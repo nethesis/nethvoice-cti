@@ -23,10 +23,11 @@
   - There is a file for every app route, check the [Next.js routing docs](https://nextjs.org/docs/routing/introduction) for more info
 - **models** - contains the models used by rematch
   - Check the [rematch models docs](https://rematchjs.org/docs/api-reference/models) for more info
+- **public** - contains the static files
 - **store** - contains the stores for rematch
   - Check the [rematch store docs](https://rematchjs.org/docs/api-reference/store) for more info
-- **public** - contains the static files
 - **styles** - contains the styling files
+- **theme** - contains classes used by the reusable components
 
 ## Tools
 
