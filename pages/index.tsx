@@ -9,7 +9,6 @@ const Home: NextPage = () => {
     <>
       <h1 className='text-5xl font-extrabold text-sky-600 flex gap-6'>
         <p>NethVoice CTI</p>
-
         <MdFavoriteBorder />
       </h1>
     </>

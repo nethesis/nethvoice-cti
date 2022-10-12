@@ -2,7 +2,7 @@
 
 - **components** - contains the reusable components
 - **config** - contains the configuration files
-- **helpers** - contains functions that can be extracted from components
+- **lib** - contains functions that can be extracted from components
 - **pages** - contains all the pages of the application
 - **models** - contains the models used by rematch
 - **store** - contains the stores for rematch
