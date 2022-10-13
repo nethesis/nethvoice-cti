@@ -1,7 +1,6 @@
 import type { NextPage } from 'next'
 import * as Janus from 'janus-gateway'
 import { MdFavoriteBorder } from 'react-icons/md'
-import { Switch } from '../components/reusable'
 
 const Home: NextPage = () => {
   console.log(Janus)

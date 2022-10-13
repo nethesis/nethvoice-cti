@@ -36,22 +36,32 @@ const theme = {
     },
   },
   input: {
-    base: 'block w-full relative placeholder-gray-500 text-gray-900  bg-white focus:z-10',
+    base: 'block w-full relative bg-white focus:z-10 disabled:cursor-not-allowed disabled:border-gray-200 disabled:bg-gray-50 disabled:text-gray-500',
     label: 'text-sm font-medium text-gray-700',
-    helper: 'mt-2 text-sm text-gray-700 text-red-600',
+    placeholder: {
+      base: 'placeholder:text-gray-500',
+      error: 'placeholder:text-red-300'
+    },
+    helper: {
+      base: 'mt-2 text-sm',
+      color: {
+        base: 'text-gray-500',
+        error: 'text-red-600'
+      }
+    },
     size: {
       base: 'px-3 py-2 sm:text-sm',
       large: 'px-4 py-3 sm:text-md',
     },
     colors: {
-      gray: 'border-gray-300 focus:border-indigo-500 focus:ring-indigo-500 placeholder:text-gray-400',
+      gray: 'border-gray-300 focus:border-sky-500 focus:ring-sky-500 placeholder:text-gray-400',
       error:
         'border-red-500 text-red-900 focus:border-red-500 focus:ring-red-500 placeholder-red-700',
     },
     icon: {
       base: 'absolute flex items-center z-20',
-      gray: 'text-gray-500',
-      red: 'text-red-600',
+      gray: 'text-gray-400',
+      red: 'text-red-500',
       left: 'inset-y-0 left-0 pl-3',
       right: 'inset-y-0 right-0 pr-3',
       size: {
