@@ -1,12 +1,12 @@
 /** @type {import('next').NextConfig} */
+
 const nextConfig = {
   reactStrictMode: true,
   swcMinify: true,
+  output: 'standalone',
   webpack: (config, { buildId, dev, isServer, defaultLoaders, nextRuntime, webpack }) => {
     // Check the janus configuration for modules here: https://janus.conf.meetecho.com/docs/js-modules.html
-
     config.plugins.push(new webpack.ProvidePlugin({ adapter: ['webrtc-adapter', 'default'] }))
-
     config.module.rules.push({
       test: require.resolve('janus-gateway'),
       loader: 'exports-loader',
@@ -14,7 +14,6 @@ const nextConfig = {
         exports: 'Janus',
       },
     })
-
     // Return config
     return config
   },
