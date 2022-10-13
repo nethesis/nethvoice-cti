@@ -21,18 +21,18 @@ const theme = {
     }
   },
   switch: {
-    background: 'relative inline-flex h-6 w-11 items-center rounded-full',
+    background: 'relative inline-flex h-6 w-11 flex-shrink-0 cursor-pointer rounded-full border-2 border-transparent transition-colors duration-200 ease-in-out focus:outline-none focus:ring-2 focus:ring-sky-500 focus:ring-offset-2',
     circle:
-      'inline-block h-4 w-4 transform rounded-full bg-white transition ease-in-out duration-200',
+      'pointer-events-none inline-block h-5 w-5 transform rounded-full bg-white shadow ring-0 transition duration-200 ease-in-out',
     on: {
-      translate: 'translate-x-6',
+      translate: 'translate-x-5',
       gray: 'bg-gray-300',
-      indigo: 'bg-indigo-600',
+      indigo: 'bg-sky-600',
     },
     off: {
-      translate: 'translate-x-1',
+      translate: 'translate-x-0',
       gray: 'bg-gray-200',
-      indigo: 'bg-indigo-200',
+      indigo: 'bg-sky-200',
     },
   },
   input: {
