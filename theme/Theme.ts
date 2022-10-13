@@ -224,23 +224,17 @@ const theme = {
     },
   },
   avatar: {
-    base: 'h-12 w-12 relative',
-    group: 'flex -space-x-4 w-fit',
-    reverse: 'flex-row-reverse space-x-reverse',
-    image: 'w-full h-full',
-    bordered: 'border-2 border-white',
-    initials: {
-      base: 'text-white w-full h-full flex justify-center items-center text-xl',
-      background: 'bg-gray-500',
+    base: 'inline-block relative',
+    sizes:{
+      small: ' h-6 w-6 ',
+      base: 'h-8 w-8 ',
+      large:'h-10 w-10',
+      extra_large:'h-12 w-12',
     },
+    image: 'w-full h-full',
     placeholder: {
       base: '',
       background: 'bg-gray-100',
-    },
-    status: {
-      base: 'w-4 h-4 rounded-full absolute border-2 border-white',
-      circular: '-right-1 top-9',
-      rounded: '-right-2 top-10',
     },
     rounded: {
       base: 'rounded-md',
