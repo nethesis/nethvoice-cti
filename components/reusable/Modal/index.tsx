@@ -10,7 +10,7 @@
  */
 
 import { FC, ComponentProps, PropsWithChildren, RefObject } from 'react'
-import React, { Fragment, createRef } from 'react'
+import { Fragment, createRef } from 'react'
 import { useTheme } from '../../../theme/Context'
 import { cleanClassName } from '../../../lib/utils'
 import { ModalContent } from './ModalContent'

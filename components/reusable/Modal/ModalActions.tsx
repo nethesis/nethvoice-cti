@@ -7,7 +7,6 @@
  */
 
 import type { FC, PropsWithChildren, ComponentProps } from 'react'
-import React from 'react'
 import { useTheme } from '../../../theme/Context'
 import { cleanClassName } from '../../../lib/utils'
 
