@@ -26,6 +26,7 @@
 - **public** - contains the static files
 - **store** - contains the stores for rematch
   - Check the [rematch store docs](https://rematchjs.org/docs/api-reference/store) for more info
+- **stories** - contains the stories for storybook (useful to develop reusable components in isolation)
 - **styles** - contains the styling files
 - **theme** - contains classes used by the common components
 
