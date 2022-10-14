@@ -223,17 +223,38 @@ const theme = {
     },
   },
   avatar: {
-    base: 'inline-block relative',
+    base: 'relative inline-block',
     sizes:{
-      small: ' h-6 w-6 ',
-      base: 'h-8 w-8 ',
-      large:'h-10 w-10',
-      extra_large:'h-12 w-12',
+      small: 'h-8 w-8 text-sm',
+      base:'h-10 w-10 text-base',
+      large:'h-12 w-12 text-lg',
     },
+    group: 'flex -space-x-4 w-fit',
+    reverse: 'flex-row-reverse space-x-reverse',
     image: 'w-full h-full',
+    bordered: 'border-2 border-white',
+    initials: {
+      base: 'text-white w-full h-full flex justify-center items-center font-medium leading-none',
+      background: 'bg-gray-500',
+    },
     placeholder: {
-      base: '',
+      base: 'w-full h-full',
       background: 'bg-gray-100',
+    },
+    status: {
+      base: 'absolute bottom-0 right-0 block ring-2 ring-white rounded-full',
+      sizes:{
+        circular: {
+          small: 'h-2 w-2',
+          base:'h-2.5 w-2.5',
+          large:'h-3 w-3',
+        },
+        rounded: {
+          small: 'h-2 w-2 translate-y-1/2 translate-x-1/2',
+          base:'h-2.5 w-2.5 translate-y-1/2 translate-x-1/2 ',
+          large:'h-3 w-3 translate-y-1/2 translate-x-1/2',
+        }
+      },
     },
     rounded: {
       base: 'rounded-md',
