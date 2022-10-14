@@ -74,3 +74,27 @@ To ensure a good development experince the following extensions are recommended 
 - [IntelliCode](https://marketplace.visualstudio.com/items?itemName=VisualStudioExptTeam.vscodeintellicode)
 - [Tailwind CSS IntelliSense](https://marketplace.visualstudio.com/items?itemName=bradlc.vscode-tailwindcss)
 - [Prettier](https://marketplace.visualstudio.com/items?itemName=esbenp.prettier-vscode)
+
+## Deployment
+
+The project can be deployed through containers.
+
+Requirements
+
+- [podman](https://podman.io/) or [docker](https://docs.docker.com/)
+
+Create the container image:
+
+```
+podman build .
+```
+_It returns the image_id._
+
+Run the container:
+
+```
+podman run -dt -p 3001:3000/tcp <image_id>
+```
+_If port 3001 is already in use, replace it with a free one._
+
+The project will be available on localhost:3001
