@@ -8,44 +8,35 @@
  *
  */
 
-import { ComponentProps, FC, ReactNode } from 'react';
-import { useTheme } from '../../theme/Context';
-import classNames from 'classnames';
+import { ComponentProps, FC, ReactNode } from 'react'
+import { useTheme } from '../../theme/Context'
+import classNames from 'classnames'
 
-export interface AvatarProps
-  extends Omit<ComponentProps<'div'>, 'className' | 'placeholder'> {
-  rounded?: 'full';
-  src: string;
+export interface AvatarProps extends Omit<ComponentProps<'div'>, 'className' | 'placeholder'> {
+  rounded?: 'full'
+  src: string
   size?: 'small' | 'base' | 'large' | 'extra_large'
-  placeholder?: ReactNode;
+  placeholder?: ReactNode
 }
 
-export const Avatar: FC<AvatarProps> = ({
-  size,
-  rounded,
-  src,
-  placeholder
-}): JSX.Element => {
-  const { avatar: theme} = useTheme().theme;
+export const Avatar: FC<AvatarProps> = ({ size, rounded, src, placeholder }): JSX.Element => {
+  const { avatar: theme } = useTheme().theme
   return (
     <div
       className={classNames(
         theme.base,
         placeholder && theme.placeholder.background,
         size && theme.sizes[size],
-        size === 'small' ? theme.sizes.small : theme.sizes.base
+        size === 'small' ? theme.sizes.small : theme.sizes.base,
       )}
     >
       {src && (
         <img
-          className={classNames(
-            theme.image,
-            rounded ? theme.rounded[rounded] : theme.rounded.full
-          )}
+          className={classNames(theme.image, rounded ? theme.rounded[rounded] : theme.rounded.full)}
           src={src}
         />
       )}
       {placeholder && <div>{placeholder}</div>}
     </div>
-  );
-};
+  )
+}

@@ -8,7 +8,7 @@
  *
  */
 
-import React, { FC, useState, useEffect } from 'react'
+import { FC, useState, useEffect } from 'react'
 import classNames from 'classnames'
 import { useTheme } from '../../theme/Context'
 import { Switch as HeadlessSwitch } from '@headlessui/react'
@@ -28,8 +28,6 @@ export const Switch: FC<SwitchProps> = ({ changed, on, disabled, label }): JSX.E
 
   useEffect(() => {
     changed && changed(enabled)
-
-    console.log("use effect executed")
   }, [changed, enabled])
 
   return (

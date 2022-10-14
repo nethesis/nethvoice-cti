@@ -20,10 +20,7 @@ export interface ButtonProps
 }
 
 export const Button = forwardRef<HTMLButtonElement, ButtonProps>(
-  (
-    { children, size = 'base', variant = 'primary', ...props },
-    ref,
-  ): JSX.Element => {
+  ({ children, size = 'base', variant = 'primary', ...props }, ref): JSX.Element => {
     const { button: theme } = useTheme().theme
     return (
       <button
@@ -31,7 +28,7 @@ export const Button = forwardRef<HTMLButtonElement, ButtonProps>(
           theme.base,
           theme[variant],
           size && theme.sizes[size],
-          size === 'small' ? theme.rounded.small : theme.rounded.base
+          size === 'small' ? theme.rounded.small : theme.rounded.base,
         )}
         ref={ref}
         {...props}

@@ -1,5 +1,5 @@
 /**
- * 
+ *
  * It renders an input fields.
  *
  * @param label - The label to render.
@@ -14,7 +14,7 @@
  *
  */
 
-import React, { ComponentProps, FC, forwardRef } from 'react'
+import { ComponentProps, FC, forwardRef } from 'react'
 import { cleanClassName } from '../../lib/utils'
 import { useTheme } from '../../theme/Context'
 import classNames from 'classnames'
@@ -56,7 +56,11 @@ export const TextInput = forwardRef<HTMLInputElement, TextInputProps>(
     const { input: theme } = useTheme().theme
     return (
       <div className='text-left w-full'>
-        {label && <label className={theme.label} htmlFor={id}>{label}</label>}
+        {label && (
+          <label className={theme.label} htmlFor={id}>
+            {label}
+          </label>
+        )}
         <div className='relative'>
           {Icon && (
             <div
@@ -87,13 +91,22 @@ export const TextInput = forwardRef<HTMLInputElement, TextInputProps>(
               size && size === 'large' ? theme.size.large : theme.size.base,
               !error ? theme.colors.gray : theme.colors.error,
               Icon && !trailingIcon && 'pl-10',
-              error ? theme.placeholder.error : theme.placeholder.base
+              error ? theme.placeholder.error : theme.placeholder.base,
             )}
             {...cleanProps}
             ref={ref}
           />
         </div>
-        {helper && <p className={classNames(theme.helper.base, error ? theme.helper.color.error : theme.helper.color.base)}>{helper}</p>}
+        {helper && (
+          <p
+            className={classNames(
+              theme.helper.base,
+              error ? theme.helper.color.error : theme.helper.color.base,
+            )}
+          >
+            {helper}
+          </p>
+        )}
       </div>
     )
   },

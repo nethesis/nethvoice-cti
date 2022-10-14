@@ -1,4 +1,4 @@
-import React, { FC, ComponentProps } from 'react'
+import { FC, ComponentProps } from 'react'
 import { Menu } from '@headlessui/react'
 import classNames from 'classnames'
 import { useTheme } from '../../../theme/Context'
