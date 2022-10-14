@@ -210,15 +210,15 @@ const theme = {
     },
   },
   badge: {
-    base: 'font-medium mr-2 flex justify-center items-center w-fit gap-2',
-    dot: 'w-1.5 h-1.5 rounded-full',
+    base: 'inline-flex items-center font-medium',
+    dot: '-ml-0.5 mr-1.5 h-2 w-2 full rounded',
     rounded: {
-      base: 'rounded-md',
+      base: 'rounded',
       full: 'rounded-full',
     },
     sizes: {
-      base: 'px-2.5 py-0.5 text-sm',
-      large: 'px-2.5 py-0.5 text-base',
+      base: 'px-2 py-0.5 text-xs',
+      large: 'px-2.5 py-0.5 text-sm ',
     },
   },
   avatar: {
