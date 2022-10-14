@@ -1,69 +1,67 @@
 const theme = {
   button: {
-    base: 'flex content-center items-center justify-center font-medium tracking-wide transition-colors duration-200 transform focus:outline-none focus:ring-2 gap-2 focus:z-20',
+    base: 'flex content-center items-center justify-center font-medium tracking-wide transition-colors duration-200 transform focus:outline-none focus:ring-2 focus:z-20 focus:ring-offset-2',
     primary:
-      'focus:ring-indigo-500 bg-indigo-600 hover:bg-indigo-700 text-white border border-transparent focus:ring-offset-2',
+      'bg-sky-600 text-white border border-transparent hover:bg-sky-700 focus:ring-sky-500',
     secondary:
-      'focus:ring-indigo-500 bg-indigo-200 hover:bg-indigo-300 text-indigo-600 border border-transparent focus:ring-offset-2',
-    light:
-      'border border-gray-300 focus:ring-indigo-500 bg-white hover:bg-gray-100 text-gray-700 focus:ring-offset-2',
+      'focus:ring-sky-500 bg-sky-100 text-sky-700 border border-transparent hover:bg-sky-200 focus:ring-sky-500',
+    white:
+      'border border-gray-300 bg-white text-gray-700 shadow-sm hover:bg-gray-100 focus:ring-sky-500',
     danger:
-      'focus:ring-red-500 bg-red-600 hover:bg-red-700 text-white border border-transparent focus:ring-offset-2',
-    transparent:
-      'focus:ring-indigo-500 ring-inset focus:outline-none hover:bg-gray-100 text-gray-700 border border-transparent drop-shadow-none',
+      'focus:ring-red-500 bg-red-600 hover:bg-red-700 text-white border border-transparent',
     rounded: {
+      small: 'rounded',
       base: 'rounded-md',
-      large: 'rounded-lg',
-      extra: 'rounded-xl',
-      full: 'rounded-full',
-      none: 'rounded-none',
-    },
-    squared: {
-      right: 'rounded-tr-none rounded-br-none',
-      top: 'rounded-tr-none rounded-tl-none',
-      left: 'rounded-tl-none rounded-bl-none',
-      bottom: 'rounded-bl-none rounded-br-none',
-      tright: 'rounded-tr-none rounded-tl-none rounded-br-none',
-      tleft: 'rounded-tl-none rounded-tr-none rounded-bl-none',
     },
     sizes: {
-      base: 'px-3.5 py-2',
-      large: 'px-4 py-2.5',
+      small: 'px-2.5 py-1.5 text-xs',
+      base: 'px-3 py-2 text-sm leading-4',
+      large: 'px-4 py-2 text-sm',
       full: 'w-full h-full',
-    },
+    }
   },
   switch: {
-    background: 'relative inline-flex h-6 w-11 items-center rounded-full',
+    background: 'relative inline-flex h-6 w-11 flex-shrink-0 cursor-pointer rounded-full border-2 border-transparent transition-colors duration-200 ease-in-out focus:outline-none focus:ring-2 focus:ring-sky-500 focus:ring-offset-2',
     circle:
-      'inline-block h-4 w-4 transform rounded-full bg-white transition ease-in-out duration-200',
+      'pointer-events-none inline-block h-5 w-5 transform rounded-full bg-white shadow ring-0 transition duration-200 ease-in-out',
     on: {
-      translate: 'translate-x-6',
+      translate: 'translate-x-5',
       gray: 'bg-gray-300',
-      indigo: 'bg-indigo-600',
+      indigo: 'bg-sky-600',
     },
     off: {
-      translate: 'translate-x-1',
+      translate: 'translate-x-0',
       gray: 'bg-gray-200',
-      indigo: 'bg-indigo-200',
+      indigo: 'bg-sky-200',
     },
   },
   input: {
-    base: 'block w-full relative placeholder-gray-500 text-gray-900  bg-white focus:z-10',
+    base: 'block w-full relative bg-white focus:z-10 disabled:cursor-not-allowed disabled:border-gray-200 disabled:bg-gray-50 disabled:text-gray-500',
     label: 'text-sm font-medium text-gray-700',
-    helper: 'mt-2 text-sm text-gray-700 text-red-600',
+    placeholder: {
+      base: 'placeholder:text-gray-500',
+      error: 'placeholder:text-red-300'
+    },
+    helper: {
+      base: 'mt-2 text-sm',
+      color: {
+        base: 'text-gray-500',
+        error: 'text-red-600'
+      }
+    },
     size: {
       base: 'px-3 py-2 sm:text-sm',
       large: 'px-4 py-3 sm:text-md',
     },
     colors: {
-      gray: 'border-gray-300 focus:border-indigo-500 focus:ring-indigo-500 placeholder:text-gray-400',
+      gray: 'border-gray-300 focus:border-sky-500 focus:ring-sky-500 placeholder:text-gray-400',
       error:
         'border-red-500 text-red-900 focus:border-red-500 focus:ring-red-500 placeholder-red-700',
     },
     icon: {
       base: 'absolute flex items-center z-20',
-      gray: 'text-gray-500',
-      red: 'text-red-600',
+      gray: 'text-gray-400',
+      red: 'text-red-500',
       left: 'inset-y-0 left-0 pl-3',
       right: 'inset-y-0 right-0 pr-3',
       size: {
