@@ -1,9 +1,6 @@
 import type { NextPage } from 'next'
 import * as Janus from 'janus-gateway'
 import { MdFavoriteBorder } from 'react-icons/md'
-import { TextInput } from '../components/reusable/TextInput'
-
-import { MdError } from 'react-icons/md';
 
 const Home: NextPage = () => {
   console.log(Janus)
