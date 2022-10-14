@@ -7,7 +7,7 @@
     - login
     - operators
     - phonebook
-    - reusable
+    - common
     - settings
 - **config** - contains the configuration files for the app
   - Build and project configuration are in the root directory of the project
@@ -27,7 +27,7 @@
 - **store** - contains the stores for rematch
   - Check the [rematch store docs](https://rematchjs.org/docs/api-reference/store) for more info
 - **styles** - contains the styling files
-- **theme** - contains classes used by the reusable components
+- **theme** - contains classes used by the common components
 
 ## Tools
 
