@@ -272,7 +272,7 @@ const theme = {
       full: 'w-full h-full'
     },
     item: {
-      base: 'block px-4 py-2 text-sm flex items-center gap-3 mt-1 mb-1',
+      base: 'block px-4 py-2 text-sm flex items-center gap-3 mt-1 mb-1 cursor-pointer',
       light: 'text-gray-700',
       active: 'bg-gray-100 text-gray-900',
       icon: 'h-5 w-5 text-gray-400 flex',
