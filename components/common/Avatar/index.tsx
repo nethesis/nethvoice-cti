@@ -31,7 +31,7 @@ export interface AvatarProps extends Omit<ComponentProps<'div'>, 'className' | '
   placeholder?: FC<ComponentProps<'svg'>>
   bordered?: boolean
   altText?: string
-  size?: 'small' | 'base' | 'large',
+  size?: 'extra_small' | 'small' | 'base' | 'large' | 'extra_large',
   unoptimized?: boolean
 }
 

@@ -20,7 +20,7 @@ const meta = {
       type: 'select',
     },
     size: {
-      options: ['small', 'base', 'large'],
+      options: ['extra_small' ,'small', 'base', 'large', 'extra_large'],
       type: 'select',
     },
   },

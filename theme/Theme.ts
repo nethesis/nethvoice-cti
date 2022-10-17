@@ -225,9 +225,11 @@ const theme = {
   avatar: {
     base: 'relative inline-block',
     sizes:{
+      extra_small: 'h-6 w-6 text-xs',
       small: 'h-8 w-8 text-sm',
       base:'h-10 w-10 text-base',
       large:'h-12 w-12 text-lg',
+      extra_large: 'h-14 w-14 text-xl'
     },
     group: 'flex -space-x-4 w-fit',
     reverse: 'flex-row-reverse space-x-reverse',
@@ -245,14 +247,18 @@ const theme = {
       base: 'absolute bottom-0 right-0 block ring-2 ring-white rounded-full',
       sizes:{
         circular: {
+          extra_small: 'h-1.5 w-1.5',
           small: 'h-2 w-2',
-          base:'h-2.5 w-2.5',
-          large:'h-3 w-3',
+          base: 'h-2.5 w-2.5',
+          large: 'h-3 w-3',
+          extra_large:'h-3.5 w-3.5',
         },
         rounded: {
+          extra_small: 'h-1.5 w-1.5 translate-y-1/2 translate-x-1/2',
           small: 'h-2 w-2 translate-y-1/2 translate-x-1/2',
-          base:'h-2.5 w-2.5 translate-y-1/2 translate-x-1/2 ',
-          large:'h-3 w-3 translate-y-1/2 translate-x-1/2',
+          base: 'h-2.5 w-2.5 translate-y-1/2 translate-x-1/2 ',
+          large: 'h-3 w-3 translate-y-1/2 translate-x-1/2',
+          extra_large: 'h-3.5 w-3.5 translate-y-1/2 translate-x-1/2'
         }
       },
     },
