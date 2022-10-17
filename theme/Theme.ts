@@ -116,7 +116,7 @@ const theme = {
     available: {
       badge: {
         base: 'bg-green-100 text-green-900',
-        dot: 'bg-green-700',
+        dot: 'bg-green-400',
       },
       avatar: {
         dot: 'bg-green-500',
@@ -128,7 +128,7 @@ const theme = {
     dnd: {
       badge: {
         base: 'bg-gray-100 text-gray-900',
-        dot: 'bg-gray-700',
+        dot: 'bg-gray-400',
       },
       avatar: {
         dot: 'bg-gray-900',
@@ -140,7 +140,7 @@ const theme = {
     voicemail: {
       badge: {
         base: 'bg-orange-100 text-orange-900',
-        dot: 'bg-orange-700',
+        dot: 'bg-orange-400',
       },
       avatar: {
         dot: 'bg-orange-500',
@@ -152,7 +152,7 @@ const theme = {
     cellphone: {
       badge: {
         base: 'bg-purple-100 text-purple-900',
-        dot: 'bg-purple-700',
+        dot: 'bg-purple-400',
       },
       avatar: {
         dot: 'bg-purple-500',
@@ -164,7 +164,7 @@ const theme = {
     callforward: {
       badge: {
         base: 'bg-yellow-100 text-yellow-900',
-        dot: 'bg-yellow-700',
+        dot: 'bg-yellow-400',
       },
       avatar: {
         dot: 'bg-yellow-500',
@@ -176,7 +176,7 @@ const theme = {
     busy: {
       badge: {
         base: 'bg-red-100 text-red-900',
-        dot: 'bg-red-700',
+        dot: 'bg-red-400',
       },
       avatar: {
         dot: 'bg-red-500',
@@ -188,7 +188,7 @@ const theme = {
     incoming: {
       badge: {
         base: 'bg-blue-100 text-blue-900',
-        dot: 'bg-blue-700',
+        dot: 'bg-blue-400',
       },
       avatar: {
         dot: 'bg-blue-500',
@@ -200,7 +200,7 @@ const theme = {
     offline: {
       badge: {
         base: 'bg-gray-100 text-gray-600',
-        dot: 'bg-gray-500',
+        dot: 'bg-gray-400',
       },
       avatar: {
         dot: 'bg-gray-500',
@@ -212,7 +212,6 @@ const theme = {
   },
   badge: {
     base: 'inline-flex items-center font-medium',
-    dot: '-ml-0.5 mr-1.5 h-2 w-2 full rounded',
     rounded: {
       base: 'rounded',
       full: 'rounded-full',
