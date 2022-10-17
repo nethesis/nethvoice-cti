@@ -62,11 +62,11 @@ export const WithPlaceholder = Template.bind({})
 WithPlaceholder.args = {
   placeholder: () => (
     <svg viewBox='0 0 48 48' fill='none' xmlns='http://www.w3.org/2000/svg'>
-      <g clip-path='url(#clip0_7835_217)'>
+      <g clipPath='url(#clip0_7835_217)'>
         <rect width='48' height='48' rx='24' fill='#F4F4F5' />
         <path
-          fill-rule='evenodd'
-          clip-rule='evenodd'
+          fillRule='evenodd'
+          clipRule='evenodd'
           d='M-3 50C-3 47.0124 -2.30162 44.0541 -0.944747 41.294C0.41213 38.5338 2.40093 36.0259 4.90812 33.9133C7.4153 31.8008 10.3918 30.125 13.6675 28.9817C16.9433 27.8384 20.4543 27.25 24 27.25C27.5457 27.25 31.0567 27.8384 34.3325 28.9817C37.6082 30.125 40.5847 31.8008 43.0919 33.9133C45.5991 36.0259 47.5879 38.5338 48.9447 41.294C50.3016 44.0541 51 47.0124 51 50H-3Z'
           fill='#D4D4D8'
         />
