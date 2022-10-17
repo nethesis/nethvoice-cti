@@ -1,6 +1,6 @@
-import React from 'react';
-import { Dropdown, DropdownProps, Button } from '../components/common';
-import { Story, Meta } from '@storybook/react';
+import React from 'react'
+import { Dropdown, DropdownProps, Button } from '../components/common'
+import { Story, Meta } from '@storybook/react'
 import {
   HiChevronDown,
   HiPencil,
@@ -8,7 +8,7 @@ import {
   HiArchive,
   HiArrowsExpand,
   HiTrash,
-} from 'react-icons/hi';
+} from 'react-icons/hi'
 
 const meta = {
   title: 'Components/Dropdown',
@@ -24,22 +24,22 @@ const meta = {
   parameters: {
     controls: { expanded: true },
   },
-};
+}
 
-export default meta as Meta;
+export default meta as Meta
 
 const Template: Story<DropdownProps> = (args) => {
   return (
     <Dropdown {...args}>
-      <Button variant="white">
+      <Button variant='white'>
         Actions
-        <HiChevronDown className="-mr-1 ml-2 h-5 w-5" aria-hidden="true" />
+        <HiChevronDown className='-mr-1 ml-2 h-5 w-5' aria-hidden='true' />
       </Button>
     </Dropdown>
-  );
-};
+  )
+}
 
-export const Base = Template.bind({});
+export const Base = Template.bind({})
 Base.args = {
   items: (
     <>
@@ -47,9 +47,9 @@ Base.args = {
       <Dropdown.Item>Chat</Dropdown.Item>
     </>
   ),
-};
+}
 
-export const WithDivider = Template.bind({});
+export const WithDivider = Template.bind({})
 WithDivider.args = {
   items: (
     <>
@@ -67,9 +67,9 @@ WithDivider.args = {
     </>
   ),
   divider: true,
-};
+}
 
-export const WithIcon = Template.bind({});
+export const WithIcon = Template.bind({})
 WithIcon.args = {
   items: (
     <>
@@ -87,17 +87,15 @@ WithIcon.args = {
     </>
   ),
   divider: true,
-};
+}
 
-export const WithHeader = Template.bind({});
+export const WithHeader = Template.bind({})
 WithHeader.args = {
   items: (
     <>
       <Dropdown.Header>
-        <span className="block text-sm">Signed in as</span>
-        <span className="block text-sm font-medium truncate">
-          john.doe@example.com
-        </span>
+        <span className='block text-sm'>Signed in as</span>
+        <span className='block text-sm font-medium truncate'>john.doe@example.com</span>
       </Dropdown.Header>
       <div>
         <Dropdown.Item>Profile</Dropdown.Item>
@@ -109,17 +107,15 @@ WithHeader.args = {
     </>
   ),
   divider: true,
-};
+}
 
-export const PositionLeft = Template.bind({});
+export const PositionLeft = Template.bind({})
 PositionLeft.args = {
   items: (
     <>
       <Dropdown.Header>
-        <span className="block text-sm">Signed in as</span>
-        <span className="block text-sm font-medium truncate">
-          john.doe@example.com
-        </span>
+        <span className='block text-sm'>Signed in as</span>
+        <span className='block text-sm font-medium truncate'>john.doe@example.com</span>
       </Dropdown.Header>
       <div>
         <Dropdown.Item>Profile</Dropdown.Item>
@@ -132,4 +128,4 @@ PositionLeft.args = {
   ),
   divider: true,
   position: 'left',
-};
+}
