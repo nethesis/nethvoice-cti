@@ -87,14 +87,14 @@ Requirements
 Create the container image:
 
 ```
-podman build .
+podman build -t ghcr.io/nethesis/nethvoice-cti .
 ```
 _It returns the image_id._
 
 Run the container:
 
 ```
-podman run -dt -p 3001:3000/tcp <image_id>
+podman run --rm --name nethvoice-cti -p 3001:3000/tcp ghcr.io/nethserver/nethvoice-cti:latest
 ```
 _If port 3001 is already in use, replace it with a free one._
 
