@@ -40,11 +40,11 @@ Large.args = {
   children: 'Badge',
   variant: 'available',
   size: 'large',
-  rounded: 'full'
+  rounded: 'full',
 }
 
 export const Rounded = Template.bind({})
 Rounded.args = {
   children: 'Badge',
-  variant: 'available'
+  variant: 'available',
 }
