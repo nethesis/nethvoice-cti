@@ -1,3 +1,6 @@
+// Copyright (C) 2022 Nethesis S.r.l.
+// SPDX-License-Identifier: AGPL-3.0-or-later
+
 import { init, RematchDispatch, RematchRootState } from "@rematch/core";
 import { models, RootModel } from "../models";
 import immerPlugin from "@rematch/immer";
