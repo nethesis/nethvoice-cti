@@ -1,14 +1,15 @@
 import React from 'react'
 import { Dropdown, DropdownProps, Button } from '../components/common'
 import { Story, Meta } from '@storybook/react'
+
 import {
-  HiChevronDown,
-  HiPencil,
-  HiDuplicate,
-  HiArchive,
-  HiArrowsExpand,
-  HiTrash,
-} from 'react-icons/hi'
+  MdOutlineExpandMore,
+  MdOutlineEdit,
+  MdContentCopy,
+  MdOutlineArchive,
+  MdOutlineExpand,
+  MdDeleteOutline,
+} from 'react-icons/md'
 
 const meta = {
   title: 'Components/Dropdown',
@@ -33,7 +34,7 @@ const Template: Story<DropdownProps> = (args) => {
     <Dropdown {...args}>
       <Button variant='white'>
         Actions
-        <HiChevronDown className='-mr-1 ml-2 h-5 w-5' aria-hidden='true' />
+        <MdOutlineExpandMore className='-mr-1 ml-2 h-5 w-5' aria-hidden='true' />
       </Button>
     </Dropdown>
   )
@@ -73,16 +74,16 @@ export const WithIcon = Template.bind({})
 WithIcon.args = {
   items: (
     <>
-      <Dropdown.Item icon={HiPencil}>Edit</Dropdown.Item>
+      <Dropdown.Item icon={MdOutlineEdit}>Edit</Dropdown.Item>
       <div>
-        <Dropdown.Item icon={HiDuplicate}>Duplicate</Dropdown.Item>
-        <Dropdown.Item icon={HiArchive}>Archive</Dropdown.Item>
+        <Dropdown.Item icon={MdContentCopy}>Duplicate</Dropdown.Item>
+        <Dropdown.Item icon={MdOutlineArchive}>Archive</Dropdown.Item>
       </div>
       <div>
-        <Dropdown.Item icon={HiArrowsExpand}>Move</Dropdown.Item>
+        <Dropdown.Item icon={MdOutlineExpand}>Move</Dropdown.Item>
       </div>
       <div>
-        <Dropdown.Item icon={HiTrash}>Delete</Dropdown.Item>
+        <Dropdown.Item icon={MdDeleteOutline}>Delete</Dropdown.Item>
       </div>
     </>
   ),

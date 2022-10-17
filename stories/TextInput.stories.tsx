@@ -1,7 +1,7 @@
-import React, { useState } from 'react'
+import { useState } from 'react'
 import { Meta, Story } from '@storybook/react'
 import { TextInput, TextInputProps } from '../components/common'
-import { HiMail, HiEyeOff, HiEye } from 'react-icons/hi'
+import { MdRemoveRedEye, MdOutlineRemoveRedEye, MdEmail } from 'react-icons/md'
 import { MdError } from 'react-icons/md'
 
 const meta = {
@@ -58,13 +58,13 @@ WithLabel.args = {
 export const WithLeadingIcon = Template.bind({})
 WithLeadingIcon.args = {
   ...WithLabel.args,
-  icon: HiMail,
+  icon: MdEmail,
 }
 
 export const WithTrailingIcon = Template.bind({})
 WithTrailingIcon.args = {
   ...WithLabel.args,
-  icon: HiMail,
+  icon: MdEmail,
   trailingIcon: true,
 }
 
@@ -93,7 +93,7 @@ ErrorHelperWithIcon.args = {
 export const Squared = Template.bind({})
 Squared.args = {
   ...WithLabel.args,
-  squared: 'top',
+  squared: 'bottom',
 }
 
 export const InputGroup: Story = () => {
@@ -109,7 +109,7 @@ export const InputGroup: Story = () => {
           name='password'
           squared='top'
           type={pwdVisible ? 'text' : 'password'}
-          icon={pwdVisible ? HiEyeOff : HiEye}
+          icon={pwdVisible ? MdRemoveRedEye : MdOutlineRemoveRedEye}
           onIconClick={() => setPwdVisible(!pwdVisible)}
           trailingIcon={true}
         />

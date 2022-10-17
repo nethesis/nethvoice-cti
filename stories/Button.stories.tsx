@@ -1,5 +1,5 @@
 import { Button, ButtonProps } from '../components/common'
-import { HiPlay, HiStop, HiRewind, HiRefresh } from 'react-icons/hi'
+import { MdRefresh } from 'react-icons/md'
 import { Story, Meta } from '@storybook/react'
 
 const meta = {
@@ -52,7 +52,7 @@ Danger.args = {
 
 const TemplateWithChild: Story<ButtonProps> = (args) => (
   <Button {...args}>
-    <HiRefresh className='-ml-1 mr-2 h-5 w-5' />
+    <MdRefresh className='-ml-1 mr-2 h-5 w-5' />
     Button
   </Button>
 )
@@ -66,7 +66,7 @@ WithIcon.args = {
 const TemplateWithChildRight: Story<ButtonProps> = (args) => (
   <Button {...args}>
     Button
-    <HiRefresh className='ml-2 -mr-1 h-5 w-5' />
+    <MdRefresh className='ml-2 -mr-1 h-5 w-5' />
   </Button>
 )
 

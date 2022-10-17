@@ -2,7 +2,7 @@ import React, { createRef, RefObject } from 'react'
 import { Meta, Story } from '@storybook/react'
 import { Modal, ModalProps, Button, TextInput } from '../components/common'
 import { useState } from 'react'
-import { HiOutlineExclamation } from 'react-icons/hi'
+import { MdWarningAmber } from 'react-icons/md'
 
 const meta = {
   title: 'Components/Modal',
@@ -25,7 +25,7 @@ export const Danger: Story<ModalProps> = (): JSX.Element => {
       <Modal show={showMondal} focus={cancelButtonRef} onClose={() => setShowMondal(false)}>
         <Modal.Content>
           <div className='mx-auto flex h-12 w-12 flex-shrink-0 items-center justify-center rounded-full bg-red-100 sm:mx-0'>
-            <HiOutlineExclamation className='h-6 w-6 text-red-600' aria-hidden='true' />
+            <MdWarningAmber className='h-6 w-6 text-red-600' aria-hidden='true' />
           </div>
           <div className='mt-3 text-center sm:mt-0 sm:ml-4 sm:text-left'>
             <h3 className='text-lg font-medium leading-6 text-gray-900'>Delete account</h3>
