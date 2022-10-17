@@ -26,6 +26,7 @@
 - **public** - contains the static files
 - **store** - contains the stores for rematch
   - Check the [rematch store docs](https://rematchjs.org/docs/api-reference/store) for more info
+- **stories** - contains the stories for storybook (useful to develop reusable components in isolation)
 - **styles** - contains the styling files
 - **theme** - contains classes used by the common components
 
@@ -87,14 +88,14 @@ Requirements
 Create the container image:
 
 ```
-podman build .
+podman build -t ghcr.io/nethesis/nethvoice-cti .
 ```
 _It returns the image_id._
 
 Run the container:
 
 ```
-podman run -dt -p 3001:3000/tcp <image_id>
+podman run --rm --name nethvoice-cti -p 3001:3000/tcp ghcr.io/nethserver/nethvoice-cti:latest
 ```
 _If port 3001 is already in use, replace it with a free one._
 

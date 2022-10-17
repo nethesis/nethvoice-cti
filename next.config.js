@@ -16,7 +16,7 @@ const nextConfig = {
     })
     // Return config
     return config
-  },
+  }
 }
 
 module.exports = nextConfig
