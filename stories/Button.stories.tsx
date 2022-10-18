@@ -1,3 +1,6 @@
+// Copyright (C) 2022 Nethesis S.r.l.
+// SPDX-License-Identifier: AGPL-3.0-or-later
+
 import { Button, ButtonProps } from '../components/common'
 import { MdRefresh } from 'react-icons/md'
 import { Story, Meta } from '@storybook/react'

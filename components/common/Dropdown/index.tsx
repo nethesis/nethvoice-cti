@@ -1,3 +1,6 @@
+// Copyright (C) 2022 Nethesis S.r.l.
+// SPDX-License-Identifier: AGPL-3.0-or-later
+
 import { FC, ComponentProps, Fragment, ReactNode } from 'react'
 import { Menu, Transition } from '@headlessui/react'
 import { DropdownItem } from './DropdownItem'

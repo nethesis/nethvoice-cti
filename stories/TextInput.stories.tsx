@@ -1,3 +1,6 @@
+// Copyright (C) 2022 Nethesis S.r.l.
+// SPDX-License-Identifier: AGPL-3.0-or-later
+
 import { useState } from 'react'
 import { Meta, Story } from '@storybook/react'
 import { TextInput, TextInputProps } from '../components/common'
