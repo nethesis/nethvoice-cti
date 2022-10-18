@@ -16,8 +16,9 @@ import { cleanClassName } from '../../../lib/utils'
 import { ModalContent } from './ModalContent'
 import { ModalActions } from './ModalActions'
 import { Transition, Dialog } from '@headlessui/react'
+import classNames from 'classnames'
 
-export interface ModalProps extends PropsWithChildren<Omit<ComponentProps<'div'>, 'className'>> {
+export interface ModalProps extends PropsWithChildren<ComponentProps<'div'>> {
   show?: boolean
   size?: 'base' | 'large'
   focus?: RefObject<HTMLElement>
@@ -30,6 +31,7 @@ const ModalComponent: FC<ModalProps> = ({
   size = 'base',
   focus = createRef(),
   onClose,
+  className,
   ...props
 }) => {
   const { modal: theme } = useTheme().theme
@@ -39,7 +41,7 @@ const ModalComponent: FC<ModalProps> = ({
     <Transition.Root show={show} as={Fragment}>
       <Dialog
         as='div'
-        className='relative z-10'
+        className={classNames('relative', 'z-10', className)}
         onClose={() => onClose()}
         initialFocus={focus && focus}
         {...cleanProps}
