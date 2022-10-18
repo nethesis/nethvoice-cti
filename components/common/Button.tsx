@@ -14,8 +14,7 @@ import { ComponentPropsWithRef, forwardRef, ReactNode } from 'react'
 import classNames from 'classnames'
 import { useTheme } from '../../theme/Context'
 
-export interface ButtonProps
-  extends Omit<ComponentPropsWithRef<'button'>, 'className' | 'color' | 'style'> {
+export interface ButtonProps extends Omit<ComponentPropsWithRef<'button'>, 'color' | 'style'> {
   children: ReactNode
   size?: 'small' | 'base' | 'large'
   variant?: 'primary' | 'secondary' | 'white' | 'danger'
@@ -25,7 +24,7 @@ export interface ButtonProps
 
 export const Button = forwardRef<HTMLButtonElement, ButtonProps>(
   (
-    { children, size = 'base', variant = 'primary', fullWidth, fullHeight, ...props },
+    { children, size = 'base', variant = 'primary', fullWidth, fullHeight, className, ...props },
     ref,
   ): JSX.Element => {
     const { button: theme } = useTheme().theme
@@ -38,6 +37,7 @@ export const Button = forwardRef<HTMLButtonElement, ButtonProps>(
           size === 'small' ? theme.rounded.small : theme.rounded.base,
           fullWidth && theme.sizes.full_w,
           fullHeight && theme.sizes.full_h,
+          className,
         )}
         ref={ref}
         {...props}

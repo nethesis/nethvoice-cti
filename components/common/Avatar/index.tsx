@@ -23,7 +23,7 @@ import type { StatusTypes } from '../../../theme/Types'
 
 export type AvatarGroupProps = GroupProps
 
-export interface AvatarProps extends Omit<ComponentProps<'div'>, 'className' | 'placeholder'> {
+export interface AvatarProps extends Omit<ComponentProps<'div'>, 'placeholder'> {
   rounded?: 'base' | 'full'
   status?: StatusTypes
   src?: string
@@ -44,7 +44,8 @@ const AvatarComponent: FC<AvatarProps> = ({
   bordered,
   altText = 'Avatar image',
   size = 'base',
-  unoptimized
+  unoptimized,
+  className
 }) => {
   const { avatar: theme, status: statuses } = useTheme().theme
 
@@ -57,6 +58,7 @@ const AvatarComponent: FC<AvatarProps> = ({
         Placeholder && theme.placeholder.background,
         theme.rounded[rounded],
         bordered && theme.bordered,
+        className,
       )}
     >
       {src && (

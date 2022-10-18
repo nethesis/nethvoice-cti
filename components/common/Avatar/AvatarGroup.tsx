@@ -12,16 +12,16 @@ import { cleanClassName } from '../../../lib/utils'
 import classNames from 'classnames'
 
 export interface AvatarGroupProps
-  extends PropsWithChildren<Omit<ComponentProps<'div'>, 'className'>> {
+  extends PropsWithChildren<ComponentProps<'div'>> {
   reversed?: boolean
 }
 
-export const AvatarGroup: FC<AvatarGroupProps> = ({ children, reversed, ...props }) => {
+export const AvatarGroup: FC<AvatarGroupProps> = ({ children, reversed, className, ...props }) => {
   const { avatar: theme } = useTheme().theme
   const cleanProps = cleanClassName(props)
 
   return (
-    <div className={classNames(theme.group, reversed && theme.reverse)} {...cleanProps}>
+    <div className={classNames(theme.group, reversed && theme.reverse, className)} {...cleanProps}>
       {children}
     </div>
   )

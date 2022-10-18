@@ -5,18 +5,18 @@ import { DropdownHeader } from './DropdownHeader'
 import { useTheme } from '../../../theme/Context'
 import classNames from 'classnames'
 
-export interface DropdownProps extends Omit<ComponentProps<'div'>, 'className'> {
+export interface DropdownProps extends ComponentProps<'div'> {
   items: ReactNode
   divider?: boolean
   position?: 'left' | 'right'
   size?: 'full'
 }
 
-const DropdownComponent: FC<DropdownProps> = ({ children, items, divider, position, size }) => {
+const DropdownComponent: FC<DropdownProps> = ({ children, items, divider, position, size, className }) => {
   const { dropdown: theme } = useTheme().theme
 
   return (
-    <Menu as='div' className={theme.base}>
+    <Menu as='div' className={classNames(theme.base, className)}>
       <Menu.Button as='div' className={classNames(size && theme.size[size])}>
         {children}
       </Menu.Button>

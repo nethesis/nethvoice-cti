@@ -20,7 +20,7 @@ import { useTheme } from '../../theme/Context'
 import classNames from 'classnames'
 
 export interface TextInputProps
-  extends Omit<ComponentProps<'input'>, 'ref' | 'color' | 'className' | 'size'> {
+  extends Omit<ComponentProps<'input'>, 'ref' | 'color' | 'size'> {
   label?: string
   placeholder: string
   icon?: FC<ComponentProps<'svg'>>
@@ -48,6 +48,7 @@ export const TextInput = forwardRef<HTMLInputElement, TextInputProps>(
       squared,
       onIconClick,
       id,
+      className,
       ...props
     },
     ref,
@@ -55,7 +56,7 @@ export const TextInput = forwardRef<HTMLInputElement, TextInputProps>(
     const cleanProps = cleanClassName(props)
     const { input: theme } = useTheme().theme
     return (
-      <div className='text-left w-full'>
+      <div className={classNames('text-left', 'w-full', className)}>
         {label && (
           <label className={theme.label} htmlFor={id}>
             {label}
