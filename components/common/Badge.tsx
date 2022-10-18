@@ -19,10 +19,9 @@ export interface BadgeProps extends ComponentProps<'div'> {
   variant: StatusTypes
   rounded?: 'base' | 'full'
   size?: 'base' | 'large'
-  dot?: boolean
 }
 
-export const Badge: FC<BadgeProps> = ({ rounded, variant, children, size, dot }): JSX.Element => {
+export const Badge: FC<BadgeProps> = ({ rounded, variant, children, size }): JSX.Element => {
   const { badge: theme, status: statuses } = useTheme().theme
 
   return (
@@ -35,7 +34,6 @@ export const Badge: FC<BadgeProps> = ({ rounded, variant, children, size, dot })
           size ? theme.sizes[size] : theme.sizes.base,
         )}
       >
-        {dot && <div className={classNames(theme.dot, statuses[variant].badge.dot)}></div>}
         {children}
       </span>
     </>

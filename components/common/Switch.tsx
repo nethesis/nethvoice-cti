@@ -32,8 +32,8 @@ export const Switch: FC<SwitchProps> = ({ changed, on, disabled, label }): JSX.E
 
   return (
     <HeadlessSwitch.Group>
-      <div className='flex items-center'>
-        {label && <HeadlessSwitch.Label className='mr-4'>{label}</HeadlessSwitch.Label>}
+      <div className='w-fit flex items-center flex-row-reverse'>
+        {label && <HeadlessSwitch.Label className='ml-3 text-sm font-medium'>{label}</HeadlessSwitch.Label>}
         <HeadlessSwitch
           checked={enabled}
           onChange={() => setEnabled(!enabled)}
