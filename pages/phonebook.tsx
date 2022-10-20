@@ -2,29 +2,37 @@
 // SPDX-License-Identifier: AGPL-3.0-or-later
 
 import type { NextPage } from 'next'
-import { MdEmail, MdPhone, MdPhoneAndroid, MdOutlineWork, MdPeople } from 'react-icons/md'
+import {
+  MdEmail,
+  MdPhone,
+  MdPhoneAndroid,
+  MdOutlineWork,
+  MdPeople,
+  MdChevronRight,
+} from 'react-icons/md'
 import { Filter } from '../components/phonebook/Filter'
-import { Avatar } from '../components/common'
+import { Avatar, Button } from '../components/common'
 import { useState, useEffect } from 'react'
-import { getPhonebook } from '../lib/phonebook'
+import { getPhonebook, PAGE_SIZE } from '../lib/phonebook'
 
 //// remove unused imports
 
 const Phonebook: NextPage = () => {
   const [isPhonebookLoaded, setPhonebookLoaded] = useState(false)
   const [phonebook, setPhonebook]: any = useState({})
+  const [pageNum, setPageNum]: any = useState(1)
   useEffect(() => {
     console.log('useEffect called') ////
 
     async function fetchPhonebook() {
       if (!isPhonebookLoaded) {
-        const res = await getPhonebook()
+        const res = await getPhonebook(pageNum)
         setPhonebook(mapPhonebook(res))
         setPhonebookLoaded(true)
       }
     }
     fetchPhonebook()
-  }, [isPhonebookLoaded, phonebook])
+  }, [isPhonebookLoaded, phonebook, pageNum])
 
   function mapPhonebook(phonebookResponse: any) {
     if (!phonebookResponse) {
@@ -47,13 +55,48 @@ const Phonebook: NextPage = () => {
       }
       return contact
     })
+
+    // total pages
+    phonebookResponse.totalPages = Math.ceil(phonebookResponse.count / PAGE_SIZE)
+
+    console.log('totalPages', phonebookResponse.totalPages) ////
+
     return phonebookResponse
+  }
+
+  function goToPreviousPage() {
+    console.log('goToPreviousPage, current', pageNum) ////
+
+    if (pageNum > 1) {
+      setPhonebookLoaded(false)
+      setPageNum(pageNum - 1)
+    }
+  }
+
+  function goToNextPage() {
+    console.log('goToPreviousPage, current', pageNum) ////
+
+    if (pageNum < phonebook.totalPages) {
+      setPhonebookLoaded(false)
+      setPageNum(pageNum + 1)
+    }
+  }
+
+  function isPreviousPageButtonDisabled() {
+    console.log('isPreviousPageButtonDisabled, pageNum', pageNum) ////
+
+    return pageNum <= 1
+  }
+
+  function isNextPageButtonDisabled() {
+    console.log('isNextPageButtonDisabled') ////
+
+    return pageNum >= phonebook?.totalPages
   }
 
   return (
     <>
-      <div className='p-6 bg-gray-100'>
-        <h1 className='text-2xl font-bold text-gray-900 mb-6'>Phonebook</h1>
+      <div className='p-8 bg-gray-100'>
         <Filter />
         <div className='overflow-hidden bg-white shadow sm:rounded-md'>
           <ul role='list' className='divide-y divide-gray-200'>
@@ -126,23 +169,6 @@ const Phonebook: NextPage = () => {
                             </div>
                           </div>
                         )}
-                        {/* physical number */}
-                        {/* {contact.physicalNumber && (
-                        <div className='mt-4 md:mt-0'>
-                          <div>
-                            <div className='text-sm text-gray-900'>Physical number</div>
-                            <div className='mt-1 flex items-center text-sm text-sky-600'>
-                              <MdPhone
-                                className='mr-1.5 h-5 w-5 flex-shrink-0 text-gray-400'
-                                aria-hidden='true'
-                              />
-                              <span className='truncate cursor-pointer'>
-                                {contact.physicalNumber}
-                              </span>
-                            </div>
-                          </div>
-                        </div>
-                      )} */}
                         {/* work email */}
                         {contact.workemail && (
                           <div className='mt-4 md:mt-0'>
@@ -165,27 +191,52 @@ const Phonebook: NextPage = () => {
                             </div>
                           </div>
                         )}
-                        {/* show contact */}
-                        {/* <div className='mt-4 md:mt-0'>
-                        <div>
-                          <div className='text-sm text-sky-600 cursor-pointer'>
-                            Show contact
-                          </div>
-                        </div>
-                      </div> */}
                       </div>
                     </div>
                     <div>
-                      {/* <MdChevronRight className='h-5 w-5 text-gray-400' aria-hidden='true' /> */}
-                      <div className='text-sm text-sky-600 cursor-pointer text-right'>
-                        Show contact
-                      </div>
+                      <MdChevronRight
+                        className='h-5 w-5 text-gray-400 cursor-pointer'
+                        aria-hidden='true'
+                      />
                     </div>
                   </div>
                 </li>
               ))}
           </ul>
         </div>
+        {/* pagination */}
+        <nav
+          className='flex items-center justify-between border-t border-gray-100 bg-gray-100 px-0 py-4'
+          aria-label='Pagination'
+        >
+          <div className='hidden sm:block'>
+            <p className='text-sm text-gray-700'>
+              Showing <span className='font-medium'>{PAGE_SIZE * (pageNum - 1) + 1}</span> to{' '}
+              <span className='font-medium'>{PAGE_SIZE * (pageNum - 1) + PAGE_SIZE}</span> of{' '}
+              <span className='font-medium'>{phonebook?.count}</span> contacts
+            </p>
+          </div>
+          <div className='flex flex-1 justify-between sm:justify-end'>
+            <Button
+              type='button'
+              variant='white'
+              className='disabled:opacity-75'
+              disabled={isPreviousPageButtonDisabled()}
+              onClick={() => goToPreviousPage()}
+            >
+              Previous page
+            </Button>
+            <Button
+              type='button'
+              variant='white'
+              className='ml-3  disabled:opacity-75'
+              disabled={isNextPageButtonDisabled()}
+              onClick={() => goToNextPage()}
+            >
+              Next page
+            </Button>
+          </div>
+        </nav>
       </div>
     </>
   )

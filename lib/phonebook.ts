@@ -3,18 +3,19 @@
 
 import axios from 'axios'
 
-export async function getPhonebook() {
+export const PAGE_SIZE = 10
+
+export async function getPhonebook(pageNum: number) {
   try {
-    //// handle offset, limit & view (person / company)
+    //// handle view (person / company)
     const stringCredentials = localStorage.getItem('credentials')
     if (!stringCredentials) {
-      console.error('No credentials in local storage')
-      return
+      return null
     }
 
     const { username, token } = JSON.parse(stringCredentials)
     const { data, status } = await axios.get(
-      'https://nethvoice.nethesis.it/webrest/phonebook/searchstartswith/A?offset=0&limit=20&view=all',
+      `https://nethvoice.nethesis.it/webrest/phonebook/searchstartswith/A?offset=${pageNum}&limit=${PAGE_SIZE}&view=all`,
       {
         headers: {
           Accept: 'application/json',
