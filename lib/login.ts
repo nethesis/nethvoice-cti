@@ -3,7 +3,7 @@
 
 /**
  * It's used to check if the token 
- * is already store in the browser
+ * is already stored in the browser
  */
  export function isTokenStored() {
     let savedToken = localStorage.getItem('credentials')
