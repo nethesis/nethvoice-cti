@@ -26,6 +26,7 @@ export default function Login() {
         const password = passwordRef.current.value
         setOnError(false)
         const res = await fetch(
+          // @ts-ignore
           window.CONFIG.API_SCHEME + window.CONFIG.API_ENDPOINT + '/webrest/authentication/login',
           {
             method: 'POST',
@@ -130,7 +131,6 @@ export default function Login() {
           </div>
         </div>
       </div>
-
     </>
   )
 }
