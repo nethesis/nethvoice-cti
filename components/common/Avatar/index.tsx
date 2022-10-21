@@ -23,7 +23,7 @@ import classNames from 'classnames'
 import Image from 'next/image'
 import { AvatarGroup, AvatarGroupProps as GroupProps } from './AvatarGroup'
 import type { StatusTypes } from '../../../theme/Types'
-
+import { MdPerson, MdApartment } from 'react-icons/md'
 export type AvatarGroupProps = GroupProps
 
 export interface AvatarProps extends Omit<ComponentProps<'div'>, 'placeholder'> {
@@ -32,9 +32,10 @@ export interface AvatarProps extends Omit<ComponentProps<'div'>, 'placeholder'> 
   src?: string
   initials?: string
   placeholder?: FC<ComponentProps<'svg'>>
+  placeholderType?: string
   bordered?: boolean
   altText?: string
-  size?: 'extra_small' | 'small' | 'base' | 'large' | 'extra_large',
+  size?: 'extra_small' | 'small' | 'base' | 'large' | 'extra_large'
   unoptimized?: boolean
 }
 
@@ -44,11 +45,12 @@ const AvatarComponent: FC<AvatarProps> = ({
   src,
   initials,
   placeholder: Placeholder,
+  placeholderType,
   bordered,
   altText = 'Avatar image',
   size = 'base',
   unoptimized,
-  className
+  className,
 }) => {
   const { avatar: theme, status: statuses } = useTheme().theme
 
@@ -59,6 +61,7 @@ const AvatarComponent: FC<AvatarProps> = ({
         theme.sizes[size],
         initials && theme.initials.background,
         Placeholder && theme.placeholder.background,
+        placeholderType && theme.placeholderType.background,
         theme.rounded[rounded],
         bordered && theme.bordered,
         className,
@@ -75,12 +78,30 @@ const AvatarComponent: FC<AvatarProps> = ({
       )}
       {initials && <div className={theme.initials.base}>{initials}</div>}
       {Placeholder && <Placeholder className={theme.placeholder.base} />}
+      {placeholderType && (
+        <div className={theme.placeholderType.base}>
+          {placeholderType == 'person' && (
+            <MdPerson
+              className={classNames(theme.placeholderType, theme.placeholderType.sizes[size])}
+              aria-hidden='true'
+            />
+          )}
+          {placeholderType == 'company' && (
+            <MdApartment
+              className={classNames(theme.placeholderType, theme.placeholderType.sizes[size])}
+              aria-hidden='true'
+            />
+          )}
+        </div>
+      )}
       {status && (
         <div
           className={classNames(
             theme.status.base,
             statuses[status].avatar.dot,
-            rounded === 'base' ? theme.status.sizes.rounded[size] : theme.status.sizes.circular[size],
+            rounded === 'base'
+              ? theme.status.sizes.rounded[size]
+              : theme.status.sizes.circular[size],
           )}
         ></div>
       )}

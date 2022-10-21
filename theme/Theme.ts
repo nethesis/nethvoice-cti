@@ -245,6 +245,17 @@ const theme = {
       base: 'w-full h-full',
       background: 'bg-gray-100',
     },
+    placeholderType: {
+      base: 'text-white w-full h-full fill-white flex justify-center items-center',
+      background: 'bg-gray-500',
+      sizes:{
+        extra_small: 'h-4 w-4',
+        small: 'h-6 w-6',
+        base:'h-6 w-6',
+        large:'h-10 w-10',
+        extra_large: 'h-12 w-12'
+      },
+    },
     status: {
       base: 'absolute bottom-0 right-0 block ring-2 ring-white rounded-full',
       sizes:{

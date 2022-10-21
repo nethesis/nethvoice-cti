@@ -58,15 +58,10 @@ const Phonebook: NextPage = () => {
 
     // total pages
     phonebookResponse.totalPages = Math.ceil(phonebookResponse.count / PAGE_SIZE)
-
-    console.log('totalPages', phonebookResponse.totalPages) ////
-
     return phonebookResponse
   }
 
   function goToPreviousPage() {
-    console.log('goToPreviousPage, current', pageNum) ////
-
     if (pageNum > 1) {
       setPhonebookLoaded(false)
       setPageNum(pageNum - 1)
@@ -74,8 +69,6 @@ const Phonebook: NextPage = () => {
   }
 
   function goToNextPage() {
-    console.log('goToPreviousPage, current', pageNum) ////
-
     if (pageNum < phonebook.totalPages) {
       setPhonebookLoaded(false)
       setPageNum(pageNum + 1)
@@ -83,14 +76,10 @@ const Phonebook: NextPage = () => {
   }
 
   function isPreviousPageButtonDisabled() {
-    console.log('isPreviousPageButtonDisabled, pageNum', pageNum) ////
-
     return pageNum <= 1
   }
 
   function isNextPageButtonDisabled() {
-    console.log('isNextPageButtonDisabled') ////
-
     return pageNum >= phonebook?.totalPages
   }
 
@@ -106,7 +95,11 @@ const Phonebook: NextPage = () => {
                   <div className='flex items-center px-4 py-4 sm:px-6'>
                     <div className='flex min-w-0 flex-1 items-center'>
                       <div className='flex-shrink-0'>
-                        <Avatar className='h-12 w-12 rounded-full cursor-pointer' initials='AZ' />
+                        {contact.kind == 'person' ? (
+                          <Avatar className='cursor-pointer' placeholderType='person' />
+                        ) : (
+                          <Avatar className='cursor-pointer' placeholderType='company' />
+                        )}
                       </div>
                       <div className='min-w-0 flex-1 px-4 md:grid md:grid-cols-2 gap-4 lg:grid-cols-3 xl:grid-cols-4'>
                         {/* display name and company/contacts */}
