@@ -12,6 +12,13 @@
 @layer base {
   html {
     font-family: Inter, system-ui, sans-serif;
+    @apply h-full bg-gray-50;
+  }
+  body {
+    @apply h-full overflow-hidden;
+  }
+  #__next {
+    @apply h-full
   }
 }
 

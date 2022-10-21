@@ -225,7 +225,7 @@ const theme = {
     },
   },
   avatar: {
-    base: 'relative inline-block',
+    base: 'relative block',
     sizes:{
       extra_small: 'h-6 w-6 text-xs',
       small: 'h-8 w-8 text-sm',
@@ -281,7 +281,7 @@ const theme = {
     },
   },
   dropdown: {
-    base: 'relative inline-block text-left',
+    base: 'relative inline-block text-left cursor-pointer',
     size: {
       full: 'w-full h-full'
     },
@@ -293,13 +293,13 @@ const theme = {
       centered: 'justify-center'
     },
     items: {
-      base: 'absolute z-10 mt-2 w-56 origin-top-right rounded-md bg-white shadow-lg ring-1 ring-black ring-opacity-5 focus:outline-none',
+      base: 'absolute z-10 mt-2 w-60 origin-top-right rounded-md bg-white shadow-lg ring-1 ring-black ring-opacity-5 focus:outline-none',
       position: {
         right: 'left-0',
         left: 'right-0',
       },
       divider: 'divide-y divide-gray-100',
-      header: 'block px-4 py-3 text-sm',
+      header: 'block px-4 py-3 text-sm cursor-normal',
       transition: {
         enter: 'transition ease-out duration-100',
         enterFrom: 'transform opacity-0 scale-95',
