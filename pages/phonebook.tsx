@@ -220,7 +220,6 @@ const Phonebook: NextPage = () => {
             <Button
               type='button'
               variant='white'
-              className='disabled:opacity-75'
               disabled={isPreviousPageButtonDisabled()}
               onClick={() => goToPreviousPage()}
             >
@@ -229,7 +228,7 @@ const Phonebook: NextPage = () => {
             <Button
               type='button'
               variant='white'
-              className='ml-3  disabled:opacity-75'
+              className='ml-3'
               disabled={isNextPageButtonDisabled()}
               onClick={() => goToNextPage()}
             >
