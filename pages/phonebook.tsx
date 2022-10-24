@@ -15,8 +15,6 @@ import { Avatar, Button } from '../components/common'
 import { useState, useEffect } from 'react'
 import { getPhonebook, PAGE_SIZE } from '../lib/phonebook'
 
-//// remove unused imports
-
 const Phonebook: NextPage = () => {
   const [isPhonebookLoaded, setPhonebookLoaded] = useState(false)
   const [phonebook, setPhonebook]: any = useState({})

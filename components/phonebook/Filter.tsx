@@ -27,8 +27,6 @@ const contactTypeFilter = {
   ],
 }
 
-//// remove unused imports
-
 export interface FilterProps extends ComponentPropsWithRef<'div'> {
   updateContactTypeFilter: Function
   updateSortFilter: Function
