@@ -5,21 +5,39 @@ import Image from 'next/image'
 import { isTokenStored, setToken } from '../lib/login'
 import { useRouter } from 'next/router'
 import { useState, useRef } from 'react'
-import { TextInput, Button } from '../components/common'
+import { TextInput, InlineNotification, Button } from '../components/common'
 import hmacSHA256 from 'crypto-js/hmac-sha256'
 import Base64 from 'crypto-js/enc-base64'
 import { MdLock, MdOutlineVisibility, MdOutlineVisibilityOff } from 'react-icons/md'
 import Logo from '../public/logo.png'
 
 export default function Login() {
+  
   const [pwdVisible, setPwdVisible] = useState(false)
   const [messageError, setMessaggeError] = useState('')
   const [onError, setOnError] = useState(false)
+  const [loading, setLoading] = useState(false)
+
+  let iconSelect = loading ? (
+    <span className='animate-spin 0.1s linear infinite loader'></span>
+  ) : (
+    <MdLock className='h-5 w-5 text-white' aria-hidden='true' />
+  )
+  let errorAlert = onError ? (
+    <InlineNotification type='error'>
+      <p>{messageError}</p>
+    </InlineNotification>
+  ) : (
+    <></>
+  )
+
   const router = useRouter()
   const usernameRef = useRef() as React.MutableRefObject<HTMLInputElement>
   const passwordRef = useRef() as React.MutableRefObject<HTMLInputElement>
+
   const doLogin = async (e: React.FormEvent) => {
     e.preventDefault()
+    setLoading(true)
     if (window !== undefined) {
       if (!isTokenStored()) {
         const username = usernameRef.current.value
@@ -46,20 +64,24 @@ export default function Login() {
           : ''
         if (token) {
           router.push('/')
+          setLoading(false)
           {
             setToken(token)
           }
         } else {
           if (callStatus === 401) {
+            setLoading(false)
             setOnError(true)
-            setMessaggeError('Unauthorized')
+            setMessaggeError('Your username and password do not match')
           } else if (callStatus === 404) {
+            setLoading(false)
             setOnError(true)
-            setMessaggeError('Not Found')
+            setMessaggeError('The network connection is lost')
           }
         }
       } else {
         router.push('/')
+        setLoading(false)
       }
     }
   }
@@ -85,7 +107,8 @@ export default function Login() {
               </h2>
             </div>
             <form className='mt-8 space-y-6' action='#' method='POST' onSubmit={doLogin}>
-              <div className='flex flex-col -space-y-1.5'>
+              <input type='hidden' name='remember' defaultValue='true' />
+              <div className='-space-y-px rounded-md shadow-sm'>
                 <TextInput
                   placeholder='Enter your username'
                   name='username'
@@ -103,12 +126,12 @@ export default function Login() {
                     onIconClick={() => setPwdVisible(!pwdVisible)}
                     trailingIcon={true}
                     error={onError ? true : false}
-                    helper={onError ? messageError : ''}
                     ref={passwordRef}
                     required
                   />
                 </div>
               </div>
+              {errorAlert}
               <div>
                 <Button
                   size='large'
@@ -119,10 +142,7 @@ export default function Login() {
                 >
                   {' '}
                   <span className='absolute inset-y-0 left-0 flex items-center pl-3'>
-                    <MdLock
-                      className='h-5 w-5 text-sky-400 group-hover:text-indigo-400'
-                      aria-hidden='true'
-                    />
+                    {iconSelect}
                   </span>
                   Sign in
                 </Button>

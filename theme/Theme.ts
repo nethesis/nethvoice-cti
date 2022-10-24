@@ -325,6 +325,39 @@ const theme = {
     actions: {
       base: 'grid grid-cols-2 divide-x divider-gray-200 h-14 border-t border-gray-200 z-30 rounded-b-xl'
     }
+  },
+  inlineNotification: {
+    base:'rounded-md p-4 flex',
+    type: {
+      info:'bg-blue-50',
+      error: 'bg-red-50',
+      warning: 'bg-yellow-50',
+      success: 'bg-green-50'
+    },
+    title : {
+      info: 'Info',
+      error: 'Error',
+      warning: 'Warning',
+      success: 'Success'
+    },
+    titleStyle : {
+      info: 'text-sm font-medium text-blue-800',
+      error: 'text-sm font-medium text-red-800',
+      warning: 'text-sm font-medium text-yellow-800',
+      success: 'text-sm font-medium text-green-800'
+    },
+    iconStyle : {
+      info: 'h-5 w-5 text-blue-400',
+      error: 'h-5 w-5 text-red-400',
+      warning: 'h-5 w-5 text-yellow-400',
+      success: 'h-5 w-5 text-green-400'
+    },
+    childrenText : {
+      info: 'mt-2 text-sm text-blue-700',
+      error: 'mt-2 text-sm text-red-700',
+      warning: 'mt-2 text-sm text-yellow-700',
+      success: 'mt-2 text-sm text-green-700'
+    }
   }
 };
 

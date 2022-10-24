@@ -14,3 +14,12 @@
     font-family: Inter, system-ui, sans-serif;
   }
 }
+
+.loader {
+  width: 24px;
+  height: 24px;
+  border: 3px solid #fff;
+  border-bottom-color: transparent;
+  border-radius: 50%;
+  display: inline-block;
+}
