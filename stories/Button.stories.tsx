@@ -33,6 +33,7 @@ export const Primary = Template.bind({})
 Primary.args = {
   size: 'base',
   variant: 'primary',
+  disabled: false,
 }
 
 export const Secondary = Template.bind({})

@@ -26,6 +26,10 @@ const meta = {
       options: ['extra_small', 'small', 'base', 'large', 'extra_large'],
       type: 'select',
     },
+    placeholderType: {
+      options: ['person', 'company'],
+      type: 'radio',
+    },
   },
   parameters: {
     controls: { expanded: true },
@@ -59,6 +63,11 @@ WithStatus.args = {
 export const WithInitials = Template.bind({})
 WithInitials.args = {
   initials: 'TW',
+}
+
+export const WithPlaceholderType = Template.bind({})
+WithPlaceholderType.args = {
+  placeholderType: 'company',
 }
 
 export const WithPlaceholder = Template.bind({})

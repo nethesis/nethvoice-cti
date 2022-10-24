@@ -23,16 +23,27 @@ export interface ButtonProps extends Omit<ComponentPropsWithRef<'button'>, 'colo
   variant?: 'primary' | 'secondary' | 'white' | 'danger'
   fullWidth?: boolean
   fullHeight?: boolean
+  disabled?: boolean
 }
 
 export const Button = forwardRef<HTMLButtonElement, ButtonProps>(
   (
-    { children, size = 'base', variant = 'primary', fullWidth, fullHeight, className, ...props },
+    {
+      children,
+      size = 'base',
+      variant = 'primary',
+      fullWidth,
+      fullHeight,
+      disabled,
+      className,
+      ...props
+    },
     ref,
   ): JSX.Element => {
     const { button: theme } = useTheme().theme
     return (
       <button
+        disabled={disabled}
         className={classNames(
           theme.base,
           theme[variant],
