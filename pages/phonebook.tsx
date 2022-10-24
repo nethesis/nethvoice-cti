@@ -21,23 +21,31 @@ const Phonebook: NextPage = () => {
   const [isPhonebookLoaded, setPhonebookLoaded] = useState(false)
   const [phonebook, setPhonebook]: any = useState({})
   const [pageNum, setPageNum]: any = useState(1)
+
   const [contactType, setContactType]: any = useState('all')
-  const updateFilters = (newContactType: string) => {
+  const updateContactTypeFilter = (newContactType: string) => {
     setPhonebookLoaded(false)
     setContactType(newContactType)
   }
+
+  const [sortBy, setSortBy]: any = useState('name')
+  const updateSortFilter = (newSortBy: string) => {
+    setPhonebookLoaded(false)
+    setSortBy(newSortBy)
+  }
+
   useEffect(() => {
     // console.log('useEffect called') ////
 
     async function fetchPhonebook() {
       if (!isPhonebookLoaded) {
-        const res = await getPhonebook(pageNum, contactType)
+        const res = await getPhonebook(pageNum, contactType, sortBy)
         setPhonebook(mapPhonebook(res))
         setPhonebookLoaded(true)
       }
     }
     fetchPhonebook()
-  }, [isPhonebookLoaded, phonebook, pageNum, contactType])
+  }, [isPhonebookLoaded, phonebook, pageNum, contactType, sortBy])
 
   function mapPhonebook(phonebookResponse: any) {
     if (!phonebookResponse) {
@@ -91,7 +99,10 @@ const Phonebook: NextPage = () => {
   return (
     <>
       <div className='p-8 bg-gray-100'>
-        <Filter updateFilters={updateFilters} />
+        <Filter
+          updateContactTypeFilter={updateContactTypeFilter}
+          updateSortFilter={updateSortFilter}
+        />
         <div className='overflow-hidden bg-white shadow sm:rounded-md'>
           <ul role='list' className='divide-y divide-gray-200'>
             {phonebook?.rows &&

@@ -5,7 +5,7 @@ import axios from 'axios'
 
 export const PAGE_SIZE = 10
 
-export async function getPhonebook(pageNum: number, contactType: string) {
+export async function getPhonebook(pageNum: number, contactType: string, sortBy: string) {
   try {
     const stringCredentials = localStorage.getItem('credentials')
     if (!stringCredentials) {
