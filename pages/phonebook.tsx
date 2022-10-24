@@ -21,18 +21,23 @@ const Phonebook: NextPage = () => {
   const [isPhonebookLoaded, setPhonebookLoaded] = useState(false)
   const [phonebook, setPhonebook]: any = useState({})
   const [pageNum, setPageNum]: any = useState(1)
+  const [contactType, setContactType]: any = useState('all')
+  const updateFilters = (newContactType: string) => {
+    setPhonebookLoaded(false)
+    setContactType(newContactType)
+  }
   useEffect(() => {
-    console.log('useEffect called') ////
+    // console.log('useEffect called') ////
 
     async function fetchPhonebook() {
       if (!isPhonebookLoaded) {
-        const res = await getPhonebook(pageNum)
+        const res = await getPhonebook(pageNum, contactType)
         setPhonebook(mapPhonebook(res))
         setPhonebookLoaded(true)
       }
     }
     fetchPhonebook()
-  }, [isPhonebookLoaded, phonebook, pageNum])
+  }, [isPhonebookLoaded, phonebook, pageNum, contactType])
 
   function mapPhonebook(phonebookResponse: any) {
     if (!phonebookResponse) {
@@ -86,12 +91,12 @@ const Phonebook: NextPage = () => {
   return (
     <>
       <div className='p-8 bg-gray-100'>
-        <Filter />
+        <Filter updateFilters={updateFilters} />
         <div className='overflow-hidden bg-white shadow sm:rounded-md'>
           <ul role='list' className='divide-y divide-gray-200'>
             {phonebook?.rows &&
-              phonebook.rows.map((contact: any) => (
-                <li key={contact.id}>
+              phonebook.rows.map((contact: any, index: number) => (
+                <li key={index}>
                   <div className='flex items-center px-4 py-4 sm:px-6'>
                     <div className='flex min-w-0 flex-1 items-center'>
                       <div className='flex-shrink-0'>
@@ -120,7 +125,7 @@ const Phonebook: NextPage = () => {
                             </div>
                           )}
                           {/* company contacts */}
-                          {contact.contacts && contact.contacts.length && (
+                          {contact.contacts && contact.contacts.length ? (
                             <div className='mt-1 flex items-center text-sm text-gray-500'>
                               <MdPeople
                                 className='mr-1.5 h-5 w-5 flex-shrink-0 text-gray-400'
@@ -130,7 +135,7 @@ const Phonebook: NextPage = () => {
                                 {contact.contacts.length} contacts
                               </span>
                             </div>
-                          )}
+                          ) : null}
                         </div>
                         {/* work phone */}
                         {contact.workphone && (

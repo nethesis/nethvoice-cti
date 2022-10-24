@@ -13,7 +13,8 @@ function MyApp({ Component, pageProps }: AppProps) {
       <Provider store={store}>
         <Component {...pageProps} />
       </Provider>
-      <Script src={`config/config.${process.env.NODE_ENV}.js`}></Script>
+       {/* //// improve config import */}
+      <Script src={`config/config.${process.env.NODE_ENV}.js`} strategy="beforeInteractive"></Script>
     </>
   )
 }
