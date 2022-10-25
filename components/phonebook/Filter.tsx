@@ -28,17 +28,22 @@ const contactTypeFilter = {
 }
 
 export interface FilterProps extends ComponentPropsWithRef<'div'> {
+  updateFilterText: Function
   updateContactTypeFilter: Function
   updateSortFilter: Function
 }
 
 export const Filter = forwardRef<HTMLButtonElement, FilterProps>(
-  ({ updateContactTypeFilter, updateSortFilter, className, ...props }, ref) => {
+  ({ updateFilterText, updateContactTypeFilter, updateSortFilter, className, ...props }, ref) => {
     const [open, setOpen] = useState(false)
 
     const [filterText, setFilterText] = useState('')
     function changeFilterText(event: any) {
-      setFilterText(event.target.value)
+      const newFilterText = event.target.value
+      setFilterText(newFilterText)
+
+      // update phonebook (notify parent component)
+      updateFilterText(newFilterText)
     }
 
     const [contactType, setContactType] = useState('all')

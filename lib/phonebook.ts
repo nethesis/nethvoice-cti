@@ -5,7 +5,12 @@ import axios from 'axios'
 
 export const PAGE_SIZE = 10
 
-export async function getPhonebook(pageNum: number, contactType: string, sortBy: string) {
+export async function getPhonebook(
+  pageNum: number,
+  filterText: string,
+  contactType: string,
+  sortBy: string,
+) {
   try {
     const stringCredentials = localStorage.getItem('credentials')
     if (!stringCredentials) {
@@ -16,16 +21,22 @@ export async function getPhonebook(pageNum: number, contactType: string, sortBy:
 
     //// remove?
     if (window !== undefined) {
-      const { data, status } = await axios.get(
-        // @ts-ignore
-        `${window.CONFIG.API_ENDPOINT}/webrest/phonebook/searchstartswith/A?offset=${pageNum}&limit=${PAGE_SIZE}&view=${contactType}`,
-        {
-          headers: {
-            Accept: 'application/json',
-            Authorization: `${username}:${token}`,
-          },
+      // @ts-ignore
+      let apiUrl = `${window.CONFIG.API_ENDPOINT}/webrest/phonebook/`
+
+      if (filterText.trim()) {
+        apiUrl += `search/${filterText}`
+      } else {
+        apiUrl += `searchstartswith/A`
+      }
+      apiUrl += `?offset=${pageNum}&limit=${PAGE_SIZE}&view=${contactType}`
+
+      const { data, status } = await axios.get(apiUrl, {
+        headers: {
+          Accept: 'application/json',
+          Authorization: `${username}:${token}`,
         },
-      )
+      })
       // console.log(JSON.stringify(data, null, 4)) ////
       return data
     }

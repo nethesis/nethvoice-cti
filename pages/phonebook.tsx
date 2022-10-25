@@ -20,6 +20,12 @@ const Phonebook: NextPage = () => {
   const [phonebook, setPhonebook]: any = useState({})
   const [pageNum, setPageNum]: any = useState(1)
 
+  const [filterText, setFilterText]: any = useState('')
+  const updateFilterText = (newFilterText: string) => {
+    setPhonebookLoaded(false)
+    setFilterText(newFilterText)
+  }
+
   const [contactType, setContactType]: any = useState('all')
   const updateContactTypeFilter = (newContactType: string) => {
     setPhonebookLoaded(false)
@@ -37,13 +43,13 @@ const Phonebook: NextPage = () => {
 
     async function fetchPhonebook() {
       if (!isPhonebookLoaded) {
-        const res = await getPhonebook(pageNum, contactType, sortBy)
+        const res = await getPhonebook(pageNum, filterText, contactType, sortBy)
         setPhonebook(mapPhonebook(res))
         setPhonebookLoaded(true)
       }
     }
     fetchPhonebook()
-  }, [isPhonebookLoaded, phonebook, pageNum, contactType, sortBy])
+  }, [isPhonebookLoaded, phonebook, pageNum, filterText, contactType, sortBy])
 
   function mapPhonebook(phonebookResponse: any) {
     if (!phonebookResponse) {
@@ -98,6 +104,7 @@ const Phonebook: NextPage = () => {
     <>
       <div className='p-8 bg-gray-100'>
         <Filter
+          updateFilterText={updateFilterText}
           updateContactTypeFilter={updateContactTypeFilter}
           updateSortFilter={updateSortFilter}
         />
