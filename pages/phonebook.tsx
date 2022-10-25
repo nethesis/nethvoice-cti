@@ -14,6 +14,7 @@ import { Filter } from '../components/phonebook/Filter'
 import { Avatar, Button } from '../components/common'
 import { useState, useEffect } from 'react'
 import { getPhonebook, PAGE_SIZE } from '../lib/phonebook'
+import Skeleton from 'react-loading-skeleton'
 
 const Phonebook: NextPage = () => {
   const [isPhonebookLoaded, setPhonebookLoaded] = useState(false)
@@ -22,20 +23,22 @@ const Phonebook: NextPage = () => {
 
   const [filterText, setFilterText]: any = useState('')
   const updateFilterText = (newFilterText: string) => {
-    setPhonebookLoaded(false)
+    setPageNum(1)
     setFilterText(newFilterText)
+    setPhonebookLoaded(false)
   }
 
   const [contactType, setContactType]: any = useState('all')
   const updateContactTypeFilter = (newContactType: string) => {
-    setPhonebookLoaded(false)
+    setPageNum(1)
     setContactType(newContactType)
+    setPhonebookLoaded(false)
   }
 
   const [sortBy, setSortBy]: any = useState('name')
   const updateSortFilter = (newSortBy: string) => {
-    setPhonebookLoaded(false)
     setSortBy(newSortBy)
+    setPhonebookLoaded(false)
   }
 
   useEffect(() => {
@@ -93,11 +96,11 @@ const Phonebook: NextPage = () => {
   }
 
   function isPreviousPageButtonDisabled() {
-    return pageNum <= 1
+    return !isPhonebookLoaded || pageNum <= 1
   }
 
   function isNextPageButtonDisabled() {
-    return pageNum >= phonebook?.totalPages
+    return !isPhonebookLoaded || pageNum >= phonebook?.totalPages
   }
 
   return (
@@ -110,7 +113,31 @@ const Phonebook: NextPage = () => {
         />
         <div className='overflow-hidden bg-white shadow sm:rounded-md'>
           <ul role='list' className='divide-y divide-gray-200'>
-            {phonebook?.rows &&
+            {/* phonebook skeleton */}
+            {!isPhonebookLoaded &&
+              Array.from(Array(10)).map((e, index) => (
+                <li key={index}>
+                  <div className='flex items-center px-4 py-4 sm:px-6'>
+                    <Skeleton circle height='100%' containerClassName='w-12 h-12 leading-none' />
+                    <div className='min-w-0 flex-1 px-4 md:grid md:grid-cols-2 gap-4 lg:grid-cols-3 xl:grid-cols-4'>
+                      <div className='flex flex-col justify-center'>
+                        <Skeleton />
+                      </div>
+                      <div>
+                        <Skeleton />
+                      </div>
+                      <div>
+                        <Skeleton />
+                      </div>
+                      <div>
+                        <Skeleton />
+                      </div>
+                    </div>
+                  </div>
+                </li>
+              ))}
+            {isPhonebookLoaded &&
+              phonebook?.rows &&
               phonebook.rows.map((contact: any, index: number) => (
                 <li key={index}>
                   <div className='flex items-center px-4 py-4 sm:px-6'>
@@ -226,8 +253,12 @@ const Phonebook: NextPage = () => {
           <div className='hidden sm:block'>
             <p className='text-sm text-gray-700'>
               Showing <span className='font-medium'>{PAGE_SIZE * (pageNum - 1) + 1}</span> to{' '}
-              <span className='font-medium'>{PAGE_SIZE * (pageNum - 1) + PAGE_SIZE}</span> of{' '}
-              <span className='font-medium'>{phonebook?.count}</span> contacts
+              <span className='font-medium'>
+                {PAGE_SIZE * (pageNum - 1) + PAGE_SIZE < phonebook?.count
+                  ? PAGE_SIZE * (pageNum - 1) + PAGE_SIZE
+                  : phonebook?.count}
+              </span>{' '}
+              of <span className='font-medium'>{phonebook?.count}</span> contacts
             </p>
           </div>
           <div className='flex flex-1 justify-between sm:justify-end'>

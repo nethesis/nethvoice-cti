@@ -25,11 +25,12 @@ export async function getPhonebook(
       let apiUrl = `${window.CONFIG.API_ENDPOINT}/webrest/phonebook/`
 
       if (filterText.trim()) {
-        apiUrl += `search/${filterText}`
+        apiUrl += `search/${filterText.trim()}`
       } else {
         apiUrl += `searchstartswith/A`
       }
-      apiUrl += `?offset=${pageNum}&limit=${PAGE_SIZE}&view=${contactType}`
+      const offset = (pageNum - 1) * PAGE_SIZE
+      apiUrl += `?offset=${offset}&limit=${PAGE_SIZE}&view=${contactType}`
 
       const { data, status } = await axios.get(apiUrl, {
         headers: {
