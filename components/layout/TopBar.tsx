@@ -10,12 +10,30 @@
 import { FC } from 'react'
 import { MdSearch, MdOutlineMenu, MdOutlineLogout } from 'react-icons/md'
 import { Avatar, Dropdown } from '../common'
+import { logout } from '../../services/login'
+import { useRouter } from 'next/router'
+import { removeItem } from '../../lib/storage'
+import { store } from '../../store'
 
 interface TopBarProps {
   openMobileCb: () => void
 }
 
 export const TopBar: FC<TopBarProps> = ({ openMobileCb }) => {
+  const router = useRouter()
+
+  const doLogout = async () => {
+    const res = await logout()
+    if (res && res.ok) {
+      // Remove credentials from localstorage
+      removeItem('credentials')
+      // Reset the authentication store
+      store.dispatch.authentication.reset()
+      // Redirect to login page
+      router.push('/login')
+    }
+  }
+
   const dropdownItems = (
     <>
       <div className='cursor-default'>
@@ -27,7 +45,9 @@ export const TopBar: FC<TopBarProps> = ({ openMobileCb }) => {
           </span>
         </Dropdown.Header>
       </div>
-      <Dropdown.Item icon={MdOutlineLogout}>Logout</Dropdown.Item>
+      <Dropdown.Item icon={MdOutlineLogout} onClick={doLogout}>
+        Logout
+      </Dropdown.Item>
     </>
   )
 
@@ -46,7 +66,7 @@ export const TopBar: FC<TopBarProps> = ({ openMobileCb }) => {
           <div className='flex flex-1'>
             <form className='flex w-full md:ml-0' action='#' method='GET'>
               <label htmlFor='search-field' className='sr-only'>
-                Search all files
+                Find and call
               </label>
               <div className='relative w-full text-gray-400 focus-within:text-gray-600'>
                 <div className='pointer-events-none absolute inset-y-0 left-0 flex items-center'>

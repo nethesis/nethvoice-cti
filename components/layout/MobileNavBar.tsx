@@ -4,11 +4,11 @@
 /**
  *
  * The MobileNavBar component for narrow views
- * 
+ *
  * @param closeMobileMenu - The callback on menu close events
  * @param items - The array with the navigation info
- * @param show - The parameter to show or hide the 
- * 
+ * @param show - The parameter to show or hide the
+ *
  */
 
 import { Transition, Dialog } from '@headlessui/react'
@@ -17,6 +17,7 @@ import classNames from 'classnames'
 import type { navigationItems } from '../../config/routes'
 import Image from 'next/image'
 import { MdOutlineClose } from 'react-icons/md'
+import Link from 'next/link'
 
 interface MobileNavBarProps {
   show: boolean
@@ -87,28 +88,30 @@ export const MobileNavBar: FC<MobileNavBarProps> = ({ closeMobileMenu, show, ite
                   <nav className='flex h-full flex-col'>
                     <div className='space-y-1'>
                       {items.map((item) => (
-                        <a
-                          key={item.name}
-                          href={item.href}
-                          className={classNames(
-                            item.current
-                              ? 'bg-sky-700 text-white'
-                              : 'text-gray-100 hover:bg-sky-700 hover:text-white',
-                            'group py-2 px-3 rounded-md flex items-center text-sm font-medium',
-                          )}
-                          aria-current={item.current ? 'page' : undefined}
-                        >
-                          <item.icon
+                        <Link key={item.name} href={item.href}>
+                          <a
+                            key={item.name}
+                            href={item.href}
                             className={classNames(
                               item.current
-                                ? 'text-white'
-                                : 'text-gray-300 group-hover:text-white',
-                              'mr-3 h-6 w-6',
+                                ? 'bg-sky-700 text-white'
+                                : 'text-gray-100 hover:bg-sky-700 hover:text-white',
+                              'group py-2 px-3 rounded-md flex items-center text-sm font-medium',
                             )}
-                            aria-hidden='true'
-                          />
-                          <span>{item.name}</span>
-                        </a>
+                            aria-current={item.current ? 'page' : undefined}
+                          >
+                            <item.icon
+                              className={classNames(
+                                item.current
+                                  ? 'text-white'
+                                  : 'text-gray-300 group-hover:text-white',
+                                'mr-3 h-6 w-6',
+                              )}
+                              aria-hidden='true'
+                            />
+                            <span>{item.name}</span>
+                          </a>
+                        </Link>
                       ))}
                     </div>
                   </nav>

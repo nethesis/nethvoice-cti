@@ -16,60 +16,28 @@ type SideBarProps = {}
 const speedDials = [
   {
     name: 'Wonka Industries Inc.',
-    handle: '200',
+    handle: '201',
   },
   {
     name: 'Wonka Industries Inc.',
-    handle: '200',
+    handle: '202',
   },
   {
     name: 'Wonka Industries Inc.',
-    handle: '200',
+    handle: '203',
   },
   {
     name: 'Wonka Industries Inc.',
-    handle: '200',
+    handle: '204',
   },
   {
     name: 'Wonka Industries Inc.',
-    handle: '200',
+    handle: '205',
   },
   {
     name: 'Wonka Industries Inc.',
-    handle: '200',
-  },
-  {
-    name: 'Wonka Industries Inc.',
-    handle: '200',
-  },
-  {
-    name: 'Wonka Industries Inc.',
-    handle: '200',
-  },
-  {
-    name: 'Wonka Industries Inc.',
-    handle: '200',
-  },
-  {
-    name: 'Wonka Industries Inc.',
-    handle: '200',
-  },
-  {
-    name: 'Wonka Industries Inc.',
-    handle: '200',
-  },
-  {
-    name: 'Wonka Industries Inc.',
-    handle: '200',
-  },
-  {
-    name: 'Wonka Industries Inc.',
-    handle: '200',
-  },
-  {
-    name: 'Wonka Industries Inc.',
-    handle: '200',
-  },
+    handle: '206',
+  }
 ]
 
 export const SideBar = (props: SideBarProps) => {

@@ -3,52 +3,51 @@
 
 import '../styles/globals.css'
 import type { AppProps } from 'next/app'
-import { useState } from 'react'
+import { useState, useEffect } from 'react'
 import { Provider } from 'react-redux'
 import { store } from '../store'
 import Script from 'next/script'
 import 'react-loading-skeleton/dist/skeleton.css'
-import { TopBar, NavBar, MobileNavBar, SideBar } from '../components/layout'
-import { navigationItems } from '../config/routes'
+import { Layout } from '../components/layout'
+import { getCredentials, updateAuthStore } from '../lib/login'
+import { useRouter } from 'next/router'
+import { RouteGuard } from '../components/router'
 
 function MyApp({ Component, pageProps }: AppProps) {
-  const [openMobileMenu, setOpenMobileMenu] = useState(false)
+  const [isLoading, setIsLoading] = useState<boolean>(true)
+  const router = useRouter()
+
+  useEffect(() => {
+    const { username, token } = getCredentials()
+    // Load the auth data to the store
+    if (username && token) {
+      updateAuthStore(username, token)
+    } else {
+      router.push('/login')
+    }
+    setIsLoading(false)
+
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [])
 
   return (
     <>
-      <Provider store={store}>
-        <div className='flex h-full'>
-          <NavBar items={navigationItems} />
-          <div className='flex flex-1 flex-col overflow-hidden'>
-            <TopBar openMobileCb={() => setOpenMobileMenu(true)} />
-            <MobileNavBar
-              show={openMobileMenu}
-              items={navigationItems}
-              closeMobileMenu={() => setOpenMobileMenu(false)}
-            />
+      {!isLoading && (
+        <Provider store={store}>
+          {router.pathname !== '/login' ? (
+            <Layout>
+              <RouteGuard>
+                <Component {...pageProps} />
+              </RouteGuard>
+            </Layout>
+          ) : (
+            // Render the Login page
+            <Component {...pageProps} />
+          )}
+        </Provider>
+      )}
 
-            {/* Main content */}
-            <div className='flex flex-1 items-stretch overflow-hidden'>
-              <main className='flex-1 overflow-y-auto'>
-                {/* Primary column */}
-                <section
-                  aria-labelledby='primary-heading'
-                  className='flex h-full min-w-0 flex-1 flex-col lg:order-last'
-                >
-                  <h1 id='primary-heading' className='sr-only'>
-                    Photos
-                  </h1>
-                  <Component {...pageProps} />
-                </section>
-              </main>
-
-              {/* Secondary column (hidden on smaller screens) */}
-              <SideBar />
-            </div>
-          </div>
-        </div>
-      </Provider>
-       {/* //// improve config import */}
+      {/* Import env variables */}
       <Script src={`config/config.${process.env.NODE_ENV}.js`}></Script>
     </>
   )

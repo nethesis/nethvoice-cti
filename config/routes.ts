@@ -12,8 +12,8 @@ export type navigationItems = {
 }
 
 export const navigationItems = [
-  { name: 'Operators', href: '/operators', icon: MdPersonOutline, current: true },
+  { name: 'Operators', href: '/operators', icon: MdPersonOutline, current: false },
   { name: 'History', href: '/history', icon: MdHistory, current: false },
-  { name: 'Phonebook', href: '/phonebook', icon: MdOutlineContacts, current: false },
+  { name: 'Phonebook', href: '/phonebook', icon: MdOutlineContacts, current: true },
   { name: 'Settings', href: '/settings', icon: MdOutlineSettings, current: false },
 ]
