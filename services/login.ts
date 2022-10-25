@@ -12,7 +12,7 @@ import { store } from '../store'
  */
  export const logout = async () => {
   try {
-    const state = store.getState()
+    const { username, token } = store.getState().authentication
     const res = await fetch(
       // @ts-ignore
       window.CONFIG.API_SCHEME + window.CONFIG.API_ENDPOINT + '/webrest/authentication/logout',
@@ -20,7 +20,7 @@ import { store } from '../store'
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
-          Authorization: `${state.authentication.username}:${state.authentication.token}`,
+          Authorization: `${username}:${token}`,
         },
       },
     )

@@ -19,13 +19,20 @@ function MyApp({ Component, pageProps }: AppProps) {
 
   useEffect(() => {
     const { username, token } = getCredentials()
+    const loaded = () => setIsLoading(false)
+
     // Load the auth data to the store
     if (username && token) {
       updateAuthStore(username, token)
+      loaded()
     } else {
       router.push('/login')
+      router.events.on('routeChangeComplete', loaded)
     }
-    setIsLoading(false)
+
+    return () => {
+      router.events.off('routeChangeComplete', loaded)
+    }
 
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [])
