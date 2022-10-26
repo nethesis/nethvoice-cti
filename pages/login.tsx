@@ -2,14 +2,13 @@
 // SPDX-License-Identifier: AGPL-3.0-or-later
 
 import Image from 'next/image'
-import { isTokenStored, setToken } from '../lib/login'
-import { useRouter } from 'next/router'
+import { saveCredentials } from '../lib/login'
 import { useState, useRef } from 'react'
 import { TextInput, InlineNotification, Button } from '../components/common'
-import hmacSHA256 from 'crypto-js/hmac-sha256'
-import Base64 from 'crypto-js/enc-base64'
+import hmacSHA1 from 'crypto-js/hmac-sha1'
 import { MdLock, MdOutlineVisibility, MdOutlineVisibilityOff } from 'react-icons/md'
 import Logo from '../public/logo.png'
+import { useRouter } from 'next/router'
 
 export default function Login() {
   
@@ -39,48 +38,38 @@ export default function Login() {
     e.preventDefault()
     setLoading(true)
     if (window !== undefined) {
-      if (!isTokenStored()) {
-        const username = usernameRef.current.value
-        const password = passwordRef.current.value
-        setOnError(false)
-        const res = await fetch(
-          // @ts-ignore
-          window.CONFIG.API_SCHEME + window.CONFIG.API_ENDPOINT + '/webrest/authentication/login',
-          {
-            method: 'POST',
-            headers: {
-              'Content-Type': 'application/json',
-            },
-            body: JSON.stringify({
-              username: username,
-              password: password,
-            }),
+      const username = usernameRef.current.value
+      const password = passwordRef.current.value
+      setOnError(false)
+      const res = await fetch(
+        // @ts-ignore
+        window.CONFIG.API_SCHEME + window.CONFIG.API_ENDPOINT + '/webrest/authentication/login',
+        {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
           },
-        )
-        const callStatus = res.status
-        const nonce = res.headers.get('www-authenticate')?.split(' ')[0]
-        const token = nonce
-          ? Base64.stringify(hmacSHA256(`${username}:${password}:${nonce}`, password))
-          : ''
-        if (token) {
-          router.push('/')
-          setLoading(false)
-          {
-            setToken(token)
-          }
-        } else {
-          if (callStatus === 401) {
-            setLoading(false)
-            setOnError(true)
-            setMessaggeError('Your username and password do not match')
-          } else if (callStatus === 404) {
-            setLoading(false)
-            setOnError(true)
-            setMessaggeError('The network connection is lost')
-          }
-        }
-      } else {
+          body: JSON.stringify({
+            username: username,
+            password: password,
+          }),
+        },
+      )
+      const callStatus = res.status
+      const nonce = res.headers.get('www-authenticate')?.split(' ')[1]
+      const token = nonce ? hmacSHA1(`${username}:${password}:${nonce}`, password).toString() : ''
+      if (token) {
+        saveCredentials(username, token)
         router.push('/')
+        setLoading(false)
+      } else {
+        if (callStatus === 401) {
+          setOnError(true)
+          setMessaggeError('Your username and password do not match')
+        } else if (callStatus === 404) {
+          setOnError(true)
+          setMessaggeError('The network connection is lost')
+        }
         setLoading(false)
       }
     }
@@ -115,6 +104,7 @@ export default function Login() {
                   squared='bottom'
                   ref={usernameRef}
                   required
+                  autoComplete='username'
                 />
                 <div className='pt-px'>
                   <TextInput
@@ -128,6 +118,7 @@ export default function Login() {
                     error={onError ? true : false}
                     ref={passwordRef}
                     required
+                    autoComplete='current-password'
                   />
                 </div>
               </div>

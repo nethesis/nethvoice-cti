@@ -24,6 +24,7 @@
 - **models** - contains the models used by rematch
   - Check the [rematch models docs](https://rematchjs.org/docs/api-reference/models) for more info
 - **public** - contains the static files
+- **services** - contains the requests to the server's APIs
 - **store** - contains the stores for rematch
   - Check the [rematch store docs](https://rematchjs.org/docs/api-reference/store) for more info
 - **stories** - contains the stories for storybook (useful to develop reusable components in isolation)

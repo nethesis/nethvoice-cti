@@ -2,6 +2,7 @@
 // SPDX-License-Identifier: AGPL-3.0-or-later
 
 import axios from 'axios'
+import { store } from '../store'
 
 export const PAGE_SIZE = 10
 
@@ -12,17 +13,11 @@ export async function getPhonebook(
   sortBy: string,
 ) {
   try {
-    const stringCredentials = localStorage.getItem('credentials')
-    if (!stringCredentials) {
-      return null
-    }
+    const { username, token } = store.getState().authentication
 
-    const { username, token } = JSON.parse(stringCredentials)
-
-    //// remove?
     if (window !== undefined) {
       // @ts-ignore
-      let apiUrl = `${window.CONFIG.API_ENDPOINT}/webrest/phonebook/`
+      let apiUrl = `${window.CONFIG.API_SCHEME + window.CONFIG.API_ENDPOINT}/webrest/phonebook/`
 
       if (filterText.trim()) {
         apiUrl += `search/${filterText.trim()}`

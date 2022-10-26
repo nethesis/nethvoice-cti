@@ -2,20 +2,20 @@
 // SPDX-License-Identifier: AGPL-3.0-or-later
 
 import type { NextPage } from 'next'
-import * as Janus from 'janus-gateway'
-import { MdFavoriteBorder } from 'react-icons/md'
+import { useEffect } from 'react'
+import { useRouter } from 'next/router'
+// import * as Janus from 'janus-gateway'
 
 const Home: NextPage = () => {
-  console.log(Janus)
+  const router = useRouter()
 
-  return (
-    <>
-      <h1 className='text-5xl font-extrabold text-sky-600 flex gap-6'>
-        <p>NethVoice CTI</p>
-        <MdFavoriteBorder />
-      </h1>
-    </>
-  )
+  useEffect(() => {
+    router.push('/phonebook')
+
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [])
+
+  return <></>
 }
 
 export default Home
