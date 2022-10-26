@@ -10,7 +10,7 @@ import { store } from '../store'
 /**
  * This method performs the logout action
  */
- export const logout = async () => {
+export const logout = async () => {
   try {
     const { username, token } = store.getState().authentication
     const res = await fetch(
