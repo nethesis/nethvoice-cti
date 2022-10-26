@@ -12,11 +12,11 @@
 import { FC } from 'react'
 import Image from 'next/image'
 import classNames from 'classnames'
-import type { navigationItems } from '../../config/routes'
+import type { NavItemsProps } from '../../config/routes'
 import Link from 'next/link'
 
 interface NavBarProps {
-  items: navigationItems[]
+  items: NavItemsProps[]
 }
 
 export const NavBar: FC<NavBarProps> = ({ items }) => {
