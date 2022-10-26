@@ -14,14 +14,14 @@
 import { Transition, Dialog } from '@headlessui/react'
 import { FC, Fragment } from 'react'
 import classNames from 'classnames'
-import type { navigationItems } from '../../config/routes'
+import type { NavItemsProps } from '../../config/routes'
 import Image from 'next/image'
 import { MdOutlineClose } from 'react-icons/md'
 import Link from 'next/link'
 
 interface MobileNavBarProps {
   show: boolean
-  items: navigationItems[]
+  items: NavItemsProps[]
   closeMobileMenu: () => void
 }
 
