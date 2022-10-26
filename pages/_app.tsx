@@ -53,9 +53,6 @@ function MyApp({ Component, pageProps }: AppProps) {
           )}
         </Provider>
       )}
-
-      {/* Import env variables */}
-      <Script src={`config/config.${process.env.NODE_ENV}.js`}></Script>
     </>
   )
 }
