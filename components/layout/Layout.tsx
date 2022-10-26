@@ -5,6 +5,9 @@ import { FC, ReactNode, useState, useEffect } from 'react'
 import { NavBar, TopBar, MobileNavBar, SideBar } from '.'
 import { navItems, NavItemsProps } from '../../config/routes'
 import { useRouter } from 'next/router'
+import { getUserInfo } from '../../services/user'
+import { useDispatch } from 'react-redux'
+import { Dispatch } from '../../store'
 
 interface LayoutProps {
   children: ReactNode
@@ -14,6 +17,7 @@ export const Layout: FC<LayoutProps> = ({ children }) => {
   const [openMobileMenu, setOpenMobileMenu] = useState<boolean>(false)
   const router = useRouter()
   const [items, setItems] = useState<NavItemsProps[]>(navItems)
+  const dispatch = useDispatch<Dispatch>()
 
   useEffect(() => {
     const currentItems = items.map((route) => {
@@ -28,6 +32,22 @@ export const Layout: FC<LayoutProps> = ({ children }) => {
     setItems(currentItems)
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [router])
+
+  useEffect(() => {
+    const getData = async () => {
+      const userInfo = await getUserInfo()
+      if (userInfo && userInfo.data) {
+        dispatch.user.update({
+          name: userInfo.data.name,
+          mainextension: userInfo.data.endpoints.mainextension[0].id,
+          mainPresence: userInfo.data.mainPresence,
+        })
+      }
+    }
+    getData()
+
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [])
 
   return (
     <div className='flex h-full'>
