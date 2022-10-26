@@ -40,4 +40,7 @@ next-env.d.ts
 storybook-static/
 
 # Config
-public/config
+public/config/config.development.js
+
+# vscode settings
+.vscode
