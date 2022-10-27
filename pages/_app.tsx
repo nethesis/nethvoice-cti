@@ -10,8 +10,8 @@ import { store } from '../store'
 import { Layout } from '../components/layout'
 import { getCredentials, updateAuthStore } from '../lib/login'
 import { useRouter } from 'next/router'
-import { RouteGuard } from '../components/router'
-import { axiosInit } from '../config/axios'
+import { RouteGuard } from '../config/router'
+import { Service } from '../config/service'
 
 function MyApp({ Component, pageProps }: AppProps) {
   const [isLoading, setIsLoading] = useState<boolean>(true)
@@ -30,9 +30,6 @@ function MyApp({ Component, pageProps }: AppProps) {
       router.events.on('routeChangeComplete', loaded)
     }
 
-    // Init axios default config
-    axiosInit()
-
     return () => {
       router.events.off('routeChangeComplete', loaded)
     }
@@ -45,11 +42,13 @@ function MyApp({ Component, pageProps }: AppProps) {
       {!isLoading && (
         <Provider store={store}>
           {router.pathname !== '/login' ? (
-            <Layout>
-              <RouteGuard>
-                <Component {...pageProps} />
-              </RouteGuard>
-            </Layout>
+            <Service>
+              <Layout>
+                <RouteGuard>
+                  <Component {...pageProps} />
+                </RouteGuard>
+              </Layout>
+            </Service>
           ) : (
             // Render the Login page
             <Component {...pageProps} />

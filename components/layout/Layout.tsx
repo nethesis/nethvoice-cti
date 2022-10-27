@@ -34,17 +34,19 @@ export const Layout: FC<LayoutProps> = ({ children }) => {
   }, [router])
 
   useEffect(() => {
-    const getData = async () => {
-      const userInfo = await getUserInfo()
-      if (userInfo && userInfo.data) {
-        dispatch.user.update({
-          name: userInfo.data.name,
-          mainextension: userInfo.data.endpoints.mainextension[0].id,
-          mainPresence: userInfo.data.mainPresence,
-        })
+    setTimeout(() => {
+      const getData = async () => {
+        const userInfo = await getUserInfo()
+        if (userInfo && userInfo.data) {
+          dispatch.user.update({
+            name: userInfo.data.name,
+            mainextension: userInfo.data.endpoints.mainextension[0].id,
+            mainPresence: userInfo.data.mainPresence,
+          })
+        }
       }
-    }
-    getData()
+      getData()
+    }, 2000)
 
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [])

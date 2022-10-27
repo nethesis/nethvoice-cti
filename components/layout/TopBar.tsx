@@ -23,7 +23,7 @@ interface TopBarProps {
 
 export const TopBar: FC<TopBarProps> = ({ openMobileCb }) => {
   const router = useRouter()
-  const { name, mainextension } = useSelector((state: RootState) => state.user);
+  const { name, mainextension, mainPresence } = useSelector((state: RootState) => state.user);
 
   const doLogout = async () => {
     const res = await logout()
@@ -94,7 +94,7 @@ export const TopBar: FC<TopBarProps> = ({ openMobileCb }) => {
                 src='https://images.unsplash.com/photo-1567532939604-b6b5b0db2604?ixlib=rb-1.2.1&ixid=eyJhcHBfaWQiOjEyMDd9&auto=format&fit=facearea&facepad=2&w=256&h=256&q=80'
                 unoptimized={true}
                 size='small'
-                status={'available'}
+                status={mainPresence}
               />
             </Dropdown>
           </div>
