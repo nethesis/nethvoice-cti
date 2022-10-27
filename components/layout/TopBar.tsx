@@ -14,6 +14,8 @@ import { logout } from '../../services/login'
 import { useRouter } from 'next/router'
 import { removeItem } from '../../lib/storage'
 import { store } from '../../store'
+import { useSelector } from "react-redux";
+import { RootState } from '../../store';
 
 interface TopBarProps {
   openMobileCb: () => void
@@ -21,6 +23,7 @@ interface TopBarProps {
 
 export const TopBar: FC<TopBarProps> = ({ openMobileCb }) => {
   const router = useRouter()
+  const { name, mainextension } = useSelector((state: RootState) => state.user);
 
   const doLogout = async () => {
     const res = await logout()
@@ -40,8 +43,8 @@ export const TopBar: FC<TopBarProps> = ({ openMobileCb }) => {
         <Dropdown.Header>
           <span className='block text-sm mb-1'>Signed in as</span>
           <span className='text-sm font-medium flex justify-between'>
-            <span className='truncate pr-2'>Jenny Wilson</span>
-            <span className='text-sm font-normal'>220</span>
+            <span className='truncate pr-2'>{name}</span>
+            <span className='text-sm font-normal'>{mainextension}</span>
           </span>
         </Dropdown.Header>
       </div>
@@ -91,7 +94,7 @@ export const TopBar: FC<TopBarProps> = ({ openMobileCb }) => {
                 src='https://images.unsplash.com/photo-1567532939604-b6b5b0db2604?ixlib=rb-1.2.1&ixid=eyJhcHBfaWQiOjEyMDd9&auto=format&fit=facearea&facepad=2&w=256&h=256&q=80'
                 unoptimized={true}
                 size='small'
-                status='available'
+                status={'available'}
               />
             </Dropdown>
           </div>
