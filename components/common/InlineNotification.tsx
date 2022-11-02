@@ -22,9 +22,9 @@ import {
 
 export interface InlineNotifcationProps extends ComponentProps<'div'> {
   type: 'info' | 'warning' | 'success' | 'error'
+  title: string
 }
-
-export const InlineNotification: FC<InlineNotifcationProps> = ({ type, children }): JSX.Element => {
+export const InlineNotification: FC<InlineNotifcationProps> = ({ type, title, children }): JSX.Element => {
   const { inlineNotification: theme } = useTheme().theme
   let checkIcon =
     type === 'info' ? (
@@ -36,13 +36,13 @@ export const InlineNotification: FC<InlineNotifcationProps> = ({ type, children 
     ) : (
       <MdOutlineCancel className={theme.iconStyle[type]} aria-hidden='true' />
     )
-    
+  
   return (
     <>
       <div className={classNames(theme.base, type ? theme.type[type] : theme.type.success)}>
         <div className='flex-shrink-0'>{checkIcon}</div>
         <div className='ml-3'>
-          <h3 className={theme.titleStyle[type]}>{theme.title[type]}</h3>
+          <h3 className={theme.titleStyle[type]}>{title}</h3>
           <div className={theme.childrenText[type]}>{children}</div>
         </div>
       </div>
