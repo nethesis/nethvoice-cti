@@ -3,17 +3,18 @@
 
 import { createModel } from '@rematch/core'
 import type { RootModel } from '.'
+import type { StatusTypes } from '../theme/Types'
 
 interface DefaultState {
   name: string
   mainextension: string
-  mainPresence: string
+  mainPresence: StatusTypes
 }
 
 const defaultState: DefaultState = {
   name: '',
   mainextension: '',
-  mainPresence: ''
+  mainPresence: 'offline'
 }
 
 export const user = createModel<RootModel>()({

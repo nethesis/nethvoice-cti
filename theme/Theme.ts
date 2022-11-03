@@ -114,7 +114,7 @@ const theme = {
     },
   },
   status: {
-    available: {
+    online: {
       badge: {
         base: 'bg-green-100 text-green-900',
         dot: 'bg-green-400',

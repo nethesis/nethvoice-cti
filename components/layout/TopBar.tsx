@@ -14,8 +14,8 @@ import { logout } from '../../services/login'
 import { useRouter } from 'next/router'
 import { removeItem } from '../../lib/storage'
 import { store } from '../../store'
-import { useSelector } from "react-redux";
-import { RootState } from '../../store';
+import { useSelector } from 'react-redux'
+import { RootState } from '../../store'
 
 interface TopBarProps {
   openMobileCb: () => void
@@ -23,7 +23,7 @@ interface TopBarProps {
 
 export const TopBar: FC<TopBarProps> = ({ openMobileCb }) => {
   const router = useRouter()
-  const { name, mainextension } = useSelector((state: RootState) => state.user);
+  const { name, mainextension, mainPresence } = useSelector((state: RootState) => state.user)
 
   const doLogout = async () => {
     const res = await logout()
@@ -79,7 +79,7 @@ export const TopBar: FC<TopBarProps> = ({ openMobileCb }) => {
                   name='search-field'
                   id='search-field'
                   className='h-full w-full border-transparent py-2 pl-8 pr-3 text-base text-gray-900 placeholder-gray-500 focus:border-transparent focus:placeholder-gray-400 focus:outline-none focus:ring-0'
-                  placeholder='Find and Call'
+                  placeholder='Call'
                   type='search'
                 />
               </div>
@@ -94,7 +94,7 @@ export const TopBar: FC<TopBarProps> = ({ openMobileCb }) => {
                 src='https://images.unsplash.com/photo-1567532939604-b6b5b0db2604?ixlib=rb-1.2.1&ixid=eyJhcHBfaWQiOjEyMDd9&auto=format&fit=facearea&facepad=2&w=256&h=256&q=80'
                 unoptimized={true}
                 size='small'
-                status={'available'}
+                status={mainPresence || 'offline'}
               />
             </Dropdown>
           </div>

@@ -10,7 +10,7 @@ import axios from 'axios'
 /**
  * The path to the user endpoints
  */
-const USER_PATH = '/user'
+const PATH = '/user'
 
 /**
  * 
@@ -21,7 +21,7 @@ const USER_PATH = '/user'
 
 export const getUserInfo = async () => {
   try {
-    const res = await axios.get(`${USER_PATH}/me`)
+    const res = await axios.get(`${PATH}/me`)
     return res
   } catch (error) {
     console.error(error)
