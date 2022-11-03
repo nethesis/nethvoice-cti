@@ -9,6 +9,7 @@
  * @param size - The size of the modal.
  * @param focus - The size of the modal.
  * @param onClose - The size of the modal.
+ * @param afterLeave - The callback for the after leave event.
  *
  */
 
@@ -26,6 +27,7 @@ export interface ModalProps extends PropsWithChildren<ComponentProps<'div'>> {
   size?: 'base' | 'large'
   focus?: RefObject<HTMLElement>
   onClose: () => void
+  afterLeave?: () => void
 }
 
 const ModalComponent: FC<ModalProps> = ({
@@ -35,13 +37,14 @@ const ModalComponent: FC<ModalProps> = ({
   focus = createRef(),
   onClose,
   className,
+  afterLeave,
   ...props
 }) => {
   const { modal: theme } = useTheme().theme
   const cleanProps = cleanClassName(props)
 
   return (
-    <Transition.Root show={show} as={Fragment}>
+    <Transition.Root show={show} as={Fragment} afterLeave={() => afterLeave && afterLeave()}>
       <Dialog
         as='div'
         className={classNames('relative', 'z-10', className)}
