@@ -8,24 +8,30 @@ import { TextInput, InlineNotification, Button } from '../components/common'
 import hmacSHA1 from 'crypto-js/hmac-sha1'
 import { MdLock, MdOutlineVisibility, MdOutlineVisibilityOff } from 'react-icons/md'
 import Logo from '../public/logo.png'
+import Background from '../public/background.png'
 import { useRouter } from 'next/router'
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
+import { faCircleNotch } from '@fortawesome/free-solid-svg-icons'
 
 export default function Login() {
-  
   const [pwdVisible, setPwdVisible] = useState(false)
   const [messageError, setMessaggeError] = useState('')
   const [onError, setOnError] = useState(false)
   const [loading, setLoading] = useState(false)
 
   let iconSelect = loading ? (
-    <span className='animate-spin 0.1s linear infinite loader'></span>
+    <FontAwesomeIcon icon={faCircleNotch} className='fa-spin loader fa-lg' />
   ) : (
-    <MdLock className='h-5 w-5 text-white' aria-hidden='true' />
+    <></>
   )
   let errorAlert = onError ? (
-    <InlineNotification type='error'>
-      <p>{messageError}</p>
-    </InlineNotification>
+    <div className='relative w-full'>
+      <div className='absolute alertLogin w-full'>
+        <InlineNotification type='error' title='Login Failed'>
+          <p>{messageError}</p>
+        </InlineNotification>
+      </div>
+    </div>
   ) : (
     <></>
   )
@@ -65,7 +71,7 @@ export default function Login() {
       } else {
         if (callStatus === 401) {
           setOnError(true)
-          setMessaggeError('Your username and password do not match')
+          setMessaggeError('Wrong username or password.')
         } else if (callStatus === 404) {
           setOnError(true)
           setMessaggeError('The network connection is lost')
@@ -77,69 +83,87 @@ export default function Login() {
 
   return (
     <>
-      <div className='bg-gray-100 h-screen'>
-        <div className='flex items-center h-screen justify-center py-40 px-4 sm:px-6 lg:px-8'>
-          <div className=' w-full max-w-md space-y-8'>
+      <div className='flex min-h-full'>
+        <div className='flex flex-1 flex-col justify-center py-12 px-4 sm:px-6 lg:flex-none lg:px-20 xl:px-24'>
+          <div className='mx-auto w-full max-w-sm lg:w-96'>
             <div>
-              <div className='flex justify-center'>
-                <Image
-                  className='mx-auto h-12 w-auto'
-                  src={Logo}
-                  alt='Your Company'
-                  width='100'
-                  height='100'
-                  unoptimized={true}
-                />
-              </div>
-              <h2 className='mt-6 text-center text-3xl font-bold tracking-tight text-gray-700'>
+              {' '}
+              <Image
+                className='mx-auto h-12 w-auto'
+                src={Logo}
+                alt='Your Company'
+                width='100'
+                height='100'
+                unoptimized={true}
+              />
+              <h2 className='mt-6 text-3xl font-bold tracking-tight text-gray-900'>
                 NethVoice CTI
               </h2>
+              <p className='mt-2 text-sm text-gray-600'>Help you to connect with other users.</p>
             </div>
-            <form className='mt-8 space-y-6' action='#' method='POST' onSubmit={doLogin}>
-              <input type='hidden' name='remember' defaultValue='true' />
-              <div className='-space-y-px rounded-md shadow-sm'>
-                <TextInput
-                  placeholder='Enter your username'
-                  name='username'
-                  squared='bottom'
-                  ref={usernameRef}
-                  required
-                  autoComplete='username'
-                />
-                <div className='pt-px'>
-                  <TextInput
-                    placeholder='Enter your password'
-                    name='password'
-                    squared='top'
-                    type={pwdVisible ? 'text' : 'password'}
-                    icon={pwdVisible ? MdOutlineVisibility : MdOutlineVisibilityOff}
-                    onIconClick={() => setPwdVisible(!pwdVisible)}
-                    trailingIcon={true}
-                    error={onError ? true : false}
-                    ref={passwordRef}
-                    required
-                    autoComplete='current-password'
-                  />
-                </div>
+            <div className='mt-8'>
+              <div className='mt-6'>
+                <form action='#' method='POST' onSubmit={doLogin} className='space-y-6'>
+                  <div>
+                    <label htmlFor='email' className='block text-sm font-medium text-gray-700'>
+                      User
+                    </label>
+                    <div className='mt-1'>
+                      <TextInput
+                        placeholder=''
+                        name='username'
+                        ref={usernameRef}
+                        error={onError ? true : false}
+                        required
+                        autoComplete='username'
+                      ></TextInput>
+                    </div>
+                  </div>
+                  <div className='space-y-1'>
+                    <label htmlFor='password' className='block text-sm font-medium text-gray-700'>
+                      Password
+                    </label>
+                    <div className='mt-1'>
+                      <TextInput
+                        placeholder=''
+                        name='password'
+                        type={pwdVisible ? 'text' : 'password'}
+                        icon={pwdVisible ? MdOutlineVisibility : MdOutlineVisibilityOff}
+                        onIconClick={() => setPwdVisible(!pwdVisible)}
+                        trailingIcon={true}
+                        error={onError ? true : false}
+                        ref={passwordRef}
+                        required
+                        autoComplete='current-password'
+                      />
+                    </div>
+                  </div>
+                  <div>
+                    <Button
+                      size='large'
+                      fullHeight={true}
+                      fullWidth={true}
+                      variant='primary'
+                      type='submit'
+                    >
+                      Sign In
+                      {iconSelect}
+                    </Button>
+                  </div>
+                </form>
+                {errorAlert}
               </div>
-              {errorAlert}
-              <div>
-                <Button
-                  size='large'
-                  fullHeight={true}
-                  fullWidth={true}
-                  variant='primary'
-                  type='submit'
-                >
-                  {' '}
-                  <span className='absolute inset-y-0 left-0 flex items-center pl-3'>
-                    {iconSelect}
-                  </span>
-                  Sign in
-                </Button>
-              </div>
-            </form>
+            </div>
           </div>
+        </div>
+        <div className='relative hidden w-0 flex-1 lg:block'>
+          <Image
+            className='absolute inset-0 h-full w-full object-cover'
+            src={Background}
+            alt='Background image'
+            layout='fill'
+            unoptimized={false}
+          />
         </div>
       </div>
     </>
