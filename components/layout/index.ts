@@ -3,6 +3,7 @@
 
 export * from './NavBar'
 export * from './SideBar'
+export * from './SideDrawer'
 export * from './TopBar'
 export * from './MobileNavBar'
 export * from './Layout'

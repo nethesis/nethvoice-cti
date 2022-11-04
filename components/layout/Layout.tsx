@@ -2,12 +2,15 @@
 // SPDX-License-Identifier: AGPL-3.0-or-later
 
 import { FC, ReactNode, useState, useEffect } from 'react'
-import { NavBar, TopBar, MobileNavBar, SideBar } from '.'
+import { NavBar, TopBar, MobileNavBar, SideBar, SideDrawer } from '.'
 import { navItems, NavItemsProps } from '../../config/routes'
 import { useRouter } from 'next/router'
 import { getUserInfo } from '../../services/user'
 import { useDispatch } from 'react-redux'
 import { Dispatch } from '../../store'
+import { RootState } from '../../store'
+import { useSelector } from 'react-redux'
+import { store } from '../../store'
 
 interface LayoutProps {
   children: ReactNode
@@ -18,6 +21,11 @@ export const Layout: FC<LayoutProps> = ({ children }) => {
   const router = useRouter()
   const [items, setItems] = useState<NavItemsProps[]>(navItems)
   const dispatch = useDispatch<Dispatch>()
+  const sideDrawer = useSelector((state: RootState) => state.sideDrawer)
+
+  const closeSideDrawer = () => {
+    store.dispatch.sideDrawer.setShown(false)
+  }
 
   useEffect(() => {
     const currentItems = items.map((route) => {
@@ -76,6 +84,12 @@ export const Layout: FC<LayoutProps> = ({ children }) => {
           </main>
           {/* Secondary column (hidden on smaller screens) */}
           <SideBar />
+          <SideDrawer
+            isShown={sideDrawer.isShown}
+            contentType={sideDrawer.contentType}
+            config={sideDrawer.config}
+            drawerClosed={() => closeSideDrawer()}
+          />
         </div>
       </div>
     </div>
