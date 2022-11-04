@@ -99,7 +99,7 @@ export default function Login() {
               <h2 className='mt-6 text-3xl font-bold tracking-tight text-gray-900'>
                 NethVoice CTI
               </h2>
-              <p className='mt-2 text-sm text-gray-600'>Help you to connect with other users.</p>
+              <p className='mt-2 text-sm text-gray-600'>Helps you connect with other users.</p>
             </div>
             <div className='mt-8'>
               <div className='mt-6'>
