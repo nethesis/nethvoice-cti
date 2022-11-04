@@ -13,9 +13,14 @@ import {
 import { Filter } from '../components/phonebook/Filter'
 import { Avatar, Button, InlineNotification } from '../components/common'
 import { useState, useEffect } from 'react'
-import { getPhonebook, mapContact, showContact, PAGE_SIZE } from '../lib/phonebook'
+import {
+  getPhonebook,
+  mapContact,
+  openShowContactDrawer,
+  PAGE_SIZE,
+  openCreateContactDrawer,
+} from '../lib/phonebook'
 import Skeleton from 'react-loading-skeleton'
-import { store } from '../store'
 
 const Phonebook: NextPage = () => {
   const [isPhonebookLoaded, setPhonebookLoaded] = useState(false)
@@ -93,20 +98,12 @@ const Phonebook: NextPage = () => {
     return !isPhonebookLoaded || pageNum >= phonebook?.totalPages
   }
 
-  const createContact = () => {
-    store.dispatch.sideDrawer.update({
-      isShown: true,
-      contentType: 'createContact',
-      config: null,
-    })
-  }
-
   const [phonebookError, setPhonebookError] = useState('')
 
   return (
     <>
       <div className='p-8 bg-gray-100'>
-        <Button variant='primary' onClick={() => createContact()} className='mb-6'>
+        <Button variant='primary' onClick={() => openCreateContactDrawer()} className='mb-6'>
           <MdAdd className='-ml-1 mr-2 h-5 w-5' />
           <span>Create contact</span>
         </Button>
@@ -152,7 +149,7 @@ const Phonebook: NextPage = () => {
                 <li key={index}>
                   <div className='flex items-center px-4 py-4 sm:px-6'>
                     <div className='flex min-w-0 flex-1 items-center'>
-                      <div className='flex-shrink-0' onClick={() => showContact(contact)}>
+                      <div className='flex-shrink-0' onClick={() => openShowContactDrawer(contact)}>
                         {contact.kind == 'person' ? (
                           <Avatar className='cursor-pointer' placeholderType='person' />
                         ) : (
@@ -163,12 +160,27 @@ const Phonebook: NextPage = () => {
                         {/* display name and company/contacts */}
                         <div className='flex flex-col justify-center'>
                           <div className='truncate text-sm font-medium text-sky-600'>
-                            <span className='cursor-pointer' onClick={() => showContact(contact)}>
+                            <span
+                              className='cursor-pointer'
+                              onClick={() => openShowContactDrawer(contact)}
+                            >
                               {contact.displayName}
                             </span>
                           </div>
+                          {/* extension */}
+                          {contact.extension && (
+                            <div className='mt-1 flex items-center text-sm text-gray-500'>
+                              <MdPhone
+                                className='mr-1.5 h-5 w-5 flex-shrink-0 text-gray-400'
+                                aria-hidden='true'
+                              />
+                              <span className='truncate text-sky-600 cursor-pointer'>
+                                {contact.extension}
+                              </span>
+                            </div>
+                          )}
                           {/* company name */}
-                          {contact.kind == 'person' && contact.company && (
+                          {contact.kind == 'person' && contact.company && !contact.extension && (
                             <div className='mt-1 flex items-center text-sm text-gray-500'>
                               <MdOutlineWork
                                 className='mr-1.5 h-5 w-5 flex-shrink-0 text-gray-400'
@@ -226,7 +238,7 @@ const Phonebook: NextPage = () => {
                       <MdChevronRight
                         className='h-5 w-5 text-gray-400 cursor-pointer'
                         aria-hidden='true'
-                        onClick={() => showContact(contact)}
+                        onClick={() => openShowContactDrawer(contact)}
                       />
                     </div>
                   </div>

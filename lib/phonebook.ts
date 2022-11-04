@@ -63,6 +63,36 @@ export async function getContact(contactId: number) {
   }
 }
 
+export async function createContact(contactData: any) {
+  if (window == undefined) {
+    return
+  }
+  let apiUrl = getPhonebookUrl() + 'create'
+
+  try {
+    const { data, status } = await axios.post(apiUrl, contactData)
+    return data
+  } catch (error) {
+    handleNetworkError(error)
+    throw error
+  }
+}
+
+export async function editContact(contactData: any) {
+  if (window == undefined) {
+    return
+  }
+  let apiUrl = getPhonebookUrl() + 'modify_cticontact'
+
+  try {
+    const { data, status } = await axios.post(apiUrl, contactData)
+    return data
+  } catch (error) {
+    handleNetworkError(error)
+    throw error
+  }
+}
+
 export function mapContact(contact: any) {
   // kind & display name
   if (contact.name) {
@@ -80,10 +110,26 @@ export function mapContact(contact: any) {
   return contact
 }
 
-export const showContact = (contact: any) => {
+export const openShowContactDrawer = (contact: any) => {
   store.dispatch.sideDrawer.update({
     isShown: true,
     contentType: 'showContact',
     config: contact,
+  })
+}
+
+export const openCreateContactDrawer = () => {
+  store.dispatch.sideDrawer.update({
+    isShown: true,
+    contentType: 'createOrEditContact',
+    config: { isEdit: false },
+  })
+}
+
+export const openEditContactDrawer = (contact: any) => {
+  store.dispatch.sideDrawer.update({
+    isShown: true,
+    contentType: 'createOrEditContact',
+    config: { isEdit: true, contact: contact },
   })
 }

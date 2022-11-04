@@ -13,8 +13,17 @@ import {
   MdMoreVert,
   MdEdit,
   MdDelete,
+  MdVisibility,
+  MdOutlineStickyNote2,
 } from 'react-icons/md'
-import { getContact, mapContact, showContact } from '../../lib/phonebook'
+import {
+  getContact,
+  mapContact,
+  openShowContactDrawer,
+  openEditContactDrawer,
+} from '../../lib/phonebook'
+import { useSelector } from 'react-redux'
+import { RootState } from '../../store'
 
 export interface ShowContactDrawerContentProps extends ComponentPropsWithRef<'div'> {
   config: any
@@ -24,15 +33,19 @@ export const ShowContactDrawerContent = forwardRef<
   HTMLButtonElement,
   ShowContactDrawerContentProps
 >(({ config, className, ...props }, ref) => {
+  const auth = useSelector((state: RootState) => state.authentication)
+
   async function fetchContact(contactId: number) {
     const res = await getContact(contactId)
     const contact = mapContact(res)
-    showContact(contact)
+    openShowContactDrawer(contact)
   }
 
   const contactMenuItems = (
     <>
-      <Dropdown.Item icon={MdEdit}>Edit</Dropdown.Item>
+      <Dropdown.Item icon={MdEdit} onClick={() => openEditContactDrawer(config)}>
+        Edit
+      </Dropdown.Item>
       <Dropdown.Item icon={MdDelete}>Delete</Dropdown.Item>
     </>
   )
@@ -50,17 +63,20 @@ export const ShowContactDrawerContent = forwardRef<
           </div>
           <h2 className='text-xl font-medium text-gray-900'>{config.displayName}</h2>
         </div>
-        <div>
-          <Dropdown items={contactMenuItems} position='left' divider={true} className='mr-1 mt-1'>
-            <Button variant='white'>
-              <MdMoreVert className='h-4 w-4' />
-              <span className='sr-only'>Open contact menu</span>
-            </Button>
-          </Dropdown>
-        </div>
+        {config.owner_id === auth.username && (
+          <div>
+            <Dropdown items={contactMenuItems} position='left' divider={true} className='mr-1 mt-1'>
+              <Button variant='white'>
+                <MdMoreVert className='h-4 w-4' />
+                <span className='sr-only'>Open contact menu</span>
+              </Button>
+            </Dropdown>
+          </div>
+        )}
       </div>
       <div className='mt-5 border-t border-gray-200'>
         <dl className='sm:divide-y sm:divide-gray-200'>
+          {/* company */}
           {config.kind == 'person' && config.company && (
             <div className='py-4 sm:grid sm:grid-cols-3 sm:gap-4 sm:py-5'>
               <dt className='text-sm font-medium text-gray-500'>Company</dt>
@@ -71,6 +87,21 @@ export const ShowContactDrawerContent = forwardRef<
                     aria-hidden='true'
                   />
                   <span>{config.company}</span>
+                </div>
+              </dd>
+            </div>
+          )}
+          {/* extension */}
+          {config.extension && (
+            <div className='py-4 sm:grid sm:grid-cols-3 sm:gap-4 sm:py-5'>
+              <dt className='text-sm font-medium text-gray-500'>Extension</dt>
+              <dd className='mt-1 text-sm text-gray-900 sm:col-span-2 sm:mt-0'>
+                <div className='flex items-center text-sm text-sky-600'>
+                  <MdPhone
+                    className='mr-1.5 h-5 w-5 flex-shrink-0 text-gray-400'
+                    aria-hidden='true'
+                  />
+                  <span className='truncate cursor-pointer'>{config.extension}</span>
                 </div>
               </dd>
             </div>
@@ -108,7 +139,7 @@ export const ShowContactDrawerContent = forwardRef<
           {/* work email */}
           {config.workemail && (
             <div className='py-4 sm:grid sm:grid-cols-3 sm:gap-4 sm:py-5'>
-              <dt className='text-sm font-medium text-gray-500'>Work email</dt>
+              <dt className='text-sm font-medium text-gray-500'>Email</dt>
               <dd className='mt-1 text-sm text-gray-900 sm:col-span-2 sm:mt-0'>
                 <div className='flex items-center text-sm text-sky-600'>
                   <MdEmail
@@ -123,6 +154,21 @@ export const ShowContactDrawerContent = forwardRef<
                   >
                     {config.workemail}
                   </a>
+                </div>
+              </dd>
+            </div>
+          )}
+          {/* notes */}
+          {config.notes && (
+            <div className='py-4 sm:grid sm:grid-cols-3 sm:gap-4 sm:py-5'>
+              <dt className='text-sm font-medium text-gray-500'>Notes</dt>
+              <dd className='mt-1 text-sm text-gray-900 sm:col-span-2 sm:mt-0'>
+                <div className='flex items-center text-sm'>
+                  <MdOutlineStickyNote2
+                    className='mr-1.5 h-5 w-5 flex-shrink-0 text-gray-400'
+                    aria-hidden='true'
+                  />
+                  <div>{config.notes}</div>
                 </div>
               </dd>
             </div>
@@ -153,6 +199,21 @@ export const ShowContactDrawerContent = forwardRef<
               </dd>
             </div>
           ) : null}
+          {/* visibility */}
+          <div className='py-4 sm:grid sm:grid-cols-3 sm:gap-4 sm:py-5'>
+            <dt className='text-sm font-medium text-gray-500'>Visibility</dt>
+            <dd className='mt-1 text-sm text-gray-900 sm:col-span-2 sm:mt-0'>
+              <div className='flex items-center text-sm'>
+                <MdVisibility
+                  className='mr-1.5 h-5 w-5 flex-shrink-0 text-gray-400'
+                  aria-hidden='true'
+                />
+                <span className='truncate'>
+                  {config.type === 'public' ? 'Everyone' : 'Only me'}
+                </span>
+              </div>
+            </dd>
+          </div>
         </dl>
       </div>
     </div>

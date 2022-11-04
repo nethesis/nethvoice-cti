@@ -8,7 +8,7 @@
  */
 import { Transition, Dialog } from '@headlessui/react'
 import { FC, Fragment } from 'react'
-import { CreateContactDrawerContent } from '../phonebook/CreateContactDrawerContent'
+import { CreateOrEditContactDrawerContent } from '../phonebook/CreateOrEditContactDrawerContent'
 import { ShowContactDrawerContent } from '../phonebook/ShowContactDrawerContent'
 
 interface SideDrawerProps {
@@ -37,8 +37,8 @@ export const SideDrawer: FC<SideDrawerProps> = ({ isShown, contentType, config, 
                 <div className='h-0 flex-1 overflow-y-auto'>
                   <nav className='flex h-full flex-col'>
                     <div className='space-y-1'>
-                      {contentType === 'createContact' ? (
-                        <CreateContactDrawerContent config={config} />
+                      {contentType === 'createOrEditContact' ? (
+                        <CreateOrEditContactDrawerContent config={config} />
                       ) : contentType === 'showContact' ? (
                         <ShowContactDrawerContent config={config} />
                       ) : null}
