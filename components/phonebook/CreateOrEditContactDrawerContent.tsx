@@ -6,7 +6,7 @@ import classNames from 'classnames'
 import { TextInput, Button } from '../common'
 import { useState, useRef, useEffect } from 'react'
 import { MdAdd, MdEdit } from 'react-icons/md'
-import { createContact, editContact } from '../../lib/phonebook'
+import { createContact, editContact, reloadPhonebook } from '../../lib/phonebook'
 import { store } from '../../store'
 
 export interface CreateOrEditContactDrawerContentProps extends ComponentPropsWithRef<'div'> {
@@ -123,6 +123,8 @@ export const CreateOrEditContactDrawerContent = forwardRef<
 
     createContact(contactData)
 
+    reloadPhonebook()
+
     //// TODO: show toast notification success or show contact in drawer
 
     store.dispatch.sideDrawer.setShown(false)
@@ -169,6 +171,8 @@ export const CreateOrEditContactDrawerContent = forwardRef<
     }
 
     editContact(contactData)
+
+    reloadPhonebook()
 
     //// TODO: show toast notification success or show contact in drawer
 

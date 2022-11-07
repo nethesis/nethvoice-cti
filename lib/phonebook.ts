@@ -93,6 +93,25 @@ export async function editContact(contactData: any) {
   }
 }
 
+export async function deleteContact(contactId: string) {
+  if (window == undefined) {
+    return
+  }
+  let apiUrl = getPhonebookUrl() + 'delete_cticontact'
+
+  try {
+    const { data, status } = await axios.post(apiUrl, { id: contactId })
+    return data
+  } catch (error) {
+    handleNetworkError(error)
+    throw error
+  }
+}
+
+export function reloadPhonebook() {
+  store.dispatch.phonebook.reload()
+}
+
 export function mapContact(contact: any) {
   // kind & display name
   if (contact.name) {

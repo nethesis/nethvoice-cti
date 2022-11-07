@@ -21,6 +21,8 @@ import {
   openCreateContactDrawer,
 } from '../lib/phonebook'
 import Skeleton from 'react-loading-skeleton'
+import { RootState } from '../store'
+import { useSelector } from 'react-redux'
 
 const Phonebook: NextPage = () => {
   const [isPhonebookLoaded, setPhonebookLoaded] = useState(false)
@@ -61,6 +63,13 @@ const Phonebook: NextPage = () => {
     }
     fetchPhonebook()
   }, [isPhonebookLoaded, phonebook, pageNum, filterText, contactType, sortBy])
+
+  const phonebookStore = useSelector((state: RootState) => state.phonebook)
+
+  useEffect(() => {
+    // reload phonebook
+    setPhonebookLoaded(false)
+  }, [phonebookStore])
 
   function mapPhonebook(phonebookResponse: any) {
     if (!phonebookResponse) {
@@ -116,9 +125,7 @@ const Phonebook: NextPage = () => {
           <ul role='list' className='divide-y divide-gray-200'>
             {/* phonebook error */}
             {phonebookError && (
-              <InlineNotification type='error'>
-                <div>{phonebookError}</div>
-              </InlineNotification>
+              <InlineNotification type='error' title={phonebookError}></InlineNotification>
             )}
             {/* phonebook skeleton */}
             {!isPhonebookLoaded &&
