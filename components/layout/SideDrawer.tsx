@@ -22,7 +22,7 @@ export const SideDrawer: FC<SideDrawerProps> = ({ isShown, contentType, config, 
   return (
     <>
       <Transition.Root show={isShown} as={Fragment}>
-        <Dialog as='div' className='relative z-20' onClose={drawerClosed}>
+        <Dialog as='div' className='relative z-10' onClose={drawerClosed}>
           <div className='fixed top-16 right-0 bottom-0 z-40 flex'>
             <Transition.Child
               as={Fragment}
