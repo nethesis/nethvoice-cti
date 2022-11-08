@@ -3,7 +3,7 @@
 
 import { ComponentPropsWithRef, forwardRef } from 'react'
 import classNames from 'classnames'
-import { TextInput, Button } from '../common'
+import { TextInput, Button, InlineNotification } from '../common'
 import { useState, useRef, useEffect } from 'react'
 import { MdAdd, MdEdit } from 'react-icons/md'
 import { createContact, editContact, reloadPhonebook } from '../../lib/phonebook'
@@ -62,13 +62,13 @@ export const CreateOrEditContactDrawerContent = forwardRef<
       // editing contact
       setContactType(config.contact.kind)
       setContactVisibility(config.contact.type)
-      nameRef.current.value = config.contact.name
-      companyRef.current.value = config.contact.company
-      extensionRef.current.value = config.contact.extension
-      workPhoneRef.current.value = config.contact.workphone
-      mobilePhoneRef.current.value = config.contact.cellphone
-      emailRef.current.value = config.contact.workemail
-      notesRef.current.value = config.contact.notes
+      nameRef.current.value = config.contact.name || ''
+      companyRef.current.value = config.contact.company || ''
+      extensionRef.current.value = config.contact.extension || ''
+      workPhoneRef.current.value = config.contact.workphone || ''
+      mobilePhoneRef.current.value = config.contact.cellphone || ''
+      emailRef.current.value = config.contact.workemail || ''
+      notesRef.current.value = config.contact.notes || ''
     } else {
       // creating contact
       setContactType('person')
@@ -83,7 +83,47 @@ export const CreateOrEditContactDrawerContent = forwardRef<
     }
   }, [config])
 
-  const prepareCreateContact = () => {
+  const [nameError, setNameError] = useState('')
+  const [companyError, setCompanyError] = useState('')
+  const [createContactError, setCreateContactError] = useState('')
+  const [editContactError, setEditContactError] = useState('')
+
+  const validateCreateOrEditContact = () => {
+    // clear errors
+    setNameError('')
+    setCompanyError('')
+    setCreateContactError('')
+    setEditContactError('')
+
+    let isValidationOk = true
+
+    // name
+    if (contactType === 'person' && !nameRef.current.value) {
+      setNameError('Required')
+
+      if (isValidationOk) {
+        nameRef.current.focus()
+        isValidationOk = false
+      }
+    }
+
+    // company
+    if (contactType === 'company' && !companyRef.current.value) {
+      setCompanyError('Required')
+
+      if (isValidationOk) {
+        companyRef.current.focus()
+        isValidationOk = false
+      }
+    }
+    return isValidationOk
+  }
+
+  const prepareCreateContact = async () => {
+    if (!validateCreateOrEditContact()) {
+      return
+    }
+
     let contactData: any = {
       name: '',
       workphone: '',
@@ -121,16 +161,24 @@ export const CreateOrEditContactDrawerContent = forwardRef<
       contactData.notes = notesRef.current.value
     }
 
-    createContact(contactData)
-
-    reloadPhonebook()
+    try {
+      await createContact(contactData)
+    } catch (error) {
+      setCreateContactError('Cannot create contact')
+      return
+    }
 
     //// TODO: show toast notification success or show contact in drawer
 
+    reloadPhonebook()
     store.dispatch.sideDrawer.setShown(false)
   }
 
-  const prepareEditContact = () => {
+  const prepareEditContact = async () => {
+    if (!validateCreateOrEditContact()) {
+      return
+    }
+
     let contactData: any = {
       id: config.contact.id.toString(),
       owner_id: config.contact.owner_id,
@@ -170,12 +218,16 @@ export const CreateOrEditContactDrawerContent = forwardRef<
       contactData.name = nameRef.current.value
     }
 
-    editContact(contactData)
-
-    reloadPhonebook()
+    try {
+      await editContact(contactData)
+    } catch (error) {
+      setEditContactError('Cannot edit contact')
+      return
+    }
 
     //// TODO: show toast notification success or show contact in drawer
 
+    reloadPhonebook()
     store.dispatch.sideDrawer.setShown(false)
   }
 
@@ -231,14 +283,38 @@ export const CreateOrEditContactDrawerContent = forwardRef<
       </div>
       {/* contact fields */}
       {contactType !== 'company' && (
-        <TextInput label='Name' name='name' ref={nameRef} className='mb-4' />
+        <TextInput
+          label='Name'
+          name='name'
+          ref={nameRef}
+          className='mb-4'
+          error={!!nameError}
+          helper={nameError}
+        />
       )}
-      <TextInput label='Company' name='company' ref={companyRef} className='mb-4' />
+      <TextInput
+        label='Company'
+        name='company'
+        ref={companyRef}
+        className='mb-4'
+        error={!!companyError}
+        helper={companyError}
+      />
       <TextInput label='Extension' name='extension' ref={extensionRef} className='mb-4' />
       <TextInput label='Work phone' name='workPhone' ref={workPhoneRef} className='mb-4' />
       <TextInput label='Mobile phone' name='mobilePhone' ref={mobilePhoneRef} className='mb-4' />
       <TextInput label='Email' name='email' ref={emailRef} className='mb-4' />
       <TextInput label='Notes' name='notes' ref={notesRef} className='mb-6' />
+
+      {/* create contact error */}
+      {createContactError && (
+        <InlineNotification type='error' title={createContactError} className='mb-4' />
+      )}
+      {/* edit contact error */}
+      {editContactError && (
+        <InlineNotification type='error' title={editContactError} className='mb-4' />
+      )}
+
       {config.isEdit ? (
         <Button variant='primary' type='submit' onClick={prepareEditContact}>
           <MdEdit className='-ml-1 mr-2 h-5 w-5' />
