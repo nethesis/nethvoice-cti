@@ -9,9 +9,10 @@ import {
   MdPeople,
   MdChevronRight,
   MdAdd,
+  MdMenuBook,
 } from 'react-icons/md'
 import { Filter } from '../components/phonebook/Filter'
-import { Avatar, Button, InlineNotification } from '../components/common'
+import { Avatar, Button, InlineNotification, EmptyState } from '../components/common'
 import { useState, useEffect } from 'react'
 import {
   getPhonebook,
@@ -150,6 +151,19 @@ const Phonebook: NextPage = () => {
                   </div>
                 </li>
               ))}
+            {/* empty state */}
+            {isPhonebookLoaded && phonebook?.rows && !phonebook.rows.length && (
+              <EmptyState
+                title='No contact'
+                description='There is no contact in your phonebook'
+                icon={<MdMenuBook className='mx-auto h-12 w-12' aria-hidden='true' />}
+              >
+                <Button variant='primary' onClick={() => openCreateContactDrawer()}>
+                  <MdAdd className='-ml-1 mr-2 h-5 w-5' />
+                  <span>Create contact</span>
+                </Button>
+              </EmptyState>
+            )}
             {isPhonebookLoaded &&
               phonebook?.rows &&
               phonebook.rows.map((contact: any, index: number) => (
@@ -254,7 +268,7 @@ const Phonebook: NextPage = () => {
           </ul>
         </div>
         {/* pagination */}
-        {!phonebookError && (
+        {!phonebookError && !!phonebook?.rows?.length && (
           <nav
             className='flex items-center justify-between border-t border-gray-100 bg-gray-100 px-0 py-4'
             aria-label='Pagination'
