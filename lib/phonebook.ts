@@ -37,7 +37,6 @@ export async function getPhonebook(
 
   try {
     const { data, status } = await axios.get(apiUrl)
-    // console.log(JSON.stringify(data, null, 4)) ////
     return data
   } catch (error) {
     handleNetworkError(error)
@@ -45,17 +44,16 @@ export async function getPhonebook(
   }
 }
 
-export async function getContact(contactId: number) {
+export async function getContact(contactId: number, source: string) {
   if (window == undefined) {
     return
   }
-  let apiUrl = getPhonebookUrl() + `contact/${contactId}`
+
+  const contactPath = source === 'cti' ? 'cticontact' : 'contact'
+  let apiUrl = getPhonebookUrl() + `${contactPath}/${contactId}`
 
   try {
     const { data, status } = await axios.get(apiUrl)
-
-    // console.log(JSON.stringify(data, null, 4)) ////
-
     return data
   } catch (error) {
     handleNetworkError(error)
@@ -110,6 +108,12 @@ export async function deleteContact(contactId: string) {
 
 export function reloadPhonebook() {
   store.dispatch.phonebook.reload()
+}
+
+export async function fetchContact(contactId: number, source: string) {
+  const res = await getContact(contactId, source)
+  const contact = mapContact(res)
+  openShowContactDrawer(contact)
 }
 
 export function mapContact(contact: any) {

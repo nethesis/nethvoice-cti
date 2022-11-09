@@ -6,7 +6,7 @@ import classNames from 'classnames'
 import { TextInput, Button, InlineNotification } from '../common'
 import { useState, useRef, useEffect } from 'react'
 import { MdAdd, MdEdit } from 'react-icons/md'
-import { createContact, editContact, reloadPhonebook } from '../../lib/phonebook'
+import { createContact, editContact, reloadPhonebook, fetchContact } from '../../lib/phonebook'
 import { store } from '../../store'
 
 export interface CreateOrEditContactDrawerContentProps extends ComponentPropsWithRef<'div'> {
@@ -182,12 +182,12 @@ export const CreateOrEditContactDrawerContent = forwardRef<
     let contactData: any = {
       id: config.contact.id.toString(),
       owner_id: config.contact.owner_id,
-      source: 'cti',
-      speeddial_num: null,
+      source: config.contact.source,
+      speeddial_num: config.contact.speeddial_num,
       name: null,
       privacy: contactVisibility,
       favorite: false,
-      selectedPrefNum: 'extension',
+      selectedPrefNum: config.contact.selectedPrefNum,
       type: contactVisibility,
       company: companyRef.current.value || null,
       extension: extensionRef.current.value || null,
@@ -195,23 +195,23 @@ export const CreateOrEditContactDrawerContent = forwardRef<
       cellphone: mobilePhoneRef.current.value || null,
       workemail: emailRef.current.value || null,
       notes: notesRef.current.value || null,
-      homeemail: null,
-      homephone: null,
-      fax: null,
-      title: null,
-      homestreet: null,
-      homepob: null,
-      homecity: null,
-      homeprovince: null,
-      homepostalcode: null,
-      homecountry: null,
-      workstreet: null,
-      workpob: null,
-      workcity: null,
-      workprovince: null,
-      workpostalcode: null,
-      workcountry: null,
-      url: null,
+      homeemail: config.contact.homeemail,
+      homephone: config.contact.homephone,
+      fax: config.contact.fax,
+      title: config.contact.title,
+      homestreet: config.contact.homestreet,
+      homepob: config.contact.homepob,
+      homecity: config.contact.homecity,
+      homeprovince: config.contact.homeprovince,
+      homepostalcode: config.contact.homepostalcode,
+      homecountry: config.contact.homecountry,
+      workstreet: config.contact.workstreet,
+      workpob: config.contact.workpob,
+      workcity: config.contact.workcity,
+      workprovince: config.contact.workprovince,
+      workpostalcode: config.contact.workpostalcode,
+      workcountry: config.contact.workcountry,
+      url: config.contact.url,
     }
 
     if (contactType === 'person' && nameRef.current.value) {
@@ -225,19 +225,23 @@ export const CreateOrEditContactDrawerContent = forwardRef<
       return
     }
 
-    //// TODO: show toast notification success or show contact in drawer
+    //// TODO: show toast notification success
 
     reloadPhonebook()
-    store.dispatch.sideDrawer.setShown(false)
+    fetchContact(config.contact.id, config.contact.source)
   }
 
   return (
     <div className={classNames(className, 'm-1')} {...props}>
+      {/* title */}
+      <h2 className='text-lg font-medium text-gray-700 mb-4'>
+        {config.isEdit ? 'Edit contact' : 'Create contact'}
+      </h2>
       {/* contact visibility */}
       <div className='mb-6'>
-        <label className='text-sm font-medium text-gray-700'>Contact visibility</label>
+        <label className='text-sm font-medium text-gray-700'>Visibility</label>
         <fieldset className='mt-2'>
-          <legend className='sr-only'>Contact visibility</legend>
+          <legend className='sr-only'>Visibility</legend>
           <div className='space-y-4 sm:flex sm:items-center sm:space-y-0 sm:space-x-10'>
             {contactVisibilityOptions.map((option) => (
               <div key={option.id} className='flex items-center'>
@@ -259,9 +263,9 @@ export const CreateOrEditContactDrawerContent = forwardRef<
       </div>
       {/* contact type */}
       <div className='mb-6'>
-        <label className='text-sm font-medium text-gray-700'>Contact type</label>
+        <label className='text-sm font-medium text-gray-700'>Type</label>
         <fieldset className='mt-2'>
-          <legend className='sr-only'>Contact type</legend>
+          <legend className='sr-only'>Type</legend>
           <div className='space-y-4 sm:flex sm:items-center sm:space-y-0 sm:space-x-10'>
             {contactTypeOptions.map((option) => (
               <div key={option.id} className='flex items-center'>
@@ -305,7 +309,6 @@ export const CreateOrEditContactDrawerContent = forwardRef<
       <TextInput label='Mobile phone' name='mobilePhone' ref={mobilePhoneRef} className='mb-4' />
       <TextInput label='Email' name='email' ref={emailRef} className='mb-4' />
       <TextInput label='Notes' name='notes' ref={notesRef} className='mb-6' />
-
       {/* create contact error */}
       {createContactError && (
         <InlineNotification type='error' title={createContactError} className='mb-4' />
@@ -314,14 +317,13 @@ export const CreateOrEditContactDrawerContent = forwardRef<
       {editContactError && (
         <InlineNotification type='error' title={editContactError} className='mb-4' />
       )}
-
       {config.isEdit ? (
-        <Button variant='primary' type='submit' onClick={prepareEditContact}>
+        <Button variant='primary' type='submit' onClick={prepareEditContact} className='mb-4'>
           <MdEdit className='-ml-1 mr-2 h-5 w-5' />
           Edit contact
         </Button>
       ) : (
-        <Button variant='primary' type='submit' onClick={prepareCreateContact}>
+        <Button variant='primary' type='submit' onClick={prepareCreateContact} className='mb-4'>
           <MdAdd className='-ml-1 mr-2 h-5 w-5' />
           Create contact
         </Button>

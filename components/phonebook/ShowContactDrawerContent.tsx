@@ -18,12 +18,10 @@ import {
   MdWarningAmber,
 } from 'react-icons/md'
 import {
-  getContact,
-  mapContact,
-  openShowContactDrawer,
   openEditContactDrawer,
   deleteContact,
   reloadPhonebook,
+  fetchContact,
 } from '../../lib/phonebook'
 import { useSelector } from 'react-redux'
 import { RootState } from '../../store'
@@ -38,13 +36,6 @@ export const ShowContactDrawerContent = forwardRef<
   ShowContactDrawerContentProps
 >(({ config, className, ...props }, ref) => {
   const auth = useSelector((state: RootState) => state.authentication)
-
-  async function fetchContact(contactId: number) {
-    const res = await getContact(contactId)
-    const contact = mapContact(res)
-    openShowContactDrawer(contact)
-  }
-
   const [showDeleteModal, setShowDeleteModal] = useState<boolean>(false)
   const [contactToDelete, setContactToDelete] = useState<any>(null)
   const cancelDeleteButtonRef = useRef() as MutableRefObject<HTMLButtonElement>
@@ -58,7 +49,7 @@ export const ShowContactDrawerContent = forwardRef<
     if (contactToDelete.id) {
       deleteContact(contactToDelete.id.toString())
 
-      //// show toast notification
+      //// TODO show toast notification
 
       reloadPhonebook()
       setShowDeleteModal(false)
@@ -247,7 +238,7 @@ export const ShowContactDrawerContent = forwardRef<
                 <dt className='text-sm font-medium text-gray-500'>Company contacts</dt>
                 <dd className='mt-1 text-sm text-gray-900 sm:col-span-2 sm:mt-0'>
                   <ul role='list'>
-                    {config.contacts.map((config: any, index: number) => (
+                    {config.contacts.map((contact: any, index: number) => (
                       <li
                         key={index}
                         className='flex items-center justify-between pb-3 pr-4 text-sm'
@@ -259,9 +250,9 @@ export const ShowContactDrawerContent = forwardRef<
                           />
                           <span
                             className='ml-2 w-0 flex-1 truncate text-sky-600 cursor-pointer'
-                            onClick={() => fetchContact(config.id)}
+                            onClick={() => fetchContact(contact.id, contact.source)}
                           >
-                            {config.name}
+                            {contact.name}
                           </span>
                         </div>
                       </li>
