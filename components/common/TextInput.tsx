@@ -25,7 +25,7 @@ import classNames from 'classnames'
 export interface TextInputProps
   extends Omit<ComponentProps<'input'>, 'ref' | 'color' | 'size'> {
   label?: string
-  placeholder: string
+  placeholder?: string
   icon?: FC<ComponentProps<'svg'>>
   trailingIcon?: boolean
   error?: boolean

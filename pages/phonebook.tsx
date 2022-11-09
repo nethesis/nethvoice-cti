@@ -3,18 +3,27 @@
 
 import type { NextPage } from 'next'
 import {
-  MdEmail,
   MdPhone,
   MdPhoneAndroid,
   MdOutlineWork,
   MdPeople,
   MdChevronRight,
+  MdAdd,
+  MdMenuBook,
 } from 'react-icons/md'
 import { Filter } from '../components/phonebook/Filter'
-import { Avatar, Button } from '../components/common'
+import { Avatar, Button, InlineNotification, EmptyState } from '../components/common'
 import { useState, useEffect } from 'react'
-import { getPhonebook, PAGE_SIZE } from '../lib/phonebook'
+import {
+  getPhonebook,
+  mapContact,
+  openShowContactDrawer,
+  PAGE_SIZE,
+  openCreateContactDrawer,
+} from '../lib/phonebook'
 import Skeleton from 'react-loading-skeleton'
+import { RootState } from '../store'
+import { useSelector } from 'react-redux'
 
 const Phonebook: NextPage = () => {
   const [isPhonebookLoaded, setPhonebookLoaded] = useState(false)
@@ -42,17 +51,26 @@ const Phonebook: NextPage = () => {
   }
 
   useEffect(() => {
-    // console.log('useEffect called') ////
-
     async function fetchPhonebook() {
       if (!isPhonebookLoaded) {
-        const res = await getPhonebook(pageNum, filterText, contactType, sortBy)
-        setPhonebook(mapPhonebook(res))
+        try {
+          const res = await getPhonebook(pageNum, filterText, contactType, sortBy)
+          setPhonebook(mapPhonebook(res))
+        } catch (e) {
+          setPhonebookError('Cannot retrieve phonebook')
+        }
         setPhonebookLoaded(true)
       }
     }
     fetchPhonebook()
   }, [isPhonebookLoaded, phonebook, pageNum, filterText, contactType, sortBy])
+
+  const phonebookStore = useSelector((state: RootState) => state.phonebook)
+
+  useEffect(() => {
+    // reload phonebook
+    setPhonebookLoaded(false)
+  }, [phonebookStore])
 
   function mapPhonebook(phonebookResponse: any) {
     if (!phonebookResponse) {
@@ -60,20 +78,7 @@ const Phonebook: NextPage = () => {
     }
 
     phonebookResponse.rows.map((contact: any) => {
-      // kind & display name
-      if (contact.name) {
-        contact.kind = 'person'
-        contact.displayName = contact.name
-      } else {
-        contact.kind = 'company'
-        contact.displayName = contact.company
-      }
-
-      // company contacts
-      if (contact.contacts) {
-        contact.contacts = JSON.parse(contact.contacts)
-      }
-      return contact
+      return mapContact(contact)
     })
 
     // total pages
@@ -103,9 +108,15 @@ const Phonebook: NextPage = () => {
     return !isPhonebookLoaded || pageNum >= phonebook?.totalPages
   }
 
+  const [phonebookError, setPhonebookError] = useState('')
+
   return (
     <>
       <div className='p-8 bg-gray-100'>
+        <Button variant='primary' onClick={() => openCreateContactDrawer()} className='mb-6'>
+          <MdAdd className='-ml-1 mr-2 h-5 w-5' />
+          <span>Create contact</span>
+        </Button>
         <Filter
           updateFilterText={updateFilterText}
           updateContactTypeFilter={updateContactTypeFilter}
@@ -113,6 +124,10 @@ const Phonebook: NextPage = () => {
         />
         <div className='overflow-hidden bg-white shadow sm:rounded-md'>
           <ul role='list' className='divide-y divide-gray-200'>
+            {/* phonebook error */}
+            {phonebookError && (
+              <InlineNotification type='error' title={phonebookError}></InlineNotification>
+            )}
             {/* phonebook skeleton */}
             {!isPhonebookLoaded &&
               Array.from(Array(10)).map((e, index) => (
@@ -136,35 +151,63 @@ const Phonebook: NextPage = () => {
                   </div>
                 </li>
               ))}
+            {/* empty state */}
+            {isPhonebookLoaded && phonebook?.rows && !phonebook.rows.length && (
+              <EmptyState
+                title='No contact'
+                description='There is no contact in your phonebook'
+                icon={<MdMenuBook className='mx-auto h-12 w-12' aria-hidden='true' />}
+              >
+                <Button variant='primary' onClick={() => openCreateContactDrawer()}>
+                  <MdAdd className='-ml-1 mr-2 h-5 w-5' />
+                  <span>Create contact</span>
+                </Button>
+              </EmptyState>
+            )}
             {isPhonebookLoaded &&
               phonebook?.rows &&
               phonebook.rows.map((contact: any, index: number) => (
                 <li key={index}>
                   <div className='flex items-center px-4 py-4 sm:px-6'>
                     <div className='flex min-w-0 flex-1 items-center'>
-                      <div className='flex-shrink-0'>
+                      <div className='flex-shrink-0' onClick={() => openShowContactDrawer(contact)}>
                         {contact.kind == 'person' ? (
                           <Avatar className='cursor-pointer' placeholderType='person' />
                         ) : (
                           <Avatar className='cursor-pointer' placeholderType='company' />
                         )}
                       </div>
-                      <div className='min-w-0 flex-1 px-4 md:grid md:grid-cols-2 gap-4 lg:grid-cols-3 xl:grid-cols-4'>
+                      <div className='min-w-0 flex-1 px-4 md:grid md:grid-cols-2 gap-4 lg:grid-cols-2 xl:grid-cols-3'>
                         {/* display name and company/contacts */}
                         <div className='flex flex-col justify-center'>
                           <div className='truncate text-sm font-medium text-sky-600'>
-                            <span className='cursor-pointer'>{contact.displayName}</span>
+                            <span
+                              className='cursor-pointer'
+                              onClick={() => openShowContactDrawer(contact)}
+                            >
+                              {contact.displayName}
+                            </span>
                           </div>
+                          {/* extension */}
+                          {contact.extension && (
+                            <div className='mt-1 flex items-center text-sm text-gray-500'>
+                              <MdPhone
+                                className='mr-1.5 h-5 w-5 flex-shrink-0 text-gray-400'
+                                aria-hidden='true'
+                              />
+                              <span className='truncate text-sky-600 cursor-pointer'>
+                                {contact.extension}
+                              </span>
+                            </div>
+                          )}
                           {/* company name */}
-                          {contact.kind == 'person' && contact.company && (
+                          {contact.kind == 'person' && contact.company && !contact.extension && (
                             <div className='mt-1 flex items-center text-sm text-gray-500'>
                               <MdOutlineWork
                                 className='mr-1.5 h-5 w-5 flex-shrink-0 text-gray-400'
                                 aria-hidden='true'
                               />
-                              <span className='truncate text-sky-600 cursor-pointer'>
-                                {contact.company}
-                              </span>
+                              <span className='truncate'>{contact.company}</span>
                             </div>
                           )}
                           {/* company contacts */}
@@ -174,9 +217,7 @@ const Phonebook: NextPage = () => {
                                 className='mr-1.5 h-5 w-5 flex-shrink-0 text-gray-400'
                                 aria-hidden='true'
                               />
-                              <span className='text-sky-600 cursor-pointer'>
-                                {contact.contacts.length} contacts
-                              </span>
+                              <span>{contact.contacts.length} contacts</span>
                             </div>
                           ) : null}
                         </div>
@@ -210,34 +251,13 @@ const Phonebook: NextPage = () => {
                             </div>
                           </div>
                         )}
-                        {/* work email */}
-                        {contact.workemail && (
-                          <div className='mt-4 md:mt-0'>
-                            <div>
-                              <div className='text-sm text-gray-900'>Work email</div>
-                              <div className='mt-1 flex items-center text-sm text-sky-600'>
-                                <MdEmail
-                                  className='mr-1.5 h-5 w-5 flex-shrink-0 text-gray-400'
-                                  aria-hidden='true'
-                                />
-                                <a
-                                  target='_blank'
-                                  rel='noreferrer'
-                                  href={`mailto: ${contact.workemail}`}
-                                  className='truncate'
-                                >
-                                  {contact.workemail}
-                                </a>
-                              </div>
-                            </div>
-                          </div>
-                        )}
                       </div>
                     </div>
                     <div>
                       <MdChevronRight
                         className='h-5 w-5 text-gray-400 cursor-pointer'
                         aria-hidden='true'
+                        onClick={() => openShowContactDrawer(contact)}
                       />
                     </div>
                   </div>
@@ -246,41 +266,43 @@ const Phonebook: NextPage = () => {
           </ul>
         </div>
         {/* pagination */}
-        <nav
-          className='flex items-center justify-between border-t border-gray-100 bg-gray-100 px-0 py-4'
-          aria-label='Pagination'
-        >
-          <div className='hidden sm:block'>
-            <p className='text-sm text-gray-700'>
-              Showing <span className='font-medium'>{PAGE_SIZE * (pageNum - 1) + 1}</span> to{' '}
-              <span className='font-medium'>
-                {PAGE_SIZE * (pageNum - 1) + PAGE_SIZE < phonebook?.count
-                  ? PAGE_SIZE * (pageNum - 1) + PAGE_SIZE
-                  : phonebook?.count}
-              </span>{' '}
-              of <span className='font-medium'>{phonebook?.count}</span> contacts
-            </p>
-          </div>
-          <div className='flex flex-1 justify-between sm:justify-end'>
-            <Button
-              type='button'
-              variant='white'
-              disabled={isPreviousPageButtonDisabled()}
-              onClick={() => goToPreviousPage()}
-            >
-              Previous page
-            </Button>
-            <Button
-              type='button'
-              variant='white'
-              className='ml-3'
-              disabled={isNextPageButtonDisabled()}
-              onClick={() => goToNextPage()}
-            >
-              Next page
-            </Button>
-          </div>
-        </nav>
+        {!phonebookError && !!phonebook?.rows?.length && (
+          <nav
+            className='flex items-center justify-between border-t border-gray-100 bg-gray-100 px-0 py-4'
+            aria-label='Pagination'
+          >
+            <div className='hidden sm:block'>
+              <p className='text-sm text-gray-700'>
+                Showing <span className='font-medium'>{PAGE_SIZE * (pageNum - 1) + 1}</span> to{' '}
+                <span className='font-medium'>
+                  {PAGE_SIZE * (pageNum - 1) + PAGE_SIZE < phonebook?.count
+                    ? PAGE_SIZE * (pageNum - 1) + PAGE_SIZE
+                    : phonebook?.count}
+                </span>{' '}
+                of <span className='font-medium'>{phonebook?.count}</span> contacts
+              </p>
+            </div>
+            <div className='flex flex-1 justify-between sm:justify-end'>
+              <Button
+                type='button'
+                variant='white'
+                disabled={isPreviousPageButtonDisabled()}
+                onClick={() => goToPreviousPage()}
+              >
+                Previous page
+              </Button>
+              <Button
+                type='button'
+                variant='white'
+                className='ml-3'
+                disabled={isNextPageButtonDisabled()}
+                onClick={() => goToNextPage()}
+              >
+                Next page
+              </Button>
+            </div>
+          </nav>
+        )}
       </div>
     </>
   )

@@ -20,11 +20,16 @@ import {
   MdCheckCircleOutline,
 } from 'react-icons/md'
 
-export interface InlineNotifcationProps extends ComponentProps<'div'> {
+export interface InlineNotificationProps extends ComponentProps<'div'> {
   type: 'info' | 'warning' | 'success' | 'error'
   title: string
 }
-export const InlineNotification: FC<InlineNotifcationProps> = ({ type, title, children }): JSX.Element => {
+export const InlineNotification: FC<InlineNotificationProps> = ({
+  type,
+  title,
+  children,
+  className,
+}): JSX.Element => {
   const { inlineNotification: theme } = useTheme().theme
   let checkIcon =
     type === 'info' ? (
@@ -36,10 +41,12 @@ export const InlineNotification: FC<InlineNotifcationProps> = ({ type, title, ch
     ) : (
       <MdOutlineCancel className={theme.iconStyle[type]} aria-hidden='true' />
     )
-  
+
   return (
     <>
-      <div className={classNames(theme.base, type ? theme.type[type] : theme.type.success)}>
+      <div
+        className={classNames(theme.base, type ? theme.type[type] : theme.type.success, className)}
+      >
         <div className='flex-shrink-0'>{checkIcon}</div>
         <div className='ml-3'>
           <h3 className={theme.titleStyle[type]}>{title}</h3>

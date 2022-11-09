@@ -2,6 +2,7 @@
 // SPDX-License-Identifier: AGPL-3.0-or-later
 
 import type { PropsWithChildren } from 'react'
+import axios from 'axios'
 
 export interface ClearProps {
   key: string
@@ -20,3 +21,12 @@ export const cleanClassName = (props: PropsWithChildren<object>): object => {
   })
 }
 
+export function handleNetworkError(error: any) {
+  if (axios.isAxiosError(error)) {
+    console.error('error: ', error.message)
+    return null
+  } else {
+    console.error('unexpected error: ', error)
+    return null
+  }
+}
