@@ -10,6 +10,7 @@ import {
   MdChevronRight,
   MdAdd,
   MdMenuBook,
+  MdSearch,
 } from 'react-icons/md'
 import { Filter } from '../components/phonebook/Filter'
 import { Avatar, Button, InlineNotification, EmptyState } from '../components/common'
@@ -152,7 +153,7 @@ const Phonebook: NextPage = () => {
                 </li>
               ))}
             {/* empty state */}
-            {isPhonebookLoaded && phonebook?.rows && !phonebook.rows.length && (
+            {isPhonebookLoaded && phonebook?.rows && !phonebook.rows.length && !filterText.length && (
               <EmptyState
                 title='No contact'
                 description='There is no contact in your phonebook'
@@ -164,6 +165,17 @@ const Phonebook: NextPage = () => {
                 </Button>
               </EmptyState>
             )}
+            {/* no search results */}
+            {isPhonebookLoaded &&
+              phonebook?.rows &&
+              !phonebook.rows.length &&
+              !!filterText.length && (
+                <EmptyState
+                  title='No search results'
+                  description='Try changing your search filters'
+                  icon={<MdSearch className='mx-auto h-12 w-12' aria-hidden='true' />}
+                />
+              )}
             {isPhonebookLoaded &&
               phonebook?.rows &&
               phonebook.rows.map((contact: any, index: number) => (
