@@ -20,11 +20,11 @@ import {
   MdCheckCircleOutline,
 } from 'react-icons/md'
 
-export interface InlineNotifcationProps extends ComponentProps<'div'> {
+export interface InlineNotificationProps extends ComponentProps<'div'> {
   type: 'info' | 'warning' | 'success' | 'error'
   title: string
 }
-export const InlineNotification: FC<InlineNotifcationProps> = ({
+export const InlineNotification: FC<InlineNotificationProps> = ({
   type,
   title,
   children,

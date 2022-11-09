@@ -1,11 +1,10 @@
-import { InlineNotification, InlineNotifcationProps } from '../components/common'
+import { InlineNotification, InlineNotificationProps } from '../components/common'
 import { Meta, Story } from '@storybook/react'
 
 const meta = {
   title: 'Components/InlineNotification',
   component: InlineNotification,
-  argTypes: {
-  },
+  argTypes: {},
   parameters: {
     controls: { expanded: true },
   },
@@ -13,7 +12,7 @@ const meta = {
 
 export default meta as Meta
 
-const Template: Story<InlineNotifcationProps> = (args) => (
+const Template: Story<InlineNotificationProps> = (args) => (
   <InlineNotification {...args}>{args.children}</InlineNotification>
 )
 
