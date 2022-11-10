@@ -114,7 +114,7 @@ const Phonebook: NextPage = () => {
   return (
     <>
       <div className='p-8 bg-gray-100'>
-        <Button variant='primary' onClick={() => openCreateContactDrawer()} className='mb-6'>
+        <Button variant='white' onClick={() => openCreateContactDrawer()} className='mb-6'>
           <MdAdd className='-ml-1 mr-2 h-5 w-5' />
           <span>Create contact</span>
         </Button>
@@ -171,7 +171,7 @@ const Phonebook: NextPage = () => {
               !phonebook.rows.length &&
               !!filterText.length && (
                 <EmptyState
-                  title='No search results'
+                  title='No contact found'
                   description='Try changing your search filters'
                   icon={<MdSearch className='mx-auto h-12 w-12' aria-hidden='true' />}
                 />
