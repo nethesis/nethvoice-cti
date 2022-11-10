@@ -7,7 +7,7 @@ import { TextInput, Button, InlineNotification } from '../common'
 import { useState, useRef, useEffect } from 'react'
 import { MdAdd, MdEdit } from 'react-icons/md'
 import { createContact, editContact, reloadPhonebook, fetchContact } from '../../lib/phonebook'
-import { store } from '../../store'
+import { closeSideDrawer } from '../../lib/utils'
 
 export interface CreateOrEditContactDrawerContentProps extends ComponentPropsWithRef<'div'> {
   config: any
@@ -171,7 +171,7 @@ export const CreateOrEditContactDrawerContent = forwardRef<
     //// TODO: show toast notification success or show contact in drawer
 
     reloadPhonebook()
-    store.dispatch.sideDrawer.setShown(false)
+    closeSideDrawer()
   }
 
   const prepareEditContact = async () => {

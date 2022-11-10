@@ -25,7 +25,7 @@ import {
 } from '../../lib/phonebook'
 import { useSelector } from 'react-redux'
 import { RootState } from '../../store'
-import { store } from '../../store'
+import { closeSideDrawer } from '../../lib/utils'
 
 export interface ShowContactDrawerContentProps extends ComponentPropsWithRef<'div'> {
   config: any
@@ -54,7 +54,7 @@ export const ShowContactDrawerContent = forwardRef<
       reloadPhonebook()
       setShowDeleteModal(false)
       setContactToDelete(null)
-      store.dispatch.sideDrawer.setShown(false)
+      closeSideDrawer()
     }
   }
 

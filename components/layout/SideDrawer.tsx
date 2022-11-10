@@ -10,6 +10,7 @@ import { Transition, Dialog } from '@headlessui/react'
 import { FC, Fragment } from 'react'
 import { CreateOrEditContactDrawerContent } from '../phonebook/CreateOrEditContactDrawerContent'
 import { ShowContactDrawerContent } from '../phonebook/ShowContactDrawerContent'
+import { CreateOrEditSpeedDialDrawerContent } from './speed_dial/CreateOrEditSpeedDialDrawerContent'
 
 interface SideDrawerProps {
   isShown: boolean
@@ -41,6 +42,8 @@ export const SideDrawer: FC<SideDrawerProps> = ({ isShown, contentType, config, 
                         <CreateOrEditContactDrawerContent config={config} />
                       ) : contentType === 'showContact' ? (
                         <ShowContactDrawerContent config={config} />
+                      ) : contentType === 'createOrEditSpeedDial' ? (
+                        <CreateOrEditSpeedDialDrawerContent config={config} />
                       ) : null}
                     </div>
                   </nav>

@@ -7,6 +7,7 @@
 
 import axios, { AxiosResponse } from 'axios'
 import { NewSpeedDialType, SpeedDialType } from './types'
+import { handleNetworkError } from '../lib/utils'
 
 /**
  * The path to the user endpoints
@@ -26,7 +27,8 @@ export const getSpeedDials = async () => {
     const data: NewSpeedDialType[] = res.data
     return data || []
   } catch (error) {
-    console.error(error)
+    handleNetworkError(error)
+    throw error
   }
 }
 
@@ -51,7 +53,8 @@ export const createSpeedDial = async (create: NewSpeedDialType) => {
     await axios.post(`${PATH}/create`, newSpeedDial)
     return newSpeedDial
   } catch (error) {
-    console.error(error)
+    handleNetworkError(error)
+    throw error
   }
 }
 
@@ -59,7 +62,7 @@ export const createSpeedDial = async (create: NewSpeedDialType) => {
  *
  * Edit a speed dial
  *
- * @returns The speed dials
+ * @returns The speed dial
  */
 
 export const editSpeedDial = async (edit: NewSpeedDialType, current: SpeedDialType) => {
@@ -73,7 +76,8 @@ export const editSpeedDial = async (edit: NewSpeedDialType, current: SpeedDialTy
       return current
     }
   } catch (error) {
-    console.error(error)
+    handleNetworkError(error)
+    throw error
   }
 }
 
@@ -90,6 +94,7 @@ export const deleteSpeedDial = async (obj: { id: string }) => {
     await axios.post(`${PATH}/delete_cticontact`, obj)
     return true
   } catch (error) {
-    console.error(error)
+    handleNetworkError(error)
+    throw error
   }
 }
