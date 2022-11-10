@@ -14,7 +14,7 @@ import {
 } from 'react-icons/md'
 import { Filter } from '../components/phonebook/Filter'
 import { Avatar, Button, InlineNotification, EmptyState } from '../components/common'
-import { useState, useEffect } from 'react'
+import { useState, useEffect, useMemo } from 'react'
 import {
   getPhonebook,
   mapContact,
@@ -25,6 +25,7 @@ import {
 import Skeleton from 'react-loading-skeleton'
 import { RootState } from '../store'
 import { useSelector } from 'react-redux'
+import debounce from 'lodash.debounce'
 
 const Phonebook: NextPage = () => {
   const [isPhonebookLoaded, setPhonebookLoaded] = useState(false)
@@ -32,11 +33,21 @@ const Phonebook: NextPage = () => {
   const [pageNum, setPageNum]: any = useState(1)
 
   const [filterText, setFilterText]: any = useState('')
+
   const updateFilterText = (newFilterText: string) => {
     setPageNum(1)
     setFilterText(newFilterText)
     setPhonebookLoaded(false)
   }
+
+  const debouncedUpdateFilterText = useMemo(() => debounce(updateFilterText, 400), [])
+
+  // Stop invocation of debounced function after unmounting
+  useEffect(() => {
+    return () => {
+      debouncedUpdateFilterText.cancel()
+    }
+  }, [debouncedUpdateFilterText])
 
   const [contactType, setContactType]: any = useState('all')
   const updateContactTypeFilter = (newContactType: string) => {
@@ -119,7 +130,7 @@ const Phonebook: NextPage = () => {
           <span>Create contact</span>
         </Button>
         <Filter
-          updateFilterText={updateFilterText}
+          updateFilterText={debouncedUpdateFilterText}
           updateContactTypeFilter={updateContactTypeFilter}
           updateSortFilter={updateSortFilter}
         />
