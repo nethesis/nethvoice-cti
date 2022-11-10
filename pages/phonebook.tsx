@@ -131,7 +131,7 @@ const Phonebook: NextPage = () => {
             )}
             {/* phonebook skeleton */}
             {!isPhonebookLoaded &&
-              Array.from(Array(10)).map((e, index) => (
+              Array.from(Array(9)).map((e, index) => (
                 <li key={index}>
                   <div className='flex items-center px-4 py-4 sm:px-6'>
                     <Skeleton circle height='100%' containerClassName='w-12 h-12 leading-none' />
