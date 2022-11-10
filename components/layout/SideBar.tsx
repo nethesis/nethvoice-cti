@@ -41,15 +41,23 @@ export const SideBar = () => {
 
   const [isSpeedDialLoaded, setSpeedDialLoaded] = useState(false)
   const [deleteSpeedDialError, setDeleteSpeedDialError] = useState('')
+  const [getSpeedDialError, setGetSpeedDialError] = useState('')
 
   useEffect(() => {
     // Initialize the speed dial list the first time
     // and every time a reload is required
     const initSpeedDials = async () => {
-      const speedDials: SpeedDialType[] | undefined = await getSpeedDials()
-      // Sort the speed dials and update the list
-      setSpeedDials(sortSpeedDials(speedDials))
-      setSpeedDialLoaded(true)
+      if (!isSpeedDialLoaded) {
+        try {
+          setGetSpeedDialError('')
+          const speedDials: SpeedDialType[] | undefined = await getSpeedDials()
+          // Sort the speed dials and update the list
+          setSpeedDials(sortSpeedDials(speedDials))
+          setSpeedDialLoaded(true)
+        } catch (error) {
+          setGetSpeedDialError('Cannot retrieve speed dial')
+        }
+      }
     }
     initSpeedDials()
   }, [isSpeedDialLoaded])
@@ -118,6 +126,10 @@ export const SideBar = () => {
           </div>
           <span className='border-b border-gray-200'></span>
           <ul role='list' className='flex-1 divide-y divide-gray-200 overflow-y-auto'>
+            {/* get speed dial error */}
+            {getSpeedDialError && (
+              <InlineNotification type='error' title={getSpeedDialError} className='mt-4' />
+            )}
             {/* Iterate through speed dial list */}
             {speedDials.map((speedDial, key) => (
               <li key={key}>
