@@ -86,7 +86,8 @@ export const ShowContactDrawerContent = forwardRef<
             <h3 className='text-lg font-medium leading-6 text-gray-900'>Delete contact</h3>
             <div className='mt-2'>
               <p className='text-sm text-gray-500'>
-                {`Contact ${contactToDelete?.displayName || ''} will be permanently deleted.`}
+                Contact <strong>{contactToDelete?.displayName || ''}</strong> will be permanently
+                deleted.
               </p>
             </div>
           </div>
