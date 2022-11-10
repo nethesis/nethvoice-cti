@@ -5,7 +5,7 @@ import { ComponentPropsWithRef, forwardRef } from 'react'
 import classNames from 'classnames'
 import { TextInput } from '../common'
 import { MdExpandMore, MdClose } from 'react-icons/md'
-import { Fragment, useState } from 'react'
+import { Fragment, useState, useEffect } from 'react'
 import { Dialog, Disclosure, Popover, Transition } from '@headlessui/react'
 
 const sortFilter = {
@@ -63,6 +63,18 @@ export const Filter = forwardRef<HTMLButtonElement, FilterProps>(
       // update phonebook (notify parent component)
       updateSortFilter(newSortBy)
     }
+
+    const [contactTypeLabel, setContactTypeLabel] = useState('')
+
+    useEffect(() => {
+      const contactTypeFound = contactTypeFilter.options.find(
+        (option) => option.value === contactType,
+      )
+
+      if (contactTypeFound) {
+        setContactTypeLabel(contactTypeFound.label)
+      }
+    }, [contactType])
 
     return (
       <div className={classNames(className)} {...props}>
@@ -344,6 +356,24 @@ export const Filter = forwardRef<HTMLButtonElement, FilterProps>(
                   >
                     Filters
                   </button>
+                </div>
+              </div>
+
+              {/* Active filters */}
+              <div className='bg-gray-100'>
+                <div className='mx-auto max-w-7xl pt-3 sm:flex sm:items-center'>
+                  <h3 className='text-sm font-medium text-gray-500'>Active filters</h3>
+                  <div
+                    aria-hidden='true'
+                    className='hidden h-5 w-px bg-gray-300 sm:ml-4 sm:block'
+                  />
+                  <div className='mt-2 sm:mt-0 sm:ml-4'>
+                    <div className='-m-1 flex flex-wrap items-center'>
+                      <span className='m-1 inline-flex items-center rounded-full border border-gray-200 bg-white py-1.5 pl-3 pr-2 text-sm font-medium text-gray-700'>
+                        <span>Contact type: {contactTypeLabel}</span>
+                      </span>
+                    </div>
+                  </div>
                 </div>
               </div>
             </section>
