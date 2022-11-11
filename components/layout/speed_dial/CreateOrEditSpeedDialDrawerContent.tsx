@@ -48,7 +48,7 @@ export const CreateOrEditSpeedDialDrawerContent = forwardRef<
     let isValidationOk = true
 
     // name
-    if (!nameRef.current.value) {
+    if (!nameRef.current.value.trim()) {
       setNameError('Required')
 
       if (isValidationOk) {
@@ -58,7 +58,7 @@ export const CreateOrEditSpeedDialDrawerContent = forwardRef<
     }
 
     // phone number
-    if (!phoneNumberRef.current.value) {
+    if (!phoneNumberRef.current.value.trim()) {
       setPhoneNumberError('Required')
 
       if (isValidationOk) {

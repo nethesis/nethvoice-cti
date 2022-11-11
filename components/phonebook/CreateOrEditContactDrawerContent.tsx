@@ -98,7 +98,7 @@ export const CreateOrEditContactDrawerContent = forwardRef<
     let isValidationOk = true
 
     // name
-    if (contactType === 'person' && !nameRef.current.value) {
+    if (contactType === 'person' && !nameRef.current.value.trim()) {
       setNameError('Required')
 
       if (isValidationOk) {
@@ -108,7 +108,7 @@ export const CreateOrEditContactDrawerContent = forwardRef<
     }
 
     // company
-    if (contactType === 'company' && !companyRef.current.value) {
+    if (contactType === 'company' && !companyRef.current.value.trim()) {
       setCompanyError('Required')
 
       if (isValidationOk) {
