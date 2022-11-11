@@ -272,7 +272,7 @@ export const ShowContactDrawerContent = forwardRef<
                     aria-hidden='true'
                   />
                   <span className='truncate'>
-                    {config.type === 'public' ? 'Everyone' : 'Only me'}
+                    {config.type === 'private' && config.source === 'cti' ? 'Only me' : 'Public'}
                   </span>
                 </div>
               </dd>
