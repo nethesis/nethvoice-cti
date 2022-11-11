@@ -361,7 +361,7 @@ export const Filter = forwardRef<HTMLButtonElement, FilterProps>(
 
               {/* Active filters */}
               <div className='bg-gray-100'>
-                <div className='mx-auto max-w-7xl pt-3 sm:flex sm:items-center'>
+                <div className='mx-auto pt-3 sm:flex sm:items-center'>
                   <h3 className='text-sm font-medium text-gray-500'>Active filters</h3>
                   <div
                     aria-hidden='true'
