@@ -16,8 +16,10 @@ import {
   MdOutlineEdit,
   MdDeleteOutline,
   MdWarningAmber,
+  MdBolt,
+  MdAdd,
 } from 'react-icons/md'
-import { Button, Avatar, Modal, Dropdown, InlineNotification } from '../common/'
+import { Button, Avatar, Modal, Dropdown, InlineNotification, EmptyState } from '../common/'
 import { deleteSpeedDial, getSpeedDials } from '../../services/phonebook'
 import {
   sortSpeedDials,
@@ -26,6 +28,7 @@ import {
 } from '../../lib/speedDial'
 import { useSelector } from 'react-redux'
 import { RootState } from '../../store'
+import Skeleton from 'react-loading-skeleton'
 
 export const SideBar = () => {
   // The state for the delete modal
@@ -116,11 +119,13 @@ export const SideBar = () => {
             <div className='flex items-start justify-between'>
               <h2 className='text-lg font-medium text-gray-900'>Speed Dial</h2>
               <div className='ml-3 flex h-7 items-center gap-2'>
-                <Button variant='white' onClick={() => openCreateSpeedDialDrawer()}>
-                  <MdOutlineAdd className='-ml-1 mr-2 h-5 w-5' />
-                  Create
-                  <span className='sr-only'>Create speed dial</span>
-                </Button>
+                {isSpeedDialLoaded && !!speedDials.length && (
+                  <Button variant='white' onClick={() => openCreateSpeedDialDrawer()}>
+                    <MdOutlineAdd className='-ml-1 mr-2 h-5 w-5' />
+                    Create
+                    <span className='sr-only'>Create speed dial</span>
+                  </Button>
+                )}
               </div>
             </div>
           </div>
@@ -130,40 +135,69 @@ export const SideBar = () => {
             {getSpeedDialError && (
               <InlineNotification type='error' title={getSpeedDialError} className='mt-4' />
             )}
-            {/* Iterate through speed dial list */}
-            {speedDials.map((speedDial, key) => (
-              <li key={key}>
-                <div className='group relative flex items-center py-6 px-5'>
-                  <div className='absolute inset-0 group-hover:bg-gray-50' aria-hidden='true' />
-                  <div className='relative flex min-w-0 flex-1 items-center justify-between'>
-                    <div className='flex'>
-                      <span className='text-gray-300 '>
-                        <Avatar size='base' placeholderType='company' />
-                      </span>
-                      <div className='ml-4 truncate'>
-                        <p className='truncate text-sm font-medium text-gray-900'>
-                          {speedDial.name}
-                        </p>
-                        <p className='truncate text-sm text-gray-500'>{speedDial.speeddial_num}</p>
+            {/* skeleton */}
+            {!isSpeedDialLoaded &&
+              Array.from(Array(4)).map((e, index) => (
+                <li key={index}>
+                  <div className='flex items-center px-4 py-4 sm:px-6'>
+                    <Skeleton circle height='100%' containerClassName='w-12 h-12 leading-none' />
+                    <div className='min-w-0 flex-1 px-4'>
+                      <div className='flex flex-col justify-center'>
+                        <Skeleton />
                       </div>
                     </div>
-                    <div className='flex gap-2'>
-                      {/* Actions */}
-                      <Button variant='white'>
-                        <MdPhone className='h-4 w-4' />
-                        <span className='sr-only'>Call speed dial</span>
-                      </Button>
-                      <Dropdown items={getItemsMenu(speedDial)} position='left'>
+                  </div>
+                </li>
+              ))}
+            {/* empty state */}
+            {isSpeedDialLoaded && !speedDials.length && (
+              <EmptyState
+                title='No speed dial'
+                icon={<MdBolt className='mx-auto h-12 w-12' aria-hidden='true' />}
+              >
+                <Button variant='primary' onClick={() => openCreateSpeedDialDrawer()}>
+                  <MdAdd className='-ml-1 mr-2 h-5 w-5' />
+                  <span>Create</span>
+                </Button>
+              </EmptyState>
+            )}
+            {/* Iterate through speed dial list */}
+            {isSpeedDialLoaded &&
+              speedDials.map((speedDial, key) => (
+                <li key={key}>
+                  <div className='group relative flex items-center py-6 px-5'>
+                    <div className='absolute inset-0 group-hover:bg-gray-50' aria-hidden='true' />
+                    <div className='relative flex min-w-0 flex-1 items-center justify-between'>
+                      <div className='flex'>
+                        <span className='text-gray-300 '>
+                          <Avatar size='base' placeholderType='company' />
+                        </span>
+                        <div className='ml-4 truncate'>
+                          <p className='truncate text-sm font-medium text-gray-900'>
+                            {speedDial.name}
+                          </p>
+                          <p className='truncate text-sm text-gray-500'>
+                            {speedDial.speeddial_num}
+                          </p>
+                        </div>
+                      </div>
+                      <div className='flex gap-2'>
+                        {/* Actions */}
                         <Button variant='white'>
-                          <MdMoreVert className='h-4 w-4' />
-                          <span className='sr-only'>Open speed dial menu</span>
+                          <MdPhone className='h-4 w-4' />
+                          <span className='sr-only'>Call speed dial</span>
                         </Button>
-                      </Dropdown>
+                        <Dropdown items={getItemsMenu(speedDial)} position='left'>
+                          <Button variant='white'>
+                            <MdMoreVert className='h-4 w-4' />
+                            <span className='sr-only'>Open speed dial menu</span>
+                          </Button>
+                        </Dropdown>
+                      </div>
                     </div>
                   </div>
-                </div>
-              </li>
-            ))}
+                </li>
+              ))}
           </ul>
         </div>
         {/* Delete speed dial modal */}

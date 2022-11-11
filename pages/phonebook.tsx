@@ -146,11 +146,8 @@ const Phonebook: NextPage = () => {
                 <li key={index}>
                   <div className='flex items-center px-4 py-4 sm:px-6'>
                     <Skeleton circle height='100%' containerClassName='w-12 h-12 leading-none' />
-                    <div className='min-w-0 flex-1 px-4 md:grid md:grid-cols-2 gap-4 lg:grid-cols-3 xl:grid-cols-4'>
+                    <div className='min-w-0 flex-1 px-4 md:grid md:grid-cols-2 gap-4 lg:grid-cols-3 xl:grid-cols-3'>
                       <div className='flex flex-col justify-center'>
-                        <Skeleton />
-                      </div>
-                      <div>
                         <Skeleton />
                       </div>
                       <div>
