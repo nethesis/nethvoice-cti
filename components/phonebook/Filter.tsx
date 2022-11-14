@@ -77,7 +77,7 @@ export const Filter = forwardRef<HTMLButtonElement, FilterProps>(
     }, [contactType])
 
     return (
-      <div className={classNames(className)} {...props}>
+      <div className={classNames('bg-gray-100', className)} {...props}>
         <div className=''>
           {/* Mobile filter dialog */}
           <Transition.Root show={open} as={Fragment}>
@@ -231,7 +231,7 @@ export const Filter = forwardRef<HTMLButtonElement, FilterProps>(
           <div className='mx-auto text-center'>
             <section aria-labelledby='filter-heading' className='pb-4'>
               <h2 id='filter-heading' className='sr-only'>
-                Product filters
+                Phonebook filters
               </h2>
 
               <div className='flex items-center justify-between'>
@@ -360,7 +360,7 @@ export const Filter = forwardRef<HTMLButtonElement, FilterProps>(
               </div>
 
               {/* Active filters */}
-              <div className='bg-gray-100'>
+              <div>
                 <div className='mx-auto pt-3 sm:flex sm:items-center'>
                   <h3 className='text-sm font-medium text-gray-500'>Active filters</h3>
                   <div
