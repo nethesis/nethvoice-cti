@@ -11,7 +11,6 @@ import type { SpeedDialType } from '../../services/types'
 import { useState, useEffect, useRef, MutableRefObject } from 'react'
 import {
   MdOutlineAdd,
-  MdPhone,
   MdMoreVert,
   MdOutlineEdit,
   MdDeleteOutline,
@@ -29,6 +28,8 @@ import {
 import { useSelector } from 'react-redux'
 import { RootState } from '../../store'
 import Skeleton from 'react-loading-skeleton'
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
+import { faPhone } from '@fortawesome/free-solid-svg-icons'
 
 export const SideBar = () => {
   // The state for the delete modal
@@ -184,7 +185,7 @@ export const SideBar = () => {
                       <div className='flex gap-2'>
                         {/* Actions */}
                         <Button variant='white'>
-                          <MdPhone className='h-4 w-4' />
+                          <FontAwesomeIcon icon={faPhone} className='h-4 w-4 text-gray-600' />
                           <span className='sr-only'>Call speed dial</span>
                         </Button>
                         <Dropdown items={getItemsMenu(speedDial)} position='left'>

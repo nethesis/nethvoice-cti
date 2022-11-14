@@ -6,8 +6,6 @@ import classNames from 'classnames'
 import { Avatar, Button, Dropdown, Modal } from '../common'
 import {
   MdEmail,
-  MdPhone,
-  MdPhoneAndroid,
   MdOutlineWork,
   MdPeople,
   MdMoreVert,
@@ -26,6 +24,8 @@ import {
 import { useSelector } from 'react-redux'
 import { RootState } from '../../store'
 import { closeSideDrawer } from '../../lib/utils'
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
+import { faPhone } from '@fortawesome/free-solid-svg-icons'
 
 export interface ShowContactDrawerContentProps extends ComponentPropsWithRef<'div'> {
   config: any
@@ -157,8 +157,9 @@ export const ShowContactDrawerContent = forwardRef<
                 <dt className='text-sm font-medium text-gray-500'>Extension</dt>
                 <dd className='mt-1 text-sm text-gray-900 sm:col-span-2 sm:mt-0'>
                   <div className='flex items-center text-sm text-sky-600'>
-                    <MdPhone
-                      className='mr-1.5 h-5 w-5 flex-shrink-0 text-gray-400'
+                    <FontAwesomeIcon
+                      icon={faPhone}
+                      className='mr-1.5 h-4 w-4 flex-shrink-0 text-gray-400'
                       aria-hidden='true'
                     />
                     <span className='truncate cursor-pointer'>{config.extension}</span>
@@ -172,8 +173,9 @@ export const ShowContactDrawerContent = forwardRef<
                 <dt className='text-sm font-medium text-gray-500'>Work phone</dt>
                 <dd className='mt-1 text-sm text-gray-900 sm:col-span-2 sm:mt-0'>
                   <div className='flex items-center text-sm text-sky-600'>
-                    <MdPhone
-                      className='mr-1.5 h-5 w-5 flex-shrink-0 text-gray-400'
+                    <FontAwesomeIcon
+                      icon={faPhone}
+                      className='mr-1.5 h-4 w-4 flex-shrink-0 text-gray-400'
                       aria-hidden='true'
                     />
                     <span className='truncate cursor-pointer'>{config.workphone}</span>
@@ -187,8 +189,9 @@ export const ShowContactDrawerContent = forwardRef<
                 <dt className='text-sm font-medium text-gray-500'>Mobile phone</dt>
                 <dd className='mt-1 text-sm text-gray-900 sm:col-span-2 sm:mt-0'>
                   <div className='flex items-center text-sm text-sky-600'>
-                    <MdPhoneAndroid
-                      className='mr-1.5 h-5 w-5 flex-shrink-0 text-gray-400'
+                    <FontAwesomeIcon
+                      icon={faPhone}
+                      className='mr-1.5 h-4 w-4 flex-shrink-0 text-gray-400'
                       aria-hidden='true'
                     />
                     <span className='truncate cursor-pointer'>{config.cellphone}</span>
