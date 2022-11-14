@@ -21,12 +21,13 @@ import { ComponentProps, FC, forwardRef } from 'react'
 import { cleanClassName } from '../../lib/utils'
 import { useTheme } from '../../theme/Context'
 import classNames from 'classnames'
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
+import { IconDefinition } from '@fortawesome/fontawesome-common-types'
 
-export interface TextInputProps
-  extends Omit<ComponentProps<'input'>, 'ref' | 'color' | 'size'> {
+export interface TextInputProps extends Omit<ComponentProps<'input'>, 'ref' | 'color' | 'size'> {
   label?: string
   placeholder?: string
-  icon?: FC<ComponentProps<'svg'>>
+  icon?: IconDefinition
   trailingIcon?: boolean
   error?: boolean
   helper?: string
@@ -73,7 +74,8 @@ export const TextInput = forwardRef<HTMLInputElement, TextInputProps>(
                 trailingIcon ? theme.icon.right : theme.icon.left,
               )}
             >
-              <Icon
+              <FontAwesomeIcon
+                icon={Icon}
                 className={classNames(
                   size === 'large' ? theme.icon.size.large : theme.icon.size.base,
                   error ? theme.icon.red : theme.icon.gray,

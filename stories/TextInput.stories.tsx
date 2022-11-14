@@ -4,8 +4,13 @@
 import { useState } from 'react'
 import { Meta, Story } from '@storybook/react'
 import { TextInput, TextInputProps } from '../components/common'
-import { MdRemoveRedEye, MdOutlineRemoveRedEye, MdEmail } from 'react-icons/md'
-import { MdError } from 'react-icons/md'
+import {
+  faMagnifyingGlass,
+  faEnvelope,
+  faCircleExclamation,
+  faEye,
+  faEyeSlash,
+} from '@fortawesome/free-solid-svg-icons'
 
 const meta = {
   title: 'Components/TextInput',
@@ -61,13 +66,13 @@ WithLabel.args = {
 export const WithLeadingIcon = Template.bind({})
 WithLeadingIcon.args = {
   ...WithLabel.args,
-  icon: MdEmail,
+  icon: faMagnifyingGlass,
 }
 
 export const WithTrailingIcon = Template.bind({})
 WithTrailingIcon.args = {
   ...WithLabel.args,
-  icon: MdEmail,
+  icon: faEnvelope,
   trailingIcon: true,
 }
 
@@ -87,7 +92,7 @@ ErrorWithHelper.args = {
 export const ErrorHelperWithIcon = Template.bind({})
 ErrorHelperWithIcon.args = {
   ...WithLabel.args,
-  icon: MdError,
+  icon: faCircleExclamation,
   trailingIcon: true,
   helper: 'This is a helper text',
   error: true,
@@ -112,7 +117,7 @@ export const InputGroup: Story = () => {
           name='password'
           squared='top'
           type={pwdVisible ? 'text' : 'password'}
-          icon={pwdVisible ? MdRemoveRedEye : MdOutlineRemoveRedEye}
+          icon={pwdVisible ? faEye : faEyeSlash}
           onIconClick={() => setPwdVisible(!pwdVisible)}
           trailingIcon={true}
         />
