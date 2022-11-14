@@ -25,7 +25,7 @@ import {
 } from '../../lib/phonebook'
 import { useSelector } from 'react-redux'
 import { RootState } from '../../store'
-import { store } from '../../store'
+import { closeSideDrawer } from '../../lib/utils'
 
 export interface ShowContactDrawerContentProps extends ComponentPropsWithRef<'div'> {
   config: any
@@ -54,7 +54,7 @@ export const ShowContactDrawerContent = forwardRef<
       reloadPhonebook()
       setShowDeleteModal(false)
       setContactToDelete(null)
-      store.dispatch.sideDrawer.setShown(false)
+      closeSideDrawer()
     }
   }
 
@@ -86,7 +86,8 @@ export const ShowContactDrawerContent = forwardRef<
             <h3 className='text-lg font-medium leading-6 text-gray-900'>Delete contact</h3>
             <div className='mt-2'>
               <p className='text-sm text-gray-500'>
-                {`Contact ${contactToDelete?.displayName || ''} will be permanently deleted.`}
+                Contact <strong>{contactToDelete?.displayName || ''}</strong> will be permanently
+                deleted.
               </p>
             </div>
           </div>
@@ -271,7 +272,7 @@ export const ShowContactDrawerContent = forwardRef<
                     aria-hidden='true'
                   />
                   <span className='truncate'>
-                    {config.type === 'public' ? 'Everyone' : 'Only me'}
+                    {config.type === 'private' && config.source === 'cti' ? 'Only me' : 'Public'}
                   </span>
                 </div>
               </dd>

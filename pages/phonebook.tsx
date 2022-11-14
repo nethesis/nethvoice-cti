@@ -10,10 +10,11 @@ import {
   MdChevronRight,
   MdAdd,
   MdMenuBook,
+  MdSearch,
 } from 'react-icons/md'
 import { Filter } from '../components/phonebook/Filter'
 import { Avatar, Button, InlineNotification, EmptyState } from '../components/common'
-import { useState, useEffect } from 'react'
+import { useState, useEffect, useMemo } from 'react'
 import {
   getPhonebook,
   mapContact,
@@ -24,6 +25,7 @@ import {
 import Skeleton from 'react-loading-skeleton'
 import { RootState } from '../store'
 import { useSelector } from 'react-redux'
+import debounce from 'lodash.debounce'
 
 const Phonebook: NextPage = () => {
   const [isPhonebookLoaded, setPhonebookLoaded] = useState(false)
@@ -31,11 +33,21 @@ const Phonebook: NextPage = () => {
   const [pageNum, setPageNum]: any = useState(1)
 
   const [filterText, setFilterText]: any = useState('')
+
   const updateFilterText = (newFilterText: string) => {
     setPageNum(1)
     setFilterText(newFilterText)
     setPhonebookLoaded(false)
   }
+
+  const debouncedUpdateFilterText = useMemo(() => debounce(updateFilterText, 400), [])
+
+  // Stop invocation of debounced function after unmounting
+  useEffect(() => {
+    return () => {
+      debouncedUpdateFilterText.cancel()
+    }
+  }, [debouncedUpdateFilterText])
 
   const [contactType, setContactType]: any = useState('all')
   const updateContactTypeFilter = (newContactType: string) => {
@@ -113,12 +125,12 @@ const Phonebook: NextPage = () => {
   return (
     <>
       <div className='p-8 bg-gray-100'>
-        <Button variant='primary' onClick={() => openCreateContactDrawer()} className='mb-6'>
+        <Button variant='white' onClick={() => openCreateContactDrawer()} className='mb-6'>
           <MdAdd className='-ml-1 mr-2 h-5 w-5' />
           <span>Create contact</span>
         </Button>
         <Filter
-          updateFilterText={updateFilterText}
+          updateFilterText={debouncedUpdateFilterText}
           updateContactTypeFilter={updateContactTypeFilter}
           updateSortFilter={updateSortFilter}
         />
@@ -130,15 +142,12 @@ const Phonebook: NextPage = () => {
             )}
             {/* phonebook skeleton */}
             {!isPhonebookLoaded &&
-              Array.from(Array(10)).map((e, index) => (
+              Array.from(Array(9)).map((e, index) => (
                 <li key={index}>
                   <div className='flex items-center px-4 py-4 sm:px-6'>
                     <Skeleton circle height='100%' containerClassName='w-12 h-12 leading-none' />
-                    <div className='min-w-0 flex-1 px-4 md:grid md:grid-cols-2 gap-4 lg:grid-cols-3 xl:grid-cols-4'>
+                    <div className='min-w-0 flex-1 px-4 md:grid md:grid-cols-2 gap-4 lg:grid-cols-3 xl:grid-cols-3'>
                       <div className='flex flex-col justify-center'>
-                        <Skeleton />
-                      </div>
-                      <div>
                         <Skeleton />
                       </div>
                       <div>
@@ -152,7 +161,7 @@ const Phonebook: NextPage = () => {
                 </li>
               ))}
             {/* empty state */}
-            {isPhonebookLoaded && phonebook?.rows && !phonebook.rows.length && (
+            {isPhonebookLoaded && phonebook?.rows && !phonebook.rows.length && !filterText.length && (
               <EmptyState
                 title='No contact'
                 description='There is no contact in your phonebook'
@@ -164,6 +173,17 @@ const Phonebook: NextPage = () => {
                 </Button>
               </EmptyState>
             )}
+            {/* no search results */}
+            {isPhonebookLoaded &&
+              phonebook?.rows &&
+              !phonebook.rows.length &&
+              !!filterText.length && (
+                <EmptyState
+                  title='No contact found'
+                  description='Try changing your search filters'
+                  icon={<MdSearch className='mx-auto h-12 w-12' aria-hidden='true' />}
+                />
+              )}
             {isPhonebookLoaded &&
               phonebook?.rows &&
               phonebook.rows.map((contact: any, index: number) => (

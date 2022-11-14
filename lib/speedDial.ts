@@ -2,6 +2,7 @@
 // SPDX-License-Identifier: AGPL-3.0-or-later
 
 import { SpeedDialType } from '../services/types'
+import { store } from '../store'
 
 /**
  * This method sorts the speed dials
@@ -10,7 +11,6 @@ import { SpeedDialType } from '../services/types'
  * @returns The sorted list of speed dials
  *
  */
-
 export const sortSpeedDials = (
   speedDials: SpeedDialType[] = [],
   field: keyof SpeedDialType = 'name',
@@ -26,4 +26,24 @@ export const sortSpeedDials = (
   } else {
     return speedDials
   }
+}
+
+export const openCreateSpeedDialDrawer = () => {
+  store.dispatch.sideDrawer.update({
+    isShown: true,
+    contentType: 'createOrEditSpeedDial',
+    config: { isEdit: false },
+  })
+}
+
+export const openEditSpeedDialDrawer = (speedDial: any) => {
+  store.dispatch.sideDrawer.update({
+    isShown: true,
+    contentType: 'createOrEditSpeedDial',
+    config: { isEdit: true, speedDial: speedDial },
+  })
+}
+
+export function reloadSpeedDial() {
+  store.dispatch.speedDial.reload()
 }

@@ -6,12 +6,14 @@ import { authentication } from './authentication'
 import { user } from './user'
 import { sideDrawer } from './sideDrawer'
 import { phonebook } from './phonebook'
+import { speedDial } from './speedDial'
 
 export interface RootModel extends Models<RootModel> {
   authentication: typeof authentication
   user: typeof user
   sideDrawer: typeof sideDrawer
   phonebook: typeof phonebook
+  speedDial: typeof speedDial
 }
 
 export const models: RootModel = {
@@ -19,4 +21,5 @@ export const models: RootModel = {
   user,
   sideDrawer,
   phonebook,
+  speedDial,
 }

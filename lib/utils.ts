@@ -3,6 +3,7 @@
 
 import type { PropsWithChildren } from 'react'
 import axios from 'axios'
+import { store } from '../store'
 
 export interface ClearProps {
   key: string
@@ -29,4 +30,8 @@ export function handleNetworkError(error: any) {
     console.error('unexpected error: ', error)
     return null
   }
+}
+
+export const closeSideDrawer = () => {
+  store.dispatch.sideDrawer.setShown(false)
 }

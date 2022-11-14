@@ -10,7 +10,7 @@ import { useDispatch } from 'react-redux'
 import { Dispatch } from '../../store'
 import { RootState } from '../../store'
 import { useSelector } from 'react-redux'
-import { store } from '../../store'
+import { closeSideDrawer } from '../../lib/utils'
 
 interface LayoutProps {
   children: ReactNode
@@ -22,10 +22,6 @@ export const Layout: FC<LayoutProps> = ({ children }) => {
   const [items, setItems] = useState<NavItemsProps[]>(navItems)
   const dispatch = useDispatch<Dispatch>()
   const sideDrawer = useSelector((state: RootState) => state.sideDrawer)
-
-  const closeSideDrawer = () => {
-    store.dispatch.sideDrawer.setShown(false)
-  }
 
   useEffect(() => {
     const currentItems = items.map((route) => {
