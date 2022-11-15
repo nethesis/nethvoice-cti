@@ -9,7 +9,7 @@
 
 import type { SpeedDialType } from '../../services/types'
 import { useState, useEffect, useRef, MutableRefObject } from 'react'
-import { MdOutlineEdit, MdDeleteOutline, MdBolt } from 'react-icons/md'
+import { MdBolt } from 'react-icons/md'
 import { Button, Avatar, Modal, Dropdown, InlineNotification, EmptyState } from '../common/'
 import { deleteSpeedDial, getSpeedDials } from '../../services/phonebook'
 import {
@@ -26,6 +26,8 @@ import {
   faPlus,
   faTriangleExclamation,
   faEllipsisVertical,
+  faPen,
+  faTrash,
 } from '@fortawesome/free-solid-svg-icons'
 
 export const SideBar = () => {
@@ -99,10 +101,10 @@ export const SideBar = () => {
   // The dropdown items for every speed dial element
   const getItemsMenu = (speedDial: any) => (
     <>
-      <Dropdown.Item icon={MdOutlineEdit} onClick={() => openEditSpeedDialDrawer(speedDial)}>
+      <Dropdown.Item icon={faPen} onClick={() => openEditSpeedDialDrawer(speedDial)}>
         Edit
       </Dropdown.Item>
-      <Dropdown.Item icon={MdDeleteOutline} onClick={() => confirmDeleteItem(speedDial)}>
+      <Dropdown.Item icon={faTrash} onClick={() => confirmDeleteItem(speedDial)}>
         Delete
       </Dropdown.Item>
     </>

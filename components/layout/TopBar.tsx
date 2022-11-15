@@ -8,7 +8,7 @@
  */
 
 import { FC } from 'react'
-import { MdOutlineMenu, MdOutlineLogout } from 'react-icons/md'
+import { MdOutlineMenu } from 'react-icons/md'
 import { Avatar, Dropdown } from '../common'
 import { logout } from '../../services/login'
 import { useRouter } from 'next/router'
@@ -17,7 +17,7 @@ import { store } from '../../store'
 import { useSelector } from 'react-redux'
 import { RootState } from '../../store'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
-import { faMagnifyingGlass } from '@fortawesome/free-solid-svg-icons'
+import { faMagnifyingGlass, faArrowRightFromBracket } from '@fortawesome/free-solid-svg-icons'
 
 interface TopBarProps {
   openMobileCb: () => void
@@ -50,7 +50,7 @@ export const TopBar: FC<TopBarProps> = ({ openMobileCb }) => {
           </span>
         </Dropdown.Header>
       </div>
-      <Dropdown.Item icon={MdOutlineLogout} onClick={doLogout}>
+      <Dropdown.Item icon={faArrowRightFromBracket} onClick={doLogout}>
         Logout
       </Dropdown.Item>
     </>

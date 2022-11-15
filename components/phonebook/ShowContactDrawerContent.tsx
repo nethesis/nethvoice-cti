@@ -4,7 +4,7 @@
 import { ComponentPropsWithRef, forwardRef, useState, useRef, MutableRefObject } from 'react'
 import classNames from 'classnames'
 import { Avatar, Button, Dropdown, Modal } from '../common'
-import { MdEdit, MdDelete, MdVisibility } from 'react-icons/md'
+import { MdVisibility } from 'react-icons/md'
 import {
   openEditContactDrawer,
   deleteContact,
@@ -23,6 +23,8 @@ import {
   faTriangleExclamation,
   faFileLines,
   faEllipsisVertical,
+  faPen,
+  faTrash,
 } from '@fortawesome/free-solid-svg-icons'
 
 export interface ShowContactDrawerContentProps extends ComponentPropsWithRef<'div'> {
@@ -58,10 +60,10 @@ export const ShowContactDrawerContent = forwardRef<
 
   const contactMenuItems = (
     <>
-      <Dropdown.Item icon={MdEdit} onClick={() => openEditContactDrawer(config)}>
+      <Dropdown.Item icon={faPen} onClick={() => openEditContactDrawer(config)}>
         Edit
       </Dropdown.Item>
-      <Dropdown.Item icon={MdDelete} onClick={() => showDeleteContactModal(config)}>
+      <Dropdown.Item icon={faTrash} onClick={() => showDeleteContactModal(config)}>
         Delete
       </Dropdown.Item>
     </>
