@@ -114,6 +114,18 @@ const theme = {
     },
   },
   status: {
+    available: {
+      badge: {
+        base: 'bg-green-100 text-green-900',
+        dot: 'bg-green-400',
+      },
+      avatar: {
+        dot: 'bg-green-500',
+      },
+      card: {
+        border: 'border-green-500',
+      },
+    },
     online: {
       badge: {
         base: 'bg-green-100 text-green-900',
@@ -247,11 +259,11 @@ const theme = {
       base: 'text-white w-full h-full fill-white flex justify-center items-center',
       background: 'bg-gray-500',
       sizes: {
-        extra_small: 'h-4 w-4',
-        small: 'h-6 w-6',
-        base: 'h-6 w-6',
-        large: 'h-10 w-10',
-        extra_large: 'h-12 w-12',
+        extra_small: 'h-3 w-3',
+        small: 'h-4 w-4',
+        base: 'h-5 w-5',
+        large: 'h-6 w-6',
+        extra_large: 'h-7 w-7',
       },
     },
     status: {

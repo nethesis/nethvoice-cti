@@ -2,7 +2,7 @@
 // SPDX-License-Identifier: AGPL-3.0-or-later
 
 import type { NextPage } from 'next'
-import { MdPeople, MdChevronRight, MdAdd, MdMenuBook, MdSearch } from 'react-icons/md'
+import { MdChevronRight, MdAdd, MdMenuBook, MdSearch } from 'react-icons/md'
 import { Filter } from '../components/phonebook/Filter'
 import { Avatar, Button, InlineNotification, EmptyState } from '../components/common'
 import { useState, useEffect, useMemo } from 'react'
@@ -18,7 +18,7 @@ import { RootState } from '../store'
 import { useSelector } from 'react-redux'
 import debounce from 'lodash.debounce'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
-import { faPhone, faSuitcase } from '@fortawesome/free-solid-svg-icons'
+import { faPhone, faSuitcase, faUserGroup } from '@fortawesome/free-solid-svg-icons'
 
 const Phonebook: NextPage = () => {
   const [isPhonebookLoaded, setPhonebookLoaded] = useState(false)
@@ -228,8 +228,9 @@ const Phonebook: NextPage = () => {
                           {/* company contacts */}
                           {contact.contacts && contact.contacts.length ? (
                             <div className='mt-1 flex items-center text-sm text-gray-500'>
-                              <MdPeople
-                                className='mr-1.5 h-5 w-5 flex-shrink-0 text-gray-400'
+                              <FontAwesomeIcon
+                                icon={faUserGroup}
+                                className='mr-2 h-4 w-4 flex-shrink-0 text-gray-400'
                                 aria-hidden='true'
                               />
                               <span>{contact.contacts.length} contacts</span>
