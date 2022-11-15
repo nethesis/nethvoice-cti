@@ -4,7 +4,7 @@
 import { ComponentPropsWithRef, forwardRef, useState, useRef, MutableRefObject } from 'react'
 import classNames from 'classnames'
 import { Avatar, Button, Dropdown, Modal } from '../common'
-import { MdMoreVert, MdEdit, MdDelete, MdVisibility, MdOutlineStickyNote2 } from 'react-icons/md'
+import { MdEdit, MdDelete, MdVisibility } from 'react-icons/md'
 import {
   openEditContactDrawer,
   deleteContact,
@@ -21,6 +21,8 @@ import {
   faSuitcase,
   faUser,
   faTriangleExclamation,
+  faFileLines,
+  faEllipsisVertical,
 } from '@fortawesome/free-solid-svg-icons'
 
 export interface ShowContactDrawerContentProps extends ComponentPropsWithRef<'div'> {
@@ -127,7 +129,7 @@ export const ShowContactDrawerContent = forwardRef<
                 className='mr-1 mt-1'
               >
                 <Button variant='white'>
-                  <MdMoreVert className='h-4 w-4' />
+                  <FontAwesomeIcon icon={faEllipsisVertical} className='h-4 w-4' />
                   <span className='sr-only'>Open contact menu</span>
                 </Button>
               </Dropdown>
@@ -229,8 +231,9 @@ export const ShowContactDrawerContent = forwardRef<
                 <dt className='text-sm font-medium text-gray-500'>Notes</dt>
                 <dd className='mt-1 text-sm text-gray-900 sm:col-span-2 sm:mt-0'>
                   <div className='flex items-center text-sm'>
-                    <MdOutlineStickyNote2
-                      className='mr-1.5 h-5 w-5 flex-shrink-0 text-gray-400'
+                    <FontAwesomeIcon
+                      icon={faFileLines}
+                      className='mr-2 h-4 w-4 flex-shrink-0 text-gray-400'
                       aria-hidden='true'
                     />
                     <div>{config.notes}</div>

@@ -9,7 +9,7 @@
 
 import type { SpeedDialType } from '../../services/types'
 import { useState, useEffect, useRef, MutableRefObject } from 'react'
-import { MdOutlineAdd, MdMoreVert, MdOutlineEdit, MdDeleteOutline, MdBolt } from 'react-icons/md'
+import { MdOutlineEdit, MdDeleteOutline, MdBolt } from 'react-icons/md'
 import { Button, Avatar, Modal, Dropdown, InlineNotification, EmptyState } from '../common/'
 import { deleteSpeedDial, getSpeedDials } from '../../services/phonebook'
 import {
@@ -21,7 +21,12 @@ import { useSelector } from 'react-redux'
 import { RootState } from '../../store'
 import Skeleton from 'react-loading-skeleton'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
-import { faPhone, faPlus, faTriangleExclamation } from '@fortawesome/free-solid-svg-icons'
+import {
+  faPhone,
+  faPlus,
+  faTriangleExclamation,
+  faEllipsisVertical,
+} from '@fortawesome/free-solid-svg-icons'
 
 export const SideBar = () => {
   // The state for the delete modal
@@ -114,7 +119,7 @@ export const SideBar = () => {
               <div className='ml-3 flex h-7 items-center gap-2'>
                 {isSpeedDialLoaded && !!speedDials.length && (
                   <Button variant='white' onClick={() => openCreateSpeedDialDrawer()}>
-                    <MdOutlineAdd className='-ml-1 mr-2 h-5 w-5' />
+                    <FontAwesomeIcon icon={faPlus} className='mr-2 h-4 w-4' />
                     Create
                     <span className='sr-only'>Create speed dial</span>
                   </Button>
@@ -182,7 +187,7 @@ export const SideBar = () => {
                         </Button>
                         <Dropdown items={getItemsMenu(speedDial)} position='left'>
                           <Button variant='white'>
-                            <MdMoreVert className='h-4 w-4' />
+                            <FontAwesomeIcon icon={faEllipsisVertical} className='h-4 w-4' />
                             <span className='sr-only'>Open speed dial menu</span>
                           </Button>
                         </Dropdown>
