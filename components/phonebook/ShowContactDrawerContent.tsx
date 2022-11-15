@@ -5,7 +5,6 @@ import { ComponentPropsWithRef, forwardRef, useState, useRef, MutableRefObject }
 import classNames from 'classnames'
 import { Avatar, Button, Dropdown, Modal } from '../common'
 import {
-  MdOutlineWork,
   MdPeople,
   MdMoreVert,
   MdEdit,
@@ -24,7 +23,7 @@ import { useSelector } from 'react-redux'
 import { RootState } from '../../store'
 import { closeSideDrawer } from '../../lib/utils'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
-import { faPhone, faEnvelope } from '@fortawesome/free-solid-svg-icons'
+import { faPhone, faEnvelope, faSuitcase } from '@fortawesome/free-solid-svg-icons'
 
 export interface ShowContactDrawerContentProps extends ComponentPropsWithRef<'div'> {
   config: any
@@ -141,8 +140,9 @@ export const ShowContactDrawerContent = forwardRef<
                 <dt className='text-sm font-medium text-gray-500'>Company</dt>
                 <dd className='mt-1 text-sm text-gray-900 sm:col-span-2 sm:mt-0'>
                   <div className='flex items-center text-sm'>
-                    <MdOutlineWork
-                      className='mr-1.5 h-5 w-5 flex-shrink-0 text-gray-400'
+                    <FontAwesomeIcon
+                      icon={faSuitcase}
+                      className='mr-2 h-4 w-4 flex-shrink-0 text-gray-400'
                       aria-hidden='true'
                     />
                     <span>{config.company}</span>
