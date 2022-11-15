@@ -14,6 +14,7 @@ import Image from 'next/image'
 import classNames from 'classnames'
 import type { NavItemsProps } from '../../config/routes'
 import Link from 'next/link'
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 
 interface NavBarProps {
   items: NavItemsProps[]
@@ -45,7 +46,8 @@ export const NavBar: FC<NavBarProps> = ({ items }) => {
                 )}
                 aria-current={item.current ? 'page' : undefined}
               >
-                <item.icon
+                <FontAwesomeIcon
+                  icon={item.icon}
                   className={classNames(
                     item.current ? 'text-white' : 'text-gray-300 group-hover:text-white',
                     'h-6 w-6',

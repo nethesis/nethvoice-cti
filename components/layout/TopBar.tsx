@@ -8,7 +8,6 @@
  */
 
 import { FC } from 'react'
-import { MdOutlineMenu } from 'react-icons/md'
 import { Avatar, Dropdown } from '../common'
 import { logout } from '../../services/login'
 import { useRouter } from 'next/router'
@@ -17,7 +16,11 @@ import { store } from '../../store'
 import { useSelector } from 'react-redux'
 import { RootState } from '../../store'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
-import { faMagnifyingGlass, faArrowRightFromBracket } from '@fortawesome/free-solid-svg-icons'
+import {
+  faMagnifyingGlass,
+  faArrowRightFromBracket,
+  faBars,
+} from '@fortawesome/free-solid-svg-icons'
 
 interface TopBarProps {
   openMobileCb: () => void
@@ -65,7 +68,7 @@ export const TopBar: FC<TopBarProps> = ({ openMobileCb }) => {
           onClick={openMobileCb}
         >
           <span className='sr-only'>Open sidebar</span>
-          <MdOutlineMenu className='h-6 w-6' aria-hidden='true' />
+          <FontAwesomeIcon icon={faBars} className='h-5 w-5' aria-hidden='true' />
         </button>
         <div className='flex flex-1 justify-between px-4 sm:px-6'>
           <div className='flex flex-1'>

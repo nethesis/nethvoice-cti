@@ -9,7 +9,6 @@
 
 import type { SpeedDialType } from '../../services/types'
 import { useState, useEffect, useRef, MutableRefObject } from 'react'
-import { MdBolt } from 'react-icons/md'
 import { Button, Avatar, Modal, Dropdown, InlineNotification, EmptyState } from '../common/'
 import { deleteSpeedDial, getSpeedDials } from '../../services/phonebook'
 import {
@@ -28,6 +27,7 @@ import {
   faEllipsisVertical,
   faPen,
   faTrash,
+  faBolt,
 } from '@fortawesome/free-solid-svg-icons'
 
 export const SideBar = () => {
@@ -153,7 +153,8 @@ export const SideBar = () => {
             {isSpeedDialLoaded && !speedDials.length && (
               <EmptyState
                 title='No speed dial'
-                icon={<MdBolt className='mx-auto h-12 w-12' aria-hidden='true' />}
+                icon={<FontAwesomeIcon
+                  icon={faBolt} className='mx-auto h-12 w-12' aria-hidden='true' />}
               >
                 <Button variant='primary' onClick={() => openCreateSpeedDialDrawer()}>
                   <FontAwesomeIcon icon={faPlus} className='mr-2 h-4 w-4' />

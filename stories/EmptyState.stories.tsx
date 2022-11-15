@@ -1,8 +1,7 @@
 import { EmptyState, EmptyStateProps } from '../components/common'
 import { Meta, Story } from '@storybook/react'
-import { MdFolderSpecial } from 'react-icons/md'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
-import { faPlus } from '@fortawesome/free-solid-svg-icons'
+import { faPlus, faFolderOpen } from '@fortawesome/free-solid-svg-icons'
 
 const meta = {
   title: 'Components/EmptyState',
@@ -19,7 +18,9 @@ const Template: Story<EmptyStateProps> = (args) => (
   <EmptyState {...args}>{args.children}</EmptyState>
 )
 
-const icon = <MdFolderSpecial className='mx-auto h-12 w-12' aria-hidden='true' />
+const icon = (
+  <FontAwesomeIcon icon={faFolderOpen} className='mx-auto h-12 w-12' aria-hidden='true' />
+)
 
 export const WithIcon = Template.bind({})
 WithIcon.args = {

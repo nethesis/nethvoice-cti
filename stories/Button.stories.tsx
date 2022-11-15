@@ -2,8 +2,9 @@
 // SPDX-License-Identifier: AGPL-3.0-or-later
 
 import { Button, ButtonProps } from '../components/common'
-import { MdRefresh } from 'react-icons/md'
 import { Story, Meta } from '@storybook/react'
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
+import { faRotateRight } from '@fortawesome/free-solid-svg-icons'
 
 const meta = {
   title: 'Components/Button',
@@ -56,7 +57,7 @@ Danger.args = {
 
 const TemplateWithChild: Story<ButtonProps> = (args) => (
   <Button {...args}>
-    <MdRefresh className='-ml-1 mr-2 h-5 w-5' />
+    <FontAwesomeIcon icon={faRotateRight} className='mr-2 h-4 w-4' />
     Button
   </Button>
 )
@@ -70,7 +71,7 @@ WithIcon.args = {
 const TemplateWithChildRight: Story<ButtonProps> = (args) => (
   <Button {...args}>
     Button
-    <MdRefresh className='ml-2 -mr-1 h-5 w-5' />
+    <FontAwesomeIcon icon={faRotateRight} className='ml-2 h-4 w-4' />
   </Button>
 )
 
