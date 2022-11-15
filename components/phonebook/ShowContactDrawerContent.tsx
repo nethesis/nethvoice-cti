@@ -158,7 +158,7 @@ export const ShowContactDrawerContent = forwardRef<
                   <div className='flex items-center text-sm text-sky-600'>
                     <FontAwesomeIcon
                       icon={faPhone}
-                      className='mr-1.5 h-4 w-4 flex-shrink-0 text-gray-400'
+                      className='mr-2 h-4 w-4 flex-shrink-0 text-gray-400'
                       aria-hidden='true'
                     />
                     <span className='truncate cursor-pointer'>{config.extension}</span>
@@ -174,7 +174,7 @@ export const ShowContactDrawerContent = forwardRef<
                   <div className='flex items-center text-sm text-sky-600'>
                     <FontAwesomeIcon
                       icon={faPhone}
-                      className='mr-1.5 h-4 w-4 flex-shrink-0 text-gray-400'
+                      className='mr-2 h-4 w-4 flex-shrink-0 text-gray-400'
                       aria-hidden='true'
                     />
                     <span className='truncate cursor-pointer'>{config.workphone}</span>
@@ -190,7 +190,7 @@ export const ShowContactDrawerContent = forwardRef<
                   <div className='flex items-center text-sm text-sky-600'>
                     <FontAwesomeIcon
                       icon={faPhone}
-                      className='mr-1.5 h-4 w-4 flex-shrink-0 text-gray-400'
+                      className='mr-2 h-4 w-4 flex-shrink-0 text-gray-400'
                       aria-hidden='true'
                     />
                     <span className='truncate cursor-pointer'>{config.cellphone}</span>
@@ -206,7 +206,7 @@ export const ShowContactDrawerContent = forwardRef<
                   <div className='flex items-center text-sm text-sky-600'>
                     <FontAwesomeIcon
                       icon={faEnvelope}
-                      className='mr-1.5 h-4 w-4 flex-shrink-0 text-gray-400'
+                      className='mr-2 h-4 w-4 flex-shrink-0 text-gray-400'
                       aria-hidden='true'
                     />
                     <a

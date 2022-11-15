@@ -206,7 +206,7 @@ const Phonebook: NextPage = () => {
                             <div className='mt-1 flex items-center text-sm text-gray-500'>
                               <FontAwesomeIcon
                                 icon={faPhone}
-                                className='mr-1.5 h-4 w-4 flex-shrink-0 text-gray-400'
+                                className='mr-2 h-4 w-4 flex-shrink-0 text-gray-400'
                                 aria-hidden='true'
                               />
                               <span className='truncate text-sky-600 cursor-pointer'>
@@ -244,7 +244,7 @@ const Phonebook: NextPage = () => {
                               <div className='mt-1 flex items-center text-sm text-sky-600'>
                                 <FontAwesomeIcon
                                   icon={faPhone}
-                                  className='mr-1.5 h-4 w-4 flex-shrink-0 text-gray-400'
+                                  className='mr-2 h-4 w-4 flex-shrink-0 text-gray-400'
                                   aria-hidden='true'
                                 />
                                 <span className='truncate cursor-pointer'>{contact.workphone}</span>
@@ -260,7 +260,7 @@ const Phonebook: NextPage = () => {
                               <div className='mt-1 flex items-center text-sm text-sky-600'>
                                 <FontAwesomeIcon
                                   icon={faPhone}
-                                  className='mr-1.5 h-4 w-4 flex-shrink-0 text-gray-400'
+                                  className='mr-2 h-4 w-4 flex-shrink-0 text-gray-400'
                                   aria-hidden='true'
                                 />
                                 <span className='truncate cursor-pointer'>{contact.cellphone}</span>
