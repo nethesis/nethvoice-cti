@@ -16,7 +16,6 @@ import {
   MdDeleteOutline,
   MdWarningAmber,
   MdBolt,
-  MdAdd,
 } from 'react-icons/md'
 import { Button, Avatar, Modal, Dropdown, InlineNotification, EmptyState } from '../common/'
 import { deleteSpeedDial, getSpeedDials } from '../../services/phonebook'
@@ -29,7 +28,7 @@ import { useSelector } from 'react-redux'
 import { RootState } from '../../store'
 import Skeleton from 'react-loading-skeleton'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
-import { faPhone } from '@fortawesome/free-solid-svg-icons'
+import { faPhone, faPlus } from '@fortawesome/free-solid-svg-icons'
 
 export const SideBar = () => {
   // The state for the delete modal
@@ -157,7 +156,7 @@ export const SideBar = () => {
                 icon={<MdBolt className='mx-auto h-12 w-12' aria-hidden='true' />}
               >
                 <Button variant='primary' onClick={() => openCreateSpeedDialDrawer()}>
-                  <MdAdd className='-ml-1 mr-2 h-5 w-5' />
+                  <FontAwesomeIcon icon={faPlus} className='mr-2 h-4 w-4' />
                   <span>Create</span>
                 </Button>
               </EmptyState>

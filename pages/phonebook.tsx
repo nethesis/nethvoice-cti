@@ -2,7 +2,7 @@
 // SPDX-License-Identifier: AGPL-3.0-or-later
 
 import type { NextPage } from 'next'
-import { MdChevronRight, MdAdd, MdMenuBook, MdSearch } from 'react-icons/md'
+import { MdMenuBook, MdSearch } from 'react-icons/md'
 import { Filter } from '../components/phonebook/Filter'
 import { Avatar, Button, InlineNotification, EmptyState } from '../components/common'
 import { useState, useEffect, useMemo } from 'react'
@@ -18,7 +18,13 @@ import { RootState } from '../store'
 import { useSelector } from 'react-redux'
 import debounce from 'lodash.debounce'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
-import { faPhone, faSuitcase, faUserGroup } from '@fortawesome/free-solid-svg-icons'
+import {
+  faPhone,
+  faSuitcase,
+  faUserGroup,
+  faChevronRight,
+  faPlus,
+} from '@fortawesome/free-solid-svg-icons'
 
 const Phonebook: NextPage = () => {
   const [isPhonebookLoaded, setPhonebookLoaded] = useState(false)
@@ -119,7 +125,7 @@ const Phonebook: NextPage = () => {
     <>
       <div className='p-8 bg-gray-100'>
         <Button variant='white' onClick={() => openCreateContactDrawer()} className='mb-6'>
-          <MdAdd className='-ml-1 mr-2 h-5 w-5' />
+          <FontAwesomeIcon icon={faPlus} className='mr-2 h-4 w-4' />
           <span>Create contact</span>
         </Button>
         <Filter
@@ -161,7 +167,7 @@ const Phonebook: NextPage = () => {
                 icon={<MdMenuBook className='mx-auto h-12 w-12' aria-hidden='true' />}
               >
                 <Button variant='primary' onClick={() => openCreateContactDrawer()}>
-                  <MdAdd className='-ml-1 mr-2 h-5 w-5' />
+                  <FontAwesomeIcon icon={faPlus} className='mr-2 h-4 w-4' />
                   <span>Create contact</span>
                 </Button>
               </EmptyState>
@@ -272,8 +278,9 @@ const Phonebook: NextPage = () => {
                       </div>
                     </div>
                     <div>
-                      <MdChevronRight
-                        className='h-5 w-5 text-gray-400 cursor-pointer'
+                      <FontAwesomeIcon
+                        icon={faChevronRight}
+                        className='h-3 w-3 text-gray-400 cursor-pointer'
                         aria-hidden='true'
                         onClick={() => openShowContactDrawer(contact)}
                       />

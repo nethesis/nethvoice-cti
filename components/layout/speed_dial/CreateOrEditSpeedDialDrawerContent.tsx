@@ -5,10 +5,12 @@ import { ComponentPropsWithRef, forwardRef } from 'react'
 import classNames from 'classnames'
 import { TextInput, Button, InlineNotification } from '../../common'
 import { useState, useRef, useEffect } from 'react'
-import { MdAdd, MdEdit } from 'react-icons/md'
+import { MdEdit } from 'react-icons/md'
 import { createSpeedDial, editSpeedDial } from '../../../services/phonebook'
 import { reloadSpeedDial } from '../../../lib/speedDial'
 import { closeSideDrawer } from '../../../lib/utils'
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
+import { faPlus } from '@fortawesome/free-solid-svg-icons'
 
 export interface CreateOrEditSpeedDialDrawerContentProps extends ComponentPropsWithRef<'div'> {
   config: any
@@ -153,7 +155,7 @@ export const CreateOrEditSpeedDialDrawerContent = forwardRef<
         </Button>
       ) : (
         <Button variant='primary' type='submit' onClick={prepareCreateSpeedDial} className='mb-4'>
-          <MdAdd className='-ml-1 mr-2 h-5 w-5' />
+          <FontAwesomeIcon icon={faPlus} className='mr-2 h-4 w-4' />
           Create speed dial
         </Button>
       )}
