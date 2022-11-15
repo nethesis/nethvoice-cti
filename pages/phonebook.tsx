@@ -2,7 +2,6 @@
 // SPDX-License-Identifier: AGPL-3.0-or-later
 
 import type { NextPage } from 'next'
-import { MdMenuBook, MdSearch } from 'react-icons/md'
 import { Filter } from '../components/phonebook/Filter'
 import { Avatar, Button, InlineNotification, EmptyState } from '../components/common'
 import { useState, useEffect, useMemo } from 'react'
@@ -24,6 +23,8 @@ import {
   faUserGroup,
   faChevronRight,
   faPlus,
+  faAddressBook,
+  faMagnifyingGlass,
 } from '@fortawesome/free-solid-svg-icons'
 
 const Phonebook: NextPage = () => {
@@ -164,7 +165,13 @@ const Phonebook: NextPage = () => {
               <EmptyState
                 title='No contact'
                 description='There is no contact in your phonebook'
-                icon={<MdMenuBook className='mx-auto h-12 w-12' aria-hidden='true' />}
+                icon={
+                  <FontAwesomeIcon
+                    icon={faAddressBook}
+                    className='mx-auto h-12 w-12'
+                    aria-hidden='true'
+                  />
+                }
               >
                 <Button variant='primary' onClick={() => openCreateContactDrawer()}>
                   <FontAwesomeIcon icon={faPlus} className='mr-2 h-4 w-4' />
@@ -180,7 +187,13 @@ const Phonebook: NextPage = () => {
                 <EmptyState
                   title='No contact found'
                   description='Try changing your search filters'
-                  icon={<MdSearch className='mx-auto h-12 w-12' aria-hidden='true' />}
+                  icon={
+                    <FontAwesomeIcon
+                      icon={faMagnifyingGlass}
+                      className='mx-auto h-12 w-12'
+                      aria-hidden='true'
+                    />
+                  }
                 />
               )}
             {isPhonebookLoaded &&
