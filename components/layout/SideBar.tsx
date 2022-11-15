@@ -9,14 +9,7 @@
 
 import type { SpeedDialType } from '../../services/types'
 import { useState, useEffect, useRef, MutableRefObject } from 'react'
-import {
-  MdOutlineAdd,
-  MdMoreVert,
-  MdOutlineEdit,
-  MdDeleteOutline,
-  MdWarningAmber,
-  MdBolt,
-} from 'react-icons/md'
+import { MdOutlineAdd, MdMoreVert, MdOutlineEdit, MdDeleteOutline, MdBolt } from 'react-icons/md'
 import { Button, Avatar, Modal, Dropdown, InlineNotification, EmptyState } from '../common/'
 import { deleteSpeedDial, getSpeedDials } from '../../services/phonebook'
 import {
@@ -28,7 +21,7 @@ import { useSelector } from 'react-redux'
 import { RootState } from '../../store'
 import Skeleton from 'react-loading-skeleton'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
-import { faPhone, faPlus } from '@fortawesome/free-solid-svg-icons'
+import { faPhone, faPlus, faTriangleExclamation } from '@fortawesome/free-solid-svg-icons'
 
 export const SideBar = () => {
   // The state for the delete modal
@@ -209,7 +202,11 @@ export const SideBar = () => {
         >
           <Modal.Content>
             <div className='mx-auto flex h-12 w-12 flex-shrink-0 items-center justify-center rounded-full bg-red-100 sm:mx-0'>
-              <MdWarningAmber className='h-6 w-6 text-red-600' aria-hidden='true' />
+              <FontAwesomeIcon
+                icon={faTriangleExclamation}
+                className='h-6 w-6 text-red-600'
+                aria-hidden='true'
+              />
             </div>
             <div className='mt-3 text-center sm:mt-0 sm:ml-4 sm:text-left'>
               <h3 className='text-lg font-medium leading-6 text-gray-900'>Delete speed dial</h3>

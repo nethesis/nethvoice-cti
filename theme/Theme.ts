@@ -351,10 +351,10 @@ const theme = {
       success: 'text-sm font-medium text-green-800',
     },
     iconStyle: {
-      info: 'h-5 w-5 text-blue-400',
-      error: 'h-5 w-5 text-red-400',
-      warning: 'h-5 w-5 text-yellow-400',
-      success: 'h-5 w-5 text-green-400',
+      info: 'h-4 w-4 text-blue-400 relative -top-1',
+      error: 'h-4 w-4 text-red-400 relative -top-1',
+      warning: 'h-4 w-4 text-yellow-600 relative -top-1',
+      success: 'h-4 w-4 text-green-600 relative -top-1',
     },
     childrenText: {
       info: 'mt-2 text-sm text-blue-700',

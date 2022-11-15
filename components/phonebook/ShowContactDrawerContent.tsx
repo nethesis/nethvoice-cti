@@ -4,14 +4,7 @@
 import { ComponentPropsWithRef, forwardRef, useState, useRef, MutableRefObject } from 'react'
 import classNames from 'classnames'
 import { Avatar, Button, Dropdown, Modal } from '../common'
-import {
-  MdMoreVert,
-  MdEdit,
-  MdDelete,
-  MdVisibility,
-  MdOutlineStickyNote2,
-  MdWarningAmber,
-} from 'react-icons/md'
+import { MdMoreVert, MdEdit, MdDelete, MdVisibility, MdOutlineStickyNote2 } from 'react-icons/md'
 import {
   openEditContactDrawer,
   deleteContact,
@@ -22,7 +15,13 @@ import { useSelector } from 'react-redux'
 import { RootState } from '../../store'
 import { closeSideDrawer } from '../../lib/utils'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
-import { faPhone, faEnvelope, faSuitcase, faUser } from '@fortawesome/free-solid-svg-icons'
+import {
+  faPhone,
+  faEnvelope,
+  faSuitcase,
+  faUser,
+  faTriangleExclamation,
+} from '@fortawesome/free-solid-svg-icons'
 
 export interface ShowContactDrawerContentProps extends ComponentPropsWithRef<'div'> {
   config: any
@@ -77,7 +76,11 @@ export const ShowContactDrawerContent = forwardRef<
       >
         <Modal.Content>
           <div className='mx-auto flex h-12 w-12 flex-shrink-0 items-center justify-center rounded-full bg-red-100 sm:mx-0'>
-            <MdWarningAmber className='h-6 w-6 text-red-600' aria-hidden='true' />
+            <FontAwesomeIcon
+              icon={faTriangleExclamation}
+              className='h-6 w-6 text-red-600'
+              aria-hidden='true'
+            />
           </div>
           <div className='mt-3 text-center sm:mt-0 sm:ml-4 sm:text-left'>
             <h3 className='text-lg font-medium leading-6 text-gray-900'>Delete contact</h3>

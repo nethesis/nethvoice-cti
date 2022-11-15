@@ -13,12 +13,13 @@
 import classNames from 'classnames'
 import { FC, ComponentProps } from 'react'
 import { useTheme } from '../../theme/Context'
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import {
-  MdOutlineCancel,
-  MdWarningAmber,
-  MdInfoOutline,
-  MdCheckCircleOutline,
-} from 'react-icons/md'
+  faCircleXmark,
+  faCircleInfo,
+  faTriangleExclamation,
+  faCircleCheck,
+} from '@fortawesome/free-solid-svg-icons'
 
 export interface InlineNotificationProps extends ComponentProps<'div'> {
   type: 'info' | 'warning' | 'success' | 'error'
@@ -33,13 +34,17 @@ export const InlineNotification: FC<InlineNotificationProps> = ({
   const { inlineNotification: theme } = useTheme().theme
   let checkIcon =
     type === 'info' ? (
-      <MdInfoOutline className={theme.iconStyle[type]} aria-hidden='true' />
+      <FontAwesomeIcon icon={faCircleInfo} className={theme.iconStyle[type]} aria-hidden='true' />
     ) : type === 'warning' ? (
-      <MdWarningAmber className={theme.iconStyle[type]} aria-hidden='true' />
+      <FontAwesomeIcon
+        icon={faTriangleExclamation}
+        className={theme.iconStyle[type]}
+        aria-hidden='true'
+      />
     ) : type === 'success' ? (
-      <MdCheckCircleOutline className={theme.iconStyle[type]} aria-hidden='true' />
+      <FontAwesomeIcon icon={faCircleCheck} className={theme.iconStyle[type]} aria-hidden='true' />
     ) : (
-      <MdOutlineCancel className={theme.iconStyle[type]} aria-hidden='true' />
+      <FontAwesomeIcon icon={faCircleXmark} className={theme.iconStyle[type]} aria-hidden='true' />
     )
 
   return (
