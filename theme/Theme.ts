@@ -40,17 +40,17 @@ const theme = {
     },
   },
   input: {
-    base: 'block w-full relative bg-white focus:z-10 disabled:cursor-not-allowed disabled:border-gray-200 disabled:bg-gray-50 disabled:text-gray-500',
-    label: 'text-sm font-medium text-gray-700',
+    base: 'block w-full relative focus:z-10 disabled:cursor-not-allowed bg-white text-gray-900 dark:bg-gray-900 dark:text-gray-100  disabled:border-gray-200 disabled:bg-gray-50 disabled:text-gray-500 dark:disabled:border-gray-700 dark:disabled:bg-gray-900 dark:disabled:text-gray-400',
+    label: 'text-sm font-medium text-gray-700 dark:text-gray-200',
     placeholder: {
-      base: 'placeholder:text-gray-500',
-      error: 'placeholder:text-red-300',
+      base: 'placeholder:text-gray-500 dark:placeholder:text-gray-400',
+      error: 'placeholder:text-red-300 dark:placeholder:text-red-600',
     },
     helper: {
       base: 'mt-2 text-sm',
       color: {
-        base: 'text-gray-500',
-        error: 'text-red-600',
+        base: 'text-gray-500 dark:text-gray-400',
+        error: 'text-red-600 dark:text-red-300',
       },
     },
     size: {
@@ -58,14 +58,14 @@ const theme = {
       large: 'px-4 py-3 sm:text-md',
     },
     colors: {
-      gray: 'border-gray-300 focus:border-primaryLight focus:ring-primaryLight placeholder:text-gray-400',
+      gray: 'border-gray-300 focus:border-primaryLight focus:ring-primaryLight placeholder:text-gray-400 dark:border-gray-600 dark:focus:border-primaryDark dark:focus:ring-primaryDark dark:placeholder:text-gray-500',
       error:
-        'border-red-500 text-red-900 focus:border-red-500 focus:ring-red-500 placeholder-red-700',
+        'border-red-500 text-red-900 focus:border-red-500 focus:ring-red-500 placeholder-red-700 dark:border-red-400 dark:text-red-100 dark:focus:border-red-400 dark:focus:ring-red-400 dark:placeholder-red-200',
     },
     icon: {
       base: 'absolute flex items-center z-20',
-      gray: 'text-gray-400',
-      red: 'text-red-500',
+      gray: 'text-gray-400 dark:text-gray-500',
+      red: 'text-red-500 dark:text-red-400',
       left: 'inset-y-0 left-0 pl-3',
       right: 'inset-y-0 right-0 pr-3',
       size: {
