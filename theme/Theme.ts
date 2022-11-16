@@ -7,7 +7,7 @@ const theme = {
     primary:
       'bg-primary text-white border border-transparent hover:bg-primaryDark focus:ring-primaryLight',
     secondary:
-      'focus:ring-primaryLight bg-sky-100 text-primaryDark border border-transparent hover:bg-sky-200 focus:ring-primaryLight',
+      'focus:ring-primaryLight bg-primaryLighter text-primaryDark border border-transparent hover:bg-primaryLighter focus:ring-primaryLight',
     white:
       'border border-gray-300 bg-white text-gray-700 shadow-sm hover:bg-gray-100 focus:ring-primaryLight',
     danger: 'focus:ring-red-500 bg-red-600 hover:bg-red-700 text-white border border-transparent',
@@ -31,12 +31,12 @@ const theme = {
     on: {
       translate: 'translate-x-5',
       gray: 'bg-gray-200',
-      indigo: 'bg-primary',
+      primary: 'bg-primary',
     },
     off: {
       translate: 'translate-x-0',
       gray: 'bg-gray-200',
-      indigo: 'bg-sky-200',
+      primary: 'bg-primaryLighter',
     },
   },
   input: {

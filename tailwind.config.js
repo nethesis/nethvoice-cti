@@ -13,8 +13,10 @@ module.exports = {
     extend: {
       colors: {
         primary: '#16a34a', // green-600
+        primaryLighter: '#dcfce7', // green-100
         primaryLight: '#22c55e', // green-500
         primaryDark: '#15803d', // green-700
+        primaryDarker: '#14532d', // green-900
       },
     },
   },

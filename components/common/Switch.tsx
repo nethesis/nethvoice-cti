@@ -27,7 +27,7 @@ export interface SwitchProps {
 export const Switch: FC<SwitchProps> = ({ changed, on, disabled, label, className }): JSX.Element => {
   const [enabled, setEnabled] = useState(on || false)
   const { switch: switchTheme } = useTheme().theme
-  const backgroundOn = disabled ? switchTheme.off.indigo : switchTheme.on.indigo
+  const backgroundOn = disabled ? switchTheme.off.primary : switchTheme.on.primary
   const backgroundOff = disabled ? switchTheme.off.gray : switchTheme.on.gray
 
   useEffect(() => {
