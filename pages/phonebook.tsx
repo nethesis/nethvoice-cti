@@ -212,7 +212,7 @@ const Phonebook: NextPage = () => {
                       <div className='min-w-0 flex-1 px-4 md:grid md:grid-cols-2 gap-4 lg:grid-cols-2 xl:grid-cols-3'>
                         {/* display name and company/contacts */}
                         <div className='flex flex-col justify-center'>
-                          <div className='truncate text-sm font-medium text-sky-600'>
+                          <div className='truncate text-sm font-medium text-primary'>
                             <span
                               className='cursor-pointer'
                               onClick={() => openShowContactDrawer(contact)}
@@ -228,7 +228,7 @@ const Phonebook: NextPage = () => {
                                 className='mr-2 h-4 w-4 flex-shrink-0 text-gray-400'
                                 aria-hidden='true'
                               />
-                              <span className='truncate text-sky-600 cursor-pointer'>
+                              <span className='truncate text-primary cursor-pointer'>
                                 {contact.extension}
                               </span>
                             </div>
@@ -261,7 +261,7 @@ const Phonebook: NextPage = () => {
                           <div className='mt-4 md:mt-0'>
                             <div>
                               <div className='text-sm text-gray-900'>Work phone</div>
-                              <div className='mt-1 flex items-center text-sm text-sky-600'>
+                              <div className='mt-1 flex items-center text-sm text-primary'>
                                 <FontAwesomeIcon
                                   icon={faPhone}
                                   className='mr-2 h-4 w-4 flex-shrink-0 text-gray-400'
@@ -277,7 +277,7 @@ const Phonebook: NextPage = () => {
                           <div className='mt-4 md:mt-0'>
                             <div>
                               <div className='text-sm text-gray-900'>Mobile phone</div>
-                              <div className='mt-1 flex items-center text-sm text-sky-600'>
+                              <div className='mt-1 flex items-center text-sm text-primary'>
                                 <FontAwesomeIcon
                                   icon={faPhone}
                                   className='mr-2 h-4 w-4 flex-shrink-0 text-gray-400'

@@ -155,7 +155,7 @@ export const Filter = forwardRef<HTMLButtonElement, FilterProps>(
                                         type='radio'
                                         defaultChecked={option.value === sortBy}
                                         onChange={changeSortBy}
-                                        className='h-4 w-4 border-gray-300 text-sky-600 focus:ring-sky-500'
+                                        className='h-4 w-4 border-gray-300 text-primary focus:ring-primaryLight'
                                       />
                                       <label
                                         htmlFor={option.value}
@@ -208,7 +208,7 @@ export const Filter = forwardRef<HTMLButtonElement, FilterProps>(
                                         type='radio'
                                         defaultChecked={option.value === contactType}
                                         onChange={changeContactType}
-                                        className='h-4 w-4 border-gray-300 text-sky-600 focus:ring-sky-500'
+                                        className='h-4 w-4 border-gray-300 text-primary focus:ring-primaryLight'
                                       />
                                       <label
                                         htmlFor={option.value}
@@ -286,7 +286,7 @@ export const Filter = forwardRef<HTMLButtonElement, FilterProps>(
                                   type='radio'
                                   defaultChecked={option.value === sortBy}
                                   onChange={changeSortBy}
-                                  className='h-4 w-4 border-gray-300 text-sky-600 focus:ring-sky-500'
+                                  className='h-4 w-4 border-gray-300 text-primary focus:ring-primaryLight'
                                 />
                                 <label
                                   htmlFor={option.value}
@@ -338,7 +338,7 @@ export const Filter = forwardRef<HTMLButtonElement, FilterProps>(
                                   type='radio'
                                   defaultChecked={option.value === contactType}
                                   onChange={changeContactType}
-                                  className='h-4 w-4 border-gray-300 text-sky-600 focus:ring-sky-500'
+                                  className='h-4 w-4 border-gray-300 text-primary focus:ring-primaryLight'
                                 />
                                 <label
                                   htmlFor={option.value}

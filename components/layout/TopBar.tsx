@@ -64,7 +64,7 @@ export const TopBar: FC<TopBarProps> = ({ openMobileCb }) => {
       <div className='relative z-10 flex h-16 flex-shrink-0 border-b border-gray-200 bg-white shadow-sm'>
         <button
           type='button'
-          className='border-r border-gray-200 px-4 text-gray-500 focus:outline-none focus:ring-2 focus:ring-inset focus:ring-sky-500 md:hidden'
+          className='border-r border-gray-200 px-4 text-gray-500 focus:outline-none focus:ring-2 focus:ring-inset focus:ring-primaryLight md:hidden'
           onClick={openMobileCb}
         >
           <span className='sr-only'>Open sidebar</span>

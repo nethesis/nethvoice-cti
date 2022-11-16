@@ -161,7 +161,7 @@ export const ShowContactDrawerContent = forwardRef<
               <div className='py-4 sm:grid sm:grid-cols-3 sm:gap-4 sm:py-5'>
                 <dt className='text-sm font-medium text-gray-500'>Extension</dt>
                 <dd className='mt-1 text-sm text-gray-900 sm:col-span-2 sm:mt-0'>
-                  <div className='flex items-center text-sm text-sky-600'>
+                  <div className='flex items-center text-sm text-primary'>
                     <FontAwesomeIcon
                       icon={faPhone}
                       className='mr-2 h-4 w-4 flex-shrink-0 text-gray-400'
@@ -177,7 +177,7 @@ export const ShowContactDrawerContent = forwardRef<
               <div className='py-4 sm:grid sm:grid-cols-3 sm:gap-4 sm:py-5'>
                 <dt className='text-sm font-medium text-gray-500'>Work phone</dt>
                 <dd className='mt-1 text-sm text-gray-900 sm:col-span-2 sm:mt-0'>
-                  <div className='flex items-center text-sm text-sky-600'>
+                  <div className='flex items-center text-sm text-primary'>
                     <FontAwesomeIcon
                       icon={faPhone}
                       className='mr-2 h-4 w-4 flex-shrink-0 text-gray-400'
@@ -193,7 +193,7 @@ export const ShowContactDrawerContent = forwardRef<
               <div className='py-4 sm:grid sm:grid-cols-3 sm:gap-4 sm:py-5'>
                 <dt className='text-sm font-medium text-gray-500'>Mobile phone</dt>
                 <dd className='mt-1 text-sm text-gray-900 sm:col-span-2 sm:mt-0'>
-                  <div className='flex items-center text-sm text-sky-600'>
+                  <div className='flex items-center text-sm text-primary'>
                     <FontAwesomeIcon
                       icon={faPhone}
                       className='mr-2 h-4 w-4 flex-shrink-0 text-gray-400'
@@ -209,7 +209,7 @@ export const ShowContactDrawerContent = forwardRef<
               <div className='py-4 sm:grid sm:grid-cols-3 sm:gap-4 sm:py-5'>
                 <dt className='text-sm font-medium text-gray-500'>Email</dt>
                 <dd className='mt-1 text-sm text-gray-900 sm:col-span-2 sm:mt-0'>
-                  <div className='flex items-center text-sm text-sky-600'>
+                  <div className='flex items-center text-sm text-primary'>
                     <FontAwesomeIcon
                       icon={faEnvelope}
                       className='mr-2 h-4 w-4 flex-shrink-0 text-gray-400'
@@ -261,7 +261,7 @@ export const ShowContactDrawerContent = forwardRef<
                             aria-hidden='true'
                           />
                           <span
-                            className='ml-2 w-0 flex-1 truncate text-sky-600 cursor-pointer'
+                            className='ml-2 w-0 flex-1 truncate text-primary cursor-pointer'
                             onClick={() => fetchContact(contact.id, contact.source)}
                           >
                             {contact.name}

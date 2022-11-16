@@ -4,11 +4,12 @@
 const theme = {
   button: {
     base: 'flex content-center items-center justify-center font-medium tracking-wide transition-colors duration-200 transform focus:outline-none focus:ring-2 focus:z-20 focus:ring-offset-2 disabled:opacity-75',
-    primary: 'bg-sky-600 text-white border border-transparent hover:bg-sky-700 focus:ring-sky-500',
+    primary:
+      'bg-primary text-white border border-transparent hover:bg-primaryDark focus:ring-primaryLight',
     secondary:
-      'focus:ring-sky-500 bg-sky-100 text-sky-700 border border-transparent hover:bg-sky-200 focus:ring-sky-500',
+      'focus:ring-primaryLight bg-sky-100 text-primaryDark border border-transparent hover:bg-sky-200 focus:ring-primaryLight',
     white:
-      'border border-gray-300 bg-white text-gray-700 shadow-sm hover:bg-gray-100 focus:ring-sky-500',
+      'border border-gray-300 bg-white text-gray-700 shadow-sm hover:bg-gray-100 focus:ring-primaryLight',
     danger: 'focus:ring-red-500 bg-red-600 hover:bg-red-700 text-white border border-transparent',
     rounded: {
       small: 'rounded',
@@ -24,13 +25,13 @@ const theme = {
   },
   switch: {
     background:
-      'relative inline-flex h-6 w-11 flex-shrink-0 cursor-pointer rounded-full border-2 border-transparent transition-colors duration-200 ease-in-out focus:outline-none focus:ring-2 focus:ring-sky-500 focus:ring-offset-2',
+      'relative inline-flex h-6 w-11 flex-shrink-0 cursor-pointer rounded-full border-2 border-transparent transition-colors duration-200 ease-in-out focus:outline-none focus:ring-2 focus:ring-primaryLight focus:ring-offset-2',
     circle:
       'pointer-events-none inline-block h-5 w-5 transform rounded-full bg-white shadow ring-0 transition duration-200 ease-in-out',
     on: {
       translate: 'translate-x-5',
       gray: 'bg-gray-200',
-      indigo: 'bg-sky-600',
+      indigo: 'bg-primary',
     },
     off: {
       translate: 'translate-x-0',
@@ -57,7 +58,7 @@ const theme = {
       large: 'px-4 py-3 sm:text-md',
     },
     colors: {
-      gray: 'border-gray-300 focus:border-sky-500 focus:ring-sky-500 placeholder:text-gray-400',
+      gray: 'border-gray-300 focus:border-primaryLight focus:ring-primaryLight placeholder:text-gray-400',
       error:
         'border-red-500 text-red-900 focus:border-red-500 focus:ring-red-500 placeholder-red-700',
     },

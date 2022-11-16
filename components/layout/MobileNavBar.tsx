@@ -54,7 +54,7 @@ export const MobileNavBar: FC<MobileNavBarProps> = ({ closeMobileMenu, show, ite
               leaveFrom='translate-x-0'
               leaveTo='-translate-x-full'
             >
-              <Dialog.Panel className='relative flex w-full max-w-xs flex-1 flex-col bg-sky-600 pt-5 pb-4'>
+              <Dialog.Panel className='relative flex w-full max-w-xs flex-1 flex-col bg-primary pt-5 pb-4'>
                 <Transition.Child
                   as={Fragment}
                   enter='ease-in-out duration-300'
@@ -99,8 +99,8 @@ export const MobileNavBar: FC<MobileNavBarProps> = ({ closeMobileMenu, show, ite
                             href={item.href}
                             className={classNames(
                               item.current
-                                ? 'bg-sky-700 text-white'
-                                : 'text-gray-100 hover:bg-sky-700 hover:text-white',
+                                ? 'bg-primaryDark text-white'
+                                : 'text-gray-100 hover:bg-primaryDark hover:text-white',
                               'group py-2 px-3 rounded-md flex items-center text-sm font-medium',
                             )}
                             aria-current={item.current ? 'page' : undefined}

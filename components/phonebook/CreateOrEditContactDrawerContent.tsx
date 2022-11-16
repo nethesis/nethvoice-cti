@@ -252,7 +252,7 @@ export const CreateOrEditContactDrawerContent = forwardRef<
                   type='radio'
                   checked={option.id === contactVisibility}
                   onChange={onContactVisibilityChanged}
-                  className='h-4 w-4 border-gray-300 text-sky-600 focus:ring-sky-500'
+                  className='h-4 w-4 border-gray-300 text-primary focus:ring-primaryLight'
                 />
                 <label htmlFor={option.id} className='ml-3 block text-sm font-medium text-gray-700'>
                   {option.title}
@@ -276,7 +276,7 @@ export const CreateOrEditContactDrawerContent = forwardRef<
                   type='radio'
                   checked={option.id === contactType}
                   onChange={onContactTypeChanged}
-                  className='h-4 w-4 border-gray-300 text-sky-600 focus:ring-sky-500'
+                  className='h-4 w-4 border-gray-300 text-primary focus:ring-primaryLight'
                 />
                 <label htmlFor={option.id} className='ml-3 block text-sm font-medium text-gray-700'>
                   {option.title}
