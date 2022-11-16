@@ -16,8 +16,9 @@ import { FC, Fragment } from 'react'
 import classNames from 'classnames'
 import type { NavItemsProps } from '../../config/routes'
 import Image from 'next/image'
-import { MdOutlineClose } from 'react-icons/md'
 import Link from 'next/link'
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
+import { faXmark } from '@fortawesome/free-solid-svg-icons'
 
 interface MobileNavBarProps {
   show: boolean
@@ -69,7 +70,11 @@ export const MobileNavBar: FC<MobileNavBarProps> = ({ closeMobileMenu, show, ite
                       className='flex h-12 w-12 items-center justify-center rounded-full'
                       onClick={closeMobileMenu}
                     >
-                      <MdOutlineClose className='h-6 w-6 text-white' aria-hidden='true' />
+                      <FontAwesomeIcon
+                        icon={faXmark}
+                        className='h-6 w-6 text-white'
+                        aria-hidden='true'
+                      />
                       <span className='sr-only'>Close sidebar</span>
                     </button>
                   </div>
@@ -100,7 +105,8 @@ export const MobileNavBar: FC<MobileNavBarProps> = ({ closeMobileMenu, show, ite
                             )}
                             aria-current={item.current ? 'page' : undefined}
                           >
-                            <item.icon
+                            <FontAwesomeIcon
+                              icon={item.icon}
                               className={classNames(
                                 item.current
                                   ? 'text-white'

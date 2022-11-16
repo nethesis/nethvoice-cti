@@ -5,19 +5,6 @@ import { ComponentPropsWithRef, forwardRef, useState, useRef, MutableRefObject }
 import classNames from 'classnames'
 import { Avatar, Button, Dropdown, Modal } from '../common'
 import {
-  MdEmail,
-  MdPhone,
-  MdPhoneAndroid,
-  MdOutlineWork,
-  MdPeople,
-  MdMoreVert,
-  MdEdit,
-  MdDelete,
-  MdVisibility,
-  MdOutlineStickyNote2,
-  MdWarningAmber,
-} from 'react-icons/md'
-import {
   openEditContactDrawer,
   deleteContact,
   reloadPhonebook,
@@ -26,6 +13,19 @@ import {
 import { useSelector } from 'react-redux'
 import { RootState } from '../../store'
 import { closeSideDrawer } from '../../lib/utils'
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
+import {
+  faPhone,
+  faEnvelope,
+  faSuitcase,
+  faUser,
+  faTriangleExclamation,
+  faFileLines,
+  faEllipsisVertical,
+  faPen,
+  faTrash,
+  faEye,
+} from '@fortawesome/free-solid-svg-icons'
 
 export interface ShowContactDrawerContentProps extends ComponentPropsWithRef<'div'> {
   config: any
@@ -60,10 +60,10 @@ export const ShowContactDrawerContent = forwardRef<
 
   const contactMenuItems = (
     <>
-      <Dropdown.Item icon={MdEdit} onClick={() => openEditContactDrawer(config)}>
+      <Dropdown.Item icon={faPen} onClick={() => openEditContactDrawer(config)}>
         Edit
       </Dropdown.Item>
-      <Dropdown.Item icon={MdDelete} onClick={() => showDeleteContactModal(config)}>
+      <Dropdown.Item icon={faTrash} onClick={() => showDeleteContactModal(config)}>
         Delete
       </Dropdown.Item>
     </>
@@ -80,7 +80,11 @@ export const ShowContactDrawerContent = forwardRef<
       >
         <Modal.Content>
           <div className='mx-auto flex h-12 w-12 flex-shrink-0 items-center justify-center rounded-full bg-red-100 sm:mx-0'>
-            <MdWarningAmber className='h-6 w-6 text-red-600' aria-hidden='true' />
+            <FontAwesomeIcon
+              icon={faTriangleExclamation}
+              className='h-6 w-6 text-red-600'
+              aria-hidden='true'
+            />
           </div>
           <div className='mt-3 text-center sm:mt-0 sm:ml-4 sm:text-left'>
             <h3 className='text-lg font-medium leading-6 text-gray-900'>Delete contact</h3>
@@ -127,7 +131,7 @@ export const ShowContactDrawerContent = forwardRef<
                 className='mr-1 mt-1'
               >
                 <Button variant='white'>
-                  <MdMoreVert className='h-4 w-4' />
+                  <FontAwesomeIcon icon={faEllipsisVertical} className='h-4 w-4' />
                   <span className='sr-only'>Open contact menu</span>
                 </Button>
               </Dropdown>
@@ -142,8 +146,9 @@ export const ShowContactDrawerContent = forwardRef<
                 <dt className='text-sm font-medium text-gray-500'>Company</dt>
                 <dd className='mt-1 text-sm text-gray-900 sm:col-span-2 sm:mt-0'>
                   <div className='flex items-center text-sm'>
-                    <MdOutlineWork
-                      className='mr-1.5 h-5 w-5 flex-shrink-0 text-gray-400'
+                    <FontAwesomeIcon
+                      icon={faSuitcase}
+                      className='mr-2 h-4 w-4 flex-shrink-0 text-gray-400'
                       aria-hidden='true'
                     />
                     <span>{config.company}</span>
@@ -157,8 +162,9 @@ export const ShowContactDrawerContent = forwardRef<
                 <dt className='text-sm font-medium text-gray-500'>Extension</dt>
                 <dd className='mt-1 text-sm text-gray-900 sm:col-span-2 sm:mt-0'>
                   <div className='flex items-center text-sm text-sky-600'>
-                    <MdPhone
-                      className='mr-1.5 h-5 w-5 flex-shrink-0 text-gray-400'
+                    <FontAwesomeIcon
+                      icon={faPhone}
+                      className='mr-2 h-4 w-4 flex-shrink-0 text-gray-400'
                       aria-hidden='true'
                     />
                     <span className='truncate cursor-pointer'>{config.extension}</span>
@@ -172,8 +178,9 @@ export const ShowContactDrawerContent = forwardRef<
                 <dt className='text-sm font-medium text-gray-500'>Work phone</dt>
                 <dd className='mt-1 text-sm text-gray-900 sm:col-span-2 sm:mt-0'>
                   <div className='flex items-center text-sm text-sky-600'>
-                    <MdPhone
-                      className='mr-1.5 h-5 w-5 flex-shrink-0 text-gray-400'
+                    <FontAwesomeIcon
+                      icon={faPhone}
+                      className='mr-2 h-4 w-4 flex-shrink-0 text-gray-400'
                       aria-hidden='true'
                     />
                     <span className='truncate cursor-pointer'>{config.workphone}</span>
@@ -187,8 +194,9 @@ export const ShowContactDrawerContent = forwardRef<
                 <dt className='text-sm font-medium text-gray-500'>Mobile phone</dt>
                 <dd className='mt-1 text-sm text-gray-900 sm:col-span-2 sm:mt-0'>
                   <div className='flex items-center text-sm text-sky-600'>
-                    <MdPhoneAndroid
-                      className='mr-1.5 h-5 w-5 flex-shrink-0 text-gray-400'
+                    <FontAwesomeIcon
+                      icon={faPhone}
+                      className='mr-2 h-4 w-4 flex-shrink-0 text-gray-400'
                       aria-hidden='true'
                     />
                     <span className='truncate cursor-pointer'>{config.cellphone}</span>
@@ -202,8 +210,9 @@ export const ShowContactDrawerContent = forwardRef<
                 <dt className='text-sm font-medium text-gray-500'>Email</dt>
                 <dd className='mt-1 text-sm text-gray-900 sm:col-span-2 sm:mt-0'>
                   <div className='flex items-center text-sm text-sky-600'>
-                    <MdEmail
-                      className='mr-1.5 h-5 w-5 flex-shrink-0 text-gray-400'
+                    <FontAwesomeIcon
+                      icon={faEnvelope}
+                      className='mr-2 h-4 w-4 flex-shrink-0 text-gray-400'
                       aria-hidden='true'
                     />
                     <a
@@ -224,8 +233,9 @@ export const ShowContactDrawerContent = forwardRef<
                 <dt className='text-sm font-medium text-gray-500'>Notes</dt>
                 <dd className='mt-1 text-sm text-gray-900 sm:col-span-2 sm:mt-0'>
                   <div className='flex items-center text-sm'>
-                    <MdOutlineStickyNote2
-                      className='mr-1.5 h-5 w-5 flex-shrink-0 text-gray-400'
+                    <FontAwesomeIcon
+                      icon={faFileLines}
+                      className='mr-2 h-4 w-4 flex-shrink-0 text-gray-400'
                       aria-hidden='true'
                     />
                     <div>{config.notes}</div>
@@ -245,8 +255,9 @@ export const ShowContactDrawerContent = forwardRef<
                         className='flex items-center justify-between pb-3 pr-4 text-sm'
                       >
                         <div className='flex w-0 flex-1 items-center'>
-                          <MdPeople
-                            className='h-5 w-5 flex-shrink-0 text-gray-400'
+                          <FontAwesomeIcon
+                            icon={faUser}
+                            className='h-4 w-4 flex-shrink-0 text-gray-400'
                             aria-hidden='true'
                           />
                           <span
@@ -267,8 +278,9 @@ export const ShowContactDrawerContent = forwardRef<
               <dt className='text-sm font-medium text-gray-500'>Visibility</dt>
               <dd className='mt-1 text-sm text-gray-900 sm:col-span-2 sm:mt-0'>
                 <div className='flex items-center text-sm'>
-                  <MdVisibility
-                    className='mr-1.5 h-5 w-5 flex-shrink-0 text-gray-400'
+                  <FontAwesomeIcon
+                    icon={faEye}
+                    className='mr-2 h-4 w-4 flex-shrink-0 text-gray-400'
                     aria-hidden='true'
                   />
                   <span className='truncate'>

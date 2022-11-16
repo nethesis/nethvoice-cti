@@ -6,10 +6,12 @@ import { Menu } from '@headlessui/react'
 import classNames from 'classnames'
 import { useTheme } from '../../../theme/Context'
 import { cleanClassName } from '../../../lib/utils'
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
+import { IconDefinition } from '@fortawesome/fontawesome-common-types'
 
 export interface DropdownItemProps extends Omit<ComponentProps<'div'>, 'className'> {
   onClick?: () => void
-  icon?: FC<ComponentProps<'svg'>>
+  icon?: IconDefinition
   centered?: boolean
 }
 
@@ -35,7 +37,7 @@ export const DropdownItem: FC<DropdownItemProps> = ({
           onClick={onClick}
           {...theirProps}
         >
-          {Icon && <Icon className={theme.item.icon} />}
+          {Icon && <FontAwesomeIcon icon={Icon} className={theme.item.icon} />}
           {children}
         </div>
       )}

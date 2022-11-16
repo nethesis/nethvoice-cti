@@ -6,12 +6,11 @@ import { saveCredentials } from '../lib/login'
 import { useState, useRef } from 'react'
 import { TextInput, InlineNotification, Button } from '../components/common'
 import hmacSHA1 from 'crypto-js/hmac-sha1'
-import { MdLock, MdOutlineVisibility, MdOutlineVisibilityOff } from 'react-icons/md'
 import Logo from '../public/logo.png'
 import Background from '../public/background.png'
 import { useRouter } from 'next/router'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
-import { faCircleNotch } from '@fortawesome/free-solid-svg-icons'
+import { faCircleNotch, faEye, faEyeSlash } from '@fortawesome/free-solid-svg-icons'
 
 export default function Login() {
   const [pwdVisible, setPwdVisible] = useState(false)
@@ -128,7 +127,7 @@ export default function Login() {
                         placeholder=''
                         name='password'
                         type={pwdVisible ? 'text' : 'password'}
-                        icon={pwdVisible ? MdOutlineVisibility : MdOutlineVisibilityOff}
+                        icon={pwdVisible ? faEye : faEyeSlash}
                         onIconClick={() => setPwdVisible(!pwdVisible)}
                         trailingIcon={true}
                         error={onError ? true : false}

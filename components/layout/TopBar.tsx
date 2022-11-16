@@ -8,7 +8,6 @@
  */
 
 import { FC } from 'react'
-import { MdSearch, MdOutlineMenu, MdOutlineLogout } from 'react-icons/md'
 import { Avatar, Dropdown } from '../common'
 import { logout } from '../../services/login'
 import { useRouter } from 'next/router'
@@ -16,6 +15,12 @@ import { removeItem } from '../../lib/storage'
 import { store } from '../../store'
 import { useSelector } from 'react-redux'
 import { RootState } from '../../store'
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
+import {
+  faMagnifyingGlass,
+  faArrowRightFromBracket,
+  faBars,
+} from '@fortawesome/free-solid-svg-icons'
 
 interface TopBarProps {
   openMobileCb: () => void
@@ -48,7 +53,7 @@ export const TopBar: FC<TopBarProps> = ({ openMobileCb }) => {
           </span>
         </Dropdown.Header>
       </div>
-      <Dropdown.Item icon={MdOutlineLogout} onClick={doLogout}>
+      <Dropdown.Item icon={faArrowRightFromBracket} onClick={doLogout}>
         Logout
       </Dropdown.Item>
     </>
@@ -63,7 +68,7 @@ export const TopBar: FC<TopBarProps> = ({ openMobileCb }) => {
           onClick={openMobileCb}
         >
           <span className='sr-only'>Open sidebar</span>
-          <MdOutlineMenu className='h-6 w-6' aria-hidden='true' />
+          <FontAwesomeIcon icon={faBars} className='h-5 w-5' aria-hidden='true' />
         </button>
         <div className='flex flex-1 justify-between px-4 sm:px-6'>
           <div className='flex flex-1'>
@@ -73,7 +78,11 @@ export const TopBar: FC<TopBarProps> = ({ openMobileCb }) => {
               </label>
               <div className='relative w-full text-gray-400 focus-within:text-gray-600'>
                 <div className='pointer-events-none absolute inset-y-0 left-0 flex items-center'>
-                  <MdSearch className='h-5 w-5 flex-shrink-0' aria-hidden='true' />
+                  <FontAwesomeIcon
+                    icon={faMagnifyingGlass}
+                    className='h-4 w-4 flex-shrink-0'
+                    aria-hidden='true'
+                  />
                 </div>
                 <input
                   name='search-field'

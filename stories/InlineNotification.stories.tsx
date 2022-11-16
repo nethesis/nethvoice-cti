@@ -18,24 +18,35 @@ const Template: Story<InlineNotificationProps> = (args) => (
 
 export const Information = Template.bind({})
 Information.args = {
-  children: 'Information',
+  title: 'Some useful information',
   type: 'info',
+  children: 'Lorem ipsum dolor sit amet, consectetur adipiscing elit',
 }
 
 export const Warning = Template.bind({})
 Warning.args = {
-  children: 'Warning',
+  title: 'Something needs attention',
   type: 'warning',
+  children: 'Lorem ipsum dolor sit amet, consectetur adipiscing elit',
 }
 
 export const Error = Template.bind({})
 Error.args = {
-  children: 'Error',
+  title: 'Something went wrong',
   type: 'error',
+  children: 'Lorem ipsum dolor sit amet, consectetur adipiscing elit',
 }
 
 export const Success = Template.bind({})
 Success.args = {
-  children: 'Success',
+  title: 'Something good has happened',
   type: 'success',
+  children: 'Lorem ipsum dolor sit amet, consectetur adipiscing elit',
+}
+
+export const NoChildren = Template.bind({})
+NoChildren.args = {
+  title: 'Some useful information',
+  type: 'info',
+  children: null,
 }

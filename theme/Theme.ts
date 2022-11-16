@@ -114,6 +114,18 @@ const theme = {
     },
   },
   status: {
+    available: {
+      badge: {
+        base: 'bg-green-100 text-green-900',
+        dot: 'bg-green-400',
+      },
+      avatar: {
+        dot: 'bg-green-500',
+      },
+      card: {
+        border: 'border-green-500',
+      },
+    },
     online: {
       badge: {
         base: 'bg-green-100 text-green-900',
@@ -247,11 +259,11 @@ const theme = {
       base: 'text-white w-full h-full fill-white flex justify-center items-center',
       background: 'bg-gray-500',
       sizes: {
-        extra_small: 'h-4 w-4',
-        small: 'h-6 w-6',
-        base: 'h-6 w-6',
-        large: 'h-10 w-10',
-        extra_large: 'h-12 w-12',
+        extra_small: 'h-3 w-3',
+        small: 'h-4 w-4',
+        base: 'h-5 w-5',
+        large: 'h-6 w-6',
+        extra_large: 'h-7 w-7',
       },
     },
     status: {
@@ -287,7 +299,7 @@ const theme = {
       base: 'block px-4 py-2 text-sm flex items-center gap-3 mt-1 mb-1 cursor-pointer',
       light: 'text-gray-700',
       active: 'bg-gray-100 text-gray-900',
-      icon: 'h-5 w-5 text-gray-400 flex',
+      icon: 'h-4 w-4 text-gray-400 flex',
       centered: 'justify-center',
     },
     items: {
@@ -339,10 +351,10 @@ const theme = {
       success: 'text-sm font-medium text-green-800',
     },
     iconStyle: {
-      info: 'h-5 w-5 text-blue-400',
-      error: 'h-5 w-5 text-red-400',
-      warning: 'h-5 w-5 text-yellow-400',
-      success: 'h-5 w-5 text-green-400',
+      info: 'h-4 w-4 text-blue-400 relative -top-1',
+      error: 'h-4 w-4 text-red-400 relative -top-1',
+      warning: 'h-4 w-4 text-yellow-600 relative -top-1',
+      success: 'h-4 w-4 text-green-600 relative -top-1',
     },
     childrenText: {
       info: 'mt-2 text-sm text-blue-700',

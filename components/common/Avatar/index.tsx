@@ -23,7 +23,9 @@ import classNames from 'classnames'
 import Image from 'next/image'
 import { AvatarGroup, AvatarGroupProps as GroupProps } from './AvatarGroup'
 import type { StatusTypes } from '../../../theme/Types'
-import { MdPerson, MdApartment } from 'react-icons/md'
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
+import { faUser, faBuilding } from '@fortawesome/free-solid-svg-icons'
+
 export type AvatarGroupProps = GroupProps
 
 export interface AvatarProps extends Omit<ComponentProps<'div'>, 'placeholder'> {
@@ -52,7 +54,8 @@ const AvatarComponent: FC<AvatarProps> = ({
   unoptimized,
   className,
 }) => {
-  const { avatar: theme, status: statuses } = useTheme().theme
+  const { avatar: theme } = useTheme().theme
+  const themeStatus = useTheme().theme.status
 
   return (
     <div
@@ -81,13 +84,15 @@ const AvatarComponent: FC<AvatarProps> = ({
       {placeholderType && (
         <div className={theme.placeholderType.base}>
           {placeholderType == 'person' && (
-            <MdPerson
+            <FontAwesomeIcon
+              icon={faUser}
               className={classNames(theme.placeholderType, theme.placeholderType.sizes[size])}
               aria-hidden='true'
             />
           )}
           {placeholderType == 'company' && (
-            <MdApartment
+            <FontAwesomeIcon
+              icon={faBuilding}
               className={classNames(theme.placeholderType, theme.placeholderType.sizes[size])}
               aria-hidden='true'
             />
@@ -98,7 +103,7 @@ const AvatarComponent: FC<AvatarProps> = ({
         <div
           className={classNames(
             theme.status.base,
-            statuses[status].avatar.dot,
+            themeStatus[status].avatar.dot,
             rounded === 'base'
               ? theme.status.sizes.rounded[size]
               : theme.status.sizes.circular[size],

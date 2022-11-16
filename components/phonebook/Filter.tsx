@@ -4,9 +4,10 @@
 import { ComponentPropsWithRef, forwardRef } from 'react'
 import classNames from 'classnames'
 import { TextInput } from '../common'
-import { MdExpandMore, MdClose } from 'react-icons/md'
 import { Fragment, useState, useEffect } from 'react'
 import { Dialog, Disclosure, Popover, Transition } from '@headlessui/react'
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
+import { faChevronDown, faXmark } from '@fortawesome/free-solid-svg-icons'
 
 const sortFilter = {
   id: 'sort',
@@ -77,7 +78,7 @@ export const Filter = forwardRef<HTMLButtonElement, FilterProps>(
     }, [contactType])
 
     return (
-      <div className={classNames(className)} {...props}>
+      <div className={classNames('bg-gray-100', className)} {...props}>
         <div className=''>
           {/* Mobile filter dialog */}
           <Transition.Root show={open} as={Fragment}>
@@ -113,7 +114,7 @@ export const Filter = forwardRef<HTMLButtonElement, FilterProps>(
                         onClick={() => setOpen(false)}
                       >
                         <span className='sr-only'>Close menu</span>
-                        <MdClose className='h-6 w-6' aria-hidden='true' />
+                        <FontAwesomeIcon icon={faXmark} className='h-5 w-5' aria-hidden='true' />
                       </button>
                     </div>
 
@@ -131,10 +132,11 @@ export const Filter = forwardRef<HTMLButtonElement, FilterProps>(
                               <Disclosure.Button className='flex w-full items-center justify-between bg-white px-2 py-3 text-sm text-gray-400'>
                                 <span className='font-medium text-gray-900'>{sortFilter.name}</span>
                                 <span className='ml-6 flex items-center'>
-                                  <MdExpandMore
+                                  <FontAwesomeIcon
+                                    icon={faChevronDown}
                                     className={classNames(
                                       open ? '-rotate-180' : 'rotate-0',
-                                      'h-5 w-5 transform',
+                                      'h-3 w-3 transform',
                                     )}
                                     aria-hidden='true'
                                   />
@@ -183,10 +185,11 @@ export const Filter = forwardRef<HTMLButtonElement, FilterProps>(
                                   {contactTypeFilter.name}
                                 </span>
                                 <span className='ml-6 flex items-center'>
-                                  <MdExpandMore
+                                  <FontAwesomeIcon
+                                    icon={faChevronDown}
                                     className={classNames(
                                       open ? '-rotate-180' : 'rotate-0',
-                                      'h-5 w-5 transform',
+                                      'h-3 w-3 transform',
                                     )}
                                     aria-hidden='true'
                                   />
@@ -231,7 +234,7 @@ export const Filter = forwardRef<HTMLButtonElement, FilterProps>(
           <div className='mx-auto text-center'>
             <section aria-labelledby='filter-heading' className='pb-4'>
               <h2 id='filter-heading' className='sr-only'>
-                Product filters
+                Phonebook filters
               </h2>
 
               <div className='flex items-center justify-between'>
@@ -256,8 +259,9 @@ export const Filter = forwardRef<HTMLButtonElement, FilterProps>(
                       <div>
                         <Popover.Button className='group inline-flex items-center justify-center text-sm font-medium text-gray-700 hover:text-gray-900'>
                           <span>{sortFilter.name}</span>
-                          <MdExpandMore
-                            className='-mr-1 ml-1 h-5 w-5 flex-shrink-0 text-gray-400 group-hover:text-gray-500'
+                          <FontAwesomeIcon
+                            icon={faChevronDown}
+                            className='ml-2 h-3 w-3 flex-shrink-0 text-gray-400 group-hover:text-gray-500'
                             aria-hidden='true'
                           />
                         </Popover.Button>
@@ -307,8 +311,9 @@ export const Filter = forwardRef<HTMLButtonElement, FilterProps>(
                       <div>
                         <Popover.Button className='group inline-flex items-center justify-center text-sm font-medium text-gray-700 hover:text-gray-900'>
                           <span>{contactTypeFilter.name}</span>
-                          <MdExpandMore
-                            className='-mr-1 ml-1 h-5 w-5 flex-shrink-0 text-gray-400 group-hover:text-gray-500'
+                          <FontAwesomeIcon
+                            icon={faChevronDown}
+                            className='ml-2 h-3 w-3 flex-shrink-0 text-gray-400 group-hover:text-gray-500'
                             aria-hidden='true'
                           />
                         </Popover.Button>
@@ -360,7 +365,7 @@ export const Filter = forwardRef<HTMLButtonElement, FilterProps>(
               </div>
 
               {/* Active filters */}
-              <div className='bg-gray-100'>
+              <div>
                 <div className='mx-auto pt-3 sm:flex sm:items-center'>
                   <h3 className='text-sm font-medium text-gray-500'>Active filters</h3>
                   <div

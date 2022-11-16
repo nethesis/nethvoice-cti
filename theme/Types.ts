@@ -3,6 +3,7 @@
 
 export type StatusTypes =
   | 'available'
+  | 'online'
   | 'dnd'
   | 'voicemail'
   | 'cellphone'

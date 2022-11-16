@@ -2,16 +2,6 @@
 // SPDX-License-Identifier: AGPL-3.0-or-later
 
 import type { NextPage } from 'next'
-import {
-  MdPhone,
-  MdPhoneAndroid,
-  MdOutlineWork,
-  MdPeople,
-  MdChevronRight,
-  MdAdd,
-  MdMenuBook,
-  MdSearch,
-} from 'react-icons/md'
 import { Filter } from '../components/phonebook/Filter'
 import { Avatar, Button, InlineNotification, EmptyState } from '../components/common'
 import { useState, useEffect, useMemo } from 'react'
@@ -25,7 +15,17 @@ import {
 import Skeleton from 'react-loading-skeleton'
 import { RootState } from '../store'
 import { useSelector } from 'react-redux'
-import debounce from 'lodash.debounce'
+import { debounce } from 'lodash'
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
+import {
+  faPhone,
+  faSuitcase,
+  faUserGroup,
+  faChevronRight,
+  faPlus,
+  faAddressBook,
+  faMagnifyingGlass,
+} from '@fortawesome/free-solid-svg-icons'
 
 const Phonebook: NextPage = () => {
   const [isPhonebookLoaded, setPhonebookLoaded] = useState(false)
@@ -126,7 +126,7 @@ const Phonebook: NextPage = () => {
     <>
       <div className='p-8 bg-gray-100'>
         <Button variant='white' onClick={() => openCreateContactDrawer()} className='mb-6'>
-          <MdAdd className='-ml-1 mr-2 h-5 w-5' />
+          <FontAwesomeIcon icon={faPlus} className='mr-2 h-4 w-4' />
           <span>Create contact</span>
         </Button>
         <Filter
@@ -165,10 +165,16 @@ const Phonebook: NextPage = () => {
               <EmptyState
                 title='No contact'
                 description='There is no contact in your phonebook'
-                icon={<MdMenuBook className='mx-auto h-12 w-12' aria-hidden='true' />}
+                icon={
+                  <FontAwesomeIcon
+                    icon={faAddressBook}
+                    className='mx-auto h-12 w-12'
+                    aria-hidden='true'
+                  />
+                }
               >
                 <Button variant='primary' onClick={() => openCreateContactDrawer()}>
-                  <MdAdd className='-ml-1 mr-2 h-5 w-5' />
+                  <FontAwesomeIcon icon={faPlus} className='mr-2 h-4 w-4' />
                   <span>Create contact</span>
                 </Button>
               </EmptyState>
@@ -181,7 +187,13 @@ const Phonebook: NextPage = () => {
                 <EmptyState
                   title='No contact found'
                   description='Try changing your search filters'
-                  icon={<MdSearch className='mx-auto h-12 w-12' aria-hidden='true' />}
+                  icon={
+                    <FontAwesomeIcon
+                      icon={faMagnifyingGlass}
+                      className='mx-auto h-12 w-12'
+                      aria-hidden='true'
+                    />
+                  }
                 />
               )}
             {isPhonebookLoaded &&
@@ -211,8 +223,9 @@ const Phonebook: NextPage = () => {
                           {/* extension */}
                           {contact.extension && (
                             <div className='mt-1 flex items-center text-sm text-gray-500'>
-                              <MdPhone
-                                className='mr-1.5 h-5 w-5 flex-shrink-0 text-gray-400'
+                              <FontAwesomeIcon
+                                icon={faPhone}
+                                className='mr-2 h-4 w-4 flex-shrink-0 text-gray-400'
                                 aria-hidden='true'
                               />
                               <span className='truncate text-sky-600 cursor-pointer'>
@@ -223,8 +236,9 @@ const Phonebook: NextPage = () => {
                           {/* company name */}
                           {contact.kind == 'person' && contact.company && !contact.extension && (
                             <div className='mt-1 flex items-center text-sm text-gray-500'>
-                              <MdOutlineWork
-                                className='mr-1.5 h-5 w-5 flex-shrink-0 text-gray-400'
+                              <FontAwesomeIcon
+                                icon={faSuitcase}
+                                className='mr-2 h-4 w-4 flex-shrink-0 text-gray-400'
                                 aria-hidden='true'
                               />
                               <span className='truncate'>{contact.company}</span>
@@ -233,8 +247,9 @@ const Phonebook: NextPage = () => {
                           {/* company contacts */}
                           {contact.contacts && contact.contacts.length ? (
                             <div className='mt-1 flex items-center text-sm text-gray-500'>
-                              <MdPeople
-                                className='mr-1.5 h-5 w-5 flex-shrink-0 text-gray-400'
+                              <FontAwesomeIcon
+                                icon={faUserGroup}
+                                className='mr-2 h-4 w-4 flex-shrink-0 text-gray-400'
                                 aria-hidden='true'
                               />
                               <span>{contact.contacts.length} contacts</span>
@@ -247,8 +262,9 @@ const Phonebook: NextPage = () => {
                             <div>
                               <div className='text-sm text-gray-900'>Work phone</div>
                               <div className='mt-1 flex items-center text-sm text-sky-600'>
-                                <MdPhone
-                                  className='mr-1.5 h-5 w-5 flex-shrink-0 text-gray-400'
+                                <FontAwesomeIcon
+                                  icon={faPhone}
+                                  className='mr-2 h-4 w-4 flex-shrink-0 text-gray-400'
                                   aria-hidden='true'
                                 />
                                 <span className='truncate cursor-pointer'>{contact.workphone}</span>
@@ -262,8 +278,9 @@ const Phonebook: NextPage = () => {
                             <div>
                               <div className='text-sm text-gray-900'>Mobile phone</div>
                               <div className='mt-1 flex items-center text-sm text-sky-600'>
-                                <MdPhoneAndroid
-                                  className='mr-1.5 h-5 w-5 flex-shrink-0 text-gray-400'
+                                <FontAwesomeIcon
+                                  icon={faPhone}
+                                  className='mr-2 h-4 w-4 flex-shrink-0 text-gray-400'
                                   aria-hidden='true'
                                 />
                                 <span className='truncate cursor-pointer'>{contact.cellphone}</span>
@@ -274,8 +291,9 @@ const Phonebook: NextPage = () => {
                       </div>
                     </div>
                     <div>
-                      <MdChevronRight
-                        className='h-5 w-5 text-gray-400 cursor-pointer'
+                      <FontAwesomeIcon
+                        icon={faChevronRight}
+                        className='h-3 w-3 text-gray-400 cursor-pointer'
                         aria-hidden='true'
                         onClick={() => openShowContactDrawer(contact)}
                       />

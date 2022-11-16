@@ -9,16 +9,6 @@
 
 import type { SpeedDialType } from '../../services/types'
 import { useState, useEffect, useRef, MutableRefObject } from 'react'
-import {
-  MdOutlineAdd,
-  MdPhone,
-  MdMoreVert,
-  MdOutlineEdit,
-  MdDeleteOutline,
-  MdWarningAmber,
-  MdBolt,
-  MdAdd,
-} from 'react-icons/md'
 import { Button, Avatar, Modal, Dropdown, InlineNotification, EmptyState } from '../common/'
 import { deleteSpeedDial, getSpeedDials } from '../../services/phonebook'
 import {
@@ -29,6 +19,16 @@ import {
 import { useSelector } from 'react-redux'
 import { RootState } from '../../store'
 import Skeleton from 'react-loading-skeleton'
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
+import {
+  faPhone,
+  faPlus,
+  faTriangleExclamation,
+  faEllipsisVertical,
+  faPen,
+  faTrash,
+  faBolt,
+} from '@fortawesome/free-solid-svg-icons'
 
 export const SideBar = () => {
   // The state for the delete modal
@@ -101,10 +101,10 @@ export const SideBar = () => {
   // The dropdown items for every speed dial element
   const getItemsMenu = (speedDial: any) => (
     <>
-      <Dropdown.Item icon={MdOutlineEdit} onClick={() => openEditSpeedDialDrawer(speedDial)}>
+      <Dropdown.Item icon={faPen} onClick={() => openEditSpeedDialDrawer(speedDial)}>
         Edit
       </Dropdown.Item>
-      <Dropdown.Item icon={MdDeleteOutline} onClick={() => confirmDeleteItem(speedDial)}>
+      <Dropdown.Item icon={faTrash} onClick={() => confirmDeleteItem(speedDial)}>
         Delete
       </Dropdown.Item>
     </>
@@ -121,7 +121,7 @@ export const SideBar = () => {
               <div className='ml-3 flex h-7 items-center gap-2'>
                 {isSpeedDialLoaded && !!speedDials.length && (
                   <Button variant='white' onClick={() => openCreateSpeedDialDrawer()}>
-                    <MdOutlineAdd className='-ml-1 mr-2 h-5 w-5' />
+                    <FontAwesomeIcon icon={faPlus} className='mr-2 h-4 w-4' />
                     Create
                     <span className='sr-only'>Create speed dial</span>
                   </Button>
@@ -133,10 +133,11 @@ export const SideBar = () => {
           <ul role='list' className='flex-1 divide-y divide-gray-200 overflow-y-auto'>
             {/* get speed dial error */}
             {getSpeedDialError && (
-              <InlineNotification type='error' title={getSpeedDialError} className='mt-4' />
+              <InlineNotification type='error' title={getSpeedDialError} className='my-6' />
             )}
             {/* skeleton */}
             {!isSpeedDialLoaded &&
+              !getSpeedDialError &&
               Array.from(Array(4)).map((e, index) => (
                 <li key={index}>
                   <div className='flex items-center px-4 py-4 sm:px-6'>
@@ -150,13 +151,15 @@ export const SideBar = () => {
                 </li>
               ))}
             {/* empty state */}
-            {isSpeedDialLoaded && !speedDials.length && (
+            {isSpeedDialLoaded && !getSpeedDialError && !speedDials.length && (
               <EmptyState
                 title='No speed dial'
-                icon={<MdBolt className='mx-auto h-12 w-12' aria-hidden='true' />}
+                icon={
+                  <FontAwesomeIcon icon={faBolt} className='mx-auto h-12 w-12' aria-hidden='true' />
+                }
               >
                 <Button variant='primary' onClick={() => openCreateSpeedDialDrawer()}>
-                  <MdAdd className='-ml-1 mr-2 h-5 w-5' />
+                  <FontAwesomeIcon icon={faPlus} className='mr-2 h-4 w-4' />
                   <span>Create</span>
                 </Button>
               </EmptyState>
@@ -184,12 +187,12 @@ export const SideBar = () => {
                       <div className='flex gap-2'>
                         {/* Actions */}
                         <Button variant='white'>
-                          <MdPhone className='h-4 w-4' />
+                          <FontAwesomeIcon icon={faPhone} className='h-4 w-4 text-gray-600' />
                           <span className='sr-only'>Call speed dial</span>
                         </Button>
                         <Dropdown items={getItemsMenu(speedDial)} position='left'>
                           <Button variant='white'>
-                            <MdMoreVert className='h-4 w-4' />
+                            <FontAwesomeIcon icon={faEllipsisVertical} className='h-4 w-4' />
                             <span className='sr-only'>Open speed dial menu</span>
                           </Button>
                         </Dropdown>
@@ -209,7 +212,11 @@ export const SideBar = () => {
         >
           <Modal.Content>
             <div className='mx-auto flex h-12 w-12 flex-shrink-0 items-center justify-center rounded-full bg-red-100 sm:mx-0'>
-              <MdWarningAmber className='h-6 w-6 text-red-600' aria-hidden='true' />
+              <FontAwesomeIcon
+                icon={faTriangleExclamation}
+                className='h-6 w-6 text-red-600'
+                aria-hidden='true'
+              />
             </div>
             <div className='mt-3 text-center sm:mt-0 sm:ml-4 sm:text-left'>
               <h3 className='text-lg font-medium leading-6 text-gray-900'>Delete speed dial</h3>
