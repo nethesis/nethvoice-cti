@@ -20,7 +20,10 @@ import {
   faMagnifyingGlass,
   faArrowRightFromBracket,
   faBars,
+  faSun,
+  faMoon,
 } from '@fortawesome/free-solid-svg-icons'
+import { setTheme } from '../../lib/darkTheme'
 
 interface TopBarProps {
   openMobileCb: () => void
@@ -29,6 +32,7 @@ interface TopBarProps {
 export const TopBar: FC<TopBarProps> = ({ openMobileCb }) => {
   const router = useRouter()
   const { name, mainextension, mainPresence } = useSelector((state: RootState) => state.user)
+  const { theme } = useSelector((state: RootState) => state.darkTheme)
 
   const doLogout = async () => {
     const res = await logout()
@@ -39,6 +43,14 @@ export const TopBar: FC<TopBarProps> = ({ openMobileCb }) => {
       store.dispatch.authentication.reset()
       // Redirect to login page
       router.push('/login')
+    }
+  }
+
+  const toggleDarkTheme = () => {
+    if (theme === 'dark') {
+      setTheme('light')
+    } else {
+      setTheme('dark')
     }
   }
 
@@ -53,6 +65,9 @@ export const TopBar: FC<TopBarProps> = ({ openMobileCb }) => {
           </span>
         </Dropdown.Header>
       </div>
+      <Dropdown.Item icon={theme === 'dark' ? faSun : faMoon} onClick={toggleDarkTheme}>
+        {theme === 'dark' ? 'Switch to light theme' : 'Switch to dark theme'}
+      </Dropdown.Item>
       <Dropdown.Item icon={faArrowRightFromBracket} onClick={doLogout}>
         Logout
       </Dropdown.Item>

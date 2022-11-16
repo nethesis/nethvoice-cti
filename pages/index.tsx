@@ -4,7 +4,6 @@
 import type { NextPage } from 'next'
 import { useEffect } from 'react'
 import { useRouter } from 'next/router'
-// import * as Janus from 'janus-gateway'
 
 const Home: NextPage = () => {
   const router = useRouter()

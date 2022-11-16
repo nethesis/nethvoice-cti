@@ -12,6 +12,7 @@ import { getCredentials, updateAuthStore } from '../lib/login'
 import { useRouter } from 'next/router'
 import { RouteGuard } from '../config/router'
 import { Service } from '../config/service'
+import { checkDarkTheme } from '../lib/darkTheme'
 
 function MyApp({ Component, pageProps }: AppProps) {
   const [isLoading, setIsLoading] = useState<boolean>(true)
@@ -35,6 +36,11 @@ function MyApp({ Component, pageProps }: AppProps) {
     }
 
     // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [])
+
+  // check if dark theme should be enabled
+  useEffect(() => {
+    checkDarkTheme()
   }, [])
 
   return (

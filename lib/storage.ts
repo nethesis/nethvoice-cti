@@ -42,3 +42,11 @@ export const getJSONItem = (name: string) => {
 export const removeItem = (name: string) => {
   localStorage.removeItem(name)
 }
+
+export const setStringItem = (name: string, value: string) => {
+  localStorage.setItem(name, value)
+}
+
+export const getStringItem = (name: string) => {
+  return localStorage.getItem(name)
+}

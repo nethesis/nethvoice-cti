@@ -9,6 +9,7 @@ module.exports = {
     './stories/**/*.{js,jsx,ts,tsx}',
   ],
   plugins: [require('@tailwindcss/forms')],
+  darkMode: 'class',
   theme: {
     extend: {
       colors: {
