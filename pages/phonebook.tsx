@@ -15,7 +15,7 @@ import {
 import Skeleton from 'react-loading-skeleton'
 import { RootState } from '../store'
 import { useSelector } from 'react-redux'
-import debounce from 'lodash.debounce'
+import { debounce } from 'lodash'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import {
   faPhone,
