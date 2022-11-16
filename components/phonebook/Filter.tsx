@@ -78,7 +78,7 @@ export const Filter = forwardRef<HTMLButtonElement, FilterProps>(
     }, [contactType])
 
     return (
-      <div className={classNames('bg-gray-100', className)} {...props}>
+      <div className={classNames('bg-gray-100 dark:bg-gray-800', className)} {...props}>
         <div className=''>
           {/* Mobile filter dialog */}
           <Transition.Root show={open} as={Fragment}>

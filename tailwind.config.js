@@ -9,4 +9,13 @@ module.exports = {
     './stories/**/*.{js,jsx,ts,tsx}',
   ],
   plugins: [require('@tailwindcss/forms')],
+  theme: {
+    extend: {
+      colors: {
+        primary: '#16a34a', // green-600
+        primaryLight: '#22c55e', // green-500
+        primaryDark: '#15803d', // green-700
+      },
+    },
+  },
 }
