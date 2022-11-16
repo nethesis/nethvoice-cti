@@ -133,10 +133,11 @@ export const SideBar = () => {
           <ul role='list' className='flex-1 divide-y divide-gray-200 overflow-y-auto'>
             {/* get speed dial error */}
             {getSpeedDialError && (
-              <InlineNotification type='error' title={getSpeedDialError} className='mt-4' />
+              <InlineNotification type='error' title={getSpeedDialError} className='my-6' />
             )}
             {/* skeleton */}
             {!isSpeedDialLoaded &&
+              !getSpeedDialError &&
               Array.from(Array(4)).map((e, index) => (
                 <li key={index}>
                   <div className='flex items-center px-4 py-4 sm:px-6'>
@@ -150,11 +151,12 @@ export const SideBar = () => {
                 </li>
               ))}
             {/* empty state */}
-            {isSpeedDialLoaded && !speedDials.length && (
+            {isSpeedDialLoaded && !getSpeedDialError && !speedDials.length && (
               <EmptyState
                 title='No speed dial'
-                icon={<FontAwesomeIcon
-                  icon={faBolt} className='mx-auto h-12 w-12' aria-hidden='true' />}
+                icon={
+                  <FontAwesomeIcon icon={faBolt} className='mx-auto h-12 w-12' aria-hidden='true' />
+                }
               >
                 <Button variant='primary' onClick={() => openCreateSpeedDialDrawer()}>
                   <FontAwesomeIcon icon={faPlus} className='mr-2 h-4 w-4' />
