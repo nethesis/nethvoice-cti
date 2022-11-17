@@ -87,7 +87,7 @@ const theme = {
   },
   modal: {
     panel: {
-      base: 'relative transform overflow-hidden rounded-lg bg-white text-left shadow-xl transition-all sm:my-8 sm:w-full sm:max-w-lg',
+      base: 'relative transform overflow-hidden rounded-lg text-left shadow-xl transition-all sm:my-8 sm:w-full sm:max-w-lg bg-white dark:bg-gray-900',
       transition: {
         enter: 'ease-out duration-300',
         enterFrom: 'opacity-0',
@@ -97,9 +97,10 @@ const theme = {
         leaveTo: 'opacity-0',
       },
     },
-    content: 'bg-white px-4 pt-5 pb-4 sm:p-6 sm:pb-4 sm:flex sm:items-start',
+    content:
+      'px-4 pt-5 pb-4 sm:p-6 sm:pb-4 sm:flex sm:items-start bg-white text-gray-900 dark:bg-gray-900 dark:text-gray-100',
     background: {
-      base: 'fixed inset-0 bg-gray-500 bg-opacity-75 transition-opacity',
+      base: 'fixed inset-0 bg-opacity-75 transition-opacity bg-gray-500 dark:bg-gray-500',
       transition: {
         enter: 'ease-out duration-300',
         enterFrom: 'opacity-0 translate-y-4 sm:translate-y-0 sm:scale-95',
@@ -109,7 +110,8 @@ const theme = {
         leaveTo: 'opacity-0 translate-y-4 sm:translate-y-0 sm:scale-95',
       },
     },
-    actions: 'bg-gray-50 px-4 py-3 flex flex-col sm:flex-row-reverse  sm:px-6 gap-3',
+    actions:
+      'px-4 py-3 flex flex-col sm:flex-row-reverse  sm:px-6 gap-3 bg-gray-50 dark:bg-gray-800',
     sizes: {
       base: '',
       large: '',
@@ -118,110 +120,110 @@ const theme = {
   status: {
     available: {
       badge: {
-        base: 'bg-green-100 text-green-900',
-        dot: 'bg-green-400',
+        base: 'bg-green-100 text-green-900 dark:bg-green-900 dark:text-green-100',
+        dot: 'bg-green-400 dark:bg-green-400',
       },
       avatar: {
-        dot: 'bg-green-500',
+        dot: 'bg-green-500 dark:bg-green-500',
       },
       card: {
-        border: 'border-green-500',
+        border: 'border-green-500 dark:border-green-500',
       },
     },
     online: {
       badge: {
-        base: 'bg-green-100 text-green-900',
-        dot: 'bg-green-400',
+        base: 'bg-green-100 text-green-900 dark:bg-green-900 dark:text-green-100',
+        dot: 'bg-green-400 dark:bg-green-400',
       },
       avatar: {
-        dot: 'bg-green-500',
+        dot: 'bg-green-500 dark:bg-green-500',
       },
       card: {
-        border: 'border-green-500',
+        border: 'border-green-500 dark:border-green-500',
       },
     },
     dnd: {
       badge: {
-        base: 'bg-gray-100 text-gray-900',
-        dot: 'bg-gray-400',
+        base: 'bg-gray-100 text-gray-900 dark:bg-gray-900 dark:text-gray-100',
+        dot: 'bg-gray-400 dark:bg-gray-400',
       },
       avatar: {
-        dot: 'bg-gray-900',
+        dot: 'bg-gray-900 dark:bg-gray-900',
       },
       card: {
-        border: 'border-gray-500',
+        border: 'border-gray-500 dark:border-green-500',
       },
     },
     voicemail: {
       badge: {
-        base: 'bg-orange-100 text-orange-900',
-        dot: 'bg-orange-400',
+        base: 'bg-orange-100 text-orange-900 dark:bg-orange-900 dark:text-orange-100',
+        dot: 'bg-orange-400 dark:bg-orange-400',
       },
       avatar: {
-        dot: 'bg-orange-500',
+        dot: 'bg-orange-500 dark:bg-orange-500',
       },
       card: {
-        border: 'border-orange-500',
+        border: 'border-orange-500 dark:border-orange-500',
       },
     },
     cellphone: {
       badge: {
-        base: 'bg-purple-100 text-purple-900',
-        dot: 'bg-purple-400',
+        base: 'bg-purple-100 text-purple-900 dark:bg-purple-900 dark:text-purple-100',
+        dot: 'bg-purple-400 dark:bg-purple-400',
       },
       avatar: {
-        dot: 'bg-purple-500',
+        dot: 'bg-purple-500 dark:bg-purple-500',
       },
       card: {
-        border: 'border-purple-500',
+        border: 'border-purple-500 dark:border-purple-500',
       },
     },
     callforward: {
       badge: {
-        base: 'bg-yellow-100 text-yellow-900',
-        dot: 'bg-yellow-400',
+        base: 'bg-yellow-100 text-yellow-900 dark:bg-yellow-900 dark:text-yellow-100',
+        dot: 'bg-yellow-400 dark:bg-yellow-400',
       },
       avatar: {
-        dot: 'bg-yellow-500',
+        dot: 'bg-yellow-500 dark:bg-yellow-500',
       },
       card: {
-        border: 'border-yellow-500',
+        border: 'border-yellow-500 dark:border-yellow-500',
       },
     },
     busy: {
       badge: {
-        base: 'bg-red-100 text-red-900',
-        dot: 'bg-red-400',
+        base: 'bg-red-100 text-red-900 dark:bg-red-900 dark:text-red-100',
+        dot: 'bg-red-400 dark:bg-red-400',
       },
       avatar: {
-        dot: 'bg-red-500',
+        dot: 'bg-red-500 dark:bg-red-500',
       },
       card: {
-        border: 'border-red-500',
+        border: 'border-red-500 dark:border-red-500',
       },
     },
     incoming: {
       badge: {
-        base: 'bg-blue-100 text-blue-900',
-        dot: 'bg-blue-400',
+        base: 'bg-blue-100 text-blue-900 dark:bg-blue-900 dark:text-blue-100',
+        dot: 'bg-blue-400 dark:bg-blue-400',
       },
       avatar: {
-        dot: 'bg-blue-500',
+        dot: 'bg-blue-500 dark:bg-blue-500',
       },
       card: {
-        border: 'border-blue-500',
+        border: 'border-blue-500 dark:border-blue-500',
       },
     },
     offline: {
       badge: {
-        base: 'bg-gray-100 text-gray-600',
-        dot: 'bg-gray-400',
+        base: 'border bg-gray-100 text-gray-600 border-gray-300 dark:bg-gray-900 dark:text-gray-300 dark:border-gray-700',
+        dot: 'bg-gray-400 dark:bg-gray-400',
       },
       avatar: {
-        dot: 'bg-gray-500',
+        dot: 'bg-gray-500 dark:bg-gray-500',
       },
       card: {
-        border: 'border-gray-500',
+        border: 'border-gray-500 dark:border-gray-500',
       },
     },
   },
@@ -248,10 +250,10 @@ const theme = {
     group: 'flex -space-x-4 w-fit',
     reverse: 'flex-row-reverse space-x-reverse',
     image: 'w-full h-full',
-    bordered: 'border-2 border-white',
+    bordered: 'border-2 border-white dark:border-gray-300',
     initials: {
       base: 'text-white w-full h-full flex justify-center items-center font-medium leading-none',
-      background: 'bg-gray-500',
+      background: 'bg-gray-500 dark:bg-gray-500',
     },
     placeholder: {
       base: 'w-full h-full',
@@ -259,7 +261,7 @@ const theme = {
     },
     placeholderType: {
       base: 'text-white w-full h-full fill-white flex justify-center items-center',
-      background: 'bg-gray-500',
+      background: 'bg-gray-500 dark:bg-gray-500',
       sizes: {
         extra_small: 'h-3 w-3',
         small: 'h-4 w-4',
@@ -299,19 +301,19 @@ const theme = {
     },
     item: {
       base: 'block px-4 py-2 text-sm flex items-center gap-3 mt-1 mb-1 cursor-pointer',
-      light: 'text-gray-700',
-      active: 'bg-gray-100 text-gray-900',
-      icon: 'h-4 w-4 text-gray-400 flex',
+      light: 'text-gray-700 dark:text-gray-300',
+      active: 'bg-gray-200 text-gray-900 dark:bg-gray-700 dark:text-gray-100',
+      icon: 'h-4 w-4 flex text-gray-400 dark:text-gray-500',
       centered: 'justify-center',
     },
     items: {
-      base: 'absolute z-10 mt-2 w-60 origin-top-right rounded-md bg-white shadow-lg ring-1 ring-black ring-opacity-5 focus:outline-none',
+      base: 'absolute z-10 mt-2 w-60 origin-top-right rounded-md  shadow-lg ring-1 ring-opacity-5 focus:outline-none bg-white ring-black dark:bg-gray-900 dark:ring-bg-gray-100',
       position: {
         right: 'left-0',
         left: 'right-0',
       },
-      divider: 'divide-y divide-gray-100',
-      header: 'block px-4 py-3 text-sm cursor-normal',
+      divider: 'divide-y divide-gray-200 dark:divide-gray-700',
+      header: 'block px-4 py-3 text-sm cursor-normal text-gray-700 dark:text-gray-300',
       transition: {
         enter: 'transition ease-out duration-100',
         enterFrom: 'transform opacity-0 scale-95',
@@ -323,7 +325,7 @@ const theme = {
     },
   },
   card: {
-    base: 'block max-w-md bg-white rounded-lg border border-gray-200 shadow dark:bg-gray-800 dark:border-gray-700 dark:hover:bg-gray-700',
+    base: 'block max-w-md rounded-lg border shadow bg-white dark:bg-gray-800 border-gray-200 dark:border-gray-700',
     wrapper: {
       border: 'border-t-2',
       rounded: 'rounded-lg',
@@ -332,37 +334,37 @@ const theme = {
       base: 'flex justify-between p-7',
     },
     content: {
-      base: 'flex flex-col p-7 gap-1 border-t border-gray-200',
+      base: 'flex flex-col p-7 gap-1 border-t border-gray-200 dark:border-gray-700',
     },
     actions: {
-      base: 'grid grid-cols-2 divide-x divider-gray-200 h-14 border-t border-gray-200 z-30 rounded-b-xl',
+      base: 'grid grid-cols-2 divide-x h-14 border-t z-30 rounded-b-xl divider-gray-200 border-gray-200 dark:divider-gray-700 dark:border-gray-700',
     },
   },
   inlineNotification: {
     base: 'border-l-4 rounded-md p-4 w-full flex',
     type: {
-      info: 'border-blue-400 bg-blue-50',
-      error: 'border-red-400 bg-red-50',
-      warning: 'border-yellow-400 bg-yellow-50',
-      success: 'border-green-400 bg-green-50',
+      info: 'border-blue-400 bg-blue-100 dark:border-blue-500 dark:bg-blue-800',
+      error: 'border-red-400 bg-red-100 dark:border-red-500 dark:bg-red-900',
+      warning: 'border-yellow-400 bg-yellow-100 dark:border-yellow-500 dark:bg-yellow-700',
+      success: 'border-green-400 bg-green-100 dark:border-green-500 dark:bg-green-800',
     },
     titleStyle: {
-      info: 'text-sm font-medium text-blue-800',
-      error: 'text-sm font-medium text-red-800',
-      warning: 'text-sm font-medium text-yellow-800',
-      success: 'text-sm font-medium text-green-800',
+      info: 'text-sm font-medium text-blue-800 dark:text-blue-100',
+      error: 'text-sm font-medium text-red-800 dark:text-red-100',
+      warning: 'text-sm font-medium text-yellow-800 dark:text-yellow-100',
+      success: 'text-sm font-medium text-green-800 dark:text-green-100',
     },
     iconStyle: {
-      info: 'h-4 w-4 text-blue-400 relative -top-1',
-      error: 'h-4 w-4 text-red-400 relative -top-1',
-      warning: 'h-4 w-4 text-yellow-600 relative -top-1',
-      success: 'h-4 w-4 text-green-600 relative -top-1',
+      info: 'h-4 w-4 relative -top-1 text-blue-400 dark:text-blue-300',
+      error: 'h-4 w-4 relative -top-1 text-red-400 dark:text-red-300',
+      warning: 'h-4 w-4 relative -top-1 text-yellow-600 dark:text-yellow-300',
+      success: 'h-4 w-4 relative -top-1 text-green-600 dark:text-green-300',
     },
     childrenText: {
-      info: 'mt-2 text-sm text-blue-700',
-      error: 'mt-2 text-sm text-red-700',
-      warning: 'mt-2 text-sm text-yellow-700',
-      success: 'mt-2 text-sm text-green-700',
+      info: 'mt-2 text-sm text-blue-700 dark:text-blue-200',
+      error: 'mt-2 text-sm text-red-700 dark:text-red-200',
+      warning: 'mt-2 text-sm text-yellow-700 dark:text-yellow-200',
+      success: 'mt-2 text-sm text-green-700 dark:text-green-200',
     },
   },
 }
