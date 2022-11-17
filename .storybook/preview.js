@@ -13,24 +13,30 @@ export const parameters = {
   },
 }
 
-const toggleTheme = () => {
-  if (document.documentElement.classList.contains('dark')) {
-    document.documentElement.classList.remove('dark')
-  } else {
-    document.documentElement.classList.add('dark')
-  }
-}
-
 export const decorators = [
-  (Story) => (
-    <div className='bg-gray-100 dark:bg-gray-800 p-10'>
-      <Story />
-      <button
-        onClick={toggleTheme}
-        className='flex content-center items-center justify-center font-medium tracking-wide transition-colors duration-200 transform focus:outline-none focus:ring-2 focus:z-20 focus:ring-offset-2 disabled:opacity-75 border shadow-sm border-gray-300 bg-white text-gray-700 hover:bg-gray-100 focus:ring-green-600 dark:border-gray-600 dark:bg-gray-900 dark:text-gray-100 dark:hover:bg-gray-800 dark:focus:ring-green-700 rounded-md px-3 py-2 text-sm leading-4 mt-10'
-      >
-        Toggle dark theme
-      </button>
+  (Story, context) => (
+    <div className={context.globals.theme}>
+      <div className={'bg-gray-100 dark:bg-gray-800 p-12 h-screen'}>
+        <Story className={context.globals.theme} />
+      </div>
     </div>
   ),
 ]
+
+export const globalTypes = {
+  theme: {
+    name: 'Theme',
+    description: 'Global theme for components',
+    defaultValue: 'light',
+    toolbar: {
+      icon: 'mirror',
+      items: [
+        { value: 'light', title: 'Light' },
+        { value: 'dark', title: 'Dark' },
+      ],
+      showName: true,
+      // Change title based on selected value
+      dynamicTitle: false,
+    },
+  },
+}
