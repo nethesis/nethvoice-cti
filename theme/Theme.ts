@@ -36,8 +36,8 @@ const theme = {
     },
     off: {
       translate: 'translate-x-0',
-      gray: 'bg-gray-200 dark:bg-gray-600',
-      primary: 'bg-primaryLighter dark:bg-primaryDarker',
+      gray: 'bg-gray-200 dark:bg-gray-600 cursor-not-allowed',
+      primary: 'bg-primaryLighter dark:bg-primaryDarker cursor-not-allowed',
     },
   },
   input: {
