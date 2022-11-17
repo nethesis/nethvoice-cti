@@ -5,12 +5,13 @@ const theme = {
   button: {
     base: 'flex content-center items-center justify-center font-medium tracking-wide transition-colors duration-200 transform focus:outline-none focus:ring-2 focus:z-20 focus:ring-offset-2 disabled:opacity-75',
     primary:
-      'bg-primary text-white border border-transparent hover:bg-primaryDark focus:ring-primaryLight',
+      'border border-transparent bg-primary text-white hover:bg-primaryDark focus:ring-primaryLight dark:bg-primary dark:text-white dark:hover:bg-primaryDark focus:ring-primaryLight',
     secondary:
-      'focus:ring-primaryLight bg-primaryLighter text-primaryDark border border-transparent hover:bg-primaryLighter focus:ring-primaryLight',
+      'border border-transparent focus:ring-primaryLight bg-primaryLighter text-primaryDark hover:bg-primaryLighter dark:focus:ring-primaryDark dark:bg-primaryDarker dark:text-primaryLight dark:hover:bg-primaryDarker',
     white:
-      'border border-gray-300 bg-white text-gray-700 shadow-sm hover:bg-gray-100 focus:ring-primaryLight',
-    danger: 'focus:ring-red-500 bg-red-600 hover:bg-red-700 text-white border border-transparent',
+      'border shadow-sm border-gray-300 bg-white text-gray-700 hover:bg-gray-100 focus:ring-primaryLight dark:border-gray-600 dark:bg-gray-900 dark:text-gray-100 dark:hover:bg-gray-800 dark:focus:ring-primaryDark',
+    danger:
+      'border border-transparent focus:ring-red-500 bg-red-600 hover:bg-red-700 text-white dark:focus:ring-red-600 dark:bg-red-700 dark:hover:bg-red-800 dark:text-white',
     rounded: {
       small: 'rounded',
       base: 'rounded-md',
@@ -25,18 +26,18 @@ const theme = {
   },
   switch: {
     background:
-      'relative inline-flex h-6 w-11 flex-shrink-0 cursor-pointer rounded-full border-2 border-transparent transition-colors duration-200 ease-in-out focus:outline-none focus:ring-2 focus:ring-primaryLight focus:ring-offset-2',
+      'relative inline-flex h-6 w-11 flex-shrink-0 cursor-pointer rounded-full border-2 border-transparent transition-colors duration-200 ease-in-out focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-primaryLight dark:focus:ring-primaryDark',
     circle:
-      'pointer-events-none inline-block h-5 w-5 transform rounded-full bg-white shadow ring-0 transition duration-200 ease-in-out',
+      'pointer-events-none inline-block h-5 w-5 transform rounded-full shadow ring-0 transition duration-200 ease-in-out bg-white dark:bg-gray-800',
     on: {
       translate: 'translate-x-5',
-      gray: 'bg-gray-200',
-      primary: 'bg-primary',
+      gray: 'bg-gray-400 dark:bg-gray-500',
+      primary: 'bg-primary dark:bg-primary',
     },
     off: {
       translate: 'translate-x-0',
-      gray: 'bg-gray-200',
-      primary: 'bg-primaryLighter',
+      gray: 'bg-gray-200 dark:bg-gray-600',
+      primary: 'bg-primaryLighter dark:bg-primaryDarker',
     },
   },
   input: {
@@ -44,13 +45,13 @@ const theme = {
     label: 'text-sm font-medium text-gray-700 dark:text-gray-200',
     placeholder: {
       base: 'placeholder:text-gray-500 dark:placeholder:text-gray-400',
-      error: 'placeholder:text-red-300 dark:placeholder:text-red-600',
+      error: '',
     },
     helper: {
       base: 'mt-2 text-sm',
       color: {
         base: 'text-gray-500 dark:text-gray-400',
-        error: 'text-red-600 dark:text-red-300',
+        error: 'text-red-600 dark:text-red-400',
       },
     },
     size: {
@@ -60,7 +61,7 @@ const theme = {
     colors: {
       gray: 'border-gray-300 focus:border-primaryLight focus:ring-primaryLight placeholder:text-gray-400 dark:border-gray-600 dark:focus:border-primaryDark dark:focus:ring-primaryDark dark:placeholder:text-gray-500',
       error:
-        'border-red-500 text-red-900 focus:border-red-500 focus:ring-red-500 placeholder-red-700 dark:border-red-400 dark:text-red-100 dark:focus:border-red-400 dark:focus:ring-red-400 dark:placeholder-red-200',
+        'border-red-500 focus:border-red-500 focus:ring-red-500 dark:border-red-400 dark:focus:border-red-400 dark:focus:ring-red-400',
     },
     icon: {
       base: 'absolute flex items-center z-20',
