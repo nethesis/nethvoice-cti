@@ -41,7 +41,7 @@ export const MobileNavBar: FC<MobileNavBarProps> = ({ closeMobileMenu, show, ite
             leaveFrom='opacity-100'
             leaveTo='opacity-0'
           >
-            <div className='fixed inset-0 bg-gray-600 bg-opacity-75' />
+            <div className='fixed inset-0 bg-opacity-75 dark:bg-opacity-75 bg-gray-600 dark:bg-gray-600' />
           </Transition.Child>
 
           <div className='fixed inset-0 z-40 flex'>
@@ -54,7 +54,7 @@ export const MobileNavBar: FC<MobileNavBarProps> = ({ closeMobileMenu, show, ite
               leaveFrom='translate-x-0'
               leaveTo='-translate-x-full'
             >
-              <Dialog.Panel className='relative flex w-full max-w-xs flex-1 flex-col bg-primary pt-5 pb-4'>
+              <Dialog.Panel className='relative flex w-full max-w-xs flex-1 flex-col pt-5 pb-4 bg-primary'>
                 <Transition.Child
                   as={Fragment}
                   enter='ease-in-out duration-300'
@@ -110,7 +110,7 @@ export const MobileNavBar: FC<MobileNavBarProps> = ({ closeMobileMenu, show, ite
                               className={classNames(
                                 item.current
                                   ? 'text-white'
-                                  : 'text-gray-300 group-hover:text-white',
+                                  : 'text-gray-100 group-hover:text-white',
                                 'mr-3 h-6 w-6',
                               )}
                               aria-hidden='true'

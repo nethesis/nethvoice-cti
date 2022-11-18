@@ -22,7 +22,7 @@ interface NavBarProps {
 
 export const NavBar: FC<NavBarProps> = ({ items }) => {
   return (
-    <div className='hidden w-28 overflow-y-auto bg-primary md:block'>
+    <div className='hidden w-28 overflow-y-auto md:block bg-primary'>
       <div className='flex w-full flex-col items-center py-6 h-full'>
         <div className='flex flex-shrink-0 items-center'>
           <Image

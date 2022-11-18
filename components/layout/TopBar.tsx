@@ -76,10 +76,10 @@ export const TopBar: FC<TopBarProps> = ({ openMobileCb }) => {
 
   return (
     <header className='w-full'>
-      <div className='relative z-10 flex h-16 flex-shrink-0 border-b border-gray-200 bg-white shadow-sm'>
+      <div className='relative z-10 flex h-16 flex-shrink-0 border-b shadow-sm border-gray-200 bg-white dark:border-gray-700 dark:bg-gray-900'>
         <button
           type='button'
-          className='border-r border-gray-200 px-4 text-gray-500 focus:outline-none focus:ring-2 focus:ring-inset focus:ring-primaryLight md:hidden'
+          className='border-r px-4 focus:outline-none focus:ring-2 focus:ring-inset md:hidden focus:ring-primaryLight border-gray-200 text-gray-500 dark:focus:ring-primaryDark dark:border-gray-700 dark:text-gray-400'
           onClick={openMobileCb}
         >
           <span className='sr-only'>Open sidebar</span>
@@ -91,7 +91,7 @@ export const TopBar: FC<TopBarProps> = ({ openMobileCb }) => {
               <label htmlFor='search-field' className='sr-only'>
                 Find and call
               </label>
-              <div className='relative w-full text-gray-400 focus-within:text-gray-600'>
+              <div className='relative w-full text-gray-400 focus-within:text-gray-600 dark:text-gray-500 dark:focus-within:text-gray-300'>
                 <div className='pointer-events-none absolute inset-y-0 left-0 flex items-center'>
                   <FontAwesomeIcon
                     icon={faMagnifyingGlass}
@@ -102,7 +102,7 @@ export const TopBar: FC<TopBarProps> = ({ openMobileCb }) => {
                 <input
                   name='search-field'
                   id='search-field'
-                  className='h-full w-full border-transparent py-2 pl-8 pr-3 text-base text-gray-900 placeholder-gray-500 focus:border-transparent focus:placeholder-gray-400 focus:outline-none focus:ring-0'
+                  className='h-full w-full border-transparent py-2 pl-8 pr-3 text-base focus:border-transparent focus:outline-none focus:ring-0 bg-white focus:placeholder-gray-400 text-gray-900 placeholder-gray-500 dark:bg-gray-900 dark:focus:placeholder-gray-500 dark:text-gray-100 dark:placeholder-gray-400'
                   placeholder='Call'
                   type='search'
                 />

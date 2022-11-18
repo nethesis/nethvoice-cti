@@ -307,7 +307,7 @@ const theme = {
       centered: 'justify-center',
     },
     items: {
-      base: 'absolute z-10 mt-2 w-60 origin-top-right rounded-md  shadow-lg ring-1 ring-opacity-5 focus:outline-none bg-white ring-black dark:bg-gray-900 dark:ring-bg-gray-100',
+      base: 'absolute z-10 mt-2 w-60 origin-top-right rounded-md  shadow-lg ring-1 ring-opacity-5 focus:outline-none bg-white ring-black dark:bg-gray-900 dark:ring-gray-700',
       position: {
         right: 'left-0',
         left: 'right-0',

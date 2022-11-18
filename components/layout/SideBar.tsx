@@ -113,11 +113,11 @@ export const SideBar = () => {
   return (
     <>
       {/* Secondary column (hidden on smaller screens) */}
-      <aside className='hidden w-96 border-l border-gray-200 bg-white lg:block h-full '>
-        <div className='flex h-full flex-col bg-white'>
+      <aside className='hidden w-96 border-l lg:block h-full border-gray-200 bg-white dark:border-gray-700 dark:bg-gray-900'>
+        <div className='flex h-full flex-col bg-white dark:bg-gray-900'>
           <div className='py-6 px-5'>
             <div className='flex items-start justify-between'>
-              <h2 className='text-lg font-medium text-gray-900'>Speed Dial</h2>
+              <h2 className='text-lg font-medium text-gray-900 dark:text-gray-100'>Speed Dial</h2>
               <div className='ml-3 flex h-7 items-center gap-2'>
                 {isSpeedDialLoaded && !!speedDials.length && (
                   <Button variant='white' onClick={() => openCreateSpeedDialDrawer()}>
@@ -129,8 +129,11 @@ export const SideBar = () => {
               </div>
             </div>
           </div>
-          <span className='border-b border-gray-200'></span>
-          <ul role='list' className='flex-1 divide-y divide-gray-200 overflow-y-auto'>
+          <span className='border-b border-gray-200 dark:border-gray-700'></span>
+          <ul
+            role='list'
+            className='flex-1 divide-y overflow-y-auto divide-gray-200 dark:divide-gray-700'
+          >
             {/* get speed dial error */}
             {getSpeedDialError && (
               <InlineNotification type='error' title={getSpeedDialError} className='my-6' />
@@ -169,17 +172,20 @@ export const SideBar = () => {
               speedDials.map((speedDial, key) => (
                 <li key={key}>
                   <div className='group relative flex items-center py-6 px-5'>
-                    <div className='absolute inset-0 group-hover:bg-gray-50' aria-hidden='true' />
+                    <div
+                      className='absolute inset-0 group-hover:bg-gray-50 dark:group-hover:bg-gray-800'
+                      aria-hidden='true'
+                    />
                     <div className='relative flex min-w-0 flex-1 items-center justify-between'>
                       <div className='flex'>
-                        <span className='text-gray-300 '>
+                        <span className='text-gray-300 dark:text-gray-600'>
                           <Avatar size='base' placeholderType='company' />
                         </span>
                         <div className='ml-4 truncate'>
-                          <p className='truncate text-sm font-medium text-gray-900'>
+                          <p className='truncate text-sm font-medium text-gray-900 dark:text-gray-100'>
                             {speedDial.name}
                           </p>
-                          <p className='truncate text-sm text-gray-500'>
+                          <p className='truncate text-sm text-gray-500 dark:text-gray-400'>
                             {speedDial.speeddial_num}
                           </p>
                         </div>
@@ -187,7 +193,10 @@ export const SideBar = () => {
                       <div className='flex gap-2'>
                         {/* Actions */}
                         <Button variant='white'>
-                          <FontAwesomeIcon icon={faPhone} className='h-4 w-4 text-gray-600' />
+                          <FontAwesomeIcon
+                            icon={faPhone}
+                            className='h-4 w-4 text-gray-600 dark:text-gray-300'
+                          />
                           <span className='sr-only'>Call speed dial</span>
                         </Button>
                         <Dropdown items={getItemsMenu(speedDial)} position='left'>
@@ -211,17 +220,19 @@ export const SideBar = () => {
           afterLeave={() => setDeletingName('')}
         >
           <Modal.Content>
-            <div className='mx-auto flex h-12 w-12 flex-shrink-0 items-center justify-center rounded-full bg-red-100 sm:mx-0'>
+            <div className='mx-auto flex h-12 w-12 flex-shrink-0 items-center justify-center rounded-full sm:mx-0 bg-red-100 dark:bg-red-900'>
               <FontAwesomeIcon
                 icon={faTriangleExclamation}
-                className='h-6 w-6 text-red-600'
+                className='h-6 w-6 text-red-600 dark:text-red-200'
                 aria-hidden='true'
               />
             </div>
             <div className='mt-3 text-center sm:mt-0 sm:ml-4 sm:text-left'>
-              <h3 className='text-lg font-medium leading-6 text-gray-900'>Delete speed dial</h3>
+              <h3 className='text-lg font-medium leading-6 text-gray-900 dark:text-gray-100'>
+                Delete speed dial
+              </h3>
               <div className='mt-2'>
-                <p className='text-sm text-gray-500'>
+                <p className='text-sm text-gray-500 dark:text-gray-400'>
                   Speed dial <strong>{deletingName || ''}</strong> will be deleted.
                 </p>
               </div>

@@ -118,7 +118,7 @@ export const CreateOrEditSpeedDialDrawerContent = forwardRef<
   return (
     <div className={classNames(className, 'm-1')} {...props}>
       {/* title */}
-      <h2 className='text-lg font-medium text-gray-700 mb-4'>
+      <h2 className='text-lg font-medium mb-4 text-gray-900 dark:text-gray-100'>
         {config.isEdit ? 'Edit speed dial' : 'Create speed dial'}
       </h2>
       {/* name */}
@@ -135,17 +135,17 @@ export const CreateOrEditSpeedDialDrawerContent = forwardRef<
         label='Phone number'
         name='phoneNumber'
         ref={phoneNumberRef}
-        className='mb-4'
+        className='mb-6'
         error={!!phoneNumberError}
         helper={phoneNumberError}
       />
       {/* create speed dial error */}
       {createSpeedDialError && (
-        <InlineNotification type='error' title={createSpeedDialError} className='mb-4' />
+        <InlineNotification type='error' title={createSpeedDialError} className='mb-6' />
       )}
       {/* edit speed dial error */}
       {editSpeedDialError && (
-        <InlineNotification type='error' title={editSpeedDialError} className='mb-4' />
+        <InlineNotification type='error' title={editSpeedDialError} className='mb-6' />
       )}
       {config.isEdit ? (
         <Button variant='primary' type='submit' onClick={prepareEditSpeedDial} className='mb-4'>

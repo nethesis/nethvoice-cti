@@ -79,17 +79,19 @@ export const ShowContactDrawerContent = forwardRef<
         afterLeave={() => setContactToDelete(null)}
       >
         <Modal.Content>
-          <div className='mx-auto flex h-12 w-12 flex-shrink-0 items-center justify-center rounded-full bg-red-100 sm:mx-0'>
+          <div className='mx-auto flex h-12 w-12 flex-shrink-0 items-center justify-center rounded-full sm:mx-0 bg-red-100 dark:bg-red-900'>
             <FontAwesomeIcon
               icon={faTriangleExclamation}
-              className='h-6 w-6 text-red-600'
+              className='h-6 w-6 text-red-600 dark:text-red-200'
               aria-hidden='true'
             />
           </div>
           <div className='mt-3 text-center sm:mt-0 sm:ml-4 sm:text-left'>
-            <h3 className='text-lg font-medium leading-6 text-gray-900'>Delete contact</h3>
+            <h3 className='text-lg font-medium leading-6 text-gray-900 dark:text-gray-100'>
+              Delete contact
+            </h3>
             <div className='mt-2'>
-              <p className='text-sm text-gray-500'>
+              <p className='text-sm text-gray-500 dark:text-gray-400'>
                 Contact <strong>{contactToDelete?.displayName || ''}</strong> will be permanently
                 deleted.
               </p>
@@ -120,7 +122,9 @@ export const ShowContactDrawerContent = forwardRef<
                 <Avatar placeholderType='company' />
               )}
             </div>
-            <h2 className='text-xl font-medium text-gray-900'>{config.displayName}</h2>
+            <h2 className='text-xl font-medium text-gray-900 dark:text-gray-100'>
+              {config.displayName}
+            </h2>
           </div>
           {config.owner_id === auth.username && (
             <div>
@@ -138,17 +142,17 @@ export const ShowContactDrawerContent = forwardRef<
             </div>
           )}
         </div>
-        <div className='mt-5 border-t border-gray-200'>
-          <dl className='sm:divide-y sm:divide-gray-200'>
+        <div className='mt-5 border-t border-gray-200 dark:border-gray-700'>
+          <dl className='sm:divide-y sm:divide-gray-200 dark:sm:divide-gray-700'>
             {/* company */}
             {config.kind == 'person' && config.company && (
               <div className='py-4 sm:grid sm:grid-cols-3 sm:gap-4 sm:py-5'>
-                <dt className='text-sm font-medium text-gray-500'>Company</dt>
-                <dd className='mt-1 text-sm text-gray-900 sm:col-span-2 sm:mt-0'>
+                <dt className='text-sm font-medium text-gray-500 dark:text-gray-400'>Company</dt>
+                <dd className='mt-1 text-sm text-gray-900 dark:text-gray-100 sm:col-span-2 sm:mt-0'>
                   <div className='flex items-center text-sm'>
                     <FontAwesomeIcon
                       icon={faSuitcase}
-                      className='mr-2 h-4 w-4 flex-shrink-0 text-gray-400'
+                      className='mr-2 h-4 w-4 flex-shrink-0 text-gray-400 dark:text-gray-500'
                       aria-hidden='true'
                     />
                     <span>{config.company}</span>
@@ -159,12 +163,12 @@ export const ShowContactDrawerContent = forwardRef<
             {/* extension */}
             {config.extension && (
               <div className='py-4 sm:grid sm:grid-cols-3 sm:gap-4 sm:py-5'>
-                <dt className='text-sm font-medium text-gray-500'>Extension</dt>
-                <dd className='mt-1 text-sm text-gray-900 sm:col-span-2 sm:mt-0'>
-                  <div className='flex items-center text-sm text-primary'>
+                <dt className='text-sm font-medium text-gray-500 dark:text-gray-400'>Extension</dt>
+                <dd className='mt-1 text-sm text-gray-900 dark:text-gray-100 sm:col-span-2 sm:mt-0'>
+                  <div className='flex items-center text-sm text-primary dark:text-primary'>
                     <FontAwesomeIcon
                       icon={faPhone}
-                      className='mr-2 h-4 w-4 flex-shrink-0 text-gray-400'
+                      className='mr-2 h-4 w-4 flex-shrink-0 text-gray-400 dark:text-gray-500'
                       aria-hidden='true'
                     />
                     <span className='truncate cursor-pointer'>{config.extension}</span>
@@ -175,12 +179,12 @@ export const ShowContactDrawerContent = forwardRef<
             {/* work phone */}
             {config.workphone && (
               <div className='py-4 sm:grid sm:grid-cols-3 sm:gap-4 sm:py-5'>
-                <dt className='text-sm font-medium text-gray-500'>Work phone</dt>
-                <dd className='mt-1 text-sm text-gray-900 sm:col-span-2 sm:mt-0'>
-                  <div className='flex items-center text-sm text-primary'>
+                <dt className='text-sm font-medium text-gray-500 dark:text-gray-400'>Work phone</dt>
+                <dd className='mt-1 text-sm text-gray-900 dark:text-gray-100 sm:col-span-2 sm:mt-0'>
+                  <div className='flex items-center text-sm text-primary dark:text-primary'>
                     <FontAwesomeIcon
                       icon={faPhone}
-                      className='mr-2 h-4 w-4 flex-shrink-0 text-gray-400'
+                      className='mr-2 h-4 w-4 flex-shrink-0 text-gray-400 dark:text-gray-500'
                       aria-hidden='true'
                     />
                     <span className='truncate cursor-pointer'>{config.workphone}</span>
@@ -191,12 +195,14 @@ export const ShowContactDrawerContent = forwardRef<
             {/* mobile phone */}
             {config.cellphone && (
               <div className='py-4 sm:grid sm:grid-cols-3 sm:gap-4 sm:py-5'>
-                <dt className='text-sm font-medium text-gray-500'>Mobile phone</dt>
-                <dd className='mt-1 text-sm text-gray-900 sm:col-span-2 sm:mt-0'>
-                  <div className='flex items-center text-sm text-primary'>
+                <dt className='text-sm font-medium text-gray-500 dark:text-gray-400'>
+                  Mobile phone
+                </dt>
+                <dd className='mt-1 text-sm text-gray-900 dark:text-gray-100 sm:col-span-2 sm:mt-0'>
+                  <div className='flex items-center text-sm text-primary dark:text-primary'>
                     <FontAwesomeIcon
                       icon={faPhone}
-                      className='mr-2 h-4 w-4 flex-shrink-0 text-gray-400'
+                      className='mr-2 h-4 w-4 flex-shrink-0 text-gray-400 dark:text-gray-500'
                       aria-hidden='true'
                     />
                     <span className='truncate cursor-pointer'>{config.cellphone}</span>
@@ -207,12 +213,12 @@ export const ShowContactDrawerContent = forwardRef<
             {/* work email */}
             {config.workemail && (
               <div className='py-4 sm:grid sm:grid-cols-3 sm:gap-4 sm:py-5'>
-                <dt className='text-sm font-medium text-gray-500'>Email</dt>
-                <dd className='mt-1 text-sm text-gray-900 sm:col-span-2 sm:mt-0'>
-                  <div className='flex items-center text-sm text-primary'>
+                <dt className='text-sm font-medium text-gray-500 dark:text-gray-400'>Email</dt>
+                <dd className='mt-1 text-sm text-gray-900 dark:text-gray-100 sm:col-span-2 sm:mt-0'>
+                  <div className='flex items-center text-sm text-primary dark:text-primary'>
                     <FontAwesomeIcon
                       icon={faEnvelope}
-                      className='mr-2 h-4 w-4 flex-shrink-0 text-gray-400'
+                      className='mr-2 h-4 w-4 flex-shrink-0 text-gray-400 dark:text-gray-500'
                       aria-hidden='true'
                     />
                     <a
@@ -230,12 +236,12 @@ export const ShowContactDrawerContent = forwardRef<
             {/* notes */}
             {config.notes && (
               <div className='py-4 sm:grid sm:grid-cols-3 sm:gap-4 sm:py-5'>
-                <dt className='text-sm font-medium text-gray-500'>Notes</dt>
-                <dd className='mt-1 text-sm text-gray-900 sm:col-span-2 sm:mt-0'>
+                <dt className='text-sm font-medium text-gray-500 dark:text-gray-400'>Notes</dt>
+                <dd className='mt-1 text-sm text-gray-900 dark:text-gray-100 sm:col-span-2 sm:mt-0'>
                   <div className='flex items-center text-sm'>
                     <FontAwesomeIcon
                       icon={faFileLines}
-                      className='mr-2 h-4 w-4 flex-shrink-0 text-gray-400'
+                      className='mr-2 h-4 w-4 flex-shrink-0 text-gray-400 dark:text-gray-500'
                       aria-hidden='true'
                     />
                     <div>{config.notes}</div>
@@ -246,8 +252,10 @@ export const ShowContactDrawerContent = forwardRef<
             {/* company contacts */}
             {config.contacts && config.contacts.length ? (
               <div className='py-4 sm:grid sm:grid-cols-3 sm:gap-4 sm:py-5'>
-                <dt className='text-sm font-medium text-gray-500'>Company contacts</dt>
-                <dd className='mt-1 text-sm text-gray-900 sm:col-span-2 sm:mt-0'>
+                <dt className='text-sm font-medium text-gray-500 dark:text-gray-400'>
+                  Company contacts
+                </dt>
+                <dd className='mt-1 text-sm text-gray-900 dark:text-gray-100 sm:col-span-2 sm:mt-0'>
                   <ul role='list'>
                     {config.contacts.map((contact: any, index: number) => (
                       <li
@@ -257,11 +265,11 @@ export const ShowContactDrawerContent = forwardRef<
                         <div className='flex w-0 flex-1 items-center'>
                           <FontAwesomeIcon
                             icon={faUser}
-                            className='h-4 w-4 flex-shrink-0 text-gray-400'
+                            className='h-4 w-4 flex-shrink-0 text-gray-400 dark:text-gray-500'
                             aria-hidden='true'
                           />
                           <span
-                            className='ml-2 w-0 flex-1 truncate text-primary cursor-pointer'
+                            className='ml-2 w-0 flex-1 truncate text-primary dark:text-primary cursor-pointer'
                             onClick={() => fetchContact(contact.id, contact.source)}
                           >
                             {contact.name}
@@ -275,12 +283,12 @@ export const ShowContactDrawerContent = forwardRef<
             ) : null}
             {/* visibility */}
             <div className='py-4 sm:grid sm:grid-cols-3 sm:gap-4 sm:py-5'>
-              <dt className='text-sm font-medium text-gray-500'>Visibility</dt>
-              <dd className='mt-1 text-sm text-gray-900 sm:col-span-2 sm:mt-0'>
+              <dt className='text-sm font-medium text-gray-500 dark:text-gray-400'>Visibility</dt>
+              <dd className='mt-1 text-sm text-gray-900 dark:text-gray-100 sm:col-span-2 sm:mt-0'>
                 <div className='flex items-center text-sm'>
                   <FontAwesomeIcon
                     icon={faEye}
-                    className='mr-2 h-4 w-4 flex-shrink-0 text-gray-400'
+                    className='mr-2 h-4 w-4 flex-shrink-0 text-gray-400 dark:text-gray-500'
                     aria-hidden='true'
                   />
                   <span className='truncate'>

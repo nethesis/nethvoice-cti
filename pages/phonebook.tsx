@@ -124,7 +124,7 @@ const Phonebook: NextPage = () => {
 
   return (
     <>
-      <div className='p-8 bg-gray-100'>
+      <div>
         <Button variant='white' onClick={() => openCreateContactDrawer()} className='mb-6'>
           <FontAwesomeIcon icon={faPlus} className='mr-2 h-4 w-4' />
           <span>Create contact</span>
@@ -134,8 +134,8 @@ const Phonebook: NextPage = () => {
           updateContactTypeFilter={updateContactTypeFilter}
           updateSortFilter={updateSortFilter}
         />
-        <div className='overflow-hidden bg-white shadow sm:rounded-md'>
-          <ul role='list' className='divide-y divide-gray-200'>
+        <div className='overflow-hidden shadow sm:rounded-md bg-white dark:bg-gray-900'>
+          <ul role='list' className='divide-y divide-gray-200 dark:divide-gray-700'>
             {/* phonebook error */}
             {phonebookError && (
               <InlineNotification type='error' title={phonebookError}></InlineNotification>
@@ -212,7 +212,7 @@ const Phonebook: NextPage = () => {
                       <div className='min-w-0 flex-1 px-4 md:grid md:grid-cols-2 gap-4 lg:grid-cols-2 xl:grid-cols-3'>
                         {/* display name and company/contacts */}
                         <div className='flex flex-col justify-center'>
-                          <div className='truncate text-sm font-medium text-primary'>
+                          <div className='truncate text-sm font-medium text-primary dark:text-primary'>
                             <span
                               className='cursor-pointer'
                               onClick={() => openShowContactDrawer(contact)}
@@ -222,23 +222,23 @@ const Phonebook: NextPage = () => {
                           </div>
                           {/* extension */}
                           {contact.extension && (
-                            <div className='mt-1 flex items-center text-sm text-gray-500'>
+                            <div className='mt-1 flex items-center text-sm text-gray-500 dark:text-gray-400'>
                               <FontAwesomeIcon
                                 icon={faPhone}
-                                className='mr-2 h-4 w-4 flex-shrink-0 text-gray-400'
+                                className='mr-2 h-4 w-4 flex-shrink-0 text-gray-400 dark:text-gray-500'
                                 aria-hidden='true'
                               />
-                              <span className='truncate text-primary cursor-pointer'>
+                              <span className='truncate text-primary dark:text-primary cursor-pointer'>
                                 {contact.extension}
                               </span>
                             </div>
                           )}
                           {/* company name */}
                           {contact.kind == 'person' && contact.company && !contact.extension && (
-                            <div className='mt-1 flex items-center text-sm text-gray-500'>
+                            <div className='mt-1 flex items-center text-sm text-gray-500 dark:text-gray-400'>
                               <FontAwesomeIcon
                                 icon={faSuitcase}
-                                className='mr-2 h-4 w-4 flex-shrink-0 text-gray-400'
+                                className='mr-2 h-4 w-4 flex-shrink-0 text-gray-400 dark:text-gray-500'
                                 aria-hidden='true'
                               />
                               <span className='truncate'>{contact.company}</span>
@@ -246,10 +246,10 @@ const Phonebook: NextPage = () => {
                           )}
                           {/* company contacts */}
                           {contact.contacts && contact.contacts.length ? (
-                            <div className='mt-1 flex items-center text-sm text-gray-500'>
+                            <div className='mt-1 flex items-center text-sm text-gray-500 dark:text-gray-400'>
                               <FontAwesomeIcon
                                 icon={faUserGroup}
-                                className='mr-2 h-4 w-4 flex-shrink-0 text-gray-400'
+                                className='mr-2 h-4 w-4 flex-shrink-0 text-gray-400 dark:text-gray-500'
                                 aria-hidden='true'
                               />
                               <span>{contact.contacts.length} contacts</span>
@@ -260,11 +260,13 @@ const Phonebook: NextPage = () => {
                         {contact.workphone && (
                           <div className='mt-4 md:mt-0'>
                             <div>
-                              <div className='text-sm text-gray-900'>Work phone</div>
-                              <div className='mt-1 flex items-center text-sm text-primary'>
+                              <div className='text-sm text-gray-900 dark:text-gray-100'>
+                                Work phone
+                              </div>
+                              <div className='mt-1 flex items-center text-sm text-primary dark:text-primary'>
                                 <FontAwesomeIcon
                                   icon={faPhone}
-                                  className='mr-2 h-4 w-4 flex-shrink-0 text-gray-400'
+                                  className='mr-2 h-4 w-4 flex-shrink-0 text-gray-400 dark:text-gray-500'
                                   aria-hidden='true'
                                 />
                                 <span className='truncate cursor-pointer'>{contact.workphone}</span>
@@ -276,11 +278,13 @@ const Phonebook: NextPage = () => {
                         {contact.cellphone && (
                           <div className='mt-4 md:mt-0'>
                             <div>
-                              <div className='text-sm text-gray-900'>Mobile phone</div>
-                              <div className='mt-1 flex items-center text-sm text-primary'>
+                              <div className='text-sm text-gray-900 dark:text-gray-100'>
+                                Mobile phone
+                              </div>
+                              <div className='mt-1 flex items-center text-sm text-primary dark:text-primary'>
                                 <FontAwesomeIcon
                                   icon={faPhone}
-                                  className='mr-2 h-4 w-4 flex-shrink-0 text-gray-400'
+                                  className='mr-2 h-4 w-4 flex-shrink-0 text-gray-400 dark:text-gray-500'
                                   aria-hidden='true'
                                 />
                                 <span className='truncate cursor-pointer'>{contact.cellphone}</span>
@@ -293,7 +297,7 @@ const Phonebook: NextPage = () => {
                     <div>
                       <FontAwesomeIcon
                         icon={faChevronRight}
-                        className='h-3 w-3 text-gray-400 cursor-pointer'
+                        className='h-3 w-3 text-gray-400 dark:text-gray-500 cursor-pointer'
                         aria-hidden='true'
                         onClick={() => openShowContactDrawer(contact)}
                       />
@@ -306,11 +310,11 @@ const Phonebook: NextPage = () => {
         {/* pagination */}
         {!phonebookError && !!phonebook?.rows?.length && (
           <nav
-            className='flex items-center justify-between border-t border-gray-100 bg-gray-100 px-0 py-4'
+            className='flex items-center justify-between border-t px-0 py-4 border-gray-100 bg-gray-100 dark:border-gray-800 dark:bg-gray-800'
             aria-label='Pagination'
           >
             <div className='hidden sm:block'>
-              <p className='text-sm text-gray-700'>
+              <p className='text-sm text-gray-700 dark:text-gray-200'>
                 Showing <span className='font-medium'>{PAGE_SIZE * (pageNum - 1) + 1}</span> to{' '}
                 <span className='font-medium'>
                   {PAGE_SIZE * (pageNum - 1) + PAGE_SIZE < phonebook?.count
