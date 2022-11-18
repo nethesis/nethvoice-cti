@@ -144,7 +144,7 @@ const theme = {
     },
     dnd: {
       badge: {
-        base: 'bg-gray-100 text-gray-900 dark:bg-gray-900 dark:text-gray-100',
+        base: 'bg-gray-200 text-gray-900 dark:bg-gray-700 dark:text-gray-100',
         dot: 'bg-gray-400 dark:bg-gray-400',
       },
       avatar: {
@@ -216,7 +216,7 @@ const theme = {
     },
     offline: {
       badge: {
-        base: 'border bg-gray-100 text-gray-600 border-gray-300 dark:bg-gray-900 dark:text-gray-300 dark:border-gray-700',
+        base: 'border bg-gray-200 text-gray-600 border-gray-300 dark:bg-gray-700 dark:text-gray-300 dark:border-gray-600',
         dot: 'bg-gray-400 dark:bg-gray-400',
       },
       avatar: {
