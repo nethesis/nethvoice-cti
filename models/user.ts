@@ -5,7 +5,6 @@ import { createModel } from '@rematch/core'
 import type { RootModel } from '.'
 import type { StatusTypes } from '../theme/Types'
 
-
 interface EndpointsTypes {
   cellphone: any[]
   email: any[]
@@ -16,6 +15,7 @@ interface EndpointsTypes {
 }
 interface DefaultState {
   name: string
+  username: string
   mainextension: string
   mainPresence: StatusTypes
   endpoints: EndpointsTypes
@@ -23,6 +23,7 @@ interface DefaultState {
 
 const defaultState: DefaultState = {
   name: '',
+  username: '',
   mainextension: '',
   mainPresence: 'offline',
   endpoints: {
@@ -32,7 +33,7 @@ const defaultState: DefaultState = {
     jabber: [],
     mainextension: [],
     voicemail: [],
-  }
+  },
 }
 
 export const user = createModel<RootModel>()({
@@ -40,6 +41,7 @@ export const user = createModel<RootModel>()({
   reducers: {
     update: (state, payload: DefaultState) => {
       state.name = payload.name
+      state.username = payload.username
       state.mainextension = payload.mainextension
       state.mainPresence = payload.mainPresence
       state.endpoints = payload.endpoints

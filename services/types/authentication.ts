@@ -9,3 +9,7 @@ export type APITokenType = {
   api_token: string
   username: string
 }
+
+export type PhoneIslandCheckType = {
+  exists: boolean
+}

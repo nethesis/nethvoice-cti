@@ -1,6 +1,7 @@
 // Copyright (C) 2022 Nethesis S.r.l.
 // SPDX-License-Identifier: AGPL-3.0-or-later
 
+import '@nethesis/phone-island/dist/index.css'
 import '../styles/globals.css'
 import type { AppProps } from 'next/app'
 import { useState, useEffect } from 'react'
@@ -12,6 +13,7 @@ import { useRouter } from 'next/router'
 import { RouteGuard } from '../config/router'
 import { Service } from '../config/service'
 import { checkDarkTheme } from '../lib/darkTheme'
+import { Island } from '../components/island'
 
 function MyApp({ Component, pageProps }: AppProps) {
   const [isLoading, setIsLoading] = useState<boolean>(true)
@@ -51,6 +53,7 @@ function MyApp({ Component, pageProps }: AppProps) {
               <Layout>
                 <RouteGuard>
                   <Component {...pageProps} />
+                  <Island />
                 </RouteGuard>
               </Layout>
             </Service>

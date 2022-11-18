@@ -43,6 +43,7 @@ export const Layout: FC<LayoutProps> = ({ children }) => {
       if (userInfo && userInfo.data) {
         dispatch.user.update({
           name: userInfo.data.name,
+          username: userInfo.data.username,
           mainextension: userInfo.data.endpoints.mainextension[0].id,
           mainPresence: userInfo.data.mainPresence,
           endpoints: userInfo.data.endpoints

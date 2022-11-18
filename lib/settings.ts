@@ -9,6 +9,8 @@ interface NewIslandConfigTypes {
   sip_secret: string
 }
 
-export function newIslandConfig (obj: NewIslandConfigTypes): string {
-    return btoa(`${obj.hostname}:${obj.username}:${obj.auth_token}:${obj.sip_exten}:${obj.sip_secret}`)
+export function newIslandConfig(obj: NewIslandConfigTypes): string {
+  return btoa(
+    `${obj.hostname}:${obj.username}:${obj.auth_token}:${obj.sip_exten}:${obj.sip_secret}`,
+  )
 }

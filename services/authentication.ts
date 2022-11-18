@@ -7,18 +7,52 @@
 
 import axios, { AxiosResponse } from 'axios'
 import { handleNetworkError } from '../lib/utils'
-import { APITokenType } from './types'
+import { APITokenType, PhoneIslandCheckType } from './types'
 
 /**
  * The path to the user endpoints
  */
 const PATH = '/authentication'
 
-export const getAPIToken = async () => {
+export const getPhoneIslandToken = async () => {
   try {
-    const res: AxiosResponse = await axios.post(`${PATH}/api_token`)
+    const res: AxiosResponse = await axios.post(`${PATH}/phone_island_token`)
     const data: APITokenType = res.data
     return data || []
+  } catch (error) {
+    handleNetworkError(error)
+    throw error
+  }
+}
+
+/**
+ * Checks if the island token exists for the user
+ *
+ * @returns An object with the exists boolean property
+ */
+export const phoneIslandTokenCheck = async () => {
+  try {
+    const res: AxiosResponse = await axios.get(`${PATH}/phone_island_token_check`)
+    const data: PhoneIslandCheckType = res.data
+    return data || []
+  } catch (error) {
+    handleNetworkError(error)
+    throw error
+  }
+}
+
+/**
+ * Checks if the island token exists for the user
+ *
+ * @returns An object with the exists boolean property
+ */
+export const removePhoneIslandToken = async () => {
+  try {
+    const res: AxiosResponse = await axios.post(`${PATH}/remove_persistent_token`, {
+      type: 'phone-island',
+    })
+    const data: {} = res.data
+    return data ? true : false
   } catch (error) {
     handleNetworkError(error)
     throw error
