@@ -18,7 +18,6 @@ import {
 } from '../../lib/speedDial'
 import { useSelector } from 'react-redux'
 import { RootState } from '../../store'
-import Skeleton from 'react-loading-skeleton'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import {
   faPhone,
@@ -144,10 +143,12 @@ export const SideBar = () => {
               Array.from(Array(4)).map((e, index) => (
                 <li key={index}>
                   <div className='flex items-center px-4 py-4 sm:px-6'>
-                    <Skeleton circle height='100%' containerClassName='w-12 h-12 leading-none' />
+                    {/* avatar skeleton */}
+                    <div className='animate-pulse rounded-full h-12 w-12 bg-gray-300 dark:bg-gray-600'></div>
                     <div className='min-w-0 flex-1 px-4'>
                       <div className='flex flex-col justify-center'>
-                        <Skeleton />
+                        {/* line skeleton */}
+                        <div className='animate-pulse h-3 rounded bg-gray-300 dark:bg-gray-600'></div>
                       </div>
                     </div>
                   </div>

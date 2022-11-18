@@ -2,7 +2,6 @@
 // SPDX-License-Identifier: AGPL-3.0-or-later
 
 import '../styles/globals.css'
-import 'react-loading-skeleton/dist/skeleton.css'
 import type { AppProps } from 'next/app'
 import { useState, useEffect } from 'react'
 import { Provider } from 'react-redux'

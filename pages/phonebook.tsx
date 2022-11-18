@@ -12,7 +12,6 @@ import {
   PAGE_SIZE,
   openCreateContactDrawer,
 } from '../lib/phonebook'
-import Skeleton from 'react-loading-skeleton'
 import { RootState } from '../store'
 import { useSelector } from 'react-redux'
 import { debounce } from 'lodash'
@@ -145,16 +144,20 @@ const Phonebook: NextPage = () => {
               Array.from(Array(9)).map((e, index) => (
                 <li key={index}>
                   <div className='flex items-center px-4 py-4 sm:px-6'>
-                    <Skeleton circle height='100%' containerClassName='w-12 h-12 leading-none' />
+                    {/* avatar skeleton */}
+                    <div className='animate-pulse rounded-full h-12 w-12 bg-gray-300 dark:bg-gray-600'></div>
                     <div className='min-w-0 flex-1 px-4 md:grid md:grid-cols-2 gap-4 lg:grid-cols-3 xl:grid-cols-3'>
                       <div className='flex flex-col justify-center'>
-                        <Skeleton />
+                        {/* line skeleton */}
+                        <div className='animate-pulse h-3 rounded bg-gray-300 dark:bg-gray-600'></div>
                       </div>
                       <div>
-                        <Skeleton />
+                        {/* line skeleton */}
+                        <div className='animate-pulse h-3 rounded bg-gray-300 dark:bg-gray-600'></div>
                       </div>
                       <div>
-                        <Skeleton />
+                        {/* line skeleton */}
+                        <div className='animate-pulse h-3 rounded bg-gray-300 dark:bg-gray-600'></div>
                       </div>
                     </div>
                   </div>
