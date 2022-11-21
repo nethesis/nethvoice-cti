@@ -42,6 +42,7 @@ const Template: Story<AvatarProps> = (args) => <Avatar {...args} />
 export const Circular = Template.bind({})
 Circular.args = {
   rounded: 'full',
+  bordered: false,
   src: 'https://images.unsplash.com/photo-1567532939604-b6b5b0db2604?ixlib=rb-1.2.1&ixid=eyJhcHBfaWQiOjEyMDd9&auto=format&fit=facearea&facepad=2&w=256&h=256&q=80',
   unoptimized: true,
 }
@@ -49,6 +50,7 @@ Circular.args = {
 export const Rounded = Template.bind({})
 Rounded.args = {
   rounded: 'base',
+  bordered: false,
   src: 'https://images.unsplash.com/photo-1567532939604-b6b5b0db2604?ixlib=rb-1.2.1&ixid=eyJhcHBfaWQiOjEyMDd9&auto=format&fit=facearea&facepad=2&w=256&h=256&q=80',
   unoptimized: true,
 }
@@ -56,6 +58,7 @@ Rounded.args = {
 export const WithStatus = Template.bind({})
 WithStatus.args = {
   status: 'available',
+  bordered: false,
   src: 'https://images.unsplash.com/photo-1567532939604-b6b5b0db2604?ixlib=rb-1.2.1&ixid=eyJhcHBfaWQiOjEyMDd9&auto=format&fit=facearea&facepad=2&w=256&h=256&q=80',
   unoptimized: true,
 }
@@ -63,11 +66,13 @@ WithStatus.args = {
 export const WithInitials = Template.bind({})
 WithInitials.args = {
   initials: 'TW',
+  bordered: false,
 }
 
 export const WithPlaceholderType = Template.bind({})
 WithPlaceholderType.args = {
   placeholderType: 'company',
+  bordered: false,
 }
 
 export const WithPlaceholder = Template.bind({})
@@ -94,6 +99,7 @@ WithPlaceholder.args = {
       </defs>
     </svg>
   ),
+  bordered: true,
   size: 'base',
 }
 

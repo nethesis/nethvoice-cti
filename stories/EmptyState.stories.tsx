@@ -32,7 +32,7 @@ WithIcon.args = {
 const button = (
   <button
     type='button'
-    className='inline-flex items-center rounded-md border border-transparent bg-sky-600 px-4 py-2 text-sm font-medium text-white shadow-sm hover:bg-sky-700 focus:outline-none focus:ring-2 focus:ring-sky-500 focus:ring-offset-2'
+    className='inline-flex items-center rounded-md border border-transparent bg-primary px-4 py-2 text-sm font-medium text-white shadow-sm hover:bg-primaryDark focus:outline-none focus:ring-2 focus:ring-primaryLight focus:ring-offset-2'
   >
     <FontAwesomeIcon icon={faPlus} className='mr-2 h-4 w-4' aria-hidden='true' />
     New project

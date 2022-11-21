@@ -15,7 +15,6 @@ const meta = {
         'busy',
         'incoming',
         'offline',
-        'rounded',
       ],
     },
   },

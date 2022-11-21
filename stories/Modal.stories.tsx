@@ -28,18 +28,18 @@ export const Danger: Story<ModalProps> = (): JSX.Element => {
       <Button onClick={() => setShowMondal(true)}>Show modal</Button>
       <Modal show={showMondal} focus={cancelButtonRef} onClose={() => setShowMondal(false)}>
         <Modal.Content>
-          <div className='mx-auto flex h-12 w-12 flex-shrink-0 items-center justify-center rounded-full bg-red-100 sm:mx-0'>
+          <div className='mx-auto flex h-12 w-12 flex-shrink-0 items-center justify-center rounded-full sm:mx-0 bg-red-100 dark:bg-red-900'>
             <FontAwesomeIcon
               icon={faTriangleExclamation}
-              className='h-6 w-6 text-red-600'
+              className='h-6 w-6 text-red-600 dark:text-red-200'
               aria-hidden='true'
             />
           </div>
           <div className='mt-3 text-center sm:mt-0 sm:ml-4 sm:text-left'>
-            <h3 className='text-lg font-medium leading-6 text-gray-900'>Delete account</h3>
+            <h3 className='text-lg font-medium leading-6 text-gray-900 dark:text-gray-100'>Delete account</h3>
             <div className='mt-2'>
-              <p className='text-sm text-gray-500'>
-                The contact will be deleted definitevely from the phonebook.
+              <p className='text-sm text-gray-500 dark:text-gray-400'>
+                The contact will be deleted from the phonebook.
               </p>
             </div>
           </div>
@@ -73,12 +73,12 @@ export const WithForm: Story<ModalProps> = (): JSX.Element => {
         <form onSubmit={handleSubmit}>
           <Modal.Content>
             <div className='mt-3 text-center sm:mt-0 sm:text-left w-full'>
-              <h3 className='text-lg font-medium leading-6 text-gray-900 text-center'>
+              <h3 className='text-lg font-medium leading-6 text-center text-gray-900 dark:text-gray-100'>
                 Add account
               </h3>
               <div className='mt-2'>
-                <p className='text-sm text-gray-500 text-center'>
-                  The contact will be added to the phonebook and will be available pubblicly by
+                <p className='text-sm text-center text-gray-500 dark:text-gray-400'>
+                  The contact will be added to the phonebook and will be available publicly by
                   default.
                 </p>
               </div>

@@ -2,7 +2,6 @@
 // SPDX-License-Identifier: AGPL-3.0-or-later
 
 import '../styles/globals.css'
-import 'react-loading-skeleton/dist/skeleton.css'
 import type { AppProps } from 'next/app'
 import { useState, useEffect } from 'react'
 import { Provider } from 'react-redux'
@@ -12,6 +11,7 @@ import { getCredentials, updateAuthStore } from '../lib/login'
 import { useRouter } from 'next/router'
 import { RouteGuard } from '../config/router'
 import { Service } from '../config/service'
+import { checkDarkTheme } from '../lib/darkTheme'
 
 function MyApp({ Component, pageProps }: AppProps) {
   const [isLoading, setIsLoading] = useState<boolean>(true)
@@ -35,6 +35,11 @@ function MyApp({ Component, pageProps }: AppProps) {
     }
 
     // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [])
+
+  // check if dark theme should be enabled
+  useEffect(() => {
+    checkDarkTheme()
   }, [])
 
   return (

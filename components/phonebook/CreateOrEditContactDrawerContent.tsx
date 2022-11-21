@@ -235,12 +235,12 @@ export const CreateOrEditContactDrawerContent = forwardRef<
   return (
     <div className={classNames(className, 'm-1')} {...props}>
       {/* title */}
-      <h2 className='text-lg font-medium text-gray-700 mb-4'>
+      <h2 className='text-lg font-medium mb-4 text-gray-700 dark:text-gray-200'>
         {config.isEdit ? 'Edit contact' : 'Create contact'}
       </h2>
       {/* contact visibility */}
       <div className='mb-6'>
-        <label className='text-sm font-medium text-gray-700'>Visibility</label>
+        <label className='text-sm font-medium text-gray-700 dark:text-gray-200'>Visibility</label>
         <fieldset className='mt-2'>
           <legend className='sr-only'>Visibility</legend>
           <div className='space-y-4 sm:flex sm:items-center sm:space-y-0 sm:space-x-10'>
@@ -252,9 +252,12 @@ export const CreateOrEditContactDrawerContent = forwardRef<
                   type='radio'
                   checked={option.id === contactVisibility}
                   onChange={onContactVisibilityChanged}
-                  className='h-4 w-4 border-gray-300 text-sky-600 focus:ring-sky-500'
+                  className='h-4 w-4 border-gray-300 text-primary focus:ring-primaryLight dark:border-gray-600 dark:text-primary dark:focus:ring-primaryDark'
                 />
-                <label htmlFor={option.id} className='ml-3 block text-sm font-medium text-gray-700'>
+                <label
+                  htmlFor={option.id}
+                  className='ml-3 block text-sm font-medium text-gray-700 dark:text-gray-200'
+                >
                   {option.title}
                 </label>
               </div>
@@ -264,7 +267,7 @@ export const CreateOrEditContactDrawerContent = forwardRef<
       </div>
       {/* contact type */}
       <div className='mb-6'>
-        <label className='text-sm font-medium text-gray-700'>Type</label>
+        <label className='text-sm font-medium text-gray-700 dark:text-gray-200'>Type</label>
         <fieldset className='mt-2'>
           <legend className='sr-only'>Type</legend>
           <div className='space-y-4 sm:flex sm:items-center sm:space-y-0 sm:space-x-10'>
@@ -276,9 +279,12 @@ export const CreateOrEditContactDrawerContent = forwardRef<
                   type='radio'
                   checked={option.id === contactType}
                   onChange={onContactTypeChanged}
-                  className='h-4 w-4 border-gray-300 text-sky-600 focus:ring-sky-500'
+                  className='h-4 w-4 border-gray-300 text-primary focus:ring-primaryLight dark:border-gray-600 dark:text-primary dark:focus:ring-primaryDark'
                 />
-                <label htmlFor={option.id} className='ml-3 block text-sm font-medium text-gray-700'>
+                <label
+                  htmlFor={option.id}
+                  className='ml-3 block text-sm font-medium text-gray-700 dark:text-gray-200'
+                >
                   {option.title}
                 </label>
               </div>
