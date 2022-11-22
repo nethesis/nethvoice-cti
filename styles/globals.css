@@ -18,7 +18,7 @@
     @apply h-full overflow-hidden;
   }
   #__next {
-    @apply h-full
+    @apply h-full;
   }
 }
 
@@ -26,8 +26,4 @@
   position: fixed;
   right: 18px !important;
   animation-duration: 1s;
-}
-
-.alertLogin{
-  bottom: -160px !important;
 }
