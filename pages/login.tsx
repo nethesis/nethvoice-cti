@@ -25,7 +25,7 @@ export default function Login() {
   )
   let errorAlert = onError ? (
     <div className='relative w-full'>
-      <div className='absolute alertLogin w-full'>
+      <div className='absolute -bottom-[104px] w-full'>
         <InlineNotification type='error' title='Login Failed'>
           <p>{messageError}</p>
         </InlineNotification>
