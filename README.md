@@ -93,12 +93,23 @@ podman build -t ghcr.io/nethesis/nethvoice-cti .
 ```
 _It returns the image_id._
 
-Run the container:
+Prepare a new config file by copying the `public/config/config.production.js`.
+Example:
+```javascript
+window.CONFIG = {
+  PRODUCT_NAME: 'NethVoice CTI',
+  COMPANY_NAME: 'Nethesis',
+  COMPANY_URL: 'https://www.nethesis.it/',
+  API_ENDPOINT: 'nethvoice.nethesis.it',
+  API_SCHEME: 'https://',
+}
+```
 
+Run the container:
 ```
-podman run --rm --name nethvoice-cti -p 3001:3000/tcp ghcr.io/nethserver/nethvoice-cti:latest
+podman run --rm --name nethvoice-cti -v ./config.production.js:/app/public/config/config.production.js:z -p 3000:3000/tcp ghcr.io/nethesis/nethvoice-cti:latest
 ```
-_If port 3001 is already in use, replace it with a free one._
+_If port 3000 is already in use, replace it with a free one._
 
 The project will be available on localhost:3001
 
