@@ -313,7 +313,7 @@ const Phonebook: NextPage = () => {
         {/* pagination */}
         {!phonebookError && !!phonebook?.rows?.length && (
           <nav
-            className='flex items-center justify-between border-t px-0 py-4 border-gray-100 bg-gray-100 dark:border-gray-800 dark:bg-gray-800'
+            className='flex items-center justify-between border-t px-0 py-4 mb-8 border-gray-100 bg-gray-100 dark:border-gray-800 dark:bg-gray-800'
             aria-label='Pagination'
           >
             <div className='hidden sm:block'>
