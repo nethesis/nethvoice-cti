@@ -47,7 +47,10 @@ export const TopBar: FC<TopBarProps> = ({ openMobileCb }) => {
   }
 
   const toggleDarkTheme = () => {
-    if (theme === 'dark') {
+    if (
+      theme === 'dark' ||
+      (theme === 'system' && window.matchMedia('(prefers-color-scheme: dark)').matches)
+    ) {
       setTheme('light')
     } else {
       setTheme('dark')
@@ -65,8 +68,19 @@ export const TopBar: FC<TopBarProps> = ({ openMobileCb }) => {
           </span>
         </Dropdown.Header>
       </div>
-      <Dropdown.Item icon={theme === 'dark' ? faSun : faMoon} onClick={toggleDarkTheme}>
-        {theme === 'dark' ? 'Switch to light theme' : 'Switch to dark theme'}
+      <Dropdown.Item
+        icon={
+          theme === 'dark' ||
+          (theme === 'system' && window.matchMedia('(prefers-color-scheme: dark)').matches)
+            ? faSun
+            : faMoon
+        }
+        onClick={toggleDarkTheme}
+      >
+        {theme === 'dark' ||
+        (theme === 'system' && window.matchMedia('(prefers-color-scheme: dark)').matches)
+          ? 'Switch to light theme'
+          : 'Switch to dark theme'}
       </Dropdown.Item>
       <Dropdown.Item icon={faArrowRightFromBracket} onClick={doLogout}>
         Logout
