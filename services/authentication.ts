@@ -16,7 +16,7 @@ const PATH = '/authentication'
 
 export const getPhoneIslandToken = async () => {
   try {
-    const res: AxiosResponse = await axios.post(`${PATH}/phone_island_token`)
+    const res: AxiosResponse = await axios.post(`${PATH}/phone_island_token_login`)
     const data: APITokenType = res.data
     return data || []
   } catch (error) {
@@ -48,7 +48,7 @@ export const phoneIslandTokenCheck = async () => {
  */
 export const removePhoneIslandToken = async () => {
   try {
-    const res: AxiosResponse = await axios.post(`${PATH}/remove_persistent_token`, {
+    const res: AxiosResponse = await axios.post(`${PATH}/persistent_token_remove`, {
       type: 'phone-island',
     })
     const data: {} = res.data

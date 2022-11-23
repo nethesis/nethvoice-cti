@@ -16,9 +16,7 @@ export function Island() {
   useEffect(() => {
     // Create the configuration for the PhoneIsland
     if (!firstRender) {
-      const webRTCExtension = currentUser.endpoints.extension.filter(
-        (el) => el.type === 'webrtc',
-      )[0]
+      const webRTCExtension = currentUser.endpoints.extension.find((el) => el.type === 'webrtc')
       if (auth.token && currentUser.username && webRTCExtension) {
         setConfig(
           newIslandConfig({
@@ -32,7 +30,7 @@ export function Island() {
         )
       }
     }
-    
+
     setFirstRender(false)
 
     // eslint-disable-next-line react-hooks/exhaustive-deps

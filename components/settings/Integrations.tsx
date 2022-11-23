@@ -2,7 +2,12 @@
 // SPDX-License-Identifier: AGPL-3.0-or-later
 
 import { RefObject, createRef, useState, useEffect } from 'react'
-import { faCheck, faClipboard, faTriangleExclamation, faCircleNotch } from '@fortawesome/free-solid-svg-icons'
+import {
+  faCheck,
+  faClipboard,
+  faTriangleExclamation,
+  faCircleNotch,
+} from '@fortawesome/free-solid-svg-icons'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { Button, InlineNotification, Modal } from '../common'
 import { CopyToClipboard } from 'react-copy-to-clipboard'
@@ -19,7 +24,7 @@ export const Integrations = () => {
   const [copied, setCopied] = useState<boolean>(false)
   const [config, setConfig] = useState<string>('')
   const currentUser = useSelector((state: RootState) => state.user)
-  const webRTCExtension = currentUser.endpoints.extension.filter((el) => el.type === 'webrtc')[0]
+  const webRTCExtension = currentUser.endpoints.extension.find((el) => el.type === 'webrtc')
   const [showMondal, setShowMondal] = useState(false)
   const cancelButtonRef: RefObject<HTMLButtonElement> = createRef()
   const [tokenExists, setTokenExists] = useState<boolean>(false)
@@ -28,12 +33,12 @@ export const Integrations = () => {
   const newConfig = async () => {
     setLoading(true)
     const data = await getPhoneIslandToken()
-    if (data.api_token) {
+    if (data.token) {
       const config = newIslandConfig({
         // @ts-ignore
         hostname: window.CONFIG.API_ENDPOINT,
         username: data.username,
-        auth_token: data.api_token,
+        auth_token: data.token,
         sip_exten: webRTCExtension.id,
         sip_secret: webRTCExtension.secret,
       })
@@ -51,11 +56,6 @@ export const Integrations = () => {
       setTokenExists(false)
       setShowMondal(false)
     }
-  }
-
-  const confirm = () => {
-    setShowMondal(false)
-    newConfig()
   }
 
   useEffect(() => {
@@ -82,23 +82,23 @@ export const Integrations = () => {
                 id='phone-configuration-heading'
                 className='text-sm font-medium leading-6 text-gray-900 dark:text-gray-100'
               >
-                External phone configuration
+                Phone widget configuration
               </h4>
               <p className='mt-1 text-sm text-gray-500 dark:text-gray-400'>
-                Phone configuration can be imported into other applications until integrations are
-                ready to work with this one. Creating a new configuration will invalidate the
-                configuration created before. A new configuration string will be shown down here,
-                and you will need to copy and paste it into the new application to configure the
-                phone.
+                Anytime the user starts or receives a phone call, a floating phone widget is shown
+                on CTI user interface. This widget can be imported and used into other web
+                applications. Click the button below to get the configuration string needed to
+                import the phone widget into your web application.
               </p>
               <p className='mt-6 flex items-center gap-2'>
-                <Button onClick={newConfig}>Create              {
-                loading && (
-                  <FontAwesomeIcon icon={faCircleNotch} className='fa-spin ml-2' />
-                )
-              }</Button>
+                {!tokenExists && (
+                  <Button variant='secondary' onClick={newConfig}>
+                    Get phone widget configuration{' '}
+                    {loading && <FontAwesomeIcon icon={faCircleNotch} className='fa-spin ml-2' />}
+                  </Button>
+                )}
                 {tokenExists && (
-                  <Button variant='white' onClick={() => setShowMondal(true)}>
+                  <Button variant='danger' onClick={() => setShowMondal(true)}>
                     Revoke
                   </Button>
                 )}
@@ -108,8 +108,8 @@ export const Integrations = () => {
                 <>
                   <InlineNotification className='mt-5 border-none' type='warning' title='Important'>
                     <p>
-                      The configuration string below will be shown only once. If you plan to use it
-                      multiple times save it in a secure place.
+                      The configuration string below is shown only once. If you will need it later,
+                      please save it in a safe place
                     </p>
                   </InlineNotification>
                   <div className='mt-5 bg-gray-50 dark:bg-gray-900 dark:border dark:border-gray-800 p-5 rounded-lg text-gray-900 dark:text-gray-100 flex gap-5 items-center'>
@@ -150,12 +150,11 @@ export const Integrations = () => {
           </div>
           <div className='mt-3 text-center sm:mt-0 sm:ml-4 sm:text-left'>
             <h3 className='text-lg font-medium leading-6 text-gray-900'>
-              Revoke phone configuration
+              Revoke widget configuration
             </h3>
             <div className='mt-2'>
               <p className='text-sm text-gray-500'>
-                The old configuration will be invalidate and the previous configured phone will stop
-                running.
+                Any phone widget using the current configuration will stop working
               </p>
             </div>
           </div>

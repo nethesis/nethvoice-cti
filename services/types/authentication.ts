@@ -6,7 +6,7 @@
  */
 
 export type APITokenType = {
-  api_token: string
+  token: string
   username: string
 }
 
