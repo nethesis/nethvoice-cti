@@ -13,9 +13,9 @@ import axios from 'axios'
 const PATH = '/user'
 
 /**
- * 
+ *
  * Get the user info from the server
- * 
+ *
  * @returns The user info
  */
 

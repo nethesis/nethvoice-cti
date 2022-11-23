@@ -15,7 +15,14 @@ export interface DropdownProps extends ComponentProps<'div'> {
   size?: 'full'
 }
 
-const DropdownComponent: FC<DropdownProps> = ({ children, items, divider, position, size, className }) => {
+const DropdownComponent: FC<DropdownProps> = ({
+  children,
+  items,
+  divider,
+  position,
+  size,
+  className,
+}) => {
   const { dropdown: theme } = useTheme().theme
 
   return (

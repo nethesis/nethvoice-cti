@@ -14,8 +14,7 @@ import { useTheme } from '../../../theme/Context'
 import { cleanClassName } from '../../../lib/utils'
 import classNames from 'classnames'
 
-export interface AvatarGroupProps
-  extends PropsWithChildren<ComponentProps<'div'>> {
+export interface AvatarGroupProps extends PropsWithChildren<ComponentProps<'div'>> {
   reversed?: boolean
 }
 

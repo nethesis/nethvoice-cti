@@ -164,24 +164,27 @@ const Phonebook: NextPage = () => {
                 </li>
               ))}
             {/* empty state */}
-            {isPhonebookLoaded && phonebook?.rows && !phonebook.rows.length && !filterText.length && (
-              <EmptyState
-                title='No contact'
-                description='There is no contact in your phonebook'
-                icon={
-                  <FontAwesomeIcon
-                    icon={faAddressBook}
-                    className='mx-auto h-12 w-12'
-                    aria-hidden='true'
-                  />
-                }
-              >
-                <Button variant='primary' onClick={() => openCreateContactDrawer()}>
-                  <FontAwesomeIcon icon={faPlus} className='mr-2 h-4 w-4' />
-                  <span>Create contact</span>
-                </Button>
-              </EmptyState>
-            )}
+            {isPhonebookLoaded &&
+              phonebook?.rows &&
+              !phonebook.rows.length &&
+              !filterText.length && (
+                <EmptyState
+                  title='No contact'
+                  description='There is no contact in your phonebook'
+                  icon={
+                    <FontAwesomeIcon
+                      icon={faAddressBook}
+                      className='mx-auto h-12 w-12'
+                      aria-hidden='true'
+                    />
+                  }
+                >
+                  <Button variant='primary' onClick={() => openCreateContactDrawer()}>
+                    <FontAwesomeIcon icon={faPlus} className='mr-2 h-4 w-4' />
+                    <span>Create contact</span>
+                  </Button>
+                </EmptyState>
+              )}
             {/* no search results */}
             {isPhonebookLoaded &&
               phonebook?.rows &&

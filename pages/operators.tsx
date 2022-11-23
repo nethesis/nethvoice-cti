@@ -4,11 +4,7 @@
 import type { NextPage } from 'next'
 
 const Operators: NextPage = () => {
-
-  return (
-    <>
-    </>
-  )
+  return <></>
 }
 
 export default Operators
