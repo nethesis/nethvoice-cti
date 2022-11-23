@@ -245,7 +245,7 @@ const theme = {
       small: 'h-8 w-8 text-sm',
       base: 'h-10 w-10 text-base',
       large: 'h-12 w-12 text-lg',
-      extra_large: 'h-14 w-14 text-xl',
+      extra_large: 'h-20 w-20 text-3xl',
     },
     group: 'flex -space-x-4 w-fit',
     reverse: 'flex-row-reverse space-x-reverse',

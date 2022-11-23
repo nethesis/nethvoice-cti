@@ -51,7 +51,7 @@ const AvatarComponent: FC<AvatarProps> = ({
   bordered,
   altText = 'Avatar image',
   size = 'base',
-  unoptimized,
+  unoptimized = true,
   className,
 }) => {
   const { avatar: theme } = useTheme().theme

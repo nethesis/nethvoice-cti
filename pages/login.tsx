@@ -120,6 +120,7 @@ export default function Login() {
                         error={onError ? true : false}
                         required
                         autoComplete='username'
+                        autoFocus
                       ></TextInput>
                     </div>
                   </div>
