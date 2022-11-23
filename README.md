@@ -86,6 +86,13 @@ Requirements
 
 - [podman](https://podman.io/) or [docker](https://docs.docker.com/)
 
+Clone this repository
+
+```
+git clone https://github.com/nethesis/nethvoice-cti.git
+cd nethvoice-cti
+```
+
 Create the container image:
 
 ```
@@ -93,21 +100,19 @@ podman build -t ghcr.io/nethesis/nethvoice-cti .
 ```
 _It returns the image_id._
 
-Prepare a new config file by copying the `public/config/config.production.js`.
-Example:
-```javascript
-window.CONFIG = {
-  PRODUCT_NAME: 'NethVoice CTI',
-  COMPANY_NAME: 'Nethesis',
-  COMPANY_URL: 'https://www.nethesis.it/',
-  API_ENDPOINT: 'nethvoice.nethesis.it',
-  API_SCHEME: 'https://',
-}
+It is possible to specify some variables through environment:
+```
+PRODUCT_NAME (default: "NethVoice CTI")
+COMPANY_NAME (default: "Nethesis")
+COMPANY_URL (default: "https://www.nethesis.it/")
+API_ENDPOINT (default: host + port + path)
+API_SCHEME (default: current protocol ["http://"|"https://"])
+WS_ENDPOINT (default: wss://host + port + path + "/ws"))
 ```
 
-Run the container:
+Run the container specifying an API endpoint :
 ```
-podman run --rm --name nethvoice-cti -v ./config.production.js:/app/public/config/config.production.js:z -p 3000:3000/tcp ghcr.io/nethesis/nethvoice-cti:latest
+podman run --rm --name nethvoice-cti --env='API_ENDPOINT=nethvoice.nethesis.it' -p 3000:3000/tcp ghcr.io/nethesis/nethvoice-cti:latest
 ```
 _If port 3000 is already in use, replace it with a free one._
 

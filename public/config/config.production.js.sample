@@ -5,8 +5,7 @@ window.CONFIG = {
   API_ENDPOINT:
     window.location.hostname +
     (window.location.port ? ':' + window.location.port : '') +
-    window.location.pathname +
-    'api',
+    window.location.pathname,
   API_SCHEME: window.location.protocol + '//',
   WS_ENDPOINT:
     'wss://' +
