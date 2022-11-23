@@ -32,8 +32,7 @@ if [ -z $API_ENDPOINT ]; then
   API_ENDPOINT:
     window.location.hostname +
     (window.location.port ? ':' + window.location.port : '') +
-    window.location.pathname +
-    'api',
+    window.location.pathname,
 EOF
 else
 	cat >> /app/public/config/config.production.js<<EOF

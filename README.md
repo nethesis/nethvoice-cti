@@ -105,7 +105,7 @@ It is possible to specify some variables through environment:
 PRODUCT_NAME (default: "NethVoice CTI")
 COMPANY_NAME (default: "Nethesis")
 COMPANY_URL (default: "https://www.nethesis.it/")
-API_ENDPOINT (default: host + port + path + "/api")
+API_ENDPOINT (default: host + port + path)
 API_SCHEME (default: current protocol ["http://"|"https://"])
 WS_ENDPOINT (default: wss://host + port + path + "/ws"))
 ```
