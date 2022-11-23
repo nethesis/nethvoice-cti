@@ -25,7 +25,6 @@
     "crypto-js": "^4.1.1",
     "font-awesome": "^4.7.0",
     "immer": "^9.0.15",
-    "janus-gateway": "git://github.com/meetecho/janus-gateway.git#1c4b1106867ffc4f49a01df02cb785996ca4fa0b",
     "lodash": "^4.17.21",
     "next": "12.3.1",
     "react": "18.2.0",
