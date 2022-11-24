@@ -4,11 +4,7 @@
 import type { NextPage } from 'next'
 
 const History: NextPage = () => {
-
-  return (
-    <>
-    </>
-  )
+  return <></>
 }
 
 export default History

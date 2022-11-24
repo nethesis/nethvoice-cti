@@ -24,7 +24,13 @@ export interface SwitchProps {
   className: string | undefined
 }
 
-export const Switch: FC<SwitchProps> = ({ changed, on, disabled, label, className }): JSX.Element => {
+export const Switch: FC<SwitchProps> = ({
+  changed,
+  on,
+  disabled,
+  label,
+  className,
+}): JSX.Element => {
   const [enabled, setEnabled] = useState(on || false)
   const { switch: switchTheme } = useTheme().theme
   const backgroundOn = disabled ? switchTheme.off.primary : switchTheme.on.primary
@@ -37,7 +43,11 @@ export const Switch: FC<SwitchProps> = ({ changed, on, disabled, label, classNam
   return (
     <HeadlessSwitch.Group>
       <div className={classNames('w-fit ', 'flex', 'items-center', 'flex-row-reverse', className)}>
-        {label && <HeadlessSwitch.Label className='ml-3 text-sm text-gray-900 dark:text-gray-100'>{label}</HeadlessSwitch.Label>}
+        {label && (
+          <HeadlessSwitch.Label className='ml-3 text-sm text-gray-900 dark:text-gray-100'>
+            {label}
+          </HeadlessSwitch.Label>
+        )}
         <HeadlessSwitch
           checked={enabled}
           onChange={() => setEnabled(!enabled)}

@@ -43,25 +43,31 @@ The project is initialized using [**Next.js**](https://nextjs.org/) with [**Type
 - [**socket.io**](https://socket.io/) - for web socket connections
 
 ## Development
+
 Requirements
+
 - Node.js 12.22.0 or later
 
 Install dependencies
+
 ```
 npm install
 ```
 
 Run locally in development mode:
+
 ```
 npm run dev
 ```
 
 Build locally:
+
 ```
 npm run build
 ```
 
 Start locally:
+
 ```
 npm start
 ```
@@ -98,9 +104,11 @@ Create the container image:
 ```
 podman build -t ghcr.io/nethesis/nethvoice-cti .
 ```
+
 _It returns the image_id._
 
 It is possible to specify some variables through environment:
+
 ```
 PRODUCT_NAME (default: "NethVoice CTI")
 COMPANY_NAME (default: "Nethesis")
@@ -111,9 +119,11 @@ WS_ENDPOINT (default: wss://host + port + path + "/ws"))
 ```
 
 Run the container specifying an API endpoint :
+
 ```
 podman run --rm --name nethvoice-cti --env='API_ENDPOINT=nethvoice.nethesis.it' -p 3000:3000/tcp ghcr.io/nethesis/nethvoice-cti:latest
 ```
+
 _If port 3000 is already in use, replace it with a free one._
 
 The project will be available on localhost:3001
@@ -121,6 +131,7 @@ The project will be available on localhost:3001
 ## Dark mode and custom color palette
 
 CTI color palette is defined in `tailwind.config.js` and consists of five shades of a primary color (currently green). These five shades are named:
+
 - `primary`
 - `primaryLighter`
 - `primaryLight`
@@ -128,6 +139,7 @@ CTI color palette is defined in `tailwind.config.js` and consists of five shades
 - `primaryDarker`
 
 Most of UI components are derived from [Tailwind UI](https://tailwindui.com/). Tailwind code needs to be adapted to use CTI color palette and to support dark mode, so:
+
 - every Tailwind class that is color related (e.g. `bg-sky-100`, `text-indigo-600`) needs to be changed in order to use CTI color palette
 - for every Tailwind class that is color related, a `dark:` class must be added to specify the color used in dark mode
 
@@ -136,6 +148,7 @@ See next paragraphs for details.
 ### Change Tailwind color related classes
 
 Tailwind CSS represents color shades with numbers from 50 (lightest) to 900 (darkest). Here are some examples to adapt color related classes included in Tailwind components for CTI color palette:
+
 - `bg-sky-600` becomes `bg-primary`
 - `bg-sky-700` becomes `bg-primaryDark`
 - `text-sky-900` becomes `text-primaryDarker`
