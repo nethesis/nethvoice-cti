@@ -4,15 +4,25 @@
 import type { NextPage } from 'next'
 import { RadioGroup } from '@headlessui/react'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
-import { faPalette } from '@fortawesome/free-solid-svg-icons'
+import { faPalette, faBorderAll, IconDefinition } from '@fortawesome/free-solid-svg-icons'
 import classNames from 'classnames'
 import { useSelector } from 'react-redux'
 import { RootState } from '../store'
 import { setTheme } from '../lib/darkTheme'
+import { Integrations } from '../components/settings'
+import { useState } from 'react'
 
-const settingsMenu = [
+interface SettingsMenuTypes {
+  name: string
+  icon: IconDefinition
+  href: string
+  current: boolean
+}
+
+const settingsMenu: SettingsMenuTypes[] = [
   // { name: 'General', href: '#', icon: faGear, current: false }, ////
   { name: 'Theme', href: '#', icon: faPalette, current: true },
+  { name: 'Integrations', href: '#', icon: faBorderAll, current: false },
 ]
 
 const themeOptions = [
@@ -35,9 +45,24 @@ const themeOptions = [
 
 const Settings: NextPage = () => {
   const { theme } = useSelector((state: RootState) => state.darkTheme)
+  const [items, setItems] = useState<SettingsMenuTypes[]>(settingsMenu)
+  const [currentSection, setCurrentSection] = useState<string>(settingsMenu[0].name)
 
   const onChangeTheme = (newTheme: string) => {
     setTheme(newTheme)
+  }
+
+  const changeSection = (name: string) => {
+    const currentItems = items.map((route) => {
+      if (name === route.name) {
+        route.current = true
+        setCurrentSection(name)
+      } else {
+        route.current = false
+      }
+      return route
+    })
+    setItems(currentItems)
   }
 
   return (
@@ -49,15 +74,15 @@ const Settings: NextPage = () => {
               {/* settings menu */}
               <aside className='py-6 lg:col-span-3'>
                 <nav className='space-y-1'>
-                  {settingsMenu.map((item) => (
+                  {items.map((item: any) => (
                     <a
                       key={item.name}
-                      href={item.href}
+                      onClick={() => changeSection(item.name)}
                       className={classNames(
                         item.current
                           ? 'bg-primaryLighter border-primaryLight text-primaryDark hover:bg-primaryLighter hover:text-primaryDark dark:bg-primaryDarker dark:border-primaryDark dark:text-primaryLight dark:hover:bg-primaryDarker dark:hover:text-primaryLight'
                           : 'border-transparent text-gray-900 hover:bg-gray-50 hover:text-gray-900 dark:text-gray-100 dark:hover:bg-gray-900 dark:hover:text-gray-100',
-                        'group border-l-4 px-3 py-2 flex items-center text-sm font-medium',
+                        'group border-l-4 px-3 py-2 flex items-center text-sm font-medium cursor-pointer',
                       )}
                       aria-current={item.current ? 'page' : undefined}
                     >
@@ -78,84 +103,88 @@ const Settings: NextPage = () => {
               </aside>
               {/* main content */}
               <div className='divide-y divide-gray-200 dark:divide-gray-700 lg:col-span-9'>
-                {/* Profile section */}
-                <div className='py-6 px-4 sm:p-6 lg:pb-8'>
-                  <div>
-                    <h2 className='text-lg font-medium leading-6 text-gray-900 dark:text-gray-100 mb-6'>
-                      Theme
-                    </h2>
-                  </div>
+                {/* Theme section */}
+                {currentSection === 'Theme' && (
+                  <div className='py-6 px-4 sm:p-6 lg:pb-8'>
+                    <div>
+                      <h2 className='text-lg font-medium leading-6 text-gray-900 dark:text-gray-100 mb-6'>
+                        Theme
+                      </h2>
+                    </div>
 
-                  <RadioGroup value={theme} onChange={onChangeTheme}>
-                    {/* <RadioGroup.Label className='text-sm font-medium text-gray-900'> //// 
-                      Theme
-                    </RadioGroup.Label> */}
-                    <div className='isolate mt-1 -space-y-px rounded-md bg-white dark:bg-gray-900 shadow-sm'>
-                      {themeOptions.map((themeOption, settingIdx) => (
-                        <RadioGroup.Option
-                          key={themeOption.title}
-                          value={themeOption.id}
-                          className={({ checked }) =>
-                            classNames(
-                              settingIdx === 0 ? 'rounded-tl-md rounded-tr-md' : '',
-                              settingIdx === themeOptions.length - 1
-                                ? 'rounded-bl-md rounded-br-md'
-                                : '',
-                              checked
-                                ? 'bg-primaryLighter border-primaryLight dark:bg-primaryDarker dark:border-primaryDark z-10'
-                                : 'border-gray-200 dark:border-gray-700',
-                              'relative border p-4 flex cursor-pointer focus:outline-none',
-                            )
-                          }
-                        >
-                          {({ active, checked }) => (
-                            <>
-                              <span
-                                className={classNames(
-                                  checked
-                                    ? 'bg-primary border-transparent'
-                                    : 'bg-white border-gray-300 dark:bg-gray-900 dark:border-gray-600',
-                                  active ? 'ring-2 ring-offset-2 ring-primary' : '',
-                                  'mt-0.5 h-4 w-4 shrink-0 cursor-pointer rounded-full border flex items-center justify-center',
-                                )}
-                                aria-hidden='true'
-                              >
-                                <span className='rounded-full bg-white dark:bg-gray-900 w-1.5 h-1.5' />
-                              </span>
-                              <span className='ml-3 flex flex-col'>
-                                <RadioGroup.Label
-                                  as='span'
+                    <RadioGroup value={theme} onChange={onChangeTheme}>
+                      {/* <RadioGroup.Label className='text-sm font-medium text-gray-900'> //// 
+                    Theme
+                  </RadioGroup.Label> */}
+                      <div className='isolate mt-1 -space-y-px rounded-md bg-white dark:bg-gray-900 shadow-sm'>
+                        {themeOptions.map((themeOption, settingIdx) => (
+                          <RadioGroup.Option
+                            key={themeOption.title}
+                            value={themeOption.id}
+                            className={({ checked }) =>
+                              classNames(
+                                settingIdx === 0 ? 'rounded-tl-md rounded-tr-md' : '',
+                                settingIdx === themeOptions.length - 1
+                                  ? 'rounded-bl-md rounded-br-md'
+                                  : '',
+                                checked
+                                  ? 'bg-primaryLighter border-primaryLight dark:bg-primaryDarker dark:border-primaryDark z-10'
+                                  : 'border-gray-200 dark:border-gray-700',
+                                'relative border p-4 flex cursor-pointer focus:outline-none',
+                              )
+                            }
+                          >
+                            {({ active, checked }) => (
+                              <>
+                                <span
                                   className={classNames(
                                     checked
-                                      ? 'text-primaryDarker dark:text-primaryLighter'
-                                      : 'text-gray-900 dark:text-gray-100',
-                                    'block text-sm font-medium',
+                                      ? 'bg-primary border-transparent'
+                                      : 'bg-white border-gray-300 dark:bg-gray-900 dark:border-gray-600',
+                                    active ? 'ring-2 ring-offset-2 ring-primary' : '',
+                                    'mt-0.5 h-4 w-4 shrink-0 cursor-pointer rounded-full border flex items-center justify-center',
                                   )}
+                                  aria-hidden='true'
                                 >
-                                  {themeOption.title}
-                                </RadioGroup.Label>
-                                {themeOption.description && (
-                                  <RadioGroup.Description
+                                  <span className='rounded-full bg-white dark:bg-gray-900 w-1.5 h-1.5' />
+                                </span>
+                                <span className='ml-3 flex flex-col'>
+                                  <RadioGroup.Label
                                     as='span'
                                     className={classNames(
                                       checked
-                                        ? 'text-primaryDark dark:text-primaryLight'
-                                        : 'text-gray-500 dark:text-gray-400',
-                                      'block text-sm',
-                                      'mt-1',
+                                        ? 'text-primaryDarker dark:text-primaryLighter'
+                                        : 'text-gray-900 dark:text-gray-100',
+                                      'block text-sm font-medium',
                                     )}
                                   >
-                                    {themeOption.description}
-                                  </RadioGroup.Description>
-                                )}
-                              </span>
-                            </>
-                          )}
-                        </RadioGroup.Option>
-                      ))}
-                    </div>
-                  </RadioGroup>
-                </div>
+                                    {themeOption.title}
+                                  </RadioGroup.Label>
+                                  {themeOption.description && (
+                                    <RadioGroup.Description
+                                      as='span'
+                                      className={classNames(
+                                        checked
+                                          ? 'text-primaryDark dark:text-primaryLight'
+                                          : 'text-gray-500 dark:text-gray-400',
+                                        'block text-sm',
+                                        'mt-1',
+                                      )}
+                                    >
+                                      {themeOption.description}
+                                    </RadioGroup.Description>
+                                  )}
+                                </span>
+                              </>
+                            )}
+                          </RadioGroup.Option>
+                        ))}
+                      </div>
+                    </RadioGroup>
+                  </div>
+                )}
+                {/* Integrations section */}
+                {currentSection === 'Integrations' && <Integrations />}
               </div>
             </div>
           </div>
