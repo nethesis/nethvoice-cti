@@ -84,9 +84,9 @@ To ensure a good development experince the following extensions are recommended 
 - [Prettier](https://marketplace.visualstudio.com/items?itemName=esbenp.prettier-vscode)
 - [ESlint](https://marketplace.visualstudio.com/items?itemName=dbaeumer.vscode-eslint)
 
-## Deployment
+## Build
 
-The project can be deployed through containers.
+The project can be locally built through containers.
 
 Requirements
 
@@ -107,6 +107,12 @@ podman build -t ghcr.io/nethesis/nethvoice-cti .
 
 _It returns the image_id._
 
+**Note:** the image is automatically built on GitHub actions on each push.
+
+## Deployment
+
+The project can be deployed through containers.
+
 It is possible to specify some variables through environment:
 
 ```
@@ -126,7 +132,7 @@ podman run --rm --name nethvoice-cti --env='API_ENDPOINT=nethvoice.nethesis.it' 
 
 _If port 3000 is already in use, replace it with a free one._
 
-The project will be available on localhost:3001
+The project will be available on localhost:3000
 
 ## Dark mode and custom color palette
 
