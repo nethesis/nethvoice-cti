@@ -132,3 +132,11 @@ AvatarGroupReverse.args = {
   bordered: true,
   unoptimized: true,
 }
+
+export const WithStar = Template.bind({})
+WithStar.args = {
+  star: true,
+  bordered: false,
+  src: 'https://images.unsplash.com/photo-1567532939604-b6b5b0db2604?ixlib=rb-1.2.1&ixid=eyJhcHBfaWQiOjEyMDd9&auto=format&fit=facearea&facepad=2&w=256&h=256&q=80',
+  unoptimized: true,
+}

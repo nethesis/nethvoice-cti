@@ -50,3 +50,32 @@ export const setStringItem = (name: string, value: string) => {
 export const getStringItem = (name: string) => {
   return localStorage.getItem(name)
 }
+
+/**
+ * Used to save user preferences inside a local storage entry "preferences-username"
+ *
+ * @param preferenceName name of the preference
+ * @param preferenceValue can be a string or a JSON object
+ * @param currentUsername username currently logged in
+ */
+export const savePreference = (
+  preferenceName: string,
+  preferenceValue: any,
+  currentUsername: string,
+) => {
+  const preferences = getJSONItem(`preferences-${currentUsername}`) || {}
+  preferences[preferenceName] = preferenceValue
+  setJSONItem(`preferences-${currentUsername}`, preferences)
+}
+
+/**
+ * Used to load user preferences from the local storage entry "preferences-username"
+ *
+ * @param preferenceName name of the preference
+ * @param currentUsername username currently logged in
+ * @returns
+ */
+export const loadPreference = (preferenceName: string, currentUsername: string) => {
+  const preferences = getJSONItem(`preferences-${currentUsername}`) || {}
+  return preferences[preferenceName]
+}

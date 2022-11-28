@@ -119,7 +119,7 @@ export const SideBar = () => {
               <h2 className='text-lg font-medium text-gray-900 dark:text-gray-100'>Speed Dial</h2>
               <div className='ml-3 flex h-7 items-center gap-2'>
                 {isSpeedDialLoaded && !!speedDials.length && (
-                  <Button variant='white' onClick={() => openCreateSpeedDialDrawer()}>
+                  <Button variant='primary' onClick={() => openCreateSpeedDialDrawer()}>
                     <FontAwesomeIcon icon={faPlus} className='mr-2 h-4 w-4' />
                     Create
                     <span className='sr-only'>Create speed dial</span>
@@ -178,28 +178,28 @@ export const SideBar = () => {
                       aria-hidden='true'
                     />
                     <div className='relative flex min-w-0 flex-1 items-center justify-between'>
-                      <div className='flex'>
+                      <div className='flex items-center'>
                         <span className='text-gray-300 dark:text-gray-600'>
-                          <Avatar size='base' placeholderType='company' />
+                          <Avatar size='base' placeholderType='person' />
                         </span>
                         <div className='ml-4 truncate'>
                           <p className='truncate text-sm font-medium text-gray-900 dark:text-gray-100'>
                             {speedDial.name}
                           </p>
-                          <p className='truncate text-sm text-gray-500 dark:text-gray-400'>
-                            {speedDial.speeddial_num}
-                          </p>
+                          <div className='truncate text-sm cursor-pointer mt-1 text-primary dark:text-primary'>
+                            <div className='flex items-center'>
+                              <FontAwesomeIcon
+                                icon={faPhone}
+                                className='mr-1.5 h-4 w-4 flex-shrink-0 text-gray-400 dark:text-gray-500'
+                                aria-hidden='true'
+                              />
+                              <span className='hover:underline'>{speedDial.speeddial_num}</span>
+                            </div>
+                          </div>
                         </div>
                       </div>
                       <div className='flex gap-2'>
                         {/* Actions */}
-                        <Button variant='white'>
-                          <FontAwesomeIcon
-                            icon={faPhone}
-                            className='h-4 w-4 text-gray-600 dark:text-gray-300'
-                          />
-                          <span className='sr-only'>Call speed dial</span>
-                        </Button>
                         <Dropdown items={getItemsMenu(speedDial)} position='left'>
                           <Button variant='white'>
                             <FontAwesomeIcon icon={faEllipsisVertical} className='h-4 w-4' />

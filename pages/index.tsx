@@ -9,7 +9,7 @@ const Home: NextPage = () => {
   const router = useRouter()
 
   useEffect(() => {
-    router.push('/phonebook')
+    router.push('/operators')
 
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [])

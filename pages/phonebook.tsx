@@ -23,58 +23,62 @@ import {
   faChevronRight,
   faPlus,
   faAddressBook,
-  faMagnifyingGlass,
+  faMobileScreenButton,
+  faFilter,
 } from '@fortawesome/free-solid-svg-icons'
 
 const Phonebook: NextPage = () => {
   const [isPhonebookLoaded, setPhonebookLoaded] = useState(false)
   const [phonebook, setPhonebook]: any = useState({})
   const [pageNum, setPageNum]: any = useState(1)
+  const auth = useSelector((state: RootState) => state.authentication)
 
-  const [filterText, setFilterText]: any = useState('')
+  const [textFilter, setTextFilter]: any = useState('')
 
-  const updateFilterText = (newFilterText: string) => {
+  const updateTextFilter = (newTextFilter: string) => {
     setPageNum(1)
-    setFilterText(newFilterText)
+    setTextFilter(newTextFilter)
     setPhonebookLoaded(false)
   }
 
-  const debouncedUpdateFilterText = useMemo(() => debounce(updateFilterText, 400), [])
+  const debouncedUpdateTextFilter = useMemo(() => debounce(updateTextFilter, 400), [])
 
   // Stop invocation of debounced function after unmounting
   useEffect(() => {
     return () => {
-      debouncedUpdateFilterText.cancel()
+      debouncedUpdateTextFilter.cancel()
     }
-  }, [debouncedUpdateFilterText])
+  }, [debouncedUpdateTextFilter])
 
-  const [contactType, setContactType]: any = useState('all')
+  const [contactType, setContactType]: any = useState('')
   const updateContactTypeFilter = (newContactType: string) => {
     setPageNum(1)
     setContactType(newContactType)
     setPhonebookLoaded(false)
   }
 
-  const [sortBy, setSortBy]: any = useState('name')
+  const [sortBy, setSortBy]: any = useState('')
   const updateSortFilter = (newSortBy: string) => {
     setSortBy(newSortBy)
     setPhonebookLoaded(false)
   }
 
+  // retrieve phonebook
   useEffect(() => {
     async function fetchPhonebook() {
-      if (!isPhonebookLoaded) {
+      if (!isPhonebookLoaded && contactType && sortBy) {
         try {
-          const res = await getPhonebook(pageNum, filterText, contactType, sortBy)
+          const res = await getPhonebook(pageNum, textFilter, contactType, sortBy)
           setPhonebook(mapPhonebook(res))
         } catch (e) {
+          console.error(e)
           setPhonebookError('Cannot retrieve phonebook')
         }
         setPhonebookLoaded(true)
       }
     }
     fetchPhonebook()
-  }, [isPhonebookLoaded, phonebook, pageNum, filterText, contactType, sortBy])
+  }, [isPhonebookLoaded, phonebook, pageNum, textFilter, contactType, sortBy])
 
   const phonebookStore = useSelector((state: RootState) => state.phonebook)
 
@@ -124,12 +128,12 @@ const Phonebook: NextPage = () => {
   return (
     <>
       <div>
-        <Button variant='white' onClick={() => openCreateContactDrawer()} className='mb-6'>
+        <Button variant='primary' onClick={() => openCreateContactDrawer()} className='mb-6'>
           <FontAwesomeIcon icon={faPlus} className='mr-2 h-4 w-4' />
           <span>Create contact</span>
         </Button>
         <Filter
-          updateFilterText={debouncedUpdateFilterText}
+          updateTextFilter={debouncedUpdateTextFilter}
           updateContactTypeFilter={updateContactTypeFilter}
           updateSortFilter={updateSortFilter}
         />
@@ -164,38 +168,35 @@ const Phonebook: NextPage = () => {
                 </li>
               ))}
             {/* empty state */}
-            {isPhonebookLoaded &&
-              phonebook?.rows &&
-              !phonebook.rows.length &&
-              !filterText.length && (
-                <EmptyState
-                  title='No contact'
-                  description='There is no contact in your phonebook'
-                  icon={
-                    <FontAwesomeIcon
-                      icon={faAddressBook}
-                      className='mx-auto h-12 w-12'
-                      aria-hidden='true'
-                    />
-                  }
-                >
-                  <Button variant='primary' onClick={() => openCreateContactDrawer()}>
-                    <FontAwesomeIcon icon={faPlus} className='mr-2 h-4 w-4' />
-                    <span>Create contact</span>
-                  </Button>
-                </EmptyState>
-              )}
+            {isPhonebookLoaded && phonebook?.rows && !phonebook.rows.length && !textFilter.length && (
+              <EmptyState
+                title='No contact'
+                description='There is no contact in your phonebook'
+                icon={
+                  <FontAwesomeIcon
+                    icon={faAddressBook}
+                    className='mx-auto h-12 w-12'
+                    aria-hidden='true'
+                  />
+                }
+              >
+                <Button variant='primary' onClick={() => openCreateContactDrawer()}>
+                  <FontAwesomeIcon icon={faPlus} className='mr-2 h-4 w-4' />
+                  <span>Create contact</span>
+                </Button>
+              </EmptyState>
+            )}
             {/* no search results */}
             {isPhonebookLoaded &&
               phonebook?.rows &&
               !phonebook.rows.length &&
-              !!filterText.length && (
+              !!textFilter.length && (
                 <EmptyState
-                  title='No contact found'
+                  title='No contact'
                   description='Try changing your search filters'
                   icon={
                     <FontAwesomeIcon
-                      icon={faMagnifyingGlass}
+                      icon={faFilter}
                       className='mx-auto h-12 w-12'
                       aria-hidden='true'
                     />
@@ -218,9 +219,9 @@ const Phonebook: NextPage = () => {
                       <div className='min-w-0 flex-1 px-4 md:grid md:grid-cols-2 gap-4 lg:grid-cols-2 xl:grid-cols-3'>
                         {/* display name and company/contacts */}
                         <div className='flex flex-col justify-center'>
-                          <div className='truncate text-sm font-medium text-primary dark:text-primary'>
+                          <div className='truncate text-sm font-medium'>
                             <span
-                              className='cursor-pointer'
+                              className='cursor-pointer hover:underline'
                               onClick={() => openShowContactDrawer(contact)}
                             >
                               {contact.displayName}
@@ -266,16 +267,16 @@ const Phonebook: NextPage = () => {
                         {contact.workphone && (
                           <div className='mt-4 md:mt-0'>
                             <div>
-                              <div className='text-sm text-gray-900 dark:text-gray-100'>
-                                Work phone
-                              </div>
+                              <div className='text-sm text-gray-900 dark:text-gray-100'>Work</div>
                               <div className='mt-1 flex items-center text-sm text-primary dark:text-primary'>
                                 <FontAwesomeIcon
                                   icon={faPhone}
                                   className='mr-2 h-4 w-4 flex-shrink-0 text-gray-400 dark:text-gray-500'
                                   aria-hidden='true'
                                 />
-                                <span className='truncate cursor-pointer'>{contact.workphone}</span>
+                                <span className='truncate cursor-pointer hover:underline'>
+                                  {contact.workphone}
+                                </span>
                               </div>
                             </div>
                           </div>
@@ -284,16 +285,16 @@ const Phonebook: NextPage = () => {
                         {contact.cellphone && (
                           <div className='mt-4 md:mt-0'>
                             <div>
-                              <div className='text-sm text-gray-900 dark:text-gray-100'>
-                                Mobile phone
-                              </div>
+                              <div className='text-sm text-gray-900 dark:text-gray-100'>Mobile</div>
                               <div className='mt-1 flex items-center text-sm text-primary dark:text-primary'>
                                 <FontAwesomeIcon
-                                  icon={faPhone}
+                                  icon={faMobileScreenButton}
                                   className='mr-2 h-4 w-4 flex-shrink-0 text-gray-400 dark:text-gray-500'
                                   aria-hidden='true'
                                 />
-                                <span className='truncate cursor-pointer'>{contact.cellphone}</span>
+                                <span className='truncate cursor-pointer hover:underline'>
+                                  {contact.cellphone}
+                                </span>
                               </div>
                             </div>
                           </div>
@@ -316,7 +317,7 @@ const Phonebook: NextPage = () => {
         {/* pagination */}
         {!phonebookError && !!phonebook?.rows?.length && (
           <nav
-            className='flex items-center justify-between border-t px-0 py-4 mb-8 border-gray-100 bg-gray-100 dark:border-gray-800 dark:bg-gray-800'
+            className='flex items-center justify-between border-t px-0 py-4 mb-8 border-gray-100 dark:border-gray-800'
             aria-label='Pagination'
           >
             <div className='hidden sm:block'>

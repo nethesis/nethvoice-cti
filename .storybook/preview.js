@@ -11,6 +11,9 @@ export const parameters = {
       date: /Date$/,
     },
   },
+  backgrounds: {
+    values: [],
+  },
 }
 
 export const decorators = [

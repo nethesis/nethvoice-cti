@@ -4,6 +4,7 @@
 import type { PropsWithChildren } from 'react'
 import axios from 'axios'
 import { store } from '../store'
+import { getJSONItem, setJSONItem } from './storage'
 
 export interface ClearProps {
   key: string
@@ -48,4 +49,20 @@ export const eventDispatch = (name: string, data: any, element: HTMLElement | Wi
   typeof element !== 'undefined'
     ? element.dispatchEvent(new CustomEvent(name, { detail: data }))
     : console.error(new Error('EventDispatch error: element is not defined'))
+}
+
+/**
+ * Sort function to order array elements by a specific property (for array of objects) or by a specific index (for arrays of arrays)
+ *
+ */
+export const sortByProperty = (property: string | number) => {
+  return function (a: any, b: any) {
+    if (a[property] < b[property]) {
+      return -1
+    }
+    if (a[property] > b[property]) {
+      return 1
+    }
+    return 0
+  }
 }

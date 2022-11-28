@@ -24,7 +24,7 @@ import Image from 'next/image'
 import { AvatarGroup, AvatarGroupProps as GroupProps } from './AvatarGroup'
 import type { StatusTypes } from '../../../theme/Types'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
-import { faUser, faBuilding } from '@fortawesome/free-solid-svg-icons'
+import { faUser, faBuilding, faStar } from '@fortawesome/free-solid-svg-icons'
 
 export type AvatarGroupProps = GroupProps
 
@@ -39,6 +39,7 @@ export interface AvatarProps extends Omit<ComponentProps<'div'>, 'placeholder'> 
   altText?: string
   size?: 'extra_small' | 'small' | 'base' | 'large' | 'extra_large'
   unoptimized?: boolean
+  star?: boolean
 }
 
 const AvatarComponent: FC<AvatarProps> = ({
@@ -52,7 +53,9 @@ const AvatarComponent: FC<AvatarProps> = ({
   altText = 'Avatar image',
   size = 'base',
   unoptimized = true,
+  star,
   className,
+  ...props
 }) => {
   const { avatar: theme } = useTheme().theme
   const themeStatus = useTheme().theme.status
@@ -69,6 +72,7 @@ const AvatarComponent: FC<AvatarProps> = ({
         bordered && theme.bordered,
         className,
       )}
+      {...props}
     >
       {src && (
         <Image
@@ -103,12 +107,19 @@ const AvatarComponent: FC<AvatarProps> = ({
         <div
           className={classNames(
             theme.status.base,
-            themeStatus[status].avatar.dot,
+            themeStatus[status]?.avatar.dot,
             rounded === 'base'
               ? theme.status.sizes.rounded[size]
               : theme.status.sizes.circular[size],
           )}
         ></div>
+      )}
+      {star && (
+        <FontAwesomeIcon
+          icon={faStar}
+          aria-hidden='true'
+          className={classNames(theme.star.base, theme.star.sizes[size])}
+        />
       )}
     </div>
   )

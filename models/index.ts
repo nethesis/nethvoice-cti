@@ -8,6 +8,7 @@ import { sideDrawer } from './sideDrawer'
 import { phonebook } from './phonebook'
 import { speedDial } from './speedDial'
 import { darkTheme } from './darkTheme'
+import { operators } from './operators'
 
 export interface RootModel extends Models<RootModel> {
   authentication: typeof authentication
@@ -16,6 +17,7 @@ export interface RootModel extends Models<RootModel> {
   phonebook: typeof phonebook
   speedDial: typeof speedDial
   darkTheme: typeof darkTheme
+  operators: typeof operators
 }
 
 export const models: RootModel = {
@@ -25,4 +27,5 @@ export const models: RootModel = {
   phonebook,
   speedDial,
   darkTheme,
+  operators,
 }

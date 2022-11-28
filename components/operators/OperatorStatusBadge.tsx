@@ -1,0 +1,81 @@
+// Copyright (C) 2022 Nethesis S.r.l.
+// SPDX-License-Identifier: AGPL-3.0-or-later
+
+import { FC, ComponentProps, useState, useEffect } from 'react'
+import { Badge } from '../common'
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
+import { faPhone } from '@fortawesome/free-solid-svg-icons'
+import { capitalize } from 'lodash'
+import classNames from 'classnames'
+import { isOperatorCallable } from '../../lib/operators'
+
+export interface OperatorStatusBadgeProps extends ComponentProps<'div'> {
+  operator: any
+  currentUsername: string
+  callEnabled: boolean
+  size?: 'base' | 'small' | 'large'
+  onCall?: Function
+}
+
+export const OperatorStatusBadge: FC<OperatorStatusBadgeProps> = ({
+  operator,
+  currentUsername,
+  callEnabled,
+  size,
+  onCall,
+  className,
+}): JSX.Element => {
+  const [isCallable, setCallable] = useState(false)
+
+  useEffect(() => {
+    const callable = isOperatorCallable(operator, currentUsername)
+    setCallable(callable && callEnabled)
+  }, [operator, currentUsername, callEnabled])
+
+  const badgeClicked = () => {
+    if (isCallable && onCall) {
+      // notify parent component
+      onCall(operator)
+    }
+  }
+
+  return (
+    <>
+      <div className={classNames(className)}>
+        <Badge
+          rounded='full'
+          variant={operator.mainPresence}
+          size={size}
+          onClick={badgeClicked}
+          className={classNames(
+            isCallable
+              ? 'hover:bg-emerald-300 dark:hover:bg-emerald-900 cursor-pointer'
+              : 'cursor-not-allowed',
+          )}
+        >
+          {operator.mainPresence === 'incoming' ? (
+            <div className='flex items-center'>
+              {/* ringing icon */}
+              <span className='incoming-loader mr-2'></span>
+              <span>{capitalize(operator.mainPresence)}</span>
+            </div>
+          ) : isCallable ? (
+            <div className='flex items-center'>
+              {/* phone icon */}
+              <FontAwesomeIcon
+                icon={faPhone}
+                className='mr-2 h-4 w-4 flex-shrink-0'
+                aria-hidden='true'
+              />
+              <span>{capitalize(operator.mainPresence)}</span>
+            </div>
+          ) : (
+            <span className='cursor-not-allowed'>{capitalize(operator.mainPresence)}</span>
+          )}
+        </Badge>
+      </div>
+    </>
+  )
+}
+
+OperatorStatusBadge.displayName = 'OperatorStatusBadge'

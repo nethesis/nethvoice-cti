@@ -47,9 +47,10 @@ const Settings: NextPage = () => {
   const { theme } = useSelector((state: RootState) => state.darkTheme)
   const [items, setItems] = useState<SettingsMenuTypes[]>(settingsMenu)
   const [currentSection, setCurrentSection] = useState<string>(settingsMenu[0].name)
+  const auth = useSelector((state: RootState) => state.authentication)
 
   const onChangeTheme = (newTheme: string) => {
-    setTheme(newTheme)
+    setTheme(newTheme, auth.username)
   }
 
   const changeSection = (name: string) => {

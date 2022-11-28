@@ -33,17 +33,22 @@ export const TopBar: FC<TopBarProps> = ({ openMobileCb }) => {
   const router = useRouter()
   const { name, mainextension, mainPresence } = useSelector((state: RootState) => state.user)
   const { theme } = useSelector((state: RootState) => state.darkTheme)
+  const auth = useSelector((state: RootState) => state.authentication)
 
   const doLogout = async () => {
     const res = await logout()
-    if (res && res.ok) {
-      // Remove credentials from localstorage
-      removeItem('credentials')
-      // Reset the authentication store
-      store.dispatch.authentication.reset()
-      // Redirect to login page
-      router.push('/login')
-    }
+    //// TODO logout api is currently authenticated. For this reason we must not check res.ok (this is a temporary workaround)
+
+    // if (res && res.ok) {
+
+    // Remove credentials from localstorage
+    removeItem('credentials')
+    // Reset the authentication store
+    store.dispatch.authentication.reset()
+    // Redirect to login page
+    router.push('/login')
+
+    // } ////
   }
 
   const toggleDarkTheme = () => {
@@ -51,9 +56,9 @@ export const TopBar: FC<TopBarProps> = ({ openMobileCb }) => {
       theme === 'dark' ||
       (theme === 'system' && window.matchMedia('(prefers-color-scheme: dark)').matches)
     ) {
-      setTheme('light')
+      setTheme('light', auth.username)
     } else {
-      setTheme('dark')
+      setTheme('dark', auth.username)
     }
   }
 
