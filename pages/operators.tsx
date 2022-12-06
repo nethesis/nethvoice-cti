@@ -379,7 +379,7 @@ const Operators: NextPage = () => {
                       <button
                         type='button'
                         onClick={() => openShowOperatorDrawer(operator)}
-                        className='group flex w-full items-center justify-between space-x-3 rounded-full border p-2 text-left shadow-sm focus:outline-none focus:ring-2 focus:ring-offset-2 bg-white dark:bg-gray-900 border-gray-300 dark:border-gray-700 hover:bg-gray-50 dark:hover:bg-gray-800 focus:ring-primary dark:focus:ring-primary'
+                        className='group flex w-full items-center justify-between space-x-3 rounded-full border p-2 text-left shadow-sm focus:outline-none focus:ring-2 focus:ring-offset-2 bg-white dark:bg-gray-900 border-gray-300 dark:border-gray-700 hover:bg-gray-100 dark:hover:bg-gray-800 focus:ring-primary dark:focus:ring-primary'
                       >
                         <span className='flex min-w-0 flex-1 items-center space-x-3'>
                           <span className='block flex-shrink-0'>

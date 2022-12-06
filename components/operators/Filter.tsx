@@ -520,14 +520,14 @@ export const Filter = forwardRef<HTMLButtonElement, FilterProps>(
                   />
                 </div>
 
-                <div className='flex'>
+                <div className='flex ml-4'>
                   <Popover.Group className='hidden sm:flex sm:items-baseline sm:space-x-8'>
                     {/* group filter */}
                     <Popover
                       as='div'
                       key={groupFilter.name}
                       id={`desktop-menu-${groupFilter.id}`}
-                      className='relative inline-block text-left'
+                      className='relative inline-block text-left shrink-0'
                     >
                       <div>
                         <Popover.Button className='group inline-flex items-center justify-center text-sm font-medium text-gray-700 hover:text-gray-900 dark:text-gray-200 dark:hover:text-gray-100'>
@@ -593,7 +593,7 @@ export const Filter = forwardRef<HTMLButtonElement, FilterProps>(
                       as='div'
                       key={statusFilter.name}
                       id={`desktop-menu-${statusFilter.id}`}
-                      className='relative inline-block text-left'
+                      className='relative inline-block text-left shrink-0'
                     >
                       <div>
                         <Popover.Button className='group inline-flex items-center justify-center text-sm font-medium text-gray-700 hover:text-gray-900 dark:text-gray-200 dark:hover:text-gray-100'>
@@ -645,7 +645,7 @@ export const Filter = forwardRef<HTMLButtonElement, FilterProps>(
                       as='div'
                       key={sortFilter.name}
                       id={`desktop-menu-${sortFilter.id}`}
-                      className='relative inline-block text-left'
+                      className='relative inline-block text-left shrink-0'
                     >
                       <div>
                         <Popover.Button className='group inline-flex items-center justify-center text-sm font-medium text-gray-700 hover:text-gray-900 dark:text-gray-200 dark:hover:text-gray-100'>
@@ -697,7 +697,7 @@ export const Filter = forwardRef<HTMLButtonElement, FilterProps>(
                       as='div'
                       key={layoutFilter.name}
                       id={`desktop-menu-${layoutFilter.id}`}
-                      className='relative inline-block text-left'
+                      className='relative inline-block text-left shrink-0'
                     >
                       <div>
                         <Popover.Button className='group inline-flex items-center justify-center text-sm font-medium text-gray-700 hover:text-gray-900 dark:text-gray-200 dark:hover:text-gray-100'>
@@ -747,7 +747,7 @@ export const Filter = forwardRef<HTMLButtonElement, FilterProps>(
 
                   <button
                     type='button'
-                    className='inline-block text-sm font-medium sm:hidden ml-4 text-gray-700 hover:text-gray-900 dark:text-gray-200 dark:hover:text-gray-100'
+                    className='inline-block text-sm font-medium sm:hidden text-gray-700 hover:text-gray-900 dark:text-gray-200 dark:hover:text-gray-100'
                     onClick={() => setOpen(true)}
                   >
                     Filters
