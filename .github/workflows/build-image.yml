@@ -34,5 +34,5 @@ jobs:
           # Publish the branch
           trap 'buildah logout ghcr.io' EXIT
           buildah login -u ${{ github.actor }} --password-stdin ghcr.io <<<"${{ secrets.GITHUB_TOKEN }}"
-          buildah push ${IMAGENAME} docker://${IMAGENAME}:${IMAGETAG}
+          buildah push ${IMAGENAME}:${IMAGETAG} docker://${IMAGENAME}:${IMAGETAG}
           echo "::notice title=Image URL::${IMAGENAME}:${IMAGETAG}"
