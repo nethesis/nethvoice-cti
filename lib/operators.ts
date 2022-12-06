@@ -7,7 +7,7 @@ import { store } from '../store'
 import { loadPreference, savePreference } from './storage'
 
 export const AVAILABLE_STATUSES = ['online', 'cellphone', 'callforward', 'voicemail']
-export const UNAVAILABLE_STATUSES = ['dnd', 'busy', 'incoming', 'offline']
+export const UNAVAILABLE_STATUSES = ['dnd', 'busy', 'incoming']
 export const DEFAULT_GROUP_FILTER = 'all'
 export const DEFAULT_STATUS_FILTER = 'all'
 export const DEFAULT_SORT_BY = 'favorites'
