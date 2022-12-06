@@ -4,8 +4,11 @@
 import axios from 'axios'
 import { handleNetworkError } from './utils'
 import { store } from '../store'
+import { loadPreference } from './storage'
 
 export const PAGE_SIZE = 10
+export const DEFAULT_CONTACT_TYPE_FILTER = 'all'
+export const DEFAULT_SORT_BY = 'name'
 
 export function getPhonebookUrl() {
   if (window == undefined) {
@@ -18,7 +21,7 @@ export function getPhonebookUrl() {
 
 export async function getPhonebook(
   pageNum: number,
-  filterText: string,
+  textFilter: string,
   contactType: string,
   sortBy: string,
 ) {
@@ -27,8 +30,8 @@ export async function getPhonebook(
   }
   let apiUrl = getPhonebookUrl()
 
-  if (filterText.trim()) {
-    apiUrl += `search/${filterText.trim()}`
+  if (textFilter.trim()) {
+    apiUrl += `search/${textFilter.trim()}`
   } else {
     apiUrl += `searchstartswith/A`
   }
@@ -155,4 +158,13 @@ export const openEditContactDrawer = (contact: any) => {
     contentType: 'createOrEditContact',
     config: { isEdit: true, contact: contact },
   })
+}
+
+export const getFilterValues = (currentUsername: string) => {
+  const contactType =
+    loadPreference('phonebookContactTypeFilter', currentUsername) || DEFAULT_CONTACT_TYPE_FILTER
+
+  const sortBy = loadPreference('phonebookSortBy', currentUsername) || DEFAULT_SORT_BY
+
+  return { contactType, sortBy }
 }

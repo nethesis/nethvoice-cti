@@ -1,8 +1,9 @@
 // Copyright (C) 2022 Nethesis S.r.l.
 // SPDX-License-Identifier: AGPL-3.0-or-later
 
-import { setStringItem, getStringItem, removeItem } from './storage'
+import { setStringItem, getStringItem, removeItem, getJSONItem, setJSONItem } from './storage'
 import { store } from '../store'
+import { user } from '../models/user'
 
 const addDarkClassToDocument = () => {
   document.documentElement.classList.add('dark')
@@ -15,13 +16,19 @@ const removeDarkClassFromDocument = () => {
 /**
  * Read theme from local storage and update global store
  */
-export const checkDarkTheme = () => {
+export const checkDarkTheme = (currentUsername?: string) => {
+  if (!currentUsername) {
+    // use theme of last logged user
+    const credentials = getJSONItem('credentials')
+    currentUsername = credentials.username
+  }
+  const preferences = getJSONItem(`preferences-${currentUsername}`) || {}
   let theme = 'system'
 
-  if (getStringItem('theme') === 'dark') {
+  if (preferences.theme === 'dark') {
     theme = 'dark'
     addDarkClassToDocument()
-  } else if (getStringItem('theme') === 'light') {
+  } else if (preferences.theme === 'light') {
     theme = 'light'
     removeDarkClassFromDocument()
   } else {
@@ -37,13 +44,9 @@ export const checkDarkTheme = () => {
   store.dispatch.darkTheme.update(theme)
 }
 
-export const setTheme = (theme: string) => {
-  if (theme === 'system') {
-    // remove entry from local storage
-    removeItem('theme')
-  } else {
-    // set entry on local storage
-    setStringItem('theme', theme)
-  }
-  checkDarkTheme()
+export const setTheme = (theme: string, currentUsername: string) => {
+  const preferences = getJSONItem(`preferences-${currentUsername}`) || {}
+  preferences.theme = theme
+  setJSONItem(`preferences-${currentUsername}`, preferences)
+  checkDarkTheme(currentUsername)
 }

@@ -8,7 +8,13 @@ import { Fragment, useState, useEffect } from 'react'
 import { Dialog, Disclosure, Popover, Transition } from '@headlessui/react'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { faChevronDown, faXmark } from '@fortawesome/free-solid-svg-icons'
-import { DEFAULT_CONTACT_TYPE_FILTER, DEFAULT_SORT_BY, getFilterValues } from '../../lib/phonebook'
+import { RadioButtonType } from '../../services/types'
+import {
+  DEFAULT_GROUP_FILTER,
+  DEFAULT_SORT_BY,
+  DEFAULT_STATUS_FILTER,
+  getFilterValues,
+} from '../../lib/operators'
 import { useSelector } from 'react-redux'
 import { RootState } from '../../store'
 import { savePreference } from '../../lib/storage'
@@ -17,30 +23,72 @@ const sortFilter = {
   id: 'sort',
   name: 'Sort by',
   options: [
+    { value: 'favorites', label: 'Favorites' },
+    { value: 'status', label: 'Status' },
     { value: 'name', label: 'Name' },
-    { value: 'company', label: 'Company' },
   ],
 }
 
-const contactTypeFilter = {
-  id: 'kind',
-  name: 'Contact type',
+const statusFilter = {
+  id: 'status',
+  name: 'Status',
   options: [
     { value: 'all', label: 'All' },
-    { value: 'person', label: 'Person' },
-    { value: 'company', label: 'Company' },
+    { value: 'available', label: 'Available' },
+    { value: 'unavailable', label: 'Unavailable' },
+    { value: 'offline', label: 'Offline' },
+    { value: 'allButOffline', label: 'All but offline' },
   ],
 }
 
 export interface FilterProps extends ComponentPropsWithRef<'div'> {
+  groups: Array<string>
   updateTextFilter: Function
-  updateContactTypeFilter: Function
+  updateGroupFilter: Function
+  updateStatusFilter: Function
   updateSortFilter: Function
 }
 
 export const Filter = forwardRef<HTMLButtonElement, FilterProps>(
-  ({ updateTextFilter, updateContactTypeFilter, updateSortFilter, className, ...props }, ref) => {
+  (
+    {
+      groups,
+      className,
+      updateTextFilter,
+      updateSortFilter,
+      updateGroupFilter,
+      updateStatusFilter,
+      ...props
+    },
+    ref,
+  ) => {
     const auth = useSelector((state: RootState) => state.authentication)
+
+    const [groupFilter, setGroupFilter] = useState({
+      id: 'group',
+      name: 'Group',
+      options: [] as RadioButtonType[],
+    })
+
+    // group options
+
+    useEffect(() => {
+      groupFilter.options = [
+        { value: 'all', label: 'All' },
+        { value: 'favorites', label: 'Favorites' },
+        { value: 'divider1', label: '-' },
+      ]
+
+      Array.from(groups).forEach((group) => {
+        groupFilter.options.push({
+          value: group,
+          label: group,
+        })
+      })
+
+      setGroupFilter(groupFilter)
+    }, [groupFilter, groups])
+
     const [open, setOpen] = useState(false)
 
     const [textFilter, setTextFilter] = useState('')
@@ -48,40 +96,74 @@ export const Filter = forwardRef<HTMLButtonElement, FilterProps>(
       const newTextFilter = event.target.value
       setTextFilter(newTextFilter)
 
-      // update phonebook (notify parent component)
+      // update operators (notify parent component)
       updateTextFilter(newTextFilter)
     }
 
-    const [contactType, setContactType] = useState('all')
-    function changeContactType(event: any) {
-      const newContactType = event.target.id
-      setContactType(newContactType)
-      savePreference('phonebookContactTypeFilter', newContactType, auth.username)
+    const [group, setGroup] = useState('')
+    function changeGroup(event: any) {
+      const newGroup = event.target.id
+      setGroup(newGroup)
+      savePreference('operatorsGroupFilter', newGroup, auth.username)
 
-      // update phonebook (notify parent component)
-      updateContactTypeFilter(newContactType)
+      // update operators (notify parent component)
+      updateGroupFilter(newGroup)
     }
 
-    const [sortBy, setSortBy]: any = useState('name')
+    const [status, setStatus] = useState('')
+    function changeStatus(event: any) {
+      const newStatus = event.target.id
+      setStatus(newStatus)
+      savePreference('operatorsStatusFilter', newStatus, auth.username)
+
+      // update operators (notify parent component)
+      updateStatusFilter(newStatus)
+    }
+
+    const [sortBy, setSortBy]: any = useState('')
     function changeSortBy(event: any) {
       const newSortBy = event.target.id
       setSortBy(newSortBy)
-      savePreference('phonebookSortBy', newSortBy, auth.username)
+      savePreference('operatorsSortBy', newSortBy, auth.username)
 
-      // update phonebook (notify parent component)
+      // update operators (notify parent component)
       updateSortFilter(newSortBy)
     }
 
-    // contact type label
+    // retrieve filter values from local storage
 
-    const [contactTypeLabel, setContactTypeLabel] = useState('')
     useEffect(() => {
-      const found = contactTypeFilter.options.find((option) => option.value === contactType)
+      const filterValues = getFilterValues(auth.username)
+      setGroup(filterValues.group)
+      setStatus(filterValues.status)
+      setSortBy(filterValues.sortBy)
+
+      updateGroupFilter(filterValues.group)
+      updateStatusFilter(filterValues.status)
+      updateSortFilter(filterValues.sortBy)
+    }, [])
+
+    // group label
+
+    const [groupLabel, setGroupLabel] = useState('')
+    useEffect(() => {
+      const found = groupFilter.options.find((option) => option.value === group)
 
       if (found) {
-        setContactTypeLabel(found.label)
+        setGroupLabel(found.label)
       }
-    }, [contactType])
+    }, [group, groupFilter.options])
+
+    // status label
+
+    const [statusLabel, setStatusLabel] = useState('')
+    useEffect(() => {
+      const found = statusFilter.options.find((option) => option.value === status)
+
+      if (found) {
+        setStatusLabel(found.label)
+      }
+    }, [status])
 
     // sort by label
 
@@ -94,33 +176,25 @@ export const Filter = forwardRef<HTMLButtonElement, FilterProps>(
       }
     }, [sortBy])
 
-    // retrieve filter values from local storage
-
-    useEffect(() => {
-      const filterValues = getFilterValues(auth.username)
-      setContactType(filterValues.contactType)
-      setSortBy(filterValues.sortBy)
-
-      updateContactTypeFilter(filterValues.contactType)
-      updateSortFilter(filterValues.sortBy)
-    }, [])
-
     const resetFilters = () => {
       setTextFilter('')
-      setContactType(DEFAULT_CONTACT_TYPE_FILTER)
+      setGroup(DEFAULT_GROUP_FILTER)
+      setStatus(DEFAULT_STATUS_FILTER)
       setSortBy(DEFAULT_SORT_BY)
-      savePreference('phonebookContactTypeFilter', DEFAULT_CONTACT_TYPE_FILTER, auth.username)
-      savePreference('phonebookSortBy', DEFAULT_SORT_BY, auth.username)
+      savePreference('operatorsGroupFilter', DEFAULT_GROUP_FILTER, auth.username)
+      savePreference('operatorsStatusFilter', DEFAULT_STATUS_FILTER, auth.username)
+      savePreference('operatorsSortBy', DEFAULT_SORT_BY, auth.username)
 
       // notify parent component
       updateTextFilter('')
-      updateContactTypeFilter(DEFAULT_CONTACT_TYPE_FILTER)
+      updateGroupFilter(DEFAULT_GROUP_FILTER)
+      updateStatusFilter(DEFAULT_STATUS_FILTER)
       updateSortFilter(DEFAULT_SORT_BY)
     }
 
     return (
       <div className={classNames(className)} {...props}>
-        <div>
+        <div className=''>
           {/* Mobile filter dialog */}
           <Transition.Root show={open} as={Fragment}>
             <Dialog as='div' className='relative z-40 sm:hidden' onClose={setOpen}>
@@ -163,10 +237,10 @@ export const Filter = forwardRef<HTMLButtonElement, FilterProps>(
 
                     {/* Filters (mobile) */}
                     <form className='mt-4'>
-                      {/* contact type filter (mobile) */}
+                      {/* groupFilter filter (mobile) */}
                       <Disclosure
                         as='div'
-                        key={contactTypeFilter.name}
+                        key={groupFilter.name}
                         className='border-t px-4 py-6 border-gray-200 dark:border-gray-700'
                       >
                         {({ open }) => (
@@ -174,7 +248,7 @@ export const Filter = forwardRef<HTMLButtonElement, FilterProps>(
                             <h3 className='-mx-2 -my-3 flow-root'>
                               <Disclosure.Button className='flex w-full items-center justify-between px-2 py-3 text-sm bg-white text-gray-400 dark:bg-gray-900 dark:text-gray-500'>
                                 <span className='font-medium text-gray-900 dark:text-gray-100'>
-                                  {contactTypeFilter.name}
+                                  {groupFilter.name}
                                 </span>
                                 <span className='ml-6 flex items-center'>
                                   <FontAwesomeIcon
@@ -190,16 +264,83 @@ export const Filter = forwardRef<HTMLButtonElement, FilterProps>(
                             </h3>
                             <Disclosure.Panel className='pt-6'>
                               <fieldset>
-                                <legend className='sr-only'>{contactTypeFilter.name}</legend>
+                                <legend className='sr-only'>{groupFilter.name}</legend>
                                 <div className='space-y-4'>
-                                  {contactTypeFilter.options.map((option) => (
+                                  {groupFilter.options.map((option) => (
+                                    <div key={option.value}>
+                                      {option.value.startsWith('divider') ? (
+                                        <div className='relative'>
+                                          <div
+                                            className='absolute inset-0 flex items-center'
+                                            aria-hidden='true'
+                                          >
+                                            <div className='w-full border-t border-gray-300 dark:border-gray-600' />
+                                          </div>
+                                          <div className='relative flex justify-center'></div>
+                                        </div>
+                                      ) : (
+                                        <div className='flex items-center'>
+                                          <input
+                                            id={option.value}
+                                            name={`filter-${groupFilter.id}`}
+                                            type='radio'
+                                            defaultChecked={option.value === group}
+                                            onChange={changeGroup}
+                                            className='h-4 w-4 border-gray-300 text-primary focus:ring-primaryLight dark:border-gray-600 dark:text-primary dark:focus:ring-primaryDark'
+                                          />
+                                          <label
+                                            htmlFor={option.value}
+                                            className='ml-3 block text-sm font-medium text-gray-700 dark:text-gray-200'
+                                          >
+                                            {option.label}
+                                          </label>
+                                        </div>
+                                      )}
+                                    </div>
+                                  ))}
+                                </div>
+                              </fieldset>
+                            </Disclosure.Panel>
+                          </>
+                        )}
+                      </Disclosure>
+                      {/* status filter (mobile) */}
+                      <Disclosure
+                        as='div'
+                        key={statusFilter.name}
+                        className='border-t px-4 py-6 border-gray-200 dark:border-gray-700'
+                      >
+                        {({ open }) => (
+                          <>
+                            <h3 className='-mx-2 -my-3 flow-root'>
+                              <Disclosure.Button className='flex w-full items-center justify-between px-2 py-3 text-sm bg-white text-gray-400 dark:bg-gray-900 dark:text-gray-500'>
+                                <span className='font-medium text-gray-900 dark:text-gray-100'>
+                                  {statusFilter.name}
+                                </span>
+                                <span className='ml-6 flex items-center'>
+                                  <FontAwesomeIcon
+                                    icon={faChevronDown}
+                                    className={classNames(
+                                      open ? '-rotate-180' : 'rotate-0',
+                                      'h-3 w-3 transform',
+                                    )}
+                                    aria-hidden='true'
+                                  />
+                                </span>
+                              </Disclosure.Button>
+                            </h3>
+                            <Disclosure.Panel className='pt-6'>
+                              <fieldset>
+                                <legend className='sr-only'>{statusFilter.name}</legend>
+                                <div className='space-y-4'>
+                                  {statusFilter.options.map((option) => (
                                     <div key={option.value} className='flex items-center'>
                                       <input
                                         id={option.value}
-                                        name={`filter-${contactTypeFilter.id}`}
+                                        name={`filter-${statusFilter.id}`}
                                         type='radio'
-                                        defaultChecked={option.value === contactType}
-                                        onChange={changeContactType}
+                                        defaultChecked={option.value === status}
+                                        onChange={changeStatus}
                                         className='h-4 w-4 border-gray-300 text-primary focus:ring-primaryLight dark:border-gray-600 dark:text-primary dark:focus:ring-primaryDark'
                                       />
                                       <label
@@ -279,13 +420,13 @@ export const Filter = forwardRef<HTMLButtonElement, FilterProps>(
           <div className='mx-auto text-center'>
             <section aria-labelledby='filter-heading' className='pb-6'>
               <h2 id='filter-heading' className='sr-only'>
-                Phonebook filters
+                Operators filters
               </h2>
 
               <div className='flex items-center justify-between'>
                 <div className='flex items-center'>
                   <TextInput
-                    placeholder='Filter contacts'
+                    placeholder='Filter operators'
                     className='max-w-sm'
                     value={textFilter}
                     onChange={changeTextFilter}
@@ -294,16 +435,16 @@ export const Filter = forwardRef<HTMLButtonElement, FilterProps>(
 
                 <div className='flex'>
                   <Popover.Group className='hidden sm:flex sm:items-baseline sm:space-x-8'>
-                    {/* contact type filter */}
+                    {/* group filter */}
                     <Popover
                       as='div'
-                      key={contactTypeFilter.name}
-                      id={`desktop-menu-${contactTypeFilter.id}`}
+                      key={groupFilter.name}
+                      id={`desktop-menu-${groupFilter.id}`}
                       className='relative inline-block text-left'
                     >
                       <div>
                         <Popover.Button className='group inline-flex items-center justify-center text-sm font-medium text-gray-700 hover:text-gray-900 dark:text-gray-200 dark:hover:text-gray-100'>
-                          <span>{contactTypeFilter.name}</span>
+                          <span>{groupFilter.name}</span>
                           <FontAwesomeIcon
                             icon={faChevronDown}
                             className='ml-2 h-3 w-3 flex-shrink-0 text-gray-400 group-hover:text-gray-500 dark:text-gray-500 dark:group-hover:text-gray-400'
@@ -323,14 +464,80 @@ export const Filter = forwardRef<HTMLButtonElement, FilterProps>(
                       >
                         <Popover.Panel className='absolute right-0 z-10 mt-2 origin-top-right rounded-md p-4 shadow-2xl ring-1 ring-opacity-5 focus:outline-none bg-white ring-black dark:bg-gray-900 dark:ring-gray-700'>
                           <form className='space-y-4'>
-                            {contactTypeFilter.options.map((option) => (
+                            {groupFilter.options.map((option) => (
+                              <div key={option.value}>
+                                {option.value.startsWith('divider') ? (
+                                  <div className='relative'>
+                                    <div
+                                      className='absolute inset-0 flex items-center'
+                                      aria-hidden='true'
+                                    >
+                                      <div className='w-full border-t border-gray-300 dark:border-gray-600' />
+                                    </div>
+                                    <div className='relative flex justify-center'></div>
+                                  </div>
+                                ) : (
+                                  <div className='flex items-center'>
+                                    <input
+                                      id={option.value}
+                                      name={`filter-${groupFilter.id}`}
+                                      type='radio'
+                                      defaultChecked={option.value === group}
+                                      onChange={changeGroup}
+                                      className='h-4 w-4 border-gray-300 text-primary focus:ring-primaryLight dark:border-gray-600 dark:text-primary dark:focus:ring-primaryDark'
+                                    />
+                                    <label
+                                      htmlFor={option.value}
+                                      className='ml-3 block text-sm font-medium text-gray-700 dark:text-gray-200'
+                                    >
+                                      {option.label}
+                                    </label>
+                                  </div>
+                                )}
+                              </div>
+                            ))}
+                          </form>
+                        </Popover.Panel>
+                      </Transition>
+                    </Popover>
+
+                    {/* status filter */}
+                    <Popover
+                      as='div'
+                      key={statusFilter.name}
+                      id={`desktop-menu-${statusFilter.id}`}
+                      className='relative inline-block text-left'
+                    >
+                      <div>
+                        <Popover.Button className='group inline-flex items-center justify-center text-sm font-medium text-gray-700 hover:text-gray-900 dark:text-gray-200 dark:hover:text-gray-100'>
+                          <span>{statusFilter.name}</span>
+                          <FontAwesomeIcon
+                            icon={faChevronDown}
+                            className='ml-2 h-3 w-3 flex-shrink-0 text-gray-400 group-hover:text-gray-500 dark:text-gray-500 dark:group-hover:text-gray-400'
+                            aria-hidden='true'
+                          />
+                        </Popover.Button>
+                      </div>
+
+                      <Transition
+                        as={Fragment}
+                        enter='transition ease-out duration-100'
+                        enterFrom='transform opacity-0 scale-95'
+                        enterTo='transform opacity-100 scale-100'
+                        leave='transition ease-in duration-75'
+                        leaveFrom='transform opacity-100 scale-100'
+                        leaveTo='transform opacity-0 scale-95'
+                      >
+                        <Popover.Panel className='absolute right-0 z-10 mt-2 origin-top-right rounded-md p-4 shadow-2xl ring-1 ring-opacity-5 focus:outline-none bg-white ring-black dark:bg-gray-900 dark:ring-gray-700'>
+                          <form className='space-y-4'>
+                            {statusFilter.options.map((option) => (
                               <div key={option.value} className='flex items-center'>
                                 <input
                                   id={option.value}
-                                  name={`filter-${contactTypeFilter.id}`}
+                                  name={`filter-${statusFilter.id}`}
                                   type='radio'
-                                  defaultChecked={option.value === contactType}
-                                  onChange={changeContactType}
+                                  defaultChecked={option.value === status}
+                                  onChange={changeStatus}
                                   className='h-4 w-4 border-gray-300 text-primary focus:ring-primaryLight dark:border-gray-600 dark:text-primary dark:focus:ring-primaryDark'
                                 />
                                 <label
@@ -419,18 +626,30 @@ export const Filter = forwardRef<HTMLButtonElement, FilterProps>(
                     aria-hidden='true'
                     className='hidden h-5 w-px sm:ml-4 sm:block bg-gray-300 dark:bg-gray-600'
                   />
-                  {/* contact type */}
+                  {/* group */}
                   <div className='mt-2 sm:mt-0 sm:ml-4'>
                     <div className='-m-1 flex flex-wrap items-center'>
                       <span className='m-1 inline-flex items-center rounded-full border py-1.5 pl-3 pr-2 text-sm font-medium border-gray-200 bg-white text-gray-700 dark:border-gray-700 dark:bg-gray-900 dark:text-gray-200'>
                         <span>
                           {/*  //// todo i18n */}
-                          <span className='text-gray-500 dark:text-gray-400'>
-                            Contact type:
-                          </span>{' '}
-                          {contactTypeLabel}
+                          <span className='text-gray-500 dark:text-gray-400'>Group:</span>{' '}
+                          {groupLabel}
                         </span>
                       </span>
+                      {/* //// todo active filters */}
+                    </div>
+                  </div>
+                  {/* status */}
+                  <div className='mt-2 sm:mt-0 sm:ml-4'>
+                    <div className='-m-1 flex flex-wrap items-center'>
+                      <span className='m-1 inline-flex items-center rounded-full border py-1.5 pl-3 pr-2 text-sm font-medium border-gray-200 bg-white text-gray-700 dark:border-gray-700 dark:bg-gray-900 dark:text-gray-200'>
+                        <span>
+                          {/*  //// todo i18n */}
+                          <span className='text-gray-500 dark:text-gray-400'>Status:</span>{' '}
+                          {statusLabel}
+                        </span>
+                      </span>
+                      {/* //// todo active filters */}
                     </div>
                   </div>
                   {/* sort by */}

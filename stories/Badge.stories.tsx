@@ -31,6 +31,15 @@ export const Base = Template.bind({})
 Base.args = {
   children: 'Badge',
   variant: 'available',
+  size: 'base',
+  rounded: 'full',
+}
+
+export const Small = Template.bind({})
+Small.args = {
+  children: 'Badge',
+  variant: 'available',
+  size: 'small',
   rounded: 'full',
 }
 
@@ -42,8 +51,10 @@ Large.args = {
   rounded: 'full',
 }
 
-export const Rounded = Template.bind({})
-Rounded.args = {
+export const Squared = Template.bind({})
+Squared.args = {
   children: 'Badge',
   variant: 'available',
+  size: 'base',
+  rounded: 'base',
 }

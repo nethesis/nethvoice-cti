@@ -14,11 +14,11 @@ module.exports = {
   theme: {
     extend: {
       colors: {
-        primary: '#16a34a', // green-600
-        primaryLighter: '#dcfce7', // green-100
-        primaryLight: '#22c55e', // green-500
-        primaryDark: '#15803d', // green-700
-        primaryDarker: '#14532d', // green-900
+        primary: '#059669', // emerald-600
+        primaryLighter: '#ecfdf5', // emerald-100
+        primaryLight: '#10b981', // emerald-500
+        primaryDark: '#047857', // emerald-700
+        primaryDarker: '#064e3b', // emerald-900
       },
     },
   },

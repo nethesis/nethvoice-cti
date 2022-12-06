@@ -11,6 +11,7 @@ import Background from '../public/background.png'
 import { useRouter } from 'next/router'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { faCircleNotch, faEye, faEyeSlash } from '@fortawesome/free-solid-svg-icons'
+import { checkDarkTheme } from '../lib/darkTheme'
 
 export default function Login() {
   const [pwdVisible, setPwdVisible] = useState(false)
@@ -67,6 +68,7 @@ export default function Login() {
         saveCredentials(username, token)
         router.push('/')
         setLoading(false)
+        checkDarkTheme()
       } else {
         if (callStatus === 401) {
           setOnError(true)
@@ -120,6 +122,7 @@ export default function Login() {
                         error={onError ? true : false}
                         required
                         autoComplete='username'
+                        autoFocus
                       ></TextInput>
                     </div>
                   </div>

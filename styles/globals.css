@@ -27,3 +27,37 @@
   right: 18px !important;
   animation-duration: 1s;
 }
+
+.incoming-loader {
+  width: 16px;
+  height: 16px;
+  display: inline-block;
+  position: relative;
+}
+.incoming-loader::after,
+.incoming-loader::before {
+  content: '';
+  box-sizing: border-box;
+  width: 16px;
+  height: 16px;
+  border-radius: 50%;
+  background-color: currentcolor;
+  position: absolute;
+  left: 0;
+  top: 0;
+  animation: animIncomingLoader 1s linear infinite;
+}
+.incoming-loader::after {
+  animation-delay: 0.5s;
+}
+
+@keyframes animIncomingLoader {
+  0% {
+    transform: scale(0);
+    opacity: 1;
+  }
+  100% {
+    transform: scale(1);
+    opacity: 0;
+  }
+}

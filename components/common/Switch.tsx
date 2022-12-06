@@ -11,17 +11,16 @@
  *
  */
 
-import { FC, useState, useEffect } from 'react'
+import { FC, useState, useEffect, ComponentProps } from 'react'
 import classNames from 'classnames'
 import { useTheme } from '../../theme/Context'
 import { Switch as HeadlessSwitch } from '@headlessui/react'
 
-export interface SwitchProps {
+export interface SwitchProps extends ComponentProps<'div'> {
   on?: boolean
   changed?: (enabled: boolean) => void
   disabled?: boolean
   label?: string
-  className: string | undefined
 }
 
 export const Switch: FC<SwitchProps> = ({
@@ -41,27 +40,31 @@ export const Switch: FC<SwitchProps> = ({
   }, [changed, enabled])
 
   return (
-    <HeadlessSwitch.Group>
-      <div className={classNames('w-fit ', 'flex', 'items-center', 'flex-row-reverse', className)}>
-        {label && (
-          <HeadlessSwitch.Label className='ml-3 text-sm text-gray-900 dark:text-gray-100'>
-            {label}
-          </HeadlessSwitch.Label>
-        )}
-        <HeadlessSwitch
-          checked={enabled}
-          onChange={() => setEnabled(!enabled)}
-          disabled={disabled}
-          className={classNames(enabled ? backgroundOn : backgroundOff, switchTheme.background)}
+    <div>
+      <HeadlessSwitch.Group>
+        <div
+          className={classNames('w-fit ', 'flex', 'items-center', 'flex-row-reverse', className)}
         >
-          <span
-            className={classNames(
-              switchTheme.circle,
-              enabled ? switchTheme.on.translate : switchTheme.off.translate,
-            )}
-          />
-        </HeadlessSwitch>
-      </div>
-    </HeadlessSwitch.Group>
+          {label && (
+            <HeadlessSwitch.Label className='ml-3 text-sm text-gray-900 dark:text-gray-100'>
+              {label}
+            </HeadlessSwitch.Label>
+          )}
+          <HeadlessSwitch
+            checked={enabled}
+            onChange={() => setEnabled(!enabled)}
+            disabled={disabled}
+            className={classNames(enabled ? backgroundOn : backgroundOff, switchTheme.background)}
+          >
+            <span
+              className={classNames(
+                switchTheme.circle,
+                enabled ? switchTheme.on.translate : switchTheme.off.translate,
+              )}
+            />
+          </HeadlessSwitch>
+        </div>
+      </HeadlessSwitch.Group>
+    </div>
   )
 }

@@ -15,3 +15,8 @@ export type ErrorType = {
   error: boolean
   message: string
 }
+
+export type RadioButtonType = {
+  value: string
+  label: string
+}

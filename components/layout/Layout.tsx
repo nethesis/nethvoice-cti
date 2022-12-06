@@ -74,7 +74,7 @@ export const Layout: FC<LayoutProps> = ({ children }) => {
             {/* Primary column */}
             <section
               aria-labelledby='primary-heading'
-              className='flex h-full min-w-0 flex-1 flex-col lg:order-last p-8 bg-gray-100 dark:bg-gray-800'
+              className='flex min-w-0 flex-1 flex-col lg:order-last p-8'
             >
               {/* The page content */}
               {children}
