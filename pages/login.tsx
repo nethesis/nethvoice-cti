@@ -172,7 +172,7 @@ export default function Login() {
             src={Background}
             alt='Background image'
             layout='fill'
-            unoptimized={false}
+            unoptimized={true}
           />
         </div>
       </div>
