@@ -12,6 +12,7 @@ import { ShowOperatorDrawerContent } from '../operators/ShowOperatorDrawerConten
 import { CreateOrEditContactDrawerContent } from '../phonebook/CreateOrEditContactDrawerContent'
 import { ShowContactDrawerContent } from '../phonebook/ShowContactDrawerContent'
 import { CreateOrEditSpeedDialDrawerContent } from './speed_dial/CreateOrEditSpeedDialDrawerContent'
+import { ShowContactHistory } from '../history/ShowContactHistory'
 
 interface SideDrawerProps {
   isShown: boolean
@@ -47,7 +48,10 @@ export const SideDrawer: FC<SideDrawerProps> = ({ isShown, contentType, config, 
                         <CreateOrEditSpeedDialDrawerContent config={config} />
                       ) : contentType === 'showOperator' ? (
                         <ShowOperatorDrawerContent config={config} />
+                      ) : contentType === 'showContactHistory' ? (
+                        <ShowContactHistory config={config} />
                       ) : null}
+                      
                     </div>
                   </nav>
                 </div>
