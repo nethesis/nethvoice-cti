@@ -11,6 +11,7 @@ export const UNAVAILABLE_STATUSES = ['dnd', 'busy', 'incoming', 'offline']
 export const DEFAULT_GROUP_FILTER = 'all'
 export const DEFAULT_STATUS_FILTER = 'all'
 export const DEFAULT_SORT_BY = 'favorites'
+export const DEFAULT_LAYOUT = 'standard'
 
 export async function getUserEndpointsAll() {
   try {
@@ -154,5 +155,7 @@ export const getFilterValues = (currentUsername: string) => {
 
   const sortBy = loadPreference('operatorsSortBy', currentUsername) || DEFAULT_SORT_BY
 
-  return { group, status, sortBy }
+  const layout = loadPreference('operatorsLayout', currentUsername) || DEFAULT_LAYOUT
+
+  return { group, status, sortBy, layout }
 }

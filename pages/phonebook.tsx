@@ -58,7 +58,7 @@ const Phonebook: NextPage = () => {
   }
 
   const [sortBy, setSortBy]: any = useState('')
-  const updateSortFilter = (newSortBy: string) => {
+  const updateSort = (newSortBy: string) => {
     setSortBy(newSortBy)
     setPhonebookLoaded(false)
   }
@@ -135,7 +135,7 @@ const Phonebook: NextPage = () => {
         <Filter
           updateTextFilter={debouncedUpdateTextFilter}
           updateContactTypeFilter={updateContactTypeFilter}
-          updateSortFilter={updateSortFilter}
+          updateSort={updateSort}
         />
         <div className='overflow-hidden shadow sm:rounded-md bg-white dark:bg-gray-900'>
           <ul role='list' className='divide-y divide-gray-200 dark:divide-gray-700'>

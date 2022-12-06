@@ -35,11 +35,11 @@ const contactTypeFilter = {
 export interface FilterProps extends ComponentPropsWithRef<'div'> {
   updateTextFilter: Function
   updateContactTypeFilter: Function
-  updateSortFilter: Function
+  updateSort: Function
 }
 
 export const Filter = forwardRef<HTMLButtonElement, FilterProps>(
-  ({ updateTextFilter, updateContactTypeFilter, updateSortFilter, className, ...props }, ref) => {
+  ({ updateTextFilter, updateContactTypeFilter, updateSort, className, ...props }, ref) => {
     const auth = useSelector((state: RootState) => state.authentication)
     const [open, setOpen] = useState(false)
 
@@ -69,7 +69,7 @@ export const Filter = forwardRef<HTMLButtonElement, FilterProps>(
       savePreference('phonebookSortBy', newSortBy, auth.username)
 
       // update phonebook (notify parent component)
-      updateSortFilter(newSortBy)
+      updateSort(newSortBy)
     }
 
     // contact type label
@@ -102,7 +102,7 @@ export const Filter = forwardRef<HTMLButtonElement, FilterProps>(
       setSortBy(filterValues.sortBy)
 
       updateContactTypeFilter(filterValues.contactType)
-      updateSortFilter(filterValues.sortBy)
+      updateSort(filterValues.sortBy)
     }, [])
 
     const resetFilters = () => {
@@ -115,7 +115,7 @@ export const Filter = forwardRef<HTMLButtonElement, FilterProps>(
       // notify parent component
       updateTextFilter('')
       updateContactTypeFilter(DEFAULT_CONTACT_TYPE_FILTER)
-      updateSortFilter(DEFAULT_SORT_BY)
+      updateSort(DEFAULT_SORT_BY)
     }
 
     return (

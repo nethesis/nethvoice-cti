@@ -41,12 +41,22 @@ const statusFilter = {
   ],
 }
 
+const layoutFilter = {
+  id: 'layout',
+  name: 'Layout',
+  options: [
+    { value: 'standard', label: 'Standard' },
+    { value: 'compact', label: 'Compact' },
+  ],
+}
+
 export interface FilterProps extends ComponentPropsWithRef<'div'> {
   groups: Array<string>
   updateTextFilter: Function
   updateGroupFilter: Function
   updateStatusFilter: Function
-  updateSortFilter: Function
+  updateSort: Function
+  updateLayout: Function
 }
 
 export const Filter = forwardRef<HTMLButtonElement, FilterProps>(
@@ -55,9 +65,10 @@ export const Filter = forwardRef<HTMLButtonElement, FilterProps>(
       groups,
       className,
       updateTextFilter,
-      updateSortFilter,
       updateGroupFilter,
       updateStatusFilter,
+      updateSort,
+      updateLayout,
       ...props
     },
     ref,
@@ -127,7 +138,17 @@ export const Filter = forwardRef<HTMLButtonElement, FilterProps>(
       savePreference('operatorsSortBy', newSortBy, auth.username)
 
       // update operators (notify parent component)
-      updateSortFilter(newSortBy)
+      updateSort(newSortBy)
+    }
+
+    const [layout, setLayout]: any = useState('')
+    function changeLayout(event: any) {
+      const newLayout = event.target.id
+      setLayout(newLayout)
+      savePreference('operatorsLayout', newLayout, auth.username)
+
+      // update operators layout (notify parent component)
+      updateLayout(newLayout)
     }
 
     // retrieve filter values from local storage
@@ -137,10 +158,12 @@ export const Filter = forwardRef<HTMLButtonElement, FilterProps>(
       setGroup(filterValues.group)
       setStatus(filterValues.status)
       setSortBy(filterValues.sortBy)
+      setLayout(filterValues.layout)
 
       updateGroupFilter(filterValues.group)
       updateStatusFilter(filterValues.status)
-      updateSortFilter(filterValues.sortBy)
+      updateSort(filterValues.sortBy)
+      updateLayout(filterValues.layout)
     }, [])
 
     // group label
@@ -176,6 +199,17 @@ export const Filter = forwardRef<HTMLButtonElement, FilterProps>(
       }
     }, [sortBy])
 
+    // layout label
+
+    const [layoutLabel, setLayoutLabel] = useState('')
+    useEffect(() => {
+      const found = layoutFilter.options.find((option) => option.value === layout)
+
+      if (found) {
+        setLayoutLabel(found.label)
+      }
+    }, [layout])
+
     const resetFilters = () => {
       setTextFilter('')
       setGroup(DEFAULT_GROUP_FILTER)
@@ -189,7 +223,7 @@ export const Filter = forwardRef<HTMLButtonElement, FilterProps>(
       updateTextFilter('')
       updateGroupFilter(DEFAULT_GROUP_FILTER)
       updateStatusFilter(DEFAULT_STATUS_FILTER)
-      updateSortFilter(DEFAULT_SORT_BY)
+      updateSort(DEFAULT_SORT_BY)
     }
 
     return (
@@ -410,6 +444,59 @@ export const Filter = forwardRef<HTMLButtonElement, FilterProps>(
                           </>
                         )}
                       </Disclosure>
+                      {/* layout (mobile) */}
+                      <Disclosure
+                        as='div'
+                        key={layoutFilter.name}
+                        className='border-t px-4 py-6 border-gray-200 dark:border-gray-700'
+                      >
+                        {({ open }) => (
+                          <>
+                            <h3 className='-mx-2 -my-3 flow-root'>
+                              <Disclosure.Button className='flex w-full items-center justify-between px-2 py-3 text-sm bg-white text-gray-400 dark:bg-gray-900 dark:text-gray-500'>
+                                <span className='font-medium text-gray-900 dark:text-gray-100'>
+                                  {layoutFilter.name}
+                                </span>
+                                <span className='ml-6 flex items-center'>
+                                  <FontAwesomeIcon
+                                    icon={faChevronDown}
+                                    className={classNames(
+                                      open ? '-rotate-180' : 'rotate-0',
+                                      'h-3 w-3 transform',
+                                    )}
+                                    aria-hidden='true'
+                                  />
+                                </span>
+                              </Disclosure.Button>
+                            </h3>
+                            <Disclosure.Panel className='pt-6'>
+                              <fieldset>
+                                <legend className='sr-only'>{layoutFilter.name}</legend>
+                                <div className='space-y-4'>
+                                  {layoutFilter.options.map((option) => (
+                                    <div key={option.value} className='flex items-center'>
+                                      <input
+                                        id={option.value}
+                                        name={`filter-${layoutFilter.id}`}
+                                        type='radio'
+                                        defaultChecked={option.value === layout}
+                                        onChange={changeLayout}
+                                        className='h-4 w-4 border-gray-300 text-primary focus:ring-primaryLight dark:border-gray-600 dark:text-primary dark:focus:ring-primaryDark'
+                                      />
+                                      <label
+                                        htmlFor={option.value}
+                                        className='ml-3 block text-sm font-medium text-gray-700 dark:text-gray-200'
+                                      >
+                                        {option.label}
+                                      </label>
+                                    </div>
+                                  ))}
+                                </div>
+                              </fieldset>
+                            </Disclosure.Panel>
+                          </>
+                        )}
+                      </Disclosure>
                     </form>
                   </Dialog.Panel>
                 </Transition.Child>
@@ -604,6 +691,58 @@ export const Filter = forwardRef<HTMLButtonElement, FilterProps>(
                         </Popover.Panel>
                       </Transition>
                     </Popover>
+
+                    {/* layout filter */}
+                    <Popover
+                      as='div'
+                      key={layoutFilter.name}
+                      id={`desktop-menu-${layoutFilter.id}`}
+                      className='relative inline-block text-left'
+                    >
+                      <div>
+                        <Popover.Button className='group inline-flex items-center justify-center text-sm font-medium text-gray-700 hover:text-gray-900 dark:text-gray-200 dark:hover:text-gray-100'>
+                          <span>{layoutFilter.name}</span>
+                          <FontAwesomeIcon
+                            icon={faChevronDown}
+                            className='ml-2 h-3 w-3 flex-shrink-0 text-gray-400 group-hover:text-gray-500 dark:text-gray-500 dark:group-hover:text-gray-400'
+                            aria-hidden='true'
+                          />
+                        </Popover.Button>
+                      </div>
+
+                      <Transition
+                        as={Fragment}
+                        enter='transition ease-out duration-100'
+                        enterFrom='transform opacity-0 scale-95'
+                        enterTo='transform opacity-100 scale-100'
+                        leave='transition ease-in duration-75'
+                        leaveFrom='transform opacity-100 scale-100'
+                        leaveTo='transform opacity-0 scale-95'
+                      >
+                        <Popover.Panel className='absolute right-0 z-10 mt-2 origin-top-right rounded-md p-4 shadow-2xl ring-1 ring-opacity-5 focus:outline-none bg-white ring-black dark:bg-gray-900 dark:ring-gray-600'>
+                          <form className='space-y-4'>
+                            {layoutFilter.options.map((option) => (
+                              <div key={option.value} className='flex items-center'>
+                                <input
+                                  id={option.value}
+                                  name={`filter-${layoutFilter.id}`}
+                                  type='radio'
+                                  defaultChecked={option.value === layout}
+                                  onChange={changeLayout}
+                                  className='h-4 w-4 border-gray-300 text-primary focus:ring-primaryLight dark:border-gray-600 dark:text-primary dark:focus:ring-primaryDark'
+                                />
+                                <label
+                                  htmlFor={option.value}
+                                  className='ml-3 block text-sm font-medium text-gray-700 dark:text-gray-200'
+                                >
+                                  {option.label}
+                                </label>
+                              </div>
+                            ))}
+                          </form>
+                        </Popover.Panel>
+                      </Transition>
+                    </Popover>
                   </Popover.Group>
 
                   <button
@@ -649,7 +788,6 @@ export const Filter = forwardRef<HTMLButtonElement, FilterProps>(
                           {statusLabel}
                         </span>
                       </span>
-                      {/* //// todo active filters */}
                     </div>
                   </div>
                   {/* sort by */}
@@ -664,6 +802,7 @@ export const Filter = forwardRef<HTMLButtonElement, FilterProps>(
                       </span>
                     </div>
                   </div>
+                  {/* separator */}
                   <div
                     aria-hidden='true'
                     className='hidden h-5 w-px sm:ml-4 sm:block bg-gray-300 dark:bg-gray-600'
