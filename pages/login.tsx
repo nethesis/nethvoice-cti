@@ -92,7 +92,7 @@ export default function Login() {
               <Image
                 className='mx-auto h-12 w-auto'
                 src={Logo}
-                alt='Your Company'
+                alt='logo'
                 width='100'
                 height='100'
                 unoptimized={true}
