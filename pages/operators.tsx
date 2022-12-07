@@ -404,7 +404,6 @@ const Operators: NextPage = () => {
                                   rounded='full'
                                   variant='busy'
                                   size='small'
-                                  className='cursor-not-allowed'
                                 >
                                   {/* //// TODO retrieve call information*/}
                                   <span className='mr-3'>Big Tech spa</span>

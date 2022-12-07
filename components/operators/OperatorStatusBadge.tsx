@@ -48,11 +48,7 @@ export const OperatorStatusBadge: FC<OperatorStatusBadgeProps> = ({
           size={size}
           onClick={badgeClicked}
           className={classNames(
-            isCallable
-              ? 'hover:bg-emerald-300 dark:hover:bg-emerald-900 cursor-pointer'
-              : callEnabled && !isCallable
-              ? 'cursor-not-allowed'
-              : 'cursor-default',
+            isCallable && 'hover:bg-emerald-300 dark:hover:bg-emerald-900 cursor-pointer',
           )}
         >
           {['incoming', 'ringing'].includes(operator.mainPresence) ? (
