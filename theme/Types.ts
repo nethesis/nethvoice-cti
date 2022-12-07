@@ -10,4 +10,5 @@ export type StatusTypes =
   | 'callforward'
   | 'busy'
   | 'incoming'
+  | 'ringing'
   | 'offline'

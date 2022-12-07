@@ -53,10 +53,10 @@ export const OperatorStatusBadge: FC<OperatorStatusBadgeProps> = ({
               : 'cursor-not-allowed',
           )}
         >
-          {operator.mainPresence === 'incoming' ? (
+          {['incoming', 'ringing'].includes(operator.mainPresence) ? (
             <div className='flex items-center'>
               {/* ringing icon */}
-              <span className='incoming-loader mr-2'></span>
+              <span className='ringing-animation mr-2'></span>
               <span>{capitalize(operator.mainPresence)}</span>
             </div>
           ) : isCallable ? (

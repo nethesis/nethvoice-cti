@@ -147,6 +147,7 @@ const Operators: NextPage = () => {
           //     'callforward',
           //     'busy',
           //     'incoming',
+          //     'ringing',
           //     'offline',
           //   ]
           //   operator.mainPresence = statuses[i]

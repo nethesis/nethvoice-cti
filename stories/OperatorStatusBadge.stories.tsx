@@ -54,6 +54,7 @@ const cellphoneOperator = { ...onlineOperator, mainPresence: 'cellphone' }
 const callforwardOperator = { ...onlineOperator, mainPresence: 'callforward' }
 const voicemailOperator = { ...onlineOperator, mainPresence: 'voicemail' }
 const incomingOperator = { ...onlineOperator, mainPresence: 'incoming' }
+const ringingOperator = { ...onlineOperator, mainPresence: 'ringing' }
 const busyOperator = { ...onlineOperator, mainPresence: 'busy' }
 const dndOperator = { ...onlineOperator, mainPresence: 'dnd' }
 const offlineOperator = { ...onlineOperator, mainPresence: 'offline' }
@@ -85,6 +86,12 @@ Voicemail.args = {
 export const Incoming = Template.bind({})
 Incoming.args = {
   operator: incomingOperator,
+  currentUsername: 'test',
+}
+
+export const Ringing = Template.bind({})
+Ringing.args = {
+  operator: ringingOperator,
   currentUsername: 'test',
 }
 

@@ -219,6 +219,17 @@ const theme = {
         border: 'border-sky-500 dark:border-sky-500',
       },
     },
+    ringing: {
+      badge: {
+        base: 'bg-red-200 text-red-900 dark:bg-red-900 dark:text-red-100',
+      },
+      avatar: {
+        dot: 'bg-red-500 dark:bg-red-500',
+      },
+      card: {
+        border: 'border-sky-500 dark:border-sky-500',
+      },
+    },
     offline: {
       badge: {
         base: 'bg-gray-300 text-gray-700 dark:bg-gray-700 dark:text-gray-300',

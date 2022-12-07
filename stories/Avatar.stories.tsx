@@ -18,6 +18,7 @@ const meta = {
         'callforward',
         'busy',
         'incoming',
+        'ringing',
         'offline',
       ],
       type: 'select',
