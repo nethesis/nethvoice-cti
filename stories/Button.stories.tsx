@@ -18,7 +18,7 @@ const meta = {
       action: 'clicked',
     },
     variant: {
-      options: ['primary', 'secondary', 'white', 'danger'],
+      options: ['primary', 'secondary', 'white', 'ghost', 'danger'],
     },
   },
   parameters: {
@@ -47,6 +47,12 @@ export const White = Template.bind({})
 White.args = {
   ...Primary.args,
   variant: 'white',
+}
+
+export const Ghost = Template.bind({})
+Ghost.args = {
+  ...Primary.args,
+  variant: 'ghost',
 }
 
 export const Danger = Template.bind({})

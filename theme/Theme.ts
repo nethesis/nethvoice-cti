@@ -10,6 +10,8 @@ const theme = {
       'border border-transparent focus:ring-primaryLight bg-primaryLighter text-primaryDark hover:bg-primaryLighter dark:focus:ring-primaryDark dark:bg-primaryDarker dark:text-primaryLight dark:hover:bg-primaryDarker',
     white:
       'border shadow-sm border-gray-300 bg-white text-gray-700 hover:bg-gray-100 focus:ring-primaryLight dark:border-gray-600 dark:bg-gray-900 dark:text-gray-100 dark:hover:bg-gray-800 dark:focus:ring-primaryDark',
+    ghost:
+      'border-gray-300 text-gray-700 hover:bg-gray-200 focus:ring-primaryLight dark:border-gray-600 dark:text-gray-100 dark:hover:bg-gray-700 dark:focus:ring-primaryDark',
     danger:
       'border border-transparent focus:ring-red-500 bg-red-600 hover:bg-red-700 text-white dark:focus:ring-red-600 dark:bg-red-700 dark:hover:bg-red-800 dark:text-white',
     rounded: {
