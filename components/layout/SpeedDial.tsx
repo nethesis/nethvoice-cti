@@ -2,14 +2,14 @@
 // SPDX-License-Identifier: AGPL-3.0-or-later
 
 /**
- * The SideBar component
+ * The SpeedDial component
  *
  * @return The fixed right bar with speed dials as the default
  */
 
 import type { SpeedDialType } from '../../services/types'
 import { useState, useEffect, useRef, MutableRefObject } from 'react'
-import { Button, Avatar, Modal, Dropdown, InlineNotification, EmptyState } from '../common/'
+import { Button, Avatar, Modal, Dropdown, InlineNotification, EmptyState } from '../common'
 import { deleteSpeedDial, getSpeedDials } from '../../services/phonebook'
 import {
   sortSpeedDials,
@@ -29,7 +29,7 @@ import {
   faBolt,
 } from '@fortawesome/free-solid-svg-icons'
 
-export const SideBar = () => {
+export const SpeedDial = () => {
   // The state for the delete modal
   const [showDeleteModal, setShowDeleteModal] = useState<boolean>(false)
   // The state for the speed dials list

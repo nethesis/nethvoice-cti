@@ -2,7 +2,7 @@
 // SPDX-License-Identifier: AGPL-3.0-or-later
 
 import { FC, ReactNode, useState, useEffect } from 'react'
-import { NavBar, TopBar, MobileNavBar, SideBar, SideDrawer } from '.'
+import { NavBar, TopBar, MobileNavBar, SpeedDial, SideDrawer } from '.'
 import { navItems, NavItemsProps } from '../../config/routes'
 import { useRouter } from 'next/router'
 import { getUserInfo } from '../../services/user'
@@ -82,7 +82,7 @@ export const Layout: FC<LayoutProps> = ({ children }) => {
             </section>
           </main>
           {/* Secondary column (hidden on smaller screens) */}
-          <SideBar />
+          <SpeedDial />
           <SideDrawer
             isShown={sideDrawer.isShown}
             contentType={sideDrawer.contentType}

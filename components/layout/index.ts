@@ -2,7 +2,7 @@
 // SPDX-License-Identifier: AGPL-3.0-or-later
 
 export * from './NavBar'
-export * from './SideBar'
+export * from './SpeedDial'
 export * from './SideDrawer'
 export * from './TopBar'
 export * from './MobileNavBar'
