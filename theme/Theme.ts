@@ -41,7 +41,7 @@ const theme = {
     },
   },
   iconSwitch: {
-    base: 'transition-colors duration-200 transform focus:outline-none focus:ring-2 focus:z-20 focus:ring-offset-2 disabled:opacity-50 disabled:cursor-not-allowed inline-block cursor-pointer rounded-md shadow-sm text-gray-700 hover:bg-gray-200 focus:ring-primaryLight dark:text-gray-100 dark:hover:bg-gray-900 dark:focus:ring-primaryDark',
+    base: 'transition-colors duration-200 transform focus:outline-none focus:ring-2 focus:z-20 focus:ring-offset-2 disabled:opacity-50 disabled:cursor-not-allowed inline-block cursor-pointer rounded-md text-gray-700 hover:bg-gray-200 focus:ring-primaryLight dark:text-gray-100 dark:hover:bg-gray-900 dark:focus:ring-primaryDark',
     sizes: {
       small: 'px-1.5 py-1 text-xs',
       base: 'px-2 py-1 text-md',
