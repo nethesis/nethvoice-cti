@@ -3,7 +3,7 @@
 
 import type { NextPage } from 'next'
 import { useEffect, useMemo, useState } from 'react'
-import { Avatar, EmptyState, InlineNotification } from '../components/common'
+import { Avatar, Badge, EmptyState, InlineNotification } from '../components/common'
 import {
   AVAILABLE_STATUSES,
   callOperator,
@@ -16,7 +16,7 @@ import {
   sortByOperatorStatus,
   UNAVAILABLE_STATUSES,
 } from '../lib/operators'
-import { isEmpty, debounce, capitalize } from 'lodash'
+import { isEmpty, debounce } from 'lodash'
 import { useSelector } from 'react-redux'
 import { RootState } from '../store'
 import { Filter, OperatorStatusBadge } from '../components/operators'
@@ -341,14 +341,14 @@ const Operators: NextPage = () => {
                 <li key={index}>
                   <button
                     type='button'
-                    className='group flex w-full items-center justify-between space-x-3 rounded-full border p-2 text-left shadow-sm focus:outline-none focus:ring-2 focus:ring-offset-2 bg-white dark:bg-gray-900 border-gray-300 dark:border-gray-700 focus:ring-primary dark:focus:ring-primary cursor-default'
+                    className='group flex w-full items-center justify-between space-x-3 rounded-lg border p-2 text-left shadow-sm focus:outline-none focus:ring-2 focus:ring-offset-2 bg-white dark:bg-gray-900 border-gray-300 dark:border-gray-700 focus:ring-primary dark:focus:ring-primary cursor-default'
                   >
                     <div className='flex min-w-0 flex-1 items-center space-x-3'>
                       <div className='block flex-shrink-0'>
                         <div className='animate-pulse rounded-full h-10 w-10 mx-auto bg-gray-300 dark:bg-gray-600'></div>
                       </div>
                       <span className='block min-w-0 flex-1'>
-                        <div className='animate-pulse h-3 rounded bg-gray-300 dark:bg-gray-600 mb-2'></div>
+                        <div className='animate-pulse h-3 rounded bg-gray-300 dark:bg-gray-600 mb-3'></div>
                         <div className='animate-pulse h-3 rounded bg-gray-300 dark:bg-gray-600'></div>
                       </span>
                     </div>
@@ -380,7 +380,7 @@ const Operators: NextPage = () => {
                       <button
                         type='button'
                         onClick={() => openShowOperatorDrawer(operator)}
-                        className='group flex w-full items-center justify-between space-x-3 rounded-full border p-2 text-left shadow-sm focus:outline-none focus:ring-2 focus:ring-offset-2 bg-white dark:bg-gray-900 border-gray-300 dark:border-gray-700 hover:bg-gray-100 dark:hover:bg-gray-800 focus:ring-primary dark:focus:ring-primary'
+                        className='group flex w-full items-center justify-between space-x-3 rounded-lg border p-2 text-left shadow-sm focus:outline-none focus:ring-2 focus:ring-offset-2 bg-white dark:bg-gray-900 border-gray-300 dark:border-gray-700 hover:bg-gray-100 dark:hover:bg-gray-800 focus:ring-primary dark:focus:ring-primary'
                       >
                         <span className='flex min-w-0 flex-1 items-center space-x-3'>
                           <span className='block flex-shrink-0'>
@@ -389,7 +389,6 @@ const Operators: NextPage = () => {
                               placeholderType='person'
                               size='large'
                               bordered
-                              status={operator.mainPresence}
                               star={operator.favorite}
                               onClick={() => openShowOperatorDrawer(operator)}
                               className='mx-auto cursor-pointer'
@@ -399,12 +398,26 @@ const Operators: NextPage = () => {
                             <span className='block truncate text-sm font-medium text-gray-900 dark:text-gray-100'>
                               {operator.name}
                             </span>
-                            <span className='block truncate text-sm font-medium text-gray-500 dark:text-gray-500'>
-                              {/* //// TODO */}
+                            <span className='block truncate mt-1 text-sm font-medium text-gray-500 dark:text-gray-500'>
                               {operator.mainPresence === 'busy' ? (
-                                <span>Ongoing call information</span>
+                                <Badge
+                                  rounded='full'
+                                  variant='busy'
+                                  size='small'
+                                  className='cursor-not-allowed'
+                                >
+                                  {/* //// TODO retrieve call information*/}
+                                  <span className='mr-3'>Big Tech spa</span>
+                                  <span>00:07:35</span>
+                                </Badge>
                               ) : (
-                                <span>{capitalize(operator.mainPresence)}</span>
+                                <OperatorStatusBadge
+                                  operator={operator}
+                                  currentUsername={auth.username}
+                                  callEnabled={true}
+                                  onCall={callOperator}
+                                  size='small'
+                                />
                               )}
                             </span>
                           </span>

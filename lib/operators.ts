@@ -116,8 +116,13 @@ export const sortByFavorite = (operator1: any, operator2: any) => {
   return 0
 }
 
-export const callOperator = (operator: any) => {
+export const callOperator = (operator: any, event: any = undefined) => {
   console.log('call operator', operator) ////
+
+  // stop propagation of click event
+  if (event) {
+    event.stopPropagation()
+  }
 }
 
 export const isOperatorCallable = (operator: any, currentUsername: string) => {

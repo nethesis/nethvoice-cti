@@ -32,10 +32,10 @@ export const OperatorStatusBadge: FC<OperatorStatusBadgeProps> = ({
     setCallable(callable && callEnabled)
   }, [operator, currentUsername, callEnabled])
 
-  const badgeClicked = () => {
+  const badgeClicked = (ev: any) => {
     if (isCallable && onCall) {
       // notify parent component
-      onCall(operator)
+      onCall(operator, ev)
     }
   }
 
@@ -66,7 +66,7 @@ export const OperatorStatusBadge: FC<OperatorStatusBadgeProps> = ({
               {/* phone icon */}
               <FontAwesomeIcon
                 icon={faPhone}
-                className='mr-2 h-4 w-4 flex-shrink-0'
+                className='mr-1.5 h-3 w-3 flex-shrink-0'
                 aria-hidden='true'
               />
               <span>{capitalize(operator.mainPresence)}</span>
