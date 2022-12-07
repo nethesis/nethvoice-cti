@@ -50,7 +50,9 @@ export const OperatorStatusBadge: FC<OperatorStatusBadgeProps> = ({
           className={classNames(
             isCallable
               ? 'hover:bg-emerald-300 dark:hover:bg-emerald-900 cursor-pointer'
-              : 'cursor-not-allowed',
+              : callEnabled && !isCallable
+              ? 'cursor-not-allowed'
+              : 'cursor-default',
           )}
         >
           {['incoming', 'ringing'].includes(operator.mainPresence) ? (
@@ -70,7 +72,7 @@ export const OperatorStatusBadge: FC<OperatorStatusBadgeProps> = ({
               <span>{capitalize(operator.mainPresence)}</span>
             </div>
           ) : (
-            <span className='cursor-not-allowed'>{capitalize(operator.mainPresence)}</span>
+            <span>{capitalize(operator.mainPresence)}</span>
           )}
         </Badge>
       </div>
