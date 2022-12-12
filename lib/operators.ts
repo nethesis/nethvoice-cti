@@ -43,6 +43,16 @@ export async function getGroups() {
   }
 }
 
+export async function getExtensions() {
+  try {
+    const { data } = await axios.get('/astproxy/extensions')
+    return data
+  } catch (error) {
+    handleNetworkError(error)
+    throw error
+  }
+}
+
 export function searchStringInOperator(operator: any, queryText: string) {
   const regex = /[^a-zA-Z0-9]/g
   queryText = queryText.replace(regex, '')

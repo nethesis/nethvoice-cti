@@ -775,7 +775,6 @@ export const Filter = forwardRef<HTMLButtonElement, FilterProps>(
                           {groupLabel}
                         </span>
                       </span>
-                      {/* //// todo active filters */}
                     </div>
                   </div>
                   {/* status */}

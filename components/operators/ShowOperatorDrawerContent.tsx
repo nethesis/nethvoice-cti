@@ -182,18 +182,38 @@ export const ShowOperatorDrawerContent = forwardRef<
         </dl>
       </div>
       {/*  ongoing call info */}
-      {config.mainPresence === 'busy' && (
+      {config.mainPresence === 'busy' && config.conversations?.length && (
         <div>
           <h4 className='mt-6 text-md font-medium text-gray-700 dark:text-gray-200'>
             Current call
           </h4>
           <div className='mt-4 border-t border-gray-200 dark:border-gray-700'>
             <dl className='sm:divide-y sm:divide-gray-200 dark:sm:divide-gray-700'>
+              {/*  interlocutor */}
+
               <div className='py-4 sm:grid sm:grid-cols-3 sm:gap-4 sm:py-5'>
-                <dt className='text-sm font-medium text-gray-500 dark:text-gray-400'>Name</dt>
+                <dt className='text-sm font-medium text-gray-500 dark:text-gray-400'>
+                  Interlocutor
+                </dt>
                 <dd className='mt-1 text-sm text-gray-900 dark:text-gray-100 sm:col-span-2 sm:mt-0'>
+                  {config.conversations[0].counterpartName !==
+                    config.conversations[0].counterpartNum && (
+                    <div className='mb-1.5 flex items-center text-sm'>
+                      <span className='truncate'>
+                        {config.conversations[0].counterpartName || '-'}
+                      </span>
+                    </div>
+                  )}
+                  {/*  number */}
                   <div className='flex items-center text-sm'>
-                    <span className='truncate cursor-pointer'>-</span>
+                    <FontAwesomeIcon
+                      icon={faPhone}
+                      className='mr-2 h-4 w-4 flex-shrink-0 text-gray-400 dark:text-gray-500'
+                      aria-hidden='true'
+                    />
+                    <span className='truncate'>
+                      {config.conversations[0].counterpartNum || '-'}
+                    </span>
                   </div>
                 </dd>
               </div>
@@ -202,7 +222,7 @@ export const ShowOperatorDrawerContent = forwardRef<
                 <dt className='text-sm font-medium text-gray-500 dark:text-gray-400'>Direction</dt>
                 <dd className='mt-1 text-sm text-gray-900 dark:text-gray-100 sm:col-span-2 sm:mt-0'>
                   <div className='flex items-center text-sm'>
-                    <span className='truncate cursor-pointer'>-</span>
+                    <span className='truncate'>{config.conversations[0].direction}</span>
                   </div>
                 </dd>
               </div>
@@ -211,7 +231,7 @@ export const ShowOperatorDrawerContent = forwardRef<
                 <dt className='text-sm font-medium text-gray-500 dark:text-gray-400'>Duration</dt>
                 <dd className='mt-1 text-sm text-gray-900 dark:text-gray-100 sm:col-span-2 sm:mt-0'>
                   <div className='flex items-center text-sm'>
-                    <span className='truncate cursor-pointer'>-</span>
+                    <span className='truncate'>{config.conversations[0].duration}</span>
                   </div>
                 </dd>
               </div>

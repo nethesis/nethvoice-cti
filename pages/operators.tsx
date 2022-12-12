@@ -8,6 +8,7 @@ import {
   AVAILABLE_STATUSES,
   callOperator,
   getAllAvatars,
+  getExtensions,
   getGroups,
   getUserEndpointsAll,
   openShowOperatorDrawer,
@@ -182,22 +183,49 @@ const Operators: NextPage = () => {
                   }
                 }
               }
-              setOperators(operators)
-              applyFilters(operators)
-              setOperatorsLoaded(true)
+
+              try {
+                // get conversations
+                const extensions = await getExtensions()
+
+                for (const [extNum, extData] of Object.entries(extensions)) {
+                  // @ts-ignore
+                  if (!isEmpty(extData.conversations)) {
+                    const opFound: any = Object.values(operators).find((op: any) => {
+                      return op.endpoints.extension.some((ext: any) => ext.id === extNum)
+                    })
+
+                    if (opFound) {
+                      // @ts-ignore
+                      Object.values(extData.conversations).forEach((conv) => {
+                        let conversations = opFound.conversations || []
+                        conversations.push(conv)
+                        opFound.conversations = conversations
+                      })
+                    }
+                  }
+                }
+                setOperators(operators)
+                applyFilters(operators)
+                setOperatorsLoaded(true)
+              } catch (e) {
+                console.error(e)
+                setOperatorsError('Cannot retrieve conversations')
+                setOperatorsLoaded(true)
+              }
             } catch (e) {
               console.error(e)
-              setOperatorsError('Cannot retrieve operators')
+              setOperatorsError('Cannot retrieve groups')
               setOperatorsLoaded(true)
             }
           } catch (e) {
             console.error(e)
-            setOperatorsError('Cannot retrieve operators')
+            setOperatorsError('Cannot retrieve avatars')
             setOperatorsLoaded(true)
           }
         } catch (e) {
           console.error(e)
-          setOperatorsError('Cannot retrieve operators')
+          setOperatorsError('Cannot retrieve user endpoints')
           setOperatorsLoaded(true)
         }
       }
@@ -348,8 +376,7 @@ const Operators: NextPage = () => {
                         <div className='animate-pulse rounded-full h-10 w-10 mx-auto bg-gray-300 dark:bg-gray-600'></div>
                       </div>
                       <span className='block min-w-0 flex-1'>
-                        <div className='animate-pulse h-3 rounded bg-gray-300 dark:bg-gray-600 mb-3'></div>
-                        <div className='animate-pulse h-3 rounded bg-gray-300 dark:bg-gray-600'></div>
+                        <div className='animate-pulse h-4 rounded bg-gray-300 dark:bg-gray-600'></div>
                       </span>
                     </div>
                     <span className='inline-flex h-10 w-10 flex-shrink-0 items-center justify-center'>
@@ -399,15 +426,15 @@ const Operators: NextPage = () => {
                               {operator.name}
                             </span>
                             <span className='block truncate mt-1 text-sm font-medium text-gray-500 dark:text-gray-500'>
-                              {operator.mainPresence === 'busy' ? (
-                                <Badge
-                                  rounded='full'
-                                  variant='busy'
-                                  size='small'
-                                >
-                                  {/* //// TODO retrieve call information*/}
-                                  <span className='mr-3'>Big Tech spa</span>
-                                  <span>00:07:35</span>
+                              {operator.mainPresence === 'busy' &&
+                              operator.conversations?.length ? (
+                                <Badge rounded='full' variant='busy' size='small'>
+                                  <span className='mr-3'>
+                                    {operator.conversations[0].counterpartName ||
+                                      operator.conversations[0].counterpartNum}
+                                  </span>
+                                  {/* //// TODO format duration */}
+                                  <span>{operator.conversations[0].duration}</span>
                                 </Badge>
                               ) : (
                                 <OperatorStatusBadge
