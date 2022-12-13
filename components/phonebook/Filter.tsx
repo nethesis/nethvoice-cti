@@ -1,13 +1,13 @@
 // Copyright (C) 2022 Nethesis S.r.l.
 // SPDX-License-Identifier: AGPL-3.0-or-later
 
-import { ComponentPropsWithRef, forwardRef } from 'react'
+import { ComponentPropsWithRef, forwardRef, useRef } from 'react'
 import classNames from 'classnames'
 import { TextInput } from '../common'
 import { Fragment, useState, useEffect } from 'react'
 import { Dialog, Disclosure, Popover, Transition } from '@headlessui/react'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
-import { faChevronDown, faXmark } from '@fortawesome/free-solid-svg-icons'
+import { faChevronDown, faCircleXmark, faXmark } from '@fortawesome/free-solid-svg-icons'
 import { DEFAULT_CONTACT_TYPE_FILTER, DEFAULT_SORT_BY, getFilterValues } from '../../lib/phonebook'
 import { useSelector } from 'react-redux'
 import { RootState } from '../../store'
@@ -44,12 +44,19 @@ export const Filter = forwardRef<HTMLButtonElement, FilterProps>(
     const [open, setOpen] = useState(false)
 
     const [textFilter, setTextFilter] = useState('')
+    const textFilterRef = useRef() as React.MutableRefObject<HTMLInputElement>
     function changeTextFilter(event: any) {
       const newTextFilter = event.target.value
       setTextFilter(newTextFilter)
 
       // update phonebook (notify parent component)
       updateTextFilter(newTextFilter)
+    }
+
+    const clearTextFilter = () => {
+      setTextFilter('')
+      updateTextFilter('')
+      textFilterRef.current.focus()
     }
 
     const [contactType, setContactType] = useState('all')
@@ -289,6 +296,10 @@ export const Filter = forwardRef<HTMLButtonElement, FilterProps>(
                     className='max-w-sm'
                     value={textFilter}
                     onChange={changeTextFilter}
+                    ref={textFilterRef}
+                    icon={faCircleXmark}
+                    onIconClick={() => clearTextFilter()}
+                    trailingIcon={true}
                   />
                 </div>
 
