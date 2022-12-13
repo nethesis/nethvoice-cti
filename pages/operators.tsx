@@ -346,12 +346,23 @@ const Operators: NextPage = () => {
                                   {operator.name}
                                 </h3>
                                 <div className='mt-3'>
-                                  <OperatorStatusBadge
-                                    operator={operator}
-                                    currentUsername={auth.username}
-                                    callEnabled={true}
-                                    onCall={callOperator}
-                                  />
+                                  <span className='block truncate mt-1 text-sm font-medium text-gray-500 dark:text-gray-500'>
+                                    {operator.mainPresence === 'busy' &&
+                                    operator.conversations?.length ? (
+                                      <Badge rounded='full' variant='busy' size='small'>
+                                        <span className='mr-1.5'>Busy</span>
+                                        {/* //// TODO format duration */}
+                                        <span>{operator.conversations[0].duration}</span>
+                                      </Badge>
+                                    ) : (
+                                      <OperatorStatusBadge
+                                        operator={operator}
+                                        currentUsername={auth.username}
+                                        callEnabled={true}
+                                        onCall={callOperator}
+                                      />
+                                    )}
+                                  </span>
                                 </div>
                               </div>
                             </div>
@@ -429,10 +440,7 @@ const Operators: NextPage = () => {
                               {operator.mainPresence === 'busy' &&
                               operator.conversations?.length ? (
                                 <Badge rounded='full' variant='busy' size='small'>
-                                  <span className='mr-3'>
-                                    {operator.conversations[0].counterpartName ||
-                                      operator.conversations[0].counterpartNum}
-                                  </span>
+                                  <span className='mr-1.5'>Busy</span>
                                   {/* //// TODO format duration */}
                                   <span>{operator.conversations[0].duration}</span>
                                 </Badge>
