@@ -37,7 +37,7 @@ const statusFilter = {
     { value: 'available', label: 'Available' },
     { value: 'unavailable', label: 'Unavailable' },
     { value: 'offline', label: 'Offline' },
-    { value: 'allButOffline', label: 'All but offline' },
+    { value: 'allExceptOffline', label: 'All except offline' },
   ],
 }
 
@@ -121,6 +121,27 @@ export const Filter = forwardRef<HTMLButtonElement, FilterProps>(
       updateGroupFilter(newGroup)
     }
 
+    // text filter for groups
+
+    const [groupTextFilter, setGroupTextFilter] = useState('')
+    function changeGroupTextFilter(event: any) {
+      const newGroupTextFilter = event.target.value
+      setGroupTextFilter(newGroupTextFilter)
+    }
+
+    const [filteredGroups, setFilteredGroups] = useState([] as RadioButtonType[])
+
+    useEffect(() => {
+      const regex = /[^a-zA-Z0-9]/g
+      const queryText = groupTextFilter.replace(regex, '')
+
+      // filter group filter options that match
+      const filtered = groupFilter.options.filter((g) =>
+        new RegExp(queryText, 'i').test(g.label.replace(regex, '')),
+      )
+      setFilteredGroups(filtered)
+    }, [groupTextFilter, groupFilter.options])
+
     const [status, setStatus] = useState('')
     function changeStatus(event: any) {
       const newStatus = event.target.id
@@ -199,17 +220,6 @@ export const Filter = forwardRef<HTMLButtonElement, FilterProps>(
       }
     }, [sortBy])
 
-    // layout label
-
-    const [layoutLabel, setLayoutLabel] = useState('')
-    useEffect(() => {
-      const found = layoutFilter.options.find((option) => option.value === layout)
-
-      if (found) {
-        setLayoutLabel(found.label)
-      }
-    }, [layout])
-
     const resetFilters = () => {
       setTextFilter('')
       setGroup(DEFAULT_GROUP_FILTER)
@@ -271,7 +281,7 @@ export const Filter = forwardRef<HTMLButtonElement, FilterProps>(
 
                     {/* Filters (mobile) */}
                     <form className='mt-4'>
-                      {/* groupFilter filter (mobile) */}
+                      {/* group filter (mobile) */}
                       <Disclosure
                         as='div'
                         key={groupFilter.name}
@@ -300,7 +310,19 @@ export const Filter = forwardRef<HTMLButtonElement, FilterProps>(
                               <fieldset>
                                 <legend className='sr-only'>{groupFilter.name}</legend>
                                 <div className='space-y-4'>
-                                  {groupFilter.options.map((option) => (
+                                  <TextInput
+                                    placeholder='Filter groups'
+                                    value={groupTextFilter}
+                                    onChange={changeGroupTextFilter}
+                                    autoFocus
+                                    className='min-w-[8rem]'
+                                  />
+                                  {!filteredGroups.length && (
+                                    <div className='text-sm text-gray-500 dark:text-gray-400'>
+                                      <span>No group</span>
+                                    </div>
+                                  )}
+                                  {filteredGroups.map((option) => (
                                     <div key={option.value}>
                                       {option.value.startsWith('divider') ? (
                                         <div className='relative'>
@@ -551,7 +573,19 @@ export const Filter = forwardRef<HTMLButtonElement, FilterProps>(
                       >
                         <Popover.Panel className='absolute right-0 z-10 mt-2 origin-top-right rounded-md p-4 shadow-2xl ring-1 ring-opacity-5 focus:outline-none bg-white ring-black dark:bg-gray-900 dark:ring-gray-700'>
                           <form className='space-y-4'>
-                            {groupFilter.options.map((option) => (
+                            <TextInput
+                              placeholder='Filter groups'
+                              value={groupTextFilter}
+                              onChange={changeGroupTextFilter}
+                              autoFocus
+                              className='min-w-[8rem]'
+                            />
+                            {!filteredGroups.length && (
+                              <div className='text-sm text-gray-500 dark:text-gray-400'>
+                                <span>No group</span>
+                              </div>
+                            )}
+                            {filteredGroups.map((option) => (
                               <div key={option.value}>
                                 {option.value.startsWith('divider') ? (
                                   <div className='relative'>

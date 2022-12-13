@@ -98,7 +98,7 @@ const Operators: NextPage = () => {
         (statusFilter === 'available' && AVAILABLE_STATUSES.includes(op.mainPresence)) ||
         (statusFilter === 'unavailable' && UNAVAILABLE_STATUSES.includes(op.mainPresence)) ||
         (statusFilter === 'offline' && op.mainPresence === 'offline') ||
-        (statusFilter === 'allButOffline' && op.mainPresence !== 'offline')
+        (statusFilter === 'allExceptOffline' && op.mainPresence !== 'offline')
       )
     })
 
