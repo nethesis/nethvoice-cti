@@ -1,13 +1,13 @@
 // Copyright (C) 2022 Nethesis S.r.l.
 // SPDX-License-Identifier: AGPL-3.0-or-later
 
-import { ComponentPropsWithRef, forwardRef } from 'react'
+import { ComponentPropsWithRef, forwardRef, useRef } from 'react'
 import classNames from 'classnames'
 import { TextInput } from '../common'
 import { Fragment, useState, useEffect } from 'react'
 import { Dialog, Disclosure, Popover, Transition } from '@headlessui/react'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
-import { faChevronDown, faXmark } from '@fortawesome/free-solid-svg-icons'
+import { faChevronDown, faCircleXmark, faXmark } from '@fortawesome/free-solid-svg-icons'
 import { RadioButtonType } from '../../services/types'
 import {
   DEFAULT_GROUP_FILTER,
@@ -103,6 +103,7 @@ export const Filter = forwardRef<HTMLButtonElement, FilterProps>(
     const [open, setOpen] = useState(false)
 
     const [textFilter, setTextFilter] = useState('')
+    const textFilterRef = useRef() as React.MutableRefObject<HTMLInputElement>
     function changeTextFilter(event: any) {
       const newTextFilter = event.target.value
       setTextFilter(newTextFilter)
@@ -124,6 +125,7 @@ export const Filter = forwardRef<HTMLButtonElement, FilterProps>(
     // text filter for groups
 
     const [groupTextFilter, setGroupTextFilter] = useState('')
+    const groupTextFilterRef = useRef() as React.MutableRefObject<HTMLInputElement>
     function changeGroupTextFilter(event: any) {
       const newGroupTextFilter = event.target.value
       setGroupTextFilter(newGroupTextFilter)
@@ -236,6 +238,17 @@ export const Filter = forwardRef<HTMLButtonElement, FilterProps>(
       updateSort(DEFAULT_SORT_BY)
     }
 
+    const clearTextFilter = () => {
+      setTextFilter('')
+      updateTextFilter('')
+      textFilterRef.current.focus()
+    }
+
+    const clearGroupTextFilter = () => {
+      setGroupTextFilter('')
+      groupTextFilterRef.current.focus()
+    }
+
     return (
       <div className={classNames(className)} {...props}>
         <div className=''>
@@ -315,6 +328,10 @@ export const Filter = forwardRef<HTMLButtonElement, FilterProps>(
                                     value={groupTextFilter}
                                     onChange={changeGroupTextFilter}
                                     autoFocus
+                                    ref={groupTextFilterRef}
+                                    icon={faCircleXmark}
+                                    onIconClick={() => clearGroupTextFilter()}
+                                    trailingIcon={true}
                                     className='min-w-[8rem]'
                                   />
                                   {!filteredGroups.length && (
@@ -539,6 +556,10 @@ export const Filter = forwardRef<HTMLButtonElement, FilterProps>(
                     className='max-w-sm'
                     value={textFilter}
                     onChange={changeTextFilter}
+                    ref={textFilterRef}
+                    icon={faCircleXmark}
+                    onIconClick={() => clearTextFilter()}
+                    trailingIcon={true}
                   />
                 </div>
 
@@ -578,7 +599,11 @@ export const Filter = forwardRef<HTMLButtonElement, FilterProps>(
                               value={groupTextFilter}
                               onChange={changeGroupTextFilter}
                               autoFocus
-                              className='min-w-[8rem]'
+                              ref={groupTextFilterRef}
+                              icon={faCircleXmark}
+                              onIconClick={() => clearGroupTextFilter()}
+                              trailingIcon={true}
+                              className='min-w-[10rem]'
                             />
                             {!filteredGroups.length && (
                               <div className='text-sm text-gray-500 dark:text-gray-400'>
