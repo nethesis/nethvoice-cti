@@ -3,15 +3,21 @@
 
 import { ComponentPropsWithRef, forwardRef, useState } from 'react'
 import classNames from 'classnames'
-import { Avatar, Button, IconSwitch } from '../common'
+import { Avatar, Button, Dropdown, IconSwitch } from '../common'
 import { useEffect } from 'react'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import {
+  faCircle,
   faComment,
+  faEllipsisVertical,
   faEnvelope,
+  faHandPointUp,
   faMobileScreenButton,
   faPhone,
+  faPhoneSlash,
   faStar,
+  faTicket,
+  faUserSecret,
   faVideo,
 } from '@fortawesome/free-solid-svg-icons'
 import { OperatorStatusBadge } from './OperatorStatusBadge'
@@ -49,6 +55,16 @@ export const ShowOperatorDrawerContent = forwardRef<
     setFavorite(!isFavorite)
     reloadOperators()
   }
+
+  const getCallActionsMenu = () => (
+    <>
+      <Dropdown.Item icon={faTicket}>Book</Dropdown.Item>
+      <Dropdown.Item icon={faPhoneSlash}>Hangup</Dropdown.Item>
+      <Dropdown.Item icon={faUserSecret}>Spy</Dropdown.Item>
+      <Dropdown.Item icon={faHandPointUp}>Intrude</Dropdown.Item>
+      <Dropdown.Item icon={faCircle}>Record</Dropdown.Item>
+    </>
+  )
 
   return (
     <div className={classNames('p-1', className)} {...props}>
@@ -181,12 +197,19 @@ export const ShowOperatorDrawerContent = forwardRef<
           )}
         </dl>
       </div>
-      {/*  ongoing call info */}
-      {config.mainPresence === 'busy' && config.conversations?.length && (
+      {/* ongoing call info */}
+      {config.conversations?.length && (
         <div>
-          <h4 className='mt-6 text-md font-medium text-gray-700 dark:text-gray-200'>
-            Current call
-          </h4>
+          <div className='mt-6 flex items-end justify-between'>
+            <h4 className='text-md font-medium text-gray-700 dark:text-gray-200'>Current call</h4>
+            {/* ongoing call menu */}
+            <Dropdown items={getCallActionsMenu()} position='left'>
+              <Button variant='ghost'>
+                <FontAwesomeIcon icon={faEllipsisVertical} className='h-4 w-4' />
+                <span className='sr-only'>Open call actions menu</span>
+              </Button>
+            </Dropdown>
+          </div>
           <div className='mt-4 border-t border-gray-200 dark:border-gray-700'>
             <dl className='sm:divide-y sm:divide-gray-200 dark:sm:divide-gray-700'>
               {/*  interlocutor */}

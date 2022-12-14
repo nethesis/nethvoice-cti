@@ -347,10 +347,9 @@ const Operators: NextPage = () => {
                                 </h3>
                                 <div className='mt-3'>
                                   <span className='block truncate mt-1 text-sm font-medium text-gray-500 dark:text-gray-500'>
-                                    {operator.mainPresence === 'busy' &&
-                                    operator.conversations?.length ? (
-                                      <Badge rounded='full' variant='busy' size='small'>
-                                        <span className='mr-1.5'>Busy</span>
+                                    {operator.conversations?.length ? (
+                                      <Badge rounded='full' variant='busy'>
+                                        <span className='mr-1.5'>{operator.mainPresence}</span>
                                         {/* //// TODO format duration */}
                                         <span>{operator.conversations[0].duration}</span>
                                       </Badge>
@@ -437,10 +436,9 @@ const Operators: NextPage = () => {
                               {operator.name}
                             </span>
                             <span className='block truncate mt-1 text-sm font-medium text-gray-500 dark:text-gray-500'>
-                              {operator.mainPresence === 'busy' &&
-                              operator.conversations?.length ? (
+                              {operator.conversations?.length ? (
                                 <Badge rounded='full' variant='busy' size='small'>
-                                  <span className='mr-1.5'>Busy</span>
+                                  <span className='mr-1.5'>{operator.mainPresence}</span>
                                   {/* //// TODO format duration */}
                                   <span>{operator.conversations[0].duration}</span>
                                 </Badge>

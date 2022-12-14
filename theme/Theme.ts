@@ -331,7 +331,7 @@ const theme = {
       base: 'block px-4 py-2 text-sm flex items-center gap-3 mt-1 mb-1 cursor-pointer',
       light: 'text-gray-700 dark:text-gray-300',
       active: 'bg-gray-200 text-gray-900 dark:bg-gray-700 dark:text-gray-100',
-      icon: 'h-4 w-4 flex text-gray-400 dark:text-gray-500',
+      icon: 'h-4 w-4 flex text-gray-500 dark:text-gray-400',
       centered: 'justify-center',
     },
     items: {
