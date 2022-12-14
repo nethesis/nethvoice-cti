@@ -50,58 +50,90 @@ const onlineOperator = {
   group: 'Test group',
 }
 
+const defaultArgs = {
+  size: 'base',
+  callEnabled: false,
+  onCall: undefined,
+  currentUsername: 'test',
+  operator: onlineOperator,
+}
+
 const cellphoneOperator = { ...onlineOperator, mainPresence: 'cellphone' }
 const callforwardOperator = { ...onlineOperator, mainPresence: 'callforward' }
 const voicemailOperator = { ...onlineOperator, mainPresence: 'voicemail' }
 const incomingOperator = { ...onlineOperator, mainPresence: 'incoming' }
+const ringingOperator = { ...onlineOperator, mainPresence: 'ringing' }
 const busyOperator = { ...onlineOperator, mainPresence: 'busy' }
 const dndOperator = { ...onlineOperator, mainPresence: 'dnd' }
 const offlineOperator = { ...onlineOperator, mainPresence: 'offline' }
 
-export const Online = Template.bind({})
-Online.args = {
+export const CallEnabled = Template.bind({})
+// @ts-ignore
+CallEnabled.args = {
+  ...defaultArgs,
+  callEnabled: true,
   operator: onlineOperator,
-  currentUsername: 'test',
+}
+
+export const Online = Template.bind({})
+// @ts-ignore
+Online.args = {
+  ...defaultArgs,
+  operator: onlineOperator,
 }
 
 export const Cellphone = Template.bind({})
+// @ts-ignore
 Cellphone.args = {
+  ...defaultArgs,
   operator: cellphoneOperator,
-  currentUsername: 'test',
 }
 
 export const Callforward = Template.bind({})
+// @ts-ignore
 Callforward.args = {
+  ...defaultArgs,
   operator: callforwardOperator,
-  currentUsername: 'test',
 }
 
 export const Voicemail = Template.bind({})
+// @ts-ignore
 Voicemail.args = {
+  ...defaultArgs,
   operator: voicemailOperator,
-  currentUsername: 'test',
 }
 
 export const Incoming = Template.bind({})
+// @ts-ignore
 Incoming.args = {
+  ...defaultArgs,
   operator: incomingOperator,
-  currentUsername: 'test',
+}
+
+export const Ringing = Template.bind({})
+// @ts-ignore
+Ringing.args = {
+  ...defaultArgs,
+  operator: ringingOperator,
 }
 
 export const Busy = Template.bind({})
+// @ts-ignore
 Busy.args = {
+  ...defaultArgs,
   operator: busyOperator,
-  currentUsername: 'test',
 }
 
 export const Dnd = Template.bind({})
+// @ts-ignore
 Dnd.args = {
+  ...defaultArgs,
   operator: dndOperator,
-  currentUsername: 'test',
 }
 
 export const Offline = Template.bind({})
+// @ts-ignore
 Offline.args = {
+  ...defaultArgs,
   operator: offlineOperator,
-  currentUsername: 'test',
 }

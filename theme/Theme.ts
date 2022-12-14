@@ -10,6 +10,8 @@ const theme = {
       'border border-transparent focus:ring-primaryLight bg-primaryLighter text-primaryDark hover:bg-primaryLighter dark:focus:ring-primaryDark dark:bg-primaryDarker dark:text-primaryLight dark:hover:bg-primaryDarker',
     white:
       'border shadow-sm border-gray-300 bg-white text-gray-700 hover:bg-gray-100 focus:ring-primaryLight dark:border-gray-600 dark:bg-gray-900 dark:text-gray-100 dark:hover:bg-gray-800 dark:focus:ring-primaryDark',
+    ghost:
+      'border-gray-300 text-gray-700 hover:bg-gray-200 focus:ring-primaryLight dark:border-gray-600 dark:text-gray-100 dark:hover:bg-gray-700 dark:focus:ring-primaryDark',
     danger:
       'border border-transparent focus:ring-red-500 bg-red-600 hover:bg-red-700 text-white dark:focus:ring-red-600 dark:bg-red-700 dark:hover:bg-red-800 dark:text-white',
     rounded: {
@@ -41,7 +43,7 @@ const theme = {
     },
   },
   iconSwitch: {
-    base: 'transition-colors duration-200 transform focus:outline-none focus:ring-2 focus:z-20 focus:ring-offset-2 disabled:opacity-50 disabled:cursor-not-allowed inline-block cursor-pointer rounded-md shadow-sm text-gray-700 hover:bg-gray-200 focus:ring-primaryLight dark:text-gray-100 dark:hover:bg-gray-900 dark:focus:ring-primaryDark',
+    base: 'transition-colors duration-200 transform focus:outline-none focus:ring-2 focus:z-20 focus:ring-offset-2 disabled:opacity-50 disabled:cursor-not-allowed inline-block cursor-pointer rounded-md text-gray-700 hover:bg-gray-200 focus:ring-primaryLight dark:text-gray-100 dark:hover:bg-gray-900 dark:focus:ring-primaryDark',
     sizes: {
       small: 'px-1.5 py-1 text-xs',
       base: 'px-2 py-1 text-md',
@@ -134,10 +136,9 @@ const theme = {
     available: {
       badge: {
         base: 'bg-emerald-200 text-emerald-900 dark:bg-emerald-800 dark:text-emerald-100',
-        dot: 'bg-emerald-400 dark:bg-emerald-400',
       },
       avatar: {
-        dot: 'bg-green-500 dark:bg-green-500',
+        dot: 'bg-emerald-500 dark:bg-emerald-500',
       },
       card: {
         border: 'border-green-500 dark:border-green-500',
@@ -146,7 +147,6 @@ const theme = {
     online: {
       badge: {
         base: 'bg-emerald-200 text-emerald-900 dark:bg-emerald-800 dark:text-emerald-100',
-        dot: 'bg-emerald-400 dark:bg-emerald-400',
       },
       avatar: {
         dot: 'bg-emerald-500 dark:bg-emerald-500',
@@ -158,10 +158,9 @@ const theme = {
     dnd: {
       badge: {
         base: 'bg-red-200 text-red-900 dark:bg-red-900 dark:text-red-100',
-        dot: 'bg-gray-400 dark:bg-gray-400',
       },
       avatar: {
-        dot: 'bg-gray-900 dark:bg-gray-900',
+        dot: 'bg-red-500 dark:bg-red-500',
       },
       card: {
         border: 'border-gray-500 dark:border-green-500',
@@ -170,10 +169,9 @@ const theme = {
     voicemail: {
       badge: {
         base: 'bg-emerald-200 text-emerald-900 dark:bg-emerald-800 dark:text-emerald-100',
-        dot: 'bg-orange-400 dark:bg-orange-400',
       },
       avatar: {
-        dot: 'bg-orange-500 dark:bg-orange-500',
+        dot: 'bg-emerald-500 dark:bg-emerald-500',
       },
       card: {
         border: 'border-orange-500 dark:border-orange-500',
@@ -182,10 +180,9 @@ const theme = {
     cellphone: {
       badge: {
         base: 'bg-emerald-200 text-emerald-900 dark:bg-emerald-800 dark:text-emerald-100',
-        dot: 'bg-purple-400 dark:bg-purple-400',
       },
       avatar: {
-        dot: 'bg-purple-500 dark:bg-purple-500',
+        dot: 'bg-emerald-500 dark:bg-emerald-500',
       },
       card: {
         border: 'border-purple-500 dark:border-purple-500',
@@ -194,10 +191,9 @@ const theme = {
     callforward: {
       badge: {
         base: 'bg-emerald-200 text-emerald-900 dark:bg-emerald-800 dark:text-emerald-100',
-        dot: 'bg-yellow-400 dark:bg-yellow-400',
       },
       avatar: {
-        dot: 'bg-yellow-400 dark:bg-yellow-400',
+        dot: 'bg-emerald-500 dark:bg-emerald-500',
       },
       card: {
         border: 'border-yellow-500 dark:border-yellow-500',
@@ -206,7 +202,6 @@ const theme = {
     busy: {
       badge: {
         base: 'bg-red-200 text-red-900 dark:bg-red-900 dark:text-red-100',
-        dot: 'bg-red-400 dark:bg-red-400',
       },
       avatar: {
         dot: 'bg-red-500 dark:bg-red-500',
@@ -218,10 +213,20 @@ const theme = {
     incoming: {
       badge: {
         base: 'bg-red-200 text-red-900 dark:bg-red-900 dark:text-red-100',
-        dot: 'bg-sky-400 dark:bg-sky-400',
       },
       avatar: {
-        dot: 'bg-sky-500 dark:bg-sky-500',
+        dot: 'bg-red-500 dark:bg-red-500',
+      },
+      card: {
+        border: 'border-sky-500 dark:border-sky-500',
+      },
+    },
+    ringing: {
+      badge: {
+        base: 'bg-red-200 text-red-900 dark:bg-red-900 dark:text-red-100',
+      },
+      avatar: {
+        dot: 'bg-red-500 dark:bg-red-500',
       },
       card: {
         border: 'border-sky-500 dark:border-sky-500',
@@ -230,7 +235,6 @@ const theme = {
     offline: {
       badge: {
         base: 'bg-gray-300 text-gray-700 dark:bg-gray-700 dark:text-gray-300',
-        dot: 'bg-gray-400 dark:bg-gray-400',
       },
       avatar: {
         dot: 'bg-gray-500 dark:bg-gray-500',
@@ -327,7 +331,7 @@ const theme = {
       base: 'block px-4 py-2 text-sm flex items-center gap-3 mt-1 mb-1 cursor-pointer',
       light: 'text-gray-700 dark:text-gray-300',
       active: 'bg-gray-200 text-gray-900 dark:bg-gray-700 dark:text-gray-100',
-      icon: 'h-4 w-4 flex text-gray-400 dark:text-gray-500',
+      icon: 'h-4 w-4 flex text-gray-500 dark:text-gray-400',
       centered: 'justify-center',
     },
     items: {

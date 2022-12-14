@@ -3,15 +3,21 @@
 
 import { ComponentPropsWithRef, forwardRef, useState } from 'react'
 import classNames from 'classnames'
-import { Avatar, Button, IconSwitch } from '../common'
+import { Avatar, Button, Dropdown, IconSwitch } from '../common'
 import { useEffect } from 'react'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import {
+  faCircle,
   faComment,
+  faEllipsisVertical,
   faEnvelope,
+  faHandPointUp,
   faMobileScreenButton,
   faPhone,
+  faPhoneSlash,
   faStar,
+  faTicket,
+  faUserSecret,
   faVideo,
 } from '@fortawesome/free-solid-svg-icons'
 import { OperatorStatusBadge } from './OperatorStatusBadge'
@@ -49,6 +55,16 @@ export const ShowOperatorDrawerContent = forwardRef<
     setFavorite(!isFavorite)
     reloadOperators()
   }
+
+  const getCallActionsMenu = () => (
+    <>
+      <Dropdown.Item icon={faTicket}>Book</Dropdown.Item>
+      <Dropdown.Item icon={faPhoneSlash}>Hangup</Dropdown.Item>
+      <Dropdown.Item icon={faUserSecret}>Spy</Dropdown.Item>
+      <Dropdown.Item icon={faHandPointUp}>Intrude</Dropdown.Item>
+      <Dropdown.Item icon={faCircle}>Record</Dropdown.Item>
+    </>
+  )
 
   return (
     <div className={classNames('p-1', className)} {...props}>
@@ -181,19 +197,46 @@ export const ShowOperatorDrawerContent = forwardRef<
           )}
         </dl>
       </div>
-      {/*  ongoing call info */}
-      {config.mainPresence === 'busy' && (
+      {/* ongoing call info */}
+      {config.conversations?.length && (
         <div>
-          <h4 className='mt-6 text-md font-medium text-gray-700 dark:text-gray-200'>
-            Current call
-          </h4>
+          <div className='mt-6 flex items-end justify-between'>
+            <h4 className='text-md font-medium text-gray-700 dark:text-gray-200'>Current call</h4>
+            {/* ongoing call menu */}
+            <Dropdown items={getCallActionsMenu()} position='left'>
+              <Button variant='ghost'>
+                <FontAwesomeIcon icon={faEllipsisVertical} className='h-4 w-4' />
+                <span className='sr-only'>Open call actions menu</span>
+              </Button>
+            </Dropdown>
+          </div>
           <div className='mt-4 border-t border-gray-200 dark:border-gray-700'>
             <dl className='sm:divide-y sm:divide-gray-200 dark:sm:divide-gray-700'>
+              {/*  interlocutor */}
+
               <div className='py-4 sm:grid sm:grid-cols-3 sm:gap-4 sm:py-5'>
-                <dt className='text-sm font-medium text-gray-500 dark:text-gray-400'>Name</dt>
+                <dt className='text-sm font-medium text-gray-500 dark:text-gray-400'>
+                  Interlocutor
+                </dt>
                 <dd className='mt-1 text-sm text-gray-900 dark:text-gray-100 sm:col-span-2 sm:mt-0'>
+                  {config.conversations[0].counterpartName !==
+                    config.conversations[0].counterpartNum && (
+                    <div className='mb-1.5 flex items-center text-sm'>
+                      <span className='truncate'>
+                        {config.conversations[0].counterpartName || '-'}
+                      </span>
+                    </div>
+                  )}
+                  {/*  number */}
                   <div className='flex items-center text-sm'>
-                    <span className='truncate cursor-pointer'>-</span>
+                    <FontAwesomeIcon
+                      icon={faPhone}
+                      className='mr-2 h-4 w-4 flex-shrink-0 text-gray-400 dark:text-gray-500'
+                      aria-hidden='true'
+                    />
+                    <span className='truncate'>
+                      {config.conversations[0].counterpartNum || '-'}
+                    </span>
                   </div>
                 </dd>
               </div>
@@ -202,7 +245,7 @@ export const ShowOperatorDrawerContent = forwardRef<
                 <dt className='text-sm font-medium text-gray-500 dark:text-gray-400'>Direction</dt>
                 <dd className='mt-1 text-sm text-gray-900 dark:text-gray-100 sm:col-span-2 sm:mt-0'>
                   <div className='flex items-center text-sm'>
-                    <span className='truncate cursor-pointer'>-</span>
+                    <span className='truncate'>{config.conversations[0].direction}</span>
                   </div>
                 </dd>
               </div>
@@ -211,7 +254,7 @@ export const ShowOperatorDrawerContent = forwardRef<
                 <dt className='text-sm font-medium text-gray-500 dark:text-gray-400'>Duration</dt>
                 <dd className='mt-1 text-sm text-gray-900 dark:text-gray-100 sm:col-span-2 sm:mt-0'>
                   <div className='flex items-center text-sm'>
-                    <span className='truncate cursor-pointer'>-</span>
+                    <span className='truncate'>{config.conversations[0].duration}</span>
                   </div>
                 </dd>
               </div>

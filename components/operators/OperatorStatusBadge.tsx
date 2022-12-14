@@ -32,10 +32,10 @@ export const OperatorStatusBadge: FC<OperatorStatusBadgeProps> = ({
     setCallable(callable && callEnabled)
   }, [operator, currentUsername, callEnabled])
 
-  const badgeClicked = () => {
+  const badgeClicked = (ev: any) => {
     if (isCallable && onCall) {
       // notify parent component
-      onCall(operator)
+      onCall(operator, ev)
     }
   }
 
@@ -48,15 +48,13 @@ export const OperatorStatusBadge: FC<OperatorStatusBadgeProps> = ({
           size={size}
           onClick={badgeClicked}
           className={classNames(
-            isCallable
-              ? 'hover:bg-emerald-300 dark:hover:bg-emerald-900 cursor-pointer'
-              : 'cursor-not-allowed',
+            isCallable && 'hover:bg-emerald-300 dark:hover:bg-emerald-900 cursor-pointer',
           )}
         >
-          {operator.mainPresence === 'incoming' ? (
+          {['incoming', 'ringing'].includes(operator.mainPresence) ? (
             <div className='flex items-center'>
               {/* ringing icon */}
-              <span className='incoming-loader mr-2'></span>
+              <span className='ringing-animation mr-2'></span>
               <span>{capitalize(operator.mainPresence)}</span>
             </div>
           ) : isCallable ? (
@@ -64,13 +62,13 @@ export const OperatorStatusBadge: FC<OperatorStatusBadgeProps> = ({
               {/* phone icon */}
               <FontAwesomeIcon
                 icon={faPhone}
-                className='mr-2 h-4 w-4 flex-shrink-0'
+                className='mr-1.5 h-3 w-3 flex-shrink-0'
                 aria-hidden='true'
               />
               <span>{capitalize(operator.mainPresence)}</span>
             </div>
           ) : (
-            <span className='cursor-not-allowed'>{capitalize(operator.mainPresence)}</span>
+            <span>{capitalize(operator.mainPresence)}</span>
           )}
         </Badge>
       </div>

@@ -135,7 +135,7 @@ export const ShowContactDrawerContent = forwardRef<
                 divider={true}
                 className='mr-1 mt-1'
               >
-                <Button variant='white'>
+                <Button variant='ghost'>
                   <FontAwesomeIcon icon={faEllipsisVertical} className='h-4 w-4' />
                   <span className='sr-only'>Open contact menu</span>
                 </Button>

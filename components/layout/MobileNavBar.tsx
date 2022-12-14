@@ -83,7 +83,7 @@ export const MobileNavBar: FC<MobileNavBarProps> = ({ closeMobileMenu, show, ite
                   <Image
                     className='h-8 w-auto'
                     src='https://tailwindui.com/img/logos/mark.svg?color=white'
-                    alt='Your Company'
+                    alt='logo'
                     unoptimized={true}
                     width={37.6}
                     height={32}

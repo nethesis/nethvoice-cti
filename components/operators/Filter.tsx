@@ -1,13 +1,13 @@
 // Copyright (C) 2022 Nethesis S.r.l.
 // SPDX-License-Identifier: AGPL-3.0-or-later
 
-import { ComponentPropsWithRef, forwardRef } from 'react'
+import { ComponentPropsWithRef, forwardRef, useRef } from 'react'
 import classNames from 'classnames'
 import { TextInput } from '../common'
 import { Fragment, useState, useEffect } from 'react'
 import { Dialog, Disclosure, Popover, Transition } from '@headlessui/react'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
-import { faChevronDown, faXmark } from '@fortawesome/free-solid-svg-icons'
+import { faChevronDown, faCircleXmark, faXmark } from '@fortawesome/free-solid-svg-icons'
 import { RadioButtonType } from '../../services/types'
 import {
   DEFAULT_GROUP_FILTER,
@@ -37,7 +37,16 @@ const statusFilter = {
     { value: 'available', label: 'Available' },
     { value: 'unavailable', label: 'Unavailable' },
     { value: 'offline', label: 'Offline' },
-    { value: 'allButOffline', label: 'All but offline' },
+    { value: 'allExceptOffline', label: 'All except offline' },
+  ],
+}
+
+const layoutFilter = {
+  id: 'layout',
+  name: 'Layout',
+  options: [
+    { value: 'standard', label: 'Standard' },
+    { value: 'compact', label: 'Compact' },
   ],
 }
 
@@ -46,7 +55,8 @@ export interface FilterProps extends ComponentPropsWithRef<'div'> {
   updateTextFilter: Function
   updateGroupFilter: Function
   updateStatusFilter: Function
-  updateSortFilter: Function
+  updateSort: Function
+  updateLayout: Function
 }
 
 export const Filter = forwardRef<HTMLButtonElement, FilterProps>(
@@ -55,9 +65,10 @@ export const Filter = forwardRef<HTMLButtonElement, FilterProps>(
       groups,
       className,
       updateTextFilter,
-      updateSortFilter,
       updateGroupFilter,
       updateStatusFilter,
+      updateSort,
+      updateLayout,
       ...props
     },
     ref,
@@ -92,6 +103,7 @@ export const Filter = forwardRef<HTMLButtonElement, FilterProps>(
     const [open, setOpen] = useState(false)
 
     const [textFilter, setTextFilter] = useState('')
+    const textFilterRef = useRef() as React.MutableRefObject<HTMLInputElement>
     function changeTextFilter(event: any) {
       const newTextFilter = event.target.value
       setTextFilter(newTextFilter)
@@ -110,6 +122,28 @@ export const Filter = forwardRef<HTMLButtonElement, FilterProps>(
       updateGroupFilter(newGroup)
     }
 
+    // text filter for groups
+
+    const [groupTextFilter, setGroupTextFilter] = useState('')
+    const groupTextFilterRef = useRef() as React.MutableRefObject<HTMLInputElement>
+    function changeGroupTextFilter(event: any) {
+      const newGroupTextFilter = event.target.value
+      setGroupTextFilter(newGroupTextFilter)
+    }
+
+    const [filteredGroups, setFilteredGroups] = useState([] as RadioButtonType[])
+
+    useEffect(() => {
+      const regex = /[^a-zA-Z0-9]/g
+      const queryText = groupTextFilter.replace(regex, '')
+
+      // filter group filter options that match
+      const filtered = groupFilter.options.filter((g) =>
+        new RegExp(queryText, 'i').test(g.label.replace(regex, '')),
+      )
+      setFilteredGroups(filtered)
+    }, [groupTextFilter, groupFilter.options])
+
     const [status, setStatus] = useState('')
     function changeStatus(event: any) {
       const newStatus = event.target.id
@@ -127,7 +161,17 @@ export const Filter = forwardRef<HTMLButtonElement, FilterProps>(
       savePreference('operatorsSortBy', newSortBy, auth.username)
 
       // update operators (notify parent component)
-      updateSortFilter(newSortBy)
+      updateSort(newSortBy)
+    }
+
+    const [layout, setLayout]: any = useState('')
+    function changeLayout(event: any) {
+      const newLayout = event.target.id
+      setLayout(newLayout)
+      savePreference('operatorsLayout', newLayout, auth.username)
+
+      // update operators layout (notify parent component)
+      updateLayout(newLayout)
     }
 
     // retrieve filter values from local storage
@@ -137,10 +181,12 @@ export const Filter = forwardRef<HTMLButtonElement, FilterProps>(
       setGroup(filterValues.group)
       setStatus(filterValues.status)
       setSortBy(filterValues.sortBy)
+      setLayout(filterValues.layout)
 
       updateGroupFilter(filterValues.group)
       updateStatusFilter(filterValues.status)
-      updateSortFilter(filterValues.sortBy)
+      updateSort(filterValues.sortBy)
+      updateLayout(filterValues.layout)
     }, [])
 
     // group label
@@ -189,7 +235,18 @@ export const Filter = forwardRef<HTMLButtonElement, FilterProps>(
       updateTextFilter('')
       updateGroupFilter(DEFAULT_GROUP_FILTER)
       updateStatusFilter(DEFAULT_STATUS_FILTER)
-      updateSortFilter(DEFAULT_SORT_BY)
+      updateSort(DEFAULT_SORT_BY)
+    }
+
+    const clearTextFilter = () => {
+      setTextFilter('')
+      updateTextFilter('')
+      textFilterRef.current.focus()
+    }
+
+    const clearGroupTextFilter = () => {
+      setGroupTextFilter('')
+      groupTextFilterRef.current.focus()
     }
 
     return (
@@ -237,7 +294,7 @@ export const Filter = forwardRef<HTMLButtonElement, FilterProps>(
 
                     {/* Filters (mobile) */}
                     <form className='mt-4'>
-                      {/* groupFilter filter (mobile) */}
+                      {/* group filter (mobile) */}
                       <Disclosure
                         as='div'
                         key={groupFilter.name}
@@ -266,7 +323,23 @@ export const Filter = forwardRef<HTMLButtonElement, FilterProps>(
                               <fieldset>
                                 <legend className='sr-only'>{groupFilter.name}</legend>
                                 <div className='space-y-4'>
-                                  {groupFilter.options.map((option) => (
+                                  <TextInput
+                                    placeholder='Filter groups'
+                                    value={groupTextFilter}
+                                    onChange={changeGroupTextFilter}
+                                    autoFocus
+                                    ref={groupTextFilterRef}
+                                    icon={faCircleXmark}
+                                    onIconClick={() => clearGroupTextFilter()}
+                                    trailingIcon={true}
+                                    className='min-w-[8rem]'
+                                  />
+                                  {!filteredGroups.length && (
+                                    <div className='text-sm text-gray-500 dark:text-gray-400'>
+                                      <span>No group</span>
+                                    </div>
+                                  )}
+                                  {filteredGroups.map((option) => (
                                     <div key={option.value}>
                                       {option.value.startsWith('divider') ? (
                                         <div className='relative'>
@@ -410,6 +483,59 @@ export const Filter = forwardRef<HTMLButtonElement, FilterProps>(
                           </>
                         )}
                       </Disclosure>
+                      {/* layout (mobile) */}
+                      <Disclosure
+                        as='div'
+                        key={layoutFilter.name}
+                        className='border-t px-4 py-6 border-gray-200 dark:border-gray-700'
+                      >
+                        {({ open }) => (
+                          <>
+                            <h3 className='-mx-2 -my-3 flow-root'>
+                              <Disclosure.Button className='flex w-full items-center justify-between px-2 py-3 text-sm bg-white text-gray-400 dark:bg-gray-900 dark:text-gray-500'>
+                                <span className='font-medium text-gray-900 dark:text-gray-100'>
+                                  {layoutFilter.name}
+                                </span>
+                                <span className='ml-6 flex items-center'>
+                                  <FontAwesomeIcon
+                                    icon={faChevronDown}
+                                    className={classNames(
+                                      open ? '-rotate-180' : 'rotate-0',
+                                      'h-3 w-3 transform',
+                                    )}
+                                    aria-hidden='true'
+                                  />
+                                </span>
+                              </Disclosure.Button>
+                            </h3>
+                            <Disclosure.Panel className='pt-6'>
+                              <fieldset>
+                                <legend className='sr-only'>{layoutFilter.name}</legend>
+                                <div className='space-y-4'>
+                                  {layoutFilter.options.map((option) => (
+                                    <div key={option.value} className='flex items-center'>
+                                      <input
+                                        id={option.value}
+                                        name={`filter-${layoutFilter.id}`}
+                                        type='radio'
+                                        defaultChecked={option.value === layout}
+                                        onChange={changeLayout}
+                                        className='h-4 w-4 border-gray-300 text-primary focus:ring-primaryLight dark:border-gray-600 dark:text-primary dark:focus:ring-primaryDark'
+                                      />
+                                      <label
+                                        htmlFor={option.value}
+                                        className='ml-3 block text-sm font-medium text-gray-700 dark:text-gray-200'
+                                      >
+                                        {option.label}
+                                      </label>
+                                    </div>
+                                  ))}
+                                </div>
+                              </fieldset>
+                            </Disclosure.Panel>
+                          </>
+                        )}
+                      </Disclosure>
                     </form>
                   </Dialog.Panel>
                 </Transition.Child>
@@ -430,17 +556,21 @@ export const Filter = forwardRef<HTMLButtonElement, FilterProps>(
                     className='max-w-sm'
                     value={textFilter}
                     onChange={changeTextFilter}
+                    ref={textFilterRef}
+                    icon={faCircleXmark}
+                    onIconClick={() => clearTextFilter()}
+                    trailingIcon={true}
                   />
                 </div>
 
-                <div className='flex'>
+                <div className='flex ml-4'>
                   <Popover.Group className='hidden sm:flex sm:items-baseline sm:space-x-8'>
                     {/* group filter */}
                     <Popover
                       as='div'
                       key={groupFilter.name}
                       id={`desktop-menu-${groupFilter.id}`}
-                      className='relative inline-block text-left'
+                      className='relative inline-block text-left shrink-0'
                     >
                       <div>
                         <Popover.Button className='group inline-flex items-center justify-center text-sm font-medium text-gray-700 hover:text-gray-900 dark:text-gray-200 dark:hover:text-gray-100'>
@@ -464,7 +594,23 @@ export const Filter = forwardRef<HTMLButtonElement, FilterProps>(
                       >
                         <Popover.Panel className='absolute right-0 z-10 mt-2 origin-top-right rounded-md p-4 shadow-2xl ring-1 ring-opacity-5 focus:outline-none bg-white ring-black dark:bg-gray-900 dark:ring-gray-700'>
                           <form className='space-y-4'>
-                            {groupFilter.options.map((option) => (
+                            <TextInput
+                              placeholder='Filter groups'
+                              value={groupTextFilter}
+                              onChange={changeGroupTextFilter}
+                              autoFocus
+                              ref={groupTextFilterRef}
+                              icon={faCircleXmark}
+                              onIconClick={() => clearGroupTextFilter()}
+                              trailingIcon={true}
+                              className='min-w-[10rem]'
+                            />
+                            {!filteredGroups.length && (
+                              <div className='text-sm text-gray-500 dark:text-gray-400'>
+                                <span>No group</span>
+                              </div>
+                            )}
+                            {filteredGroups.map((option) => (
                               <div key={option.value}>
                                 {option.value.startsWith('divider') ? (
                                   <div className='relative'>
@@ -506,7 +652,7 @@ export const Filter = forwardRef<HTMLButtonElement, FilterProps>(
                       as='div'
                       key={statusFilter.name}
                       id={`desktop-menu-${statusFilter.id}`}
-                      className='relative inline-block text-left'
+                      className='relative inline-block text-left shrink-0'
                     >
                       <div>
                         <Popover.Button className='group inline-flex items-center justify-center text-sm font-medium text-gray-700 hover:text-gray-900 dark:text-gray-200 dark:hover:text-gray-100'>
@@ -558,7 +704,7 @@ export const Filter = forwardRef<HTMLButtonElement, FilterProps>(
                       as='div'
                       key={sortFilter.name}
                       id={`desktop-menu-${sortFilter.id}`}
-                      className='relative inline-block text-left'
+                      className='relative inline-block text-left shrink-0'
                     >
                       <div>
                         <Popover.Button className='group inline-flex items-center justify-center text-sm font-medium text-gray-700 hover:text-gray-900 dark:text-gray-200 dark:hover:text-gray-100'>
@@ -604,11 +750,63 @@ export const Filter = forwardRef<HTMLButtonElement, FilterProps>(
                         </Popover.Panel>
                       </Transition>
                     </Popover>
+
+                    {/* layout filter */}
+                    <Popover
+                      as='div'
+                      key={layoutFilter.name}
+                      id={`desktop-menu-${layoutFilter.id}`}
+                      className='relative inline-block text-left shrink-0'
+                    >
+                      <div>
+                        <Popover.Button className='group inline-flex items-center justify-center text-sm font-medium text-gray-700 hover:text-gray-900 dark:text-gray-200 dark:hover:text-gray-100'>
+                          <span>{layoutFilter.name}</span>
+                          <FontAwesomeIcon
+                            icon={faChevronDown}
+                            className='ml-2 h-3 w-3 flex-shrink-0 text-gray-400 group-hover:text-gray-500 dark:text-gray-500 dark:group-hover:text-gray-400'
+                            aria-hidden='true'
+                          />
+                        </Popover.Button>
+                      </div>
+
+                      <Transition
+                        as={Fragment}
+                        enter='transition ease-out duration-100'
+                        enterFrom='transform opacity-0 scale-95'
+                        enterTo='transform opacity-100 scale-100'
+                        leave='transition ease-in duration-75'
+                        leaveFrom='transform opacity-100 scale-100'
+                        leaveTo='transform opacity-0 scale-95'
+                      >
+                        <Popover.Panel className='absolute right-0 z-10 mt-2 origin-top-right rounded-md p-4 shadow-2xl ring-1 ring-opacity-5 focus:outline-none bg-white ring-black dark:bg-gray-900 dark:ring-gray-600'>
+                          <form className='space-y-4'>
+                            {layoutFilter.options.map((option) => (
+                              <div key={option.value} className='flex items-center'>
+                                <input
+                                  id={option.value}
+                                  name={`filter-${layoutFilter.id}`}
+                                  type='radio'
+                                  defaultChecked={option.value === layout}
+                                  onChange={changeLayout}
+                                  className='h-4 w-4 border-gray-300 text-primary focus:ring-primaryLight dark:border-gray-600 dark:text-primary dark:focus:ring-primaryDark'
+                                />
+                                <label
+                                  htmlFor={option.value}
+                                  className='ml-3 block text-sm font-medium text-gray-700 dark:text-gray-200'
+                                >
+                                  {option.label}
+                                </label>
+                              </div>
+                            ))}
+                          </form>
+                        </Popover.Panel>
+                      </Transition>
+                    </Popover>
                   </Popover.Group>
 
                   <button
                     type='button'
-                    className='inline-block text-sm font-medium sm:hidden ml-4 text-gray-700 hover:text-gray-900 dark:text-gray-200 dark:hover:text-gray-100'
+                    className='inline-block text-sm font-medium sm:hidden text-gray-700 hover:text-gray-900 dark:text-gray-200 dark:hover:text-gray-100'
                     onClick={() => setOpen(true)}
                   >
                     Filters
@@ -636,7 +834,6 @@ export const Filter = forwardRef<HTMLButtonElement, FilterProps>(
                           {groupLabel}
                         </span>
                       </span>
-                      {/* //// todo active filters */}
                     </div>
                   </div>
                   {/* status */}
@@ -649,7 +846,6 @@ export const Filter = forwardRef<HTMLButtonElement, FilterProps>(
                           {statusLabel}
                         </span>
                       </span>
-                      {/* //// todo active filters */}
                     </div>
                   </div>
                   {/* sort by */}
@@ -664,6 +860,7 @@ export const Filter = forwardRef<HTMLButtonElement, FilterProps>(
                       </span>
                     </div>
                   </div>
+                  {/* separator */}
                   <div
                     aria-hidden='true'
                     className='hidden h-5 w-px sm:ml-4 sm:block bg-gray-300 dark:bg-gray-600'

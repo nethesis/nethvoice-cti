@@ -16,7 +16,7 @@ export function Island() {
   useEffect(() => {
     // Create the configuration for the PhoneIsland
     if (!firstRender) {
-      const webRTCExtension = currentUser.endpoints.extension.find((el) => el.type === 'webrtc')
+      const webRTCExtension = currentUser.endpoints.extension.find((el: any) => el.type === 'webrtc')
       if (auth.token && currentUser.username && webRTCExtension) {
         setConfig(
           newIslandConfig({

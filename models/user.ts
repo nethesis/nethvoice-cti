@@ -19,6 +19,7 @@ interface DefaultState {
   mainextension: string
   mainPresence: StatusTypes
   endpoints: EndpointsTypes
+  avatar: string
 }
 
 const defaultState: DefaultState = {
@@ -34,6 +35,7 @@ const defaultState: DefaultState = {
     mainextension: [],
     voicemail: [],
   },
+  avatar: '',
 }
 
 export const user = createModel<RootModel>()({
@@ -45,6 +47,7 @@ export const user = createModel<RootModel>()({
       state.mainextension = payload.mainextension
       state.mainPresence = payload.mainPresence
       state.endpoints = payload.endpoints
+      state.avatar = payload.avatar
       return state
     },
     reset: () => {

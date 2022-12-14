@@ -1,13 +1,13 @@
 // Copyright (C) 2022 Nethesis S.r.l.
 // SPDX-License-Identifier: AGPL-3.0-or-later
 
-import { ComponentPropsWithRef, forwardRef } from 'react'
+import { ComponentPropsWithRef, forwardRef, useRef } from 'react'
 import classNames from 'classnames'
 import { TextInput } from '../common'
 import { Fragment, useState, useEffect } from 'react'
 import { Dialog, Disclosure, Popover, Transition } from '@headlessui/react'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
-import { faChevronDown, faXmark } from '@fortawesome/free-solid-svg-icons'
+import { faChevronDown, faCircleXmark, faXmark } from '@fortawesome/free-solid-svg-icons'
 import { DEFAULT_CONTACT_TYPE_FILTER, DEFAULT_SORT_BY, getFilterValues } from '../../lib/phonebook'
 import { useSelector } from 'react-redux'
 import { RootState } from '../../store'
@@ -35,21 +35,28 @@ const contactTypeFilter = {
 export interface FilterProps extends ComponentPropsWithRef<'div'> {
   updateTextFilter: Function
   updateContactTypeFilter: Function
-  updateSortFilter: Function
+  updateSort: Function
 }
 
 export const Filter = forwardRef<HTMLButtonElement, FilterProps>(
-  ({ updateTextFilter, updateContactTypeFilter, updateSortFilter, className, ...props }, ref) => {
+  ({ updateTextFilter, updateContactTypeFilter, updateSort, className, ...props }, ref) => {
     const auth = useSelector((state: RootState) => state.authentication)
     const [open, setOpen] = useState(false)
 
     const [textFilter, setTextFilter] = useState('')
+    const textFilterRef = useRef() as React.MutableRefObject<HTMLInputElement>
     function changeTextFilter(event: any) {
       const newTextFilter = event.target.value
       setTextFilter(newTextFilter)
 
       // update phonebook (notify parent component)
       updateTextFilter(newTextFilter)
+    }
+
+    const clearTextFilter = () => {
+      setTextFilter('')
+      updateTextFilter('')
+      textFilterRef.current.focus()
     }
 
     const [contactType, setContactType] = useState('all')
@@ -69,7 +76,7 @@ export const Filter = forwardRef<HTMLButtonElement, FilterProps>(
       savePreference('phonebookSortBy', newSortBy, auth.username)
 
       // update phonebook (notify parent component)
-      updateSortFilter(newSortBy)
+      updateSort(newSortBy)
     }
 
     // contact type label
@@ -102,7 +109,7 @@ export const Filter = forwardRef<HTMLButtonElement, FilterProps>(
       setSortBy(filterValues.sortBy)
 
       updateContactTypeFilter(filterValues.contactType)
-      updateSortFilter(filterValues.sortBy)
+      updateSort(filterValues.sortBy)
     }, [])
 
     const resetFilters = () => {
@@ -115,7 +122,7 @@ export const Filter = forwardRef<HTMLButtonElement, FilterProps>(
       // notify parent component
       updateTextFilter('')
       updateContactTypeFilter(DEFAULT_CONTACT_TYPE_FILTER)
-      updateSortFilter(DEFAULT_SORT_BY)
+      updateSort(DEFAULT_SORT_BY)
     }
 
     return (
@@ -289,17 +296,21 @@ export const Filter = forwardRef<HTMLButtonElement, FilterProps>(
                     className='max-w-sm'
                     value={textFilter}
                     onChange={changeTextFilter}
+                    ref={textFilterRef}
+                    icon={faCircleXmark}
+                    onIconClick={() => clearTextFilter()}
+                    trailingIcon={true}
                   />
                 </div>
 
-                <div className='flex'>
+                <div className='flex ml-4'>
                   <Popover.Group className='hidden sm:flex sm:items-baseline sm:space-x-8'>
                     {/* contact type filter */}
                     <Popover
                       as='div'
                       key={contactTypeFilter.name}
                       id={`desktop-menu-${contactTypeFilter.id}`}
-                      className='relative inline-block text-left'
+                      className='relative inline-block text-left shrink-0'
                     >
                       <div>
                         <Popover.Button className='group inline-flex items-center justify-center text-sm font-medium text-gray-700 hover:text-gray-900 dark:text-gray-200 dark:hover:text-gray-100'>
@@ -351,7 +362,7 @@ export const Filter = forwardRef<HTMLButtonElement, FilterProps>(
                       as='div'
                       key={sortFilter.name}
                       id={`desktop-menu-${sortFilter.id}`}
-                      className='relative inline-block text-left'
+                      className='relative inline-block text-left shrink-0'
                     >
                       <div>
                         <Popover.Button className='group inline-flex items-center justify-center text-sm font-medium text-gray-700 hover:text-gray-900 dark:text-gray-200 dark:hover:text-gray-100'>
@@ -401,7 +412,7 @@ export const Filter = forwardRef<HTMLButtonElement, FilterProps>(
 
                   <button
                     type='button'
-                    className='inline-block text-sm font-medium sm:hidden ml-4 text-gray-700 hover:text-gray-900 dark:text-gray-200 dark:hover:text-gray-100'
+                    className='inline-block text-sm font-medium sm:hidden text-gray-700 hover:text-gray-900 dark:text-gray-200 dark:hover:text-gray-100'
                     onClick={() => setOpen(true)}
                   >
                     Filters

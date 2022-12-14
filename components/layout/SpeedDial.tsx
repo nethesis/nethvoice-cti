@@ -2,14 +2,14 @@
 // SPDX-License-Identifier: AGPL-3.0-or-later
 
 /**
- * The SideBar component
+ * The SpeedDial component
  *
  * @return The fixed right bar with speed dials as the default
  */
 
 import type { SpeedDialType } from '../../services/types'
 import { useState, useEffect, useRef, MutableRefObject } from 'react'
-import { Button, Avatar, Modal, Dropdown, InlineNotification, EmptyState } from '../common/'
+import { Button, Avatar, Modal, Dropdown, InlineNotification, EmptyState } from '../common'
 import { deleteSpeedDial, getSpeedDials } from '../../services/phonebook'
 import {
   sortSpeedDials,
@@ -29,7 +29,7 @@ import {
   faBolt,
 } from '@fortawesome/free-solid-svg-icons'
 
-export const SideBar = () => {
+export const SpeedDial = () => {
   // The state for the delete modal
   const [showDeleteModal, setShowDeleteModal] = useState<boolean>(false)
   // The state for the speed dials list
@@ -95,6 +95,10 @@ export const SideBar = () => {
       setShowDeleteModal(false)
       setCurrentItem(null)
     }
+  }
+
+  const callSpeedDial = (speedDial: any) => {
+    console.log('call speed dial', speedDial.speeddial_num) ////
   }
 
   // The dropdown items for every speed dial element
@@ -186,14 +190,19 @@ export const SideBar = () => {
                           <p className='truncate text-sm font-medium text-gray-900 dark:text-gray-100'>
                             {speedDial.name}
                           </p>
-                          <div className='truncate text-sm cursor-pointer mt-1 text-primary dark:text-primary'>
+                          <div className='truncate text-sm mt-1 text-primary dark:text-primary'>
                             <div className='flex items-center'>
                               <FontAwesomeIcon
                                 icon={faPhone}
                                 className='mr-1.5 h-4 w-4 flex-shrink-0 text-gray-400 dark:text-gray-500'
                                 aria-hidden='true'
                               />
-                              <span className='hover:underline'>{speedDial.speeddial_num}</span>
+                              <span
+                                className='cursor-pointer hover:underline'
+                                onClick={() => callSpeedDial(speedDial)}
+                              >
+                                {speedDial.speeddial_num}
+                              </span>
                             </div>
                           </div>
                         </div>
@@ -201,7 +210,7 @@ export const SideBar = () => {
                       <div className='flex gap-2'>
                         {/* Actions */}
                         <Dropdown items={getItemsMenu(speedDial)} position='left'>
-                          <Button variant='white'>
+                          <Button variant='ghost'>
                             <FontAwesomeIcon icon={faEllipsisVertical} className='h-4 w-4' />
                             <span className='sr-only'>Open speed dial menu</span>
                           </Button>

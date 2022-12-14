@@ -7,10 +7,11 @@ import { store } from '../store'
 import { loadPreference, savePreference } from './storage'
 
 export const AVAILABLE_STATUSES = ['online', 'cellphone', 'callforward', 'voicemail']
-export const UNAVAILABLE_STATUSES = ['dnd', 'busy', 'incoming', 'offline']
+export const UNAVAILABLE_STATUSES = ['dnd', 'busy', 'incoming', 'ringing']
 export const DEFAULT_GROUP_FILTER = 'all'
 export const DEFAULT_STATUS_FILTER = 'all'
 export const DEFAULT_SORT_BY = 'favorites'
+export const DEFAULT_LAYOUT = 'standard'
 
 export async function getUserEndpointsAll() {
   try {
@@ -35,6 +36,16 @@ export async function getAllAvatars() {
 export async function getGroups() {
   try {
     const { data } = await axios.get('/astproxy/opgroups')
+    return data
+  } catch (error) {
+    handleNetworkError(error)
+    throw error
+  }
+}
+
+export async function getExtensions() {
+  try {
+    const { data } = await axios.get('/astproxy/extensions')
     return data
   } catch (error) {
     handleNetworkError(error)
@@ -88,6 +99,7 @@ export const sortByOperatorStatus = (operator1: any, operator2: any) => {
     'callforward',
     'voicemail',
     'incoming',
+    'ringing',
     'busy',
     'dnd',
     'offline',
@@ -114,8 +126,13 @@ export const sortByFavorite = (operator1: any, operator2: any) => {
   return 0
 }
 
-export const callOperator = (operator: any) => {
+export const callOperator = (operator: any, event: any = undefined) => {
   console.log('call operator', operator) ////
+
+  // stop propagation of click event
+  if (event) {
+    event.stopPropagation()
+  }
 }
 
 export const isOperatorCallable = (operator: any, currentUsername: string) => {
@@ -154,5 +171,7 @@ export const getFilterValues = (currentUsername: string) => {
 
   const sortBy = loadPreference('operatorsSortBy', currentUsername) || DEFAULT_SORT_BY
 
-  return { group, status, sortBy }
+  const layout = loadPreference('operatorsLayout', currentUsername) || DEFAULT_LAYOUT
+
+  return { group, status, sortBy, layout }
 }
