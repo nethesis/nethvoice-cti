@@ -35,6 +35,7 @@ const Operators: NextPage = () => {
   const [operatorsError, setOperatorsError] = useState('')
   const [groups, setGroups]: any = useState({})
   const auth = useSelector((state: RootState) => state.authentication)
+  const [firstRender, setFirstRender] = useState(true)
 
   const [textFilter, setTextFilter]: any = useState('')
   const updateTextFilter = (newTextFilter: string) => {
@@ -161,66 +162,68 @@ const Operators: NextPage = () => {
           // })
 
           try {
-            // get avatars
-            const avatars = await getAllAvatars()
+            // get groups
+            const groups = await getGroups()
+            setGroups(Object.keys(groups))
 
-            for (const [username, avatarBase64] of Object.entries(avatars)) {
-              if (operators[username]) {
-                operators[username].avatarBase64 = avatarBase64
+            for (let [group, users] of Object.entries(groups)) {
+              // @ts-ignore
+              for (const username of users.users) {
+                if (operators[username]) {
+                  operators[username].group = group
+                }
               }
             }
 
             try {
-              // get groups
-              const groups = await getGroups()
-              setGroups(Object.keys(groups))
+              // get conversations
+              const extensions = await getExtensions()
 
-              for (let [group, users] of Object.entries(groups)) {
+              for (const [extNum, extData] of Object.entries(extensions)) {
                 // @ts-ignore
-                for (const username of users.users) {
-                  if (operators[username]) {
-                    operators[username].group = group
+                if (!isEmpty(extData.conversations)) {
+                  const opFound: any = Object.values(operators).find((op: any) => {
+                    return op.endpoints.extension.some((ext: any) => ext.id === extNum)
+                  })
+
+                  if (opFound) {
+                    // @ts-ignore
+                    Object.values(extData.conversations).forEach((conv) => {
+                      let conversations = opFound.conversations || []
+                      conversations.push(conv)
+                      opFound.conversations = conversations
+                    })
                   }
                 }
               }
+              setOperators(operators)
+              applyFilters(operators)
+              setOperatorsLoaded(true)
 
               try {
-                // get conversations
-                const extensions = await getExtensions()
+                // get avatars
+                const avatars = await getAllAvatars()
 
-                for (const [extNum, extData] of Object.entries(extensions)) {
-                  // @ts-ignore
-                  if (!isEmpty(extData.conversations)) {
-                    const opFound: any = Object.values(operators).find((op: any) => {
-                      return op.endpoints.extension.some((ext: any) => ext.id === extNum)
-                    })
-
-                    if (opFound) {
-                      // @ts-ignore
-                      Object.values(extData.conversations).forEach((conv) => {
-                        let conversations = opFound.conversations || []
-                        conversations.push(conv)
-                        opFound.conversations = conversations
-                      })
-                    }
+                for (const [username, avatarBase64] of Object.entries(avatars)) {
+                  if (operators[username]) {
+                    operators[username].avatarBase64 = avatarBase64
                   }
                 }
                 setOperators(operators)
                 applyFilters(operators)
-                setOperatorsLoaded(true)
               } catch (e) {
                 console.error(e)
-                setOperatorsError('Cannot retrieve conversations')
+                setOperatorsError('Cannot retrieve avatars')
                 setOperatorsLoaded(true)
               }
             } catch (e) {
               console.error(e)
-              setOperatorsError('Cannot retrieve groups')
+              setOperatorsError('Cannot retrieve conversations')
               setOperatorsLoaded(true)
             }
           } catch (e) {
             console.error(e)
-            setOperatorsError('Cannot retrieve avatars')
+            setOperatorsError('Cannot retrieve groups')
             setOperatorsLoaded(true)
           }
         } catch (e) {
@@ -230,8 +233,13 @@ const Operators: NextPage = () => {
         }
       }
     }
-    fetchOperators()
-  }, [isOperatorsLoaded, operators])
+
+    if (firstRender) {
+      setFirstRender(false)
+    } else {
+      fetchOperators()
+    }
+  }, [isOperatorsLoaded, operators, firstRender])
 
   // filtered operators
   useEffect(() => {
