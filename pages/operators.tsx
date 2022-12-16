@@ -36,6 +36,10 @@ const Operators: NextPage = () => {
   const [groups, setGroups]: any = useState({})
   const auth = useSelector((state: RootState) => state.authentication)
   const [firstRender, setFirstRender] = useState(true)
+  const [isLoading, setLoading] = useState(false)
+  const [isEndpointsLoaded, setEndpointsLoaded] = useState(false)
+  const [isGroupsLoaded, setGroupsLoaded] = useState(false)
+  const [isConversationsLoaded, setConversationsLoaded] = useState(false)
 
   const [textFilter, setTextFilter]: any = useState('')
   const updateTextFilter = (newTextFilter: string) => {
@@ -122,13 +126,92 @@ const Operators: NextPage = () => {
     setFilteredOperators(filteredOperators)
   }
 
+  const retrieveGroups = async (operators: any) => {
+    try {
+      const groups = await getGroups()
+      setGroups(Object.keys(groups))
+
+      for (let [group, users] of Object.entries(groups)) {
+        // @ts-ignore
+        for (const username of users.users) {
+          if (operators[username]) {
+            operators[username].group = group
+          }
+        }
+      }
+      setGroupsLoaded(true)
+    } catch (e) {
+      console.error(e)
+      setOperatorsError('Cannot retrieve groups')
+      setOperatorsLoaded(true)
+      setLoading(false)
+    }
+  }
+
+  const retrieveConversations = async (operators: any) => {
+    try {
+      const extensions = await getExtensions()
+
+      for (const [extNum, extData] of Object.entries(extensions)) {
+        // @ts-ignore
+        if (!isEmpty(extData.conversations)) {
+          const opFound: any = Object.values(operators).find((op: any) => {
+            return op.endpoints.extension.some((ext: any) => ext.id === extNum)
+          })
+
+          if (opFound) {
+            // @ts-ignore
+            Object.values(extData.conversations).forEach((conv) => {
+              let conversations = opFound.conversations || []
+              conversations.push(conv)
+              opFound.conversations = conversations
+            })
+          }
+        }
+      }
+      setConversationsLoaded(true)
+    } catch (e) {
+      console.error(e)
+      setOperatorsError('Cannot retrieve conversations')
+      setOperatorsLoaded(true)
+      setLoading(false)
+    }
+  }
+
+  const retrieveAvatars = async (operators: any) => {
+    try {
+      const avatars = await getAllAvatars()
+
+      for (const [username, avatarBase64] of Object.entries(avatars)) {
+        if (operators[username]) {
+          operators[username].avatarBase64 = avatarBase64
+        }
+      }
+
+      // needed to render avatar images
+      setOperators(operators)
+      applyFilters(operators)
+    } catch (e) {
+      console.error(e)
+      setOperatorsError('Cannot retrieve avatars')
+      setOperatorsLoaded(true)
+      setLoading(false)
+    }
+  }
+
   // retrieve operators
   useEffect(() => {
     async function fetchOperators() {
-      if (!isOperatorsLoaded) {
+      if (!isOperatorsLoaded && !isLoading) {
+        setLoading(true)
+
         try {
           // get operators
           let operators = await getUserEndpointsAll()
+          setEndpointsLoaded(true)
+          retrieveGroups(operators)
+          retrieveConversations(operators)
+          retrieveAvatars(operators)
 
           // get favorites
           const favoriteOperators = loadPreference('favoriteOperators', auth.username) || []
@@ -161,75 +244,12 @@ const Operators: NextPage = () => {
           //   })
           // })
 
-          try {
-            // get groups
-            const groups = await getGroups()
-            setGroups(Object.keys(groups))
-
-            for (let [group, users] of Object.entries(groups)) {
-              // @ts-ignore
-              for (const username of users.users) {
-                if (operators[username]) {
-                  operators[username].group = group
-                }
-              }
-            }
-
-            try {
-              // get conversations
-              const extensions = await getExtensions()
-
-              for (const [extNum, extData] of Object.entries(extensions)) {
-                // @ts-ignore
-                if (!isEmpty(extData.conversations)) {
-                  const opFound: any = Object.values(operators).find((op: any) => {
-                    return op.endpoints.extension.some((ext: any) => ext.id === extNum)
-                  })
-
-                  if (opFound) {
-                    // @ts-ignore
-                    Object.values(extData.conversations).forEach((conv) => {
-                      let conversations = opFound.conversations || []
-                      conversations.push(conv)
-                      opFound.conversations = conversations
-                    })
-                  }
-                }
-              }
-              setOperators(operators)
-              applyFilters(operators)
-              setOperatorsLoaded(true)
-
-              try {
-                // get avatars
-                const avatars = await getAllAvatars()
-
-                for (const [username, avatarBase64] of Object.entries(avatars)) {
-                  if (operators[username]) {
-                    operators[username].avatarBase64 = avatarBase64
-                  }
-                }
-                setOperators(operators)
-                applyFilters(operators)
-              } catch (e) {
-                console.error(e)
-                setOperatorsError('Cannot retrieve avatars')
-                setOperatorsLoaded(true)
-              }
-            } catch (e) {
-              console.error(e)
-              setOperatorsError('Cannot retrieve conversations')
-              setOperatorsLoaded(true)
-            }
-          } catch (e) {
-            console.error(e)
-            setOperatorsError('Cannot retrieve groups')
-            setOperatorsLoaded(true)
-          }
+          setOperators(operators)
         } catch (e) {
           console.error(e)
           setOperatorsError('Cannot retrieve user endpoints')
           setOperatorsLoaded(true)
+          setLoading(false)
         }
       }
     }
@@ -241,6 +261,15 @@ const Operators: NextPage = () => {
     }
   }, [isOperatorsLoaded, operators, firstRender])
 
+  // detect when operators data has been loaded
+  useEffect(() => {
+    if (isEndpointsLoaded && isGroupsLoaded && isConversationsLoaded) {
+      applyFilters(operators)
+      setOperatorsLoaded(true)
+      setLoading(false)
+    }
+  }, [isEndpointsLoaded, isGroupsLoaded, isConversationsLoaded])
+
   // filtered operators
   useEffect(() => {
     applyFilters(operators)
@@ -248,7 +277,7 @@ const Operators: NextPage = () => {
 
   const operatorsStore = useSelector((state: RootState) => state.operators)
 
-  // reload operators
+  // reload operators command
   useEffect(() => {
     setOperatorsLoaded(false)
   }, [operatorsStore])
