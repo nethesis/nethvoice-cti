@@ -51,7 +51,7 @@ const layoutFilter = {
 }
 
 export interface FilterProps extends ComponentPropsWithRef<'div'> {
-  groups: Array<string>
+  groups: Object
   updateTextFilter: Function
   updateGroupFilter: Function
   updateStatusFilter: Function
@@ -90,7 +90,7 @@ export const Filter = forwardRef<HTMLButtonElement, FilterProps>(
         { value: 'divider1', label: '-' },
       ]
 
-      Array.from(groups).forEach((group) => {
+      Object.keys(groups).forEach((group) => {
         groupFilter.options.push({
           value: group,
           label: group,
