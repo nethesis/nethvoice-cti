@@ -6,6 +6,9 @@ import axios from 'axios'
 import { store } from '../store'
 import { getJSONItem, setJSONItem } from './storage'
 
+import { format, utcToZonedTime } from 'date-fns-tz'
+import { enGB, it } from 'date-fns/locale'
+
 export interface ClearProps {
   key: string
   source: Record<string, unknown>
@@ -65,4 +68,22 @@ export const sortByProperty = (property: string | number) => {
     }
     return 0
   }
+}
+
+export function formatDate(date: any, fmt: string) {
+  let loc = enGB
+  if (navigator) {
+    const lang = navigator.language.substring(0, 2)
+    switch (lang) {
+      case 'it':
+        loc = it
+        break
+      //TO DO add other languages
+    }
+    return format(date, fmt, { locale: loc })
+  }
+}
+
+export const formatInTimeZone = (date: any, fmt: string, tz: any) => {
+  return format(utcToZonedTime(date, tz), fmt, { timeZone: tz })
 }
