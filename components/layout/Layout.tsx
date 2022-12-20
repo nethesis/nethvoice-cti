@@ -81,7 +81,7 @@ export const Layout: FC<LayoutProps> = ({ children }) => {
           retrieveUserEndpoints()
           retrieveGroups()
           retrieveExtensions()
-          retrieveAvatars()
+          retrieveAvatars(authStore)
           retrieveFavorites(authStore)
         } catch (e) {
           store.dispatch.operators.setErrorMessage('Cannot retrieve user endpoints')

@@ -129,11 +129,6 @@ const Operators: NextPage = () => {
     }
   }, [operatorsStore.isOperatorsLoaded])
 
-  // render operator avatars
-  // useEffect(() => { ////
-  //   applyFilters(operatorsStore.operators)
-  // }, [operatorsStore.isAvatarsLoaded])
-
   // filtered operators
   useEffect(() => {
     applyFilters(operatorsStore.operators)

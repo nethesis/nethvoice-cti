@@ -5,6 +5,8 @@
  * Contains the methods to manage browser's storage
  */
 
+import { cloneDeep } from 'lodash'
+
 /**
  * Saves an Item to localstorage
  *
@@ -78,4 +80,43 @@ export const savePreference = (
 export const loadPreference = (preferenceName: string, currentUsername: string) => {
   const preferences = getJSONItem(`preferences-${currentUsername}`) || {}
   return preferences[preferenceName]
+}
+
+/**
+ * Used to save data to cache inside a local storage entry "caches-username"
+ *
+ * @param cacheName name of the cache
+ * @param cacheValue a JSON object
+ * @param currentUsername username currently logged in
+ * @param expiration timestamp of expiration of the cache
+ */
+export const saveCache = (
+  cacheName: string,
+  cacheData: any,
+  currentUsername: string,
+  expiration: number,
+) => {
+  const caches = getJSONItem(`caches-${currentUsername}`) || {}
+  let data = cloneDeep(cacheData)
+  data['_expiration'] = expiration
+  caches[cacheName] = data
+  setJSONItem(`caches-${currentUsername}`, caches)
+}
+
+/**
+ * Used to load user caches from the local storage entry "caches-username"
+ *
+ * @param cacheName name of the cache
+ * @param currentUsername username currently logged in
+ * @returns
+ */
+export const loadCache = (cacheName: string, currentUsername: string) => {
+  const caches = getJSONItem(`caches-${currentUsername}`) || {}
+  const cache = caches[cacheName]
+
+  if (cache && cache['_expiration'] && new Date().getTime() > cache['_expiration']) {
+    // cache has expired
+    return undefined
+  }
+  return cache
 }

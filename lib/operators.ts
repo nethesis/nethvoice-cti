@@ -4,7 +4,7 @@
 import axios from 'axios'
 import { handleNetworkError } from '../lib/utils'
 import { store } from '../store'
-import { loadPreference, savePreference } from './storage'
+import { loadCache, loadPreference, saveCache, savePreference } from './storage'
 import { isEmpty, cloneDeep } from 'lodash'
 
 export const AVAILABLE_STATUSES = ['online', 'cellphone', 'callforward', 'voicemail']
@@ -13,6 +13,7 @@ export const DEFAULT_GROUP_FILTER = 'all'
 export const DEFAULT_STATUS_FILTER = 'all'
 export const DEFAULT_SORT_BY = 'favorites'
 export const DEFAULT_LAYOUT = 'standard'
+export const AVATARS_EXPIRATION_MILLIS = 24 * 60 * 60 * 1000 // 24 hours
 
 export async function getUserEndpointsAll() {
   try {
@@ -222,11 +223,18 @@ export const retrieveExtensions = async () => {
   }
 }
 
-export const retrieveAvatars = async () => {
+export const retrieveAvatars = async (authStore: any) => {
   store.dispatch.operators.setAvatarsLoaded(false)
 
   try {
-    const avatars = await getAllAvatars()
+    let avatars = loadCache('operatorsAvatars', authStore.username)
+
+    if (!avatars) {
+      // avatars not cached or cache has expired
+      avatars = await getAllAvatars()
+      const expiration = new Date().getTime() + AVATARS_EXPIRATION_MILLIS
+      saveCache('operatorsAvatars', avatars, authStore.username, expiration)
+    }
     store.dispatch.operators.setAvatars(avatars)
     store.dispatch.operators.setAvatarsLoaded(true)
   } catch (e) {
@@ -293,10 +301,6 @@ export const buildOperators = (operatorsStore: any) => {
       operators[username].avatarBase64 = avatarBase64
     }
   }
-
-  // needed to render avatar images
-  // store.dispatch.operators.setOperators(operators) ////
-  // store.dispatch.operators.setAvatarsLoaded(true)
 
   store.dispatch.operators.setOperators(operators)
   store.dispatch.operators.setOperatorsLoaded(true)
