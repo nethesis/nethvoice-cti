@@ -4,7 +4,6 @@
 import type { PropsWithChildren } from 'react'
 import axios from 'axios'
 import { store } from '../store'
-import { getJSONItem, setJSONItem } from './storage'
 
 import { format, utcToZonedTime } from 'date-fns-tz'
 import { enGB, it } from 'date-fns/locale'

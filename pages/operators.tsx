@@ -21,6 +21,7 @@ import { sortByProperty } from '../lib/utils'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { faChevronRight, faFilter, faHeadset } from '@fortawesome/free-solid-svg-icons'
 import { store } from '../store'
+import { formatDuration } from '../lib/dateTime'
 
 //// use i18n where there is operator.mainPresence
 
@@ -248,8 +249,9 @@ const Operators: NextPage = () => {
                                     {operator.conversations?.length ? (
                                       <Badge rounded='full' variant='busy'>
                                         <span className='mr-1.5'>{operator.mainPresence}</span>
-                                        {/* //// TODO format duration */}
-                                        <span>{operator.conversations[0].duration}</span>
+                                        <span>
+                                          {formatDuration(operator.conversations[0].duration)}
+                                        </span>
                                       </Badge>
                                     ) : (
                                       <OperatorStatusBadge
@@ -337,8 +339,7 @@ const Operators: NextPage = () => {
                               {operator.conversations?.length ? (
                                 <Badge rounded='full' variant='busy' size='small'>
                                   <span className='mr-1.5'>{operator.mainPresence}</span>
-                                  {/* //// TODO format duration */}
-                                  <span>{operator.conversations[0].duration}</span>
+                                  <span>{formatDuration(operator.conversations[0].duration)}</span>
                                 </Badge>
                               ) : (
                                 <OperatorStatusBadge

@@ -30,6 +30,7 @@ import {
 } from '../../lib/operators'
 import { useSelector } from 'react-redux'
 import { RootState } from '../../store'
+import { formatDuration } from '../../lib/dateTime'
 
 export interface ShowOperatorDrawerContentProps extends ComponentPropsWithRef<'div'> {
   config: any
@@ -254,7 +255,9 @@ export const ShowOperatorDrawerContent = forwardRef<
                 <dt className='text-sm font-medium text-gray-500 dark:text-gray-400'>Duration</dt>
                 <dd className='mt-1 text-sm text-gray-900 dark:text-gray-100 sm:col-span-2 sm:mt-0'>
                   <div className='flex items-center text-sm'>
-                    <span className='truncate'>{config.conversations[0].duration}</span>
+                    <span className='truncate'>
+                      {formatDuration(config.conversations[0].duration)}
+                    </span>
                   </div>
                 </dd>
               </div>
