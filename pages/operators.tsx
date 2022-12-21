@@ -283,7 +283,7 @@ const Operators: NextPage = () => {
                 <li key={index}>
                   <button
                     type='button'
-                    className='group flex w-full items-center justify-between space-x-3 rounded-lg border p-2 text-left shadow-sm focus:outline-none focus:ring-2 focus:ring-offset-2 bg-white dark:bg-gray-900 border-gray-300 dark:border-gray-700 focus:ring-primary dark:focus:ring-primary cursor-default'
+                    className='group flex w-full items-center justify-between space-x-3 rounded-lg p-2 text-left focus:outline-none focus:ring-2 focus:ring-offset-2 bg-white dark:bg-gray-900 cursor-default'
                   >
                     <div className='flex min-w-0 flex-1 items-center space-x-3'>
                       <div className='block flex-shrink-0'>
@@ -321,7 +321,7 @@ const Operators: NextPage = () => {
                       <button
                         type='button'
                         onClick={() => openShowOperatorDrawer(operator)}
-                        className='group flex w-full items-center justify-between space-x-3 rounded-lg border p-2 text-left shadow-sm focus:outline-none focus:ring-2 focus:ring-offset-2 bg-white dark:bg-gray-900 border-gray-300 dark:border-gray-700 hover:bg-gray-100 dark:hover:bg-gray-800 focus:ring-primary dark:focus:ring-primary'
+                        className='group flex w-full items-center justify-between space-x-3 rounded-lg p-2 text-left focus:outline-none focus:ring-2 focus:ring-offset-2 bg-white dark:bg-gray-900 hover:bg-gray-200 dark:hover:bg-gray-700 focus:ring-primary dark:focus:ring-primary'
                       >
                         <span className='flex min-w-0 flex-1 items-center space-x-3'>
                           <span className='block flex-shrink-0'>
