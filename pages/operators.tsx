@@ -22,6 +22,7 @@ import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { faChevronRight, faFilter, faHeadset } from '@fortawesome/free-solid-svg-icons'
 import { store } from '../store'
 import { formatDuration } from '../lib/dateTime'
+import { CallDuration } from '../components/operators/CallDuration'
 
 //// use i18n where there is operator.mainPresence
 
@@ -246,12 +247,15 @@ const Operators: NextPage = () => {
                                 </h3>
                                 <div className='mt-3'>
                                   <span className='block truncate mt-1 text-sm font-medium text-gray-500 dark:text-gray-500'>
-                                    {operator.conversations?.length ? (
+                                    {operator.conversations?.length &&
+                                    (operator.conversations[0].connected ||
+                                      operator.conversations[0].inConference ||
+                                      operator.conversations[0].chDest.inConference == true) ? (
                                       <Badge rounded='full' variant='busy'>
                                         <span className='mr-1.5'>{operator.mainPresence}</span>
-                                        <span>
-                                          {formatDuration(operator.conversations[0].duration)}
-                                        </span>
+                                        <CallDuration
+                                          startTime={operator.conversations[0].startTime}
+                                        />
                                       </Badge>
                                     ) : (
                                       <OperatorStatusBadge
@@ -336,10 +340,13 @@ const Operators: NextPage = () => {
                               {operator.name}
                             </span>
                             <span className='block truncate mt-1 text-sm font-medium text-gray-500 dark:text-gray-500'>
-                              {operator.conversations?.length ? (
+                              {operator.conversations?.length &&
+                              (operator.conversations[0].connected ||
+                                operator.conversations[0].inConference ||
+                                operator.conversations[0].chDest.inConference == true) ? (
                                 <Badge rounded='full' variant='busy' size='small'>
                                   <span className='mr-1.5'>{operator.mainPresence}</span>
-                                  <span>{formatDuration(operator.conversations[0].duration)}</span>
+                                  <CallDuration startTime={operator.conversations[0].startTime} />
                                 </Badge>
                               ) : (
                                 <OperatorStatusBadge
