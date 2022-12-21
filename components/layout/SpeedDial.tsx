@@ -116,7 +116,7 @@ export const SpeedDial = () => {
   return (
     <>
       {/* Secondary column (hidden on smaller screens) */}
-      <aside className='hidden w-96 border-l lg:block h-full border-gray-200 bg-white dark:border-gray-700 dark:bg-gray-900'>
+      <aside className='hidden lg:w-72 xl:w-80 2xl:w-96 border-l lg:block h-full border-gray-200 bg-white dark:border-gray-700 dark:bg-gray-900'>
         <div className='flex h-full flex-col bg-white dark:bg-gray-900'>
           <div className='py-6 px-5'>
             <div className='flex items-start justify-between'>
@@ -124,8 +124,8 @@ export const SpeedDial = () => {
               <div className='ml-3 flex h-7 items-center gap-2'>
                 {isSpeedDialLoaded && !!speedDials.length && (
                   <Button variant='primary' onClick={() => openCreateSpeedDialDrawer()}>
-                    <FontAwesomeIcon icon={faPlus} className='mr-2 h-4 w-4' />
-                    Create
+                    <FontAwesomeIcon icon={faPlus} className='xl:mr-2 h-4 w-4' />
+                    <span className='hidden xl:inline-block'>Create</span>
                     <span className='sr-only'>Create speed dial</span>
                   </Button>
                 )}
