@@ -1,9 +1,8 @@
 // Copyright (C) 2022 Nethesis S.r.l.
 // SPDX-License-Identifier: AGPL-3.0-or-later
 
-import { setStringItem, getStringItem, removeItem, getJSONItem, setJSONItem } from './storage'
+import { getJSONItem, setJSONItem } from './storage'
 import { store } from '../store'
-import { user } from '../models/user'
 
 const addDarkClassToDocument = () => {
   document.documentElement.classList.add('dark')
