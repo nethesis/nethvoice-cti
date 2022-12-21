@@ -79,7 +79,7 @@ const theme = {
         'border-red-500 focus:border-red-500 focus:ring-red-500 dark:border-red-400 dark:focus:border-red-400 dark:focus:ring-red-400',
     },
     icon: {
-      base: 'absolute flex items-center z-20',
+      base: 'absolute flex items-center z-10',
       gray: 'text-gray-400 dark:text-gray-500',
       red: 'text-red-500 dark:text-red-400',
       left: 'inset-y-0 left-0 pl-3',
