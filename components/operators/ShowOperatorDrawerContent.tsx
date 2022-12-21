@@ -32,6 +32,7 @@ import { useSelector } from 'react-redux'
 import { RootState } from '../../store'
 import { formatDuration } from '../../lib/dateTime'
 import { CallDuration } from './CallDuration'
+import { HiArrowDownLeft, HiArrowUpRight } from 'react-icons/hi2'
 
 export interface ShowOperatorDrawerContentProps extends ComponentPropsWithRef<'div'> {
   config: any
@@ -249,9 +250,24 @@ export const ShowOperatorDrawerContent = forwardRef<
                     Direction
                   </dt>
                   <dd className='mt-1 text-sm text-gray-900 dark:text-gray-100 sm:col-span-2 sm:mt-0'>
-                    <div className='flex items-center text-sm'>
-                      <span className='truncate'>{config.conversations[0].direction}</span>
-                    </div>
+                    {config.conversations[0].direction == 'out' && (
+                      <div className='flex items-center text-sm'>
+                        <HiArrowUpRight
+                          className='mr-2 h-5 w-5 text-green-400'
+                          aria-hidden='true'
+                        />
+                        <span className='truncate'>Outgoing</span>
+                      </div>
+                    )}
+                    {config.conversations[0].direction == 'in' && (
+                      <div className='flex items-center text-sm'>
+                        <HiArrowDownLeft
+                          className='mr-2 h-5 w-5 text-green-400'
+                          aria-hidden='true'
+                        />
+                        <span className='truncate'>Ingoing</span>
+                      </div>
+                    )}
                   </dd>
                 </div>
                 {/*  duration */}
