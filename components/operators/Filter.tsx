@@ -336,7 +336,7 @@ export const Filter = forwardRef<HTMLButtonElement, FilterProps>(
                                   />
                                   {!filteredGroups.length && (
                                     <div className='text-sm text-gray-500 dark:text-gray-400'>
-                                      <span>No group</span>
+                                      <span>No groups</span>
                                     </div>
                                   )}
                                   {filteredGroups.map((option) => (
@@ -607,7 +607,7 @@ export const Filter = forwardRef<HTMLButtonElement, FilterProps>(
                             />
                             {!filteredGroups.length && (
                               <div className='text-sm text-gray-500 dark:text-gray-400'>
-                                <span>No group</span>
+                                <span>No groups</span>
                               </div>
                             )}
                             {filteredGroups.map((option) => (

@@ -170,7 +170,7 @@ const Phonebook: NextPage = () => {
             {/* empty state */}
             {isPhonebookLoaded && phonebook?.rows && !phonebook.rows.length && !textFilter.length && (
               <EmptyState
-                title='No contact'
+                title='No contacts'
                 description='There is no contact in your phonebook'
                 icon={
                   <FontAwesomeIcon
@@ -192,7 +192,7 @@ const Phonebook: NextPage = () => {
               !phonebook.rows.length &&
               !!textFilter.length && (
                 <EmptyState
-                  title='No contact'
+                  title='No contacts'
                   description='Try changing your search filters'
                   icon={
                     <FontAwesomeIcon
