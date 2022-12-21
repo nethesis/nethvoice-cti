@@ -154,11 +154,11 @@ const Phonebook: NextPage = () => {
                     <div className='min-w-0 flex-1 px-4 md:grid md:grid-cols-2 gap-4 lg:grid-cols-3 xl:grid-cols-3'>
                       <div className='flex flex-col justify-center'>
                         {/* line skeleton */}
-                        <div className='animate-pulse h-3 rounded bg-gray-300 dark:bg-gray-600'></div>
+                        <div className='animate-pulse h-3 rounded mb-6 md:mb-0 bg-gray-300 dark:bg-gray-600'></div>
                       </div>
                       <div>
                         {/* line skeleton */}
-                        <div className='animate-pulse h-3 rounded bg-gray-300 dark:bg-gray-600'></div>
+                        <div className='animate-pulse h-3 rounded mb-6 md:mb-0 bg-gray-300 dark:bg-gray-600'></div>
                       </div>
                       <div>
                         {/* line skeleton */}
