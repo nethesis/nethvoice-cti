@@ -13,7 +13,7 @@ import {
   sortByOperatorStatus,
   UNAVAILABLE_STATUSES,
 } from '../lib/operators'
-import { isEmpty, debounce } from 'lodash'
+import { isEmpty, debounce, capitalize } from 'lodash'
 import { useSelector } from 'react-redux'
 import { RootState } from '../store'
 import { Filter, OperatorStatusBadge } from '../components/operators'
@@ -251,10 +251,17 @@ const Operators: NextPage = () => {
                                     (operator.conversations[0].connected ||
                                       operator.conversations[0].inConference ||
                                       operator.conversations[0].chDest.inConference == true) ? (
-                                      <Badge rounded='full' variant='busy'>
-                                        <span className='mr-1.5'>{operator.mainPresence}</span>
+                                      <Badge
+                                        rounded='full'
+                                        variant='busy'
+                                        className='flex items-center'
+                                      >
+                                        <span className='mr-1.5'>
+                                          {capitalize(operator.mainPresence)}
+                                        </span>
                                         <CallDuration
                                           startTime={operator.conversations[0].startTime}
+                                          className='font-mono relative top-px'
                                         />
                                       </Badge>
                                     ) : (
@@ -344,9 +351,19 @@ const Operators: NextPage = () => {
                               (operator.conversations[0].connected ||
                                 operator.conversations[0].inConference ||
                                 operator.conversations[0].chDest.inConference == true) ? (
-                                <Badge rounded='full' variant='busy' size='small'>
-                                  <span className='mr-1.5'>{operator.mainPresence}</span>
-                                  <CallDuration startTime={operator.conversations[0].startTime} />
+                                <Badge
+                                  rounded='full'
+                                  variant='busy'
+                                  size='small'
+                                  className='flex items-center'
+                                >
+                                  <span className='mr-1.5'>
+                                    {capitalize(operator.mainPresence)}
+                                  </span>
+                                  <CallDuration
+                                    startTime={operator.conversations[0].startTime}
+                                    className='font-mono relative top-px'
+                                  />
                                 </Badge>
                               ) : (
                                 <OperatorStatusBadge
