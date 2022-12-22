@@ -114,7 +114,7 @@ export const Filter = forwardRef<HTMLButtonElement, FilterProps>(
 
     const [group, setGroup] = useState('')
     function changeGroup(event: any) {
-      const newGroup = event.target.id
+      const newGroup = event.target.id.split('group-')[1]
       setGroup(newGroup)
       savePreference('operatorsGroupFilter', newGroup, auth.username)
 
@@ -146,7 +146,7 @@ export const Filter = forwardRef<HTMLButtonElement, FilterProps>(
 
     const [status, setStatus] = useState('')
     function changeStatus(event: any) {
-      const newStatus = event.target.id
+      const newStatus = event.target.id.split('status-')[1]
       setStatus(newStatus)
       savePreference('operatorsStatusFilter', newStatus, auth.username)
 
@@ -156,7 +156,7 @@ export const Filter = forwardRef<HTMLButtonElement, FilterProps>(
 
     const [sortBy, setSortBy]: any = useState('')
     function changeSortBy(event: any) {
-      const newSortBy = event.target.id
+      const newSortBy = event.target.id.split('sort-')[1]
       setSortBy(newSortBy)
       savePreference('operatorsSortBy', newSortBy, auth.username)
 
@@ -166,7 +166,7 @@ export const Filter = forwardRef<HTMLButtonElement, FilterProps>(
 
     const [layout, setLayout]: any = useState('')
     function changeLayout(event: any) {
-      const newLayout = event.target.id
+      const newLayout = event.target.id.split('layout-')[1]
       setLayout(newLayout)
       savePreference('operatorsLayout', newLayout, auth.username)
 
@@ -354,7 +354,7 @@ export const Filter = forwardRef<HTMLButtonElement, FilterProps>(
                                       ) : (
                                         <div className='flex items-center'>
                                           <input
-                                            id={option.value}
+                                            id={`group-${option.value}`}
                                             name={`filter-${groupFilter.id}`}
                                             type='radio'
                                             defaultChecked={option.value === group}
@@ -362,7 +362,7 @@ export const Filter = forwardRef<HTMLButtonElement, FilterProps>(
                                             className='h-4 w-4 border-gray-300 text-primary focus:ring-primaryLight dark:border-gray-600 dark:text-primary dark:focus:ring-primaryDark'
                                           />
                                           <label
-                                            htmlFor={option.value}
+                                            htmlFor={`group-${option.value}`}
                                             className='ml-3 block text-sm font-medium text-gray-700 dark:text-gray-200'
                                           >
                                             {option.label}
@@ -409,7 +409,7 @@ export const Filter = forwardRef<HTMLButtonElement, FilterProps>(
                                   {statusFilter.options.map((option) => (
                                     <div key={option.value} className='flex items-center'>
                                       <input
-                                        id={option.value}
+                                        id={`status-${option.value}`}
                                         name={`filter-${statusFilter.id}`}
                                         type='radio'
                                         defaultChecked={option.value === status}
@@ -417,7 +417,7 @@ export const Filter = forwardRef<HTMLButtonElement, FilterProps>(
                                         className='h-4 w-4 border-gray-300 text-primary focus:ring-primaryLight dark:border-gray-600 dark:text-primary dark:focus:ring-primaryDark'
                                       />
                                       <label
-                                        htmlFor={option.value}
+                                        htmlFor={`status-${option.value}`}
                                         className='ml-3 block text-sm font-medium text-gray-700 dark:text-gray-200'
                                       >
                                         {option.label}
@@ -462,7 +462,7 @@ export const Filter = forwardRef<HTMLButtonElement, FilterProps>(
                                   {sortFilter.options.map((option) => (
                                     <div key={option.value} className='flex items-center'>
                                       <input
-                                        id={option.value}
+                                        id={`sort-${option.value}`}
                                         name={`filter-${sortFilter.id}`}
                                         type='radio'
                                         defaultChecked={option.value === sortBy}
@@ -470,7 +470,7 @@ export const Filter = forwardRef<HTMLButtonElement, FilterProps>(
                                         className='h-4 w-4 border-gray-300 text-primary focus:ring-primaryLight dark:border-gray-600 dark:text-primary dark:focus:ring-primaryDark'
                                       />
                                       <label
-                                        htmlFor={option.value}
+                                        htmlFor={`sort-${option.value}`}
                                         className='ml-3 block text-sm font-medium text-gray-700 dark:text-gray-200'
                                       >
                                         {option.label}
@@ -515,7 +515,7 @@ export const Filter = forwardRef<HTMLButtonElement, FilterProps>(
                                   {layoutFilter.options.map((option) => (
                                     <div key={option.value} className='flex items-center'>
                                       <input
-                                        id={option.value}
+                                        id={`layout-${option.value}`}
                                         name={`filter-${layoutFilter.id}`}
                                         type='radio'
                                         defaultChecked={option.value === layout}
@@ -523,7 +523,7 @@ export const Filter = forwardRef<HTMLButtonElement, FilterProps>(
                                         className='h-4 w-4 border-gray-300 text-primary focus:ring-primaryLight dark:border-gray-600 dark:text-primary dark:focus:ring-primaryDark'
                                       />
                                       <label
-                                        htmlFor={option.value}
+                                        htmlFor={`layout-${option.value}`}
                                         className='ml-3 block text-sm font-medium text-gray-700 dark:text-gray-200'
                                       >
                                         {option.label}
@@ -625,7 +625,7 @@ export const Filter = forwardRef<HTMLButtonElement, FilterProps>(
                                 ) : (
                                   <div className='flex items-center'>
                                     <input
-                                      id={option.value}
+                                      id={`group-${option.value}`}
                                       name={`filter-${groupFilter.id}`}
                                       type='radio'
                                       defaultChecked={option.value === group}
@@ -633,7 +633,7 @@ export const Filter = forwardRef<HTMLButtonElement, FilterProps>(
                                       className='h-4 w-4 border-gray-300 text-primary focus:ring-primaryLight dark:border-gray-600 dark:text-primary dark:focus:ring-primaryDark'
                                     />
                                     <label
-                                      htmlFor={option.value}
+                                      htmlFor={`group-${option.value}`}
                                       className='ml-3 block text-sm font-medium text-gray-700 dark:text-gray-200'
                                     >
                                       {option.label}
@@ -679,7 +679,7 @@ export const Filter = forwardRef<HTMLButtonElement, FilterProps>(
                             {statusFilter.options.map((option) => (
                               <div key={option.value} className='flex items-center'>
                                 <input
-                                  id={option.value}
+                                  id={`status-${option.value}`}
                                   name={`filter-${statusFilter.id}`}
                                   type='radio'
                                   defaultChecked={option.value === status}
@@ -687,7 +687,7 @@ export const Filter = forwardRef<HTMLButtonElement, FilterProps>(
                                   className='h-4 w-4 border-gray-300 text-primary focus:ring-primaryLight dark:border-gray-600 dark:text-primary dark:focus:ring-primaryDark'
                                 />
                                 <label
-                                  htmlFor={option.value}
+                                  htmlFor={`status-${option.value}`}
                                   className='ml-3 block text-sm font-medium text-gray-700 dark:text-gray-200'
                                 >
                                   {option.label}
@@ -731,7 +731,7 @@ export const Filter = forwardRef<HTMLButtonElement, FilterProps>(
                             {sortFilter.options.map((option) => (
                               <div key={option.value} className='flex items-center'>
                                 <input
-                                  id={option.value}
+                                  id={`sort-${option.value}`}
                                   name={`filter-${sortFilter.id}`}
                                   type='radio'
                                   defaultChecked={option.value === sortBy}
@@ -739,7 +739,7 @@ export const Filter = forwardRef<HTMLButtonElement, FilterProps>(
                                   className='h-4 w-4 border-gray-300 text-primary focus:ring-primaryLight dark:border-gray-600 dark:text-primary dark:focus:ring-primaryDark'
                                 />
                                 <label
-                                  htmlFor={option.value}
+                                  htmlFor={`sort-${option.value}`}
                                   className='ml-3 block text-sm font-medium text-gray-700 dark:text-gray-200'
                                 >
                                   {option.label}
@@ -783,7 +783,7 @@ export const Filter = forwardRef<HTMLButtonElement, FilterProps>(
                             {layoutFilter.options.map((option) => (
                               <div key={option.value} className='flex items-center'>
                                 <input
-                                  id={option.value}
+                                  id={`layout-${option.value}`}
                                   name={`filter-${layoutFilter.id}`}
                                   type='radio'
                                   defaultChecked={option.value === layout}
@@ -791,7 +791,7 @@ export const Filter = forwardRef<HTMLButtonElement, FilterProps>(
                                   className='h-4 w-4 border-gray-300 text-primary focus:ring-primaryLight dark:border-gray-600 dark:text-primary dark:focus:ring-primaryDark'
                                 />
                                 <label
-                                  htmlFor={option.value}
+                                  htmlFor={`layout-${option.value}`}
                                   className='ml-3 block text-sm font-medium text-gray-700 dark:text-gray-200'
                                 >
                                   {option.label}
