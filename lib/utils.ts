@@ -41,20 +41,6 @@ export const closeSideDrawer = () => {
 }
 
 /**
- * The helper function to dispatch events
- *
- * @param name The name of the event
- * @param data The data object
- * @param element The target element
- */
-
-export const eventDispatch = (name: string, data: any, element: HTMLElement | Window = window) => {
-  typeof element !== 'undefined'
-    ? element.dispatchEvent(new CustomEvent(name, { detail: data }))
-    : console.error(new Error('EventDispatch error: element is not defined'))
-}
-
-/**
  * Sort function to order array elements by a specific property (for array of objects) or by a specific index (for arrays of arrays)
  *
  */
