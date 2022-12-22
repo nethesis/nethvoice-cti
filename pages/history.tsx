@@ -219,25 +219,25 @@ const History: NextPage = () => {
         <>
           <div
             className={
-              'truncate text-sm ' +
+              'truncate text-gray-900 dark:text-gray-100 text-sm' +
               (call.cnum === mainextension || call.cnum === ''
-                ? 'text-sm'
-                : 'hover:underline cursor-pointer ')
+                ? 'text-gray-900 text-sm'
+                : 'hover text-sm cursor-pointer hover:underline')
             }
           >
             {/* Check the date to show */}
             {call.cnam !== '' && call.cnum !== mainextension && call.cnam !== name
               ? call.cnam
               : call.ccompany !== ''
-              ? call.ccompany
-              : call.cnum !== mainextension
-              ? call.cnum
-              : 'You'}
+                ? call.ccompany
+                : call.cnum !== mainextension
+                  ? call.cnum
+                  : 'You'}
           </div>
           {call.cnum !== '' &&
             call.cnum !== mainextension &&
             (call.cnam !== '' || call.ccompany !== '') && (
-              <div className='truncate text-sm cursor-pointer hover:underline text-gray-400 dark:text-gray-500'>
+              <div className='truncate text-sm cursor-pointer hover:underline text-gray-500 dark:text-gray-500'>
                 {call.src}
               </div>
             )}
@@ -247,11 +247,11 @@ const History: NextPage = () => {
       //Switchboard call type
       return (
         <>
-          <div className='truncate text-sm cursor-pointer hover:underline'>
+          <div className='truncate text-sm cursor-pointer hover:underline text-gray-900 dark:text-gray-100'>
             {call.cnam !== '' ? call.cnam : call.ccompany !== '' ? call.ccompany : call.cnum || '-'}
           </div>
           {call.cnum !== '' && (
-            <div className='truncate text-sm cursor-pointer hover:underline text-gray-400 dark:text-gray-500'>
+            <div className='truncate text-sm cursor-pointer hover:underline text-gray-500 dark:text-gray-500'>
               {call.src}
             </div>
           )}
@@ -268,24 +268,24 @@ const History: NextPage = () => {
         <>
           <div
             className={
-              'truncate text-sm ' +
+              'truncate text-gray-900 dark:text-gray-100 text-sm ' +
               (call.dst === mainextension || call.dst === ''
-                ? 'text-sm'
-                : ' hover:underline cursor-pointer')
+                ? 'text-gray-900 text-sm'
+                : 'hover hover:underline cursor-pointer')
             }
           >
             {call.dst_cnam !== '' && call.dst !== mainextension && call.dst_cnam !== name
               ? call.dst_cnam
               : call.dst_ccompany !== ''
-              ? call.dst_ccompany
-              : call.dst !== mainextension
-              ? call.dst
-              : 'You'}
+                ? call.dst_ccompany
+                : call.dst !== mainextension
+                  ? call.dst
+                  : 'You'}
           </div>
           {call.dst !== '' &&
             call.dst !== mainextension &&
             (call.dst_cnam !== '' || call.dst_ccompany !== '') && (
-              <div className='truncate text-sm cursor-pointer hover:underline text-gray-400 dark:text-gray-500'>
+              <div className='truncate text-sm cursor-pointer hover:underline text-gray-500 dark:text-gray-500'>
                 {call.dst}
               </div>
             )}
@@ -295,15 +295,15 @@ const History: NextPage = () => {
       //Switchboard call type
       return (
         <>
-          <div className=' truncate text-sm cursor-pointer hover:underline'>
+          <div className=' truncate text-sm cursor-pointer hover:underline text-gray-900 dark:text-gray-100'>
             {call.dst_cnam !== ''
               ? call.dst_cnam
               : call.dst_ccompany !== ''
-              ? call.dst_ccompany
-              : call.dst || '-'}
+                ? call.dst_ccompany
+                : call.dst || '-'}
           </div>
           {(call.dst_cnam !== '' || call.dst_ccompany !== '') && (
-            <div className='truncate text-sm cursor-pointer hover:underline text-gray-400 dark:text-gray-500'>
+            <div className='truncate text-sm cursor-pointer hover:underline text-gray-500 dark:text-gray-500'>
               {call.dst}
             </div>
           )}
@@ -323,14 +323,14 @@ const History: NextPage = () => {
             {call.direction === 'in' && (
               <div>
                 {call.disposition === 'ANSWERED' ? (
-                  <div className='flex flex-nowrap'>
+                  <div className='flex flex-nowrap items-center'>
                     <HiArrowDownLeft className='mr-2 h-5 w-5 text-green-400' aria-hidden='true' />
-                    <span className='text-gray-400 dark:text-gray-500'>Incoming answered</span>
+                    <span className='text-gray-900 dark:text-gray-100'>Incoming answered</span>
                   </div>
                 ) : (
-                  <div className='flex flex-nowrap'>
+                  <div className='flex flex-nowrap items-center'>
                     <MdCallMissed className='mr-2 h-5 w-5 text-red-400' aria-hidden='true' />
-                    <span className='text-gray-400 dark:text-gray-500'>Incoming missed</span>
+                    <span className='text-gray-900 dark:text-gray-100'>Incoming missed</span>
                   </div>
                 )}
               </div>
@@ -338,14 +338,14 @@ const History: NextPage = () => {
             {call.direction === 'out' && (
               <div>
                 {call.disposition === 'ANSWERED' ? (
-                  <div className='flex flex-nowrap'>
+                  <div className='flex flex-nowrap items-center'>
                     <HiArrowUpRight className='mr-2 h-5 w-5 text-green-400' aria-hidden='true' />
-                    <span className='text-gray-400 dark:text-gray-500'>Outgoing answered</span>
+                    <span className='text-gray-900 dark:text-gray-100'>Outgoing answered</span>
                   </div>
                 ) : (
-                  <div className='flex flex-nowrap'>
+                  <div className='flex flex-nowrap items-center'>
                     <HiArrowUpRight className='mr-2 h-5 w-5 text-red-400' aria-hidden='true' />
-                    <span className='text-gray-400 dark:text-gray-500'>Outgoing missed</span>
+                    <span className='text-gray-900 dark:text-gray-100'>Outgoing missed</span>
                   </div>
                 )}
               </div>
@@ -362,13 +362,13 @@ const History: NextPage = () => {
             {call.type === 'internal' && (
               <div>
                 {call.disposition === 'ANSWERED' ? (
-                  <div className='flex flex-nowrap'>
+                  <div className='flex flex-nowrap items-center'>
                     <FontAwesomeIcon
                       icon={faBuilding}
                       className='mr-2 h-4 w-4 flex-shrink-0 text-green-400'
                       aria-hidden='true'
                     />
-                    <span className='text-gray-400 dark:text-gray-500'>Internal answered</span>
+                    <span className='text-gray-900 dark:text-gray-100'>Internal answered</span>
                   </div>
                 ) : (
                   <div className='flex flex-nowrap'>
@@ -377,7 +377,7 @@ const History: NextPage = () => {
                       className='mr-2 h-4 w-4 flex-shrink-0 text-red-400'
                       aria-hidden='true'
                     />
-                    <span className='text-gray-400 dark:text-gray-500'>Internal missed</span>
+                    <span className='text-gray-900 dark:text-gray-100'>Internal missed</span>
                   </div>
                 )}
               </div>
@@ -387,17 +387,17 @@ const History: NextPage = () => {
                 {call.type === 'in' && (
                   <div>
                     {call.disposition === 'ANSWERED' ? (
-                      <div className='flex flex-nowrap'>
+                      <div className='flex flex-nowrap items-center'>
                         <HiArrowDownLeft
                           className='mr-2 h-5 w-5 text-green-400'
                           aria-hidden='true'
                         />
-                        <span className='text-gray-400 dark:text-gray-500'>Incoming answered</span>
+                        <span className='text-gray-900 dark:text-gray-100'>Incoming answered</span>
                       </div>
                     ) : (
                       <div className='flex flex-nowrap'>
                         <MdCallMissed className='mr-2 h-5 w-5 text-red-400' aria-hidden='true' />
-                        <span className='text-gray-400 dark:text-gray-500'>Incoming missed</span>
+                        <span className='text-gray-900 dark:text-gray-100'>Incoming missed</span>
                       </div>
                     )}
                   </div>
@@ -406,17 +406,17 @@ const History: NextPage = () => {
                 {call.type === 'out' && (
                   <div>
                     {call.disposition === 'ANSWERED' ? (
-                      <div className='flex flex-nowrap'>
+                      <div className='flex flex-nowrap items-center'>
                         <HiArrowUpRight
                           className='mr-2 h-5 w-5 text-green-400'
                           aria-hidden='true'
                         />
-                        <span className='text-gray-400 dark:text-gray-500'>Outgoing answered</span>
+                        <span className='text-gray-900 dark:text-gray-100'>Outgoing answered</span>
                       </div>
                     ) : (
                       <div className='flex flex-nowrap'>
                         <HiArrowUpRight className='mr-2 h-5 w-5 text-red-400' aria-hidden='true' />
-                        <span className='text-gray-400 dark:text-gray-500'>Outgoing missed</span>
+                        <span className='text-gray-900 dark:text-gray-100'>Outgoing missed</span>
                       </div>
                     )}
                   </div>
@@ -460,32 +460,60 @@ const History: NextPage = () => {
             {!isHistoryLoaded &&
               Array.from(Array(9)).map((e, index) => (
                 <li key={index}>
-                  <div className='flex items-center px-4 py-4 sm:px-6'>
+                  {/* Skeleton for larger than 750px screen */}
+                  <div className='hidden md:flex items-center px-4 py-4 sm:px-6'>
                     {/* History skeleton */}
-                    <div className='min-w-0 flex-1 px-4 h-12 md:grid md:grid-cols-6 gap-4 lg:grid-cols-6 xl:grid-cols-7'>
+                    <div className='min-w-0 flex-1 px-4 h-12 md:grid md:grid-cols-4 gap-4 lg:grid-cols-4 xl:grid-cols-7'>
                       <div className='flex flex-col justify-center'>
                         {/* Date skeleton */}
-                        <div className='animate-pulse h-3 rounded bg-gray-300 dark:bg-gray-600'></div>
+                        <div className='animate-pulse h-3 rounded mb-6 md:mb-0 bg-gray-300 dark:bg-gray-600'></div>
                       </div>
                       <div className='flex flex-col justify-center'>
                         {/* Source skeleton */}
-                        <div className='animate-pulse h-3 rounded bg-gray-300 dark:bg-gray-600'></div>
+                        <div className='animate-pulse h-3 rounded mb-6 md:mb-0 bg-gray-300 dark:bg-gray-600'></div>
                       </div>
                       <div className='flex flex-col justify-center'>
                         {/* Icon skeleton */}
-                        <div className='animate-pulse h-3 rounded bg-gray-300 dark:bg-gray-600'></div>
+                        <div className='animate-pulse h-3 rounded mb-6 md:mb-0 bg-gray-300 dark:bg-gray-600'></div>
                       </div>
                       <div className='flex flex-col justify-center'>
                         {/* Destination skeleton */}
-                        <div className='animate-pulse h-3 rounded bg-gray-300 dark:bg-gray-600'></div>
+                        <div className='animate-pulse h-3 rounded mb-6 md:mb-0 bg-gray-300 dark:bg-gray-600'></div>
                       </div>
                       <div className='flex flex-col justify-center'>
                         {/* Duration skeleton */}
-                        <div className='animate-pulse h-3 rounded bg-gray-300 dark:bg-gray-600'></div>
+                        <div className='animate-pulse h-3 rounded mb-6 md:mb-0 bg-gray-300 dark:bg-gray-600'></div>
                       </div>
                       <div className='flex flex-col justify-center'>
                         {/* Icon skeleton */}
+                        <div className='animate-pulse h-3 rounded mb-6 md:mb-0mb-6 md:mb-0  bg-gray-300 dark:bg-gray-600'></div>
+                      </div>
+                      <div className='flex flex-col justify-center'>
+                        {/* Recording skeleton */}
                         <div className='animate-pulse h-3 rounded bg-gray-300 dark:bg-gray-600'></div>
+                      </div>
+                    </div>
+                  </div>
+
+                  {/* Skeleton for mobile device  */}
+                  <div className='md:hidden flex items-center px-4 py-4 sm:px-6 shadow'>
+                    {/* History skeleton */}
+                    <div className='min-w-0 flex-1 px-4 sm:grid sm:grid-cols-2 gap-4'>
+                      <div className='flex flex-col justify-center'>
+                        {/* Date skeleton */}
+                        <div className='animate-pulse h-3 rounded mb-6 sm:mb-0 bg-gray-300 dark:bg-gray-600'></div>
+                      </div>
+                      <div className='flex flex-col justify-center'>
+                        {/* Source skeleton */}
+                        <div className='animate-pulse h-3 rounded mb-6 sm:mb-0 bg-gray-300 dark:bg-gray-600'></div>
+                      </div>
+                      <div className='flex flex-col justify-center'>
+                        {/* Duration skeleton */}
+                        <div className='animate-pulse h-3 rounded mb-6 sm:mb-0 bg-gray-300 dark:bg-gray-600'></div>
+                      </div>
+                      <div className='flex flex-col justify-center'>
+                        {/* Icon skeleton */}
+                        <div className='animate-pulse h-3 rounded mb-6 sm:mb-0  bg-gray-300 dark:bg-gray-600'></div>
                       </div>
                       <div className='flex flex-col justify-center'>
                         {/* Recording skeleton */}
@@ -515,7 +543,7 @@ const History: NextPage = () => {
                         {/* Date column */}
                         <div className='flex flex-col justify-center'>
                           <div className=''>
-                            <div className='font-medium text-sm text-gray-900 dark:text-gray-100'>
+                            <div className='text-sm text-gray-900 dark:text-gray-100'>
                               {formatDate(call.time * 1000, 'PP')}
                             </div>
                             <div className='text-sm text-gray-500'>
@@ -531,28 +559,28 @@ const History: NextPage = () => {
                           onClick={
                             callType !== 'user'
                               ? () =>
-                                  openDrawerHistory(
-                                    call.cnam,
-                                    call.ccompany,
-                                    call.cnum,
-                                    dateBegin,
-                                    dateEnd,
-                                    username,
-                                    callType,
-                                    sortBy,
-                                    callDirection,
-                                    call.disposition,
-                                    call.type,
-                                    call.cnam,
-                                    call.ccompany,
-                                    call.cnum,
-                                    call.dst_cnam,
-                                    call.dst_ccompany,
-                                    call.dst,
-                                  )
+                                openDrawerHistory(
+                                  call.cnam,
+                                  call.ccompany,
+                                  call.cnum,
+                                  dateBegin,
+                                  dateEnd,
+                                  username,
+                                  callType,
+                                  sortBy,
+                                  callDirection,
+                                  call.disposition,
+                                  call.type,
+                                  call.cnam,
+                                  call.ccompany,
+                                  call.cnum,
+                                  call.dst_cnam,
+                                  call.dst_ccompany,
+                                  call.dst,
+                                )
                               : call.cnum === mainextension
-                              ? undefined
-                              : () =>
+                                ? undefined
+                                : () =>
                                   openDrawerHistory(
                                     call.cnam,
                                     call.ccompany,
@@ -581,7 +609,7 @@ const History: NextPage = () => {
                         <div className='hidden md:flex mt-4 md:mt-0 items-center'>
                           <FontAwesomeIcon
                             icon={faArrowRight}
-                            className='ml-0 h-4 w-4 flex-shrink-0 text-gray-300 dark:text-gray-600'
+                            className='ml-0 h-4 w-4 flex-shrink-0 text-gray-500 dark:text-gray-600'
                             aria-hidden='true'
                           />
                         </div>
@@ -592,29 +620,29 @@ const History: NextPage = () => {
                           onClick={
                             callType !== 'user'
                               ? () =>
-                                  openDrawerHistory(
-                                    call.dst_cnam,
-                                    call.dst_ccompany,
-                                    call.dst,
-                                    dateBegin,
-                                    dateEnd,
-                                    username,
-                                    callType,
-                                    sortBy,
-                                    call.direction,
-                                    call.disposition,
-                                    call.type,
-                                    call.cnam,
-                                    call.ccompany,
-                                    call.cnum,
-                                    call.dst_cnam,
-                                    call.dst_ccompany,
-                                    call.dst,
-                                  )
+                                openDrawerHistory(
+                                  call.dst_cnam,
+                                  call.dst_ccompany,
+                                  call.dst,
+                                  dateBegin,
+                                  dateEnd,
+                                  username,
+                                  callType,
+                                  sortBy,
+                                  call.direction,
+                                  call.disposition,
+                                  call.type,
+                                  call.cnam,
+                                  call.ccompany,
+                                  call.cnum,
+                                  call.dst_cnam,
+                                  call.dst_ccompany,
+                                  call.dst,
+                                )
                               : callType === 'user' &&
                                 call.direction === 'out' &&
                                 call.dst !== mainextension
-                              ? () =>
+                                ? () =>
                                   openDrawerHistory(
                                     call.dst_cnam,
                                     call.dst_ccompany,
@@ -634,28 +662,28 @@ const History: NextPage = () => {
                                     call.dst_ccompany,
                                     call.dst,
                                   )
-                              : call.dst === mainextension
-                              ? undefined
-                              : () =>
-                                  openDrawerHistory(
-                                    call.cnam,
-                                    call.ccompany,
-                                    call.cnum,
-                                    dateBegin,
-                                    dateEnd,
-                                    username,
-                                    callType,
-                                    sortBy,
-                                    call.direction,
-                                    call.disposition,
-                                    call.type,
-                                    call.cnam,
-                                    call.ccompany,
-                                    call.cnum,
-                                    call.dst_cnam,
-                                    call.dst_ccompany,
-                                    call.dst,
-                                  )
+                                : call.dst === mainextension
+                                  ? undefined
+                                  : () =>
+                                    openDrawerHistory(
+                                      call.cnam,
+                                      call.ccompany,
+                                      call.cnum,
+                                      dateBegin,
+                                      dateEnd,
+                                      username,
+                                      callType,
+                                      sortBy,
+                                      call.direction,
+                                      call.disposition,
+                                      call.type,
+                                      call.cnam,
+                                      call.ccompany,
+                                      call.cnum,
+                                      call.dst_cnam,
+                                      call.dst_ccompany,
+                                      call.dst,
+                                    )
                           }
                         >
                           {checkTypeDestination(call)}
@@ -670,28 +698,28 @@ const History: NextPage = () => {
                             onClick={
                               callType !== 'user'
                                 ? () =>
-                                    openDrawerHistory(
-                                      call.cnam,
-                                      call.ccompany,
-                                      call.cnum,
-                                      dateBegin,
-                                      dateEnd,
-                                      username,
-                                      callType,
-                                      sortBy,
-                                      callDirection,
-                                      call.disposition,
-                                      call.type,
-                                      call.cnam,
-                                      call.ccompany,
-                                      call.cnum,
-                                      call.dst_cnam,
-                                      call.dst_ccompany,
-                                      call.dst,
-                                    )
+                                  openDrawerHistory(
+                                    call.cnam,
+                                    call.ccompany,
+                                    call.cnum,
+                                    dateBegin,
+                                    dateEnd,
+                                    username,
+                                    callType,
+                                    sortBy,
+                                    callDirection,
+                                    call.disposition,
+                                    call.type,
+                                    call.cnam,
+                                    call.ccompany,
+                                    call.cnum,
+                                    call.dst_cnam,
+                                    call.dst_ccompany,
+                                    call.dst,
+                                  )
                                 : call.cnum === mainextension
-                                ? undefined
-                                : () =>
+                                  ? undefined
+                                  : () =>
                                     openDrawerHistory(
                                       call.cnam,
                                       call.ccompany,
@@ -720,7 +748,7 @@ const History: NextPage = () => {
                           <div className='flex mt-4 md:mt-0 mx-6 items-center'>
                             <FontAwesomeIcon
                               icon={faArrowRight}
-                              className='ml-0 h-4 w-4 flex-shrink-0 text-gray-300 dark:text-gray-600'
+                              className='ml-0 h-4 w-4 flex-shrink-0 text-gray-900 dark:text-gray-100'
                               aria-hidden='true'
                             />
                           </div>
@@ -731,29 +759,29 @@ const History: NextPage = () => {
                             onClick={
                               callType !== 'user'
                                 ? () =>
-                                    openDrawerHistory(
-                                      call.dst_cnam,
-                                      call.dst_ccompany,
-                                      call.dst,
-                                      dateBegin,
-                                      dateEnd,
-                                      username,
-                                      callType,
-                                      sortBy,
-                                      call.direction,
-                                      call.disposition,
-                                      call.type,
-                                      call.cnam,
-                                      call.ccompany,
-                                      call.cnum,
-                                      call.dst_cnam,
-                                      call.dst_ccompany,
-                                      call.dst,
-                                    )
+                                  openDrawerHistory(
+                                    call.dst_cnam,
+                                    call.dst_ccompany,
+                                    call.dst,
+                                    dateBegin,
+                                    dateEnd,
+                                    username,
+                                    callType,
+                                    sortBy,
+                                    call.direction,
+                                    call.disposition,
+                                    call.type,
+                                    call.cnam,
+                                    call.ccompany,
+                                    call.cnum,
+                                    call.dst_cnam,
+                                    call.dst_ccompany,
+                                    call.dst,
+                                  )
                                 : callType === 'user' &&
                                   call.direction === 'out' &&
                                   call.dst !== mainextension
-                                ? () =>
+                                  ? () =>
                                     openDrawerHistory(
                                       call.dst_cnam,
                                       call.dst_ccompany,
@@ -773,28 +801,28 @@ const History: NextPage = () => {
                                       call.dst_ccompany,
                                       call.dst,
                                     )
-                                : call.dst === mainextension
-                                ? undefined
-                                : () =>
-                                    openDrawerHistory(
-                                      call.cnam,
-                                      call.ccompany,
-                                      call.cnum,
-                                      dateBegin,
-                                      dateEnd,
-                                      username,
-                                      callType,
-                                      sortBy,
-                                      call.direction,
-                                      call.disposition,
-                                      call.type,
-                                      call.cnam,
-                                      call.ccompany,
-                                      call.cnum,
-                                      call.dst_cnam,
-                                      call.dst_ccompany,
-                                      call.dst,
-                                    )
+                                  : call.dst === mainextension
+                                    ? undefined
+                                    : () =>
+                                      openDrawerHistory(
+                                        call.cnam,
+                                        call.ccompany,
+                                        call.cnum,
+                                        dateBegin,
+                                        dateEnd,
+                                        username,
+                                        callType,
+                                        sortBy,
+                                        call.direction,
+                                        call.disposition,
+                                        call.type,
+                                        call.cnam,
+                                        call.ccompany,
+                                        call.cnum,
+                                        call.dst_cnam,
+                                        call.dst_ccompany,
+                                        call.dst,
+                                      )
                             }
                           >
                             {checkTypeDestination(call)}

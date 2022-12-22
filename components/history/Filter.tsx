@@ -614,6 +614,7 @@ export const Filter = forwardRef<HTMLButtonElement, FilterProps>(
               </div>
             </Dialog>
           </Transition.Root>
+          
           {/* Filter pc */}
           <div className='mx-auto text-center'>
             <section aria-labelledby='filter-heading' className='pb-4'>
@@ -625,8 +626,7 @@ export const Filter = forwardRef<HTMLButtonElement, FilterProps>(
                 <div className='flex items-center'>
                   <TextInput
                     placeholder='Filter by name or number'
-                    className='max-w-md'
-                    size='large'
+                    className='max-w-lg'
                     value={filterText}
                     onChange={changeFilterText}
                     ref={textFilterRef}
