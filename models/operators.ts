@@ -5,7 +5,7 @@ import { createModel } from '@rematch/core'
 import type { RootModel } from '.'
 
 interface DefaultState {
-  operators: Object
+  operators: any
   isOperatorsLoaded: boolean
   isLoading: boolean
   userEndpoints: Object
@@ -95,6 +95,21 @@ export const operators = createModel<RootModel>()({
     },
     setFavoritesLoaded: (state, isFavoritesLoaded: boolean) => {
       state.isFavoritesLoaded = isFavoritesLoaded
+      return state
+    },
+    updateMainPresence: (state, operatorName: string, newMainPresence: string) => {
+      const op = state.operators[operatorName]
+      op.mainPresence = newMainPresence
+      return state
+    },
+    updateConversations: (state, operatorName: string, newConversations: any) => {
+      const op = state.operators[operatorName]
+      let conversations: any = []
+
+      Object.values(newConversations).forEach((conv) => {
+        conversations.push(conv)
+      })
+      op.conversations = conversations
       return state
     },
   },

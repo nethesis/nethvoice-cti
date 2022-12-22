@@ -6,6 +6,7 @@ import { handleNetworkError } from '../lib/utils'
 import { store } from '../store'
 import { loadCache, loadPreference, saveCache, savePreference } from './storage'
 import { isEmpty, cloneDeep } from 'lodash'
+import { eventDispatch } from './hooks/eventDispatch'
 
 export const AVAILABLE_STATUSES = ['online', 'cellphone', 'callforward', 'voicemail']
 export const UNAVAILABLE_STATUSES = ['dnd', 'busy', 'incoming', 'ringing']
@@ -129,7 +130,10 @@ export const sortByFavorite = (operator1: any, operator2: any) => {
 }
 
 export const callOperator = (operator: any, event: any = undefined) => {
-  console.log('call operator', operator) ////
+  const phoneNumber = operator.endpoints.mainextension[0].id
+  eventDispatch('phone-island-call-start', { number: phoneNumber })
+
+  console.log('call operator', phoneNumber) ////
 
   // stop propagation of click event
   if (event) {
@@ -278,12 +282,13 @@ export const buildOperators = (operatorsStore: any) => {
       })
 
       if (opFound) {
+        let conversations = opFound.conversations || []
+
         // @ts-ignore
         Object.values(extData.conversations).forEach((conv) => {
-          let conversations = opFound.conversations || []
           conversations.push(conv)
-          opFound.conversations = conversations
         })
+        opFound.conversations = conversations
       }
     }
   }

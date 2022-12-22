@@ -3,7 +3,7 @@
 
 import type { NextPage } from 'next'
 import { useEffect, useMemo, useState } from 'react'
-import { Avatar, Badge, EmptyState, InlineNotification } from '../components/common'
+import { Avatar, Badge, Button, EmptyState, InlineNotification } from '../components/common'
 import {
   AVAILABLE_STATUSES,
   callOperator,
@@ -17,7 +17,7 @@ import { isEmpty, debounce, capitalize } from 'lodash'
 import { useSelector } from 'react-redux'
 import { RootState } from '../store'
 import { Filter, OperatorStatusBadge } from '../components/operators'
-import { sortByProperty } from '../lib/utils'
+import { eventDispatch, sortByProperty } from '../lib/utils'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { faChevronRight, faFilter, faHeadset } from '@fortawesome/free-solid-svg-icons'
 import { store } from '../store'

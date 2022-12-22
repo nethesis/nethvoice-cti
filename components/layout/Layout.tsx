@@ -20,6 +20,7 @@ import {
   retrieveGroups,
   retrieveUserEndpoints,
 } from '../../lib/operators'
+import { useEventListener } from '../../lib/hooks/useEventListener'
 
 interface LayoutProps {
   children: ReactNode
@@ -116,6 +117,21 @@ export const Layout: FC<LayoutProps> = ({ children }) => {
     operatorsStore.isAvatarsLoaded,
     operatorsStore.isFavoritesLoaded,
   ])
+
+  useEventListener('phone-island-main-presence', (data) => {
+    const opName = Object.keys(data)[0]
+    const mainPresence = data[opName].mainPresence
+    store.dispatch.operators.updateMainPresence(opName, mainPresence)
+
+    console.log('updateMainPresence', opName, mainPresence) ////
+  })
+
+  useEventListener('phone-island-conversations', (data) => {
+    const opName = Object.keys(data)[0]
+    const conversations = data[opName].conversations
+    store.dispatch.operators.updateConversations(opName, conversations)
+    console.log('updateConversations', opName, conversations) ////
+  })
 
   return (
     <div className='flex h-full'>
