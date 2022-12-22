@@ -249,7 +249,7 @@ const Operators: NextPage = () => {
                                     {operator.conversations?.length &&
                                     (operator.conversations[0].connected ||
                                       operator.conversations[0].inConference ||
-                                      operator.conversations[0].chDest.inConference == true) ? (
+                                      operator.conversations[0].chDest?.inConference == true) ? (
                                       <Badge
                                         rounded='full'
                                         variant='busy'
@@ -349,7 +349,7 @@ const Operators: NextPage = () => {
                               {operator.conversations?.length &&
                               (operator.conversations[0].connected ||
                                 operator.conversations[0].inConference ||
-                                operator.conversations[0].chDest.inConference == true) ? (
+                                operator.conversations[0].chDest?.inConference == true) ? (
                                 <Badge
                                   rounded='full'
                                   variant='busy'
