@@ -7,34 +7,29 @@ import { Avatar, Badge, EmptyState, InlineNotification } from '../components/com
 import {
   AVAILABLE_STATUSES,
   callOperator,
-  getAllAvatars,
-  getExtensions,
-  getGroups,
-  getUserEndpointsAll,
   openShowOperatorDrawer,
   searchStringInOperator,
   sortByFavorite,
   sortByOperatorStatus,
   UNAVAILABLE_STATUSES,
 } from '../lib/operators'
-import { isEmpty, debounce } from 'lodash'
+import { isEmpty, debounce, capitalize } from 'lodash'
 import { useSelector } from 'react-redux'
 import { RootState } from '../store'
 import { Filter, OperatorStatusBadge } from '../components/operators'
 import { sortByProperty } from '../lib/utils'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { faChevronRight, faFilter, faHeadset } from '@fortawesome/free-solid-svg-icons'
-import { loadPreference } from '../lib/storage'
+import { store } from '../store'
+import { CallDuration } from '../components/operators/CallDuration'
 
 //// use i18n where there is operator.mainPresence
 
 const Operators: NextPage = () => {
-  const [isOperatorsLoaded, setOperatorsLoaded] = useState(false)
-  const [operators, setOperators]: any = useState({})
   const [filteredOperators, setFilteredOperators]: any = useState({})
-  const [operatorsError, setOperatorsError] = useState('')
-  const [groups, setGroups]: any = useState({})
-  const auth = useSelector((state: RootState) => state.authentication)
+  const authStore = useSelector((state: RootState) => state.authentication)
+  const operatorsStore = useSelector((state: RootState) => state.operators)
+  const [isApplyingFilters, setApplyingFilters]: any = useState(false)
 
   const [textFilter, setTextFilter]: any = useState('')
   const updateTextFilter = (newTextFilter: string) => {
@@ -74,6 +69,7 @@ const Operators: NextPage = () => {
     if (!(groupFilter && statusFilter && sortByFilter)) {
       return
     }
+    setApplyingFilters(true)
 
     // text filter
     let filteredOperators = Object.values(operators).filter((op) =>
@@ -87,7 +83,7 @@ const Operators: NextPage = () => {
       })
     } else {
       filteredOperators = filteredOperators.filter((op: any) => {
-        return groupFilter === 'all' || op.group === groupFilter
+        return groupFilter === 'all' || op.groups?.includes(groupFilter)
       })
     }
 
@@ -119,137 +115,31 @@ const Operators: NextPage = () => {
     }
 
     setFilteredOperators(filteredOperators)
+    setApplyingFilters(false)
   }
 
-  // retrieve operators
+  // load operators when navigating to operators page
   useEffect(() => {
-    async function fetchOperators() {
-      if (!isOperatorsLoaded) {
-        try {
-          // get operators
-          let operators = await getUserEndpointsAll()
+    store.dispatch.operators.setOperatorsLoaded(false)
+  }, [])
 
-          // get favorites
-          const favoriteOperators = loadPreference('favoriteOperators', auth.username) || []
-
-          for (const username of favoriteOperators) {
-            operators[username].favorite = true
-          }
-
-          //// remove mock
-          // let i = 0
-          // Object.keys(operators).map((key, index) => {
-          //   const operator = operators[key]
-          //   const statuses = [
-          //     'online',
-          //     'dnd',
-          //     'voicemail',
-          //     'cellphone',
-          //     'callforward',
-          //     'busy',
-          //     'incoming',
-          //     'ringing',
-          //     'offline',
-          //   ]
-          //   operator.mainPresence = statuses[i]
-          //   i = (i + 1) % statuses.length
-
-          //   // mock email
-          //   operator.endpoints.email.push({
-          //     id: `${operator.username}@test.org`,
-          //   })
-          // })
-
-          try {
-            // get avatars
-            const avatars = await getAllAvatars()
-
-            for (const [username, avatarBase64] of Object.entries(avatars)) {
-              if (operators[username]) {
-                operators[username].avatarBase64 = avatarBase64
-              }
-            }
-
-            try {
-              // get groups
-              const groups = await getGroups()
-              setGroups(Object.keys(groups))
-
-              for (let [group, users] of Object.entries(groups)) {
-                // @ts-ignore
-                for (const username of users.users) {
-                  if (operators[username]) {
-                    operators[username].group = group
-                  }
-                }
-              }
-
-              try {
-                // get conversations
-                const extensions = await getExtensions()
-
-                for (const [extNum, extData] of Object.entries(extensions)) {
-                  // @ts-ignore
-                  if (!isEmpty(extData.conversations)) {
-                    const opFound: any = Object.values(operators).find((op: any) => {
-                      return op.endpoints.extension.some((ext: any) => ext.id === extNum)
-                    })
-
-                    if (opFound) {
-                      // @ts-ignore
-                      Object.values(extData.conversations).forEach((conv) => {
-                        let conversations = opFound.conversations || []
-                        conversations.push(conv)
-                        opFound.conversations = conversations
-                      })
-                    }
-                  }
-                }
-                setOperators(operators)
-                applyFilters(operators)
-                setOperatorsLoaded(true)
-              } catch (e) {
-                console.error(e)
-                setOperatorsError('Cannot retrieve conversations')
-                setOperatorsLoaded(true)
-              }
-            } catch (e) {
-              console.error(e)
-              setOperatorsError('Cannot retrieve groups')
-              setOperatorsLoaded(true)
-            }
-          } catch (e) {
-            console.error(e)
-            setOperatorsError('Cannot retrieve avatars')
-            setOperatorsLoaded(true)
-          }
-        } catch (e) {
-          console.error(e)
-          setOperatorsError('Cannot retrieve user endpoints')
-          setOperatorsLoaded(true)
-        }
-      }
+  // apply filters when operators data has been loaded
+  useEffect(() => {
+    if (operatorsStore.isOperatorsLoaded) {
+      applyFilters(operatorsStore.operators)
     }
-    fetchOperators()
-  }, [isOperatorsLoaded, operators])
+  }, [operatorsStore.isOperatorsLoaded])
 
   // filtered operators
   useEffect(() => {
-    applyFilters(operators)
-  }, [operators, textFilter, groupFilter, statusFilter, sortByFilter])
-
-  const operatorsStore = useSelector((state: RootState) => state.operators)
-
-  // reload operators
-  useEffect(() => {
-    setOperatorsLoaded(false)
-  }, [operatorsStore])
+    applyFilters(operatorsStore.operators)
+  }, [operatorsStore.operators, textFilter, groupFilter, statusFilter, sortByFilter])
 
   return (
     <>
       <div>
         <Filter
-          groups={groups}
+          groups={operatorsStore.groups}
           updateTextFilter={debouncedUpdateTextFilter}
           updateGroupFilter={updateGroupFilter}
           updateStatusFilter={updateStatusFilter}
@@ -257,36 +147,45 @@ const Operators: NextPage = () => {
           updateLayout={updateLayout}
         />
         {/* operators error */}
-        {operatorsError && (
-          <InlineNotification type='error' title={operatorsError}></InlineNotification>
+        {operatorsStore.errorMessage && (
+          <InlineNotification type='error' title={operatorsStore.errorMessage}></InlineNotification>
         )}
         <div className='mx-auto max-w-7xl text-center'>
           {/* empty state */}
-          {isOperatorsLoaded && !operatorsError && isEmpty(operators) && (
-            <EmptyState
-              title='No operator'
-              description='There is no operator configured'
-              icon={
-                <FontAwesomeIcon
-                  icon={faHeadset}
-                  className='mx-auto h-12 w-12'
-                  aria-hidden='true'
-                />
-              }
-            ></EmptyState>
-          )}
+          {operatorsStore.isOperatorsLoaded &&
+            !operatorsStore.errorMessage &&
+            isEmpty(operatorsStore.operators) && (
+              <EmptyState
+                title='No operators'
+                description='There is no operator configured'
+                icon={
+                  <FontAwesomeIcon
+                    icon={faHeadset}
+                    className='mx-auto h-12 w-12'
+                    aria-hidden='true'
+                  />
+                }
+              ></EmptyState>
+            )}
           {/* no search results */}
-          {isOperatorsLoaded && !operatorsError && isEmpty(filteredOperators) && (
-            <EmptyState
-              title='No operator'
-              description='Try changing your search filters'
-              icon={
-                <FontAwesomeIcon icon={faFilter} className='mx-auto h-12 w-12' aria-hidden='true' />
-              }
-            />
-          )}
+          {operatorsStore.isOperatorsLoaded &&
+            !operatorsStore.errorMessage &&
+            !isEmpty(operatorsStore.operators) &&
+            isEmpty(filteredOperators) && (
+              <EmptyState
+                title='No operators'
+                description='Try changing your search filters'
+                icon={
+                  <FontAwesomeIcon
+                    icon={faFilter}
+                    className='mx-auto h-12 w-12'
+                    aria-hidden='true'
+                  />
+                }
+              />
+            )}
           {/* standard layout skeleton */}
-          {layout === 'standard' && !isOperatorsLoaded && (
+          {((layout === 'standard' && !operatorsStore.isOperatorsLoaded) || isApplyingFilters) && (
             <div className='space-y-8 sm:space-y-12 py-8'>
               <ul
                 role='list'
@@ -313,15 +212,15 @@ const Operators: NextPage = () => {
           )}
           {/* standard layout operators */}
           {layout === 'standard' &&
-            isOperatorsLoaded &&
-            !operatorsError &&
+            operatorsStore.isOperatorsLoaded &&
+            !operatorsStore.errorMessage &&
             !isEmpty(filteredOperators) && (
               <div className='space-y-8 sm:space-y-12 py-8'>
                 <ul
                   role='list'
                   className='mx-auto grid grid-cols-2 gap-x-4 gap-y-8 sm:grid-cols-4 md:gap-x-6 lg:max-w-5xl lg:gap-x-8 lg:gap-y-12 xl:grid-cols-5'
                 >
-                  {isOperatorsLoaded &&
+                  {operatorsStore.isOperatorsLoaded &&
                     !isEmpty(filteredOperators) &&
                     Object.keys(filteredOperators).map((key, index) => {
                       const operator = filteredOperators[key]
@@ -347,16 +246,27 @@ const Operators: NextPage = () => {
                                 </h3>
                                 <div className='mt-3'>
                                   <span className='block truncate mt-1 text-sm font-medium text-gray-500 dark:text-gray-500'>
-                                    {operator.conversations?.length ? (
-                                      <Badge rounded='full' variant='busy'>
-                                        <span className='mr-1.5'>{operator.mainPresence}</span>
-                                        {/* //// TODO format duration */}
-                                        <span>{operator.conversations[0].duration}</span>
+                                    {operator.conversations?.length &&
+                                    (operator.conversations[0].connected ||
+                                      operator.conversations[0].inConference ||
+                                      operator.conversations[0].chDest?.inConference == true) ? (
+                                      <Badge
+                                        rounded='full'
+                                        variant='busy'
+                                        className='flex items-center'
+                                      >
+                                        <span className='mr-1.5'>
+                                          {capitalize(operator.mainPresence)}
+                                        </span>
+                                        <CallDuration
+                                          startTime={operator.conversations[0].startTime}
+                                          className='font-mono relative top-px'
+                                        />
                                       </Badge>
                                     ) : (
                                       <OperatorStatusBadge
                                         operator={operator}
-                                        currentUsername={auth.username}
+                                        currentUsername={authStore.username}
                                         callEnabled={true}
                                         onCall={callOperator}
                                       />
@@ -373,13 +283,13 @@ const Operators: NextPage = () => {
               </div>
             )}
           {/* compact layout skeleton */}
-          {layout === 'compact' && !isOperatorsLoaded && (
+          {((layout === 'compact' && !operatorsStore.isOperatorsLoaded) || isApplyingFilters) && (
             <ul role='list' className='mt-4 grid grid-cols-1 gap-4 sm:grid-cols-2 2xl:grid-cols-3'>
               {Array.from(Array(24)).map((e, index) => (
                 <li key={index}>
                   <button
                     type='button'
-                    className='group flex w-full items-center justify-between space-x-3 rounded-lg border p-2 text-left shadow-sm focus:outline-none focus:ring-2 focus:ring-offset-2 bg-white dark:bg-gray-900 border-gray-300 dark:border-gray-700 focus:ring-primary dark:focus:ring-primary cursor-default'
+                    className='group flex w-full items-center justify-between space-x-3 rounded-lg p-2 text-left focus:outline-none focus:ring-2 focus:ring-offset-2 bg-white dark:bg-gray-900 cursor-default'
                   >
                     <div className='flex min-w-0 flex-1 items-center space-x-3'>
                       <div className='block flex-shrink-0'>
@@ -403,8 +313,8 @@ const Operators: NextPage = () => {
           )}
           {/* compact layout operators */}
           {layout === 'compact' &&
-            isOperatorsLoaded &&
-            !operatorsError &&
+            operatorsStore.isOperatorsLoaded &&
+            !operatorsStore.errorMessage &&
             !isEmpty(filteredOperators) && (
               <ul
                 role='list'
@@ -417,7 +327,7 @@ const Operators: NextPage = () => {
                       <button
                         type='button'
                         onClick={() => openShowOperatorDrawer(operator)}
-                        className='group flex w-full items-center justify-between space-x-3 rounded-lg border p-2 text-left shadow-sm focus:outline-none focus:ring-2 focus:ring-offset-2 bg-white dark:bg-gray-900 border-gray-300 dark:border-gray-700 hover:bg-gray-100 dark:hover:bg-gray-800 focus:ring-primary dark:focus:ring-primary'
+                        className='group flex w-full items-center justify-between space-x-3 rounded-lg p-2 text-left focus:outline-none focus:ring-2 focus:ring-offset-2 bg-white dark:bg-gray-900 hover:bg-gray-200 dark:hover:bg-gray-700 focus:ring-primary dark:focus:ring-primary'
                       >
                         <span className='flex min-w-0 flex-1 items-center space-x-3'>
                           <span className='block flex-shrink-0'>
@@ -436,16 +346,28 @@ const Operators: NextPage = () => {
                               {operator.name}
                             </span>
                             <span className='block truncate mt-1 text-sm font-medium text-gray-500 dark:text-gray-500'>
-                              {operator.conversations?.length ? (
-                                <Badge rounded='full' variant='busy' size='small'>
-                                  <span className='mr-1.5'>{operator.mainPresence}</span>
-                                  {/* //// TODO format duration */}
-                                  <span>{operator.conversations[0].duration}</span>
+                              {operator.conversations?.length &&
+                              (operator.conversations[0].connected ||
+                                operator.conversations[0].inConference ||
+                                operator.conversations[0].chDest?.inConference == true) ? (
+                                <Badge
+                                  rounded='full'
+                                  variant='busy'
+                                  size='small'
+                                  className='flex items-center'
+                                >
+                                  <span className='mr-1.5'>
+                                    {capitalize(operator.mainPresence)}
+                                  </span>
+                                  <CallDuration
+                                    startTime={operator.conversations[0].startTime}
+                                    className='font-mono relative top-px'
+                                  />
                                 </Badge>
                               ) : (
                                 <OperatorStatusBadge
                                   operator={operator}
-                                  currentUsername={auth.username}
+                                  currentUsername={authStore.username}
                                   callEnabled={true}
                                   onCall={callOperator}
                                   size='small'

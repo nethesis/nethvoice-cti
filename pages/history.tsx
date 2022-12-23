@@ -10,7 +10,13 @@ import { RootState } from '../store'
 import { useSelector } from 'react-redux'
 import { debounce } from 'lodash'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
-import { faBuilding, faPlay, faArrowRight } from '@fortawesome/free-solid-svg-icons'
+import {
+  faBuilding,
+  faPlay,
+  faArrowRight,
+  faChevronRight,
+  faChevronLeft,
+} from '@fortawesome/free-solid-svg-icons'
 import { HiArrowDownLeft, HiArrowUpRight } from 'react-icons/hi2'
 import { MdCallMissed } from 'react-icons/md'
 import { formatDate, formatInTimeZone } from '../lib/utils'
@@ -885,17 +891,20 @@ const History: NextPage = () => {
                 variant='white'
                 disabled={isPreviousPageButtonDisabled()}
                 onClick={() => goToPreviousPage()}
+                className='flex items-center'
               >
-                Previous page
+                <FontAwesomeIcon icon={faChevronLeft} className='mr-2 h-4 w-4' />
+                <span>Previous page</span>
               </Button>
               <Button
                 type='button'
                 variant='white'
-                className='ml-3'
+                className='ml-3 flex items-center'
                 disabled={isNextPageButtonDisabled()}
                 onClick={() => goToNextPage()}
               >
-                Next page
+                <span>Next page</span>
+                <FontAwesomeIcon icon={faChevronRight} className='ml-2 h-4 w-4' />
               </Button>
             </div>
           </nav>

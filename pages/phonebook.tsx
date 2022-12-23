@@ -25,6 +25,7 @@ import {
   faAddressBook,
   faMobileScreenButton,
   faFilter,
+  faChevronLeft,
 } from '@fortawesome/free-solid-svg-icons'
 
 const Phonebook: NextPage = () => {
@@ -153,11 +154,11 @@ const Phonebook: NextPage = () => {
                     <div className='min-w-0 flex-1 px-4 md:grid md:grid-cols-2 gap-4 lg:grid-cols-3 xl:grid-cols-3'>
                       <div className='flex flex-col justify-center'>
                         {/* line skeleton */}
-                        <div className='animate-pulse h-3 rounded bg-gray-300 dark:bg-gray-600'></div>
+                        <div className='animate-pulse h-3 rounded mb-6 md:mb-0 bg-gray-300 dark:bg-gray-600'></div>
                       </div>
                       <div>
                         {/* line skeleton */}
-                        <div className='animate-pulse h-3 rounded bg-gray-300 dark:bg-gray-600'></div>
+                        <div className='animate-pulse h-3 rounded mb-6 md:mb-0 bg-gray-300 dark:bg-gray-600'></div>
                       </div>
                       <div>
                         {/* line skeleton */}
@@ -168,31 +169,34 @@ const Phonebook: NextPage = () => {
                 </li>
               ))}
             {/* empty state */}
-            {isPhonebookLoaded && phonebook?.rows && !phonebook.rows.length && !textFilter.length && (
-              <EmptyState
-                title='No contact'
-                description='There is no contact in your phonebook'
-                icon={
-                  <FontAwesomeIcon
-                    icon={faAddressBook}
-                    className='mx-auto h-12 w-12'
-                    aria-hidden='true'
-                  />
-                }
-              >
-                <Button variant='primary' onClick={() => openCreateContactDrawer()}>
-                  <FontAwesomeIcon icon={faPlus} className='mr-2 h-4 w-4' />
-                  <span>Create contact</span>
-                </Button>
-              </EmptyState>
-            )}
+            {isPhonebookLoaded &&
+              phonebook?.rows &&
+              !phonebook.rows.length &&
+              !textFilter.length && (
+                <EmptyState
+                  title='No contacts'
+                  description='There is no contact in your phonebook'
+                  icon={
+                    <FontAwesomeIcon
+                      icon={faAddressBook}
+                      className='mx-auto h-12 w-12'
+                      aria-hidden='true'
+                    />
+                  }
+                >
+                  <Button variant='primary' onClick={() => openCreateContactDrawer()}>
+                    <FontAwesomeIcon icon={faPlus} className='mr-2 h-4 w-4' />
+                    <span>Create contact</span>
+                  </Button>
+                </EmptyState>
+              )}
             {/* no search results */}
             {isPhonebookLoaded &&
               phonebook?.rows &&
               !phonebook.rows.length &&
               !!textFilter.length && (
                 <EmptyState
-                  title='No contact'
+                  title='No contacts'
                   description='Try changing your search filters'
                   icon={
                     <FontAwesomeIcon
@@ -337,17 +341,20 @@ const Phonebook: NextPage = () => {
                 variant='white'
                 disabled={isPreviousPageButtonDisabled()}
                 onClick={() => goToPreviousPage()}
+                className='flex items-center'
               >
-                Previous page
+                <FontAwesomeIcon icon={faChevronLeft} className='mr-2 h-4 w-4' />
+                <span>Previous page</span>
               </Button>
               <Button
                 type='button'
                 variant='white'
-                className='ml-3'
+                className='ml-3 flex items-center'
                 disabled={isNextPageButtonDisabled()}
                 onClick={() => goToNextPage()}
               >
-                Next page
+                <span>Next page</span>
+                <FontAwesomeIcon icon={faChevronRight} className='ml-2 h-4 w-4' />
               </Button>
             </div>
           </nav>

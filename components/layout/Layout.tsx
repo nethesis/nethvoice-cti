@@ -11,6 +11,16 @@ import { Dispatch } from '../../store'
 import { RootState } from '../../store'
 import { useSelector } from 'react-redux'
 import { closeSideDrawer } from '../../lib/utils'
+import { store } from '../../store'
+import {
+  buildOperators,
+  retrieveAvatars,
+  retrieveExtensions,
+  retrieveFavorites,
+  retrieveGroups,
+  retrieveUserEndpoints,
+} from '../../lib/operators'
+import { useEventListener } from '../../lib/hooks/useEventListener'
 
 interface LayoutProps {
   children: ReactNode
@@ -22,6 +32,9 @@ export const Layout: FC<LayoutProps> = ({ children }) => {
   const [items, setItems] = useState<NavItemsProps[]>(navItems)
   const dispatch = useDispatch<Dispatch>()
   const sideDrawer = useSelector((state: RootState) => state.sideDrawer)
+  const operatorsStore = useSelector((state: RootState) => state.operators)
+  const [firstRenderOperators, setFirstRenderOperators] = useState(true)
+  const authStore = useSelector((state: RootState) => state.authentication)
 
   useEffect(() => {
     const currentItems = items.map((route) => {
@@ -37,6 +50,7 @@ export const Layout: FC<LayoutProps> = ({ children }) => {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [router])
 
+  // get user data
   useEffect(() => {
     const getData = async () => {
       const userInfo = await getUserInfo()
@@ -47,7 +61,7 @@ export const Layout: FC<LayoutProps> = ({ children }) => {
           mainextension: userInfo.data.endpoints.mainextension[0].id,
           mainPresence: userInfo.data.mainPresence,
           endpoints: userInfo.data.endpoints,
-          avatar: userInfo.data.settings.avatar
+          avatar: userInfo.data.settings.avatar,
         })
       }
     }
@@ -55,6 +69,72 @@ export const Layout: FC<LayoutProps> = ({ children }) => {
 
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [])
+
+  // get operators on page load
+  useEffect(() => {
+    async function fetchOperators() {
+      if (!operatorsStore.isOperatorsLoaded && !operatorsStore.isLoading) {
+        store.dispatch.operators.setLoading(true)
+        store.dispatch.operators.setOperatorsLoaded(false)
+        store.dispatch.operators.setErrorMessage('')
+
+        try {
+          retrieveUserEndpoints()
+          retrieveGroups()
+          retrieveExtensions()
+          retrieveAvatars(authStore)
+          retrieveFavorites(authStore)
+        } catch (e) {
+          store.dispatch.operators.setErrorMessage('Cannot retrieve user endpoints')
+          store.dispatch.operators.setOperatorsLoaded(true)
+          store.dispatch.operators.setLoading(false)
+        }
+      }
+    }
+
+    if (firstRenderOperators) {
+      setFirstRenderOperators(false)
+    } else {
+      fetchOperators()
+    }
+  }, [operatorsStore.isOperatorsLoaded, firstRenderOperators])
+
+  // detect when operators data has been loaded
+  useEffect(() => {
+    if (
+      operatorsStore.isUserEndpointsLoaded &&
+      operatorsStore.isGroupsLoaded &&
+      operatorsStore.isExtensionsLoaded &&
+      operatorsStore.isAvatarsLoaded &&
+      operatorsStore.isFavoritesLoaded
+    ) {
+      buildOperators(operatorsStore)
+    }
+  }, [
+    operatorsStore.isUserEndpointsLoaded,
+    operatorsStore.isGroupsLoaded,
+    operatorsStore.isExtensionsLoaded,
+    operatorsStore.isAvatarsLoaded,
+    operatorsStore.isFavoritesLoaded,
+  ])
+
+  // register to phone island events
+
+  useEventListener('phone-island-main-presence', (data) => {
+    const opName = Object.keys(data)[0]
+    const mainPresence = data[opName].mainPresence
+    store.dispatch.operators.updateMainPresence(opName, mainPresence)
+
+    // console.log('updateMainPresence', opName, mainPresence) ////
+  })
+
+  useEventListener('phone-island-conversations', (data) => {
+    const opName = Object.keys(data)[0]
+    const conversations = data[opName].conversations
+    store.dispatch.operators.updateConversations(opName, conversations)
+
+    // console.log('updateConversations', opName, conversations) ////
+  })
 
   return (
     <div className='flex h-full'>

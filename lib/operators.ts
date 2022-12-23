@@ -4,7 +4,9 @@
 import axios from 'axios'
 import { handleNetworkError } from '../lib/utils'
 import { store } from '../store'
-import { loadPreference, savePreference } from './storage'
+import { loadCache, loadPreference, saveCache, savePreference } from './storage'
+import { isEmpty, cloneDeep } from 'lodash'
+import { eventDispatch } from './hooks/eventDispatch'
 
 export const AVAILABLE_STATUSES = ['online', 'cellphone', 'callforward', 'voicemail']
 export const UNAVAILABLE_STATUSES = ['dnd', 'busy', 'incoming', 'ringing']
@@ -12,6 +14,7 @@ export const DEFAULT_GROUP_FILTER = 'all'
 export const DEFAULT_STATUS_FILTER = 'all'
 export const DEFAULT_SORT_BY = 'favorites'
 export const DEFAULT_LAYOUT = 'standard'
+export const AVATARS_EXPIRATION_MILLIS = 24 * 60 * 60 * 1000 // 24 hours
 
 export async function getUserEndpointsAll() {
   try {
@@ -127,7 +130,10 @@ export const sortByFavorite = (operator1: any, operator2: any) => {
 }
 
 export const callOperator = (operator: any, event: any = undefined) => {
-  console.log('call operator', operator) ////
+  const phoneNumber = operator.endpoints.mainextension[0].id
+  eventDispatch('phone-island-call-start', { number: phoneNumber })
+
+  console.log('call operator', phoneNumber) ////
 
   // stop propagation of click event
   if (event) {
@@ -161,7 +167,7 @@ export const removeOperatorFromFavorites = (operatorToRemove: string, currentUse
 }
 
 export function reloadOperators() {
-  store.dispatch.operators.reload()
+  store.dispatch.operators.setOperatorsLoaded(false)
 }
 
 export const getFilterValues = (currentUsername: string) => {
@@ -174,4 +180,134 @@ export const getFilterValues = (currentUsername: string) => {
   const layout = loadPreference('operatorsLayout', currentUsername) || DEFAULT_LAYOUT
 
   return { group, status, sortBy, layout }
+}
+
+export const retrieveUserEndpoints = async () => {
+  store.dispatch.operators.setUserEndpointsLoaded(false)
+
+  try {
+    const endpoints = await getUserEndpointsAll()
+    store.dispatch.operators.setUserEndpoints(endpoints)
+    store.dispatch.operators.setUserEndpointsLoaded(true)
+  } catch (e) {
+    console.error(e)
+    store.dispatch.operators.setErrorMessage('Cannot retrieve user endpoints')
+    store.dispatch.operators.setOperatorsLoaded(true)
+    store.dispatch.operators.setLoading(false)
+  }
+}
+
+export const retrieveGroups = async () => {
+  store.dispatch.operators.setGroupsLoaded(false)
+
+  try {
+    const groups = await getGroups()
+    store.dispatch.operators.setGroups(groups)
+    store.dispatch.operators.setGroupsLoaded(true)
+  } catch (e) {
+    console.error(e)
+    store.dispatch.operators.setErrorMessage('Cannot retrieve groups')
+    store.dispatch.operators.setOperatorsLoaded(true)
+    store.dispatch.operators.setLoading(false)
+  }
+}
+
+export const retrieveExtensions = async () => {
+  store.dispatch.operators.setExtensionsLoaded(false)
+
+  try {
+    const extensions = await getExtensions()
+    store.dispatch.operators.setExtensions(extensions)
+    store.dispatch.operators.setExtensionsLoaded(true)
+  } catch (e) {
+    console.error(e)
+    store.dispatch.operators.setErrorMessage('Cannot retrieve conversations')
+    store.dispatch.operators.setOperatorsLoaded(true)
+    store.dispatch.operators.setLoading(false)
+  }
+}
+
+export const retrieveAvatars = async (authStore: any) => {
+  store.dispatch.operators.setAvatarsLoaded(false)
+
+  try {
+    let avatars = loadCache('operatorsAvatars', authStore.username)
+
+    if (!avatars) {
+      // avatars not cached or cache has expired
+      avatars = await getAllAvatars()
+      const expiration = new Date().getTime() + AVATARS_EXPIRATION_MILLIS
+      saveCache('operatorsAvatars', avatars, authStore.username, expiration)
+    }
+    store.dispatch.operators.setAvatars(avatars)
+    store.dispatch.operators.setAvatarsLoaded(true)
+  } catch (e) {
+    console.error(e)
+    store.dispatch.operators.setErrorMessage('Cannot retrieve avatars')
+    store.dispatch.operators.setOperatorsLoaded(true)
+    store.dispatch.operators.setLoading(false)
+  }
+}
+
+export const retrieveFavorites = (authStore: any) => {
+  store.dispatch.operators.setFavoritesLoaded(false)
+  const favoriteOperators = loadPreference('favoriteOperators', authStore.username) || []
+  store.dispatch.operators.setFavorites(favoriteOperators)
+  store.dispatch.operators.setFavoritesLoaded(true)
+}
+
+export const buildOperators = (operatorsStore: any) => {
+  let operators = cloneDeep(operatorsStore.userEndpoints)
+
+  // groups
+
+  for (let [groupName, groupData] of Object.entries(operatorsStore.groups)) {
+    // @ts-ignore
+    for (const username of groupData.users) {
+      if (operators[username]) {
+        let groups = operators[username].groups || []
+        groups.push(groupName)
+        operators[username].groups = groups
+      }
+    }
+  }
+
+  // conversations
+
+  for (const [extNum, extData] of Object.entries(operatorsStore.extensions)) {
+    // @ts-ignore
+    if (!isEmpty(extData.conversations)) {
+      const opFound: any = Object.values(operators).find((op: any) => {
+        return op.endpoints.extension.some((ext: any) => ext.id === extNum)
+      })
+
+      if (opFound) {
+        let conversations = opFound.conversations || []
+
+        // @ts-ignore
+        Object.values(extData.conversations).forEach((conv) => {
+          conversations.push(conv)
+        })
+        opFound.conversations = conversations
+      }
+    }
+  }
+
+  // favorites
+
+  for (const username of operatorsStore.favorites) {
+    operators[username].favorite = true
+  }
+
+  // avatars
+
+  for (const [username, avatarBase64] of Object.entries(operatorsStore.avatars)) {
+    if (operators[username]) {
+      operators[username].avatarBase64 = avatarBase64
+    }
+  }
+
+  store.dispatch.operators.setOperators(operators)
+  store.dispatch.operators.setOperatorsLoaded(true)
+  store.dispatch.operators.setLoading(false)
 }
