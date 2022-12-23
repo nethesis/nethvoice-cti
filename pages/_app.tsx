@@ -49,14 +49,16 @@ function MyApp({ Component, pageProps }: AppProps) {
       {!isLoading && (
         <Provider store={store}>
           {router.pathname !== '/login' ? (
-            <Service>
-              <Layout>
-                <RouteGuard>
-                  <Component {...pageProps} />
-                  <Island />
-                </RouteGuard>
-              </Layout>
-            </Service>
+            <>
+              <Service>
+                <Layout>
+                  <RouteGuard>
+                    <Component {...pageProps} />
+                  </RouteGuard>
+                </Layout>
+              </Service>
+              <Island />
+            </>
           ) : (
             // Render the Login page
             <Component {...pageProps} />
