@@ -201,7 +201,7 @@ export const ShowOperatorDrawerContent = forwardRef<
         </dl>
       </div>
       {/* ongoing call info */}
-      {config.conversations?.length &&
+      {!!config.conversations?.length &&
         (config.conversations[0].connected ||
           config.conversations[0].inConference ||
           config.conversations[0].chDest.inConference == true) && (
