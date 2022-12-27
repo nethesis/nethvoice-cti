@@ -54,7 +54,6 @@ function checkTitle(config: any) {
 
 export const ShowContactHistory = forwardRef<HTMLButtonElement, ShowContactHistoryProps>(
   ({ config, className, ...props }, ref) => {
-
     const [isDrawerLoaded, setIsDrawerLoaded] = useState(false)
 
     const [drawerError, setDrawerError] = useState('')
@@ -73,6 +72,7 @@ export const ShowContactHistory = forwardRef<HTMLButtonElement, ShowContactHisto
               config.number,
               config.sort,
             )
+            res.rows = res.rows.filter((call: any) => (call.src === config.number || call.cnum === config.number || call.dst === config.number))
             setDrawer(res)
           } catch (e) {
             setDrawerError('Cannot retrieve user drawer history')
@@ -87,6 +87,8 @@ export const ShowContactHistory = forwardRef<HTMLButtonElement, ShowContactHisto
                 config.number,
                 config.sort,
               )
+              res.rows = res.rows.filter((call: any) => (call.src === config.number || call.cnum === config.number || call.dst === config.number))
+              console.log("res.rows", res.rows)
               setDrawer(res)
             } catch (e) {
               setDrawerError('Cannot retrieve switchboard drawer history')
@@ -120,42 +122,34 @@ export const ShowContactHistory = forwardRef<HTMLButtonElement, ShowContactHisto
             {call.direction === 'in' && (
               <div>
                 {call.disposition === 'ANSWERED' ? (
-
                   <HiArrowDownLeft
                     className='mr-2 h-5 w-5 text-green-400'
                     aria-hidden='true'
                     title='Incoming answered'
                   />
-
                 ) : (
-
                   <MdCallMissed
                     className='mr-2 h-5 w-5 text-red-400'
                     aria-hidden='true'
                     title='Incoming missed'
                   />
-
                 )}
               </div>
             )}
             {call.direction === 'out' && (
               <div>
                 {call.disposition === 'ANSWERED' ? (
-
                   <HiArrowUpRight
                     className='mr-2 h-5 w-5 text-green-400'
                     aria-hidden='true'
                     title='Outgoing answered'
                   />
-
                 ) : (
-
                   <HiArrowUpRight
                     className='mr-2 h-5 w-5 text-red-400'
                     aria-hidden='true'
                     title='Outgoing missed'
                   />
-
                 )}
               </div>
             )}
@@ -355,74 +349,78 @@ export const ShowContactHistory = forwardRef<HTMLButtonElement, ShowContactHisto
                 drawer?.rows &&
                 drawer.rows.map((call: any, index: number) => (
                   <li key={index}>
-                    <div className='flex items-center py-4'>
-                      <div className='flex min-w-0 flex-1 items-center'>
-                        <div className='min-w-0 flex-1 px-2 md:grid md:grid-cols-2 gap-4 lg:grid-cols-2 xl:grid-cols-2 2xl:grid-cols-5'>
-                          {/* Date column */}
-                          <div className='flex flex-col justify-center'>
-                            <div className=''>
-                              <div className='text-sm text-gray-900 dark:text-gray-100'>
-                                {formatDate(call.time * 1000, 'PP')}
-                              </div>
-                              <div className='text-sm text-gray-500'>
-                                {conversionToUtcHour(call.time)}
+                      <div className='flex items-center py-4'>
+                        <div className='flex min-w-0 flex-1 items-center'>
+                          <div className='min-w-0 flex-1 px-2 md:grid md:grid-cols-2 gap-4 lg:grid-cols-2 xl:grid-cols-2 2xl:grid-cols-5'>
+                            {/* Date column */}
+                            <div className='flex flex-col justify-center'>
+                              <div className=''>
+                                <div className='text-sm text-gray-900 dark:text-gray-100'>
+                                  {formatDate(call.time * 1000, 'PP')}
+                                </div>
+                                <div className='text-sm text-gray-500'>
+                                  {conversionToUtcHour(call.time)}
+                                </div>
                               </div>
                             </div>
-                          </div>
 
-                          {/* Source column  */}
-                          <div className='flex flex-col justify-center text-sm mt-4 text-gray-900 dark:text-gray-100 md:mt-0'>
-                            <div className='truncate'>
-                              {call.cnam !== ''
-                                ? call.cnam
-                                : call.ccompany !== ''
+                            {/* Source column  */}
+                            <div className='flex flex-col justify-center text-sm mt-4 text-gray-900 dark:text-gray-100 md:mt-0'>
+                              <div className='truncate'>
+                                {call.cnam !== ''
+                                  ? call.cnam
+                                  : call.ccompany !== ''
                                   ? call.ccompany
                                   : call.cnum || '-'}
+                              </div>
+                              {call.cnum !== '' && (
+                                <div className='truncate text-sm text-gray-500 dark:text-gray-500'>
+                                  {call.src}
+                                </div>
+                              )}
                             </div>
-                            {call.cnum !== '' && (
-                              <div className='truncate text-sm text-gray-500 dark:text-gray-500'>{call.src}</div>
-                            )}
-                          </div>
 
-                          {/* Icon column */}
-                          <div className='mt-4 md:mt-0 flex items-center 2xl:justify-center'>
-                            <FontAwesomeIcon
-                              icon={faArrowRight}
-                              className='h-4 w-4 flex-shrink-0 text-gray-500 dark:text-gray-600'
-                              aria-hidden='true'
-                            />
-                          </div>
+                            {/* Icon column */}
+                            <div className='mt-4 md:mt-0 flex items-center 2xl:justify-center'>
+                              <FontAwesomeIcon
+                                icon={faArrowRight}
+                                className='h-4 w-4 flex-shrink-0 text-gray-500 dark:text-gray-600'
+                                aria-hidden='true'
+                              />
+                            </div>
 
-                          {/* Destination column */}
-                          <div className='flex flex-col justify-center mt-4 md:mt-0'>
-                            <div className='truncate text-sm text-gray-900 dark:text-gray-100'>
-                              {call.dst_cnam !== ''
-                                ? call.dst_cnam
-                                : call.dst_ccompany !== ''
+                            {/* Destination column */}
+                            <div className='flex flex-col justify-center mt-4 md:mt-0'>
+                              <div className='truncate text-sm text-gray-900 dark:text-gray-100'>
+                                {call.dst_cnam !== ''
+                                  ? call.dst_cnam
+                                  : call.dst_ccompany !== ''
                                   ? call.dst_ccompany
                                   : call.dst || '-'}
+                              </div>
+                              {(call.dst_cnam !== '' || call.dst_ccompany !== '') && (
+                                <div className='truncate text-sm text-gray-500 dark:text-gray-500'>
+                                  {call.dst}
+                                </div>
+                              )}
                             </div>
-                            {(call.dst_cnam !== '' || call.dst_ccompany !== '') && (
-                              <div className='truncate text-sm text-gray-500 dark:text-gray-500'>{call.dst}</div>
+
+                            {/* icon user column */}
+                            {config.selectionType === 'user' && (
+                              <div className='flex items-center md:mt-0 2xl:justify-center'>
+                                {checkIconUser(call)}{' '}
+                              </div>
+                            )}
+
+                            {/* icon user column */}
+                            {config.selectionType === 'switchboard' && (
+                              <div className='flex items-center md:mt-0 2xl:justify-center'>
+                                {checkIconSwitchboard(call)}
+                              </div>
                             )}
                           </div>
-
-                          {/* icon user column */}
-                          {config.selectionType === 'user' && (
-                            <div className='flex items-center md:mt-0 2xl:justify-center'>
-                              {checkIconUser(call)}{' '}
-                            </div>
-                          )}
-
-                          {/* icon user column */}
-                          {config.selectionType === 'switchboard' && (
-                            <div className='flex items-center md:mt-0 2xl:justify-center'>
-                              {checkIconSwitchboard(call)}
-                            </div>
-                          )}
                         </div>
                       </div>
-                    </div>
                   </li>
                 ))}
             </ul>
