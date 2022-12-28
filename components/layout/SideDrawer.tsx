@@ -13,7 +13,7 @@ import { CreateOrEditContactDrawerContent } from '../phonebook/CreateOrEditConta
 import { ShowContactDrawerContent } from '../phonebook/ShowContactDrawerContent'
 import { CreateOrEditSpeedDialDrawerContent } from './speed_dial/CreateOrEditSpeedDialDrawerContent'
 import { ShowContactHistory } from '../history/ShowContactHistory'
-import { ShowLastCallsDrawerContent } from './ShowLastCallsDrawerContent'
+import { CallNotificationsDrawerContent } from './CallNotificationsDrawerContent'
 
 interface SideDrawerProps {
   isShown: boolean
@@ -51,8 +51,8 @@ export const SideDrawer: FC<SideDrawerProps> = ({ isShown, contentType, config, 
                         <ShowOperatorDrawerContent config={config} />
                       ) : contentType === 'showContactHistory' ? (
                         <ShowContactHistory config={config} />
-                      ) : contentType === 'showLastCalls' ? (
-                        <ShowLastCallsDrawerContent />
+                      ) : contentType === 'callNotifications' ? (
+                        <CallNotificationsDrawerContent />
                       ) : null}
                     </div>
                   </nav>

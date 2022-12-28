@@ -17,11 +17,11 @@ import { MdCallMissed } from 'react-icons/md'
 import { utcToZonedTime } from 'date-fns-tz'
 import { formatDistanceToNowLoc } from '../../lib/dateTime'
 
-export interface ShowLastCallsDrawerContentProps extends ComponentPropsWithRef<'div'> {}
+export interface CallNotificationsDrawerContentProps extends ComponentPropsWithRef<'div'> {}
 
-export const ShowLastCallsDrawerContent = forwardRef<
+export const CallNotificationsDrawerContent = forwardRef<
   HTMLButtonElement,
-  ShowLastCallsDrawerContentProps
+  CallNotificationsDrawerContentProps
 >(({ className, ...props }, ref) => {
   const [firstRender, setFirstRender]: any = useState(true)
   const [isLoaded, setLoaded] = useState(false)
@@ -359,4 +359,4 @@ export const ShowLastCallsDrawerContent = forwardRef<
   )
 })
 
-ShowLastCallsDrawerContent.displayName = 'ShowLastCallsDrawerContent'
+CallNotificationsDrawerContent.displayName = 'CallNotificationsDrawerContent'

@@ -70,7 +70,7 @@ export const TopBar: FC<TopBarProps> = ({ openMobileCb }) => {
   const openLastCallsDrawer = () => {
     store.dispatch.sideDrawer.update({
       isShown: true,
-      contentType: 'showLastCalls',
+      contentType: 'callNotifications',
       config: null,
     })
   }
@@ -149,7 +149,7 @@ export const TopBar: FC<TopBarProps> = ({ openMobileCb }) => {
                   icon={faPhone}
                   className={
                     'h-5 w-5 py-1 px-0.5 flex-shrink-0 ' +
-                    (sideDrawer.isShown && sideDrawer.contentType === 'showLastCalls'
+                    (sideDrawer.isShown && sideDrawer.contentType === 'callNotifications'
                       ? ' text-primary dark:text-primary'
                       : ' text-gray-500 dark:text-gray-400')
                   }
