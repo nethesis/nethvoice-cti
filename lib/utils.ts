@@ -72,3 +72,11 @@ export function formatDate(date: any, fmt: string) {
 export const formatInTimeZone = (date: any, fmt: string, tz: any) => {
   return format(utcToZonedTime(date, tz), fmt, { timeZone: tz })
 }
+
+export function getProductName() {
+  if (window == undefined) {
+    return ''
+  }
+  // @ts-ignore
+  return `${window.CONFIG.PRODUCT_NAME}`
+}

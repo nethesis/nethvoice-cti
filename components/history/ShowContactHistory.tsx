@@ -65,7 +65,6 @@ export const ShowContactHistory = forwardRef<HTMLButtonElement, ShowContactHisto
     //Get the operators information
     const operatorStore = useSelector((state: RootState) => state.operators)
     const operators = operatorStore.operators
-    const arrayOperators = Object.values(operators)
 
     //Get the history drawer for the user type filter selected
     useEffect(() => {
@@ -252,7 +251,7 @@ export const ShowContactHistory = forwardRef<HTMLButtonElement, ShowContactHisto
     function sourceColumn(call: any) {
       //Check if a user does not have a name and add the name of the operator
       if (call.cnam === '') {
-        let foundOperator: any = arrayOperators.find((operator: any) =>
+        let foundOperator: any = Object.values(operators).find((operator: any) =>
           operator.endpoints.extension.find(
             (device: any) => device.id === call.cnum || device.id === call.src,
           ),
@@ -278,7 +277,7 @@ export const ShowContactHistory = forwardRef<HTMLButtonElement, ShowContactHisto
     function destinationColumn(call: any) {
       //Check if a user does not have a name and add the name of the operator
       if (call.dst_cnam === '') {
-        let foundOperator: any = arrayOperators.find((operator: any) =>
+        let foundOperator: any = Object.values(operators).find((operator: any) =>
           operator.endpoints.extension.find((device: any) => device.id === call.dst),
         )
 

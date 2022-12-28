@@ -90,7 +90,6 @@ const History: NextPage = () => {
   //Get the operators information
   const operatorStore = useSelector((state: RootState) => state.operators)
   const operators = operatorStore.operators
-  const arrayOperators = Object.values(operators)
 
   //This date will be sent to the API to get the history of the user
   //Get actual date without hours and minutes
@@ -251,7 +250,7 @@ const History: NextPage = () => {
     } else {
       //Check if a user does not have a name and add the name of the operator
       if (call.cnam === '') {
-        let foundOperator: any = arrayOperators.find((operator: any) =>
+        let foundOperator: any = Object.values(operators).find((operator: any) =>
           operator.endpoints.extension.find(
             (device: any) => device.id === call.cnum || device.id === call.src,
           ),
@@ -312,7 +311,7 @@ const History: NextPage = () => {
     } else {
       //Check if a user does not have a name and add the name of the operator
       if (call.dst_cnam === '') {
-        let foundOperator: any = arrayOperators.find((operator: any) =>
+        let foundOperator: any = Object.values(operators).find((operator: any) =>
           operator.endpoints.extension.find((device: any) => device.id === call.dst),
         )
 
