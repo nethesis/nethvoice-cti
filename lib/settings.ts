@@ -14,3 +14,11 @@ export function newIslandConfig(obj: NewIslandConfigTypes): string {
     `${obj.hostname}:${obj.username}:${obj.auth_token}:${obj.sip_exten}:${obj.sip_secret}`,
   )
 }
+
+export function getProductName() {
+  if (window == undefined) {
+    return ''
+  }
+  // @ts-ignore
+  return `${window.CONFIG.PRODUCT_NAME}`
+}

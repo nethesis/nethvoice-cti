@@ -4,7 +4,7 @@
 import type { NextPage } from 'next'
 import { RadioGroup } from '@headlessui/react'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
-import { faPalette, faBorderAll, IconDefinition, faTrashCan} from '@fortawesome/free-solid-svg-icons'
+import { faPalette, faBorderAll, IconDefinition, faDatabase} from '@fortawesome/free-solid-svg-icons'
 import classNames from 'classnames'
 import { useSelector } from 'react-redux'
 import { RootState } from '../store'
@@ -23,7 +23,7 @@ const settingsMenu: SettingsMenuTypes[] = [
   // { name: 'General', href: '#', icon: faGear, current: false }, ////
   { name: 'Theme', href: '#', icon: faPalette, current: true },
   { name: 'Integrations', href: '#', icon: faBorderAll, current: false },
-  { name: 'Clear Cache', href: '#',icon: faTrashCan, current: false },
+  { name: 'Cache', href: '#',icon: faDatabase, current: false },
 ]
 
 const themeOptions = [
@@ -188,7 +188,7 @@ const Settings: NextPage = () => {
                 {/* Integrations section */}
                 {currentSection === 'Integrations' && <Integrations />}
                 {/* Clean cache */}
-                {currentSection === 'Clean cache' && <ClearCache />}
+                {currentSection === 'Cache' && <ClearCache />}
               </div>
             </div>
           </div>
