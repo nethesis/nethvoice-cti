@@ -63,19 +63,8 @@ export function callPhoneNumber(phoneNumber: string) {
   console.log('callPhoneNumber', phoneNumber) ////
 }
 
-//// TODO externalize browser language
 export function formatDate(date: any, fmt: string) {
-  let loc = enGB
-  if (navigator) {
-    const lang = navigator.language.substring(0, 2)
-    switch (lang) {
-      case 'it':
-        loc = it
-        break
-      //TO DO add other languages
-    }
-    return format(date, fmt, { locale: loc })
-  }
+  return format(date, fmt, { locale: getLocale() })
 }
 
 export const formatInTimeZone = (date: any, fmt: string, tz: any) => {
