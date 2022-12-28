@@ -84,9 +84,12 @@ const History: NextPage = () => {
   const [historyError, setHistoryError] = useState('')
 
   //Find the credentials of the user saved in the store
-  const historyStore = useSelector((state: RootState) => state.history)
   const authenticationStore = useSelector((state: RootState) => state.authentication)
   const { username } = authenticationStore
+
+  //Get the operators information
+  const operatorStore = useSelector((state: RootState) => state.operators)
+  const operators = operatorStore.operators
 
   //This date will be sent to the API to get the history of the user
   //Get actual date without hours and minutes
@@ -160,11 +163,6 @@ const History: NextPage = () => {
     callDirection,
   ])
 
-  useEffect(() => {
-    // reload phonebook
-    setHistoryLoaded(false)
-  }, [historyStore])
-
   const [totalPages, setTotalPages] = useState(0)
 
   //Calculate the total pages of the history
@@ -235,10 +233,10 @@ const History: NextPage = () => {
             {call.cnam !== '' && call.cnum !== mainextension && call.cnam !== name
               ? call.cnam
               : call.ccompany !== ''
-                ? call.ccompany
-                : call.cnum !== mainextension
-                  ? call.cnum
-                  : 'You'}
+              ? call.ccompany
+              : call.cnum !== mainextension
+              ? call.cnum
+              : 'You'}
           </div>
           {call.cnum !== '' &&
             call.cnum !== mainextension &&
@@ -250,6 +248,19 @@ const History: NextPage = () => {
         </>
       )
     } else {
+      //Check if a user does not have a name and add the name of the operator
+      if (call.cnam === '') {
+        let foundOperator: any = Object.values(operators).find((operator: any) =>
+          operator.endpoints.extension.find(
+            (device: any) => device.id === call.cnum || device.id === call.src,
+          ),
+        )
+
+        if (foundOperator) {
+          call.cnam = foundOperator.name
+        }
+      }
+
       //Switchboard call type
       return (
         <>
@@ -283,10 +294,10 @@ const History: NextPage = () => {
             {call.dst_cnam !== '' && call.dst !== mainextension && call.dst_cnam !== name
               ? call.dst_cnam
               : call.dst_ccompany !== ''
-                ? call.dst_ccompany
-                : call.dst !== mainextension
-                  ? call.dst
-                  : 'You'}
+              ? call.dst_ccompany
+              : call.dst !== mainextension
+              ? call.dst
+              : 'You'}
           </div>
           {call.dst !== '' &&
             call.dst !== mainextension &&
@@ -298,6 +309,17 @@ const History: NextPage = () => {
         </>
       )
     } else {
+      //Check if a user does not have a name and add the name of the operator
+      if (call.dst_cnam === '') {
+        let foundOperator: any = Object.values(operators).find((operator: any) =>
+          operator.endpoints.extension.find((device: any) => device.id === call.dst),
+        )
+
+        if (foundOperator) {
+          call.dst_cnam = foundOperator.name
+        }
+      }
+
       //Switchboard call type
       return (
         <>
@@ -305,8 +327,8 @@ const History: NextPage = () => {
             {call.dst_cnam !== ''
               ? call.dst_cnam
               : call.dst_ccompany !== ''
-                ? call.dst_ccompany
-                : call.dst || '-'}
+              ? call.dst_ccompany
+              : call.dst || '-'}{' '}
           </div>
           {(call.dst_cnam !== '' || call.dst_ccompany !== '') && (
             <div className='truncate text-sm cursor-pointer hover:underline text-gray-500 dark:text-gray-500'>
@@ -565,28 +587,28 @@ const History: NextPage = () => {
                           onClick={
                             callType !== 'user'
                               ? () =>
-                                openDrawerHistory(
-                                  call.cnam,
-                                  call.ccompany,
-                                  call.cnum,
-                                  dateBegin,
-                                  dateEnd,
-                                  username,
-                                  callType,
-                                  sortBy,
-                                  callDirection,
-                                  call.disposition,
-                                  call.type,
-                                  call.cnam,
-                                  call.ccompany,
-                                  call.cnum,
-                                  call.dst_cnam,
-                                  call.dst_ccompany,
-                                  call.dst,
-                                )
+                                  openDrawerHistory(
+                                    call.cnam,
+                                    call.ccompany,
+                                    call.cnum,
+                                    dateBegin,
+                                    dateEnd,
+                                    username,
+                                    callType,
+                                    sortBy,
+                                    callDirection,
+                                    call.disposition,
+                                    call.type,
+                                    call.cnam,
+                                    call.ccompany,
+                                    call.cnum,
+                                    call.dst_cnam,
+                                    call.dst_ccompany,
+                                    call.dst,
+                                  )
                               : call.cnum === mainextension
-                                ? undefined
-                                : () =>
+                              ? undefined
+                              : () =>
                                   openDrawerHistory(
                                     call.cnam,
                                     call.ccompany,
@@ -626,29 +648,6 @@ const History: NextPage = () => {
                           onClick={
                             callType !== 'user'
                               ? () =>
-                                openDrawerHistory(
-                                  call.dst_cnam,
-                                  call.dst_ccompany,
-                                  call.dst,
-                                  dateBegin,
-                                  dateEnd,
-                                  username,
-                                  callType,
-                                  sortBy,
-                                  call.direction,
-                                  call.disposition,
-                                  call.type,
-                                  call.cnam,
-                                  call.ccompany,
-                                  call.cnum,
-                                  call.dst_cnam,
-                                  call.dst_ccompany,
-                                  call.dst,
-                                )
-                              : callType === 'user' &&
-                                call.direction === 'out' &&
-                                call.dst !== mainextension
-                                ? () =>
                                   openDrawerHistory(
                                     call.dst_cnam,
                                     call.dst_ccompany,
@@ -668,28 +667,51 @@ const History: NextPage = () => {
                                     call.dst_ccompany,
                                     call.dst,
                                   )
-                                : call.dst === mainextension
-                                  ? undefined
-                                  : () =>
-                                    openDrawerHistory(
-                                      call.cnam,
-                                      call.ccompany,
-                                      call.cnum,
-                                      dateBegin,
-                                      dateEnd,
-                                      username,
-                                      callType,
-                                      sortBy,
-                                      call.direction,
-                                      call.disposition,
-                                      call.type,
-                                      call.cnam,
-                                      call.ccompany,
-                                      call.cnum,
-                                      call.dst_cnam,
-                                      call.dst_ccompany,
-                                      call.dst,
-                                    )
+                              : callType === 'user' &&
+                                call.direction === 'out' &&
+                                call.dst !== mainextension
+                              ? () =>
+                                  openDrawerHistory(
+                                    call.dst_cnam,
+                                    call.dst_ccompany,
+                                    call.dst,
+                                    dateBegin,
+                                    dateEnd,
+                                    username,
+                                    callType,
+                                    sortBy,
+                                    call.direction,
+                                    call.disposition,
+                                    call.type,
+                                    call.cnam,
+                                    call.ccompany,
+                                    call.cnum,
+                                    call.dst_cnam,
+                                    call.dst_ccompany,
+                                    call.dst,
+                                  )
+                              : call.dst === mainextension
+                              ? undefined
+                              : () =>
+                                  openDrawerHistory(
+                                    call.cnam,
+                                    call.ccompany,
+                                    call.cnum,
+                                    dateBegin,
+                                    dateEnd,
+                                    username,
+                                    callType,
+                                    sortBy,
+                                    call.direction,
+                                    call.disposition,
+                                    call.type,
+                                    call.cnam,
+                                    call.ccompany,
+                                    call.cnum,
+                                    call.dst_cnam,
+                                    call.dst_ccompany,
+                                    call.dst,
+                                  )
                           }
                         >
                           {checkTypeDestination(call)}
@@ -704,28 +726,28 @@ const History: NextPage = () => {
                             onClick={
                               callType !== 'user'
                                 ? () =>
-                                  openDrawerHistory(
-                                    call.cnam,
-                                    call.ccompany,
-                                    call.cnum,
-                                    dateBegin,
-                                    dateEnd,
-                                    username,
-                                    callType,
-                                    sortBy,
-                                    callDirection,
-                                    call.disposition,
-                                    call.type,
-                                    call.cnam,
-                                    call.ccompany,
-                                    call.cnum,
-                                    call.dst_cnam,
-                                    call.dst_ccompany,
-                                    call.dst,
-                                  )
+                                    openDrawerHistory(
+                                      call.cnam,
+                                      call.ccompany,
+                                      call.cnum,
+                                      dateBegin,
+                                      dateEnd,
+                                      username,
+                                      callType,
+                                      sortBy,
+                                      callDirection,
+                                      call.disposition,
+                                      call.type,
+                                      call.cnam,
+                                      call.ccompany,
+                                      call.cnum,
+                                      call.dst_cnam,
+                                      call.dst_ccompany,
+                                      call.dst,
+                                    )
                                 : call.cnum === mainextension
-                                  ? undefined
-                                  : () =>
+                                ? undefined
+                                : () =>
                                     openDrawerHistory(
                                       call.cnam,
                                       call.ccompany,
@@ -765,29 +787,6 @@ const History: NextPage = () => {
                             onClick={
                               callType !== 'user'
                                 ? () =>
-                                  openDrawerHistory(
-                                    call.dst_cnam,
-                                    call.dst_ccompany,
-                                    call.dst,
-                                    dateBegin,
-                                    dateEnd,
-                                    username,
-                                    callType,
-                                    sortBy,
-                                    call.direction,
-                                    call.disposition,
-                                    call.type,
-                                    call.cnam,
-                                    call.ccompany,
-                                    call.cnum,
-                                    call.dst_cnam,
-                                    call.dst_ccompany,
-                                    call.dst,
-                                  )
-                                : callType === 'user' &&
-                                  call.direction === 'out' &&
-                                  call.dst !== mainextension
-                                  ? () =>
                                     openDrawerHistory(
                                       call.dst_cnam,
                                       call.dst_ccompany,
@@ -807,28 +806,51 @@ const History: NextPage = () => {
                                       call.dst_ccompany,
                                       call.dst,
                                     )
-                                  : call.dst === mainextension
-                                    ? undefined
-                                    : () =>
-                                      openDrawerHistory(
-                                        call.cnam,
-                                        call.ccompany,
-                                        call.cnum,
-                                        dateBegin,
-                                        dateEnd,
-                                        username,
-                                        callType,
-                                        sortBy,
-                                        call.direction,
-                                        call.disposition,
-                                        call.type,
-                                        call.cnam,
-                                        call.ccompany,
-                                        call.cnum,
-                                        call.dst_cnam,
-                                        call.dst_ccompany,
-                                        call.dst,
-                                      )
+                                : callType === 'user' &&
+                                  call.direction === 'out' &&
+                                  call.dst !== mainextension
+                                ? () =>
+                                    openDrawerHistory(
+                                      call.dst_cnam,
+                                      call.dst_ccompany,
+                                      call.dst,
+                                      dateBegin,
+                                      dateEnd,
+                                      username,
+                                      callType,
+                                      sortBy,
+                                      call.direction,
+                                      call.disposition,
+                                      call.type,
+                                      call.cnam,
+                                      call.ccompany,
+                                      call.cnum,
+                                      call.dst_cnam,
+                                      call.dst_ccompany,
+                                      call.dst,
+                                    )
+                                : call.dst === mainextension
+                                ? undefined
+                                : () =>
+                                    openDrawerHistory(
+                                      call.cnam,
+                                      call.ccompany,
+                                      call.cnum,
+                                      dateBegin,
+                                      dateEnd,
+                                      username,
+                                      callType,
+                                      sortBy,
+                                      call.direction,
+                                      call.disposition,
+                                      call.type,
+                                      call.cnam,
+                                      call.ccompany,
+                                      call.cnum,
+                                      call.dst_cnam,
+                                      call.dst_ccompany,
+                                      call.dst,
+                                    )
                             }
                           >
                             {checkTypeDestination(call)}
