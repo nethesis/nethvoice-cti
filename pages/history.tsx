@@ -216,19 +216,8 @@ const History: NextPage = () => {
   //Get the main extension and the name of the user
   const { name, mainextension } = useSelector((state: RootState) => state.user)
 
-  //convert the data
-  function checkData(call: any) {
-    // console.log("found", arrayOperators)
-    // console.log("call", call)
-    // if (callType === 'switchboard' && call.cnam === '' && call.cnum) {
-    //  let found = arrayOperators.find((operator: any) => operator.endpoints.extension[0] === call.cnum)
-    //  console.log("found", found)
-    // }
-  }
-
   //check if the call type is user or switchboard for the Source column
   function checkTypeSource(call: any) {
-    checkData(call)
     //User call type
     if (callType === 'user') {
       return (
@@ -260,6 +249,19 @@ const History: NextPage = () => {
         </>
       )
     } else {
+      //Check if a user does not have a name and add the name of the operator
+      if (call.cnam === '') {
+        let foundOperator: any = arrayOperators.find((operator: any) =>
+          operator.endpoints.extension.find(
+            (device: any) => device.id === call.cnum || device.id === call.src,
+          ),
+        )
+
+        if (foundOperator) {
+          call.cnam = foundOperator.name
+        }
+      }
+
       //Switchboard call type
       return (
         <>
@@ -308,14 +310,17 @@ const History: NextPage = () => {
         </>
       )
     } else {
-      let found: any = arrayOperators.find(
-        (operator: any) => operator.endpoints.extension[0].id === call.dst,
-      )
+      //Check if a user does not have a name and add the name of the operator
+      if (call.dst_cnam === '') {
+        let foundOperator: any = arrayOperators.find((operator: any) =>
+          operator.endpoints.extension.find((device: any) => device.id === call.dst),
+        )
 
-      if (found && call.dst_cnam === '') {
-        console.log("found", found.name)
-        call.dst_cnam = found.name
+        if (foundOperator) {
+          call.dst_cnam = foundOperator.name
+        }
       }
+
       //Switchboard call type
       return (
         <>
@@ -325,7 +330,6 @@ const History: NextPage = () => {
               : call.dst_ccompany !== ''
               ? call.dst_ccompany
               : call.dst || '-'}{' '}
-            {call.dst_cnam}
           </div>
           {(call.dst_cnam !== '' || call.dst_ccompany !== '') && (
             <div className='truncate text-sm cursor-pointer hover:underline text-gray-500 dark:text-gray-500'>
@@ -334,23 +338,6 @@ const History: NextPage = () => {
           )}
         </>
       )
-    }
-  }
-
-  //convert the data
-  function checkSource(call: any) {
-    console.log('found', arrayOperators)
-    let found: any = []
-    if (callType === 'switchboard' && call.dst_cnam === '' && call.dst) {
-      found = arrayOperators.find(
-        (operator: any) => operator.endpoints.extension[0].id === call.dst,
-      )
-    }
-    if (found) {
-      return
-      {
-        call.dst_cnam = found.name
-      }
     }
   }
 

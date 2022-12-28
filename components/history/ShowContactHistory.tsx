@@ -11,8 +11,7 @@ import { HiArrowDownLeft, HiArrowUpRight } from 'react-icons/hi2'
 import { MdCallMissed } from 'react-icons/md'
 import { formatDate, formatInTimeZone } from '../../lib/utils'
 import { useSelector } from 'react-redux'
-
-
+import { RootState } from '../../store'
 
 export interface ShowContactHistoryProps extends ComponentPropsWithRef<'div'> {
   config: any
@@ -62,6 +61,11 @@ export const ShowContactHistory = forwardRef<HTMLButtonElement, ShowContactHisto
     const [drawerError, setDrawerError] = useState('')
 
     const [drawer, setDrawer] = useState<any>([])
+
+    //Get the operators information
+    const operatorStore = useSelector((state: RootState) => state.operators)
+    const operators = operatorStore.operators
+    const arrayOperators = Object.values(operators)
 
     //Get the history drawer for the user type filter selected
     useEffect(() => {
@@ -245,6 +249,60 @@ export const ShowContactHistory = forwardRef<HTMLButtonElement, ShowContactHisto
       return convertedUtcHour
     }
 
+    function sourceColumn(call: any) {
+      //Check if a user does not have a name and add the name of the operator
+      if (call.cnam === '') {
+        let foundOperator: any = arrayOperators.find((operator: any) =>
+          operator.endpoints.extension.find(
+            (device: any) => device.id === call.cnum || device.id === call.src,
+          ),
+        )
+
+        if (foundOperator) {
+          call.cnam = foundOperator.name
+        }
+      }
+
+      return (
+        <div className='flex flex-col justify-center text-sm mt-4 text-gray-900 dark:text-gray-100 md:mt-0'>
+          <div className='truncate'>
+            {call.cnam !== '' ? call.cnam : call.ccompany !== '' ? call.ccompany : call.cnum || '-'}
+          </div>
+          {call.cnum !== '' && (
+            <div className='truncate text-sm text-gray-500 dark:text-gray-500'>{call.src}</div>
+          )}
+        </div>
+      )
+    }
+
+    function destinationColumn(call: any) {
+      //Check if a user does not have a name and add the name of the operator
+      if (call.dst_cnam === '') {
+        let foundOperator: any = arrayOperators.find((operator: any) =>
+          operator.endpoints.extension.find((device: any) => device.id === call.dst),
+        )
+
+        if (foundOperator) {
+          call.dst_cnam = foundOperator.name
+        }
+      }
+
+      return (
+        <div className='flex flex-col justify-center mt-4 md:mt-0'>
+          <div className='truncate text-sm text-gray-900 dark:text-gray-100'>
+            {call.dst_cnam !== ''
+              ? call.dst_cnam
+              : call.dst_ccompany !== ''
+              ? call.dst_ccompany
+              : call.dst || '-'}
+          </div>
+          {(call.dst_cnam !== '' || call.dst_ccompany !== '') && (
+            <div className='truncate text-sm text-gray-500 dark:text-gray-500'>{call.dst}</div>
+          )}
+        </div>
+      )
+    }
+
     return (
       <>
         {/* drawer content */}
@@ -375,22 +433,8 @@ export const ShowContactHistory = forwardRef<HTMLButtonElement, ShowContactHisto
                               </div>
                             </div>
                           </div>
-
                           {/* Source column  */}
-                          <div className='flex flex-col justify-center text-sm mt-4 text-gray-900 dark:text-gray-100 md:mt-0'>
-                            <div className='truncate'>
-                              {call.cnam !== ''
-                                ? call.cnam
-                                : call.ccompany !== ''
-                                ? call.ccompany
-                                : call.cnum || '-'}
-                            </div>
-                            {call.cnum !== '' && (
-                              <div className='truncate text-sm text-gray-500 dark:text-gray-500'>
-                                {call.src}
-                              </div>
-                            )}
-                          </div>
+                          {sourceColumn(call)}
 
                           {/* Icon column */}
                           <div className='mt-4 md:mt-0 flex items-center 2xl:justify-center'>
@@ -402,20 +446,7 @@ export const ShowContactHistory = forwardRef<HTMLButtonElement, ShowContactHisto
                           </div>
 
                           {/* Destination column */}
-                          <div className='flex flex-col justify-center mt-4 md:mt-0'>
-                            <div className='truncate text-sm text-gray-900 dark:text-gray-100'>
-                              {call.dst_cnam !== ''
-                                ? call.dst_cnam
-                                : call.dst_ccompany !== ''
-                                ? call.dst_ccompany
-                                : call.dst || '-'}
-                            </div>
-                            {(call.dst_cnam !== '' || call.dst_ccompany !== '') && (
-                              <div className='truncate text-sm text-gray-500 dark:text-gray-500'>
-                                {call.dst}
-                              </div>
-                            )}
-                          </div>
+                          {destinationColumn(call)}
 
                           {/* icon user column */}
                           {config.selectionType === 'user' && (
