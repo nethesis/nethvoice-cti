@@ -70,7 +70,7 @@ export const ShowOperatorDrawerContent = forwardRef<
   )
 
   return (
-    <div className={classNames('p-1', className)} {...props}>
+    <div className={classNames('p-5', className)} {...props}>
       <div className='flex min-w-0 flex-1 items-center justify-between'>
         <div className='flex items-center'>
           <div className='flex-shrink-0 mr-4'>

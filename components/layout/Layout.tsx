@@ -124,16 +124,12 @@ export const Layout: FC<LayoutProps> = ({ children }) => {
     const opName = Object.keys(data)[0]
     const mainPresence = data[opName].mainPresence
     store.dispatch.operators.updateMainPresence(opName, mainPresence)
-
-    // console.log('updateMainPresence', opName, mainPresence) ////
   })
 
   useEventListener('phone-island-conversations', (data) => {
     const opName = Object.keys(data)[0]
     const conversations = data[opName].conversations
     store.dispatch.operators.updateConversations(opName, conversations)
-
-    // console.log('updateConversations', opName, conversations) ////
   })
 
   return (

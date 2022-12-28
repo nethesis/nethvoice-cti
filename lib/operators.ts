@@ -2,7 +2,7 @@
 // SPDX-License-Identifier: AGPL-3.0-or-later
 
 import axios from 'axios'
-import { handleNetworkError } from '../lib/utils'
+import { callPhoneNumber, handleNetworkError } from '../lib/utils'
 import { store } from '../store'
 import { loadCache, loadPreference, saveCache, savePreference } from './storage'
 import { isEmpty, cloneDeep } from 'lodash'
@@ -131,9 +131,7 @@ export const sortByFavorite = (operator1: any, operator2: any) => {
 
 export const callOperator = (operator: any, event: any = undefined) => {
   const phoneNumber = operator.endpoints.mainextension[0].id
-  eventDispatch('phone-island-call-start', { number: phoneNumber })
-
-  console.log('call operator', phoneNumber) ////
+  callPhoneNumber(phoneNumber)
 
   // stop propagation of click event
   if (event) {

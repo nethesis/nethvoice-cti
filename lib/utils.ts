@@ -7,6 +7,8 @@ import { store } from '../store'
 
 import { format, utcToZonedTime } from 'date-fns-tz'
 import { enGB, it } from 'date-fns/locale'
+import { eventDispatch } from './hooks/eventDispatch'
+import { getLocale } from './dateTime'
 
 export interface ClearProps {
   key: string
@@ -55,6 +57,13 @@ export const sortByProperty = (property: string | number) => {
   }
 }
 
+export function callPhoneNumber(phoneNumber: string) {
+  eventDispatch('phone-island-call-start', { number: phoneNumber })
+
+  console.log('callPhoneNumber', phoneNumber) ////
+}
+
+//// TODO externalize browser language
 export function formatDate(date: any, fmt: string) {
   let loc = enGB
   if (navigator) {
@@ -70,7 +79,7 @@ export function formatDate(date: any, fmt: string) {
 }
 
 export const formatInTimeZone = (date: any, fmt: string, tz: any) => {
-  return format(utcToZonedTime(date, tz), fmt, { timeZone: tz })
+  return format(utcToZonedTime(date, tz), fmt, { timeZone: tz, locale: getLocale() })
 }
 
 export function getProductName() {

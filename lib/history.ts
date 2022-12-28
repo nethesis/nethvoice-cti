@@ -25,10 +25,11 @@ export async function search(
   from: string,
   to: string,
   textSearch: string,
-  pageNum: number,
   sort: string,
   type: string,
-) {
+  pageNum: number,
+  pageSize: number = PAGE_SIZE,
+  ) {
   if (window == undefined) {
     return
   }
@@ -38,7 +39,7 @@ export async function search(
   } else {
     removeLostCalls = false
   }
-  const offset = (pageNum - 1) * PAGE_SIZE
+  const offset = (pageNum - 1) * pageSize
 
   let apiUrl = getHistoryUrl()
   let userUrlApi = apiUrl + '/webrest/'
@@ -49,9 +50,9 @@ export async function search(
   }
   userUrlApi += '/' + from + '/' + to
   if (textSearch) {
-    userUrlApi += '/' + textSearch + '?offset=' + offset + '&limit=' + PAGE_SIZE + '&sort=' + sort
+    userUrlApi += '/' + textSearch + '?offset=' + offset + '&limit=' + pageSize + '&sort=' + sort
   } else {
-    userUrlApi += '?offset=' + offset + '&limit=' + PAGE_SIZE + '&sort=' + sort
+    userUrlApi += '?offset=' + offset + '&limit=' + pageSize + '&sort=' + sort
   }
   if (callType === 'user') {
     if (type != 'all') {

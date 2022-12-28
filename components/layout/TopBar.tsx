@@ -8,7 +8,7 @@
  */
 
 import { FC } from 'react'
-import { Avatar, Dropdown } from '../common'
+import { Avatar, Button, Dropdown } from '../common'
 import { logout } from '../../services/login'
 import { useRouter } from 'next/router'
 import { removeItem } from '../../lib/storage'
@@ -22,6 +22,8 @@ import {
   faBars,
   faSun,
   faMoon,
+  faPhone,
+  faComment,
 } from '@fortawesome/free-solid-svg-icons'
 import { setTheme } from '../../lib/darkTheme'
 
@@ -36,6 +38,7 @@ export const TopBar: FC<TopBarProps> = ({ openMobileCb }) => {
   )
   const { theme } = useSelector((state: RootState) => state.darkTheme)
   const auth = useSelector((state: RootState) => state.authentication)
+  const sideDrawer = useSelector((state: RootState) => state.sideDrawer)
 
   const doLogout = async () => {
     const res = await logout()
@@ -62,6 +65,14 @@ export const TopBar: FC<TopBarProps> = ({ openMobileCb }) => {
     } else {
       setTheme('dark', auth.username)
     }
+  }
+
+  const openLastCallsDrawer = () => {
+    store.dispatch.sideDrawer.update({
+      isShown: true,
+      contentType: 'showLastCalls',
+      config: null,
+    })
   }
 
   const dropdownItems = (
@@ -130,9 +141,47 @@ export const TopBar: FC<TopBarProps> = ({ openMobileCb }) => {
               </div>
             </form>
           </div>
-          <div className='ml-2 flex items-center space-x-4 sm:ml-6 sm:space-x-6'>
+          <div className='ml-2 flex items-center space-x-2'>
+            {/* Last calls drawer */}
+            <Button variant='ghost' onClick={() => openLastCallsDrawer()}>
+              <span className='relative inline-block'>
+                <FontAwesomeIcon
+                  icon={faPhone}
+                  className={
+                    'h-5 w-5 py-1 px-0.5 flex-shrink-0 ' +
+                    (sideDrawer.isShown && sideDrawer.contentType === 'showLastCalls'
+                      ? ' text-primary dark:text-primary'
+                      : ' text-gray-500 dark:text-gray-400')
+                  }
+                  aria-hidden='true'
+                />
+                {/* <span className='absolute top-0 right-0 block h-2 w-2 -translate-y-1/2 translate-x-1/2 transform rounded-full bg-red-500'/> //// */}
+                <span className='absolute flex justify-center items-center top-1 right-0 h-4 w-4 -translate-y-1/2 translate-x-1/2 transform rounded-full text-xs ring-2 ring-white dark:ring-gray-700 text-white bg-red-500'>
+                  <span>3</span>
+                </span>
+              </span>
+            </Button>
+            {/* Chat drawer */}
+            <Button variant='ghost'>
+              <span className='relative inline-block'>
+                <FontAwesomeIcon
+                  icon={faComment}
+                  className={
+                    'h-5 w-5 py-1 px-0.5 flex-shrink-0 ' +
+                    (sideDrawer.isShown && sideDrawer.contentType === 'showChat'
+                      ? ' text-primary dark:text-primary'
+                      : ' text-gray-500 dark:text-gray-400')
+                  }
+                  aria-hidden='true'
+                />
+                {/* <span className='absolute top-0 right-0 block h-2 w-2 -translate-y-1/2 translate-x-1/2 transform rounded-full bg-red-500' /> //// */}
+                <span className='absolute flex justify-center items-center top-1 right-0 h-4 w-4 -translate-y-1/2 translate-x-1/2 transform rounded-full text-xs ring-2 ring-white dark:ring-gray-700 text-white bg-red-500'>
+                  <span>2</span>
+                </span>
+              </span>
+            </Button>
             {/* Profile dropdown */}
-            <Dropdown items={dropdownItems} position='left' divider={true}>
+            <Dropdown items={dropdownItems} position='left' divider={true} className='pl-3'>
               <span className='sr-only'>Open user menu</span>
               <Avatar
                 rounded='full'

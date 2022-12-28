@@ -138,9 +138,9 @@ const History: NextPage = () => {
             dateBegin,
             dateEnd,
             filterText,
-            pageNum,
             sortBy,
             callDirection,
+            pageNum,
           )
           setHistory(res)
         } catch (e) {

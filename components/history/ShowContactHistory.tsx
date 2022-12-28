@@ -305,7 +305,7 @@ export const ShowContactHistory = forwardRef<HTMLButtonElement, ShowContactHisto
     return (
       <>
         {/* drawer content */}
-        <div className={classNames('p-1', className)} {...props}>
+        <div className={classNames('p-5', className)} {...props}>
           <div className='flex min-w-0 flex-1 items-center justify-between'>
             {checkTitle(config)}
           </div>
