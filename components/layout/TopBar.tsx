@@ -156,9 +156,10 @@ export const TopBar: FC<TopBarProps> = ({ openMobileCb }) => {
                   aria-hidden='true'
                 />
                 {/* <span className='absolute top-0 right-0 block h-2 w-2 -translate-y-1/2 translate-x-1/2 transform rounded-full bg-red-500'/> //// */}
-                <span className='absolute flex justify-center items-center top-1 right-0 h-4 w-4 -translate-y-1/2 translate-x-1/2 transform rounded-full text-xs ring-2 ring-white dark:ring-gray-700 text-white bg-red-500'>
+                {/* badge with notifications number */}
+                {/* <span className='absolute flex justify-center items-center top-1 right-0 h-4 w-4 -translate-y-1/2 translate-x-1/2 transform rounded-full text-xs ring-2 ring-white dark:ring-gray-700 text-white bg-red-500'>
                   <span>3</span>
-                </span>
+                </span> //// */}
               </span>
             </Button>
             {/* Chat drawer */}
@@ -175,9 +176,10 @@ export const TopBar: FC<TopBarProps> = ({ openMobileCb }) => {
                   aria-hidden='true'
                 />
                 {/* <span className='absolute top-0 right-0 block h-2 w-2 -translate-y-1/2 translate-x-1/2 transform rounded-full bg-red-500' /> //// */}
-                <span className='absolute flex justify-center items-center top-1 right-0 h-4 w-4 -translate-y-1/2 translate-x-1/2 transform rounded-full text-xs ring-2 ring-white dark:ring-gray-700 text-white bg-red-500'>
+                {/* badge with notifications number */}
+                {/* <span className='absolute flex justify-center items-center top-1 right-0 h-4 w-4 -translate-y-1/2 translate-x-1/2 transform rounded-full text-xs ring-2 ring-white dark:ring-gray-700 text-white bg-red-500'>
                   <span>2</span>
-                </span>
+                </span> //// */}
               </span>
             </Button>
             {/* Profile dropdown */}
