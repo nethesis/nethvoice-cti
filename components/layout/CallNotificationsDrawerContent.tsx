@@ -45,6 +45,8 @@ export const CallNotificationsDrawerContent = forwardRef<
 
     async function fetchHistory() {
       setLoaded(false)
+      setErrorMessage('')
+      setLastCalls({})
       const dateTo: any = formatDate(new Date(), 'yyyyMMdd')
       const dateFrom: any = formatDate(startOfDay(subDays(new Date(), 14)), 'yyyyMMdd')
 
@@ -60,8 +62,6 @@ export const CallNotificationsDrawerContent = forwardRef<
           1,
           20,
         )
-
-        console.log('last calls', res) ////
 
         for (const call of res.rows) {
           const isNotificationUnread = call.direction === 'in' && call.disposition !== 'ANSWERED'
@@ -100,10 +100,6 @@ export const CallNotificationsDrawerContent = forwardRef<
   const toggleNotificationRead = (call: any) => {
     call.isNotificationUnread = !call.isNotificationUnread
   }
-
-  useEffect(() => {
-    console.log('useEffect lastCalls.rows', lastCalls.rows) ////
-  }, [lastCalls.rows])
 
   const getCallIcon = (call: any) => {
     return (

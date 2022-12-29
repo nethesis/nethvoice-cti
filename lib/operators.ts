@@ -309,3 +309,9 @@ export const buildOperators = (operatorsStore: any) => {
   store.dispatch.operators.setOperatorsLoaded(true)
   store.dispatch.operators.setLoading(false)
 }
+
+export const getOperatorByPhoneNumber = (phoneNumber: string, operators: any) => {
+  return Object.values(operators).find((operator: any) =>
+    operator.endpoints.extension.find((ext: any) => ext.id === phoneNumber),
+  )
+}

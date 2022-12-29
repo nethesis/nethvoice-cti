@@ -30,9 +30,10 @@ import {
 } from '../../lib/operators'
 import { useSelector } from 'react-redux'
 import { RootState } from '../../store'
-import { formatDuration } from '../../lib/dateTime'
 import { CallDuration } from './CallDuration'
 import { HiArrowDownLeft, HiArrowUpRight } from 'react-icons/hi2'
+import { LastCallsDrawerTable } from '../history/LastCallsDrawerTable'
+import { startOfDay, subDays } from 'date-fns'
 
 export interface ShowOperatorDrawerContentProps extends ComponentPropsWithRef<'div'> {
   config: any
@@ -286,6 +287,14 @@ export const ShowOperatorDrawerContent = forwardRef<
             </div>
           </div>
         )}
+      {/* last calls: search all operator extensions */}
+      <LastCallsDrawerTable
+        callType={config.lastCallsType || 'switchboard'}
+        dateFrom={startOfDay(subDays(new Date(), 7))}
+        dateTo={new Date()}
+        phoneNumbers={config.endpoints?.extension?.map((ext: any) => ext.id)}
+        limit={10}
+      />
     </div>
   )
 })

@@ -2,9 +2,11 @@
 // SPDX-License-Identifier: AGPL-3.0-or-later
 
 import axios from 'axios'
-import { handleNetworkError } from './utils'
+import { formatInTimeZone, handleNetworkError } from './utils'
 import { store } from '../store'
 import { loadPreference } from './storage'
+import { getOperatorByPhoneNumber, openShowOperatorDrawer } from './operators'
+import { cloneDeep } from 'lodash'
 
 export const PAGE_SIZE = 10
 export const DEFAULT_CONTACT_TYPE_FILTER = 'user'
@@ -29,7 +31,7 @@ export async function search(
   type: string,
   pageNum: number,
   pageSize: number = PAGE_SIZE,
-  ) {
+) {
   if (window == undefined) {
     return
   }
@@ -79,49 +81,37 @@ export async function search(
 }
 
 export const openDrawerHistory = (
-  name: any,
-  company: any,
-  number: any,
-  dataBegin: any,
-  dateEnd: any,
-  username: any,
-  selectionType: any,
-  sort: any,
-  direction: any,
-  disposition: any,
-  contactType: any,
-  cnam: any,
-  ccompany: any,
-  src: any,
-  dst_cnam: any,
-  dst_ccompany: any,
-  dst: any,
+  name: string,
+  company: string,
+  number: string,
+  callType: string,
+  operators: any,
 ) => {
-  let contact = {
-    name: name,
-    company: company,
-    number: number,
-    dateBegin: dataBegin,
-    dateEnd: dateEnd,
-    username: username,
-    selectionType: selectionType,
-    sort: sort,
-    direction: direction,
-    disposition: disposition,
-    contactType: contactType,
-    cnam: cnam,
-    ccompany: ccompany,
-    src: src,
-    dst_cnam: dst_cnam,
-    dst_ccompany: dst_ccompany,
-    dst: dst,
-  }
-  if (number !== 's' && number !== '') {
-    store.dispatch.sideDrawer.update({
-      isShown: true,
-      contentType: 'showContactHistory',
-      config: contact,
-    })
+  // check if phone number belongs to an operator
+  const operatorFound: any = getOperatorByPhoneNumber(number, operators)
+
+  if (operatorFound) {
+    const operator = cloneDeep(operatorFound)
+    operator.lastCallsType = callType
+
+    // show operator drawer
+    openShowOperatorDrawer(operator)
+  } else {
+    // show history drawer
+    if (number !== 's' && number !== '') {
+      let contact = {
+        name: name,
+        company: company,
+        number: number,
+        callType: callType,
+      }
+
+      store.dispatch.sideDrawer.update({
+        isShown: true,
+        contentType: 'showContactHistory',
+        config: contact,
+      })
+    }
   }
 }
 
@@ -131,6 +121,7 @@ export async function searchDrawerHistoryUser(
   dateEndSearch: string,
   number: string,
   sort: string,
+  pageSize: number = PAGE_SIZE,
 ) {
   let apiUrl = getHistoryUrl()
   let historycallUrlApiUser =
@@ -143,7 +134,9 @@ export async function searchDrawerHistoryUser(
     dateEndSearch +
     '/' +
     number +
-    '?offset=0&limit=10&sort=' +
+    '?offset=0&limit=' +
+    pageSize +
+    '&sort=' +
     sort +
     '&removeLostCalls=false'
 
@@ -161,6 +154,7 @@ export async function searchDrawerHistorySwitchboard(
   dateEndSearch: string,
   number: string,
   sort: string,
+  pageSize: number = PAGE_SIZE,
 ) {
   let apiUrl = getHistoryUrl()
   let historycallUrlApiSwitchboard =
@@ -171,7 +165,9 @@ export async function searchDrawerHistorySwitchboard(
     dateEndSearch +
     '/' +
     number +
-    '?offset=0&limit=10&sort=' +
+    '?offset=0&limit=' +
+    pageSize +
+    '&sort=' +
     sort +
     '&removeLostCalls=false'
   try {
@@ -194,4 +190,11 @@ export const getFilterValues = (currentUsername: string) => {
   const sortBy = loadPreference('historySortTypePreference', currentUsername) || DEFAULT_SORT_BY
 
   return { contactType, contactDirection, sortBy }
+}
+
+export const getCallTimeToDisplay = (date: any) => {
+  const hour: any = date * 1000
+  let hourWithMilliseconds = new Date(hour)
+  let convertedUtcHour = formatInTimeZone(hourWithMilliseconds, 'HH:mm', 'UTC')
+  return convertedUtcHour
 }

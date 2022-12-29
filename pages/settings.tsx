@@ -120,9 +120,6 @@ const Settings: NextPage = () => {
                     </div>
 
                     <RadioGroup value={theme} onChange={onChangeTheme}>
-                      {/* <RadioGroup.Label className='text-sm font-medium text-gray-900'> //// 
-                    Theme
-                  </RadioGroup.Label> */}
                       <div className='isolate mt-1 -space-y-px rounded-md bg-white dark:bg-gray-900 shadow-sm'>
                         {themeOptions.map((themeOption, settingIdx) => (
                           <RadioGroup.Option
