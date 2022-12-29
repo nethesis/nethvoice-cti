@@ -233,7 +233,12 @@ export const LastCallsDrawerTable = forwardRef<HTMLButtonElement, LastCallsDrawe
 
       return (
         <div className='flex flex-col justify-center text-sm mt-4 text-gray-900 dark:text-gray-100 md:mt-0'>
-          <div className='truncate'>
+          <div
+            title={
+              call.cnam !== '' ? call.cnam : call.ccompany !== '' ? call.ccompany : call.cnum || '-'
+            }
+            className='truncate max-w-[6rem] md:max-w-[8rem] lg:max-w-[9rem] xl:max-w-[10rem]'
+          >
             {call.cnam !== '' ? call.cnam : call.ccompany !== '' ? call.ccompany : call.cnum || '-'}
           </div>
           {call.cnum !== '' && (
@@ -255,7 +260,16 @@ export const LastCallsDrawerTable = forwardRef<HTMLButtonElement, LastCallsDrawe
 
       return (
         <div className='flex flex-col justify-center mt-4 md:mt-0'>
-          <div className='truncate text-sm text-gray-900 dark:text-gray-100'>
+          <div
+            title={
+              call.dst_cnam !== ''
+                ? call.dst_cnam
+                : call.dst_ccompany !== ''
+                ? call.dst_ccompany
+                : call.dst || '-'
+            }
+            className='truncate text-sm max-w-[6rem] md:max-w-[8rem] lg:max-w-[9rem] xl:max-w-[10rem] text-gray-900 dark:text-gray-100'
+          >
             {call.dst_cnam !== ''
               ? call.dst_cnam
               : call.dst_ccompany !== ''
@@ -317,7 +331,7 @@ export const LastCallsDrawerTable = forwardRef<HTMLButtonElement, LastCallsDrawe
                   <li key={index}>
                     <div className='flex items-center py-4'>
                       <div className='flex min-w-0 flex-1 items-center'>
-                        <div className='min-w-0 flex-1 px-2 md:grid md:grid-cols-2 gap-4 lg:grid-cols-2 xl:grid-cols-2 2xl:grid-cols-5'>
+                        <div className='min-w-0 flex-1 px-2 2xl:grid 2xl:grid-cols-4 gap-4'>
                           {/* Date column */}
                           <div className='flex flex-col justify-center'>
                             <div className=''>
@@ -329,34 +343,31 @@ export const LastCallsDrawerTable = forwardRef<HTMLButtonElement, LastCallsDrawe
                               </div>
                             </div>
                           </div>
-                          {/* Source column  */}
-                          {sourceColumn(call)}
 
-                          {/* Icon column */}
-                          <div className='mt-4 md:mt-0 flex items-center 2xl:justify-center'>
-                            <FontAwesomeIcon
-                              icon={faArrowRight}
-                              className='h-4 w-4 flex-shrink-0 text-gray-500 dark:text-gray-600'
-                              aria-hidden='true'
-                            />
+                          <div className='mt-4 2xl:mt-0 flex justify-between col-span-3'>
+                            <div className='flex'>
+                              {/* Source column  */}
+                              {sourceColumn(call)}
+
+                              {/* Icon column */}
+                              <div className='mx-4 mt-4 md:mt-0 flex items-center 2xl:justify-center'>
+                                <FontAwesomeIcon
+                                  icon={faArrowRight}
+                                  className='h-4 w-4 flex-shrink-0 text-gray-500 dark:text-gray-600'
+                                  aria-hidden='true'
+                                />
+                              </div>
+
+                              {/* Destination column */}
+                              {destinationColumn(call)}
+                            </div>
+
+                            {/* icon user column */}
+                            <div className='ml-4 flex items-center md:mt-0 2xl:justify-center'>
+                              {callType === 'user' && checkIconUser(call)}
+                              {callType === 'switchboard' && checkIconSwitchboard(call)}
+                            </div>
                           </div>
-
-                          {/* Destination column */}
-                          {destinationColumn(call)}
-
-                          {/* icon user column */}
-                          {callType === 'user' && (
-                            <div className='flex items-center md:mt-0 2xl:justify-center'>
-                              {checkIconUser(call)}{' '}
-                            </div>
-                          )}
-
-                          {/* icon user column */}
-                          {callType === 'switchboard' && (
-                            <div className='flex items-center md:mt-0 2xl:justify-center'>
-                              {checkIconSwitchboard(call)}
-                            </div>
-                          )}
                         </div>
                       </div>
                     </div>
