@@ -222,7 +222,7 @@ const History: NextPage = () => {
         <>
           <div
             className={
-              'truncate text-gray-900 dark:text-gray-100 text-sm ' +
+              'truncate max-w-[6rem] md:max-w-[12rem] lg:max-w-[10rem] xl:max-w-[10rem] 2xl:max-w-[12rem] text-gray-900 dark:text-gray-100 text-sm ' +
               (call.cnum !== '' ? ' text-sm cursor-pointer hover:underline' : '')
             }
           >
@@ -261,7 +261,7 @@ const History: NextPage = () => {
       //Switchboard call type
       return (
         <>
-          <div className='truncate text-sm cursor-pointer hover:underline text-gray-900 dark:text-gray-100'>
+          <div className='truncate max-w-[6rem] md:max-w-[12rem] lg:max-w-[10rem] xl:max-w-[10rem] 2xl:max-w-[12rem] text-sm cursor-pointer hover:underline text-gray-900 dark:text-gray-100'>
             {call.cnam !== '' ? call.cnam : call.ccompany !== '' ? call.ccompany : call.cnum || '-'}
           </div>
           {call.cnum !== '' && (
@@ -282,7 +282,7 @@ const History: NextPage = () => {
         <>
           <div
             className={
-              'truncate text-gray-900 dark:text-gray-100 text-sm ' +
+              'truncate max-w-[6rem] md:max-w-[12rem] lg:max-w-[10rem] xl:max-w-[10rem] 2xl:max-w-[12rem] text-gray-900 dark:text-gray-100 text-sm ' +
               (call.dst !== '' ? 'hover:underline cursor-pointer' : '')
             }
           >
@@ -318,7 +318,7 @@ const History: NextPage = () => {
       //Switchboard call type
       return (
         <>
-          <div className=' truncate text-sm cursor-pointer hover:underline text-gray-900 dark:text-gray-100'>
+          <div className='truncate max-w-[6rem] md:max-w-[12rem] lg:max-w-[10rem] xl:max-w-[10rem] 2xl:max-w-[12rem] text-sm cursor-pointer hover:underline text-gray-900 dark:text-gray-100'>
             {call.dst_cnam !== ''
               ? call.dst_cnam
               : call.dst_ccompany !== ''
@@ -554,7 +554,7 @@ const History: NextPage = () => {
                 <li key={index}>
                   <div className='flex items-center px-4 py-4 sm:px-6'>
                     <div className='flex min-w-0 flex-1 items-center'>
-                      <div className='min-w-0 flex-1 px-4 sm:grid-cols-1 sm:grid md:grid-cols-4 gap-4 lg:grid-cols-4 xl:grid-cols-7'>
+                      <div className='min-w-0 flex-1 px-4 md:grid md:grid-cols-3 gap-4 xl:grid-cols-5'>
                         {/* Date column */}
                         <div className='flex flex-col justify-center'>
                           <div className=''>
@@ -567,55 +567,11 @@ const History: NextPage = () => {
                           </div>
                         </div>
 
-                        {/* This is for medium screen to 2xl  */}
-                        {/* Source column  */}
-                        <div
-                          className='hidden md:flex flex-col justify-center mt-4 md:mt-0'
-                          onClick={() => {
-                            openDrawerHistory(
-                              call.cnam,
-                              call.ccompany,
-                              call.cnum || call.src,
-                              callType,
-                              operators,
-                            )
-                          }}
-                        >
-                          {checkTypeSource(call)}
-                        </div>
-
-                        {/* Icon column */}
-                        <div className='hidden md:flex mt-4 md:mt-0 items-center'>
-                          <FontAwesomeIcon
-                            icon={faArrowRight}
-                            className='ml-0 h-4 w-4 flex-shrink-0 text-gray-500 dark:text-gray-600'
-                            aria-hidden='true'
-                          />
-                        </div>
-
-                        {/* Destination column */}
-                        <div
-                          className='hidden md:flex flex-col justify-center mt-4 md:mt-0'
-                          onClick={() =>
-                            openDrawerHistory(
-                              call.dst_cnam,
-                              call.dst_ccompany,
-                              call.dst,
-                              callType,
-                              operators,
-                            )
-                          }
-                        >
-                          {checkTypeDestination(call)}
-                        </div>
-
-                        {/* only for the small dimension screen  */}
-
-                        <div className='md:hidden flex mt-4 md:mt-0'>
+                        <div className='flex col-span-2'>
                           {/* Source column  */}
                           <div
-                            className='truncate flex flex-col justify-center mt-4 md:mt-0'
-                            onClick={() =>
+                            className='flex flex-col justify-center mt-4 md:mt-0'
+                            onClick={() => {
                               openDrawerHistory(
                                 call.cnam,
                                 call.ccompany,
@@ -623,23 +579,23 @@ const History: NextPage = () => {
                                 callType,
                                 operators,
                               )
-                            }
+                            }}
                           >
                             {checkTypeSource(call)}
                           </div>
 
                           {/* Icon column */}
-                          <div className='flex mt-4 md:mt-0 mx-6 items-center'>
+                          <div className='flex mx-4 mt-4 md:mt-0 items-center'>
                             <FontAwesomeIcon
                               icon={faArrowRight}
-                              className='ml-0 h-4 w-4 flex-shrink-0 text-gray-900 dark:text-gray-100'
+                              className='ml-0 h-4 w-4 flex-shrink-0 text-gray-500 dark:text-gray-600'
                               aria-hidden='true'
                             />
                           </div>
 
                           {/* Destination column */}
                           <div
-                            className='truncate flex flex-col justify-center mt-4 md:mt-0'
+                            className='flex flex-col justify-center mt-4 md:mt-0'
                             onClick={() =>
                               openDrawerHistory(
                                 call.dst_cnam,
