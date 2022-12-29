@@ -4,6 +4,15 @@
 import { formatDistanceToNow, intervalToDuration } from 'date-fns'
 import { padStart } from 'lodash'
 import { enGB, it } from 'date-fns/locale'
+import { format, utcToZonedTime } from 'date-fns-tz'
+
+export function formatDateLoc(date: any, fmt: string) {
+  return format(date, fmt, { locale: getLocale() })
+}
+
+export const formatInTimeZoneLoc = (date: any, fmt: string, tz: any) => {
+  return format(utcToZonedTime(date, tz), fmt, { timeZone: tz, locale: getLocale() })
+}
 
 /**
  * Format a duration expressed in seconds to HH:MM:SS. E.g. 189 -> 03:09

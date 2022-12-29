@@ -6,7 +6,8 @@ import classNames from 'classnames'
 import { useSelector } from 'react-redux'
 import { RootState } from '../../store'
 import { search } from '../../lib/history'
-import { callPhoneNumber, closeSideDrawer, formatDate, formatInTimeZone } from '../../lib/utils'
+import { callPhoneNumber, closeSideDrawer } from '../../lib/utils'
+import { formatDateLoc, formatInTimeZoneLoc } from '../../lib/dateTime'
 import { subDays, startOfDay } from 'date-fns'
 import { EmptyState, IconSwitch, InlineNotification } from '../common'
 import { faCircle, faPhone } from '@fortawesome/free-solid-svg-icons'
@@ -47,8 +48,8 @@ export const CallNotificationsDrawerContent = forwardRef<
       setLoaded(false)
       setErrorMessage('')
       setLastCalls({})
-      const dateTo: any = formatDate(new Date(), 'yyyyMMdd')
-      const dateFrom: any = formatDate(startOfDay(subDays(new Date(), 14)), 'yyyyMMdd')
+      const dateTo: any = formatDateLoc(new Date(), 'yyyyMMdd')
+      const dateFrom: any = formatDateLoc(startOfDay(subDays(new Date(), 14)), 'yyyyMMdd')
 
       try {
         const res = await search(
@@ -318,7 +319,7 @@ export const CallNotificationsDrawerContent = forwardRef<
                         {getCallContact(call)}
                       </div>
                       <div
-                        title={formatInTimeZone(new Date(call.time * 1000), 'PPpp', 'UTC')}
+                        title={formatInTimeZoneLoc(new Date(call.time * 1000), 'PPpp', 'UTC')}
                         className='mt-3 text-sm text-gray-500 dark:text-gray-400'
                       >
                         {formatDistanceToNowLoc(utcToZonedTime(new Date(call.time * 1000), 'UTC'), {

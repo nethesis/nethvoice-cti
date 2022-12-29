@@ -2,7 +2,8 @@
 // SPDX-License-Identifier: AGPL-3.0-or-later
 
 import axios from 'axios'
-import { formatInTimeZone, handleNetworkError } from './utils'
+import { handleNetworkError } from './utils'
+import { formatInTimeZoneLoc } from './dateTime'
 import { store } from '../store'
 import { loadPreference } from './storage'
 import { getOperatorByPhoneNumber, openShowOperatorDrawer } from './operators'
@@ -195,6 +196,6 @@ export const getFilterValues = (currentUsername: string) => {
 export const getCallTimeToDisplay = (date: any) => {
   const hour: any = date * 1000
   let hourWithMilliseconds = new Date(hour)
-  let convertedUtcHour = formatInTimeZone(hourWithMilliseconds, 'HH:mm', 'UTC')
+  let convertedUtcHour = formatInTimeZoneLoc(hourWithMilliseconds, 'HH:mm', 'UTC')
   return convertedUtcHour
 }

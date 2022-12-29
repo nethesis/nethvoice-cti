@@ -6,7 +6,6 @@ import axios from 'axios'
 import { store } from '../store'
 
 import { format, utcToZonedTime } from 'date-fns-tz'
-import { enGB, it } from 'date-fns/locale'
 import { eventDispatch } from './hooks/eventDispatch'
 import { getLocale } from './dateTime'
 
@@ -61,14 +60,6 @@ export function callPhoneNumber(phoneNumber: string) {
   eventDispatch('phone-island-call-start', { number: phoneNumber })
 
   console.log('callPhoneNumber', phoneNumber) ////
-}
-
-export function formatDate(date: any, fmt: string) {
-  return format(date, fmt, { locale: getLocale() })
-}
-
-export const formatInTimeZone = (date: any, fmt: string, tz: any) => {
-  return format(utcToZonedTime(date, tz), fmt, { timeZone: tz, locale: getLocale() })
 }
 
 export function getProductName() {

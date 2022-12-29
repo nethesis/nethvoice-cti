@@ -11,7 +11,7 @@ import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { faBuilding, faArrowRight, faPhone } from '@fortawesome/free-solid-svg-icons'
 import { HiArrowDownLeft, HiArrowUpRight } from 'react-icons/hi2'
 import { MdCallMissed } from 'react-icons/md'
-import { formatDate, formatInTimeZone } from '../../lib/utils'
+import { formatDateLoc } from '../../lib/dateTime'
 import { useSelector } from 'react-redux'
 import { RootState } from '../../store'
 import { EmptyState, InlineNotification } from '../common'
@@ -48,8 +48,8 @@ export const LastCallsDrawerTable = forwardRef<HTMLButtonElement, LastCallsDrawe
         setLoaded(false)
         setErrorMessage('')
         setLastCalls({})
-        const dateStart = formatDate(dateFrom, 'yyyyMMdd')
-        const dateEnd = formatDate(dateTo, 'yyyyMMdd')
+        const dateStart = formatDateLoc(dateFrom, 'yyyyMMdd')
+        const dateEnd = formatDateLoc(dateTo, 'yyyyMMdd')
 
         if (callType === 'user') {
           try {
@@ -336,7 +336,7 @@ export const LastCallsDrawerTable = forwardRef<HTMLButtonElement, LastCallsDrawe
                           <div className='flex flex-col justify-center'>
                             <div className=''>
                               <div className='text-sm text-gray-900 dark:text-gray-100'>
-                                {formatDate(call.time * 1000, 'PP')}
+                                {formatDateLoc(call.time * 1000, 'PP')}
                               </div>
                               <div className='text-sm text-gray-500'>
                                 {getCallTimeToDisplay(call.time)}

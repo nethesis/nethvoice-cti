@@ -19,7 +19,7 @@ import {
 } from '@fortawesome/free-solid-svg-icons'
 import { HiArrowDownLeft, HiArrowUpRight } from 'react-icons/hi2'
 import { MdCallMissed } from 'react-icons/md'
-import { formatDate, formatInTimeZone } from '../lib/utils'
+import { formatDateLoc } from '../lib/dateTime'
 import { subDays, startOfDay } from 'date-fns'
 
 const History: NextPage = () => {
@@ -92,13 +92,13 @@ const History: NextPage = () => {
 
   //This date will be sent to the API to get the history of the user
   //Get actual date without hours and minutes
-  const dateTo: any = formatDate(new Date(), 'yyyy-MM-dd')
+  const dateTo: any = formatDateLoc(new Date(), 'yyyy-MM-dd')
 
   //Get one week before date
   const DateFromNotConverted = startOfDay(subDays(new Date(), 7))
 
   //Format the date to the format for the visualizations
-  const dateFrom: any = formatDate(DateFromNotConverted, 'yyyy-MM-dd')
+  const dateFrom: any = formatDateLoc(DateFromNotConverted, 'yyyy-MM-dd')
 
   useEffect(() => {
     if (!dateBegin) {
@@ -565,7 +565,7 @@ const History: NextPage = () => {
                         <div className='flex flex-col justify-center'>
                           <div className=''>
                             <div className='text-sm text-gray-900 dark:text-gray-100'>
-                              {formatDate(call.time * 1000, 'PP')}
+                              {formatDateLoc(call.time * 1000, 'PP')}
                             </div>
                             <div className='text-sm text-gray-500'>
                               {getCallTimeToDisplay(call.time)}
