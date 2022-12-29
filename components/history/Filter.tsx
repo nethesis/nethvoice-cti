@@ -916,7 +916,7 @@ export const Filter = forwardRef<HTMLButtonElement, FilterProps>(
                   <div>
                     <button
                       type='button'
-                      className='my-1 text-gray-500 dark:text-gray-400 no-underline hover:underline'
+                      className='my-1 text-sm hover:underline text-gray-700 dark:text-gray-200'
                       onClick={clearFilters}
                     >
                       Reset filters
