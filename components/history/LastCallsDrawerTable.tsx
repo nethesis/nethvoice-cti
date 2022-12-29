@@ -118,7 +118,7 @@ export const LastCallsDrawerTable = forwardRef<HTMLButtonElement, LastCallsDrawe
               <div>
                 {call.disposition === 'ANSWERED' ? (
                   <HiArrowDownLeft
-                    className='mr-2 h-5 w-5 text-green-400'
+                    className='mr-2 h-5 w-5 text-green-500 dark:text-green-400'
                     aria-hidden='true'
                     title='Incoming answered'
                   />
@@ -135,7 +135,7 @@ export const LastCallsDrawerTable = forwardRef<HTMLButtonElement, LastCallsDrawe
               <div>
                 {call.disposition === 'ANSWERED' ? (
                   <HiArrowUpRight
-                    className='mr-2 h-5 w-5 text-green-400'
+                    className='mr-2 h-5 w-5 text-green-500 dark:text-green-400'
                     aria-hidden='true'
                     title='Outgoing answered'
                   />
@@ -163,7 +163,7 @@ export const LastCallsDrawerTable = forwardRef<HTMLButtonElement, LastCallsDrawe
                   {call.disposition === 'ANSWERED' ? (
                     <FontAwesomeIcon
                       icon={faBuilding}
-                      className='h-4 w-4 text-green-400'
+                      className='h-4 w-4 text-green-500 dark:text-green-400'
                       aria-hidden='true'
                       title='Internal answered'
                     />
@@ -183,7 +183,7 @@ export const LastCallsDrawerTable = forwardRef<HTMLButtonElement, LastCallsDrawe
                     <div>
                       {call.disposition === 'ANSWERED' ? (
                         <HiArrowDownLeft
-                          className='h-5 w-5 text-green-400'
+                          className='h-5 w-5 text-green-500 dark:text-green-400'
                           aria-hidden='true'
                           title='Incoming answered'
                         />
@@ -200,7 +200,7 @@ export const LastCallsDrawerTable = forwardRef<HTMLButtonElement, LastCallsDrawe
                     <div>
                       {call.disposition === 'ANSWERED' ? (
                         <HiArrowUpRight
-                          className='h-5 w-5 text-green-400'
+                          className='h-5 w-5 text-green-500 dark:text-green-400'
                           aria-hidden='true'
                           title='Outgoing answered'
                         />

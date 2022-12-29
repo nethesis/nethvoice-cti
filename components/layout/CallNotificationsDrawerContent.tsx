@@ -125,7 +125,7 @@ export const CallNotificationsDrawerContent = forwardRef<
           <div>
             {call.disposition === 'ANSWERED' ? (
               <HiArrowUpRight
-                className='h-5 w-5 text-green-400 dark:text-green-500'
+                className='h-5 w-5 text-green-500 dark:text-green-400'
                 aria-hidden='true'
                 title='Outgoing answered'
               />
