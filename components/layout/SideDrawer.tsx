@@ -12,7 +12,7 @@ import { ShowOperatorDrawerContent } from '../operators/ShowOperatorDrawerConten
 import { CreateOrEditContactDrawerContent } from '../phonebook/CreateOrEditContactDrawerContent'
 import { ShowContactDrawerContent } from '../phonebook/ShowContactDrawerContent'
 import { CreateOrEditSpeedDialDrawerContent } from './speed_dial/CreateOrEditSpeedDialDrawerContent'
-import { ShowContactHistory } from '../history/ShowContactHistory'
+import { ShowHistoryDrawerContent } from '../history/ShowHistoryDrawerContent'
 import { CallNotificationsDrawerContent } from './CallNotificationsDrawerContent'
 
 interface SideDrawerProps {
@@ -50,7 +50,7 @@ export const SideDrawer: FC<SideDrawerProps> = ({ isShown, contentType, config, 
                       ) : contentType === 'showOperator' ? (
                         <ShowOperatorDrawerContent config={config} />
                       ) : contentType === 'showContactHistory' ? (
-                        <ShowContactHistory config={config} />
+                        <ShowHistoryDrawerContent config={config} />
                       ) : contentType === 'callNotifications' ? (
                         <CallNotificationsDrawerContent />
                       ) : null}

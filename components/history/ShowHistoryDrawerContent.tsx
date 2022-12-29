@@ -9,7 +9,7 @@ import { faPhone, faPlus } from '@fortawesome/free-solid-svg-icons'
 import { LastCallsDrawerTable } from './LastCallsDrawerTable'
 import { startOfDay, subDays } from 'date-fns'
 
-export interface ShowContactHistoryProps extends ComponentPropsWithRef<'div'> {
+export interface ShowHistoryDrawerContentProps extends ComponentPropsWithRef<'div'> {
   config: any
 }
 
@@ -50,7 +50,7 @@ function checkTitle(config: any) {
   }
 }
 
-export const ShowContactHistory = forwardRef<HTMLButtonElement, ShowContactHistoryProps>(
+export const ShowHistoryDrawerContent = forwardRef<HTMLButtonElement, ShowHistoryDrawerContentProps>(
   ({ config, className, ...props }, ref) => {
     return (
       <>
@@ -156,4 +156,4 @@ export const ShowContactHistory = forwardRef<HTMLButtonElement, ShowContactHisto
   },
 )
 
-ShowContactHistory.displayName = 'ShowContactHistory'
+ShowHistoryDrawerContent.displayName = 'ShowHistoryDrawerContent'
