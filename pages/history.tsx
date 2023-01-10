@@ -560,7 +560,7 @@ const History: NextPage = () => {
                 <li key={index}>
                   <div className='flex items-center px-4 py-4 sm:px-6'>
                     <div className='flex min-w-0 flex-1 items-center'>
-                      <div className='min-w-0 flex-1 px-4 md:grid md:grid-cols-3 gap-4 xl:grid-cols-5'>
+                      <div className='min-w-0 flex-1 px-4 md:grid md:grid-cols-3 gap-4 xl:grid-cols-4 2xl:grid-cols-5'>
                         {/* Date column */}
                         <div className='flex flex-col justify-center'>
                           <div className=''>
