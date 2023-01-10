@@ -104,6 +104,13 @@ export const operators = createModel<RootModel>()({
     },
     updateConversations: (state, operatorName: string, newConversations: any) => {
       const op = state.operators[operatorName]
+
+      if (!op) {
+        //// remove error print after investigation
+        console.error('OP NOT FOUND', operatorName) ////
+
+        return
+      }
       let conversations: any = []
 
       Object.values(newConversations).forEach((conv) => {
