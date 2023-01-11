@@ -15,6 +15,10 @@ import { removeItem } from '../../lib/storage'
 import { store } from '../../store'
 import { useSelector } from 'react-redux'
 import { RootState } from '../../store'
+import classNames from 'classnames'
+import { changeStatusPresence } from '../../lib/topBar'
+import { Fragment } from 'react'
+import { Popover, Transition } from '@headlessui/react'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import {
   faMagnifyingGlass,
@@ -23,9 +27,37 @@ import {
   faSun,
   faMoon,
   faBell,
+  faChevronLeft,
 } from '@fortawesome/free-solid-svg-icons'
 import { setTheme } from '../../lib/darkTheme'
 import { loadNotificationsFromStorage } from '../../lib/notifications'
+
+const solutions = [
+  {
+    name:'online',
+    status: 'Online',
+    description: 'Allows users to to make and receive phone calls.',
+    href: '#',
+  },
+  {
+    name:'forward',
+    status: 'Forward',
+    description: 'Allows users to forward incoming calls to another number or destination.',
+    href: '#',
+  },
+  {
+    name:'mobile',
+    status: 'Mobile',
+    description: 'Learn how to maximize our platform to get the most out of it.',
+    href: '#',
+  },
+  {
+    name:'dnd',
+    status: 'Do not disturb',
+    description: 'Check out webinars with experts and learn about our annual conference.',
+    href: '#',
+  },
+]
 
 interface TopBarProps {
   openMobileCb: () => void
@@ -58,6 +90,7 @@ export const TopBar: FC<TopBarProps> = ({ openMobileCb }) => {
     }
   }, [firstNotificationsRender, notificationsStore.isLoaded])
 
+  console.log( 'mainPresence', mainPresence)
   const doLogout = async () => {
     const res = await logout()
     //// TODO logout api is currently authenticated. For this reason we must not check res.ok (this is a temporary workaround)
@@ -92,6 +125,13 @@ export const TopBar: FC<TopBarProps> = ({ openMobileCb }) => {
       config: null,
     })
   }
+  const setPresence = async (presence: any) => {
+    try{
+      await changeStatusPresence(presence)
+    }catch(err){
+      console.log(err)
+    }
+  }
 
   const dropdownItems = (
     <>
@@ -118,6 +158,54 @@ export const TopBar: FC<TopBarProps> = ({ openMobileCb }) => {
           ? 'Switch to light theme'
           : 'Switch to dark theme'}
       </Dropdown.Item>
+      <Popover className='relative hover:bg-gray-200 dark:hover:bg-gray-700'>
+        {({ open }) => (
+          <>
+            <Popover.Button
+              className={classNames(
+                open ? '' : '',
+                'relative text-left cursor-pointer px-4 py-2 text-sm flex items-center gap-3 w-full ',
+              )}
+            >
+              <FontAwesomeIcon
+                icon={faChevronLeft}
+                className='h-4 w-4 flex text-gray-500 dark:text-gray-400'
+                aria-hidden='true'
+              />
+              Presence
+            </Popover.Button>
+            <Transition
+              as={Fragment}
+              enter='transition ease-out duration-200'
+              enterFrom='opacity-0 translate-y-1'
+              enterTo='opacity-100 translate-y-0'
+              leave='transition ease-in duration-150'
+              leaveFrom='opacity-100 translate-y-0'
+              leaveTo='opacity-0 translate-y-1'
+            >
+              <Popover.Panel className='absolute mr-4 mt-0 right-0 z-10 w-screen max-w-md -translate-x-1/2 transform px-2 sm:px-0'>
+                <div className='overflow-hidden rounded-lg shadow-lg ring-1 ring-black ring-opacity-5'>
+                  <div className='relative grid gap-6 bg-white dark:border-gray-700 dark:bg-gray-900 px-5 py-6 sm:gap-8 sm:p-8'>
+                    {solutions.map((item) => (
+                      <a
+                        key={item.status}
+                        href={item.href}
+                        onClick={() => setPresence(item.name)}
+                        className='-m-3 flex items-start rounded-lg p-3 transition duration-150 ease-in-out hover:bg-gray-200 dark:hover:bg-gray-700'
+                      >
+                        <div className='ml-4' >
+                          <p className='text-base font-medium'>{item.status}</p>
+                          <p className='mt-1 text-sm text-gray-500'>{item.description}</p>
+                        </div>
+                      </a>
+                    ))}
+                  </div>
+                </div>
+              </Popover.Panel>
+            </Transition>
+          </>
+        )}
+      </Popover>
       <Dropdown.Item icon={faArrowRightFromBracket} onClick={doLogout}>
         Logout
       </Dropdown.Item>
