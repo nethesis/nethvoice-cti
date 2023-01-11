@@ -53,10 +53,11 @@ const theme = {
       full_w: 'w-full',
     },
     iconEnabled: 'text-primary dark:text-primary',
+    iconEnabledLighterOnDark: 'text-primary dark:text-primaryLight',
     iconDisabled: 'text-gray-500 dark:text-gray-400',
   },
   input: {
-    base: 'block w-full relative focus:z-10 disabled:cursor-not-allowed bg-white text-gray-900 dark:bg-gray-900 dark:text-gray-100  disabled:border-gray-200 disabled:bg-gray-50 disabled:text-gray-500 dark:disabled:border-gray-700 dark:disabled:bg-gray-900 dark:disabled:text-gray-400',
+    base: 'block w-full relative focus:z-[8] disabled:cursor-not-allowed bg-white text-gray-900 dark:bg-gray-900 dark:text-gray-100  disabled:border-gray-200 disabled:bg-gray-50 disabled:text-gray-500 dark:disabled:border-gray-700 dark:disabled:bg-gray-900 dark:disabled:text-gray-400',
     label: 'text-sm font-medium text-gray-700 dark:text-gray-200',
     placeholder: {
       base: 'placeholder:text-gray-500 dark:placeholder:text-gray-400',
@@ -79,7 +80,7 @@ const theme = {
         'border-red-500 focus:border-red-500 focus:ring-red-500 dark:border-red-400 dark:focus:border-red-400 dark:focus:ring-red-400',
     },
     icon: {
-      base: 'absolute flex items-center z-20',
+      base: 'absolute flex items-center z-[9]',
       gray: 'text-gray-400 dark:text-gray-500',
       red: 'text-red-500 dark:text-red-400',
       left: 'inset-y-0 left-0 pl-3',

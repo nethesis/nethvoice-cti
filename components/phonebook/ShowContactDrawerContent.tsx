@@ -112,7 +112,7 @@ export const ShowContactDrawerContent = forwardRef<
         </Modal.Actions>
       </Modal>
       {/* drawer content */}
-      <div className={classNames(className)} {...props}>
+      <div className={classNames(className, 'p-5')} {...props}>
         <div className='flex min-w-0 flex-1 items-center justify-between'>
           <div className='flex items-center'>
             <div className='flex-shrink-0 mr-4'>

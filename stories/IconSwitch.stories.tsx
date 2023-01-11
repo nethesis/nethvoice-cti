@@ -52,3 +52,9 @@ OffDisabled.args = {
   on: false,
   disabled: true,
 }
+
+export const LighterOnDark = Template.bind({})
+LighterOnDark.args = {
+  ...On.args,
+  lighterOnDark: true,
+}

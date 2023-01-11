@@ -233,7 +233,7 @@ export const CreateOrEditContactDrawerContent = forwardRef<
   }
 
   return (
-    <div className={classNames(className, 'm-1')} {...props}>
+    <div className={classNames(className, 'm-1 p-5')} {...props}>
       {/* title */}
       <h2 className='text-lg font-medium mb-4 text-gray-700 dark:text-gray-200'>
         {config.isEdit ? 'Edit contact' : 'Create contact'}

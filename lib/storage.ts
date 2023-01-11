@@ -75,7 +75,6 @@ export const savePreference = (
  *
  * @param preferenceName name of the preference
  * @param currentUsername username currently logged in
- * @returns
  */
 export const loadPreference = (preferenceName: string, currentUsername: string) => {
   const preferences = getJSONItem(`preferences-${currentUsername}`) || {}
@@ -96,6 +95,9 @@ export const saveCache = (
   currentUsername: string,
   expiration: number,
 ) => {
+  if (!currentUsername) {
+    return
+  }
   const caches = getJSONItem(`caches-${currentUsername}`) || {}
   let data = cloneDeep(cacheData)
   data['_expiration'] = expiration
@@ -108,7 +110,6 @@ export const saveCache = (
  *
  * @param cacheName name of the cache
  * @param currentUsername username currently logged in
- * @returns
  */
 export const loadCache = (cacheName: string, currentUsername: string) => {
   const caches = getJSONItem(`caches-${currentUsername}`) || {}

@@ -116,7 +116,7 @@ export const CreateOrEditSpeedDialDrawerContent = forwardRef<
   }
 
   return (
-    <div className={classNames(className, 'm-1')} {...props}>
+    <div className={classNames(className, 'm-1 p-5')} {...props}>
       {/* title */}
       <h2 className='text-lg font-medium mb-4 text-gray-900 dark:text-gray-100'>
         {config.isEdit ? 'Edit speed dial' : 'Create speed dial'}

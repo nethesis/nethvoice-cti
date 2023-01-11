@@ -18,7 +18,7 @@ import {
   DEFAULT_SORT_BY,
   getFilterValues,
 } from '../../lib/history'
-import { formatDate } from '../../lib/utils'
+import { formatDateLoc } from '../../lib/dateTime'
 import { parse, subDays, startOfDay } from 'date-fns'
 
 //Filter for the sort
@@ -142,22 +142,22 @@ export const Filter = forwardRef<HTMLButtonElement, FilterProps>(
 
     //Date to be visualized in the active filters section
     //Get actual date with hour and minute
-    const dateToWithHour: any = formatDate(new Date(), 'PPp')
+    const dateToWithHour: any = formatDateLoc(new Date(), 'PPp')
 
     //Get actual date without hour and minute for the reset
-    const actualDateForReset: any = formatDate(new Date(), 'yyyy-MM-dd')
+    const actualDateForReset: any = formatDateLoc(new Date(), 'yyyy-MM-dd')
 
     //Get one week before date
     const oneWeekBeforeActualDate = startOfDay(subDays(new Date(), 7))
 
     //Format the date to the format for the visualizations
-    const dateFromWithHour: any = formatDate(oneWeekBeforeActualDate, 'PPp')
+    const dateFromWithHour: any = formatDateLoc(oneWeekBeforeActualDate, 'PPp')
 
-    const actualDateLabelTo:any = formatDate(new Date(), "yyyy-MM-dd'T'HH:mm")
-    const actualDateLabelFrom:any = formatDate(oneWeekBeforeActualDate, "yyyy-MM-dd'T'HH:mm")
+    const actualDateLabelTo:any = formatDateLoc(new Date(), "yyyy-MM-dd'T'HH:mm")
+    const actualDateLabelFrom:any = formatDateLoc(oneWeekBeforeActualDate, "yyyy-MM-dd'T'HH:mm")
 
     //Get one week before date without hour and minute for the reset
-    const dateFromForReset: any = formatDate(oneWeekBeforeActualDate, 'yyyy-MM-dd')
+    const dateFromForReset: any = formatDateLoc(oneWeekBeforeActualDate, 'yyyy-MM-dd')
 
     //Set the date to be showed in to the label for the date filter
     if (labelForDateTo === '') {
@@ -175,9 +175,9 @@ export const Filter = forwardRef<HTMLButtonElement, FilterProps>(
       //Convert the date to the format for the visualizations
       let convertDateBegin = parse(dateBegin, "yyyy-MM-dd'T'HH:mm", new Date())
       //Convert from object to string and format the date
-      let dateBeginWithHour: any = formatDate(convertDateBegin, 'PPp')
+      let dateBeginWithHour: any = formatDateLoc(convertDateBegin, 'PPp')
       //Convert the the date get from the input to the format without hours
-      let noHour: any = formatDate(convertDateBegin, 'yyyy-MM-dd')
+      let noHour: any = formatDateLoc(convertDateBegin, 'yyyy-MM-dd')
       // update history (notify parent component) with the date without hours for the api calls
       updateDateBeginFilter(noHour)
       // update the begin date that will be showed in the calendar filter
@@ -193,9 +193,9 @@ export const Filter = forwardRef<HTMLButtonElement, FilterProps>(
       //Convert the date to the format for the visualizations
       let convertDateBegin = parse(dateEnd, "yyyy-MM-dd'T'HH:mm", new Date())
       //Convert from object to string and format the date
-      let dateEndWithHour: any = formatDate(convertDateBegin, 'PPp')
+      let dateEndWithHour: any = formatDateLoc(convertDateBegin, 'PPp')
       //Convert the the date get from the input to the format without hours
-      let noEndHour: any = formatDate(convertDateBegin, 'yyyy-MM-dd')
+      let noEndHour: any = formatDateLoc(convertDateBegin, 'yyyy-MM-dd')
       // update history (notify parent component) with the date without hours for the api calls
       updateDateEndFilter(noEndHour)
       // update the begin date that will be showed in the calendar filter
@@ -916,7 +916,7 @@ export const Filter = forwardRef<HTMLButtonElement, FilterProps>(
                   <div>
                     <button
                       type='button'
-                      className='my-1 text-gray-500 dark:text-gray-400 no-underline hover:underline'
+                      className='my-1 text-sm hover:underline text-gray-700 dark:text-gray-200'
                       onClick={clearFilters}
                     >
                       Reset filters

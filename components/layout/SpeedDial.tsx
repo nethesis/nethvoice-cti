@@ -28,6 +28,7 @@ import {
   faTrash,
   faBolt,
 } from '@fortawesome/free-solid-svg-icons'
+import { callPhoneNumber } from '../../lib/utils'
 
 export const SpeedDial = () => {
   // The state for the delete modal
@@ -98,7 +99,7 @@ export const SpeedDial = () => {
   }
 
   const callSpeedDial = (speedDial: any) => {
-    console.log('call speed dial', speedDial.speeddial_num) ////
+    callPhoneNumber(speedDial.speeddial_num)
   }
 
   // The dropdown items for every speed dial element
