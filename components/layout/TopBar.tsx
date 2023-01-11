@@ -7,7 +7,7 @@
  *
  */
 
-import { FC } from 'react'
+import { FC, useEffect, useState } from 'react'
 import { Avatar, Button, Dropdown } from '../common'
 import { logout } from '../../services/login'
 import { useRouter } from 'next/router'
@@ -22,10 +22,10 @@ import {
   faBars,
   faSun,
   faMoon,
-  faPhone,
-  faComment,
+  faBell,
 } from '@fortawesome/free-solid-svg-icons'
 import { setTheme } from '../../lib/darkTheme'
+import { loadNotificationsFromStorage } from '../../lib/notifications'
 
 interface TopBarProps {
   openMobileCb: () => void
@@ -39,6 +39,24 @@ export const TopBar: FC<TopBarProps> = ({ openMobileCb }) => {
   const { theme } = useSelector((state: RootState) => state.darkTheme)
   const auth = useSelector((state: RootState) => state.authentication)
   const sideDrawer = useSelector((state: RootState) => state.sideDrawer)
+  const [firstNotificationsRender, setFirstNotificationsRender]: any = useState(true)
+  const authStore = useSelector((state: RootState) => state.authentication)
+  const notificationsStore = useSelector((state: RootState) => state.notifications)
+
+  // get notifications on page load
+  useEffect(() => {
+    if (firstNotificationsRender) {
+      setFirstNotificationsRender(false)
+      return
+    }
+
+    if (!notificationsStore.isLoaded) {
+      store.dispatch.notifications.setLoaded(false)
+      const notifications = loadNotificationsFromStorage(authStore.username)
+      store.dispatch.notifications.setNotifications(notifications)
+      store.dispatch.notifications.setLoaded(true)
+    }
+  }, [firstNotificationsRender, notificationsStore.isLoaded])
 
   const doLogout = async () => {
     const res = await logout()
@@ -67,10 +85,10 @@ export const TopBar: FC<TopBarProps> = ({ openMobileCb }) => {
     }
   }
 
-  const openLastCallsDrawer = () => {
+  const openNotificationsDrawer = () => {
     store.dispatch.sideDrawer.update({
       isShown: true,
-      contentType: 'callNotifications',
+      contentType: 'notifications',
       config: null,
     })
   }
@@ -142,44 +160,32 @@ export const TopBar: FC<TopBarProps> = ({ openMobileCb }) => {
             </form>
           </div>
           <div className='ml-2 flex items-center space-x-2'>
-            {/* Last calls drawer */}
-            <Button variant='ghost' onClick={() => openLastCallsDrawer()}>
+            {/* Notifications drawer */}
+            <Button variant='ghost' onClick={() => openNotificationsDrawer()}>
               <span className='relative inline-block'>
                 <FontAwesomeIcon
-                  icon={faPhone}
+                  icon={faBell}
                   className={
                     'h-5 w-5 py-1 px-0.5 flex-shrink-0 ' +
-                    (sideDrawer.isShown && sideDrawer.contentType === 'callNotifications'
+                    (sideDrawer.isShown && sideDrawer.contentType === 'notifications'
                       ? ' text-primary dark:text-primary'
                       : ' text-gray-500 dark:text-gray-400')
                   }
                   aria-hidden='true'
                 />
-                {/* <span className='absolute top-0 right-0 block h-2 w-2 -translate-y-1/2 translate-x-1/2 transform rounded-full bg-red-500'/> //// */}
                 {/* badge with notifications number */}
-                {/* <span className='absolute flex justify-center items-center top-1 right-0 h-4 w-4 -translate-y-1/2 translate-x-1/2 transform rounded-full text-xs ring-2 ring-white dark:ring-gray-700 text-white bg-red-500'>
-                  <span>3</span>
-                </span> //// */}
-              </span>
-            </Button>
-            {/* Chat drawer */}
-            <Button variant='ghost'>
-              <span className='relative inline-block'>
-                <FontAwesomeIcon
-                  icon={faComment}
-                  className={
-                    'h-5 w-5 py-1 px-0.5 flex-shrink-0 ' +
-                    (sideDrawer.isShown && sideDrawer.contentType === 'showChat'
-                      ? ' text-primary dark:text-primary'
-                      : ' text-gray-500 dark:text-gray-400')
-                  }
-                  aria-hidden='true'
-                />
-                {/* <span className='absolute top-0 right-0 block h-2 w-2 -translate-y-1/2 translate-x-1/2 transform rounded-full bg-red-500' /> //// */}
-                {/* badge with notifications number */}
-                {/* <span className='absolute flex justify-center items-center top-1 right-0 h-4 w-4 -translate-y-1/2 translate-x-1/2 transform rounded-full text-xs ring-2 ring-white dark:ring-gray-700 text-white bg-red-500'>
-                  <span>2</span>
-                </span> //// */}
+                {notificationsStore.unreadCount > 0 && (
+                  <span
+                    className={
+                      'absolute flex justify-center items-center top-1.5 right-0.5 h-4 -translate-y-1/2 translate-x-1/2 transform rounded-full text-xs ring-2 ring-white dark:ring-gray-700 text-white bg-red-500 ' +
+                      (notificationsStore.unreadCount < 10 ? 'w-4' : 'w-6')
+                    }
+                  >
+                    <span>
+                      {notificationsStore.unreadCount < 10 ? notificationsStore.unreadCount : '9+'}
+                    </span>
+                  </span>
+                )}
               </span>
             </Button>
             {/* Profile dropdown */}

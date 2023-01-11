@@ -12,6 +12,7 @@ export interface IconSwitchProps extends ComponentProps<'div'> {
   size?: 'small' | 'base' | 'large' | 'extra_large'
   changed?: (enabled: boolean) => void
   disabled?: boolean
+  lighterOnDark?: boolean
 }
 
 export const IconSwitch: FC<IconSwitchProps> = ({
@@ -20,6 +21,7 @@ export const IconSwitch: FC<IconSwitchProps> = ({
   icon,
   size = 'base',
   disabled,
+  lighterOnDark = false,
   className,
   ...props
 }): JSX.Element => {
@@ -43,7 +45,17 @@ export const IconSwitch: FC<IconSwitchProps> = ({
         disabled={disabled}
         className={classNames(theme.base, size && theme.sizes[size], className)}
       >
-        <span className={classNames(enabled ? theme.iconEnabled : theme.iconDisabled)}>{icon}</span>
+        <span
+          className={classNames(
+            enabled
+              ? lighterOnDark
+                ? theme.iconEnabledLighterOnDark
+                : theme.iconEnabled
+              : theme.iconDisabled,
+          )}
+        >
+          {icon}
+        </span>
       </HeadlessSwitch>
     </HeadlessSwitch.Group>
   )

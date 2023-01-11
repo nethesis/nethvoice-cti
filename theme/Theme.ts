@@ -53,6 +53,7 @@ const theme = {
       full_w: 'w-full',
     },
     iconEnabled: 'text-primary dark:text-primary',
+    iconEnabledLighterOnDark: 'text-primary dark:text-primaryLight',
     iconDisabled: 'text-gray-500 dark:text-gray-400',
   },
   input: {

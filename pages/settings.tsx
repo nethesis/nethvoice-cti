@@ -12,10 +12,12 @@ import {
 } from '@fortawesome/free-solid-svg-icons'
 import classNames from 'classnames'
 import { useSelector } from 'react-redux'
-import { RootState } from '../store'
+import { RootState, store } from '../store'
 import { setTheme } from '../lib/darkTheme'
 import { Integrations, ClearCache } from '../components/settings'
 import { useState } from 'react'
+import { Button } from '../components/common'
+import { v4 as uuidv4 } from 'uuid'
 
 interface SettingsMenuTypes {
   name: string
@@ -70,6 +72,41 @@ const Settings: NextPage = () => {
       return route
     })
     setItems(currentItems)
+  }
+
+  const authStore = useSelector((state: RootState) => state.authentication)
+
+  //// remove mock
+  const createCallNotif = () => {
+    const notif = {
+      id: uuidv4(),
+      type: 'missedCall',
+      timestamp: new Date().getTime(),
+      isRead: false,
+      name: 'Test user',
+      number: '222',
+    }
+    store.dispatch.notifications.addNotification({
+      notification: notif,
+      currentUsername: authStore.username,
+    })
+  }
+
+  //// remove mock
+  const createChatNotif = () => {
+    const notif = {
+      id: uuidv4(),
+      type: 'chat',
+      timestamp: new Date().getTime(),
+      isRead: false,
+      name: 'John Doe',
+      message:
+        'Hey there, lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore',
+    }
+    store.dispatch.notifications.addNotification({
+      notification: notif,
+      currentUsername: authStore.username,
+    })
   }
 
   return (
@@ -185,6 +222,14 @@ const Settings: NextPage = () => {
                         ))}
                       </div>
                     </RadioGroup>
+
+                    {/* //// remove test buttons */}
+                    {/* <Button variant='white' onClick={() => createCallNotif()} className='mt-6'>
+                      <span>Create call notif</span>
+                    </Button>
+                    <Button variant='white' onClick={() => createChatNotif()} className='mt-6 ml-4'>
+                      <span>Create chat notif</span>
+                    </Button> */}
                   </div>
                 )}
                 {/* Integrations section */}
