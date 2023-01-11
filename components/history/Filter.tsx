@@ -311,16 +311,6 @@ export const Filter = forwardRef<HTMLButtonElement, FilterProps>(
       checkSelected(DEFAULT_CONTACT_TYPE_FILTER)
     }
 
-    // save filter inside the local storage
-    useEffect(() => {
-      const history = {
-        contactType,
-        contactDirection,
-        sortBy,
-      }
-      localStorage.setItem('historyFilter', JSON.stringify(history))
-    }, [contactType, contactDirection, sortBy])
-
     return (
       <div className={classNames('bg-gray-100 dark:bg-gray-800', className)} {...props}>
         <div className=''>
