@@ -34,6 +34,8 @@ export const Layout: FC<LayoutProps> = ({ children }) => {
   const sideDrawer = useSelector((state: RootState) => state.sideDrawer)
   const operatorsStore = useSelector((state: RootState) => state.operators)
   const [firstRenderOperators, setFirstRenderOperators] = useState(true)
+  const [firstRenderUserInfo, setFirstRenderUserInfo] = useState(true)
+  const [isUserInfoLoaded, setUserInfoLoaded] = useState(false)
   const authStore = useSelector((state: RootState) => state.authentication)
 
   useEffect(() => {
@@ -50,10 +52,11 @@ export const Layout: FC<LayoutProps> = ({ children }) => {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [router])
 
-  // get user data
+  // get logged user data on page load
   useEffect(() => {
-    const getData = async () => {
+    const fetchUserInfo = async () => {
       const userInfo = await getUserInfo()
+
       if (userInfo && userInfo.data) {
         dispatch.user.update({
           name: userInfo.data.name,
@@ -63,12 +66,19 @@ export const Layout: FC<LayoutProps> = ({ children }) => {
           endpoints: userInfo.data.endpoints,
           avatar: userInfo.data.settings.avatar,
         })
+        setUserInfoLoaded(true)
       }
     }
-    getData()
 
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [])
+    if (firstRenderUserInfo) {
+      setFirstRenderUserInfo(false)
+      return
+    }
+
+    if (!isUserInfoLoaded) {
+      fetchUserInfo()
+    }
+  }, [isUserInfoLoaded, firstRenderUserInfo])
 
   // get operators on page load
   useEffect(() => {
