@@ -8,7 +8,9 @@
  */
 
 import { FC, useEffect, useState } from 'react'
-import { Avatar, Button, Dropdown } from '../common'
+import React from 'react'
+import { createRef, RefObject } from 'react'
+import { Avatar, Dropdown, Modal, TextInput, Button } from '../common'
 import { logout } from '../../services/login'
 import { useRouter } from 'next/router'
 import { removeItem } from '../../lib/storage'
@@ -16,7 +18,7 @@ import { store } from '../../store'
 import { useSelector } from 'react-redux'
 import { RootState } from '../../store'
 import classNames from 'classnames'
-import { changeStatusPresence } from '../../lib/topBar'
+import { changeStatusPresence, forwardStatus } from '../../lib/topBar'
 import { Fragment } from 'react'
 import { Popover, Transition } from '@headlessui/react'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
@@ -34,27 +36,27 @@ import { loadNotificationsFromStorage } from '../../lib/notifications'
 
 const solutions = [
   {
-    name:'online',
+    name: 'online',
     status: 'Online',
     description: 'Allows users to to make and receive phone calls.',
     href: '#',
   },
   {
-    name:'forward',
+    name: 'callforward',
     status: 'Forward',
     description: 'Allows users to forward incoming calls to another number or destination.',
     href: '#',
   },
   {
-    name:'mobile',
+    name: 'mobile',
     status: 'Mobile',
-    description: 'Learn how to maximize our platform to get the most out of it.',
+    description: 'Allow users to use mobile device.',
     href: '#',
   },
   {
-    name:'dnd',
+    name: 'dnd',
     status: 'Do not disturb',
-    description: 'Check out webinars with experts and learn about our annual conference.',
+    description: 'Allow users to do not receive more calls.',
     href: '#',
   },
 ]
@@ -90,7 +92,6 @@ export const TopBar: FC<TopBarProps> = ({ openMobileCb }) => {
     }
   }, [firstNotificationsRender, notificationsStore.isLoaded])
 
-  console.log( 'mainPresence', mainPresence)
   const doLogout = async () => {
     const res = await logout()
     //// TODO logout api is currently authenticated. For this reason we must not check res.ok (this is a temporary workaround)
@@ -125,12 +126,43 @@ export const TopBar: FC<TopBarProps> = ({ openMobileCb }) => {
       config: null,
     })
   }
+
+  const [showPresenceModal, setShowPresenceModal] = React.useState(false)
+  const handleSubmit = (e: React.FormEvent) => {
+    e.preventDefault()
+    setShowPresenceModal(false)
+  }
+  const numberInputRef: RefObject<HTMLInputElement> = createRef()
+
+  function showModalPresence() {
+    setShowPresenceModal(true)
+  }
+
   const setPresence = async (presence: any) => {
-    try{
-      await changeStatusPresence(presence)
-    }catch(err){
+    if (presence === 'callforward') {
+      showModalPresence()
+    }
+    if (presence !== 'callforward') {
+      try {
+        await changeStatusPresence(presence)
+      } catch (err) {
+        console.log(err)
+      }
+    }
+  }
+
+  const setForwardPresence = async (number: any) => {
+    let presence = 'callforward'
+    try {
+      await forwardStatus(presence, number)
+    } catch (err) {
       console.log(err)
     }
+  }
+
+  const closedModalSaved = () => {
+    setShowPresenceModal(false)
+    setForwardPresence(numberInputRef.current?.value)
   }
 
   const dropdownItems = (
@@ -193,7 +225,7 @@ export const TopBar: FC<TopBarProps> = ({ openMobileCb }) => {
                         onClick={() => setPresence(item.name)}
                         className='-m-3 flex items-start rounded-lg p-3 transition duration-150 ease-in-out hover:bg-gray-200 dark:hover:bg-gray-700'
                       >
-                        <div className='ml-4' >
+                        <div className='ml-4'>
                           <p className='text-base font-medium'>{item.status}</p>
                           <p className='mt-1 text-sm text-gray-500'>{item.description}</p>
                         </div>
@@ -288,6 +320,32 @@ export const TopBar: FC<TopBarProps> = ({ openMobileCb }) => {
               />
             </Dropdown>
           </div>
+          <Modal
+            show={showPresenceModal}
+            focus={numberInputRef}
+            onClose={() => setShowPresenceModal(false)}
+          >
+            <form onSubmit={handleSubmit}>
+              <Modal.Content>
+                <div className='mt-3 text-center sm:mt-0 sm:text-left w-full'>
+                  <h3 className='text-lg font-medium leading-6 text-center text-gray-900 dark:text-gray-100'>
+                    Add number for forward
+                  </h3>
+                  <div className='mt-3 flex flex-col gap-2'>
+                    <TextInput placeholder='Enter the number' name='number' ref={numberInputRef} />
+                  </div>
+                </div>
+              </Modal.Content>
+              <Modal.Actions>
+                <Button variant='primary' onClick={() => closedModalSaved()}>
+                  Save
+                </Button>
+                <Button variant='white' onClick={() => setShowPresenceModal(false)}>
+                  Cancel
+                </Button>
+              </Modal.Actions>
+            </form>
+          </Modal>
         </div>
       </div>
     </header>
