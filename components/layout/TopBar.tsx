@@ -190,7 +190,7 @@ export const TopBar: FC<TopBarProps> = ({ openMobileCb }) => {
               leaveFrom='opacity-100 translate-y-0'
               leaveTo='opacity-0 translate-y-1'
             >
-              <Popover.Panel className='absolute mr-[2.788rem] -mt-10 right-0 z-10 w-screen max-w-sm -translate-x-1/2 transform px-0.5 md:px-1'>
+              <Popover.Panel className='absolute sm:mr-[4.788rem] sm:-mt-10 right-0 z-10 w-screen max-w-xs sm:-translate-x-1/2 transform px-0.5 sm:px-1 xs:mr-[6rem] '>
                 <div className='overflow-hidden rounded-lg shadow-lg ring-1 ring-black ring-opacity-5'>
                   <div className='relative bg-white dark:border-gray-700 dark:bg-gray-900 py-3'>
                     <a
