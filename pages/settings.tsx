@@ -12,10 +12,12 @@ import {
 } from '@fortawesome/free-solid-svg-icons'
 import classNames from 'classnames'
 import { useSelector } from 'react-redux'
-import { RootState } from '../store'
+import { RootState, store } from '../store'
 import { setTheme } from '../lib/darkTheme'
 import { Integrations, ClearCache } from '../components/settings'
 import { useState } from 'react'
+import { Button } from '../components/common'
+import { v4 as uuidv4 } from 'uuid'
 
 interface SettingsMenuTypes {
   name: string
@@ -72,6 +74,58 @@ const Settings: NextPage = () => {
     setItems(currentItems)
   }
 
+  const authStore = useSelector((state: RootState) => state.authentication)
+
+  //// remove mock
+  const createCallNotif = () => {
+    const notif = {
+      id: uuidv4(),
+      type: 'missedCall',
+      timestamp: new Date().getTime(),
+      isRead: false,
+      name: 'Test user',
+      number: '222',
+    }
+    store.dispatch.notifications.addNotification({
+      notification: notif,
+      currentUsername: authStore.username,
+    })
+  }
+
+  //// remove mock
+  const createQueueCallNotif = () => {
+    const notif = {
+      id: uuidv4(),
+      type: 'missedCall',
+      timestamp: new Date().getTime(),
+      isRead: false,
+      name: 'Test user',
+      number: '222',
+      queue: 'ksd fjaskljklsdfj aklsdj fklasd fkla afkl',
+    }
+    store.dispatch.notifications.addNotification({
+      notification: notif,
+      currentUsername: authStore.username,
+    })
+  }
+
+  //// remove mock
+  const createChatNotif = () => {
+    const notif = {
+      id: uuidv4(),
+      type: 'chat',
+      timestamp: new Date().getTime(),
+      isRead: false,
+      name: 'John Doe',
+      message:
+        'Hey there, lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore',
+    }
+    store.dispatch.notifications.addNotification({
+      notification: notif,
+      currentUsername: authStore.username,
+    })
+  }
+
   return (
     <>
       <div>
@@ -120,9 +174,6 @@ const Settings: NextPage = () => {
                     </div>
 
                     <RadioGroup value={theme} onChange={onChangeTheme}>
-                      {/* <RadioGroup.Label className='text-sm font-medium text-gray-900'> //// 
-                    Theme
-                  </RadioGroup.Label> */}
                       <div className='isolate mt-1 -space-y-px rounded-md bg-white dark:bg-gray-900 shadow-sm'>
                         {themeOptions.map((themeOption, settingIdx) => (
                           <RadioGroup.Option
@@ -188,6 +239,27 @@ const Settings: NextPage = () => {
                         ))}
                       </div>
                     </RadioGroup>
+
+                    {/* //// remove test buttons */}
+                    {/* <div className='mt-6'>
+                      <Button variant='white' onClick={() => createCallNotif()}>
+                        <span>Create personal call notif</span>
+                      </Button>
+                      <Button
+                        variant='white'
+                        onClick={() => createQueueCallNotif()}
+                        className='ml-2'
+                      >
+                        <span>Create queue call notif</span>
+                      </Button>
+                      <Button
+                        variant='white'
+                        onClick={() => createChatNotif()}
+                        className='ml-2'
+                      >
+                        <span>Create chat notif</span>
+                      </Button>
+                    </div> */}
                   </div>
                 )}
                 {/* Integrations section */}

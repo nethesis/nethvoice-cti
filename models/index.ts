@@ -9,6 +9,7 @@ import { phonebook } from './phonebook'
 import { speedDial } from './speedDial'
 import { darkTheme } from './darkTheme'
 import { operators } from './operators'
+import { notifications } from './notifications'
 
 export interface RootModel extends Models<RootModel> {
   authentication: typeof authentication
@@ -18,6 +19,7 @@ export interface RootModel extends Models<RootModel> {
   speedDial: typeof speedDial
   darkTheme: typeof darkTheme
   operators: typeof operators
+  notifications: typeof notifications
 }
 
 export const models: RootModel = {
@@ -28,4 +30,5 @@ export const models: RootModel = {
   speedDial,
   darkTheme,
   operators,
+  notifications,
 }

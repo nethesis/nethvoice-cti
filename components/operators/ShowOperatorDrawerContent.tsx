@@ -30,9 +30,10 @@ import {
 } from '../../lib/operators'
 import { useSelector } from 'react-redux'
 import { RootState } from '../../store'
-import { formatDuration } from '../../lib/dateTime'
 import { CallDuration } from './CallDuration'
 import { HiArrowDownLeft, HiArrowUpRight } from 'react-icons/hi2'
+import { LastCallsDrawerTable } from '../history/LastCallsDrawerTable'
+import { startOfDay, subDays } from 'date-fns'
 
 export interface ShowOperatorDrawerContentProps extends ComponentPropsWithRef<'div'> {
   config: any
@@ -70,7 +71,7 @@ export const ShowOperatorDrawerContent = forwardRef<
   )
 
   return (
-    <div className={classNames('p-1', className)} {...props}>
+    <div className={classNames('p-5', className)} {...props}>
       <div className='flex min-w-0 flex-1 items-center justify-between'>
         <div className='flex items-center'>
           <div className='flex-shrink-0 mr-4'>
@@ -201,7 +202,7 @@ export const ShowOperatorDrawerContent = forwardRef<
         </dl>
       </div>
       {/* ongoing call info */}
-      {config.conversations?.length &&
+      {!!config.conversations?.length &&
         (config.conversations[0].connected ||
           config.conversations[0].inConference ||
           config.conversations[0].chDest.inConference == true) && (
@@ -253,7 +254,7 @@ export const ShowOperatorDrawerContent = forwardRef<
                     {config.conversations[0].direction == 'out' && (
                       <div className='flex items-center text-sm'>
                         <HiArrowUpRight
-                          className='mr-2 h-5 w-5 text-green-400'
+                          className='mr-2 h-5 w-5 text-green-600 dark:text-green-500'
                           aria-hidden='true'
                         />
                         <span className='truncate'>Outgoing</span>
@@ -262,7 +263,7 @@ export const ShowOperatorDrawerContent = forwardRef<
                     {config.conversations[0].direction == 'in' && (
                       <div className='flex items-center text-sm'>
                         <HiArrowDownLeft
-                          className='mr-2 h-5 w-5 text-green-400'
+                          className='mr-2 h-5 w-5 text-green-600 dark:text-green-500'
                           aria-hidden='true'
                         />
                         <span className='truncate'>Ingoing</span>
@@ -286,6 +287,14 @@ export const ShowOperatorDrawerContent = forwardRef<
             </div>
           </div>
         )}
+      {/* last calls: search all operator extensions */}
+      <LastCallsDrawerTable
+        callType={config.lastCallsType || 'switchboard'}
+        dateFrom={startOfDay(subDays(new Date(), 7))}
+        dateTo={new Date()}
+        phoneNumbers={config.endpoints?.extension?.map((ext: any) => ext.id)}
+        limit={10}
+      />
     </div>
   )
 })

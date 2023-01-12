@@ -4,9 +4,7 @@
 import type { PropsWithChildren } from 'react'
 import axios from 'axios'
 import { store } from '../store'
-
-import { format, utcToZonedTime } from 'date-fns-tz'
-import { enGB, it } from 'date-fns/locale'
+import { eventDispatch } from './hooks/eventDispatch'
 
 export interface ClearProps {
   key: string
@@ -55,22 +53,10 @@ export const sortByProperty = (property: string | number) => {
   }
 }
 
-export function formatDate(date: any, fmt: string) {
-  let loc = enGB
-  if (navigator) {
-    const lang = navigator.language.substring(0, 2)
-    switch (lang) {
-      case 'it':
-        loc = it
-        break
-      //TO DO add other languages
-    }
-    return format(date, fmt, { locale: loc })
-  }
-}
+export function callPhoneNumber(phoneNumber: string) {
+  eventDispatch('phone-island-call-start', { number: phoneNumber })
 
-export const formatInTimeZone = (date: any, fmt: string, tz: any) => {
-  return format(utcToZonedTime(date, tz), fmt, { timeZone: tz })
+  console.log('callPhoneNumber', phoneNumber) ////
 }
 
 export function getProductName() {

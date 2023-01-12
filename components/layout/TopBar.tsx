@@ -7,8 +7,8 @@
  *
  */
 
-import { FC } from 'react'
-import { Avatar, Dropdown } from '../common'
+import { FC, useEffect, useState } from 'react'
+import { Avatar, Button, Dropdown } from '../common'
 import { logout } from '../../services/login'
 import { useRouter } from 'next/router'
 import { removeItem } from '../../lib/storage'
@@ -22,8 +22,10 @@ import {
   faBars,
   faSun,
   faMoon,
+  faBell,
 } from '@fortawesome/free-solid-svg-icons'
 import { setTheme } from '../../lib/darkTheme'
+import { loadNotificationsFromStorage } from '../../lib/notifications'
 
 interface TopBarProps {
   openMobileCb: () => void
@@ -36,6 +38,25 @@ export const TopBar: FC<TopBarProps> = ({ openMobileCb }) => {
   )
   const { theme } = useSelector((state: RootState) => state.darkTheme)
   const auth = useSelector((state: RootState) => state.authentication)
+  const sideDrawer = useSelector((state: RootState) => state.sideDrawer)
+  const [firstNotificationsRender, setFirstNotificationsRender]: any = useState(true)
+  const authStore = useSelector((state: RootState) => state.authentication)
+  const notificationsStore = useSelector((state: RootState) => state.notifications)
+
+  // get notifications on page load
+  useEffect(() => {
+    if (firstNotificationsRender) {
+      setFirstNotificationsRender(false)
+      return
+    }
+
+    if (!notificationsStore.isLoaded) {
+      store.dispatch.notifications.setLoaded(false)
+      const notifications = loadNotificationsFromStorage(authStore.username)
+      store.dispatch.notifications.setNotifications(notifications)
+      store.dispatch.notifications.setLoaded(true)
+    }
+  }, [firstNotificationsRender, notificationsStore.isLoaded])
 
   const doLogout = async () => {
     const res = await logout()
@@ -62,6 +83,14 @@ export const TopBar: FC<TopBarProps> = ({ openMobileCb }) => {
     } else {
       setTheme('dark', auth.username)
     }
+  }
+
+  const openNotificationsDrawer = () => {
+    store.dispatch.sideDrawer.update({
+      isShown: true,
+      contentType: 'notifications',
+      config: null,
+    })
   }
 
   const dropdownItems = (
@@ -130,9 +159,37 @@ export const TopBar: FC<TopBarProps> = ({ openMobileCb }) => {
               </div>
             </form>
           </div>
-          <div className='ml-2 flex items-center space-x-4 sm:ml-6 sm:space-x-6'>
+          <div className='ml-2 flex items-center space-x-2'>
+            {/* Notifications drawer */}
+            <Button variant='ghost' onClick={() => openNotificationsDrawer()}>
+              <span className='relative inline-block'>
+                <FontAwesomeIcon
+                  icon={faBell}
+                  className={
+                    'h-5 w-5 py-1 px-0.5 flex-shrink-0 ' +
+                    (sideDrawer.isShown && sideDrawer.contentType === 'notifications'
+                      ? ' text-primary dark:text-primary'
+                      : ' text-gray-500 dark:text-gray-400')
+                  }
+                  aria-hidden='true'
+                />
+                {/* badge with notifications number */}
+                {notificationsStore.unreadCount > 0 && (
+                  <span
+                    className={
+                      'absolute flex justify-center items-center top-1.5 right-0.5 h-4 -translate-y-1/2 translate-x-1/2 transform rounded-full text-xs ring-2 ring-white dark:ring-gray-700 text-white bg-red-500 ' +
+                      (notificationsStore.unreadCount < 10 ? 'w-4' : 'w-6')
+                    }
+                  >
+                    <span>
+                      {notificationsStore.unreadCount < 10 ? notificationsStore.unreadCount : '9+'}
+                    </span>
+                  </span>
+                )}
+              </span>
+            </Button>
             {/* Profile dropdown */}
-            <Dropdown items={dropdownItems} position='left' divider={true}>
+            <Dropdown items={dropdownItems} position='left' divider={true} className='pl-3'>
               <span className='sr-only'>Open user menu</span>
               <Avatar
                 rounded='full'
