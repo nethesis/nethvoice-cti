@@ -7,7 +7,7 @@ import { useSelector } from 'react-redux'
 import { RootState, store } from '../../store'
 import { callPhoneNumber } from '../../lib/utils'
 import { formatInTimeZoneLoc } from '../../lib/dateTime'
-import { EmptyState, IconSwitch } from '../common'
+import { Badge, EmptyState, IconSwitch } from '../common'
 import { faCircleCheck, faPhone } from '@fortawesome/free-solid-svg-icons'
 import { faBell, faCommentDots } from '@fortawesome/free-regular-svg-icons'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
@@ -81,9 +81,16 @@ export const NotificationsDrawerContent = forwardRef<
       /* //// TODO */
     }
     return (
-      <div className='truncate text-sm mb-1 text-gray-900 dark:text-gray-100'>
-        {notification.type === 'missedCall' && notification.name}
-        {notification.type === 'chat' && notification.name}
+      <div className='flex items-center mb-1 overflow-hidden'>
+        <span className='shrink-0 truncate text-sm text-gray-900 dark:text-gray-100 overflow-hidden'>
+          {notification.type === 'missedCall' && notification.name}
+          {notification.type === 'chat' && notification.name}
+        </span>
+        {notification.queue && (
+          <Badge size='small' variant='offline' rounded='full' className='ml-2 overflow-hidden'>
+            <div className='truncate'>{notification.queue}</div>
+          </Badge>
+        )}
       </div>
     )
   }
@@ -124,7 +131,7 @@ export const NotificationsDrawerContent = forwardRef<
         {notification.type === 'chat' && (
           <div
             className={classNames(
-              'truncate text-sm md:w-72 ',
+              'truncate text-sm',
               notification.isRead
                 ? 'text-gray-500 dark:text-gray-400'
                 : 'text-gray-900 dark:text-gray-100',
@@ -180,14 +187,16 @@ export const NotificationsDrawerContent = forwardRef<
                 <li
                   key={index}
                   className={classNames(
-                    'flex py-4 items-center px-5 cursor-pointer',
-                    !notification.isRead ? 'bg-primaryLighter dark:bg-primaryDarker' : '',
+                    'flex py-4 items-center px-5',
+                    !notification.isRead &&
+                      'bg-primaryLighter dark:bg-primaryDarker cursor-pointer',
+                    ['chat', 'voicemail'].includes(notification.type) && 'cursor-pointer',
                   )}
                   onClick={() => openNotification(notification)}
                 >
                   <div>{getNotificationIcon(notification)}</div>
-                  <div className='flex justify-between grow items-center'>
-                    <div className='ml-5'>
+                  <div className='flex justify-between grow items-center overflow-hidden'>
+                    <div className='ml-5 overflow-hidden'>
                       <div className={!notification.isRead ? 'font-semibold' : ''}>
                         <div>{getNotificationTitle(notification)}</div>
                         <div>{getNotificationDetails(notification)}</div>
@@ -212,6 +221,7 @@ export const NotificationsDrawerContent = forwardRef<
                         changed={() => toggleNotificationRead(notification)}
                         onClick={(event) => event.stopPropagation()}
                         title={notification.isRead ? 'Mark as unread' : 'Mark as read'}
+                        className='mr-1'
                       >
                         <span className='sr-only'>Toggle notification read</span>
                       </IconSwitch>

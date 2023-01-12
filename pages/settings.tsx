@@ -93,6 +93,23 @@ const Settings: NextPage = () => {
   }
 
   //// remove mock
+  const createQueueCallNotif = () => {
+    const notif = {
+      id: uuidv4(),
+      type: 'missedCall',
+      timestamp: new Date().getTime(),
+      isRead: false,
+      name: 'Test user',
+      number: '222',
+      queue: 'ksd fjaskljklsdfj aklsdj fklasd fkla afkl',
+    }
+    store.dispatch.notifications.addNotification({
+      notification: notif,
+      currentUsername: authStore.username,
+    })
+  }
+
+  //// remove mock
   const createChatNotif = () => {
     const notif = {
       id: uuidv4(),
@@ -224,12 +241,25 @@ const Settings: NextPage = () => {
                     </RadioGroup>
 
                     {/* //// remove test buttons */}
-                    {/* <Button variant='white' onClick={() => createCallNotif()} className='mt-6'>
-                      <span>Create call notif</span>
-                    </Button>
-                    <Button variant='white' onClick={() => createChatNotif()} className='mt-6 ml-4'>
-                      <span>Create chat notif</span>
-                    </Button> */}
+                    {/* <div className='mt-6'>
+                      <Button variant='white' onClick={() => createCallNotif()}>
+                        <span>Create personal call notif</span>
+                      </Button>
+                      <Button
+                        variant='white'
+                        onClick={() => createQueueCallNotif()}
+                        className='ml-2'
+                      >
+                        <span>Create queue call notif</span>
+                      </Button>
+                      <Button
+                        variant='white'
+                        onClick={() => createChatNotif()}
+                        className='ml-2'
+                      >
+                        <span>Create chat notif</span>
+                      </Button>
+                    </div> */}
                   </div>
                 )}
                 {/* Integrations section */}
