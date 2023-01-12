@@ -348,7 +348,7 @@ const History: NextPage = () => {
                 {call.disposition === 'ANSWERED' ? (
                   <div className='flex flex-nowrap items-center'>
                     <HiArrowDownLeft
-                      className='mr-2 h-5 w-5 text-green-500 dark:text-green-400'
+                      className='mr-2 h-5 w-5 text-green-600 dark:text-green-500'
                       aria-hidden='true'
                     />
                     <span className='text-gray-900 dark:text-gray-100'>Incoming answered</span>
@@ -366,7 +366,7 @@ const History: NextPage = () => {
                 {call.disposition === 'ANSWERED' ? (
                   <div className='flex flex-nowrap items-center'>
                     <HiArrowUpRight
-                      className='mr-2 h-5 w-5 text-green-500 dark:text-green-400'
+                      className='mr-2 h-5 w-5 text-green-600 dark:text-green-500'
                       aria-hidden='true'
                     />
                     <span className='text-gray-900 dark:text-gray-100'>Outgoing answered</span>
@@ -394,7 +394,7 @@ const History: NextPage = () => {
                   <div className='flex flex-nowrap items-center'>
                     <FontAwesomeIcon
                       icon={faBuilding}
-                      className='mr-2 h-4 w-4 flex-shrink-0 text-green-500 dark:text-green-400'
+                      className='mr-2 h-4 w-4 flex-shrink-0 text-green-600 dark:text-green-500'
                       aria-hidden='true'
                     />
                     <span className='text-gray-900 dark:text-gray-100'>Internal answered</span>
@@ -418,7 +418,7 @@ const History: NextPage = () => {
                     {call.disposition === 'ANSWERED' ? (
                       <div className='flex flex-nowrap items-center'>
                         <HiArrowDownLeft
-                          className='mr-2 h-5 w-5 text-green-500 dark:text-green-400'
+                          className='mr-2 h-5 w-5 text-green-600 dark:text-green-500'
                           aria-hidden='true'
                         />
                         <span className='text-gray-900 dark:text-gray-100'>Incoming answered</span>
@@ -437,7 +437,7 @@ const History: NextPage = () => {
                     {call.disposition === 'ANSWERED' ? (
                       <div className='flex flex-nowrap items-center'>
                         <HiArrowUpRight
-                          className='mr-2 h-5 w-5 text-green-500 dark:text-green-400'
+                          className='mr-2 h-5 w-5 text-green-600 dark:text-green-500'
                           aria-hidden='true'
                         />
                         <span className='text-gray-900 dark:text-gray-100'>Outgoing answered</span>

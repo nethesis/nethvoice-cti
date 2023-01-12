@@ -254,7 +254,7 @@ export const ShowOperatorDrawerContent = forwardRef<
                     {config.conversations[0].direction == 'out' && (
                       <div className='flex items-center text-sm'>
                         <HiArrowUpRight
-                          className='mr-2 h-5 w-5 text-green-500 dark:text-green-400'
+                          className='mr-2 h-5 w-5 text-green-600 dark:text-green-500'
                           aria-hidden='true'
                         />
                         <span className='truncate'>Outgoing</span>
@@ -263,7 +263,7 @@ export const ShowOperatorDrawerContent = forwardRef<
                     {config.conversations[0].direction == 'in' && (
                       <div className='flex items-center text-sm'>
                         <HiArrowDownLeft
-                          className='mr-2 h-5 w-5 text-green-500 dark:text-green-400'
+                          className='mr-2 h-5 w-5 text-green-600 dark:text-green-500'
                           aria-hidden='true'
                         />
                         <span className='truncate'>Ingoing</span>
