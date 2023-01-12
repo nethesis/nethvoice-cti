@@ -190,7 +190,7 @@ export const TopBar: FC<TopBarProps> = ({ openMobileCb }) => {
               leaveFrom='opacity-100 translate-y-0'
               leaveTo='opacity-0 translate-y-1'
             >
-              <Popover.Panel className='absolute mr-[0.80rem] -mt-10 right-0 z-10 w-screen max-w-md -translate-x-1/2 transform px-0.5 md:px-1'>
+              <Popover.Panel className='absolute mr-[2.788rem] -mt-10 right-0 z-10 w-screen max-w-sm -translate-x-1/2 transform px-0.5 md:px-1'>
                 <div className='overflow-hidden rounded-lg shadow-lg ring-1 ring-black ring-opacity-5'>
                   <div className='relative bg-white dark:border-gray-700 dark:bg-gray-900 py-3'>
                     <a
@@ -202,9 +202,7 @@ export const TopBar: FC<TopBarProps> = ({ openMobileCb }) => {
                           <span className='bg-emerald-500 dark:bg-emerald-500 h-2 w-2 flex rounded-full mr-2 ring-2 ring-white' />
                           <p className='flex text-base font-medium'> Online</p>
                         </div>
-                        <p className='text-sm text-gray-500'>
-                          Make and receive phone calls.
-                        </p>
+                        <p className='text-sm text-gray-500'>Make and receive phone calls.</p>
                       </div>
                     </a>
                     <a
@@ -235,9 +233,7 @@ export const TopBar: FC<TopBarProps> = ({ openMobileCb }) => {
                           <span className='bg-red-500 dark:bg-red-500 h-2 w-2 flex rounded-full mr-2 ring-2 ring-white' />
                           <p className='flex text-base font-medium'> Do not disturb</p>
                         </div>
-                        <p className='text-sm text-gray-500'>
-                        Do not receive any calls.{' '}
-                        </p>
+                        <p className='text-sm text-gray-500'>Do not receive any calls.</p>
                       </div>
                     </a>
                   </div>
