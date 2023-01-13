@@ -116,9 +116,7 @@ export const TopBar: FC<TopBarProps> = ({ openMobileCb }) => {
   const setPresence = async (presence: any) => {
     if (presence === 'callforward') {
       showModalPresence()
-    }
-
-    if (presence !== 'callforward') {
+    } else {
       try {
         await changeStatusPresence(presence)
         setUpdatePresence(presence)
