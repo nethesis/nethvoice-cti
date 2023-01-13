@@ -7,14 +7,21 @@
  *
  */
 
-import { FC, useEffect, useState } from 'react'
-import { Avatar, Button, Dropdown } from '../common'
+import React from 'react'
+
+import { FC, useEffect, useState, createRef, RefObject } from 'react'
+
+import { Avatar, Dropdown, Modal, TextInput, Button } from '../common'
 import { logout } from '../../services/login'
 import { useRouter } from 'next/router'
 import { removeItem } from '../../lib/storage'
 import { store } from '../../store'
 import { useSelector } from 'react-redux'
 import { RootState } from '../../store'
+import classNames from 'classnames'
+import { changeStatusPresence, forwardStatus } from '../../lib/topBar'
+import { Fragment } from 'react'
+import { Popover, Transition } from '@headlessui/react'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import {
   faMagnifyingGlass,
@@ -23,6 +30,7 @@ import {
   faSun,
   faMoon,
   faBell,
+  faChevronRight,
 } from '@fortawesome/free-solid-svg-icons'
 import { setTheme } from '../../lib/darkTheme'
 import { loadNotificationsFromStorage } from '../../lib/notifications'
@@ -57,6 +65,7 @@ export const TopBar: FC<TopBarProps> = ({ openMobileCb }) => {
       store.dispatch.notifications.setLoaded(true)
     }
   }, [firstNotificationsRender, notificationsStore.isLoaded])
+  const [updatePresence, setUpdatePresence] = useState(mainPresence)
 
   const doLogout = async () => {
     const res = await logout()
@@ -93,6 +102,49 @@ export const TopBar: FC<TopBarProps> = ({ openMobileCb }) => {
     })
   }
 
+  const [showPresenceModal, setShowPresenceModal] = React.useState(false)
+  const handleSubmit = (e: React.FormEvent) => {
+    e.preventDefault()
+    setShowPresenceModal(false)
+  }
+  const numberInputRef: RefObject<HTMLInputElement> = createRef()
+
+  function showModalPresence() {
+    setShowPresenceModal(true)
+  }
+
+  const setPresence = async (presence: any) => {
+    if (presence === 'callforward') {
+      showModalPresence()
+    } else {
+      try {
+        await changeStatusPresence(presence)
+        setUpdatePresence(presence)
+      } catch (err) {
+        console.log(err)
+      }
+    }
+  }
+
+  const setForwardPresence = async (number: any) => {
+    let presence: any = 'callforward'
+    try {
+      await forwardStatus(presence, number)
+      setUpdatePresence(presence)
+    } catch (err) {
+      console.log(err)
+    }
+  }
+
+  const closedModalSaved = () => {
+    setShowPresenceModal(false)
+    setForwardPresence(numberInputRef.current?.value)
+  }
+
+  useEffect(() => {
+    setUpdatePresence(mainPresence)
+  }, [mainPresence])
+
   const dropdownItems = (
     <>
       <div className='cursor-default'>
@@ -104,6 +156,91 @@ export const TopBar: FC<TopBarProps> = ({ openMobileCb }) => {
           </span>
         </Dropdown.Header>
       </div>
+      <Popover className='md:relative hover:bg-gray-200 dark:hover:bg-gray-700'>
+        {({ open }) => (
+          <>
+            <Popover.Button
+              className={classNames(
+                open ? '' : '',
+                'relative text-left cursor-pointer px-5 py-2 text-sm flex items-center gap-3 w-full ',
+              )}
+            >
+              <span
+                className={classNames(
+                  updatePresence === 'dnd'
+                    ? 'bg-red-500 dark:bg-red-500'
+                    : 'bg-emerald-500 dark:bg-emerald-500',
+                  'h-2 w-2 flex rounded-full mr-1 ring-2 ring-white',
+                )}
+              />
+              Presence
+              <FontAwesomeIcon
+                icon={faChevronRight}
+                className='ml-auto h-3 w-3 flex justify-center text-gray-400 dark:text-gray-500'
+              />
+            </Popover.Button>
+            <Transition
+              as={Fragment}
+              enter='transition ease-out duration-200'
+              enterFrom='opacity-0 translate-y-1'
+              enterTo='opacity-100 translate-y-0'
+              leave='transition ease-in duration-150'
+              leaveFrom='opacity-100 translate-y-0'
+              leaveTo='opacity-0 translate-y-1'
+            >
+              <Popover.Panel className='absolute sm:mr-[4.788rem] sm:-mt-10 right-0 z-10 w-screen max-w-xs sm:-translate-x-1/2 transform px-0.5 sm:px-1 xs:mr-[6rem] '>
+                <div className='overflow-hidden shadow-lg ring-1 ring-black ring-opacity-5 rounded-md'>
+                  <div className='relative bg-white dark:border-gray-700 dark:bg-gray-900 py-2'>
+                    <a
+                      className='flex px-5 py-3 items-start transition duration-150 ease-in-out hover:bg-gray-200 dark:hover:bg-gray-700'
+                      onClick={() => setPresence('online')}
+                    >
+                      <div>
+                        <div className='flex items-center'>
+                          <span className='bg-emerald-500 dark:bg-emerald-500 h-2 w-2 flex rounded-full mr-2 ring-2 ring-white' />
+                          <p className='flex text-base font-medium'> Online</p>
+                        </div>
+                        <p className='text-sm text-gray-500'>Make and receive phone calls.</p>
+                      </div>
+                    </a>
+                    <a
+                      className='flex px-5 py-3 items-start transition duration-150 ease-in-out hover:bg-gray-200 dark:hover:bg-gray-700'
+                      onClick={() => setPresence('callforward')}
+                    >
+                      <div className=''>
+                        <div className='flex items-center'>
+                          <span className='bg-emerald-500 dark:bg-emerald-500 h-2 w-2 flex rounded-full mr-2 ring-2 ring-white' />
+                          <p className='flex text-base font-medium'> Call forward</p>
+                        </div>
+                        <p className='text-sm text-gray-500'>
+                          Forward incoming calls to another phone number.
+                        </p>
+                      </div>
+                    </a>
+                    <div className='relative py-2'>
+                      <div className='absolute inset-0 flex items-center' aria-hidden='true'>
+                        <div className='w-full border-t  border-gray-300 dark:border-gray-600' />
+                      </div>
+                    </div>
+                    <a
+                      className='flex px-5 py-3 items-start transition duration-150 ease-in-out hover:bg-gray-200 dark:hover:bg-gray-700'
+                      onClick={() => setPresence('dnd')}
+                    >
+                      <div>
+                        <div className='flex items-center'>
+                          <span className='bg-red-500 dark:bg-red-500 h-2 w-2 flex rounded-full mr-2 ring-2 ring-white' />
+                          <p className='flex text-base font-medium'> Do not disturb</p>
+                        </div>
+                        <p className='text-sm text-gray-500'>Do not receive any calls.</p>
+                      </div>
+                    </a>
+                  </div>
+                </div>
+              </Popover.Panel>
+            </Transition>
+          </>
+        )}
+      </Popover>
       <Dropdown.Item
         icon={
           theme === 'dark' ||
@@ -196,10 +333,36 @@ export const TopBar: FC<TopBarProps> = ({ openMobileCb }) => {
                 src={avatar}
                 placeholderType='person'
                 size='small'
-                status={mainPresence || 'offline'}
+                status={updatePresence || 'offline'}
               />
             </Dropdown>
           </div>
+          <Modal
+            show={showPresenceModal}
+            focus={numberInputRef}
+            onClose={() => setShowPresenceModal(false)}
+          >
+            <form onSubmit={handleSubmit}>
+              <Modal.Content>
+                <div className='mt-3 text-center sm:mt-0 sm:text-left w-full'>
+                  <h3 className='text-lg font-medium leading-6 text-center text-gray-900 dark:text-gray-100'>
+                    Enter phone number for call forward
+                  </h3>
+                  <div className='mt-3 flex flex-col gap-2'>
+                    <TextInput placeholder='Phone number' name='number' ref={numberInputRef} />
+                  </div>
+                </div>
+              </Modal.Content>
+              <Modal.Actions>
+                <Button variant='primary' onClick={() => closedModalSaved()}>
+                  Save
+                </Button>
+                <Button variant='white' onClick={() => setShowPresenceModal(false)}>
+                  Cancel
+                </Button>
+              </Modal.Actions>
+            </form>
+          </Modal>
         </div>
       </div>
     </header>
