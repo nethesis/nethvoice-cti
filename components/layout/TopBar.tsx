@@ -189,10 +189,10 @@ export const TopBar: FC<TopBarProps> = ({ openMobileCb }) => {
               leaveTo='opacity-0 translate-y-1'
             >
               <Popover.Panel className='absolute sm:mr-[4.788rem] sm:-mt-10 right-0 z-10 w-screen max-w-xs sm:-translate-x-1/2 transform px-0.5 sm:px-1 xs:mr-[6rem] '>
-                <div className='overflow-hidden rounded-lg shadow-lg ring-1 ring-black ring-opacity-5'>
-                  <div className='relative bg-white dark:border-gray-700 dark:bg-gray-900 py-3'>
+                <div className='overflow-hidden shadow-lg ring-1 ring-black ring-opacity-5 rounded-md'>
+                  <div className='relative bg-white dark:border-gray-700 dark:bg-gray-900 py-2'>
                     <a
-                      className='flex px-5 py-3 items-start rounded-lg transition duration-150 ease-in-out hover:bg-gray-200 dark:hover:bg-gray-700'
+                      className='flex px-5 py-3 items-start transition duration-150 ease-in-out hover:bg-gray-200 dark:hover:bg-gray-700'
                       onClick={() => setPresence('online')}
                     >
                       <div>
@@ -204,7 +204,7 @@ export const TopBar: FC<TopBarProps> = ({ openMobileCb }) => {
                       </div>
                     </a>
                     <a
-                      className='flex px-5 py-3 items-start rounded-lg transition duration-150 ease-in-out hover:bg-gray-200 dark:hover:bg-gray-700'
+                      className='flex px-5 py-3 items-start transition duration-150 ease-in-out hover:bg-gray-200 dark:hover:bg-gray-700'
                       onClick={() => setPresence('callforward')}
                     >
                       <div className=''>
@@ -217,13 +217,13 @@ export const TopBar: FC<TopBarProps> = ({ openMobileCb }) => {
                         </p>
                       </div>
                     </a>
-                    <div className='relative py-3'>
+                    <div className='relative py-2'>
                       <div className='absolute inset-0 flex items-center' aria-hidden='true'>
                         <div className='w-full border-t  border-gray-300 dark:border-gray-600' />
                       </div>
                     </div>
                     <a
-                      className='flex px-5 py-3 items-start rounded-lg transition duration-150 ease-in-out hover:bg-gray-200 dark:hover:bg-gray-700'
+                      className='flex px-5 py-3 items-start transition duration-150 ease-in-out hover:bg-gray-200 dark:hover:bg-gray-700'
                       onClick={() => setPresence('dnd')}
                     >
                       <div>
