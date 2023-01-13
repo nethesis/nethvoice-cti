@@ -25,9 +25,9 @@ import {
   faTriangleExclamation,
   faEllipsisVertical,
   faPen,
-  faTrash,
   faBolt,
 } from '@fortawesome/free-solid-svg-icons'
+import { faTrashCan } from '@fortawesome/free-regular-svg-icons'
 import { callPhoneNumber } from '../../lib/utils'
 
 export const SpeedDial = () => {
@@ -108,7 +108,7 @@ export const SpeedDial = () => {
       <Dropdown.Item icon={faPen} onClick={() => openEditSpeedDialDrawer(speedDial)}>
         Edit
       </Dropdown.Item>
-      <Dropdown.Item icon={faTrash} onClick={() => confirmDeleteItem(speedDial)}>
+      <Dropdown.Item icon={faTrashCan} onClick={() => confirmDeleteItem(speedDial)}>
         Delete
       </Dropdown.Item>
     </>

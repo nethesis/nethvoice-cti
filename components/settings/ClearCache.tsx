@@ -3,7 +3,7 @@
 
 import { Button } from '../common'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
-import { faTrash } from '@fortawesome/free-solid-svg-icons'
+import { faTrashCan } from '@fortawesome/free-regular-svg-icons'
 import { getProductName } from '../../lib/utils'
 import { useSelector } from 'react-redux'
 import { RootState } from '../../store'
@@ -46,7 +46,7 @@ export const ClearCache = () => {
                   }}
                 >
                   <span>Clear cache</span>
-                  <FontAwesomeIcon icon={faTrash} className='ml-2 h-4 w-4' />
+                  <FontAwesomeIcon icon={faTrashCan} className='ml-2 h-4 w-4' />
                 </Button>
               </div>
             </div>

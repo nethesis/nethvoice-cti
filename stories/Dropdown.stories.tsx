@@ -5,7 +5,8 @@ import React from 'react'
 import { Dropdown, DropdownProps, Button } from '../components/common'
 import { Story, Meta } from '@storybook/react'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
-import { faPen, faTrash, faClone, faChevronDown } from '@fortawesome/free-solid-svg-icons'
+import { faPen, faClone, faChevronDown } from '@fortawesome/free-solid-svg-icons'
+import { faTrashCan } from '@fortawesome/free-regular-svg-icons'
 
 const meta = {
   title: 'Components/Dropdown',
@@ -75,7 +76,7 @@ WithIcon.args = {
         <Dropdown.Item icon={faClone}>Duplicate</Dropdown.Item>
       </div>
       <div>
-        <Dropdown.Item icon={faTrash}>Delete</Dropdown.Item>
+        <Dropdown.Item icon={faTrashCan}>Delete</Dropdown.Item>
       </div>
     </>
   ),

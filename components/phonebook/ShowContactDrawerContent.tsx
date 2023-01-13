@@ -23,9 +23,9 @@ import {
   faFileLines,
   faEllipsisVertical,
   faPen,
-  faTrash,
   faEye,
 } from '@fortawesome/free-solid-svg-icons'
+import { faTrashCan } from '@fortawesome/free-regular-svg-icons'
 
 export interface ShowContactDrawerContentProps extends ComponentPropsWithRef<'div'> {
   config: any
@@ -63,7 +63,7 @@ export const ShowContactDrawerContent = forwardRef<
       <Dropdown.Item icon={faPen} onClick={() => openEditContactDrawer(config)}>
         Edit
       </Dropdown.Item>
-      <Dropdown.Item icon={faTrash} onClick={() => showDeleteContactModal(config)}>
+      <Dropdown.Item icon={faTrashCan} onClick={() => showDeleteContactModal(config)}>
         Delete
       </Dropdown.Item>
     </>
