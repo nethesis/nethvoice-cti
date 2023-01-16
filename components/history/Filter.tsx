@@ -153,8 +153,8 @@ export const Filter = forwardRef<HTMLButtonElement, FilterProps>(
     //Format the date to the format for the visualizations
     const dateFromWithHour: any = formatDateLoc(oneWeekBeforeActualDate, 'PPp')
 
-    const actualDateLabelTo:any = formatDateLoc(new Date(), "yyyy-MM-dd'T'HH:mm")
-    const actualDateLabelFrom:any = formatDateLoc(oneWeekBeforeActualDate, "yyyy-MM-dd'T'HH:mm")
+    const actualDateLabelTo: any = formatDateLoc(new Date(), "yyyy-MM-dd'T'HH:mm")
+    const actualDateLabelFrom: any = formatDateLoc(oneWeekBeforeActualDate, "yyyy-MM-dd'T'HH:mm")
 
     //Get one week before date without hour and minute for the reset
     const dateFromForReset: any = formatDateLoc(oneWeekBeforeActualDate, 'yyyy-MM-dd')
@@ -286,7 +286,7 @@ export const Filter = forwardRef<HTMLButtonElement, FilterProps>(
 
     const [clearSelected, setClearSelected] = useState(false)
 
-    function clearDate(){
+    function clearDate() {
       setClearSelected(true)
       setLabelForDateTo(dateToWithHour)
     }
@@ -300,6 +300,9 @@ export const Filter = forwardRef<HTMLButtonElement, FilterProps>(
       setdateBeginValue(actualDateLabelFrom)
       setdateEndValue(actualDateLabelTo)
       setSortBy(DEFAULT_SORT_BY)
+      savePreference('historyContactTypeFilter', DEFAULT_CONTACT_TYPE_FILTER, auth.username)
+      savePreference('historyContactTypeDirection', DEFAULT_CONTACT_DIRECTION_FILTER, auth.username)
+      savePreference('historySortTypePreference', DEFAULT_SORT_BY, auth.username)
 
       // notify parent component
       updateFilterText('')
@@ -604,7 +607,7 @@ export const Filter = forwardRef<HTMLButtonElement, FilterProps>(
               </div>
             </Dialog>
           </Transition.Root>
-          
+
           {/* Filter pc */}
           <div className='mx-auto text-center'>
             <section aria-labelledby='filter-heading' className='pb-4'>
@@ -887,7 +890,7 @@ export const Filter = forwardRef<HTMLButtonElement, FilterProps>(
                     <div className='-m-1 flex flex-wrap items-center'>
                       <span className='m-1 inline-flex items-center rounded-full border py-1.5 pl-3 pr-2 text-sm font-medium border-gray-200 bg-white text-gray-700 dark:border-gray-700 dark:bg-gray-900 dark:text-gray-200'>
                         <span className='text-gray-500 dark:text-gray-400'>From:&nbsp;</span>
-                        {(!dateBeginValue || clearSelected) ? labelForDateFrom : dateBeginShowed}
+                        {!dateBeginValue || clearSelected ? labelForDateFrom : dateBeginShowed}
                       </span>
                     </div>
                   </div>
@@ -895,7 +898,7 @@ export const Filter = forwardRef<HTMLButtonElement, FilterProps>(
                     <div className='-m-1 flex flex-wrap items-center'>
                       <span className='m-1 inline-flex items-center rounded-full border py-1.5 pl-3 pr-2 text-sm font-medium border-gray-200 bg-white text-gray-700 dark:border-gray-700 dark:bg-gray-900 dark:text-gray-200'>
                         <span className='text-gray-500 dark:text-gray-400'>To:&nbsp;</span>
-                        {(!dateEndValue || clearSelected ) ? labelForDateTo : dateEndShowed}
+                        {!dateEndValue || clearSelected ? labelForDateTo : dateEndShowed}
                       </span>
                     </div>
                   </div>
