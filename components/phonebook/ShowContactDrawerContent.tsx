@@ -172,7 +172,7 @@ export const ShowContactDrawerContent = forwardRef<
                       className='mr-2 h-4 w-4 flex-shrink-0 text-gray-400 dark:text-gray-500'
                       aria-hidden='true'
                     />
-                    <span className='truncate cursor-pointer'>{config.extension}</span>
+                    <span className='truncate cursor-pointer hover:underline'>{config.extension}</span>
                   </div>
                 </dd>
               </div>
@@ -188,7 +188,7 @@ export const ShowContactDrawerContent = forwardRef<
                       className='mr-2 h-4 w-4 flex-shrink-0 text-gray-400 dark:text-gray-500'
                       aria-hidden='true'
                     />
-                    <span className='truncate cursor-pointer'>{config.workphone}</span>
+                    <span className='truncate cursor-pointer hover:underline'>{config.workphone}</span>
                   </div>
                 </dd>
               </div>
@@ -206,7 +206,7 @@ export const ShowContactDrawerContent = forwardRef<
                       className='mr-2 h-4 w-4 flex-shrink-0 text-gray-400 dark:text-gray-500'
                       aria-hidden='true'
                     />
-                    <span className='truncate cursor-pointer'>{config.cellphone}</span>
+                    <span className='truncate cursor-pointer hover:underline'>{config.cellphone}</span>
                   </div>
                 </dd>
               </div>
