@@ -92,6 +92,7 @@ export const ShowOperatorDrawerContent = forwardRef<
                 size='large'
                 icon={<FontAwesomeIcon icon={faStar} />}
                 changed={() => toggleFavorite()}
+                className={'mr-5'}
               >
                 <span className='sr-only'>Toggle favorite operator</span>
               </IconSwitch>
