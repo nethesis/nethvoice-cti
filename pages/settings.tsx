@@ -15,7 +15,7 @@ import { useSelector } from 'react-redux'
 import { RootState, store } from '../store'
 import { setTheme } from '../lib/darkTheme'
 import { Integrations, ClearCache } from '../components/settings'
-import { useState } from 'react'
+import { useEffect, useState } from 'react'
 import { Button } from '../components/common'
 import { v4 as uuidv4 } from 'uuid'
 
@@ -56,6 +56,19 @@ const Settings: NextPage = () => {
   const [items, setItems] = useState<SettingsMenuTypes[]>(settingsMenu)
   const [currentSection, setCurrentSection] = useState<string>(settingsMenu[0].name)
   const auth = useSelector((state: RootState) => state.authentication)
+  const [firstRender, setFirstRender]: any = useState(true)
+  const [isLoaded, setLoaded] = useState(false)
+
+  useEffect(() => {
+    if (firstRender) {
+      setFirstRender(false)
+      return
+    }
+
+    if (!isLoaded) {
+      changeSection('Theme')
+    }
+  }, [firstRender, isLoaded])
 
   const onChangeTheme = (newTheme: string) => {
     setTheme(newTheme, auth.username)

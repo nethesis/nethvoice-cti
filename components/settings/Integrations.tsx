@@ -92,7 +92,7 @@ export const Integrations = () => {
               </p>
               <p className='mt-6 flex items-center gap-2'>
                 {!tokenExists && (
-                  <Button variant='secondary' onClick={newConfig}>
+                  <Button variant='white' onClick={newConfig}>
                     Get phone widget configuration{' '}
                     {loading && <FontAwesomeIcon icon={faCircleNotch} className='fa-spin ml-2' />}
                   </Button>

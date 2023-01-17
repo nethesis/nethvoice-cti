@@ -1,12 +1,14 @@
 // Copyright (C) 2022 Nethesis S.r.l.
 // SPDX-License-Identifier: AGPL-3.0-or-later
 
-import { Button } from '../common'
+import { Button, InlineNotification } from '../common'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
-import { faTrash } from '@fortawesome/free-solid-svg-icons'
+import { faTrashCan } from '@fortawesome/free-regular-svg-icons'
 import { getProductName } from '../../lib/utils'
 import { useSelector } from 'react-redux'
 import { RootState } from '../../store'
+import { useState } from 'react'
+import { faCheck } from '@fortawesome/free-solid-svg-icons'
 
 export const ClearCache = () => {
   const productName = getProductName()
@@ -15,7 +17,12 @@ export const ClearCache = () => {
   const authenticationStore = useSelector((state: RootState) => state.authentication)
   const { username } = authenticationStore
   //Create the variable that will be used to clear the cache
-  const cacheEntry: any = 'caches-' + username
+  const [isCacheCleared, setCacheCleared] = useState(false)
+
+  const clearCache = () => {
+    localStorage.removeItem('caches-' + username)
+    setCacheCleared(true)
+  }
 
   return (
     <>
@@ -40,14 +47,22 @@ export const ClearCache = () => {
               </p>
               <div className='mt-6'>
                 <Button
-                  variant='danger'
+                  variant='white'
                   onClick={() => {
-                    localStorage.removeItem(cacheEntry)
+                    clearCache()
                   }}
+                  disabled={isCacheCleared}
                 >
                   <span>Clear cache</span>
-                  <FontAwesomeIcon icon={faTrash} className='ml-2 h-4 w-4' />
+                  <FontAwesomeIcon icon={faTrashCan} className='ml-2 h-4 w-4' />
                 </Button>
+                {isCacheCleared && (
+                  <InlineNotification
+                    className='mt-5 border-none'
+                    type='success'
+                    title='Cache cleared'
+                  />
+                )}
               </div>
             </div>
           </div>
