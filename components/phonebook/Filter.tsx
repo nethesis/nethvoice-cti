@@ -297,7 +297,7 @@ export const Filter = forwardRef<HTMLButtonElement, FilterProps>(
                     value={textFilter}
                     onChange={changeTextFilter}
                     ref={textFilterRef}
-                    icon={faCircleXmark}
+                    icon={textFilter.length ? faCircleXmark : undefined}
                     onIconClick={() => clearTextFilter()}
                     trailingIcon={true}
                   />

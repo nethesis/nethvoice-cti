@@ -329,7 +329,7 @@ export const Filter = forwardRef<HTMLButtonElement, FilterProps>(
                                     onChange={changeGroupTextFilter}
                                     autoFocus
                                     ref={groupTextFilterRef}
-                                    icon={faCircleXmark}
+                                    icon={groupTextFilter.length ? faCircleXmark : undefined}
                                     onIconClick={() => clearGroupTextFilter()}
                                     trailingIcon={true}
                                     className='min-w-[8rem]'
@@ -557,7 +557,7 @@ export const Filter = forwardRef<HTMLButtonElement, FilterProps>(
                     value={textFilter}
                     onChange={changeTextFilter}
                     ref={textFilterRef}
-                    icon={faCircleXmark}
+                    icon={textFilter.length ? faCircleXmark : undefined}
                     onIconClick={() => clearTextFilter()}
                     trailingIcon={true}
                   />
@@ -600,7 +600,7 @@ export const Filter = forwardRef<HTMLButtonElement, FilterProps>(
                               onChange={changeGroupTextFilter}
                               autoFocus
                               ref={groupTextFilterRef}
-                              icon={faCircleXmark}
+                              icon={groupTextFilter.length ? faCircleXmark : undefined}
                               onIconClick={() => clearGroupTextFilter()}
                               trailingIcon={true}
                               className='min-w-[10rem]'
