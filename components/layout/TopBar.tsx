@@ -167,9 +167,20 @@ export const TopBar: FC<TopBarProps> = ({ openMobileCb }) => {
             >
               <span
                 className={classNames(
-                  updatePresence === 'dnd'
+                  updatePresence === 'offline'
+                    ? 'bg-gray-500 dark:bg-gray-500'
+                    : updatePresence === 'online' ||
+                      updatePresence === 'callforward' ||
+                      updatePresence === 'available' ||
+                      updatePresence === 'voicemail' ||
+                      updatePresence === 'cellphone'
+                    ? 'bg-emerald-500 dark:bg-emerald-500'
+                    : updatePresence === 'dnd' ||
+                      updatePresence === 'ringing' ||
+                      updatePresence === 'busy' ||
+                      updatePresence === 'incoming'
                     ? 'bg-red-500 dark:bg-red-500'
-                    : 'bg-emerald-500 dark:bg-emerald-500',
+                    : 'bg-gray-500 dark:bg-gray-500',
                   'h-2 w-2 flex rounded-full mr-1 ring-2 ring-white',
                 )}
               />
@@ -198,7 +209,7 @@ export const TopBar: FC<TopBarProps> = ({ openMobileCb }) => {
                       <div>
                         <div className='flex items-center'>
                           <span className='bg-emerald-500 dark:bg-emerald-500 h-2 w-2 flex rounded-full mr-2 ring-2 ring-white' />
-                          <p className='flex text-base font-medium'> Online</p>
+                          <p className='flex text-sm font-medium'> Online</p>
                         </div>
                         <p className='text-sm text-gray-500'>Make and receive phone calls.</p>
                       </div>
@@ -210,7 +221,7 @@ export const TopBar: FC<TopBarProps> = ({ openMobileCb }) => {
                       <div className=''>
                         <div className='flex items-center'>
                           <span className='bg-emerald-500 dark:bg-emerald-500 h-2 w-2 flex rounded-full mr-2 ring-2 ring-white' />
-                          <p className='flex text-base font-medium'> Call forward</p>
+                          <p className='flex text-sm font-medium'> Call forward</p>
                         </div>
                         <p className='text-sm text-gray-500'>
                           Forward incoming calls to another phone number.
@@ -229,7 +240,7 @@ export const TopBar: FC<TopBarProps> = ({ openMobileCb }) => {
                       <div>
                         <div className='flex items-center'>
                           <span className='bg-red-500 dark:bg-red-500 h-2 w-2 flex rounded-full mr-2 ring-2 ring-white' />
-                          <p className='flex text-base font-medium'> Do not disturb</p>
+                          <p className='flex text-sm font-medium'> Do not disturb</p>
                         </div>
                         <p className='text-sm text-gray-500'>Do not receive any calls.</p>
                       </div>
