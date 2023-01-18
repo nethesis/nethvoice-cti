@@ -35,6 +35,7 @@ import {
 import { getUserInfo } from '../../services/user'
 import { setTheme } from '../../lib/darkTheme'
 import { loadNotificationsFromStorage } from '../../lib/notifications'
+import { GlobalSearch } from './GlobalSearch'
 
 interface TopBarProps {
   openMobileCb: () => void
@@ -303,8 +304,9 @@ export const TopBar: FC<TopBarProps> = ({ openMobileCb }) => {
           <span className='sr-only'>Open sidebar</span>
           <FontAwesomeIcon icon={faBars} className='h-5 w-5' aria-hidden='true' />
         </button>
-        <div className='flex flex-1 justify-between px-4 sm:px-6'>
-          <div className='flex flex-1'>
+        <div className='flex flex-1 justify-end px-4 sm:px-6'>
+          <GlobalSearch />
+          {/* <div className='flex flex-1'> ////
             <form className='flex w-full md:ml-0' action='#' method='GET'>
               <label htmlFor='search-field' className='sr-only'>
                 Find and call
@@ -326,7 +328,7 @@ export const TopBar: FC<TopBarProps> = ({ openMobileCb }) => {
                 />
               </div>
             </form>
-          </div>
+          </div> */}
           <div className='ml-2 flex items-center space-x-2'>
             {/* Notifications drawer */}
             <Button variant='ghost' onClick={() => openNotificationsDrawer()}>

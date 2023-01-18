@@ -258,7 +258,7 @@ const theme = {
     },
   },
   avatar: {
-    base: 'relative block',
+    base: 'relative block shrink-0',
     sizes: {
       extra_small: 'h-6 w-6 text-xs',
       small: 'h-8 w-8 text-sm',

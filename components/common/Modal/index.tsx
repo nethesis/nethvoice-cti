@@ -47,7 +47,7 @@ const ModalComponent: FC<ModalProps> = ({
     <Transition.Root show={show} as={Fragment} afterLeave={() => afterLeave && afterLeave()}>
       <Dialog
         as='div'
-        className={classNames('relative', 'z-10', className)}
+        className={classNames('relative', 'z-50', className)}
         onClose={() => onClose()}
         initialFocus={focus && focus}
         {...cleanProps}
@@ -55,7 +55,7 @@ const ModalComponent: FC<ModalProps> = ({
         <Transition.Child as={Fragment} {...theme.panel.transition}>
           <div className={theme.background.base} />
         </Transition.Child>
-        <div className='fixed inset-0 z-10 overflow-y-auto'>
+        <div className='fixed inset-0 z-50 overflow-y-auto'>
           <div className='flex min-h-full items-end justify-center p-4 text-center sm:items-center sm:p-0'>
             <Transition.Child as={Fragment} {...theme.background.transition}>
               <Dialog.Panel className={theme.panel.base}>{children}</Dialog.Panel>

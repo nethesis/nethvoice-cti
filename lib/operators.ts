@@ -304,7 +304,6 @@ export const buildOperators = (operatorsStore: any) => {
       operators[username].avatarBase64 = avatarBase64
     }
   }
-
   store.dispatch.operators.setOperators(operators)
   store.dispatch.operators.setOperatorsLoaded(true)
   store.dispatch.operators.setLoading(false)
