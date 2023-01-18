@@ -22,6 +22,7 @@ import {
   faUserGroup,
   faChevronRight,
   faPlus,
+  faUserPlus,
   faAddressBook,
   faMobileScreenButton,
   faFilter,
@@ -130,7 +131,7 @@ const Phonebook: NextPage = () => {
     <>
       <div>
         <Button variant='primary' onClick={() => openCreateContactDrawer()} className='mb-6'>
-          <FontAwesomeIcon icon={faPlus} className='mr-2 h-4 w-4' />
+          <FontAwesomeIcon icon={faUserPlus} className='mr-2 h-4 w-4' />
           <span>Create contact</span>
         </Button>
         <Filter

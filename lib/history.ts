@@ -199,3 +199,11 @@ export const getCallTimeToDisplay = (date: any) => {
   let convertedUtcHour = formatInTimeZoneLoc(hourWithMilliseconds, 'HH:mm', 'UTC')
   return convertedUtcHour
 }
+
+export const openAddToPhonebookDrawer = (operator: any) => {
+  store.dispatch.sideDrawer.update({
+    isShown: true,
+    contentType: 'addToPhonebookDrawer',
+    config: operator,
+  })
+}

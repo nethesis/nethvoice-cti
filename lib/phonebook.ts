@@ -152,6 +152,14 @@ export const openCreateContactDrawer = () => {
   })
 }
 
+export const openCreateContactDrawerWithPhone = (contact: any) => {
+  store.dispatch.sideDrawer.update({
+    isShown: true,
+    contentType: 'createOrEditContact',
+    config: { isEdit: false, contact: contact },
+  })
+}
+
 export const openEditContactDrawer = (contact: any) => {
   store.dispatch.sideDrawer.update({
     isShown: true,

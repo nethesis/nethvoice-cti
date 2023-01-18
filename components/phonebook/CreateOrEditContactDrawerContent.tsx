@@ -8,7 +8,7 @@ import { useState, useRef, useEffect } from 'react'
 import { createContact, editContact, reloadPhonebook, fetchContact } from '../../lib/phonebook'
 import { closeSideDrawer } from '../../lib/utils'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
-import { faPlus, faPen } from '@fortawesome/free-solid-svg-icons'
+import { faUserPlus, faPen } from '@fortawesome/free-solid-svg-icons'
 
 export interface CreateOrEditContactDrawerContentProps extends ComponentPropsWithRef<'div'> {
   config: any
@@ -77,7 +77,11 @@ export const CreateOrEditContactDrawerContent = forwardRef<
       nameRef.current.value = ''
       companyRef.current.value = ''
       extensionRef.current.value = ''
-      workPhoneRef.current.value = ''
+      if (config.contact) {
+        workPhoneRef.current.value = config.contact
+      } else {
+        workPhoneRef.current.value = ''
+      }
       mobilePhoneRef.current.value = ''
       emailRef.current.value = ''
       notesRef.current.value = ''
@@ -331,7 +335,7 @@ export const CreateOrEditContactDrawerContent = forwardRef<
         </Button>
       ) : (
         <Button variant='primary' type='submit' onClick={prepareCreateContact} className='mb-4'>
-          <FontAwesomeIcon icon={faPlus} className='mr-2 h-4 w-4' />
+          <FontAwesomeIcon icon={faUserPlus} className='mr-2 h-4 w-4' />
           Create contact
         </Button>
       )}
