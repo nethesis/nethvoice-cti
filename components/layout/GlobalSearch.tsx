@@ -172,14 +172,14 @@ export const GlobalSearch: FC<GlobalSearchProps> = () => {
     <>
       {globalSearchStore.isFocused && (
         <>
-          <div className='bg-gray-500 bg-opacity-75 dark:bg-gray-500 fixed left-0 md:left-28 top-16 right-0 bottom-0 opacity-100 transition-opacity'></div>
+          <div className='bg-opacity-75 dark:bg-opacity-75 fixed left-0 md:left-28 top-16 right-0 bottom-0 opacity-100 transition-opacity bg-gray-500 dark:bg-gray-500'></div>
           <div className='fixed left-0 md:left-28 top-16 right-0 bottom-0 z-50 overflow-y-auto'></div>
         </>
       )}
       <div
         id='globalSearch'
         className={classNames(
-          'absolute left-[53px] md:left-0 sm:w-[70%] md:w-[75%] 2xl:w-[50vw] transform divide-y divide-gray-200 overflow-hidden bg-white transition-all rounded-lg z-[60]',
+          'absolute left-[53px] md:left-0 sm:w-[70%] md:w-[75%] 2xl:w-[50vw] transform divide-y overflow-hidden transition-all rounded-lg z-[60] bg-white divide-gray-200 dark:bg-gray-900 dark:divide-gray-700',
           globalSearchStore.isFocused ? 'w-[calc(100vw - 52px)]' : 'w-[50%]',
         )}
       >
@@ -189,11 +189,11 @@ export const GlobalSearch: FC<GlobalSearchProps> = () => {
               <div className='relative flex items-center'>
                 <FontAwesomeIcon
                   icon={faMagnifyingGlass}
-                  className='pointer-events-none absolute left-4 h-5 w-5 text-gray-400'
+                  className='pointer-events-none absolute left-4 h-5 w-5 text-gray-400 dark:text-gray-500'
                   aria-hidden='true'
                 />
                 <Combobox.Input
-                  className='h-[63px] w-full border-0 bg-transparent pl-12 pr-4 text-gray-800 placeholder-gray-400 focus:ring-0 sm:text-sm'
+                  className='h-[63px] w-full border-0 bg-transparent pl-12 pr-4 focus:ring-0 sm:text-sm text-gray-800 placeholder-gray-400 dark:text-gray-100 dark:placeholder-gray-500'
                   placeholder='Search or compose...'
                   onChange={debouncedChangeQuery}
                 />
@@ -213,14 +213,14 @@ export const GlobalSearch: FC<GlobalSearchProps> = () => {
                     as='div'
                     static
                     hold
-                    className='flex divide-x border divide-gray-100'
+                    className='flex divide-x border divide-gray-100 dark:divide-gray-800 dark:border-gray-700'
                   >
                     <div
                       className={classNames(
                         'max-h-96 min-w-0 flex-auto scroll-py-4 overflow-y-auto px-6 py-4',
                       )}
                     >
-                      <div className='-mx-2 text-sm text-gray-700'>
+                      <div className='-mx-2 text-sm text-gray-700 dark:text-gray-200'>
                         {/* phonebook error */}
                         {phonebookError && (
                           <InlineNotification
@@ -281,7 +281,8 @@ export const GlobalSearch: FC<GlobalSearchProps> = () => {
                               className={({ active }) =>
                                 classNames(
                                   'flex select-none items-center rounded-md p-2 h-14 cursor-pointer',
-                                  active && 'bg-gray-100 text-gray-900',
+                                  active &&
+                                    'bg-gray-100 text-gray-900 dark:bg-gray-800 dark:text-gray-100',
                                 )
                               }
                             >
@@ -293,7 +294,7 @@ export const GlobalSearch: FC<GlobalSearchProps> = () => {
                                       <div className='w-8 text-center'>
                                         <FontAwesomeIcon
                                           icon={faPhone}
-                                          className='h-4 w-4 text-gray-500 dark:text-gray-500'
+                                          className='h-4 w-4 text-gray-500 dark:text-gray-400'
                                         />
                                       </div>
                                       <span className='ml-2 flex-auto truncate'>
@@ -307,7 +308,7 @@ export const GlobalSearch: FC<GlobalSearchProps> = () => {
                                       <div className='w-8 text-center'>
                                         <FontAwesomeIcon
                                           icon={faUserPlus}
-                                          className='h-4 w-4 text-gray-500 dark:text-gray-500'
+                                          className='h-4 w-4 text-gray-500 dark:text-gray-400'
                                         />
                                       </div>
                                       <span className='ml-2 flex-auto truncate'>
@@ -340,7 +341,7 @@ export const GlobalSearch: FC<GlobalSearchProps> = () => {
                                   {active && (
                                     <FontAwesomeIcon
                                       icon={faChevronRight}
-                                      className='mr-2 h-3 w-3 flex-none text-gray-400'
+                                      className='mr-2 h-3 w-3 flex-none text-gray-400 dark:text-gray-500'
                                       aria-hidden='true'
                                     />
                                   )}
