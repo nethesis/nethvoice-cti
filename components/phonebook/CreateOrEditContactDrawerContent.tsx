@@ -59,7 +59,6 @@ export const CreateOrEditContactDrawerContent = forwardRef<
   const notesRef = useRef() as React.MutableRefObject<HTMLInputElement>
 
   useEffect(() => {
-    console.log('config0', config)
     if (config.isEdit) {
       // editing contact
       if (config.contact.kind) {
