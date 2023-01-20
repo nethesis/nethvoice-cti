@@ -2,6 +2,8 @@
 // SPDX-License-Identifier: AGPL-3.0-or-later
 
 import { ComponentPropsWithRef, forwardRef, useState, useRef, useEffect } from 'react'
+import { useSelector } from 'react-redux'
+import { RootState } from '../../store'
 import classNames from 'classnames'
 import { Button, TextInput, Avatar, EmptyState } from '../common'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
@@ -9,12 +11,13 @@ import {
   faUserPlus,
   faCircleXmark,
   faChevronRight,
-  faPhone,
-  faAddressBook,
-  faPlus,
   faUser,
 } from '@fortawesome/free-solid-svg-icons'
-import { getPhonebook, openCreateContactDrawerWithPhone } from '../../lib/phonebook'
+import {
+  getPhonebook,
+  openCreateContactDrawerWithPhone,
+  openAddToContactDrawer,
+} from '../../lib/phonebook'
 
 export interface AddToPhonebookDrawerContentProps extends ComponentPropsWithRef<'div'> {
   config: any
@@ -44,6 +47,9 @@ export const AddToPhonebookDrawerContent = forwardRef<
     setPhonebookLoaded(false)
   }
 
+  const auth = useSelector((state: RootState) => state.authentication)
+  const username = auth.username
+
   // retrieve phonebook
   useEffect(() => {
     async function fetchPhonebook() {
@@ -54,8 +60,10 @@ export const AddToPhonebookDrawerContent = forwardRef<
       //pageNum is set to 1 by default
       let pageNum = 1
       if (!isPhonebookLoaded) {
+        let pageSize = 100
         try {
-          const res = await getPhonebook(pageNum, textFilter, contactType, sortBy)
+          const res = await getPhonebook(pageNum, textFilter, contactType, sortBy, pageSize)
+          res.rows = filterHistoryDrawer(res)
           setPhonebook(res)
         } catch (e) {
           console.error(e)
@@ -66,6 +74,14 @@ export const AddToPhonebookDrawerContent = forwardRef<
     }
     fetchPhonebook()
   }, [isPhonebookLoaded, phonebook, textFilter])
+
+  const filterHistoryDrawer = (contacts: any) => {
+    let limit = 10
+    const filteredHistoryDrawerContacts = contacts.rows.filter((phonebookContacts: any) => {
+      return phonebookContacts.owner_id === username
+    })
+    return filteredHistoryDrawerContacts.slice(0, limit)
+  }
 
   return (
     <>
@@ -93,7 +109,9 @@ export const AddToPhonebookDrawerContent = forwardRef<
         <span className='flex text-sm font-medium mt-7'>Add to existing contact</span>
         <div className='mt-4'>
           <TextInput
-            placeholder='Search contact'
+            placeholder={
+              textFilter.length > 0 ? 'Search contact' : 'Start typing to search contact'
+            }
             className='max-w-lg'
             value={textFilter}
             onChange={changeFilterText}
@@ -148,8 +166,9 @@ export const AddToPhonebookDrawerContent = forwardRef<
               )}
             {isPhonebookLoaded &&
               phonebook?.rows &&
+              textFilter.length > 0 &&
               phonebook.rows.map((contact: any, index: number) => (
-                <li key={index}>
+                <li key={index} onClick={() => openAddToContactDrawer(contact, config)}>
                   <div className='flex items-center cursor-pointer hover:bg-gray-200 dark:hover:bg-gray-700 px-4 py-4 sm:px-6 mt-3'>
                     <div className='flex min-w-0 flex-1 items-center'>
                       <div className='flex-shrink-0'>
@@ -168,6 +187,8 @@ export const AddToPhonebookDrawerContent = forwardRef<
                               <span className='flex text-sm text-gray-500 dark:text-gray-500'>
                                 {contact.company
                                   ? contact.company
+                                  : contact.extension
+                                  ? contact.extension
                                   : contact.workphone
                                   ? contact.workphone
                                   : contact.cellphone}

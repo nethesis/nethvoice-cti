@@ -24,6 +24,7 @@ export async function getPhonebook(
   textFilter: string,
   contactType: string,
   sortBy: string,
+  pageSize: number = PAGE_SIZE,
 ) {
   if (window == undefined) {
     return
@@ -35,8 +36,8 @@ export async function getPhonebook(
   } else {
     apiUrl += `searchstartswith/A`
   }
-  const offset = (pageNum - 1) * PAGE_SIZE
-  apiUrl += `?offset=${offset}&limit=${PAGE_SIZE}&view=${contactType}`
+  const offset = (pageNum - 1) * pageSize
+  apiUrl += `?offset=${offset}&limit=${pageSize}&view=${contactType}`
 
   try {
     const { data, status } = await axios.get(apiUrl)
@@ -161,6 +162,15 @@ export const openCreateContactDrawerWithPhone = (contact: any) => {
 }
 
 export const openEditContactDrawer = (contact: any) => {
+  store.dispatch.sideDrawer.update({
+    isShown: true,
+    contentType: 'createOrEditContact',
+    config: { isEdit: true, contact: contact },
+  })
+}
+
+export const openAddToContactDrawer = (contact: any, phone: any) => {
+  contact.phone = phone
   store.dispatch.sideDrawer.update({
     isShown: true,
     contentType: 'createOrEditContact',

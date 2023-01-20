@@ -59,15 +59,36 @@ export const CreateOrEditContactDrawerContent = forwardRef<
   const notesRef = useRef() as React.MutableRefObject<HTMLInputElement>
 
   useEffect(() => {
+    console.log('config0', config)
     if (config.isEdit) {
       // editing contact
-      setContactType(config.contact.kind)
+      if (config.contact.kind) {
+        setContactType(config.contact.kind)
+      } else {
+        if (config.contact.name) {
+          setContactType('person')
+        } else {
+          setContactType('company')
+        }
+      }
       setContactVisibility(config.contact.type)
       nameRef.current.value = config.contact.name || ''
       companyRef.current.value = config.contact.company || ''
-      extensionRef.current.value = config.contact.extension || ''
-      workPhoneRef.current.value = config.contact.workphone || ''
-      mobilePhoneRef.current.value = config.contact.cellphone || ''
+      extensionRef.current.value = config.contact.extension
+        ? config.contact.extension
+        : config.contact.phone
+        ? config.contact.phone
+        : ''
+      workPhoneRef.current.value = config.contact.workphone
+        ? config.contact.workphone
+        : (config.contact.phone && extensionRef.current.value !== config.contact.phone &&  mobilePhoneRef.current.value !== config.contact.phone)
+        ? config.contact.phone
+        : ''
+      mobilePhoneRef.current.value = config.contact.cellphone
+        ? config.contact.cellphone
+        : (config.contact.phone && extensionRef.current.value !== config.contact.phone && workPhoneRef.current.value !== config.contact.phone)
+        ? config.contact.phone
+        : ''
       emailRef.current.value = config.contact.workemail || ''
       notesRef.current.value = config.contact.notes || ''
     } else {
