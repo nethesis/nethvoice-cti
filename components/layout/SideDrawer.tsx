@@ -47,7 +47,7 @@ export const SideDrawer: FC<SideDrawerProps> = ({ isShown, contentType, config, 
                     <div className='overflow-x-hidden relative'>
                       <FontAwesomeIcon
                         icon={faXmark}
-                        className='h-5 w-5 text-gray-500 absolute top-5 right-5 cursor-pointer p-0.5'
+                        className='h-5 w-5 text-gray-500 absolute top-4 right-4 cursor-pointer p-0.5'
                         aria-hidden='true'
                         onClick={() => closeSideDrawer()}
                       />
