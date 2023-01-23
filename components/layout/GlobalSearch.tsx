@@ -22,6 +22,7 @@ import { getPhonebook, mapPhonebookResponse, openShowContactDrawer } from '../..
 import { callPhoneNumber, sortByProperty } from '../../lib/utils'
 import { OperatorSummary } from '../operators/OperatorSummary'
 import { ContactSummary } from '../phonebook/ContactSummary'
+import { openAddToPhonebookDrawer } from '../../lib/history'
 
 interface GlobalSearchProps extends ComponentProps<'div'> {}
 
@@ -149,7 +150,7 @@ export const GlobalSearch: FC<GlobalSearchProps> = () => {
         callPhoneNumber(result.phoneNumber)
         break
       case 'addToPhonebook':
-        //// TODO
+        openAddToPhonebookDrawer(result.phoneNumber)
         break
       case 'operator':
         openShowOperatorDrawer(result)
