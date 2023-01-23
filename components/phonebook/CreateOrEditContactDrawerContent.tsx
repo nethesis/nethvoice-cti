@@ -98,6 +98,10 @@ export const CreateOrEditContactDrawerContent = forwardRef<
           workPhoneRef.current.value = config.contact.workphone || ''
           mobilePhoneRef.current.value = config.contact.cellphone || ''
           extensionRef.current.value = config.contact.phone
+        } else {
+          workPhoneRef.current.value = config.contact.workphone || ''
+          mobilePhoneRef.current.value = config.contact.cellphone || ''
+          extensionRef.current.value = config.contact.extension || ''
         }
       }
       emailRef.current.value = config.contact.workemail || ''
@@ -378,6 +382,9 @@ export const CreateOrEditContactDrawerContent = forwardRef<
           Create contact
         </Button>
       )}
+      <Button variant='white' type='submit' onClick={closeSideDrawer} className='ml-4 mb-4'>
+        Cancel
+      </Button>
     </div>
   )
 })

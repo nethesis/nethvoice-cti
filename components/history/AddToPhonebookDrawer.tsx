@@ -27,24 +27,24 @@ export const AddToPhonebookDrawerContent = forwardRef<
   HTMLButtonElement,
   AddToPhonebookDrawerContentProps
 >(({ config, className, ...props }, ref) => {
-  const [textFilter, setFilterText] = useState('')
+  const [textFilter, setTextFilter] = useState('')
   const textFilterRef = useRef() as React.MutableRefObject<HTMLInputElement>
   const [isPhonebookLoaded, setPhonebookLoaded] = useState(true)
   const [phonebook, setPhonebook]: any = useState({})
   const [phonebookError, setPhonebookError] = useState('')
 
   // text filter
-  function changeFilterText(event: any) {
-    const newFilterText = event.target.value
-    setFilterText(newFilterText)
-    if (newFilterText.length > 0) {
+  function changeTextFilter(event: any) {
+    const newTextFilter = event.target.value
+    setTextFilter(newTextFilter)
+    if (newTextFilter.length > 0) {
       setPhonebookLoaded(false)
     }
   }
 
   // clear text filter
   const clearTextFilter = () => {
-    setFilterText('')
+    setTextFilter('')
     textFilterRef.current.focus()
   }
 
@@ -113,14 +113,14 @@ export const AddToPhonebookDrawerContent = forwardRef<
             placeholder='Type to search contact'
             className='max-w-lg'
             value={textFilter}
-            onChange={changeFilterText}
+            onChange={changeTextFilter}
             ref={textFilterRef}
             icon={textFilter.length ? faCircleXmark : undefined}
             onIconClick={() => clearTextFilter()}
             trailingIcon={true}
           />
         </div>
-        <div className='overflow-hidden shadow sm:rounded-md bg-white dark:bg-gray-900'>
+        <div className='overflow-hidden shadow sm:rounded-md mt-3 bg-white dark:bg-gray-900'>
           <ul role='list' className='divide-y divide-gray-200 dark:divide-gray-700'>
             {/* phonebook error */}
             {phonebookError && (
@@ -164,7 +164,7 @@ export const AddToPhonebookDrawerContent = forwardRef<
               textFilter.length > 0 &&
               phonebook.rows.map((contact: any, index: number) => (
                 <li key={index} onClick={() => openAddToContactDrawer(contact, config)}>
-                  <div className='flex items-center cursor-pointer hover:bg-gray-200 dark:hover:bg-gray-700 px-4 py-4 sm:px-6 mt-3'>
+                  <div className='flex items-center cursor-pointer hover:bg-gray-200 dark:hover:bg-gray-700 px-4 py-4 sm:px-6'>
                     <div className='flex min-w-0 flex-1 items-center'>
                       <div className='flex-shrink-0'>
                         {contact.name !== null ? (
