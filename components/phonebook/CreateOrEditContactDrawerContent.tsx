@@ -8,7 +8,7 @@ import { useState, useRef, useEffect } from 'react'
 import { createContact, editContact, reloadPhonebook, fetchContact } from '../../lib/phonebook'
 import { closeSideDrawer } from '../../lib/utils'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
-import { faPlus, faPen } from '@fortawesome/free-solid-svg-icons'
+import { faUserPlus, faPen } from '@fortawesome/free-solid-svg-icons'
 
 export interface CreateOrEditContactDrawerContentProps extends ComponentPropsWithRef<'div'> {
   config: any
@@ -57,17 +57,49 @@ export const CreateOrEditContactDrawerContent = forwardRef<
   const mobilePhoneRef = useRef() as React.MutableRefObject<HTMLInputElement>
   const emailRef = useRef() as React.MutableRefObject<HTMLInputElement>
   const notesRef = useRef() as React.MutableRefObject<HTMLInputElement>
+  const [firstRender, setFirstRender] = useState(true)
 
   useEffect(() => {
+    if (firstRender) {
+      setFirstRender(false)
+      return
+    }
     if (config.isEdit) {
       // editing contact
-      setContactType(config.contact.kind)
+      if (config.contact.kind) {
+        setContactType(config.contact.kind)
+      } else {
+        if (config.contact.name) {
+          setContactType('person')
+        } else {
+          setContactType('company')
+        }
+      }
       setContactVisibility(config.contact.type)
       nameRef.current.value = config.contact.name || ''
       companyRef.current.value = config.contact.company || ''
-      extensionRef.current.value = config.contact.extension || ''
-      workPhoneRef.current.value = config.contact.workphone || ''
-      mobilePhoneRef.current.value = config.contact.cellphone || ''
+
+      if (!config.contact.phone) {
+        // User is editing a contact
+        extensionRef.current.value = config.contact.extension || ''
+        workPhoneRef.current.value = config.contact.workphone || ''
+        mobilePhoneRef.current.value = config.contact.cellphone || ''
+      } else {
+        // User is adding a number to a contact
+        if (!config.contact.workphone) {
+          workPhoneRef.current.value = config.contact.phone
+          mobilePhoneRef.current.value = config.contact.cellphone || ''
+          extensionRef.current.value = config.contact.extension || ''
+        } else if (!config.contact.cellphone) {
+          workPhoneRef.current.value = config.contact.workphone || ''
+          mobilePhoneRef.current.value = config.contact.phone
+          extensionRef.current.value = config.contact.extension || ''
+        } else if (!config.contact.extension) {
+          workPhoneRef.current.value = config.contact.workphone || ''
+          mobilePhoneRef.current.value = config.contact.cellphone || ''
+          extensionRef.current.value = config.contact.phone
+        }
+      }
       emailRef.current.value = config.contact.workemail || ''
       notesRef.current.value = config.contact.notes || ''
     } else {
@@ -77,12 +109,16 @@ export const CreateOrEditContactDrawerContent = forwardRef<
       nameRef.current.value = ''
       companyRef.current.value = ''
       extensionRef.current.value = ''
-      workPhoneRef.current.value = ''
+      if (config.contact) {
+        workPhoneRef.current.value = config.contact
+      } else {
+        workPhoneRef.current.value = ''
+      }
       mobilePhoneRef.current.value = ''
       emailRef.current.value = ''
       notesRef.current.value = ''
     }
-  }, [config])
+  }, [firstRender, config])
 
   const [nameError, setNameError] = useState('')
   const [companyError, setCompanyError] = useState('')
@@ -235,9 +271,16 @@ export const CreateOrEditContactDrawerContent = forwardRef<
   return (
     <div className={classNames(className, 'm-1 p-5')} {...props}>
       {/* title */}
-      <h2 className='text-lg font-medium mb-4 text-gray-700 dark:text-gray-200'>
-        {config.isEdit ? 'Edit contact' : 'Create contact'}
-      </h2>
+      <div className='flex flex-col justify-center mb-7'>
+        <h2 className='text-lg font-medium text-gray-700 dark:text-gray-200'>
+          {config.isEdit ? 'Edit contact' : 'Create contact'}
+        </h2>
+        {config.contact?.phone && (
+          <span className='text-sm mt-1 text-gray-500 dark:text-gray-500'>
+            Adding phone number: {config.contact.phone}
+          </span>
+        )}
+      </div>
       {/* contact visibility */}
       <div className='mb-6'>
         <label className='text-sm font-medium text-gray-700 dark:text-gray-200'>Visibility</label>
@@ -331,7 +374,7 @@ export const CreateOrEditContactDrawerContent = forwardRef<
         </Button>
       ) : (
         <Button variant='primary' type='submit' onClick={prepareCreateContact} className='mb-4'>
-          <FontAwesomeIcon icon={faPlus} className='mr-2 h-4 w-4' />
+          <FontAwesomeIcon icon={faUserPlus} className='mr-2 h-4 w-4' />
           Create contact
         </Button>
       )}

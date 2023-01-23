@@ -16,8 +16,8 @@ import { logout } from '../../services/login'
 import { useRouter } from 'next/router'
 import { removeItem } from '../../lib/storage'
 import { store } from '../../store'
-import { useSelector } from 'react-redux'
-import { RootState } from '../../store'
+import { useSelector, useDispatch } from 'react-redux'
+import { RootState, Dispatch } from '../../store'
 import classNames from 'classnames'
 import { changeStatusPresence, forwardStatus } from '../../lib/topBar'
 import { Fragment } from 'react'
@@ -32,6 +32,7 @@ import {
   faBell,
   faChevronRight,
 } from '@fortawesome/free-solid-svg-icons'
+import { getUserInfo } from '../../services/user'
 import { setTheme } from '../../lib/darkTheme'
 import { loadNotificationsFromStorage } from '../../lib/notifications'
 
@@ -65,7 +66,8 @@ export const TopBar: FC<TopBarProps> = ({ openMobileCb }) => {
       store.dispatch.notifications.setLoaded(true)
     }
   }, [firstNotificationsRender, notificationsStore.isLoaded])
-  const [updatePresence, setUpdatePresence] = useState(mainPresence)
+
+  const dispatch = useDispatch<Dispatch>()
 
   const doLogout = async () => {
     const res = await logout()
@@ -119,7 +121,18 @@ export const TopBar: FC<TopBarProps> = ({ openMobileCb }) => {
     } else {
       try {
         await changeStatusPresence(presence)
-        setUpdatePresence(presence)
+        const userInfo = await getUserInfo()
+
+        if (userInfo && userInfo.data) {
+          dispatch.user.update({
+            name: userInfo.data.name,
+            username: userInfo.data.username,
+            mainextension: userInfo.data.endpoints.mainextension[0].id,
+            mainPresence: userInfo.data.mainPresence,
+            endpoints: userInfo.data.endpoints,
+            avatar: userInfo.data.settings.avatar,
+          })
+        }
       } catch (err) {
         console.log(err)
       }
@@ -130,7 +143,18 @@ export const TopBar: FC<TopBarProps> = ({ openMobileCb }) => {
     let presence: any = 'callforward'
     try {
       await forwardStatus(presence, number)
-      setUpdatePresence(presence)
+      const userInfo = await getUserInfo()
+
+      if (userInfo && userInfo.data) {
+        dispatch.user.update({
+          name: userInfo.data.name,
+          username: userInfo.data.username,
+          mainextension: userInfo.data.endpoints.mainextension[0].id,
+          mainPresence: userInfo.data.mainPresence,
+          endpoints: userInfo.data.endpoints,
+          avatar: userInfo.data.settings.avatar,
+        })
+      }
     } catch (err) {
       console.log(err)
     }
@@ -140,10 +164,6 @@ export const TopBar: FC<TopBarProps> = ({ openMobileCb }) => {
     setShowPresenceModal(false)
     setForwardPresence(numberInputRef.current?.value)
   }
-
-  useEffect(() => {
-    setUpdatePresence(mainPresence)
-  }, [mainPresence])
 
   const dropdownItems = (
     <>
@@ -167,18 +187,18 @@ export const TopBar: FC<TopBarProps> = ({ openMobileCb }) => {
             >
               <span
                 className={classNames(
-                  updatePresence === 'offline'
+                  mainPresence === 'offline'
                     ? 'bg-gray-500 dark:bg-gray-500'
-                    : updatePresence === 'online' ||
-                      updatePresence === 'callforward' ||
-                      updatePresence === 'available' ||
-                      updatePresence === 'voicemail' ||
-                      updatePresence === 'cellphone'
+                    : mainPresence === 'online' ||
+                      mainPresence === 'callforward' ||
+                      mainPresence === 'available' ||
+                      mainPresence === 'voicemail' ||
+                      mainPresence === 'cellphone'
                     ? 'bg-emerald-500 dark:bg-emerald-500'
-                    : updatePresence === 'dnd' ||
-                      updatePresence === 'ringing' ||
-                      updatePresence === 'busy' ||
-                      updatePresence === 'incoming'
+                    : mainPresence === 'dnd' ||
+                      mainPresence === 'ringing' ||
+                      mainPresence === 'busy' ||
+                      mainPresence === 'incoming'
                     ? 'bg-red-500 dark:bg-red-500'
                     : 'bg-gray-500 dark:bg-gray-500',
                   'h-2 w-2 flex rounded-full mr-1 ring-2 ring-white',
@@ -344,7 +364,7 @@ export const TopBar: FC<TopBarProps> = ({ openMobileCb }) => {
                 src={avatar}
                 placeholderType='person'
                 size='small'
-                status={updatePresence || 'offline'}
+                status={mainPresence || 'offline'}
               />
             </Dropdown>
           </div>

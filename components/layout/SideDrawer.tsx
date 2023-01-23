@@ -17,6 +17,7 @@ import { NotificationsDrawerContent } from './NotificationsDrawerContent'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { faXmark } from '@fortawesome/free-solid-svg-icons'
 import { closeSideDrawer } from '../../lib/utils'
+import { AddToPhonebookDrawerContent } from '../history/AddToPhonebookDrawer'
 
 interface SideDrawerProps {
   isShown: boolean
@@ -62,6 +63,8 @@ export const SideDrawer: FC<SideDrawerProps> = ({ isShown, contentType, config, 
                         <ShowHistoryDrawerContent config={config} />
                       ) : contentType === 'notifications' ? (
                         <NotificationsDrawerContent />
+                      ) : contentType === 'addToPhonebookDrawer' ? (
+                        <AddToPhonebookDrawerContent config={config} />
                       ) : null}
                     </div>
                   </nav>
