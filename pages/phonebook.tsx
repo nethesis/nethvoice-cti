@@ -70,6 +70,7 @@ const Phonebook: NextPage = () => {
     async function fetchPhonebook() {
       if (!isPhonebookLoaded && contactType && sortBy) {
         try {
+          setPhonebookError('')
           const res = await getPhonebook(pageNum, textFilter, contactType, sortBy)
           setPhonebook(mapPhonebook(res))
         } catch (e) {

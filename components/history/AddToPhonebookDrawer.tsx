@@ -62,6 +62,7 @@ export const AddToPhonebookDrawerContent = forwardRef<
       let pageNum = 1
       let pageSize = 100
       try {
+        setPhonebookError('')
         const res = await getPhonebook(pageNum, textFilter, contactType, sortBy, pageSize)
         res.rows = filterHistoryDrawer(res)
         setPhonebook(res)

@@ -131,6 +131,7 @@ const History: NextPage = () => {
         !checkDateType.test(dateEnd) && !(callType === 'user' && callDirection === 'internal')
       ) {
         try {
+          setHistoryError('')
           const res = await search(
             callType,
             username,
