@@ -70,17 +70,16 @@ export const ShowHistoryDrawerContent = forwardRef<
           </div>
           <div>
             {!config.name && !config.company && (
-              <Button variant='white' className='mr-2'>
+              <Button
+                variant='white'
+                className='mr-2'
+                onClick={() => openAddToPhonebookDrawer(config.number)}
+              >
                 <FontAwesomeIcon
                   icon={faPlus}
                   className='h-4 w-4 xl:mr-2 text-gray-500 dark:text-gray-400'
                 />
-                <span
-                  className='hidden xl:inline-block'
-                  onClick={() => openAddToPhonebookDrawer(config.number)}
-                >
-                  Add to phonebook
-                </span>
+                <span className='hidden xl:inline-block'>Add to phonebook</span>
                 <span className='sr-only'>Add to phonebook</span>
               </Button>
             )}
