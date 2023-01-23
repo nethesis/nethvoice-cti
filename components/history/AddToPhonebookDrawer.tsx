@@ -1,7 +1,7 @@
 // Copyright (C) 2022 Nethesis S.r.l.
 // SPDX-License-Identifier: AGPL-3.0-or-later
 
-import { ComponentPropsWithRef, forwardRef, useState, useRef, useEffect } from 'react'
+import { ComponentPropsWithRef, forwardRef, useState, useRef, useEffect, useMemo } from 'react'
 import { useSelector } from 'react-redux'
 import { RootState } from '../../store'
 import classNames from 'classnames'
@@ -18,6 +18,7 @@ import {
   openCreateContactDrawerWithPhone,
   openAddToContactDrawer,
 } from '../../lib/phonebook'
+import { debounce } from 'lodash'
 
 export interface AddToPhonebookDrawerContentProps extends ComponentPropsWithRef<'div'> {
   config: any
@@ -33,12 +34,28 @@ export const AddToPhonebookDrawerContent = forwardRef<
   const [phonebook, setPhonebook]: any = useState({})
   const [phonebookError, setPhonebookError] = useState('')
 
+  const debouncedSearchPhonebook = useMemo(
+    () =>
+      debounce(() => {
+        setPhonebookLoaded(false)
+      }, 400),
+    [],
+  )
+
+  // Stop invocation of debounced function after unmounting
+  useEffect(() => {
+    return () => {
+      debouncedSearchPhonebook.cancel()
+    }
+  }, [debouncedSearchPhonebook])
+
   // text filter
   function changeTextFilter(event: any) {
     const newTextFilter = event.target.value
     setTextFilter(newTextFilter)
+
     if (newTextFilter.length > 0) {
-      setPhonebookLoaded(false)
+      debouncedSearchPhonebook()
     }
   }
 
@@ -75,7 +92,7 @@ export const AddToPhonebookDrawerContent = forwardRef<
     if (textFilter.length > 0 && !isPhonebookLoaded) {
       fetchPhonebook()
     }
-  }, [isPhonebookLoaded, phonebook, textFilter])
+  }, [isPhonebookLoaded, phonebook])
 
   const filterHistoryDrawer = (contacts: any) => {
     let limit = 10
