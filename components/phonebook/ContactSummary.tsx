@@ -146,7 +146,7 @@ export const ContactSummary = forwardRef<HTMLButtonElement, ContactSummaryProps>
           )}
         </div>
         <div className='mt-5 border-t border-gray-200 dark:border-gray-700'>
-          <dl className='sm:divide-y sm:divide-gray-200 dark:sm:divide-gray-700'>
+          <dl>
             {/* company */}
             {contact.kind == 'person' && contact.company && (
               <div className='py-4 sm:grid sm:grid-cols-3 sm:gap-4 sm:py-5'>

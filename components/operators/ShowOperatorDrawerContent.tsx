@@ -84,7 +84,7 @@ export const ShowOperatorDrawerContent = forwardRef<
               </Dropdown>
             </div>
             <div className='mt-4 border-t border-gray-200 dark:border-gray-700'>
-              <dl className='sm:divide-y sm:divide-gray-200 dark:sm:divide-gray-700'>
+              <dl>
                 {/*  contact */}
                 <div className='py-4 sm:grid sm:grid-cols-3 sm:gap-4 sm:py-5'>
                   <dt className='text-sm font-medium text-gray-500 dark:text-gray-400'>Contact</dt>

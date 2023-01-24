@@ -90,14 +90,17 @@ export const CreateOrEditContactDrawerContent = forwardRef<
           workPhoneRef.current.value = config.contact.phone
           mobilePhoneRef.current.value = config.contact.cellphone || ''
           extensionRef.current.value = config.contact.extension || ''
+          workPhoneRef.current.focus()
         } else if (!config.contact.cellphone) {
           workPhoneRef.current.value = config.contact.workphone || ''
           mobilePhoneRef.current.value = config.contact.phone
           extensionRef.current.value = config.contact.extension || ''
+          mobilePhoneRef.current.focus()
         } else if (!config.contact.extension) {
           workPhoneRef.current.value = config.contact.workphone || ''
           mobilePhoneRef.current.value = config.contact.cellphone || ''
           extensionRef.current.value = config.contact.phone
+          extensionRef.current.focus()
         } else {
           workPhoneRef.current.value = config.contact.workphone || ''
           mobilePhoneRef.current.value = config.contact.cellphone || ''

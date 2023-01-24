@@ -292,7 +292,7 @@ export const GlobalSearch: FC<GlobalSearchProps> = () => {
                                   {/* call phone number */}
                                   {result.resultType === 'callPhoneNumber' && (
                                     <>
-                                      <div className='w-8 text-center'>
+                                      <div className='w-10 text-center'>
                                         <FontAwesomeIcon
                                           icon={faPhone}
                                           className='h-4 w-4 text-gray-500 dark:text-gray-400'
@@ -306,7 +306,7 @@ export const GlobalSearch: FC<GlobalSearchProps> = () => {
                                   {/* add to phonebook */}
                                   {result.resultType === 'addToPhonebook' && (
                                     <>
-                                      <div className='w-8 text-center'>
+                                      <div className='w-10 text-center'>
                                         <FontAwesomeIcon
                                           icon={faUserPlus}
                                           className='h-4 w-4 text-gray-500 dark:text-gray-400'

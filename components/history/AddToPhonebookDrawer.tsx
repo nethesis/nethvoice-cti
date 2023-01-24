@@ -125,10 +125,9 @@ export const AddToPhonebookDrawerContent = forwardRef<
         >
           <FontAwesomeIcon
             icon={faUserPlus}
-            className='h-4 w-4 xl:mr-2 text-gray-500 dark:text-gray-400'
+            className='h-4 w-4 mr-2 text-gray-500 dark:text-gray-400'
           />
-          <span className='hidden xl:inline-block'>Create new contact</span>
-          <span className='sr-only'>Create new contact</span>
+          <span>Create new contact</span>
         </Button>
         <span className='flex text-sm font-medium mt-7'>Add to existing contact</span>
         <div className='mt-4'>

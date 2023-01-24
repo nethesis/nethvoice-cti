@@ -119,7 +119,7 @@ export const OperatorSummary = forwardRef<HTMLButtonElement, OperatorSummaryProp
           </Button>
         </div>
         <div className='mt-6 border-t border-gray-200 dark:border-gray-700'>
-          <dl className='sm:divide-y sm:divide-gray-200 dark:sm:divide-gray-700'>
+          <dl>
             {/* extension */}
             {operator.endpoints?.mainextension[0]?.id && (
               <div className='py-4 sm:grid sm:grid-cols-3 sm:gap-4 sm:py-5'>
