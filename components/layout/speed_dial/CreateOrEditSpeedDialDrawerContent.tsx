@@ -9,7 +9,7 @@ import { createSpeedDial, editSpeedDial } from '../../../services/phonebook'
 import { reloadSpeedDial } from '../../../lib/speedDial'
 import { closeSideDrawer } from '../../../lib/utils'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
-import { faPlus, faPen } from '@fortawesome/free-solid-svg-icons'
+import { faPlus, faPen, faXmark } from '@fortawesome/free-solid-svg-icons'
 
 export interface CreateOrEditSpeedDialDrawerContentProps extends ComponentPropsWithRef<'div'> {
   config: any
@@ -116,49 +116,62 @@ export const CreateOrEditSpeedDialDrawerContent = forwardRef<
   }
 
   return (
-    <div className={classNames(className, 'm-1 p-5')} {...props}>
-      {/* title */}
-      <h2 className='text-lg font-medium mb-4 text-gray-900 dark:text-gray-100'>
-        {config.isEdit ? 'Edit speed dial' : 'Create speed dial'}
-      </h2>
-      {/* name */}
-      <TextInput
-        label='Name'
-        name='name'
-        ref={nameRef}
-        className='mb-4'
-        error={!!nameError}
-        helper={nameError}
-      />
-      {/* phone number */}
-      <TextInput
-        label='Phone number'
-        name='phoneNumber'
-        ref={phoneNumberRef}
-        className='mb-6'
-        error={!!phoneNumberError}
-        helper={phoneNumberError}
-      />
-      {/* create speed dial error */}
-      {createSpeedDialError && (
-        <InlineNotification type='error' title={createSpeedDialError} className='mb-6' />
-      )}
-      {/* edit speed dial error */}
-      {editSpeedDialError && (
-        <InlineNotification type='error' title={editSpeedDialError} className='mb-6' />
-      )}
-      {config.isEdit ? (
-        <Button variant='primary' type='submit' onClick={prepareEditSpeedDial} className='mb-4'>
-          <FontAwesomeIcon icon={faPen} className='mr-2 h-4 w-4' />
-          Edit speed dial
-        </Button>
-      ) : (
-        <Button variant='primary' type='submit' onClick={prepareCreateSpeedDial} className='mb-4'>
-          <FontAwesomeIcon icon={faPlus} className='mr-2 h-4 w-4' />
-          Create speed dial
-        </Button>
-      )}
-    </div>
+    <>
+      <div className='bg-gray-100 dark:bg-gray-800 py-6 px-6'>
+        <div className='flex items-center justify-between'>
+          <div className='text-lg font-medium dark:text-gray-200 text-gray-700'>
+            {config.isEdit ? 'Edit speed dial' : 'Create speed dial'}
+          </div>
+          <div className='flex items-center h-7'>
+            <FontAwesomeIcon
+              icon={faXmark}
+              className='h-5 w-5 cursor-pointer p-0.5 mr-1 dark:text-gray-200 text-gray-700'
+              aria-hidden='true'
+              onClick={() => closeSideDrawer()}
+            />
+          </div>
+        </div>
+      </div>
+      <div className={classNames(className, 'm-1 p-5')} {...props}>
+        {/* name */}
+        <TextInput
+          label='Name'
+          name='name'
+          ref={nameRef}
+          className='mb-4'
+          error={!!nameError}
+          helper={nameError}
+        />
+        {/* phone number */}
+        <TextInput
+          label='Phone number'
+          name='phoneNumber'
+          ref={phoneNumberRef}
+          className='mb-6'
+          error={!!phoneNumberError}
+          helper={phoneNumberError}
+        />
+        {/* create speed dial error */}
+        {createSpeedDialError && (
+          <InlineNotification type='error' title={createSpeedDialError} className='mb-6' />
+        )}
+        {/* edit speed dial error */}
+        {editSpeedDialError && (
+          <InlineNotification type='error' title={editSpeedDialError} className='mb-6' />
+        )}
+        {config.isEdit ? (
+          <Button variant='primary' type='submit' onClick={prepareEditSpeedDial} className='mb-4'>
+            <FontAwesomeIcon icon={faPen} className='mr-2 h-4 w-4' />
+            Edit speed dial
+          </Button>
+        ) : (
+          <Button variant='primary' type='submit' onClick={prepareCreateSpeedDial} className='mb-4'>
+            <FontAwesomeIcon icon={faPlus} className='mr-2 h-4 w-4' />
+            Create speed dial
+          </Button>
+        )}
+      </div>
+    </>
   )
 })
 

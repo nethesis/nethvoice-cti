@@ -14,9 +14,6 @@ import { ShowContactDrawerContent } from '../phonebook/ShowContactDrawerContent'
 import { CreateOrEditSpeedDialDrawerContent } from './speed_dial/CreateOrEditSpeedDialDrawerContent'
 import { ShowHistoryDrawerContent } from '../history/ShowHistoryDrawerContent'
 import { NotificationsDrawerContent } from './NotificationsDrawerContent'
-import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
-import { faXmark } from '@fortawesome/free-solid-svg-icons'
-import { closeSideDrawer } from '../../lib/utils'
 import { AddToPhonebookDrawerContent } from '../history/AddToPhonebookDrawer'
 
 interface SideDrawerProps {
@@ -45,12 +42,6 @@ export const SideDrawer: FC<SideDrawerProps> = ({ isShown, contentType, config, 
                 <div className='h-0 flex-1 overflow-y-auto'>
                   <nav className='flex h-full flex-col'>
                     <div className='overflow-x-hidden relative'>
-                      <FontAwesomeIcon
-                        icon={faXmark}
-                        className='h-5 w-5 text-gray-500 absolute top-4 right-4 cursor-pointer p-0.5'
-                        aria-hidden='true'
-                        onClick={() => closeSideDrawer()}
-                      />
                       {contentType === 'createOrEditContact' ? (
                         <CreateOrEditContactDrawerContent config={config} />
                       ) : contentType === 'showContact' ? (

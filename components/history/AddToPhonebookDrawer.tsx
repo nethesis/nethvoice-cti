@@ -12,6 +12,7 @@ import {
   faCircleXmark,
   faChevronRight,
   faUser,
+  faXmark,
 } from '@fortawesome/free-solid-svg-icons'
 import {
   getPhonebook,
@@ -19,6 +20,7 @@ import {
   openAddToContactDrawer,
 } from '../../lib/phonebook'
 import { debounce } from 'lodash'
+import { closeSideDrawer } from '../../lib/utils'
 
 export interface AddToPhonebookDrawerContentProps extends ComponentPropsWithRef<'div'> {
   config: any
@@ -110,17 +112,26 @@ export const AddToPhonebookDrawerContent = forwardRef<
 
   return (
     <>
+      <div className='bg-gray-100 dark:bg-gray-800 py-6 px-6'>
+        <div className='flex items-center justify-between'>
+          <div className='text-lg font-medium dark:text-gray-200 text-gray-700'>
+            Add to phonebook: {config}
+          </div>
+          <div className='flex items-center h-7'>
+            <FontAwesomeIcon
+              icon={faXmark}
+              className='h-5 w-5 cursor-pointer p-0.5 mr-1 dark:text-gray-200 text-gray-700'
+              aria-hidden='true'
+              onClick={() => closeSideDrawer()}
+            />
+          </div>
+        </div>
+      </div>
       {/* drawer content */}
       <div className={classNames('p-5', className)} {...props}>
-        <div className='flex flex-col justify-center'>
-          <h1 className='text-lg font-semibold'>Add to phonebook</h1>
-          <span className='text-sm mt-1 text-gray-500 dark:text-gray-500'>
-            Phone number: {config}
-          </span>
-        </div>
         <Button
           variant='white'
-          className='mr-2 mt-7'
+          className='mr-2 mt-4'
           onClick={() => openCreateContactDrawerWithPhone(config)}
         >
           <FontAwesomeIcon

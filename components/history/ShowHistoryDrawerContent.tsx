@@ -6,9 +6,10 @@ import classNames from 'classnames'
 import { Avatar, Button } from '../common'
 import { openAddToPhonebookDrawer } from '../../lib/history'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
-import { faPhone, faPlus } from '@fortawesome/free-solid-svg-icons'
+import { faPhone, faPlus, faXmark } from '@fortawesome/free-solid-svg-icons'
 import { LastCallsDrawerTable } from './LastCallsDrawerTable'
 import { startOfDay, subDays } from 'date-fns'
+import { closeSideDrawer } from '../../lib/utils'
 
 export interface ShowHistoryDrawerContentProps extends ComponentPropsWithRef<'div'> {
   config: any
@@ -57,6 +58,21 @@ export const ShowHistoryDrawerContent = forwardRef<
 >(({ config, className, ...props }, ref) => {
   return (
     <>
+      <div className='bg-gray-100 dark:bg-gray-800 py-6 px-6'>
+        <div className='flex items-center justify-between'>
+          <div className='text-lg dark:text-gray-200 text-gray-700 font-medium'>
+            History details
+          </div>
+          <div className='flex items-center h-7'>
+            <FontAwesomeIcon
+              icon={faXmark}
+              className='h-5 w-5 cursor-pointer p-0.5 mr-1 dark:text-gray-200 text-gray-700'
+              aria-hidden='true'
+              onClick={() => closeSideDrawer()}
+            />
+          </div>
+        </div>
+      </div>
       {/* drawer content */}
       <div className={classNames('p-5', className)} {...props}>
         <div className='flex min-w-0 flex-1 items-center justify-between'>{checkTitle(config)}</div>

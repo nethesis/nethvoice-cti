@@ -8,8 +8,7 @@ import { useState, useRef, useEffect } from 'react'
 import { createContact, editContact, reloadPhonebook, fetchContact } from '../../lib/phonebook'
 import { closeSideDrawer } from '../../lib/utils'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
-import { faUserPlus, faPen } from '@fortawesome/free-solid-svg-icons'
-
+import { faUserPlus, faPen, faXmark } from '@fortawesome/free-solid-svg-icons'
 export interface CreateOrEditContactDrawerContentProps extends ComponentPropsWithRef<'div'> {
   config: any
 }
@@ -276,119 +275,129 @@ export const CreateOrEditContactDrawerContent = forwardRef<
   }
 
   return (
-    <div className={classNames(className, 'm-1 p-5')} {...props}>
-      {/* title */}
-      <div className='flex flex-col justify-center mb-7'>
-        <h2 className='text-lg font-medium text-gray-700 dark:text-gray-200'>
-          {config.isEdit ? 'Edit contact' : 'Create contact'}
-        </h2>
-        {config.contact?.phone && (
-          <span className='text-sm mt-1 text-gray-500 dark:text-gray-500'>
-            Adding phone number: {config.contact.phone}
-          </span>
+    <>
+      <div className='bg-gray-100 dark:bg-gray-800 py-6 px-6'>
+        <div className='flex items-center justify-between'>
+          <div className='text-lg font-medium dark:text-gray-200 text-gray-700'>
+            {config.isEdit
+              ? config.contact.phone
+                ? 'Add phone number: ' + config.contact.phone
+                : 'Edit contact'
+              : 'Create contact'}
+          </div>
+          <div className='flex items-center h-7'>
+            <FontAwesomeIcon
+              icon={faXmark}
+              className='h-5 w-5 cursor-pointer p-0.5 mr-1 dark:text-gray-200 text-gray-700'
+              aria-hidden='true'
+              onClick={() => closeSideDrawer()}
+            />
+          </div>
+        </div>
+      </div>
+      <div className={classNames(className, 'm-1 p-5')} {...props}>
+        {/* contact visibility */}
+        <div className='mb-6'>
+          <label className='text-sm font-medium text-gray-700 dark:text-gray-200'>Visibility</label>
+          <fieldset className='mt-2'>
+            <legend className='sr-only'>Visibility</legend>
+            <div className='space-y-4 sm:flex sm:items-center sm:space-y-0 sm:space-x-10'>
+              {contactVisibilityOptions.map((option) => (
+                <div key={option.id} className='flex items-center'>
+                  <input
+                    id={option.id}
+                    name='contact-visibility'
+                    type='radio'
+                    checked={option.id === contactVisibility}
+                    onChange={onContactVisibilityChanged}
+                    className='h-4 w-4 border-gray-300 text-primary focus:ring-primaryLight dark:border-gray-600 dark:text-primary dark:focus:ring-primaryDark'
+                  />
+                  <label
+                    htmlFor={option.id}
+                    className='ml-3 block text-sm font-medium text-gray-700 dark:text-gray-200'
+                  >
+                    {option.title}
+                  </label>
+                </div>
+              ))}
+            </div>
+          </fieldset>
+        </div>
+        {/* contact type */}
+        <div className='mb-6'>
+          <label className='text-sm font-medium text-gray-700 dark:text-gray-200'>Type</label>
+          <fieldset className='mt-2'>
+            <legend className='sr-only'>Type</legend>
+            <div className='space-y-4 sm:flex sm:items-center sm:space-y-0 sm:space-x-10'>
+              {contactTypeOptions.map((option) => (
+                <div key={option.id} className='flex items-center'>
+                  <input
+                    id={option.id}
+                    name='contact-type'
+                    type='radio'
+                    checked={option.id === contactType}
+                    onChange={onContactTypeChanged}
+                    className='h-4 w-4 border-gray-300 text-primary focus:ring-primaryLight dark:border-gray-600 dark:text-primary dark:focus:ring-primaryDark'
+                  />
+                  <label
+                    htmlFor={option.id}
+                    className='ml-3 block text-sm font-medium text-gray-700 dark:text-gray-200'
+                  >
+                    {option.title}
+                  </label>
+                </div>
+              ))}
+            </div>
+          </fieldset>
+        </div>
+        {/* contact fields */}
+        {contactType !== 'company' && (
+          <TextInput
+            label='Name'
+            name='name'
+            ref={nameRef}
+            className='mb-4'
+            error={!!nameError}
+            helper={nameError}
+          />
         )}
-      </div>
-      {/* contact visibility */}
-      <div className='mb-6'>
-        <label className='text-sm font-medium text-gray-700 dark:text-gray-200'>Visibility</label>
-        <fieldset className='mt-2'>
-          <legend className='sr-only'>Visibility</legend>
-          <div className='space-y-4 sm:flex sm:items-center sm:space-y-0 sm:space-x-10'>
-            {contactVisibilityOptions.map((option) => (
-              <div key={option.id} className='flex items-center'>
-                <input
-                  id={option.id}
-                  name='contact-visibility'
-                  type='radio'
-                  checked={option.id === contactVisibility}
-                  onChange={onContactVisibilityChanged}
-                  className='h-4 w-4 border-gray-300 text-primary focus:ring-primaryLight dark:border-gray-600 dark:text-primary dark:focus:ring-primaryDark'
-                />
-                <label
-                  htmlFor={option.id}
-                  className='ml-3 block text-sm font-medium text-gray-700 dark:text-gray-200'
-                >
-                  {option.title}
-                </label>
-              </div>
-            ))}
-          </div>
-        </fieldset>
-      </div>
-      {/* contact type */}
-      <div className='mb-6'>
-        <label className='text-sm font-medium text-gray-700 dark:text-gray-200'>Type</label>
-        <fieldset className='mt-2'>
-          <legend className='sr-only'>Type</legend>
-          <div className='space-y-4 sm:flex sm:items-center sm:space-y-0 sm:space-x-10'>
-            {contactTypeOptions.map((option) => (
-              <div key={option.id} className='flex items-center'>
-                <input
-                  id={option.id}
-                  name='contact-type'
-                  type='radio'
-                  checked={option.id === contactType}
-                  onChange={onContactTypeChanged}
-                  className='h-4 w-4 border-gray-300 text-primary focus:ring-primaryLight dark:border-gray-600 dark:text-primary dark:focus:ring-primaryDark'
-                />
-                <label
-                  htmlFor={option.id}
-                  className='ml-3 block text-sm font-medium text-gray-700 dark:text-gray-200'
-                >
-                  {option.title}
-                </label>
-              </div>
-            ))}
-          </div>
-        </fieldset>
-      </div>
-      {/* contact fields */}
-      {contactType !== 'company' && (
         <TextInput
-          label='Name'
-          name='name'
-          ref={nameRef}
+          label='Company'
+          name='company'
+          ref={companyRef}
           className='mb-4'
-          error={!!nameError}
-          helper={nameError}
+          error={!!companyError}
+          helper={companyError}
         />
-      )}
-      <TextInput
-        label='Company'
-        name='company'
-        ref={companyRef}
-        className='mb-4'
-        error={!!companyError}
-        helper={companyError}
-      />
-      <TextInput label='Extension' name='extension' ref={extensionRef} className='mb-4' />
-      <TextInput label='Work phone' name='workPhone' ref={workPhoneRef} className='mb-4' />
-      <TextInput label='Mobile phone' name='mobilePhone' ref={mobilePhoneRef} className='mb-4' />
-      <TextInput label='Email' name='email' ref={emailRef} className='mb-4' />
-      <TextInput label='Notes' name='notes' ref={notesRef} className='mb-6' />
-      {/* create contact error */}
-      {createContactError && (
-        <InlineNotification type='error' title={createContactError} className='mb-4' />
-      )}
-      {/* edit contact error */}
-      {editContactError && (
-        <InlineNotification type='error' title={editContactError} className='mb-4' />
-      )}
-      {config.isEdit ? (
-        <Button variant='primary' type='submit' onClick={prepareEditContact} className='mb-4'>
-          <FontAwesomeIcon icon={faPen} className='mr-2 h-4 w-4' />
-          Edit contact
+        <TextInput label='Extension' name='extension' ref={extensionRef} className='mb-4' />
+        <TextInput label='Work phone' name='workPhone' ref={workPhoneRef} className='mb-4' />
+        <TextInput label='Mobile phone' name='mobilePhone' ref={mobilePhoneRef} className='mb-4' />
+        <TextInput label='Email' name='email' ref={emailRef} className='mb-4' />
+        <TextInput label='Notes' name='notes' ref={notesRef} className='mb-6' />
+        {/* create contact error */}
+        {createContactError && (
+          <InlineNotification type='error' title={createContactError} className='mb-4' />
+        )}
+        {/* edit contact error */}
+        {editContactError && (
+          <InlineNotification type='error' title={editContactError} className='mb-4' />
+        )}
+        {config.isEdit ? (
+          <Button variant='primary' type='submit' onClick={prepareEditContact} className='mb-4'>
+            <FontAwesomeIcon icon={faPen} className='mr-2 h-4 w-4' />
+            Edit contact
+          </Button>
+        ) : (
+          <Button variant='primary' type='submit' onClick={prepareCreateContact} className='mb-4'>
+            <FontAwesomeIcon icon={faUserPlus} className='mr-2 h-4 w-4' />
+            Create contact
+          </Button>
+        )}
+        <Button variant='white' type='submit' onClick={closeSideDrawer} className='ml-4 mb-4'>
+          Cancel
         </Button>
-      ) : (
-        <Button variant='primary' type='submit' onClick={prepareCreateContact} className='mb-4'>
-          <FontAwesomeIcon icon={faUserPlus} className='mr-2 h-4 w-4' />
-          Create contact
-        </Button>
-      )}
-      <Button variant='white' type='submit' onClick={closeSideDrawer} className='ml-4 mb-4'>
-        Cancel
-      </Button>
-    </div>
+      </div>
+    </>
   )
 })
 
