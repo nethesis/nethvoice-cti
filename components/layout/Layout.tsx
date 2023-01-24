@@ -131,7 +131,6 @@ export const Layout: FC<LayoutProps> = ({ children }) => {
 
   // register to phone island events
 
-  //// useEffect needed to avoid multiple event registration?
   useEventListener('phone-island-main-presence', (data) => {
     const opName = Object.keys(data)[0]
     const mainPresence = data[opName].mainPresence

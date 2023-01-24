@@ -1,7 +1,7 @@
 // Copyright (C) 2022 Nethesis S.r.l.
 // SPDX-License-Identifier: AGPL-3.0-or-later
 
-import React, { ComponentProps, useEffect, useMemo } from 'react'
+import React, { ComponentProps, MutableRefObject, useEffect, useMemo, useRef } from 'react'
 import { FC, useState } from 'react'
 import classNames from 'classnames'
 import { Transition, Combobox } from '@headlessui/react'
@@ -23,6 +23,7 @@ import { callPhoneNumber, isMobileDevice, sortByProperty } from '../../lib/utils
 import { OperatorSummary } from '../operators/OperatorSummary'
 import { ContactSummary } from '../phonebook/ContactSummary'
 import { openAddToPhonebookDrawer } from '../../lib/history'
+import { useHotkeys } from 'react-hotkeys-hook'
 
 interface GlobalSearchProps extends ComponentProps<'div'> {}
 
@@ -33,6 +34,7 @@ export const GlobalSearch: FC<GlobalSearchProps> = () => {
   const operatorsStore = useSelector((state: RootState) => state.operators)
   const [isLoaded, setLoaded]: any[] = useState(true)
   const [phonebookError, setPhonebookError] = useState('')
+  const globalSearchRef = useRef() as MutableRefObject<HTMLButtonElement>
 
   const searchOperators = (cleanQuery: string, cleanRegex: RegExp) => {
     let operatorsResults = Object.values(operatorsStore.operators).filter((op: any) => {
@@ -168,6 +170,18 @@ export const GlobalSearch: FC<GlobalSearchProps> = () => {
       store.dispatch.globalSearch.setFocused(false)
     }, 100)
   }
+
+  const focusGlobalSearch = () => {
+    store.dispatch.globalSearch.setFocused(true)
+    const globalSearchInput: any = document.querySelector('#globalSearch input')
+
+    if (globalSearchInput) {
+      globalSearchInput.focus()
+    }
+  }
+
+  // global keyborad shortcut
+  useHotkeys('ctrl+shift+f', () => focusGlobalSearch(), [])
 
   return (
     <>
