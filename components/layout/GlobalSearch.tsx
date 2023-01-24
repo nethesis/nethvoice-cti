@@ -19,7 +19,7 @@ import { cloneDeep, debounce } from 'lodash'
 import { Avatar, EmptyState, InlineNotification } from '../common'
 import { openShowOperatorDrawer } from '../../lib/operators'
 import { getPhonebook, mapPhonebookResponse, openShowContactDrawer } from '../../lib/phonebook'
-import { callPhoneNumber, sortByProperty } from '../../lib/utils'
+import { callPhoneNumber, isMobileDevice, sortByProperty } from '../../lib/utils'
 import { OperatorSummary } from '../operators/OperatorSummary'
 import { ContactSummary } from '../phonebook/ContactSummary'
 import { openAddToPhonebookDrawer } from '../../lib/history'
@@ -353,7 +353,8 @@ export const GlobalSearch: FC<GlobalSearchProps> = () => {
                       </div>
                     </div>
                     {/* right frame */}
-                    {isLoaded &&
+                    {!isMobileDevice() &&
+                      isLoaded &&
                       activeOption &&
                       activeOption.resultType &&
                       ['operator', 'contact'].includes(activeOption.resultType) && (
