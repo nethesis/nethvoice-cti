@@ -1,7 +1,7 @@
 // Copyright (C) 2022 Nethesis S.r.l.
 // SPDX-License-Identifier: AGPL-3.0-or-later
 
-import { ComponentPropsWithRef, forwardRef, useState, useRef, useEffect } from 'react'
+import { ComponentPropsWithRef, forwardRef, useState, useRef, useEffect, useMemo } from 'react'
 import { useSelector } from 'react-redux'
 import { RootState } from '../../store'
 import classNames from 'classnames'
@@ -18,6 +18,7 @@ import {
   openCreateContactDrawerWithPhone,
   openAddToContactDrawer,
 } from '../../lib/phonebook'
+import { debounce } from 'lodash'
 
 export interface AddToPhonebookDrawerContentProps extends ComponentPropsWithRef<'div'> {
   config: any
@@ -27,24 +28,45 @@ export const AddToPhonebookDrawerContent = forwardRef<
   HTMLButtonElement,
   AddToPhonebookDrawerContentProps
 >(({ config, className, ...props }, ref) => {
-  const [textFilter, setFilterText] = useState('')
+  const [textFilter, setTextFilter] = useState('')
   const textFilterRef = useRef() as React.MutableRefObject<HTMLInputElement>
   const [isPhonebookLoaded, setPhonebookLoaded] = useState(true)
   const [phonebook, setPhonebook]: any = useState({})
   const [phonebookError, setPhonebookError] = useState('')
+  const [isUserTyping, setUserTyping] = useState(false)
+
+  const debouncedSearchPhonebook = useMemo(
+    () =>
+      debounce(() => {
+        setPhonebookLoaded(false)
+        setUserTyping(false)
+      }, 400),
+    [],
+  )
+
+  // Stop invocation of debounced function after unmounting
+  useEffect(() => {
+    return () => {
+      debouncedSearchPhonebook.cancel()
+    }
+  }, [debouncedSearchPhonebook])
 
   // text filter
-  function changeFilterText(event: any) {
-    const newFilterText = event.target.value
-    setFilterText(newFilterText)
-    if (newFilterText.length > 0) {
-      setPhonebookLoaded(false)
+  function changeTextFilter(event: any) {
+    const newTextFilter = event.target.value
+    setTextFilter(newTextFilter)
+
+    if (newTextFilter.trim().length > 0) {
+      setUserTyping(true)
+      debouncedSearchPhonebook()
+    } else {
+      setPhonebook({})
     }
   }
 
   // clear text filter
   const clearTextFilter = () => {
-    setFilterText('')
+    setTextFilter('')
     textFilterRef.current.focus()
   }
 
@@ -63,7 +85,7 @@ export const AddToPhonebookDrawerContent = forwardRef<
       let pageSize = 100
       try {
         setPhonebookError('')
-        const res = await getPhonebook(pageNum, textFilter, contactType, sortBy, pageSize)
+        const res = await getPhonebook(pageNum, textFilter.trim(), contactType, sortBy, pageSize)
         res.rows = filterHistoryDrawer(res)
         setPhonebook(res)
       } catch (e) {
@@ -72,10 +94,11 @@ export const AddToPhonebookDrawerContent = forwardRef<
       }
       setPhonebookLoaded(true)
     }
-    if (textFilter.length > 0 && !isPhonebookLoaded) {
+
+    if (textFilter.trim().length > 0) {
       fetchPhonebook()
     }
-  }, [isPhonebookLoaded, phonebook, textFilter])
+  }, [isPhonebookLoaded])
 
   const filterHistoryDrawer = (contacts: any) => {
     let limit = 10
@@ -102,10 +125,9 @@ export const AddToPhonebookDrawerContent = forwardRef<
         >
           <FontAwesomeIcon
             icon={faUserPlus}
-            className='h-4 w-4 xl:mr-2 text-gray-500 dark:text-gray-400'
+            className='h-4 w-4 mr-2 text-gray-500 dark:text-gray-400'
           />
-          <span className='hidden xl:inline-block'>Create new contact</span>
-          <span className='sr-only'>Create new contact</span>
+          <span>Create new contact</span>
         </Button>
         <span className='flex text-sm font-medium mt-7'>Add to existing contact</span>
         <div className='mt-4'>
@@ -113,21 +135,21 @@ export const AddToPhonebookDrawerContent = forwardRef<
             placeholder='Type to search contact'
             className='max-w-lg'
             value={textFilter}
-            onChange={changeFilterText}
+            onChange={changeTextFilter}
             ref={textFilterRef}
             icon={textFilter.length ? faCircleXmark : undefined}
             onIconClick={() => clearTextFilter()}
             trailingIcon={true}
           />
         </div>
-        <div className='overflow-hidden shadow sm:rounded-md bg-white dark:bg-gray-900'>
+        <div className='overflow-hidden shadow sm:rounded-md mt-3 bg-white dark:bg-gray-900'>
           <ul role='list' className='divide-y divide-gray-200 dark:divide-gray-700'>
             {/* phonebook error */}
             {phonebookError && (
               <InlineNotification type='error' title={phonebookError}></InlineNotification>
             )}
             {/* phonebook skeleton */}
-            {!isPhonebookLoaded &&
+            {(!isPhonebookLoaded || isUserTyping) &&
               Array.from(Array(9)).map((e, index) => (
                 <li key={index}>
                   <div className='flex items-center px-4 py-4 sm:px-6'>
@@ -144,6 +166,7 @@ export const AddToPhonebookDrawerContent = forwardRef<
               ))}
             {/* no search results */}
             {isPhonebookLoaded &&
+              !isUserTyping &&
               phonebook?.rows &&
               !phonebook.rows.length &&
               !!textFilter.length && (
@@ -160,11 +183,12 @@ export const AddToPhonebookDrawerContent = forwardRef<
                 />
               )}
             {isPhonebookLoaded &&
+              !isUserTyping &&
               phonebook?.rows &&
               textFilter.length > 0 &&
               phonebook.rows.map((contact: any, index: number) => (
                 <li key={index} onClick={() => openAddToContactDrawer(contact, config)}>
-                  <div className='flex items-center cursor-pointer hover:bg-gray-200 dark:hover:bg-gray-700 px-4 py-4 sm:px-6 mt-3'>
+                  <div className='flex items-center cursor-pointer hover:bg-gray-200 dark:hover:bg-gray-700 px-4 py-4 sm:px-6'>
                     <div className='flex min-w-0 flex-1 items-center'>
                       <div className='flex-shrink-0'>
                         {contact.name !== null ? (

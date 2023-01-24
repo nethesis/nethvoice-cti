@@ -35,6 +35,7 @@ export const Layout: FC<LayoutProps> = ({ children }) => {
   const operatorsStore = useSelector((state: RootState) => state.operators)
   const [firstRenderOperators, setFirstRenderOperators] = useState(true)
   const [firstRenderUserInfo, setFirstRenderUserInfo] = useState(true)
+  const [firstRenderGlobalSearchListener, setFirstRenderGlobalSearchListener] = useState(true)
   const [isUserInfoLoaded, setUserInfoLoaded] = useState(false)
   const authStore = useSelector((state: RootState) => state.authentication)
 
@@ -130,6 +131,7 @@ export const Layout: FC<LayoutProps> = ({ children }) => {
 
   // register to phone island events
 
+  //// useEffect needed to avoid multiple event registration?
   useEventListener('phone-island-main-presence', (data) => {
     const opName = Object.keys(data)[0]
     const mainPresence = data[opName].mainPresence
@@ -141,6 +143,38 @@ export const Layout: FC<LayoutProps> = ({ children }) => {
     const conversations = data[opName].conversations
     store.dispatch.operators.updateConversations(opName, conversations)
   })
+
+  // global search listeners
+
+  const globalSearchClick = (event: any) => {
+    const globalSearch = document.querySelector('#globalSearch')
+
+    if (globalSearch) {
+      const withinBoundaries = event.composedPath().includes(globalSearch)
+
+      if (withinBoundaries) {
+        // dim the screen and set user attention on global search
+        store.dispatch.globalSearch.setFocused(true)
+      } else {
+        // close global search
+        store.dispatch.globalSearch.setOpen(false)
+        store.dispatch.globalSearch.setFocused(false)
+      }
+    }
+  }
+
+  useEffect(() => {
+    if (firstRenderGlobalSearchListener) {
+      setFirstRenderGlobalSearchListener(false)
+    } else {
+      document.addEventListener('click', globalSearchClick)
+    }
+
+    return () => {
+      // clean up event listener
+      document.removeEventListener('click', globalSearchClick)
+    }
+  }, [firstRenderGlobalSearchListener])
 
   return (
     <div className='flex h-full'>

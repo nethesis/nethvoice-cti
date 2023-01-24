@@ -116,7 +116,7 @@ const theme = {
     content:
       'px-4 pt-5 pb-4 sm:p-6 sm:pb-4 sm:flex sm:items-start bg-white text-gray-900 dark:bg-gray-900 dark:text-gray-100',
     background: {
-      base: 'fixed inset-0 bg-opacity-75 transition-opacity bg-gray-500 dark:bg-gray-500',
+      base: 'fixed inset-0 bg-opacity-75 dark:bg-opacity-75 transition-opacity bg-gray-500 dark:bg-gray-500',
       transition: {
         enter: 'ease-out duration-300',
         enterFrom: 'opacity-0 translate-y-4 sm:translate-y-0 sm:scale-95',
@@ -258,7 +258,7 @@ const theme = {
     },
   },
   avatar: {
-    base: 'relative block',
+    base: 'relative block shrink-0',
     sizes: {
       extra_small: 'h-6 w-6 text-xs',
       small: 'h-8 w-8 text-sm',

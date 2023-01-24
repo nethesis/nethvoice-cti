@@ -11,6 +11,7 @@ import {
   openShowContactDrawer,
   PAGE_SIZE,
   openCreateContactDrawer,
+  mapPhonebookResponse,
 } from '../lib/phonebook'
 import { RootState } from '../store'
 import { useSelector } from 'react-redux'
@@ -28,12 +29,12 @@ import {
   faFilter,
   faChevronLeft,
 } from '@fortawesome/free-solid-svg-icons'
+import { callPhoneNumber } from '../lib/utils'
 
 const Phonebook: NextPage = () => {
   const [isPhonebookLoaded, setPhonebookLoaded] = useState(false)
   const [phonebook, setPhonebook]: any = useState({})
   const [pageNum, setPageNum]: any = useState(1)
-  const auth = useSelector((state: RootState) => state.authentication)
 
   const [textFilter, setTextFilter]: any = useState('')
 
@@ -72,7 +73,7 @@ const Phonebook: NextPage = () => {
         try {
           setPhonebookError('')
           const res = await getPhonebook(pageNum, textFilter, contactType, sortBy)
-          setPhonebook(mapPhonebook(res))
+          setPhonebook(mapPhonebookResponse(res))
         } catch (e) {
           console.error(e)
           setPhonebookError('Cannot retrieve phonebook')
@@ -89,20 +90,6 @@ const Phonebook: NextPage = () => {
     // reload phonebook
     setPhonebookLoaded(false)
   }, [phonebookStore])
-
-  function mapPhonebook(phonebookResponse: any) {
-    if (!phonebookResponse) {
-      return null
-    }
-
-    phonebookResponse.rows.map((contact: any) => {
-      return mapContact(contact)
-    })
-
-    // total pages
-    phonebookResponse.totalPages = Math.ceil(phonebookResponse.count / PAGE_SIZE)
-    return phonebookResponse
-  }
 
   function goToPreviousPage() {
     if (pageNum > 1) {
@@ -241,7 +228,10 @@ const Phonebook: NextPage = () => {
                                 className='mr-2 h-4 w-4 flex-shrink-0 text-gray-400 dark:text-gray-500'
                                 aria-hidden='true'
                               />
-                              <span className='truncate text-primary dark:text-primary cursor-pointer'>
+                              <span
+                                className='truncate text-primary dark:text-primary cursor-pointer'
+                                onClick={() => callPhoneNumber(contact.extension)}
+                              >
                                 {contact.extension}
                               </span>
                             </div>
@@ -280,7 +270,10 @@ const Phonebook: NextPage = () => {
                                   className='mr-2 h-4 w-4 flex-shrink-0 text-gray-400 dark:text-gray-500'
                                   aria-hidden='true'
                                 />
-                                <span className='truncate cursor-pointer hover:underline'>
+                                <span
+                                  className='truncate cursor-pointer hover:underline'
+                                  onClick={() => callPhoneNumber(contact.workphone)}
+                                >
                                   {contact.workphone}
                                 </span>
                               </div>
@@ -298,7 +291,10 @@ const Phonebook: NextPage = () => {
                                   className='mr-2 h-4 w-4 flex-shrink-0 text-gray-400 dark:text-gray-500'
                                   aria-hidden='true'
                                 />
-                                <span className='truncate cursor-pointer hover:underline'>
+                                <span
+                                  className='truncate cursor-pointer hover:underline'
+                                  onClick={() => callPhoneNumber(contact.cellphone)}
+                                >
                                   {contact.cellphone}
                                 </span>
                               </div>

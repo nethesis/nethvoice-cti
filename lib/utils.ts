@@ -66,3 +66,13 @@ export function getProductName() {
   // @ts-ignore
   return `${window.CONFIG.PRODUCT_NAME}`
 }
+
+/**
+ * Returns true if the device used by the user is using a mobile device. Useful to check if the user is using a touch screen, for example to disable hover features
+ */
+export function isMobileDevice() {
+  if (!navigator) {
+    return true
+  }
+  return /Android|iPhone|iPad|iPod|Windows Phone/i.test(navigator.userAgent)
+}
