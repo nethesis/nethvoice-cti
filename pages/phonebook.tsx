@@ -118,6 +118,7 @@ const Phonebook: NextPage = () => {
   return (
     <>
       <div>
+        <h1 className='text-2xl font-semibold mb-6 text-gray-900 dark:text-gray-100'>Phonebook</h1>
         <Button variant='primary' onClick={() => openCreateContactDrawer()} className='mb-6'>
           <FontAwesomeIcon icon={faUserPlus} className='mr-2 h-4 w-4' />
           <span>Create contact</span>

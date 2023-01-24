@@ -138,6 +138,7 @@ const Operators: NextPage = () => {
   return (
     <>
       <div>
+        <h1 className='text-2xl font-semibold mb-6 text-gray-900 dark:text-gray-100'>Operators</h1>
         <Filter
           groups={operatorsStore.groups}
           updateTextFilter={debouncedUpdateTextFilter}
