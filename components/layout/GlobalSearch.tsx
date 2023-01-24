@@ -173,8 +173,8 @@ export const GlobalSearch: FC<GlobalSearchProps> = () => {
     <>
       {globalSearchStore.isFocused && (
         <>
-          <div className='bg-opacity-75 dark:bg-opacity-75 fixed left-0 md:left-28 top-16 right-0 bottom-0 opacity-100 transition-opacity bg-gray-500 dark:bg-gray-500'></div>
-          <div className='fixed left-0 md:left-28 top-16 right-0 bottom-0 z-50 overflow-y-auto'></div>
+          <div className='bg-opacity-75 dark:bg-opacity-75 fixed left-0 md:left-20 top-16 right-0 bottom-0 opacity-100 transition-opacity bg-gray-500 dark:bg-gray-500'></div>
+          <div className='fixed left-0 md:left-20 top-16 right-0 bottom-0 z-50 overflow-y-auto'></div>
         </>
       )}
       <div
