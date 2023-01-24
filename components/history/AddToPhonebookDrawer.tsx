@@ -33,11 +33,13 @@ export const AddToPhonebookDrawerContent = forwardRef<
   const [isPhonebookLoaded, setPhonebookLoaded] = useState(true)
   const [phonebook, setPhonebook]: any = useState({})
   const [phonebookError, setPhonebookError] = useState('')
+  const [isUserTyping, setUserTyping] = useState(false)
 
   const debouncedSearchPhonebook = useMemo(
     () =>
       debounce(() => {
         setPhonebookLoaded(false)
+        setUserTyping(false)
       }, 400),
     [],
   )
@@ -54,8 +56,11 @@ export const AddToPhonebookDrawerContent = forwardRef<
     const newTextFilter = event.target.value
     setTextFilter(newTextFilter)
 
-    if (newTextFilter.length > 0) {
+    if (newTextFilter.trim().length > 0) {
+      setUserTyping(true)
       debouncedSearchPhonebook()
+    } else {
+      setPhonebook({})
     }
   }
 
@@ -80,7 +85,7 @@ export const AddToPhonebookDrawerContent = forwardRef<
       let pageSize = 100
       try {
         setPhonebookError('')
-        const res = await getPhonebook(pageNum, textFilter, contactType, sortBy, pageSize)
+        const res = await getPhonebook(pageNum, textFilter.trim(), contactType, sortBy, pageSize)
         res.rows = filterHistoryDrawer(res)
         setPhonebook(res)
       } catch (e) {
@@ -89,10 +94,11 @@ export const AddToPhonebookDrawerContent = forwardRef<
       }
       setPhonebookLoaded(true)
     }
-    if (textFilter.length > 0 && !isPhonebookLoaded) {
+
+    if (textFilter.trim().length > 0) {
       fetchPhonebook()
     }
-  }, [isPhonebookLoaded, phonebook])
+  }, [isPhonebookLoaded])
 
   const filterHistoryDrawer = (contacts: any) => {
     let limit = 10
@@ -144,7 +150,7 @@ export const AddToPhonebookDrawerContent = forwardRef<
               <InlineNotification type='error' title={phonebookError}></InlineNotification>
             )}
             {/* phonebook skeleton */}
-            {!isPhonebookLoaded &&
+            {(!isPhonebookLoaded || isUserTyping) &&
               Array.from(Array(9)).map((e, index) => (
                 <li key={index}>
                   <div className='flex items-center px-4 py-4 sm:px-6'>
@@ -161,6 +167,7 @@ export const AddToPhonebookDrawerContent = forwardRef<
               ))}
             {/* no search results */}
             {isPhonebookLoaded &&
+              !isUserTyping &&
               phonebook?.rows &&
               !phonebook.rows.length &&
               !!textFilter.length && (
@@ -177,6 +184,7 @@ export const AddToPhonebookDrawerContent = forwardRef<
                 />
               )}
             {isPhonebookLoaded &&
+              !isUserTyping &&
               phonebook?.rows &&
               textFilter.length > 0 &&
               phonebook.rows.map((contact: any, index: number) => (
