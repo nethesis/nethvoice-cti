@@ -41,7 +41,7 @@ export const NotificationsDrawerContent = forwardRef<
   }
 
   const markAllAsRead = () => {
-    store.dispatch.notifications.markAllAsRead()
+    store.dispatch.notifications.markAllAsRead(authStore.username)
   }
 
   const openNotification = (notification: any) => {
@@ -169,6 +169,18 @@ export const NotificationsDrawerContent = forwardRef<
       </div>
       {/* drawer content */}
       <div className={classNames(className)} {...props}>
+        <div className='flex flex-wrap min-w-0 flex-1 items-center justify-between py-5 mx-5'>
+          <h2 className='text-lg font-medium mr-4 text-gray-900 dark:text-gray-100'>
+            Notifications
+          </h2>
+          <span
+            className='text-sm cursor-pointer hover:underline text-gray-700 dark:text-gray-200 mr-12'
+            onClick={markAllAsRead}
+          >
+            Mark all as read
+          </span>
+        </div>
+        <div className='border-b border-gray-200 dark:border-gray-700'></div>
         {/* skeleton */}
         {!notificationsStore.isLoaded && (
           <ul role='list' className='divide-y divide-gray-200 dark:divide-gray-700'>
