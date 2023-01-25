@@ -16,7 +16,7 @@ import {
 import { RootState, store } from '../../store'
 import { useSelector } from 'react-redux'
 import { cloneDeep, debounce } from 'lodash'
-import { Avatar, EmptyState, InlineNotification } from '../common'
+import { Avatar, EmptyState, InlineNotification, StatusDot } from '../common'
 import { openShowOperatorDrawer } from '../../lib/operators'
 import { getPhonebook, mapPhonebookResponse, openShowContactDrawer } from '../../lib/phonebook'
 import { callPhoneNumber, isMobileDevice, sortByProperty } from '../../lib/utils'
@@ -325,8 +325,11 @@ export const GlobalSearch: FC<GlobalSearchProps> = () => {
                                         src={result.avatarBase64}
                                         placeholderType='person'
                                         size='base'
+                                      ></Avatar>
+                                      <StatusDot
                                         status={result.mainPresence}
-                                      />
+                                        className='absolute mt-8 ml-8'
+                                      ></StatusDot>
                                       <span className='ml-2 flex-auto truncate'>{result.name}</span>
                                     </>
                                   )}

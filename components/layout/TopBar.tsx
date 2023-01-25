@@ -23,6 +23,7 @@ import { changeStatusPresence, forwardStatus } from '../../lib/topBar'
 import { Fragment } from 'react'
 import { Popover, Transition } from '@headlessui/react'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
+import { StatusDot } from '../common'
 import {
   faArrowRightFromBracket,
   faBars,
@@ -185,25 +186,7 @@ export const TopBar: FC<TopBarProps> = ({ openMobileCb }) => {
                 'relative text-left cursor-pointer px-5 py-2 text-sm flex items-center gap-3 w-full ',
               )}
             >
-              <span
-                className={classNames(
-                  mainPresence === 'offline'
-                    ? 'bg-gray-500 dark:bg-gray-500'
-                    : mainPresence === 'online' ||
-                      mainPresence === 'callforward' ||
-                      mainPresence === 'available' ||
-                      mainPresence === 'voicemail' ||
-                      mainPresence === 'cellphone'
-                    ? 'bg-emerald-500 dark:bg-emerald-500'
-                    : mainPresence === 'dnd' ||
-                      mainPresence === 'ringing' ||
-                      mainPresence === 'busy' ||
-                      mainPresence === 'incoming'
-                    ? 'bg-red-500 dark:bg-red-500'
-                    : 'bg-gray-500 dark:bg-gray-500',
-                  'h-2 w-2 flex rounded-full mr-1 ring-2 ring-white',
-                )}
-              />
+              <StatusDot status={mainPresence} className='flex'></StatusDot>
               Presence
               <FontAwesomeIcon
                 icon={faChevronRight}
@@ -228,7 +211,7 @@ export const TopBar: FC<TopBarProps> = ({ openMobileCb }) => {
                     >
                       <div>
                         <div className='flex items-center'>
-                          <span className='bg-emerald-500 dark:bg-emerald-500 h-2 w-2 flex rounded-full mr-2 ring-2 ring-white' />
+                          <StatusDot status='online' className='flex mr-2'></StatusDot>
                           <p className='flex text-sm font-medium'> Online</p>
                         </div>
                         <p className='text-sm text-gray-500'>Make and receive phone calls.</p>
@@ -240,7 +223,7 @@ export const TopBar: FC<TopBarProps> = ({ openMobileCb }) => {
                     >
                       <div className=''>
                         <div className='flex items-center'>
-                          <span className='bg-emerald-500 dark:bg-emerald-500 h-2 w-2 flex rounded-full mr-2 ring-2 ring-white' />
+                          <StatusDot status='callforward' className='flex mr-2'></StatusDot>
                           <p className='flex text-sm font-medium'> Call forward</p>
                         </div>
                         <p className='text-sm text-gray-500'>
@@ -259,7 +242,7 @@ export const TopBar: FC<TopBarProps> = ({ openMobileCb }) => {
                     >
                       <div>
                         <div className='flex items-center'>
-                          <span className='bg-red-500 dark:bg-red-500 h-2 w-2 flex rounded-full mr-2 ring-2 ring-white' />
+                          <StatusDot status='dnd' className='flex mr-2'></StatusDot>
                           <p className='flex text-sm font-medium'> Do not disturb</p>
                         </div>
                         <p className='text-sm text-gray-500'>Do not receive any calls.</p>
@@ -337,13 +320,8 @@ export const TopBar: FC<TopBarProps> = ({ openMobileCb }) => {
             {/* Profile dropdown */}
             <Dropdown items={dropdownItems} position='left' divider={true} className='pl-3'>
               <span className='sr-only'>Open user menu</span>
-              <Avatar
-                rounded='full'
-                src={avatar}
-                placeholderType='person'
-                size='small'
-                status={mainPresence || 'offline'}
-              />
+              <Avatar rounded='full' src={avatar} placeholderType='person' size='small' />
+              <StatusDot status={mainPresence} className='absolute bottom-0 right-0 '></StatusDot>
             </Dropdown>
           </div>
           <Modal

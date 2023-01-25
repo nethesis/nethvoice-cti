@@ -9,20 +9,6 @@ const meta = {
   title: 'Components/Avatar',
   component: Avatar,
   argTypes: {
-    status: {
-      options: [
-        'available',
-        'dnd',
-        'voicemail',
-        'cellphone',
-        'callforward',
-        'busy',
-        'incoming',
-        'ringing',
-        'offline',
-      ],
-      type: 'select',
-    },
     size: {
       options: ['extra_small', 'small', 'base', 'large', 'extra_large'],
       type: 'select',
@@ -50,13 +36,6 @@ Circular.args = {
 export const Rounded = Template.bind({})
 Rounded.args = {
   rounded: 'base',
-  bordered: false,
-  src: 'https://images.unsplash.com/photo-1567532939604-b6b5b0db2604?ixlib=rb-1.2.1&ixid=eyJhcHBfaWQiOjEyMDd9&auto=format&fit=facearea&facepad=2&w=256&h=256&q=80',
-}
-
-export const WithStatus = Template.bind({})
-WithStatus.args = {
-  status: 'available',
   bordered: false,
   src: 'https://images.unsplash.com/photo-1567532939604-b6b5b0db2604?ixlib=rb-1.2.1&ixid=eyJhcHBfaWQiOjEyMDd9&auto=format&fit=facearea&facepad=2&w=256&h=256&q=80',
 }

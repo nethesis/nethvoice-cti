@@ -6,7 +6,7 @@ import { saveCredentials } from '../lib/login'
 import { useState, useRef } from 'react'
 import { TextInput, InlineNotification, Button } from '../components/common'
 import hmacSHA1 from 'crypto-js/hmac-sha1'
-import Logo from '../public/logo.png'
+import Logo from '../public/logo_nethvoice.svg'
 import Background from '../public/background.png'
 import { useRouter } from 'next/router'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
@@ -87,22 +87,14 @@ export default function Login() {
       <div className='flex min-h-full'>
         <div className='flex flex-1 flex-col justify-center py-12 px-4 sm:px-6 lg:flex-none lg:px-20 xl:px-24'>
           <div className='mx-auto w-full max-w-sm lg:w-96'>
-            <div>
+            <div className='flex items-center justify-center'>
               {' '}
               <Image
-                className='mx-auto h-12 w-auto'
+                className='mx-auto h-12 w-auto items-center'
                 src={Logo}
                 alt='logo'
-                width='100'
-                height='100'
                 unoptimized={true}
               />
-              <h2 className='mt-6 text-3xl font-bold tracking-tight text-gray-900 dark:text-gray-100'>
-                NethVoice CTI
-              </h2>
-              <p className='mt-2 text-sm text-gray-600 dark:text-gray-300'>
-                Helps you connect with other users.
-              </p>
             </div>
             <div className='mt-8'>
               <div className='mt-6'>
