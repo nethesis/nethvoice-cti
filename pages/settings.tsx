@@ -114,7 +114,7 @@ const Settings: NextPage = () => {
       isRead: false,
       name: 'Test user',
       number: '222',
-      queue: 'ksd fjaskljklsdfj aklsdj fklasd fkla afkl',
+      queue: 'Commerciali',
     }
     store.dispatch.notifications.addNotification({
       notification: notif,
