@@ -6,9 +6,7 @@ import classNames from 'classnames'
 import { useSelector } from 'react-redux'
 import { RootState } from '../../store'
 import { ContactSummary } from './ContactSummary'
-import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
-import { faXmark } from '@fortawesome/free-solid-svg-icons'
-import { closeSideDrawer } from '../../lib/utils'
+import { SideDrawerCloseIcon } from '../common'
 
 export interface ShowContactDrawerContentProps extends ComponentPropsWithRef<'div'> {
   config: any
@@ -28,12 +26,7 @@ export const ShowContactDrawerContent = forwardRef<
             Contact details
           </div>
           <div className='flex items-center h-7'>
-            <FontAwesomeIcon
-              icon={faXmark}
-              className='h-5 w-5 cursor-pointer p-0.5 mr-1 dark:text-gray-200 text-gray-700'
-              aria-hidden='true'
-              onClick={() => closeSideDrawer()}
-            />
+            <SideDrawerCloseIcon className='p-0.5 mr-1'></SideDrawerCloseIcon>
           </div>
         </div>
       </div>

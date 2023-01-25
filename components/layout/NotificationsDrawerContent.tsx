@@ -7,14 +7,13 @@ import { useSelector } from 'react-redux'
 import { RootState, store } from '../../store'
 import { callPhoneNumber } from '../../lib/utils'
 import { formatInTimeZoneLoc } from '../../lib/dateTime'
-import { Badge, EmptyState, IconSwitch } from '../common'
-import { faCircleCheck, faPhone, faXmark } from '@fortawesome/free-solid-svg-icons'
+import { Badge, EmptyState, IconSwitch, SideDrawerCloseIcon } from '../common'
+import { faCircleCheck, faPhone } from '@fortawesome/free-solid-svg-icons'
 import { faBell, faCommentDots } from '@fortawesome/free-regular-svg-icons'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { MdCallMissed } from 'react-icons/md'
 import { utcToZonedTime } from 'date-fns-tz'
 import { formatDistanceToNowLoc } from '../../lib/dateTime'
-import { closeSideDrawer } from '../../lib/utils'
 
 export interface NotificationsDrawerContentProps extends ComponentPropsWithRef<'div'> {}
 
@@ -164,12 +163,7 @@ export const NotificationsDrawerContent = forwardRef<
           </div>
 
           <div className='flex items-center h-7'>
-            <FontAwesomeIcon
-              icon={faXmark}
-              className='h-5 w-5 cursor-pointer p-0.5 mr-1 dark:text-gray-200 text-gray-700'
-              aria-hidden='true'
-              onClick={() => closeSideDrawer()}
-            />
+            <SideDrawerCloseIcon className='p-0.5 mr-1'></SideDrawerCloseIcon>
           </div>
         </div>
       </div>

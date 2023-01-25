@@ -3,13 +3,12 @@
 
 import { ComponentPropsWithRef, forwardRef } from 'react'
 import classNames from 'classnames'
-import { Avatar, Button } from '../common'
+import { Avatar, Button, SideDrawerCloseIcon } from '../common'
 import { openAddToPhonebookDrawer } from '../../lib/history'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
-import { faPhone, faPlus, faXmark } from '@fortawesome/free-solid-svg-icons'
+import { faPhone, faPlus } from '@fortawesome/free-solid-svg-icons'
 import { LastCallsDrawerTable } from './LastCallsDrawerTable'
 import { startOfDay, subDays } from 'date-fns'
-import { closeSideDrawer } from '../../lib/utils'
 
 export interface ShowHistoryDrawerContentProps extends ComponentPropsWithRef<'div'> {
   config: any
@@ -64,12 +63,7 @@ export const ShowHistoryDrawerContent = forwardRef<
             History details
           </div>
           <div className='flex items-center h-7'>
-            <FontAwesomeIcon
-              icon={faXmark}
-              className='h-5 w-5 cursor-pointer p-0.5 mr-1 dark:text-gray-200 text-gray-700'
-              aria-hidden='true'
-              onClick={() => closeSideDrawer()}
-            />
+            <SideDrawerCloseIcon className='p-0.5 mr-1'></SideDrawerCloseIcon>
           </div>
         </div>
       </div>

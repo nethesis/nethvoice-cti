@@ -3,13 +3,13 @@
 
 import { ComponentPropsWithRef, forwardRef } from 'react'
 import classNames from 'classnames'
-import { TextInput, Button, InlineNotification } from '../../common'
+import { TextInput, Button, InlineNotification, SideDrawerCloseIcon } from '../../common'
 import { useState, useRef, useEffect } from 'react'
 import { createSpeedDial, editSpeedDial } from '../../../services/phonebook'
 import { reloadSpeedDial } from '../../../lib/speedDial'
 import { closeSideDrawer } from '../../../lib/utils'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
-import { faPlus, faPen, faXmark } from '@fortawesome/free-solid-svg-icons'
+import { faPlus, faPen } from '@fortawesome/free-solid-svg-icons'
 
 export interface CreateOrEditSpeedDialDrawerContentProps extends ComponentPropsWithRef<'div'> {
   config: any
@@ -123,12 +123,7 @@ export const CreateOrEditSpeedDialDrawerContent = forwardRef<
             {config.isEdit ? 'Edit speed dial' : 'Create speed dial'}
           </div>
           <div className='flex items-center h-7'>
-            <FontAwesomeIcon
-              icon={faXmark}
-              className='h-5 w-5 cursor-pointer p-0.5 mr-1 dark:text-gray-200 text-gray-700'
-              aria-hidden='true'
-              onClick={() => closeSideDrawer()}
-            />
+          <SideDrawerCloseIcon className='p-0.5 mr-1'></SideDrawerCloseIcon>
           </div>
         </div>
       </div>

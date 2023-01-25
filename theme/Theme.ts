@@ -315,6 +315,9 @@ const theme = {
       full: 'rounded-full',
     },
   },
+  crossIcon: {
+    base: 'h-5 w-5 cursor-pointer dark:text-gray-200 text-gray-700',
+  },
   dropdown: {
     base: 'relative inline-block text-left cursor-pointer',
     size: {
