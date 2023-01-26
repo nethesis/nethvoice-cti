@@ -167,7 +167,7 @@ export const SpeedDial = () => {
                   <FontAwesomeIcon icon={faBolt} className='mx-auto h-12 w-12' aria-hidden='true' />
                 }
               >
-                <Button variant='primary' onClick={() => openCreateSpeedDialDrawer()}>
+                <Button variant='white' onClick={() => openCreateSpeedDialDrawer()}>
                   <FontAwesomeIcon icon={faPlus} className='mr-2 h-4 w-4' />
                   <span>Create</span>
                 </Button>
