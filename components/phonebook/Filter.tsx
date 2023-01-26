@@ -164,7 +164,7 @@ export const Filter = forwardRef<HTMLButtonElement, FilterProps>(
                         onClick={() => setOpen(false)}
                       >
                         <span className='sr-only'>Close menu</span>
-                        <SideDrawerCloseIcon></SideDrawerCloseIcon>
+                        <SideDrawerCloseIcon />
                       </button>
                     </div>
 

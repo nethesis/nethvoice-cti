@@ -26,7 +26,7 @@ export const ShowContactDrawerContent = forwardRef<
             Contact details
           </div>
           <div className='flex items-center h-7'>
-            <SideDrawerCloseIcon className='p-0.5 mr-1'></SideDrawerCloseIcon>
+            <SideDrawerCloseIcon className='p-0.5' />
           </div>
         </div>
       </div>

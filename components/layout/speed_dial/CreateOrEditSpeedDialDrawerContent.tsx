@@ -123,7 +123,7 @@ export const CreateOrEditSpeedDialDrawerContent = forwardRef<
             {config.isEdit ? 'Edit speed dial' : 'Create speed dial'}
           </div>
           <div className='flex items-center h-7'>
-          <SideDrawerCloseIcon className='p-0.5 mr-1'></SideDrawerCloseIcon>
+          <SideDrawerCloseIcon className='p-0.5' />
           </div>
         </div>
       </div>

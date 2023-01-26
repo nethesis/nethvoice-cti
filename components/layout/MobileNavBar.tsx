@@ -70,7 +70,7 @@ export const MobileNavBar: FC<MobileNavBarProps> = ({ closeMobileMenu, show, ite
                       className='flex h-12 w-12 items-center justify-center rounded-full'
                       onClick={closeMobileMenu}
                     >
-                      <SideDrawerCloseIcon></SideDrawerCloseIcon>
+                      <SideDrawerCloseIcon />
                       <span className='sr-only'>Close sidebar</span>
                     </button>
                   </div>
