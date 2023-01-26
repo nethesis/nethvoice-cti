@@ -40,6 +40,12 @@ export default meta as Meta
 
 const Template: Story<AvatarProps> = (args) => <Avatar {...args} />
 
+export const WithStatus = Template.bind({})
+WithStatus.args = {
+  status: 'available',
+  src: 'https://images.unsplash.com/photo-1567532939604-b6b5b0db2604?ixlib=rb-1.2.1&ixid=eyJhcHBfaWQiOjEyMDd9&auto=format&fit=facearea&facepad=2&w=256&h=256&q=80',
+}
+
 export const Circular = Template.bind({})
 Circular.args = {
   rounded: 'full',
@@ -50,13 +56,6 @@ Circular.args = {
 export const Rounded = Template.bind({})
 Rounded.args = {
   rounded: 'base',
-  bordered: false,
-  src: 'https://images.unsplash.com/photo-1567532939604-b6b5b0db2604?ixlib=rb-1.2.1&ixid=eyJhcHBfaWQiOjEyMDd9&auto=format&fit=facearea&facepad=2&w=256&h=256&q=80',
-}
-
-export const WithStatus = Template.bind({})
-WithStatus.args = {
-  status: 'available',
   bordered: false,
   src: 'https://images.unsplash.com/photo-1567532939604-b6b5b0db2604?ixlib=rb-1.2.1&ixid=eyJhcHBfaWQiOjEyMDd9&auto=format&fit=facearea&facepad=2&w=256&h=256&q=80',
 }

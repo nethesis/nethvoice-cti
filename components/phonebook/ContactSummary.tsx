@@ -135,7 +135,7 @@ export const ContactSummary = forwardRef<HTMLButtonElement, ContactSummaryProps>
                 items={contactMenuItems}
                 position='left'
                 divider={true}
-                className='mt-1'
+                className='mt-1 mr-2'
               >
                 <Button variant='ghost'>
                   <FontAwesomeIcon icon={faEllipsisVertical} className='h-4 w-4' />

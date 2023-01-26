@@ -7,7 +7,7 @@ import { useSelector } from 'react-redux'
 import { RootState, store } from '../../store'
 import { callPhoneNumber } from '../../lib/utils'
 import { formatInTimeZoneLoc } from '../../lib/dateTime'
-import { Badge, EmptyState, IconSwitch } from '../common'
+import { Badge, EmptyState, IconSwitch, SideDrawerCloseIcon } from '../common'
 import { faCircleCheck, faPhone } from '@fortawesome/free-solid-svg-icons'
 import { faBell, faCommentDots } from '@fortawesome/free-regular-svg-icons'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
@@ -146,18 +146,29 @@ export const NotificationsDrawerContent = forwardRef<
 
   return (
     <>
+      {' '}
+      <div className='bg-gray-100 dark:bg-gray-800 py-6 px-6'>
+        <div className='flex items-center justify-between'>
+          {/* Notification title for device with display width greater than 640px */}
+          <div className='flex items-center justify-between grow'>
+            <div className='text-lg font-medium dark:text-gray-200 text-gray-700 mr-2'>
+              Notifications
+            </div>
+            <div
+              className='text-sm cursor-pointer hover:underline text-gray-700 dark:text-gray-200 mr-5 text-right'
+              onClick={markAllAsRead}
+            >
+              Mark all as read
+            </div>
+          </div>
+
+          <div className='flex items-center h-7'>
+            <SideDrawerCloseIcon className='p-0.5' />
+          </div>
+        </div>
+      </div>
       {/* drawer content */}
       <div className={classNames(className)} {...props}>
-        <div className='flex flex-wrap min-w-0 flex-1 items-center justify-between py-5 mx-5'>
-          <h2 className='text-lg font-medium mr-4 text-gray-900 dark:text-gray-100'>Notifications</h2>
-          <span
-            className='text-sm cursor-pointer hover:underline text-gray-700 dark:text-gray-200 mr-12'
-            onClick={markAllAsRead}
-          >
-            Mark all as read
-          </span>
-        </div>
-        <div className='border-b border-gray-200 dark:border-gray-700'></div>
         {/* skeleton */}
         {!notificationsStore.isLoaded && (
           <ul role='list' className='divide-y divide-gray-200 dark:divide-gray-700'>

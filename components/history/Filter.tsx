@@ -4,9 +4,9 @@
 import { ComponentPropsWithRef, forwardRef } from 'react'
 import React from 'react'
 import classNames from 'classnames'
-import { TextInput } from '../common'
+import { TextInput, SideDrawerCloseIcon } from '../common'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
-import { faChevronDown, faCircleXmark, faXmark } from '@fortawesome/free-solid-svg-icons'
+import { faChevronDown, faCircleXmark } from '@fortawesome/free-solid-svg-icons'
 import { Fragment, useState, useEffect, useRef } from 'react'
 import { Dialog, Disclosure, Popover, Transition } from '@headlessui/react'
 import { useSelector } from 'react-redux'
@@ -353,7 +353,7 @@ export const Filter = forwardRef<HTMLButtonElement, FilterProps>(
                         onClick={() => setOpen(false)}
                       >
                         <span className='sr-only'>Close menu</span>
-                        <FontAwesomeIcon icon={faXmark} className='h-5 w-5' aria-hidden='true' />
+                        <SideDrawerCloseIcon />
                       </button>
                     </div>
 

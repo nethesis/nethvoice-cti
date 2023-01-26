@@ -245,6 +245,16 @@ const theme = {
       },
     },
   },
+  statusDot: {
+    base: 'block ring-2 ring-white rounded-full',
+    sizes: {
+      extra_small: 'h-1.5 w-1.5',
+      small: 'h-2 w-2',
+      base: 'h-2.5 w-2.5',
+      large: 'h-3 w-3',
+      extra_large: 'h-3.5 w-3.5',
+    },
+  },
   badge: {
     base: 'inline-flex items-center font-medium',
     rounded: {
@@ -322,6 +332,9 @@ const theme = {
       base: 'rounded-md',
       full: 'rounded-full',
     },
+  },
+  sideDrawerCloseIcon: {
+    base: 'h-5 w-5 cursor-pointer dark:text-gray-200 text-gray-700',
   },
   dropdown: {
     base: 'relative inline-block text-left cursor-pointer',

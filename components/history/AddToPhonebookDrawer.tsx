@@ -5,14 +5,20 @@ import { ComponentPropsWithRef, forwardRef, useState, useRef, useEffect, useMemo
 import { useSelector } from 'react-redux'
 import { RootState } from '../../store'
 import classNames from 'classnames'
-import { Button, TextInput, Avatar, EmptyState, InlineNotification } from '../common'
+import {
+  Button,
+  TextInput,
+  Avatar,
+  EmptyState,
+  InlineNotification,
+  SideDrawerCloseIcon,
+} from '../common'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import {
   faUserPlus,
   faCircleXmark,
   faChevronRight,
   faUser,
-  faXmark,
 } from '@fortawesome/free-solid-svg-icons'
 import {
   getPhonebook,
@@ -20,7 +26,6 @@ import {
   openAddToContactDrawer,
 } from '../../lib/phonebook'
 import { debounce } from 'lodash'
-import { closeSideDrawer } from '../../lib/utils'
 
 export interface AddToPhonebookDrawerContentProps extends ComponentPropsWithRef<'div'> {
   config: any
@@ -118,12 +123,7 @@ export const AddToPhonebookDrawerContent = forwardRef<
             Add to phonebook: {config}
           </div>
           <div className='flex items-center h-7'>
-            <FontAwesomeIcon
-              icon={faXmark}
-              className='h-5 w-5 cursor-pointer p-0.5 mr-1 dark:text-gray-200 text-gray-700'
-              aria-hidden='true'
-              onClick={() => closeSideDrawer()}
-            />
+            <SideDrawerCloseIcon />
           </div>
         </div>
       </div>

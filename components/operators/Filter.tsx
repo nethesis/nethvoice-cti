@@ -3,11 +3,11 @@
 
 import { ComponentPropsWithRef, forwardRef, useRef } from 'react'
 import classNames from 'classnames'
-import { TextInput } from '../common'
+import { TextInput, SideDrawerCloseIcon } from '../common'
 import { Fragment, useState, useEffect } from 'react'
 import { Dialog, Disclosure, Popover, Transition } from '@headlessui/react'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
-import { faChevronDown, faCircleXmark, faXmark } from '@fortawesome/free-solid-svg-icons'
+import { faChevronDown, faCircleXmark } from '@fortawesome/free-solid-svg-icons'
 import { RadioButtonType } from '../../services/types'
 import {
   DEFAULT_GROUP_FILTER,
@@ -288,7 +288,7 @@ export const Filter = forwardRef<HTMLButtonElement, FilterProps>(
                         onClick={() => setOpen(false)}
                       >
                         <span className='sr-only'>Close menu</span>
-                        <FontAwesomeIcon icon={faXmark} className='h-5 w-5' aria-hidden='true' />
+                        <SideDrawerCloseIcon />
                       </button>
                     </div>
 

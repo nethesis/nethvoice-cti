@@ -25,6 +25,7 @@ import { AvatarGroup, AvatarGroupProps as GroupProps } from './AvatarGroup'
 import type { StatusTypes } from '../../../theme/Types'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { faUser, faBuilding, faStar } from '@fortawesome/free-solid-svg-icons'
+import { StatusDot } from '../StatusDot'
 
 export type AvatarGroupProps = GroupProps
 
@@ -58,7 +59,6 @@ const AvatarComponent: FC<AvatarProps> = ({
   ...props
 }) => {
   const { avatar: theme } = useTheme().theme
-  const themeStatus = useTheme().theme.status
 
   return (
     <div
@@ -104,15 +104,9 @@ const AvatarComponent: FC<AvatarProps> = ({
         </div>
       )}
       {status && (
-        <div
-          className={classNames(
-            theme.status.base,
-            themeStatus[status]?.avatar.dot,
-            rounded === 'base'
-              ? theme.status.sizes.rounded[size]
-              : theme.status.sizes.circular[size],
-          )}
-        ></div>
+        <div>
+          <StatusDot status={status} className='absolute bottom-0 right-0' />
+        </div>
       )}
       {star && (
         <FontAwesomeIcon
