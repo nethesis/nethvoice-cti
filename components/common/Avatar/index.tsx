@@ -24,7 +24,7 @@ import Image from 'next/image'
 import { AvatarGroup, AvatarGroupProps as GroupProps } from './AvatarGroup'
 import type { StatusTypes } from '../../../theme/Types'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
-import { faUser, faBuilding, faStar } from '@fortawesome/free-solid-svg-icons'
+import { faUser, faBuilding, faStar, faHeadset } from '@fortawesome/free-solid-svg-icons'
 import { StatusDot } from '../StatusDot'
 
 export type AvatarGroupProps = GroupProps
@@ -97,6 +97,13 @@ const AvatarComponent: FC<AvatarProps> = ({
           {placeholderType == 'company' && (
             <FontAwesomeIcon
               icon={faBuilding}
+              className={classNames(theme.placeholderType, theme.placeholderType.sizes[size])}
+              aria-hidden='true'
+            />
+          )}
+          {placeholderType == 'operator' && (
+            <FontAwesomeIcon
+              icon={faHeadset}
               className={classNames(theme.placeholderType, theme.placeholderType.sizes[size])}
               aria-hidden='true'
             />

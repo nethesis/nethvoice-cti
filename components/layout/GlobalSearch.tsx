@@ -337,7 +337,7 @@ export const GlobalSearch: FC<GlobalSearchProps> = () => {
                                       <Avatar
                                         rounded='full'
                                         src={result.avatarBase64}
-                                        placeholderType='person'
+                                        placeholderType='operator'
                                         size='base'
                                         status={result.mainPresence}
                                       />

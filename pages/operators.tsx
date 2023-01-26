@@ -230,7 +230,7 @@ const Operators: NextPage = () => {
                           <div className='space-y-4'>
                             <Avatar
                               src={operator.avatarBase64}
-                              placeholderType='person'
+                              placeholderType='operator'
                               size='extra_large'
                               bordered
                               star={operator.favorite}
@@ -334,7 +334,7 @@ const Operators: NextPage = () => {
                           <span className='block flex-shrink-0'>
                             <Avatar
                               src={operator.avatarBase64}
-                              placeholderType='person'
+                              placeholderType='operator'
                               size='large'
                               bordered
                               star={operator.favorite}
