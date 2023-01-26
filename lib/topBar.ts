@@ -7,11 +7,11 @@
 
 import axios from 'axios'
 
-const linkPresence  = '/user/presence'
+const linkPresence = '/user/presence'
 
 export async function changeStatusPresence(status: any) {
   try {
-    const { data } =  await axios.post(linkPresence, {
+    const { data } = await axios.post(linkPresence, {
       status,
     })
     return data
@@ -20,9 +20,9 @@ export async function changeStatusPresence(status: any) {
   }
 }
 
-export async function forwardStatus(status:any, to:number) {
+export async function forwardStatus(status: any, to: number) {
   try {
-    const { data } =  await axios.post(linkPresence, {
+    const { data } = await axios.post(linkPresence, {
       status,
       to,
     })

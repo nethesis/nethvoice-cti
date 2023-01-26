@@ -128,7 +128,8 @@ const History: NextPage = () => {
         dateBegin &&
         !checkDateType.test(dateBegin) &&
         dateEnd &&
-        !checkDateType.test(dateEnd) && !(callType === 'user' && callDirection === 'internal')
+        !checkDateType.test(dateEnd) &&
+        !(callType === 'user' && callDirection === 'internal')
       ) {
         try {
           setHistoryError('')

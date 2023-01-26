@@ -22,7 +22,7 @@ export interface statusDotProps extends Omit<ComponentPropsWithRef<'button'>, 'c
 }
 
 export const StatusDot = forwardRef<HTMLButtonElement, statusDotProps>(
-  ({ size = 'small', status, position= 'standard', className }, ref): JSX.Element => {
+  ({ size = 'small', status, position = 'standard', className }, ref): JSX.Element => {
     const { statusDot: theme } = useTheme().theme
     const themeStatus: any = useTheme().theme.status
     return (

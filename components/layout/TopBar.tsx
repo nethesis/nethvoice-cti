@@ -320,7 +320,14 @@ export const TopBar: FC<TopBarProps> = ({ openMobileCb }) => {
             {/* Profile dropdown */}
             <Dropdown items={dropdownItems} position='left' divider={true} className='pl-3'>
               <span className='sr-only'>Open user menu</span>
-              <Avatar rounded='full' src={avatar} placeholderType='person' size='small' status={mainPresence} position='avatar' />
+              <Avatar
+                rounded='full'
+                src={avatar}
+                placeholderType='person'
+                size='small'
+                status={mainPresence}
+                position='avatar'
+              />
             </Dropdown>
           </div>
           <Modal

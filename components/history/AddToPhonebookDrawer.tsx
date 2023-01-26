@@ -203,7 +203,7 @@ export const AddToPhonebookDrawerContent = forwardRef<
                     <div className='flex min-w-0 flex-1 items-center'>
                       <div className='flex-shrink-0'>
                         {contact.name !== null ? (
-                          <Avatar className='cursor-pointer' placeholderType='person'/>
+                          <Avatar className='cursor-pointer' placeholderType='person' />
                         ) : (
                           <Avatar className='cursor-pointer' placeholderType='company' />
                         )}
