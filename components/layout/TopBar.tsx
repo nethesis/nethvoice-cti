@@ -326,7 +326,6 @@ export const TopBar: FC<TopBarProps> = ({ openMobileCb }) => {
                 placeholderType='person'
                 size='small'
                 status={mainPresence}
-                position='avatar'
               />
             </Dropdown>
           </div>

@@ -254,10 +254,6 @@ const theme = {
       large: 'h-3 w-3',
       extra_large: 'h-3.5 w-3.5',
     },
-    positions: {
-      standard: '',
-      avatar: 'absolute bottom-0 right-0',
-    },
   },
   badge: {
     base: 'inline-flex items-center font-medium',

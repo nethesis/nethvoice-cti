@@ -41,7 +41,6 @@ export interface AvatarProps extends Omit<ComponentProps<'div'>, 'placeholder'> 
   size?: 'extra_small' | 'small' | 'base' | 'large' | 'extra_large'
   unoptimized?: boolean
   star?: boolean
-  position?: 'standard' | 'avatar'
 }
 
 const AvatarComponent: FC<AvatarProps> = ({
@@ -56,7 +55,6 @@ const AvatarComponent: FC<AvatarProps> = ({
   size = 'base',
   unoptimized = true,
   star,
-  position,
   className,
   ...props
 }) => {
@@ -107,7 +105,7 @@ const AvatarComponent: FC<AvatarProps> = ({
       )}
       {status && (
         <div>
-          <StatusDot status={status} position={position} />
+          <StatusDot status={status} className='absolute bottom-0 right-0' />
         </div>
       )}
       {star && (

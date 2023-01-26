@@ -326,7 +326,6 @@ export const GlobalSearch: FC<GlobalSearchProps> = () => {
                                         placeholderType='person'
                                         size='base'
                                         status={result.mainPresence}
-                                        position='avatar'
                                       />
                                       <span className='ml-2 flex-auto truncate'>{result.name}</span>
                                     </>
