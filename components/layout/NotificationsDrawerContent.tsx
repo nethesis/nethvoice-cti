@@ -170,9 +170,7 @@ export const NotificationsDrawerContent = forwardRef<
       {/* drawer content */}
       <div className={classNames(className)} {...props}>
         <div className='flex flex-wrap min-w-0 flex-1 items-center justify-between py-5 mx-5'>
-          <h2 className='text-lg font-medium mr-4 text-gray-900 dark:text-gray-100'>
-            Notifications
-          </h2>
+          <h2 className='text-lg font-medium mr-4 text-gray-900 dark:text-gray-100'>Notifications</h2>
           <span
             className='text-sm cursor-pointer hover:underline text-gray-700 dark:text-gray-200 mr-12'
             onClick={markAllAsRead}

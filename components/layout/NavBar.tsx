@@ -22,7 +22,7 @@ interface NavBarProps {
 
 export const NavBar: FC<NavBarProps> = ({ items }) => {
   return (
-    <div className='hidden w-20 overflow-y-auto md:block bg-gray-600'>
+    <div className='hidden w-20 overflow-y-auto md:block bg-gray-600 dark:bg-gray-700'>
       <div className='flex w-full flex-col items-center py-3.5 h-full'>
         <div className='flex flex-shrink-0 items-center'>
           <Image
@@ -40,8 +40,8 @@ export const NavBar: FC<NavBarProps> = ({ items }) => {
               <a
                 className={classNames(
                   item.current
-                    ? 'bg-gray-800 text-white'
-                    : 'text-gray-100 hover:bg-gray-800 hover:text-white',
+                    ? 'text-white bg-gray-700 dark:bg-gray-500'
+                    : 'text-gray-100 hover:text-white hover:bg-gray-700 dark:hover:bg-gray-500',
                   'group w-full p-5 rounded-md flex flex-col items-center text-xs font-medium',
                 )}
                 aria-current={item.current ? 'page' : undefined}
