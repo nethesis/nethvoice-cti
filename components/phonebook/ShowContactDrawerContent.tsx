@@ -31,7 +31,7 @@ export const ShowContactDrawerContent = forwardRef<
         </div>
       </div>
       <div className={classNames(className, 'p-5')} {...props}>
-        <ContactSummary contact={config} isShownContactMenu={true} />
+        <ContactSummary contact={config} isShownContactMenu={true} isShownSideDrawerLink={false} />
       </div>
     </>
   )

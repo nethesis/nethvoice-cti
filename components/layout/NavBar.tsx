@@ -34,7 +34,7 @@ export const NavBar: FC<NavBarProps> = ({ items }) => {
             height={32}
           />
         </div>
-        <div className='mt-6 w-full h-full flex flex-col space-y-2 px-2 justify-center'>
+        <div className='mt-6 w-full h-full flex flex-col space-y-2 px-2.5 justify-center'>
           {items.map((item) => (
             <Link key={item.name} href={item.href}>
               <a
@@ -54,7 +54,6 @@ export const NavBar: FC<NavBarProps> = ({ items }) => {
                   )}
                   aria-hidden='true'
                 />
-                {/* <span className='mt-2'>{item.name}</span> //// */}
               </a>
             </Link>
           ))}

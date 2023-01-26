@@ -375,11 +375,19 @@ export const GlobalSearch: FC<GlobalSearchProps> = () => {
                         <div className='hidden h-96 w-1/2 flex-none flex-col overflow-y-auto lg:flex p-5'>
                           {/* operator */}
                           {activeOption.resultType === 'operator' && (
-                            <OperatorSummary operator={activeOption} isShownFavorite={false} />
+                            <OperatorSummary
+                              operator={activeOption}
+                              isShownFavorite={false}
+                              isShownSideDrawerLink={true}
+                            />
                           )}
                           {/* phonebook contact */}
                           {activeOption.resultType === 'contact' && (
-                            <ContactSummary contact={activeOption} isShownContactMenu={false} />
+                            <ContactSummary
+                              contact={activeOption}
+                              isShownContactMenu={false}
+                              isShownSideDrawerLink={true}
+                            />
                           )}
                         </div>
                       )}

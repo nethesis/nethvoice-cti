@@ -76,7 +76,7 @@ export const ShowOperatorDrawerContent = forwardRef<
         </div>
       </div>
       <div className={classNames('p-5', className)} {...props}>
-        <OperatorSummary operator={config} isShownFavorite={true} />
+        <OperatorSummary operator={config} isShownFavorite={true} isShownSideDrawerLink={false} />
 
         {/* ongoing call info */}
         {!!config.conversations?.length &&

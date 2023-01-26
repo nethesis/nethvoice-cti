@@ -6,7 +6,7 @@ import classNames from 'classnames'
 import { Avatar, Button, Dropdown, Modal } from '../common'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { useSelector } from 'react-redux'
-import { RootState } from '../../store'
+import { RootState, store } from '../../store'
 import { callPhoneNumber, closeSideDrawer } from '../../lib/utils'
 import {
   faEllipsisVertical,
@@ -26,16 +26,18 @@ import {
   deleteContact,
   fetchContact,
   openEditContactDrawer,
+  openShowContactDrawer,
   reloadPhonebook,
 } from '../../lib/phonebook'
 
 export interface ContactSummaryProps extends ComponentPropsWithRef<'div'> {
   contact: any
   isShownContactMenu: boolean
+  isShownSideDrawerLink: boolean
 }
 
 export const ContactSummary = forwardRef<HTMLButtonElement, ContactSummaryProps>(
-  ({ contact, isShownContactMenu, className, ...props }, ref) => {
+  ({ contact, isShownContactMenu, isShownSideDrawerLink = false, className, ...props }, ref) => {
     const auth = useSelector((state: RootState) => state.authentication)
     const [showDeleteModal, setShowDeleteModal] = useState<boolean>(false)
     const [contactToDelete, setContactToDelete] = useState<any>(null)
@@ -68,6 +70,16 @@ export const ContactSummary = forwardRef<HTMLButtonElement, ContactSummaryProps>
         setContactToDelete(null)
         closeSideDrawer()
       }
+    }
+
+    const maybeShowSideDrawer = (contact: any) => {
+      if (!isShownSideDrawerLink) {
+        return
+      }
+      // close global search
+      openShowContactDrawer(contact)
+      store.dispatch.globalSearch.setOpen(false)
+      store.dispatch.globalSearch.setFocused(false)
     }
 
     return (
@@ -118,13 +130,18 @@ export const ContactSummary = forwardRef<HTMLButtonElement, ContactSummaryProps>
         >
           <div className='flex items-center'>
             <div className='flex-shrink-0 mr-4'>
-              {contact.kind == 'person' ? (
-                <Avatar placeholderType='person' />
-              ) : (
-                <Avatar placeholderType='company' />
-              )}
+              <Avatar
+                placeholderType={contact.kind}
+                onClick={() => maybeShowSideDrawer(contact)}
+                className={classNames(isShownSideDrawerLink && 'cursor-pointer')}
+              />
             </div>
-            <h2 className='text-xl font-medium text-gray-900 dark:text-gray-100'>
+            <h2
+              className={classNames(
+                'text-xl font-medium text-gray-900 dark:text-gray-100',
+                isShownSideDrawerLink && 'cursor-pointer hover:underline',
+              )}
+            >
               {contact.displayName}
             </h2>
           </div>

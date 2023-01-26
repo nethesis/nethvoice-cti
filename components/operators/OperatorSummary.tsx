@@ -12,21 +12,23 @@ import {
   addOperatorToFavorites,
   callOperator,
   isOperatorCallable,
+  openShowOperatorDrawer,
   reloadOperators,
   removeOperatorFromFavorites,
 } from '../../lib/operators'
 import { useSelector } from 'react-redux'
-import { RootState } from '../../store'
+import { RootState, store } from '../../store'
 import { callPhoneNumber } from '../../lib/utils'
 import { faMobileScreenButton, faPhone, faStar, faVideo } from '@fortawesome/free-solid-svg-icons'
 
 export interface OperatorSummaryProps extends ComponentPropsWithRef<'div'> {
   operator: any
   isShownFavorite: boolean
+  isShownSideDrawerLink: boolean
 }
 
 export const OperatorSummary = forwardRef<HTMLButtonElement, OperatorSummaryProps>(
-  ({ operator, isShownFavorite, className, ...props }, ref) => {
+  ({ operator, isShownFavorite, isShownSideDrawerLink = false, className, ...props }, ref) => {
     const auth = useSelector((state: RootState) => state.authentication)
     const [isFavorite, setFavorite] = useState(false)
 
@@ -44,6 +46,16 @@ export const OperatorSummary = forwardRef<HTMLButtonElement, OperatorSummaryProp
       reloadOperators()
     }
 
+    const maybeShowSideDrawer = (operator: any) => {
+      if (!isShownSideDrawerLink) {
+        return
+      }
+      // close global search
+      openShowOperatorDrawer(operator)
+      store.dispatch.globalSearch.setOpen(false)
+      store.dispatch.globalSearch.setFocused(false)
+    }
+
     return (
       <>
         <div
@@ -57,11 +69,19 @@ export const OperatorSummary = forwardRef<HTMLButtonElement, OperatorSummaryProp
                 src={operator.avatarBase64}
                 placeholderType='person'
                 bordered
+                onClick={() => maybeShowSideDrawer(operator)}
+                className={classNames(isShownSideDrawerLink && 'cursor-pointer')}
               />
             </div>
             <div>
               <div>
-                <h2 className='text-xl inline-block font-medium text-gray-700 dark:text-gray-200 mr-2'>
+                <h2
+                  className={classNames(
+                    'text-xl inline-block font-medium text-gray-700 dark:text-gray-200 mr-2',
+                    isShownSideDrawerLink && 'cursor-pointer hover:underline',
+                  )}
+                  onClick={() => maybeShowSideDrawer(operator)}
+                >
                   {operator.name}
                 </h2>
                 {isShownFavorite && (
