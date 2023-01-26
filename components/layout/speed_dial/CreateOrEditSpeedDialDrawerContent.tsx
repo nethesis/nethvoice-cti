@@ -154,17 +154,27 @@ export const CreateOrEditSpeedDialDrawerContent = forwardRef<
         {editSpeedDialError && (
           <InlineNotification type='error' title={editSpeedDialError} className='mb-6' />
         )}
-        {config.isEdit ? (
-          <Button variant='primary' type='submit' onClick={prepareEditSpeedDial} className='mb-4'>
-            <FontAwesomeIcon icon={faPen} className='mr-2 h-4 w-4' />
-            Edit speed dial
+        <div className='flex'>
+          {config.isEdit ? (
+            <Button variant='primary' type='submit' onClick={prepareEditSpeedDial} className='mb-4'>
+              <FontAwesomeIcon icon={faPen} className='mr-2 h-4 w-4' />
+              Save speed dial
+            </Button>
+          ) : (
+            <Button
+              variant='primary'
+              type='submit'
+              onClick={prepareCreateSpeedDial}
+              className='mb-4'
+            >
+              <FontAwesomeIcon icon={faPlus} className='mr-2 h-4 w-4' />
+              Create speed dial
+            </Button>
+          )}
+          <Button variant='white' type='submit' onClick={closeSideDrawer} className='ml-4 mb-4'>
+            Cancel
           </Button>
-        ) : (
-          <Button variant='primary' type='submit' onClick={prepareCreateSpeedDial} className='mb-4'>
-            <FontAwesomeIcon icon={faPlus} className='mr-2 h-4 w-4' />
-            Create speed dial
-          </Button>
-        )}
+        </div>
       </div>
     </>
   )
