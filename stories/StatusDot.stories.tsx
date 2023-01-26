@@ -23,6 +23,10 @@ const meta = {
       options: ['extra_small', 'small', 'base', 'large', 'extra_large'],
       type: 'select',
     },
+    position: {
+      options: ['standard', 'avatar'],
+      type: 'select',
+    },
   },
 }
 
@@ -34,4 +38,5 @@ export const WithStatus = Template.bind({})
 WithStatus.args = {
   status: 'available',
   size: 'small',
+  position: 'avatar',
 }

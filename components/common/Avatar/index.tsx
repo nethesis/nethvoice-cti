@@ -22,13 +22,16 @@ import { useTheme } from '../../../theme/Context'
 import classNames from 'classnames'
 import Image from 'next/image'
 import { AvatarGroup, AvatarGroupProps as GroupProps } from './AvatarGroup'
+import type { StatusTypes } from '../../../theme/Types'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { faUser, faBuilding, faStar } from '@fortawesome/free-solid-svg-icons'
+import { StatusDot } from '../StatusDot'
 
 export type AvatarGroupProps = GroupProps
 
 export interface AvatarProps extends Omit<ComponentProps<'div'>, 'placeholder'> {
   rounded?: 'base' | 'full'
+  status?: StatusTypes
   src?: string
   initials?: string
   placeholder?: FC<ComponentProps<'svg'>>
@@ -38,10 +41,12 @@ export interface AvatarProps extends Omit<ComponentProps<'div'>, 'placeholder'> 
   size?: 'extra_small' | 'small' | 'base' | 'large' | 'extra_large'
   unoptimized?: boolean
   star?: boolean
+  position?: 'standard' | 'avatar'
 }
 
 const AvatarComponent: FC<AvatarProps> = ({
   rounded = 'full',
+  status,
   src,
   initials,
   placeholder: Placeholder,
@@ -51,6 +56,7 @@ const AvatarComponent: FC<AvatarProps> = ({
   size = 'base',
   unoptimized = true,
   star,
+  position,
   className,
   ...props
 }) => {
@@ -97,6 +103,11 @@ const AvatarComponent: FC<AvatarProps> = ({
               aria-hidden='true'
             />
           )}
+        </div>
+      )}
+      {status && (
+        <div>
+          <StatusDot status={status} position={position} />
         </div>
       )}
       {star && (

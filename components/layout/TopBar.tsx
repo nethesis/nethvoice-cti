@@ -186,7 +186,7 @@ export const TopBar: FC<TopBarProps> = ({ openMobileCb }) => {
                 'relative text-left cursor-pointer px-5 py-2 text-sm flex items-center gap-3 w-full ',
               )}
             >
-              <StatusDot status={mainPresence} className='flex'></StatusDot>
+              <StatusDot status={mainPresence} className='flex' />
               Presence
               <FontAwesomeIcon
                 icon={faChevronRight}
@@ -211,7 +211,7 @@ export const TopBar: FC<TopBarProps> = ({ openMobileCb }) => {
                     >
                       <div>
                         <div className='flex items-center'>
-                          <StatusDot status='online' className='flex mr-2'></StatusDot>
+                          <StatusDot status='online' className='flex mr-2' />
                           <p className='flex text-sm font-medium'> Online</p>
                         </div>
                         <p className='text-sm text-gray-500'>Make and receive phone calls.</p>
@@ -223,7 +223,7 @@ export const TopBar: FC<TopBarProps> = ({ openMobileCb }) => {
                     >
                       <div className=''>
                         <div className='flex items-center'>
-                          <StatusDot status='callforward' className='flex mr-2'></StatusDot>
+                          <StatusDot status='callforward' className='flex mr-2' />
                           <p className='flex text-sm font-medium'> Call forward</p>
                         </div>
                         <p className='text-sm text-gray-500'>
@@ -242,7 +242,7 @@ export const TopBar: FC<TopBarProps> = ({ openMobileCb }) => {
                     >
                       <div>
                         <div className='flex items-center'>
-                          <StatusDot status='dnd' className='flex mr-2'></StatusDot>
+                          <StatusDot status='dnd' className='flex mr-2' />
                           <p className='flex text-sm font-medium'> Do not disturb</p>
                         </div>
                         <p className='text-sm text-gray-500'>Do not receive any calls.</p>
@@ -320,8 +320,7 @@ export const TopBar: FC<TopBarProps> = ({ openMobileCb }) => {
             {/* Profile dropdown */}
             <Dropdown items={dropdownItems} position='left' divider={true} className='pl-3'>
               <span className='sr-only'>Open user menu</span>
-              <Avatar rounded='full' src={avatar} placeholderType='person' size='small' />
-              <StatusDot status={mainPresence} className='absolute bottom-0 right-0 '></StatusDot>
+              <Avatar rounded='full' src={avatar} placeholderType='person' size='small' status={mainPresence} position='avatar' />
             </Dropdown>
           </div>
           <Modal

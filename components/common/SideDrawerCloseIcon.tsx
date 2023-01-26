@@ -19,7 +19,7 @@ import { Button } from './Button'
 export interface SideDrawerCloseIconProps extends ComponentProps<'div'> {}
 
 export const SideDrawerCloseIcon: FC<SideDrawerCloseIconProps> = ({ className }): JSX.Element => {
-  const { crossIcon: theme } = useTheme().theme
+  const { sideDrawerCloseIcon: theme } = useTheme().theme
   return (
     <Button variant='ghost'>
       <FontAwesomeIcon

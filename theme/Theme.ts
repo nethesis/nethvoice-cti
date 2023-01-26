@@ -138,6 +138,9 @@ const theme = {
       badge: {
         base: 'bg-emerald-200 text-emerald-900 dark:bg-emerald-800 dark:text-emerald-100',
       },
+      avatar: {
+        dot: 'bg-emerald-500 dark:bg-emerald-500',
+      },
       card: {
         border: 'border-green-500 dark:border-green-500',
       },
@@ -145,6 +148,9 @@ const theme = {
     online: {
       badge: {
         base: 'bg-emerald-200 text-emerald-900 dark:bg-emerald-800 dark:text-emerald-100',
+      },
+      avatar: {
+        dot: 'bg-emerald-500 dark:bg-emerald-500',
       },
       card: {
         border: 'border-emerald-500 dark:border-emerald-500',
@@ -154,6 +160,9 @@ const theme = {
       badge: {
         base: 'bg-red-200 text-red-900 dark:bg-red-900 dark:text-red-100',
       },
+      avatar: {
+        dot: 'bg-red-500 dark:bg-red-500',
+      },
       card: {
         border: 'border-gray-500 dark:border-green-500',
       },
@@ -161,6 +170,9 @@ const theme = {
     voicemail: {
       badge: {
         base: 'bg-emerald-200 text-emerald-900 dark:bg-emerald-800 dark:text-emerald-100',
+      },
+      avatar: {
+        dot: 'bg-emerald-500 dark:bg-emerald-500',
       },
       card: {
         border: 'border-orange-500 dark:border-orange-500',
@@ -170,6 +182,9 @@ const theme = {
       badge: {
         base: 'bg-emerald-200 text-emerald-900 dark:bg-emerald-800 dark:text-emerald-100',
       },
+      avatar: {
+        dot: 'bg-emerald-500 dark:bg-emerald-500',
+      },
       card: {
         border: 'border-purple-500 dark:border-purple-500',
       },
@@ -177,6 +192,9 @@ const theme = {
     callforward: {
       badge: {
         base: 'bg-emerald-200 text-emerald-900 dark:bg-emerald-800 dark:text-emerald-100',
+      },
+      avatar: {
+        dot: 'bg-emerald-500 dark:bg-emerald-500',
       },
       card: {
         border: 'border-yellow-500 dark:border-yellow-500',
@@ -186,6 +204,9 @@ const theme = {
       badge: {
         base: 'bg-red-200 text-red-900 dark:bg-red-900 dark:text-red-100',
       },
+      avatar: {
+        dot: 'bg-red-500 dark:bg-red-500',
+      },
       card: {
         border: 'border-red-500 dark:border-red-500',
       },
@@ -193,6 +214,9 @@ const theme = {
     incoming: {
       badge: {
         base: 'bg-red-200 text-red-900 dark:bg-red-900 dark:text-red-100',
+      },
+      avatar: {
+        dot: 'bg-red-500 dark:bg-red-500',
       },
       card: {
         border: 'border-sky-500 dark:border-sky-500',
@@ -202,6 +226,9 @@ const theme = {
       badge: {
         base: 'bg-red-200 text-red-900 dark:bg-red-900 dark:text-red-100',
       },
+      avatar: {
+        dot: 'bg-red-500 dark:bg-red-500',
+      },
       card: {
         border: 'border-sky-500 dark:border-sky-500',
       },
@@ -210,12 +237,15 @@ const theme = {
       badge: {
         base: 'bg-gray-300 text-gray-700 dark:bg-gray-700 dark:text-gray-300',
       },
+      avatar: {
+        dot: 'bg-gray-500 dark:bg-gray-500',
+      },
       card: {
         border: 'border-gray-500 dark:border-gray-500',
       },
     },
   },
-  dot: {
+  statusDot: {
     base: 'block ring-2 ring-white rounded-full',
     sizes: {
       extra_small: 'h-1.5 w-1.5',
@@ -224,17 +254,9 @@ const theme = {
       large: 'h-3 w-3',
       extra_large: 'h-3.5 w-3.5',
     },
-    status: {
-      offline: 'bg-gray-500 dark:bg-gray-500',
-      ringing: 'bg-red-500 dark:bg-red-500',
-      incoming: 'bg-red-500 dark:bg-red-500',
-      busy: 'bg-red-500 dark:bg-red-500',
-      callforward: 'bg-emerald-500 dark:bg-emerald-500',
-      cellphone: 'bg-emerald-500 dark:bg-emerald-500',
-      voicemail: 'bg-emerald-500 dark:bg-emerald-500',
-      dnd: 'bg-red-500 dark:bg-red-500',
-      online: 'bg-emerald-500 dark:bg-emerald-500',
-      available: 'bg-emerald-500 dark:bg-emerald-500',
+    positions: {
+      standard: '',
+      avatar: 'absolute bottom-0 right-0',
     },
   },
   badge: {
@@ -315,7 +337,7 @@ const theme = {
       full: 'rounded-full',
     },
   },
-  crossIcon: {
+  sideDrawerCloseIcon: {
     base: 'h-5 w-5 cursor-pointer dark:text-gray-200 text-gray-700',
   },
   dropdown: {
