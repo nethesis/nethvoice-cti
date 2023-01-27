@@ -149,13 +149,13 @@ export const NotificationsDrawerContent = forwardRef<
       {/* drawer content */}
       <div className={classNames(className)} {...props}>
         <div className='bg-gray-100 dark:bg-gray-800 py-6 px-6'>
-          <div className='flex items-center justify-between'>
-            <div className='flex items-center justify-between grow'>
-              <div className='text-lg font-medium dark:text-gray-200 text-gray-700 mr-2'>
+          <div className='flex items-stretch xl:items-center justify-between'>
+            <div className='flex justify-between grow flex-col xl:flex-row xl:items-center'>
+              <div className='text-lg font-medium dark:text-gray-200 text-gray-700 mr-4'>
                 Notifications
               </div>
               <div
-                className='text-sm cursor-pointer hover:underline text-gray-700 dark:text-gray-200 mr-5 text-right'
+                className='text-sm cursor-pointer hover:underline mt-2 xl:mt-0 text-gray-700 dark:text-gray-200 mr-5'
                 onClick={markAllAsRead}
               >
                 Mark all as read
