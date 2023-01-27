@@ -22,8 +22,8 @@ interface NavBarProps {
 
 export const NavBar: FC<NavBarProps> = ({ items }) => {
   return (
-    <div className='hidden w-28 overflow-y-auto md:block bg-primary'>
-      <div className='flex w-full flex-col items-center py-6 h-full'>
+    <div className='hidden w-20 overflow-y-auto md:block bg-gray-600 dark:bg-gray-700'>
+      <div className='flex w-full flex-col items-center py-3.5 h-full'>
         <div className='flex flex-shrink-0 items-center'>
           <Image
             className='h-8 w-auto'
@@ -34,15 +34,15 @@ export const NavBar: FC<NavBarProps> = ({ items }) => {
             height={32}
           />
         </div>
-        <div className='mt-6 w-full h-full flex flex-col space-y-1 px-2 justify-center'>
+        <div className='mt-6 w-full h-full flex flex-col space-y-2 px-2.5 justify-center'>
           {items.map((item) => (
             <Link key={item.name} href={item.href}>
               <a
                 className={classNames(
                   item.current
-                    ? 'bg-primaryDark text-white'
-                    : 'text-gray-100 hover:bg-primaryDark hover:text-white',
-                  'group w-full p-3 rounded-md flex flex-col items-center text-xs font-medium',
+                    ? 'text-white bg-gray-700 dark:bg-gray-500'
+                    : 'text-gray-100 hover:text-white hover:bg-gray-700 dark:hover:bg-gray-500',
+                  'group w-full p-5 rounded-md flex flex-col items-center text-xs font-medium',
                 )}
                 aria-current={item.current ? 'page' : undefined}
               >
@@ -54,7 +54,6 @@ export const NavBar: FC<NavBarProps> = ({ items }) => {
                   )}
                   aria-hidden='true'
                 />
-                <span className='mt-2'>{item.name}</span>
               </a>
             </Link>
           ))}

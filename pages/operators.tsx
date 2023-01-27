@@ -138,6 +138,7 @@ const Operators: NextPage = () => {
   return (
     <>
       <div>
+        <h1 className='text-2xl font-semibold mb-6 text-gray-900 dark:text-gray-100'>Operators</h1>
         <Filter
           groups={operatorsStore.groups}
           updateTextFilter={debouncedUpdateTextFilter}
@@ -229,7 +230,7 @@ const Operators: NextPage = () => {
                           <div className='space-y-4'>
                             <Avatar
                               src={operator.avatarBase64}
-                              placeholderType='person'
+                              placeholderType='operator'
                               size='extra_large'
                               bordered
                               star={operator.favorite}
@@ -333,7 +334,7 @@ const Operators: NextPage = () => {
                           <span className='block flex-shrink-0'>
                             <Avatar
                               src={operator.avatarBase64}
-                              placeholderType='person'
+                              placeholderType='operator'
                               size='large'
                               bordered
                               star={operator.favorite}

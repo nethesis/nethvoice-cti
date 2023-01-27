@@ -463,6 +463,7 @@ const History: NextPage = () => {
   return (
     <>
       <div>
+        <h1 className='text-2xl font-semibold mb-6 text-gray-900 dark:text-gray-100'>History</h1>
         <Filter
           updateFilterText={debouncedUpdateFilterText}
           updateContactTypeFilter={updateContactTypeFilter}

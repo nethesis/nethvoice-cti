@@ -114,7 +114,7 @@ const Settings: NextPage = () => {
       isRead: false,
       name: 'Test user',
       number: '222',
-      queue: 'ksd fjaskljklsdfj aklsdj fklasd fkla afkl',
+      queue: 'Commerciali',
     }
     store.dispatch.notifications.addNotification({
       notification: notif,
@@ -142,7 +142,8 @@ const Settings: NextPage = () => {
   return (
     <>
       <div>
-        <div className='mx-auto max-w-screen-xl px-4 pt-4 pb-6 sm:px-6 sm:pt-6 lg:px-8 lg:pt-8 lg:pb-16'>
+        <div className='mx-auto max-w-screen-xl'>
+          <h1 className='text-2xl font-semibold mb-6 text-gray-900 dark:text-gray-100'>Settings</h1>
           <div className='overflow-hidden rounded-lg bg-white shadow dark:bg-gray-900'>
             <div className='divide-y divide-gray-200 dark:divide-gray-700 lg:grid lg:grid-cols-12 lg:divide-y-0 lg:divide-x'>
               {/* settings menu */}

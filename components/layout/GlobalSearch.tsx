@@ -1,7 +1,7 @@
 // Copyright (C) 2022 Nethesis S.r.l.
 // SPDX-License-Identifier: AGPL-3.0-or-later
 
-import React, { ComponentProps, useEffect, useMemo } from 'react'
+import React, { ComponentProps, MutableRefObject, useEffect, useMemo, useRef } from 'react'
 import { FC, useState } from 'react'
 import classNames from 'classnames'
 import { Transition, Combobox } from '@headlessui/react'
@@ -23,6 +23,7 @@ import { callPhoneNumber, isMobileDevice, sortByProperty } from '../../lib/utils
 import { OperatorSummary } from '../operators/OperatorSummary'
 import { ContactSummary } from '../phonebook/ContactSummary'
 import { openAddToPhonebookDrawer } from '../../lib/history'
+import { useHotkeys } from 'react-hotkeys-hook'
 
 interface GlobalSearchProps extends ComponentProps<'div'> {}
 
@@ -33,6 +34,7 @@ export const GlobalSearch: FC<GlobalSearchProps> = () => {
   const operatorsStore = useSelector((state: RootState) => state.operators)
   const [isLoaded, setLoaded]: any[] = useState(true)
   const [phonebookError, setPhonebookError] = useState('')
+  const globalSearchRef = useRef() as MutableRefObject<HTMLButtonElement>
 
   const searchOperators = (cleanQuery: string, cleanRegex: RegExp) => {
     let operatorsResults = Object.values(operatorsStore.operators).filter((op: any) => {
@@ -169,12 +171,24 @@ export const GlobalSearch: FC<GlobalSearchProps> = () => {
     }, 100)
   }
 
+  const focusGlobalSearch = () => {
+    store.dispatch.globalSearch.setFocused(true)
+    const globalSearchInput: any = document.querySelector('#globalSearch input')
+
+    if (globalSearchInput) {
+      globalSearchInput.focus()
+    }
+  }
+
+  // global keyborad shortcut
+  useHotkeys('ctrl+shift+f', () => focusGlobalSearch(), [])
+
   return (
     <>
       {globalSearchStore.isFocused && (
         <>
-          <div className='bg-opacity-75 dark:bg-opacity-75 fixed left-0 md:left-28 top-16 right-0 bottom-0 opacity-100 transition-opacity bg-gray-500 dark:bg-gray-500'></div>
-          <div className='fixed left-0 md:left-28 top-16 right-0 bottom-0 z-50 overflow-y-auto'></div>
+          <div className='bg-opacity-75 dark:bg-opacity-75 fixed left-0 md:left-20 top-16 right-0 bottom-0 opacity-100 transition-opacity bg-gray-500 dark:bg-gray-500'></div>
+          <div className='fixed left-0 md:left-20 top-16 right-0 bottom-0 z-50 overflow-y-auto'></div>
         </>
       )}
       <div
@@ -323,7 +337,7 @@ export const GlobalSearch: FC<GlobalSearchProps> = () => {
                                       <Avatar
                                         rounded='full'
                                         src={result.avatarBase64}
-                                        placeholderType='person'
+                                        placeholderType='operator'
                                         size='base'
                                         status={result.mainPresence}
                                       />
@@ -361,11 +375,19 @@ export const GlobalSearch: FC<GlobalSearchProps> = () => {
                         <div className='hidden h-96 w-1/2 flex-none flex-col overflow-y-auto lg:flex p-5'>
                           {/* operator */}
                           {activeOption.resultType === 'operator' && (
-                            <OperatorSummary operator={activeOption} isShownFavorite={false} />
+                            <OperatorSummary
+                              operator={activeOption}
+                              isShownFavorite={false}
+                              isShownSideDrawerLink={true}
+                            />
                           )}
                           {/* phonebook contact */}
                           {activeOption.resultType === 'contact' && (
-                            <ContactSummary contact={activeOption} isShownContactMenu={false} />
+                            <ContactSummary
+                              contact={activeOption}
+                              isShownContactMenu={false}
+                              isShownSideDrawerLink={true}
+                            />
                           )}
                         </div>
                       )}

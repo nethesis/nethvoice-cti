@@ -121,10 +121,10 @@ export const SpeedDial = () => {
         <div className='flex h-full flex-col bg-white dark:bg-gray-900'>
           <div className='py-6 px-5'>
             <div className='flex items-start justify-between'>
-              <h2 className='text-lg font-medium text-gray-900 dark:text-gray-100'>Speed Dial</h2>
+              <h2 className='text-lg font-medium text-gray-700 dark:text-gray-300'>Speed Dial</h2>
               <div className='ml-3 flex h-7 items-center gap-2'>
                 {isSpeedDialLoaded && !!speedDials.length && (
-                  <Button variant='primary' onClick={() => openCreateSpeedDialDrawer()}>
+                  <Button variant='white' onClick={() => openCreateSpeedDialDrawer()}>
                     <FontAwesomeIcon icon={faPlus} className='xl:mr-2 h-4 w-4' />
                     <span className='hidden xl:inline-block'>Create</span>
                     <span className='sr-only'>Create speed dial</span>
@@ -167,7 +167,7 @@ export const SpeedDial = () => {
                   <FontAwesomeIcon icon={faBolt} className='mx-auto h-12 w-12' aria-hidden='true' />
                 }
               >
-                <Button variant='primary' onClick={() => openCreateSpeedDialDrawer()}>
+                <Button variant='white' onClick={() => openCreateSpeedDialDrawer()}>
                   <FontAwesomeIcon icon={faPlus} className='mr-2 h-4 w-4' />
                   <span>Create</span>
                 </Button>
@@ -188,7 +188,7 @@ export const SpeedDial = () => {
                           <Avatar size='base' placeholderType='person' />
                         </span>
                         <div className='ml-4 truncate'>
-                          <p className='truncate text-sm font-medium text-gray-900 dark:text-gray-100'>
+                          <p className='truncate text-sm font-medium text-gray-700 dark:text-gray-200'>
                             {speedDial.name}
                           </p>
                           <div className='truncate text-sm mt-1 text-primary dark:text-primary'>

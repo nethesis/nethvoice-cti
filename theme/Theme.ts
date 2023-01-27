@@ -3,7 +3,7 @@
 
 const theme = {
   button: {
-    base: 'content-center items-center justify-center font-medium tracking-wide transition-colors duration-200 transform focus:outline-none focus:ring-2 focus:z-20 focus:ring-offset-2 disabled:opacity-50 disabled:cursor-not-allowed',
+    base: 'inline-flex content-center items-center justify-center font-medium tracking-wide transition-colors duration-200 transform focus:outline-none focus:ring-2 focus:z-20 focus:ring-offset-2 disabled:opacity-50 disabled:cursor-not-allowed',
     primary:
       'border border-transparent bg-primary text-white hover:bg-primaryDark focus:ring-primaryLight dark:bg-primary dark:text-white dark:hover:bg-primaryDark focus:ring-primaryLight',
     secondary:

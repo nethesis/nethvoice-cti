@@ -76,10 +76,11 @@ export const notifications = createModel<RootModel>()({
       }
       return state
     },
-    markAllAsRead: (state) => {
+    markAllAsRead: (state, currentUsername) => {
       state.notifications.forEach((notif) => {
         notif.isRead = true
       })
+      saveNotificationsToStorage(state.notifications, currentUsername)
       updateUnreadCount(state)
       return state
     },
