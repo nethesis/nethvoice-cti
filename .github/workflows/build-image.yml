@@ -35,8 +35,6 @@ jobs:
           echo "REPOBASE=$REPOBASE" >> $GITHUB_ENV
           echo "IMAGETAG=$IMAGETAG" >> $GITHUB_ENV
           echo "IMAGENAME=$IMAGENAME" >> $GITHUB_ENV
-          
-          podman version
           podman build --env=GITHUB_TOKEN=${{ secrets.GITHUB_TOKEN }} -t ${IMAGENAME}:${IMAGETAG} .
       - id: publish
         run: |
