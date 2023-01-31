@@ -16,6 +16,12 @@ jobs:
       IMAGETAG: ${{ github.ref_name }}
     steps:
       - uses: actions/checkout@v2
+      - id: update-podman
+        run: |
+          echo 'deb http://download.opensuse.org/repositories/devel:/kubic:/libcontainers:/unstable/xUbuntu_22.04/ /' | sudo tee /etc/apt/sources.list.d/devel:kubic:libcontainers:unstable.list
+          curl -fsSL https://download.opensuse.org/repositories/devel:kubic:libcontainers:unstable/xUbuntu_22.04/Release.key | gpg --dearmor | sudo tee /etc/apt/trusted.gpg.d/devel_kubic_libcontainers_unstable.gpg > /dev/null
+          sudo apt update
+          sudo apt update podman -y
       - id: build
         run: |
           # Build the module image
@@ -28,8 +34,9 @@ jobs:
           echo "REPOBASE=$REPOBASE" >> $GITHUB_ENV
           echo "IMAGETAG=$IMAGETAG" >> $GITHUB_ENV
           echo "IMAGENAME=$IMAGENAME" >> $GITHUB_ENV
+          
           podman version
-          podman build --env="GITHUB_TOKEN=${{ secrets.GITHUB_TOKEN }}" -t ${IMAGENAME}:${IMAGETAG} .
+          podman build --env=GITHUB_TOKEN=${{ secrets.GITHUB_TOKEN }} -t ${IMAGENAME}:${IMAGETAG} .
       - id: publish
         run: |
           # Publish the branch
