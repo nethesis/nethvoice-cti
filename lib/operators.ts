@@ -120,11 +120,11 @@ export const sortByOperatorStatus = (operator1: any, operator2: any) => {
 }
 
 export const sortByFavorite = (operator1: any, operator2: any) => {
-  if (operator1.favorite < operator2.favorite || !operator1.favorite) {
-    return 1
-  }
-  if (operator1.favorite > operator2.favorite || !operator2.favorite) {
+  if (operator1.favorite && !operator2.favorite) {
     return -1
+  }
+  if (!operator1.favorite && operator2.favorite) {
+    return 1
   }
   return 0
 }
