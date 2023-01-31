@@ -6,7 +6,7 @@ WORKDIR /app
 
 # Install dependencies based on the preferred package manager
 COPY package.json yarn.lock* package-lock.json* pnpm-lock.yaml* ./
-RUN echo "${GITHUB_TOKEN}\n"
+RUN cat package-lock.json | grep nethesis
 RUN sed -i "s#github:nethesis#git+https://${GITHUB_TOKEN}:x-oauth-basic@github.com/nethesis#g" package.json
 RUN sed -i "s#github:nethesis#git+https://${GITHUB_TOKEN}:x-oauth-basic@github.com/nethesis#g" package-lock.json
 RUN sed -i "s#git+ssh://git@github.com/nethesis/nethesis-icons#git+https://${GITHUB_TOKEN}:x-oauth-basic@github.com/nethesis#g" package-lock.json
