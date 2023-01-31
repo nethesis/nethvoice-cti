@@ -50,6 +50,10 @@ export const user = createModel<RootModel>()({
       state.avatar = payload.avatar
       return state
     },
+    updateMainPresence: (state, mainPresence) => {
+      state.mainPresence = mainPresence
+      return state
+    },
     reset: () => {
       return defaultState
     },

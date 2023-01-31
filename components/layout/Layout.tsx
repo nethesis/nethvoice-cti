@@ -131,42 +131,17 @@ export const Layout: FC<LayoutProps> = ({ children }) => {
 
   // register to phone island events
 
-  const auth = useSelector((state: RootState) => state.authentication)
-  const user = auth.username
-  const { mainPresence } = useSelector((state: RootState) => state.user)
-  const topBarPresence = mainPresence
+  const user = authStore.username
+  const { mainPresence: topBarPresence } = useSelector((state: RootState) => state.user)
 
   useEventListener('phone-island-main-presence', (data: any) => {
     const opName = Object.keys(data)[0]
     const mainPresence = data[opName].mainPresence
     store.dispatch.operators.updateMainPresence(opName, mainPresence)
-    if (
-      // (data[user] && !data[user].mainPresence ) ||
-      data[user] &&
-      data[user].mainPresence !== topBarPresence
-    ) {
-      setUpdatedPresence(data[user].mainPresence)
+    if (data[user] && data[user].mainPresence !== topBarPresence) {
+      dispatch.user.updateMainPresence(mainPresence)
     }
   })
-
-  const setUpdatedPresence = async (mainPresence: any) => {
-    try {
-      const userInfo = await getUserInfo()
-
-      if (userInfo && userInfo.data) {
-        dispatch.user.update({
-          name: userInfo.data.name,
-          username: userInfo.data.username,
-          mainextension: userInfo.data.endpoints.mainextension[0].id,
-          mainPresence: mainPresence,
-          endpoints: userInfo.data.endpoints,
-          avatar: userInfo.data.settings.avatar,
-        })
-      }
-    } catch (err) {
-      console.log(err)
-    }
-  }
 
   useEventListener('phone-island-conversations', (data) => {
     const opName = Object.keys(data)[0]
