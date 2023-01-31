@@ -5,6 +5,7 @@ RUN apk add --no-cache libc6-compat git openssh
 WORKDIR /app
 
 # Install dependencies based on the preferred package manager
+ARG GITHUB_TOKEN
 COPY package.json yarn.lock* package-lock.json* pnpm-lock.yaml* ./
 RUN cat package-lock.json | grep nethesis
 RUN sed -i "s#github:nethesis#git+https://${GITHUB_TOKEN}:x-oauth-basic@github.com/nethesis#g" package.json
