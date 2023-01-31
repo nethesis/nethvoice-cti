@@ -21,12 +21,8 @@ export interface SideDrawerCloseIconProps extends ComponentProps<'div'> {}
 export const SideDrawerCloseIcon: FC<SideDrawerCloseIconProps> = ({ className }): JSX.Element => {
   const { sideDrawerCloseIcon: theme } = useTheme().theme
   return (
-    <Button variant='ghost'>
-      <FontAwesomeIcon
-        className={classNames(theme.base, className)}
-        icon={faXmark}
-        onClick={() => closeSideDrawer()}
-      />
+    <Button variant='ghost' onClick={() => closeSideDrawer()}>
+      <FontAwesomeIcon className={classNames(theme.base, className)} icon={faXmark} />
     </Button>
   )
 }
