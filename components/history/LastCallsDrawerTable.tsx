@@ -331,7 +331,7 @@ export const LastCallsDrawerTable = forwardRef<HTMLButtonElement, LastCallsDrawe
                   <li key={index}>
                     <div className='flex items-center py-4'>
                       <div className='flex min-w-0 flex-1 items-center'>
-                        <div className='min-w-0 flex-1 px-2 2xl:grid 2xl:grid-cols-4 gap-4'>
+                        <div className='min-w-0 flex-1 2xl:grid 2xl:grid-cols-4 gap-4'>
                           {/* Date column */}
                           <div className='flex flex-col justify-center'>
                             <div className=''>
@@ -344,7 +344,7 @@ export const LastCallsDrawerTable = forwardRef<HTMLButtonElement, LastCallsDrawe
                             </div>
                           </div>
 
-                          <div className='mt-4 2xl:mt-0 flex justify-between col-span-3'>
+                          <div className='mt-4 2xl:mt-0 flex col-span-3 flex-wrap gap-2 justify-between'>
                             <div className='flex'>
                               {/* Source column  */}
                               {sourceColumn(call)}
@@ -363,7 +363,7 @@ export const LastCallsDrawerTable = forwardRef<HTMLButtonElement, LastCallsDrawe
                             </div>
 
                             {/* icon user column */}
-                            <div className='ml-4 flex items-center md:mt-0 2xl:justify-center'>
+                            <div className='flex items-center md:mt-0 2xl:justify-center'>
                               {callType === 'user' && checkIconUser(call)}
                               {callType === 'switchboard' && checkIconSwitchboard(call)}
                             </div>
