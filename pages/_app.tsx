@@ -14,6 +14,7 @@ import { RouteGuard } from '../config/router'
 import { Service } from '../config/service'
 import { checkDarkTheme } from '../lib/darkTheme'
 import { Island } from '../components/island'
+import { getProductName } from '../lib/utils'
 import Head from 'next/head'
 
 function MyApp({ Component, pageProps }: AppProps) {
@@ -45,13 +46,15 @@ function MyApp({ Component, pageProps }: AppProps) {
     checkDarkTheme()
   }, [])
 
-  function capitalizeRouthPath() {
+  const productName = getProductName()
+
+  function getPageTitle() {
     if (router.pathname) {
       // Delete slash at the beginning of the path
-      const cleanRouterPath: string = router.pathname.replace(/^\/|\/$/g, '') || ''
+      const cleanRouterPath: string = router.pathname.replace(/^\/|\/$/g, '')
       // Return path with the uppercase first character
       if (cleanRouterPath) {
-        return cleanRouterPath[0].toUpperCase() + cleanRouterPath.slice(1) + ' - Nethvoice'
+        return cleanRouterPath[0].toUpperCase() + cleanRouterPath.slice(1) + ' - ' + productName
       }
     }
   }
@@ -60,7 +63,7 @@ function MyApp({ Component, pageProps }: AppProps) {
     <>
       <div>
         <Head>
-          <title>{capitalizeRouthPath()}</title>
+          <title>{getPageTitle()}</title>
         </Head>
       </div>
       {!isLoading && (

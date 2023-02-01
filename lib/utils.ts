@@ -60,7 +60,7 @@ export function callPhoneNumber(phoneNumber: string) {
 }
 
 export function getProductName() {
-  if (window == undefined) {
+  if (typeof window === 'undefined') {
     return ''
   }
   // @ts-ignore
