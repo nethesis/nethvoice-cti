@@ -8,7 +8,6 @@ import { getProductName } from '../../lib/utils'
 import { useSelector } from 'react-redux'
 import { RootState } from '../../store'
 import { useState } from 'react'
-import { faCheck } from '@fortawesome/free-solid-svg-icons'
 
 export const ClearCache = () => {
   const productName = getProductName()
@@ -26,7 +25,6 @@ export const ClearCache = () => {
 
   return (
     <>
-      {/* The Integration section */}
       <section aria-labelledby='clear-cache-heading'>
         <div className='shadow sm:overflow-hidden w-full dark:bg-gray-900'>
           <div className='bg-white py-6 px-4 sm:p-6 w-full dark:bg-gray-900'>

@@ -224,7 +224,7 @@ const History: NextPage = () => {
         <>
           <div
             className={
-              'truncate max-w-[6rem] md:max-w-[12rem] lg:max-w-[10rem] xl:max-w-[10rem] 2xl:max-w-[12rem] text-gray-900 dark:text-gray-100 text-sm ' +
+              'truncate text-gray-900 dark:text-gray-100 text-sm ' +
               (call.cnum !== '' ? ' text-sm cursor-pointer hover:underline' : '')
             }
           >
@@ -263,7 +263,7 @@ const History: NextPage = () => {
       //Switchboard call type
       return (
         <>
-          <div className='truncate max-w-[6rem] md:max-w-[12rem] lg:max-w-[10rem] xl:max-w-[10rem] 2xl:max-w-[12rem] text-sm cursor-pointer hover:underline text-gray-900 dark:text-gray-100'>
+          <div className='truncate text-sm cursor-pointer hover:underline text-gray-900 dark:text-gray-100'>
             {call.cnam !== '' ? call.cnam : call.ccompany !== '' ? call.ccompany : call.cnum || '-'}
           </div>
           {call.cnum !== '' && (
@@ -284,7 +284,7 @@ const History: NextPage = () => {
         <>
           <div
             className={
-              'truncate max-w-[6rem] md:max-w-[12rem] lg:max-w-[10rem] xl:max-w-[10rem] 2xl:max-w-[12rem] text-gray-900 dark:text-gray-100 text-sm ' +
+              'truncate text-gray-900 dark:text-gray-100 text-sm ' +
               (call.dst !== '' ? 'hover:underline cursor-pointer' : '')
             }
           >
@@ -320,7 +320,7 @@ const History: NextPage = () => {
       //Switchboard call type
       return (
         <>
-          <div className='truncate max-w-[6rem] md:max-w-[12rem] lg:max-w-[10rem] xl:max-w-[10rem] 2xl:max-w-[12rem] text-sm cursor-pointer hover:underline text-gray-900 dark:text-gray-100'>
+          <div className='truncate text-sm cursor-pointer hover:underline text-gray-900 dark:text-gray-100'>
             {call.dst_cnam !== ''
               ? call.dst_cnam
               : call.dst_ccompany !== ''
@@ -563,7 +563,7 @@ const History: NextPage = () => {
                 <li key={index}>
                   <div className='flex items-center px-4 py-4 sm:px-6'>
                     <div className='flex min-w-0 flex-1 items-center'>
-                      <div className='min-w-0 flex-1 px-4 md:grid md:grid-cols-3 gap-4 xl:grid-cols-4 2xl:grid-cols-5'>
+                      <div className='min-w-0 flex-1 md:grid md:grid-cols-3 gap-6 xl:grid-cols-4 2xl:grid-cols-5'>
                         {/* Date column */}
                         <div className='flex flex-col justify-center'>
                           <div className=''>
@@ -579,7 +579,7 @@ const History: NextPage = () => {
                         <div className='flex col-span-2'>
                           {/* Source column  */}
                           <div
-                            className='flex flex-col justify-center mt-4 md:mt-0'
+                            className='flex flex-col justify-center mt-4 md:mt-0 overflow-hidden'
                             onClick={() => {
                               openDrawerHistory(
                                 call.cnam,
@@ -604,7 +604,7 @@ const History: NextPage = () => {
 
                           {/* Destination column */}
                           <div
-                            className='flex flex-col justify-center mt-4 md:mt-0'
+                            className='flex flex-col justify-center mt-4 md:mt-0 overflow-hidden'
                             onClick={() =>
                               openDrawerHistory(
                                 call.dst_cnam,
@@ -630,20 +630,20 @@ const History: NextPage = () => {
                         <div className='mt-4 md:mt-0 flex items-center'>{checkIconUser(call)}</div>
 
                         {/* recording column */}
-                        <div className='mt-4 md:mt-0 grid items-center justify-items-end'>
-                          {call.recordingfile && (
+                        {call.recordingfile && (
+                          <div className='mt-4 md:mt-0 grid items-center'>
                             <div>
                               <Button variant='white'>
                                 <FontAwesomeIcon
                                   icon={faPlay}
-                                  className='h-4 w-4 flex-shrink-0 text-gray-900 dark:text-gray-100'
+                                  className='h-4 w-4 mr-2 flex-shrink-0 text-gray-900 dark:text-gray-100'
                                   aria-hidden='true'
                                 />{' '}
                                 Play recording
                               </Button>
                             </div>
-                          )}
-                        </div>
+                          </div>
+                        )}
                       </div>
                     </div>
                   </div>
