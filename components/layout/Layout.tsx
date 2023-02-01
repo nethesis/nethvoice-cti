@@ -131,10 +131,16 @@ export const Layout: FC<LayoutProps> = ({ children }) => {
 
   // register to phone island events
 
-  useEventListener('phone-island-main-presence', (data) => {
+  const user = authStore.username
+  const { mainPresence: topBarPresence } = useSelector((state: RootState) => state.user)
+
+  useEventListener('phone-island-main-presence', (data: any) => {
     const opName = Object.keys(data)[0]
     const mainPresence = data[opName].mainPresence
     store.dispatch.operators.updateMainPresence(opName, mainPresence)
+    if (data[user] && data[user].mainPresence !== topBarPresence) {
+      dispatch.user.updateMainPresence(mainPresence)
+    }
   })
 
   useEventListener('phone-island-conversations', (data) => {
