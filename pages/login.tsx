@@ -6,8 +6,8 @@ import { saveCredentials } from '../lib/login'
 import { useState, useRef } from 'react'
 import { TextInput, InlineNotification, Button } from '../components/common'
 import hmacSHA1 from 'crypto-js/hmac-sha1'
-import Logo from '../public/logo_nethvoice.svg'
-import Background from '../public/background.png'
+import LoginLogo from '../public/login_logo.svg'
+import Background from '../public/login_background.png'
 import { useRouter } from 'next/router'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { faCircleNotch, faEye, faEyeSlash } from '@fortawesome/free-solid-svg-icons'
@@ -91,7 +91,7 @@ export default function Login() {
               {' '}
               <Image
                 className='mx-auto h-12 w-auto items-center'
-                src={Logo}
+                src={LoginLogo}
                 alt='logo'
                 unoptimized={true}
               />

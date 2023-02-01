@@ -19,6 +19,7 @@ import Image from 'next/image'
 import Link from 'next/link'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { SideDrawerCloseIcon } from '../common'
+import Logo from '../../public/logo.svg'
 
 interface MobileNavBarProps {
   show: boolean
@@ -54,7 +55,7 @@ export const MobileNavBar: FC<MobileNavBarProps> = ({ closeMobileMenu, show, ite
               leaveFrom='translate-x-0'
               leaveTo='-translate-x-full'
             >
-              <Dialog.Panel className='relative flex w-full max-w-xs flex-1 flex-col pt-5 pb-4 bg-primary'>
+              <Dialog.Panel className='relative flex w-full max-w-xs flex-1 flex-col pt-4 pb-4 bg-gray-600 dark:bg-gray-700'>
                 <Transition.Child
                   as={Fragment}
                   enter='ease-in-out duration-300'
@@ -77,15 +78,15 @@ export const MobileNavBar: FC<MobileNavBarProps> = ({ closeMobileMenu, show, ite
                 </Transition.Child>
                 <div className='flex flex-shrink-0 items-center px-4'>
                   <Image
-                    className='h-8 w-auto'
-                    src='https://tailwindui.com/img/logos/mark.svg?color=white'
+                    className='h-8 w-auto cursor-pointer object-contain object-top'
+                    src={Logo}
                     alt='logo'
                     unoptimized={true}
-                    width={37.6}
-                    height={32}
+                    width={56}
+                    height={50}
                   />
                 </div>
-                <div className='mt-5 h-0 flex-1 overflow-y-auto px-2'>
+                <div className='mt-4 h-0 flex-1 overflow-y-auto px-4'>
                   <nav className='flex h-full flex-col'>
                     <div className='space-y-1'>
                       {items.map((item) => (
@@ -95,9 +96,9 @@ export const MobileNavBar: FC<MobileNavBarProps> = ({ closeMobileMenu, show, ite
                             href={item.href}
                             className={classNames(
                               item.current
-                                ? 'bg-primaryDark text-white'
-                                : 'text-gray-100 hover:bg-primaryDark hover:text-white',
-                              'group py-2 px-3 rounded-md flex items-center text-sm font-medium',
+                                ? 'text-white bg-gray-700 dark:bg-gray-500'
+                                : 'text-gray-100 hover:text-white hover:bg-gray-700 dark:hover:bg-gray-500',
+                              'group py-4 px-3 rounded-md flex items-center text-sm font-medium',
                             )}
                             aria-current={item.current ? 'page' : undefined}
                           >
