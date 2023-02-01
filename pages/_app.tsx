@@ -14,6 +14,7 @@ import { RouteGuard } from '../config/router'
 import { Service } from '../config/service'
 import { checkDarkTheme } from '../lib/darkTheme'
 import { Island } from '../components/island'
+import Head from 'next/head'
 
 function MyApp({ Component, pageProps }: AppProps) {
   const [isLoading, setIsLoading] = useState<boolean>(true)
@@ -44,8 +45,24 @@ function MyApp({ Component, pageProps }: AppProps) {
     checkDarkTheme()
   }, [])
 
+  function capitalizeRouthPath() {
+    if (router.pathname) {
+      // Delete slash at the beginning of the path
+      const cleanRouterPath: string = router.pathname.replace(/^\/|\/$/g, '') || ''
+      // Return path with the uppercase first character
+      if (cleanRouterPath) {
+        return cleanRouterPath[0].toUpperCase() + cleanRouterPath.slice(1) + ' - Nethvoice'
+      }
+    }
+  }
+
   return (
     <>
+      <div>
+        <Head>
+          <title>{capitalizeRouthPath()}</title>
+        </Head>
+      </div>
       {!isLoading && (
         <Provider store={store}>
           {router.pathname !== '/login' ? (
