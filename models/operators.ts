@@ -101,9 +101,6 @@ export const operators = createModel<RootModel>()({
       const op = state.operators[operatorName]
 
       if (!op) {
-        //// remove error print after investigation
-        console.error('updateMainPresence, OP NOT FOUND', operatorName) ////
-
         return
       }
       op.mainPresence = newMainPresence
@@ -113,9 +110,6 @@ export const operators = createModel<RootModel>()({
       const op = state.operators[operatorName]
 
       if (!op) {
-        //// remove error print after investigation
-        console.error('updateConversations, OP NOT FOUND', operatorName) ////
-
         return
       }
       let conversations: any = []
