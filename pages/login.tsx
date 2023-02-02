@@ -6,7 +6,6 @@ import { saveCredentials } from '../lib/login'
 import { useState, useRef } from 'react'
 import { TextInput, InlineNotification, Button } from '../components/common'
 import hmacSHA1 from 'crypto-js/hmac-sha1'
-import LoginLogo from '../public/login_logo.svg'
 import Background from '../public/login_background.png'
 import { useRouter } from 'next/router'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
@@ -89,11 +88,11 @@ export default function Login() {
           <div className='mx-auto w-full max-w-sm lg:w-96'>
             <div className='flex items-center justify-center'>
               {' '}
-              <Image
-                className='mx-auto h-12 w-auto items-center'
-                src={LoginLogo}
+              {/* Nextjs <Image> is not suitable for rebranding: it always uses the aspect ratio of the original logo  */}
+              <img
+                className='mx-auto w-auto items-center object-contain object-bottom'
+                src='/login_logo.png'
                 alt='logo'
-                unoptimized={true}
               />
             </div>
             <div className='mt-8'>
