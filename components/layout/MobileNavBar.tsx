@@ -18,6 +18,7 @@ import type { NavItemsProps } from '../../config/routes'
 import Image from 'next/image'
 import Link from 'next/link'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
+import { faXmark } from '@fortawesome/free-solid-svg-icons'
 import { SideDrawerCloseIcon } from '../common'
 
 interface MobileNavBarProps {
@@ -70,7 +71,11 @@ export const MobileNavBar: FC<MobileNavBarProps> = ({ closeMobileMenu, show, ite
                       className='flex h-12 w-12 items-center justify-center rounded-full'
                       onClick={closeMobileMenu}
                     >
-                      <SideDrawerCloseIcon />
+                      <FontAwesomeIcon
+                        icon={faXmark}
+                        className='h-6 w-6 text-white'
+                        aria-hidden='true'
+                      />
                       <span className='sr-only'>Close sidebar</span>
                     </button>
                   </div>
