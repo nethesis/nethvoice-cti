@@ -15,6 +15,7 @@ import classNames from 'classnames'
 import type { NavItemsProps } from '../../config/routes'
 import Link from 'next/link'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
+import Logo from '../../public/logo.svg'
 
 interface NavBarProps {
   items: NavItemsProps[]
@@ -22,17 +23,21 @@ interface NavBarProps {
 
 export const NavBar: FC<NavBarProps> = ({ items }) => {
   return (
-    <div className='hidden w-20 overflow-y-auto md:block bg-gray-600 dark:bg-gray-700'>
-      <div className='flex w-full flex-col items-center py-3.5 h-full'>
+    <div className='hidden w-20 overflow-y-auto md:block border-l-4 border-primary bg-gray-600 dark:bg-gray-700'>
+      <div className='flex w-full flex-col items-center py-2 h-full'>
         <div className='flex flex-shrink-0 items-center'>
-          <Image
-            className='h-8 w-auto'
-            src='https://tailwindui.com/img/logos/mark.svg?color=white'
-            alt='logo'
-            unoptimized={true}
-            width={37.6}
-            height={32}
-          />
+          <Link href='/operators'>
+            <div>
+              <Image
+                className='h-8 w-auto cursor-pointer object-contain object-top'
+                src={Logo}
+                alt='logo'
+                unoptimized={true}
+                width={56}
+                height={50}
+              />
+            </div>
+          </Link>
         </div>
         <div className='mt-6 w-full h-full flex flex-col space-y-2 px-2.5 justify-center'>
           {items.map((item) => (
