@@ -17,7 +17,7 @@
     "@fortawesome/free-solid-svg-icons": "^6.2.1",
     "@fortawesome/react-fontawesome": "^0.2.0",
     "@headlessui/react": "^1.7.3",
-    "@nethesis/phone-island": "0.7.37",
+    "@nethesis/phone-island": "0.7.43",
     "@nethesis/nethesis-duotone-svg-icons": "github:nethesis/nethesis-icons#duotone",
     "@nethesis/nethesis-light-svg-icons": "github:nethesis/nethesis-icons#light",
     "@nethesis/nethesis-regular-svg-icons": "github:nethesis/nethesis-icons#regular",
