@@ -433,7 +433,7 @@ export const Filter = forwardRef<HTMLButtonElement, FilterProps>(
                   {/* contact type */}
                   <div className='mt-2 sm:mt-0 sm:ml-4'>
                     <div className='-m-1 flex flex-wrap items-center'>
-                      <span className='m-1 inline-flex items-center rounded-full border py-1.5 pl-3 pr-2 text-sm font-medium border-gray-200 bg-white text-gray-700 dark:border-gray-700 dark:bg-gray-900 dark:text-gray-200'>
+                      <span className='m-1 inline-flex items-center rounded-full border py-1.5 px-3 text-sm font-medium border-gray-200 bg-white text-gray-700 dark:border-gray-700 dark:bg-gray-900 dark:text-gray-200'>
                         <span>
                           {/*  //// todo i18n */}
                           <span className='text-gray-500 dark:text-gray-400'>
@@ -447,7 +447,7 @@ export const Filter = forwardRef<HTMLButtonElement, FilterProps>(
                   {/* sort by */}
                   <div className='mt-2 sm:mt-0 sm:ml-4'>
                     <div className='-m-1 flex flex-wrap items-center'>
-                      <span className='m-1 inline-flex items-center rounded-full border py-1.5 pl-3 pr-2 text-sm font-medium border-gray-200 bg-white text-gray-700 dark:border-gray-700 dark:bg-gray-900 dark:text-gray-200'>
+                      <span className='m-1 inline-flex items-center rounded-full border py-1.5 px-3 text-sm font-medium border-gray-200 bg-white text-gray-700 dark:border-gray-700 dark:bg-gray-900 dark:text-gray-200'>
                         <span>
                           {/*  //// todo i18n */}
                           <span className='text-gray-500 dark:text-gray-400'>Sort by:</span>{' '}
