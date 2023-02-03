@@ -47,7 +47,7 @@ export const NavBar: FC<NavBarProps> = ({ items }) => {
                   item.current
                     ? 'text-white bg-gray-700 dark:bg-gray-500'
                     : 'text-gray-100 hover:text-white hover:bg-gray-700 dark:hover:bg-gray-500',
-                  'group w-full p-5 rounded-md flex flex-col items-center text-xs font-medium',
+                  'group rounded-md flex flex-col items-center text-xs font-medium h-14 w-14 justify-center',
                 )}
                 aria-current={item.current ? 'page' : undefined}
               >

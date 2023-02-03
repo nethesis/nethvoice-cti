@@ -870,7 +870,7 @@ export const Filter = forwardRef<HTMLButtonElement, FilterProps>(
                   />
                   <div className='mr-4 my-1'>
                     <div className='-m-1 flex flex-wrap items-center'>
-                      <span className='m-1 inline-flex items-center rounded-full border py-1.5 pl-3 pr-2 text-sm font-medium border-gray-200 bg-white text-gray-700 dark:border-gray-700 dark:bg-gray-900 dark:text-gray-200'>
+                      <span className='m-1 inline-flex items-center rounded-full border py-1.5 px-3 text-sm font-medium border-gray-200 bg-white text-gray-700 dark:border-gray-700 dark:bg-gray-900 dark:text-gray-200'>
                         <span className='text-gray-500 dark:text-gray-400'>Call type:&nbsp;</span>
                         {contactTypeLabel}
                       </span>
@@ -878,7 +878,7 @@ export const Filter = forwardRef<HTMLButtonElement, FilterProps>(
                   </div>
                   <div className='mr-4 my-1'>
                     <div className='-m-1 flex flex-wrap items-center'>
-                      <span className='m-1 inline-flex items-center rounded-full border py-1.5 pl-3 pr-2 text-sm font-medium border-gray-200 bg-white text-gray-700 dark:border-gray-700 dark:bg-gray-900 dark:text-gray-200'>
+                      <span className='m-1 inline-flex items-center rounded-full border py-1.5 px-3 text-sm font-medium border-gray-200 bg-white text-gray-700 dark:border-gray-700 dark:bg-gray-900 dark:text-gray-200'>
                         <span className='text-gray-500 dark:text-gray-400'>
                           Call direction:&nbsp;
                         </span>
@@ -888,7 +888,7 @@ export const Filter = forwardRef<HTMLButtonElement, FilterProps>(
                   </div>
                   <div className='mr-4 my-1'>
                     <div className='-m-1 flex flex-wrap items-center'>
-                      <span className='m-1 inline-flex items-center rounded-full border py-1.5 pl-3 pr-2 text-sm font-medium border-gray-200 bg-white text-gray-700 dark:border-gray-700 dark:bg-gray-900 dark:text-gray-200'>
+                      <span className='m-1 inline-flex items-center rounded-full border py-1.5 px-3 text-sm font-medium border-gray-200 bg-white text-gray-700 dark:border-gray-700 dark:bg-gray-900 dark:text-gray-200'>
                         <span className='text-gray-500 dark:text-gray-400'>From:&nbsp;</span>
                         {!dateBeginValue || clearSelected ? labelForDateFrom : dateBeginShowed}
                       </span>
@@ -896,7 +896,7 @@ export const Filter = forwardRef<HTMLButtonElement, FilterProps>(
                   </div>
                   <div className='mr-4 my-1'>
                     <div className='-m-1 flex flex-wrap items-center'>
-                      <span className='m-1 inline-flex items-center rounded-full border py-1.5 pl-3 pr-2 text-sm font-medium border-gray-200 bg-white text-gray-700 dark:border-gray-700 dark:bg-gray-900 dark:text-gray-200'>
+                      <span className='m-1 inline-flex items-center rounded-full border py-1.5 px-3 text-sm font-medium border-gray-200 bg-white text-gray-700 dark:border-gray-700 dark:bg-gray-900 dark:text-gray-200'>
                         <span className='text-gray-500 dark:text-gray-400'>To:&nbsp;</span>
                         {!dateEndValue || clearSelected ? labelForDateTo : dateEndShowed}
                       </span>
