@@ -57,17 +57,17 @@ EOF
 
 if [ ! -z $NAVBAR_LOGO_URL ]; then
   # navbar logo rebranding
-  /usr/bin/wget $NAVBAR_LOGO_URL -O /app/public/navbar_logo.png
+  /usr/bin/wget --timeout=60 $NAVBAR_LOGO_URL -O /app/public/navbar_logo.png
 fi
 
 if [ ! -z $LOGIN_LOGO_URL ]; then
   # login logo rebranding
-  /usr/bin/wget $LOGIN_LOGO_URL -O /app/public/login_logo.png
+  /usr/bin/wget --timeout=60 $LOGIN_LOGO_URL -O /app/public/login_logo.png
 fi
 
 if [ ! -z $FAVICON_URL ]; then
   # favicon rebranding
-  /usr/bin/wget $FAVICON_URL -O /app/public/favicon.ico
+  /usr/bin/wget --timeout=60 $FAVICON_URL -O /app/public/favicon.ico
 fi
 
 exec "$@"
