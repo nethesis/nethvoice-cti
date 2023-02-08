@@ -10,12 +10,10 @@
  */
 
 import { FC } from 'react'
-import Image from 'next/image'
 import classNames from 'classnames'
 import type { NavItemsProps } from '../../config/routes'
 import Link from 'next/link'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
-import Logo from '../../public/logo.svg'
 
 interface NavBarProps {
   items: NavItemsProps[]
@@ -28,13 +26,11 @@ export const NavBar: FC<NavBarProps> = ({ items }) => {
         <div className='flex flex-shrink-0 items-center'>
           <Link href='/operators'>
             <div>
-              <Image
-                className='h-8 w-auto cursor-pointer object-contain object-top'
-                src={Logo}
+              {/* Nextjs <Image> is not suitable for rebranding: it always uses the aspect ratio of the original logo  */}
+              <img
+                className='px-2.5 w-auto cursor-pointer object-contain object-top'
+                src='/navbar_logo.png'
                 alt='logo'
-                unoptimized={true}
-                width={56}
-                height={50}
               />
             </div>
           </Link>
