@@ -1,4 +1,4 @@
-// Copyright (C) 2022 Nethesis S.r.l.
+// Copyright (C) 2023 Nethesis S.r.l.
 // SPDX-License-Identifier: AGPL-3.0-or-later
 
 import type { NextPage } from 'next'
@@ -232,7 +232,6 @@ const Operators: NextPage = () => {
                               src={operator.avatarBase64}
                               placeholderType='operator'
                               size='extra_large'
-                              bordered
                               star={operator.favorite}
                               onClick={() => openShowOperatorDrawer(operator)}
                               className='mx-auto cursor-pointer'
@@ -336,7 +335,6 @@ const Operators: NextPage = () => {
                               src={operator.avatarBase64}
                               placeholderType='operator'
                               size='large'
-                              bordered
                               star={operator.favorite}
                               onClick={() => openShowOperatorDrawer(operator)}
                               className='mx-auto cursor-pointer'

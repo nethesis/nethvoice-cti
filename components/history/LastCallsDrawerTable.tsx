@@ -1,4 +1,4 @@
-// Copyright (C) 2022 Nethesis S.r.l.
+// Copyright (C) 2023 Nethesis S.r.l.
 // SPDX-License-Identifier: AGPL-3.0-or-later
 
 import { ComponentPropsWithRef, forwardRef, useEffect, useState } from 'react'
@@ -8,9 +8,15 @@ import {
   getCallTimeToDisplay,
 } from '../../lib/history'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
-import { faBuilding, faArrowRight, faPhone } from '@fortawesome/free-solid-svg-icons'
-import { HiArrowDownLeft, HiArrowUpRight } from 'react-icons/hi2'
-import { MdCallMissed } from 'react-icons/md'
+import {
+  faBuilding,
+  faArrowRight,
+  faPhone,
+  faPhoneMissed,
+  faPhoneArrowDown,
+  faPhoneArrowUp,
+  faPhoneXmark,
+} from '@nethesis/nethesis-solid-svg-icons'
 import { formatDateLoc } from '../../lib/dateTime'
 import { useSelector } from 'react-redux'
 import { RootState } from '../../store'
@@ -117,14 +123,16 @@ export const LastCallsDrawerTable = forwardRef<HTMLButtonElement, LastCallsDrawe
             {call.direction === 'in' && (
               <div>
                 {call.disposition === 'ANSWERED' ? (
-                  <HiArrowDownLeft
-                    className='mr-2 h-5 w-5 text-green-600 dark:text-green-500'
+                  <FontAwesomeIcon
+                    icon={faPhoneArrowDown}
+                    className='mr-2 h-5 w-3.5 text-green-600 dark:text-green-500'
                     aria-hidden='true'
                     title='Incoming answered'
                   />
                 ) : (
-                  <MdCallMissed
-                    className='mr-2 h-5 w-5 text-red-400'
+                  <FontAwesomeIcon
+                    icon={faPhoneMissed}
+                    className='mr-2 h-5 w-4 text-red-400'
                     aria-hidden='true'
                     title='Incoming missed'
                   />
@@ -134,14 +142,16 @@ export const LastCallsDrawerTable = forwardRef<HTMLButtonElement, LastCallsDrawe
             {call.direction === 'out' && (
               <div>
                 {call.disposition === 'ANSWERED' ? (
-                  <HiArrowUpRight
-                    className='mr-2 h-5 w-5 text-green-600 dark:text-green-500'
+                  <FontAwesomeIcon
+                    icon={faPhoneArrowUp}
+                    className='mr-2 h-5 w-3.5 text-green-600 dark:text-green-500'
                     aria-hidden='true'
                     title='Outgoing answered'
                   />
                 ) : (
-                  <HiArrowUpRight
-                    className='mr-2 h-5 w-5 text-red-400'
+                  <FontAwesomeIcon
+                    icon={faPhoneXmark}
+                    className='mr-2 h-5 w-3.5 text-red-400'
                     aria-hidden='true'
                     title='Outgoing missed'
                   />
@@ -182,14 +192,16 @@ export const LastCallsDrawerTable = forwardRef<HTMLButtonElement, LastCallsDrawe
                   {call.type === 'in' && (
                     <div>
                       {call.disposition === 'ANSWERED' ? (
-                        <HiArrowDownLeft
-                          className='h-5 w-5 text-green-600 dark:text-green-500'
+                        <FontAwesomeIcon
+                          icon={faPhoneArrowDown}
+                          className='h-5 w-3.5 text-green-600 dark:text-green-500'
                           aria-hidden='true'
                           title='Incoming answered'
                         />
                       ) : (
-                        <MdCallMissed
-                          className='h-5 w-5 text-red-400'
+                        <FontAwesomeIcon
+                          icon={faPhoneMissed}
+                          className='h-5 w-4 text-red-400'
                           aria-hidden='true'
                           title='Incoming missed'
                         />
@@ -199,14 +211,16 @@ export const LastCallsDrawerTable = forwardRef<HTMLButtonElement, LastCallsDrawe
                   {call.type === 'out' && (
                     <div>
                       {call.disposition === 'ANSWERED' ? (
-                        <HiArrowUpRight
-                          className='h-5 w-5 text-green-600 dark:text-green-500'
+                        <FontAwesomeIcon
+                          icon={faPhoneArrowUp}
+                          className='h-5 w-3.5 text-green-600 dark:text-green-500'
                           aria-hidden='true'
                           title='Outgoing answered'
                         />
                       ) : (
-                        <HiArrowUpRight
-                          className='h-5 w-5 text-red-400'
+                        <FontAwesomeIcon
+                          icon={faPhoneXmark}
+                          className='h-5 w-3.5 text-red-400'
                           aria-hidden='true'
                           title='Outgoing missed'
                         />

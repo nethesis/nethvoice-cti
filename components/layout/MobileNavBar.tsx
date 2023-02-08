@@ -1,4 +1,4 @@
-// Copyright (C) 2022 Nethesis S.r.l.
+// Copyright (C) 2023 Nethesis S.r.l.
 // SPDX-License-Identifier: AGPL-3.0-or-later
 
 /**
@@ -108,7 +108,7 @@ export const MobileNavBar: FC<MobileNavBarProps> = ({ closeMobileMenu, show, ite
                             aria-current={item.current ? 'page' : undefined}
                           >
                             <FontAwesomeIcon
-                              icon={item.icon}
+                              icon={item.current ? item.iconActive : item.icon}
                               className={classNames(
                                 item.current
                                   ? 'text-white'

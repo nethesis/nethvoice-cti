@@ -1,4 +1,4 @@
-// Copyright (C) 2022 Nethesis S.r.l.
+// Copyright (C) 2023 Nethesis S.r.l.
 // SPDX-License-Identifier: AGPL-3.0-or-later
 
 /**
@@ -35,28 +35,38 @@ export const NavBar: FC<NavBarProps> = ({ items }) => {
             </div>
           </Link>
         </div>
-        <div className='mt-6 w-full h-full flex flex-col space-y-2 px-2.5 justify-center'>
-          {items.map((item) => (
-            <Link key={item.name} href={item.href}>
-              <a
-                className={classNames(
-                  item.current
-                    ? 'text-white bg-gray-700 dark:bg-gray-500'
-                    : 'text-gray-100 hover:text-white hover:bg-gray-700 dark:hover:bg-gray-500',
-                  'group rounded-md flex flex-col items-center text-xs font-medium h-14 w-14 justify-center',
-                )}
-                aria-current={item.current ? 'page' : undefined}
-              >
-                <FontAwesomeIcon
-                  icon={item.icon}
+        <div className='mt-6 w-full h-full flex flex-col space-y-5 px-2.5 justify-center'>
+          {items.map((item, index: number) => (
+            <div key={index}>
+              {/* Added divider above settings icon */}
+              {item.icon.iconName === 'gear' && (
+                <div className='relative'>
+                  <div className='absolute inset-0 flex items-center' aria-hidden='true'>
+                    <div className='w-full border-t m-3 p-2.5 border-gray-400 dark:border-gray-500' />
+                  </div>
+                </div>
+              )}
+              <Link href={item.href}>
+                <a
                   className={classNames(
-                    item.current ? 'text-white' : 'text-gray-100 group-hover:text-white',
-                    'h-6 w-6',
+                    item.current
+                      ? 'text-white bg-gray-700 dark:bg-gray-500'
+                      : 'text-gray-100 hover:text-white hover:bg-gray-700 dark:hover:bg-gray-500',
+                    'group rounded-md flex flex-col items-center text-xs font-medium h-14 w-14 justify-center',
                   )}
-                  aria-hidden='true'
-                />
-              </a>
-            </Link>
+                  aria-current={item.current ? 'page' : undefined}
+                >
+                  <FontAwesomeIcon
+                    icon={item.current ? item.iconActive : item.icon}
+                    className={classNames(
+                      item.current ? 'text-white' : `text-gray-100 group-hover:text-white`,
+                      'h-6 w-6',
+                    )}
+                    aria-hidden='true'
+                  />
+                </a>
+              </Link>
+            </div>
           ))}
         </div>
       </div>

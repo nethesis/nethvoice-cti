@@ -1,4 +1,4 @@
-// Copyright (C) 2022 Nethesis S.r.l.
+// Copyright (C) 2023 Nethesis S.r.l.
 // SPDX-License-Identifier: AGPL-3.0-or-later
 
 import type { NextPage } from 'next'
@@ -16,9 +16,11 @@ import {
   faArrowRight,
   faChevronRight,
   faChevronLeft,
-} from '@fortawesome/free-solid-svg-icons'
-import { HiArrowDownLeft, HiArrowUpRight } from 'react-icons/hi2'
-import { MdCallMissed } from 'react-icons/md'
+  faPhoneMissed,
+  faPhoneArrowDown,
+  faPhoneArrowUp,
+  faPhoneXmark,
+} from '@nethesis/nethesis-solid-svg-icons'
 import { formatDateLoc } from '../lib/dateTime'
 import { subDays, startOfDay } from 'date-fns'
 
@@ -349,15 +351,20 @@ const History: NextPage = () => {
               <div>
                 {call.disposition === 'ANSWERED' ? (
                   <div className='flex flex-nowrap items-center'>
-                    <HiArrowDownLeft
-                      className='mr-2 h-5 w-5 text-green-600 dark:text-green-500'
+                    <FontAwesomeIcon
+                      icon={faPhoneArrowDown}
+                      className='mr-2 h-5 w-3.5 text-green-600 dark:text-green-500'
                       aria-hidden='true'
                     />
                     <span className='text-gray-900 dark:text-gray-100'>Incoming answered</span>
                   </div>
                 ) : (
                   <div className='flex flex-nowrap items-center'>
-                    <MdCallMissed className='mr-2 h-5 w-5 text-red-400' aria-hidden='true' />
+                    <FontAwesomeIcon
+                      icon={faPhoneMissed}
+                      className='mr-2 h-5 w-4 text-red-400'
+                      aria-hidden='true'
+                    />
                     <span className='text-gray-900 dark:text-gray-100'>Incoming missed</span>
                   </div>
                 )}
@@ -367,15 +374,20 @@ const History: NextPage = () => {
               <div>
                 {call.disposition === 'ANSWERED' ? (
                   <div className='flex flex-nowrap items-center'>
-                    <HiArrowUpRight
-                      className='mr-2 h-5 w-5 text-green-600 dark:text-green-500'
+                    <FontAwesomeIcon
+                      icon={faPhoneArrowUp}
+                      className='mr-2 h-5 w-3.5 text-green-600 dark:text-green-500'
                       aria-hidden='true'
                     />
                     <span className='text-gray-900 dark:text-gray-100'>Outgoing answered</span>
                   </div>
                 ) : (
                   <div className='flex flex-nowrap items-center'>
-                    <HiArrowUpRight className='mr-2 h-5 w-5 text-red-400' aria-hidden='true' />
+                    <FontAwesomeIcon
+                      icon={faPhoneXmark}
+                      className='mr-2 h-5 w-3.5 text-red-400'
+                      aria-hidden='true'
+                    />
                     <span className='text-gray-900 dark:text-gray-100'>Outgoing missed</span>
                   </div>
                 )}
@@ -419,15 +431,20 @@ const History: NextPage = () => {
                   <div>
                     {call.disposition === 'ANSWERED' ? (
                       <div className='flex flex-nowrap items-center'>
-                        <HiArrowDownLeft
-                          className='mr-2 h-5 w-5 text-green-600 dark:text-green-500'
+                        <FontAwesomeIcon
+                          icon={faPhoneArrowDown}
+                          className='mr-2 h-5 w-3.5 text-green-600 dark:text-green-500'
                           aria-hidden='true'
                         />
                         <span className='text-gray-900 dark:text-gray-100'>Incoming answered</span>
                       </div>
                     ) : (
                       <div className='flex flex-nowrap'>
-                        <MdCallMissed className='mr-2 h-5 w-5 text-red-400' aria-hidden='true' />
+                        <FontAwesomeIcon
+                          icon={faPhoneMissed}
+                          className='mr-2 h-5 w-4 text-red-400'
+                          aria-hidden='true'
+                        />
                         <span className='text-gray-900 dark:text-gray-100'>Incoming missed</span>
                       </div>
                     )}
@@ -438,15 +455,20 @@ const History: NextPage = () => {
                   <div>
                     {call.disposition === 'ANSWERED' ? (
                       <div className='flex flex-nowrap items-center'>
-                        <HiArrowUpRight
-                          className='mr-2 h-5 w-5 text-green-600 dark:text-green-500'
+                        <FontAwesomeIcon
+                          icon={faPhoneArrowUp}
+                          className='mr-2 h-5 w-3.5 text-green-600 dark:text-green-500'
                           aria-hidden='true'
                         />
                         <span className='text-gray-900 dark:text-gray-100'>Outgoing answered</span>
                       </div>
                     ) : (
                       <div className='flex flex-nowrap'>
-                        <HiArrowUpRight className='mr-2 h-5 w-5 text-red-400' aria-hidden='true' />
+                        <FontAwesomeIcon
+                          icon={faPhoneXmark}
+                          className='mr-2 h-5 w-3.5 text-red-400'
+                          aria-hidden='true'
+                        />
                         <span className='text-gray-900 dark:text-gray-100'>Outgoing missed</span>
                       </div>
                     )}

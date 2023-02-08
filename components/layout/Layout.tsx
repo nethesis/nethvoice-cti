@@ -1,4 +1,4 @@
-// Copyright (C) 2022 Nethesis S.r.l.
+// Copyright (C) 2023 Nethesis S.r.l.
 // SPDX-License-Identifier: AGPL-3.0-or-later
 
 import { FC, ReactNode, useState, useEffect } from 'react'
@@ -21,6 +21,7 @@ import {
   retrieveUserEndpoints,
 } from '../../lib/operators'
 import { useEventListener } from '../../lib/hooks/useEventListener'
+import { loadI18n } from '../../lib/i18n'
 
 interface LayoutProps {
   children: ReactNode
@@ -35,9 +36,18 @@ export const Layout: FC<LayoutProps> = ({ children }) => {
   const operatorsStore = useSelector((state: RootState) => state.operators)
   const [firstRenderOperators, setFirstRenderOperators] = useState(true)
   const [firstRenderUserInfo, setFirstRenderUserInfo] = useState(true)
+  const [firstRenderI18n, setFirstRenderI18n] = useState(true)
   const [firstRenderGlobalSearchListener, setFirstRenderGlobalSearchListener] = useState(true)
   const [isUserInfoLoaded, setUserInfoLoaded] = useState(false)
   const authStore = useSelector((state: RootState) => state.authentication)
+
+  //initialize i18n
+  useEffect(() => {
+    if (firstRenderI18n) {
+      loadI18n()
+      setFirstRenderI18n(false)
+    }
+  }, [firstRenderI18n])
 
   useEffect(() => {
     const currentItems = items.map((route) => {

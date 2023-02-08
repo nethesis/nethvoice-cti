@@ -1,4 +1,4 @@
-// Copyright (C) 2022 Nethesis S.r.l.
+// Copyright (C) 2023 Nethesis S.r.l.
 // SPDX-License-Identifier: AGPL-3.0-or-later
 
 import { ComponentPropsWithRef, forwardRef } from 'react'
@@ -8,10 +8,9 @@ import { RootState, store } from '../../store'
 import { callPhoneNumber } from '../../lib/utils'
 import { formatInTimeZoneLoc } from '../../lib/dateTime'
 import { Badge, EmptyState, IconSwitch, SideDrawerCloseIcon } from '../common'
-import { faCircleCheck, faPhone } from '@fortawesome/free-solid-svg-icons'
+import { faPhoneXmark, faCircleCheck, faPhone } from '@nethesis/nethesis-solid-svg-icons'
 import { faBell, faCommentDots } from '@fortawesome/free-regular-svg-icons'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
-import { MdCallMissed } from 'react-icons/md'
 import { utcToZonedTime } from 'date-fns-tz'
 import { formatDistanceToNowLoc } from '../../lib/dateTime'
 
@@ -55,8 +54,9 @@ export const NotificationsDrawerContent = forwardRef<
       <div>
         {/* missed call */}
         {notification.type === 'missedCall' && (
-          <MdCallMissed
-            className='h-5 w-5 text-red-400 dark:text-red-500'
+          <FontAwesomeIcon
+            icon={faPhoneXmark}
+            className='h-5 w-3.5 text-red-400 dark:text-red-500'
             aria-hidden='true'
             title='Missed call'
           />

@@ -1,4 +1,4 @@
-// Copyright (C) 2022 Nethesis S.r.l.
+// Copyright (C) 2023 Nethesis S.r.l.
 // SPDX-License-Identifier: AGPL-3.0-or-later
 
 import Image from 'next/image'
@@ -11,6 +11,7 @@ import { useRouter } from 'next/router'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { faCircleNotch, faEye, faEyeSlash } from '@fortawesome/free-solid-svg-icons'
 import { checkDarkTheme } from '../lib/darkTheme'
+import { useTranslation } from 'react-i18next'
 
 export default function Login() {
   const [pwdVisible, setPwdVisible] = useState(false)
@@ -18,6 +19,7 @@ export default function Login() {
   const [onError, setOnError] = useState(false)
   const [loading, setLoading] = useState(false)
 
+  const { t } = useTranslation()
   let iconSelect = loading ? (
     <FontAwesomeIcon icon={faCircleNotch} className='fa-spin loader fa-lg' />
   ) : (
@@ -103,7 +105,7 @@ export default function Login() {
                       htmlFor='email'
                       className='block text-sm font-medium text-gray-700 dark:text-gray-200'
                     >
-                      User
+                      {t('Login.User')}
                     </label>
                     <div className='mt-1'>
                       <TextInput
@@ -122,7 +124,7 @@ export default function Login() {
                       htmlFor='password'
                       className='block text-sm font-medium text-gray-700 dark:text-gray-200'
                     >
-                      Password
+                      {t('Login.Password')}
                     </label>
                     <div className='mt-1'>
                       <TextInput
@@ -147,7 +149,7 @@ export default function Login() {
                       variant='primary'
                       type='submit'
                     >
-                      Sign In
+                      {t('Login.Sign in')}
                       {iconSelect}
                     </Button>
                   </div>

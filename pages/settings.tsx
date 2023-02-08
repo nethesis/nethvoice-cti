@@ -1,4 +1,4 @@
-// Copyright (C) 2022 Nethesis S.r.l.
+// Copyright (C) 2023 Nethesis S.r.l.
 // SPDX-License-Identifier: AGPL-3.0-or-later
 
 import type { NextPage } from 'next'
@@ -142,7 +142,7 @@ const Settings: NextPage = () => {
   return (
     <>
       <div>
-        <div className='mx-auto max-w-screen-xl'>
+        <div className='mx-auto'>
           <h1 className='text-2xl font-semibold mb-6 text-gray-900 dark:text-gray-100'>Settings</h1>
           <div className='overflow-hidden rounded-lg bg-white shadow dark:bg-gray-900'>
             <div className='divide-y divide-gray-200 dark:divide-gray-700 lg:grid lg:grid-cols-12 lg:divide-y-0 lg:divide-x'>

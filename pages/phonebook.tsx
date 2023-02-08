@@ -1,4 +1,4 @@
-// Copyright (C) 2022 Nethesis S.r.l.
+// Copyright (C) 2023 Nethesis S.r.l.
 // SPDX-License-Identifier: AGPL-3.0-or-later
 
 import type { NextPage } from 'next'
@@ -30,11 +30,13 @@ import {
   faChevronLeft,
 } from '@fortawesome/free-solid-svg-icons'
 import { callPhoneNumber } from '../lib/utils'
+import { useTranslation } from 'react-i18next'
 
 const Phonebook: NextPage = () => {
   const [isPhonebookLoaded, setPhonebookLoaded] = useState(false)
   const [phonebook, setPhonebook]: any = useState({})
   const [pageNum, setPageNum]: any = useState(1)
+  const { t } = useTranslation()
 
   const [textFilter, setTextFilter]: any = useState('')
 
@@ -118,10 +120,12 @@ const Phonebook: NextPage = () => {
   return (
     <>
       <div>
-        <h1 className='text-2xl font-semibold mb-6 text-gray-900 dark:text-gray-100'>Phonebook</h1>
+        <h1 className='text-2xl font-semibold mb-6 text-gray-900 dark:text-gray-100'>
+          {t('Phonebook.Phonebook')}
+        </h1>
         <Button variant='primary' onClick={() => openCreateContactDrawer()} className='mb-6'>
           <FontAwesomeIcon icon={faUserPlus} className='mr-2 h-4 w-4' />
-          <span>Create contact</span>
+          <span>{t('Phonebook.Create contact')}</span>
         </Button>
         <Filter
           updateTextFilter={debouncedUpdateTextFilter}
@@ -176,7 +180,7 @@ const Phonebook: NextPage = () => {
                 >
                   <Button variant='primary' onClick={() => openCreateContactDrawer()}>
                     <FontAwesomeIcon icon={faPlus} className='mr-2 h-4 w-4' />
-                    <span>Create contact</span>
+                    <span>{t('Phonebook.Create contact')}</span>
                   </Button>
                 </EmptyState>
               )}
@@ -325,13 +329,15 @@ const Phonebook: NextPage = () => {
           >
             <div className='hidden sm:block'>
               <p className='text-sm text-gray-700 dark:text-gray-200'>
-                Showing <span className='font-medium'>{PAGE_SIZE * (pageNum - 1) + 1}</span> to{' '}
+                {t('Common.Showing')}{' '}
+                <span className='font-medium'>{PAGE_SIZE * (pageNum - 1) + 1}</span> -&nbsp;
                 <span className='font-medium'>
                   {PAGE_SIZE * (pageNum - 1) + PAGE_SIZE < phonebook?.count
                     ? PAGE_SIZE * (pageNum - 1) + PAGE_SIZE
                     : phonebook?.count}
                 </span>{' '}
-                of <span className='font-medium'>{phonebook?.count}</span> contacts
+                {t('Common.of')} <span className='font-medium'>{phonebook?.count}</span>{' '}
+                {t('Phonebook.contacts')}
               </p>
             </div>
             <div className='flex flex-1 justify-between sm:justify-end'>
@@ -343,7 +349,7 @@ const Phonebook: NextPage = () => {
                 className='flex items-center'
               >
                 <FontAwesomeIcon icon={faChevronLeft} className='mr-2 h-4 w-4' />
-                <span>Previous page</span>
+                <span> {t('Common.Previous page')}</span>
               </Button>
               <Button
                 type='button'
@@ -352,7 +358,7 @@ const Phonebook: NextPage = () => {
                 disabled={isNextPageButtonDisabled()}
                 onClick={() => goToNextPage()}
               >
-                <span>Next page</span>
+                <span>{t('Common.Next page')}</span>
                 <FontAwesomeIcon icon={faChevronRight} className='ml-2 h-4 w-4' />
               </Button>
             </div>

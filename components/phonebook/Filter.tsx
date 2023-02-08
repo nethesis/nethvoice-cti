@@ -1,4 +1,4 @@
-// Copyright (C) 2022 Nethesis S.r.l.
+// Copyright (C) 2023 Nethesis S.r.l.
 // SPDX-License-Identifier: AGPL-3.0-or-later
 
 import { ComponentPropsWithRef, forwardRef, useRef } from 'react'
@@ -12,6 +12,7 @@ import { DEFAULT_CONTACT_TYPE_FILTER, DEFAULT_SORT_BY, getFilterValues } from '.
 import { useSelector } from 'react-redux'
 import { RootState } from '../../store'
 import { savePreference } from '../../lib/storage'
+import { useTranslation } from 'react-i18next'
 
 const sortFilter = {
   id: 'sort',
@@ -40,6 +41,7 @@ export interface FilterProps extends ComponentPropsWithRef<'div'> {
 
 export const Filter = forwardRef<HTMLButtonElement, FilterProps>(
   ({ updateTextFilter, updateContactTypeFilter, updateSort, className, ...props }, ref) => {
+    const { t } = useTranslation()
     const auth = useSelector((state: RootState) => state.authentication)
     const [open, setOpen] = useState(false)
 
@@ -84,20 +86,21 @@ export const Filter = forwardRef<HTMLButtonElement, FilterProps>(
     const [contactTypeLabel, setContactTypeLabel] = useState('')
     useEffect(() => {
       const found = contactTypeFilter.options.find((option) => option.value === contactType)
+      let translatedContactTypeLabel = t(`Phonebook.${found.label}`)
 
       if (found) {
-        setContactTypeLabel(found.label)
+        setContactTypeLabel(translatedContactTypeLabel)
       }
     }, [contactType])
-
     // sort by label
 
     const [sortByLabel, setSortByLabel] = useState('')
     useEffect(() => {
       const found = sortFilter.options.find((option) => option.value === sortBy)
+      let translatedSortByLabel = t(`Phonebook.${found.label}`)
 
       if (found) {
-        setSortByLabel(found.label)
+        setSortByLabel(translatedSortByLabel)
       }
     }, [sortBy])
 
@@ -156,14 +159,14 @@ export const Filter = forwardRef<HTMLButtonElement, FilterProps>(
                   <Dialog.Panel className='relative ml-auto flex h-full w-full max-w-xs flex-col overflow-y-auto py-4 pb-6 shadow-xl bg-white dark:bg-gray-900'>
                     <div className='flex items-center justify-between px-4'>
                       <h2 className='text-lg font-medium text-gray-900 dark:text-gray-100'>
-                        Filters
+                        {t('Common.Filters')}
                       </h2>
                       <button
                         type='button'
                         className='-mr-2 flex h-10 w-10 items-center justify-center rounded-md focus:outline-none focus:ring-2 p-2 bg-white text-gray-400 hover:bg-gray-50 focus:ring-primaryLight dark:bg-gray-900 dark:text-gray-400 dark:hover:bg-gray-800 dark:focus:ring-primaryDark'
                         onClick={() => setOpen(false)}
                       >
-                        <span className='sr-only'>Close menu</span>
+                        <span className='sr-only'>{t('Common.Close menu')}</span>
                         <FontAwesomeIcon icon={faXmark} className='h-5 w-5' aria-hidden='true' />
                       </button>
                     </div>
@@ -181,7 +184,7 @@ export const Filter = forwardRef<HTMLButtonElement, FilterProps>(
                             <h3 className='-mx-2 -my-3 flow-root'>
                               <Disclosure.Button className='flex w-full items-center justify-between px-2 py-3 text-sm bg-white text-gray-400 dark:bg-gray-900 dark:text-gray-500'>
                                 <span className='font-medium text-gray-900 dark:text-gray-100'>
-                                  {contactTypeFilter.name}
+                                  {t(`Phonebook.${contactTypeFilter.name}`)}
                                 </span>
                                 <span className='ml-6 flex items-center'>
                                   <FontAwesomeIcon
@@ -213,7 +216,7 @@ export const Filter = forwardRef<HTMLButtonElement, FilterProps>(
                                         htmlFor={option.value}
                                         className='ml-3 block text-sm font-medium text-gray-700 dark:text-gray-200'
                                       >
-                                        {option.label}
+                                        {t(`Phonebook.${option.label}`)}
                                       </label>
                                     </div>
                                   ))}
@@ -234,7 +237,7 @@ export const Filter = forwardRef<HTMLButtonElement, FilterProps>(
                             <h3 className='-mx-2 -my-3 flow-root'>
                               <Disclosure.Button className='flex w-full items-center justify-between px-2 py-3 text-sm bg-white text-gray-400 dark:bg-gray-900 dark:text-gray-500'>
                                 <span className='font-medium text-gray-900 dark:text-gray-100'>
-                                  {sortFilter.name}
+                                  {t(`Phonebook.${sortFilter.name}`)}
                                 </span>
                                 <span className='ml-6 flex items-center'>
                                   <FontAwesomeIcon
@@ -266,7 +269,7 @@ export const Filter = forwardRef<HTMLButtonElement, FilterProps>(
                                         htmlFor={option.value}
                                         className='ml-3 block text-sm font-medium text-gray-700 dark:text-gray-200'
                                       >
-                                        {option.label}
+                                        {t(`Phonebook.${option.label}`)}
                                       </label>
                                     </div>
                                   ))}
@@ -286,13 +289,13 @@ export const Filter = forwardRef<HTMLButtonElement, FilterProps>(
           <div className='mx-auto text-center'>
             <section aria-labelledby='filter-heading' className='pb-6'>
               <h2 id='filter-heading' className='sr-only'>
-                Phonebook filters
+                {t('Phonebook.Phonebook filters')}
               </h2>
 
               <div className='flex items-center justify-between'>
                 <div className='flex items-center'>
                   <TextInput
-                    placeholder='Filter contacts'
+                    placeholder={t('Phonebook.Filter contacts') || ''}
                     className='max-w-sm'
                     value={textFilter}
                     onChange={changeTextFilter}
@@ -314,7 +317,7 @@ export const Filter = forwardRef<HTMLButtonElement, FilterProps>(
                     >
                       <div>
                         <Popover.Button className='group inline-flex items-center justify-center text-sm font-medium text-gray-700 hover:text-gray-900 dark:text-gray-200 dark:hover:text-gray-100'>
-                          <span>{contactTypeFilter.name}</span>
+                          <span>{t(`Phonebook.${contactTypeFilter.name}`)}</span>
                           <FontAwesomeIcon
                             icon={faChevronDown}
                             className='ml-2 h-3 w-3 flex-shrink-0 text-gray-400 group-hover:text-gray-500 dark:text-gray-500 dark:group-hover:text-gray-400'
@@ -348,7 +351,7 @@ export const Filter = forwardRef<HTMLButtonElement, FilterProps>(
                                   htmlFor={option.value}
                                   className='ml-3 block text-sm font-medium text-gray-700 dark:text-gray-200'
                                 >
-                                  {option.label}
+                                  {t(`Phonebook.${option.label}`)}
                                 </label>
                               </div>
                             ))}
@@ -366,7 +369,7 @@ export const Filter = forwardRef<HTMLButtonElement, FilterProps>(
                     >
                       <div>
                         <Popover.Button className='group inline-flex items-center justify-center text-sm font-medium text-gray-700 hover:text-gray-900 dark:text-gray-200 dark:hover:text-gray-100'>
-                          <span>{sortFilter.name}</span>
+                          <span>{t(`Phonebook.${sortFilter.name}`)}</span>
                           <FontAwesomeIcon
                             icon={faChevronDown}
                             className='ml-2 h-3 w-3 flex-shrink-0 text-gray-400 group-hover:text-gray-500 dark:text-gray-500 dark:group-hover:text-gray-400'
@@ -400,7 +403,7 @@ export const Filter = forwardRef<HTMLButtonElement, FilterProps>(
                                   htmlFor={option.value}
                                   className='ml-3 block text-sm font-medium text-gray-700 dark:text-gray-200'
                                 >
-                                  {option.label}
+                                  {t(`Phonebook.${option.label}`)}
                                 </label>
                               </div>
                             ))}
@@ -415,7 +418,7 @@ export const Filter = forwardRef<HTMLButtonElement, FilterProps>(
                     className='inline-block text-sm font-medium sm:hidden text-gray-700 hover:text-gray-900 dark:text-gray-200 dark:hover:text-gray-100'
                     onClick={() => setOpen(true)}
                   >
-                    Filters
+                    {t('Common.Filters')}
                   </button>
                 </div>
               </div>
@@ -424,7 +427,7 @@ export const Filter = forwardRef<HTMLButtonElement, FilterProps>(
               <div>
                 <div className='mx-auto pt-3 sm:flex sm:items-center'>
                   <h3 className='text-sm font-medium text-gray-500 dark:text-gray-400'>
-                    Active filters
+                    {t('Common.Active filters')}
                   </h3>
                   <div
                     aria-hidden='true'
@@ -435,11 +438,10 @@ export const Filter = forwardRef<HTMLButtonElement, FilterProps>(
                     <div className='-m-1 flex flex-wrap items-center'>
                       <span className='m-1 inline-flex items-center rounded-full border py-1.5 px-3 text-sm font-medium border-gray-200 bg-white text-gray-700 dark:border-gray-700 dark:bg-gray-900 dark:text-gray-200'>
                         <span>
-                          {/*  //// todo i18n */}
                           <span className='text-gray-500 dark:text-gray-400'>
-                            Contact type:
+                            {t('Phonebook.Contact type')}:
                           </span>{' '}
-                          {contactTypeLabel}
+                          {`${contactTypeLabel}`}
                         </span>
                       </span>
                     </div>
@@ -449,9 +451,10 @@ export const Filter = forwardRef<HTMLButtonElement, FilterProps>(
                     <div className='-m-1 flex flex-wrap items-center'>
                       <span className='m-1 inline-flex items-center rounded-full border py-1.5 px-3 text-sm font-medium border-gray-200 bg-white text-gray-700 dark:border-gray-700 dark:bg-gray-900 dark:text-gray-200'>
                         <span>
-                          {/*  //// todo i18n */}
-                          <span className='text-gray-500 dark:text-gray-400'>Sort by:</span>{' '}
-                          {sortByLabel}
+                          <span className='text-gray-500 dark:text-gray-400'>
+                            {t('Phonebook.Sort by')}:
+                          </span>{' '}
+                          {`${sortByLabel}`}
                         </span>
                       </span>
                     </div>
@@ -467,7 +470,7 @@ export const Filter = forwardRef<HTMLButtonElement, FilterProps>(
                       onClick={() => resetFilters()}
                       className='text-sm hover:underline text-gray-700 dark:text-gray-200'
                     >
-                      Reset filters
+                      {t('Common.Reset filters')}
                     </button>
                   </div>
                 </div>
