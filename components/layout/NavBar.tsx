@@ -35,13 +35,13 @@ export const NavBar: FC<NavBarProps> = ({ items }) => {
             </div>
           </Link>
         </div>
-        <div className='mt-6 w-full h-full flex flex-col space-y-3 px-2.5 justify-center'>
+        <div className='mt-6 w-full h-full flex flex-col space-y-5 px-2.5 justify-center'>
           {items.map((item, index: number) => (
             <div key={index}>
               {item.icon.iconName === 'gear' && (
                 <div className='relative'>
                   <div className='absolute inset-0 flex items-center' aria-hidden='true'>
-                    <div className='w-full border-t m-3 border-gray-400 dark:border-gray-500' />
+                    <div className='w-full border-t m-3 p-2.5 border-gray-400 dark:border-gray-500' />
                   </div>
                 </div>
               )}

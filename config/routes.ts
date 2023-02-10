@@ -21,6 +21,7 @@ export type NavItemsProps = {
   name: string
   href: string
   icon: IconDefinition
+  iconActive: IconDefinition
   current: boolean
 }
 
