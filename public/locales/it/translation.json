@@ -1,0 +1,46 @@
+{
+  "Common": {
+    "Showing": "Mostrando",
+    "of": "di",
+    "Active filters": "Filtri attivi",
+    "Reset filters": "Ripristina filtri",
+    "Filters": "Filtri",
+    "Close menu": "Chiudi menu",
+    "Next page": "Pagina successiva",
+    "Previous page": "Pagina precedente"
+  },
+  "Login": {
+    "User": "Utente",
+    "Password": "Password",
+    "Sign in": "Accedi"
+  },
+  "Phonebook": {
+    "Phonebook": "Rubrica",
+    "Create contact": "Crea contatto",
+    "Group": "Gruppo",
+    "Sort by": "Ordina per",
+    "All": "Tutti",
+    "Name": "Nome",
+    "Person": "Persona",
+    "Company": "Azienda",
+    "Contact type": "Tipo di contatto",
+    "Phonebook filters": "Filtri rubrica",
+    "Filter contacts": "Filtra contatti",
+    "contacts": "contatti"
+  },
+  "History": {},
+  "Operators": {
+    "Operators": "Operatori",
+    "No groups": "Nessun gruppo",
+    "Favorites": "Preferiti",
+    "Available": "Disponibile",
+    "Unavailable": "Non disponibile",
+    "Offline": "Offline",
+    "All except offline": "Tutti eccetto offline",
+    "Name": "Nome",
+    "Compact": "Compatto",
+    "Layout": "Layout",
+    "Filter operators": "Filtra operatori",
+    "Status": "Stato"
+  }
+}

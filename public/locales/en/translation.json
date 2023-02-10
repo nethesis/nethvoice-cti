@@ -1,0 +1,46 @@
+{
+  "Common": {
+    "Showing": "Showing",
+    "of": "of",
+    "Active filters": "Active filters",
+    "Reset filters": "Reset filters",
+    "Filters": "Filters",
+    "Close menu": "Close menu",
+    "Next page": "Next page",
+    "Previous page": "Previous page"
+  },
+  "Login": {
+    "User": "User",
+    "Password": "Password",
+    "Sign in": "Sign in"
+  },
+  "Phonebook": {
+    "Phonebook": "Phonebook",
+    "Create contact": "Create contact",
+    "Group": "Group",
+    "Sort by": "Sort by",
+    "All": "All",
+    "Name": "Name",
+    "Person": "Person",
+    "Company": "Company",
+    "Contact type": "Contact type",
+    "Phonebook filters": "Phonebook filters",
+    "Filter contacts": "Filter contacts",
+    "contacts": "contacts"
+  },
+  "History": {},
+  "Operators": {
+    "Operators": "Operators",
+    "No groups": "No groups",
+    "Favorites": "Favorites",
+    "Available": "Available",
+    "Unavailable": "Unavailable",
+    "Offline": "Offline",
+    "All except offline": "All except offline",
+    "Name": "Name",
+    "Compact": "Compact",
+    "Layout": "Layout",
+    "Filter operators": "Filter operators",
+    "Status": "Status"
+  }
+}
