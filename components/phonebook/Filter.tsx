@@ -86,10 +86,9 @@ export const Filter = forwardRef<HTMLButtonElement, FilterProps>(
     const [contactTypeLabel, setContactTypeLabel] = useState('')
     useEffect(() => {
       const found = contactTypeFilter.options.find((option) => option.value === contactType)
-      let translatedContactTypeLabel = t(`Phonebook.${found.label}`)
 
       if (found) {
-        setContactTypeLabel(translatedContactTypeLabel)
+        setContactTypeLabel(found.label)
       }
     }, [contactType])
     // sort by label
@@ -97,10 +96,9 @@ export const Filter = forwardRef<HTMLButtonElement, FilterProps>(
     const [sortByLabel, setSortByLabel] = useState('')
     useEffect(() => {
       const found = sortFilter.options.find((option) => option.value === sortBy)
-      let translatedSortByLabel = t(`Phonebook.${found.label}`)
 
       if (found) {
-        setSortByLabel(translatedSortByLabel)
+        setSortByLabel(found.label)
       }
     }, [sortBy])
 
@@ -441,7 +439,7 @@ export const Filter = forwardRef<HTMLButtonElement, FilterProps>(
                           <span className='text-gray-500 dark:text-gray-400'>
                             {t('Phonebook.Contact type')}:
                           </span>{' '}
-                          {`${contactTypeLabel}`}
+                          {contactTypeLabel && t(`Phonebook.${contactTypeLabel}`)}
                         </span>
                       </span>
                     </div>
@@ -454,7 +452,7 @@ export const Filter = forwardRef<HTMLButtonElement, FilterProps>(
                           <span className='text-gray-500 dark:text-gray-400'>
                             {t('Phonebook.Sort by')}:
                           </span>{' '}
-                          {`${sortByLabel}`}
+                          {sortByLabel && t(`Phonebook.${sortByLabel}`)}
                         </span>
                       </span>
                     </div>
