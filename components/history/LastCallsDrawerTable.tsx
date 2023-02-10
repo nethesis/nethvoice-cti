@@ -2,11 +2,7 @@
 // SPDX-License-Identifier: AGPL-3.0-or-later
 
 import { ComponentPropsWithRef, forwardRef, useEffect, useState } from 'react'
-import {
-  searchDrawerHistoryUser,
-  searchDrawerHistorySwitchboard,
-  getCallTimeToDisplay,
-} from '../../lib/history'
+import { searchDrawerHistoryUser, searchDrawerHistorySwitchboard } from '../../lib/history'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import {
   faBuilding,
@@ -17,7 +13,7 @@ import {
   faPhoneArrowUp,
   faPhoneXmark,
 } from '@nethesis/nethesis-solid-svg-icons'
-import { formatDateLoc } from '../../lib/dateTime'
+import { formatDateLoc, getCallTimeToDisplay } from '../../lib/dateTime'
 import { useSelector } from 'react-redux'
 import { RootState } from '../../store'
 import { EmptyState, InlineNotification } from '../common'
@@ -304,9 +300,7 @@ export const LastCallsDrawerTable = forwardRef<HTMLButtonElement, LastCallsDrawe
           {callType === 'switchboard' ? 'Last switchboard calls' : 'Last personal calls'}
         </h4>
         {/* Divider */}
-        <div className='mt-4 border-t border-gray-200 dark:border-gray-700'>
-          <dl className='sm:divide-y sm:divide-gray-200 dark:sm:divide-gray-700'></dl>
-        </div>
+        <div className='mt-4 border-t border-gray-200 dark:border-gray-700'></div>
         {/* error */}
         {errorMessage && (
           <InlineNotification

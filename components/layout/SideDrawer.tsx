@@ -15,6 +15,7 @@ import { CreateOrEditSpeedDialDrawerContent } from './speed_dial/CreateOrEditSpe
 import { ShowHistoryDrawerContent } from '../history/ShowHistoryDrawerContent'
 import { NotificationsDrawerContent } from './NotificationsDrawerContent'
 import { AddToPhonebookDrawerContent } from '../history/AddToPhonebookDrawer'
+import { ShowQueueCallDrawerContent } from '../queues/ShowQueueCallDrawerContent'
 
 interface SideDrawerProps {
   isShown: boolean
@@ -56,6 +57,8 @@ export const SideDrawer: FC<SideDrawerProps> = ({ isShown, contentType, config, 
                         <NotificationsDrawerContent />
                       ) : contentType === 'addToPhonebookDrawer' ? (
                         <AddToPhonebookDrawerContent config={config} />
+                      ) : contentType === 'showQueueCall' ? (
+                        <ShowQueueCallDrawerContent config={config} />
                       ) : null}
                     </div>
                   </nav>
