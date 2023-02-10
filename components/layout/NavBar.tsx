@@ -38,6 +38,7 @@ export const NavBar: FC<NavBarProps> = ({ items }) => {
         <div className='mt-6 w-full h-full flex flex-col space-y-5 px-2.5 justify-center'>
           {items.map((item, index: number) => (
             <div key={index}>
+              {/* Added divider above settings icon */}
               {item.icon.iconName === 'gear' && (
                 <div className='relative'>
                   <div className='absolute inset-0 flex items-center' aria-hidden='true'>
