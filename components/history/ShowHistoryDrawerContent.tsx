@@ -19,7 +19,7 @@ function checkTitle(config: any) {
     return (
       <div className='flex items-center'>
         <div className='flex-shrink-0 mr-4'>
-          <Avatar size='large' placeholderType='person' bordered />
+          <Avatar size='large' placeholderType='person' />
         </div>
         <div className='flex-shrink-0 mr-4'>
           <h2 className='text-xl font-medium text-gray-700 dark:text-gray-200'>{config.name}</h2>
@@ -30,7 +30,7 @@ function checkTitle(config: any) {
     return (
       <div className='flex items-center'>
         <div className='flex-shrink-0 mr-4'>
-          <Avatar size='large' placeholderType='company' bordered />
+          <Avatar size='large' placeholderType='company' />
         </div>
         <div className='flex-shrink-0 mr-4'>
           <h2 className='text-xl font-medium text-gray-700 dark:text-gray-200'>{config.company}</h2>
@@ -41,7 +41,7 @@ function checkTitle(config: any) {
     return (
       <div className='flex items-center'>
         <div className='flex-shrink-0 mr-4'>
-          <Avatar size='large' placeholderType='person' bordered />
+          <Avatar size='large' placeholderType='person' />
         </div>
         <div>
           <h2 className='text-xl font-medium text-gray-700 dark:text-gray-200'>{config.number}</h2>

@@ -68,7 +68,6 @@ export const OperatorSummary = forwardRef<HTMLButtonElement, OperatorSummaryProp
                 size='extra_large'
                 src={operator.avatarBase64}
                 placeholderType='operator'
-                bordered
                 onClick={() => maybeShowSideDrawer(operator)}
                 className={classNames(isShownSideDrawerLink && 'cursor-pointer')}
               />
