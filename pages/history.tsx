@@ -5,7 +5,7 @@ import type { NextPage } from 'next'
 import { Filter } from '../components/history/Filter'
 import { Button, EmptyState, InlineNotification } from '../components/common'
 import { useState, useEffect, useMemo } from 'react'
-import { search, PAGE_SIZE, openDrawerHistory, getCallTimeToDisplay } from '../lib/history'
+import { search, PAGE_SIZE, openDrawerHistory } from '../lib/history'
 import { RootState } from '../store'
 import { useSelector } from 'react-redux'
 import { debounce } from 'lodash'
@@ -22,7 +22,7 @@ import {
   faPhoneXmark,
   faPhone,
 } from '@nethesis/nethesis-solid-svg-icons'
-import { formatDateLoc } from '../lib/dateTime'
+import { formatDateLoc, getCallTimeToDisplay } from '../lib/dateTime'
 import { subDays, startOfDay } from 'date-fns'
 import { useTranslation } from 'react-i18next'
 
@@ -690,10 +690,7 @@ const History: NextPage = () => {
                                 {/* No recording file available */}
                                 {!call.recordingfile && (
                                   <td className='px-3 py-4'>
-                                    <div className='flex text-gray-500 dark:text-gray-600'>
-                                      {' '}
-                                      -{' '}
-                                    </div>
+                                    <div className='flex text-gray-500 dark:text-gray-600'> - </div>
                                   </td>
                                 )}
                               </tr>

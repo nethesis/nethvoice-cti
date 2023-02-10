@@ -7,6 +7,7 @@ import {
   faAddressBook as faAddressBookSolid,
   faGear as faGearSolid,
   faGrid2 as faGridSolid,
+  faUsers as faUsersSolid,
 } from '@nethesis/nethesis-solid-svg-icons'
 
 import {
@@ -15,6 +16,7 @@ import {
   faAddressBook as faAddressBookLight,
   faGear as faGearLight,
   faGrid2 as faGridLight,
+  faUsers as faUsersLight,
 } from '@nethesis/nethesis-light-svg-icons'
 
 import { IconDefinition } from '@fortawesome/fontawesome-common-types'
@@ -35,6 +37,7 @@ export const navItems: NavItemsProps[] = [
     iconActive: faHeadsetSolid,
     current: false,
   },
+  { name: 'Queues', href: '/queues', icon: faUsersLight, iconActive: faUsersSolid, current: false },
   {
     name: 'Phonebook',
     href: '/phonebook',

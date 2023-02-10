@@ -1,0 +1,141 @@
+// Copyright (C) 2023 Nethesis S.r.l.
+// SPDX-License-Identifier: AGPL-3.0-or-later
+
+import type { NextPage } from 'next'
+import { useEffect, useState } from 'react'
+import { retrieveQueues } from '../lib/queuesLib'
+import { useTranslation } from 'react-i18next'
+import classNames from 'classnames'
+import { QueuesManagementView, CallsView, StatisticsView } from '../components/queues'
+import { InlineNotification } from '../components/common'
+import { useSelector } from 'react-redux'
+import { RootState } from '../store'
+
+const Queues: NextPage = () => {
+  const { t } = useTranslation()
+  const [queues, setQueues]: any = useState({})
+  const [firstRender, setFirstRender]: any = useState(true)
+  const [isLoaded, setLoaded] = useState(false)
+  const [queuesError, setQueuesError] = useState('')
+  const [currentTab, setCurrentTab] = useState('queues')
+  const { mainextension } = useSelector((state: RootState) => state.user)
+
+  const tabs = [
+    { name: t('Queues.Queues management'), value: 'queues' },
+    { name: t('Queues.Calls'), value: 'calls' },
+    { name: t('Queues.Statistics'), value: 'stats' },
+  ]
+
+  const changeTab = (tabName: string) => {
+    const selectedTab = tabs.find((tab) => tab.name === tabName)
+
+    if (selectedTab) {
+      setCurrentTab(selectedTab.value)
+    }
+  }
+
+  const fetchQueues = async () => {
+    try {
+      setQueuesError('')
+      const res = await retrieveQueues(mainextension)
+
+      Object.keys(res).map((key, index) => {
+        const queue = res[key]
+        //// TODO read expand status from local storage
+        queue.expanded = false
+      })
+      setQueues(res)
+
+      console.log('queues', res) ////
+    } catch (e) {
+      console.error(e)
+      setQueuesError(t('Queues.Cannot retrieve queues') || '')
+    }
+    setLoaded(true)
+  }
+
+  // retrieve queues
+  useEffect(() => {
+    if (firstRender) {
+      setFirstRender(false)
+      return
+    }
+
+    if (!isLoaded && mainextension) {
+      fetchQueues()
+    }
+  }, [firstRender, mainextension, isLoaded])
+
+  return (
+    <>
+      <div>
+        <h1 className='text-2xl font-semibold mb-6 text-gray-900 dark:text-gray-100'>
+          {t('Queues.Queues')}
+        </h1>
+        {/* queues error */}
+        {queuesError && <InlineNotification type='error' title={queuesError}></InlineNotification>}
+        {/* tabs */}
+        {!queuesError && (
+          <>
+            <div className='mb-6'>
+              {/* mobile tabs */}
+              <div className='sm:hidden'>
+                <label htmlFor='tabs' className='sr-only'>
+                  {t('Queues.Select a tab')}
+                </label>
+                <select
+                  id='tabs'
+                  name='tabs'
+                  className='block w-full rounded-md border-gray-300 py-2 pl-3 pr-10 text-base focus:border-primary-500 focus:outline-none focus:ring-primary-500 sm:text-sm'
+                  defaultValue={currentTab}
+                  onChange={(event) => changeTab(event.target.value)}
+                >
+                  {tabs.map((tab) => (
+                    <option key={tab.value}>{tab.name}</option>
+                  ))}
+                </select>
+              </div>
+              {/* desktop tabs */}
+              <div className='hidden sm:block'>
+                <div className='border-b border-gray-300'>
+                  <nav className='-mb-px flex space-x-8' aria-label='Tabs'>
+                    {tabs.map((tab) => (
+                      <a
+                        key={tab.name}
+                        onClick={() => changeTab(tab.name)}
+                        className={classNames(
+                          tab.value === currentTab
+                            ? 'border-primary text-primary'
+                            : 'border-transparent text-gray-500 hover:text-gray-700 hover:border-gray-300',
+                          'cursor-pointer whitespace-nowrap py-4 px-1 border-b-2 font-medium text-sm',
+                        )}
+                        aria-current={tab.value === currentTab ? 'page' : undefined}
+                      >
+                        {tab.name}
+                      </a>
+                    ))}
+                  </nav>
+                </div>
+              </div>
+            </div>
+            <div>
+              {currentTab === 'queues' ? (
+                <QueuesManagementView
+                  queues={queues}
+                  isLoaded={isLoaded}
+                  reloadQueues={fetchQueues}
+                />
+              ) : currentTab === 'calls' ? (
+                <CallsView queues={queues} isLoaded={isLoaded} />
+              ) : currentTab === 'stats' ? (
+                <StatisticsView queues={queues} isLoaded={isLoaded} />
+              ) : null}
+            </div>
+          </>
+        )}
+      </div>
+    </>
+  )
+}
+
+export default Queues

@@ -232,6 +232,7 @@ const Operators: NextPage = () => {
                               src={operator.avatarBase64}
                               placeholderType='operator'
                               size='extra_large'
+                              bordered
                               star={operator.favorite}
                               onClick={() => openShowOperatorDrawer(operator)}
                               className='mx-auto cursor-pointer'
@@ -335,6 +336,7 @@ const Operators: NextPage = () => {
                               src={operator.avatarBase64}
                               placeholderType='operator'
                               size='large'
+                              bordered
                               star={operator.favorite}
                               onClick={() => openShowOperatorDrawer(operator)}
                               className='mx-auto cursor-pointer'

@@ -20,6 +20,9 @@ module.exports = {
         primaryDark: '#047857', // emerald-700
         primaryDarker: '#064e3b', // emerald-900
       },
+      screens: {
+        '3xl': '1792px'
+      }
     },
   },
 }

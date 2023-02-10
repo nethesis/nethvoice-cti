@@ -12,7 +12,7 @@ import { faPhoneXmark, faCircleCheck, faPhone } from '@nethesis/nethesis-solid-s
 import { faBell, faCommentDots } from '@fortawesome/free-regular-svg-icons'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { utcToZonedTime } from 'date-fns-tz'
-import { formatDistanceToNowLoc } from '../../lib/dateTime'
+import { humanDistanceToNowLoc } from '../../lib/dateTime'
 
 export interface NotificationsDrawerContentProps extends ComponentPropsWithRef<'div'> {}
 
@@ -214,7 +214,7 @@ export const NotificationsDrawerContent = forwardRef<
                         title={formatInTimeZoneLoc(new Date(notification.timestamp), 'PPpp', 'UTC')}
                         className='mt-3 text-sm text-gray-500 dark:text-gray-400'
                       >
-                        {formatDistanceToNowLoc(
+                        {humanDistanceToNowLoc(
                           utcToZonedTime(new Date(notification.timestamp), 'UTC'),
                           {
                             addSuffix: true,

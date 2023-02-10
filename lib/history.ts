@@ -193,13 +193,6 @@ export const getFilterValues = (currentUsername: string) => {
   return { contactType, contactDirection, sortBy }
 }
 
-export const getCallTimeToDisplay = (date: any) => {
-  const hour: any = date * 1000
-  let hourWithMilliseconds = new Date(hour)
-  let convertedUtcHour = formatInTimeZoneLoc(hourWithMilliseconds, 'HH:mm', 'UTC')
-  return convertedUtcHour
-}
-
 export const openAddToPhonebookDrawer = (operator: any) => {
   store.dispatch.sideDrawer.update({
     isShown: true,
