@@ -14,7 +14,9 @@ import {
   faPhoneSlash,
   faTicket,
   faUserSecret,
-} from '@fortawesome/free-solid-svg-icons'
+  faPhoneArrowDown,
+  faPhoneArrowUp,
+} from '@nethesis/nethesis-solid-svg-icons'
 import {
   addOperatorToFavorites,
   reloadOperators,
@@ -23,7 +25,6 @@ import {
 import { useSelector } from 'react-redux'
 import { RootState } from '../../store'
 import { CallDuration } from './CallDuration'
-import { HiArrowDownLeft, HiArrowUpRight } from 'react-icons/hi2'
 import { LastCallsDrawerTable } from '../history/LastCallsDrawerTable'
 import { startOfDay, subDays } from 'date-fns'
 import { OperatorSummary } from './OperatorSummary'
@@ -133,8 +134,9 @@ export const ShowOperatorDrawerContent = forwardRef<
                     <dd className='mt-1 text-sm text-gray-900 dark:text-gray-100 sm:col-span-2 sm:mt-0'>
                       {config.conversations[0].direction == 'out' && (
                         <div className='flex items-center text-sm'>
-                          <HiArrowUpRight
-                            className='mr-2 h-5 w-5 text-green-600 dark:text-green-500'
+                          <FontAwesomeIcon
+                            icon={faPhoneArrowUp}
+                            className='mr-2 h-5 w-3.5 text-green-600 dark:text-green-500'
                             aria-hidden='true'
                           />
                           <span className='truncate'>Outgoing</span>
@@ -142,11 +144,12 @@ export const ShowOperatorDrawerContent = forwardRef<
                       )}
                       {config.conversations[0].direction == 'in' && (
                         <div className='flex items-center text-sm'>
-                          <HiArrowDownLeft
-                            className='mr-2 h-5 w-5 text-green-600 dark:text-green-500'
+                          <FontAwesomeIcon
+                            icon={faPhoneArrowDown}
+                            className='mr-2 h-5 w-3.5 text-green-600 dark:text-green-500'
                             aria-hidden='true'
                           />
-                          <span className='truncate'>Ingoing</span>
+                          <span className='truncate'>Incoming</span>
                         </div>
                       )}
                     </dd>

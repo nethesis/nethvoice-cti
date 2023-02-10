@@ -36,8 +36,8 @@ export const NavBar: FC<NavBarProps> = ({ items }) => {
           </Link>
         </div>
         <div className='mt-6 w-full h-full flex flex-col space-y-3 px-2.5 justify-center'>
-          {items.map((item) => (
-            <>
+          {items.map((item, index: number) => (
+            <div key={index}>
               {item.icon.iconName === 'gear' && (
                 <div className='relative'>
                   <div className='absolute inset-0 flex items-center' aria-hidden='true'>
@@ -45,7 +45,7 @@ export const NavBar: FC<NavBarProps> = ({ items }) => {
                   </div>
                 </div>
               )}
-              <Link key={item.name} href={item.href}>
+              <Link href={item.href}>
                 <a
                   className={classNames(
                     item.current
@@ -65,7 +65,7 @@ export const NavBar: FC<NavBarProps> = ({ items }) => {
                   />
                 </a>
               </Link>
-            </>
+            </div>
           ))}
         </div>
       </div>
