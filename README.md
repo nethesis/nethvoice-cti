@@ -1,7 +1,9 @@
 # NethVoice CTI
+
 NethVoice CTI is a web application allows the user to have a web phone to manage calls, modify the phonebook, handle the queues of a switchboard, use the chat between connected users and much more.
 
 ## Type of users
+
 To better understand the needs of the different types of user who use NethVoice CTI, [this file on Figma](https://www.figma.com/file/VGP0wulIn47E7OHADG17A9/Personas?node-id=0%3A1) identifies 4 Personas.
 
 ## Project scaffolding
