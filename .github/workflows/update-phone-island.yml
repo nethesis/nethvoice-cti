@@ -1,0 +1,32 @@
+name: Update phone-island dependency
+
+on:
+  workflow_dispatch:
+
+  schedule:
+    - cron:  "0 0 * * 0"
+
+jobs:
+  update-dependency:
+    name: Update phone-island dependency
+
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v2
+
+      - name: Set up Node.js
+        uses: actions/setup-node@v2
+        with:
+          node-version: '16.x'
+
+      - name: Update dependency
+        run: npm update @nethesis/phone-island --save
+
+      - name: Commit and create PR
+        uses: peter-evans/create-pull-request@v3
+        with:
+          title: 'build(deps): Update phone-island dependency (automated)'
+          branch: 'build-update-phone-island-dependency-automated'
+          commit-message: 'build(deps): NPM: update phone-island dependency (automated)'
