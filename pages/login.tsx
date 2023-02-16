@@ -12,6 +12,7 @@ import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { faCircleNotch, faEye, faEyeSlash } from '@fortawesome/free-solid-svg-icons'
 import { checkDarkTheme } from '../lib/darkTheme'
 import { useTranslation } from 'react-i18next'
+import { faPhone } from '@nethesis/nethesis-thin-svg-icons'
 
 export default function Login() {
   const [pwdVisible, setPwdVisible] = useState(false)
@@ -88,7 +89,7 @@ export default function Login() {
       <div className='flex min-h-full'>
         <div className='flex flex-1 flex-col justify-center py-12 px-4 sm:px-6 lg:flex-none lg:px-20 xl:px-24'>
           <div className='mx-auto w-full max-w-sm lg:w-96'>
-            <div className='flex items-center justify-center'>
+            <div className='flex flex-col items-center justify-center'>
               {' '}
               {/* Nextjs <Image> is not suitable for rebranding: it always uses the aspect ratio of the original logo  */}
               <img
@@ -96,6 +97,14 @@ export default function Login() {
                 src='/login_logo.png'
                 alt='logo'
               />
+              <div className='flex items-center text-primary p-4'>
+                <FontAwesomeIcon
+                  icon={faPhone}
+                  className='mr-1.5 h-5 w-5 flex-shrink-0'
+                  aria-hidden='true'
+                />
+                <span className='cursor-pointer hover:underline'>CTI</span>
+              </div>
             </div>
             <div className='mt-8'>
               <div className='mt-6'>
