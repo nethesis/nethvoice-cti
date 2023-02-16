@@ -103,7 +103,7 @@ export default function Login() {
                   className='mr-1.5 h-5 w-5 flex-shrink-0'
                   aria-hidden='true'
                 />
-                <span className='cursor-pointer hover:underline'>CTI</span>
+                CTI
               </div>
             </div>
             <div className='mt-8'>
