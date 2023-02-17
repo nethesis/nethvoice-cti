@@ -16,10 +16,12 @@ import { checkDarkTheme } from '../lib/darkTheme'
 import { Island } from '../components/island'
 import { getProductName } from '../lib/utils'
 import Head from 'next/head'
+import { loadI18n } from '../lib/i18n'
 
 function MyApp({ Component, pageProps }: AppProps) {
   const [isLoading, setIsLoading] = useState<boolean>(true)
   const router = useRouter()
+  const [firstRenderI18n, setFirstRenderI18n] = useState(true)
 
   useEffect(() => {
     const { username, token } = getCredentials()
@@ -40,6 +42,14 @@ function MyApp({ Component, pageProps }: AppProps) {
 
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [])
+
+  //initialize i18n
+  useEffect(() => {
+    if (firstRenderI18n) {
+      loadI18n()
+      setFirstRenderI18n(false)
+    }
+  }, [firstRenderI18n])
 
   // check if dark theme should be enabled
   useEffect(() => {
