@@ -31,7 +31,7 @@ const Applications: NextPage = () => {
           <div className='flex flex-wrap gap-5'>
             <div className='max-w-sm mt-5 bg-white border-gray-200 rounded-lg shadow dark:bg-gray-900'>
               <div className='bg-emerald-50 rounded-lg flex flex-col justify-center items-center'>
-                <span className='h-10 w-10 overflow-hidden rounded-full bg-emerald-500 flex relative top-[-1.25rem]'>
+                <span className='h-10 w-10 overflow-hidden rounded-full bg-emerald-600 dark:bg-emerald-500 flex relative top-[-1.25rem]'>
                   <FontAwesomeIcon
                     icon={faPhoneVolume}
                     className='h-4 w-4 m-3 rounded-lg text-white'
@@ -60,7 +60,7 @@ const Applications: NextPage = () => {
             </div>
             <div className='max-w-sm mt-5 bg-white border-gray-200 rounded-lg shadow dark:bg-gray-900'>
               <div className='bg-emerald-50 rounded-lg flex flex-col justify-center items-center'>
-                <span className='h-10 w-10 overflow-hidden rounded-full bg-emerald-500 flex relative top-[-1.25rem]'>
+                <span className='h-10 w-10 overflow-hidden rounded-full bg-emerald-600 dark:bg-emerald-500 flex relative top-[-1.25rem]'>
                   <FontAwesomeIcon
                     icon={faCameraSecurity}
                     className='h-4 w-4 m-3 rounded-lg text-white'
@@ -93,7 +93,7 @@ const Applications: NextPage = () => {
             </div>
             <div className='max-w-sm mt-5 bg-white border-gray-200 rounded-lg shadow dark:bg-gray-900'>
               <div className='bg-emerald-50 rounded-lg flex flex-col justify-center items-center'>
-                <span className='h-10 w-10 overflow-hidden rounded-full bg-emerald-500 flex relative top-[-1.25rem]'>
+                <span className='h-10 w-10 overflow-hidden rounded-full bg-emerald-600 dark:bg-emerald-500 flex relative top-[-1.25rem]'>
                   <FontAwesomeIcon
                     icon={faVideo}
                     className='h-4 w-4 m-3 rounded-lg text-white'
@@ -133,7 +133,7 @@ const Applications: NextPage = () => {
           <div className='flex flex-wrap gap-5'>
           <div className='max-w-sm mt-5 bg-white border-gray-200 rounded-lg shadow dark:bg-gray-900'>
               <div className='bg-emerald-50 rounded-lg flex flex-col justify-center items-center'>
-                <span className='h-10 w-10 overflow-hidden rounded-full bg-emerald-500 flex relative top-[-1.25rem]'>
+                <span className='h-10 w-10 overflow-hidden rounded-full bg-emerald-600 dark:bg-emerald-500 flex relative top-[-1.25rem]'>
                   <FontAwesomeIcon
                     icon={faChartSimple}
                     className='h-4 w-4 m-3 rounded-lg text-white'
