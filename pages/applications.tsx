@@ -14,9 +14,14 @@ import {
 } from '@nethesis/nethesis-solid-svg-icons'
 import { Button } from '../components/common'
 import { faPhone } from '@fortawesome/free-solid-svg-icons'
+import { getApiEndpoint } from '../lib/utils'
+import { getApiScheme } from '../lib/utils'
 
 const Applications: NextPage = () => {
   const { t } = useTranslation()
+  const pathCompany = getApiEndpoint()
+  const apiScheme = getApiScheme()
+  const linkNethvoiceReport = apiScheme + pathCompany + '/pbx-report/'
 
   return (
     <>
@@ -158,8 +163,9 @@ const Applications: NextPage = () => {
                     />{' '}
                     <a
                       className='text-gray-700 dark:text-gray-100'
-                      href='/pbx-report/#/cdr'
+                      href={linkNethvoiceReport}
                       target='_blank'
+                      rel='noreferrer'
                     >
                       {t('Applications.Open Nethvoice Report')}
                     </a>
