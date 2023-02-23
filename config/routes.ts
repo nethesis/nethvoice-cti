@@ -6,6 +6,7 @@ import {
   faHeadset as faHeadsetSolid,
   faAddressBook as faAddressBookSolid,
   faGear as faGearSolid,
+  faGrid2 as faGridSolid,
 } from '@nethesis/nethesis-solid-svg-icons'
 
 import {
@@ -13,6 +14,7 @@ import {
   faHeadset as faHeadsetLight,
   faAddressBook as faAddressBookLight,
   faGear as faGearLight,
+  faGrid2 as faGridLight,
 } from '@nethesis/nethesis-light-svg-icons'
 
 import { IconDefinition } from '@fortawesome/fontawesome-common-types'
@@ -45,6 +47,13 @@ export const navItems: NavItemsProps[] = [
     href: '/history',
     icon: faClockRotateLeftLight,
     iconActive: faClockRotateLeftSolid,
+    current: false,
+  },
+  {
+    name: 'Applications',
+    href: '/applications',
+    icon: faGridLight,
+    iconActive: faGridSolid,
     current: false,
   },
   {

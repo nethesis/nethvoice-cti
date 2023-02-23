@@ -42,5 +42,19 @@
     "Layout": "Layout",
     "Filter operators": "Filter operators",
     "Status": "Status"
+  },
+  "Applications": {
+    "Applications": "Applicazioni",
+    "Internal": "Interne",
+    "Telephone lines and announcements": "Telephone lines and announcements",
+    "Manage your phone lines, activate announcements, voicemail or forward calls": "Manage your phone lines, activate announcements, voicemail or forward calls",
+    "Activate announcements, voicemail or forward calls": "Activate announcements, voicemail or forward calls",
+    "Video sources": "Video sources",
+    "View streams from different sources such as IP video cameras or video intercoms": "View streams from different sources such as IP video cameras or video intercoms",
+    "Video conference": "Video conference",
+    "Start a conference with the ability to share audio, video or your screen with multiple contacts": "Start a conference with the ability to share audio, video or your screen with multiple contacts",
+    "External": "External",
+    "Access the complete tool for consulting reports": "Access the complete tool for consulting reports",
+    "Open Nethvoice Report": "Open Nethvoice Report"
   }
 }
