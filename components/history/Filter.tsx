@@ -20,6 +20,7 @@ import {
 } from '../../lib/history'
 import { formatDateLoc } from '../../lib/dateTime'
 import { parse, subDays, startOfDay } from 'date-fns'
+import { useTranslation } from 'react-i18next'
 
 //Filter for the sort
 const sortFilter = {
@@ -314,6 +315,8 @@ export const Filter = forwardRef<HTMLButtonElement, FilterProps>(
       checkSelected(DEFAULT_CONTACT_TYPE_FILTER)
     }
 
+    const { t } = useTranslation()
+
     return (
       <div className={classNames('bg-gray-100 dark:bg-gray-800', className)} {...props}>
         <div className=''>
@@ -345,14 +348,14 @@ export const Filter = forwardRef<HTMLButtonElement, FilterProps>(
                   <Dialog.Panel className='relative ml-auto flex h-full w-full max-w-xs flex-col overflow-y-auto py-4 pb-6 shadow-xl bg-white dark:bg-gray-900'>
                     <div className='flex items-center justify-between px-4'>
                       <h2 className='text-lg font-medium text-gray-900 dark:text-gray-100'>
-                        Filters
+                        {t('History.Filters')}
                       </h2>
                       <button
                         type='button'
                         className='-mr-2 flex h-10 w-10 items-center justify-center rounded-md focus:outline-none focus:ring-2 p-2 bg-white text-gray-400 hover:bg-gray-50 focus:ring-primaryLight dark:bg-gray-900 dark:text-gray-400 dark:hover:bg-gray-800 dark:focus:ring-primaryDark'
                         onClick={() => setOpen(false)}
                       >
-                        <span className='sr-only'>Close menu</span>
+                        <span className='sr-only'>{t('Common.Close menu')}</span>
                         <FontAwesomeIcon icon={faXmark} className='h-5 w-5' aria-hidden='true' />
                       </button>
                     </div>
@@ -370,7 +373,7 @@ export const Filter = forwardRef<HTMLButtonElement, FilterProps>(
                             <h3 className='-mx-2 -my-3 flow-root'>
                               <Disclosure.Button className='flex w-full items-center justify-between px-2 py-3 text-sm bg-white text-gray-400 dark:bg-gray-900 dark:text-gray-500'>
                                 <span className='font-medium text-gray-900 dark:text-gray-100'>
-                                  {contactTypeFilter.name}
+                                  {t(`History.${contactTypeFilter.name}`)}
                                 </span>
                                 <span className='ml-6 flex items-center'>
                                   <FontAwesomeIcon
@@ -403,7 +406,7 @@ export const Filter = forwardRef<HTMLButtonElement, FilterProps>(
                                       htmlFor={option.value}
                                       className='ml-3 block text-sm font-medium text-gray-700 dark:text-gray-200'
                                     >
-                                      {option.label}
+                                      {t(`History.${option.label}`)}
                                     </label>
                                   </div>
                                 ))}
@@ -444,7 +447,7 @@ export const Filter = forwardRef<HTMLButtonElement, FilterProps>(
                                         htmlFor={option.value}
                                         className='ml-3 block text-sm font-medium text-gray-700 dark:text-gray-200'
                                       >
-                                        {option.label}
+                                        {t(`History.${option.label}`)}
                                       </label>
                                     </div>
                                   ))}
@@ -470,7 +473,7 @@ export const Filter = forwardRef<HTMLButtonElement, FilterProps>(
                                         htmlFor={option.value}
                                         className='ml-3 block text-sm font-medium text-gray-700 dark:text-gray-200'
                                       >
-                                        {option.label}
+                                        {t(`History.${option.label}`)}
                                       </label>
                                     </div>
                                   ))}
@@ -494,7 +497,7 @@ export const Filter = forwardRef<HTMLButtonElement, FilterProps>(
                             <h3 className='-mx-2 -my-3 flow-root'>
                               <Disclosure.Button className='flex w-full items-center justify-between bg-white px-2 py-3 text-sm text-gray-400 dark:bg-gray-900 dark:text-gray-500'>
                                 <span className='font-medium text-gray-900 dark:text-gray-100'>
-                                  {date.name}
+                                  {t(`History.${date.name}`)}
                                 </span>
                                 <span className='ml-6 flex items-center'>
                                   <FontAwesomeIcon
@@ -559,7 +562,7 @@ export const Filter = forwardRef<HTMLButtonElement, FilterProps>(
                             <h3 className='-mx-2 -my-3 flow-root'>
                               <Disclosure.Button className='flex w-full items-center justify-between bg-white px-2 py-3 text-sm text-gray-400 dark:bg-gray-900 dark:text-gray-500'>
                                 <span className='font-medium text-gray-900 dark:text-gray-100'>
-                                  {sortFilter.name}
+                                  {t(`History.${sortFilter.name}`)}
                                 </span>
                                 <span className='ml-6 flex items-center'>
                                   <FontAwesomeIcon
@@ -575,7 +578,9 @@ export const Filter = forwardRef<HTMLButtonElement, FilterProps>(
                             </h3>
                             <Disclosure.Panel className='pt-6 flex flex-col'>
                               <fieldset>
-                                <legend className='sr-only'>{sortFilter.name}</legend>
+                                <legend className='sr-only'>
+                                  {t(`History.${sortFilter.name}`)}
+                                </legend>
                               </fieldset>
                               <div className='space-y-4'>
                                 {sortFilter.options.map((option) => (
@@ -592,7 +597,7 @@ export const Filter = forwardRef<HTMLButtonElement, FilterProps>(
                                       htmlFor={option.value}
                                       className='ml-3 block text-sm font-medium text-gray-700 dark:text-gray-200 space-y-4'
                                     >
-                                      {option.label}
+                                      {t(`History.${option.label}`)}
                                     </label>
                                   </div>
                                 ))}
@@ -612,13 +617,13 @@ export const Filter = forwardRef<HTMLButtonElement, FilterProps>(
           <div className='mx-auto text-center'>
             <section aria-labelledby='filter-heading' className='pb-4'>
               <h2 id='filter-heading' className='sr-only'>
-                History filters
+                {t('History.History filters')}
               </h2>
 
               <div className='flex items-center justify-between'>
                 <div className='flex items-center'>
                   <TextInput
-                    placeholder='Filter by name or number'
+                    placeholder={t('History.Filter by name or number') || ''}
                     className='max-w-lg'
                     value={filterText}
                     onChange={changeFilterText}
@@ -639,7 +644,7 @@ export const Filter = forwardRef<HTMLButtonElement, FilterProps>(
                     >
                       <div>
                         <Popover.Button className='group inline-flex items-center justify-center text-sm font-medium text-gray-700 hover:text-gray-900 dark:text-gray-200 dark:hover:text-gray-100'>
-                          <span>{contactTypeFilter.name}</span>
+                          <span> {t(`History.${contactTypeFilter.name}`)}</span>
                           <FontAwesomeIcon
                             icon={faChevronDown}
                             className='ml-2 h-3 w-3 flex-shrink-0 text-gray-400 group-hover:text-gray-500 dark:text-gray-500 dark:group-hover:text-gray-400'
@@ -673,7 +678,7 @@ export const Filter = forwardRef<HTMLButtonElement, FilterProps>(
                                   htmlFor={option.value}
                                   className='ml-3 block text-sm font-medium text-gray-700 dark:text-gray-200'
                                 >
-                                  {option.label}
+                                  {t(`History.${option.label}`)}
                                 </label>
                               </div>
                             ))}
@@ -707,7 +712,7 @@ export const Filter = forwardRef<HTMLButtonElement, FilterProps>(
                                     htmlFor={option.value}
                                     className='ml-3 block text-sm font-medium text-gray-700 dark:text-gray-200'
                                   >
-                                    {option.label}
+                                    {t(`History.${option.label}`)}
                                   </label>
                                 </div>
                               ))}
@@ -733,7 +738,7 @@ export const Filter = forwardRef<HTMLButtonElement, FilterProps>(
                                     htmlFor={option.value}
                                     className='ml-3 block text-sm font-medium text-gray-700 dark:text-gray-200'
                                   >
-                                    {option.label}
+                                    {t(`History.${option.label}`)}
                                   </label>
                                 </div>
                               ))}
@@ -747,7 +752,7 @@ export const Filter = forwardRef<HTMLButtonElement, FilterProps>(
                     <Popover className='relative inline-block text-left'>
                       <div>
                         <Popover.Button className='group inline-flex items-center justify-center text-sm font-medium text-gray-700 hover:text-gray-900 dark:text-gray-200 dark:hover:text-gray-100'>
-                          <span>{date.name}</span>
+                          <span> {t(`History.${date.name}`)}</span>
                           <FontAwesomeIcon
                             icon={faChevronDown}
                             className='ml-2 h-3 w-3 flex-shrink-0 text-gray-400 group-hover:text-gray-500 dark:text-gray-500 dark:group-hover:text-gray-400'
@@ -805,7 +810,7 @@ export const Filter = forwardRef<HTMLButtonElement, FilterProps>(
                     >
                       <div>
                         <Popover.Button className='group inline-flex items-center justify-center text-sm font-medium text-gray-700 hover:text-gray-900 dark:text-gray-200 dark:hover:text-gray-100'>
-                          <span>{sortFilter.name}</span>
+                          <span>{t(`History.${sortFilter.name}`)}</span>
                           <FontAwesomeIcon
                             icon={faChevronDown}
                             className='ml-2 h-3 w-3 flex-shrink-0 text-gray-400 group-hover:text-gray-500 dark:text-gray-500 dark:group-hover:text-gray-400'
@@ -839,7 +844,7 @@ export const Filter = forwardRef<HTMLButtonElement, FilterProps>(
                                   htmlFor={option.value}
                                   className='ml-3 block text-sm font-medium text-gray-700 dark:text-gray-200'
                                 >
-                                  {option.label}
+                                  {t(`History.${option.label}`)}
                                 </label>
                               </div>
                             ))}
@@ -853,7 +858,7 @@ export const Filter = forwardRef<HTMLButtonElement, FilterProps>(
                     className='inline-block text-sm font-medium text-gray-700 hover:text-gray-900 sm:hidden ml-4'
                     onClick={() => setOpen(true)}
                   >
-                    Filters
+                    {t('History.Filters')}
                   </button>
                 </div>
               </div>
@@ -862,7 +867,7 @@ export const Filter = forwardRef<HTMLButtonElement, FilterProps>(
               <div>
                 <div className='mx-auto pt-3 flex flex-wrap items-center'>
                   <h3 className='text-sm font-medium my-1 text-gray-500 dark:text-gray-400'>
-                    Active filters
+                    {t('Common.Active filters')}
                   </h3>
                   <div
                     aria-hidden='true'
@@ -871,8 +876,10 @@ export const Filter = forwardRef<HTMLButtonElement, FilterProps>(
                   <div className='mr-4 my-1'>
                     <div className='-m-1 flex flex-wrap items-center'>
                       <span className='m-1 inline-flex items-center rounded-full border py-1.5 px-3 text-sm font-medium border-gray-200 bg-white text-gray-700 dark:border-gray-700 dark:bg-gray-900 dark:text-gray-200'>
-                        <span className='text-gray-500 dark:text-gray-400'>Call type:&nbsp;</span>
-                        {contactTypeLabel}
+                        <span className='text-gray-500 dark:text-gray-400'>
+                          {t('History.Call type')}:&nbsp;
+                        </span>
+                        {contactTypeLabel && t(`History.${contactTypeLabel}`)}
                       </span>
                     </div>
                   </div>
@@ -880,16 +887,18 @@ export const Filter = forwardRef<HTMLButtonElement, FilterProps>(
                     <div className='-m-1 flex flex-wrap items-center'>
                       <span className='m-1 inline-flex items-center rounded-full border py-1.5 px-3 text-sm font-medium border-gray-200 bg-white text-gray-700 dark:border-gray-700 dark:bg-gray-900 dark:text-gray-200'>
                         <span className='text-gray-500 dark:text-gray-400'>
-                          Call direction:&nbsp;
+                          {t('History.Call direction')}:&nbsp;
                         </span>
-                        {contactDirectionLabel}
+                        {contactDirectionLabel && t(`History.${contactDirectionLabel}`)}
                       </span>
                     </div>
                   </div>
                   <div className='mr-4 my-1'>
                     <div className='-m-1 flex flex-wrap items-center'>
                       <span className='m-1 inline-flex items-center rounded-full border py-1.5 px-3 text-sm font-medium border-gray-200 bg-white text-gray-700 dark:border-gray-700 dark:bg-gray-900 dark:text-gray-200'>
-                        <span className='text-gray-500 dark:text-gray-400'>From:&nbsp;</span>
+                        <span className='text-gray-500 dark:text-gray-400'>
+                          {t('History.From')}:&nbsp;
+                        </span>
                         {!dateBeginValue || clearSelected ? labelForDateFrom : dateBeginShowed}
                       </span>
                     </div>
@@ -897,7 +906,9 @@ export const Filter = forwardRef<HTMLButtonElement, FilterProps>(
                   <div className='mr-4 my-1'>
                     <div className='-m-1 flex flex-wrap items-center'>
                       <span className='m-1 inline-flex items-center rounded-full border py-1.5 px-3 text-sm font-medium border-gray-200 bg-white text-gray-700 dark:border-gray-700 dark:bg-gray-900 dark:text-gray-200'>
-                        <span className='text-gray-500 dark:text-gray-400'>To:&nbsp;</span>
+                        <span className='text-gray-500 dark:text-gray-400'>
+                          {t('History.To')}:&nbsp;
+                        </span>
                         {!dateEndValue || clearSelected ? labelForDateTo : dateEndShowed}
                       </span>
                     </div>
@@ -912,7 +923,7 @@ export const Filter = forwardRef<HTMLButtonElement, FilterProps>(
                       className='my-1 text-sm hover:underline text-gray-700 dark:text-gray-200'
                       onClick={clearFilters}
                     >
-                      Reset filters
+                      {t('Common.Reset filters')}
                     </button>
                   </div>
                 </div>

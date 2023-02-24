@@ -23,11 +23,13 @@ import {
 } from '@nethesis/nethesis-solid-svg-icons'
 import { formatDateLoc } from '../lib/dateTime'
 import { subDays, startOfDay } from 'date-fns'
+import { useTranslation } from 'react-i18next'
 
 const History: NextPage = () => {
   const [isHistoryLoaded, setHistoryLoaded] = useState(false)
   const [history, setHistory]: any = useState({})
   const [pageNum, setPageNum]: any = useState(1)
+  const { t } = useTranslation()
 
   const [filterText, setFilterText]: any = useState('')
 
@@ -356,7 +358,10 @@ const History: NextPage = () => {
                       className='mr-2 h-5 w-3.5 text-green-600 dark:text-green-500'
                       aria-hidden='true'
                     />
-                    <span className='text-gray-900 dark:text-gray-100'>Incoming answered</span>
+                    <span className='text-gray-900 dark:text-gray-100'>
+                      {' '}
+                      {t('History.Incoming answered')}
+                    </span>
                   </div>
                 ) : (
                   <div className='flex flex-nowrap items-center'>
@@ -365,7 +370,9 @@ const History: NextPage = () => {
                       className='mr-2 h-5 w-4 text-red-400'
                       aria-hidden='true'
                     />
-                    <span className='text-gray-900 dark:text-gray-100'>Incoming missed</span>
+                    <span className='text-gray-900 dark:text-gray-100'>
+                      {t('History.Incoming missed')}
+                    </span>
                   </div>
                 )}
               </div>
@@ -379,7 +386,10 @@ const History: NextPage = () => {
                       className='mr-2 h-5 w-3.5 text-green-600 dark:text-green-500'
                       aria-hidden='true'
                     />
-                    <span className='text-gray-900 dark:text-gray-100'>Outgoing answered</span>
+                    <span className='text-gray-900 dark:text-gray-100'>
+                      {' '}
+                      {t('History.Outgoing answered')}
+                    </span>
                   </div>
                 ) : (
                   <div className='flex flex-nowrap items-center'>
@@ -388,7 +398,10 @@ const History: NextPage = () => {
                       className='mr-2 h-5 w-3.5 text-red-400'
                       aria-hidden='true'
                     />
-                    <span className='text-gray-900 dark:text-gray-100'>Outgoing missed</span>
+                    <span className='text-gray-900 dark:text-gray-100'>
+                      {' '}
+                      {t('History.Outgoing missed')}
+                    </span>
                   </div>
                 )}
               </div>
@@ -411,7 +424,10 @@ const History: NextPage = () => {
                       className='mr-2 h-4 w-4 flex-shrink-0 text-green-600 dark:text-green-500'
                       aria-hidden='true'
                     />
-                    <span className='text-gray-900 dark:text-gray-100'>Internal answered</span>
+                    <span className='text-gray-900 dark:text-gray-100'>
+                      {' '}
+                      {t('History.Internal answered')}
+                    </span>
                   </div>
                 ) : (
                   <div className='flex flex-nowrap'>
@@ -420,7 +436,9 @@ const History: NextPage = () => {
                       className='mr-2 h-4 w-4 flex-shrink-0 text-red-400'
                       aria-hidden='true'
                     />
-                    <span className='text-gray-900 dark:text-gray-100'>Internal missed</span>
+                    <span className='text-gray-900 dark:text-gray-100'>
+                      {t('History.Internal missed')}
+                    </span>
                   </div>
                 )}
               </div>
@@ -436,7 +454,9 @@ const History: NextPage = () => {
                           className='mr-2 h-5 w-3.5 text-green-600 dark:text-green-500'
                           aria-hidden='true'
                         />
-                        <span className='text-gray-900 dark:text-gray-100'>Incoming answered</span>
+                        <span className='text-gray-900 dark:text-gray-100'>
+                          {t('History.Incoming answered')}
+                        </span>
                       </div>
                     ) : (
                       <div className='flex flex-nowrap'>
@@ -445,7 +465,10 @@ const History: NextPage = () => {
                           className='mr-2 h-5 w-4 text-red-400'
                           aria-hidden='true'
                         />
-                        <span className='text-gray-900 dark:text-gray-100'>Incoming missed</span>
+                        <span className='text-gray-900 dark:text-gray-100'>
+                          {' '}
+                          {t('History.Incoming missed')}
+                        </span>
                       </div>
                     )}
                   </div>
@@ -460,7 +483,10 @@ const History: NextPage = () => {
                           className='mr-2 h-5 w-3.5 text-green-600 dark:text-green-500'
                           aria-hidden='true'
                         />
-                        <span className='text-gray-900 dark:text-gray-100'>Outgoing answered</span>
+                        <span className='text-gray-900 dark:text-gray-100'>
+                          {' '}
+                          {t('History.Outgoing answered')}
+                        </span>
                       </div>
                     ) : (
                       <div className='flex flex-nowrap'>
@@ -469,7 +495,10 @@ const History: NextPage = () => {
                           className='mr-2 h-5 w-3.5 text-red-400'
                           aria-hidden='true'
                         />
-                        <span className='text-gray-900 dark:text-gray-100'>Outgoing missed</span>
+                        <span className='text-gray-900 dark:text-gray-100'>
+                          {' '}
+                          {t('History.Outgoing missed')}
+                        </span>
                       </div>
                     )}
                   </div>
@@ -485,7 +514,9 @@ const History: NextPage = () => {
   return (
     <>
       <div>
-        <h1 className='text-2xl font-semibold mb-6 text-gray-900 dark:text-gray-100'>History</h1>
+        <h1 className='text-2xl font-semibold mb-6 text-gray-900 dark:text-gray-100'>
+          {t('History.History')}
+        </h1>
         <Filter
           updateFilterText={debouncedUpdateFilterText}
           updateContactTypeFilter={updateContactTypeFilter}
@@ -682,13 +713,15 @@ const History: NextPage = () => {
           >
             <div className='hidden sm:block'>
               <p className='text-sm text-gray-700 dark:text-gray-200'>
-                Showing <span className='font-medium'>{PAGE_SIZE * (pageNum - 1) + 1}</span> to{' '}
+                {t('Common.Showing')}{' '}
+                <span className='font-medium'>{PAGE_SIZE * (pageNum - 1) + 1}</span> -&nbsp;
                 <span className='font-medium'>
                   {PAGE_SIZE * (pageNum - 1) + PAGE_SIZE < history?.count
                     ? PAGE_SIZE * (pageNum - 1) + PAGE_SIZE
                     : history?.count}
                 </span>{' '}
-                of <span className='font-medium'>{history?.count}</span> calls
+                {t('Common.of')} <span className='font-medium'>{history?.count}</span>{' '}
+                {t('History.calls')}
               </p>
             </div>
             <div className='flex flex-1 justify-between sm:justify-end'>
@@ -700,7 +733,7 @@ const History: NextPage = () => {
                 className='flex items-center'
               >
                 <FontAwesomeIcon icon={faChevronLeft} className='mr-2 h-4 w-4' />
-                <span>Previous page</span>
+                <span>{t('Common.Previous page')}</span>
               </Button>
               <Button
                 type='button'
@@ -709,7 +742,7 @@ const History: NextPage = () => {
                 disabled={isNextPageButtonDisabled()}
                 onClick={() => goToNextPage()}
               >
-                <span>Next page</span>
+                <span>{t('Common.Next page')}</span>
                 <FontAwesomeIcon icon={faChevronRight} className='ml-2 h-4 w-4' />
               </Button>
             </div>
