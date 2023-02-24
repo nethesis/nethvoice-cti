@@ -114,7 +114,7 @@ const Applications: NextPage = () => {
                 </div>
               </div>
               <div className='bg-white dark:bg-gray-900 p-5 px-12 rounded-lg flex flex-col justify-center'>
-                <div className='mb-4 font-normal text-xs justify-center items-center text-gray-600 dark:text-gray-400'>
+                <div className='mb-8 font-normal text-xs justify-center items-center text-gray-600 dark:text-gray-400'>
                   <p className='text-center'>
                     {t(
                       'Applications.Start a conference with the ability to share audio, video or your screen with multiple contacts',
