@@ -106,5 +106,18 @@
     "The configuration string below is shown only once. If you will need it later, please save it in a safe place": "The configuration string below is shown only once. If you will need it later, please save it in a safe place",
     "Any phone widget using the current configuration will stop working": "Any phone widget using the current configuration will stop working",
     "Revoke widget configuration": "Revoke widget configuration"
+  },
+  "TopBar": {
+    "Signed in as": "Signed in as",
+    "Switch to light theme": "Switch to light theme",
+    "Switch to dark theme": "Switch to dark theme",
+    "Logout": "Logout",
+    "Make and receive phone calls": "Make and receive phone calls.",
+    "Forward incoming calls to another phone number": "Forward incoming calls to another phone number.",
+    "Do not disturb": "Do not disturb",
+    "Do not receive any calls": "Do not receive any calls.",
+    "Online": "Online",
+    "Call forward": "Call forward",
+    "Enter phone number for call forward": "Enter phone number for call forward"
   }
 }

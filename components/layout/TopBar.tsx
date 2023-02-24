@@ -31,11 +31,12 @@ import {
   faMoon,
   faBell,
   faChevronRight,
-} from '@fortawesome/free-solid-svg-icons'
+} from '@nethesis/nethesis-solid-svg-icons'
 import { getUserInfo } from '../../services/user'
 import { setTheme } from '../../lib/darkTheme'
 import { loadNotificationsFromStorage } from '../../lib/notifications'
 import { GlobalSearch } from './GlobalSearch'
+import { useTranslation } from 'react-i18next'
 
 interface TopBarProps {
   openMobileCb: () => void
@@ -52,6 +53,7 @@ export const TopBar: FC<TopBarProps> = ({ openMobileCb }) => {
   const [firstNotificationsRender, setFirstNotificationsRender]: any = useState(true)
   const authStore = useSelector((state: RootState) => state.authentication)
   const notificationsStore = useSelector((state: RootState) => state.notifications)
+  const { t } = useTranslation()
 
   // get notifications on page load
   useEffect(() => {
@@ -172,7 +174,7 @@ export const TopBar: FC<TopBarProps> = ({ openMobileCb }) => {
     <>
       <div className='cursor-default'>
         <Dropdown.Header>
-          <span className='block text-sm mb-1'>Signed in as</span>
+          <span className='block text-sm mb-1'>{t('TopBar.Signed in as')}</span>
           <span className='text-sm font-medium flex justify-between'>
             <span className='truncate pr-2'>{name}</span>
             <span className='text-sm font-normal'>{mainextension}</span>
@@ -214,9 +216,11 @@ export const TopBar: FC<TopBarProps> = ({ openMobileCb }) => {
                       <div>
                         <div className='flex items-center'>
                           <StatusDot status='online' className='flex mr-2' />
-                          <p className='flex text-sm font-medium'> Online</p>
+                          <p className='flex text-sm font-medium'>{t('TopBar.Online')}</p>
                         </div>
-                        <p className='text-sm text-gray-500'>Make and receive phone calls.</p>
+                        <p className='text-sm text-gray-500'>
+                          {t('TopBar.Make and receive phone calls')}
+                        </p>
                       </div>
                     </a>
                     <a
@@ -226,10 +230,10 @@ export const TopBar: FC<TopBarProps> = ({ openMobileCb }) => {
                       <div className=''>
                         <div className='flex items-center'>
                           <StatusDot status='callforward' className='flex mr-2' />
-                          <p className='flex text-sm font-medium'> Call forward</p>
+                          <p className='flex text-sm font-medium'> {t('TopBar.Call forward')}</p>
                         </div>
                         <p className='text-sm text-gray-500'>
-                          Forward incoming calls to another phone number.
+                          {t('TopBar.Forward incoming calls to another phone number')}
                         </p>
                       </div>
                     </a>
@@ -245,9 +249,11 @@ export const TopBar: FC<TopBarProps> = ({ openMobileCb }) => {
                       <div>
                         <div className='flex items-center'>
                           <StatusDot status='dnd' className='flex mr-2' />
-                          <p className='flex text-sm font-medium'> Do not disturb</p>
+                          <p className='flex text-sm font-medium'>{t('TopBar.Do not disturb')}</p>
                         </div>
-                        <p className='text-sm text-gray-500'>Do not receive any calls.</p>
+                        <p className='text-sm text-gray-500'>
+                          {t('TopBar.Do not receive any calls')}
+                        </p>
                       </div>
                     </a>
                   </div>
@@ -268,11 +274,11 @@ export const TopBar: FC<TopBarProps> = ({ openMobileCb }) => {
       >
         {theme === 'dark' ||
         (theme === 'system' && window.matchMedia('(prefers-color-scheme: dark)').matches)
-          ? 'Switch to light theme'
-          : 'Switch to dark theme'}
+          ? `${t('TopBar.Switch to light theme')}`
+          : `${t('TopBar.Switch to dark theme')}`}
       </Dropdown.Item>
       <Dropdown.Item icon={faArrowRightFromBracket} onClick={doLogout}>
-        Logout
+        {t('TopBar.Logout')}
       </Dropdown.Item>
     </>
   )
@@ -340,7 +346,7 @@ export const TopBar: FC<TopBarProps> = ({ openMobileCb }) => {
               <Modal.Content>
                 <div className='mt-3 text-center sm:mt-0 sm:text-left w-full'>
                   <h3 className='text-lg font-medium leading-6 text-center text-gray-900 dark:text-gray-100'>
-                    Enter phone number for call forward
+                    {t('TopBar.Enter phone number for call forward')}
                   </h3>
                   <div className='mt-3 flex flex-col gap-2'>
                     <TextInput placeholder='Phone number' name='number' ref={numberInputRef} />
@@ -349,10 +355,10 @@ export const TopBar: FC<TopBarProps> = ({ openMobileCb }) => {
               </Modal.Content>
               <Modal.Actions>
                 <Button variant='primary' onClick={() => closedModalSaved()}>
-                  Save
+                  {t('Common.Save')}
                 </Button>
                 <Button variant='white' onClick={() => setShowPresenceModal(false)}>
-                  Cancel
+                  {t('Common.Cancel')}
                 </Button>
               </Modal.Actions>
             </form>

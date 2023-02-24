@@ -9,7 +9,8 @@
     "Next page": "Pagina successiva",
     "Previous page": "Pagina precedente",
     "Coming soon": "Prossimamente",
-    "Cancel": "Annulla"
+    "Cancel": "Annulla",
+    "Save": "Salva"
   },
   "Login": {
     "User": "Utente",
@@ -106,5 +107,18 @@
     "The configuration string below is shown only once. If you will need it later, please save it in a safe place": "La stringa di configurazione sottostante viene mostrata solo una volta. Se ne avrai bisogno in seguito, conservalo in un luogo sicuro",
     "Any phone widget using the current configuration will stop working": "Qualsiasi widget del telefono che utilizza la configurazione corrente smetterà di funzionare",
     "Revoke widget configuration": "Revoca la configurazione del widget"
+  },
+  "TopBar": {
+    "Signed in as": "Effettuato l'accesso come",
+    "Switch to light theme": "Passa al tema chiaro",
+    "Switch to dark theme": "Passa al tema scuro",
+    "Logout": "Disconnettiti",
+    "Make and receive phone calls": "Effettua e ricevi telefonate.",
+    "Forward incoming calls to another phone number": "Inoltra le chiamate in arrivo a un altro numero di telefono.",
+    "Do not disturb": "Non disturbare",
+    "Do not receive any calls": "Non ricevere alcuna chiamata.",
+    "Online": "Disponibile",
+    "Call forward": "Inoltro",
+    "Enter phone number for call forward": "Immettere il numero di telefono per l'inoltro di chiamata"
   }
 }
