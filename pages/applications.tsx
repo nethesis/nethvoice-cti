@@ -50,11 +50,13 @@ const Applications: NextPage = () => {
                 </div>
               </div>
               <div className='bg-white dark:bg-gray-900 p-5 px-12 rounded-lg flex flex-col justify-center'>
-                <p className='text-center mb-8 font-normal text-xs justify-center items-center text-gray-600 dark:text-gray-400'>
+               <div className='mb-8 font-normal text-xs justify-center items-center text-gray-600 dark:text-gray-400'>
+                <p className='text-center'>
                   {t(
                     'Applications.Manage your phone lines, activate announcements, voicemail or forward calls',
                   )}
                 </p>
+               </div>
                 <div className='text-gray-900 dark:text-gray-100 text-sm flex items-center justify-center'>
                   <span className='font-semibold'>Coming soon..</span>
                   {/* <FontAwesomeIcon
@@ -152,11 +154,13 @@ const Applications: NextPage = () => {
                 </div>
               </div>
               <div className='bg-white dark:bg-gray-900 p-5 px-12 rounded-lg flex flex-col justify-center'>
-                <p className='text-center mb-8 font-normal text-xs justify-center items-center text-gray-600 dark:text-gray-400'>
-                  {t('Applications.Access the complete tool for consulting reports')}
-                </p>
-                <div className='text-sm flex items-center justify-center'>
-                  <Button size='small' variant='white'>
+                <div className='mb-8 font-normal text-xs justify-center items-center text-gray-600 dark:text-gray-400'>
+                  <p className='text-center'>
+                    {t('Applications.Access the complete tool for consulting reports')}
+                  </p>
+                </div>
+                <div className='text-gray-900 dark:text-gray-100 text-sm flex items-center justify-center'>
+                <Button size='small' variant='white'>
                     <FontAwesomeIcon
                       icon={faArrowUpRightFromSquare}
                       className='mr-2 h-4 w-4 text-gray-500 dark:text-gray-100'
@@ -170,7 +174,6 @@ const Applications: NextPage = () => {
                       {t('Applications.Open Nethvoice Report')}
                     </a>
                   </Button>
-                  {/* <span className='font-semibold'>Coming soon..</span> */}
                   {/* <FontAwesomeIcon
                 icon={faArrowRight}
                 className='h-4 w-4 ml-1 content-center'
