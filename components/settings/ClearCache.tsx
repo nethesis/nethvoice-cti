@@ -8,6 +8,7 @@ import { getProductName } from '../../lib/utils'
 import { useSelector } from 'react-redux'
 import { RootState } from '../../store'
 import { useState } from 'react'
+import { useTranslation } from 'react-i18next'
 
 export const ClearCache = () => {
   const productName = getProductName()
@@ -17,6 +18,8 @@ export const ClearCache = () => {
   const { username } = authenticationStore
   //Create the variable that will be used to clear the cache
   const [isCacheCleared, setCacheCleared] = useState(false)
+
+  const { t } = useTranslation()
 
   const clearCache = () => {
     localStorage.removeItem('caches-' + username)
@@ -30,7 +33,7 @@ export const ClearCache = () => {
           <div className='bg-white py-6 px-4 sm:p-6 w-full dark:bg-gray-900'>
             <div>
               <h2 className='text-lg font-medium leading-6 text-gray-900 dark:text-gray-100 mb-6'>
-                Cache
+                {t('Settings.Cache')}
               </h2>
             </div>
             <div>
@@ -38,10 +41,11 @@ export const ClearCache = () => {
                 id='clear-cache-heading'
                 className='text-sm font-medium leading-6 text-gray-900 dark:text-gray-100'
               >
-                Clear cache
+                {t('Settings.Clear cache')}
               </h4>
               <p className='mt-1 text-sm text-gray-500 dark:text-gray-400'>
-                This will force {productName} to reload all cached data from the server
+                {t('Settings.This will force')} {productName}{' '}
+                {t('Settings.to reload all cached data from the server')}
               </p>
               <div className='mt-6'>
                 <Button
@@ -51,7 +55,7 @@ export const ClearCache = () => {
                   }}
                   disabled={isCacheCleared}
                 >
-                  <span>Clear cache</span>
+                  <span>{t('Settings.Clear cache')}</span>
                   <FontAwesomeIcon icon={faTrashCan} className='ml-2 h-4 w-4' />
                 </Button>
                 {isCacheCleared && (

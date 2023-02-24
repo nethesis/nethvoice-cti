@@ -8,7 +8,8 @@
     "Close menu": "Close menu",
     "Next page": "Next page",
     "Previous page": "Previous page",
-    "Coming soon": "Coming soon"
+    "Coming soon": "Coming soon",
+    "Cancel": "Cancel"
   },
   "Login": {
     "User": "User",
@@ -85,5 +86,25 @@
     "External": "External",
     "Access the complete tool for consulting reports": "Access the complete tool for consulting reports.",
     "Open PBX Report": "Open PBX Report"
+  },
+  "Settings": {
+    "Theme": "Theme",
+    "Integrations": "Integrations",
+    "System": "System",
+    "Light": "Light",
+    "Dark": "Dark",
+    "Phone widget configuration": "Phone widget configuration",
+    "Settings": "Settings",
+    "Cache": "Cache",
+    "Use light or dark theme according to system preferences": "Use light or dark theme according to system preferences",
+    "Clear cache": "Clear cache",
+    "This will force": "This will force",
+    "to reload all cached data from the server": "to reload all cached data from the server",
+    "Anytime the user starts or receives a phone call, a floating phone widget is shown on CTI user interface. This widget can be imported and used into other web applications. Click the button below to get the configuration string needed to import the phone widget into your web application": "Anytime the user starts or receives a phone call, a floating phone widget is shown on CTI user interface. This widget can be imported and used into other web applications. Click the button below to get the configuration string needed to import the phone widget into your web application.",
+    "Revoke": "Revoke",
+    "Get phone widget configuration": "Get phone widget configuration",
+    "The configuration string below is shown only once. If you will need it later, please save it in a safe place": "The configuration string below is shown only once. If you will need it later, please save it in a safe place",
+    "Any phone widget using the current configuration will stop working": "Any phone widget using the current configuration will stop working",
+    "Revoke widget configuration": "Revoke widget configuration"
   }
 }

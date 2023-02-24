@@ -8,7 +8,8 @@
     "Close menu": "Chiudi menu",
     "Next page": "Pagina successiva",
     "Previous page": "Pagina precedente",
-    "Coming soon": "Prossimamente"
+    "Coming soon": "Prossimamente",
+    "Cancel": "Annulla"
   },
   "Login": {
     "User": "Utente",
@@ -85,5 +86,25 @@
     "External": "Esterne",
     "Access the complete tool for consulting reports": "Accedi al tool completo per la consultazione dei report.",
     "Open PBX Report": "Apri PBX Report"
+  },
+  "Settings": {
+    "Theme": "Tema",
+    "Integrations": "Integrazioni",
+    "System": "Sistema",
+    "Light": "Chiaro",
+    "Dark": "Scuro",
+    "Phone widget configuration": "Configurazione del widget del telefono",
+    "Settings": "Impostazioni",
+    "Cache": "Cache",
+    "Use light or dark theme according to system preferences": "Usa il tema chiaro o scuro in base alle preferenze di sistema",
+    "Clear cache": "Pulisci cache",
+    "This will force": "Questo forzerà",
+    "to reload all cached data from the server": "a ricaricare tutti i dati memorizzati nella cache dal server",
+    "Anytime the user starts or receives a phone call, a floating phone widget is shown on CTI user interface. This widget can be imported and used into other web applications. Click the button below to get the configuration string needed to import the phone widget into your web application": "Ogni volta che l'utente avvia o riceve una telefonata, sull'interfaccia utente CTI viene visualizzato un widget telefono mobile. Questo widget può essere importato e utilizzato in altre applicazioni web. Fare clic sul pulsante in basso per ottenere la stringa di configurazione necessaria per importare il widget del telefono nelle impostazioni dell'applicazione Web.",
+    "Revoke": "Revoca",
+    "Get phone widget configuration": "Ottieni la configurazione del widget del telefono",
+    "The configuration string below is shown only once. If you will need it later, please save it in a safe place": "La stringa di configurazione sottostante viene mostrata solo una volta. Se ne avrai bisogno in seguito, conservalo in un luogo sicuro",
+    "Any phone widget using the current configuration will stop working": "Qualsiasi widget del telefono che utilizza la configurazione corrente smetterà di funzionare",
+    "Revoke widget configuration": "Revoca la configurazione del widget"
   }
 }
