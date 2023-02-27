@@ -7,7 +7,8 @@
     "Filters": "Filtri",
     "Close menu": "Chiudi menu",
     "Next page": "Pagina successiva",
-    "Previous page": "Pagina precedente"
+    "Previous page": "Pagina precedente",
+    "Coming soon": "Prossimamente"
   },
   "Login": {
     "User": "Utente",
@@ -42,5 +43,19 @@
     "Layout": "Layout",
     "Filter operators": "Filtra operatori",
     "Status": "Stato"
+  },
+  "Applications": {
+    "Applications": "Applicazioni",
+    "Internal": "Interne",
+    "Telephone lines and announcements": "Linee telefoniche e annunci",
+    "Manage your phone lines, activate announcements, voicemail or forward calls": "Gestisci le tue linee telefoniche, attiva annunci, casella vocale o inoltra chiamate.",
+    "Activate announcements, voicemail or forward calls": "Attiva annunci, casella vocale o inoltra chiamate",
+    "Video sources": "Sorgenti video",
+    "View streams from different sources such as IP video cameras or video intercoms": "Visualizza flussi provenienti da diverse sorgenti come vidocamere IP o videocitofoni.",
+    "Video conference": "Videoconferenza",
+    "Start a conference with the ability to share audio, video or your screen with multiple contacts": "Avvia una conferenza con la possibilità di condividere con più contatti audio, video o il tuo schermo.",
+    "External": "Esterne",
+    "Access the complete tool for consulting reports": "Accedi al tool completo per la consultazione dei report.",
+    "Open PBX Report": "Apri PBX Report"
   }
 }

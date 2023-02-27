@@ -67,6 +67,22 @@ export function getProductName() {
   return `${window.CONFIG.PRODUCT_NAME}`
 }
 
+export function getApiEndpoint() {
+  if (typeof window === 'undefined') {
+    return ''
+  }
+  // @ts-ignore
+  return `${window.CONFIG.API_ENDPOINT}`
+}
+
+export function getApiScheme() {
+  if (typeof window === 'undefined') {
+    return ''
+  }
+  // @ts-ignore
+  return `${window.CONFIG.API_SCHEME}`
+}
+
 /**
  * Returns true if the device used by the user is using a mobile device. Useful to check if the user is using a touch screen, for example to disable hover features
  */
