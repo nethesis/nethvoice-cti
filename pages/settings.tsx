@@ -18,6 +18,7 @@ import { Integrations, ClearCache } from '../components/settings'
 import { useEffect, useState } from 'react'
 import { Button } from '../components/common'
 import { v4 as uuidv4 } from 'uuid'
+import { useTranslation } from 'react-i18next'
 
 interface SettingsMenuTypes {
   name: string
@@ -58,6 +59,7 @@ const Settings: NextPage = () => {
   const auth = useSelector((state: RootState) => state.authentication)
   const [firstRender, setFirstRender]: any = useState(true)
   const [isLoaded, setLoaded] = useState(false)
+  const { t } = useTranslation()
 
   useEffect(() => {
     if (firstRender) {
@@ -143,7 +145,9 @@ const Settings: NextPage = () => {
     <>
       <div>
         <div className='mx-auto'>
-          <h1 className='text-2xl font-semibold mb-6 text-gray-900 dark:text-gray-100'>Settings</h1>
+          <h1 className='text-2xl font-semibold mb-6 text-gray-900 dark:text-gray-100'>
+            {t('Settings.Settings')}
+          </h1>
           <div className='overflow-hidden rounded-lg bg-white shadow dark:bg-gray-900'>
             <div className='divide-y divide-gray-200 dark:divide-gray-700 lg:grid lg:grid-cols-12 lg:divide-y-0 lg:divide-x'>
               {/* settings menu */}
@@ -171,7 +175,7 @@ const Settings: NextPage = () => {
                         )}
                         aria-hidden='true'
                       />
-                      <span className='truncate'>{item.name}</span>
+                      <span className='truncate'>{t(`Settings.${item.name}`)}</span>
                     </a>
                   ))}
                 </nav>
@@ -183,7 +187,7 @@ const Settings: NextPage = () => {
                   <div className='py-6 px-4 sm:p-6 lg:pb-8'>
                     <div>
                       <h2 className='text-lg font-medium leading-6 text-gray-900 dark:text-gray-100 mb-6'>
-                        Theme
+                        {t('Settings.Theme')}
                       </h2>
                     </div>
 
@@ -230,7 +234,7 @@ const Settings: NextPage = () => {
                                       'block text-sm font-medium',
                                     )}
                                   >
-                                    {themeOption.title}
+                                    {t(`Settings.${themeOption.title}`)}
                                   </RadioGroup.Label>
                                   {themeOption.description && (
                                     <RadioGroup.Description
@@ -243,7 +247,7 @@ const Settings: NextPage = () => {
                                         'mt-1',
                                       )}
                                     >
-                                      {themeOption.description}
+                                      {t(`Settings.${themeOption.description}`)}
                                     </RadioGroup.Description>
                                   )}
                                 </span>

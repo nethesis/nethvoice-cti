@@ -13,12 +13,20 @@ interface EndpointsTypes {
   mainextension: any[]
   voicemail: any[]
 }
+
+interface ProfileTypes {
+  id: string
+  macro_permissions: any[]
+  name: string
+  outbound_routes_permissions: any[]
+}
 interface DefaultState {
   name: string
   username: string
   mainextension: string
   mainPresence: StatusTypes
   endpoints: EndpointsTypes
+  profile: ProfileTypes
   avatar: string
 }
 
@@ -35,6 +43,12 @@ const defaultState: DefaultState = {
     mainextension: [],
     voicemail: [],
   },
+  profile: {
+    id: '',
+    macro_permissions: [],
+    name: '',
+    outbound_routes_permissions: [],
+  },
   avatar: '',
 }
 
@@ -47,6 +61,7 @@ export const user = createModel<RootModel>()({
       state.mainextension = payload.mainextension
       state.mainPresence = payload.mainPresence
       state.endpoints = payload.endpoints
+      state.profile = payload.profile
       state.avatar = payload.avatar
       return state
     },

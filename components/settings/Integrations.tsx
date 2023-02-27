@@ -19,6 +19,7 @@ import {
   phoneIslandTokenCheck,
   removePhoneIslandToken,
 } from '../../services/authentication'
+import { useTranslation } from 'react-i18next'
 
 export const Integrations = () => {
   const [copied, setCopied] = useState<boolean>(false)
@@ -29,6 +30,7 @@ export const Integrations = () => {
   const cancelButtonRef: RefObject<HTMLButtonElement> = createRef()
   const [tokenExists, setTokenExists] = useState<boolean>(false)
   const [loading, setLoading] = useState<boolean>(false)
+  const { t } = useTranslation()
 
   const newConfig = async () => {
     setLoading(true)
@@ -74,7 +76,7 @@ export const Integrations = () => {
           <div className='bg-white py-6 px-4 sm:p-6 w-full dark:bg-gray-900'>
             <div>
               <h2 className='text-lg font-medium leading-6 text-gray-900 dark:text-gray-100 mb-6'>
-                Integrations
+                {t('Settings.Integrations')}
               </h2>
             </div>
             <div>
@@ -82,24 +84,23 @@ export const Integrations = () => {
                 id='phone-configuration-heading'
                 className='text-sm font-medium leading-6 text-gray-900 dark:text-gray-100'
               >
-                Phone widget configuration
+                {t('Settings.Phone widget configuration')}
               </h4>
               <p className='mt-1 text-sm text-gray-500 dark:text-gray-400'>
-                Anytime the user starts or receives a phone call, a floating phone widget is shown
-                on CTI user interface. This widget can be imported and used into other web
-                applications. Click the button below to get the configuration string needed to
-                import the phone widget into your web application.
+                {t(
+                  'Settings.Anytime the user starts or receives a phone call, a floating phone widget is shown on CTI user interface. This widget can be imported and used into other web applications. Click the button below to get the configuration string needed to import the phone widget into your web application',
+                )}
               </p>
               <p className='mt-6 flex items-center gap-2'>
                 {!tokenExists && (
                   <Button variant='white' onClick={newConfig}>
-                    Get phone widget configuration{' '}
+                    {t('Settings.Get phone widget configuration')}{' '}
                     {loading && <FontAwesomeIcon icon={faCircleNotch} className='fa-spin ml-2' />}
                   </Button>
                 )}
                 {tokenExists && (
                   <Button variant='danger' onClick={() => setShowMondal(true)}>
-                    Revoke
+                    {t('Settings.Revoke')}
                   </Button>
                 )}
               </p>
@@ -108,8 +109,9 @@ export const Integrations = () => {
                 <>
                   <InlineNotification className='mt-5 border-none' type='warning' title='Important'>
                     <p>
-                      The configuration string below is shown only once. If you will need it later,
-                      please save it in a safe place
+                      {t(
+                        'Settings.The configuration string below is shown only once. If you will need it later, please save it in a safe place',
+                      )}
                     </p>
                   </InlineNotification>
                   <div className='mt-5 bg-gray-50 dark:bg-gray-900 dark:border dark:border-gray-800 p-5 rounded-lg text-gray-900 dark:text-gray-100 flex gap-5 items-center'>
@@ -150,21 +152,21 @@ export const Integrations = () => {
           </div>
           <div className='mt-3 text-center sm:mt-0 sm:ml-4 sm:text-left'>
             <h3 className='text-lg font-medium leading-6 text-gray-900'>
-              Revoke widget configuration
+              {t('Settings.Revoke widget configuration')}
             </h3>
             <div className='mt-2'>
               <p className='text-sm text-gray-500'>
-                Any phone widget using the current configuration will stop working
+                {t('Settings.Any phone widget using the current configuration will stop working')}
               </p>
             </div>
           </div>
         </Modal.Content>
         <Modal.Actions>
           <Button variant='danger' onClick={removeConfig}>
-            Revoke
+            {t('Settings.Revoke')}
           </Button>
           <Button variant='white' onClick={() => setShowMondal(false)} ref={cancelButtonRef}>
-            Cancel
+            {t('Common.Cancel')}
           </Button>
         </Modal.Actions>
       </Modal>

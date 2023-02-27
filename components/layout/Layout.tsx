@@ -65,6 +65,7 @@ export const Layout: FC<LayoutProps> = ({ children }) => {
           mainextension: userInfo.data.endpoints.mainextension[0].id,
           mainPresence: userInfo.data.mainPresence,
           endpoints: userInfo.data.endpoints,
+          profile: userInfo.data.profile,
           avatar: userInfo.data.settings.avatar,
         })
         setUserInfoLoaded(true)
