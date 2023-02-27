@@ -7,7 +7,8 @@
     "Filters": "Filtri",
     "Close menu": "Chiudi menu",
     "Next page": "Pagina successiva",
-    "Previous page": "Pagina precedente"
+    "Previous page": "Pagina precedente",
+    "Coming soon": "Prossimamente"
   },
   "Login": {
     "User": "Utente",
@@ -55,6 +56,6 @@
     "Start a conference with the ability to share audio, video or your screen with multiple contacts": "Avvia una conferenza con la possibilità di condividere con più contatti audio, video o il tuo schermo.",
     "External": "Esterne",
     "Access the complete tool for consulting reports": "Accedi al tool completo per la consultazione dei report.",
-    "Open Nethvoice Report": "Apri Nethvoice Report"
+    "Open PBX Report": "Apri PBX Report"
   }
 }
