@@ -67,7 +67,7 @@ export function getProductName() {
   return `${window.CONFIG.PRODUCT_NAME}`
 }
 
-export function apiEdnpoint() {
+export function getApiEndpoint() {
   if (typeof window === 'undefined') {
     return ''
   }
