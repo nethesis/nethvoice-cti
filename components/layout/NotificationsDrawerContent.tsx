@@ -225,7 +225,7 @@ export const NotificationsDrawerContent = forwardRef<
                     <div>
                       <IconSwitch
                         on={!notification.isRead}
-                        icon={<FontAwesomeIcon icon={faCircleCheck} />}
+                        onIcon={<FontAwesomeIcon icon={faCircleCheck} />}
                         lighterOnDark
                         changed={() => toggleNotificationRead(notification)}
                         onClick={(event) => event.stopPropagation()}
