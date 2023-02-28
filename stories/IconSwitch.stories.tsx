@@ -29,7 +29,8 @@ On.args = {
   on: true,
   size: 'extra_large',
   disabled: false,
-  icon: <FontAwesomeIcon icon={faStarSolid} />,
+  onIcon: <FontAwesomeIcon icon={faStarSolid} />,
+  offIcon: <FontAwesomeIcon icon={faStarLight} />,
   changed: (enabled) => {
     console.log('IconSwitch changed', enabled)
   },
@@ -39,7 +40,8 @@ export const Off = Template.bind({})
 Off.args = {
   ...On.args,
   on: false,
-  icon: <FontAwesomeIcon icon={faStarLight} />,
+  onIcon: <FontAwesomeIcon icon={faStarSolid} />,
+  offIcon: <FontAwesomeIcon icon={faStarLight} />,
 }
 
 export const OnDisabled = Template.bind({})
@@ -53,7 +55,8 @@ OffDisabled.args = {
   ...On.args,
   on: false,
   disabled: true,
-  icon: <FontAwesomeIcon icon={faStarLight} />,
+  onIcon: <FontAwesomeIcon icon={faStarSolid} />,
+  offIcon: <FontAwesomeIcon icon={faStarLight} />,
 }
 
 export const LighterOnDark = Template.bind({})

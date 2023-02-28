@@ -93,7 +93,8 @@ export const OperatorSummary = forwardRef<HTMLButtonElement, OperatorSummaryProp
                   <IconSwitch
                     on={isFavorite}
                     size='large'
-                    icon={<FontAwesomeIcon icon={isFavorite ? faStarSolid : faStarLight} />}
+                    onIcon={<FontAwesomeIcon icon={faStarSolid} />}
+                    offIcon={<FontAwesomeIcon icon={faStarLight} />}
                     changed={() => toggleFavorite()}
                     className={'mr-5'}
                   >
