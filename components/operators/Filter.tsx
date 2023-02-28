@@ -549,7 +549,7 @@ export const Filter = forwardRef<HTMLButtonElement, FilterProps>(
                 Operators filters
               </h2>
 
-              <div className='flex items-center justify-between'>
+              <div className='flex items-center space-x-8'>
                 <div className='flex items-center'>
                   <TextInput
                     placeholder='Filter operators'

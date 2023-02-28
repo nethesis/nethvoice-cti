@@ -620,7 +620,7 @@ export const Filter = forwardRef<HTMLButtonElement, FilterProps>(
                 {t('History.History filters')}
               </h2>
 
-              <div className='flex items-center justify-between'>
+              <div className='flex items-center space-x-8'>
                 <div className='flex items-center'>
                   <TextInput
                     placeholder={t('History.Filter by name or number') || ''}
@@ -855,7 +855,7 @@ export const Filter = forwardRef<HTMLButtonElement, FilterProps>(
                   </Popover.Group>
                   <button
                     type='button'
-                    className='inline-block text-sm font-medium text-gray-700 hover:text-gray-900 sm:hidden ml-4'
+                    className='inline-block text-sm font-medium text-gray-700 dark:text-gray-100 hover:text-gray-900 sm:hidden ml-4'
                     onClick={() => setOpen(true)}
                   >
                     {t('History.Filters')}
