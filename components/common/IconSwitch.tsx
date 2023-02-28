@@ -8,7 +8,8 @@ import { Switch as HeadlessSwitch } from '@headlessui/react'
 
 export interface IconSwitchProps extends ComponentProps<'div'> {
   on?: boolean
-  icon: ReactNode
+  icon?: ReactNode
+  iconActive?: ReactNode
   size?: 'small' | 'base' | 'large' | 'extra_large'
   changed?: (enabled: boolean) => void
   disabled?: boolean
@@ -19,6 +20,7 @@ export const IconSwitch: FC<IconSwitchProps> = ({
   changed,
   on = false,
   icon,
+  iconActive,
   size = 'base',
   disabled,
   lighterOnDark = false,
@@ -54,7 +56,7 @@ export const IconSwitch: FC<IconSwitchProps> = ({
               : theme.iconDisabled,
           )}
         >
-          {icon}
+          {icon || iconActive}
         </span>
       </HeadlessSwitch>
     </HeadlessSwitch.Group>

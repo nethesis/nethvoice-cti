@@ -6,7 +6,7 @@ import classNames from 'classnames'
 import { Avatar, Button, IconSwitch } from '../common'
 import { useEffect } from 'react'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
-import { faComment, faEnvelope } from '@fortawesome/free-regular-svg-icons'
+import { faComment, faEnvelope } from '@nethesis/nethesis-regular-svg-icons'
 import { OperatorStatusBadge } from './OperatorStatusBadge'
 import {
   addOperatorToFavorites,
@@ -19,7 +19,13 @@ import {
 import { useSelector } from 'react-redux'
 import { RootState, store } from '../../store'
 import { callPhoneNumber } from '../../lib/utils'
-import { faMobileScreenButton, faPhone, faStar, faVideo } from '@fortawesome/free-solid-svg-icons'
+import {
+  faMobileScreenButton,
+  faPhone,
+  faStar as faStarSolid,
+  faVideo,
+} from '@nethesis/nethesis-solid-svg-icons'
+import { faStar as faStarLight } from '@nethesis/nethesis-light-svg-icons'
 
 export interface OperatorSummaryProps extends ComponentPropsWithRef<'div'> {
   operator: any
@@ -87,7 +93,7 @@ export const OperatorSummary = forwardRef<HTMLButtonElement, OperatorSummaryProp
                   <IconSwitch
                     on={isFavorite}
                     size='large'
-                    icon={<FontAwesomeIcon icon={faStar} />}
+                    icon={<FontAwesomeIcon icon={isFavorite ? faStarSolid : faStarLight} />}
                     changed={() => toggleFavorite()}
                     className={'mr-5'}
                   >

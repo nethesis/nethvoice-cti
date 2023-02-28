@@ -4,7 +4,8 @@
 import { IconSwitch, IconSwitchProps } from '../components/common'
 import { Story, Meta } from '@storybook/react'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
-import { faStar } from '@fortawesome/free-solid-svg-icons'
+import { faStar as faStarSolid } from '@nethesis/nethesis-solid-svg-icons'
+import { faStar as faStarLight } from '@nethesis/nethesis-light-svg-icons'
 
 const meta = {
   title: 'Components/IconSwitch',
@@ -28,7 +29,7 @@ On.args = {
   on: true,
   size: 'extra_large',
   disabled: false,
-  icon: <FontAwesomeIcon icon={faStar} />,
+  icon: <FontAwesomeIcon icon={faStarSolid} />,
   changed: (enabled) => {
     console.log('IconSwitch changed', enabled)
   },
@@ -38,6 +39,7 @@ export const Off = Template.bind({})
 Off.args = {
   ...On.args,
   on: false,
+  icon: <FontAwesomeIcon icon={faStarLight} />,
 }
 
 export const OnDisabled = Template.bind({})
@@ -51,6 +53,7 @@ OffDisabled.args = {
   ...On.args,
   on: false,
   disabled: true,
+  icon: <FontAwesomeIcon icon={faStarLight} />,
 }
 
 export const LighterOnDark = Template.bind({})
