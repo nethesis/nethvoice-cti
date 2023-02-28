@@ -10,7 +10,7 @@
     "Previous page": "Previous page",
     "Coming soon": "Coming soon",
     "Cancel": "Cancel",
-    "Save":"Save"
+    "Save": "Save"
   },
   "Login": {
     "User": "User",
@@ -120,5 +120,20 @@
     "Online": "Online",
     "Call forward": "Call forward",
     "Enter phone number for call forward": "Enter phone number for call forward"
+  },
+  "OperatorDrawer": {
+    "Book": "Book",
+    "Hangup": "Hangup",
+    "Listen": "Listen",
+    "Intrude": "Intrude",
+    "Record": "Record",
+    "Operator details": "Operator details",
+    "Current call": "Current call",
+    "Open call actions menu": "Open call actions menu",
+    "Contact": "Contact",
+    "Direction": "Direction",
+    "Incoming": "Incoming",
+    "Outgoing": "Outgoing",
+    "Duration": "Duration"
   }
 }
