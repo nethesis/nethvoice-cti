@@ -290,7 +290,7 @@ export const Filter = forwardRef<HTMLButtonElement, FilterProps>(
                 {t('Phonebook.Phonebook filters')}
               </h2>
 
-              <div className='flex items-center justify-between'>
+              <div className='flex items-center space-x-8'>
                 <div className='flex items-center'>
                   <TextInput
                     placeholder={t('Phonebook.Filter contacts') || ''}

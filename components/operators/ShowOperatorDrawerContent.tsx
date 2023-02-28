@@ -13,9 +13,9 @@ import {
   faPhone,
   faPhoneSlash,
   faTicket,
-  faUserSecret,
   faPhoneArrowDown,
   faPhoneArrowUp,
+  faEar,
 } from '@nethesis/nethesis-solid-svg-icons'
 import {
   addOperatorToFavorites,
@@ -28,6 +28,7 @@ import { CallDuration } from './CallDuration'
 import { LastCallsDrawerTable } from '../history/LastCallsDrawerTable'
 import { startOfDay, subDays } from 'date-fns'
 import { OperatorSummary } from './OperatorSummary'
+import { useTranslation } from 'react-i18next'
 
 export interface ShowOperatorDrawerContentProps extends ComponentPropsWithRef<'div'> {
   config: any
@@ -39,6 +40,7 @@ export const ShowOperatorDrawerContent = forwardRef<
 >(({ config, className, ...props }, ref) => {
   const auth = useSelector((state: RootState) => state.authentication)
   const [isFavorite, setFavorite] = useState(false)
+  const { t } = useTranslation()
 
   useEffect(() => {
     setFavorite(config.favorite)
@@ -56,11 +58,11 @@ export const ShowOperatorDrawerContent = forwardRef<
 
   const getCallActionsMenu = () => (
     <>
-      <Dropdown.Item icon={faTicket}>Book</Dropdown.Item>
-      <Dropdown.Item icon={faPhoneSlash}>Hangup</Dropdown.Item>
-      <Dropdown.Item icon={faUserSecret}>Spy</Dropdown.Item>
-      <Dropdown.Item icon={faHandPointUp}>Intrude</Dropdown.Item>
-      <Dropdown.Item icon={faCircle}>Record</Dropdown.Item>
+      <Dropdown.Item icon={faTicket}>{t('OperatorDrawer.Book')}</Dropdown.Item>
+      <Dropdown.Item icon={faPhoneSlash}> {t('OperatorDrawer.Hangup')}</Dropdown.Item>
+      <Dropdown.Item icon={faEar}> {t('OperatorDrawer.Listen')}</Dropdown.Item>
+      <Dropdown.Item icon={faHandPointUp}> {t('OperatorDrawer.Intrude')}</Dropdown.Item>
+      <Dropdown.Item icon={faCircle}> {t('OperatorDrawer.Record')}</Dropdown.Item>
     </>
   )
 
@@ -69,7 +71,7 @@ export const ShowOperatorDrawerContent = forwardRef<
       <div className='bg-gray-100 dark:bg-gray-800 py-6 px-6'>
         <div className='flex items-center justify-between'>
           <div className='text-lg font-medium dark:text-gray-200 text-gray-700'>
-            Operator details
+            {t('OperatorDrawer.Operator details')}
           </div>
           <div className='flex items-center h-7'>
             <SideDrawerCloseIcon className='p-0.5' />
@@ -87,13 +89,13 @@ export const ShowOperatorDrawerContent = forwardRef<
             <div>
               <div className='mt-6 flex items-end justify-between'>
                 <h4 className='text-md font-medium text-gray-700 dark:text-gray-200'>
-                  Current call
+                  {t('OperatorDrawer.Current call')}
                 </h4>
                 {/* ongoing call menu */}
                 <Dropdown items={getCallActionsMenu()} position='left'>
                   <Button variant='ghost'>
                     <FontAwesomeIcon icon={faEllipsisVertical} className='h-4 w-4' />
-                    <span className='sr-only'>Open call actions menu</span>
+                    <span className='sr-only'>{t('OperatorDrawer.Open call actions menu')}</span>
                   </Button>
                 </Dropdown>
               </div>
@@ -102,7 +104,7 @@ export const ShowOperatorDrawerContent = forwardRef<
                   {/*  contact */}
                   <div className='py-4 sm:grid sm:grid-cols-3 sm:gap-4 sm:py-5'>
                     <dt className='text-sm font-medium text-gray-500 dark:text-gray-400'>
-                      Contact
+                      {t('OperatorDrawer.Contact')}
                     </dt>
                     <dd className='mt-1 text-sm text-gray-900 dark:text-gray-100 sm:col-span-2 sm:mt-0'>
                       {config.conversations[0].counterpartName !==
@@ -129,7 +131,7 @@ export const ShowOperatorDrawerContent = forwardRef<
                   {/*  direction */}
                   <div className='py-4 sm:grid sm:grid-cols-3 sm:gap-4 sm:py-5'>
                     <dt className='text-sm font-medium text-gray-500 dark:text-gray-400'>
-                      Direction
+                      {t('OperatorDrawer.Direction')}
                     </dt>
                     <dd className='mt-1 text-sm text-gray-900 dark:text-gray-100 sm:col-span-2 sm:mt-0'>
                       {config.conversations[0].direction == 'out' && (
@@ -139,7 +141,7 @@ export const ShowOperatorDrawerContent = forwardRef<
                             className='mr-2 h-5 w-3.5 text-green-600 dark:text-green-500'
                             aria-hidden='true'
                           />
-                          <span className='truncate'>Outgoing</span>
+                          <span className='truncate'> {t('OperatorDrawer.Outgoing')}</span>
                         </div>
                       )}
                       {config.conversations[0].direction == 'in' && (
@@ -149,7 +151,7 @@ export const ShowOperatorDrawerContent = forwardRef<
                             className='mr-2 h-5 w-3.5 text-green-600 dark:text-green-500'
                             aria-hidden='true'
                           />
-                          <span className='truncate'>Incoming</span>
+                          <span className='truncate'>{t('OperatorDrawer.Incoming')}</span>
                         </div>
                       )}
                     </dd>
@@ -157,7 +159,7 @@ export const ShowOperatorDrawerContent = forwardRef<
                   {/*  duration */}
                   <div className='py-4 sm:grid sm:grid-cols-3 sm:gap-4 sm:py-5'>
                     <dt className='text-sm font-medium text-gray-500 dark:text-gray-400'>
-                      Duration
+                      {t('OperatorDrawer.Duration')}
                     </dt>
                     <dd className='mt-1 text-sm text-gray-900 dark:text-gray-100 sm:col-span-2 sm:mt-0'>
                       <div

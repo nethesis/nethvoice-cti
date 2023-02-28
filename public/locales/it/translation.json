@@ -120,5 +120,20 @@
     "Online": "Disponibile",
     "Call forward": "Inoltro",
     "Enter phone number for call forward": "Immettere il numero di telefono per l'inoltro di chiamata"
+  },
+  "OperatorDrawer": {
+    "Book": "Prenota",
+    "Hangup": "Chiudi",
+    "Listen": "Ascolta",
+    "Intrude": "Intromettiti",
+    "Record": "Registra",
+    "Operator details": "Dettagli operatore",
+    "Current call": "Chiamata in corso",
+    "Open call actions menu": "Apri il menu delle azioni di chiamata",
+    "Contact": "Contatto",
+    "Direction": "Direzione",
+    "Incoming": "In entrata",
+    "Outgoing": "In uscita",
+    "Duration": "Durata"
   }
 }
