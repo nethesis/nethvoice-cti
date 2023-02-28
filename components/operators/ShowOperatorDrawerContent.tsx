@@ -16,6 +16,7 @@ import {
   faUserSecret,
   faPhoneArrowDown,
   faPhoneArrowUp,
+  faEar
 } from '@nethesis/nethesis-solid-svg-icons'
 import {
   addOperatorToFavorites,
@@ -58,7 +59,7 @@ export const ShowOperatorDrawerContent = forwardRef<
     <>
       <Dropdown.Item icon={faTicket}>Book</Dropdown.Item>
       <Dropdown.Item icon={faPhoneSlash}>Hangup</Dropdown.Item>
-      <Dropdown.Item icon={faUserSecret}>Spy</Dropdown.Item>
+      <Dropdown.Item icon={faEar}>Listen</Dropdown.Item>
       <Dropdown.Item icon={faHandPointUp}>Intrude</Dropdown.Item>
       <Dropdown.Item icon={faCircle}>Record</Dropdown.Item>
     </>
