@@ -20,6 +20,7 @@ import {
   faPhoneArrowDown,
   faPhoneArrowUp,
   faPhoneXmark,
+  faPhone,
 } from '@nethesis/nethesis-solid-svg-icons'
 import { formatDateLoc } from '../lib/dateTime'
 import { subDays, startOfDay } from 'date-fns'
@@ -525,185 +526,184 @@ const History: NextPage = () => {
           updateDateBeginFilter={updateDateBeginFilter}
           updateDateEndFilter={updateDateEndFilter}
         />
+        {historyError && (
+          <InlineNotification type='error' title={historyError}></InlineNotification>
+        )}
 
-        <div className='overflow-hidden shadow sm:rounded-md bg-white dark:bg-gray-900'>
-          <ul role='list' className='divide-y divide-gray-200 dark:divide-gray-700'>
-            {/* History error */}
-            {historyError && (
-              <InlineNotification type='error' title={historyError}></InlineNotification>
-            )}
+        {!historyError && (
+          <div className='mx-auto'>
+            <div className='flex flex-col overflow-hidden'>
+              <div className='-my-2 -mx-4 overflow-x-auto sm:-mx-6 lg:-mx-8'>
+                <div className='inline-block min-w-full py-2 align-middle px-2 md:px-6 lg:px-8'>
+                  <div className='overflow-hidden shadow ring-1 ring-black ring-opacity-5 md:rounded-lg'>
+                    {/* empty state */}
+                    {isHistoryLoaded && history?.count === 0 && (
+                      <EmptyState
+                        title={t('History.No calls')}
+                        description={t('History.There are no calls in your history') || ''}
+                        icon={
+                          <FontAwesomeIcon
+                            icon={faPhone}
+                            className='mx-auto h-12 w-12'
+                            aria-hidden='true'
+                          />
+                        }
+                        className='bg-white'
+                      ></EmptyState>
+                    )}
+                    {isHistoryLoaded && history?.count !== 0 && (
+                      <table className='min-w-full divide-y divide-gray-300 dark:divide-gray-700'>
+                        <thead className='bg-white dark:bg-gray-900'>
+                          <tr>
+                            <th
+                              scope='col'
+                              className='py-3.5 pl-4 pr-3 text-left text-sm font-semibold text-gray-700 dark:text-gray-100 sm:pl-6'
+                            >
+                              {t('History.Date')}
+                            </th>
+                            <th
+                              scope='col'
+                              className='px-3 py-3.5 text-left text-sm font-semibold text-gray-700 dark:text-gray-100'
+                            >
+                              {t('History.Source')}
+                            </th>
+                            <th
+                              scope='col'
+                              className='px-3 py-3.5 text-left text-sm font-semibold text-gray-700 dark:text-gray-100'
+                            >
+                              {t('History.Destination')}
+                            </th>
+                            <th
+                              scope='col'
+                              className='px-3 py-3.5 text-left text-sm font-semibold text-gray-700 dark:text-gray-100'
+                            >
+                              {t('History.Duration')}
+                            </th>
+                            <th
+                              scope='col'
+                              className='px-3 py-3.5 text-left text-sm font-semibold text-gray-700 dark:text-gray-100'
+                            >
+                              {t('History.State')}
+                            </th>
+                            <th
+                              scope='col'
+                              className='px-3 py-3.5 text-left text-sm font-semibold text-gray-700 dark:text-gray-100'
+                            >
+                              {t('History.Recording')}
+                            </th>
+                          </tr>
+                        </thead>
+                        <tbody className='divide-y divide-gray-200 dark:divide-gray-700 bg-white dark:bg-gray-900 text-gray-700 text-sm'>
+                          {/* skeleton */}
+                          {!isHistoryLoaded &&
+                            Array.from(Array(5)).map((i) => (
+                              <tr key={i}>
+                                {Array.from(Array(6)).map((j) => (
+                                  <td key={j}>
+                                    <div className='px-4 py-6'>
+                                      <div className='animate-pulse h-5 rounded bg-gray-300 dark:bg-gray-600'></div>
+                                    </div>
+                                  </td>
+                                ))}
+                              </tr>
+                            ))}
+                          {/* calls */}
+                          {/* Not empty state  */}
+                          {isHistoryLoaded &&
+                            history?.rows &&
+                            history.rows.map((call: any, index: number) => (
+                              <tr key={index}>
+                                {/* Date */}
+                                <td className='whitespace-nowrap py-4 pl-4 pr-3 sm:pl-6'>
+                                  <div className='flex flex-col'>
+                                    <div>{formatDateLoc(call.time * 1000, 'PP')}</div>
+                                    <div className='text-gray-500 dark:text-gray-500'>
+                                      {getCallTimeToDisplay(call.time * 1000)}
+                                    </div>
+                                  </div>
+                                </td>
 
-            {/* history skeleton */}
-            {!isHistoryLoaded &&
-              Array.from(Array(9)).map((e, index) => (
-                <li key={index}>
-                  {/* Skeleton for larger than 750px screen */}
-                  <div className='hidden md:flex items-center px-4 py-4 sm:px-6'>
-                    {/* History skeleton */}
-                    <div className='min-w-0 flex-1 px-4 h-12 md:grid md:grid-cols-4 gap-4 lg:grid-cols-4 xl:grid-cols-7'>
-                      <div className='flex flex-col justify-center'>
-                        {/* Date skeleton */}
-                        <div className='animate-pulse h-3 rounded mb-6 md:mb-0 bg-gray-300 dark:bg-gray-600'></div>
-                      </div>
-                      <div className='flex flex-col justify-center'>
-                        {/* Source skeleton */}
-                        <div className='animate-pulse h-3 rounded mb-6 md:mb-0 bg-gray-300 dark:bg-gray-600'></div>
-                      </div>
-                      <div className='flex flex-col justify-center'>
-                        {/* Icon skeleton */}
-                        <div className='animate-pulse h-3 rounded mb-6 md:mb-0 bg-gray-300 dark:bg-gray-600'></div>
-                      </div>
-                      <div className='flex flex-col justify-center'>
-                        {/* Destination skeleton */}
-                        <div className='animate-pulse h-3 rounded mb-6 md:mb-0 bg-gray-300 dark:bg-gray-600'></div>
-                      </div>
-                      <div className='flex flex-col justify-center'>
-                        {/* Duration skeleton */}
-                        <div className='animate-pulse h-3 rounded mb-6 md:mb-0 bg-gray-300 dark:bg-gray-600'></div>
-                      </div>
-                      <div className='flex flex-col justify-center'>
-                        {/* Icon skeleton */}
-                        <div className='animate-pulse h-3 rounded mb-6 md:mb-0mb-6 md:mb-0  bg-gray-300 dark:bg-gray-600'></div>
-                      </div>
-                      <div className='flex flex-col justify-center'>
-                        {/* Recording skeleton */}
-                        <div className='animate-pulse h-3 rounded bg-gray-300 dark:bg-gray-600'></div>
-                      </div>
-                    </div>
+                                {/* Source */}
+                                <td className='px-3 py-4'>
+                                  <div
+                                    onClick={() => {
+                                      openDrawerHistory(
+                                        call.cnam,
+                                        call.ccompany,
+                                        call.cnum || call.src,
+                                        callType,
+                                        operators,
+                                      )
+                                    }}
+                                  >
+                                    {checkTypeSource(call)}
+                                  </div>
+                                </td>
+
+                                {/* Destination */}
+                                <td className='px-3 py-4'>
+                                  <div
+                                    onClick={() =>
+                                      openDrawerHistory(
+                                        call.dst_cnam,
+                                        call.dst_ccompany,
+                                        call.dst,
+                                        callType,
+                                        operators,
+                                      )
+                                    }
+                                  >
+                                    {checkTypeDestination(call)}
+                                  </div>
+                                </td>
+
+                                {/* Duration */}
+                                <td className='px-3 py-4'>
+                                  <div>
+                                    {!call.duration
+                                      ? '0 second'
+                                      : toDaysMinutesSeconds(call.duration)}
+                                  </div>
+                                </td>
+
+                                {/* State */}
+                                <td className='px-3 py-4'>
+                                  <div>{checkIconUser(call)}</div>
+                                </td>
+
+                                {/* Recording */}
+                                {call.recordingfile && (
+                                  <td className='px-3 py-4'>
+                                    <div>
+                                      {' '}
+                                      <Button variant='white'>
+                                        <FontAwesomeIcon
+                                          icon={faPlay}
+                                          className='h-4 w-4 text-gray-900 dark:text-gray-100'
+                                          aria-hidden='true'
+                                        />{' '}
+                                      </Button>
+                                    </div>
+                                  </td>
+                                )}
+                                {/* No recordingfile available */}
+                                {/* TO DO ADD SOME ICON */}
+                                {!call.recordingfile && (
+                                  <td className='px-3 py-4'>
+                                    <div> </div>
+                                  </td>
+                                )}
+                              </tr>
+                            ))}
+                        </tbody>
+                      </table>
+                    )}
                   </div>
-
-                  {/* Skeleton for mobile device  */}
-                  <div className='md:hidden flex items-center px-4 py-4 sm:px-6 shadow'>
-                    {/* History skeleton */}
-                    <div className='min-w-0 flex-1 px-4 sm:grid sm:grid-cols-2 gap-4'>
-                      <div className='flex flex-col justify-center'>
-                        {/* Date skeleton */}
-                        <div className='animate-pulse h-3 rounded mb-6 sm:mb-0 bg-gray-300 dark:bg-gray-600'></div>
-                      </div>
-                      <div className='flex flex-col justify-center'>
-                        {/* Source skeleton */}
-                        <div className='animate-pulse h-3 rounded mb-6 sm:mb-0 bg-gray-300 dark:bg-gray-600'></div>
-                      </div>
-                      <div className='flex flex-col justify-center'>
-                        {/* Duration skeleton */}
-                        <div className='animate-pulse h-3 rounded mb-6 sm:mb-0 bg-gray-300 dark:bg-gray-600'></div>
-                      </div>
-                      <div className='flex flex-col justify-center'>
-                        {/* Icon skeleton */}
-                        <div className='animate-pulse h-3 rounded mb-6 sm:mb-0  bg-gray-300 dark:bg-gray-600'></div>
-                      </div>
-                      <div className='flex flex-col justify-center'>
-                        {/* Recording skeleton */}
-                        <div className='animate-pulse h-3 rounded bg-gray-300 dark:bg-gray-600'></div>
-                      </div>
-                    </div>
-                  </div>
-                </li>
-              ))}
-
-            {/* Empty state */}
-            {isHistoryLoaded && history?.count === 0 && (
-              <EmptyState
-                title='No calls'
-                description='There are no calls in your history'
-              ></EmptyState>
-            )}
-
-            {/* Not empty state  */}
-            {isHistoryLoaded &&
-              history?.rows &&
-              history.rows.map((call: any, index: number) => (
-                <li key={index}>
-                  <div className='flex items-center px-4 py-4 sm:px-6'>
-                    <div className='flex min-w-0 flex-1 items-center'>
-                      <div className='min-w-0 flex-1 md:grid md:grid-cols-3 gap-6 xl:grid-cols-4 2xl:grid-cols-5'>
-                        {/* Date column */}
-                        <div className='flex flex-col justify-center'>
-                          <div className=''>
-                            <div className='text-sm text-gray-900 dark:text-gray-100'>
-                              {formatDateLoc(call.time * 1000, 'PP')}
-                            </div>
-                            <div className='text-sm text-gray-500'>
-                              {getCallTimeToDisplay(call.time)}
-                            </div>
-                          </div>
-                        </div>
-
-                        <div className='flex col-span-2'>
-                          {/* Source column  */}
-                          <div
-                            className='flex flex-col justify-center mt-4 md:mt-0 overflow-hidden'
-                            onClick={() => {
-                              openDrawerHistory(
-                                call.cnam,
-                                call.ccompany,
-                                call.cnum || call.src,
-                                callType,
-                                operators,
-                              )
-                            }}
-                          >
-                            {checkTypeSource(call)}
-                          </div>
-
-                          {/* Icon column */}
-                          <div className='flex mx-4 mt-4 md:mt-0 items-center'>
-                            <FontAwesomeIcon
-                              icon={faArrowRight}
-                              className='ml-0 h-4 w-4 flex-shrink-0 text-gray-500 dark:text-gray-600'
-                              aria-hidden='true'
-                            />
-                          </div>
-
-                          {/* Destination column */}
-                          <div
-                            className='flex flex-col justify-center mt-4 md:mt-0 overflow-hidden'
-                            onClick={() =>
-                              openDrawerHistory(
-                                call.dst_cnam,
-                                call.dst_ccompany,
-                                call.dst,
-                                callType,
-                                operators,
-                              )
-                            }
-                          >
-                            {checkTypeDestination(call)}
-                          </div>
-                        </div>
-
-                        {/* duration column */}
-                        <div className='mt-4 md:mt-0 flex items-center'>
-                          <div className='text-sm text-gray-900 dark:text-gray-100'>
-                            {!call.duration ? '0 second' : toDaysMinutesSeconds(call.duration)}
-                          </div>
-                        </div>
-
-                        {/* icon column */}
-                        <div className='mt-4 md:mt-0 flex items-center'>{checkIconUser(call)}</div>
-
-                        {/* recording column */}
-                        {call.recordingfile && (
-                          <div className='mt-4 md:mt-0 grid items-center'>
-                            <div>
-                              <Button variant='white'>
-                                <FontAwesomeIcon
-                                  icon={faPlay}
-                                  className='h-4 w-4 mr-2 flex-shrink-0 text-gray-900 dark:text-gray-100'
-                                  aria-hidden='true'
-                                />{' '}
-                                Play recording
-                              </Button>
-                            </div>
-                          </div>
-                        )}
-                      </div>
-                    </div>
-                  </div>
-                </li>
-              ))}
-          </ul>
-        </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        )}
 
         {/* pagination */}
         {totalPages > 1 && (

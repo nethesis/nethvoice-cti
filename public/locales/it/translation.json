@@ -58,7 +58,14 @@
     "calls": "chiamate",
     "Filters": "Filtri",
     "Call direction": "Direzione chiamata",
-    "History filters": "Filtri storico"
+    "History filters": "Filtri storico",
+    "Source": "Sorgente",
+    "Destination": "Destinazione",
+    "State": "Stato",
+    "Duration": "Durata",
+    "Recording": "Registrazione",
+    "No calls": "Non ci sono chiamate",
+    "There are no calls in your history": "Non ci sono chiamate nel tuo storico"
   },
   "Operators": {
     "Operators": "Operatori",
