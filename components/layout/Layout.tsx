@@ -22,6 +22,7 @@ import {
 } from '../../lib/operators'
 import { useEventListener } from '../../lib/hooks/useEventListener'
 import { retrieveQueues } from '../../lib/queuesLib'
+import { manageFaviconEvents } from '../../lib/utils'
 
 interface LayoutProps {
   children: ReactNode
@@ -39,7 +40,17 @@ export const Layout: FC<LayoutProps> = ({ children }) => {
   const [firstRenderGlobalSearchListener, setFirstRenderGlobalSearchListener] = useState(true)
   const [isUserInfoLoaded, setUserInfoLoaded] = useState(false)
   const authStore = useSelector((state: RootState) => state.authentication)
+
   const queuesStore = useSelector((state: RootState) => state.queues)
+  const [errorFavicon, setErrorFavicon] = useState(false)
+  const [callingUserFavicon, setCallingUserFavicon] = useState(false)
+
+  //TO DO ERROR EVENT AND MODAL TO STOP WARNING FAVICON
+  // useEffect(() => {
+  //   manageFaviconEvents(errorFavicon, callingUserFavicon)
+  // }, [errorFavicon, callingUserFavicon])
+
+  manageFaviconEvents(errorFavicon, callingUserFavicon)
 
   useEffect(() => {
     const currentItems = items.map((route) => {

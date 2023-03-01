@@ -4,7 +4,9 @@ import Script from 'next/script'
 export default function Document() {
   return (
     <Html>
-      <Head />
+      <Head>
+        <link rel='icon' href='/favicon.ico' />
+      </Head>
       <body className='bg-gray-100 dark:bg-gray-800 text-gray-700 dark:text-gray-100'>
         <Main />
         <NextScript />
