@@ -29,7 +29,13 @@
     "Contact type": "Tipo di contatto",
     "Phonebook filters": "Filtri rubrica",
     "Filter contacts": "Filtra contatti",
-    "contacts": "contatti"
+    "contacts": "contatti",
+    "No contacts": "Nessun contatto",
+    "There is no contact in your phonebook": "Nessun contatto presente nella tua rubrica",
+    "Work phone": "Telefono lavoro",
+    "Mobile phone": "Cellulare",
+    "Contact details": "Dettagli contatto",
+    "Type":"Tipo"
   },
   "History": {
     "History": "Storico",
