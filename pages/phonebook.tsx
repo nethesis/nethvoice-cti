@@ -171,7 +171,7 @@ const Phonebook: NextPage = () => {
                           <tr>
                             <th
                               scope='col'
-                              className='px-3 py-3.5 text-left text-sm font-semibold text-gray-700 dark:text-gray-100'
+                              className='py-3.5 pl-4 pr-3 text-left text-sm font-semibold text-gray-700 dark:text-gray-100 sm:pl-6'
                             >
                               {t('Phonebook.Name')}
                             </th>
@@ -179,7 +179,7 @@ const Phonebook: NextPage = () => {
                               scope='col'
                               className='px-3 py-3.5 text-left text-sm font-semibold text-gray-700 dark:text-gray-100'
                             >
-                              {t('Phonebook.Work phone')}
+                              {t('Phonebook.Primary phone')}
                             </th>
                             <th
                               scope='col'
@@ -189,33 +189,43 @@ const Phonebook: NextPage = () => {
                             </th>
                             <th
                               scope='col'
-                              className='px-3 py-3.5 text-right text-sm font-semibold text-gray-700 dark:text-gray-100'
+                              className='px-8 py-3.5 text-right text-sm font-semibold text-gray-700 dark:text-gray-100 sm:pr-6'
                             >
-                              {t('Phonebook.Contact details')}
+                              {/* {t('Phonebook.Contact details')} */}
                             </th>
                           </tr>
                         </thead>
                         <tbody className='divide-y divide-gray-200 dark:divide-gray-700 bg-white dark:bg-gray-900 text-gray-700 text-sm'>
-                          {/* skeleton */}
-                          {!isPhonebookLoaded &&
-                            Array.from(Array(5)).map((i) => (
-                              <tr key={i}>
-                                {Array.from(Array(6)).map((j) => (
-                                  <td key={j}>
-                                    <div className='px-4 py-6'>
-                                      <div className='animate-pulse h-5 rounded bg-gray-300 dark:bg-gray-600'></div>
-                                    </div>
-                                  </td>
-                                ))}
+                          {/* no search results */}
+                          {isPhonebookLoaded &&
+                            phonebook?.rows &&
+                            !phonebook.rows.length &&
+                            !!textFilter.length && (
+                              <tr>
+                                <td colSpan={4}>
+                                  <EmptyState
+                                    title={t('Phonebook.No contacts')}
+                                    description={
+                                      t('Phonebook.Try changing your search filters') || ''
+                                    }
+                                    icon={
+                                      <FontAwesomeIcon
+                                        icon={faFilter}
+                                        className='mx-auto h-12 w-12'
+                                        aria-hidden='true'
+                                      />
+                                    }
+                                  />
+                                </td>
                               </tr>
-                            ))}
+                            )}
                           {/* Not empty state  */}
                           {isPhonebookLoaded &&
                             phonebook?.rows &&
                             phonebook.rows.map((contact: any, index: number) => (
                               <tr key={index}>
                                 {/* Name */}
-                                <td className='py-4 px-4'>
+                                <td className='py-4 px-4 sm:pl-6'>
                                   <div
                                     className='flex items-center'
                                     onClick={() => openShowContactDrawer(contact)}
@@ -282,7 +292,7 @@ const Phonebook: NextPage = () => {
                                   <td className='py-4 px-4'>
                                     <div>
                                       <div className='text-sm text-gray-900 dark:text-gray-100'>
-                                        Work
+                                        {t('Phonebook.Work')}
                                       </div>
                                       <div className='mt-1 flex items-center text-sm text-primary dark:text-primary'>
                                         <FontAwesomeIcon
@@ -306,7 +316,7 @@ const Phonebook: NextPage = () => {
                                   <td className='py-4 px-4'>
                                     <div>
                                       <div className='text-sm text-gray-900 dark:text-gray-100'>
-                                        Mobile
+                                        {t('Phonebook.Mobile')}
                                       </div>
                                       <div className='mt-1 flex items-center text-sm text-primary dark:text-primary'>
                                         <FontAwesomeIcon
@@ -325,13 +335,15 @@ const Phonebook: NextPage = () => {
                                   </td>
                                 )}
                                 {!contact.cellphone && <td className='py-4 px-4'></td>}
-                                <td className='py-4 px-4'>
-                                  <FontAwesomeIcon
-                                    icon={faChevronRight}
-                                    className='h-3 w-3 text-gray-400 dark:text-gray-500 cursor-pointer'
-                                    aria-hidden='true'
-                                    onClick={() => openShowContactDrawer(contact)}
-                                  />
+                                <td className='py-4 px-4 sm:pr-8'>
+                                  <div className='flex items-center justify-end'>
+                                    <FontAwesomeIcon
+                                      icon={faChevronRight}
+                                      className='h-3 w-3 text-gray-400 dark:text-gray-500 cursor-pointer'
+                                      aria-hidden='true'
+                                      onClick={() => openShowContactDrawer(contact)}
+                                    />
+                                  </div>
                                 </td>
                               </tr>
                             ))}
@@ -345,77 +357,44 @@ const Phonebook: NextPage = () => {
           </div>
         )}
 
-        <div className='overflow-hidden shadow sm:rounded-md bg-white dark:bg-gray-900'>
-          <ul role='list' className='divide-y divide-gray-200 dark:divide-gray-700'>
-            {/* phonebook error */}
-            {phonebookError && (
-              <InlineNotification type='error' title={phonebookError}></InlineNotification>
-            )}
-            {/* phonebook skeleton */}
-            {!isPhonebookLoaded &&
-              Array.from(Array(9)).map((e, index) => (
-                <li key={index}>
-                  <div className='flex items-center px-4 py-4 sm:px-6'>
-                    {/* avatar skeleton */}
-                    <div className='animate-pulse rounded-full h-12 w-12 bg-gray-300 dark:bg-gray-600'></div>
-                    <div className='min-w-0 flex-1 px-4 md:grid md:grid-cols-2 gap-4 lg:grid-cols-3 xl:grid-cols-3'>
-                      <div className='flex flex-col justify-center'>
-                        {/* line skeleton */}
-                        <div className='animate-pulse h-3 rounded mb-6 md:mb-0 bg-gray-300 dark:bg-gray-600'></div>
-                      </div>
-                      <div>
-                        {/* line skeleton */}
-                        <div className='animate-pulse h-3 rounded mb-6 md:mb-0 bg-gray-300 dark:bg-gray-600'></div>
-                      </div>
-                      <div>
-                        {/* line skeleton */}
-                        <div className='animate-pulse h-3 rounded bg-gray-300 dark:bg-gray-600'></div>
+        {/* skeleton  */}
+        {!isPhonebookLoaded && (
+          <table className='min-w-full divide-y divide-gray-300 dark:divide-gray-700 bg-white dark:bg-gray-900'>
+            <thead className=''>
+              <tr>
+                {Array.from(Array(4)).map((i) => (
+                  <th key={i}>
+                    <div className='px-6 py-6'>
+                      <div className='animate-pulse h-5 rounded bg-gray-300 dark:bg-gray-600'></div>
+                    </div>
+                  </th>
+                ))}
+              </tr>
+            </thead>
+            <tbody>
+              {Array.from(Array(8)).map((j) => (
+                <tr key={j}>
+                  <td className='py-4 px-6 sm:pl-6'>
+                    <div className='flex items-center'>
+                      <div className='animate-pulse rounded-full h-12 w-12 bg-gray-300 dark:bg-gray-600'></div>
+                      <div className='min-w-0 flex-1 pl-3'>
+                        <div className='animate-pulse h-5 rounded bg-gray-300 dark:bg-gray-600'></div>
                       </div>
                     </div>
-                  </div>
-                </li>
+                  </td>
+                  {Array.from(Array(3)).map((y) => (
+                    <td key={y}>
+                      <div className='px-6 py-6'>
+                        <div className='animate-pulse h-5 rounded bg-gray-300 dark:bg-gray-600'></div>
+                      </div>
+                    </td>
+                  ))}
+                </tr>
               ))}
-            {/* empty state */}
-            {isPhonebookLoaded &&
-              phonebook?.rows &&
-              !phonebook.rows.length &&
-              !textFilter.length && (
-                <EmptyState
-                  title='No contacts'
-                  description='There is no contact in your phonebook'
-                  icon={
-                    <FontAwesomeIcon
-                      icon={faAddressBook}
-                      className='mx-auto h-12 w-12'
-                      aria-hidden='true'
-                    />
-                  }
-                >
-                  <Button variant='primary' onClick={() => openCreateContactDrawer()}>
-                    <FontAwesomeIcon icon={faPlus} className='mr-2 h-4 w-4' />
-                    <span>{t('Phonebook.Create contact')}</span>
-                  </Button>
-                </EmptyState>
-              )}
-            {/* no search results */}
-            {isPhonebookLoaded &&
-              phonebook?.rows &&
-              !phonebook.rows.length &&
-              !!textFilter.length && (
-                <EmptyState
-                  title='No contacts'
-                  description='Try changing your search filters'
-                  icon={
-                    <FontAwesomeIcon
-                      icon={faFilter}
-                      className='mx-auto h-12 w-12'
-                      aria-hidden='true'
-                    />
-                  }
-                />
-              )}
-          </ul>
-        </div>
+            </tbody>
+          </table>
+        )}
+
         {/* pagination */}
         {!phonebookError && !!phonebook?.rows?.length && (
           <nav

@@ -32,10 +32,13 @@
     "contacts": "contacts",
     "No contacts": "No contacts",
     "There is no contact in your phonebook": "There is no contact in your phonebook",
-    "Work phone": "Work phone",
+    "Primary phone": "Primary phone",
     "Mobile phone": "Mobile phone",
     "Contact details": "Contact details",
-    "Type":"Type"
+    "Type": "Type",
+    "Work": "Work",
+    "Mobile": "Mobile",
+    "Try changing your search filters": "Try changing your search filters"
   },
   "History": {
     "History": "History",
