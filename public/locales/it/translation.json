@@ -70,11 +70,12 @@
     "History filters": "Filtri storico",
     "Source": "Sorgente",
     "Destination": "Destinazione",
-    "State": "Stato",
+    "Outcome": "Esito",
     "Duration": "Durata",
     "Recording": "Registrazione",
     "No calls": "Non ci sono chiamate",
-    "There are no calls in your history": "Non ci sono chiamate nel tuo storico"
+    "There are no calls in your history": "Non ci sono chiamate nel tuo storico",
+    "Play": "Riproduci"
   },
   "Operators": {
     "Operators": "Operatori",

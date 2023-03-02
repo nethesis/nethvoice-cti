@@ -70,11 +70,12 @@
     "History filters": "History filters",
     "Source": "Source",
     "Destination": "Destination",
-    "State": "State",
+    "Outcome": "Outcome",
     "Duration": "Duration",
     "Recording": "Recording",
     "No calls": "No calls",
-    "There are no calls in your history": "There are no calls in your history"
+    "There are no calls in your history": "There are no calls in your history",
+    "Play": "Play"
   },
   "Operators": {
     "Operators": "Operators",

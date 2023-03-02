@@ -141,7 +141,7 @@ const Phonebook: NextPage = () => {
           <div className='mx-auto'>
             <div className='flex flex-col overflow-hidden'>
               <div className='-my-2 -mx-4 overflow-x-auto sm:-mx-6 lg:-mx-8'>
-                <div className='inline-block min-w-full py-2 align-middle px-2 md:px-6 lg:px-8'>
+                <div className='min-w-full py-2 align-middle px-2 md:px-6 lg:px-8'>
                   <div className='overflow-hidden shadow ring-1 ring-black ring-opacity-5 md:rounded-lg'>
                     {/* empty state */}
                     {isPhonebookLoaded &&
@@ -190,9 +190,7 @@ const Phonebook: NextPage = () => {
                             <th
                               scope='col'
                               className='px-8 py-3.5 text-right text-sm font-semibold text-gray-700 dark:text-gray-100 sm:pr-6'
-                            >
-                              {/* {t('Phonebook.Contact details')} */}
-                            </th>
+                            ></th>
                           </tr>
                         </thead>
                         <tbody className='divide-y divide-gray-200 dark:divide-gray-700 bg-white dark:bg-gray-900 text-gray-700 text-sm'>
@@ -225,7 +223,7 @@ const Phonebook: NextPage = () => {
                             phonebook.rows.map((contact: any, index: number) => (
                               <tr key={index}>
                                 {/* Name */}
-                                <td className='py-4 px-4 sm:pl-6'>
+                                <td className='py-4 px-4 sm:pl-6 '>
                                   <div
                                     className='flex items-center'
                                     onClick={() => openShowContactDrawer(contact)}
@@ -245,7 +243,7 @@ const Phonebook: NextPage = () => {
                                       )}{' '}
                                     </div>
                                     <div className='ml-4'>
-                                      <div className='font-medium text-gray-100'>
+                                      <div className='font-medium text-gray-700 dark:text-gray-100'>
                                         {' '}
                                         <span
                                           className='cursor-pointer hover:underline'
@@ -359,12 +357,12 @@ const Phonebook: NextPage = () => {
 
         {/* skeleton  */}
         {!isPhonebookLoaded && (
-          <table className='min-w-full divide-y divide-gray-300 dark:divide-gray-700 bg-white dark:bg-gray-900'>
-            <thead className=''>
+          <table className='min-w-full divide-y divide-gray-300 dark:divide-gray-700 bg-white dark:bg-gray-900 rounded-md overflow-hidden'>
+            <thead>
               <tr>
-                {Array.from(Array(4)).map((i) => (
-                  <th key={i}>
-                    <div className='px-6 py-6'>
+                {Array.from(Array(4)).map((_, index) => (
+                  <th key={`th-${index}`}>
+                    <div className='px-6 py-3.5'>
                       <div className='animate-pulse h-5 rounded bg-gray-300 dark:bg-gray-600'></div>
                     </div>
                   </th>
@@ -372,18 +370,24 @@ const Phonebook: NextPage = () => {
               </tr>
             </thead>
             <tbody>
-              {Array.from(Array(8)).map((j) => (
-                <tr key={j}>
+              {Array.from(Array(8)).map((_, secondIndex) => (
+                <tr key={`tr-${secondIndex}`}>
                   <td className='py-4 px-6 sm:pl-6'>
                     <div className='flex items-center'>
-                      <div className='animate-pulse rounded-full h-12 w-12 bg-gray-300 dark:bg-gray-600'></div>
+                      <div
+                        className='animate-pulse rounded-full h-12 w-12 bg-gray-300 dark:bg-gray-600'
+                        key={`td-${secondIndex}-0`}
+                      ></div>
                       <div className='min-w-0 flex-1 pl-3'>
-                        <div className='animate-pulse h-5 rounded bg-gray-300 dark:bg-gray-600'></div>
+                        <div
+                          className='animate-pulse h-5 rounded bg-gray-300 dark:bg-gray-600'
+                          key={`td-${secondIndex}-1`}
+                        ></div>
                       </div>
                     </div>
                   </td>
-                  {Array.from(Array(3)).map((y) => (
-                    <td key={y}>
+                  {Array.from(Array(3)).map((_, thirdIndex) => (
+                    <td key={`td-${secondIndex}-${thirdIndex}`}>
                       <div className='px-6 py-6'>
                         <div className='animate-pulse h-5 rounded bg-gray-300 dark:bg-gray-600'></div>
                       </div>

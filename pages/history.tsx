@@ -529,12 +529,11 @@ const History: NextPage = () => {
         {historyError && (
           <InlineNotification type='error' title={historyError}></InlineNotification>
         )}
-
         {!historyError && (
           <div className='mx-auto'>
             <div className='flex flex-col overflow-hidden'>
               <div className='-my-2 -mx-4 overflow-x-auto sm:-mx-6 lg:-mx-8'>
-                <div className='inline-block min-w-full py-2 align-middle px-2 md:px-6 lg:px-8'>
+                <div className='min-w-full py-2 align-middle px-2 md:px-6 lg:px-8'>
                   <div className='overflow-hidden shadow ring-1 ring-black ring-opacity-5 md:rounded-lg'>
                     {/* empty state */}
                     {isHistoryLoaded && history?.count === 0 && (
@@ -548,7 +547,6 @@ const History: NextPage = () => {
                             aria-hidden='true'
                           />
                         }
-                        className='bg-white'
                       ></EmptyState>
                     )}
                     {isHistoryLoaded && history?.count !== 0 && (
@@ -567,6 +565,11 @@ const History: NextPage = () => {
                             >
                               {t('History.Source')}
                             </th>
+                            {/* Arrow column */}
+                            <th
+                              scope='col'
+                              className='px-3 py-3.5 text-left text-sm font-semibold text-gray-700 dark:text-gray-100'
+                            ></th>
                             <th
                               scope='col'
                               className='px-3 py-3.5 text-left text-sm font-semibold text-gray-700 dark:text-gray-100'
@@ -583,7 +586,7 @@ const History: NextPage = () => {
                               scope='col'
                               className='px-3 py-3.5 text-left text-sm font-semibold text-gray-700 dark:text-gray-100'
                             >
-                              {t('History.State')}
+                              {t('History.Outcome')}
                             </th>
                             <th
                               scope='col'
@@ -594,20 +597,6 @@ const History: NextPage = () => {
                           </tr>
                         </thead>
                         <tbody className='divide-y divide-gray-200 dark:divide-gray-700 bg-white dark:bg-gray-900 text-gray-700 text-sm'>
-                          {/* skeleton */}
-                          {!isHistoryLoaded &&
-                            Array.from(Array(5)).map((i) => (
-                              <tr key={i}>
-                                {Array.from(Array(6)).map((j) => (
-                                  <td key={j}>
-                                    <div className='px-4 py-6'>
-                                      <div className='animate-pulse h-5 rounded bg-gray-300 dark:bg-gray-600'></div>
-                                    </div>
-                                  </td>
-                                ))}
-                              </tr>
-                            ))}
-                          {/* calls */}
                           {/* Not empty state  */}
                           {isHistoryLoaded &&
                             history?.rows &&
@@ -616,7 +605,9 @@ const History: NextPage = () => {
                                 {/* Date */}
                                 <td className='whitespace-nowrap py-4 pl-4 pr-3 sm:pl-6'>
                                   <div className='flex flex-col'>
-                                    <div>{formatDateLoc(call.time * 1000, 'PP')}</div>
+                                    <div className='text-sm text-gray-900 dark:text-gray-100'>
+                                      {formatDateLoc(call.time * 1000, 'PP')}
+                                    </div>
                                     <div className='text-gray-500 dark:text-gray-500'>
                                       {getCallTimeToDisplay(call.time * 1000)}
                                     </div>
@@ -640,6 +631,15 @@ const History: NextPage = () => {
                                   </div>
                                 </td>
 
+                                {/* Icon column */}
+                                <td className='pl-2 pr-6 py-4'>
+                                  <FontAwesomeIcon
+                                    icon={faArrowRight}
+                                    className='ml-0 h-4 w-4 flex-shrink-0 text-gray-500 dark:text-gray-600'
+                                    aria-hidden='true'
+                                  />
+                                </td>
+
                                 {/* Destination */}
                                 <td className='px-3 py-4'>
                                   <div
@@ -659,14 +659,14 @@ const History: NextPage = () => {
 
                                 {/* Duration */}
                                 <td className='px-3 py-4'>
-                                  <div>
+                                  <div className='text-sm text-gray-900 dark:text-gray-100'>
                                     {!call.duration
                                       ? '0 second'
                                       : toDaysMinutesSeconds(call.duration)}
                                   </div>
                                 </td>
 
-                                {/* State */}
+                                {/* Outcome */}
                                 <td className='px-3 py-4'>
                                   <div>{checkIconUser(call)}</div>
                                 </td>
@@ -679,18 +679,21 @@ const History: NextPage = () => {
                                       <Button variant='white'>
                                         <FontAwesomeIcon
                                           icon={faPlay}
-                                          className='h-4 w-4 text-gray-900 dark:text-gray-100'
+                                          className='h-4 w-4 mr-2 text-gray-900 dark:text-gray-100'
                                           aria-hidden='true'
                                         />{' '}
+                                        {t('History.Play')}
                                       </Button>
                                     </div>
                                   </td>
                                 )}
-                                {/* No recordingfile available */}
-                                {/* TO DO ADD SOME ICON */}
+                                {/* No recording file available */}
                                 {!call.recordingfile && (
                                   <td className='px-3 py-4'>
-                                    <div> </div>
+                                    <div className='flex text-gray-500 dark:text-gray-600'>
+                                      {' '}
+                                      -{' '}
+                                    </div>
                                   </td>
                                 )}
                               </tr>
@@ -703,6 +706,36 @@ const History: NextPage = () => {
               </div>
             </div>
           </div>
+        )}
+
+        {/* skeleton  */}
+        {!isHistoryLoaded && (
+          <table className='min-w-full divide-y divide-gray-300 dark:divide-gray-700 bg-white dark:bg-gray-900 overflow-hidden rounded-lg'>
+            <thead>
+              <tr>
+                {Array.from(Array(6)).map((_, index) => (
+                  <th key={`th-${index}`}>
+                    <div className='px-6 py-3.5'>
+                      <div className='animate-pulse h-5 rounded bg-gray-300 dark:bg-gray-600'></div>
+                    </div>
+                  </th>
+                ))}
+              </tr>
+            </thead>
+            <tbody>
+              {Array.from(Array(8)).map((_, secondIndex) => (
+                <tr key={`tr-${secondIndex}`}>
+                  {Array.from(Array(6)).map((_, thirdIndex) => (
+                    <td key={`td-${secondIndex}-${thirdIndex}`}>
+                      <div className='px-6 py-6'>
+                        <div className='animate-pulse h-5 rounded bg-gray-300 dark:bg-gray-600'></div>
+                      </div>
+                    </td>
+                  ))}
+                </tr>
+              ))}
+            </tbody>
+          </table>
         )}
 
         {/* pagination */}
