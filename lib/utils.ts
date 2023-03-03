@@ -5,6 +5,7 @@ import type { PropsWithChildren } from 'react'
 import axios from 'axios'
 import { store } from '../store'
 import { eventDispatch } from './hooks/eventDispatch'
+import { doLogout } from '../services/login'
 
 export interface ClearProps {
   key: string
@@ -26,6 +27,11 @@ export const cleanClassName = (props: PropsWithChildren<object>): object => {
 export function handleNetworkError(error: any) {
   if (axios.isAxiosError(error)) {
     console.error('error: ', error.message)
+
+    if (!error.status) {
+      // the request probably failed because auth token is expired (and CORS policy misconfigured)
+      doLogout()
+    }
     return null
   } else {
     console.error('unexpected error: ', error)

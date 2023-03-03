@@ -12,9 +12,7 @@ import React from 'react'
 import { FC, useEffect, useState, createRef, RefObject } from 'react'
 
 import { Avatar, Dropdown, Modal, TextInput, Button } from '../common'
-import { logout } from '../../services/login'
-import { useRouter } from 'next/router'
-import { removeItem } from '../../lib/storage'
+import { doLogout } from '../../services/login'
 import { store } from '../../store'
 import { useSelector, useDispatch } from 'react-redux'
 import { RootState, Dispatch } from '../../store'
@@ -43,7 +41,6 @@ interface TopBarProps {
 }
 
 export const TopBar: FC<TopBarProps> = ({ openMobileCb }) => {
-  const router = useRouter()
   const { name, mainextension, mainPresence, avatar } = useSelector(
     (state: RootState) => state.user,
   )
@@ -71,22 +68,6 @@ export const TopBar: FC<TopBarProps> = ({ openMobileCb }) => {
   }, [firstNotificationsRender, notificationsStore.isLoaded])
 
   const dispatch = useDispatch<Dispatch>()
-
-  const doLogout = async () => {
-    const res = await logout()
-    //// TODO logout api is currently authenticated. For this reason we must not check res.ok (this is a temporary workaround)
-
-    // if (res && res.ok) {
-
-    // Remove credentials from localstorage
-    removeItem('credentials')
-    // Reset the authentication store
-    store.dispatch.authentication.reset()
-    // Redirect to login page
-    router.push('/login')
-
-    // } ////
-  }
 
   const toggleDarkTheme = () => {
     if (
