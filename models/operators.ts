@@ -118,6 +118,9 @@ export const operators = createModel<RootModel>()({
         conversations.push(conv)
       })
       op.conversations = conversations
+
+      // console.log('! updateConversations', operatorName, conversations) ////
+
       return state
     },
   },

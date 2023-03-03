@@ -35,7 +35,6 @@ import { faStar as faStarLight } from '@nethesis/nethesis-light-svg-icons'
 import { getOperatorByPhoneNumber } from '../../lib/operators'
 import classNames from 'classnames'
 import { LoggedStatus } from './LoggedStatus'
-import { formatCallDuration } from '../../lib/dateTime'
 import { CallDuration } from '../operators/CallDuration'
 
 export interface QueuesManagementViewProps extends ComponentProps<'div'> {
@@ -463,7 +462,9 @@ export const QueuesManagementView: FC<QueuesManagementViewProps> = ({
                             icon={faPhone}
                             className='h-4 w-4 text-gray-400 dark:text-gray-500'
                           />
-                          <span>0</span>
+                          <span>
+                            {queue.waitingCallersList.length + queue.connectedCalls.length}
+                          </span>
                         </div>
                         <div
                           title={t('Queues.Waiting calls') || ''}
@@ -483,7 +484,7 @@ export const QueuesManagementView: FC<QueuesManagementViewProps> = ({
                             icon={faArrowDownLeftAndArrowUpRightToCenter}
                             className='h-4 w-4 text-gray-400 dark:text-gray-500'
                           />
-                          <span>0</span>
+                          <span>{queue.connectedCalls.length}</span>
                         </div>
                         <div
                           title={t('Queues.Active operators') || ''}
@@ -703,8 +704,92 @@ export const QueuesManagementView: FC<QueuesManagementViewProps> = ({
                             </div>
                             {/* connected calls table */}
                             <div className='text-sm'>
-                              <div className='p-4 border border-gray-200 dark:border-gray-700 rounded-md text-gray-700 dark:text-gray-200'>
-                                {t('Queues.No calls')}
+                              <div className='border rounded-md border-gray-200 dark:border-gray-700 text-gray-700 dark:text-gray-200'>
+                                {isEmpty(queue.connectedCalls) ? (
+                                  <div className='p-4'>{t('Queues.No calls')}</div>
+                                ) : (
+                                  <div className='-my-2 -mx-4 overflow-x-auto sm:-mx-6 lg:-mx-8'>
+                                    <div className='inline-block min-w-full py-2 align-middle sm:px-6 lg:px-8'>
+                                      <div className='overflow-hidden sm:rounded-lg'>
+                                        <table className='min-w-full divide-y divide-gray-300'>
+                                          <thead className='bg-gray-100 dark:bg-gray-700'>
+                                            <tr>
+                                              <th
+                                                scope='col'
+                                                className='whitespace-nowrap py-3 pl-4 pr-2 text-left font-semibold'
+                                              >
+                                                {t('Queues.Caller')}
+                                              </th>
+                                              <th
+                                                scope='col'
+                                                className='whitespace-nowrap px-2 py-3 text-left font-semibold'
+                                              >
+                                                {t('Queues.Operator')}
+                                              </th>
+                                              <th
+                                                scope='col'
+                                                className='whitespace-nowrap pl-2 pr-4 py-3 text-left font-semibold'
+                                              >
+                                                {t('Queues.Duration')}
+                                              </th>
+                                            </tr>
+                                          </thead>
+                                          <tbody className='divide-y divide-gray-200 bg-white'>
+                                            {queue.connectedCalls.map((call: any) => (
+                                              <tr key={call.id}>
+                                                <td className='whitespace-nowrap py-3 pl-4 pr-2'>
+                                                  <div className='flex flex-col'>
+                                                    <div className='font-medium'>
+                                                      {call.conversation.counterpartName}
+                                                    </div>
+                                                    {call.conversation.counterpartName !==
+                                                      call.conversation.counterpartNum && (
+                                                      <div>{call.conversation.counterpartNum}</div>
+                                                    )}
+                                                  </div>
+                                                </td>
+                                                <td className='whitespace-nowrap px-2 py-3'>
+                                                  <div className='flex items-center gap-3 overflow-hidden'>
+                                                    <Avatar
+                                                      rounded='full'
+                                                      src={
+                                                        operators[call.operatorUsername]
+                                                          .avatarBase64
+                                                      }
+                                                      placeholderType='person'
+                                                      size='small'
+                                                      status={
+                                                        operators[call.operatorUsername]
+                                                          .mainPresence
+                                                      }
+                                                    />
+                                                    <div className='flex flex-col overflow-hidden'>
+                                                      <div className='truncate'>
+                                                        {operators[call.operatorUsername].name}
+                                                      </div>
+                                                      <div className='text-gray-500 dark:text-gray-400'>
+                                                        {
+                                                          operators[call.operatorUsername].endpoints
+                                                            .mainextension[0].id
+                                                        }
+                                                      </div>
+                                                    </div>
+                                                  </div>
+                                                </td>
+                                                <td className='whitespace-nowrap pl-2 pr-4 py-3'>
+                                                  <CallDuration
+                                                    key={`callDuration-${call.conversation.id}`}
+                                                    startTime={call.conversation.startTime}
+                                                  />
+                                                </td>
+                                              </tr>
+                                            ))}
+                                          </tbody>
+                                        </table>
+                                      </div>
+                                    </div>
+                                  </div>
+                                )}
                               </div>
                             </div>
                           </div>
