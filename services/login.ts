@@ -5,6 +5,8 @@
  * Contains the request to the APIs consumed by the Login
  */
 
+import router from 'next/router'
+import { removeItem } from '../lib/storage'
 import { store } from '../store'
 
 /**
@@ -28,4 +30,20 @@ export const logout = async () => {
   } catch (error) {
     console.error(error)
   }
+}
+
+export const doLogout = async () => {
+  const res = await logout()
+  //// TODO logout api is currently authenticated. For this reason we must not check res.ok (this is a temporary workaround)
+
+  // if (res && res.ok) {
+
+  // Remove credentials from localstorage
+  removeItem('credentials')
+  // Reset the authentication store
+  store.dispatch.authentication.reset()
+  // Redirect to login page
+  router.push('/login')
+
+  // } ////
 }
