@@ -34,47 +34,65 @@ export const searchStringInQueue = (queue: any, queryText: string) => {
   return false
 }
 
-export const retrieveQueues = async (mainextension: string) => {
+export const retrieveQueues = async (mainextension: string, operators: any) => {
+  let data: any = null
+
   try {
-    const { data } = await axios.get('/astproxy/queues')
-    let queues: any = {}
-
-    // keep only user queues
-
-    Object.keys(data).map((queueNum: string) => {
-      const queue = data[queueNum]
-
-      if (queue.members[mainextension]) {
-        queues[queueNum] = queue
-      }
-    })
-
-    Object.values(queues).forEach((queue: any) => {
-      // convert caller position to number
-      Object.values(queue.waitingCallers).forEach((caller: any) => {
-        caller.position = parseInt(caller.position)
-      })
-
-      // sort waiting callers
-      queue.waitingCallersList = Object.values(queue.waitingCallers)
-      queue.waitingCallersList.sort(sortByProperty('position'))
-
-      // compute active operators
-      let numActiveOperators = 0
-
-      Object.values(queue.members).forEach((operator: any) => {
-        if (operator.loggedIn && !operator.paused) {
-          numActiveOperators++
-        }
-      })
-      queue.numActiveOperators = numActiveOperators
-    })
-
-    return queues
+    const res = await axios.get('/astproxy/queues')
+    data = res.data
   } catch (error) {
     handleNetworkError(error)
     throw error
   }
+
+  let queues: any = {}
+
+  // keep only user queues
+
+  Object.keys(data).map((queueNum: string) => {
+    const queue = data[queueNum]
+
+    if (queue.members[mainextension]) {
+      queues[queueNum] = queue
+    }
+  })
+
+  Object.values(queues).forEach((queue: any) => {
+    // convert caller position to number
+    Object.values(queue.waitingCallers).forEach((caller: any) => {
+      caller.position = parseInt(caller.position)
+    })
+
+    // sort waiting callers
+    queue.waitingCallersList = Object.values(queue.waitingCallers)
+    queue.waitingCallersList.sort(sortByProperty('position'))
+
+    // compute active operators
+    let numActiveOperators = 0
+
+    Object.values(queue.members).forEach((operator: any) => {
+      if (operator.loggedIn && !operator.paused) {
+        numActiveOperators++
+      }
+    })
+    queue.numActiveOperators = numActiveOperators
+
+    // compute connected calls
+    let connectedCalls: any[] = []
+
+    Object.values(operators).forEach((operator: any) => {
+      operator.conversations?.forEach((conversation: any) => {
+        if (conversation.queueId === queue.queue) {
+          connectedCalls.push({ conversation, operatorUsername: operator.username })
+        }
+      })
+    })
+    queue.connectedCalls = connectedCalls
+
+    console.log('connectedCalls', queue.queue, connectedCalls) ////
+  })
+
+  return queues
 }
 
 export const retrieveAndFilterQueueCalls = async (
@@ -178,8 +196,6 @@ export const retrieveQueueStats = async () => {
     data.timeAtPhone = formatDurationLoc(
       (data.outgoingCalls?.duration_outgoing || 0) + (data.incomingCalls?.duration_incoming || 0),
     )
-
-    console.log('stats', data) ////
 
     return data
   } catch (error) {

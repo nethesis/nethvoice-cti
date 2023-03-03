@@ -32,7 +32,7 @@ export const ShowQueueCallDrawerContent = forwardRef<
   const [callInfo, setCallInfo] = useState([])
   const [firstRender, setFirstRender] = useState(true)
   const [isLoaded, setLoaded] = useState(false)
-  const [errorMessage, setErrorMessage] = useState('') ////
+  const [errorMessage, setErrorMessage] = useState('')
   const operatorsStore = useSelector((state: RootState) => state.operators)
 
   const retrieveCallInformation = async () => {
@@ -80,8 +80,6 @@ export const ShowQueueCallDrawerContent = forwardRef<
   }, [firstRender, config.cid, config.queueId])
 
   const toggleExpandCall = (index: number) => {
-    console.log('toggleExpandCall', index) ////
-
     // good example of how to update an object inside an array managed by useState
 
     const newCallInfo: any = callInfo.map((call: any, i) => {

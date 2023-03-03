@@ -19,6 +19,7 @@ const Queues: NextPage = () => {
   const [queuesError, setQueuesError] = useState('')
   const [currentTab, setCurrentTab] = useState('queues')
   const { mainextension } = useSelector((state: RootState) => state.user)
+  const { operators } = useSelector((state: RootState) => state.operators)
 
   const tabs = [
     { name: t('Queues.Queues management'), value: 'queues' },
@@ -37,7 +38,7 @@ const Queues: NextPage = () => {
   const fetchQueues = async () => {
     try {
       setQueuesError('')
-      const res = await retrieveQueues(mainextension)
+      const res = await retrieveQueues(mainextension, operators)
 
       Object.keys(res).map((key, index) => {
         const queue = res[key]
