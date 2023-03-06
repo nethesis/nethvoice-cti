@@ -123,9 +123,6 @@ export const Layout: FC<LayoutProps> = ({ children }) => {
       operatorsStore.isFavoritesLoaded
     ) {
       buildOperators(operatorsStore)
-
-      // retrieve queues after loading operators
-      retrieveQueues(authStore.username, mainextension, operatorsStore.operators)
     }
   }, [
     operatorsStore.isUserEndpointsLoaded,
@@ -135,19 +132,19 @@ export const Layout: FC<LayoutProps> = ({ children }) => {
     operatorsStore.isFavoritesLoaded,
   ])
 
-  // reload queues
-  useEffect(() => {
-    if (!queuesStore.isLoaded) {
-      retrieveQueues(authStore.username, mainextension, operatorsStore.operators)
-    }
-  }, [queuesStore.isLoaded])
-
   // register to phone island events
 
   const user = authStore.username
   const { mainPresence: topBarPresence, mainextension } = useSelector(
     (state: RootState) => state.user,
   )
+
+  // load / reload queues
+  useEffect(() => {
+    if (mainextension && operatorsStore.isOperatorsLoaded && !queuesStore.isLoaded) {
+      retrieveQueues(authStore.username, mainextension, operatorsStore.operators)
+    }
+  }, [queuesStore.isLoaded, operatorsStore.isOperatorsLoaded, mainextension])
 
   useEventListener('phone-island-main-presence', (data: any) => {
     const opName = Object.keys(data)[0]
