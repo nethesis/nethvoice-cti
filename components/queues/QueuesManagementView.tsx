@@ -10,10 +10,12 @@ import { RootState, store } from '../../store'
 import { sortByFavorite, sortByProperty } from '../../lib/utils'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import {
+  addQueueToExpanded,
   addQueueToFavorites,
   loginToQueue,
   logoutFromQueue,
   pauseQueue,
+  removeQueueFromExpanded,
   removeQueueFromFavorites,
   retrieveQueues,
   searchStringInQueue,
@@ -113,7 +115,15 @@ export const QueuesManagementView: FC<QueuesManagementViewProps> = ({ className 
   }
 
   const toggleExpandQueue = (queue: any) => {
-    store.dispatch.queues.setQueueExpanded(queue.queue, !queue.expanded)
+    const queueId = queue.queue
+    const isExpanded = !queue.expanded
+    store.dispatch.queues.setQueueExpanded(queueId, isExpanded)
+
+    if (isExpanded) {
+      addQueueToExpanded(queueId, authStore.username)
+    } else {
+      removeQueueFromExpanded(queueId, authStore.username)
+    }
     applyFilters()
   }
 
@@ -129,24 +139,47 @@ export const QueuesManagementView: FC<QueuesManagementViewProps> = ({ className 
     }
   }
 
+  const toggleWaitingCallsExpanded = (queue: any) => {
+    const queueId = queue.queue
+    const isExpanded = !queue.waitingCallsExpanded
+    store.dispatch.queues.setWaitingCallsExpanded(queueId, isExpanded)
+    applyFilters()
+  }
+
+  const toggleConnectedCallsExpanded = (queue: any) => {
+    const queueId = queue.queue
+    const isExpanded = !queue.connectedCallsExpanded
+    store.dispatch.queues.setConnectedCallsExpanded(queueId, isExpanded)
+    applyFilters()
+  }
+
+  const toggleOperatorsExpanded = (queue: any) => {
+    const queueId = queue.queue
+    const isExpanded = !queue.operatorsExpanded
+    store.dispatch.queues.setOperatorsExpanded(queueId, isExpanded)
+    applyFilters()
+  }
+
   const toggleExpandAllQueues = () => {
     if (areAllQueuesExpanded()) {
       // collapse all queues
       Object.keys(queuesStore.queues).map((key: any) => {
         const queue: any = queuesStore.queues[key]
         store.dispatch.queues.setQueueExpanded(queue.queue, false)
+        removeQueueFromExpanded(queue.queue, authStore.username)
       })
     } else {
       // expand all queues
       Object.keys(queuesStore.queues).map((key: any) => {
         const queue: any = queuesStore.queues[key]
         store.dispatch.queues.setQueueExpanded(queue.queue, true)
+        addQueueToExpanded(queue.queue, authStore.username)
       })
     }
     applyFilters()
   }
 
-  const getQueuesUserLoggedId = () => {
+  const getQueuesUserLoggedIn = () => {
     return Object.values(queuesStore.queues)
       .filter((queue: any) => {
         return (
@@ -167,7 +200,7 @@ export const QueuesManagementView: FC<QueuesManagementViewProps> = ({ className 
   const loginAllQueues = () => {
     const queuesToLogin = Object.values(queuesStore.queues).filter((queue: any) => {
       return (
-        !getQueuesUserLoggedId().includes(queue.queue) &&
+        !getQueuesUserLoggedIn().includes(queue.queue) &&
         queue.members[mainextension].type != 'static'
       )
     })
@@ -184,7 +217,7 @@ export const QueuesManagementView: FC<QueuesManagementViewProps> = ({ className 
 
   const logoutAllQueues = () => {
     const queuesToLogout = Object.values(queuesStore.queues).filter((queue: any) => {
-      return getQueuesUserLoggedId().includes(queue.queue)
+      return getQueuesUserLoggedIn().includes(queue.queue)
     })
 
     queuesToLogout.forEach((queue: any) => {
@@ -329,56 +362,58 @@ export const QueuesManagementView: FC<QueuesManagementViewProps> = ({ className 
         />
         {/* login/logout and pause buttons */}
         <div className='flex flex-col md:items-end mb-3 shrink-0'>
-          <div>
-            {/* login / logout */}
-            {isEmpty(getQueuesUserLoggedId()) ? (
-              <>
-                {/* login from all queues */}
-                <Button variant='white' className='mr-2 mb-2' onClick={loginAllQueues}>
-                  <FontAwesomeIcon
-                    icon={faUserCheck}
-                    className='h-4 w-4 mr-2 text-gray-500 dark:text-gray-400'
-                  />
-                  <span>{t('Queues.Login to all queues')}</span>
-                </Button>
-              </>
-            ) : (
-              <>
-                {/* logout from all queues */}
-                <Button variant='white' className='mr-2 mb-2' onClick={logoutAllQueues}>
-                  <FontAwesomeIcon
-                    icon={faUserXmark}
-                    className='h-4 w-4 mr-2 text-gray-500 dark:text-gray-400'
-                  />
-                  <span>{t('Queues.Logout from all queues')}</span>
-                </Button>
-              </>
-            )}
-            {/* pause / end pause */}
-            {isEmpty(getQueuesUserPaused()) ? (
-              <>
-                {/* pause on all queues */}
-                <Button variant='primary' className='mb-3' onClick={pauseAllQueues}>
-                  <FontAwesomeIcon
-                    icon={faUserClock}
-                    className='h-4 w-4 mr-2 text-white dark:text-white'
-                  />
-                  <span>{t('Queues.Pause on all queues')}</span>
-                </Button>
-              </>
-            ) : (
-              <>
-                {/* end pause on all queues */}
-                <Button variant='primary' className='mb-3' onClick={unpauseAllQueues}>
-                  <FontAwesomeIcon
-                    icon={faUserClock}
-                    className='h-4 w-4 mr-2 text-white dark:text-white'
-                  />
-                  <span>{t('Queues.End pause on all queues')}</span>
-                </Button>
-              </>
-            )}
-          </div>
+          {queuesStore.isLoaded && (
+            <div>
+              {/* login / logout */}
+              {isEmpty(getQueuesUserLoggedIn()) ? (
+                <>
+                  {/* login from all queues */}
+                  <Button variant='white' className='mr-2 mb-2' onClick={loginAllQueues}>
+                    <FontAwesomeIcon
+                      icon={faUserCheck}
+                      className='h-4 w-4 mr-2 text-gray-500 dark:text-gray-400'
+                    />
+                    <span>{t('Queues.Login to all queues')}</span>
+                  </Button>
+                </>
+              ) : (
+                <>
+                  {/* logout from all queues */}
+                  <Button variant='white' className='mr-2 mb-2' onClick={logoutAllQueues}>
+                    <FontAwesomeIcon
+                      icon={faUserXmark}
+                      className='h-4 w-4 mr-2 text-gray-500 dark:text-gray-400'
+                    />
+                    <span>{t('Queues.Logout from all queues')}</span>
+                  </Button>
+                </>
+              )}
+              {/* pause / end pause */}
+              {isEmpty(getQueuesUserPaused()) ? (
+                <>
+                  {/* pause on all queues */}
+                  <Button variant='primary' className='mb-3' onClick={pauseAllQueues}>
+                    <FontAwesomeIcon
+                      icon={faUserClock}
+                      className='h-4 w-4 mr-2 text-white dark:text-white'
+                    />
+                    <span>{t('Queues.Pause on all queues')}</span>
+                  </Button>
+                </>
+              ) : (
+                <>
+                  {/* end pause on all queues */}
+                  <Button variant='primary' className='mb-3' onClick={unpauseAllQueues}>
+                    <FontAwesomeIcon
+                      icon={faUserClock}
+                      className='h-4 w-4 mr-2 text-white dark:text-white'
+                    />
+                    <span>{t('Queues.End pause on all queues')}</span>
+                  </Button>
+                </>
+              )}
+            </div>
+          )}
           {/* expand/collapse all queues */}
           <div
             onClick={() => toggleExpandAllQueues()}
@@ -628,76 +663,82 @@ export const QueuesManagementView: FC<QueuesManagementViewProps> = ({ className 
                                 <span>{t('Queues.Waiting calls')}</span>
                               </div>
                               <div>
-                                {/* //// TODO save expanded to local storage */}
                                 <FontAwesomeIcon
-                                  icon={faChevronUp}
+                                  icon={queue.waitingCallsExpanded ? faChevronUp : faChevronDown}
+                                  onClick={() => toggleWaitingCallsExpanded(queue)}
                                   className='h-3.5 w-3.5 pl-2 py-2 cursor-pointer'
                                   aria-hidden='true'
                                 />
                               </div>
                             </div>
                             {/* waiting calls table */}
-                            <div className='text-sm'>
-                              <div className='border rounded-md border-gray-200 dark:border-gray-700 text-gray-700 dark:text-gray-200'>
-                                {isEmpty(queue.waitingCallersList) ? (
-                                  <div className='p-4'>{t('Queues.No calls')}</div>
-                                ) : (
-                                  <div className='-my-2 -mx-4 overflow-x-auto sm:-mx-6 lg:-mx-8'>
-                                    <div className='inline-block min-w-full py-2 align-middle sm:px-6 lg:px-8'>
-                                      <div className='overflow-hidden sm:rounded-lg'>
-                                        <table className='min-w-full divide-y divide-gray-300'>
-                                          <thead className='bg-gray-100 dark:bg-gray-700'>
-                                            <tr>
-                                              <th
-                                                scope='col'
-                                                className='whitespace-nowrap py-3 pl-4 pr-2 text-left font-semibold'
-                                              >
-                                                {t('Queues.Caller')}
-                                              </th>
-                                              <th
-                                                scope='col'
-                                                className='whitespace-nowrap px-2 py-3 text-left font-semibold'
-                                              >
-                                                {t('Queues.Position')}
-                                              </th>
-                                              <th
-                                                scope='col'
-                                                className='whitespace-nowrap pl-2 pr-4 py-3 text-left font-semibold'
-                                              >
-                                                {t('Queues.Wait')}
-                                              </th>
-                                            </tr>
-                                          </thead>
-                                          <tbody className='divide-y divide-gray-200 bg-white'>
-                                            {queue.waitingCallersList.map((call: any) => (
-                                              <tr key={call.id}>
-                                                <td className='whitespace-nowrap py-3 pl-4 pr-2'>
-                                                  <div className='flex flex-col'>
-                                                    <div className='font-medium'>{call.name}</div>
-                                                    {call.name !== call.num && (
-                                                      <div>{call.num}</div>
-                                                    )}
-                                                  </div>
-                                                </td>
-                                                <td className='whitespace-nowrap px-2 py-3'>
-                                                  {call.position}
-                                                </td>
-                                                <td className='whitespace-nowrap pl-2 pr-4 py-3'>
-                                                  <CallDuration
-                                                    startTime={call.waitingTime}
-                                                    className='font-mono'
-                                                  />
-                                                </td>
+                            {queue.waitingCallsExpanded && (
+                              <div className='text-sm'>
+                                <div className='border rounded-md border-gray-200 dark:border-gray-700 text-gray-700 dark:text-gray-200'>
+                                  {isEmpty(queue.waitingCallersList) ? (
+                                    <div className='p-4'>{t('Queues.No calls')}</div>
+                                  ) : (
+                                    <div className='-my-2 -mx-4 overflow-x-auto sm:-mx-6 lg:-mx-8'>
+                                      <div className='inline-block min-w-full py-2 align-middle sm:px-6 lg:px-8'>
+                                        <div className='sm:rounded-lg max-h-[12.7rem] overflow-auto'>
+                                          <table className='min-w-full divide-y divide-gray-300'>
+                                            <thead className='bg-gray-100 dark:bg-gray-700'>
+                                              <tr>
+                                                <th
+                                                  scope='col'
+                                                  className='whitespace-nowrap py-3 pl-4 pr-2 text-left font-semibold'
+                                                >
+                                                  {t('Queues.Caller')}
+                                                </th>
+                                                <th
+                                                  scope='col'
+                                                  className='whitespace-nowrap px-2 py-3 text-left font-semibold'
+                                                >
+                                                  {t('Queues.Position')}
+                                                </th>
+                                                <th
+                                                  scope='col'
+                                                  className='whitespace-nowrap pl-2 pr-4 py-3 text-left font-semibold'
+                                                >
+                                                  {t('Queues.Wait')}
+                                                </th>
                                               </tr>
-                                            ))}
-                                          </tbody>
-                                        </table>
+                                            </thead>
+                                            <tbody className='divide-y divide-gray-200 bg-white'>
+                                              {queue.waitingCallersList.map(
+                                                (call: any, index: number) => (
+                                                  <tr key={index}>
+                                                    <td className='whitespace-nowrap py-3 pl-4 pr-2'>
+                                                      <div className='flex flex-col'>
+                                                        <div className='font-medium'>
+                                                          {call.name}
+                                                        </div>
+                                                        {call.name !== call.num && (
+                                                          <div>{call.num}</div>
+                                                        )}
+                                                      </div>
+                                                    </td>
+                                                    <td className='whitespace-nowrap px-2 py-3'>
+                                                      {call.position}
+                                                    </td>
+                                                    <td className='whitespace-nowrap pl-2 pr-4 py-3'>
+                                                      <CallDuration
+                                                        startTime={call.waitingTime}
+                                                        className='font-mono'
+                                                      />
+                                                    </td>
+                                                  </tr>
+                                                ),
+                                              )}
+                                            </tbody>
+                                          </table>
+                                        </div>
                                       </div>
                                     </div>
-                                  </div>
-                                )}
+                                  )}
+                                </div>
                               </div>
-                            </div>
+                            )}
                           </div>
                           {/* connected calls */}
                           <div>
@@ -711,104 +752,110 @@ export const QueuesManagementView: FC<QueuesManagementViewProps> = ({ className 
                                 <span>{t('Queues.Connected calls')}</span>
                               </div>
                               <div>
-                                {/* //// TODO save expanded to local storage */}
                                 <FontAwesomeIcon
-                                  icon={faChevronUp}
+                                  icon={queue.connectedCallsExpanded ? faChevronUp : faChevronDown}
+                                  onClick={() => toggleConnectedCallsExpanded(queue)}
                                   className='h-3.5 w-3.5 pl-2 py-2 cursor-pointer'
                                   aria-hidden='true'
                                 />
                               </div>
                             </div>
                             {/* connected calls table */}
-                            <div className='text-sm'>
-                              <div className='border rounded-md border-gray-200 dark:border-gray-700 text-gray-700 dark:text-gray-200'>
-                                {isEmpty(queue.connectedCalls) ? (
-                                  <div className='p-4'>{t('Queues.No calls')}</div>
-                                ) : (
-                                  <div className='-my-2 -mx-4 overflow-x-auto sm:-mx-6 lg:-mx-8'>
-                                    <div className='inline-block min-w-full py-2 align-middle sm:px-6 lg:px-8'>
-                                      <div className='overflow-hidden sm:rounded-lg'>
-                                        <table className='min-w-full divide-y divide-gray-300'>
-                                          <thead className='bg-gray-100 dark:bg-gray-700'>
-                                            <tr>
-                                              <th
-                                                scope='col'
-                                                className='whitespace-nowrap py-3 pl-4 pr-2 text-left font-semibold'
-                                              >
-                                                {t('Queues.Caller')}
-                                              </th>
-                                              <th
-                                                scope='col'
-                                                className='whitespace-nowrap px-2 py-3 text-left font-semibold'
-                                              >
-                                                {t('Queues.Operator')}
-                                              </th>
-                                              <th
-                                                scope='col'
-                                                className='whitespace-nowrap pl-2 pr-4 py-3 text-left font-semibold'
-                                              >
-                                                {t('Queues.Duration')}
-                                              </th>
-                                            </tr>
-                                          </thead>
-                                          <tbody className='divide-y divide-gray-200 bg-white'>
-                                            {queue.connectedCalls.map((call: any) => (
-                                              <tr key={call.id}>
-                                                <td className='whitespace-nowrap py-3 pl-4 pr-2'>
-                                                  <div className='flex flex-col'>
-                                                    <div className='font-medium'>
-                                                      {call.conversation.counterpartName}
-                                                    </div>
-                                                    {call.conversation.counterpartName !==
-                                                      call.conversation.counterpartNum && (
-                                                      <div>{call.conversation.counterpartNum}</div>
-                                                    )}
-                                                  </div>
-                                                </td>
-                                                <td className='whitespace-nowrap px-2 py-3'>
-                                                  <div className='flex items-center gap-3 overflow-hidden'>
-                                                    <Avatar
-                                                      rounded='full'
-                                                      src={
-                                                        operators[call.operatorUsername]
-                                                          .avatarBase64
-                                                      }
-                                                      placeholderType='person'
-                                                      size='small'
-                                                      status={
-                                                        operators[call.operatorUsername]
-                                                          .mainPresence
-                                                      }
-                                                    />
-                                                    <div className='flex flex-col overflow-hidden'>
-                                                      <div className='truncate'>
-                                                        {operators[call.operatorUsername].name}
-                                                      </div>
-                                                      <div className='text-gray-500 dark:text-gray-400'>
-                                                        {
-                                                          operators[call.operatorUsername].endpoints
-                                                            .mainextension[0].id
-                                                        }
-                                                      </div>
-                                                    </div>
-                                                  </div>
-                                                </td>
-                                                <td className='whitespace-nowrap pl-2 pr-4 py-3'>
-                                                  <CallDuration
-                                                    key={`callDuration-${call.conversation.id}`}
-                                                    startTime={call.conversation.startTime}
-                                                  />
-                                                </td>
+                            {queue.connectedCallsExpanded && (
+                              <div className='text-sm'>
+                                <div className='border rounded-md border-gray-200 dark:border-gray-700 text-gray-700 dark:text-gray-200'>
+                                  {isEmpty(queue.connectedCalls) ? (
+                                    <div className='p-4'>{t('Queues.No calls')}</div>
+                                  ) : (
+                                    <div className='-my-2 -mx-4 overflow-x-auto sm:-mx-6 lg:-mx-8'>
+                                      <div className='inline-block min-w-full py-2 align-middle sm:px-6 lg:px-8'>
+                                        <div className='sm:rounded-lg max-h-[17rem] overflow-auto'>
+                                          <table className='min-w-full divide-y divide-gray-300'>
+                                            <thead className='bg-gray-100 dark:bg-gray-700'>
+                                              <tr>
+                                                <th
+                                                  scope='col'
+                                                  className='whitespace-nowrap py-3 pl-4 pr-2 text-left font-semibold'
+                                                >
+                                                  {t('Queues.Caller')}
+                                                </th>
+                                                <th
+                                                  scope='col'
+                                                  className='whitespace-nowrap px-2 py-3 text-left font-semibold'
+                                                >
+                                                  {t('Queues.Operator')}
+                                                </th>
+                                                <th
+                                                  scope='col'
+                                                  className='whitespace-nowrap pl-2 pr-4 py-3 text-left font-semibold'
+                                                >
+                                                  {t('Queues.Duration')}
+                                                </th>
                                               </tr>
-                                            ))}
-                                          </tbody>
-                                        </table>
+                                            </thead>
+                                            <tbody className='divide-y divide-gray-200 bg-white'>
+                                              {queue.connectedCalls.map(
+                                                (call: any, index: number) => (
+                                                  <tr key={index}>
+                                                    <td className='whitespace-nowrap py-3 pl-4 pr-2'>
+                                                      <div className='flex flex-col'>
+                                                        <div className='font-medium'>
+                                                          {call.conversation.counterpartName}
+                                                        </div>
+                                                        {call.conversation.counterpartName !==
+                                                          call.conversation.counterpartNum && (
+                                                          <div>
+                                                            {call.conversation.counterpartNum}
+                                                          </div>
+                                                        )}
+                                                      </div>
+                                                    </td>
+                                                    <td className='whitespace-nowrap px-2 py-3'>
+                                                      <div className='flex items-center gap-3 overflow-hidden'>
+                                                        <Avatar
+                                                          rounded='full'
+                                                          src={
+                                                            operators[call.operatorUsername]
+                                                              .avatarBase64
+                                                          }
+                                                          placeholderType='person'
+                                                          size='small'
+                                                          status={
+                                                            operators[call.operatorUsername]
+                                                              .mainPresence
+                                                          }
+                                                        />
+                                                        <div className='flex flex-col overflow-hidden'>
+                                                          <div className='truncate'>
+                                                            {operators[call.operatorUsername].name}
+                                                          </div>
+                                                          <div className='text-gray-500 dark:text-gray-400'>
+                                                            {
+                                                              operators[call.operatorUsername]
+                                                                .endpoints.mainextension[0].id
+                                                            }
+                                                          </div>
+                                                        </div>
+                                                      </div>
+                                                    </td>
+                                                    <td className='whitespace-nowrap pl-2 pr-4 py-3'>
+                                                      <CallDuration
+                                                        key={`callDuration-${call.conversation.id}`}
+                                                        startTime={call.conversation.startTime}
+                                                      />
+                                                    </td>
+                                                  </tr>
+                                                ),
+                                              )}
+                                            </tbody>
+                                          </table>
+                                        </div>
                                       </div>
                                     </div>
-                                  </div>
-                                )}
+                                  )}
+                                </div>
                               </div>
-                            </div>
+                            )}
                           </div>
                           {/* operators */}
                           {/* //// show only with permissions */}
@@ -823,28 +870,30 @@ export const QueuesManagementView: FC<QueuesManagementViewProps> = ({ className 
                                 <span>{t('Queues.Queue operators')}</span>
                               </div>
                               <div>
-                                {/* //// TODO save expanded to local storage */}
                                 <FontAwesomeIcon
-                                  icon={faChevronUp}
+                                  icon={queue.operatorsExpanded ? faChevronUp : faChevronDown}
+                                  onClick={() => toggleOperatorsExpanded(queue)}
                                   className='h-3.5 w-3.5 pl-2 py-2 cursor-pointer'
                                   aria-hidden='true'
                                 />
                               </div>
                             </div>
                             {/* operators table */}
-                            <div className='text-sm'>
-                              {isEmpty(queue.members) ? (
-                                <div className='p-4 rounded-md text-gray-700 bg-gray-100 dark:text-gray-200 dark:bg-gray-800'>
-                                  {t('Queues.No operators')}
-                                </div>
-                              ) : (
-                                <div className='flex flex-col gap-2 border rounded-md max-h-72 overflow-auto border-gray-200 dark:border-gray-700'>
-                                  {Object.keys(queue.members).map((key, index) => {
-                                    return getQueueOperatorTemplate(queue, key, index)
-                                  })}
-                                </div>
-                              )}
-                            </div>
+                            {queue.operatorsExpanded && (
+                              <div className='text-sm'>
+                                {isEmpty(queue.members) ? (
+                                  <div className='p-4 rounded-md text-gray-700 bg-gray-100 dark:text-gray-200 dark:bg-gray-800'>
+                                    {t('Queues.No operators')}
+                                  </div>
+                                ) : (
+                                  <div className='flex flex-col gap-2 border rounded-md max-h-56 overflow-auto border-gray-200 dark:border-gray-700'>
+                                    {Object.keys(queue.members).map((key, index) => {
+                                      return getQueueOperatorTemplate(queue, key, index)
+                                    })}
+                                  </div>
+                                )}
+                              </div>
+                            )}
                           </div>
                         </div>
                       )}

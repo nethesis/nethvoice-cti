@@ -93,11 +93,18 @@ export const retrieveQueues = async (username: string, mainextension: string, op
       })
     })
     queue.connectedCalls = connectedCalls
+
+    // expanded sections
+    queue.waitingCallsExpanded = true
+    queue.connectedCallsExpanded = true
+    queue.operatorsExpanded = true
   })
 
   // favorite queues
+  retrieveAndSetFavoriteQueues(queues, username)
 
-  retrieveFavoriteQueues(queues, username)
+  // expanded queues
+  retrieveAndSetExpandedQueues(queues, username)
 
   store.dispatch.queues.setQueues(queues)
   store.dispatch.queues.setLoaded(true)
@@ -371,9 +378,9 @@ export const retrieveQueueCallInfo = async (
   }
 }
 
-export const addQueueToFavorites = (queueToAdd: string, currentUsername: string) => {
+export const addQueueToFavorites = (queueId: string, currentUsername: string) => {
   const favoriteQueues = loadPreference('favoriteQueues', currentUsername) || []
-  favoriteQueues.push(queueToAdd)
+  favoriteQueues.push(queueId)
   savePreference('favoriteQueues', favoriteQueues, currentUsername)
 }
 
@@ -383,7 +390,7 @@ export const removeQueueFromFavorites = (queueId: string, currentUsername: strin
   savePreference('favoriteQueues', favoriteQueues, currentUsername)
 }
 
-export const retrieveFavoriteQueues = (queues: any, username: any) => {
+export const retrieveAndSetFavoriteQueues = (queues: any, username: any) => {
   const favoriteQueues = loadPreference('favoriteQueues', username) || []
 
   favoriteQueues.forEach((queueId: string) => {
@@ -391,5 +398,29 @@ export const retrieveFavoriteQueues = (queues: any, username: any) => {
       queues[queueId].favorite = true
     }
   })
-  store.dispatch.queues.setFavorites(favoriteQueues)
+}
+
+export const retrieveAndSetExpandedQueues = (queues: any, username: any) => {
+  const expandedQueues = loadPreference('expandedQueues', username) || []
+
+  expandedQueues.forEach((queueId: string) => {
+    if (queues[queueId]) {
+      queues[queueId].expanded = true
+    }
+  })
+}
+
+export const addQueueToExpanded = (queueId: string, currentUsername: string) => {
+  const expandedQueues = loadPreference('expandedQueues', currentUsername) || []
+
+  if (!expandedQueues.includes(queueId)) {
+    expandedQueues.push(queueId)
+  }
+  savePreference('expandedQueues', expandedQueues, currentUsername)
+}
+
+export const removeQueueFromExpanded = (queueId: string, currentUsername: string) => {
+  let expandedQueues = loadPreference('expandedQueues', currentUsername) || []
+  expandedQueues = expandedQueues.filter((q: string) => q !== queueId)
+  savePreference('expandedQueues', expandedQueues, currentUsername)
 }

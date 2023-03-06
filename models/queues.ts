@@ -9,7 +9,6 @@ interface DefaultState {
   isLoaded: boolean
   isLoading: boolean
   errorMessage: string
-  favorites: string[]
 }
 
 const defaultState: DefaultState = {
@@ -17,7 +16,6 @@ const defaultState: DefaultState = {
   isLoaded: false,
   isLoading: false,
   errorMessage: '',
-  favorites: [],
 }
 
 export const queues = createModel<RootModel>()({
@@ -39,10 +37,6 @@ export const queues = createModel<RootModel>()({
       state.errorMessage = errorMessage
       return state
     },
-    setFavorites: (state, favorites: string[]) => {
-      state.favorites = favorites
-      return state
-    },
     setQueueExpanded: (state, queueId: string, expanded: boolean) => {
       const queue = state.queues[queueId]
       queue.expanded = expanded
@@ -51,6 +45,21 @@ export const queues = createModel<RootModel>()({
     setQueueFavorite: (state, queueId: string, favorite: boolean) => {
       const queue = state.queues[queueId]
       queue.favorite = favorite
+      return state
+    },
+    setWaitingCallsExpanded: (state, queueId: string, expanded: boolean) => {
+      const queue = state.queues[queueId]
+      queue.waitingCallsExpanded = expanded
+      return state
+    },
+    setConnectedCallsExpanded: (state, queueId: string, expanded: boolean) => {
+      const queue = state.queues[queueId]
+      queue.connectedCallsExpanded = expanded
+      return state
+    },
+    setOperatorsExpanded: (state, queueId: string, expanded: boolean) => {
+      const queue = state.queues[queueId]
+      queue.operatorsExpanded = expanded
       return state
     },
   },
