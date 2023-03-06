@@ -22,7 +22,8 @@ import {
 } from '../../lib/operators'
 import { useEventListener } from '../../lib/hooks/useEventListener'
 import { retrieveQueues } from '../../lib/queuesLib'
-import { manageFaviconEvents } from '../../lib/utils'
+import { manageFaviconEvents, hideFaviconWarn } from '../../lib/utils'
+import { Button } from '../common'
 
 interface LayoutProps {
   children: ReactNode
@@ -46,12 +47,18 @@ export const Layout: FC<LayoutProps> = ({ children }) => {
   const [callingUserFavicon, setCallingUserFavicon] = useState(false)
   const ctiStatus = useSelector((state: RootState) => state.ctiStatus)
 
-  //TO DO ERROR EVENT AND MODAL TO STOP WARNING FAVICON
-  // useEffect(() => {
-  //   manageFaviconEvents(errorFavicon, callingUserFavicon)
-  // }, [errorFavicon, callingUserFavicon])
+  useEffect(() => {
+    manageFaviconEvents(ctiStatus.webRtcConnected, ctiStatus.isPhoneRinging)
+  }, [ctiStatus.webRtcConnected, ctiStatus.isPhoneRinging])
 
-  manageFaviconEvents(errorFavicon, callingUserFavicon)
+  const handleClick = () => {
+    store.dispatch.ctiStatus.setConnected(!ctiStatus.webRtcConnected)
+    console.log('now clicked', ctiStatus.webRtcConnected)
+  }
+
+  const handleReset = () => {
+    hideFaviconWarn()
+  }
 
   useEffect(() => {
     const currentItems = items.map((route) => {
@@ -254,7 +261,8 @@ export const Layout: FC<LayoutProps> = ({ children }) => {
   return (
     <div className='flex h-full'>
       {/* Navigation bar */}
-      <NavBar items={items} />
+      <NavBar items={items} /> <Button onClick={handleClick}> </Button>
+      <Button onClick={handleReset} variant='danger'> </Button>
       <div className='flex flex-1 flex-col overflow-hidden'>
         {/* Top heading bar */}
         <TopBar openMobileCb={() => setOpenMobileMenu(true)} />

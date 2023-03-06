@@ -1,7 +1,7 @@
 // Copyright (C) 2023 Nethesis S.r.l.
 // SPDX-License-Identifier: AGPL-3.0-or-later
 
-import type { PropsWithChildren } from 'react'
+import { PropsWithChildren, useState } from 'react'
 import axios from 'axios'
 import { store } from '../store'
 import { eventDispatch } from './hooks/eventDispatch'
@@ -112,24 +112,46 @@ export function isMobileDevice() {
   return /Android|iPhone|iPad|iPod|Windows Phone/i.test(navigator.userAgent)
 }
 
+let idInterval: any
+
 // It' s used to handle events and make the favicon dynamic
 export function manageFaviconEvents(isError: boolean, isCalling: boolean) {
   let warningMessageError = 'Warning' + ' -'
-  let beforeTitle = window.document.title
+  let base = true
   if (typeof window !== 'undefined') {
-    setInterval(() => {
-      const link = document.querySelector("link[rel*='icon']") as HTMLLinkElement
-      if (link) {
-        if (isError) {
-          link.href = 'favicon-warn.ico'
-          window.document.title = window.document.title.replace(/^[^-]+-/, `${warningMessageError}`)
-        } else if (isCalling) {
-          link.href = 'favicon-call.ico'
-        } else {
-          link.href = 'favicon.ico'
-          window.document.title = beforeTitle
+    let link = document.querySelector("link[rel*='icon']") as HTMLLinkElement
+    idInterval = setInterval(() => {
+      if (base) {
+        if (isError || isCalling) {
+          if (isError) {
+            link.href = 'favicon-warn.ico'
+            window.document.title = window.document.title.replace(
+              /^[^-]+-/,
+              `${warningMessageError}`,
+            )
+          } else {
+            link.href = 'favicon-calling.ico'
+            window.document.title = window.document.title.replace(
+              /^[^-]+-/,
+              `${warningMessageError}`,
+            )
+          }
         }
+      } else {
+        link.href = 'favicon.ico'
+        window.document.title = 'Changed'
       }
+      base = !base
     }, 1500)
+  }
+}
+
+export function hideFaviconWarn() {
+  clearInterval(idInterval)
+  if (typeof window !== 'undefined') {
+    let link = document.querySelector("link[rel*='icon']") as HTMLLinkElement
+    link.href = 'favicon.ico'
+    window.document.title = 'Changed'
+    console.log("job done")
   }
 }
