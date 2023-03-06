@@ -16,11 +16,12 @@ import {
   buildOperators,
   retrieveAvatars,
   retrieveExtensions,
-  retrieveFavorites,
+  retrieveFavoriteOperators,
   retrieveGroups,
   retrieveUserEndpoints,
 } from '../../lib/operators'
 import { useEventListener } from '../../lib/hooks/useEventListener'
+import { retrieveQueues } from '../../lib/queuesLib'
 
 interface LayoutProps {
   children: ReactNode
@@ -38,6 +39,7 @@ export const Layout: FC<LayoutProps> = ({ children }) => {
   const [firstRenderGlobalSearchListener, setFirstRenderGlobalSearchListener] = useState(true)
   const [isUserInfoLoaded, setUserInfoLoaded] = useState(false)
   const authStore = useSelector((state: RootState) => state.authentication)
+  const queuesStore = useSelector((state: RootState) => state.queues)
 
   useEffect(() => {
     const currentItems = items.map((route) => {
@@ -95,9 +97,9 @@ export const Layout: FC<LayoutProps> = ({ children }) => {
           retrieveGroups()
           retrieveExtensions()
           retrieveAvatars(authStore)
-          retrieveFavorites(authStore)
+          retrieveFavoriteOperators(authStore)
         } catch (e) {
-          store.dispatch.operators.setErrorMessage('Cannot retrieve user endpoints')
+          store.dispatch.operators.setErrorMessage('Cannot retrieve operators')
           store.dispatch.operators.setOperatorsLoaded(true)
           store.dispatch.operators.setLoading(false)
         }
@@ -121,6 +123,9 @@ export const Layout: FC<LayoutProps> = ({ children }) => {
       operatorsStore.isFavoritesLoaded
     ) {
       buildOperators(operatorsStore)
+
+      // retrieve queues after loading operators
+      retrieveQueues(authStore.username, mainextension, operatorsStore.operators)
     }
   }, [
     operatorsStore.isUserEndpointsLoaded,
@@ -130,10 +135,19 @@ export const Layout: FC<LayoutProps> = ({ children }) => {
     operatorsStore.isFavoritesLoaded,
   ])
 
+  // reload queues
+  useEffect(() => {
+    if (!queuesStore.isLoaded) {
+      retrieveQueues(authStore.username, mainextension, operatorsStore.operators)
+    }
+  }, [queuesStore.isLoaded])
+
   // register to phone island events
 
   const user = authStore.username
-  const { mainPresence: topBarPresence } = useSelector((state: RootState) => state.user)
+  const { mainPresence: topBarPresence, mainextension } = useSelector(
+    (state: RootState) => state.user,
+  )
 
   useEventListener('phone-island-main-presence', (data: any) => {
     const opName = Object.keys(data)[0]

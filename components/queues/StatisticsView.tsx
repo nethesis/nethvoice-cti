@@ -13,16 +13,9 @@ import { LoggedStatus } from './LoggedStatus'
 import { useSelector } from 'react-redux'
 import { RootState } from '../../store'
 
-export interface StatisticsViewProps extends ComponentProps<'div'> {
-  queues: any
-  isLoaded: boolean
-}
+export interface StatisticsViewProps extends ComponentProps<'div'> {}
 
-export const StatisticsView: FC<StatisticsViewProps> = ({
-  queues,
-  isLoaded,
-  className,
-}): JSX.Element => {
+export const StatisticsView: FC<StatisticsViewProps> = ({ className }): JSX.Element => {
   const STATS_UPDATE_INTERVAL = 30000 // 30 seconds
   const { t } = useTranslation()
   const [stats, setStats]: any = useState({})
@@ -31,6 +24,7 @@ export const StatisticsView: FC<StatisticsViewProps> = ({
   const [firstRender, setFirstRender]: any = useState(true)
   const { mainextension } = useSelector((state: RootState) => state.user)
   const [lastUpdated, setLastUpdated]: any = useState(null)
+  const queuesStore = useSelector((state: RootState) => state.queues)
 
   const fetchStats = async () => {
     try {
@@ -113,7 +107,7 @@ export const StatisticsView: FC<StatisticsViewProps> = ({
               className='grid grid-cols-1 gap-6 md:grid-cols-2 2xl:grid-cols-3 text-sm'
             >
               {/* skeleton */}
-              {(!isLoaded || !isStatsLoaded) &&
+              {(!queuesStore.isLoaded || !isStatsLoaded) &&
                 Array.from(Array(3)).map((e, i) => (
                   <li
                     key={i}
@@ -129,7 +123,7 @@ export const StatisticsView: FC<StatisticsViewProps> = ({
                     </div>
                   </li>
                 ))}
-              {isLoaded && isStatsLoaded && (
+              {queuesStore.isLoaded && isStatsLoaded && (
                 <>
                   {/* login stats */}
                   <div>
@@ -305,7 +299,7 @@ export const StatisticsView: FC<StatisticsViewProps> = ({
               className='grid grid-cols-1 gap-6 md:grid-cols-2 2xl:grid-cols-3 text-sm'
             >
               {/* skeleton */}
-              {(!isLoaded || !isStatsLoaded) &&
+              {(!queuesStore.isLoaded || !isStatsLoaded) &&
                 Array.from(Array(3)).map((e, i) => (
                   <li
                     key={i}
@@ -321,10 +315,10 @@ export const StatisticsView: FC<StatisticsViewProps> = ({
                     </div>
                   </li>
                 ))}
-              {isLoaded &&
+              {queuesStore.isLoaded &&
                 isStatsLoaded &&
-                Object.keys(queues).map((key, index) => {
-                  const queue = queues[key]
+                Object.keys(queuesStore.queues).map((key, index) => {
+                  const queue = queuesStore.queues[key]
                   return (
                     <div key={index}>
                       <li className='col-span-1 rounded-lg divide-y shadow divide-gray-200 bg-white text-gray-700'>

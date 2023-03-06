@@ -3,23 +3,17 @@
 
 import type { NextPage } from 'next'
 import { useEffect, useState } from 'react'
-import { retrieveQueues } from '../lib/queuesLib'
 import { useTranslation } from 'react-i18next'
 import classNames from 'classnames'
 import { QueuesManagementView, CallsView, StatisticsView } from '../components/queues'
 import { InlineNotification } from '../components/common'
 import { useSelector } from 'react-redux'
-import { RootState } from '../store'
+import { RootState, store } from '../store'
 
 const Queues: NextPage = () => {
   const { t } = useTranslation()
-  const [queues, setQueues]: any = useState({})
-  const [firstRender, setFirstRender]: any = useState(true)
-  const [isLoaded, setLoaded] = useState(false)
-  const [queuesError, setQueuesError] = useState('')
+  const queuesStore = useSelector((state: RootState) => state.queues)
   const [currentTab, setCurrentTab] = useState('queues')
-  const { mainextension } = useSelector((state: RootState) => state.user)
-  const { operators } = useSelector((state: RootState) => state.operators)
 
   const tabs = [
     { name: t('Queues.Queues management'), value: 'queues' },
@@ -35,37 +29,10 @@ const Queues: NextPage = () => {
     }
   }
 
-  const fetchQueues = async () => {
-    try {
-      setQueuesError('')
-      const res = await retrieveQueues(mainextension, operators)
-
-      Object.keys(res).map((key, index) => {
-        const queue = res[key]
-        //// TODO read expand status from local storage
-        queue.expanded = false
-      })
-      setQueues(res)
-
-      console.log('queues', res) ////
-    } catch (e) {
-      console.error(e)
-      setQueuesError(t('Queues.Cannot retrieve queues') || '')
-    }
-    setLoaded(true)
-  }
-
-  // retrieve queues
+  // load queues when navigating to queues page
   useEffect(() => {
-    if (firstRender) {
-      setFirstRender(false)
-      return
-    }
-
-    if (!isLoaded && mainextension) {
-      fetchQueues()
-    }
-  }, [firstRender, mainextension, isLoaded])
+    store.dispatch.queues.setLoaded(false)
+  }, [])
 
   return (
     <>
@@ -74,9 +41,11 @@ const Queues: NextPage = () => {
           {t('Queues.Queues')}
         </h1>
         {/* queues error */}
-        {queuesError && <InlineNotification type='error' title={queuesError}></InlineNotification>}
+        {queuesStore.errorMessage && (
+          <InlineNotification type='error' title={queuesStore.errorMessage}></InlineNotification>
+        )}
         {/* tabs */}
-        {!queuesError && (
+        {!queuesStore.errorMessage && (
           <>
             <div className='mb-6'>
               {/* mobile tabs */}
@@ -121,15 +90,11 @@ const Queues: NextPage = () => {
             </div>
             <div>
               {currentTab === 'queues' ? (
-                <QueuesManagementView
-                  queues={queues}
-                  isLoaded={isLoaded}
-                  reloadQueues={fetchQueues}
-                />
+                <QueuesManagementView />
               ) : currentTab === 'calls' ? (
-                <CallsView queues={queues} isLoaded={isLoaded} />
+                <CallsView />
               ) : currentTab === 'stats' ? (
-                <StatisticsView queues={queues} isLoaded={isLoaded} />
+                <StatisticsView />
               ) : null}
             </div>
           </>

@@ -17,13 +17,12 @@ import classNames from 'classnames'
 import { exactDistanceToNowLoc, formatDateLoc, getCallTimeToDisplay } from '../../lib/dateTime'
 import { CallsViewFilter } from './CallsViewFilter'
 import { utcToZonedTime } from 'date-fns-tz'
+import { useSelector } from 'react-redux'
+import { RootState } from '../../store'
 
-export interface CallsViewProps extends ComponentProps<'div'> {
-  queues: any
-  isLoaded: boolean
-}
+export interface CallsViewProps extends ComponentProps<'div'> {}
 
-export const CallsView: FC<CallsViewProps> = ({ queues, isLoaded, className }): JSX.Element => {
+export const CallsView: FC<CallsViewProps> = ({ className }): JSX.Element => {
   const { t } = useTranslation()
   const [calls, setCalls]: any = useState({})
   const [isCallsLoaded, setCallsLoaded]: any = useState(false)
@@ -32,6 +31,7 @@ export const CallsView: FC<CallsViewProps> = ({ queues, isLoaded, className }): 
   const [firstRender, setFirstRender]: any = useState(true)
   const [lastUpdated, setLastUpdated]: any = useState(null)
   const [intervalId, setIntervalId]: any = useState(0)
+  const queuesStore = useSelector((state: RootState) => state.queues)
 
   const [textFilter, setTextFilter]: any = useState('')
   const updateTextFilter = (newTextFilter: string) => {
@@ -65,7 +65,7 @@ export const CallsView: FC<CallsViewProps> = ({ queues, isLoaded, className }): 
     let selectedQueues = queuesFilter
 
     if (isEmpty(selectedQueues)) {
-      selectedQueues = Object.keys(queues)
+      selectedQueues = Object.keys(queuesStore.queues)
     }
 
     //// todo: read numHours from preferences
@@ -85,7 +85,7 @@ export const CallsView: FC<CallsViewProps> = ({ queues, isLoaded, className }): 
 
       res.rows = res.rows.map((call: any) => {
         call.queueId = call.queuename
-        call.queueName = queues[call.queuename]?.name
+        call.queueName = queuesStore.queues[call.queuename]?.name
 
         // queuename attribute name is misleading
         delete call.queuename
@@ -174,7 +174,6 @@ export const CallsView: FC<CallsViewProps> = ({ queues, isLoaded, className }): 
     <div className={classNames(className)}>
       <div className='flex flex-col flex-wrap xl:flex-row justify-between gap-x-4 xl:items-end'>
         <CallsViewFilter
-          allQueues={queues}
           updateTextFilter={debouncedUpdateTextFilter}
           updateOutcomeFilter={updateOutcomeFilter}
           updateQueuesFilter={updateQueuesFilter}
@@ -290,7 +289,11 @@ export const CallsView: FC<CallsViewProps> = ({ queues, isLoaded, className }): 
                               {/* name / number */}
                               <td className='px-3 py-4'>
                                 {call.name && (
-                                  <div onClick={() => openShowQueueCallDrawer(call, queues)}>
+                                  <div
+                                    onClick={() =>
+                                      openShowQueueCallDrawer(call, queuesStore.queues)
+                                    }
+                                  >
                                     <span
                                       className={classNames(
                                         call.cid && 'cursor-pointer hover:underline',
@@ -301,7 +304,7 @@ export const CallsView: FC<CallsViewProps> = ({ queues, isLoaded, className }): 
                                   </div>
                                 )}
                                 <div
-                                  onClick={() => openShowQueueCallDrawer(call, queues)}
+                                  onClick={() => openShowQueueCallDrawer(call, queuesStore.queues)}
                                   className={classNames(
                                     call.name && 'text-gray-500 dark:text-gray-500',
                                   )}
@@ -324,7 +327,7 @@ export const CallsView: FC<CallsViewProps> = ({ queues, isLoaded, className }): 
                                   icon={faChevronRight}
                                   className='h-3 w-3 p-2 cursor-pointer text-gray-500 dark:text-gray-500'
                                   aria-hidden='true'
-                                  onClick={() => openShowQueueCallDrawer(call, queues)}
+                                  onClick={() => openShowQueueCallDrawer(call, queuesStore.queues)}
                                 />
                               </td>
                             </tr>

@@ -13,7 +13,9 @@
     "Save": "Save",
     "Try changing your search filters": "Try changing your search filters",
     "Phone number": "Phone number",
-    "time_distance_ago": "{{ timeDistance }} ago"
+    "time_distance_ago": "{{ timeDistance }} ago",
+    "Add to favorites": "Add to favorites",
+    "Remove from favorites": "Remove from favorites"
   },
   "Login": {
     "User": "User",
