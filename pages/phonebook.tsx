@@ -285,13 +285,11 @@ const Phonebook: NextPage = () => {
                                     </div>
                                   </div>
                                 </td>
+
                                 {/* work phone */}
-                                {contact.workphone && (
-                                  <td className='py-4 px-4'>
-                                    <div>
-                                      <div className='text-sm text-gray-900 dark:text-gray-100'>
-                                        {t('Phonebook.Work')}
-                                      </div>
+                                <td className='py-4 px-4'>
+                                  <div>
+                                    {contact.workphone ? (
                                       <div className='mt-1 flex items-center text-sm text-primary dark:text-primary'>
                                         <FontAwesomeIcon
                                           icon={faPhone}
@@ -305,17 +303,16 @@ const Phonebook: NextPage = () => {
                                           {contact.workphone}
                                         </span>
                                       </div>
-                                    </div>
-                                  </td>
-                                )}
-                                {!contact.workphone && <td className='py-4 px-4'></td>}
+                                    ) : (
+                                      '-'
+                                    )}
+                                  </div>
+                                </td>
+
                                 {/* mobile phone */}
-                                {contact.cellphone && (
-                                  <td className='py-4 px-4'>
-                                    <div>
-                                      <div className='text-sm text-gray-900 dark:text-gray-100'>
-                                        {t('Phonebook.Mobile')}
-                                      </div>
+                                <td className='py-4 px-4'>
+                                  <div>
+                                    {contact.cellphone ? (
                                       <div className='mt-1 flex items-center text-sm text-primary dark:text-primary'>
                                         <FontAwesomeIcon
                                           icon={faMobileScreenButton}
@@ -329,10 +326,12 @@ const Phonebook: NextPage = () => {
                                           {contact.cellphone}
                                         </span>
                                       </div>
-                                    </div>
-                                  </td>
-                                )}
-                                {!contact.cellphone && <td className='py-4 px-4'></td>}
+                                    ) : (
+                                      '-'
+                                    )}
+                                  </div>
+                                </td>
+
                                 <td className='py-4 px-4 sm:pr-8'>
                                   <div className='flex items-center justify-end'>
                                     <FontAwesomeIcon
