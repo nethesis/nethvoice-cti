@@ -44,6 +44,7 @@ export const Layout: FC<LayoutProps> = ({ children }) => {
   const queuesStore = useSelector((state: RootState) => state.queues)
   const [errorFavicon, setErrorFavicon] = useState(false)
   const [callingUserFavicon, setCallingUserFavicon] = useState(false)
+  const ctiStatus = useSelector((state: RootState) => state.ctiStatus)
 
   //TO DO ERROR EVENT AND MODAL TO STOP WARNING FAVICON
   // useEffect(() => {
