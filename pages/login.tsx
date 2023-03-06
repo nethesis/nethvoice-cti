@@ -169,12 +169,10 @@ export default function Login() {
           </div>
         </div>
         <div className='relative hidden w-0 flex-1 lg:block'>
-          <Image
+          <img
             className='absolute inset-0 h-full w-full object-cover'
-            src={Background}
-            alt='Background image'
-            layout='fill'
-            unoptimized={true}
+            src='/login_background.png'
+            alt='background image'
           />
         </div>
       </div>
