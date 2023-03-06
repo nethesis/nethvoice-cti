@@ -4,15 +4,18 @@
 import { FC, ComponentProps, useState, useEffect, useMemo, useRef } from 'react'
 import { useTranslation } from 'react-i18next'
 import { Avatar, Button, EmptyState, IconSwitch, TextInput } from '../common'
-import { isEmpty, debounce, cloneDeep } from 'lodash'
+import { isEmpty, debounce } from 'lodash'
 import { useSelector } from 'react-redux'
-import { RootState } from '../../store'
-import { sortByProperty } from '../../lib/utils'
+import { RootState, store } from '../../store'
+import { sortByFavorite, sortByProperty } from '../../lib/utils'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import {
+  addQueueToFavorites,
   loginToQueue,
   logoutFromQueue,
   pauseQueue,
+  removeQueueFromFavorites,
+  retrieveQueues,
   searchStringInQueue,
   unpauseQueue,
 } from '../../lib/queuesLib'
@@ -37,18 +40,9 @@ import classNames from 'classnames'
 import { LoggedStatus } from './LoggedStatus'
 import { CallDuration } from '../operators/CallDuration'
 
-export interface QueuesManagementViewProps extends ComponentProps<'div'> {
-  queues: any
-  isLoaded: boolean
-  reloadQueues: Function
-}
+export interface QueuesManagementViewProps extends ComponentProps<'div'> {}
 
-export const QueuesManagementView: FC<QueuesManagementViewProps> = ({
-  queues,
-  isLoaded,
-  reloadQueues,
-  className,
-}): JSX.Element => {
+export const QueuesManagementView: FC<QueuesManagementViewProps> = ({ className }): JSX.Element => {
   const { t } = useTranslation()
   const [filteredQueues, setFilteredQueues]: any = useState({})
   const { operators } = useSelector((state: RootState) => state.operators)
@@ -56,6 +50,9 @@ export const QueuesManagementView: FC<QueuesManagementViewProps> = ({
   const { name, mainPresence, mainextension, avatar } = useSelector(
     (state: RootState) => state.user,
   )
+  const authStore = useSelector((state: RootState) => state.authentication)
+  const queuesStore = useSelector((state: RootState) => state.queues)
+  const operatorsStore = useSelector((state: RootState) => state.operators)
 
   const [textFilter, setTextFilter]: any = useState('')
   const [debouncedTextFilter, setDebouncedTextFilter] = useState(false)
@@ -89,17 +86,18 @@ export const QueuesManagementView: FC<QueuesManagementViewProps> = ({
     }
   }, [debouncedUpdateTextFilter])
 
-  const applyFilters = (queues: any) => {
+  const applyFilters = () => {
     setApplyingFilters(true)
 
     // text filter
-    let filteredQueues = Object.values(queues).filter((queue) =>
+    let filteredQueues = Object.values(queuesStore.queues).filter((queue) =>
       searchStringInQueue(queue, textFilter),
     )
 
     // sort queues
     filteredQueues.sort(sortByProperty('name'))
     filteredQueues.sort(sortByProperty('queue'))
+    filteredQueues.sort(sortByFavorite)
 
     setFilteredQueues(filteredQueues)
     setApplyingFilters(false)
@@ -107,37 +105,49 @@ export const QueuesManagementView: FC<QueuesManagementViewProps> = ({
 
   // filtered queues
   useEffect(() => {
-    applyFilters(queues)
-  }, [queues, debouncedTextFilter])
+    applyFilters()
+  }, [queuesStore.queues, debouncedTextFilter])
 
   const areAllQueuesExpanded = () => {
-    return Object.values(queues).every((queue: any) => queue.expanded)
+    return Object.values(queuesStore.queues).every((queue: any) => queue.expanded)
   }
 
   const toggleExpandQueue = (queue: any) => {
-    queue.expanded = !queue.expanded
-    applyFilters(queues)
+    store.dispatch.queues.setQueueExpanded(queue.queue, !queue.expanded)
+    applyFilters()
+  }
+
+  const toggleFavoriteQueue = (queue: any) => {
+    const queueId = queue.queue
+    const isFavorite = !queue.favorite
+    store.dispatch.queues.setQueueFavorite(queueId, isFavorite)
+
+    if (isFavorite) {
+      addQueueToFavorites(queueId, authStore.username)
+    } else {
+      removeQueueFromFavorites(queueId, authStore.username)
+    }
   }
 
   const toggleExpandAllQueues = () => {
     if (areAllQueuesExpanded()) {
       // collapse all queues
-      Object.keys(queues).map((key: any) => {
-        const queue: any = queues[key]
-        queue.expanded = false
+      Object.keys(queuesStore.queues).map((key: any) => {
+        const queue: any = queuesStore.queues[key]
+        store.dispatch.queues.setQueueExpanded(queue.queue, false)
       })
     } else {
       // expand all queues
-      Object.keys(queues).map((key: any) => {
-        const queue: any = queues[key]
-        queue.expanded = true
+      Object.keys(queuesStore.queues).map((key: any) => {
+        const queue: any = queuesStore.queues[key]
+        store.dispatch.queues.setQueueExpanded(queue.queue, true)
       })
     }
-    applyFilters(queues)
+    applyFilters()
   }
 
   const getQueuesUserLoggedId = () => {
-    return Object.values(queues)
+    return Object.values(queuesStore.queues)
       .filter((queue: any) => {
         return (
           queue.members[mainextension].loggedIn && queue.members[mainextension].type !== 'static'
@@ -147,7 +157,7 @@ export const QueuesManagementView: FC<QueuesManagementViewProps> = ({
   }
 
   const getQueuesUserPaused = () => {
-    return Object.values(queues)
+    return Object.values(queuesStore.queues)
       .filter((queue: any) => {
         return queue.members?.[mainextension]?.paused
       })
@@ -155,7 +165,7 @@ export const QueuesManagementView: FC<QueuesManagementViewProps> = ({
   }
 
   const loginAllQueues = () => {
-    const queuesToLogin = Object.values(queues).filter((queue: any) => {
+    const queuesToLogin = Object.values(queuesStore.queues).filter((queue: any) => {
       return (
         !getQueuesUserLoggedId().includes(queue.queue) &&
         queue.members[mainextension].type != 'static'
@@ -168,12 +178,12 @@ export const QueuesManagementView: FC<QueuesManagementViewProps> = ({
 
     //// queues should be updated by websocket
     setTimeout(() => {
-      reloadQueues()
+      retrieveQueues(authStore.username, mainextension, operatorsStore.operators)
     }, 100)
   }
 
   const logoutAllQueues = () => {
-    const queuesToLogout = Object.values(queues).filter((queue: any) => {
+    const queuesToLogout = Object.values(queuesStore.queues).filter((queue: any) => {
       return getQueuesUserLoggedId().includes(queue.queue)
     })
 
@@ -183,7 +193,7 @@ export const QueuesManagementView: FC<QueuesManagementViewProps> = ({
 
     //// queues should be updated by websocket
     setTimeout(() => {
-      reloadQueues()
+      retrieveQueues(authStore.username, mainextension, operatorsStore.operators)
     }, 100)
   }
 
@@ -192,7 +202,7 @@ export const QueuesManagementView: FC<QueuesManagementViewProps> = ({
 
     //// queues should be updated by websocket
     setTimeout(() => {
-      reloadQueues()
+      retrieveQueues(authStore.username, mainextension, operatorsStore.operators)
     }, 100)
   }
 
@@ -201,12 +211,12 @@ export const QueuesManagementView: FC<QueuesManagementViewProps> = ({
 
     //// queues should be updated by websocket
     setTimeout(() => {
-      reloadQueues()
+      retrieveQueues(authStore.username, mainextension, operatorsStore.operators)
     }, 100)
   }
 
   const pauseAllQueues = () => {
-    const queuesToPause = Object.values(queues).filter((queue: any) => {
+    const queuesToPause = Object.values(queuesStore.queues).filter((queue: any) => {
       return !getQueuesUserPaused().includes(queue.queue) && queue.members[mainextension].loggedIn
     })
 
@@ -216,12 +226,12 @@ export const QueuesManagementView: FC<QueuesManagementViewProps> = ({
 
     //// queues should be updated by websocket
     setTimeout(() => {
-      reloadQueues()
+      retrieveQueues(authStore.username, mainextension, operatorsStore.operators)
     }, 100)
   }
 
   const unpauseAllQueues = () => {
-    const queuesToUnpause = Object.values(queues).filter((queue: any) => {
+    const queuesToUnpause = Object.values(queuesStore.queues).filter((queue: any) => {
       return getQueuesUserPaused().includes(queue.queue)
     })
 
@@ -231,7 +241,7 @@ export const QueuesManagementView: FC<QueuesManagementViewProps> = ({
 
     //// queues should be updated by websocket
     setTimeout(() => {
-      reloadQueues()
+      retrieveQueues(authStore.username, mainextension, operatorsStore.operators)
     }, 100)
   }
 
@@ -240,7 +250,7 @@ export const QueuesManagementView: FC<QueuesManagementViewProps> = ({
 
     //// queues should be updated by websocket
     setTimeout(() => {
-      reloadQueues()
+      retrieveQueues(authStore.username, mainextension, operatorsStore.operators)
     }, 100)
   }
 
@@ -249,7 +259,7 @@ export const QueuesManagementView: FC<QueuesManagementViewProps> = ({
 
     //// queues should be updated by websocket
     setTimeout(() => {
-      reloadQueues()
+      retrieveQueues(authStore.username, mainextension, operatorsStore.operators)
     }, 100)
   }
 
@@ -382,17 +392,18 @@ export const QueuesManagementView: FC<QueuesManagementViewProps> = ({
       </div>
       <div className='mx-auto text-center'>
         {/* empty state */}
-        {isLoaded && isEmpty(queues) && (
+        {queuesStore.isLoaded && isEmpty(queuesStore.queues) && (
           <EmptyState
             title={t('Queues.No queues')}
             description={t('Queues.You are member of no queues') || ''}
             icon={
               <FontAwesomeIcon icon={faUsers} className='mx-auto h-12 w-12' aria-hidden='true' />
             }
+            className='md:rounded-lg bg-white'
           ></EmptyState>
         )}
         {/* no search results */}
-        {isLoaded && !isEmpty(queues) && isEmpty(filteredQueues) && (
+        {queuesStore.isLoaded && !isEmpty(queuesStore.queues) && isEmpty(filteredQueues) && (
           <EmptyState
             title={t('Queues.No queues')}
             description={t('Common.Try changing your search filters') || ''}
@@ -403,7 +414,7 @@ export const QueuesManagementView: FC<QueuesManagementViewProps> = ({
         )}
         <ul role='list' className='grid grid-cols-1 gap-6 xl:grid-cols-2 3xl:grid-cols-3'>
           {/* skeleton */}
-          {(!isLoaded || isApplyingFilters) &&
+          {(!queuesStore.isLoaded || isApplyingFilters) &&
             Array.from(Array(3)).map((e, i) => (
               <li
                 key={i}
@@ -420,12 +431,12 @@ export const QueuesManagementView: FC<QueuesManagementViewProps> = ({
               </li>
             ))}
           {/* queues */}
-          {isLoaded &&
+          {queuesStore.isLoaded &&
             !isEmpty(filteredQueues) &&
-            Object.keys(filteredQueues).map((key, index) => {
+            Object.keys(filteredQueues).map((key) => {
               const queue = filteredQueues[key]
               return (
-                <div key={index}>
+                <div key={queue.queue}>
                   <li className='col-span-1 rounded-lg divide-y divide-gray-200 bg-white shadow'>
                     {/* card header */}
                     <div className='flex flex-col pt-3 pb-5 px-5'>
@@ -435,11 +446,17 @@ export const QueuesManagementView: FC<QueuesManagementViewProps> = ({
                             <h3 className='truncate text-lg leading-6 font-medium'>{queue.name}</h3>
                             <span>{queue.queue}</span>
                             <IconSwitch
-                              on={false}
+                              on={queue.favorite}
                               size='large'
                               onIcon={<FontAwesomeIcon icon={faStarSolid} />}
                               offIcon={<FontAwesomeIcon icon={faStarLight} />}
-                              changed={() => {}}
+                              changed={() => toggleFavoriteQueue(queue)}
+                              title={
+                                queue.favorite
+                                  ? t('Common.Remove from favorites') || ''
+                                  : t('Common.Add to favorites') || ''
+                              }
+                              key={queue.queue}
                             >
                               <span className='sr-only'>{t('Queues.Toggle favorite queue')}</span>
                             </IconSwitch>

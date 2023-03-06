@@ -12,7 +12,7 @@ import axios from 'axios'
 import { cloneDeep } from 'lodash'
 import { store } from '../store'
 import { exactDistanceToNowLoc, formatDurationLoc } from './dateTime'
-import { loadPreference } from './storage'
+import { loadPreference, savePreference } from './storage'
 import { handleNetworkError, sortByProperty } from './utils'
 
 export const PAGE_SIZE = 10
@@ -34,7 +34,10 @@ export const searchStringInQueue = (queue: any, queryText: string) => {
   return false
 }
 
-export const retrieveQueues = async (mainextension: string, operators: any) => {
+export const retrieveQueues = async (username: string, mainextension: string, operators: any) => {
+  store.dispatch.queues.setLoading(true)
+  store.dispatch.queues.setLoaded(false)
+  store.dispatch.queues.setErrorMessage('')
   let data: any = null
 
   try {
@@ -42,7 +45,9 @@ export const retrieveQueues = async (mainextension: string, operators: any) => {
     data = res.data
   } catch (error) {
     handleNetworkError(error)
-    throw error
+    store.dispatch.queues.setErrorMessage('Cannot retrieve queues')
+    store.dispatch.queues.setLoaded(true)
+    store.dispatch.queues.setLoading(false)
   }
 
   let queues: any = {}
@@ -88,11 +93,17 @@ export const retrieveQueues = async (mainextension: string, operators: any) => {
       })
     })
     queue.connectedCalls = connectedCalls
-
-    console.log('connectedCalls', queue.queue, connectedCalls) ////
   })
 
-  return queues
+  // favorite queues
+
+  retrieveFavoriteQueues(queues, username)
+
+  store.dispatch.queues.setQueues(queues)
+  store.dispatch.queues.setLoaded(true)
+  store.dispatch.queues.setLoading(false)
+
+  console.log('queues', queues) ////
 }
 
 export const retrieveAndFilterQueueCalls = async (
@@ -211,7 +222,7 @@ export const getFilterValues = (currentUsername: string) => {
 }
 
 export const searchStringInCall = (call: any, queryText: string) => {
-  const regex = /[^a-zA-Z0-9]/g ////
+  const regex = /[^a-zA-Z0-9]/g
   queryText = queryText.replace(regex, '')
   let found = false
 
@@ -358,4 +369,27 @@ export const retrieveQueueCallInfo = async (
     handleNetworkError(error)
     throw error
   }
+}
+
+export const addQueueToFavorites = (queueToAdd: string, currentUsername: string) => {
+  const favoriteQueues = loadPreference('favoriteQueues', currentUsername) || []
+  favoriteQueues.push(queueToAdd)
+  savePreference('favoriteQueues', favoriteQueues, currentUsername)
+}
+
+export const removeQueueFromFavorites = (queueId: string, currentUsername: string) => {
+  let favoriteQueues = loadPreference('favoriteQueues', currentUsername) || []
+  favoriteQueues = favoriteQueues.filter((q: string) => q !== queueId)
+  savePreference('favoriteQueues', favoriteQueues, currentUsername)
+}
+
+export const retrieveFavoriteQueues = (queues: any, username: any) => {
+  const favoriteQueues = loadPreference('favoriteQueues', username) || []
+
+  favoriteQueues.forEach((queueId: string) => {
+    if (queues[queueId]) {
+      queues[queueId].favorite = true
+    }
+  })
+  store.dispatch.queues.setFavorites(favoriteQueues)
 }

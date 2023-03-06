@@ -59,6 +59,19 @@ export const sortByProperty = (property: string | number) => {
   }
 }
 
+/**
+ * Sort function to order array elements by "favorite" boolean attribute
+ */
+export const sortByFavorite = (a: any, b: any) => {
+  if (a.favorite && !b.favorite) {
+    return -1
+  }
+  if (!a.favorite && b.favorite) {
+    return 1
+  }
+  return 0
+}
+
 export function callPhoneNumber(phoneNumber: string) {
   eventDispatch('phone-island-call-start', { number: phoneNumber })
 

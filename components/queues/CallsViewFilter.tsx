@@ -16,17 +16,13 @@ import { useTranslation } from 'react-i18next'
 import { cloneDeep, isEmpty } from 'lodash'
 
 export interface CallsViewFilterProps extends ComponentPropsWithRef<'div'> {
-  allQueues: Object
   updateTextFilter: Function
   updateOutcomeFilter: Function
   updateQueuesFilter: Function
 }
 
 export const CallsViewFilter = forwardRef<HTMLButtonElement, CallsViewFilterProps>(
-  (
-    { allQueues, updateTextFilter, updateOutcomeFilter, updateQueuesFilter, className, ...props },
-    ref,
-  ) => {
+  ({ updateTextFilter, updateOutcomeFilter, updateQueuesFilter, className, ...props }, ref) => {
     const { t } = useTranslation()
     const auth = useSelector((state: RootState) => state.authentication)
     const [textFilter, setTextFilter] = useState('')
@@ -34,6 +30,7 @@ export const CallsViewFilter = forwardRef<HTMLButtonElement, CallsViewFilterProp
     const [open, setOpen] = useState(false)
     const [outcome, setOutcome] = useState('')
     const [selectedQueues, setSelectedQueues]: any = useState([])
+    const queuesStore = useSelector((state: RootState) => state.queues)
 
     const outcomeFilter = {
       id: 'outcome',
@@ -48,7 +45,7 @@ export const CallsViewFilter = forwardRef<HTMLButtonElement, CallsViewFilterProp
     const queuesFilter = {
       id: 'queues',
       name: t('Queues.Queues'),
-      options: Object.values(allQueues).map((queue) => {
+      options: Object.values(queuesStore.queues).map((queue: any) => {
         return { value: queue.queue, label: `${queue.name} (${queue.queue})` }
       }),
     }
@@ -97,7 +94,7 @@ export const CallsViewFilter = forwardRef<HTMLButtonElement, CallsViewFilterProp
 
       if (isEmpty(filterValues.selectedQueues)) {
         // select all queues
-        const allQueueCodes = Object.values(allQueues).map((queue) => {
+        const allQueueCodes = Object.values(queuesStore.queues).map((queue: any) => {
           return queue.queue
         })
         setSelectedQueues(allQueueCodes)
@@ -142,7 +139,7 @@ export const CallsViewFilter = forwardRef<HTMLButtonElement, CallsViewFilterProp
       savePreference('queuesOutcomeFilter', DEFAULT_OUTCOME_FILTER, auth.username)
 
       // select all queues
-      const allQueueCodes = Object.values(allQueues).map((queue) => {
+      const allQueueCodes = Object.values(queuesStore.queues).map((queue: any) => {
         return queue.queue
       })
       setSelectedQueues(allQueueCodes)

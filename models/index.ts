@@ -11,6 +11,7 @@ import { darkTheme } from './darkTheme'
 import { operators } from './operators'
 import { notifications } from './notifications'
 import { globalSearch } from './globalSearch'
+import { queues } from './queues'
 
 export interface RootModel extends Models<RootModel> {
   authentication: typeof authentication
@@ -22,6 +23,7 @@ export interface RootModel extends Models<RootModel> {
   operators: typeof operators
   notifications: typeof notifications
   globalSearch: typeof globalSearch
+  queues: typeof queues
 }
 
 export const models: RootModel = {
@@ -34,4 +36,5 @@ export const models: RootModel = {
   operators,
   notifications,
   globalSearch,
+  queues,
 }

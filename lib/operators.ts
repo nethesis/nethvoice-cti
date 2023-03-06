@@ -119,16 +119,6 @@ export const sortByOperatorStatus = (operator1: any, operator2: any) => {
   return 0
 }
 
-export const sortByFavorite = (operator1: any, operator2: any) => {
-  if (operator1.favorite && !operator2.favorite) {
-    return -1
-  }
-  if (!operator1.favorite && operator2.favorite) {
-    return 1
-  }
-  return 0
-}
-
 export const callOperator = (operator: any, event: any = undefined) => {
   const phoneNumber = operator.endpoints.mainextension[0].id
   callPhoneNumber(phoneNumber)
@@ -247,7 +237,7 @@ export const retrieveAvatars = async (authStore: any) => {
   }
 }
 
-export const retrieveFavorites = (authStore: any) => {
+export const retrieveFavoriteOperators = (authStore: any) => {
   store.dispatch.operators.setFavoritesLoaded(false)
   const favoriteOperators = loadPreference('favoriteOperators', authStore.username) || []
   store.dispatch.operators.setFavorites(favoriteOperators)

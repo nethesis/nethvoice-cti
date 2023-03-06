@@ -9,7 +9,6 @@ import {
   callOperator,
   openShowOperatorDrawer,
   searchStringInOperator,
-  sortByFavorite,
   sortByOperatorStatus,
   UNAVAILABLE_STATUSES,
 } from '../lib/operators'
@@ -17,7 +16,7 @@ import { isEmpty, debounce, capitalize } from 'lodash'
 import { useSelector } from 'react-redux'
 import { RootState } from '../store'
 import { Filter, OperatorStatusBadge } from '../components/operators'
-import { sortByProperty } from '../lib/utils'
+import { sortByFavorite, sortByProperty } from '../lib/utils'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { faChevronRight, faFilter, faHeadset } from '@fortawesome/free-solid-svg-icons'
 import { store } from '../store'

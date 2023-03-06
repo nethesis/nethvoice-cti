@@ -17,11 +17,6 @@ import {
   faPhoneArrowUp,
   faEar,
 } from '@nethesis/nethesis-solid-svg-icons'
-import {
-  addOperatorToFavorites,
-  reloadOperators,
-  removeOperatorFromFavorites,
-} from '../../lib/operators'
 import { useSelector } from 'react-redux'
 import { RootState } from '../../store'
 import { CallDuration } from './CallDuration'
@@ -45,16 +40,6 @@ export const ShowOperatorDrawerContent = forwardRef<
   useEffect(() => {
     setFavorite(config.favorite)
   }, [config])
-
-  const toggleFavorite = () => {
-    if (isFavorite) {
-      removeOperatorFromFavorites(config.username, auth.username)
-    } else {
-      addOperatorToFavorites(config.username, auth.username)
-    }
-    setFavorite(!isFavorite)
-    reloadOperators()
-  }
 
   const getCallActionsMenu = () => (
     <>
