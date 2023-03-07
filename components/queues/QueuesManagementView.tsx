@@ -37,7 +37,7 @@ import {
   faUserXmark,
 } from '@nethesis/nethesis-solid-svg-icons'
 import { faStar as faStarLight } from '@nethesis/nethesis-light-svg-icons'
-import { getOperatorByPhoneNumber } from '../../lib/operators'
+import { getOperatorByPhoneNumber, openShowOperatorDrawer } from '../../lib/operators'
 import classNames from 'classnames'
 import { LoggedStatus } from './LoggedStatus'
 import { CallDuration } from '../operators/CallDuration'
@@ -328,12 +328,19 @@ export const QueuesManagementView: FC<QueuesManagementViewProps> = ({ className 
           <Avatar
             rounded='full'
             src={operator.avatarBase64}
-            placeholderType='person'
+            placeholderType='operator'
             size='small'
             status={operator.mainPresence}
+            onClick={() => openShowOperatorDrawer(operator)}
+            className='cursor-pointer'
           />
           <div className='flex flex-col overflow-hidden'>
-            <div className='truncate'>{operator.name}</div>
+            <div
+              className='truncate cursor-pointer hover:underline'
+              onClick={() => openShowOperatorDrawer(operator)}
+            >
+              {operator.name}
+            </div>
             <div className='text-gray-500 dark:text-gray-400'>
               {operator.endpoints.mainextension[0].id}
             </div>
@@ -558,7 +565,7 @@ export const QueuesManagementView: FC<QueuesManagementViewProps> = ({ className 
                           <Avatar
                             rounded='full'
                             src={avatar}
-                            placeholderType='person'
+                            placeholderType='operator'
                             size='small'
                             status={mainPresence}
                           />
@@ -818,7 +825,7 @@ export const QueuesManagementView: FC<QueuesManagementViewProps> = ({ className 
                                                             operators[call.operatorUsername]
                                                               .avatarBase64
                                                           }
-                                                          placeholderType='person'
+                                                          placeholderType='operator'
                                                           size='small'
                                                           status={
                                                             operators[call.operatorUsername]
