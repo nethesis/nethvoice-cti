@@ -312,7 +312,7 @@ export const TopBar: FC<TopBarProps> = ({ openMobileCb }) => {
               <Avatar
                 rounded='full'
                 src={avatar}
-                placeholderType='person'
+                placeholderType='operator'
                 size='small'
                 status={mainPresence}
               />
