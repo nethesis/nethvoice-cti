@@ -49,7 +49,7 @@ export const QueuesManagementView: FC<QueuesManagementViewProps> = ({ className 
   const [filteredQueues, setFilteredQueues]: any = useState({})
   const { operators } = useSelector((state: RootState) => state.operators)
   const [isApplyingFilters, setApplyingFilters]: any = useState(false)
-  const { name, mainPresence, mainextension, avatar } = useSelector(
+  const { name, mainPresence, mainextension, avatar, profile } = useSelector(
     (state: RootState) => state.user,
   )
   const authStore = useSelector((state: RootState) => state.authentication)
@@ -865,43 +865,46 @@ export const QueuesManagementView: FC<QueuesManagementViewProps> = ({ className 
                             )}
                           </div>
                           {/* operators */}
-                          {/* //// show only with permissions */}
-                          <div>
-                            <div className='flex justify-between items-center'>
-                              <div className='font-medium flex items-center'>
-                                <FontAwesomeIcon
-                                  icon={faHeadset}
-                                  aria-hidden='true'
-                                  className='h-4 w-4 mr-2'
-                                />
-                                <span>{t('Queues.Queue operators')}</span>
-                              </div>
+                          {profile.macro_permissions.queue_agent.value &&
+                            profile.macro_permissions.queue_agent.permissions.ad_queue_agent
+                              .value && (
                               <div>
-                                <FontAwesomeIcon
-                                  icon={queue.operatorsExpanded ? faChevronUp : faChevronDown}
-                                  onClick={() => toggleOperatorsExpanded(queue)}
-                                  className='h-3.5 w-3.5 pl-2 py-2 cursor-pointer'
-                                  aria-hidden='true'
-                                />
-                              </div>
-                            </div>
-                            {/* operators table */}
-                            {queue.operatorsExpanded && (
-                              <div className='text-sm'>
-                                {isEmpty(queue.members) ? (
-                                  <div className='p-4 rounded-md text-gray-700 bg-gray-100 dark:text-gray-200 dark:bg-gray-800'>
-                                    {t('Queues.No operators')}
+                                <div className='flex justify-between items-center'>
+                                  <div className='font-medium flex items-center'>
+                                    <FontAwesomeIcon
+                                      icon={faHeadset}
+                                      aria-hidden='true'
+                                      className='h-4 w-4 mr-2'
+                                    />
+                                    <span>{t('Queues.Queue operators')}</span>
                                   </div>
-                                ) : (
-                                  <div className='flex flex-col gap-2 border rounded-md max-h-56 overflow-auto border-gray-200 dark:border-gray-700'>
-                                    {Object.keys(queue.members).map((key, index) => {
-                                      return getQueueOperatorTemplate(queue, key, index)
-                                    })}
+                                  <div>
+                                    <FontAwesomeIcon
+                                      icon={queue.operatorsExpanded ? faChevronUp : faChevronDown}
+                                      onClick={() => toggleOperatorsExpanded(queue)}
+                                      className='h-3.5 w-3.5 pl-2 py-2 cursor-pointer'
+                                      aria-hidden='true'
+                                    />
+                                  </div>
+                                </div>
+                                {/* operators table */}
+                                {queue.operatorsExpanded && (
+                                  <div className='text-sm'>
+                                    {isEmpty(queue.members) ? (
+                                      <div className='p-4 rounded-md text-gray-700 bg-gray-100 dark:text-gray-200 dark:bg-gray-800'>
+                                        {t('Queues.No operators')}
+                                      </div>
+                                    ) : (
+                                      <div className='flex flex-col gap-2 border rounded-md max-h-56 overflow-auto border-gray-200 dark:border-gray-700'>
+                                        {Object.keys(queue.members).map((key, index) => {
+                                          return getQueueOperatorTemplate(queue, key, index)
+                                        })}
+                                      </div>
+                                    )}
                                   </div>
                                 )}
                               </div>
                             )}
-                          </div>
                         </div>
                       )}
                     </div>

@@ -16,7 +16,7 @@ interface EndpointsTypes {
 
 interface ProfileTypes {
   id: string
-  macro_permissions: any[]
+  macro_permissions: any
   name: string
   outbound_routes_permissions: any[]
 }
@@ -45,7 +45,7 @@ const defaultState: DefaultState = {
   },
   profile: {
     id: '',
-    macro_permissions: [],
+    macro_permissions: {},
     name: '',
     outbound_routes_permissions: [],
   },
