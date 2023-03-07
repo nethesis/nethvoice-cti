@@ -169,6 +169,7 @@ export default function Login() {
           </div>
         </div>
         <div className='relative hidden w-0 flex-1 lg:block'>
+          {/* Nextjs <Image> is not suitable for rebranding: it always uses the aspect ratio of the original image  */}
           <img
             className='absolute inset-0 h-full w-full object-cover'
             src='/login_background.png'
