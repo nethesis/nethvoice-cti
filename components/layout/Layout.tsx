@@ -10,7 +10,7 @@ import { useDispatch } from 'react-redux'
 import { Dispatch } from '../../store'
 import { RootState } from '../../store'
 import { useSelector } from 'react-redux'
-import { closeSideDrawer } from '../../lib/utils'
+import { closeSideDrawer, hideFaviconWarn } from '../../lib/utils'
 import { store } from '../../store'
 import {
   buildOperators,
@@ -22,8 +22,7 @@ import {
 } from '../../lib/operators'
 import { useEventListener } from '../../lib/hooks/useEventListener'
 import { retrieveQueues } from '../../lib/queuesLib'
-import { manageFaviconEvents, hideFaviconWarn } from '../../lib/utils'
-import { Button } from '../common'
+import { manageFaviconEvents } from '../../lib/utils'
 
 interface LayoutProps {
   children: ReactNode
@@ -43,22 +42,21 @@ export const Layout: FC<LayoutProps> = ({ children }) => {
   const authStore = useSelector((state: RootState) => state.authentication)
 
   const queuesStore = useSelector((state: RootState) => state.queues)
-  const [errorFavicon, setErrorFavicon] = useState(false)
-  const [callingUserFavicon, setCallingUserFavicon] = useState(false)
+
   const ctiStatus = useSelector((state: RootState) => state.ctiStatus)
 
   useEffect(() => {
-    manageFaviconEvents(ctiStatus.webRtcConnected, ctiStatus.isPhoneRinging)
-  }, [ctiStatus.webRtcConnected, ctiStatus.isPhoneRinging])
+    manageFaviconEvents(ctiStatus.webRtcError, ctiStatus.isPhoneRinging)
+    return () => {
+      hideFaviconWarn()
+    }
+  }, [ctiStatus.webRtcError, ctiStatus.isPhoneRinging])
 
-  const handleClick = () => {
-    store.dispatch.ctiStatus.setConnected(!ctiStatus.webRtcConnected)
-    console.log('now clicked', ctiStatus.webRtcConnected)
-  }
-
-  const handleReset = () => {
-    hideFaviconWarn()
-  }
+  // Change warning favicon status ( only for test )
+  // const warningFaviconStatus = () => {
+  // store.dispatch.ctiStatus.setConnected(!ctiStatus.webRtcError)
+  // store.dispatch.ctiStatus.setRinging(!ctiStatus.isPhoneRinging)
+  // }
 
   useEffect(() => {
     const currentItems = items.map((route) => {
@@ -261,8 +259,9 @@ export const Layout: FC<LayoutProps> = ({ children }) => {
   return (
     <div className='flex h-full'>
       {/* Navigation bar */}
-      <NavBar items={items} /> <Button onClick={handleClick}> </Button>
-      <Button onClick={handleReset} variant='danger'> </Button>
+      <NavBar items={items} />
+      {/* Test Dynamic Favicon */}
+      {/* <Button onClick={warningFaviconStatus}> </Button> */}
       <div className='flex flex-1 flex-col overflow-hidden'>
         {/* Top heading bar */}
         <TopBar openMobileCb={() => setOpenMobileMenu(true)} />

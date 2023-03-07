@@ -112,46 +112,69 @@ export function isMobileDevice() {
   return /Android|iPhone|iPad|iPod|Windows Phone/i.test(navigator.userAgent)
 }
 
-let idInterval: any
+let pathName: string = ''
 
-// It' s used to handle events and make the favicon dynamic
-export function manageFaviconEvents(isError: boolean, isCalling: boolean) {
-  let warningMessageError = 'Warning' + ' -'
-  let base = true
-  if (typeof window !== 'undefined') {
-    let link = document.querySelector("link[rel*='icon']") as HTMLLinkElement
-    idInterval = setInterval(() => {
-      if (base) {
-        if (isError || isCalling) {
-          if (isError) {
-            link.href = 'favicon-warn.ico'
-            window.document.title = window.document.title.replace(
-              /^[^-]+-/,
-              `${warningMessageError}`,
-            )
-          } else {
-            link.href = 'favicon-calling.ico'
-            window.document.title = window.document.title.replace(
-              /^[^-]+-/,
-              `${warningMessageError}`,
-            )
-          }
-        }
-      } else {
-        link.href = 'favicon.ico'
-        window.document.title = 'Changed'
-      }
-      base = !base
-    }, 1500)
+// Get current page name and convert in the correct format
+export function convertRouterPathName(router: any) {
+  const productName = getProductName()
+  if (router.pathname) {
+    // Delete slash at the beginning of the path
+    const cleanRouterPath: string = router.pathname.replace(/^\/|\/$/g, '')
+    // Return path with the uppercase first character
+    if (cleanRouterPath) {
+      pathName = cleanRouterPath[0].toUpperCase() + cleanRouterPath.slice(1) + ' - ' + productName
+    }
   }
 }
 
+// Get icon html icon path
+export function getLinkIcon() {
+  if (typeof window === 'undefined') {
+    return ''
+  }
+  let link = document.querySelector("link[rel*='icon']") as HTMLLinkElement
+  return link
+}
+
+const linkIcon = getLinkIcon()
+
+let idInterval: any
+export function manageFaviconEvents(isError: boolean, isCalling: boolean) {
+  let warningMessage = 'Warning'
+  let callingMessage = 'Calling'
+  const warningMessageError = pathName.replace(/^.*? -/, `${warningMessage} - `)
+  const callingMessageNotification = pathName.replace(/^.*? -/, `${callingMessage} - `)
+  let base = true
+  if (isError || isCalling) {
+    idInterval = setInterval(() => {
+      if (base) {
+        if (isError) {
+          if (linkIcon) {
+            linkIcon.href = 'favicon-warn.ico'
+          }
+          window.document.title = warningMessageError
+        } else if (isCalling) {
+          if (linkIcon) {
+            linkIcon.href = 'favicon-call.ico'
+          }
+          window.document.title = callingMessageNotification
+        }
+      } else {
+        if (linkIcon) {
+          linkIcon.href = 'favicon.ico'
+        }
+        window.document.title = pathName
+      }
+      base = !base
+    }, 1000)
+  }
+}
+
+// Call the function to interrupt the dynamic icon interval
 export function hideFaviconWarn() {
   clearInterval(idInterval)
-  if (typeof window !== 'undefined') {
-    let link = document.querySelector("link[rel*='icon']") as HTMLLinkElement
-    link.href = 'favicon.ico'
-    window.document.title = 'Changed'
-    console.log("job done")
+  if (linkIcon) {
+    linkIcon.href = 'favicon.ico'
   }
+  window.document.title = pathName
 }

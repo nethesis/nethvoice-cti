@@ -14,7 +14,7 @@ import { RouteGuard } from '../config/router'
 import { Service } from '../config/service'
 import { checkDarkTheme } from '../lib/darkTheme'
 import { Island } from '../components/island'
-import { getProductName } from '../lib/utils'
+import { getProductName, convertRouterPathName } from '../lib/utils'
 import Head from 'next/head'
 import { loadI18n } from '../lib/i18n'
 
@@ -55,6 +55,10 @@ function MyApp({ Component, pageProps }: AppProps) {
   useEffect(() => {
     checkDarkTheme()
   }, [])
+
+  useEffect(() => {
+    convertRouterPathName(router)
+  }, [router])
 
   const productName = getProductName()
 

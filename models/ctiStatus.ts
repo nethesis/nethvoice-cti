@@ -5,15 +5,15 @@ import { createModel } from '@rematch/core'
 import type { RootModel } from '.'
 
 const defaultState = {
-  webRtcConnected: false,
-  isPhoneRinging: false,
+  webRtcError: false,
+  isPhoneRinging: false
 }
 
 export const ctiStatus = createModel<RootModel>()({
   state: defaultState,
   reducers: {
-    setConnected: (state, webRtcConnected: boolean) => {
-      state.webRtcConnected = webRtcConnected
+    setConnected: (state, webRtcError: boolean) => {
+      state.webRtcError = webRtcError
       return state
     },
     setRinging: (state, isPhoneRinging: boolean) => {
