@@ -15,7 +15,14 @@
     "Phone number": "Phone number",
     "time_distance_ago": "{{ timeDistance }} ago",
     "Add to favorites": "Add to favorites",
-    "Remove from favorites": "Remove from favorites"
+    "Remove from favorites": "Remove from favorites",
+    "Warning": "Warning",
+    "Calling": "Calling",
+    "Operators": "Operators",
+    "Phonebook": "Phonebook",
+    "History": "History",
+    "Applications": "Applications",
+    "Settings": "Settings"
   },
   "Login": {
     "User": "User",

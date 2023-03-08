@@ -6,17 +6,17 @@ import type { RootModel } from '.'
 
 const defaultState = {
   webRtcError: false,
-  isPhoneRinging: false
+  isPhoneRinging: false,
 }
 
 export const ctiStatus = createModel<RootModel>()({
   state: defaultState,
   reducers: {
-    setConnected: (state, webRtcError: boolean) => {
+    setWebRtcError: (state, webRtcError: boolean) => {
       state.webRtcError = webRtcError
       return state
     },
-    setRinging: (state, isPhoneRinging: boolean) => {
+    setPhoneRinging: (state, isPhoneRinging: boolean) => {
       state.isPhoneRinging = isPhoneRinging
       return state
     },

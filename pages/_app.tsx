@@ -14,7 +14,7 @@ import { RouteGuard } from '../config/router'
 import { Service } from '../config/service'
 import { checkDarkTheme } from '../lib/darkTheme'
 import { Island } from '../components/island'
-import { getProductName, convertRouterPathName } from '../lib/utils'
+import { getProductName } from '../lib/utils'
 import Head from 'next/head'
 import { loadI18n } from '../lib/i18n'
 
@@ -56,28 +56,13 @@ function MyApp({ Component, pageProps }: AppProps) {
     checkDarkTheme()
   }, [])
 
-  useEffect(() => {
-    convertRouterPathName(router)
-  }, [router])
-
   const productName = getProductName()
-
-  function getPageTitle() {
-    if (router.pathname) {
-      // Delete slash at the beginning of the path
-      const cleanRouterPath: string = router.pathname.replace(/^\/|\/$/g, '')
-      // Return path with the uppercase first character
-      if (cleanRouterPath) {
-        return cleanRouterPath[0].toUpperCase() + cleanRouterPath.slice(1) + ' - ' + productName
-      }
-    }
-  }
 
   return (
     <>
       <div>
         <Head>
-          <title>{getPageTitle()}</title>
+          <title>{productName}</title>
         </Head>
       </div>
       {!isLoading && (
