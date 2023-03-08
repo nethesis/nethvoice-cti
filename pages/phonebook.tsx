@@ -132,195 +132,272 @@ const Phonebook: NextPage = () => {
           updateContactTypeFilter={updateContactTypeFilter}
           updateSort={updateSort}
         />
-        <div className='overflow-hidden shadow sm:rounded-md bg-white dark:bg-gray-900'>
-          <ul role='list' className='divide-y divide-gray-200 dark:divide-gray-700'>
-            {/* phonebook error */}
-            {phonebookError && (
-              <InlineNotification type='error' title={phonebookError}></InlineNotification>
-            )}
-            {/* phonebook skeleton */}
-            {!isPhonebookLoaded &&
-              Array.from(Array(9)).map((e, index) => (
-                <li key={index}>
-                  <div className='flex items-center px-4 py-4 sm:px-6'>
-                    {/* avatar skeleton */}
-                    <div className='animate-pulse rounded-full h-12 w-12 bg-gray-300 dark:bg-gray-600'></div>
-                    <div className='min-w-0 flex-1 px-4 md:grid md:grid-cols-2 gap-4 lg:grid-cols-3 xl:grid-cols-3'>
-                      <div className='flex flex-col justify-center'>
-                        {/* line skeleton */}
-                        <div className='animate-pulse h-3 rounded mb-6 md:mb-0 bg-gray-300 dark:bg-gray-600'></div>
-                      </div>
-                      <div>
-                        {/* line skeleton */}
-                        <div className='animate-pulse h-3 rounded mb-6 md:mb-0 bg-gray-300 dark:bg-gray-600'></div>
-                      </div>
-                      <div>
-                        {/* line skeleton */}
-                        <div className='animate-pulse h-3 rounded bg-gray-300 dark:bg-gray-600'></div>
-                      </div>
-                    </div>
-                  </div>
-                </li>
-              ))}
-            {/* empty state */}
-            {isPhonebookLoaded &&
-              phonebook?.rows &&
-              !phonebook.rows.length &&
-              !textFilter.length && (
-                <EmptyState
-                  title='No contacts'
-                  description='There is no contact in your phonebook'
-                  icon={
-                    <FontAwesomeIcon
-                      icon={faAddressBook}
-                      className='mx-auto h-12 w-12'
-                      aria-hidden='true'
-                    />
-                  }
-                >
-                  <Button variant='primary' onClick={() => openCreateContactDrawer()}>
-                    <FontAwesomeIcon icon={faPlus} className='mr-2 h-4 w-4' />
-                    <span>{t('Phonebook.Create contact')}</span>
-                  </Button>
-                </EmptyState>
-              )}
-            {/* no search results */}
-            {isPhonebookLoaded &&
-              phonebook?.rows &&
-              !phonebook.rows.length &&
-              !!textFilter.length && (
-                <EmptyState
-                  title='No contacts'
-                  description='Try changing your search filters'
-                  icon={
-                    <FontAwesomeIcon
-                      icon={faFilter}
-                      className='mx-auto h-12 w-12'
-                      aria-hidden='true'
-                    />
-                  }
-                />
-              )}
-            {isPhonebookLoaded &&
-              phonebook?.rows &&
-              phonebook.rows.map((contact: any, index: number) => (
-                <li key={index}>
-                  <div className='flex items-center px-4 py-4 sm:px-6'>
-                    <div className='flex min-w-0 flex-1 items-center'>
-                      <div className='flex-shrink-0' onClick={() => openShowContactDrawer(contact)}>
-                        {contact.kind == 'person' ? (
-                          <Avatar className='cursor-pointer' placeholderType='person' />
-                        ) : (
-                          <Avatar className='cursor-pointer' placeholderType='company' />
-                        )}
-                      </div>
-                      <div className='min-w-0 flex-1 px-4 md:grid md:grid-cols-2 gap-4 lg:grid-cols-2 xl:grid-cols-3'>
-                        {/* display name and company/contacts */}
-                        <div className='flex flex-col justify-center'>
-                          <div className='truncate text-sm font-medium'>
-                            <span
-                              className='cursor-pointer hover:underline'
-                              onClick={() => openShowContactDrawer(contact)}
+        {/* phonebook error */}
+        {phonebookError && (
+          <InlineNotification type='error' title={phonebookError}></InlineNotification>
+        )}
+
+        {!phonebookError && (
+          <div className='mx-auto'>
+            <div className='flex flex-col overflow-hidden'>
+              <div className='-my-2 -mx-4 overflow-x-auto sm:-mx-6 lg:-mx-8'>
+                <div className='min-w-full py-2 align-middle px-2 md:px-6 lg:px-8'>
+                  <div className='overflow-hidden shadow ring-1 ring-black ring-opacity-5 md:rounded-lg'>
+                    {/* empty state */}
+                    {isPhonebookLoaded &&
+                      phonebook?.rows &&
+                      !phonebook.rows.length &&
+                      !textFilter.length && (
+                        <EmptyState
+                          title={t('Phonebook.No contacts')}
+                          description={t('Phonebook.There is no contact in your phonebook') || ''}
+                          icon={
+                            <FontAwesomeIcon
+                              icon={faAddressBook}
+                              className='mx-auto h-12 w-12'
+                              aria-hidden='true'
+                            />
+                          }
+                        >
+                          <Button variant='primary' onClick={() => openCreateContactDrawer()}>
+                            <FontAwesomeIcon icon={faPlus} className='mr-2 h-4 w-4' />
+                            <span>{t('Phonebook.Create contact')}</span>
+                          </Button>
+                        </EmptyState>
+                      )}
+                    {isPhonebookLoaded && phonebook?.rows && phonebook.rows.length && (
+                      <table className='min-w-full divide-y divide-gray-300 dark:divide-gray-700'>
+                        <thead className='bg-white dark:bg-gray-900'>
+                          <tr>
+                            <th
+                              scope='col'
+                              className='py-3.5 pl-4 pr-3 text-left text-sm font-semibold text-gray-700 dark:text-gray-100 sm:pl-6'
                             >
-                              {contact.displayName}
-                            </span>
-                          </div>
-                          {/* extension */}
-                          {contact.extension && (
-                            <div className='mt-1 flex items-center text-sm text-gray-500 dark:text-gray-400'>
-                              <FontAwesomeIcon
-                                icon={faPhone}
-                                className='mr-2 h-4 w-4 flex-shrink-0 text-gray-400 dark:text-gray-500'
-                                aria-hidden='true'
-                              />
-                              <span
-                                className='truncate text-primary dark:text-primary cursor-pointer'
-                                onClick={() => callPhoneNumber(contact.extension)}
-                              >
-                                {contact.extension}
-                              </span>
-                            </div>
-                          )}
-                          {/* company name */}
-                          {contact.kind == 'person' && contact.company && !contact.extension && (
-                            <div className='mt-1 flex items-center text-sm text-gray-500 dark:text-gray-400'>
-                              <FontAwesomeIcon
-                                icon={faSuitcase}
-                                className='mr-2 h-4 w-4 flex-shrink-0 text-gray-400 dark:text-gray-500'
-                                aria-hidden='true'
-                              />
-                              <span className='truncate'>{contact.company}</span>
-                            </div>
-                          )}
-                          {/* company contacts */}
-                          {contact.contacts && contact.contacts.length ? (
-                            <div className='mt-1 flex items-center text-sm text-gray-500 dark:text-gray-400'>
-                              <FontAwesomeIcon
-                                icon={faUserGroup}
-                                className='mr-2 h-4 w-4 flex-shrink-0 text-gray-400 dark:text-gray-500'
-                                aria-hidden='true'
-                              />
-                              <span>{contact.contacts.length} contacts</span>
-                            </div>
-                          ) : null}
-                        </div>
-                        {/* work phone */}
-                        {contact.workphone && (
-                          <div className='mt-4 md:mt-0'>
-                            <div>
-                              <div className='text-sm text-gray-900 dark:text-gray-100'>Work</div>
-                              <div className='mt-1 flex items-center text-sm text-primary dark:text-primary'>
-                                <FontAwesomeIcon
-                                  icon={faPhone}
-                                  className='mr-2 h-4 w-4 flex-shrink-0 text-gray-400 dark:text-gray-500'
-                                  aria-hidden='true'
-                                />
-                                <span
-                                  className='truncate cursor-pointer hover:underline'
-                                  onClick={() => callPhoneNumber(contact.workphone)}
-                                >
-                                  {contact.workphone}
-                                </span>
-                              </div>
-                            </div>
-                          </div>
-                        )}
-                        {/* mobile phone */}
-                        {contact.cellphone && (
-                          <div className='mt-4 md:mt-0'>
-                            <div>
-                              <div className='text-sm text-gray-900 dark:text-gray-100'>Mobile</div>
-                              <div className='mt-1 flex items-center text-sm text-primary dark:text-primary'>
-                                <FontAwesomeIcon
-                                  icon={faMobileScreenButton}
-                                  className='mr-2 h-4 w-4 flex-shrink-0 text-gray-400 dark:text-gray-500'
-                                  aria-hidden='true'
-                                />
-                                <span
-                                  className='truncate cursor-pointer hover:underline'
-                                  onClick={() => callPhoneNumber(contact.cellphone)}
-                                >
-                                  {contact.cellphone}
-                                </span>
-                              </div>
-                            </div>
-                          </div>
-                        )}
+                              {t('Phonebook.Name')}
+                            </th>
+                            <th
+                              scope='col'
+                              className='px-3 py-3.5 text-left text-sm font-semibold text-gray-700 dark:text-gray-100'
+                            >
+                              {t('Phonebook.Primary phone')}
+                            </th>
+                            <th
+                              scope='col'
+                              className='px-3 py-3.5 text-left text-sm font-semibold text-gray-700 dark:text-gray-100'
+                            >
+                              {t('Phonebook.Mobile phone')}
+                            </th>
+                            <th
+                              scope='col'
+                              className='px-8 py-3.5 text-right text-sm font-semibold text-gray-700 dark:text-gray-100 sm:pr-6'
+                            ></th>
+                          </tr>
+                        </thead>
+                        <tbody className='divide-y divide-gray-200 dark:divide-gray-700 bg-white dark:bg-gray-900 text-gray-700 text-sm'>
+                          {/* no search results */}
+                          {isPhonebookLoaded &&
+                            phonebook?.rows &&
+                            !phonebook.rows.length &&
+                            !!textFilter.length && (
+                              <tr>
+                                <td colSpan={4}>
+                                  <EmptyState
+                                    title={t('Phonebook.No contacts')}
+                                    description={
+                                      t('Phonebook.Try changing your search filters') || ''
+                                    }
+                                    icon={
+                                      <FontAwesomeIcon
+                                        icon={faFilter}
+                                        className='mx-auto h-12 w-12'
+                                        aria-hidden='true'
+                                      />
+                                    }
+                                  />
+                                </td>
+                              </tr>
+                            )}
+                          {/* Not empty state  */}
+                          {isPhonebookLoaded &&
+                            phonebook?.rows &&
+                            phonebook.rows.map((contact: any, index: number) => (
+                              <tr key={index}>
+                                {/* Name */}
+                                <td className='py-4 px-4 sm:pl-6 '>
+                                  <div
+                                    className='flex items-center'
+                                    onClick={() => openShowContactDrawer(contact)}
+                                  >
+                                    <div className='h-10 w-10 flex-shrink-0'>
+                                      {' '}
+                                      {contact.kind == 'person' ? (
+                                        <Avatar
+                                          className='cursor-pointer'
+                                          placeholderType='person'
+                                        />
+                                      ) : (
+                                        <Avatar
+                                          className='cursor-pointer'
+                                          placeholderType='company'
+                                        />
+                                      )}{' '}
+                                    </div>
+                                    <div className='ml-4'>
+                                      <div className='font-medium text-gray-700 dark:text-gray-100'>
+                                        {' '}
+                                        <span
+                                          className='cursor-pointer hover:underline'
+                                          onClick={() => openShowContactDrawer(contact)}
+                                        >
+                                          {contact.displayName}
+                                        </span>
+                                      </div>
+                                      {/* extension */}
+                                      {contact.extension && (
+                                        <div className='mt-1 flex items-center text-sm text-gray-500 dark:text-gray-400'>
+                                          <FontAwesomeIcon
+                                            icon={faPhone}
+                                            className='mr-2 h-4 w-4 flex-shrink-0 text-gray-400 dark:text-gray-500'
+                                            aria-hidden='true'
+                                          />
+                                          <span
+                                            className='truncate text-primary dark:text-primary cursor-pointer'
+                                            onClick={() => callPhoneNumber(contact.extension)}
+                                          >
+                                            {contact.extension}
+                                          </span>
+                                        </div>
+                                      )}
+                                      {/* company name */}
+                                      {contact.kind == 'person' &&
+                                        contact.company &&
+                                        !contact.extension && (
+                                          <div className='mt-1 flex items-center text-sm text-gray-500 dark:text-gray-400'>
+                                            <FontAwesomeIcon
+                                              icon={faSuitcase}
+                                              className='mr-2 h-4 w-4 flex-shrink-0 text-gray-400 dark:text-gray-500'
+                                              aria-hidden='true'
+                                            />
+                                            <span className='truncate'>{contact.company}</span>
+                                          </div>
+                                        )}
+                                      <div className='text-gray-500'></div>
+                                    </div>
+                                  </div>
+                                </td>
+
+                                {/* work phone */}
+                                <td className='py-4 px-4'>
+                                  <div>
+                                    {contact.workphone ? (
+                                      <div className='mt-1 flex items-center text-sm text-primary dark:text-primary'>
+                                        <FontAwesomeIcon
+                                          icon={faPhone}
+                                          className='mr-2 h-4 w-4 flex-shrink-0 text-gray-400 dark:text-gray-500'
+                                          aria-hidden='true'
+                                        />
+                                        <span
+                                          className='truncate cursor-pointer hover:underline'
+                                          onClick={() => callPhoneNumber(contact.workphone)}
+                                        >
+                                          {contact.workphone}
+                                        </span>
+                                      </div>
+                                    ) : (
+                                      '-'
+                                    )}
+                                  </div>
+                                </td>
+
+                                {/* mobile phone */}
+                                <td className='py-4 px-4'>
+                                  <div>
+                                    {contact.cellphone ? (
+                                      <div className='mt-1 flex items-center text-sm text-primary dark:text-primary'>
+                                        <FontAwesomeIcon
+                                          icon={faMobileScreenButton}
+                                          className='mr-2 h-4 w-4 flex-shrink-0 text-gray-400 dark:text-gray-500'
+                                          aria-hidden='true'
+                                        />
+                                        <span
+                                          className='truncate cursor-pointer hover:underline'
+                                          onClick={() => callPhoneNumber(contact.cellphone)}
+                                        >
+                                          {contact.cellphone}
+                                        </span>
+                                      </div>
+                                    ) : (
+                                      '-'
+                                    )}
+                                  </div>
+                                </td>
+
+                                <td className='py-4 px-4 sm:pr-8'>
+                                  <div className='flex items-center justify-end'>
+                                    <FontAwesomeIcon
+                                      icon={faChevronRight}
+                                      className='h-3 w-3 text-gray-400 dark:text-gray-500 cursor-pointer'
+                                      aria-hidden='true'
+                                      onClick={() => openShowContactDrawer(contact)}
+                                    />
+                                  </div>
+                                </td>
+                              </tr>
+                            ))}
+                        </tbody>
+                      </table>
+                    )}
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        )}
+
+        {/* skeleton  */}
+        {!isPhonebookLoaded && (
+          <table className='min-w-full divide-y divide-gray-300 dark:divide-gray-700 bg-white dark:bg-gray-900 rounded-md overflow-hidden'>
+            <thead>
+              <tr>
+                {Array.from(Array(4)).map((_, index) => (
+                  <th key={`th-${index}`}>
+                    <div className='px-6 py-3.5'>
+                      <div className='animate-pulse h-5 rounded bg-gray-300 dark:bg-gray-600'></div>
+                    </div>
+                  </th>
+                ))}
+              </tr>
+            </thead>
+            <tbody>
+              {Array.from(Array(8)).map((_, secondIndex) => (
+                <tr key={`tr-${secondIndex}`}>
+                  <td className='py-4 px-6 sm:pl-6'>
+                    <div className='flex items-center'>
+                      <div
+                        className='animate-pulse rounded-full h-12 w-12 bg-gray-300 dark:bg-gray-600'
+                        key={`td-${secondIndex}-0`}
+                      ></div>
+                      <div className='min-w-0 flex-1 pl-3'>
+                        <div
+                          className='animate-pulse h-5 rounded bg-gray-300 dark:bg-gray-600'
+                          key={`td-${secondIndex}-1`}
+                        ></div>
                       </div>
                     </div>
-                    <div>
-                      <FontAwesomeIcon
-                        icon={faChevronRight}
-                        className='h-3 w-3 text-gray-400 dark:text-gray-500 cursor-pointer'
-                        aria-hidden='true'
-                        onClick={() => openShowContactDrawer(contact)}
-                      />
-                    </div>
-                  </div>
-                </li>
+                  </td>
+                  {Array.from(Array(3)).map((_, thirdIndex) => (
+                    <td key={`td-${secondIndex}-${thirdIndex}`}>
+                      <div className='px-6 py-6'>
+                        <div className='animate-pulse h-5 rounded bg-gray-300 dark:bg-gray-600'></div>
+                      </div>
+                    </td>
+                  ))}
+                </tr>
               ))}
-          </ul>
-        </div>
+            </tbody>
+          </table>
+        )}
+
         {/* pagination */}
         {!phonebookError && !!phonebook?.rows?.length && (
           <nav

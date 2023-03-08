@@ -29,7 +29,16 @@
     "Contact type": "Contact type",
     "Phonebook filters": "Phonebook filters",
     "Filter contacts": "Filter contacts",
-    "contacts": "contacts"
+    "contacts": "contacts",
+    "No contacts": "No contacts",
+    "There is no contact in your phonebook": "There is no contact in your phonebook",
+    "Primary phone": "Primary phone",
+    "Mobile phone": "Mobile phone",
+    "Contact details": "Contact details",
+    "Type": "Type",
+    "Work": "Work",
+    "Mobile": "Mobile",
+    "Try changing your search filters": "Try changing your search filters"
   },
   "History": {
     "History": "History",
@@ -58,7 +67,15 @@
     "calls": "calls",
     "Filters": "Filters",
     "Call direction": "Call direction",
-    "History filters": "History filters"
+    "History filters": "History filters",
+    "Source": "Source",
+    "Destination": "Destination",
+    "Outcome": "Outcome",
+    "Duration": "Duration",
+    "Recording": "Recording",
+    "No calls": "No calls",
+    "There are no calls in your history": "There are no calls in your history",
+    "Play": "Play"
   },
   "Operators": {
     "Operators": "Operators",
