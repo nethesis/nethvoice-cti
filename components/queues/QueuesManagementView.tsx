@@ -192,7 +192,7 @@ export const QueuesManagementView: FC<QueuesManagementViewProps> = ({ className 
   const getQueuesUserPaused = () => {
     return Object.values(queuesStore.queues)
       .filter((queue: any) => {
-        return queue.members?.[mainextension]?.paused
+        return queue.members[mainextension].paused
       })
       .map((queue: any) => queue.queue)
   }
@@ -300,6 +300,7 @@ export const QueuesManagementView: FC<QueuesManagementViewProps> = ({ className 
     if (isEmpty(queue.waitingCallersList)) {
       return 0
     }
+
     return queue.waitingCallersList[queue.waitingCallersList.length - 1].waitingTime
   }
 

@@ -19,21 +19,21 @@ export const CallDuration: FC<CallDurationProps> = ({ startTime, className }): J
       return
     }
 
-    if (!startTime) {
-      return
-    }
-
     updateDuration()
     const id = setInterval(updateDuration, 1000)
 
     return () => {
       clearInterval(id)
     }
-  }, [firstRender])
+  }, [firstRender, startTime])
 
   const updateDuration = () => {
-    const d = (new Date().getTime() - startTime) / 1000
-    setDuration(d)
+    if (startTime) {
+      const d = (new Date().getTime() - startTime) / 1000
+      setDuration(d)
+    } else {
+      setDuration(0)
+    }
   }
 
   return (
