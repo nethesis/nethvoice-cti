@@ -13,7 +13,6 @@ import {
   faArrowUpRightFromSquare,
 } from '@nethesis/nethesis-solid-svg-icons'
 import { Button } from '../components/common'
-import { faPhone } from '@fortawesome/free-solid-svg-icons'
 import { getApiEndpoint } from '../lib/utils'
 import { getApiScheme } from '../lib/utils'
 
@@ -58,7 +57,14 @@ const Applications: NextPage = () => {
                   </p>
                 </div>
                 <div className='text-gray-900 dark:text-gray-100 text-sm flex items-center justify-center'>
-                  <span className='font-semibold text-gray-500'>{t('Common.Coming soon')}...</span>
+                  <span className='font-semibold text-gray-900 dark:text-gray-100'>
+                    {t('Applications.Go to manage lines')}
+                  </span>
+                  <FontAwesomeIcon
+                    icon={faArrowRight}
+                    className='h-4 w-4 m-3 rounded-lg text-gray-900 dark:text-gray-100'
+                    aria-hidden='true'
+                  />
                 </div>
               </div>
             </div>
