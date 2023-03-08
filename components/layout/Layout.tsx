@@ -146,21 +146,6 @@ export const Layout: FC<LayoutProps> = ({ children }) => {
     }
   }, [queuesStore.isLoaded, operatorsStore.isOperatorsLoaded, mainextension])
 
-  useEventListener('phone-island-main-presence', (data: any) => {
-    const opName = Object.keys(data)[0]
-    const mainPresence = data[opName].mainPresence
-    store.dispatch.operators.updateMainPresence(opName, mainPresence)
-    if (data[user] && data[user].mainPresence !== topBarPresence) {
-      dispatch.user.updateMainPresence(mainPresence)
-    }
-  })
-
-  useEventListener('phone-island-conversations', (data) => {
-    const opName = Object.keys(data)[0]
-    const conversations = data[opName].conversations
-    store.dispatch.operators.updateConversations(opName, conversations)
-  })
-
   // global search listeners
 
   const globalSearchClick = (event: any) => {
@@ -192,6 +177,83 @@ export const Layout: FC<LayoutProps> = ({ children }) => {
       document.removeEventListener('click', globalSearchClick)
     }
   }, [firstRenderGlobalSearchListener])
+
+  useEventListener('phone-island-main-presence', (data: any) => {
+    const opName = Object.keys(data)[0]
+    const mainPresence = data[opName].mainPresence
+    store.dispatch.operators.updateMainPresence(opName, mainPresence)
+    if (data[user] && data[user].mainPresence !== topBarPresence) {
+      dispatch.user.updateMainPresence(mainPresence)
+    }
+  })
+
+  useEventListener('phone-island-conversations', (data) => {
+    console.log('event phone-island-conversations', data) ////
+
+    const opName = Object.keys(data)[0]
+    const conversations = data[opName].conversations
+    store.dispatch.operators.updateConversations(opName, conversations)
+
+    // update queue connected calls
+
+    let queueConnectedCalls: any = {}
+
+    Object.values(conversations).forEach((conversation: any) => {
+      if (conversation.throughQueue && conversation.connected && conversation.queueId) {
+        const queueFound = queuesStore.queues[conversation.queueId]
+
+        if (queueFound) {
+          console.log('queueFound, opName', queueFound.queue, opName) ////
+
+          let calls = queueConnectedCalls[queueFound.queue] || []
+          calls.push({ conversation, operatorUsername: opName })
+          queueConnectedCalls[queueFound.queue] = calls
+        }
+      }
+    })
+
+    Object.keys(queueConnectedCalls).forEach((queueId: string) => {
+      const connectedCalls = queueConnectedCalls[queueId]
+
+      console.log('setConnectedCalls', queueId, connectedCalls) ////
+
+      store.dispatch.queues.setConnectedCalls(queueId, connectedCalls)
+    })
+
+    //// process al queues data
+    // const queues = cloneDeep(queuesStore.queues) ////
+    // processQueues(queues, authStore.username, mainextension, operatorsStore.operators) ////
+  })
+
+  useEventListener('phone-island-queue-update', (data: any) => {
+    console.log('event phone-island-queue-update', data) ////
+
+    const queueId = Object.keys(data)[0]
+    const queueData = data[queueId]
+
+    if (Object.values(queueData.waitingCallers).length) {
+      console.log('! waitingCallers', Object.values(queueData.waitingCallers)) ////
+    }
+
+    // skip events related to unknown queues
+    const knownQueues = Object.keys(queuesStore.queues)
+
+    if (!knownQueues.includes(queueId)) {
+      return
+    }
+
+    store.dispatch.queues.processQueue({
+      queueData,
+      username: authStore.username,
+      mainextension,
+      operators: operatorsStore.operators,
+    })
+  })
+
+  useEventListener('phone-island-queue-member-update', (data: any) => {
+    console.log('event phone-island-queue-member-update', data) ////
+    ////
+  })
 
   return (
     <div className='flex h-full'>
