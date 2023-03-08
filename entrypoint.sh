@@ -70,4 +70,9 @@ if [ ! -z $FAVICON_URL ]; then
   /usr/bin/wget --timeout=60 $FAVICON_URL -O /app/public/favicon.ico
 fi
 
+if [ ! -z $LOGIN_BACKGROUND_URL ]; then
+  # login background image rebranding
+  /usr/bin/wget --timeout=60 $LOGIN_BACKGROUND_URL -O /app/public/login_background.png
+fi
+
 exec "$@"

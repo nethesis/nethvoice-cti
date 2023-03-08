@@ -87,7 +87,7 @@ export default function Login() {
   return (
     <>
       <div className='flex min-h-full'>
-        <div className='flex flex-1 flex-col justify-center py-12 px-4 sm:px-6 lg:flex-none lg:px-20 xl:px-24'>
+        <div className='flex flex-1 flex-col justify-center py-12 px-4 sm:px-6 lg:flex-none lg:px-20 xl:px-24 2xl:px-32'>
           <div className='mx-auto w-full max-w-sm lg:w-96'>
             <div className='flex flex-col items-center justify-center'>
               {' '}
@@ -169,12 +169,11 @@ export default function Login() {
           </div>
         </div>
         <div className='relative hidden w-0 flex-1 lg:block'>
-          <Image
+          {/* Nextjs <Image> is not suitable for rebranding: it always uses the aspect ratio of the original image  */}
+          <img
             className='absolute inset-0 h-full w-full object-cover'
-            src={Background}
-            alt='Background image'
-            layout='fill'
-            unoptimized={true}
+            src='/login_background.png'
+            alt='background image'
           />
         </div>
       </div>
