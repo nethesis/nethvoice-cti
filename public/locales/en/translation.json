@@ -275,5 +275,11 @@
     "Wait": "Wait",
     "Position": "Position",
     "You are about to logout from the following queues": "You are about to logout from the following queues"
+  },
+  "Lines": {
+    "Lines management": "Lines management",
+    "Ads": "Ads",
+    "Rules": "Rules",
+    "Phone lines": "Phone lines"
   }
 }

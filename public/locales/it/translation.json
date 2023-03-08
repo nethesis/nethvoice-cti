@@ -166,5 +166,11 @@
     "Incoming": "In entrata",
     "Outgoing": "In uscita",
     "Duration": "Durata"
+  },
+  "Lines": {
+    "Lines management": "Gestione linee",
+    "Ads": "Annunci",
+    "Rules": "Regole",
+    "Phone lines": "Linee telefoniche"
   }
 }
