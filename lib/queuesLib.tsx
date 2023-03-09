@@ -57,7 +57,7 @@ export const processQueues = (
   store.dispatch.queues.setLoaded(true)
   store.dispatch.queues.setLoading(false)
 
-  console.log('queues', queues) ////
+  // console.log('queues', queues) ////
 }
 
 export const retrieveQueues = async (username: string, mainextension: string, operators: any) => {
