@@ -358,12 +358,14 @@ export const addQueueToFavorites = (queueId: string, currentUsername: string) =>
   const favoriteQueues = loadPreference('favoriteQueues', currentUsername) || []
   favoriteQueues.push(queueId)
   savePreference('favoriteQueues', favoriteQueues, currentUsername)
+  store.dispatch.queues.setFavoriteQueues(favoriteQueues)
 }
 
 export const removeQueueFromFavorites = (queueId: string, currentUsername: string) => {
   let favoriteQueues = loadPreference('favoriteQueues', currentUsername) || []
   favoriteQueues = favoriteQueues.filter((q: string) => q !== queueId)
   savePreference('favoriteQueues', favoriteQueues, currentUsername)
+  store.dispatch.queues.setFavoriteQueues(favoriteQueues)
 }
 
 export const addQueueToExpanded = (queueId: string, currentUsername: string) => {
@@ -373,10 +375,12 @@ export const addQueueToExpanded = (queueId: string, currentUsername: string) => 
     expandedQueues.push(queueId)
   }
   savePreference('expandedQueues', expandedQueues, currentUsername)
+  store.dispatch.queues.setExpandedQueues(expandedQueues)
 }
 
 export const removeQueueFromExpanded = (queueId: string, currentUsername: string) => {
   let expandedQueues = loadPreference('expandedQueues', currentUsername) || []
   expandedQueues = expandedQueues.filter((q: string) => q !== queueId)
   savePreference('expandedQueues', expandedQueues, currentUsername)
+  store.dispatch.queues.setExpandedQueues(expandedQueues)
 }
