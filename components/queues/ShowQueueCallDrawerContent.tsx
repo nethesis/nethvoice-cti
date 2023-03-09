@@ -59,9 +59,6 @@ export const ShowQueueCallDrawerContent = forwardRef<
         // queuename attribute name is misleading
         delete call.queuename
       })
-
-      console.log('callInfo', res) ////
-
       setCallInfo(res)
     } catch (e) {
       console.error(e)

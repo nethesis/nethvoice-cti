@@ -49,13 +49,11 @@ export const queues = createModel<RootModel>()({
       state.errorMessage = errorMessage
       return state
     },
-    //// needed?
     setQueueExpanded: (state, queueId: string, expanded: boolean) => {
       const queue = state.queues[queueId]
       queue.expanded = expanded
       return state
     },
-    //// needed?
     setQueueFavorite: (state, queueId: string, favorite: boolean) => {
       const queue = state.queues[queueId]
       queue.favorite = favorite
@@ -84,18 +82,7 @@ export const queues = createModel<RootModel>()({
       queue.operatorsExpanded = expanded
       return state
     },
-    //// needed?
-    updateQueue: (state, queueId: string, queueData: any) => {
-      let queue = state.queues[queueId]
-      queue = { ...queue, ...queueData }
-
-      console.log('new queue', queue) ////
-
-      return state
-    },
     processQueue: (state, payload: ProcessQueueProps) => {
-      console.log('processQueue', payload) ////
-
       let queueData = payload.queueData
       let queueId = queueData.queue
       const operators = payload.operators

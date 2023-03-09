@@ -92,9 +92,6 @@ export const CallsView: FC<CallsViewProps> = ({ className }): JSX.Element => {
 
         return call
       })
-
-      console.log('calls', res) ////
-
       setCalls(res)
       setLastUpdated(new Date())
     } catch (e) {
