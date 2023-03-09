@@ -44,10 +44,10 @@ export const LoggedStatus: FC<LoggedStatusProps> = ({
         className={classNames(
           'flex items-center gap-2 text-sm shrink-0',
           status === 'loggedIn'
-            ? 'text-green-700'
+            ? 'text-green-700 dark:text-green-600'
             : status === 'paused'
-            ? 'text-yellow-700'
-            : 'text-gray-500',
+            ? 'text-yellow-700 dark:text-yellow-600'
+            : 'text-gray-500 dark:text-gray-400',
           className,
         )}
       >

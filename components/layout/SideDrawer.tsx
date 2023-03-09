@@ -15,7 +15,7 @@ import { CreateOrEditSpeedDialDrawerContent } from './speed_dial/CreateOrEditSpe
 import { ShowHistoryDrawerContent } from '../history/ShowHistoryDrawerContent'
 import { NotificationsDrawerContent } from './NotificationsDrawerContent'
 import { AddToPhonebookDrawerContent } from '../history/AddToPhonebookDrawer'
-import { ShowQueueCallDrawerContent } from '../queues/ShowQueueCallDrawerContent'
+import { ShowQueueCallDrawerContent } from '../queues'
 
 interface SideDrawerProps {
   isShown: boolean
