@@ -105,11 +105,6 @@ export const queues = createModel<RootModel>()({
         caller.position = parseInt(caller.position)
       })
 
-      ////
-      if (Object.values(queueData.waitingCallers).length) {
-        console.log('!! waitingCallers', Object.values(queueData.waitingCallers)) ////
-      }
-
       // sort waiting callers
       queueData.waitingCallersList = Object.values(queueData.waitingCallers)
       queueData.waitingCallersList.sort(sortByProperty('position'))
@@ -164,6 +159,16 @@ export const queues = createModel<RootModel>()({
     },
     setConnectedCalls: (state, queueId, connectedCalls) => {
       state.queues[queueId].connectedCalls = connectedCalls
+      return state
+    },
+    setQueueMember: (state, memberData: any) => {
+      const queueId = memberData.queue
+      const opMainExtension = memberData.member
+      let queue = state.queues[queueId]
+
+      if (queue) {
+        queue.members[opMainExtension] = memberData
+      }
       return state
     },
   },

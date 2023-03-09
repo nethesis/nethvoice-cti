@@ -188,8 +188,6 @@ export const Layout: FC<LayoutProps> = ({ children }) => {
   })
 
   useEventListener('phone-island-conversations', (data) => {
-    console.log('event phone-island-conversations', data) ////
-
     const opName = Object.keys(data)[0]
     const conversations = data[opName].conversations
     store.dispatch.operators.updateConversations(opName, conversations)
@@ -203,8 +201,6 @@ export const Layout: FC<LayoutProps> = ({ children }) => {
         const queueFound = queuesStore.queues[conversation.queueId]
 
         if (queueFound) {
-          console.log('queueFound, opName', queueFound.queue, opName) ////
-
           let calls = queueConnectedCalls[queueFound.queue] || []
           calls.push({ conversation, operatorUsername: opName })
           queueConnectedCalls[queueFound.queue] = calls
@@ -214,26 +210,13 @@ export const Layout: FC<LayoutProps> = ({ children }) => {
 
     Object.keys(queueConnectedCalls).forEach((queueId: string) => {
       const connectedCalls = queueConnectedCalls[queueId]
-
-      console.log('setConnectedCalls', queueId, connectedCalls) ////
-
       store.dispatch.queues.setConnectedCalls(queueId, connectedCalls)
     })
-
-    //// process al queues data
-    // const queues = cloneDeep(queuesStore.queues) ////
-    // processQueues(queues, authStore.username, mainextension, operatorsStore.operators) ////
   })
 
   useEventListener('phone-island-queue-update', (data: any) => {
-    console.log('event phone-island-queue-update', data) ////
-
     const queueId = Object.keys(data)[0]
     const queueData = data[queueId]
-
-    if (Object.values(queueData.waitingCallers).length) {
-      console.log('! waitingCallers', Object.values(queueData.waitingCallers)) ////
-    }
 
     // skip events related to unknown queues
     const knownQueues = Object.keys(queuesStore.queues)
@@ -251,8 +234,9 @@ export const Layout: FC<LayoutProps> = ({ children }) => {
   })
 
   useEventListener('phone-island-queue-member-update', (data: any) => {
-    console.log('event phone-island-queue-member-update', data) ////
-    ////
+    const opMainExtension = Object.keys(data)[0]
+    const queueMemberData = data[opMainExtension]
+    store.dispatch.queues.setQueueMember(queueMemberData)
   })
 
   return (
