@@ -282,7 +282,7 @@ export const QueuesManagementView: FC<QueuesManagementViewProps> = ({ className 
     return (
       <div
         key={index}
-        className='flex items-center justify-between px-4 py-2 gap-2 hover:bg-gray-100'
+        className='flex items-center justify-between px-4 py-2 gap-2 hover:bg-gray-100 dark:hover:bg-gray-900'
       >
         <div className='flex items-center gap-3 overflow-hidden'>
           <Avatar
@@ -301,7 +301,7 @@ export const QueuesManagementView: FC<QueuesManagementViewProps> = ({ className 
             >
               {operator.name}
             </div>
-            <div className='text-gray-500 dark:text-gray-400'>
+            <div className='text-gray-500 dark:text-gray-500'>
               {operator.endpoints.mainextension[0].id}
             </div>
           </div>
@@ -315,7 +315,7 @@ export const QueuesManagementView: FC<QueuesManagementViewProps> = ({ className 
 
   return (
     <div className={classNames(className)}>
-      <div className='flex justify-between gap-x-4 flex-col-reverse md:flex-row '>
+      <div className='flex justify-between gap-x-4 flex-col-reverse md:flex-row'>
         {/* text filter */}
         <TextInput
           placeholder={t('Queues.Filter queues') || ''}
@@ -401,7 +401,7 @@ export const QueuesManagementView: FC<QueuesManagementViewProps> = ({ className 
             icon={
               <FontAwesomeIcon icon={faUsers} className='mx-auto h-12 w-12' aria-hidden='true' />
             }
-            className='md:rounded-lg bg-white'
+            className='md:rounded-md bg-white dark:bg-gray-900'
           ></EmptyState>
         )}
         {/* no search results */}
@@ -420,14 +420,14 @@ export const QueuesManagementView: FC<QueuesManagementViewProps> = ({ className 
             Array.from(Array(3)).map((e, i) => (
               <li
                 key={i}
-                className='col-span-1 rounded-lg divide-y divide-gray-200 bg-white shadow'
+                className='col-span-1 rounded-md divide-y shadow divide-gray-200 bg-white dark:divide-gray-700 dark:bg-gray-900'
               >
-                <div className='p-5 space-y-4'>
-                  {Array.from(Array(5)).map((e, j) => (
-                    <div
-                      key={j}
-                      className='animate-pulse h-5 rounded bg-gray-300 dark:bg-gray-600'
-                    ></div>
+                <div className='px-5 py-4'>
+                  {Array.from(Array(3)).map((e, j) => (
+                    <div key={j} className='space-y-4 mb-4'>
+                      <div className='animate-pulse h-5 rounded bg-gray-300 dark:bg-gray-600'></div>
+                      <div className='animate-pulse h-5 rounded max-w-[75%] bg-gray-300 dark:bg-gray-600'></div>
+                    </div>
                   ))}
                 </div>
               </li>
@@ -439,12 +439,12 @@ export const QueuesManagementView: FC<QueuesManagementViewProps> = ({ className 
               const queue = filteredQueues[key]
               return (
                 <div key={queue.queue}>
-                  <li className='col-span-1 rounded-lg divide-y divide-gray-200 bg-white shadow'>
+                  <li className='col-span-1 rounded-md divide-y shadow divide-gray-200 bg-white dark:divide-gray-700 dark:bg-gray-900'>
                     {/* card header */}
                     <div className='flex flex-col pt-3 pb-5 px-5'>
                       <div className='flex w-full items-center justify-between space-x-6'>
                         <div className='flex-1 truncate'>
-                          <div className='flex items-center space-x-2 py-1 text-gray-700'>
+                          <div className='flex items-center space-x-2 py-1 text-gray-700 dark:text-gray-200'>
                             <h3 className='truncate text-lg leading-6 font-medium'>{queue.name}</h3>
                             <span>{queue.queue}</span>
                             <IconSwitch
@@ -608,11 +608,11 @@ export const QueuesManagementView: FC<QueuesManagementViewProps> = ({ className 
                       <div className='flex justify-evenly text-sm gap-2 text-gray-500 dark:text-gray-400'>
                         <div className='flex gap-2 items-center'>
                           {t('Queues.Min wait')}
-                          <CallDuration startTime={getMinWait(queue)} className='font-mono' />
+                          <CallDuration startTime={getMinWait(queue)} />
                         </div>
                         <div className='flex gap-2 items-center'>
                           {t('Queues.Max wait')}
-                          <CallDuration startTime={getMaxWait(queue)} className='font-mono' />
+                          <CallDuration startTime={getMaxWait(queue)} />
                         </div>
                       </div>
                       {/* expand sections */}
@@ -647,9 +647,9 @@ export const QueuesManagementView: FC<QueuesManagementViewProps> = ({ className 
                                   ) : (
                                     <div className='-my-2 -mx-4 overflow-x-auto sm:-mx-6 lg:-mx-8'>
                                       <div className='inline-block min-w-full py-2 align-middle sm:px-6 lg:px-8'>
-                                        <div className='sm:rounded-lg max-h-[12.7rem] overflow-auto'>
-                                          <table className='min-w-full divide-y divide-gray-300'>
-                                            <thead className='bg-gray-100 dark:bg-gray-700'>
+                                        <div className='sm:rounded-md max-h-[12.7rem] overflow-auto'>
+                                          <table className='min-w-full divide-y divide-gray-300 dark:divide-gray-600'>
+                                            <thead className='bg-gray-100 dark:bg-gray-800'>
                                               <tr>
                                                 <th
                                                   scope='col'
@@ -671,7 +671,7 @@ export const QueuesManagementView: FC<QueuesManagementViewProps> = ({ className 
                                                 </th>
                                               </tr>
                                             </thead>
-                                            <tbody className='divide-y divide-gray-200 bg-white'>
+                                            <tbody className='divide-y divide-gray-200 bg-white dark:divide-gray-700 dark:bg-gray-900'>
                                               {queue.waitingCallersList.map(
                                                 (call: any, index: number) => (
                                                   <tr key={index}>
@@ -689,10 +689,7 @@ export const QueuesManagementView: FC<QueuesManagementViewProps> = ({ className 
                                                       {call.position}
                                                     </td>
                                                     <td className='whitespace-nowrap pl-2 pr-4 py-3'>
-                                                      <CallDuration
-                                                        startTime={call.waitingTime}
-                                                        className='font-mono'
-                                                      />
+                                                      <CallDuration startTime={call.waitingTime} />
                                                     </td>
                                                   </tr>
                                                 ),
@@ -736,9 +733,9 @@ export const QueuesManagementView: FC<QueuesManagementViewProps> = ({ className 
                                   ) : (
                                     <div className='-my-2 -mx-4 overflow-x-auto sm:-mx-6 lg:-mx-8'>
                                       <div className='inline-block min-w-full py-2 align-middle sm:px-6 lg:px-8'>
-                                        <div className='sm:rounded-lg max-h-[17rem] overflow-auto'>
-                                          <table className='min-w-full divide-y divide-gray-300'>
-                                            <thead className='bg-gray-100 dark:bg-gray-700'>
+                                        <div className='sm:rounded-md max-h-[17rem] overflow-auto'>
+                                          <table className='min-w-full divide-y divide-gray-300 dark:divide-gray-600'>
+                                            <thead className='bg-gray-100 dark:bg-gray-800'>
                                               <tr>
                                                 <th
                                                   scope='col'
@@ -760,7 +757,7 @@ export const QueuesManagementView: FC<QueuesManagementViewProps> = ({ className 
                                                 </th>
                                               </tr>
                                             </thead>
-                                            <tbody className='divide-y divide-gray-200 bg-white'>
+                                            <tbody className='divide-y divide-gray-200 bg-white dark:divide-gray-700 dark:bg-gray-900'>
                                               {queue.connectedCalls.map(
                                                 (call: any, index: number) => (
                                                   <tr key={index}>

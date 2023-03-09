@@ -111,7 +111,7 @@ export const CallsView: FC<CallsViewProps> = ({ className }): JSX.Element => {
       return
     }
 
-    let newIntervalId: any = 0 // used
+    let newIntervalId: any = 0
 
     async function fetchCallsInterval() {
       // fetch stats immediately and set interval
@@ -179,7 +179,7 @@ export const CallsView: FC<CallsViewProps> = ({ className }): JSX.Element => {
           updateQueuesFilter={updateQueuesFilter}
         />
         <div className='flex text-sm gap-4 text-right pb-4 xl:pb-7'>
-          <div className='text-gray-500 dark:text-gray-400'>
+          <div className='text-gray-500 dark:text-gray-500'>
             {t('Queues.Last update')}: {lastUpdated ? formatDateLoc(new Date(), 'HH:mm:ss') : '-'} (
             {t('Queues.every_time_interval_seconds', { timeInterval: 20 })})
           </div>
@@ -194,7 +194,7 @@ export const CallsView: FC<CallsViewProps> = ({ className }): JSX.Element => {
           <div className='flex flex-col overflow-hidden'>
             <div className='-my-2 -mx-4 overflow-x-auto sm:-mx-6 lg:-mx-8'>
               <div className='inline-block min-w-full py-2 align-middle px-2 md:px-6 lg:px-8'>
-                <div className='overflow-hidden shadow ring-1 ring-black ring-opacity-5 md:rounded-lg'>
+                <div className='overflow-hidden shadow ring-1 md:rounded-lg ring-opacity-5 dark:ring-opacity-5 ring-gray-900 dark:ring-gray-100'>
                   {/* empty state */}
                   {isCallsLoaded && isEmpty(calls.rows) && (
                     <EmptyState
@@ -207,40 +207,40 @@ export const CallsView: FC<CallsViewProps> = ({ className }): JSX.Element => {
                           aria-hidden='true'
                         />
                       }
-                      className='bg-white'
+                      className='bg-white dark:bg-gray-900'
                     ></EmptyState>
                   )}
                   {(!isCallsLoaded || !isEmpty(calls.rows)) && (
-                    <table className='min-w-full divide-y divide-gray-300'>
-                      <thead className='bg-white'>
+                    <table className='min-w-full divide-y divide-gray-300 dark:divide-gray-600'>
+                      <thead className='bg-white dark:bg-gray-900'>
                         <tr>
                           <th
                             scope='col'
-                            className='py-3.5 pl-4 pr-3 text-left text-sm font-semibold text-gray-700 sm:pl-6'
+                            className='py-3.5 pl-4 pr-3 text-left text-sm font-semibold sm:pl-6 text-gray-700 dark:text-gray-200'
                           >
                             {t('Queues.Time')}
                           </th>
                           <th
                             scope='col'
-                            className='px-3 py-3.5 text-left text-sm font-semibold text-gray-700'
+                            className='px-3 py-3.5 text-left text-sm font-semibold text-gray-700 dark:text-gray-200'
                           >
                             {t('Queues.Queue')}
                           </th>
                           <th
                             scope='col'
-                            className='px-3 py-3.5 text-left text-sm font-semibold text-gray-700'
+                            className='px-3 py-3.5 text-left text-sm font-semibold text-gray-700 dark:text-gray-200'
                           >
                             {t('Queues.Name')}
                           </th>
                           <th
                             scope='col'
-                            className='px-3 py-3.5 text-left text-sm font-semibold text-gray-700'
+                            className='px-3 py-3.5 text-left text-sm font-semibold text-gray-700 dark:text-gray-200'
                           >
                             {t('Queues.Company')}
                           </th>
                           <th
                             scope='col'
-                            className='px-3 py-3.5 text-left text-sm font-semibold text-gray-700'
+                            className='px-3 py-3.5 text-left text-sm font-semibold text-gray-700 dark:text-gray-200'
                           >
                             {t('Queues.Outcome')}
                           </th>
@@ -249,7 +249,7 @@ export const CallsView: FC<CallsViewProps> = ({ className }): JSX.Element => {
                           </th>
                         </tr>
                       </thead>
-                      <tbody className='divide-y divide-gray-200 bg-white text-gray-700 text-sm'>
+                      <tbody className=' text-sm divide-y divide-gray-200 bg-white text-gray-700 dark:divide-gray-700 dark:bg-gray-900 dark:text-gray-200'>
                         {/* skeleton */}
                         {!isCallsLoaded &&
                           Array.from(Array(5)).map((e, i) => (

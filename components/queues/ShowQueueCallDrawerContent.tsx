@@ -124,7 +124,7 @@ export const ShowQueueCallDrawerContent = forwardRef<
     <>
       <div className='bg-gray-100 dark:bg-gray-800 py-6 px-6'>
         <div className='flex items-center justify-between'>
-          <div className='text-lg font-medium dark:text-gray-200 text-gray-700'>
+          <div className='text-lg font-medium text-gray-700 dark:text-gray-200'>
             {t('Queues.Call details')}
           </div>
           <div className='flex items-center h-7'>
@@ -140,7 +140,7 @@ export const ShowQueueCallDrawerContent = forwardRef<
               <dt className='text-sm font-medium text-gray-500 dark:text-gray-400'>
                 {t('Queues.Name')}
               </dt>
-              <dd className='mt-1 text-sm text-gray-900 dark:text-gray-100 sm:col-span-2 sm:mt-0'>
+              <dd className='mt-1 text-sm sm:col-span-2 sm:mt-0 text-gray-900 dark:text-gray-100'>
                 <div className='flex items-center text-sm'>
                   <FontAwesomeIcon
                     icon={faUser}
@@ -158,7 +158,7 @@ export const ShowQueueCallDrawerContent = forwardRef<
               <dt className='text-sm font-medium text-gray-500 dark:text-gray-400'>
                 {t('Queues.Company')}
               </dt>
-              <dd className='mt-1 text-sm text-gray-900 dark:text-gray-100 sm:col-span-2 sm:mt-0'>
+              <dd className='mt-1 text-sm sm:col-span-2 sm:mt-0 text-gray-900 dark:text-gray-100'>
                 <div className='flex items-center text-sm'>
                   <FontAwesomeIcon
                     icon={faSuitcase}
@@ -263,7 +263,7 @@ export const ShowQueueCallDrawerContent = forwardRef<
                             <dt className='font-medium text-gray-500 dark:text-gray-400'>
                               {t('Queues.Queue')}
                             </dt>
-                            <dd className='mt-1 text-gray-900 dark:text-gray-100 sm:col-span-2 sm:mt-0'>
+                            <dd className='mt-1 sm:col-span-2 sm:mt-0 text-gray-900 dark:text-gray-100'>
                               <div className='flex items-center'>
                                 <span>{`${call.queueName} (${call.queueId})`}</span>
                               </div>
@@ -274,7 +274,7 @@ export const ShowQueueCallDrawerContent = forwardRef<
                             <dt className='font-medium text-gray-500 dark:text-gray-400'>
                               {t('Queues.Duration')}
                             </dt>
-                            <dd className='mt-1 text-gray-900 dark:text-gray-100 sm:col-span-2 sm:mt-0'>
+                            <dd className='mt-1 sm:col-span-2 sm:mt-0 text-gray-900 dark:text-gray-100'>
                               <div className='flex items-center'>
                                 <span>{formatCallDuration(call.duration)}</span>
                               </div>
@@ -285,7 +285,7 @@ export const ShowQueueCallDrawerContent = forwardRef<
                             <dt className='font-medium text-gray-500 dark:text-gray-400'>
                               {t('Queues.Hold')}
                             </dt>
-                            <dd className='mt-1 text-gray-900 dark:text-gray-100 sm:col-span-2 sm:mt-0'>
+                            <dd className='mt-1 sm:col-span-2 sm:mt-0 text-gray-900 dark:text-gray-100'>
                               <div className='flex items-center'>
                                 <span>{formatCallDuration(call.hold)}</span>
                               </div>
@@ -297,7 +297,7 @@ export const ShowQueueCallDrawerContent = forwardRef<
                               <dt className='font-medium text-gray-500 dark:text-gray-400'>
                                 {t('Queues.Operator')}
                               </dt>
-                              <dd className='mt-1 text-gray-900 dark:text-gray-100 sm:col-span-2 sm:mt-0'>
+                              <dd className='mt-1 sm:col-span-2 sm:mt-0 text-gray-900 dark:text-gray-100'>
                                 <div>{getOperatorTemplate(call.agent)}</div>
                               </dd>
                             </div>

@@ -85,7 +85,7 @@ export const StatisticsView: FC<StatisticsViewProps> = ({ className }): JSX.Elem
           <div className='mx-auto'>
             {/* operator stats */}
             <div className='flex flex-col sm:flex-row justify-between items-start sm:items-center'>
-              <h3 className='truncate text-lg leading-6 font-medium mb-4 text-gray-900'>
+              <h3 className='truncate text-lg leading-6 font-medium mb-4 text-gray-900 dark:text-gray-100'>
                 {t('Queues.Operator statistics')}
               </h3>
               {/*  //// use 'disabled={!isStatsLoaded}' when download button will be working */}
@@ -111,14 +111,14 @@ export const StatisticsView: FC<StatisticsViewProps> = ({ className }): JSX.Elem
                 Array.from(Array(3)).map((e, i) => (
                   <li
                     key={i}
-                    className='col-span-1 rounded-lg divide-y divide-gray-200 bg-white shadow'
+                    className='col-span-1 rounded-lg divide-y shadow divide-gray-200 bg-white dark:divide-gray-700 dark:bg-gray-900'
                   >
-                    <div className='px-5 py-4 space-y-4'>
-                      {Array.from(Array(6)).map((e, j) => (
-                        <div
-                          key={j}
-                          className='animate-pulse h-5 rounded bg-gray-300 dark:bg-gray-600'
-                        ></div>
+                    <div className='px-5 py-4'>
+                      {Array.from(Array(3)).map((e, j) => (
+                        <div key={j} className='space-y-4 mb-4'>
+                          <div className='animate-pulse h-5 rounded bg-gray-300 dark:bg-gray-600'></div>
+                          <div className='animate-pulse h-5 rounded max-w-[75%] bg-gray-300 dark:bg-gray-600'></div>
+                        </div>
                       ))}
                     </div>
                   </li>
@@ -127,7 +127,7 @@ export const StatisticsView: FC<StatisticsViewProps> = ({ className }): JSX.Elem
                 <>
                   {/* login stats */}
                   <div>
-                    <li className='col-span-1 rounded-lg divide-y shadow divide-gray-200 bg-white text-gray-700'>
+                    <li className='col-span-1 rounded-lg divide-y shadow divide-gray-200 bg-white text-gray-700 dark:divide-gray-700 dark:bg-gray-900 dark:text-gray-200'>
                       {/* card header */}
                       <div className='px-5 py-4'>
                         <h3 className='truncate text-base leading-6 font-medium'>
@@ -140,7 +140,7 @@ export const StatisticsView: FC<StatisticsViewProps> = ({ className }): JSX.Elem
                         </h3>
                       </div>
                       {/* card body */}
-                      <div className='flex flex-col divide-y'>
+                      <div className='flex flex-col divide-y divide-gray-200 dark:divide-gray-700'>
                         {/* last login */}
                         <div className='flex py-2 px-5'>
                           <div className='w-1/2 text-gray-500 dark:text-gray-400'>
@@ -159,7 +159,7 @@ export const StatisticsView: FC<StatisticsViewProps> = ({ className }): JSX.Elem
                     </li>
                   </div>
                   {/* call stats */}
-                  <li className='col-span-1 rounded-lg divide-y shadow divide-gray-200 bg-white text-gray-700'>
+                  <li className='col-span-1 rounded-lg divide-y shadow divide-gray-200 bg-white text-gray-700 dark:divide-gray-700 dark:bg-gray-900 dark:text-gray-200'>
                     {/* card header */}
                     <div className='px-5 py-4'>
                       <h3 className='truncate text-base leading-6 font-medium'>
@@ -172,7 +172,7 @@ export const StatisticsView: FC<StatisticsViewProps> = ({ className }): JSX.Elem
                       </h3>
                     </div>
                     {/* card body */}
-                    <div className='flex flex-col divide-y'>
+                    <div className='flex flex-col divide-y divide-gray-200 dark:divide-gray-700'>
                       {/* answered calls */}
                       <div className='flex py-2 px-5'>
                         <div className='w-1/2 text-gray-500 dark:text-gray-400'>
@@ -211,7 +211,7 @@ export const StatisticsView: FC<StatisticsViewProps> = ({ className }): JSX.Elem
                     </div>
                   </li>
                   {/* calls duration */}
-                  <li className='col-span-1 rounded-lg divide-y shadow divide-gray-200 bg-white text-gray-700'>
+                  <li className='col-span-1 rounded-lg divide-y shadow divide-gray-200 bg-white text-gray-700 dark:divide-gray-700 dark:bg-gray-900 dark:text-gray-200'>
                     {/* card header */}
                     <div className='px-5 py-4'>
                       <h3 className='truncate text-base leading-6 font-medium'>
@@ -224,7 +224,7 @@ export const StatisticsView: FC<StatisticsViewProps> = ({ className }): JSX.Elem
                       </h3>
                     </div>
                     {/* card body */}
-                    <div className='flex flex-col divide-y'>
+                    <div className='flex flex-col divide-y divide-gray-200 dark:divide-gray-700'>
                       {/* minimum */}
                       <div className='flex py-2 px-5'>
                         <div className='w-1/2 text-gray-500 dark:text-gray-400'>
@@ -277,7 +277,7 @@ export const StatisticsView: FC<StatisticsViewProps> = ({ className }): JSX.Elem
             </ul>
             {/* queues statistics */}
             <div className='flex flex-col sm:flex-row justify-between items-start sm:items-center mt-8'>
-              <h3 className='truncate text-lg leading-6 font-medium mb-4 text-gray-900'>
+              <h3 className='truncate text-lg leading-6 font-medium mb-4 text-gray-900 dark:text-gray-100'>
                 {t('Queues.Queue statistics')}
               </h3>
               {/*  //// use 'disabled={!isStatsLoaded}' when download button will be working */}
@@ -303,7 +303,7 @@ export const StatisticsView: FC<StatisticsViewProps> = ({ className }): JSX.Elem
                 Array.from(Array(3)).map((e, i) => (
                   <li
                     key={i}
-                    className='col-span-1 rounded-lg divide-y divide-gray-200 bg-white shadow'
+                    className='col-span-1 rounded-lg divide-y shadow divide-gray-200 bg-white dark:divide-gray-700 dark:bg-gray-900'
                   >
                     <div className='px-5 py-4 space-y-4'>
                       {Array.from(Array(6)).map((e, j) => (
@@ -321,7 +321,7 @@ export const StatisticsView: FC<StatisticsViewProps> = ({ className }): JSX.Elem
                   const queue = queuesStore.queues[key]
                   return (
                     <div key={index}>
-                      <li className='col-span-1 rounded-lg divide-y shadow divide-gray-200 bg-white text-gray-700'>
+                      <li className='col-span-1 rounded-lg divide-y shadow divide-gray-200 bg-white text-gray-700 dark:divide-gray-700 dark:bg-gray-900 dark:text-gray-200'>
                         {/* card header */}
                         <div className='flex justify-between items-center px-5 py-4 space-x-4'>
                           <div className='flex overflow-hidden items-center space-x-2'>
@@ -336,7 +336,7 @@ export const StatisticsView: FC<StatisticsViewProps> = ({ className }): JSX.Elem
                           />
                         </div>
                         {/* card body */}
-                        <div className='flex flex-col divide-y'>
+                        <div className='flex flex-col divide-y divide-gray-200 dark:divide-gray-700'>
                           {/* logon time */}
                           <div className='flex py-2 px-5'>
                             <div className='w-1/2 text-gray-500 dark:text-gray-400'>

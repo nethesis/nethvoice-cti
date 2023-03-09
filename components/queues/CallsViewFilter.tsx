@@ -184,14 +184,14 @@ export const CallsViewFilter = forwardRef<HTMLButtonElement, CallsViewFilterProp
                   <Dialog.Panel className='relative ml-auto flex h-full w-full max-w-xs flex-col overflow-y-auto py-4 pb-6 shadow-xl bg-white dark:bg-gray-900'>
                     <div className='flex items-center justify-between px-4'>
                       <h2 className='text-lg font-medium text-gray-900 dark:text-gray-100'>
-                        Filters
+                        {t('Common.Filters')}
                       </h2>
                       <button
                         type='button'
                         className='-mr-2 flex h-10 w-10 items-center justify-center rounded-md focus:outline-none focus:ring-2 p-2 bg-white text-gray-400 hover:bg-gray-50 focus:ring-primaryLight dark:bg-gray-900 dark:text-gray-400 dark:hover:bg-gray-800 dark:focus:ring-primaryDark'
                         onClick={() => setOpen(false)}
                       >
-                        <span className='sr-only'>Close menu</span>
+                        <span className='sr-only'>{t('Common.Close menu')}</span>
                         <FontAwesomeIcon icon={faXmark} className='h-5 w-5' aria-hidden='true' />
                       </button>
                     </div>
@@ -375,7 +375,7 @@ export const CallsViewFilter = forwardRef<HTMLButtonElement, CallsViewFilterProp
                         leaveFrom='transform opacity-100 scale-100'
                         leaveTo='transform opacity-0 scale-95'
                       >
-                        <Popover.Panel className='absolute right-0 z-10 mt-2 origin-top-right rounded-md min-w-max p-4 shadow-2xl ring-1 ring-opacity-5 focus:outline-none bg-white ring-black dark:bg-gray-900 dark:ring-gray-700'>
+                        <Popover.Panel className='absolute right-0 z-10 mt-2 origin-top-right rounded-md min-w-max p-4 shadow-2xl ring-1 focus:outline-none ring-opacity-5 bg-white ring-black dark:ring-opacity-5 dark:bg-gray-900 dark:ring-gray-700'>
                           <form className='space-y-4'>
                             {outcomeFilter.options.map((option) => (
                               <div key={option.value}>
@@ -442,7 +442,7 @@ export const CallsViewFilter = forwardRef<HTMLButtonElement, CallsViewFilterProp
                         leaveFrom='transform opacity-100 scale-100'
                         leaveTo='transform opacity-0 scale-95'
                       >
-                        <Popover.Panel className='absolute right-0 z-10 mt-2 origin-top-right rounded-md min-w-max p-4 shadow-2xl ring-1 ring-opacity-5 focus:outline-none bg-white ring-black dark:bg-gray-900 dark:ring-gray-700'>
+                        <Popover.Panel className='absolute right-0 z-10 mt-2 origin-top-right rounded-md min-w-max p-4 shadow-2xl ring-1 focus:outline-none ring-opacity-5 bg-white ring-black dark:ring-opacity-5 dark:bg-gray-900 dark:ring-gray-700'>
                           <form className='space-y-4'>
                             {queuesFilter.options.map((option) => (
                               <div key={option.value} className='flex items-center'>

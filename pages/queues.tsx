@@ -56,7 +56,7 @@ const Queues: NextPage = () => {
                 <select
                   id='tabs'
                   name='tabs'
-                  className='block w-full rounded-md border-gray-300 py-2 pl-3 pr-10 text-base focus:border-primary-500 focus:outline-none focus:ring-primary-500 sm:text-sm'
+                  className='block w-full rounded-md py-2 pl-3 pr-10 text-base focus:outline-none sm:text-sm border-gray-300 focus:border-primary focus:ring-primary dark:border-gray-600 dark:focus:border-primary dark:focus:ring-primary'
                   defaultValue={currentTab}
                   onChange={(event) => changeTab(event.target.value)}
                 >
@@ -67,7 +67,7 @@ const Queues: NextPage = () => {
               </div>
               {/* desktop tabs */}
               <div className='hidden sm:block'>
-                <div className='border-b border-gray-300'>
+                <div className='border-b border-gray-300 dark:border-gray-600'>
                   <nav className='-mb-px flex space-x-8' aria-label='Tabs'>
                     {tabs.map((tab) => (
                       <a
@@ -76,7 +76,7 @@ const Queues: NextPage = () => {
                         className={classNames(
                           tab.value === currentTab
                             ? 'border-primary text-primary'
-                            : 'border-transparent text-gray-500 hover:text-gray-700 hover:border-gray-300',
+                            : 'border-transparent text-gray-500 hover:text-gray-700 hover:border-gray-300 dark:text-gray-400 dark:hover:text-gray-200 dark:hover:border-gray-600',
                           'cursor-pointer whitespace-nowrap py-4 px-1 border-b-2 font-medium text-sm',
                         )}
                         aria-current={tab.value === currentTab ? 'page' : undefined}
