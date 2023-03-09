@@ -17,7 +17,6 @@ import {
   pauseQueue,
   removeQueueFromExpanded,
   removeQueueFromFavorites,
-  retrieveQueues,
   searchStringInQueue,
   unpauseQueue,
 } from '../../lib/queuesLib'
@@ -208,11 +207,6 @@ export const QueuesManagementView: FC<QueuesManagementViewProps> = ({ className 
     queuesToLogin.forEach((queue: any) => {
       loginToQueue(mainextension, queue.queue)
     })
-
-    //// queues should be updated by websocket
-    setTimeout(() => {
-      retrieveQueues(authStore.username, mainextension, operatorsStore.operators)
-    }, 100)
   }
 
   const logoutAllQueues = () => {
@@ -223,29 +217,14 @@ export const QueuesManagementView: FC<QueuesManagementViewProps> = ({ className 
     queuesToLogout.forEach((queue: any) => {
       logoutFromQueue(mainextension, queue.queue)
     })
-
-    //// queues should be updated by websocket
-    setTimeout(() => {
-      retrieveQueues(authStore.username, mainextension, operatorsStore.operators)
-    }, 100)
   }
 
   const loginSingleQueue = (queue: any) => {
     loginToQueue(mainextension, queue.queue)
-
-    //// queues should be updated by websocket
-    setTimeout(() => {
-      retrieveQueues(authStore.username, mainextension, operatorsStore.operators)
-    }, 100)
   }
 
   const logoutSingleQueue = (queue: any) => {
     logoutFromQueue(mainextension, queue.queue)
-
-    //// queues should be updated by websocket
-    setTimeout(() => {
-      retrieveQueues(authStore.username, mainextension, operatorsStore.operators)
-    }, 100)
   }
 
   const pauseAllQueues = () => {
@@ -256,11 +235,6 @@ export const QueuesManagementView: FC<QueuesManagementViewProps> = ({ className 
     queuesToPause.forEach((queue: any) => {
       pauseQueue(mainextension, queue.queue)
     })
-
-    //// queues should be updated by websocket
-    setTimeout(() => {
-      retrieveQueues(authStore.username, mainextension, operatorsStore.operators)
-    }, 100)
   }
 
   const unpauseAllQueues = () => {
@@ -271,29 +245,14 @@ export const QueuesManagementView: FC<QueuesManagementViewProps> = ({ className 
     queuesToUnpause.forEach((queue: any) => {
       unpauseQueue(mainextension, queue.queue)
     })
-
-    //// queues should be updated by websocket
-    setTimeout(() => {
-      retrieveQueues(authStore.username, mainextension, operatorsStore.operators)
-    }, 100)
   }
 
   const pauseSingleQueue = (queue: any) => {
     pauseQueue(mainextension, queue.queue)
-
-    //// queues should be updated by websocket
-    setTimeout(() => {
-      retrieveQueues(authStore.username, mainextension, operatorsStore.operators)
-    }, 100)
   }
 
   const unpauseSingleQueue = (queue: any) => {
     unpauseQueue(mainextension, queue.queue)
-
-    //// queues should be updated by websocket
-    setTimeout(() => {
-      retrieveQueues(authStore.username, mainextension, operatorsStore.operators)
-    }, 100)
   }
 
   const getMinWait = (queue: any) => {

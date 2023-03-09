@@ -13,7 +13,7 @@ import { cloneDeep } from 'lodash'
 import { store } from '../store'
 import { exactDistanceToNowLoc, formatDurationLoc } from './dateTime'
 import { loadPreference, savePreference } from './storage'
-import { handleNetworkError, sortByProperty } from './utils'
+import { handleNetworkError } from './utils'
 
 export const PAGE_SIZE = 10
 export const DEFAULT_OUTCOME_FILTER = 'lost'
@@ -54,62 +54,10 @@ export const processQueues = (
     store.dispatch.queues.processQueue({ queueData, username, mainextension, operators })
   })
 
-  ////
-  // Object.values(queues).forEach((queue: any) => {
-  //   // convert caller position to number ////
-  //   Object.values(queue.waitingCallers).forEach((caller: any) => {
-  //     caller.position = parseInt(caller.position)
-  //   })
-
-  //   ////
-  //   if (Object.values(queue.waitingCallers).length) {
-  //     console.log('!! waitingCallers', Object.values(queue.waitingCallers)) ////
-  //   }
-
-  //   // sort waiting callers
-  //   queue.waitingCallersList = Object.values(queue.waitingCallers)
-  //   queue.waitingCallersList.sort(sortByProperty('position'))
-
-  //   // compute active operators
-  //   let numActiveOperators = 0
-
-  //   Object.values(queue.members).forEach((operator: any) => {
-  //     if (operator.loggedIn && !operator.paused) {
-  //       numActiveOperators++
-  //     }
-  //   })
-  //   queue.numActiveOperators = numActiveOperators
-
-  //   // compute connected calls
-  //   let connectedCalls: any[] = []
-
-  //   Object.values(operators).forEach((operator: any) => {
-  //     operator.conversations?.forEach((conversation: any) => {
-  //       if (conversation.queueId === queue.queue) {
-  //         connectedCalls.push({ conversation, operatorUsername: operator.username })
-  //       }
-  //     })
-  //   })
-  //   queue.connectedCalls = connectedCalls
-
-  //   // expanded sections
-  //   queue.waitingCallsExpanded = true
-  //   queue.connectedCallsExpanded = true
-  //   queue.operatorsExpanded = true
-  // })
-
-  // favorite queues
-  // retrieveAndSetFavoriteQueues(queues, username) ////
-
-  // expanded queues
-  // retrieveAndSetExpandedQueues(queues, username) ////
-
-  // store.dispatch.queues.setQueues(queues) ////
-
   store.dispatch.queues.setLoaded(true)
   store.dispatch.queues.setLoading(false)
 
-  // console.log('queues', queues) ////
+  console.log('queues', queues) ////
 }
 
 export const retrieveQueues = async (username: string, mainextension: string, operators: any) => {
@@ -417,28 +365,6 @@ export const removeQueueFromFavorites = (queueId: string, currentUsername: strin
   favoriteQueues = favoriteQueues.filter((q: string) => q !== queueId)
   savePreference('favoriteQueues', favoriteQueues, currentUsername)
 }
-
-////
-// export const retrieveAndSetFavoriteQueues = (queues: any, username: any) => {
-//   const favoriteQueues = loadPreference('favoriteQueues', username) || []
-
-//   favoriteQueues.forEach((queueId: string) => {
-//     if (queues[queueId]) {
-//       queues[queueId].favorite = true
-//     }
-//   })
-// }
-
-////
-// export const retrieveAndSetExpandedQueues = (queues: any, username: any) => {
-//   const expandedQueues = loadPreference('expandedQueues', username) || []
-
-//   expandedQueues.forEach((queueId: string) => {
-//     if (queues[queueId]) {
-//       queues[queueId].expanded = true
-//     }
-//   })
-// }
 
 export const addQueueToExpanded = (queueId: string, currentUsername: string) => {
   const expandedQueues = loadPreference('expandedQueues', currentUsername) || []
