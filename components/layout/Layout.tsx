@@ -55,13 +55,11 @@ export const Layout: FC<LayoutProps> = ({ children }) => {
       // Delete slash at the beginning of the path
       const cleanRouterPath: string = router.pathname.replace(/^\/|\/$/g, '')
       // Return path with the uppercase first character
-      if (cleanRouterPath) {
-        return t(`Common.${capitalize(cleanRouterPath)}`) + ' - ' + productName
-      }
+      return t(`Common.${capitalize(cleanRouterPath)}`) + ' - ' + productName
     }
   }
 
-  // Get icon html icon path
+  // Get favicon element
   function getHtmlFaviconElement() {
     if (typeof window === 'undefined') {
       return ''
@@ -78,6 +76,7 @@ export const Layout: FC<LayoutProps> = ({ children }) => {
     const warningMessageFavicon = t('Common.Warning')
     const callingMessageFavicon = t('Common.Calling')
     setLinkHtmlFaviconElement(getHtmlFaviconElement())
+    // boolean flag to handle favicon flashing
     let flashFavicon = true
     if (ctiStatus.webRtcError || ctiStatus.isPhoneRinging) {
       setIdInterval(
@@ -88,7 +87,7 @@ export const Layout: FC<LayoutProps> = ({ children }) => {
                 linkHtmlFaviconElement.href = 'favicon-warn.ico'
               }
               window.document.title = warningMessageFavicon
-            } else if (ctiStatus.isPhoneRinging) {
+            } else {
               if (linkHtmlFaviconElement) {
                 linkHtmlFaviconElement.href = 'favicon-call.ico'
               }
@@ -104,16 +103,18 @@ export const Layout: FC<LayoutProps> = ({ children }) => {
         }, 800),
       )
     } else {
-      clearInterval(idInterval)
+      clearFaviconInterval()
     }
   }
 
   // Call the function to interrupt the dynamic icon interval
   function clearFaviconInterval() {
+    let cleanTitlePageName: any = cleanProductNamePageTitle()
     clearInterval(idInterval)
     if (linkHtmlFaviconElement) {
       linkHtmlFaviconElement.href = 'favicon.ico'
     }
+    window.document.title = cleanTitlePageName
   }
 
   useEffect(() => {
