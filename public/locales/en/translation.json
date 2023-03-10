@@ -22,7 +22,8 @@
     "Phonebook": "Phonebook",
     "History": "History",
     "Applications": "Applications",
-    "Settings": "Settings"
+    "Settings": "Settings",
+    "Queues":"Code"
   },
   "Login": {
     "User": "User",
