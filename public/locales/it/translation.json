@@ -10,7 +10,14 @@
     "Previous page": "Pagina precedente",
     "Coming soon": "Prossimamente",
     "Cancel": "Annulla",
-    "Save": "Salva"
+    "Save": "Salva",
+    "Warning":"Attenzione",
+    "Calling":"In chiamata",
+    "Operators":"Operatori",
+    "Phonebook":"Rubrica",
+    "History":"Storico",
+    "Applications":"Applicazioni",
+    "Settings":"Impostazioni"
   },
   "Login": {
     "User": "Utente",

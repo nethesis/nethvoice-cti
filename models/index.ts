@@ -12,6 +12,7 @@ import { operators } from './operators'
 import { notifications } from './notifications'
 import { globalSearch } from './globalSearch'
 import { queues } from './queues'
+import { ctiStatus } from './ctiStatus'
 
 export interface RootModel extends Models<RootModel> {
   authentication: typeof authentication
@@ -24,6 +25,7 @@ export interface RootModel extends Models<RootModel> {
   notifications: typeof notifications
   globalSearch: typeof globalSearch
   queues: typeof queues
+  ctiStatus: typeof ctiStatus
 }
 
 export const models: RootModel = {
@@ -37,4 +39,5 @@ export const models: RootModel = {
   notifications,
   globalSearch,
   queues,
+  ctiStatus,
 }

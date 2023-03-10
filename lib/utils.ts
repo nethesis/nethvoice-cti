@@ -1,7 +1,7 @@
 // Copyright (C) 2023 Nethesis S.r.l.
 // SPDX-License-Identifier: AGPL-3.0-or-later
 
-import type { PropsWithChildren } from 'react'
+import { PropsWithChildren, useState } from 'react'
 import axios from 'axios'
 import { store } from '../store'
 import { eventDispatch } from './hooks/eventDispatch'

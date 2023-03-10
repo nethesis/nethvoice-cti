@@ -58,22 +58,11 @@ function MyApp({ Component, pageProps }: AppProps) {
 
   const productName = getProductName()
 
-  function getPageTitle() {
-    if (router.pathname) {
-      // Delete slash at the beginning of the path
-      const cleanRouterPath: string = router.pathname.replace(/^\/|\/$/g, '')
-      // Return path with the uppercase first character
-      if (cleanRouterPath) {
-        return cleanRouterPath[0].toUpperCase() + cleanRouterPath.slice(1) + ' - ' + productName
-      }
-    }
-  }
-
   return (
     <>
       <div>
         <Head>
-          <title>{getPageTitle()}</title>
+          <title>{productName}</title>
         </Head>
       </div>
       {!isLoading && (

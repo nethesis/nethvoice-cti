@@ -10,7 +10,7 @@ import { useDispatch } from 'react-redux'
 import { Dispatch } from '../../store'
 import { RootState } from '../../store'
 import { useSelector } from 'react-redux'
-import { closeSideDrawer } from '../../lib/utils'
+import { closeSideDrawer, getProductName } from '../../lib/utils'
 import { store } from '../../store'
 import {
   buildOperators,
@@ -22,10 +22,13 @@ import {
 } from '../../lib/operators'
 import { useEventListener } from '../../lib/hooks/useEventListener'
 import { retrieveQueues } from '../../lib/queuesLib'
+import Head from 'next/head'
+import { capitalize } from 'lodash'
 
 interface LayoutProps {
   children: ReactNode
 }
+import { useTranslation } from 'react-i18next'
 
 export const Layout: FC<LayoutProps> = ({ children }) => {
   const [openMobileMenu, setOpenMobileMenu] = useState<boolean>(false)
@@ -39,7 +42,88 @@ export const Layout: FC<LayoutProps> = ({ children }) => {
   const [firstRenderGlobalSearchListener, setFirstRenderGlobalSearchListener] = useState(true)
   const [isUserInfoLoaded, setUserInfoLoaded] = useState(false)
   const authStore = useSelector((state: RootState) => state.authentication)
+
   const queuesStore = useSelector((state: RootState) => state.queues)
+
+  const ctiStatus = useSelector((state: RootState) => state.ctiStatus)
+  const [linkHtmlFaviconElement, setLinkHtmlFaviconElement] = useState<any>(null)
+
+  const productName = getProductName()
+  // Get current page name, clean the path from / and capitalize page name
+  function cleanProductNamePageTitle() {
+    if (router.pathname) {
+      // Delete slash at the beginning of the path
+      const cleanRouterPath: string = router.pathname.replace(/^\/|\/$/g, '')
+      // Return path with the uppercase first character
+      return t(`Common.${capitalize(cleanRouterPath)}`) + ' - ' + productName
+    }
+  }
+
+  // Get favicon element
+  function getHtmlFaviconElement() {
+    if (typeof window === 'undefined') {
+      return ''
+    }
+
+    let faviconHtmlElement = document.querySelector("link[rel*='icon']") as HTMLLinkElement
+    return faviconHtmlElement
+  }
+
+  const { t } = useTranslation()
+  const [idInterval, setIdInterval] = useState<any>(0)
+
+  function manageFaviconInterval() {
+    const warningMessageFavicon = t('Common.Warning')
+    const callingMessageFavicon = t('Common.Calling')
+    setLinkHtmlFaviconElement(getHtmlFaviconElement())
+    // boolean flag to handle favicon flashing
+    let flashFavicon = true
+    if (ctiStatus.webRtcError || ctiStatus.isPhoneRinging) {
+      setIdInterval(
+        setInterval(() => {
+          if (flashFavicon) {
+            if (ctiStatus.webRtcError) {
+              if (linkHtmlFaviconElement) {
+                linkHtmlFaviconElement.href = 'favicon-warn.ico'
+              }
+              window.document.title = warningMessageFavicon
+            } else {
+              if (linkHtmlFaviconElement) {
+                linkHtmlFaviconElement.href = 'favicon-call.ico'
+              }
+              window.document.title = callingMessageFavicon
+            }
+          } else {
+            if (linkHtmlFaviconElement) {
+              linkHtmlFaviconElement.href = 'favicon.ico'
+            }
+            window.document.title = productName
+          }
+          flashFavicon = !flashFavicon
+        }, 800),
+      )
+    } else {
+      clearFaviconInterval()
+    }
+  }
+
+  // Call the function to interrupt the dynamic icon interval
+  function clearFaviconInterval() {
+    let cleanTitlePageName: any = cleanProductNamePageTitle()
+    clearInterval(idInterval)
+    if (linkHtmlFaviconElement) {
+      linkHtmlFaviconElement.href = 'favicon.ico'
+    }
+    window.document.title = cleanTitlePageName
+  }
+
+  useEffect(() => {
+    manageFaviconInterval()
+    return () => {
+      clearFaviconInterval()
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [ctiStatus.webRtcError, ctiStatus.isPhoneRinging])
 
   useEffect(() => {
     const currentItems = items.map((route) => {
@@ -82,6 +166,7 @@ export const Layout: FC<LayoutProps> = ({ children }) => {
     if (!isUserInfoLoaded) {
       fetchUserInfo()
     }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [isUserInfoLoaded, firstRenderUserInfo])
 
   // get operators on page load
@@ -111,6 +196,7 @@ export const Layout: FC<LayoutProps> = ({ children }) => {
     } else {
       fetchOperators()
     }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [operatorsStore.isOperatorsLoaded, firstRenderOperators])
 
   // detect when operators data has been loaded
@@ -124,6 +210,7 @@ export const Layout: FC<LayoutProps> = ({ children }) => {
     ) {
       buildOperators(operatorsStore)
     }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [
     operatorsStore.isUserEndpointsLoaded,
     operatorsStore.isGroupsLoaded,
@@ -240,40 +327,47 @@ export const Layout: FC<LayoutProps> = ({ children }) => {
   })
 
   return (
-    <div className='flex h-full'>
-      {/* Navigation bar */}
-      <NavBar items={items} />
-      <div className='flex flex-1 flex-col overflow-hidden'>
-        {/* Top heading bar */}
-        <TopBar openMobileCb={() => setOpenMobileMenu(true)} />
-        {/* Mobile navigation bar */}
-        <MobileNavBar
-          show={openMobileMenu}
-          items={items}
-          closeMobileMenu={() => setOpenMobileMenu(false)}
-        />
-        {/* Main content */}
-        <div className='flex flex-1 items-stretch overflow-hidden'>
-          <main className='flex-1 overflow-y-auto'>
-            {/* Primary column */}
-            <section
-              aria-labelledby='primary-heading'
-              className='flex min-w-0 flex-1 flex-col lg:order-last p-8'
-            >
-              {/* The page content */}
-              {children}
-            </section>
-          </main>
-          {/* Secondary column (hidden on smaller screens) */}
-          <SpeedDial />
-          <SideDrawer
-            isShown={sideDrawer.isShown}
-            contentType={sideDrawer.contentType}
-            config={sideDrawer.config}
-            drawerClosed={() => closeSideDrawer()}
+    <>
+      <div>
+        <Head>
+          <title>{cleanProductNamePageTitle()}</title>
+        </Head>
+      </div>
+      <div className='flex h-full'>
+        {/* Navigation bar */}
+        <NavBar items={items} />
+        <div className='flex flex-1 flex-col overflow-hidden'>
+          {/* Top heading bar */}
+          <TopBar openMobileCb={() => setOpenMobileMenu(true)} />
+          {/* Mobile navigation bar */}
+          <MobileNavBar
+            show={openMobileMenu}
+            items={items}
+            closeMobileMenu={() => setOpenMobileMenu(false)}
           />
+          {/* Main content */}
+          <div className='flex flex-1 items-stretch overflow-hidden'>
+            <main className='flex-1 overflow-y-auto'>
+              {/* Primary column */}
+              <section
+                aria-labelledby='primary-heading'
+                className='flex min-w-0 flex-1 flex-col lg:order-last p-8'
+              >
+                {/* The page content */}
+                {children}
+              </section>
+            </main>
+            {/* Secondary column (hidden on smaller screens) */}
+            <SpeedDial />
+            <SideDrawer
+              isShown={sideDrawer.isShown}
+              contentType={sideDrawer.contentType}
+              config={sideDrawer.config}
+              drawerClosed={() => closeSideDrawer()}
+            />
+          </div>
         </div>
       </div>
-    </div>
+    </>
   )
 }
