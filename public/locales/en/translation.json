@@ -25,7 +25,8 @@
     "Settings": "Settings",
     "Queues": "Queues",
     "Reset to defaults": "Reset to defaults",
-    "Loading": "Loading"
+    "Loading": "Loading",
+    "Lines": "Lines"
   },
   "Login": {
     "User": "User",
@@ -280,6 +281,12 @@
     "Lines management": "Lines management",
     "Ads": "Ads",
     "Rules": "Rules",
-    "Phone lines": "Phone lines"
+    "Phone lines": "Phone lines",
+    "Name": "Name",
+    "Number": "Number",
+    "Custom configuration": "Custom configuration",
+    "Rule": "Rule",
+    "Show more details": "Show more details",
+    "Lines filters": "Lines filters"
   }
 }

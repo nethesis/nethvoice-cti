@@ -6,6 +6,7 @@ import { useEffect, useState } from 'react'
 import { useTranslation } from 'react-i18next'
 import classNames from 'classnames'
 import { RootState, store } from '../store'
+import { LinesView } from '../components/lines'
 
 const Lines: NextPage = () => {
   const { t } = useTranslation()
@@ -78,6 +79,7 @@ const Lines: NextPage = () => {
               </div>
             </div>
           </div>
+          <div>{currentTab === 'lines' ? <LinesView /> : null}</div>
         </>
       </div>
     </>

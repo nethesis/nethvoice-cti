@@ -15,6 +15,7 @@ import {
 import { Button } from '../components/common'
 import { getApiEndpoint } from '../lib/utils'
 import { getApiScheme } from '../lib/utils'
+import Link from 'next/link'
 
 const Applications: NextPage = () => {
   const { t } = useTranslation()
@@ -57,14 +58,17 @@ const Applications: NextPage = () => {
                   </p>
                 </div>
                 <div className='text-gray-900 dark:text-gray-100 text-sm flex items-center justify-center'>
-                  <span className='font-semibold text-gray-900 dark:text-gray-100'>
-                    {t('Applications.Go to manage lines')}
-                  </span>
-                  <FontAwesomeIcon
-                    icon={faArrowRight}
-                    className='h-4 w-4 m-3 rounded-lg text-gray-900 dark:text-gray-100'
-                    aria-hidden='true'
-                  />
+                  <Link href={'/lines'}>
+                    <a className='flex justify-center items-center'>
+                      <span className='font-semibold text-gray-900 dark:text-gray-100'>
+                        {t('Applications.Go to manage lines')}
+                      </span>
+                      <FontAwesomeIcon
+                        icon={faArrowRight}
+                        className='h-4 w-4 m-3 rounded-lg text-gray-900 dark:text-gray-100'
+                      />
+                    </a>
+                  </Link>
                 </div>
               </div>
             </div>

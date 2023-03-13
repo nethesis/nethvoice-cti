@@ -19,7 +19,8 @@
     "Applications": "Applicazioni",
     "Settings": "Impostazioni",
     "Queues": "Code",
-    "Loading": "Loading"
+    "Loading": "Loading",
+    "Lines": "Linee"
   },
   "Login": {
     "User": "Utente",
@@ -171,6 +172,12 @@
     "Lines management": "Gestione linee",
     "Ads": "Annunci",
     "Rules": "Regole",
-    "Phone lines": "Linee telefoniche"
+    "Phone lines": "Linee telefoniche",
+    "Name": "Nome",
+    "Number": "Numero",
+    "Custom configuration": "Configurazione personalizzata",
+    "Rule": "Regola",
+    "Show more details": "Mostra più dettagli",
+    "Lines filters":"Filtri Linee"
   }
 }
