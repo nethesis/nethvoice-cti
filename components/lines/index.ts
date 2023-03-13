@@ -3,3 +3,4 @@
 
 export * from './LinesFilter'
 export * from './LinesView'
+export * from './ShowTelephoneLinesDrawerContent'

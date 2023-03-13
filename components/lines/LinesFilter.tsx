@@ -17,14 +17,7 @@ export interface LinesFilterProps extends ComponentPropsWithRef<'div'> {
 }
 
 export const LinesFilter = forwardRef<HTMLButtonElement, LinesFilterProps>(
-  (
-    {
-      updateTextFilter,
-      className,
-      ...props
-    },
-    ref,
-  ) => {
+  ({ updateTextFilter, className, ...props }, ref) => {
     const { t } = useTranslation()
     const auth = useSelector((state: RootState) => state.authentication)
     const [textFilter, setTextFilter] = useState('')
@@ -107,7 +100,7 @@ export const LinesFilter = forwardRef<HTMLButtonElement, LinesFilterProps>(
               <div className='flex items-center'>
                 <div className='flex items-center'>
                   <TextInput
-                    placeholder='Filter calls'
+                    placeholder={t('Lines.Filter lines') || ''}
                     className='max-w-sm'
                     value={textFilter}
                     onChange={changeTextFilter}

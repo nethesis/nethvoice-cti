@@ -3,14 +3,15 @@
 
 import axios from 'axios'
 import { handleNetworkError, getApiEndpoint, getApiScheme } from './utils'
+import { store } from '../store'
 
 export const PAGE_SIZE = 10
 const apiEnpoint = getApiEndpoint()
 const apiScheme = getApiScheme()
-const apiUrl = apiScheme + apiEnpoint 
+const apiUrl = apiScheme + apiEnpoint
 
 export async function retrieveLines() {
-  let userUrlApi = apiUrl + '/webrest/offhour/list_announcement'
+  let userUrlApi = apiUrl + '/webrest/offhour/list'
 
   try {
     const { data, status } = await axios.get(userUrlApi)
@@ -19,4 +20,14 @@ export async function retrieveLines() {
     handleNetworkError(error)
     throw error
   }
+}
+
+export const openShowTelephoneLinesDrawer = (name: any, number: any) => {
+  const config = { name, number }
+
+  store.dispatch.sideDrawer.update({
+    isShown: true,
+    contentType: 'showTelephoneLines',
+    config: config,
+  })
 }

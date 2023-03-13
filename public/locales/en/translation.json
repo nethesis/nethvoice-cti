@@ -287,6 +287,20 @@
     "Custom configuration": "Custom configuration",
     "Rule": "Rule",
     "Show more details": "Show more details",
-    "Lines filters": "Lines filters"
+    "Lines filters": "Lines filters",
+    "Filter Lines": "Filter Lines",
+    "Line details": "Line details",
+    "Activate configuration": "Activate configuration",
+    "Customize": "Customize",
+    "Choose rule": "Choose rule",
+    "Activate announcement": "Activate announcement",
+    "Select period": "Select period",
+    "Begin": "Begin",
+    "End": "End",
+    "Only for a day": "Only for a day",
+    "Active every day": "Active every day",
+    "Active 24h": "Active 24h",
+    "Activate announcement + voicemail": "Activate announcement + voicemail",
+    "Activate forward": "Activate forward"
   }
 }

@@ -178,6 +178,20 @@
     "Custom configuration": "Configurazione personalizzata",
     "Rule": "Regola",
     "Show more details": "Mostra più dettagli",
-    "Lines filters":"Filtri Linee"
+    "Lines filters": "Filtri Linee",
+    "Filter lines": "Filtra linee",
+    "Line details": "Dettagli linea",
+    "Activate configuration": "Attiva configurazione",
+    "Customize": "Personalizza",
+    "Choose rule": "Scegli regola",
+    "Activate announcement": "Attiva annuncio",
+    "Select period": "Seleziona periodo",
+    "Begin": "Inizio",
+    "End": "Fine",
+    "Only for a day": "Solo per per un giorno",
+    "Active every day": "Attivo tutti i giorni",
+    "Active 24h": "Attivo 24h",
+    "Activate announcement + voicemail": "Attiva annuncio + casella vocale",
+    "Activate forward": "Attiva inoltro"
   }
 }
