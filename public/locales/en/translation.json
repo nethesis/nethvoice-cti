@@ -304,6 +304,18 @@
     "Activate forward": "Activate forward",
     "Select rule": "Select rule",
     "Select a type": "Select a type",
-    "Rule details": "Rule details"
+    "Rule details": "Rule details",
+    "Author": "Author",
+    "Date": "Date",
+    "Privacy": "Privacy",
+    "Details": "Details",
+    "Delete": "Delete",
+    "Play": "Play",
+    "Download": "Download",
+    "Add announcement": "Add announcement",
+    "Filter announcement": "Filter announcement",
+    "Announcement name": "Announcement name",
+    "Public": "Public",
+    "Private": "Private"
   }
 }

@@ -7,42 +7,48 @@ import { Button, EmptyState, InlineNotification } from '../common'
 import { isEmpty, debounce } from 'lodash'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { openShowTelephoneLinesDrawer } from '../../lib/lines'
-import { faChevronRight, faChevronLeft, faPhone } from '@nethesis/nethesis-solid-svg-icons'
+import { faPhone, faPlay, faDownload, faTrash } from '@nethesis/nethesis-solid-svg-icons'
 import classNames from 'classnames'
-import { LinesFilter } from './LinesFilter'
+import { AnnouncementFilter } from './AnnouncementFilter'
 import { useSelector } from 'react-redux'
 import { RootState } from '../../store'
 
-export interface LinesViewProps extends ComponentProps<'div'> {}
+export interface AnnouncementViewProps extends ComponentProps<'div'> {}
 
 const table = [
   {
-    name: 'Mario Rossi',
-    number: '1234567890',
-    description: 'Lorem ipsum dolor sit amet',
-    role: 'Sviluppatore',
+    name: 'La notte degli unicorni',
+    author: 'Valentina Rossi',
+    date: '2022-02-14',
+    privacy: 'privato',
   },
   {
-    name: 'Anna Bianchi',
-    number: '0987654321',
-    description: 'Consectetur adipiscing elit',
-    role: 'Progettista',
+    name: 'Il segreto del tempio',
+    author: 'Marco Bianchi',
+    date: '2021-11-30',
+    privacy: 'pubblico',
   },
   {
-    name: 'Luigi Verdi',
-    number: '5555555555',
-    description: 'Sed do eiusmod tempor incididunt',
-    role: 'Tester',
+    name: 'Ombre sul lago',
+    author: 'Maria Neri',
+    date: '2022-01-15',
+    privacy: 'pubblico',
   },
   {
-    name: 'Giovanni Neri',
-    number: '7777777777',
-    description: 'Ut labore et dolore magna aliqua',
-    role: 'Manager',
+    name: 'Cuori in fuga',
+    author: 'Paolo Verdi',
+    date: '2021-10-20',
+    privacy: 'privato',
+  },
+  {
+    name: "L'isola misteriosa",
+    author: 'Laura Russo',
+    date: '2022-03-01',
+    privacy: 'pubblico',
   },
 ]
 
-export const LinesView: FC<LinesViewProps> = ({ className }): JSX.Element => {
+export const AnnouncementView: FC<AnnouncementViewProps> = ({ className }): JSX.Element => {
   const { t } = useTranslation()
   const [lines, setLines]: any = useState({})
   const [isLinesLoaded, setLinesLoaded]: any = useState(false)
@@ -106,10 +112,15 @@ export const LinesView: FC<LinesViewProps> = ({ className }): JSX.Element => {
   //     return !isLinesLoaded || pageNum >= lines?.totalPages
   //   }
 
+  const deleteAnnouncement = (index: any) => {
+    console.log("you've just deleted this index", index)
+  }
+
   return (
     <div className={classNames(className)}>
-      <div className='flex flex-col flex-wrap xl:flex-row justify-between gap-x-4 xl:items-end'>
-        <LinesFilter updateTextFilter={debouncedUpdateTextFilter} />
+      {/* TO DO CHECK ON MOBILE DEVICE  */}
+      <div className='flex-col flex-wrap xl:flex-row justify-between gap-x-4 xl:items-end'>
+        <AnnouncementFilter updateTextFilter={debouncedUpdateTextFilter} />
       </div>
       {linesError && <InlineNotification type='error' title={linesError}></InlineNotification>}
       {/* {!linesError && ( */}
@@ -147,22 +158,25 @@ export const LinesView: FC<LinesViewProps> = ({ className }): JSX.Element => {
                         scope='col'
                         className='px-3 py-3.5 text-left text-sm font-semibold text-gray-700 dark:text-gray-200'
                       >
-                        {t('Lines.Number')}
+                        {t('Lines.Author')}
                       </th>
                       <th
                         scope='col'
                         className='px-3 py-3.5 text-left text-sm font-semibold text-gray-700 dark:text-gray-200'
                       >
-                        {t('Lines.Custom configuration')}
+                        {t('Lines.Date')}
                       </th>
                       <th
                         scope='col'
                         className='px-3 py-3.5 text-left text-sm font-semibold text-gray-700 dark:text-gray-200'
                       >
-                        {t('Lines.Rule')}
+                        {t('Lines.Privacy')}
                       </th>
                       <th scope='col' className='relative py-3.5 pl-3 pr-4 sm:pr-6'>
                         <span className='sr-only'>{t('Lines.Details')}</span>
+                      </th>
+                      <th scope='col' className='relative py-3.5 pl-3 pr-4 sm:pr-6'>
+                        <span className='sr-only'>{t('Lines.Delete')}</span>
                       </th>
                     </tr>
                   </thead>
@@ -184,38 +198,62 @@ export const LinesView: FC<LinesViewProps> = ({ className }): JSX.Element => {
                     {/* {isLinesLoaded &&
                           lines?.rows?.map((call: any, index: number) => ( */}
 
-                    {table.map((call: any, index: number) => (
+                    {table.map((announcement: any, index: number) => (
                       <tr key={index}>
                         {/* Name */}
                         <td className='py-4 pl-4 pr-3 sm:pl-6'>
                           <div className='flex flex-col'>
-                            <div>{call.name} </div>
+                            <div>{announcement.name} </div>
                           </div>
                         </td>
-                        {/* Number */}
+                        {/* Author */}
                         <td className='px-3 py-4'>
-                          <div>{call.number}</div>
-                          <div className='text-gray-500 dark:text-gray-500'>{call.queueId}</div>
+                          <div>{announcement.author}</div>
                         </td>
-                        {/* Costum configuration */}
-                        <td className='whitespace-nowrap px-3 py-4'>
+                        {/* Date */}
+                        <td className='px-3 py-4'>
                           <div className='flex items-center'>
-                            <span>{call.description}</span>
+                            <span>{announcement.date}</span>
                           </div>
                         </td>
-                        {/* Ruolo */}
-                        <td className='whitespace-nowrap px-3 py-4'>
+                        {/* Privacy */}
+                        <td className='px-3 py-4'>
                           <div className='flex items-center'>
-                            <span>{call.role}</span>
+                            <span>{announcement.privacy}</span>
                           </div>
                         </td>
-                        {/* show details */}
+                        {/* Action button */}
+                        <td className='px-3 py-4 flex gap-2 justify-end'>
+                          <div>
+                            {' '}
+                            <Button variant='white'>
+                              <FontAwesomeIcon
+                                icon={faPlay}
+                                className='h-4 w-4 mr-2 text-gray-500 dark:text-gray-500'
+                                aria-hidden='true'
+                              />{' '}
+                              {t('Lines.Play')}
+                            </Button>
+                          </div>
+                          <div>
+                            {' '}
+                            <Button variant='white'>
+                              <FontAwesomeIcon
+                                icon={faDownload}
+                                className='h-4 w-4 mr-2 text-gray-500 dark:text-gray-500'
+                                aria-hidden='true'
+                              />{' '}
+                              {t('Lines.Download')}
+                            </Button>
+                          </div>
+                        </td>
+                        {/* Delete announcement */}
                         <td className='relative whitespace-nowrap py-4 pl-3 pr-4 text-right text-sm font-medium sm:pr-6'>
                           <FontAwesomeIcon
-                            icon={faChevronRight}
-                            className='h-3 w-3 p-2 cursor-pointer text-gray-500 dark:text-gray-500'
+                            icon={faTrash}
+                            className='h-4 w-4 p-2 cursor-pointer text-gray-500 dark:text-gray-500'
                             aria-hidden='true'
-                            onClick={() => openShowTelephoneLinesDrawer(call.name, call.number)}
+                            onClick={() => deleteAnnouncement(index)}
                           />
                         </td>
                       </tr>
@@ -277,4 +315,4 @@ export const LinesView: FC<LinesViewProps> = ({ className }): JSX.Element => {
   )
 }
 
-LinesView.displayName = 'LinesView'
+AnnouncementView.displayName = 'AnnouncementView'

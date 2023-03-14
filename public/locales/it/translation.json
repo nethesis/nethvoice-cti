@@ -195,6 +195,18 @@
     "Activate forward": "Attiva inoltro",
     "Select rule": "Seleziona regola",
     "Select a type": "Seleziona un tipo",
-    "Rule details": "Dettagli regola"
+    "Rule details": "Dettagli regola",
+    "Author": "Autore",
+    "Date": "Data",
+    "Privacy": "Privacy",
+    "Details": "Dettagli",
+    "Delete": "Cancella",
+    "Play": "Riproduci",
+    "Download": "Scarica",
+    "Add announcement": "Aggiungi annuncio",
+    "Filter announcement": "Filtra annunci",
+    "Announcement name": "Nome annuncio",
+    "Public": "Pubblico",
+    "Private": "Privato"
   }
 }

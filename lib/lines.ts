@@ -31,3 +31,13 @@ export const openShowTelephoneLinesDrawer = (name: any, number: any) => {
     config: config,
   })
 }
+
+export const openShowTelephoneAnnouncementDrawer = () => {
+  const config = {}
+
+  store.dispatch.sideDrawer.update({
+    isShown: true,
+    contentType: 'showTelephoneAnnouncement',
+    config: config,
+  })
+}
