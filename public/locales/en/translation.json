@@ -301,6 +301,9 @@
     "Active every day": "Active every day",
     "Active 24h": "Active 24h",
     "Activate announcement + voicemail": "Activate announcement + voicemail",
-    "Activate forward": "Activate forward"
+    "Activate forward": "Activate forward",
+    "Select rule": "Select rule",
+    "Select a type": "Select a type",
+    "Rule details": "Rule details"
   }
 }

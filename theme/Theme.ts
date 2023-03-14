@@ -14,6 +14,8 @@ const theme = {
       'border-gray-300 text-gray-700 hover:bg-gray-200 focus:ring-primaryLight dark:border-gray-600 dark:text-gray-100 dark:hover:bg-gray-700 dark:focus:ring-primaryDark',
     danger:
       'border border-transparent focus:ring-red-500 bg-red-600 hover:bg-red-700 text-white dark:focus:ring-red-600 dark:bg-red-700 dark:hover:bg-red-800 dark:text-white',
+    disabled:
+      'border border-transparent bg-primary text-white opacity-50 cursor-not-allowed hover:bg-primaryDark focus:ring-primaryLight dark:bg-primary dark:text-white dark:hover:bg-primaryDark focus:ring-primaryLight disabled:opacity-50 disabled:cursor-not-allowed',
     rounded: {
       small: 'rounded',
       base: 'rounded-md',

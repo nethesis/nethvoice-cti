@@ -18,7 +18,7 @@ const meta = {
       action: 'clicked',
     },
     variant: {
-      options: ['primary', 'secondary', 'white', 'ghost', 'danger'],
+      options: ['primary', 'secondary', 'white', 'ghost', 'danger', 'disabled'],
     },
   },
   parameters: {
@@ -59,6 +59,12 @@ export const Danger = Template.bind({})
 Danger.args = {
   ...Primary.args,
   variant: 'danger',
+}
+
+export const Disabled = Template.bind({})
+Disabled.args = {
+  ...Primary.args,
+  variant: 'disabled',
 }
 
 const TemplateWithChild: Story<ButtonProps> = (args) => (

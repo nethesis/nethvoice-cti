@@ -13,11 +13,15 @@ import {
   faBullhorn,
   faVoicemail,
   faArrowTurnDownRight,
-  faFloppyDisk
+  faFloppyDisk,
+  faChevronRight,
+  faChevronDown,
+  faCalendar,
 } from '@nethesis/nethesis-solid-svg-icons'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { callPhoneNumber, closeSideDrawer } from '../../lib/utils'
 import { TextInput, Button } from '../common'
+import { cloneDeep, isEmpty } from 'lodash'
 
 export interface ShowTelephoneLinesDrawerContentProps extends ComponentPropsWithRef<'div'> {
   config: any
@@ -33,11 +37,18 @@ export const ShowTelephoneLinesDrawerContent = forwardRef<
   const [isAnnouncementVoicemailActive, setAnnouncementVoicemailActive] = useState(false)
   const [isForwardActive, setForwardActive] = useState(false)
   const [changeConfigurationRadio, setChangeConfigurationRadio] = useState('customize')
-  const [changeDateSelectedRadio, setChangeDateSelectedRadio] = useState('allDay')
   const [isManageAnnouncementActive, setManageAnnouncementActive] = useState(true)
   const [announcementSelected, setAnnouncementSelected] = useState('')
   const [dateBeginValue, setDateBeginValue] = useState('')
   const [dateEndValue, setDateEndValue] = useState('')
+  const [selectedDate, setselectedDate]: any = useState([])
+  const [selectedRulesInfo, setSelectedRulesInfo] = useState('ferie')
+
+  const [openPanel, setOpenPanel] = useState('')
+
+  const togglePanel = (id: string) => {
+    setOpenPanel(openPanel === id ? '' : id)
+  }
 
   const configurationType = [
     { id: 'customize', value: t('Lines.Customize') },
@@ -55,6 +66,17 @@ export const ShowTelephoneLinesDrawerContent = forwardRef<
     { id: 'everyDay', value: t('Lines.Active every day') },
     { id: 'allDay', value: t('Lines.Active 24h') },
   ]
+
+  const dateRuleInformations = [
+    { id: 'febbraio', value: 'Febbraio 2023' },
+    { id: 'ferie', value: 'Ferie' },
+    { id: 'natale', value: 'Natale' },
+  ]
+
+  function changeDateSelected(event: any) {
+    const radioButtonDateSelected = event.target.id
+    setSelectedRulesInfo(radioButtonDateSelected)
+  }
 
   const toggleConfigurationActive = () => {
     setConfigurationActive(!isConfigurationActive)
@@ -94,13 +116,274 @@ export const ShowTelephoneLinesDrawerContent = forwardRef<
     setChangeConfigurationRadio(radioButtonConfigurationValue)
   }
 
-  function changeDateSelected(event: any) {
-    const radioButtonDateSelected = event.target.id
-    setChangeDateSelectedRadio(radioButtonDateSelected)
+  function saveEditTelephoneLines() {
+    // TO DO POST API
   }
 
-  function saveEditTelephoneLines(){
-    // TO DO POST API
+  function changeDateFilter(event: any) {
+    const isChecked = event.target.checked
+    const newSelectedDate = cloneDeep(selectedDate)
+
+    if (isChecked) {
+      newSelectedDate.push(event.target.value)
+      setselectedDate(newSelectedDate)
+    } else {
+      let index = newSelectedDate.indexOf(event.target.value)
+      newSelectedDate.splice(index, 1)
+      setselectedDate(newSelectedDate)
+    }
+  }
+
+  function customTypeSelected() {
+    return (
+      <>
+        {isConfigurationActive && (
+          <>
+            {/* Activate Announcement switch  */}
+            <div className='flex items-center justify-between mt-6'>
+              <div className='flex items-center'>
+                <FontAwesomeIcon
+                  icon={faBullhorn}
+                  className='mr-4 h-4 w-4 flex-shrink-0 text-gray-400 dark:text-gray-500'
+                  aria-hidden='true'
+                />
+                <h4 className='text-md font-medium text-gray-700 dark:text-gray-200'>
+                  {t('Lines.Activate announcement')}
+                </h4>
+              </div>
+              <IconSwitch
+                on={isConfigurationActive}
+                size='double_extra_large'
+                onIcon={<FontAwesomeIcon icon={faToggleLargeOn} />}
+                offIcon={<FontAwesomeIcon icon={faToggleLargeOff} />}
+                changed={() => toggleManageAnnouncement()}
+              ></IconSwitch>
+            </div>
+            {/* Divider */}
+            <div className='mt-1 mb-5 border-t border-gray-200 dark:border-gray-700'></div>
+
+            {isManageAnnouncementActive && changeConfigurationRadio == 'customize' && (
+              <>
+                <div className='mb-8'>
+                  <label htmlFor='types' className='sr-only'>
+                    {t('Lines.Select a type')}
+                  </label>
+                  <select
+                    id='types'
+                    name='types'
+                    className='block w-full rounded-md py-2 pl-3 pr-10 text-base focus:outline-none sm:text-sm border-gray-300 focus:border-primary focus:ring-primary dark:border-gray-600 dark:focus:border-primary dark:focus:ring-primary'
+                    defaultValue={announcementSelected}
+                    onChange={changeAnnouncementSelect}
+                  >
+                    {announcementLists.map((announcementList) => (
+                      <option key={announcementList.id}>{announcementList.value}</option>
+                    ))}
+                  </select>
+                </div>
+                <span className='font-medium'>{t('Lines.Select period')}</span>
+                <div className='flex mt-2 items-center justify-between'>
+                  <span>{t('Lines.Begin')}</span>
+                  <span className='ml-auto mr-auto'>{t('Lines.End')}</span>
+                </div>
+                {/* Date input  */}
+                {/* TO DO MANAGE IN CASE OF MOBILE DEVICE */}
+                {/* TO DO CHECK RADIO BUTTON VALUE TO SET DATE  */}
+                <div className='flex mt-2 items-center justify-between'>
+                  <TextInput
+                    type='datetime-local'
+                    placeholder='Select date start'
+                    className='max-w-sm mr-4'
+                    id='meeting-time'
+                    name='meeting-time'
+                    ref={dateBeginRef}
+                    onChange={changeDateBegin}
+                    defaultValue={dateBeginValue}
+                  />
+                  <TextInput
+                    type='datetime-local'
+                    placeholder='Select date start'
+                    className='max-w-sm'
+                    id='meeting-time'
+                    name='meeting-time'
+                    ref={dateEndRef}
+                    onChange={changeDateEnd}
+                    defaultValue={dateEndValue}
+                  />
+                </div>
+
+                {/* Date input select  */}
+                <fieldset>
+                  <legend className='sr-only'>Notification method</legend>
+                  <div className='space-y-4 mt-3'>
+                    {dateSelectionInputs.map((dateSelectionInput) => (
+                      <div key={dateSelectionInput.id} className='flex items-center'>
+                        <input
+                          id={dateSelectionInput.id}
+                          name='date-select'
+                          type='checkbox'
+                          defaultChecked={selectedDate.includes(dateSelectionInput.value)}
+                          value={dateSelectionInput.value}
+                          onChange={changeDateFilter}
+                          className='h-4 w-4 border-gray-300 text-primary focus:ring-primaryLight dark:border-gray-600 dark:text-primary dark:focus:ring-primaryDark'
+                        />
+                        <label
+                          htmlFor={dateSelectionInput.id}
+                          className='ml-3 block text-sm font-medium leading-6 text-gray-700 dark:text-gray-200'
+                        >
+                          {dateSelectionInput.value}
+                        </label>
+                      </div>
+                    ))}
+                  </div>
+                </fieldset>
+
+                {/* Announcement and voicemail switch */}
+                <div className='flex items-center justify-between mt-6'>
+                  <div className='flex items-center'>
+                    <FontAwesomeIcon
+                      icon={faVoicemail}
+                      className='mr-4 h-4 w-4 flex-shrink-0 text-gray-400 dark:text-gray-500'
+                      aria-hidden='true'
+                    />
+                    <h4 className='text-md font-medium text-gray-700 dark:text-gray-200'>
+                      {t('Lines.Activate announcement + voicemail')}
+                    </h4>
+                  </div>
+                  <IconSwitch
+                    on={isConfigurationActive}
+                    size='double_extra_large'
+                    onIcon={<FontAwesomeIcon icon={faToggleLargeOn} />}
+                    offIcon={<FontAwesomeIcon icon={faToggleLargeOff} />}
+                    changed={() => toggleAnnouncementVoicemail()}
+                  ></IconSwitch>
+                </div>
+
+                {/* Divider */}
+                <div className='mt-1 border-t border-gray-200 dark:border-gray-700'></div>
+
+                {/* Activate forward */}
+                <div className='flex items-center justify-between mt-6'>
+                  <div className='flex items-center'>
+                    <FontAwesomeIcon
+                      icon={faArrowTurnDownRight}
+                      className='mr-4 h-4 w-4 flex-shrink-0 text-gray-400 dark:text-gray-500'
+                      aria-hidden='true'
+                    />
+                    <h4 className='text-md font-medium text-gray-700 dark:text-gray-200'>
+                      {t('Lines.Activate forward')}
+                    </h4>
+                  </div>
+                  <IconSwitch
+                    on={isConfigurationActive}
+                    size='double_extra_large'
+                    onIcon={<FontAwesomeIcon icon={faToggleLargeOn} />}
+                    offIcon={<FontAwesomeIcon icon={faToggleLargeOff} />}
+                    changed={() => toggleForward()}
+                  ></IconSwitch>
+                </div>
+
+                {/* Divider */}
+                <div className='mt-1 border-t border-gray-200 dark:border-gray-700'></div>
+              </>
+            )}
+          </>
+        )}
+      </>
+    )
+  }
+
+  function ruleTypeSelected() {
+    return (
+      <>
+        {/* Activate Announcement switch  */}
+        <div className='flex items-center justify-between mt-8'>
+          <h4 className='text-md font-medium text-gray-700 dark:text-gray-200'>
+            {t('Lines.Select rule')}
+          </h4>
+        </div>
+        {/* Divider */}
+        <div className='mt-3 mb-5 border-t border-gray-200 dark:border-gray-700'></div>
+        <fieldset className='mt-4'>
+          <legend className='sr-only'>Notification method</legend>
+          <div className='space-y-4'>
+            {dateRuleInformations.map((dateRuleInformation) => (
+              <>
+                <div
+                  key={dateRuleInformation.id}
+                  className='flex items-center justify-between mt-1'
+                >
+                  <div className='flex items-center'>
+                    <input
+                      id={dateRuleInformation.id}
+                      name='date-select'
+                      type='radio'
+                      defaultChecked={dateRuleInformation.id === 'ferie'}
+                      className='h-4 w-4 border-gray-300 text-primary dark:border-gray-600 focus:ring-primaryLight dark:focus:ring-primaryDark dark:text-primary'
+                      onChange={changeDateSelected}
+                    />
+                    <label
+                      htmlFor={dateRuleInformation.id}
+                      className='ml-3 block text-sm font-medium leading-6 text-gray-700 dark:text-gray-200'
+                    >
+                      {dateRuleInformation.value}
+                    </label>
+                  </div>
+                  <button
+                    className='mr-4 h-4 w-4 flex-shrink-0 text-gray-400 dark:text-gray-500'
+                    aria-hidden='true'
+                    onClick={() => togglePanel(dateRuleInformation.id)}
+                  >
+                    <FontAwesomeIcon
+                      icon={openPanel === dateRuleInformation.id ? faChevronDown : faChevronRight}
+                    />
+                  </button>
+                </div>
+                {openPanel === dateRuleInformation.id && (
+                  <div className='bg-gray-100 p-2'>
+                    <div className='flex flex-col'>
+                      <h1 className='flex text-md font-medium text-gray-700 dark:text-gray-200'>
+                        {t('Lines.Rule details')}
+                      </h1>
+                      {/* TO DO GET DATA FROM API */}
+                      <div className='flex mt-2'>
+                        <FontAwesomeIcon
+                          icon={faVoicemail}
+                          className='mr-4 h-4 w-4 flex-shrink-0 text-gray-400 dark:text-gray-500'
+                          aria-hidden='true'
+                        />
+                        <h4 className='text-md text-gray-700 dark:text-gray-200'>
+                          {t('Lines.Activate announcement + voicemail')}
+                        </h4>
+                      </div>
+                      <div className='flex mt-1'>
+                        <FontAwesomeIcon
+                          icon={faCalendar}
+                          className='mr-4 h-4 w-4 flex-shrink-0 text-gray-400 dark:text-gray-500'
+                          aria-hidden='true'
+                        />
+                        <h4 className='text-md text-gray-700 dark:text-gray-200'>
+                          {t('Lines.Begin')}
+                        </h4>
+                      </div>
+                      <div className='flex mt-1'>
+                        <FontAwesomeIcon
+                          icon={faCalendar}
+                          className='mr-4 h-4 w-4 flex-shrink-0 text-gray-400 dark:text-gray-500'
+                          aria-hidden='true'
+                        />
+                        <h4 className='text-md text-gray-700 dark:text-gray-200'>
+                          {t('Lines.End')}
+                        </h4>
+                      </div>
+                    </div>
+                  </div>
+                )}
+              </>
+            ))}
+          </div>
+        </fieldset>
+      </>
+    )
   }
 
   //Get value from date input
@@ -199,155 +482,7 @@ export const ShowTelephoneLinesDrawerContent = forwardRef<
                 ))}
               </div>
             </fieldset>
-            {isConfigurationActive && changeConfigurationRadio === 'customize' && (
-              <>
-                {/* Activate Announcement switch  */}
-                <div className='flex items-center justify-between mt-6'>
-                  <div className='flex items-center'>
-                    <FontAwesomeIcon
-                      icon={faBullhorn}
-                      className='mr-4 h-4 w-4 flex-shrink-0 text-gray-400 dark:text-gray-500'
-                      aria-hidden='true'
-                    />
-                    <h4 className='text-md font-medium text-gray-700 dark:text-gray-200'>
-                      {t('Lines.Activate announcement')}
-                    </h4>
-                  </div>
-                  <IconSwitch
-                    on={isConfigurationActive}
-                    size='double_extra_large'
-                    onIcon={<FontAwesomeIcon icon={faToggleLargeOn} />}
-                    offIcon={<FontAwesomeIcon icon={faToggleLargeOff} />}
-                    changed={() => toggleManageAnnouncement()}
-                  ></IconSwitch>
-                </div>
-                {/* Divider */}
-                <div className='mt-1 mb-5 border-t border-gray-200 dark:border-gray-700'></div>
-                {isConfigurationActive &&
-                  changeConfigurationRadio === 'customize' &&
-                  isManageAnnouncementActive && (
-                    <>
-                      <div className='mb-8'>
-                        <label htmlFor='tabs' className='sr-only'>
-                          {t('Queues.Select a tab')}
-                        </label>
-                        <select
-                          id='tabs'
-                          name='tabs'
-                          className='block w-full rounded-md py-2 pl-3 pr-10 text-base focus:outline-none sm:text-sm border-gray-300 focus:border-primary focus:ring-primary dark:border-gray-600 dark:focus:border-primary dark:focus:ring-primary'
-                          defaultValue={announcementSelected}
-                          onChange={changeAnnouncementSelect}
-                        >
-                          {announcementLists.map((announcementList) => (
-                            <option key={announcementList.id}>{announcementList.value}</option>
-                          ))}
-                        </select>
-                      </div>
-                      <span className='font-medium'>{t('Lines.Select period')}</span>
-                      <div className='flex mt-2 items-center justify-between'>
-                        <span>{t('Lines.Begin')}</span>
-                        <span className='ml-auto mr-auto'>{t('Lines.End')}</span>
-                      </div>
-                      {/* Date input  */}
-                      {/* TO DO MANAGE IN CASE OF MOBILE DEVICE */}
-                      {/* TO DO CHECK RADIO BUTTON VALUE TO SET DATE  */}
-                      <div className='flex mt-2 items-center justify-between'>
-                        <TextInput
-                          type='datetime-local'
-                          placeholder='Select date start'
-                          className='max-w-sm mr-4'
-                          id='meeting-time'
-                          name='meeting-time'
-                          ref={dateBeginRef}
-                          onChange={changeDateBegin}
-                          defaultValue={dateBeginValue}
-                        />
-                        <TextInput
-                          type='datetime-local'
-                          placeholder='Select date start'
-                          className='max-w-sm'
-                          id='meeting-time'
-                          name='meeting-time'
-                          ref={dateEndRef}
-                          onChange={changeDateEnd}
-                          defaultValue={dateEndValue}
-                        />
-                      </div>
-                      <fieldset className='mt-4'>
-                        <legend className='sr-only'>Notification method</legend>
-                        <div className='space-y-4'>
-                          {dateSelectionInputs.map((dateSelectionInput) => (
-                            <div key={dateSelectionInput.id} className='flex items-center'>
-                              <input
-                                id={dateSelectionInput.id}
-                                name='date-select'
-                                type='radio'
-                                defaultChecked={dateSelectionInput.id === 'allDay'}
-                                className='h-4 w-4 border-gray-300 text-primary dark:border-gray-600 focus:ring-primaryLight dark:focus:ring-primaryDark dark:text-primary'
-                                onChange={changeDateSelected}
-                              />
-                              <label
-                                htmlFor={dateSelectionInput.id}
-                                className='ml-3 block text-sm font-medium leading-6 text-gray-700 dark:text-gray-200'
-                              >
-                                {dateSelectionInput.value}
-                              </label>
-                            </div>
-                          ))}
-                        </div>
-                      </fieldset>
-
-                      {/* Announcement and voicemail switch */}
-                      <div className='flex items-center justify-between mt-6'>
-                        <div className='flex items-center'>
-                          <FontAwesomeIcon
-                            icon={faVoicemail}
-                            className='mr-4 h-4 w-4 flex-shrink-0 text-gray-400 dark:text-gray-500'
-                            aria-hidden='true'
-                          />
-                          <h4 className='text-md font-medium text-gray-700 dark:text-gray-200'>
-                            {t('Lines.Activate announcement + voicemail')}
-                          </h4>
-                        </div>
-                        <IconSwitch
-                          on={isConfigurationActive}
-                          size='double_extra_large'
-                          onIcon={<FontAwesomeIcon icon={faToggleLargeOn} />}
-                          offIcon={<FontAwesomeIcon icon={faToggleLargeOff} />}
-                          changed={() => toggleAnnouncementVoicemail()}
-                        ></IconSwitch>
-                      </div>
-
-                      {/* Divider */}
-                      <div className='mt-1 border-t border-gray-200 dark:border-gray-700'></div>
-
-                      {/* Activate forward */}
-                      <div className='flex items-center justify-between mt-6'>
-                        <div className='flex items-center'>
-                          <FontAwesomeIcon
-                            icon={faArrowTurnDownRight}
-                            className='mr-4 h-4 w-4 flex-shrink-0 text-gray-400 dark:text-gray-500'
-                            aria-hidden='true'
-                          />
-                          <h4 className='text-md font-medium text-gray-700 dark:text-gray-200'>
-                            {t('Lines.Activate forward')}
-                          </h4>
-                        </div>
-                        <IconSwitch
-                          on={isConfigurationActive}
-                          size='double_extra_large'
-                          onIcon={<FontAwesomeIcon icon={faToggleLargeOn} />}
-                          offIcon={<FontAwesomeIcon icon={faToggleLargeOff} />}
-                          changed={() => toggleForward()}
-                        ></IconSwitch>
-                      </div>
-
-                      {/* Divider */}
-                      <div className='mt-1 border-t border-gray-200 dark:border-gray-700'></div>
-                    </>
-                  )}
-              </>
-            )}
+            {changeConfigurationRadio === 'customize' ? customTypeSelected() : ruleTypeSelected()}
           </>
         )}
 
@@ -363,7 +498,12 @@ export const ShowTelephoneLinesDrawerContent = forwardRef<
           </ul>
         )} */}
         <div className='flex mt-4 fixed bottom-0'>
-          <Button variant='primary' type='submit' onClick={saveEditTelephoneLines} className='mb-4'>
+          <Button
+            variant={isConfigurationActive ? 'primary' : 'disabled'}
+            type='submit'
+            onClick={saveEditTelephoneLines}
+            className='mb-4'
+          >
             <FontAwesomeIcon icon={faFloppyDisk} className='mr-2 h-4 w-4' />
             {t('Common.Save')}
           </Button>

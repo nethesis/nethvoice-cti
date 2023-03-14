@@ -192,6 +192,9 @@
     "Active every day": "Attivo tutti i giorni",
     "Active 24h": "Attivo 24h",
     "Activate announcement + voicemail": "Attiva annuncio + casella vocale",
-    "Activate forward": "Attiva inoltro"
+    "Activate forward": "Attiva inoltro",
+    "Select rule": "Seleziona regola",
+    "Select a type": "Seleziona un tipo",
+    "Rule details": "Dettagli regola"
   }
 }
