@@ -147,7 +147,7 @@ export const LinesView: FC<LinesViewProps> = ({ className }): JSX.Element => {
                         scope='col'
                         className='px-3 py-3.5 text-left text-sm font-semibold text-gray-700 dark:text-gray-200'
                       >
-                        {t('Lines.Number')}
+                        {t('Common.Phone number')}
                       </th>
                       <th
                         scope='col'

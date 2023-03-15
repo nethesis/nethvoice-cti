@@ -14,8 +14,8 @@ import {
   faVoicemail,
   faArrowTurnDownRight,
   faFloppyDisk,
-  faChevronRight,
   faChevronDown,
+  faChevronUp,
   faCalendar,
 } from '@nethesis/nethesis-solid-svg-icons'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
@@ -152,7 +152,7 @@ export const ShowTelephoneLinesDrawerContent = forwardRef<
                 </h4>
               </div>
               <IconSwitch
-                on={isConfigurationActive}
+                on={isManageAnnouncementActive}
                 size='double_extra_large'
                 onIcon={<FontAwesomeIcon icon={faToggleLargeOn} />}
                 offIcon={<FontAwesomeIcon icon={faToggleLargeOff} />}
@@ -250,7 +250,7 @@ export const ShowTelephoneLinesDrawerContent = forwardRef<
                     </h4>
                   </div>
                   <IconSwitch
-                    on={isConfigurationActive}
+                    on={isAnnouncementVoicemailActive}
                     size='double_extra_large'
                     onIcon={<FontAwesomeIcon icon={faToggleLargeOn} />}
                     offIcon={<FontAwesomeIcon icon={faToggleLargeOff} />}
@@ -274,7 +274,7 @@ export const ShowTelephoneLinesDrawerContent = forwardRef<
                     </h4>
                   </div>
                   <IconSwitch
-                    on={isConfigurationActive}
+                    on={isForwardActive}
                     size='double_extra_large'
                     onIcon={<FontAwesomeIcon icon={faToggleLargeOn} />}
                     offIcon={<FontAwesomeIcon icon={faToggleLargeOff} />}
@@ -331,7 +331,7 @@ export const ShowTelephoneLinesDrawerContent = forwardRef<
                     onClick={() => togglePanel(dateRuleInformation.id)}
                   >
                     <FontAwesomeIcon
-                      icon={openPanel === dateRuleInformation.id ? faChevronDown : faChevronRight}
+                      icon={openPanel === dateRuleInformation.id ? faChevronUp : faChevronDown}
                     />
                   </button>
                 </div>

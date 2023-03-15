@@ -79,7 +79,7 @@ export const ShowAddAnnouncementDrawerContent = forwardRef<
       <div className='bg-gray-100 dark:bg-gray-800 py-6 px-6'>
         <div className='flex items-center justify-between'>
           <div className='text-lg font-medium text-gray-700 dark:text-gray-200'>
-            {t('Lines.Line details')}
+            {t('Lines.Add announcement')}
           </div>
           <div className='flex items-center h-7'>
             <SideDrawerCloseIcon />
