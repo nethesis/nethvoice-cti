@@ -307,11 +307,8 @@ export const ShowTelephoneLinesDrawerContent = forwardRef<
           <legend className='sr-only'>Notification method</legend>
           <div className='space-y-4'>
             {dateRuleInformations.map((dateRuleInformation) => (
-              <>
-                <div
-                  key={dateRuleInformation.id}
-                  className='flex items-center justify-between mt-1'
-                >
+              <div key={dateRuleInformation.id}>
+                <div className='flex items-center justify-between mt-1'>
                   <div className='flex items-center'>
                     <input
                       id={dateRuleInformation.id}
@@ -378,7 +375,7 @@ export const ShowTelephoneLinesDrawerContent = forwardRef<
                     </div>
                   </div>
                 )}
-              </>
+              </div>
             ))}
           </div>
         </fieldset>

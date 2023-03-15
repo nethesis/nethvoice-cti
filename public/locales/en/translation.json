@@ -26,7 +26,8 @@
     "Queues": "Queues",
     "Reset to defaults": "Reset to defaults",
     "Loading": "Loading",
-    "Lines": "Lines"
+    "Lines": "Lines",
+    "or": "or"
   },
   "Login": {
     "User": "User",
@@ -316,6 +317,10 @@
     "Filter announcement": "Filter announcement",
     "Announcement name": "Announcement name",
     "Public": "Public",
-    "Private": "Private"
+    "Private": "Private",
+    "Announcement": "Announcement",
+    "Select a file audio to upload": "Select a file audio to upload",
+    "or click and drag here": "or click and drag here",
+    "Record now": "Registra ora"
   }
 }

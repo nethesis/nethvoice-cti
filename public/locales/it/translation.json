@@ -20,7 +20,8 @@
     "Settings": "Impostazioni",
     "Queues": "Code",
     "Loading": "Loading",
-    "Lines": "Linee"
+    "Lines": "Linee",
+    "or": "oppure"
   },
   "Login": {
     "User": "Utente",
@@ -207,6 +208,10 @@
     "Filter announcement": "Filtra annunci",
     "Announcement name": "Nome annuncio",
     "Public": "Pubblico",
-    "Private": "Privato"
+    "Private": "Privato",
+    "Announcement": "Annuncio",
+    "Select a file audio to upload": "Seleziona un file audio da caricare",
+    "or click and drag here": "o clicca e trascina quì",
+    "Record now": "Registra ora"
   }
 }
