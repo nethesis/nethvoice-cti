@@ -17,6 +17,8 @@ import { handleNetworkError } from './utils'
 
 export const PAGE_SIZE = 10
 export const DEFAULT_OUTCOME_FILTER = 'lost'
+export const DEFAULT_CALLS_REFRESH_INTERVAL = 20
+export const DEFAULT_CALLS_LOAD_PERIOD = 12
 
 export const searchStringInQueue = (queue: any, queryText: string) => {
   const regex = /[^a-zA-Z0-9]/g
@@ -56,8 +58,6 @@ export const processQueues = (
 
   store.dispatch.queues.setLoaded(true)
   store.dispatch.queues.setLoading(false)
-
-  // console.log('queues', queues) ////
 }
 
 export const retrieveQueues = async (username: string, mainextension: string, operators: any) => {
@@ -102,9 +102,8 @@ export const retrieveAndFilterQueueCalls = async (
 
     const queues = selectedQueues.join(',')
 
-    //// fix hours argument
     const { data } = await axios.get(
-      `/astproxy/queue_recall/12/${queues}/${outcomeFilter}?limit=200&offset=0`,
+      `/astproxy/queue_recall/${numHours}/${queues}/${outcomeFilter}?limit=200&offset=0`,
     )
 
     const allFilteredCalls = data.rows.filter((call: any) => {

@@ -7,6 +7,8 @@ import { Button, EmptyState, InlineNotification } from '../common'
 import { isEmpty, debounce } from 'lodash'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import {
+  DEFAULT_CALLS_LOAD_PERIOD,
+  DEFAULT_CALLS_REFRESH_INTERVAL,
   getCallIcon,
   openShowQueueCallDrawer,
   PAGE_SIZE,
@@ -19,6 +21,8 @@ import { CallsViewFilter } from './CallsViewFilter'
 import { utcToZonedTime } from 'date-fns-tz'
 import { useSelector } from 'react-redux'
 import { RootState } from '../../store'
+import { loadPreference } from '../../lib/storage'
+import Link from 'next/link'
 
 export interface CallsViewProps extends ComponentProps<'div'> {}
 
@@ -31,7 +35,11 @@ export const CallsView: FC<CallsViewProps> = ({ className }): JSX.Element => {
   const [firstRender, setFirstRender]: any = useState(true)
   const [lastUpdated, setLastUpdated]: any = useState(null)
   const [intervalId, setIntervalId]: any = useState(0)
+  const [callsRefreshInterval, setCallsRefreshInterval]: any = useState(
+    DEFAULT_CALLS_REFRESH_INTERVAL,
+  )
   const queuesStore = useSelector((state: RootState) => state.queues)
+  const authStore = useSelector((state: RootState) => state.authentication)
 
   const [textFilter, setTextFilter]: any = useState('')
   const updateTextFilter = (newTextFilter: string) => {
@@ -61,15 +69,12 @@ export const CallsView: FC<CallsViewProps> = ({ className }): JSX.Element => {
     setCallsLoaded(false)
   }
 
-  const fetchCalls = async () => {
+  const fetchCalls = async (numHours: number) => {
     let selectedQueues = queuesFilter
 
     if (isEmpty(selectedQueues)) {
       selectedQueues = Object.keys(queuesStore.queues)
     }
-
-    //// todo: read numHours from preferences
-    const numHours = 12
 
     try {
       setCallsError('')
@@ -111,20 +116,26 @@ export const CallsView: FC<CallsViewProps> = ({ className }): JSX.Element => {
     let newIntervalId: any = 0
 
     async function fetchCallsInterval() {
+      const numHours =
+        loadPreference('queuesCallsLoadPeriod', authStore.username) || DEFAULT_CALLS_LOAD_PERIOD
+
       // fetch stats immediately and set interval
-      fetchCalls()
+      fetchCalls(numHours)
 
       // clear previous interval (if exists)
       if (intervalId) {
         clearInterval(intervalId)
       }
 
-      //// todo read from preferences
-      const callsUpdateInterval = 20000
+      const refreshInterval =
+        loadPreference('queuesCallsRefreshInterval', authStore.username) ||
+        DEFAULT_CALLS_REFRESH_INTERVAL
+
+      setCallsRefreshInterval(refreshInterval)
 
       newIntervalId = setInterval(() => {
-        fetchCalls()
-      }, callsUpdateInterval)
+        fetchCalls(numHours)
+      }, refreshInterval * 1000)
 
       setIntervalId(newIntervalId)
     }
@@ -178,11 +189,13 @@ export const CallsView: FC<CallsViewProps> = ({ className }): JSX.Element => {
         <div className='flex text-sm gap-4 text-right pb-4 xl:pb-7'>
           <div className='text-gray-500 dark:text-gray-500'>
             {t('Queues.Last update')}: {lastUpdated ? formatDateLoc(new Date(), 'HH:mm:ss') : '-'} (
-            {t('Queues.every_time_interval_seconds', { timeInterval: 20 })})
+            {t('Queues.every_time_interval_seconds', { timeInterval: callsRefreshInterval })})
           </div>
-          <button type='button' className='hover:underline text-gray-900 dark:text-gray-100'>
-            {t('Queues.Settings')}
-          </button>
+          <Link href={{ pathname: '/settings', query: { section: 'Queues' } }}>
+            <a className='hover:underline text-gray-900 dark:text-gray-100'>
+              {t('Queues.Settings')}
+            </a>
+          </Link>
         </div>
       </div>
       {callsError && <InlineNotification type='error' title={callsError}></InlineNotification>}
