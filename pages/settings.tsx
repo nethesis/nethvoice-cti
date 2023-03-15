@@ -16,9 +16,11 @@ import { RootState, store } from '../store'
 import { setTheme } from '../lib/darkTheme'
 import { Integrations, ClearCache } from '../components/settings'
 import { useEffect, useState } from 'react'
-import { Button } from '../components/common'
 import { v4 as uuidv4 } from 'uuid'
 import { useTranslation } from 'react-i18next'
+import { faUsers } from '@nethesis/nethesis-solid-svg-icons'
+import { Queues } from '../components/settings/Queues'
+import { useRouter } from 'next/router'
 
 interface SettingsMenuTypes {
   name: string
@@ -30,6 +32,7 @@ interface SettingsMenuTypes {
 const settingsMenu: SettingsMenuTypes[] = [
   // { name: 'General', href: '#', icon: faGear, current: false }, ////
   { name: 'Theme', href: '#', icon: faPalette, current: true },
+  { name: 'Queues', href: '#', icon: faUsers, current: false },
   { name: 'Integrations', href: '#', icon: faBorderAll, current: false },
   { name: 'Cache', href: '#', icon: faDatabase, current: false },
 ]
@@ -58,29 +61,31 @@ const Settings: NextPage = () => {
   const [currentSection, setCurrentSection] = useState<string>(settingsMenu[0].name)
   const auth = useSelector((state: RootState) => state.authentication)
   const [firstRender, setFirstRender]: any = useState(true)
-  const [isLoaded, setLoaded] = useState(false)
   const { t } = useTranslation()
+  const router = useRouter()
 
   useEffect(() => {
     if (firstRender) {
       setFirstRender(false)
       return
     }
+    let section = router.query.section as string
 
-    if (!isLoaded) {
-      changeSection('Theme')
+    if (!section) {
+      section = 'Theme'
     }
-  }, [firstRender, isLoaded])
+    changeSection(section)
+  }, [firstRender])
 
   const onChangeTheme = (newTheme: string) => {
     setTheme(newTheme, auth.username)
   }
 
-  const changeSection = (name: string) => {
+  const changeSection = (sectionName: string) => {
     const currentItems = items.map((route) => {
-      if (name === route.name) {
+      if (sectionName === route.name) {
         route.current = true
-        setCurrentSection(name)
+        setCurrentSection(sectionName)
       } else {
         route.current = false
       }
@@ -280,6 +285,8 @@ const Settings: NextPage = () => {
                     </div> */}
                   </div>
                 )}
+                {/* Queues */}
+                {currentSection === 'Queues' && <Queues />}
                 {/* Integrations section */}
                 {currentSection === 'Integrations' && <Integrations />}
                 {/* Clean cache */}

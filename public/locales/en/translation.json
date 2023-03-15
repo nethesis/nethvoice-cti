@@ -23,7 +23,8 @@
     "History": "History",
     "Applications": "Applications",
     "Settings": "Settings",
-    "Queues":"Queues"
+    "Queues": "Queues",
+    "Reset to defaults": "Reset to defaults"
   },
   "Login": {
     "User": "User",
@@ -120,6 +121,7 @@
   },
   "Settings": {
     "Theme": "Theme",
+    "Queues": "Queues",
     "Integrations": "Integrations",
     "System": "System",
     "Light": "Light",
@@ -136,7 +138,10 @@
     "Get phone widget configuration": "Get phone widget configuration",
     "The configuration string below is shown only once. If you will need it later, please save it in a safe place": "The configuration string below is shown only once. If you will need it later, please save it in a safe place",
     "Any phone widget using the current configuration will stop working": "Any phone widget using the current configuration will stop working",
-    "Revoke widget configuration": "Revoke widget configuration"
+    "Revoke widget configuration": "Revoke widget configuration",
+    "Queue calls": "Queue calls",
+    "Refresh calls every": "Refresh calls every",
+    "Load calls of last": "Load calls of last"
   },
   "TopBar": {
     "Signed in as": "Signed in as",
