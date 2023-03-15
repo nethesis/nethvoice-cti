@@ -496,10 +496,11 @@ export const ShowTelephoneLinesDrawerContent = forwardRef<
         )} */}
         <div className='flex mt-4 fixed bottom-0'>
           <Button
-            variant={isConfigurationActive ? 'primary' : 'disabled'}
+            variant='primary'
             type='submit'
             onClick={saveEditTelephoneLines}
             className='mb-4'
+            disabled={!isConfigurationActive ? true : false}
           >
             <FontAwesomeIcon icon={faFloppyDisk} className='mr-2 h-4 w-4' />
             {t('Common.Save')}

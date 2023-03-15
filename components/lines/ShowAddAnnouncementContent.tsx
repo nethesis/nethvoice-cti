@@ -28,7 +28,6 @@ export const ShowAddAnnouncementDrawerContent = forwardRef<
 >(({ config, className, ...props }, ref) => {
   const { t } = useTranslation()
   const [errorMessage, setErrorMessage] = useState('')
-  const [isAnnouncementUploaded, setAnnounceUploaded] = useState(false)
   const [textFilter, setTextFilter] = useState('')
   const [selectedType, setSelectedType] = useState('private')
   const textFilterRef = useRef() as React.MutableRefObject<HTMLInputElement>
@@ -223,10 +222,11 @@ export const ShowAddAnnouncementDrawerContent = forwardRef<
 
         <div className='flex mt-4 fixed bottom-0'>
           <Button
-            variant={isAnnouncementUploaded ? 'primary' : 'disabled'}
+            variant='primary'
             type='submit'
             onClick={saveEditTelephoneLines}
             className='mb-4'
+            disabled={!selectedFile ? true : false}
           >
             <FontAwesomeIcon icon={faFloppyDisk} className='mr-2 h-4 w-4' />
             {t('Common.Save')}
