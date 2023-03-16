@@ -242,7 +242,7 @@ export const SpeedDial = () => {
               <h3 className='text-lg font-medium leading-6 text-gray-900 dark:text-gray-100'>
                 Delete speed dial
               </h3>
-              <div className='mt-2'>
+              <div className='mt-3'>
                 <p className='text-sm text-gray-500 dark:text-gray-400'>
                   Speed dial <strong>{deletingName || ''}</strong> will be deleted.
                 </p>
