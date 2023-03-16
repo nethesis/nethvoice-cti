@@ -40,6 +40,7 @@ import { getOperatorByPhoneNumber, openShowOperatorDrawer } from '../../lib/oper
 import classNames from 'classnames'
 import { LoggedStatus } from './LoggedStatus'
 import { CallDuration } from '../operators/CallDuration'
+import { LogoutAllQueuesModal } from './LogoutAllQueuesModal'
 
 export interface QueuesManagementViewProps extends ComponentProps<'div'> {}
 
@@ -53,10 +54,12 @@ export const QueuesManagementView: FC<QueuesManagementViewProps> = ({ className 
   )
   const authStore = useSelector((state: RootState) => state.authentication)
   const queuesStore = useSelector((state: RootState) => state.queues)
-  const operatorsStore = useSelector((state: RootState) => state.operators)
 
   const [textFilter, setTextFilter]: any = useState('')
   const [debouncedTextFilter, setDebouncedTextFilter] = useState(false)
+
+  const [queuesToLogout, setQueuesToLogout] = useState<any[]>([])
+  const [showLogoutAllQueuesModal, setShowLogoutAllQueuesModal] = useState<boolean>(false)
 
   const toggleDebouncedTextFilter = () => {
     setDebouncedTextFilter(!debouncedTextFilter)
@@ -209,14 +212,20 @@ export const QueuesManagementView: FC<QueuesManagementViewProps> = ({ className 
     })
   }
 
-  const logoutAllQueues = () => {
+  const prepareLogoutAllQueuesModal = () => {
     const queuesToLogout = Object.values(queuesStore.queues).filter((queue: any) => {
       return getQueuesUserLoggedIn().includes(queue.queue)
     })
 
+    setQueuesToLogout(queuesToLogout)
+    setShowLogoutAllQueuesModal(true)
+  }
+
+  const logoutAllQueues = () => {
     queuesToLogout.forEach((queue: any) => {
       logoutFromQueue(mainextension, queue.queue)
     })
+    setShowLogoutAllQueuesModal(false)
   }
 
   const loginSingleQueue = (queue: any) => {
@@ -315,6 +324,12 @@ export const QueuesManagementView: FC<QueuesManagementViewProps> = ({ className 
 
   return (
     <div className={classNames(className)}>
+      <LogoutAllQueuesModal
+        isShown={showLogoutAllQueuesModal}
+        queuesToLogout={queuesToLogout}
+        onConfirm={logoutAllQueues}
+        onClose={() => setShowLogoutAllQueuesModal(false)}
+      />
       <div className='flex justify-between gap-x-4 flex-col-reverse md:flex-row'>
         {/* text filter */}
         <TextInput
@@ -346,7 +361,11 @@ export const QueuesManagementView: FC<QueuesManagementViewProps> = ({ className 
               ) : (
                 <>
                   {/* logout from all queues */}
-                  <Button variant='white' className='mr-2 mb-2' onClick={logoutAllQueues}>
+                  <Button
+                    variant='white'
+                    className='mr-2 mb-2'
+                    onClick={prepareLogoutAllQueuesModal}
+                  >
                     <FontAwesomeIcon
                       icon={faUserXmark}
                       className='h-4 w-4 mr-2 text-gray-500 dark:text-gray-400'

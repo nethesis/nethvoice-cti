@@ -261,6 +261,7 @@
     "Operator": "Operator",
     "Caller": "Caller",
     "Wait": "Wait",
-    "Position": "Position"
+    "Position": "Position",
+    "You are about to logout from the following queues": "You are about to logout from the following queues"
   }
 }
