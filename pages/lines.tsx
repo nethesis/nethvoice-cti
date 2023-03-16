@@ -6,7 +6,7 @@ import { useEffect, useState } from 'react'
 import { useTranslation } from 'react-i18next'
 import classNames from 'classnames'
 import { RootState, store } from '../store'
-import { LinesView, AnnouncementView } from '../components/lines'
+import { LinesView, AnnouncementView, RulesView } from '../components/lines'
 
 const Lines: NextPage = () => {
   const { t } = useTranslation()
@@ -84,6 +84,8 @@ const Lines: NextPage = () => {
               <LinesView />
             ) : currentTab === 'ads' ? (
               <AnnouncementView />
+            ) : currentTab === 'rules' ? (
+              <RulesView />
             ) : null}
           </div>
         </>
