@@ -324,6 +324,13 @@
     "Record now": "Registra ora",
     "Activation": "Attivazione",
     "Typology": "Tipologia",
-    "Add rule": "Add rule"
+    "Add rule": "Add rule",
+    "Rule name": "Rule name",
+    "Activate rule": "Activate rule",
+    "Lines select": "Lines select",
+    "Select all": "Select all",
+    "Specify start date and end date": "Specify start date and end date",
+    "Only active for one day": "Only active for one day",
+    "Insert number": "Insert number"
   }
 }

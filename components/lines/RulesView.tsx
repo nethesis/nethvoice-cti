@@ -7,6 +7,7 @@ import { Button, EmptyState, InlineNotification } from '../common'
 import { isEmpty, debounce } from 'lodash'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { openShowTelephoneLinesDrawer } from '../../lib/lines'
+import { openShowRuleDetailsDrawer } from '../../lib/lines'
 import { faPhone, faChevronRight } from '@nethesis/nethesis-solid-svg-icons'
 import classNames from 'classnames'
 import { RulesFilter } from './RulesFilter'
@@ -196,7 +197,7 @@ export const RulesView: FC<RulesViewProps> = ({ className }): JSX.Element => {
                             icon={faChevronRight}
                             className='h-3 w-3 p-2 cursor-pointer text-gray-500 dark:text-gray-500'
                             aria-hidden='true'
-                            // onClick={() => openShowTelephoneLinesDrawer(call.name, call.number)}
+                            onClick={() => openShowRuleDetailsDrawer(announcement.name)}
                           />
                         </td>
                       </tr>

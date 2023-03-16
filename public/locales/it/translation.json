@@ -216,6 +216,13 @@
     "Record now": "Registra ora",
     "Activation": "Attivazione",
     "Typology": "Tipologia",
-    "Add rule": "Aggiungi regola"
+    "Add rule": "Aggiungi regola",
+    "Rule name": "Nome regola",
+    "Activate rule": "Attiva regola",
+    "Lines select": "Seleziona linee",
+    "Select all": "Seleziona tutto",
+    "Specify start date and end date": "Specifica data inizio e data fine",
+    "Only active for one day": "Attivo solo un giorno",
+    "Insert number": "Inserisci numero"
   }
 }

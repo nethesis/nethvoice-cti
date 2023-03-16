@@ -18,6 +18,7 @@ import { AddToPhonebookDrawerContent } from '../history/AddToPhonebookDrawer'
 import { ShowQueueCallDrawerContent } from '../queues'
 import { ShowTelephoneLinesDrawerContent } from '../lines/ShowTelephoneLinesDrawerContent'
 import { ShowAddAnnouncementDrawerContent } from '../lines'
+import { ShowRuleDetailsContent } from '../lines'
 
 interface SideDrawerProps {
   isShown: boolean
@@ -65,6 +66,8 @@ export const SideDrawer: FC<SideDrawerProps> = ({ isShown, contentType, config, 
                         <ShowTelephoneLinesDrawerContent config={config} />
                       ) : contentType === 'showTelephoneAnnouncement' ? (
                         <ShowAddAnnouncementDrawerContent config={config} />
+                      ) : contentType === 'showRuleDetails' ? (
+                        <ShowRuleDetailsContent config={config} />
                       ) : null}
                     </div>
                   </nav>

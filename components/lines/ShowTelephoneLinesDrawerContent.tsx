@@ -41,8 +41,8 @@ export const ShowTelephoneLinesDrawerContent = forwardRef<
   const [announcementSelected, setAnnouncementSelected] = useState('')
   const [dateBeginValue, setDateBeginValue] = useState('')
   const [dateEndValue, setDateEndValue] = useState('')
-  const [selectedDate, setselectedDate]: any = useState([])
   const [selectedRulesInfo, setSelectedRulesInfo] = useState('ferie')
+  const [selectedType, setSelectedType] = useState('specifyDay')
 
   const [openPanel, setOpenPanel] = useState('')
 
@@ -62,9 +62,9 @@ export const ShowTelephoneLinesDrawerContent = forwardRef<
   ]
 
   const dateSelectionInputs = [
-    { id: 'onlyOneDay', value: t('Lines.Only for a day') },
+    { id: 'specifyDay', value: t('Lines.Specify start date and end date') },
+    { id: 'onlyOneDay', value: t('Lines.Only active for one day') },
     { id: 'everyDay', value: t('Lines.Active every day') },
-    { id: 'allDay', value: t('Lines.Active 24h') },
   ]
 
   const dateRuleInformations = [
@@ -116,22 +116,13 @@ export const ShowTelephoneLinesDrawerContent = forwardRef<
     setChangeConfigurationRadio(radioButtonConfigurationValue)
   }
 
-  function saveEditTelephoneLines() {
-    // TO DO POST API
+  function changeTypeSelected(event: any) {
+    const radioButtonTypeSelected = event.target.id
+    setSelectedType(radioButtonTypeSelected)
   }
 
-  function changeDateFilter(event: any) {
-    const isChecked = event.target.checked
-    const newSelectedDate = cloneDeep(selectedDate)
-
-    if (isChecked) {
-      newSelectedDate.push(event.target.value)
-      setselectedDate(newSelectedDate)
-    } else {
-      let index = newSelectedDate.indexOf(event.target.value)
-      newSelectedDate.splice(index, 1)
-      setselectedDate(newSelectedDate)
-    }
+  function saveEditTelephoneLines() {
+    // TO DO POST API
   }
 
   function customTypeSelected() {
@@ -164,7 +155,7 @@ export const ShowTelephoneLinesDrawerContent = forwardRef<
 
             {isManageAnnouncementActive && changeConfigurationRadio == 'customize' && (
               <>
-                <div className='mb-8'>
+                <div className='mb-4'>
                   <label htmlFor='types' className='sr-only'>
                     {t('Lines.Select a type')}
                   </label>
@@ -181,61 +172,63 @@ export const ShowTelephoneLinesDrawerContent = forwardRef<
                   </select>
                 </div>
                 <span className='font-medium'>{t('Lines.Select period')}</span>
-                <div className='flex mt-2 items-center justify-between'>
-                  <span>{t('Lines.Begin')}</span>
-                  <span className='ml-auto mr-auto'>{t('Lines.End')}</span>
-                </div>
                 {/* Date input  */}
                 {/* TO DO MANAGE IN CASE OF MOBILE DEVICE */}
                 {/* TO DO CHECK RADIO BUTTON VALUE TO SET DATE  */}
-                <div className='flex mt-2 items-center justify-between'>
-                  <TextInput
-                    type='datetime-local'
-                    placeholder='Select date start'
-                    className='max-w-sm mr-4'
-                    id='meeting-time'
-                    name='meeting-time'
-                    ref={dateBeginRef}
-                    onChange={changeDateBegin}
-                    defaultValue={dateBeginValue}
-                  />
-                  <TextInput
-                    type='datetime-local'
-                    placeholder='Select date start'
-                    className='max-w-sm'
-                    id='meeting-time'
-                    name='meeting-time'
-                    ref={dateEndRef}
-                    onChange={changeDateEnd}
-                    defaultValue={dateEndValue}
-                  />
-                </div>
-
-                {/* Date input select  */}
-                <fieldset>
-                  <legend className='sr-only'>Notification method</legend>
-                  <div className='space-y-4 mt-3'>
-                    {dateSelectionInputs.map((dateSelectionInput) => (
-                      <div key={dateSelectionInput.id} className='flex items-center'>
-                        <input
-                          id={dateSelectionInput.id}
-                          name='date-select'
-                          type='checkbox'
-                          defaultChecked={selectedDate.includes(dateSelectionInput.value)}
-                          value={dateSelectionInput.value}
-                          onChange={changeDateFilter}
-                          className='h-4 w-4 border-gray-300 text-primary focus:ring-primaryLight dark:border-gray-600 dark:text-primary dark:focus:ring-primaryDark'
-                        />
-                        <label
-                          htmlFor={dateSelectionInput.id}
-                          className='ml-3 block text-sm font-medium leading-6 text-gray-700 dark:text-gray-200'
-                        >
-                          {dateSelectionInput.value}
-                        </label>
-                      </div>
-                    ))}
+                <div className='mt-4'>
+                  {/* Date input select */}
+                  <fieldset>
+                    <legend className='sr-only'>Date range select</legend>
+                    <div className='space-y-4'>
+                      {dateSelectionInputs.map((dateSelectionInput) => (
+                        <div key={dateSelectionInput.id} className='flex items-center'>
+                          <input
+                            id={dateSelectionInput.id}
+                            name='date-select'
+                            type='radio'
+                            defaultChecked={dateSelectionInput.id === 'specifyDay'}
+                            className='h-4 w-4 border-gray-300 text-primary dark:border-gray-600 focus:ring-primaryLight dark:focus:ring-primaryDark dark:text-primary'
+                            onChange={changeTypeSelected}
+                          />
+                          <label
+                            htmlFor={dateSelectionInput.id}
+                            className='ml-3 block text-sm font-medium leading-6 text-gray-700 dark:text-gray-200'
+                          >
+                            {dateSelectionInput.value}
+                          </label>
+                        </div>
+                      ))}
+                    </div>
+                  </fieldset>
+                  <div className='flex mt-3 items-center justify-between'>
+                    <span>{t('Lines.Begin')}</span>
+                    <span className='ml-auto mr-auto'>{t('Lines.End')}</span>
                   </div>
-                </fieldset>
+                  <div className='flex mt-3 items-center justify-between'>
+                    <TextInput
+                      type='datetime-local'
+                      placeholder='Select date start'
+                      className='max-w-sm mr-4'
+                      id='meeting-time'
+                      name='meeting-time'
+                      ref={dateBeginRef}
+                      onChange={changeDateBegin}
+                      defaultValue={dateBeginValue}
+                      disabled={selectedType != 'specifyDay'}
+                    />
+                    <TextInput
+                      type='datetime-local'
+                      placeholder='Select date end'
+                      className='max-w-sm'
+                      id='meeting-time'
+                      name='meeting-time'
+                      ref={dateEndRef}
+                      onChange={changeDateEnd}
+                      defaultValue={dateEndValue}
+                      disabled={selectedType != 'specifyDay'}
+                    />
+                  </div>
+                </div>
 
                 {/* Announcement and voicemail switch */}
                 <div className='flex items-center justify-between mt-6'>
@@ -284,6 +277,13 @@ export const ShowTelephoneLinesDrawerContent = forwardRef<
 
                 {/* Divider */}
                 <div className='mt-1 border-t border-gray-200 dark:border-gray-700'></div>
+
+                {isForwardActive && (
+                  <TextInput
+                    placeholder={t('Lines.Insert number') || ''}
+                    className='mt-4'
+                  ></TextInput>
+                )}
               </>
             )}
           </>
@@ -494,7 +494,8 @@ export const ShowTelephoneLinesDrawerContent = forwardRef<
             ))}
           </ul>
         )} */}
-        <div className='flex mt-4 fixed bottom-0'>
+        {/* fixed bottom-0 */}
+        <div className='flex mt-6'>
           <Button
             variant='primary'
             type='submit'

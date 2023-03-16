@@ -41,3 +41,13 @@ export const openShowTelephoneAnnouncementDrawer = () => {
     config: config,
   })
 }
+
+export const openShowRuleDetailsDrawer = (name: any) => {
+  const config = { name }
+
+  store.dispatch.sideDrawer.update({
+    isShown: true,
+    contentType: 'showRuleDetails',
+    config: config,
+  })
+}
