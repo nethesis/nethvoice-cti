@@ -18,6 +18,7 @@ import {
   removeQueueFromExpanded,
   removeQueueFromFavorites,
   searchStringInQueue,
+  sortByLoggedStatus,
   unpauseQueue,
 } from '../../lib/queuesLib'
 import {
@@ -279,8 +280,7 @@ export const QueuesManagementView: FC<QueuesManagementViewProps> = ({ className 
     return queue.waitingCallersList[0].waitingTime
   }
 
-  const getQueueOperatorTemplate = (queue: any, key: string, index: number) => {
-    const queueOperator = queue.members[key]
+  const getQueueOperatorTemplate = (queue: any, queueOperator: any, index: number) => {
     const operatorExtension = queueOperator.member
     const operator: any = getOperatorByPhoneNumber(operatorExtension, operators)
 
@@ -872,9 +872,11 @@ export const QueuesManagementView: FC<QueuesManagementViewProps> = ({ className 
                                       </div>
                                     ) : (
                                       <div className='flex flex-col gap-2 border rounded-md max-h-56 overflow-auto border-gray-200 dark:border-gray-700'>
-                                        {Object.keys(queue.members).map((key, index) => {
-                                          return getQueueOperatorTemplate(queue, key, index)
-                                        })}
+                                        {Object.values(queue.members)
+                                          .sort(sortByLoggedStatus)
+                                          .map((op, index) => {
+                                            return getQueueOperatorTemplate(queue, op, index)
+                                          })}
                                       </div>
                                     )}
                                   </div>

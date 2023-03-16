@@ -383,3 +383,37 @@ export const removeQueueFromExpanded = (queueId: string, currentUsername: string
   savePreference('expandedQueues', expandedQueues, currentUsername)
   store.dispatch.queues.setExpandedQueues(expandedQueues)
 }
+
+/**
+ * Get operator status on a queue
+ */
+export const getLoggedStatus = (operator: any) => {
+  if (!operator.loggedIn) {
+    return 'loggedOut'
+  } else {
+    if (operator.paused) {
+      return 'paused'
+    } else {
+      return 'loggedIn'
+    }
+  }
+}
+
+/**
+ * Sort function to order queue members by logged / paused attributes
+ */
+export const sortByLoggedStatus = (operator1: any, operator2: any) => {
+  const loggedStatusRanking = ['loggedIn', 'paused', 'loggedOut']
+  const status1 = getLoggedStatus(operator1)
+  const status2 = getLoggedStatus(operator2)
+  const rank1 = loggedStatusRanking.indexOf(status1)
+  const rank2 = loggedStatusRanking.indexOf(status2)
+
+  if (rank1 < rank2) {
+    return -1
+  }
+  if (rank1 > rank2) {
+    return 1
+  }
+  return 0
+}
