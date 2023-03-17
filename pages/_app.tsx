@@ -1,8 +1,11 @@
 // Copyright (C) 2023 Nethesis S.r.l.
 // SPDX-License-Identifier: AGPL-3.0-or-later
 
-import '@nethesis/phone-island/dist/index.css'
+// Import nethvoice-cti styles
 import '../styles/globals.css'
+// Import phone-island styles
+import '@nethesis/phone-island/dist/index.css'
+
 import type { AppProps } from 'next/app'
 import { useState, useEffect } from 'react'
 import { Provider } from 'react-redux'
