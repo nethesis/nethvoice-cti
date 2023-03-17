@@ -44,8 +44,7 @@ export const ClearCache = () => {
                 {t('Settings.Clear cache')}
               </h4>
               <p className='mt-1 text-sm text-gray-500 dark:text-gray-400'>
-                {t('Settings.This will force')} {productName}{' '}
-                {t('Settings.to reload all cached data from the server')}
+                {t('Settings.clear_cache_description')}
               </p>
               <div className='mt-6'>
                 <Button
@@ -62,7 +61,7 @@ export const ClearCache = () => {
                   <InlineNotification
                     className='mt-5 border-none'
                     type='success'
-                    title='Cache cleared'
+                    title={t('Settings.Cache cleared')}
                   />
                 )}
               </div>

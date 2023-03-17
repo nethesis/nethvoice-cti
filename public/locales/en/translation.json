@@ -24,7 +24,8 @@
     "Applications": "Applications",
     "Settings": "Settings",
     "Queues": "Queues",
-    "Reset to defaults": "Reset to defaults"
+    "Reset to defaults": "Reset to defaults",
+    "Loading": "Loading"
   },
   "Login": {
     "User": "User",
@@ -126,22 +127,23 @@
     "System": "System",
     "Light": "Light",
     "Dark": "Dark",
-    "Phone widget configuration": "Phone widget configuration",
+    "Phone Island configuration": "Phone Island configuration",
     "Settings": "Settings",
     "Cache": "Cache",
     "Use light or dark theme according to system preferences": "Use light or dark theme according to system preferences",
     "Clear cache": "Clear cache",
-    "This will force": "This will force",
-    "to reload all cached data from the server": "to reload all cached data from the server",
-    "Anytime the user starts or receives a phone call, a floating phone widget is shown on CTI user interface. This widget can be imported and used into other web applications. Click the button below to get the configuration string needed to import the phone widget into your web application": "Anytime the user starts or receives a phone call, a floating phone widget is shown on CTI user interface. This widget can be imported and used into other web applications. Click the button below to get the configuration string needed to import the phone widget into your web application.",
+    "clear_cache_description": "All cached data (e.g. operator avatars) will be reloaded from the server",
+    "phone_island_integration_description": "Anytime a user starts or receives a phone call, a Phone Island is shown on {{productName}} user interface. Phone Island widget can be imported and used into other web applications. Click the button below to get the configuration string needed to import the Phone Island into your web application.",
     "Revoke": "Revoke",
-    "Get phone widget configuration": "Get phone widget configuration",
+    "Revoke configuration": "Revoke configuration",
+    "Get Phone Island configuration": "Get Phone Island configuration",
     "The configuration string below is shown only once. If you will need it later, please save it in a safe place": "The configuration string below is shown only once. If you will need it later, please save it in a safe place",
-    "Any phone widget using the current configuration will stop working": "Any phone widget using the current configuration will stop working",
-    "Revoke widget configuration": "Revoke widget configuration",
+    "Any Phone Island using the current configuration will stop working": "Any Phone Island using the current configuration will stop working",
+    "Revoke Phone Island configuration": "Revoke Phone Island configuration",
     "Queue calls": "Queue calls",
     "Refresh calls every": "Refresh calls every",
-    "Load calls of last": "Load calls of last"
+    "Load calls of last": "Load calls of last",
+    "Cache cleared": "Cache cleared"
   },
   "TopBar": {
     "Signed in as": "Signed in as",

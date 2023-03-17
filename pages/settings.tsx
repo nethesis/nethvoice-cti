@@ -2,7 +2,6 @@
 // SPDX-License-Identifier: AGPL-3.0-or-later
 
 import type { NextPage } from 'next'
-import { RadioGroup } from '@headlessui/react'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import {
   faPalette,
@@ -13,7 +12,6 @@ import {
 import classNames from 'classnames'
 import { useSelector } from 'react-redux'
 import { RootState, store } from '../store'
-import { setTheme } from '../lib/darkTheme'
 import { Integrations, ClearCache } from '../components/settings'
 import { useEffect, useState } from 'react'
 import { v4 as uuidv4 } from 'uuid'
@@ -21,6 +19,7 @@ import { useTranslation } from 'react-i18next'
 import { faUsers } from '@nethesis/nethesis-solid-svg-icons'
 import { Queues } from '../components/settings/Queues'
 import { useRouter } from 'next/router'
+import { Theme } from '../components/settings/Theme'
 
 interface SettingsMenuTypes {
   name: string
@@ -29,40 +28,21 @@ interface SettingsMenuTypes {
   current: boolean
 }
 
-const settingsMenu: SettingsMenuTypes[] = [
-  // { name: 'General', href: '#', icon: faGear, current: false }, ////
-  { name: 'Theme', href: '#', icon: faPalette, current: true },
-  { name: 'Queues', href: '#', icon: faUsers, current: false },
-  { name: 'Integrations', href: '#', icon: faBorderAll, current: false },
-  { name: 'Cache', href: '#', icon: faDatabase, current: false },
-]
-
-const themeOptions = [
-  {
-    id: 'system',
-    title: 'System',
-    description: 'Use light or dark theme according to system preferences',
-  },
-  {
-    id: 'light',
-    title: 'Light',
-    description: '',
-  },
-  {
-    id: 'dark',
-    title: 'Dark',
-    description: '',
-  },
-]
-
 const Settings: NextPage = () => {
-  const { theme } = useSelector((state: RootState) => state.darkTheme)
+  const { t } = useTranslation()
+  const authStore = useSelector((state: RootState) => state.authentication)
+  const [firstRender, setFirstRender]: any = useState(true)
+  const router = useRouter()
+
+  const settingsMenu: SettingsMenuTypes[] = [
+    { name: 'Theme', href: '#', icon: faPalette, current: true },
+    { name: 'Queues', href: '#', icon: faUsers, current: false },
+    { name: 'Integrations', href: '#', icon: faBorderAll, current: false },
+    { name: 'Cache', href: '#', icon: faDatabase, current: false },
+  ]
+
   const [items, setItems] = useState<SettingsMenuTypes[]>(settingsMenu)
   const [currentSection, setCurrentSection] = useState<string>(settingsMenu[0].name)
-  const auth = useSelector((state: RootState) => state.authentication)
-  const [firstRender, setFirstRender]: any = useState(true)
-  const { t } = useTranslation()
-  const router = useRouter()
 
   useEffect(() => {
     if (firstRender) {
@@ -77,10 +57,6 @@ const Settings: NextPage = () => {
     changeSection(section)
   }, [firstRender])
 
-  const onChangeTheme = (newTheme: string) => {
-    setTheme(newTheme, auth.username)
-  }
-
   const changeSection = (sectionName: string) => {
     const currentItems = items.map((route) => {
       if (sectionName === route.name) {
@@ -93,8 +69,6 @@ const Settings: NextPage = () => {
     })
     setItems(currentItems)
   }
-
-  const authStore = useSelector((state: RootState) => state.authentication)
 
   //// remove mock
   const createCallNotif = () => {
@@ -166,7 +140,7 @@ const Settings: NextPage = () => {
                         item.current
                           ? 'bg-primaryLighter border-primaryLight text-primaryDark hover:bg-primaryLighter hover:text-primaryDark dark:bg-primaryDarker dark:border-primaryDark dark:text-primaryLight dark:hover:bg-primaryDarker dark:hover:text-primaryLight'
                           : 'border-transparent text-gray-900 hover:bg-gray-50 hover:text-gray-900 dark:text-gray-100 dark:hover:bg-gray-900 dark:hover:text-gray-100',
-                        'group border-l-4 px-3 py-2 flex items-center text-sm font-medium cursor-pointer',
+                        'group border-l-4 px-3 py-3 flex items-center text-sm font-medium cursor-pointer',
                       )}
                       aria-current={item.current ? 'page' : undefined}
                     >
@@ -174,9 +148,9 @@ const Settings: NextPage = () => {
                         icon={item.icon}
                         className={classNames(
                           item.current
-                            ? 'text-primaryLight group-hover:text-primaryLight dark:text-primary dark:group-hover:text-primary'
+                            ? 'text-primary group-hover:text-primary dark:text-primaryLight dark:group-hover:text-primaryLight'
                             : 'text-gray-400 group-hover:text-gray-500 dark:text-gray-500 dark:group-hover:text-gray-400',
-                          'flex-shrink-0 -ml-1 mr-3 h-6 w-6',
+                          'flex-shrink-0 -ml-1 mr-3 h-4 w-4',
                         )}
                         aria-hidden='true'
                       />
@@ -188,109 +162,33 @@ const Settings: NextPage = () => {
               {/* main content */}
               <div className='divide-y divide-gray-200 dark:divide-gray-700 lg:col-span-9'>
                 {/* Theme section */}
-                {currentSection === 'Theme' && (
-                  <div className='py-6 px-4 sm:p-6 lg:pb-8'>
-                    <div>
-                      <h2 className='text-lg font-medium leading-6 text-gray-900 dark:text-gray-100 mb-6'>
-                        {t('Settings.Theme')}
-                      </h2>
-                    </div>
-
-                    <RadioGroup value={theme} onChange={onChangeTheme}>
-                      <div className='isolate mt-1 -space-y-px rounded-md bg-white dark:bg-gray-900 shadow-sm'>
-                        {themeOptions.map((themeOption, settingIdx) => (
-                          <RadioGroup.Option
-                            key={themeOption.title}
-                            value={themeOption.id}
-                            className={({ checked }) =>
-                              classNames(
-                                settingIdx === 0 ? 'rounded-tl-md rounded-tr-md' : '',
-                                settingIdx === themeOptions.length - 1
-                                  ? 'rounded-bl-md rounded-br-md'
-                                  : '',
-                                checked
-                                  ? 'bg-primaryLighter border-primaryLight dark:bg-primaryDarker dark:border-primaryDark z-10'
-                                  : 'border-gray-200 dark:border-gray-700',
-                                'relative border p-4 flex cursor-pointer focus:outline-none',
-                              )
-                            }
-                          >
-                            {({ active, checked }) => (
-                              <>
-                                <span
-                                  className={classNames(
-                                    checked
-                                      ? 'bg-primary border-transparent'
-                                      : 'bg-white border-gray-300 dark:bg-gray-900 dark:border-gray-600',
-                                    active ? 'ring-2 ring-offset-2 ring-primary' : '',
-                                    'mt-0.5 h-4 w-4 shrink-0 cursor-pointer rounded-full border flex items-center justify-center',
-                                  )}
-                                  aria-hidden='true'
-                                >
-                                  <span className='rounded-full bg-white dark:bg-gray-900 w-1.5 h-1.5' />
-                                </span>
-                                <span className='ml-3 flex flex-col'>
-                                  <RadioGroup.Label
-                                    as='span'
-                                    className={classNames(
-                                      checked
-                                        ? 'text-primaryDarker dark:text-primaryLighter'
-                                        : 'text-gray-900 dark:text-gray-100',
-                                      'block text-sm font-medium',
-                                    )}
-                                  >
-                                    {t(`Settings.${themeOption.title}`)}
-                                  </RadioGroup.Label>
-                                  {themeOption.description && (
-                                    <RadioGroup.Description
-                                      as='span'
-                                      className={classNames(
-                                        checked
-                                          ? 'text-primaryDark dark:text-primaryLight'
-                                          : 'text-gray-500 dark:text-gray-400',
-                                        'block text-sm',
-                                        'mt-1',
-                                      )}
-                                    >
-                                      {t(`Settings.${themeOption.description}`)}
-                                    </RadioGroup.Description>
-                                  )}
-                                </span>
-                              </>
-                            )}
-                          </RadioGroup.Option>
-                        ))}
-                      </div>
-                    </RadioGroup>
-
-                    {/* //// remove test buttons */}
-                    {/* <div className='mt-6'>
-                      <Button variant='white' onClick={() => createCallNotif()}>
-                        <span>Create personal call notif</span>
-                      </Button>
-                      <Button
-                        variant='white'
-                        onClick={() => createQueueCallNotif()}
-                        className='ml-2'
-                      >
-                        <span>Create queue call notif</span>
-                      </Button>
-                      <Button
-                        variant='white'
-                        onClick={() => createChatNotif()}
-                        className='ml-2'
-                      >
-                        <span>Create chat notif</span>
-                      </Button>
-                    </div> */}
-                  </div>
-                )}
+                {currentSection === 'Theme' && <Theme />}
                 {/* Queues */}
                 {currentSection === 'Queues' && <Queues />}
                 {/* Integrations section */}
                 {currentSection === 'Integrations' && <Integrations />}
                 {/* Clean cache */}
                 {currentSection === 'Cache' && <ClearCache />}
+                {/* //// remove test buttons */}
+                {/* <div className='mt-6'>
+                  <Button variant='white' onClick={() => createCallNotif()}>
+                    <span>Create personal call notif</span>
+                  </Button>
+                  <Button
+                    variant='white'
+                    onClick={() => createQueueCallNotif()}
+                    className='ml-2'
+                  >
+                    <span>Create queue call notif</span>
+                  </Button>
+                  <Button
+                    variant='white'
+                    onClick={() => createChatNotif()}
+                    className='ml-2'
+                  >
+                    <span>Create chat notif</span>
+                  </Button>
+                </div> */}
               </div>
             </div>
           </div>
