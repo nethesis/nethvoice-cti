@@ -103,7 +103,7 @@ export const ContactSummary = forwardRef<HTMLButtonElement, ContactSummaryProps>
               <h3 className='text-lg font-medium leading-6 text-gray-900 dark:text-gray-100'>
                 Delete contact
               </h3>
-              <div className='mt-2'>
+              <div className='mt-3'>
                 <p className='text-sm text-gray-500 dark:text-gray-400'>
                   Contact <strong>{contactToDelete?.displayName || ''}</strong> will be permanently
                   deleted.

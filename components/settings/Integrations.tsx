@@ -20,6 +20,7 @@ import {
   removePhoneIslandToken,
 } from '../../services/authentication'
 import { useTranslation } from 'react-i18next'
+import { getProductName } from '../../lib/utils'
 
 export const Integrations = () => {
   const [copied, setCopied] = useState<boolean>(false)
@@ -31,6 +32,8 @@ export const Integrations = () => {
   const [tokenExists, setTokenExists] = useState<boolean>(false)
   const [loading, setLoading] = useState<boolean>(false)
   const { t } = useTranslation()
+
+  const productName = getProductName()
 
   const newConfig = async () => {
     setLoading(true)
@@ -52,18 +55,24 @@ export const Integrations = () => {
   }
 
   const removeConfig = async () => {
+    setLoading(true)
+    setShowMondal(false)
     const removed = await removePhoneIslandToken()
     if (removed) {
       setConfig('')
       setTokenExists(false)
-      setShowMondal(false)
     }
+    setLoading(false)
   }
 
   useEffect(() => {
     const checkPhoneIslandToken = async () => {
+      setLoading(true)
       const data = await phoneIslandTokenCheck()
-      if (data.exists) setTokenExists(true)
+      if (data.exists) {
+        setTokenExists(true)
+      }
+      setLoading(false)
     }
     checkPhoneIslandToken()
   }, [])
@@ -84,30 +93,33 @@ export const Integrations = () => {
                 id='phone-configuration-heading'
                 className='text-sm font-medium leading-6 text-gray-900 dark:text-gray-100'
               >
-                {t('Settings.Phone widget configuration')}
+                {t('Settings.Phone Island configuration')}
               </h4>
               <p className='mt-1 text-sm text-gray-500 dark:text-gray-400'>
-                {t(
-                  'Settings.Anytime the user starts or receives a phone call, a floating phone widget is shown on CTI user interface. This widget can be imported and used into other web applications. Click the button below to get the configuration string needed to import the phone widget into your web application',
-                )}
+                {t('Settings.phone_island_integration_description', { productName })}
               </p>
               <p className='mt-6 flex items-center gap-2'>
-                {!tokenExists && (
-                  <Button variant='white' onClick={newConfig}>
-                    {t('Settings.Get phone widget configuration')}{' '}
-                    {loading && <FontAwesomeIcon icon={faCircleNotch} className='fa-spin ml-2' />}
+                {loading && (
+                  <Button variant='white' disabled>
+                    {t('Common.Loading')}{' '}
+                    <FontAwesomeIcon icon={faCircleNotch} className='fa-spin ml-2' />
                   </Button>
                 )}
-                {tokenExists && (
-                  <Button variant='danger' onClick={() => setShowMondal(true)}>
-                    {t('Settings.Revoke')}
+                {!loading && !tokenExists && (
+                  <Button variant='white' onClick={newConfig}>
+                    {t('Settings.Get Phone Island configuration')}{' '}
+                  </Button>
+                )}
+                {!loading && tokenExists && (
+                  <Button variant='white' onClick={() => setShowMondal(true)}>
+                    {t('Settings.Revoke configuration')}
                   </Button>
                 )}
               </p>
 
               {config && (
                 <>
-                  <InlineNotification className='mt-5 border-none' type='warning' title='Important'>
+                  <InlineNotification className='mt-5' type='warning' title={t('Common.Warning')}>
                     <p>
                       {t(
                         'Settings.The configuration string below is shown only once. If you will need it later, please save it in a safe place',
@@ -152,11 +164,11 @@ export const Integrations = () => {
           </div>
           <div className='mt-3 text-center sm:mt-0 sm:ml-4 sm:text-left'>
             <h3 className='text-lg font-medium leading-6 text-gray-900'>
-              {t('Settings.Revoke widget configuration')}
+              {t('Settings.Revoke Phone Island configuration')}
             </h3>
             <div className='mt-2'>
               <p className='text-sm text-gray-500'>
-                {t('Settings.Any phone widget using the current configuration will stop working')}
+                {t('Settings.Any Phone Island using the current configuration will stop working')}
               </p>
             </div>
           </div>

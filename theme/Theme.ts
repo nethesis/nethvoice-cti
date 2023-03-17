@@ -397,10 +397,10 @@ const theme = {
       success: 'text-sm font-medium text-green-800 dark:text-green-100',
     },
     iconStyle: {
-      info: 'h-4 w-4 relative -top-1 text-blue-400 dark:text-blue-300',
-      error: 'h-4 w-4 relative -top-1 text-red-400 dark:text-red-300',
-      warning: 'h-4 w-4 relative -top-1 text-yellow-600 dark:text-yellow-300',
-      success: 'h-4 w-4 relative -top-1 text-green-600 dark:text-green-300',
+      info: 'h-4 w-4 relative -top-0.5 text-blue-400 dark:text-blue-300',
+      error: 'h-4 w-4 relative -top-0.5 text-red-400 dark:text-red-300',
+      warning: 'h-4 w-4 relative -top-0.5 text-yellow-600 dark:text-yellow-300',
+      success: 'h-4 w-4 relative -top-0.5 text-green-600 dark:text-green-300',
     },
     childrenText: {
       info: 'mt-2 text-sm text-blue-700 dark:text-blue-200',

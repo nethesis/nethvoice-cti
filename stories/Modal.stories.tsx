@@ -39,7 +39,7 @@ export const Danger: Story<ModalProps> = (): JSX.Element => {
             <h3 className='text-lg font-medium leading-6 text-gray-900 dark:text-gray-100'>
               Delete account
             </h3>
-            <div className='mt-2'>
+            <div className='mt-3'>
               <p className='text-sm text-gray-500 dark:text-gray-400'>
                 The contact will be deleted from the phonebook.
               </p>
