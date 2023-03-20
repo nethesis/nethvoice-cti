@@ -3,7 +3,7 @@
 
 import { ComponentPropsWithRef, forwardRef, useRef } from 'react'
 import classNames from 'classnames'
-import { TextInput, SideDrawerCloseIcon } from '../common'
+import { TextInput } from '../common'
 import { Fragment, useState, useEffect } from 'react'
 import { Dialog, Disclosure, Popover, Transition } from '@headlessui/react'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
@@ -225,7 +225,8 @@ export const Filter = forwardRef<HTMLButtonElement, FilterProps>(
                         )}
                       </Disclosure>
                       {/* sort by filter (mobile) */}
-                      <Disclosure
+                      {/* //// sort by company is currently not implemented on CTI server */}
+                      {/* <Disclosure
                         as='div'
                         key={sortFilter.name}
                         className='border-t px-4 py-6 border-gray-200 dark:border-gray-700'
@@ -276,7 +277,7 @@ export const Filter = forwardRef<HTMLButtonElement, FilterProps>(
                             </Disclosure.Panel>
                           </>
                         )}
-                      </Disclosure>
+                      </Disclosure> */}
                     </form>
                   </Dialog.Panel>
                 </Transition.Child>
@@ -359,7 +360,8 @@ export const Filter = forwardRef<HTMLButtonElement, FilterProps>(
                     </Popover>
 
                     {/* sort by filter */}
-                    <Popover
+                    {/* //// sort by company is currently not implemented on CTI server */}
+                    {/* <Popover
                       as='div'
                       key={sortFilter.name}
                       id={`desktop-menu-${sortFilter.id}`}
@@ -408,7 +410,7 @@ export const Filter = forwardRef<HTMLButtonElement, FilterProps>(
                           </form>
                         </Popover.Panel>
                       </Transition>
-                    </Popover>
+                    </Popover> */}
                   </Popover.Group>
 
                   <button
@@ -445,7 +447,8 @@ export const Filter = forwardRef<HTMLButtonElement, FilterProps>(
                     </div>
                   </div>
                   {/* sort by */}
-                  <div className='mt-2 sm:mt-0 sm:ml-4'>
+                  {/* //// sort by company is currently not implemented on CTI server */}
+                  {/* <div className='mt-2 sm:mt-0 sm:ml-4'>
                     <div className='-m-1 flex flex-wrap items-center'>
                       <span className='m-1 inline-flex items-center rounded-full border py-1.5 px-3 text-sm font-medium border-gray-200 bg-white text-gray-700 dark:border-gray-700 dark:bg-gray-900 dark:text-gray-200'>
                         <span>
@@ -460,7 +463,7 @@ export const Filter = forwardRef<HTMLButtonElement, FilterProps>(
                   <div
                     aria-hidden='true'
                     className='hidden h-5 w-px sm:ml-4 sm:block bg-gray-300 dark:bg-gray-600'
-                  />
+                  /> */}
                   {/* reset filters */}
                   <div className='mt-4 sm:mt-0 text-left sm:text-center ml-1 sm:ml-4'>
                     <button
