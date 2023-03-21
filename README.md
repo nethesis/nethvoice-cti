@@ -109,8 +109,13 @@ cd nethvoice-cti
 
 Create the container image:
 
+**Requires**
+
+- Access to github.com/nethesis/nethesis-icons
+- A valid token with _repo_ permission of your GitHub account 
+
 ```
-podman build --env GITHUB_TOKEN=<YOUR_GH_TOKEN> -t ghcr.io/nethesis/nethvoice-cti .
+podman build --env ICONS_TOKEN=<YOUR_VALID_GH_TOKEN> -t ghcr.io/nethesis/nethvoice-cti .
 ```
 
 _It returns the image_id._
