@@ -300,12 +300,18 @@ export const logoutFromQueue = async (endpointId: string, queueId: string) => {
   }
 }
 
-export const pauseQueue = async (endpointId: string, queueId: string) => {
+export const pauseQueue = async (endpointId: string, queueId: string, reason: string) => {
+  const payload: any = {
+    endpointId,
+    queueId,
+  }
+
+  if (reason) {
+    payload.reason = reason
+  }
+
   try {
-    const { data, status } = await axios.post('/astproxy/queuemember_pause', {
-      endpointId,
-      queueId,
-    })
+    const { data, status } = await axios.post('/astproxy/queuemember_pause', payload)
     return data
   } catch (error) {
     handleNetworkError(error)
