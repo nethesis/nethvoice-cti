@@ -160,7 +160,7 @@ const Settings: NextPage = () => {
                 </nav>
               </aside>
               {/* main content */}
-              <div className='divide-y divide-gray-200 dark:divide-gray-700 lg:col-span-9'>
+              <div className='lg:col-span-9'>
                 {/* Theme section */}
                 {currentSection === 'Theme' && <Theme />}
                 {/* Queues */}
@@ -170,22 +170,14 @@ const Settings: NextPage = () => {
                 {/* Clean cache */}
                 {currentSection === 'Cache' && <ClearCache />}
                 {/* //// remove test buttons */}
-                {/* <div className='mt-6'>
+                {/* <div className='my-6'>
                   <Button variant='white' onClick={() => createCallNotif()}>
                     <span>Create personal call notif</span>
                   </Button>
-                  <Button
-                    variant='white'
-                    onClick={() => createQueueCallNotif()}
-                    className='ml-2'
-                  >
+                  <Button variant='white' onClick={() => createQueueCallNotif()} className='ml-2'>
                     <span>Create queue call notif</span>
                   </Button>
-                  <Button
-                    variant='white'
-                    onClick={() => createChatNotif()}
-                    className='ml-2'
-                  >
+                  <Button variant='white' onClick={() => createChatNotif()} className='ml-2'>
                     <span>Create chat notif</span>
                   </Button>
                 </div> */}
