@@ -76,6 +76,16 @@ export const RulesView: FC<RulesViewProps> = ({ className }): JSX.Element => {
     console.log("you've just deleted this index", index)
   }
 
+  const filterLinesTable = (lines: any) => {
+    let limit = 10
+    const filteredLinesTables = lines.filter((telephoneLines: any) => {
+      return telephoneLines.name.toLowerCase().includes(textFilter)
+    })
+    return filteredLinesTables.slice(0, limit)
+  }
+
+  const filteredTable = filterLinesTable(table)
+
   return (
     <div className={classNames(className)}>
       {/* TO DO CHECK ON MOBILE DEVICE  */}
@@ -161,7 +171,7 @@ export const RulesView: FC<RulesViewProps> = ({ className }): JSX.Element => {
                     {/* {isLinesLoaded &&
                           lines?.rows?.map((call: any, index: number) => ( */}
 
-                    {table.map((announcement: any, index: number) => (
+                    {filteredTable.map((announcement: any, index: number) => (
                       <tr key={index}>
                         {/* Name */}
                         <td className='py-4 pl-4 pr-3 sm:pl-6'>

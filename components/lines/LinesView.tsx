@@ -6,7 +6,7 @@ import { useTranslation } from 'react-i18next'
 import { Button, EmptyState, InlineNotification } from '../common'
 import { isEmpty, debounce } from 'lodash'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
-import { openShowTelephoneLinesDrawer } from '../../lib/lines'
+import { openShowTelephoneLinesDrawer, retrieveLines } from '../../lib/lines'
 import { faChevronRight, faChevronLeft, faPhone } from '@nethesis/nethesis-solid-svg-icons'
 import classNames from 'classnames'
 import { LinesFilter } from './LinesFilter'
@@ -106,6 +106,16 @@ export const LinesView: FC<LinesViewProps> = ({ className }): JSX.Element => {
   //     return !isLinesLoaded || pageNum >= lines?.totalPages
   //   }
 
+  const filterLinesTable = (lines: any) => {
+    let limit = 10
+    const filteredLinesTables = lines.filter((telephoneLines:any) => {
+      return telephoneLines.name.toLowerCase().includes(textFilter)
+    })
+    return filteredLinesTables.slice(0, limit)
+  }
+
+  const filteredTable = filterLinesTable(table)
+
   return (
     <div className={classNames(className)}>
       <div className='flex flex-col flex-wrap xl:flex-row justify-between gap-x-4 xl:items-end'>
@@ -184,7 +194,7 @@ export const LinesView: FC<LinesViewProps> = ({ className }): JSX.Element => {
                     {/* {isLinesLoaded &&
                           lines?.rows?.map((call: any, index: number) => ( */}
 
-                    {table.map((call: any, index: number) => (
+                    {filteredTable.map((call: any, index: number) => (
                       <tr key={index}>
                         {/* Name */}
                         <td className='py-4 pl-4 pr-3 sm:pl-6'>

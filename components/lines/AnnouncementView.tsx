@@ -3,46 +3,55 @@
 
 import { FC, ComponentProps, useState, useEffect, useMemo } from 'react'
 import { useTranslation } from 'react-i18next'
-import { Button, EmptyState, InlineNotification } from '../common'
+import { Button, EmptyState, InlineNotification, Avatar } from '../common'
 import { isEmpty, debounce } from 'lodash'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
-import { openShowTelephoneLinesDrawer } from '../../lib/lines'
-import { faPhone, faPlay, faDownload, faTrash } from '@nethesis/nethesis-solid-svg-icons'
+import { openShowTelephoneLinesDrawer, retrieveLines } from '../../lib/lines'
+import {
+  faPhone,
+  faPlay,
+  faDownload,
+  faTrash,
+  faLock,
+  faLockOpen,
+} from '@nethesis/nethesis-solid-svg-icons'
 import classNames from 'classnames'
 import { AnnouncementFilter } from './AnnouncementFilter'
 import { useSelector } from 'react-redux'
 import { RootState } from '../../store'
+import { retrieveAvatars } from '../../lib/operators'
+import { loadCache } from '../../lib/storage'
 
 export interface AnnouncementViewProps extends ComponentProps<'div'> {}
 
 const table = [
   {
     name: 'La notte degli unicorni',
-    author: 'Valentina Rossi',
+    author: 'antonio',
     date: '2022-02-14',
     privacy: 'privato',
   },
   {
     name: 'Il segreto del tempio',
-    author: 'Marco Bianchi',
+    author: 'vittorio',
     date: '2021-11-30',
     privacy: 'pubblico',
   },
   {
     name: 'Ombre sul lago',
-    author: 'Maria Neri',
+    author: 'edoardo',
     date: '2022-01-15',
     privacy: 'pubblico',
   },
   {
     name: 'Cuori in fuga',
-    author: 'Paolo Verdi',
+    author: 'andrea',
     date: '2021-10-20',
     privacy: 'privato',
   },
   {
     name: "L'isola misteriosa",
-    author: 'Laura Russo',
+    author: 'nicola',
     date: '2022-03-01',
     privacy: 'pubblico',
   },
@@ -57,11 +66,12 @@ export const AnnouncementView: FC<AnnouncementViewProps> = ({ className }): JSX.
   const [firstRender, setFirstRender]: any = useState(true)
   const [intervalId, setIntervalId]: any = useState(0)
   const queuesStore = useSelector((state: RootState) => state.queues)
+  const authStore = useSelector((state: RootState) => state.authentication)
 
   const [textFilter, setTextFilter]: any = useState('')
   const updateTextFilter = (newTextFilter: string) => {
     setTextFilter(newTextFilter)
-    setPageNum(1)
+    // setPageNum(1)
   }
 
   const debouncedUpdateTextFilter = useMemo(() => debounce(updateTextFilter, 400), [])
@@ -112,8 +122,40 @@ export const AnnouncementView: FC<AnnouncementViewProps> = ({ className }): JSX.
   //     return !isLinesLoaded || pageNum >= lines?.totalPages
   //   }
 
+  const filterLinesTable = (lines: any) => {
+    let limit = 10
+    const filteredLinesTables = lines.filter((telephoneLines: any) => {
+      return telephoneLines.name.toLowerCase().includes(textFilter)
+    })
+    return filteredLinesTables.slice(0, limit)
+  }
+
+  const filteredTable = filterLinesTable(table)
+
   const deleteAnnouncement = (index: any) => {
     console.log("you've just deleted this index", index)
+  }
+
+  const [avatarData, setAvatarData] = useState<any>()
+
+  useEffect(() => {
+    if (!avatarData) {
+      setAvatarData(loadCache('operatorsAvatars', authStore.username))
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [])
+
+  function getAvatarData(announcement: any) {
+    let announcementPath = ''
+    if (announcement.author && avatarData) {
+      for (const author in avatarData) {
+        if (author === announcement.author) {
+          announcementPath = avatarData[author]
+          break
+        }
+      }
+    }
+    return announcementPath
   }
 
   return (
@@ -198,7 +240,7 @@ export const AnnouncementView: FC<AnnouncementViewProps> = ({ className }): JSX.
                     {/* {isLinesLoaded &&
                           lines?.rows?.map((call: any, index: number) => ( */}
 
-                    {table.map((announcement: any, index: number) => (
+                    {filteredTable.map((announcement: any, index: number) => (
                       <tr key={index}>
                         {/* Name */}
                         <td className='py-4 pl-4 pr-3 sm:pl-6'>
@@ -208,7 +250,16 @@ export const AnnouncementView: FC<AnnouncementViewProps> = ({ className }): JSX.
                         </td>
                         {/* Author */}
                         <td className='px-3 py-4'>
-                          <div>{announcement.author}</div>
+                          <div className='flex items-center'>
+                            <Avatar
+                              src={getAvatarData(announcement)}
+                              placeholderType='operator'
+                              size='small'
+                              bordered
+                              className='mr-2'
+                            />
+                            <div>{announcement.author}</div>
+                          </div>
                         </td>
                         {/* Date */}
                         <td className='px-3 py-4'>
@@ -219,6 +270,15 @@ export const AnnouncementView: FC<AnnouncementViewProps> = ({ className }): JSX.
                         {/* Privacy */}
                         <td className='px-3 py-4'>
                           <div className='flex items-center'>
+                            {/* The ternary operator is required because the open lock icon takes up
+                            more right margin */}
+                            <FontAwesomeIcon
+                              icon={announcement.privacy === 'privato' ? faLock : faLockOpen}
+                              className={`h-5 text-gray-500 dark:text-gray-500 ${
+                                announcement.privacy === 'privato' ? 'mr-3' : 'mr-2'
+                              }`}
+                              aria-hidden='true'
+                            />
                             <span>{announcement.privacy}</span>
                           </div>
                         </td>

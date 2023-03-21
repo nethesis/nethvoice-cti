@@ -56,7 +56,7 @@ export const RulesFilter = forwardRef<HTMLButtonElement, RulesFilterProps>(
               <div className='flex justify-between items-center'>
                 <div className='items-center'>
                   <TextInput
-                    placeholder={t('Lines.Filter announcement') || ''}
+                    placeholder={t('Lines.Filter roules') || ''}
                     className='max-w-sm'
                     value={textFilter}
                     onChange={changeTextFilter}

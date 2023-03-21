@@ -93,7 +93,7 @@ export const ShowAddAnnouncementDrawerContent = forwardRef<
             {t('Lines.Announcement name')}
           </h4>
           <TextInput
-            placeholder={t('Lines.Filter announcement') || ''}
+            placeholder={t('Lines.Insert announcement name') || ''}
             className='max-w-sm'
             value={textFilter}
             onChange={changeTextFilter}
@@ -220,7 +220,8 @@ export const ShowAddAnnouncementDrawerContent = forwardRef<
           </>
         )}
 
-        <div className='flex mt-4 fixed bottom-0'>
+        {/* fixed bottom-0 */}
+        <div className='flex mt-4'>
           <Button
             variant='primary'
             type='submit'
