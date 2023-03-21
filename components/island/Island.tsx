@@ -1,6 +1,7 @@
 // Copyright (C) 2023 Nethesis S.r.l.
 // SPDX-License-Identifier: AGPL-3.0-or-later
 
+import '@nethesis/phone-island/dist/index.css'
 import { useState, useEffect } from 'react'
 import { PhoneIsland } from '@nethesis/phone-island'
 import { newIslandConfig } from '../../lib/settings'
