@@ -6,7 +6,6 @@ import { callPhoneNumber, handleNetworkError } from '../lib/utils'
 import { store } from '../store'
 import { loadCache, loadPreference, saveCache, savePreference } from './storage'
 import { isEmpty, cloneDeep } from 'lodash'
-import { eventDispatch } from './hooks/eventDispatch'
 
 export const AVAILABLE_STATUSES = ['online', 'cellphone', 'callforward', 'voicemail']
 export const UNAVAILABLE_STATUSES = ['dnd', 'busy', 'incoming', 'ringing']
@@ -15,6 +14,7 @@ export const DEFAULT_STATUS_FILTER = 'all'
 export const DEFAULT_SORT_BY = 'favorites'
 export const DEFAULT_LAYOUT = 'standard'
 export const AVATARS_EXPIRATION_MILLIS = 24 * 60 * 60 * 1000 // 24 hours
+export const INFINITE_SCROLL_OPERATORS_PAGE_SIZE = 30
 
 export async function getUserEndpointsAll() {
   try {
