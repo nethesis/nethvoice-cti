@@ -30,6 +30,7 @@ export const ShowAddAnnouncementDrawerContent = forwardRef<
   const [errorMessage, setErrorMessage] = useState('')
   const [textFilter, setTextFilter] = useState('')
   const [selectedType, setSelectedType] = useState('private')
+  const [errorUpload, setErrorUpload] = useState(false)
   const textFilterRef = useRef() as React.MutableRefObject<HTMLInputElement>
   const [selectedFile, setSelectedFile] = useState<any>(null)
 
@@ -43,9 +44,38 @@ export const ShowAddAnnouncementDrawerContent = forwardRef<
     textFilterRef.current.focus()
   }
 
-  function handleFileSelect(event: any) {
-    const file = event.target.files[0]
-    setSelectedFile(file)
+  function handleDragOver(event: React.DragEvent<HTMLLabelElement>) {
+    event.preventDefault()
+    event.stopPropagation()
+    event.dataTransfer.dropEffect = 'copy'
+  }
+
+  function handleDrop(event: React.DragEvent<HTMLLabelElement>) {
+    event.preventDefault()
+    event.stopPropagation()
+
+    const file = event.dataTransfer.files && event.dataTransfer.files[0]
+
+    if (file && file.type.includes('audio/')) {
+      setSelectedFile(file)
+      if (errorUpload) {
+        setErrorUpload(false)
+      }
+    } else {
+      setErrorUpload(true)
+      // return
+    }
+  }
+
+  function handleFileSelect(event: React.ChangeEvent<HTMLInputElement>) {
+    event.preventDefault()
+    const file = event.target.files && event.target.files[0]
+
+    if (file && file.type.includes('audio/')) {
+      setSelectedFile(file)
+    } else {
+      console.log('Invalid file format. Only audio files are allowed.')
+    }
   }
 
   function changeTypeSelected(event: any) {
@@ -142,6 +172,14 @@ export const ShowAddAnnouncementDrawerContent = forwardRef<
           </h4>
         </div>
         {/* Upload announcement section */}
+        {/* Upload error */}
+        {errorUpload && (
+          <InlineNotification
+            title={t('Lines.Wrong file type')}
+            type='error'
+            className='mt-2'
+          ></InlineNotification>
+        )}
         {/* If the file hasn't been uploaded yet */}
         {!selectedFile ? (
           <>
@@ -149,6 +187,8 @@ export const ShowAddAnnouncementDrawerContent = forwardRef<
               <label
                 htmlFor='dropzone-file'
                 className='flex flex-col items-center justify-center w-full py-2 border-2 border-primary border-dashed rounded-lg cursor-pointer bg-emerald-50 dark:hover:bg-bray-800 dark:bg-gray-700 hover:bg-emerald-100 dark:border-gray-600 dark:hover:border-gray-500 dark:hover:bg-gray-600'
+                onDragOver={handleDragOver}
+                onDrop={handleDrop}
               >
                 <div className='flex flex-col items-center justify-center pt-5 pb-6'>
                   <FontAwesomeIcon
@@ -205,12 +245,11 @@ export const ShowAddAnnouncementDrawerContent = forwardRef<
                     </div>
                   </div>
                   <div className='ml-4 flex-shrink-0'>
-                    <Button variant='ghost'>
+                    <Button variant='ghost' onClick={() => deleteUploadedAnnouncement()}>
                       <FontAwesomeIcon
                         icon={faXmark}
                         className='h-4 w-4 text-gray-500 dark:text-gray-500'
                         aria-hidden='true'
-                        onClick={() => deleteUploadedAnnouncement()}
                       />
                     </Button>
                   </div>
