@@ -10,33 +10,31 @@ import { openShowTelephoneLinesDrawer, retrieveLines } from '../../lib/lines'
 import { faChevronRight, faChevronLeft, faPhone } from '@nethesis/nethesis-solid-svg-icons'
 import classNames from 'classnames'
 import { LinesFilter } from './LinesFilter'
-import { useSelector } from 'react-redux'
-import { RootState } from '../../store'
 
 export interface LinesViewProps extends ComponentProps<'div'> {}
 
 const table = [
   {
     name: 'Mario Rossi',
-    number: '1234567890',
+    number: '1',
     description: 'Lorem ipsum dolor sit amet',
     role: 'Sviluppatore',
   },
   {
     name: 'Anna Bianchi',
-    number: '0987654321',
+    number: '2',
     description: 'Consectetur adipiscing elit',
     role: 'Progettista',
   },
   {
     name: 'Luigi Verdi',
-    number: '5555555555',
+    number: '3',
     description: 'Sed do eiusmod tempor incididunt',
     role: 'Tester',
   },
   {
     name: 'Giovanni Neri',
-    number: '7777777777',
+    number: '4',
     description: 'Ut labore et dolore magna aliqua',
     role: 'Manager',
   },
@@ -50,7 +48,6 @@ export const LinesView: FC<LinesViewProps> = ({ className }): JSX.Element => {
   const [pageNum, setPageNum]: any = useState(1)
   const [firstRender, setFirstRender]: any = useState(true)
   const [intervalId, setIntervalId]: any = useState(0)
-  const queuesStore = useSelector((state: RootState) => state.queues)
 
   const [textFilter, setTextFilter]: any = useState('')
   const updateTextFilter = (newTextFilter: string) => {
@@ -108,7 +105,7 @@ export const LinesView: FC<LinesViewProps> = ({ className }): JSX.Element => {
 
   const filterLinesTable = (lines: any) => {
     let limit = 10
-    const filteredLinesTables = lines.filter((telephoneLines:any) => {
+    const filteredLinesTables = lines.filter((telephoneLines: any) => {
       return telephoneLines.name.toLowerCase().includes(textFilter)
     })
     return filteredLinesTables.slice(0, limit)
@@ -116,10 +113,29 @@ export const LinesView: FC<LinesViewProps> = ({ className }): JSX.Element => {
 
   const filteredTable = filterLinesTable(table)
 
+  const [sortBy, setSortBy]: any = useState('name')
+
+  const updateSortFilter = (newSortBy: string) => {
+    setSortBy(newSortBy)
+  }
+
+  // Copy of the table to order
+  // const tableRows = [...props.lines.rows];
+
+  // Sorting of the table according to the selected value
+  if (sortBy === 'name') {
+    table.sort((a, b) => a.name.localeCompare(b.name))
+  } else if (sortBy === 'number') {
+    table.sort((a, b) => a.number.localeCompare(b.number))
+  }
+
   return (
     <div className={classNames(className)}>
       <div className='flex flex-col flex-wrap xl:flex-row justify-between gap-x-4 xl:items-end'>
-        <LinesFilter updateTextFilter={debouncedUpdateTextFilter} />
+        <LinesFilter
+          updateTextFilter={debouncedUpdateTextFilter}
+          updateSortFilter={updateSortFilter}
+        />
       </div>
       {linesError && <InlineNotification type='error' title={linesError}></InlineNotification>}
       {/* {!linesError && ( */}

@@ -274,7 +274,7 @@ export const AnnouncementView: FC<AnnouncementViewProps> = ({ className }): JSX.
                             more right margin */}
                             <FontAwesomeIcon
                               icon={announcement.privacy === 'privato' ? faLock : faLockOpen}
-                              className={`h-5 text-gray-500 dark:text-gray-500 ${
+                              className={`h-4 text-gray-500 dark:text-gray-500 ${
                                 announcement.privacy === 'privato' ? 'mr-3' : 'mr-2'
                               }`}
                               aria-hidden='true'

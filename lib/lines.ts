@@ -4,8 +4,11 @@
 import axios from 'axios'
 import { handleNetworkError, getApiEndpoint, getApiScheme } from './utils'
 import { store } from '../store'
+import { loadPreference } from './storage'
 
 export const PAGE_SIZE = 10
+export const DEFAULT_SORT_BY = 'name'
+
 const apiEnpoint = getApiEndpoint()
 const apiScheme = getApiScheme()
 const apiUrl = apiScheme + apiEnpoint
@@ -50,4 +53,10 @@ export const openShowRuleDetailsDrawer = (name: any) => {
     contentType: 'showRuleDetails',
     config: config,
   })
+}
+
+export const getFilterValues = (currentUsername: string) => {
+  const sortBy = loadPreference('telephoneLinesSortBy', currentUsername) || DEFAULT_SORT_BY
+
+  return { sortBy }
 }
