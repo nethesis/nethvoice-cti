@@ -32,6 +32,7 @@ export const CreateOrEditSpeedDialDrawerContent = forwardRef<
       nameRef.current.value = ''
       phoneNumberRef.current.value = ''
     }
+    nameRef.current.focus()
   }, [config])
 
   const [nameError, setNameError] = useState('')

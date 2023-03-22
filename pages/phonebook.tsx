@@ -7,7 +7,6 @@ import { Avatar, Button, InlineNotification, EmptyState } from '../components/co
 import { useState, useEffect, useMemo } from 'react'
 import {
   getPhonebook,
-  mapContact,
   openShowContactDrawer,
   PAGE_SIZE,
   openCreateContactDrawer,
@@ -20,7 +19,6 @@ import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import {
   faPhone,
   faSuitcase,
-  faUserGroup,
   faChevronRight,
   faPlus,
   faUserPlus,

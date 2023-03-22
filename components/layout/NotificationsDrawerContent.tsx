@@ -196,7 +196,7 @@ export const NotificationsDrawerContent = forwardRef<
                 <li
                   key={index}
                   className={classNames(
-                    'flex py-4 items-center px-5',
+                    'flex py-4 px-5',
                     !notification.isRead &&
                       'bg-primaryLighter dark:bg-primaryDarker cursor-pointer',
                     ['chat', 'voicemail'].includes(notification.type) && 'cursor-pointer',
