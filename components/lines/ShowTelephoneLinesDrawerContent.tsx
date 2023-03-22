@@ -17,11 +17,14 @@ import {
   faChevronDown,
   faChevronUp,
   faCalendar,
+  faFileMusic,
+  faXmark,
 } from '@nethesis/nethesis-solid-svg-icons'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { callPhoneNumber, closeSideDrawer } from '../../lib/utils'
 import { TextInput, Button } from '../common'
 import { cloneDeep, isEmpty } from 'lodash'
+import { formatDateLoc } from '../../lib/dateTime'
 
 export interface ShowTelephoneLinesDrawerContentProps extends ComponentPropsWithRef<'div'> {
   config: any
@@ -38,11 +41,12 @@ export const ShowTelephoneLinesDrawerContent = forwardRef<
   const [isForwardActive, setForwardActive] = useState(false)
   const [changeConfigurationRadio, setChangeConfigurationRadio] = useState('customize')
   const [isManageAnnouncementActive, setManageAnnouncementActive] = useState(true)
-  const [announcementSelected, setAnnouncementSelected] = useState('')
+  const [announcementSelected, setAnnouncementSelected] = useState<any>(null)
   const [dateBeginValue, setDateBeginValue] = useState('')
   const [dateEndValue, setDateEndValue] = useState('')
   const [selectedRulesInfo, setSelectedRulesInfo] = useState('ferie')
   const [selectedType, setSelectedType] = useState('specifyDay')
+  const [selectedAnnouncementInfo, setSelectedAnnouncementInfo] = useState<any>(null)
 
   const [openPanel, setOpenPanel] = useState('')
 
@@ -56,16 +60,39 @@ export const ShowTelephoneLinesDrawerContent = forwardRef<
   ]
 
   const announcementLists = [
-    { id: 'firstAnnouncement', value: 'firstAnnouncement' },
-    { id: 'secondAnnouncement', value: 'secondAnnouncement' },
-    { id: 'thirdAnnouncement', value: 'thirdAnnouncement' },
+    {
+      id: 'firstAnnouncement',
+      value: 'firstAnnouncement',
+      announcementName: 'test1.mp3',
+      fileSize: '3kb',
+    },
+    {
+      id: 'secondAnnouncement',
+      value: 'secondAnnouncement',
+      announcementName: 'test2.wav',
+      fileSize: '4kb',
+    },
+    {
+      id: 'thirdAnnouncement',
+      value: 'thirdAnnouncement',
+      announcementName: 'test3.mp3',
+      fileSize: '6kb',
+    },
   ]
+
+  const actualDateWithoutHour: any = formatDateLoc(new Date(), 'yyyy-MM-dd')
 
   const dateSelectionInputs = [
     { id: 'specifyDay', value: t('Lines.Specify start date and end date') },
-    { id: 'onlyOneDay', value: t('Lines.Only active for one day') },
+    {
+      id: 'onlyOneDay',
+      value: t('Lines.Only active for one day'),
+    },
     { id: 'everyDay', value: t('Lines.Active every day') },
   ]
+
+  const actualBeginDate = new Date().toISOString().slice(0, 11) + '09:00'
+  const actualEndDate = new Date().toISOString().slice(0, 11) + '22:00'
 
   const dateRuleInformations = [
     { id: 'febbraio', value: 'Febbraio 2023' },
@@ -80,6 +107,10 @@ export const ShowTelephoneLinesDrawerContent = forwardRef<
 
   const toggleConfigurationActive = () => {
     setConfigurationActive(!isConfigurationActive)
+  }
+
+  function deleteUploadedAnnouncement() {
+    setAnnouncementSelected(null)
   }
 
   const toggleManageAnnouncement = () => {
@@ -107,7 +138,11 @@ export const ShowTelephoneLinesDrawerContent = forwardRef<
   }
 
   function changeAnnouncementSelect(event: any) {
-    const listAnnouncementValue = event.target.id
+    const listAnnouncementValue = event.target.value
+    const selectedAnnouncement = announcementLists.find(
+      (announcement) => announcement.id === listAnnouncementValue,
+    )
+    setSelectedAnnouncementInfo(selectedAnnouncement)
     setAnnouncementSelected(listAnnouncementValue)
   }
 
@@ -159,17 +194,55 @@ export const ShowTelephoneLinesDrawerContent = forwardRef<
                   <label htmlFor='types' className='sr-only'>
                     {t('Lines.Select a type')}
                   </label>
-                  <select
-                    id='types'
-                    name='types'
-                    className='block w-full rounded-md py-2 pl-3 pr-10 text-base focus:outline-none sm:text-sm border-gray-300 focus:border-primary focus:ring-primary dark:border-gray-600 dark:focus:border-primary dark:focus:ring-primary'
-                    defaultValue={announcementSelected}
-                    onChange={changeAnnouncementSelect}
-                  >
-                    {announcementLists.map((announcementList) => (
-                      <option key={announcementList.id}>{announcementList.value}</option>
-                    ))}
-                  </select>
+                  {announcementSelected && (
+                    <>
+                      <div className='py-3'>
+                        <div className='rounded-md border border-emerald-500'>
+                          <div className='flex items-center justify-between py-4 pl-3 pr-4'>
+                            <div className='flex w-0 flex-1 items-center pl-2'>
+                              <div className='h-9 w-9 bg-emerald-50 dark:bg-emerald-200 flex items-center rounded-sm justify-center'>
+                                <FontAwesomeIcon
+                                  icon={faFileMusic}
+                                  className='h-4 w-4 text-primary dark:text-primaryDark'
+                                  aria-hidden='true'
+                                />
+                              </div>
+                              <div className='text-md flex flex-col pl-3'>
+                                <span className='font-semibold text-gray-900 dark:text-gray-100'>
+                                  {selectedAnnouncementInfo.announcementName}
+                                </span>
+                                <span className='text-sm'>{selectedAnnouncementInfo.fileSize}</span>
+                              </div>
+                            </div>
+                            <div className='ml-4 flex-shrink-0'>
+                              <Button variant='ghost' onClick={() => deleteUploadedAnnouncement()}>
+                                <FontAwesomeIcon
+                                  icon={faXmark}
+                                  className='h-4 w-4 text-gray-500 dark:text-gray-500'
+                                  aria-hidden='true'
+                                />
+                              </Button>
+                            </div>
+                          </div>
+                        </div>
+                      </div>
+                    </>
+                  )}
+                  {!announcementSelected && (
+                    <select
+                      id='types'
+                      name='types'
+                      className='block w-full rounded-md py-2 pl-3 pr-10 text-base focus:outline-none sm:text-sm border-gray-300 focus:border-primary focus:ring-primary dark:border-gray-600 dark:focus:border-primary dark:focus:ring-primary'
+                      defaultValue={announcementSelected}
+                      onChange={changeAnnouncementSelect}
+                    >
+                      {announcementLists.map((announcementList) => (
+                        <option key={announcementList.id} value={announcementList.id}>
+                          {announcementList.value}
+                        </option>
+                      ))}
+                    </select>
+                  )}
                 </div>
                 <span className='font-medium'>{t('Lines.Select period')}</span>
                 {/* Date input  */}
@@ -202,7 +275,9 @@ export const ShowTelephoneLinesDrawerContent = forwardRef<
                   </fieldset>
                   <div className='flex mt-3 items-center justify-between'>
                     <span>{t('Lines.Begin')}</span>
-                    <span className='ml-auto mr-auto'>{t('Lines.End')}</span>
+                    {selectedType !== 'everyDay' && (
+                      <span className='ml-auto mr-auto'>{t('Lines.End')}</span>
+                    )}
                   </div>
                   <div className='flex mt-3 items-center justify-between'>
                     <TextInput
@@ -213,20 +288,21 @@ export const ShowTelephoneLinesDrawerContent = forwardRef<
                       name='meeting-time'
                       ref={dateBeginRef}
                       onChange={changeDateBegin}
-                      defaultValue={dateBeginValue}
-                      disabled={selectedType != 'specifyDay'}
+                      defaultValue={actualBeginDate}
                     />
-                    <TextInput
-                      type='datetime-local'
-                      placeholder='Select date end'
-                      className='max-w-sm'
-                      id='meeting-time'
-                      name='meeting-time'
-                      ref={dateEndRef}
-                      onChange={changeDateEnd}
-                      defaultValue={dateEndValue}
-                      disabled={selectedType != 'specifyDay'}
-                    />
+                    {selectedType !== 'everyDay' && (
+                      <TextInput
+                        type='datetime-local'
+                        placeholder='Select date end'
+                        className='max-w-sm'
+                        id='meeting-time'
+                        name='meeting-time'
+                        ref={dateEndRef}
+                        onChange={changeDateEnd}
+                        defaultValue={selectedType === 'onlyOneDay' ? actualEndDate : dateEndValue}
+                        disabled={selectedType !== 'specifyDay'}
+                      />
+                    )}
                   </div>
                 </div>
 

@@ -234,7 +234,7 @@ export const ShowAddAnnouncementDrawerContent = forwardRef<
                         icon={faFileMusic}
                         className='h-4 w-4 text-primary dark:text-primaryDark'
                         aria-hidden='true'
-                        onClick={() => recordAudioAnnouncement()}
+                        // onClick={() => recordAudioAnnouncement()}
                       />
                     </div>
                     <div className='text-md flex flex-col pl-3'>

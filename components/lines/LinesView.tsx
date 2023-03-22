@@ -131,7 +131,7 @@ export const LinesView: FC<LinesViewProps> = ({ className }): JSX.Element => {
   // const tableRows = [...props.lines.rows];
 
   // Sorting of the table according to the selected value
-  if (sortBy === 'name') {
+  if (sortBy === 'description') {
     table.sort((a, b) => a.description.localeCompare(b.description))
   } else if (sortBy === 'calledIdNum') {
     table.sort((a, b) => a.calledIdNum.localeCompare(b.calledIdNum))

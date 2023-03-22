@@ -7,7 +7,8 @@ import { store } from '../store'
 import { loadPreference } from './storage'
 
 export const PAGE_SIZE = 10
-export const DEFAULT_SORT_BY = 'name'
+export const DEFAULT_SORT_BY = 'description'
+export const DEFAULT_SORT_BY_ANNOUNCEMENT = 'description'
 
 const apiEnpoint = getApiEndpoint()
 const apiScheme = getApiScheme()
@@ -57,6 +58,12 @@ export const openShowRuleDetailsDrawer = (name: any) => {
 
 export const getFilterValues = (currentUsername: string) => {
   const sortBy = loadPreference('telephoneLinesSortBy', currentUsername) || DEFAULT_SORT_BY
+
+  return { sortBy }
+}
+
+export const getFilterAnnouncementValues = (currentUsername: string) => {
+  const sortBy = loadPreference('telephoneAnnouncementSortBy', currentUsername) || DEFAULT_SORT_BY
 
   return { sortBy }
 }

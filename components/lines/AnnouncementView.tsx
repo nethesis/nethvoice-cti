@@ -141,6 +141,12 @@ export const AnnouncementView: FC<AnnouncementViewProps> = ({ className }): JSX.
     console.log("you've just deleted this index", index)
   }
 
+  const [sortBy, setSortBy]: any = useState('name')
+
+  const updateSortFilter = (newSortBy: string) => {
+    setSortBy(newSortBy)
+  }
+
   const [avatarData, setAvatarData] = useState<any>()
 
   useEffect(() => {
@@ -178,11 +184,23 @@ export const AnnouncementView: FC<AnnouncementViewProps> = ({ className }): JSX.
     return announcementPath
   }
 
+  // Sorting of the table according to the selected value
+  if (sortBy === 'username') {
+    table.sort((a, b) => a.username.localeCompare(b.username))
+  } else if (sortBy === 'description') {
+    table.sort((a, b) => a.description.localeCompare(b.description))
+  } else if (sortBy === 'privacy') {
+    table.sort((a, b) => a.privacy.localeCompare(b.privacy))
+  }
+
   return (
     <div className={classNames(className)}>
       {/* TO DO CHECK ON MOBILE DEVICE  */}
       <div className='flex-col flex-wrap xl:flex-row justify-between gap-x-4 xl:items-end'>
-        <AnnouncementFilter updateTextFilter={debouncedUpdateTextFilter} />
+        <AnnouncementFilter
+          updateTextFilter={debouncedUpdateTextFilter}
+          updateSortFilter={updateSortFilter}
+        />
       </div>
       {linesError && <InlineNotification type='error' title={linesError}></InlineNotification>}
       {/* {!linesError && ( */}

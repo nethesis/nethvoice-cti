@@ -31,13 +31,13 @@ export const LinesFilter = forwardRef<HTMLButtonElement, LinesFilterProps>(
       id: 'sort',
       name: t('Lines.Sort by'),
       options: [
-        { value: 'name', label: t('Lines.Name') },
-        { value: 'number', label: t('Lines.Number') },
+        { value: 'description', label: t('Lines.Name') },
+        { value: 'calledIdNum', label: t('Lines.Number') },
       ],
     }
 
     //Sorting filter
-    const [sortBy, setSortBy]: any = useState('name')
+    const [sortBy, setSortBy]: any = useState('description')
 
     function changeSortBy(event: any) {
       const newSortBy = event.target.id
@@ -242,7 +242,7 @@ export const LinesFilter = forwardRef<HTMLButtonElement, LinesFilterProps>(
                       <span className='m-1 inline-flex items-center rounded-full border py-1.5 px-3 text-sm font-medium border-gray-200 bg-white text-gray-700 dark:border-gray-700 dark:bg-gray-900 dark:text-gray-200'>
                         <span>
                           <span className='text-gray-500 dark:text-gray-400'>
-                            {t('Phonebook.Sort by')}:
+                            {t('Lines.Sort by')}:
                           </span>{' '}
                           {sortByLabel}
                         </span>
