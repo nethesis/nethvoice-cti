@@ -15,28 +15,36 @@ export interface LinesViewProps extends ComponentProps<'div'> {}
 
 const table = [
   {
-    name: 'Mario Rossi',
-    number: '1',
-    description: 'Lorem ipsum dolor sit amet',
-    role: 'Sviluppatore',
+    description: 'Mario Rossi',
+    calledIdNum: '1',
+    personalized: 'Lorem ipsum dolor sit amet',
+    audiomsg: {
+      description: 'Natale 2020',
+    },
   },
   {
-    name: 'Anna Bianchi',
-    number: '2',
-    description: 'Consectetur adipiscing elit',
-    role: 'Progettista',
+    description: 'Anna Bianchi',
+    calledIdNum: '2',
+    personalized: 'Consectetur adipiscing elit',
+    audiomsg: {
+      description: 'Natale 2021',
+    },
   },
   {
-    name: 'Luigi Verdi',
-    number: '3',
-    description: 'Sed do eiusmod tempor incididunt',
-    role: 'Tester',
+    description: 'Luigi Verdi',
+    calledIdNum: '3',
+    personalized: 'Sed do eiusmod tempor incididunt',
+    audiomsg: {
+      description: 'Natale 2022',
+    },
   },
   {
-    name: 'Giovanni Neri',
-    number: '4',
-    description: 'Ut labore et dolore magna aliqua',
-    role: 'Manager',
+    description: 'Giovanni Neri',
+    calledIdNum: '4',
+    personalized: 'Ut labore et dolore magna aliqua',
+    audiomsg: {
+      description: 'Pasqua 2023',
+    },
   },
 ]
 
@@ -106,14 +114,14 @@ export const LinesView: FC<LinesViewProps> = ({ className }): JSX.Element => {
   const filterLinesTable = (lines: any) => {
     let limit = 10
     const filteredLinesTables = lines.filter((telephoneLines: any) => {
-      return telephoneLines.name.toLowerCase().includes(textFilter)
+      return telephoneLines.description.toLowerCase().includes(textFilter)
     })
     return filteredLinesTables.slice(0, limit)
   }
 
   const filteredTable = filterLinesTable(table)
 
-  const [sortBy, setSortBy]: any = useState('name')
+  const [sortBy, setSortBy]: any = useState('description')
 
   const updateSortFilter = (newSortBy: string) => {
     setSortBy(newSortBy)
@@ -124,9 +132,9 @@ export const LinesView: FC<LinesViewProps> = ({ className }): JSX.Element => {
 
   // Sorting of the table according to the selected value
   if (sortBy === 'name') {
-    table.sort((a, b) => a.name.localeCompare(b.name))
-  } else if (sortBy === 'number') {
-    table.sort((a, b) => a.number.localeCompare(b.number))
+    table.sort((a, b) => a.description.localeCompare(b.description))
+  } else if (sortBy === 'calledIdNum') {
+    table.sort((a, b) => a.calledIdNum.localeCompare(b.calledIdNum))
   }
 
   return (
@@ -215,24 +223,24 @@ export const LinesView: FC<LinesViewProps> = ({ className }): JSX.Element => {
                         {/* Name */}
                         <td className='py-4 pl-4 pr-3 sm:pl-6'>
                           <div className='flex flex-col'>
-                            <div>{call.name} </div>
+                            <div>{call.description} </div>
                           </div>
                         </td>
                         {/* Number */}
                         <td className='px-3 py-4'>
-                          <div>{call.number}</div>
+                          <div>{call.calledIdNum}</div>
                           <div className='text-gray-500 dark:text-gray-500'>{call.queueId}</div>
                         </td>
                         {/* Costum configuration */}
                         <td className='whitespace-nowrap px-3 py-4'>
                           <div className='flex items-center'>
-                            <span>{call.description}</span>
+                            <span>{call.personalized}</span>
                           </div>
                         </td>
                         {/* Ruolo */}
                         <td className='whitespace-nowrap px-3 py-4'>
                           <div className='flex items-center'>
-                            <span>{call.role}</span>
+                            <span>{call.audiomsg.description}</span>
                           </div>
                         </td>
                         {/* show details */}
