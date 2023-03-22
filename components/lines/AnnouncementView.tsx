@@ -6,7 +6,7 @@ import { useTranslation } from 'react-i18next'
 import { Button, EmptyState, InlineNotification, Avatar } from '../common'
 import { isEmpty, debounce } from 'lodash'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
-import { openShowTelephoneLinesDrawer, retrieveLines } from '../../lib/lines'
+import { retrieveLines } from '../../lib/lines'
 import {
   faPhone,
   faPlay,
@@ -19,41 +19,46 @@ import classNames from 'classnames'
 import { AnnouncementFilter } from './AnnouncementFilter'
 import { useSelector } from 'react-redux'
 import { RootState } from '../../store'
-import { retrieveAvatars } from '../../lib/operators'
 import { loadCache } from '../../lib/storage'
+import { formatDateLoc, getCallTimeToDisplay } from '../../lib/dateTime'
 
 export interface AnnouncementViewProps extends ComponentProps<'div'> {}
 
 const table = [
   {
-    name: 'La notte degli unicorni',
-    author: 'antonio',
-    date: '2022-02-14',
-    privacy: 'privato',
+    description: 'La notte degli unicorni',
+    username: 'antonio',
+    date_creation: '27/12/2017',
+    privacy: 'private',
+    time_creation: '08:12:30',
   },
   {
-    name: 'Il segreto del tempio',
-    author: 'vittorio',
-    date: '2021-11-30',
+    description: 'Il segreto del tempio',
+    username: 'vittorio',
+    date_creation: '19/10/2018',
     privacy: 'pubblico',
+    time_creation: '08:12:30',
   },
   {
-    name: 'Ombre sul lago',
-    author: 'edoardo',
-    date: '2022-01-15',
+    description: 'Ombre sul lago',
+    username: 'edoardo',
+    date_creation: '21/12/2018',
     privacy: 'pubblico',
+    time_creation: '08:12:30',
   },
   {
-    name: 'Cuori in fuga',
-    author: 'andrea',
-    date: '2021-10-20',
-    privacy: 'privato',
+    description: 'Cuori in fuga',
+    username: 'andrea',
+    date_creation: '25/03/2020',
+    privacy: 'private',
+    time_creation: '08:12:30',
   },
   {
-    name: "L'isola misteriosa",
-    author: 'nicola',
-    date: '2022-03-01',
+    description: "L'isola misteriosa",
+    username: 'nicola',
+    date_creation: '21/12/2018',
     privacy: 'pubblico',
+    time_creation: '08:12:30',
   },
 ]
 
@@ -125,7 +130,7 @@ export const AnnouncementView: FC<AnnouncementViewProps> = ({ className }): JSX.
   const filterLinesTable = (lines: any) => {
     let limit = 10
     const filteredLinesTables = lines.filter((telephoneLines: any) => {
-      return telephoneLines.name.toLowerCase().includes(textFilter)
+      return telephoneLines.description.toLowerCase().includes(textFilter)
     })
     return filteredLinesTables.slice(0, limit)
   }
@@ -145,12 +150,27 @@ export const AnnouncementView: FC<AnnouncementViewProps> = ({ className }): JSX.
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [])
 
+  function dateCreationShowed(dateCreation: any) {
+    if (typeof dateCreation === 'string') {
+      const dateObject = new Date(dateCreation.split('/').reverse().join('-'))
+      const formattedDate = formatDateLoc(dateObject, 'PP')
+      return formattedDate
+    } else {
+      return ''
+    }
+  }
+
+  function hourCreationShowed(hourCreation: any) {
+    const formattedTime = getCallTimeToDisplay(`1970-01-01T${hourCreation}Z`)
+    return formattedTime
+  }
+
   function getAvatarData(announcement: any) {
     let announcementPath = ''
-    if (announcement.author && avatarData) {
-      for (const author in avatarData) {
-        if (author === announcement.author) {
-          announcementPath = avatarData[author]
+    if (announcement.username && avatarData) {
+      for (const username in avatarData) {
+        if (username === announcement.username) {
+          announcementPath = avatarData[username]
           break
         }
       }
@@ -206,7 +226,7 @@ export const AnnouncementView: FC<AnnouncementViewProps> = ({ className }): JSX.
                         scope='col'
                         className='px-3 py-3.5 text-left text-sm font-semibold text-gray-700 dark:text-gray-200'
                       >
-                        {t('Lines.Date')}
+                        {t('Lines.Creation date')}
                       </th>
                       <th
                         scope='col'
@@ -245,7 +265,7 @@ export const AnnouncementView: FC<AnnouncementViewProps> = ({ className }): JSX.
                         {/* Name */}
                         <td className='py-4 pl-4 pr-3 sm:pl-6'>
                           <div className='flex flex-col'>
-                            <div>{announcement.name} </div>
+                            <div>{announcement.description} </div>
                           </div>
                         </td>
                         {/* Author */}
@@ -258,24 +278,30 @@ export const AnnouncementView: FC<AnnouncementViewProps> = ({ className }): JSX.
                               bordered
                               className='mr-2'
                             />
-                            <div>{announcement.author}</div>
+                            <div>{announcement.username}</div>
                           </div>
                         </td>
                         {/* Date */}
                         <td className='px-3 py-4'>
-                          <div className='flex items-center'>
-                            <span>{announcement.date}</span>
+                          <div className='flex flex-col'>
+                            <div className='text-sm text-gray-900 dark:text-gray-100'>
+                              {dateCreationShowed(announcement.date_creation)}
+                            </div>
+                            <div className='text-gray-500 dark:text-gray-500'>
+                              {hourCreationShowed(announcement.time_creation)}
+                            </div>
                           </div>
                         </td>
+
                         {/* Privacy */}
                         <td className='px-3 py-4'>
                           <div className='flex items-center'>
                             {/* The ternary operator is required because the open lock icon takes up
                             more right margin */}
                             <FontAwesomeIcon
-                              icon={announcement.privacy === 'privato' ? faLock : faLockOpen}
+                              icon={announcement.privacy === 'private' ? faLock : faLockOpen}
                               className={`h-4 text-gray-500 dark:text-gray-500 ${
-                                announcement.privacy === 'privato' ? 'mr-3' : 'mr-2'
+                                announcement.privacy === 'private' ? 'mr-3' : 'mr-2'
                               }`}
                               aria-hidden='true'
                             />
