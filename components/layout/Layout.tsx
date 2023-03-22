@@ -347,7 +347,7 @@ export const Layout: FC<LayoutProps> = ({ children }) => {
           />
           {/* Main content */}
           <div className='flex flex-1 items-stretch overflow-hidden'>
-            <main className='flex-1 overflow-y-auto'>
+            <main className='flex-1 overflow-y-auto' id='main-content'>
               {/* Primary column */}
               <section
                 aria-labelledby='primary-heading'

@@ -7,6 +7,7 @@ import { Avatar, Badge, EmptyState, InlineNotification } from '../components/com
 import {
   AVAILABLE_STATUSES,
   callOperator,
+  INFINITE_SCROLL_OPERATORS_PAGE_SIZE,
   openShowOperatorDrawer,
   searchStringInOperator,
   sortByOperatorStatus,
@@ -21,14 +22,21 @@ import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { faChevronRight, faFilter, faHeadset } from '@fortawesome/free-solid-svg-icons'
 import { store } from '../store'
 import { CallDuration } from '../components/operators/CallDuration'
+import InfiniteScroll from 'react-infinite-scroll-component'
+import { faCircleNotch } from '@nethesis/nethesis-solid-svg-icons'
 
 //// use i18n where there is operator.mainPresence
 
 const Operators: NextPage = () => {
-  const [filteredOperators, setFilteredOperators]: any = useState({})
+  const [filteredOperators, setFilteredOperators]: any = useState([])
   const authStore = useSelector((state: RootState) => state.authentication)
   const operatorsStore = useSelector((state: RootState) => state.operators)
   const [isApplyingFilters, setApplyingFilters]: any = useState(false)
+  const [infiniteScrollOperators, setInfiniteScrollOperators] = useState([])
+  const [infiniteScrollHasMore, setInfiniteScrollHasMore] = useState(false)
+  const [infiniteScrollLastIndex, setInfiniteScrollLastIndex] = useState(
+    INFINITE_SCROLL_OPERATORS_PAGE_SIZE,
+  )
 
   const [textFilter, setTextFilter]: any = useState('')
   const updateTextFilter = (newTextFilter: string) => {
@@ -71,7 +79,7 @@ const Operators: NextPage = () => {
     setApplyingFilters(true)
 
     // text filter
-    let filteredOperators = Object.values(operators).filter((op) =>
+    let filteredOperators: any = Object.values(operators).filter((op) =>
       searchStringInOperator(op, textFilter),
     )
 
@@ -114,6 +122,10 @@ const Operators: NextPage = () => {
     }
 
     setFilteredOperators(filteredOperators)
+
+    setInfiniteScrollOperators(filteredOperators.slice(0, infiniteScrollLastIndex))
+    const hasMore = infiniteScrollLastIndex < filteredOperators.length
+    setInfiniteScrollHasMore(hasMore)
     setApplyingFilters(false)
   }
 
@@ -133,6 +145,14 @@ const Operators: NextPage = () => {
   useEffect(() => {
     applyFilters(operatorsStore.operators)
   }, [operatorsStore.operators, textFilter, groupFilter, statusFilter, sortByFilter])
+
+  const showMoreInfiniteScrollOperators = () => {
+    const lastIndex = infiniteScrollLastIndex + INFINITE_SCROLL_OPERATORS_PAGE_SIZE
+    setInfiniteScrollLastIndex(lastIndex)
+    setInfiniteScrollOperators(filteredOperators.slice(0, lastIndex))
+    const hasMore = lastIndex < filteredOperators.length
+    setInfiniteScrollHasMore(hasMore)
+  }
 
   return (
     <>
@@ -216,77 +236,89 @@ const Operators: NextPage = () => {
             !operatorsStore.errorMessage &&
             !isEmpty(filteredOperators) && (
               <div className='space-y-8 sm:space-y-12 py-8'>
-                <ul
-                  role='list'
-                  className='mx-auto grid grid-cols-2 gap-x-4 gap-y-8 sm:grid-cols-4 md:gap-x-6 lg:max-w-5xl lg:gap-x-8 lg:gap-y-12 xl:grid-cols-5'
+                <InfiniteScroll
+                  dataLength={infiniteScrollOperators.length}
+                  next={showMoreInfiniteScrollOperators}
+                  hasMore={infiniteScrollHasMore}
+                  scrollableTarget='main-content'
+                  loader={
+                    <FontAwesomeIcon
+                      icon={faCircleNotch}
+                      className='inline-block text-center fa-spin h-8 m-10 text-gray-400 dark:text-gray-500'
+                    />
+                  }
                 >
-                  {operatorsStore.isOperatorsLoaded &&
-                    !isEmpty(filteredOperators) &&
-                    Object.keys(filteredOperators).map((key, index) => {
-                      const operator = filteredOperators[key]
+                  <ul
+                    role='list'
+                    className='mx-auto grid grid-cols-2 gap-x-4 gap-y-8 sm:grid-cols-4 md:gap-x-6 lg:max-w-5xl lg:gap-x-8 lg:gap-y-12 xl:grid-cols-5'
+                  >
+                    {infiniteScrollOperators.map((operator: any, index) => {
                       return (
-                        <li key={index}>
-                          <div className='space-y-4'>
-                            <Avatar
-                              src={operator.avatarBase64}
-                              placeholderType='operator'
-                              size='extra_large'
-                              bordered
-                              star={operator.favorite}
-                              onClick={() => openShowOperatorDrawer(operator)}
-                              className='mx-auto cursor-pointer'
-                            />
-                            <div className='space-y-2'>
-                              <div className='text-xs font-medium lg:text-sm'>
-                                <h3
-                                  className='cursor-pointer hover:underline'
-                                  onClick={() => openShowOperatorDrawer(operator)}
-                                >
-                                  {operator.name}
-                                </h3>
-                                <div className='mt-3'>
-                                  <span className='block truncate mt-1 text-sm font-medium text-gray-500 dark:text-gray-500'>
-                                    {operator.conversations?.length &&
-                                    (operator.conversations[0].connected ||
-                                      operator.conversations[0].inConference ||
-                                      operator.conversations[0].chDest?.inConference == true) ? (
-                                      <Badge
-                                        rounded='full'
-                                        variant='busy'
-                                        className='flex items-center'
-                                      >
-                                        <span className='mr-1.5'>
-                                          {capitalize(operator.mainPresence)}
-                                        </span>
-                                        <CallDuration
-                                          startTime={operator.conversations[0].startTime}
-                                          className='font-mono relative top-px'
+                        <div key={index}>
+                          <li key={index}>
+                            <div className='space-y-4'>
+                              <Avatar
+                                src={operator.avatarBase64}
+                                placeholderType='operator'
+                                size='extra_large'
+                                bordered
+                                star={operator.favorite}
+                                onClick={() => openShowOperatorDrawer(operator)}
+                                className='mx-auto cursor-pointer'
+                              />
+                              <div className='space-y-2'>
+                                <div className='text-xs font-medium lg:text-sm'>
+                                  <h3
+                                    className='cursor-pointer hover:underline'
+                                    onClick={() => openShowOperatorDrawer(operator)}
+                                  >
+                                    {operator.name}
+                                  </h3>
+                                  <div className='mt-3'>
+                                    <span className='block truncate mt-1 text-sm font-medium text-gray-500 dark:text-gray-500'>
+                                      {operator.conversations?.length &&
+                                      (operator.conversations[0].connected ||
+                                        operator.conversations[0].inConference ||
+                                        operator.conversations[0].chDest?.inConference == true) ? (
+                                        <Badge
+                                          rounded='full'
+                                          variant='busy'
+                                          className='flex items-center'
+                                        >
+                                          <span className='mr-1.5'>
+                                            {capitalize(operator.mainPresence)}
+                                          </span>
+                                          <CallDuration
+                                            startTime={operator.conversations[0].startTime}
+                                            className='font-mono relative top-px'
+                                          />
+                                        </Badge>
+                                      ) : (
+                                        <OperatorStatusBadge
+                                          operator={operator}
+                                          currentUsername={authStore.username}
+                                          callEnabled={true}
+                                          onCall={callOperator}
                                         />
-                                      </Badge>
-                                    ) : (
-                                      <OperatorStatusBadge
-                                        operator={operator}
-                                        currentUsername={authStore.username}
-                                        callEnabled={true}
-                                        onCall={callOperator}
-                                      />
-                                    )}
-                                  </span>
+                                      )}
+                                    </span>
+                                  </div>
                                 </div>
                               </div>
                             </div>
-                          </div>
-                        </li>
+                          </li>
+                        </div>
                       )
                     })}
-                </ul>
+                  </ul>
+                </InfiniteScroll>
               </div>
             )}
           {/* compact layout skeleton */}
           {((layout === 'compact' && !operatorsStore.isOperatorsLoaded) || isApplyingFilters) && (
             <ul role='list' className='mt-4 grid grid-cols-1 gap-4 sm:grid-cols-2 2xl:grid-cols-3'>
               {Array.from(Array(24)).map((e, index) => (
-                <li key={index}>
+                <li key={index} className='px-1'>
                   <button
                     type='button'
                     className='group flex w-full items-center justify-between space-x-3 rounded-lg p-2 text-left focus:outline-none focus:ring-2 focus:ring-offset-2 bg-white dark:bg-gray-900 cursor-default'
@@ -316,78 +348,90 @@ const Operators: NextPage = () => {
             operatorsStore.isOperatorsLoaded &&
             !operatorsStore.errorMessage &&
             !isEmpty(filteredOperators) && (
-              <ul
-                role='list'
-                className='mt-4 grid grid-cols-1 gap-4 sm:grid-cols-2 2xl:grid-cols-3'
+              <InfiniteScroll
+                dataLength={infiniteScrollOperators.length}
+                next={showMoreInfiniteScrollOperators}
+                hasMore={infiniteScrollHasMore}
+                scrollableTarget='main-content'
+                loader={
+                  <FontAwesomeIcon
+                    icon={faCircleNotch}
+                    className='inline-block text-center fa-spin h-8 m-10 text-gray-400 dark:text-gray-500'
+                  />
+                }
               >
-                {Object.keys(filteredOperators).map((key, index) => {
-                  const operator = filteredOperators[key]
-                  return (
-                    <li key={index}>
-                      <button
-                        type='button'
-                        onClick={() => openShowOperatorDrawer(operator)}
-                        className='group flex w-full items-center justify-between space-x-3 rounded-lg p-2 text-left focus:outline-none focus:ring-2 focus:ring-offset-2 bg-white dark:bg-gray-900 hover:bg-gray-200 dark:hover:bg-gray-700 focus:ring-primary dark:focus:ring-primary'
-                      >
-                        <span className='flex min-w-0 flex-1 items-center space-x-3'>
-                          <span className='block flex-shrink-0'>
-                            <Avatar
-                              src={operator.avatarBase64}
-                              placeholderType='operator'
-                              size='large'
-                              bordered
-                              star={operator.favorite}
-                              onClick={() => openShowOperatorDrawer(operator)}
-                              className='mx-auto cursor-pointer'
+                <ul
+                  role='list'
+                  className='mt-4 grid grid-cols-1 gap-4 sm:grid-cols-2 2xl:grid-cols-3'
+                >
+                  {infiniteScrollOperators.map((operator: any, index) => {
+                    return (
+                      <li key={index} className='px-1'>
+                        <button
+                          type='button'
+                          onClick={() => openShowOperatorDrawer(operator)}
+                          className='group flex w-full items-center justify-between space-x-3 rounded-lg p-2 text-left focus:outline-none focus:ring-2 focus:ring-offset-2 bg-white dark:bg-gray-900 hover:bg-gray-200 dark:hover:bg-gray-700 focus:ring-primary dark:focus:ring-primary'
+                        >
+                          <span className='flex min-w-0 flex-1 items-center space-x-3'>
+                            <span className='block flex-shrink-0'>
+                              <Avatar
+                                src={operator.avatarBase64}
+                                placeholderType='operator'
+                                size='large'
+                                bordered
+                                star={operator.favorite}
+                                onClick={() => openShowOperatorDrawer(operator)}
+                                className='mx-auto cursor-pointer'
+                              />
+                            </span>
+                            <span className='block min-w-0 flex-1'>
+                              <span className='block truncate text-sm font-medium text-gray-900 dark:text-gray-100'>
+                                {operator.name}
+                              </span>
+                              <span className='block truncate mt-1 text-sm font-medium text-gray-500 dark:text-gray-500'>
+                                {operator.conversations?.length &&
+                                (operator.conversations[0].connected ||
+                                  operator.conversations[0].inConference ||
+                                  operator.conversations[0].chDest?.inConference == true) ? (
+                                  <Badge
+                                    rounded='full'
+                                    variant='busy'
+                                    size='small'
+                                    className='flex items-center'
+                                  >
+                                    <span className='mr-1.5'>
+                                      {capitalize(operator.mainPresence)}
+                                    </span>
+                                    <CallDuration
+                                      startTime={operator.conversations[0].startTime}
+                                      className='font-mono relative top-px'
+                                    />
+                                  </Badge>
+                                ) : (
+                                  <OperatorStatusBadge
+                                    operator={operator}
+                                    currentUsername={authStore.username}
+                                    callEnabled={true}
+                                    onCall={callOperator}
+                                    size='small'
+                                  />
+                                )}
+                              </span>
+                            </span>
+                          </span>
+                          <span className='inline-flex h-10 w-10 flex-shrink-0 items-center justify-center'>
+                            <FontAwesomeIcon
+                              icon={faChevronRight}
+                              className='h-3 w-3 text-gray-400 dark:text-gray-500 cursor-pointer'
+                              aria-hidden='true'
                             />
                           </span>
-                          <span className='block min-w-0 flex-1'>
-                            <span className='block truncate text-sm font-medium text-gray-900 dark:text-gray-100'>
-                              {operator.name}
-                            </span>
-                            <span className='block truncate mt-1 text-sm font-medium text-gray-500 dark:text-gray-500'>
-                              {operator.conversations?.length &&
-                              (operator.conversations[0].connected ||
-                                operator.conversations[0].inConference ||
-                                operator.conversations[0].chDest?.inConference == true) ? (
-                                <Badge
-                                  rounded='full'
-                                  variant='busy'
-                                  size='small'
-                                  className='flex items-center'
-                                >
-                                  <span className='mr-1.5'>
-                                    {capitalize(operator.mainPresence)}
-                                  </span>
-                                  <CallDuration
-                                    startTime={operator.conversations[0].startTime}
-                                    className='font-mono relative top-px'
-                                  />
-                                </Badge>
-                              ) : (
-                                <OperatorStatusBadge
-                                  operator={operator}
-                                  currentUsername={authStore.username}
-                                  callEnabled={true}
-                                  onCall={callOperator}
-                                  size='small'
-                                />
-                              )}
-                            </span>
-                          </span>
-                        </span>
-                        <span className='inline-flex h-10 w-10 flex-shrink-0 items-center justify-center'>
-                          <FontAwesomeIcon
-                            icon={faChevronRight}
-                            className='h-3 w-3 text-gray-400 dark:text-gray-500 cursor-pointer'
-                            aria-hidden='true'
-                          />
-                        </span>
-                      </button>
-                    </li>
-                  )
-                })}
-              </ul>
+                        </button>
+                      </li>
+                    )
+                  })}
+                </ul>
+              </InfiniteScroll>
             )}
         </div>
       </div>
