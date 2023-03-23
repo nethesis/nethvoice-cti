@@ -336,6 +336,10 @@
     "Insert announcement name": "Insert announcement name",
     "Sort by": "Sort by",
     "Creation date": "Creation date",
-    "Wrong file type":"Wrong file type"
+    "Wrong file type": "Wrong file type",
+    "Insert voicemail": "Insert voicemail",
+    "Forward": "Forward",
+    "Announcement + voicemail": "Announcement + voicemail",
+    "Lines":"Lines"
   }
 }

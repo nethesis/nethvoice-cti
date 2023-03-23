@@ -6,8 +6,14 @@ import { useTranslation } from 'react-i18next'
 import { Button, EmptyState, InlineNotification } from '../common'
 import { isEmpty, debounce } from 'lodash'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
-import { openShowTelephoneLinesDrawer, retrieveLines } from '../../lib/lines'
-import { faChevronRight, faChevronLeft, faPhone } from '@nethesis/nethesis-solid-svg-icons'
+import { openShowTelephoneLinesDrawer, retrieveLines, PAGE_SIZE } from '../../lib/lines'
+import {
+  faChevronRight,
+  faChevronLeft,
+  faPhone,
+  faVoicemail,
+  faArrowTurnDownRight,
+} from '@nethesis/nethesis-solid-svg-icons'
 import classNames from 'classnames'
 import { LinesFilter } from './LinesFilter'
 
@@ -17,7 +23,7 @@ const table = [
   {
     description: 'Mario Rossi',
     calledIdNum: '1',
-    personalized: 'Lorem ipsum dolor sit amet',
+    personalized: 'audiomsg',
     audiomsg: {
       description: 'Natale 2020',
     },
@@ -25,7 +31,7 @@ const table = [
   {
     description: 'Anna Bianchi',
     calledIdNum: '2',
-    personalized: 'Consectetur adipiscing elit',
+    personalized: 'audiomsg_voicemail',
     audiomsg: {
       description: 'Natale 2021',
     },
@@ -33,7 +39,7 @@ const table = [
   {
     description: 'Luigi Verdi',
     calledIdNum: '3',
-    personalized: 'Sed do eiusmod tempor incididunt',
+    personalized: 'redirect',
     audiomsg: {
       description: 'Natale 2022',
     },
@@ -41,9 +47,49 @@ const table = [
   {
     description: 'Giovanni Neri',
     calledIdNum: '4',
-    personalized: 'Ut labore et dolore magna aliqua',
+    personalized: '',
     audiomsg: {
-      description: 'Pasqua 2023',
+      description: '',
+    },
+  },
+  {
+    description: 'Maria Russo',
+    calledIdNum: '5',
+    personalized: 'audiomsg_voicemail',
+    audiomsg: {
+      description: 'Compleanno 2022',
+    },
+  },
+  {
+    description: 'Paolo Verde',
+    calledIdNum: '6',
+    personalized: 'redirect',
+    audiomsg: {
+      description: 'Natale 2023',
+    },
+  },
+  {
+    description: 'Chiara Rossi',
+    calledIdNum: '7',
+    personalized: 'audiomsg',
+    audiomsg: {
+      description: 'Matrimonio 2022',
+    },
+  },
+  {
+    description: 'Marco Bianchi',
+    calledIdNum: '8',
+    personalized: '',
+    audiomsg: {
+      description: '',
+    },
+  },
+  {
+    description: 'Sara Neri',
+    calledIdNum: '9',
+    personalized: 'audiomsg_voicemail',
+    audiomsg: {
+      description: 'Natale 2021',
     },
   },
 ]
@@ -135,6 +181,50 @@ export const LinesView: FC<LinesViewProps> = ({ className }): JSX.Element => {
     table.sort((a, b) => a.description.localeCompare(b.description))
   } else if (sortBy === 'calledIdNum') {
     table.sort((a, b) => a.calledIdNum.localeCompare(b.calledIdNum))
+  }
+
+  // Check which configuration will be shown
+  function getConfiguration(configurationType: any) {
+    switch (configurationType.personalized) {
+      case 'audiomsg':
+        return (
+          <>
+            <div className='flex items-center'>
+              <span>{t(`Lines.Announcement`)}</span>
+            </div>
+          </>
+        )
+      case 'audiomsg_voicemail':
+        return (
+          <>
+            <div className='flex items-center'>
+              <FontAwesomeIcon icon={faVoicemail} className='h-4 w-4 mr-2' aria-hidden='true' />
+              <span>{t(`Lines.Announcement + voicemail`)}</span>
+            </div>
+          </>
+        )
+      case 'redirect':
+        return (
+          <>
+            <div className='flex items-center'>
+              <FontAwesomeIcon
+                icon={faArrowTurnDownRight}
+                className='h-4 w-4 mr-2'
+                aria-hidden='true'
+              />
+              <span>{t(`Lines.Forward`)}</span>
+            </div>
+          </>
+        )
+      default:
+        return (
+          <>
+            <div className='flex items-center'>
+              <span>-</span>
+            </div>
+          </>
+        )
+    }
   }
 
   return (
@@ -232,18 +322,16 @@ export const LinesView: FC<LinesViewProps> = ({ className }): JSX.Element => {
                           <div className='text-gray-500 dark:text-gray-500'>{call.queueId}</div>
                         </td>
                         {/* Costum configuration */}
+                        <td className='whitespace-nowrap px-3 py-4'>{getConfiguration(call)}</td>
+                        {/* Role */}
                         <td className='whitespace-nowrap px-3 py-4'>
                           <div className='flex items-center'>
-                            <span>{call.personalized}</span>
+                            <span>
+                              {call.audiomsg.description ? call.audiomsg.description : '-'}
+                            </span>
                           </div>
                         </td>
-                        {/* Ruolo */}
-                        <td className='whitespace-nowrap px-3 py-4'>
-                          <div className='flex items-center'>
-                            <span>{call.audiomsg.description}</span>
-                          </div>
-                        </td>
-                        {/* show details */}
+                        {/* Show details */}
                         <td className='relative whitespace-nowrap py-4 pl-3 pr-4 text-right text-sm font-medium sm:pr-6'>
                           <FontAwesomeIcon
                             icon={faChevronRight}
@@ -280,7 +368,7 @@ export const LinesView: FC<LinesViewProps> = ({ className }): JSX.Element => {
                       : lines?.count}
                   </span>{' '}
                   {t('Common.of')} <span className='font-medium'>{lines?.count}</span>{' '}
-                  {t('Queues.lines')}
+                  {t('Lines.Lines')}
                 </p>
               </div>
               <div className='flex flex-1 justify-between sm:justify-end'>

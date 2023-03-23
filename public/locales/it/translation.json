@@ -226,8 +226,12 @@
     "Insert number": "Inserisci numero",
     "Filter roules": "Filtra regole",
     "Insert announcement name": "Inserisci nome annuncio",
-    "Sort by":"Ordina per",
+    "Sort by": "Ordina per",
     "Creation date": "Data creazione",
-    "Wrong file type":"Formato file errato"
+    "Wrong file type": "Formato file errato",
+    "Insert voicemail": "Inserisci voicemail",
+    "Forward": "Inoltro",
+    "Announcemnt + voicemail": "Annuncio + voicemail",
+    "Lines": "Linee"
   }
 }

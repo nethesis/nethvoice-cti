@@ -184,6 +184,7 @@ export const ShowTelephoneLinesDrawerContent = forwardRef<
                   onIcon={<FontAwesomeIcon icon={faToggleLargeOn} />}
                   offIcon={<FontAwesomeIcon icon={faToggleLargeOff} />}
                   changed={() => toggleManageAnnouncement()}
+                  disabled={isForwardActive ? true : false}
                 ></IconSwitch>
               </div>
               {/* Divider */}
@@ -339,36 +340,9 @@ export const ShowTelephoneLinesDrawerContent = forwardRef<
                   {/* Divider */}
                   <div className='mt-1 border-t border-gray-200 dark:border-gray-700'></div>
                 </div>
-
-                {/* Activate forward */}
-                <div className='px-5'>
-                  <div className='flex items-center justify-between mt-6'>
-                    <div className='flex items-center'>
-                      <FontAwesomeIcon
-                        icon={faArrowTurnDownRight}
-                        className='mr-4 h-4 w-4 flex-shrink-0 text-gray-400 dark:text-gray-500'
-                        aria-hidden='true'
-                      />
-                      <h4 className='text-md font-medium text-gray-700 dark:text-gray-200'>
-                        {t('Lines.Activate forward')}
-                      </h4>
-                    </div>
-                    <IconSwitch
-                      on={isForwardActive}
-                      size='double_extra_large'
-                      onIcon={<FontAwesomeIcon icon={faToggleLargeOn} />}
-                      offIcon={<FontAwesomeIcon icon={faToggleLargeOff} />}
-                      changed={() => toggleForward()}
-                    ></IconSwitch>
-                  </div>
-
-                  {/* Divider */}
-                  <div className='mt-1 border-t border-gray-200 dark:border-gray-700'></div>
-                </div>
-
-                {isForwardActive && (
+                {isAnnouncementVoicemailActive && (
                   <TextInput
-                    placeholder={t('Lines.Insert number') || ''}
+                    placeholder={t('Lines.Insert voicemail') || ''}
                     className='mt-4 px-5'
                   ></TextInput>
                 )}
@@ -376,6 +350,36 @@ export const ShowTelephoneLinesDrawerContent = forwardRef<
             )}
           </>
         )}
+        {/* Activate forward */}
+
+        <div className='px-5'>
+          <div className='flex items-center justify-between mt-6'>
+            <div className='flex items-center'>
+              <FontAwesomeIcon
+                icon={faArrowTurnDownRight}
+                className='mr-4 h-4 w-4 flex-shrink-0 text-gray-400 dark:text-gray-500'
+                aria-hidden='true'
+              />
+              <h4 className='text-md font-medium text-gray-700 dark:text-gray-200'>
+                {t('Lines.Activate forward')}
+              </h4>
+            </div>
+            <IconSwitch
+              on={isForwardActive}
+              size='double_extra_large'
+              onIcon={<FontAwesomeIcon icon={faToggleLargeOn} />}
+              offIcon={<FontAwesomeIcon icon={faToggleLargeOff} />}
+              changed={() => toggleForward()}
+              disabled={isManageAnnouncementActive ? true : false}
+            ></IconSwitch>
+          </div>
+
+          {/* Divider */}
+          <div className='mt-1 border-t border-gray-200 dark:border-gray-700'></div>
+          {isForwardActive && (
+            <TextInput placeholder={t('Lines.Insert number') || ''} className='mt-4'></TextInput>
+          )}
+        </div>
       </>
     )
   }

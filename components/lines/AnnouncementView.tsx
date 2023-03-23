@@ -21,6 +21,7 @@ import { useSelector } from 'react-redux'
 import { RootState } from '../../store'
 import { loadCache } from '../../lib/storage'
 import { formatDateLoc, getCallTimeToDisplay } from '../../lib/dateTime'
+import { capitalize } from 'lodash'
 
 export interface AnnouncementViewProps extends ComponentProps<'div'> {}
 
@@ -37,7 +38,7 @@ const table = [
     description: 'Il segreto del tempio',
     username: 'vittorio',
     date_creation: '19/10/2018',
-    privacy: 'pubblico',
+    privacy: 'public',
     time_creation: '08:12:30',
     id: 2,
   },
@@ -45,7 +46,7 @@ const table = [
     description: 'Ombre sul lago',
     username: 'edoardo',
     date_creation: '21/12/2018',
-    privacy: 'pubblico',
+    privacy: 'public',
     time_creation: '08:12:30',
     id: 3,
   },
@@ -60,7 +61,7 @@ const table = [
     description: "L'isola misteriosa",
     username: 'nicola',
     date_creation: '21/12/2018',
-    privacy: 'pubblico',
+    privacy: 'public',
     time_creation: '08:12:30',
     id: 4,
   },
@@ -335,7 +336,7 @@ export const AnnouncementView: FC<AnnouncementViewProps> = ({ className }): JSX.
                               }`}
                               aria-hidden='true'
                             />
-                            <span>{announcement.privacy}</span>
+                            <span>{t(`Lines.${capitalize(announcement.privacy)}`)} </span>
                           </div>
                         </td>
                         {/* Action button */}
