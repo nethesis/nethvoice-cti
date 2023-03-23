@@ -249,7 +249,9 @@ export const LinesView: FC<LinesViewProps> = ({ className }): JSX.Element => {
                             icon={faChevronRight}
                             className='h-3 w-3 p-2 cursor-pointer text-gray-500 dark:text-gray-500'
                             aria-hidden='true'
-                            onClick={() => openShowTelephoneLinesDrawer(call.name, call.number)}
+                            onClick={() =>
+                              openShowTelephoneLinesDrawer(call.description, call.calledIdNum)
+                            }
                           />
                         </td>
                       </tr>

@@ -31,6 +31,7 @@ const table = [
     date_creation: '27/12/2017',
     privacy: 'private',
     time_creation: '08:12:30',
+    id: 1,
   },
   {
     description: 'Il segreto del tempio',
@@ -38,6 +39,7 @@ const table = [
     date_creation: '19/10/2018',
     privacy: 'pubblico',
     time_creation: '08:12:30',
+    id: 2,
   },
   {
     description: 'Ombre sul lago',
@@ -45,6 +47,7 @@ const table = [
     date_creation: '21/12/2018',
     privacy: 'pubblico',
     time_creation: '08:12:30',
+    id: 3,
   },
   {
     description: 'Cuori in fuga',
@@ -59,6 +62,7 @@ const table = [
     date_creation: '21/12/2018',
     privacy: 'pubblico',
     time_creation: '08:12:30',
+    id: 4,
   },
 ]
 
@@ -191,6 +195,14 @@ export const AnnouncementView: FC<AnnouncementViewProps> = ({ className }): JSX.
     table.sort((a, b) => a.description.localeCompare(b.description))
   } else if (sortBy === 'privacy') {
     table.sort((a, b) => a.privacy.localeCompare(b.privacy))
+  }
+
+  function playSelectedAnnouncement(announcementId: any) {
+    console.log('you want to play this announcement', announcementId)
+  }
+
+  function donwloadSelectedAnnouncement(announcementId: any) {
+    console.log('you want to download this announcement', announcementId)
   }
 
   return (
@@ -330,7 +342,11 @@ export const AnnouncementView: FC<AnnouncementViewProps> = ({ className }): JSX.
                         <td className='px-3 py-4 flex gap-2 justify-end'>
                           <div>
                             {' '}
-                            <Button variant='white'>
+                            {/* Play button */}
+                            <Button
+                              variant='white'
+                              onClick={() => playSelectedAnnouncement(announcement.id)}
+                            >
                               <FontAwesomeIcon
                                 icon={faPlay}
                                 className='h-4 w-4 mr-2 text-gray-500 dark:text-gray-500'
@@ -341,13 +357,19 @@ export const AnnouncementView: FC<AnnouncementViewProps> = ({ className }): JSX.
                           </div>
                           <div>
                             {' '}
-                            <Button variant='white'>
+                            {/* Download button */}
+                            <Button
+                              variant='white'
+                              onClick={() => donwloadSelectedAnnouncement(announcement.id)}
+                            >
+                              {/* <a href='link_al_file' download> */}
                               <FontAwesomeIcon
                                 icon={faDownload}
                                 className='h-4 w-4 mr-2 text-gray-500 dark:text-gray-500'
                                 aria-hidden='true'
                               />{' '}
                               {t('Lines.Download')}
+                              {/* </a> */}
                             </Button>
                           </div>
                         </td>

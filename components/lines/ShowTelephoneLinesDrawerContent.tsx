@@ -166,34 +166,37 @@ export const ShowTelephoneLinesDrawerContent = forwardRef<
         {isConfigurationActive && (
           <>
             {/* Activate Announcement switch  */}
-            <div className='flex items-center justify-between mt-6'>
-              <div className='flex items-center'>
-                <FontAwesomeIcon
-                  icon={faBullhorn}
-                  className='mr-4 h-4 w-4 flex-shrink-0 text-gray-400 dark:text-gray-500'
-                  aria-hidden='true'
-                />
-                <h4 className='text-md font-medium text-gray-700 dark:text-gray-200'>
-                  {t('Lines.Activate announcement')}
-                </h4>
+            <div className='px-5'>
+              <div className='flex items-center justify-between mt-6'>
+                <div className='flex items-center'>
+                  <FontAwesomeIcon
+                    icon={faBullhorn}
+                    className='mr-4 h-4 w-4 flex-shrink-0 text-gray-400 dark:text-gray-500'
+                    aria-hidden='true'
+                  />
+                  <h4 className='text-md font-medium text-gray-700 dark:text-gray-200'>
+                    {t('Lines.Activate announcement')}
+                  </h4>
+                </div>
+                <IconSwitch
+                  on={isManageAnnouncementActive}
+                  size='double_extra_large'
+                  onIcon={<FontAwesomeIcon icon={faToggleLargeOn} />}
+                  offIcon={<FontAwesomeIcon icon={faToggleLargeOff} />}
+                  changed={() => toggleManageAnnouncement()}
+                ></IconSwitch>
               </div>
-              <IconSwitch
-                on={isManageAnnouncementActive}
-                size='double_extra_large'
-                onIcon={<FontAwesomeIcon icon={faToggleLargeOn} />}
-                offIcon={<FontAwesomeIcon icon={faToggleLargeOff} />}
-                changed={() => toggleManageAnnouncement()}
-              ></IconSwitch>
+              {/* Divider */}
+              <div className='mt-1 mb-5 border-t border-gray-200 dark:border-gray-700'></div>
             </div>
-            {/* Divider */}
-            <div className='mt-1 mb-5 border-t border-gray-200 dark:border-gray-700'></div>
 
             {isManageAnnouncementActive && changeConfigurationRadio == 'customize' && (
               <>
-                <div className='mb-4'>
+                <div className='mb-8 px-5'>
                   <label htmlFor='types' className='sr-only'>
                     {t('Lines.Select a type')}
                   </label>
+                  {/* Delete selected announcement */}
                   {announcementSelected && (
                     <>
                       <div className='py-3'>
@@ -228,6 +231,7 @@ export const ShowTelephoneLinesDrawerContent = forwardRef<
                       </div>
                     </>
                   )}
+                  {/* Select announcement */}
                   {!announcementSelected && (
                     <select
                       id='types'
@@ -244,11 +248,11 @@ export const ShowTelephoneLinesDrawerContent = forwardRef<
                     </select>
                   )}
                 </div>
-                <span className='font-medium'>{t('Lines.Select period')}</span>
+                <span className='font-medium px-5'>{t('Lines.Select period')}</span>
                 {/* Date input  */}
                 {/* TO DO MANAGE IN CASE OF MOBILE DEVICE */}
                 {/* TO DO CHECK RADIO BUTTON VALUE TO SET DATE  */}
-                <div className='mt-4'>
+                <div className='mt-4 px-5'>
                   {/* Date input select */}
                   <fieldset>
                     <legend className='sr-only'>Date range select</legend>
@@ -273,91 +277,99 @@ export const ShowTelephoneLinesDrawerContent = forwardRef<
                       ))}
                     </div>
                   </fieldset>
-                  <div className='flex mt-3 items-center justify-between'>
-                    <span>{t('Lines.Begin')}</span>
-                    {selectedType !== 'everyDay' && (
-                      <span className='ml-auto mr-auto'>{t('Lines.End')}</span>
-                    )}
-                  </div>
-                  <div className='flex mt-3 items-center justify-between'>
-                    <TextInput
-                      type='datetime-local'
-                      placeholder='Select date start'
-                      className='max-w-sm mr-4'
-                      id='meeting-time'
-                      name='meeting-time'
-                      ref={dateBeginRef}
-                      onChange={changeDateBegin}
-                      defaultValue={actualBeginDate}
-                    />
-                    {selectedType !== 'everyDay' && (
-                      <TextInput
-                        type='datetime-local'
-                        placeholder='Select date end'
-                        className='max-w-sm'
-                        id='meeting-time'
-                        name='meeting-time'
-                        ref={dateEndRef}
-                        onChange={changeDateEnd}
-                        defaultValue={selectedType === 'onlyOneDay' ? actualEndDate : dateEndValue}
-                        disabled={selectedType !== 'specifyDay'}
-                      />
-                    )}
-                  </div>
+                  {selectedType !== 'everyDay' && (
+                    <>
+                      <div className='flex mt-3 items-center justify-between'>
+                        <span>{t('Lines.Begin')}</span>
+
+                        <span className='ml-auto mr-auto'>{t('Lines.End')}</span>
+                      </div>
+                      <div className='flex mt-3 items-center justify-between'>
+                        <TextInput
+                          type='datetime-local'
+                          placeholder='Select date start'
+                          className='max-w-sm mr-4'
+                          id='meeting-time'
+                          name='meeting-time'
+                          ref={dateBeginRef}
+                          onChange={changeDateBegin}
+                          defaultValue={actualBeginDate}
+                        />
+
+                        <TextInput
+                          type='datetime-local'
+                          placeholder='Select date end'
+                          className='max-w-sm'
+                          id='meeting-time'
+                          name='meeting-time'
+                          ref={dateEndRef}
+                          onChange={changeDateEnd}
+                          defaultValue={
+                            selectedType === 'onlyOneDay' ? actualEndDate : dateEndValue
+                          }
+                          disabled={selectedType !== 'specifyDay'}
+                        />
+                      </div>
+                    </>
+                  )}
                 </div>
 
                 {/* Announcement and voicemail switch */}
-                <div className='flex items-center justify-between mt-6'>
-                  <div className='flex items-center'>
-                    <FontAwesomeIcon
-                      icon={faVoicemail}
-                      className='mr-4 h-4 w-4 flex-shrink-0 text-gray-400 dark:text-gray-500'
-                      aria-hidden='true'
-                    />
-                    <h4 className='text-md font-medium text-gray-700 dark:text-gray-200'>
-                      {t('Lines.Activate announcement + voicemail')}
-                    </h4>
+                <div className='px-5 pt-2'>
+                  <div className='flex items-center justify-between mt-8'>
+                    <div className='flex items-center'>
+                      <FontAwesomeIcon
+                        icon={faVoicemail}
+                        className='mr-4 h-4 w-4 flex-shrink-0 text-gray-400 dark:text-gray-500'
+                        aria-hidden='true'
+                      />
+                      <h4 className='text-md font-medium text-gray-700 dark:text-gray-200'>
+                        {t('Lines.Activate announcement + voicemail')}
+                      </h4>
+                    </div>
+                    <IconSwitch
+                      on={isAnnouncementVoicemailActive}
+                      size='double_extra_large'
+                      onIcon={<FontAwesomeIcon icon={faToggleLargeOn} />}
+                      offIcon={<FontAwesomeIcon icon={faToggleLargeOff} />}
+                      changed={() => toggleAnnouncementVoicemail()}
+                    ></IconSwitch>
                   </div>
-                  <IconSwitch
-                    on={isAnnouncementVoicemailActive}
-                    size='double_extra_large'
-                    onIcon={<FontAwesomeIcon icon={faToggleLargeOn} />}
-                    offIcon={<FontAwesomeIcon icon={faToggleLargeOff} />}
-                    changed={() => toggleAnnouncementVoicemail()}
-                  ></IconSwitch>
-                </div>
 
-                {/* Divider */}
-                <div className='mt-1 border-t border-gray-200 dark:border-gray-700'></div>
+                  {/* Divider */}
+                  <div className='mt-1 border-t border-gray-200 dark:border-gray-700'></div>
+                </div>
 
                 {/* Activate forward */}
-                <div className='flex items-center justify-between mt-6'>
-                  <div className='flex items-center'>
-                    <FontAwesomeIcon
-                      icon={faArrowTurnDownRight}
-                      className='mr-4 h-4 w-4 flex-shrink-0 text-gray-400 dark:text-gray-500'
-                      aria-hidden='true'
-                    />
-                    <h4 className='text-md font-medium text-gray-700 dark:text-gray-200'>
-                      {t('Lines.Activate forward')}
-                    </h4>
+                <div className='px-5'>
+                  <div className='flex items-center justify-between mt-6'>
+                    <div className='flex items-center'>
+                      <FontAwesomeIcon
+                        icon={faArrowTurnDownRight}
+                        className='mr-4 h-4 w-4 flex-shrink-0 text-gray-400 dark:text-gray-500'
+                        aria-hidden='true'
+                      />
+                      <h4 className='text-md font-medium text-gray-700 dark:text-gray-200'>
+                        {t('Lines.Activate forward')}
+                      </h4>
+                    </div>
+                    <IconSwitch
+                      on={isForwardActive}
+                      size='double_extra_large'
+                      onIcon={<FontAwesomeIcon icon={faToggleLargeOn} />}
+                      offIcon={<FontAwesomeIcon icon={faToggleLargeOff} />}
+                      changed={() => toggleForward()}
+                    ></IconSwitch>
                   </div>
-                  <IconSwitch
-                    on={isForwardActive}
-                    size='double_extra_large'
-                    onIcon={<FontAwesomeIcon icon={faToggleLargeOn} />}
-                    offIcon={<FontAwesomeIcon icon={faToggleLargeOff} />}
-                    changed={() => toggleForward()}
-                  ></IconSwitch>
-                </div>
 
-                {/* Divider */}
-                <div className='mt-1 border-t border-gray-200 dark:border-gray-700'></div>
+                  {/* Divider */}
+                  <div className='mt-1 border-t border-gray-200 dark:border-gray-700'></div>
+                </div>
 
                 {isForwardActive && (
                   <TextInput
                     placeholder={t('Lines.Insert number') || ''}
-                    className='mt-4'
+                    className='mt-4 px-5'
                   ></TextInput>
                 )}
               </>
@@ -372,20 +384,28 @@ export const ShowTelephoneLinesDrawerContent = forwardRef<
     return (
       <>
         {/* Activate Announcement switch  */}
-        <div className='flex items-center justify-between mt-8'>
-          <h4 className='text-md font-medium text-gray-700 dark:text-gray-200'>
-            {t('Lines.Select rule')}
-          </h4>
+        <div className='px-5'>
+          {/* Title */}
+          <div className='flex items-center justify-between mt-8'>
+            <h4 className='text-md font-medium text-gray-700 dark:text-gray-200'>
+              {t('Lines.Select rule')}
+            </h4>
+          </div>
+          {/* Divider */}
+          <div className='mt-3 mb-5 border-t border-gray-200 dark:border-gray-700'></div>
         </div>
-        {/* Divider */}
-        <div className='mt-3 mb-5 border-t border-gray-200 dark:border-gray-700'></div>
+
         <fieldset className='mt-4'>
-          <legend className='sr-only'>Notification method</legend>
+          <legend className='sr-only'>Rule information</legend>
           <div className='space-y-4'>
             {dateRuleInformations.map((dateRuleInformation) => (
               <div key={dateRuleInformation.id}>
-                <div className='flex items-center justify-between mt-1'>
-                  <div className='flex items-center'>
+                <div
+                  className={`flex items-center justify-between mt-1 ${
+                    openPanel === dateRuleInformation.id ? 'bg-gray-100' : ''
+                  } `}
+                >
+                  <div className='flex items-center px-5 pt-3'>
                     <input
                       id={dateRuleInformation.id}
                       name='date-select'
@@ -412,13 +432,13 @@ export const ShowTelephoneLinesDrawerContent = forwardRef<
                   </button>
                 </div>
                 {openPanel === dateRuleInformation.id && (
-                  <div className='bg-gray-100 p-2'>
+                  <div className='bg-gray-100 px-5 py-3'>
                     <div className='flex flex-col'>
                       <h1 className='flex text-md font-medium text-gray-700 dark:text-gray-200'>
                         {t('Lines.Rule details')}
                       </h1>
                       {/* TO DO GET DATA FROM API */}
-                      <div className='flex mt-2'>
+                      <div className='flex items-center mt-2'>
                         <FontAwesomeIcon
                           icon={faVoicemail}
                           className='mr-4 h-4 w-4 flex-shrink-0 text-gray-400 dark:text-gray-500'
@@ -428,7 +448,7 @@ export const ShowTelephoneLinesDrawerContent = forwardRef<
                           {t('Lines.Activate announcement + voicemail')}
                         </h4>
                       </div>
-                      <div className='flex mt-1'>
+                      <div className='flex items-center mt-1'>
                         <FontAwesomeIcon
                           icon={faCalendar}
                           className='mr-4 h-4 w-4 flex-shrink-0 text-gray-400 dark:text-gray-500'
@@ -438,7 +458,7 @@ export const ShowTelephoneLinesDrawerContent = forwardRef<
                           {t('Lines.Begin')}
                         </h4>
                       </div>
-                      <div className='flex mt-1'>
+                      <div className='flex items-center mt-1'>
                         <FontAwesomeIcon
                           icon={faCalendar}
                           className='mr-4 h-4 w-4 flex-shrink-0 text-gray-400 dark:text-gray-500'
@@ -465,6 +485,7 @@ export const ShowTelephoneLinesDrawerContent = forwardRef<
 
   return (
     <>
+      {/* Drawer title */}
       <div className='bg-gray-100 dark:bg-gray-800 py-6 px-6'>
         <div className='flex items-center justify-between'>
           <div className='text-lg font-medium text-gray-700 dark:text-gray-200'>
@@ -475,8 +496,9 @@ export const ShowTelephoneLinesDrawerContent = forwardRef<
           </div>
         </div>
       </div>
-      <div className={classNames(className, 'p-5')} {...props}>
-        <dl>
+      <div className={classNames(className)} {...props}>
+        {/* Contact details */}
+        <dl className='px-5 pt-5'>
           {/* name */}
           {config.name && (
             <div className='py-4 sm:grid sm:grid-cols-3 sm:gap-4 sm:py-5'>
@@ -515,24 +537,27 @@ export const ShowTelephoneLinesDrawerContent = forwardRef<
           )}
         </dl>
         {/* Lines configuration management */}
-        <div className='flex items-center justify-between mt-1'>
-          <h4 className=' text-md font-medium text-gray-700 dark:text-gray-200'>
-            {t('Lines.Activate configuration')}
-          </h4>
+        <div className='px-5'>
+          <div className='flex items-center justify-between mt-1'>
+            <h4 className=' text-md font-medium text-gray-700 dark:text-gray-200'>
+              {t('Lines.Activate configuration')}
+            </h4>
 
-          <IconSwitch
-            on={isConfigurationActive}
-            size='double_extra_large'
-            onIcon={<FontAwesomeIcon icon={faToggleLargeOn} />}
-            offIcon={<FontAwesomeIcon icon={faToggleLargeOff} />}
-            changed={() => toggleConfigurationActive()}
-          ></IconSwitch>
+            <IconSwitch
+              on={isConfigurationActive}
+              size='double_extra_large'
+              onIcon={<FontAwesomeIcon icon={faToggleLargeOn} />}
+              offIcon={<FontAwesomeIcon icon={faToggleLargeOff} />}
+              changed={() => toggleConfigurationActive()}
+            ></IconSwitch>
+          </div>
+          {/* Divider */}
+          <div className='mt-1 border-t border-gray-200 dark:border-gray-700'></div>
         </div>
-        {/* Divider */}
-        <div className='mt-1 border-t border-gray-200 dark:border-gray-700'></div>
+
         {isConfigurationActive && (
           <>
-            <fieldset className='mt-4'>
+            <fieldset className='mt-4 px-5'>
               <legend className='sr-only'>Configuration type</legend>
               <div className='space-y-4 sm:flex sm:items-center sm:space-y-0 sm:space-x-10'>
                 {configurationType.map((configuration) => (
@@ -571,7 +596,7 @@ export const ShowTelephoneLinesDrawerContent = forwardRef<
           </ul>
         )} */}
         {/* fixed bottom-0 */}
-        <div className='flex mt-6'>
+        <div className='flex mt-6 px-5'>
           <Button
             variant='primary'
             type='submit'
