@@ -12,10 +12,128 @@ export const DEFAULT_SORT_BY_ANNOUNCEMENT = 'description'
 
 const apiEnpoint = getApiEndpoint()
 const apiScheme = getApiScheme()
-const apiUrl = apiScheme + apiEnpoint
+const apiUrl = apiScheme + apiEnpoint + '/webrest'
 
+// Get phone lines list
 export async function retrieveLines() {
-  let userUrlApi = apiUrl + '/webrest/offhour/list'
+  let userUrlApi = apiUrl + '/offhour/list/'
+
+  try {
+    const { data, status } = await axios.get(userUrlApi)
+    return data
+  } catch (error) {
+    handleNetworkError(error)
+    throw error
+  }
+}
+
+// Get announcements list
+export async function getAnnouncements() {
+  let userUrlApi = apiUrl + '/offhour/list_announcement/'
+
+  try {
+    const { data, status } = await axios.get(userUrlApi)
+    return data
+  } catch (error) {
+    handleNetworkError(error)
+    throw error
+  }
+}
+
+// Set record announcent
+export async function setRecordMsg() {
+  let userUrlApi = apiUrl + '/offhour/record_announcement/'
+
+  try {
+    const { data, status } = await axios.post(userUrlApi)
+    return data
+  } catch (error) {
+    handleNetworkError(error)
+    throw error
+  }
+}
+
+// Set offhour
+export async function setOffHour(offHourElement: any) {
+  let userUrlApi = apiUrl + '/offhour/set_offhour/'
+
+  try {
+    const { data, status } = await axios.post(userUrlApi, offHourElement)
+    return data
+  } catch (error) {
+    handleNetworkError(error)
+    throw error
+  }
+}
+
+// Enable message
+export async function enableMsg(msgElement: any) {
+  let userUrlApi = apiUrl + '/offhour/enable_announcement/'
+
+  try {
+    const { data, status } = await axios.post(userUrlApi, msgElement)
+    return data
+  } catch (error) {
+    handleNetworkError(error)
+    throw error
+  }
+}
+
+// Delete message
+export async function deleteMsg(msgElement: any) {
+  let userUrlApi = apiUrl + '/offhour/delete_announcement/'
+
+  try {
+    const { data, status } = await axios.post(userUrlApi, msgElement)
+    return data
+  } catch (error) {
+    handleNetworkError(error)
+    throw error
+  }
+}
+
+// Modify message
+export async function modifyMsg(msgElement: any) {
+  let userUrlApi = apiUrl + '/offhour/modify_announcement/'
+
+  try {
+    const { data, status } = await axios.post(userUrlApi, msgElement)
+    return data
+  } catch (error) {
+    handleNetworkError(error)
+    throw error
+  }
+}
+
+// Upload audio message
+export async function uploadAudioMsg(msgElement: any) {
+  let userUrlApi = apiUrl + '/offhour/upload_announcement/'
+
+  try {
+    const { data, status } = await axios.post(userUrlApi, msgElement)
+    return data
+  } catch (error) {
+    handleNetworkError(error)
+    throw error
+  }
+}
+
+// Listen audio message
+export async function listenMsg(keyMessage: any) {
+  let userUrlApi = apiUrl + '/offhour/listen_announcement/' + keyMessage
+
+  try {
+    const { data, status } = await axios.get(userUrlApi)
+    return data
+  } catch (error) {
+    handleNetworkError(error)
+    throw error
+  }
+}
+
+// Donwload audio message
+export async function downloadMsg(keyMessage: any) {
+  let userUrlApi = apiUrl + '/offhour/download_announcement/' + keyMessage
 
   try {
     const { data, status } = await axios.get(userUrlApi)
