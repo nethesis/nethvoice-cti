@@ -25,6 +25,7 @@ import { callPhoneNumber, closeSideDrawer } from '../../lib/utils'
 import { TextInput, Button } from '../common'
 import { cloneDeep, isEmpty } from 'lodash'
 import { formatDateLoc } from '../../lib/dateTime'
+import { Switch } from '@headlessui/react'
 
 export interface ShowTelephoneLinesDrawerContentProps extends ComponentPropsWithRef<'div'> {
   config: any
@@ -160,6 +161,13 @@ export const ShowTelephoneLinesDrawerContent = forwardRef<
     // TO DO POST API
   }
 
+  // const [enabled, setEnabled] = useState(false)
+
+  // function toggleSwitch() {
+  //   setEnabled(!enabled)
+  //   console.log('setted')
+  // }
+
   function customTypeSelected() {
     return (
       <>
@@ -197,6 +205,20 @@ export const ShowTelephoneLinesDrawerContent = forwardRef<
                   <label htmlFor='types' className='sr-only'>
                     {t('Lines.Select a type')}
                   </label>
+
+                  {/* <Switch
+                    checked={enabled}
+                    onChange={() => toggleSwitch()}
+                    className={`${
+                      enabled ? 'bg-blue-600' : 'bg-gray-200'
+                    } relative inline-flex h-6 w-11 items-center rounded-full`}
+                  >
+                    <span
+                      className={`${
+                        enabled ? 'translate-x-6' : 'translate-x-1'
+                      } inline-block h-4 w-4 transform rounded-full bg-white transition`}
+                    />
+                  </Switch> */}
                   {/* Delete selected announcement */}
                   {announcementSelected && (
                     <>

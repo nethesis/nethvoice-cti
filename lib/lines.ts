@@ -12,11 +12,11 @@ export const DEFAULT_SORT_BY_ANNOUNCEMENT = 'description'
 
 const apiEnpoint = getApiEndpoint()
 const apiScheme = getApiScheme()
-const apiUrl = apiScheme + apiEnpoint + '/webrest'
+const apiUrl = apiScheme + apiEnpoint + '/webrest/'
 
 // Get phone lines list
 export async function retrieveLines() {
-  let userUrlApi = apiUrl + '/offhour/list/'
+  let userUrlApi = apiUrl + 'offhour/list'
 
   try {
     const { data, status } = await axios.get(userUrlApi)
@@ -29,7 +29,7 @@ export async function retrieveLines() {
 
 // Get announcements list
 export async function getAnnouncements() {
-  let userUrlApi = apiUrl + '/offhour/list_announcement/'
+  let userUrlApi = apiUrl + '/offhour/list_announcement'
 
   try {
     const { data, status } = await axios.get(userUrlApi)
@@ -42,7 +42,7 @@ export async function getAnnouncements() {
 
 // Set record announcent
 export async function setRecordMsg() {
-  let userUrlApi = apiUrl + '/offhour/record_announcement/'
+  let userUrlApi = apiUrl + '/offhour/record_announcement'
 
   try {
     const { data, status } = await axios.post(userUrlApi)
@@ -68,7 +68,7 @@ export async function setOffHour(offHourElement: any) {
 
 // Enable message
 export async function enableMsg(msgElement: any) {
-  let userUrlApi = apiUrl + '/offhour/enable_announcement/'
+  let userUrlApi = apiUrl + '/offhour/enable_announcement'
 
   try {
     const { data, status } = await axios.post(userUrlApi, msgElement)
@@ -80,11 +80,13 @@ export async function enableMsg(msgElement: any) {
 }
 
 // Delete message
-export async function deleteMsg(msgElement: any) {
-  let userUrlApi = apiUrl + '/offhour/delete_announcement/'
-
+export async function deleteMsg(msgElement: string) {
+  let userUrlApi = apiUrl + '/offhour/delete_announcement'
+  let objectToSend = {
+    id: msgElement.toString(),
+  }
   try {
-    const { data, status } = await axios.post(userUrlApi, msgElement)
+    const { data, status } = await axios.post(userUrlApi, objectToSend)
     return data
   } catch (error) {
     handleNetworkError(error)
@@ -94,7 +96,7 @@ export async function deleteMsg(msgElement: any) {
 
 // Modify message
 export async function modifyMsg(msgElement: any) {
-  let userUrlApi = apiUrl + '/offhour/modify_announcement/'
+  let userUrlApi = apiUrl + '/offhour/modify_announcement'
 
   try {
     const { data, status } = await axios.post(userUrlApi, msgElement)
@@ -107,8 +109,7 @@ export async function modifyMsg(msgElement: any) {
 
 // Upload audio message
 export async function uploadAudioMsg(msgElement: any) {
-  let userUrlApi = apiUrl + '/offhour/upload_announcement/'
-
+  let userUrlApi = apiUrl + '/offhour/upload_announcement'
   try {
     const { data, status } = await axios.post(userUrlApi, msgElement)
     return data
@@ -131,12 +132,13 @@ export async function listenMsg(keyMessage: any) {
   }
 }
 
-// Donwload audio message
+// Download audio message
 export async function downloadMsg(keyMessage: any) {
   let userUrlApi = apiUrl + '/offhour/download_announcement/' + keyMessage
 
+  let pathForDownload: any = userUrlApi
   try {
-    const { data, status } = await axios.get(userUrlApi)
+    const { data } = await axios.get(userUrlApi)
     return data
   } catch (error) {
     handleNetworkError(error)

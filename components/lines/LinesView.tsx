@@ -19,80 +19,23 @@ import { LinesFilter } from './LinesFilter'
 
 export interface LinesViewProps extends ComponentProps<'div'> {}
 
-const table = [
-  {
-    description: 'Mario Rossi',
-    calledIdNum: '1',
-    personalized: 'audiomsg',
-    audiomsg: {
-      description: 'Natale 2020',
-    },
-  },
-  {
-    description: 'Anna Bianchi',
-    calledIdNum: '2',
-    personalized: 'audiomsg_voicemail',
-    audiomsg: {
-      description: 'Natale 2021',
-    },
-  },
-  {
-    description: 'Luigi Verdi',
-    calledIdNum: '3',
-    personalized: 'redirect',
-    audiomsg: {
-      description: 'Natale 2022',
-    },
-  },
-  {
-    description: 'Giovanni Neri',
-    calledIdNum: '4',
-    personalized: '',
-    audiomsg: {
-      description: '',
-    },
-  },
-  {
-    description: 'Maria Russo',
-    calledIdNum: '5',
-    personalized: 'audiomsg_voicemail',
-    audiomsg: {
-      description: 'Compleanno 2022',
-    },
-  },
-  {
-    description: 'Paolo Verde',
-    calledIdNum: '6',
-    personalized: 'redirect',
-    audiomsg: {
-      description: 'Natale 2023',
-    },
-  },
-  {
-    description: 'Chiara Rossi',
-    calledIdNum: '7',
-    personalized: 'audiomsg',
-    audiomsg: {
-      description: 'Matrimonio 2022',
-    },
-  },
-  {
-    description: 'Marco Bianchi',
-    calledIdNum: '8',
-    personalized: '',
-    audiomsg: {
-      description: '',
-    },
-  },
-  {
-    description: 'Sara Neri',
-    calledIdNum: '9',
-    personalized: 'audiomsg_voicemail',
-    audiomsg: {
-      description: 'Natale 2021',
-    },
-  },
-]
+// const table = [
+//   {
+//     description: 'Mario Rossi',
+//     calledIdNum: '1',
+//     personalized: 'audiomsg',
+//     audiomsg: {
+//       description: 'Natale 2020',
+//     },
+//   },
+//   {
+//     description: 'Anna Bianchi',
+//     calledIdNum: '2',
+//     personalized: 'audiomsg_voicemail',
+//     audiomsg: {
+//       description: 'Natale 2021',
+//     },
+//   },]
 
 export const LinesView: FC<LinesViewProps> = ({ className }): JSX.Element => {
   const { t } = useTranslation()
@@ -119,23 +62,24 @@ export const LinesView: FC<LinesViewProps> = ({ className }): JSX.Element => {
   }, [debouncedUpdateTextFilter])
 
   //Get Lines information
-  // useEffect(() => {
-  //   async function fetchLines() {
-  //     if (!isLinesLoaded) {
-  //       try {
-  //         setLinesError('')
-  //         const res = await retrieveLines()
-  //         setLines(res)
-  //       } catch (e) {
-  //         console.error(e)
-  //         setLinesError(t('Lines.Cannot retrieve lines') || '')
-  //       }
-  //       setLinesLoaded(true)
-  //     }
-  //   }
-  //   fetchLines()
-  //   // eslint-disable-next-line react-hooks/exhaustive-deps
-  // }, [isLinesLoaded])
+  useEffect(() => {
+    async function fetchLines() {
+      if (!isLinesLoaded) {
+        try {
+          setLinesError('')
+          const res = await retrieveLines()
+          setLines(res)
+        } catch (e) {
+          console.error(e)
+          setLinesError(t('Lines.Cannot retrieve lines') || '')
+        }
+        setLinesLoaded(true)
+      }
+    }
+    fetchLines()
+
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [isLinesLoaded])
 
   //   function goToPreviousPage() {
   //     if (pageNum > 1) {
@@ -165,7 +109,7 @@ export const LinesView: FC<LinesViewProps> = ({ className }): JSX.Element => {
     return filteredLinesTables.slice(0, limit)
   }
 
-  const filteredTable = filterLinesTable(table)
+  // const filteredTable = filterLinesTable(table)
 
   const [sortBy, setSortBy]: any = useState('description')
 
@@ -177,11 +121,11 @@ export const LinesView: FC<LinesViewProps> = ({ className }): JSX.Element => {
   // const tableRows = [...props.lines.rows];
 
   // Sorting of the table according to the selected value
-  if (sortBy === 'description') {
-    table.sort((a, b) => a.description.localeCompare(b.description))
-  } else if (sortBy === 'calledIdNum') {
-    table.sort((a, b) => a.calledIdNum.localeCompare(b.calledIdNum))
-  }
+  // if (sortBy === 'description') {
+  //   table.sort((a, b) => a.description.localeCompare(b.description))
+  // } else if (sortBy === 'calledIdNum') {
+  //   table.sort((a, b) => a.calledIdNum.localeCompare(b.calledIdNum))
+  // }
 
   // Check which configuration will be shown
   function getConfiguration(configurationType: any) {
@@ -235,7 +179,7 @@ export const LinesView: FC<LinesViewProps> = ({ className }): JSX.Element => {
           updateSortFilter={updateSortFilter}
         />
       </div>
-      {linesError && <InlineNotification type='error' title={linesError}></InlineNotification>}
+      {/* {linesError && <InlineNotification type='error' title={linesError}></InlineNotification>} */}
       {/* {!linesError && ( */}
       <div className='mx-auto'>
         <div className='flex flex-col overflow-hidden'>
@@ -243,7 +187,7 @@ export const LinesView: FC<LinesViewProps> = ({ className }): JSX.Element => {
             <div className='inline-block min-w-full py-2 align-middle px-2 md:px-6 lg:px-8'>
               <div className='overflow-hidden shadow ring-1 md:rounded-lg ring-opacity-5 dark:ring-opacity-5 ring-gray-900 dark:ring-gray-100'>
                 {/* empty state */}
-                {isLinesLoaded && isEmpty(lines.rows) && (
+                {/* {isLinesLoaded && isEmpty(lines.rows) && (
                   <EmptyState
                     title={t('Lines.No lines')}
                     description={t('Lines.There are no lines with current filters') || ''}
@@ -256,7 +200,7 @@ export const LinesView: FC<LinesViewProps> = ({ className }): JSX.Element => {
                     }
                     className='bg-white dark:bg-gray-900'
                   ></EmptyState>
-                )}
+                )} */}
                 {/* {(!isLinesLoaded || !isEmpty(lines.rows)) && ( */}
                 <table className='min-w-full divide-y divide-gray-300 dark:divide-gray-600'>
                   <thead className='bg-white dark:bg-gray-900'>
@@ -308,26 +252,30 @@ export const LinesView: FC<LinesViewProps> = ({ className }): JSX.Element => {
                     {/* {isLinesLoaded &&
                           lines?.rows?.map((call: any, index: number) => ( */}
 
-                    {filteredTable.map((call: any, index: number) => (
-                      <tr key={index}>
+                    {Object.keys(lines).map((key) => (
+                      <tr key={key}>
                         {/* Name */}
                         <td className='py-4 pl-4 pr-3 sm:pl-6'>
                           <div className='flex flex-col'>
-                            <div>{call.description} </div>
+                            <div>{lines[key].description} </div>
                           </div>
                         </td>
                         {/* Number */}
                         <td className='px-3 py-4'>
-                          <div>{call.calledIdNum}</div>
-                          <div className='text-gray-500 dark:text-gray-500'>{call.queueId}</div>
+                          <div>{lines[key].calledIdNum}</div>
+                          <div className='text-gray-500 dark:text-gray-500'>
+                            {lines[key].queueId}
+                          </div>
                         </td>
                         {/* Costum configuration */}
-                        <td className='whitespace-nowrap px-3 py-4'>{getConfiguration(call)}</td>
+                        <td className='whitespace-nowrap px-3 py-4'>
+                          {getConfiguration(lines[key])}
+                        </td>
                         {/* Role */}
                         <td className='whitespace-nowrap px-3 py-4'>
                           <div className='flex items-center'>
                             <span>
-                              {call.audiomsg.description ? call.audiomsg.description : '-'}
+                              {lines[key].offhour ? lines[key].offhour.audiomsg.description : '-'}
                             </span>
                           </div>
                         </td>
@@ -338,7 +286,10 @@ export const LinesView: FC<LinesViewProps> = ({ className }): JSX.Element => {
                             className='h-3 w-3 p-2 cursor-pointer text-gray-500 dark:text-gray-500'
                             aria-hidden='true'
                             onClick={() =>
-                              openShowTelephoneLinesDrawer(call.description, call.calledIdNum)
+                              openShowTelephoneLinesDrawer(
+                                lines[key].description,
+                                lines[key].calledIdNum,
+                              )
                             }
                           />
                         </td>

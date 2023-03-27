@@ -1,12 +1,12 @@
 // Copyright (C) 2023 Nethesis S.r.l.
 // SPDX-License-Identifier: AGPL-3.0-or-later
 
-import { FC, ComponentProps, useState, useEffect, useMemo } from 'react'
+import { FC, ComponentProps, useState, useEffect, useMemo, RefObject, createRef } from 'react'
 import { useTranslation } from 'react-i18next'
-import { Button, EmptyState, InlineNotification, Avatar } from '../common'
+import { Button, EmptyState, InlineNotification, Avatar, Modal, TextInput } from '../common'
 import { isEmpty, debounce } from 'lodash'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
-import { retrieveLines } from '../../lib/lines'
+import { getAnnouncements, downloadMsg, listenMsg, deleteMsg } from '../../lib/lines'
 import {
   faPhone,
   faPlay,
@@ -14,6 +14,7 @@ import {
   faTrash,
   faLock,
   faLockOpen,
+  faTriangleExclamation,
 } from '@nethesis/nethesis-solid-svg-icons'
 import classNames from 'classnames'
 import { AnnouncementFilter } from './AnnouncementFilter'
@@ -22,6 +23,7 @@ import { RootState } from '../../store'
 import { loadCache } from '../../lib/storage'
 import { formatDateLoc, getCallTimeToDisplay } from '../../lib/dateTime'
 import { capitalize } from 'lodash'
+import { getApiEndpoint, getApiScheme } from '../../lib/utils'
 
 export interface AnnouncementViewProps extends ComponentProps<'div'> {}
 
@@ -75,10 +77,19 @@ export const AnnouncementView: FC<AnnouncementViewProps> = ({ className }): JSX.
   const [pageNum, setPageNum]: any = useState(1)
   const [firstRender, setFirstRender]: any = useState(true)
   const [intervalId, setIntervalId]: any = useState(0)
-  const queuesStore = useSelector((state: RootState) => state.queues)
   const authStore = useSelector((state: RootState) => state.authentication)
-
+  const [showDeleteModal, setShowDelecteModal] = useState(false)
+  const [deleteAnnouncementId, setDeleteAnnouncementId] = useState(null)
   const [textFilter, setTextFilter]: any = useState('')
+  const [deleteAudioMessageError, setDeleteAudioMessageError] = useState('')
+  const [donwloadAudioMessageError, setDownloadAudioMessageError] = useState('')
+
+  const cancelButtonRef: RefObject<HTMLButtonElement> = createRef()
+
+  const apiEnpoint = getApiEndpoint()
+  const apiScheme = getApiScheme()
+  const downloadUrl = apiScheme + apiEnpoint + '/webrest/static/'
+
   const updateTextFilter = (newTextFilter: string) => {
     setTextFilter(newTextFilter)
     // setPageNum(1)
@@ -94,23 +105,23 @@ export const AnnouncementView: FC<AnnouncementViewProps> = ({ className }): JSX.
   }, [debouncedUpdateTextFilter])
 
   //Get Lines information
-  // useEffect(() => {
-  //   async function fetchLines() {
-  //     if (!isLinesLoaded) {
-  //       try {
-  //         setLinesError('')
-  //         const res = await retrieveLines()
-  //         setLines(res)
-  //       } catch (e) {
-  //         console.error(e)
-  //         setLinesError(t('Lines.Cannot retrieve lines') || '')
-  //       }
-  //       setLinesLoaded(true)
-  //     }
-  //   }
-  //   fetchLines()
-  //   // eslint-disable-next-line react-hooks/exhaustive-deps
-  // }, [isLinesLoaded])
+  useEffect(() => {
+    async function fetchLines() {
+      if (!isLinesLoaded) {
+        try {
+          setLinesError('')
+          const res = await getAnnouncements()
+          setLines(res)
+        } catch (e) {
+          console.error(e)
+          setLinesError(t('Lines.Cannot retrieve lines') || '')
+        }
+        setLinesLoaded(true)
+      }
+    }
+    fetchLines()
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [isLinesLoaded])
 
   //   function goToPreviousPage() {
   //     if (pageNum > 1) {
@@ -142,11 +153,57 @@ export const AnnouncementView: FC<AnnouncementViewProps> = ({ className }): JSX.
 
   const filteredTable = filterLinesTable(table)
 
-  const deleteAnnouncement = (index: any) => {
-    console.log("you've just deleted this index", index)
+  const deleteAnnouncement = (announcementId: any) => {
+    setShowDelecteModal(true)
+    setDeleteAnnouncementId(announcementId)
+  }
+
+  async function closedModalSaved() {
+    if (deleteAnnouncementId) {
+      try {
+        await deleteMsg(deleteAnnouncementId)
+      } catch (error) {
+        setDeleteAudioMessageError('Cannot play announcement')
+        return
+      }
+    }
+    setShowDelecteModal(false)
+    // setForwardPresence(numberInputRef.current?.value)
+  }
+
+  async function donwloadSelectedAnnouncement(announcementId: any) {
+    if (announcementId) {
+      try {
+        const res = await downloadMsg(announcementId)
+        var link = document.createElement('a')
+        link.download = res
+        //This is for test inside localHost
+        // link.href = 'http://localhost:3000//webrest/static/' + res
+        link.href = downloadUrl + res
+        link.setAttribute('type', 'hidden')
+        document.body.appendChild(link)
+        link.click()
+      } catch (error) {
+        setDownloadAudioMessageError('Cannot download announcement')
+        return
+      }
+    }
+  }
+
+  async function playSelectedAnnouncement(announcementId: any) {
+    if (announcementId) {
+      // try {
+      //   await listenMsg(announcementId)
+      // } catch (error) {
+      //   setPlayAudioMessageError('Cannot play announcement')
+      //   return
+      // }
+    }
+    console.log('you want to play this announcement', announcementId)
   }
 
   const [sortBy, setSortBy]: any = useState('name')
+  const auth = useSelector((state: RootState) => state.authentication)
 
   const updateSortFilter = (newSortBy: string) => {
     setSortBy(newSortBy)
@@ -198,14 +255,6 @@ export const AnnouncementView: FC<AnnouncementViewProps> = ({ className }): JSX.
     table.sort((a, b) => a.privacy.localeCompare(b.privacy))
   }
 
-  function playSelectedAnnouncement(announcementId: any) {
-    console.log('you want to play this announcement', announcementId)
-  }
-
-  function donwloadSelectedAnnouncement(announcementId: any) {
-    console.log('you want to download this announcement', announcementId)
-  }
-
   return (
     <div className={classNames(className)}>
       {/* TO DO CHECK ON MOBILE DEVICE  */}
@@ -223,7 +272,7 @@ export const AnnouncementView: FC<AnnouncementViewProps> = ({ className }): JSX.
             <div className='inline-block min-w-full py-2 align-middle px-2 md:px-6 lg:px-8'>
               <div className='overflow-hidden shadow ring-1 md:rounded-lg ring-opacity-5 dark:ring-opacity-5 ring-gray-900 dark:ring-gray-100'>
                 {/* empty state */}
-                {isLinesLoaded && isEmpty(lines.rows) && (
+                {/* {isLinesLoaded && isEmpty(lines.rows) && (
                   <EmptyState
                     title={t('Lines.No lines')}
                     description={t('Lines.There are no lines with current filters') || ''}
@@ -236,7 +285,7 @@ export const AnnouncementView: FC<AnnouncementViewProps> = ({ className }): JSX.
                     }
                     className='bg-white dark:bg-gray-900'
                   ></EmptyState>
-                )}
+                )} */}
                 {/* {(!isLinesLoaded || !isEmpty(lines.rows)) && ( */}
                 <table className='min-w-full divide-y divide-gray-300 dark:divide-gray-600'>
                   <thead className='bg-white dark:bg-gray-900'>
@@ -291,35 +340,35 @@ export const AnnouncementView: FC<AnnouncementViewProps> = ({ className }): JSX.
                     {/* {isLinesLoaded &&
                           lines?.rows?.map((call: any, index: number) => ( */}
 
-                    {filteredTable.map((announcement: any, index: number) => (
-                      <tr key={index}>
+                    {Object.keys(lines).map((key) => (
+                      <tr key={key}>
                         {/* Name */}
                         <td className='py-4 pl-4 pr-3 sm:pl-6'>
                           <div className='flex flex-col'>
-                            <div>{announcement.description} </div>
+                            <div>{lines[key].description} </div>
                           </div>
                         </td>
                         {/* Author */}
                         <td className='px-3 py-4'>
                           <div className='flex items-center'>
                             <Avatar
-                              src={getAvatarData(announcement)}
+                              src={getAvatarData(lines[key])}
                               placeholderType='operator'
                               size='small'
                               bordered
                               className='mr-2'
                             />
-                            <div>{announcement.username}</div>
+                            <div>{lines[key].username}</div>
                           </div>
                         </td>
                         {/* Date */}
                         <td className='px-3 py-4'>
                           <div className='flex flex-col'>
                             <div className='text-sm text-gray-900 dark:text-gray-100'>
-                              {dateCreationShowed(announcement.date_creation)}
+                              {dateCreationShowed(lines[key].date_creation)}
                             </div>
                             <div className='text-gray-500 dark:text-gray-500'>
-                              {hourCreationShowed(announcement.time_creation)}
+                              {hourCreationShowed(lines[key].time_creation)}
                             </div>
                           </div>
                         </td>
@@ -330,13 +379,13 @@ export const AnnouncementView: FC<AnnouncementViewProps> = ({ className }): JSX.
                             {/* The ternary operator is required because the open lock icon takes up
                             more right margin */}
                             <FontAwesomeIcon
-                              icon={announcement.privacy === 'private' ? faLock : faLockOpen}
+                              icon={lines[key].privacy === 'private' ? faLock : faLockOpen}
                               className={`h-4 text-gray-500 dark:text-gray-500 ${
-                                announcement.privacy === 'private' ? 'mr-3' : 'mr-2'
+                                lines[key].privacy === 'private' ? 'mr-3' : 'mr-2'
                               }`}
                               aria-hidden='true'
                             />
-                            <span>{t(`Lines.${capitalize(announcement.privacy)}`)} </span>
+                            <span>{t(`Lines.${capitalize(lines[key].privacy)}`)} </span>
                           </div>
                         </td>
                         {/* Action button */}
@@ -346,7 +395,7 @@ export const AnnouncementView: FC<AnnouncementViewProps> = ({ className }): JSX.
                             {/* Play button */}
                             <Button
                               variant='white'
-                              onClick={() => playSelectedAnnouncement(announcement.id)}
+                              onClick={() => playSelectedAnnouncement(lines[key].id)}
                             >
                               <FontAwesomeIcon
                                 icon={faPlay}
@@ -361,7 +410,7 @@ export const AnnouncementView: FC<AnnouncementViewProps> = ({ className }): JSX.
                             {/* Download button */}
                             <Button
                               variant='white'
-                              onClick={() => donwloadSelectedAnnouncement(announcement.id)}
+                              onClick={() => donwloadSelectedAnnouncement(lines[key].id)}
                             >
                               {/* <a href='link_al_file' download> */}
                               <FontAwesomeIcon
@@ -376,17 +425,58 @@ export const AnnouncementView: FC<AnnouncementViewProps> = ({ className }): JSX.
                         </td>
                         {/* Delete announcement */}
                         <td className='relative whitespace-nowrap py-4 pl-3 pr-4 text-right text-sm font-medium sm:pr-6'>
-                          <FontAwesomeIcon
-                            icon={faTrash}
-                            className='h-4 w-4 p-2 cursor-pointer text-gray-500 dark:text-gray-500'
-                            aria-hidden='true'
-                            onClick={() => deleteAnnouncement(index)}
-                          />
+                          {auth.username === lines[key].username && (
+                            <FontAwesomeIcon
+                              icon={faTrash}
+                              className='h-4 w-4 p-2 cursor-pointer text-gray-500 dark:text-gray-500'
+                              aria-hidden='true'
+                              onClick={() => deleteAnnouncement(lines[key].id)}
+                            />
+                          )}
                         </td>
                       </tr>
                     ))}
                   </tbody>
                 </table>
+
+                {/* Delete announcement modal */}
+                <Modal
+                  show={showDeleteModal}
+                  focus={cancelButtonRef}
+                  onClose={() => setShowDelecteModal(false)}
+                >
+                  <Modal.Content>
+                    <div className='mx-auto flex h-12 w-12 flex-shrink-0 items-center justify-center rounded-full bg-red-100 sm:mx-0'>
+                      <FontAwesomeIcon
+                        icon={faTriangleExclamation}
+                        className='h-5 w-5 text-red-600'
+                        aria-hidden='true'
+                      />
+                    </div>
+                    <div className='mt-3 text-center sm:mt-0 sm:ml-4 sm:text-left'>
+                      <h3 className='text-lg font-medium leading-6 text-gray-900'>
+                        {t('Lines.Delete announcement')}
+                      </h3>
+                      <div className='mt-2'>
+                        <p className='text-sm text-gray-500'>
+                          {t('Lines.Are you sure to delete selected announcement?')}
+                        </p>
+                      </div>
+                    </div>
+                  </Modal.Content>
+                  <Modal.Actions>
+                    <Button variant='danger' onClick={() => closedModalSaved()}>
+                      {t('Common.Save')}
+                    </Button>
+                    <Button
+                      variant='white'
+                      onClick={() => setShowDelecteModal(false)}
+                      ref={cancelButtonRef}
+                    >
+                      {t('Common.Cancel')}
+                    </Button>
+                  </Modal.Actions>
+                </Modal>
 
                 {/* )} */}
               </div>

@@ -17,7 +17,7 @@ import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { callPhoneNumber, closeSideDrawer } from '../../lib/utils'
 import { TextInput, Button } from '../common'
 import { isEmpty } from 'lodash'
-
+import { uploadAudioMsg } from '../../lib/lines'
 export interface ShowAddAnnouncementContentProps extends ComponentPropsWithRef<'div'> {
   config: any
 }
@@ -33,6 +33,9 @@ export const ShowAddAnnouncementDrawerContent = forwardRef<
   const [errorUpload, setErrorUpload] = useState(false)
   const textFilterRef = useRef() as React.MutableRefObject<HTMLInputElement>
   const [selectedFile, setSelectedFile] = useState<any>(null)
+  const [selectedFileBase64, setSelectedFileBase64] = useState<any>(null)
+
+  const [uploadAudioMessageError, setUploadAudioMessageError] = useState('')
 
   const dateRuleInformations = [
     { id: 'public', value: t('Lines.Public') },
@@ -58,6 +61,12 @@ export const ShowAddAnnouncementDrawerContent = forwardRef<
 
     if (file && file.type.includes('audio/')) {
       setSelectedFile(file)
+      const reader = new FileReader()
+
+      reader.readAsDataURL(file)
+      reader.onloadend = () => {
+        setSelectedFileBase64(reader.result)
+      }
       if (errorUpload) {
         setErrorUpload(false)
       }
@@ -73,6 +82,12 @@ export const ShowAddAnnouncementDrawerContent = forwardRef<
 
     if (file && file.type.includes('audio/')) {
       setSelectedFile(file)
+      const reader = new FileReader()
+
+      reader.readAsDataURL(file)
+      reader.onloadend = () => {
+        setSelectedFileBase64(reader.result)
+      }
     } else {
       console.log('Invalid file format. Only audio files are allowed.')
     }
@@ -87,8 +102,24 @@ export const ShowAddAnnouncementDrawerContent = forwardRef<
     setSelectedFile(null)
   }
 
-  function saveEditTelephoneLines() {
-    // TO DO POST API
+  async function saveEditTelephoneLines() {
+    let editPhoneLinesObj = {}
+    if (textFilter && selectedType && selectedFileBase64) {
+      editPhoneLinesObj = {
+        audio_content: selectedFileBase64,
+        description: textFilter,
+        privacy: selectedType,
+      }
+      if (editPhoneLinesObj) {
+        try {
+          await uploadAudioMsg(editPhoneLinesObj)
+        } catch (error) {
+          setUploadAudioMessageError('Cannot upload announcement')
+          return
+        }
+      }
+    }
+    closeSideDrawer()
   }
 
   function changeTextFilter(event: any) {
@@ -99,10 +130,6 @@ export const ShowAddAnnouncementDrawerContent = forwardRef<
   function recordAudioAnnouncement() {
     //TO DO RECORD FILE AUDIO
   }
-
-  //Get value from date input
-  const dateBeginRef = useRef() as React.MutableRefObject<HTMLInputElement>
-  const dateEndRef = useRef() as React.MutableRefObject<HTMLInputElement>
 
   return (
     <>

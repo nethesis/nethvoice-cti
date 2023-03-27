@@ -340,6 +340,8 @@
     "Insert voicemail": "Insert voicemail",
     "Forward": "Forward",
     "Announcement + voicemail": "Announcement + voicemail",
-    "Lines":"Lines"
+    "Lines": "Lines",
+    "Delete announcement": "Delete announcement",
+    "Are you sure to delete selected announcement?": "Are you sure to delete selected announcement?"
   }
 }

@@ -232,6 +232,8 @@
     "Insert voicemail": "Inserisci voicemail",
     "Forward": "Inoltro",
     "Announcemnt + voicemail": "Annuncio + voicemail",
-    "Lines": "Linee"
+    "Lines": "Linee",
+    "Delete announcement": "Elimina annuncio",
+    "Are you sure to delete selected announcement?": "Sei sicuro di voler eliminare l'annuncio selezionato?"
   }
 }
