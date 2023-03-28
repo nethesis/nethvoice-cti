@@ -173,6 +173,12 @@
     "Outgoing": "Outgoing",
     "Duration": "Duration"
   },
+  "Notifications": {
+    "Mark as read": "Mark as read",
+    "Mark as unread": "Mark as unread",
+    "Missed call": "Missed call",
+    "Chat": "Chat"
+  },
   "Queues": {
     "Queues": "Queues",
     "Filter queues": "Filter queues",

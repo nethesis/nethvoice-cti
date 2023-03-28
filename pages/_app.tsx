@@ -1,6 +1,7 @@
 // Copyright (C) 2023 Nethesis S.r.l.
 // SPDX-License-Identifier: AGPL-3.0-or-later
 
+import 'react-tooltip/dist/react-tooltip.css'
 import '../styles/globals.css'
 import type { AppProps } from 'next/app'
 import { useState, useEffect } from 'react'

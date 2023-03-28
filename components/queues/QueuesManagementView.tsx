@@ -45,6 +45,7 @@ import classNames from 'classnames'
 import { LoggedStatus } from './LoggedStatus'
 import { CallDuration } from '../operators/CallDuration'
 import { LogoutAllQueuesModal } from './LogoutAllQueuesModal'
+import { Tooltip } from 'react-tooltip'
 
 export interface QueuesManagementViewProps extends ComponentProps<'div'> {}
 
@@ -512,15 +513,16 @@ export const QueuesManagementView: FC<QueuesManagementViewProps> = ({ className 
                               onIcon={<FontAwesomeIcon icon={faStarSolid} />}
                               offIcon={<FontAwesomeIcon icon={faStarLight} />}
                               changed={() => toggleFavoriteQueue(queue)}
-                              title={
-                                queue.favorite
-                                  ? t('Common.Remove from favorites') || ''
-                                  : t('Common.Add to favorites') || ''
-                              }
                               key={queue.queue}
+                              className={`tooltip-favorite-${queue.queue}`}
                             >
                               <span className='sr-only'>{t('Queues.Toggle favorite queue')}</span>
                             </IconSwitch>
+                            <Tooltip anchorSelect={`.tooltip-favorite-${queue.queue}`} place='top'>
+                              {queue.favorite
+                                ? t('Common.Remove from favorites') || ''
+                                : t('Common.Add to favorites') || ''}
+                            </Tooltip>
                           </div>
                         </div>
                         <FontAwesomeIcon
@@ -532,9 +534,12 @@ export const QueuesManagementView: FC<QueuesManagementViewProps> = ({ className 
                       </div>
                       {/* queue stats */}
                       <div className='flex justify-evenly mt-1 text-gray-500 dark:text-gray-400'>
+                        {/* total calls */}
                         <div
-                          title={t('Queues.Total calls') || ''}
-                          className='flex items-center gap-2'
+                          className={classNames(
+                            'flex items-center gap-2',
+                            `tooltip-total-calls-${queue.queue}`,
+                          )}
                         >
                           <FontAwesomeIcon
                             icon={faPhone}
@@ -544,9 +549,18 @@ export const QueuesManagementView: FC<QueuesManagementViewProps> = ({ className 
                             {queue.waitingCallersList.length + queue.connectedCalls.length}
                           </span>
                         </div>
+                        <Tooltip
+                          anchorSelect={`.tooltip-total-calls-${queue.queue}`}
+                          place='bottom'
+                        >
+                          {t('Queues.Total calls')}
+                        </Tooltip>
+                        {/* waiting calls */}
                         <div
-                          title={t('Queues.Waiting calls') || ''}
-                          className='flex items-center gap-2'
+                          className={classNames(
+                            'flex items-center gap-2',
+                            `tooltip-waiting-calls-${queue.queue}`,
+                          )}
                         >
                           <FontAwesomeIcon
                             icon={faPause}
@@ -554,9 +568,18 @@ export const QueuesManagementView: FC<QueuesManagementViewProps> = ({ className 
                           />
                           <span>{queue.waitingCallersList.length}</span>
                         </div>
+                        <Tooltip
+                          anchorSelect={`.tooltip-waiting-calls-${queue.queue}`}
+                          place='bottom'
+                        >
+                          {t('Queues.Waiting calls')}
+                        </Tooltip>
+                        {/* connected calls */}
                         <div
-                          title={t('Queues.Connected calls') || ''}
-                          className='flex items-center gap-2'
+                          className={classNames(
+                            'flex items-center gap-2',
+                            `tooltip-connected-calls-${queue.queue}`,
+                          )}
                         >
                           <FontAwesomeIcon
                             icon={faArrowDownLeftAndArrowUpRightToCenter}
@@ -564,9 +587,18 @@ export const QueuesManagementView: FC<QueuesManagementViewProps> = ({ className 
                           />
                           <span>{queue.connectedCalls.length}</span>
                         </div>
+                        <Tooltip
+                          anchorSelect={`.tooltip-connected-calls-${queue.queue}`}
+                          place='bottom'
+                        >
+                          {t('Queues.Connected calls')}
+                        </Tooltip>
+                        {/* active operators */}
                         <div
-                          title={t('Queues.Active operators') || ''}
-                          className='flex items-center gap-2'
+                          className={classNames(
+                            'flex items-center gap-2',
+                            `tooltip-active-operators-${queue.queue}`,
+                          )}
                         >
                           <FontAwesomeIcon
                             icon={faHeadset}
@@ -574,6 +606,12 @@ export const QueuesManagementView: FC<QueuesManagementViewProps> = ({ className 
                           />
                           <span>{queue.numActiveOperators}</span>
                         </div>
+                        <Tooltip
+                          anchorSelect={`.tooltip-active-operators-${queue.queue}`}
+                          place='bottom'
+                        >
+                          {t('Queues.Active operators')}
+                        </Tooltip>
                       </div>
                     </div>
                     {/* card body */}
@@ -721,19 +759,19 @@ export const QueuesManagementView: FC<QueuesManagementViewProps> = ({ className 
                                               <tr>
                                                 <th
                                                   scope='col'
-                                                  className='whitespace-nowrap py-3 pl-4 pr-2 text-left font-semibold'
+                                                  className='py-3 pl-4 pr-2 text-left font-semibold'
                                                 >
                                                   {t('Queues.Caller')}
                                                 </th>
                                                 <th
                                                   scope='col'
-                                                  className='whitespace-nowrap px-2 py-3 text-left font-semibold'
+                                                  className='px-2 py-3 text-left font-semibold'
                                                 >
                                                   {t('Queues.Position')}
                                                 </th>
                                                 <th
                                                   scope='col'
-                                                  className='whitespace-nowrap pl-2 pr-4 py-3 text-left font-semibold'
+                                                  className='pl-2 pr-4 py-3 text-left font-semibold'
                                                 >
                                                   {t('Queues.Wait')}
                                                 </th>
@@ -743,7 +781,7 @@ export const QueuesManagementView: FC<QueuesManagementViewProps> = ({ className 
                                               {queue.waitingCallersList.map(
                                                 (call: any, index: number) => (
                                                   <tr key={index}>
-                                                    <td className='whitespace-nowrap py-3 pl-4 pr-2'>
+                                                    <td className='py-3 pl-4 pr-2'>
                                                       <div className='flex flex-col'>
                                                         <div className='font-medium'>
                                                           {call.name}
@@ -753,10 +791,8 @@ export const QueuesManagementView: FC<QueuesManagementViewProps> = ({ className 
                                                         )}
                                                       </div>
                                                     </td>
-                                                    <td className='whitespace-nowrap px-2 py-3'>
-                                                      {call.position}
-                                                    </td>
-                                                    <td className='whitespace-nowrap pl-2 pr-4 py-3'>
+                                                    <td className='px-2 py-3'>{call.position}</td>
+                                                    <td className='pl-2 pr-4 py-3'>
                                                       <CallDuration startTime={call.waitingTime} />
                                                     </td>
                                                   </tr>
@@ -807,19 +843,19 @@ export const QueuesManagementView: FC<QueuesManagementViewProps> = ({ className 
                                               <tr>
                                                 <th
                                                   scope='col'
-                                                  className='whitespace-nowrap py-3 pl-4 pr-2 text-left font-semibold'
+                                                  className='py-3 pl-4 pr-2 text-left font-semibold'
                                                 >
                                                   {t('Queues.Caller')}
                                                 </th>
                                                 <th
                                                   scope='col'
-                                                  className='whitespace-nowrap px-2 py-3 text-left font-semibold'
+                                                  className='px-2 py-3 text-left font-semibold'
                                                 >
                                                   {t('Queues.Operator')}
                                                 </th>
                                                 <th
                                                   scope='col'
-                                                  className='whitespace-nowrap pl-2 pr-4 py-3 text-left font-semibold'
+                                                  className='pl-2 pr-4 py-3 text-left font-semibold'
                                                 >
                                                   {t('Queues.Duration')}
                                                 </th>
@@ -829,7 +865,7 @@ export const QueuesManagementView: FC<QueuesManagementViewProps> = ({ className 
                                               {queue.connectedCalls.map(
                                                 (call: any, index: number) => (
                                                   <tr key={index}>
-                                                    <td className='whitespace-nowrap py-3 pl-4 pr-2'>
+                                                    <td className='py-3 pl-4 pr-2'>
                                                       <div className='flex flex-col'>
                                                         <div className='font-medium'>
                                                           {call.conversation.counterpartName}
@@ -842,7 +878,7 @@ export const QueuesManagementView: FC<QueuesManagementViewProps> = ({ className 
                                                         )}
                                                       </div>
                                                     </td>
-                                                    <td className='whitespace-nowrap px-2 py-3'>
+                                                    <td className='px-2 py-3'>
                                                       <div className='flex items-center gap-3 overflow-hidden'>
                                                         <Avatar
                                                           rounded='full'
@@ -858,7 +894,7 @@ export const QueuesManagementView: FC<QueuesManagementViewProps> = ({ className 
                                                           }
                                                         />
                                                         <div className='flex flex-col overflow-hidden'>
-                                                          <div className='truncate'>
+                                                          <div>
                                                             {operators[call.operatorUsername].name}
                                                           </div>
                                                           <div className='text-gray-500 dark:text-gray-400'>
@@ -870,7 +906,7 @@ export const QueuesManagementView: FC<QueuesManagementViewProps> = ({ className 
                                                         </div>
                                                       </div>
                                                     </td>
-                                                    <td className='whitespace-nowrap pl-2 pr-4 py-3'>
+                                                    <td className='pl-2 pr-4 py-3'>
                                                       <CallDuration
                                                         key={`callDuration-${call.conversation.id}`}
                                                         startTime={call.conversation.startTime}

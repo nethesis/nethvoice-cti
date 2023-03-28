@@ -13,6 +13,9 @@ import { faBell, faCommentDots } from '@fortawesome/free-regular-svg-icons'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { utcToZonedTime } from 'date-fns-tz'
 import { humanDistanceToNowLoc } from '../../lib/dateTime'
+import { Tooltip } from 'react-tooltip'
+import { useTranslation } from 'react-i18next'
+import { faCircle } from '@nethesis/nethesis-regular-svg-icons'
 
 export interface NotificationsDrawerContentProps extends ComponentPropsWithRef<'div'> {}
 
@@ -20,6 +23,7 @@ export const NotificationsDrawerContent = forwardRef<
   HTMLButtonElement,
   NotificationsDrawerContentProps
 >(({ className, ...props }, ref) => {
+  const { t } = useTranslation()
   const authStore = useSelector((state: RootState) => state.authentication)
   const notificationsStore = useSelector((state: RootState) => state.notifications)
 
@@ -54,22 +58,36 @@ export const NotificationsDrawerContent = forwardRef<
       <div>
         {/* missed call */}
         {notification.type === 'missedCall' && (
-          <FontAwesomeIcon
-            icon={faPhoneXmark}
-            className='h-5 w-3.5 text-red-400 dark:text-red-500'
-            aria-hidden='true'
-            title='Missed call'
-          />
+          <>
+            <FontAwesomeIcon
+              icon={faPhoneXmark}
+              className={classNames(
+                'h-5 w-3.5 text-red-400 dark:text-red-500',
+                `tooltip-${notification.id}`,
+              )}
+              aria-hidden='true'
+            />
+            <Tooltip anchorSelect={`.tooltip-${notification.id}`} place='bottom'>
+              {t('Notifications.Missed call')}
+            </Tooltip>
+          </>
         )}
         {/* chat */}
         {notification.type === 'chat' && (
-          <FontAwesomeIcon
-            icon={faCommentDots}
-            className={classNames(
-              'h-5 w-5 text-gray-400',
-              notification.isRead ? 'dark:text-gray-500' : 'dark:text-gray-100',
-            )}
-          />
+          <>
+            <FontAwesomeIcon
+              icon={faCommentDots}
+              className={classNames(
+                'h-5 w-5 text-gray-400',
+                notification.isRead ? 'dark:text-gray-500' : 'dark:text-gray-100',
+                `tooltip-chat-${notification.id}`,
+              )}
+              aria-hidden='true'
+            />
+            <Tooltip anchorSelect={`.tooltip-chat-${notification.id}`} place='bottom'>
+              {t('Notifications.Chat')}
+            </Tooltip>
+          </>
         )}
         {/* //// TODO */}
       </div>
@@ -131,7 +149,7 @@ export const NotificationsDrawerContent = forwardRef<
         {notification.type === 'chat' && (
           <div
             className={classNames(
-              'truncate text-sm',
+              'truncate text-sm cursor-pointer hover:underline',
               notification.isRead
                 ? 'text-gray-500 dark:text-gray-400'
                 : 'text-gray-900 dark:text-gray-100',
@@ -199,7 +217,6 @@ export const NotificationsDrawerContent = forwardRef<
                     'flex py-4 px-5',
                     !notification.isRead &&
                       'bg-primaryLighter dark:bg-primaryDarker cursor-pointer',
-                    ['chat', 'voicemail'].includes(notification.type) && 'cursor-pointer',
                   )}
                   onClick={() => openNotification(notification)}
                 >
@@ -211,8 +228,10 @@ export const NotificationsDrawerContent = forwardRef<
                         <div>{getNotificationDetails(notification)}</div>
                       </div>
                       <div
-                        title={formatInTimeZoneLoc(new Date(notification.timestamp), 'PPpp', 'UTC')}
-                        className='mt-3 text-sm text-gray-500 dark:text-gray-400'
+                        className={classNames(
+                          'mt-3 text-sm inline-block text-gray-500 dark:text-gray-400 cursor-default',
+                          `tooltip-timestamp-${notification.id}`,
+                        )}
                       >
                         {humanDistanceToNowLoc(
                           utcToZonedTime(new Date(notification.timestamp), 'UTC'),
@@ -221,19 +240,30 @@ export const NotificationsDrawerContent = forwardRef<
                           },
                         )}
                       </div>
+                      <Tooltip
+                        anchorSelect={`.tooltip-timestamp-${notification.id}`}
+                        place='bottom'
+                      >
+                        {formatInTimeZoneLoc(new Date(notification.timestamp), 'PPpp', 'UTC')}
+                      </Tooltip>
                     </div>
                     <div>
                       <IconSwitch
                         on={!notification.isRead}
                         onIcon={<FontAwesomeIcon icon={faCircleCheck} />}
+                        offIcon={<FontAwesomeIcon icon={faCircle} />}
                         lighterOnDark
                         changed={() => toggleNotificationRead(notification)}
                         onClick={(event) => event.stopPropagation()}
-                        title={notification.isRead ? 'Mark as unread' : 'Mark as read'}
-                        className='mr-1'
+                        className={classNames('mr-1', `tooltip-mark-as-${notification.id}`)}
                       >
                         <span className='sr-only'>Toggle notification read</span>
                       </IconSwitch>
+                      <Tooltip anchorSelect={`.tooltip-mark-as-${notification.id}`} place='bottom'>
+                        {notification.isRead
+                          ? t('Notifications.Mark as unread')
+                          : t('Notifications.Mark as read')}
+                      </Tooltip>
                     </div>
                   </div>
                 </li>

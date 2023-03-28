@@ -14,6 +14,7 @@ import classNames from 'classnames'
 import type { NavItemsProps } from '../../config/routes'
 import Link from 'next/link'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
+import { Tooltip } from 'react-tooltip'
 
 interface NavBarProps {
   items: NavItemsProps[]
@@ -53,6 +54,7 @@ export const NavBar: FC<NavBarProps> = ({ items }) => {
                       ? 'text-white bg-gray-700 dark:bg-gray-500'
                       : 'text-gray-100 hover:text-white hover:bg-gray-700 dark:hover:bg-gray-500',
                     'group rounded-md flex flex-col items-center text-xs font-medium h-14 w-14 justify-center',
+                    `tooltip-${item.name}`,
                   )}
                   aria-current={item.current ? 'page' : undefined}
                 >
@@ -66,6 +68,9 @@ export const NavBar: FC<NavBarProps> = ({ items }) => {
                   />
                 </a>
               </Link>
+              <Tooltip anchorSelect={`.tooltip-${item.name}`} place='right' offset={20}>
+                {item.name}
+              </Tooltip>
             </div>
           ))}
         </div>

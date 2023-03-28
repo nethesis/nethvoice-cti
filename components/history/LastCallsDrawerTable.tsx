@@ -18,6 +18,8 @@ import { useSelector } from 'react-redux'
 import { RootState } from '../../store'
 import { EmptyState, InlineNotification } from '../common'
 import { getOperatorByPhoneNumber } from '../../lib/operators'
+import { useTranslation } from 'react-i18next'
+import { Tooltip } from 'react-tooltip'
 
 export interface LastCallsDrawerTableProps extends ComponentPropsWithRef<'div'> {
   callType: string
@@ -31,6 +33,7 @@ export interface LastCallsDrawerTableProps extends ComponentPropsWithRef<'div'> 
 
 export const LastCallsDrawerTable = forwardRef<HTMLButtonElement, LastCallsDrawerTableProps>(
   ({ callType, dateFrom, dateTo, limit, phoneNumbers, className, ...props }, ref) => {
+    const { t } = useTranslation()
     const [isLoaded, setLoaded] = useState(false)
     const [errorMessage, setErrorMessage] = useState('')
     const [lastCalls, setLastCalls] = useState<any>([])
@@ -119,38 +122,54 @@ export const LastCallsDrawerTable = forwardRef<HTMLButtonElement, LastCallsDrawe
             {call.direction === 'in' && (
               <div>
                 {call.disposition === 'ANSWERED' ? (
-                  <FontAwesomeIcon
-                    icon={faPhoneArrowDown}
-                    className='mr-2 h-5 w-3.5 text-green-600 dark:text-green-500'
-                    aria-hidden='true'
-                    title='Incoming answered'
-                  />
+                  <>
+                    <FontAwesomeIcon
+                      icon={faPhoneArrowDown}
+                      className='tooltip-incoming-answered mr-2 h-5 w-3.5 text-green-600 dark:text-green-500'
+                      aria-hidden='true'
+                    />
+                    <Tooltip anchorSelect='.tooltip-incoming-answered' place='left'>
+                      {t('History.Incoming answered') || ''}
+                    </Tooltip>
+                  </>
                 ) : (
-                  <FontAwesomeIcon
-                    icon={faPhoneMissed}
-                    className='mr-2 h-5 w-4 text-red-400'
-                    aria-hidden='true'
-                    title='Incoming missed'
-                  />
+                  <>
+                    <FontAwesomeIcon
+                      icon={faPhoneMissed}
+                      className='tooltip-incoming-missed mr-2 h-5 w-4 text-red-400'
+                      aria-hidden='true'
+                    />
+                    <Tooltip anchorSelect='.tooltip-incoming-missed' place='left'>
+                      {t('History.Incoming missed') || ''}
+                    </Tooltip>
+                  </>
                 )}
               </div>
             )}
             {call.direction === 'out' && (
               <div>
                 {call.disposition === 'ANSWERED' ? (
-                  <FontAwesomeIcon
-                    icon={faPhoneArrowUp}
-                    className='mr-2 h-5 w-3.5 text-green-600 dark:text-green-500'
-                    aria-hidden='true'
-                    title='Outgoing answered'
-                  />
+                  <>
+                    <FontAwesomeIcon
+                      icon={faPhoneArrowUp}
+                      className='tooltip-outgoing-answered mr-2 h-5 w-3.5 text-green-600 dark:text-green-500'
+                      aria-hidden='true'
+                    />
+                    <Tooltip anchorSelect='.tooltip-outgoing-answered' place='left'>
+                      {t('History.Outgoing answered') || ''}
+                    </Tooltip>
+                  </>
                 ) : (
-                  <FontAwesomeIcon
-                    icon={faPhoneXmark}
-                    className='mr-2 h-5 w-3.5 text-red-400'
-                    aria-hidden='true'
-                    title='Outgoing missed'
-                  />
+                  <>
+                    <FontAwesomeIcon
+                      icon={faPhoneXmark}
+                      className='tooltip-outgoing-missed mr-2 h-5 w-3.5 text-red-400'
+                      aria-hidden='true'
+                    />
+                    <Tooltip anchorSelect='.tooltip-outgoing-missed' place='left'>
+                      {t('History.Outgoing missed') || ''}
+                    </Tooltip>
+                  </>
                 )}
               </div>
             )}
@@ -167,19 +186,27 @@ export const LastCallsDrawerTable = forwardRef<HTMLButtonElement, LastCallsDrawe
               {call.type === 'internal' && (
                 <div>
                   {call.disposition === 'ANSWERED' ? (
-                    <FontAwesomeIcon
-                      icon={faBuilding}
-                      className='h-4 w-4 text-green-600 dark:text-green-500'
-                      aria-hidden='true'
-                      title='Internal answered'
-                    />
+                    <>
+                      <FontAwesomeIcon
+                        icon={faBuilding}
+                        className='tooltip-switchboard-internal-answered h-4 w-4 text-green-600 dark:text-green-500'
+                        aria-hidden='true'
+                      />
+                      <Tooltip anchorSelect='.tooltip-switchboard-internal-answered' place='left'>
+                        {t('History.Internal answered') || ''}
+                      </Tooltip>
+                    </>
                   ) : (
-                    <FontAwesomeIcon
-                      icon={faBuilding}
-                      className='h-4 w-4 text-red-400'
-                      aria-hidden='true'
-                      title='Internal missed'
-                    />
+                    <>
+                      <FontAwesomeIcon
+                        icon={faBuilding}
+                        className='tooltip-switchboard-internal-missed h-4 w-4 text-red-400'
+                        aria-hidden='true'
+                      />
+                      <Tooltip anchorSelect='.tooltip-switchboard-internal-missed' place='left'>
+                        {t('History.Internal missed') || ''}
+                      </Tooltip>
+                    </>
                   )}
                 </div>
               )}
@@ -188,38 +215,60 @@ export const LastCallsDrawerTable = forwardRef<HTMLButtonElement, LastCallsDrawe
                   {call.type === 'in' && (
                     <div>
                       {call.disposition === 'ANSWERED' ? (
-                        <FontAwesomeIcon
-                          icon={faPhoneArrowDown}
-                          className='h-5 w-3.5 text-green-600 dark:text-green-500'
-                          aria-hidden='true'
-                          title='Incoming answered'
-                        />
+                        <>
+                          <FontAwesomeIcon
+                            icon={faPhoneArrowDown}
+                            className='tooltip-switchboard-incoming-answered h-5 w-3.5 text-green-600 dark:text-green-500'
+                            aria-hidden='true'
+                          />
+                          <Tooltip
+                            anchorSelect='.tooltip-switchboard-incoming-answered'
+                            place='left'
+                          >
+                            {t('History.Incoming answered') || ''}
+                          </Tooltip>
+                        </>
                       ) : (
-                        <FontAwesomeIcon
-                          icon={faPhoneMissed}
-                          className='h-5 w-4 text-red-400'
-                          aria-hidden='true'
-                          title='Incoming missed'
-                        />
+                        <>
+                          <FontAwesomeIcon
+                            icon={faPhoneMissed}
+                            className='tooltip-switchboard-incoming-missed h-5 w-4 text-red-400'
+                            aria-hidden='true'
+                          />
+                          <Tooltip anchorSelect='.tooltip-switchboard-incoming-missed' place='left'>
+                            {t('History.Incoming missed') || ''}
+                          </Tooltip>
+                        </>
                       )}
                     </div>
                   )}
                   {call.type === 'out' && (
                     <div>
                       {call.disposition === 'ANSWERED' ? (
-                        <FontAwesomeIcon
-                          icon={faPhoneArrowUp}
-                          className='h-5 w-3.5 text-green-600 dark:text-green-500'
-                          aria-hidden='true'
-                          title='Outgoing answered'
-                        />
+                        <>
+                          <FontAwesomeIcon
+                            icon={faPhoneArrowUp}
+                            className='tooltip-switchboard-outgoing-answered h-5 w-3.5 text-green-600 dark:text-green-500'
+                            aria-hidden='true'
+                          />
+                          <Tooltip
+                            anchorSelect='.tooltip-switchboard-outgoing-answered'
+                            place='left'
+                          >
+                            {t('History.Outgoing answered') || ''}
+                          </Tooltip>
+                        </>
                       ) : (
-                        <FontAwesomeIcon
-                          icon={faPhoneXmark}
-                          className='h-5 w-3.5 text-red-400'
-                          aria-hidden='true'
-                          title='Outgoing missed'
-                        />
+                        <>
+                          <FontAwesomeIcon
+                            icon={faPhoneXmark}
+                            className='tooltip-switchboard-outgoing-missed h-5 w-3.5 text-red-400'
+                            aria-hidden='true'
+                          />
+                          <Tooltip anchorSelect='.tooltip-switchboard-outgoing-missed' place='left'>
+                            {t('History.Outgoing missed') || ''}
+                          </Tooltip>
+                        </>
                       )}
                     </div>
                   )}
