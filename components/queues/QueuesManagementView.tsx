@@ -38,6 +38,7 @@ import {
   faMug,
   faLightEmergencyOn,
   faThumbTack,
+  faCircleNotch,
 } from '@nethesis/nethesis-solid-svg-icons'
 import { faStar as faStarLight } from '@nethesis/nethesis-light-svg-icons'
 import { getOperatorByPhoneNumber, openShowOperatorDrawer } from '../../lib/operators'
@@ -46,6 +47,7 @@ import { LoggedStatus } from './LoggedStatus'
 import { CallDuration } from '../operators/CallDuration'
 import { LogoutAllQueuesModal } from './LogoutAllQueuesModal'
 import { Tooltip } from 'react-tooltip'
+import InfiniteScroll from 'react-infinite-scroll-component'
 
 export interface QueuesManagementViewProps extends ComponentProps<'div'> {}
 
@@ -956,12 +958,36 @@ export const QueuesManagementView: FC<QueuesManagementViewProps> = ({ className 
                                         {t('Queues.No operators')}
                                       </div>
                                     ) : (
-                                      <div className='flex flex-col gap-2 border rounded-md max-h-56 overflow-auto border-gray-200 dark:border-gray-700'>
-                                        {Object.values(queue.members)
-                                          .sort(sortByLoggedStatus)
-                                          .map((op, index) => {
-                                            return getQueueOperatorTemplate(queue, op, index)
-                                          })}
+                                      <div
+                                        id={`queue-operators-${queue.queue}`}
+                                        className='flex flex-col gap-2 border rounded-md max-h-56 overflow-auto border-gray-200 dark:border-gray-700'
+                                      >
+                                        <InfiniteScroll
+                                          dataLength={
+                                            queue.infiniteScrollOperators.operators.length
+                                          }
+                                          next={() =>
+                                            store.dispatch.queues.showMoreInfiniteScrollOperators(
+                                              queue.queue,
+                                            )
+                                          }
+                                          hasMore={queue.infiniteScrollOperators.hasMore}
+                                          scrollableTarget={`queue-operators-${queue.queue}`}
+                                          loader={
+                                            <div className='flex justify-center'>
+                                              <FontAwesomeIcon
+                                                icon={faCircleNotch}
+                                                className='fa-spin h-5 m-5 text-gray-400 dark:text-gray-500'
+                                              />
+                                            </div>
+                                          }
+                                        >
+                                          {queue.infiniteScrollOperators.operators.map(
+                                            (op: any, index: number) => {
+                                              return getQueueOperatorTemplate(queue, op, index)
+                                            },
+                                          )}
+                                        </InfiniteScroll>
                                       </div>
                                     )}
                                   </div>
