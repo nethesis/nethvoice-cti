@@ -22,6 +22,15 @@
   }
 }
 
+:root {
+  /* react tooltip opacity */
+  --rt-opacity: 1;
+}
+
+.react-tooltip {
+  @apply z-50 bg-gray-700 text-white dark:bg-gray-300 dark:text-gray-900;
+}
+
 .loader {
   position: fixed;
   right: 18px !important;
