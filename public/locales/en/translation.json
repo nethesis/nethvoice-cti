@@ -342,6 +342,12 @@
     "Announcement + voicemail": "Announcement + voicemail",
     "Lines": "Lines",
     "Delete announcement": "Delete announcement",
-    "Are you sure to delete selected announcement?": "Are you sure to delete selected announcement?"
+    "Are you sure to delete selected announcement?": "Are you sure to delete selected announcement?",
+    "Caller number": "Caller number",
+    "Typology configuration": "Typology configuration",
+    "No lines available": "No lines available",
+    "There are no lines with the current filter": "There are no lines with the current filter",
+    "No announcement available": "No lines available",
+    "There are no announcement with the current filter": "There are no lines with the current filter"
   }
 }

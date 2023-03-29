@@ -3,13 +3,11 @@
 
 import { ComponentPropsWithRef, forwardRef, useEffect, useState, useRef } from 'react'
 import classNames from 'classnames'
-import { InlineNotification, SideDrawerCloseIcon, IconSwitch } from '../common'
+import { SideDrawerCloseIcon, Switch } from '../common'
 
 import { useTranslation } from 'react-i18next'
 import {
   faPhone,
-  faToggleLargeOff,
-  faToggleLargeOn,
   faBullhorn,
   faVoicemail,
   faArrowTurnDownRight,
@@ -17,15 +15,14 @@ import {
   faChevronDown,
   faChevronUp,
   faCalendar,
-  faFileMusic,
-  faXmark,
+  faPlay,
+  faCircleXmark,
 } from '@nethesis/nethesis-solid-svg-icons'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { callPhoneNumber, closeSideDrawer } from '../../lib/utils'
 import { TextInput, Button } from '../common'
-import { cloneDeep, isEmpty } from 'lodash'
 import { formatDateLoc } from '../../lib/dateTime'
-import { Switch } from '@headlessui/react'
+import { setOffHour, getAnnouncements } from '../../lib/lines'
 
 export interface ShowTelephoneLinesDrawerContentProps extends ComponentPropsWithRef<'div'> {
   config: any
@@ -36,17 +33,15 @@ export const ShowTelephoneLinesDrawerContent = forwardRef<
   ShowTelephoneLinesDrawerContentProps
 >(({ config, className, ...props }, ref) => {
   const { t } = useTranslation()
-  const [errorMessage, setErrorMessage] = useState('')
   const [isConfigurationActive, setConfigurationActive] = useState(false)
-  const [isAnnouncementVoicemailActive, setAnnouncementVoicemailActive] = useState(false)
-  const [isForwardActive, setForwardActive] = useState(false)
   const [changeConfigurationRadio, setChangeConfigurationRadio] = useState('customize')
-  const [isManageAnnouncementActive, setManageAnnouncementActive] = useState(true)
+  const [isManageAnnouncementActive, setManageAnnouncementActive] = useState(false)
   const [announcementSelected, setAnnouncementSelected] = useState<any>(null)
   const [dateBeginValue, setDateBeginValue] = useState('')
   const [dateEndValue, setDateEndValue] = useState('')
   const [selectedRulesInfo, setSelectedRulesInfo] = useState('ferie')
   const [selectedType, setSelectedType] = useState('specifyDay')
+  const [selectedConfigurationTypology, setselectedConfigurationTypology] = useState('audiomsg')
   const [selectedAnnouncementInfo, setSelectedAnnouncementInfo] = useState<any>(null)
 
   const [openPanel, setOpenPanel] = useState('')
@@ -57,28 +52,7 @@ export const ShowTelephoneLinesDrawerContent = forwardRef<
 
   const configurationType = [
     { id: 'customize', value: t('Lines.Customize') },
-    { id: 'rule', value: t('Lines.Choose rule') },
-  ]
-
-  const announcementLists = [
-    {
-      id: 'firstAnnouncement',
-      value: 'firstAnnouncement',
-      announcementName: 'test1.mp3',
-      fileSize: '3kb',
-    },
-    {
-      id: 'secondAnnouncement',
-      value: 'secondAnnouncement',
-      announcementName: 'test2.wav',
-      fileSize: '4kb',
-    },
-    {
-      id: 'thirdAnnouncement',
-      value: 'thirdAnnouncement',
-      announcementName: 'test3.mp3',
-      fileSize: '6kb',
-    },
+    // { id: 'rule', value: t('Lines.Choose rule') },
   ]
 
   const actualDateWithoutHour: any = formatDateLoc(new Date(), 'yyyy-MM-dd')
@@ -89,17 +63,32 @@ export const ShowTelephoneLinesDrawerContent = forwardRef<
       id: 'onlyOneDay',
       value: t('Lines.Only active for one day'),
     },
-    { id: 'everyDay', value: t('Lines.Active every day') },
+    { id: 'always', value: t('Lines.Active every day') },
   ]
 
+  const announcementTypologyConfiguration = [
+    { id: 'audiomsg', value: t('Lines.Announcement') },
+    {
+      id: 'audiomsg_voicemail',
+      value: t('Lines.Announcement + voicemail'),
+    },
+    { id: 'redirect', value: t('Lines.Forward') },
+  ]
+
+  const [changeTypeDate, setChangeTypeDate] = useState('period')
   const actualBeginDate = new Date().toISOString().slice(0, 11) + '09:00'
   const actualEndDate = new Date().toISOString().slice(0, 11) + '22:00'
+  const [textFilterVoiceMail, setTextFilterVoiceMail] = useState('')
+  const [textFilterRedirect, setTextFilterRedirect] = useState('')
 
-  const dateRuleInformations = [
-    { id: 'febbraio', value: 'Febbraio 2023' },
-    { id: 'ferie', value: 'Ferie' },
-    { id: 'natale', value: 'Natale' },
-  ]
+  const textFilterVoiceMailRef = useRef() as React.MutableRefObject<HTMLInputElement>
+  const textFilterRedirectRef = useRef() as React.MutableRefObject<HTMLInputElement>
+
+  // const dateRuleInformations = [
+  //   { id: 'febbraio', value: 'Febbraio 2023' },
+  //   { id: 'ferie', value: 'Ferie' },
+  //   { id: 'natale', value: 'Natale' },
+  // ]
 
   function changeDateSelected(event: any) {
     const radioButtonDateSelected = event.target.id
@@ -108,22 +97,6 @@ export const ShowTelephoneLinesDrawerContent = forwardRef<
 
   const toggleConfigurationActive = () => {
     setConfigurationActive(!isConfigurationActive)
-  }
-
-  function deleteUploadedAnnouncement() {
-    setAnnouncementSelected(null)
-  }
-
-  const toggleManageAnnouncement = () => {
-    setManageAnnouncementActive(!isManageAnnouncementActive)
-  }
-
-  const toggleAnnouncementVoicemail = () => {
-    setAnnouncementVoicemailActive(!isAnnouncementVoicemailActive)
-  }
-
-  const toggleForward = () => {
-    setForwardActive(!isForwardActive)
   }
 
   const changeDateBegin = () => {
@@ -138,15 +111,6 @@ export const ShowTelephoneLinesDrawerContent = forwardRef<
     setDateEndValue(dateEnd)
   }
 
-  function changeAnnouncementSelect(event: any) {
-    const listAnnouncementValue = event.target.value
-    const selectedAnnouncement = announcementLists.find(
-      (announcement) => announcement.id === listAnnouncementValue,
-    )
-    setSelectedAnnouncementInfo(selectedAnnouncement)
-    setAnnouncementSelected(listAnnouncementValue)
-  }
-
   function changeConfiguration(event: any) {
     const radioButtonConfigurationValue = event.target.id
     setChangeConfigurationRadio(radioButtonConfigurationValue)
@@ -155,226 +119,331 @@ export const ShowTelephoneLinesDrawerContent = forwardRef<
   function changeTypeSelected(event: any) {
     const radioButtonTypeSelected = event.target.id
     setSelectedType(radioButtonTypeSelected)
+    if (radioButtonTypeSelected === 'always') {
+      setChangeTypeDate('always')
+    } else {
+      setChangeTypeDate('period')
+    }
+  }
+
+  function changeAnnouncementTypologySelected(event: any) {
+    const radioButtonTypeSelected = event.target.id
+    setselectedConfigurationTypology(radioButtonTypeSelected)
+  }
+
+  const [uploadOffHourError, setuploadOffHourError] = useState('')
+
+  async function setOffHourObject(obj: any) {
+    try {
+      await setOffHour(obj)
+    } catch (error) {
+      setuploadOffHourError('Cannot upload announcement')
+      return
+    }
   }
 
   function saveEditTelephoneLines() {
-    // TO DO POST API
+    if (isConfigurationActive) {
+      let editPhoneLinesObj = {}
+      let actionType = ''
+
+      switch (true) {
+        case isManageAnnouncementActive && announcementSelected && selectedType:
+          actionType = 'audiomsg'
+
+          editPhoneLinesObj = {
+            action: actionType,
+            announcement_id: announcementSelected.toString(),
+            calledIdNum: config.number.toString(),
+            callerIdNum: config.callerNumber.toString(),
+            enabled: changeTypeDate,
+          }
+          if (editPhoneLinesObj) {
+            setOffHourObject(editPhoneLinesObj)
+          }
+
+          break
+
+        case isManageAnnouncementActive &&
+          announcementSelected &&
+          selectedType &&
+          textFilterVoiceMail:
+          actionType = 'audiomsg + voicemail'
+
+          editPhoneLinesObj = {
+            action: actionType,
+            announcement_id: announcementSelected.toString(),
+            calledIdNum: config.number.toString(),
+            callerIdNum: config.callerNumber.toString(),
+            enabled: changeTypeDate,
+          }
+
+          break
+
+        case isManageAnnouncementActive && announcementSelected && selectedType:
+          actionType = 'redirect'
+
+          editPhoneLinesObj = {
+            action: actionType,
+            announcement_id: announcementSelected.toString(),
+            calledIdNum: config.number.toString(),
+            callerIdNum: config.callerNumber.toString(),
+            enabled: changeTypeDate,
+          }
+
+          break
+
+        default:
+          // default action if none of the cases match
+          break
+      }
+    }
+
+    closeSideDrawer()
   }
 
-  // const [enabled, setEnabled] = useState(false)
+  const [isAnnouncementLoaded, setAnnouncementLoaded]: any = useState(false)
+  const [announcement, setAnnouncement]: any = useState({})
+  const [linesError, setLinesError] = useState('')
 
-  // function toggleSwitch() {
-  //   setEnabled(!enabled)
-  //   console.log('setted')
-  // }
+  //Get Lines information
+  useEffect(() => {
+    async function fetchLines() {
+      if (!isAnnouncementLoaded) {
+        try {
+          setLinesError('')
+          const res = await getAnnouncements()
+          setAnnouncement(res)
+        } catch (e) {
+          console.error(e)
+          setLinesError(t('Lines.Cannot retrieve lines') || '')
+        }
+        setAnnouncementLoaded(true)
+      }
+    }
+    fetchLines()
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [isAnnouncementLoaded])
 
-  function customTypeSelected() {
+  function changeAnnouncementSelect(event: any) {
+    const listAnnouncementValue = event.target.value
+    const selectedAnnouncement = announcement.find(
+      (announcementItem: any) => announcementItem.id === parseInt(listAnnouncementValue),
+    )
+    if (selectedAnnouncement) {
+      setSelectedAnnouncementInfo(selectedAnnouncement)
+      setAnnouncementSelected(listAnnouncementValue)
+    }
+  }
+
+  function changeTextFilterVoiceMail(event: any) {
+    const newTextFilter = event.target.value
+    setTextFilterVoiceMail(newTextFilter)
+  }
+
+  function changeTextFilterRedirect(event: any) {
+    const newTextFilter = event.target.value
+    setTextFilterRedirect(newTextFilter)
+  }
+
+  const clearTextFilterVoiceMail = () => {
+    setTextFilterVoiceMail('')
+    textFilterVoiceMailRef.current.focus()
+  }
+
+  const clearTextFilterRedirect = () => {
+    setTextFilterRedirect('')
+    textFilterRedirectRef.current.focus()
+  }
+
+  async function playSelectedAnnouncement(announcementId: any) {
+    if (announcementId) {
+      // try {
+      //   await listenMsg(announcementId)
+      // } catch (error) {
+      //   setPlayAudioMessageError('Cannot play announcement')
+      //   return
+      // }
+    }
+    console.log('you want to play this announcement', announcementId)
+  }
+
+  function periodSelect() {
     return (
       <>
-        {isConfigurationActive && (
-          <>
-            {/* Activate Announcement switch  */}
-            <div className='px-5'>
-              <div className='flex items-center justify-between mt-6'>
-                <div className='flex items-center'>
-                  <FontAwesomeIcon
-                    icon={faBullhorn}
-                    className='mr-4 h-4 w-4 flex-shrink-0 text-gray-400 dark:text-gray-500'
-                    aria-hidden='true'
+        <div className='px-5 pt-8 pb-2'>
+          <div className='flex items-center justify-between mt-1'>
+            <h4 className=' text-md font-medium text-gray-700 dark:text-gray-200'>
+              {t('Lines.Select period')}
+            </h4>
+          </div>
+          {/* Divider */}
+          <div className='mt-2 border-t border-gray-200 dark:border-gray-700'></div>
+        </div>
+
+        {/* Date input  */}
+        {/* TO DO MANAGE IN CASE OF MOBILE DEVICE */}
+        {/* TO DO CHECK RADIO BUTTON VALUE TO SET DATE  */}
+        <div className='mt-4 px-5'>
+          {/* Date input select */}
+          <fieldset>
+            <legend className='sr-only'>Date range select</legend>
+            <div className='space-y-4'>
+              {dateSelectionInputs.map((dateSelectionInput) => (
+                <div key={dateSelectionInput.id} className='flex items-center'>
+                  <input
+                    id={dateSelectionInput.id}
+                    name='date-select'
+                    type='radio'
+                    defaultChecked={dateSelectionInput.id === 'specifyDay'}
+                    className='h-4 w-4 border-gray-300 text-primary dark:border-gray-600 focus:ring-primaryLight dark:focus:ring-primaryDark dark:text-primary'
+                    onChange={changeTypeSelected}
                   />
-                  <h4 className='text-md font-medium text-gray-700 dark:text-gray-200'>
-                    {t('Lines.Activate announcement')}
-                  </h4>
-                </div>
-                <IconSwitch
-                  on={isManageAnnouncementActive}
-                  size='double_extra_large'
-                  onIcon={<FontAwesomeIcon icon={faToggleLargeOn} />}
-                  offIcon={<FontAwesomeIcon icon={faToggleLargeOff} />}
-                  changed={() => toggleManageAnnouncement()}
-                  disabled={isForwardActive ? true : false}
-                ></IconSwitch>
-              </div>
-              {/* Divider */}
-              <div className='mt-1 mb-5 border-t border-gray-200 dark:border-gray-700'></div>
-            </div>
-
-            {isManageAnnouncementActive && changeConfigurationRadio == 'customize' && (
-              <>
-                <div className='mb-8 px-5'>
-                  <label htmlFor='types' className='sr-only'>
-                    {t('Lines.Select a type')}
-                  </label>
-
-                  {/* <Switch
-                    checked={enabled}
-                    onChange={() => toggleSwitch()}
-                    className={`${
-                      enabled ? 'bg-blue-600' : 'bg-gray-200'
-                    } relative inline-flex h-6 w-11 items-center rounded-full`}
+                  <label
+                    htmlFor={dateSelectionInput.id}
+                    className='ml-3 block text-sm font-medium leading-6 text-gray-700 dark:text-gray-200'
                   >
-                    <span
-                      className={`${
-                        enabled ? 'translate-x-6' : 'translate-x-1'
-                      } inline-block h-4 w-4 transform rounded-full bg-white transition`}
-                    />
-                  </Switch> */}
-                  {/* Delete selected announcement */}
-                  {announcementSelected && (
-                    <>
-                      <div className='py-3'>
-                        <div className='rounded-md border border-emerald-500'>
-                          <div className='flex items-center justify-between py-4 pl-3 pr-4'>
-                            <div className='flex w-0 flex-1 items-center pl-2'>
-                              <div className='h-9 w-9 bg-emerald-50 dark:bg-emerald-200 flex items-center rounded-sm justify-center'>
-                                <FontAwesomeIcon
-                                  icon={faFileMusic}
-                                  className='h-4 w-4 text-primary dark:text-primaryDark'
-                                  aria-hidden='true'
-                                />
-                              </div>
-                              <div className='text-md flex flex-col pl-3'>
-                                <span className='font-semibold text-gray-900 dark:text-gray-100'>
-                                  {selectedAnnouncementInfo.announcementName}
-                                </span>
-                                <span className='text-sm'>{selectedAnnouncementInfo.fileSize}</span>
-                              </div>
-                            </div>
-                            <div className='ml-4 flex-shrink-0'>
-                              <Button variant='ghost' onClick={() => deleteUploadedAnnouncement()}>
-                                <FontAwesomeIcon
-                                  icon={faXmark}
-                                  className='h-4 w-4 text-gray-500 dark:text-gray-500'
-                                  aria-hidden='true'
-                                />
-                              </Button>
-                            </div>
-                          </div>
-                        </div>
-                      </div>
-                    </>
-                  )}
-                  {/* Select announcement */}
-                  {!announcementSelected && (
-                    <select
-                      id='types'
-                      name='types'
-                      className='block w-full rounded-md py-2 pl-3 pr-10 text-base focus:outline-none sm:text-sm border-gray-300 focus:border-primary focus:ring-primary dark:border-gray-600 dark:focus:border-primary dark:focus:ring-primary'
-                      defaultValue={announcementSelected}
-                      onChange={changeAnnouncementSelect}
-                    >
-                      {announcementLists.map((announcementList) => (
-                        <option key={announcementList.id} value={announcementList.id}>
-                          {announcementList.value}
-                        </option>
-                      ))}
-                    </select>
-                  )}
+                    {dateSelectionInput.value}
+                  </label>
                 </div>
-                <span className='font-medium px-5'>{t('Lines.Select period')}</span>
-                {/* Date input  */}
-                {/* TO DO MANAGE IN CASE OF MOBILE DEVICE */}
-                {/* TO DO CHECK RADIO BUTTON VALUE TO SET DATE  */}
-                <div className='mt-4 px-5'>
-                  {/* Date input select */}
-                  <fieldset>
-                    <legend className='sr-only'>Date range select</legend>
-                    <div className='space-y-4'>
-                      {dateSelectionInputs.map((dateSelectionInput) => (
-                        <div key={dateSelectionInput.id} className='flex items-center'>
-                          <input
-                            id={dateSelectionInput.id}
-                            name='date-select'
-                            type='radio'
-                            defaultChecked={dateSelectionInput.id === 'specifyDay'}
-                            className='h-4 w-4 border-gray-300 text-primary dark:border-gray-600 focus:ring-primaryLight dark:focus:ring-primaryDark dark:text-primary'
-                            onChange={changeTypeSelected}
-                          />
-                          <label
-                            htmlFor={dateSelectionInput.id}
-                            className='ml-3 block text-sm font-medium leading-6 text-gray-700 dark:text-gray-200'
-                          >
-                            {dateSelectionInput.value}
-                          </label>
-                        </div>
-                      ))}
-                    </div>
-                  </fieldset>
-                  {selectedType !== 'everyDay' && (
-                    <>
-                      <div className='flex mt-3 items-center justify-between'>
-                        <span>{t('Lines.Begin')}</span>
-
-                        <span className='ml-auto mr-auto'>{t('Lines.End')}</span>
-                      </div>
-                      <div className='flex mt-3 items-center justify-between'>
-                        <TextInput
-                          type='datetime-local'
-                          placeholder='Select date start'
-                          className='max-w-sm mr-4'
-                          id='meeting-time'
-                          name='meeting-time'
-                          ref={dateBeginRef}
-                          onChange={changeDateBegin}
-                          defaultValue={actualBeginDate}
-                        />
-
-                        <TextInput
-                          type='datetime-local'
-                          placeholder='Select date end'
-                          className='max-w-sm'
-                          id='meeting-time'
-                          name='meeting-time'
-                          ref={dateEndRef}
-                          onChange={changeDateEnd}
-                          defaultValue={
-                            selectedType === 'onlyOneDay' ? actualEndDate : dateEndValue
-                          }
-                          disabled={selectedType !== 'specifyDay'}
-                        />
-                      </div>
-                    </>
-                  )}
-                </div>
-
-                {/* Announcement and voicemail switch */}
-                <div className='px-5 pt-2'>
-                  <div className='flex items-center justify-between mt-8'>
-                    <div className='flex items-center'>
-                      <FontAwesomeIcon
-                        icon={faVoicemail}
-                        className='mr-4 h-4 w-4 flex-shrink-0 text-gray-400 dark:text-gray-500'
-                        aria-hidden='true'
-                      />
-                      <h4 className='text-md font-medium text-gray-700 dark:text-gray-200'>
-                        {t('Lines.Activate announcement + voicemail')}
-                      </h4>
-                    </div>
-                    <IconSwitch
-                      on={isAnnouncementVoicemailActive}
-                      size='double_extra_large'
-                      onIcon={<FontAwesomeIcon icon={faToggleLargeOn} />}
-                      offIcon={<FontAwesomeIcon icon={faToggleLargeOff} />}
-                      changed={() => toggleAnnouncementVoicemail()}
-                    ></IconSwitch>
-                  </div>
-
-                  {/* Divider */}
-                  <div className='mt-1 border-t border-gray-200 dark:border-gray-700'></div>
-                </div>
-                {isAnnouncementVoicemailActive && (
-                  <TextInput
-                    placeholder={t('Lines.Insert voicemail') || ''}
-                    className='mt-4 px-5'
-                  ></TextInput>
+              ))}
+            </div>
+          </fieldset>
+          {selectedType !== 'always' && (
+            <>
+              <div className='flex mt-5 items-center justify-between'>
+                <span>{t('Lines.Begin')}</span>
+                {selectedType === 'specifyDay' && (
+                  <span className='ml-auto mr-auto'>{t('Lines.End')}</span>
                 )}
-              </>
-            )}
-          </>
-        )}
-        {/* Activate forward */}
+              </div>
+              <div className='flex mt-3 items-center justify-between'>
+                <TextInput
+                  type={selectedType === 'specifyDay' ? 'datetime-local' : 'date'}
+                  placeholder='Select date start'
+                  className='max-w-sm mr-4'
+                  id='meeting-time'
+                  name='meeting-time'
+                  ref={dateBeginRef}
+                  onChange={changeDateBegin}
+                  // defaultValue={actualBeginDate}
+                  step={selectedType === 'specifyDay' ? '1d' : ''}
+                />
 
-        <div className='px-5'>
+                {selectedType === 'specifyDay' && (
+                  <TextInput
+                    type='datetime-local'
+                    placeholder='Select date end'
+                    className='max-w-sm'
+                    id='meeting-time'
+                    name='meeting-time'
+                    ref={dateEndRef}
+                    onChange={changeDateEnd}
+                    defaultValue={dateEndValue}
+                  />
+                )}
+              </div>
+            </>
+          )}
+        </div>
+      </>
+    )
+  }
+
+  function announcementSelect() {
+    return (
+      <>
+        {/* Select announcement */}
+        <div className='px-5 pt-9'>
+          <div className='flex items-center'>
+            <FontAwesomeIcon
+              icon={faBullhorn}
+              className='mr-4 h-4 w-4 flex-shrink-0 text-gray-400 dark:text-gray-500'
+              aria-hidden='true'
+            />
+            <h4 className='text-md font-medium text-gray-700 dark:text-gray-200'>
+              {t('Lines.Activate announcement')}
+            </h4>
+          </div>
+          {/* Divider */}
+          <div className='mt-2 border-t border-gray-200 dark:border-gray-700'></div>
+        </div>
+        <div className='pt-4 px-5'>
+          <div className='flex'>
+            <select
+              id='types'
+              name='types'
+              className='block w-full rounded-md py-2 pl-3 pr-10 text-base focus:outline-none sm:text-sm border-gray-300 focus:border-primary focus:ring-primary dark:border-gray-600 dark:focus:border-primary dark:focus:ring-primary'
+              defaultValue='-'
+              onChange={changeAnnouncementSelect}
+            >
+              {Object.keys(announcement).map((key) => (
+                <option key={key} value={announcement[key].id}>
+                  {announcement[key].description}
+                </option>
+              ))}
+            </select>
+            <div className='ml-4 flex-shrink-0'>
+              <Button
+                variant='white'
+                onClick={() => playSelectedAnnouncement(selectedAnnouncementInfo.id)}
+                disabled={!announcementSelected}
+              >
+                <FontAwesomeIcon
+                  icon={faPlay}
+                  className='h-4 w-4 mr-2 text-gray-500 dark:text-gray-500'
+                  aria-hidden='true'
+                />{' '}
+                {t('Lines.Play')}
+              </Button>
+            </div>
+          </div>
+        </div>
+      </>
+    )
+  }
+
+  function selectAnnouncementVoicemail() {
+    return (
+      <>
+        {/* Announcement and voicemail switch */}
+        <div className='px-5 pt-3'>
+          <div className='flex items-center justify-between mt-6'>
+            <div className='flex items-center'>
+              <FontAwesomeIcon
+                icon={faVoicemail}
+                className='mr-4 h-4 w-4 flex-shrink-0 text-gray-400 dark:text-gray-500'
+                aria-hidden='true'
+              />
+              <h4 className='text-md font-medium text-gray-700 dark:text-gray-200'>
+                {t('Lines.Activate announcement + voicemail')}
+              </h4>
+            </div>
+          </div>
+
+          {/* Divider */}
+          <div className='mt-2 border-t border-gray-200 dark:border-gray-700'></div>
+
+          <TextInput
+            placeholder={t('Lines.Insert voicemail') || ''}
+            className='mt-4'
+            value={textFilterVoiceMail}
+            onChange={changeTextFilterVoiceMail}
+            ref={textFilterVoiceMailRef}
+            icon={textFilterVoiceMail.length ? faCircleXmark : undefined}
+            onIconClick={() => clearTextFilterVoiceMail()}
+            trailingIcon={true}
+          />
+        </div>
+      </>
+    )
+  }
+
+  function selectForward() {
+    return (
+      <>
+        {/* Activate forward */}
+        <div className='px-5 pt-3'>
           <div className='flex items-center justify-between mt-6'>
             <div className='flex items-center'>
               <FontAwesomeIcon
@@ -386,126 +455,169 @@ export const ShowTelephoneLinesDrawerContent = forwardRef<
                 {t('Lines.Activate forward')}
               </h4>
             </div>
-            <IconSwitch
-              on={isForwardActive}
-              size='double_extra_large'
-              onIcon={<FontAwesomeIcon icon={faToggleLargeOn} />}
-              offIcon={<FontAwesomeIcon icon={faToggleLargeOff} />}
-              changed={() => toggleForward()}
-              disabled={isManageAnnouncementActive ? true : false}
-            ></IconSwitch>
           </div>
 
           {/* Divider */}
-          <div className='mt-1 border-t border-gray-200 dark:border-gray-700'></div>
-          {isForwardActive && (
-            <TextInput placeholder={t('Lines.Insert number') || ''} className='mt-4'></TextInput>
-          )}
+          <div className='mt-2 border-t border-gray-200 dark:border-gray-700'></div>
+
+          <TextInput
+            placeholder={t('Lines.Insert number') || ''}
+            className='mt-4'
+            value={textFilterRedirect}
+            onChange={changeTextFilterRedirect}
+            ref={textFilterRedirectRef}
+            icon={textFilterRedirect.length ? faCircleXmark : undefined}
+            onIconClick={() => clearTextFilterRedirect()}
+            trailingIcon={true}
+          />
         </div>
       </>
     )
   }
 
-  function ruleTypeSelected() {
+  function typologyConfiguration() {
     return (
       <>
-        {/* Activate Announcement switch  */}
-        <div className='px-5'>
-          {/* Title */}
-          <div className='flex items-center justify-between mt-8'>
-            <h4 className='text-md font-medium text-gray-700 dark:text-gray-200'>
-              {t('Lines.Select rule')}
+        <div className='px-5 pt-8 pb-2'>
+          <div className='flex items-center justify-between mt-1'>
+            <h4 className=' text-md font-medium text-gray-700 dark:text-gray-200'>
+              {t('Lines.Typology configuration')}
             </h4>
           </div>
           {/* Divider */}
-          <div className='mt-3 mb-5 border-t border-gray-200 dark:border-gray-700'></div>
+          <div className='mt-2 border-t border-gray-200 dark:border-gray-700'></div>
         </div>
-
-        <fieldset className='mt-4'>
-          <legend className='sr-only'>Rule information</legend>
-          <div className='space-y-4'>
-            {dateRuleInformations.map((dateRuleInformation) => (
-              <div key={dateRuleInformation.id}>
-                <div
-                  className={`flex items-center justify-between mt-1 ${
-                    openPanel === dateRuleInformation.id ? 'bg-gray-100' : ''
-                  } `}
-                >
-                  <div className='flex items-center px-5 pt-3'>
-                    <input
-                      id={dateRuleInformation.id}
-                      name='date-select'
-                      type='radio'
-                      defaultChecked={dateRuleInformation.id === 'ferie'}
-                      className='h-4 w-4 border-gray-300 text-primary dark:border-gray-600 focus:ring-primaryLight dark:focus:ring-primaryDark dark:text-primary'
-                      onChange={changeDateSelected}
-                    />
-                    <label
-                      htmlFor={dateRuleInformation.id}
-                      className='ml-3 block text-sm font-medium leading-6 text-gray-700 dark:text-gray-200'
-                    >
-                      {dateRuleInformation.value}
-                    </label>
-                  </div>
-                  <button
-                    className='mr-4 h-4 w-4 flex-shrink-0 text-gray-400 dark:text-gray-500'
-                    aria-hidden='true'
-                    onClick={() => togglePanel(dateRuleInformation.id)}
+        <div className='mt-4 px-5'>
+          {/* Date input select */}
+          <fieldset>
+            <legend className='sr-only'>Typology Configuration </legend>
+            <div className='space-y-4'>
+              {announcementTypologyConfiguration.map((typology) => (
+                <div key={typology.id} className='flex items-center'>
+                  <input
+                    id={typology.id}
+                    name='Typology select'
+                    type='radio'
+                    defaultChecked={typology.id === 'audiomsg'}
+                    className='h-4 w-4 border-gray-300 text-primary dark:border-gray-600 focus:ring-primaryLight dark:focus:ring-primaryDark dark:text-primary'
+                    onChange={changeAnnouncementTypologySelected}
+                  />
+                  <label
+                    htmlFor={typology.id}
+                    className='ml-3 block text-sm font-medium leading-6 text-gray-700 dark:text-gray-200'
                   >
-                    <FontAwesomeIcon
-                      icon={openPanel === dateRuleInformation.id ? faChevronUp : faChevronDown}
-                    />
-                  </button>
+                    {typology.value}
+                  </label>
                 </div>
-                {openPanel === dateRuleInformation.id && (
-                  <div className='bg-gray-100 px-5 py-3'>
-                    <div className='flex flex-col'>
-                      <h1 className='flex text-md font-medium text-gray-700 dark:text-gray-200'>
-                        {t('Lines.Rule details')}
-                      </h1>
-                      {/* TO DO GET DATA FROM API */}
-                      <div className='flex items-center mt-2'>
-                        <FontAwesomeIcon
-                          icon={faVoicemail}
-                          className='mr-4 h-4 w-4 flex-shrink-0 text-gray-400 dark:text-gray-500'
-                          aria-hidden='true'
-                        />
-                        <h4 className='text-md text-gray-700 dark:text-gray-200'>
-                          {t('Lines.Activate announcement + voicemail')}
-                        </h4>
-                      </div>
-                      <div className='flex items-center mt-1'>
-                        <FontAwesomeIcon
-                          icon={faCalendar}
-                          className='mr-4 h-4 w-4 flex-shrink-0 text-gray-400 dark:text-gray-500'
-                          aria-hidden='true'
-                        />
-                        <h4 className='text-md text-gray-700 dark:text-gray-200'>
-                          {t('Lines.Begin')}
-                        </h4>
-                      </div>
-                      <div className='flex items-center mt-1'>
-                        <FontAwesomeIcon
-                          icon={faCalendar}
-                          className='mr-4 h-4 w-4 flex-shrink-0 text-gray-400 dark:text-gray-500'
-                          aria-hidden='true'
-                        />
-                        <h4 className='text-md text-gray-700 dark:text-gray-200'>
-                          {t('Lines.End')}
-                        </h4>
-                      </div>
-                    </div>
-                  </div>
-                )}
-              </div>
-            ))}
-          </div>
-        </fieldset>
+              ))}
+            </div>
+          </fieldset>
+        </div>
       </>
     )
   }
 
+  // function ruleTypeSelected() {
+  //   return (
+  //     <>
+  //       {/* Activate Announcement switch  */}
+  //       <div className='px-5'>
+  //         {/* Title */}
+  //         <div className='flex items-center justify-between mt-8'>
+  //           <h4 className='text-md font-medium text-gray-700 dark:text-gray-200'>
+  //             {t('Lines.Select rule')}
+  //           </h4>
+  //         </div>
+  //         {/* Divider */}
+  //         <div className='mt-3 mb-5 border-t border-gray-200 dark:border-gray-700'></div>
+  //       </div>
+
+  //       <fieldset className='mt-4'>
+  //         <legend className='sr-only'>Rule information</legend>
+  //         <div className='space-y-4'>
+  //           {dateRuleInformations.map((dateRuleInformation) => (
+  //             <div key={dateRuleInformation.id}>
+  //               <div
+  //                 className={`flex items-center justify-between mt-1 ${
+  //                   openPanel === dateRuleInformation.id ? 'bg-gray-100' : ''
+  //                 } `}
+  //               >
+  //                 <div className='flex items-center px-5 pt-3'>
+  //                   <input
+  //                     id={dateRuleInformation.id}
+  //                     name='date-select'
+  //                     type='radio'
+  //                     defaultChecked={dateRuleInformation.id === 'ferie'}
+  //                     className='h-4 w-4 border-gray-300 text-primary dark:border-gray-600 focus:ring-primaryLight dark:focus:ring-primaryDark dark:text-primary'
+  //                     onChange={changeDateSelected}
+  //                   />
+  //                   <label
+  //                     htmlFor={dateRuleInformation.id}
+  //                     className='ml-3 block text-sm font-medium leading-6 text-gray-700 dark:text-gray-200'
+  //                   >
+  //                     {dateRuleInformation.value}
+  //                   </label>
+  //                 </div>
+  //                 <button
+  //                   className='mr-4 h-4 w-4 flex-shrink-0 text-gray-400 dark:text-gray-500'
+  //                   aria-hidden='true'
+  //                   onClick={() => togglePanel(dateRuleInformation.id)}
+  //                 >
+  //                   <FontAwesomeIcon
+  //                     icon={openPanel === dateRuleInformation.id ? faChevronUp : faChevronDown}
+  //                   />
+  //                 </button>
+  //               </div>
+  //               {openPanel === dateRuleInformation.id && (
+  //                 <div className='bg-gray-100 px-5 py-3'>
+  //                   <div className='flex flex-col'>
+  //                     <h1 className='flex text-md font-medium text-gray-700 dark:text-gray-200'>
+  //                       {t('Lines.Rule details')}
+  //                     </h1>
+  //                     {/* TO DO GET DATA FROM API */}
+  //                     <div className='flex items-center mt-2'>
+  //                       <FontAwesomeIcon
+  //                         icon={faVoicemail}
+  //                         className='mr-4 h-4 w-4 flex-shrink-0 text-gray-400 dark:text-gray-500'
+  //                         aria-hidden='true'
+  //                       />
+  //                       <h4 className='text-md text-gray-700 dark:text-gray-200'>
+  //                         {t('Lines.Activate announcement + voicemail')}
+  //                       </h4>
+  //                     </div>
+  //                     <div className='flex items-center mt-1'>
+  //                       <FontAwesomeIcon
+  //                         icon={faCalendar}
+  //                         className='mr-4 h-4 w-4 flex-shrink-0 text-gray-400 dark:text-gray-500'
+  //                         aria-hidden='true'
+  //                       />
+  //                       <h4 className='text-md text-gray-700 dark:text-gray-200'>
+  //                         {t('Lines.Begin')}
+  //                       </h4>
+  //                     </div>
+  //                     <div className='flex items-center mt-1'>
+  //                       <FontAwesomeIcon
+  //                         icon={faCalendar}
+  //                         className='mr-4 h-4 w-4 flex-shrink-0 text-gray-400 dark:text-gray-500'
+  //                         aria-hidden='true'
+  //                       />
+  //                       <h4 className='text-md text-gray-700 dark:text-gray-200'>
+  //                         {t('Lines.End')}
+  //                       </h4>
+  //                     </div>
+  //                   </div>
+  //                 </div>
+  //               )}
+  //             </div>
+  //           ))}
+  //         </div>
+  //       </fieldset>
+  //     </>
+  //   )
+  // }
+
   //Get value from date input
+
   const dateBeginRef = useRef() as React.MutableRefObject<HTMLInputElement>
   const dateEndRef = useRef() as React.MutableRefObject<HTMLInputElement>
 
@@ -553,7 +665,30 @@ export const ShowTelephoneLinesDrawerContent = forwardRef<
                   />
                   <span
                     className='truncate cursor-pointer hover:underline'
-                    onClick={() => callPhoneNumber(config.cid)}
+                    onClick={() => callPhoneNumber(config.number)}
+                  >
+                    {config.number}
+                  </span>
+                </div>
+              </dd>
+            </div>
+          )}
+          {/* Caller number */}
+          {config.callerNumber && (
+            <div className='py-4 sm:grid sm:grid-cols-3 sm:gap-4 sm:py-5'>
+              <dt className='text-sm font-medium text-gray-500 dark:text-gray-400'>
+                {t('Lines.Caller number')}
+              </dt>
+              <dd className='mt-1 text-sm text-gray-900 dark:text-gray-100 sm:col-span-2 sm:mt-0'>
+                <div className='flex items-center text-sm text-primary dark:text-primary'>
+                  <FontAwesomeIcon
+                    icon={faPhone}
+                    className='mr-2 h-4 w-4 flex-shrink-0 text-gray-400 dark:text-gray-500'
+                    aria-hidden='true'
+                  />
+                  <span
+                    className='truncate cursor-pointer hover:underline'
+                    onClick={() => callPhoneNumber(config.callerNumber)}
                   >
                     {config.number}
                   </span>
@@ -562,25 +697,20 @@ export const ShowTelephoneLinesDrawerContent = forwardRef<
             </div>
           )}
         </dl>
-        {/* Lines configuration management */}
-        <div className='px-5'>
+
+        {/* Activate configuration */}
+        <div className='px-5 pt-8'>
           <div className='flex items-center justify-between mt-1'>
             <h4 className=' text-md font-medium text-gray-700 dark:text-gray-200'>
               {t('Lines.Activate configuration')}
             </h4>
-
-            <IconSwitch
-              on={isConfigurationActive}
-              size='double_extra_large'
-              onIcon={<FontAwesomeIcon icon={faToggleLargeOn} />}
-              offIcon={<FontAwesomeIcon icon={faToggleLargeOff} />}
-              changed={() => toggleConfigurationActive()}
-            ></IconSwitch>
+            <Switch on={isConfigurationActive} changed={() => toggleConfigurationActive()}></Switch>
           </div>
           {/* Divider */}
-          <div className='mt-1 border-t border-gray-200 dark:border-gray-700'></div>
+          <div className='mt-2 border-t border-gray-200 dark:border-gray-700'></div>
         </div>
 
+        {/* configuration type select */}
         {isConfigurationActive && (
           <>
             <fieldset className='mt-4 px-5'>
@@ -606,23 +736,24 @@ export const ShowTelephoneLinesDrawerContent = forwardRef<
                 ))}
               </div>
             </fieldset>
-            {changeConfigurationRadio === 'customize' ? customTypeSelected() : ruleTypeSelected()}
+
+            {/* Period select */}
+            {periodSelect()}
+
+            {/* Activate announcement field */}
+
+            {typologyConfiguration()}
+            {/* {changeConfigurationRadio === 'customize' ? customTypeSelected() : ruleTypeSelected()} */}
+
+            {selectedConfigurationTypology === 'audiomsg' && <>{announcementSelect()}</>}
+            {selectedConfigurationTypology === 'audiomsg_voicemail' && (
+              <>{selectAnnouncementVoicemail()}</>
+            )}
+            {selectedConfigurationTypology === 'redirect' && <>{selectForward()}</>}
           </>
         )}
-
-        {/* skeleton */}
-        {/* {!isLoaded && !errorMessage && (
-          <ul role='list' className='divide-y divide-gray-200 dark:divide-gray-700'>
-            {Array.from(Array(3)).map((e, index) => (
-              <li key={index} className='py-4 px-5'>
-                <div className='animate-pulse h-5 rounded mb-6 bg-gray-300 dark:bg-gray-600'></div>
-                <div className='animate-pulse h-5 max-w-[75%] rounded bg-gray-300 dark:bg-gray-600'></div>
-              </li>
-            ))}
-          </ul>
-        )} */}
         {/* fixed bottom-0 */}
-        <div className='flex mt-6 px-5'>
+        <div className='flex mt-6 px-5 pt-2'>
           <Button
             variant='primary'
             type='submit'

@@ -15,7 +15,7 @@ const Lines: NextPage = () => {
   const tabs = [
     { name: t('Lines.Lines management'), value: 'lines' },
     { name: t('Lines.Ads'), value: 'ads' },
-    { name: t('Lines.Rules'), value: 'rules' },
+    // { name: t('Lines.Rules'), value: 'rules' },
   ]
 
   const changeTab = (tabName: string) => {
@@ -84,8 +84,8 @@ const Lines: NextPage = () => {
               <LinesView />
             ) : currentTab === 'ads' ? (
               <AnnouncementView />
-            ) : currentTab === 'rules' ? (
-              <RulesView />
+            // ) : currentTab === 'rules' ? (
+            //   <RulesView />
             ) : null}
           </div>
         </>

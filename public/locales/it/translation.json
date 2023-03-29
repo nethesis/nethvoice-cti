@@ -234,6 +234,12 @@
     "Announcemnt + voicemail": "Annuncio + voicemail",
     "Lines": "Linee",
     "Delete announcement": "Elimina annuncio",
-    "Are you sure to delete selected announcement?": "Sei sicuro di voler eliminare l'annuncio selezionato?"
+    "Are you sure to delete selected announcement?": "Sei sicuro di voler eliminare l'annuncio selezionato?",
+    "Caller number": "Numero chiamante",
+    "Typology configuration": "Tipologia configurazione",
+    "No lines available": "Nessuna linea disponibile",
+    "There are no lines with the current filter": "Non ci sono linee con il filtro corrente",
+    "No announcement available": "Nessun annuncio disponibile",
+    "There are no announcement with the current filter": "Non ci sono annunci con il filtro corrente"
   }
 }

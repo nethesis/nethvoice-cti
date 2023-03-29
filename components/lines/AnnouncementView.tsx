@@ -6,7 +6,13 @@ import { useTranslation } from 'react-i18next'
 import { Button, EmptyState, InlineNotification, Avatar, Modal, TextInput } from '../common'
 import { isEmpty, debounce } from 'lodash'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
-import { getAnnouncements, downloadMsg, listenMsg, deleteMsg } from '../../lib/lines'
+import {
+  getAnnouncementsFiltered,
+  downloadMsg,
+  listenMsg,
+  deleteMsg,
+  PAGE_SIZE,
+} from '../../lib/lines'
 import {
   faPhone,
   faPlay,
@@ -15,6 +21,8 @@ import {
   faLock,
   faLockOpen,
   faTriangleExclamation,
+  faChevronLeft,
+  faChevronRight,
 } from '@nethesis/nethesis-solid-svg-icons'
 import classNames from 'classnames'
 import { AnnouncementFilter } from './AnnouncementFilter'
@@ -92,7 +100,8 @@ export const AnnouncementView: FC<AnnouncementViewProps> = ({ className }): JSX.
 
   const updateTextFilter = (newTextFilter: string) => {
     setTextFilter(newTextFilter)
-    // setPageNum(1)
+    setLinesLoaded(false)
+    setPageNum(1)
   }
 
   const debouncedUpdateTextFilter = useMemo(() => debounce(updateTextFilter, 400), [])
@@ -104,14 +113,16 @@ export const AnnouncementView: FC<AnnouncementViewProps> = ({ className }): JSX.
     }
   }, [debouncedUpdateTextFilter])
 
+  const [dataPagination, setDataPagination]: any = useState({})
   //Get Lines information
   useEffect(() => {
     async function fetchLines() {
       if (!isLinesLoaded) {
         try {
           setLinesError('')
-          const res = await getAnnouncements()
-          setLines(res)
+          const res = await getAnnouncementsFiltered(textFilter.trim(), pageNum)
+          setLines(res.rows)
+          setDataPagination(res)
         } catch (e) {
           console.error(e)
           setLinesError(t('Lines.Cannot retrieve lines') || '')
@@ -123,35 +134,27 @@ export const AnnouncementView: FC<AnnouncementViewProps> = ({ className }): JSX.
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [isLinesLoaded])
 
-  //   function goToPreviousPage() {
-  //     if (pageNum > 1) {
-  //       setPageNum(pageNum - 1)
-  //     }
-  //   }
-
-  //   function goToNextPage() {
-  //     if (pageNum < lines.totalPages) {
-  //       setPageNum(pageNum + 1)
-  //     }
-  //   }
-
-  //   function isPreviousPageButtonDisabled() {
-  //     return !isLinesLoaded || pageNum <= 1
-  //   }
-
-  //   function isNextPageButtonDisabled() {
-  //     return !isLinesLoaded || pageNum >= lines?.totalPages
-  //   }
-
-  const filterLinesTable = (lines: any) => {
-    let limit = 10
-    const filteredLinesTables = lines.filter((telephoneLines: any) => {
-      return telephoneLines.description.toLowerCase().includes(textFilter)
-    })
-    return filteredLinesTables.slice(0, limit)
+  function goToPreviousPage() {
+    if (pageNum > 1) {
+      setPageNum(pageNum - 1)
+      setLinesLoaded(false)
+    }
   }
 
-  const filteredTable = filterLinesTable(table)
+  function goToNextPage() {
+    if (pageNum < dataPagination.totalPages) {
+      setPageNum(pageNum + 1)
+      setLinesLoaded(false)
+    }
+  }
+
+  function isPreviousPageButtonDisabled() {
+    return !isLinesLoaded || pageNum <= 1
+  }
+
+  function isNextPageButtonDisabled() {
+    return !isLinesLoaded || pageNum >= dataPagination.totalPages
+  }
 
   const deleteAnnouncement = (announcementId: any) => {
     setShowDelecteModal(true)
@@ -265,69 +268,69 @@ export const AnnouncementView: FC<AnnouncementViewProps> = ({ className }): JSX.
         />
       </div>
       {linesError && <InlineNotification type='error' title={linesError}></InlineNotification>}
-      {/* {!linesError && ( */}
-      <div className='mx-auto'>
-        <div className='flex flex-col overflow-hidden'>
-          <div className='-my-2 -mx-4 overflow-x-auto sm:-mx-6 lg:-mx-8'>
-            <div className='inline-block min-w-full py-2 align-middle px-2 md:px-6 lg:px-8'>
-              <div className='overflow-hidden shadow ring-1 md:rounded-lg ring-opacity-5 dark:ring-opacity-5 ring-gray-900 dark:ring-gray-100'>
-                {/* empty state */}
-                {/* {isLinesLoaded && isEmpty(lines.rows) && (
-                  <EmptyState
-                    title={t('Lines.No lines')}
-                    description={t('Lines.There are no lines with current filters') || ''}
-                    icon={
-                      <FontAwesomeIcon
-                        icon={faPhone}
-                        className='mx-auto h-12 w-12'
-                        aria-hidden='true'
-                      />
-                    }
-                    className='bg-white dark:bg-gray-900'
-                  ></EmptyState>
-                )} */}
-                {/* {(!isLinesLoaded || !isEmpty(lines.rows)) && ( */}
-                <table className='min-w-full divide-y divide-gray-300 dark:divide-gray-600'>
-                  <thead className='bg-white dark:bg-gray-900'>
-                    <tr>
-                      <th
-                        scope='col'
-                        className='py-3.5 pl-4 pr-3 text-left text-sm font-semibold sm:pl-6 text-gray-700 dark:text-gray-200'
-                      >
-                        {t('Lines.Name')}
-                      </th>
-                      <th
-                        scope='col'
-                        className='px-3 py-3.5 text-left text-sm font-semibold text-gray-700 dark:text-gray-200'
-                      >
-                        {t('Lines.Author')}
-                      </th>
-                      <th
-                        scope='col'
-                        className='px-3 py-3.5 text-left text-sm font-semibold text-gray-700 dark:text-gray-200'
-                      >
-                        {t('Lines.Creation date')}
-                      </th>
-                      <th
-                        scope='col'
-                        className='px-3 py-3.5 text-left text-sm font-semibold text-gray-700 dark:text-gray-200'
-                      >
-                        {t('Lines.Privacy')}
-                      </th>
-                      <th scope='col' className='relative py-3.5 pl-3 pr-4 sm:pr-6'>
-                        <span className='sr-only'>{t('Lines.Details')}</span>
-                      </th>
-                      <th scope='col' className='relative py-3.5 pl-3 pr-4 sm:pr-6'>
-                        <span className='sr-only'>{t('Lines.Delete')}</span>
-                      </th>
-                    </tr>
-                  </thead>
-                  <tbody className=' text-sm divide-y divide-gray-200 bg-white text-gray-700 dark:divide-gray-700 dark:bg-gray-900 dark:text-gray-200'>
-                    {/* skeleton */}
-                    {/* {!isLinesLoaded &&
-                          Array.from(Array(5)).map((e, i) => (
+      {!linesError && (
+        <div className='mx-auto'>
+          <div className='flex flex-col overflow-hidden'>
+            <div className='-my-2 -mx-4 overflow-x-auto sm:-mx-6 lg:-mx-8'>
+              <div className='inline-block min-w-full py-2 align-middle px-2 md:px-6 lg:px-8'>
+                <div className='overflow-hidden shadow ring-1 md:rounded-lg ring-opacity-5 dark:ring-opacity-5 ring-gray-900 dark:ring-gray-100'>
+                  {/* empty state */}
+                  {isLinesLoaded && isEmpty(lines) && (
+                    <EmptyState
+                      title={t('Lines.No announcement available')}
+                      description={t('Lines.There are no announcement with current filters') || ''}
+                      icon={
+                        <FontAwesomeIcon
+                          icon={faPhone}
+                          className='mx-auto h-12 w-12'
+                          aria-hidden='true'
+                        />
+                      }
+                      className='bg-white dark:bg-gray-900'
+                    ></EmptyState>
+                  )}
+                  {(!isLinesLoaded || !isEmpty(lines)) && (
+                    <table className='min-w-full divide-y divide-gray-300 dark:divide-gray-600'>
+                      <thead className='bg-white dark:bg-gray-900'>
+                        <tr>
+                          <th
+                            scope='col'
+                            className='py-3.5 pl-4 pr-3 text-left text-sm font-semibold sm:pl-6 text-gray-700 dark:text-gray-200'
+                          >
+                            {t('Lines.Name')}
+                          </th>
+                          <th
+                            scope='col'
+                            className='px-3 py-3.5 text-left text-sm font-semibold text-gray-700 dark:text-gray-200'
+                          >
+                            {t('Lines.Author')}
+                          </th>
+                          <th
+                            scope='col'
+                            className='px-3 py-3.5 text-left text-sm font-semibold text-gray-700 dark:text-gray-200'
+                          >
+                            {t('Lines.Creation date')}
+                          </th>
+                          <th
+                            scope='col'
+                            className='px-3 py-3.5 text-left text-sm font-semibold text-gray-700 dark:text-gray-200'
+                          >
+                            {t('Lines.Privacy')}
+                          </th>
+                          <th scope='col' className='relative py-3.5 pl-3 pr-4 sm:pr-6'>
+                            <span className='sr-only'>{t('Lines.Details')}</span>
+                          </th>
+                          <th scope='col' className='relative py-3.5 pl-3 pr-4 sm:pr-6'>
+                            <span className='sr-only'>{t('Lines.Delete')}</span>
+                          </th>
+                        </tr>
+                      </thead>
+                      <tbody className=' text-sm divide-y divide-gray-200 bg-white text-gray-700 dark:divide-gray-700 dark:bg-gray-900 dark:text-gray-200'>
+                        {/* skeleton */}
+                        {!isLinesLoaded &&
+                          Array.from(Array(10)).map((e, i) => (
                             <tr key={i}>
-                              {Array.from(Array(5)).map((e, j) => (
+                              {Array.from(Array(6)).map((e, j) => (
                                 <td key={j}>
                                   <div className='px-4 py-6'>
                                     <div className='animate-pulse h-5 rounded bg-gray-300 dark:bg-gray-600'></div>
@@ -335,156 +338,156 @@ export const AnnouncementView: FC<AnnouncementViewProps> = ({ className }): JSX.
                                 </td>
                               ))}
                             </tr>
-                          ))} */}
-                    {/* lines */}
-                    {/* {isLinesLoaded &&
-                          lines?.rows?.map((call: any, index: number) => ( */}
+                          ))}
 
-                    {Object.keys(lines).map((key) => (
-                      <tr key={key}>
-                        {/* Name */}
-                        <td className='py-4 pl-4 pr-3 sm:pl-6'>
-                          <div className='flex flex-col'>
-                            <div>{lines[key].description} </div>
-                          </div>
-                        </td>
-                        {/* Author */}
-                        <td className='px-3 py-4'>
-                          <div className='flex items-center'>
-                            <Avatar
-                              src={getAvatarData(lines[key])}
-                              placeholderType='operator'
-                              size='small'
-                              bordered
-                              className='mr-2'
-                            />
-                            <div>{lines[key].username}</div>
-                          </div>
-                        </td>
-                        {/* Date */}
-                        <td className='px-3 py-4'>
-                          <div className='flex flex-col'>
-                            <div className='text-sm text-gray-900 dark:text-gray-100'>
-                              {dateCreationShowed(lines[key].date_creation)}
-                            </div>
-                            <div className='text-gray-500 dark:text-gray-500'>
-                              {hourCreationShowed(lines[key].time_creation)}
-                            </div>
-                          </div>
-                        </td>
+                        {/* Announcement */}
+                        {isLinesLoaded &&
+                          Object.keys(lines).map((key) => (
+                            <tr key={key}>
+                              {/* Name */}
+                              <td className='py-4 pl-4 pr-3 sm:pl-6'>
+                                <div className='flex flex-col'>
+                                  <div>{lines[key].description} </div>
+                                </div>
+                              </td>
+                              {/* Author */}
+                              <td className='px-3 py-4'>
+                                <div className='flex items-center'>
+                                  <Avatar
+                                    src={getAvatarData(lines[key])}
+                                    placeholderType='operator'
+                                    size='small'
+                                    bordered
+                                    className='mr-2'
+                                  />
+                                  <div>{lines[key].username}</div>
+                                </div>
+                              </td>
+                              {/* Date */}
+                              <td className='px-3 py-4'>
+                                <div className='flex flex-col'>
+                                  <div className='text-sm text-gray-900 dark:text-gray-100'>
+                                    {dateCreationShowed(lines[key].date_creation)}
+                                  </div>
+                                  <div className='text-gray-500 dark:text-gray-500'>
+                                    {hourCreationShowed(lines[key].time_creation)}
+                                  </div>
+                                </div>
+                              </td>
 
-                        {/* Privacy */}
-                        <td className='px-3 py-4'>
-                          <div className='flex items-center'>
-                            {/* The ternary operator is required because the open lock icon takes up
+                              {/* Privacy */}
+                              <td className='px-3 py-4'>
+                                <div className='flex items-center'>
+                                  {/* The ternary operator is required because the open lock icon takes up
                             more right margin */}
-                            <FontAwesomeIcon
-                              icon={lines[key].privacy === 'private' ? faLock : faLockOpen}
-                              className={`h-4 text-gray-500 dark:text-gray-500 ${
-                                lines[key].privacy === 'private' ? 'mr-3' : 'mr-2'
-                              }`}
-                              aria-hidden='true'
-                            />
-                            <span>{t(`Lines.${capitalize(lines[key].privacy)}`)} </span>
-                          </div>
-                        </td>
-                        {/* Action button */}
-                        <td className='px-3 py-4 flex gap-2 justify-end'>
-                          <div>
-                            {' '}
-                            {/* Play button */}
-                            <Button
-                              variant='white'
-                              onClick={() => playSelectedAnnouncement(lines[key].id)}
-                            >
-                              <FontAwesomeIcon
-                                icon={faPlay}
-                                className='h-4 w-4 mr-2 text-gray-500 dark:text-gray-500'
-                                aria-hidden='true'
-                              />{' '}
-                              {t('Lines.Play')}
-                            </Button>
-                          </div>
-                          <div>
-                            {' '}
-                            {/* Download button */}
-                            <Button
-                              variant='white'
-                              onClick={() => donwloadSelectedAnnouncement(lines[key].id)}
-                            >
-                              {/* <a href='link_al_file' download> */}
-                              <FontAwesomeIcon
-                                icon={faDownload}
-                                className='h-4 w-4 mr-2 text-gray-500 dark:text-gray-500'
-                                aria-hidden='true'
-                              />{' '}
-                              {t('Lines.Download')}
-                              {/* </a> */}
-                            </Button>
-                          </div>
-                        </td>
-                        {/* Delete announcement */}
-                        <td className='relative whitespace-nowrap py-4 pl-3 pr-4 text-right text-sm font-medium sm:pr-6'>
-                          {auth.username === lines[key].username && (
-                            <FontAwesomeIcon
-                              icon={faTrash}
-                              className='h-4 w-4 p-2 cursor-pointer text-gray-500 dark:text-gray-500'
-                              aria-hidden='true'
-                              onClick={() => deleteAnnouncement(lines[key].id)}
-                            />
-                          )}
-                        </td>
-                      </tr>
-                    ))}
-                  </tbody>
-                </table>
+                                  <FontAwesomeIcon
+                                    icon={lines[key].privacy === 'private' ? faLock : faLockOpen}
+                                    className={`h-4 text-gray-500 dark:text-gray-500 ${
+                                      lines[key].privacy === 'private' ? 'mr-3' : 'mr-2'
+                                    }`}
+                                    aria-hidden='true'
+                                  />
+                                  <span>{t(`Lines.${capitalize(lines[key].privacy)}`)} </span>
+                                </div>
+                              </td>
+                              {/* Action button */}
+                              <td className='px-3 py-4 flex gap-2 justify-end'>
+                                <div>
+                                  {' '}
+                                  {/* Play button */}
+                                  <Button
+                                    variant='white'
+                                    onClick={() => playSelectedAnnouncement(lines[key].id)}
+                                  >
+                                    <FontAwesomeIcon
+                                      icon={faPlay}
+                                      className='h-4 w-4 mr-2 text-gray-500 dark:text-gray-500'
+                                      aria-hidden='true'
+                                    />{' '}
+                                    {t('Lines.Play')}
+                                  </Button>
+                                </div>
+                                <div>
+                                  {' '}
+                                  {/* Download button */}
+                                  <Button
+                                    variant='white'
+                                    onClick={() => donwloadSelectedAnnouncement(lines[key].id)}
+                                  >
+                                    {/* <a href='link_al_file' download> */}
+                                    <FontAwesomeIcon
+                                      icon={faDownload}
+                                      className='h-4 w-4 mr-2 text-gray-500 dark:text-gray-500'
+                                      aria-hidden='true'
+                                    />{' '}
+                                    {t('Lines.Download')}
+                                    {/* </a> */}
+                                  </Button>
+                                </div>
+                              </td>
+                              {/* Delete announcement */}
+                              <td className='relative whitespace-nowrap py-4 pl-3 pr-4 text-right text-sm font-medium sm:pr-6'>
+                                {auth.username === lines[key].username && (
+                                  <FontAwesomeIcon
+                                    icon={faTrash}
+                                    className='h-4 w-4 p-2 cursor-pointer text-gray-500 dark:text-gray-500'
+                                    aria-hidden='true'
+                                    onClick={() => deleteAnnouncement(lines[key].id)}
+                                  />
+                                )}
+                              </td>
+                            </tr>
+                          ))}
+                      </tbody>
+                    </table>
+                  )}
 
-                {/* Delete announcement modal */}
-                <Modal
-                  show={showDeleteModal}
-                  focus={cancelButtonRef}
-                  onClose={() => setShowDelecteModal(false)}
-                >
-                  <Modal.Content>
-                    <div className='mx-auto flex h-12 w-12 flex-shrink-0 items-center justify-center rounded-full bg-red-100 sm:mx-0'>
-                      <FontAwesomeIcon
-                        icon={faTriangleExclamation}
-                        className='h-5 w-5 text-red-600'
-                        aria-hidden='true'
-                      />
-                    </div>
-                    <div className='mt-3 text-center sm:mt-0 sm:ml-4 sm:text-left'>
-                      <h3 className='text-lg font-medium leading-6 text-gray-900'>
-                        {t('Lines.Delete announcement')}
-                      </h3>
-                      <div className='mt-2'>
-                        <p className='text-sm text-gray-500'>
-                          {t('Lines.Are you sure to delete selected announcement?')}
-                        </p>
+                  {/* Delete announcement modal */}
+                  <Modal
+                    show={showDeleteModal}
+                    focus={cancelButtonRef}
+                    onClose={() => setShowDelecteModal(false)}
+                  >
+                    <Modal.Content>
+                      <div className='mx-auto flex h-12 w-12 flex-shrink-0 items-center justify-center rounded-full bg-red-100 sm:mx-0'>
+                        <FontAwesomeIcon
+                          icon={faTriangleExclamation}
+                          className='h-5 w-5 text-red-600'
+                          aria-hidden='true'
+                        />
                       </div>
-                    </div>
-                  </Modal.Content>
-                  <Modal.Actions>
-                    <Button variant='danger' onClick={() => closedModalSaved()}>
-                      {t('Common.Save')}
-                    </Button>
-                    <Button
-                      variant='white'
-                      onClick={() => setShowDelecteModal(false)}
-                      ref={cancelButtonRef}
-                    >
-                      {t('Common.Cancel')}
-                    </Button>
-                  </Modal.Actions>
-                </Modal>
+                      <div className='mt-3 text-center sm:mt-0 sm:ml-4 sm:text-left'>
+                        <h3 className='text-lg font-medium leading-6 text-gray-900'>
+                          {t('Lines.Delete announcement')}
+                        </h3>
+                        <div className='mt-2'>
+                          <p className='text-sm text-gray-500'>
+                            {t('Lines.Are you sure to delete selected announcement?')}
+                          </p>
+                        </div>
+                      </div>
+                    </Modal.Content>
+                    <Modal.Actions>
+                      <Button variant='danger' onClick={() => closedModalSaved()}>
+                        {t('Common.Save')}
+                      </Button>
+                      <Button
+                        variant='white'
+                        onClick={() => setShowDelecteModal(false)}
+                        ref={cancelButtonRef}
+                      >
+                        {t('Common.Cancel')}
+                      </Button>
+                    </Modal.Actions>
+                  </Modal>
 
-                {/* )} */}
+                  {/* )} */}
+                </div>
               </div>
             </div>
           </div>
-        </div>
-        {/* pagination */}
-        {/* {!LinesError && !!lines?.rows?.length && (
+          {/* pagination */}
+          {!linesError && !!lines?.length && (
             <nav
               className='flex items-center justify-between border-t px-0 py-4 mb-8 border-gray-100 dark:border-gray-800'
               aria-label='Pagination'
@@ -494,12 +497,12 @@ export const AnnouncementView: FC<AnnouncementViewProps> = ({ className }): JSX.
                   {t('Common.Showing')}{' '}
                   <span className='font-medium'>{PAGE_SIZE * (pageNum - 1) + 1}</span> -&nbsp;
                   <span className='font-medium'>
-                    {PAGE_SIZE * (pageNum - 1) + PAGE_SIZE < lines?.count
+                    {PAGE_SIZE * (pageNum - 1) + PAGE_SIZE < dataPagination?.count
                       ? PAGE_SIZE * (pageNum - 1) + PAGE_SIZE
-                      : lines?.count}
+                      : dataPagination?.count}
                   </span>{' '}
-                  {t('Common.of')} <span className='font-medium'>{lines?.count}</span>{' '}
-                  {t('Queues.lines')}
+                  {t('Common.of')} <span className='font-medium'>{dataPagination?.count}</span>{' '}
+                  {t('Lines.Lines')}
                 </p>
               </div>
               <div className='flex flex-1 justify-between sm:justify-end'>
@@ -525,9 +528,9 @@ export const AnnouncementView: FC<AnnouncementViewProps> = ({ className }): JSX.
                 </Button>
               </div>
             </nav>
-          )} */}
-      </div>
-      {/* )} */}
+          )}
+        </div>
+      )}
     </div>
   )
 }

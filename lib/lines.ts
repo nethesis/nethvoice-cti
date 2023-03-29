@@ -13,13 +13,72 @@ export const DEFAULT_SORT_BY_ANNOUNCEMENT = 'description'
 const apiEnpoint = getApiEndpoint()
 const apiScheme = getApiScheme()
 const apiUrl = apiScheme + apiEnpoint + '/webrest/'
+let type = ''
+
+export const searchStringInLines = (lines: any, queryText: string, type: string) => {
+  const regex = /[^a-zA-Z0-9]/g
+  queryText = queryText.replace(regex, '')
+  let found = false
+
+  if (type === 'phoneLines') {
+    // search in string attributes phone lines
+    found = ['description', 'callerIdNum', 'calledIdNum'].some((attrName) => {
+      return new RegExp(queryText, 'i').test(lines[attrName]?.replace(regex, ''))
+    })
+
+    if (found) {
+      return true
+    }
+    return false
+  } else {
+    // search in string attributes announcement
+    found = ['description', 'dateCreation', 'privacy'].some((attrName) => {
+      return new RegExp(queryText, 'i').test(lines[attrName]?.replace(regex, ''))
+    })
+
+    if (found) {
+      return true
+    }
+    return false
+  }
+}
 
 // Get phone lines list
-export async function retrieveLines() {
+export const retrieveLines = async (textFilter: string, pageNum: any) => {
   let userUrlApi = apiUrl + 'offhour/list'
+  type = 'phoneLines'
+  try {
+    const { data, status } = await axios.get(userUrlApi)
+    const allFilteredCalls = Object.values(data).filter((calls: any) => {
+      return searchStringInLines(calls, textFilter, type)
+    })
+    data.count = allFilteredCalls.length
+    data.totalPages = Math.ceil(allFilteredCalls.length / PAGE_SIZE)
+    const start = (pageNum - 1) * PAGE_SIZE
+    const end = start + PAGE_SIZE
+    data.rows = allFilteredCalls.slice(start, end)
+    return data
+  } catch (error) {
+    handleNetworkError(error)
+    throw error
+  }
+}
+
+// Get announcements list
+export async function getAnnouncementsFiltered(textFilter: string, pageNum: any) {
+  let userUrlApi = apiUrl + '/offhour/list_announcement'
 
   try {
     const { data, status } = await axios.get(userUrlApi)
+    const allFilteredCalls = Object.values(data).filter((calls: any) => {
+      console.log('this is the result', data)
+      return searchStringInLines(calls, textFilter, type)
+    })
+    data.count = allFilteredCalls.length
+    data.totalPages = Math.ceil(allFilteredCalls.length / PAGE_SIZE)
+    const start = (pageNum - 1) * PAGE_SIZE
+    const end = start + PAGE_SIZE
+    data.rows = allFilteredCalls.slice(start, end)
     return data
   } catch (error) {
     handleNetworkError(error)
@@ -146,8 +205,8 @@ export async function downloadMsg(keyMessage: any) {
   }
 }
 
-export const openShowTelephoneLinesDrawer = (name: any, number: any) => {
-  const config = { name, number }
+export const openShowTelephoneLinesDrawer = (name: any, number: any, callerNumber: any) => {
+  const config = { name, number, callerNumber }
 
   store.dispatch.sideDrawer.update({
     isShown: true,
