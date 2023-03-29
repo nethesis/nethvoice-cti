@@ -125,46 +125,110 @@ export const LinesView: FC<LinesViewProps> = ({ className }): JSX.Element => {
 
   // Check which configuration will be shown
   function getConfiguration(configurationType: any) {
-    switch (configurationType.personalized) {
-      case 'audiomsg':
-        return (
-          <>
-            <div className='flex items-center'>
-              <span>{t(`Lines.Announcement`)}</span>
-            </div>
-          </>
-        )
-      case 'audiomsg_voicemail':
-        return (
-          <>
-            <div className='flex items-center'>
-              <FontAwesomeIcon icon={faVoicemail} className='h-4 w-4 mr-2' aria-hidden='true' />
-              <span>{t(`Lines.Announcement + voicemail`)}</span>
-            </div>
-          </>
-        )
-      case 'redirect':
-        return (
-          <>
-            <div className='flex items-center'>
-              <FontAwesomeIcon
-                icon={faArrowTurnDownRight}
-                className='h-4 w-4 mr-2'
-                aria-hidden='true'
-              />
-              <span>{t(`Lines.Forward`)}</span>
-            </div>
-          </>
-        )
-      default:
-        return (
-          <>
-            <div className='flex items-center'>
-              <span>-</span>
-            </div>
-          </>
-        )
+    if (
+      configurationType.offhour &&
+      configurationType.offhour.action &&
+      configurationType.offhour.enabled !== 'never'
+    ) {
+      switch (configurationType.offhour.action) {
+        case 'audiomsg':
+          return (
+            <>
+              <div className='flex items-center'>
+                <span>{t(`Lines.Announcement`)}</span>
+              </div>
+            </>
+          )
+        case 'audiomsg_voicemail':
+          return (
+            <>
+              <div className='flex items-center'>
+                <FontAwesomeIcon icon={faVoicemail} className='h-4 w-4 mr-2' aria-hidden='true' />
+                <span>{t(`Lines.Announcement + voicemail`)}</span>
+              </div>
+            </>
+          )
+        case 'redirect':
+          return (
+            <>
+              <div className='flex items-center'>
+                <FontAwesomeIcon
+                  icon={faArrowTurnDownRight}
+                  className='h-4 w-4 mr-2'
+                  aria-hidden='true'
+                />
+                <span>{t(`Lines.Forward`)}</span>
+              </div>
+            </>
+          )
+        default:
+          return (
+            <>
+              <div className='flex items-center'>
+                <span>-</span>
+              </div>
+            </>
+          )
+      }
+    } else {
+      return (
+        <>
+          <div className='flex items-center'>
+            <span>-</span>
+          </div>
+        </>
+      )
     }
+  }
+
+  function checkObjectDrawer(lines: any) {
+    let objConfig = {
+      datebegin: null,
+      dateend: null,
+      enabled: null,
+      name: null,
+      number: null,
+      callerNumber: null,
+      action: null,
+      redirect_to: null,
+      announcement_id: null,
+      voicemail_id: null,
+    }
+    if (lines) {
+      objConfig.name = lines.description
+      objConfig.number = lines.calledIdNum
+      objConfig.callerNumber = lines.callerIdNum
+
+      if (lines.offhour) {
+        objConfig.enabled = lines.offhour.enabled
+        objConfig.action = lines.offhour.action
+        if (
+          lines.offhour.action === 'redirect' &&
+          lines.offhour.redirect &&
+          lines.offhour.redirect.redirect_to
+        ) {
+          objConfig.redirect_to = lines.offhour.redirect.redirect_to
+        }
+        if (lines.offhour.action === 'audiomsg' && lines.offhour.audiomsg) {
+          objConfig.announcement_id = lines.offhour.audiomsg.announcement_id
+        }
+        if (
+          lines.offhour.action === 'audiomsg_voicemail' &&
+          lines.offhour.audiomsg &&
+          lines.offhour.voicemail
+        ) {
+          objConfig.announcement_id = lines.offhour.audiomsg.announcement_id
+          objConfig.voicemail_id = lines.offhour.voicemail.voicemail_id
+        }
+        if (lines.offhour.period) {
+          if (lines.offhour.period.datebegin) {
+            objConfig.datebegin = lines.offhour.period.datebegin
+            objConfig.dateend = lines.offhour.period.dateend
+          }
+        }
+      }
+    }
+    openShowTelephoneLinesDrawer(objConfig)
   }
 
   return (
@@ -258,28 +322,18 @@ export const LinesView: FC<LinesViewProps> = ({ className }): JSX.Element => {
                               {/* Name */}
                               <td className='py-4 pl-4 pr-3 sm:pl-6'>
                                 <div className='flex flex-col'>
-                                  <div>{lines[key].description} </div>
+                                  <div>
+                                    {lines[key].description ? lines[key].description : '-'}{' '}
+                                  </div>
                                 </div>
                               </td>
                               {/* Number */}
                               <td className='px-3 py-4'>
-                                <div>{lines[key].calledIdNum}</div>
-                                <div className='text-gray-500 dark:text-gray-500'>
-                                  {lines[key].queueId}
-                                </div>
+                                <div>{lines[key].calledIdNum ? lines[key].calledIdNum : '-'}</div>
                               </td>
                               {/* Caller number */}
                               <td className='px-3 py-4'>
-                                {lines[key].callerIdNum ? (
-                                  <>
-                                    <div>{lines[key].calledIdNum}</div>
-                                    <div className='text-gray-500 dark:text-gray-500'>
-                                      {lines[key].queueId}
-                                    </div>
-                                  </>
-                                ) : (
-                                  <>-</>
-                                )}
+                                <div>{lines[key].callerIdNum ? lines[key].callerIdNum : '-'}</div>
                               </td>
                               {/* Costum configuration */}
                               <td className='whitespace-nowrap px-3 py-4'>
@@ -301,13 +355,9 @@ export const LinesView: FC<LinesViewProps> = ({ className }): JSX.Element => {
                                   icon={faChevronRight}
                                   className='h-3 w-3 p-2 cursor-pointer text-gray-500 dark:text-gray-500'
                                   aria-hidden='true'
-                                  onClick={() =>
-                                    openShowTelephoneLinesDrawer(
-                                      lines[key].description,
-                                      lines[key].calledIdNum,
-                                      lines[key].callerIdNum,
-                                    )
-                                  }
+                                  onClick={() => {
+                                    checkObjectDrawer(lines[key])
+                                  }}
                                 />
                               </td>
                             </tr>

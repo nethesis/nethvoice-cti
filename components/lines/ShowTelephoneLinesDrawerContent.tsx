@@ -33,14 +33,17 @@ export const ShowTelephoneLinesDrawerContent = forwardRef<
   ShowTelephoneLinesDrawerContentProps
 >(({ config, className, ...props }, ref) => {
   const { t } = useTranslation()
-  const [isConfigurationActive, setConfigurationActive] = useState(false)
+  const [isConfigurationActive, setConfigurationActive] = useState(
+    config.enabled !== 'never' ? true : false,
+  )
   const [changeConfigurationRadio, setChangeConfigurationRadio] = useState('customize')
-  const [isManageAnnouncementActive, setManageAnnouncementActive] = useState(false)
   const [announcementSelected, setAnnouncementSelected] = useState<any>(null)
   const [dateBeginValue, setDateBeginValue] = useState('')
   const [dateEndValue, setDateEndValue] = useState('')
   const [selectedRulesInfo, setSelectedRulesInfo] = useState('ferie')
-  const [selectedType, setSelectedType] = useState('specifyDay')
+  const [selectedType, setSelectedType] = useState(
+    config.enabled === 'always' ? config.enabled : 'specifyDay',
+  )
   const [selectedConfigurationTypology, setselectedConfigurationTypology] = useState('audiomsg')
   const [selectedAnnouncementInfo, setSelectedAnnouncementInfo] = useState<any>(null)
 
@@ -76,7 +79,6 @@ export const ShowTelephoneLinesDrawerContent = forwardRef<
   ]
 
   const [changeTypeDate, setChangeTypeDate] = useState('period')
-  const actualBeginDate = new Date().toISOString().slice(0, 11) + '09:00'
   const actualEndDate = new Date().toISOString().slice(0, 11) + '22:00'
   const [textFilterVoiceMail, setTextFilterVoiceMail] = useState('')
   const [textFilterRedirect, setTextFilterRedirect] = useState('')
@@ -148,7 +150,7 @@ export const ShowTelephoneLinesDrawerContent = forwardRef<
       let actionType = ''
 
       switch (true) {
-        case isManageAnnouncementActive && announcementSelected && selectedType:
+        case announcementSelected && selectedType:
           actionType = 'audiomsg'
 
           editPhoneLinesObj = {
@@ -164,10 +166,7 @@ export const ShowTelephoneLinesDrawerContent = forwardRef<
 
           break
 
-        case isManageAnnouncementActive &&
-          announcementSelected &&
-          selectedType &&
-          textFilterVoiceMail:
+        case announcementSelected && selectedType && textFilterVoiceMail:
           actionType = 'audiomsg + voicemail'
 
           editPhoneLinesObj = {
@@ -180,7 +179,7 @@ export const ShowTelephoneLinesDrawerContent = forwardRef<
 
           break
 
-        case isManageAnnouncementActive && announcementSelected && selectedType:
+        case announcementSelected && selectedType:
           actionType = 'redirect'
 
           editPhoneLinesObj = {
@@ -268,6 +267,9 @@ export const ShowTelephoneLinesDrawerContent = forwardRef<
     console.log('you want to play this announcement', announcementId)
   }
 
+  const [dateBegin, setDateBegin] = useState(new Date())
+  const [dateEnd, setDateEnd] = useState(new Date())
+
   function periodSelect() {
     return (
       <>
@@ -326,8 +328,7 @@ export const ShowTelephoneLinesDrawerContent = forwardRef<
                   name='meeting-time'
                   ref={dateBeginRef}
                   onChange={changeDateBegin}
-                  // defaultValue={actualBeginDate}
-                  step={selectedType === 'specifyDay' ? '1d' : ''}
+                  value={dateBegin.toISOString().slice(0, selectedType === 'onlyOneDay' ? 10 : -8)}
                 />
 
                 {selectedType === 'specifyDay' && (
@@ -339,7 +340,7 @@ export const ShowTelephoneLinesDrawerContent = forwardRef<
                     name='meeting-time'
                     ref={dateEndRef}
                     onChange={changeDateEnd}
-                    defaultValue={dateEndValue}
+                    value={dateEnd.toISOString().slice(0, -8)}
                   />
                 )}
               </div>

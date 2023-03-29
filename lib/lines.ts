@@ -71,7 +71,6 @@ export async function getAnnouncementsFiltered(textFilter: string, pageNum: any)
   try {
     const { data, status } = await axios.get(userUrlApi)
     const allFilteredCalls = Object.values(data).filter((calls: any) => {
-      console.log('this is the result', data)
       return searchStringInLines(calls, textFilter, type)
     })
     data.count = allFilteredCalls.length
@@ -205,8 +204,8 @@ export async function downloadMsg(keyMessage: any) {
   }
 }
 
-export const openShowTelephoneLinesDrawer = (name: any, number: any, callerNumber: any) => {
-  const config = { name, number, callerNumber }
+export const openShowTelephoneLinesDrawer = (object: any) => {
+  const config = object
 
   store.dispatch.sideDrawer.update({
     isShown: true,
