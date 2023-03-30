@@ -52,29 +52,6 @@ const table = [
     time_creation: '08:12:30',
     id: 2,
   },
-  {
-    description: 'Ombre sul lago',
-    username: 'edoardo',
-    date_creation: '21/12/2018',
-    privacy: 'public',
-    time_creation: '08:12:30',
-    id: 3,
-  },
-  {
-    description: 'Cuori in fuga',
-    username: 'andrea',
-    date_creation: '25/03/2020',
-    privacy: 'private',
-    time_creation: '08:12:30',
-  },
-  {
-    description: "L'isola misteriosa",
-    username: 'nicola',
-    date_creation: '21/12/2018',
-    privacy: 'public',
-    time_creation: '08:12:30',
-    id: 4,
-  },
 ]
 
 export const AnnouncementView: FC<AnnouncementViewProps> = ({ className }): JSX.Element => {
@@ -212,15 +189,6 @@ export const AnnouncementView: FC<AnnouncementViewProps> = ({ className }): JSX.
     setSortBy(newSortBy)
   }
 
-  const [avatarData, setAvatarData] = useState<any>()
-
-  useEffect(() => {
-    if (!avatarData) {
-      setAvatarData(loadCache('operatorsAvatars', authStore.username))
-    }
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [])
-
   function dateCreationShowed(dateCreation: any) {
     if (typeof dateCreation === 'string') {
       const dateObject = new Date(dateCreation.split('/').reverse().join('-'))
@@ -236,12 +204,33 @@ export const AnnouncementView: FC<AnnouncementViewProps> = ({ className }): JSX.
     return formattedTime
   }
 
+  // load operators information from the store
+  const operatorsStore = useSelector((state: RootState) => state.operators)
+  const [avatarIcon, setAvatarIcon] = useState<any>()
+  const [operatorInformation, setOperatorInformation] = useState<any>()
+
+  // get operator avatar base64 from the store
+  useEffect(() => {
+    if (operatorsStore && !avatarIcon) {
+      setAvatarIcon(operatorsStore.avatars)
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [])
+
+  // get operator information from the store
+  useEffect(() => {
+    if (operatorsStore && !operatorInformation) {
+      setOperatorInformation(operatorsStore.operators)
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [])
+
   function getAvatarData(announcement: any) {
     let announcementPath = ''
-    if (announcement.username && avatarData) {
-      for (const username in avatarData) {
+    if (announcement.username && avatarIcon) {
+      for (const username in avatarIcon) {
         if (username === announcement.username) {
-          announcementPath = avatarData[username]
+          announcementPath = avatarIcon[username]
           break
         }
       }
@@ -249,6 +238,29 @@ export const AnnouncementView: FC<AnnouncementViewProps> = ({ className }): JSX.
     return announcementPath
   }
 
+  function getAvatarMainPresence(announcement: any) {
+    let informationData = null
+    if (announcement.username && operatorInformation) {
+      for (const username in operatorInformation) {
+        if (username === announcement.username) {
+          informationData = operatorInformation[username].presence
+        }
+      }
+    }
+    return informationData
+  }
+
+  function getFullUsername(announcement: any) {
+    let fullName = null
+    if (announcement.username && operatorInformation) {
+      for (const username in operatorInformation) {
+        if (username === announcement.username) {
+          fullName = operatorInformation[username].name
+        }
+      }
+    }
+    return fullName
+  }
   // Sorting of the table according to the selected value
   if (sortBy === 'username') {
     table.sort((a, b) => a.username.localeCompare(b.username))
@@ -359,8 +371,10 @@ export const AnnouncementView: FC<AnnouncementViewProps> = ({ className }): JSX.
                                     size='small'
                                     bordered
                                     className='mr-2'
+                                    status={getAvatarMainPresence(lines[key])}
                                   />
-                                  <div>{lines[key].username}</div>
+                                  {/* <div>{lines[key].username}</div> */}
+                                  <div>{getFullUsername(lines[key])}</div>
                                 </div>
                               </td>
                               {/* Date */}
