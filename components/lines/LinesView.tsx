@@ -193,6 +193,7 @@ export const LinesView: FC<LinesViewProps> = ({ className }): JSX.Element => {
       redirect_to: null,
       announcement_id: null,
       voicemail_id: null,
+      dateType: '',
     }
     if (lines) {
       objConfig.name = lines.description
@@ -202,6 +203,11 @@ export const LinesView: FC<LinesViewProps> = ({ className }): JSX.Element => {
       if (lines.offhour) {
         objConfig.enabled = lines.offhour.enabled
         objConfig.action = lines.offhour.action
+        if (lines.offhour.enabled === 'period') {
+          objConfig.dateType = 'specifyDay'
+        } else if (lines.offhour.enabled === 'always') {
+          objConfig.dateType = 'always'
+        }
         if (
           lines.offhour.action === 'redirect' &&
           lines.offhour.redirect &&

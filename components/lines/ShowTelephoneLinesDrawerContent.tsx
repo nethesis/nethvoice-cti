@@ -40,18 +40,23 @@ export const ShowTelephoneLinesDrawerContent = forwardRef<
   const [announcementSelected, setAnnouncementSelected] = useState<any>(null)
   const [dateBeginValue, setDateBeginValue] = useState('')
   const [dateEndValue, setDateEndValue] = useState('')
-  const [selectedRulesInfo, setSelectedRulesInfo] = useState('ferie')
-  const [selectedType, setSelectedType] = useState(
-    config.enabled === 'always' ? config.enabled : 'specifyDay',
-  )
-  const [selectedConfigurationTypology, setselectedConfigurationTypology] = useState('audiomsg')
+  // const [selectedRulesInfo, setSelectedRulesInfo] = useState('ferie')
+  const [selectedType, setSelectedType] = useState('')
+  const [selectedConfigurationTypology, setSelectedConfigurationTypology] = useState('')
   const [selectedAnnouncementInfo, setSelectedAnnouncementInfo] = useState<any>(null)
 
   const [openPanel, setOpenPanel] = useState('')
 
-  const togglePanel = (id: string) => {
-    setOpenPanel(openPanel === id ? '' : id)
-  }
+  useEffect(() => {
+    setConfigurationActive(config.enabled !== 'never' ? true : false)
+    setSelectedType(config.dateType)
+    setSelectedConfigurationTypology(config.action)
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [])
+
+  // const togglePanel = (id: string) => {
+  //   setOpenPanel(openPanel === id ? '' : id)
+  // }
 
   const configurationType = [
     { id: 'customize', value: t('Lines.Customize') },
@@ -60,28 +65,32 @@ export const ShowTelephoneLinesDrawerContent = forwardRef<
 
   const actualDateWithoutHour: any = formatDateLoc(new Date(), 'yyyy-MM-dd')
 
-  const dateSelectionInputs = [
-    { id: 'specifyDay', value: t('Lines.Specify start date and end date') },
-    {
-      id: 'onlyOneDay',
-      value: t('Lines.Only active for one day'),
-    },
-    { id: 'always', value: t('Lines.Active every day') },
-  ]
+  const contactTypeFilter = {
+    id: 'contactTypeFilter',
+    name: 'Contact type',
+    options: [
+      { value: 'specifyDay', label: t('Lines.Specify start date and end date') },
+      { value: 'onlyOneDay', label: t('Lines.Only active for one day') },
+      { value: 'always', label: t('Lines.Active every day') },
+    ],
+  }
 
-  const announcementTypologyConfiguration = [
-    { id: 'audiomsg', value: t('Lines.Announcement') },
-    {
-      id: 'audiomsg_voicemail',
-      value: t('Lines.Announcement + voicemail'),
-    },
-    { id: 'redirect', value: t('Lines.Forward') },
-  ]
+  const announcementTypologyConfiguration = {
+    id: 'msgType',
+    name: 'announcementType',
+    options: [
+      { value: 'audiomsg', label: t('Lines.Announcement') },
+      { value: 'audiomsg_voicemail', label: t('Lines.Announcement + voicemail') },
+      { value: 'redirect', label: t('Lines.Forward') },
+    ],
+  }
 
   const [changeTypeDate, setChangeTypeDate] = useState('period')
   const actualEndDate = new Date().toISOString().slice(0, 11) + '22:00'
   const [textFilterVoiceMail, setTextFilterVoiceMail] = useState('')
-  const [textFilterRedirect, setTextFilterRedirect] = useState('')
+  const [textFilterRedirect, setTextFilterRedirect] = useState(
+    config.redirect_to ? config.redirect_to : '',
+  )
 
   const textFilterVoiceMailRef = useRef() as React.MutableRefObject<HTMLInputElement>
   const textFilterRedirectRef = useRef() as React.MutableRefObject<HTMLInputElement>
@@ -92,10 +101,10 @@ export const ShowTelephoneLinesDrawerContent = forwardRef<
   //   { id: 'natale', value: 'Natale' },
   // ]
 
-  function changeDateSelected(event: any) {
-    const radioButtonDateSelected = event.target.id
-    setSelectedRulesInfo(radioButtonDateSelected)
-  }
+  // function changeDateSelected(event: any) {
+  //   const radioButtonDateSelected = event.target.id
+  //   setSelectedRulesInfo(radioButtonDateSelected)
+  // }
 
   const toggleConfigurationActive = () => {
     setConfigurationActive(!isConfigurationActive)
@@ -130,7 +139,7 @@ export const ShowTelephoneLinesDrawerContent = forwardRef<
 
   function changeAnnouncementTypologySelected(event: any) {
     const radioButtonTypeSelected = event.target.id
-    setselectedConfigurationTypology(radioButtonTypeSelected)
+    setSelectedConfigurationTypology(radioButtonTypeSelected)
   }
 
   const [uploadOffHourError, setuploadOffHourError] = useState('')
@@ -145,57 +154,48 @@ export const ShowTelephoneLinesDrawerContent = forwardRef<
   }
 
   function saveEditTelephoneLines() {
-    if (isConfigurationActive) {
-      let editPhoneLinesObj = {}
-      let actionType = ''
+    let editPhoneLinesObj = {}
 
-      switch (true) {
-        case announcementSelected && selectedType:
-          actionType = 'audiomsg'
+    switch (true) {
+      case selectedConfigurationTypology === 'audiomsg':
+        editPhoneLinesObj = {
+          action: selectedConfigurationTypology,
+          announcement_id: announcementSelected.toString(),
+          calledIdNum: config.number.toString(),
+          callerIdNum: config.callerNumber.toString(),
+          enabled: changeTypeDate,
+        }
+        if (editPhoneLinesObj) {
+          setOffHourObject(editPhoneLinesObj)
+        }
 
-          editPhoneLinesObj = {
-            action: actionType,
-            announcement_id: announcementSelected.toString(),
-            calledIdNum: config.number.toString(),
-            callerIdNum: config.callerNumber.toString(),
-            enabled: changeTypeDate,
-          }
-          if (editPhoneLinesObj) {
-            setOffHourObject(editPhoneLinesObj)
-          }
+        break
 
-          break
+      case selectedConfigurationTypology === 'audiomsg + voicemail':
+        editPhoneLinesObj = {
+          action: selectedConfigurationTypology,
+          announcement_id: announcementSelected.toString(),
+          calledIdNum: config.number.toString(),
+          callerIdNum: config.callerNumber.toString(),
+          enabled: changeTypeDate,
+        }
 
-        case announcementSelected && selectedType && textFilterVoiceMail:
-          actionType = 'audiomsg + voicemail'
+        break
 
-          editPhoneLinesObj = {
-            action: actionType,
-            announcement_id: announcementSelected.toString(),
-            calledIdNum: config.number.toString(),
-            callerIdNum: config.callerNumber.toString(),
-            enabled: changeTypeDate,
-          }
+      case selectedConfigurationTypology === 'redirect':
+        editPhoneLinesObj = {
+          action: selectedConfigurationTypology,
+          announcement_id: announcementSelected.toString(),
+          calledIdNum: config.number.toString(),
+          callerIdNum: config.callerNumber.toString(),
+          enabled: changeTypeDate,
+        }
 
-          break
+        break
 
-        case announcementSelected && selectedType:
-          actionType = 'redirect'
-
-          editPhoneLinesObj = {
-            action: actionType,
-            announcement_id: announcementSelected.toString(),
-            calledIdNum: config.number.toString(),
-            callerIdNum: config.callerNumber.toString(),
-            enabled: changeTypeDate,
-          }
-
-          break
-
-        default:
-          // default action if none of the cases match
-          break
-      }
+      default:
+        // default action if none of the cases match
+        break
     }
 
     closeSideDrawer()
@@ -282,7 +282,6 @@ export const ShowTelephoneLinesDrawerContent = forwardRef<
           {/* Divider */}
           <div className='mt-2 border-t border-gray-200 dark:border-gray-700'></div>
         </div>
-
         {/* Date input  */}
         {/* TO DO MANAGE IN CASE OF MOBILE DEVICE */}
         {/* TO DO CHECK RADIO BUTTON VALUE TO SET DATE  */}
@@ -291,21 +290,21 @@ export const ShowTelephoneLinesDrawerContent = forwardRef<
           <fieldset>
             <legend className='sr-only'>Date range select</legend>
             <div className='space-y-4'>
-              {dateSelectionInputs.map((dateSelectionInput) => (
-                <div key={dateSelectionInput.id} className='flex items-center'>
+              {contactTypeFilter.options.map((dateSelectionInput) => (
+                <div key={dateSelectionInput.value} className='flex items-center'>
                   <input
-                    id={dateSelectionInput.id}
-                    name='date-select'
+                    id={dateSelectionInput.value}
+                    name={`filter-${contactTypeFilter.id}`}
                     type='radio'
-                    defaultChecked={dateSelectionInput.id === 'specifyDay'}
+                    checked={dateSelectionInput.value === selectedType}
                     className='h-4 w-4 border-gray-300 text-primary dark:border-gray-600 focus:ring-primaryLight dark:focus:ring-primaryDark dark:text-primary'
                     onChange={changeTypeSelected}
                   />
                   <label
-                    htmlFor={dateSelectionInput.id}
+                    htmlFor={dateSelectionInput.value}
                     className='ml-3 block text-sm font-medium leading-6 text-gray-700 dark:text-gray-200'
                   >
-                    {dateSelectionInput.value}
+                    {dateSelectionInput.label}
                   </label>
                 </div>
               ))}
@@ -314,7 +313,7 @@ export const ShowTelephoneLinesDrawerContent = forwardRef<
           {selectedType !== 'always' && (
             <>
               <div className='flex mt-5 items-center justify-between'>
-                <span>{t('Lines.Begin')}</span>
+                <span>{selectedType === 'specifyDay' ? t('Lines.Begin') : t('Lines.Date')}</span>
                 {selectedType === 'specifyDay' && (
                   <span className='ml-auto mr-auto'>{t('Lines.End')}</span>
                 )}
@@ -328,14 +327,25 @@ export const ShowTelephoneLinesDrawerContent = forwardRef<
                   name='meeting-time'
                   ref={dateBeginRef}
                   onChange={changeDateBegin}
-                  value={dateBegin.toISOString().slice(0, selectedType === 'onlyOneDay' ? 10 : -8)}
+                  value={dateBegin.toISOString().slice(0, selectedType === 'specifyDay' ? -8 : 10)}
                 />
 
-                {selectedType === 'specifyDay' && (
+                {selectedType === 'specifyDay' ? (
                   <TextInput
                     type='datetime-local'
                     placeholder='Select date end'
                     className='max-w-sm'
+                    id='meeting-time'
+                    name='meeting-time'
+                    ref={dateEndRef}
+                    onChange={changeDateEnd}
+                    value={dateEnd.toISOString().slice(0, -8)}
+                  />
+                ) : (
+                  <TextInput
+                    type='datetime-local'
+                    placeholder=''
+                    className='max-w-sm invisible'
                     id='meeting-time'
                     name='meeting-time'
                     ref={dateEndRef}
@@ -375,7 +385,7 @@ export const ShowTelephoneLinesDrawerContent = forwardRef<
               id='types'
               name='types'
               className='block w-full rounded-md py-2 pl-3 pr-10 text-base focus:outline-none sm:text-sm border-gray-300 focus:border-primary focus:ring-primary dark:border-gray-600 dark:focus:border-primary dark:focus:ring-primary'
-              defaultValue='-'
+              defaultValue={'-'}
               onChange={changeAnnouncementSelect}
             >
               {Object.keys(announcement).map((key) => (
@@ -425,6 +435,37 @@ export const ShowTelephoneLinesDrawerContent = forwardRef<
           {/* Divider */}
           <div className='mt-2 border-t border-gray-200 dark:border-gray-700'></div>
 
+          <div className='pt-4 pb-2'>
+            <div className='flex'>
+              <select
+                id='types'
+                name='types'
+                className='block w-full rounded-md py-2 pl-3 pr-10 text-base focus:outline-none sm:text-sm border-gray-300 focus:border-primary focus:ring-primary dark:border-gray-600 dark:focus:border-primary dark:focus:ring-primary'
+                defaultValue='-'
+                onChange={changeAnnouncementSelect}
+              >
+                {Object.keys(announcement).map((key) => (
+                  <option key={key} value={announcement[key].id}>
+                    {announcement[key].description}
+                  </option>
+                ))}
+              </select>
+              <div className='ml-4 flex-shrink-0'>
+                <Button
+                  variant='white'
+                  onClick={() => playSelectedAnnouncement(selectedAnnouncementInfo.id)}
+                  disabled={!announcementSelected}
+                >
+                  <FontAwesomeIcon
+                    icon={faPlay}
+                    className='h-4 w-4 mr-2 text-gray-500 dark:text-gray-500'
+                    aria-hidden='true'
+                  />{' '}
+                  {t('Lines.Play')}
+                </Button>
+              </div>
+            </div>
+          </div>
           <TextInput
             placeholder={t('Lines.Insert voicemail') || ''}
             className='mt-4'
@@ -493,21 +534,21 @@ export const ShowTelephoneLinesDrawerContent = forwardRef<
           <fieldset>
             <legend className='sr-only'>Typology Configuration </legend>
             <div className='space-y-4'>
-              {announcementTypologyConfiguration.map((typology) => (
-                <div key={typology.id} className='flex items-center'>
+              {announcementTypologyConfiguration.options.map((typology) => (
+                <div key={typology.value} className='flex items-center'>
                   <input
-                    id={typology.id}
-                    name='Typology select'
+                    id={typology.value}
+                    name={`filter-${announcementTypologyConfiguration.id}`}
                     type='radio'
-                    defaultChecked={typology.id === 'audiomsg'}
+                    checked={typology.value === selectedConfigurationTypology}
                     className='h-4 w-4 border-gray-300 text-primary dark:border-gray-600 focus:ring-primaryLight dark:focus:ring-primaryDark dark:text-primary'
                     onChange={changeAnnouncementTypologySelected}
                   />
                   <label
-                    htmlFor={typology.id}
+                    htmlFor={typology.value}
                     className='ml-3 block text-sm font-medium leading-6 text-gray-700 dark:text-gray-200'
                   >
-                    {typology.value}
+                    {typology.label}
                   </label>
                 </div>
               ))}
