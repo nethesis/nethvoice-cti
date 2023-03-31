@@ -70,7 +70,7 @@ export const ShowOperatorDrawerContent = forwardRef<
         {!!config.conversations?.length &&
           (config.conversations[0].connected ||
             config.conversations[0].inConference ||
-            config.conversations[0].chDest.inConference == true) && (
+            config.conversations[0].chDest?.inConference == true) && (
             <div>
               <div className='mt-6 flex items-end justify-between'>
                 <h4 className='text-md font-medium text-gray-700 dark:text-gray-200'>
