@@ -87,7 +87,9 @@ export const ShowTelephoneLinesDrawerContent = forwardRef<
 
   const [changeTypeDate, setChangeTypeDate] = useState('period')
   const actualEndDate = new Date().toISOString().slice(0, 11) + '22:00'
-  const [textFilterVoiceMail, setTextFilterVoiceMail] = useState('')
+  const [textFilterVoiceMail, setTextFilterVoiceMail] = useState(
+    config.voicemail_id ? config.voicemail_id : '',
+  )
   const [textFilterRedirect, setTextFilterRedirect] = useState(
     config.redirect_to ? config.redirect_to : '',
   )
@@ -152,51 +154,81 @@ export const ShowTelephoneLinesDrawerContent = forwardRef<
       return
     }
   }
-  let editPhoneLinesObj = {}
+
   function saveEditTelephoneLines() {
-    console.log("enabled", config.enabled)
-    editPhoneLinesObj = {
-      calledIdNum: config.number.toString(),
-      callerIdNum: config.callerNumber.toString(),
-      enabled: config.enabled
-    }
     if (isConfigurationActive) {
       switch (true) {
         case selectedConfigurationTypology === 'audiomsg':
-          editPhoneLinesObj = {
-            action: selectedConfigurationTypology,
-            announcement_id: announcementSelected.toString(),
-
-            enabled: changeTypeDate,
-            end_date: '',
-            start_date: '',
-          }
-          if (changeTypeDate === 'period') {
-          }
-          if (editPhoneLinesObj) {
-            setOffHourObject(editPhoneLinesObj)
-          }
-
-          break
-
-        case selectedConfigurationTypology === 'audiomsg + voicemail':
-          editPhoneLinesObj = {
-            action: selectedConfigurationTypology,
-            announcement_id: announcementSelected.toString(),
+          let setOffHourAudiomsg = {
             calledIdNum: config.number.toString(),
             callerIdNum: config.callerNumber.toString(),
-            enabled: changeTypeDate,
+            enabled: '',
+            action: selectedConfigurationTypology,
+            announcement_id: announcementSelected.toString(),
+          }
+
+          if (changeTypeDate === 'period') {
+            setOffHourAudiomsg.enabled = 'period'
+            // setOffHourAudiomsg = {
+
+            //   end_date: '',
+            //   start_date: '',
+            // }
+          } else {
+            setOffHourAudiomsg.enabled = 'always'
+          }
+          if (setOffHourAudiomsg) {
+            setOffHourObject(setOffHourAudiomsg)
+          }
+          break
+
+        case selectedConfigurationTypology === 'audiomsg_voicemail':
+          let setOffHourVoicemail = {
+            calledIdNum: config.number.toString(),
+            callerIdNum: config.callerNumber.toString(),
+            enabled: '',
+            action: selectedConfigurationTypology,
+            announcement_id: announcementSelected.toString(),
+            voicemail_id: textFilterVoiceMail,
+          }
+
+          if (changeTypeDate === 'period') {
+            setOffHourVoicemail.enabled = 'period'
+            // setOffHourVoicemail = {
+
+            //   end_date: '',
+            //   start_date: '',
+            // }
+          } else {
+            setOffHourVoicemail.enabled = 'always'
+          }
+          if (setOffHourVoicemail) {
+            setOffHourObject(setOffHourVoicemail)
           }
 
           break
 
         case selectedConfigurationTypology === 'redirect':
-          editPhoneLinesObj = {
-            action: selectedConfigurationTypology,
-            announcement_id: announcementSelected.toString(),
+          let setOffHourRedirect = {
             calledIdNum: config.number.toString(),
             callerIdNum: config.callerNumber.toString(),
-            enabled: changeTypeDate,
+            enabled: '',
+            action: selectedConfigurationTypology,
+            redirect_to: textFilterRedirect,
+          }
+
+          if (changeTypeDate === 'period') {
+            setOffHourRedirect.enabled = 'period'
+            // setOffHourRedirect = {
+
+            //   end_date: '',
+            //   start_date: '',
+            // }
+          } else {
+            setOffHourRedirect.enabled = 'always'
+          }
+          if (setOffHourRedirect) {
+            setOffHourObject(setOffHourRedirect)
           }
 
           break
@@ -206,7 +238,14 @@ export const ShowTelephoneLinesDrawerContent = forwardRef<
           break
       }
     } else {
-      console.log('Deactivate')
+      let turnOffPhoneLinesObj = {
+        calledIdNum: config.number.toString(),
+        callerIdNum: config.callerNumber.toString(),
+        enabled: 'never',
+      }
+      if (turnOffPhoneLinesObj) {
+        setOffHourObject(turnOffPhoneLinesObj)
+      }
     }
 
     closeSideDrawer()
@@ -276,7 +315,6 @@ export const ShowTelephoneLinesDrawerContent = forwardRef<
       //   return
       // }
     }
-    console.log('you want to play this announcement', announcementId)
   }
 
   const [dateBegin, setDateBegin] = useState(new Date())

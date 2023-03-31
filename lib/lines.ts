@@ -113,7 +113,7 @@ export async function setRecordMsg() {
 
 // Set offhour
 export async function setOffHour(offHourElement: any) {
-  let userUrlApi = apiUrl + '/offhour/set_offhour/'
+  let userUrlApi = apiUrl + '/offhour/set_offhour'
 
   try {
     const { data, status } = await axios.post(userUrlApi, offHourElement)
