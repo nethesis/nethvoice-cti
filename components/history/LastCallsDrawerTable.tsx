@@ -412,7 +412,7 @@ export const LastCallsDrawerTable = forwardRef<HTMLButtonElement, LastCallsDrawe
                             {formatDateLoc(call.time * 1000, 'PP')}
                           </div>
                           <div className='text-sm text-gray-500'>
-                            {getCallTimeToDisplay(call.time)}
+                            {getCallTimeToDisplay(call.time * 1000)}
                           </div>
                         </div>
                       </div>
