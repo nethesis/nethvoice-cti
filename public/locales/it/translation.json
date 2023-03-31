@@ -240,6 +240,9 @@
     "No lines available": "Nessuna linea disponibile",
     "There are no lines with the current filter": "Non ci sono linee con il filtro corrente",
     "No announcement available": "Nessun annuncio disponibile",
-    "There are no announcement with the current filter": "Non ci sono annunci con il filtro corrente"
+    "There are no announcement with the current filter": "Non ci sono annunci con il filtro corrente",
+    "Configuration status": "Stato configurazione",
+    "Active": "Attiva",
+    "Not active": "Non attiva"
   }
 }

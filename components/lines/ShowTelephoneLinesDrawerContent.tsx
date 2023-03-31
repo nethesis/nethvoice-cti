@@ -152,50 +152,61 @@ export const ShowTelephoneLinesDrawerContent = forwardRef<
       return
     }
   }
-
+  let editPhoneLinesObj = {}
   function saveEditTelephoneLines() {
-    let editPhoneLinesObj = {}
+    console.log("enabled", config.enabled)
+    editPhoneLinesObj = {
+      calledIdNum: config.number.toString(),
+      callerIdNum: config.callerNumber.toString(),
+      enabled: config.enabled
+    }
+    if (isConfigurationActive) {
+      switch (true) {
+        case selectedConfigurationTypology === 'audiomsg':
+          editPhoneLinesObj = {
+            action: selectedConfigurationTypology,
+            announcement_id: announcementSelected.toString(),
 
-    switch (true) {
-      case selectedConfigurationTypology === 'audiomsg':
-        editPhoneLinesObj = {
-          action: selectedConfigurationTypology,
-          announcement_id: announcementSelected.toString(),
-          calledIdNum: config.number.toString(),
-          callerIdNum: config.callerNumber.toString(),
-          enabled: changeTypeDate,
-        }
-        if (editPhoneLinesObj) {
-          setOffHourObject(editPhoneLinesObj)
-        }
+            enabled: changeTypeDate,
+            end_date: '',
+            start_date: '',
+          }
+          if (changeTypeDate === 'period') {
+          }
+          if (editPhoneLinesObj) {
+            setOffHourObject(editPhoneLinesObj)
+          }
 
-        break
+          break
 
-      case selectedConfigurationTypology === 'audiomsg + voicemail':
-        editPhoneLinesObj = {
-          action: selectedConfigurationTypology,
-          announcement_id: announcementSelected.toString(),
-          calledIdNum: config.number.toString(),
-          callerIdNum: config.callerNumber.toString(),
-          enabled: changeTypeDate,
-        }
+        case selectedConfigurationTypology === 'audiomsg + voicemail':
+          editPhoneLinesObj = {
+            action: selectedConfigurationTypology,
+            announcement_id: announcementSelected.toString(),
+            calledIdNum: config.number.toString(),
+            callerIdNum: config.callerNumber.toString(),
+            enabled: changeTypeDate,
+          }
 
-        break
+          break
 
-      case selectedConfigurationTypology === 'redirect':
-        editPhoneLinesObj = {
-          action: selectedConfigurationTypology,
-          announcement_id: announcementSelected.toString(),
-          calledIdNum: config.number.toString(),
-          callerIdNum: config.callerNumber.toString(),
-          enabled: changeTypeDate,
-        }
+        case selectedConfigurationTypology === 'redirect':
+          editPhoneLinesObj = {
+            action: selectedConfigurationTypology,
+            announcement_id: announcementSelected.toString(),
+            calledIdNum: config.number.toString(),
+            callerIdNum: config.callerNumber.toString(),
+            enabled: changeTypeDate,
+          }
 
-        break
+          break
 
-      default:
-        // default action if none of the cases match
-        break
+        default:
+          // default action if none of the cases match
+          break
+      }
+    } else {
+      console.log('Deactivate')
     }
 
     closeSideDrawer()
@@ -226,6 +237,7 @@ export const ShowTelephoneLinesDrawerContent = forwardRef<
 
   function changeAnnouncementSelect(event: any) {
     const listAnnouncementValue = event.target.value
+
     const selectedAnnouncement = announcement.find(
       (announcementItem: any) => announcementItem.id === parseInt(listAnnouncementValue),
     )
@@ -310,14 +322,16 @@ export const ShowTelephoneLinesDrawerContent = forwardRef<
               ))}
             </div>
           </fieldset>
-          {selectedType !== 'always' && (
+          {selectedType && selectedType !== 'always' && (
             <>
               <div className='flex mt-5 items-center justify-between'>
                 <span>{selectedType === 'specifyDay' ? t('Lines.Begin') : t('Lines.Date')}</span>
+
                 {selectedType === 'specifyDay' && (
                   <span className='ml-auto mr-auto'>{t('Lines.End')}</span>
                 )}
               </div>
+
               <div className='flex mt-3 items-center justify-between'>
                 <TextInput
                   type={selectedType === 'specifyDay' ? 'datetime-local' : 'date'}
@@ -801,7 +815,7 @@ export const ShowTelephoneLinesDrawerContent = forwardRef<
             type='submit'
             onClick={saveEditTelephoneLines}
             className='mb-4'
-            disabled={!isConfigurationActive ? true : false}
+            // disabled={!isConfigurationActive ? true : false}
           >
             <FontAwesomeIcon icon={faFloppyDisk} className='mr-2 h-4 w-4' />
             {t('Common.Save')}

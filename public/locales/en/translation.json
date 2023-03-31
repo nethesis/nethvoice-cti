@@ -348,6 +348,9 @@
     "No lines available": "No lines available",
     "There are no lines with the current filter": "There are no lines with the current filter",
     "No announcement available": "No lines available",
-    "There are no announcement with the current filter": "There are no lines with the current filter"
+    "There are no announcement with the current filter": "There are no lines with the current filter",
+    "Configuration status": "Configuration status",
+    "Active": "Active",
+    "Not active": "Not active"
   }
 }

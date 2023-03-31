@@ -3,7 +3,7 @@
 
 import { FC, ComponentProps, useState, useEffect, useMemo } from 'react'
 import { useTranslation } from 'react-i18next'
-import { Button, EmptyState, InlineNotification } from '../common'
+import { Button, EmptyState, InlineNotification, Badge } from '../common'
 import { isEmpty, debounce } from 'lodash'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { openShowTelephoneLinesDrawer, retrieveLines, PAGE_SIZE } from '../../lib/lines'
@@ -237,6 +237,14 @@ export const LinesView: FC<LinesViewProps> = ({ className }): JSX.Element => {
     openShowTelephoneLinesDrawer(objConfig)
   }
 
+  function getConfigurationStatus(lines: any) {
+    if (lines.offhour && lines.offhour.enabled !== 'never') {
+      return 'online'
+    } else {
+      return 'offline'
+    }
+  }
+
   return (
     <div className={classNames(className)}>
       <div className='flex flex-col flex-wrap xl:flex-row justify-between gap-x-4 xl:items-end'>
@@ -301,6 +309,12 @@ export const LinesView: FC<LinesViewProps> = ({ className }): JSX.Element => {
                           >
                             {t('Lines.Rule')}
                           </th>
+                          <th
+                            scope='col'
+                            className='px-3 py-3.5 text-left text-sm font-semibold text-gray-700 dark:text-gray-200'
+                          >
+                            {t('Lines.Configuration status')}
+                          </th>
                           <th scope='col' className='relative py-3.5 pl-3 pr-4 sm:pr-6'>
                             <span className='sr-only'>{t('Lines.Details')}</span>
                           </th>
@@ -311,7 +325,7 @@ export const LinesView: FC<LinesViewProps> = ({ className }): JSX.Element => {
                         {!isLinesLoaded &&
                           Array.from(Array(10)).map((e, i) => (
                             <tr key={i}>
-                              {Array.from(Array(6)).map((e, j) => (
+                              {Array.from(Array(7)).map((e, j) => (
                                 <td key={j}>
                                   <div className='px-4 py-6'>
                                     <div className='animate-pulse h-5 rounded bg-gray-300 dark:bg-gray-600'></div>
@@ -345,7 +359,7 @@ export const LinesView: FC<LinesViewProps> = ({ className }): JSX.Element => {
                               <td className='whitespace-nowrap px-3 py-4'>
                                 {getConfiguration(lines[key])}
                               </td>
-                              {/* Role */}
+                              {/* Rule */}
                               <td className='whitespace-nowrap px-3 py-4'>
                                 <div className='flex items-center'>
                                   <span>
@@ -354,6 +368,15 @@ export const LinesView: FC<LinesViewProps> = ({ className }): JSX.Element => {
                                       : '-'}
                                   </span>
                                 </div>
+                              </td>
+                              {/* Configuration status */}
+                              <td className='whitespace-nowrap px-3 py-4'>
+                                <Badge variant={getConfigurationStatus(lines[key])} rounded='full'>
+                                  {' '}
+                                  {lines[key].offhour && lines[key].offhour.enabled !== 'never'
+                                    ? t('Lines.Active')
+                                    : t('Lines.Not active')}
+                                </Badge>
                               </td>
                               {/* Show details */}
                               <td className='relative whitespace-nowrap py-4 pl-3 pr-4 text-right text-sm font-medium sm:pr-6'>
