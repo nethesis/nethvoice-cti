@@ -111,3 +111,10 @@ export function isMobileDevice() {
   }
   return /Android|iPhone|iPad|iPod|Windows Phone/i.test(navigator.userAgent)
 }
+
+/**
+ * Returns the input string after removing all spaces and special characters
+ */
+export function cleanString(s: string) {
+  return s.replace(/[^a-zA-Z0-9]/g, '')
+}

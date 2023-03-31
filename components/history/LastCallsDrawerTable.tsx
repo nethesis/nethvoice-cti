@@ -20,6 +20,8 @@ import { EmptyState, InlineNotification } from '../common'
 import { getOperatorByPhoneNumber } from '../../lib/operators'
 import { useTranslation } from 'react-i18next'
 import { Tooltip } from 'react-tooltip'
+import classNames from 'classnames'
+import { cleanString } from '../../lib/utils'
 
 export interface LastCallsDrawerTableProps extends ComponentPropsWithRef<'div'> {
   callType: string
@@ -292,14 +294,21 @@ export const LastCallsDrawerTable = forwardRef<HTMLButtonElement, LastCallsDrawe
 
       return (
         <div className='flex flex-col justify-center overflow-hidden'>
+          {/* name */}
           <div
-            title={
-              call.cnam !== '' ? call.cnam : call.ccompany !== '' ? call.ccompany : call.cnum || '-'
-            }
-            className='truncate'
+            className={classNames(
+              `tooltip-source-${cleanString(call.cnam || call.ccompany || call.cnum)}`,
+              'truncate',
+            )}
           >
-            {call.cnam !== '' ? call.cnam : call.ccompany !== '' ? call.ccompany : call.cnum || '-'}
+            {call.cnam || call.ccompany || call.cnum || '-'}
           </div>
+          <Tooltip
+            anchorSelect={`.tooltip-source-${cleanString(call.cnam || call.ccompany || call.cnum)}`}
+          >
+            {call.cnam || call.ccompany || call.cnum || '-'}
+          </Tooltip>
+          {/* phone number */}
           {call.cnum !== '' && (
             <div className='truncate text-gray-500 dark:text-gray-500'>{call.src}</div>
           )}
@@ -319,22 +328,23 @@ export const LastCallsDrawerTable = forwardRef<HTMLButtonElement, LastCallsDrawe
 
       return (
         <div className='flex flex-col justify-center overflow-hidden'>
+          {/* name */}
           <div
-            title={
-              call.dst_cnam !== ''
-                ? call.dst_cnam
-                : call.dst_ccompany !== ''
-                ? call.dst_ccompany
-                : call.dst || '-'
-            }
-            className='truncate'
+            className={classNames(
+              `tooltip-dest-${cleanString(call.dst_cnam || call.dst_ccompany || call.dst)}`,
+              'truncate',
+            )}
           >
-            {call.dst_cnam !== ''
-              ? call.dst_cnam
-              : call.dst_ccompany !== ''
-              ? call.dst_ccompany
-              : call.dst || '-'}
+            {call.dst_cnam || call.dst_ccompany || call.dst || '-'}
           </div>
+          <Tooltip
+            anchorSelect={`.tooltip-dest-${cleanString(
+              call.dst_cnam || call.dst_ccompany || call.dst,
+            )}`}
+          >
+            {call.dst_cnam || call.dst_ccompany || call.dst || '-'}
+          </Tooltip>
+          {/* phone number */}
           {(call.dst_cnam !== '' || call.dst_ccompany !== '') && (
             <div className='truncate text-gray-500 dark:text-gray-500'>{call.dst}</div>
           )}
