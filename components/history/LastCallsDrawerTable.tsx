@@ -291,17 +291,17 @@ export const LastCallsDrawerTable = forwardRef<HTMLButtonElement, LastCallsDrawe
       }
 
       return (
-        <div className='flex flex-col justify-center text-sm mt-4 text-gray-900 dark:text-gray-100 md:mt-0'>
+        <div className='flex flex-col justify-center overflow-hidden'>
           <div
             title={
               call.cnam !== '' ? call.cnam : call.ccompany !== '' ? call.ccompany : call.cnum || '-'
             }
-            className='truncate max-w-[6rem] md:max-w-[8rem] lg:max-w-[9rem] xl:max-w-[10rem]'
+            className='truncate'
           >
             {call.cnam !== '' ? call.cnam : call.ccompany !== '' ? call.ccompany : call.cnum || '-'}
           </div>
           {call.cnum !== '' && (
-            <div className='truncate text-sm text-gray-500 dark:text-gray-500'>{call.src}</div>
+            <div className='truncate text-gray-500 dark:text-gray-500'>{call.src}</div>
           )}
         </div>
       )
@@ -318,7 +318,7 @@ export const LastCallsDrawerTable = forwardRef<HTMLButtonElement, LastCallsDrawe
       }
 
       return (
-        <div className='flex flex-col justify-center mt-4 md:mt-0'>
+        <div className='flex flex-col justify-center overflow-hidden'>
           <div
             title={
               call.dst_cnam !== ''
@@ -327,7 +327,7 @@ export const LastCallsDrawerTable = forwardRef<HTMLButtonElement, LastCallsDrawe
                 ? call.dst_ccompany
                 : call.dst || '-'
             }
-            className='truncate text-sm max-w-[6rem] md:max-w-[8rem] lg:max-w-[9rem] xl:max-w-[10rem] text-gray-900 dark:text-gray-100'
+            className='truncate'
           >
             {call.dst_cnam !== ''
               ? call.dst_cnam
@@ -336,7 +336,7 @@ export const LastCallsDrawerTable = forwardRef<HTMLButtonElement, LastCallsDrawe
               : call.dst || '-'}
           </div>
           {(call.dst_cnam !== '' || call.dst_ccompany !== '') && (
-            <div className='truncate text-sm text-gray-500 dark:text-gray-500'>{call.dst}</div>
+            <div className='truncate text-gray-500 dark:text-gray-500'>{call.dst}</div>
           )}
         </div>
       )
@@ -386,47 +386,30 @@ export const LastCallsDrawerTable = forwardRef<HTMLButtonElement, LastCallsDrawe
                 lastCalls?.rows &&
                 lastCalls.rows.map((call: any, index: number) => (
                   <li key={index}>
-                    <div className='flex items-center py-4'>
-                      <div className='flex min-w-0 flex-1 items-center'>
-                        <div className='min-w-0 flex-1 2xl:grid 2xl:grid-cols-4 gap-4'>
-                          {/* Date column */}
-                          <div className='flex flex-col justify-center'>
-                            <div className=''>
-                              <div className='text-sm text-gray-900 dark:text-gray-100'>
-                                {formatDateLoc(call.time * 1000, 'PP')}
-                              </div>
-                              <div className='text-sm text-gray-500'>
-                                {getCallTimeToDisplay(call.time)}
-                              </div>
-                            </div>
+                    <div className='flex items-center justify-between gap-4 py-4 text-sm'>
+                      {/* Date column */}
+                      <div className='flex flex-col justify-center flex-shrink-0'>
+                        <div className=''>
+                          <div className='text-sm text-gray-900 dark:text-gray-100'>
+                            {formatDateLoc(call.time * 1000, 'PP')}
                           </div>
-
-                          <div className='mt-4 2xl:mt-0 flex col-span-3 flex-wrap gap-2 justify-between'>
-                            <div className='flex'>
-                              {/* Source column  */}
-                              {sourceColumn(call)}
-
-                              {/* Icon column */}
-                              <div className='mx-4 mt-4 md:mt-0 flex items-center 2xl:justify-center'>
-                                <FontAwesomeIcon
-                                  icon={faArrowRight}
-                                  className='h-4 w-4 flex-shrink-0 text-gray-500 dark:text-gray-600'
-                                  aria-hidden='true'
-                                />
-                              </div>
-
-                              {/* Destination column */}
-                              {destinationColumn(call)}
-                            </div>
-
-                            {/* icon user column */}
-                            <div className='flex items-center md:mt-0 2xl:justify-center'>
-                              {callType === 'user' && checkIconUser(call)}
-                              {callType === 'switchboard' && checkIconSwitchboard(call)}
-                            </div>
+                          <div className='text-sm text-gray-500'>
+                            {getCallTimeToDisplay(call.time)}
                           </div>
                         </div>
                       </div>
+                      {/* Source column  */}
+                      {sourceColumn(call)}
+                      {/* Arrow column */}
+                      <FontAwesomeIcon
+                        icon={faArrowRight}
+                        className='h-4 w-4 flex-shrink-0 text-gray-500 dark:text-gray-600'
+                        aria-hidden='true'
+                      />
+                      {/* Destination column */}
+                      {destinationColumn(call)}
+                      {callType === 'user' && checkIconUser(call)}
+                      {callType === 'switchboard' && checkIconSwitchboard(call)}
                     </div>
                   </li>
                 ))}
