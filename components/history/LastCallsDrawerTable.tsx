@@ -22,6 +22,7 @@ import { useTranslation } from 'react-i18next'
 import { Tooltip } from 'react-tooltip'
 import classNames from 'classnames'
 import { cleanString } from '../../lib/utils'
+import { isEqual } from 'lodash'
 
 export interface LastCallsDrawerTableProps extends ComponentPropsWithRef<'div'> {
   callType: string
@@ -42,6 +43,7 @@ export const LastCallsDrawerTable = forwardRef<HTMLButtonElement, LastCallsDrawe
     const [firstRender, setFirstRender]: any = useState(true)
     const { operators } = useSelector((state: RootState) => state.operators)
     const authStore = useSelector((state: RootState) => state.authentication)
+    const [previousPhoneNumbers, setPreviousPhoneNumbers]: any = useState([])
     // history API returns irrelevant calls that need to be filtered, pageSize specifies the total number of calls to retrieve from backend
     const pageSize = 100
 
@@ -99,6 +101,12 @@ export const LastCallsDrawerTable = forwardRef<HTMLButtonElement, LastCallsDrawe
     }, [firstRender, isLoaded, dateFrom, dateTo, callType])
 
     useEffect(() => {
+      if (isEqual(phoneNumbers, previousPhoneNumbers)) {
+        return
+      }
+      setPreviousPhoneNumbers(phoneNumbers)
+
+      // reload last calls
       setLoaded(false)
     }, [phoneNumbers])
 
