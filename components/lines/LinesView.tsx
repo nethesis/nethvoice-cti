@@ -205,6 +205,8 @@ export const LinesView: FC<LinesViewProps> = ({ className }): JSX.Element => {
         objConfig.action = lines.offhour.action
         if (lines.offhour.enabled === 'period') {
           objConfig.dateType = 'specifyDay'
+          objConfig.datebegin = lines.offhour.period.datebegin
+          objConfig.datebegin = lines.offhour.period.dateend
         } else if (lines.offhour.enabled === 'always') {
           objConfig.dateType = 'always'
         }

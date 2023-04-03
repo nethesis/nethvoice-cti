@@ -3,7 +3,7 @@
 
 import { ComponentPropsWithRef, forwardRef, useEffect, useState, useRef } from 'react'
 import classNames from 'classnames'
-import { SideDrawerCloseIcon, Switch } from '../common'
+import { SideDrawerCloseIcon, Switch, InlineNotification } from '../common'
 
 import { useTranslation } from 'react-i18next'
 import {
@@ -21,8 +21,9 @@ import {
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { callPhoneNumber, closeSideDrawer } from '../../lib/utils'
 import { TextInput, Button } from '../common'
-import { formatDateLoc } from '../../lib/dateTime'
+import { formatDateLoc, formatInTimeZoneLoc } from '../../lib/dateTime'
 import { setOffHour, getAnnouncements } from '../../lib/lines'
+import { format, parse } from 'date-fns'
 
 export interface ShowTelephoneLinesDrawerContentProps extends ComponentPropsWithRef<'div'> {
   config: any
@@ -38,8 +39,6 @@ export const ShowTelephoneLinesDrawerContent = forwardRef<
   )
   const [changeConfigurationRadio, setChangeConfigurationRadio] = useState('customize')
   const [announcementSelected, setAnnouncementSelected] = useState<any>(null)
-  const [dateBeginValue, setDateBeginValue] = useState('')
-  const [dateEndValue, setDateEndValue] = useState('')
   // const [selectedRulesInfo, setSelectedRulesInfo] = useState('ferie')
   const [selectedType, setSelectedType] = useState('')
   const [selectedConfigurationTypology, setSelectedConfigurationTypology] = useState('')
@@ -47,12 +46,131 @@ export const ShowTelephoneLinesDrawerContent = forwardRef<
 
   const [openPanel, setOpenPanel] = useState('')
 
+  //date function section
+  const [dateBeginToShow, setDateBeginToShow] = useState('')
+  const [dateBeginToShowNoHour, setDateBeginToShowNoHour] = useState('')
+  const [dateEndToShow, setDateEndToShow] = useState('')
+
+  //set actual date without hours
+  const actualDateToShow: any = formatDateLoc(new Date(), 'yyyy-MM-dd')
+  //set actual date with hours
+  const actualDateToShowWithHour: any = formatDateLoc(new Date(), "yyyy-MM-dd'T'HH:mm")
+
   useEffect(() => {
+    //check if the configuration is active
     setConfigurationActive(config.enabled !== 'never' ? true : false)
+    //set the dateType. It could be 'always' or 'period'
     setSelectedType(config.dateType)
+    //set the configuration typology. It could be 'audiomsg', 'audiomsg_voicemail' or 'redirect'
     setSelectedConfigurationTypology(config.action)
+
+    //If datebegin exist convert the dateType in yyyy-MM-dd'T'HH:mm in case of "specify a day"
+    //'yyyy-MM-dd' in case of 'only one day'
+    if (config.datebegin) {
+      const dateBeginObj = new Date(config.datebegin)
+      const formattedBeginDate = format(dateBeginObj, "yyyy-MM-dd'T'HH:mm")
+      const formattedBeginDateNoHour = format(dateBeginObj, 'yyyy-MM-dd')
+
+      setDateBeginToShow(formattedBeginDate)
+      setDateBeginToShowNoHour(formattedBeginDateNoHour)
+    } else {
+      //if datebegin doesn't exist set both the date to the actual date
+      setDateBeginToShow(actualDateToShowWithHour)
+      setDateBeginToShowNoHour(actualDateToShow)
+    }
+    if (config.dateend) {
+      const dateEndObj = new Date(config.dateend)
+      const formattedEndDate = format(dateEndObj, "yyyy-MM-dd'T'HH:mm")
+      setDateEndToShow(formattedEndDate)
+    } else {
+      setDateEndToShow(actualDateToShowWithHour)
+    }
+
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [])
+
+  const dateBeginRef = useRef() as React.MutableRefObject<HTMLInputElement>
+  const dateEndRef = useRef() as React.MutableRefObject<HTMLInputElement>
+
+  const changeDateBegin = () => {
+    //Get the date from the input
+    const dateBegin = dateBeginRef.current.value
+    setDateBeginToShow(dateBegin)
+  }
+
+  const changeDateBeginNoHours = () => {
+    //Get the date from the input and remove hours and minute
+    const dateBegin = dateBeginRef.current.value
+    const dateBeginNoHour = new Date(dateBegin)
+    const formattedBeginDateNoHour = format(dateBeginNoHour, 'yyyy-MM-dd')
+    setDateBeginToShowNoHour(formattedBeginDateNoHour)
+  }
+
+  const changeDateEnd = () => {
+    //Get the date from the input
+    const dateEnd = dateEndRef.current.value
+    setDateEndToShow(dateEnd)
+  }
+
+  const [changeTypeDate, setChangeTypeDate] = useState('')
+
+  function dateInputFunction() {
+    return (
+      <div className='flex mt-3 items-center justify-between'>
+        {selectedType === 'specifyDay' ? (
+          <TextInput
+            type={'datetime-local'}
+            placeholder='Select date start'
+            className='max-w-sm mr-4'
+            id='meeting-time'
+            name='meeting-time'
+            ref={dateBeginRef}
+            onChange={changeDateBegin}
+            value={dateBeginToShow}
+          />
+        ) : (
+          <TextInput
+            type={'date'}
+            placeholder='Select date start'
+            className='max-w-sm mr-4'
+            id='meeting-time'
+            name='meeting-time'
+            ref={dateBeginRef}
+            onChange={changeDateBeginNoHours}
+            // value={dateBegin.toISOString().slice(0, 10)}
+            value={dateBeginToShowNoHour}
+          />
+        )}
+
+        {selectedType === 'specifyDay' ? (
+          <TextInput
+            type='datetime-local'
+            placeholder='Select date end'
+            className='max-w-sm'
+            id='meeting-time'
+            name='meeting-time'
+            ref={dateEndRef}
+            onChange={changeDateEnd}
+            // value={dateEnd.toISOString().slice(0, -8)}
+            value={dateEndToShow}
+          />
+        ) : (
+          <TextInput
+            type='datetime-local'
+            placeholder=''
+            className='max-w-sm invisible'
+            id='meeting-time'
+            name='meeting-time'
+            ref={dateEndRef}
+            onChange={changeDateEnd}
+            // value={dateEnd.toISOString().slice(0, -8)}
+            value={dateEndToShow}
+          />
+        )}
+      </div>
+    )
+  }
+  //end of all the date function operations
 
   // const togglePanel = (id: string) => {
   //   setOpenPanel(openPanel === id ? '' : id)
@@ -62,8 +180,6 @@ export const ShowTelephoneLinesDrawerContent = forwardRef<
     { id: 'customize', value: t('Lines.Customize') },
     // { id: 'rule', value: t('Lines.Choose rule') },
   ]
-
-  const actualDateWithoutHour: any = formatDateLoc(new Date(), 'yyyy-MM-dd')
 
   const contactTypeFilter = {
     id: 'contactTypeFilter',
@@ -85,8 +201,6 @@ export const ShowTelephoneLinesDrawerContent = forwardRef<
     ],
   }
 
-  const [changeTypeDate, setChangeTypeDate] = useState('period')
-  const actualEndDate = new Date().toISOString().slice(0, 11) + '22:00'
   const [textFilterVoiceMail, setTextFilterVoiceMail] = useState(
     config.voicemail_id ? config.voicemail_id : '',
   )
@@ -110,18 +224,6 @@ export const ShowTelephoneLinesDrawerContent = forwardRef<
 
   const toggleConfigurationActive = () => {
     setConfigurationActive(!isConfigurationActive)
-  }
-
-  const changeDateBegin = () => {
-    //Get the date from the input
-    const dateBegin = dateBeginRef.current.value
-    setDateBeginValue(dateBegin)
-  }
-
-  const changeDateEnd = () => {
-    //Get the date from the input
-    const dateEnd = dateEndRef.current.value
-    setDateEndValue(dateEnd)
   }
 
   function changeConfiguration(event: any) {
@@ -155,80 +257,125 @@ export const ShowTelephoneLinesDrawerContent = forwardRef<
     }
   }
 
+  function convertDateSpecifyFormat() {
+    const dateBeginConversion = parse(dateBeginToShow, "yyyy-MM-dd'T'HH:mm", new Date())
+    const dateBeginConversionIso = dateBeginConversion.toISOString()
+    const dateEndConversion = parse(dateEndToShow, "yyyy-MM-dd'T'HH:mm", new Date())
+    const dateEndConversionIso = dateEndConversion.toISOString()
+
+    return {
+      dateBeginToSendApi: dateBeginConversionIso,
+      dateEndToSendApi: dateEndConversionIso,
+    }
+  }
+
+  function convertDateOnlyDayFormat() {
+    const dateEndConversionNoHour = `${dateBeginToShowNoHour}T23:59:59.000Z`
+
+    const dateBeginConversion = formatInTimeZoneLoc(
+      new Date(dateBeginToShowNoHour),
+      "yyyy-MM-dd'T'HH:mm:ss.SSS'Z'",
+      'UTC',
+    )
+
+    const dateEndConversion = formatInTimeZoneLoc(
+      new Date(dateEndConversionNoHour),
+      "yyyy-MM-dd'T'HH:mm:ss.SSS'Z'",
+      'UTC',
+    )
+
+    return {
+      dateBegin: dateBeginConversion,
+      dateEnd: dateEndConversion,
+    }
+  }
+
+  console.log('announcement', announcementSelected)
   function saveEditTelephoneLines() {
     if (isConfigurationActive) {
+      let objectToSendApi = {
+        action: selectedConfigurationTypology,
+        announcement_id: selectedConfigurationTypology !== 'redirect' ? '' : null,
+        calledIdNum: config.number.toString(),
+        callerIdNum: config.callerNumber.toString(),
+        enabled: '',
+        end_date: changeTypeDate === 'period' ? '' : null,
+        start_date: changeTypeDate === 'period' ? '' : null,
+        voicemail_id: selectedConfigurationTypology === 'audiomsg_voicemail' ? '' : null,
+        redirect_to: selectedConfigurationTypology === 'redirect' ? '' : null,
+      }
       switch (true) {
         case selectedConfigurationTypology === 'audiomsg':
-          let setOffHourAudiomsg = {
-            calledIdNum: config.number.toString(),
-            callerIdNum: config.callerNumber.toString(),
-            enabled: '',
-            action: selectedConfigurationTypology,
-            announcement_id: announcementSelected.toString(),
+          if (announcementSelected) {
+            objectToSendApi.announcement_id = announcementSelected.toString()
           }
 
           if (changeTypeDate === 'period') {
-            setOffHourAudiomsg.enabled = 'period'
-            // setOffHourAudiomsg = {
-
-            //   end_date: '',
-            //   start_date: '',
-            // }
+            objectToSendApi.enabled = 'period'
+            if (selectedType === 'onlyOneDay') {
+              const { dateBegin, dateEnd } = convertDateOnlyDayFormat()
+              objectToSendApi.end_date = dateBegin
+              objectToSendApi.start_date = dateEnd
+            } else {
+              const { dateBeginToSendApi, dateEndToSendApi } = convertDateSpecifyFormat()
+              objectToSendApi.end_date = dateBeginToSendApi
+              objectToSendApi.start_date = dateEndToSendApi
+            }
           } else {
-            setOffHourAudiomsg.enabled = 'always'
+            objectToSendApi.enabled = 'always'
           }
-          if (setOffHourAudiomsg) {
-            setOffHourObject(setOffHourAudiomsg)
+          if (objectToSendApi) {
+            setOffHourObject(objectToSendApi)
           }
           break
 
         case selectedConfigurationTypology === 'audiomsg_voicemail':
-          let setOffHourVoicemail = {
-            calledIdNum: config.number.toString(),
-            callerIdNum: config.callerNumber.toString(),
-            enabled: '',
-            action: selectedConfigurationTypology,
-            announcement_id: announcementSelected.toString(),
-            voicemail_id: textFilterVoiceMail,
+          if (textFilterVoiceMail) {
+            objectToSendApi.voicemail_id = textFilterVoiceMail
           }
-
+          if (announcementSelected) {
+            objectToSendApi.announcement_id = announcementSelected.toString()
+          }
           if (changeTypeDate === 'period') {
-            setOffHourVoicemail.enabled = 'period'
-            // setOffHourVoicemail = {
-
-            //   end_date: '',
-            //   start_date: '',
-            // }
+            objectToSendApi.enabled = 'period'
+            if (selectedType === 'onlyOneDay') {
+              const { dateBegin, dateEnd } = convertDateOnlyDayFormat()
+              objectToSendApi.end_date = dateBegin
+              objectToSendApi.start_date = dateEnd
+            } else {
+              const { dateBeginToSendApi, dateEndToSendApi } = convertDateSpecifyFormat()
+              objectToSendApi.end_date = dateBeginToSendApi
+              objectToSendApi.start_date = dateEndToSendApi
+            }
           } else {
-            setOffHourVoicemail.enabled = 'always'
+            objectToSendApi.enabled = 'always'
           }
-          if (setOffHourVoicemail) {
-            setOffHourObject(setOffHourVoicemail)
+          if (objectToSendApi && objectToSendApi.voicemail_id && announcementSelected !== null) {
+            setOffHourObject(objectToSendApi)
           }
 
           break
 
         case selectedConfigurationTypology === 'redirect':
-          let setOffHourRedirect = {
-            calledIdNum: config.number.toString(),
-            callerIdNum: config.callerNumber.toString(),
-            enabled: '',
-            action: selectedConfigurationTypology,
-            redirect_to: textFilterRedirect,
+          if (textFilterRedirect) {
+            objectToSendApi.redirect_to = textFilterRedirect
           }
-
           if (changeTypeDate === 'period') {
-            setOffHourRedirect.enabled = 'period'
-            // setOffHourRedirect = {
-
-            //   end_date: '',
-            //   start_date: '',
-            // }
+            objectToSendApi.enabled = 'period'
+            if (selectedType === 'onlyOneDay') {
+              const { dateBegin, dateEnd } = convertDateOnlyDayFormat()
+              objectToSendApi.end_date = dateBegin
+              objectToSendApi.start_date = dateEnd
+            } else {
+              const { dateBeginToSendApi, dateEndToSendApi } = convertDateSpecifyFormat()
+              objectToSendApi.end_date = dateBeginToSendApi
+              objectToSendApi.start_date = dateEndToSendApi
+            }
           } else {
-            setOffHourRedirect.enabled = 'always'
+            objectToSendApi.enabled = 'always'
           }
-          if (setOffHourRedirect) {
-            setOffHourObject(setOffHourRedirect)
+          if (objectToSendApi && objectToSendApi.redirect_to) {
+            setOffHourObject(objectToSendApi)
           }
 
           break
@@ -369,43 +516,7 @@ export const ShowTelephoneLinesDrawerContent = forwardRef<
                   <span className='ml-auto mr-auto'>{t('Lines.End')}</span>
                 )}
               </div>
-
-              <div className='flex mt-3 items-center justify-between'>
-                <TextInput
-                  type={selectedType === 'specifyDay' ? 'datetime-local' : 'date'}
-                  placeholder='Select date start'
-                  className='max-w-sm mr-4'
-                  id='meeting-time'
-                  name='meeting-time'
-                  ref={dateBeginRef}
-                  onChange={changeDateBegin}
-                  value={dateBegin.toISOString().slice(0, selectedType === 'specifyDay' ? -8 : 10)}
-                />
-
-                {selectedType === 'specifyDay' ? (
-                  <TextInput
-                    type='datetime-local'
-                    placeholder='Select date end'
-                    className='max-w-sm'
-                    id='meeting-time'
-                    name='meeting-time'
-                    ref={dateEndRef}
-                    onChange={changeDateEnd}
-                    value={dateEnd.toISOString().slice(0, -8)}
-                  />
-                ) : (
-                  <TextInput
-                    type='datetime-local'
-                    placeholder=''
-                    className='max-w-sm invisible'
-                    id='meeting-time'
-                    name='meeting-time'
-                    ref={dateEndRef}
-                    onChange={changeDateEnd}
-                    value={dateEnd.toISOString().slice(0, -8)}
-                  />
-                )}
-              </div>
+              {dateInputFunction()}
             </>
           )}
         </div>
@@ -712,9 +823,6 @@ export const ShowTelephoneLinesDrawerContent = forwardRef<
 
   //Get value from date input
 
-  const dateBeginRef = useRef() as React.MutableRefObject<HTMLInputElement>
-  const dateEndRef = useRef() as React.MutableRefObject<HTMLInputElement>
-
   return (
     <>
       {/* Drawer title */}
@@ -844,6 +952,14 @@ export const ShowTelephoneLinesDrawerContent = forwardRef<
               <>{selectAnnouncementVoicemail()}</>
             )}
             {selectedConfigurationTypology === 'redirect' && <>{selectForward()}</>}
+            {/* Upload error */}
+            {/* {missingDataError && (
+              <InlineNotification
+                title={t('Lines.Wrong file type')}
+                type='error'
+                className='mt-2'
+              ></InlineNotification>
+            )} */}
           </>
         )}
         {/* fixed bottom-0 */}
