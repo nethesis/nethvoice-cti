@@ -14,7 +14,6 @@ export const DEFAULT_STATUS_FILTER = 'all'
 export const DEFAULT_SORT_BY = 'favorites'
 export const DEFAULT_LAYOUT = 'standard'
 export const AVATARS_EXPIRATION_MILLIS = 24 * 60 * 60 * 1000 // 24 hours
-export const INFINITE_SCROLL_OPERATORS_PAGE_SIZE = 30
 
 export async function getUserEndpointsAll() {
   try {
@@ -303,4 +302,13 @@ export const getOperatorByPhoneNumber = (phoneNumber: string, operators: any) =>
   return Object.values(operators).find((operator: any) =>
     operator.endpoints.extension.find((ext: any) => ext.id === phoneNumber),
   )
+}
+
+export const getInfiniteScrollOperatorsPageSize = () => {
+  let pageSize = 30
+
+  if (typeof window !== 'undefined' && window.innerHeight > 1000) {
+    pageSize = 100
+  }
+  return pageSize
 }

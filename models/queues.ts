@@ -3,7 +3,7 @@
 
 import { createModel } from '@rematch/core'
 import type { RootModel } from '.'
-import { INFINITE_SCROLL_OPERATORS_PAGE_SIZE } from '../lib/operators'
+import { INFINITE_SCROLL_QUEUE_OPERATORS_PAGE_SIZE } from '../lib/queuesLib'
 import { sortByLoggedStatus } from '../lib/queuesLib'
 import { sortByProperty } from '../lib/utils'
 
@@ -148,9 +148,9 @@ export const queues = createModel<RootModel>()({
       const allQueueOperators = Object.values(queueData.members).sort(sortByLoggedStatus)
 
       queueData.infiniteScrollOperators = {
-        operators: allQueueOperators.slice(0, INFINITE_SCROLL_OPERATORS_PAGE_SIZE),
-        hasMore: INFINITE_SCROLL_OPERATORS_PAGE_SIZE < allQueueOperators.length,
-        lastIndex: INFINITE_SCROLL_OPERATORS_PAGE_SIZE,
+        operators: allQueueOperators.slice(0, INFINITE_SCROLL_QUEUE_OPERATORS_PAGE_SIZE),
+        hasMore: INFINITE_SCROLL_QUEUE_OPERATORS_PAGE_SIZE < allQueueOperators.length,
+        lastIndex: INFINITE_SCROLL_QUEUE_OPERATORS_PAGE_SIZE,
       }
       queueData.allQueueOperators = allQueueOperators
 
@@ -160,7 +160,7 @@ export const queues = createModel<RootModel>()({
     showMoreInfiniteScrollOperators: (state, queueId) => {
       const queueData = state.queues[queueId]
       const infiniteScrollOperators = queueData.infiniteScrollOperators
-      const lastIndex = infiniteScrollOperators.lastIndex + INFINITE_SCROLL_OPERATORS_PAGE_SIZE
+      const lastIndex = infiniteScrollOperators.lastIndex + INFINITE_SCROLL_QUEUE_OPERATORS_PAGE_SIZE
       infiniteScrollOperators.operators = queueData.allQueueOperators.slice(0, lastIndex)
       infiniteScrollOperators.hasMore = lastIndex < queueData.members.length
       return state
@@ -181,9 +181,9 @@ export const queues = createModel<RootModel>()({
         queueData.allQueueOperators = Object.values(queueData.members).sort(sortByLoggedStatus)
 
         queueData.infiniteScrollOperators = {
-          operators: queueData.allQueueOperators.slice(0, INFINITE_SCROLL_OPERATORS_PAGE_SIZE),
-          hasMore: INFINITE_SCROLL_OPERATORS_PAGE_SIZE < queueData.allQueueOperators.length,
-          lastIndex: INFINITE_SCROLL_OPERATORS_PAGE_SIZE,
+          operators: queueData.allQueueOperators.slice(0, INFINITE_SCROLL_QUEUE_OPERATORS_PAGE_SIZE),
+          hasMore: INFINITE_SCROLL_QUEUE_OPERATORS_PAGE_SIZE < queueData.allQueueOperators.length,
+          lastIndex: INFINITE_SCROLL_QUEUE_OPERATORS_PAGE_SIZE,
         }
         state.queues[queueData.queue] = queueData
       }
