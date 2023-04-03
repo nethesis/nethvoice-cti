@@ -309,14 +309,15 @@ export const LinesView: FC<LinesViewProps> = ({ className }): JSX.Element => {
                             scope='col'
                             className='px-3 py-3.5 text-left text-sm font-semibold text-gray-700 dark:text-gray-200'
                           >
-                            {t('Lines.Rule')}
+                            {t('Lines.Configuration status')}
                           </th>
-                          <th
+                          {/* <th
                             scope='col'
                             className='px-3 py-3.5 text-left text-sm font-semibold text-gray-700 dark:text-gray-200'
                           >
-                            {t('Lines.Configuration status')}
-                          </th>
+                            {t('Lines.Rule')}
+                          </th> */}
+
                           <th scope='col' className='relative py-3.5 pl-3 pr-4 sm:pr-6'>
                             <span className='sr-only'>{t('Lines.Details')}</span>
                           </th>
@@ -361,16 +362,6 @@ export const LinesView: FC<LinesViewProps> = ({ className }): JSX.Element => {
                               <td className='whitespace-nowrap px-3 py-4'>
                                 {getConfiguration(lines[key])}
                               </td>
-                              {/* Rule */}
-                              <td className='whitespace-nowrap px-3 py-4'>
-                                <div className='flex items-center'>
-                                  <span>
-                                    {lines[key].offhour && lines[key].offhour.audiomsg
-                                      ? lines[key].offhour.audiomsg.description
-                                      : '-'}
-                                  </span>
-                                </div>
-                              </td>
                               {/* Configuration status */}
                               <td className='whitespace-nowrap px-3 py-4'>
                                 <Badge variant={getConfigurationStatus(lines[key])} rounded='full'>
@@ -380,6 +371,17 @@ export const LinesView: FC<LinesViewProps> = ({ className }): JSX.Element => {
                                     : t('Lines.Not active')}
                                 </Badge>
                               </td>
+                              {/* Rule */}
+                              {/* <td className='whitespace-nowrap px-3 py-4'>
+                                <div className='flex items-center'>
+                                  <span>
+                                    {lines[key].offhour && lines[key].offhour.audiomsg
+                                      ? lines[key].offhour.audiomsg.description
+                                      : '-'}
+                                  </span>
+                                </div>
+                              </td> */}
+
                               {/* Show details */}
                               <td className='relative whitespace-nowrap py-4 pl-3 pr-4 text-right text-sm font-medium sm:pr-6'>
                                 <FontAwesomeIcon

@@ -56,6 +56,18 @@ export const ShowTelephoneLinesDrawerContent = forwardRef<
   //set actual date with hours
   const actualDateToShowWithHour: any = formatDateLoc(new Date(), "yyyy-MM-dd'T'HH:mm")
 
+  function changeAnnouncementSelect(event: any) {
+    const listAnnouncementValue = event.target.value
+
+    const selectedAnnouncement = announcement.find(
+      (announcementItem: any) => announcementItem.id === parseInt(listAnnouncementValue),
+    )
+    if (selectedAnnouncement) {
+      setSelectedAnnouncementInfo(selectedAnnouncement)
+      setAnnouncementSelected(listAnnouncementValue)
+    }
+  }
+
   useEffect(() => {
     //check if the configuration is active
     setConfigurationActive(config.enabled !== 'never' ? true : false)
@@ -63,6 +75,7 @@ export const ShowTelephoneLinesDrawerContent = forwardRef<
     setSelectedType(config.dateType)
     //set the configuration typology. It could be 'audiomsg', 'audiomsg_voicemail' or 'redirect'
     setSelectedConfigurationTypology(config.action)
+    setAnnouncementSelected(config.announcement_id)
 
     //If datebegin exist convert the dateType in yyyy-MM-dd'T'HH:mm in case of "specify a day"
     //'yyyy-MM-dd' in case of 'only one day'
@@ -290,7 +303,6 @@ export const ShowTelephoneLinesDrawerContent = forwardRef<
     }
   }
 
-  console.log('announcement', announcementSelected)
   function saveEditTelephoneLines() {
     if (isConfigurationActive) {
       let objectToSendApi = {
@@ -421,18 +433,6 @@ export const ShowTelephoneLinesDrawerContent = forwardRef<
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [isAnnouncementLoaded])
 
-  function changeAnnouncementSelect(event: any) {
-    const listAnnouncementValue = event.target.value
-
-    const selectedAnnouncement = announcement.find(
-      (announcementItem: any) => announcementItem.id === parseInt(listAnnouncementValue),
-    )
-    if (selectedAnnouncement) {
-      setSelectedAnnouncementInfo(selectedAnnouncement)
-      setAnnouncementSelected(listAnnouncementValue)
-    }
-  }
-
   function changeTextFilterVoiceMail(event: any) {
     const newTextFilter = event.target.value
     setTextFilterVoiceMail(newTextFilter)
@@ -548,9 +548,10 @@ export const ShowTelephoneLinesDrawerContent = forwardRef<
               id='types'
               name='types'
               className='block w-full rounded-md py-2 pl-3 pr-10 text-base focus:outline-none sm:text-sm border-gray-300 focus:border-primary focus:ring-primary dark:border-gray-600 dark:focus:border-primary dark:focus:ring-primary'
-              defaultValue={'-'}
+              value={announcementSelected || ''}
               onChange={changeAnnouncementSelect}
             >
+              {!announcementSelected && <option value=''>{t('Lines.Announcement select')}</option>}
               {Object.keys(announcement).map((key) => (
                 <option key={key} value={announcement[key].id}>
                   {announcement[key].description}
@@ -604,9 +605,12 @@ export const ShowTelephoneLinesDrawerContent = forwardRef<
                 id='types'
                 name='types'
                 className='block w-full rounded-md py-2 pl-3 pr-10 text-base focus:outline-none sm:text-sm border-gray-300 focus:border-primary focus:ring-primary dark:border-gray-600 dark:focus:border-primary dark:focus:ring-primary'
-                defaultValue='-'
+                value={announcementSelected || ''}
                 onChange={changeAnnouncementSelect}
               >
+                {!announcementSelected && (
+                  <option value=''>{t('Lines.Announcement select')}</option>
+                )}
                 {Object.keys(announcement).map((key) => (
                   <option key={key} value={announcement[key].id}>
                     {announcement[key].description}

@@ -268,7 +268,7 @@ export const ShowAddAnnouncementDrawerContent = forwardRef<
                       <span className='font-semibold text-gray-900 dark:text-gray-100'>
                         {selectedFile.name}
                       </span>
-                      <span className='text-sm'>{selectedFile.size}</span>
+                      <span className='text-sm'>{(selectedFile.size / 1024).toFixed(2)} KB</span>
                     </div>
                   </div>
                   <div className='ml-4 flex-shrink-0'>

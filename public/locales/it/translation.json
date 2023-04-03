@@ -243,6 +243,7 @@
     "There are no announcement with the current filter": "Non ci sono annunci con il filtro corrente",
     "Configuration status": "Stato configurazione",
     "Active": "Attiva",
-    "Not active": "Non attiva"
+    "Not active": "Non attiva",
+    "Announcement select": "Seleziona annuncio"
   }
 }

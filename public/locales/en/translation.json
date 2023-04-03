@@ -351,6 +351,7 @@
     "There are no announcement with the current filter": "There are no lines with the current filter",
     "Configuration status": "Configuration status",
     "Active": "Active",
-    "Not active": "Not active"
+    "Not active": "Not active",
+    "Announcement select": "Announcement select"
   }
 }
