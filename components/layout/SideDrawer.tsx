@@ -39,7 +39,7 @@ export const SideDrawer: FC<SideDrawerProps> = ({ isShown, contentType, config, 
               leaveFrom='translate-x-0'
               leaveTo='translate-x-full'
             >
-              <Dialog.Panel className='relative flex w-80 md:w-96 lg:w-[33vw] 2xl:w-[30vw] flex-1 flex-col shadow-[0px_20px_40px_0_rgba(0,0,0,0.2)] bg-white dark:bg-gray-900 dark:shadow-[0px_20px_40px_0_rgba(0,0,0,0.6)]'>
+              <Dialog.Panel className='relative flex w-[80vw] md:w-[60vw] lg:w-[40vw] 2xl:w-[33vw] 3xl:w-[36rem] flex-1 flex-col shadow-[0px_20px_40px_0_rgba(0,0,0,0.2)] bg-white dark:bg-gray-900 dark:shadow-[0px_20px_40px_0_rgba(0,0,0,0.6)]'>
                 <div className='h-0 flex-1 overflow-y-auto'>
                   <nav className='flex h-full flex-col'>
                     <div className='overflow-x-hidden relative'>

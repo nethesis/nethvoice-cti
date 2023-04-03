@@ -21,7 +21,7 @@ function checkTitle(config: any) {
         <div className='flex-shrink-0 mr-4'>
           <Avatar size='large' placeholderType='person' />
         </div>
-        <div className='flex-shrink-0 mr-4'>
+        <div>
           <h2 className='text-xl font-medium text-gray-700 dark:text-gray-200'>{config.name}</h2>
         </div>
       </div>
