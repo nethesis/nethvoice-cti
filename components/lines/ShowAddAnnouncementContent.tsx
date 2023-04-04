@@ -1,7 +1,15 @@
 // Copyright (C) 2023 Nethesis S.r.l.
 // SPDX-License-Identifier: AGPL-3.0-or-later
 
-import { ComponentPropsWithRef, forwardRef, useEffect, useState, useRef } from 'react'
+import {
+  ComponentPropsWithRef,
+  forwardRef,
+  useEffect,
+  useState,
+  useRef,
+  createRef,
+  RefObject,
+} from 'react'
 import classNames from 'classnames'
 import { InlineNotification, SideDrawerCloseIcon } from '../common'
 
@@ -15,9 +23,9 @@ import {
 } from '@nethesis/nethesis-solid-svg-icons'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { callPhoneNumber, closeSideDrawer } from '../../lib/utils'
-import { TextInput, Button } from '../common'
+import { TextInput, Button, Modal } from '../common'
 import { isEmpty } from 'lodash'
-import { uploadAudioMsg } from '../../lib/lines'
+import { uploadAudioMsg, reloadAnnouncement, enableMsg } from '../../lib/lines'
 export interface ShowAddAnnouncementContentProps extends ComponentPropsWithRef<'div'> {
   config: any
 }
@@ -88,8 +96,11 @@ export const ShowAddAnnouncementDrawerContent = forwardRef<
       reader.onloadend = () => {
         setSelectedFileBase64(reader.result)
       }
+      if (errorUpload) {
+        setErrorUpload(false)
+      }
     } else {
-      console.log('Invalid file format. Only audio files are allowed.')
+      setErrorUpload(true)
     }
   }
 
@@ -119,6 +130,7 @@ export const ShowAddAnnouncementDrawerContent = forwardRef<
         }
       }
     }
+    reloadAnnouncement()
     closeSideDrawer()
   }
 
@@ -129,6 +141,58 @@ export const ShowAddAnnouncementDrawerContent = forwardRef<
 
   function recordAudioAnnouncement() {
     //TO DO RECORD FILE AUDIO
+  }
+
+  function formatFileSize(sizeInBytes: any) {
+    const units = ['B', 'KB', 'MB', 'GB', 'TB']
+    let size = sizeInBytes
+    let unitIndex = 0
+
+    while (size >= 1024 && unitIndex < units.length - 1) {
+      size /= 1024
+      unitIndex++
+    }
+
+    const sizeFormatted = size.toFixed(2)
+    const unit = units[unitIndex]
+
+    return `${sizeFormatted} ${unit}`
+  }
+
+  const [isRecordingActive, setIsRecordingActive] = useState(false)
+
+  const handleSubmit = (e: React.FormEvent) => {
+    e.preventDefault()
+    setIsRecordingActive(false)
+  }
+  const descriptionModalInputRef: RefObject<HTMLInputElement> = createRef()
+
+  const closedModalSaved = () => {
+    setIsRecordingActive(false)
+    enableAnnouncement()
+  }
+
+  const [modalAnnouncementType, setModalAnnouncementType] = useState('')
+  function changeAnnouncementModalTypeSelected(event: any) {
+    const radioButtonTypeSelected = event.target.id
+    setModalAnnouncementType(radioButtonTypeSelected)
+  }
+
+  const [inputTextModal, setInputTextModal] = useState('')
+  const [enableAnnouncementError, setEnableAnnouncementError] = useState('')
+
+  const enableAnnouncement = async () => {
+    let objectEnableAnnouncement = {
+      description: inputTextModal,
+      privacy: modalAnnouncementType,
+      tempFIleName: '',
+    }
+    try {
+      await enableMsg(objectEnableAnnouncement)
+    } catch (error) {
+      setEnableAnnouncementError('Cannot enable announcement')
+      return
+    }
   }
 
   return (
@@ -237,17 +301,19 @@ export const ShowAddAnnouncementDrawerContent = forwardRef<
                 />
               </label>
             </div>
-            <span className='flex justify-center py-6'>{t('Common.or')}</span>
-            <div className='flex justify-center'>
-              <Button variant='white'>
-                <FontAwesomeIcon
-                  icon={faMicrophone}
-                  className='h-4 w-4 mr-2 text-gray-500 dark:text-gray-500'
-                  aria-hidden='true'
-                  onClick={() => recordAudioAnnouncement()}
-                />{' '}
-                {t('Lines.Record now')}
-              </Button>
+            <div className='flex items-center pt-2'>
+              <span className='flex justify-center py-6'>{t('Common.or')}</span>
+              <div className='ml-8'>
+                <Button variant='white'>
+                  <FontAwesomeIcon
+                    icon={faMicrophone}
+                    className='h-4 w-4 mr-2 text-gray-500 dark:text-gray-500'
+                    aria-hidden='true'
+                    onClick={() => recordAudioAnnouncement()}
+                  />{' '}
+                  {t('Lines.Record now')}
+                </Button>
+              </div>
             </div>
           </>
         ) : (
@@ -268,7 +334,7 @@ export const ShowAddAnnouncementDrawerContent = forwardRef<
                       <span className='font-semibold text-gray-900 dark:text-gray-100'>
                         {selectedFile.name}
                       </span>
-                      <span className='text-sm'>{(selectedFile.size / 1024).toFixed(2)} KB</span>
+                      <span className='text-sm'>{formatFileSize(selectedFile.size)}</span>
                     </div>
                   </div>
                   <div className='ml-4 flex-shrink-0'>
@@ -303,6 +369,73 @@ export const ShowAddAnnouncementDrawerContent = forwardRef<
           </Button>
         </div>
       </div>
+      <Modal
+        show={isRecordingActive}
+        focus={descriptionModalInputRef}
+        onClose={() => setIsRecordingActive(false)}
+      >
+        <form onSubmit={handleSubmit}>
+          <Modal.Content>
+            <div className='mt-3 text-center sm:mt-0 sm:text-left w-full'>
+              <h3 className='text-lg font-medium leading-6 text-center text-gray-900 dark:text-gray-100'>
+                {t('Lines.Enter announcement information')}
+              </h3>
+              <div className='mt-3 flex flex-col gap-2'>
+                <TextInput
+                  placeholder={t('Lines.Description') || ''}
+                  name='number'
+                  ref={descriptionModalInputRef}
+                  value={inputTextModal}
+                  onChange={(event) => setInputTextModal(event.target.value)}
+                />
+              </div>
+              {/* Privacy name section */}
+              <div className='flex items-center justify-between mt-3'>
+                <h4 className='text-md font-medium text-gray-700 dark:text-gray-200'>
+                  {t('Lines.Privacy')}
+                </h4>
+              </div>
+              {/* Radio button for privacy selection */}
+              <fieldset className='mt-2'>
+                <legend className='sr-only'>Announcement type</legend>
+                <div className='space-y-4 sm:flex sm:items-center sm:space-y-0 sm:space-x-10'>
+                  {dateRuleInformations.map((dateRuleInformation) => (
+                    <div
+                      key={dateRuleInformation.id}
+                      className='flex items-center justify-between mt-1'
+                    >
+                      <div className='flex items-center'>
+                        <input
+                          id={dateRuleInformation.id}
+                          name='date-select'
+                          type='radio'
+                          defaultChecked={dateRuleInformation.id === 'private'}
+                          className='h-4 w-4 border-gray-300 text-primary dark:border-gray-600 focus:ring-primaryLight dark:focus:ring-primaryDark dark:text-primary'
+                          onChange={changeAnnouncementModalTypeSelected}
+                        />
+                        <label
+                          htmlFor={dateRuleInformation.id}
+                          className='ml-3 block text-sm font-medium leading-6 text-gray-700 dark:text-gray-200'
+                        >
+                          {dateRuleInformation.value}
+                        </label>
+                      </div>
+                    </div>
+                  ))}
+                </div>
+              </fieldset>
+            </div>
+          </Modal.Content>
+          <Modal.Actions>
+            <Button variant='primary' disabled={!inputTextModal} onClick={() => closedModalSaved()}>
+              {t('Common.Save')}
+            </Button>
+            <Button variant='white' onClick={() => setIsRecordingActive(false)}>
+              {t('Common.Cancel')}
+            </Button>
+          </Modal.Actions>
+        </form>
+      </Modal>
     </>
   )
 })

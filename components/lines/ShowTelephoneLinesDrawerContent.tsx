@@ -22,7 +22,7 @@ import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { callPhoneNumber, closeSideDrawer } from '../../lib/utils'
 import { TextInput, Button } from '../common'
 import { formatDateLoc, formatInTimeZoneLoc } from '../../lib/dateTime'
-import { setOffHour, getAnnouncements } from '../../lib/lines'
+import { setOffHour, getAnnouncements, reloadPhoneLines } from '../../lib/lines'
 import { format, parse } from 'date-fns'
 
 export interface ShowTelephoneLinesDrawerContentProps extends ComponentPropsWithRef<'div'> {
@@ -34,9 +34,7 @@ export const ShowTelephoneLinesDrawerContent = forwardRef<
   ShowTelephoneLinesDrawerContentProps
 >(({ config, className, ...props }, ref) => {
   const { t } = useTranslation()
-  const [isConfigurationActive, setConfigurationActive] = useState(
-    config.enabled !== 'never' ? true : false,
-  )
+  const [isConfigurationActive, setConfigurationActive] = useState(false)
   const [changeConfigurationRadio, setChangeConfigurationRadio] = useState('customize')
   const [announcementSelected, setAnnouncementSelected] = useState<any>(null)
   // const [selectedRulesInfo, setSelectedRulesInfo] = useState('ferie')
@@ -55,6 +53,10 @@ export const ShowTelephoneLinesDrawerContent = forwardRef<
   const actualDateToShow: any = formatDateLoc(new Date(), 'yyyy-MM-dd')
   //set actual date with hours
   const actualDateToShowWithHour: any = formatDateLoc(new Date(), "yyyy-MM-dd'T'HH:mm")
+  const formattedActualDateEndToShowWithHour = format(
+    new Date().setHours(23, 59),
+    "yyyy-MM-dd'T'HH:mm",
+  )
 
   function changeAnnouncementSelect(event: any) {
     const listAnnouncementValue = event.target.value
@@ -70,7 +72,7 @@ export const ShowTelephoneLinesDrawerContent = forwardRef<
 
   useEffect(() => {
     //check if the configuration is active
-    setConfigurationActive(config.enabled !== 'never' ? true : false)
+    setConfigurationActive(config.enabled)
     //set the dateType. It could be 'always' or 'period'
     setSelectedType(config.dateType)
     //set the configuration typology. It could be 'audiomsg', 'audiomsg_voicemail' or 'redirect'
@@ -96,7 +98,7 @@ export const ShowTelephoneLinesDrawerContent = forwardRef<
       const formattedEndDate = format(dateEndObj, "yyyy-MM-dd'T'HH:mm")
       setDateEndToShow(formattedEndDate)
     } else {
-      setDateEndToShow(actualDateToShowWithHour)
+      setDateEndToShow(formattedActualDateEndToShowWithHour)
     }
 
     // eslint-disable-next-line react-hooks/exhaustive-deps
@@ -150,7 +152,6 @@ export const ShowTelephoneLinesDrawerContent = forwardRef<
             name='meeting-time'
             ref={dateBeginRef}
             onChange={changeDateBeginNoHours}
-            // value={dateBegin.toISOString().slice(0, 10)}
             value={dateBeginToShowNoHour}
           />
         )}
@@ -164,7 +165,6 @@ export const ShowTelephoneLinesDrawerContent = forwardRef<
             name='meeting-time'
             ref={dateEndRef}
             onChange={changeDateEnd}
-            // value={dateEnd.toISOString().slice(0, -8)}
             value={dateEndToShow}
           />
         ) : (
@@ -176,7 +176,6 @@ export const ShowTelephoneLinesDrawerContent = forwardRef<
             name='meeting-time'
             ref={dateEndRef}
             onChange={changeDateEnd}
-            // value={dateEnd.toISOString().slice(0, -8)}
             value={dateEndToShow}
           />
         )}
@@ -283,7 +282,7 @@ export const ShowTelephoneLinesDrawerContent = forwardRef<
   }
 
   function convertDateOnlyDayFormat() {
-    const dateEndConversionNoHour = `${dateBeginToShowNoHour}T23:59:59.000Z`
+    const dateEndConversionNoHour = `${dateBeginToShowNoHour}T23:55:59.000Z`
 
     const dateBeginConversion = formatInTimeZoneLoc(
       new Date(dateBeginToShowNoHour),
@@ -303,6 +302,7 @@ export const ShowTelephoneLinesDrawerContent = forwardRef<
     }
   }
 
+  const [missingAudiomessageAnnouncement, setMissingAudiomessageAnnouncement] = useState(false)
   function saveEditTelephoneLines() {
     if (isConfigurationActive) {
       let objectToSendApi = {
@@ -316,10 +316,14 @@ export const ShowTelephoneLinesDrawerContent = forwardRef<
         voicemail_id: selectedConfigurationTypology === 'audiomsg_voicemail' ? '' : null,
         redirect_to: selectedConfigurationTypology === 'redirect' ? '' : null,
       }
-      switch (true) {
-        case selectedConfigurationTypology === 'audiomsg':
+      switch (selectedConfigurationTypology) {
+        case 'audiomsg':
           if (announcementSelected) {
             objectToSendApi.announcement_id = announcementSelected.toString()
+            setMissingAudiomessageAnnouncement(false)
+          } else {
+            setMissingAudiomessageAnnouncement(true)
+            return
           }
 
           if (changeTypeDate === 'period') {
@@ -336,17 +340,25 @@ export const ShowTelephoneLinesDrawerContent = forwardRef<
           } else {
             objectToSendApi.enabled = 'always'
           }
-          if (objectToSendApi) {
+          if (announcementSelected) {
             setOffHourObject(objectToSendApi)
           }
           break
 
-        case selectedConfigurationTypology === 'audiomsg_voicemail':
+        case 'audiomsg_voicemail':
           if (textFilterVoiceMail) {
             objectToSendApi.voicemail_id = textFilterVoiceMail
+            setMissingAudiomessageAnnouncement(false)
+          } else {
+            setMissingAudiomessageAnnouncement(true)
+            return
           }
           if (announcementSelected) {
             objectToSendApi.announcement_id = announcementSelected.toString()
+            setMissingAudiomessageAnnouncement(false)
+          } else {
+            setMissingAudiomessageAnnouncement(true)
+            return
           }
           if (changeTypeDate === 'period') {
             objectToSendApi.enabled = 'period'
@@ -368,9 +380,13 @@ export const ShowTelephoneLinesDrawerContent = forwardRef<
 
           break
 
-        case selectedConfigurationTypology === 'redirect':
+        case 'redirect':
           if (textFilterRedirect) {
             objectToSendApi.redirect_to = textFilterRedirect
+            setMissingAudiomessageAnnouncement(false)
+          } else {
+            setMissingAudiomessageAnnouncement(true)
+            return
           }
           if (changeTypeDate === 'period') {
             objectToSendApi.enabled = 'period'
@@ -406,7 +422,7 @@ export const ShowTelephoneLinesDrawerContent = forwardRef<
         setOffHourObject(turnOffPhoneLinesObj)
       }
     }
-
+    reloadPhoneLines()
     closeSideDrawer()
   }
 
@@ -957,13 +973,15 @@ export const ShowTelephoneLinesDrawerContent = forwardRef<
             )}
             {selectedConfigurationTypology === 'redirect' && <>{selectForward()}</>}
             {/* Upload error */}
-            {/* {missingDataError && (
-              <InlineNotification
-                title={t('Lines.Wrong file type')}
-                type='error'
-                className='mt-2'
-              ></InlineNotification>
-            )} */}
+            {missingAudiomessageAnnouncement && (
+              <div className='px-5 pt-3'>
+                <InlineNotification
+                  title={t('Lines.Please select all fields before continuing')}
+                  type='error'
+                  className='mt-2'
+                ></InlineNotification>
+              </div>
+            )}
           </>
         )}
         {/* fixed bottom-0 */}

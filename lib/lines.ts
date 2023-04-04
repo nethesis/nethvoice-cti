@@ -245,3 +245,11 @@ export const getFilterAnnouncementValues = (currentUsername: string) => {
 
   return { sortBy }
 }
+
+export function reloadPhoneLines() {
+  store.dispatch.phoneLines.reload()
+}
+
+export function reloadAnnouncement() {
+  store.dispatch.announcement.reload()
+}

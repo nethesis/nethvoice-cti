@@ -352,6 +352,9 @@
     "Configuration status": "Configuration status",
     "Active": "Active",
     "Not active": "Not active",
-    "Announcement select": "Announcement select"
+    "Announcement select": "Announcement select",
+    "Please select all fields before continuing": "Please select all fields before continuing",
+    "Enter announcement information": "Enter announcement information",
+    "Description": "Description"
   }
 }

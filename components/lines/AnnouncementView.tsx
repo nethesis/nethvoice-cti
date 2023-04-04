@@ -111,6 +111,13 @@ export const AnnouncementView: FC<AnnouncementViewProps> = ({ className }): JSX.
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [isLinesLoaded])
 
+  const announcement = useSelector((state: RootState) => state.announcement)
+
+  useEffect(() => {
+    // reload phonebook
+    setLinesLoaded(false)
+  }, [announcement])
+
   function goToPreviousPage() {
     if (pageNum > 1) {
       setPageNum(pageNum - 1)

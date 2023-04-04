@@ -14,6 +14,8 @@ import { globalSearch } from './globalSearch'
 import { queues } from './queues'
 import { ctiStatus } from './ctiStatus'
 import { lines } from './lines'
+import { phoneLines } from './phoneLines'
+import { announcement } from './announcement'
 
 export interface RootModel extends Models<RootModel> {
   authentication: typeof authentication
@@ -28,6 +30,8 @@ export interface RootModel extends Models<RootModel> {
   queues: typeof queues
   ctiStatus: typeof ctiStatus
   lines: typeof lines
+  phoneLines: typeof phoneLines
+  announcement: typeof announcement
 }
 
 export const models: RootModel = {
@@ -43,4 +47,6 @@ export const models: RootModel = {
   queues,
   ctiStatus,
   lines,
+  phoneLines,
+  announcement,
 }

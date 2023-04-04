@@ -231,7 +231,7 @@
     "Wrong file type": "Formato file errato",
     "Insert voicemail": "Inserisci voicemail",
     "Forward": "Inoltro",
-    "Announcemnt + voicemail": "Annuncio + voicemail",
+    "Announcement + voicemail": "Annuncio + casella vocale",
     "Lines": "Linee",
     "Delete announcement": "Elimina annuncio",
     "Are you sure to delete selected announcement?": "Sei sicuro di voler eliminare l'annuncio selezionato?",
@@ -244,6 +244,9 @@
     "Configuration status": "Stato configurazione",
     "Active": "Attiva",
     "Not active": "Non attiva",
-    "Announcement select": "Seleziona annuncio"
+    "Announcement select": "Seleziona annuncio",
+    "Please select all fields before continuing": "Si prega di selezionare tutti i campi prima di continuare",
+    "Enter announcement information": "Inserisci informazioni annuncio",
+    "Description": "Descrizione"
   }
 }

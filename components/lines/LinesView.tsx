@@ -5,6 +5,8 @@ import { FC, ComponentProps, useState, useEffect, useMemo } from 'react'
 import { useTranslation } from 'react-i18next'
 import { Button, EmptyState, InlineNotification, Badge } from '../common'
 import { isEmpty, debounce } from 'lodash'
+import { useSelector } from 'react-redux'
+import { RootState } from '../../store'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { openShowTelephoneLinesDrawer, retrieveLines, PAGE_SIZE } from '../../lib/lines'
 import {
@@ -16,6 +18,7 @@ import {
 } from '@nethesis/nethesis-solid-svg-icons'
 import classNames from 'classnames'
 import { LinesFilter } from './LinesFilter'
+import { sortByProperty } from '../../lib/utils'
 
 export interface LinesViewProps extends ComponentProps<'div'> {}
 
@@ -84,6 +87,13 @@ export const LinesView: FC<LinesViewProps> = ({ className }): JSX.Element => {
 
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [isLinesLoaded, pageNum])
+
+  const phoneLines = useSelector((state: RootState) => state.phoneLines)
+
+  useEffect(() => {
+    // reload phonebook
+    setLinesLoaded(false)
+  }, [phoneLines])
 
   function goToPreviousPage() {
     if (pageNum > 1) {
@@ -185,11 +195,11 @@ export const LinesView: FC<LinesViewProps> = ({ className }): JSX.Element => {
     let objConfig = {
       datebegin: null,
       dateend: null,
-      enabled: null,
+      enabled: false,
       name: null,
       number: null,
       callerNumber: null,
-      action: null,
+      action: '',
       redirect_to: null,
       announcement_id: null,
       voicemail_id: null,
@@ -201,7 +211,15 @@ export const LinesView: FC<LinesViewProps> = ({ className }): JSX.Element => {
       objConfig.callerNumber = lines.callerIdNum
 
       if (lines.offhour) {
-        objConfig.enabled = lines.offhour.enabled
+        // objConfig.enabled = lines.offhour.enabled
+        if (lines.offhour.enabled) {
+          if (lines.offhour.enabled !== 'never' && lines.offhour.enabled !== undefined) {
+            objConfig.enabled = true
+          } else {
+            objConfig.enabled = false
+            objConfig.dateType = 'specifyDay'
+          }
+        }
         objConfig.action = lines.offhour.action
         if (lines.offhour.enabled === 'period') {
           objConfig.dateType = 'specifyDay'
@@ -234,6 +252,9 @@ export const LinesView: FC<LinesViewProps> = ({ className }): JSX.Element => {
             objConfig.dateend = lines.offhour.period.dateend
           }
         }
+      } else {
+        objConfig.dateType = 'always'
+        objConfig.action = 'audiomsg'
       }
     }
     openShowTelephoneLinesDrawer(objConfig)
@@ -328,7 +349,7 @@ export const LinesView: FC<LinesViewProps> = ({ className }): JSX.Element => {
                         {!isLinesLoaded &&
                           Array.from(Array(10)).map((e, i) => (
                             <tr key={i}>
-                              {Array.from(Array(7)).map((e, j) => (
+                              {Array.from(Array(6)).map((e, j) => (
                                 <td key={j}>
                                   <div className='px-4 py-6'>
                                     <div className='animate-pulse h-5 rounded bg-gray-300 dark:bg-gray-600'></div>
