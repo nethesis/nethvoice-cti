@@ -22,24 +22,6 @@ import { sortByProperty } from '../../lib/utils'
 
 export interface LinesViewProps extends ComponentProps<'div'> {}
 
-// const table = [
-//   {
-//     description: 'Mario Rossi',
-//     calledIdNum: '1',
-//     personalized: 'audiomsg',
-//     audiomsg: {
-//       description: 'Natale 2020',
-//     },
-//   },
-//   {
-//     description: 'Anna Bianchi',
-//     calledIdNum: '2',
-//     personalized: 'audiomsg_voicemail',
-//     audiomsg: {
-//       description: 'Natale 2021',
-//     },
-//   },]
-
 export const LinesView: FC<LinesViewProps> = ({ className }): JSX.Element => {
   const { t } = useTranslation()
   const [lines, setLines]: any = useState({})
@@ -68,6 +50,10 @@ export const LinesView: FC<LinesViewProps> = ({ className }): JSX.Element => {
   const [dataPagination, setDataPagination]: any = useState({})
   //Get Lines information
   useEffect(() => {
+    if (firstRender) {
+      setFirstRender(false)
+      return
+    }
     async function fetchLines() {
       if (!isLinesLoaded) {
         try {
@@ -86,7 +72,7 @@ export const LinesView: FC<LinesViewProps> = ({ className }): JSX.Element => {
     fetchLines()
 
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [isLinesLoaded, pageNum])
+  }, [isLinesLoaded, pageNum, firstRender])
 
   const phoneLines = useSelector((state: RootState) => state.phoneLines)
 
@@ -123,15 +109,22 @@ export const LinesView: FC<LinesViewProps> = ({ className }): JSX.Element => {
     setSortBy(newSortBy)
   }
 
-  // Copy of the table to order
-  // const tableRows = [...props.lines.rows];
-
-  // Sorting of the table according to the selected value
-  // if (sortBy === 'description') {
-  //   table.sort((a, b) => a.description.localeCompare(b.description))
-  // } else if (sortBy === 'calledIdNum') {
-  //   table.sort((a, b) => a.calledIdNum.localeCompare(b.calledIdNum))
-  // }
+  useEffect(() => {
+    let newLines = null
+    switch (sortBy) {
+      case 'description':
+        newLines = Array.from(lines).sort(sortByProperty('description'))
+        break
+      case 'calledIdNum':
+        newLines = Array.from(lines).sort(sortByProperty('calledIdNum'))
+        break
+      default:
+        newLines = Array.from(lines)
+        break
+    }
+    setLines(newLines)
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [sortBy, isLinesLoaded])
 
   // Check which configuration will be shown
   function getConfiguration(configurationType: any) {

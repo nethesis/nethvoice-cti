@@ -353,7 +353,7 @@ export const ShowAddAnnouncementDrawerContent = forwardRef<
         )}
 
         {/* fixed bottom-0 */}
-        <div className='flex mt-4'>
+        <div className='flex mt-7'>
           <Button
             variant='primary'
             type='submit'
@@ -377,7 +377,7 @@ export const ShowAddAnnouncementDrawerContent = forwardRef<
         <form onSubmit={handleSubmit}>
           <Modal.Content>
             <div className='mt-3 text-center sm:mt-0 sm:text-left w-full'>
-              <h3 className='text-lg font-medium leading-6 text-center text-gray-900 dark:text-gray-100'>
+              <h3 className='text-lg font-medium leading-6 text-gray-900 dark:text-gray-100'>
                 {t('Lines.Enter announcement information')}
               </h3>
               <div className='mt-3 flex flex-col gap-2'>

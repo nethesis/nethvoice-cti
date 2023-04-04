@@ -31,7 +31,7 @@ import { RootState } from '../../store'
 import { loadCache } from '../../lib/storage'
 import { formatDateLoc, getCallTimeToDisplay } from '../../lib/dateTime'
 import { capitalize } from 'lodash'
-import { getApiEndpoint, getApiScheme } from '../../lib/utils'
+import { getApiEndpoint, getApiScheme, sortByProperty } from '../../lib/utils'
 
 export interface AnnouncementViewProps extends ComponentProps<'div'> {}
 
@@ -94,6 +94,10 @@ export const AnnouncementView: FC<AnnouncementViewProps> = ({ className }): JSX.
   //Get Lines information
   useEffect(() => {
     async function fetchLines() {
+      if (firstRender) {
+        setFirstRender(false)
+        return
+      }
       if (!isLinesLoaded) {
         try {
           setLinesError('')
@@ -109,7 +113,7 @@ export const AnnouncementView: FC<AnnouncementViewProps> = ({ className }): JSX.
     }
     fetchLines()
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [isLinesLoaded])
+  }, [isLinesLoaded, firstRender])
 
   const announcement = useSelector((state: RootState) => state.announcement)
 
@@ -195,6 +199,27 @@ export const AnnouncementView: FC<AnnouncementViewProps> = ({ className }): JSX.
   const updateSortFilter = (newSortBy: string) => {
     setSortBy(newSortBy)
   }
+
+  useEffect(() => {
+    let newLines = null
+    switch (sortBy) {
+      case 'username':
+        newLines = Array.from(lines).sort(sortByProperty('username'))
+        break
+      case 'description':
+        newLines = Array.from(lines).sort(sortByProperty('description'))
+        break
+      case 'privacy':
+        newLines = Array.from(lines).sort(sortByProperty('privacy'))
+        break
+      default:
+        newLines = Array.from(lines)
+        break
+    }
+    setLines(newLines)
+
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [sortBy, isLinesLoaded])
 
   function dateCreationShowed(dateCreation: any) {
     if (typeof dateCreation === 'string') {

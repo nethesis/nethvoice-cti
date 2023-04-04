@@ -41,6 +41,7 @@ export const ShowTelephoneLinesDrawerContent = forwardRef<
   const [selectedType, setSelectedType] = useState('')
   const [selectedConfigurationTypology, setSelectedConfigurationTypology] = useState('')
   const [selectedAnnouncementInfo, setSelectedAnnouncementInfo] = useState<any>(null)
+  const [firstRender, setFirstRender]: any = useState(true)
 
   const [openPanel, setOpenPanel] = useState('')
 
@@ -428,26 +429,30 @@ export const ShowTelephoneLinesDrawerContent = forwardRef<
 
   const [isAnnouncementLoaded, setAnnouncementLoaded]: any = useState(false)
   const [announcement, setAnnouncement]: any = useState({})
-  const [linesError, setLinesError] = useState('')
+  const [announcementListError, setAnnouncementList] = useState('')
 
-  //Get Lines information
+  //Get announcement information
   useEffect(() => {
     async function fetchLines() {
+      if (firstRender) {
+        setFirstRender(false)
+        return
+      }
       if (!isAnnouncementLoaded) {
         try {
-          setLinesError('')
+          setAnnouncementList('')
           const res = await getAnnouncements()
           setAnnouncement(res)
         } catch (e) {
           console.error(e)
-          setLinesError(t('Lines.Cannot retrieve lines') || '')
+          setAnnouncementList(t('Lines.Cannot retrieve announcement') || '')
         }
         setAnnouncementLoaded(true)
       }
     }
     fetchLines()
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [isAnnouncementLoaded])
+  }, [isAnnouncementLoaded, firstRender])
 
   function changeTextFilterVoiceMail(event: any) {
     const newTextFilter = event.target.value
