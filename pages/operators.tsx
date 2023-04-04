@@ -7,7 +7,7 @@ import { Avatar, Badge, EmptyState, InlineNotification } from '../components/com
 import {
   AVAILABLE_STATUSES,
   callOperator,
-  INFINITE_SCROLL_OPERATORS_PAGE_SIZE,
+  getInfiniteScrollOperatorsPageSize,
   openShowOperatorDrawer,
   searchStringInOperator,
   sortByOperatorStatus,
@@ -32,10 +32,11 @@ const Operators: NextPage = () => {
   const authStore = useSelector((state: RootState) => state.authentication)
   const operatorsStore = useSelector((state: RootState) => state.operators)
   const [isApplyingFilters, setApplyingFilters]: any = useState(false)
+  const infiniteScrollOperatorsPageSize = getInfiniteScrollOperatorsPageSize()
   const [infiniteScrollOperators, setInfiniteScrollOperators] = useState([])
   const [infiniteScrollHasMore, setInfiniteScrollHasMore] = useState(false)
   const [infiniteScrollLastIndex, setInfiniteScrollLastIndex] = useState(
-    INFINITE_SCROLL_OPERATORS_PAGE_SIZE,
+    infiniteScrollOperatorsPageSize,
   )
 
   const [textFilter, setTextFilter]: any = useState('')
@@ -147,7 +148,7 @@ const Operators: NextPage = () => {
   }, [operatorsStore.operators, textFilter, groupFilter, statusFilter, sortByFilter])
 
   const showMoreInfiniteScrollOperators = () => {
-    const lastIndex = infiniteScrollLastIndex + INFINITE_SCROLL_OPERATORS_PAGE_SIZE
+    const lastIndex = infiniteScrollLastIndex + infiniteScrollOperatorsPageSize
     setInfiniteScrollLastIndex(lastIndex)
     setInfiniteScrollOperators(filteredOperators.slice(0, lastIndex))
     const hasMore = lastIndex < filteredOperators.length
@@ -170,7 +171,7 @@ const Operators: NextPage = () => {
         {operatorsStore.errorMessage && (
           <InlineNotification type='error' title={operatorsStore.errorMessage}></InlineNotification>
         )}
-        <div className='mx-auto max-w-7xl text-center'>
+        <div className='mx-auto text-center max-w-7xl 5xl:max-w-screen-2xl'>
           {/* empty state */}
           {operatorsStore.isOperatorsLoaded &&
             !operatorsStore.errorMessage &&
@@ -209,7 +210,7 @@ const Operators: NextPage = () => {
             <div className='space-y-8 sm:space-y-12 py-8'>
               <ul
                 role='list'
-                className='mx-auto grid grid-cols-2 gap-x-4 gap-y-8 sm:grid-cols-4 md:gap-x-6 lg:max-w-5xl lg:gap-x-8 lg:gap-y-12 xl:grid-cols-5'
+                className='mx-auto grid grid-cols-2 gap-x-4 gap-y-8 sm:grid-cols-4 md:gap-x-6 lg:max-w-5xl lg:gap-x-8 lg:gap-y-12 xl:grid-cols-5 5xl:grid-cols-6 5xl:max-w-screen-2xl'
               >
                 {Array.from(Array(15)).map((e, index) => (
                   <li key={index}>
@@ -250,7 +251,7 @@ const Operators: NextPage = () => {
                 >
                   <ul
                     role='list'
-                    className='mx-auto grid grid-cols-2 gap-x-4 gap-y-8 sm:grid-cols-4 md:gap-x-6 lg:max-w-5xl lg:gap-x-8 lg:gap-y-12 xl:grid-cols-5'
+                    className='mx-auto grid grid-cols-2 gap-x-4 gap-y-8 sm:grid-cols-4 md:gap-x-6 lg:max-w-5xl lg:gap-x-8 lg:gap-y-12 xl:grid-cols-5 5xl:grid-cols-6 5xl:max-w-screen-2xl'
                   >
                     {infiniteScrollOperators.map((operator: any, index) => {
                       return (
@@ -316,7 +317,10 @@ const Operators: NextPage = () => {
             )}
           {/* compact layout skeleton */}
           {((layout === 'compact' && !operatorsStore.isOperatorsLoaded) || isApplyingFilters) && (
-            <ul role='list' className='mt-4 grid grid-cols-1 gap-4 sm:grid-cols-2 2xl:grid-cols-3'>
+            <ul
+              role='list'
+              className='mt-4 grid grid-cols-1 gap-4 sm:grid-cols-2 2xl:grid-cols-3 5xl:grid-cols-4 5xl:max-w-screen-2xl'
+            >
               {Array.from(Array(24)).map((e, index) => (
                 <li key={index} className='px-1'>
                   <button
@@ -362,7 +366,7 @@ const Operators: NextPage = () => {
               >
                 <ul
                   role='list'
-                  className='mt-4 grid grid-cols-1 gap-4 sm:grid-cols-2 2xl:grid-cols-3'
+                  className='mt-4 grid grid-cols-1 gap-4 sm:grid-cols-2 2xl:grid-cols-3 5xl:grid-cols-4 5xl:max-w-screen-2xl'
                 >
                   {infiniteScrollOperators.map((operator: any, index) => {
                     return (
