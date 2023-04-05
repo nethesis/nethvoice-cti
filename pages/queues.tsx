@@ -56,7 +56,7 @@ const Queues: NextPage = () => {
                 <select
                   id='tabs'
                   name='tabs'
-                  className='block w-full rounded-md py-2 pl-3 pr-10 text-base focus:outline-none sm:text-sm border-gray-300 focus:border-primary focus:ring-primary dark:border-gray-600 dark:focus:border-primary dark:focus:ring-primary'
+                  className='block w-full rounded-md py-2 pl-3 pr-10 text-base focus:outline-none sm:text-sm border-gray-300 focus:border-primary focus:ring-primary dark:border-gray-600 dark:focus:border-primary dark:focus:ring-primary dark:bg-gray-900'
                   defaultValue={currentTab}
                   onChange={(event) => changeTab(event.target.value)}
                 >

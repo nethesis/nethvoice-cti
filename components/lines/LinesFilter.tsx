@@ -5,7 +5,7 @@ import { ComponentPropsWithRef, forwardRef, useRef } from 'react'
 import classNames from 'classnames'
 import { TextInput } from '../common'
 import { Fragment, useState, useEffect } from 'react'
-import { Dialog, Popover, Transition } from '@headlessui/react'
+import { Dialog, Popover, Transition, Disclosure } from '@headlessui/react'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { faCircleXmark, faXmark, faChevronDown } from '@nethesis/nethesis-solid-svg-icons'
 import { useSelector } from 'react-redux'
@@ -134,12 +134,68 @@ export const LinesFilter = forwardRef<HTMLButtonElement, LinesFilterProps>(
                         <FontAwesomeIcon icon={faXmark} className='h-5 w-5' aria-hidden='true' />
                       </button>
                     </div>
+                    {/* Divider */}
+                    <div className='mt-2 border-t border-gray-200 dark:border-gray-700'></div>
+
+                    {/* Filters (mobile) */}
+                    <form className='mt-4 px-5'>
+                      {/* contact type filter (mobile) */}
+                      <Disclosure
+                        as='div'
+                        key={sortFilter.name}
+                        id={`desktop-menu-${sortFilter.id}`}
+                        className='relative text-left'
+                      >
+                        {({ open }) => (
+                          <>
+                            <h3 className='-mx-2 -my-3 flow-root'>
+                              <Disclosure.Button className='flex w-full items-center justify-between px-2 py-3 text-sm bg-white text-gray-400 dark:bg-gray-900 dark:text-gray-500'>
+                                <span className='font-medium text-gray-900 dark:text-gray-100'>
+                                  {sortFilter.name}
+                                </span>
+                                <span className='ml-6 flex items-center'>
+                                  <FontAwesomeIcon
+                                    icon={faChevronDown}
+                                    className='ml-2 h-3 w-3 flex-shrink-0 text-gray-400 group-hover:text-gray-500 dark:text-gray-500 dark:group-hover:text-gray-400'
+                                    aria-hidden='true'
+                                  />
+                                </span>
+                              </Disclosure.Button>
+                            </h3>
+                            <Disclosure.Panel className='pt-6'>
+                              <fieldset>
+                                <div className='space-y-4'>
+                                  {sortFilter.options.map((option) => (
+                                    <div key={option.value} className='flex items-center'>
+                                      <input
+                                        id={option.value}
+                                        name={`filter-${sortFilter.id}`}
+                                        type='radio'
+                                        defaultChecked={option.value === sortBy}
+                                        onChange={changeSortBy}
+                                        className='h-4 w-4 border-gray-300 text-primary focus:ring-primaryLight dark:border-gray-600 dark:text-primary dark:focus:ring-primaryDark'
+                                      />
+                                      <label
+                                        htmlFor={option.value}
+                                        className='ml-3 block text-sm font-medium text-gray-700 dark:text-gray-200'
+                                      >
+                                        {option.label}
+                                      </label>
+                                    </div>
+                                  ))}
+                                </div>
+                              </fieldset>
+                            </Disclosure.Panel>
+                          </>
+                        )}
+                      </Disclosure>
+                    </form>
                   </Dialog.Panel>
                 </Transition.Child>
               </div>
             </Dialog>
           </Transition.Root>
-
+          {/* Filter pc  */}
           <div className='mx-auto text-center'>
             <section aria-labelledby='filter-heading' className='pb-6'>
               <h2 id='filter-heading' className='sr-only'>
