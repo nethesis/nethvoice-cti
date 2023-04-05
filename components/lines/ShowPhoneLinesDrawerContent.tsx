@@ -111,22 +111,29 @@ export const ShowPhoneLinesDrawerContent = forwardRef<
 
   const changeDateBegin = () => {
     //Get the date from the input
+
     const dateBegin = dateBeginRef.current.value
-    setDateBeginToShow(dateBegin)
+    if (dateBegin) {
+      setDateBeginToShow(dateBegin)
+    }
   }
 
   const changeDateBeginNoHours = () => {
     //Get the date from the input and remove hours and minute
     const dateBegin = dateBeginRef.current.value
-    const dateBeginNoHour = new Date(dateBegin)
-    const formattedBeginDateNoHour = format(dateBeginNoHour, 'yyyy-MM-dd')
-    setDateBeginToShowNoHour(formattedBeginDateNoHour)
+    if (dateBegin) {
+      const dateBeginNoHour = new Date(dateBegin)
+      const formattedBeginDateNoHour = format(dateBeginNoHour, 'yyyy-MM-dd')
+      setDateBeginToShowNoHour(formattedBeginDateNoHour)
+    }
   }
 
   const changeDateEnd = () => {
     //Get the date from the input
     const dateEnd = dateEndRef.current.value
-    setDateEndToShow(dateEnd)
+    if (dateEnd) {
+      setDateEndToShow(dateEnd)
+    }
   }
 
   const [changeTypeDate, setChangeTypeDate] = useState('')
@@ -135,64 +142,14 @@ export const ShowPhoneLinesDrawerContent = forwardRef<
     return (
       <>
         {/* hidden on mobile phone */}
-        <div className='hidden sm:flex mt-5 items-center justify-between'>
-          <span>{selectedType === 'specifyDay' ? t('Lines.Begin') : t('Lines.Date')}</span>
-
-          {selectedType === 'specifyDay' && (
-            <span className='ml-auto mr-auto'>{t('Lines.End')}</span>
-          )}
-        </div>
-        <div className='hidden sm:flex mt-3 items-center justify-between'>
-          {selectedType === 'specifyDay' ? (
-            <TextInput
-              type={'datetime-local'}
-              placeholder='Select date start'
-              className='max-w-sm mr-4'
-              id='meeting-time'
-              name='meeting-time'
-              ref={dateBeginRef}
-              onChange={changeDateBegin}
-              value={dateBeginToShow}
-            />
-          ) : (
-            <TextInput
-              type={'date'}
-              placeholder='Select date start'
-              className='max-w-sm mr-4'
-              id='meeting-time'
-              name='meeting-time'
-              ref={dateBeginRef}
-              onChange={changeDateBeginNoHours}
-              value={dateBeginToShowNoHour}
-            />
-          )}
-
-          {selectedType === 'specifyDay' ? (
-            <TextInput
-              type='datetime-local'
-              placeholder='Select date end'
-              className='max-w-sm'
-              id='meeting-time'
-              name='meeting-time'
-              ref={dateEndRef}
-              onChange={changeDateEnd}
-              value={dateEndToShow}
-            />
-          ) : (
-            <TextInput className='max-w-sm invisible' />
-          )}
-        </div>
-        {/* Visible on mobile phone */}
-        <div className='sm:hidden'>
-          <div className='flex mt-5 items-center justify-between'>
-            <span>{selectedType === 'specifyDay' ? t('Lines.Begin') : t('Lines.Date')}</span>
-          </div>
-          <div className='flex flex-col mt-3'>
+        <div className='flex-wrap sm:flex mt-5 space-y-2 sm:space-y-0 items-center justify-between'>
+          <div>
+            <span className=''>{selectedType === 'specifyDay' ? t('Lines.Begin') : t('Lines.Date')}</span>
             {selectedType === 'specifyDay' ? (
               <TextInput
                 type={'datetime-local'}
                 placeholder='Select date start'
-                className='max-w-sm mr-4'
+                className='mr-4 mt-2'
                 id='meeting-time'
                 name='meeting-time'
                 ref={dateBeginRef}
@@ -203,7 +160,7 @@ export const ShowPhoneLinesDrawerContent = forwardRef<
               <TextInput
                 type={'date'}
                 placeholder='Select date start'
-                className='max-w-sm mr-4'
+                className=' mr-4 mt-2'
                 id='meeting-time'
                 name='meeting-time'
                 ref={dateBeginRef}
@@ -211,22 +168,25 @@ export const ShowPhoneLinesDrawerContent = forwardRef<
                 value={dateBeginToShowNoHour}
               />
             )}
+          </div>
+
+          <div>
             {selectedType === 'specifyDay' && (
-              <>
-                <div className='pt-5'>
-                  <span>{t('Lines.End')}</span>
-                  <TextInput
-                    type='datetime-local'
-                    placeholder='Select date end'
-                    className='max-w-sm pt-3'
-                    id='meeting-time'
-                    name='meeting-time'
-                    ref={dateEndRef}
-                    onChange={changeDateEnd}
-                    value={dateEndToShow}
-                  />
-                </div>
-              </>
+              <span className=''>{t('Lines.End')}</span>
+            )}
+            {selectedType === 'specifyDay' ? (
+              <TextInput
+                type='datetime-local'
+                placeholder='Select date end'
+                className=' mt-2'
+                id='meeting-time'
+                name='meeting-time'
+                ref={dateEndRef}
+                onChange={changeDateEnd}
+                value={dateEndToShow}
+              />
+            ) : (
+              <TextInput className=' invisible' />
             )}
           </div>
         </div>
@@ -981,7 +941,7 @@ export const ShowPhoneLinesDrawerContent = forwardRef<
         {/* configuration type select */}
         {isConfigurationActive && (
           <>
-          {/* HIDDEN AT THE MOMENT */}
+            {/* HIDDEN AT THE MOMENT */}
             {/* <fieldset className='mt-4 px-5'>
               <legend className='sr-only'>Configuration type</legend>
               <div className='space-y-4 sm:flex sm:items-center sm:space-y-0 sm:space-x-10'>
