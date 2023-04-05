@@ -7,7 +7,7 @@ import { store } from '../store'
 import { loadPreference } from './storage'
 
 export const PAGE_SIZE = 10
-export const DEFAULT_SORT_BY = 'description'
+export const DEFAULT_SORT_BY = 'calledIdNum'
 export const DEFAULT_SORT_BY_ANNOUNCEMENT = 'description'
 
 const apiEnpoint = getApiEndpoint()

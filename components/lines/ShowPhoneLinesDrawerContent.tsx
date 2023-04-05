@@ -35,9 +35,10 @@ export const ShowPhoneLinesDrawerContent = forwardRef<
 >(({ config, className, ...props }, ref) => {
   const { t } = useTranslation()
   const [isConfigurationActive, setConfigurationActive] = useState(false)
-  const [changeConfigurationRadio, setChangeConfigurationRadio] = useState('customize')
+  // HIDDEN AT THE MOMENT
+  // const [changeConfigurationRadio, setChangeConfigurationRadio] = useState('customize')
   const [announcementSelected, setAnnouncementSelected] = useState<any>(null)
-  // const [selectedRulesInfo, setSelectedRulesInfo] = useState('ferie')
+  // const [selectedRulesInfo, setSelectedRulesInfo] = useState('')
   const [selectedType, setSelectedType] = useState('')
   const [selectedConfigurationTypology, setSelectedConfigurationTypology] = useState('')
   const [selectedAnnouncementInfo, setSelectedAnnouncementInfo] = useState<any>(null)
@@ -258,7 +259,7 @@ export const ShowPhoneLinesDrawerContent = forwardRef<
     name: 'announcementType',
     options: [
       { value: 'audiomsg', label: t('Lines.Announcement') },
-      { value: 'audiomsg_voicemail', label: t('Lines.Announcement + voicemail') },
+      { value: 'audiomsg_voicemail', label: t('Lines.Announcement and voicemail') },
       { value: 'redirect', label: t('Lines.Forward') },
     ],
   }
@@ -288,10 +289,11 @@ export const ShowPhoneLinesDrawerContent = forwardRef<
     setConfigurationActive(!isConfigurationActive)
   }
 
-  function changeConfiguration(event: any) {
-    const radioButtonConfigurationValue = event.target.id
-    setChangeConfigurationRadio(radioButtonConfigurationValue)
-  }
+  // HIDDEN AT THE MOMENT
+  // function changeConfiguration(event: any) {
+  //   const radioButtonConfigurationValue = event.target.id
+  //   setChangeConfigurationRadio(radioButtonConfigurationValue)
+  // }
 
   function changeTypeSelected(event: any) {
     const radioButtonTypeSelected = event.target.id
@@ -595,7 +597,7 @@ export const ShowPhoneLinesDrawerContent = forwardRef<
               aria-hidden='true'
             />
             <h4 className='text-md font-medium text-gray-700 dark:text-gray-200'>
-              {t('Lines.Activate announcement')}
+              {t('Lines.Announcement')}
             </h4>
           </div>
           {/* Divider */}
@@ -650,7 +652,7 @@ export const ShowPhoneLinesDrawerContent = forwardRef<
                 aria-hidden='true'
               />
               <h4 className='text-md font-medium text-gray-700 dark:text-gray-200'>
-                {t('Lines.Activate announcement + voicemail')}
+                {t('Lines.Announcement and voicemail')}
               </h4>
             </div>
           </div>
@@ -693,7 +695,7 @@ export const ShowPhoneLinesDrawerContent = forwardRef<
             </div>
           </div>
           <TextInput
-            placeholder={t('Lines.Insert voicemail') || ''}
+            placeholder={t('Lines.Insert voicemail phone number') || ''}
             className='mt-4'
             value={textFilterVoiceMail}
             onChange={changeTextFilterVoiceMail}
@@ -720,7 +722,7 @@ export const ShowPhoneLinesDrawerContent = forwardRef<
                 aria-hidden='true'
               />
               <h4 className='text-md font-medium text-gray-700 dark:text-gray-200'>
-                {t('Lines.Activate forward')}
+                {t('Lines.Forward')}
               </h4>
             </div>
           </div>
@@ -729,7 +731,7 @@ export const ShowPhoneLinesDrawerContent = forwardRef<
           <div className='mt-2 border-t border-gray-200 dark:border-gray-700'></div>
 
           <TextInput
-            placeholder={t('Lines.Insert number') || ''}
+            placeholder={t('Lines.Insert forward phone number') || ''}
             className='mt-4'
             value={textFilterRedirect}
             onChange={changeTextFilterRedirect}
@@ -850,7 +852,7 @@ export const ShowPhoneLinesDrawerContent = forwardRef<
   //                         aria-hidden='true'
   //                       />
   //                       <h4 className='text-md text-gray-700 dark:text-gray-200'>
-  //                         {t('Lines.Activate announcement + voicemail')}
+  //                         {t('Lines.Activate announcement and voicemail')}
   //                       </h4>
   //                     </div>
   //                     <div className='flex items-center mt-1'>
@@ -902,24 +904,11 @@ export const ShowPhoneLinesDrawerContent = forwardRef<
       <div className={classNames(className)} {...props}>
         {/* Contact details */}
         <dl className='px-5 pt-5'>
-          {/* name */}
-          {config.name && (
-            <div className='py-4 sm:grid sm:grid-cols-3 sm:gap-4 sm:py-5'>
-              <dt className='text-sm font-medium text-gray-500 dark:text-gray-400'>
-                {t('Lines.Name')}
-              </dt>
-              <dd className='mt-1 text-sm sm:col-span-2 sm:mt-0 text-gray-900 dark:text-gray-100'>
-                <div className='flex items-center text-sm'>
-                  <span>{config.name}</span>
-                </div>
-              </dd>
-            </div>
-          )}
-          {/* number */}
+          {/* Line number */}
           {config.number && (
             <div className='py-4 sm:grid sm:grid-cols-3 sm:gap-4 sm:py-5'>
               <dt className='text-sm font-medium text-gray-500 dark:text-gray-400'>
-                {t('Common.Phone number')}
+                {t('Lines.Line number')}
               </dt>
               <dd className='mt-1 text-sm text-gray-900 dark:text-gray-100 sm:col-span-2 sm:mt-0'>
                 <div className='flex items-center text-sm text-primary dark:text-primary'>
@@ -938,6 +927,20 @@ export const ShowPhoneLinesDrawerContent = forwardRef<
               </dd>
             </div>
           )}
+          {/* Description */}
+          {config.name && (
+            <div className='py-4 sm:grid sm:grid-cols-3 sm:gap-4 sm:py-5'>
+              <dt className='text-sm font-medium text-gray-500 dark:text-gray-400'>
+                {t('Lines.Description')}
+              </dt>
+              <dd className='mt-1 text-sm sm:col-span-2 sm:mt-0 text-gray-900 dark:text-gray-100'>
+                <div className='flex items-center text-sm'>
+                  <span>{config.name}</span>
+                </div>
+              </dd>
+            </div>
+          )}
+
           {/* Caller number */}
           {config.callerNumber && (
             <div className='py-4 sm:grid sm:grid-cols-3 sm:gap-4 sm:py-5'>
@@ -955,7 +958,7 @@ export const ShowPhoneLinesDrawerContent = forwardRef<
                     className='truncate cursor-pointer hover:underline'
                     onClick={() => callPhoneNumber(config.callerNumber)}
                   >
-                    {config.number}
+                    {config.callerNumber}
                   </span>
                 </div>
               </dd>
@@ -978,7 +981,8 @@ export const ShowPhoneLinesDrawerContent = forwardRef<
         {/* configuration type select */}
         {isConfigurationActive && (
           <>
-            <fieldset className='mt-4 px-5'>
+          {/* HIDDEN AT THE MOMENT */}
+            {/* <fieldset className='mt-4 px-5'>
               <legend className='sr-only'>Configuration type</legend>
               <div className='space-y-4 sm:flex sm:items-center sm:space-y-0 sm:space-x-10'>
                 {configurationType.map((configuration) => (
@@ -1000,7 +1004,7 @@ export const ShowPhoneLinesDrawerContent = forwardRef<
                   </div>
                 ))}
               </div>
-            </fieldset>
+            </fieldset> */}
 
             {/* Period select */}
             {periodSelect()}
@@ -1019,7 +1023,7 @@ export const ShowPhoneLinesDrawerContent = forwardRef<
             {missingAudiomessageAnnouncement && (
               <div className='px-5 pt-3'>
                 <InlineNotification
-                  title={t('Lines.Please select all fields before continuing')}
+                  title={t('Lines.Fill in all the fields to be able to continue')}
                   type='error'
                   className='mt-2'
                 ></InlineNotification>

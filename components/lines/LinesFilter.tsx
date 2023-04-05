@@ -31,13 +31,13 @@ export const LinesFilter = forwardRef<HTMLButtonElement, LinesFilterProps>(
       id: 'sort',
       name: t('Lines.Sort by'),
       options: [
-        { value: 'description', label: t('Lines.Name') },
-        { value: 'calledIdNum', label: t('Lines.Number') },
+        { value: 'description', label: t('Lines.Description') },
+        { value: 'calledIdNum', label: t('Lines.Line number') },
       ],
     }
 
     //Sorting filter
-    const [sortBy, setSortBy]: any = useState('description')
+    const [sortBy, setSortBy]: any = useState('calledIdNum')
 
     function changeSortBy(event: any) {
       const newSortBy = event.target.id

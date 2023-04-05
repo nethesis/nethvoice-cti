@@ -23,6 +23,7 @@ import {
   faTriangleExclamation,
   faChevronLeft,
   faChevronRight,
+  faFilter,
 } from '@nethesis/nethesis-solid-svg-icons'
 import classNames from 'classnames'
 import { AnnouncementFilter } from './AnnouncementFilter'
@@ -32,6 +33,7 @@ import { loadCache } from '../../lib/storage'
 import { formatDateLoc, getCallTimeToDisplay } from '../../lib/dateTime'
 import { capitalize } from 'lodash'
 import { getApiEndpoint, getApiScheme, sortByProperty } from '../../lib/utils'
+import { openShowOperatorDrawer } from '../../lib/operators'
 
 export interface AnnouncementViewProps extends ComponentProps<'div'> {}
 
@@ -302,6 +304,20 @@ export const AnnouncementView: FC<AnnouncementViewProps> = ({ className }): JSX.
     table.sort((a, b) => a.privacy.localeCompare(b.privacy))
   }
 
+  function setOperatorInformationDrawer(operatorData: any) {
+    let operatorInformationDataDrawer = null
+    if (operatorData.username && operatorInformation) {
+      for (const username in operatorInformation) {
+        if (username === operatorData.username) {
+          operatorInformationDataDrawer = operatorInformation[username]
+          openShowOperatorDrawer(operatorInformationDataDrawer)
+        }
+      }
+    }
+
+    return
+  }
+
   return (
     <div className={classNames(className)}>
       {/* TO DO CHECK ON MOBILE DEVICE  */}
@@ -321,11 +337,11 @@ export const AnnouncementView: FC<AnnouncementViewProps> = ({ className }): JSX.
                   {/* empty state */}
                   {isLinesLoaded && isEmpty(lines) && (
                     <EmptyState
-                      title={t('Lines.No announcement available')}
-                      description={t('Lines.There are no announcement with current filters') || ''}
+                      title={t('Lines.No announcement')}
+                      description={t('Lines.There are no announcement with current filter') || ''}
                       icon={
                         <FontAwesomeIcon
-                          icon={faPhone}
+                          icon={faFilter}
                           className='mx-auto h-12 w-12'
                           aria-hidden='true'
                         />
@@ -364,17 +380,14 @@ export const AnnouncementView: FC<AnnouncementViewProps> = ({ className }): JSX.
                           <th scope='col' className='relative py-3.5 pl-3 pr-4 sm:pr-6'>
                             <span className='sr-only'>{t('Lines.Details')}</span>
                           </th>
-                          <th scope='col' className='relative py-3.5 pl-3 pr-4 sm:pr-6'>
-                            <span className='sr-only'>{t('Lines.Delete')}</span>
-                          </th>
                         </tr>
                       </thead>
                       <tbody className=' text-sm divide-y divide-gray-200 bg-white text-gray-700 dark:divide-gray-700 dark:bg-gray-900 dark:text-gray-200'>
                         {/* skeleton */}
                         {!isLinesLoaded &&
-                          Array.from(Array(10)).map((e, i) => (
+                          Array.from(Array(5)).map((e, i) => (
                             <tr key={i}>
-                              {Array.from(Array(6)).map((e, j) => (
+                              {Array.from(Array(5)).map((e, j) => (
                                 <td key={j}>
                                   <div className='px-4 py-6'>
                                     <div className='animate-pulse h-5 rounded bg-gray-300 dark:bg-gray-600'></div>
@@ -402,7 +415,8 @@ export const AnnouncementView: FC<AnnouncementViewProps> = ({ className }): JSX.
                                     placeholderType='operator'
                                     size='small'
                                     bordered
-                                    className='mr-2'
+                                    className='mr-3 cursor-pointer'
+                                    onClick={() => setOperatorInformationDrawer(lines[key])}
                                     status={getAvatarMainPresence(lines[key])}
                                   />
                                   {/* <div>{lines[key].username}</div> */}
@@ -470,15 +484,18 @@ export const AnnouncementView: FC<AnnouncementViewProps> = ({ className }): JSX.
                                     {/* </a> */}
                                   </Button>
                                 </div>
-                              </td>
-                              {/* Delete announcement */}
-                              <td className='relative whitespace-nowrap py-4 pl-3 pr-4 text-right text-sm font-medium sm:pr-6'>
-                                {auth.username === lines[key].username && (
+                                {/* Delete announcement */}
+                                {auth.username === lines[key].username ? (
                                   <FontAwesomeIcon
                                     icon={faTrash}
-                                    className='h-4 w-4 p-2 cursor-pointer text-gray-500 dark:text-gray-500'
+                                    className='h-4 w-4 ml-4 p-2 cursor-pointer text-gray-500 dark:text-gray-500'
                                     aria-hidden='true'
                                     onClick={() => deleteAnnouncement(lines[key].id)}
+                                  />
+                                ) : (
+                                  <FontAwesomeIcon
+                                    icon={faTrash}
+                                    className='h-4 w-4 ml-4 p-2 invisible'
                                   />
                                 )}
                               </td>
@@ -503,7 +520,7 @@ export const AnnouncementView: FC<AnnouncementViewProps> = ({ className }): JSX.
                         />
                       </div>
                       <div className='mt-3 text-center sm:mt-0 sm:ml-4 sm:text-left'>
-                        <h3 className='text-lg font-medium leading-6 text-gray-900'>
+                        <h3 className='text-lg font-medium leading-6 text-gray-900 dark:text-gray-200'>
                           {t('Lines.Delete announcement')}
                         </h3>
                         <div className='mt-2'>
@@ -515,7 +532,7 @@ export const AnnouncementView: FC<AnnouncementViewProps> = ({ className }): JSX.
                     </Modal.Content>
                     <Modal.Actions>
                       <Button variant='danger' onClick={() => closedModalSaved()}>
-                        {t('Common.Save')}
+                        {t('Common.Delete')}
                       </Button>
                       <Button
                         variant='white'

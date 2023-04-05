@@ -215,7 +215,6 @@ export const ShowAddAnnouncementDrawerContent = forwardRef<
           </h4>
           <TextInput
             placeholder={t('Lines.Insert announcement name') || ''}
-            className='max-w-sm'
             value={textFilter}
             onChange={changeTextFilter}
             ref={textFilterRef}
@@ -277,20 +276,19 @@ export const ShowAddAnnouncementDrawerContent = forwardRef<
             <div className='flex items-center justify-center w-full mt-2'>
               <label
                 htmlFor='dropzone-file'
-                className='flex flex-col items-center justify-center w-full py-2 border-2 border-primary border-dashed rounded-lg cursor-pointer bg-emerald-50 dark:hover:bg-bray-800 dark:bg-gray-700 hover:bg-emerald-100 dark:border-gray-600 dark:hover:border-gray-500 dark:hover:bg-gray-600'
+                className='flex flex-col items-center justify-center w-full py-2 border-2 border-primary border-dashed rounded-lg cursor-pointer bg-emerald-50 dark:hover:bg-emerald-800 dark:bg-primaryDark hover:bg-emerald-100 dark:border-gray-400 dark:hover:border-gray-500 '
                 onDragOver={handleDragOver}
                 onDrop={handleDrop}
               >
                 <div className='flex flex-col items-center justify-center pt-5 pb-6'>
                   <FontAwesomeIcon
                     icon={faFileMusic}
-                    className='w-10 h-10 mb-3 text-gray-400 dark:text-gray-500'
+                    className='w-10 h-10 mb-3 text-gray-400 dark:text-gray-200'
                   />
                   <p className='mb-2 text-md text-gray-900 dark:text-gray-100'>
-                    <span className='font-normal'>{t('Lines.Select a file audio to upload')}</span>
-                  </p>
-                  <p className='text-sm text-gray-500 dark:text-gray-400'>
-                    {t('Lines.or click and drag here')}
+                    <span className='font-normal'>
+                      {t('Lines.Select or drag an audio file here')}
+                    </span>
                   </p>
                 </div>
                 <input
@@ -377,7 +375,7 @@ export const ShowAddAnnouncementDrawerContent = forwardRef<
         <form onSubmit={handleSubmit}>
           <Modal.Content>
             <div className='mt-3 text-center sm:mt-0 sm:text-left w-full'>
-              <h3 className='text-lg font-medium leading-6 text-gray-900 dark:text-gray-100'>
+              <h3 className='text-lg font-medium leading-6 text-gray-900 dark:text-gray-200'>
                 {t('Lines.Enter announcement information')}
               </h3>
               <div className='mt-3 flex flex-col gap-2'>

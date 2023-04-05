@@ -33,8 +33,8 @@ const Applications: NextPage = () => {
           <span className='text-md font-normal mb-4 text-gray-600 dark:text-gray-100'>
             {t('Applications.Internal')}
           </span>
-          <div className='grid grid-cols-1 gap-5 xl:grid-cols-2 3xl:grid-cols-3'>
-            <div className='max-w-sm mt-5 bg-white border-gray-200 rounded-lg shadow dark:bg-gray-900 dark:border-gray-700'>
+          <div className='grid grid-cols-1 gap-6 md:grid-cols-2 2xl:grid-cols-3'>
+            <div className='mt-5 bg-white border-gray-200 rounded-lg shadow dark:bg-gray-900 dark:border-gray-700'>
               <div className='bg-emerald-50 rounded-lg flex flex-col justify-center items-center'>
                 <span className='h-10 w-10 overflow-hidden rounded-full bg-emerald-600 dark:bg-emerald-500 flex relative top-[-1.25rem]'>
                   <FontAwesomeIcon
@@ -72,7 +72,7 @@ const Applications: NextPage = () => {
                 </div>
               </div>
             </div>
-            <div className='max-w-sm mt-5 bg-white border-gray-200 rounded-lg shadow dark:bg-gray-900 dark:border-gray-700'>
+            <div className='mt-5 bg-white border-gray-200 rounded-lg shadow dark:bg-gray-900 dark:border-gray-700'>
               <div className='bg-emerald-50 rounded-lg flex flex-col justify-center items-center'>
                 <span className='h-10 w-10 overflow-hidden rounded-full bg-emerald-600 dark:bg-emerald-500 flex relative top-[-1.25rem]'>
                   <FontAwesomeIcon
@@ -100,7 +100,7 @@ const Applications: NextPage = () => {
                 </div>
               </div>
             </div>
-            <div className='max-w-sm mt-5 bg-white border-gray-200 rounded-lg shadow dark:bg-gray-900 dark:border-gray-700'>
+            <div className='mt-5 bg-white border-gray-200 rounded-lg shadow dark:bg-gray-900 dark:border-gray-700'>
               <div className='bg-emerald-50 rounded-lg flex flex-col justify-center items-center'>
                 <span className='h-10 w-10 overflow-hidden rounded-full bg-emerald-600 dark:bg-emerald-500 flex relative top-[-1.25rem]'>
                   <FontAwesomeIcon
@@ -135,7 +135,7 @@ const Applications: NextPage = () => {
             {t('Applications.External')}
           </span>
           <div className='flex flex-wrap gap-5'>
-            <div className='max-w-sm mt-5 bg-white border-gray-200 rounded-lg shadow dark:bg-gray-900 dark:border-gray-700'>
+            <div className='mt-5 bg-white border-gray-200 rounded-lg shadow dark:bg-gray-900 dark:border-gray-700'>
               <div className='bg-emerald-50 rounded-lg flex flex-col justify-center items-center'>
                 <span className='h-10 w-10 overflow-hidden rounded-full bg-emerald-600 dark:bg-emerald-500 flex relative top-[-1.25rem]'>
                   <FontAwesomeIcon

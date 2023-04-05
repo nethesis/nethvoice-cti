@@ -13,6 +13,7 @@ import {
   faChevronRight,
   faChevronLeft,
   faPhone,
+  faFilter,
   faVoicemail,
   faArrowTurnDownRight,
 } from '@nethesis/nethesis-solid-svg-icons'
@@ -103,7 +104,7 @@ export const LinesView: FC<LinesViewProps> = ({ className }): JSX.Element => {
   }
 
   //set the default sort type
-  const [sortBy, setSortBy]: any = useState('description')
+  const [sortBy, setSortBy]: any = useState('calledIdNum')
 
   const updateSortFilter = (newSortBy: string) => {
     setSortBy(newSortBy)
@@ -285,11 +286,11 @@ export const LinesView: FC<LinesViewProps> = ({ className }): JSX.Element => {
                   {/* empty state */}
                   {isLinesLoaded && isEmpty(lines) && (
                     <EmptyState
-                      title={t('Lines.No lines available')}
+                      title={t('Lines.No lines')}
                       description={t('Lines.There are no lines with the current filter') || ''}
                       icon={
                         <FontAwesomeIcon
-                          icon={faPhone}
+                          icon={faFilter}
                           className='mx-auto h-12 w-12'
                           aria-hidden='true'
                         />
@@ -305,13 +306,13 @@ export const LinesView: FC<LinesViewProps> = ({ className }): JSX.Element => {
                             scope='col'
                             className='py-3.5 pl-4 pr-3 text-left text-sm font-semibold sm:pl-6 text-gray-700 dark:text-gray-200'
                           >
-                            {t('Lines.Name')}
+                            {t('Lines.Line number')}
                           </th>
                           <th
                             scope='col'
                             className='px-3 py-3.5 text-left text-sm font-semibold text-gray-700 dark:text-gray-200'
                           >
-                            {t('Common.Phone number')}
+                            {t('Lines.Description')}
                           </th>
                           <th
                             scope='col'
@@ -346,7 +347,7 @@ export const LinesView: FC<LinesViewProps> = ({ className }): JSX.Element => {
                       <tbody className=' text-sm divide-y divide-gray-200 bg-white text-gray-700 dark:divide-gray-700 dark:bg-gray-900 dark:text-gray-200'>
                         {/* skeleton */}
                         {!isLinesLoaded &&
-                          Array.from(Array(10)).map((e, i) => (
+                          Array.from(Array(5)).map((e, i) => (
                             <tr key={i}>
                               {Array.from(Array(6)).map((e, j) => (
                                 <td key={j}>
@@ -361,18 +362,20 @@ export const LinesView: FC<LinesViewProps> = ({ className }): JSX.Element => {
                         {/* lines */}
                         {isLinesLoaded &&
                           Object.keys(lines).map((key) => (
-                            <tr key={key}>
+                            <tr key={key} className='cursor-pointer' onClick={() => {
+                              checkObjectDrawer(lines[key])
+                            }}>
                               {/* Name */}
                               <td className='py-4 pl-4 pr-3 sm:pl-6'>
+                                <div>{lines[key].calledIdNum ? lines[key].calledIdNum : '-'}</div>
+                              </td>
+                              {/* Number */}
+                              <td className='px-3 py-4'>
                                 <div className='flex flex-col'>
                                   <div>
                                     {lines[key].description ? lines[key].description : '-'}{' '}
                                   </div>
                                 </div>
-                              </td>
-                              {/* Number */}
-                              <td className='px-3 py-4'>
-                                <div>{lines[key].calledIdNum ? lines[key].calledIdNum : '-'}</div>
                               </td>
                               {/* Caller number */}
                               <td className='px-3 py-4'>
