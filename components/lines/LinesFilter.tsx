@@ -42,7 +42,7 @@ export const LinesFilter = forwardRef<HTMLButtonElement, LinesFilterProps>(
     function changeSortBy(event: any) {
       const newSortBy = event.target.id
       setSortBy(newSortBy)
-      savePreference('telephoneLinesSortBy', newSortBy, auth.username)
+      savePreference('phoneLinesSortBy', newSortBy, auth.username)
 
       // update history (notify parent component)
       updateSortFilter(newSortBy)
@@ -69,7 +69,7 @@ export const LinesFilter = forwardRef<HTMLButtonElement, LinesFilterProps>(
     const resetFilters = () => {
       setTextFilter('')
       setSortBy(DEFAULT_SORT_BY)
-      savePreference('telephoneLinesSortBy', DEFAULT_SORT_BY, auth.username)
+      savePreference('phoneLinesSortBy', DEFAULT_SORT_BY, auth.username)
 
       // notify parent component
       updateTextFilter('')

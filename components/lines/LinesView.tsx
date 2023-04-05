@@ -8,7 +8,7 @@ import { isEmpty, debounce } from 'lodash'
 import { useSelector } from 'react-redux'
 import { RootState } from '../../store'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
-import { openShowTelephoneLinesDrawer, retrieveLines, PAGE_SIZE } from '../../lib/lines'
+import { openShowPhoneLinesDrawer, retrieveLines, PAGE_SIZE } from '../../lib/lines'
 import {
   faChevronRight,
   faChevronLeft,
@@ -29,7 +29,6 @@ export const LinesView: FC<LinesViewProps> = ({ className }): JSX.Element => {
   const [linesError, setLinesError] = useState('')
   const [pageNum, setPageNum]: any = useState(1)
   const [firstRender, setFirstRender]: any = useState(true)
-  const [intervalId, setIntervalId]: any = useState(0)
 
   const [textFilter, setTextFilter]: any = useState('')
   const updateTextFilter = (newTextFilter: string) => {
@@ -48,7 +47,7 @@ export const LinesView: FC<LinesViewProps> = ({ className }): JSX.Element => {
   }, [debouncedUpdateTextFilter])
 
   const [dataPagination, setDataPagination]: any = useState({})
-  //Get Lines information
+  //Get phone lines information
   useEffect(() => {
     if (firstRender) {
       setFirstRender(false)
@@ -77,7 +76,7 @@ export const LinesView: FC<LinesViewProps> = ({ className }): JSX.Element => {
   const phoneLines = useSelector((state: RootState) => state.phoneLines)
 
   useEffect(() => {
-    // reload phonebook
+    // reload phone lines
     setLinesLoaded(false)
   }, [phoneLines])
 
@@ -103,12 +102,15 @@ export const LinesView: FC<LinesViewProps> = ({ className }): JSX.Element => {
     return !isLinesLoaded || pageNum >= dataPagination.totalPages
   }
 
+  //set the default sort type
   const [sortBy, setSortBy]: any = useState('description')
 
   const updateSortFilter = (newSortBy: string) => {
     setSortBy(newSortBy)
   }
 
+  //check if the sort filter is changed
+  // if it has changed check the type and reorder the object
   useEffect(() => {
     let newLines = null
     switch (sortBy) {
@@ -184,8 +186,9 @@ export const LinesView: FC<LinesViewProps> = ({ className }): JSX.Element => {
     }
   }
 
+  // Creation of the object to be sent to the drawer
   function checkObjectDrawer(lines: any) {
-    let objConfig = {
+    let objConfigDrawer = {
       datebegin: null,
       dateend: null,
       enabled: false,
@@ -199,60 +202,63 @@ export const LinesView: FC<LinesViewProps> = ({ className }): JSX.Element => {
       dateType: '',
     }
     if (lines) {
-      objConfig.name = lines.description
-      objConfig.number = lines.calledIdNum
-      objConfig.callerNumber = lines.callerIdNum
+      objConfigDrawer.name = lines.description
+      objConfigDrawer.number = lines.calledIdNum
+      objConfigDrawer.callerNumber = lines.callerIdNum
 
       if (lines.offhour) {
-        // objConfig.enabled = lines.offhour.enabled
+        // objConfigDrawer.enabled = lines.offhour.enabled
         if (lines.offhour.enabled) {
           if (lines.offhour.enabled !== 'never' && lines.offhour.enabled !== undefined) {
-            objConfig.enabled = true
+            objConfigDrawer.enabled = true
           } else {
-            objConfig.enabled = false
-            objConfig.dateType = 'specifyDay'
+            objConfigDrawer.enabled = false
+            objConfigDrawer.dateType = 'specifyDay'
           }
         }
-        objConfig.action = lines.offhour.action
+        objConfigDrawer.action = lines.offhour.action
         if (lines.offhour.enabled === 'period') {
-          objConfig.dateType = 'specifyDay'
-          objConfig.datebegin = lines.offhour.period.datebegin
-          objConfig.datebegin = lines.offhour.period.dateend
+          objConfigDrawer.dateType = 'specifyDay'
+          objConfigDrawer.datebegin = lines.offhour.period.datebegin
+          objConfigDrawer.datebegin = lines.offhour.period.dateend
         } else if (lines.offhour.enabled === 'always') {
-          objConfig.dateType = 'always'
+          objConfigDrawer.dateType = 'always'
         }
         if (
           lines.offhour.action === 'redirect' &&
           lines.offhour.redirect &&
           lines.offhour.redirect.redirect_to
         ) {
-          objConfig.redirect_to = lines.offhour.redirect.redirect_to
+          objConfigDrawer.redirect_to = lines.offhour.redirect.redirect_to
         }
         if (lines.offhour.action === 'audiomsg' && lines.offhour.audiomsg) {
-          objConfig.announcement_id = lines.offhour.audiomsg.announcement_id
+          objConfigDrawer.announcement_id = lines.offhour.audiomsg.announcement_id
         }
         if (
           lines.offhour.action === 'audiomsg_voicemail' &&
           lines.offhour.audiomsg &&
           lines.offhour.voicemail
         ) {
-          objConfig.announcement_id = lines.offhour.audiomsg.announcement_id
-          objConfig.voicemail_id = lines.offhour.voicemail.voicemail_id
+          objConfigDrawer.announcement_id = lines.offhour.audiomsg.announcement_id
+          objConfigDrawer.voicemail_id = lines.offhour.voicemail.voicemail_id
         }
         if (lines.offhour.period) {
           if (lines.offhour.period.datebegin) {
-            objConfig.datebegin = lines.offhour.period.datebegin
-            objConfig.dateend = lines.offhour.period.dateend
+            objConfigDrawer.datebegin = lines.offhour.period.datebegin
+            objConfigDrawer.dateend = lines.offhour.period.dateend
           }
         }
+
+        // If offhour doesn't exist, set the date to always and the action to never
       } else {
-        objConfig.dateType = 'always'
-        objConfig.action = 'audiomsg'
+        objConfigDrawer.dateType = 'always'
+        objConfigDrawer.action = 'audiomsg'
       }
     }
-    openShowTelephoneLinesDrawer(objConfig)
+    openShowPhoneLinesDrawer(objConfigDrawer)
   }
 
+  //Check if the configuration is activate or deactivate
   function getConfigurationStatus(lines: any) {
     if (lines.offhour && lines.offhour.enabled !== 'never') {
       return 'online'

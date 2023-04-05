@@ -111,7 +111,7 @@ export const ShowRuleDetailsContent = forwardRef<HTMLButtonElement, ShowRuleDeta
       setDateEndValue(dateEnd)
     }
 
-    function saveEditTelephoneLines() {
+    function saveEditPhoneLines() {
       // TO DO POST API
     }
 
@@ -405,7 +405,7 @@ export const ShowRuleDetailsContent = forwardRef<HTMLButtonElement, ShowRuleDeta
             <Button
               variant='primary'
               type='submit'
-              onClick={saveEditTelephoneLines}
+              onClick={saveEditPhoneLines}
               className='mb-4'
               disabled={!selectedFile ? true : false}
             >

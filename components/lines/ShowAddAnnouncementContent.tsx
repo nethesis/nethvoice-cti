@@ -113,7 +113,7 @@ export const ShowAddAnnouncementDrawerContent = forwardRef<
     setSelectedFile(null)
   }
 
-  async function saveEditTelephoneLines() {
+  async function saveEditPhoneLines() {
     let editPhoneLinesObj = {}
     if (textFilter && selectedType && selectedFileBase64) {
       editPhoneLinesObj = {
@@ -357,7 +357,7 @@ export const ShowAddAnnouncementDrawerContent = forwardRef<
           <Button
             variant='primary'
             type='submit'
-            onClick={saveEditTelephoneLines}
+            onClick={saveEditPhoneLines}
             className='mb-4'
             disabled={!selectedFile ? true : false}
           >

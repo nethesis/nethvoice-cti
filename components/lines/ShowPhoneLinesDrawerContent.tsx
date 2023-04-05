@@ -25,13 +25,13 @@ import { formatDateLoc, formatInTimeZoneLoc } from '../../lib/dateTime'
 import { setOffHour, getAnnouncements, reloadPhoneLines } from '../../lib/lines'
 import { format, parse } from 'date-fns'
 
-export interface ShowTelephoneLinesDrawerContentProps extends ComponentPropsWithRef<'div'> {
+export interface ShowPhoneLinesDrawerContentProps extends ComponentPropsWithRef<'div'> {
   config: any
 }
 
-export const ShowTelephoneLinesDrawerContent = forwardRef<
+export const ShowPhoneLinesDrawerContent = forwardRef<
   HTMLButtonElement,
-  ShowTelephoneLinesDrawerContentProps
+  ShowPhoneLinesDrawerContentProps
 >(({ config, className, ...props }, ref) => {
   const { t } = useTranslation()
   const [isConfigurationActive, setConfigurationActive] = useState(false)
@@ -132,55 +132,104 @@ export const ShowTelephoneLinesDrawerContent = forwardRef<
 
   function dateInputFunction() {
     return (
-      <div className='flex mt-3 items-center justify-between'>
-        {selectedType === 'specifyDay' ? (
-          <TextInput
-            type={'datetime-local'}
-            placeholder='Select date start'
-            className='max-w-sm mr-4'
-            id='meeting-time'
-            name='meeting-time'
-            ref={dateBeginRef}
-            onChange={changeDateBegin}
-            value={dateBeginToShow}
-          />
-        ) : (
-          <TextInput
-            type={'date'}
-            placeholder='Select date start'
-            className='max-w-sm mr-4'
-            id='meeting-time'
-            name='meeting-time'
-            ref={dateBeginRef}
-            onChange={changeDateBeginNoHours}
-            value={dateBeginToShowNoHour}
-          />
-        )}
+      <>
+        {/* hidden on mobile phone */}
+        <div className='hidden sm:flex mt-5 items-center justify-between'>
+          <span>{selectedType === 'specifyDay' ? t('Lines.Begin') : t('Lines.Date')}</span>
 
-        {selectedType === 'specifyDay' ? (
-          <TextInput
-            type='datetime-local'
-            placeholder='Select date end'
-            className='max-w-sm'
-            id='meeting-time'
-            name='meeting-time'
-            ref={dateEndRef}
-            onChange={changeDateEnd}
-            value={dateEndToShow}
-          />
-        ) : (
-          <TextInput
-            type='datetime-local'
-            placeholder=''
-            className='max-w-sm invisible'
-            id='meeting-time'
-            name='meeting-time'
-            ref={dateEndRef}
-            onChange={changeDateEnd}
-            value={dateEndToShow}
-          />
-        )}
-      </div>
+          {selectedType === 'specifyDay' && (
+            <span className='ml-auto mr-auto'>{t('Lines.End')}</span>
+          )}
+        </div>
+        <div className='hidden sm:flex mt-3 items-center justify-between'>
+          {selectedType === 'specifyDay' ? (
+            <TextInput
+              type={'datetime-local'}
+              placeholder='Select date start'
+              className='max-w-sm mr-4'
+              id='meeting-time'
+              name='meeting-time'
+              ref={dateBeginRef}
+              onChange={changeDateBegin}
+              value={dateBeginToShow}
+            />
+          ) : (
+            <TextInput
+              type={'date'}
+              placeholder='Select date start'
+              className='max-w-sm mr-4'
+              id='meeting-time'
+              name='meeting-time'
+              ref={dateBeginRef}
+              onChange={changeDateBeginNoHours}
+              value={dateBeginToShowNoHour}
+            />
+          )}
+
+          {selectedType === 'specifyDay' ? (
+            <TextInput
+              type='datetime-local'
+              placeholder='Select date end'
+              className='max-w-sm'
+              id='meeting-time'
+              name='meeting-time'
+              ref={dateEndRef}
+              onChange={changeDateEnd}
+              value={dateEndToShow}
+            />
+          ) : (
+            <TextInput className='max-w-sm invisible' />
+          )}
+        </div>
+        {/* Visible on mobile phone */}
+        <div className='sm:hidden'>
+          <div className='flex mt-5 items-center justify-between'>
+            <span>{selectedType === 'specifyDay' ? t('Lines.Begin') : t('Lines.Date')}</span>
+          </div>
+          <div className='flex flex-col mt-3'>
+            {selectedType === 'specifyDay' ? (
+              <TextInput
+                type={'datetime-local'}
+                placeholder='Select date start'
+                className='max-w-sm mr-4'
+                id='meeting-time'
+                name='meeting-time'
+                ref={dateBeginRef}
+                onChange={changeDateBegin}
+                value={dateBeginToShow}
+              />
+            ) : (
+              <TextInput
+                type={'date'}
+                placeholder='Select date start'
+                className='max-w-sm mr-4'
+                id='meeting-time'
+                name='meeting-time'
+                ref={dateBeginRef}
+                onChange={changeDateBeginNoHours}
+                value={dateBeginToShowNoHour}
+              />
+            )}
+            {selectedType === 'specifyDay' && (
+              <>
+                <div className='pt-5'>
+                  <span>{t('Lines.End')}</span>
+                  <TextInput
+                    type='datetime-local'
+                    placeholder='Select date end'
+                    className='max-w-sm pt-3'
+                    id='meeting-time'
+                    name='meeting-time'
+                    ref={dateEndRef}
+                    onChange={changeDateEnd}
+                    value={dateEndToShow}
+                  />
+                </div>
+              </>
+            )}
+          </div>
+        </div>
+      </>
     )
   }
   //end of all the date function operations
@@ -304,7 +353,7 @@ export const ShowTelephoneLinesDrawerContent = forwardRef<
   }
 
   const [missingAudiomessageAnnouncement, setMissingAudiomessageAnnouncement] = useState(false)
-  function saveEditTelephoneLines() {
+  function saveEditPhoneLines() {
     if (isConfigurationActive) {
       let objectToSendApi = {
         action: selectedConfigurationTypology,
@@ -528,18 +577,7 @@ export const ShowTelephoneLinesDrawerContent = forwardRef<
               ))}
             </div>
           </fieldset>
-          {selectedType && selectedType !== 'always' && (
-            <>
-              <div className='flex mt-5 items-center justify-between'>
-                <span>{selectedType === 'specifyDay' ? t('Lines.Begin') : t('Lines.Date')}</span>
-
-                {selectedType === 'specifyDay' && (
-                  <span className='ml-auto mr-auto'>{t('Lines.End')}</span>
-                )}
-              </div>
-              {dateInputFunction()}
-            </>
-          )}
+          {selectedType && selectedType !== 'always' && <>{dateInputFunction()}</>}
         </div>
       </>
     )
@@ -994,7 +1032,7 @@ export const ShowTelephoneLinesDrawerContent = forwardRef<
           <Button
             variant='primary'
             type='submit'
-            onClick={saveEditTelephoneLines}
+            onClick={saveEditPhoneLines}
             className='mb-4'
             // disabled={!isConfigurationActive ? true : false}
           >
@@ -1010,4 +1048,4 @@ export const ShowTelephoneLinesDrawerContent = forwardRef<
   )
 })
 
-ShowTelephoneLinesDrawerContent.displayName = 'ShowTelephoneLinesDrawerContent'
+ShowPhoneLinesDrawerContent.displayName = 'ShowPhoneLinesDrawerContent'

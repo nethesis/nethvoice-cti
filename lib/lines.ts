@@ -204,12 +204,12 @@ export async function downloadMsg(keyMessage: any) {
   }
 }
 
-export const openShowTelephoneLinesDrawer = (object: any) => {
+export const openShowPhoneLinesDrawer = (object: any) => {
   const config = object
 
   store.dispatch.sideDrawer.update({
     isShown: true,
-    contentType: 'showTelephoneLines',
+    contentType: 'showPhoneLines',
     config: config,
   })
 }
@@ -235,7 +235,7 @@ export const openShowRuleDetailsDrawer = (name: any) => {
 }
 
 export const getFilterValues = (currentUsername: string) => {
-  const sortBy = loadPreference('telephoneLinesSortBy', currentUsername) || DEFAULT_SORT_BY
+  const sortBy = loadPreference('phoneLinesSortBy', currentUsername) || DEFAULT_SORT_BY
 
   return { sortBy }
 }

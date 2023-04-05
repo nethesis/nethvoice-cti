@@ -3,7 +3,7 @@
 
 export * from './LinesFilter'
 export * from './LinesView'
-export * from './ShowTelephoneLinesDrawerContent'
+export * from './ShowPhoneLinesDrawerContent'
 export * from './AnnouncementView'
 export * from './AnnouncementFilter'
 export * from './ShowAddAnnouncementContent'

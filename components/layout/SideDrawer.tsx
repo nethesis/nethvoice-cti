@@ -16,7 +16,7 @@ import { ShowHistoryDrawerContent } from '../history/ShowHistoryDrawerContent'
 import { NotificationsDrawerContent } from './NotificationsDrawerContent'
 import { AddToPhonebookDrawerContent } from '../history/AddToPhonebookDrawer'
 import { ShowQueueCallDrawerContent } from '../queues'
-import { ShowTelephoneLinesDrawerContent } from '../lines/ShowTelephoneLinesDrawerContent'
+import { ShowPhoneLinesDrawerContent } from '../lines/ShowPhoneLinesDrawerContent'
 import { ShowAddAnnouncementDrawerContent } from '../lines'
 import { ShowRuleDetailsContent } from '../lines'
 
@@ -62,8 +62,8 @@ export const SideDrawer: FC<SideDrawerProps> = ({ isShown, contentType, config, 
                         <AddToPhonebookDrawerContent config={config} />
                       ) : contentType === 'showQueueCall' ? (
                         <ShowQueueCallDrawerContent config={config} />
-                      ) : contentType === 'showTelephoneLines' ? (
-                        <ShowTelephoneLinesDrawerContent config={config} />
+                      ) : contentType === 'showPhoneLines' ? (
+                        <ShowPhoneLinesDrawerContent config={config} />
                       ) : contentType === 'showTelephoneAnnouncement' ? (
                         <ShowAddAnnouncementDrawerContent config={config} />
                       ) : contentType === 'showRuleDetails' ? (
