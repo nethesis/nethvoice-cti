@@ -142,7 +142,7 @@ export const ShowPhoneLinesDrawerContent = forwardRef<
   function dateInputFunction() {
     return (
       <>
-        <div className='flex-wrap sm:flex mt-5 space-y-2 sm:space-y-0 items-center justify-between'>
+        <div className='grid grid-cols-1 sm:grid-cols-2 gap-6 mt-5 items-center justify-between'>
           <div>
             <span className=''>
               {selectedType === 'specifyDay' ? t('Lines.Begin') : t('Lines.Date')}
@@ -516,8 +516,6 @@ export const ShowPhoneLinesDrawerContent = forwardRef<
           <div className='mt-2 border-t border-gray-200 dark:border-gray-700'></div>
         </div>
         {/* Date input  */}
-        {/* TO DO MANAGE IN CASE OF MOBILE DEVICE */}
-        {/* TO DO CHECK RADIO BUTTON VALUE TO SET DATE  */}
         <div className='mt-4 px-5'>
           {/* Date input select */}
           <fieldset>

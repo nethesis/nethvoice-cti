@@ -66,7 +66,7 @@ export const ShowAddAnnouncementDrawerContent = forwardRef<
   const contactMenuItems = (
     <>
       <Dropdown.Item icon={faTrash} onClick={() => deleteAnnouncement(config.id)}>
-        Delete
+        {t('Common.Delete')}
       </Dropdown.Item>
     </>
   )

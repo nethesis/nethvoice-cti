@@ -45,7 +45,7 @@ const Applications: NextPage = () => {
                 </span>
                 <div className='pb-1 rounded-lg'>
                   <h5 className='flex mb-2 font-medium  text-gray-700 dark:text-gray-800'>
-                    {t('Applications.Telephone lines and announcements')}
+                    {t('Applications.Phone lines and announcements')}
                   </h5>
                 </div>
               </div>
@@ -134,7 +134,7 @@ const Applications: NextPage = () => {
           <span className='text-md font-normal mb-4  text-gray-600 dark:text-gray-100'>
             {t('Applications.External')}
           </span>
-          <div className='flex flex-wrap gap-5'>
+          <div className='grid grid-cols-1 gap-6 md:grid-cols-2 2xl:grid-cols-3'>
             <div className='mt-5 bg-white border-gray-200 rounded-lg shadow dark:bg-gray-900 dark:border-gray-700'>
               <div className='bg-emerald-50 rounded-lg flex flex-col justify-center items-center'>
                 <span className='h-10 w-10 overflow-hidden rounded-full bg-emerald-600 dark:bg-emerald-500 flex relative top-[-1.25rem]'>

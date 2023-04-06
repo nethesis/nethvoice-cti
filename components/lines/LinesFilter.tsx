@@ -173,7 +173,11 @@ export const LinesFilter = forwardRef<HTMLButtonElement, LinesFilterProps>(
                                         type='radio'
                                         defaultChecked={option.value === sortBy}
                                         onChange={changeSortBy}
-                                        className='h-4 w-4 border-gray-300 text-primary focus:ring-primaryLight dark:border-gray-600 dark:text-primary dark:focus:ring-primaryDark'
+                                        className={`h-4 w-4 border-gray-300 text-primary focus:ring-primaryLight dark:focus:ring-primaryDark ${
+                                          sortBy === option.value
+                                            ? 'dark:bg-primaryLight dark:text-primary dark:border-gray-600'
+                                            : 'dark:bg-gray-700 dark:text-white dark:border-gray-600'
+                                        }`}
                                       />
                                       <label
                                         htmlFor={option.value}
@@ -255,7 +259,11 @@ export const LinesFilter = forwardRef<HTMLButtonElement, LinesFilterProps>(
                                   type='radio'
                                   defaultChecked={option.value === sortBy}
                                   onChange={changeSortBy}
-                                  className='h-4 w-4 border-gray-300 text-primary focus:ring-primaryLight dark:border-gray-600 dark:text-primary dark:focus:ring-primaryDark'
+                                  className={`h-4 w-4 border-gray-300 text-primary focus:ring-primaryLight dark:focus:ring-primaryDark ${
+                                    sortBy === option.value
+                                      ? 'dark:bg-primaryLight dark:text-primary dark:border-gray-600'
+                                      : 'dark:bg-gray-700 dark:text-white dark:border-gray-600'
+                                  }`}
                                 />
                                 <label
                                   htmlFor={option.value}
