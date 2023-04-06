@@ -37,6 +37,8 @@ import {
   modifyMsg,
   deleteMsg,
 } from '../../lib/lines'
+import { useEventListener } from '../../lib/hooks/useEventListener'
+
 export interface EditAnnouncementContentProps extends ComponentPropsWithRef<'div'> {
   config: any
 }
@@ -218,10 +220,6 @@ export const ShowAddAnnouncementDrawerContent = forwardRef<
     setTextFilter(newTextFilter)
   }
 
-  function recordAudioAnnouncement() {
-    //TO DO RECORD FILE AUDIO
-  }
-
   function formatFileSize(sizeInBytes: any) {
     const units = ['B', 'KB', 'MB', 'GB', 'TB']
     let size = sizeInBytes
@@ -251,7 +249,7 @@ export const ShowAddAnnouncementDrawerContent = forwardRef<
     enableAnnouncement()
   }
 
-  const [modalAnnouncementType, setModalAnnouncementType] = useState('')
+  const [modalAnnouncementType, setModalAnnouncementType] = useState('private')
   function changeAnnouncementModalTypeSelected(event: any) {
     const radioButtonTypeSelected = event.target.id
     setModalAnnouncementType(radioButtonTypeSelected)
@@ -260,11 +258,20 @@ export const ShowAddAnnouncementDrawerContent = forwardRef<
   const [inputTextModal, setInputTextModal] = useState('')
   const [enableAnnouncementError, setEnableAnnouncementError] = useState('')
 
+  const [tempFileNameAudioUpload, setTempFileNameAudioUpload] = useState('')
+  // show modal announcement
+  useEventListener('phone-island-recording', (modalAnnouncementObjInformation) => {
+    if (modalAnnouncementObjInformation.base64_audio_file) {
+      setTempFileNameAudioUpload(modalAnnouncementObjInformation.base64_audio_file)
+    }
+    setIsRecordingActive(true)
+  })
+
   const enableAnnouncement = async () => {
     let objectEnableAnnouncement = {
       description: inputTextModal,
       privacy: modalAnnouncementType,
-      tempFIleName: '',
+      tempFIleName: tempFileNameAudioUpload,
     }
     try {
       await enableMsg(objectEnableAnnouncement)

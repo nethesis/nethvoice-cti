@@ -22,8 +22,9 @@ import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { callPhoneNumber, closeSideDrawer } from '../../lib/utils'
 import { TextInput, Button } from '../common'
 import { formatDateLoc, formatInTimeZoneLoc } from '../../lib/dateTime'
-import { setOffHour, getAnnouncements, reloadPhoneLines } from '../../lib/lines'
+import { setOffHour, getAnnouncements, reloadPhoneLines, playAnnouncement } from '../../lib/lines'
 import { format, parse } from 'date-fns'
+import { useEventListener } from '../../lib/hooks/useEventListener'
 
 export interface ShowPhoneLinesDrawerContentProps extends ComponentPropsWithRef<'div'> {
   config: any
@@ -484,16 +485,20 @@ export const ShowPhoneLinesDrawerContent = forwardRef<
     textFilterRedirectRef.current.focus()
   }
 
+  const [isListeningAnnouncements, setIsListeningAnnouncements] = useState(false)
+
   async function playSelectedAnnouncement(announcementId: any) {
     if (announcementId) {
-      // try {
-      //   await listenMsg(announcementId)
-      // } catch (error) {
-      //   setPlayAudioMessageError('Cannot play announcement')
-      //   return
-      // }
+      playAnnouncement(announcementId)
+      // disactivate play button
+      setIsListeningAnnouncements(true)
     }
   }
+
+  //Reactivate play button
+  useEventListener('phone-island-audio-player-closed', () => {
+    setIsListeningAnnouncements(false)
+  })
 
   const [dateBegin, setDateBegin] = useState(new Date())
   const [dateEnd, setDateEnd] = useState(new Date())
@@ -586,7 +591,7 @@ export const ShowPhoneLinesDrawerContent = forwardRef<
               <Button
                 variant='white'
                 onClick={() => playSelectedAnnouncement(selectedAnnouncementInfo.id)}
-                disabled={!announcementSelected}
+                disabled={!announcementSelected && isListeningAnnouncements}
               >
                 <FontAwesomeIcon
                   icon={faPlay}
@@ -645,7 +650,7 @@ export const ShowPhoneLinesDrawerContent = forwardRef<
                 <Button
                   variant='white'
                   onClick={() => playSelectedAnnouncement(selectedAnnouncementInfo.id)}
-                  disabled={!announcementSelected}
+                  disabled={!announcementSelected && isListeningAnnouncements}
                 >
                   <FontAwesomeIcon
                     icon={faPlay}

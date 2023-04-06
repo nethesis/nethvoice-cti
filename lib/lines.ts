@@ -156,7 +156,6 @@ export async function deleteMsg(msgElement: string) {
 // Modify message
 export async function modifyMsg(msgElement: any) {
   let userUrlApi = apiUrl + '/offhour/modify_announcement'
-  console.log("qui",msgElement)
 
   try {
     const { data, status } = await axios.post(userUrlApi, msgElement)
@@ -273,19 +272,17 @@ export function reloadAnnouncement() {
 
 //phone island events
 
+// The event to show the recording view.
 export function recordingAnnouncement() {
   console.log('recording start') ////
   eventDispatch('phone-island-recording-start', {})
 }
 
-export function playerAnnouncement() {
-  eventDispatch('phone-island-audio-player-start', {})
-}
-
-export function recordingAccepted() {
-  eventDispatch('phone-island-recording', {})
-}
-
-export function audioplayerClose() {
-  eventDispatch('phone-island-audio-player-closed', {})
+// The event to show the audio player view and play an audio file.
+export function playAnnouncement(announcement_id: any) {
+  let objectPlayAnnouncement = {
+    type: 'announcement',
+    id: announcement_id.toString(),
+  }
+  eventDispatch('phone-island-audio-player-start', { objectPlayAnnouncement })
 }

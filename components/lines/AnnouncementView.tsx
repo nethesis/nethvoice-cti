@@ -28,7 +28,8 @@ import { formatDateLoc, getCallTimeToDisplay } from '../../lib/dateTime'
 import { capitalize } from 'lodash'
 import { getApiEndpoint, getApiScheme, sortByProperty } from '../../lib/utils'
 import { openShowOperatorDrawer } from '../../lib/operators'
-import { openEditAnnouncementDrawer } from '../../lib/lines'
+import { openEditAnnouncementDrawer, playAnnouncement } from '../../lib/lines'
+import { useEventListener } from '../../lib/hooks/useEventListener'
 
 export interface AnnouncementViewProps extends ComponentProps<'div'> {}
 
@@ -136,17 +137,21 @@ export const AnnouncementView: FC<AnnouncementViewProps> = ({ className }): JSX.
     }
   }
 
+  const [isListeningAnnouncements, setIsListeningAnnouncements] = useState(false)
+  const [idAnnouncementInPlay, setIdAnnouncementInPlay] = useState('')
   async function playSelectedAnnouncement(announcementId: any) {
     if (announcementId) {
-      // try {
-      //   await listenMsg(announcementId)
-      // } catch (error) {
-      //   setPlayAudioMessageError('Cannot play announcement')
-      //   return
-      // }
+      playAnnouncement(announcementId)
+      setIdAnnouncementInPlay(announcementId)
+      // disactivate play button
+      setIsListeningAnnouncements(true)
     }
-    console.log('you want to play this announcement', announcementId)
   }
+
+  //Reactivate play button
+  useEventListener('phone-island-audio-player-closed', () => {
+    setIsListeningAnnouncements(false)
+  })
 
   const [sortBy, setSortBy]: any = useState('name')
   const auth = useSelector((state: RootState) => state.authentication)
@@ -402,6 +407,10 @@ export const AnnouncementView: FC<AnnouncementViewProps> = ({ className }): JSX.
                                   {/* Play button */}
                                   <Button
                                     variant='white'
+                                    disabled={
+                                      idAnnouncementInPlay === lines[key].id &&
+                                      isListeningAnnouncements
+                                    }
                                     onClick={() => playSelectedAnnouncement(lines[key].id)}
                                   >
                                     <FontAwesomeIcon
