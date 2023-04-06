@@ -5,9 +5,10 @@ import axios from 'axios'
 import { handleNetworkError, getApiEndpoint, getApiScheme } from './utils'
 import { store } from '../store'
 import { loadPreference } from './storage'
+import { eventDispatch } from './hooks/eventDispatch'
 
 export const PAGE_SIZE = 10
-export const DEFAULT_SORT_BY = 'calledIdNum'
+export const DEFAULT_SORT_BY = 'description'
 export const DEFAULT_SORT_BY_ANNOUNCEMENT = 'description'
 
 const apiEnpoint = getApiEndpoint()
@@ -155,6 +156,7 @@ export async function deleteMsg(msgElement: string) {
 // Modify message
 export async function modifyMsg(msgElement: any) {
   let userUrlApi = apiUrl + '/offhour/modify_announcement'
+  console.log("qui",msgElement)
 
   try {
     const { data, status } = await axios.post(userUrlApi, msgElement)
@@ -214,13 +216,28 @@ export const openShowPhoneLinesDrawer = (object: any) => {
   })
 }
 
-export const openShowTelephoneAnnouncementDrawer = () => {
-  const config = {}
-
+export const openCreateAnnouncementDrawer = () => {
   store.dispatch.sideDrawer.update({
     isShown: true,
     contentType: 'showTelephoneAnnouncement',
-    config: config,
+    config: { isEdit: false },
+  })
+}
+
+export const openEditAnnouncementDrawer = (
+  description: any,
+  announcement_id: any,
+  privacy: any,
+) => {
+  store.dispatch.sideDrawer.update({
+    isShown: true,
+    contentType: 'showTelephoneAnnouncement',
+    config: {
+      isEdit: true,
+      description: description,
+      announcement_id: announcement_id,
+      privacy: privacy,
+    },
   })
 }
 
@@ -252,4 +269,23 @@ export function reloadPhoneLines() {
 
 export function reloadAnnouncement() {
   store.dispatch.announcement.reload()
+}
+
+//phone island events
+
+export function recordingAnnouncement() {
+  console.log('recording start') ////
+  eventDispatch('phone-island-recording-start', {})
+}
+
+export function playerAnnouncement() {
+  eventDispatch('phone-island-audio-player-start', {})
+}
+
+export function recordingAccepted() {
+  eventDispatch('phone-island-recording', {})
+}
+
+export function audioplayerClose() {
+  eventDispatch('phone-island-audio-player-closed', {})
 }

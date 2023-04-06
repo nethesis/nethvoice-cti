@@ -141,10 +141,11 @@ export const ShowPhoneLinesDrawerContent = forwardRef<
   function dateInputFunction() {
     return (
       <>
-        {/* hidden on mobile phone */}
         <div className='flex-wrap sm:flex mt-5 space-y-2 sm:space-y-0 items-center justify-between'>
           <div>
-            <span className=''>{selectedType === 'specifyDay' ? t('Lines.Begin') : t('Lines.Date')}</span>
+            <span className=''>
+              {selectedType === 'specifyDay' ? t('Lines.Begin') : t('Lines.Date')}
+            </span>
             {selectedType === 'specifyDay' ? (
               <TextInput
                 type={'datetime-local'}
@@ -171,9 +172,7 @@ export const ShowPhoneLinesDrawerContent = forwardRef<
           </div>
 
           <div>
-            {selectedType === 'specifyDay' && (
-              <span className=''>{t('Lines.End')}</span>
-            )}
+            {selectedType === 'specifyDay' && <span className=''>{t('Lines.End')}</span>}
             {selectedType === 'specifyDay' ? (
               <TextInput
                 type='datetime-local'
@@ -526,7 +525,11 @@ export const ShowPhoneLinesDrawerContent = forwardRef<
                     name={`filter-${contactTypeFilter.id}`}
                     type='radio'
                     checked={dateSelectionInput.value === selectedType}
-                    className='h-4 w-4 border-gray-300 text-primary dark:border-gray-600 focus:ring-primaryLight dark:focus:ring-primaryDark dark:text-primary'
+                    className={`h-4 w-4 border-gray-300 text-primary focus:ring-primaryLight ${
+                      selectedType === dateSelectionInput.value
+                        ? 'dark:text-primary dark:bg-primaryLight'
+                        : 'dark:text-primary dark:bg-gray-700'
+                    } dark:border-gray-600 dark:focus:ring-primaryDark`}
                     onChange={changeTypeSelected}
                   />
                   <label
@@ -729,7 +732,11 @@ export const ShowPhoneLinesDrawerContent = forwardRef<
                     name={`filter-${announcementTypologyConfiguration.id}`}
                     type='radio'
                     checked={typology.value === selectedConfigurationTypology}
-                    className='h-4 w-4 border-gray-300 text-primary dark:border-gray-600 focus:ring-primaryLight dark:focus:ring-primaryDark dark:text-primary'
+                    className={`h-4 w-4 border-gray-300 text-primary focus:ring-primaryLight ${
+                      selectedConfigurationTypology === typology.value
+                        ? 'dark:text-primary dark:bg-primaryLight'
+                        : 'dark:text-primary dark:bg-gray-700'
+                    } dark:border-gray-600 dark:focus:ring-primaryDark`}
                     onChange={changeAnnouncementTypologySelected}
                   />
                   <label
@@ -864,6 +871,19 @@ export const ShowPhoneLinesDrawerContent = forwardRef<
       <div className={classNames(className)} {...props}>
         {/* Contact details */}
         <dl className='px-5 pt-5'>
+          {/* Description */}
+          {config.name && (
+            <div className='py-4 sm:grid sm:grid-cols-3 sm:gap-4 sm:py-5'>
+              <dt className='text-sm font-medium text-gray-500 dark:text-gray-400'>
+                {t('Lines.Description')}
+              </dt>
+              <dd className='mt-1 text-sm sm:col-span-2 sm:mt-0 text-gray-900 dark:text-gray-100'>
+                <div className='flex items-center text-sm'>
+                  <span>{config.name}</span>
+                </div>
+              </dd>
+            </div>
+          )}
           {/* Line number */}
           {config.number && (
             <div className='py-4 sm:grid sm:grid-cols-3 sm:gap-4 sm:py-5'>
@@ -887,20 +907,6 @@ export const ShowPhoneLinesDrawerContent = forwardRef<
               </dd>
             </div>
           )}
-          {/* Description */}
-          {config.name && (
-            <div className='py-4 sm:grid sm:grid-cols-3 sm:gap-4 sm:py-5'>
-              <dt className='text-sm font-medium text-gray-500 dark:text-gray-400'>
-                {t('Lines.Description')}
-              </dt>
-              <dd className='mt-1 text-sm sm:col-span-2 sm:mt-0 text-gray-900 dark:text-gray-100'>
-                <div className='flex items-center text-sm'>
-                  <span>{config.name}</span>
-                </div>
-              </dd>
-            </div>
-          )}
-
           {/* Caller number */}
           {config.callerNumber && (
             <div className='py-4 sm:grid sm:grid-cols-3 sm:gap-4 sm:py-5'>

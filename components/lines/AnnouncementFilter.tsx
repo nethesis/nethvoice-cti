@@ -11,7 +11,7 @@ import { faCircleXmark, faXmark, faPlus, faChevronDown } from '@nethesis/nethesi
 import { useSelector } from 'react-redux'
 import { RootState } from '../../store'
 import { useTranslation } from 'react-i18next'
-import { openShowTelephoneAnnouncementDrawer } from '../../lib/lines'
+import { openCreateAnnouncementDrawer } from '../../lib/lines'
 import { savePreference } from '../../lib/storage'
 import { DEFAULT_SORT_BY_ANNOUNCEMENT, getFilterAnnouncementValues } from '../../lib/lines'
 
@@ -284,11 +284,7 @@ export const AnnouncementFilter = forwardRef<HTMLButtonElement, AnnouncementFilt
 
                 {/* Container for add announcement button  */}
                 <div className='flex pb-4 sm:pb-0'>
-                  <Button
-                    variant='primary'
-                    className=''
-                    onClick={openShowTelephoneAnnouncementDrawer}
-                  >
+                  <Button variant='primary' className='' onClick={openCreateAnnouncementDrawer}>
                     <FontAwesomeIcon
                       icon={faPlus}
                       className='h-4 w-4 mr-2 text-white dark:text-white'
@@ -300,18 +296,18 @@ export const AnnouncementFilter = forwardRef<HTMLButtonElement, AnnouncementFilt
 
               {/* Active filters */}
               <div>
-                <div className='mx-auto pt-3 sm:flex sm:items-center'>
-                  <h3 className='text-sm font-medium text-gray-500 dark:text-gray-400'>
+                <div className='mx-auto pt-3 flex flex-wrap items-center'>
+                  <h3 className='text-sm font-medium text-gray-500 dark:text-gray-400 text-left sm:text-center'>
                     {t('Common.Active filters')}
                   </h3>
                   {/* separator */}
                   <div
                     aria-hidden='true'
-                    className='hidden h-5 w-px sm:ml-4 sm:block bg-gray-300 dark:bg-gray-600'
+                    className='h-5 w-px ml-4 block bg-gray-300 dark:bg-gray-600'
                   />
                   {/* sort by */}
-                  <div className='mt-2 sm:mt-0 sm:ml-4'>
-                    <div className='-m-1 flex flex-wrap items-center'>
+                  <div className='mt-0 ml-4'>
+                    <div className='-m-1 flex items-center'>
                       <span className='m-1 inline-flex items-center rounded-full border py-1.5 px-3 text-sm font-medium border-gray-200 bg-white text-gray-700 dark:border-gray-700 dark:bg-gray-900 dark:text-gray-200'>
                         <span>
                           <span className='text-gray-500 dark:text-gray-400'>
@@ -325,10 +321,10 @@ export const AnnouncementFilter = forwardRef<HTMLButtonElement, AnnouncementFilt
                   {/* separator */}
                   <div
                     aria-hidden='true'
-                    className='hidden h-5 w-px sm:ml-4 sm:block bg-gray-300 dark:bg-gray-600'
+                    className='h-5 w-px ml-4 sm:block bg-gray-300 dark:bg-gray-600'
                   />
                   {/* reset filters */}
-                  <div className='mt-4 sm:mt-0 text-left sm:text-center ml-1 sm:ml-4'>
+                  <div className='mt-0 text-center ml-4'>
                     <button
                       type='button'
                       onClick={() => resetFilters()}

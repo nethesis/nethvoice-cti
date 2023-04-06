@@ -28,7 +28,8 @@
     "Loading": "Loading",
     "Lines": "Lines",
     "or": "or",
-    "Delete": "Delete"
+    "Delete": "Delete",
+    "Edit": "Edit"
   },
   "Login": {
     "User": "User",
@@ -354,6 +355,7 @@
     "Fill in all the fields to be able to continue": "Fill in all the fields to be able to continue",
     "Enter announcement information": "Enter announcement information",
     "Description": "Description",
-    "Line number": "Line number"
+    "Line number": "Line number",
+    "Announcement details": "Announcement details"
   }
 }

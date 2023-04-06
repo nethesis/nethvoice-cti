@@ -283,17 +283,17 @@ export const LinesFilter = forwardRef<HTMLButtonElement, LinesFilterProps>(
 
               {/* Active filters */}
               <div>
-                <div className='mx-auto pt-3 sm:flex sm:items-center'>
-                  <h3 className='text-sm font-medium text-gray-500 dark:text-gray-400'>
+                <div className='mx-auto pt-3 flex flex-wrap items-center'>
+                  <h3 className='text-sm font-medium text-gray-500 dark:text-gray-400 text-left sm:text-center'>
                     {t('Common.Active filters')}
                   </h3>
                   {/* separator */}
                   <div
                     aria-hidden='true'
-                    className='hidden h-5 w-px sm:ml-4 sm:block bg-gray-300 dark:bg-gray-600'
+                    className='h-5 w-px ml-4 block bg-gray-300 dark:bg-gray-600'
                   />
                   {/* sort by */}
-                  <div className='mt-2 sm:mt-0 sm:ml-4'>
+                  <div className='mt-0 ml-4'>
                     <div className='-m-1 flex flex-wrap items-center'>
                       <span className='m-1 inline-flex items-center rounded-full border py-1.5 px-3 text-sm font-medium border-gray-200 bg-white text-gray-700 dark:border-gray-700 dark:bg-gray-900 dark:text-gray-200'>
                         <span>
@@ -308,10 +308,10 @@ export const LinesFilter = forwardRef<HTMLButtonElement, LinesFilterProps>(
                   {/* separator */}
                   <div
                     aria-hidden='true'
-                    className='hidden h-5 w-px sm:ml-4 sm:block bg-gray-300 dark:bg-gray-600'
+                    className='h-5 w-px ml-4 sm:block bg-gray-300 dark:bg-gray-600'
                   />
                   {/* reset filters */}
-                  <div className='mt-4 sm:mt-0 text-left sm:text-center ml-1 sm:ml-4'>
+                  <div className='mt-0 text-center ml-4'>
                     <button
                       type='button'
                       onClick={() => resetFilters()}

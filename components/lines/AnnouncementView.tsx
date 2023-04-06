@@ -6,13 +6,7 @@ import { useTranslation } from 'react-i18next'
 import { Button, EmptyState, InlineNotification, Avatar, Modal, TextInput } from '../common'
 import { isEmpty, debounce } from 'lodash'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
-import {
-  getAnnouncementsFiltered,
-  downloadMsg,
-  listenMsg,
-  deleteMsg,
-  PAGE_SIZE,
-} from '../../lib/lines'
+import { getAnnouncementsFiltered, downloadMsg, listenMsg, PAGE_SIZE } from '../../lib/lines'
 import {
   faPhone,
   faPlay,
@@ -34,27 +28,9 @@ import { formatDateLoc, getCallTimeToDisplay } from '../../lib/dateTime'
 import { capitalize } from 'lodash'
 import { getApiEndpoint, getApiScheme, sortByProperty } from '../../lib/utils'
 import { openShowOperatorDrawer } from '../../lib/operators'
+import { openEditAnnouncementDrawer } from '../../lib/lines'
 
 export interface AnnouncementViewProps extends ComponentProps<'div'> {}
-
-const table = [
-  {
-    description: 'La notte degli unicorni',
-    username: 'antonio',
-    date_creation: '27/12/2017',
-    privacy: 'private',
-    time_creation: '08:12:30',
-    id: 1,
-  },
-  {
-    description: 'Il segreto del tempio',
-    username: 'vittorio',
-    date_creation: '19/10/2018',
-    privacy: 'public',
-    time_creation: '08:12:30',
-    id: 2,
-  },
-]
 
 export const AnnouncementView: FC<AnnouncementViewProps> = ({ className }): JSX.Element => {
   const { t } = useTranslation()
@@ -65,13 +41,8 @@ export const AnnouncementView: FC<AnnouncementViewProps> = ({ className }): JSX.
   const [firstRender, setFirstRender]: any = useState(true)
   const [intervalId, setIntervalId]: any = useState(0)
   const authStore = useSelector((state: RootState) => state.authentication)
-  const [showDeleteModal, setShowDelecteModal] = useState(false)
-  const [deleteAnnouncementId, setDeleteAnnouncementId] = useState(null)
   const [textFilter, setTextFilter]: any = useState('')
-  const [deleteAudioMessageError, setDeleteAudioMessageError] = useState('')
   const [donwloadAudioMessageError, setDownloadAudioMessageError] = useState('')
-
-  const cancelButtonRef: RefObject<HTMLButtonElement> = createRef()
 
   const apiEnpoint = getApiEndpoint()
   const apiScheme = getApiScheme()
@@ -144,24 +115,6 @@ export const AnnouncementView: FC<AnnouncementViewProps> = ({ className }): JSX.
 
   function isNextPageButtonDisabled() {
     return !isLinesLoaded || pageNum >= dataPagination.totalPages
-  }
-
-  const deleteAnnouncement = (announcementId: any) => {
-    setShowDelecteModal(true)
-    setDeleteAnnouncementId(announcementId)
-  }
-
-  async function closedModalSaved() {
-    if (deleteAnnouncementId) {
-      try {
-        await deleteMsg(deleteAnnouncementId)
-      } catch (error) {
-        setDeleteAudioMessageError('Cannot play announcement')
-        return
-      }
-    }
-    setShowDelecteModal(false)
-    // setForwardPresence(numberInputRef.current?.value)
   }
 
   async function donwloadSelectedAnnouncement(announcementId: any) {
@@ -294,14 +247,6 @@ export const AnnouncementView: FC<AnnouncementViewProps> = ({ className }): JSX.
       }
     }
     return fullName
-  }
-  // Sorting of the table according to the selected value
-  if (sortBy === 'username') {
-    table.sort((a, b) => a.username.localeCompare(b.username))
-  } else if (sortBy === 'description') {
-    table.sort((a, b) => a.description.localeCompare(b.description))
-  } else if (sortBy === 'privacy') {
-    table.sort((a, b) => a.privacy.localeCompare(b.privacy))
   }
 
   function setOperatorInformationDrawer(operatorData: any) {
@@ -484,13 +429,19 @@ export const AnnouncementView: FC<AnnouncementViewProps> = ({ className }): JSX.
                                     {/* </a> */}
                                   </Button>
                                 </div>
-                                {/* Delete announcement */}
+                                {/* Edit announcement */}
                                 {auth.username === lines[key].username ? (
                                   <FontAwesomeIcon
-                                    icon={faTrash}
-                                    className='h-4 w-4 ml-4 p-2 cursor-pointer text-gray-500 dark:text-gray-500'
+                                    icon={faChevronRight}
+                                    className='h-3 w-3 ml-4 mr-1 p-2 cursor-pointer text-gray-500 dark:text-gray-500'
                                     aria-hidden='true'
-                                    onClick={() => deleteAnnouncement(lines[key].id)}
+                                    onClick={() => {
+                                      openEditAnnouncementDrawer(
+                                        lines[key].description,
+                                        lines[key].id,
+                                        lines[key].privacy,
+                                      )
+                                    }}
                                   />
                                 ) : (
                                   <FontAwesomeIcon
@@ -504,47 +455,6 @@ export const AnnouncementView: FC<AnnouncementViewProps> = ({ className }): JSX.
                       </tbody>
                     </table>
                   )}
-
-                  {/* Delete announcement modal */}
-                  <Modal
-                    show={showDeleteModal}
-                    focus={cancelButtonRef}
-                    onClose={() => setShowDelecteModal(false)}
-                  >
-                    <Modal.Content>
-                      <div className='mx-auto flex h-12 w-12 flex-shrink-0 items-center justify-center rounded-full bg-red-100 sm:mx-0'>
-                        <FontAwesomeIcon
-                          icon={faTriangleExclamation}
-                          className='h-5 w-5 text-red-600'
-                          aria-hidden='true'
-                        />
-                      </div>
-                      <div className='mt-3 text-center sm:mt-0 sm:ml-4 sm:text-left'>
-                        <h3 className='text-lg font-medium leading-6 text-gray-900 dark:text-gray-200'>
-                          {t('Lines.Delete announcement')}
-                        </h3>
-                        <div className='mt-2'>
-                          <p className='text-sm text-gray-500'>
-                            {t('Lines.Are you sure to delete selected announcement?')}
-                          </p>
-                        </div>
-                      </div>
-                    </Modal.Content>
-                    <Modal.Actions>
-                      <Button variant='danger' onClick={() => closedModalSaved()}>
-                        {t('Common.Delete')}
-                      </Button>
-                      <Button
-                        variant='white'
-                        onClick={() => setShowDelecteModal(false)}
-                        ref={cancelButtonRef}
-                      >
-                        {t('Common.Cancel')}
-                      </Button>
-                    </Modal.Actions>
-                  </Modal>
-
-                  {/* )} */}
                 </div>
               </div>
             </div>

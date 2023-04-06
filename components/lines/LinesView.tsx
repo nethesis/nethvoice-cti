@@ -104,7 +104,7 @@ export const LinesView: FC<LinesViewProps> = ({ className }): JSX.Element => {
   }
 
   //set the default sort type
-  const [sortBy, setSortBy]: any = useState('calledIdNum')
+  const [sortBy, setSortBy]: any = useState('description')
 
   const updateSortFilter = (newSortBy: string) => {
     setSortBy(newSortBy)
@@ -150,7 +150,7 @@ export const LinesView: FC<LinesViewProps> = ({ className }): JSX.Element => {
             <>
               <div className='flex items-center'>
                 <FontAwesomeIcon icon={faVoicemail} className='h-4 w-4 mr-2' aria-hidden='true' />
-                <span>{t(`Lines.Announcement + voicemail`)}</span>
+                <span>{t(`Lines.Announcement and voicemail`)}</span>
               </div>
             </>
           )
@@ -306,13 +306,13 @@ export const LinesView: FC<LinesViewProps> = ({ className }): JSX.Element => {
                             scope='col'
                             className='py-3.5 pl-4 pr-3 text-left text-sm font-semibold sm:pl-6 text-gray-700 dark:text-gray-200'
                           >
-                            {t('Lines.Line number')}
+                            {t('Lines.Description')}
                           </th>
                           <th
                             scope='col'
                             className='px-3 py-3.5 text-left text-sm font-semibold text-gray-700 dark:text-gray-200'
                           >
-                            {t('Lines.Description')}
+                            {t('Lines.Line number')}
                           </th>
                           <th
                             scope='col'
@@ -362,18 +362,24 @@ export const LinesView: FC<LinesViewProps> = ({ className }): JSX.Element => {
                         {/* lines */}
                         {isLinesLoaded &&
                           Object.keys(lines).map((key) => (
-                            <tr key={key} className='cursor-pointer' onClick={() => {
-                              checkObjectDrawer(lines[key])
-                            }}>
-                              {/* Name */}
+                            <tr
+                              key={key}
+                              className='cursor-pointer'
+                              onClick={() => {
+                                checkObjectDrawer(lines[key])
+                              }}
+                            >
+                              {/* Description */}
                               <td className='py-4 pl-4 pr-3 sm:pl-6'>
-                                <div>{lines[key].calledIdNum ? lines[key].calledIdNum : '-'}</div>
+                                {lines[key].description ? lines[key].description : '-'}{' '}
                               </td>
-                              {/* Number */}
+                              {/* Phone line */}
                               <td className='px-3 py-4'>
                                 <div className='flex flex-col'>
                                   <div>
-                                    {lines[key].description ? lines[key].description : '-'}{' '}
+                                    <div>
+                                      {lines[key].calledIdNum ? lines[key].calledIdNum : '-'}
+                                    </div>
                                   </div>
                                 </div>
                               </td>

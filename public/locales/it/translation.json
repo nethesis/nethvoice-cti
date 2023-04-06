@@ -23,7 +23,8 @@
     "Loading": "Loading",
     "Lines": "Linee",
     "or": "oppure",
-    "Delete": "Cancella"
+    "Delete": "Cancella",
+    "Edit": "Modifica"
   },
   "Login": {
     "User": "Utente",
@@ -248,6 +249,7 @@
     "Fill in all the fields to be able to continue": "Compila tutti i campi per poter continuare",
     "Enter announcement information": "Inserisci informazioni annuncio",
     "Description": "Descrizione",
-    "Line number": "Numero linea"
+    "Line number": "Numero linea",
+    "Announcement details": "Dettagli annuncio"
   }
 }

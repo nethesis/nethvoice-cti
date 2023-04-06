@@ -11,7 +11,7 @@ import { faCircleXmark, faXmark, faPlus } from '@nethesis/nethesis-solid-svg-ico
 import { useSelector } from 'react-redux'
 import { RootState } from '../../store'
 import { useTranslation } from 'react-i18next'
-import { openShowTelephoneAnnouncementDrawer } from '../../lib/lines'
+import { openCreateAnnouncementDrawer } from '../../lib/lines'
 
 export interface RulesFilterProps extends ComponentPropsWithRef<'div'> {
   updateTextFilter: Function
@@ -70,7 +70,7 @@ export const RulesFilter = forwardRef<HTMLButtonElement, RulesFilterProps>(
                 <Button
                   variant='primary'
                   className=''
-                  onClick={openShowTelephoneAnnouncementDrawer}
+                  onClick={openCreateAnnouncementDrawer}
                 >
                   <FontAwesomeIcon
                     icon={faPlus}
