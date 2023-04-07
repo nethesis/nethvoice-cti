@@ -12,7 +12,6 @@ import { openShowPhoneLinesDrawer, retrieveLines, PAGE_SIZE } from '../../lib/li
 import {
   faChevronRight,
   faChevronLeft,
-  faPhone,
   faFilter,
   faVoicemail,
   faArrowTurnDownRight,
@@ -134,6 +133,7 @@ export const LinesView: FC<LinesViewProps> = ({ className }): JSX.Element => {
     if (
       configurationType.offhour &&
       configurationType.offhour.action &&
+      configurationType.offhour.enabled &&
       configurationType.offhour.enabled !== 'never'
     ) {
       switch (configurationType.offhour.action) {
@@ -201,30 +201,40 @@ export const LinesView: FC<LinesViewProps> = ({ className }): JSX.Element => {
       announcement_id: null,
       voicemail_id: null,
       dateType: '',
+      periodTypology: '',
     }
     if (lines) {
+      // calledIdNum, description and callerIdNum no required check
       objConfigDrawer.name = lines.description
       objConfigDrawer.number = lines.calledIdNum
       objConfigDrawer.callerNumber = lines.callerIdNum
 
       if (lines.offhour) {
-        // objConfigDrawer.enabled = lines.offhour.enabled
+        // check if the configuration is enabled
         if (lines.offhour.enabled) {
           if (lines.offhour.enabled !== 'never' && lines.offhour.enabled !== undefined) {
             objConfigDrawer.enabled = true
           } else {
             objConfigDrawer.enabled = false
+            objConfigDrawer.periodTypology = 'period'
             objConfigDrawer.dateType = 'specifyDay'
           }
         }
+        //action can be 'audiomsg', 'audiomsg_voicemail' or 'redirect'
         objConfigDrawer.action = lines.offhour.action
+        //lines.offhour.enabled can be 'never', 'always' or 'period'
         if (lines.offhour.enabled === 'period') {
+          // set standard radio button for period equal to 'specifyDay'
+          objConfigDrawer.periodTypology = 'period'
           objConfigDrawer.dateType = 'specifyDay'
+          //set datebegin and dateend
           objConfigDrawer.datebegin = lines.offhour.period.datebegin
-          objConfigDrawer.datebegin = lines.offhour.period.dateend
+          objConfigDrawer.dateend = lines.offhour.period.dateend
         } else if (lines.offhour.enabled === 'always') {
+          objConfigDrawer.periodTypology = 'always'
           objConfigDrawer.dateType = 'always'
         }
+        // if action is equal to 'redirect' set input redirect_to
         if (
           lines.offhour.action === 'redirect' &&
           lines.offhour.redirect &&
@@ -232,9 +242,11 @@ export const LinesView: FC<LinesViewProps> = ({ className }): JSX.Element => {
         ) {
           objConfigDrawer.redirect_to = lines.offhour.redirect.redirect_to
         }
+        // if action is equal to 'audiomsg' set input 'audiomsg_id'
         if (lines.offhour.action === 'audiomsg' && lines.offhour.audiomsg) {
           objConfigDrawer.announcement_id = lines.offhour.audiomsg.announcement_id
         }
+        // if action is equal to 'audiomsg' set input 'audiomsg_id' and 'voicemail_id'
         if (
           lines.offhour.action === 'audiomsg_voicemail' &&
           lines.offhour.audiomsg &&
@@ -243,14 +255,15 @@ export const LinesView: FC<LinesViewProps> = ({ className }): JSX.Element => {
           objConfigDrawer.announcement_id = lines.offhour.audiomsg.announcement_id
           objConfigDrawer.voicemail_id = lines.offhour.voicemail.voicemail_id
         }
-        if (lines.offhour.period) {
-          if (lines.offhour.period.datebegin) {
-            objConfigDrawer.datebegin = lines.offhour.period.datebegin
-            objConfigDrawer.dateend = lines.offhour.period.dateend
-          }
-        }
+        //set datebegin and dateend
+        // if (lines.offhour.period) {
+        //   if (lines.offhour.period.datebegin) {
+        //     objConfigDrawer.datebegin = lines.offhour.period.datebegin
+        //     objConfigDrawer.dateend = lines.offhour.period.dateend
+        //   }
+        // }
 
-        // If offhour doesn't exist, set the date to always and the action to never
+        // If offhour doesn't exist, set the date to always and the action to never to avoid empty radio button
       } else {
         objConfigDrawer.dateType = 'always'
         objConfigDrawer.action = 'audiomsg'

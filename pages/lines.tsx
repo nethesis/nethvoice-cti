@@ -58,7 +58,7 @@ const Lines: NextPage = () => {
             </div>
             {/* desktop tabs */}
             <div className='hidden sm:block'>
-              <div className='border-b border-gray-300'>
+              <div className='border-b border-gray-300 dark:border-gray-600'>
                 <nav className='-mb-px flex space-x-8' aria-label='Tabs'>
                   {tabs.map((tab) => (
                     <a
@@ -67,7 +67,7 @@ const Lines: NextPage = () => {
                       className={classNames(
                         tab.value === currentTab
                           ? 'border-primary text-primary'
-                          : 'border-transparent text-gray-500 hover:text-gray-700 hover:border-gray-300',
+                          : 'border-transparent text-gray-500 hover:text-gray-700 hover:border-gray-300 dark:text-gray-400 dark:hover:text-gray-200 dark:hover:border-gray-600',
                         'cursor-pointer whitespace-nowrap py-4 px-1 border-b-2 font-medium text-sm',
                       )}
                       aria-current={tab.value === currentTab ? 'page' : undefined}
@@ -84,9 +84,9 @@ const Lines: NextPage = () => {
               <LinesView />
             ) : currentTab === 'ads' ? (
               <AnnouncementView />
-            // ) : currentTab === 'rules' ? (
+            ) : // ) : currentTab === 'rules' ? (
             //   <RulesView />
-            ) : null}
+            null}
           </div>
         </>
       </div>

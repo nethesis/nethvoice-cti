@@ -34,7 +34,6 @@ export const AnnouncementFilter = forwardRef<HTMLButtonElement, AnnouncementFilt
       options: [
         { value: 'username', label: t('Lines.Author') },
         { value: 'description', label: t('Lines.Name') },
-        { value: 'privacy', label: t('Lines.Privacy') },
       ],
     }
 

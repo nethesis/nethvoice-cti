@@ -1,20 +1,18 @@
 // Copyright (C) 2023 Nethesis S.r.l.
 // SPDX-License-Identifier: AGPL-3.0-or-later
 
-import { FC, ComponentProps, useState, useEffect, useMemo, RefObject, createRef } from 'react'
+import { FC, ComponentProps, useState, useEffect, useMemo } from 'react'
 import { useTranslation } from 'react-i18next'
-import { Button, EmptyState, InlineNotification, Avatar, Modal, TextInput } from '../common'
+import { Button, EmptyState, InlineNotification, Avatar } from '../common'
 import { isEmpty, debounce } from 'lodash'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
-import { getAnnouncementsFiltered, downloadMsg, listenMsg, PAGE_SIZE } from '../../lib/lines'
+import { getAnnouncementsFiltered, downloadMsg, PAGE_SIZE } from '../../lib/lines'
 import {
-  faPhone,
   faPlay,
   faDownload,
   faTrash,
   faLock,
   faLockOpen,
-  faTriangleExclamation,
   faChevronLeft,
   faChevronRight,
   faFilter,
@@ -23,12 +21,15 @@ import classNames from 'classnames'
 import { AnnouncementFilter } from './AnnouncementFilter'
 import { useSelector } from 'react-redux'
 import { RootState } from '../../store'
-import { loadCache } from '../../lib/storage'
 import { formatDateLoc, getCallTimeToDisplay } from '../../lib/dateTime'
 import { capitalize } from 'lodash'
 import { getApiEndpoint, getApiScheme, sortByProperty } from '../../lib/utils'
 import { openShowOperatorDrawer } from '../../lib/operators'
-import { openEditAnnouncementDrawer, playAnnouncement } from '../../lib/lines'
+import {
+  openEditAnnouncementDrawer,
+  playAnnouncement,
+  openCreateAnnouncementDrawer,
+} from '../../lib/lines'
 import { useEventListener } from '../../lib/hooks/useEventListener'
 
 export interface AnnouncementViewProps extends ComponentProps<'div'> {}
@@ -40,8 +41,6 @@ export const AnnouncementView: FC<AnnouncementViewProps> = ({ className }): JSX.
   const [linesError, setLinesError] = useState('')
   const [pageNum, setPageNum]: any = useState(1)
   const [firstRender, setFirstRender]: any = useState(true)
-  const [intervalId, setIntervalId]: any = useState(0)
-  const authStore = useSelector((state: RootState) => state.authentication)
   const [textFilter, setTextFilter]: any = useState('')
   const [donwloadAudioMessageError, setDownloadAudioMessageError] = useState('')
 
@@ -124,8 +123,6 @@ export const AnnouncementView: FC<AnnouncementViewProps> = ({ className }): JSX.
         const res = await downloadMsg(announcementId)
         var link = document.createElement('a')
         link.download = res
-        //This is for test inside localHost
-        // link.href = 'http://localhost:3000//webrest/static/' + res
         link.href = downloadUrl + res
         link.setAttribute('type', 'hidden')
         document.body.appendChild(link)
@@ -168,9 +165,6 @@ export const AnnouncementView: FC<AnnouncementViewProps> = ({ className }): JSX.
         break
       case 'description':
         newLines = Array.from(lines).sort(sortByProperty('description'))
-        break
-      case 'privacy':
-        newLines = Array.from(lines).sort(sortByProperty('privacy'))
         break
       default:
         newLines = Array.from(lines)
@@ -270,7 +264,6 @@ export const AnnouncementView: FC<AnnouncementViewProps> = ({ className }): JSX.
 
   return (
     <div className={classNames(className)}>
-      {/* TO DO CHECK ON MOBILE DEVICE  */}
       <div className='flex-col flex-wrap xl:flex-row justify-between gap-x-4 xl:items-end'>
         <AnnouncementFilter
           updateTextFilter={debouncedUpdateTextFilter}
@@ -354,7 +347,20 @@ export const AnnouncementView: FC<AnnouncementViewProps> = ({ className }): JSX.
                               {/* Name */}
                               <td className='py-4 pl-4 pr-3 sm:pl-6'>
                                 <div className='flex flex-col'>
-                                  <div>{lines[key].description} </div>
+                                  <div
+                                    className='cursor-pointer hover:underline'
+                                    onClick={() => {
+                                      auth.username === lines[key].username
+                                        ? openEditAnnouncementDrawer(
+                                            lines[key].description,
+                                            lines[key].id,
+                                            lines[key].privacy,
+                                          )
+                                        : openCreateAnnouncementDrawer()
+                                    }}
+                                  >
+                                    {lines[key].description}{' '}
+                                  </div>
                                 </div>
                               </td>
                               {/* Author */}
@@ -369,7 +375,6 @@ export const AnnouncementView: FC<AnnouncementViewProps> = ({ className }): JSX.
                                     onClick={() => setOperatorInformationDrawer(lines[key])}
                                     status={getAvatarMainPresence(lines[key])}
                                   />
-                                  {/* <div>{lines[key].username}</div> */}
                                   <div>{getFullUsername(lines[key])}</div>
                                 </div>
                               </td>
@@ -428,14 +433,12 @@ export const AnnouncementView: FC<AnnouncementViewProps> = ({ className }): JSX.
                                     variant='white'
                                     onClick={() => donwloadSelectedAnnouncement(lines[key].id)}
                                   >
-                                    {/* <a href='link_al_file' download> */}
                                     <FontAwesomeIcon
                                       icon={faDownload}
                                       className='h-4 w-4 mr-2 text-gray-500 dark:text-gray-500'
                                       aria-hidden='true'
                                     />{' '}
                                     {t('Lines.Download')}
-                                    {/* </a> */}
                                   </Button>
                                 </div>
                                 {/* Edit announcement */}
