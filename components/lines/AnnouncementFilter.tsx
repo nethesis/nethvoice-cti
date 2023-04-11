@@ -43,7 +43,7 @@ export const AnnouncementFilter = forwardRef<HTMLButtonElement, AnnouncementFilt
     function changeSortBy(event: any) {
       const newSortBy = event.target.id
       setSortBy(newSortBy)
-      savePreference('telephoneAnnouncementSortBy', newSortBy, auth.username)
+      savePreference('phoneAnnouncementSortBy', newSortBy, auth.username)
 
       // update history (notify parent component)
       updateSortFilter(newSortBy)
@@ -70,7 +70,7 @@ export const AnnouncementFilter = forwardRef<HTMLButtonElement, AnnouncementFilt
     const resetFilters = () => {
       setTextFilter('')
       setSortBy(DEFAULT_SORT_BY_ANNOUNCEMENT)
-      savePreference('telephoneAnnouncementSortBy', DEFAULT_SORT_BY_ANNOUNCEMENT, auth.username)
+      savePreference('phoneAnnouncementSortBy', DEFAULT_SORT_BY_ANNOUNCEMENT, auth.username)
       // notify parent component
       updateTextFilter('')
       updateSortFilter(DEFAULT_SORT_BY_ANNOUNCEMENT)

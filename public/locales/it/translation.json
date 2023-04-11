@@ -251,6 +251,8 @@
     "Description": "Descrizione",
     "Line number": "Numero linea",
     "Announcement details": "Dettagli annuncio",
-    "Select audio file": "Seleziona file audio"
+    "Select audio file": "Seleziona file audio",
+    "All": "Tutti",
+    "Configuration type": "Tipo configurazione"
   }
 }

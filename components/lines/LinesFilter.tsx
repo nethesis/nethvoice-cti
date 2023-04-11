@@ -11,16 +11,20 @@ import { faCircleXmark, faXmark, faChevronDown } from '@nethesis/nethesis-solid-
 import { useSelector } from 'react-redux'
 import { RootState } from '../../store'
 import { useTranslation } from 'react-i18next'
-import { DEFAULT_SORT_BY, getFilterValues } from '../../lib/lines'
+import { DEFAULT_SORT_BY, getFilterValues, DEFAULT_CONFIGURATION_TYPE } from '../../lib/lines'
 import { savePreference } from '../../lib/storage'
 
 export interface LinesFilterProps extends ComponentPropsWithRef<'div'> {
   updateTextFilter: Function
   updateSortFilter: Function
+  updateConfigurationTypeFilter: Function
 }
 
 export const LinesFilter = forwardRef<HTMLButtonElement, LinesFilterProps>(
-  ({ updateTextFilter, updateSortFilter, className, ...props }, ref) => {
+  (
+    { updateTextFilter, updateSortFilter, updateConfigurationTypeFilter, className, ...props },
+    ref,
+  ) => {
     const { t } = useTranslation()
     const auth = useSelector((state: RootState) => state.authentication)
     const [textFilter, setTextFilter] = useState('')
@@ -36,9 +40,20 @@ export const LinesFilter = forwardRef<HTMLButtonElement, LinesFilterProps>(
       ],
     }
 
+    const typeConfigurationFilter = {
+      id: 'type',
+      name: t('Lines.Configuration status'),
+      options: [
+        { value: 'all', label: t('Lines.All') },
+        { value: 'active', label: t('Lines.Active') },
+        { value: 'not_active', label: t('Lines.Not active') },
+      ],
+    }
+
     //Sorting filter
     const [sortBy, setSortBy]: any = useState('calledIdNum')
 
+    //Sorting filter function
     function changeSortBy(event: any) {
       const newSortBy = event.target.id
       setSortBy(newSortBy)
@@ -48,6 +63,20 @@ export const LinesFilter = forwardRef<HTMLButtonElement, LinesFilterProps>(
       updateSortFilter(newSortBy)
     }
 
+    //Type configuration filter
+    const [configurationType, setConfigurationType]: any = useState('all')
+
+    //Configuration filter function
+    function changeConfigurationType(event: any) {
+      const newConfigurationType = event.target.id
+      setConfigurationType(newConfigurationType)
+      savePreference('phoneLinesConfigurationType', newConfigurationType, auth.username)
+
+      // update history (notify parent component)
+      updateConfigurationTypeFilter(newConfigurationType)
+    }
+
+    //Selected sort filter
     const [sortByLabel, setSortByLabel] = useState('')
     useEffect(() => {
       const found = sortFilter.options.find((option) => option.value === sortBy)
@@ -57,6 +86,19 @@ export const LinesFilter = forwardRef<HTMLButtonElement, LinesFilterProps>(
       }
       // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [sortBy])
+
+    //Selected configuration type filter
+    const [configurationTypeLabel, setConfigurationTypeLabel] = useState('')
+    useEffect(() => {
+      const configurationFound = typeConfigurationFilter.options.find(
+        (option) => option.value === configurationType,
+      )
+
+      if (configurationFound) {
+        setConfigurationTypeLabel(configurationFound.label)
+      }
+      // eslint-disable-next-line react-hooks/exhaustive-deps
+    }, [configurationType])
 
     function changeTextFilter(event: any) {
       const newTextFilter = event.target.value
@@ -70,10 +112,13 @@ export const LinesFilter = forwardRef<HTMLButtonElement, LinesFilterProps>(
       setTextFilter('')
       setSortBy(DEFAULT_SORT_BY)
       savePreference('phoneLinesSortBy', DEFAULT_SORT_BY, auth.username)
+      setConfigurationType(DEFAULT_CONFIGURATION_TYPE)
+      savePreference('phoneLinesConfigurationType', DEFAULT_SORT_BY, auth.username)
 
       // notify parent component
       updateTextFilter('')
       updateSortFilter(DEFAULT_SORT_BY)
+      updateConfigurationTypeFilter(DEFAULT_CONFIGURATION_TYPE)
     }
 
     const clearTextFilter = () => {
@@ -86,9 +131,11 @@ export const LinesFilter = forwardRef<HTMLButtonElement, LinesFilterProps>(
     useEffect(() => {
       const filterValues = getFilterValues(auth.username)
       setSortBy(filterValues.sortBy)
+      setConfigurationType(filterValues.configurationType)
 
       // notify parent component
       updateSortFilter(filterValues.sortBy)
+      updateConfigurationTypeFilter(filterValues.configurationType)
       // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [])
 
@@ -137,8 +184,8 @@ export const LinesFilter = forwardRef<HTMLButtonElement, LinesFilterProps>(
                     {/* Divider */}
                     <div className='mt-2 border-t border-gray-200 dark:border-gray-700'></div>
 
-                    {/* Filters (mobile) */}
-                    <form className='mt-4 px-5'>
+                    {/* Mobile sort by filter */}
+                    <form className='mt-4 p-5'>
                       {/* contact type filter (mobile) */}
                       <Disclosure
                         as='div'
@@ -175,6 +222,65 @@ export const LinesFilter = forwardRef<HTMLButtonElement, LinesFilterProps>(
                                         onChange={changeSortBy}
                                         className={`h-4 w-4 border-gray-300 text-primary focus:ring-primaryLight dark:focus:ring-primaryDark ${
                                           sortBy === option.value
+                                            ? 'dark:bg-primaryLight dark:text-primary dark:border-gray-600'
+                                            : 'dark:bg-gray-700 dark:text-white dark:border-gray-600'
+                                        }`}
+                                      />
+                                      <label
+                                        htmlFor={option.value}
+                                        className='ml-3 block text-sm font-medium text-gray-700 dark:text-gray-200'
+                                      >
+                                        {option.label}
+                                      </label>
+                                    </div>
+                                  ))}
+                                </div>
+                              </fieldset>
+                            </Disclosure.Panel>
+                          </>
+                        )}
+                      </Disclosure>
+                    </form>
+                    
+                    <div className='mt-2 border-t border-gray-200 dark:border-gray-700'></div>
+                    {/* Mobile configuration type filter */}
+                    <form className='mt-4 p-5'>
+                      {/* contact type filter (mobile) */}
+                      <Disclosure
+                        as='div'
+                        key={typeConfigurationFilter.name}
+                        id={`desktop-menu-${typeConfigurationFilter.id}`}
+                        className='relative text-left'
+                      >
+                        {({ open }) => (
+                          <>
+                            <h3 className='-mx-2 -my-3 flow-root'>
+                              <Disclosure.Button className='flex w-full items-center justify-between px-2 py-3 text-sm bg-white text-gray-400 dark:bg-gray-900 dark:text-gray-500'>
+                                <span className='font-medium text-gray-900 dark:text-gray-100'>
+                                  {typeConfigurationFilter.name}
+                                </span>
+                                <span className='ml-6 flex items-center'>
+                                  <FontAwesomeIcon
+                                    icon={faChevronDown}
+                                    className='ml-2 h-3 w-3 flex-shrink-0 text-gray-400 group-hover:text-gray-500 dark:text-gray-500 dark:group-hover:text-gray-400'
+                                    aria-hidden='true'
+                                  />
+                                </span>
+                              </Disclosure.Button>
+                            </h3>
+                            <Disclosure.Panel className='pt-6'>
+                              <fieldset>
+                                <div className='space-y-4'>
+                                  {typeConfigurationFilter.options.map((option) => (
+                                    <div key={option.value} className='flex items-center'>
+                                      <input
+                                        id={option.value}
+                                        name={`filter-${typeConfigurationFilter.id}`}
+                                        type='radio'
+                                        defaultChecked={option.value === configurationType}
+                                        onChange={changeConfigurationType}
+                                        className={`h-4 w-4 border-gray-300 text-primary focus:ring-primaryLight dark:focus:ring-primaryDark ${
+                                          configurationType === option.value
                                             ? 'dark:bg-primaryLight dark:text-primary dark:border-gray-600'
                                             : 'dark:bg-gray-700 dark:text-white dark:border-gray-600'
                                         }`}
@@ -277,6 +383,61 @@ export const LinesFilter = forwardRef<HTMLButtonElement, LinesFilterProps>(
                         </Popover.Panel>
                       </Transition>
                     </Popover>
+                    {/* Configuration type filter */}
+                    <Popover
+                      as='div'
+                      key={typeConfigurationFilter.name}
+                      id={`desktop-menu-${typeConfigurationFilter.id}`}
+                      className='relative inline-block text-left'
+                    >
+                      <div>
+                        <Popover.Button className='group inline-flex items-center justify-center text-sm font-medium text-gray-700 hover:text-gray-900 dark:text-gray-200 dark:hover:text-gray-100'>
+                          <span>{typeConfigurationFilter.name}</span>
+                          <FontAwesomeIcon
+                            icon={faChevronDown}
+                            className='ml-2 h-3 w-3 flex-shrink-0 text-gray-400 group-hover:text-gray-500 dark:text-gray-500 dark:group-hover:text-gray-400'
+                            aria-hidden='true'
+                          />
+                        </Popover.Button>
+                      </div>
+
+                      <Transition
+                        as={Fragment}
+                        enter='transition ease-out duration-100'
+                        enterFrom='transform opacity-0 scale-95'
+                        enterTo='transform opacity-100 scale-100'
+                        leave='transition ease-in duration-75'
+                        leaveFrom='transform opacity-100 scale-100'
+                        leaveTo='transform opacity-0 scale-95'
+                      >
+                        <Popover.Panel className='absolute right-0 z-10 mt-2 origin-top-right rounded-md min-w-max p-4 shadow-2xl ring-1 ring-opacity-5 focus:outline-none bg-white ring-black dark:bg-gray-900 dark:ring-gray-600'>
+                          <form className='space-y-4'>
+                            {typeConfigurationFilter.options.map((option) => (
+                              <div key={option.value} className='flex items-center'>
+                                <input
+                                  id={option.value}
+                                  name={`filter-${typeConfigurationFilter.id}`}
+                                  type='radio'
+                                  defaultChecked={option.value === configurationType}
+                                  onChange={changeConfigurationType}
+                                  className={`h-4 w-4 border-gray-300 text-primary focus:ring-primaryLight dark:focus:ring-primaryDark ${
+                                    configurationType === option.value
+                                      ? 'dark:bg-primaryLight dark:text-primary dark:border-gray-600'
+                                      : 'dark:bg-gray-700 dark:text-white dark:border-gray-600'
+                                  }`}
+                                />
+                                <label
+                                  htmlFor={option.value}
+                                  className='ml-3 block text-sm font-medium text-gray-700 dark:text-gray-200'
+                                >
+                                  {option.label}
+                                </label>
+                              </div>
+                            ))}
+                          </form>
+                        </Popover.Panel>
+                      </Transition>
+                    </Popover>
                   </Popover.Group>
 
                   <button
@@ -309,6 +470,24 @@ export const LinesFilter = forwardRef<HTMLButtonElement, LinesFilterProps>(
                             {t('Lines.Sort by')}:
                           </span>{' '}
                           {sortByLabel}
+                        </span>
+                      </span>
+                    </div>
+                  </div>
+                  {/* separator */}
+                  <div
+                    aria-hidden='true'
+                    className='h-5 w-px ml-4 sm:block bg-gray-300 dark:bg-gray-600'
+                  />
+                  {/* sort by */}
+                  <div className='mt-0 ml-4'>
+                    <div className='-m-1 flex flex-wrap items-center'>
+                      <span className='m-1 inline-flex items-center rounded-full border py-1.5 px-3 text-sm font-medium border-gray-200 bg-white text-gray-700 dark:border-gray-700 dark:bg-gray-900 dark:text-gray-200'>
+                        <span>
+                          <span className='text-gray-500 dark:text-gray-400'>
+                            {t('Lines.Configuration type')}:
+                          </span>{' '}
+                          {configurationTypeLabel}
                         </span>
                       </span>
                     </div>

@@ -57,7 +57,7 @@ export const LinesView: FC<LinesViewProps> = ({ className }): JSX.Element => {
       if (!isLinesLoaded) {
         try {
           setLinesError('')
-          const res = await retrieveLines(textFilter.trim(), pageNum)
+          const res = await retrieveLines(textFilter.trim(), pageNum, configurationType)
 
           setLines(res.rows)
           setDataPagination(res)
@@ -107,6 +107,14 @@ export const LinesView: FC<LinesViewProps> = ({ className }): JSX.Element => {
 
   const updateSortFilter = (newSortBy: string) => {
     setSortBy(newSortBy)
+  }
+
+  //set the default configuration type
+  const [configurationType, setConfigurationType]: any = useState('all')
+
+  const updateConfigurationTypeFilter = (newConfigurationType: string) => {
+    setConfigurationType(newConfigurationType)
+    setLinesLoaded(false)
   }
 
   //check if the sort filter is changed
@@ -287,6 +295,7 @@ export const LinesView: FC<LinesViewProps> = ({ className }): JSX.Element => {
         <LinesFilter
           updateTextFilter={debouncedUpdateTextFilter}
           updateSortFilter={updateSortFilter}
+          updateConfigurationTypeFilter={updateConfigurationTypeFilter}
         />
       </div>
       {linesError && <InlineNotification type='error' title={linesError}></InlineNotification>}

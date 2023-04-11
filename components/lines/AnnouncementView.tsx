@@ -43,6 +43,7 @@ export const AnnouncementView: FC<AnnouncementViewProps> = ({ className }): JSX.
   const [firstRender, setFirstRender]: any = useState(true)
   const [textFilter, setTextFilter]: any = useState('')
   const [donwloadAudioMessageError, setDownloadAudioMessageError] = useState('')
+  // const { profile } = useSelector((state: RootState) => state.user)
 
   const apiEnpoint = getApiEndpoint()
   const apiScheme = getApiScheme()
@@ -441,6 +442,11 @@ export const AnnouncementView: FC<AnnouncementViewProps> = ({ className }): JSX.
                                     {t('Lines.Download')}
                                   </Button>
                                 </div>
+
+                                {/* Disabled at the moment */}
+                                {/* lines[key].privacy === 'public' ||
+                                profile?.macro_permissions?.off_hour?.permissions?.ad_off_hour
+                                  ?.value || */}
                                 {/* Edit announcement */}
                                 {auth.username === lines[key].username ? (
                                   <FontAwesomeIcon

@@ -357,6 +357,8 @@
     "Description": "Description",
     "Line number": "Line number",
     "Announcement details": "Announcement details",
-    "Select audio file": "Select audio file"
+    "Select audio file": "Select audio file",
+    "All": "All",
+    "Configuration type": "Configuration type"
   }
 }

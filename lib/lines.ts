@@ -10,6 +10,7 @@ import { eventDispatch } from './hooks/eventDispatch'
 export const PAGE_SIZE = 10
 export const DEFAULT_SORT_BY = 'description'
 export const DEFAULT_SORT_BY_ANNOUNCEMENT = 'description'
+export const DEFAULT_CONFIGURATION_TYPE = 'all'
 
 const apiEnpoint = getApiEndpoint()
 const apiScheme = getApiScheme()
@@ -44,21 +45,58 @@ export const searchStringInLines = (lines: any, queryText: string, type: string)
   }
 }
 
+export const setFilteredListByConfigurations = (lines: any, configurations: any) => {
+  let found = false
+  if (configurations === 'active') {
+    if (
+      lines.offhour &&
+      lines.offhour.enabled &&
+      (lines.offhour.enabled === 'period' || lines.offhour === 'always')
+    ) {
+      found = true
+    }
+  } else {
+    if (
+      (lines.offhour && lines.offhour.enabled && lines.offhour.enabled === 'never') ||
+      !lines.offhour
+    ) {
+      found = true
+    }
+  }
+  return found
+}
+
 // Get phone lines list
-export const retrieveLines = async (textFilter: string, pageNum: any) => {
+export const retrieveLines = async (textFilter: string, pageNum: any, configuration: any) => {
   let userUrlApi = apiUrl + 'offhour/list'
   type = 'phoneLines'
+
   try {
     const { data, status } = await axios.get(userUrlApi)
-    const allFilteredCalls = Object.values(data).filter((calls: any) => {
-      return searchStringInLines(calls, textFilter, type)
-    })
-    data.count = allFilteredCalls.length
-    data.totalPages = Math.ceil(allFilteredCalls.length / PAGE_SIZE)
-    const start = (pageNum - 1) * PAGE_SIZE
-    const end = start + PAGE_SIZE
-    data.rows = allFilteredCalls.slice(start, end)
-    return data
+    if (configuration === 'all') {
+      const allFilteredCalls = Object.values(data).filter((calls: any) => {
+        return searchStringInLines(calls, textFilter, type)
+      })
+      data.count = allFilteredCalls.length
+      data.totalPages = Math.ceil(allFilteredCalls.length / PAGE_SIZE)
+      const start = (pageNum - 1) * PAGE_SIZE
+      const end = start + PAGE_SIZE
+      data.rows = allFilteredCalls.slice(start, end)
+      return data
+    } else {
+      const onlyFilteredLines = Object.values(data).filter((calls: any) => {
+        return setFilteredListByConfigurations(calls, configuration)
+      })
+      const allFilteredCalls = Object.values(onlyFilteredLines).filter((calls: any) => {
+        return searchStringInLines(calls, textFilter, type)
+      })
+      data.count = allFilteredCalls.length
+      data.totalPages = Math.ceil(allFilteredCalls.length / PAGE_SIZE)
+      const start = (pageNum - 1) * PAGE_SIZE
+      const end = start + PAGE_SIZE
+      data.rows = allFilteredCalls.slice(start, end)
+      return data
+    }
   } catch (error) {
     handleNetworkError(error)
     throw error
@@ -253,13 +291,14 @@ export const openShowRuleDetailsDrawer = (name: any) => {
 
 export const getFilterValues = (currentUsername: string) => {
   const sortBy = loadPreference('phoneLinesSortBy', currentUsername) || DEFAULT_SORT_BY
+  const configurationType =
+    loadPreference('phoneLinesConfigurationType', currentUsername) || DEFAULT_CONFIGURATION_TYPE
 
-  return { sortBy }
+  return { sortBy, configurationType }
 }
 
 export const getFilterAnnouncementValues = (currentUsername: string) => {
-  const sortBy = loadPreference('telephoneAnnouncementSortBy', currentUsername) || DEFAULT_SORT_BY
-
+  const sortBy = loadPreference('phoneAnnouncementSortBy', currentUsername) || DEFAULT_SORT_BY
   return { sortBy }
 }
 
