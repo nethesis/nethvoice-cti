@@ -23,7 +23,7 @@
     "Loading": "Loading",
     "Lines": "Linee",
     "or": "oppure",
-    "Delete": "Cancella",
+    "Delete": "Elimina",
     "Edit": "Modifica"
   },
   "Login": {
@@ -203,7 +203,7 @@
     "Date": "Data",
     "Privacy": "Privacy",
     "Details": "Dettagli",
-    "Delete": "Cancella",
+    "Delete": "Elimina",
     "Play": "Riproduci",
     "Download": "Scarica",
     "Add announcement": "Aggiungi annuncio",
@@ -250,6 +250,7 @@
     "Enter announcement information": "Inserisci informazioni annuncio",
     "Description": "Descrizione",
     "Line number": "Numero linea",
-    "Announcement details": "Dettagli annuncio"
+    "Announcement details": "Dettagli annuncio",
+    "Select audio file": "Seleziona file audio"
   }
 }

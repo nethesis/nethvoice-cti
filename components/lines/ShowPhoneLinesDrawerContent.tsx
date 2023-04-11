@@ -151,7 +151,6 @@ export const ShowPhoneLinesDrawerContent = forwardRef<
 
     const dateBeginConversionIso = new Date(dateBeginConversionUTC).toISOString()
 
-
     const dateEndConversion = parse(dateEndToShow, "yyyy-MM-dd'T'HH:mm", new Date())
 
     let dateEndConversionUTC = formatInTimeZoneLoc(
@@ -161,7 +160,6 @@ export const ShowPhoneLinesDrawerContent = forwardRef<
     )
 
     const dateEndConversionIso = new Date(dateEndConversionUTC).toISOString()
-
 
     return {
       dateBeginToSendApi: dateBeginConversionIso,
@@ -376,9 +374,9 @@ export const ShowPhoneLinesDrawerContent = forwardRef<
     id: 'contactTypeFilter',
     name: 'Contact type',
     options: [
+      { value: 'always', label: t('Lines.Active every day') },
       { value: 'specifyDay', label: t('Lines.Specify start date and end date') },
       { value: 'onlyOneDay', label: t('Lines.Only active for one day') },
-      { value: 'always', label: t('Lines.Active every day') },
     ],
   }
 
@@ -603,20 +601,15 @@ export const ShowPhoneLinesDrawerContent = forwardRef<
     textFilterRedirectRef.current.focus()
   }
 
-  const [isListeningAnnouncements, setIsListeningAnnouncements] = useState(false)
-
   async function playSelectedAnnouncement(announcementId: any) {
     if (announcementId) {
       playAnnouncement(announcementId)
-      // disactivate play button
-      setIsListeningAnnouncements(true)
     }
   }
 
-  //Reactivate play button
-  useEventListener('phone-island-audio-player-closed', () => {
-    setIsListeningAnnouncements(false)
-  })
+  //On phone island reproduce announcement close button
+  // useEventListener('phone-island-audio-player-closed', () => {
+  // })
 
   function periodSelect() {
     return (
@@ -704,7 +697,7 @@ export const ShowPhoneLinesDrawerContent = forwardRef<
               <Button
                 variant='white'
                 onClick={() => playSelectedAnnouncement(selectedAnnouncementInfo.id)}
-                disabled={!announcementSelected || isListeningAnnouncements}
+                disabled={!announcementSelected}
               >
                 <FontAwesomeIcon
                   icon={faPlay}
@@ -763,7 +756,7 @@ export const ShowPhoneLinesDrawerContent = forwardRef<
                 <Button
                   variant='white'
                   onClick={() => playSelectedAnnouncement(selectedAnnouncementInfo.id)}
-                  disabled={!announcementSelected || isListeningAnnouncements}
+                  disabled={!announcementSelected}
                 >
                   <FontAwesomeIcon
                     icon={faPlay}

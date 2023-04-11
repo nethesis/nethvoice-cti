@@ -21,7 +21,7 @@ import {
   faMicrophone,
   faXmark,
   faPen,
-  faTrash,
+  faTrashCan,
   faEllipsisVertical,
   faTriangleExclamation,
 } from '@nethesis/nethesis-solid-svg-icons'
@@ -65,7 +65,7 @@ export const ShowAddAnnouncementDrawerContent = forwardRef<
 
   const contactMenuItems = (
     <>
-      <Dropdown.Item icon={faTrash} onClick={() => deleteAnnouncement(config.id)}>
+      <Dropdown.Item icon={faTrashCan} onClick={() => deleteAnnouncement(config.id)}>
         {t('Common.Delete')}
       </Dropdown.Item>
     </>
@@ -362,7 +362,7 @@ export const ShowAddAnnouncementDrawerContent = forwardRef<
             {/* Announcement name section */}
             <div className='flex items-center justify-between mt-8'>
               <h4 className='text-md font-medium text-gray-700 dark:text-gray-200'>
-                {t('Lines.Announcement')}
+                {t('Lines.Select audio file')}
               </h4>
             </div>
             {/* Upload announcement section */}
@@ -461,7 +461,7 @@ export const ShowAddAnnouncementDrawerContent = forwardRef<
             <>
               <Button variant='primary' type='submit' onClick={saveEditPhoneLines} className='mb-4'>
                 <FontAwesomeIcon icon={faFloppyDisk} className='mr-2 h-4 w-4' />
-                {t('Common.Edit')}
+                {t('Common.Save')}
               </Button>
               <Button variant='white' type='submit' onClick={closeSideDrawer} className='ml-4 mb-4'>
                 {t('Common.Cancel')}

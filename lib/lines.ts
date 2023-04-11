@@ -33,7 +33,7 @@ export const searchStringInLines = (lines: any, queryText: string, type: string)
     return false
   } else {
     // search in string attributes announcement
-    found = ['description', 'dateCreation', 'privacy'].some((attrName) => {
+    found = ['description', 'username', 'privacy'].some((attrName) => {
       return new RegExp(queryText, 'i').test(lines[attrName]?.replace(regex, ''))
     })
 
@@ -68,6 +68,7 @@ export const retrieveLines = async (textFilter: string, pageNum: any) => {
 // Get announcements list
 export async function getAnnouncementsFiltered(textFilter: string, pageNum: any) {
   let userUrlApi = apiUrl + '/offhour/list_announcement'
+  type = 'announcement'
 
   try {
     const { data, status } = await axios.get(userUrlApi)

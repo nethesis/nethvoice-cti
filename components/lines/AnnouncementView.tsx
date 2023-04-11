@@ -10,7 +10,7 @@ import { getAnnouncementsFiltered, downloadMsg, PAGE_SIZE } from '../../lib/line
 import {
   faPlay,
   faDownload,
-  faTrash,
+  faTrashCan,
   faLock,
   faLockOpen,
   faChevronLeft,
@@ -348,7 +348,11 @@ export const AnnouncementView: FC<AnnouncementViewProps> = ({ className }): JSX.
                               <td className='py-4 pl-4 pr-3 sm:pl-6'>
                                 <div className='flex flex-col'>
                                   <div
-                                    className='cursor-pointer hover:underline'
+                                    className={` ${
+                                      auth.username === lines[key].username
+                                        ? 'cursor-pointer hover:underline'
+                                        : ''
+                                    } `}
                                     onClick={() => {
                                       auth.username === lines[key].username
                                         ? openEditAnnouncementDrawer(
@@ -356,7 +360,7 @@ export const AnnouncementView: FC<AnnouncementViewProps> = ({ className }): JSX.
                                             lines[key].id,
                                             lines[key].privacy,
                                           )
-                                        : openCreateAnnouncementDrawer()
+                                        : ''
                                     }}
                                   >
                                     {lines[key].description}{' '}
@@ -412,10 +416,6 @@ export const AnnouncementView: FC<AnnouncementViewProps> = ({ className }): JSX.
                                   {/* Play button */}
                                   <Button
                                     variant='white'
-                                    disabled={
-                                      idAnnouncementInPlay === lines[key].id &&
-                                      isListeningAnnouncements
-                                    }
                                     onClick={() => playSelectedAnnouncement(lines[key].id)}
                                   >
                                     <FontAwesomeIcon
@@ -457,7 +457,7 @@ export const AnnouncementView: FC<AnnouncementViewProps> = ({ className }): JSX.
                                   />
                                 ) : (
                                   <FontAwesomeIcon
-                                    icon={faTrash}
+                                    icon={faTrashCan}
                                     className='h-4 w-4 ml-4 p-2 invisible'
                                   />
                                 )}
