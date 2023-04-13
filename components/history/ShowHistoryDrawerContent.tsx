@@ -9,6 +9,8 @@ import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { faPhone, faPlus } from '@fortawesome/free-solid-svg-icons'
 import { LastCallsDrawerTable } from './LastCallsDrawerTable'
 import { startOfDay, subDays } from 'date-fns'
+import { useSelector } from 'react-redux'
+import { RootState } from '../../store'
 
 export interface ShowHistoryDrawerContentProps extends ComponentPropsWithRef<'div'> {
   config: any
@@ -55,6 +57,8 @@ export const ShowHistoryDrawerContent = forwardRef<
   HTMLButtonElement,
   ShowHistoryDrawerContentProps
 >(({ config, className, ...props }, ref) => {
+  const { profile } = useSelector((state: RootState) => state.user)
+
   return (
     <>
       <div className='bg-gray-100 dark:bg-gray-800 py-6 px-6'>
@@ -158,13 +162,15 @@ export const ShowHistoryDrawerContent = forwardRef<
         </div>
 
         {/* last calls */}
-        <LastCallsDrawerTable
-          callType={config.callType}
-          dateFrom={startOfDay(subDays(new Date(), 7))}
-          dateTo={new Date()}
-          phoneNumbers={[config.number]}
-          limit={10}
-        />
+        {profile.macro_permissions?.cdr?.permissions?.ad_cdr?.value && (
+          <LastCallsDrawerTable
+            callType={config.callType}
+            dateFrom={startOfDay(subDays(new Date(), 7))}
+            dateTo={new Date()}
+            phoneNumbers={[config.number]}
+            limit={10}
+          />
+        )}
       </div>
     </>
   )
