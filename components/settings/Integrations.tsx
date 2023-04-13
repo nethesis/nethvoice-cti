@@ -163,7 +163,7 @@ export const Integrations = () => {
             />
           </div>
           <div className='mt-3 text-center sm:mt-0 sm:ml-4 sm:text-left'>
-            <h3 className='text-lg font-medium leading-6 text-gray-900'>
+            <h3 className='text-lg font-medium leading-6 text-gray-900 dark:text-gray-200'>
               {t('Settings.Revoke Phone Island configuration')}
             </h3>
             <div className='mt-2'>

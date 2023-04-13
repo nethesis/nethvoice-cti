@@ -25,7 +25,7 @@ export interface SwitchProps extends ComponentProps<'div'> {
 
 export const Switch: FC<SwitchProps> = ({
   changed,
-  on,
+  on = false,
   disabled,
   label,
   className,
@@ -36,8 +36,13 @@ export const Switch: FC<SwitchProps> = ({
   const backgroundOff = disabled ? switchTheme.off.gray : switchTheme.on.gray
 
   useEffect(() => {
-    changed && changed(enabled)
-  }, [changed, enabled])
+    setEnabled(on)
+  }, [on])
+
+  const callback = () => {
+    setEnabled(!enabled)
+    changed && changed(!enabled)
+  }
 
   return (
     <div>
@@ -52,7 +57,7 @@ export const Switch: FC<SwitchProps> = ({
           )}
           <HeadlessSwitch
             checked={enabled}
-            onChange={() => setEnabled(!enabled)}
+            onChange={() => callback()}
             disabled={disabled}
             className={classNames(enabled ? backgroundOn : backgroundOff, switchTheme.background)}
           >

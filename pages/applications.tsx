@@ -13,15 +13,18 @@ import {
   faArrowUpRightFromSquare,
 } from '@nethesis/nethesis-solid-svg-icons'
 import { Button } from '../components/common'
-import { faPhone } from '@fortawesome/free-solid-svg-icons'
 import { getApiEndpoint } from '../lib/utils'
 import { getApiScheme } from '../lib/utils'
+import Link from 'next/link'
+import { useSelector } from 'react-redux'
+import { RootState } from '../store'
 
 const Applications: NextPage = () => {
   const { t } = useTranslation()
   const apiEnpoint = getApiEndpoint()
   const apiScheme = getApiScheme()
   const pbxReportUrl = apiScheme + apiEnpoint + '/pbx-report/'
+  const { profile } = useSelector((state: RootState) => state.user)
 
   return (
     <>
@@ -33,36 +36,52 @@ const Applications: NextPage = () => {
           <span className='text-md font-normal mb-4 text-gray-600 dark:text-gray-100'>
             {t('Applications.Internal')}
           </span>
-          <div className='flex flex-wrap gap-5'>
-            <div className='max-w-sm mt-5 bg-white border-gray-200 rounded-lg shadow dark:bg-gray-900 dark:border-gray-700'>
-              <div className='bg-emerald-50 rounded-lg flex flex-col justify-center items-center'>
-                <span className='h-10 w-10 overflow-hidden rounded-full bg-emerald-600 dark:bg-emerald-500 flex relative top-[-1.25rem]'>
-                  <FontAwesomeIcon
-                    icon={faPhoneVolume}
-                    className='h-4 w-4 m-3 rounded-lg text-white'
-                    aria-hidden='true'
-                  />
-                </span>
-                <div className='pb-1 rounded-lg'>
-                  <h5 className='flex mb-2 font-medium  text-gray-700 dark:text-gray-800'>
-                    {t('Applications.Telephone lines and announcements')}
-                  </h5>
+          <div className='grid grid-cols-1 gap-6 md:grid-cols-2 2xl:grid-cols-3'>
+            {/* Check if the user has offhour permission enabled */}
+            {profile.macro_permissions &&
+              profile.macro_permissions.off_hour &&
+              profile.macro_permissions.off_hour.value && (
+                <div className='mt-5 bg-white border-gray-200 rounded-lg shadow dark:bg-gray-900 dark:border-gray-700'>
+                  <div className='bg-emerald-50 rounded-lg flex flex-col justify-center items-center'>
+                    <span className='h-10 w-10 overflow-hidden rounded-full bg-emerald-600 dark:bg-emerald-500 flex relative top-[-1.25rem]'>
+                      <FontAwesomeIcon
+                        icon={faPhoneVolume}
+                        className='h-4 w-4 m-3 rounded-lg text-white'
+                        aria-hidden='true'
+                      />
+                    </span>
+                    <div className='pb-1 rounded-lg'>
+                      <h5 className='flex mb-2 font-medium  text-gray-700 dark:text-gray-800'>
+                        {t('Applications.Phone lines and announcements')}
+                      </h5>
+                    </div>
+                  </div>
+                  <div className='bg-white dark:bg-gray-900 p-5 px-12 rounded-lg flex flex-col justify-center'>
+                    <div className='mb-8 font-normal text-xs justify-center items-center text-gray-600 dark:text-gray-400'>
+                      <p className='text-center'>
+                        {t(
+                          'Applications.Manage your phone lines, activate announcements, voicemail or forward calls',
+                        )}
+                      </p>
+                    </div>
+                    <div className='text-gray-900 dark:text-gray-100 text-sm flex items-center justify-center'>
+                      <Link href={'/lines'}>
+                        <a className='flex justify-center items-center'>
+                          <span className='font-semibold text-gray-900 dark:text-gray-100'>
+                            {t('Applications.Go to manage lines')}
+                          </span>
+                          <FontAwesomeIcon
+                            icon={faArrowRight}
+                            className='h-4 w-4 m-3 rounded-lg text-gray-900 dark:text-gray-100'
+                          />
+                        </a>
+                      </Link>
+                    </div>
+                  </div>
                 </div>
-              </div>
-              <div className='bg-white dark:bg-gray-900 p-5 px-12 rounded-lg flex flex-col justify-center'>
-                <div className='mb-8 font-normal text-xs justify-center items-center text-gray-600 dark:text-gray-400'>
-                  <p className='text-center'>
-                    {t(
-                      'Applications.Manage your phone lines, activate announcements, voicemail or forward calls',
-                    )}
-                  </p>
-                </div>
-                <div className='text-gray-900 dark:text-gray-100 text-sm flex items-center justify-center'>
-                  <span className='font-semibold text-gray-500'>{t('Common.Coming soon')}...</span>
-                </div>
-              </div>
-            </div>
-            <div className='max-w-sm mt-5 bg-white border-gray-200 rounded-lg shadow dark:bg-gray-900 dark:border-gray-700'>
+              )}
+
+            <div className='mt-5 bg-white border-gray-200 rounded-lg shadow dark:bg-gray-900 dark:border-gray-700'>
               <div className='bg-emerald-50 rounded-lg flex flex-col justify-center items-center'>
                 <span className='h-10 w-10 overflow-hidden rounded-full bg-emerald-600 dark:bg-emerald-500 flex relative top-[-1.25rem]'>
                   <FontAwesomeIcon
@@ -90,7 +109,8 @@ const Applications: NextPage = () => {
                 </div>
               </div>
             </div>
-            <div className='max-w-sm mt-5 bg-white border-gray-200 rounded-lg shadow dark:bg-gray-900 dark:border-gray-700'>
+
+            <div className='mt-5 bg-white border-gray-200 rounded-lg shadow dark:bg-gray-900 dark:border-gray-700'>
               <div className='bg-emerald-50 rounded-lg flex flex-col justify-center items-center'>
                 <span className='h-10 w-10 overflow-hidden rounded-full bg-emerald-600 dark:bg-emerald-500 flex relative top-[-1.25rem]'>
                   <FontAwesomeIcon
@@ -120,12 +140,13 @@ const Applications: NextPage = () => {
             </div>
           </div>
         </div>
+
         <div className='pt-8'>
           <span className='text-md font-normal mb-4  text-gray-600 dark:text-gray-100'>
             {t('Applications.External')}
           </span>
-          <div className='flex flex-wrap gap-5'>
-            <div className='max-w-sm mt-5 bg-white border-gray-200 rounded-lg shadow dark:bg-gray-900 dark:border-gray-700'>
+          <div className='grid grid-cols-1 gap-6 md:grid-cols-2 2xl:grid-cols-3'>
+            <div className='mt-5 bg-white border-gray-200 rounded-lg shadow dark:bg-gray-900 dark:border-gray-700'>
               <div className='bg-emerald-50 rounded-lg flex flex-col justify-center items-center'>
                 <span className='h-10 w-10 overflow-hidden rounded-full bg-emerald-600 dark:bg-emerald-500 flex relative top-[-1.25rem]'>
                   <FontAwesomeIcon
