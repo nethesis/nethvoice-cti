@@ -185,7 +185,7 @@ export const ShowRuleDetailsContent = forwardRef<HTMLButtonElement, ShowRuleDeta
             </h4>
             <IconSwitch
               on={isManageRuleActive}
-              size='double_extra_large'
+              size='extra_large'
               onIcon={<FontAwesomeIcon icon={faToggleLargeOn} />}
               offIcon={<FontAwesomeIcon icon={faToggleLargeOff} />}
               changed={() => toggleManageRule()}
@@ -209,7 +209,7 @@ export const ShowRuleDetailsContent = forwardRef<HTMLButtonElement, ShowRuleDeta
             </div>
             <IconSwitch
               on={isManageAnnouncementActive}
-              size='double_extra_large'
+              size='extra_large'
               onIcon={<FontAwesomeIcon icon={faToggleLargeOn} />}
               offIcon={<FontAwesomeIcon icon={faToggleLargeOff} />}
               changed={() => toggleManageAnnouncement()}
@@ -314,7 +314,7 @@ export const ShowRuleDetailsContent = forwardRef<HTMLButtonElement, ShowRuleDeta
             </div>
             <IconSwitch
               on={isAnnouncementVoicemailActive}
-              size='double_extra_large'
+              size='extra_large'
               onIcon={<FontAwesomeIcon icon={faToggleLargeOn} />}
               offIcon={<FontAwesomeIcon icon={faToggleLargeOff} />}
               changed={() => toggleAnnouncementVoicemail()}
@@ -338,7 +338,7 @@ export const ShowRuleDetailsContent = forwardRef<HTMLButtonElement, ShowRuleDeta
             </div>
             <IconSwitch
               on={isForwardActive}
-              size='double_extra_large'
+              size='extra_large'
               onIcon={<FontAwesomeIcon icon={faToggleLargeOn} />}
               offIcon={<FontAwesomeIcon icon={faToggleLargeOff} />}
               changed={() => toggleForward()}

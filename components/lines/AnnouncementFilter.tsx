@@ -45,7 +45,7 @@ export const AnnouncementFilter = forwardRef<HTMLButtonElement, AnnouncementFilt
       setSortBy(newSortBy)
       savePreference('phoneAnnouncementSortBy', newSortBy, auth.username)
 
-      // update history (notify parent component)
+      // notify parent component
       updateSortFilter(newSortBy)
     }
 

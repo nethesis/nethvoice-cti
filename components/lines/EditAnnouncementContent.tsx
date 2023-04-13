@@ -26,7 +26,7 @@ import {
   faTriangleExclamation,
 } from '@nethesis/nethesis-solid-svg-icons'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
-import { callPhoneNumber, closeSideDrawer } from '../../lib/utils'
+import { callPhoneNumber, closeSideDrawer, formatFileSize } from '../../lib/utils'
 import { TextInput, Button, Modal } from '../common'
 import { isEmpty } from 'lodash'
 import {
@@ -43,7 +43,7 @@ export interface EditAnnouncementContentProps extends ComponentPropsWithRef<'div
   config: any
 }
 
-export const ShowAddAnnouncementDrawerContent = forwardRef<
+export const EditAnnouncementDrawerContent = forwardRef<
   HTMLButtonElement,
   EditAnnouncementContentProps
 >(({ config, className, ...props }, ref) => {
@@ -55,7 +55,7 @@ export const ShowAddAnnouncementDrawerContent = forwardRef<
   const textFilterRef = useRef() as React.MutableRefObject<HTMLInputElement>
   const [selectedFile, setSelectedFile] = useState<any>(null)
   const [selectedFileBase64, setSelectedFileBase64] = useState<any>(null)
-  const [showDeleteModal, setShowDelecteModal] = useState(false)
+  const [showDeleteModal, setShowDeleteModal] = useState(false)
   const [deleteAnnouncementId, setDeleteAnnouncementId] = useState(null)
 
   const [uploadAudioMessageError, setUploadAudioMessageError] = useState('')
@@ -72,7 +72,7 @@ export const ShowAddAnnouncementDrawerContent = forwardRef<
   )
 
   const deleteAnnouncement = (announcementId: any) => {
-    setShowDelecteModal(true)
+    setShowDeleteModal(true)
     setDeleteAnnouncementId(announcementId)
   }
 
@@ -87,8 +87,7 @@ export const ShowAddAnnouncementDrawerContent = forwardRef<
         return
       }
     }
-    setShowDelecteModal(false)
-    // setForwardPresence(numberInputRef.current?.value)
+    setShowDeleteModal(false)
   }
 
   useEffect(() => {
@@ -98,7 +97,6 @@ export const ShowAddAnnouncementDrawerContent = forwardRef<
     }
     if (config.isEdit) {
       setSelectedType(config.privacy)
-      // textFilterRef.current.value = config.description || ''
       setTextFilter(config.description)
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
@@ -139,7 +137,6 @@ export const ShowAddAnnouncementDrawerContent = forwardRef<
       }
     } else {
       setErrorUpload(true)
-      // return
     }
   }
 
@@ -218,22 +215,6 @@ export const ShowAddAnnouncementDrawerContent = forwardRef<
   function changeTextFilter(event: any) {
     const newTextFilter = event.target.value
     setTextFilter(newTextFilter)
-  }
-
-  function formatFileSize(sizeInBytes: any) {
-    const units = ['B', 'KB', 'MB', 'GB', 'TB']
-    let size = sizeInBytes
-    let unitIndex = 0
-
-    while (size >= 1024 && unitIndex < units.length - 1) {
-      size /= 1024
-      unitIndex++
-    }
-
-    const sizeFormatted = size.toFixed(2)
-    const unit = units[unitIndex]
-
-    return `${sizeFormatted} ${unit}`
   }
 
   const [isRecordingActive, setIsRecordingActive] = useState(false)
@@ -564,7 +545,7 @@ export const ShowAddAnnouncementDrawerContent = forwardRef<
       <Modal
         show={showDeleteModal}
         focus={cancelButtonRef}
-        onClose={() => setShowDelecteModal(false)}
+        onClose={() => setShowDeleteModal(false)}
       >
         <Modal.Content>
           <div className='mx-auto flex h-12 w-12 flex-shrink-0 items-center justify-center rounded-full bg-red-100 sm:mx-0'>
@@ -589,7 +570,7 @@ export const ShowAddAnnouncementDrawerContent = forwardRef<
           <Button variant='danger' onClick={() => closedModalDeleteAnnouncement()}>
             {t('Common.Delete')}
           </Button>
-          <Button variant='white' onClick={() => setShowDelecteModal(false)} ref={cancelButtonRef}>
+          <Button variant='white' onClick={() => setShowDeleteModal(false)} ref={cancelButtonRef}>
             {t('Common.Cancel')}
           </Button>
         </Modal.Actions>
@@ -598,4 +579,4 @@ export const ShowAddAnnouncementDrawerContent = forwardRef<
   )
 })
 
-ShowAddAnnouncementDrawerContent.displayName = 'ShowAddAnnouncementDrawerContent'
+EditAnnouncementDrawerContent.displayName = 'EditAnnouncementDrawerContent'

@@ -263,14 +263,6 @@ export const LinesView: FC<LinesViewProps> = ({ className }): JSX.Element => {
           objConfigDrawer.announcement_id = lines.offhour.audiomsg.announcement_id
           objConfigDrawer.voicemail_id = lines.offhour.voicemail.voicemail_id
         }
-        //set datebegin and dateend
-        // if (lines.offhour.period) {
-        //   if (lines.offhour.period.datebegin) {
-        //     objConfigDrawer.datebegin = lines.offhour.period.datebegin
-        //     objConfigDrawer.dateend = lines.offhour.period.dateend
-        //   }
-        // }
-
         // If offhour doesn't exist, set the date to always and the action to never to avoid empty radio button
       } else {
         objConfigDrawer.dateType = 'always'

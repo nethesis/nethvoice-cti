@@ -314,7 +314,6 @@ export function reloadAnnouncement() {
 
 // The event to show the recording view.
 export function recordingAnnouncement() {
-  console.log('recording start') ////
   eventDispatch('phone-island-recording-start', {})
 }
 

@@ -74,13 +74,13 @@ export const ShowPhoneLinesDrawerContent = forwardRef<
     //check if the configuration is active
     setConfigurationActive(config.enabled)
     setChangeTypeDate(config.periodTypology)
-    //set the dateType. It could be 'always' or 'specifyDay'
+    //set the dateType. It can be 'always' or 'specifyDay'
     setSelectedType(config.dateType)
     //set the configuration typology. It could be 'audiomsg', 'audiomsg_voicemail' or 'redirect'
     setSelectedConfigurationTypology(config.action)
     setAnnouncementSelected(config.announcement_id)
 
-    //If datebegin exist convert the dateType in yyyy-MM-dd'T'HH:mm in case of "specify a day"
+    //If datebegin exists convert the dateType to yyyy-MM-dd'T'HH:mm in case of "specify a day"
     //'yyyy-MM-dd' in case of 'only one day'
     if (config.datebegin) {
       const dateBeginObj = new Date(config.datebegin)
@@ -90,7 +90,7 @@ export const ShowPhoneLinesDrawerContent = forwardRef<
       setDateBeginToShow(formattedBeginDate)
       setDateBeginToShowNoHour(formattedBeginDateNoHour)
     } else {
-      //if datebegin doesn't exist set both the date to the actual date
+      //if datebegin doesn't exist set both dates to the current date
       setDateBeginToShow(actualDateToShowWithHour)
       setDateBeginToShowNoHour(actualDateToShow)
     }
@@ -243,7 +243,7 @@ export const ShowPhoneLinesDrawerContent = forwardRef<
   }
   //end of all the date function operations
 
-  // RULE SECTION IDDEN AT THE MOMENT
+  // RULE SECTION HIDDEN AT THE MOMENT
   // const [changeConfigurationRadio, setChangeConfigurationRadio] = useState('customize')
   // const [selectedRulesInfo, setSelectedRulesInfo] = useState('')
   // const [openPanel, setOpenPanel] = useState('')
@@ -537,7 +537,6 @@ export const ShowPhoneLinesDrawerContent = forwardRef<
           break
 
         default:
-          // default action if none of the cases match
           break
       }
     } else {
@@ -606,10 +605,6 @@ export const ShowPhoneLinesDrawerContent = forwardRef<
       playAnnouncement(announcementId)
     }
   }
-
-  //On phone island reproduce announcement close button
-  // useEventListener('phone-island-audio-player-closed', () => {
-  // })
 
   function periodSelect() {
     return (
@@ -963,7 +958,7 @@ export const ShowPhoneLinesDrawerContent = forwardRef<
         {/* configuration type select */}
         {isConfigurationActive && (
           <>
-            {/* RULE SELECTION IDDEN AT THE MOMENT */}
+            {/* RULE SELECTION HIDDEN AT THE MOMENT */}
             {/* <fieldset className='mt-4 px-5'>
               <legend className='sr-only'>Configuration type</legend>
               <div className='space-y-4 sm:flex sm:items-center sm:space-y-0 sm:space-x-10'>

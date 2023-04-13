@@ -12,7 +12,7 @@ const meta = {
   component: IconSwitch,
   argTypes: {
     size: {
-      options: ['small', 'base', 'large', 'extra_large', 'double_extra_large'],
+      options: ['small', 'base', 'large', 'extra_large'],
     },
   },
   parameters: {

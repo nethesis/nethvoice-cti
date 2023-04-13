@@ -118,3 +118,22 @@ export function isMobileDevice() {
 export function cleanString(s: string) {
   return s.replace(/[^a-zA-Z0-9]/g, '')
 }
+
+/**
+ * Returns the converted size of the input file
+ */
+export function formatFileSize(sizeInBytes: any) {
+  const units = ['B', 'KB', 'MB', 'GB', 'TB']
+  let size = sizeInBytes
+  let unitIndex = 0
+
+  while (size >= 1024 && unitIndex < units.length - 1) {
+    size /= 1024
+    unitIndex++
+  }
+
+  const sizeFormatted = size.toFixed(2)
+  const unit = units[unitIndex]
+
+  return `${sizeFormatted} ${unit}`
+}

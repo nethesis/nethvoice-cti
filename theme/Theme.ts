@@ -49,7 +49,6 @@ const theme = {
       base: 'px-2 py-1 text-md',
       large: 'px-2 py-1 text-lg',
       extra_large: 'px-2 py-1 text-2xl',
-      double_extra_large: 'px-2 py-1 text-3xl',
       full_h: 'h-full',
       full_w: 'w-full',
     },

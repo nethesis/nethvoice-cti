@@ -59,7 +59,7 @@ export const LinesFilter = forwardRef<HTMLButtonElement, LinesFilterProps>(
       setSortBy(newSortBy)
       savePreference('phoneLinesSortBy', newSortBy, auth.username)
 
-      // update history (notify parent component)
+      //notify parent component
       updateSortFilter(newSortBy)
     }
 
@@ -72,7 +72,7 @@ export const LinesFilter = forwardRef<HTMLButtonElement, LinesFilterProps>(
       setConfigurationType(newConfigurationType)
       savePreference('phoneLinesConfigurationType', newConfigurationType, auth.username)
 
-      // update history (notify parent component)
+      //notify parent component
       updateConfigurationTypeFilter(newConfigurationType)
     }
 
@@ -186,7 +186,6 @@ export const LinesFilter = forwardRef<HTMLButtonElement, LinesFilterProps>(
 
                     {/* Mobile sort by filter */}
                     <form className='mt-4 p-5'>
-                      {/* contact type filter (mobile) */}
                       <Disclosure
                         as='div'
                         key={sortFilter.name}
@@ -241,11 +240,10 @@ export const LinesFilter = forwardRef<HTMLButtonElement, LinesFilterProps>(
                         )}
                       </Disclosure>
                     </form>
-                    
+
                     <div className='mt-2 border-t border-gray-200 dark:border-gray-700'></div>
                     {/* Mobile configuration type filter */}
                     <form className='mt-4 p-5'>
-                      {/* contact type filter (mobile) */}
                       <Disclosure
                         as='div'
                         key={typeConfigurationFilter.name}

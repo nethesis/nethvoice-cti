@@ -10,7 +10,7 @@ export interface IconSwitchProps extends ComponentProps<'div'> {
   on?: boolean
   offIcon?: ReactNode
   onIcon?: ReactNode
-  size?: 'small' | 'base' | 'large' | 'extra_large' | 'double_extra_large'
+  size?: 'small' | 'base' | 'large' | 'extra_large'
   changed?: (enabled: boolean) => void
   disabled?: boolean
   lighterOnDark?: boolean

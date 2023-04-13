@@ -43,7 +43,6 @@ export const AnnouncementView: FC<AnnouncementViewProps> = ({ className }): JSX.
   const [firstRender, setFirstRender]: any = useState(true)
   const [textFilter, setTextFilter]: any = useState('')
   const [donwloadAudioMessageError, setDownloadAudioMessageError] = useState('')
-  // const { profile } = useSelector((state: RootState) => state.user)
 
   const apiEnpoint = getApiEndpoint()
   const apiScheme = getApiScheme()
@@ -141,7 +140,7 @@ export const AnnouncementView: FC<AnnouncementViewProps> = ({ className }): JSX.
     if (announcementId) {
       playAnnouncement(announcementId)
       setIdAnnouncementInPlay(announcementId)
-      // disactivate play button
+      // deactivate play button
       setIsListeningAnnouncements(true)
     }
   }
@@ -213,28 +212,28 @@ export const AnnouncementView: FC<AnnouncementViewProps> = ({ className }): JSX.
   }, [])
 
   function getAvatarData(announcement: any) {
-    let announcementPath = ''
+    let userAvatarData = ''
     if (announcement.username && avatarIcon) {
       for (const username in avatarIcon) {
         if (username === announcement.username) {
-          announcementPath = avatarIcon[username]
+          userAvatarData = avatarIcon[username]
           break
         }
       }
     }
-    return announcementPath
+    return userAvatarData
   }
 
   function getAvatarMainPresence(announcement: any) {
-    let informationData = null
+    let userMainPresence = null
     if (announcement.username && operatorInformation) {
       for (const username in operatorInformation) {
         if (username === announcement.username) {
-          informationData = operatorInformation[username].presence
+          userMainPresence = operatorInformation[username].presence
         }
       }
     }
-    return informationData
+    return userMainPresence
   }
 
   function getFullUsername(announcement: any) {
