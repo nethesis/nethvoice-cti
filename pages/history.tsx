@@ -49,19 +49,19 @@ const History: NextPage = () => {
     }
   }, [debouncedUpdateFilterText])
 
-  const [callType, setContactType]: any = useState('user')
+  const [callType, setCallType]: any = useState('user')
 
-  const updateContactTypeFilter = (newContactType: string) => {
+  const updateCallTypeFilter = (newCallType: string) => {
     setPageNum(1)
-    setContactType(newContactType)
+    setCallType(newCallType)
     setHistoryLoaded(false)
   }
 
-  const [callDirection, setContactDirection]: any = useState('all')
+  const [callDirection, setCallDirection]: any = useState('all')
 
-  const updateContactDirectionFilter = (newContactDirection: string) => {
+  const updateCallDirectionFilter = (newCallDirection: string) => {
     setPageNum(1)
-    setContactDirection(newContactDirection)
+    setCallDirection(newCallDirection)
     setHistoryLoaded(false)
   }
 
@@ -520,9 +520,9 @@ const History: NextPage = () => {
         </h1>
         <Filter
           updateFilterText={debouncedUpdateFilterText}
-          updateContactTypeFilter={updateContactTypeFilter}
+          updateCallTypeFilter={updateCallTypeFilter}
           updateSortFilter={updateSortFilter}
-          updateContactDirectionFilter={updateContactDirectionFilter}
+          updateCallDirectionFilter={updateCallDirectionFilter}
           updateDateBeginFilter={updateDateBeginFilter}
           updateDateEndFilter={updateDateEndFilter}
         />

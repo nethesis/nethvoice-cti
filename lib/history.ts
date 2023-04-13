@@ -3,15 +3,14 @@
 
 import axios from 'axios'
 import { handleNetworkError } from './utils'
-import { formatInTimeZoneLoc } from './dateTime'
 import { store } from '../store'
 import { loadPreference } from './storage'
 import { getOperatorByPhoneNumber, openShowOperatorDrawer } from './operators'
 import { cloneDeep } from 'lodash'
 
 export const PAGE_SIZE = 10
-export const DEFAULT_CONTACT_TYPE_FILTER = 'user'
-export const DEFAULT_CONTACT_DIRECTION_FILTER = 'all'
+export const DEFAULT_CALL_TYPE_FILTER = 'user'
+export const DEFAULT_CALL_DIRECTION_FILTER = 'all'
 export const DEFAULT_SORT_BY = 'time%20desc'
 
 export function getHistoryUrl() {
@@ -181,16 +180,15 @@ export async function searchDrawerHistorySwitchboard(
 }
 
 export const getFilterValues = (currentUsername: string) => {
-  const contactType =
-    loadPreference('historyContactTypeFilter', currentUsername) || DEFAULT_CONTACT_TYPE_FILTER
+  const callType =
+    loadPreference('historyCallTypeFilter', currentUsername) || DEFAULT_CALL_TYPE_FILTER
 
-  const contactDirection =
-    loadPreference('historyContactTypeDirection', currentUsername) ||
-    DEFAULT_CONTACT_DIRECTION_FILTER
+  const callDirection =
+    loadPreference('historyCallTypeDirection', currentUsername) || DEFAULT_CALL_DIRECTION_FILTER
 
   const sortBy = loadPreference('historySortTypePreference', currentUsername) || DEFAULT_SORT_BY
 
-  return { contactType, contactDirection, sortBy }
+  return { callType, callDirection, sortBy }
 }
 
 export const openAddToPhonebookDrawer = (operator: any) => {

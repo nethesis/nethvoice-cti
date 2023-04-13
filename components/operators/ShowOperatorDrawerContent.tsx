@@ -33,7 +33,7 @@ export const ShowOperatorDrawerContent = forwardRef<
   HTMLButtonElement,
   ShowOperatorDrawerContentProps
 >(({ config, className, ...props }, ref) => {
-  const auth = useSelector((state: RootState) => state.authentication)
+  const { profile } = useSelector((state: RootState) => state.user)
   const [isFavorite, setFavorite] = useState(false)
   const { t } = useTranslation()
 
@@ -160,13 +160,15 @@ export const ShowOperatorDrawerContent = forwardRef<
             </div>
           )}
         {/* last calls: search all operator extensions */}
-        <LastCallsDrawerTable
-          callType={config.lastCallsType || 'switchboard'}
-          dateFrom={startOfDay(subDays(new Date(), 7))}
-          dateTo={new Date()}
-          phoneNumbers={config.endpoints?.extension?.map((ext: any) => ext.id)}
-          limit={10}
-        />
+        {profile.macro_permissions?.cdr?.permissions?.ad_cdr?.value && (
+          <LastCallsDrawerTable
+            callType={config.lastCallsType || 'switchboard'}
+            dateFrom={startOfDay(subDays(new Date(), 7))}
+            dateTo={new Date()}
+            phoneNumbers={config.endpoints?.extension?.map((ext: any) => ext.id)}
+            limit={10}
+          />
+        )}
       </div>
     </>
   )

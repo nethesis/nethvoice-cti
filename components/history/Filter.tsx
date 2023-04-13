@@ -4,7 +4,7 @@
 import { ComponentPropsWithRef, forwardRef } from 'react'
 import React from 'react'
 import classNames from 'classnames'
-import { TextInput, SideDrawerCloseIcon } from '../common'
+import { TextInput } from '../common'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { faChevronDown, faCircleXmark, faXmark } from '@fortawesome/free-solid-svg-icons'
 import { Fragment, useState, useEffect, useRef } from 'react'
@@ -13,8 +13,8 @@ import { useSelector } from 'react-redux'
 import { RootState } from '../../store'
 import { savePreference } from '../../lib/storage'
 import {
-  DEFAULT_CONTACT_TYPE_FILTER,
-  DEFAULT_CONTACT_DIRECTION_FILTER,
+  DEFAULT_CALL_TYPE_FILTER,
+  DEFAULT_CALL_DIRECTION_FILTER,
   DEFAULT_SORT_BY,
   getFilterValues,
 } from '../../lib/history'
@@ -38,8 +38,8 @@ const date = {
   name: 'Date',
 }
 
-//Contact type filter: Personal/ Switchboard
-const contactTypeFilter = {
+//Call type filter: Personal/ Switchboard
+const callTypeFilter = {
   id: 'kind',
   name: 'Call type',
   options: [
@@ -49,9 +49,9 @@ const contactTypeFilter = {
 }
 
 //Filter for the direction: All/ Incoming/ Outgoing/ Missed/ Internal
-const contactDirectionFilter = {
+const callDirectionFilter = {
   id: 'direction',
-  name: 'contact direction',
+  name: 'call direction',
   options: [
     { value: 'all', label: 'All' },
     { value: 'in', label: 'Incoming' },
@@ -62,9 +62,9 @@ const contactDirectionFilter = {
 }
 
 //Filter for the direction: All/ Incoming/ Outgoing/ Missed
-const contactDirectionFilterNoInternal = {
+const callDirectionFilterNoInternal = {
   id: 'direction',
-  name: 'contact direction',
+  name: 'call direction',
   options: [
     { value: 'all', label: 'All' },
     { value: 'in', label: 'Incoming' },
@@ -75,8 +75,8 @@ const contactDirectionFilterNoInternal = {
 
 export interface FilterProps extends ComponentPropsWithRef<'div'> {
   updateFilterText: Function
-  updateContactTypeFilter: Function
-  updateContactDirectionFilter: Function
+  updateCallTypeFilter: Function
+  updateCallDirectionFilter: Function
   updateDateBeginFilter: Function
   updateDateEndFilter: Function
   updateSortFilter: Function
@@ -86,8 +86,8 @@ export const Filter = forwardRef<HTMLButtonElement, FilterProps>(
   (
     {
       updateFilterText,
-      updateContactTypeFilter,
-      updateContactDirectionFilter,
+      updateCallTypeFilter,
+      updateCallDirectionFilter,
       updateDateBeginFilter,
       updateDateEndFilter,
       updateSortFilter,
@@ -97,6 +97,7 @@ export const Filter = forwardRef<HTMLButtonElement, FilterProps>(
     ref,
   ) => {
     const auth = useSelector((state: RootState) => state.authentication)
+    const { profile } = useSelector((state: RootState) => state.user)
     const [internalUsed, setInternalUsed] = useState(false)
 
     const [dateBeginValue, setdateBeginValue] = useState('')
@@ -107,13 +108,13 @@ export const Filter = forwardRef<HTMLButtonElement, FilterProps>(
     const [filterText, setFilterText] = useState('')
     const textFilterRef = useRef() as React.MutableRefObject<HTMLInputElement>
 
-    const [contactDirectionLabel, setContactDirectionLabel] = useState('')
+    const [callDirectionLabel, setCallDirectionLabel] = useState('')
 
-    const [contactTypeLabel, setContactTypeLabel] = useState('')
+    const [callTypeLabel, setCallTypeLabel] = useState('')
 
-    const [contactDirection, setContactDirection] = useState('all')
+    const [callDirection, setCallDirection] = useState('all')
 
-    const [contactType, setContactType] = useState('user')
+    const [callType, setCallType] = useState('user')
 
     const [dateBeginShowed, setDateBeginShowed] = useState('')
     const [dateEndShowed, setDateEndShowed] = useState('')
@@ -130,7 +131,7 @@ export const Filter = forwardRef<HTMLButtonElement, FilterProps>(
 
     //Check if personal call filter is selected
     function checkSelected(selectedType: any) {
-      contactDirectionFilter.options
+      callDirectionFilter.options
       if (selectedType === 'user') {
         setInternalUsed(false)
       } else {
@@ -223,65 +224,59 @@ export const Filter = forwardRef<HTMLButtonElement, FilterProps>(
       textFilterRef.current.focus()
     }
 
-    //Check the item selected for the contact type
-    function changeContactType(event: any) {
-      const newContactType = event.target.id
-      setContactType(newContactType)
+    function changeCallType(event: any) {
+      const newCallType = event.target.id
+      setCallType(newCallType)
       //Call the function to check if personal call is selected
-      checkSelected(newContactType)
-      updateContactTypeFilter(newContactType)
-      savePreference('historyContactTypeFilter', newContactType, auth.username)
+      checkSelected(newCallType)
+      updateCallTypeFilter(newCallType)
+      savePreference('historyCallTypeFilter', newCallType, auth.username)
     }
 
-    //Check the call direction selected for the contact type
-    function changeContactDirection(event: any) {
-      const newContactDirection = event.target.id
-      setContactDirection(newContactDirection)
-      updateContactDirectionFilter(newContactDirection)
-      savePreference('historyContactTypeDirection', newContactDirection, auth.username)
+    function changeCallDirection(event: any) {
+      const newCallDirection = event.target.id
+      setCallDirection(newCallDirection)
+      updateCallDirectionFilter(newCallDirection)
+      savePreference('historyCallTypeDirection', newCallDirection, auth.username)
     }
 
-    //Set the label for the selected contact type
-    //Also check if the selected contact is user
-    //In positive case set the contact direction filter to All
+    //Set the label for the selected call type
     useEffect(() => {
-      const contactTypeFound = contactTypeFilter.options.find(
-        (option) => option.value === contactType,
-      )
-      if (contactTypeFound) {
-        setContactTypeLabel(contactTypeFound.label)
+      const callTypeFound = callTypeFilter.options.find((option) => option.value === callType)
+      if (callTypeFound) {
+        setCallTypeLabel(callTypeFound.label)
       }
-    }, [contactType])
+    }, [callType])
 
     useEffect(() => {
-      if (contactType === 'user' && contactDirection === 'internal') {
-        setContactDirectionLabel('All')
-        setContactDirection('all')
-        updateContactDirectionFilter('all')
+      if (callType === 'user' && callDirection === 'internal') {
+        setCallDirectionLabel('All')
+        setCallDirection('all')
+        updateCallDirectionFilter('all')
       }
-    }, [contactType, contactDirection])
+    }, [callType, callDirection])
 
-    //Set the label for the selected contact type
+    //Set the label for the selected call direction
     useEffect(() => {
-      const contactDirectionFound = contactDirectionFilter.options.find(
-        (option) => option.value === contactDirection,
+      const callDirectionFound = callDirectionFilter.options.find(
+        (option) => option.value === callDirection,
       )
-      if (contactDirectionFound) {
-        setContactDirectionLabel(contactDirectionFound.label)
+      if (callDirectionFound) {
+        setCallDirectionLabel(callDirectionFound.label)
       }
-    }, [contactDirection])
+    }, [callDirection])
 
     //Get the selected filter from the local storage
     useEffect(() => {
       const filterValues = getFilterValues(auth.username)
-      setContactType(filterValues.contactType)
-      setContactDirection(filterValues.contactDirection)
+      setCallType(filterValues.callType)
+      setCallDirection(filterValues.callDirection)
       setSortBy(filterValues.sortBy)
-      checkSelected(filterValues.contactType)
+      checkSelected(filterValues.callType)
 
       // notify parent component
-      updateContactTypeFilter(filterValues.contactType)
-      updateContactDirectionFilter(filterValues.contactDirection)
+      updateCallTypeFilter(filterValues.callType)
+      updateCallDirectionFilter(filterValues.callDirection)
       updateSortFilter(filterValues.sortBy)
     }, [])
 
@@ -296,23 +291,23 @@ export const Filter = forwardRef<HTMLButtonElement, FilterProps>(
     function clearFilters() {
       clearDate()
       setFilterText('')
-      setContactType(DEFAULT_CONTACT_TYPE_FILTER)
-      setContactDirection(DEFAULT_CONTACT_DIRECTION_FILTER)
+      setCallType(DEFAULT_CALL_TYPE_FILTER)
+      setCallDirection(DEFAULT_CALL_DIRECTION_FILTER)
       setdateBeginValue(actualDateLabelFrom)
       setdateEndValue(actualDateLabelTo)
       setSortBy(DEFAULT_SORT_BY)
-      savePreference('historyContactTypeFilter', DEFAULT_CONTACT_TYPE_FILTER, auth.username)
-      savePreference('historyContactTypeDirection', DEFAULT_CONTACT_DIRECTION_FILTER, auth.username)
+      savePreference('historyCallTypeFilter', DEFAULT_CALL_TYPE_FILTER, auth.username)
+      savePreference('historyCallTypeDirection', DEFAULT_CALL_DIRECTION_FILTER, auth.username)
       savePreference('historySortTypePreference', DEFAULT_SORT_BY, auth.username)
 
       // notify parent component
       updateFilterText('')
-      updateContactTypeFilter(DEFAULT_CONTACT_TYPE_FILTER)
-      updateContactDirectionFilter(DEFAULT_CONTACT_DIRECTION_FILTER)
+      updateCallTypeFilter(DEFAULT_CALL_TYPE_FILTER)
+      updateCallDirectionFilter(DEFAULT_CALL_DIRECTION_FILTER)
       updateDateBeginFilter(dateFromForReset)
       updateDateEndFilter(actualDateForReset)
       updateSortFilter(DEFAULT_SORT_BY)
-      checkSelected(DEFAULT_CONTACT_TYPE_FILTER)
+      checkSelected(DEFAULT_CALL_TYPE_FILTER)
     }
 
     const { t } = useTranslation()
@@ -362,10 +357,10 @@ export const Filter = forwardRef<HTMLButtonElement, FilterProps>(
 
                     {/* Filters (mobile) */}
                     <form className='mt-4'>
-                      {/* contact type filter (mobile) */}
+                      {/* call type filter (mobile) */}
                       <Disclosure
                         as='div'
-                        key={contactTypeFilter.name}
+                        key={callTypeFilter.name}
                         className='border-t border-gray-200 px-4 py-6 dark:border-gray-700'
                       >
                         {({ open }) => (
@@ -373,7 +368,7 @@ export const Filter = forwardRef<HTMLButtonElement, FilterProps>(
                             <h3 className='-mx-2 -my-3 flow-root'>
                               <Disclosure.Button className='flex w-full items-center justify-between px-2 py-3 text-sm bg-white text-gray-400 dark:bg-gray-900 dark:text-gray-500'>
                                 <span className='font-medium text-gray-900 dark:text-gray-100'>
-                                  {t(`History.${contactTypeFilter.name}`)}
+                                  {t(`History.${callTypeFilter.name}`)}
                                 </span>
                                 <span className='ml-6 flex items-center'>
                                   <FontAwesomeIcon
@@ -389,58 +384,63 @@ export const Filter = forwardRef<HTMLButtonElement, FilterProps>(
                             </h3>
                             <Disclosure.Panel className='pt-6 flex flex-col space-y-2'>
                               <fieldset>
-                                <legend className='sr-only'>{contactTypeFilter.name}</legend>
+                                <legend className='sr-only'>{callTypeFilter.name}</legend>
                               </fieldset>
-                              <div className='space-y-4'>
-                                {contactTypeFilter.options.map((option) => (
-                                  <div key={option.value} className='flex items-center'>
-                                    <input
-                                      id={option.value}
-                                      name={`filter-${contactTypeFilter.id}`}
-                                      type='radio'
-                                      defaultChecked={option.value === contactType}
-                                      onChange={changeContactType}
-                                      className='h-4 w-4 border-gray-300 text-primary focus:ring-primaryLight dark:border-gray-600 dark:text-primary dark:focus:ring-primaryDark'
-                                    />
-                                    <label
-                                      htmlFor={option.value}
-                                      className='ml-3 block text-sm font-medium text-gray-700 dark:text-gray-200'
-                                    >
-                                      {t(`History.${option.label}`)}
-                                    </label>
+                              {/* show call type filter only if user has cdr permissions */}
+                              {profile.macro_permissions?.cdr?.permissions?.ad_cdr?.value && (
+                                <>
+                                  <div className='space-y-4'>
+                                    {callTypeFilter.options.map((option) => (
+                                      <div key={option.value} className='flex items-center'>
+                                        <input
+                                          id={option.value}
+                                          name={`filter-${callTypeFilter.id}`}
+                                          type='radio'
+                                          defaultChecked={option.value === callType}
+                                          onChange={changeCallType}
+                                          className='h-4 w-4 border-gray-300 text-primary focus:ring-primaryLight dark:border-gray-600 dark:text-primary dark:focus:ring-primaryDark'
+                                        />
+                                        <label
+                                          htmlFor={option.value}
+                                          className='ml-3 block text-sm font-medium text-gray-700 dark:text-gray-200'
+                                        >
+                                          {t(`History.${option.label}`)}
+                                        </label>
+                                      </div>
+                                    ))}
                                   </div>
-                                ))}
-                              </div>
 
-                              {/* Divider  */}
-                              <div className='relative'>
-                                <div
-                                  className='absolute inset-0 flex items-center'
-                                  aria-hidden='true'
-                                >
-                                  <div className='w-full border-t  border-gray-300 dark:border-gray-600' />
-                                </div>
-                              </div>
+                                  {/* Divider  */}
+                                  <div className='relative'>
+                                    <div
+                                      className='absolute inset-0 flex items-center'
+                                      aria-hidden='true'
+                                    >
+                                      <div className='w-full border-t  border-gray-300 dark:border-gray-600' />
+                                    </div>
+                                  </div>
+                                </>
+                              )}
 
                               <fieldset>
-                                <legend className='sr-only'>{contactDirectionFilter.name}</legend>
+                                <legend className='sr-only'>{callDirectionFilter.name}</legend>
                               </fieldset>
 
-                              {/* Contact direction filter (mobile) */}
+                              {/* Call direction filter (mobile) */}
                               {internalUsed && (
                                 <div className='space-y-4'>
-                                  {contactDirectionFilter.options.map((option) => (
+                                  {callDirectionFilter.options.map((option) => (
                                     <div key={option.value} className='flex items-center'>
                                       <input
                                         id={option.value}
-                                        name={`filter-${contactDirectionFilter.id}`}
+                                        name={`filter-${callDirectionFilter.id}`}
                                         type='radio'
                                         defaultChecked={
-                                          contactType === 'user' && contactDirection === 'internal'
+                                          callType === 'user' && callDirection === 'internal'
                                             ? option.value === 'all'
-                                            : option.value === contactDirection
+                                            : option.value === callDirection
                                         }
-                                        onChange={changeContactDirection}
+                                        onChange={changeCallDirection}
                                         className='h-4 w-4 border-gray-300 text-primary focus:ring-primaryLight dark:border-gray-600 dark:text-primary dark:focus:ring-primaryDark'
                                       />
                                       <label
@@ -455,18 +455,18 @@ export const Filter = forwardRef<HTMLButtonElement, FilterProps>(
                               )}
                               {!internalUsed && (
                                 <div className='space-y-4'>
-                                  {contactDirectionFilterNoInternal.options.map((option) => (
+                                  {callDirectionFilterNoInternal.options.map((option) => (
                                     <div key={option.value} className='flex items-center'>
                                       <input
                                         id={option.value}
-                                        name={`filter-${contactDirectionFilter.id}`}
+                                        name={`filter-${callDirectionFilter.id}`}
                                         type='radio'
                                         defaultChecked={
-                                          contactType === 'user' && contactDirection === 'internal'
+                                          callType === 'user' && callDirection === 'internal'
                                             ? option.value === 'all'
-                                            : option.value === contactDirection
+                                            : option.value === callDirection
                                         }
-                                        onChange={changeContactDirection}
+                                        onChange={changeCallDirection}
                                         className='h-4 w-4 border-gray-300 text-primary focus:ring-primaryLight dark:border-gray-600 dark:text-primary dark:focus:ring-primaryDark'
                                       />
                                       <label
@@ -635,16 +635,16 @@ export const Filter = forwardRef<HTMLButtonElement, FilterProps>(
                 </div>
                 <div className='flex'>
                   <Popover.Group className='hidden sm:flex sm:items-baseline sm:space-x-8'>
-                    {/* contact type filter */}
+                    {/* call type filter */}
                     <Popover
                       as='div'
-                      key={contactTypeFilter.name}
-                      id={`desktop-menu-${contactTypeFilter.id}`}
+                      key={callTypeFilter.name}
+                      id={`desktop-menu-${callTypeFilter.id}`}
                       className='relative inline-block text-left'
                     >
                       <div>
                         <Popover.Button className='group inline-flex items-center justify-center text-sm font-medium text-gray-700 hover:text-gray-900 dark:text-gray-200 dark:hover:text-gray-100'>
-                          <span> {t(`History.${contactTypeFilter.name}`)}</span>
+                          <span> {t(`History.${callTypeFilter.name}`)}</span>
                           <FontAwesomeIcon
                             icon={faChevronDown}
                             className='ml-2 h-3 w-3 flex-shrink-0 text-gray-400 group-hover:text-gray-500 dark:text-gray-500 dark:group-hover:text-gray-400'
@@ -663,49 +663,57 @@ export const Filter = forwardRef<HTMLButtonElement, FilterProps>(
                       >
                         <Popover.Panel className='absolute right-0 z-10 mt-2 origin-top-right rounded-md flex flex-col space-y-4 bg-white p-4 shadow-2xl ring-1 ring-black ring-opacity-5 focus:outline-none dark:bg-gray-900 dark:ring-gray-700 '>
                           {/* Call type */}
-                          <form className='space-y-4'>
-                            {contactTypeFilter.options.map((option) => (
-                              <div key={option.value} className='flex items-center'>
-                                <input
-                                  id={option.value}
-                                  name={`filter-${contactTypeFilter.id}`}
-                                  type='radio'
-                                  defaultChecked={option.value === contactType}
-                                  onChange={changeContactType}
-                                  className='h-4 w-4 border-gray-300 text-primary focus:ring-primaryLight dark:border-gray-600 dark:text-primary dark:focus:ring-primaryDark'
-                                />
-                                <label
-                                  htmlFor={option.value}
-                                  className='ml-3 block text-sm font-medium text-gray-700 dark:text-gray-200'
-                                >
-                                  {t(`History.${option.label}`)}
-                                </label>
-                              </div>
-                            ))}
-                          </form>
+                          {/* show call type filter only if user has cdr permissions */}
+                          {profile.macro_permissions?.cdr?.permissions?.ad_cdr?.value && (
+                            <>
+                              <form className='space-y-4'>
+                                {callTypeFilter.options.map((option) => (
+                                  <div key={option.value} className='flex items-center'>
+                                    <input
+                                      id={option.value}
+                                      name={`filter-${callTypeFilter.id}`}
+                                      type='radio'
+                                      defaultChecked={option.value === callType}
+                                      onChange={changeCallType}
+                                      className='h-4 w-4 border-gray-300 text-primary focus:ring-primaryLight dark:border-gray-600 dark:text-primary dark:focus:ring-primaryDark'
+                                    />
+                                    <label
+                                      htmlFor={option.value}
+                                      className='ml-3 block text-sm font-medium text-gray-700 dark:text-gray-200'
+                                    >
+                                      {t(`History.${option.label}`)}
+                                    </label>
+                                  </div>
+                                ))}
+                              </form>
 
-                          {/* Divider */}
-                          <div className='relative '>
-                            <div className='absolute inset-0 flex items-center' aria-hidden='true'>
-                              <div className='w-full border-t border-gray-300 dark:border-gray-600' />
-                            </div>
-                          </div>
+                              {/* Divider */}
+                              <div className='relative '>
+                                <div
+                                  className='absolute inset-0 flex items-center'
+                                  aria-hidden='true'
+                                >
+                                  <div className='w-full border-t border-gray-300 dark:border-gray-600' />
+                                </div>
+                              </div>
+                            </>
+                          )}
 
                           {/* Call direction */}
                           {internalUsed && (
                             <form className='space-y-4'>
-                              {contactDirectionFilter.options.map((option) => (
+                              {callDirectionFilter.options.map((option) => (
                                 <div key={option.value} className='flex items-center'>
                                   <input
                                     id={option.value}
-                                    name={`filter-${contactDirectionFilter.id}`}
+                                    name={`filter-${callDirectionFilter.id}`}
                                     type='radio'
                                     defaultChecked={
-                                      contactType === 'user' && contactDirection === 'internal'
+                                      callType === 'user' && callDirection === 'internal'
                                         ? option.value === 'all'
-                                        : option.value === contactDirection
+                                        : option.value === callDirection
                                     }
-                                    onChange={changeContactDirection}
+                                    onChange={changeCallDirection}
                                     className='h-4 w-4 border-gray-300 text-primary focus:ring-primaryLight dark:border-gray-600 dark:text-primary dark:focus:ring-primaryDark'
                                   />
                                   <label
@@ -720,18 +728,18 @@ export const Filter = forwardRef<HTMLButtonElement, FilterProps>(
                           )}
                           {!internalUsed && (
                             <form className='space-y-4'>
-                              {contactDirectionFilterNoInternal.options.map((option) => (
+                              {callDirectionFilterNoInternal.options.map((option) => (
                                 <div key={option.value} className='flex items-center'>
                                   <input
                                     id={option.value}
-                                    name={`filter-${contactDirectionFilter.id}`}
+                                    name={`filter-${callDirectionFilter.id}`}
                                     type='radio'
                                     defaultChecked={
-                                      contactType === 'user' && contactDirection === 'internal'
+                                      callType === 'user' && callDirection === 'internal'
                                         ? option.value === 'all'
-                                        : option.value === contactDirection
+                                        : option.value === callDirection
                                     }
-                                    onChange={changeContactDirection}
+                                    onChange={changeCallDirection}
                                     className='h-4 w-4 border-gray-300 text-primary focus:ring-primaryLight dark:border-gray-600 dark:text-primary dark:focus:ring-primaryDark'
                                   />
                                   <label
@@ -873,23 +881,26 @@ export const Filter = forwardRef<HTMLButtonElement, FilterProps>(
                     aria-hidden='true'
                     className='h-5 w-px mx-4 my-1 sm:block bg-gray-300 dark:bg-gray-600'
                   />
-                  <div className='mr-4 my-1'>
-                    <div className='-m-1 flex flex-wrap items-center'>
-                      <span className='m-1 inline-flex items-center rounded-full border py-1.5 px-3 text-sm font-medium border-gray-200 bg-white text-gray-700 dark:border-gray-700 dark:bg-gray-900 dark:text-gray-200'>
-                        <span className='text-gray-500 dark:text-gray-400'>
-                          {t('History.Call type')}:&nbsp;
+                  {/* show selected call type only if user has cdr permissions */}
+                  {profile.macro_permissions?.cdr?.permissions?.ad_cdr?.value && (
+                    <div className='mr-4 my-1'>
+                      <div className='-m-1 flex flex-wrap items-center'>
+                        <span className='m-1 inline-flex items-center rounded-full border py-1.5 px-3 text-sm font-medium border-gray-200 bg-white text-gray-700 dark:border-gray-700 dark:bg-gray-900 dark:text-gray-200'>
+                          <span className='text-gray-500 dark:text-gray-400'>
+                            {t('History.Call type')}:&nbsp;
+                          </span>
+                          {callTypeLabel && t(`History.${callTypeLabel}`)}
                         </span>
-                        {contactTypeLabel && t(`History.${contactTypeLabel}`)}
-                      </span>
+                      </div>
                     </div>
-                  </div>
+                  )}
                   <div className='mr-4 my-1'>
                     <div className='-m-1 flex flex-wrap items-center'>
                       <span className='m-1 inline-flex items-center rounded-full border py-1.5 px-3 text-sm font-medium border-gray-200 bg-white text-gray-700 dark:border-gray-700 dark:bg-gray-900 dark:text-gray-200'>
                         <span className='text-gray-500 dark:text-gray-400'>
                           {t('History.Call direction')}:&nbsp;
                         </span>
-                        {contactDirectionLabel && t(`History.${contactDirectionLabel}`)}
+                        {callDirectionLabel && t(`History.${callDirectionLabel}`)}
                       </span>
                     </div>
                   </div>
