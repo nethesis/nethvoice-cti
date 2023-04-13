@@ -6,9 +6,12 @@ import { useEffect, useState } from 'react'
 import { useTranslation } from 'react-i18next'
 import classNames from 'classnames'
 import { QueuesManagementView, CallsView, StatisticsView } from '../components/queues'
-import { InlineNotification } from '../components/common'
+import { EmptyState, InlineNotification } from '../components/common'
 import { useSelector } from 'react-redux'
 import { RootState, store } from '../store'
+import { isEmpty } from 'lodash'
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
+import { faUsers } from '@nethesis/nethesis-solid-svg-icons'
 
 const Queues: NextPage = () => {
   const { t } = useTranslation()
@@ -44,8 +47,19 @@ const Queues: NextPage = () => {
         {queuesStore.errorMessage && (
           <InlineNotification type='error' title={queuesStore.errorMessage}></InlineNotification>
         )}
+        {/* empty state */}
+        {queuesStore.isLoaded && isEmpty(queuesStore.queues) && (
+          <EmptyState
+            title={t('Queues.No queues')}
+            description={t('Queues.You are member of no queues') || ''}
+            icon={
+              <FontAwesomeIcon icon={faUsers} className='mx-auto h-12 w-12' aria-hidden='true' />
+            }
+            className='md:rounded-md bg-white dark:bg-gray-900'
+          ></EmptyState>
+        )}
         {/* tabs */}
-        {!queuesStore.errorMessage && (
+        {!queuesStore.errorMessage && queuesStore.isLoaded && !isEmpty(queuesStore.queues) && (
           <>
             <div className='mb-6'>
               {/* mobile tabs */}

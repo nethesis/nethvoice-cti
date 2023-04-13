@@ -18,7 +18,6 @@ import {
   removeQueueFromExpanded,
   removeQueueFromFavorites,
   searchStringInQueue,
-  sortByLoggedStatus,
   unpauseQueue,
 } from '../../lib/queuesLib'
 import {
@@ -29,7 +28,6 @@ import {
   faPause,
   faPhone,
   faStar as faStarSolid,
-  faUsers,
   faArrowDownLeftAndArrowUpRightToCenter,
   faChevronUp,
   faUserClock,
@@ -455,19 +453,8 @@ export const QueuesManagementView: FC<QueuesManagementViewProps> = ({ className 
         </div>
       </div>
       <div className='mx-auto text-center'>
-        {/* empty state */}
-        {queuesStore.isLoaded && isEmpty(queuesStore.queues) && (
-          <EmptyState
-            title={t('Queues.No queues')}
-            description={t('Queues.You are member of no queues') || ''}
-            icon={
-              <FontAwesomeIcon icon={faUsers} className='mx-auto h-12 w-12' aria-hidden='true' />
-            }
-            className='md:rounded-md bg-white dark:bg-gray-900'
-          ></EmptyState>
-        )}
         {/* no search results */}
-        {queuesStore.isLoaded && !isEmpty(queuesStore.queues) && isEmpty(filteredQueues) && (
+        {queuesStore.isLoaded && isEmpty(filteredQueues) && (
           <EmptyState
             title={t('Queues.No queues')}
             description={t('Common.Try changing your search filters') || ''}
