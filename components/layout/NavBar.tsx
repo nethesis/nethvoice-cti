@@ -30,7 +30,7 @@ export const NavBar: FC<NavBarProps> = ({ items }) => {
               {/* Nextjs <Image> is not suitable for rebranding: it always uses the aspect ratio of the original logo  */}
               <img
                 className='px-2.5 w-auto cursor-pointer object-contain object-top'
-                src='/navbar_logo.png'
+                src='/navbar_logo.svg'
                 alt='logo'
               />
             </div>

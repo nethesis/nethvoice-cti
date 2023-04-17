@@ -57,7 +57,7 @@ EOF
 
 if [ ! -z $NAVBAR_LOGO_URL ]; then
   # navbar logo rebranding
-  /usr/bin/wget --timeout=60 $NAVBAR_LOGO_URL -O /app/public/navbar_logo.png
+  /usr/bin/wget --timeout=60 $NAVBAR_LOGO_URL -O /app/public/navbar_logo.svg
 fi
 
 if [ ! -z $LOGIN_LOGO_URL ]; then
