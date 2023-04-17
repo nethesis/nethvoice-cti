@@ -137,3 +137,11 @@ export function formatFileSize(sizeInBytes: any) {
 
   return `${sizeFormatted} ${unit}`
 }
+
+/**
+ * Checks if the input string contains only valid characters for a phone number.
+ */
+function validatePhoneNumber(phoneNumber: any) {
+  const regex = /^[0-9*#+]*$/
+  return regex.test(phoneNumber)
+}
