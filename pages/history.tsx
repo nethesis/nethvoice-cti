@@ -156,6 +156,7 @@ const History: NextPage = () => {
       }
     }
     fetchHistory()
+  // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [
     isHistoryLoaded,
     history,
@@ -533,7 +534,7 @@ const History: NextPage = () => {
           <div className='mx-auto'>
             <div className='flex flex-col overflow-hidden'>
               <div className='-my-2 -mx-4 overflow-x-auto sm:-mx-6 lg:-mx-8'>
-                <div className='min-w-full py-2 align-middle px-2 md:px-6 lg:px-8'>
+                <div className='inline-block min-w-full py-2 align-middle px-2 md:px-6 lg:px-8'>
                   <div className='overflow-hidden shadow ring-1 ring-black ring-opacity-5 md:rounded-lg'>
                     {/* empty state */}
                     {isHistoryLoaded && history?.count === 0 && (
