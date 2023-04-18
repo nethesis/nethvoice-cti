@@ -34,7 +34,7 @@ export async function getPhonebook(
   if (textFilter.trim()) {
     apiUrl += `search/${textFilter.trim()}`
   } else {
-    apiUrl += `searchstartswith/A`
+    apiUrl += `search/`
   }
   const offset = (pageNum - 1) * pageSize
   apiUrl += `?offset=${offset}&limit=${pageSize}&view=${contactType}`
