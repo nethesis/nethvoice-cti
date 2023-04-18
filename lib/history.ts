@@ -199,12 +199,3 @@ export const openAddToPhonebookDrawer = (operator: any) => {
     config: operator,
   })
 }
-
-// The event to show the audio player view and play an audio file.
-export function playRecordingAudio(audioFileId: any) {
-  let objectPlayAudioFile = {
-    type: 'call_recording',
-    id: audioFileId.toString(),
-  }
-  eventDispatch('phone-island-audio-player-start', { objectPlayAudioFile })
-}

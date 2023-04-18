@@ -5,7 +5,7 @@ import type { NextPage } from 'next'
 import { Filter } from '../components/history/Filter'
 import { Button, EmptyState, InlineNotification } from '../components/common'
 import { useState, useEffect, useMemo } from 'react'
-import { search, PAGE_SIZE, openDrawerHistory, playRecordingAudio } from '../lib/history'
+import { search, PAGE_SIZE, openDrawerHistory } from '../lib/history'
 import { RootState } from '../store'
 import { useSelector } from 'react-redux'
 import { debounce } from 'lodash'
@@ -25,6 +25,7 @@ import {
 import { formatDateLoc, getCallTimeToDisplay } from '../lib/dateTime'
 import { subDays, startOfDay } from 'date-fns'
 import { useTranslation } from 'react-i18next'
+import { playFileAudio } from '../lib/utils'
 
 const History: NextPage = () => {
   const [isHistoryLoaded, setHistoryLoaded] = useState(false)
@@ -515,7 +516,7 @@ const History: NextPage = () => {
 
   async function playSelectedAudioFile(callId: any) {
     if (callId) {
-      playRecordingAudio(callId)
+      playFileAudio(callId, 'recordingFile')
     }
   }
 

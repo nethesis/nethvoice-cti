@@ -23,13 +23,9 @@ import { useSelector } from 'react-redux'
 import { RootState } from '../../store'
 import { formatDateLoc, getCallTimeToDisplay } from '../../lib/dateTime'
 import { capitalize } from 'lodash'
-import { getApiEndpoint, getApiScheme, sortByProperty } from '../../lib/utils'
+import { getApiEndpoint, getApiScheme, sortByProperty, playFileAudio } from '../../lib/utils'
 import { openShowOperatorDrawer } from '../../lib/operators'
-import {
-  openEditAnnouncementDrawer,
-  playAnnouncement,
-  openCreateAnnouncementDrawer,
-} from '../../lib/lines'
+import { openEditAnnouncementDrawer, openCreateAnnouncementDrawer } from '../../lib/lines'
 import { useEventListener } from '../../lib/hooks/useEventListener'
 
 export interface AnnouncementViewProps extends ComponentProps<'div'> {}
@@ -138,7 +134,7 @@ export const AnnouncementView: FC<AnnouncementViewProps> = ({ className }): JSX.
   const [idAnnouncementInPlay, setIdAnnouncementInPlay] = useState('')
   async function playSelectedAnnouncement(announcementId: any) {
     if (announcementId) {
-      playAnnouncement(announcementId)
+      playFileAudio(announcementId, 'announcement')
       setIdAnnouncementInPlay(announcementId)
       // deactivate play button
       setIsListeningAnnouncements(true)

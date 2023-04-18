@@ -316,12 +316,3 @@ export function reloadAnnouncement() {
 export function recordingAnnouncement() {
   eventDispatch('phone-island-recording-start', {})
 }
-
-// The event to show the audio player view and play an audio file.
-export function playAnnouncement(announcement_id: any) {
-  let objectPlayAnnouncement = {
-    type: 'announcement',
-    id: announcement_id.toString(),
-  }
-  eventDispatch('phone-island-audio-player-start', { objectPlayAnnouncement })
-}
