@@ -9,7 +9,7 @@ module.exports = {
     './stories/**/*.{js,jsx,ts,tsx}',
     './.storybook/**/*.{js,jsx,ts,tsx}',
   ],
-  plugins: [require('@tailwindcss/forms')],
+  plugins: [require('@tailwindcss/forms'), require('tailwind-scrollbar')({ nocompatible: true })],
   darkMode: 'class',
   theme: {
     extend: {
