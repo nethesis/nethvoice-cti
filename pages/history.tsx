@@ -5,7 +5,7 @@ import type { NextPage } from 'next'
 import { Filter } from '../components/history/Filter'
 import { Button, EmptyState, InlineNotification } from '../components/common'
 import { useState, useEffect, useMemo } from 'react'
-import { search, PAGE_SIZE, openDrawerHistory } from '../lib/history'
+import { search, PAGE_SIZE, openDrawerHistory, playRecordingAudio } from '../lib/history'
 import { RootState } from '../store'
 import { useSelector } from 'react-redux'
 import { debounce } from 'lodash'
@@ -156,7 +156,7 @@ const History: NextPage = () => {
       }
     }
     fetchHistory()
-  // eslint-disable-next-line react-hooks/exhaustive-deps
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [
     isHistoryLoaded,
     history,
@@ -513,6 +513,12 @@ const History: NextPage = () => {
     }
   }
 
+  async function playSelectedAudioFile(callId: any) {
+    if (callId) {
+      playRecordingAudio(callId)
+    }
+  }
+
   return (
     <>
       <div>
@@ -677,7 +683,10 @@ const History: NextPage = () => {
                                   <td className='px-3 py-4'>
                                     <div>
                                       {' '}
-                                      <Button variant='white'>
+                                      <Button
+                                        variant='white'
+                                        onClick={() => playSelectedAudioFile(call.uniqueid)}
+                                      >
                                         <FontAwesomeIcon
                                           icon={faPlay}
                                           className='h-4 w-4 mr-2 text-gray-900 dark:text-gray-100'

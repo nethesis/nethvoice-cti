@@ -7,6 +7,7 @@ import { store } from '../store'
 import { loadPreference } from './storage'
 import { getOperatorByPhoneNumber, openShowOperatorDrawer } from './operators'
 import { cloneDeep } from 'lodash'
+import { eventDispatch } from './hooks/eventDispatch'
 
 export const PAGE_SIZE = 10
 export const DEFAULT_CALL_TYPE_FILTER = 'user'
@@ -197,4 +198,13 @@ export const openAddToPhonebookDrawer = (operator: any) => {
     contentType: 'addToPhonebookDrawer',
     config: operator,
   })
+}
+
+// The event to show the audio player view and play an audio file.
+export function playRecordingAudio(audioFileId: any) {
+  let objectPlayAudioFile = {
+    type: 'call_recording',
+    id: audioFileId.toString(),
+  }
+  eventDispatch('phone-island-audio-player-start', { objectPlayAudioFile })
 }
