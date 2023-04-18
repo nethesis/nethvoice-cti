@@ -7,6 +7,7 @@ import { store } from '../store'
 import { loadPreference } from './storage'
 import { getOperatorByPhoneNumber, openShowOperatorDrawer } from './operators'
 import { cloneDeep } from 'lodash'
+import { eventDispatch } from './hooks/eventDispatch'
 
 export const PAGE_SIZE = 10
 export const DEFAULT_CALL_TYPE_FILTER = 'user'

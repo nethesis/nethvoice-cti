@@ -20,7 +20,7 @@ import Link from 'next/link'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { faXmark } from '@fortawesome/free-solid-svg-icons'
 import { SideDrawerCloseIcon } from '../common'
-import Logo from '../../public/navbar_logo.png'
+import Logo from '../../public/navbar_logo.svg'
 
 interface MobileNavBarProps {
   show: boolean

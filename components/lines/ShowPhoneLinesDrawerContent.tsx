@@ -19,10 +19,10 @@ import {
   faCircleXmark,
 } from '@nethesis/nethesis-solid-svg-icons'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
-import { callPhoneNumber, closeSideDrawer } from '../../lib/utils'
+import { callPhoneNumber, closeSideDrawer, playFileAudio } from '../../lib/utils'
 import { TextInput, Button } from '../common'
 import { formatDateLoc, formatInTimeZoneLoc } from '../../lib/dateTime'
-import { setOffHour, getAnnouncements, reloadPhoneLines, playAnnouncement } from '../../lib/lines'
+import { setOffHour, getAnnouncements, reloadPhoneLines } from '../../lib/lines'
 import { format, parse } from 'date-fns'
 import { useEventListener } from '../../lib/hooks/useEventListener'
 
@@ -602,7 +602,7 @@ export const ShowPhoneLinesDrawerContent = forwardRef<
 
   async function playSelectedAnnouncement(announcementId: any) {
     if (announcementId) {
-      playAnnouncement(announcementId)
+      playFileAudio(announcementId, "announcement")
     }
   }
 

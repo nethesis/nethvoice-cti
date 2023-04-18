@@ -94,7 +94,7 @@ export default function Login() {
               {/* Nextjs <Image> is not suitable for rebranding: it always uses the aspect ratio of the original logo  */}
               <img
                 className='mx-auto w-auto items-center object-contain object-bottom'
-                src='/login_logo.png'
+                src='/login_logo.svg'
                 alt='logo'
               />
               <div className='flex items-center text-primary p-4'>

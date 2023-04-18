@@ -123,7 +123,9 @@ export const OperatorSummary = forwardRef<HTMLButtonElement, OperatorSummaryProp
             <span className='hidden xl:inline-block'>Call</span>
             <span className='sr-only'>Call</span>
           </Button>
-          <Button
+
+          {/* HIDDEN AT THE MOMENT */}
+          {/* <Button
             variant='white'
             disabled={!isOperatorCallable(operator, auth.username)}
             className='mr-2'
@@ -142,7 +144,8 @@ export const OperatorSummary = forwardRef<HTMLButtonElement, OperatorSummaryProp
             />
             <span className='hidden xl:inline-block'>Chat</span>
             <span className='sr-only'>Chat</span>
-          </Button>
+          </Button> */}
+          
         </div>
         <div className='mt-6 border-t border-gray-200 dark:border-gray-700'>
           <dl>

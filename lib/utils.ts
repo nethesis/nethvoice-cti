@@ -137,3 +137,20 @@ export function formatFileSize(sizeInBytes: any) {
 
   return `${sizeFormatted} ${unit}`
 }
+
+/**
+ * Checks if the input string contains only valid characters for a phone number.
+ */
+function validatePhoneNumber(phoneNumber: any) {
+  const regex = /^[0-9*#+]*$/
+  return regex.test(phoneNumber)
+}
+
+// The event to show the audio player view and play an audio file.
+export function playFileAudio(audioFileId: any, typeFile: string) {
+  let objectPlayAudioFile = {
+    type: typeFile === 'announcement' ? 'announcement' : 'call_recording',
+    id: audioFileId.toString(),
+  }
+  eventDispatch('phone-island-audio-player-start', { ...objectPlayAudioFile })
+}
