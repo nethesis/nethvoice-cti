@@ -21,7 +21,7 @@ export const ctiStatus = createModel<RootModel>()({
       state.isPhoneRinging = isPhoneRinging
       return state
     },
-    setIdIntervalStatus: (state, idInterval: any) => {
+    setIdInterval: (state, idInterval: any) => {
       state.idInterval = idInterval
       return state
     },

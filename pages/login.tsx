@@ -60,7 +60,7 @@ export default function Login() {
     e.preventDefault()
     setLoading(true)
     if (ctiStatus.webRtcError) {
-      store.dispatch.ctiStatus.setWebRtcError(!ctiStatus.webRtcError)
+      store.dispatch.ctiStatus.setWebRtcError(false)
     }
     if (window !== undefined) {
       const username = usernameRef.current.value

@@ -263,11 +263,11 @@ export const Layout: FC<LayoutProps> = ({ children }) => {
     store.dispatch.queues.setQueueMember(queueMemberData)
   })
 
-  //check if the user make a double login
+  //check if the user makes a double login
   useEventListener('phone-island-user-already-login', () => {
     if (!ctiStatus.webRtcError) {
       // update global store
-      store.dispatch.ctiStatus.setWebRtcError(!ctiStatus.webRtcError)
+      store.dispatch.ctiStatus.setWebRtcError(true)
       // force logout
       doLogout()
     }
@@ -303,7 +303,7 @@ export const Layout: FC<LayoutProps> = ({ children }) => {
         }
         flashFavicon = !flashFavicon
       }, 800)
-      store.dispatch.ctiStatus.setIdIntervalStatus(intervalId)
+      store.dispatch.ctiStatus.setIdInterval(intervalId)
       setIdInterval(intervalId)
     } else {
       clearFaviconInterval()
@@ -339,10 +339,8 @@ export const Layout: FC<LayoutProps> = ({ children }) => {
       setFirstRenderFaviconCheck(false)
       return
     }
-    if (idInterval === 0 && !ctiStatus.webRtcError) {
-      if (linkHtmlFaviconElement) {
-        linkHtmlFaviconElement.href = 'favicon.ico'
-      }
+    if (idInterval === 0 && !ctiStatus.webRtcError && linkHtmlFaviconElement) {
+      linkHtmlFaviconElement.href = 'favicon.ico'
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [firstRenderFaviconCheck])
