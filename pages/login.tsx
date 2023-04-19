@@ -16,6 +16,8 @@ import { faPhone } from '@nethesis/nethesis-thin-svg-icons'
 import { store } from '../store'
 import { useSelector } from 'react-redux'
 import { RootState } from '../store'
+import { getProductName } from '../lib/utils'
+import Head from 'next/head'
 
 export default function Login() {
   const [pwdVisible, setPwdVisible] = useState(false)
@@ -99,8 +101,16 @@ export default function Login() {
     }
   }
 
+  // Get product name to show in the tab
+  const productName = getProductName()
+
   return (
     <>
+      <div>
+        <Head>
+          <title>{productName}</title>
+        </Head>
+      </div>
       <div className='flex min-h-full'>
         <div className='flex flex-1 flex-col justify-center py-12 px-4 sm:px-6 lg:flex-none lg:px-20 xl:px-24 2xl:px-32'>
           <div className='mx-auto w-full max-w-sm lg:w-96'>
