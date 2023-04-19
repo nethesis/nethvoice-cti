@@ -2,7 +2,7 @@
 // SPDX-License-Identifier: AGPL-3.0-or-later
 
 import axios from 'axios'
-import { handleNetworkError } from './utils'
+import { handleNetworkError, callPhoneNumber } from './utils'
 import { store } from '../store'
 import { loadPreference } from './storage'
 import { getOperatorByPhoneNumber, openShowOperatorDrawer } from './operators'
@@ -198,4 +198,14 @@ export const openAddToPhonebookDrawer = (operator: any) => {
     contentType: 'addToPhonebookDrawer',
     config: operator,
   })
+}
+
+export const callUser = (user: any, event: any = undefined) => {
+  const phoneNumber = user.number
+  callPhoneNumber(phoneNumber)
+
+  // stop propagation of click event
+  if (event) {
+    event.stopPropagation()
+  }
 }

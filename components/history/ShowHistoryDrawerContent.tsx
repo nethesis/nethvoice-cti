@@ -4,7 +4,7 @@
 import { ComponentPropsWithRef, forwardRef } from 'react'
 import classNames from 'classnames'
 import { Avatar, Button, SideDrawerCloseIcon } from '../common'
-import { openAddToPhonebookDrawer } from '../../lib/history'
+import { openAddToPhonebookDrawer, callUser } from '../../lib/history'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { faPhone, faPlus } from '@fortawesome/free-solid-svg-icons'
 import { LastCallsDrawerTable } from './LastCallsDrawerTable'
@@ -76,7 +76,7 @@ export const ShowHistoryDrawerContent = forwardRef<
         <div className='flex min-w-0 flex-1 items-center justify-between'>{checkTitle(config)}</div>
         <div className='mt-8 flex items-center gap-2'>
           <div>
-            <Button variant='primary' className='mr-2'>
+            <Button variant='primary' className='mr-2' onClick={() => callUser(config)}>
               <FontAwesomeIcon icon={faPhone} className='h-4 w-4 xl:mr-2' />
               <span className='hidden xl:inline-block'>Call</span>
               <span className='sr-only'>Call</span>
