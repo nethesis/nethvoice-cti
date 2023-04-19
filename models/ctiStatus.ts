@@ -7,6 +7,7 @@ import type { RootModel } from '.'
 const defaultState = {
   webRtcError: false,
   isPhoneRinging: false,
+  idInterval: 0,
 }
 
 export const ctiStatus = createModel<RootModel>()({
@@ -18,6 +19,10 @@ export const ctiStatus = createModel<RootModel>()({
     },
     setPhoneRinging: (state, isPhoneRinging: boolean) => {
       state.isPhoneRinging = isPhoneRinging
+      return state
+    },
+    setIdIntervalStatus: (state, idInterval: any) => {
+      state.idInterval = idInterval
       return state
     },
     reset: () => {

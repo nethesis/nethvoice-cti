@@ -10,7 +10,7 @@ import { useDispatch } from 'react-redux'
 import { Dispatch } from '../../store'
 import { RootState } from '../../store'
 import { useSelector } from 'react-redux'
-import { closeSideDrawer, getProductName } from '../../lib/utils'
+import { closeSideDrawer, getProductName, getHtmlFaviconElement } from '../../lib/utils'
 import { store } from '../../store'
 import {
   buildOperators,
@@ -24,6 +24,7 @@ import { useEventListener } from '../../lib/hooks/useEventListener'
 import { retrieveQueues } from '../../lib/queuesLib'
 import Head from 'next/head'
 import { capitalize } from 'lodash'
+import { doLogout } from '../../services/login'
 
 interface LayoutProps {
   children: ReactNode
@@ -40,6 +41,8 @@ export const Layout: FC<LayoutProps> = ({ children }) => {
   const [firstRenderOperators, setFirstRenderOperators] = useState(true)
   const [firstRenderUserInfo, setFirstRenderUserInfo] = useState(true)
   const [firstRenderGlobalSearchListener, setFirstRenderGlobalSearchListener] = useState(true)
+  const [firstRenderFaviconCheck, setFirstRenderFaviconCheck]: any = useState(true)
+
   const [isUserInfoLoaded, setUserInfoLoaded] = useState(false)
   const authStore = useSelector((state: RootState) => state.authentication)
 
@@ -59,71 +62,7 @@ export const Layout: FC<LayoutProps> = ({ children }) => {
     }
   }
 
-  // Get favicon element
-  function getHtmlFaviconElement() {
-    if (typeof window === 'undefined') {
-      return ''
-    }
-
-    let faviconHtmlElement = document.querySelector("link[rel*='icon']") as HTMLLinkElement
-    return faviconHtmlElement
-  }
-
   const { t } = useTranslation()
-  const [idInterval, setIdInterval] = useState<any>(0)
-
-  function manageFaviconInterval() {
-    const warningMessageFavicon = t('Common.Warning')
-    const callingMessageFavicon = t('Common.Calling')
-    setLinkHtmlFaviconElement(getHtmlFaviconElement())
-    // boolean flag to handle favicon flashing
-    let flashFavicon = true
-    if (ctiStatus.webRtcError || ctiStatus.isPhoneRinging) {
-      setIdInterval(
-        setInterval(() => {
-          if (flashFavicon) {
-            if (ctiStatus.webRtcError) {
-              if (linkHtmlFaviconElement) {
-                linkHtmlFaviconElement.href = 'favicon-warn.ico'
-              }
-              window.document.title = warningMessageFavicon
-            } else {
-              if (linkHtmlFaviconElement) {
-                linkHtmlFaviconElement.href = 'favicon-call.ico'
-              }
-              window.document.title = callingMessageFavicon
-            }
-          } else {
-            if (linkHtmlFaviconElement) {
-              linkHtmlFaviconElement.href = 'favicon.ico'
-            }
-            window.document.title = productName
-          }
-          flashFavicon = !flashFavicon
-        }, 800),
-      )
-    } else {
-      clearFaviconInterval()
-    }
-  }
-
-  // Call the function to interrupt the dynamic icon interval
-  function clearFaviconInterval() {
-    let cleanTitlePageName: any = cleanProductNamePageTitle()
-    clearInterval(idInterval)
-    if (linkHtmlFaviconElement) {
-      linkHtmlFaviconElement.href = 'favicon.ico'
-    }
-    window.document.title = cleanTitlePageName
-  }
-
-  useEffect(() => {
-    manageFaviconInterval()
-    return () => {
-      clearFaviconInterval()
-    }
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [ctiStatus.webRtcError, ctiStatus.isPhoneRinging])
 
   useEffect(() => {
     const currentItems = items.map((route) => {
@@ -233,8 +172,6 @@ export const Layout: FC<LayoutProps> = ({ children }) => {
     }
   }, [queuesStore.isLoaded, operatorsStore.isOperatorsLoaded, mainextension])
 
-  // global search listeners
-
   const globalSearchClick = (event: any) => {
     const globalSearch = document.querySelector('#globalSearch')
 
@@ -325,6 +262,90 @@ export const Layout: FC<LayoutProps> = ({ children }) => {
     const queueMemberData = data[opMainExtension]
     store.dispatch.queues.setQueueMember(queueMemberData)
   })
+
+  //check if the user make a double login
+  useEventListener('phone-island-user-already-login', () => {
+    if (!ctiStatus.webRtcError) {
+      // update global store
+      store.dispatch.ctiStatus.setWebRtcError(!ctiStatus.webRtcError)
+      // force logout
+      doLogout()
+    }
+  })
+
+  const [idInterval, setIdInterval] = useState<any>(0)
+
+  function manageFaviconInterval() {
+    const warningMessageFavicon = t('Common.Warning')
+    const callingMessageFavicon = t('Common.Calling')
+    setLinkHtmlFaviconElement(getHtmlFaviconElement())
+    let flashFavicon = true
+    if (ctiStatus.webRtcError || ctiStatus.isPhoneRinging) {
+      const intervalId = setInterval(() => {
+        if (flashFavicon) {
+          if (ctiStatus.webRtcError) {
+            if (linkHtmlFaviconElement) {
+              ;('you are entered wrong')
+              linkHtmlFaviconElement.href = 'favicon-warn.ico'
+            }
+            window.document.title = warningMessageFavicon
+          } else {
+            if (linkHtmlFaviconElement) {
+              linkHtmlFaviconElement.href = 'favicon-call.ico'
+            }
+            window.document.title = callingMessageFavicon
+          }
+        } else {
+          if (linkHtmlFaviconElement) {
+            linkHtmlFaviconElement.href = 'favicon.ico'
+          }
+          window.document.title = productName
+        }
+        flashFavicon = !flashFavicon
+      }, 800)
+      store.dispatch.ctiStatus.setIdIntervalStatus(intervalId)
+      setIdInterval(intervalId)
+    } else {
+      clearFaviconInterval()
+    }
+  }
+
+  function clearFaviconInterval() {
+    let cleanTitlePageName: any = cleanProductNamePageTitle()
+    if (idInterval > 0) {
+      clearInterval(idInterval)
+    } else {
+      // Use the interval id from the store
+      clearInterval(ctiStatus.idInterval)
+    }
+
+    if (linkHtmlFaviconElement) {
+      linkHtmlFaviconElement.href = 'favicon.ico'
+    }
+    window.document.title = cleanTitlePageName
+  }
+
+  useEffect(() => {
+    manageFaviconInterval()
+    return () => {
+      clearFaviconInterval()
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [ctiStatus.webRtcError, ctiStatus.isPhoneRinging])
+
+  //check if the user is in the main page but have the wrong icon
+  useEffect(() => {
+    if (firstRenderFaviconCheck) {
+      setFirstRenderFaviconCheck(false)
+      return
+    }
+    if (idInterval === 0 && !ctiStatus.webRtcError) {
+      if (linkHtmlFaviconElement) {
+        linkHtmlFaviconElement.href = 'favicon.ico'
+      }
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [firstRenderFaviconCheck])
 
   return (
     <>

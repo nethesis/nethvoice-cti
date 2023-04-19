@@ -13,12 +13,16 @@ import { faCircleNotch, faEye, faEyeSlash } from '@fortawesome/free-solid-svg-ic
 import { checkDarkTheme } from '../lib/darkTheme'
 import { useTranslation } from 'react-i18next'
 import { faPhone } from '@nethesis/nethesis-thin-svg-icons'
+import { store } from '../store'
+import { useSelector } from 'react-redux'
+import { RootState } from '../store'
 
 export default function Login() {
   const [pwdVisible, setPwdVisible] = useState(false)
   const [messageError, setMessaggeError] = useState('')
   const [onError, setOnError] = useState(false)
   const [loading, setLoading] = useState(false)
+  const ctiStatus = useSelector((state: RootState) => state.ctiStatus)
 
   const { t } = useTranslation()
   let iconSelect = loading ? (
@@ -34,6 +38,14 @@ export default function Login() {
         </InlineNotification>
       </div>
     </div>
+  ) : ctiStatus.webRtcError ? (
+    <div className='relative w-full'>
+      <div className='absolute -bottom-[104px] w-full'>
+        <InlineNotification type='error' title={t('Common.Warning')}>
+          <p>{t('Login.The application is open in another window')}</p>
+        </InlineNotification>
+      </div>
+    </div>
   ) : (
     <></>
   )
@@ -45,6 +57,9 @@ export default function Login() {
   const doLogin = async (e: React.FormEvent) => {
     e.preventDefault()
     setLoading(true)
+    if (ctiStatus.webRtcError) {
+      store.dispatch.ctiStatus.setWebRtcError(!ctiStatus.webRtcError)
+    }
     if (window !== undefined) {
       const username = usernameRef.current.value
       const password = passwordRef.current.value
@@ -90,7 +105,6 @@ export default function Login() {
         <div className='flex flex-1 flex-col justify-center py-12 px-4 sm:px-6 lg:flex-none lg:px-20 xl:px-24 2xl:px-32'>
           <div className='mx-auto w-full max-w-sm lg:w-96'>
             <div className='flex flex-col items-center justify-center'>
-              {' '}
               {/* Nextjs <Image> is not suitable for rebranding: it always uses the aspect ratio of the original logo  */}
               <img
                 className='mx-auto w-auto items-center object-contain object-bottom'

@@ -154,3 +154,13 @@ export function playFileAudio(audioFileId: any, typeFile: string) {
   }
   eventDispatch('phone-island-audio-player-start', { ...objectPlayAudioFile })
 }
+
+// Get favicon element
+export function getHtmlFaviconElement() {
+  if (typeof window === 'undefined') {
+    return ''
+  }
+
+  let faviconHtmlElement = document.querySelector("link[rel*='icon']") as HTMLLinkElement
+  return faviconHtmlElement
+}
