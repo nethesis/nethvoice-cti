@@ -34,7 +34,8 @@
   "Login": {
     "User": "User",
     "Password": "Password",
-    "Sign in": "Sign in"
+    "Sign in": "Sign in",
+    "The application is open in another window": "The application is open in another window"
   },
   "Phonebook": {
     "Phonebook": "Phonebook",

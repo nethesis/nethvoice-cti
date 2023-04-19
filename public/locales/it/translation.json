@@ -29,7 +29,8 @@
   "Login": {
     "User": "Utente",
     "Password": "Password",
-    "Sign in": "Accedi"
+    "Sign in": "Accedi",
+    "The application is open in another window": "L'applicazione è aperta in un'altra finestra"
   },
   "Phonebook": {
     "Phonebook": "Rubrica",
