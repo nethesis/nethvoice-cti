@@ -472,11 +472,6 @@ export const LinesFilter = forwardRef<HTMLButtonElement, LinesFilterProps>(
                       </span>
                     </div>
                   </div>
-                  {/* separator */}
-                  <div
-                    aria-hidden='true'
-                    className='h-5 w-px ml-4 sm:block bg-gray-300 dark:bg-gray-600'
-                  />
                   {/* sort by */}
                   <div className='mt-0 ml-4'>
                     <div className='-m-1 flex flex-wrap items-center'>

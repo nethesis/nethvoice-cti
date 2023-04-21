@@ -874,16 +874,17 @@ export const Filter = forwardRef<HTMLButtonElement, FilterProps>(
               {/* Active filters */}
               <div>
                 <div className='mx-auto pt-3 flex flex-wrap items-center'>
-                  <h3 className='text-sm font-medium my-1 text-gray-500 dark:text-gray-400'>
+                  <h3 className='text-sm font-medium text-gray-500 dark:text-gray-400 text-left sm:text-center'>
                     {t('Common.Active filters')}
                   </h3>
+                  {/* separator */}
                   <div
                     aria-hidden='true'
-                    className='h-5 w-px mx-4 my-1 sm:block bg-gray-300 dark:bg-gray-600'
+                    className='h-5 w-px ml-4 block bg-gray-300 dark:bg-gray-600'
                   />
                   {/* show selected call type only if user has cdr permissions */}
                   {profile.macro_permissions?.cdr?.permissions?.ad_cdr?.value && (
-                    <div className='mr-4 my-1'>
+                    <div className='mt-0 ml-4'>
                       <div className='-m-1 flex flex-wrap items-center'>
                         <span className='m-1 inline-flex items-center rounded-full border py-1.5 px-3 text-sm font-medium border-gray-200 bg-white text-gray-700 dark:border-gray-700 dark:bg-gray-900 dark:text-gray-200'>
                           <span className='text-gray-500 dark:text-gray-400'>
@@ -894,7 +895,8 @@ export const Filter = forwardRef<HTMLButtonElement, FilterProps>(
                       </div>
                     </div>
                   )}
-                  <div className='mr-4 my-1'>
+                  {/* Call direction */}
+                  <div className='mt-0 ml-4'>
                     <div className='-m-1 flex flex-wrap items-center'>
                       <span className='m-1 inline-flex items-center rounded-full border py-1.5 px-3 text-sm font-medium border-gray-200 bg-white text-gray-700 dark:border-gray-700 dark:bg-gray-900 dark:text-gray-200'>
                         <span className='text-gray-500 dark:text-gray-400'>
@@ -904,7 +906,8 @@ export const Filter = forwardRef<HTMLButtonElement, FilterProps>(
                       </span>
                     </div>
                   </div>
-                  <div className='mr-4 my-1'>
+                  {/* filter date from */}
+                  <div className='mt-0 ml-4'>
                     <div className='-m-1 flex flex-wrap items-center'>
                       <span className='m-1 inline-flex items-center rounded-full border py-1.5 px-3 text-sm font-medium border-gray-200 bg-white text-gray-700 dark:border-gray-700 dark:bg-gray-900 dark:text-gray-200'>
                         <span className='text-gray-500 dark:text-gray-400'>
@@ -914,7 +917,8 @@ export const Filter = forwardRef<HTMLButtonElement, FilterProps>(
                       </span>
                     </div>
                   </div>
-                  <div className='mr-4 my-1'>
+                  {/* Filter date to  */}
+                  <div className='mt-0 ml-4'>
                     <div className='-m-1 flex flex-wrap items-center'>
                       <span className='m-1 inline-flex items-center rounded-full border py-1.5 px-3 text-sm font-medium border-gray-200 bg-white text-gray-700 dark:border-gray-700 dark:bg-gray-900 dark:text-gray-200'>
                         <span className='text-gray-500 dark:text-gray-400'>
@@ -924,18 +928,22 @@ export const Filter = forwardRef<HTMLButtonElement, FilterProps>(
                       </span>
                     </div>
                   </div>
+                  {/* separator */}
                   <div
                     aria-hidden='true'
-                    className='h-5 w-px mr-4 my-1 sm:block bg-gray-300 dark:bg-gray-600'
+                    className='h-5 w-px ml-4 sm:block bg-gray-300 dark:bg-gray-600'
                   />
                   <div>
-                    <button
-                      type='button'
-                      className='my-1 text-sm hover:underline text-gray-700 dark:text-gray-200'
-                      onClick={clearFilters}
-                    >
-                      {t('Common.Reset filters')}
-                    </button>
+                    {/* reset filters */}
+                    <div className='mt-0 text-center ml-4'>
+                      <button
+                        type='button'
+                        className='text-sm hover:underline text-gray-700 dark:text-gray-200'
+                        onClick={clearFilters}
+                      >
+                        {t('Common.Reset filters')}
+                      </button>
+                    </div>
                   </div>
                 </div>
               </div>
