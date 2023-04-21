@@ -602,7 +602,7 @@ export const ShowPhoneLinesDrawerContent = forwardRef<
 
   async function playSelectedAnnouncement(announcementId: any) {
     if (announcementId) {
-      playFileAudio(announcementId, "announcement")
+      playFileAudio(announcementId, 'announcement')
     }
   }
 
@@ -750,7 +750,11 @@ export const ShowPhoneLinesDrawerContent = forwardRef<
               <div className='ml-4 flex-shrink-0'>
                 <Button
                   variant='white'
-                  onClick={() => playSelectedAnnouncement(selectedAnnouncementInfo.id)}
+                  onClick={() =>
+                    selectedAnnouncementInfo?.id
+                      ? playSelectedAnnouncement(selectedAnnouncementInfo.id)
+                      : playSelectedAnnouncement(announcementSelected)
+                  }
                   disabled={!announcementSelected}
                 >
                   <FontAwesomeIcon
