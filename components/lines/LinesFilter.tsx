@@ -325,7 +325,7 @@ export const LinesFilter = forwardRef<HTMLButtonElement, LinesFilterProps>(
                 </div>
 
                 <div className='flex ml-8'>
-                  <Popover.Group className='hidden sm:flex sm:items-baseline sm:space-x-8'>
+                  <Popover.Group className='hidden sm:flex sm:items-baseline sm:space-x-4'>
                     {/* Sort filter */}
                     <Popover
                       as='div'
@@ -334,7 +334,7 @@ export const LinesFilter = forwardRef<HTMLButtonElement, LinesFilterProps>(
                       className='relative inline-block text-left'
                     >
                       <div>
-                        <Popover.Button className='group inline-flex items-center justify-center text-sm font-medium text-gray-700 hover:text-gray-900 dark:text-gray-200 dark:hover:text-gray-100'>
+                        <Popover.Button className='px-3 py-2 text-sm leading-4 p-2 rounded border shadow-sm border-gray-300 bg-white text-gray-700 hover:bg-gray-100 focus:ring-primaryLight dark:border-gray-600 dark:bg-gray-900 dark:text-gray-100 dark:hover:bg-gray-800 dark:focus:ring-primaryDark group inline-flex items-center justify-center font-medium  hover:text-gray-900 dark:hover:text-gray-100'>
                           <span>{sortFilter.name}</span>
                           <FontAwesomeIcon
                             icon={faChevronDown}
@@ -389,7 +389,7 @@ export const LinesFilter = forwardRef<HTMLButtonElement, LinesFilterProps>(
                       className='relative inline-block text-left'
                     >
                       <div>
-                        <Popover.Button className='group inline-flex items-center justify-center text-sm font-medium text-gray-700 hover:text-gray-900 dark:text-gray-200 dark:hover:text-gray-100'>
+                        <Popover.Button className='px-3 py-2 text-sm leading-4 p-2 rounded border shadow-sm border-gray-300 bg-white text-gray-700 hover:bg-gray-100 focus:ring-primaryLight dark:border-gray-600 dark:bg-gray-900 dark:text-gray-100 dark:hover:bg-gray-800 dark:focus:ring-primaryDark group inline-flex items-center justify-center font-medium  hover:text-gray-900 dark:hover:text-gray-100'>
                           <span>{typeConfigurationFilter.name}</span>
                           <FontAwesomeIcon
                             icon={faChevronDown}
@@ -462,9 +462,9 @@ export const LinesFilter = forwardRef<HTMLButtonElement, LinesFilterProps>(
                   {/* sort by */}
                   <div className='mt-0 ml-4'>
                     <div className='-m-1 flex flex-wrap items-center'>
-                      <span className='m-1 inline-flex items-center rounded-full border py-1.5 px-3 text-sm font-medium border-gray-200 bg-white text-gray-700 dark:border-gray-700 dark:bg-gray-900 dark:text-gray-200'>
+                      <span className='m-1 inline-flex items-center rounded-full border py-1.5 px-3 text-sm font-medium border-gray-300 text-gray-700 dark:border-gray-600 dark:text-gray-100'>
                         <span>
-                          <span className='text-gray-500 dark:text-gray-400'>
+                          <span className='text-gray-600 dark:text-gray-300'>
                             {t('Lines.Sort by')}:
                           </span>{' '}
                           {sortByLabel}
@@ -472,12 +472,12 @@ export const LinesFilter = forwardRef<HTMLButtonElement, LinesFilterProps>(
                       </span>
                     </div>
                   </div>
-                  {/* sort by */}
+                  {/* Configuration state */}
                   <div className='mt-0 ml-4'>
                     <div className='-m-1 flex flex-wrap items-center'>
-                      <span className='m-1 inline-flex items-center rounded-full border py-1.5 px-3 text-sm font-medium border-gray-200 bg-white text-gray-700 dark:border-gray-700 dark:bg-gray-900 dark:text-gray-200'>
+                      <span className='m-1 inline-flex items-center rounded-full border py-1.5 px-3 text-sm font-medium border-gray-300 text-gray-700 dark:border-gray-600 dark:text-gray-100'>
                         <span>
-                          <span className='text-gray-500 dark:text-gray-400'>
+                          <span className='text-gray-600 dark:text-gray-300'>
                             {t('Lines.Configuration type')}:
                           </span>{' '}
                           {configurationTypeLabel}
