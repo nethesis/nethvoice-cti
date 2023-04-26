@@ -347,7 +347,7 @@ export const CallsViewFilter = forwardRef<HTMLButtonElement, CallsViewFilterProp
                 </div>
 
                 <div className='flex ml-8'>
-                  <Popover.Group className='hidden sm:flex sm:items-baseline sm:space-x-8'>
+                  <Popover.Group className='hidden sm:flex sm:items-baseline sm:space-x-4'>
                     {/* outcome filter */}
                     <Popover
                       as='div'
@@ -356,7 +356,7 @@ export const CallsViewFilter = forwardRef<HTMLButtonElement, CallsViewFilterProp
                       className='relative inline-block text-left shrink-0'
                     >
                       <div>
-                        <Popover.Button className='group inline-flex items-center justify-center text-sm font-medium text-gray-700 hover:text-gray-900 dark:text-gray-200 dark:hover:text-gray-100'>
+                        <Popover.Button className='px-3 py-2 text-sm leading-4 p-2 rounded border shadow-sm border-gray-300 bg-white text-gray-700 hover:bg-gray-100 focus:ring-primaryLight dark:border-gray-600 dark:bg-gray-900 dark:text-gray-100 dark:hover:bg-gray-800 dark:focus:ring-primaryDark group inline-flex items-center justify-center font-medium  hover:text-gray-900 dark:hover:text-gray-100'>
                           <span>{outcomeFilter.name}</span>
                           <FontAwesomeIcon
                             icon={faChevronDown}
@@ -423,7 +423,7 @@ export const CallsViewFilter = forwardRef<HTMLButtonElement, CallsViewFilterProp
                       className='relative inline-block text-left shrink-0'
                     >
                       <div>
-                        <Popover.Button className='group inline-flex items-center justify-center text-sm font-medium text-gray-700 hover:text-gray-900 dark:text-gray-200 dark:hover:text-gray-100'>
+                        <Popover.Button className='px-3 py-2 text-sm leading-4 p-2 rounded border shadow-sm border-gray-300 bg-white text-gray-700 hover:bg-gray-100 focus:ring-primaryLight dark:border-gray-600 dark:bg-gray-900 dark:text-gray-100 dark:hover:bg-gray-800 dark:focus:ring-primaryDark group inline-flex items-center justify-center font-medium  hover:text-gray-900 dark:hover:text-gray-100'>
                           <span>{queuesFilter.name}</span>
                           <FontAwesomeIcon
                             icon={faChevronDown}
@@ -481,20 +481,18 @@ export const CallsViewFilter = forwardRef<HTMLButtonElement, CallsViewFilterProp
 
               {/* Active filters */}
               <div>
-                <div className='mx-auto pt-3 sm:flex sm:items-center'>
-                  <h3 className='text-sm font-medium text-gray-500 dark:text-gray-400'>
+                <div className='mx-auto pt-3 flex flex-wrap items-center gap-y-2 gap-x-4'>
+                  <h3 className='text-sm font-medium text-gray-500 dark:text-gray-400 text-left sm:text-center'>
                     {t('Common.Active filters')}
                   </h3>
-                  <div
-                    aria-hidden='true'
-                    className='hidden h-5 w-px sm:ml-4 sm:block bg-gray-300 dark:bg-gray-600'
-                  />
+                  {/* separator */}
+                  <div aria-hidden='true' className='h-5 w-px block bg-gray-300 dark:bg-gray-600' />
                   {/* outcome */}
-                  <div className='mt-2 sm:mt-0 sm:ml-4'>
+                  <div className='mt-0'>
                     <div className='-m-1 flex flex-wrap items-center'>
-                      <span className='m-1 inline-flex items-center rounded-full border py-1.5 px-3 text-sm font-medium border-gray-200 bg-white text-gray-700 dark:border-gray-700 dark:bg-gray-900 dark:text-gray-200'>
+                      <span className='m-1 inline-flex items-center rounded-full border py-1.5 px-3 text-sm font-medium border-gray-300 text-gray-700 dark:border-gray-600 dark:text-gray-100'>
                         <span>
-                          <span className='text-gray-500 dark:text-gray-400'>
+                          <span className='text-gray-600 dark:text-gray-300'>
                             {t('Queues.Outcome')}:
                           </span>{' '}
                           {outcomeLabel}
@@ -503,11 +501,11 @@ export const CallsViewFilter = forwardRef<HTMLButtonElement, CallsViewFilterProp
                     </div>
                   </div>
                   {/* queues */}
-                  <div className='mt-2 sm:mt-0 sm:ml-4'>
+                  <div className='mt-0'>
                     <div className='-m-1 flex flex-wrap items-center'>
-                      <span className='m-1 inline-flex items-center rounded-full border py-1.5 px-3 text-sm font-medium border-gray-200 bg-white text-gray-700 dark:border-gray-700 dark:bg-gray-900 dark:text-gray-200'>
+                      <span className='m-1 inline-flex items-center rounded-full border py-1.5 px-3 text-sm font-medium border-gray-300 text-gray-700 dark:border-gray-600 dark:text-gray-100'>
                         <span>
-                          <span className='text-gray-500 dark:text-gray-400'>
+                          <span className='text-gray-600 dark:text-gray-300'>
                             {t('Queues.Queues')}:
                           </span>{' '}
                           {queuesLabel}
@@ -519,10 +517,10 @@ export const CallsViewFilter = forwardRef<HTMLButtonElement, CallsViewFilterProp
                   {/* separator */}
                   <div
                     aria-hidden='true'
-                    className='hidden h-5 w-px sm:ml-4 sm:block bg-gray-300 dark:bg-gray-600'
+                    className='h-5 w-px sm:block bg-gray-300 dark:bg-gray-600'
                   />
                   {/* reset filters */}
-                  <div className='mt-4 sm:mt-0 text-left sm:text-center ml-1 sm:ml-4'>
+                  <div className='mt-0 text-center'>
                     <button
                       type='button'
                       onClick={() => resetFilters()}

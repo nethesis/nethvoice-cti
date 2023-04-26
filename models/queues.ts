@@ -160,7 +160,8 @@ export const queues = createModel<RootModel>()({
     showMoreInfiniteScrollOperators: (state, queueId) => {
       const queueData = state.queues[queueId]
       const infiniteScrollOperators = queueData.infiniteScrollOperators
-      const lastIndex = infiniteScrollOperators.lastIndex + INFINITE_SCROLL_QUEUE_OPERATORS_PAGE_SIZE
+      const lastIndex =
+        infiniteScrollOperators.lastIndex + INFINITE_SCROLL_QUEUE_OPERATORS_PAGE_SIZE
       infiniteScrollOperators.operators = queueData.allQueueOperators.slice(0, lastIndex)
       infiniteScrollOperators.hasMore = lastIndex < queueData.members.length
       return state
@@ -181,7 +182,10 @@ export const queues = createModel<RootModel>()({
         queueData.allQueueOperators = Object.values(queueData.members).sort(sortByLoggedStatus)
 
         queueData.infiniteScrollOperators = {
-          operators: queueData.allQueueOperators.slice(0, INFINITE_SCROLL_QUEUE_OPERATORS_PAGE_SIZE),
+          operators: queueData.allQueueOperators.slice(
+            0,
+            INFINITE_SCROLL_QUEUE_OPERATORS_PAGE_SIZE,
+          ),
           hasMore: INFINITE_SCROLL_QUEUE_OPERATORS_PAGE_SIZE < queueData.allQueueOperators.length,
           lastIndex: INFINITE_SCROLL_QUEUE_OPERATORS_PAGE_SIZE,
         }

@@ -199,6 +199,7 @@ export const AnnouncementFilter = forwardRef<HTMLButtonElement, AnnouncementFilt
               </div>
             </Dialog>
           </Transition.Root>
+
           {/* Filter pc  */}
           <div className='mx-auto text-center'>
             <section aria-labelledby='filter-heading' className='pb-6'>
@@ -221,7 +222,7 @@ export const AnnouncementFilter = forwardRef<HTMLButtonElement, AnnouncementFilt
                     />
                   </div>
                   <div className='flex ml-8'>
-                    <Popover.Group className='hidden sm:flex sm:items-baseline sm:space-x-8'>
+                    <Popover.Group className='hidden sm:flex sm:items-baseline sm:space-x-4'>
                       {/* Sort filter */}
                       <Popover
                         as='div'
@@ -230,7 +231,7 @@ export const AnnouncementFilter = forwardRef<HTMLButtonElement, AnnouncementFilt
                         className='relative inline-block text-left'
                       >
                         <div>
-                          <Popover.Button className='group inline-flex items-center justify-center text-sm font-medium text-gray-700 hover:text-gray-900 dark:text-gray-200 dark:hover:text-gray-100'>
+                          <Popover.Button className='px-3 py-2 text-sm leading-4 p-2 rounded border shadow-sm border-gray-300 bg-white text-gray-700 hover:bg-gray-100 focus:ring-primaryLight dark:border-gray-600 dark:bg-gray-900 dark:text-gray-100 dark:hover:bg-gray-800 dark:focus:ring-primaryDark group inline-flex items-center justify-center font-medium  hover:text-gray-900 dark:hover:text-gray-100'>
                             <span>{sortFilter.name}</span>
                             <FontAwesomeIcon
                               icon={faChevronDown}
@@ -303,21 +304,18 @@ export const AnnouncementFilter = forwardRef<HTMLButtonElement, AnnouncementFilt
 
               {/* Active filters */}
               <div>
-                <div className='mx-auto pt-3 flex flex-wrap items-center'>
+                <div className='mx-auto pt-3 flex flex-wrap items-center gap-y-2 gap-x-4'>
                   <h3 className='text-sm font-medium text-gray-500 dark:text-gray-400 text-left sm:text-center'>
                     {t('Common.Active filters')}
                   </h3>
                   {/* separator */}
-                  <div
-                    aria-hidden='true'
-                    className='h-5 w-px ml-4 block bg-gray-300 dark:bg-gray-600'
-                  />
+                  <div aria-hidden='true' className='h-5 w-px block bg-gray-300 dark:bg-gray-600' />
                   {/* sort by */}
-                  <div className='mt-0 ml-4'>
+                  <div className='mt-0'>
                     <div className='-m-1 flex items-center'>
-                      <span className='m-1 inline-flex items-center rounded-full border py-1.5 px-3 text-sm font-medium border-gray-200 bg-white text-gray-700 dark:border-gray-700 dark:bg-gray-900 dark:text-gray-200'>
+                      <span className='m-1 inline-flex items-center rounded-full border py-1.5 px-3 text-sm font-medium border-gray-300 text-gray-700 dark:border-gray-600 dark:text-gray-100'>
                         <span>
-                          <span className='text-gray-500 dark:text-gray-400'>
+                          <span className='text-gray-600 dark:text-gray-300'>
                             {t('Lines.Sort by')}:
                           </span>{' '}
                           {sortByLabel}
@@ -328,10 +326,10 @@ export const AnnouncementFilter = forwardRef<HTMLButtonElement, AnnouncementFilt
                   {/* separator */}
                   <div
                     aria-hidden='true'
-                    className='h-5 w-px ml-4 sm:block bg-gray-300 dark:bg-gray-600'
+                    className='h-5 w-px sm:block bg-gray-300 dark:bg-gray-600'
                   />
                   {/* reset filters */}
-                  <div className='mt-0 text-center ml-4'>
+                  <div className='mt-0 text-center'>
                     <button
                       type='button'
                       onClick={() => resetFilters()}
