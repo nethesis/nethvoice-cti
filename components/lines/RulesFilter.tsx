@@ -67,11 +67,7 @@ export const RulesFilter = forwardRef<HTMLButtonElement, RulesFilterProps>(
                   />
                 </div>
 
-                <Button
-                  variant='primary'
-                  className=''
-                  onClick={openCreateAnnouncementDrawer}
-                >
+                <Button variant='primary' className='' onClick={openCreateAnnouncementDrawer}>
                   <FontAwesomeIcon
                     icon={faPlus}
                     className='h-4 w-4 mr-2 text-white dark:text-white'

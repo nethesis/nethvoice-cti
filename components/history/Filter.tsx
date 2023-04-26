@@ -873,7 +873,7 @@ export const Filter = forwardRef<HTMLButtonElement, FilterProps>(
 
               {/* Active filters */}
               <div>
-              <div className='mx-auto pt-3 flex flex-wrap items-center gap-y-2 gap-x-4'>
+                <div className='mx-auto pt-3 flex flex-wrap items-center gap-y-2 gap-x-4'>
                   <h3 className='text-sm font-medium text-gray-500 dark:text-gray-400 text-left sm:text-center'>
                     {t('Common.Active filters')}
                   </h3>
