@@ -425,17 +425,14 @@ export const Filter = forwardRef<HTMLButtonElement, FilterProps>(
 
               {/* Active filters */}
               <div>
-                <div className='mx-auto pt-3 flex flex-wrap items-center'>
+                <div className='mx-auto pt-3 flex flex-wrap items-center gap-y-2 gap-x-4'>
                   <h3 className='text-sm font-medium text-gray-500 dark:text-gray-400 text-left sm:text-center'>
                     {t('Common.Active filters')}
                   </h3>
                   {/* separator */}
-                  <div
-                    aria-hidden='true'
-                    className='h-5 w-px ml-4 block bg-gray-300 dark:bg-gray-600'
-                  />
+                  <div aria-hidden='true' className='h-5 w-px block bg-gray-300 dark:bg-gray-600' />
                   {/* contact type */}
-                  <div className='mt-0 ml-4'>
+                  <div className='mt-0'>
                     <div className='-m-1 flex flex-wrap items-center'>
                       <span className='m-1 inline-flex items-center rounded-full border py-1.5 px-3 text-sm font-medium border-gray-300 text-gray-700 dark:border-gray-600 dark:text-gray-100'>
                         <span>
@@ -449,7 +446,7 @@ export const Filter = forwardRef<HTMLButtonElement, FilterProps>(
                   </div>
                   {/* sort by */}
                   {/* //// sort by company is currently not implemented on CTI server */}
-                  {/* <div className='mt-2 sm:mt-0 sm:ml-4'>
+                  {/* <div className='mt-2 sm:mt-0 sm'>
                     <div className='-m-1 flex flex-wrap items-center'>
                       <span className='m-1 inline-flex items-center rounded-full border py-1.5 px-3 text-sm font-medium border-gray-200 bg-white text-gray-700 dark:border-gray-700 dark:bg-gray-900 dark:text-gray-200'>
                         <span>
@@ -463,15 +460,15 @@ export const Filter = forwardRef<HTMLButtonElement, FilterProps>(
                   </div>
                   <div
                     aria-hidden='true'
-                    className='hidden h-5 w-px sm:ml-4 sm:block bg-gray-300 dark:bg-gray-600'
+                    className='hidden h-5 w-px sm sm:block bg-gray-300 dark:bg-gray-600'
                   /> */}
                   {/* separator */}
                   <div
                     aria-hidden='true'
-                    className='h-5 w-px ml-4 sm:block bg-gray-300 dark:bg-gray-600'
+                    className='h-5 w-px sm:block bg-gray-300 dark:bg-gray-600'
                   />
                   {/* reset filters */}
-                  <div className='mt-0 text-center ml-4'>
+                  <div className='mt-0 text-center'>
                     <button
                       type='button'
                       onClick={() => resetFilters()}
