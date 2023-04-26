@@ -18,6 +18,7 @@ import {
 import { useSelector } from 'react-redux'
 import { RootState } from '../../store'
 import { savePreference } from '../../lib/storage'
+import { useTranslation } from 'react-i18next'
 
 const sortFilter = {
   id: 'sort',
@@ -248,6 +249,8 @@ export const Filter = forwardRef<HTMLButtonElement, FilterProps>(
       setGroupTextFilter('')
       groupTextFilterRef.current.focus()
     }
+
+    const { t } = useTranslation()
 
     return (
       <div className={classNames(className)} {...props}>
@@ -564,7 +567,7 @@ export const Filter = forwardRef<HTMLButtonElement, FilterProps>(
                 </div>
 
                 <div className='flex ml-4'>
-                  <Popover.Group className='hidden sm:flex sm:items-baseline sm:space-x-8'>
+                  <Popover.Group className='hidden sm:flex sm:items-baseline sm:space-x-4'>
                     {/* group filter */}
                     <Popover
                       as='div'
@@ -573,7 +576,7 @@ export const Filter = forwardRef<HTMLButtonElement, FilterProps>(
                       className='relative inline-block text-left shrink-0'
                     >
                       <div>
-                        <Popover.Button className='group inline-flex items-center justify-center text-sm font-medium text-gray-700 hover:text-gray-900 dark:text-gray-200 dark:hover:text-gray-100'>
+                        <Popover.Button className='px-3 py-2 text-sm leading-4 p-2 rounded border shadow-sm border-gray-300 bg-white text-gray-700 hover:bg-gray-100 focus:ring-primaryLight dark:border-gray-600 dark:bg-gray-900 dark:text-gray-100 dark:hover:bg-gray-800 dark:focus:ring-primaryDark group inline-flex items-center justify-center font-medium  hover:text-gray-900 dark:hover:text-gray-100'>
                           <span>{groupFilter.name}</span>
                           <FontAwesomeIcon
                             icon={faChevronDown}
@@ -655,7 +658,7 @@ export const Filter = forwardRef<HTMLButtonElement, FilterProps>(
                       className='relative inline-block text-left shrink-0'
                     >
                       <div>
-                        <Popover.Button className='group inline-flex items-center justify-center text-sm font-medium text-gray-700 hover:text-gray-900 dark:text-gray-200 dark:hover:text-gray-100'>
+                        <Popover.Button className='px-3 py-2 text-sm leading-4 p-2 rounded border shadow-sm border-gray-300 bg-white text-gray-700 hover:bg-gray-100 focus:ring-primaryLight dark:border-gray-600 dark:bg-gray-900 dark:text-gray-100 dark:hover:bg-gray-800 dark:focus:ring-primaryDark group inline-flex items-center justify-center font-medium  hover:text-gray-900 dark:hover:text-gray-100'>
                           <span>{statusFilter.name}</span>
                           <FontAwesomeIcon
                             icon={faChevronDown}
@@ -707,7 +710,7 @@ export const Filter = forwardRef<HTMLButtonElement, FilterProps>(
                       className='relative inline-block text-left shrink-0'
                     >
                       <div>
-                        <Popover.Button className='group inline-flex items-center justify-center text-sm font-medium text-gray-700 hover:text-gray-900 dark:text-gray-200 dark:hover:text-gray-100'>
+                        <Popover.Button className='px-3 py-2 text-sm leading-4 p-2 rounded border shadow-sm border-gray-300 bg-white text-gray-700 hover:bg-gray-100 focus:ring-primaryLight dark:border-gray-600 dark:bg-gray-900 dark:text-gray-100 dark:hover:bg-gray-800 dark:focus:ring-primaryDark group inline-flex items-center justify-center font-medium  hover:text-gray-900 dark:hover:text-gray-100'>
                           <span>{sortFilter.name}</span>
                           <FontAwesomeIcon
                             icon={faChevronDown}
@@ -759,7 +762,7 @@ export const Filter = forwardRef<HTMLButtonElement, FilterProps>(
                       className='relative inline-block text-left shrink-0'
                     >
                       <div>
-                        <Popover.Button className='group inline-flex items-center justify-center text-sm font-medium text-gray-700 hover:text-gray-900 dark:text-gray-200 dark:hover:text-gray-100'>
+                        <Popover.Button className='px-3 py-2 text-sm leading-4 p-2 rounded border shadow-sm border-gray-300 bg-white text-gray-700 hover:bg-gray-100 focus:ring-primaryLight dark:border-gray-600 dark:bg-gray-900 dark:text-gray-100 dark:hover:bg-gray-800 dark:focus:ring-primaryDark group inline-flex items-center justify-center font-medium  hover:text-gray-900 dark:hover:text-gray-100'>
                           <span>{layoutFilter.name}</span>
                           <FontAwesomeIcon
                             icon={faChevronDown}
@@ -816,45 +819,47 @@ export const Filter = forwardRef<HTMLButtonElement, FilterProps>(
 
               {/* Active filters */}
               <div>
-                <div className='mx-auto pt-3 sm:flex sm:items-center'>
-                  <h3 className='text-sm font-medium text-gray-500 dark:text-gray-400'>
-                    Active filters
+                <div className='mx-auto pt-3 flex flex-wrap items-center'>
+                  <h3 className='text-sm font-medium text-gray-500 dark:text-gray-400 text-left sm:text-center'>
+                    {t('Common.Active filters')}
                   </h3>
+                  {/* separator */}
                   <div
                     aria-hidden='true'
-                    className='hidden h-5 w-px sm:ml-4 sm:block bg-gray-300 dark:bg-gray-600'
+                    className='h-5 w-px ml-4 block bg-gray-300 dark:bg-gray-600'
                   />
                   {/* group */}
-                  <div className='mt-2 sm:mt-0 sm:ml-4'>
+                  <div className='mt-0 ml-4'>
                     <div className='-m-1 flex flex-wrap items-center'>
-                      <span className='m-1 inline-flex items-center rounded-full border py-1.5 px-3 text-sm font-medium border-gray-200 bg-white text-gray-700 dark:border-gray-700 dark:bg-gray-900 dark:text-gray-200'>
+                      <span className='m-1 inline-flex items-center rounded-full border py-1.5 px-3 text-sm font-medium border-gray-300 text-gray-700 dark:border-gray-600 dark:text-gray-100'>
                         <span>
-                          {/*  //// todo i18n */}
-                          <span className='text-gray-500 dark:text-gray-400'>Group:</span>{' '}
+                          <span className='text-gray-600 dark:text-gray-300'>
+                            {t('Phonebook.Group')}:
+                          </span>{' '}
                           {groupLabel}
                         </span>
                       </span>
                     </div>
                   </div>
                   {/* status */}
-                  <div className='mt-2 sm:mt-0 sm:ml-4'>
+                  <div className='mt-0 ml-4'>
                     <div className='-m-1 flex flex-wrap items-center'>
-                      <span className='m-1 inline-flex items-center rounded-full border py-1.5 px-3 text-sm font-medium border-gray-200 bg-white text-gray-700 dark:border-gray-700 dark:bg-gray-900 dark:text-gray-200'>
+                      <span className='m-1 inline-flex items-center rounded-full border py-1.5 px-3 text-sm font-medium border-gray-300 text-gray-700 dark:border-gray-600 dark:text-gray-100'>
                         <span>
-                          {/*  //// todo i18n */}
-                          <span className='text-gray-500 dark:text-gray-400'>Status:</span>{' '}
+                          <span className='text-gray-600 dark:text-gray-300'>
+                            {t('Phonebook.Status')}:
+                          </span>{' '}
                           {statusLabel}
                         </span>
                       </span>
                     </div>
                   </div>
                   {/* sort by */}
-                  <div className='mt-2 sm:mt-0 sm:ml-4'>
+                  <div className='mt-0 ml-4'>
                     <div className='-m-1 flex flex-wrap items-center'>
-                      <span className='m-1 inline-flex items-center rounded-full border py-1.5 px-3 text-sm font-medium border-gray-200 bg-white text-gray-700 dark:border-gray-700 dark:bg-gray-900 dark:text-gray-200'>
+                      <span className='m-1 inline-flex items-center rounded-full border py-1.5 px-3 text-sm font-medium border-gray-300 text-gray-700 dark:border-gray-600 dark:text-gray-100'>
                         <span>
-                          {/*  //// todo i18n */}
-                          <span className='text-gray-500 dark:text-gray-400'>Sort by:</span>{' '}
+                          <span className='text-gray-600 dark:text-gray-300'>{t('Phonebook.Sort by')}:</span>{' '}
                           {sortByLabel}
                         </span>
                       </span>
@@ -863,16 +868,16 @@ export const Filter = forwardRef<HTMLButtonElement, FilterProps>(
                   {/* separator */}
                   <div
                     aria-hidden='true'
-                    className='hidden h-5 w-px sm:ml-4 sm:block bg-gray-300 dark:bg-gray-600'
+                    className='h-5 w-px ml-4 sm:block bg-gray-300 dark:bg-gray-600'
                   />
                   {/* reset filters */}
-                  <div className='mt-4 sm:mt-0 text-left sm:text-center ml-1 sm:ml-4'>
+                  <div className='mt-0 text-center ml-4'>
                     <button
                       type='button'
                       onClick={() => resetFilters()}
-                      className='text-sm hover:underline text-gray-700 dark:text-gray-200'
+                      className='text-sm hover:underline text-gray-900 dark:text-gray-100'
                     >
-                      Reset filters
+                      {t('Common.Reset filters')}
                     </button>
                   </div>
                 </div>
