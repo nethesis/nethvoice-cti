@@ -446,7 +446,7 @@ export const Filter = forwardRef<HTMLButtonElement, FilterProps>(
                   </div>
                   {/* sort by */}
                   {/* //// sort by company is currently not implemented on CTI server */}
-                  {/* <div className='mt-2 sm:mt-0 sm'>
+                  {/* <div className='mt-2 sm:mt-0'>
                     <div className='-m-1 flex flex-wrap items-center'>
                       <span className='m-1 inline-flex items-center rounded-full border py-1.5 px-3 text-sm font-medium border-gray-200 bg-white text-gray-700 dark:border-gray-700 dark:bg-gray-900 dark:text-gray-200'>
                         <span>
@@ -460,7 +460,7 @@ export const Filter = forwardRef<HTMLButtonElement, FilterProps>(
                   </div>
                   <div
                     aria-hidden='true'
-                    className='hidden h-5 w-px sm sm:block bg-gray-300 dark:bg-gray-600'
+                    className='hidden h-5 w-px sm:block bg-gray-300 dark:bg-gray-600'
                   /> */}
                   {/* separator */}
                   <div
