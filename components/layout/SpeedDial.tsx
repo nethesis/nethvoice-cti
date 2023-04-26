@@ -15,6 +15,7 @@ import {
   sortSpeedDials,
   openCreateSpeedDialDrawer,
   openEditSpeedDialDrawer,
+  exportSpeedDial,
 } from '../../lib/speedDial'
 import { useSelector } from 'react-redux'
 import { RootState } from '../../store'
@@ -124,7 +125,12 @@ export const SpeedDial = () => {
     <>
       {/* onClick={() => openEditSpeedDialDrawer()} */}
       <Dropdown.Item icon={faFileImport}>{t('SpeedDial.Import')}</Dropdown.Item>
-      <Dropdown.Item icon={faFileArrowDown}>{t('SpeedDial.Export')}</Dropdown.Item>
+      {/* if the list of speed dial is not empty */}
+      {speedDials.length > 0 && (
+        <Dropdown.Item icon={faFileArrowDown} onClick={() => exportSpeedDial(speedDials)}>
+          {t('SpeedDial.Export')}
+        </Dropdown.Item>
+      )}
     </>
   )
 
