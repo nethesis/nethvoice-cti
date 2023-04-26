@@ -362,5 +362,16 @@
     "Select audio file": "Select audio file",
     "All": "All",
     "Configuration type": "Configuration type"
+  },
+  "SpeedDial": {
+    "Create": "Create",
+    "Import": "Import",
+    "Export": "Export",
+    "Create speed dial": "Create speed dial",
+    "Open speed dial menu": "Open speed dial menu",
+    "Delete speed dial": "Delete speed dial",
+    "Speed dial": "Speed dial",
+    "will be deleted": "will be deleted",
+    "No speed dials": "No speed dials"
   }
 }
