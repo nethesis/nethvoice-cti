@@ -114,3 +114,21 @@ export const deleteAllSpeedDial = async () => {
     throw error
   }
 }
+
+/**
+ *
+ * Import speed dials from CSV file
+ *
+ * @param - The object containing base 64 file
+ *
+ */
+
+export const importCsvSpeedDial = async (obj: { file64: any }) => {
+  try {
+    await axios.post(`${PATH}/import_csv_speeddial`, obj)
+    return true
+  } catch (error) {
+    handleNetworkError(error)
+    throw error
+  }
+}

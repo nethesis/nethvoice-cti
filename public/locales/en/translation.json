@@ -365,8 +365,8 @@
   },
   "SpeedDial": {
     "Create": "Create",
-    "Import CSV": "Import CSV",
-    "Export CSV": "Export CSV",
+    "Import CSV": "Import Csv",
+    "Export CSV": "Export Csv",
     "Create speed dial": "Create speed dial",
     "Open speed dial menu": "Open speed dial menu",
     "Delete speed dial": "Delete speed dial",
@@ -375,6 +375,8 @@
     "Speed dial": "Speed dial",
     "will be deleted": "will be deleted",
     "No speed dials": "No speed dials",
-    "Delete all": "Delete all"
+    "Delete all": "Delete all",
+    "SpeedDial importation": "SpeedDial importation",
+    "Start importing Speed Dial from csv file?": "Start importing Speed Dial from csv file?"
   }
 }

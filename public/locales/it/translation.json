@@ -269,6 +269,8 @@
     "Speed dial": "Chiamata rapida",
     "will be deleted": "verrà eliminata",
     "No speed dials": "Nessuna chiamata rapida",
-    "Delete all": "Elimina tutte"
+    "Delete all": "Elimina tutte",
+    "SpeedDial importation": "Importazione chiamate",
+    "Start importing Speed Dial from csv file?": "Iniziare importazione chiamate rapide da file Csv?"
   }
 }

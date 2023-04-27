@@ -10,7 +10,12 @@
 import type { SpeedDialType } from '../../services/types'
 import { useState, useEffect, useRef, MutableRefObject } from 'react'
 import { Button, Avatar, Modal, Dropdown, InlineNotification, EmptyState } from '../common'
-import { deleteSpeedDial, deleteAllSpeedDial, getSpeedDials } from '../../services/phonebook'
+import {
+  deleteSpeedDial,
+  deleteAllSpeedDial,
+  getSpeedDials,
+  importCsvSpeedDial,
+} from '../../services/phonebook'
 import {
   sortSpeedDials,
   openCreateSpeedDialDrawer,
@@ -30,6 +35,7 @@ import {
   faTrashCan,
   faFileImport,
   faFileArrowDown,
+  faCheckCircle,
 } from '@nethesis/nethesis-solid-svg-icons'
 import { callPhoneNumber } from '../../lib/utils'
 import { useTranslation } from 'react-i18next'
@@ -47,6 +53,9 @@ export const SpeedDial = () => {
   const cancelDeleteButtonRef = useRef() as MutableRefObject<HTMLButtonElement>
   // The state for the name to be deleted
   const [deletingName, setDeletingName] = useState<string | undefined>('')
+  const [file64Csv, setFile64Csv] = useState('')
+  const [showModalImportCsv, setShowModalImportCsv] = useState<boolean>(false)
+  const [importCsvError, setImportCsvError] = useState('')
 
   const [isSpeedDialLoaded, setSpeedDialLoaded] = useState(false)
   const [deleteSpeedDialError, setDeleteSpeedDialError] = useState('')
@@ -125,8 +134,43 @@ export const SpeedDial = () => {
     }
   }
 
+  // Execute the service method to import speed dial
+  const handleImportCsv = async () => {
+    if (file64Csv) {
+      // Use the id to perform actions
+      try {
+        const imported = await importCsvSpeedDial({
+          file64: file64Csv.toString(),
+        })
+      } catch (error) {
+        setImportCsvError('Cannot import speed dial')
+        return
+      }
+      setSpeedDialLoaded(false)
+      setShowModalImportCsv(false)
+    }
+  }
+
   const callSpeedDial = (speedDial: any) => {
     callPhoneNumber(speedDial.speeddial_num)
+  }
+
+  function importSpeedDial(selectedFile: any) {
+    if (selectedFile?.target?.files && selectedFile.target.files[0]) {
+      const reader = new FileReader()
+      reader.onload = (ev: any) => {
+        setFile64Csv(ev.target?.result as string)
+        if (selectedFile.target) {
+          selectedFile.target.value = ''
+        }
+      }
+      reader.readAsDataURL(selectedFile.target.files[0])
+      // open modal to confirm the upload
+      setShowModalImportCsv(true)
+      setImportCsvError('')
+    } else {
+      setImportCsvError('Upload failed')
+    }
   }
 
   // The dropdown items for every speed dial element
@@ -144,8 +188,20 @@ export const SpeedDial = () => {
   // The dropdown items for import or export speed dial element
   const speedDialInformation = () => (
     <>
-      {/* onClick={() => openEditSpeedDialDrawer()} */}
-      <Dropdown.Item icon={faFileImport}>{t('SpeedDial.Import CSV')}</Dropdown.Item>
+      <Dropdown.Item
+        icon={faFileImport}
+        onClick={() => {
+          const input = document.createElement('input')
+          input.type = 'file'
+          input.accept = '.csv'
+          input.onchange = (e) => {
+            importSpeedDial(e)
+          }
+          input.click()
+        }}
+      >
+        {t('SpeedDial.Import CSV')}
+      </Dropdown.Item>
       {/* if the list of speed dial is not empty */}
       {speedDials.length > 0 && (
         <>
@@ -365,6 +421,48 @@ export const SpeedDial = () => {
             <Button
               variant='white'
               onClick={() => setShowDeleteAllSpeedDialModal(false)}
+              ref={cancelDeleteButtonRef}
+            >
+              {t('Common.Cancel')}
+            </Button>
+          </Modal.Actions>
+        </Modal>
+        {/* Upload speed dial from Csv*/}
+        <Modal
+          show={showModalImportCsv}
+          focus={cancelDeleteButtonRef}
+          onClose={() => setShowModalImportCsv(false)}
+        >
+          <Modal.Content>
+            <div className='mx-auto flex h-12 w-12 flex-shrink-0 items-center justify-center rounded-full sm:mx-0 bg-green-100 dark:bg-green-900'>
+              <FontAwesomeIcon
+                icon={faCheckCircle}
+                className='h-6 w-6 text-green-600 dark:text-green-200'
+                aria-hidden='true'
+              />
+            </div>
+            <div className='mt-3 text-center sm:mt-0 sm:ml-4 sm:text-left'>
+              <h3 className='text-lg font-medium leading-6 text-gray-900 dark:text-gray-100'>
+                {t('SpeedDial.SpeedDial importation')}
+              </h3>
+              <div className='mt-3'>
+                <p className='text-sm text-gray-500 dark:text-gray-400'>
+                  {t('SpeedDial.Start importing Speed Dial from csv file?')}
+                </p>
+              </div>
+              {/* delete speed dial error */}
+              {importCsvError !== '' && (
+                <InlineNotification type='error' title={importCsvError} className='mt-4' />
+              )}
+            </div>
+          </Modal.Content>
+          <Modal.Actions>
+            <Button variant='primary' onClick={() => handleImportCsv()}>
+              {t('SpeedDial.Import CSV')}
+            </Button>
+            <Button
+              variant='white'
+              onClick={() => setShowModalImportCsv(false)}
               ref={cancelDeleteButtonRef}
             >
               {t('Common.Cancel')}
