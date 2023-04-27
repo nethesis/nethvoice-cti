@@ -10,7 +10,7 @@
 import type { SpeedDialType } from '../../services/types'
 import { useState, useEffect, useRef, MutableRefObject } from 'react'
 import { Button, Avatar, Modal, Dropdown, InlineNotification, EmptyState } from '../common'
-import { deleteSpeedDial, getSpeedDials } from '../../services/phonebook'
+import { deleteSpeedDial, deleteAllSpeedDial, getSpeedDials } from '../../services/phonebook'
 import {
   sortSpeedDials,
   openCreateSpeedDialDrawer,
@@ -29,7 +29,6 @@ import {
   faBolt,
   faTrashCan,
   faFileImport,
-  faFileExport,
   faFileArrowDown,
 } from '@nethesis/nethesis-solid-svg-icons'
 import { callPhoneNumber } from '../../lib/utils'
@@ -38,6 +37,8 @@ import { useTranslation } from 'react-i18next'
 export const SpeedDial = () => {
   // The state for the delete modal
   const [showDeleteModal, setShowDeleteModal] = useState<boolean>(false)
+  // The state for delete all speed dial modal
+  const [showDeleteAllSpeedDialModal, setShowDeleteAllSpeedDialModal] = useState<boolean>(false)
   // The state for the speed dials list
   const [speedDials, setSpeedDials] = useState<SpeedDialType[]>([])
   // The state for current item selected for editing or deletion
@@ -49,6 +50,7 @@ export const SpeedDial = () => {
 
   const [isSpeedDialLoaded, setSpeedDialLoaded] = useState(false)
   const [deleteSpeedDialError, setDeleteSpeedDialError] = useState('')
+  const [deleteAllSpeedDialError, setDeleteAllSpeedDialError] = useState('')
   const [getSpeedDialError, setGetSpeedDialError] = useState('')
   const { t } = useTranslation()
 
@@ -84,6 +86,25 @@ export const SpeedDial = () => {
     setDeletingName(speedDial.name)
     setDeleteSpeedDialError('')
     setShowDeleteModal(true)
+  }
+
+  // Handle the delete action on item
+  const confirmDeleteAllItem = () => {
+    setDeleteAllSpeedDialError('')
+    setShowDeleteAllSpeedDialModal(true)
+  }
+
+  // Execute the service method to delete all item
+  const handleDeleteAllItem = async () => {
+    // Use the id to perform actions
+    try {
+      const deleted = await deleteAllSpeedDial()
+    } catch (error) {
+      setDeleteSpeedDialError('Cannot delete speed dial')
+      return
+    }
+    setSpeedDialLoaded(false)
+    setShowDeleteAllSpeedDialModal(false)
   }
 
   // Execute the service method to delete an item
@@ -124,12 +145,22 @@ export const SpeedDial = () => {
   const speedDialInformation = () => (
     <>
       {/* onClick={() => openEditSpeedDialDrawer()} */}
-      <Dropdown.Item icon={faFileImport}>{t('SpeedDial.Import')}</Dropdown.Item>
+      <Dropdown.Item icon={faFileImport}>{t('SpeedDial.Import CSV')}</Dropdown.Item>
       {/* if the list of speed dial is not empty */}
       {speedDials.length > 0 && (
-        <Dropdown.Item icon={faFileArrowDown} onClick={() => exportSpeedDial(speedDials)}>
-          {t('SpeedDial.Export')}
-        </Dropdown.Item>
+        <>
+          <Dropdown.Item icon={faFileArrowDown} onClick={() => exportSpeedDial(speedDials)}>
+            {t('SpeedDial.Export CSV')}
+          </Dropdown.Item>
+          <div className='relative pb-2'>
+            <div className='absolute inset-0 flex items-center' aria-hidden='true'>
+              <div className='w-full border-t  border-gray-300 dark:border-gray-600' />
+            </div>
+          </div>
+          <Dropdown.Item icon={faTrashCan} onClick={() => confirmDeleteAllItem()}>
+            {t('SpeedDial.Delete all')}
+          </Dropdown.Item>
+        </>
       )}
     </>
   )
@@ -140,11 +171,11 @@ export const SpeedDial = () => {
       <aside className='hidden lg:w-72 xl:w-80 2xl:w-96 border-l lg:block h-full border-gray-200 bg-white dark:border-gray-700 dark:bg-gray-900'>
         <div className='flex h-full flex-col bg-white dark:bg-gray-900'>
           <div className='py-6 px-5'>
-            <div className='flex items-start justify-between'>
+            <div className='flex items-center justify-between'>
               <h2 className='text-lg font-medium text-gray-700 dark:text-gray-300'>
                 {t('SpeedDial.Speed dial')}
               </h2>
-              <div className='flex gap-2'>
+              <div className='flex gap-2 items-center'>
                 {' '}
                 {isSpeedDialLoaded && !!speedDials.length && (
                   <div className='ml-3 h-7 flex items-center'>
@@ -292,6 +323,48 @@ export const SpeedDial = () => {
             <Button
               variant='white'
               onClick={() => setShowDeleteModal(false)}
+              ref={cancelDeleteButtonRef}
+            >
+              {t('Common.Cancel')}
+            </Button>
+          </Modal.Actions>
+        </Modal>
+        {/* Delete all speed dial modal */}
+        <Modal
+          show={showDeleteAllSpeedDialModal}
+          focus={cancelDeleteButtonRef}
+          onClose={() => setShowDeleteAllSpeedDialModal(false)}
+        >
+          <Modal.Content>
+            <div className='mx-auto flex h-12 w-12 flex-shrink-0 items-center justify-center rounded-full sm:mx-0 bg-red-100 dark:bg-red-900'>
+              <FontAwesomeIcon
+                icon={faTriangleExclamation}
+                className='h-6 w-6 text-red-600 dark:text-red-200'
+                aria-hidden='true'
+              />
+            </div>
+            <div className='mt-3 text-center sm:mt-0 sm:ml-4 sm:text-left'>
+              <h3 className='text-lg font-medium leading-6 text-gray-900 dark:text-gray-100'>
+                {t('SpeedDial.Delete all speed dials')}
+              </h3>
+              <div className='mt-3'>
+                <p className='text-sm text-gray-500 dark:text-gray-400'>
+                  {t('SpeedDial.Are you sure?')}
+                </p>
+              </div>
+              {/* delete speed dial error */}
+              {deleteAllSpeedDialError && (
+                <InlineNotification type='error' title={deleteAllSpeedDialError} className='mt-4' />
+              )}
+            </div>
+          </Modal.Content>
+          <Modal.Actions>
+            <Button variant='danger' onClick={() => handleDeleteAllItem()}>
+              {t('Common.Delete')}
+            </Button>
+            <Button
+              variant='white'
+              onClick={() => setShowDeleteAllSpeedDialModal(false)}
               ref={cancelDeleteButtonRef}
             >
               {t('Common.Cancel')}

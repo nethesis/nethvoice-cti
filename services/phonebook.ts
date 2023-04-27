@@ -98,3 +98,19 @@ export const deleteSpeedDial = async (obj: { id: string }) => {
     throw error
   }
 }
+
+/**
+ *
+ * Delete all existing speed dial
+ *
+ */
+
+export const deleteAllSpeedDial = async () => {
+  try {
+    await axios.delete(`${PATH}/speeddials`)
+    return true
+  } catch (error) {
+    handleNetworkError(error)
+    throw error
+  }
+}

@@ -259,13 +259,16 @@
   },
   "SpeedDial": {
     "Create": "Crea",
-    "Import": "Importa",
-    "Export": "Esporta",
+    "Import CSV": "Importa CSV",
+    "Export CSV": "Esporta CSV",
     "Create speed dial": "Crea chiamata rapida",
     "Open speed dial menu": "Apri menu chiamata rapida",
     "Delete speed dial": "Elimina chiamata rapida",
+    "Delete all speed dials": "Elimina tutte le chiamate rapide",
+    "Are you sure?": "Sei sicuro?",
     "Speed dial": "Chiamata rapida",
     "will be deleted": "verrà eliminata",
-    "No speed dials": "Nessuna chiamata rapida"
+    "No speed dials": "Nessuna chiamata rapida",
+    "Delete all": "Elimina tutte"
   }
 }
