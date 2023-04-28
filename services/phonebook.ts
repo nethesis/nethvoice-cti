@@ -101,11 +101,11 @@ export const deleteSpeedDial = async (obj: { id: string }) => {
 
 /**
  *
- * Delete all existing speed dial
+ * Delete all existing speed dials
  *
  */
 
-export const deleteAllSpeedDial = async () => {
+export const deleteAllSpeedDials = async () => {
   try {
     await axios.delete(`${PATH}/speeddials`)
     return true

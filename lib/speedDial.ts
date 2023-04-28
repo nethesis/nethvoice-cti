@@ -2,6 +2,7 @@
 // SPDX-License-Identifier: AGPL-3.0-or-later
 
 import { SpeedDialType } from '../services/types'
+import { convertToCSV } from './utils'
 import { store } from '../store'
 
 /**
@@ -48,31 +49,31 @@ export function reloadSpeedDial() {
   store.dispatch.speedDial.reload()
 }
 
-export function exportSpeedDial(speedDial: any) {
-  let temp: any
+export function exportSpeedDial(speedDials: any) {
+  let row: any
   let headers: any
-  let formattedData = speedDial.map(function (speed: any) {
-    temp = {}
+  let formattedData = speedDials.map(function (speedDial: any) {
+    row = {}
     headers = []
-    for (const k in speed) {
+    for (const k in speedDial) {
       if (k !== '$$hashKey' && k !== 'id') {
         headers.push(k)
-        temp[k] = speed[k]
+        row[k] = speedDial[k]
       }
     }
-    return temp
+    return row
   })
   exportCSVFile(headers, formattedData, 'speeddial')
 }
 
-function exportCSVFile(headers: string[], items: any[], fileTitle: string): void {
+function exportCSVFile(headers: string[], items: any[], fileName: string): void {
   if (headers) {
     items.unshift(headers)
   }
   // Convert Object to JSON
   const jsonObject = JSON.stringify(items)
   const csv = convertToCSV(jsonObject)
-  const exportedFilename = fileTitle + '.csv' || 'export.csv'
+  const exportedFilename = fileName + '.csv' || 'export.csv'
   const blob = new Blob([csv], { type: 'text/csv;charset=utf-8;' })
 
   const link = document.createElement('a')
@@ -85,21 +86,4 @@ function exportCSVFile(headers: string[], items: any[], fileTitle: string): void
     link.click()
     document.body.removeChild(link)
   }
-}
-
-function convertToCSV(objArray: any) {
-  const array = typeof objArray !== 'object' ? JSON.parse(objArray) : objArray
-  let str = ''
-
-  for (let i = 0; i < array.length; i++) {
-    let line = ''
-    for (const index in array[i]) {
-      if (line !== '') {
-        line += ','
-      }
-      line += array[i][index] === null ? '' : array[i][index]
-    }
-    str += line + '\r\n'
-  }
-  return str
 }

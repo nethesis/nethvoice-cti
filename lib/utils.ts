@@ -164,3 +164,20 @@ export function getHtmlFaviconElement() {
   let faviconHtmlElement = document.querySelector("link[rel*='icon']") as HTMLLinkElement
   return faviconHtmlElement
 }
+
+export function convertToCSV(objArray: any) {
+  const array = typeof objArray !== 'object' ? JSON.parse(objArray) : objArray
+  let str = ''
+
+  for (let i = 0; i < array.length; i++) {
+    let line = ''
+    for (const index in array[i]) {
+      if (line !== '') {
+        line += ','
+      }
+      line += array[i][index] === null ? '' : array[i][index]
+    }
+    str += line + '\r\n'
+  }
+  return str
+}
