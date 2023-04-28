@@ -278,7 +278,7 @@ export const SpeedDial = () => {
             {/* empty state */}
             {isSpeedDialLoaded && !getSpeedDialError && !speedDials.length && (
               <EmptyState
-                title={t('SpeedDial.No announcement')}
+                title={t('SpeedDial.No speed dials')}
                 icon={
                   <FontAwesomeIcon icon={faBolt} className='mx-auto h-12 w-12' aria-hidden='true' />
                 }
