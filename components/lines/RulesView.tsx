@@ -73,7 +73,6 @@ export const RulesView: FC<RulesViewProps> = ({ className }): JSX.Element => {
   }, [debouncedUpdateTextFilter])
 
   const deleteAnnouncement = (index: any) => {
-    console.log("you've just deleted this index", index)
   }
 
   const filterLinesTable = (lines: any) => {

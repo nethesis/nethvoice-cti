@@ -10,11 +10,17 @@
 import type { SpeedDialType } from '../../services/types'
 import { useState, useEffect, useRef, MutableRefObject } from 'react'
 import { Button, Avatar, Modal, Dropdown, InlineNotification, EmptyState } from '../common'
-import { deleteSpeedDial, getSpeedDials } from '../../services/phonebook'
+import {
+  deleteSpeedDial,
+  deleteAllSpeedDials,
+  getSpeedDials,
+  importCsvSpeedDial,
+} from '../../services/phonebook'
 import {
   sortSpeedDials,
   openCreateSpeedDialDrawer,
   openEditSpeedDialDrawer,
+  exportSpeedDial,
 } from '../../lib/speedDial'
 import { useSelector } from 'react-redux'
 import { RootState } from '../../store'
@@ -26,13 +32,19 @@ import {
   faEllipsisVertical,
   faPen,
   faBolt,
-} from '@fortawesome/free-solid-svg-icons'
-import { faTrashCan } from '@fortawesome/free-regular-svg-icons'
+  faTrashCan,
+  faFileImport,
+  faFileArrowDown,
+  faCheckCircle,
+} from '@nethesis/nethesis-solid-svg-icons'
 import { callPhoneNumber } from '../../lib/utils'
+import { useTranslation } from 'react-i18next'
 
 export const SpeedDial = () => {
   // The state for the delete modal
   const [showDeleteModal, setShowDeleteModal] = useState<boolean>(false)
+  // The state for delete all speed dial modal
+  const [showDeleteAllSpeedDialModal, setShowDeleteAllSpeedDialModal] = useState<boolean>(false)
   // The state for the speed dials list
   const [speedDials, setSpeedDials] = useState<SpeedDialType[]>([])
   // The state for current item selected for editing or deletion
@@ -41,10 +53,15 @@ export const SpeedDial = () => {
   const cancelDeleteButtonRef = useRef() as MutableRefObject<HTMLButtonElement>
   // The state for the name to be deleted
   const [deletingName, setDeletingName] = useState<string | undefined>('')
+  const [csvBase64, setCsvBase64] = useState('')
+  const [showImportCsvModal, setShowImportCsvModal] = useState<boolean>(false)
+  const [importCsvError, setImportCsvError] = useState('')
 
   const [isSpeedDialLoaded, setSpeedDialLoaded] = useState(false)
   const [deleteSpeedDialError, setDeleteSpeedDialError] = useState('')
+  const [deleteAllSpeedDialError, setDeleteAllSpeedDialError] = useState('')
   const [getSpeedDialError, setGetSpeedDialError] = useState('')
+  const { t } = useTranslation()
 
   useEffect(() => {
     // Initialize the speed dial list the first time
@@ -80,6 +97,24 @@ export const SpeedDial = () => {
     setShowDeleteModal(true)
   }
 
+  // Handle the delete action on item
+  const confirmDeleteAllItems = () => {
+    setDeleteAllSpeedDialError('')
+    setShowDeleteAllSpeedDialModal(true)
+  }
+
+  // Execute the service method to delete all items
+  const handleDeleteAllItems = async () => {
+    try {
+      const deleted = await deleteAllSpeedDials()
+    } catch (error) {
+      setDeleteSpeedDialError(t('SpeedDial.Cannot delete speed dial') || '')
+      return
+    }
+    setSpeedDialLoaded(false)
+    setShowDeleteAllSpeedDialModal(false)
+  }
+
   // Execute the service method to delete an item
   const handleDeleteItem = async () => {
     if (currentItem?.id) {
@@ -89,7 +124,7 @@ export const SpeedDial = () => {
           id: currentItem.id.toString(),
         })
       } catch (error) {
-        setDeleteSpeedDialError('Cannot delete speed dial')
+        setDeleteSpeedDialError(t('SpeedDial.Cannot delete speed dial') || '')
         return
       }
       setSpeedDialLoaded(false)
@@ -98,19 +133,89 @@ export const SpeedDial = () => {
     }
   }
 
+  // Execute the service method to import speed dial
+  const handleImportCsv = async () => {
+    if (csvBase64) {
+      try {
+        const imported = await importCsvSpeedDial({
+          file64: csvBase64.toString(),
+        })
+      } catch (error) {
+        setImportCsvError(t('SpeedDial.Cannot import speed dial') || '')
+        return
+      }
+      setSpeedDialLoaded(false)
+      setShowImportCsvModal(false)
+    }
+  }
+
   const callSpeedDial = (speedDial: any) => {
     callPhoneNumber(speedDial.speeddial_num)
+  }
+
+  function importSpeedDial(selectedFile: any) {
+    if (selectedFile?.target?.files && selectedFile.target.files[0]) {
+      const reader = new FileReader()
+      reader.onload = (ev: any) => {
+        setCsvBase64(ev.target?.result as string)
+        if (selectedFile.target) {
+          selectedFile.target.value = ''
+        }
+      }
+      reader.readAsDataURL(selectedFile.target.files[0])
+      // open modal to confirm the upload
+      setShowImportCsvModal(true)
+      setImportCsvError('')
+    } else {
+      setImportCsvError(t('SpeedDial.Upload failed') || '')
+    }
   }
 
   // The dropdown items for every speed dial element
   const getItemsMenu = (speedDial: any) => (
     <>
       <Dropdown.Item icon={faPen} onClick={() => openEditSpeedDialDrawer(speedDial)}>
-        Edit
+        {t('Common.Edit')}
       </Dropdown.Item>
       <Dropdown.Item icon={faTrashCan} onClick={() => confirmDeleteItem(speedDial)}>
-        Delete
+        {t('Common.Delete')}
       </Dropdown.Item>
+    </>
+  )
+
+  // The dropdown items for import or export speed dial element
+  const getSpeedDialMenuTemplate = () => (
+    <>
+      <Dropdown.Item
+        icon={faFileImport}
+        onClick={() => {
+          const input = document.createElement('input')
+          input.type = 'file'
+          input.accept = '.csv'
+          input.onchange = (e) => {
+            importSpeedDial(e)
+          }
+          input.click()
+        }}
+      >
+        {t('SpeedDial.Import CSV')}
+      </Dropdown.Item>
+      {/* if the list of speed dial is not empty */}
+      {speedDials.length > 0 && (
+        <>
+          <Dropdown.Item icon={faFileArrowDown} onClick={() => exportSpeedDial(speedDials)}>
+            {t('SpeedDial.Export CSV')}
+          </Dropdown.Item>
+          <div className='relative pb-2'>
+            <div className='absolute inset-0 flex items-center' aria-hidden='true'>
+              <div className='w-full border-t  border-gray-300 dark:border-gray-600' />
+            </div>
+          </div>
+          <Dropdown.Item icon={faTrashCan} onClick={() => confirmDeleteAllItems()}>
+            {t('SpeedDial.Delete all')}
+          </Dropdown.Item>
+        </>
+      )}
     </>
   )
 
@@ -120,16 +225,27 @@ export const SpeedDial = () => {
       <aside className='hidden lg:w-72 xl:w-80 2xl:w-96 border-l lg:block h-full border-gray-200 bg-white dark:border-gray-700 dark:bg-gray-900'>
         <div className='flex h-full flex-col bg-white dark:bg-gray-900'>
           <div className='py-6 px-5'>
-            <div className='flex items-start justify-between'>
-              <h2 className='text-lg font-medium text-gray-700 dark:text-gray-300'>Speed Dial</h2>
-              <div className='ml-3 flex h-7 items-center gap-2'>
+            <div className='flex items-center justify-between'>
+              <h2 className='text-lg font-medium text-gray-700 dark:text-gray-300'>
+                {t('SpeedDial.Speed dial')}
+              </h2>
+              <div className='flex gap-2 items-center'>
+                {' '}
                 {isSpeedDialLoaded && !!speedDials.length && (
-                  <Button variant='white' onClick={() => openCreateSpeedDialDrawer()}>
-                    <FontAwesomeIcon icon={faPlus} className='xl:mr-2 h-4 w-4' />
-                    <span className='hidden xl:inline-block'>Create</span>
-                    <span className='sr-only'>Create speed dial</span>
-                  </Button>
+                  <div className='ml-3 h-7 flex items-center'>
+                    <Button variant='white' onClick={() => openCreateSpeedDialDrawer()}>
+                      <FontAwesomeIcon icon={faPlus} className='xl:mr-2 h-4 w-4' />
+                      <span className='hidden xl:inline-block'>{t('SpeedDial.Create')}</span>
+                      <span className='sr-only'>{t('SpeedDial.Create speed dial')}</span>
+                    </Button>
+                  </div>
                 )}
+                <Dropdown items={getSpeedDialMenuTemplate()} position='left'>
+                  <Button variant='ghost'>
+                    <FontAwesomeIcon icon={faEllipsisVertical} className='h-4 w-4' />
+                    <span className='sr-only'>{t('SpeedDial.Open speed dial menu')}</span>
+                  </Button>
+                </Dropdown>
               </div>
             </div>
           </div>
@@ -162,14 +278,14 @@ export const SpeedDial = () => {
             {/* empty state */}
             {isSpeedDialLoaded && !getSpeedDialError && !speedDials.length && (
               <EmptyState
-                title='No speed dials'
+                title={t('SpeedDial.No speed dials')}
                 icon={
                   <FontAwesomeIcon icon={faBolt} className='mx-auto h-12 w-12' aria-hidden='true' />
                 }
               >
                 <Button variant='white' onClick={() => openCreateSpeedDialDrawer()}>
                   <FontAwesomeIcon icon={faPlus} className='mr-2 h-4 w-4' />
-                  <span>Create</span>
+                  <span>{t('SpeedDial.Create')}</span>
                 </Button>
               </EmptyState>
             )}
@@ -213,7 +329,7 @@ export const SpeedDial = () => {
                         <Dropdown items={getItemsMenu(speedDial)} position='left'>
                           <Button variant='ghost'>
                             <FontAwesomeIcon icon={faEllipsisVertical} className='h-4 w-4' />
-                            <span className='sr-only'>Open speed dial menu</span>
+                            <span className='sr-only'>{t('SpeedDial.Open speed dial menu')}</span>
                           </Button>
                         </Dropdown>
                       </div>
@@ -240,11 +356,11 @@ export const SpeedDial = () => {
             </div>
             <div className='mt-3 text-center sm:mt-0 sm:ml-4 sm:text-left'>
               <h3 className='text-lg font-medium leading-6 text-gray-900 dark:text-gray-100'>
-                Delete speed dial
+                {t('SpeedDial.Delete speed dial')}
               </h3>
               <div className='mt-3'>
                 <p className='text-sm text-gray-500 dark:text-gray-400'>
-                  Speed dial <strong>{deletingName || ''}</strong> will be deleted.
+                  {t('SpeedDial.Speed dial delete message', { deletingName })}
                 </p>
               </div>
               {/* delete speed dial error */}
@@ -255,14 +371,98 @@ export const SpeedDial = () => {
           </Modal.Content>
           <Modal.Actions>
             <Button variant='danger' onClick={() => handleDeleteItem()}>
-              Delete
+              {t('Common.Delete')}
             </Button>
             <Button
               variant='white'
               onClick={() => setShowDeleteModal(false)}
               ref={cancelDeleteButtonRef}
             >
-              Cancel
+              {t('Common.Cancel')}
+            </Button>
+          </Modal.Actions>
+        </Modal>
+        {/* Delete all speed dials modal */}
+        <Modal
+          show={showDeleteAllSpeedDialModal}
+          focus={cancelDeleteButtonRef}
+          onClose={() => setShowDeleteAllSpeedDialModal(false)}
+        >
+          <Modal.Content>
+            <div className='mx-auto flex h-12 w-12 flex-shrink-0 items-center justify-center rounded-full sm:mx-0 bg-red-100 dark:bg-red-900'>
+              <FontAwesomeIcon
+                icon={faTriangleExclamation}
+                className='h-6 w-6 text-red-600 dark:text-red-200'
+                aria-hidden='true'
+              />
+            </div>
+            <div className='mt-3 text-center sm:mt-0 sm:ml-4 sm:text-left'>
+              <h3 className='text-lg font-medium leading-6 text-gray-900 dark:text-gray-100'>
+                {t('SpeedDial.Delete all speed dials')}
+              </h3>
+              <div className='mt-3'>
+                <p className='text-sm text-gray-500 dark:text-gray-400'>
+                  {t('SpeedDial.Are you sure?')}
+                </p>
+              </div>
+              {/* delete all speed dials error */}
+              {deleteAllSpeedDialError && (
+                <InlineNotification type='error' title={deleteAllSpeedDialError} className='mt-4' />
+              )}
+            </div>
+          </Modal.Content>
+          <Modal.Actions>
+            <Button variant='danger' onClick={() => handleDeleteAllItems()}>
+              {t('Common.Delete')}
+            </Button>
+            <Button
+              variant='white'
+              onClick={() => setShowDeleteAllSpeedDialModal(false)}
+              ref={cancelDeleteButtonRef}
+            >
+              {t('Common.Cancel')}
+            </Button>
+          </Modal.Actions>
+        </Modal>
+        {/* Upload speed dial from Csv*/}
+        <Modal
+          show={showImportCsvModal}
+          focus={cancelDeleteButtonRef}
+          onClose={() => setShowImportCsvModal(false)}
+        >
+          <Modal.Content>
+            <div className='mx-auto flex h-12 w-12 flex-shrink-0 items-center justify-center rounded-full sm:mx-0 bg-green-100 dark:bg-green-900'>
+              <FontAwesomeIcon
+                icon={faCheckCircle}
+                className='h-6 w-6 text-green-600 dark:text-green-200'
+                aria-hidden='true'
+              />
+            </div>
+            <div className='mt-3 text-center sm:mt-0 sm:ml-4 sm:text-left'>
+              <h3 className='text-lg font-medium leading-6 text-gray-900 dark:text-gray-100'>
+                {t('SpeedDial.Speed dial import')}
+              </h3>
+              <div className='mt-3'>
+                <p className='text-sm text-gray-500 dark:text-gray-400'>
+                  {t('SpeedDial.Start importing Speed Dial from csv file?')}
+                </p>
+              </div>
+              {/* import csv error */}
+              {importCsvError !== '' && (
+                <InlineNotification type='error' title={importCsvError} className='mt-4' />
+              )}
+            </div>
+          </Modal.Content>
+          <Modal.Actions>
+            <Button variant='primary' onClick={() => handleImportCsv()}>
+              {t('SpeedDial.Import CSV')}
+            </Button>
+            <Button
+              variant='white'
+              onClick={() => setShowImportCsvModal(false)}
+              ref={cancelDeleteButtonRef}
+            >
+              {t('Common.Cancel')}
             </Button>
           </Modal.Actions>
         </Modal>

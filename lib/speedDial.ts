@@ -2,6 +2,7 @@
 // SPDX-License-Identifier: AGPL-3.0-or-later
 
 import { SpeedDialType } from '../services/types'
+import { convertToCSV } from './utils'
 import { store } from '../store'
 
 /**
@@ -46,4 +47,43 @@ export const openEditSpeedDialDrawer = (speedDial: any) => {
 
 export function reloadSpeedDial() {
   store.dispatch.speedDial.reload()
+}
+
+export function exportSpeedDial(speedDials: any) {
+  let row: any
+  let headers: any
+  let formattedData = speedDials.map(function (speedDial: any) {
+    row = {}
+    headers = []
+    for (const k in speedDial) {
+      if (k !== '$$hashKey' && k !== 'id') {
+        headers.push(k)
+        row[k] = speedDial[k]
+      }
+    }
+    return row
+  })
+  exportCSVFile(headers, formattedData, 'speeddial')
+}
+
+function exportCSVFile(headers: string[], items: any[], fileName: string): void {
+  if (headers) {
+    items.unshift(headers)
+  }
+  // Convert Object to JSON
+  const jsonObject = JSON.stringify(items)
+  const csv = convertToCSV(jsonObject)
+  const exportedFilename = fileName + '.csv' || 'export.csv'
+  const blob = new Blob([csv], { type: 'text/csv;charset=utf-8;' })
+
+  const link = document.createElement('a')
+  if (link.download !== undefined) {
+    const url = URL.createObjectURL(blob)
+    link.setAttribute('href', url)
+    link.setAttribute('download', exportedFilename)
+    link.style.visibility = 'hidden'
+    document.body.appendChild(link)
+    link.click()
+    document.body.removeChild(link)
+  }
 }

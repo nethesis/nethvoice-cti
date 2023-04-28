@@ -256,5 +256,22 @@
     "Select audio file": "Seleziona file audio",
     "All": "Tutti",
     "Configuration type": "Tipo configurazione"
+  },
+  "SpeedDial": {
+    "Create": "Crea",
+    "Import CSV": "Importa CSV",
+    "Export CSV": "Esporta CSV",
+    "Create speed dial": "Crea chiamata rapida",
+    "Open speed dial menu": "Apri menu chiamata rapida",
+    "Delete speed dial": "Elimina chiamata rapida",
+    "Delete all speed dials": "Elimina tutte le chiamate rapide",
+    "Are you sure?": "Sei sicuro?",
+    "Speed dial": "Chiamata rapida",
+    "will be deleted": "verrà eliminata",
+    "No speed dials": "Nessuna chiamata rapida",
+    "Delete all": "Elimina tutte",
+    "Speed dial import": "Importazione chiamate rapide",
+    "Start importing Speed Dial from csv file?": "Iniziare importazione chiamate rapide da file CSV?",
+    "Speed dial delete message": "La chiamata rapida {{deletingName}} verrà eliminata"
   }
 }
