@@ -311,6 +311,18 @@
         "Pause": "Pausa",
         "End pause": "Termina pausa",
         "Lunch break": "Pausa pranzo",
-        "Toggle favorite queue": "Attiva/disattiva la coda preferita"
+        "Toggle favorite queue": "Attiva/disattiva la coda preferita",
+        "Queue operators": "Operatori di coda",
+        "Cannot retrieve queues": "Impossibile recuperare le code",
+        "No calls": "Nessuna chiamata",
+        "No operators": "Nessun operatore",
+        "Time": "Tempo",
+        "Select a tab": "Selezionare una scheda",
+        "Max wait": "Attesa massima",
+        "Queues management": "Gestione delle code",
+        "Cannot retrieve calls": "Impossibile recuperare le chiamate",
+        "Calls": "Chiamate",
+        "calls": "Chiamate",
+        "Statistics": "Statistiche"
     }
 }
