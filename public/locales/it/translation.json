@@ -304,6 +304,12 @@
         "Expand all queues": "Espandi tutte le code",
         "Active operators": "Operatori attivi",
         "On a break": "In pausa",
-        "Logged out": "Disconnesso"
+        "Logged out": "Disconnesso",
+        "Min wait": "Attesa minima",
+        "Emergency": "Emergenza",
+        "Backend": "Backend",
+        "Pause": "Pausa",
+        "End pause": "Termina pausa",
+        "Lunch break": "Pausa pranzo"
     }
 }
