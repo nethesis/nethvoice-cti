@@ -278,7 +278,8 @@
         "Delete all": "Elimina tutte",
         "Speed dial import": "Importazione chiamate rapide",
         "Start importing Speed Dial from csv file?": "Iniziare importazione chiamate rapide da file CSV?",
-        "Speed dial delete message": "La chiamata rapida {{deletingName}} verrà eliminata"
+        "Speed dial delete message": "La chiamata rapida {{deletingName}} verrà eliminata",
+        "Upload failed": "Caricamento fallito"
     },
     "Notifications": {
         "Mark as read": "Contrassegna come letto",
@@ -328,6 +329,15 @@
         "Name": "Nome",
         "Company": "Azienda",
         "Details": "Dettagli",
-        "Outcome": "Esito"
+        "Outcome": "Esito",
+        "outcome_BUSY": "Occupato",
+        "outcome_FAILED": "Fallite",
+        "outcome_NO ANSWER": "Nessuna risposta",
+        "outcome_ABANDON": "Abbandonata",
+        "outcome_DONE": "Gestita",
+        "outcome_RINGNOANSWER": "Nessuna risposta",
+        "outcome_EXITWITHTIMEOUT": "Timeout",
+        "outcome_ANSWERED": "Risposte",
+        "outcome_COMPLETECALLER": "Gestita"
     }
 }
