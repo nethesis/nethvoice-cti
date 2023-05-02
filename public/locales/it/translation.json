@@ -323,6 +323,9 @@
         "Cannot retrieve calls": "Impossibile recuperare le chiamate",
         "Calls": "Chiamate",
         "calls": "Chiamate",
-        "Statistics": "Statistiche"
+        "Statistics": "Statistiche",
+        "Queue": "Coda",
+        "Name": "Nome",
+        "Company": "Azienda"
     }
 }
