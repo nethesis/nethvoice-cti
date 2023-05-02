@@ -327,6 +327,7 @@
         "Queue": "In coda",
         "Name": "Nome",
         "Company": "Azienda",
-        "Details": "Dettagli"
+        "Details": "Dettagli",
+        "Outcome": "Esito"
     }
 }
