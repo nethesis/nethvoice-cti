@@ -326,6 +326,7 @@
         "Statistics": "Statistiche",
         "Queue": "In coda",
         "Name": "Nome",
-        "Company": "Azienda"
+        "Company": "Azienda",
+        "Details": "Dettagli"
     }
 }
