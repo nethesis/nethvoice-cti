@@ -172,7 +172,7 @@ export const TopBar: FC<TopBarProps> = ({ openMobileCb }) => {
               )}
             >
               <StatusDot status={mainPresence} className='flex' />
-              Presence
+              {t('TopBar.Presence')}
               <FontAwesomeIcon
                 icon={faChevronRight}
                 className='ml-auto h-3 w-3 flex justify-center text-gray-400 dark:text-gray-500'
@@ -263,7 +263,7 @@ export const TopBar: FC<TopBarProps> = ({ openMobileCb }) => {
           className='border-r px-4 focus:outline-none focus:ring-2 focus:ring-inset md:hidden focus:ring-primaryLight border-gray-200 text-gray-500 dark:focus:ring-primaryDark dark:border-gray-700 dark:text-gray-400'
           onClick={openMobileCb}
         >
-          <span className='sr-only'>Open sidebar</span>
+          <span className='sr-only'>{t('TopBar.Open sidebar')}</span>
           <FontAwesomeIcon icon={faBars} className='h-5 w-5' aria-hidden='true' />
         </button>
         <div className='flex flex-1 justify-end px-4 sm:px-6'>
@@ -299,7 +299,7 @@ export const TopBar: FC<TopBarProps> = ({ openMobileCb }) => {
             </Button>
             {/* Profile dropdown */}
             <Dropdown items={dropdownItems} position='left' divider={true} className='pl-3'>
-              <span className='sr-only'>Open user menu</span>
+              <span className='sr-only'>{t('TopBar.Open user menu')}</span>
               <Avatar
                 rounded='full'
                 src={avatar}
