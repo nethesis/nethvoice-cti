@@ -59,7 +59,10 @@ export const GlobalSearch: FC<GlobalSearchProps> = () => {
     setPhonebookError('')
 
     try {
-      const res = await getPhonebook(1, query, 'all', 'name')
+      //remove space and slash characters
+      let noSlashCharactersQuery = query.replace(/\//g, '')
+      const res = await getPhonebook(1, noSlashCharactersQuery, 'all', 'name')
+
       let phonebookResults = mapPhonebookResponse(res).rows
       let isNumberInPhonebook = false
 
@@ -67,7 +70,6 @@ export const GlobalSearch: FC<GlobalSearchProps> = () => {
         phonebookResults.forEach((contact: any) => {
           // set result type
           contact.resultType = 'contact'
-
           if (isQueryPhoneNumber) {
             // check if contact has the queried number
             const extensionNoSpaces = contact.extension?.replace(/\s/g, '')
