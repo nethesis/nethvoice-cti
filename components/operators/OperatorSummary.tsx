@@ -180,7 +180,10 @@ export const OperatorSummary = forwardRef<HTMLButtonElement, OperatorSummaryProp
                       className='mr-2 h-4 w-4 flex-shrink-0 text-gray-400 dark:text-gray-500'
                       aria-hidden='true'
                     />
-                    <span className='truncate cursor-pointer hover:underline'>
+                    <span
+                      className='truncate cursor-pointer hover:underline'
+                      onClick={() => callPhoneNumber(operator.endpoints.cellphone[0].id)}
+                    >
                       {operator.endpoints.cellphone[0].id}
                     </span>
                   </div>

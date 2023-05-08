@@ -172,7 +172,7 @@ export const TopBar: FC<TopBarProps> = ({ openMobileCb }) => {
               )}
             >
               <StatusDot status={mainPresence} className='flex' />
-              Presence
+              {t('TopBar.Presence')}
               <FontAwesomeIcon
                 icon={faChevronRight}
                 className='ml-auto h-3 w-3 flex justify-center text-gray-400 dark:text-gray-500'
@@ -190,10 +190,7 @@ export const TopBar: FC<TopBarProps> = ({ openMobileCb }) => {
               <Popover.Panel className='absolute sm:mr-[4.788rem] sm:-mt-10 right-0 z-10 w-screen max-w-xs sm:-translate-x-1/2 transform px-0.5 sm:px-1 xs:mr-[6rem] '>
                 <div className='overflow-hidden shadow-lg ring-1 ring-gray-200 dark:ring-gray-700 ring-opacity-1 rounded-md'>
                   <div className='relative bg-white dark:border-gray-700 dark:bg-gray-900 py-2'>
-                    <a
-                      className='flex px-5 py-3 items-start transition duration-150 ease-in-out hover:bg-gray-200 dark:hover:bg-gray-700'
-                      onClick={() => setPresence('online')}
-                    >
+                    <Dropdown.Item onClick={() => setPresence('online')}>
                       <div>
                         <div className='flex items-center'>
                           <StatusDot status='online' className='flex mr-2' />
@@ -203,11 +200,8 @@ export const TopBar: FC<TopBarProps> = ({ openMobileCb }) => {
                           {t('TopBar.Make and receive phone calls')}
                         </p>
                       </div>
-                    </a>
-                    <a
-                      className='flex px-5 py-3 items-start transition duration-150 ease-in-out hover:bg-gray-200 dark:hover:bg-gray-700'
-                      onClick={() => setPresence('callforward')}
-                    >
+                    </Dropdown.Item>
+                    <Dropdown.Item onClick={() => setPresence('callforward')}>
                       <div className=''>
                         <div className='flex items-center'>
                           <StatusDot status='callforward' className='flex mr-2' />
@@ -217,16 +211,13 @@ export const TopBar: FC<TopBarProps> = ({ openMobileCb }) => {
                           {t('TopBar.Forward incoming calls to another phone number')}
                         </p>
                       </div>
-                    </a>
+                    </Dropdown.Item>
                     <div className='relative py-2'>
                       <div className='absolute inset-0 flex items-center' aria-hidden='true'>
                         <div className='w-full border-t  border-gray-300 dark:border-gray-600' />
                       </div>
                     </div>
-                    <a
-                      className='flex px-5 py-3 items-start transition duration-150 ease-in-out hover:bg-gray-200 dark:hover:bg-gray-700'
-                      onClick={() => setPresence('dnd')}
-                    >
+                    <Dropdown.Item onClick={() => setPresence('dnd')}>
                       <div>
                         <div className='flex items-center'>
                           <StatusDot status='dnd' className='flex mr-2' />
@@ -236,7 +227,7 @@ export const TopBar: FC<TopBarProps> = ({ openMobileCb }) => {
                           {t('TopBar.Do not receive any calls')}
                         </p>
                       </div>
-                    </a>
+                    </Dropdown.Item>
                   </div>
                 </div>
               </Popover.Panel>
@@ -272,7 +263,7 @@ export const TopBar: FC<TopBarProps> = ({ openMobileCb }) => {
           className='border-r px-4 focus:outline-none focus:ring-2 focus:ring-inset md:hidden focus:ring-primaryLight border-gray-200 text-gray-500 dark:focus:ring-primaryDark dark:border-gray-700 dark:text-gray-400'
           onClick={openMobileCb}
         >
-          <span className='sr-only'>Open sidebar</span>
+          <span className='sr-only'>{t('TopBar.Open sidebar')}</span>
           <FontAwesomeIcon icon={faBars} className='h-5 w-5' aria-hidden='true' />
         </button>
         <div className='flex flex-1 justify-end px-4 sm:px-6'>
@@ -308,7 +299,7 @@ export const TopBar: FC<TopBarProps> = ({ openMobileCb }) => {
             </Button>
             {/* Profile dropdown */}
             <Dropdown items={dropdownItems} position='left' divider={true} className='pl-3'>
-              <span className='sr-only'>Open user menu</span>
+              <span className='sr-only'>{t('TopBar.Open user menu')}</span>
               <Avatar
                 rounded='full'
                 src={avatar}

@@ -163,7 +163,10 @@
     "Do not receive any calls": "Do not receive any calls.",
     "Online": "Online",
     "Call forward": "Call forward",
-    "Enter phone number for call forward": "Enter phone number for call forward"
+    "Enter phone number for call forward": "Enter phone number for call forward",
+    "Open user menu": "Open user menu",
+    "Presence": "Presence",
+    "Open sidebar": "Open sidebar"
   },
   "OperatorDrawer": {
     "Book": "Book",
