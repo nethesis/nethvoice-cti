@@ -50,6 +50,18 @@ else
 EOF
 fi
 
+if [ -n $JANUS_HOST ]; then
+  cat >> /app/public/config/config.production.js<<EOF
+  JANUS_HOST: '$JANUS_HOST',
+EOF
+fi
+
+if [ -n $JANUS_PORT ]; then
+  cat >> /app/public/config/config.production.js<<EOF
+  JANUS_PORT: '$JANUS_PORT',
+EOF
+fi
+
 cat >> /app/public/config/config.production.js<<EOF
 }
 

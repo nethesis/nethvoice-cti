@@ -29,6 +29,10 @@ export function Island() {
             auth_token: auth.token,
             sip_exten: webRTCExtension.id,
             sip_secret: webRTCExtension.secret,
+            // @ts-ignore
+            janus_host: window.CONFIG.JANUS_HOST,
+            // @ts-ignore
+            janus_port: window.CONFIG.JANUS_PORT,
           }),
         )
       }
