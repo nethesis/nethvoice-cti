@@ -47,9 +47,9 @@ export const Integrations = () => {
         sip_exten: webRTCExtension.id,
         sip_secret: webRTCExtension.secret,
         // @ts-ignore
-        janus_host: window.CONFIG.JANUS_HOST,
+        sip_host: window.CONFIG.SIP_HOST,
         // @ts-ignore
-        janus_port: window.CONFIG.JANUS_PORT,
+        sip_port: window.CONFIG.SIP_PORT,
       })
       setConfig(config)
       setCopied(false)

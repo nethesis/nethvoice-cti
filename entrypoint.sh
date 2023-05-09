@@ -50,23 +50,23 @@ else
 EOF
 fi
 
-if [ -z $JANUS_HOST ]; then
+if [ -z $SIP_HOST ]; then
   cat >> /app/public/config/config.production.js<<EOF
-  JANUS_HOST: '127.0.0.1',
+  SIP_HOST: '127.0.0.1',
 EOF
 else
   cat >> /app/public/config/config.production.js<<EOF
-  JANUS_HOST: '$JANUS_HOST',
+  SIP_HOST: '$SIP_HOST',
 EOF
 fi
 
-if [ -z $JANUS_PORT ]; then
+if [ -z $SIP_PORT ]; then
   cat >> /app/public/config/config.production.js<<EOF
-  JANUS_PORT: '5060',
+  SIP_PORT: '5060',
 EOF
 else
   cat >> /app/public/config/config.production.js<<EOF
-  JANUS_PORT: '$JANUS_PORT',
+  SIP_PORT: '$SIP_PORT',
 EOF
 fi
 

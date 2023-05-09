@@ -7,13 +7,13 @@ interface NewIslandConfigTypes {
   auth_token: string
   sip_exten: string
   sip_secret: string
-  janus_host: string
-  janus_port: string
+  sip_host: string
+  sip_port: string
 }
 
 export function newIslandConfig(obj: NewIslandConfigTypes): string {
   // Return the encoded string
   return btoa(
-    `${obj.hostname}:${obj.username}:${obj.auth_token}:${obj.sip_exten}:${obj.sip_secret}:${obj.janus_host}:${obj.janus_port}`,
+    `${obj.hostname}:${obj.username}:${obj.auth_token}:${obj.sip_exten}:${obj.sip_secret}:${obj.sip_host}:${obj.sip_port}`,
   )
 }
