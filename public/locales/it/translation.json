@@ -163,7 +163,10 @@
     "Do not receive any calls": "Non ricevere nessuna chiamata.",
     "Online": "Disponibile",
     "Call forward": "Inoltro",
-    "Enter phone number for call forward": "Inserisci il numero di telefono per l'inoltro di chiamata"
+    "Enter phone number for call forward": "Inserisci il numero di telefono per l'inoltro di chiamata",
+    "Presence": "",
+    "Open user menu": "",
+    "Open sidebar": ""
   },
   "OperatorDrawer": {
     "Book": "Prenota",
