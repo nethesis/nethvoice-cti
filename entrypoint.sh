@@ -54,15 +54,9 @@ cat >> /app/public/config/config.production.js<<EOF
   SIP_HOST: '${SIP_HOST:-127.0.0.1}',
 EOF
 
-if [ -z $SIP_PORT ]; then
-  cat >> /app/public/config/config.production.js<<EOF
-  SIP_PORT: '5060',
+cat >> /app/public/config/config.production.js<<EOF
+  SIP_PORT: '${SIP_PORT:-5060}',
 EOF
-else
-  cat >> /app/public/config/config.production.js<<EOF
-  SIP_PORT: '$SIP_PORT',
-EOF
-fi
 
 cat >> /app/public/config/config.production.js<<EOF
 }
