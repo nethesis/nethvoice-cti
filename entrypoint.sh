@@ -51,6 +51,14 @@ EOF
 fi
 
 cat >> /app/public/config/config.production.js<<EOF
+  SIP_HOST: '${SIP_HOST:-127.0.0.1}',
+EOF
+
+cat >> /app/public/config/config.production.js<<EOF
+  SIP_PORT: '${SIP_PORT:-5060}',
+EOF
+
+cat >> /app/public/config/config.production.js<<EOF
 }
 
 EOF

@@ -46,6 +46,10 @@ export const Integrations = () => {
         auth_token: data.token,
         sip_exten: webRTCExtension.id,
         sip_secret: webRTCExtension.secret,
+        // @ts-ignore
+        sip_host: window.CONFIG.SIP_HOST,
+        // @ts-ignore
+        sip_port: window.CONFIG.SIP_PORT,
       })
       setConfig(config)
       setCopied(false)
