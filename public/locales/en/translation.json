@@ -96,7 +96,10 @@
     "Recording": "Recording",
     "No calls": "No calls",
     "There are no calls in your history": "There are no calls in your history",
-    "Play": "Play"
+    "Play": "Play",
+    "From time": "From time",
+    "To time": "To time",
+    "Choose a date range..": "Choose a date range.."
   },
   "Operators": {
     "Operators": "Operators",
