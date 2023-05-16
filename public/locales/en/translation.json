@@ -367,7 +367,12 @@
     "Announcement details": "Announcement details",
     "Select audio file": "Select audio file",
     "All": "All",
-    "Configuration type": "Configuration type"
+    "Configuration type": "Configuration type",
+    "Select date": "Select date",
+    "Hour begin": "Hour begin",
+    "Hour end": "Hour end",
+    "Select date begin": "Select date begin",
+    "Select date end": "Select date end"
   },
   "SpeedDial": {
     "Create": "Create",

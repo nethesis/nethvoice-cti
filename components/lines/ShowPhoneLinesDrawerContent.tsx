@@ -24,7 +24,7 @@ import { TextInput, Button } from '../common'
 import { formatDateLoc, formatInTimeZoneLoc } from '../../lib/dateTime'
 import { setOffHour, getAnnouncements, reloadPhoneLines } from '../../lib/lines'
 import { format, parse } from 'date-fns'
-import { useEventListener } from '../../lib/hooks/useEventListener'
+import Datepicker from 'react-tailwindcss-datepicker'
 
 export interface ShowPhoneLinesDrawerContentProps extends ComponentPropsWithRef<'div'> {
   config: any
@@ -60,6 +60,27 @@ export const ShowPhoneLinesDrawerContent = forwardRef<
   const [dateBeginToShow, setDateBeginToShow] = useState('')
   const [dateBeginToShowNoHour, setDateBeginToShowNoHour] = useState('')
   const [dateEndToShow, setDateEndToShow] = useState('')
+  //Get value from date input
+  const hourBeginRef = useRef() as React.MutableRefObject<HTMLInputElement>
+  const hourEndRef = useRef() as React.MutableRefObject<HTMLInputElement>
+
+  const [dateBeginValue, setdateBeginValue]: any = useState({
+    startDate: null,
+    endDate: null,
+  })
+
+  const [dateBeginNoHourValue, setdateBeginNoHourValue]: any = useState({
+    startDate: null,
+    endDate: null,
+  })
+
+  const [dateEndValue, setdateEndValue]: any = useState({
+    startDate: null,
+    endDate: null,
+  })
+
+  const [hourBeginValue, setHourBeginValue]: any = useState('')
+  const [hourEndValue, setHourEndValue]: any = useState('')
 
   //set actual date without hours
   const actualDateToShow: any = formatDateLoc(new Date(), 'yyyy-MM-dd')
@@ -86,57 +107,70 @@ export const ShowPhoneLinesDrawerContent = forwardRef<
       const dateBeginObj = new Date(config.datebegin)
       const formattedBeginDate = format(dateBeginObj, "yyyy-MM-dd'T'HH:mm")
       const formattedBeginDateNoHour = format(dateBeginObj, 'yyyy-MM-dd')
+      const hourBegin = format(dateBeginObj, 'HH:mm')
+      setHourBeginValue(hourBegin)
 
       setDateBeginToShow(formattedBeginDate)
+      setdateBeginValue((prevState: any) => {
+        return {
+          ...prevState,
+          startDate: formattedBeginDate,
+          endDate: formattedBeginDate,
+        }
+      })
       setDateBeginToShowNoHour(formattedBeginDateNoHour)
+      setdateBeginNoHourValue((prevState: any) => {
+        return {
+          ...prevState,
+          startDate: formattedBeginDateNoHour,
+          endDate: formattedBeginDateNoHour,
+        }
+      })
     } else {
       //if datebegin doesn't exist set both dates to the current date
       setDateBeginToShow(actualDateToShowWithHour)
+      setdateBeginValue((prevState: any) => {
+        return {
+          ...prevState,
+          startDate: actualDateToShow,
+          endDate: actualDateToShow,
+        }
+      })
       setDateBeginToShowNoHour(actualDateToShow)
+      setdateBeginNoHourValue((prevState: any) => {
+        return {
+          ...prevState,
+          startDate: actualDateToShow,
+          endDate: actualDateToShow,
+        }
+      })
     }
     if (config.dateend) {
       const dateEndObj = new Date(config.dateend)
       const formattedEndDate = format(dateEndObj, "yyyy-MM-dd'T'HH:mm")
+      const hourEnd = format(dateEndObj, 'HH:mm')
+      setHourEndValue(hourEnd)
       setDateEndToShow(formattedEndDate)
+      setdateEndValue((prevState: any) => {
+        return {
+          ...prevState,
+          startDate: formattedEndDate,
+          endDate: formattedEndDate,
+        }
+      })
     } else {
       setDateEndToShow(formattedActualDateEndToShowWithHour)
+      setdateEndValue((prevState: any) => {
+        return {
+          ...prevState,
+          startDate: formattedActualDateEndToShowWithHour,
+          endDate: formattedActualDateEndToShowWithHour,
+        }
+      })
     }
 
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [])
-
-  const dateBeginRef = useRef() as React.MutableRefObject<HTMLInputElement>
-  const dateBeginNoHourRef = useRef() as React.MutableRefObject<HTMLInputElement>
-  const dateEndRef = useRef() as React.MutableRefObject<HTMLInputElement>
-
-  const changeDateBegin = () => {
-    //Get the date from the input
-
-    const dateBegin = dateBeginRef.current.value
-    if (dateBegin) {
-      setDateBeginToShow(dateBegin)
-    }
-  }
-
-  const changeDateBeginNoHours = () => {
-    //Get the date from the input and remove hours and minute
-    if (dateBeginNoHourRef) {
-      const dateBegin = dateBeginNoHourRef.current.value
-      if (dateBegin) {
-        const dateBeginNoHour = new Date(dateBegin)
-        const formattedBeginDateNoHour = format(dateBeginNoHour, 'yyyy-MM-dd')
-        setDateBeginToShowNoHour(formattedBeginDateNoHour)
-      }
-    }
-  }
-
-  const changeDateEnd = () => {
-    //Get the date from the input
-    const dateEnd = dateEndRef.current.value
-    if (dateEnd) {
-      setDateEndToShow(dateEnd)
-    }
-  }
 
   const [changeTypeDate, setChangeTypeDate] = useState('')
 
@@ -188,53 +222,211 @@ export const ShowPhoneLinesDrawerContent = forwardRef<
       dateEnd: dateEndConversion,
     }
   }
+  const changeDateBeginNoHours = (dateBeginNoHour: any) => {
+    if (dateBeginNoHour) {
+      const testBeginNoHour = new Date(dateBeginNoHour.startDate)
+
+      //convert the date from object to string
+      const formattedBeginDateNoHour = format(testBeginNoHour, 'yyyy-MM-dd')
+
+      setDateBeginToShowNoHour(formattedBeginDateNoHour)
+      //update date picker form
+      setdateBeginNoHourValue(dateBeginNoHour)
+    }
+  }
+
+  function changeHourBegin() {
+    //Get the date from the input
+    const hourBegin = hourBeginRef.current.value
+    setHourBeginValue(hourBegin)
+  }
+
+  function changeHourEnd() {
+    //Get the date from the input
+    const hourEnd = hourEndRef.current.value
+    setHourEndValue(hourEnd)
+  }
+
+  const changeDateBegin = (dateBegin: any) => {
+    // Check if dateBegin is not null and has valid startDate and endDate properties
+    if (dateBegin != null && dateBegin.startDate !== null && dateBegin.endDate !== null) {
+      let startDateWithHour
+      // Check if hourBeginValue is not null and not an empty string
+      if (hourBeginValue != null && hourBeginValue !== '') {
+        // If hourBeginValue is specified, append it to the startDate
+        startDateWithHour = dateBegin.startDate + 'T' + hourBeginValue
+      } else {
+        // If hourBeginValue is not specified, use '08:00' as the default hour
+        startDateWithHour = dateBegin.startDate + 'T08:00'
+      }
+      // Update the state with the startDate including the hour
+      setDateBeginToShow(startDateWithHour)
+      setdateBeginValue(dateBegin)
+    }
+  }
+
+  const changeDateEnd = (dateEnd: any) => {
+    // Check if dateEnd is not null and has valid startDate and endDate properties
+    if (dateEnd != null && dateEnd.startDate !== null && dateEnd.endDate !== null) {
+      let endDateWithHour
+      // Check if hourEndValue is not null and not an empty string
+      if (hourEndValue != null && hourEndValue !== '') {
+        // If hourEndValue is specified, append it to the endDate
+        endDateWithHour = dateEnd.endDate + 'T' + hourEndValue
+      } else {
+        // If hourEndValue is not specified, use '21:00' as the default hour
+        endDateWithHour = dateEnd.endDate + 'T21:00'
+      }
+      // Update the state with the endDate including the hour
+      setDateEndToShow(endDateWithHour)
+      setdateEndValue(dateEnd)
+    }
+  }
+
+  useEffect(() => {
+    // Check if dateBeginValue is not null
+    if (dateBeginValue !== null) {
+      // Check if the startDate property includes 'T', indicating it has an hour
+      if (dateBeginValue?.startDate?.includes('T')) {
+        // If it has an hour, create an updatedObject with startDate and endDate without the hour
+        const updatedObjectDateBegin = {
+          startDate: dateBeginValue.startDate.substring(0, 10),
+          endDate: dateBeginValue.endDate.substring(0, 10),
+        }
+        // Call changeDateBegin with the updatedObject
+        changeDateBegin(updatedObjectDateBegin)
+      } else {
+        // If it doesn't have an hour, call changeDateBegin with dateBeginValue as is
+        changeDateBegin(dateBeginValue)
+      }
+    }
+
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [hourBeginValue])
+
+  useEffect(() => {
+    // Check if dateEndValue is not null
+    if (dateEndValue !== null) {
+      // Check if the endDate property includes 'T', indicating it has an hour
+      if (dateEndValue?.endDate?.includes('T')) {
+        // If it has an hour, create an updatedObject with startDate and endDate without the hour
+        const updatedObjectDateEnd = {
+          startDate: dateEndValue.startDate.substring(0, 10),
+          endDate: dateEndValue.endDate.substring(0, 10),
+        }
+        // Call changeDateEnd with the updatedObject
+        changeDateEnd(updatedObjectDateEnd)
+      } else {
+        // If it doesn't have an hour, call changeDateEnd with dateEndValue as is
+        changeDateEnd(dateEndValue)
+      }
+    }
+
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [hourEndValue])
 
   function dateInputFunction() {
     return (
       <>
-        <div className='grid grid-cols-1 sm:grid-cols-2 gap-6 mt-5 items-center justify-between'>
+        <div className='mt-5 items-center justify-between'>
           <div>
-            <span className=''>
-              {selectedType === 'specifyDay' ? t('Lines.Begin') : t('Lines.Date')}
-            </span>
             {selectedType === 'specifyDay' ? (
-              <TextInput
-                type={'datetime-local'}
-                placeholder='Select date start'
-                className='mr-4 mt-2'
-                id='meeting-time'
-                name='meeting-time'
-                ref={dateBeginRef}
-                onChange={changeDateBegin}
-                value={dateBeginToShow}
-              />
+              <>
+                <div className='flex pb-4'>
+                  <div className='relative flex-1'>
+                    <label htmlFor='fromTime' className='text-gray-700 dark:text-gray-300 mt-2'>
+                      {t('Lines.Hour begin')}:
+                    </label>
+                    <input
+                      id='fromTime'
+                      type='time'
+                      ref={hourBeginRef}
+                      onChange={changeHourBegin}
+                      defaultValue={hourBeginValue}
+                      className='bg-white mt-1 w-full border-gray-300 dark:bg-gray-900 dark:border-gray-600 dark:disabled:bg-gray-900 dark:disabled:border-gray-700 dark:disabled:text-gray-400 dark:focus:border-primaryDark dark:focus:ring-primaryDark dark:placeholder:text-gray-500 dark:text-gray-100 disabled:bg-gray-50 disabled:border-gray-200 disabled:cursor-not-allowed disabled:text-gray-500 focus:border-primaryLight focus:ring-primaryLight placeholder:text-gray-500 rounded-md sm:text-sm text-gray-900'
+                    />
+                  </div>
+                  <div className='mx-4'></div>
+                  <div className='flex flex-col'>
+                    <label htmlFor='toTime' className='text-gray-700 dark:text-gray-300 mb-1'>
+                      {t('Lines.Select date begin')}:
+                    </label>
+                    <div className='relative'>
+                      <Datepicker
+                        value={dateBeginValue}
+                        onChange={changeDateBegin}
+                        primaryColor={'emerald'}
+                        showShortcuts={false}
+                        placeholder={'DD/MM/YYYY'}
+                        displayFormat={'DD/MM/YYYY'}
+                        useRange={false}
+                        asSingle={true}
+                        inputClassName='bg-white border-gray-300 dark:bg-gray-900 dark:border-gray-600 dark:disabled:bg-gray-900 dark:disabled:border-gray-700 dark:disabled:text-gray-400 dark:focus:border-primaryDark dark:focus:ring-primaryDark dark:placeholder:text-gray-400 dark:placeholder:text-gray-500 dark:text-gray-100 disabled:bg-gray-50 disabled:border-gray-200 disabled:cursor-not-allowed disabled:text-gray-500 focus:border-primaryLight focus:ring-primaryLight placeholder:text-gray-400 placeholder:text-gray-500 rounded-md sm:text-sm text-gray-900 w-full'
+                      />
+                    </div>
+                  </div>
+                </div>
+              </>
             ) : (
-              <TextInput
-                type={'date'}
-                placeholder='Select date start'
-                className=' mr-4 mt-2'
-                id='meeting-time'
-                name='meeting-time'
-                ref={dateBeginNoHourRef}
-                onChange={changeDateBeginNoHours}
-                value={dateBeginToShowNoHour}
-              />
+              <>
+                <div className='flex pb-4 flex-col'>
+                  <label htmlFor='toTime' className='text-gray-700 dark:text-gray-300 mb-1'>
+                    {t('Lines.Select date begin')}:
+                  </label>
+                  <div className='relative flex-grow'>
+                    <Datepicker
+                      value={dateBeginNoHourValue}
+                      onChange={changeDateBeginNoHours}
+                      primaryColor={'emerald'}
+                      showShortcuts={false}
+                      placeholder={'DD/MM/YYYY'}
+                      displayFormat={'DD/MM/YYYY'}
+                      useRange={false}
+                      asSingle={true}
+                      inputClassName='bg-white border-gray-300 dark:bg-gray-900 dark:border-gray-600 dark:disabled:bg-gray-900 dark:disabled:border-gray-700 dark:disabled:text-gray-400 dark:focus:border-primaryDark dark:focus:ring-primaryDark dark:placeholder:text-gray-400 dark:placeholder:text-gray-500 dark:text-gray-100 disabled:bg-gray-50 disabled:border-gray-200 disabled:cursor-not-allowed disabled:text-gray-500 focus:border-primaryLight focus:ring-primaryLight placeholder:text-gray-400 placeholder:text-gray-500 rounded-md sm:text-sm text-gray-900 w-full'
+                    />
+                  </div>
+                </div>
+              </>
             )}
           </div>
 
           <div>
-            {selectedType === 'specifyDay' && <span className=''>{t('Lines.End')}</span>}
             {selectedType === 'specifyDay' && (
-              <TextInput
-                type='datetime-local'
-                placeholder='Select date end'
-                className=' mt-2'
-                id='meeting-time'
-                name='meeting-time'
-                ref={dateEndRef}
-                onChange={changeDateEnd}
-                value={dateEndToShow}
-              />
+              <div className='flex pb-4'>
+                <div className='relative flex-1'>
+                  <label htmlFor='fromTime' className='text-gray-700 dark:text-gray-300 mt-2'>
+                    {t('Lines.Hour end')}:
+                  </label>
+                  <input
+                    id='fromTime'
+                    type='time'
+                    ref={hourEndRef}
+                    onChange={changeHourEnd}
+                    defaultValue={hourEndValue}
+                    className='bg-white mt-1 w-full border-gray-300 dark:bg-gray-900 dark:border-gray-600 dark:disabled:bg-gray-900 dark:disabled:border-gray-700 dark:disabled:text-gray-400 dark:focus:border-primaryDark dark:focus:ring-primaryDark dark:placeholder:text-gray-500 dark:text-gray-100 disabled:bg-gray-50 disabled:border-gray-200 disabled:cursor-not-allowed disabled:text-gray-500 focus:border-primaryLight focus:ring-primaryLight placeholder:text-gray-500 rounded-md sm:text-sm text-gray-900'
+                  />
+                </div>
+                <div className='mx-4'></div>
+                <div className='flex flex-col'>
+                  <label htmlFor='toTime' className='text-gray-700 dark:text-gray-300 mb-1'>
+                    {t('Lines.Select date end')}:
+                  </label>
+                  <div className='relative'>
+                    <Datepicker
+                      value={dateEndValue}
+                      onChange={changeDateEnd}
+                      primaryColor={'emerald'}
+                      showShortcuts={false}
+                      placeholder={'DD/MM/YYYY'}
+                      displayFormat={'DD/MM/YYYY'}
+                      useRange={false}
+                      asSingle={true}
+                      inputClassName='bg-white border-gray-300 dark:bg-gray-900 dark:border-gray-600 dark:disabled:bg-gray-900 dark:disabled:border-gray-700 dark:disabled:text-gray-400 dark:focus:border-primaryDark dark:focus:ring-primaryDark dark:placeholder:text-gray-400 dark:placeholder:text-gray-500 dark:text-gray-100 disabled:bg-gray-50 disabled:border-gray-200 disabled:cursor-not-allowed disabled:text-gray-500 focus:border-primaryLight focus:ring-primaryLight placeholder:text-gray-400 placeholder:text-gray-500 rounded-md sm:text-sm text-gray-900 w-full'
+                    />
+                  </div>
+                </div>
+              </div>
             )}
           </div>
         </div>
