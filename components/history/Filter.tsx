@@ -21,6 +21,8 @@ import {
 import { formatDateLoc } from '../../lib/dateTime'
 import { parse, subDays, startOfDay } from 'date-fns'
 import { useTranslation } from 'react-i18next'
+import Datepicker from 'react-tailwindcss-datepicker'
+import { useTheme } from '../../theme/Context'
 
 //Filter for the sort
 const sortFilter = {
@@ -100,9 +102,6 @@ export const Filter = forwardRef<HTMLButtonElement, FilterProps>(
     const { profile } = useSelector((state: RootState) => state.user)
     const [internalUsed, setInternalUsed] = useState(false)
 
-    const [dateBeginValue, setdateBeginValue] = useState('')
-    const [dateEndValue, setdateEndValue] = useState('')
-
     const [open, setOpen] = useState(false)
 
     const [filterText, setFilterText] = useState('')
@@ -118,6 +117,8 @@ export const Filter = forwardRef<HTMLButtonElement, FilterProps>(
 
     const [dateBeginShowed, setDateBeginShowed] = useState('')
     const [dateEndShowed, setDateEndShowed] = useState('')
+
+    const { timePicker: timePickerTheme, datePicker: datePickerTheme } = useTheme().theme
 
     //Sorting filter
     const [sortBy, setSortBy]: any = useState('time%20desc')
@@ -170,46 +171,64 @@ export const Filter = forwardRef<HTMLButtonElement, FilterProps>(
       setLabelForDateFrom(dateFromWithHour)
     }
 
-    //Set the date when the date filter is changed
-    const changeDateBegin = () => {
+    function changeHourBegin() {
       //Get the date from the input
-      const dateBegin = dateBeginRef.current.value
-      //Convert the date to the format for the visualizations
-      let convertDateBegin = parse(dateBegin, "yyyy-MM-dd'T'HH:mm", new Date())
-      //Convert from object to string and format the date
-      let dateBeginWithHour: any = formatDateLoc(convertDateBegin, 'PPp')
-      //Convert the the date get from the input to the format without hours
-      let noHour: any = formatDateLoc(convertDateBegin, 'yyyy-MM-dd')
-      // update history (notify parent component) with the date without hours for the api calls
-      updateDateBeginFilter(noHour)
-      // update the begin date that will be showed in the calendar filter
-      setdateBeginValue(dateBegin)
-      // update the begin date that will be showed in the filter
-      setDateBeginShowed(dateBeginWithHour)
-      setClearSelected(false)
+      const hourBegin = hourBeginRef.current.value
+      setHourBeginValue(hourBegin)
     }
 
-    //Set the date of end search
-    const changeDateEnd = () => {
-      const dateEnd = dateEndRef.current.value
-      //Convert the date to the format for the visualizations
-      let convertDateBegin = parse(dateEnd, "yyyy-MM-dd'T'HH:mm", new Date())
-      //Convert from object to string and format the date
-      let dateEndWithHour: any = formatDateLoc(convertDateBegin, 'PPp')
-      //Convert the the date get from the input to the format without hours
-      let noEndHour: any = formatDateLoc(convertDateBegin, 'yyyy-MM-dd')
-      // update history (notify parent component) with the date without hours for the api calls
-      updateDateEndFilter(noEndHour)
-      // update the begin date that will be showed in the calendar filter
-      setdateEndValue(dateEnd)
-      // update the begin date that will be showed in the filter
-      setDateEndShowed(dateEndWithHour)
-      setClearSelected(false)
+    function changeHourEnd() {
+      //Get the date from the input
+      const hourEnd = hourEndRef.current.value
+      setHourEndValue(hourEnd)
+    }
+
+    const [dateValue, setdateValue]: any = useState({
+      startDate: null,
+      endDate: null,
+    })
+    const [hourBeginValue, setHourBeginValue]: any = useState('')
+    const [hourEndValue, setHourEndValue]: any = useState('')
+
+    //Set the date when the date filter is changed
+    const changeDateBegin = (date: any) => {
+      if (date != null && date.startDate !== null && date.endDate !== null) {
+        // Start date
+        let startDateWithHour
+        if (hourBeginValue != null && hourBeginValue !== '') {
+          startDateWithHour = date.startDate + 'T' + hourBeginValue
+        } else {
+          startDateWithHour = date.startDate + 'T00:00'
+        }
+
+        // Convert the date to the format for the visualizations
+        let convertDateBegin = parse(startDateWithHour, "yyyy-MM-dd'T'HH:mm", new Date())
+        let dateBeginWithHour: any = formatDateLoc(convertDateBegin, 'PPp')
+        let noHour: any = formatDateLoc(convertDateBegin, 'yyyy-MM-dd')
+        updateDateBeginFilter(noHour)
+
+        // End date
+        let endDateWithHour
+        if (hourEndValue != null && hourEndValue !== '') {
+          endDateWithHour = date.endDate + 'T' + hourEndValue
+        } else {
+          endDateWithHour = date.endDate + 'T23:59'
+        }
+        let convertDateEnd = parse(endDateWithHour, "yyyy-MM-dd'T'HH:mm", new Date())
+        let dateEndWithHour: any = formatDateLoc(convertDateEnd, 'PPp')
+        let noEndHour: any = formatDateLoc(convertDateEnd, 'yyyy-MM-dd')
+        updateDateEndFilter(noEndHour)
+
+        setDateEndShowed(dateEndWithHour)
+        setDateBeginShowed(dateBeginWithHour)
+        setdateValue(date)
+        setClearSelected(false)
+      }
     }
 
     //Get value from date input
-    const dateBeginRef = useRef() as React.MutableRefObject<HTMLInputElement>
-    const dateEndRef = useRef() as React.MutableRefObject<HTMLInputElement>
+    const hourBeginRef = useRef() as React.MutableRefObject<HTMLInputElement>
+    const hourEndRef = useRef() as React.MutableRefObject<HTMLInputElement>
 
     function changeFilterText(event: any) {
       const newFilterText = event.target.value
@@ -254,6 +273,7 @@ export const Filter = forwardRef<HTMLButtonElement, FilterProps>(
         setCallDirection('all')
         updateCallDirectionFilter('all')
       }
+      // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [callType, callDirection])
 
     //Set the label for the selected call direction
@@ -278,6 +298,7 @@ export const Filter = forwardRef<HTMLButtonElement, FilterProps>(
       updateCallTypeFilter(filterValues.callType)
       updateCallDirectionFilter(filterValues.callDirection)
       updateSortFilter(filterValues.sortBy)
+      // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [])
 
     const [clearSelected, setClearSelected] = useState(false)
@@ -293,8 +314,14 @@ export const Filter = forwardRef<HTMLButtonElement, FilterProps>(
       setFilterText('')
       setCallType(DEFAULT_CALL_TYPE_FILTER)
       setCallDirection(DEFAULT_CALL_DIRECTION_FILTER)
-      setdateBeginValue(actualDateLabelFrom)
-      setdateEndValue(actualDateLabelTo)
+      // Update the dateValue state
+      setdateValue((prevState: any) => {
+        return {
+          ...prevState,
+          startDate: actualDateLabelFrom,
+          endDate: actualDateLabelTo,
+        }
+      })
       setSortBy(DEFAULT_SORT_BY)
       savePreference('historyCallTypeFilter', DEFAULT_CALL_TYPE_FILTER, auth.username)
       savePreference('historyCallTypeDirection', DEFAULT_CALL_DIRECTION_FILTER, auth.username)
@@ -515,35 +542,51 @@ export const Filter = forwardRef<HTMLButtonElement, FilterProps>(
                               <fieldset>
                                 <legend className='sr-only'>{date.name}</legend>
                               </fieldset>
-                              <div className='flex flex-col'>
-                                <div className='space-y-4'>
-                                  <TextInput
-                                    type='datetime-local'
-                                    placeholder='Select date start'
-                                    className='max-w-sm'
-                                    id='meeting-time'
-                                    name='meeting-time'
-                                    ref={dateBeginRef}
-                                    onChange={changeDateBegin}
-                                    defaultValue={dateBeginValue}
+                              <div className='flex pb-4'>
+                                <div className='relative flex-1'>
+                                  <label
+                                    htmlFor='startTime'
+                                    className='text-gray-700 dark:text-gray-300 mt-2'
+                                  >
+                                    {t('History.Start time')}:
+                                  </label>
+                                  <input
+                                    id='startTime'
+                                    type='time'
+                                    ref={hourBeginRef}
+                                    onChange={changeHourBegin}
+                                    defaultValue={hourBeginValue}
+                                    className={classNames(timePickerTheme.base)}
                                   />
                                 </div>
-                                <span className='mx-32 py-2 font-medium text-gray-700 dark:text-gray-200 space-y-4'>
-                                  To
-                                </span>
-                                <div className='space-y-4'>
-                                  <TextInput
-                                    type='datetime-local'
-                                    placeholder='Select date end'
-                                    className='max-w-sm'
-                                    id='meeting-time'
-                                    name='meeting-time'
-                                    ref={dateEndRef}
-                                    onChange={changeDateEnd}
-                                    defaultValue={dateEndValue}
+                                <div className='mx-4'></div>
+                                <div className='relative flex-1'>
+                                  <label
+                                    htmlFor='endTime'
+                                    className='text-gray-700 dark:text-gray-300 mb-2'
+                                  >
+                                    {t('History.End time')}:
+                                  </label>
+                                  <input
+                                    id='endTime'
+                                    type='time'
+                                    ref={hourEndRef}
+                                    onChange={changeHourEnd}
+                                    defaultValue={hourEndValue}
+                                    className={classNames(timePickerTheme.base)}
                                   />
                                 </div>
                               </div>
+
+                              <Datepicker
+                                value={dateValue}
+                                onChange={changeDateBegin}
+                                primaryColor={'emerald'}
+                                showShortcuts={true}
+                                separator={t('History.to') || ''}
+                                placeholder={t('History.Choose a date range') || ''}
+                                inputClassName={classNames(datePickerTheme.base)}
+                              />
                             </Disclosure.Panel>
                           </>
                         )}
@@ -778,33 +821,52 @@ export const Filter = forwardRef<HTMLButtonElement, FilterProps>(
                         leaveTo='transform opacity-0 scale-95'
                       >
                         <Popover.Panel className='absolute right-0 z-10 mt-2 origin-top-right rounded-md bg-white ring-black dark:bg-gray-900 dark:ring-gray-600  p-4 shadow-2xl ring-1 ring-opacity-5'>
-                          <div className='flex items-center'>
-                            <div className='relative '>
-                              <TextInput
-                                type='datetime-local'
-                                placeholder='Select date start'
-                                className='max-w-sm'
-                                id='meeting-time'
-                                name='meeting-time'
-                                ref={dateBeginRef}
-                                onChange={changeDateBegin}
-                                defaultValue={dateBeginValue}
+                          <div className='flex pb-4'>
+                            <div className='relative flex-1'>
+                              <label
+                                htmlFor='startTime'
+                                className='text-gray-700 dark:text-gray-300 mt-2'
+                              >
+                                {t('History.Start time')}:
+                              </label>
+                              <input
+                                id='startTime'
+                                type='time'
+                                ref={hourBeginRef}
+                                onChange={changeHourBegin}
+                                defaultValue={hourBeginValue}
+                                className={classNames(timePickerTheme.base)}
                               />
                             </div>
-                            <span className='mx-4 text-gray-500'>to</span>
-                            <div className='relative'>
-                              <TextInput
-                                type='datetime-local'
-                                placeholder='Select date end'
-                                className='max-w-sm'
-                                id='meeting-time'
-                                name='meeting-time'
-                                ref={dateEndRef}
-                                onChange={changeDateEnd}
-                                defaultValue={dateEndValue}
+                            <div className='mx-4'></div>
+                            <div className='relative flex-1'>
+                              <label
+                                htmlFor='endTime'
+                                className='text-gray-700 dark:text-gray-300 mb-2'
+                              >
+                                {t('History.End time')}:
+                              </label>
+                              <input
+                                id='endTime'
+                                type='time'
+                                ref={hourEndRef}
+                                onChange={changeHourEnd}
+                                defaultValue={hourEndValue}
+                                className={classNames(timePickerTheme.base)}
                               />
                             </div>
                           </div>
+
+                          <Datepicker
+                            value={dateValue}
+                            onChange={changeDateBegin}
+                            primaryColor={'emerald'}
+                            showShortcuts={true}
+                            separator={t('History.to') || ''}
+                            placeholder={t('History.Choose a date range') || ''}
+                            displayFormat={'DD/MM/YYYY'}
+                            inputClassName={classNames(datePickerTheme.base)}
+                          />
                         </Popover.Panel>
                       </Transition>
                     </Popover>
@@ -913,7 +975,7 @@ export const Filter = forwardRef<HTMLButtonElement, FilterProps>(
                         <span className='text-gray-600 dark:text-gray-300'>
                           {t('History.From')}:&nbsp;
                         </span>
-                        {!dateBeginValue || clearSelected ? labelForDateFrom : dateBeginShowed}
+                        {!dateValue.startDate || clearSelected ? labelForDateFrom : dateBeginShowed}
                       </span>
                     </div>
                   </div>
@@ -924,7 +986,7 @@ export const Filter = forwardRef<HTMLButtonElement, FilterProps>(
                         <span className='text-gray-600 dark:text-gray-300'>
                           {t('History.To')}:&nbsp;
                         </span>
-                        {!dateEndValue || clearSelected ? labelForDateTo : dateEndShowed}
+                        {!dateValue.endDate || clearSelected ? labelForDateTo : dateEndShowed}
                       </span>
                     </div>
                   </div>

@@ -29,7 +29,8 @@
     "Lines": "Lines",
     "or": "or",
     "Delete": "Delete",
-    "Edit": "Edit"
+    "Edit": "Edit",
+    "DD/MM/YYYY": "DD/MM/YYYY"
   },
   "Login": {
     "User": "User",
@@ -72,6 +73,7 @@
     "Oldest": "Oldest",
     "From": "From",
     "To": "To",
+    "to": "to",
     "You": "You",
     "All": "All",
     "Incoming": "Incoming",
@@ -96,7 +98,10 @@
     "Recording": "Recording",
     "No calls": "No calls",
     "There are no calls in your history": "There are no calls in your history",
-    "Play": "Play"
+    "Play": "Play",
+    "Start time": "Start time",
+    "End time": "End time",
+    "Choose a date range": "Choose a date range"
   },
   "Operators": {
     "Operators": "Operators",
@@ -125,7 +130,7 @@
     "External": "External",
     "Access the complete tool for consulting reports": "Access the complete tool for consulting reports.",
     "Open PBX Report": "Open PBX Report",
-    "Go to manage lines": "Go to manage lines"
+    "Go to Phone lines and announcements": "Go to Phone lines and announcements"
   },
   "Settings": {
     "Theme": "Theme",
@@ -364,7 +369,12 @@
     "Announcement details": "Announcement details",
     "Select audio file": "Select audio file",
     "All": "All",
-    "Configuration type": "Configuration type"
+    "Configuration type": "Configuration type",
+    "Select date": "Select date",
+    "Start time": "Start time",
+    "End time": "End time",
+    "Start date": "Start date",
+    "End date": "End date"
   },
   "SpeedDial": {
     "Create": "Create",

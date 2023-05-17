@@ -68,7 +68,7 @@ const Applications: NextPage = () => {
                       <Link href={'/lines'}>
                         <a className='flex justify-center items-center'>
                           <span className='font-semibold text-gray-900 dark:text-gray-100'>
-                            {t('Applications.Go to manage lines')}
+                            {t('Applications.Go to Phone lines and announcements')}
                           </span>
                           <FontAwesomeIcon
                             icon={faArrowRight}
