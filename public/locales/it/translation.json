@@ -125,7 +125,7 @@
     "External": "Esterne",
     "Access the complete tool for consulting reports": "Accedi al tool completo per la consultazione dei report.",
     "Open PBX Report": "Apri PBX Report",
-    "Go to manage lines": "Vai a gestione linee"
+    "Go to Phone lines and announcements": "Vai a Linee telefoniche e annunci"
   },
   "Settings": {
     "Theme": "Tema",
@@ -301,7 +301,7 @@
     "You are member of no queues": "Non si è membri di nessuna coda",
     "Connected calls": "Chiamate collegate",
     "Logged in": "Connesso",
-    "Login to all queues": "Accessso a tutte le code",
+    "Login to all queues": "Accesso a tutte le code",
     "Logout from all queues": "Disconnessione da tutte le code",
     "Pause on all queues": "Pausa su tutte le code",
     "End pause on all queues": "Termina la pausa su tutte le code",
