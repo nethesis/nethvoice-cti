@@ -29,7 +29,8 @@
     "Lines": "Lines",
     "or": "or",
     "Delete": "Delete",
-    "Edit": "Edit"
+    "Edit": "Edit",
+    "DD/MM/YYYY": "DD/MM/YYYY"
   },
   "Login": {
     "User": "User",
@@ -72,6 +73,7 @@
     "Oldest": "Oldest",
     "From": "From",
     "To": "To",
+    "to": "to",
     "You": "You",
     "All": "All",
     "Incoming": "Incoming",
@@ -97,9 +99,9 @@
     "No calls": "No calls",
     "There are no calls in your history": "There are no calls in your history",
     "Play": "Play",
-    "From time": "From time",
-    "To time": "To time",
-    "Choose a date range..": "Choose a date range.."
+    "Start time": "Start time",
+    "End time": "End time",
+    "Choose a date range": "Choose a date range"
   },
   "Operators": {
     "Operators": "Operators",
@@ -369,10 +371,10 @@
     "All": "All",
     "Configuration type": "Configuration type",
     "Select date": "Select date",
-    "Hour begin": "Hour begin",
-    "Hour end": "Hour end",
-    "Select date begin": "Select date begin",
-    "Select date end": "Select date end"
+    "Start time": "Start time",
+    "End time": "End time",
+    "Start date": "Start date",
+    "End date": "End date"
   },
   "SpeedDial": {
     "Create": "Create",

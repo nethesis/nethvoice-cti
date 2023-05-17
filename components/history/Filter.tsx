@@ -22,6 +22,7 @@ import { formatDateLoc } from '../../lib/dateTime'
 import { parse, subDays, startOfDay } from 'date-fns'
 import { useTranslation } from 'react-i18next'
 import Datepicker from 'react-tailwindcss-datepicker'
+import { useTheme } from '../../theme/Context'
 
 //Filter for the sort
 const sortFilter = {
@@ -116,6 +117,8 @@ export const Filter = forwardRef<HTMLButtonElement, FilterProps>(
 
     const [dateBeginShowed, setDateBeginShowed] = useState('')
     const [dateEndShowed, setDateEndShowed] = useState('')
+
+    const { timePicker: theme, datePicker: themeDate } = useTheme().theme
 
     //Sorting filter
     const [sortBy, setSortBy]: any = useState('time%20desc')
@@ -542,35 +545,35 @@ export const Filter = forwardRef<HTMLButtonElement, FilterProps>(
                               <div className='flex pb-4'>
                                 <div className='relative flex-1'>
                                   <label
-                                    htmlFor='fromTime'
+                                    htmlFor='startTime'
                                     className='text-gray-700 dark:text-gray-300 mt-2'
                                   >
-                                    {t('History.From time')}:
+                                    {t('History.Start time')}:
                                   </label>
                                   <input
-                                    id='fromTime'
+                                    id='startTime'
                                     type='time'
                                     ref={hourBeginRef}
                                     onChange={changeHourBegin}
                                     defaultValue={hourBeginValue}
-                                    className='w-full bg-white mt-1 border-gray-300 dark:bg-gray-900 dark:border-gray-600 dark:disabled:bg-gray-900 dark:disabled:border-gray-700 dark:disabled:text-gray-400 dark:focus:border-primaryDark dark:focus:ring-primaryDark dark:placeholder:text-gray-500 dark:text-gray-100 disabled:bg-gray-50 disabled:border-gray-200 disabled:cursor-not-allowed disabled:text-gray-500 focus:border-primaryLight focus:ring-primaryLight placeholder:text-gray-500 rounded-md sm:text-sm text-gray-900'
+                                    className={classNames(theme.base)}
                                   />
                                 </div>
                                 <div className='mx-4'></div>
                                 <div className='relative flex-1'>
                                   <label
-                                    htmlFor='toTime'
+                                    htmlFor='endTime'
                                     className='text-gray-700 dark:text-gray-300 mb-2'
                                   >
-                                    {t('History.To time')}:
+                                    {t('History.End time')}:
                                   </label>
                                   <input
-                                    id='toTime'
+                                    id='endTime'
                                     type='time'
                                     ref={hourEndRef}
                                     onChange={changeHourEnd}
                                     defaultValue={hourEndValue}
-                                    className='w-full bg-white mt-1 border-gray-300 dark:bg-gray-900 dark:border-gray-600 dark:disabled:bg-gray-900 dark:disabled:border-gray-700 dark:disabled:text-gray-400 dark:focus:border-primaryDark dark:focus:ring-primaryDark dark:placeholder:text-gray-500 dark:text-gray-100 disabled:bg-gray-50 disabled:border-gray-200 disabled:cursor-not-allowed disabled:text-gray-500 focus:border-primaryLight focus:ring-primaryLight placeholder:text-gray-500 rounded-md sm:text-sm text-gray-900'
+                                    className={classNames(theme.base)}
                                   />
                                 </div>
                               </div>
@@ -580,9 +583,9 @@ export const Filter = forwardRef<HTMLButtonElement, FilterProps>(
                                 onChange={changeDateBegin}
                                 primaryColor={'emerald'}
                                 showShortcuts={true}
-                                separator={t('History.To') || ''}
-                                placeholder={t('History.Choose a date range..') || ''}
-                                inputClassName='max-w-sm bg-white border-gray-300 dark:bg-gray-900 dark:border-gray-600 dark:disabled:bg-gray-900 dark:disabled:border-gray-700 dark:disabled:text-gray-400 dark:focus:border-primaryDark dark:focus:ring-primaryDark dark:placeholder:text-gray-400 dark:placeholder:text-gray-500 dark:text-gray-100 disabled:bg-gray-50 disabled:border-gray-200 disabled:cursor-not-allowed disabled:text-gray-500 focus:border-primaryLight focus:ring-primaryLight placeholder:text-gray-400 placeholder:text-gray-500 rounded-md sm:text-sm text-gray-900 w-full'
+                                separator={t('History.to') || ''}
+                                placeholder={t('History.Choose a date range') || ''}
+                                inputClassName={classNames(themeDate.base)}
                               />
                             </Disclosure.Panel>
                           </>
@@ -821,35 +824,35 @@ export const Filter = forwardRef<HTMLButtonElement, FilterProps>(
                           <div className='flex pb-4'>
                             <div className='relative flex-1'>
                               <label
-                                htmlFor='fromTime'
+                                htmlFor='startTime'
                                 className='text-gray-700 dark:text-gray-300 mt-2'
                               >
-                                {t('History.From time')}:
+                                {t('History.Start time')}:
                               </label>
                               <input
-                                id='fromTime'
+                                id='startTime'
                                 type='time'
                                 ref={hourBeginRef}
                                 onChange={changeHourBegin}
                                 defaultValue={hourBeginValue}
-                                className='w-full bg-white mt-1 border-gray-300 dark:bg-gray-900 dark:border-gray-600 dark:disabled:bg-gray-900 dark:disabled:border-gray-700 dark:disabled:text-gray-400 dark:focus:border-primaryDark dark:focus:ring-primaryDark dark:placeholder:text-gray-500 dark:text-gray-100 disabled:bg-gray-50 disabled:border-gray-200 disabled:cursor-not-allowed disabled:text-gray-500 focus:border-primaryLight focus:ring-primaryLight placeholder:text-gray-500 rounded-md sm:text-sm text-gray-900'
+                                className={classNames(theme.base)}
                               />
                             </div>
                             <div className='mx-4'></div>
                             <div className='relative flex-1'>
                               <label
-                                htmlFor='toTime'
+                                htmlFor='endTime'
                                 className='text-gray-700 dark:text-gray-300 mb-2'
                               >
-                                {t('History.To time')}:
+                                {t('History.End time')}:
                               </label>
                               <input
-                                id='toTime'
+                                id='endTime'
                                 type='time'
                                 ref={hourEndRef}
                                 onChange={changeHourEnd}
                                 defaultValue={hourEndValue}
-                                className='w-full bg-white mt-1 border-gray-300 dark:bg-gray-900 dark:border-gray-600 dark:disabled:bg-gray-900 dark:disabled:border-gray-700 dark:disabled:text-gray-400 dark:focus:border-primaryDark dark:focus:ring-primaryDark dark:placeholder:text-gray-500 dark:text-gray-100 disabled:bg-gray-50 disabled:border-gray-200 disabled:cursor-not-allowed disabled:text-gray-500 focus:border-primaryLight focus:ring-primaryLight placeholder:text-gray-500 rounded-md sm:text-sm text-gray-900'
+                                className={classNames(theme.base)}
                               />
                             </div>
                           </div>
@@ -860,9 +863,9 @@ export const Filter = forwardRef<HTMLButtonElement, FilterProps>(
                             primaryColor={'emerald'}
                             showShortcuts={true}
                             separator={t('History.To') || ''}
-                            placeholder={t('History.Choose a date range..') || ''}
+                            placeholder={t('History.Choose a date range') || ''}
                             displayFormat={'DD/MM/YYYY'}
-                            inputClassName='max-w-sm bg-white border-gray-300 dark:bg-gray-900 dark:border-gray-600 dark:disabled:bg-gray-900 dark:disabled:border-gray-700 dark:disabled:text-gray-400 dark:focus:border-primaryDark dark:focus:ring-primaryDark dark:placeholder:text-gray-400 dark:placeholder:text-gray-500 dark:text-gray-100 disabled:bg-gray-50 disabled:border-gray-200 disabled:cursor-not-allowed disabled:text-gray-500 focus:border-primaryLight focus:ring-primaryLight placeholder:text-gray-400 placeholder:text-gray-500 rounded-md sm:text-sm text-gray-900 w-full'
+                            inputClassName={classNames(themeDate.base)}
                           />
                         </Popover.Panel>
                       </Transition>

@@ -25,6 +25,7 @@ import { formatDateLoc, formatInTimeZoneLoc } from '../../lib/dateTime'
 import { setOffHour, getAnnouncements, reloadPhoneLines } from '../../lib/lines'
 import { format, parse } from 'date-fns'
 import Datepicker from 'react-tailwindcss-datepicker'
+import { useTheme } from '../../theme/Context'
 
 export interface ShowPhoneLinesDrawerContentProps extends ComponentPropsWithRef<'div'> {
   config: any
@@ -42,6 +43,7 @@ export const ShowPhoneLinesDrawerContent = forwardRef<
   const [selectedConfigurationTypology, setSelectedConfigurationTypology] = useState('')
   const [selectedAnnouncementInfo, setSelectedAnnouncementInfo] = useState<any>(null)
   const [firstRender, setFirstRender]: any = useState(true)
+  const { timePicker: theme, datePicker: themeDate } = useTheme().theme
 
   function changeAnnouncementSelect(event: any) {
     const listAnnouncementValue = event.target.value
@@ -61,8 +63,8 @@ export const ShowPhoneLinesDrawerContent = forwardRef<
   const [dateBeginToShowNoHour, setDateBeginToShowNoHour] = useState('')
   const [dateEndToShow, setDateEndToShow] = useState('')
   //Get value from date input
-  const hourBeginRef = useRef() as React.MutableRefObject<HTMLInputElement>
-  const hourEndRef = useRef() as React.MutableRefObject<HTMLInputElement>
+  const startTimeRef = useRef() as React.MutableRefObject<HTMLInputElement>
+  const endTimeRef = useRef() as React.MutableRefObject<HTMLInputElement>
 
   const [dateBeginValue, setdateBeginValue]: any = useState({
     startDate: null,
@@ -79,8 +81,8 @@ export const ShowPhoneLinesDrawerContent = forwardRef<
     endDate: null,
   })
 
-  const [hourBeginValue, setHourBeginValue]: any = useState('')
-  const [hourEndValue, setHourEndValue]: any = useState('')
+  const [startTimeValue, setStartTimeValue]: any = useState('')
+  const [endTimeValue, setEndTimeValue]: any = useState('')
 
   //set actual date without hours
   const actualDateToShow: any = formatDateLoc(new Date(), 'yyyy-MM-dd')
@@ -107,8 +109,8 @@ export const ShowPhoneLinesDrawerContent = forwardRef<
       const dateBeginObj = new Date(config.datebegin)
       const formattedBeginDate = format(dateBeginObj, "yyyy-MM-dd'T'HH:mm")
       const formattedBeginDateNoHour = format(dateBeginObj, 'yyyy-MM-dd')
-      const hourBegin = format(dateBeginObj, 'HH:mm')
-      setHourBeginValue(hourBegin)
+      const startTime = format(dateBeginObj, 'HH:mm')
+      setStartTimeValue(startTime)
 
       setDateBeginToShow(formattedBeginDate)
       setdateBeginValue((prevState: any) => {
@@ -148,8 +150,8 @@ export const ShowPhoneLinesDrawerContent = forwardRef<
     if (config.dateend) {
       const dateEndObj = new Date(config.dateend)
       const formattedEndDate = format(dateEndObj, "yyyy-MM-dd'T'HH:mm")
-      const hourEnd = format(dateEndObj, 'HH:mm')
-      setHourEndValue(hourEnd)
+      const endDate = format(dateEndObj, 'HH:mm')
+      setEndTimeValue(endDate)
       setDateEndToShow(formattedEndDate)
       setdateEndValue((prevState: any) => {
         return {
@@ -222,64 +224,64 @@ export const ShowPhoneLinesDrawerContent = forwardRef<
       dateEnd: dateEndConversion,
     }
   }
-  const changeDateBeginNoHours = (dateBeginNoHour: any) => {
-    if (dateBeginNoHour) {
-      const testBeginNoHour = new Date(dateBeginNoHour.startDate)
+  const changeStartTimeNoHours = (startTimeNoHoursObject: any) => {
+    if (startTimeNoHoursObject) {
+      const startTimeNoHours = new Date(startTimeNoHoursObject.startDate)
 
       //convert the date from object to string
-      const formattedBeginDateNoHour = format(testBeginNoHour, 'yyyy-MM-dd')
+      const formattedBeginDateNoHour = format(startTimeNoHours, 'yyyy-MM-dd')
 
       setDateBeginToShowNoHour(formattedBeginDateNoHour)
       //update date picker form
-      setdateBeginNoHourValue(dateBeginNoHour)
+      setdateBeginNoHourValue(startTimeNoHoursObject)
     }
   }
 
-  function changeHourBegin() {
+  function changeStartTime() {
     //Get the date from the input
-    const hourBegin = hourBeginRef.current.value
-    setHourBeginValue(hourBegin)
+    const startTime = startTimeRef.current.value
+    setStartTimeValue(startTime)
   }
 
-  function changeHourEnd() {
+  function changeEndTime() {
     //Get the date from the input
-    const hourEnd = hourEndRef.current.value
-    setHourEndValue(hourEnd)
+    const endDate = endTimeRef.current.value
+    setEndTimeValue(endDate)
   }
 
-  const changeDateBegin = (dateBegin: any) => {
-    // Check if dateBegin is not null and has valid startDate and endDate properties
-    if (dateBegin != null && dateBegin.startDate !== null && dateBegin.endDate !== null) {
+  const changeDateBegin = (dateStartObject: any) => {
+    // Check if dateStartObject is not null and has valid startDate properties
+    if (dateStartObject?.startDate !== null) {
       let startDateWithHour
-      // Check if hourBeginValue is not null and not an empty string
-      if (hourBeginValue != null && hourBeginValue !== '') {
-        // If hourBeginValue is specified, append it to the startDate
-        startDateWithHour = dateBegin.startDate + 'T' + hourBeginValue
+      // Check if startTimeValue is not null and not an empty string
+      if (startTimeValue != null && startTimeValue !== '') {
+        // If startTimeValue is specified, append it to the startDate
+        startDateWithHour = dateStartObject.startDate + 'T' + startTimeValue
       } else {
-        // If hourBeginValue is not specified, use '08:00' as the default hour
-        startDateWithHour = dateBegin.startDate + 'T08:00'
+        // If startTimeValue is not specified, use '08:00' as the default hour
+        startDateWithHour = dateStartObject.startDate + 'T08:00'
       }
       // Update the state with the startDate including the hour
       setDateBeginToShow(startDateWithHour)
-      setdateBeginValue(dateBegin)
+      setdateBeginValue(dateStartObject)
     }
   }
 
-  const changeDateEnd = (dateEnd: any) => {
-    // Check if dateEnd is not null and has valid startDate and endDate properties
-    if (dateEnd != null && dateEnd.startDate !== null && dateEnd.endDate !== null) {
+  const changeDateEnd = (dateEndObject: any) => {
+    // Check if dateEndObject is not null and has valid endDate properties
+    if (dateEndObject?.endDate !== null) {
       let endDateWithHour
-      // Check if hourEndValue is not null and not an empty string
-      if (hourEndValue != null && hourEndValue !== '') {
-        // If hourEndValue is specified, append it to the endDate
-        endDateWithHour = dateEnd.endDate + 'T' + hourEndValue
+      // Check if endTimeValue is not null and not an empty string
+      if (endTimeValue != null && endTimeValue !== '') {
+        // If endTimeValue is specified, append it to the endDate
+        endDateWithHour = dateEndObject.endDate + 'T' + endTimeValue
       } else {
-        // If hourEndValue is not specified, use '21:00' as the default hour
-        endDateWithHour = dateEnd.endDate + 'T21:00'
+        // If endTimeValue is not specified, use '21:00' as the default hour
+        endDateWithHour = dateEndObject.endDate + 'T21:00'
       }
       // Update the state with the endDate including the hour
       setDateEndToShow(endDateWithHour)
-      setdateEndValue(dateEnd)
+      setdateEndValue(dateEndObject)
     }
   }
 
@@ -302,7 +304,7 @@ export const ShowPhoneLinesDrawerContent = forwardRef<
     }
 
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [hourBeginValue])
+  }, [startTimeValue])
 
   useEffect(() => {
     // Check if dateEndValue is not null
@@ -323,7 +325,7 @@ export const ShowPhoneLinesDrawerContent = forwardRef<
     }
 
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [hourEndValue])
+  }, [endTimeValue])
 
   function dateInputFunction() {
     return (
@@ -335,21 +337,21 @@ export const ShowPhoneLinesDrawerContent = forwardRef<
                 <div className='flex pb-4'>
                   <div className='relative flex-1'>
                     <label htmlFor='fromTime' className='text-gray-700 dark:text-gray-300 mt-2'>
-                      {t('Lines.Hour begin')}:
+                      {t('Lines.Start time')}:
                     </label>
                     <input
                       id='fromTime'
                       type='time'
-                      ref={hourBeginRef}
-                      onChange={changeHourBegin}
-                      defaultValue={hourBeginValue}
-                      className='bg-white mt-1 w-full border-gray-300 dark:bg-gray-900 dark:border-gray-600 dark:disabled:bg-gray-900 dark:disabled:border-gray-700 dark:disabled:text-gray-400 dark:focus:border-primaryDark dark:focus:ring-primaryDark dark:placeholder:text-gray-500 dark:text-gray-100 disabled:bg-gray-50 disabled:border-gray-200 disabled:cursor-not-allowed disabled:text-gray-500 focus:border-primaryLight focus:ring-primaryLight placeholder:text-gray-500 rounded-md sm:text-sm text-gray-900'
+                      ref={startTimeRef}
+                      onChange={changeStartTime}
+                      defaultValue={startTimeValue}
+                      className={classNames(theme.base)}
                     />
                   </div>
                   <div className='mx-4'></div>
                   <div className='flex flex-col'>
                     <label htmlFor='toTime' className='text-gray-700 dark:text-gray-300 mb-1'>
-                      {t('Lines.Select date begin')}:
+                      {t('Lines.Start date')}:
                     </label>
                     <div className='relative'>
                       <Datepicker
@@ -357,11 +359,11 @@ export const ShowPhoneLinesDrawerContent = forwardRef<
                         onChange={changeDateBegin}
                         primaryColor={'emerald'}
                         showShortcuts={false}
-                        placeholder={'DD/MM/YYYY'}
+                        placeholder={t('Common.DD/MM/YYYY') || ''}
                         displayFormat={'DD/MM/YYYY'}
                         useRange={false}
                         asSingle={true}
-                        inputClassName='bg-white border-gray-300 dark:bg-gray-900 dark:border-gray-600 dark:disabled:bg-gray-900 dark:disabled:border-gray-700 dark:disabled:text-gray-400 dark:focus:border-primaryDark dark:focus:ring-primaryDark dark:placeholder:text-gray-400 dark:placeholder:text-gray-500 dark:text-gray-100 disabled:bg-gray-50 disabled:border-gray-200 disabled:cursor-not-allowed disabled:text-gray-500 focus:border-primaryLight focus:ring-primaryLight placeholder:text-gray-400 placeholder:text-gray-500 rounded-md sm:text-sm text-gray-900 w-full'
+                        inputClassName={classNames(themeDate.base)}
                       />
                     </div>
                   </div>
@@ -371,19 +373,19 @@ export const ShowPhoneLinesDrawerContent = forwardRef<
               <>
                 <div className='flex pb-4 flex-col'>
                   <label htmlFor='toTime' className='text-gray-700 dark:text-gray-300 mb-1'>
-                    {t('Lines.Select date begin')}:
+                    {t('Lines.Start date')}:
                   </label>
                   <div className='relative flex-grow'>
                     <Datepicker
                       value={dateBeginNoHourValue}
-                      onChange={changeDateBeginNoHours}
+                      onChange={changeStartTimeNoHours}
                       primaryColor={'emerald'}
                       showShortcuts={false}
-                      placeholder={'DD/MM/YYYY'}
+                      placeholder={t('Common.DD/MM/YYYY') || ''}
                       displayFormat={'DD/MM/YYYY'}
                       useRange={false}
                       asSingle={true}
-                      inputClassName='bg-white border-gray-300 dark:bg-gray-900 dark:border-gray-600 dark:disabled:bg-gray-900 dark:disabled:border-gray-700 dark:disabled:text-gray-400 dark:focus:border-primaryDark dark:focus:ring-primaryDark dark:placeholder:text-gray-400 dark:placeholder:text-gray-500 dark:text-gray-100 disabled:bg-gray-50 disabled:border-gray-200 disabled:cursor-not-allowed disabled:text-gray-500 focus:border-primaryLight focus:ring-primaryLight placeholder:text-gray-400 placeholder:text-gray-500 rounded-md sm:text-sm text-gray-900 w-full'
+                      inputClassName={classNames(themeDate.base)}
                     />
                   </div>
                 </div>
@@ -396,21 +398,21 @@ export const ShowPhoneLinesDrawerContent = forwardRef<
               <div className='flex pb-4'>
                 <div className='relative flex-1'>
                   <label htmlFor='fromTime' className='text-gray-700 dark:text-gray-300 mt-2'>
-                    {t('Lines.Hour end')}:
+                    {t('Lines.End time')}:
                   </label>
                   <input
                     id='fromTime'
                     type='time'
-                    ref={hourEndRef}
-                    onChange={changeHourEnd}
-                    defaultValue={hourEndValue}
-                    className='bg-white mt-1 w-full border-gray-300 dark:bg-gray-900 dark:border-gray-600 dark:disabled:bg-gray-900 dark:disabled:border-gray-700 dark:disabled:text-gray-400 dark:focus:border-primaryDark dark:focus:ring-primaryDark dark:placeholder:text-gray-500 dark:text-gray-100 disabled:bg-gray-50 disabled:border-gray-200 disabled:cursor-not-allowed disabled:text-gray-500 focus:border-primaryLight focus:ring-primaryLight placeholder:text-gray-500 rounded-md sm:text-sm text-gray-900'
+                    ref={endTimeRef}
+                    onChange={changeEndTime}
+                    defaultValue={endTimeValue}
+                    className={classNames(theme.base)}
                   />
                 </div>
                 <div className='mx-4'></div>
                 <div className='flex flex-col'>
                   <label htmlFor='toTime' className='text-gray-700 dark:text-gray-300 mb-1'>
-                    {t('Lines.Select date end')}:
+                    {t('Lines.End date')}:
                   </label>
                   <div className='relative'>
                     <Datepicker
@@ -418,11 +420,11 @@ export const ShowPhoneLinesDrawerContent = forwardRef<
                       onChange={changeDateEnd}
                       primaryColor={'emerald'}
                       showShortcuts={false}
-                      placeholder={'DD/MM/YYYY'}
+                      placeholder={t('Common.DD/MM/YYYY') || ''}
                       displayFormat={'DD/MM/YYYY'}
                       useRange={false}
                       asSingle={true}
-                      inputClassName='bg-white border-gray-300 dark:bg-gray-900 dark:border-gray-600 dark:disabled:bg-gray-900 dark:disabled:border-gray-700 dark:disabled:text-gray-400 dark:focus:border-primaryDark dark:focus:ring-primaryDark dark:placeholder:text-gray-400 dark:placeholder:text-gray-500 dark:text-gray-100 disabled:bg-gray-50 disabled:border-gray-200 disabled:cursor-not-allowed disabled:text-gray-500 focus:border-primaryLight focus:ring-primaryLight placeholder:text-gray-400 placeholder:text-gray-500 rounded-md sm:text-sm text-gray-900 w-full'
+                      inputClassName={classNames(themeDate.base)}
                     />
                   </div>
                 </div>
