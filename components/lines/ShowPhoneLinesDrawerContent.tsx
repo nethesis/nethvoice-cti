@@ -43,7 +43,7 @@ export const ShowPhoneLinesDrawerContent = forwardRef<
   const [selectedConfigurationTypology, setSelectedConfigurationTypology] = useState('')
   const [selectedAnnouncementInfo, setSelectedAnnouncementInfo] = useState<any>(null)
   const [firstRender, setFirstRender]: any = useState(true)
-  const { timePicker: theme, datePicker: themeDate } = useTheme().theme
+  const { timePicker: timePickerTheme, datePicker: datePickerTheme } = useTheme().theme
 
   function changeAnnouncementSelect(event: any) {
     const listAnnouncementValue = event.target.value
@@ -66,7 +66,7 @@ export const ShowPhoneLinesDrawerContent = forwardRef<
   const startTimeRef = useRef() as React.MutableRefObject<HTMLInputElement>
   const endTimeRef = useRef() as React.MutableRefObject<HTMLInputElement>
 
-  const [dateBeginValue, setdateBeginValue]: any = useState({
+  const [dateBeginValue, setDateBeginValue]: any = useState({
     startDate: null,
     endDate: null,
   })
@@ -113,7 +113,7 @@ export const ShowPhoneLinesDrawerContent = forwardRef<
       setStartTimeValue(startTime)
 
       setDateBeginToShow(formattedBeginDate)
-      setdateBeginValue((prevState: any) => {
+      setDateBeginValue((prevState: any) => {
         return {
           ...prevState,
           startDate: formattedBeginDate,
@@ -131,7 +131,7 @@ export const ShowPhoneLinesDrawerContent = forwardRef<
     } else {
       //if datebegin doesn't exist set both dates to the current date
       setDateBeginToShow(actualDateToShowWithHour)
-      setdateBeginValue((prevState: any) => {
+      setDateBeginValue((prevState: any) => {
         return {
           ...prevState,
           startDate: actualDateToShow,
@@ -263,7 +263,7 @@ export const ShowPhoneLinesDrawerContent = forwardRef<
       }
       // Update the state with the startDate including the hour
       setDateBeginToShow(startDateWithHour)
-      setdateBeginValue(dateStartObject)
+      setDateBeginValue(dateStartObject)
     }
   }
 
@@ -345,7 +345,7 @@ export const ShowPhoneLinesDrawerContent = forwardRef<
                       ref={startTimeRef}
                       onChange={changeStartTime}
                       defaultValue={startTimeValue}
-                      className={classNames(theme.base)}
+                      className={classNames(timePickerTheme.base)}
                     />
                   </div>
                   <div className='mx-4'></div>
@@ -363,7 +363,7 @@ export const ShowPhoneLinesDrawerContent = forwardRef<
                         displayFormat={'DD/MM/YYYY'}
                         useRange={false}
                         asSingle={true}
-                        inputClassName={classNames(themeDate.base)}
+                        inputClassName={classNames(datePickerTheme.base)}
                       />
                     </div>
                   </div>
@@ -385,7 +385,7 @@ export const ShowPhoneLinesDrawerContent = forwardRef<
                       displayFormat={'DD/MM/YYYY'}
                       useRange={false}
                       asSingle={true}
-                      inputClassName={classNames(themeDate.base)}
+                      inputClassName={classNames(datePickerTheme.base)}
                     />
                   </div>
                 </div>
@@ -406,7 +406,7 @@ export const ShowPhoneLinesDrawerContent = forwardRef<
                     ref={endTimeRef}
                     onChange={changeEndTime}
                     defaultValue={endTimeValue}
-                    className={classNames(theme.base)}
+                    className={classNames(timePickerTheme.base)}
                   />
                 </div>
                 <div className='mx-4'></div>
@@ -424,7 +424,7 @@ export const ShowPhoneLinesDrawerContent = forwardRef<
                       displayFormat={'DD/MM/YYYY'}
                       useRange={false}
                       asSingle={true}
-                      inputClassName={classNames(themeDate.base)}
+                      inputClassName={classNames(datePickerTheme.base)}
                     />
                   </div>
                 </div>

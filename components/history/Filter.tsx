@@ -118,7 +118,7 @@ export const Filter = forwardRef<HTMLButtonElement, FilterProps>(
     const [dateBeginShowed, setDateBeginShowed] = useState('')
     const [dateEndShowed, setDateEndShowed] = useState('')
 
-    const { timePicker: theme, datePicker: themeDate } = useTheme().theme
+    const { timePicker: timePickerTheme, datePicker: datePickerTheme } = useTheme().theme
 
     //Sorting filter
     const [sortBy, setSortBy]: any = useState('time%20desc')
@@ -556,7 +556,7 @@ export const Filter = forwardRef<HTMLButtonElement, FilterProps>(
                                     ref={hourBeginRef}
                                     onChange={changeHourBegin}
                                     defaultValue={hourBeginValue}
-                                    className={classNames(theme.base)}
+                                    className={classNames(timePickerTheme.base)}
                                   />
                                 </div>
                                 <div className='mx-4'></div>
@@ -573,7 +573,7 @@ export const Filter = forwardRef<HTMLButtonElement, FilterProps>(
                                     ref={hourEndRef}
                                     onChange={changeHourEnd}
                                     defaultValue={hourEndValue}
-                                    className={classNames(theme.base)}
+                                    className={classNames(timePickerTheme.base)}
                                   />
                                 </div>
                               </div>
@@ -585,7 +585,7 @@ export const Filter = forwardRef<HTMLButtonElement, FilterProps>(
                                 showShortcuts={true}
                                 separator={t('History.to') || ''}
                                 placeholder={t('History.Choose a date range') || ''}
-                                inputClassName={classNames(themeDate.base)}
+                                inputClassName={classNames(datePickerTheme.base)}
                               />
                             </Disclosure.Panel>
                           </>
@@ -835,7 +835,7 @@ export const Filter = forwardRef<HTMLButtonElement, FilterProps>(
                                 ref={hourBeginRef}
                                 onChange={changeHourBegin}
                                 defaultValue={hourBeginValue}
-                                className={classNames(theme.base)}
+                                className={classNames(timePickerTheme.base)}
                               />
                             </div>
                             <div className='mx-4'></div>
@@ -852,7 +852,7 @@ export const Filter = forwardRef<HTMLButtonElement, FilterProps>(
                                 ref={hourEndRef}
                                 onChange={changeHourEnd}
                                 defaultValue={hourEndValue}
-                                className={classNames(theme.base)}
+                                className={classNames(timePickerTheme.base)}
                               />
                             </div>
                           </div>
@@ -862,10 +862,10 @@ export const Filter = forwardRef<HTMLButtonElement, FilterProps>(
                             onChange={changeDateBegin}
                             primaryColor={'emerald'}
                             showShortcuts={true}
-                            separator={t('History.To') || ''}
+                            separator={t('History.to') || ''}
                             placeholder={t('History.Choose a date range') || ''}
                             displayFormat={'DD/MM/YYYY'}
-                            inputClassName={classNames(themeDate.base)}
+                            inputClassName={classNames(datePickerTheme.base)}
                           />
                         </Popover.Panel>
                       </Transition>
