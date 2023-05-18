@@ -426,6 +426,12 @@
     "Answered calls": "Answered calls",
     "Lost calls": "Lost calls",
     "Invalid calls": "Invalid calls",
-    "Waiting calls": "Waiting calls"
+    "Waiting calls": "Waiting calls",
+    "Hourly distribution of incoming calls": "Hourly distribution of incoming calls",
+    "Hourly distribution of call results": "Hourly distribution of call results",
+    "Hourly distribution of calls answered": "Hourly distribution of calls answered",
+    "Hourly distribution of not answered calls": "Hourly distribution of not answered calls",
+    "Operators statistics": "Operators statistics",
+    "Queues statistics": "Queues statistics"
   }
 }
