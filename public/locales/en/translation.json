@@ -412,5 +412,20 @@
   "NavBars": {
     "Speed dials": "Speed dials",
     "Last calls": "Last calls"
+  },
+  "QueueManager": {
+    "Dashboard": "Dashboard",
+    "Queues management": "Queues management",
+    "Not managed calls": "Not managed calls",
+    "Live": "Live",
+    "Summary": "Summary",
+    "Monitor": "Monitor",
+    "Queue manager": "Queue manager",
+    "Alarms": "Alarms",
+    "Total calls": "Total calls",
+    "Answered calls": "Answered calls",
+    "Lost calls": "Lost calls",
+    "Invalid calls": "Invalid calls",
+    "Waiting calls": "Waiting calls"
   }
 }

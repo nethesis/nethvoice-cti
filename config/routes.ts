@@ -8,6 +8,7 @@ import {
   faGear as faGearSolid,
   faGrid2 as faGridSolid,
   faUsers as faUsersSolid,
+  faChartLine as faChartLineSolid,
 } from '@nethesis/nethesis-solid-svg-icons'
 
 import {
@@ -17,6 +18,7 @@ import {
   faGear as faGearLight,
   faGrid2 as faGridLight,
   faUsers as faUsersLight,
+  faChartLine as faChartLineLight,
 } from '@nethesis/nethesis-light-svg-icons'
 
 import { IconDefinition } from '@fortawesome/fontawesome-common-types'
@@ -50,6 +52,13 @@ export const navItems: NavItemsProps[] = [
     href: '/history',
     icon: faClockRotateLeftLight,
     iconActive: faClockRotateLeftSolid,
+    current: false,
+  },
+  {
+    name: 'QueueManager',
+    href: '/queueManager',
+    icon: faChartLineLight,
+    iconActive: faChartLineSolid,
     current: false,
   },
   {
