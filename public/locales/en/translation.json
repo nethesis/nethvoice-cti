@@ -30,7 +30,8 @@
     "or": "or",
     "Delete": "Delete",
     "Edit": "Edit",
-    "DD/MM/YYYY": "DD/MM/YYYY"
+    "DD/MM/YYYY": "DD/MM/YYYY",
+    "Queuemanager": "Queue manager"
   },
   "Login": {
     "User": "User",
@@ -432,6 +433,20 @@
     "Hourly distribution of calls answered": "Hourly distribution of calls answered",
     "Hourly distribution of not answered calls": "Hourly distribution of not answered calls",
     "Operators statistics": "Operators statistics",
-    "Queues statistics": "Queues statistics"
+    "Queues statistics": "Queues statistics",
+    "Select queue": "Select queue",
+    "Queue Dashboard": "Queue Dashboard",
+    "Online operators": "Online operators",
+    "On break operators": "On break operators",
+    "Offline operators": "Offline operators",
+    "Free operators": "Free operators",
+    "Busy operators (in queue)": "Busy operators (in queue)",
+    "Busy operators (out queue)": "Busy operators (out queue)",
+    "Calls duration": "Calls duration",
+    "Calls": "Calls",
+    "Details": "Details",
+    "Customers to manage": "Customers to manage",
+    "Connected calls": "Connected calls",
+    "Queue operators": "Queue operators"
   }
 }

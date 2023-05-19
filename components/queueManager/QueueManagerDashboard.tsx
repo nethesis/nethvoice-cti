@@ -302,7 +302,7 @@ export const QueueManagerDashboard: FC<QueueManagerDashboardProps> = ({
       </div>
 
       {/* Queues statistics section */}
-      <div className='py-2 mt- relative'>
+      <div className='py-2 relative'>
         <div className='flex items-center space-x-1'>
           <div className='flex-grow'>
             <h2 className='text-md font-semibold ml-2'>{t('QueueManager.Queues statistics')}</h2>
