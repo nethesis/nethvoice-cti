@@ -8,6 +8,7 @@ import classNames from 'classnames'
 import { StatisticsView } from '../components/queues'
 import { QueueManagerDashboard } from '../components/queueManager/QueueManagerDashboard'
 import { QueueManagement } from '../components/queueManager/QueueManagement'
+import { NotManagedCalls } from '../components/queueManager/NotManagedCalls'
 import { useSelector } from 'react-redux'
 import { RootState, store } from '../store'
 
@@ -93,7 +94,7 @@ const QueueManager: NextPage = () => {
             ) : currentTab === 'queueManagement' ? (
               <QueueManagement />
             ) : currentTab === 'notManagedCalls' ? (
-              <QueueManagement />
+              <NotManagedCalls />
             ) : currentTab === 'live' ? (
               <StatisticsView />
             ) : currentTab === 'summary' ? (

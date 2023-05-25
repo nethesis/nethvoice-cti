@@ -3,3 +3,5 @@
 
 export * from './QueueManagerDashboard'
 export * from './QueueManagement'
+export * from './NotManagedCalls'
+export * from './NotManagedCallsFilter'
