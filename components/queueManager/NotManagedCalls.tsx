@@ -13,7 +13,7 @@ import {
   openShowQueueCallDrawer,
   PAGE_SIZE,
   retrieveAndFilterQueueCalls,
-} from '../../lib/queuesLib'
+} from '../../lib/queueManager'
 import { faChevronRight, faChevronLeft, faPhone } from '@nethesis/nethesis-solid-svg-icons'
 import classNames from 'classnames'
 import { exactDistanceToNowLoc, formatDateLoc, getCallTimeToDisplay } from '../../lib/dateTime'
