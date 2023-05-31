@@ -6,7 +6,6 @@ import classNames from 'classnames'
 import { Button, Dropdown, SideDrawerCloseIcon } from '../common'
 import { useEffect } from 'react'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
-import { faPhoneArrowDown, faPhoneArrowUp } from '@nethesis/nethesis-solid-svg-icons'
 import {
   faEarListen,
   faTicket,
@@ -15,6 +14,7 @@ import {
   faCircle,
   faEllipsisVertical,
   faHandPointUp,
+  faArrowLeft
 } from '@fortawesome/free-solid-svg-icons'
 import { useSelector } from 'react-redux'
 import { RootState } from '../../store'
@@ -121,8 +121,8 @@ export const ShowOperatorDrawerContent = forwardRef<
                       {config.conversations[0].direction == 'out' && (
                         <div className='flex items-center text-sm'>
                           <FontAwesomeIcon
-                            icon={faPhoneArrowUp}
-                            className='mr-2 h-5 w-3.5 text-green-600 dark:text-green-500'
+                            icon={faArrowLeft}
+                            className='mr-2 h-5 w-3.5 rotate-[135deg] text-green-600 dark:text-green-500'
                             aria-hidden='true'
                           />
                           <span className='truncate'> {t('OperatorDrawer.Outgoing')}</span>
@@ -131,8 +131,8 @@ export const ShowOperatorDrawerContent = forwardRef<
                       {config.conversations[0].direction == 'in' && (
                         <div className='flex items-center text-sm'>
                           <FontAwesomeIcon
-                            icon={faPhoneArrowDown}
-                            className='mr-2 h-5 w-3.5 text-green-600 dark:text-green-500'
+                            icon={faArrowLeft}
+                            className='mr-2 h-5 w-3.5 -rotate-45 text-green-600 dark:text-green-500'
                             aria-hidden='true'
                           />
                           <span className='truncate'>{t('OperatorDrawer.Incoming')}</span>

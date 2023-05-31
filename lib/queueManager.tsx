@@ -2,12 +2,8 @@
 // SPDX-License-Identifier: AGPL-3.0-or-later
 
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
-import {
-  faPhoneArrowDown,
-  faPhoneArrowUp,
-  faPhoneMissed,
-  faPhoneXmark,
-} from '@nethesis/nethesis-solid-svg-icons'
+import { faPhoneMissed } from '@nethesis/nethesis-solid-svg-icons'
+import { faXmark, faArrowLeft } from '@fortawesome/free-solid-svg-icons'
 import axios from 'axios'
 import { cloneDeep } from 'lodash'
 import { store } from '../store'
@@ -231,8 +227,8 @@ export const getCallIcon = (call: any) => {
         // positive outcome
         return (
           <FontAwesomeIcon
-            icon={faPhoneArrowDown}
-            className='mr-2 h-5 w-3.5 text-green-600 dark:text-green-400'
+            icon={faArrowLeft}
+            className='mr-2 h-5 w-3.5 -rotate-45 text-green-600 dark:text-green-400'
             aria-hidden='true'
           />
         )
@@ -256,8 +252,8 @@ export const getCallIcon = (call: any) => {
         // positive outcome
         return (
           <FontAwesomeIcon
-            icon={faPhoneArrowUp}
-            className='mr-2 h-5 w-3.5 text-green-600 dark:text-green-400'
+            icon={faArrowLeft}
+            className='mr-2 h-5 w-3.5 rotate-[135deg] text-green-600 dark:text-green-400'
             aria-hidden='true'
           />
         )
@@ -265,7 +261,7 @@ export const getCallIcon = (call: any) => {
         // negative outcome
         return (
           <FontAwesomeIcon
-            icon={faPhoneXmark}
+            icon={faXmark}
             className='mr-2 h-5 w-4 text-red-400 dark:text-red-500'
             aria-hidden='true'
           />

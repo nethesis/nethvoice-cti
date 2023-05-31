@@ -7,6 +7,7 @@ import { Button } from '../common'
 import { useSelector } from 'react-redux'
 import { RootState, store } from '../../store'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
+
 import {
   faChevronDown,
   faChevronUp,
@@ -17,24 +18,25 @@ import {
   faUserXmark,
   faHeadset,
   faPause,
-  faArrowDownLeftAndArrowUpRightToCenter,
-} from '@nethesis/nethesis-solid-svg-icons'
+  faDownLeftAndUpRightToCenter,
+} from '@fortawesome/free-solid-svg-icons'
+
 import { Listbox, Transition } from '@headlessui/react'
 
 export interface QueueManagementProps extends ComponentProps<'div'> {}
 
 const people = [
-    { id: 1, name: 'Wade Cooper' },
-    { id: 2, name: 'Arlene Mccoy' },
-    { id: 3, name: 'Devon Webb' },
-    { id: 4, name: 'Tom Cook' },
-    { id: 5, name: 'Tanya Fox' },
-    { id: 6, name: 'Hellen Schmidt' },
-    { id: 7, name: 'Caroline Schultz' },
-    { id: 8, name: 'Mason Heaney' },
-    { id: 9, name: 'Claudie Smitham' },
-    { id: 10, name: 'Emil Schaefer' },
-  ]
+  { id: 1, name: 'Wade Cooper' },
+  { id: 2, name: 'Arlene Mccoy' },
+  { id: 3, name: 'Devon Webb' },
+  { id: 4, name: 'Tom Cook' },
+  { id: 5, name: 'Tanya Fox' },
+  { id: 6, name: 'Hellen Schmidt' },
+  { id: 7, name: 'Caroline Schultz' },
+  { id: 8, name: 'Mason Heaney' },
+  { id: 9, name: 'Claudie Smitham' },
+  { id: 10, name: 'Emil Schaefer' },
+]
 
 function classNames(...classes: any) {
   return classes.filter(Boolean).join(' ')
@@ -400,7 +402,7 @@ export const QueueManagement: FC<QueueManagementProps> = ({ className }): JSX.El
             <div className='flex items-center mt-6'>
               <div className='flex items-center'>
                 <FontAwesomeIcon
-                  icon={faArrowDownLeftAndArrowUpRightToCenter}
+                  icon={faDownLeftAndUpRightToCenter}
                   className='h-4 w-4 mr-2 py-2 cursor-pointer flex items-center'
                   aria-hidden='true'
                 />

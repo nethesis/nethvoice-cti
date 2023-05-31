@@ -21,12 +21,6 @@ import {
   unpauseQueue,
 } from '../../lib/queuesLib'
 import {
-  faCircleXmark,
-  faUserClock,
-  faUserCheck,
-  faUserXmark,
-} from '@nethesis/nethesis-solid-svg-icons'
-import {
   faMugSaucer,
   faThumbTack,
   faCircleNotch,
@@ -38,7 +32,11 @@ import {
   faFilter,
   faChevronDown,
   faDownLeftAndUpRightToCenter,
-  faCircleExclamation
+  faCircleExclamation,
+  faCircleXmark,
+  faUserClock,
+  faUserCheck,
+  faUserXmark,
 } from '@fortawesome/free-solid-svg-icons'
 import { faStar as faStarLight } from '@nethesis/nethesis-light-svg-icons'
 import { getOperatorByPhoneNumber, openShowOperatorDrawer } from '../../lib/operators'
