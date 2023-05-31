@@ -6,7 +6,7 @@ import { useTranslation } from 'react-i18next'
 import { retrieveQueueStats } from '../../lib/queuesLib'
 import classNames from 'classnames'
 import { formatDateLoc, formatDurationLoc } from '../../lib/dateTime'
-import { faDownload, faPhone, faTimer, faUser } from '@nethesis/nethesis-solid-svg-icons'
+import { faStopwatch, faDownload, faPhone, faUser } from '@fortawesome/free-solid-svg-icons'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { Button, InlineNotification } from '../common'
 import { LoggedStatus } from './LoggedStatus'
@@ -216,7 +216,7 @@ export const StatisticsView: FC<StatisticsViewProps> = ({ className }): JSX.Elem
                     <div className='px-5 py-4'>
                       <h3 className='truncate text-base leading-6 font-medium'>
                         <FontAwesomeIcon
-                          icon={faTimer}
+                          icon={faStopwatch}
                           className='mx-auto h-4 w-4 mr-2'
                           aria-hidden='true'
                         />

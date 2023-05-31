@@ -6,17 +6,16 @@ import classNames from 'classnames'
 import { Button, Dropdown, SideDrawerCloseIcon } from '../common'
 import { useEffect } from 'react'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
+import { faPhoneArrowDown, faPhoneArrowUp } from '@nethesis/nethesis-solid-svg-icons'
 import {
+  faEarListen,
+  faTicket,
+  faPhoneSlash,
+  faPhone,
   faCircle,
   faEllipsisVertical,
   faHandPointUp,
-  faPhone,
-  faPhoneSlash,
-  faTicket,
-  faPhoneArrowDown,
-  faPhoneArrowUp,
-  faEar,
-} from '@nethesis/nethesis-solid-svg-icons'
+} from '@fortawesome/free-solid-svg-icons'
 import { useSelector } from 'react-redux'
 import { RootState } from '../../store'
 import { CallDuration } from './CallDuration'
@@ -45,7 +44,7 @@ export const ShowOperatorDrawerContent = forwardRef<
     <>
       <Dropdown.Item icon={faTicket}>{t('OperatorDrawer.Book')}</Dropdown.Item>
       <Dropdown.Item icon={faPhoneSlash}> {t('OperatorDrawer.Hangup')}</Dropdown.Item>
-      <Dropdown.Item icon={faEar}> {t('OperatorDrawer.Listen')}</Dropdown.Item>
+      <Dropdown.Item icon={faEarListen}> {t('OperatorDrawer.Listen')}</Dropdown.Item>
       <Dropdown.Item icon={faHandPointUp}> {t('OperatorDrawer.Intrude')}</Dropdown.Item>
       <Dropdown.Item icon={faCircle}> {t('OperatorDrawer.Record')}</Dropdown.Item>
     </>

@@ -8,6 +8,7 @@ import {
   faBorderAll,
   IconDefinition,
   faDatabase,
+  faUsers,
 } from '@fortawesome/free-solid-svg-icons'
 import classNames from 'classnames'
 import { useSelector } from 'react-redux'
@@ -16,7 +17,6 @@ import { Integrations, ClearCache } from '../components/settings'
 import { useEffect, useState } from 'react'
 import { v4 as uuidv4 } from 'uuid'
 import { useTranslation } from 'react-i18next'
-import { faUsers } from '@nethesis/nethesis-solid-svg-icons'
 import { Queues } from '../components/settings/Queues'
 import { useRouter } from 'next/router'
 import { Theme } from '../components/settings/Theme'

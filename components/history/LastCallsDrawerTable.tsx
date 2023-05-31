@@ -5,14 +5,12 @@ import { ComponentPropsWithRef, forwardRef, useEffect, useState, FC } from 'reac
 import { searchDrawerHistoryUser, searchDrawerHistorySwitchboard } from '../../lib/history'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import {
-  faBuilding,
-  faArrowRight,
-  faPhone,
   faPhoneMissed,
   faPhoneArrowDown,
   faPhoneArrowUp,
   faPhoneXmark,
 } from '@nethesis/nethesis-solid-svg-icons'
+import { faBuilding, faArrowRight, faPhone } from '@fortawesome/free-solid-svg-icons'
 import { formatDateLoc, getCallTimeToDisplay } from '../../lib/dateTime'
 import { useSelector } from 'react-redux'
 import { RootState } from '../../store'

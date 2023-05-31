@@ -11,7 +11,7 @@ import { useSelector } from 'react-redux'
 import { RootState, store } from '../store'
 import { isEmpty } from 'lodash'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
-import { faUsers } from '@nethesis/nethesis-solid-svg-icons'
+import { faUsers } from '@fortawesome/free-solid-svg-icons'
 
 const Queues: NextPage = () => {
   const { t } = useTranslation()

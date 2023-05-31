@@ -11,17 +11,19 @@ import { useSelector } from 'react-redux'
 import { debounce } from 'lodash'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import {
+  faPhoneMissed,
+  faPhoneArrowDown,
+  faPhoneArrowUp,
+  faPhoneXmark,
+} from '@nethesis/nethesis-solid-svg-icons'
+import {
   faBuilding,
   faPlay,
   faArrowRight,
   faChevronRight,
   faChevronLeft,
-  faPhoneMissed,
-  faPhoneArrowDown,
-  faPhoneArrowUp,
-  faPhoneXmark,
   faPhone,
-} from '@nethesis/nethesis-solid-svg-icons'
+} from '@fortawesome/free-solid-svg-icons'
 import { formatDateLoc, getCallTimeToDisplay } from '../lib/dateTime'
 import { subDays, startOfDay } from 'date-fns'
 import { useTranslation } from 'react-i18next'
