@@ -12,12 +12,9 @@ import {
   faXmark,
   faPlus,
   faChevronDown,
-  faMicrophone,
+  faFileAudio,
   faRecordVinyl,
-  faFileUpload,
-  faFileMusic,
-} from '@nethesis/nethesis-solid-svg-icons'
-
+} from '@fortawesome/free-solid-svg-icons'
 import { useSelector } from 'react-redux'
 import { RootState } from '../../store'
 import { useTranslation } from 'react-i18next'
@@ -307,11 +304,17 @@ export const AnnouncementFilter = forwardRef<HTMLButtonElement, AnnouncementFilt
                   items={
                     <>
                       <Dropdown.Item onClick={recordingAnnouncement}>
-                        <FontAwesomeIcon icon={faRecordVinyl} className='mr-2 h-4 w-4 text-gray-500' />
+                        <FontAwesomeIcon
+                          icon={faRecordVinyl}
+                          className='mr-2 h-4 w-4 text-gray-500'
+                        />
                         {t('Lines.Record announcement')}
                       </Dropdown.Item>
                       <Dropdown.Item onClick={openCreateAnnouncementDrawer}>
-                        <FontAwesomeIcon icon={faFileMusic} className='mr-2 h-4 w-4 text-gray-500' />
+                        <FontAwesomeIcon
+                          icon={faFileAudio}
+                          className='mr-2 h-4 w-4 text-gray-500'
+                        />
                         {t('Lines.Upload announcement')}
                       </Dropdown.Item>
                     </>

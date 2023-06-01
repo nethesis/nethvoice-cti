@@ -11,7 +11,7 @@ import {
   faPhone,
   faSuitcase,
   faUser,
-} from '@nethesis/nethesis-solid-svg-icons'
+} from '@fortawesome/free-solid-svg-icons'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { callPhoneNumber } from '../../lib/utils'
 import { getCallIcon, retrieveQueueCallInfo } from '../../lib/queuesLib'

@@ -2,7 +2,7 @@
 // SPDX-License-Identifier: AGPL-3.0-or-later
 
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
-import { faPhoneMissed } from '@nethesis/nethesis-solid-svg-icons'
+import { faMissed } from '@nethesis/nethesis-solid-svg-icons'
 import { faXmark, faArrowLeft } from '@fortawesome/free-solid-svg-icons'
 import axios from 'axios'
 import { cloneDeep } from 'lodash'
@@ -236,7 +236,7 @@ export const getCallIcon = (call: any) => {
         // negative outcome
         return (
           <FontAwesomeIcon
-            icon={faPhoneMissed}
+            icon={faMissed}
             className='mr-2 h-5 w-4 text-red-400 dark:text-red-500'
             aria-hidden='true'
           />

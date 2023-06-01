@@ -14,8 +14,8 @@ import {
   faChevronLeft,
   faFilter,
   faVoicemail,
-  faArrowTurnDownRight,
-} from '@nethesis/nethesis-solid-svg-icons'
+  faTurnDown,
+} from '@fortawesome/free-solid-svg-icons'
 import classNames from 'classnames'
 import { LinesFilter } from './LinesFilter'
 import { sortByProperty } from '../../lib/utils'
@@ -167,8 +167,8 @@ export const LinesView: FC<LinesViewProps> = ({ className }): JSX.Element => {
             <>
               <div className='flex items-center'>
                 <FontAwesomeIcon
-                  icon={faArrowTurnDownRight}
-                  className='h-4 w-4 mr-2'
+                  icon={faTurnDown}
+                  className='h-4 w-4 mr-2 rotate-[270deg]'
                   aria-hidden='true'
                 />
                 <span>{t(`Lines.Forward`)}</span>

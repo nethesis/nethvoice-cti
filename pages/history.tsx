@@ -10,7 +10,7 @@ import { RootState } from '../store'
 import { useSelector } from 'react-redux'
 import { debounce } from 'lodash'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
-import { faPhoneMissed } from '@nethesis/nethesis-solid-svg-icons'
+import { faMissed } from '@nethesis/nethesis-solid-svg-icons'
 import {
   faBuilding,
   faPlay,
@@ -368,7 +368,7 @@ const History: NextPage = () => {
                 ) : (
                   <div className='flex flex-nowrap items-center'>
                     <FontAwesomeIcon
-                      icon={faPhoneMissed}
+                      icon={faMissed}
                       className='mr-2 h-5 w-4 text-red-400'
                       aria-hidden='true'
                     />
@@ -463,7 +463,7 @@ const History: NextPage = () => {
                     ) : (
                       <div className='flex flex-nowrap'>
                         <FontAwesomeIcon
-                          icon={faPhoneMissed}
+                          icon={faMissed}
                           className='mr-2 h-5 w-4 text-red-400'
                           aria-hidden='true'
                         />

@@ -8,7 +8,7 @@ import { isEmpty, debounce } from 'lodash'
 import { useSelector } from 'react-redux'
 import { RootState, store } from '../../store'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
-import { faPhoneMissed } from '@nethesis/nethesis-solid-svg-icons'
+import { faMissed } from '@nethesis/nethesis-solid-svg-icons'
 import {
   faPause,
   faChevronDown,
@@ -109,7 +109,7 @@ export const QueueManagerDashboard: FC<QueueManagerDashboardProps> = ({
                 <div className='flex items-center'>
                   <div className='h-14 w-14 flex items-center justify-center rounded-md bg-emerald-50'>
                     <FontAwesomeIcon
-                      icon={faPhoneMissed}
+                      icon={faMissed}
                       className='h-6 w-6 cursor-pointer text-emerald-600 dark:text-emerald-600'
                       aria-hidden='true'
                       // onClick={() => toggleExpandQueue(queue)}

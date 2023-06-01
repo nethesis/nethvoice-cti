@@ -29,7 +29,7 @@ import {
   faMoon,
   faBell,
   faChevronRight,
-} from '@nethesis/nethesis-solid-svg-icons'
+} from '@fortawesome/free-solid-svg-icons'
 import { getUserInfo } from '../../services/user'
 import { setTheme } from '../../lib/darkTheme'
 import { loadNotificationsFromStorage } from '../../lib/notifications'

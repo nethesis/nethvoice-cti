@@ -14,7 +14,7 @@ import {
   PAGE_SIZE,
   retrieveAndFilterQueueCalls,
 } from '../../lib/queuesLib'
-import { faChevronRight, faChevronLeft, faPhone } from '@nethesis/nethesis-solid-svg-icons'
+import { faChevronRight, faChevronLeft, faPhone } from '@fortawesome/free-solid-svg-icons'
 import classNames from 'classnames'
 import { exactDistanceToNowLoc, formatDateLoc, getCallTimeToDisplay } from '../../lib/dateTime'
 import { CallsViewFilter } from './CallsViewFilter'

@@ -4,7 +4,7 @@
 import { ComponentPropsWithRef, forwardRef, useEffect, useState, FC } from 'react'
 import { searchDrawerHistoryUser, searchDrawerHistorySwitchboard } from '../../lib/history'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
-import { faPhoneMissed } from '@nethesis/nethesis-solid-svg-icons'
+import { faMissed } from '@nethesis/nethesis-solid-svg-icons'
 import {
   faBuilding,
   faArrowRight,
@@ -179,7 +179,7 @@ export const LastCallsDrawerTable = forwardRef<HTMLButtonElement, LastCallsDrawe
                       ) : (
                         <>
                           <FontAwesomeIcon
-                            icon={faPhoneMissed}
+                            icon={faMissed}
                             className='tooltip-switchboard-incoming-missed h-5 w-4 text-red-400'
                             aria-hidden='true'
                           />

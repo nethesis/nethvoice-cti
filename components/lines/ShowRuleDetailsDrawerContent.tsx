@@ -9,11 +9,9 @@ import {
   faFloppyDisk,
   faCircleXmark,
   faBullhorn,
-  faToggleLargeOn,
-  faToggleLargeOff,
   faVoicemail,
-  faArrowTurnDownRight,
-} from '@nethesis/nethesis-solid-svg-icons'
+  faTurnDown,
+} from '@fortawesome/free-solid-svg-icons'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { closeSideDrawer } from '../../lib/utils'
 import { TextInput, Button, IconSwitch } from '../common'
@@ -183,13 +181,13 @@ export const ShowRuleDetailsContent = forwardRef<HTMLButtonElement, ShowRuleDeta
             <h4 className='text-md font-medium text-gray-700 dark:text-gray-200'>
               {t('Lines.Activate rule')}
             </h4>
-            <IconSwitch
+            {/* <IconSwitch
               on={isManageRuleActive}
               size='extra_large'
               onIcon={<FontAwesomeIcon icon={faToggleLargeOn} />}
               offIcon={<FontAwesomeIcon icon={faToggleLargeOff} />}
               changed={() => toggleManageRule()}
-            ></IconSwitch>{' '}
+            ></IconSwitch>{' '} */}
           </div>
 
           {/* Divider */}
@@ -207,13 +205,13 @@ export const ShowRuleDetailsContent = forwardRef<HTMLButtonElement, ShowRuleDeta
                 {t('Lines.Activate announcement')}
               </h4>
             </div>
-            <IconSwitch
+            {/* <IconSwitch
               on={isManageAnnouncementActive}
               size='extra_large'
               onIcon={<FontAwesomeIcon icon={faToggleLargeOn} />}
               offIcon={<FontAwesomeIcon icon={faToggleLargeOff} />}
               changed={() => toggleManageAnnouncement()}
-            ></IconSwitch>{' '}
+            ></IconSwitch>{' '} */}
           </div>
 
           {/* Divider */}
@@ -312,13 +310,13 @@ export const ShowRuleDetailsContent = forwardRef<HTMLButtonElement, ShowRuleDeta
                 {t('Lines.Activate announcement + voicemail')}
               </h4>
             </div>
-            <IconSwitch
+            {/* <IconSwitch
               on={isAnnouncementVoicemailActive}
               size='extra_large'
               onIcon={<FontAwesomeIcon icon={faToggleLargeOn} />}
               offIcon={<FontAwesomeIcon icon={faToggleLargeOff} />}
               changed={() => toggleAnnouncementVoicemail()}
-            ></IconSwitch>
+            ></IconSwitch> */}
           </div>
 
           {/* Divider */}
@@ -328,21 +326,21 @@ export const ShowRuleDetailsContent = forwardRef<HTMLButtonElement, ShowRuleDeta
           <div className='flex items-center justify-between mt-6'>
             <div className='flex items-center'>
               <FontAwesomeIcon
-                icon={faArrowTurnDownRight}
-                className='mr-4 h-4 w-4 flex-shrink-0 text-gray-400 dark:text-gray-500'
+                icon={faTurnDown}
+                className='mr-4 h-4 w-4 rotate-[270deg] flex-shrink-0 text-gray-400 dark:text-gray-500'
                 aria-hidden='true'
               />
               <h4 className='text-md font-medium text-gray-700 dark:text-gray-200'>
                 {t('Lines.Activate forward')}
               </h4>
             </div>
-            <IconSwitch
+            {/* <IconSwitch
               on={isForwardActive}
               size='extra_large'
               onIcon={<FontAwesomeIcon icon={faToggleLargeOn} />}
               offIcon={<FontAwesomeIcon icon={faToggleLargeOff} />}
               changed={() => toggleForward()}
-            ></IconSwitch>
+            ></IconSwitch> */}
           </div>
 
           {/* Divider */}

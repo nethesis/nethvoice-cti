@@ -16,7 +16,7 @@ import {
   faChevronLeft,
   faChevronRight,
   faFilter,
-} from '@nethesis/nethesis-solid-svg-icons'
+} from '@fortawesome/free-solid-svg-icons'
 import classNames from 'classnames'
 import { AnnouncementFilter } from './AnnouncementFilter'
 import { useDispatch, useSelector } from 'react-redux'
