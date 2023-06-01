@@ -13,10 +13,15 @@ import { useRouter } from 'next/router'
 import { RouteGuard } from '../config/router'
 import { Service } from '../config/service'
 import { checkDarkTheme } from '../lib/darkTheme'
-import { Island } from '../components/island'
 import { getProductName } from '../lib/utils'
 import Head from 'next/head'
 import { loadI18n } from '../lib/i18n'
+import dynamic from 'next/dynamic'
+
+// Import the Island component asynchronously avoiding ssr
+const Island = dynamic<{}>(() => import('../components/island').then((mod) => mod.Island), {
+  ssr: false,
+})
 
 function MyApp({ Component, pageProps }: AppProps) {
   const [isLoading, setIsLoading] = useState<boolean>(true)
