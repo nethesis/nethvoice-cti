@@ -40,7 +40,8 @@ export const IconSwitch: FC<IconSwitchProps> = ({
   }
 
   return (
-    <HeadlessSwitch.Group {...props}>
+    // eslint-disable-next-line react/no-did-mount-set-state
+    <HeadlessSwitch.Group {...(props as { ref?: React.Ref<unknown> })}>
       <HeadlessSwitch
         checked={enabled}
         onChange={() => callback()}
