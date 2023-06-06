@@ -10,13 +10,14 @@ import { QueueManagerDashboard } from '../components/queueManager/QueueManagerDa
 import { QueueManagement } from '../components/queueManager/QueueManagement'
 import { NotManagedCalls } from '../components/queueManager/NotManagedCalls'
 import { RealTimeManagement } from '../components/queueManager/RealTimeManagement'
+import { Summary } from '../components/queueManager/Summary'
 import { useSelector } from 'react-redux'
 import { RootState, store } from '../store'
 
 const QueueManager: NextPage = () => {
   const { t } = useTranslation()
   const queuesStore = useSelector((state: RootState) => state.queues)
-  const [currentTab, setCurrentTab] = useState('live')
+  const [currentTab, setCurrentTab] = useState('summary')
 
   const tabs = [
     { name: t('QueueManager.Dashboard'), value: 'dashboard' },
@@ -99,7 +100,7 @@ const QueueManager: NextPage = () => {
             ) : currentTab === 'live' ? (
               <RealTimeManagement />
             ) : currentTab === 'summary' ? (
-              <StatisticsView />
+              <Summary />
             ) : currentTab === 'monitor' ? (
               <StatisticsView />
             ) : null}

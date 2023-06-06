@@ -448,6 +448,12 @@
     "Customers to manage": "Customers to manage",
     "Connected calls": "Connected calls",
     "Queue operators": "Queue operators",
-    "Outcome": "Outcome"
+    "Outcome": "Outcome",
+    "Operators summary": "Operators summary",
+    "Queues summary": "Queues summary",
+    "Calls answered before service level": "Calls answered before service level",
+    "Unanswered calls": "Unanswered calls",
+    "Reasons for unanswered calls": "Reasons for unanswered calls",
+    "Callback time": "Callback time"
   }
 }
