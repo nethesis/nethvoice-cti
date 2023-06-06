@@ -3,7 +3,7 @@
 
 import { FC, ComponentProps, useState, useEffect, useMemo } from 'react'
 import { useTranslation } from 'react-i18next'
-import { Button, EmptyState, InlineNotification } from '../common'
+import { Button, EmptyState, InlineNotification, ProgressionRing } from '../common'
 import { isEmpty, debounce } from 'lodash'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import {
@@ -186,13 +186,20 @@ export const NotManagedCalls: FC<NotManagedCallsProps> = ({ className }): JSX.El
           updateOutcomeFilter={updateOutcomeFilter}
           updateQueuesFilter={updateQueuesFilter}
         />
-        <div className='flex text-sm gap-4 text-right pb-4 xl:pb-7'>
-          <div className='text-gray-500 dark:text-gray-500'>
-            {t('Queues.Last update')}: {lastUpdated ? formatDateLoc(new Date(), 'HH:mm:ss') : '-'} (
-            {t('Queues.every_time_interval_seconds', { timeInterval: callsRefreshInterval })})
+        <div className='flex items-center justify-end text-sm pb-4 xl:pb-7'>
+          <div className='flex items-center'>
+            <span className='mr-2'>
+              <span className='text-gray-900'>{t('Queues.Last update')}:</span>{' '}
+              <span className='text-gray-500 dark:text-gray-500'>
+                {lastUpdated ? formatDateLoc(new Date(), 'HH:mm:ss') : '-'}
+              </span>
+            </span>
+            <div className='w-8 h-8 mr-3'>
+              <ProgressionRing seconds={callsRefreshInterval} size={24} />
+            </div>
           </div>
           <Link href={{ pathname: '/settings', query: { section: 'Queues' } }}>
-            <a className='hover:underline text-gray-900 dark:text-gray-100'>
+            <a className='hover:underline text-gray-900 font-semibold dark:text-gray-100'>
               {t('Queues.Settings')}
             </a>
           </Link>
