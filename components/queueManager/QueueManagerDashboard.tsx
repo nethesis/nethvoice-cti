@@ -26,10 +26,14 @@ export const QueueManagerDashboard: FC<QueueManagerDashboardProps> = ({
 }): JSX.Element => {
   const { t } = useTranslation()
 
-  const [isZoomed, setIsZoomed] = useState(false)
+  const [zoomedCardIndex, setZoomedCardIndex] = useState(null)
 
-  const handleZoom = () => {
-    setIsZoomed(!isZoomed)
+  const handleZoom = (index: any) => {
+    if (zoomedCardIndex === index) {
+      setZoomedCardIndex(null) // Ripristina le dimensioni originali se la card è già ingrandita
+    } else {
+      setZoomedCardIndex(index) // Ingrandisci la card se è diversa da quella attualmente ingrandita
+    }
   }
 
   return (
@@ -169,9 +173,9 @@ export const QueueManagerDashboard: FC<QueueManagerDashboardProps> = ({
       </div>
 
       {/* Chart section */}
-      <div className='grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-2'>
+      <div className='grid grid-cols-2 gap-4 sm:grid-cols-2 lg:grid-cols-2'>
         {/* Hourly distribution of incoming calls section*/}
-        <div className='pt-8'>
+        <div className={`pt-8 ${zoomedCardIndex === 0 ? 'col-span-2' : 'col-span-1'}`}>
           {/* title */}
           <h2 className='text-md ml-4 font-semibold mb-4'>
             {t('QueueManager.Hourly distribution of incoming calls')}
@@ -186,7 +190,7 @@ export const QueueManagerDashboard: FC<QueueManagerDashboardProps> = ({
               <Button
                 className='h-14 w-14 flex items-center justify-center rounded-md'
                 variant='white'
-                onClick={handleZoom}
+                onClick={() => handleZoom(0)}
               >
                 <FontAwesomeIcon
                   icon={faExpand}
@@ -199,7 +203,7 @@ export const QueueManagerDashboard: FC<QueueManagerDashboardProps> = ({
         </div>
 
         {/* Hourly distribution of call results*/}
-        <div className='pt-8'>
+        <div className={`pt-8 ${zoomedCardIndex === 1 ? 'col-span-2' : 'col-span-1'}`}>
           {/* title */}
           <h2 className='text-md ml-4 font-semibold mb-4'>
             {t('QueueManager.Hourly distribution of call results')}
@@ -214,7 +218,7 @@ export const QueueManagerDashboard: FC<QueueManagerDashboardProps> = ({
               <Button
                 className='h-14 w-14 flex items-center justify-center rounded-md'
                 variant='white'
-                onClick={handleZoom}
+                onClick={() => handleZoom(1)}
               >
                 <FontAwesomeIcon
                   icon={faExpand}
@@ -227,7 +231,7 @@ export const QueueManagerDashboard: FC<QueueManagerDashboardProps> = ({
         </div>
 
         {/* Hourly distribution of calls answered*/}
-        <div className='pt-12'>
+        <div className={`pt-12 ${zoomedCardIndex === 2 ? 'col-span-2' : 'col-span-1'}`}>
           {/* title */}
           <h2 className='text-md ml-4 font-semibold mb-4'>
             {t('QueueManager.Hourly distribution of calls answered')}
@@ -242,7 +246,7 @@ export const QueueManagerDashboard: FC<QueueManagerDashboardProps> = ({
               <Button
                 className='h-14 w-14 flex items-center justify-center rounded-md'
                 variant='white'
-                onClick={handleZoom}
+                onClick={() => handleZoom(2)}
               >
                 <FontAwesomeIcon
                   icon={faExpand}
@@ -255,7 +259,7 @@ export const QueueManagerDashboard: FC<QueueManagerDashboardProps> = ({
         </div>
 
         {/* Hourly distribution of not answered calls*/}
-        <div className='pt-12'>
+        <div className={`pt-12 ${zoomedCardIndex === 3 ? 'col-span-2' : 'col-span-1'}`}>
           {/* title */}
           <h2 className='text-md ml-4 font-semibold mb-4'>
             {t('QueueManager.Hourly distribution of not answered calls')}
@@ -270,7 +274,7 @@ export const QueueManagerDashboard: FC<QueueManagerDashboardProps> = ({
               <Button
                 className='h-14 w-14 flex items-center justify-center rounded-md'
                 variant='white'
-                onClick={handleZoom}
+                onClick={() => handleZoom(3)}
               >
                 <FontAwesomeIcon
                   icon={faExpand}
