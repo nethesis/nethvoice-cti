@@ -18,6 +18,85 @@ import {
   faPhoneSlash,
   faArrowLeft,
 } from '@fortawesome/free-solid-svg-icons'
+import {
+  Chart as ChartJS,
+  CategoryScale,
+  LinearScale,
+  BarElement,
+  Title,
+  Tooltip,
+  Legend,
+} from 'chart.js'
+import { Bar } from 'react-chartjs-2'
+
+ChartJS.register(CategoryScale, LinearScale, BarElement, Title, Tooltip, Legend)
+
+export const options = {
+  responsive: true,
+  // scales: {
+  //   // x: { stacked: false },
+  //   // y: { stacked: false, 
+  //   //   beginAtZero: true 
+  //   // },
+    
+  // },
+  scales: {
+    y: {
+      beginAtZero: true
+    }
+},
+  plugins: {
+    legend: {
+      position: 'bottom' as const,
+    },
+    title: {
+      display: true,
+      // text: 'Chart.js Bar Chart',
+    },
+  },
+}
+
+const labels = [
+  '09.00',
+  '10.00',
+  '11.00',
+  '12.00',
+  '13.00',
+  '14.00',
+  '15.00',
+  '16.00',
+  '17.00',
+  '18.00',
+]
+
+export const data = {
+  labels,
+  datasets: [
+    {
+      label: 'Unanswered calls',
+      data: [4, 6, 2, 8, 5, 9, 3, 7, 4, 6],
+      backgroundColor: '#10B981',
+      // borderRadius: 80
+      borderRadius: {
+        topRight: 10,
+        topLeft: 10,
+        bottomRight: 10,
+        bottomLeft: 10,
+      },
+    },
+    {
+      label: 'Answered calls',
+      data: [0, 2, 4, 1, 3, 2, 5, 1, 4, 2],
+      backgroundColor: '#6b7280',
+      borderRadius: {
+        topRight: 20,
+        topLeft: 20,
+        bottomRight: 20,
+        bottomLeft: 20,
+      },
+    },
+  ],
+}
 
 export interface QueueManagerDashboardProps extends ComponentProps<'div'> {}
 
@@ -183,7 +262,10 @@ export const QueueManagerDashboard: FC<QueueManagerDashboardProps> = ({
 
           <div className='border-b rounded-md shadow-md bg-white px-4 py-5 sm:px-6 mt-1 relative w-full h-full'>
             <div className='flex space-x-3'>
-              <div className='min-w-0 flex-1'>{/* ... */} </div>
+              <div className='min-w-0 flex-1'>
+                {/* ... */}
+                <Bar options={options} data={data}></Bar>
+              </div>
             </div>
             {/* Zoom button */}
             <div className='absolute top-2 right-2 pt-3 pr-3'>
