@@ -35,16 +35,16 @@ export const options = {
   responsive: true,
   // scales: {
   //   // x: { stacked: false },
-  //   // y: { stacked: false, 
-  //   //   beginAtZero: true 
+  //   // y: { stacked: false,
+  //   //   beginAtZero: true
   //   // },
-    
+
   // },
   scales: {
     y: {
-      beginAtZero: true
-    }
-},
+      beginAtZero: true,
+    },
+  },
   plugins: {
     legend: {
       position: 'bottom' as const,
@@ -76,24 +76,15 @@ export const data = {
       label: 'Unanswered calls',
       data: [4, 6, 2, 8, 5, 9, 3, 7, 4, 6],
       backgroundColor: '#10B981',
-      // borderRadius: 80
-      borderRadius: {
-        topRight: 10,
-        topLeft: 10,
-        bottomRight: 10,
-        bottomLeft: 10,
-      },
+      borderRadius: [20, 20, 10, 10],
+      borderSkipped: false,
     },
     {
       label: 'Answered calls',
       data: [0, 2, 4, 1, 3, 2, 5, 1, 4, 2],
       backgroundColor: '#6b7280',
-      borderRadius: {
-        topRight: 20,
-        topLeft: 20,
-        bottomRight: 20,
-        bottomLeft: 20,
-      },
+      borderRadius: [20, 20, 10, 10],
+      borderSkipped: false,
     },
   ],
 }

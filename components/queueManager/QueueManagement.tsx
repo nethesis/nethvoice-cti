@@ -23,6 +23,166 @@ import {
 
 import { Listbox, Transition } from '@headlessui/react'
 
+import {
+  Chart as ChartJS,
+  CategoryScale,
+  LinearScale,
+  BarElement,
+  Title,
+  Tooltip,
+  Legend,
+} from 'chart.js'
+import { Bar } from 'react-chartjs-2'
+
+ChartJS.register(CategoryScale, LinearScale, BarElement, Title, Tooltip, Legend)
+
+export const options = {
+  indexAxis: 'y' as const,
+  elements: {
+    bar: {
+      borderWidth: 1,
+    },
+  },
+  scales: {
+    y: {
+      display: false,
+      stacked: true,
+    },
+    x: {
+      display: false,
+      // stacked:true
+    },
+  },
+  responsive: true,
+  layout: {
+    padding: {
+      top: 20,
+      bottom: 20,
+    },
+  },
+  plugins: {
+    legend: {
+      position: 'bottom' as const,
+      labels: {
+        usePointStyle: true,
+      },
+    },
+    title: {
+      display: true,
+      text: 'Connected calls',
+    },
+    // avoid to show labels inside tooltip
+    //   tooltip: {
+    //     callbacks: {
+    //        title : () => null // or function () { return null; }
+    //     }
+    //  },
+  },
+}
+
+export const optionsSecond = {
+  indexAxis: 'y' as const,
+  elements: {
+    bar: {
+      borderWidth: 1,
+    },
+  },
+  scales: {
+    y: {
+      display: false,
+      stacked: true,
+    },
+    x: {
+      display: false,
+      // stacked:true
+    },
+  },
+  responsive: true,
+  layout: {
+    padding: {
+      top: 20,
+      bottom: 20,
+    },
+  },
+  plugins: {
+    legend: {
+      position: 'bottom' as const,
+      labels: {
+        usePointStyle: true,
+      },
+    },
+    title: {
+      display: true,
+      text: 'Waiting calls',
+    },
+  },
+}
+
+const labels = ['Connected calls']
+
+let mininum = 2
+let average = 5
+let maximum = 30
+
+export const data = {
+  labels,
+  datasets: [
+    {
+      label: 'Minimum',
+      data: [mininum],
+      backgroundColor: '#6EE7B7',
+      borderRadius: [20, 20, 10, 10],
+      barPercentage: 0.5,
+      borderSkipped: false,
+    },
+    {
+      label: 'Average',
+      data: [average],
+      backgroundColor: '#10B981',
+      borderRadius: [20, 20, 10, 10],
+      barPercentage: 0.5,
+      borderSkipped: false,
+    },
+    {
+      label: `Maximum`,
+      data: [maximum],
+      backgroundColor: '#047857',
+      borderRadius: [20, 20, 10, 10],
+      barPercentage: 0.5,
+      borderSkipped: false,
+    },
+  ],
+}
+
+export const dataSecond = {
+  labels,
+  datasets: [
+    {
+      label: 'Minimum',
+      data: [mininum],
+      backgroundColor: '#D1D5DB',
+      borderRadius: [20, 20, 10, 10],
+      barPercentage: 0.5,
+      borderSkipped: false,
+    },
+    {
+      label: 'Average',
+      data: [average],
+      backgroundColor: '#6B7280',
+      borderRadius: [20, 20, 10, 10],
+      barPercentage: 0.5,
+      borderSkipped: false,
+    },
+    {
+      label: `Maximum`,
+      data: [maximum],
+      backgroundColor: '#374151',
+      borderRadius: [20, 20, 10, 10],
+      barPercentage: 0.5,
+      borderSkipped: false,
+    },
+  ],
+}
 export interface QueueManagementProps extends ComponentProps<'div'> {}
 
 const people = [
@@ -46,7 +206,7 @@ export const QueueManagement: FC<QueueManagementProps> = ({ className }): JSX.El
   const { t } = useTranslation()
   const [selected, setSelected] = useState(people[3])
 
-  const [expanded, setExpanded] = useState(false)
+  const [expanded, setExpanded] = useState(true)
 
   const [expandedWaitingCall, setExpandedWaitingCall] = useState(false)
 
@@ -325,6 +485,12 @@ export const QueueManagement: FC<QueueManagementProps> = ({ className }): JSX.El
                     <span className='text-sm font-medium leading-6 text-center text-gray-700 dark:text-gray-100'>
                       {t('QueueManager.Calls duration')}
                     </span>
+                  </div>
+                  <div className='flex justify-center'>
+                    <div className='w-full'>
+                      <Bar options={options} data={data} />
+                      <Bar options={optionsSecond} data={dataSecond} />
+                    </div>
                   </div>
                 </div>
               </div>
