@@ -25,6 +25,7 @@ import { Listbox, Transition } from '@headlessui/react'
 
 import {
   Chart as ChartJS,
+  ArcElement,
   CategoryScale,
   LinearScale,
   BarElement,
@@ -32,11 +33,11 @@ import {
   Tooltip,
   Legend,
 } from 'chart.js'
-import { Bar } from 'react-chartjs-2'
+import { Bar, Doughnut } from 'react-chartjs-2'
 
-ChartJS.register(CategoryScale, LinearScale, BarElement, Title, Tooltip, Legend)
+ChartJS.register(ArcElement, CategoryScale, LinearScale, BarElement, Title, Tooltip, Legend)
 
-export const options = {
+export const optionsFirst = {
   indexAxis: 'y' as const,
   elements: {
     bar: {
@@ -70,6 +71,9 @@ export const options = {
     title: {
       display: true,
       text: 'Connected calls',
+      font: {
+        size: 16,
+      },
     },
     // avoid to show labels inside tooltip
     //   tooltip: {
@@ -114,6 +118,9 @@ export const optionsSecond = {
     title: {
       display: true,
       text: 'Waiting calls',
+      font: {
+        size: 16,
+      },
     },
   },
 }
@@ -124,7 +131,7 @@ let mininum = 2
 let average = 5
 let maximum = 30
 
-export const data = {
+export const dataFirst = {
   labels,
   datasets: [
     {
@@ -183,6 +190,72 @@ export const dataSecond = {
     },
   ],
 }
+
+let lostCalls = 10
+let answeredCalls = 20
+let totalCalls = lostCalls + answeredCalls
+
+export const optionsThird = {
+  responsive: true,
+  maintainAspectRatio: true,
+  layout: {
+    padding: {
+      top: 20,
+      bottom: 20,
+    },
+  },
+  plugins: {
+    legend: {
+      position: 'right' as const,
+      labels: {
+        usePointStyle: true,
+      },
+    },
+    tooltip: {
+      callbacks: {
+        title: function (tooltipItem: any) {
+          return ''
+        },
+        label: function (context: any) {
+          const value = context.parsed ? context.parsed : 0
+          return value.toFixed(2) + '%'
+        },
+      },
+    },
+    title: {
+      display: true,
+      text: `Total calls: ${totalCalls}`,
+      font: {
+        size: 16,
+      },
+    },
+  },
+}
+
+export const doughnutData = {
+  labels: [`Answered calls: ${answeredCalls}`, `Lost calls: ${lostCalls}`],
+  datasets: [
+    {
+      label: 'Answered',
+      data: [answeredCalls],
+      backgroundColor: ['#10B981', '#6B7280'],
+      borderRadius: 50,
+      barPercentage: 0.8,
+      borderSkipped: false,
+      cutout: '80%',
+      weight: 0.05,
+      rotation: 180,
+    },
+  ],
+}
+
+// Calcolate percentage values
+const percentageLostCalls = (lostCalls / totalCalls) * 100
+const percentageAnsweredCalls = (answeredCalls / totalCalls) * 100
+
+// Update graphics data
+doughnutData.datasets[0].data = [percentageAnsweredCalls, 100 - percentageAnsweredCalls]
+
 export interface QueueManagementProps extends ComponentProps<'div'> {}
 
 const people = [
@@ -488,7 +561,7 @@ export const QueueManagement: FC<QueueManagementProps> = ({ className }): JSX.El
                   </div>
                   <div className='flex justify-center'>
                     <div className='w-full'>
-                      <Bar options={options} data={data} />
+                      <Bar options={optionsFirst} data={dataFirst} />
                       <Bar options={optionsSecond} data={dataSecond} />
                     </div>
                   </div>
@@ -497,16 +570,21 @@ export const QueueManagement: FC<QueueManagementProps> = ({ className }): JSX.El
 
               {/* Calls */}
               <div>
-                <div className='border-b rounded-lg shadow-md bg-white px-5 py-1 sm: mt-1 relative flex justify-between'>
-                  <div className='pt-3'>
-                    <span className='text-sm font-medium leading-6 text-center text-gray-700 dark:text-gray-100'>
-                      {t('QueueManager.Calls')}
-                    </span>
+                <div className='border-b rounded-lg shadow-md bg-white px-5 py-1 sm:mt-1 relative'>
+                  <div className='flex justify-between'>
+                    <div className='pt-3'>
+                      <span className='text-sm font-medium leading-6 text-center text-gray-700 dark:text-gray-100'>
+                        {t('QueueManager.Calls')}
+                      </span>
+                    </div>
+                    <div className='pt-3'>
+                      <span className='text-sm font-medium leading-6 text-center text-gray-700 dark:text-gray-100'>
+                        {t('QueueManager.Details')}
+                      </span>
+                    </div>
                   </div>
-                  <div className='pt-3'>
-                    <span className='text-sm font-medium leading-6 text-center text-gray-700 dark:text-gray-100'>
-                      {t('QueueManager.Details')}
-                    </span>
+                  <div className='w-full h-full'>
+                    <Doughnut data={doughnutData} options={optionsThird} />
                   </div>
                 </div>
               </div>

@@ -33,13 +33,7 @@ ChartJS.register(CategoryScale, LinearScale, BarElement, Title, Tooltip, Legend)
 
 export const options = {
   responsive: true,
-  // scales: {
-  //   // x: { stacked: false },
-  //   // y: { stacked: false,
-  //   //   beginAtZero: true
-  //   // },
-
-  // },
+  maintainAspectRatio: true,
   scales: {
     y: {
       beginAtZero: true,
