@@ -454,6 +454,10 @@
     "Calls answered before service level": "Calls answered before service level",
     "Unanswered calls": "Unanswered calls",
     "Reasons for unanswered calls": "Reasons for unanswered calls",
-    "Callback time": "Callback time"
+    "Callback time": "Callback time",
+    "Remove": "Remove",
+    "Position": "Position",
+    "Waiting": "Waiting",
+    "Calls to show": "Calls to show"
   }
 }
