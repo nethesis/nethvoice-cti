@@ -18,7 +18,7 @@ import { RootState, store } from '../store'
 const QueueManager: NextPage = () => {
   const { t } = useTranslation()
   const queuesStore = useSelector((state: RootState) => state.queues)
-  const [currentTab, setCurrentTab] = useState('monitor')
+  const [currentTab, setCurrentTab] = useState('dashboard')
 
   const tabs = [
     { name: t('QueueManager.Dashboard'), value: 'dashboard' },

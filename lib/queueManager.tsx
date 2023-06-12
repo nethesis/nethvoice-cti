@@ -271,64 +271,6 @@ export const getCallIcon = (call: any) => {
   }
 }
 
-export const loginToQueue = async (endpointId: string, queueId: string) => {
-  try {
-    const { data, status } = await axios.post('/astproxy/queuemember_add', {
-      endpointId,
-      queueId,
-    })
-    return data
-  } catch (error) {
-    handleNetworkError(error)
-    throw error
-  }
-}
-
-export const logoutFromQueue = async (endpointId: string, queueId: string) => {
-  try {
-    const { data, status } = await axios.post('/astproxy/queuemember_remove', {
-      endpointId,
-      queueId,
-    })
-    return data
-  } catch (error) {
-    handleNetworkError(error)
-    throw error
-  }
-}
-
-export const pauseQueue = async (endpointId: string, queueId: string, reason: string) => {
-  const payload: any = {
-    endpointId,
-    queueId,
-  }
-
-  if (reason) {
-    payload.reason = reason
-  }
-
-  try {
-    const { data, status } = await axios.post('/astproxy/queuemember_pause', payload)
-    return data
-  } catch (error) {
-    handleNetworkError(error)
-    throw error
-  }
-}
-
-export const unpauseQueue = async (endpointId: string, queueId: string) => {
-  try {
-    const { data, status } = await axios.post('/astproxy/queuemember_unpause', {
-      endpointId,
-      queueId,
-    })
-    return data
-  } catch (error) {
-    handleNetworkError(error)
-    throw error
-  }
-}
-
 export const openShowQueueCallDrawer = (call: any, queues: any) => {
   if (!call.cid) {
     return
@@ -402,21 +344,43 @@ export const getLoggedStatus = (operator: any) => {
   }
 }
 
-/**
- * Sort function to order queue members by logged / paused attributes
- */
-export const sortByLoggedStatus = (operator1: any, operator2: any) => {
-  const loggedStatusRanking = ['loggedIn', 'paused', 'loggedOut']
-  const status1 = getLoggedStatus(operator1)
-  const status2 = getLoggedStatus(operator2)
-  const rank1 = loggedStatusRanking.indexOf(status1)
-  const rank2 = loggedStatusRanking.indexOf(status2)
+// Get queueManager alarm
+export async function getAlarm() {
+  try {
+    const { data } = await axios.get('/astproxy/qalarms')
+    return data
+  } catch (error) {
+    handleNetworkError(error)
+    throw error
+  }
+}
 
-  if (rank1 < rank2) {
-    return -1
+// Get queueManager queues information
+export const getQueues = async () => {
+  try {
+    const { data } = await axios.get('/astproxy/qmanager_queues')
+    return data
+  } catch (error) {
+    handleNetworkError(error)
   }
-  if (rank1 > rank2) {
-    return 1
+}
+
+//get queues status
+export const getQueueStats = async (qid:any) => {
+  try {
+    const { data } = await axios.get('/astproxy/qmanager_qstats/' + qid)
+    return data
+  } catch (error) {
+    handleNetworkError(error)
   }
-  return 0
+}
+
+// Get queueManager queues information
+export const getAgentsStats = async () => {
+  try {
+    const { data } = await axios.get('/astproxy/qmanager_astats')
+    return data
+  } catch (error) {
+    handleNetworkError(error)
+  }
 }
