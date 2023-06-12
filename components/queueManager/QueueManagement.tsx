@@ -320,7 +320,6 @@ export const QueueManagement: FC<QueueManagementProps> = ({ className }): JSX.El
                       icon={faChevronDown}
                       className='h-3.5 w-3.5 pl-2 py-2 cursor-pointer flex items-center'
                       aria-hidden='true'
-                      // onClick={() => toggleExpandQueue(queue)}
                     />
                   </span>
                 </Listbox.Button>
@@ -366,7 +365,6 @@ export const QueueManagement: FC<QueueManagementProps> = ({ className }): JSX.El
                                   icon={faCheck}
                                   className='h-3.5 w-3.5 pl-2 py-2 cursor-pointer flex items-center'
                                   aria-hidden='true'
-                                  // onClick={() => toggleExpandQueue(queue)}
                                 />
                               </span>
                             ) : null}

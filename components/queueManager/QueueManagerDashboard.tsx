@@ -17,6 +17,8 @@ import {
   faExpand,
   faPhoneSlash,
   faArrowLeft,
+  faChevronUp,
+  faArrowUpWideShort,
 } from '@fortawesome/free-solid-svg-icons'
 import {
   Chart as ChartJS,
@@ -101,6 +103,17 @@ export const QueueManagerDashboard: FC<QueueManagerDashboardProps> = ({
     } else {
       setZoomedCardIndex(index) // Ingrandisci la card se è diversa da quella attualmente ingrandita
     }
+  }
+
+  const [expandedOperators, setExpandedOperators] = useState(false)
+  const [expandedQueues, setExpandedQueues] = useState(false)
+
+  const toggleExpandedOperators = () => {
+    setExpandedOperators(!expandedOperators)
+  }
+
+  const toggleExpandedQueues = () => {
+    setExpandedQueues(!expandedQueues)
   }
 
   const [dashboardData, setDashboardData] = useState<any>({
@@ -579,7 +592,9 @@ export const QueueManagerDashboard: FC<QueueManagerDashboardProps> = ({
                     />
                   </div>
                   <div className='flex flex-col justify-center ml-4'>
-                    <p className='text-3xl font-semibold tracking-tight text-left'>{dashboardData.totalFailed}</p>
+                    <p className='text-3xl font-semibold tracking-tight text-left'>
+                      {dashboardData.totalFailed}
+                    </p>
                     <p className='text-sm font-medium leading-6 text-center text-gray-500 dark:text-gray-500'>
                       {t('QueueManager.Lost calls')}
                     </p>
@@ -599,7 +614,9 @@ export const QueueManagerDashboard: FC<QueueManagerDashboardProps> = ({
                     />
                   </div>
                   <div className='flex flex-col justify-center ml-4'>
-                    <p className='text-3xl font-semibold tracking-tight text-left'>{dashboardData.totalInvalid}</p>
+                    <p className='text-3xl font-semibold tracking-tight text-left'>
+                      {dashboardData.totalInvalid}
+                    </p>
                     <p className='text-sm font-medium leading-6 text-center text-gray-500 dark:text-gray-500'>
                       {t('QueueManager.Invalid calls')}
                     </p>
@@ -756,14 +773,235 @@ export const QueueManagerDashboard: FC<QueueManagerDashboardProps> = ({
           </div>
           <div className='flex items-center justify-end h-6 w-6'>
             <FontAwesomeIcon
-              icon={faChevronDown}
+              icon={expandedOperators ? faChevronDown : faChevronUp}
               className='h-3.5 w-3.5 pl-2 py-2 cursor-pointer flex items-center'
               aria-hidden='true'
-              // onClick={() => toggleExpandQueue(queue)}
+              onClick={toggleExpandedOperators}
             />
           </div>
         </div>
         <div className='flex-grow border-b border-gray-300'></div>
+        {expandedOperators && (
+          <>
+            <div className='grid grid-cols-1 gap-6 xl:grid-cols-2 3xl:grid-cols-3 pt-6'>
+              {/* Number of answered calls  */}
+              <div>
+                <div className='col-span-1 rounded-md divide-y shadow divide-gray-200 bg-white dark:divide-gray-700 dark:bg-gray-900'>
+                  {/* card header */}
+                  <div className='flex flex-col pt-3 pb-5 px-5'>
+                    <div className='flex w-full items-center justify-between space-x-6'>
+                      <div className='flex-1 truncate'>
+                        <div className='flex items-center space-x-2 py-1 text-gray-700 dark:text-gray-200'>
+                          <h3 className='truncate text-lg leading-6 font-medium'>
+                            {t('QueueManager.Number of answered calls')}
+                          </h3>
+                        </div>
+                      </div>
+                      <Button variant='white'>
+                        <div className='flex items-center space-x-2'>
+                          <FontAwesomeIcon
+                            icon={faArrowUpWideShort}
+                            className='h-4 w-4 pl-2 py-2 cursor-pointer'
+                            aria-hidden='true'
+                          />
+                          <span>{t('QueueManager.Order')}</span>
+                          <FontAwesomeIcon
+                            icon={faChevronUp}
+                            className='h-3.5 w-3.5 pl-2 py-2 cursor-pointer'
+                            aria-hidden='true'
+                            // onClick={() => toggleExpandQueue(queue)}
+                          />
+                        </div>
+                      </Button>
+                    </div>
+                  </div>
+                  <div className='flex-grow border-b border-gray-300'></div>
+                  {/* card body */}
+                </div>
+              </div>
+
+              {/* Number of unanswered calls  */}
+              <div>
+                <div className='col-span-1 rounded-md divide-y shadow divide-gray-200 bg-white dark:divide-gray-700 dark:bg-gray-900'>
+                  {/* card header */}
+                  <div className='flex flex-col pt-3 pb-5 px-5'>
+                    <div className='flex w-full items-center justify-between space-x-6'>
+                      <div className='flex-1 truncate'>
+                        <div className='flex items-center space-x-2 py-1 text-gray-700 dark:text-gray-200'>
+                          <h3 className='truncate text-lg leading-6 font-medium'>
+                            {t('QueueManager.Number of unanswered calls')}
+                          </h3>
+                        </div>
+                      </div>
+                      <Button variant='white'>
+                        <div className='flex items-center space-x-2'>
+                          <FontAwesomeIcon
+                            icon={faArrowUpWideShort}
+                            className='h-4 w-4 pl-2 py-2 cursor-pointer'
+                            aria-hidden='true'
+                          />
+                          <span>{t('QueueManager.Order')}</span>
+                          <FontAwesomeIcon
+                            icon={faChevronUp}
+                            className='h-3.5 w-3.5 pl-2 py-2 cursor-pointer'
+                            aria-hidden='true'
+                            // onClick={() => toggleExpandQueue(queue)}
+                          />
+                        </div>
+                      </Button>
+                    </div>
+                  </div>
+                  <div className='flex-grow border-b border-gray-300'></div>
+                  {/* card body */}
+                </div>
+              </div>
+
+              {/* Pause on login  */}
+              <div>
+                <div className='col-span-1 rounded-md divide-y shadow divide-gray-200 bg-white dark:divide-gray-700 dark:bg-gray-900'>
+                  {/* card header */}
+                  <div className='flex flex-col pt-3 pb-5 px-5'>
+                    <div className='flex w-full items-center justify-between space-x-6'>
+                      <div className='flex-1 truncate'>
+                        <div className='flex items-center space-x-2 py-1 text-gray-700 dark:text-gray-200'>
+                          <h3 className='truncate text-lg leading-6 font-medium'>
+                            {t('QueueManager.Pause on login')}
+                          </h3>
+                        </div>
+                      </div>
+                      <Button variant='white'>
+                        <div className='flex items-center space-x-2'>
+                          <FontAwesomeIcon
+                            icon={faArrowUpWideShort}
+                            className='h-4 w-4 pl-2 py-2 cursor-pointer'
+                            aria-hidden='true'
+                          />
+                          <span>{t('QueueManager.Order')}</span>
+                          <FontAwesomeIcon
+                            icon={faChevronUp}
+                            className='h-3.5 w-3.5 pl-2 py-2 cursor-pointer'
+                            aria-hidden='true'
+                            // onClick={() => toggleExpandQueue(queue)}
+                          />
+                        </div>
+                      </Button>
+                    </div>
+                  </div>
+                  <div className='flex-grow border-b border-gray-300'></div>
+                  {/* card body */}
+                </div>
+              </div>
+
+              {/* Time on login  */}
+              <div>
+                <div className='col-span-1 rounded-md divide-y shadow divide-gray-200 bg-white dark:divide-gray-700 dark:bg-gray-900'>
+                  {/* card header */}
+                  <div className='flex flex-col pt-3 pb-5 px-5'>
+                    <div className='flex w-full items-center justify-between space-x-6'>
+                      <div className='flex-1 truncate'>
+                        <div className='flex items-center space-x-2 py-1 text-gray-700 dark:text-gray-200'>
+                          <h3 className='truncate text-lg leading-6 font-medium'>
+                            {t('QueueManager.Time on login')}
+                          </h3>
+                        </div>
+                      </div>
+                      <Button variant='white'>
+                        <div className='flex items-center space-x-2'>
+                          <FontAwesomeIcon
+                            icon={faArrowUpWideShort}
+                            className='h-4 w-4 pl-2 py-2 cursor-pointer'
+                            aria-hidden='true'
+                          />
+                          <span>{t('QueueManager.Order')}</span>
+                          <FontAwesomeIcon
+                            icon={faChevronUp}
+                            className='h-3.5 w-3.5 pl-2 py-2 cursor-pointer'
+                            aria-hidden='true'
+                            // onClick={() => toggleExpandQueue(queue)}
+                          />
+                        </div>
+                      </Button>
+                    </div>
+                  </div>
+                  <div className='flex-grow border-b border-gray-300'></div>
+                  {/* card body */}
+                </div>
+              </div>
+
+              {/* Pause time  */}
+              <div>
+                <div className='col-span-1 rounded-md divide-y shadow divide-gray-200 bg-white dark:divide-gray-700 dark:bg-gray-900'>
+                  {/* card header */}
+                  <div className='flex flex-col pt-3 pb-5 px-5'>
+                    <div className='flex w-full items-center justify-between space-x-6'>
+                      <div className='flex-1 truncate'>
+                        <div className='flex items-center space-x-2 py-1 text-gray-700 dark:text-gray-200'>
+                          <h3 className='truncate text-lg leading-6 font-medium'>
+                            {t('QueueManager.Pause time')}
+                          </h3>
+                        </div>
+                      </div>
+                      <Button variant='white'>
+                        <div className='flex items-center space-x-2'>
+                          <FontAwesomeIcon
+                            icon={faArrowUpWideShort}
+                            className='h-4 w-4 pl-2 py-2 cursor-pointer'
+                            aria-hidden='true'
+                          />
+                          <span>{t('QueueManager.Order')}</span>
+                          <FontAwesomeIcon
+                            icon={faChevronUp}
+                            className='h-3.5 w-3.5 pl-2 py-2 cursor-pointer'
+                            aria-hidden='true'
+                            // onClick={() => toggleExpandQueue(queue)}
+                          />
+                        </div>
+                      </Button>
+                    </div>
+                  </div>
+                  <div className='flex-grow border-b border-gray-300'></div>
+                  {/* card body */}
+                </div>
+              </div>
+
+              {/* In call percentage */}
+              <div>
+                <div className='col-span-1 rounded-md divide-y shadow divide-gray-200 bg-white dark:divide-gray-700 dark:bg-gray-900'>
+                  {/* card header */}
+                  <div className='flex flex-col pt-3 pb-5 px-5'>
+                    <div className='flex w-full items-center justify-between space-x-6'>
+                      <div className='flex-1 truncate'>
+                        <div className='flex items-center space-x-2 py-1 text-gray-700 dark:text-gray-200'>
+                          <h3 className='truncate text-lg leading-6 font-medium'>
+                            {t('QueueManager.In call percentage')}
+                          </h3>
+                        </div>
+                      </div>
+                      <Button variant='white'>
+                        <div className='flex items-center space-x-2'>
+                          <FontAwesomeIcon
+                            icon={faArrowUpWideShort}
+                            className='h-4 w-4 pl-2 py-2 cursor-pointer'
+                            aria-hidden='true'
+                          />
+                          <span>{t('QueueManager.Order')}</span>
+                          <FontAwesomeIcon
+                            icon={faChevronUp}
+                            className='h-3.5 w-3.5 pl-2 py-2 cursor-pointer'
+                            aria-hidden='true'
+                            // onClick={() => toggleExpandQueue(queue)}
+                          />
+                        </div>
+                      </Button>
+                    </div>
+                  </div>
+                  <div className='flex-grow border-b border-gray-300'></div>
+                  {/* card body */}
+                </div>
+              </div>
+            </div>
+          </>
+        )}
       </div>
 
       {/* Queues statistics section */}
@@ -774,14 +1012,19 @@ export const QueueManagerDashboard: FC<QueueManagerDashboardProps> = ({
           </div>
           <div className='flex items-center justify-end h-6 w-6'>
             <FontAwesomeIcon
-              icon={faChevronDown}
+              icon={expandedQueues ? faChevronDown : faChevronUp}
               className='h-3.5 w-3.5 pl-2 py-2 cursor-pointer flex items-center'
               aria-hidden='true'
-              // onClick={() => toggleExpandQueue(queue)}
+              onClick={toggleExpandedQueues}
             />
           </div>
         </div>
         <div className='flex-grow border-b border-gray-300'></div>
+        {expandedQueues && (
+          <>
+            {/* <ul role='list' className='grid grid-cols-1 gap-6 xl:grid-cols-2 3xl:grid-cols-3'></ul> */}
+          </>
+        )}
       </div>
     </>
   )
