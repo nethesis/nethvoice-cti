@@ -105,7 +105,7 @@ export const QueueManagerDashboard: FC<QueueManagerDashboardProps> = ({
     }
   }
 
-  const [expandedOperators, setExpandedOperators] = useState(false)
+  const [expandedOperators, setExpandedOperators] = useState(true)
   const [expandedQueues, setExpandedQueues] = useState(false)
 
   const toggleExpandedOperators = () => {
@@ -153,9 +153,7 @@ export const QueueManagerDashboard: FC<QueueManagerDashboardProps> = ({
 
   const [queuesList, setQueuesList] = useState<any>({})
   const [isLoadedQueues, setLoadedQueues] = useState(false)
-  const [queuesRecallTimeOrder, setQueuesRecallTimeOrder] = useState(true)
-  const [agentsRecallTimeOrder, setAgentsRecallTimeOrder] = useState(true)
-  const [updateDashboardInterval, SetUpdateDashboardInterval] = useState(10000)
+  // const [updateDashboardInterval, SetUpdateDashboardInterval] = useState(3000)
 
   //get queues list information
   useEffect(() => {
@@ -178,421 +176,37 @@ export const QueueManagerDashboard: FC<QueueManagerDashboardProps> = ({
     }
   }, [firstRenderQueuesList, isLoadedQueues])
 
-  const getQueuesStats = () => {
-    const keys = Object.keys(queuesList)
-    const len = keys.length
-    let i = 1
+  // const initDashboard = () => {
+  //   console.log('enter use effect')
+  //   setDashboardData({
+  //     ...dashboardData,
+  //     agentsAnswered: {},
+  //     agentsLost: {},
+  //     agentsPauseOnLogon: {},
+  //     totalAll: 0,
+  //     totalAnswered: 0,
+  //     totalFailed: 0,
+  //     totalInvalid: 0,
+  //     answeredAverage: 0,
+  //     agentsRecallTime: {},
+  //     queuesRecallTime: {},
+  //   })
 
-    if (len === 0) {
-      // queuesList is empty, no need to fetch queue stats
-      return
-    }
+  //   getQueuesStats()
+  // }
 
-    //for each queue set the stats
-    keys.forEach((key) => {
-      getQueueStats(key)
-        .then((res) => {
-          setQueuesList((prevQueues: any) => ({
-            ...prevQueues,
-            [key]: {
-              ...prevQueues[key],
-              qstats: res,
-            },
-          }))
+  // useEffect(() => {
+  //   initDashboard()
+  //   const interval = setInterval(() => {
+  //     if (document.hasFocus()) {
+  //       initDashboard()
+  //     }
+  //   }, updateDashboardInterval)
 
-          if (i === len) {
-            // CALL FUNCTIONS TO MAKE GRAPHICS
-            loadQueuesRanksFirst()
-          }
-
-          i++
-        })
-        .catch((err) => {
-          console.error(err)
-        })
-    })
-  }
-
-  //check lost, total, answered, unanswered call
-  const queuesDashboardRank = (keys: string[]) => {
-    return new Promise((resolve) => {
-      let n = 0
-      const list: any = {}
-      for (const q in queuesList) {
-        if (!isNaN(Number(q))) {
-          list[n] = {
-            name: queuesList[q].name,
-            queue: q,
-            values: {},
-          }
-          for (let i = 0; i < keys.length; i++) {
-            const key = keys[i]
-            list[n].values[key] = queuesList[q]?.qstats?.[key] || 0
-          }
-        }
-        n++
-      }
-      resolve(list)
-    })
-  }
-
-  const sortDashboard = (obj: any, valKey: string, order: string) => {
-    const sortable: any[] = []
-    const sorted: any = {}
-
-    for (const key in obj) {
-      if (obj.hasOwnProperty(key)) {
-        const temparr = [obj[key].name, obj[key].queue]
-        if (valKey) {
-          temparr.push(obj[key].values[valKey])
-        } else {
-          temparr.push(obj[key].value)
-        }
-        if (obj[key].note) {
-          temparr.push(obj[key].note)
-        }
-        sortable.push(temparr)
-      }
-    }
-
-    sortable.sort((a, b) => {
-      if (order === 'asc') {
-        return a[2] - b[2]
-      } else if (order === 'desc') {
-        return b[2] - a[2]
-      }
-      return 0
-    })
-
-    for (let i = 0; i < sortable.length; i++) {
-      sorted[i] = {
-        name: sortable[i][0],
-        queue: sortable[i][1],
-        value: sortable[i][2],
-      }
-      if (sortable[i][3]) {
-        sorted[i].note = sortable[i][3]
-      }
-    }
-
-    return sorted
-  }
-
-  const loadQueuesRanksFirst = () => {
-    queuesDashboardRank(['tot_processed', 'tot_failed', 'tot', 'tot_null']).then((value: any) => {
-      const initTopSparklineTotals = () => {
-        for (const h in dashboardData.queuesTotalCalls) {
-          dashboardData.totalAll += dashboardData.queuesTotalCalls[h].value
-        }
-        for (const h in dashboardData.queuesAnswered) {
-          dashboardData.totalAnswered += dashboardData.queuesAnswered[h].value
-        }
-        for (const h in dashboardData.queuesFailedCalls) {
-          dashboardData.totalFailed += dashboardData.queuesFailedCalls[h].value
-        }
-        for (const h in dashboardData.queuesInvalidCalls) {
-          dashboardData.totalInvalid += dashboardData.queuesInvalidCalls[h].value
-        }
-      }
-      setDashboardData((prevData: any) => ({
-        ...prevData,
-        queuesAnswered: sortDashboard(value, 'tot_processed', 'desc'),
-        queuesTotalCalls: sortDashboard(value, 'tot', 'desc'),
-        queuesFailedCalls: sortDashboard(value, 'tot_failed', 'desc'),
-        queuesInvalidCalls: sortDashboard(value, 'tot_null', 'desc'),
-      }))
-
-      initTopSparklineTotals()
-      // loadQueuesRanksSecond();
-    })
-  }
-
-  const getQueuesRecallTime = (data: any) => {
-    const queuesRecallTime: any = {}
-
-    // Set available queues
-    for (const queue in queuesList) {
-      queuesRecallTime[queue] = {
-        min_recall_time: [],
-        max_recall_time: [],
-        avg_recall_time: [],
-      }
-    }
-
-    // Get values from agents stats
-    for (const agent in data) {
-      for (const queue in queuesRecallTime) {
-        if (Object.hasOwnProperty.call(data[agent], queue)) {
-          if (data[agent][queue].min_recall_time)
-            queuesRecallTime[queue].min_recall_time.push(data[agent][queue].min_recall_time)
-          if (data[agent][queue].max_recall_time)
-            queuesRecallTime[queue].max_recall_time.push(data[agent][queue].max_recall_time)
-          if (data[agent][queue].avg_recall_time)
-            queuesRecallTime[queue].avg_recall_time.push(data[agent][queue].avg_recall_time)
-        }
-      }
-    }
-
-    // Retrieve values for every queue
-    for (const queue in queuesRecallTime) {
-      if (
-        queuesRecallTime[queue].min_recall_time.length > 0 &&
-        queuesRecallTime[queue].max_recall_time.length > 0 &&
-        queuesRecallTime[queue].avg_recall_time.length > 0
-      ) {
-        queuesRecallTime[queue] = {
-          min_recall_time: Math.min(...queuesRecallTime[queue].min_recall_time),
-          max_recall_time: Math.max(...queuesRecallTime[queue].max_recall_time),
-          avg_recall_time: Math.round(
-            queuesRecallTime[queue].avg_recall_time.reduce((a: number, b: number) => a + b) /
-              queuesRecallTime[queue].avg_recall_time.length,
-          ),
-        }
-      } else {
-        delete queuesRecallTime[queue]
-      }
-    }
-
-    // Return retrieved recall_time values
-    return queuesRecallTime
-  }
-
-  const orderRecallTimeAgents = (direction: string) => {
-    const agents: any[] = []
-    const ordered: any = {}
-    let n = 0
-
-    for (const agent in dashboardData.agentsRecallTime) {
-      agents[n] = {
-        agent: agent,
-      }
-
-      for (const key in dashboardData.agentsRecallTime[agent]) {
-        agents[n][key] = dashboardData.agentsRecallTime[agent][key]
-      }
-
-      n++
-    }
-
-    if (direction === 'asc') {
-      agents.sort((a, b) =>
-        a.allQueues.avg_recall_time > b.allQueues.avg_recall_time
-          ? 1
-          : b.allQueues.avg_recall_time > a.allQueues.avg_recall_time
-          ? -1
-          : 0,
-      )
-    } else if (direction === 'desc') {
-      agents.sort((a, b) =>
-        a.allQueues.avg_recall_time > b.allQueues.avg_recall_time
-          ? -1
-          : b.allQueues.avg_recall_time > a.allQueues.avg_recall_time
-          ? 1
-          : 0,
-      )
-    }
-
-    agents.forEach((el) => {
-      ordered[el.agent] = el
-      delete ordered[el.agent].agent
-    })
-
-    setAgentsRecallTimeOrder(!agentsRecallTimeOrder)
-    setDashboardData((prevData: typeof dashboardData) => ({
-      ...prevData,
-      agentsRecallTime: ordered,
-    }))
-  }
-
-  const orderRecallTimeQueues = (direction: string) => {
-    const queues: any[] = []
-    const ordered: any = {}
-    let n = 0
-    for (const queue in dashboardData.queuesRecallTime) {
-      queues[n] = {
-        queue: queue,
-      }
-      for (const key in dashboardData.queuesRecallTime[queue]) {
-        queues[n][key] = dashboardData.queuesRecallTime[queue][key]
-      }
-      n++
-    }
-    if (direction === 'asc') {
-      queues.sort((a, b) =>
-        a.avg_recall_time > b.avg_recall_time ? 1 : b.avg_recall_time > a.avg_recall_time ? -1 : 0,
-      )
-    } else if (direction === 'desc') {
-      queues.sort((a, b) =>
-        a.avg_recall_time > b.avg_recall_time ? -1 : b.avg_recall_time > a.avg_recall_time ? 1 : 0,
-      )
-    }
-    queues.forEach((el) => {
-      ordered[`queue_${el.queue}`] = el
-    })
-    setDashboardData((prevData: typeof dashboardData) => ({
-      ...prevData,
-      queuesRecallTime: ordered,
-    }))
-  }
-
-  const agentsDashboardRanks = (astats: any, keys: any) => {
-    return new Promise((resolve) => {
-      let n = 0
-      const list: any = {}
-
-      for (const agent in astats) {
-        for (const q in astats[agent]) {
-          if (!isNaN(parseInt(q))) {
-            list[n] = {
-              name: agent,
-              queue: q,
-              values: {},
-            }
-
-            for (let i = 0; i < keys.length; i++) {
-              const key = keys[i]
-              list[n].values[key] = astats[agent][q][key] || 0
-            }
-          }
-
-          n++
-        }
-      }
-
-      resolve(list)
-    })
-  }
-
-  const loadAgentsRanksFirst = (res: any) => {
-    agentsDashboardRanks(res, ['calls_taken', 'no_answer_calls', 'pause_percent']).then(
-      (value: any) => {
-        const agentsAnswered = sortDashboard(
-          value,
-          'calls_taken',
-          dashboardData.orderStatusAsc && dashboardData.orderStatusAsc['agentsAnswered'] ? 'asc' : 'desc',
-        )
-        const agentsLost = sortDashboard(
-          value,
-          'no_answer_calls',
-          dashboardData.orderStatusAsc && dashboardData.orderStatusAsc['agentsLost'] ? 'asc' : 'desc',
-        )
-        const agentsPauseOnLogon = sortDashboard(
-          value,
-          'pause_percent',
-          dashboardData.orderStatusAsc && dashboardData.orderStatusAsc['agentsPauseOnLogon'] ? 'asc' : 'desc',
-        )
-  
-        setDashboardData((prevData: any) => ({
-          ...prevData,
-          agentsAnswered,
-          agentsLost,
-          agentsPauseOnLogon,
-        }))
-
-        loadAgentsRanksSecond(res);
-      },
-    )
-  }
-
-  const loadAgentsRanksSecond = (res: any) => {
-    agentsDashboardRanks(res, ['time_in_logon', 'time_in_pause', 'conversation_percent']).then(
-      (value: any) => {
-        const agentsLoginTime = sortDashboard(
-          value,
-          'time_in_logon',
-          dashboardData.orderStatusAsc && dashboardData.orderStatusAsc['agentsLoginTime'] ? 'asc' : 'desc',
-        )
-        const agentsPauseTime = sortDashboard(
-          value,
-          'time_in_pause',
-          dashboardData.orderStatusAsc && dashboardData.orderStatusAsc['agentsPauseTime'] ? 'asc' : 'desc',
-        )
-        const inCallPercentage = sortDashboard(
-          value,
-          'conversation_percent',
-          dashboardData.orderStatusAsc && dashboardData.orderStatusAsc['inCallPercentage'] ? 'asc' : 'desc',
-        )
-  
-        setDashboardData((prevData: any) => ({
-          ...prevData,
-          agentsLoginTime,
-          agentsPauseTime,
-          inCallPercentage,
-        }))
-      },
-    )
-  }
-
-  const avgRecallTimeRanks = (data: any) => {
-    const newData = { ...data }
-    for (const agent in newData) {
-      if (
-        !newData[agent].allQueues ||
-        (newData[agent].allQueues &&
-          !newData[agent].allQueues.avg_recall_time &&
-          !newData[agent].allQueues.min_recall_time &&
-          !newData[agent].allQueues.max_recall_time)
-      ) {
-        delete newData[agent]
-      }
-    }
-
-    setDashboardData((prevData: any) => ({
-      ...prevData,
-      agentsRecallTime: newData,
-      queuesRecallTime: getQueuesRecallTime(newData),
-    }))
-
-    orderRecallTimeAgents('asc')
-    orderRecallTimeQueues('asc')
-  }
-
-  const getUsersStats = (): void => {
-    getAgentsStats()
-      .then((res: { data: any }) => {
-        avgRecallTimeRanks(res)
-        loadAgentsRanksFirst(res)
-      })
-      .catch((err: any) => {
-        console.error(err)
-      })
-  }
-
-  const initDashboard = function () {
-    getUsersStats()
-    getQueuesStats()
-  }
-
-  useEffect(() => {
-    initDashboard()
-    const interval = setInterval(() => {
-      if (document.hasFocus()) {
-        initDashboard()
-      }
-    }, updateDashboardInterval)
-
-    return () => {
-      clearInterval(interval)
-    }
-  }, [isLoadedQueues])
-
-  const renderAlarms = (data: any, source: string) => {
-    if (source === 'api') {
-      setDashboardData((prevData: any) => ({
-        ...prevData,
-        alarms: data,
-      }))
-    }
-  }
-
-  const getQueueManagerAlarm = async () => {
-    try {
-      const res = await getAlarm()
-      renderAlarms(res.data, 'api')
-    } catch (err) {
-      console.error(err)
-    }
-  }
+  //   return () => {
+  //     clearInterval(interval)
+  //   }
+  // }, [isLoadedQueues])
 
   return (
     <>
