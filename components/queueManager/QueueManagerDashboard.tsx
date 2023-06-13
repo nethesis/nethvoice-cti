@@ -435,6 +435,94 @@ export const QueueManagerDashboard: FC<QueueManagerDashboardProps> = ({
     }))
   }
 
+  const agentsDashboardRanks = (astats: any, keys: any) => {
+    return new Promise((resolve) => {
+      let n = 0
+      const list: any = {}
+
+      for (const agent in astats) {
+        for (const q in astats[agent]) {
+          if (!isNaN(parseInt(q))) {
+            list[n] = {
+              name: agent,
+              queue: q,
+              values: {},
+            }
+
+            for (let i = 0; i < keys.length; i++) {
+              const key = keys[i]
+              list[n].values[key] = astats[agent][q][key] || 0
+            }
+          }
+
+          n++
+        }
+      }
+
+      resolve(list)
+    })
+  }
+
+  const loadAgentsRanksFirst = (res: any) => {
+    agentsDashboardRanks(res, ['calls_taken', 'no_answer_calls', 'pause_percent']).then(
+      (value: any) => {
+        const agentsAnswered = sortDashboard(
+          value,
+          'calls_taken',
+          dashboardData.orderStatusAsc && dashboardData.orderStatusAsc['agentsAnswered'] ? 'asc' : 'desc',
+        )
+        const agentsLost = sortDashboard(
+          value,
+          'no_answer_calls',
+          dashboardData.orderStatusAsc && dashboardData.orderStatusAsc['agentsLost'] ? 'asc' : 'desc',
+        )
+        const agentsPauseOnLogon = sortDashboard(
+          value,
+          'pause_percent',
+          dashboardData.orderStatusAsc && dashboardData.orderStatusAsc['agentsPauseOnLogon'] ? 'asc' : 'desc',
+        )
+  
+        setDashboardData((prevData: any) => ({
+          ...prevData,
+          agentsAnswered,
+          agentsLost,
+          agentsPauseOnLogon,
+        }))
+
+        loadAgentsRanksSecond(res);
+      },
+    )
+  }
+
+  const loadAgentsRanksSecond = (res: any) => {
+    agentsDashboardRanks(res, ['time_in_logon', 'time_in_pause', 'conversation_percent']).then(
+      (value: any) => {
+        const agentsLoginTime = sortDashboard(
+          value,
+          'time_in_logon',
+          dashboardData.orderStatusAsc && dashboardData.orderStatusAsc['agentsLoginTime'] ? 'asc' : 'desc',
+        )
+        const agentsPauseTime = sortDashboard(
+          value,
+          'time_in_pause',
+          dashboardData.orderStatusAsc && dashboardData.orderStatusAsc['agentsPauseTime'] ? 'asc' : 'desc',
+        )
+        const inCallPercentage = sortDashboard(
+          value,
+          'conversation_percent',
+          dashboardData.orderStatusAsc && dashboardData.orderStatusAsc['inCallPercentage'] ? 'asc' : 'desc',
+        )
+  
+        setDashboardData((prevData: any) => ({
+          ...prevData,
+          agentsLoginTime,
+          agentsPauseTime,
+          inCallPercentage,
+        }))
+      },
+    )
+  }
+
   const avgRecallTimeRanks = (data: any) => {
     const newData = { ...data }
     for (const agent in newData) {
@@ -462,8 +550,8 @@ export const QueueManagerDashboard: FC<QueueManagerDashboardProps> = ({
   const getUsersStats = (): void => {
     getAgentsStats()
       .then((res: { data: any }) => {
-        avgRecallTimeRanks(res.data)
-        // loadAgentsRanksFirst(res.data)
+        avgRecallTimeRanks(res)
+        loadAgentsRanksFirst(res)
       })
       .catch((err: any) => {
         console.error(err)
