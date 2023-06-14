@@ -309,15 +309,6 @@ export const QueueManagerDashboard: FC<QueueManagerDashboardProps> = ({
     }
   }, [firstRenderQueuesAgents, isLoadedQueuesAgents])
 
-  let agentStatus = {
-    agentsAnswered: {} as Record<string, any>,
-    agentsLost: {} as Record<string, any>,
-    agentsPauseOnLogon: {} as Record<string, any>,
-    agentsLoginTime: {} as Record<string, any>,
-    agentsPauseTime: {} as Record<string, any>,
-    inCallPercentage: {} as Record<string, any>,
-  }
-
   const agentsDashboardRanks = (keys: any) => {
     let n = 0
     const list = {} as Record<string, any>
@@ -343,39 +334,36 @@ export const QueueManagerDashboard: FC<QueueManagerDashboardProps> = ({
     return list
   }
 
+  const [agentsAnswered, setAgentsAnswered] = useState({} as Record<string, any>)
+  const [agentsLost, setAgentsLost] = useState({} as Record<string, any>)
+  const [agentsPauseOnLogon, setAgentsPauseOnLogon] = useState({} as Record<string, any>)
+
   useEffect(() => {
     if (isLoadedQueuesAgents) {
       const keys = ['calls_taken', 'no_answer_calls', 'pause_percent']
       let calculatedAgent = agentsDashboardRanks(keys)
-
-      agentStatus.agentsAnswered = Object.values(calculatedAgent).reduce((result, agent, index) => {
-        result[index] = {
+      setAgentsAnswered(
+        Object.values(calculatedAgent).map((agent: any, index: number) => ({
           name: agent.name,
           queue: agent.queue,
           values: agent.values.calls_taken,
-        }
-        return result
-      }, {})
+        })),
+      )
 
-      agentStatus.agentsLost = Object.values(calculatedAgent).reduce((result, agent, index) => {
-        result[index] = {
+      setAgentsLost(
+        Object.values(calculatedAgent).map((agent: any, index: number) => ({
           name: agent.name,
           queue: agent.queue,
           values: agent.values.no_answer_calls,
-        }
-        return result
-      }, {})
+        })),
+      )
 
-      agentStatus.agentsPauseOnLogon = Object.values(calculatedAgent).reduce(
-        (result, agent, index) => {
-          result[index] = {
-            name: agent.name,
-            queue: agent.queue,
-            values: agent.values.pause_percent,
-          }
-          return result
-        },
-        {},
+      setAgentsPauseOnLogon(
+        Object.values(calculatedAgent).map((agent: any, index: number) => ({
+          name: agent.name,
+          queue: agent.queue,
+          values: agent.values.pause_percent,
+        })),
       )
     }
   }, [isLoadedQueuesAgents])
@@ -683,8 +671,40 @@ export const QueueManagerDashboard: FC<QueueManagerDashboardProps> = ({
                       </Button>
                     </div>
                   </div>
-                  <div className='flex-grow border-b border-gray-300'></div>
+                  {/* <div className='flex-grow border-b border-gray-300'></div> */}
                   {/* card body */}
+                  <div className='flow-root'>
+                    <div className='-mx-4 -my-2 overflow-x-auto sm:-mx-6 pl-2 pr-2'>
+                      <div className='inline-block min-w-full py-2 align-middle sm:px-6 lg:px-8'>
+                        <table className='min-w-full divide-y divide-gray-300'>
+                          <tbody className='divide-y divide-gray-200 bg-white'>
+                            {Object.values(agentsAnswered).map((agent: any, index: number) => (
+                              <tr key={index}>
+                                <td className='whitespace-nowrap py-5 pl-4 pr-3 text-sm sm:pl-0'>
+                                  <div className='flex items-center'>
+                                    <div className='h-11 w-11 flex-shrink-0'>
+                                      {/* <img
+                                        className='h-11 w-11 rounded-full'
+                                        src={person.image}
+                                        alt=''
+                                      /> */}
+                                      {agent.name}
+                                    </div>
+                                    <div className='ml-4'>
+                                      {/* <div className='font-medium text-gray-900'>{agent.queue}</div> */}
+                                    </div>
+                                  </div>
+                                </td>
+                                <td className='relative whitespace-nowrap py-5 pl-3 pr-4 text-right text-sm font-medium sm:pr-0'>
+                                  {agent.values}
+                                </td>
+                              </tr>
+                            ))}
+                          </tbody>
+                        </table>
+                      </div>
+                    </div>
+                  </div>
                 </div>
               </div>
 
