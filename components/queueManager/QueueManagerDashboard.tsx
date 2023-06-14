@@ -95,6 +95,7 @@ export const QueueManagerDashboard: FC<QueueManagerDashboardProps> = ({
 
   const [firstRenderQueuesList, setFirstRenderQueuesList]: any = useState(true)
   const [firstRenderQueuesStats, setFirstRenderQueuesStats]: any = useState(true)
+  const [firstRenderQueuesAgents, setFirstRenderQueuesAgents]: any = useState(true)
 
   const [zoomedCardIndex, setZoomedCardIndex] = useState(null)
 
@@ -153,8 +154,10 @@ export const QueueManagerDashboard: FC<QueueManagerDashboardProps> = ({
   })
 
   const [queuesList, setQueuesList] = useState<any>({})
+  const [agentsStatsList, setAgentsStatsList] = useState<any>({})
   const [isLoadedQueues, setLoadedQueues] = useState(false)
   const [isLoadedQueuesStats, setLoadedQueuesStats] = useState(false)
+  const [isLoadedQueuesAgents, setLoadedQueuesAgents] = useState(false)
 
   // const [updateDashboardInterval, SetUpdateDashboardInterval] = useState(3000)
 
@@ -260,7 +263,6 @@ export const QueueManagerDashboard: FC<QueueManagerDashboardProps> = ({
     if (allQueuesStats) {
       const keys = ['tot_processed', 'tot_failed', 'tot', 'tot_null']
       const calculatedRank = getQueuesDashboardRank(keys)
-      console.log('calculatedRank', calculatedRank)
 
       // Initialize variables to hold the total counts
       let totalAllCount = 0
@@ -282,8 +284,101 @@ export const QueueManagerDashboard: FC<QueueManagerDashboardProps> = ({
       setTotalFailed(totalFailedCount)
       setTotalInvalid(totalInvalidCount)
     }
-  // eslint-disable-next-line react-hooks/exhaustive-deps
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [allQueuesStats, queuesList])
+
+  //get queues agents stats
+  useEffect(() => {
+    // Avoid api double calling
+    if (firstRenderQueuesAgents) {
+      setFirstRenderQueuesAgents(false)
+      return
+    }
+    async function getQueuesAgentsStats() {
+      setLoadedQueuesAgents(false)
+      try {
+        const res = await getAgentsStats()
+        setAgentsStatsList(res)
+      } catch (err) {
+        console.error(err)
+      }
+      setLoadedQueuesAgents(true)
+    }
+    if (!isLoadedQueuesAgents) {
+      getQueuesAgentsStats()
+    }
+  }, [firstRenderQueuesAgents, isLoadedQueuesAgents])
+
+  let agentStatus = {
+    agentsAnswered: {} as Record<string, any>,
+    agentsLost: {} as Record<string, any>,
+    agentsPauseOnLogon: {} as Record<string, any>,
+    agentsLoginTime: {} as Record<string, any>,
+    agentsPauseTime: {} as Record<string, any>,
+    inCallPercentage: {} as Record<string, any>,
+  }
+
+  const agentsDashboardRanks = (keys: any) => {
+    let n = 0
+    const list = {} as Record<string, any>
+    let q: any
+
+    for (const agent in agentsStatsList) {
+      for (q in agentsStatsList[agent]) {
+        if (!isNaN(q)) {
+          list[n] = {
+            name: agent,
+            queue: q,
+            values: {},
+          }
+
+          for (const key of keys) {
+            list[n].values[key] = agentsStatsList[agent][q][key] || 0
+          }
+          n++
+        }
+      }
+    }
+
+    return list
+  }
+
+  useEffect(() => {
+    if (isLoadedQueuesAgents) {
+      const keys = ['calls_taken', 'no_answer_calls', 'pause_percent']
+      let calculatedAgent = agentsDashboardRanks(keys)
+
+      agentStatus.agentsAnswered = Object.values(calculatedAgent).reduce((result, agent, index) => {
+        result[index] = {
+          name: agent.name,
+          queue: agent.queue,
+          values: agent.values.calls_taken,
+        }
+        return result
+      }, {})
+
+      agentStatus.agentsLost = Object.values(calculatedAgent).reduce((result, agent, index) => {
+        result[index] = {
+          name: agent.name,
+          queue: agent.queue,
+          values: agent.values.no_answer_calls,
+        }
+        return result
+      }, {})
+
+      agentStatus.agentsPauseOnLogon = Object.values(calculatedAgent).reduce(
+        (result, agent, index) => {
+          result[index] = {
+            name: agent.name,
+            queue: agent.queue,
+            values: agent.values.pause_percent,
+          }
+          return result
+        },
+        {},
+      )
+    }
+  }, [isLoadedQueuesAgents])
 
   return (
     <>
@@ -328,9 +423,7 @@ export const QueueManagerDashboard: FC<QueueManagerDashboardProps> = ({
                     />
                   </div>
                   <div className='flex flex-col justify-center ml-4'>
-                    <p className='text-3xl font-semibold tracking-tight text-left'>
-                      {totalAll}
-                    </p>
+                    <p className='text-3xl font-semibold tracking-tight text-left'>{totalAll}</p>
                     <p className='text-sm font-medium leading-6 text-center text-gray-500 dark:text-gray-500'>
                       {t('QueueManager.Total calls')}
                     </p>
@@ -370,9 +463,7 @@ export const QueueManagerDashboard: FC<QueueManagerDashboardProps> = ({
                     />
                   </div>
                   <div className='flex flex-col justify-center ml-4'>
-                    <p className='text-3xl font-semibold tracking-tight text-left'>
-                      {totalFailed}
-                    </p>
+                    <p className='text-3xl font-semibold tracking-tight text-left'>{totalFailed}</p>
                     <p className='text-sm font-medium leading-6 text-center text-gray-500 dark:text-gray-500'>
                       {t('QueueManager.Lost calls')}
                     </p>
