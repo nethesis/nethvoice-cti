@@ -94,6 +94,7 @@ export const QueueManagerDashboard: FC<QueueManagerDashboardProps> = ({
   const { t } = useTranslation()
 
   const [firstRenderQueuesList, setFirstRenderQueuesList]: any = useState(true)
+  const [firstRenderQueuesStats, setFirstRenderQueuesStats]: any = useState(true)
 
   const [zoomedCardIndex, setZoomedCardIndex] = useState(null)
 
@@ -153,10 +154,13 @@ export const QueueManagerDashboard: FC<QueueManagerDashboardProps> = ({
 
   const [queuesList, setQueuesList] = useState<any>({})
   const [isLoadedQueues, setLoadedQueues] = useState(false)
+  const [isLoadedQueuesStats, setLoadedQueuesStats] = useState(false)
+
   // const [updateDashboardInterval, SetUpdateDashboardInterval] = useState(3000)
 
   //get queues list information
   useEffect(() => {
+    // Avoid api double calling
     if (firstRenderQueuesList) {
       setFirstRenderQueuesList(false)
       return
@@ -176,37 +180,110 @@ export const QueueManagerDashboard: FC<QueueManagerDashboardProps> = ({
     }
   }, [firstRenderQueuesList, isLoadedQueues])
 
-  // const initDashboard = () => {
-  //   console.log('enter use effect')
-  //   setDashboardData({
-  //     ...dashboardData,
-  //     agentsAnswered: {},
-  //     agentsLost: {},
-  //     agentsPauseOnLogon: {},
-  //     totalAll: 0,
-  //     totalAnswered: 0,
-  //     totalFailed: 0,
-  //     totalInvalid: 0,
-  //     answeredAverage: 0,
-  //     agentsRecallTime: {},
-  //     queuesRecallTime: {},
-  //   })
+  const [allQueuesStats, setAllQueuesStats] = useState(false)
+  //get queues status information
+  useEffect(() => {
+    // Avoid api double calling
+    if (firstRenderQueuesStats) {
+      setFirstRenderQueuesStats(false)
+      return
+    }
+    async function getQueuesStats() {
+      setLoadedQueuesStats(false)
+      try {
+        setAllQueuesStats(false)
+        //get list of queues from queuesList
+        const queuesName = Object.keys(queuesList)
+        //get number of queues
+        const queuesLength = queuesName.length
 
-  //   getQueuesStats()
-  // }
+        // Get statuses for each queue
+        for (let i = 0; i < queuesLength; i++) {
+          const key = queuesName[i]
+          const res = await getQueueStats(key)
 
-  // useEffect(() => {
-  //   initDashboard()
-  //   const interval = setInterval(() => {
-  //     if (document.hasFocus()) {
-  //       initDashboard()
-  //     }
-  //   }, updateDashboardInterval)
+          if (queuesList[key]) {
+            queuesList[key].qstats = res
+          }
+        }
 
-  //   return () => {
-  //     clearInterval(interval)
-  //   }
-  // }, [isLoadedQueues])
+        setAllQueuesStats(true)
+      } catch (err) {
+        console.error(err)
+      }
+    }
+    if (!isLoadedQueuesStats) {
+      getQueuesStats()
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [queuesList, firstRenderQueuesStats])
+
+  // Function to retrieve the queues' dashboard rank based on specified keys
+  const getQueuesDashboardRank = (keys: any) => {
+    // Array to store queue data
+    const result = []
+    // Temporary variable to iterate over queues
+    let queue: any
+
+    for (queue of Object.values(queuesList)) {
+      // Iterate over each queue in the queuesList object
+      if (!isNaN(queue.queue)) {
+        // Check if the 'queue' field of the queue is a number
+        const queueData = {
+          name: queue.name,
+          queue: queue.queue,
+          // Object to store queue statistics values
+          values: {} as Record<string, any>,
+        }
+
+        // Iterate over the specified keys "tot_processed", "tot_failed", "tot", "tot_null"
+        for (const key of keys) {
+          // Assign the corresponding statistic value to the queue
+          queueData.values[key] = queue.qstats?.[key] || 0
+        }
+        // Add the queue data to the result array
+        result.push(queueData)
+      }
+    }
+
+    // Return the array of queue data
+    return result
+  }
+
+  const [totalAll, setTotalAll] = useState(0)
+  const [totalAnswered, setTotalAnswered] = useState(0)
+  const [totalFailed, setTotalFailed] = useState(0)
+  const [totalInvalid, setTotalInvalid] = useState(0)
+
+  //get total calls for headers cards Dashboard
+  useEffect(() => {
+    if (allQueuesStats) {
+      const keys = ['tot_processed', 'tot_failed', 'tot', 'tot_null']
+      const calculatedRank = getQueuesDashboardRank(keys)
+      console.log('calculatedRank', calculatedRank)
+
+      // Initialize variables to hold the total counts
+      let totalAllCount = 0
+      let totalAnsweredCount = 0
+      let totalFailedCount = 0
+      let totalInvalidCount = 0
+
+      // Iterate over each queue in calculatedRank and calculate the totals
+      calculatedRank.forEach((queue) => {
+        totalAllCount += queue.values.tot
+        totalAnsweredCount += queue.values.tot_processed
+        totalFailedCount += queue.values.tot_failed
+        totalInvalidCount += queue.values.tot_null
+      })
+
+      // Update the state with the calculated totals
+      setTotalAll(totalAllCount)
+      setTotalAnswered(totalAnsweredCount)
+      setTotalFailed(totalFailedCount)
+      setTotalInvalid(totalInvalidCount)
+    }
+  // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [allQueuesStats, queuesList])
 
   return (
     <>
@@ -252,7 +329,7 @@ export const QueueManagerDashboard: FC<QueueManagerDashboardProps> = ({
                   </div>
                   <div className='flex flex-col justify-center ml-4'>
                     <p className='text-3xl font-semibold tracking-tight text-left'>
-                      {dashboardData.totalAll}
+                      {totalAll}
                     </p>
                     <p className='text-sm font-medium leading-6 text-center text-gray-500 dark:text-gray-500'>
                       {t('QueueManager.Total calls')}
@@ -273,7 +350,7 @@ export const QueueManagerDashboard: FC<QueueManagerDashboardProps> = ({
                   </div>
                   <div className='flex flex-col justify-center ml-4'>
                     <p className='text-3xl font-semibold tracking-tight text-left'>
-                      {dashboardData.totalAnswered}
+                      {totalAnswered}
                     </p>
                     <p className='text-sm font-medium leading-6 text-center text-gray-500 dark:text-gray-500'>
                       {t('QueueManager.Answered calls')}
@@ -290,12 +367,11 @@ export const QueueManagerDashboard: FC<QueueManagerDashboardProps> = ({
                       icon={faMissed}
                       className='h-6 w-6 cursor-pointer text-emerald-600 dark:text-emerald-600'
                       aria-hidden='true'
-                      // onClick={() => toggleExpandQueue(queue)}
                     />
                   </div>
                   <div className='flex flex-col justify-center ml-4'>
                     <p className='text-3xl font-semibold tracking-tight text-left'>
-                      {dashboardData.totalFailed}
+                      {totalFailed}
                     </p>
                     <p className='text-sm font-medium leading-6 text-center text-gray-500 dark:text-gray-500'>
                       {t('QueueManager.Lost calls')}
@@ -312,12 +388,11 @@ export const QueueManagerDashboard: FC<QueueManagerDashboardProps> = ({
                       icon={faPhoneSlash}
                       className='h-6 w-6 cursor-pointer text-emerald-600 dark:text-emerald-600'
                       aria-hidden='true'
-                      // onClick={() => toggleExpandQueue(queue)}
                     />
                   </div>
                   <div className='flex flex-col justify-center ml-4'>
                     <p className='text-3xl font-semibold tracking-tight text-left'>
-                      {dashboardData.totalInvalid}
+                      {totalInvalid}
                     </p>
                     <p className='text-sm font-medium leading-6 text-center text-gray-500 dark:text-gray-500'>
                       {t('QueueManager.Invalid calls')}
