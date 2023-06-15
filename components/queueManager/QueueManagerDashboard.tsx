@@ -97,6 +97,40 @@ export const QueueManagerDashboard: FC<QueueManagerDashboardProps> = ({
   const [firstRenderQueuesStats, setFirstRenderQueuesStats]: any = useState(true)
   const [firstRenderQueuesAgents, setFirstRenderQueuesAgents]: any = useState(true)
 
+  // load operators information from the store
+  const operatorsStore = useSelector((state: RootState) => state.operators)
+  const [avatarIcon, setAvatarIcon] = useState<any>()
+  const [operatorInformation, setOperatorInformation] = useState<any>()
+
+  // get operator avatar base64 from the store
+  useEffect(() => {
+    if (operatorsStore && !avatarIcon) {
+      setAvatarIcon(operatorsStore.avatars)
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [])
+
+  // get operator information from the store
+  useEffect(() => {
+    if (operatorsStore && !operatorInformation) {
+      setOperatorInformation(operatorsStore.operators)
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [])
+
+  function getAvatarData(announcement: any) {
+    let userAvatarData = ''
+    if (announcement.shorName && avatarIcon) {
+      for (const username in avatarIcon) {
+        if (username === announcement.shorName) {
+          userAvatarData = avatarIcon[username]
+          break
+        }
+      }
+    }
+    return userAvatarData
+  }
+
   const [zoomedCardIndex, setZoomedCardIndex] = useState(null)
 
   const handleZoom = (index: any) => {
@@ -338,35 +372,115 @@ export const QueueManagerDashboard: FC<QueueManagerDashboardProps> = ({
   const [agentsLost, setAgentsLost] = useState({} as Record<string, any>)
   const [agentsPauseOnLogon, setAgentsPauseOnLogon] = useState({} as Record<string, any>)
 
+  function getFullUsername(announcement: any, operatorInformation: any) {
+    let shortName = ''
+    if (announcement.name && operatorInformation) {
+      const username = operatorInformation[announcement.name]
+      if (username) {
+        shortName = username
+      }
+    }
+    return shortName
+  }
+
+  // Inverts an object by swapping its keys and values
+  function invertObject(obj: any) {
+    const invertedObj: any = {}
+
+    // Iterate over each key-value pair in the original object.
+    for (const key in obj) {
+      const value = obj[key]
+      // Swap the key and value in the inverted object.
+      invertedObj[value.name] = key
+    }
+    return invertedObj
+  }
+
+  function getAvatarMainPresence(announcement: any) {
+    let userMainPresence = null
+    if (announcement.shorName && operatorInformation) {
+      for (const username in operatorInformation) {
+        if (username === announcement.shorName) {
+          userMainPresence = operatorInformation[username].presence
+        }
+      }
+    }
+    return userMainPresence
+  }
+
+  const [sortOrderAnsweredCalls, setSortOrderAnsweredCalls] = useState<'asc' | 'desc'>('desc')
+  const [sortOrderUnansweredCalls, setSortOrderUnansweredCalls] = useState<'asc' | 'desc'>('desc')
+  const [sortOrderPauseOnLogin, setSortOrderPauseOnLogin] = useState<'asc' | 'desc'>('desc')
+
+  function handleSortOrderAnsweredCallsToggle() {
+    setSortOrderAnsweredCalls(sortOrderAnsweredCalls === 'asc' ? 'desc' : 'asc')
+  }
+
+  function handleSortOrderUnansweredCallsToggle() {
+    setSortOrderUnansweredCalls(sortOrderUnansweredCalls === 'asc' ? 'desc' : 'asc')
+  }
+
+  function handleSortOrderPauseOnLoginToggle() {
+    setSortOrderPauseOnLogin(sortOrderPauseOnLogin === 'asc' ? 'desc' : 'asc')
+  }
+
+  function sortAgentsData(data: any[], sortOrder: any) {
+    const sortedData = data.sort((a, b) => {
+      if (sortOrder === 'asc') {
+        return a.values - b.values
+      } else {
+        return b.values - a.values
+      }
+    })
+
+    return sortedData.slice(0, 5)
+  }
+
   useEffect(() => {
     if (isLoadedQueuesAgents) {
       const keys = ['calls_taken', 'no_answer_calls', 'pause_percent']
       let calculatedAgent = agentsDashboardRanks(keys)
-      setAgentsAnswered(
-        Object.values(calculatedAgent).map((agent: any, index: number) => ({
+      const invertedOperatorInformation = invertObject(operatorInformation)
+
+      const agentsAnsweredData = Object.values(calculatedAgent).map(
+        (agent: any, index: number) => ({
           name: agent.name,
+          shorName: getFullUsername(agent, invertedOperatorInformation),
           queue: agent.queue,
           values: agent.values.calls_taken,
-        })),
+        }),
       )
 
-      setAgentsLost(
-        Object.values(calculatedAgent).map((agent: any, index: number) => ({
-          name: agent.name,
-          queue: agent.queue,
-          values: agent.values.no_answer_calls,
-        })),
-      )
+      const agentsLostData = Object.values(calculatedAgent).map((agent: any, index: number) => ({
+        name: agent.name,
+        shorName: getFullUsername(agent, invertedOperatorInformation),
+        queue: agent.queue,
+        values: agent.values.no_answer_calls,
+      }))
 
-      setAgentsPauseOnLogon(
-        Object.values(calculatedAgent).map((agent: any, index: number) => ({
+      const agentsPauseOnLogonData = Object.values(calculatedAgent).map(
+        (agent: any, index: number) => ({
           name: agent.name,
+          shorName: getFullUsername(agent, invertedOperatorInformation),
           queue: agent.queue,
           values: agent.values.pause_percent,
-        })),
+        }),
       )
+
+      const sortedAgentsAnswered = sortAgentsData(agentsAnsweredData, sortOrderAnsweredCalls)
+      const sortedAgentsLost = sortAgentsData(agentsLostData, sortOrderUnansweredCalls)
+      const sortedAgentsPauseOnLogon = sortAgentsData(agentsPauseOnLogonData, sortOrderPauseOnLogin)
+
+      setAgentsAnswered(sortedAgentsAnswered)
+      setAgentsLost(sortedAgentsLost)
+      setAgentsPauseOnLogon(sortedAgentsPauseOnLogon)
     }
-  }, [isLoadedQueuesAgents])
+  }, [
+    isLoadedQueuesAgents,
+    sortOrderAnsweredCalls,
+    sortOrderUnansweredCalls,
+    sortOrderPauseOnLogin,
+  ])
 
   return (
     <>
@@ -653,7 +767,7 @@ export const QueueManagerDashboard: FC<QueueManagerDashboardProps> = ({
                           </h3>
                         </div>
                       </div>
-                      <Button variant='white'>
+                      <Button variant='white' onClick={() => handleSortOrderAnsweredCallsToggle()}>
                         <div className='flex items-center space-x-2'>
                           <FontAwesomeIcon
                             icon={faArrowUpWideShort}
@@ -665,7 +779,6 @@ export const QueueManagerDashboard: FC<QueueManagerDashboardProps> = ({
                             icon={faChevronUp}
                             className='h-3.5 w-3.5 pl-2 py-2 cursor-pointer'
                             aria-hidden='true'
-                            // onClick={() => toggleExpandQueue(queue)}
                           />
                         </div>
                       </Button>
@@ -680,22 +793,27 @@ export const QueueManagerDashboard: FC<QueueManagerDashboardProps> = ({
                           <tbody className='divide-y divide-gray-200 bg-white'>
                             {Object.values(agentsAnswered).map((agent: any, index: number) => (
                               <tr key={index}>
-                                <td className='whitespace-nowrap py-5 pl-4 pr-3 text-sm sm:pl-0'>
-                                  <div className='flex items-center'>
-                                    <div className='h-11 w-11 flex-shrink-0'>
-                                      {/* <img
-                                        className='h-11 w-11 rounded-full'
-                                        src={person.image}
-                                        alt=''
-                                      /> */}
-                                      {agent.name}
-                                    </div>
-                                    <div className='ml-4'>
-                                      {/* <div className='font-medium text-gray-900'>{agent.queue}</div> */}
-                                    </div>
+                                <td className='whitespace-nowrap py-2 pl-4 pr-3 text-sm sm:pl-0'>
+                                  <div className='flex items-center justify-center h-full'>
+                                    {index + 1}.
                                   </div>
                                 </td>
-                                <td className='relative whitespace-nowrap py-5 pl-3 pr-4 text-right text-sm font-medium sm:pr-0'>
+                                <td className='whitespace-nowrap py-3 pl-4 pr-3 text-sm sm:pl-0'>
+                                  <div className='flex items-center'>
+                                    <div className='h-9 w-9 flex-shrink-0 mr-2'>
+                                      <Avatar
+                                        src={getAvatarData(agentsAnswered[index])}
+                                        placeholderType='operator'
+                                        size='small'
+                                        bordered
+                                        className='cursor-pointer'
+                                        status={getAvatarMainPresence(agentsAnswered[index])}
+                                      />
+                                    </div>
+                                    <div className='text-gray-900'>{agent.name}</div>
+                                  </div>
+                                </td>
+                                <td className='relative whitespace-nowrap py-2 pl-3 pr-4 text-right text-sm font-medium sm:pr-0'>
                                   {agent.values}
                                 </td>
                               </tr>
@@ -721,7 +839,10 @@ export const QueueManagerDashboard: FC<QueueManagerDashboardProps> = ({
                           </h3>
                         </div>
                       </div>
-                      <Button variant='white'>
+                      <Button
+                        variant='white'
+                        onClick={() => handleSortOrderUnansweredCallsToggle()}
+                      >
                         <div className='flex items-center space-x-2'>
                           <FontAwesomeIcon
                             icon={faArrowUpWideShort}
@@ -733,7 +854,6 @@ export const QueueManagerDashboard: FC<QueueManagerDashboardProps> = ({
                             icon={faChevronUp}
                             className='h-3.5 w-3.5 pl-2 py-2 cursor-pointer'
                             aria-hidden='true'
-                            // onClick={() => toggleExpandQueue(queue)}
                           />
                         </div>
                       </Button>
@@ -741,6 +861,43 @@ export const QueueManagerDashboard: FC<QueueManagerDashboardProps> = ({
                   </div>
                   <div className='flex-grow border-b border-gray-300'></div>
                   {/* card body */}
+                  <div className='flow-root'>
+                    <div className='-mx-4 -my-2 overflow-x-auto sm:-mx-6 pl-2 pr-2'>
+                      <div className='inline-block min-w-full py-2 align-middle sm:px-6 lg:px-8'>
+                        <table className='min-w-full divide-y divide-gray-300'>
+                          <tbody className='divide-y divide-gray-200 bg-white'>
+                            {Object.values(agentsLost).map((agent: any, index: number) => (
+                              <tr key={index}>
+                                <td className='whitespace-nowrap py-2 pl-4 pr-3 text-sm sm:pl-0'>
+                                  <div className='flex items-center justify-center h-full'>
+                                    {index + 1}.
+                                  </div>
+                                </td>
+                                <td className='whitespace-nowrap py-3 pl-4 pr-3 text-sm sm:pl-0'>
+                                  <div className='flex items-center'>
+                                    <div className='h-9 w-9 flex-shrink-0 mr-2'>
+                                      <Avatar
+                                        src={getAvatarData(agentsLost[index])}
+                                        placeholderType='operator'
+                                        size='small'
+                                        bordered
+                                        className='cursor-pointer'
+                                        status={getAvatarMainPresence(agentsLost[index])}
+                                      />
+                                    </div>
+                                    <div className='text-gray-900'>{agent.name}</div>
+                                  </div>
+                                </td>
+                                <td className='relative whitespace-nowrap py-2 pl-3 pr-4 text-right text-sm font-medium sm:pr-0'>
+                                  {agent.values}
+                                </td>
+                              </tr>
+                            ))}
+                          </tbody>
+                        </table>
+                      </div>
+                    </div>
+                  </div>
                 </div>
               </div>
 
@@ -757,7 +914,7 @@ export const QueueManagerDashboard: FC<QueueManagerDashboardProps> = ({
                           </h3>
                         </div>
                       </div>
-                      <Button variant='white'>
+                      <Button variant='white' onClick={() => handleSortOrderPauseOnLoginToggle()}>
                         <div className='flex items-center space-x-2'>
                           <FontAwesomeIcon
                             icon={faArrowUpWideShort}
@@ -777,6 +934,43 @@ export const QueueManagerDashboard: FC<QueueManagerDashboardProps> = ({
                   </div>
                   <div className='flex-grow border-b border-gray-300'></div>
                   {/* card body */}
+                  <div className='flow-root'>
+                    <div className='-mx-4 -my-2 overflow-x-auto sm:-mx-6 pl-2 pr-2'>
+                      <div className='inline-block min-w-full py-2 align-middle sm:px-6 lg:px-8'>
+                        <table className='min-w-full divide-y divide-gray-300'>
+                          <tbody className='divide-y divide-gray-200 bg-white'>
+                            {Object.values(agentsPauseOnLogon).map((agent: any, index: number) => (
+                              <tr key={index}>
+                                <td className='whitespace-nowrap py-2 pl-4 pr-3 text-sm sm:pl-0'>
+                                  <div className='flex items-center justify-center h-full'>
+                                    {index + 1}.
+                                  </div>
+                                </td>
+                                <td className='whitespace-nowrap py-3 pl-4 pr-3 text-sm sm:pl-0'>
+                                  <div className='flex items-center'>
+                                    <div className='h-9 w-9 flex-shrink-0 mr-2'>
+                                      <Avatar
+                                        src={getAvatarData(agentsPauseOnLogon[index])}
+                                        placeholderType='operator'
+                                        size='small'
+                                        bordered
+                                        className='cursor-pointer'
+                                        status={getAvatarMainPresence(agentsPauseOnLogon[index])}
+                                      />
+                                    </div>
+                                    <div className='text-gray-900'>{agent.name}</div>
+                                  </div>
+                                </td>
+                                <td className='relative whitespace-nowrap py-2 pl-3 pr-4 text-right text-sm font-medium sm:pr-0'>
+                                  {agent.values}
+                                </td>
+                              </tr>
+                            ))}
+                          </tbody>
+                        </table>
+                      </div>
+                    </div>
+                  </div>
                 </div>
               </div>
 
