@@ -19,6 +19,7 @@ import {
   faArrowLeft,
   faChevronUp,
   faArrowUpWideShort,
+  faArrowDownWideShort,
 } from '@fortawesome/free-solid-svg-icons'
 import {
   Chart as ChartJS,
@@ -770,7 +771,11 @@ export const QueueManagerDashboard: FC<QueueManagerDashboardProps> = ({
                       <Button variant='white' onClick={() => handleSortOrderAnsweredCallsToggle()}>
                         <div className='flex items-center space-x-2'>
                           <FontAwesomeIcon
-                            icon={faArrowUpWideShort}
+                            icon={
+                              sortOrderAnsweredCalls === 'desc'
+                                ? faArrowUpWideShort
+                                : faArrowDownWideShort
+                            }
                             className='h-4 w-4 pl-2 py-2 cursor-pointer'
                             aria-hidden='true'
                           />
@@ -845,7 +850,11 @@ export const QueueManagerDashboard: FC<QueueManagerDashboardProps> = ({
                       >
                         <div className='flex items-center space-x-2'>
                           <FontAwesomeIcon
-                            icon={faArrowUpWideShort}
+                            icon={
+                              sortOrderUnansweredCalls === 'desc'
+                                ? faArrowUpWideShort
+                                : faArrowDownWideShort
+                            }
                             className='h-4 w-4 pl-2 py-2 cursor-pointer'
                             aria-hidden='true'
                           />
@@ -917,7 +926,11 @@ export const QueueManagerDashboard: FC<QueueManagerDashboardProps> = ({
                       <Button variant='white' onClick={() => handleSortOrderPauseOnLoginToggle()}>
                         <div className='flex items-center space-x-2'>
                           <FontAwesomeIcon
-                            icon={faArrowUpWideShort}
+                            icon={
+                              sortOrderPauseOnLogin === 'desc'
+                                ? faArrowUpWideShort
+                                : faArrowDownWideShort
+                            }
                             className='h-4 w-4 pl-2 py-2 cursor-pointer'
                             aria-hidden='true'
                           />
