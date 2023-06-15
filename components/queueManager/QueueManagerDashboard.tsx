@@ -32,6 +32,7 @@ import {
 } from 'chart.js'
 import { Bar } from 'react-chartjs-2'
 import { getAlarm, getQueues, getAgentsStats, getQueueStats } from '../../lib/queueManager'
+import { formatDuration, intervalToDuration, format } from 'date-fns'
 
 ChartJS.register(CategoryScale, LinearScale, BarElement, Title, Tooltip, Legend)
 
@@ -369,10 +370,6 @@ export const QueueManagerDashboard: FC<QueueManagerDashboardProps> = ({
     return list
   }
 
-  const [agentsAnswered, setAgentsAnswered] = useState({} as Record<string, any>)
-  const [agentsLost, setAgentsLost] = useState({} as Record<string, any>)
-  const [agentsPauseOnLogon, setAgentsPauseOnLogon] = useState({} as Record<string, any>)
-
   function getFullUsername(announcement: any, operatorInformation: any) {
     let shortName = ''
     if (announcement.name && operatorInformation) {
@@ -409,9 +406,21 @@ export const QueueManagerDashboard: FC<QueueManagerDashboardProps> = ({
     return userMainPresence
   }
 
+  const [agentsAnswered, setAgentsAnswered] = useState({} as Record<string, any>)
+  const [agentsLost, setAgentsLost] = useState({} as Record<string, any>)
+  const [agentsPauseOnLogon, setAgentsPauseOnLogon] = useState({} as Record<string, any>)
+
+  const [agentsLoginTime, setAgentsLoginTime] = useState({} as Record<string, any>)
+  const [agentsPauseTime, setAgentsPauseTime] = useState({} as Record<string, any>)
+  const [inCallPercentage, setInCallPercentage] = useState({} as Record<string, any>)
+
   const [sortOrderAnsweredCalls, setSortOrderAnsweredCalls] = useState<'asc' | 'desc'>('desc')
   const [sortOrderUnansweredCalls, setSortOrderUnansweredCalls] = useState<'asc' | 'desc'>('desc')
   const [sortOrderPauseOnLogin, setSortOrderPauseOnLogin] = useState<'asc' | 'desc'>('desc')
+
+  const [sortOrderAgentsLoginTime, setSortOrderAgentsLoginTime] = useState<'asc' | 'desc'>('desc')
+  const [sortOrderAgentsPauseTime, setSortOrderAgentsPauseTime] = useState<'asc' | 'desc'>('desc')
+  const [sortOrderInCallPercentage, setSortOrderInCallPercentage] = useState<'asc' | 'desc'>('desc')
 
   function handleSortOrderAnsweredCallsToggle() {
     setSortOrderAnsweredCalls(sortOrderAnsweredCalls === 'asc' ? 'desc' : 'asc')
@@ -425,6 +434,18 @@ export const QueueManagerDashboard: FC<QueueManagerDashboardProps> = ({
     setSortOrderPauseOnLogin(sortOrderPauseOnLogin === 'asc' ? 'desc' : 'asc')
   }
 
+  function handleSortOrderAgentsLoginTimeToggle() {
+    setSortOrderAgentsLoginTime(sortOrderAgentsLoginTime === 'asc' ? 'desc' : 'asc')
+  }
+
+  function handleSortOrderAgentsPauseTimeToggle() {
+    setSortOrderAgentsPauseTime(sortOrderAgentsPauseTime === 'asc' ? 'desc' : 'asc')
+  }
+
+  function handleSortOrderInCallPercentageToggle() {
+    setSortOrderInCallPercentage(sortOrderInCallPercentage === 'asc' ? 'desc' : 'asc')
+  }
+
   function sortAgentsData(data: any[], sortOrder: any) {
     const sortedData = data.sort((a, b) => {
       if (sortOrder === 'asc') {
@@ -434,12 +455,40 @@ export const QueueManagerDashboard: FC<QueueManagerDashboardProps> = ({
       }
     })
 
-    return sortedData.slice(0, 5)
+    // return sortedData.slice(0, 5)
+    return sortedData
+  }
+
+  //convert from seconds to human readable format
+  function convertToHumanReadable(seconds: number | undefined) {
+    if (seconds === 0) {
+      return '00:00:00'
+    }
+
+    if (seconds === undefined) {
+      return '00:00:00'
+    }
+
+    const duration = intervalToDuration({ start: 0, end: seconds * 1000 })
+
+    // Extract the hours, minutes and seconds from the formatted string
+    const hours = duration.hours?.toString().padStart(2, '0') || '00'
+    const minutes = duration.minutes?.toString().padStart(2, '0') || '00'
+    const secondsTest = duration.seconds?.toString().padStart(2, '0') || '00'
+
+    return `${hours}:${minutes}:${secondsTest}`
   }
 
   useEffect(() => {
     if (isLoadedQueuesAgents) {
-      const keys = ['calls_taken', 'no_answer_calls', 'pause_percent']
+      const keys = [
+        'calls_taken',
+        'no_answer_calls',
+        'pause_percent',
+        'time_in_logon',
+        'time_in_pause',
+        'conversation_percent',
+      ]
       let calculatedAgent = agentsDashboardRanks(keys)
       const invertedOperatorInformation = invertObject(operatorInformation)
 
@@ -468,19 +517,66 @@ export const QueueManagerDashboard: FC<QueueManagerDashboardProps> = ({
         }),
       )
 
+      const agentsLoginTimeData = Object.values(calculatedAgent).map(
+        (agent: any, index: number) => ({
+          name: agent.name,
+          shorName: getFullUsername(agent, invertedOperatorInformation),
+          queue: agent.queue,
+          values: agent.values.time_in_logon,
+        }),
+      )
+
+      const agentsPauseTimeData = Object.values(calculatedAgent).map(
+        (agent: any, index: number) => ({
+          name: agent.name,
+          shorName: getFullUsername(agent, invertedOperatorInformation),
+          queue: agent.queue,
+          values: agent.values.time_in_pause,
+        }),
+      )
+
+      const inCallPercentageData = Object.values(calculatedAgent).map(
+        (agent: any, index: number) => ({
+          name: agent.name,
+          shorName: getFullUsername(agent, invertedOperatorInformation),
+          queue: agent.queue,
+          values: agent.values.conversation_percent,
+        }),
+      )
+
       const sortedAgentsAnswered = sortAgentsData(agentsAnsweredData, sortOrderAnsweredCalls)
       const sortedAgentsLost = sortAgentsData(agentsLostData, sortOrderUnansweredCalls)
       const sortedAgentsPauseOnLogon = sortAgentsData(agentsPauseOnLogonData, sortOrderPauseOnLogin)
 
+      const sortedAgentsLoginTimeData = sortAgentsData(
+        agentsLoginTimeData,
+        sortOrderAgentsLoginTime,
+      )
+      const sortedAgentsPauseTimeData = sortAgentsData(
+        agentsPauseTimeData,
+        sortOrderAgentsPauseTime,
+      )
+
+      const sortedInCallPercentageData = sortAgentsData(
+        inCallPercentageData,
+        sortOrderInCallPercentage,
+      )
+
       setAgentsAnswered(sortedAgentsAnswered)
       setAgentsLost(sortedAgentsLost)
       setAgentsPauseOnLogon(sortedAgentsPauseOnLogon)
+      setAgentsLoginTime(sortedAgentsLoginTimeData)
+      setAgentsPauseTime(sortedAgentsPauseTimeData)
+      setInCallPercentage(sortedInCallPercentageData)
     }
   }, [
     isLoadedQueuesAgents,
     sortOrderAnsweredCalls,
     sortOrderUnansweredCalls,
     sortOrderPauseOnLogin,
+    sortOrderAgentsLoginTime,
+    sortOrderAgentsPauseTime,
+    sortOrderInCallPercentage,
   ])
 
   return (
@@ -939,7 +1035,6 @@ export const QueueManagerDashboard: FC<QueueManagerDashboardProps> = ({
                             icon={faChevronUp}
                             className='h-3.5 w-3.5 pl-2 py-2 cursor-pointer'
                             aria-hidden='true'
-                            // onClick={() => toggleExpandQueue(queue)}
                           />
                         </div>
                       </Button>
@@ -975,7 +1070,7 @@ export const QueueManagerDashboard: FC<QueueManagerDashboardProps> = ({
                                   </div>
                                 </td>
                                 <td className='relative whitespace-nowrap py-2 pl-3 pr-4 text-right text-sm font-medium sm:pr-0'>
-                                  {agent.values}
+                                  {agent.values}%
                                 </td>
                               </tr>
                             ))}
@@ -1000,10 +1095,17 @@ export const QueueManagerDashboard: FC<QueueManagerDashboardProps> = ({
                           </h3>
                         </div>
                       </div>
-                      <Button variant='white'>
+                      <Button
+                        variant='white'
+                        onClick={() => handleSortOrderAgentsLoginTimeToggle()}
+                      >
                         <div className='flex items-center space-x-2'>
                           <FontAwesomeIcon
-                            icon={faArrowUpWideShort}
+                            icon={
+                              sortOrderAgentsLoginTime === 'desc'
+                                ? faArrowUpWideShort
+                                : faArrowDownWideShort
+                            }
                             className='h-4 w-4 pl-2 py-2 cursor-pointer'
                             aria-hidden='true'
                           />
@@ -1012,7 +1114,6 @@ export const QueueManagerDashboard: FC<QueueManagerDashboardProps> = ({
                             icon={faChevronUp}
                             className='h-3.5 w-3.5 pl-2 py-2 cursor-pointer'
                             aria-hidden='true'
-                            // onClick={() => toggleExpandQueue(queue)}
                           />
                         </div>
                       </Button>
@@ -1020,6 +1121,43 @@ export const QueueManagerDashboard: FC<QueueManagerDashboardProps> = ({
                   </div>
                   <div className='flex-grow border-b border-gray-300'></div>
                   {/* card body */}
+                  <div className='flow-root'>
+                    <div className='-mx-4 -my-2 overflow-x-auto sm:-mx-6 pl-2 pr-2'>
+                      <div className='inline-block min-w-full py-2 align-middle sm:px-6 lg:px-8'>
+                        <table className='min-w-full divide-y divide-gray-300'>
+                          <tbody className='divide-y divide-gray-200 bg-white'>
+                            {Object.values(agentsLoginTime).map((agent: any, index: number) => (
+                              <tr key={index}>
+                                <td className='whitespace-nowrap py-2 pl-4 pr-3 text-sm sm:pl-0'>
+                                  <div className='flex items-center justify-center h-full'>
+                                    {index + 1}.
+                                  </div>
+                                </td>
+                                <td className='whitespace-nowrap py-3 pl-4 pr-3 text-sm sm:pl-0'>
+                                  <div className='flex items-center'>
+                                    <div className='h-9 w-9 flex-shrink-0 mr-2'>
+                                      <Avatar
+                                        src={getAvatarData(agentsLoginTime[index])}
+                                        placeholderType='operator'
+                                        size='small'
+                                        bordered
+                                        className='cursor-pointer'
+                                        status={getAvatarMainPresence(agentsLoginTime[index])}
+                                      />
+                                    </div>
+                                    <div className='text-gray-900'>{agent.name}</div>
+                                  </div>
+                                </td>
+                                <td className='relative whitespace-nowrap py-2 pl-3 pr-4 text-right text-sm font-medium sm:pr-0'>
+                                  {convertToHumanReadable(agent.values)}
+                                </td>
+                              </tr>
+                            ))}
+                          </tbody>
+                        </table>
+                      </div>
+                    </div>
+                  </div>
                 </div>
               </div>
 
@@ -1036,10 +1174,17 @@ export const QueueManagerDashboard: FC<QueueManagerDashboardProps> = ({
                           </h3>
                         </div>
                       </div>
-                      <Button variant='white'>
+                      <Button
+                        variant='white'
+                        onClick={() => handleSortOrderAgentsPauseTimeToggle()}
+                      >
                         <div className='flex items-center space-x-2'>
                           <FontAwesomeIcon
-                            icon={faArrowUpWideShort}
+                            icon={
+                              sortOrderAgentsPauseTime === 'desc'
+                                ? faArrowUpWideShort
+                                : faArrowDownWideShort
+                            }
                             className='h-4 w-4 pl-2 py-2 cursor-pointer'
                             aria-hidden='true'
                           />
@@ -1048,7 +1193,6 @@ export const QueueManagerDashboard: FC<QueueManagerDashboardProps> = ({
                             icon={faChevronUp}
                             className='h-3.5 w-3.5 pl-2 py-2 cursor-pointer'
                             aria-hidden='true'
-                            // onClick={() => toggleExpandQueue(queue)}
                           />
                         </div>
                       </Button>
@@ -1056,6 +1200,43 @@ export const QueueManagerDashboard: FC<QueueManagerDashboardProps> = ({
                   </div>
                   <div className='flex-grow border-b border-gray-300'></div>
                   {/* card body */}
+                  <div className='flow-root'>
+                    <div className='-mx-4 -my-2 overflow-x-auto sm:-mx-6 pl-2 pr-2'>
+                      <div className='inline-block min-w-full py-2 align-middle sm:px-6 lg:px-8'>
+                        <table className='min-w-full divide-y divide-gray-300'>
+                          <tbody className='divide-y divide-gray-200 bg-white'>
+                            {Object.values(agentsPauseTime).map((agent: any, index: number) => (
+                              <tr key={index}>
+                                <td className='whitespace-nowrap py-2 pl-4 pr-3 text-sm sm:pl-0'>
+                                  <div className='flex items-center justify-center h-full'>
+                                    {index + 1}.
+                                  </div>
+                                </td>
+                                <td className='whitespace-nowrap py-3 pl-4 pr-3 text-sm sm:pl-0'>
+                                  <div className='flex items-center'>
+                                    <div className='h-9 w-9 flex-shrink-0 mr-2'>
+                                      <Avatar
+                                        src={getAvatarData(agentsPauseTime[index])}
+                                        placeholderType='operator'
+                                        size='small'
+                                        bordered
+                                        className='cursor-pointer'
+                                        status={getAvatarMainPresence(agentsPauseTime[index])}
+                                      />
+                                    </div>
+                                    <div className='text-gray-900'>{agent.name}</div>
+                                  </div>
+                                </td>
+                                <td className='relative whitespace-nowrap py-2 pl-3 pr-4 text-right text-sm font-medium sm:pr-0'>
+                                  {convertToHumanReadable(agent.values)}
+                                </td>
+                              </tr>
+                            ))}
+                          </tbody>
+                        </table>
+                      </div>
+                    </div>
+                  </div>
                 </div>
               </div>
 
@@ -1072,10 +1253,17 @@ export const QueueManagerDashboard: FC<QueueManagerDashboardProps> = ({
                           </h3>
                         </div>
                       </div>
-                      <Button variant='white'>
+                      <Button
+                        variant='white'
+                        onClick={() => handleSortOrderInCallPercentageToggle()}
+                      >
                         <div className='flex items-center space-x-2'>
                           <FontAwesomeIcon
-                            icon={faArrowUpWideShort}
+                            icon={
+                              sortOrderInCallPercentage === 'desc'
+                                ? faArrowUpWideShort
+                                : faArrowDownWideShort
+                            }
                             className='h-4 w-4 pl-2 py-2 cursor-pointer'
                             aria-hidden='true'
                           />
@@ -1084,7 +1272,6 @@ export const QueueManagerDashboard: FC<QueueManagerDashboardProps> = ({
                             icon={faChevronUp}
                             className='h-3.5 w-3.5 pl-2 py-2 cursor-pointer'
                             aria-hidden='true'
-                            // onClick={() => toggleExpandQueue(queue)}
                           />
                         </div>
                       </Button>
@@ -1092,6 +1279,43 @@ export const QueueManagerDashboard: FC<QueueManagerDashboardProps> = ({
                   </div>
                   <div className='flex-grow border-b border-gray-300'></div>
                   {/* card body */}
+                  <div className='flow-root'>
+                    <div className='-mx-4 -my-2 overflow-x-auto sm:-mx-6 pl-2 pr-2'>
+                      <div className='inline-block min-w-full py-2 align-middle sm:px-6 lg:px-8'>
+                        <table className='min-w-full divide-y divide-gray-300'>
+                          <tbody className='divide-y divide-gray-200 bg-white'>
+                            {Object.values(inCallPercentage).map((agent: any, index: number) => (
+                              <tr key={index}>
+                                <td className='whitespace-nowrap py-2 pl-4 pr-3 text-sm sm:pl-0'>
+                                  <div className='flex items-center justify-center h-full'>
+                                    {index + 1}.
+                                  </div>
+                                </td>
+                                <td className='whitespace-nowrap py-3 pl-4 pr-3 text-sm sm:pl-0'>
+                                  <div className='flex items-center'>
+                                    <div className='h-9 w-9 flex-shrink-0 mr-2'>
+                                      <Avatar
+                                        src={getAvatarData(inCallPercentage[index])}
+                                        placeholderType='operator'
+                                        size='small'
+                                        bordered
+                                        className='cursor-pointer'
+                                        status={getAvatarMainPresence(inCallPercentage[index])}
+                                      />
+                                    </div>
+                                    <div className='text-gray-900'>{agent.name}</div>
+                                  </div>
+                                </td>
+                                <td className='relative whitespace-nowrap py-2 pl-3 pr-4 text-right text-sm font-medium sm:pr-0'>
+                                  {agent.values}%
+                                </td>
+                              </tr>
+                            ))}
+                          </tbody>
+                        </table>
+                      </div>
+                    </div>
+                  </div>
                 </div>
               </div>
             </div>
