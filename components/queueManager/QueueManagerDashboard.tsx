@@ -262,10 +262,14 @@ export const QueueManagerDashboard: FC<QueueManagerDashboardProps> = ({
   const [queuesAnswered, setQueuesAnswered] = useState({} as Record<string, any>)
   const [queuesTotalCalls, setQueuesTotalCalls] = useState({} as Record<string, any>)
   const [queuesFailedCalls, setQueuesFailedCalls] = useState({} as Record<string, any>)
+  const [queuesInvalidCalls, setQueuesInvalidCalls] = useState({} as Record<string, any>)
 
   const [sortOrderQueuesAnswered, setSortOrderQueuesAnswered] = useState<'asc' | 'desc'>('desc')
   const [sortOrderQueuesTotalCalls, setSortOrderQueuesTotalCalls] = useState<'asc' | 'desc'>('desc')
   const [sortOrderQueuesFailedCalls, setSortOrderQueuesFailedCalls] = useState<'asc' | 'desc'>(
+    'desc',
+  )
+  const [sortOrderQueuesInvalidCalls, setSortOrderQueuesInvalidCalls] = useState<'asc' | 'desc'>(
     'desc',
   )
 
@@ -279,6 +283,10 @@ export const QueueManagerDashboard: FC<QueueManagerDashboardProps> = ({
 
   function handleSortOrderQueuesFailedCallsToggle() {
     setSortOrderQueuesFailedCalls(sortOrderQueuesFailedCalls === 'asc' ? 'desc' : 'asc')
+  }
+
+  function handleSortOrderQueuesInvalidCallsToggle() {
+    setSortOrderQueuesInvalidCalls(sortOrderQueuesInvalidCalls === 'asc' ? 'desc' : 'asc')
   }
 
   //get total calls for headers cards Dashboard
@@ -309,6 +317,14 @@ export const QueueManagerDashboard: FC<QueueManagerDashboardProps> = ({
         }),
       )
 
+      const queuesInvalidCallsData = Object.values(calculatedRank).map(
+        (agent: any, index: number) => ({
+          name: agent.name,
+          queue: agent.queue,
+          values: agent.values.tot_null,
+        }),
+      )
+
       const sortedQueuesAgentsAnswered = sortAgentsData(queuesAnsweredData, sortOrderQueuesAnswered)
       const sortedQueuesTotalCallsData = sortAgentsData(
         queuesTotalCallsData,
@@ -318,10 +334,15 @@ export const QueueManagerDashboard: FC<QueueManagerDashboardProps> = ({
         queuesFailedCallsData,
         sortOrderQueuesFailedCalls,
       )
+      const sortedQueuesInvalidCalls = sortAgentsData(
+        queuesInvalidCallsData,
+        sortOrderQueuesInvalidCalls,
+      )
 
       setQueuesAnswered(sortedQueuesAgentsAnswered)
       setQueuesTotalCalls(sortedQueuesTotalCallsData)
       setQueuesFailedCalls(sortedQueuesFailedCalls)
+      setQueuesInvalidCalls(sortedQueuesInvalidCalls)
 
       // Initialize variables to hold the total counts
       let totalAllCount = 0
@@ -350,6 +371,7 @@ export const QueueManagerDashboard: FC<QueueManagerDashboardProps> = ({
     sortOrderQueuesAnswered,
     sortOrderQueuesFailedCalls,
     sortOrderQueuesTotalCalls,
+    sortOrderQueuesInvalidCalls,
   ])
 
   //get queues agents stats
@@ -1384,7 +1406,10 @@ export const QueueManagerDashboard: FC<QueueManagerDashboardProps> = ({
                           </h3>
                         </div>
                       </div>
-                      <Button variant='white' onClick={() => handleSortOrderQueuesTotalCallsToggle()}>
+                      <Button
+                        variant='white'
+                        onClick={() => handleSortOrderQueuesTotalCallsToggle()}
+                      >
                         <div className='flex items-center space-x-2'>
                           <FontAwesomeIcon
                             icon={
@@ -1482,6 +1507,75 @@ export const QueueManagerDashboard: FC<QueueManagerDashboardProps> = ({
                         <table className='min-w-full divide-y divide-gray-300'>
                           <tbody className='divide-y divide-gray-200 bg-white'>
                             {Object.values(queuesFailedCalls).map((queue: any, index: number) => (
+                              <tr key={index}>
+                                <td className='whitespace-nowrap py-2 pl-4 pr-3 text-sm sm:pl-0'>
+                                  <div className='flex items-center justify-center h-full'>
+                                    {index + 1}.
+                                  </div>
+                                </td>
+                                <td className='whitespace-nowrap py-3 pl-4 pr-3 text-sm sm:pl-0'>
+                                  <div className='flex items-center py-3'>
+                                    <div className='text-gray-900'>{queue.name}</div>
+                                  </div>
+                                </td>
+                                <td className='relative whitespace-nowrap py-2 pl-3 pr-4 text-right text-sm font-medium sm:pr-0'>
+                                  {queue.values}
+                                </td>
+                              </tr>
+                            ))}
+                          </tbody>
+                        </table>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+
+              {/* Invalid calls  */}
+              <div>
+                <div className='col-span-1 rounded-md divide-y shadow divide-gray-200 bg-white dark:divide-gray-700 dark:bg-gray-900'>
+                  {/* card header */}
+                  <div className='flex flex-col pt-3 pb-5 px-5'>
+                    <div className='flex w-full items-center justify-between space-x-6'>
+                      <div className='flex-1 truncate'>
+                        <div className='flex items-center space-x-2 py-1 text-gray-700 dark:text-gray-200'>
+                          <h3 className='truncate text-lg leading-6 font-medium'>
+                            {t('QueueManager.Invalid calls')}
+                          </h3>
+                        </div>
+                      </div>
+                      <Button
+                        variant='white'
+                        onClick={() => handleSortOrderQueuesInvalidCallsToggle()}
+                      >
+                        <div className='flex items-center space-x-2'>
+                          <FontAwesomeIcon
+                            icon={
+                              sortOrderQueuesInvalidCalls === 'desc'
+                                ? faArrowUpWideShort
+                                : faArrowDownWideShort
+                            }
+                            className='h-4 w-4 pl-2 py-2 cursor-pointer'
+                            aria-hidden='true'
+                          />
+                          <span>{t('QueueManager.Order')}</span>
+                          <FontAwesomeIcon
+                            icon={faChevronDown}
+                            className='h-3.5 w-3.5 pl-2 py-2 cursor-pointer'
+                            aria-hidden='true'
+                          />
+                        </div>
+                      </Button>
+                    </div>
+                  </div>
+                  {/* <div className='flex-grow border-b border-gray-300'></div> */}
+                  {/* card body */}
+                  <div className='flow-root'>
+                    <div className='-mx-4 -my-2 overflow-x-auto sm:-mx-6 pl-2 pr-2'>
+                      <div className='inline-block min-w-full py-2 align-middle sm:px-6 lg:px-8'>
+                        <table className='min-w-full divide-y divide-gray-300'>
+                          <tbody className='divide-y divide-gray-200 bg-white'>
+                            {Object.values(queuesInvalidCalls).map((queue: any, index: number) => (
                               <tr key={index}>
                                 <td className='whitespace-nowrap py-2 pl-4 pr-3 text-sm sm:pl-0'>
                                   <div className='flex items-center justify-center h-full'>
