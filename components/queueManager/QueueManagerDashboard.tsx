@@ -31,8 +31,15 @@ import {
   Legend,
 } from 'chart.js'
 import { Bar } from 'react-chartjs-2'
-import { getAlarm, getQueues, getAgentsStats, getQueueStats } from '../../lib/queueManager'
-import { formatDuration, intervalToDuration, format } from 'date-fns'
+import {
+  getAlarm,
+  getQueues,
+  getAgentsStats,
+  getQueueStats,
+  getTotalsForEachKey,
+  sortAgentsData,
+  convertToHumanReadable,
+} from '../../lib/queueManager'
 
 ChartJS.register(CategoryScale, LinearScale, BarElement, Title, Tooltip, Legend)
 
@@ -240,7 +247,7 @@ export const QueueManagerDashboard: FC<QueueManagerDashboardProps> = ({
           values: {} as Record<string, any>,
         }
 
-        // Iterate over the specified keys "tot_processed", "tot_failed", "tot", "tot_null"
+        // Iterate over the specified keys
         for (const key of keys) {
           // Assign the corresponding statistic value to the queue
           queueData.values[key] = queue.qstats?.[key] || 0
@@ -263,6 +270,7 @@ export const QueueManagerDashboard: FC<QueueManagerDashboardProps> = ({
   const [queuesTotalCalls, setQueuesTotalCalls] = useState({} as Record<string, any>)
   const [queuesFailedCalls, setQueuesFailedCalls] = useState({} as Record<string, any>)
   const [queuesInvalidCalls, setQueuesInvalidCalls] = useState({} as Record<string, any>)
+  const [queuesFailures, setQueuesFailures] = useState({} as Record<string, any>)
 
   const [sortOrderQueuesAnswered, setSortOrderQueuesAnswered] = useState<'asc' | 'desc'>('desc')
   const [sortOrderQueuesTotalCalls, setSortOrderQueuesTotalCalls] = useState<'asc' | 'desc'>('desc')
@@ -272,6 +280,7 @@ export const QueueManagerDashboard: FC<QueueManagerDashboardProps> = ({
   const [sortOrderQueuesInvalidCalls, setSortOrderQueuesInvalidCalls] = useState<'asc' | 'desc'>(
     'desc',
   )
+  const [sortOrderQueuesFailures, setSortOrderQueuesFailures] = useState<'asc' | 'desc'>('desc')
 
   function handleSortOrderQueuesAnsweredToggle() {
     setSortOrderQueuesAnswered(sortOrderQueuesAnswered === 'asc' ? 'desc' : 'asc')
@@ -289,9 +298,15 @@ export const QueueManagerDashboard: FC<QueueManagerDashboardProps> = ({
     setSortOrderQueuesInvalidCalls(sortOrderQueuesInvalidCalls === 'asc' ? 'desc' : 'asc')
   }
 
+  function handleSortOrderQueuesFailuresToggle() {
+    setSortOrderQueuesFailures(sortOrderQueuesFailures === 'asc' ? 'desc' : 'asc')
+  }
+
   //get total calls for headers cards Dashboard
   useEffect(() => {
+    // carry out the operations only after the data has been inserted to the queues
     if (allQueuesStats) {
+      //total calls tables section
       const keys = ['tot_processed', 'tot_failed', 'tot', 'tot_null']
       const calculatedRank = getQueuesDashboardRank(keys)
 
@@ -344,6 +359,33 @@ export const QueueManagerDashboard: FC<QueueManagerDashboardProps> = ({
       setQueuesFailedCalls(sortedQueuesFailedCalls)
       setQueuesInvalidCalls(sortedQueuesInvalidCalls)
 
+      //failure calls tables section
+      const reasonsToFailCallsKeys = [
+        'failed_abandon',
+        'failed_full',
+        'failed_inqueue_noagents',
+        'failed_outqueue_noagents',
+        'failed_timeout',
+        'failed_withkey',
+      ]
+
+      const failureCallRank = getQueuesDashboardRank(reasonsToFailCallsKeys)
+      const totalValueForEachFailuerType = getTotalsForEachKey(failureCallRank)
+
+      const queuesFailuresData = Object.values(totalValueForEachFailuerType).map(
+        (agent: any, index: number) => ({
+          name: agent.name,
+          queue: agent.queue,
+          values: agent.values.value,
+          note: agent.note,
+        }),
+      )
+
+      const sortedQueuesFailuresData = sortAgentsData(queuesFailuresData, sortOrderQueuesFailures)
+      setQueuesFailures(sortedQueuesFailuresData)
+
+      // top section of the dashboard page
+      // total counts cards section
       // Initialize variables to hold the total counts
       let totalAllCount = 0
       let totalAnsweredCount = 0
@@ -372,6 +414,7 @@ export const QueueManagerDashboard: FC<QueueManagerDashboardProps> = ({
     sortOrderQueuesFailedCalls,
     sortOrderQueuesTotalCalls,
     sortOrderQueuesInvalidCalls,
+    sortOrderQueuesFailures,
   ])
 
   //get queues agents stats
@@ -497,39 +540,6 @@ export const QueueManagerDashboard: FC<QueueManagerDashboardProps> = ({
     setSortOrderInCallPercentage(sortOrderInCallPercentage === 'asc' ? 'desc' : 'asc')
   }
 
-  function sortAgentsData(data: any[], sortOrder: any) {
-    const sortedData = data.sort((a, b) => {
-      if (sortOrder === 'asc') {
-        return a.values - b.values
-      } else {
-        return b.values - a.values
-      }
-    })
-
-    // return sortedData.slice(0, 5)
-    return sortedData
-  }
-
-  //convert from seconds to human readable format
-  function convertToHumanReadable(seconds: number | undefined) {
-    if (seconds === 0) {
-      return '00:00:00'
-    }
-
-    if (seconds === undefined) {
-      return '00:00:00'
-    }
-
-    const duration = intervalToDuration({ start: 0, end: seconds * 1000 })
-
-    // Extract the hours, minutes and seconds from the formatted string
-    const hours = duration.hours?.toString().padStart(2, '0') || '00'
-    const minutes = duration.minutes?.toString().padStart(2, '0') || '00'
-    const secondsTest = duration.seconds?.toString().padStart(2, '0') || '00'
-
-    return `${hours}:${minutes}:${secondsTest}`
-  }
-
   useEffect(() => {
     if (isLoadedQueuesAgents) {
       const keys = [
@@ -632,6 +642,7 @@ export const QueueManagerDashboard: FC<QueueManagerDashboardProps> = ({
 
   return (
     <>
+      {/* Top page section */}
       <div className='border-b rounded-md shadow-md border-gray-200 bg-white px-4 py-1 sm:px-6'>
         <div className=''>
           <div className='mx-auto'>
@@ -1586,6 +1597,78 @@ export const QueueManagerDashboard: FC<QueueManagerDashboardProps> = ({
                                   <div className='flex items-center py-3'>
                                     <div className='text-gray-900'>{queue.name}</div>
                                   </div>
+                                </td>
+                                <td className='relative whitespace-nowrap py-2 pl-3 pr-4 text-right text-sm font-medium sm:pr-0'>
+                                  {queue.values}
+                                </td>
+                              </tr>
+                            ))}
+                          </tbody>
+                        </table>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+
+              {/* Missed call reasons  */}
+              <div>
+                <div className='col-span-1 rounded-md divide-y shadow divide-gray-200 bg-white dark:divide-gray-700 dark:bg-gray-900'>
+                  {/* card header */}
+                  <div className='flex flex-col pt-3 pb-5 px-5'>
+                    <div className='flex w-full items-center justify-between space-x-6'>
+                      <div className='flex-1 truncate'>
+                        <div className='flex items-center space-x-2 py-1 text-gray-700 dark:text-gray-200'>
+                          <h3 className='truncate text-lg leading-6 font-medium'>
+                            {t('QueueManager.Missed call reasons')}
+                          </h3>
+                        </div>
+                      </div>
+                      <Button
+                        variant='white'
+                        onClick={() => handleSortOrderQueuesFailuresToggle()}
+                      >
+                        <div className='flex items-center space-x-2'>
+                          <FontAwesomeIcon
+                            icon={
+                              sortOrderQueuesFailures === 'desc'
+                                ? faArrowUpWideShort
+                                : faArrowDownWideShort
+                            }
+                            className='h-4 w-4 pl-2 py-2 cursor-pointer'
+                            aria-hidden='true'
+                          />
+                          <span>{t('QueueManager.Order')}</span>
+                          <FontAwesomeIcon
+                            icon={faChevronDown}
+                            className='h-3.5 w-3.5 pl-2 py-2 cursor-pointer'
+                            aria-hidden='true'
+                          />
+                        </div>
+                      </Button>
+                    </div>
+                  </div>
+                  {/* <div className='flex-grow border-b border-gray-300'></div> */}
+                  {/* card body */}
+                  <div className='flow-root'>
+                    <div className='-mx-4 -my-2 overflow-x-auto sm:-mx-6 pl-2 pr-2'>
+                      <div className='inline-block min-w-full py-2 align-middle sm:px-6 lg:px-8'>
+                        <table className='min-w-full divide-y divide-gray-300'>
+                          <tbody className='divide-y divide-gray-200 bg-white'>
+                            {Object.values(queuesFailures).map((queue: any, index: number) => (
+                              <tr key={index}>
+                                <td className='whitespace-nowrap py-2 pl-4 pr-3 text-sm sm:pl-0'>
+                                  <div className='flex items-center justify-center h-full'>
+                                    {index + 1}.
+                                  </div>
+                                </td>
+                                <td className='whitespace-nowrap py-3 pl-4 pr-3 text-sm sm:pl-0'>
+                                  <div className='flex items-center py-3'>
+                                    <div className='text-gray-900'>{queue.name} ({queue.queue})</div>
+                                  </div>
+                                </td>
+                                <td className='relative whitespace-nowrap py-2 pl-3 pr-4 text-right text-sm font-medium sm:pr-0'>
+                                  {t(`QueueManager.${queue.note}`)}
                                 </td>
                                 <td className='relative whitespace-nowrap py-2 pl-3 pr-4 text-right text-sm font-medium sm:pr-0'>
                                   {queue.values}

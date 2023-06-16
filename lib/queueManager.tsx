@@ -10,6 +10,7 @@ import { store } from '../store'
 import { exactDistanceToNowLoc, formatDurationLoc } from './dateTime'
 import { loadPreference, savePreference } from './storage'
 import { handleNetworkError } from './utils'
+import { formatDuration, intervalToDuration, format } from 'date-fns'
 
 export const PAGE_SIZE = 10
 export const DEFAULT_OUTCOME_FILTER = 'lost'
@@ -366,7 +367,7 @@ export const getQueues = async () => {
 }
 
 //get queues status
-export const getQueueStats = async (qid:any) => {
+export const getQueueStats = async (qid: any) => {
   try {
     const { data } = await axios.get('/astproxy/qmanager_qstats/' + qid)
     return data
@@ -383,4 +384,58 @@ export const getAgentsStats = async () => {
   } catch (error) {
     handleNetworkError(error)
   }
+}
+
+//Get total number of type for each failed calls
+export function getTotalsForEachKey(callbackTimeRank: any) {
+  let n = 0
+  let list = {} as Record<string, any>
+  for (let q in callbackTimeRank) {
+    for (let v in callbackTimeRank[q].values) {
+      list[n] = {
+        name: callbackTimeRank[q].name,
+        queue: callbackTimeRank[q].queue,
+        note: v,
+        values: {
+          value: callbackTimeRank[q].values[v],
+        },
+      }
+      n++
+    }
+  }
+
+  return list
+}
+
+export function sortAgentsData(data: any[], sortOrder: any) {
+  const sortedData = data.sort((a, b) => {
+    if (sortOrder === 'asc') {
+      return a.values - b.values
+    } else {
+      return b.values - a.values
+    }
+  })
+
+  return sortedData.slice(0, 5)
+  // return sortedData
+}
+
+//convert from seconds to human readable format
+export function convertToHumanReadable(seconds: number | undefined) {
+  if (seconds === 0) {
+    return '00:00:00'
+  }
+
+  if (seconds === undefined) {
+    return '00:00:00'
+  }
+
+  const duration = intervalToDuration({ start: 0, end: seconds * 1000 })
+
+  // Extract the hours, minutes and seconds from the formatted string
+  const hours = duration.hours?.toString().padStart(2, '0') || '00'
+  const minutes = duration.minutes?.toString().padStart(2, '0') || '00'
+  const secondsTest = duration.seconds?.toString().padStart(2, '0') || '00'
+
+  return `${hours}:${minutes}:${secondsTest}`
 }

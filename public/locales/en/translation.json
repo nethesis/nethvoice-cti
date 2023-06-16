@@ -459,12 +459,19 @@
     "Position": "Position",
     "Waiting": "Waiting",
     "Calls to show": "Calls to show",
-    "Number of answered calls":"Number of answered calls",
-    "Number of unanswered calls":"Number of unanswered calls",
-    "Pause on login":"Pause on login",
-    "Time on login":"Time on login",
-    "Pause time":"Pause time",
-    "In call percentage":"In call percentage",
-    "Order": "Order"
+    "Number of answered calls": "Number of answered calls",
+    "Number of unanswered calls": "Number of unanswered calls",
+    "Pause on login": "Pause on login",
+    "Time on login": "Time on login",
+    "Pause time": "Pause time",
+    "In call percentage": "In call percentage",
+    "Order": "Order",
+    "Missed call reasons": "Missed call reasons",
+    "failed_abandon": "Failed abandon",
+    "failed_full": "Failed full",
+    "failed_inqueue_noagents": "Failed inqueue agents",
+    "failed_outqueue_noagents": "Failed outqueue agents",
+    "failed_timeout": "Failed timeout",
+    "failed_withkey": "Failed withkey"
   }
 }
