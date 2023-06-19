@@ -540,6 +540,29 @@ export const QueueManagerDashboard: FC<QueueManagerDashboardProps> = ({
     setSortOrderInCallPercentage(sortOrderInCallPercentage === 'asc' ? 'desc' : 'asc')
   }
 
+  // const avgRecallTimeRanks = (queuesInformation: any) => {
+  //   const newQueuesInformation = { ...queuesInformation };
+
+    
+  //   for (const agent in newQueuesInformation) {
+  //     if (
+  //       !newQueuesInformation[agent].allQueues ||
+  //       (!newQueuesInformation[agent].allQueues.avg_recall_time &&
+  //         !newQueuesInformation[agent].allQueues.min_recall_time &&
+  //         !newQueuesInformation[agent].allQueues.max_recall_time)
+  //     ) {
+  //       delete newQueuesInformation[agent];
+  //     }
+  //   }
+  //   return newQueuesInformation;
+  // }
+  
+  // useEffect(() => {
+  //   if (isLoadedQueuesAgents) {
+  //     let avgRecallTime = avgRecallTimeRanks(agentsStatsList)
+  //   }
+  // },[isLoadedQueuesAgents, sortOrderAnsweredCalls])
+  
   useEffect(() => {
     if (isLoadedQueuesAgents) {
       const keys = [

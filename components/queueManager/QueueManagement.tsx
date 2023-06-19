@@ -34,6 +34,7 @@ import {
   Legend,
 } from 'chart.js'
 import { Bar, Doughnut } from 'react-chartjs-2'
+import { getQueues, getQueueStats } from '../../lib/queueManager'
 
 ChartJS.register(ArcElement, CategoryScale, LinearScale, BarElement, Title, Tooltip, Legend)
 
@@ -277,7 +278,6 @@ function classNames(...classes: any) {
 
 export const QueueManagement: FC<QueueManagementProps> = ({ className }): JSX.Element => {
   const { t } = useTranslation()
-  const [selected, setSelected] = useState(people[3])
 
   const [expanded, setExpanded] = useState(true)
 
@@ -303,6 +303,78 @@ export const QueueManagement: FC<QueueManagementProps> = ({ className }): JSX.El
     setExpandedQueueOperators(!expandedQueueOperators)
   }
 
+  // const [updateDashboardInterval, SetUpdateDashboardInterval] = useState(3000)
+
+  const [firstRenderQueuesList, setFirstRenderQueuesList]: any = useState(true)
+  const [isLoadedQueues, setLoadedQueues] = useState(false)
+  const [queuesList, setQueuesList] = useState<any>({})
+
+  //get queues list
+  useEffect(() => {
+    // Avoid api double calling
+    if (firstRenderQueuesList) {
+      setFirstRenderQueuesList(false)
+      return
+    }
+    async function getQueuesInformation() {
+      setLoadedQueues(false)
+      try {
+        const res = await getQueues()
+        setQueuesList(res)
+      } catch (err) {
+        console.error(err)
+      }
+      setLoadedQueues(true)
+    }
+    if (!isLoadedQueues) {
+      getQueuesInformation()
+    }
+  }, [firstRenderQueuesList, isLoadedQueues])
+
+  const [allQueuesStats, setAllQueuesStats] = useState(false)
+  const [firstRenderQueuesStats, setFirstRenderQueuesStats]: any = useState(true)
+  const [isLoadedQueuesStats, setLoadedQueuesStats] = useState(false)
+
+  //get queues status information
+  useEffect(() => {
+    // Avoid api double calling
+    if (firstRenderQueuesStats) {
+      setFirstRenderQueuesStats(false)
+      return
+    }
+    async function getQueuesStats() {
+      setLoadedQueuesStats(false)
+      try {
+        setAllQueuesStats(false)
+        //get list of queues from queuesList
+        const queuesName = Object.keys(queuesList)
+        //get number of queues
+        const queuesLength = queuesName.length
+
+        // Get statuses for each queue
+        for (let i = 0; i < queuesLength; i++) {
+          const key = queuesName[i]
+          const res = await getQueueStats(key)
+
+          if (queuesList[key]) {
+            queuesList[key].qstats = res
+          }
+        }
+
+        setAllQueuesStats(true)
+      } catch (err) {
+        console.error(err)
+      }
+    }
+    if (!isLoadedQueuesStats) {
+      getQueuesStats()
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [queuesList, firstRenderQueuesStats])
+
+  //TODO SAVE SELECTED QUEUE INSIDE LOCAL STORAGE
+  const [selected, setSelected] = useState('Select queues')
+
   return (
     <>
       <Listbox value={selected} onChange={setSelected}>
@@ -312,9 +384,9 @@ export const QueueManagement: FC<QueueManagementProps> = ({ className }): JSX.El
               <Listbox.Label className='block text-sm font-medium leading-6 text-gray-500 mr-8'>
                 {t('QueueManager.Select queue')}
               </Listbox.Label>
-              <div className='relative '>
-                <Listbox.Button className='relative w-full cursor-default rounded-md bg-white py-1.5 pl-3 pr-10 text-left text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 focus:outline-none focus:ring-2 focus:ring-indigo-600 sm:text-sm sm:leading-6'>
-                  <span className='block truncate'>{selected.name}</span>
+              <div className='relative'>
+                <Listbox.Button className='relative cursor-default rounded-md bg-white py-1.5 pl-3 pr-10 text-left text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 focus:outline-none focus:ring-2 focus:ring-indigo-600 sm:text-sm sm:leading-6 inline-block'>
+                  <span className='block truncate'>Select queue</span>
                   <span className='pointer-events-none absolute inset-y-0 right-0 flex items-center pr-2'>
                     <FontAwesomeIcon
                       icon={faChevronDown}
@@ -331,17 +403,17 @@ export const QueueManagement: FC<QueueManagementProps> = ({ className }): JSX.El
                   leaveFrom='opacity-100'
                   leaveTo='opacity-0'
                 >
-                  <Listbox.Options className='absolute z-10 mt-1 max-h-60 w-full overflow-auto rounded-md bg-white py-1 text-base shadow-lg ring-1 ring-black ring-opacity-5 focus:outline-none sm:text-sm'>
-                    {people.map((person) => (
+                  <Listbox.Options className='absolute z-10 mt-1 w-full overflow-auto rounded-md bg-white py-1 text-base shadow-lg ring-1 ring-black ring-opacity-5 focus:outline-none sm:text-sm h-auto'>
+                    {Object.entries<any>(queuesList).map(([queueId, queueInfo]) => (
                       <Listbox.Option
-                        key={person.id}
+                        key={queueId}
                         className={({ active }) =>
                           classNames(
-                            active ? 'bg-indigo-600 text-white' : 'text-gray-900',
+                            active ? 'bg-primary text-white' : 'text-gray-900',
                             'relative cursor-default select-none py-2 pl-8 pr-4',
                           )
                         }
-                        value={person}
+                        value={queueInfo}
                       >
                         {({ selected, active }) => (
                           <>
@@ -351,7 +423,7 @@ export const QueueManagement: FC<QueueManagementProps> = ({ className }): JSX.El
                                 'block truncate',
                               )}
                             >
-                              {person.name}
+                              {queueInfo.name} ({queueInfo.queue})
                             </span>
 
                             {selected ? (
