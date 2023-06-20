@@ -191,3 +191,16 @@ export function getNMonthsAgoDate(monthsAgo: number = 0): Date {
   )
   return targetDate
 }
+
+// Inverts an object by swapping its keys and values
+export function invertObject(obj: any) {
+  const invertedObj: any = {}
+
+  // Iterate over each key-value pair in the original object.
+  for (const key in obj) {
+    const value = obj[key]
+    // Swap the key and value in the inverted object.
+    invertedObj[value.name] = key
+  }
+  return invertedObj
+}

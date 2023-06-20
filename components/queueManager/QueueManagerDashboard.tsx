@@ -40,6 +40,7 @@ import {
   sortAgentsData,
   convertToHumanReadable,
 } from '../../lib/queueManager'
+import { invertObject } from '../../lib/utils'
 
 ChartJS.register(CategoryScale, LinearScale, BarElement, Title, Tooltip, Legend)
 
@@ -129,9 +130,9 @@ export const QueueManagerDashboard: FC<QueueManagerDashboardProps> = ({
 
   function getAvatarData(announcement: any) {
     let userAvatarData = ''
-    if (announcement.shorName && avatarIcon) {
+    if (announcement.shortname && avatarIcon) {
       for (const username in avatarIcon) {
-        if (username === announcement.shorName) {
+        if (username === announcement.shortname) {
           userAvatarData = avatarIcon[username]
           break
         }
@@ -465,34 +466,21 @@ export const QueueManagerDashboard: FC<QueueManagerDashboardProps> = ({
   }
 
   function getFullUsername(announcement: any, operatorInformation: any) {
-    let shortName = ''
+    let shortname = ''
     if (announcement.name && operatorInformation) {
       const username = operatorInformation[announcement.name]
       if (username) {
-        shortName = username
+        shortname = username
       }
     }
-    return shortName
-  }
-
-  // Inverts an object by swapping its keys and values
-  function invertObject(obj: any) {
-    const invertedObj: any = {}
-
-    // Iterate over each key-value pair in the original object.
-    for (const key in obj) {
-      const value = obj[key]
-      // Swap the key and value in the inverted object.
-      invertedObj[value.name] = key
-    }
-    return invertedObj
+    return shortname
   }
 
   function getAvatarMainPresence(announcement: any) {
     let userMainPresence = null
-    if (announcement.shorName && operatorInformation) {
+    if (announcement.shortname && operatorInformation) {
       for (const username in operatorInformation) {
-        if (username === announcement.shorName) {
+        if (username === announcement.shortname) {
           userMainPresence = operatorInformation[username].presence
         }
       }
@@ -543,7 +531,6 @@ export const QueueManagerDashboard: FC<QueueManagerDashboardProps> = ({
   // const avgRecallTimeRanks = (queuesInformation: any) => {
   //   const newQueuesInformation = { ...queuesInformation };
 
-    
   //   for (const agent in newQueuesInformation) {
   //     if (
   //       !newQueuesInformation[agent].allQueues ||
@@ -556,13 +543,13 @@ export const QueueManagerDashboard: FC<QueueManagerDashboardProps> = ({
   //   }
   //   return newQueuesInformation;
   // }
-  
+
   // useEffect(() => {
   //   if (isLoadedQueuesAgents) {
   //     let avgRecallTime = avgRecallTimeRanks(agentsStatsList)
   //   }
   // },[isLoadedQueuesAgents, sortOrderAnsweredCalls])
-  
+
   useEffect(() => {
     if (isLoadedQueuesAgents) {
       const keys = [
@@ -579,7 +566,7 @@ export const QueueManagerDashboard: FC<QueueManagerDashboardProps> = ({
       const agentsAnsweredData = Object.values(calculatedAgent).map(
         (agent: any, index: number) => ({
           name: agent.name,
-          shorName: getFullUsername(agent, invertedOperatorInformation),
+          shortname: getFullUsername(agent, invertedOperatorInformation),
           queue: agent.queue,
           values: agent.values.calls_taken,
         }),
@@ -587,7 +574,7 @@ export const QueueManagerDashboard: FC<QueueManagerDashboardProps> = ({
 
       const agentsLostData = Object.values(calculatedAgent).map((agent: any, index: number) => ({
         name: agent.name,
-        shorName: getFullUsername(agent, invertedOperatorInformation),
+        shortname: getFullUsername(agent, invertedOperatorInformation),
         queue: agent.queue,
         values: agent.values.no_answer_calls,
       }))
@@ -595,7 +582,7 @@ export const QueueManagerDashboard: FC<QueueManagerDashboardProps> = ({
       const agentsPauseOnLogonData = Object.values(calculatedAgent).map(
         (agent: any, index: number) => ({
           name: agent.name,
-          shorName: getFullUsername(agent, invertedOperatorInformation),
+          shortname: getFullUsername(agent, invertedOperatorInformation),
           queue: agent.queue,
           values: agent.values.pause_percent,
         }),
@@ -604,7 +591,7 @@ export const QueueManagerDashboard: FC<QueueManagerDashboardProps> = ({
       const agentsLoginTimeData = Object.values(calculatedAgent).map(
         (agent: any, index: number) => ({
           name: agent.name,
-          shorName: getFullUsername(agent, invertedOperatorInformation),
+          shortname: getFullUsername(agent, invertedOperatorInformation),
           queue: agent.queue,
           values: agent.values.time_in_logon,
         }),
@@ -613,7 +600,7 @@ export const QueueManagerDashboard: FC<QueueManagerDashboardProps> = ({
       const agentsPauseTimeData = Object.values(calculatedAgent).map(
         (agent: any, index: number) => ({
           name: agent.name,
-          shorName: getFullUsername(agent, invertedOperatorInformation),
+          shortname: getFullUsername(agent, invertedOperatorInformation),
           queue: agent.queue,
           values: agent.values.time_in_pause,
         }),
@@ -622,7 +609,7 @@ export const QueueManagerDashboard: FC<QueueManagerDashboardProps> = ({
       const inCallPercentageData = Object.values(calculatedAgent).map(
         (agent: any, index: number) => ({
           name: agent.name,
-          shorName: getFullUsername(agent, invertedOperatorInformation),
+          shortname: getFullUsername(agent, invertedOperatorInformation),
           queue: agent.queue,
           values: agent.values.conversation_percent,
         }),
@@ -1647,10 +1634,7 @@ export const QueueManagerDashboard: FC<QueueManagerDashboardProps> = ({
                           </h3>
                         </div>
                       </div>
-                      <Button
-                        variant='white'
-                        onClick={() => handleSortOrderQueuesFailuresToggle()}
-                      >
+                      <Button variant='white' onClick={() => handleSortOrderQueuesFailuresToggle()}>
                         <div className='flex items-center space-x-2'>
                           <FontAwesomeIcon
                             icon={
@@ -1687,7 +1671,9 @@ export const QueueManagerDashboard: FC<QueueManagerDashboardProps> = ({
                                 </td>
                                 <td className='whitespace-nowrap py-3 pl-4 pr-3 text-sm sm:pl-0'>
                                   <div className='flex items-center py-3'>
-                                    <div className='text-gray-900'>{queue.name} ({queue.queue})</div>
+                                    <div className='text-gray-900'>
+                                      {queue.name} ({queue.queue})
+                                    </div>
                                   </div>
                                 </td>
                                 <td className='relative whitespace-nowrap py-2 pl-3 pr-4 text-right text-sm font-medium sm:pr-0'>

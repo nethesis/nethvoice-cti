@@ -17,6 +17,8 @@ export const DEFAULT_OUTCOME_FILTER = 'lost'
 export const DEFAULT_CALLS_REFRESH_INTERVAL = 20
 export const DEFAULT_CALLS_LOAD_PERIOD = 12
 export const INFINITE_SCROLL_QUEUE_OPERATORS_PAGE_SIZE = 15
+export const DEFAULT_SORT_BY_QUEUE_MANAGEMENT = 'name'
+export const DEFAULT_STATUS_FILTER_QUEUE_MANAGEMENT = 'connected'
 
 export const searchStringInQueue = (queue: any, queryText: string) => {
   const regex = /[^a-zA-Z0-9]/g
@@ -199,6 +201,30 @@ export const getFilterValues = (currentUsername: string) => {
   const outcome = loadPreference('queuesOutcomeFilter', currentUsername) || DEFAULT_OUTCOME_FILTER
   const selectedQueues = loadPreference('queuesSelectedQueues', currentUsername) || []
   return { outcome, selectedQueues }
+}
+
+export const getFilterValuesQueuesManagement = (currentUsername: string) => {
+  const status =
+    loadPreference('queueManagementStatusFilter', currentUsername) ||
+    DEFAULT_STATUS_FILTER_QUEUE_MANAGEMENT
+  const sortBy =
+    loadPreference('queueManagementSortBy', currentUsername) || DEFAULT_SORT_BY_QUEUE_MANAGEMENT
+  return { status, sortBy }
+}
+
+export function searchStringInQueuesMembers(operator: any, queryText: string) {
+  const regex = /[^a-zA-Z0-9]/g
+  queryText = queryText.replace(regex, '')
+  let found = false
+
+  // search in string attributes
+  found = ['name', 'member'].some((attrName) => {
+    return new RegExp(queryText, 'i').test(operator[attrName]?.replace(regex, ''))
+  })
+
+  if (found) {
+    return true
+  }
 }
 
 export const searchStringInCall = (call: any, queryText: string) => {

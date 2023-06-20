@@ -472,6 +472,8 @@
     "failed_inqueue_noagents": "Failed inqueue agents",
     "failed_outqueue_noagents": "Failed outqueue agents",
     "failed_timeout": "Failed timeout",
-    "failed_withkey": "Failed withkey"
+    "failed_withkey": "Failed withkey",
+    "Logged_in": "Logged in",
+    "Logged_out": "Logged out"
   }
 }

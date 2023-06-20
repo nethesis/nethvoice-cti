@@ -1,7 +1,7 @@
 // Copyright (C) 2023 Nethesis S.r.l.
 // SPDX-License-Identifier: AGPL-3.0-or-later
 
-import { FC, ComponentProps, useState, useEffect, Fragment } from 'react'
+import { FC, ComponentProps, useState, useEffect, Fragment, useMemo } from 'react'
 import { useTranslation } from 'react-i18next'
 import { Button } from '../common'
 import { useSelector } from 'react-redux'
@@ -19,9 +19,13 @@ import {
   faHeadset,
   faPause,
   faDownLeftAndUpRightToCenter,
+  faChevronRight,
+  faCircleNotch,
 } from '@fortawesome/free-solid-svg-icons'
 
 import { Listbox, Transition } from '@headlessui/react'
+import { QueueManagementFilterOperators } from './QueueManagementFilterOperators'
+import { searchStringInQueuesMembers } from '../../lib/queueManager'
 
 import {
   Chart as ChartJS,
@@ -35,6 +39,11 @@ import {
 } from 'chart.js'
 import { Bar, Doughnut } from 'react-chartjs-2'
 import { getQueues, getQueueStats } from '../../lib/queueManager'
+import { isEmpty, debounce, capitalize } from 'lodash'
+import { EmptyState, Avatar } from '../common'
+import InfiniteScroll from 'react-infinite-scroll-component'
+import { getInfiniteScrollOperatorsPageSize } from '../../lib/operators'
+import { sortByProperty, invertObject } from '../../lib/utils'
 
 ChartJS.register(ArcElement, CategoryScale, LinearScale, BarElement, Title, Tooltip, Legend)
 
@@ -279,6 +288,13 @@ function classNames(...classes: any) {
 export const QueueManagement: FC<QueueManagementProps> = ({ className }): JSX.Element => {
   const { t } = useTranslation()
 
+  const infiniteScrollOperatorsPageSize = getInfiniteScrollOperatorsPageSize()
+  const [infiniteScrollLastIndex, setInfiniteScrollLastIndex] = useState(
+    infiniteScrollOperatorsPageSize,
+  )
+  const [infiniteScrollOperators, setInfiniteScrollOperators] = useState([])
+  const [infiniteScrollHasMore, setInfiniteScrollHasMore] = useState(false)
+
   const [expanded, setExpanded] = useState(true)
 
   const [expandedWaitingCall, setExpandedWaitingCall] = useState(false)
@@ -372,8 +388,213 @@ export const QueueManagement: FC<QueueManagementProps> = ({ className }): JSX.El
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [queuesList, firstRenderQueuesStats])
 
+  // load extensions information from the store
+  const operatorsStore = useSelector((state: RootState) => state.operators) as Record<string, any>
+  const [invertedOperatorInformation, setInvertedOperatorInformation] = useState<any>()
+
+  const [agentCounters, setAgentCounters] = useState<any>({})
+  //get agent values from queues list
+  useEffect(() => {
+    if (allQueuesStats) {
+      for (const q in queuesList) {
+        if (!agentCounters[q]) {
+          agentCounters[q] = {}
+        }
+        // Initialize all counters to 0
+        agentCounters[q].online = 0
+        agentCounters[q].offline = 0
+        agentCounters[q].paused = 0
+        agentCounters[q].connected = 0
+        agentCounters[q].free = 0
+        agentCounters[q].busy = 0
+
+        for (const m in queuesList[q].members) {
+          if (queuesList[q].members[m].loggedIn) {
+            agentCounters[q].online += 1
+          } else {
+            agentCounters[q].offline += 1
+          }
+          if (queuesList[q].members[m].paused) {
+            agentCounters[q].paused += 1
+          }
+
+          if (
+            operatorsStore &&
+            operatorsStore.extensions &&
+            operatorsStore.extensions[m] &&
+            Object.keys(operatorsStore.extensions[m].conversations).length > 0
+          ) {
+            for (const c in operatorsStore.extensions[m].conversations) {
+              if (
+                operatorsStore.extensions[m].conversations[c].throughQueue &&
+                operatorsStore.extensions[m].conversations[c].queueId === q &&
+                operatorsStore.extensions[m].conversations[c].connected
+              ) {
+                agentCounters[q].connected += 1
+              } else if (
+                operatorsStore.extensions[m].conversations[c].queueId !== q &&
+                operatorsStore.extensions[m].conversations[c].connected
+              ) {
+                agentCounters[q].busy += 1
+              }
+            }
+          }
+
+          if (
+            operatorsStore &&
+            operatorsStore.extensions &&
+            operatorsStore.extensions[m] &&
+            operatorsStore.extensions[m].status === 'online' &&
+            operatorsStore.extensions[m].cf === '' &&
+            operatorsStore.extensions[m].dnd === false &&
+            queuesList[q].members[m].loggedIn === true &&
+            queuesList[q].members[m].paused === false
+          ) {
+            agentCounters[q].free += 1
+          }
+        }
+      }
+      setAgentCounters({ ...agentCounters })
+    }
+  }, [queuesList, allQueuesStats, operatorsStore])
+
   //TODO SAVE SELECTED QUEUE INSIDE LOCAL STORAGE
-  const [selected, setSelected] = useState('Select queues')
+  const [selected, setSelected] = useState<any>({})
+
+  const [agentCountersSelectedQueue, setAgentCountersSelectedQueue] = useState<any>({})
+  const [agentMembers, setAgentMembers] = useState<any>({})
+  useEffect(() => {
+    if (selected) {
+      const selectedQueue = selected.queue
+
+      const selectedQueueAgents = agentCounters[selectedQueue]
+      setAgentCountersSelectedQueue(selectedQueueAgents)
+
+      setAgentMembers(Object.values(queuesList[selectedQueue]?.members ?? {}))
+    }
+  }, [selected])
+
+  const [textFilter, setTextFilter]: any = useState('')
+  const updateTextFilter = (newTextFilter: string) => {
+    setTextFilter(newTextFilter)
+  }
+
+  const debouncedUpdateTextFilter = useMemo(() => debounce(updateTextFilter, 400), [])
+
+  // stop invocation of debounced function after unmounting
+  useEffect(() => {
+    return () => {
+      debouncedUpdateTextFilter.cancel()
+    }
+  }, [debouncedUpdateTextFilter])
+
+  const [statusFilter, setStatusFilter]: any = useState('')
+  const updateStatusFilter = (newStatusFilter: string) => {
+    setStatusFilter(newStatusFilter)
+  }
+
+  const [sortByFilter, setSortByFilter]: any = useState('')
+  const updateSort = (newSortBy: string) => {
+    setSortByFilter(newSortBy)
+  }
+
+  const showMoreInfiniteScrollOperators = () => {
+    const lastIndex = infiniteScrollLastIndex + infiniteScrollOperatorsPageSize
+    setInfiniteScrollLastIndex(lastIndex)
+    setInfiniteScrollOperators(filteredAgentMembers.slice(0, lastIndex))
+    const hasMore = lastIndex < filteredAgentMembers.length
+    setInfiniteScrollHasMore(hasMore)
+  }
+
+  const [isApplyingFilters, setApplyingFilters]: any = useState(false)
+  const [filteredAgentMembers, setFilteredAgentMembers]: any = useState([])
+
+  const applyFilters = (operators: any) => {
+    if (!(statusFilter && sortByFilter)) {
+      return
+    }
+    setApplyingFilters(true)
+    // text filter
+    let filteredAgentMembers: any = Object.values(operators).filter((op) =>
+      searchStringInQueuesMembers(op, textFilter),
+    )
+
+    filteredAgentMembers.forEach((member: any) => {
+      if (invertedOperatorInformation[member.name]) {
+        member.shortname = invertedOperatorInformation[member.name]
+      }
+    })
+
+    // sort operators
+    switch (sortByFilter) {
+      case 'name':
+        filteredAgentMembers.sort(sortByProperty('name'))
+        break
+      case 'status':
+        filteredAgentMembers.sort(sortByProperty('name'))
+        break
+    }
+
+    setFilteredAgentMembers(filteredAgentMembers)
+
+    setInfiniteScrollOperators(filteredAgentMembers.slice(0, infiniteScrollLastIndex))
+    const hasMore = infiniteScrollLastIndex < filteredAgentMembers.length
+    setInfiniteScrollHasMore(hasMore)
+    setApplyingFilters(false)
+  }
+
+  // apply filters when operators data has been loaded and operator menu is opened
+  useEffect(() => {
+    if (agentMembers.length > 0) {
+      applyFilters(agentMembers)
+    }
+  }, [expandedQueueOperators, agentMembers, textFilter])
+
+  // invert key to use getAvatarData function
+  useEffect(() => {
+    if (operatorsStore) {
+      setInvertedOperatorInformation(invertObject(operatorsStore.operators))
+    }
+  }, [operatorsStore])
+
+  const [avatarIcon, setAvatarIcon] = useState<any>()
+  const [operatorInformation, setOperatorInformation] = useState<any>()
+
+  // get operator avatar base64 from the store
+  useEffect(() => {
+    if (operatorsStore && !avatarIcon) {
+      setAvatarIcon(operatorsStore.avatars)
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [])
+
+  // Get avatar icon for each selected queue agents
+  function getAvatarData(selectedQueueAgent: any) {
+    let userAvatarData = ''
+    if (selectedQueueAgent.shortname && avatarIcon) {
+      for (const username in avatarIcon) {
+        if (username === selectedQueueAgent.shortname) {
+          userAvatarData = avatarIcon[username]
+          break
+        }
+      }
+    }
+    return userAvatarData
+  }
+
+  // Set status dot to avatar icon
+  function getAvatarMainPresence(selectedQueueAgent: any) {
+    let userMainPresence = null
+    let operatorInformation = operatorsStore.operators
+    if (selectedQueueAgent.shortname && operatorInformation) {
+      for (const username in operatorInformation) {
+        if (username === selectedQueueAgent.shortname) {
+          userMainPresence = operatorInformation[username].presence
+        }
+      }
+    }
+    return userMainPresence
+  }
 
   return (
     <>
@@ -486,12 +707,13 @@ export const QueueManagement: FC<QueueManagementProps> = ({ className }): JSX.El
                         icon={faUserCheck}
                         className='h-6 w-6 cursor-pointer text-emerald-600 dark:text-emerald-600'
                         aria-hidden='true'
-                        // onClick={() => toggleExpandQueue(queue)}
                       />
                     </div>
                     <div className='flex justify-center'>
                       <p className='text-3xl font-semibold tracking-tight text-left text-gray-900 dark:text-gray-100'>
-                        0
+                        {agentCountersSelectedQueue?.online
+                          ? agentCountersSelectedQueue?.online
+                          : 0}
                       </p>
                     </div>
                     <span className='text-sm flex justify-center font-medium leading-6 text-center text-gray-700 dark:text-gray-100'>
@@ -510,12 +732,13 @@ export const QueueManagement: FC<QueueManagementProps> = ({ className }): JSX.El
                         icon={faUserClock}
                         className='h-6 w-6 cursor-pointer text-emerald-600 dark:text-emerald-600'
                         aria-hidden='true'
-                        // onClick={() => toggleExpandQueue(queue)}
                       />
                     </div>
                     <div className='flex justify-center'>
                       <p className='text-3xl font-semibold tracking-tight text-left text-gray-900 dark:text-gray-100'>
-                        0
+                        {agentCountersSelectedQueue?.paused
+                          ? agentCountersSelectedQueue?.paused
+                          : 0}
                       </p>
                     </div>
                     <span className='text-sm flex justify-center font-medium leading-6 text-center text-gray-700 dark:text-gray-100'>
@@ -534,12 +757,13 @@ export const QueueManagement: FC<QueueManagementProps> = ({ className }): JSX.El
                         icon={faUserXmark}
                         className='h-6 w-6 cursor-pointer text-emerald-600 dark:text-emerald-600'
                         aria-hidden='true'
-                        // onClick={() => toggleExpandQueue(queue)}
                       />
                     </div>
                     <div className='flex justify-center'>
                       <p className='text-3xl font-semibold tracking-tight text-left text-gray-900 dark:text-gray-100'>
-                        0
+                        {agentCountersSelectedQueue?.offline
+                          ? agentCountersSelectedQueue?.offline
+                          : 0}
                       </p>
                     </div>
                     <span className='text-sm flex justify-center font-medium leading-6 text-center text-gray-700 dark:text-gray-100'>
@@ -558,12 +782,11 @@ export const QueueManagement: FC<QueueManagementProps> = ({ className }): JSX.El
                         icon={faHeadset}
                         className='h-6 w-6 cursor-pointer text-emerald-600 dark:text-emerald-600'
                         aria-hidden='true'
-                        // onClick={() => toggleExpandQueue(queue)}
                       />
                     </div>
                     <div className='flex justify-center'>
                       <p className='text-3xl font-semibold tracking-tight text-left text-gray-900 dark:text-gray-100'>
-                        0
+                        {agentCountersSelectedQueue?.free ? agentCountersSelectedQueue?.free : 0}
                       </p>
                     </div>
                     <span className='text-sm flex justify-center font-medium leading-6 text-center text-gray-700 dark:text-gray-100'>
@@ -582,12 +805,13 @@ export const QueueManagement: FC<QueueManagementProps> = ({ className }): JSX.El
                         icon={faHeadset}
                         className='h-6 w-6 cursor-pointer text-emerald-600 dark:text-emerald-600'
                         aria-hidden='true'
-                        // onClick={() => toggleExpandQueue(queue)}
                       />
                     </div>
                     <div className='flex justify-center'>
                       <p className='text-3xl font-semibold tracking-tight text-left text-gray-900 dark:text-gray-100'>
-                        0
+                        {agentCountersSelectedQueue?.connected
+                          ? agentCountersSelectedQueue?.connected
+                          : 0}
                       </p>
                     </div>
                     <span className='text-sm flex justify-center font-medium leading-6 text-center text-gray-700 dark:text-gray-100'>
@@ -606,12 +830,11 @@ export const QueueManagement: FC<QueueManagementProps> = ({ className }): JSX.El
                         icon={faHeadset}
                         className='h-6 w-6 cursor-pointer text-emerald-600 dark:text-emerald-600'
                         aria-hidden='true'
-                        // onClick={() => toggleExpandQueue(queue)}
                       />
                     </div>
                     <div className='flex justify-center'>
                       <p className='text-3xl font-semibold tracking-tight text-left text-gray-900 dark:text-gray-100'>
-                        0
+                        {agentCountersSelectedQueue?.busy ? agentCountersSelectedQueue?.busy : 0}
                       </p>
                     </div>
                     <span className='text-sm flex justify-center font-medium leading-6 text-center text-gray-700 dark:text-gray-100'>
@@ -766,6 +989,139 @@ export const QueueManagement: FC<QueueManagementProps> = ({ className }): JSX.El
 
             {/* divider */}
             <div className='flex-grow border-b border-gray-300 mt-1'></div>
+            {expandedQueueOperators && (
+              <div className='pt-6'>
+                <QueueManagementFilterOperators
+                  updateTextFilter={debouncedUpdateTextFilter}
+                  updateStatusFilter={updateStatusFilter}
+                  updateSort={updateSort}
+                ></QueueManagementFilterOperators>
+                <div className='mx-auto text-center max-w-7xl 5xl:max-w-screen-2xl'>
+                  {/* empty state */}
+                  {allQueuesStats && agentMembers.length === 0 && (
+                    <EmptyState
+                      title='No operators'
+                      description='There is no operator configured'
+                      icon={
+                        <FontAwesomeIcon
+                          icon={faHeadset}
+                          className='mx-auto h-12 w-12'
+                          aria-hidden='true'
+                        />
+                      }
+                    ></EmptyState>
+                  )}
+                  {/* skeleton */}
+                  {/* {allQueuesStats && agentMembers.length > 0 && (
+                    <ul
+                      role='list'
+                      className='mt-4 grid grid-cols-1 gap-4 sm:grid-cols-2 2xl:grid-cols-3 5xl:grid-cols-4 5xl:max-w-screen-2xl'
+                    >
+                      {Array.from(Array(24)).map((e, index) => (
+                        <li key={index} className='px-1'>
+                          <button
+                            type='button'
+                            className='group flex w-full items-center justify-between space-x-3 rounded-lg p-2 text-left focus:outline-none focus:ring-2 focus:ring-offset-2 bg-white dark:bg-gray-900 cursor-default'
+                          >
+                            <div className='flex min-w-0 flex-1 items-center space-x-3'>
+                              <div className='block flex-shrink-0'>
+                                <div className='animate-pulse rounded-full h-10 w-10 mx-auto bg-gray-300 dark:bg-gray-600'></div>
+                              </div>
+                              <span className='block min-w-0 flex-1'>
+                                <div className='animate-pulse h-4 rounded bg-gray-300 dark:bg-gray-600'></div>
+                              </span>
+                            </div>
+                            <span className='inline-flex h-10 w-10 flex-shrink-0 items-center justify-center'>
+                              <FontAwesomeIcon
+                                icon={faChevronRight}
+                                className='h-3 w-3 text-gray-400 dark:text-gray-500'
+                                aria-hidden='true'
+                              />
+                            </span>
+                          </button>
+                        </li>
+                      ))}
+                    </ul>
+                  )} */}
+                  {/* compact layout operators */}
+                  {allQueuesStats && agentMembers.length > 0 && (
+                    <InfiniteScroll
+                      dataLength={infiniteScrollOperators.length}
+                      next={showMoreInfiniteScrollOperators}
+                      hasMore={infiniteScrollHasMore}
+                      scrollableTarget='main-content'
+                      loader={
+                        <FontAwesomeIcon
+                          icon={faCircleNotch}
+                          className='inline-block text-center fa-spin h-8 m-10 text-gray-400 dark:text-gray-500'
+                        />
+                      }
+                    >
+                      <ul
+                        role='list'
+                        className='mt-4 grid grid-cols-1 gap-4 sm:grid-cols-2 2xl:grid-cols-3 5xl:grid-cols-4 5xl:max-w-screen-2xl'
+                      >
+                        {infiniteScrollOperators.map((operator: any, index) => {
+                          return (
+                            <li key={index} className='px-1'>
+                              <button
+                                type='button'
+                                // onClick={() => openShowOperatorDrawer(operator)}
+                                className='group flex w-full items-center justify-between space-x-3 rounded-lg p-2 text-left focus:outline-none focus:ring-2 focus:ring-offset-2 bg-white dark:bg-gray-900 hover:bg-gray-200 dark:hover:bg-gray-700 focus:ring-primary dark:focus:ring-primary'
+                              >
+                                <span className='flex min-w-0 flex-1 items-center space-x-3'>
+                                  <span className='block flex-shrink-0'>
+                                    <Avatar
+                                      src={getAvatarData(operator)}
+                                      placeholderType='operator'
+                                      size='large'
+                                      bordered
+                                      // onClick={() => openShowOperatorDrawer(operator)}
+                                      className='mx-auto cursor-pointer'
+                                      status={getAvatarMainPresence(operator)}
+                                    />
+                                  </span>
+                                  <span className='block min-w-0 flex-1'>
+                                    <span className='block truncate text-sm font-medium text-gray-900 dark:text-gray-100'>
+                                      {operator.name}
+                                    </span>
+                                    <span className='block truncate mt-1 text-sm font-medium text-gray-500 dark:text-gray-500'>
+                                      <FontAwesomeIcon
+                                        icon={operator.loggedIn ? faUserCheck : faUserXmark}
+                                        className={`h-4 w-4 mr-2 ${
+                                          operator.loggedIn ? 'text-primary' : 'text-red-400'
+                                        } dark:text-gray-500 cursor-pointer`}
+                                        aria-hidden='true'
+                                      />
+                                      <span
+                                        className={`${
+                                          operator.loggedIn ? 'text-primary' : 'text-red-400'
+                                        } `}
+                                      >
+                                        {operator.loggedIn
+                                          ? `${t('QueueManager.Logged_in')}`
+                                          : `${t('QueueManager.Logged_out')}`}
+                                      </span>
+                                    </span>
+                                  </span>
+                                </span>
+                                <span className='inline-flex h-10 w-10 flex-shrink-0 items-center justify-center'>
+                                  <FontAwesomeIcon
+                                    icon={faChevronRight}
+                                    className='h-3 w-3 text-gray-400 dark:text-gray-500 cursor-pointer'
+                                    aria-hidden='true'
+                                  />
+                                </span>
+                              </button>
+                            </li>
+                          )
+                        })}
+                      </ul>
+                    </InfiniteScroll>
+                  )}
+                </div>
+              </div>
+            )}
           </div>
         </div>
       </div>
