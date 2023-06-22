@@ -3,148 +3,128 @@
 
 import { ComponentPropsWithRef, forwardRef, useRef } from 'react'
 import classNames from 'classnames'
-import { TextInput } from '../common'
+import { TextInput, SideDrawerCloseIcon } from '../common'
 import { Fragment, useState, useEffect } from 'react'
 import { Dialog, Disclosure, Popover, Transition } from '@headlessui/react'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { faChevronDown, faCircleXmark, faXmark } from '@fortawesome/free-solid-svg-icons'
+import {
+  DEFAULT_SORT_BY_SUMMARY,
+  DEFAULT_STATUS_FILTER_SUMMARY,
+  getFilterValuesQueuesManagement,
+} from '../../lib/queueManager'
 import { useSelector } from 'react-redux'
 import { RootState } from '../../store'
 import { savePreference } from '../../lib/storage'
-import { DEFAULT_OUTCOME_FILTER, getFilterValues } from '../../lib/queuesLib'
 import { useTranslation } from 'react-i18next'
-import { cloneDeep, isEmpty } from 'lodash'
 
-export interface RealTimeQueuesFilterProps extends ComponentPropsWithRef<'div'> {
-  updateTextFilter: Function
-  updateOutcomeFilter: Function
-  updateQueuesFilter: Function
+const sortFilter = {
+  id: 'sort',
+  name: 'Sort by',
+  options: [
+    { value: 'name', label: 'Name' },
+    { value: 'status', label: 'Status' },
+  ],
 }
 
-export const RealTimeQueuesFilter = forwardRef<HTMLButtonElement, RealTimeQueuesFilterProps>(
-  ({ updateTextFilter, updateOutcomeFilter, updateQueuesFilter, className, ...props }, ref) => {
-    const { t } = useTranslation()
+const statusFilter = {
+  id: 'status',
+  name: 'Status',
+  options: [
+    { value: 'all', label: 'All' },
+    { value: 'available', label: 'Available' },
+    { value: 'unavailable', label: 'Unavailable' },
+    { value: 'offline', label: 'Offline' },
+    { value: 'allExceptOffline', label: 'All except offline' },
+  ],
+}
+
+export interface SummaryFIlterProps extends ComponentPropsWithRef<'div'> {
+  updateTextFilter: Function
+  updateStatusFilter: Function
+  updateSort: Function
+}
+
+export const SummaryFilter = forwardRef<HTMLButtonElement, SummaryFIlterProps>(
+  ({ className, updateTextFilter, updateStatusFilter, updateSort, ...props }, ref) => {
     const auth = useSelector((state: RootState) => state.authentication)
+
+    const [open, setOpen] = useState(false)
+
     const [textFilter, setTextFilter] = useState('')
     const textFilterRef = useRef() as React.MutableRefObject<HTMLInputElement>
-    const [open, setOpen] = useState(false)
-    const [outcome, setOutcome] = useState('')
-    const [selectedQueues, setSelectedQueues]: any = useState([])
-    const queuesStore = useSelector((state: RootState) => state.queues)
-
-    const outcomeFilter = {
-      id: 'outcome',
-      name: t('Queues.Outcome'),
-      options: [
-        { value: 'lost', label: t('Queues.Not managed') },
-        { value: 'done', label: t('Queues.Managed') },
-        { value: 'all', label: t('Queues.All') },
-      ],
-    }
-
-    const queuesFilter = {
-      id: 'queues',
-      name: t('Queues.Queues'),
-      options: Object.values(queuesStore.queues).map((queue: any) => {
-        return { value: queue.queue, label: `${queue.name} (${queue.queue})` }
-      }),
-    }
-
     function changeTextFilter(event: any) {
       const newTextFilter = event.target.value
       setTextFilter(newTextFilter)
 
-      // notify parent component
+      // update operators (notify parent component)
       updateTextFilter(newTextFilter)
     }
 
-    function changeQueuesFilter(event: any) {
-      const isChecked = event.target.checked
-      const newSelectedQueues = cloneDeep(selectedQueues)
+    const [status, setStatus] = useState('')
+    function changeStatus(event: any) {
+      const newStatus = event.target.id.split('status-')[1]
+      setStatus(newStatus)
+      savePreference('summaryStatusFilter', newStatus, auth.username)
 
-      if (isChecked) {
-        newSelectedQueues.push(event.target.value)
-        setSelectedQueues(newSelectedQueues)
-      } else {
-        let index = newSelectedQueues.indexOf(event.target.value)
-        newSelectedQueues.splice(index, 1)
-        setSelectedQueues(newSelectedQueues)
-      }
-      savePreference('queuesSelectedQueues', newSelectedQueues, auth.username)
-
-      // notify parent component
-      updateQueuesFilter(newSelectedQueues)
+      // update operators (notify parent component)
+      updateStatusFilter(newStatus)
     }
 
-    function changeOutcomeFilter(event: any) {
-      const newOutcome = event.target.id.split('outcome-')[1]
-      setOutcome(newOutcome)
-      savePreference('queuesOutcomeFilter', newOutcome, auth.username)
+    const [sortBy, setSortBy]: any = useState('')
+    function changeSortBy(event: any) {
+      const newSortBy = event.target.id.split('sort-')[1]
+      setSortBy(newSortBy)
+      savePreference('summarySortBy', newSortBy, auth.username)
 
-      // notify parent component
-      updateOutcomeFilter(newOutcome)
+      // update operators (notify parent component)
+      updateSort(newSortBy)
     }
 
     // retrieve filter values from local storage
 
     useEffect(() => {
-      const filterValues = getFilterValues(auth.username)
-      setOutcome(filterValues.outcome)
-      updateOutcomeFilter(filterValues.outcome)
+      const filterValues = getFilterValuesQueuesManagement(auth.username)
+      setStatus(filterValues.status)
+      setSortBy(filterValues.sortBy)
 
-      if (isEmpty(filterValues.selectedQueues)) {
-        // select all queues
-        const allQueueCodes = Object.values(queuesStore.queues).map((queue: any) => {
-          return queue.queue
-        })
-        setSelectedQueues(allQueueCodes)
-        updateQueuesFilter(allQueueCodes)
-      } else {
-        // select queues from preferences
-        setSelectedQueues(filterValues.selectedQueues)
-        updateQueuesFilter(filterValues.selectedQueues)
-      }
+      updateStatusFilter(filterValues.status)
+      updateSort(filterValues.sortBy)
     }, [])
 
-    // outcome label
+    // status label
 
-    const [outcomeLabel, setOutcomeLabel] = useState('')
+    const [statusLabel, setStatusLabel] = useState('')
     useEffect(() => {
-      const found = outcomeFilter.options.find((option) => option.value === outcome)
+      const found = statusFilter.options.find((option) => option.value === status)
 
       if (found) {
-        setOutcomeLabel(found.label)
+        setStatusLabel(found.label)
       }
-    }, [outcome, outcomeFilter.options])
+    }, [status])
 
-    // queues label
+    // sort by label
 
-    const [queuesLabel, setQueuesLabel] = useState('')
+    const [sortByLabel, setSortByLabel] = useState('')
     useEffect(() => {
-      if (!isEmpty(selectedQueues)) {
-        setQueuesLabel(selectedQueues.join(', '))
-      } else {
-        // if no queues are selected, it's equivalent to select all of them
-        const allQueueCodes = queuesFilter.options.map((queue: any) => queue.value)
-        setQueuesLabel(allQueueCodes.join(', '))
+      const found = sortFilter.options.find((option) => option.value === sortBy)
+
+      if (found) {
+        setSortByLabel(found.label)
       }
-    }, [selectedQueues, queuesFilter.options])
+    }, [sortBy])
 
     const resetFilters = () => {
       setTextFilter('')
-      updateTextFilter('') // notify parent component
+      setStatus(DEFAULT_STATUS_FILTER_SUMMARY)
+      setSortBy(DEFAULT_SORT_BY_SUMMARY)
+      savePreference('summaryStatusFilter', DEFAULT_STATUS_FILTER_SUMMARY, auth.username)
+      savePreference('summarySortBy', DEFAULT_SORT_BY_SUMMARY, auth.username)
 
-      setOutcome(DEFAULT_OUTCOME_FILTER)
-      updateOutcomeFilter(DEFAULT_OUTCOME_FILTER) // notify parent component
-      savePreference('queuesOutcomeFilter', DEFAULT_OUTCOME_FILTER, auth.username)
-
-      // select all queues
-      const allQueueCodes = Object.values(queuesStore.queues).map((queue: any) => {
-        return queue.queue
-      })
-      setSelectedQueues(allQueueCodes)
-      updateQueuesFilter(allQueueCodes)
-      savePreference('queuesSelectedQueues', allQueueCodes, auth.username)
+      // notify parent component
+      updateTextFilter('')
+      updateStatusFilter(DEFAULT_STATUS_FILTER_SUMMARY)
+      updateSort(DEFAULT_SORT_BY_SUMMARY)
     }
 
     const clearTextFilter = () => {
@@ -152,6 +132,8 @@ export const RealTimeQueuesFilter = forwardRef<HTMLButtonElement, RealTimeQueues
       updateTextFilter('')
       textFilterRef.current.focus()
     }
+
+    const { t } = useTranslation()
 
     return (
       <div className={classNames(className)} {...props}>
@@ -184,24 +166,24 @@ export const RealTimeQueuesFilter = forwardRef<HTMLButtonElement, RealTimeQueues
                   <Dialog.Panel className='relative ml-auto flex h-full w-full max-w-xs flex-col overflow-y-auto py-4 pb-6 shadow-xl bg-white dark:bg-gray-900'>
                     <div className='flex items-center justify-between px-4'>
                       <h2 className='text-lg font-medium text-gray-900 dark:text-gray-100'>
-                        {t('Common.Filters')}
+                        Filters
                       </h2>
                       <button
                         type='button'
                         className='-mr-2 flex h-10 w-10 items-center justify-center rounded-md focus:outline-none focus:ring-2 p-2 bg-white text-gray-400 hover:bg-gray-50 focus:ring-primaryLight dark:bg-gray-900 dark:text-gray-400 dark:hover:bg-gray-800 dark:focus:ring-primaryDark'
                         onClick={() => setOpen(false)}
                       >
-                        <span className='sr-only'>{t('Common.Close menu')}</span>
+                        <span className='sr-only'>Close menu</span>
                         <FontAwesomeIcon icon={faXmark} className='h-5 w-5' aria-hidden='true' />
                       </button>
                     </div>
 
                     {/* Filters (mobile) */}
                     <form className='mt-4'>
-                      {/* outcome filter (mobile) */}
+                      {/* status filter (mobile) */}
                       <Disclosure
                         as='div'
-                        key={outcomeFilter.name}
+                        key={statusFilter.name}
                         className='border-t px-4 py-6 border-gray-200 dark:border-gray-700'
                       >
                         {({ open }) => (
@@ -209,7 +191,7 @@ export const RealTimeQueuesFilter = forwardRef<HTMLButtonElement, RealTimeQueues
                             <h3 className='-mx-2 -my-3 flow-root'>
                               <Disclosure.Button className='flex w-full items-center justify-between px-2 py-3 text-sm bg-white text-gray-400 dark:bg-gray-900 dark:text-gray-500'>
                                 <span className='font-medium text-gray-900 dark:text-gray-100'>
-                                  {outcomeFilter.name}
+                                  {statusFilter.name}
                                 </span>
                                 <span className='ml-6 flex items-center'>
                                   <FontAwesomeIcon
@@ -225,38 +207,24 @@ export const RealTimeQueuesFilter = forwardRef<HTMLButtonElement, RealTimeQueues
                             </h3>
                             <Disclosure.Panel className='pt-6'>
                               <fieldset>
-                                <legend className='sr-only'>{outcomeFilter.name}</legend>
+                                <legend className='sr-only'>{statusFilter.name}</legend>
                                 <div className='space-y-4'>
-                                  {outcomeFilter.options.map((option) => (
-                                    <div key={option.value}>
-                                      {option.value.startsWith('divider') ? (
-                                        <div className='relative'>
-                                          <div
-                                            className='absolute inset-0 flex items-center'
-                                            aria-hidden='true'
-                                          >
-                                            <div className='w-full border-t border-gray-300 dark:border-gray-600' />
-                                          </div>
-                                          <div className='relative flex justify-center'></div>
-                                        </div>
-                                      ) : (
-                                        <div className='flex items-center'>
-                                          <input
-                                            id={`outcome-${option.value}`}
-                                            name={`filter-${outcomeFilter.id}`}
-                                            type='radio'
-                                            defaultChecked={option.value === outcome}
-                                            onChange={changeOutcomeFilter}
-                                            className='h-4 w-4 border-gray-300 text-primary focus:ring-primaryLight dark:border-gray-600 dark:text-primary dark:focus:ring-primaryDark'
-                                          />
-                                          <label
-                                            htmlFor={`outcome-${option.value}`}
-                                            className='ml-3 block text-sm font-medium text-gray-700 dark:text-gray-200'
-                                          >
-                                            {option.label}
-                                          </label>
-                                        </div>
-                                      )}
+                                  {statusFilter.options.map((option) => (
+                                    <div key={option.value} className='flex items-center'>
+                                      <input
+                                        id={`status-${option.value}`}
+                                        name={`filter-${statusFilter.id}`}
+                                        type='radio'
+                                        defaultChecked={option.value === status}
+                                        onChange={changeStatus}
+                                        className='h-4 w-4 border-gray-300 text-primary focus:ring-primaryLight dark:border-gray-600 dark:text-primary dark:focus:ring-primaryDark'
+                                      />
+                                      <label
+                                        htmlFor={`status-${option.value}`}
+                                        className='ml-3 block text-sm font-medium text-gray-700 dark:text-gray-200'
+                                      >
+                                        {option.label}
+                                      </label>
                                     </div>
                                   ))}
                                 </div>
@@ -265,10 +233,10 @@ export const RealTimeQueuesFilter = forwardRef<HTMLButtonElement, RealTimeQueues
                           </>
                         )}
                       </Disclosure>
-                      {/* queues filter (mobile) */}
+                      {/* sort by filter (mobile) */}
                       <Disclosure
                         as='div'
-                        key={queuesFilter.name}
+                        key={sortFilter.name}
                         className='border-t px-4 py-6 border-gray-200 dark:border-gray-700'
                       >
                         {({ open }) => (
@@ -276,7 +244,7 @@ export const RealTimeQueuesFilter = forwardRef<HTMLButtonElement, RealTimeQueues
                             <h3 className='-mx-2 -my-3 flow-root'>
                               <Disclosure.Button className='flex w-full items-center justify-between px-2 py-3 text-sm bg-white text-gray-400 dark:bg-gray-900 dark:text-gray-500'>
                                 <span className='font-medium text-gray-900 dark:text-gray-100'>
-                                  {queuesFilter.name}
+                                  {sortFilter.name}
                                 </span>
                                 <span className='ml-6 flex items-center'>
                                   <FontAwesomeIcon
@@ -292,21 +260,20 @@ export const RealTimeQueuesFilter = forwardRef<HTMLButtonElement, RealTimeQueues
                             </h3>
                             <Disclosure.Panel className='pt-6'>
                               <fieldset>
-                                <legend className='sr-only'>{queuesFilter.name}</legend>
+                                <legend className='sr-only'>{sortFilter.name}</legend>
                                 <div className='space-y-4'>
-                                  {queuesFilter.options.map((option) => (
+                                  {sortFilter.options.map((option) => (
                                     <div key={option.value} className='flex items-center'>
                                       <input
-                                        id={`queues-${option.value}`}
-                                        name={`filter-${queuesFilter.id}`}
-                                        type='checkbox'
-                                        defaultChecked={selectedQueues.includes(option.value)}
-                                        value={option.value}
-                                        onChange={changeQueuesFilter}
+                                        id={`sort-${option.value}`}
+                                        name={`filter-${sortFilter.id}`}
+                                        type='radio'
+                                        defaultChecked={option.value === sortBy}
+                                        onChange={changeSortBy}
                                         className='h-4 w-4 border-gray-300 text-primary focus:ring-primaryLight dark:border-gray-600 dark:text-primary dark:focus:ring-primaryDark'
                                       />
                                       <label
-                                        htmlFor={`queues-${option.value}`}
+                                        htmlFor={`sort-${option.value}`}
                                         className='ml-3 block text-sm font-medium text-gray-700 dark:text-gray-200'
                                       >
                                         {option.label}
@@ -329,13 +296,13 @@ export const RealTimeQueuesFilter = forwardRef<HTMLButtonElement, RealTimeQueues
           <div className='mx-auto text-center'>
             <section aria-labelledby='filter-heading' className='pb-6'>
               <h2 id='filter-heading' className='sr-only'>
-                {t('Queues.Calls filters')}
+                Operators filters
               </h2>
 
-              <div className='flex items-center'>
+              <div className='flex items-center space-x-8'>
                 <div className='flex items-center'>
                   <TextInput
-                    placeholder='Filter calls'
+                    placeholder='Filter operators'
                     className='max-w-sm'
                     value={textFilter}
                     onChange={changeTextFilter}
@@ -346,18 +313,18 @@ export const RealTimeQueuesFilter = forwardRef<HTMLButtonElement, RealTimeQueues
                   />
                 </div>
 
-                <div className='flex ml-8'>
+                <div className='flex ml-4'>
                   <Popover.Group className='hidden sm:flex sm:items-baseline sm:space-x-4'>
-                    {/* outcome filter */}
+                    {/* status filter */}
                     <Popover
                       as='div'
-                      key={outcomeFilter.name}
-                      id={`desktop-menu-${outcomeFilter.id}`}
+                      key={statusFilter.name}
+                      id={`desktop-menu-${statusFilter.id}`}
                       className='relative inline-block text-left shrink-0'
                     >
                       <div>
                         <Popover.Button className='px-3 py-2 text-sm leading-4 p-2 rounded border shadow-sm border-gray-300 bg-white text-gray-700 hover:bg-gray-100 focus:ring-primaryLight dark:border-gray-600 dark:bg-gray-900 dark:text-gray-100 dark:hover:bg-gray-800 dark:focus:ring-primaryDark group inline-flex items-center justify-center font-medium  hover:text-gray-900 dark:hover:text-gray-100'>
-                          <span>{outcomeFilter.name}</span>
+                          <span>{statusFilter.name}</span>
                           <FontAwesomeIcon
                             icon={faChevronDown}
                             className='ml-2 h-3 w-3 flex-shrink-0 text-gray-400 group-hover:text-gray-500 dark:text-gray-500 dark:group-hover:text-gray-400'
@@ -375,38 +342,24 @@ export const RealTimeQueuesFilter = forwardRef<HTMLButtonElement, RealTimeQueues
                         leaveFrom='transform opacity-100 scale-100'
                         leaveTo='transform opacity-0 scale-95'
                       >
-                        <Popover.Panel className='absolute right-0 z-10 mt-2 origin-top-right rounded-md min-w-max p-4 shadow-2xl ring-1 focus:outline-none ring-opacity-5 bg-white ring-black dark:ring-opacity-5 dark:bg-gray-900 dark:ring-gray-700'>
+                        <Popover.Panel className='absolute right-0 z-10 mt-2 origin-top-right rounded-md min-w-max p-4 shadow-2xl ring-1 ring-opacity-5 focus:outline-none bg-white ring-black dark:bg-gray-900 dark:ring-gray-700'>
                           <form className='space-y-4'>
-                            {outcomeFilter.options.map((option) => (
-                              <div key={option.value}>
-                                {option.value.startsWith('divider') ? (
-                                  <div className='relative'>
-                                    <div
-                                      className='absolute inset-0 flex items-center'
-                                      aria-hidden='true'
-                                    >
-                                      <div className='w-full border-t border-gray-300 dark:border-gray-600' />
-                                    </div>
-                                    <div className='relative flex justify-center'></div>
-                                  </div>
-                                ) : (
-                                  <div className='flex items-center'>
-                                    <input
-                                      id={`outcome-${option.value}`}
-                                      name={`filter-${outcomeFilter.id}`}
-                                      type='radio'
-                                      defaultChecked={option.value === outcome}
-                                      onChange={changeOutcomeFilter}
-                                      className='h-4 w-4 border-gray-300 text-primary focus:ring-primaryLight dark:border-gray-600 dark:text-primary dark:focus:ring-primaryDark'
-                                    />
-                                    <label
-                                      htmlFor={`outcome-${option.value}`}
-                                      className='ml-3 block text-sm font-medium text-gray-700 dark:text-gray-200'
-                                    >
-                                      {option.label}
-                                    </label>
-                                  </div>
-                                )}
+                            {statusFilter.options.map((option) => (
+                              <div key={option.value} className='flex items-center'>
+                                <input
+                                  id={`status-${option.value}`}
+                                  name={`filter-${statusFilter.id}`}
+                                  type='radio'
+                                  defaultChecked={option.value === status}
+                                  onChange={changeStatus}
+                                  className='h-4 w-4 border-gray-300 text-primary focus:ring-primaryLight dark:border-gray-600 dark:text-primary dark:focus:ring-primaryDark'
+                                />
+                                <label
+                                  htmlFor={`status-${option.value}`}
+                                  className='ml-3 block text-sm font-medium text-gray-700 dark:text-gray-200'
+                                >
+                                  {option.label}
+                                </label>
                               </div>
                             ))}
                           </form>
@@ -414,17 +367,16 @@ export const RealTimeQueuesFilter = forwardRef<HTMLButtonElement, RealTimeQueues
                       </Transition>
                     </Popover>
 
-                    {/* queues filter */}
-
+                    {/* sort by filter */}
                     <Popover
                       as='div'
-                      key={queuesFilter.name}
-                      id={`desktop-menu-${queuesFilter.id}`}
+                      key={sortFilter.name}
+                      id={`desktop-menu-${sortFilter.id}`}
                       className='relative inline-block text-left shrink-0'
                     >
                       <div>
                         <Popover.Button className='px-3 py-2 text-sm leading-4 p-2 rounded border shadow-sm border-gray-300 bg-white text-gray-700 hover:bg-gray-100 focus:ring-primaryLight dark:border-gray-600 dark:bg-gray-900 dark:text-gray-100 dark:hover:bg-gray-800 dark:focus:ring-primaryDark group inline-flex items-center justify-center font-medium  hover:text-gray-900 dark:hover:text-gray-100'>
-                          <span>{queuesFilter.name}</span>
+                          <span>{sortFilter.name}</span>
                           <FontAwesomeIcon
                             icon={faChevronDown}
                             className='ml-2 h-3 w-3 flex-shrink-0 text-gray-400 group-hover:text-gray-500 dark:text-gray-500 dark:group-hover:text-gray-400'
@@ -442,21 +394,20 @@ export const RealTimeQueuesFilter = forwardRef<HTMLButtonElement, RealTimeQueues
                         leaveFrom='transform opacity-100 scale-100'
                         leaveTo='transform opacity-0 scale-95'
                       >
-                        <Popover.Panel className='absolute right-0 z-10 mt-2 origin-top-right rounded-md min-w-max p-4 shadow-2xl ring-1 focus:outline-none ring-opacity-5 bg-white ring-black dark:ring-opacity-5 dark:bg-gray-900 dark:ring-gray-700'>
+                        <Popover.Panel className='absolute right-0 z-10 mt-2 origin-top-right rounded-md p-4 shadow-2xl ring-1 ring-opacity-5 focus:outline-none bg-white ring-black dark:bg-gray-900 dark:ring-gray-600'>
                           <form className='space-y-4'>
-                            {queuesFilter.options.map((option) => (
+                            {sortFilter.options.map((option) => (
                               <div key={option.value} className='flex items-center'>
                                 <input
-                                  id={`queues-${option.value}`}
-                                  name={`filter-${queuesFilter.id}`}
-                                  type='checkbox'
-                                  defaultChecked={selectedQueues.includes(option.value)}
-                                  value={option.value}
-                                  onChange={changeQueuesFilter}
-                                  className='h-4 w-4 rounded border-gray-300 text-primary focus:ring-primaryLight dark:border-gray-600 dark:text-primary dark:focus:ring-primaryDark'
+                                  id={`sort-${option.value}`}
+                                  name={`filter-${sortFilter.id}`}
+                                  type='radio'
+                                  defaultChecked={option.value === sortBy}
+                                  onChange={changeSortBy}
+                                  className='h-4 w-4 border-gray-300 text-primary focus:ring-primaryLight dark:border-gray-600 dark:text-primary dark:focus:ring-primaryDark'
                                 />
                                 <label
-                                  htmlFor={`queues-${option.value}`}
+                                  htmlFor={`sort-${option.value}`}
                                   className='ml-3 block text-sm font-medium text-gray-700 dark:text-gray-200'
                                 >
                                   {option.label}
@@ -474,7 +425,7 @@ export const RealTimeQueuesFilter = forwardRef<HTMLButtonElement, RealTimeQueues
                     className='inline-block text-sm font-medium sm:hidden text-gray-700 hover:text-gray-900 dark:text-gray-200 dark:hover:text-gray-100'
                     onClick={() => setOpen(true)}
                   >
-                    {t('Common.Filters')}
+                    Filters
                   </button>
                 </div>
               </div>
@@ -487,33 +438,32 @@ export const RealTimeQueuesFilter = forwardRef<HTMLButtonElement, RealTimeQueues
                   </h3>
                   {/* separator */}
                   <div aria-hidden='true' className='h-5 w-px block bg-gray-300 dark:bg-gray-600' />
-                  {/* outcome */}
+                  {/* status */}
                   <div className='mt-0'>
                     <div className='-m-1 flex flex-wrap items-center'>
                       <span className='m-1 inline-flex items-center rounded-full border py-1.5 px-3 text-sm font-medium border-gray-300 text-gray-700 dark:border-gray-600 dark:text-gray-100'>
                         <span>
                           <span className='text-gray-600 dark:text-gray-300'>
-                            {t('Queues.Outcome')}:
+                            {t('Phonebook.Status')}:
                           </span>{' '}
-                          {outcomeLabel}
+                          {statusLabel}
                         </span>
                       </span>
                     </div>
                   </div>
-                  {/* queues */}
+                  {/* sort by */}
                   <div className='mt-0'>
-                    <div className='-m-1 flex flex-wrap items-center'>
+                    <div className='-m-1 flex flex-wrap  items-center'>
                       <span className='m-1 inline-flex items-center rounded-full border py-1.5 px-3 text-sm font-medium border-gray-300 text-gray-700 dark:border-gray-600 dark:text-gray-100'>
                         <span>
                           <span className='text-gray-600 dark:text-gray-300'>
-                            {t('Queues.Queues')}:
+                            {t('Phonebook.Sort by')}:
                           </span>{' '}
-                          {queuesLabel}
+                          {sortByLabel}
                         </span>
                       </span>
                     </div>
                   </div>
-
                   {/* separator */}
                   <div
                     aria-hidden='true'
@@ -539,4 +489,4 @@ export const RealTimeQueuesFilter = forwardRef<HTMLButtonElement, RealTimeQueues
   },
 )
 
-RealTimeQueuesFilter.displayName = 'RealTimeQueuesFilter'
+SummaryFilter.displayName = 'SummaryFilter'

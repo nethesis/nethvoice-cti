@@ -19,6 +19,8 @@ export const DEFAULT_CALLS_LOAD_PERIOD = 12
 export const INFINITE_SCROLL_QUEUE_OPERATORS_PAGE_SIZE = 15
 export const DEFAULT_SORT_BY_QUEUE_MANAGEMENT = 'name'
 export const DEFAULT_STATUS_FILTER_QUEUE_MANAGEMENT = 'connected'
+export const DEFAULT_SORT_BY_SUMMARY = 'name'
+export const DEFAULT_STATUS_FILTER_SUMMARY = 'all'
 
 export const searchStringInQueue = (queue: any, queryText: string) => {
   const regex = /[^a-zA-Z0-9]/g
