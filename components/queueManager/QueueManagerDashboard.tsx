@@ -653,7 +653,7 @@ export const QueueManagerDashboard: FC<QueueManagerDashboardProps> = ({
   return (
     <>
       {/* Top page section */}
-      <div className='border-b rounded-md shadow-md border-gray-200 bg-white px-4 py-1 sm:px-6'>
+      <div className='border-b rounded-md shadow-md border-gray-200 bg-white dark:bg-gray-900 px-4 py-1 sm:px-6'>
         <div className=''>
           <div className='mx-auto'>
             <div className='grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-6'>
@@ -795,7 +795,7 @@ export const QueueManagerDashboard: FC<QueueManagerDashboardProps> = ({
             {t('QueueManager.Hourly distribution of incoming calls')}
           </h2>
 
-          <div className='border-b rounded-md shadow-md bg-white px-4 py-5 sm:px-6 mt-1 relative w-full h-full'>
+          <div className='border-b rounded-md shadow-md bg-white dark:bg-gray-900 px-4 py-5 sm:px-6 mt-1 relative w-full h-full'>
             <div className='flex space-x-3'>
               <div className='min-w-0 flex-1'>
                 {/* ... */}
@@ -826,7 +826,7 @@ export const QueueManagerDashboard: FC<QueueManagerDashboardProps> = ({
             {t('QueueManager.Hourly distribution of call results')}
           </h2>
 
-          <div className='border-b rounded-md shadow-md bg-white px-4 py-5 sm:px-6 mt-1 relative w-full h-full'>
+          <div className='border-b rounded-md shadow-md bg-white dark:bg-gray-900 px-4 py-5 sm:px-6 mt-1 relative w-full h-full'>
             <div className='flex space-x-3'>
               <div className='min-w-0 flex-1'>{/* ... */} </div>
             </div>
@@ -854,7 +854,7 @@ export const QueueManagerDashboard: FC<QueueManagerDashboardProps> = ({
             {t('QueueManager.Hourly distribution of calls answered')}
           </h2>
 
-          <div className='border-b rounded-md shadow-md bg-white px-4 py-5 sm:px-6 mt-1 relative w-full h-full'>
+          <div className='border-b rounded-md shadow-md bg-white dark:bg-gray-900 px-4 py-5 sm:px-6 mt-1 relative w-full h-full'>
             <div className='flex space-x-3'>
               <div className='min-w-0 flex-1'>{/* ... */} </div>
             </div>
@@ -882,7 +882,7 @@ export const QueueManagerDashboard: FC<QueueManagerDashboardProps> = ({
             {t('QueueManager.Hourly distribution of not answered calls')}
           </h2>
 
-          <div className='border-b rounded-md shadow-md bg-white px-4 py-5 sm:px-6 mt-1 relative w-full h-full'>
+          <div className='border-b rounded-md shadow-md bg-white dark:bg-gray-900 px-4 py-5 sm:px-6 mt-1 relative w-full h-full'>
             <div className='flex space-x-3'>
               <div className='min-w-0 flex-1'>{/* ... */} </div>
             </div>
@@ -1457,7 +1457,7 @@ export const QueueManagerDashboard: FC<QueueManagerDashboardProps> = ({
                     <div className='-mx-4 -my-2 overflow-x-auto sm:-mx-6 pl-2 pr-2'>
                       <div className='inline-block min-w-full py-2 align-middle sm:px-6 lg:px-8'>
                         <table className='min-w-full divide-y divide-gray-300'>
-                          <tbody className='divide-y divide-gray-200 bg-white'>
+                          <tbody className='divide-y divide-gray-200 bg-white dark:bg-gray-900'>
                             {Object.values(queuesTotalCalls).map((queue: any, index: number) => (
                               <tr key={index}>
                                 <td className='whitespace-nowrap py-2 pl-4 pr-3 text-sm sm:pl-0'>
@@ -1526,7 +1526,7 @@ export const QueueManagerDashboard: FC<QueueManagerDashboardProps> = ({
                     <div className='-mx-4 -my-2 overflow-x-auto sm:-mx-6 pl-2 pr-2'>
                       <div className='inline-block min-w-full py-2 align-middle sm:px-6 lg:px-8'>
                         <table className='min-w-full divide-y divide-gray-300'>
-                          <tbody className='divide-y divide-gray-200 bg-white'>
+                          <tbody className='divide-y divide-gray-200 bg-white dark:bg-gray-900'>
                             {Object.values(queuesFailedCalls).map((queue: any, index: number) => (
                               <tr key={index}>
                                 <td className='whitespace-nowrap py-2 pl-4 pr-3 text-sm sm:pl-0'>
@@ -1595,7 +1595,7 @@ export const QueueManagerDashboard: FC<QueueManagerDashboardProps> = ({
                     <div className='-mx-4 -my-2 overflow-x-auto sm:-mx-6 pl-2 pr-2'>
                       <div className='inline-block min-w-full py-2 align-middle sm:px-6 lg:px-8'>
                         <table className='min-w-full divide-y divide-gray-300'>
-                          <tbody className='divide-y divide-gray-200 bg-white'>
+                          <tbody className='divide-y divide-gray-200 bg-white dark:bg-gray-900'>
                             {Object.values(queuesInvalidCalls).map((queue: any, index: number) => (
                               <tr key={index}>
                                 <td className='whitespace-nowrap py-2 pl-4 pr-3 text-sm sm:pl-0'>
@@ -1661,7 +1661,7 @@ export const QueueManagerDashboard: FC<QueueManagerDashboardProps> = ({
                     <div className='-mx-4 -my-2 overflow-x-auto sm:-mx-6 pl-2 pr-2'>
                       <div className='inline-block min-w-full py-2 align-middle sm:px-6 lg:px-8'>
                         <table className='min-w-full divide-y divide-gray-300'>
-                          <tbody className='divide-y divide-gray-200 bg-white'>
+                          <tbody className='divide-y divide-gray-200 bg-white dark:bg-gray-900'>
                             {Object.values(queuesFailures).map((queue: any, index: number) => (
                               <tr key={index}>
                                 <td className='whitespace-nowrap py-2 pl-4 pr-3 text-sm sm:pl-0'>

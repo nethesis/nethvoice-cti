@@ -593,7 +593,7 @@ export const QueueManagement: FC<QueueManagementProps> = ({ className }): JSX.El
                 {t('QueueManager.Select queue')}
               </Listbox.Label>
               <div className='relative'>
-                <Listbox.Button className='relative cursor-default rounded-md bg-white py-1.5 pl-3 pr-10 text-left text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 focus:outline-none focus:ring-2 focus:ring-indigo-600 sm:text-sm sm:leading-6 inline-block'>
+                <Listbox.Button className='relative cursor-default rounded-md bg-white py-1.5 pl-3 pr-10 text-left text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 focus:outline-none focus:ring-2 focus:ring-primary sm:text-sm sm:leading-6 inline-block'>
                   <span className='block truncate'>Select queue</span>
                   <span className='pointer-events-none absolute inset-y-0 right-0 flex items-center pr-2'>
                     <FontAwesomeIcon
@@ -611,7 +611,7 @@ export const QueueManagement: FC<QueueManagementProps> = ({ className }): JSX.El
                   leaveFrom='opacity-100'
                   leaveTo='opacity-0'
                 >
-                  <Listbox.Options className='absolute z-10 mt-1 w-full overflow-auto rounded-md bg-white py-1 text-base shadow-lg ring-1 ring-black ring-opacity-5 focus:outline-none sm:text-sm h-auto'>
+                  <Listbox.Options className='absolute z-10 mt-1 w-full overflow-auto rounded-md bg-white py-1 text-base shadow-lg ring-1 dark:bg-gray-900 ring-black ring-opacity-5 focus:outline-none sm:text-sm h-auto'>
                     {Object.entries<any>(queuesList).map(([queueId, queueInfo]) => (
                       <Listbox.Option
                         key={queueId}
@@ -637,7 +637,7 @@ export const QueueManagement: FC<QueueManagementProps> = ({ className }): JSX.El
                             {selected ? (
                               <span
                                 className={classNames(
-                                  active ? 'text-white' : 'text-indigo-600',
+                                  active ? 'text-white' : 'text-primary',
                                   'absolute inset-y-0 left-0 flex items-center pl-1.5',
                                 )}
                               >
@@ -687,7 +687,7 @@ export const QueueManagement: FC<QueueManagementProps> = ({ className }): JSX.El
             <div className='grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-3'>
               {/* Online operators */}
               <div className='pt-8'>
-                <div className='border-b rounded-lg shadow-md bg-white px-5 py-1 sm: mt-1 relative flex items-center'>
+                <div className='border-b rounded-lg shadow-md bg-white dark:bg-gray-900 px-5 py-1 sm: mt-1 relative flex items-center'>
                   <div className='flex items-center space-x-4'>
                     <div className='h-10 w-10 flex items-center justify-center rounded-xl bg-emerald-50 mt-1 mb-1'>
                       <FontAwesomeIcon
@@ -712,7 +712,7 @@ export const QueueManagement: FC<QueueManagementProps> = ({ className }): JSX.El
 
               {/* On break operators */}
               <div className='pt-8'>
-                <div className='border-b rounded-lg shadow-md bg-white px-5 py-1 sm: mt-1 relative flex items-center'>
+                <div className='border-b rounded-lg shadow-md  dark:bg-gray-900 px-5 py-1 sm: mt-1 relative flex items-center'>
                   <div className='flex items-center space-x-4'>
                     <div className='h-10 w-10 flex items-center justify-center rounded-xl bg-emerald-50 mt-1 mb-1'>
                       <FontAwesomeIcon
@@ -737,7 +737,7 @@ export const QueueManagement: FC<QueueManagementProps> = ({ className }): JSX.El
 
               {/* Offline operators */}
               <div className='pt-8'>
-                <div className='border-b rounded-lg shadow-md bg-white px-5 py-1 sm: mt-1 relative flex items-center'>
+                <div className='border-b rounded-lg shadow-md bg-white dark:bg-gray-900 px-5 py-1 sm: mt-1 relative flex items-center'>
                   <div className='flex items-center space-x-4'>
                     <div className='h-10 w-10 flex items-center justify-center rounded-xl bg-emerald-50 mt-1 mb-1'>
                       <FontAwesomeIcon
@@ -762,7 +762,7 @@ export const QueueManagement: FC<QueueManagementProps> = ({ className }): JSX.El
 
               {/* Free operators */}
               <div>
-                <div className='border-b rounded-lg shadow-md bg-white px-5 py-1 sm: mt-1 relative flex items-center'>
+                <div className='border-b rounded-lg shadow-md bg-white dark:bg-gray-900 px-5 py-1 sm: mt-1 relative flex items-center'>
                   <div className='flex items-center space-x-4'>
                     <div className='h-10 w-10 flex items-center justify-center rounded-xl bg-emerald-50 mt-1 mb-1'>
                       <FontAwesomeIcon
@@ -785,7 +785,7 @@ export const QueueManagement: FC<QueueManagementProps> = ({ className }): JSX.El
 
               {/* Busy operators ( in queue ) */}
               <div>
-                <div className='border-b rounded-lg shadow-md bg-white px-5 py-1 sm: mt-1 relative flex items-center'>
+                <div className='border-b rounded-lg shadow-md bg-white dark:bg-gray-900 px-5 py-1 sm: mt-1 relative flex items-center'>
                   <div className='flex items-center space-x-4'>
                     <div className='h-10 w-10 flex items-center justify-center rounded-xl bg-emerald-50 mt-1 mb-1'>
                       <FontAwesomeIcon
@@ -810,7 +810,7 @@ export const QueueManagement: FC<QueueManagementProps> = ({ className }): JSX.El
 
               {/* Busy operators ( out queue ) */}
               <div>
-                <div className='border-b rounded-lg shadow-md bg-white px-5 py-1 sm: mt-1 relative flex items-center'>
+                <div className='border-b rounded-lg shadow-md bg-white dark:bg-gray-900 px-5 py-1 sm: mt-1 relative flex items-center'>
                   <div className='flex items-center space-x-4'>
                     <div className='h-10 w-10 flex items-center justify-center rounded-xl bg-emerald-50 mt-1 mb-1'>
                       <FontAwesomeIcon
@@ -833,7 +833,7 @@ export const QueueManagement: FC<QueueManagementProps> = ({ className }): JSX.El
 
               {/* Calls duration */}
               <div>
-                <div className='border-b rounded-lg shadow-md bg-white px-5 py-1 sm: mt-1 relative'>
+                <div className='border-b rounded-lg shadow-md bg-white dark:bg-gray-900 px-5 py-1 sm: mt-1 relative'>
                   <div className='pt-3'>
                     <span className='text-sm font-medium leading-6 text-center text-gray-700 dark:text-gray-100'>
                       {t('QueueManager.Calls duration')}
@@ -850,7 +850,7 @@ export const QueueManagement: FC<QueueManagementProps> = ({ className }): JSX.El
 
               {/* Calls */}
               <div>
-                <div className='border-b rounded-lg shadow-md bg-white px-5 py-1 sm:mt-1 relative'>
+                <div className='border-b rounded-lg shadow-md bg-white dark:bg-gray-900 px-5 py-1 sm:mt-1 relative'>
                   <div className='flex justify-between'>
                     <div className='pt-3'>
                       <span className='text-sm font-medium leading-6 text-center text-gray-700 dark:text-gray-100'>
@@ -871,7 +871,7 @@ export const QueueManagement: FC<QueueManagementProps> = ({ className }): JSX.El
 
               {/* Customers to manage */}
               <div>
-                <div className='border-b rounded-lg shadow-md bg-white px-5 py-1 sm: mt-1 relative flex justify-between'>
+                <div className='border-b rounded-lg shadow-md bg-white dark:bg-gray-900 px-5 py-1 sm: mt-1 relative flex justify-between'>
                   <div className='pt-3'>
                     <span className='text-sm font-medium leading-6 text-center text-gray-700 dark:text-gray-100'>
                       {t('QueueManager.Customers to manage')}

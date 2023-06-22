@@ -370,7 +370,7 @@ export const Summary: FC<SummaryProps> = ({ className }): JSX.Element => {
                     {t('QueueManager.Select queue')}
                   </Listbox.Label>
                   <div className='relative'>
-                    <Listbox.Button className='relative cursor-default rounded-md bg-white py-1.5 pl-3 pr-10 text-left text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 focus:outline-none focus:ring-2 focus:ring-indigo-600 sm:text-sm sm:leading-6 inline-block'>
+                    <Listbox.Button className='relative cursor-default rounded-md bg-white dark:bg-gray-900 py-1.5 pl-3 pr-10 text-left text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 focus:outline-none focus:ring-2 focus:ring-primary sm:text-sm sm:leading-6 inline-block'>
                       <span className='block truncate'>Select queue</span>
                       <span className='pointer-events-none absolute inset-y-0 right-0 flex items-center pr-2'>
                         <FontAwesomeIcon
@@ -388,7 +388,7 @@ export const Summary: FC<SummaryProps> = ({ className }): JSX.Element => {
                       leaveFrom='opacity-100'
                       leaveTo='opacity-0'
                     >
-                      <Listbox.Options className='absolute z-10 mt-1 w-full overflow-auto rounded-md bg-white py-1 text-base shadow-lg ring-1 ring-black ring-opacity-5 focus:outline-none sm:text-sm h-auto'>
+                      <Listbox.Options className='absolute z-10 mt-1 w-full overflow-auto rounded-md dark:bg-gray-900 bg-white py-1 text-base shadow-lg ring-1  ring-black ring-opacity-5 focus:outline-none sm:text-sm h-auto'>
                         {Object.entries<any>(queuesList).map(([queueId, queueInfo]) => (
                           <Listbox.Option
                             key={queueId}
@@ -414,7 +414,7 @@ export const Summary: FC<SummaryProps> = ({ className }): JSX.Element => {
                                 {selected ? (
                                   <span
                                     className={classNames(
-                                      active ? 'text-white' : 'text-indigo-600',
+                                      active ? 'text-white' : 'text-primary',
                                       'absolute inset-y-0 left-0 flex items-center pl-1.5',
                                     )}
                                   >
@@ -444,7 +444,7 @@ export const Summary: FC<SummaryProps> = ({ className }): JSX.Element => {
               <div className='grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-3'>
                 {/* Total calls */}
                 <div className='pt-8'>
-                  <div className='border-b rounded-lg shadow-md bg-white px-5 py-3 sm:mt-1 relative flex items-center'>
+                  <div className='border-b rounded-lg shadow-md bg-white dark:bg-gray-900 px-5 py-3 sm:mt-1 relative flex items-center'>
                     <div className='flex items-center justify-between w-full'>
                       <span className='text-sm font-medium leading-6 text-gray-700 dark:text-gray-100'>
                         {t('QueueManager.Total calls')}
@@ -462,7 +462,7 @@ export const Summary: FC<SummaryProps> = ({ className }): JSX.Element => {
 
                 {/* Answered calls */}
                 <div className='pt-8'>
-                  <div className='border-b rounded-lg shadow-md bg-white px-5 py-3 sm:mt-1 relative flex items-center'>
+                  <div className='border-b rounded-lg shadow-md bg-white dark:bg-gray-900 px-5 py-3 sm:mt-1 relative flex items-center'>
                     <div className='flex items-center justify-between w-full'>
                       <span className='text-sm font-medium leading-6 text-gray-700 dark:text-gray-100'>
                         {t('QueueManager.Answered calls')}
@@ -480,7 +480,7 @@ export const Summary: FC<SummaryProps> = ({ className }): JSX.Element => {
 
                 {/* Calls answered before service level */}
                 <div className='pt-8'>
-                  <div className='border-b rounded-lg shadow-md bg-white px-5 py-3 sm:mt-1 relative flex items-center'>
+                  <div className='border-b rounded-lg shadow-md bg-white dark:bg-gray-900 px-5 py-3 sm:mt-1 relative flex items-center'>
                     <div className='flex items-center justify-between w-full'>
                       <span className='text-sm font-medium leading-6 text-gray-700 dark:text-gray-100'>
                         {t('QueueManager.Calls answered before service level')}
@@ -498,7 +498,7 @@ export const Summary: FC<SummaryProps> = ({ className }): JSX.Element => {
 
                 {/* Unanswered calls */}
                 <div>
-                  <div className='border-b rounded-lg shadow-md bg-white px-5 py-3 sm:mt-1 relative flex items-center'>
+                  <div className='border-b rounded-lg shadow-md bg-white dark:bg-gray-900 px-5 py-3 sm:mt-1 relative flex items-center'>
                     <div className='flex items-center justify-between w-full'>
                       <span className='text-sm font-medium leading-6 text-gray-700 dark:text-gray-100'>
                         {t('QueueManager.Unanswered calls')}
@@ -516,7 +516,7 @@ export const Summary: FC<SummaryProps> = ({ className }): JSX.Element => {
 
                 {/* Reasons for unanswered calls */}
                 <div>
-                  <div className='border-b rounded-lg shadow-md bg-white px-5 py-3 sm:mt-1 relative flex items-center'>
+                  <div className='border-b rounded-lg shadow-md bg-white dark:bg-gray-900 px-5 py-3 sm:mt-1 relative flex items-center'>
                     <div className='flex items-center justify-between w-full'>
                       <span className='text-sm font-medium leading-6 text-gray-700 dark:text-gray-100'>
                         {t('QueueManager.Reasons for unanswered calls')}
@@ -534,7 +534,7 @@ export const Summary: FC<SummaryProps> = ({ className }): JSX.Element => {
 
                 {/* Callback time */}
                 <div>
-                  <div className='border-b rounded-lg shadow-md bg-white px-5 py-3 sm:mt-1 relative flex items-center'>
+                  <div className='border-b rounded-lg shadow-md bg-white dark:bg-gray-900 px-5 py-3 sm:mt-1 relative flex items-center'>
                     <div className='flex items-center justify-between w-full'>
                       <span className='text-sm font-medium leading-6 text-gray-700 dark:text-gray-100'>
                         {t('QueueManager.Callback time')}
@@ -552,7 +552,7 @@ export const Summary: FC<SummaryProps> = ({ className }): JSX.Element => {
 
                 {/* Invalid calls */}
                 <div>
-                  <div className='border-b rounded-lg shadow-md bg-white px-5 py-3 sm:mt-1 relative flex items-center'>
+                  <div className='border-b rounded-lg shadow-md bg-white dark:bg-gray-900 px-5 py-3 sm:mt-1 relative flex items-center'>
                     <div className='flex items-center justify-between w-full'>
                       <span className='text-sm font-medium leading-6 text-gray-700 dark:text-gray-100'>
                         {t('QueueManager.Invalid calls')}
@@ -570,7 +570,7 @@ export const Summary: FC<SummaryProps> = ({ className }): JSX.Element => {
 
                 {/* Waiting calls */}
                 <div>
-                  <div className='border-b rounded-lg shadow-md bg-white px-5 py-3 sm:mt-1 relative flex items-center'>
+                  <div className='border-b rounded-lg shadow-md bg-white dark:bg-gray-900 px-5 py-3 sm:mt-1 relative flex items-center'>
                     <div className='flex items-center justify-between w-full'>
                       <span className='text-sm font-medium leading-6 text-gray-700 dark:text-gray-100'>
                         {t('QueueManager.Waiting calls')}
@@ -588,7 +588,7 @@ export const Summary: FC<SummaryProps> = ({ className }): JSX.Element => {
 
                 {/* Calls duration */}
                 <div>
-                  <div className='border-b rounded-lg shadow-md bg-white px-5 py-3 sm:mt-1 relative flex items-center'>
+                  <div className='border-b rounded-lg shadow-md bg-white dark:bg-gray-900 px-5 py-3 sm:mt-1 relative flex items-center'>
                     <div className='flex items-center justify-between w-full'>
                       <span className='text-sm font-medium leading-6 text-gray-700 dark:text-gray-100'>
                         {t('QueueManager.Calls duration')}
