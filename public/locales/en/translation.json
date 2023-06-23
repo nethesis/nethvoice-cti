@@ -474,6 +474,8 @@
     "failed_timeout": "Failed timeout",
     "failed_withkey": "Failed withkey",
     "Logged_in": "Logged in",
-    "Logged_out": "Logged out"
+    "Logged_out": "Logged out",
+    "Fullscreen": "Fullscreen",
+    "Add queue": "Add queue"
   }
 }
