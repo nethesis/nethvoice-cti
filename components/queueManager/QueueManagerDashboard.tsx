@@ -22,16 +22,6 @@ import {
   faArrowDownWideShort,
 } from '@fortawesome/free-solid-svg-icons'
 import {
-  Chart as ChartJS,
-  CategoryScale,
-  LinearScale,
-  BarElement,
-  Title,
-  Tooltip,
-  Legend,
-} from 'chart.js'
-import { Bar } from 'react-chartjs-2'
-import {
   getAlarm,
   getQueues,
   getAgentsStats,
@@ -39,62 +29,11 @@ import {
   getTotalsForEachKey,
   sortAgentsData,
   convertToHumanReadable,
+  getQueuesHistory,
+  groupDataByHour,
 } from '../../lib/queueManager'
 import { invertObject } from '../../lib/utils'
-
-ChartJS.register(CategoryScale, LinearScale, BarElement, Title, Tooltip, Legend)
-
-export const options = {
-  responsive: true,
-  maintainAspectRatio: true,
-  scales: {
-    y: {
-      beginAtZero: true,
-    },
-  },
-  plugins: {
-    legend: {
-      position: 'bottom' as const,
-    },
-    title: {
-      display: true,
-      // text: 'Chart.js Bar Chart',
-    },
-  },
-}
-
-const labels = [
-  '09.00',
-  '10.00',
-  '11.00',
-  '12.00',
-  '13.00',
-  '14.00',
-  '15.00',
-  '16.00',
-  '17.00',
-  '18.00',
-]
-
-export const data = {
-  labels,
-  datasets: [
-    {
-      label: 'Unanswered calls',
-      data: [4, 6, 2, 8, 5, 9, 3, 7, 4, 6],
-      backgroundColor: '#10B981',
-      borderRadius: [20, 20, 10, 10],
-      borderSkipped: false,
-    },
-    {
-      label: 'Answered calls',
-      data: [0, 2, 4, 1, 3, 2, 5, 1, 4, 2],
-      backgroundColor: '#6b7280',
-      borderRadius: [20, 20, 10, 10],
-      borderSkipped: false,
-    },
-  ],
-}
+import BarChart from '../chart/BarChart'
 
 export interface QueueManagerDashboardProps extends ComponentProps<'div'> {}
 
@@ -105,6 +44,7 @@ export const QueueManagerDashboard: FC<QueueManagerDashboardProps> = ({
 
   const [firstRenderQueuesList, setFirstRenderQueuesList]: any = useState(true)
   const [firstRenderQueuesStats, setFirstRenderQueuesStats]: any = useState(true)
+  const [firstRenderQueuesHistory, setFirstRenderQueuesHistory]: any = useState(true)
   const [firstRenderQueuesAgents, setFirstRenderQueuesAgents]: any = useState(true)
 
   // load operators information from the store
@@ -167,6 +107,8 @@ export const QueueManagerDashboard: FC<QueueManagerDashboardProps> = ({
   const [isLoadedQueues, setLoadedQueues] = useState(false)
   const [isLoadedQueuesStats, setLoadedQueuesStats] = useState(false)
   const [isLoadedQueuesAgents, setLoadedQueuesAgents] = useState(false)
+  const [isLoadedQueuesHistory, setLoadedQueuesHistory] = useState(false)
+  const [queuesHistory, setQueuesHistory] = useState<any>({})
 
   // const [updateDashboardInterval, SetUpdateDashboardInterval] = useState(3000)
 
@@ -191,6 +133,282 @@ export const QueueManagerDashboard: FC<QueueManagerDashboardProps> = ({
       getQueuesInformation()
     }
   }, [firstRenderQueuesList, isLoadedQueues])
+
+  // Get queues history information
+  useEffect(() => {
+    // Avoid api double calling
+    if (firstRenderQueuesHistory) {
+      setFirstRenderQueuesHistory(false)
+      return
+    }
+    async function getQueueHistory() {
+      setLoadedQueuesHistory(false)
+      try {
+        const res = await getQueuesHistory()
+        setQueuesHistory(res)
+      } catch (err) {
+        console.error(err)
+      }
+      setLoadedQueuesHistory(true)
+    }
+    if (!isLoadedQueuesHistory) {
+      getQueueHistory()
+    }
+  }, [firstRenderQueuesHistory, isLoadedQueuesHistory])
+
+  const [dashboardData, setDashboardData] = useState<any>(0)
+  const [totalHoursNumber, setTotalHoursNumber] = useState<any>(0)
+  const [answeredAverage, setAnsweredAverage] = useState(0)
+
+  useEffect(() => {
+    if (isLoadedQueuesHistory && queuesHistory && queuesList) {
+      let test = initTopSparklineChartsData(queuesHistory)
+      extractStartHour(test)
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [isLoadedQueuesHistory, queuesHistory, queuesList])
+
+  useEffect(() => {
+    if (isLoadedQueuesHistory && queuesHistory && queuesList && dashboardData !== 0) {
+      let hourlydistribution = initHourlyChartsDataPerQueues(queuesHistory)
+      creationChart(hourlydistribution.stackedBarComparison)
+    }
+  }, [dashboardData, isLoadedQueuesHistory, queuesHistory, queuesList])
+
+  const [labelsOutcome, setLabelsOutcome] = useState<any>([])
+  const [datasetsOutcome, setDatasetsOutcome] = useState<any>([])
+
+  const creationChart = (chartValue: any) => {
+    let groupedChartInformation = groupDataByHour(chartValue)
+    const labels = Object.keys(groupedChartInformation)
+    setLabelsOutcome(labels)
+    const datasets = [
+      {
+        label: 'Answered',
+        data: [] as number[],
+        backgroundColor: '#10B981',
+        // borderRadius: [20, 20, 0, 0],
+        // borderSkipped: false,
+        borderRadius: 5,
+      },
+      {
+        label: 'Failed',
+        data: [] as number[],
+        backgroundColor: '#6b7280',
+        // borderRadius: [20, 20, 0, 0],
+        // borderSkipped: false,
+        borderRadius: 5,
+      },
+      {
+        label: 'Invalid',
+        data: [] as number[],
+        backgroundColor: '#ff0000',
+        // borderRadius: [20, 20, 0, 0],
+        // borderSkipped: false,
+        borderRadius: 5,
+      },
+    ]
+
+    labels.forEach((label) => {
+      const data = groupedChartInformation[label]
+      datasets[0].data.push(data.answered)
+      datasets[1].data.push(data.failed)
+      datasets[2].data.push(data.invalid)
+    })
+
+    setDatasetsOutcome(datasets)
+  }
+
+  const initHourlyChartsDataPerQueues = (queuesHistoryData: any) => {
+    //create an empty object to collect chart data
+    var queuesHistoryUnified: {
+      stacked: {
+        data: any[]
+      }
+      lineTotal: {
+        dataByTopic: any[]
+      }
+      lineFailed: {
+        dataByTopic: any[]
+      }
+      stackedBarComparison: {
+        data: any[]
+      }
+    } = {
+      stacked: {
+        data: [],
+      },
+      lineTotal: {
+        dataByTopic: [],
+      },
+      lineFailed: {
+        dataByTopic: [],
+      },
+      stackedBarComparison: {
+        data: [],
+      },
+    }
+
+    let queuesUnified = {} as Record<string, any>
+
+    //cycle through all queueHistory elements
+    for (var q in queuesHistoryData) {
+      setTotalHoursNumber(0)
+      let counter = 0
+
+      for (let i = 0; i < queuesHistoryData[q].answered.length; i++) {
+        //check if queueHistoryData is more than dashboard begin time
+        if (new Date(queuesHistoryData[q].answered[i].fullDate) > dashboardData) {
+          queuesHistoryData[q].answered[i].name = queuesList[q].name
+          queuesHistoryUnified.stacked.data.push(queuesHistoryData[q].answered[i])
+
+          counter++
+          if (counter === 2) {
+            setTotalHoursNumber(totalHoursNumber + 1)
+            counter = 0
+          }
+        }
+      }
+
+      // line chart total object
+      var totalTopic: {
+        topic: string
+        topicName: string
+        dates: any[]
+      } = {
+        topic: q,
+        topicName: queuesList[q].name,
+        dates: [],
+      }
+      for (let i = 0; i < queuesHistoryData[q]?.total?.length; i++) {
+        if (new Date(queuesHistoryData[q]?.total[i]?.fullDate) > dashboardData) {
+          totalTopic.dates.push(queuesHistoryData[q]?.total[i])
+        }
+      }
+
+      queuesHistoryUnified.lineTotal.dataByTopic.push(totalTopic)
+
+      // line chart failed
+      var failedTopic: {
+        topic: string
+        topicName: string
+        dates: any[]
+      } = {
+        topic: q,
+        topicName: queuesList[q].name,
+        dates: [],
+      }
+      for (let i = 0; i < queuesHistoryData[q]?.failed?.length; i++) {
+        if (new Date(queuesHistoryData[q]?.failed[i]?.fullDate) > dashboardData) {
+          failedTopic.dates.push(queuesHistoryData[q]?.failed[i])
+        }
+      }
+
+      queuesHistoryUnified.lineFailed.dataByTopic.push(failedTopic)
+
+      for (let i = 0; i < queuesHistoryData[q].total.length; i++) {
+        const date = new Date(queuesHistoryData[q].total[i].fullDate)
+
+        const hour = date.getHours()
+
+        const minutes = date.getMinutes()
+
+        const dateName = `${hour < 10 ? '0' + hour : hour}:${minutes == 0 ? '00' : minutes}`
+        if (!queuesUnified[dateName])
+          queuesUnified[dateName] = {
+            date: date,
+            answered: 0,
+            failed: 0,
+            invalid: 0,
+          }
+        queuesUnified[dateName].answered += queuesHistoryData[q].answered[i].value || 0
+        queuesUnified[dateName].failed += queuesHistoryData[q].failed[i].value || 0
+        queuesUnified[dateName].invalid += queuesHistoryData[q].invalid[i].value || 0
+      }
+
+      //cycle hours
+      for (let k in queuesUnified) {
+        //check if hour is inside date
+        if (new Date(queuesUnified[k].date) > dashboardData) {
+          queuesHistoryUnified.stackedBarComparison.data.push({
+            date: k,
+            stack: 'answered',
+            views: queuesUnified[k].answered,
+            valueLabel:
+              (100 * queuesUnified[k].answered) /
+              (queuesUnified[k].answered + queuesUnified[k].failed + queuesUnified[k].invalid),
+          })
+          queuesHistoryUnified.stackedBarComparison.data.push({
+            date: k,
+            stack: 'failed',
+            views: queuesUnified[k].failed,
+            valueLabel:
+              (100 * queuesUnified[k].failed) /
+              (queuesUnified[k].answered + queuesUnified[k].failed + queuesUnified[k].invalid),
+          })
+          queuesHistoryUnified.stackedBarComparison.data.push({
+            date: k,
+            stack: 'invalid',
+            views: queuesUnified[k].invalid,
+            valueLabel:
+              (100 * queuesUnified[k].invalid) /
+              (queuesUnified[k].answered + queuesUnified[k].failed + queuesUnified[k].invalid),
+          })
+        }
+      }
+    }
+    return queuesHistoryUnified
+  }
+
+  //find totals
+  const initTopSparklineChartsData = (queuesHistoryData: any) => {
+    const queuesHistoryTotalized = {} as Record<string, any>
+
+    for (const q in queuesHistoryData) {
+      for (const c in queuesHistoryData[q]) {
+        if (!queuesHistoryTotalized[c]) {
+          queuesHistoryTotalized[c] = []
+        }
+
+        for (let i = 0; i < queuesHistoryData[q][c].length; i++) {
+          if (!queuesHistoryTotalized[c][i]) {
+            queuesHistoryTotalized[c][i] = {}
+          }
+
+          queuesHistoryTotalized[c][i].name = c
+          queuesHistoryTotalized[c][i].fullDate = queuesHistoryData[q][c][i].fullDate
+          queuesHistoryTotalized[c][i].date = queuesHistoryData[q][c][i].date
+
+          if (!queuesHistoryTotalized[c][i].value) {
+            queuesHistoryTotalized[c][i].value = 0
+          }
+
+          queuesHistoryTotalized[c][i].value += queuesHistoryData[q][c][i].value
+        }
+      }
+    }
+    return queuesHistoryTotalized
+  }
+
+  const extractStartHour = (totalizedData: any) => {
+    let beginTime = 0
+    for (var h in totalizedData.total) {
+      if (totalizedData.total[h].value > 0) {
+        beginTime = new Date(totalizedData.total[h].fullDate).getTime() - 3600000
+        setDashboardData(beginTime)
+        break
+      }
+    }
+
+    for (var c in totalizedData) {
+      for (var h in totalizedData[c]) {
+        if (new Date(totalizedData[c][h].fullDate).getTime() < beginTime) {
+          delete totalizedData[c][h]
+        }
+      }
+    }
+    return totalizedData
+  }
 
   const [allQueuesStats, setAllQueuesStats] = useState(false)
   //get queues status information
@@ -787,7 +1005,7 @@ export const QueueManagerDashboard: FC<QueueManagerDashboardProps> = ({
       </div>
 
       {/* Chart section */}
-      <div className='grid grid-cols-2 gap-4 sm:grid-cols-2 lg:grid-cols-2'>
+      <div className='grid grid-cols-1 gap-4 sm:grid-cols-1 lg:grid-cols-2'>
         {/* Hourly distribution of incoming calls section*/}
         <div className={`pt-8 ${zoomedCardIndex === 0 ? 'col-span-2' : 'col-span-1'}`}>
           {/* title */}
@@ -795,17 +1013,17 @@ export const QueueManagerDashboard: FC<QueueManagerDashboardProps> = ({
             {t('QueueManager.Hourly distribution of incoming calls')}
           </h2>
 
-          <div className='border-b rounded-md shadow-md bg-white dark:bg-gray-900 px-4 py-5 sm:px-6 mt-1 relative w-full h-full'>
-            <div className='flex space-x-3'>
-              <div className='min-w-0 flex-1'>
+          <div className='border-b rounded-md shadow-md bg-white dark:bg-gray-900 px-4 py-5 sm:px-6 mt-1 relative w-full min-h-full'>
+            <div className='flex space-x-3 h-96'>
+              <div className='min-w-0 flex-1 '>
                 {/* ... */}
-                <Bar options={options} data={data}></Bar>
+                {/* <BarChart labels={labelsOutcome} datasets={datasetsOutcome} /> */}
               </div>
             </div>
             {/* Zoom button */}
             <div className='absolute top-2 right-2 pt-3 pr-3'>
               <Button
-                className='h-14 w-14 flex items-center justify-center rounded-md'
+                className='h-10 w-10 flex items-center justify-center rounded-md'
                 variant='white'
                 onClick={() => handleZoom(0)}
               >
@@ -819,21 +1037,28 @@ export const QueueManagerDashboard: FC<QueueManagerDashboardProps> = ({
           </div>
         </div>
 
-        {/* Hourly distribution of call results*/}
-        <div className={`pt-8 ${zoomedCardIndex === 1 ? 'col-span-2' : 'col-span-1'}`}>
+        {/* Hourly distribution of call results */}
+        <div
+          className={`pt-8 ${zoomedCardIndex === 1 ? 'col-span-2 ' : 'col-span-1'} ${
+            zoomedCardIndex === 0 ? 'mt-4 ' : ''
+          }`}
+        >
           {/* title */}
           <h2 className='text-md ml-4 font-semibold mb-4'>
             {t('QueueManager.Hourly distribution of call results')}
           </h2>
 
           <div className='border-b rounded-md shadow-md bg-white dark:bg-gray-900 px-4 py-5 sm:px-6 mt-1 relative w-full h-full'>
-            <div className='flex space-x-3'>
-              <div className='min-w-0 flex-1'>{/* ... */} </div>
+            <div className='flex space-x-3 h-96'>
+              <div className='flex-1 w-full'>
+                {/* ... */}
+                <BarChart labels={labelsOutcome} datasets={datasetsOutcome} />
+              </div>
             </div>
             {/* Zoom button */}
             <div className='absolute top-2 right-2 pt-3 pr-3'>
               <Button
-                className='h-14 w-14 flex items-center justify-center rounded-md'
+                className='h-10 w-10 flex items-center justify-center rounded-md'
                 variant='white'
                 onClick={() => handleZoom(1)}
               >
@@ -855,13 +1080,16 @@ export const QueueManagerDashboard: FC<QueueManagerDashboardProps> = ({
           </h2>
 
           <div className='border-b rounded-md shadow-md bg-white dark:bg-gray-900 px-4 py-5 sm:px-6 mt-1 relative w-full h-full'>
-            <div className='flex space-x-3'>
-              <div className='min-w-0 flex-1'>{/* ... */} </div>
+            <div className='flex space-x-3 h-96'>
+              <div className='min-w-0 flex-1 '>
+                {/* ... */}
+                {/* <BarChart labels={labelsOutcome} datasets={datasetsOutcome} /> */}
+              </div>
             </div>
             {/* Zoom button */}
             <div className='absolute top-2 right-2 pt-3 pr-3'>
               <Button
-                className='h-14 w-14 flex items-center justify-center rounded-md'
+                className='h-10 w-10 flex items-center justify-center rounded-md'
                 variant='white'
                 onClick={() => handleZoom(2)}
               >
@@ -883,13 +1111,16 @@ export const QueueManagerDashboard: FC<QueueManagerDashboardProps> = ({
           </h2>
 
           <div className='border-b rounded-md shadow-md bg-white dark:bg-gray-900 px-4 py-5 sm:px-6 mt-1 relative w-full h-full'>
-            <div className='flex space-x-3'>
-              <div className='min-w-0 flex-1'>{/* ... */} </div>
+            <div className='flex space-x-3 h-96'>
+              <div className='min-w-0 flex-1 '>
+                {/* ... */}
+                {/* <BarChart labels={labelsOutcome} datasets={datasetsOutcome} /> */}
+              </div>
             </div>
             {/* Zoom button */}
             <div className='absolute top-2 right-2 pt-3 pr-3'>
               <Button
-                className='h-14 w-14 flex items-center justify-center rounded-md'
+                className='h-10 w-10 flex items-center justify-center rounded-md'
                 variant='white'
                 onClick={() => handleZoom(3)}
               >

@@ -394,6 +394,16 @@ export const getQueues = async () => {
   }
 }
 
+// Get queueManager queues history
+export const getQueuesHistory = async () => {
+  try {
+    const { data } = await axios.get('/astproxy/qmanager_qcalls_hist')
+    return data
+  } catch (error) {
+    handleNetworkError(error)
+  }
+}
+
 //get queues status
 export const getQueueStats = async (qid: any) => {
   try {
@@ -466,4 +476,22 @@ export function convertToHumanReadable(seconds: number | undefined) {
   const secondsTest = duration.seconds?.toString().padStart(2, '0') || '00'
 
   return `${hours}:${minutes}:${secondsTest}`
+}
+
+//Get chart values for each hours
+export const groupDataByHour = (data: any) => {
+  const dataArray = Array.isArray(data) ? data : data.data
+  const groupedData: Record<string, any> = {}
+
+  dataArray.forEach((item: any) => {
+    const { date, stack, views } = item
+
+    if (!groupedData[date]) {
+      groupedData[date] = {}
+    }
+
+    groupedData[date][stack] = views
+  })
+
+  return groupedData
 }
