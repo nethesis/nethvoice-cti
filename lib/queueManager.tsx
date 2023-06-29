@@ -569,3 +569,26 @@ export const groupDataByHourLineCallsChart = (data: any) => {
 
   return groupedData
 }
+
+//Get line chart values for invalid calls
+export const groupDataFailedCallsHourLineChart = (data: any) => {
+  const dataArray = Array.isArray(data) ? data : data.dataByTopic
+  const groupedData = {} as Record<string, any>
+
+  dataArray.forEach((item: any) => {
+    const { topicName, dates } = item
+
+    if (!groupedData[topicName]) {
+      groupedData[topicName] = {}
+    }
+
+    dates.forEach((dateItem: any) => {
+      const { date, value } = dateItem
+      const hour = date.split('-')[3]
+
+      groupedData[topicName][hour] = value
+    })
+  })
+
+  return groupedData
+}
