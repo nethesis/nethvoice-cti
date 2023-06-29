@@ -495,3 +495,58 @@ export const groupDataByHour = (data: any) => {
 
   return groupedData
 }
+
+//Get line chart values for each hours and each queue
+export const groupDataByHourLineChart = (data: any) => {
+  const dataArray = Array.isArray(data) ? data : data.dataByTopic
+  const groupedData = {} as Record<string, any>
+
+  dataArray.forEach((item: any) => {
+    const { topicName, dates } = item
+
+    if (!groupedData[topicName]) {
+      groupedData[topicName] = {}
+    }
+
+    dates.forEach((dateItem: any) => {
+      const { date, value } = dateItem
+      const hour = date.split('-')[3]
+
+      groupedData[topicName][hour] = value
+    })
+  })
+
+  return groupedData
+}
+
+// Get color for line chart
+export const getRandomColor = (index: number) => {
+  const colors = [
+    'rgba(22, 163, 74, 0.5)',
+    'rgba(5, 150, 105, 0.5)',
+    'rgba(13, 148, 136, 0.5)',
+    'rgba(8, 145, 178, 0.5)',
+    'rgba(71, 85, 105, 0.5)',
+    'rgba(75, 85, 99, 0.5)',
+    'rgba(82, 82, 91, 0.5)',
+    'rgba(82, 82, 82, 0.5)',
+    'rgba(87, 83, 78, 0.5)',
+    'rgba(220, 38, 38, 0.5)',
+    'rgba(234, 88, 12, 0.5)',
+    'rgba(217, 119, 6, 0.5)',
+    'rgba(202, 138, 4, 0.5)',
+    'rgba(101, 163, 13, 0.5)',
+
+    'rgba(2, 132, 199, 0.5)',
+    'rgba(37, 99, 235, 0.5)',
+    'rgba(79, 70, 229, 0.5)',
+    'rgba(124, 58, 237, 0.5)',
+    'rgba(147, 51, 234, 0.5)',
+    'rgba(192, 38, 211, 0.5)',
+    'rgba(219, 39, 119, 0.5)',
+    'rgba(225, 29, 72, 0.5)',
+  ]
+
+  const colorIndex = index % colors.length
+  return colors[colorIndex]
+}
