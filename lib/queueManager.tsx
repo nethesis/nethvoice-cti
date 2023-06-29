@@ -550,3 +550,22 @@ export const getRandomColor = (index: number) => {
   const colorIndex = index % colors.length
   return colors[colorIndex]
 }
+
+//Get line chart values for each hours and each queue
+export const groupDataByHourLineCallsChart = (data: any) => {
+  const dataArray = Array.isArray(data) ? data : data.data
+  const groupedData = {} as Record<string, any>
+
+  dataArray.forEach((item: any) => {
+    const { name, date, value } = item
+    const hour = date.split('-')[3]
+
+    if (!groupedData[name]) {
+      groupedData[name] = {}
+    }
+
+    groupedData[name][hour] = value
+  })
+
+  return groupedData
+}

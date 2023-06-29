@@ -33,6 +33,7 @@ import {
   groupDataByHour,
   groupDataByHourLineChart,
   getRandomColor,
+  groupDataByHourLineCallsChart,
 } from '../../lib/queueManager'
 import { invertObject } from '../../lib/utils'
 import BarChart from '../chart/BarChart'
@@ -176,6 +177,7 @@ export const QueueManagerDashboard: FC<QueueManagerDashboardProps> = ({
       let hourlydistribution = initHourlyChartsDataPerQueues(queuesHistory)
       creationBarChart(hourlydistribution.stackedBarComparison)
       creationLineChartCallsHour(hourlydistribution.lineTotal)
+      creationEnterCallsHour(hourlydistribution.stacked)
     }
   }, [dashboardData, isLoadedQueuesHistory, queuesHistory, queuesList])
 
@@ -184,6 +186,9 @@ export const QueueManagerDashboard: FC<QueueManagerDashboardProps> = ({
 
   const [labelsCallsHour, setLabelsCallsHour] = useState<any>([])
   const [datasetsCallsHour, setDatasetsCallsHour] = useState<any>([])
+
+  const [labelsIncomingCallsHour, setLabelsIncomingCallsHour] = useState<any>([])
+  const [datasetsIncomingCallsHour, setDatasetsIncomingCallsHour] = useState<any>([])
 
   const creationBarChart = (chartValue: any) => {
     let groupedChartInformation = groupDataByHour(chartValue)
@@ -244,6 +249,32 @@ export const QueueManagerDashboard: FC<QueueManagerDashboardProps> = ({
     })
 
     setDatasetsCallsHour(datasets)
+  }
+
+  //line chart incoming call hours
+  const creationEnterCallsHour = (chartValue: any) => {
+    const groupedLineChartCallsHourInformation = groupDataByHourLineCallsChart(chartValue)
+  
+    const labels = Object.keys(groupedLineChartCallsHourInformation)
+    //first label should keep all the hours values
+    const hours = Object.keys(groupedLineChartCallsHourInformation[labels[0]])
+  
+    setLabelsIncomingCallsHour(hours)
+  
+    const datasets = labels.map((label, index) => {
+      const randomColor = getRandomColor(index)
+      const data = hours.map((hour) => groupedLineChartCallsHourInformation[label][hour])
+      return {
+        label: label,
+        data: data,
+        backgroundColor: randomColor,
+        borderRadius: 5,
+        tension: 0.4,
+        fill: true,
+      }
+    })
+  
+    setDatasetsIncomingCallsHour(datasets)
   }
 
   const initHourlyChartsDataPerQueues = (queuesHistoryData: any) => {
@@ -1110,7 +1141,7 @@ export const QueueManagerDashboard: FC<QueueManagerDashboardProps> = ({
             <div className='flex space-x-3 h-96'>
               <div className='min-w-0 flex-1 '>
                 {/* ... */}
-                {/* <BarChart labels={labelsOutcome} datasets={datasetsOutcome} /> */}
+                <LineChart labels={labelsIncomingCallsHour} datasets={datasetsIncomingCallsHour} />
               </div>
             </div>
             {/* Zoom button */}
