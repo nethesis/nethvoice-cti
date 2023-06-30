@@ -476,6 +476,10 @@
     "Logged_in": "Logged in",
     "Logged_out": "Logged out",
     "Fullscreen": "Fullscreen",
-    "Add queue": "Add queue"
+    "Add queue": "Add queue",
+    "In progress": "In progress",
+    "No alarm detected": "No alarm detected",
+    "Begin hour":"Begin hour",
+    "Queue": "Queue"
   }
 }

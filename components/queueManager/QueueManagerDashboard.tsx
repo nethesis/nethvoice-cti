@@ -9,6 +9,7 @@ import { useSelector } from 'react-redux'
 import { RootState, store } from '../../store'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { faMissed } from '@nethesis/nethesis-solid-svg-icons'
+import { savePreference } from '../../lib/storage'
 import {
   faPause,
   faChevronDown,
@@ -20,6 +21,8 @@ import {
   faChevronUp,
   faArrowUpWideShort,
   faArrowDownWideShort,
+  faClock,
+  faUsers,
 } from '@fortawesome/free-solid-svg-icons'
 import {
   getAlarm,
@@ -35,6 +38,7 @@ import {
   getRandomColor,
   groupDataByHourLineCallsChart,
   groupDataFailedCallsHourLineChart,
+  getExpandedQueueManagerDashboardValue,
 } from '../../lib/queueManager'
 import { invertObject } from '../../lib/utils'
 import BarChart from '../chart/BarChart'
@@ -51,6 +55,10 @@ export const QueueManagerDashboard: FC<QueueManagerDashboardProps> = ({
   const [firstRenderQueuesStats, setFirstRenderQueuesStats]: any = useState(true)
   const [firstRenderQueuesHistory, setFirstRenderQueuesHistory]: any = useState(true)
   const [firstRenderQueuesAgents, setFirstRenderQueuesAgents]: any = useState(true)
+  const [firstRenderAlarmList, setFirstRenderAlarmList]: any = useState(true)
+
+  // Call api interval update ( every 2 minutes)
+  const [updateDashboardInterval, SetUpdateDashboardInterval] = useState(120000)
 
   // load operators information from the store
   const operatorsStore = useSelector((state: RootState) => state.operators)
@@ -90,22 +98,47 @@ export const QueueManagerDashboard: FC<QueueManagerDashboardProps> = ({
 
   const handleZoom = (index: any) => {
     if (zoomedCardIndex === index) {
-      setZoomedCardIndex(null) // Ripristina le dimensioni originali se la card è già ingrandita
+      // Restore original size if card is already enlarged
+      setZoomedCardIndex(null)
     } else {
-      setZoomedCardIndex(index) // Ingrandisci la card se è diversa da quella attualmente ingrandita
+      // Enlarge the card if it is different from the one currently enlarged
+      setZoomedCardIndex(index)
     }
   }
 
   const [expandedOperators, setExpandedOperators] = useState(false)
   const [expandedQueues, setExpandedQueues] = useState(true)
 
+  const auth = useSelector((state: RootState) => state.authentication)
+
+  //set Expanded Operators value to localStorage
   const toggleExpandedOperators = () => {
     setExpandedOperators(!expandedOperators)
+    let correctExpandedOperators = !expandedOperators
+    savePreference(
+      'queueManagementOperatorsStatisticExpandedPreference',
+      correctExpandedOperators,
+      auth.username,
+    )
   }
 
+  //set Expanded Queues value to localStorage
   const toggleExpandedQueues = () => {
     setExpandedQueues(!expandedQueues)
+    let correctExpandedQueues = !expandedQueues
+    savePreference(
+      'queueManagementQueuesStatisticExpandedPreference',
+      correctExpandedQueues,
+      auth.username,
+    )
   }
+
+  useEffect(() => {
+    const expandedValues = getExpandedQueueManagerDashboardValue(auth.username)
+    setExpandedOperators(expandedValues.expandedOperators)
+    setExpandedQueues(expandedValues.expandedQueues)
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [])
 
   const [queuesList, setQueuesList] = useState<any>({})
   const [agentsStatsList, setAgentsStatsList] = useState<any>({})
@@ -113,9 +146,9 @@ export const QueueManagerDashboard: FC<QueueManagerDashboardProps> = ({
   const [isLoadedQueuesStats, setLoadedQueuesStats] = useState(false)
   const [isLoadedQueuesAgents, setLoadedQueuesAgents] = useState(false)
   const [isLoadedQueuesHistory, setLoadedQueuesHistory] = useState(false)
+  const [isLoadedAlarms, setLoadedAlarms] = useState(false)
   const [queuesHistory, setQueuesHistory] = useState<any>({})
-
-  // const [updateDashboardInterval, SetUpdateDashboardInterval] = useState(3000)
+  const [alarmsList, setAlarmsList] = useState<any>({})
 
   //get queues list information
   useEffect(() => {
@@ -139,6 +172,41 @@ export const QueueManagerDashboard: FC<QueueManagerDashboardProps> = ({
     }
   }, [firstRenderQueuesList, isLoadedQueues])
 
+  //get alarm list information
+  useEffect(() => {
+    // Avoid api double calling
+    if (firstRenderAlarmList) {
+      setFirstRenderAlarmList(false)
+      return
+    }
+    async function getAlarmList() {
+      setLoadedAlarms(false)
+      try {
+        const res = await getAlarm()
+        setAlarmsList(res)
+      } catch (err) {
+        console.error(err)
+      }
+      setLoadedAlarms(true)
+    }
+    if (!isLoadedAlarms) {
+      getAlarmList()
+    }
+  }, [firstRenderAlarmList, isLoadedAlarms])
+
+  useEffect(() => {
+    //every tot seconds set loaded queues to false to call api
+    const interval = setInterval(() => {
+      setLoadedQueues(false)
+    }, updateDashboardInterval)
+
+    // After unmount clean interval
+    return () => {
+      clearInterval(interval)
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [])
+
   // Get queues history information
   useEffect(() => {
     // Avoid api double calling
@@ -159,7 +227,7 @@ export const QueueManagerDashboard: FC<QueueManagerDashboardProps> = ({
     if (!isLoadedQueuesHistory) {
       getQueueHistory()
     }
-  }, [firstRenderQueuesHistory, isLoadedQueuesHistory])
+  }, [firstRenderQueuesHistory, isLoadedQueuesHistory, isLoadedQueues])
 
   const [dashboardData, setDashboardData] = useState<any>(0)
   const [totalHoursNumber, setTotalHoursNumber] = useState<any>(0)
@@ -171,7 +239,7 @@ export const QueueManagerDashboard: FC<QueueManagerDashboardProps> = ({
       extractStartHour(test)
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [isLoadedQueuesHistory, queuesHistory, queuesList])
+  }, [isLoadedQueuesHistory, queuesHistory, queuesList, isLoadedQueues])
 
   useEffect(() => {
     if (isLoadedQueuesHistory && queuesHistory && queuesList && dashboardData !== 0) {
@@ -346,7 +414,7 @@ export const QueueManagerDashboard: FC<QueueManagerDashboardProps> = ({
 
       for (let i = 0; i < queuesHistoryData[q].answered.length; i++) {
         //check if queueHistoryData is more than dashboard begin time
-        if (new Date(queuesHistoryData[q].answered[i].fullDate) > dashboardData) {
+        if (new Date(queuesHistoryData[q]?.answered[i]?.fullDate) > dashboardData) {
           queuesHistoryData[q].answered[i].name = queuesList[q].name
           queuesHistoryUnified.stacked.data.push(queuesHistoryData[q].answered[i])
 
@@ -572,6 +640,7 @@ export const QueueManagerDashboard: FC<QueueManagerDashboardProps> = ({
   const [totalAnswered, setTotalAnswered] = useState(0)
   const [totalFailed, setTotalFailed] = useState(0)
   const [totalInvalid, setTotalInvalid] = useState(0)
+  const [totalInProgress, setTotalInProgress] = useState(0)
 
   const [queuesAnswered, setQueuesAnswered] = useState({} as Record<string, any>)
   const [queuesTotalCalls, setQueuesTotalCalls] = useState({} as Record<string, any>)
@@ -698,6 +767,7 @@ export const QueueManagerDashboard: FC<QueueManagerDashboardProps> = ({
       let totalAnsweredCount = 0
       let totalFailedCount = 0
       let totalInvalidCount = 0
+      let totalInProgressCount = 0
 
       // Iterate over each queue in calculatedRank and calculate the totals
       calculatedRank.forEach((queue) => {
@@ -706,12 +776,12 @@ export const QueueManagerDashboard: FC<QueueManagerDashboardProps> = ({
         totalFailedCount += queue.values.tot_failed
         totalInvalidCount += queue.values.tot_null
       })
-
       // Update the state with the calculated totals
       setTotalAll(totalAllCount)
       setTotalAnswered(totalAnsweredCount)
       setTotalFailed(totalFailedCount)
       setTotalInvalid(totalInvalidCount)
+      setTotalInProgress(totalAllCount - totalAnsweredCount - totalFailedCount - totalInvalidCount)
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [
@@ -956,38 +1026,125 @@ export const QueueManagerDashboard: FC<QueueManagerDashboardProps> = ({
     sortOrderInCallPercentage,
   ])
 
+  const dropdownItems = (
+    <>
+      <div
+        className={`cursor-default py-2 w-96 px-2 ${
+          isEmpty(alarmsList.list) ? 'bg-gray-100' : 'bg-red-50'
+        }`}
+      >
+        <Dropdown.Header>
+          {isEmpty(alarmsList.list) ? (
+            <>
+              {/* Header dropdown  */}
+              <span className='text-lg font-semibold flex justify-start text-center mb-2'>
+                Alarm error detected
+              </span>
+              {/* Divider  */}
+              <div className='relative'>
+                <div className='absolute inset-0 flex items-center' aria-hidden='true'>
+                  <div className='w-full border-t  border-gray-300 dark:border-gray-600' />
+                </div>
+              </div>
+
+              {/* Body dropdown */}
+              <div className='flex flex-col'>
+                {/* First row */}
+                <div className='flex items-center pt-3 space-x-3'>
+                  <FontAwesomeIcon
+                    icon={faClock}
+                    className='h-5 w-5 py-2 cursor-pointer flex items-center text-gray-500 dark:text-gray-400'
+                    aria-hidden='true'
+                  />
+                  <div className='flex justify-center items-center'>
+                    <p className='text-md font-semibold tracking-tight text-left text-gray-900 dark:text-gray-900 mr-1'>
+                      {t('QueueManager.Begin hour')}
+                    </p>
+                    <p className='text-md font-bold leading-6 text-center text-gray-900 dark:text-gray-900'>
+                      09.00
+                    </p>
+                  </div>
+                </div>
+
+                {/* Second row */}
+                <div className='flex items-center pt-2 space-x-3'>
+                  <FontAwesomeIcon
+                    icon={faUsers}
+                    className='h-5 w-5 py-2 cursor-pointer flex items-center text-gray-500 dark:text-gray-400'
+                    aria-hidden='true'
+                  />
+                  <div className='flex justify-center items-center'>
+                    <p className='text-md font-semibold tracking-tight text-left text-gray-900 dark:text-gray-900 mr-1'>
+                      {t('QueueManager.Queue')}:
+                    </p>
+                    <p className='text-md font-bold leading-6 text-center mr-1 text-gray-900 dark:text-gray-900'>
+                      Assistenza Clienti
+                    </p>
+                    <p className='text-md font-bold leading-6 text-center text-gray-900 dark:text-gray-900'>
+                      500
+                    </p>
+                  </div>
+                </div>
+                {/* Third row */}
+                <span className='pt-3 text-sm '> Error message </span>
+              </div>
+            </>
+          ) : (
+            <span className='text-sm text-gray-900 dark:text-gray-900 font-medium flex justify-center text-center '>
+              {' '}
+              {t('QueueManager.No alarm detected')}
+            </span>
+          )}
+          {/* <span className='block text-sm mb-1'>{t('TopBar.Signed in as')}</span>
+          <span className='text-sm font-medium flex justify-between'>
+            <span className='truncate pr-2'>test</span>
+            <span className='text-sm font-normal'>test</span>
+          </span> */}
+        </Dropdown.Header>
+      </div>
+    </>
+  )
+
   return (
     <>
       {/* Top page section */}
-      <div className='border-b rounded-md shadow-md border-gray-200 bg-white dark:bg-gray-900 px-4 py-1 sm:px-6'>
+      <div className='border-b rounded-md shadow-md border-gray-200 dark:border-gray-700  bg-white dark:bg-gray-900 px-4 py-1 sm:px-6'>
         <div className=''>
           <div className='mx-auto'>
             <div className='grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-6'>
               {/* Alarms section */}
-              <div className='flex items-center justify-between px-4 mt-2 mb-2 bg-gray-100 rounded-md'>
-                <div className='flex items-center'>
-                  <FontAwesomeIcon
-                    // icon={queue.expanded ? faChevronUp : faChevronDown}
-                    icon={faTriangleExclamation}
-                    className='h-6 w-6 pr-6 py-2 cursor-pointer flex items-center text-gray-400 dark:text-gray-500'
-                    aria-hidden='true'
-                    // onClick={() => toggleExpandQueue(queue)}
-                  />
-                  <div className='flex flex-col justify-center'>
-                    <p className='text-3xl font-semibold tracking-tight text-left'>0</p>
-                    <p className='text-sm font-medium leading-6 text-center text-gray-500 dark:text-gray-500'>
-                      {t('QueueManager.Alarms')}
-                    </p>
+              <Dropdown items={dropdownItems} position='left' divider={true} className='pl-3 pt-3'>
+                <div
+                  className={`flex items-center justify-between px-4 mt-1 mb-2 bg-gray-100 rounded-md py-1 ${
+                    !isEmpty(alarmsList.list) ? 'bg-red-50' : ''
+                  }`}
+                >
+                  <div className='flex items-center'>
+                    <FontAwesomeIcon
+                      icon={isEmpty(alarmsList.list) ? faTriangleExclamation : faChevronDown}
+                      className={`h-6 w-6 pr-6 py-2 cursor-pointer flex items-center ${
+                        !isEmpty(alarmsList.list)
+                          ? 'text-red-600'
+                          : 'text-gray-500 dark:text-gray-400'
+                      }`}
+                      aria-hidden='true'
+                    />
+                    <div className='flex flex-col justify-center'>
+                      <p className='text-3xl font-semibold tracking-tight text-left text-gray-900 dark:text-gray-900'>
+                        0
+                      </p>
+                      <p className='text-sm font-medium leading-6 text-center text-gray-500 dark:text-gray-400'>
+                        {t('QueueManager.Alarms')}
+                      </p>
+                    </div>
                   </div>
+                  <FontAwesomeIcon
+                    icon={faChevronDown}
+                    className='h-3.5 w-3.5 pl-2 py-2 cursor-pointer flex items-center'
+                    aria-hidden='true'
+                  />
                 </div>
-                <FontAwesomeIcon
-                  // icon={queue.expanded ? faChevronUp : faChevronDown}
-                  icon={faChevronDown}
-                  className='h-3.5 w-3.5 pl-2 py-2 cursor-pointer flex items-center'
-                  aria-hidden='true'
-                  // onClick={() => toggleExpandQueue(queue)}
-                />
-              </div>
+              </Dropdown>
 
               {/* Total calls section */}
               <div className='flex items-center justify-between px-4 mt-2 mb-2'>
@@ -1000,8 +1157,10 @@ export const QueueManagerDashboard: FC<QueueManagerDashboardProps> = ({
                     />
                   </div>
                   <div className='flex flex-col justify-center ml-4'>
-                    <p className='text-3xl font-semibold tracking-tight text-left'>{totalAll}</p>
-                    <p className='text-sm font-medium leading-6 text-center text-gray-500 dark:text-gray-500'>
+                    <p className='text-3xl font-semibold tracking-tight text-left text-gray-900 dark:text-gray-100'>
+                      {totalAll}
+                    </p>
+                    <p className='text-sm font-medium leading-6 text-center text-gray-500 dark:text-gray-400'>
                       {t('QueueManager.Total calls')}
                     </p>
                   </div>
@@ -1019,10 +1178,10 @@ export const QueueManagerDashboard: FC<QueueManagerDashboardProps> = ({
                     />
                   </div>
                   <div className='flex flex-col justify-center ml-4'>
-                    <p className='text-3xl font-semibold tracking-tight text-left'>
+                    <p className='text-3xl font-semibold tracking-tight text-left text-gray-900 dark:text-gray-100'>
                       {totalAnswered}
                     </p>
-                    <p className='text-sm font-medium leading-6 text-center text-gray-500 dark:text-gray-500'>
+                    <p className='text-sm font-medium leading-6 text-center text-gray-500 dark:text-gray-400'>
                       {t('QueueManager.Answered calls')}
                     </p>
                   </div>
@@ -1040,8 +1199,10 @@ export const QueueManagerDashboard: FC<QueueManagerDashboardProps> = ({
                     />
                   </div>
                   <div className='flex flex-col justify-center ml-4'>
-                    <p className='text-3xl font-semibold tracking-tight text-left'>{totalFailed}</p>
-                    <p className='text-sm font-medium leading-6 text-center text-gray-500 dark:text-gray-500'>
+                    <p className='text-3xl font-semibold tracking-tight text-left text-gray-900 dark:text-gray-100'>
+                      {totalFailed}
+                    </p>
+                    <p className='text-sm font-medium leading-6 text-center text-gray-500 dark:text-gray-400'>
                       {t('QueueManager.Lost calls')}
                     </p>
                   </div>
@@ -1059,17 +1220,17 @@ export const QueueManagerDashboard: FC<QueueManagerDashboardProps> = ({
                     />
                   </div>
                   <div className='flex flex-col justify-center ml-4'>
-                    <p className='text-3xl font-semibold tracking-tight text-left'>
+                    <p className='text-3xl font-semibold tracking-tight text-left text-gray-900 dark:text-gray-100'>
                       {totalInvalid}
                     </p>
-                    <p className='text-sm font-medium leading-6 text-center text-gray-500 dark:text-gray-500'>
+                    <p className='text-sm font-medium leading-6 text-center text-gray-500 dark:text-gray-400'>
                       {t('QueueManager.Invalid calls')}
                     </p>
                   </div>
                 </div>
               </div>
 
-              {/* Waiting calls section */}
+              {/* In progress calls section */}
               <div className='flex items-center justify-between px-4 mt-5 mb-5'>
                 <div className='flex items-center'>
                   <div className='h-14 w-14 flex items-center justify-center rounded-md bg-emerald-50'>
@@ -1080,9 +1241,11 @@ export const QueueManagerDashboard: FC<QueueManagerDashboardProps> = ({
                     />
                   </div>
                   <div className='flex flex-col justify-center ml-4'>
-                    <p className='text-3xl font-semibold tracking-tight text-left'>0</p>
-                    <p className='text-sm font-medium leading-6 text-center text-gray-500 dark:text-gray-500'>
-                      {t('QueueManager.Waiting calls')}
+                    <p className='text-3xl font-semibold tracking-tight text-left text-gray-900 dark:text-gray-100'>
+                      {totalInProgress}
+                    </p>
+                    <p className='text-sm font-medium leading-6 text-center text-gray-500 dark:text-gray-400'>
+                      {t('QueueManager.In progress')}
                     </p>
                   </div>
                 </div>
@@ -1101,7 +1264,7 @@ export const QueueManagerDashboard: FC<QueueManagerDashboardProps> = ({
             {t('QueueManager.Hourly distribution of incoming calls')}
           </h2>
 
-          <div className='border-b rounded-md shadow-md bg-white dark:bg-gray-900 px-4 py-5 sm:px-6 mt-1 relative w-full min-h-full'>
+          <div className='border-b rounded-md shadow-md bg-white border-gray-200 dark:border-gray-700 dark:bg-gray-900 px-4 py-5 sm:px-6 mt-1 relative w-full min-h-full'>
             <div className='flex space-x-3 h-96'>
               <div className='min-w-0 flex-1 '>
                 {/* ... */}
@@ -1117,7 +1280,7 @@ export const QueueManagerDashboard: FC<QueueManagerDashboardProps> = ({
               >
                 <FontAwesomeIcon
                   icon={faExpand}
-                  className='h-6 w-6 cursor-pointer text-gray-500 dark:text-gray-500'
+                  className='h-6 w-6 cursor-pointer text-gray-500 dark:text-gray-400'
                   aria-hidden='true'
                 />
               </Button>
@@ -1136,7 +1299,7 @@ export const QueueManagerDashboard: FC<QueueManagerDashboardProps> = ({
             {t('QueueManager.Hourly distribution of call results')}
           </h2>
 
-          <div className='border-b rounded-md shadow-md bg-white dark:bg-gray-900 px-4 py-5 sm:px-6 mt-1 relative w-full h-full'>
+          <div className='border-b rounded-md shadow-md bg-white border-gray-200 dark:border-gray-700 dark:bg-gray-900 px-4 py-5 sm:px-6 mt-1 relative w-full h-full'>
             <div className='flex space-x-3 h-96'>
               <div className='flex-1 w-full'>
                 {/* ... */}
@@ -1152,7 +1315,7 @@ export const QueueManagerDashboard: FC<QueueManagerDashboardProps> = ({
               >
                 <FontAwesomeIcon
                   icon={faExpand}
-                  className='h-6 w-6 cursor-pointer text-gray-500 dark:text-gray-500'
+                  className='h-6 w-6 cursor-pointer text-gray-500 dark:text-gray-400'
                   aria-hidden='true'
                 />
               </Button>
@@ -1167,7 +1330,7 @@ export const QueueManagerDashboard: FC<QueueManagerDashboardProps> = ({
             {t('QueueManager.Hourly distribution of calls answered')}
           </h2>
 
-          <div className='border-b rounded-md shadow-md bg-white dark:bg-gray-900 px-4 py-5 sm:px-6 mt-1 relative w-full h-full'>
+          <div className='border-b rounded-md shadow-md bg-white border-gray-200 dark:border-gray-700 dark:bg-gray-900 px-4 py-5 sm:px-6 mt-1 relative w-full h-full'>
             <div className='flex space-x-3 h-96'>
               <div className='min-w-0 flex-1 '>
                 {/* ... */}
@@ -1183,7 +1346,7 @@ export const QueueManagerDashboard: FC<QueueManagerDashboardProps> = ({
               >
                 <FontAwesomeIcon
                   icon={faExpand}
-                  className='h-6 w-6 cursor-pointer text-gray-500 dark:text-gray-500'
+                  className='h-6 w-6 cursor-pointer text-gray-500 dark:text-gray-400'
                   aria-hidden='true'
                 />
               </Button>
@@ -1198,7 +1361,7 @@ export const QueueManagerDashboard: FC<QueueManagerDashboardProps> = ({
             {t('QueueManager.Hourly distribution of not answered calls')}
           </h2>
 
-          <div className='border-b rounded-md shadow-md bg-white dark:bg-gray-900 px-4 py-5 sm:px-6 mt-1 relative w-full h-full'>
+          <div className='border-b rounded-md shadow-md bg-white border-gray-200 dark:border-gray-700 dark:bg-gray-900 px-4 py-5 sm:px-6 mt-1 relative w-full h-full'>
             <div className='flex space-x-3 h-96'>
               <div className='min-w-0 flex-1 '>
                 {/* ... */}
@@ -1214,7 +1377,7 @@ export const QueueManagerDashboard: FC<QueueManagerDashboardProps> = ({
               >
                 <FontAwesomeIcon
                   icon={faExpand}
-                  className='h-6 w-6 cursor-pointer text-gray-500 dark:text-gray-500'
+                  className='h-6 w-6 cursor-pointer text-gray-500 dark:text-gray-400'
                   aria-hidden='true'
                 />
               </Button>
@@ -1238,7 +1401,7 @@ export const QueueManagerDashboard: FC<QueueManagerDashboardProps> = ({
             />
           </div>
         </div>
-        <div className='flex-grow border-b border-gray-300'></div>
+        <div className='flex-grow border-b border-gray-200 dark:border-gray-700'></div>
         {expandedOperators && (
           <>
             <div className='grid grid-cols-1 gap-6 xl:grid-cols-2 3xl:grid-cols-3 pt-6'>
@@ -1276,40 +1439,70 @@ export const QueueManagerDashboard: FC<QueueManagerDashboardProps> = ({
                       </Button>
                     </div>
                   </div>
-                  {/* <div className='flex-grow border-b border-gray-300'></div> */}
+                  {/* <div className='flex-grow border-b border-gray-200 dark:border-gray-700'></div> */}
                   {/* card body */}
                   <div className='flow-root'>
                     <div className='-mx-4 -my-2 overflow-x-auto sm:-mx-6 pl-2 pr-2'>
                       <div className='inline-block min-w-full py-2 align-middle sm:px-6 lg:px-8'>
                         <table className='min-w-full divide-y divide-gray-300'>
-                          <tbody className='divide-y divide-gray-200 bg-white'>
-                            {Object.values(agentsAnswered).map((agent: any, index: number) => (
-                              <tr key={index}>
-                                <td className='whitespace-nowrap py-2 pl-4 pr-3 text-sm sm:pl-0'>
-                                  <div className='flex items-center justify-center h-full'>
-                                    {index + 1}.
-                                  </div>
-                                </td>
-                                <td className='whitespace-nowrap py-3 pl-4 pr-3 text-sm sm:pl-0'>
-                                  <div className='flex items-center'>
-                                    <div className='h-9 w-9 flex-shrink-0 mr-2'>
-                                      <Avatar
-                                        src={getAvatarData(agentsAnswered[index])}
-                                        placeholderType='operator'
-                                        size='small'
-                                        bordered
-                                        className='cursor-pointer'
-                                        status={getAvatarMainPresence(agentsAnswered[index])}
-                                      />
-                                    </div>
-                                    <div className='text-gray-900'>{agent.name}</div>
-                                  </div>
-                                </td>
-                                <td className='relative whitespace-nowrap py-2 pl-3 pr-4 text-right text-sm font-medium sm:pr-0'>
-                                  {agent.values}
-                                </td>
-                              </tr>
-                            ))}
+                          <tbody className='divide-y divide-gray-200 dark:divide-gray-700 bg-white dark:bg-gray-900'>
+                            {/* skeleton */}
+                            {!isLoadedQueues &&
+                              Array.from(Array(5)).map((e, i) => (
+                                <tr key={i}>
+                                  {Array.from(Array(3)).map((e, j) => (
+                                    <td key={j}>
+                                      <div className='px-4 py-6'>
+                                        <div className='animate-pulse h-5 rounded bg-gray-300 dark:bg-gray-600'></div>
+                                      </div>
+                                    </td>
+                                  ))}
+                                </tr>
+                              ))}
+                            {isLoadedQueues &&
+                              Array.from({ length: 5 }).map((_, index) => {
+                                const agent = Object.values(agentsAnswered)[index]
+                                const isRowEmpty = !agent
+
+                                return (
+                                  <tr key={index}>
+                                    <td className='whitespace-nowrap py-2 pl-4 pr-3 text-sm sm:pl-0'>
+                                      <div className='flex items-center justify-center h-full'>
+                                        {index + 1}.
+                                      </div>
+                                    </td>
+                                    <td className='whitespace-nowrap py-3 pl-4 pr-3 text-sm sm:pl-0'>
+                                      <div className='flex items-center'>
+                                        <div className='h-9 w-9 flex-shrink-0 mr-2'>
+                                          {isRowEmpty ? (
+                                            <Avatar
+                                              placeholderType='operator'
+                                              size='small'
+                                              bordered
+                                              className='cursor-pointer'
+                                            />
+                                          ) : (
+                                            <Avatar
+                                              src={getAvatarData(agent)}
+                                              placeholderType='operator'
+                                              size='small'
+                                              bordered
+                                              className='cursor-pointer'
+                                              status={getAvatarMainPresence(agent)}
+                                            />
+                                          )}
+                                        </div>
+                                        <div className='text-gray-900 dark:text-gray-100'>
+                                          {isRowEmpty ? '-' : agent.name}
+                                        </div>
+                                      </div>
+                                    </td>
+                                    <td className='relative whitespace-nowrap py-2 pl-3 pr-4 text-right text-sm font-medium sm:pr-0'>
+                                      {isRowEmpty ? '-' : agent.values}
+                                    </td>
+                                  </tr>
+                                )
+                              })}
                           </tbody>
                         </table>
                       </div>
@@ -1355,40 +1548,70 @@ export const QueueManagerDashboard: FC<QueueManagerDashboardProps> = ({
                       </Button>
                     </div>
                   </div>
-                  <div className='flex-grow border-b border-gray-300'></div>
+                  <div className='flex-grow border-b border-gray-200 dark:border-gray-700'></div>
                   {/* card body */}
                   <div className='flow-root'>
                     <div className='-mx-4 -my-2 overflow-x-auto sm:-mx-6 pl-2 pr-2'>
                       <div className='inline-block min-w-full py-2 align-middle sm:px-6 lg:px-8'>
                         <table className='min-w-full divide-y divide-gray-300'>
-                          <tbody className='divide-y divide-gray-200 bg-white'>
-                            {Object.values(agentsLost).map((agent: any, index: number) => (
-                              <tr key={index}>
-                                <td className='whitespace-nowrap py-2 pl-4 pr-3 text-sm sm:pl-0'>
-                                  <div className='flex items-center justify-center h-full'>
-                                    {index + 1}.
-                                  </div>
-                                </td>
-                                <td className='whitespace-nowrap py-3 pl-4 pr-3 text-sm sm:pl-0'>
-                                  <div className='flex items-center'>
-                                    <div className='h-9 w-9 flex-shrink-0 mr-2'>
-                                      <Avatar
-                                        src={getAvatarData(agentsLost[index])}
-                                        placeholderType='operator'
-                                        size='small'
-                                        bordered
-                                        className='cursor-pointer'
-                                        status={getAvatarMainPresence(agentsLost[index])}
-                                      />
-                                    </div>
-                                    <div className='text-gray-900'>{agent.name}</div>
-                                  </div>
-                                </td>
-                                <td className='relative whitespace-nowrap py-2 pl-3 pr-4 text-right text-sm font-medium sm:pr-0'>
-                                  {agent.values}
-                                </td>
-                              </tr>
-                            ))}
+                          <tbody className='divide-y divide-gray-200 dark:divide-gray-700 bg-white dark:bg-gray-900'>
+                            {/* skeleton */}
+                            {!isLoadedQueues &&
+                              Array.from(Array(5)).map((e, i) => (
+                                <tr key={i}>
+                                  {Array.from(Array(3)).map((e, j) => (
+                                    <td key={j}>
+                                      <div className='px-4 py-6'>
+                                        <div className='animate-pulse h-5 rounded bg-gray-300 dark:bg-gray-600'></div>
+                                      </div>
+                                    </td>
+                                  ))}
+                                </tr>
+                              ))}
+                            {isLoadedQueues &&
+                              Array.from({ length: 5 }).map((_, index) => {
+                                const agent = Object.values(agentsLost)[index]
+                                const isRowEmpty = !agent
+
+                                return (
+                                  <tr key={index}>
+                                    <td className='whitespace-nowrap py-2 pl-4 pr-3 text-sm sm:pl-0'>
+                                      <div className='flex items-center justify-center h-full'>
+                                        {index + 1}
+                                      </div>
+                                    </td>
+                                    <td className='whitespace-nowrap py-3 pl-4 pr-3 text-sm sm:pl-0'>
+                                      <div className='flex items-center'>
+                                        <div className='h-9 w-9 flex-shrink-0 mr-2'>
+                                          {isRowEmpty ? (
+                                            <Avatar
+                                              placeholderType='operator'
+                                              size='small'
+                                              bordered
+                                              className='cursor-pointer'
+                                            />
+                                          ) : (
+                                            <Avatar
+                                              src={getAvatarData(agent)}
+                                              placeholderType='operator'
+                                              size='small'
+                                              bordered
+                                              className='cursor-pointer'
+                                              status={getAvatarMainPresence(agent)}
+                                            />
+                                          )}
+                                        </div>
+                                        <div className='text-gray-900 dark:text-gray-100'>
+                                          {isRowEmpty ? '-' : agent.name}
+                                        </div>
+                                      </div>
+                                    </td>
+                                    <td className='relative whitespace-nowrap py-2 pl-3 pr-4 text-right text-sm font-medium sm:pr-0'>
+                                      {isRowEmpty ? '-' : agent.values}
+                                    </td>
+                                  </tr>
+                                )
+                              })}
                           </tbody>
                         </table>
                       </div>
@@ -1431,40 +1654,70 @@ export const QueueManagerDashboard: FC<QueueManagerDashboardProps> = ({
                       </Button>
                     </div>
                   </div>
-                  <div className='flex-grow border-b border-gray-300'></div>
+                  <div className='flex-grow border-b border-gray-200 dark:border-gray-700'></div>
                   {/* card body */}
                   <div className='flow-root'>
                     <div className='-mx-4 -my-2 overflow-x-auto sm:-mx-6 pl-2 pr-2'>
                       <div className='inline-block min-w-full py-2 align-middle sm:px-6 lg:px-8'>
                         <table className='min-w-full divide-y divide-gray-300'>
-                          <tbody className='divide-y divide-gray-200 bg-white'>
-                            {Object.values(agentsPauseOnLogon).map((agent: any, index: number) => (
-                              <tr key={index}>
-                                <td className='whitespace-nowrap py-2 pl-4 pr-3 text-sm sm:pl-0'>
-                                  <div className='flex items-center justify-center h-full'>
-                                    {index + 1}.
-                                  </div>
-                                </td>
-                                <td className='whitespace-nowrap py-3 pl-4 pr-3 text-sm sm:pl-0'>
-                                  <div className='flex items-center'>
-                                    <div className='h-9 w-9 flex-shrink-0 mr-2'>
-                                      <Avatar
-                                        src={getAvatarData(agentsPauseOnLogon[index])}
-                                        placeholderType='operator'
-                                        size='small'
-                                        bordered
-                                        className='cursor-pointer'
-                                        status={getAvatarMainPresence(agentsPauseOnLogon[index])}
-                                      />
-                                    </div>
-                                    <div className='text-gray-900'>{agent.name}</div>
-                                  </div>
-                                </td>
-                                <td className='relative whitespace-nowrap py-2 pl-3 pr-4 text-right text-sm font-medium sm:pr-0'>
-                                  {agent.values}%
-                                </td>
-                              </tr>
-                            ))}
+                          <tbody className='divide-y divide-gray-200 dark:divide-gray-700 bg-white dark:bg-gray-900'>
+                            {/* skeleton */}
+                            {!isLoadedQueues &&
+                              Array.from(Array(5)).map((e, i) => (
+                                <tr key={i}>
+                                  {Array.from(Array(3)).map((e, j) => (
+                                    <td key={j}>
+                                      <div className='px-4 py-6'>
+                                        <div className='animate-pulse h-5 rounded bg-gray-300 dark:bg-gray-600'></div>
+                                      </div>
+                                    </td>
+                                  ))}
+                                </tr>
+                              ))}
+                            {isLoadedQueues &&
+                              Array.from({ length: 5 }).map((_, index) => {
+                                const agent = Object.values(agentsPauseOnLogon)[index]
+                                const isRowEmpty = !agent
+
+                                return (
+                                  <tr key={index}>
+                                    <td className='whitespace-nowrap py-2 pl-4 pr-3 text-sm sm:pl-0'>
+                                      <div className='flex items-center justify-center h-full'>
+                                        {isRowEmpty ? '-' : index + 1}
+                                      </div>
+                                    </td>
+                                    <td className='whitespace-nowrap py-3 pl-4 pr-3 text-sm sm:pl-0'>
+                                      <div className='flex items-center'>
+                                        <div className='h-9 w-9 flex-shrink-0 mr-2'>
+                                          {isRowEmpty ? (
+                                            <Avatar
+                                              placeholderType='operator'
+                                              size='small'
+                                              bordered
+                                              className='cursor-pointer'
+                                            />
+                                          ) : (
+                                            <Avatar
+                                              src={getAvatarData(agent)}
+                                              placeholderType='operator'
+                                              size='small'
+                                              bordered
+                                              className='cursor-pointer'
+                                              status={getAvatarMainPresence(agent)}
+                                            />
+                                          )}
+                                        </div>
+                                        <div className='text-gray-900 dark:text-gray-100'>
+                                          {isRowEmpty ? '-' : agent.name}
+                                        </div>
+                                      </div>
+                                    </td>
+                                    <td className='relative whitespace-nowrap py-2 pl-3 pr-4 text-right text-sm font-medium sm:pr-0'>
+                                      {isRowEmpty ? '-' : `${agent.values}%`}
+                                    </td>
+                                  </tr>
+                                )
+                              })}
                           </tbody>
                         </table>
                       </div>
@@ -1510,40 +1763,70 @@ export const QueueManagerDashboard: FC<QueueManagerDashboardProps> = ({
                       </Button>
                     </div>
                   </div>
-                  <div className='flex-grow border-b border-gray-300'></div>
+                  <div className='flex-grow border-b border-gray-200 dark:border-gray-700'></div>
                   {/* card body */}
                   <div className='flow-root'>
                     <div className='-mx-4 -my-2 overflow-x-auto sm:-mx-6 pl-2 pr-2'>
                       <div className='inline-block min-w-full py-2 align-middle sm:px-6 lg:px-8'>
                         <table className='min-w-full divide-y divide-gray-300'>
-                          <tbody className='divide-y divide-gray-200 bg-white'>
-                            {Object.values(agentsLoginTime).map((agent: any, index: number) => (
-                              <tr key={index}>
-                                <td className='whitespace-nowrap py-2 pl-4 pr-3 text-sm sm:pl-0'>
-                                  <div className='flex items-center justify-center h-full'>
-                                    {index + 1}.
-                                  </div>
-                                </td>
-                                <td className='whitespace-nowrap py-3 pl-4 pr-3 text-sm sm:pl-0'>
-                                  <div className='flex items-center'>
-                                    <div className='h-9 w-9 flex-shrink-0 mr-2'>
-                                      <Avatar
-                                        src={getAvatarData(agentsLoginTime[index])}
-                                        placeholderType='operator'
-                                        size='small'
-                                        bordered
-                                        className='cursor-pointer'
-                                        status={getAvatarMainPresence(agentsLoginTime[index])}
-                                      />
-                                    </div>
-                                    <div className='text-gray-900'>{agent.name}</div>
-                                  </div>
-                                </td>
-                                <td className='relative whitespace-nowrap py-2 pl-3 pr-4 text-right text-sm font-medium sm:pr-0'>
-                                  {convertToHumanReadable(agent.values)}
-                                </td>
-                              </tr>
-                            ))}
+                          <tbody className='divide-y divide-gray-200 dark:divide-gray-700 bg-white dark:bg-gray-900'>
+                            {/* skeleton */}
+                            {!isLoadedQueues &&
+                              Array.from(Array(5)).map((e, i) => (
+                                <tr key={i}>
+                                  {Array.from(Array(3)).map((e, j) => (
+                                    <td key={j}>
+                                      <div className='px-4 py-6'>
+                                        <div className='animate-pulse h-5 rounded bg-gray-300 dark:bg-gray-600'></div>
+                                      </div>
+                                    </td>
+                                  ))}
+                                </tr>
+                              ))}
+                            {isLoadedQueues &&
+                              Array.from({ length: 5 }).map((_, index) => {
+                                const agent = Object.values(agentsLoginTime)[index]
+                                const isRowEmpty = !agent
+
+                                return (
+                                  <tr key={index}>
+                                    <td className='whitespace-nowrap py-2 pl-4 pr-3 text-sm sm:pl-0'>
+                                      <div className='flex items-center justify-center h-full'>
+                                        {isRowEmpty ? '-' : index + 1}
+                                      </div>
+                                    </td>
+                                    <td className='whitespace-nowrap py-3 pl-4 pr-3 text-sm sm:pl-0'>
+                                      <div className='flex items-center'>
+                                        <div className='h-9 w-9 flex-shrink-0 mr-2'>
+                                          {isRowEmpty ? (
+                                            <Avatar
+                                              placeholderType='operator'
+                                              size='small'
+                                              bordered
+                                              className='cursor-pointer'
+                                            />
+                                          ) : (
+                                            <Avatar
+                                              src={getAvatarData(agent)}
+                                              placeholderType='operator'
+                                              size='small'
+                                              bordered
+                                              className='cursor-pointer'
+                                              status={getAvatarMainPresence(agent)}
+                                            />
+                                          )}
+                                        </div>
+                                        <div className='text-gray-900 dark:text-gray-100'>
+                                          {isRowEmpty ? '-' : agent.name}
+                                        </div>
+                                      </div>
+                                    </td>
+                                    <td className='relative whitespace-nowrap py-2 pl-3 pr-4 text-right text-sm font-medium sm:pr-0'>
+                                      {isRowEmpty ? '-' : convertToHumanReadable(agent.values)}
+                                    </td>
+                                  </tr>
+                                )
+                              })}
                           </tbody>
                         </table>
                       </div>
@@ -1589,40 +1872,70 @@ export const QueueManagerDashboard: FC<QueueManagerDashboardProps> = ({
                       </Button>
                     </div>
                   </div>
-                  <div className='flex-grow border-b border-gray-300'></div>
+                  <div className='flex-grow border-b border-gray-200 dark:border-gray-700'></div>
                   {/* card body */}
                   <div className='flow-root'>
                     <div className='-mx-4 -my-2 overflow-x-auto sm:-mx-6 pl-2 pr-2'>
                       <div className='inline-block min-w-full py-2 align-middle sm:px-6 lg:px-8'>
                         <table className='min-w-full divide-y divide-gray-300'>
-                          <tbody className='divide-y divide-gray-200 bg-white'>
-                            {Object.values(agentsPauseTime).map((agent: any, index: number) => (
-                              <tr key={index}>
-                                <td className='whitespace-nowrap py-2 pl-4 pr-3 text-sm sm:pl-0'>
-                                  <div className='flex items-center justify-center h-full'>
-                                    {index + 1}.
-                                  </div>
-                                </td>
-                                <td className='whitespace-nowrap py-3 pl-4 pr-3 text-sm sm:pl-0'>
-                                  <div className='flex items-center'>
-                                    <div className='h-9 w-9 flex-shrink-0 mr-2'>
-                                      <Avatar
-                                        src={getAvatarData(agentsPauseTime[index])}
-                                        placeholderType='operator'
-                                        size='small'
-                                        bordered
-                                        className='cursor-pointer'
-                                        status={getAvatarMainPresence(agentsPauseTime[index])}
-                                      />
-                                    </div>
-                                    <div className='text-gray-900'>{agent.name}</div>
-                                  </div>
-                                </td>
-                                <td className='relative whitespace-nowrap py-2 pl-3 pr-4 text-right text-sm font-medium sm:pr-0'>
-                                  {convertToHumanReadable(agent.values)}
-                                </td>
-                              </tr>
-                            ))}
+                          <tbody className='divide-y divide-gray-200 dark:divide-gray-700 bg-white dark:bg-gray-900'>
+                            {/* skeleton */}
+                            {!isLoadedQueues &&
+                              Array.from(Array(5)).map((e, i) => (
+                                <tr key={i}>
+                                  {Array.from(Array(3)).map((e, j) => (
+                                    <td key={j}>
+                                      <div className='px-4 py-6'>
+                                        <div className='animate-pulse h-5 rounded bg-gray-300 dark:bg-gray-600'></div>
+                                      </div>
+                                    </td>
+                                  ))}
+                                </tr>
+                              ))}
+                            {isLoadedQueues &&
+                              Array.from({ length: 5 }).map((_, index) => {
+                                const agent = Object.values(agentsPauseTime)[index]
+                                const isRowEmpty = !agent
+
+                                return (
+                                  <tr key={index}>
+                                    <td className='whitespace-nowrap py-2 pl-4 pr-3 text-sm sm:pl-0'>
+                                      <div className='flex items-center justify-center h-full'>
+                                        {isRowEmpty ? '-' : index + 1}
+                                      </div>
+                                    </td>
+                                    <td className='whitespace-nowrap py-3 pl-4 pr-3 text-sm sm:pl-0'>
+                                      <div className='flex items-center'>
+                                        <div className='h-9 w-9 flex-shrink-0 mr-2'>
+                                          {isRowEmpty ? (
+                                            <Avatar
+                                              placeholderType='operator'
+                                              size='small'
+                                              bordered
+                                              className='cursor-pointer'
+                                            />
+                                          ) : (
+                                            <Avatar
+                                              src={getAvatarData(agent)}
+                                              placeholderType='operator'
+                                              size='small'
+                                              bordered
+                                              className='cursor-pointer'
+                                              status={getAvatarMainPresence(agent)}
+                                            />
+                                          )}
+                                        </div>
+                                        <div className='text-gray-900 dark:text-gray-100'>
+                                          {isRowEmpty ? '-' : agent.name}
+                                        </div>
+                                      </div>
+                                    </td>
+                                    <td className='relative whitespace-nowrap py-2 pl-3 pr-4 text-right text-sm font-medium sm:pr-0'>
+                                      {isRowEmpty ? '-' : convertToHumanReadable(agent.values)}
+                                    </td>
+                                  </tr>
+                                )
+                              })}
                           </tbody>
                         </table>
                       </div>
@@ -1668,40 +1981,70 @@ export const QueueManagerDashboard: FC<QueueManagerDashboardProps> = ({
                       </Button>
                     </div>
                   </div>
-                  <div className='flex-grow border-b border-gray-300'></div>
+                  <div className='flex-grow border-b border-gray-200 dark:border-gray-700'></div>
                   {/* card body */}
                   <div className='flow-root'>
                     <div className='-mx-4 -my-2 overflow-x-auto sm:-mx-6 pl-2 pr-2'>
                       <div className='inline-block min-w-full py-2 align-middle sm:px-6 lg:px-8'>
                         <table className='min-w-full divide-y divide-gray-300'>
-                          <tbody className='divide-y divide-gray-200 bg-white'>
-                            {Object.values(inCallPercentage).map((agent: any, index: number) => (
-                              <tr key={index}>
-                                <td className='whitespace-nowrap py-2 pl-4 pr-3 text-sm sm:pl-0'>
-                                  <div className='flex items-center justify-center h-full'>
-                                    {index + 1}.
-                                  </div>
-                                </td>
-                                <td className='whitespace-nowrap py-3 pl-4 pr-3 text-sm sm:pl-0'>
-                                  <div className='flex items-center'>
-                                    <div className='h-9 w-9 flex-shrink-0 mr-2'>
-                                      <Avatar
-                                        src={getAvatarData(inCallPercentage[index])}
-                                        placeholderType='operator'
-                                        size='small'
-                                        bordered
-                                        className='cursor-pointer'
-                                        status={getAvatarMainPresence(inCallPercentage[index])}
-                                      />
-                                    </div>
-                                    <div className='text-gray-900'>{agent.name}</div>
-                                  </div>
-                                </td>
-                                <td className='relative whitespace-nowrap py-2 pl-3 pr-4 text-right text-sm font-medium sm:pr-0'>
-                                  {agent.values}%
-                                </td>
-                              </tr>
-                            ))}
+                          <tbody className='divide-y divide-gray-200 dark:divide-gray-700 bg-white dark:bg-gray-900'>
+                            {/* skeleton */}
+                            {!isLoadedQueues &&
+                              Array.from(Array(5)).map((e, i) => (
+                                <tr key={i}>
+                                  {Array.from(Array(3)).map((e, j) => (
+                                    <td key={j}>
+                                      <div className='px-4 py-6'>
+                                        <div className='animate-pulse h-5 rounded bg-gray-300 dark:bg-gray-600'></div>
+                                      </div>
+                                    </td>
+                                  ))}
+                                </tr>
+                              ))}
+                            {isLoadedQueues &&
+                              Array.from({ length: 5 }).map((_, index) => {
+                                const agent = Object.values(inCallPercentage)[index]
+                                const isRowEmpty = !agent
+
+                                return (
+                                  <tr key={index}>
+                                    <td className='whitespace-nowrap py-2 pl-4 pr-3 text-sm sm:pl-0'>
+                                      <div className='flex items-center justify-center h-full'>
+                                        {isRowEmpty ? '-' : index + 1}
+                                      </div>
+                                    </td>
+                                    <td className='whitespace-nowrap py-3 pl-4 pr-3 text-sm sm:pl-0'>
+                                      <div className='flex items-center'>
+                                        <div className='h-9 w-9 flex-shrink-0 mr-2'>
+                                          {isRowEmpty ? (
+                                            <Avatar
+                                              placeholderType='operator'
+                                              size='small'
+                                              bordered
+                                              className='cursor-pointer'
+                                            />
+                                          ) : (
+                                            <Avatar
+                                              src={getAvatarData(agent)}
+                                              placeholderType='operator'
+                                              size='small'
+                                              bordered
+                                              className='cursor-pointer'
+                                              status={getAvatarMainPresence(agent)}
+                                            />
+                                          )}
+                                        </div>
+                                        <div className='text-gray-900 dark:text-gray-100'>
+                                          {isRowEmpty ? '-' : agent.name}
+                                        </div>
+                                      </div>
+                                    </td>
+                                    <td className='relative whitespace-nowrap py-2 pl-3 pr-4 text-right text-sm font-medium sm:pr-0'>
+                                      {isRowEmpty ? '-' : `${agent.values}%`}
+                                    </td>
+                                  </tr>
+                                )
+                              })}
                           </tbody>
                         </table>
                       </div>
@@ -1729,7 +2072,7 @@ export const QueueManagerDashboard: FC<QueueManagerDashboardProps> = ({
             />
           </div>
         </div>
-        <div className='flex-grow border-b border-gray-300'></div>
+        <div className='flex-grow border-b border-gray-200 dark:border-gray-700'></div>
         {expandedQueues && (
           <>
             <div className='grid grid-cols-1 gap-6 xl:grid-cols-2 3xl:grid-cols-3 pt-6'>
@@ -1770,30 +2113,46 @@ export const QueueManagerDashboard: FC<QueueManagerDashboardProps> = ({
                       </Button>
                     </div>
                   </div>
-                  {/* <div className='flex-grow border-b border-gray-300'></div> */}
+                  {/* <div className='flex-grow border-b border-gray-200 dark:border-gray-700'></div> */}
                   {/* card body */}
                   <div className='flow-root'>
                     <div className='-mx-4 -my-2 overflow-x-auto sm:-mx-6 pl-2 pr-2'>
                       <div className='inline-block min-w-full py-2 align-middle sm:px-6 lg:px-8'>
                         <table className='min-w-full divide-y divide-gray-300'>
-                          <tbody className='divide-y divide-gray-200 bg-white dark:bg-gray-900'>
-                            {Object.values(queuesTotalCalls).map((queue: any, index: number) => (
-                              <tr key={index}>
-                                <td className='whitespace-nowrap py-2 pl-4 pr-3 text-sm sm:pl-0'>
-                                  <div className='flex items-center justify-center h-full'>
-                                    {index + 1}.
-                                  </div>
-                                </td>
-                                <td className='whitespace-nowrap py-3 pl-4 pr-3 text-sm sm:pl-0'>
-                                  <div className='flex items-center py-3'>
-                                    <div className='text-gray-900'>{queue.name}</div>
-                                  </div>
-                                </td>
-                                <td className='relative whitespace-nowrap py-2 pl-3 pr-4 text-right text-sm font-medium sm:pr-0'>
-                                  {queue.values}
-                                </td>
-                              </tr>
-                            ))}
+                          <tbody className='divide-y divide-gray-200 dark:divide-gray-700 bg-white dark:bg-gray-900'>
+                            {/* skeleton */}
+                            {!isLoadedQueues &&
+                              Array.from(Array(5)).map((e, i) => (
+                                <tr key={i}>
+                                  {Array.from(Array(3)).map((e, j) => (
+                                    <td key={j}>
+                                      <div className='px-4 py-6'>
+                                        <div className='animate-pulse h-5 rounded bg-gray-300 dark:bg-gray-600'></div>
+                                      </div>
+                                    </td>
+                                  ))}
+                                </tr>
+                              ))}
+                            {isLoadedQueues &&
+                              Object.values(queuesTotalCalls).map((queue: any, index: number) => (
+                                <tr key={index}>
+                                  <td className='whitespace-nowrap py-2 pl-4 pr-3 text-sm sm:pl-0'>
+                                    <div className='flex items-center justify-center h-full'>
+                                      {index + 1}.
+                                    </div>
+                                  </td>
+                                  <td className='whitespace-nowrap py-3 pl-4 pr-3 text-sm sm:pl-0'>
+                                    <div className='flex items-center py-3'>
+                                      <div className='text-gray-900 dark:text-gray-100'>
+                                        {queue.name}
+                                      </div>
+                                    </div>
+                                  </td>
+                                  <td className='relative whitespace-nowrap py-2 pl-3 pr-4 text-right text-sm font-medium sm:pr-0'>
+                                    {queue.values}
+                                  </td>
+                                </tr>
+                              ))}
                           </tbody>
                         </table>
                       </div>
@@ -1839,30 +2198,46 @@ export const QueueManagerDashboard: FC<QueueManagerDashboardProps> = ({
                       </Button>
                     </div>
                   </div>
-                  {/* <div className='flex-grow border-b border-gray-300'></div> */}
+                  {/* <div className='flex-grow border-b border-gray-200 dark:border-gray-700'></div> */}
                   {/* card body */}
                   <div className='flow-root'>
                     <div className='-mx-4 -my-2 overflow-x-auto sm:-mx-6 pl-2 pr-2'>
                       <div className='inline-block min-w-full py-2 align-middle sm:px-6 lg:px-8'>
                         <table className='min-w-full divide-y divide-gray-300'>
-                          <tbody className='divide-y divide-gray-200 bg-white dark:bg-gray-900'>
-                            {Object.values(queuesFailedCalls).map((queue: any, index: number) => (
-                              <tr key={index}>
-                                <td className='whitespace-nowrap py-2 pl-4 pr-3 text-sm sm:pl-0'>
-                                  <div className='flex items-center justify-center h-full'>
-                                    {index + 1}.
-                                  </div>
-                                </td>
-                                <td className='whitespace-nowrap py-3 pl-4 pr-3 text-sm sm:pl-0'>
-                                  <div className='flex items-center py-3'>
-                                    <div className='text-gray-900'>{queue.name}</div>
-                                  </div>
-                                </td>
-                                <td className='relative whitespace-nowrap py-2 pl-3 pr-4 text-right text-sm font-medium sm:pr-0'>
-                                  {queue.values}
-                                </td>
-                              </tr>
-                            ))}
+                          <tbody className='divide-y  dark:divide-gray-700 bg-white dark:bg-gray-900'>
+                            {/* skeleton */}
+                            {!isLoadedQueues &&
+                              Array.from(Array(5)).map((e, i) => (
+                                <tr key={i}>
+                                  {Array.from(Array(3)).map((e, j) => (
+                                    <td key={j}>
+                                      <div className='px-4 py-6'>
+                                        <div className='animate-pulse h-5 rounded bg-gray-300 dark:bg-gray-600'></div>
+                                      </div>
+                                    </td>
+                                  ))}
+                                </tr>
+                              ))}
+                            {isLoadedQueues &&
+                              Object.values(queuesFailedCalls).map((queue: any, index: number) => (
+                                <tr key={index}>
+                                  <td className='whitespace-nowrap py-2 pl-4 pr-3 text-sm sm:pl-0'>
+                                    <div className='flex items-center justify-center h-full'>
+                                      {index + 1}.
+                                    </div>
+                                  </td>
+                                  <td className='whitespace-nowrap py-3 pl-4 pr-3 text-sm sm:pl-0'>
+                                    <div className='flex items-center py-3'>
+                                      <div className='text-gray-900 dark:text-gray-100'>
+                                        {queue.name}
+                                      </div>
+                                    </div>
+                                  </td>
+                                  <td className='relative whitespace-nowrap py-2 pl-3 pr-4 text-right text-sm font-medium sm:pr-0'>
+                                    {queue.values}
+                                  </td>
+                                </tr>
+                              ))}
                           </tbody>
                         </table>
                       </div>
@@ -1908,30 +2283,46 @@ export const QueueManagerDashboard: FC<QueueManagerDashboardProps> = ({
                       </Button>
                     </div>
                   </div>
-                  {/* <div className='flex-grow border-b border-gray-300'></div> */}
+                  {/* <div className='flex-grow border-b border-gray-200 dark:border-gray-700'></div> */}
                   {/* card body */}
                   <div className='flow-root'>
                     <div className='-mx-4 -my-2 overflow-x-auto sm:-mx-6 pl-2 pr-2'>
                       <div className='inline-block min-w-full py-2 align-middle sm:px-6 lg:px-8'>
                         <table className='min-w-full divide-y divide-gray-300'>
-                          <tbody className='divide-y divide-gray-200 bg-white dark:bg-gray-900'>
-                            {Object.values(queuesInvalidCalls).map((queue: any, index: number) => (
-                              <tr key={index}>
-                                <td className='whitespace-nowrap py-2 pl-4 pr-3 text-sm sm:pl-0'>
-                                  <div className='flex items-center justify-center h-full'>
-                                    {index + 1}.
-                                  </div>
-                                </td>
-                                <td className='whitespace-nowrap py-3 pl-4 pr-3 text-sm sm:pl-0'>
-                                  <div className='flex items-center py-3'>
-                                    <div className='text-gray-900'>{queue.name}</div>
-                                  </div>
-                                </td>
-                                <td className='relative whitespace-nowrap py-2 pl-3 pr-4 text-right text-sm font-medium sm:pr-0'>
-                                  {queue.values}
-                                </td>
-                              </tr>
-                            ))}
+                          <tbody className='divide-y divide-gray-200 dark:divide-gray-700 bg-white dark:bg-gray-900'>
+                            {/* skeleton */}
+                            {!isLoadedQueues &&
+                              Array.from(Array(5)).map((e, i) => (
+                                <tr key={i}>
+                                  {Array.from(Array(3)).map((e, j) => (
+                                    <td key={j}>
+                                      <div className='px-4 py-6'>
+                                        <div className='animate-pulse h-5 rounded bg-gray-300 dark:bg-gray-600'></div>
+                                      </div>
+                                    </td>
+                                  ))}
+                                </tr>
+                              ))}
+                            {isLoadedQueues &&
+                              Object.values(queuesInvalidCalls).map((queue: any, index: number) => (
+                                <tr key={index}>
+                                  <td className='whitespace-nowrap py-2 pl-4 pr-3 text-sm sm:pl-0'>
+                                    <div className='flex items-center justify-center h-full'>
+                                      {index + 1}.
+                                    </div>
+                                  </td>
+                                  <td className='whitespace-nowrap py-3 pl-4 pr-3 text-sm sm:pl-0'>
+                                    <div className='flex items-center py-3'>
+                                      <div className='text-gray-900 dark:text-gray-100'>
+                                        {queue.name}
+                                      </div>
+                                    </div>
+                                  </td>
+                                  <td className='relative whitespace-nowrap py-2 pl-3 pr-4 text-right text-sm font-medium sm:pr-0'>
+                                    {queue.values}
+                                  </td>
+                                </tr>
+                              ))}
                           </tbody>
                         </table>
                       </div>
@@ -1974,35 +2365,49 @@ export const QueueManagerDashboard: FC<QueueManagerDashboardProps> = ({
                       </Button>
                     </div>
                   </div>
-                  {/* <div className='flex-grow border-b border-gray-300'></div> */}
+                  {/* <div className='flex-grow border-b border-gray-200 dark:border-gray-700'></div> */}
                   {/* card body */}
                   <div className='flow-root'>
                     <div className='-mx-4 -my-2 overflow-x-auto sm:-mx-6 pl-2 pr-2'>
                       <div className='inline-block min-w-full py-2 align-middle sm:px-6 lg:px-8'>
                         <table className='min-w-full divide-y divide-gray-300'>
-                          <tbody className='divide-y divide-gray-200 bg-white dark:bg-gray-900'>
-                            {Object.values(queuesFailures).map((queue: any, index: number) => (
-                              <tr key={index}>
-                                <td className='whitespace-nowrap py-2 pl-4 pr-3 text-sm sm:pl-0'>
-                                  <div className='flex items-center justify-center h-full'>
-                                    {index + 1}.
-                                  </div>
-                                </td>
-                                <td className='whitespace-nowrap py-3 pl-4 pr-3 text-sm sm:pl-0'>
-                                  <div className='flex items-center py-3'>
-                                    <div className='text-gray-900'>
-                                      {queue.name} ({queue.queue})
+                          <tbody className='divide-y divide-gray-200  dark:divide-gray-700 bg-white dark:bg-gray-900'>
+                            {/* skeleton */}
+                            {!isLoadedQueues &&
+                              Array.from(Array(5)).map((e, i) => (
+                                <tr key={i}>
+                                  {Array.from(Array(3)).map((e, j) => (
+                                    <td key={j}>
+                                      <div className='px-4 py-6'>
+                                        <div className='animate-pulse h-5 rounded bg-gray-300 dark:bg-gray-600'></div>
+                                      </div>
+                                    </td>
+                                  ))}
+                                </tr>
+                              ))}
+                            {isLoadedQueues &&
+                              Object.values(queuesFailures).map((queue: any, index: number) => (
+                                <tr key={index}>
+                                  <td className='whitespace-nowrap py-2 pl-4 pr-3 text-sm sm:pl-0'>
+                                    <div className='flex items-center justify-center h-full'>
+                                      {index + 1}.
                                     </div>
-                                  </div>
-                                </td>
-                                <td className='relative whitespace-nowrap py-2 pl-3 pr-4 text-right text-sm font-medium sm:pr-0'>
-                                  {t(`QueueManager.${queue.note}`)}
-                                </td>
-                                <td className='relative whitespace-nowrap py-2 pl-3 pr-4 text-right text-sm font-medium sm:pr-0'>
-                                  {queue.values}
-                                </td>
-                              </tr>
-                            ))}
+                                  </td>
+                                  <td className='whitespace-nowrap py-3 pl-4 pr-3 text-sm sm:pl-0'>
+                                    <div className='flex items-center py-3'>
+                                      <div className='text-gray-900 dark:text-gray-100'>
+                                        {queue.name} ({queue.queue})
+                                      </div>
+                                    </div>
+                                  </td>
+                                  <td className='relative whitespace-nowrap py-2 pl-3 pr-4 text-right text-sm font-medium sm:pr-0'>
+                                    {t(`QueueManager.${queue.note}`)}
+                                  </td>
+                                  <td className='relative whitespace-nowrap py-2 pl-3 pr-4 text-right text-sm font-medium sm:pr-0'>
+                                    {queue.values}
+                                  </td>
+                                </tr>
+                              ))}
                           </tbody>
                         </table>
                       </div>

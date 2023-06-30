@@ -592,3 +592,18 @@ export const groupDataFailedCallsHourLineChart = (data: any) => {
 
   return groupedData
 }
+
+export const DEFAULT_EXPANDED_OPERATORS = false
+export const DEFAULT_EXPANDED_QUEUES = false
+
+export const getExpandedQueueManagerDashboardValue = (currentUsername: string) => {
+  const expandedOperators =
+    loadPreference('queueManagementOperatorsStatisticExpandedPreference', currentUsername) ||
+    DEFAULT_EXPANDED_OPERATORS
+
+  const expandedQueues =
+    loadPreference('queueManagementQueuesStatisticExpandedPreference', currentUsername) ||
+    DEFAULT_EXPANDED_QUEUES
+
+  return { expandedOperators, expandedQueues }
+}
