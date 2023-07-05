@@ -49,55 +49,9 @@ import { EmptyState, Avatar } from '../common'
 import InfiniteScroll from 'react-infinite-scroll-component'
 import { getInfiniteScrollOperatorsPageSize } from '../../lib/operators'
 import { sortByProperty, invertObject } from '../../lib/utils'
+import BarChartHorizontal from '../chart/horizontalBarChart'
 
 ChartJS.register(ArcElement, CategoryScale, LinearScale, BarElement, Title, Tooltip, Legend)
-
-export const optionsFirst = {
-  indexAxis: 'y' as const,
-  elements: {
-    bar: {
-      borderWidth: 1,
-    },
-  },
-  scales: {
-    y: {
-      display: false,
-      stacked: true,
-    },
-    x: {
-      display: false,
-      // stacked:true
-    },
-  },
-  responsive: true,
-  layout: {
-    padding: {
-      top: 20,
-      bottom: 20,
-    },
-  },
-  plugins: {
-    legend: {
-      position: 'bottom' as const,
-      labels: {
-        usePointStyle: true,
-      },
-    },
-    title: {
-      display: true,
-      text: 'Connected calls',
-      font: {
-        size: 16,
-      },
-    },
-    // avoid to show labels inside tooltip
-    //   tooltip: {
-    //     callbacks: {
-    //        title : () => null // or function () { return null; }
-    //     }
-    //  },
-  },
-}
 
 export const optionsSecond = {
   indexAxis: 'y' as const,
@@ -138,72 +92,6 @@ export const optionsSecond = {
       },
     },
   },
-}
-
-const labels = ['Connected calls']
-
-let mininum = 2
-let average = 5
-let maximum = 30
-
-export const dataFirst = {
-  labels,
-  datasets: [
-    {
-      label: 'Minimum',
-      data: [mininum],
-      backgroundColor: '#6EE7B7',
-      borderRadius: [20, 20, 10, 10],
-      barPercentage: 0.5,
-      borderSkipped: false,
-    },
-    {
-      label: 'Average',
-      data: [average],
-      backgroundColor: '#10B981',
-      borderRadius: [20, 20, 10, 10],
-      barPercentage: 0.5,
-      borderSkipped: false,
-    },
-    {
-      label: `Maximum`,
-      data: [maximum],
-      backgroundColor: '#047857',
-      borderRadius: [20, 20, 10, 10],
-      barPercentage: 0.5,
-      borderSkipped: false,
-    },
-  ],
-}
-
-export const dataSecond = {
-  labels,
-  datasets: [
-    {
-      label: 'Minimum',
-      data: [mininum],
-      backgroundColor: '#D1D5DB',
-      borderRadius: [20, 20, 10, 10],
-      barPercentage: 0.5,
-      borderSkipped: false,
-    },
-    {
-      label: 'Average',
-      data: [average],
-      backgroundColor: '#6B7280',
-      borderRadius: [20, 20, 10, 10],
-      barPercentage: 0.5,
-      borderSkipped: false,
-    },
-    {
-      label: `Maximum`,
-      data: [maximum],
-      backgroundColor: '#374151',
-      borderRadius: [20, 20, 10, 10],
-      barPercentage: 0.5,
-      borderSkipped: false,
-    },
-  ],
 }
 
 let lostCalls = 10
@@ -307,8 +195,6 @@ export const QueueManagement: FC<QueueManagementProps> = ({ className }): JSX.El
     )
   }
 
-  useEffect(() => {})
-
   const toggleWaitingCall = () => {
     setExpandedWaitingCall(!expandedWaitingCall)
     let correctExpandedWaitingCall = !expandedWaitingCall
@@ -381,6 +267,7 @@ export const QueueManagement: FC<QueueManagementProps> = ({ className }): JSX.El
   const [allQueuesStats, setAllQueuesStats] = useState(false)
   const [firstRenderQueuesStats, setFirstRenderQueuesStats]: any = useState(true)
   const [isLoadedQueuesStats, setLoadedQueuesStats] = useState(false)
+  const [selectedValue, setSelectedValue] = useState<any>(Object.keys(queuesList)[0] || '')
 
   //get queues status information
   useEffect(() => {
@@ -418,6 +305,117 @@ export const QueueManagement: FC<QueueManagementProps> = ({ className }): JSX.El
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [queuesList, firstRenderQueuesStats])
+
+  const [mininumConnectedCallsDatasets, setMininumConnectedCallsDatasets] = useState(0)
+  const [averageConnectedCallsDatasets, setAverageConnectedCallsDatasets] = useState(0)
+  const [maximumConnectedCallsDatasets, setMaximumConnectedCallsDatasets] = useState(0)
+
+  const [mininumWaitingCallsDatasets, setMininumWaitingCallsDatasets] = useState(0)
+  const [averageWaitingCallsDatasets, setAverageWaitingCallsDatasets] = useState(0)
+  const [maximumWaitingCallsDatasets, setMaximumWaitingCallsDatasets] = useState(0)
+
+  // Chart functions section
+  useEffect(() => {
+    if (queuesList && selectedValue?.queue && allQueuesStats) {
+      const qstats = queuesList[selectedValue.queue]?.qstats || {}
+
+      if (!isEmpty(qstats)) {
+        const connectedCallsStats = calculateConnectedCallsStats(qstats)
+        const waitingCallsStats = calculateWaitingCallsStats(qstats)
+
+        setMininumConnectedCallsDatasets(connectedCallsStats.minimum)
+        setAverageConnectedCallsDatasets(connectedCallsStats.average)
+        setMaximumConnectedCallsDatasets(connectedCallsStats.maximum)
+
+        setMininumWaitingCallsDatasets(waitingCallsStats.minimum)
+        setAverageWaitingCallsDatasets(waitingCallsStats.average)
+        setMaximumWaitingCallsDatasets(waitingCallsStats.maximum)
+      }
+    }
+  }, [queuesList, selectedValue, allQueuesStats])
+
+  function calculateConnectedCallsStats(qstats: any) {
+    const minDurationConnected = qstats.min_duration || 0
+    const avgDurationConnected = qstats.avg_duration || 0
+    const maxDurationConnected = qstats.max_duration || 0
+
+    return {
+      minimum: minDurationConnected,
+      average: avgDurationConnected,
+      maximum: maxDurationConnected,
+    }
+  }
+
+  function calculateWaitingCallsStats(qstats: any) {
+    const minDurationWaiting = qstats.min_wait || 0
+    const avgDurationWaiting = qstats.avg_wait || 0
+    const maxDurationWaiting = qstats.max_wait || 0
+
+    return {
+      minimum: minDurationWaiting,
+      average: avgDurationWaiting,
+      maximum: maxDurationWaiting,
+    }
+  }
+  //Connected calls chart functions section
+  const connectedCallsLabels = [t('QueueManager.Connected calls')]
+
+  const ConnectedCallsDatasets = [
+    {
+      label: 'Minimum',
+      data: [mininumConnectedCallsDatasets],
+      backgroundColor: '#6EE7B7',
+      borderRadius: [20, 20, 10, 10],
+      barPercentage: 0.5,
+      borderSkipped: false,
+    },
+    {
+      label: 'Average',
+      data: [averageConnectedCallsDatasets],
+      backgroundColor: '#10B981',
+      borderRadius: [20, 20, 10, 10],
+      barPercentage: 0.5,
+      borderSkipped: false,
+    },
+    {
+      label: 'Maximum',
+      data: [maximumConnectedCallsDatasets],
+      backgroundColor: '#047857',
+      borderRadius: [20, 20, 10, 10],
+      barPercentage: 0.5,
+      borderSkipped: false,
+    },
+  ]
+
+  //Waiting calls chart functions section
+  const waitingCallsLabels = [t('QueueManager.Waiting calls')]
+
+  const WaitingCallsDatasets = [
+    {
+      label: 'Minimum',
+      data: [mininumWaitingCallsDatasets],
+      backgroundColor: '#D1D5DB',
+      borderRadius: [20, 20, 10, 10],
+      barPercentage: 0.5,
+      borderSkipped: false,
+    },
+    {
+      label: 'Average',
+      data: [averageWaitingCallsDatasets],
+      backgroundColor: '#6B7280',
+      borderRadius: [20, 20, 10, 10],
+      barPercentage: 0.5,
+      borderSkipped: false,
+    },
+    {
+      label: `Maximum`,
+      data: [maximumWaitingCallsDatasets],
+      backgroundColor: '#374151',
+      borderRadius: [20, 20, 10, 10],
+      barPercentage: 0.5,
+      borderSkipped: false,
+    },
+  ]
 
   // load extensions information from the store
   const operatorsStore = useSelector((state: RootState) => state.operators) as Record<string, any>
@@ -488,12 +486,6 @@ export const QueueManagement: FC<QueueManagementProps> = ({ className }): JSX.El
       setAgentCounters({ ...agentCounters })
     }
   }, [queuesList, allQueuesStats, operatorsStore])
-
-  //TODO SAVE SELECTED QUEUE INSIDE LOCAL STORAGE
-  // const [selected, setSelected] = useState<any>({})
-
-  // const [selected, setSelected] = useState<any>(Object.keys(queuesList)[0] || '')
-  const [selectedValue, setSelectedValue] = useState<any>(Object.keys(queuesList)[0] || '')
 
   const [agentCountersSelectedQueue, setAgentCountersSelectedQueue] = useState<any>({})
   const [agentMembers, setAgentMembers] = useState<any>({})
@@ -647,7 +639,7 @@ export const QueueManagement: FC<QueueManagementProps> = ({ className }): JSX.El
                 {t('QueueManager.Select queue')}
               </Listbox.Label>
               <div className='relative'>
-                <Listbox.Button className='relative cursor-default rounded-md bg-white py-1.5 pl-3 pr-10 text-left text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 focus:outline-none focus:ring-2 focus:ring-primary sm:text-sm sm:leading-6 inline-block'>
+                <Listbox.Button className='relative cursor-default rounded-md bg-white dark:bg-gray-900 py-1.5 pl-3 pr-10 text-left text-gray-900 dark:text-gray-100 shadow-sm ring-1 ring-inset ring-gray-300 focus:outline-none focus:ring-2 focus:ring-primary sm:text-sm sm:leading-6 inline-block'>
                   <span className='block truncate'>
                     {selectedValue.name ? selectedValue.name : 'Select queue'}
                   </span>
@@ -673,7 +665,7 @@ export const QueueManagement: FC<QueueManagementProps> = ({ className }): JSX.El
                         key={queueId}
                         className={({ active }) =>
                           classNames(
-                            active ? 'bg-primary text-white' : 'text-gray-900',
+                            active ? 'bg-primary text-white' : 'text-gray-900 dark:text-gray-100',
                             'relative cursor-default select-none py-2 pl-8 pr-4',
                           )
                         }
@@ -735,14 +727,14 @@ export const QueueManagement: FC<QueueManagementProps> = ({ className }): JSX.El
         </div>
 
         {/* divider */}
-        <div className='flex-grow border-b border-gray-200 dark:border-gray-700 mt-1'></div>
+        <div className='flex-grow border-b border-gray-200 dark:border-gray-700 mt-1 mb-6'></div>
 
         {/* Dashboard queue active section */}
         {expandedDashboard && (
           <div>
-            <div className='grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-3'>
+            <div className='grid grid-cols-1 gap-4 sm:grid-cols-2 md:grid-cols-2 lg:grid-cols-2 xl:grid-cols-3'>
               {/* Online operators */}
-              <div className='pt-8'>
+              <div>
                 <div className='border-b rounded-lg shadow-md border-gray-200 dark:border-gray-700 bg-white dark:bg-gray-900 px-5 py-1 sm: mt-1 relative flex items-center'>
                   <div className='flex items-center space-x-4'>
                     <div className='h-10 w-10 flex items-center justify-center rounded-xl bg-emerald-50 mt-1 mb-1'>
@@ -767,7 +759,7 @@ export const QueueManagement: FC<QueueManagementProps> = ({ className }): JSX.El
               </div>
 
               {/* On break operators */}
-              <div className='pt-8'>
+              <div>
                 <div className='border-b rounded-lg shadow-md border-gray-200 dark:border-gray-700 bg-white dark:bg-gray-900 px-5 py-1 sm: mt-1 relative flex items-center'>
                   <div className='flex items-center space-x-4'>
                     <div className='h-10 w-10 flex items-center justify-center rounded-xl bg-emerald-50 mt-1 mb-1'>
@@ -792,7 +784,7 @@ export const QueueManagement: FC<QueueManagementProps> = ({ className }): JSX.El
               </div>
 
               {/* Offline operators */}
-              <div className='pt-8'>
+              <div>
                 <div className='border-b rounded-lg shadow-md border-gray-200 dark:border-gray-700 bg-white dark:bg-gray-900 px-5 py-1 sm: mt-1 relative flex items-center'>
                   <div className='flex items-center space-x-4'>
                     <div className='h-10 w-10 flex items-center justify-center rounded-xl bg-emerald-50 mt-1 mb-1'>
@@ -886,9 +878,13 @@ export const QueueManagement: FC<QueueManagementProps> = ({ className }): JSX.El
                   </div>
                 </div>
               </div>
+            </div>
 
+            {/* Chart section  */}
+            <div className='grid grid-cols-1 gap-4 sm:grid-cols-1 md:grid-cols-1 lg:grid-cols-2 xl:grid-cols-3'>
               {/* Calls duration */}
-              <div>
+
+              <div className='pt-8'>
                 <div className='border-b rounded-lg shadow-md border-gray-200 dark:border-gray-700 bg-white dark:bg-gray-900 px-5 py-1 sm: mt-1 relative'>
                   <div className='pt-3'>
                     <span className='text-sm font-medium leading-6 text-center text-gray-700 dark:text-gray-100'>
@@ -896,16 +892,24 @@ export const QueueManagement: FC<QueueManagementProps> = ({ className }): JSX.El
                     </span>
                   </div>
                   <div className='flex justify-center'>
-                    <div className='w-full'>
-                      <Bar options={optionsFirst} data={dataFirst} />
-                      <Bar options={optionsSecond} data={dataSecond} />
+                    <div className='w-full h-full'>
+                      <BarChartHorizontal
+                        labels={connectedCallsLabels}
+                        datasets={ConnectedCallsDatasets}
+                        titleText={t('QueueManager.Connected calls')}
+                      />
+                      <BarChartHorizontal
+                        labels={waitingCallsLabels}
+                        datasets={WaitingCallsDatasets}
+                        titleText={t('QueueManager.Waiting calls')}
+                      />
                     </div>
                   </div>
                 </div>
               </div>
 
               {/* Calls */}
-              <div>
+              <div className='pt-8'>
                 <div className='border-b rounded-lg shadow-md border-gray-200 dark:border-gray-700 bg-white dark:bg-gray-900 px-5 py-1 sm:mt-1 relative'>
                   <div className='flex justify-between'>
                     <div className='pt-3'>
@@ -926,7 +930,7 @@ export const QueueManagement: FC<QueueManagementProps> = ({ className }): JSX.El
               </div>
 
               {/* Customers to manage */}
-              <div>
+              <div className='pt-8'>
                 <div className='border-b rounded-lg shadow-md border-gray-200 dark:border-gray-700 bg-white dark:bg-gray-900 px-5 py-1 sm: mt-1 relative flex justify-between'>
                   <div className='pt-3'>
                     <span className='text-sm font-medium leading-6 text-center text-gray-700 dark:text-gray-100'>
@@ -941,7 +945,6 @@ export const QueueManagement: FC<QueueManagementProps> = ({ className }): JSX.El
                 </div>
               </div>
             </div>
-            {/* ... */}
           </div>
         )}
       </div>
