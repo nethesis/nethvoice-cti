@@ -11,6 +11,7 @@ import { exactDistanceToNowLoc, formatDurationLoc } from './dateTime'
 import { loadPreference, savePreference } from './storage'
 import { handleNetworkError } from './utils'
 import { formatDuration, intervalToDuration, format } from 'date-fns'
+import { openShowOperatorDrawer } from '../lib/operators'
 
 export const PAGE_SIZE = 10
 export const DEFAULT_OUTCOME_FILTER = 'lost'
@@ -838,4 +839,40 @@ export function getQueueName(agentName: any, queuesList: any) {
   if (queue && queue.name) {
     return queue.name
   }
+}
+
+//set operator information to open operator drawer
+export function setOperatorInformationDrawer(operatorData: any, operatorsStore: any) {
+  let operatorInformationDataDrawer = null
+  let operatorInformation = operatorsStore.operators
+  if (operatorData.shortname && operatorInformation) {
+    for (const username in operatorInformation) {
+      if (username === operatorData.shortname) {
+        operatorInformationDataDrawer = operatorInformation[username]
+        openShowOperatorDrawer(operatorInformationDataDrawer)
+      }
+    }
+  }
+  return
+}
+
+// Get formatted hours from first element of alarm list
+export function getFormattedTimeFromAlarmsList(alarmsList: any) {
+  const firstAlarm = alarmsList.list[Object.keys(alarmsList.list)[0]]
+  const alarmType = Object.keys(firstAlarm)[0]
+  const alarmData = firstAlarm[alarmType]
+
+  const timestamp = alarmData.date
+  const formattedTime = format(new Date(timestamp), 'HH:mm')
+
+  return formattedTime
+}
+
+// Get alarm description
+export function getAlarmDescription(alarmsList: any, alarmsTypeObject: any) {
+  const firstAlarm = alarmsList.list[Object.keys(alarmsList.list)[0]]
+  const alarmType = Object.keys(firstAlarm)[0]
+  const alarmDescription = alarmsTypeObject[alarmType]?.description || ''
+
+  return alarmDescription
 }

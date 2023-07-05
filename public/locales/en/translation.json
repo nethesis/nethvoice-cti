@@ -482,6 +482,12 @@
     "Begin hour": "Begin hour",
     "Queue": "Queue",
     "Average call time": "Average call time",
-    "Average callback time": "Average callback time"
+    "Average callback time": "Average callback time",
+    "queuefewop alarm": "The ratio between the number of calls waiting and the number of agents has exceeded the alarm threshold",
+    "queueholdtime alarm": "The average waiting time has exceeded the alarm threshold",
+    "queueload alarm": "There are many calls waiting and the average waiting time has exceeded the alarm threshold",
+    "queuemaxwait alarm": "There are many calls waiting and the first call is on hold for a long time",
+    "Alarm error detected": "Alarm error detected",
+    "Alarm":"Alarm"
   }
 }

@@ -47,10 +47,14 @@ import {
   getQueuesDashboardRank,
   agentsDashboardRanks,
   getQueueName,
+  setOperatorInformationDrawer,
+  getFormattedTimeFromAlarmsList,
+  getAlarmDescription,
 } from '../../lib/queueManager'
 import { invertObject } from '../../lib/utils'
 import BarChart from '../chart/BarChart'
 import LineChart from '../chart/LineChart'
+import { format } from 'date-fns'
 
 export interface QueueManagerDashboardProps extends ComponentProps<'div'> {}
 
@@ -169,6 +173,37 @@ export const QueueManagerDashboard: FC<QueueManagerDashboardProps> = ({
     }
   }, [firstRenderQueuesList, isLoadedQueues])
 
+  // Alarms section
+
+  // Create a object with all alarms type and description
+  const alarmsType = {
+    queuefewop: {
+      description: `${t('QueueManager.queuefewop alarm')}`,
+    },
+    queueholdtime: {
+      description: `${t('QueueManager.queueholdtime alarm')}`,
+    },
+    queueload: {
+      description: `${t('QueueManager.queueload alarm')}`,
+    },
+    queuemaxwait: {
+      description: `${t('QueueManager.queuemaxwait alarm')}`,
+    },
+  }
+
+  // Alarm list example to test
+  // const alarmListExample = {
+  //   list: {
+  //     '211': {
+  //       queuefewop: {
+  //         status: 'warning',
+  //         date: new Date().getTime(),
+  //       },
+  //     },
+  //   },
+  //   status: true,
+  // }
+
   //get alarm list information
   useEffect(() => {
     // Avoid api double calling
@@ -181,6 +216,8 @@ export const QueueManagerDashboard: FC<QueueManagerDashboardProps> = ({
       try {
         const res = await getAlarm()
         setAlarmsList(res)
+        // only for testing
+        // setAlarmsList(alarmListExample)
       } catch (err) {
         console.error(err)
       }
@@ -807,11 +844,11 @@ export const QueueManagerDashboard: FC<QueueManagerDashboardProps> = ({
         }`}
       >
         <Dropdown.Header>
-          {isEmpty(alarmsList.list) ? (
+          {!isEmpty(alarmsList.list) ? (
             <>
               {/* Header dropdown  */}
               <span className='text-lg font-semibold flex justify-start text-center mb-2'>
-                Alarm error detected
+                {t('QueueManager.Alarm error detected')}
               </span>
               {/* Divider  */}
               <div className='relative'>
@@ -834,13 +871,13 @@ export const QueueManagerDashboard: FC<QueueManagerDashboardProps> = ({
                       {t('QueueManager.Begin hour')}
                     </p>
                     <p className='text-md font-bold leading-6 text-center text-gray-900 dark:text-gray-900'>
-                      09.00
+                      {getFormattedTimeFromAlarmsList(alarmsList)}
                     </p>
                   </div>
                 </div>
 
                 {/* Second row */}
-                <div className='flex items-center pt-2 space-x-3'>
+                {/* <div className='flex items-center pt-2 space-x-3'>
                   <FontAwesomeIcon
                     icon={faUsers}
                     className='h-5 w-5 py-2 cursor-pointer flex items-center text-gray-500 dark:text-gray-400'
@@ -857,9 +894,10 @@ export const QueueManagerDashboard: FC<QueueManagerDashboardProps> = ({
                       500
                     </p>
                   </div>
-                </div>
+                </div> */}
+
                 {/* Third row */}
-                <span className='pt-3 text-sm '> Error message </span>
+                <span className='pt-3 text-sm'>{getAlarmDescription(alarmsList, alarmsType)}</span>
               </div>
             </>
           ) : (
@@ -868,11 +906,6 @@ export const QueueManagerDashboard: FC<QueueManagerDashboardProps> = ({
               {t('QueueManager.No alarm detected')}
             </span>
           )}
-          {/* <span className='block text-sm mb-1'>{t('TopBar.Signed in as')}</span>
-          <span className='text-sm font-medium flex justify-between'>
-            <span className='truncate pr-2'>test</span>
-            <span className='text-sm font-normal'>test</span>
-          </span> */}
         </Dropdown.Header>
       </div>
     </>
@@ -894,7 +927,7 @@ export const QueueManagerDashboard: FC<QueueManagerDashboardProps> = ({
                 >
                   <div className='flex items-center'>
                     <FontAwesomeIcon
-                      icon={isEmpty(alarmsList.list) ? faTriangleExclamation : faChevronDown}
+                      icon={faTriangleExclamation}
                       className={`h-6 w-6 pr-6 py-2 cursor-pointer flex items-center ${
                         !isEmpty(alarmsList.list)
                           ? 'text-red-600'
@@ -904,10 +937,12 @@ export const QueueManagerDashboard: FC<QueueManagerDashboardProps> = ({
                     />
                     <div className='flex flex-col justify-center'>
                       <p className='text-3xl font-semibold tracking-tight text-left text-gray-900 dark:text-gray-900'>
-                        0
+                        {(alarmsList.list && Object.keys(alarmsList.list).length) ?? 0}
                       </p>
                       <p className='text-sm font-medium leading-6 text-center text-gray-500 dark:text-gray-400'>
-                        {t('QueueManager.Alarms')}
+                        {alarmsList.list && Object.keys(alarmsList.list).length === 1
+                          ? t('QueueManager.Alarm')
+                          : t('QueueManager.Alarms')}
                       </p>
                     </div>
                   </div>
@@ -1270,10 +1305,18 @@ export const QueueManagerDashboard: FC<QueueManagerDashboardProps> = ({
                                                 agent,
                                                 operatorInformation,
                                               )}
+                                              onClick={() =>
+                                                setOperatorInformationDrawer(agent, operatorsStore)
+                                              }
                                             />
                                           )}
                                         </div>
-                                        <div className='text-gray-900 dark:text-gray-100'>
+                                        <div
+                                          className='text-gray-900 dark:text-gray-100 cursor-pointer'
+                                          onClick={() =>
+                                            setOperatorInformationDrawer(agent, operatorsStore)
+                                          }
+                                        >
                                           {isRowEmpty ? '-' : agent.name}
                                         </div>
                                       </div>
@@ -1387,10 +1430,18 @@ export const QueueManagerDashboard: FC<QueueManagerDashboardProps> = ({
                                                 agent,
                                                 operatorInformation,
                                               )}
+                                              onClick={() =>
+                                                setOperatorInformationDrawer(agent, operatorsStore)
+                                              }
                                             />
                                           )}
                                         </div>
-                                        <div className='text-gray-900 dark:text-gray-100'>
+                                        <div
+                                          className='text-gray-900 dark:text-gray-100 cursor-pointer'
+                                          onClick={() =>
+                                            setOperatorInformationDrawer(agent, operatorsStore)
+                                          }
+                                        >
                                           {isRowEmpty ? '-' : agent.name}
                                         </div>
                                       </div>
@@ -1501,10 +1552,18 @@ export const QueueManagerDashboard: FC<QueueManagerDashboardProps> = ({
                                                 agent,
                                                 operatorInformation,
                                               )}
+                                              onClick={() =>
+                                                setOperatorInformationDrawer(agent, operatorsStore)
+                                              }
                                             />
                                           )}
                                         </div>
-                                        <div className='text-gray-900 dark:text-gray-100'>
+                                        <div
+                                          className='text-gray-900 dark:text-gray-100 cursor-pointer'
+                                          onClick={() =>
+                                            setOperatorInformationDrawer(agent, operatorsStore)
+                                          }
+                                        >
                                           {isRowEmpty ? '-' : agent.name}
                                         </div>
                                       </div>
@@ -1618,10 +1677,18 @@ export const QueueManagerDashboard: FC<QueueManagerDashboardProps> = ({
                                                 agent,
                                                 operatorInformation,
                                               )}
+                                              onClick={() =>
+                                                setOperatorInformationDrawer(agent, operatorsStore)
+                                              }
                                             />
                                           )}
                                         </div>
-                                        <div className='text-gray-900 dark:text-gray-100'>
+                                        <div
+                                          className='text-gray-900 dark:text-gray-100 cursor-pointer'
+                                          onClick={() =>
+                                            setOperatorInformationDrawer(agent, operatorsStore)
+                                          }
+                                        >
                                           {isRowEmpty ? '-' : agent.name}
                                         </div>
                                       </div>
@@ -1735,10 +1802,18 @@ export const QueueManagerDashboard: FC<QueueManagerDashboardProps> = ({
                                                 agent,
                                                 operatorInformation,
                                               )}
+                                              onClick={() =>
+                                                setOperatorInformationDrawer(agent, operatorsStore)
+                                              }
                                             />
                                           )}
                                         </div>
-                                        <div className='text-gray-900 dark:text-gray-100'>
+                                        <div
+                                          className='text-gray-900 dark:text-gray-100 cursor-pointer'
+                                          onClick={() =>
+                                            setOperatorInformationDrawer(agent, operatorsStore)
+                                          }
+                                        >
                                           {isRowEmpty ? '-' : agent.name}
                                         </div>
                                       </div>
@@ -1852,10 +1927,18 @@ export const QueueManagerDashboard: FC<QueueManagerDashboardProps> = ({
                                                 agent,
                                                 operatorInformation,
                                               )}
+                                              onClick={() =>
+                                                setOperatorInformationDrawer(agent, operatorsStore)
+                                              }
                                             />
                                           )}
                                         </div>
-                                        <div className='text-gray-900 dark:text-gray-100'>
+                                        <div
+                                          className='text-gray-900 dark:text-gray-100 cursor-pointer'
+                                          onClick={() =>
+                                            setOperatorInformationDrawer(agent, operatorsStore)
+                                          }
+                                        >
                                           {isRowEmpty ? '-' : agent.name}
                                         </div>
                                       </div>
@@ -2352,10 +2435,18 @@ export const QueueManagerDashboard: FC<QueueManagerDashboardProps> = ({
                                                 agent,
                                                 operatorInformation,
                                               )}
+                                              onClick={() =>
+                                                setOperatorInformationDrawer(agent, operatorsStore)
+                                              }
                                             />
                                           )}
                                         </div>
-                                        <div className='text-gray-900 dark:text-gray-100'>
+                                        <div
+                                          className='text-gray-900 dark:text-gray-100 cursor-pointer'
+                                          onClick={() =>
+                                            setOperatorInformationDrawer(agent, operatorsStore)
+                                          }
+                                        >
                                           {isRowEmpty ? '-' : agent.name}
                                         </div>
                                       </div>
