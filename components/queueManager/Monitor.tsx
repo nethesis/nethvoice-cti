@@ -199,7 +199,7 @@ export const Monitor: FC<MonitorProps> = ({ className }): JSX.Element => {
           <div className='grid grid-cols-2 gap-4 sm:grid-cols-2 xl:grid-cols-2'>
             <div className={`pt-8 ${!showSecondCard ? 'col-span-2' : 'col-span-1'}`}>
               {/* First Queue card  */}
-              <div className='border-b rounded-lg shadow-md bg-white dark:bg-gray-900 px-5 py-4 sm:mt-1 relative'>
+              <div className='border-b rounded-lg shadow-md border-gray-200 dark:border-gray-700 bg-white dark:bg-gray-900 px-5 py-4 sm:mt-1 relative'>
                 {/* Header section */}
                 <div className='flex items-center space-x-2'>
                   {/* left side */}
@@ -415,7 +415,7 @@ export const Monitor: FC<MonitorProps> = ({ className }): JSX.Element => {
             {/* Second Queue card  */}
             {showSecondCard && (
               <div className='pt-8'>
-                <div className='border-b rounded-lg shadow-md bg-white dark:bg-gray-900 px-5 py-4 sm:mt-1 relative'>
+                <div className='border-b rounded-lg shadow-md border-gray-200 dark:border-gray-700 bg-white dark:bg-gray-900 px-5 py-4 sm:mt-1 relative'>
                   {/* Header section */}
                   <div className='flex items-center space-x-2'>
                     {/* left side */}

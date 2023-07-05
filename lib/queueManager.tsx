@@ -125,80 +125,6 @@ export const retrieveAndFilterQueueCalls = async (
   }
 }
 
-export const retrieveQueueStats = async () => {
-  try {
-    let { data } = await axios.get('/astproxy/queue_astats')
-
-    // compute missing stats
-
-    let lastLogin = 0
-    let lastLogout = 0
-    let lastCall = 0
-    let answeredCalls = 0
-    let missedCalls = 0
-
-    Object.keys(data).map((queueNum: string) => {
-      const queue = data[queueNum]
-
-      // last login
-      if (queue.last_login_time) {
-        if (!lastLogin || lastLogin < queue.last_login_time) {
-          lastLogin = queue.last_login_time
-        }
-      }
-
-      // last logout
-      if (queue.last_logout_time) {
-        if (!lastLogout || lastLogout < queue.last_logout_time) {
-          lastLogout = queue.last_logout_time
-        }
-      }
-
-      // last call
-      if (queue.last_call_time) {
-        if (!lastCall || lastCall < queue.last_call_time) {
-          lastCall = queue.last_call_time
-        }
-      }
-
-      // answered calls
-      if (queue.calls_taken) {
-        answeredCalls += queue.calls_taken
-      }
-
-      // missed calls
-      if (queue.no_answer_calls) {
-        missedCalls += queue.no_answer_calls
-      }
-    })
-
-    if (lastLogin) {
-      data.lastLogin = new Date(lastLogin * 1000).toLocaleTimeString()
-    }
-
-    if (lastLogout) {
-      data.lastLogout = new Date(lastLogout * 1000).toLocaleTimeString()
-    }
-
-    if (lastCall) {
-      data.fromLastCall = exactDistanceToNowLoc(new Date(lastCall * 1000))
-    }
-
-    data.answeredCalls = answeredCalls
-    data.missedCalls = missedCalls
-
-    // time at phone
-    data.timeAtPhone = formatDurationLoc(
-      (data.outgoingCalls?.duration_outgoing || 0) + (data.incomingCalls?.duration_incoming || 0),
-    )
-
-    return data
-  } catch (error) {
-    handleNetworkError(error)
-    throw error
-  }
-}
-
 export const getFilterValues = (currentUsername: string) => {
   const outcome = loadPreference('queuesOutcomeFilter', currentUsername) || DEFAULT_OUTCOME_FILTER
   const selectedQueues = loadPreference('queuesSelectedQueues', currentUsername) || []
@@ -595,15 +521,321 @@ export const groupDataFailedCallsHourLineChart = (data: any) => {
 
 export const DEFAULT_EXPANDED_OPERATORS = false
 export const DEFAULT_EXPANDED_QUEUES = false
+export const DEFAULT_EXPANDED_QUEUES_MANAGEMENT_DASHBOARD = false
+export const DEFAULT_EXPANDED_QUEUES_MANAGEMENT_OPERATORS = false
+export const DEFAULT_EXPANDED_QUEUES_MANAGEMENT_CONNECTED = false
+export const DEFAULT_EXPANDED_QUEUES_MANAGEMENT_WAITING = false
+export const DEFAULT_QUEUES_MANAGEMENT_SELECTED_QUEUE = {}
 
 export const getExpandedQueueManagerDashboardValue = (currentUsername: string) => {
   const expandedOperators =
-    loadPreference('queueManagementOperatorsStatisticExpandedPreference', currentUsername) ||
+    loadPreference('queueManagerDashboardOperatorsStatisticExpandedPreference', currentUsername) ||
     DEFAULT_EXPANDED_OPERATORS
 
   const expandedQueues =
-    loadPreference('queueManagementQueuesStatisticExpandedPreference', currentUsername) ||
+    loadPreference('queueManagerQueuesStatisticExpandedPreference', currentUsername) ||
     DEFAULT_EXPANDED_QUEUES
 
   return { expandedOperators, expandedQueues }
+}
+
+export const getExpandedQueueManagamentValue = (currentUsername: string) => {
+  const expandedQueueDashboard =
+    loadPreference('queueManagementDashboardExpandedPreference', currentUsername) ||
+    DEFAULT_EXPANDED_QUEUES_MANAGEMENT_DASHBOARD
+
+  const expandedQueueOperators =
+    loadPreference('queueManagementQueueOperatorsExpandedPreference', currentUsername) ||
+    DEFAULT_EXPANDED_QUEUES_MANAGEMENT_OPERATORS
+
+  const expandedWaitingCalls =
+    loadPreference('queueManagementQueueWaitingCallsExpandedPreference', currentUsername) ||
+    DEFAULT_EXPANDED_QUEUES_MANAGEMENT_WAITING
+
+  const expandedConnectedCalls =
+    loadPreference('queueManagementQueueConnectedCallsExpandedPreference', currentUsername) ||
+    DEFAULT_EXPANDED_QUEUES_MANAGEMENT_CONNECTED
+
+  const selectedQueue =
+    loadPreference('queueManagementSelectedQueue', currentUsername) ||
+    DEFAULT_QUEUES_MANAGEMENT_SELECTED_QUEUE
+
+  return {
+    expandedQueueDashboard,
+    expandedQueueOperators,
+    expandedWaitingCalls,
+    expandedConnectedCalls,
+    selectedQueue,
+  }
+}
+
+//Get user avatar icon
+export function getAvatarData(announcement: any, avatarIcon: any) {
+  let userAvatarData = ''
+  if (announcement.shortname && avatarIcon) {
+    for (const username in avatarIcon) {
+      if (username === announcement.shortname) {
+        userAvatarData = avatarIcon[username]
+        break
+      }
+    }
+  }
+  return userAvatarData
+}
+
+//Get operator main presence value
+export function getAvatarMainPresence(operator: any, operatorInformation: any) {
+  let userMainPresence = null
+  if (operator.shortname && operatorInformation) {
+    for (const username in operatorInformation) {
+      if (username === operator.shortname) {
+        userMainPresence = operatorInformation[username].presence
+      }
+    }
+  }
+  return userMainPresence
+}
+
+//find totals
+export const initTopSparklineChartsData = (queuesHistoryData: any) => {
+  const queuesHistoryTotalized = {} as Record<string, any>
+
+  for (const q in queuesHistoryData) {
+    for (const c in queuesHistoryData[q]) {
+      if (!queuesHistoryTotalized[c]) {
+        queuesHistoryTotalized[c] = []
+      }
+
+      for (let i = 0; i < queuesHistoryData[q][c].length; i++) {
+        if (!queuesHistoryTotalized[c][i]) {
+          queuesHistoryTotalized[c][i] = {}
+        }
+
+        queuesHistoryTotalized[c][i].name = c
+        queuesHistoryTotalized[c][i].fullDate = queuesHistoryData[q][c][i].fullDate
+        queuesHistoryTotalized[c][i].date = queuesHistoryData[q][c][i].date
+
+        if (!queuesHistoryTotalized[c][i].value) {
+          queuesHistoryTotalized[c][i].value = 0
+        }
+
+        queuesHistoryTotalized[c][i].value += queuesHistoryData[q][c][i].value
+      }
+    }
+  }
+  return queuesHistoryTotalized
+}
+
+// Collect graph data information
+export const initHourlyChartsDataPerQueues = (
+  queuesHistoryData: any,
+  dashboardData: any,
+  queuesList: any,
+) => {
+  //create an empty object to collect chart data
+  var queuesHistoryUnified: {
+    stacked: {
+      data: any[]
+    }
+    lineTotal: {
+      dataByTopic: any[]
+    }
+    lineFailed: {
+      dataByTopic: any[]
+    }
+    stackedBarComparison: {
+      data: any[]
+    }
+  } = {
+    stacked: {
+      data: [],
+    },
+    lineTotal: {
+      dataByTopic: [],
+    },
+    lineFailed: {
+      dataByTopic: [],
+    },
+    stackedBarComparison: {
+      data: [],
+    },
+  }
+
+  let queuesUnified = {} as Record<string, any>
+
+  //cycle through all queueHistory elements
+  for (var q in queuesHistoryData) {
+    for (let i = 0; i < queuesHistoryData[q].answered.length; i++) {
+      //check if queueHistoryData is more than dashboard begin time
+      if (new Date(queuesHistoryData[q]?.answered[i]?.fullDate) > dashboardData) {
+        queuesHistoryData[q].answered[i].name = queuesList[q].name
+        queuesHistoryUnified.stacked.data.push(queuesHistoryData[q].answered[i])
+      }
+    }
+
+    // line chart total object
+    var totalTopic: {
+      topic: string
+      topicName: string
+      dates: any[]
+    } = {
+      topic: q,
+      topicName: queuesList[q].name,
+      dates: [],
+    }
+    for (let i = 0; i < queuesHistoryData[q]?.total?.length; i++) {
+      if (new Date(queuesHistoryData[q]?.total[i]?.fullDate) > dashboardData) {
+        totalTopic.dates.push(queuesHistoryData[q]?.total[i])
+      }
+    }
+
+    queuesHistoryUnified.lineTotal.dataByTopic.push(totalTopic)
+
+    // line chart failed
+    var failedTopic: {
+      topic: string
+      topicName: string
+      dates: any[]
+    } = {
+      topic: q,
+      topicName: queuesList[q].name,
+      dates: [],
+    }
+    for (let i = 0; i < queuesHistoryData[q]?.failed?.length; i++) {
+      if (new Date(queuesHistoryData[q]?.failed[i]?.fullDate) > dashboardData) {
+        failedTopic.dates.push(queuesHistoryData[q]?.failed[i])
+      }
+    }
+
+    queuesHistoryUnified.lineFailed.dataByTopic.push(failedTopic)
+
+    for (let i = 0; i < queuesHistoryData[q].total.length; i++) {
+      const date = new Date(queuesHistoryData[q].total[i].fullDate)
+
+      const hour = date.getHours()
+
+      const minutes = date.getMinutes()
+
+      const dateName = `${hour < 10 ? '0' + hour : hour}:${minutes == 0 ? '00' : minutes}`
+      if (!queuesUnified[dateName])
+        queuesUnified[dateName] = {
+          date: date,
+          answered: 0,
+          failed: 0,
+          invalid: 0,
+        }
+      queuesUnified[dateName].answered += queuesHistoryData[q].answered[i].value || 0
+      queuesUnified[dateName].failed += queuesHistoryData[q].failed[i].value || 0
+      queuesUnified[dateName].invalid += queuesHistoryData[q].invalid[i].value || 0
+    }
+
+    //cycle hours
+    for (let k in queuesUnified) {
+      //check if hour is inside date
+      if (new Date(queuesUnified[k].date) > dashboardData) {
+        queuesHistoryUnified.stackedBarComparison.data.push({
+          date: k,
+          stack: 'answered',
+          views: queuesUnified[k].answered,
+          valueLabel:
+            (100 * queuesUnified[k].answered) /
+            (queuesUnified[k].answered + queuesUnified[k].failed + queuesUnified[k].invalid),
+        })
+        queuesHistoryUnified.stackedBarComparison.data.push({
+          date: k,
+          stack: 'failed',
+          views: queuesUnified[k].failed,
+          valueLabel:
+            (100 * queuesUnified[k].failed) /
+            (queuesUnified[k].answered + queuesUnified[k].failed + queuesUnified[k].invalid),
+        })
+        queuesHistoryUnified.stackedBarComparison.data.push({
+          date: k,
+          stack: 'invalid',
+          views: queuesUnified[k].invalid,
+          valueLabel:
+            (100 * queuesUnified[k].invalid) /
+            (queuesUnified[k].answered + queuesUnified[k].failed + queuesUnified[k].invalid),
+        })
+      }
+    }
+  }
+  return queuesHistoryUnified
+}
+
+// Get operators shortName to use inside avatar
+export function getFullUsername(announcement: any, operatorInformation: any) {
+  let shortname = ''
+  if (announcement.name && operatorInformation) {
+    const username = operatorInformation[announcement.name]
+    if (username) {
+      shortname = username
+    }
+  }
+  return shortname
+}
+
+// Function to retrieve the queues' dashboard rank based on specified keys
+export const getQueuesDashboardRank = (keys: any, queuesList: any) => {
+  // Array to store queue data
+  const result = []
+  // Temporary variable to iterate over queues
+  let queue: any
+
+  for (queue of Object.values(queuesList)) {
+    // Iterate over each queue in the queuesList object
+    if (!isNaN(queue.queue)) {
+      // Check if the 'queue' field of the queue is a number
+      const queueData = {
+        name: queue.name,
+        queue: queue.queue,
+        // Object to store queue statistics values
+        values: {} as Record<string, any>,
+      }
+
+      // Iterate over the specified keys
+      for (const key of keys) {
+        // Assign the corresponding statistic value to the queue
+        queueData.values[key] = queue.qstats?.[key] || 0
+      }
+      // Add the queue data to the result array
+      result.push(queueData)
+    }
+  }
+
+  // Return the array of queue data
+  return result
+}
+
+export const agentsDashboardRanks = (keys: any, agentsStatsList: any) => {
+  let n = 0
+  const list = {} as Record<string, any>
+  let q: any
+
+  for (const agent in agentsStatsList) {
+    for (q in agentsStatsList[agent]) {
+      if (!isNaN(q)) {
+        list[n] = {
+          name: agent,
+          queue: q,
+          values: {},
+        }
+
+        for (const key of keys) {
+          list[n].values[key] = agentsStatsList[agent][q][key] || 0
+        }
+        n++
+      }
+    }
+  }
+
+  return list
+}
+
+// Get queues name from queue number
+export function getQueueName(agentName: any, queuesList: any) {
+  const queue = queuesList[agentName]
+  if (queue && queue.name) {
+    return queue.name
+  }
 }

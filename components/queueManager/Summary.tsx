@@ -359,7 +359,7 @@ export const Summary: FC<SummaryProps> = ({ className }): JSX.Element => {
       </div>
 
       {/* divider */}
-      <div className='flex-grow border-b border-gray-300 mt-1'></div>
+      <div className='flex-grow border-b border-gray-200 dark:border-gray-700 mt-1'></div>
       {expandedQueuesSummary && (
         <>
           <Listbox value={selected} onChange={setSelected}>
@@ -444,7 +444,7 @@ export const Summary: FC<SummaryProps> = ({ className }): JSX.Element => {
               <div className='grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-3'>
                 {/* Total calls */}
                 <div className='pt-8'>
-                  <div className='border-b rounded-lg shadow-md bg-white dark:bg-gray-900 px-5 py-3 sm:mt-1 relative flex items-center'>
+                  <div className='border-b rounded-lg shadow-md border-gray-200 dark:border-gray-700 bg-white dark:bg-gray-900 px-5 py-3 sm:mt-1 relative flex items-center'>
                     <div className='flex items-center justify-between w-full'>
                       <span className='text-sm font-medium leading-6 text-gray-700 dark:text-gray-100'>
                         {t('QueueManager.Total calls')}
@@ -462,7 +462,7 @@ export const Summary: FC<SummaryProps> = ({ className }): JSX.Element => {
 
                 {/* Answered calls */}
                 <div className='pt-8'>
-                  <div className='border-b rounded-lg shadow-md bg-white dark:bg-gray-900 px-5 py-3 sm:mt-1 relative flex items-center'>
+                  <div className='border-b rounded-lg shadow-md border-gray-200 dark:border-gray-700 bg-white dark:bg-gray-900 px-5 py-3 sm:mt-1 relative flex items-center'>
                     <div className='flex items-center justify-between w-full'>
                       <span className='text-sm font-medium leading-6 text-gray-700 dark:text-gray-100'>
                         {t('QueueManager.Answered calls')}
@@ -480,7 +480,7 @@ export const Summary: FC<SummaryProps> = ({ className }): JSX.Element => {
 
                 {/* Calls answered before service level */}
                 <div className='pt-8'>
-                  <div className='border-b rounded-lg shadow-md bg-white dark:bg-gray-900 px-5 py-3 sm:mt-1 relative flex items-center'>
+                  <div className='border-b rounded-lg shadow-md border-gray-200 dark:border-gray-700 bg-white dark:bg-gray-900 px-5 py-3 sm:mt-1 relative flex items-center'>
                     <div className='flex items-center justify-between w-full'>
                       <span className='text-sm font-medium leading-6 text-gray-700 dark:text-gray-100'>
                         {t('QueueManager.Calls answered before service level')}
@@ -498,7 +498,7 @@ export const Summary: FC<SummaryProps> = ({ className }): JSX.Element => {
 
                 {/* Unanswered calls */}
                 <div>
-                  <div className='border-b rounded-lg shadow-md bg-white dark:bg-gray-900 px-5 py-3 sm:mt-1 relative flex items-center'>
+                  <div className='border-b rounded-lg shadow-md border-gray-200 dark:border-gray-700 bg-white dark:bg-gray-900 px-5 py-3 sm:mt-1 relative flex items-center'>
                     <div className='flex items-center justify-between w-full'>
                       <span className='text-sm font-medium leading-6 text-gray-700 dark:text-gray-100'>
                         {t('QueueManager.Unanswered calls')}
@@ -516,7 +516,7 @@ export const Summary: FC<SummaryProps> = ({ className }): JSX.Element => {
 
                 {/* Reasons for unanswered calls */}
                 <div>
-                  <div className='border-b rounded-lg shadow-md bg-white dark:bg-gray-900 px-5 py-3 sm:mt-1 relative flex items-center'>
+                  <div className='border-b rounded-lg shadow-md border-gray-200 dark:border-gray-700 bg-white dark:bg-gray-900 px-5 py-3 sm:mt-1 relative flex items-center'>
                     <div className='flex items-center justify-between w-full'>
                       <span className='text-sm font-medium leading-6 text-gray-700 dark:text-gray-100'>
                         {t('QueueManager.Reasons for unanswered calls')}
@@ -534,7 +534,7 @@ export const Summary: FC<SummaryProps> = ({ className }): JSX.Element => {
 
                 {/* Callback time */}
                 <div>
-                  <div className='border-b rounded-lg shadow-md bg-white dark:bg-gray-900 px-5 py-3 sm:mt-1 relative flex items-center'>
+                  <div className='border-b rounded-lg shadow-md border-gray-200 dark:border-gray-700 bg-white dark:bg-gray-900 px-5 py-3 sm:mt-1 relative flex items-center'>
                     <div className='flex items-center justify-between w-full'>
                       <span className='text-sm font-medium leading-6 text-gray-700 dark:text-gray-100'>
                         {t('QueueManager.Callback time')}
@@ -552,7 +552,7 @@ export const Summary: FC<SummaryProps> = ({ className }): JSX.Element => {
 
                 {/* Invalid calls */}
                 <div>
-                  <div className='border-b rounded-lg shadow-md bg-white dark:bg-gray-900 px-5 py-3 sm:mt-1 relative flex items-center'>
+                  <div className='border-b rounded-lg shadow-md border-gray-200 dark:border-gray-700 bg-white dark:bg-gray-900 px-5 py-3 sm:mt-1 relative flex items-center'>
                     <div className='flex items-center justify-between w-full'>
                       <span className='text-sm font-medium leading-6 text-gray-700 dark:text-gray-100'>
                         {t('QueueManager.Invalid calls')}
@@ -570,7 +570,7 @@ export const Summary: FC<SummaryProps> = ({ className }): JSX.Element => {
 
                 {/* Waiting calls */}
                 <div>
-                  <div className='border-b rounded-lg shadow-md bg-white dark:bg-gray-900 px-5 py-3 sm:mt-1 relative flex items-center'>
+                  <div className='border-b rounded-lg shadow-md border-gray-200 dark:border-gray-700 bg-white dark:bg-gray-900 px-5 py-3 sm:mt-1 relative flex items-center'>
                     <div className='flex items-center justify-between w-full'>
                       <span className='text-sm font-medium leading-6 text-gray-700 dark:text-gray-100'>
                         {t('QueueManager.Waiting calls')}
@@ -588,7 +588,7 @@ export const Summary: FC<SummaryProps> = ({ className }): JSX.Element => {
 
                 {/* Calls duration */}
                 <div>
-                  <div className='border-b rounded-lg shadow-md bg-white dark:bg-gray-900 px-5 py-3 sm:mt-1 relative flex items-center'>
+                  <div className='border-b rounded-lg shadow-md border-gray-200 dark:border-gray-700 bg-white dark:bg-gray-900 px-5 py-3 sm:mt-1 relative flex items-center'>
                     <div className='flex items-center justify-between w-full'>
                       <span className='text-sm font-medium leading-6 text-gray-700 dark:text-gray-100'>
                         {t('QueueManager.Calls duration')}
@@ -628,7 +628,7 @@ export const Summary: FC<SummaryProps> = ({ className }): JSX.Element => {
       </div>
 
       {/* divider */}
-      <div className='flex-grow border-b border-gray-300 mt-1'></div>
+      <div className='flex-grow border-b border-gray-200 dark:border-gray-700 mt-1'></div>
 
       {expanded && (
         <div className='pt-6'>
@@ -749,7 +749,7 @@ export const Summary: FC<SummaryProps> = ({ className }): JSX.Element => {
                         {isCardOpen && (
                           <>
                             {/* divider */}
-                            <div className='flex-grow border-b border-gray-300 mt-1'></div>
+                            <div className='flex-grow border-b border-gray-200 dark:border-gray-700 mt-1'></div>
 
                             {/* login stats */}
                             <div className='pt-2'>

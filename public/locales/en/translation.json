@@ -479,7 +479,9 @@
     "Add queue": "Add queue",
     "In progress": "In progress",
     "No alarm detected": "No alarm detected",
-    "Begin hour":"Begin hour",
-    "Queue": "Queue"
+    "Begin hour": "Begin hour",
+    "Queue": "Queue",
+    "Average call time": "Average call time",
+    "Average callback time": "Average callback time"
   }
 }

@@ -7,6 +7,7 @@ import { Button } from '../common'
 import { useSelector } from 'react-redux'
 import { RootState, store } from '../../store'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
+import { savePreference } from '../../lib/storage'
 
 import {
   faChevronDown,
@@ -25,7 +26,10 @@ import {
 
 import { Listbox, Transition } from '@headlessui/react'
 import { QueueManagementFilterOperators } from './QueueManagementFilterOperators'
-import { searchStringInQueuesMembers } from '../../lib/queueManager'
+import {
+  searchStringInQueuesMembers,
+  getExpandedQueueManagamentValue,
+} from '../../lib/queueManager'
 
 import {
   Chart as ChartJS,
@@ -44,6 +48,7 @@ import { EmptyState, Avatar } from '../common'
 import InfiniteScroll from 'react-infinite-scroll-component'
 import { getInfiniteScrollOperatorsPageSize } from '../../lib/operators'
 import { sortByProperty, invertObject } from '../../lib/utils'
+import { openShowOperatorDrawer } from '../../lib/operators'
 
 ChartJS.register(ArcElement, CategoryScale, LinearScale, BarElement, Title, Tooltip, Legend)
 
@@ -275,6 +280,8 @@ function classNames(...classes: any) {
 export const QueueManagement: FC<QueueManagementProps> = ({ className }): JSX.Element => {
   const { t } = useTranslation()
 
+  const auth = useSelector((state: RootState) => state.authentication)
+
   const infiniteScrollOperatorsPageSize = getInfiniteScrollOperatorsPageSize()
   const [infiniteScrollLastIndex, setInfiniteScrollLastIndex] = useState(
     infiniteScrollOperatorsPageSize,
@@ -282,7 +289,7 @@ export const QueueManagement: FC<QueueManagementProps> = ({ className }): JSX.El
   const [infiniteScrollOperators, setInfiniteScrollOperators] = useState([])
   const [infiniteScrollHasMore, setInfiniteScrollHasMore] = useState(false)
 
-  const [expanded, setExpanded] = useState(true)
+  const [expandedDashboard, setExpandedDashboard] = useState(true)
 
   const [expandedWaitingCall, setExpandedWaitingCall] = useState(false)
 
@@ -290,21 +297,58 @@ export const QueueManagement: FC<QueueManagementProps> = ({ className }): JSX.El
 
   const [expandedQueueOperators, setExpandedQueueOperators] = useState(false)
 
-  const toggleExpandQueue = () => {
-    setExpanded(!expanded)
+  const toggleExpandDashboard = () => {
+    setExpandedDashboard(!expandedDashboard)
+    let correctExpandedDashboard = !expandedDashboard
+    savePreference(
+      'queueManagementDashboardExpandedPreference',
+      correctExpandedDashboard,
+      auth.username,
+    )
   }
+
+  useEffect(() => {})
 
   const toggleWaitingCall = () => {
     setExpandedWaitingCall(!expandedWaitingCall)
+    let correctExpandedWaitingCall = !expandedWaitingCall
+    savePreference(
+      'queueManagementQueueWaitingCallsExpandedPreference',
+      correctExpandedWaitingCall,
+      auth.username,
+    )
   }
 
   const toggleConnectedCall = () => {
     setExpandedConnectedCall(!expandedConnectedCall)
+    let correctExpandedConnectedCall = !expandedConnectedCall
+    savePreference(
+      'queueManagementQueueConnectedCallsExpandedPreference',
+      correctExpandedConnectedCall,
+      auth.username,
+    )
   }
 
   const toggleQueueOperators = () => {
     setExpandedQueueOperators(!expandedQueueOperators)
+    let correctExpandedQueueOperators = !expandedQueueOperators
+    savePreference(
+      'queueManagementQueueOperatorsExpandedPreference',
+      correctExpandedQueueOperators,
+      auth.username,
+    )
   }
+
+  //Load expanded chevron values from local storage
+  useEffect(() => {
+    const expandedValues = getExpandedQueueManagamentValue(auth.username)
+    setExpandedDashboard(expandedValues.expandedQueueDashboard)
+    setExpandedQueueOperators(expandedValues.expandedQueueOperators)
+    setExpandedConnectedCall(expandedValues.expandedConnectedCalls)
+    setExpandedWaitingCall(expandedValues.expandedWaitingCalls)
+    setSelectedValue(expandedValues.selectedQueue)
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [])
 
   // const [updateDashboardInterval, SetUpdateDashboardInterval] = useState(3000)
 
@@ -446,20 +490,24 @@ export const QueueManagement: FC<QueueManagementProps> = ({ className }): JSX.El
   }, [queuesList, allQueuesStats, operatorsStore])
 
   //TODO SAVE SELECTED QUEUE INSIDE LOCAL STORAGE
-  const [selected, setSelected] = useState<any>({})
+  // const [selected, setSelected] = useState<any>({})
+
+  // const [selected, setSelected] = useState<any>(Object.keys(queuesList)[0] || '')
+  const [selectedValue, setSelectedValue] = useState<any>(Object.keys(queuesList)[0] || '')
 
   const [agentCountersSelectedQueue, setAgentCountersSelectedQueue] = useState<any>({})
   const [agentMembers, setAgentMembers] = useState<any>({})
+
   useEffect(() => {
-    if (selected) {
-      const selectedQueue = selected.queue
+    if (selectedValue && !isEmpty(agentCounters)) {
+      const selectedQueue = selectedValue.queue
 
       const selectedQueueAgents = agentCounters[selectedQueue]
       setAgentCountersSelectedQueue(selectedQueueAgents)
 
       setAgentMembers(Object.values(queuesList[selectedQueue]?.members ?? {}))
     }
-  }, [selected])
+  }, [selectedValue, agentCounters])
 
   const [textFilter, setTextFilter]: any = useState('')
   const updateTextFilter = (newTextFilter: string) => {
@@ -583,9 +631,30 @@ export const QueueManagement: FC<QueueManagementProps> = ({ className }): JSX.El
     return userMainPresence
   }
 
+  const handleSelectedValue = (newValueQueue: any) => {
+    setSelectedValue(newValueQueue)
+    let currentSelectedQueue = newValueQueue
+    savePreference('queueManagementSelectedQueue', currentSelectedQueue, auth.username)
+  }
+
+  //set operator information to open drawer
+  function setOperatorInformationDrawer(operatorData: any) {
+    let operatorInformationDataDrawer = null
+    let operatorInformation = operatorsStore.operators
+    if (operatorData.shortname && operatorInformation) {
+      for (const username in operatorInformation) {
+        if (username === operatorData.shortname) {
+          operatorInformationDataDrawer = operatorInformation[username]
+          openShowOperatorDrawer(operatorInformationDataDrawer)
+        }
+      }
+    }
+    return
+  }
+
   return (
     <>
-      <Listbox value={selected} onChange={setSelected}>
+      <Listbox value={selectedValue} onChange={handleSelectedValue}>
         {({ open }) => (
           <>
             <div className='flex items-center'>
@@ -594,7 +663,9 @@ export const QueueManagement: FC<QueueManagementProps> = ({ className }): JSX.El
               </Listbox.Label>
               <div className='relative'>
                 <Listbox.Button className='relative cursor-default rounded-md bg-white py-1.5 pl-3 pr-10 text-left text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 focus:outline-none focus:ring-2 focus:ring-primary sm:text-sm sm:leading-6 inline-block'>
-                  <span className='block truncate'>Select queue</span>
+                  <span className='block truncate'>
+                    {selectedValue.name ? selectedValue.name : 'Select queue'}
+                  </span>
                   <span className='pointer-events-none absolute inset-y-0 right-0 flex items-center pr-2'>
                     <FontAwesomeIcon
                       icon={faChevronDown}
@@ -670,24 +741,24 @@ export const QueueManagement: FC<QueueManagementProps> = ({ className }): JSX.El
           </div>
           <div className='flex items-center justify-end h-6 w-6'>
             <FontAwesomeIcon
-              icon={expanded ? faChevronDown : faChevronUp}
+              icon={expandedDashboard ? faChevronDown : faChevronUp}
               className='h-3.5 w-3.5 pl-2 py-2 cursor-pointer flex items-center'
               aria-hidden='true'
-              onClick={toggleExpandQueue}
+              onClick={toggleExpandDashboard}
             />
           </div>
         </div>
 
         {/* divider */}
-        <div className='flex-grow border-b border-gray-300 mt-1'></div>
+        <div className='flex-grow border-b border-gray-200 dark:border-gray-700 mt-1'></div>
 
         {/* Dashboard queue active section */}
-        {expanded && (
+        {expandedDashboard && (
           <div>
             <div className='grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-3'>
               {/* Online operators */}
               <div className='pt-8'>
-                <div className='border-b rounded-lg shadow-md bg-white dark:bg-gray-900 px-5 py-1 sm: mt-1 relative flex items-center'>
+                <div className='border-b rounded-lg shadow-md border-gray-200 dark:border-gray-700 bg-white dark:bg-gray-900 px-5 py-1 sm: mt-1 relative flex items-center'>
                   <div className='flex items-center space-x-4'>
                     <div className='h-10 w-10 flex items-center justify-center rounded-xl bg-emerald-50 mt-1 mb-1'>
                       <FontAwesomeIcon
@@ -712,7 +783,7 @@ export const QueueManagement: FC<QueueManagementProps> = ({ className }): JSX.El
 
               {/* On break operators */}
               <div className='pt-8'>
-                <div className='border-b rounded-lg shadow-md  dark:bg-gray-900 px-5 py-1 sm: mt-1 relative flex items-center'>
+                <div className='border-b rounded-lg shadow-md border-gray-200 dark:border-gray-700 bg-white dark:bg-gray-900 px-5 py-1 sm: mt-1 relative flex items-center'>
                   <div className='flex items-center space-x-4'>
                     <div className='h-10 w-10 flex items-center justify-center rounded-xl bg-emerald-50 mt-1 mb-1'>
                       <FontAwesomeIcon
@@ -737,7 +808,7 @@ export const QueueManagement: FC<QueueManagementProps> = ({ className }): JSX.El
 
               {/* Offline operators */}
               <div className='pt-8'>
-                <div className='border-b rounded-lg shadow-md bg-white dark:bg-gray-900 px-5 py-1 sm: mt-1 relative flex items-center'>
+                <div className='border-b rounded-lg shadow-md border-gray-200 dark:border-gray-700 bg-white dark:bg-gray-900 px-5 py-1 sm: mt-1 relative flex items-center'>
                   <div className='flex items-center space-x-4'>
                     <div className='h-10 w-10 flex items-center justify-center rounded-xl bg-emerald-50 mt-1 mb-1'>
                       <FontAwesomeIcon
@@ -762,7 +833,7 @@ export const QueueManagement: FC<QueueManagementProps> = ({ className }): JSX.El
 
               {/* Free operators */}
               <div>
-                <div className='border-b rounded-lg shadow-md bg-white dark:bg-gray-900 px-5 py-1 sm: mt-1 relative flex items-center'>
+                <div className='border-b rounded-lg shadow-md border-gray-200 dark:border-gray-700 bg-white dark:bg-gray-900 px-5 py-1 sm: mt-1 relative flex items-center'>
                   <div className='flex items-center space-x-4'>
                     <div className='h-10 w-10 flex items-center justify-center rounded-xl bg-emerald-50 mt-1 mb-1'>
                       <FontAwesomeIcon
@@ -785,7 +856,7 @@ export const QueueManagement: FC<QueueManagementProps> = ({ className }): JSX.El
 
               {/* Busy operators ( in queue ) */}
               <div>
-                <div className='border-b rounded-lg shadow-md bg-white dark:bg-gray-900 px-5 py-1 sm: mt-1 relative flex items-center'>
+                <div className='border-b rounded-lg shadow-md border-gray-200 dark:border-gray-700 bg-white dark:bg-gray-900 px-5 py-1 sm: mt-1 relative flex items-center'>
                   <div className='flex items-center space-x-4'>
                     <div className='h-10 w-10 flex items-center justify-center rounded-xl bg-emerald-50 mt-1 mb-1'>
                       <FontAwesomeIcon
@@ -810,7 +881,7 @@ export const QueueManagement: FC<QueueManagementProps> = ({ className }): JSX.El
 
               {/* Busy operators ( out queue ) */}
               <div>
-                <div className='border-b rounded-lg shadow-md bg-white dark:bg-gray-900 px-5 py-1 sm: mt-1 relative flex items-center'>
+                <div className='border-b rounded-lg shadow-md border-gray-200 dark:border-gray-700 bg-white dark:bg-gray-900 px-5 py-1 sm: mt-1 relative flex items-center'>
                   <div className='flex items-center space-x-4'>
                     <div className='h-10 w-10 flex items-center justify-center rounded-xl bg-emerald-50 mt-1 mb-1'>
                       <FontAwesomeIcon
@@ -833,7 +904,7 @@ export const QueueManagement: FC<QueueManagementProps> = ({ className }): JSX.El
 
               {/* Calls duration */}
               <div>
-                <div className='border-b rounded-lg shadow-md bg-white dark:bg-gray-900 px-5 py-1 sm: mt-1 relative'>
+                <div className='border-b rounded-lg shadow-md border-gray-200 dark:border-gray-700 bg-white dark:bg-gray-900 px-5 py-1 sm: mt-1 relative'>
                   <div className='pt-3'>
                     <span className='text-sm font-medium leading-6 text-center text-gray-700 dark:text-gray-100'>
                       {t('QueueManager.Calls duration')}
@@ -850,7 +921,7 @@ export const QueueManagement: FC<QueueManagementProps> = ({ className }): JSX.El
 
               {/* Calls */}
               <div>
-                <div className='border-b rounded-lg shadow-md bg-white dark:bg-gray-900 px-5 py-1 sm:mt-1 relative'>
+                <div className='border-b rounded-lg shadow-md border-gray-200 dark:border-gray-700 bg-white dark:bg-gray-900 px-5 py-1 sm:mt-1 relative'>
                   <div className='flex justify-between'>
                     <div className='pt-3'>
                       <span className='text-sm font-medium leading-6 text-center text-gray-700 dark:text-gray-100'>
@@ -871,7 +942,7 @@ export const QueueManagement: FC<QueueManagementProps> = ({ className }): JSX.El
 
               {/* Customers to manage */}
               <div>
-                <div className='border-b rounded-lg shadow-md bg-white dark:bg-gray-900 px-5 py-1 sm: mt-1 relative flex justify-between'>
+                <div className='border-b rounded-lg shadow-md border-gray-200 dark:border-gray-700 bg-white dark:bg-gray-900 px-5 py-1 sm: mt-1 relative flex justify-between'>
                   <div className='pt-3'>
                     <span className='text-sm font-medium leading-6 text-center text-gray-700 dark:text-gray-100'>
                       {t('QueueManager.Customers to manage')}
@@ -920,7 +991,7 @@ export const QueueManagement: FC<QueueManagementProps> = ({ className }): JSX.El
             </div>
 
             {/* divider */}
-            <div className='flex-grow border-b border-gray-300 mt-1'></div>
+            <div className='flex-grow border-b border-gray-200 dark:border-gray-700 mt-1'></div>
 
             {/* Connected calls */}
             <div className='flex items-center mt-6'>
@@ -946,7 +1017,7 @@ export const QueueManagement: FC<QueueManagementProps> = ({ className }): JSX.El
             </div>
 
             {/* divider */}
-            <div className='flex-grow border-b border-gray-300 mt-1'></div>
+            <div className='flex-grow border-b border-gray-200 dark:border-gray-700 mt-1'></div>
           </div>
 
           {/* Footer right  */}
@@ -975,7 +1046,7 @@ export const QueueManagement: FC<QueueManagementProps> = ({ className }): JSX.El
             </div>
 
             {/* divider */}
-            <div className='flex-grow border-b border-gray-300 mt-1'></div>
+            <div className='flex-grow border-b border-gray-200 dark:border-gray-700 mt-1'></div>
             {expandedQueueOperators && (
               <div className='pt-6'>
                 <QueueManagementFilterOperators
@@ -1053,7 +1124,7 @@ export const QueueManagement: FC<QueueManagementProps> = ({ className }): JSX.El
                             <li key={index} className='px-1'>
                               <button
                                 type='button'
-                                // onClick={() => openShowOperatorDrawer(operator)}
+                                onClick={() => setOperatorInformationDrawer(operator)}
                                 className='group flex w-full items-center justify-between space-x-3 rounded-lg p-2 text-left focus:outline-none focus:ring-2 focus:ring-offset-2 bg-white dark:bg-gray-900 hover:bg-gray-200 dark:hover:bg-gray-700 focus:ring-primary dark:focus:ring-primary'
                               >
                                 <span className='flex min-w-0 flex-1 items-center space-x-3'>
@@ -1063,7 +1134,6 @@ export const QueueManagement: FC<QueueManagementProps> = ({ className }): JSX.El
                                       placeholderType='operator'
                                       size='large'
                                       bordered
-                                      // onClick={() => openShowOperatorDrawer(operator)}
                                       className='mx-auto cursor-pointer'
                                       status={getAvatarMainPresence(operator)}
                                     />

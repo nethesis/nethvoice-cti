@@ -1,12 +1,12 @@
 // Copyright (C) 2023 Nethesis S.r.l.
 // SPDX-License-Identifier: AGPL-3.0-or-later
 
-import { FC, ComponentProps, useState, useEffect, useMemo, useRef } from 'react'
+import { FC, ComponentProps, useState, useEffect } from 'react'
 import { useTranslation } from 'react-i18next'
-import { Avatar, Button, Dropdown, EmptyState, IconSwitch, TextInput } from '../common'
-import { isEmpty, debounce, get } from 'lodash'
+import { Avatar, Button, Dropdown } from '../common'
+import { isEmpty } from 'lodash'
 import { useSelector } from 'react-redux'
-import { RootState, store } from '../../store'
+import { RootState } from '../../store'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { faMissed } from '@nethesis/nethesis-solid-svg-icons'
 import { savePreference } from '../../lib/storage'
@@ -39,6 +39,14 @@ import {
   groupDataByHourLineCallsChart,
   groupDataFailedCallsHourLineChart,
   getExpandedQueueManagerDashboardValue,
+  getAvatarData,
+  getAvatarMainPresence,
+  initTopSparklineChartsData,
+  initHourlyChartsDataPerQueues,
+  getFullUsername,
+  getQueuesDashboardRank,
+  agentsDashboardRanks,
+  getQueueName,
 } from '../../lib/queueManager'
 import { invertObject } from '../../lib/utils'
 import BarChart from '../chart/BarChart'
@@ -81,28 +89,16 @@ export const QueueManagerDashboard: FC<QueueManagerDashboardProps> = ({
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [])
 
-  function getAvatarData(announcement: any) {
-    let userAvatarData = ''
-    if (announcement.shortname && avatarIcon) {
-      for (const username in avatarIcon) {
-        if (username === announcement.shortname) {
-          userAvatarData = avatarIcon[username]
-          break
-        }
-      }
-    }
-    return userAvatarData
-  }
+  //zoom sections
+  const [zoomedCardIndices, setZoomedCardIndices] = useState<number[]>([])
 
-  const [zoomedCardIndex, setZoomedCardIndex] = useState(null)
-
-  const handleZoom = (index: any) => {
-    if (zoomedCardIndex === index) {
-      // Restore original size if card is already enlarged
-      setZoomedCardIndex(null)
+  const handleZoom = (index: number) => {
+    if (zoomedCardIndices.includes(index)) {
+      // Remove index if the card is already zoomed
+      setZoomedCardIndices(zoomedCardIndices.filter((i) => i !== index))
     } else {
-      // Enlarge the card if it is different from the one currently enlarged
-      setZoomedCardIndex(index)
+      // Add index if the card is not zoomed
+      setZoomedCardIndices([...zoomedCardIndices, index])
     }
   }
 
@@ -116,7 +112,7 @@ export const QueueManagerDashboard: FC<QueueManagerDashboardProps> = ({
     setExpandedOperators(!expandedOperators)
     let correctExpandedOperators = !expandedOperators
     savePreference(
-      'queueManagementOperatorsStatisticExpandedPreference',
+      'queueManagerDashboardOperatorsStatisticExpandedPreference',
       correctExpandedOperators,
       auth.username,
     )
@@ -127,12 +123,13 @@ export const QueueManagerDashboard: FC<QueueManagerDashboardProps> = ({
     setExpandedQueues(!expandedQueues)
     let correctExpandedQueues = !expandedQueues
     savePreference(
-      'queueManagementQueuesStatisticExpandedPreference',
+      'queueManagerQueuesStatisticExpandedPreference',
       correctExpandedQueues,
       auth.username,
     )
   }
 
+  //set expanded values at the beginning
   useEffect(() => {
     const expandedValues = getExpandedQueueManagerDashboardValue(auth.username)
     setExpandedOperators(expandedValues.expandedOperators)
@@ -230,20 +227,22 @@ export const QueueManagerDashboard: FC<QueueManagerDashboardProps> = ({
   }, [firstRenderQueuesHistory, isLoadedQueuesHistory, isLoadedQueues])
 
   const [dashboardData, setDashboardData] = useState<any>(0)
-  const [totalHoursNumber, setTotalHoursNumber] = useState<any>(0)
-  const [answeredAverage, setAnsweredAverage] = useState(0)
 
   useEffect(() => {
     if (isLoadedQueuesHistory && queuesHistory && queuesList) {
-      let test = initTopSparklineChartsData(queuesHistory)
-      extractStartHour(test)
+      let totalChartsData = initTopSparklineChartsData(queuesHistory)
+      extractStartHour(totalChartsData)
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [isLoadedQueuesHistory, queuesHistory, queuesList, isLoadedQueues])
 
   useEffect(() => {
     if (isLoadedQueuesHistory && queuesHistory && queuesList && dashboardData !== 0) {
-      let hourlydistribution = initHourlyChartsDataPerQueues(queuesHistory)
+      let hourlydistribution = initHourlyChartsDataPerQueues(
+        queuesHistory,
+        dashboardData,
+        queuesList,
+      )
       creationBarChart(hourlydistribution.stackedBarComparison)
       creationLineChartCallsHour(hourlydistribution.lineTotal)
       creationIncomingCallsHour(hourlydistribution.stacked)
@@ -272,24 +271,18 @@ export const QueueManagerDashboard: FC<QueueManagerDashboardProps> = ({
         label: 'Answered',
         data: [] as number[],
         backgroundColor: '#10B981',
-        // borderRadius: [20, 20, 0, 0],
-        // borderSkipped: false,
         borderRadius: 5,
       },
       {
         label: 'Failed',
         data: [] as number[],
         backgroundColor: '#6b7280',
-        // borderRadius: [20, 20, 0, 0],
-        // borderSkipped: false,
         borderRadius: 5,
       },
       {
         label: 'Invalid',
         data: [] as number[],
         backgroundColor: '#ff0000',
-        // borderRadius: [20, 20, 0, 0],
-        // borderSkipped: false,
         borderRadius: 5,
       },
     ]
@@ -375,177 +368,7 @@ export const QueueManagerDashboard: FC<QueueManagerDashboardProps> = ({
     setDatasetsIncomingCallsHour(datasets)
   }
 
-  const initHourlyChartsDataPerQueues = (queuesHistoryData: any) => {
-    //create an empty object to collect chart data
-    var queuesHistoryUnified: {
-      stacked: {
-        data: any[]
-      }
-      lineTotal: {
-        dataByTopic: any[]
-      }
-      lineFailed: {
-        dataByTopic: any[]
-      }
-      stackedBarComparison: {
-        data: any[]
-      }
-    } = {
-      stacked: {
-        data: [],
-      },
-      lineTotal: {
-        dataByTopic: [],
-      },
-      lineFailed: {
-        dataByTopic: [],
-      },
-      stackedBarComparison: {
-        data: [],
-      },
-    }
-
-    let queuesUnified = {} as Record<string, any>
-
-    //cycle through all queueHistory elements
-    for (var q in queuesHistoryData) {
-      setTotalHoursNumber(0)
-      let counter = 0
-
-      for (let i = 0; i < queuesHistoryData[q].answered.length; i++) {
-        //check if queueHistoryData is more than dashboard begin time
-        if (new Date(queuesHistoryData[q]?.answered[i]?.fullDate) > dashboardData) {
-          queuesHistoryData[q].answered[i].name = queuesList[q].name
-          queuesHistoryUnified.stacked.data.push(queuesHistoryData[q].answered[i])
-
-          counter++
-          if (counter === 2) {
-            setTotalHoursNumber(totalHoursNumber + 1)
-            counter = 0
-          }
-        }
-      }
-
-      // line chart total object
-      var totalTopic: {
-        topic: string
-        topicName: string
-        dates: any[]
-      } = {
-        topic: q,
-        topicName: queuesList[q].name,
-        dates: [],
-      }
-      for (let i = 0; i < queuesHistoryData[q]?.total?.length; i++) {
-        if (new Date(queuesHistoryData[q]?.total[i]?.fullDate) > dashboardData) {
-          totalTopic.dates.push(queuesHistoryData[q]?.total[i])
-        }
-      }
-
-      queuesHistoryUnified.lineTotal.dataByTopic.push(totalTopic)
-
-      // line chart failed
-      var failedTopic: {
-        topic: string
-        topicName: string
-        dates: any[]
-      } = {
-        topic: q,
-        topicName: queuesList[q].name,
-        dates: [],
-      }
-      for (let i = 0; i < queuesHistoryData[q]?.failed?.length; i++) {
-        if (new Date(queuesHistoryData[q]?.failed[i]?.fullDate) > dashboardData) {
-          failedTopic.dates.push(queuesHistoryData[q]?.failed[i])
-        }
-      }
-
-      queuesHistoryUnified.lineFailed.dataByTopic.push(failedTopic)
-
-      for (let i = 0; i < queuesHistoryData[q].total.length; i++) {
-        const date = new Date(queuesHistoryData[q].total[i].fullDate)
-
-        const hour = date.getHours()
-
-        const minutes = date.getMinutes()
-
-        const dateName = `${hour < 10 ? '0' + hour : hour}:${minutes == 0 ? '00' : minutes}`
-        if (!queuesUnified[dateName])
-          queuesUnified[dateName] = {
-            date: date,
-            answered: 0,
-            failed: 0,
-            invalid: 0,
-          }
-        queuesUnified[dateName].answered += queuesHistoryData[q].answered[i].value || 0
-        queuesUnified[dateName].failed += queuesHistoryData[q].failed[i].value || 0
-        queuesUnified[dateName].invalid += queuesHistoryData[q].invalid[i].value || 0
-      }
-
-      //cycle hours
-      for (let k in queuesUnified) {
-        //check if hour is inside date
-        if (new Date(queuesUnified[k].date) > dashboardData) {
-          queuesHistoryUnified.stackedBarComparison.data.push({
-            date: k,
-            stack: 'answered',
-            views: queuesUnified[k].answered,
-            valueLabel:
-              (100 * queuesUnified[k].answered) /
-              (queuesUnified[k].answered + queuesUnified[k].failed + queuesUnified[k].invalid),
-          })
-          queuesHistoryUnified.stackedBarComparison.data.push({
-            date: k,
-            stack: 'failed',
-            views: queuesUnified[k].failed,
-            valueLabel:
-              (100 * queuesUnified[k].failed) /
-              (queuesUnified[k].answered + queuesUnified[k].failed + queuesUnified[k].invalid),
-          })
-          queuesHistoryUnified.stackedBarComparison.data.push({
-            date: k,
-            stack: 'invalid',
-            views: queuesUnified[k].invalid,
-            valueLabel:
-              (100 * queuesUnified[k].invalid) /
-              (queuesUnified[k].answered + queuesUnified[k].failed + queuesUnified[k].invalid),
-          })
-        }
-      }
-    }
-    return queuesHistoryUnified
-  }
-
-  //find totals
-  const initTopSparklineChartsData = (queuesHistoryData: any) => {
-    const queuesHistoryTotalized = {} as Record<string, any>
-
-    for (const q in queuesHistoryData) {
-      for (const c in queuesHistoryData[q]) {
-        if (!queuesHistoryTotalized[c]) {
-          queuesHistoryTotalized[c] = []
-        }
-
-        for (let i = 0; i < queuesHistoryData[q][c].length; i++) {
-          if (!queuesHistoryTotalized[c][i]) {
-            queuesHistoryTotalized[c][i] = {}
-          }
-
-          queuesHistoryTotalized[c][i].name = c
-          queuesHistoryTotalized[c][i].fullDate = queuesHistoryData[q][c][i].fullDate
-          queuesHistoryTotalized[c][i].date = queuesHistoryData[q][c][i].date
-
-          if (!queuesHistoryTotalized[c][i].value) {
-            queuesHistoryTotalized[c][i].value = 0
-          }
-
-          queuesHistoryTotalized[c][i].value += queuesHistoryData[q][c][i].value
-        }
-      }
-    }
-    return queuesHistoryTotalized
-  }
-
+  //Get start hours for graphs
   const extractStartHour = (totalizedData: any) => {
     let beginTime = 0
     for (var h in totalizedData.total) {
@@ -566,7 +389,10 @@ export const QueueManagerDashboard: FC<QueueManagerDashboardProps> = ({
     return totalizedData
   }
 
+  // initialize allQueuesStats to false
+  // it will be true only if all queues have been populated with states
   const [allQueuesStats, setAllQueuesStats] = useState(false)
+
   //get queues status information
   useEffect(() => {
     // Avoid api double calling
@@ -604,38 +430,6 @@ export const QueueManagerDashboard: FC<QueueManagerDashboardProps> = ({
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [queuesList, firstRenderQueuesStats])
 
-  // Function to retrieve the queues' dashboard rank based on specified keys
-  const getQueuesDashboardRank = (keys: any) => {
-    // Array to store queue data
-    const result = []
-    // Temporary variable to iterate over queues
-    let queue: any
-
-    for (queue of Object.values(queuesList)) {
-      // Iterate over each queue in the queuesList object
-      if (!isNaN(queue.queue)) {
-        // Check if the 'queue' field of the queue is a number
-        const queueData = {
-          name: queue.name,
-          queue: queue.queue,
-          // Object to store queue statistics values
-          values: {} as Record<string, any>,
-        }
-
-        // Iterate over the specified keys
-        for (const key of keys) {
-          // Assign the corresponding statistic value to the queue
-          queueData.values[key] = queue.qstats?.[key] || 0
-        }
-        // Add the queue data to the result array
-        result.push(queueData)
-      }
-    }
-
-    // Return the array of queue data
-    return result
-  }
-
   const [totalAll, setTotalAll] = useState(0)
   const [totalAnswered, setTotalAnswered] = useState(0)
   const [totalFailed, setTotalFailed] = useState(0)
@@ -647,7 +441,10 @@ export const QueueManagerDashboard: FC<QueueManagerDashboardProps> = ({
   const [queuesFailedCalls, setQueuesFailedCalls] = useState({} as Record<string, any>)
   const [queuesInvalidCalls, setQueuesInvalidCalls] = useState({} as Record<string, any>)
   const [queuesFailures, setQueuesFailures] = useState({} as Record<string, any>)
+  const [averageCallTime, setAverageCallTime] = useState({} as Record<string, any>)
+  const [averageCallTimeQueue, setAverageCallTimeQueue] = useState({} as Record<string, any>)
 
+  //type of order section
   const [sortOrderQueuesAnswered, setSortOrderQueuesAnswered] = useState<'asc' | 'desc'>('desc')
   const [sortOrderQueuesTotalCalls, setSortOrderQueuesTotalCalls] = useState<'asc' | 'desc'>('desc')
   const [sortOrderQueuesFailedCalls, setSortOrderQueuesFailedCalls] = useState<'asc' | 'desc'>(
@@ -658,24 +455,23 @@ export const QueueManagerDashboard: FC<QueueManagerDashboardProps> = ({
   )
   const [sortOrderQueuesFailures, setSortOrderQueuesFailures] = useState<'asc' | 'desc'>('desc')
 
-  function handleSortOrderQueuesAnsweredToggle() {
-    setSortOrderQueuesAnswered(sortOrderQueuesAnswered === 'asc' ? 'desc' : 'asc')
-  }
+  const [sortOrderAverageCallTime, setSortOrderAverageCallTime] = useState<'asc' | 'desc'>('desc')
 
-  function handleSortOrderQueuesTotalCallsToggle() {
-    setSortOrderQueuesTotalCalls(sortOrderQueuesTotalCalls === 'asc' ? 'desc' : 'asc')
-  }
+  const [sortOrderAverageCallTimeQueue, setSortOrderAverageCallTimeQueue] = useState<
+    'asc' | 'desc'
+  >('desc')
 
-  function handleSortOrderQueuesFailedCallsToggle() {
-    setSortOrderQueuesFailedCalls(sortOrderQueuesFailedCalls === 'asc' ? 'desc' : 'asc')
-  }
+  const [sortOrderAnsweredCalls, setSortOrderAnsweredCalls] = useState<'asc' | 'desc'>('desc')
+  const [sortOrderUnansweredCalls, setSortOrderUnansweredCalls] = useState<'asc' | 'desc'>('desc')
+  const [sortOrderPauseOnLogin, setSortOrderPauseOnLogin] = useState<'asc' | 'desc'>('desc')
 
-  function handleSortOrderQueuesInvalidCallsToggle() {
-    setSortOrderQueuesInvalidCalls(sortOrderQueuesInvalidCalls === 'asc' ? 'desc' : 'asc')
-  }
+  const [sortOrderAgentsLoginTime, setSortOrderAgentsLoginTime] = useState<'asc' | 'desc'>('desc')
+  const [sortOrderAgentsPauseTime, setSortOrderAgentsPauseTime] = useState<'asc' | 'desc'>('desc')
+  const [sortOrderInCallPercentage, setSortOrderInCallPercentage] = useState<'asc' | 'desc'>('desc')
 
-  function handleSortOrderQueuesFailuresToggle() {
-    setSortOrderQueuesFailures(sortOrderQueuesFailures === 'asc' ? 'desc' : 'asc')
+  //change card order
+  function handleSortOrderToggle(sortOrder: any, setSortOrder: any) {
+    setSortOrder(sortOrder === 'asc' ? 'desc' : 'asc')
   }
 
   //get total calls for headers cards Dashboard
@@ -684,7 +480,7 @@ export const QueueManagerDashboard: FC<QueueManagerDashboardProps> = ({
     if (allQueuesStats) {
       //total calls tables section
       const keys = ['tot_processed', 'tot_failed', 'tot', 'tot_null']
-      const calculatedRank = getQueuesDashboardRank(keys)
+      const calculatedRank = getQueuesDashboardRank(keys, queuesList)
 
       const queuesAnsweredData = Object.values(calculatedRank).map((agent: any, index: number) => ({
         name: agent.name,
@@ -745,7 +541,7 @@ export const QueueManagerDashboard: FC<QueueManagerDashboardProps> = ({
         'failed_withkey',
       ]
 
-      const failureCallRank = getQueuesDashboardRank(reasonsToFailCallsKeys)
+      const failureCallRank = getQueuesDashboardRank(reasonsToFailCallsKeys, queuesList)
       const totalValueForEachFailuerType = getTotalsForEachKey(failureCallRank)
 
       const queuesFailuresData = Object.values(totalValueForEachFailuerType).map(
@@ -816,52 +612,16 @@ export const QueueManagerDashboard: FC<QueueManagerDashboardProps> = ({
     }
   }, [firstRenderQueuesAgents, isLoadedQueuesAgents])
 
-  const agentsDashboardRanks = (keys: any) => {
-    let n = 0
-    const list = {} as Record<string, any>
-    let q: any
-
-    for (const agent in agentsStatsList) {
-      for (q in agentsStatsList[agent]) {
-        if (!isNaN(q)) {
-          list[n] = {
-            name: agent,
-            queue: q,
-            values: {},
-          }
-
-          for (const key of keys) {
-            list[n].values[key] = agentsStatsList[agent][q][key] || 0
-          }
-          n++
-        }
-      }
-    }
-
-    return list
-  }
-
-  function getFullUsername(announcement: any, operatorInformation: any) {
+  // Get operators short names ( only for average call functions)
+  function getAverageCallFullUsername(operator: any, operatorInformation: any) {
     let shortname = ''
-    if (announcement.name && operatorInformation) {
-      const username = operatorInformation[announcement.name]
+    if (operator && operatorInformation) {
+      const username = operatorInformation[operator]
       if (username) {
         shortname = username
       }
     }
     return shortname
-  }
-
-  function getAvatarMainPresence(announcement: any) {
-    let userMainPresence = null
-    if (announcement.shortname && operatorInformation) {
-      for (const username in operatorInformation) {
-        if (username === announcement.shortname) {
-          userMainPresence = operatorInformation[username].presence
-        }
-      }
-    }
-    return userMainPresence
   }
 
   const [agentsAnswered, setAgentsAnswered] = useState({} as Record<string, any>)
@@ -872,59 +632,71 @@ export const QueueManagerDashboard: FC<QueueManagerDashboardProps> = ({
   const [agentsPauseTime, setAgentsPauseTime] = useState({} as Record<string, any>)
   const [inCallPercentage, setInCallPercentage] = useState({} as Record<string, any>)
 
-  const [sortOrderAnsweredCalls, setSortOrderAnsweredCalls] = useState<'asc' | 'desc'>('desc')
-  const [sortOrderUnansweredCalls, setSortOrderUnansweredCalls] = useState<'asc' | 'desc'>('desc')
-  const [sortOrderPauseOnLogin, setSortOrderPauseOnLogin] = useState<'asc' | 'desc'>('desc')
+  const avgRecallTimeRanks = (queuesInformation: any) => {
+    const newQueuesInformation = { ...queuesInformation }
 
-  const [sortOrderAgentsLoginTime, setSortOrderAgentsLoginTime] = useState<'asc' | 'desc'>('desc')
-  const [sortOrderAgentsPauseTime, setSortOrderAgentsPauseTime] = useState<'asc' | 'desc'>('desc')
-  const [sortOrderInCallPercentage, setSortOrderInCallPercentage] = useState<'asc' | 'desc'>('desc')
-
-  function handleSortOrderAnsweredCallsToggle() {
-    setSortOrderAnsweredCalls(sortOrderAnsweredCalls === 'asc' ? 'desc' : 'asc')
+    for (const agent in newQueuesInformation) {
+      //check if allQueues object exists
+      if (
+        !newQueuesInformation[agent].allQueues ||
+        (!newQueuesInformation[agent].allQueues.avg_recall_time &&
+          !newQueuesInformation[agent].allQueues.min_recall_time &&
+          !newQueuesInformation[agent].allQueues.max_recall_time)
+      ) {
+        delete newQueuesInformation[agent]
+      }
+    }
+    return newQueuesInformation
   }
 
-  function handleSortOrderUnansweredCallsToggle() {
-    setSortOrderUnansweredCalls(sortOrderUnansweredCalls === 'asc' ? 'desc' : 'asc')
-  }
+  //Get average recall time value
+  useEffect(() => {
+    if (isLoadedQueuesAgents) {
+      let avgRecallTime = avgRecallTimeRanks(agentsStatsList)
+      const invertedOperatorInformation = invertObject(operatorInformation)
 
-  function handleSortOrderPauseOnLoginToggle() {
-    setSortOrderPauseOnLogin(sortOrderPauseOnLogin === 'asc' ? 'desc' : 'asc')
-  }
+      const avgRecallTimeArray = Object.entries(avgRecallTime).map(
+        ([name, data]: [string, any]) => ({
+          name,
+          values: data?.allQueues?.avg_recall_time ?? 0,
+          shortname: getAverageCallFullUsername(name, invertedOperatorInformation),
+        }),
+      )
 
-  function handleSortOrderAgentsLoginTimeToggle() {
-    setSortOrderAgentsLoginTime(sortOrderAgentsLoginTime === 'asc' ? 'desc' : 'asc')
-  }
+      const sortedAvgRecallTimeArray = sortAgentsData(avgRecallTimeArray, sortOrderAverageCallTime)
+      setAverageCallTime(sortedAvgRecallTimeArray)
 
-  function handleSortOrderAgentsPauseTimeToggle() {
-    setSortOrderAgentsPauseTime(sortOrderAgentsPauseTime === 'asc' ? 'desc' : 'asc')
-  }
+      const avgRecallTimeQueueSum: { [key: string]: { values: number; name: string } } = {}
 
-  function handleSortOrderInCallPercentageToggle() {
-    setSortOrderInCallPercentage(sortOrderInCallPercentage === 'asc' ? 'desc' : 'asc')
-  }
+      Object.values(avgRecallTime).forEach((userData: any) => {
+        Object.entries(userData)
+          .filter(([queue]) => /^\d+$/.test(queue))
+          .forEach(([queue, queueData]: [string, any]) => {
+            if (!avgRecallTimeQueueSum[queue]) {
+              avgRecallTimeQueueSum[queue] = {
+                values: queueData?.avg_recall_time ?? 0,
+                name: queue,
+              }
+            } else {
+              avgRecallTimeQueueSum[queue].values += queueData?.avg_recall_time ?? 0
+            }
+          })
+      })
 
-  // const avgRecallTimeRanks = (queuesInformation: any) => {
-  //   const newQueuesInformation = { ...queuesInformation };
-
-  //   for (const agent in newQueuesInformation) {
-  //     if (
-  //       !newQueuesInformation[agent].allQueues ||
-  //       (!newQueuesInformation[agent].allQueues.avg_recall_time &&
-  //         !newQueuesInformation[agent].allQueues.min_recall_time &&
-  //         !newQueuesInformation[agent].allQueues.max_recall_time)
-  //     ) {
-  //       delete newQueuesInformation[agent];
-  //     }
-  //   }
-  //   return newQueuesInformation;
-  // }
-
-  // useEffect(() => {
-  //   if (isLoadedQueuesAgents) {
-  //     let avgRecallTime = avgRecallTimeRanks(agentsStatsList)
-  //   }
-  // },[isLoadedQueuesAgents, sortOrderAnsweredCalls])
+      const sortedAvgRecallTimeQueueArray = sortAgentsData(
+        Object.values(avgRecallTimeQueueSum),
+        sortOrderAverageCallTimeQueue,
+      )
+      setAverageCallTimeQueue(sortedAvgRecallTimeQueueArray)
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [
+    isLoadedQueuesAgents,
+    sortOrderAnsweredCalls,
+    sortOrderInCallPercentage,
+    sortOrderAverageCallTimeQueue,
+    sortOrderAverageCallTime,
+  ])
 
   useEffect(() => {
     if (isLoadedQueuesAgents) {
@@ -936,7 +708,7 @@ export const QueueManagerDashboard: FC<QueueManagerDashboardProps> = ({
         'time_in_pause',
         'conversation_percent',
       ]
-      let calculatedAgent = agentsDashboardRanks(keys)
+      let calculatedAgent = agentsDashboardRanks(keys, agentsStatsList)
       const invertedOperatorInformation = invertObject(operatorInformation)
 
       const agentsAnsweredData = Object.values(calculatedAgent).map(
@@ -1016,6 +788,7 @@ export const QueueManagerDashboard: FC<QueueManagerDashboardProps> = ({
       setAgentsPauseTime(sortedAgentsPauseTimeData)
       setInCallPercentage(sortedInCallPercentageData)
     }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [
     isLoadedQueuesAgents,
     sortOrderAnsweredCalls,
@@ -1108,7 +881,7 @@ export const QueueManagerDashboard: FC<QueueManagerDashboardProps> = ({
   return (
     <>
       {/* Top page section */}
-      <div className='border-b rounded-md shadow-md border-gray-200 dark:border-gray-700  bg-white dark:bg-gray-900 px-4 py-1 sm:px-6'>
+      <div className='border-b rounded-md shadow-md border-gray-200 dark:border-gray-700 bg-white dark:bg-gray-900 px-4 py-1 sm:px-6'>
         <div className=''>
           <div className='mx-auto'>
             <div className='grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-6'>
@@ -1258,7 +1031,7 @@ export const QueueManagerDashboard: FC<QueueManagerDashboardProps> = ({
       {/* Chart section */}
       <div className='grid grid-cols-1 gap-4 sm:grid-cols-1 lg:grid-cols-2'>
         {/* Hourly distribution of incoming calls section*/}
-        <div className={`pt-8 ${zoomedCardIndex === 0 ? 'col-span-2' : 'col-span-1'}`}>
+        <div className={`pt-8 ${zoomedCardIndices.includes(0) ? 'col-span-2' : 'col-span-1'}`}>
           {/* title */}
           <h2 className='text-md ml-4 font-semibold mb-4'>
             {t('QueueManager.Hourly distribution of incoming calls')}
@@ -1290,8 +1063,8 @@ export const QueueManagerDashboard: FC<QueueManagerDashboardProps> = ({
 
         {/* Hourly distribution of call results */}
         <div
-          className={`pt-8 ${zoomedCardIndex === 1 ? 'col-span-2 ' : 'col-span-1'} ${
-            zoomedCardIndex === 0 ? 'mt-4 ' : ''
+          className={`pt-8 ${zoomedCardIndices.includes(1) ? 'col-span-2 ' : 'col-span-1'} ${
+            zoomedCardIndices.includes(0) ? 'mt-4' : ''
           }`}
         >
           {/* title */}
@@ -1324,7 +1097,7 @@ export const QueueManagerDashboard: FC<QueueManagerDashboardProps> = ({
         </div>
 
         {/* Hourly distribution of calls answered*/}
-        <div className={`pt-12 ${zoomedCardIndex === 2 ? 'col-span-2' : 'col-span-1'}`}>
+        <div className={`pt-12 ${zoomedCardIndices.includes(2) ? 'col-span-2' : 'col-span-1'}`}>
           {/* title */}
           <h2 className='text-md ml-4 font-semibold mb-4'>
             {t('QueueManager.Hourly distribution of calls answered')}
@@ -1355,12 +1128,12 @@ export const QueueManagerDashboard: FC<QueueManagerDashboardProps> = ({
         </div>
 
         {/* Hourly distribution of not answered calls*/}
-        <div className={`pt-12 ${zoomedCardIndex === 3 ? 'col-span-2' : 'col-span-1'}`}>
+        <div className={`pt-12 ${zoomedCardIndices.includes(3) ? 'col-span-2' : 'col-span-1'}`}>
+          {' '}
           {/* title */}
           <h2 className='text-md ml-4 font-semibold mb-4'>
             {t('QueueManager.Hourly distribution of not answered calls')}
           </h2>
-
           <div className='border-b rounded-md shadow-md bg-white border-gray-200 dark:border-gray-700 dark:bg-gray-900 px-4 py-5 sm:px-6 mt-1 relative w-full h-full'>
             <div className='flex space-x-3 h-96'>
               <div className='min-w-0 flex-1 '>
@@ -1418,7 +1191,12 @@ export const QueueManagerDashboard: FC<QueueManagerDashboardProps> = ({
                           </h3>
                         </div>
                       </div>
-                      <Button variant='white' onClick={() => handleSortOrderAnsweredCallsToggle()}>
+                      <Button
+                        variant='white'
+                        onClick={() =>
+                          handleSortOrderToggle(sortOrderAnsweredCalls, setSortOrderAnsweredCalls)
+                        }
+                      >
                         <div className='flex items-center space-x-2'>
                           <FontAwesomeIcon
                             icon={
@@ -1483,12 +1261,15 @@ export const QueueManagerDashboard: FC<QueueManagerDashboardProps> = ({
                                             />
                                           ) : (
                                             <Avatar
-                                              src={getAvatarData(agent)}
+                                              src={getAvatarData(agent, avatarIcon)}
                                               placeholderType='operator'
                                               size='small'
                                               bordered
                                               className='cursor-pointer'
-                                              status={getAvatarMainPresence(agent)}
+                                              status={getAvatarMainPresence(
+                                                agent,
+                                                operatorInformation,
+                                              )}
                                             />
                                           )}
                                         </div>
@@ -1526,7 +1307,12 @@ export const QueueManagerDashboard: FC<QueueManagerDashboardProps> = ({
                       </div>
                       <Button
                         variant='white'
-                        onClick={() => handleSortOrderUnansweredCallsToggle()}
+                        onClick={() =>
+                          handleSortOrderToggle(
+                            sortOrderUnansweredCalls,
+                            setSortOrderUnansweredCalls,
+                          )
+                        }
                       >
                         <div className='flex items-center space-x-2'>
                           <FontAwesomeIcon
@@ -1577,7 +1363,7 @@ export const QueueManagerDashboard: FC<QueueManagerDashboardProps> = ({
                                   <tr key={index}>
                                     <td className='whitespace-nowrap py-2 pl-4 pr-3 text-sm sm:pl-0'>
                                       <div className='flex items-center justify-center h-full'>
-                                        {index + 1}
+                                        {index + 1}.
                                       </div>
                                     </td>
                                     <td className='whitespace-nowrap py-3 pl-4 pr-3 text-sm sm:pl-0'>
@@ -1592,12 +1378,15 @@ export const QueueManagerDashboard: FC<QueueManagerDashboardProps> = ({
                                             />
                                           ) : (
                                             <Avatar
-                                              src={getAvatarData(agent)}
+                                              src={getAvatarData(agent, avatarIcon)}
                                               placeholderType='operator'
                                               size='small'
                                               bordered
                                               className='cursor-pointer'
-                                              status={getAvatarMainPresence(agent)}
+                                              status={getAvatarMainPresence(
+                                                agent,
+                                                operatorInformation,
+                                              )}
                                             />
                                           )}
                                         </div>
@@ -1633,7 +1422,12 @@ export const QueueManagerDashboard: FC<QueueManagerDashboardProps> = ({
                           </h3>
                         </div>
                       </div>
-                      <Button variant='white' onClick={() => handleSortOrderPauseOnLoginToggle()}>
+                      <Button
+                        variant='white'
+                        onClick={() =>
+                          handleSortOrderToggle(sortOrderPauseOnLogin, setSortOrderPauseOnLogin)
+                        }
+                      >
                         <div className='flex items-center space-x-2'>
                           <FontAwesomeIcon
                             icon={
@@ -1683,7 +1477,7 @@ export const QueueManagerDashboard: FC<QueueManagerDashboardProps> = ({
                                   <tr key={index}>
                                     <td className='whitespace-nowrap py-2 pl-4 pr-3 text-sm sm:pl-0'>
                                       <div className='flex items-center justify-center h-full'>
-                                        {isRowEmpty ? '-' : index + 1}
+                                        {index + 1}.
                                       </div>
                                     </td>
                                     <td className='whitespace-nowrap py-3 pl-4 pr-3 text-sm sm:pl-0'>
@@ -1698,12 +1492,15 @@ export const QueueManagerDashboard: FC<QueueManagerDashboardProps> = ({
                                             />
                                           ) : (
                                             <Avatar
-                                              src={getAvatarData(agent)}
+                                              src={getAvatarData(agent, avatarIcon)}
                                               placeholderType='operator'
                                               size='small'
                                               bordered
                                               className='cursor-pointer'
-                                              status={getAvatarMainPresence(agent)}
+                                              status={getAvatarMainPresence(
+                                                agent,
+                                                operatorInformation,
+                                              )}
                                             />
                                           )}
                                         </div>
@@ -1741,7 +1538,12 @@ export const QueueManagerDashboard: FC<QueueManagerDashboardProps> = ({
                       </div>
                       <Button
                         variant='white'
-                        onClick={() => handleSortOrderAgentsLoginTimeToggle()}
+                        onClick={() =>
+                          handleSortOrderToggle(
+                            sortOrderAgentsLoginTime,
+                            setSortOrderAgentsLoginTime,
+                          )
+                        }
                       >
                         <div className='flex items-center space-x-2'>
                           <FontAwesomeIcon
@@ -1792,7 +1594,7 @@ export const QueueManagerDashboard: FC<QueueManagerDashboardProps> = ({
                                   <tr key={index}>
                                     <td className='whitespace-nowrap py-2 pl-4 pr-3 text-sm sm:pl-0'>
                                       <div className='flex items-center justify-center h-full'>
-                                        {isRowEmpty ? '-' : index + 1}
+                                        {index + 1}.
                                       </div>
                                     </td>
                                     <td className='whitespace-nowrap py-3 pl-4 pr-3 text-sm sm:pl-0'>
@@ -1807,12 +1609,15 @@ export const QueueManagerDashboard: FC<QueueManagerDashboardProps> = ({
                                             />
                                           ) : (
                                             <Avatar
-                                              src={getAvatarData(agent)}
+                                              src={getAvatarData(agent, avatarIcon)}
                                               placeholderType='operator'
                                               size='small'
                                               bordered
                                               className='cursor-pointer'
-                                              status={getAvatarMainPresence(agent)}
+                                              status={getAvatarMainPresence(
+                                                agent,
+                                                operatorInformation,
+                                              )}
                                             />
                                           )}
                                         </div>
@@ -1850,7 +1655,12 @@ export const QueueManagerDashboard: FC<QueueManagerDashboardProps> = ({
                       </div>
                       <Button
                         variant='white'
-                        onClick={() => handleSortOrderAgentsPauseTimeToggle()}
+                        onClick={() =>
+                          handleSortOrderToggle(
+                            sortOrderAgentsPauseTime,
+                            setSortOrderAgentsPauseTime,
+                          )
+                        }
                       >
                         <div className='flex items-center space-x-2'>
                           <FontAwesomeIcon
@@ -1901,7 +1711,7 @@ export const QueueManagerDashboard: FC<QueueManagerDashboardProps> = ({
                                   <tr key={index}>
                                     <td className='whitespace-nowrap py-2 pl-4 pr-3 text-sm sm:pl-0'>
                                       <div className='flex items-center justify-center h-full'>
-                                        {isRowEmpty ? '-' : index + 1}
+                                        {index + 1}.
                                       </div>
                                     </td>
                                     <td className='whitespace-nowrap py-3 pl-4 pr-3 text-sm sm:pl-0'>
@@ -1916,12 +1726,15 @@ export const QueueManagerDashboard: FC<QueueManagerDashboardProps> = ({
                                             />
                                           ) : (
                                             <Avatar
-                                              src={getAvatarData(agent)}
+                                              src={getAvatarData(agent, avatarIcon)}
                                               placeholderType='operator'
                                               size='small'
                                               bordered
                                               className='cursor-pointer'
-                                              status={getAvatarMainPresence(agent)}
+                                              status={getAvatarMainPresence(
+                                                agent,
+                                                operatorInformation,
+                                              )}
                                             />
                                           )}
                                         </div>
@@ -1959,7 +1772,12 @@ export const QueueManagerDashboard: FC<QueueManagerDashboardProps> = ({
                       </div>
                       <Button
                         variant='white'
-                        onClick={() => handleSortOrderInCallPercentageToggle()}
+                        onClick={() =>
+                          handleSortOrderToggle(
+                            sortOrderInCallPercentage,
+                            setSortOrderInCallPercentage,
+                          )
+                        }
                       >
                         <div className='flex items-center space-x-2'>
                           <FontAwesomeIcon
@@ -2010,7 +1828,7 @@ export const QueueManagerDashboard: FC<QueueManagerDashboardProps> = ({
                                   <tr key={index}>
                                     <td className='whitespace-nowrap py-2 pl-4 pr-3 text-sm sm:pl-0'>
                                       <div className='flex items-center justify-center h-full'>
-                                        {isRowEmpty ? '-' : index + 1}
+                                        {index + 1}.
                                       </div>
                                     </td>
                                     <td className='whitespace-nowrap py-3 pl-4 pr-3 text-sm sm:pl-0'>
@@ -2025,12 +1843,15 @@ export const QueueManagerDashboard: FC<QueueManagerDashboardProps> = ({
                                             />
                                           ) : (
                                             <Avatar
-                                              src={getAvatarData(agent)}
+                                              src={getAvatarData(agent, avatarIcon)}
                                               placeholderType='operator'
                                               size='small'
                                               bordered
                                               className='cursor-pointer'
-                                              status={getAvatarMainPresence(agent)}
+                                              status={getAvatarMainPresence(
+                                                agent,
+                                                operatorInformation,
+                                              )}
                                             />
                                           )}
                                         </div>
@@ -2091,7 +1912,12 @@ export const QueueManagerDashboard: FC<QueueManagerDashboardProps> = ({
                       </div>
                       <Button
                         variant='white'
-                        onClick={() => handleSortOrderQueuesTotalCallsToggle()}
+                        onClick={() =>
+                          handleSortOrderToggle(
+                            sortOrderQueuesTotalCalls,
+                            setSortOrderQueuesTotalCalls,
+                          )
+                        }
                       >
                         <div className='flex items-center space-x-2'>
                           <FontAwesomeIcon
@@ -2176,7 +2002,12 @@ export const QueueManagerDashboard: FC<QueueManagerDashboardProps> = ({
                       </div>
                       <Button
                         variant='white'
-                        onClick={() => handleSortOrderQueuesFailedCallsToggle()}
+                        onClick={() =>
+                          handleSortOrderToggle(
+                            sortOrderQueuesFailedCalls,
+                            setSortOrderQueuesFailedCalls,
+                          )
+                        }
                       >
                         <div className='flex items-center space-x-2'>
                           <FontAwesomeIcon
@@ -2261,7 +2092,12 @@ export const QueueManagerDashboard: FC<QueueManagerDashboardProps> = ({
                       </div>
                       <Button
                         variant='white'
-                        onClick={() => handleSortOrderQueuesInvalidCallsToggle()}
+                        onClick={() =>
+                          handleSortOrderToggle(
+                            sortOrderQueuesInvalidCalls,
+                            setSortOrderQueuesInvalidCalls,
+                          )
+                        }
                       >
                         <div className='flex items-center space-x-2'>
                           <FontAwesomeIcon
@@ -2344,7 +2180,12 @@ export const QueueManagerDashboard: FC<QueueManagerDashboardProps> = ({
                           </h3>
                         </div>
                       </div>
-                      <Button variant='white' onClick={() => handleSortOrderQueuesFailuresToggle()}>
+                      <Button
+                        variant='white'
+                        onClick={() =>
+                          handleSortOrderToggle(sortOrderQueuesFailures, setSortOrderQueuesFailures)
+                        }
+                      >
                         <div className='flex items-center space-x-2'>
                           <FontAwesomeIcon
                             icon={
@@ -2408,6 +2249,225 @@ export const QueueManagerDashboard: FC<QueueManagerDashboardProps> = ({
                                   </td>
                                 </tr>
                               ))}
+                          </tbody>
+                        </table>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+
+              {/* Average call time */}
+              <div>
+                <div className='col-span-1 rounded-md divide-y shadow divide-gray-200 bg-white dark:divide-gray-700 dark:bg-gray-900'>
+                  {/* card header */}
+                  <div className='flex flex-col pt-3 pb-5 px-5'>
+                    <div className='flex w-full items-center justify-between space-x-6'>
+                      <div className='flex-1 truncate'>
+                        <div className='flex items-center space-x-2 py-1 text-gray-700 dark:text-gray-200'>
+                          <h3 className='truncate text-lg leading-6 font-medium'>
+                            {t('QueueManager.Average call time')}
+                          </h3>
+                        </div>
+                      </div>
+                      <Button
+                        variant='white'
+                        onClick={() =>
+                          handleSortOrderToggle(
+                            sortOrderAverageCallTime,
+                            setSortOrderAverageCallTime,
+                          )
+                        }
+                      >
+                        <div className='flex items-center space-x-2'>
+                          <FontAwesomeIcon
+                            icon={
+                              sortOrderAverageCallTime === 'desc'
+                                ? faArrowUpWideShort
+                                : faArrowDownWideShort
+                            }
+                            className='h-4 w-4 pl-2 py-2 cursor-pointer'
+                            aria-hidden='true'
+                          />
+                          <span>{t('QueueManager.Order')}</span>
+                          <FontAwesomeIcon
+                            icon={faChevronDown}
+                            className='h-3.5 w-3.5 pl-2 py-2 cursor-pointer'
+                            aria-hidden='true'
+                          />
+                        </div>
+                      </Button>
+                    </div>
+                  </div>
+                  <div className='flex-grow border-b border-gray-200 dark:border-gray-700'></div>
+                  {/* card body */}
+                  <div className='flow-root'>
+                    <div className='-mx-4 -my-2 overflow-x-auto sm:-mx-6 pl-2 pr-2'>
+                      <div className='inline-block min-w-full py-2 align-middle sm:px-6 lg:px-8'>
+                        <table className='min-w-full divide-y divide-gray-300'>
+                          <tbody className='divide-y divide-gray-200 dark:divide-gray-700 bg-white dark:bg-gray-900'>
+                            {/* skeleton */}
+                            {!isLoadedQueues &&
+                              Array.from(Array(5)).map((e, i) => (
+                                <tr key={i}>
+                                  {Array.from(Array(3)).map((e, j) => (
+                                    <td key={j}>
+                                      <div className='px-4 py-6'>
+                                        <div className='animate-pulse h-5 rounded bg-gray-300 dark:bg-gray-600'></div>
+                                      </div>
+                                    </td>
+                                  ))}
+                                </tr>
+                              ))}
+                            {isLoadedQueues &&
+                              Array.from({ length: 5 }).map((_, index) => {
+                                const agent = Object.values(averageCallTime)[index]
+                                const isRowEmpty = !agent
+
+                                return (
+                                  <tr key={index}>
+                                    <td className='whitespace-nowrap py-3 pl-4 pr-3 text-sm sm:pl-0'>
+                                      <div className='flex items-center justify-center h-full py-3'>
+                                        {index + 1}.
+                                      </div>
+                                    </td>
+                                    <td className='whitespace-nowrap py-3 pl-4 pr-3 text-sm sm:pl-0'>
+                                      <div className='flex items-center'>
+                                        <div className='h-9 w-9 flex-shrink-0 mr-2'>
+                                          {isRowEmpty ? (
+                                            <Avatar
+                                              placeholderType='operator'
+                                              size='small'
+                                              bordered
+                                              className='cursor-pointer'
+                                            />
+                                          ) : (
+                                            <Avatar
+                                              src={getAvatarData(agent, avatarIcon)}
+                                              placeholderType='operator'
+                                              size='small'
+                                              bordered
+                                              className='cursor-pointer'
+                                              status={getAvatarMainPresence(
+                                                agent,
+                                                operatorInformation,
+                                              )}
+                                            />
+                                          )}
+                                        </div>
+                                        <div className='text-gray-900 dark:text-gray-100'>
+                                          {isRowEmpty ? '-' : agent.name}
+                                        </div>
+                                      </div>
+                                    </td>
+                                    <td className='relative whitespace-nowrap py-2 pl-3 pr-4 text-right text-sm font-medium sm:pr-0'>
+                                      {isRowEmpty
+                                        ? '00:00:00'
+                                        : convertToHumanReadable(agent.values)}
+                                    </td>
+                                  </tr>
+                                )
+                              })}
+                          </tbody>
+                        </table>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+
+              {/* Average callback time */}
+              <div>
+                <div className='col-span-1 rounded-md divide-y shadow divide-gray-200 bg-white dark:divide-gray-700 dark:bg-gray-900'>
+                  {/* card header */}
+                  <div className='flex flex-col pt-3 pb-5 px-5'>
+                    <div className='flex w-full items-center justify-between space-x-6'>
+                      <div className='flex-1 truncate'>
+                        <div className='flex items-center space-x-2 py-1 text-gray-700 dark:text-gray-200'>
+                          <h3 className='truncate text-lg leading-6 font-medium'>
+                            {t('QueueManager.Average callback time')}
+                          </h3>
+                        </div>
+                      </div>
+                      <Button
+                        variant='white'
+                        onClick={() =>
+                          handleSortOrderToggle(
+                            sortOrderAverageCallTimeQueue,
+                            setSortOrderAverageCallTimeQueue,
+                          )
+                        }
+                      >
+                        <div className='flex items-center space-x-2'>
+                          <FontAwesomeIcon
+                            icon={
+                              sortOrderAverageCallTimeQueue === 'desc'
+                                ? faArrowUpWideShort
+                                : faArrowDownWideShort
+                            }
+                            className='h-4 w-4 pl-2 py-2 cursor-pointer'
+                            aria-hidden='true'
+                          />
+                          <span>{t('QueueManager.Order')}</span>
+                          <FontAwesomeIcon
+                            icon={faChevronDown}
+                            className='h-3.5 w-3.5 pl-2 py-2 cursor-pointer'
+                            aria-hidden='true'
+                          />
+                        </div>
+                      </Button>
+                    </div>
+                  </div>
+                  <div className='flex-grow border-b border-gray-200 dark:border-gray-700'></div>
+                  {/* card body */}
+                  <div className='flow-root'>
+                    <div className='-mx-4 -my-2 overflow-x-auto sm:-mx-6 pl-2 pr-2'>
+                      <div className='inline-block min-w-full py-2 align-middle sm:px-6 lg:px-8'>
+                        <table className='min-w-full divide-y divide-gray-300'>
+                          <tbody className='divide-y divide-gray-200 dark:divide-gray-700 bg-white dark:bg-gray-900'>
+                            {/* skeleton */}
+                            {!isLoadedQueues &&
+                              Array.from(Array(5)).map((e, i) => (
+                                <tr key={i}>
+                                  {Array.from(Array(3)).map((e, j) => (
+                                    <td key={j}>
+                                      <div className='px-4 py-6'>
+                                        <div className='animate-pulse h-5 rounded bg-gray-300 dark:bg-gray-600'></div>
+                                      </div>
+                                    </td>
+                                  ))}
+                                </tr>
+                              ))}
+                            {isLoadedQueues &&
+                              Array.from({ length: 5 }).map((_, index) => {
+                                const agent = Object.values(averageCallTimeQueue)[index]
+                                const isRowEmpty = !agent
+
+                                return (
+                                  <tr key={index}>
+                                    <td className='whitespace-nowrap py-3 pl-4 pr-3 text-sm sm:pl-0'>
+                                      <div className='flex items-center justify-center h-full py-3'>
+                                        {index + 1}.
+                                      </div>
+                                    </td>
+                                    <td className='whitespace-nowrap py-3 pl-4 pr-3 text-sm sm:pl-0'>
+                                      <div className='flex items-center'>
+                                        <span className='flex-shrink-0 mr-2'>
+                                          {isRowEmpty ? '' : getQueueName(agent.name, queuesList)}
+                                        </span>
+                                        <div className='text-gray-900 dark:text-gray-100'>
+                                          {isRowEmpty ? '-' : agent.name}
+                                        </div>
+                                      </div>
+                                    </td>
+                                    <td className='relative whitespace-nowrap py-2 pl-3 pr-4 text-right text-sm font-medium sm:pr-0'>
+                                      {isRowEmpty
+                                        ? '00:00:00'
+                                        : convertToHumanReadable(agent.values)}
+                                    </td>
+                                  </tr>
+                                )
+                              })}
                           </tbody>
                         </table>
                       </div>
