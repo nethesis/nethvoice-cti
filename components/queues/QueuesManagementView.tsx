@@ -351,7 +351,10 @@ export const QueuesManagementView: FC<QueuesManagementViewProps> = ({ className 
       <Dropdown.Item icon={faMugSaucer} onClick={() => pauseSingleQueue(queue, 'Lunch break')}>
         {t('Queues.Lunch break')}
       </Dropdown.Item>
-      <Dropdown.Item icon={faCircleExclamation} onClick={() => pauseSingleQueue(queue, 'Emergency')}>
+      <Dropdown.Item
+        icon={faCircleExclamation}
+        onClick={() => pauseSingleQueue(queue, 'Emergency')}
+      >
         {t('Queues.Emergency')}
       </Dropdown.Item>
       <Dropdown.Item icon={faThumbTack} onClick={() => pauseSingleQueue(queue, 'Backend')}>

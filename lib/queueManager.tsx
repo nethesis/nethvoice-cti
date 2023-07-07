@@ -669,7 +669,7 @@ export const initHourlyChartsDataPerQueues = (
     for (let i = 0; i < queuesHistoryData[q].answered.length; i++) {
       //check if queueHistoryData is more than dashboard begin time
       if (new Date(queuesHistoryData[q]?.answered[i]?.fullDate) > dashboardData) {
-        queuesHistoryData[q].answered[i].name = queuesList[q].name
+        queuesHistoryData[q].answered[i].name = queuesList[q]?.name
         queuesHistoryUnified.stacked.data.push(queuesHistoryData[q].answered[i])
       }
     }

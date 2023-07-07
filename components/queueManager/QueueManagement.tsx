@@ -3,7 +3,6 @@
 
 import { FC, ComponentProps, useState, useEffect, Fragment, useMemo } from 'react'
 import { useTranslation } from 'react-i18next'
-import { Button } from '../common'
 import { useSelector } from 'react-redux'
 import { RootState } from '../../store'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
@@ -30,134 +29,21 @@ import {
   searchStringInQueuesMembers,
   getExpandedQueueManagamentValue,
   setOperatorInformationDrawer,
+  getAvatarMainPresence,
+  getAvatarData,
 } from '../../lib/queueManager'
 
-import {
-  Chart as ChartJS,
-  ArcElement,
-  CategoryScale,
-  LinearScale,
-  BarElement,
-  Title,
-  Tooltip,
-  Legend,
-} from 'chart.js'
-import { Bar, Doughnut } from 'react-chartjs-2'
 import { getQueues, getQueueStats } from '../../lib/queueManager'
-import { isEmpty, debounce, capitalize } from 'lodash'
+import { isEmpty, debounce } from 'lodash'
 import { EmptyState, Avatar } from '../common'
 import InfiniteScroll from 'react-infinite-scroll-component'
 import { getInfiniteScrollOperatorsPageSize } from '../../lib/operators'
+import { CallDuration } from '../operators/CallDuration'
 import { sortByProperty, invertObject } from '../../lib/utils'
 import BarChartHorizontal from '../chart/horizontalBarChart'
 
-ChartJS.register(ArcElement, CategoryScale, LinearScale, BarElement, Title, Tooltip, Legend)
-
-export const optionsSecond = {
-  indexAxis: 'y' as const,
-  elements: {
-    bar: {
-      borderWidth: 1,
-    },
-  },
-  scales: {
-    y: {
-      display: false,
-      stacked: true,
-    },
-    x: {
-      display: false,
-      // stacked:true
-    },
-  },
-  responsive: true,
-  layout: {
-    padding: {
-      top: 20,
-      bottom: 20,
-    },
-  },
-  plugins: {
-    legend: {
-      position: 'bottom' as const,
-      labels: {
-        usePointStyle: true,
-      },
-    },
-    title: {
-      display: true,
-      text: 'Waiting calls',
-      font: {
-        size: 16,
-      },
-    },
-  },
-}
-
-let lostCalls = 10
-let answeredCalls = 20
-let totalCalls = lostCalls + answeredCalls
-
-export const optionsThird = {
-  responsive: true,
-  maintainAspectRatio: true,
-  layout: {
-    padding: {
-      top: 20,
-      bottom: 20,
-    },
-  },
-  plugins: {
-    legend: {
-      position: 'right' as const,
-      labels: {
-        usePointStyle: true,
-      },
-    },
-    tooltip: {
-      callbacks: {
-        title: function (tooltipItem: any) {
-          return ''
-        },
-        label: function (context: any) {
-          const value = context.parsed ? context.parsed : 0
-          return value.toFixed(2) + '%'
-        },
-      },
-    },
-    title: {
-      display: true,
-      text: `Total calls: ${totalCalls}`,
-      font: {
-        size: 16,
-      },
-    },
-  },
-}
-
-export const doughnutData = {
-  labels: [`Answered calls: ${answeredCalls}`, `Lost calls: ${lostCalls}`],
-  datasets: [
-    {
-      label: 'Answered',
-      data: [answeredCalls],
-      backgroundColor: ['#10B981', '#6B7280'],
-      borderRadius: 50,
-      barPercentage: 0.8,
-      borderSkipped: false,
-      cutout: '80%',
-      weight: 0.05,
-      rotation: 180,
-    },
-  ],
-}
-
-// Calcolate percentage values
-const percentageLostCalls = (lostCalls / totalCalls) * 100
-const percentageAnsweredCalls = (answeredCalls / totalCalls) * 100
-
-// Update graphics data
-doughnutData.datasets[0].data = [percentageAnsweredCalls, 100 - percentageAnsweredCalls]
+import DoughnutChart from '../chart/Doughnut'
+import { useEventListener } from '../../lib/hooks/useEventListener'
 
 export interface QueueManagementProps extends ComponentProps<'div'> {}
 
@@ -184,6 +70,16 @@ export const QueueManagement: FC<QueueManagementProps> = ({ className }): JSX.El
   const [expandedConnectedCall, setExpandedConnectedCall] = useState(false)
 
   const [expandedQueueOperators, setExpandedQueueOperators] = useState(false)
+
+  const [operatorInformation, setOperatorInformation] = useState<any>()
+
+  // get operator information from the store
+  useEffect(() => {
+    if (operatorsStore && !operatorInformation) {
+      setOperatorInformation(operatorsStore.operators)
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [])
 
   const toggleExpandDashboard = () => {
     setExpandedDashboard(!expandedDashboard)
@@ -304,32 +200,120 @@ export const QueueManagement: FC<QueueManagementProps> = ({ className }): JSX.El
       getQueuesStats()
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [queuesList, firstRenderQueuesStats])
+  }, [isLoadedQueues, isLoadedQueuesStats, firstRenderQueuesStats])
 
+  // Create connected calls trough phone-island-conversations from phone-island
+  useEventListener('phone-island-conversations', (data) => {
+    // Get operator information
+    const opName = Object.keys(data)[0]
+
+    // Get conversations information
+    const conversations = data[opName].conversations
+
+    // Check if there are any conversations
+    if (Object.keys(conversations).length === 0) {
+      // No conversations, clear connected calls for all queues
+      Object.keys(queuesList).forEach((queueId) => {
+        queuesList[queueId].connectedCalls = {}
+      })
+      return
+    }
+
+    // Update queue connected calls
+    let queueConnectedCalls: any = {}
+
+    Object.values(conversations).forEach((conversation: any) => {
+      if (conversation.throughQueue && conversation.connected && conversation.queueId) {
+        const queueFound = queuesList[conversation.queueId]
+
+        if (queueFound) {
+          let calls = queueConnectedCalls[queueFound.queue] || []
+          calls.push({ conversation, operatorUsername: opName })
+          queueConnectedCalls[queueFound.queue] = calls
+        }
+      }
+    })
+
+    // Update connected calls for each queue in the updatedQueuesList
+    Object.keys(queueConnectedCalls).forEach((queueId: string) => {
+      const connectedCalls = queueConnectedCalls[queueId]
+
+      //check if connected calls is not empty
+      if (connectedCalls && connectedCalls.length > 0) {
+        queuesList[queueId].connectedCalls = connectedCalls
+      } else {
+        queuesList[queueId].connectedCalls = {}
+      }
+    })
+  })
+
+  useEventListener('phone-island-queue-update', (data: any) => {
+    //id related to updated queue
+    const queueId = Object.keys(data)[0]
+
+    //updated queue
+    const queueData = data[queueId]
+    queuesList[selectedValue.queue] = queueData
+
+    // skip events related to unknown queues
+    const knownQueues = Object.keys(queuesList)
+
+    if (!knownQueues.includes(queueId)) {
+      return
+    }
+  })
+
+  // Chart functions section
+
+  // Connected calls
   const [mininumConnectedCallsDatasets, setMininumConnectedCallsDatasets] = useState(0)
   const [averageConnectedCallsDatasets, setAverageConnectedCallsDatasets] = useState(0)
   const [maximumConnectedCallsDatasets, setMaximumConnectedCallsDatasets] = useState(0)
 
+  // Waiting calls
   const [mininumWaitingCallsDatasets, setMininumWaitingCallsDatasets] = useState(0)
   const [averageWaitingCallsDatasets, setAverageWaitingCallsDatasets] = useState(0)
   const [maximumWaitingCallsDatasets, setMaximumWaitingCallsDatasets] = useState(0)
 
-  // Chart functions section
+  // Calls status
+  const [totalCallsStatus, setTotalCallsStatus] = useState(0)
+  const [totalCallsAnsweredStatus, setTotalCallsAnsweredStatus] = useState(0)
+  const [totalCallsMissedStatus, setTotalCallsMissedStatus] = useState(0)
+  const [percentageAnsweredCalls, setPercentageAnsweredCalls] = useState(0)
+
   useEffect(() => {
+    //check if queue list is already loaded and queue is selected
     if (queuesList && selectedValue?.queue && allQueuesStats) {
       const qstats = queuesList[selectedValue.queue]?.qstats || {}
 
       if (!isEmpty(qstats)) {
         const connectedCallsStats = calculateConnectedCallsStats(qstats)
         const waitingCallsStats = calculateWaitingCallsStats(qstats)
+        const callStatus = calculateCallsStats(qstats)
 
+        // Calls duration charts status
+
+        // Connected calls
         setMininumConnectedCallsDatasets(connectedCallsStats.minimum)
         setAverageConnectedCallsDatasets(connectedCallsStats.average)
         setMaximumConnectedCallsDatasets(connectedCallsStats.maximum)
 
+        // Waiting calls
         setMininumWaitingCallsDatasets(waitingCallsStats.minimum)
         setAverageWaitingCallsDatasets(waitingCallsStats.average)
         setMaximumWaitingCallsDatasets(waitingCallsStats.maximum)
+
+        // Calls charts status
+
+        // Total calls
+        setTotalCallsStatus(callStatus.total)
+        // Answered calls
+        setTotalCallsAnsweredStatus(callStatus.answered)
+        // Lost calls
+        setTotalCallsMissedStatus(callStatus.notAnswerCalls)
+        // Percentage answered calls
+        let percentageCalls = (callStatus.answered / callStatus.total) * 100
+        setPercentageAnsweredCalls(percentageCalls)
       }
     }
   }, [queuesList, selectedValue, allQueuesStats])
@@ -357,6 +341,19 @@ export const QueueManagement: FC<QueueManagementProps> = ({ className }): JSX.El
       maximum: maxDurationWaiting,
     }
   }
+
+  function calculateCallsStats(qstats: any) {
+    const totalCalls = qstats.tot || 0
+    const answeredCalls = qstats.processed_less_sla || 0
+    const notAnswerCalls = qstats.tot_failed || 0
+
+    return {
+      total: totalCalls,
+      answered: answeredCalls,
+      notAnswerCalls: notAnswerCalls,
+    }
+  }
+
   //Connected calls chart functions section
   const connectedCallsLabels = [t('QueueManager.Connected calls')]
 
@@ -416,6 +413,29 @@ export const QueueManagement: FC<QueueManagementProps> = ({ className }): JSX.El
       borderSkipped: false,
     },
   ]
+
+  const doughnutData = {
+    labels: [
+      `Answered calls: ${totalCallsAnsweredStatus}`,
+      `Lost calls: ${totalCallsMissedStatus}`,
+    ],
+    datasets: [
+      {
+        label: 'Answered',
+        data: [totalCallsAnsweredStatus],
+        backgroundColor: ['#10B981', '#6B7280'],
+        borderRadius: 50,
+        barPercentage: 0.8,
+        borderSkipped: false,
+        cutout: '80%',
+        weight: 0.05,
+        rotation: 180,
+      },
+    ],
+  }
+
+  // Update graphics data
+  doughnutData.datasets[0].data = [percentageAnsweredCalls, 100 - percentageAnsweredCalls]
 
   // load extensions information from the store
   const operatorsStore = useSelector((state: RootState) => state.operators) as Record<string, any>
@@ -585,7 +605,6 @@ export const QueueManagement: FC<QueueManagementProps> = ({ className }): JSX.El
   }, [operatorsStore])
 
   const [avatarIcon, setAvatarIcon] = useState<any>()
-  const [operatorInformation, setOperatorInformation] = useState<any>()
 
   // get operator avatar base64 from the store
   useEffect(() => {
@@ -594,34 +613,6 @@ export const QueueManagement: FC<QueueManagementProps> = ({ className }): JSX.El
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [])
-
-  // Get avatar icon for each selected queue agents
-  function getAvatarData(selectedQueueAgent: any) {
-    let userAvatarData = ''
-    if (selectedQueueAgent.shortname && avatarIcon) {
-      for (const username in avatarIcon) {
-        if (username === selectedQueueAgent.shortname) {
-          userAvatarData = avatarIcon[username]
-          break
-        }
-      }
-    }
-    return userAvatarData
-  }
-
-  // Set status dot to avatar icon
-  function getAvatarMainPresence(selectedQueueAgent: any) {
-    let userMainPresence = null
-    let operatorInformation = operatorsStore.operators
-    if (selectedQueueAgent.shortname && operatorInformation) {
-      for (const username in operatorInformation) {
-        if (username === selectedQueueAgent.shortname) {
-          userMainPresence = operatorInformation[username].presence
-        }
-      }
-    }
-    return userMainPresence
-  }
 
   const handleSelectedValue = (newValueQueue: any) => {
     setSelectedValue(newValueQueue)
@@ -924,7 +915,11 @@ export const QueueManagement: FC<QueueManagementProps> = ({ className }): JSX.El
                     </div>
                   </div>
                   <div className='w-full h-full'>
-                    <Doughnut data={doughnutData} options={optionsThird} />
+                    <DoughnutChart
+                      labels={doughnutData.labels}
+                      datasets={doughnutData.datasets}
+                      titleText={`Total calls: ${totalCallsStatus}`}
+                    />{' '}
                   </div>
                 </div>
               </div>
@@ -980,6 +975,66 @@ export const QueueManagement: FC<QueueManagementProps> = ({ className }): JSX.El
 
             {/* divider */}
             <div className='flex-grow border-b border-gray-200 dark:border-gray-700 mt-1'></div>
+            {expandedWaitingCall && (
+              <>
+                <div className='text-sm'>
+                  <div className='border rounded-md border-gray-200 dark:border-gray-700 text-gray-700 dark:text-gray-200'>
+                    {queuesList &&
+                    queuesList[selectedValue.queue] &&
+                    isEmpty(queuesList[selectedValue.queue].waitingCallers) ? (
+                      <div className='p-4'>{t('Queues.No calls')}</div>
+                    ) : (
+                      <div className='-my-2 -mx-4 overflow-x-auto sm:-mx-6 lg:-mx-8'>
+                        <div className='inline-block min-w-full py-2 align-middle sm:px-6 lg:px-8'>
+                          <div className='sm:rounded-md max-h-[12.7rem] overflow-auto'>
+                            <table className='min-w-full divide-y divide-gray-300 dark:divide-gray-600'>
+                              <thead className='bg-gray-100 dark:bg-gray-800'>
+                                <tr>
+                                  <th
+                                    scope='col'
+                                    className='py-3 pl-4 pr-2 text-left font-semibold'
+                                  >
+                                    {t('Queues.Caller')}
+                                  </th>
+                                  <th scope='col' className='px-2 py-3 text-left font-semibold'>
+                                    {t('Queues.Position')}
+                                  </th>
+                                  <th
+                                    scope='col'
+                                    className='pl-2 pr-4 py-3 text-left font-semibold'
+                                  >
+                                    {t('Queues.Wait')}
+                                  </th>
+                                </tr>
+                              </thead>
+                              <tbody className='divide-y divide-gray-200 bg-white dark:divide-gray-700 dark:bg-gray-900'>
+                                {queuesList[selectedValue.queue]?.waitingCallers &&
+                                  Object.values(
+                                    queuesList[selectedValue.queue]?.waitingCallers,
+                                  )?.map((call: any, index: number) => (
+                                    <tr key={index}>
+                                      <td className='py-3 pl-4 pr-2'>
+                                        <div className='flex flex-col'>
+                                          <div className='font-medium'>{call.name}</div>
+                                          {call.name !== call.num && <div>{call.num}</div>}
+                                        </div>
+                                      </td>
+                                      <td className='px-2 py-3'>{call.position}</td>
+                                      <td className='pl-2 pr-4 py-3'>
+                                        <CallDuration startTime={call.waitingTime} />
+                                      </td>
+                                    </tr>
+                                  ))}
+                              </tbody>
+                            </table>
+                          </div>
+                        </div>
+                      </div>
+                    )}
+                  </div>
+                </div>
+              </>
+            )}
 
             {/* Connected calls */}
             <div className='flex items-center mt-6'>
@@ -1006,6 +1061,85 @@ export const QueueManagement: FC<QueueManagementProps> = ({ className }): JSX.El
 
             {/* divider */}
             <div className='flex-grow border-b border-gray-200 dark:border-gray-700 mt-1'></div>
+
+            {expandedConnectedCall && (
+              <div className='text-sm'>
+                <div className='border rounded-md border-gray-200 dark:border-gray-700 text-gray-700 dark:text-gray-200'>
+                  {queuesList &&
+                  queuesList[selectedValue.queue] &&
+                  isEmpty(queuesList[selectedValue.queue].connectedCalls) ? (
+                    <div className='p-4'>{t('Queues.No calls')}</div>
+                  ) : (
+                    <div className='-my-2 -mx-4 overflow-x-auto sm:-mx-6 lg:-mx-8'>
+                      <div className='inline-block min-w-full py-2 align-middle sm:px-6 lg:px-8'>
+                        <div className='sm:rounded-md max-h-[17rem] overflow-auto'>
+                          <table className='min-w-full divide-y divide-gray-300 dark:divide-gray-600'>
+                            <thead className='bg-gray-100 dark:bg-gray-800'>
+                              <tr>
+                                <th scope='col' className='py-3 pl-4 pr-2 text-left font-semibold'>
+                                  {t('Queues.Caller')}
+                                </th>
+                                <th scope='col' className='px-2 py-3 text-left font-semibold'>
+                                  {t('Queues.Operator')}
+                                </th>
+                                <th scope='col' className='pl-2 pr-4 py-3 text-left font-semibold'>
+                                  {t('Queues.Duration')}
+                                </th>
+                              </tr>
+                            </thead>
+                            <tbody className='divide-y divide-gray-200 bg-white dark:divide-gray-700 dark:bg-gray-900'>
+                              {queuesList[selectedValue.queue]?.connectedCalls?.map(
+                                (call: any, index: number) => (
+                                  <tr key={index}>
+                                    <td className='py-3 pl-4 pr-2'>
+                                      <div className='flex flex-col'>
+                                        <div className='font-medium'>
+                                          {call.conversation.counterpartName}
+                                        </div>
+                                        {call.conversation.counterpartName !==
+                                          call.conversation.counterpartNum && (
+                                          <div>{call.conversation.counterpartNum}</div>
+                                        )}
+                                      </div>
+                                    </td>
+                                    <td className='px-2 py-3'>
+                                      <div className='flex items-center gap-3 overflow-hidden'>
+                                        {/* <Avatar
+                                        rounded='full'
+                                        src={operators[call.operatorUsername].avatarBase64}
+                                        placeholderType='operator'
+                                        size='small'
+                                        status={operators[call.operatorUsername].mainPresence}
+                                      /> */}
+                                        <div className='flex flex-col overflow-hidden'>
+                                          {/* <div>{operators[call.operatorUsername].name}</div> */}
+                                          <div className='text-gray-500 dark:text-gray-400'>
+                                            {/* {
+                                            operators[call.operatorUsername].endpoints
+                                              .mainextension[0].id
+                                          } */}
+                                          </div>
+                                        </div>
+                                      </div>
+                                    </td>
+                                    <td className='pl-2 pr-4 py-3'>
+                                      <CallDuration
+                                        key={`callDuration-${call.conversation.id}`}
+                                        startTime={call.conversation.startTime}
+                                      />
+                                    </td>
+                                  </tr>
+                                ),
+                              )}
+                            </tbody>
+                          </table>
+                        </div>
+                      </div>
+                    </div>
+                  )}
+                </div>
+              </div>
+            )}
           </div>
 
           {/* Footer right  */}
@@ -1058,7 +1192,7 @@ export const QueueManagement: FC<QueueManagementProps> = ({ className }): JSX.El
                     ></EmptyState>
                   )}
                   {/* skeleton */}
-                  {/* {allQueuesStats && agentMembers.length > 0 && (
+                  {!allQueuesStats && (
                     <ul
                       role='list'
                       className='mt-4 grid grid-cols-1 gap-4 sm:grid-cols-2 2xl:grid-cols-3 5xl:grid-cols-4 5xl:max-w-screen-2xl'
@@ -1088,7 +1222,7 @@ export const QueueManagement: FC<QueueManagementProps> = ({ className }): JSX.El
                         </li>
                       ))}
                     </ul>
-                  )} */}
+                  )}
                   {/* compact layout operators */}
                   {allQueuesStats && agentMembers.length > 0 && (
                     <InfiniteScroll
@@ -1120,12 +1254,12 @@ export const QueueManagement: FC<QueueManagementProps> = ({ className }): JSX.El
                                 <span className='flex min-w-0 flex-1 items-center space-x-3'>
                                   <span className='block flex-shrink-0'>
                                     <Avatar
-                                      src={getAvatarData(operator)}
+                                      src={getAvatarData(operator, avatarIcon)}
                                       placeholderType='operator'
                                       size='large'
                                       bordered
                                       className='mx-auto cursor-pointer'
-                                      status={getAvatarMainPresence(operator)}
+                                      status={getAvatarMainPresence(operator, operatorInformation)}
                                     />
                                   </span>
                                   <span className='block min-w-0 flex-1'>
