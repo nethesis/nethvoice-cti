@@ -54,7 +54,6 @@ import {
 import { invertObject } from '../../lib/utils'
 import BarChart from '../chart/BarChart'
 import LineChart from '../chart/LineChart'
-import { format } from 'date-fns'
 
 export interface QueueManagerDashboardProps extends ComponentProps<'div'> {}
 

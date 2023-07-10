@@ -488,6 +488,10 @@
     "queueload alarm": "There are many calls waiting and the average waiting time has exceeded the alarm threshold",
     "queuemaxwait alarm": "There are many calls waiting and the first call is on hold for a long time",
     "Alarm error detected": "Alarm error detected",
-    "Alarm":"Alarm"
+    "Alarm":"Alarm",
+    "Minimum": "Minimum",
+    "Maximum": "Maximum",
+    "Average": "Average",
+    "Answered": "Answered"
   }
 }

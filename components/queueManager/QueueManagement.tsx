@@ -39,8 +39,9 @@ import { EmptyState, Avatar } from '../common'
 import InfiniteScroll from 'react-infinite-scroll-component'
 import { getInfiniteScrollOperatorsPageSize } from '../../lib/operators'
 import { CallDuration } from '../operators/CallDuration'
-import { sortByProperty, invertObject } from '../../lib/utils'
-import BarChartHorizontal from '../chart/horizontalBarChart'
+import { sortByProperty, invertObject, sortByBooleanProperty } from '../../lib/utils'
+import BarChartHorizontal from '../chart/HorizontalBarChart'
+import BarChartHorizontalNotStacked from '../chart/HorizontalNotStacked'
 
 import DoughnutChart from '../chart/Doughnut'
 import { useEventListener } from '../../lib/hooks/useEventListener'
@@ -160,10 +161,26 @@ export const QueueManagement: FC<QueueManagementProps> = ({ className }): JSX.El
     }
   }, [firstRenderQueuesList, isLoadedQueues])
 
+  // Call api interval update ( every 2 minutes)
+  const [updateDashboardInterval, SetUpdateDashboardInterval] = useState(120000)
+
+  useEffect(() => {
+    //every tot seconds set loaded queues to false to call api
+    const interval = setInterval(() => {
+      setLoadedQueues(false)
+    }, updateDashboardInterval)
+
+    // After unmount clean interval
+    return () => {
+      clearInterval(interval)
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [])
+
   const [allQueuesStats, setAllQueuesStats] = useState(false)
   const [firstRenderQueuesStats, setFirstRenderQueuesStats]: any = useState(true)
   const [isLoadedQueuesStats, setLoadedQueuesStats] = useState(false)
-  const [selectedValue, setSelectedValue] = useState<any>(Object.keys(queuesList)[0] || '')
+  const [selectedValue, setSelectedValue] = useState<any>(Object.keys(queuesList)?.[0] || '')
 
   //get queues status information
   useEffect(() => {
@@ -214,7 +231,9 @@ export const QueueManagement: FC<QueueManagementProps> = ({ className }): JSX.El
     if (Object.keys(conversations).length === 0) {
       // No conversations, clear connected calls for all queues
       Object.keys(queuesList).forEach((queueId) => {
-        queuesList[queueId].connectedCalls = {}
+        const queue = { ...queuesList[queueId] }
+        queue.connectedCalls = {}
+        queuesList[queueId] = queue
       })
       return
     }
@@ -281,6 +300,11 @@ export const QueueManagement: FC<QueueManagementProps> = ({ className }): JSX.El
   const [totalCallsMissedStatus, setTotalCallsMissedStatus] = useState(0)
   const [percentageAnsweredCalls, setPercentageAnsweredCalls] = useState(0)
 
+  // Customers to manage
+  const [lostCalls, setLostCalls] = useState(0)
+  const [expiredTime, setExpiredTime] = useState(0)
+  const [totalCallCustomers, setTotalCallCustomers] = useState(0)
+
   useEffect(() => {
     //check if queue list is already loaded and queue is selected
     if (queuesList && selectedValue?.queue && allQueuesStats) {
@@ -290,6 +314,7 @@ export const QueueManagement: FC<QueueManagementProps> = ({ className }): JSX.El
         const connectedCallsStats = calculateConnectedCallsStats(qstats)
         const waitingCallsStats = calculateWaitingCallsStats(qstats)
         const callStatus = calculateCallsStats(qstats)
+        const customersManage = calculateCustomerstToManageValues(qstats)
 
         // Calls duration charts status
 
@@ -303,7 +328,7 @@ export const QueueManagement: FC<QueueManagementProps> = ({ className }): JSX.El
         setAverageWaitingCallsDatasets(waitingCallsStats.average)
         setMaximumWaitingCallsDatasets(waitingCallsStats.maximum)
 
-        // Calls charts status
+        // Calls chart status
 
         // Total calls
         setTotalCallsStatus(callStatus.total)
@@ -314,10 +339,32 @@ export const QueueManagement: FC<QueueManagementProps> = ({ className }): JSX.El
         // Percentage answered calls
         let percentageCalls = (callStatus.answered / callStatus.total) * 100
         setPercentageAnsweredCalls(percentageCalls)
+
+        // Customers to manage chart
+
+        //lost calls value
+        setLostCalls(customersManage.lostCallsValue)
+
+        //Test values
+        // setLostCalls(1)
+
+        //expired time value
+        setExpiredTime(customersManage.expiredTimeValue)
+
+        //Test values
+        // setExpiredTime(2)
+
+        //total value
+        let totalCallsToManage = customersManage.lostCallsValue + customersManage.expiredTimeValue
+        // Test value
+        //  let totalCallsToManage = 1 + 2
+
+        setTotalCallCustomers(totalCallsToManage)
       }
     }
   }, [queuesList, selectedValue, allQueuesStats])
 
+  //Connected calls chart values
   function calculateConnectedCallsStats(qstats: any) {
     const minDurationConnected = qstats.min_duration || 0
     const avgDurationConnected = qstats.avg_duration || 0
@@ -330,6 +377,7 @@ export const QueueManagement: FC<QueueManagementProps> = ({ className }): JSX.El
     }
   }
 
+  //Connected calls chart values
   function calculateWaitingCallsStats(qstats: any) {
     const minDurationWaiting = qstats.min_wait || 0
     const avgDurationWaiting = qstats.avg_wait || 0
@@ -342,9 +390,21 @@ export const QueueManagement: FC<QueueManagementProps> = ({ className }): JSX.El
     }
   }
 
+  //Connected calls stats chart values
+  function calculateCustomerstToManageValues(qstats: any) {
+    const lostCalls = qstats.failed_full || 0
+    const expiredTime = qstats.failed_timeout || 0
+
+    return {
+      lostCallsValue: lostCalls,
+      expiredTimeValue: expiredTime,
+    }
+  }
+
+  //Customers to manage chart values
   function calculateCallsStats(qstats: any) {
     const totalCalls = qstats.tot || 0
-    const answeredCalls = qstats.processed_less_sla || 0
+    const answeredCalls = qstats.tot_processed || 0
     const notAnswerCalls = qstats.tot_failed || 0
 
     return {
@@ -359,27 +419,34 @@ export const QueueManagement: FC<QueueManagementProps> = ({ className }): JSX.El
 
   const ConnectedCallsDatasets = [
     {
-      label: 'Minimum',
+      label: `${t('Queues.Minimum')}`,
       data: [mininumConnectedCallsDatasets],
       backgroundColor: '#6EE7B7',
-      borderRadius: [20, 20, 10, 10],
+      // borderRadius: [20, 20, 10, 10],
+      borderRadius: 10,
       barPercentage: 0.5,
+      borderWidth: 0,
+
       borderSkipped: false,
     },
     {
-      label: 'Average',
+      label: `${t('Queues.Average')}`,
       data: [averageConnectedCallsDatasets],
       backgroundColor: '#10B981',
-      borderRadius: [20, 20, 10, 10],
+      // borderRadius: [20, 20, 10, 10],
+      borderRadius: 10,
       barPercentage: 0.5,
+      borderWidth: 0,
       borderSkipped: false,
     },
     {
-      label: 'Maximum',
+      label: `${t('Queues.Maximum')}`,
       data: [maximumConnectedCallsDatasets],
       backgroundColor: '#047857',
-      borderRadius: [20, 20, 10, 10],
+      // borderRadius: [20, 20, 10, 10],
+      borderRadius: 10,
       barPercentage: 0.5,
+      borderWidth: 0,
       borderSkipped: false,
     },
   ]
@@ -389,43 +456,48 @@ export const QueueManagement: FC<QueueManagementProps> = ({ className }): JSX.El
 
   const WaitingCallsDatasets = [
     {
-      label: 'Minimum',
+      label: `${t('Queues.Minimum')}`,
       data: [mininumWaitingCallsDatasets],
       backgroundColor: '#D1D5DB',
-      borderRadius: [20, 20, 10, 10],
+      borderRadius: 10,
       barPercentage: 0.5,
+      borderWidth: 0,
       borderSkipped: false,
     },
     {
-      label: 'Average',
+      label: `${t('Queues.Average')}`,
       data: [averageWaitingCallsDatasets],
       backgroundColor: '#6B7280',
-      borderRadius: [20, 20, 10, 10],
+      borderRadius: 10,
       barPercentage: 0.5,
+      borderWidth: 0,
       borderSkipped: false,
     },
     {
-      label: `Maximum`,
+      label: `${t('Queues.Maximum')}`,
       data: [maximumWaitingCallsDatasets],
       backgroundColor: '#374151',
-      borderRadius: [20, 20, 10, 10],
+      borderRadius: 10,
       barPercentage: 0.5,
+      borderWidth: 0,
       borderSkipped: false,
     },
   ]
 
+  //Calls chart functions section
   const doughnutData = {
     labels: [
-      `Answered calls: ${totalCallsAnsweredStatus}`,
-      `Lost calls: ${totalCallsMissedStatus}`,
+      `${t('QueueManager.Answered calls')}: ${totalCallsAnsweredStatus}`,
+      `${t('QueueManager.Lost calls')}: ${totalCallsMissedStatus}`,
     ],
     datasets: [
       {
-        label: 'Answered',
+        label: `${t('QueueManager.Answered')}`,
         data: [totalCallsAnsweredStatus],
         backgroundColor: ['#10B981', '#6B7280'],
         borderRadius: 50,
         barPercentage: 0.8,
+        borderWidth: 0,
         borderSkipped: false,
         cutout: '80%',
         weight: 0.05,
@@ -436,6 +508,27 @@ export const QueueManagement: FC<QueueManagementProps> = ({ className }): JSX.El
 
   // Update graphics data
   doughnutData.datasets[0].data = [percentageAnsweredCalls, 100 - percentageAnsweredCalls]
+
+  // Customers to manage chart section
+  const labels = ['Lost calls', 'Expired time', 'Total']
+
+  const datasets = [
+    {
+      label: 'Data',
+      data: [lostCalls, expiredTime, totalCallCustomers],
+      backgroundColor: [
+        '#059669', // Lost calls
+        '#064E3B', // Expired time
+        '#E5E7EB', // Total
+      ],
+      borderRadius: 10,
+      barPercentage: 1,
+      borderWidth: 0,
+      borderSkipped: false,
+      categorySpacing: 6,
+      barThickness: 25,
+    },
+  ]
 
   // load extensions information from the store
   const operatorsStore = useSelector((state: RootState) => state.operators) as Record<string, any>
@@ -572,13 +665,21 @@ export const QueueManagement: FC<QueueManagementProps> = ({ className }): JSX.El
       }
     })
 
+    // status filter
+    filteredAgentMembers = filteredAgentMembers.filter((member: any) => {
+      return (
+        statusFilter === 'all' ||
+        (statusFilter === 'connected' && member.loggedIn) ||
+        (statusFilter === 'disconnected' && !member.loggedIn)
+      )
+    })
     // sort operators
     switch (sortByFilter) {
       case 'name':
         filteredAgentMembers.sort(sortByProperty('name'))
         break
       case 'status':
-        filteredAgentMembers.sort(sortByProperty('name'))
+        filteredAgentMembers.sort(sortByBooleanProperty('loggedIn'))
         break
     }
 
@@ -595,7 +696,7 @@ export const QueueManagement: FC<QueueManagementProps> = ({ className }): JSX.El
     if (agentMembers.length > 0) {
       applyFilters(agentMembers)
     }
-  }, [expandedQueueOperators, agentMembers, textFilter])
+  }, [expandedQueueOperators, agentMembers, textFilter, sortByFilter, statusFilter])
 
   // invert key to use getAvatarData function
   useEffect(() => {
@@ -876,7 +977,7 @@ export const QueueManagement: FC<QueueManagementProps> = ({ className }): JSX.El
               {/* Calls duration */}
 
               <div className='pt-8'>
-                <div className='border-b rounded-lg shadow-md border-gray-200 dark:border-gray-700 bg-white dark:bg-gray-900 px-5 py-1 sm: mt-1 relative'>
+                <div className='border-b rounded-lg shadow-md border-gray-200 dark:border-gray-700 bg-white dark:bg-gray-900 px-5 py-1 sm: mt-1 relative h-full'>
                   <div className='pt-3'>
                     <span className='text-sm font-medium leading-6 text-center text-gray-700 dark:text-gray-100'>
                       {t('QueueManager.Calls duration')}
@@ -901,7 +1002,7 @@ export const QueueManagement: FC<QueueManagementProps> = ({ className }): JSX.El
 
               {/* Calls */}
               <div className='pt-8'>
-                <div className='border-b rounded-lg shadow-md border-gray-200 dark:border-gray-700 bg-white dark:bg-gray-900 px-5 py-1 sm:mt-1 relative'>
+                <div className='border-b rounded-lg shadow-md border-gray-200 dark:border-gray-700 bg-white dark:bg-gray-900 px-5 py-1 sm:mt-1 relative w-full h-full'>
                   <div className='flex justify-between'>
                     <div className='pt-3'>
                       <span className='text-sm font-medium leading-6 text-center text-gray-700 dark:text-gray-100'>
@@ -914,11 +1015,11 @@ export const QueueManagement: FC<QueueManagementProps> = ({ className }): JSX.El
                       </span>
                     </div>
                   </div>
-                  <div className='w-full h-full'>
+                  <div className='w-full h-full flex justify-center items-center'>
                     <DoughnutChart
                       labels={doughnutData.labels}
                       datasets={doughnutData.datasets}
-                      titleText={`Total calls: ${totalCallsStatus}`}
+                      titleText={`${t('QueueManager.Total calls')}: ${totalCallsStatus}`}
                     />{' '}
                   </div>
                 </div>
@@ -926,16 +1027,25 @@ export const QueueManagement: FC<QueueManagementProps> = ({ className }): JSX.El
 
               {/* Customers to manage */}
               <div className='pt-8'>
-                <div className='border-b rounded-lg shadow-md border-gray-200 dark:border-gray-700 bg-white dark:bg-gray-900 px-5 py-1 sm: mt-1 relative flex justify-between'>
-                  <div className='pt-3'>
-                    <span className='text-sm font-medium leading-6 text-center text-gray-700 dark:text-gray-100'>
-                      {t('QueueManager.Customers to manage')}
-                    </span>
+                <div className='border-b rounded-lg shadow-md border-gray-200 dark:border-gray-700 bg-white dark:bg-gray-900 px-5 py-1 sm: mt-1 relative h-full'>
+                  <div className='flex justify-between'>
+                    <div className='pt-3'>
+                      <span className='text-sm font-medium leading-6 text-center text-gray-700 dark:text-gray-100'>
+                        {t('QueueManager.Customers to manage')}
+                      </span>
+                    </div>
+                    <div className='pt-3'>
+                      <span className='text-sm font-medium leading-6 text-center text-gray-700 dark:text-gray-100'>
+                        {t('QueueManager.Details')}
+                      </span>
+                    </div>
                   </div>
-                  <div className='pt-3'>
-                    <span className='text-sm font-medium leading-6 text-center text-gray-700 dark:text-gray-100'>
-                      {t('QueueManager.Details')}
-                    </span>
+                  <div className='w-full py-32'>
+                    <BarChartHorizontalNotStacked
+                      labels={labels}
+                      datasets={datasets}
+                      tickColor='#374151'
+                    />
                   </div>
                 </div>
               </div>

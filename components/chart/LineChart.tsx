@@ -27,6 +27,8 @@ interface LineChartProps {
       scales: {
         y: {
           beginAtZero: true,
+          //Add space at the top of the chart
+          grace:'5%'
         },
       },
       plugins: {

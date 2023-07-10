@@ -60,6 +60,27 @@ export const sortByProperty = (property: string | number) => {
 }
 
 /**
+ * Sort function to order array elements by a boolean property (for arrays of objects) or by a specific index
+ *
+ */
+export const sortByBooleanProperty = (property: string | number) => {
+  return function (a: any, b: any) {
+    //set 1 if true, 0 otherwise
+    const valueA = a[property] ? 1 : 0
+    //set 1 if true, 0 otherwise
+    const valueB = b[property] ? 1 : 0
+
+    if (valueA < valueB) {
+      return -1
+    }
+    if (valueA > valueB) {
+      return 1
+    }
+    return 0
+  }
+}
+
+/**
  * Sort function to order array elements by "favorite" boolean attribute
  */
 export const sortByFavorite = (a: any, b: any) => {

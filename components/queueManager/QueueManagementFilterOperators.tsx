@@ -31,6 +31,7 @@ const statusFilter = {
   id: 'status',
   name: 'Status',
   options: [
+    {value: 'all', label: 'All'},
     { value: 'connected', label: 'Connected' },
     { value: 'disconnected', label: 'Disconnected' },
   ],
