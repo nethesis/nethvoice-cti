@@ -530,6 +530,10 @@ export const DEFAULT_EXPANDED_QUEUES_MANAGEMENT_DASHBOARD = false
 export const DEFAULT_EXPANDED_QUEUES_MANAGEMENT_OPERATORS = false
 export const DEFAULT_EXPANDED_QUEUES_MANAGEMENT_CONNECTED = false
 export const DEFAULT_EXPANDED_QUEUES_MANAGEMENT_WAITING = false
+
+export const DEFAULT_EXPANDED_REALTIME_QUEUES_STATISTICS = false
+export const DEFAULT_EXPANDED_REALTIME_OPERATOR_STATISTICS = false
+
 export const DEFAULT_QUEUES_MANAGEMENT_SELECTED_QUEUE = {}
 
 // Set default queue manager tab to dashboard
@@ -581,6 +585,18 @@ export const getSelectedTabQueueManager = (currentUsername: string) => {
   const selectedQueueManagerTab =
     loadPreference('queueManagerSelectedTab', currentUsername) || DEFAULT_SELECTED_TAB_QUEUE_MANAGER
   return { selectedQueueManagerTab }
+}
+
+export const getExpandedRealtimeValue = (currentUsername: string) => {
+  const expandedQueuesStatistics =
+    loadPreference('queueManagerRealtimeQueuesPreference', currentUsername) ||
+    DEFAULT_EXPANDED_REALTIME_QUEUES_STATISTICS
+
+  const expandedOperatorsStatistics =
+    loadPreference('queueManagerRealtimeOperatorPreference', currentUsername) ||
+    DEFAULT_EXPANDED_REALTIME_OPERATOR_STATISTICS
+
+  return { expandedQueuesStatistics, expandedOperatorsStatistics }
 }
 
 //Get user avatar icon

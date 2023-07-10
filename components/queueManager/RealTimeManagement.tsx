@@ -31,12 +31,13 @@ import {
   removeQueueFromExpanded,
 } from '../../lib/queuesLib'
 
-import { getQueues, getAgentsStats } from '../../lib/queueManager'
+import { getQueues, getAgentsStats, getExpandedRealtimeValue } from '../../lib/queueManager'
 import { RealTimeOperatorsFilter } from './RealTimeOperatorsFilter'
 import { RealTimeQueuesFilter } from './RealTimeQueuesFilter'
 import InfiniteScroll from 'react-infinite-scroll-component'
 import { getInfiniteScrollOperatorsPageSize } from '../../lib/operators'
 import { sortByProperty, invertObject } from '../../lib/utils'
+import { savePreference } from '../../lib/storage'
 
 export interface RealTimeManagementProps extends ComponentProps<'div'> {}
 
@@ -75,11 +76,31 @@ export const RealTimeManagement: FC<RealTimeManagementProps> = ({ className }): 
 
   const toggleExpandQueuesStatistics = () => {
     setQueuesStatisticsExpanded(!queuesStatisticsExpanded)
+    let correctExpandQueuesStatistics = !queuesStatisticsExpanded
+    savePreference(
+      'queueManagerRealtimeQueuesPreference',
+      correctExpandQueuesStatistics,
+      authStore.username,
+    )
   }
 
   const toggleExpandOperatorsStatistics = () => {
     setOperatorsStatisticsExpanded(!operatorsStatisticsExpanded)
+    let correctExpandOperatorsStatistics = !operatorsStatisticsExpanded
+    savePreference(
+      'queueManagerRealtimeOperatorPreference',
+      correctExpandOperatorsStatistics,
+      authStore.username,
+    )
   }
+
+  //Load expanded chevron values from local storage
+  useEffect(() => {
+    const expandedValues = getExpandedRealtimeValue(authStore.username)
+    setQueuesStatisticsExpanded(expandedValues.expandedQueuesStatistics)
+    setOperatorsStatisticsExpanded(expandedValues.expandedOperatorsStatistics)
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [])
 
   const [textFilter, setTextFilter]: any = useState('')
 
