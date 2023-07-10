@@ -22,6 +22,7 @@ import {
 } from '../../lib/operators'
 import { useEventListener } from '../../lib/hooks/useEventListener'
 import { retrieveQueues } from '../../lib/queuesLib'
+import { retrieveQueueManager } from '../../lib/queueManager'
 import Head from 'next/head'
 import { capitalize } from 'lodash'
 import { doLogout } from '../../services/login'
@@ -48,6 +49,8 @@ export const Layout: FC<LayoutProps> = ({ children }) => {
   const authStore = useSelector((state: RootState) => state.authentication)
 
   const queuesStore = useSelector((state: RootState) => state.queues)
+
+  const queueManagerStore = useSelector((state: RootState) => state.queueManagerQueues)
 
   const ctiStatus = useSelector((state: RootState) => state.ctiStatus)
   const [linkHtmlFaviconElement, setLinkHtmlFaviconElement] = useState<any>(null)
@@ -173,6 +176,13 @@ export const Layout: FC<LayoutProps> = ({ children }) => {
     }
   }, [queuesStore.isLoaded, operatorsStore.isOperatorsLoaded, mainextension])
 
+  //load / reload queue manager queues
+  useEffect(() => {
+    if (mainextension && operatorsStore.isOperatorsLoaded && !queueManagerStore.isLoaded) {
+      retrieveQueueManager(authStore.username, mainextension, operatorsStore.operators)
+    }
+  }, [queueManagerStore.isLoaded, operatorsStore.isOperatorsLoaded, mainextension])
+
   const globalSearchClick = (event: any) => {
     const globalSearch = document.querySelector('#globalSearch')
 
@@ -221,14 +231,23 @@ export const Layout: FC<LayoutProps> = ({ children }) => {
 
     let queueConnectedCalls: any = {}
 
+    let queueManagerConnectedCalls: any = {}
+
     Object.values(conversations).forEach((conversation: any) => {
       if (conversation.throughQueue && conversation.connected && conversation.queueId) {
         const queueFound = queuesStore.queues[conversation.queueId]
+        const queueManagerFound = queueManagerStore.queues[conversation.queueId]
 
         if (queueFound) {
           let calls = queueConnectedCalls[queueFound.queue] || []
           calls.push({ conversation, operatorUsername: opName })
           queueConnectedCalls[queueFound.queue] = calls
+        }
+
+        if (queueManagerFound) {
+          let callsQueueManager = queueManagerConnectedCalls[queueManagerFound.queue] || []
+          callsQueueManager.push({ conversation, operatorUsername: opName })
+          queueManagerConnectedCalls[queueFound.queue] = callsQueueManager
         }
       }
     })
@@ -236,6 +255,11 @@ export const Layout: FC<LayoutProps> = ({ children }) => {
     Object.keys(queueConnectedCalls).forEach((queueId: string) => {
       const connectedCalls = queueConnectedCalls[queueId]
       store.dispatch.queues.setConnectedCalls(queueId, connectedCalls)
+    })
+
+    Object.keys(queueConnectedCalls).forEach((queueId: string) => {
+      const connectedQueueManagerCalls = queueManagerConnectedCalls[queueId]
+      store.dispatch.queueManagerQueues.setConnectedCalls(queueId, connectedQueueManagerCalls)
     })
   })
 
@@ -246,11 +270,27 @@ export const Layout: FC<LayoutProps> = ({ children }) => {
     // skip events related to unknown queues
     const knownQueues = Object.keys(queuesStore.queues)
 
+    // skip events related to unknown queue manager queues
+    const knownQueueManagerQueues = Object.keys(queueManagerStore.queues)
+
+    // queue
     if (!knownQueues.includes(queueId)) {
       return
     }
 
+    // queue manager
+    if (!knownQueueManagerQueues.includes(queueId)) {
+      return
+    }
+
     store.dispatch.queues.processQueue({
+      queueData,
+      username: authStore.username,
+      mainextension,
+      operators: operatorsStore.operators,
+    })
+
+    store.dispatch.queueManagerQueues.processQueue({
       queueData,
       username: authStore.username,
       mainextension,
@@ -262,6 +302,7 @@ export const Layout: FC<LayoutProps> = ({ children }) => {
     const opMainExtension = Object.keys(data)[0]
     const queueMemberData = data[opMainExtension]
     store.dispatch.queues.setQueueMember(queueMemberData)
+    store.dispatch.queueManagerQueues.setQueueMember(queueMemberData)
   })
 
   //check if the user makes a double login

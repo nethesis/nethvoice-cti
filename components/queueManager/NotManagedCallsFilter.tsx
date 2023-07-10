@@ -30,7 +30,8 @@ export const NotManagedCallsFilter = forwardRef<HTMLButtonElement, NotManagedCal
     const [open, setOpen] = useState(false)
     const [outcome, setOutcome] = useState('')
     const [selectedQueues, setSelectedQueues]: any = useState([])
-    const queuesStore = useSelector((state: RootState) => state.queues)
+
+    const queueManagerStore = useSelector((state: RootState) => state.queueManagerQueues)
 
     const outcomeFilter = {
       id: 'outcome',
@@ -45,7 +46,7 @@ export const NotManagedCallsFilter = forwardRef<HTMLButtonElement, NotManagedCal
     const queuesFilter = {
       id: 'queues',
       name: t('Queues.Queues'),
-      options: Object.values(queuesStore.queues).map((queue: any) => {
+      options: Object.values(queueManagerStore.queues).map((queue: any) => {
         return { value: queue.queue, label: `${queue.name} (${queue.queue})` }
       }),
     }
@@ -94,7 +95,7 @@ export const NotManagedCallsFilter = forwardRef<HTMLButtonElement, NotManagedCal
 
       if (isEmpty(filterValues.selectedQueues)) {
         // select all queues
-        const allQueueCodes = Object.values(queuesStore.queues).map((queue: any) => {
+        const allQueueCodes = Object.values(queueManagerStore.queues).map((queue: any) => {
           return queue.queue
         })
         setSelectedQueues(allQueueCodes)
@@ -139,7 +140,7 @@ export const NotManagedCallsFilter = forwardRef<HTMLButtonElement, NotManagedCal
       savePreference('queuesOutcomeFilter', DEFAULT_OUTCOME_FILTER, auth.username)
 
       // select all queues
-      const allQueueCodes = Object.values(queuesStore.queues).map((queue: any) => {
+      const allQueueCodes = Object.values(queueManagerStore.queues).map((queue: any) => {
         return queue.queue
       })
       setSelectedQueues(allQueueCodes)

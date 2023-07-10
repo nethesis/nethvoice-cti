@@ -38,7 +38,8 @@ export const NotManagedCalls: FC<NotManagedCallsProps> = ({ className }): JSX.El
   const [callsRefreshInterval, setCallsRefreshInterval]: any = useState(
     DEFAULT_CALLS_REFRESH_INTERVAL,
   )
-  const queuesStore = useSelector((state: RootState) => state.queues)
+  const queueManagerStore = useSelector((state: RootState) => state.queueManagerQueues)
+
   const authStore = useSelector((state: RootState) => state.authentication)
 
   const [textFilter, setTextFilter]: any = useState('')
@@ -73,7 +74,7 @@ export const NotManagedCalls: FC<NotManagedCallsProps> = ({ className }): JSX.El
     let selectedQueues = queuesFilter
 
     if (isEmpty(selectedQueues)) {
-      selectedQueues = Object.keys(queuesStore.queues)
+      selectedQueues = Object.keys(queueManagerStore.queues)
     }
 
     try {
@@ -90,7 +91,7 @@ export const NotManagedCalls: FC<NotManagedCallsProps> = ({ className }): JSX.El
 
       res.rows = res.rows.map((call: any) => {
         call.queueId = call.queuename
-        call.queueName = queuesStore.queues[call.queuename]?.name
+        call.queueName = queueManagerStore.queues[call.queuename]?.name
 
         // queuename attribute name is misleading
         delete call.queuename
@@ -194,9 +195,9 @@ export const NotManagedCalls: FC<NotManagedCallsProps> = ({ className }): JSX.El
                 {lastUpdated ? formatDateLoc(new Date(), 'HH:mm:ss') : '-'}
               </span>
             </span>
-            <div className='w-8 h-8 mr-3'>
+            {/* <div className='w-8 h-8 mr-3'>
               <ProgressionRing seconds={callsRefreshInterval} size={24} />
-            </div>
+            </div> */}
           </div>
           <Link href={{ pathname: '/settings', query: { section: 'Queues' } }}>
             <a className='hover:underline text-gray-900 font-semibold dark:text-gray-100'>
@@ -308,7 +309,7 @@ export const NotManagedCalls: FC<NotManagedCallsProps> = ({ className }): JSX.El
                                 {call.name && (
                                   <div
                                     onClick={() =>
-                                      openShowQueueCallDrawer(call, queuesStore.queues)
+                                      openShowQueueCallDrawer(call, queueManagerStore.queues)
                                     }
                                   >
                                     <span
@@ -321,7 +322,9 @@ export const NotManagedCalls: FC<NotManagedCallsProps> = ({ className }): JSX.El
                                   </div>
                                 )}
                                 <div
-                                  onClick={() => openShowQueueCallDrawer(call, queuesStore.queues)}
+                                  onClick={() =>
+                                    openShowQueueCallDrawer(call, queueManagerStore.queues)
+                                  }
                                   className={classNames(
                                     call.name && 'text-gray-500 dark:text-gray-500',
                                   )}
@@ -344,7 +347,9 @@ export const NotManagedCalls: FC<NotManagedCallsProps> = ({ className }): JSX.El
                                   icon={faChevronRight}
                                   className='h-3 w-3 p-2 cursor-pointer text-gray-500 dark:text-gray-500'
                                   aria-hidden='true'
-                                  onClick={() => openShowQueueCallDrawer(call, queuesStore.queues)}
+                                  onClick={() =>
+                                    openShowQueueCallDrawer(call, queueManagerStore.queues)
+                                  }
                                 />
                               </td>
                             </tr>

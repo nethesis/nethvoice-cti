@@ -7,10 +7,9 @@ import { faXmark, faArrowLeft } from '@fortawesome/free-solid-svg-icons'
 import axios from 'axios'
 import { cloneDeep } from 'lodash'
 import { store } from '../store'
-import { exactDistanceToNowLoc, formatDurationLoc } from './dateTime'
 import { loadPreference, savePreference } from './storage'
 import { handleNetworkError } from './utils'
-import { formatDuration, intervalToDuration, format } from 'date-fns'
+import { intervalToDuration, format } from 'date-fns'
 import { openShowOperatorDrawer } from '../lib/operators'
 
 export const PAGE_SIZE = 10
@@ -39,57 +38,62 @@ export const searchStringInQueue = (queue: any, queryText: string) => {
   return false
 }
 
-export const processQueues = (
-  queuesData: any,
+export const processQueueManager = (
+  queueManagerData: any,
   username: string,
   mainextension: string,
   operators: any,
 ) => {
   let queues: any = {}
 
-  // keep only user queues
-
-  Object.values(queuesData).forEach((queue: any) => {
-    if (queue.members[mainextension]) {
-      queues[queue.queue] = queue
-    }
+  Object.values(queueManagerData).forEach((queue: any) => {
+    queues[queue.queue] = queue
   })
 
   Object.values(queues).forEach((queueData: any) => {
-    store.dispatch.queues.processQueue({ queueData, username, mainextension, operators })
+    store.dispatch.queueManagerQueues.processQueue({
+      queueData,
+      username,
+      mainextension,
+      operators,
+    })
   })
 
-  store.dispatch.queues.setLoaded(true)
-  store.dispatch.queues.setLoading(false)
+  store.dispatch.queueManagerQueues.setLoaded(true)
+  store.dispatch.queueManagerQueues.setLoading(false)
 }
 
-export const retrieveQueues = async (username: string, mainextension: string, operators: any) => {
-  store.dispatch.queues.setLoading(true)
-  store.dispatch.queues.setLoaded(false)
-  store.dispatch.queues.setErrorMessage('')
-  let queuesData: any = null
+export const retrieveQueueManager = async (
+  username: string,
+  mainextension: string,
+  operators: any,
+) => {
+  store.dispatch.queueManagerQueues.setLoading(true)
+  store.dispatch.queueManagerQueues.setLoaded(false)
+  store.dispatch.queueManagerQueues.setErrorMessage('')
+  let queueManagerData: any = null
 
   try {
-    const res = await axios.get('/astproxy/queues')
-    queuesData = res.data
+    const res = await axios.get('/astproxy/qmanager_queues')
+    queueManagerData = res.data
   } catch (error) {
     handleNetworkError(error)
-    store.dispatch.queues.setErrorMessage('Cannot retrieve queues')
-    store.dispatch.queues.setLoaded(true)
-    store.dispatch.queues.setLoading(false)
+    store.dispatch.queueManagerQueues.setErrorMessage('Cannot retrieve queues queue manager')
+    store.dispatch.queueManagerQueues.setLoaded(true)
+    store.dispatch.queueManagerQueues.setLoading(false)
   }
 
   // favorite queues
 
   const favoriteQueues = loadPreference('favoriteQueues', username) || []
-  store.dispatch.queues.setFavoriteQueues(favoriteQueues)
+  store.dispatch.queueManagerQueues.setFavoriteQueues(favoriteQueues)
 
   // expanded queues
 
   const expandedQueues = loadPreference('expandedQueues', username) || []
-  store.dispatch.queues.setExpandedQueues(expandedQueues)
+  store.dispatch.queueManagerQueues.setExpandedQueues(expandedQueues)
 
-  processQueues(queuesData, username, mainextension, operators)
+  processQueueManager(queueManagerData, username, mainextension, operators)
 }
 
 export const retrieveAndFilterQueueCalls = async (
