@@ -731,7 +731,7 @@ export const QueueManagement: FC<QueueManagementProps> = ({ className }): JSX.El
                 {t('QueueManager.Select queue')}
               </Listbox.Label>
               <div className='relative'>
-                <Listbox.Button className='relative cursor-default rounded-md bg-white dark:bg-gray-900 py-1.5 pl-3 pr-10 text-left text-gray-900 dark:text-gray-100 shadow-sm ring-1 ring-inset ring-gray-300 focus:outline-none focus:ring-2 focus:ring-primary sm:text-sm sm:leading-6 inline-block'>
+                <Listbox.Button className='relative cursor-default rounded-md bg-white dark:bg-gray-900 py-1.5 pl-3 pr-10 text-left w-60 text-gray-900 dark:text-gray-100 shadow-sm ring-1 ring-inset ring-gray-300 focus:outline-none focus:ring-2 focus:ring-primary sm:text-sm sm:leading-6 inline-block'>
                   <span className='block truncate'>
                     {selectedValue.name ? selectedValue.name : 'Select queue'}
                   </span>
@@ -774,7 +774,7 @@ export const QueueManagement: FC<QueueManagementProps> = ({ className }): JSX.El
                               {queueInfo.name} ({queueInfo.queue})
                             </span>
 
-                            {selected ? (
+                            {selected || selectedValue.queue === queueId ? (
                               <span
                                 className={classNames(
                                   active ? 'text-white' : 'text-primary',
