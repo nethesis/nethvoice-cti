@@ -14,11 +14,14 @@ import { Summary } from '../components/queueManager/Summary'
 import { Monitor } from '../components/queueManager/Monitor'
 import { useSelector } from 'react-redux'
 import { RootState, store } from '../store'
+import { savePreference } from '../lib/storage'
+import { getSelectedTabQueueManager } from '../lib/queueManager'
 
 const QueueManager: NextPage = () => {
   const { t } = useTranslation()
   const queuesStore = useSelector((state: RootState) => state.queues)
-  const [currentTab, setCurrentTab] = useState('queueManagement')
+  const [currentTab, setCurrentTab] = useState('')
+  const auth = useSelector((state: RootState) => state.authentication)
 
   const tabs = [
     { name: t('QueueManager.Dashboard'), value: 'dashboard' },
@@ -34,8 +37,17 @@ const QueueManager: NextPage = () => {
 
     if (selectedTab) {
       setCurrentTab(selectedTab.value)
+      let currentSelectedTab = selectedTab.value
+      savePreference('queueManagerSelectedTab', currentSelectedTab, auth.username)
     }
   }
+
+  //Load selected tab values from local storage
+  useEffect(() => {
+    const selectedTab = getSelectedTabQueueManager(auth.username)
+    setCurrentTab(selectedTab.selectedQueueManagerTab)
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [])
 
   // load queues when navigating to queues page
   useEffect(() => {

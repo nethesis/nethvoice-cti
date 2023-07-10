@@ -528,6 +528,9 @@ export const DEFAULT_EXPANDED_QUEUES_MANAGEMENT_CONNECTED = false
 export const DEFAULT_EXPANDED_QUEUES_MANAGEMENT_WAITING = false
 export const DEFAULT_QUEUES_MANAGEMENT_SELECTED_QUEUE = {}
 
+// Set default queue manager tab to dashboard
+export const DEFAULT_SELECTED_TAB_QUEUE_MANAGER = 'dashboard'
+
 export const getExpandedQueueManagerDashboardValue = (currentUsername: string) => {
   const expandedOperators =
     loadPreference('queueManagerDashboardOperatorsStatisticExpandedPreference', currentUsername) ||
@@ -568,6 +571,12 @@ export const getExpandedQueueManagamentValue = (currentUsername: string) => {
     expandedConnectedCalls,
     selectedQueue,
   }
+}
+
+export const getSelectedTabQueueManager = (currentUsername: string) => {
+  const selectedQueueManagerTab =
+    loadPreference('queueManagerSelectedTab', currentUsername) || DEFAULT_SELECTED_TAB_QUEUE_MANAGER
+  return { selectedQueueManagerTab }
 }
 
 //Get user avatar icon
