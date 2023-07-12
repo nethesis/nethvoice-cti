@@ -11,18 +11,18 @@ import {
 } from 'chart.js'
 ChartJS.register(CategoryScale, LinearScale, BarElement, Title, Tooltip, Legend)
 
-interface BarChartHorizontalNotStackedProps {
+interface BarChartHorizontalWithTitleProps {
   labels: string[]
   datasets: any[]
   tickColor?: string
-  titleText?: string
+  titleText: string
 }
 
-const BarChartHorizontalNotStacked: FC<BarChartHorizontalNotStackedProps> = ({
+const BarChartHorizontalWithTitle: FC<BarChartHorizontalWithTitleProps> = ({
   labels,
   datasets,
   tickColor,
-  titleText
+  titleText,
 }) => {
   const options = {
     indexAxis: 'y' as const,
@@ -30,13 +30,13 @@ const BarChartHorizontalNotStacked: FC<BarChartHorizontalNotStackedProps> = ({
     maintainAspectRatio: false,
     elements: {
       bar: {
-        borderWidth: 1,
+        borderWidth: 0,
       },
     },
     scales: {
       y: {
         beginAtZero: true,
-        
+
         grid: {
           display: false,
         },
@@ -44,10 +44,10 @@ const BarChartHorizontalNotStacked: FC<BarChartHorizontalNotStackedProps> = ({
           display: false,
         },
         ticks: {
-          stepSize: 1,
+          stepSize: 2,
           color: tickColor,
-          font:{
-            size:14,
+          font: {
+            size: 14,
           },
         },
       },
@@ -58,21 +58,20 @@ const BarChartHorizontalNotStacked: FC<BarChartHorizontalNotStackedProps> = ({
         },
       },
     },
-    layout: {
-      padding: {
-        right: 0,
-      },
-    },
     plugins: {
       legend: {
         position: 'bottom' as const,
         display: false,
       },
       title: {
-        display: false,
+        display: true,
         text: titleText,
         font: {
           size: 16,
+        },
+        padding: {
+          top: 0,
+          bottom: 4,
         },
       },
     },
@@ -86,4 +85,4 @@ const BarChartHorizontalNotStacked: FC<BarChartHorizontalNotStackedProps> = ({
   return <Bar data={data} options={options} />
 }
 
-export default BarChartHorizontalNotStacked
+export default BarChartHorizontalWithTitle

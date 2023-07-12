@@ -5,7 +5,7 @@ import { createModel } from '@rematch/core'
 import type { RootModel } from '.'
 import { INFINITE_SCROLL_QUEUE_OPERATORS_PAGE_SIZE } from '../lib/queuesLib'
 import { sortByLoggedStatus } from '../lib/queuesLib'
-import { sortByProperty } from '../lib/utils'
+import { sortByProperty, invertObject } from '../lib/utils'
 
 interface DefaultState {
   queues: any
@@ -84,8 +84,12 @@ export const queueManagerQueues = createModel<RootModel>()({
       queue.operatorsExpanded = expanded
       return state
     },
+    // setQstats: (state, queueId: number) => {
+    //   const queue = state.queues[queueId]
+    // },
     processQueue: (state, payload: ProcessQueuemanagerProps) => {
-      const queueData = { ...payload.queueData }
+      let queueData: any = {}
+      queueData = { ...payload.queueData }
       const queueId = queueData.queue
       const operators = payload.operators
 
@@ -100,6 +104,25 @@ export const queueManagerQueues = createModel<RootModel>()({
         sortByProperty('position'),
       )
 
+      const updatedMembers: any = {}
+      Object.values(queueData.members).forEach((operator: any) => {
+        let fullName = operator.name
+        let invertedOperatorInformation = invertObject(operators)
+        if (fullName && invertedOperatorInformation) {
+          const username = invertedOperatorInformation[fullName]
+          if (username) {
+            updatedMembers[operator.member] = {
+              ...operator,
+              shortname: username,
+            }
+          } else {
+            updatedMembers[operator.member] = operator
+          }
+        }
+      })
+
+      queueData.members = updatedMembers
+
       let numActiveOperators = 0
       Object.values(queueData.members).forEach((operator: any) => {
         if (operator.loggedIn && !operator.paused) {
@@ -107,6 +130,29 @@ export const queueManagerQueues = createModel<RootModel>()({
         }
       })
       queueData.numActiveOperators = numActiveOperators
+
+      let onlineOperators = 0
+      Object.values(queueData.members).forEach((operator: any) => {
+        if (operator.loggedIn) {
+          onlineOperators++
+        }
+      })
+      queueData.onlineOperators = onlineOperators
+
+      let numPausedOperators = 0
+      Object.values(queueData.members).forEach((operator: any) => {
+        if (operator.loggedIn && operator.paused) {
+          numPausedOperators++
+        }
+      })
+      queueData.numAPausedOperators = numPausedOperators
+
+      let totalOperators = 0
+      Object.values(queueData.members).forEach((operator: any) => {
+        totalOperators++
+      })
+
+      queueData.totalOperators = totalOperators
 
       let connectedCalls: any[] = []
       Object.values(operators).forEach((operator: any) => {
@@ -140,6 +186,7 @@ export const queueManagerQueues = createModel<RootModel>()({
       state.queues[queueData.queue] = queueData
       return state
     },
+
     showMoreInfiniteScrollOperators: (state, queueId) => {
       const queueData = state.queues[queueId]
       const infiniteScrollOperators = queueData.infiniteScrollOperators
@@ -150,7 +197,9 @@ export const queueManagerQueues = createModel<RootModel>()({
       return state
     },
     setConnectedCalls: (state, queueId, connectedCalls) => {
-      state.queues[queueId].connectedCalls = connectedCalls
+      if (state.queues[queueId]) {
+        state.queues[queueId].connectedCalls = connectedCalls
+      }
       return state
     },
     setQueueMember: (state, memberData: any) => {

@@ -16,9 +16,15 @@ interface BarChartHorizontalProps {
   labels: string[]
   datasets: any[]
   titleText: string
+  numericTooltip: boolean
 }
 
-const BarChartHorizontal: FC<BarChartHorizontalProps> = ({ labels, datasets, titleText }) => {
+const BarChartHorizontal: FC<BarChartHorizontalProps> = ({
+  labels,
+  datasets,
+  titleText,
+  numericTooltip,
+}) => {
   const options = {
     indexAxis: 'y' as const,
     elements: {
@@ -38,8 +44,8 @@ const BarChartHorizontal: FC<BarChartHorizontalProps> = ({ labels, datasets, tit
     responsive: true,
     layout: {
       padding: {
-        top: 20,
-        bottom: 20,
+        top: 0,
+        bottom: 0,
         right: 0,
       },
     },
@@ -61,8 +67,9 @@ const BarChartHorizontal: FC<BarChartHorizontalProps> = ({ labels, datasets, tit
         callbacks: {
           label: (context: any) => {
             const originalValue = context.dataset.data[context.dataIndex]
-            const formattedValue = convertToHumanReadable(originalValue)
-
+            const formattedValue = numericTooltip
+              ? originalValue
+              : convertToHumanReadable(originalValue)
             return `${context.dataset.label}: ${formattedValue}`
           },
         },

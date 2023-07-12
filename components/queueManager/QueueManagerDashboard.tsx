@@ -50,6 +50,7 @@ import {
   setOperatorInformationDrawer,
   getFormattedTimeFromAlarmsList,
   getAlarmDescription,
+  retrieveOnlyNotManaged,
 } from '../../lib/queueManager'
 import { invertObject } from '../../lib/utils'
 import BarChart from '../chart/BarChart'
@@ -171,6 +172,38 @@ export const QueueManagerDashboard: FC<QueueManagerDashboardProps> = ({
       getQueuesInformation()
     }
   }, [firstRenderQueuesList, isLoadedQueues])
+
+  // const queueManagerStore = useSelector((state: RootState) => state.queueManagerQueues)
+  // const [calls, setCalls]: any = useState({})
+  // const [firstRenderNotManaged, setFirstRenderNotManaged]: any = useState(true)
+  // const [isLoadedQueuesNotManaged, setLoadedQueuesNotManaged] = useState(false)
+
+  // //get queues list information
+  // useEffect(() => {
+  //   let selectedQueues: any = {}
+
+  //   if (isEmpty(selectedQueues)) {
+  //     selectedQueues = Object.keys(queueManagerStore.queues)
+  //   }
+  //   // Avoid api double calling
+  //   if (firstRenderNotManaged) {
+  //     setFirstRenderNotManaged(false)
+  //     return
+  //   }
+  //   async function getQueuesNotManaged() {
+  //     setLoadedQueuesNotManaged(false)
+  //     try {
+  //       const res = await retrieveOnlyNotManaged(selectedQueues)
+  //       setCalls(res)
+  //     } catch (err) {
+  //       console.error(err)
+  //     }
+  //     setLoadedQueuesNotManaged(true)
+  //   }
+  //   if (!isLoadedQueuesNotManaged) {
+  //     getQueuesNotManaged()
+  //   }
+  // }, [firstRenderNotManaged, isLoadedQueuesNotManaged, queueManagerStore.isLoaded])
 
   // Alarms section
 
@@ -689,8 +722,8 @@ export const QueueManagerDashboard: FC<QueueManagerDashboardProps> = ({
   useEffect(() => {
     if (isLoadedQueuesAgents) {
       let avgRecallTime = avgRecallTimeRanks(agentsStatsList)
+      
       const invertedOperatorInformation = invertObject(operatorInformation)
-
       const avgRecallTimeArray = Object.entries(avgRecallTime).map(
         ([name, data]: [string, any]) => ({
           name,
@@ -953,6 +986,26 @@ export const QueueManagerDashboard: FC<QueueManagerDashboardProps> = ({
                 </div>
               </Dropdown>
 
+              {/* Not managed calls section
+              <div className='flex items-center justify-between px-4 mt-2 mb-2'>
+                <div className='flex items-center'>
+                  <div className='h-14 w-14 flex items-center justify-center rounded-md bg-emerald-50'>
+                    <FontAwesomeIcon
+                      icon={faPhone}
+                      className='h-6 w-6 cursor-pointer text-emerald-600 dark:text-emerald-600'
+                      aria-hidden='true'
+                    />
+                  </div>
+                  <div className='flex flex-col justify-center ml-4'>
+                    <p className='text-3xl font-semibold tracking-tight text-left text-gray-900 dark:text-gray-100'>
+                      {calls.count}
+                    </p>
+                    <p className='text-sm font-medium leading-6 text-center text-gray-500 dark:text-gray-400'>
+                      {t('QueueManager.Not managed customers')}
+                    </p>
+                  </div>
+                </div>
+              </div> */}
               {/* Total calls section */}
               <div className='flex items-center justify-between px-4 mt-2 mb-2'>
                 <div className='flex items-center'>

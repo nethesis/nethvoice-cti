@@ -6,7 +6,10 @@ import { useTranslation } from 'react-i18next'
 import { useSelector } from 'react-redux'
 import { RootState } from '../../store'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
+import { exactDistanceToNowLoc, formatDateLoc, getCallTimeToDisplay } from '../../lib/dateTime'
+import { Tooltip } from 'react-tooltip'
 import { savePreference } from '../../lib/storage'
+import Link from 'next/link'
 
 import {
   faChevronDown,
@@ -21,6 +24,8 @@ import {
   faDownLeftAndUpRightToCenter,
   faChevronRight,
   faCircleNotch,
+  faArrowRight,
+  faUser,
 } from '@fortawesome/free-solid-svg-icons'
 
 import { Listbox, Transition } from '@headlessui/react'
@@ -31,6 +36,9 @@ import {
   setOperatorInformationDrawer,
   getAvatarMainPresence,
   getAvatarData,
+  retrieveSelectedNotManaged,
+  openShowQueueCallDrawer,
+  getCallIcon,
 } from '../../lib/queueManager'
 
 import { getQueues, getQueueStats } from '../../lib/queueManager'
@@ -41,9 +49,9 @@ import { getInfiniteScrollOperatorsPageSize } from '../../lib/operators'
 import { CallDuration } from '../operators/CallDuration'
 import { sortByProperty, invertObject, sortByBooleanProperty } from '../../lib/utils'
 import BarChartHorizontal from '../chart/HorizontalBarChart'
-import BarChartHorizontalNotStacked from '../chart/HorizontalNotStacked'
+import LineChart from '../chart/LineChart'
+import { utcToZonedTime } from 'date-fns-tz'
 
-import DoughnutChart from '../chart/Doughnut'
 import { useEventListener } from '../../lib/hooks/useEventListener'
 
 export interface QueueManagementProps extends ComponentProps<'div'> {}
@@ -73,6 +81,8 @@ export const QueueManagement: FC<QueueManagementProps> = ({ className }): JSX.El
   const [expandedQueueOperators, setExpandedQueueOperators] = useState(false)
 
   const [operatorInformation, setOperatorInformation] = useState<any>()
+
+  const queueManagerStore = useSelector((state: RootState) => state.queueManagerQueues)
 
   // get operator information from the store
   useEffect(() => {
@@ -180,9 +190,11 @@ export const QueueManagement: FC<QueueManagementProps> = ({ className }): JSX.El
   const [allQueuesStats, setAllQueuesStats] = useState(false)
   const [firstRenderQueuesStats, setFirstRenderQueuesStats]: any = useState(true)
   const [isLoadedQueuesStats, setLoadedQueuesStats] = useState(false)
-  const [selectedValue, setSelectedValue] = useState<any>(Object.keys(queuesList)?.[0] || '')
+  const [selectedValue, setSelectedValue] = useState<any>(
+    Object.keys(queueManagerStore.queues)?.[0] || '',
+  )
 
-  //get queues status information
+  // //get queues status information
   useEffect(() => {
     // Avoid api double calling
     if (firstRenderQueuesStats) {
@@ -218,6 +230,37 @@ export const QueueManagement: FC<QueueManagementProps> = ({ className }): JSX.El
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [isLoadedQueues, isLoadedQueuesStats, firstRenderQueuesStats])
+
+  // const queueManagerStore = useSelector((state: RootState) => state.queueManagerQueues)
+  const [calls, setCalls]: any = useState({})
+  const [firstRenderNotManaged, setFirstRenderNotManaged]: any = useState(true)
+  const [isLoadedQueuesNotManaged, setLoadedQueuesNotManaged] = useState(false)
+
+  //get queues list information
+  useEffect(() => {
+    // Avoid api double calling
+    if (firstRenderNotManaged) {
+      setFirstRenderNotManaged(false)
+      return
+    }
+    if (isEmpty(selectedValue)) {
+      return
+    }
+    async function getQueuesNotManaged() {
+      setLoadedQueuesNotManaged(false)
+      try {
+        let selectedQueue = selectedValue.queue
+        const res = await retrieveSelectedNotManaged(selectedQueue)
+        setCalls(res)
+      } catch (err) {
+        console.error(err)
+      }
+      setLoadedQueuesNotManaged(true)
+    }
+    if (!isLoadedQueuesNotManaged) {
+      getQueuesNotManaged()
+    }
+  }, [firstRenderNotManaged, isLoadedQueuesNotManaged, queueManagerStore.isLoaded, selectedValue])
 
   // Create connected calls trough phone-island-conversations from phone-island
   useEventListener('phone-island-conversations', (data) => {
@@ -295,15 +338,23 @@ export const QueueManagement: FC<QueueManagementProps> = ({ className }): JSX.El
   const [maximumWaitingCallsDatasets, setMaximumWaitingCallsDatasets] = useState(0)
 
   // Calls status
+
+  //Totals
   const [totalCallsStatus, setTotalCallsStatus] = useState(0)
   const [totalCallsAnsweredStatus, setTotalCallsAnsweredStatus] = useState(0)
   const [totalCallsMissedStatus, setTotalCallsMissedStatus] = useState(0)
-  const [percentageAnsweredCalls, setPercentageAnsweredCalls] = useState(0)
+  const [totalNullCalls, setTotalNullCalls] = useState(0)
+  const [inProgress, setInProgress] = useState(0)
 
-  // Customers to manage
-  const [lostCalls, setLostCalls] = useState(0)
+  //Details answered
+  const [answeredBeforeSeconds, setAnsweredBeforeSeconds] = useState(0)
+  const [answeredAfterSeconds, setAnsweredAfterSeconds] = useState(0)
+
+  //Details failed
   const [expiredTime, setExpiredTime] = useState(0)
-  const [totalCallCustomers, setTotalCallCustomers] = useState(0)
+  const [abandonedCalls, setAbandonedCalls] = useState(0)
+  const [failedNoagentsOutqueue, setFailedNoagentsOutqueue] = useState(0)
+  const [failedNoagentsInqueue, setFailedNoagentsInqueue] = useState(0)
 
   useEffect(() => {
     //check if queue list is already loaded and queue is selected
@@ -314,7 +365,6 @@ export const QueueManagement: FC<QueueManagementProps> = ({ className }): JSX.El
         const connectedCallsStats = calculateConnectedCallsStats(qstats)
         const waitingCallsStats = calculateWaitingCallsStats(qstats)
         const callStatus = calculateCallsStats(qstats)
-        const customersManage = calculateCustomerstToManageValues(qstats)
 
         // Calls duration charts status
 
@@ -330,36 +380,30 @@ export const QueueManagement: FC<QueueManagementProps> = ({ className }): JSX.El
 
         // Calls chart status
 
+        // Total calls section
         // Total calls
         setTotalCallsStatus(callStatus.total)
         // Answered calls
         setTotalCallsAnsweredStatus(callStatus.answered)
         // Lost calls
         setTotalCallsMissedStatus(callStatus.notAnswerCalls)
-        // Percentage answered calls
-        let percentageCalls = (callStatus.answered / callStatus.total) * 100
-        setPercentageAnsweredCalls(percentageCalls)
+        // Null calls
+        setTotalNullCalls(callStatus.totNull)
+        // In progress call
+        let inProgressValue =
+          callStatus.total - callStatus.answered - callStatus.notAnswerCalls - callStatus.totNull
+        setInProgress(inProgressValue)
 
-        // Customers to manage chart
+        // Answred calls details
+        // Answered before seconds
+        setAnsweredBeforeSeconds(callStatus.beforeSecondsCalls)
+        setAnsweredAfterSeconds(callStatus.afterSecondsCalls)
 
-        //lost calls value
-        setLostCalls(customersManage.lostCallsValue)
-
-        //Test values
-        // setLostCalls(1)
-
-        //expired time value
-        setExpiredTime(customersManage.expiredTimeValue)
-
-        //Test values
-        // setExpiredTime(2)
-
-        //total value
-        let totalCallsToManage = customersManage.lostCallsValue + customersManage.expiredTimeValue
-        // Test value
-        //  let totalCallsToManage = 1 + 2
-
-        setTotalCallCustomers(totalCallsToManage)
+        // Failed section details
+        setExpiredTime(callStatus.expiredTime)
+        setAbandonedCalls(callStatus.abandon)
+        setFailedNoagentsOutqueue(callStatus.outqueueNoAgents)
+        setFailedNoagentsInqueue(callStatus.inqueueNoAgents)
       }
     }
   }, [queuesList, selectedValue, allQueuesStats])
@@ -390,27 +434,40 @@ export const QueueManagement: FC<QueueManagementProps> = ({ className }): JSX.El
     }
   }
 
-  //Connected calls stats chart values
-  function calculateCustomerstToManageValues(qstats: any) {
-    const lostCalls = qstats.failed_full || 0
-    const expiredTime = qstats.failed_timeout || 0
-
-    return {
-      lostCallsValue: lostCalls,
-      expiredTimeValue: expiredTime,
-    }
-  }
-
-  //Customers to manage chart values
+  //Customers to manage calls values
   function calculateCallsStats(qstats: any) {
+    //total sections
     const totalCalls = qstats.tot || 0
-    const answeredCalls = qstats.tot_processed || 0
     const notAnswerCalls = qstats.tot_failed || 0
+    const answeredCalls = qstats.tot_processed || 0
+    const totNull = qstats.tot_null || 0
+
+    //details answered section
+    const beforeSecondsCalls = qstats.processed_less_sla || 0
+    const afterSecondsCalls = qstats.processed_greater_sla || 0
+
+    //details failed section
+    const expiredTime = qstats.failed_timeout || 0
+    const abandon = qstats.failed_abandon || 0
+    const outqueueNoAgents = qstats.failed_outqueue_noagents || 0
+    const inqueueNoAgents = qstats.failed_inqueue_noagents || 0
 
     return {
+      //total sections
       total: totalCalls,
       answered: answeredCalls,
       notAnswerCalls: notAnswerCalls,
+      totNull: totNull,
+
+      //details answered section
+      beforeSecondsCalls: beforeSecondsCalls,
+      afterSecondsCalls: afterSecondsCalls,
+
+      //details failed section
+      expiredTime: expiredTime,
+      abandon: abandon,
+      outqueueNoAgents: outqueueNoAgents,
+      inqueueNoAgents: inqueueNoAgents,
     }
   }
 
@@ -484,49 +541,139 @@ export const QueueManagement: FC<QueueManagementProps> = ({ className }): JSX.El
     },
   ]
 
-  //Calls chart functions section
-  const doughnutData = {
-    labels: [
-      `${t('QueueManager.Answered calls')}: ${totalCallsAnsweredStatus}`,
-      `${t('QueueManager.Lost calls')}: ${totalCallsMissedStatus}`,
-    ],
-    datasets: [
-      {
-        label: `${t('QueueManager.Answered')}`,
-        data: [totalCallsAnsweredStatus],
-        backgroundColor: ['#10B981', '#6B7280'],
-        borderRadius: 50,
-        barPercentage: 0.8,
-        borderWidth: 0,
-        borderSkipped: false,
-        cutout: '80%',
-        weight: 0.05,
-        rotation: 180,
-      },
-    ],
-  }
+  //total calls chart functions section
+  const totalCallsLabels = [t('QueueManager.Total calls')]
 
-  // Update graphics data
-  doughnutData.datasets[0].data = [percentageAnsweredCalls, 100 - percentageAnsweredCalls]
-
-  // Customers to manage chart section
-  const labels = ['Lost calls', 'Expired time', 'Total']
-
-  const datasets = [
+  const totalCallsDatasets = [
     {
-      label: 'Data',
-      data: [lostCalls, expiredTime, totalCallCustomers],
-      backgroundColor: [
-        '#059669', // Lost calls
-        '#064E3B', // Expired time
-        '#E5E7EB', // Total
-      ],
+      label: `${t('QueueManager.Null')}`,
+      data: [totalNullCalls],
+      backgroundColor: '#a7f3d0',
+      // borderRadius: [20, 20, 10, 10],
       borderRadius: 10,
-      barPercentage: 1,
+      barPercentage: 0.5,
       borderWidth: 0,
       borderSkipped: false,
-      categorySpacing: 6,
-      barThickness: 25,
+    },
+    {
+      label: `${t('QueueManager.Failed')}`,
+      data: [totalCallsMissedStatus],
+      backgroundColor: '#6EE7B7',
+      // borderRadius: [20, 20, 10, 10],
+      borderRadius: 10,
+      barPercentage: 0.5,
+      borderWidth: 0,
+
+      borderSkipped: false,
+    },
+    {
+      label: `${t('QueueManager.Answered')}`,
+      data: [totalCallsAnsweredStatus],
+      backgroundColor: '#10B981',
+      // borderRadius: [20, 20, 10, 10],
+      borderRadius: 10,
+      barPercentage: 0.5,
+      borderWidth: 0,
+      borderSkipped: false,
+    },
+    {
+      label: `${t('QueueManager.In progress')}`,
+      data: [inProgress],
+      backgroundColor: '#047857',
+      // borderRadius: [20, 20, 10, 10],
+      borderRadius: 10,
+      barPercentage: 0.5,
+      borderWidth: 0,
+      borderSkipped: false,
+    },
+  ]
+
+  const AnsweredCallsLabels = [t('QueueManager.Answered details')]
+
+  const AnsweredCallsDatasets = [
+    {
+      label: `${t('QueueManager.Before 60s')}`,
+      data: [answeredBeforeSeconds],
+      backgroundColor: '#6EE7B7',
+      // borderRadius: [20, 20, 10, 10],
+      borderRadius: 10,
+      barPercentage: 0.5,
+      borderWidth: 0,
+
+      borderSkipped: false,
+    },
+    {
+      label: `${t('QueueManager.After 60s')}`,
+      data: [answeredAfterSeconds],
+      backgroundColor: '#10B981',
+      // borderRadius: [20, 20, 10, 10],
+      borderRadius: 10,
+      barPercentage: 0.5,
+      borderWidth: 0,
+      borderSkipped: false,
+    },
+  ]
+
+  const failedCallsLabels = [t('QueueManager.Failed details')]
+
+  const failedCallsDatasets = [
+    {
+      label: `${t('QueueManager.Expired')}`,
+      data: [expiredTime],
+      backgroundColor: '#6EE7B7',
+      // borderRadius: [20, 20, 10, 10],
+      borderRadius: 10,
+      barPercentage: 0.5,
+      borderWidth: 0,
+      borderSkipped: false,
+    },
+    {
+      label: `${t('QueueManager.Abandoned')}`,
+      data: [abandonedCalls],
+      backgroundColor: '#10B981',
+      // borderRadius: [20, 20, 10, 10],
+      borderRadius: 10,
+      barPercentage: 0.5,
+      borderWidth: 0,
+      borderSkipped: false,
+    },
+    {
+      label: `${t('QueueManager.No agents outqueue')}`,
+      data: [failedNoagentsOutqueue],
+      backgroundColor: '#10B981',
+      // borderRadius: [20, 20, 10, 10],
+      borderRadius: 10,
+      barPercentage: 1,
+      borderWidth: 0.5,
+      borderSkipped: false,
+    },
+    {
+      label: `${t('QueueManager.No agents inqueue')}`,
+      data: [failedNoagentsInqueue],
+      backgroundColor: '#10B981',
+      // borderRadius: [20, 20, 10, 10],
+      borderRadius: 10,
+      barPercentage: 1,
+      borderWidth: 0.5,
+      borderSkipped: false,
+    },
+  ]
+
+  const labelsOutcome = ['January', 'February', 'March', 'April', 'May', 'June']
+  const datasetsCallsHour = [
+    {
+      label: 'Dataset 1',
+      data: [10, 20, 15, 25, 18, 30],
+      fill: false,
+      borderColor: 'rgb(75, 192, 192)',
+      tension: 0.1,
+    },
+    {
+      label: 'Dataset 2',
+      data: [5, 12, 8, 20, 10, 15],
+      fill: false,
+      borderColor: 'rgb(192, 75, 192)',
+      tension: 0.1,
     },
   ]
 
@@ -538,7 +685,7 @@ export const QueueManagement: FC<QueueManagementProps> = ({ className }): JSX.El
   //get agent values from queues list
   useEffect(() => {
     if (allQueuesStats) {
-      for (const q in queuesList) {
+      for (const q in queueManagerStore.queues) {
         if (!agentCounters[q]) {
           agentCounters[q] = {}
         }
@@ -550,13 +697,13 @@ export const QueueManagement: FC<QueueManagementProps> = ({ className }): JSX.El
         agentCounters[q].free = 0
         agentCounters[q].busy = 0
 
-        for (const m in queuesList[q].members) {
-          if (queuesList[q].members[m].loggedIn) {
+        for (const m in queueManagerStore.queues[q].members) {
+          if (queueManagerStore.queues[q].members[m].loggedIn) {
             agentCounters[q].online += 1
           } else {
             agentCounters[q].offline += 1
           }
-          if (queuesList[q].members[m].paused) {
+          if (queueManagerStore.queues[q].members[m].paused) {
             agentCounters[q].paused += 1
           }
 
@@ -589,8 +736,8 @@ export const QueueManagement: FC<QueueManagementProps> = ({ className }): JSX.El
             operatorsStore.extensions[m].status === 'online' &&
             operatorsStore.extensions[m].cf === '' &&
             operatorsStore.extensions[m].dnd === false &&
-            queuesList[q].members[m].loggedIn === true &&
-            queuesList[q].members[m].paused === false
+            queueManagerStore.queues[q].members[m].loggedIn === true &&
+            queueManagerStore.queues[q].members[m].paused === false
           ) {
             agentCounters[q].free += 1
           }
@@ -598,7 +745,7 @@ export const QueueManagement: FC<QueueManagementProps> = ({ className }): JSX.El
       }
       setAgentCounters({ ...agentCounters })
     }
-  }, [queuesList, allQueuesStats, operatorsStore])
+  }, [queueManagerStore.isLoaded, allQueuesStats, operatorsStore])
 
   const [agentCountersSelectedQueue, setAgentCountersSelectedQueue] = useState<any>({})
   const [agentMembers, setAgentMembers] = useState<any>({})
@@ -610,7 +757,7 @@ export const QueueManagement: FC<QueueManagementProps> = ({ className }): JSX.El
       const selectedQueueAgents = agentCounters[selectedQueue]
       setAgentCountersSelectedQueue(selectedQueueAgents)
 
-      setAgentMembers(Object.values(queuesList[selectedQueue]?.members ?? {}))
+      // setAgentMembers(Object.values(queuesList[selectedQueue]?.members ?? {}))
     }
   }, [selectedValue, agentCounters])
 
@@ -659,12 +806,6 @@ export const QueueManagement: FC<QueueManagementProps> = ({ className }): JSX.El
       searchStringInQueuesMembers(op, textFilter),
     )
 
-    filteredAgentMembers.forEach((member: any) => {
-      if (invertedOperatorInformation[member.name]) {
-        member.shortname = invertedOperatorInformation[member.name]
-      }
-    })
-
     // status filter
     filteredAgentMembers = filteredAgentMembers.filter((member: any) => {
       return (
@@ -693,10 +834,13 @@ export const QueueManagement: FC<QueueManagementProps> = ({ className }): JSX.El
 
   // apply filters when operators data has been loaded and operator menu is opened
   useEffect(() => {
-    if (agentMembers.length > 0) {
-      applyFilters(agentMembers)
+    if (
+      queueManagerStore?.isLoaded &&
+      queueManagerStore?.queues[selectedValue?.queue]?.allQueueOperators
+    ) {
+      applyFilters(queueManagerStore?.queues[selectedValue?.queue]?.allQueueOperators)
     }
-  }, [expandedQueueOperators, agentMembers, textFilter, sortByFilter, statusFilter])
+  }, [selectedValue, textFilter, sortByFilter, statusFilter, queueManagerStore.isLoaded])
 
   // invert key to use getAvatarData function
   useEffect(() => {
@@ -719,6 +863,16 @@ export const QueueManagement: FC<QueueManagementProps> = ({ className }): JSX.El
     setSelectedValue(newValueQueue)
     let currentSelectedQueue = newValueQueue
     savePreference('queueManagementSelectedQueue', currentSelectedQueue, auth.username)
+    setLoadedQueuesNotManaged(false)
+  }
+
+  const getCallDistanceToNowTemplate = (callTime: any) => {
+    const timeDistance = exactDistanceToNowLoc(utcToZonedTime(new Date(callTime), 'UTC'), {
+      addSuffix: true,
+      hideSeconds: true,
+    })
+
+    return t('Common.time_distance_ago', { timeDistance })
   }
 
   return (
@@ -752,7 +906,7 @@ export const QueueManagement: FC<QueueManagementProps> = ({ className }): JSX.El
                   leaveTo='opacity-0'
                 >
                   <Listbox.Options className='absolute z-10 mt-1 w-full overflow-auto rounded-md bg-white py-1 text-base shadow-lg ring-1 dark:bg-gray-900 ring-black ring-opacity-5 focus:outline-none sm:text-sm h-auto'>
-                    {Object.entries<any>(queuesList).map(([queueId, queueInfo]) => (
+                    {Object.entries<any>(queueManagerStore.queues).map(([queueId, queueInfo]) => (
                       <Listbox.Option
                         key={queueId}
                         className={({ active }) =>
@@ -983,17 +1137,19 @@ export const QueueManagement: FC<QueueManagementProps> = ({ className }): JSX.El
                       {t('QueueManager.Calls duration')}
                     </span>
                   </div>
-                  <div className='flex justify-center'>
+                  <div className='flex justify-center pt-2'>
                     <div className='w-full h-full'>
                       <BarChartHorizontal
                         labels={connectedCallsLabels}
                         datasets={ConnectedCallsDatasets}
                         titleText={t('QueueManager.Connected calls')}
+                        numericTooltip={false}
                       />
                       <BarChartHorizontal
                         labels={waitingCallsLabels}
                         datasets={WaitingCallsDatasets}
                         titleText={t('QueueManager.Waiting calls')}
+                        numericTooltip={false}
                       />
                     </div>
                   </div>
@@ -1015,13 +1171,31 @@ export const QueueManagement: FC<QueueManagementProps> = ({ className }): JSX.El
                       </span>
                     </div>
                   </div>
-                  <div className='w-full h-full flex justify-center items-center'>
-                    <DoughnutChart
-                      labels={doughnutData.labels}
-                      datasets={doughnutData.datasets}
-                      titleText={`${t('QueueManager.Total calls')}: ${totalCallsStatus}`}
-                    />{' '}
+                  <div className='flex justify-center items-center px-3 pt-2'>
+                    <div className='w-full h-full flex flex-col space-y-4'>
+                      <BarChartHorizontal
+                        labels={totalCallsLabels}
+                        datasets={totalCallsDatasets}
+                        titleText={`${t('QueueManager.Total calls')}: ${totalCallsStatus}`}
+                        numericTooltip={true}
+                      />
+                      <BarChartHorizontal
+                        labels={AnsweredCallsLabels}
+                        datasets={AnsweredCallsDatasets}
+                        titleText={`${t(
+                          'QueueManager.Answered calls',
+                        )}: ${totalCallsAnsweredStatus}`}
+                        numericTooltip={true}
+                      />
+                      <BarChartHorizontal
+                        labels={failedCallsLabels}
+                        datasets={failedCallsDatasets}
+                        titleText={`${t('QueueManager.Failed calls')}: ${totalCallsMissedStatus}`}
+                        numericTooltip={true}
+                      />
+                    </div>
                   </div>
+                  <div className='w-full h-full flex '></div>
                 </div>
               </div>
 
@@ -1040,12 +1214,139 @@ export const QueueManagement: FC<QueueManagementProps> = ({ className }): JSX.El
                       </span>
                     </div>
                   </div>
-                  <div className='w-full py-32'>
-                    <BarChartHorizontalNotStacked
-                      labels={labels}
-                      datasets={datasets}
-                      tickColor='#374151'
-                    />
+                  <div className='flex flex-col justify-center items-center px-4'>
+                    <div className='w-full h-full'>
+                      <LineChart labels={labelsOutcome} datasets={datasetsCallsHour} />
+                    </div>
+                    <div className='overflow-auto mt-12 h-56 w-full'>
+                      <ul
+                        role='list'
+                        className=' divide-gray-300 dark:divide-gray-600 bg-white dark:bg-gray-900'
+                      >
+                        <li className='flex items-center justify-between gap-x-6 border-b rounded-lg shadow-md border-gray-200 dark:border-gray-700 bg-gray-200 py-2 px-2'>
+                          <div className='py-1 px-2'>
+                            <strong>{t('QueueManager.Date')}</strong>
+                          </div>
+                          <div className='px-3'>
+                            <strong>{t('QueueManager.Caller')}</strong>
+                          </div>
+                          <div className='px-3'>
+                            <strong>{t('QueueManager.Outcome')}</strong>
+                          </div>
+                        </li>
+                        {isLoadedQueuesNotManaged && calls.count === 0 && (
+                          <EmptyState
+                            title={t('QueueManager.No customers to manage')}
+                            description={t('QueueManager.There are no customers to manage') || ''}
+                            icon={
+                              <FontAwesomeIcon
+                                icon={faUser}
+                                className='mx-auto h-12 w-12'
+                                aria-hidden='true'
+                              />
+                            }
+                            className='bg-white dark:bg-gray-900'
+                          ></EmptyState>
+                        )}
+                        {/* skeleton */}
+                        {!isLoadedQueuesNotManaged &&
+                          Array.from(Array(6)).map((e, index) => (
+                            <li key={index}>
+                              <div className='flex items-center py-4'>
+                                {/* avatar skeleton */}
+                                <div className='min-w-0 flex-1 px-2 py-2'>
+                                  <div className='flex flex-col justify-center'>
+                                    {/* line skeleton */}
+                                    <div className='animate-pulse h-3 rounded bg-gray-300 dark:bg-gray-600'></div>
+                                  </div>
+                                </div>
+                              </div>
+                            </li>
+                          ))}
+                        {isLoadedQueuesNotManaged &&
+                          calls?.rows?.map((call: any, index: number) => (
+                            <li
+                              key={index}
+                              className='flex justify-between gap-x-6 pt-1 items-center'
+                            >
+                              {/* time */}
+                              <div className='py-4 px-2 pr-3'>
+                                <div className='flex flex-col'>
+                                  <div>{formatDateLoc(call.time * 1000, 'PP')}</div>
+                                  <div className='text-gray-500 dark:text-gray-500'>
+                                    {getCallTimeToDisplay(call.time * 1000)}
+                                  </div>
+                                </div>
+                              </div>
+
+                              {/* name / number */}
+                              <div className='px-3 py-4'>
+                                {call.name && (
+                                  <div
+                                    onClick={() =>
+                                      openShowQueueCallDrawer(call, queueManagerStore.queues)
+                                    }
+                                  >
+                                    <span
+                                      className={classNames(
+                                        call.cid && 'cursor-pointer hover:underline',
+                                      )}
+                                    >
+                                      {call.name}
+                                    </span>
+                                  </div>
+                                )}
+                                <div
+                                  onClick={() =>
+                                    openShowQueueCallDrawer(call, queueManagerStore.queues)
+                                  }
+                                  className={classNames(
+                                    call.name && 'text-gray-500 dark:text-gray-500',
+                                  )}
+                                >
+                                  <span className='cursor-pointer hover:underline'>{call.cid}</span>
+                                </div>
+                              </div>
+
+                              {/* outcome */}
+                              <div className='whitespace-nowrap px-3 py-4'>
+                                <div className='flex items-center'>
+                                  <span
+                                    className='tooltip-outcome-value'
+                                    id={`tooltip-outcome-value-${index}`}
+                                  >
+                                    {getCallIcon(call)}
+                                  </span>
+                                  <Tooltip
+                                    anchorSelect={`#tooltip-outcome-value-${index}`}
+                                    place='left'
+                                  >
+                                    {t(`Queues.outcome_${call.event}`)}
+                                  </Tooltip>
+                                </div>
+                              </div>
+                            </li>
+                          ))}
+                      </ul>
+                    </div>
+                  </div>
+                  <div className='pt-8 px-4 flex items-center justify-between'>
+                    <Link
+                      href={{ pathname: '/queueuManager', query: { section: 'notManagedCalls' } }}
+                    >
+                      <a className='hover:underline text-gray-900 font-semibold dark:text-gray-100'>
+                        {t('QueueManager.Go to not managed customers')}
+                      </a>
+                    </Link>
+                    <Link
+                      href={{ pathname: '/queueuManager', query: { section: 'notManagedCalls' } }}
+                    >
+                      <FontAwesomeIcon
+                        icon={faArrowRight}
+                        className='h-5 w-5 pr-2 cursor-pointer text-gray-600 dark:text-gray-200'
+                        aria-hidden='true'
+                      />
+                    </Link>
                   </div>
                 </div>
               </div>
@@ -1089,9 +1390,10 @@ export const QueueManagement: FC<QueueManagementProps> = ({ className }): JSX.El
               <>
                 <div className='text-sm'>
                   <div className='border rounded-md border-gray-200 dark:border-gray-700 text-gray-700 dark:text-gray-200'>
-                    {queuesList &&
-                    queuesList[selectedValue.queue] &&
-                    isEmpty(queuesList[selectedValue.queue].waitingCallers) ? (
+                    {queueManagerStore &&
+                    queueManagerStore?.isLoaded &&
+                    queueManagerStore?.queues[selectedValue?.queue] &&
+                    isEmpty(queueManagerStore?.queues[selectedValue.queue]?.waitingCallers) ? (
                       <div className='p-4'>{t('Queues.No calls')}</div>
                     ) : (
                       <div className='-my-2 -mx-4 overflow-x-auto sm:-mx-6 lg:-mx-8'>
@@ -1118,9 +1420,11 @@ export const QueueManagement: FC<QueueManagementProps> = ({ className }): JSX.El
                                 </tr>
                               </thead>
                               <tbody className='divide-y divide-gray-200 bg-white dark:divide-gray-700 dark:bg-gray-900'>
-                                {queuesList[selectedValue.queue]?.waitingCallers &&
+                                {queueManagerStore?.queues[selectedValue.queue]
+                                  ?.waitingCallersList &&
                                   Object.values(
-                                    queuesList[selectedValue.queue]?.waitingCallers,
+                                    queueManagerStore?.queues[selectedValue.queue]
+                                      ?.waitingCallersList,
                                   )?.map((call: any, index: number) => (
                                     <tr key={index}>
                                       <td className='py-3 pl-4 pr-2'>
@@ -1175,9 +1479,10 @@ export const QueueManagement: FC<QueueManagementProps> = ({ className }): JSX.El
             {expandedConnectedCall && (
               <div className='text-sm'>
                 <div className='border rounded-md border-gray-200 dark:border-gray-700 text-gray-700 dark:text-gray-200'>
-                  {queuesList &&
-                  queuesList[selectedValue.queue] &&
-                  isEmpty(queuesList[selectedValue.queue].connectedCalls) ? (
+                  {queueManagerStore &&
+                  queueManagerStore?.isLoaded &&
+                  queueManagerStore?.queues[selectedValue?.queue] &&
+                  isEmpty(queueManagerStore?.queues[selectedValue.queue]?.connectedCalls) ? (
                     <div className='p-4'>{t('Queues.No calls')}</div>
                   ) : (
                     <div className='-my-2 -mx-4 overflow-x-auto sm:-mx-6 lg:-mx-8'>
@@ -1198,8 +1503,10 @@ export const QueueManagement: FC<QueueManagementProps> = ({ className }): JSX.El
                               </tr>
                             </thead>
                             <tbody className='divide-y divide-gray-200 bg-white dark:divide-gray-700 dark:bg-gray-900'>
-                              {queuesList[selectedValue.queue]?.connectedCalls?.map(
-                                (call: any, index: number) => (
+                              {queueManagerStore?.queues[selectedValue.queue]?.connectedCalls &&
+                                Object.values(
+                                  queueManagerStore?.queues[selectedValue.queue]?.connectedCalls,
+                                )?.map((call: any, index: number) => (
                                   <tr key={index}>
                                     <td className='py-3 pl-4 pr-2'>
                                       <div className='flex flex-col'>
@@ -1239,8 +1546,7 @@ export const QueueManagement: FC<QueueManagementProps> = ({ className }): JSX.El
                                       />
                                     </td>
                                   </tr>
-                                ),
-                              )}
+                                ))}
                             </tbody>
                           </table>
                         </div>
@@ -1302,7 +1608,7 @@ export const QueueManagement: FC<QueueManagementProps> = ({ className }): JSX.El
                     ></EmptyState>
                   )}
                   {/* skeleton */}
-                  {!allQueuesStats && (
+                  {!allQueuesStats && !queueManagerStore?.isLoaded && (
                     <ul
                       role='list'
                       className='mt-4 grid grid-cols-1 gap-4 sm:grid-cols-2 2xl:grid-cols-3 5xl:grid-cols-4 5xl:max-w-screen-2xl'
@@ -1334,82 +1640,87 @@ export const QueueManagement: FC<QueueManagementProps> = ({ className }): JSX.El
                     </ul>
                   )}
                   {/* compact layout operators */}
-                  {allQueuesStats && agentMembers.length > 0 && (
-                    <InfiniteScroll
-                      dataLength={infiniteScrollOperators.length}
-                      next={showMoreInfiniteScrollOperators}
-                      hasMore={infiniteScrollHasMore}
-                      scrollableTarget='main-content'
-                      loader={
-                        <FontAwesomeIcon
-                          icon={faCircleNotch}
-                          className='inline-block text-center fa-spin h-8 m-10 text-gray-400 dark:text-gray-500'
-                        />
-                      }
-                    >
-                      <ul
-                        role='list'
-                        className='mt-4 grid grid-cols-1 gap-4 sm:grid-cols-2 2xl:grid-cols-3 5xl:grid-cols-4 5xl:max-w-screen-2xl'
+                  {allQueuesStats &&
+                    queueManagerStore?.queues[selectedValue.queue]?.allQueueOperators?.length >
+                      0 && (
+                      <InfiniteScroll
+                        dataLength={infiniteScrollOperators.length}
+                        next={showMoreInfiniteScrollOperators}
+                        hasMore={infiniteScrollHasMore}
+                        scrollableTarget='main-content'
+                        loader={
+                          <FontAwesomeIcon
+                            icon={faCircleNotch}
+                            className='inline-block text-center fa-spin h-8 m-10 text-gray-400 dark:text-gray-500'
+                          />
+                        }
                       >
-                        {infiniteScrollOperators.map((operator: any, index) => {
-                          return (
-                            <li key={index} className='px-1'>
-                              <button
-                                type='button'
-                                onClick={() =>
-                                  setOperatorInformationDrawer(operator, operatorsStore)
-                                }
-                                className='group flex w-full items-center justify-between space-x-3 rounded-lg p-2 text-left focus:outline-none focus:ring-2 focus:ring-offset-2 bg-white dark:bg-gray-900 hover:bg-gray-200 dark:hover:bg-gray-700 focus:ring-primary dark:focus:ring-primary'
-                              >
-                                <span className='flex min-w-0 flex-1 items-center space-x-3'>
-                                  <span className='block flex-shrink-0'>
-                                    <Avatar
-                                      src={getAvatarData(operator, avatarIcon)}
-                                      placeholderType='operator'
-                                      size='large'
-                                      bordered
-                                      className='mx-auto cursor-pointer'
-                                      status={getAvatarMainPresence(operator, operatorInformation)}
-                                    />
-                                  </span>
-                                  <span className='block min-w-0 flex-1'>
-                                    <span className='block truncate text-sm font-medium text-gray-900 dark:text-gray-100'>
-                                      {operator.name}
-                                    </span>
-                                    <span className='block truncate mt-1 text-sm font-medium text-gray-500 dark:text-gray-500'>
-                                      <FontAwesomeIcon
-                                        icon={operator.loggedIn ? faUserCheck : faUserXmark}
-                                        className={`h-4 w-4 mr-2 ${
-                                          operator.loggedIn ? 'text-primary' : 'text-red-400'
-                                        } dark:text-gray-500 cursor-pointer`}
-                                        aria-hidden='true'
+                        <ul
+                          role='list'
+                          className='mt-4 grid grid-cols-1 gap-4 sm:grid-cols-2 2xl:grid-cols-3 5xl:grid-cols-4 5xl:max-w-screen-2xl'
+                        >
+                          {infiniteScrollOperators.map((operator: any, index) => {
+                            return (
+                              <li key={index} className='px-1'>
+                                <button
+                                  type='button'
+                                  onClick={() =>
+                                    setOperatorInformationDrawer(operator, operatorsStore)
+                                  }
+                                  className='group flex w-full items-center justify-between space-x-3 rounded-lg p-2 text-left focus:outline-none focus:ring-2 focus:ring-offset-2 bg-white dark:bg-gray-900 hover:bg-gray-200 dark:hover:bg-gray-700 focus:ring-primary dark:focus:ring-primary'
+                                >
+                                  <span className='flex min-w-0 flex-1 items-center space-x-3'>
+                                    <span className='block flex-shrink-0'>
+                                      <Avatar
+                                        src={getAvatarData(operator, avatarIcon)}
+                                        placeholderType='operator'
+                                        size='large'
+                                        bordered
+                                        className='mx-auto cursor-pointer'
+                                        status={getAvatarMainPresence(
+                                          operator,
+                                          operatorInformation,
+                                        )}
                                       />
-                                      <span
-                                        className={`${
-                                          operator.loggedIn ? 'text-primary' : 'text-red-400'
-                                        } `}
-                                      >
-                                        {operator.loggedIn
-                                          ? `${t('QueueManager.Logged_in')}`
-                                          : `${t('QueueManager.Logged_out')}`}
+                                    </span>
+                                    <span className='block min-w-0 flex-1'>
+                                      <span className='block truncate text-sm font-medium text-gray-900 dark:text-gray-100'>
+                                        {operator.name}
+                                      </span>
+                                      <span className='block truncate mt-1 text-sm font-medium text-gray-500 dark:text-gray-500'>
+                                        <FontAwesomeIcon
+                                          icon={operator.loggedIn ? faUserCheck : faUserXmark}
+                                          className={`h-4 w-4 mr-2 ${
+                                            operator.loggedIn ? 'text-primary' : 'text-red-400'
+                                          } dark:text-gray-500 cursor-pointer`}
+                                          aria-hidden='true'
+                                        />
+                                        <span
+                                          className={`${
+                                            operator.loggedIn ? 'text-primary' : 'text-red-400'
+                                          } `}
+                                        >
+                                          {operator.loggedIn
+                                            ? `${t('QueueManager.Logged_in')}`
+                                            : `${t('QueueManager.Logged_out')}`}
+                                        </span>
                                       </span>
                                     </span>
                                   </span>
-                                </span>
-                                <span className='inline-flex h-10 w-10 flex-shrink-0 items-center justify-center'>
-                                  <FontAwesomeIcon
-                                    icon={faChevronRight}
-                                    className='h-3 w-3 text-gray-400 dark:text-gray-500 cursor-pointer'
-                                    aria-hidden='true'
-                                  />
-                                </span>
-                              </button>
-                            </li>
-                          )
-                        })}
-                      </ul>
-                    </InfiniteScroll>
-                  )}
+                                  <span className='inline-flex h-10 w-10 flex-shrink-0 items-center justify-center'>
+                                    <FontAwesomeIcon
+                                      icon={faChevronRight}
+                                      className='h-3 w-3 text-gray-400 dark:text-gray-500 cursor-pointer'
+                                      aria-hidden='true'
+                                    />
+                                  </span>
+                                </button>
+                              </li>
+                            )
+                          })}
+                        </ul>
+                      </InfiniteScroll>
+                    )}
                 </div>
               </div>
             )}

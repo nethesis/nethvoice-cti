@@ -1,14 +1,14 @@
 // Copyright (C) 2023 Nethesis S.r.l.
 // SPDX-License-Identifier: AGPL-3.0-or-later
 
-import { FC, ComponentProps, useState, useEffect, useMemo } from 'react'
+import { FC, ComponentProps, useState, useEffect, useMemo, useRef } from 'react'
 import { useTranslation } from 'react-i18next'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
-import { Avatar, Button, Dropdown, EmptyState, IconSwitch, TextInput } from '../common'
+import { Avatar, EmptyState, IconSwitch, TextInput } from '../common'
 import { useSelector } from 'react-redux'
 import { RootState, store } from '../../store'
 import { Tooltip } from 'react-tooltip'
-import { debounce } from 'lodash'
+import { debounce, isEmpty } from 'lodash'
 import {
   faChevronDown,
   faChevronUp,
@@ -21,6 +21,8 @@ import {
   faStopwatch,
   faUser,
   faPhone,
+  faCircleXmark,
+  faFilter,
 } from '@fortawesome/free-solid-svg-icons'
 import { faStar as faStarLight } from '@nethesis/nethesis-light-svg-icons'
 import {
@@ -33,11 +35,11 @@ import {
 
 import { getQueues, getAgentsStats, getExpandedRealtimeValue } from '../../lib/queueManager'
 import { RealTimeOperatorsFilter } from './RealTimeOperatorsFilter'
-import { RealTimeQueuesFilter } from './RealTimeQueuesFilter'
 import InfiniteScroll from 'react-infinite-scroll-component'
 import { getInfiniteScrollOperatorsPageSize } from '../../lib/operators'
-import { sortByProperty, invertObject } from '../../lib/utils'
+import { sortByProperty, invertObject, sortByFavorite } from '../../lib/utils'
 import { savePreference } from '../../lib/storage'
+import BarChartHorizontalWithTitle from '../chart/HorizontalWithTitle'
 
 export interface RealTimeManagementProps extends ComponentProps<'div'> {}
 
@@ -57,7 +59,6 @@ export const RealTimeManagement: FC<RealTimeManagementProps> = ({ className }): 
 
   const [queuesStatisticsExpanded, setQueuesStatisticsExpanded] = useState(false)
   const [operatorsStatisticsExpanded, setOperatorsStatisticsExpanded] = useState(false)
-  const [queueExpanded, setQueueExpanded] = useState(false)
   const [pageNum, setPageNum]: any = useState(1)
 
   const authStore = useSelector((state: RootState) => state.authentication)
@@ -65,7 +66,7 @@ export const RealTimeManagement: FC<RealTimeManagementProps> = ({ className }): 
   const toggleFavoriteQueue = (queue: any) => {
     const queueId = queue.queue
     const isFavorite = !queue.favorite
-    store.dispatch.queues.setQueueFavorite(queueId, isFavorite)
+    store.dispatch.queueManagerQueues.setQueueFavorite(queueId, isFavorite)
 
     if (isFavorite) {
       addQueueToFavorites(queueId, authStore.username)
@@ -103,16 +104,34 @@ export const RealTimeManagement: FC<RealTimeManagementProps> = ({ className }): 
   }, [])
 
   const [textFilter, setTextFilter]: any = useState('')
+  const [debouncedTextFilter, setDebouncedTextFilter] = useState(false)
+
+  const toggleDebouncedTextFilter = () => {
+    setDebouncedTextFilter(!debouncedTextFilter)
+  }
+
+  const changeTextFilter = (event: any) => {
+    const newTextFilter = event.target.value
+    setTextFilter(newTextFilter)
+    debouncedUpdateTextFilter()
+  }
+
+  const debouncedUpdateTextFilter = useMemo(
+    () => debounce(toggleDebouncedTextFilter, 400),
+    [debouncedTextFilter],
+  )
+
+  const textFilterRef = useRef() as React.MutableRefObject<HTMLInputElement>
+  const clearTextFilter = () => {
+    setTextFilter('')
+    debouncedUpdateTextFilter()
+    textFilterRef.current.focus()
+  }
 
   const updateTextFilter = (newTextFilter: string) => {
     setTextFilter(newTextFilter)
     setPageNum(1)
   }
-
-  const debouncedUpdateTextFilterQueuesStatistics = useMemo(
-    () => debounce(updateTextFilter, 400),
-    [],
-  )
 
   const debouncedUpdateTextFilterOperatorsStatistics = useMemo(
     () => debounce(updateTextFilter, 400),
@@ -122,73 +141,29 @@ export const RealTimeManagement: FC<RealTimeManagementProps> = ({ className }): 
   // stop invocation of debounced function after unmounting
   useEffect(() => {
     return () => {
-      debouncedUpdateTextFilterQueuesStatistics.cancel()
-    }
-  }, [debouncedUpdateTextFilterQueuesStatistics])
-
-  // stop invocation of debounced function after unmounting
-  useEffect(() => {
-    return () => {
       debouncedUpdateTextFilterOperatorsStatistics.cancel()
     }
   }, [debouncedUpdateTextFilterOperatorsStatistics])
 
-  const [outcomeFilterQueues, setOutcomeFilterQueues]: any = useState('')
-  const updateOutcomeFilterQueues = (newOutcomeFilter: string) => {
-    setOutcomeFilterQueues(newOutcomeFilter)
-    setPageNum(1)
-  }
-
-  const [queuesFilterQueues, setQueuesFilterQueues]: any = useState([])
-  const updateQueuesFilterQueues = (newQueuesFilter: string[]) => {
-    setQueuesFilterQueues(newQueuesFilter)
-    setPageNum(1)
-  }
-
-  const [outcomeFilterOperators, setOutcomeFilterOperators]: any = useState('')
-  const updateOutcomeFilterOperators = (newOutcomeFilter: string) => {
-    setOutcomeFilterQueues(newOutcomeFilter)
-    setPageNum(1)
-  }
-
-  const [queuesFilterOperators, setQueuesFilterOperators]: any = useState([])
-  const updateQueuesFilterOperators = (newQueuesFilter: string[]) => {
-    setQueuesFilterQueues(newQueuesFilter)
-    setPageNum(1)
-  }
-
   const [filteredQueues, setFilteredQueues]: any = useState({})
-
-  const { name, mainPresence, mainextension, avatar, profile } = useSelector(
-    (state: RootState) => state.user,
-  )
 
   const [isApplyingFilters, setApplyingFilters]: any = useState(false)
 
-  const queuesStore = useSelector((state: RootState) => state.queues)
+  const queueManagerStore = useSelector((state: RootState) => state.queueManagerQueues)
 
-  const getQueuesUserLoggedIn = () => {
-    return Object.values(queuesStore.queues)
-      .filter((queue: any) => {
-        return (
-          queue.members[mainextension].loggedIn && queue.members[mainextension].type !== 'static'
-        )
-      })
-      .map((queue: any) => queue.queue)
-  }
-
+  //declaration of apply filter
   const applyFilters = () => {
     setApplyingFilters(true)
 
     // text filter
-    let filteredQueues = Object.values(queuesStore.queues).filter((queue) =>
+    let filteredQueues = Object.values(queueManagerStore.queues).filter((queue) =>
       searchStringInQueue(queue, textFilter),
     )
 
     // sort queues
-    // filteredQueues.sort(sortByProperty('name'))
-    // filteredQueues.sort(sortByProperty('queue'))
-    // filteredQueues.sort(sortByFavorite)
+    filteredQueues.sort(sortByProperty('name'))
+    filteredQueues.sort(sortByProperty('queue'))
+    filteredQueues.sort(sortByFavorite)
 
     setFilteredQueues(filteredQueues)
     setApplyingFilters(false)
@@ -197,12 +172,13 @@ export const RealTimeManagement: FC<RealTimeManagementProps> = ({ className }): 
   // filtered queues
   useEffect(() => {
     applyFilters()
-  }, [queuesStore.queues])
+  }, [queueManagerStore.queues, debouncedTextFilter])
 
   const toggleExpandQueue = (queue: any) => {
+    console.log('this is queue', queue)
     const queueId = queue.queue
     const isExpanded = !queue.expanded
-    store.dispatch.queues.setQueueExpanded(queueId, isExpanded)
+    store.dispatch.queueManagerQueues.setQueueExpanded(queueId, isExpanded)
 
     if (isExpanded) {
       addQueueToExpanded(queueId, authStore.username)
@@ -541,6 +517,10 @@ export const RealTimeManagement: FC<RealTimeManagementProps> = ({ className }): 
     return userMainPresence
   }
 
+  // Labels for queues chart
+  const labelsCalls = ['Connected calls', 'Waiting calls', 'Total']
+  const labelsOperators = ['Online', 'On a break', 'Offline', 'Busy', 'Free']
+
   return (
     <>
       {/* Dashboard queue active section */}
@@ -777,16 +757,35 @@ export const RealTimeManagement: FC<RealTimeManagementProps> = ({ className }): 
         <div className='flex-grow border-b border-gray-200 dark:border-gray-700 mt-1'></div>
 
         {queuesStatisticsExpanded && (
-          <>
-            <RealTimeQueuesFilter
-              updateTextFilter={debouncedUpdateTextFilterQueuesStatistics}
-              updateOutcomeFilter={updateOutcomeFilterQueues}
-              updateQueuesFilter={updateQueuesFilterQueues}
-              className='pt-6'
-            ></RealTimeQueuesFilter>
+          <div className='mx-auto text-center'>
+            <TextInput
+              placeholder={t('Queues.Filter queues') || ''}
+              value={textFilter}
+              onChange={changeTextFilter}
+              ref={textFilterRef}
+              icon={textFilter.length ? faCircleXmark : undefined}
+              onIconClick={() => clearTextFilter()}
+              trailingIcon={true}
+              className='max-w-sm mb-6 mt-8'
+            />
+            {/* no search results */}
+            {queueManagerStore.isLoaded && isEmpty(filteredQueues) && (
+              <EmptyState
+                title={t('Queues.No queues')}
+                description={t('Common.Try changing your search filters') || ''}
+                icon={
+                  <FontAwesomeIcon
+                    icon={faFilter}
+                    className='mx-auto h-12 w-12'
+                    aria-hidden='true'
+                  />
+                }
+              />
+            )}
+
             <ul role='list' className='grid grid-cols-1 gap-6 xl:grid-cols-2 3xl:grid-cols-3'>
               {/* skeleton */}
-              {/* {(!queuesStore.isLoaded || isApplyingFilters) &&
+              {(!queueManagerStore.isLoaded || isApplyingFilters) &&
                 Array.from(Array(3)).map((e, i) => (
                   <li
                     key={i}
@@ -801,14 +800,60 @@ export const RealTimeManagement: FC<RealTimeManagementProps> = ({ className }): 
                       ))}
                     </div>
                   </li>
-                ))} */}
+                ))}
               {/* queues */}
-              {queuesStore.isLoaded &&
+              {queueManagerStore.isLoaded &&
                 Object.keys(filteredQueues).map((key) => {
                   const queue = filteredQueues[key]
+                  const datasetsQueues = [
+                    {
+                      label: 'Calls',
+                      data: [
+                        queue.waitingCallersList.length || 0,
+                        queue.connectedCalls.length || 0,
+                        queue.waitingCallersList.length + queue.connectedCalls.length || 0,
+                      ],
+                      backgroundColor: [
+                        '#059669', // Lost calls
+                        '#064E3B', // Expired time
+                        '#E5E7EB', // Total
+                      ],
+                      borderRadius: 10,
+                      barPercentage: 1,
+                      borderWidth: 0,
+                      borderSkipped: false,
+                      categorySpacing: 6,
+                      barThickness: 25,
+                    },
+                  ]
+                  const datasetsOperators = [
+                    {
+                      label: 'Operators',
+                      data: [
+                        queue.onlineOperators || 0,
+                        queue.numAPausedOperators || 0,
+                        queue.totalOperators - queue.numActiveOperators || 0,
+                        queue.busyOperators || 0,
+                        queue.numActiveOperators - queue.busyOperators || 0,
+                      ],
+                      backgroundColor: [
+                        '#059669', // Online
+                        '#eab308', // On a break
+                        '#E5E7EB', // Offline
+                        '#4b5563', // Busy
+                        '#4ade80', // Free
+                      ],
+                      borderRadius: 10,
+                      barPercentage: 1,
+                      borderWidth: 0,
+                      borderSkipped: false,
+                      categorySpacing: 6,
+                      barThickness: 10,
+                    },
+                  ]
                   return (
                     <div key={queue.queue}>
-                      <li className='col-span-1 rounded-md divide-y shadow divide-gray-200 bg-white dark:divide-gray-700 dark:bg-gray-900'>
+                      <li className='col-span-1 rounded-md shadow divide-gray-200 bg-white dark:divide-gray-700 dark:bg-gray-900'>
                         {/* card header */}
                         <div className='flex flex-col pt-3 pb-5 px-5'>
                           <div className='flex w-full items-center justify-between space-x-6'>
@@ -853,7 +898,23 @@ export const RealTimeManagement: FC<RealTimeManagementProps> = ({ className }): 
                         {queue.expanded && (
                           <>
                             {/* divider */}
-                            <div className='flex-grow border-b border-gray-200 dark:border-gray-700 mt-1'></div>
+                            {/* <div className='flex-grow border-b border-gray-200 dark:border-gray-700 mt-1'></div> */}
+                            <div className='w-full px-8 pt-1'>
+                              <BarChartHorizontalWithTitle
+                                labels={labelsCalls}
+                                datasets={datasetsQueues}
+                                tickColor='#374151'
+                                titleText='Calls'
+                              />
+                            </div>
+                            <div className='w-full px-8 pt-1 pb-6'>
+                              <BarChartHorizontalWithTitle
+                                labels={labelsOperators}
+                                datasets={datasetsOperators}
+                                tickColor='#374151'
+                                titleText='Operators'
+                              />
+                            </div>
                           </>
                         )}
                       </li>
@@ -861,7 +922,7 @@ export const RealTimeManagement: FC<RealTimeManagementProps> = ({ className }): 
                   )
                 })}
             </ul>
-          </>
+          </div>
         )}
       </div>
 
@@ -888,12 +949,12 @@ export const RealTimeManagement: FC<RealTimeManagementProps> = ({ className }): 
         {operatorsStatisticsExpanded && (
           <>
             <div>
-              <RealTimeOperatorsFilter
+              {/* <RealTimeOperatorsFilter
                 updateTextFilter={debouncedUpdateTextFilterOperatorsStatistics}
                 updateOutcomeFilter={updateOutcomeFilterOperators}
                 updateQueuesFilter={updateQueuesFilterOperators}
                 className='pt-6'
-              ></RealTimeOperatorsFilter>
+              ></RealTimeOperatorsFilter> */}
               <div className='mx-auto text-center 5xl:max-w-screen-2xl'>
                 {/* empty state */}
                 {realTimeAgentConvertedArray.length === 0 && (

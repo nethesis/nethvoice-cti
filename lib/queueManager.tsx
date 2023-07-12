@@ -96,6 +96,33 @@ export const retrieveQueueManager = async (
   processQueueManager(queueManagerData, username, mainextension, operators)
 }
 
+export const retrieveOnlyNotManaged = async (selectedQueues: string[]) => {
+  try {
+    const queues = selectedQueues.join(',')
+
+    const { data } = await axios.get(
+      `/astproxy/qmanager_queue_recall/12/${queues}/lost?limit=200&offset=0`,
+    )
+    return data
+  } catch (error) {
+    handleNetworkError(error)
+    throw error
+  }
+}
+
+export const retrieveSelectedNotManaged = async (selectedQueues: any) => {
+  console.log("this is selected", selectedQueues)
+  try {
+    const { data } = await axios.get(
+      `/astproxy/qmanager_queue_recall/12/${selectedQueues}/lost?limit=200&offset=0`,
+    )
+    return data
+  } catch (error) {
+    handleNetworkError(error)
+    throw error
+  }
+}
+
 export const retrieveAndFilterQueueCalls = async (
   pageNum: number,
   textFilter: string,

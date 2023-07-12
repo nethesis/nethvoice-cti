@@ -247,7 +247,7 @@ export const Layout: FC<LayoutProps> = ({ children }) => {
         if (queueManagerFound) {
           let callsQueueManager = queueManagerConnectedCalls[queueManagerFound.queue] || []
           callsQueueManager.push({ conversation, operatorUsername: opName })
-          queueManagerConnectedCalls[queueFound.queue] = callsQueueManager
+          queueManagerConnectedCalls[queueManagerFound.queue] = callsQueueManager
         }
       }
     })
