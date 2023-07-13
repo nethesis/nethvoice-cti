@@ -6,7 +6,7 @@ import { useTranslation } from 'react-i18next'
 import { useSelector } from 'react-redux'
 import { RootState } from '../../store'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
-import { exactDistanceToNowLoc, formatDateLoc, getCallTimeToDisplay } from '../../lib/dateTime'
+import { formatDateLoc, getCallTimeToDisplay } from '../../lib/dateTime'
 import { Tooltip } from 'react-tooltip'
 import { savePreference } from '../../lib/storage'
 import Link from 'next/link'
@@ -50,9 +50,6 @@ import { CallDuration } from '../operators/CallDuration'
 import { sortByProperty, invertObject, sortByBooleanProperty } from '../../lib/utils'
 import BarChartHorizontal from '../chart/HorizontalBarChart'
 import LineChart from '../chart/LineChart'
-import { utcToZonedTime } from 'date-fns-tz'
-
-import { useEventListener } from '../../lib/hooks/useEventListener'
 
 export interface QueueManagementProps extends ComponentProps<'div'> {}
 
@@ -261,69 +258,6 @@ export const QueueManagement: FC<QueueManagementProps> = ({ className }): JSX.El
       getQueuesNotManaged()
     }
   }, [firstRenderNotManaged, isLoadedQueuesNotManaged, queueManagerStore.isLoaded, selectedValue])
-
-  // Create connected calls trough phone-island-conversations from phone-island
-  useEventListener('phone-island-conversations', (data) => {
-    // Get operator information
-    const opName = Object.keys(data)[0]
-
-    // Get conversations information
-    const conversations = data[opName].conversations
-
-    // Check if there are any conversations
-    if (Object.keys(conversations).length === 0) {
-      // No conversations, clear connected calls for all queues
-      Object.keys(queuesList).forEach((queueId) => {
-        const queue = { ...queuesList[queueId] }
-        queue.connectedCalls = {}
-        queuesList[queueId] = queue
-      })
-      return
-    }
-
-    // Update queue connected calls
-    let queueConnectedCalls: any = {}
-
-    Object.values(conversations).forEach((conversation: any) => {
-      if (conversation.throughQueue && conversation.connected && conversation.queueId) {
-        const queueFound = queuesList[conversation.queueId]
-
-        if (queueFound) {
-          let calls = queueConnectedCalls[queueFound.queue] || []
-          calls.push({ conversation, operatorUsername: opName })
-          queueConnectedCalls[queueFound.queue] = calls
-        }
-      }
-    })
-
-    // Update connected calls for each queue in the updatedQueuesList
-    Object.keys(queueConnectedCalls).forEach((queueId: string) => {
-      const connectedCalls = queueConnectedCalls[queueId]
-
-      //check if connected calls is not empty
-      if (connectedCalls && connectedCalls.length > 0) {
-        queuesList[queueId].connectedCalls = connectedCalls
-      } else {
-        queuesList[queueId].connectedCalls = {}
-      }
-    })
-  })
-
-  useEventListener('phone-island-queue-update', (data: any) => {
-    //id related to updated queue
-    const queueId = Object.keys(data)[0]
-
-    //updated queue
-    const queueData = data[queueId]
-    queuesList[selectedValue.queue] = queueData
-
-    // skip events related to unknown queues
-    const knownQueues = Object.keys(queuesList)
-
-    if (!knownQueues.includes(queueId)) {
-      return
-    }
-  })
 
   // Chart functions section
 
@@ -866,15 +800,6 @@ export const QueueManagement: FC<QueueManagementProps> = ({ className }): JSX.El
     setLoadedQueuesNotManaged(false)
   }
 
-  const getCallDistanceToNowTemplate = (callTime: any) => {
-    const timeDistance = exactDistanceToNowLoc(utcToZonedTime(new Date(callTime), 'UTC'), {
-      addSuffix: true,
-      hideSeconds: true,
-    })
-
-    return t('Common.time_distance_ago', { timeDistance })
-  }
-
   return (
     <>
       <Listbox value={selectedValue} onChange={handleSelectedValue}>
@@ -1133,7 +1058,7 @@ export const QueueManagement: FC<QueueManagementProps> = ({ className }): JSX.El
               <div className='pt-8'>
                 <div className='border-b rounded-lg shadow-md border-gray-200 dark:border-gray-700 bg-white dark:bg-gray-900 px-5 py-1 sm: mt-1 relative h-full'>
                   <div className='pt-3'>
-                    <span className='text-sm font-medium leading-6 text-center text-gray-700 dark:text-gray-100'>
+                    <span className='text-lg font-semibold leading-6 text-center text-gray-700 dark:text-gray-100'>
                       {t('QueueManager.Calls duration')}
                     </span>
                   </div>
@@ -1161,7 +1086,7 @@ export const QueueManagement: FC<QueueManagementProps> = ({ className }): JSX.El
                 <div className='border-b rounded-lg shadow-md border-gray-200 dark:border-gray-700 bg-white dark:bg-gray-900 px-5 py-1 sm:mt-1 relative w-full h-full'>
                   <div className='flex justify-between'>
                     <div className='pt-3'>
-                      <span className='text-sm font-medium leading-6 text-center text-gray-700 dark:text-gray-100'>
+                      <span className='text-lg font-semibold leading-6 text-center text-gray-700 dark:text-gray-100'>
                         {t('QueueManager.Calls')}
                       </span>
                     </div>
@@ -1204,7 +1129,7 @@ export const QueueManagement: FC<QueueManagementProps> = ({ className }): JSX.El
                 <div className='border-b rounded-lg shadow-md border-gray-200 dark:border-gray-700 bg-white dark:bg-gray-900 px-5 py-1 sm: mt-1 relative h-full'>
                   <div className='flex justify-between'>
                     <div className='pt-3'>
-                      <span className='text-sm font-medium leading-6 text-center text-gray-700 dark:text-gray-100'>
+                      <span className='text-lg font-semibold leading-6 text-center text-gray-700 dark:text-gray-100'>
                         {t('QueueManager.Customers to manage')}
                       </span>
                     </div>
@@ -1393,7 +1318,7 @@ export const QueueManagement: FC<QueueManagementProps> = ({ className }): JSX.El
                     {queueManagerStore &&
                     queueManagerStore?.isLoaded &&
                     queueManagerStore?.queues[selectedValue?.queue] &&
-                    isEmpty(queueManagerStore?.queues[selectedValue.queue]?.waitingCallers) ? (
+                    isEmpty(queueManagerStore?.queues[selectedValue.queue]?.waitingCallersList) ? (
                       <div className='p-4'>{t('Queues.No calls')}</div>
                     ) : (
                       <div className='-my-2 -mx-4 overflow-x-auto sm:-mx-6 lg:-mx-8'>

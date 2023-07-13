@@ -19,6 +19,8 @@ export const DEFAULT_CALLS_LOAD_PERIOD = 12
 export const INFINITE_SCROLL_QUEUE_OPERATORS_PAGE_SIZE = 15
 export const DEFAULT_SORT_BY_QUEUE_MANAGEMENT = 'name'
 export const DEFAULT_STATUS_FILTER_QUEUE_MANAGEMENT = 'all'
+export const DEFAULT_SORT_BY_REALTIME = 'name'
+export const DEFAULT_STATUS_FILTER_REALTIME = 'all'
 export const DEFAULT_SORT_BY_SUMMARY = 'name'
 export const DEFAULT_STATUS_FILTER_SUMMARY = 'all'
 
@@ -111,7 +113,6 @@ export const retrieveOnlyNotManaged = async (selectedQueues: string[]) => {
 }
 
 export const retrieveSelectedNotManaged = async (selectedQueues: any) => {
-  console.log("this is selected", selectedQueues)
   try {
     const { data } = await axios.get(
       `/astproxy/qmanager_queue_recall/12/${selectedQueues}/lost?limit=200&offset=0`,
@@ -172,6 +173,14 @@ export const getFilterValuesQueuesManagement = (currentUsername: string) => {
   return { status, sortBy }
 }
 
+export const getFilterValuesRealtime = (currentUsername: string) => {
+  const status =
+    loadPreference('realtimeStatusFilter', currentUsername) || DEFAULT_STATUS_FILTER_REALTIME
+  const sortBy = loadPreference('realtimeStatusSortBy', currentUsername) || DEFAULT_SORT_BY_REALTIME
+  const selectedQueues = loadPreference('realtimeSelectedQueues', currentUsername) || []
+  return { status, sortBy, selectedQueues }
+}
+
 export function searchStringInQueuesMembers(operator: any, queryText: string) {
   const regex = /[^a-zA-Z0-9]/g
   queryText = queryText.replace(regex, '')
@@ -185,6 +194,28 @@ export function searchStringInQueuesMembers(operator: any, queryText: string) {
   if (found) {
     return true
   }
+}
+
+// Function to filter operators inside realtime tab
+export function searchOperatorsInQueuesMembers(
+  operator: any,
+  queryText: string,
+  queuesFilter: string[],
+) {
+  const regex = /[^a-zA-Z0-9]/g
+  queryText = queryText.replace(regex, '')
+  let found = false
+
+  // search in string attributes
+  found = ['name', 'member'].some((attrName) => {
+    return new RegExp(queryText, 'i').test(operator[attrName]?.replace(regex, ''))
+  })
+
+  if (found && queuesFilter.some((queue) => operator.queues?.[queue]?.queue)) {
+    return true
+  }
+
+  return false
 }
 
 export const searchStringInCall = (call: any, queryText: string) => {

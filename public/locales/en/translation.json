@@ -511,6 +511,8 @@
     "Caller": "Caller",
     "Go to not managed customers": "Go to not managed customers",
     "No customers to manage": "No customers to manage",
-    "There are no customers to manage": "There are no customers to manage"
+    "There are no customers to manage": "There are no customers to manage",
+    "Queues": "Queues",
+    "Realtime operators filters": "Realtime operators filters"
   }
 }

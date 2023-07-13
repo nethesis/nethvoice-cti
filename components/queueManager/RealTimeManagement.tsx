@@ -23,6 +23,7 @@ import {
   faPhone,
   faCircleXmark,
   faFilter,
+  faChevronRight,
 } from '@fortawesome/free-solid-svg-icons'
 import { faStar as faStarLight } from '@nethesis/nethesis-light-svg-icons'
 import {
@@ -33,13 +34,17 @@ import {
   removeQueueFromExpanded,
 } from '../../lib/queuesLib'
 
-import { getQueues, getAgentsStats, getExpandedRealtimeValue } from '../../lib/queueManager'
-import { RealTimeOperatorsFilter } from './RealTimeOperatorsFilter'
+import {
+  getAgentsStats,
+  getExpandedRealtimeValue,
+  searchOperatorsInQueuesMembers,
+} from '../../lib/queueManager'
 import InfiniteScroll from 'react-infinite-scroll-component'
 import { getInfiniteScrollOperatorsPageSize } from '../../lib/operators'
 import { sortByProperty, invertObject, sortByFavorite } from '../../lib/utils'
 import { savePreference } from '../../lib/storage'
 import BarChartHorizontalWithTitle from '../chart/HorizontalWithTitle'
+import { RealTimeOperatorsFilter } from './RealTimeOperatorsFilter'
 
 export interface RealTimeManagementProps extends ComponentProps<'div'> {}
 
@@ -59,9 +64,13 @@ export const RealTimeManagement: FC<RealTimeManagementProps> = ({ className }): 
 
   const [queuesStatisticsExpanded, setQueuesStatisticsExpanded] = useState(false)
   const [operatorsStatisticsExpanded, setOperatorsStatisticsExpanded] = useState(false)
-  const [pageNum, setPageNum]: any = useState(1)
+
+  const [realTimeAgent, setRealTimeAgent] = useState<any>({})
+  const [realTimeAgentConvertedArray, setRealTimeAgentConvertedArray] = useState<any>([])
 
   const authStore = useSelector((state: RootState) => state.authentication)
+
+  const queueManagerStore = useSelector((state: RootState) => state.queueManagerQueues)
 
   const toggleFavoriteQueue = (queue: any) => {
     const queueId = queue.queue
@@ -103,6 +112,7 @@ export const RealTimeManagement: FC<RealTimeManagementProps> = ({ className }): 
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [])
 
+  // Queues filter section
   const [textFilter, setTextFilter]: any = useState('')
   const [debouncedTextFilter, setDebouncedTextFilter] = useState(false)
 
@@ -128,31 +138,48 @@ export const RealTimeManagement: FC<RealTimeManagementProps> = ({ className }): 
     textFilterRef.current.focus()
   }
 
-  const updateTextFilter = (newTextFilter: string) => {
-    setTextFilter(newTextFilter)
-    setPageNum(1)
+  // stop invocation of debounced function after unmounting
+  useEffect(() => {
+    return () => {
+      debouncedUpdateTextFilter.cancel()
+    }
+  }, [debouncedUpdateTextFilter])
+
+  //End of queues text filter
+
+  // Operators filter section
+  const [textFilterOperators, setTextFilterOperators]: any = useState('')
+  const updateTextFilterOperators = (newTextFilterOperators: string) => {
+    setTextFilterOperators(newTextFilterOperators)
   }
 
-  const debouncedUpdateTextFilterOperatorsStatistics = useMemo(
-    () => debounce(updateTextFilter, 400),
+  const debouncedUpdateTextFilterOperator = useMemo(
+    () => debounce(updateTextFilterOperators, 400),
     [],
   )
 
   // stop invocation of debounced function after unmounting
   useEffect(() => {
     return () => {
-      debouncedUpdateTextFilterOperatorsStatistics.cancel()
+      debouncedUpdateTextFilterOperator.cancel()
     }
-  }, [debouncedUpdateTextFilterOperatorsStatistics])
+  }, [debouncedUpdateTextFilterOperator])
+
+  //Update selected queues
+  const [queuesFilter, setQueuesFilter]: any = useState([])
+  const updateQueuesFilter = (newQueuesFilter: string[]) => {
+    setQueuesFilter(newQueuesFilter)
+    // setCallsLoaded(false)
+  }
+
+  //End of operators filter
 
   const [filteredQueues, setFilteredQueues]: any = useState({})
 
   const [isApplyingFilters, setApplyingFilters]: any = useState(false)
 
-  const queueManagerStore = useSelector((state: RootState) => state.queueManagerQueues)
-
   //declaration of apply filter
-  const applyFilters = () => {
+  const applyFiltersQueues = () => {
     setApplyingFilters(true)
 
     // text filter
@@ -169,13 +196,40 @@ export const RealTimeManagement: FC<RealTimeManagementProps> = ({ className }): 
     setApplyingFilters(false)
   }
 
+  const [filteredAgentMembers, setFilteredAgentMembers]: any = useState([])
+
+  const [isApplyingFiltersOperators, setApplyingFiltersOperators]: any = useState(false)
+
+  const applyFiltersOperators = () => {
+    setApplyingFiltersOperators(true)
+    // text filter
+    let filteredAgentMembers: any = Object.values(realTimeAgentConvertedArray).filter((op) =>
+      searchOperatorsInQueuesMembers(op, textFilterOperators, queuesFilter),
+    )
+
+    setFilteredAgentMembers(filteredAgentMembers)
+
+    setInfiniteScrollOperators(filteredAgentMembers.slice(0, infiniteScrollLastIndex))
+    const hasMore = infiniteScrollLastIndex < filteredAgentMembers.length
+    setInfiniteScrollHasMore(hasMore)
+    setApplyingFiltersOperators(false)
+  }
+
   // filtered queues
   useEffect(() => {
-    applyFilters()
-  }, [queueManagerStore.queues, debouncedTextFilter])
+    applyFiltersQueues()
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [queueManagerStore, textFilter])
+
+  // filtered operators
+  useEffect(() => {
+    if (realTimeAgentConvertedArray) {
+      applyFiltersOperators()
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [realTimeAgentConvertedArray, textFilterOperators, queuesFilter])
 
   const toggleExpandQueue = (queue: any) => {
-    console.log('this is queue', queue)
     const queueId = queue.queue
     const isExpanded = !queue.expanded
     store.dispatch.queueManagerQueues.setQueueExpanded(queueId, isExpanded)
@@ -185,7 +239,7 @@ export const RealTimeManagement: FC<RealTimeManagementProps> = ({ className }): 
     } else {
       removeQueueFromExpanded(queueId, authStore.username)
     }
-    applyFilters()
+    applyFiltersQueues()
   }
 
   const [openedCardIndexes, setOpenedCardIndexes] = useState<number[]>([])
@@ -197,33 +251,6 @@ export const RealTimeManagement: FC<RealTimeManagementProps> = ({ className }): 
       setOpenedCardIndexes([...openedCardIndexes, index])
     }
   }
-
-  const [firstRenderQueuesList, setFirstRenderQueuesList]: any = useState(true)
-  const [isLoadedQueues, setLoadedQueues] = useState(false)
-  const [queuesList, setQueuesList] = useState<any>({})
-  const [openedCardAgent, setOpenedCardAgent] = useState<number | null>(null)
-
-  //get queues list
-  useEffect(() => {
-    // Avoid api double calling
-    if (firstRenderQueuesList) {
-      setFirstRenderQueuesList(false)
-      return
-    }
-    async function getQueuesInformation() {
-      setLoadedQueues(false)
-      try {
-        const res = await getQueues()
-        setQueuesList(res)
-      } catch (err) {
-        console.error(err)
-      }
-      setLoadedQueues(true)
-    }
-    if (!isLoadedQueues) {
-      getQueuesInformation()
-    }
-  }, [firstRenderQueuesList, isLoadedQueues])
 
   // load extensions information from the store
   const operatorsStore = useSelector((state: RootState) => state.operators) as Record<string, any>
@@ -244,7 +271,7 @@ export const RealTimeManagement: FC<RealTimeManagementProps> = ({ className }): 
         tot: 0,
       }
 
-      for (const q in queuesList) {
+      for (const q in queueManagerStore?.queues) {
         updatedCounters.counters[q] = {
           total: 0,
           waiting: 0,
@@ -265,13 +292,13 @@ export const RealTimeManagement: FC<RealTimeManagementProps> = ({ className }): 
       let busyCount = 0
       let freeCount = 0
 
-      for (const q in queuesList) {
-        const waitingCallersCount = Object.keys(queuesList[q].waitingCallers).length
+      for (const q in queueManagerStore?.queues) {
+        const waitingCallersCount = Object.keys(queueManagerStore?.queues[q].waitingCallers).length
         updatedCounters.counters[q].waiting = waitingCallersCount
         waitingCount += waitingCallersCount
 
-        for (const m in queuesList[q].members) {
-          const member = queuesList[q].members[m]
+        for (const m in queueManagerStore?.queues[q].members) {
+          const member = queueManagerStore?.queues[q].members[m]
 
           if (member.loggedIn === true) {
             updatedCounters.counters[q].online += 1
@@ -308,7 +335,7 @@ export const RealTimeManagement: FC<RealTimeManagementProps> = ({ className }): 
           if (
             conversation.connected === true &&
             conversation.throughQueue === true &&
-            queuesList[conversation.queueId] !== undefined
+            queueManagerStore?.queues[conversation.queueId] !== undefined
           ) {
             const queueId = conversation.queueId
             if (updatedCounters.counters[queueId]) {
@@ -350,10 +377,7 @@ export const RealTimeManagement: FC<RealTimeManagementProps> = ({ className }): 
     }
 
     updateCounters()
-  }, [queuesList, operatorsStore])
-
-  const [realTimeAgent, setRealTimeAgent] = useState<any>({})
-  const [realTimeAgentConvertedArray, setRealTimeAgentConvertedArray] = useState<any>([])
+  }, [queueManagerStore, operatorsStore])
 
   useEffect(() => {
     // Function to fetch real-time agent data
@@ -362,8 +386,8 @@ export const RealTimeManagement: FC<RealTimeManagementProps> = ({ className }): 
         const newRealTimeAgents: any = {} // New object for agents
 
         // Iterate through each queue in queuesList
-        for (const queueId in queuesList) {
-          const queue = queuesList[queueId]
+        for (const queueId in queueManagerStore?.queues) {
+          const queue = queueManagerStore?.queues[queueId]
 
           // Iterate through each member in the queue
           for (const memberId in queue.members) {
@@ -436,23 +460,23 @@ export const RealTimeManagement: FC<RealTimeManagementProps> = ({ className }): 
         const agentArray: any[] = Object.values(newRealTimeAgents)
 
         agentArray.forEach((member: any) => {
-          if (invertedOperatorInformation[member.name]) {
-            member.shortname = invertedOperatorInformation[member.name]
-          }
+          Object.values(member.queues).some((queue: any) => {
+            member.shortname = queue.shortname
+            return
+          })
         })
-
         setRealTimeAgentConvertedArray(agentArray)
-        setInfiniteScrollOperators(agentArray.slice(0, infiniteScrollLastIndex))
-        const hasMore = infiniteScrollLastIndex < agentArray.length
-        setInfiniteScrollHasMore(hasMore)
-        setApplyingFilters(false)
+        // setInfiniteScrollOperators(agentArray.slice(0, infiniteScrollLastIndex))
+        // const hasMore = infiniteScrollLastIndex < agentArray.length
+        // setInfiniteScrollHasMore(hasMore)
+        // setApplyingFilters(false)
       } catch (err) {
         console.error(err)
       }
     }
 
     getRealTimeAgents()
-  }, [queuesList])
+  }, [queueManagerStore])
 
   const updateFromLastPause = (u: string, n: string, type: string) => {
     // TODO
@@ -465,8 +489,8 @@ export const RealTimeManagement: FC<RealTimeManagementProps> = ({ className }): 
   const showMoreInfiniteScrollOperators = () => {
     const lastIndex = infiniteScrollLastIndex + infiniteScrollOperatorsPageSize
     setInfiniteScrollLastIndex(lastIndex)
-    setInfiniteScrollOperators(realTimeAgentConvertedArray.slice(0, lastIndex))
-    const hasMore = lastIndex < realTimeAgentConvertedArray.length
+    setInfiniteScrollOperators(filteredAgentMembers.slice(0, lastIndex))
+    const hasMore = lastIndex < filteredAgentMembers.length
     setInfiniteScrollHasMore(hasMore)
   }
 
@@ -518,7 +542,7 @@ export const RealTimeManagement: FC<RealTimeManagementProps> = ({ className }): 
   }
 
   // Labels for queues chart
-  const labelsCalls = ['Connected calls', 'Waiting calls', 'Total']
+  const labelsCalls = ['Waiting calls', 'Connected calls', 'Total']
   const labelsOperators = ['Online', 'On a break', 'Offline', 'Busy', 'Free']
 
   return (
@@ -949,15 +973,14 @@ export const RealTimeManagement: FC<RealTimeManagementProps> = ({ className }): 
         {operatorsStatisticsExpanded && (
           <>
             <div>
-              {/* <RealTimeOperatorsFilter
-                updateTextFilter={debouncedUpdateTextFilterOperatorsStatistics}
-                updateOutcomeFilter={updateOutcomeFilterOperators}
-                updateQueuesFilter={updateQueuesFilterOperators}
+              <RealTimeOperatorsFilter
+                updateTextFilter={debouncedUpdateTextFilterOperator}
+                updateQueuesFilter={updateQueuesFilter}
                 className='pt-6'
-              ></RealTimeOperatorsFilter> */}
+              ></RealTimeOperatorsFilter>
               <div className='mx-auto text-center 5xl:max-w-screen-2xl'>
                 {/* empty state */}
-                {realTimeAgentConvertedArray.length === 0 && (
+                {filteredAgentMembers.length === 0 && (
                   <EmptyState
                     title='No agents'
                     description='There is no agent'
@@ -971,38 +994,38 @@ export const RealTimeManagement: FC<RealTimeManagementProps> = ({ className }): 
                   ></EmptyState>
                 )}
                 {/* skeleton */}
-                {/* {allQueuesStats && agentMembers.length > 0 && (
-                    <ul
-                      role='list'
-                      className='mt-4 grid grid-cols-1 gap-4 sm:grid-cols-2 2xl:grid-cols-3 5xl:grid-cols-4 5xl:max-w-screen-2xl'
-                    >
-                      {Array.from(Array(24)).map((e, index) => (
-                        <li key={index} className='px-1'>
-                          <button
-                            type='button'
-                            className='group flex w-full items-center justify-between space-x-3 rounded-lg p-2 text-left focus:outline-none focus:ring-2 focus:ring-offset-2 bg-white dark:bg-gray-900 cursor-default'
-                          >
-                            <div className='flex min-w-0 flex-1 items-center space-x-3'>
-                              <div className='block flex-shrink-0'>
-                                <div className='animate-pulse rounded-full h-10 w-10 mx-auto bg-gray-300 dark:bg-gray-600'></div>
-                              </div>
-                              <span className='block min-w-0 flex-1'>
-                                <div className='animate-pulse h-4 rounded bg-gray-300 dark:bg-gray-600'></div>
-                              </span>
+                {!queueManagerStore.isLoaded && (
+                  <ul
+                    role='list'
+                    className='mt-4 grid grid-cols-1 gap-4 sm:grid-cols-2 2xl:grid-cols-3 5xl:grid-cols-4 5xl:max-w-screen-2xl'
+                  >
+                    {Array.from(Array(24)).map((e, index) => (
+                      <li key={index} className='px-1'>
+                        <button
+                          type='button'
+                          className='group flex w-full items-center justify-between space-x-3 rounded-lg p-2 text-left focus:outline-none focus:ring-2 focus:ring-offset-2 bg-white dark:bg-gray-900 cursor-default'
+                        >
+                          <div className='flex min-w-0 flex-1 items-center space-x-3'>
+                            <div className='block flex-shrink-0'>
+                              <div className='animate-pulse rounded-full h-10 w-10 mx-auto bg-gray-300 dark:bg-gray-600'></div>
                             </div>
-                            <span className='inline-flex h-10 w-10 flex-shrink-0 items-center justify-center'>
-                              <FontAwesomeIcon
-                                icon={faChevronRight}
-                                className='h-3 w-3 text-gray-400 dark:text-gray-500'
-                                aria-hidden='true'
-                              />
+                            <span className='block min-w-0 flex-1'>
+                              <div className='animate-pulse h-4 rounded bg-gray-300 dark:bg-gray-600'></div>
                             </span>
-                          </button>
-                        </li>
-                      ))}
-                    </ul>
-                  )} */}
-                {realTimeAgentConvertedArray.length > 0 && (
+                          </div>
+                          <span className='inline-flex h-10 w-10 flex-shrink-0 items-center justify-center'>
+                            <FontAwesomeIcon
+                              icon={faChevronRight}
+                              className='h-3 w-3 text-gray-400 dark:text-gray-500'
+                              aria-hidden='true'
+                            />
+                          </span>
+                        </button>
+                      </li>
+                    ))}
+                  </ul>
+                )}
+                {filteredAgentMembers.length > 0 && (
                   <InfiniteScroll
                     dataLength={infiniteScrollOperators.length}
                     next={showMoreInfiniteScrollOperators}
