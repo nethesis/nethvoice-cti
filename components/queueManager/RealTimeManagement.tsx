@@ -41,10 +41,11 @@ import {
 } from '../../lib/queueManager'
 import InfiniteScroll from 'react-infinite-scroll-component'
 import { getInfiniteScrollOperatorsPageSize } from '../../lib/operators'
-import { sortByProperty, invertObject, sortByFavorite } from '../../lib/utils'
+import { sortByProperty, sortByFavorite } from '../../lib/utils'
 import { savePreference } from '../../lib/storage'
 import BarChartHorizontalWithTitle from '../chart/HorizontalWithTitle'
 import { RealTimeOperatorsFilter } from './RealTimeOperatorsFilter'
+import { openShowOperatorDrawer } from '../../lib/operators'
 
 export interface RealTimeManagementProps extends ComponentProps<'div'> {}
 
@@ -71,6 +72,9 @@ export const RealTimeManagement: FC<RealTimeManagementProps> = ({ className }): 
   const authStore = useSelector((state: RootState) => state.authentication)
 
   const queueManagerStore = useSelector((state: RootState) => state.queueManagerQueues)
+
+  // load extensions information from the store
+  const { operators } = useSelector((state: RootState) => state.operators) as Record<string, any>
 
   const toggleFavoriteQueue = (queue: any) => {
     const queueId = queue.queue
@@ -492,53 +496,6 @@ export const RealTimeManagement: FC<RealTimeManagementProps> = ({ className }): 
     setInfiniteScrollOperators(filteredAgentMembers.slice(0, lastIndex))
     const hasMore = lastIndex < filteredAgentMembers.length
     setInfiniteScrollHasMore(hasMore)
-  }
-
-  const [invertedOperatorInformation, setInvertedOperatorInformation] = useState<any>()
-
-  // invert key to use getAvatarData function
-  useEffect(() => {
-    if (operatorsStore) {
-      setInvertedOperatorInformation(invertObject(operatorsStore.operators))
-    }
-  }, [operatorsStore])
-
-  const [avatarIcon, setAvatarIcon] = useState<any>()
-
-  // get operator avatar base64 from the store
-  useEffect(() => {
-    if (operatorsStore && !avatarIcon) {
-      setAvatarIcon(operatorsStore.avatars)
-    }
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [])
-
-  // Get avatar icon for each selected queue agents
-  function getAvatarData(selectedQueueAgent: any) {
-    let userAvatarData = ''
-    if (selectedQueueAgent.shortname && avatarIcon) {
-      for (const username in avatarIcon) {
-        if (username === selectedQueueAgent.shortname) {
-          userAvatarData = avatarIcon[username]
-          break
-        }
-      }
-    }
-    return userAvatarData
-  }
-
-  // Set status dot to avatar icon
-  function getAvatarMainPresence(selectedQueueAgent: any) {
-    let userMainPresence = null
-    let operatorInformation = operatorsStore.operators
-    if (selectedQueueAgent.shortname && operatorInformation) {
-      for (const username in operatorInformation) {
-        if (username === selectedQueueAgent.shortname) {
-          userMainPresence = operatorInformation[username].presence
-        }
-      }
-    }
-    return userMainPresence
   }
 
   // Labels for queues chart
@@ -1059,13 +1016,15 @@ export const RealTimeManagement: FC<RealTimeManagementProps> = ({ className }): 
                                   <div className='flex items-center space-x-2'>
                                     <span className='block flex-shrink-0'>
                                       <Avatar
-                                        src={getAvatarData(operator)}
+                                        rounded='full'
+                                        src={operators[operator.shortname].avatarBase64}
                                         placeholderType='operator'
-                                        size='large'
-                                        bordered
-                                        // onClick={() => openShowOperatorDrawer(operator)}
-                                        className='mx-auto cursor-pointer'
-                                        status={getAvatarMainPresence(operator)}
+                                        size='small'
+                                        status={operators[operator.shortname].mainPresence}
+                                        onClick={() =>
+                                          openShowOperatorDrawer(operators[operator.shortname])
+                                        }
+                                        className='cursor-pointer'
                                       />
                                     </span>
                                     <div className='flex-1 pl-2'>

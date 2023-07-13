@@ -39,8 +39,6 @@ import {
   groupDataByHourLineCallsChart,
   groupDataFailedCallsHourLineChart,
   getExpandedQueueManagerDashboardValue,
-  getAvatarData,
-  getAvatarMainPresence,
   initTopSparklineChartsData,
   initHourlyChartsDataPerQueues,
   getFullUsername,
@@ -50,11 +48,12 @@ import {
   setOperatorInformationDrawer,
   getFormattedTimeFromAlarmsList,
   getAlarmDescription,
-  retrieveOnlyNotManaged,
 } from '../../lib/queueManager'
 import { invertObject } from '../../lib/utils'
 import BarChart from '../chart/BarChart'
 import LineChart from '../chart/LineChart'
+
+import { openShowOperatorDrawer } from '../../lib/operators'
 
 export interface QueueManagerDashboardProps extends ComponentProps<'div'> {}
 
@@ -69,21 +68,13 @@ export const QueueManagerDashboard: FC<QueueManagerDashboardProps> = ({
   const [firstRenderQueuesAgents, setFirstRenderQueuesAgents]: any = useState(true)
   const [firstRenderAlarmList, setFirstRenderAlarmList]: any = useState(true)
 
+  const { operators } = useSelector((state: RootState) => state.operators)
   // Call api interval update ( every 2 minutes)
   const [updateDashboardInterval, SetUpdateDashboardInterval] = useState(120000)
 
   // load operators information from the store
   const operatorsStore = useSelector((state: RootState) => state.operators)
-  const [avatarIcon, setAvatarIcon] = useState<any>()
   const [operatorInformation, setOperatorInformation] = useState<any>()
-
-  // get operator avatar base64 from the store
-  useEffect(() => {
-    if (operatorsStore && !avatarIcon) {
-      setAvatarIcon(operatorsStore.avatars)
-    }
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [])
 
   // get operator information from the store
   useEffect(() => {
@@ -173,7 +164,6 @@ export const QueueManagerDashboard: FC<QueueManagerDashboardProps> = ({
     }
   }, [firstRenderQueuesList, isLoadedQueues])
 
-  // const queueManagerStore = useSelector((state: RootState) => state.queueManagerQueues)
   // const [calls, setCalls]: any = useState({})
   // const [firstRenderNotManaged, setFirstRenderNotManaged]: any = useState(true)
   // const [isLoadedQueuesNotManaged, setLoadedQueuesNotManaged] = useState(false)
@@ -722,7 +712,7 @@ export const QueueManagerDashboard: FC<QueueManagerDashboardProps> = ({
   useEffect(() => {
     if (isLoadedQueuesAgents) {
       let avgRecallTime = avgRecallTimeRanks(agentsStatsList)
-      
+
       const invertedOperatorInformation = invertObject(operatorInformation)
       const avgRecallTimeArray = Object.entries(avgRecallTime).map(
         ([name, data]: [string, any]) => ({
@@ -1348,25 +1338,22 @@ export const QueueManagerDashboard: FC<QueueManagerDashboardProps> = ({
                                             />
                                           ) : (
                                             <Avatar
-                                              src={getAvatarData(agent, avatarIcon)}
+                                              rounded='full'
+                                              src={operators[agent.shortname]?.avatarBase64}
                                               placeholderType='operator'
                                               size='small'
-                                              bordered
-                                              className='cursor-pointer'
-                                              status={getAvatarMainPresence(
-                                                agent,
-                                                operatorInformation,
-                                              )}
+                                              status={operators[agent.shortname]?.mainPresence}
                                               onClick={() =>
-                                                setOperatorInformationDrawer(agent, operatorsStore)
+                                                openShowOperatorDrawer(operators[agent.shortname])
                                               }
+                                              className='cursor-pointer'
                                             />
                                           )}
                                         </div>
                                         <div
                                           className='text-gray-900 dark:text-gray-100 cursor-pointer'
                                           onClick={() =>
-                                            setOperatorInformationDrawer(agent, operatorsStore)
+                                            openShowOperatorDrawer(operators[agent.shortname])
                                           }
                                         >
                                           {isRowEmpty ? '-' : agent.name}
@@ -1473,18 +1460,15 @@ export const QueueManagerDashboard: FC<QueueManagerDashboardProps> = ({
                                             />
                                           ) : (
                                             <Avatar
-                                              src={getAvatarData(agent, avatarIcon)}
+                                              rounded='full'
+                                              src={operators[agent.shortname]?.avatarBase64}
                                               placeholderType='operator'
                                               size='small'
-                                              bordered
-                                              className='cursor-pointer'
-                                              status={getAvatarMainPresence(
-                                                agent,
-                                                operatorInformation,
-                                              )}
+                                              status={operators[agent.shortname]?.mainPresence}
                                               onClick={() =>
-                                                setOperatorInformationDrawer(agent, operatorsStore)
+                                                openShowOperatorDrawer(operators[agent.shortname])
                                               }
+                                              className='cursor-pointer'
                                             />
                                           )}
                                         </div>
@@ -1595,18 +1579,15 @@ export const QueueManagerDashboard: FC<QueueManagerDashboardProps> = ({
                                             />
                                           ) : (
                                             <Avatar
-                                              src={getAvatarData(agent, avatarIcon)}
+                                              rounded='full'
+                                              src={operators[agent.shortname]?.avatarBase64}
                                               placeholderType='operator'
                                               size='small'
-                                              bordered
-                                              className='cursor-pointer'
-                                              status={getAvatarMainPresence(
-                                                agent,
-                                                operatorInformation,
-                                              )}
+                                              status={operators[agent.shortname]?.mainPresence}
                                               onClick={() =>
-                                                setOperatorInformationDrawer(agent, operatorsStore)
+                                                openShowOperatorDrawer(operators[agent.shortname])
                                               }
+                                              className='cursor-pointer'
                                             />
                                           )}
                                         </div>
@@ -1720,18 +1701,15 @@ export const QueueManagerDashboard: FC<QueueManagerDashboardProps> = ({
                                             />
                                           ) : (
                                             <Avatar
-                                              src={getAvatarData(agent, avatarIcon)}
+                                              rounded='full'
+                                              src={operators[agent.shortname]?.avatarBase64}
                                               placeholderType='operator'
                                               size='small'
-                                              bordered
-                                              className='cursor-pointer'
-                                              status={getAvatarMainPresence(
-                                                agent,
-                                                operatorInformation,
-                                              )}
+                                              status={operators[agent.shortname]?.mainPresence}
                                               onClick={() =>
-                                                setOperatorInformationDrawer(agent, operatorsStore)
+                                                openShowOperatorDrawer(operators[agent.shortname])
                                               }
+                                              className='cursor-pointer'
                                             />
                                           )}
                                         </div>
@@ -1845,18 +1823,15 @@ export const QueueManagerDashboard: FC<QueueManagerDashboardProps> = ({
                                             />
                                           ) : (
                                             <Avatar
-                                              src={getAvatarData(agent, avatarIcon)}
+                                              rounded='full'
+                                              src={operators[agent.shortname]?.avatarBase64}
                                               placeholderType='operator'
                                               size='small'
-                                              bordered
-                                              className='cursor-pointer'
-                                              status={getAvatarMainPresence(
-                                                agent,
-                                                operatorInformation,
-                                              )}
+                                              status={operators[agent.shortname]?.mainPresence}
                                               onClick={() =>
-                                                setOperatorInformationDrawer(agent, operatorsStore)
+                                                openShowOperatorDrawer(operators[agent.shortname])
                                               }
+                                              className='cursor-pointer'
                                             />
                                           )}
                                         </div>
@@ -1970,18 +1945,15 @@ export const QueueManagerDashboard: FC<QueueManagerDashboardProps> = ({
                                             />
                                           ) : (
                                             <Avatar
-                                              src={getAvatarData(agent, avatarIcon)}
+                                              rounded='full'
+                                              src={operators[agent.shortname]?.avatarBase64}
                                               placeholderType='operator'
                                               size='small'
-                                              bordered
-                                              className='cursor-pointer'
-                                              status={getAvatarMainPresence(
-                                                agent,
-                                                operatorInformation,
-                                              )}
+                                              status={operators[agent.shortname]?.mainPresence}
                                               onClick={() =>
-                                                setOperatorInformationDrawer(agent, operatorsStore)
+                                                openShowOperatorDrawer(operators[agent.shortname])
                                               }
+                                              className='cursor-pointer'
                                             />
                                           )}
                                         </div>
@@ -2478,18 +2450,15 @@ export const QueueManagerDashboard: FC<QueueManagerDashboardProps> = ({
                                             />
                                           ) : (
                                             <Avatar
-                                              src={getAvatarData(agent, avatarIcon)}
+                                              rounded='full'
+                                              src={operators[agent.shortname]?.avatarBase64}
                                               placeholderType='operator'
                                               size='small'
-                                              bordered
-                                              className='cursor-pointer'
-                                              status={getAvatarMainPresence(
-                                                agent,
-                                                operatorInformation,
-                                              )}
+                                              status={operators[agent.shortname]?.mainPresence}
                                               onClick={() =>
-                                                setOperatorInformationDrawer(agent, operatorsStore)
+                                                openShowOperatorDrawer(operators[agent.shortname])
                                               }
+                                              className='cursor-pointer'
                                             />
                                           )}
                                         </div>

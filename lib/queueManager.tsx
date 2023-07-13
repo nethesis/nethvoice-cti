@@ -657,33 +657,6 @@ export const getExpandedRealtimeValue = (currentUsername: string) => {
   return { expandedQueuesStatistics, expandedOperatorsStatistics }
 }
 
-//Get user avatar icon
-export function getAvatarData(announcement: any, avatarIcon: any) {
-  let userAvatarData = ''
-  if (announcement.shortname && avatarIcon) {
-    for (const username in avatarIcon) {
-      if (username === announcement.shortname) {
-        userAvatarData = avatarIcon[username]
-        break
-      }
-    }
-  }
-  return userAvatarData
-}
-
-//Get operator main presence value
-export function getAvatarMainPresence(operator: any, operatorInformation: any) {
-  let userMainPresence = null
-  if (operator.shortname && operatorInformation) {
-    for (const username in operatorInformation) {
-      if (username === operator.shortname) {
-        userMainPresence = operatorInformation[username].presence
-      }
-    }
-  }
-  return userMainPresence
-}
-
 //find totals
 export const initTopSparklineChartsData = (queuesHistoryData: any) => {
   const queuesHistoryTotalized = {} as Record<string, any>

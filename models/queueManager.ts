@@ -84,9 +84,11 @@ export const queueManagerQueues = createModel<RootModel>()({
       queue.operatorsExpanded = expanded
       return state
     },
-    // setQstats: (state, queueId: number) => {
-    //   const queue = state.queues[queueId]
-    // },
+    setQstats: (state, queueId: string, expanded: boolean) => {
+      const queue = state.queues[queueId]
+      queue.qStats = expanded
+      return state
+    },
     processQueue: (state, payload: ProcessQueuemanagerProps) => {
       let queueData: any = {}
       queueData = { ...payload.queueData }

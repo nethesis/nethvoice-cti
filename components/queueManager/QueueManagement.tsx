@@ -9,6 +9,7 @@ import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { formatDateLoc, getCallTimeToDisplay } from '../../lib/dateTime'
 import { Tooltip } from 'react-tooltip'
 import { savePreference } from '../../lib/storage'
+import { LoggedStatus } from '../queues'
 import Link from 'next/link'
 
 import {
@@ -28,14 +29,13 @@ import {
   faUser,
 } from '@fortawesome/free-solid-svg-icons'
 
+import { openShowOperatorDrawer } from '../../lib/operators'
+
 import { Listbox, Transition } from '@headlessui/react'
 import { QueueManagementFilterOperators } from './QueueManagementFilterOperators'
 import {
   searchStringInQueuesMembers,
   getExpandedQueueManagamentValue,
-  setOperatorInformationDrawer,
-  getAvatarMainPresence,
-  getAvatarData,
   retrieveSelectedNotManaged,
   openShowQueueCallDrawer,
   getCallIcon,
@@ -47,7 +47,7 @@ import { EmptyState, Avatar } from '../common'
 import InfiniteScroll from 'react-infinite-scroll-component'
 import { getInfiniteScrollOperatorsPageSize } from '../../lib/operators'
 import { CallDuration } from '../operators/CallDuration'
-import { sortByProperty, invertObject, sortByBooleanProperty } from '../../lib/utils'
+import { sortByProperty, sortByBooleanProperty } from '../../lib/utils'
 import BarChartHorizontal from '../chart/HorizontalBarChart'
 import LineChart from '../chart/LineChart'
 
@@ -77,17 +77,7 @@ export const QueueManagement: FC<QueueManagementProps> = ({ className }): JSX.El
 
   const [expandedQueueOperators, setExpandedQueueOperators] = useState(false)
 
-  const [operatorInformation, setOperatorInformation] = useState<any>()
-
   const queueManagerStore = useSelector((state: RootState) => state.queueManagerQueues)
-
-  // get operator information from the store
-  useEffect(() => {
-    if (operatorsStore && !operatorInformation) {
-      setOperatorInformation(operatorsStore.operators)
-    }
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [])
 
   const toggleExpandDashboard = () => {
     setExpandedDashboard(!expandedDashboard)
@@ -613,7 +603,6 @@ export const QueueManagement: FC<QueueManagementProps> = ({ className }): JSX.El
 
   // load extensions information from the store
   const operatorsStore = useSelector((state: RootState) => state.operators) as Record<string, any>
-  const [invertedOperatorInformation, setInvertedOperatorInformation] = useState<any>()
 
   const [agentCounters, setAgentCounters] = useState<any>({})
   //get agent values from queues list
@@ -776,29 +765,14 @@ export const QueueManagement: FC<QueueManagementProps> = ({ className }): JSX.El
     }
   }, [selectedValue, textFilter, sortByFilter, statusFilter, queueManagerStore.isLoaded])
 
-  // invert key to use getAvatarData function
-  useEffect(() => {
-    if (operatorsStore) {
-      setInvertedOperatorInformation(invertObject(operatorsStore.operators))
-    }
-  }, [operatorsStore])
-
-  const [avatarIcon, setAvatarIcon] = useState<any>()
-
-  // get operator avatar base64 from the store
-  useEffect(() => {
-    if (operatorsStore && !avatarIcon) {
-      setAvatarIcon(operatorsStore.avatars)
-    }
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [])
-
   const handleSelectedValue = (newValueQueue: any) => {
     setSelectedValue(newValueQueue)
     let currentSelectedQueue = newValueQueue
     savePreference('queueManagementSelectedQueue', currentSelectedQueue, auth.username)
     setLoadedQueuesNotManaged(false)
   }
+
+  const { operators } = useSelector((state: RootState) => state.operators)
 
   return (
     <>
@@ -1446,20 +1420,24 @@ export const QueueManagement: FC<QueueManagementProps> = ({ className }): JSX.El
                                     </td>
                                     <td className='px-2 py-3'>
                                       <div className='flex items-center gap-3 overflow-hidden'>
-                                        {/* <Avatar
-                                        rounded='full'
-                                        src={operators[call.operatorUsername].avatarBase64}
-                                        placeholderType='operator'
-                                        size='small'
-                                        status={operators[call.operatorUsername].mainPresence}
-                                      /> */}
+                                        <Avatar
+                                          rounded='full'
+                                          src={operators[call.operatorUsername].avatarBase64}
+                                          placeholderType='operator'
+                                          size='small'
+                                          status={operators[call.operatorUsername].mainPresence}
+                                          onClick={() =>
+                                            openShowOperatorDrawer(operators[call.operatorUsername])
+                                          }
+                                          className='cursor-pointer'
+                                        />
                                         <div className='flex flex-col overflow-hidden'>
-                                          {/* <div>{operators[call.operatorUsername].name}</div> */}
+                                          <div>{operators[call.operatorUsername].name}</div>
                                           <div className='text-gray-500 dark:text-gray-400'>
-                                            {/* {
-                                            operators[call.operatorUsername].endpoints
-                                              .mainextension[0].id
-                                          } */}
+                                            {
+                                              operators[call.operatorUsername].endpoints
+                                                .mainextension[0].id
+                                            }
                                           </div>
                                         </div>
                                       </div>
@@ -1590,22 +1568,21 @@ export const QueueManagement: FC<QueueManagementProps> = ({ className }): JSX.El
                                 <button
                                   type='button'
                                   onClick={() =>
-                                    setOperatorInformationDrawer(operator, operatorsStore)
+                                    openShowOperatorDrawer(operators[operator.shortname])
                                   }
                                   className='group flex w-full items-center justify-between space-x-3 rounded-lg p-2 text-left focus:outline-none focus:ring-2 focus:ring-offset-2 bg-white dark:bg-gray-900 hover:bg-gray-200 dark:hover:bg-gray-700 focus:ring-primary dark:focus:ring-primary'
                                 >
                                   <span className='flex min-w-0 flex-1 items-center space-x-3'>
                                     <span className='block flex-shrink-0'>
                                       <Avatar
-                                        src={getAvatarData(operator, avatarIcon)}
+                                        rounded='full'
+                                        src={operators[operator.shortname].avatarBase64}
                                         placeholderType='operator'
-                                        size='large'
-                                        bordered
-                                        className='mx-auto cursor-pointer'
-                                        status={getAvatarMainPresence(
-                                          operator,
-                                          operatorInformation,
-                                        )}
+                                        size='small'
+                                        status={operators[operator.shortname].mainPresence}
+                                        onClick={() =>
+                                          openShowOperatorDrawer(operators[operator.shortname])
+                                        }
                                       />
                                     </span>
                                     <span className='block min-w-0 flex-1'>
@@ -1613,26 +1590,14 @@ export const QueueManagement: FC<QueueManagementProps> = ({ className }): JSX.El
                                         {operator.name}
                                       </span>
                                       <span className='block truncate mt-1 text-sm font-medium text-gray-500 dark:text-gray-500'>
-                                        <FontAwesomeIcon
-                                          icon={operator.loggedIn ? faUserCheck : faUserXmark}
-                                          className={`h-4 w-4 mr-2 ${
-                                            operator.loggedIn ? 'text-primary' : 'text-red-400'
-                                          } dark:text-gray-500 cursor-pointer`}
-                                          aria-hidden='true'
+                                        <LoggedStatus
+                                          loggedIn={operator.loggedIn}
+                                          paused={operator.paused}
                                         />
-                                        <span
-                                          className={`${
-                                            operator.loggedIn ? 'text-primary' : 'text-red-400'
-                                          } `}
-                                        >
-                                          {operator.loggedIn
-                                            ? `${t('QueueManager.Logged_in')}`
-                                            : `${t('QueueManager.Logged_out')}`}
-                                        </span>
                                       </span>
                                     </span>
                                   </span>
-                                  <span className='inline-flex h-10 w-10 flex-shrink-0 items-center justify-center'>
+                                  <span className='inline-flex h-10 w-10 flex-shrink-0 items-center justify-center m-2'>
                                     <FontAwesomeIcon
                                       icon={faChevronRight}
                                       className='h-3 w-3 text-gray-400 dark:text-gray-500 cursor-pointer'
