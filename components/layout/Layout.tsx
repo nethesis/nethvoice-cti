@@ -333,7 +333,7 @@ export const Layout: FC<LayoutProps> = ({ children }) => {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [ctiStatus.webRtcError, ctiStatus.isPhoneRinging])
 
-  //check if the user is in the main page but have the wrong icon
+  // Check if the user is in the main page but have the wrong icon
   useEffect(() => {
     if (firstRenderFaviconCheck) {
       setFirstRenderFaviconCheck(false)

@@ -374,7 +374,12 @@
     "Start time": "Start time",
     "End time": "End time",
     "Start date": "Start date",
-    "End date": "End date"
+    "End date": "End date",
+    "New announcement": "New announcement",
+    "Record announcement": "Record announcement",
+    "Upload announcement": "Upload announcement",
+    "Announcement successfully saved": "Announcement successfully saved",
+    "Error saving the announcement": "Error saving the announcement"
   },
   "SpeedDial": {
     "Create": "Create",
