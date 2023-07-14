@@ -219,7 +219,7 @@ export const EditAnnouncementDrawerContent = forwardRef<
       <div className='bg-gray-100 dark:bg-gray-800 py-6 px-6'>
         <div className='flex items-center justify-between'>
           <div className='text-lg font-medium text-gray-700 dark:text-gray-200'>
-            {config.isEdit ? t('Lines.Announcement details') : 'Carica annuncio'}
+            {config.isEdit ? t('Lines.Announcement details') : t('Lines.Add announcement')}
           </div>
           <div className='flex items-center h-7'>
             <SideDrawerCloseIcon />
@@ -394,7 +394,7 @@ export const EditAnnouncementDrawerContent = forwardRef<
                 type='submit'
                 onClick={saveCreatePhoneLines}
                 className='mb-4'
-                disabled={!selectedFile ? true : false}
+                disabled={!selectedFile || !textFilter ? true : false}
               >
                 <FontAwesomeIcon icon={faFloppyDisk} className='mr-2 h-4 w-4' />
                 {t('Common.Save')}

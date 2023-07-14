@@ -46,7 +46,7 @@ export const SaveRecordedAnnouncementDrawerContent = forwardRef<
 
   const enableAnnouncement = async () => {
     let objectEnableAnnouncement = {
-      description: textFilterRef.current.value,
+      description: textFilter,
       privacy: modalAnnouncementType,
       tempFilename: config.recordedFilename,
     }
@@ -94,6 +94,7 @@ export const SaveRecordedAnnouncementDrawerContent = forwardRef<
             icon={textFilter.length ? faCircleXmark : undefined}
             onIconClick={() => clearTextFilter()}
             trailingIcon={true}
+            onChange={(e) => setTextFilter(e.currentTarget.value)}
           />
         </div>
         {/* Privacy name section */}
@@ -135,7 +136,7 @@ export const SaveRecordedAnnouncementDrawerContent = forwardRef<
 
         <div className='flex mt-7'>
           <>
-            <Button variant='primary' type='submit' onClick={enableAnnouncement} className='mb-4'>
+            <Button variant='primary' type='submit' onClick={enableAnnouncement} className='mb-4' disabled={textFilter ? false : true}>
               <FontAwesomeIcon icon={faFloppyDisk} className='mr-2 h-4 w-4' />
               {t('Common.Save')}
             </Button>

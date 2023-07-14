@@ -138,7 +138,9 @@ FAVICON_URL (used for rebranding: specify a URL to an ICO image)
 LOGIN_BACKGROUND_URL (used for rebranding: specify a URL to a PNG image)
 API_ENDPOINT (default: host + port + path)
 API_SCHEME (default: current protocol ["http://"|"https://"])
-WS_ENDPOINT (default: wss://host + port + path + "/ws"))
+WS_ENDPOINT (default: wss://host + port + path + "/ws")
+SIP_HOST (default: "127.0.0.1")
+SIP_PORT (default: "5060")
 ```
 
 Run the container specifying an API endpoint :
