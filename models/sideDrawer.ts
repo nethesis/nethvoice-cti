@@ -7,7 +7,7 @@ import type { RootModel } from '.'
 interface DefaultState {
   isShown: boolean
   contentType: string
-  config: any
+  config: any,
 }
 
 const defaultState: DefaultState = {

@@ -166,7 +166,7 @@ export async function setOffHour(offHourElement: any) {
 
 // Enable message
 export async function enableMsg(msgElement: any) {
-  let userUrlApi = apiUrl + '/offhour/enable_announcement'
+  let userUrlApi = apiUrl + 'offhour/enable_announcement'
 
   try {
     const { data, status } = await axios.post(userUrlApi, msgElement)

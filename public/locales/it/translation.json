@@ -266,7 +266,12 @@
     "All": "Tutti",
     "Configuration type": "Tipo configurazione",
     "No lines available": "Nessuna linea disponibile",
-    "Insert voicemail": "Inserire la segreteria telefonica"
+    "Insert voicemail": "Inserire la segreteria telefonica",
+    "New announcement": "Nuovo annuncio",
+    "Record announcement": "Registra annuncio",
+    "Upload announcement": "Carica annuncio",
+    "Announcement successfully saved": "Annuncio salvato con successo",
+    "Error saving the announcement": "Errore durante il salvataggio dell'annuncio"
   },
   "SpeedDial": {
     "Create": "Crea",

@@ -19,8 +19,8 @@ import {
 } from '@nethesis/nethesis-solid-svg-icons'
 import classNames from 'classnames'
 import { AnnouncementFilter } from './AnnouncementFilter'
-import { useSelector } from 'react-redux'
-import { RootState } from '../../store'
+import { useDispatch, useSelector } from 'react-redux'
+import { Dispatch, RootState } from '../../store'
 import { formatDateLoc, getCallTimeToDisplay } from '../../lib/dateTime'
 import { capitalize } from 'lodash'
 import { getApiEndpoint, getApiScheme, sortByProperty, playFileAudio } from '../../lib/utils'
@@ -44,6 +44,8 @@ export const AnnouncementView: FC<AnnouncementViewProps> = ({ className }): JSX.
   const apiScheme = getApiScheme()
   const downloadUrl = apiScheme + apiEnpoint + '/webrest/static/'
 
+  const dispatch = useDispatch<Dispatch>()
+
   const updateTextFilter = (newTextFilter: string) => {
     setTextFilter(newTextFilter)
     setLinesLoaded(false)
@@ -58,6 +60,33 @@ export const AnnouncementView: FC<AnnouncementViewProps> = ({ className }): JSX.
       debouncedUpdateTextFilter.cancel()
     }
   }, [debouncedUpdateTextFilter])
+
+  async function announcementSavedCallback() {
+    dispatch.sideDrawer.setShown(false)
+    try {
+      const res = await getAnnouncementsFiltered(textFilter.trim(), pageNum)
+      setLines(res.rows)
+      setDataPagination(res)
+    } catch (e) {
+      console.error(e)
+      setLinesError(t('Lines.Cannot retrieve lines') || '')
+    }
+  }
+
+  // Show modal announcement
+  useEventListener('phone-island-recording-save', (modalAnnouncementObjInformation) => {
+    if (modalAnnouncementObjInformation?.tempFileName) {
+      dispatch.sideDrawer.update({
+        isShown: true,
+        contentType: 'showSaveRecordedAnnouncement',
+        config: {
+          isEdit: false,
+          recordedFilename: modalAnnouncementObjInformation.tempFileName,
+          announcementSavedCallback: announcementSavedCallback,
+        },
+      })
+    }
+  })
 
   const [dataPagination, setDataPagination]: any = useState({})
   //Get Lines information

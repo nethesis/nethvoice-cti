@@ -18,9 +18,7 @@ import {
   faFloppyDisk,
   faCircleXmark,
   faFileMusic,
-  faMicrophone,
   faXmark,
-  faPen,
   faTrashCan,
   faEllipsisVertical,
   faTriangleExclamation,
@@ -37,7 +35,6 @@ import {
   modifyMsg,
   deleteMsg,
 } from '../../lib/lines'
-import { useEventListener } from '../../lib/hooks/useEventListener'
 
 export interface EditAnnouncementContentProps extends ComponentPropsWithRef<'div'> {
   config: any
@@ -217,57 +214,12 @@ export const EditAnnouncementDrawerContent = forwardRef<
     setTextFilter(newTextFilter)
   }
 
-  const [isRecordingActive, setIsRecordingActive] = useState(false)
-
-  const handleSubmit = (e: React.FormEvent) => {
-    e.preventDefault()
-    setIsRecordingActive(false)
-  }
-  const descriptionModalInputRef: RefObject<HTMLInputElement> = createRef()
-
-  const closedModalSaved = () => {
-    setIsRecordingActive(false)
-    enableAnnouncement()
-  }
-
-  const [modalAnnouncementType, setModalAnnouncementType] = useState('private')
-  function changeAnnouncementModalTypeSelected(event: any) {
-    const radioButtonTypeSelected = event.target.id
-    setModalAnnouncementType(radioButtonTypeSelected)
-  }
-
-  const [inputTextModal, setInputTextModal] = useState('')
-  const [enableAnnouncementError, setEnableAnnouncementError] = useState('')
-
-  const [tempFileNameAudioUpload, setTempFileNameAudioUpload] = useState('')
-  // show modal announcement
-  useEventListener('phone-island-recording', (modalAnnouncementObjInformation) => {
-    if (modalAnnouncementObjInformation.base64_audio_file) {
-      setTempFileNameAudioUpload(modalAnnouncementObjInformation.base64_audio_file)
-    }
-    setIsRecordingActive(true)
-  })
-
-  const enableAnnouncement = async () => {
-    let objectEnableAnnouncement = {
-      description: inputTextModal,
-      privacy: modalAnnouncementType,
-      tempFIleName: tempFileNameAudioUpload,
-    }
-    try {
-      await enableMsg(objectEnableAnnouncement)
-    } catch (error) {
-      setEnableAnnouncementError('Cannot enable announcement')
-      return
-    }
-  }
-
   return (
     <>
       <div className='bg-gray-100 dark:bg-gray-800 py-6 px-6'>
         <div className='flex items-center justify-between'>
           <div className='text-lg font-medium text-gray-700 dark:text-gray-200'>
-            {config.isEdit ? t('Lines.Announcement details') : t('Lines.Add announcement')}
+            {config.isEdit ? t('Lines.Announcement details') : 'Carica annuncio'}
           </div>
           <div className='flex items-center h-7'>
             <SideDrawerCloseIcon />
@@ -384,19 +336,6 @@ export const EditAnnouncementDrawerContent = forwardRef<
                     />
                   </label>
                 </div>
-                <div className='flex items-center pt-2'>
-                  <span className='flex justify-center py-6'>{t('Common.or')}</span>
-                  <div className='ml-8'>
-                    <Button variant='white' onClick={() => recordingAnnouncement()}>
-                      <FontAwesomeIcon
-                        icon={faMicrophone}
-                        className='h-4 w-4 mr-2 text-gray-500 dark:text-gray-500'
-                        aria-hidden='true'
-                      />{' '}
-                      {t('Lines.Record now')}
-                    </Button>
-                  </div>
-                </div>
               </>
             ) : (
               <>
@@ -467,79 +406,6 @@ export const EditAnnouncementDrawerContent = forwardRef<
           )}
         </div>
       </div>
-
-      {/* Put description to file audio just recorded  */}
-      <Modal
-        show={isRecordingActive}
-        focus={descriptionModalInputRef}
-        onClose={() => setIsRecordingActive(false)}
-      >
-        <form onSubmit={handleSubmit}>
-          <Modal.Content>
-            <div className='mt-3 text-center sm:mt-0 sm:text-left w-full'>
-              <h3 className='text-lg font-medium leading-6 text-gray-900 dark:text-gray-200'>
-                {t('Lines.Enter announcement information')}
-              </h3>
-              <div className='mt-3 flex flex-col gap-2'>
-                <TextInput
-                  placeholder={t('Lines.Description') || ''}
-                  name='number'
-                  ref={descriptionModalInputRef}
-                  value={inputTextModal}
-                  onChange={(event) => setInputTextModal(event.target.value)}
-                />
-              </div>
-              {/* Privacy name section */}
-              <div className='flex items-center justify-between mt-3'>
-                <h4 className='text-md font-medium text-gray-700 dark:text-gray-200'>
-                  {t('Lines.Privacy')}
-                </h4>
-              </div>
-              {/* Radio button for privacy selection */}
-              <fieldset className='mt-2'>
-                <legend className='sr-only'>Announcement type</legend>
-                <div className='space-y-4 sm:flex sm:items-center sm:space-y-0 sm:space-x-10'>
-                  {dateRuleInformations.map((dateRuleInformation) => (
-                    <div
-                      key={dateRuleInformation.id}
-                      className='flex items-center justify-between mt-1'
-                    >
-                      <div className='flex items-center'>
-                        <input
-                          id={dateRuleInformation.id}
-                          name='date-select'
-                          type='radio'
-                          defaultChecked={dateRuleInformation.id === 'private'}
-                          className={`h-4 w-4 border-gray-300 text-primary focus:ring-primaryLight dark:focus:ring-primaryDark ${
-                            modalAnnouncementType === dateRuleInformation.id
-                              ? 'dark:bg-primaryLight dark:text-primary dark:border-gray-600'
-                              : 'dark:bg-gray-700 dark:text-white dark:border-gray-600'
-                          }`}
-                          onChange={changeAnnouncementModalTypeSelected}
-                        />
-                        <label
-                          htmlFor={dateRuleInformation.id}
-                          className='ml-3 block text-sm font-medium leading-6 text-gray-700 dark:text-gray-200'
-                        >
-                          {dateRuleInformation.value}
-                        </label>
-                      </div>
-                    </div>
-                  ))}
-                </div>
-              </fieldset>
-            </div>
-          </Modal.Content>
-          <Modal.Actions>
-            <Button variant='primary' disabled={!inputTextModal} onClick={() => closedModalSaved()}>
-              {t('Common.Save')}
-            </Button>
-            <Button variant='white' onClick={() => setIsRecordingActive(false)}>
-              {t('Common.Cancel')}
-            </Button>
-          </Modal.Actions>
-        </form>
-      </Modal>
 
       {/* Delete announcement modal */}
       <Modal

@@ -3,17 +3,28 @@
 
 import { ComponentPropsWithRef, forwardRef, useRef } from 'react'
 import classNames from 'classnames'
-import { TextInput, Button } from '../common'
+import { TextInput, Button, Dropdown } from '../common'
 import { Fragment, useState, useEffect } from 'react'
 import { Dialog, Popover, Transition, Disclosure } from '@headlessui/react'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
-import { faCircleXmark, faXmark, faPlus, faChevronDown } from '@nethesis/nethesis-solid-svg-icons'
+import {
+  faCircleXmark,
+  faXmark,
+  faPlus,
+  faChevronDown,
+  faMicrophone,
+  faRecordVinyl,
+  faFileUpload,
+  faFileMusic,
+} from '@nethesis/nethesis-solid-svg-icons'
+
 import { useSelector } from 'react-redux'
 import { RootState } from '../../store'
 import { useTranslation } from 'react-i18next'
 import { openCreateAnnouncementDrawer } from '../../lib/lines'
 import { savePreference } from '../../lib/storage'
 import { DEFAULT_SORT_BY_ANNOUNCEMENT, getFilterAnnouncementValues } from '../../lib/lines'
+import { recordingAnnouncement } from '../../lib/lines'
 
 export interface AnnouncementFilterProps extends ComponentPropsWithRef<'div'> {
   updateTextFilter: Function
@@ -291,15 +302,26 @@ export const AnnouncementFilter = forwardRef<HTMLButtonElement, AnnouncementFilt
                 </div>
 
                 {/* Container for add announcement button  */}
-                <div className='flex pb-4 sm:pb-0'>
-                  <Button variant='primary' className='' onClick={openCreateAnnouncementDrawer}>
-                    <FontAwesomeIcon
-                      icon={faPlus}
-                      className='h-4 w-4 mr-2 text-white dark:text-white'
-                    />
-                    <span>{t('Lines.Add announcement')}</span>
+                <Dropdown
+                  position='left'
+                  items={
+                    <>
+                      <Dropdown.Item onClick={recordingAnnouncement}>
+                        <FontAwesomeIcon icon={faRecordVinyl} className='mr-2 h-4 w-4 text-gray-500' />
+                        {t('Lines.Record announcement')}
+                      </Dropdown.Item>
+                      <Dropdown.Item onClick={openCreateAnnouncementDrawer}>
+                        <FontAwesomeIcon icon={faFileMusic} className='mr-2 h-4 w-4 text-gray-500' />
+                        {t('Lines.Upload announcement')}
+                      </Dropdown.Item>
+                    </>
+                  }
+                >
+                  <Button variant='primary'>
+                    <FontAwesomeIcon icon={faPlus} className='mr-2 h-4 w-4' />
+                    {t('Lines.New announcement')}
                   </Button>
-                </div>
+                </Dropdown>
               </div>
 
               {/* Active filters */}
