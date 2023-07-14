@@ -1077,173 +1077,55 @@ export const RealTimeManagement: FC<RealTimeManagementProps> = ({ className }): 
 
                                 {/* login stats */}
                                 <div className='pt-2'>
-                                  <div className='col-span-1 divide-y divide-gray-200 bg-white text-gray-700 dark:divide-gray-700 dark:bg-gray-900 dark:text-gray-200'>
-                                    {/* card header */}
-                                    <div className='px-5 py-4'>
-                                      <h3 className='truncate text-base leading-6 font-medium flex items-center'>
-                                        <FontAwesomeIcon
-                                          icon={faUser}
-                                          className='h-4 w-4 mr-2'
-                                          aria-hidden='true'
-                                        />
-                                        <span>{t('Queues.Login')}</span>
-                                      </h3>
-                                    </div>
-                                    {/* card body */}
-                                    <div className='flex flex-col divide-y divide-gray-200 dark:divide-gray-700'>
-                                      {/* last login */}
-                                      <div className='flex py-2 px-5'>
-                                        <div className='text-gray-500 dark:text-gray-400'>
-                                          {t('Queues.Last login')}
+                                  {Object.values(operator.queues).map(
+                                    (queue: any, queueIndex: number) => (
+                                      <div
+                                        key={queueIndex}
+                                        className='col-span-1 divide-gray-200 bg-white text-gray-700 dark:divide-gray-700 dark:bg-gray-900 dark:text-gray-200 px-4 pb-4'
+                                      >
+                                        {/* card header */}
+                                        <div className='flex items-center justify-between py-2 px-4 bg-gray-100 rounded-md '>
+                                          <h3 className='truncate text-base leading-6 font-medium flex items-center space-x-2'>
+                                            <span>{queue.qname}</span>
+                                            <span>{queue.queue}</span>
+                                          </h3>
                                         </div>
-                                        <div className='w-1/2'>
-                                          {/* {stats.lastLogin || '-'} */}
+                                        <div className='px-5 py-4'>
+                                          <h3 className='truncate text-base leading-6 font-medium flex items-center'>
+                                            <FontAwesomeIcon
+                                              icon={faUser}
+                                              className='h-4 w-4 mr-2'
+                                              aria-hidden='true'
+                                            />
+                                            <span>{t('Queues.Login')}</span>
+                                          </h3>
                                         </div>
-                                      </div>
-                                      {/* last logout */}
-                                      <div className='flex py-2 px-5'>
-                                        <div className='text-gray-500 dark:text-gray-400'>
-                                          {t('Queues.Last logout')}
-                                        </div>
-                                        <div className='w-1/2'>
-                                          {/* {stats.lastLogout || '-'} */}
-                                        </div>
-                                      </div>
-                                    </div>
-                                  </div>
-                                </div>
-
-                                {/* call stats */}
-                                <div className='pt-4'>
-                                  <div className='col-span-1 divide-y divide-gray-200 bg-white text-gray-700 dark:divide-gray-700 dark:bg-gray-900 dark:text-gray-200'>
-                                    {/* card header */}
-                                    <div className='px-5 py-4'>
-                                      <h3 className='truncate text-base leading-6 font-medium flex items-center justify-start'>
-                                        <FontAwesomeIcon
-                                          icon={faPhone}
-                                          className='h-4 w-4 mr-2'
-                                          aria-hidden='true'
-                                        />
-                                        <span>{t('Queues.Calls')}</span>
-                                      </h3>
-                                    </div>
-                                    {/* card body */}
-                                    <div className='flex flex-col divide-y divide-gray-200 dark:divide-gray-700'>
-                                      {/* answered calls */}
-                                      <div className='flex py-2 px-5'>
-                                        <div className=' text-gray-500 dark:text-gray-400'>
-                                          {t('Queues.Answered calls')}
-                                        </div>
-                                        <div className='w-1/2'>
-                                          {/* {stats.answeredCalls || '-'} */}
+                                        {/* divider */}
+                                        <div className='flex-grow border-b border-gray-200 dark:border-gray-700 mt-1'></div>
+                                        {/* card body */}
+                                        <div className='flex flex-col divide-y divide-gray-200 dark:divide-gray-700'>
+                                          {/* last login */}
+                                          <div className='flex py-2 px-5'>
+                                            <div className='text-gray-500 dark:text-gray-400'>
+                                              {t('Queues.Last login')}
+                                            </div>
+                                            <div className='w-1/2'>
+                                              {/* {stats.lastLogin || '-'} */}
+                                            </div>
+                                          </div>
+                                          {/* last logout */}
+                                          <div className='flex py-2 px-5'>
+                                            <div className='text-gray-500 dark:text-gray-400'>
+                                              {t('Queues.Last logout')}
+                                            </div>
+                                            <div className='w-1/2'>
+                                              {/* {stats.lastLogout || '-'} */}
+                                            </div>
+                                          </div>
                                         </div>
                                       </div>
-                                      {/* outgoing calls */}
-                                      <div className='flex py-2 px-5'>
-                                        <div className=' text-gray-500 dark:text-gray-400'>
-                                          {t('Queues.Outgoing calls')}
-                                        </div>
-                                        <div className='w-1/2'>
-                                          {/* {stats.outgoingCalls?.outgoing_calls || '-'} */}
-                                        </div>
-                                      </div>
-                                      {/* missed calls */}
-                                      <div className='flex py-2 px-5'>
-                                        <div className=' text-gray-500 dark:text-gray-400'>
-                                          {t('Queues.Missed calls')}
-                                        </div>
-                                        <div className='w-1/2'>
-                                          {/* {stats.missedCalls || '-'} */}
-                                        </div>
-                                      </div>
-                                      {/* from last call */}
-                                      <div className='flex py-2 px-5'>
-                                        <div className=' text-gray-500 dark:text-gray-400'>
-                                          {t('Queues.From last call')}
-                                        </div>
-                                        <div className='w-1/2'>
-                                          {/* {stats.fromLastCall || '-'} */}
-                                        </div>
-                                      </div>
-                                      {/* time at phone */}
-                                      <div className='flex py-2 px-5'>
-                                        <div className=' text-gray-500 dark:text-gray-400'>
-                                          {t('Queues.Time at phone')}
-                                        </div>
-                                        <div className='w-1/2'>
-                                          {/* {stats.timeAtPhone || '-'} */}
-                                        </div>
-                                      </div>
-                                    </div>
-                                  </div>
-                                </div>
-
-                                {/* call durations */}
-                                <div className='pt-4'>
-                                  <div className='col-span-1 divide-y divide-gray-200 bg-white text-gray-700 dark:divide-gray-700 dark:bg-gray-900 dark:text-gray-200'>
-                                    {/* card header */}
-                                    <div className='px-5 py-4'>
-                                      <h3 className='truncate text-base leading-6 font-medium flex items-center justify-start'>
-                                        <FontAwesomeIcon
-                                          icon={faStopwatch}
-                                          className='h-4 w-4 mr-2'
-                                          aria-hidden='true'
-                                        />
-                                        <span>{t('Queues.Calls duration')}</span>
-                                      </h3>
-                                    </div>
-
-                                    {/* card body */}
-                                    <div className='flex flex-col divide-y divide-gray-200 dark:divide-gray-700'>
-                                      {/* minimum */}
-                                      <div className='flex py-2 px-5'>
-                                        <div className=' text-gray-500 dark:text-gray-400'>
-                                          {t('Queues.Minimum')}
-                                        </div>
-                                        <div className='w-1/2'>
-                                          {/* {formatDurationLoc(stats.allCalls?.min_duration) || '-'} */}
-                                        </div>
-                                      </div>
-                                      {/* maximum */}
-                                      <div className='flex py-2 px-5'>
-                                        <div className=' text-gray-500 dark:text-gray-400'>
-                                          {t('Queues.Maximum')}
-                                        </div>
-                                        <div className='w-1/2'>
-                                          {/* {formatDurationLoc(stats.allCalls?.max_duration) || '-'} */}
-                                        </div>
-                                      </div>
-                                      {/* average */}
-                                      <div className='flex py-2 px-5'>
-                                        <div className=' text-gray-500 dark:text-gray-400'>
-                                          {t('Queues.Average')}
-                                        </div>
-                                        <div className='w-1/2'>
-                                          {/* {formatDurationLoc(stats.allCalls?.avg_duration) || '-'} */}
-                                        </div>
-                                      </div>
-                                      {/* total incoming */}
-                                      <div className='flex py-2 px-5'>
-                                        <div className=' text-gray-500 dark:text-gray-400'>
-                                          {t('Queues.Total incoming')}
-                                        </div>
-                                        <div className='w-1/2'>
-                                          {/* {formatDurationLoc(stats.incomingCalls?.duration_incoming) || */}
-                                          {/* '-'} */}
-                                        </div>
-                                      </div>
-                                      {/* total outgoing */}
-                                      <div className='flex py-2 px-5'>
-                                        <div className=' text-gray-500 dark:text-gray-400'>
-                                          {t('Queues.Total outgoing')}
-                                        </div>
-                                        <div className='w-1/2'>
-                                          {/* {formatDurationLoc(stats.outgoingCalls?.duration_outgoing) || */}
-                                          {/* '-'} */}
-                                        </div>
-                                      </div>
-                                    </div>
-                                  </div>
+                                    ),
+                                  )}
                                 </div>
                               </>
                             )}
