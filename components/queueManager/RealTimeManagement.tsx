@@ -46,6 +46,7 @@ import { savePreference } from '../../lib/storage'
 import BarChartHorizontalWithTitle from '../chart/HorizontalWithTitle'
 import { RealTimeOperatorsFilter } from './RealTimeOperatorsFilter'
 import { openShowOperatorDrawer } from '../../lib/operators'
+import { LoggedStatus } from '../queues'
 
 export interface RealTimeManagementProps extends ComponentProps<'div'> {}
 
@@ -1085,10 +1086,18 @@ export const RealTimeManagement: FC<RealTimeManagementProps> = ({ className }): 
                                       >
                                         {/* card header */}
                                         <div className='flex items-center justify-between py-2 px-4 bg-gray-100 rounded-md '>
-                                          <h3 className='truncate text-base leading-6 font-medium flex items-center space-x-2'>
-                                            <span>{queue.qname}</span>
-                                            <span>{queue.queue}</span>
-                                          </h3>
+                                          <div>
+                                            <div className='truncate text-base leading-6 font-medium flex items-center space-x-2'>
+                                              <span>{queue.qname}</span>
+                                              <span>{queue.queue}</span>
+                                            </div>
+                                          </div>
+                                          <div className='flex flex-col'>
+                                            <LoggedStatus
+                                              loggedIn={queue.loggedIn}
+                                              paused={queue.paused}
+                                            />
+                                          </div>
                                         </div>
                                         <div className='px-5 py-4'>
                                           <h3 className='truncate text-base leading-6 font-medium flex items-center'>
