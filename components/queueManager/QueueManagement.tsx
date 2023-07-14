@@ -1058,15 +1058,10 @@ export const QueueManagement: FC<QueueManagementProps> = ({ className }): JSX.El
               {/* Calls */}
               <div className='pt-8'>
                 <div className='border-b rounded-lg shadow-md border-gray-200 dark:border-gray-700 bg-white dark:bg-gray-900 px-5 py-1 sm:mt-1 relative w-full h-full'>
-                  <div className='flex justify-between'>
+                  <div className='flex'>
                     <div className='pt-3'>
                       <span className='text-lg font-semibold leading-6 text-center text-gray-700 dark:text-gray-100'>
                         {t('QueueManager.Calls')}
-                      </span>
-                    </div>
-                    <div className='pt-3'>
-                      <span className='text-sm font-medium leading-6 text-center text-gray-700 dark:text-gray-100'>
-                        {t('QueueManager.Details')}
                       </span>
                     </div>
                   </div>
@@ -1101,15 +1096,10 @@ export const QueueManagement: FC<QueueManagementProps> = ({ className }): JSX.El
               {/* Customers to manage */}
               <div className='pt-8'>
                 <div className='border-b rounded-lg shadow-md border-gray-200 dark:border-gray-700 bg-white dark:bg-gray-900 px-5 py-1 sm: mt-1 relative h-full'>
-                  <div className='flex justify-between'>
+                  <div className='flex'>
                     <div className='pt-3'>
                       <span className='text-lg font-semibold leading-6 text-center text-gray-700 dark:text-gray-100'>
                         {t('QueueManager.Customers to manage')}
-                      </span>
-                    </div>
-                    <div className='pt-3'>
-                      <span className='text-sm font-medium leading-6 text-center text-gray-700 dark:text-gray-100'>
-                        {t('QueueManager.Details')}
                       </span>
                     </div>
                   </div>
@@ -1576,10 +1566,10 @@ export const QueueManagement: FC<QueueManagementProps> = ({ className }): JSX.El
                                     <span className='block flex-shrink-0'>
                                       <Avatar
                                         rounded='full'
-                                        src={operators[operator.shortname].avatarBase64}
+                                        src={operators[operator.shortname]?.avatarBase64}
                                         placeholderType='operator'
                                         size='small'
-                                        status={operators[operator.shortname].mainPresence}
+                                        status={operators[operator.shortname]?.mainPresence}
                                         onClick={() =>
                                           openShowOperatorDrawer(operators[operator.shortname])
                                         }

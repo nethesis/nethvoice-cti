@@ -25,7 +25,7 @@ const QueueManager: NextPage = () => {
   const tabs = [
     { name: t('QueueManager.Dashboard'), value: 'dashboard' },
     { name: t('QueueManager.Queues management'), value: 'queueManagement' },
-    { name: t('QueueManager.Not managed calls'), value: 'notManagedCalls' },
+    { name: t('QueueManager.Not managed customers'), value: 'notManagedCustomers' },
     { name: t('QueueManager.Live'), value: 'live' },
     { name: t('QueueManager.Summary'), value: 'summary' },
     { name: t('QueueManager.Monitor'), value: 'monitor' },
@@ -107,7 +107,7 @@ const QueueManager: NextPage = () => {
               <QueueManagerDashboard />
             ) : currentTab === 'queueManagement' ? (
               <QueueManagement />
-            ) : currentTab === 'notManagedCalls' ? (
+            ) : currentTab === 'notManagedCustomers' ? (
               <NotManagedCalls />
             ) : currentTab === 'live' ? (
               <RealTimeManagement />

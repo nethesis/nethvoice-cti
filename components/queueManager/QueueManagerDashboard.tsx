@@ -976,7 +976,7 @@ export const QueueManagerDashboard: FC<QueueManagerDashboardProps> = ({
                 </div>
               </Dropdown>
 
-              {/* Not managed calls section
+              {/* Not managed customers section
               <div className='flex items-center justify-between px-4 mt-2 mb-2'>
                 <div className='flex items-center'>
                   <div className='h-14 w-14 flex items-center justify-center rounded-md bg-emerald-50'>

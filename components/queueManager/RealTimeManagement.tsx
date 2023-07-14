@@ -1017,10 +1017,10 @@ export const RealTimeManagement: FC<RealTimeManagementProps> = ({ className }): 
                                     <span className='block flex-shrink-0'>
                                       <Avatar
                                         rounded='full'
-                                        src={operators[operator.shortname].avatarBase64}
+                                        src={operators[operator.shortname]?.avatarBase64}
                                         placeholderType='operator'
                                         size='small'
-                                        status={operators[operator.shortname].mainPresence}
+                                        status={operators[operator.shortname]?.mainPresence}
                                         onClick={() =>
                                           openShowOperatorDrawer(operators[operator.shortname])
                                         }
@@ -1062,7 +1062,7 @@ export const RealTimeManagement: FC<RealTimeManagementProps> = ({ className }): 
                                   </div>
                                 </div>
                                 <FontAwesomeIcon
-                                  icon={faChevronUp}
+                                  icon={isCardOpen ? faChevronUp : faChevronDown}
                                   className='h-3 w-3 text-gray-400 dark:text-gray-500 cursor-pointer ml-auto'
                                   aria-hidden='true'
                                   onClick={() => toggleExpandAgentCard(index)}

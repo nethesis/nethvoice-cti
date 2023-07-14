@@ -741,7 +741,7 @@ export const initHourlyChartsDataPerQueues = (
       dates: any[]
     } = {
       topic: q,
-      topicName: queuesList[q].name,
+      topicName: queuesList[q]?.name,
       dates: [],
     }
     for (let i = 0; i < queuesHistoryData[q]?.total?.length; i++) {
@@ -759,7 +759,7 @@ export const initHourlyChartsDataPerQueues = (
       dates: any[]
     } = {
       topic: q,
-      topicName: queuesList[q].name,
+      topicName: queuesList[q]?.name,
       dates: [],
     }
     for (let i = 0; i < queuesHistoryData[q]?.failed?.length; i++) {
