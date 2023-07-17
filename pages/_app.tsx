@@ -16,12 +16,7 @@ import { checkDarkTheme } from '../lib/darkTheme'
 import { getProductName } from '../lib/utils'
 import Head from 'next/head'
 import { loadI18n } from '../lib/i18n'
-import dynamic from 'next/dynamic'
-
-// Import the Island component asynchronously avoiding ssr
-const Island = dynamic<{}>(() => import('../components/island').then((mod) => mod.Island), {
-  ssr: false,
-})
+import { Island } from '../components/island'
 
 function MyApp({ Component, pageProps }: AppProps) {
   const [isLoading, setIsLoading] = useState<boolean>(true)
