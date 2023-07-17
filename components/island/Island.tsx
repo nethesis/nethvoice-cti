@@ -3,20 +3,24 @@
 
 import '@nethesis/phone-island/dist/index.css'
 import { useState, useEffect } from 'react'
-import { PhoneIsland } from '@nethesis/phone-island'
 import { newIslandConfig } from '../../lib/settings'
 import { useSelector } from 'react-redux'
 import { RootState } from '../../store'
+import dynamic from 'next/dynamic'
+
+// Import the module asynchronously avoiding server-side-rendering
+const PhoneIsland = dynamic(() => import('@nethesis/phone-island').then((mod) => mod.PhoneIsland), {
+  ssr: false,
+})
 
 export function Island() {
   const [config, setConfig] = useState<string>('')
   const currentUser = useSelector((state: RootState) => state.user)
   const auth = useSelector((state: RootState) => state.authentication)
-  const [firstRender, setFirstRender] = useState<boolean>(true)
 
   useEffect(() => {
     // Create the configuration for the PhoneIsland
-    if (!firstRender) {
+    if (auth.token && currentUser.endpoints.extension) {
       const webRTCExtension = currentUser.endpoints.extension.find(
         (el: any) => el.type === 'webrtc',
       )
@@ -37,8 +41,6 @@ export function Island() {
         )
       }
     }
-
-    setFirstRender(false)
 
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [auth.token, currentUser.endpoints.extension])
