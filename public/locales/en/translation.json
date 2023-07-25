@@ -513,6 +513,13 @@
     "No customers to manage": "No customers to manage",
     "There are no customers to manage": "There are no customers to manage",
     "Queues": "Queues",
-    "Realtime operators filters": "Realtime operators filters"
+    "Realtime operators filters": "Realtime operators filters",
+    "Actions": "Actions",
+    "Pause": "Pause",
+    "Last pause": "Latest pause",
+    "Since last pause": "Since latest pause",
+    "Last end pause": "Last end pause",
+    "Latest call": "Latest call",
+    "Since latest call": "Since latest call"
   }
 }

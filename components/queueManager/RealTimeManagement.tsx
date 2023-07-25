@@ -4,11 +4,12 @@
 import { FC, ComponentProps, useState, useEffect, useMemo, useRef } from 'react'
 import { useTranslation } from 'react-i18next'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
-import { Avatar, EmptyState, IconSwitch, TextInput } from '../common'
+import { Avatar, EmptyState, IconSwitch, TextInput, Button } from '../common'
 import { useSelector } from 'react-redux'
 import { RootState, store } from '../../store'
 import { Tooltip } from 'react-tooltip'
 import { debounce, isEmpty } from 'lodash'
+import { exactDistanceToNowLoc } from '../../lib/dateTime'
 import {
   faChevronDown,
   faChevronUp,
@@ -24,17 +25,16 @@ import {
   faCircleXmark,
   faFilter,
   faChevronRight,
+  faCaretDown,
+  faPause,
 } from '@fortawesome/free-solid-svg-icons'
 import { faStar as faStarLight } from '@nethesis/nethesis-light-svg-icons'
 import {
-  searchStringInQueue,
   addQueueToFavorites,
   removeQueueFromFavorites,
   addQueueToExpanded,
   removeQueueFromExpanded,
-} from '../../lib/queuesLib'
-
-import {
+  searchStringInQueue,
   getAgentsStats,
   getExpandedRealtimeValue,
   searchOperatorsInQueuesMembers,
@@ -73,6 +73,8 @@ export const RealTimeManagement: FC<RealTimeManagementProps> = ({ className }): 
   const authStore = useSelector((state: RootState) => state.authentication)
 
   const queueManagerStore = useSelector((state: RootState) => state.queueManagerQueues)
+
+  const REFRESH_TIME = 5000
 
   // load extensions information from the store
   const { operators } = useSelector((state: RootState) => state.operators) as Record<string, any>
@@ -402,8 +404,6 @@ export const RealTimeManagement: FC<RealTimeManagementProps> = ({ className }): 
             if (!newRealTimeAgents[memberId]) {
               newRealTimeAgents[memberId] = {
                 queues: {},
-                answeredcalls: 0,
-                lastcall: 0,
                 name: member.name,
                 member: member.member,
               }
@@ -421,7 +421,7 @@ export const RealTimeManagement: FC<RealTimeManagementProps> = ({ className }): 
         const res = await getAgentsStats()
         const agentsRealTimeStats = res
 
-        // Update the agents' data with the real-time stats
+        // // Update the agents' data with the real-time stats
         for (const agentId in newRealTimeAgents) {
           const agent = newRealTimeAgents[agentId]
 
@@ -433,26 +433,56 @@ export const RealTimeManagement: FC<RealTimeManagementProps> = ({ className }): 
               queue.stats = agentsRealTimeStats[agent.name][queueId]
 
               // Update answered calls count
-              if (queue.stats.calls_taken) {
-                agent.answeredcalls += queue.stats.calls_taken
+              if (queue?.stats?.calls_taken) {
+                queue.answeredcalls = queue.stats.calls_taken
+              }
+
+              // Update no answered calls count
+              if (queue?.stats?.no_answer_calls) {
+                queue.noAnswerCalls = queue.stats.no_answer_calls
+              }
+
+              // Last login
+              if (queue?.stats?.last_login_time) {
+                queue.lastLogin = new Date(queue.stats?.last_login_time * 1000).toLocaleTimeString()
+              }
+
+              // Last logout
+              if (queue?.stats?.last_logout_time) {
+                queue.lastLogout = new Date(
+                  queue.stats?.last_logout_time * 1000,
+                ).toLocaleTimeString()
               }
 
               // Update last call time
               if (queue.stats.last_call_time) {
                 const lastCallTime = queue.stats.last_call_time
                 if (lastCallTime > agent.lastcall) {
-                  agent.lastcall = lastCallTime
+                  queue.lastcall = new Date(lastCallTime * 1000).toLocaleTimeString()
                 }
               }
 
-              // Update from last pause time
+              // Update last pause time
+              if (queue.stats.last_paused_time) {
+                queue.lastPause = new Date(queue.stats.last_paused_time * 1000).toLocaleTimeString()
+              }
+
+              // Update since last pause time
               if (queue.stats.last_unpaused_time) {
-                updateFromLastPause(agentId, queueId, 'realtime')
+                queue.lastEndPause = new Date(
+                  queue.stats.last_unpaused_time * 1000,
+                ).toLocaleTimeString()
+                queue.sinceLastPause = exactDistanceToNowLoc(
+                  new Date(queue.stats.last_unpaused_time * 1000),
+                )
               }
 
               // Update from last call time
               if (queue.stats.last_call_time) {
-                updateFromLastCall(agentId, queueId, 'realtime')
+                queue.lastCall = new Date(queue.stats.last_call_time * 1000).toLocaleTimeString()
+                queue.sinceLastCall = exactDistanceToNowLoc(
+                  new Date(queue.stats.last_call_time * 1000),
+                )
               }
             }
           }
@@ -480,16 +510,16 @@ export const RealTimeManagement: FC<RealTimeManagementProps> = ({ className }): 
       }
     }
 
+    // Refresh time
+    // const startUpdateTimer = () => {
+    //   setInterval(() => {
+    //     getRealTimeAgents()
+    //   }, REFRESH_TIME)
+    // }
+
+    // startUpdateTimer()
     getRealTimeAgents()
   }, [queueManagerStore])
-
-  const updateFromLastPause = (u: string, n: string, type: string) => {
-    // TODO
-  }
-
-  const updateFromLastCall = (u: string, n: string, type: string) => {
-    // TODO
-  }
 
   const showMoreInfiniteScrollOperators = () => {
     const lastIndex = infiniteScrollLastIndex + infiniteScrollOperatorsPageSize
@@ -503,6 +533,9 @@ export const RealTimeManagement: FC<RealTimeManagementProps> = ({ className }): 
   const labelsCalls = ['Waiting calls', 'Connected calls', 'Total']
   const labelsOperators = ['Online', 'On a break', 'Offline', 'Busy', 'Free']
 
+  const test = (info: any) => {
+    console.log('info', info)
+  }
   return (
     <>
       {/* Dashboard queue active section */}
@@ -729,7 +762,7 @@ export const RealTimeManagement: FC<RealTimeManagementProps> = ({ className }): 
           <div className='flex items-center justify-end h-6 w-6'>
             <FontAwesomeIcon
               icon={queuesStatisticsExpanded ? faChevronDown : faChevronUp}
-              className='h-3.5 w-3.5 pl-2 py-2 cursor-pointer flex items-center'
+              className='h-4 w-4 text-gray-600 dark:text-gray-500 pl-2 py-2 cursor-pointer flex items-center'
               aria-hidden='true'
               onClick={toggleExpandQueuesStatistics}
             />
@@ -870,7 +903,7 @@ export const RealTimeManagement: FC<RealTimeManagementProps> = ({ className }): 
                             </div>
                             <FontAwesomeIcon
                               icon={queue.expanded ? faChevronUp : faChevronDown}
-                              className='h-3.5 w-3.5 pl-2 py-2 cursor-pointer'
+                              className='h-4 w-4 text-gray-600 dark:text-gray-500 pl-2 py-2 cursor-pointer'
                               aria-hidden='true'
                               onClick={() => toggleExpandQueue(queue)}
                             />
@@ -919,7 +952,7 @@ export const RealTimeManagement: FC<RealTimeManagementProps> = ({ className }): 
           <div className='flex items-center justify-end h-6 w-6'>
             <FontAwesomeIcon
               icon={operatorsStatisticsExpanded ? faChevronDown : faChevronUp}
-              className='h-3.5 w-3.5 pl-2 py-2 cursor-pointer flex items-center'
+              className='h-4 w-4 pl-2 py-2  text-gray-600 dark:text-gray-500cursor-pointer flex items-center'
               aria-hidden='true'
               onClick={toggleExpandOperatorsStatistics}
             />
@@ -1020,7 +1053,9 @@ export const RealTimeManagement: FC<RealTimeManagementProps> = ({ className }): 
                                         rounded='full'
                                         src={operators[operator.shortname]?.avatarBase64}
                                         placeholderType='operator'
-                                        size='small'
+                                        bordered
+                                        size='large'
+                                        star={operators[operator.shortname]?.favorite}
                                         status={operators[operator.shortname]?.mainPresence}
                                         onClick={() =>
                                           openShowOperatorDrawer(operators[operator.shortname])
@@ -1037,34 +1072,10 @@ export const RealTimeManagement: FC<RealTimeManagementProps> = ({ className }): 
                                       </span>
                                     </div>
                                   </div>
-                                  <div className='flex items-center ml-4'>
-                                    {' '}
-                                    <IconSwitch
-                                      on={operator.favorite}
-                                      size='large'
-                                      onIcon={<FontAwesomeIcon icon={faStarSolid} />}
-                                      offIcon={<FontAwesomeIcon icon={faStarLight} />}
-                                      // changed={() => toggleFavoriteQueue(quoperatoreue)}
-                                      key={operator.queue}
-                                      className={`tooltip-favorite-${operator.queue}`}
-                                    >
-                                      <span className='sr-only'>
-                                        {t('Queues.Toggle favorite queue')}
-                                      </span>
-                                    </IconSwitch>
-                                    <Tooltip
-                                      anchorSelect={`.tooltip-favorite-${operator.queue}`}
-                                      place='top'
-                                    >
-                                      {operator.favorite
-                                        ? t('Common.Remove from favorites') || ''
-                                        : t('Common.Add to favorites') || ''}
-                                    </Tooltip>
-                                  </div>
                                 </div>
                                 <FontAwesomeIcon
                                   icon={isCardOpen ? faChevronUp : faChevronDown}
-                                  className='h-3 w-3 text-gray-400 dark:text-gray-500 cursor-pointer ml-auto'
+                                  className='h-4 w-4 text-gray-600 dark:text-gray-500 cursor-pointer ml-auto'
                                   aria-hidden='true'
                                   onClick={() => toggleExpandAgentCard(index)}
                                 />
@@ -1082,24 +1093,34 @@ export const RealTimeManagement: FC<RealTimeManagementProps> = ({ className }): 
                                     (queue: any, queueIndex: number) => (
                                       <div
                                         key={queueIndex}
-                                        className='col-span-1 divide-gray-200 bg-white text-gray-700 dark:divide-gray-700 dark:bg-gray-900 dark:text-gray-200 px-4 pb-4'
+                                        className='col-span-1 pt-2 divide-gray-200 bg-white text-gray-700 dark:divide-gray-700 dark:bg-gray-900 dark:text-gray-200 px-4 pb-4'
                                       >
                                         {/* card header */}
-                                        <div className='flex items-center justify-between py-2 px-4 bg-gray-100 rounded-md '>
-                                          <div>
-                                            <div className='truncate text-base leading-6 font-medium flex items-center space-x-2'>
-                                              <span>{queue.qname}</span>
-                                              <span>{queue.queue}</span>
+                                        <div className='flex items-center justify-between py-3 px-4 bg-gray-100 rounded-md'>
+                                          <div className='flex flex-grow justify-between'>
+                                            <div className='flex flex-col'>
+                                              <div className='truncate text-base leading-6 font-medium flex items-center space-x-2'>
+                                                <span>{queue.qname}</span>
+                                                <span>{queue.queue}</span>
+                                              </div>
+                                              <div className='flex pt-1'>
+                                                <LoggedStatus
+                                                  loggedIn={queue.loggedIn}
+                                                  paused={queue.paused}
+                                                />
+                                              </div>
                                             </div>
-                                          </div>
-                                          <div className='flex flex-col'>
-                                            <LoggedStatus
-                                              loggedIn={queue.loggedIn}
-                                              paused={queue.paused}
-                                            />
+                                            <Button variant='white'>
+                                              <span>{t('QueueManager.Actions')}</span>
+                                              <FontAwesomeIcon
+                                                icon={faCaretDown}
+                                                className='h-4 w-4 ml-2'
+                                                aria-hidden='true'
+                                              />
+                                            </Button>
                                           </div>
                                         </div>
-                                        <div className='px-5 py-4'>
+                                        <div className='px-3 py-4'>
                                           <h3 className='truncate text-base leading-6 font-medium flex items-center'>
                                             <FontAwesomeIcon
                                               icon={faUser}
@@ -1111,24 +1132,122 @@ export const RealTimeManagement: FC<RealTimeManagementProps> = ({ className }): 
                                         </div>
                                         {/* divider */}
                                         <div className='flex-grow border-b border-gray-200 dark:border-gray-700 mt-1'></div>
-                                        {/* card body */}
+                                        {/* login stats */}
                                         <div className='flex flex-col divide-y divide-gray-200 dark:divide-gray-700'>
                                           {/* last login */}
-                                          <div className='flex py-2 px-5'>
-                                            <div className='text-gray-500 dark:text-gray-400'>
+                                          <div
+                                            className='flex py-2 px-3'
+                                            onClick={() => test(queue)}
+                                          >
+                                            <div className='w-1/2 flex justify-start text-gray-500 dark:text-gray-400'>
                                               {t('Queues.Last login')}
                                             </div>
-                                            <div className='w-1/2'>
-                                              {/* {stats.lastLogin || '-'} */}
+                                            <div className='w-1/2 flex justify-end mr-4'>
+                                              {queue?.lastLogin || '-'}
                                             </div>
                                           </div>
                                           {/* last logout */}
-                                          <div className='flex py-2 px-5'>
-                                            <div className='text-gray-500 dark:text-gray-400'>
+                                          <div className='flex py-2 px-3'>
+                                            <div className='w-1/2 flex justify-start text-gray-500 dark:text-gray-400'>
                                               {t('Queues.Last logout')}
                                             </div>
-                                            <div className='w-1/2'>
-                                              {/* {stats.lastLogout || '-'} */}
+                                            <div className='w-1/2 flex justify-end mr-4'>
+                                              {queue?.lastLogout || '-'}
+                                            </div>
+                                          </div>
+                                          {/* last login */}
+                                        </div>
+
+                                        {/* Pause stats */}
+                                        <div className='pt-4'>
+                                          <div className='col-span-1 divide-y divide-gray-200 bg-white text-gray-700 dark:divide-gray-700 dark:bg-gray-900 dark:text-gray-200'>
+                                            {/* card header */}
+                                            <div className='px-3 py-4'>
+                                              <h3 className='truncate text-base leading-6 font-medium flex items-center justify-start'>
+                                                <FontAwesomeIcon
+                                                  icon={faPause}
+                                                  className='h-4 w-4 mr-2'
+                                                  aria-hidden='true'
+                                                />
+                                                <span>{t('QueueManager.Pause')}</span>
+                                              </h3>
+                                            </div>
+                                            {/* card body */}
+                                            <div className='flex flex-col divide-y divide-gray-200 dark:divide-gray-700'>
+                                              {/* last pause */}
+                                              <div className='flex py-2 px-3'>
+                                                <div className='w-1/2 flex justify-start text-gray-500 dark:text-gray-400'>
+                                                  {t('QueueManager.Last pause')}
+                                                </div>
+                                                <div className='w-1/2 flex justify-end mr-4'>
+                                                  {queue?.lastPause || '-'}
+                                                </div>
+                                              </div>
+                                              {/* outgoing calls */}
+                                              <div className='flex py-2 px-3'>
+                                                <div className='w-1/2 flex justify-start text-gray-500 dark:text-gray-400'>
+                                                  {t('QueueManager.Last end pause')}
+                                                </div>
+                                                <div className='w-1/2 flex justify-end mr-4'>
+                                                  {queue?.lastEndPause || '-'}
+                                                </div>
+                                              </div>
+                                              {/* missed calls */}
+                                              <div className='flex py-2 px-3'>
+                                                <div className='w-1/2 flex justify-start text-gray-500 dark:text-gray-400'>
+                                                  {t('QueueManager.Since last pause')}
+                                                </div>
+                                                <div className='w-1/2 flex justify-end mr-4'>
+                                                  {queue?.sinceLastPause || '-'}
+                                                </div>
+                                              </div>
+                                            </div>
+                                          </div>
+                                        </div>
+
+                                        {/* call stats */}
+                                        <div className='pt-4'>
+                                          <div className='col-span-1 divide-y divide-gray-200 bg-white text-gray-700 dark:divide-gray-700 dark:bg-gray-900 dark:text-gray-200'>
+                                            {/* card header */}
+                                            <div className='px-3 py-4'>
+                                              <h3 className='truncate text-base leading-6 font-medium flex items-center justify-start'>
+                                                <FontAwesomeIcon
+                                                  icon={faPhone}
+                                                  className='h-4 w-4 mr-2'
+                                                  aria-hidden='true'
+                                                />
+                                                <span>{t('Queues.Calls')}</span>
+                                              </h3>
+                                            </div>
+                                            {/* card body */}
+                                            <div className='flex flex-col divide-y divide-gray-200 dark:divide-gray-700'>
+                                              {/* answered calls */}
+                                              <div className='flex py-2 px-3'>
+                                                <div className='w-1/2 flex justify-start text-gray-500 dark:text-gray-400'>
+                                                  {t('QueueManager.Answered calls')}
+                                                </div>
+                                                <div className='w-1/2 flex justify-end mr-4'>
+                                                  {queue?.answeredcalls || '-'}
+                                                </div>
+                                              </div>
+                                              {/* outgoing calls */}
+                                              <div className='flex py-2 px-3'>
+                                                <div className='w-1/2 flex justify-start text-gray-500 dark:text-gray-400'>
+                                                  {t('QueueManager.Latest call')}
+                                                </div>
+                                                <div className='w-1/2 flex justify-end mr-4'>
+                                                  {queue?.lastCall || '-'}
+                                                </div>
+                                              </div>
+                                              {/* missed calls */}
+                                              <div className='flex py-2 px-3'>
+                                                <div className='w-1/2 flex justify-start text-gray-500 dark:text-gray-400'>
+                                                  {t('QueueManager.Since latest call')}
+                                                </div>
+                                                <div className='w-1/2 flex justify-end mr-4'>
+                                                  {queue?.sinceLastCall || '-'}
+                                                </div>
+                                              </div>
                                             </div>
                                           </div>
                                         </div>
