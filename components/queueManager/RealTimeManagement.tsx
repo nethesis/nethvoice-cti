@@ -417,13 +417,39 @@ export const RealTimeManagement: FC<RealTimeManagementProps> = ({ className }): 
           }
         }
 
-        // Fetch the real-time stats for agents
-        const res = await getAgentsStats()
-        const agentsRealTimeStats = res
+        // Update state with the new agent object
+        setRealTimeAgent(newRealTimeAgents)
 
-        // // Update the agents' data with the real-time stats
-        for (const agentId in newRealTimeAgents) {
-          const agent = newRealTimeAgents[agentId]
+        // Convert object to an array
+        const agentArray: any[] = Object.values(newRealTimeAgents)
+
+        agentArray.forEach((member: any) => {
+          Object.values(member.queues).some((queue: any) => {
+            member.shortname = queue.shortname
+            return
+          })
+        })
+        setRealTimeAgentConvertedArray(agentArray)
+      } catch (err) {
+        console.error(err)
+      }
+    }
+    getRealTimeAgents()
+  }, [queueManagerStore])
+
+  const [stats, setStats]: any = useState({})
+  const [firstRender, setFirstRender]: any = useState(true)
+  const STATS_UPDATE_INTERVAL = 5000 // 5 seconds
+
+  const fetchStats = async () => {
+    try {
+      const res = await getAgentsStats()
+      const agentsRealTimeStats = res
+      let updatedStats = {} as Record<string, any>
+
+      if (realTimeAgent) {
+        for (const agentId in realTimeAgent) {
+          const agent = realTimeAgent[agentId]
 
           for (const queueId in agent.queues) {
             const queue = agent.queues[queueId]
@@ -484,42 +510,49 @@ export const RealTimeManagement: FC<RealTimeManagementProps> = ({ className }): 
                   new Date(queue.stats.last_call_time * 1000),
                 )
               }
+              // Update and save queue inside updatedStat
+              if (!updatedStats[agent.name]) {
+                updatedStats[agent.name] = {}
+              }
+              updatedStats[agent.name][queueId] = queue
             }
           }
         }
-
-        // Update state with the new agent object
-        setRealTimeAgent(newRealTimeAgents)
-
-        // Convert object to an array
-        const agentArray: any[] = Object.values(newRealTimeAgents)
-
-        agentArray.forEach((member: any) => {
-          Object.values(member.queues).some((queue: any) => {
-            member.shortname = queue.shortname
-            return
-          })
-        })
-        setRealTimeAgentConvertedArray(agentArray)
-        // setInfiniteScrollOperators(agentArray.slice(0, infiniteScrollLastIndex))
-        // const hasMore = infiniteScrollLastIndex < agentArray.length
-        // setInfiniteScrollHasMore(hasMore)
-        // setApplyingFilters(false)
-      } catch (err) {
-        console.error(err)
       }
+      //Update the agents' data with the real-time stats
+
+      setStats(updatedStats)
+    } catch (e) {
+      console.error(e)
+    }
+  }
+
+  // retrieve stats
+  useEffect(() => {
+    if (firstRender) {
+      setFirstRender(false)
+      return
     }
 
-    // Refresh time
-    // const startUpdateTimer = () => {
-    //   setInterval(() => {
-    //     getRealTimeAgents()
-    //   }, REFRESH_TIME)
-    // }
+    let intervalId: any = 0
 
-    // startUpdateTimer()
-    getRealTimeAgents()
-  }, [queueManagerStore])
+    function fetchStatsInterval() {
+      // fetch stats immediately and set interval
+      fetchStats()
+
+      // update every 5 seconds
+      intervalId = setInterval(() => {
+        fetchStats()
+      }, STATS_UPDATE_INTERVAL)
+    }
+    fetchStatsInterval()
+
+    return () => {
+      if (intervalId) {
+        clearInterval(intervalId)
+      }
+    }
+  }, [firstRender, realTimeAgent])
 
   const showMoreInfiniteScrollOperators = () => {
     const lastIndex = infiniteScrollLastIndex + infiniteScrollOperatorsPageSize
@@ -533,9 +566,6 @@ export const RealTimeManagement: FC<RealTimeManagementProps> = ({ className }): 
   const labelsCalls = ['Waiting calls', 'Connected calls', 'Total']
   const labelsOperators = ['Online', 'On a break', 'Offline', 'Busy', 'Free']
 
-  const test = (info: any) => {
-    console.log('info', info)
-  }
   return (
     <>
       {/* Dashboard queue active section */}
