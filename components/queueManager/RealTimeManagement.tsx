@@ -4,12 +4,13 @@
 import { FC, ComponentProps, useState, useEffect, useMemo, useRef } from 'react'
 import { useTranslation } from 'react-i18next'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
-import { Avatar, EmptyState, IconSwitch, TextInput, Button } from '../common'
+import { Avatar, EmptyState, IconSwitch, TextInput, Button, Dropdown } from '../common'
 import { useSelector } from 'react-redux'
 import { RootState, store } from '../../store'
 import { Tooltip } from 'react-tooltip'
 import { debounce, isEmpty } from 'lodash'
 import { exactDistanceToNowLoc } from '../../lib/dateTime'
+import { Popover } from '@headlessui/react'
 import {
   faChevronDown,
   faChevronUp,
@@ -27,6 +28,7 @@ import {
   faChevronRight,
   faCaretDown,
   faPause,
+  faPlay,
 } from '@fortawesome/free-solid-svg-icons'
 import { faStar as faStarLight } from '@nethesis/nethesis-light-svg-icons'
 import {
@@ -47,6 +49,7 @@ import BarChartHorizontalWithTitle from '../chart/HorizontalWithTitle'
 import { RealTimeOperatorsFilter } from './RealTimeOperatorsFilter'
 import { openShowOperatorDrawer } from '../../lib/operators'
 import { LoggedStatus } from '../queues'
+import { unpauseQueue, pauseQueue, loginToQueue, logoutFromQueue } from '../../lib/queuesLib'
 
 export interface RealTimeManagementProps extends ComponentProps<'div'> {}
 
@@ -566,6 +569,122 @@ export const RealTimeManagement: FC<RealTimeManagementProps> = ({ className }): 
   const labelsCalls = ['Waiting calls', 'Connected calls', 'Total']
   const labelsOperators = ['Online', 'On a break', 'Offline', 'Busy', 'Free']
 
+  // User queues actions
+
+  const pauseUserQueue = (queue: any, reason: string) => {
+    //member is user extension
+    pauseQueue(queue.member, queue.queue, reason)
+  }
+
+  // Unpause user queue
+  const unpauseUserQueue = (queue: any) => {
+    //member is user extension
+    unpauseQueue(queue.member, queue.queue)
+  }
+
+  const loginUserQueue = (queue: any) => {
+    loginToQueue(queue.member, queue.queue)
+  }
+
+  const logoutUserQueue = (queue: any) => {
+    logoutFromQueue(queue.member, queue.queue)
+  }
+
+  const dropdownItems = (queue: any) => (
+    <>
+      {/* If user is not logged in */}
+      {!queue.loggedIn ? (
+        <Popover className='md:relative hover:bg-gray-200 dark:hover:bg-gray-700'>
+          {({ open }) => (
+            <>
+              <Popover.Button
+                className={classNames(
+                  open ? '' : '',
+                  'relative text-left cursor-pointer px-5 py-3 text-sm flex items-center gap-3 w-full',
+                )}
+                onClick={() => loginUserQueue(queue)}
+                disabled={queue.type !== 'dynamic'}
+              >
+                <FontAwesomeIcon
+                  icon={faPlay}
+                  className='h-4 w-4 flex justify-start text-gray-400 dark:text-gray-500'
+                />
+                <span>{t('QueueManager.Login')}</span>
+              </Popover.Button>
+            </>
+          )}
+        </Popover>
+      ) : (
+        // If user is loggedIn
+        <>
+          <Popover className='md:relative hover:bg-gray-200 dark:hover:bg-gray-700'>
+            {({ open }) => (
+              <>
+                <Popover.Button
+                  className={classNames(
+                    open ? '' : '',
+                    'relative text-left cursor-pointer px-5 py-3 text-sm flex items-center gap-3 w-full ',
+                  )}
+                  onClick={() => logoutUserQueue(queue)}
+                  disabled={queue?.type !== 'dynamic'}
+                >
+                  <FontAwesomeIcon
+                    icon={faUserXmark}
+                    className='h-4 w-4 flex justify-start text-red-400 dark:text-red-500'
+                  />
+                  <span>{t('QueueManager.Logout')}</span>
+                </Popover.Button>
+              </>
+            )}
+          </Popover>
+          {/* User is in pause */}
+          {queue.paused ? (
+            <Popover className='md:relative hover:bg-gray-200 dark:hover:bg-gray-700'>
+              {({ open }) => (
+                <>
+                  <Popover.Button
+                    className={classNames(
+                      open ? '' : '',
+                      'relative text-left cursor-pointer px-5 py-3 text-sm flex items-center gap-3 w-full ',
+                    )}
+                    onClick={() => unpauseUserQueue(queue)}
+                  >
+                    <FontAwesomeIcon
+                      icon={faUserClock}
+                      className='h-4 w-4 flex justify-start text-gray-400 dark:text-gray-500'
+                    />
+                    <span>{t('QueueManager.End pause')}</span>
+                  </Popover.Button>
+                </>
+              )}
+            </Popover>
+          ) : (
+            // User is not in pause
+            <Popover className='md:relative hover:bg-gray-200 dark:hover:bg-gray-700'>
+              {({ open }) => (
+                <>
+                  <Popover.Button
+                    className={classNames(
+                      open ? '' : '',
+                      'relative text-left cursor-pointer px-5 py-3 text-sm flex items-center gap-3 w-full ',
+                    )}
+                    onClick={() => pauseUserQueue(queue, '')}
+                  >
+                    <FontAwesomeIcon
+                      icon={faPause}
+                      className='h-4 w-4 flex justify-start text-gray-400 dark:text-gray-500 -ml-0.5'
+                    />
+                    <span>{t('QueueManager.Pause')}</span>
+                  </Popover.Button>
+                </>
+              )}
+            </Popover>
+          )}
+        </>
+      )}
+    </>
+  )
+
   return (
     <>
       {/* Dashboard queue active section */}
@@ -1070,7 +1189,7 @@ export const RealTimeManagement: FC<RealTimeManagementProps> = ({ className }): 
                           <li
                             key={index}
                             className={`col-span-1 rounded-md divide-y shadow divide-gray-200 bg-white dark:divide-gray-700 dark:bg-gray-900 ${
-                              isCardOpen ? 'h-auto' : 'h-20'
+                              isCardOpen ? 'h-full' : 'h-20'
                             }`}
                           >
                             {/* card header */}
@@ -1110,183 +1229,190 @@ export const RealTimeManagement: FC<RealTimeManagementProps> = ({ className }): 
                                   onClick={() => toggleExpandAgentCard(index)}
                                 />
                               </div>
-                            </div>
-                            {/* Agent card body  */}
-                            {isCardOpen && (
-                              <>
-                                {/* divider */}
-                                <div className='flex-grow border-b border-gray-200 dark:border-gray-700 mt-1'></div>
+                              {/* Agent card body  */}
+                              {isCardOpen && (
+                                <>
+                                  {/* divider */}
+                                  <div className='flex-grow border-b border-gray-200 dark:border-gray-700 mt-1'></div>
 
-                                {/* login stats */}
-                                <div className='pt-2'>
-                                  {Object.values(operator.queues).map(
-                                    (queue: any, queueIndex: number) => (
-                                      <div
-                                        key={queueIndex}
-                                        className='col-span-1 pt-2 divide-gray-200 bg-white text-gray-700 dark:divide-gray-700 dark:bg-gray-900 dark:text-gray-200 px-4 pb-4'
-                                      >
-                                        {/* card header */}
-                                        <div className='flex items-center justify-between py-3 px-4 bg-gray-100 rounded-md'>
-                                          <div className='flex flex-grow justify-between'>
-                                            <div className='flex flex-col'>
-                                              <div className='truncate text-base leading-6 font-medium flex items-center space-x-2'>
-                                                <span>{queue.qname}</span>
-                                                <span>{queue.queue}</span>
+                                  {/* login stats */}
+                                  <div className='pt-2 h-96 overflow-auto'>
+                                    {Object.values(operator.queues).map(
+                                      (queue: any, queueIndex: number) => (
+                                        <div
+                                          key={queueIndex}
+                                          className='col-span-1 pt-2 divide-gray-200 bg-white text-gray-700 dark:divide-gray-700 dark:bg-gray-900 dark:text-gray-200 pb-4'
+                                        >
+                                          {/* card header */}
+                                          <div className='flex items-center justify-between py-3 px-4 bg-gray-100 rounded-md'>
+                                            <div className='flex flex-grow justify-between'>
+                                              <div className='flex flex-col'>
+                                                <div className='truncate text-base leading-6 font-medium flex items-center space-x-2'>
+                                                  <span>{queue.qname}</span>
+                                                  <span>{queue.queue}</span>
+                                                </div>
+                                                <div className='flex pt-1'>
+                                                  <LoggedStatus
+                                                    loggedIn={queue.loggedIn}
+                                                    paused={queue.paused}
+                                                  />
+                                                </div>
                                               </div>
-                                              <div className='flex pt-1'>
-                                                <LoggedStatus
-                                                  loggedIn={queue.loggedIn}
-                                                  paused={queue.paused}
-                                                />
-                                              </div>
+                                              <Dropdown
+                                                items={dropdownItems(queue)}
+                                                position='left'
+                                                divider={true}
+                                                className='pl-3'
+                                              >
+                                                <span className='sr-only'>
+                                                  {t('TopBar.Open user menu')}
+                                                </span>
+                                                <Button variant='white'>
+                                                  <span>{t('QueueManager.Actions')}</span>
+                                                  <FontAwesomeIcon
+                                                    icon={faCaretDown}
+                                                    className='h-4 w-4 ml-2'
+                                                    aria-hidden='true'
+                                                  />
+                                                </Button>
+                                              </Dropdown>
                                             </div>
-                                            <Button variant='white'>
-                                              <span>{t('QueueManager.Actions')}</span>
+                                          </div>
+                                          <div className='px-3 py-4'>
+                                            <h3 className='truncate text-base leading-6 font-medium flex items-center'>
                                               <FontAwesomeIcon
-                                                icon={faCaretDown}
-                                                className='h-4 w-4 ml-2'
+                                                icon={faUser}
+                                                className='h-4 w-4 mr-2'
                                                 aria-hidden='true'
                                               />
-                                            </Button>
+                                              <span>{t('Queues.Login')}</span>
+                                            </h3>
                                           </div>
-                                        </div>
-                                        <div className='px-3 py-4'>
-                                          <h3 className='truncate text-base leading-6 font-medium flex items-center'>
-                                            <FontAwesomeIcon
-                                              icon={faUser}
-                                              className='h-4 w-4 mr-2'
-                                              aria-hidden='true'
-                                            />
-                                            <span>{t('Queues.Login')}</span>
-                                          </h3>
-                                        </div>
-                                        {/* divider */}
-                                        <div className='flex-grow border-b border-gray-200 dark:border-gray-700 mt-1'></div>
-                                        {/* login stats */}
-                                        <div className='flex flex-col divide-y divide-gray-200 dark:divide-gray-700'>
-                                          {/* last login */}
-                                          <div
-                                            className='flex py-2 px-3'
-                                            onClick={() => test(queue)}
-                                          >
-                                            <div className='w-1/2 flex justify-start text-gray-500 dark:text-gray-400'>
-                                              {t('Queues.Last login')}
+                                          {/* divider */}
+                                          <div className='flex-grow border-b border-gray-200 dark:border-gray-700 mt-1'></div>
+                                          {/* login stats */}
+                                          <div className='flex flex-col divide-y divide-gray-200 dark:divide-gray-700'>
+                                            {/* last login */}
+                                            <div className='flex py-2 px-3'>
+                                              <div className='w-1/2 flex justify-start text-gray-500 dark:text-gray-400'>
+                                                {t('Queues.Last login')}
+                                              </div>
+                                              <div className='w-1/2 flex justify-end mr-4'>
+                                                {queue?.lastLogin || '-'}
+                                              </div>
                                             </div>
-                                            <div className='w-1/2 flex justify-end mr-4'>
-                                              {queue?.lastLogin || '-'}
+                                            {/* last logout */}
+                                            <div className='flex py-2 px-3'>
+                                              <div className='w-1/2 flex justify-start text-gray-500 dark:text-gray-400'>
+                                                {t('Queues.Last logout')}
+                                              </div>
+                                              <div className='w-1/2 flex justify-end mr-4'>
+                                                {queue?.lastLogout || '-'}
+                                              </div>
                                             </div>
+                                            {/* last login */}
                                           </div>
-                                          {/* last logout */}
-                                          <div className='flex py-2 px-3'>
-                                            <div className='w-1/2 flex justify-start text-gray-500 dark:text-gray-400'>
-                                              {t('Queues.Last logout')}
-                                            </div>
-                                            <div className='w-1/2 flex justify-end mr-4'>
-                                              {queue?.lastLogout || '-'}
-                                            </div>
-                                          </div>
-                                          {/* last login */}
-                                        </div>
 
-                                        {/* Pause stats */}
-                                        <div className='pt-4'>
-                                          <div className='col-span-1 divide-y divide-gray-200 bg-white text-gray-700 dark:divide-gray-700 dark:bg-gray-900 dark:text-gray-200'>
-                                            {/* card header */}
-                                            <div className='px-3 py-4'>
-                                              <h3 className='truncate text-base leading-6 font-medium flex items-center justify-start'>
-                                                <FontAwesomeIcon
-                                                  icon={faPause}
-                                                  className='h-4 w-4 mr-2'
-                                                  aria-hidden='true'
-                                                />
-                                                <span>{t('QueueManager.Pause')}</span>
-                                              </h3>
-                                            </div>
-                                            {/* card body */}
-                                            <div className='flex flex-col divide-y divide-gray-200 dark:divide-gray-700'>
-                                              {/* last pause */}
-                                              <div className='flex py-2 px-3'>
-                                                <div className='w-1/2 flex justify-start text-gray-500 dark:text-gray-400'>
-                                                  {t('QueueManager.Last pause')}
-                                                </div>
-                                                <div className='w-1/2 flex justify-end mr-4'>
-                                                  {queue?.lastPause || '-'}
-                                                </div>
+                                          {/* Pause stats */}
+                                          <div className='pt-4'>
+                                            <div className='col-span-1 divide-y divide-gray-200 bg-white text-gray-700 dark:divide-gray-700 dark:bg-gray-900 dark:text-gray-200'>
+                                              {/* card header */}
+                                              <div className='px-3 py-4'>
+                                                <h3 className='truncate text-base leading-6 font-medium flex items-center justify-start'>
+                                                  <FontAwesomeIcon
+                                                    icon={faPause}
+                                                    className='h-4 w-4 mr-2'
+                                                    aria-hidden='true'
+                                                  />
+                                                  <span>{t('QueueManager.Pause')}</span>
+                                                </h3>
                                               </div>
-                                              {/* outgoing calls */}
-                                              <div className='flex py-2 px-3'>
-                                                <div className='w-1/2 flex justify-start text-gray-500 dark:text-gray-400'>
-                                                  {t('QueueManager.Last end pause')}
+                                              {/* card body */}
+                                              <div className='flex flex-col divide-y divide-gray-200 dark:divide-gray-700'>
+                                                {/* last pause */}
+                                                <div className='flex py-2 px-3'>
+                                                  <div className='w-1/2 flex justify-start text-gray-500 dark:text-gray-400'>
+                                                    {t('QueueManager.Last pause')}
+                                                  </div>
+                                                  <div className='w-1/2 flex justify-end mr-4'>
+                                                    {queue?.lastPause || '-'}
+                                                  </div>
                                                 </div>
-                                                <div className='w-1/2 flex justify-end mr-4'>
-                                                  {queue?.lastEndPause || '-'}
+                                                {/* outgoing calls */}
+                                                <div className='flex py-2 px-3'>
+                                                  <div className='w-1/2 flex justify-start text-gray-500 dark:text-gray-400'>
+                                                    {t('QueueManager.Last end pause')}
+                                                  </div>
+                                                  <div className='w-1/2 flex justify-end mr-4'>
+                                                    {queue?.lastEndPause || '-'}
+                                                  </div>
                                                 </div>
-                                              </div>
-                                              {/* missed calls */}
-                                              <div className='flex py-2 px-3'>
-                                                <div className='w-1/2 flex justify-start text-gray-500 dark:text-gray-400'>
-                                                  {t('QueueManager.Since last pause')}
-                                                </div>
-                                                <div className='w-1/2 flex justify-end mr-4'>
-                                                  {queue?.sinceLastPause || '-'}
+                                                {/* missed calls */}
+                                                <div className='flex py-2 px-3'>
+                                                  <div className='w-1/2 flex justify-start text-gray-500 dark:text-gray-400'>
+                                                    {t('QueueManager.Since last pause')}
+                                                  </div>
+                                                  <div className='w-1/2 flex justify-end mr-4'>
+                                                    {queue?.sinceLastPause || '-'}
+                                                  </div>
                                                 </div>
                                               </div>
                                             </div>
                                           </div>
-                                        </div>
 
-                                        {/* call stats */}
-                                        <div className='pt-4'>
-                                          <div className='col-span-1 divide-y divide-gray-200 bg-white text-gray-700 dark:divide-gray-700 dark:bg-gray-900 dark:text-gray-200'>
-                                            {/* card header */}
-                                            <div className='px-3 py-4'>
-                                              <h3 className='truncate text-base leading-6 font-medium flex items-center justify-start'>
-                                                <FontAwesomeIcon
-                                                  icon={faPhone}
-                                                  className='h-4 w-4 mr-2'
-                                                  aria-hidden='true'
-                                                />
-                                                <span>{t('Queues.Calls')}</span>
-                                              </h3>
-                                            </div>
-                                            {/* card body */}
-                                            <div className='flex flex-col divide-y divide-gray-200 dark:divide-gray-700'>
-                                              {/* answered calls */}
-                                              <div className='flex py-2 px-3'>
-                                                <div className='w-1/2 flex justify-start text-gray-500 dark:text-gray-400'>
-                                                  {t('QueueManager.Answered calls')}
-                                                </div>
-                                                <div className='w-1/2 flex justify-end mr-4'>
-                                                  {queue?.answeredcalls || '-'}
-                                                </div>
+                                          {/* call stats */}
+                                          <div className='pt-4'>
+                                            <div className='col-span-1 divide-y divide-gray-200 bg-white text-gray-700 dark:divide-gray-700 dark:bg-gray-900 dark:text-gray-200'>
+                                              {/* card header */}
+                                              <div className='px-3 py-4'>
+                                                <h3 className='truncate text-base leading-6 font-medium flex items-center justify-start'>
+                                                  <FontAwesomeIcon
+                                                    icon={faPhone}
+                                                    className='h-4 w-4 mr-2'
+                                                    aria-hidden='true'
+                                                  />
+                                                  <span>{t('Queues.Calls')}</span>
+                                                </h3>
                                               </div>
-                                              {/* outgoing calls */}
-                                              <div className='flex py-2 px-3'>
-                                                <div className='w-1/2 flex justify-start text-gray-500 dark:text-gray-400'>
-                                                  {t('QueueManager.Latest call')}
+                                              {/* card body */}
+                                              <div className='flex flex-col divide-y divide-gray-200 dark:divide-gray-700'>
+                                                {/* answered calls */}
+                                                <div className='flex py-2 px-3'>
+                                                  <div className='w-1/2 flex justify-start text-gray-500 dark:text-gray-400'>
+                                                    {t('QueueManager.Answered calls')}
+                                                  </div>
+                                                  <div className='w-1/2 flex justify-end mr-4'>
+                                                    {queue?.answeredcalls || '-'}
+                                                  </div>
                                                 </div>
-                                                <div className='w-1/2 flex justify-end mr-4'>
-                                                  {queue?.lastCall || '-'}
+                                                {/* outgoing calls */}
+                                                <div className='flex py-2 px-3'>
+                                                  <div className='w-1/2 flex justify-start text-gray-500 dark:text-gray-400'>
+                                                    {t('QueueManager.Latest call')}
+                                                  </div>
+                                                  <div className='w-1/2 flex justify-end mr-4'>
+                                                    {queue?.lastCall || '-'}
+                                                  </div>
                                                 </div>
-                                              </div>
-                                              {/* missed calls */}
-                                              <div className='flex py-2 px-3'>
-                                                <div className='w-1/2 flex justify-start text-gray-500 dark:text-gray-400'>
-                                                  {t('QueueManager.Since latest call')}
-                                                </div>
-                                                <div className='w-1/2 flex justify-end mr-4'>
-                                                  {queue?.sinceLastCall || '-'}
+                                                {/* missed calls */}
+                                                <div className='flex py-2 px-3'>
+                                                  <div className='w-1/2 flex justify-start text-gray-500 dark:text-gray-400'>
+                                                    {t('QueueManager.Since latest call')}
+                                                  </div>
+                                                  <div className='w-1/2 flex justify-end mr-4'>
+                                                    {queue?.sinceLastCall || '-'}
+                                                  </div>
                                                 </div>
                                               </div>
                                             </div>
                                           </div>
                                         </div>
-                                      </div>
-                                    ),
-                                  )}
-                                </div>
-                              </>
-                            )}
+                                      ),
+                                    )}
+                                  </div>
+                                </>
+                              )}
+                            </div>
                           </li>
                         )
                       })}

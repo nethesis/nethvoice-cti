@@ -520,6 +520,9 @@
     "Since last pause": "Since latest pause",
     "Last end pause": "Last end pause",
     "Latest call": "Latest call",
-    "Since latest call": "Since latest call"
+    "Since latest call": "Since latest call",
+    "Login": "Login",
+    "Logout": "Logout",
+    "End pause": "End pause"
   }
 }
