@@ -584,6 +584,9 @@ export const groupDataFailedCallsHourLineChart = (data: any) => {
 
 export const DEFAULT_EXPANDED_OPERATORS = false
 export const DEFAULT_EXPANDED_QUEUES = false
+
+export const DEFAULT_EXPANDED_QUEUES_SUMMARY = false
+export const DEFAULT_EXPANDED_OPERATORS_SUMMARY = false
 export const DEFAULT_EXPANDED_QUEUES_MANAGEMENT_DASHBOARD = false
 export const DEFAULT_EXPANDED_QUEUES_MANAGEMENT_OPERATORS = false
 export const DEFAULT_EXPANDED_QUEUES_MANAGEMENT_CONNECTED = false
@@ -596,6 +599,18 @@ export const DEFAULT_QUEUES_MANAGEMENT_SELECTED_QUEUE = {}
 
 // Set default queue manager tab to dashboard
 export const DEFAULT_SELECTED_TAB_QUEUE_MANAGER = 'dashboard'
+
+export const getExpandedSummaryValue = (currentUsername: string) => {
+  const expandedOperators =
+    loadPreference('operatorsSummaryExpandedPreference', currentUsername) ||
+    DEFAULT_EXPANDED_QUEUES_SUMMARY
+
+  const expandedQueues =
+    loadPreference('queuesSummaryExpandedPreference', currentUsername) ||
+    DEFAULT_EXPANDED_QUEUES_SUMMARY
+
+  return { expandedOperators, expandedQueues }
+}
 
 export const getExpandedQueueManagerDashboardValue = (currentUsername: string) => {
   const expandedOperators =

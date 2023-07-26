@@ -21,12 +21,18 @@ import {
 } from '@fortawesome/free-solid-svg-icons'
 
 import { Listbox, Transition } from '@headlessui/react'
-import { getQueues, getQueueStats, getAgentsStats } from '../../lib/queueManager'
+import {
+  getQueues,
+  getQueueStats,
+  getAgentsStats,
+  getExpandedSummaryValue,
+} from '../../lib/queueManager'
 import { SummaryFilter } from './SummaryFilter'
 import { isEmpty, debounce, capitalize } from 'lodash'
 import { sortByProperty, invertObject } from '../../lib/utils'
 import InfiniteScroll from 'react-infinite-scroll-component'
 import { getInfiniteScrollOperatorsPageSize } from '../../lib/operators'
+import { savePreference } from '../../lib/storage'
 
 export interface SummaryProps extends ComponentProps<'div'> {}
 
@@ -53,15 +59,33 @@ export const Summary: FC<SummaryProps> = ({ className }): JSX.Element => {
 
   const [expanded, setExpanded] = useState(false)
 
+  const auth = useSelector((state: RootState) => state.authentication)
+
   const [expandedQueuesSummary, setExpandedQueuesSummary] = useState(false)
 
   const toggleExpandQueue = () => {
     setExpanded(!expanded)
+    let correctExpandedOperatorsSummary = !expanded
+    savePreference(
+      'operatorsSummaryExpandedPreference',
+      correctExpandedOperatorsSummary,
+      auth.username,
+    )
   }
 
   const toggleQueuesSummary = () => {
     setExpandedQueuesSummary(!expandedQueuesSummary)
+    let correctExpandedQueuesSummary = !expandedQueuesSummary
+    savePreference('queuesSummaryExpandedPreference', correctExpandedQueuesSummary, auth.username)
   }
+
+  //set expanded values at the beginning
+  useEffect(() => {
+    const expandedValues = getExpandedSummaryValue(auth.username)
+    setExpanded(expandedValues.expandedOperators)
+    setExpandedQueuesSummary(expandedValues.expandedQueues)
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [])
 
   const [firstRenderQueuesList, setFirstRenderQueuesList]: any = useState(true)
   const [isLoadedQueues, setLoadedQueues] = useState(false)
