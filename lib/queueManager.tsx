@@ -596,6 +596,7 @@ export const DEFAULT_EXPANDED_REALTIME_QUEUES_STATISTICS = false
 export const DEFAULT_EXPANDED_REALTIME_OPERATOR_STATISTICS = false
 
 export const DEFAULT_QUEUES_MANAGEMENT_SELECTED_QUEUE = {}
+export const DEFAULT_SUMMARY_SELECTED_QUEUE = {}
 
 // Set default queue manager tab to dashboard
 export const DEFAULT_SELECTED_TAB_QUEUE_MANAGER = 'dashboard'
@@ -609,7 +610,11 @@ export const getExpandedSummaryValue = (currentUsername: string) => {
     loadPreference('queuesSummaryExpandedPreference', currentUsername) ||
     DEFAULT_EXPANDED_QUEUES_SUMMARY
 
-  return { expandedOperators, expandedQueues }
+  const selectedSummaryQueue =
+    loadPreference('queuesSummarySelectedQueuePreference', currentUsername) ||
+    DEFAULT_SUMMARY_SELECTED_QUEUE
+
+  return { expandedOperators, expandedQueues, selectedSummaryQueue }
 }
 
 export const getExpandedQueueManagerDashboardValue = (currentUsername: string) => {

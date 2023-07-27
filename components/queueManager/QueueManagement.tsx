@@ -16,7 +16,6 @@ import {
   faChevronDown,
   faChevronUp,
   faCheck,
-  faPhone,
   faUserCheck,
   faUserClock,
   faUserXmark,
@@ -29,7 +28,7 @@ import {
   faUser,
 } from '@fortawesome/free-solid-svg-icons'
 
-import { openShowOperatorDrawer } from '../../lib/operators'
+import { openShowOperatorDrawer, getInfiniteScrollOperatorsPageSize } from '../../lib/operators'
 
 import { Listbox, Transition } from '@headlessui/react'
 import { QueueManagementFilterOperators } from './QueueManagementFilterOperators'
@@ -45,7 +44,6 @@ import { getQueues, getQueueStats } from '../../lib/queueManager'
 import { isEmpty, debounce } from 'lodash'
 import { EmptyState, Avatar } from '../common'
 import InfiniteScroll from 'react-infinite-scroll-component'
-import { getInfiniteScrollOperatorsPageSize } from '../../lib/operators'
 import { CallDuration } from '../operators/CallDuration'
 import { sortByProperty, sortByBooleanProperty } from '../../lib/utils'
 import BarChartHorizontal from '../chart/HorizontalBarChart'
@@ -136,7 +134,7 @@ export const QueueManagement: FC<QueueManagementProps> = ({ className }): JSX.El
   const [isLoadedQueues, setLoadedQueues] = useState(false)
   const [queuesList, setQueuesList] = useState<any>({})
 
-  //get queues list
+  // Get queues list
   useEffect(() => {
     // Avoid api double calling
     if (firstRenderQueuesList) {
@@ -197,7 +195,7 @@ export const QueueManagement: FC<QueueManagementProps> = ({ className }): JSX.El
         //get number of queues
         const queuesLength = queuesName.length
 
-        // Get statuses for each queue
+        // Get statuses for each queue from webrest/astproxy/qmanager_qstats/name queue
         for (let i = 0; i < queuesLength; i++) {
           const key = queuesName[i]
           const res = await getQueueStats(key)
@@ -223,7 +221,7 @@ export const QueueManagement: FC<QueueManagementProps> = ({ className }): JSX.El
   const [firstRenderNotManaged, setFirstRenderNotManaged]: any = useState(true)
   const [isLoadedQueuesNotManaged, setLoadedQueuesNotManaged] = useState(false)
 
-  //get queues list information
+  //get not managed information for selected queue
   useEffect(() => {
     // Avoid api double calling
     if (firstRenderNotManaged) {
@@ -605,8 +603,10 @@ export const QueueManagement: FC<QueueManagementProps> = ({ className }): JSX.El
   const operatorsStore = useSelector((state: RootState) => state.operators) as Record<string, any>
 
   const [agentCounters, setAgentCounters] = useState<any>({})
-  //get agent values from queues list
+
+  //get agent values from queues list ( for the header counters )
   useEffect(() => {
+    //check if all queues
     if (allQueuesStats) {
       for (const q in queueManagerStore.queues) {
         if (!agentCounters[q]) {
@@ -671,12 +671,11 @@ export const QueueManagement: FC<QueueManagementProps> = ({ className }): JSX.El
   }, [queueManagerStore.isLoaded, allQueuesStats, operatorsStore])
 
   const [agentCountersSelectedQueue, setAgentCountersSelectedQueue] = useState<any>({})
-  const [agentMembers, setAgentMembers] = useState<any>({})
 
+  //set agent for selected queue
   useEffect(() => {
     if (selectedValue && !isEmpty(agentCounters)) {
       const selectedQueue = selectedValue.queue
-
       const selectedQueueAgents = agentCounters[selectedQueue]
       setAgentCountersSelectedQueue(selectedQueueAgents)
 
@@ -719,6 +718,7 @@ export const QueueManagement: FC<QueueManagementProps> = ({ className }): JSX.El
   const [isApplyingFilters, setApplyingFilters]: any = useState(false)
   const [filteredAgentMembers, setFilteredAgentMembers]: any = useState([])
 
+  // apply selected filters
   const applyFilters = (operators: any) => {
     if (!(statusFilter && sortByFilter)) {
       return
@@ -765,6 +765,7 @@ export const QueueManagement: FC<QueueManagementProps> = ({ className }): JSX.El
     }
   }, [selectedValue, textFilter, sortByFilter, statusFilter, queueManagerStore.isLoaded])
 
+  // on change of selected queue
   const handleSelectedValue = (newValueQueue: any) => {
     setSelectedValue(newValueQueue)
     let currentSelectedQueue = newValueQueue
@@ -1487,19 +1488,20 @@ export const QueueManagement: FC<QueueManagementProps> = ({ className }): JSX.El
                 ></QueueManagementFilterOperators>
                 <div className='mx-auto text-center max-w-7xl 5xl:max-w-screen-2xl'>
                   {/* empty state */}
-                  {allQueuesStats && agentMembers.length === 0 && (
-                    <EmptyState
-                      title='No operators'
-                      description='There is no operator configured'
-                      icon={
-                        <FontAwesomeIcon
-                          icon={faHeadset}
-                          className='mx-auto h-12 w-12'
-                          aria-hidden='true'
-                        />
-                      }
-                    ></EmptyState>
-                  )}
+                  {allQueuesStats &&
+                    isEmpty(queueManagerStore?.queues[selectedValue.queue]?.members) && (
+                      <EmptyState
+                        title='No operators'
+                        description='There is no operator configured'
+                        icon={
+                          <FontAwesomeIcon
+                            icon={faHeadset}
+                            className='mx-auto h-12 w-12'
+                            aria-hidden='true'
+                          />
+                        }
+                      ></EmptyState>
+                    )}
                   {/* skeleton */}
                   {!allQueuesStats && !queueManagerStore?.isLoaded && (
                     <ul
