@@ -523,6 +523,12 @@
     "Since latest call": "Since latest call",
     "Login": "Login",
     "Logout": "Logout",
-    "End pause": "End pause"
+    "End pause": "End pause",
+    "Time at phone": "Time at phone",
+    "Since last call": "Since last call",
+    "Incoming total": "Incoming total",
+    "Outgoing total": "Outgoing total",
+    "Outgoing calls": "Outgoing calls",
+    "Missed calls": "Missed calls"
   }
 }

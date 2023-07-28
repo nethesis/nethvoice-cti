@@ -208,10 +208,7 @@ export const RealTimeManagement: FC<RealTimeManagementProps> = ({ className }): 
 
   const [filteredAgentMembers, setFilteredAgentMembers]: any = useState([])
 
-  const [isApplyingFiltersOperators, setApplyingFiltersOperators]: any = useState(false)
-
   const applyFiltersOperators = () => {
-    setApplyingFiltersOperators(true)
     // text filter
     let filteredAgentMembers: any = Object.values(realTimeAgentConvertedArray).filter((op) =>
       searchOperatorsInQueuesMembers(op, textFilterOperators, queuesFilter),
@@ -222,7 +219,6 @@ export const RealTimeManagement: FC<RealTimeManagementProps> = ({ className }): 
     setInfiniteScrollOperators(filteredAgentMembers.slice(0, infiniteScrollLastIndex))
     const hasMore = infiniteScrollLastIndex < filteredAgentMembers.length
     setInfiniteScrollHasMore(hasMore)
-    setApplyingFiltersOperators(false)
   }
 
   // filtered queues
