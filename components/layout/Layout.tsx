@@ -25,6 +25,7 @@ import { retrieveQueues } from '../../lib/queuesLib'
 import Head from 'next/head'
 import { capitalize } from 'lodash'
 import { doLogout } from '../../services/login'
+import { UserSideBar } from './UserSideBar'
 
 interface LayoutProps {
   children: ReactNode
@@ -377,7 +378,7 @@ export const Layout: FC<LayoutProps> = ({ children }) => {
               </section>
             </main>
             {/* Secondary column (hidden on smaller screens) */}
-            <SpeedDial />
+            <UserSideBar />
             <SideDrawer
               isShown={sideDrawer.isShown}
               contentType={sideDrawer.contentType}
