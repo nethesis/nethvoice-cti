@@ -25,15 +25,16 @@ import {
 import { LoggedStatus } from '../queues'
 import { openShowOperatorDrawer } from '../../lib/operators'
 
-import { Listbox, Transition } from '@headlessui/react'
+import { Transition } from '@headlessui/react'
 import {
   getQueues,
   getQueueStats,
   getAgentsStats,
   getExpandedSummaryValue,
   searchOperatorsInQueuesMembers,
+  getFilterValuesSummary,
 } from '../../lib/queueManager'
-import { debounce } from 'lodash'
+import { debounce, isEmpty } from 'lodash'
 import { invertObject } from '../../lib/utils'
 import InfiniteScroll from 'react-infinite-scroll-component'
 import { getInfiniteScrollOperatorsPageSize } from '../../lib/operators'
@@ -61,13 +62,6 @@ export const Summary: FC<SummaryProps> = ({ className }): JSX.Element => {
     Object.keys(queueManagerStore.queues)?.[0] || '',
   )
 
-  //save selected queue inside local storage
-  const handleSelectedValue = (newValueQueue: any) => {
-    setSelectedValue(newValueQueue)
-    let currentSelectedQueue = newValueQueue
-    savePreference('queuesSummarySelectedQueuePreference', currentSelectedQueue, auth.username)
-  }
-
   const auth = useSelector((state: RootState) => state.authentication)
 
   const [expandedQueuesSummary, setExpandedQueuesSummary] = useState(false)
@@ -89,11 +83,24 @@ export const Summary: FC<SummaryProps> = ({ className }): JSX.Element => {
   }
 
   //set expanded values at the beginning
+  //set beginning value of selected queues
   useEffect(() => {
     const expandedValues = getExpandedSummaryValue(auth.username)
+    const filterValues = getFilterValuesSummary(auth.username)
+
     setExpanded(expandedValues.expandedOperators)
     setExpandedQueuesSummary(expandedValues.expandedQueues)
-    setSelectedValue(expandedValues.selectedSummaryQueue)
+
+    if (isEmpty(filterValues.selectedQueues)) {
+      // select all queues
+      const allQueueCodes = Object.values(queueManagerStore.queues).map((queue: any) => {
+        return queue.queue
+      })
+      setSelectedQueues(allQueueCodes)
+    } else {
+      // select queues from preferences
+      setSelectedQueues(filterValues.selectedQueues)
+    }
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [])
 
@@ -232,7 +239,7 @@ export const Summary: FC<SummaryProps> = ({ className }): JSX.Element => {
       newSelectedQueues.splice(index, 1)
       setSelectedQueues(newSelectedQueues)
     }
-    savePreference('queuesSummarySelectedQueuePreference', newSelectedQueues, auth.username)
+    savePreference('summaryOperatorSelectedQueues', newSelectedQueues, auth.username)
 
     const selectedQueuesData = getSelectedQueuesData(queueManagerStore.queues, newSelectedQueues)
     setSelectedTest(selectedQueuesData)
@@ -908,9 +915,8 @@ export const Summary: FC<SummaryProps> = ({ className }): JSX.Element => {
                                 <div className='pt-2 overflow-auto'>
                                   {Object.entries(operator.queues).map(
                                     ([queueNum, queue]: [string, any], queueIndex: number) => {
-                                      // Verifica se il nome della coda è un numero usando isNaN
                                       if (isNaN(Number(queueNum))) {
-                                        return null // Salta questa coda e passa alla successiva
+                                        return null
                                       }
 
                                       return (

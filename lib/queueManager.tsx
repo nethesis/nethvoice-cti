@@ -13,16 +13,6 @@ import { intervalToDuration, format } from 'date-fns'
 import { openShowOperatorDrawer } from '../lib/operators'
 
 export const PAGE_SIZE = 10
-export const DEFAULT_OUTCOME_FILTER = 'lost'
-export const DEFAULT_CALLS_REFRESH_INTERVAL = 20
-export const DEFAULT_CALLS_LOAD_PERIOD = 12
-export const INFINITE_SCROLL_QUEUE_OPERATORS_PAGE_SIZE = 15
-export const DEFAULT_SORT_BY_QUEUE_MANAGEMENT = 'name'
-export const DEFAULT_STATUS_FILTER_QUEUE_MANAGEMENT = 'all'
-export const DEFAULT_SORT_BY_REALTIME = 'name'
-export const DEFAULT_STATUS_FILTER_REALTIME = 'all'
-export const DEFAULT_SORT_BY_SUMMARY = 'name'
-export const DEFAULT_STATUS_FILTER_SUMMARY = 'all'
 
 export const searchStringInQueue = (queue: any, queryText: string) => {
   const regex = /[^a-zA-Z0-9]/g
@@ -156,29 +146,6 @@ export const retrieveAndFilterQueueCalls = async (
     handleNetworkError(error)
     throw error
   }
-}
-
-export const getFilterValues = (currentUsername: string) => {
-  const outcome = loadPreference('queuesOutcomeFilter', currentUsername) || DEFAULT_OUTCOME_FILTER
-  const selectedQueues = loadPreference('queuesSelectedQueues', currentUsername) || []
-  return { outcome, selectedQueues }
-}
-
-export const getFilterValuesQueuesManagement = (currentUsername: string) => {
-  const status =
-    loadPreference('queueManagementStatusFilter', currentUsername) ||
-    DEFAULT_STATUS_FILTER_QUEUE_MANAGEMENT
-  const sortBy =
-    loadPreference('queueManagementSortBy', currentUsername) || DEFAULT_SORT_BY_QUEUE_MANAGEMENT
-  return { status, sortBy }
-}
-
-export const getFilterValuesRealtime = (currentUsername: string) => {
-  const status =
-    loadPreference('realtimeStatusFilter', currentUsername) || DEFAULT_STATUS_FILTER_REALTIME
-  const sortBy = loadPreference('realtimeStatusSortBy', currentUsername) || DEFAULT_SORT_BY_REALTIME
-  const selectedQueues = loadPreference('realtimeSelectedQueues', currentUsername) || []
-  return { status, sortBy, selectedQueues }
 }
 
 export function searchStringInQueuesMembers(operator: any, queryText: string) {
@@ -582,21 +549,38 @@ export const groupDataFailedCallsHourLineChart = (data: any) => {
   return groupedData
 }
 
+//----------------------------------------------------------------
+//Local storage section
+
 export const DEFAULT_EXPANDED_OPERATORS = false
 export const DEFAULT_EXPANDED_QUEUES = false
 
+export const DEFAULT_OUTCOME_FILTER = 'lost'
+export const DEFAULT_CALLS_REFRESH_INTERVAL = 20
+export const DEFAULT_CALLS_LOAD_PERIOD = 12
+export const INFINITE_SCROLL_QUEUE_OPERATORS_PAGE_SIZE = 15
+
+export const DEFAULT_SORT_BY_QUEUE_MANAGEMENT = 'name'
+export const DEFAULT_STATUS_FILTER_QUEUE_MANAGEMENT = 'all'
+
+export const DEFAULT_SORT_BY_REALTIME = 'name'
+export const DEFAULT_STATUS_FILTER_REALTIME = 'all'
+
+export const DEFAULT_SORT_BY_SUMMARY = 'name'
+export const DEFAULT_STATUS_FILTER_SUMMARY = 'all'
+
 export const DEFAULT_EXPANDED_QUEUES_SUMMARY = false
 export const DEFAULT_EXPANDED_OPERATORS_SUMMARY = false
+export const DEFAULT_SUMMARY_SELECTED_QUEUE = {}
+
 export const DEFAULT_EXPANDED_QUEUES_MANAGEMENT_DASHBOARD = false
 export const DEFAULT_EXPANDED_QUEUES_MANAGEMENT_OPERATORS = false
 export const DEFAULT_EXPANDED_QUEUES_MANAGEMENT_CONNECTED = false
 export const DEFAULT_EXPANDED_QUEUES_MANAGEMENT_WAITING = false
+export const DEFAULT_QUEUES_MANAGEMENT_SELECTED_QUEUE = {}
 
 export const DEFAULT_EXPANDED_REALTIME_QUEUES_STATISTICS = false
 export const DEFAULT_EXPANDED_REALTIME_OPERATOR_STATISTICS = false
-
-export const DEFAULT_QUEUES_MANAGEMENT_SELECTED_QUEUE = {}
-export const DEFAULT_SUMMARY_SELECTED_QUEUE = {}
 
 // Set default queue manager tab to dashboard
 export const DEFAULT_SELECTED_TAB_QUEUE_MANAGER = 'dashboard'
@@ -610,11 +594,41 @@ export const getExpandedSummaryValue = (currentUsername: string) => {
     loadPreference('queuesSummaryExpandedPreference', currentUsername) ||
     DEFAULT_EXPANDED_QUEUES_SUMMARY
 
-  const selectedSummaryQueue =
-    loadPreference('queuesSummarySelectedQueuePreference', currentUsername) ||
-    DEFAULT_SUMMARY_SELECTED_QUEUE
+  return { expandedOperators, expandedQueues }
+}
 
-  return { expandedOperators, expandedQueues, selectedSummaryQueue }
+export const getFilterValues = (currentUsername: string) => {
+  const outcome = loadPreference('queuesOutcomeFilter', currentUsername) || DEFAULT_OUTCOME_FILTER
+  const selectedQueues = loadPreference('queuesSelectedQueues', currentUsername) || []
+  return { outcome, selectedQueues }
+}
+
+export const getFilterValuesQueuesManagement = (currentUsername: string) => {
+  const status =
+    loadPreference('queueManagementStatusFilter', currentUsername) ||
+    DEFAULT_STATUS_FILTER_QUEUE_MANAGEMENT
+  const sortBy =
+    loadPreference('queueManagementSortBy', currentUsername) || DEFAULT_SORT_BY_QUEUE_MANAGEMENT
+  return { status, sortBy }
+}
+
+export const getFilterValuesRealtime = (currentUsername: string) => {
+  const status =
+    loadPreference('realtimeStatusFilter', currentUsername) || DEFAULT_STATUS_FILTER_REALTIME
+  const sortBy = loadPreference('realtimeStatusSortBy', currentUsername) || DEFAULT_SORT_BY_REALTIME
+  const selectedQueues = loadPreference('realtimeSelectedQueues', currentUsername) || []
+  return { status, sortBy, selectedQueues }
+}
+
+export const getFilterValuesSummary = (currentUsername: string) => {
+  const status =
+    loadPreference('summaryOperatorStatusFilter', currentUsername) || DEFAULT_STATUS_FILTER_SUMMARY
+  const sortBy = loadPreference('summaryOperatorSortBy', currentUsername) || DEFAULT_SORT_BY_SUMMARY
+  const selectedQueues = loadPreference('summaryOperatorSelectedQueues', currentUsername) || []
+
+  const selectedQueuesOperator =
+    loadPreference('summaryOperatorSelectedQueuesOperator', currentUsername) || []
+  return { status, sortBy, selectedQueues, selectedQueuesOperator }
 }
 
 export const getExpandedQueueManagerDashboardValue = (currentUsername: string) => {
