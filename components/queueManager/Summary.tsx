@@ -204,6 +204,7 @@ export const Summary: FC<SummaryProps> = ({ className }): JSX.Element => {
     setInfiniteScrollHasMore(hasMore)
   }
 
+  // used to check if queue operator card is opened or closed
   const [openedCardIndexes, setOpenedCardIndexes] = useState<number[]>([])
   const toggleExpandAgentCard = (index: number) => {
     const isOpen = openedCardIndexes.includes(index)
@@ -211,6 +212,17 @@ export const Summary: FC<SummaryProps> = ({ className }): JSX.Element => {
       setOpenedCardIndexes(openedCardIndexes.filter((i) => i !== index))
     } else {
       setOpenedCardIndexes([...openedCardIndexes, index])
+    }
+  }
+
+  // used to check if queue information section inside card is opened or closed
+  const [openedQueueInformationIndexes, setOpenedQueueInformationIndexes] = useState<number[]>([])
+  const toggleExpandCardQueueInformations = (index: number) => {
+    const isOpen = openedQueueInformationIndexes.includes(index)
+    if (isOpen) {
+      setOpenedQueueInformationIndexes(openedQueueInformationIndexes.filter((i) => i !== index))
+    } else {
+      setOpenedQueueInformationIndexes([...openedQueueInformationIndexes, index])
     }
   }
 
@@ -919,26 +931,39 @@ export const Summary: FC<SummaryProps> = ({ className }): JSX.Element => {
                                         return null
                                       }
 
+                                      const isQueueCardOpen =
+                                        openedQueueInformationIndexes.includes(queueIndex)
+
                                       return (
                                         <div
                                           key={queueIndex}
                                           className='col-span-1 pt-2 divide-gray-200 bg-white text-gray-700 dark:divide-gray-700 dark:bg-gray-900 dark:text-gray-200 pb-4'
                                         >
                                           {/* Queue header */}
-                                          <div className='flex items-center justify-between py-3 px-4 bg-gray-100 rounded-md'>
-                                            <div className='flex flex-grow justify-between'>
-                                              <div className='flex flex-col'>
-                                                <div className='truncate text-base leading-6 font-medium flex items-center space-x-2'>
-                                                  <span>{queue.qname}</span>
-                                                  <span>{queue.queue}</span>
-                                                </div>
-                                                <div className='flex pt-1'>
-                                                  <LoggedStatus
-                                                    loggedIn={queue.loggedIn}
-                                                    paused={queue.paused}
-                                                  />
+                                          <div className='flex w-full items-center justify-between space-x-6 pt-4'>
+                                            <div className='flex items-center justify-between py-3 px-4 bg-gray-100 rounded-md w-full'>
+                                              <div className='flex flex-grow justify-between'>
+                                                <div className='flex flex-col'>
+                                                  <div className='truncate text-base leading-6 font-medium flex items-center space-x-2'>
+                                                    <span>{queue.qname}</span>
+                                                    <span>{queue.queue}</span>
+                                                  </div>
+                                                  <div className='flex pt-1'>
+                                                    <LoggedStatus
+                                                      loggedIn={queue.loggedIn}
+                                                      paused={queue.paused}
+                                                    />
+                                                  </div>
                                                 </div>
                                               </div>
+                                              <FontAwesomeIcon
+                                                icon={isQueueCardOpen ? faChevronUp : faChevronDown}
+                                                className='h-4 w-4 text-gray-600 dark:text-gray-500 cursor-pointer ml-auto'
+                                                aria-hidden='true'
+                                                onClick={() =>
+                                                  toggleExpandCardQueueInformations(queueIndex)
+                                                }
+                                              />
                                             </div>
                                           </div>
                                         </div>
