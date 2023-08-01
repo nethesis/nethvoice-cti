@@ -530,6 +530,10 @@
     "Outgoing total": "Outgoing total",
     "Outgoing calls": "Outgoing calls",
     "Missed calls": "Missed calls",
-    "Recall time": "Recall time"
+    "Recall time": "Recall time",
+    "Time in queue": "Time in queue",
+    "Time in break": "Time in break",
+    "Pause on logon": "Pause on logon",
+    "Average recall time": "Average recall time"
   }
 }

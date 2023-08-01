@@ -1238,7 +1238,7 @@ export const RealTimeManagement: FC<RealTimeManagementProps> = ({ className }): 
                                           className='col-span-1 pt-2 divide-gray-200 bg-white text-gray-700 dark:divide-gray-700 dark:bg-gray-900 dark:text-gray-200 pb-4'
                                         >
                                           {/* card header */}
-                                          <div className='flex items-center justify-between py-3 px-4 bg-gray-100 rounded-md'>
+                                          <div className='flex items-center justify-between py-3 px-4 bg-gray-100 dark:bg-gray-700 rounded-md'>
                                             <div className='flex flex-grow justify-between'>
                                               <div className='flex flex-col'>
                                                 <div className='truncate text-base leading-6 font-medium flex items-center space-x-2'>

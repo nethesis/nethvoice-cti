@@ -131,14 +131,18 @@ export const Summary: FC<SummaryProps> = ({ className }): JSX.Element => {
     }
   }
 
-  // used to check if queue information section inside card is opened or closed
-  const [openedQueueInformationIndexes, setOpenedQueueInformationIndexes] = useState<number[]>([])
-  const toggleExpandCardQueueInformations = (index: number) => {
-    const isOpen = openedQueueInformationIndexes.includes(index)
+  const [openedQueueInformationIndexes, setOpenedQueueInformationIndexes] = useState<string[]>([])
+
+  // Function to toggle queue information expansion
+  const toggleExpandCardQueueInformations = (cardIndex: number, queueIndex: number) => {
+    const queueInfoIndex = `${cardIndex}-${queueIndex}`
+    const isOpen = openedQueueInformationIndexes.includes(queueInfoIndex)
     if (isOpen) {
-      setOpenedQueueInformationIndexes(openedQueueInformationIndexes.filter((i) => i !== index))
+      setOpenedQueueInformationIndexes(
+        openedQueueInformationIndexes.filter((i) => i !== queueInfoIndex),
+      )
     } else {
-      setOpenedQueueInformationIndexes([...openedQueueInformationIndexes, index])
+      setOpenedQueueInformationIndexes([...openedQueueInformationIndexes, queueInfoIndex])
     }
   }
 
@@ -366,6 +370,32 @@ export const Summary: FC<SummaryProps> = ({ className }): JSX.Element => {
                   new Date(queue.stats.last_call_time * 1000),
                 )
               }
+
+              //check time in queue
+              if (queue?.stats?.time_in_logon) {
+                queue.timeInLogon = formatDurationLoc(queue?.stats?.time_in_logon || 0)
+              }
+
+              //check time in pause ( TO DO )
+              if (queue?.stats?.time_in_pause) {
+                queue.timeInPause = formatDurationLoc(queue?.stats?.time_in_pause || 0)
+              }
+
+              //check pause on logon ( TO DO )
+              if (queue?.stats?.pause_on_logon) {
+                queue.pauseOnLogon = formatDurationLoc(queue?.stats?.pause_on_logon || 0)
+              }
+
+              //Time at phone
+              if (queue?.stats?.conversation_percent) {
+                queue.timeAtPhone = queue?.stats?.conversation_percent + '%'
+              }
+
+              //Average recall time
+              if (queue?.stats?.avg_recall_time) {
+                queue.timeRecall = formatDurationLoc(queue?.stats?.avg_recall_time || 0)
+              }
+
               // Update and save queue inside updatedStat
               if (!updatedStats[agent.name]) {
                 updatedStats[agent.name] = {}
@@ -432,7 +462,6 @@ export const Summary: FC<SummaryProps> = ({ className }): JSX.Element => {
     }
   }
 
-  console.log('this is infinite', infiniteScrollOperators)
   const [firstRender, setFirstRender]: any = useState(true)
   const STATS_UPDATE_INTERVAL = 10000 // .. seconds
 
@@ -962,47 +991,110 @@ export const Summary: FC<SummaryProps> = ({ className }): JSX.Element => {
                                 </div>
 
                                 {/* Queues body */}
-                                <div className='pt-2 overflow-auto'>
+                                <div className='pt-6 overflow-auto h-56'>
                                   {Object.entries(operator.queues).map(
                                     ([queueNum, queue]: [string, any], queueIndex: number) => {
                                       if (isNaN(Number(queueNum))) {
                                         return null
                                       }
 
+                                      const queueInfoIndex = `${index}-${queueIndex}`
                                       const isQueueCardOpen =
-                                        openedQueueInformationIndexes.includes(queueIndex)
+                                        openedQueueInformationIndexes.includes(queueInfoIndex)
 
                                       return (
                                         <div
                                           key={queueIndex}
-                                          className='col-span-1 pt-2 divide-gray-200 bg-white text-gray-700 dark:divide-gray-700 dark:bg-gray-900 dark:text-gray-200 pb-4'
+                                          className='col-span-1 pt-2 divide-gray-200 dark:divide-gray-600 bg-white text-gray-700  dark:bg-gray-900 dark:text-gray-200 pb-6'
                                         >
-                                          {/* Queue header */}
-                                          <div className='flex w-full items-center justify-between space-x-6 pt-4'>
-                                            <div className='flex items-center justify-between py-3 px-4 bg-gray-100 rounded-md w-full'>
-                                              <div className='flex flex-grow justify-between'>
-                                                <div className='flex flex-col'>
-                                                  <div className='truncate text-base leading-6 font-medium flex items-center space-x-2'>
-                                                    <span>{queue.qname}</span>
-                                                    <span>{queue.queue}</span>
-                                                  </div>
-                                                  <div className='flex pt-1'>
-                                                    <LoggedStatus
-                                                      loggedIn={queue.loggedIn}
-                                                      paused={queue.paused}
-                                                    />
+                                          <div className='bg-gray-100 dark:bg-gray-700 rounded-md'>
+                                            {/* Queue header */}
+                                            <div className='flex w-full items-center justify-between space-x-6'>
+                                              <div className='flex items-center justify-between py-3 px-4 w-full'>
+                                                <div className='flex flex-grow justify-between'>
+                                                  <div className='flex flex-col'>
+                                                    <div className='truncate text-base leading-6 font-medium flex items-center space-x-2'>
+                                                      <span>{queue.qname}</span>
+                                                      <span>{queue.queue}</span>
+                                                    </div>
+                                                    <div className='flex pt-1'>
+                                                      <LoggedStatus
+                                                        loggedIn={queue.loggedIn}
+                                                        paused={queue.paused}
+                                                      />
+                                                    </div>
                                                   </div>
                                                 </div>
+                                                <FontAwesomeIcon
+                                                  icon={
+                                                    isQueueCardOpen ? faChevronUp : faChevronDown
+                                                  }
+                                                  className='h-4 w-4 text-gray-600 dark:text-gray-500 cursor-pointer ml-auto'
+                                                  aria-hidden='true'
+                                                  onClick={() =>
+                                                    toggleExpandCardQueueInformations(
+                                                      index,
+                                                      queueIndex,
+                                                    )
+                                                  }
+                                                />
                                               </div>
-                                              <FontAwesomeIcon
-                                                icon={isQueueCardOpen ? faChevronUp : faChevronDown}
-                                                className='h-4 w-4 text-gray-600 dark:text-gray-500 cursor-pointer ml-auto'
-                                                aria-hidden='true'
-                                                onClick={() =>
-                                                  toggleExpandCardQueueInformations(queueIndex)
-                                                }
-                                              />
                                             </div>
+                                            {isQueueCardOpen && (
+                                              <>
+                                                {/* divider */}
+                                                <div className='flex-grow border-b border-gray-200 dark:border-gray-600 mt-1'></div>
+
+                                                {/* card body */}
+                                                <div className='flex flex-col divide-y  divide-gray-200 dark:divide-gray-600'>
+                                                  {/* Time in queue */}
+                                                  <div className='flex py-2 px-3'>
+                                                    <div className='w-1/2 flex justify-start text-gray-500 dark:text-gray-400'>
+                                                      {t('QueueManager.Time in queue')}
+                                                    </div>
+                                                    <div className='w-1/2 flex justify-end mr-4'>
+                                                      {queue?.timeInLogon || '-'}
+                                                    </div>
+                                                  </div>
+                                                  {/* Time in break */}
+                                                  <div className='flex py-2 px-3'>
+                                                    <div className='w-1/2 flex justify-start text-gray-500 dark:text-gray-400'>
+                                                      {t('QueueManager.Time in break')}
+                                                    </div>
+                                                    <div className='w-1/2 flex justify-end mr-4'>
+                                                      {queue?.timeInPause || '-'}
+                                                    </div>
+                                                  </div>
+                                                  {/* Pause on logon */}
+                                                  <div className='flex py-2 px-3'>
+                                                    <div className='w-1/2 flex justify-start text-gray-500 dark:text-gray-400'>
+                                                      {t('QueueManager.Pause on logon')}
+                                                    </div>
+                                                    <div className='w-1/2 flex justify-end mr-4'>
+                                                      {queue?.pauseOnLogon || '-'}
+                                                    </div>
+                                                  </div>
+                                                  {/* Time at phone */}
+                                                  <div className='flex py-2 px-3'>
+                                                    <div className='w-1/2 flex justify-start text-gray-500 dark:text-gray-400'>
+                                                      {t('QueueManager.Time at phone')}
+                                                    </div>
+                                                    <div className='w-1/2 flex justify-end mr-4'>
+                                                      {queue?.timeAtPhone || '-'}
+                                                    </div>
+                                                  </div>
+                                                  {/* Average recall time */}
+                                                  <div className='flex py-2 px-3'>
+                                                    <div className='w-1/2 flex justify-start text-gray-500 dark:text-gray-400'>
+                                                      {t('QueueManager.Average recall time')}
+                                                    </div>
+                                                    <div className='w-1/2 flex justify-end mr-4'>
+                                                      {queue?.timeRecall || '-'}
+                                                    </div>
+                                                  </div>
+                                                </div>
+                                              </>
+                                            )}
                                           </div>
                                         </div>
                                       )
