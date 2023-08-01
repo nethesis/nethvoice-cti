@@ -181,3 +181,13 @@ export function convertToCSV(objArray: any) {
   }
   return str
 }
+
+export function getNMonthsAgoDate(monthsAgo: number = 0): Date {
+  const currentDate = new Date()
+  const targetDate = new Date(
+    currentDate.getFullYear(),
+    currentDate.getMonth() - monthsAgo,
+    currentDate.getDate(),
+  )
+  return targetDate
+}

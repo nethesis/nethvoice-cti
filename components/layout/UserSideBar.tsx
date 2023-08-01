@@ -7,9 +7,9 @@ import { SpeedDial } from './SpeedDial'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { faBolt, faPhone, type IconDefinition } from '@nethesis/nethesis-solid-svg-icons'
 import { getJSONItem, setJSONItem } from '../../lib/storage'
-import { RootState, store } from '../../store'
+import { RootState } from '../../store'
 import { useSelector } from 'react-redux'
-import { RootModel } from '../../models'
+import { LastCalls } from './LastCalls'
 
 const activeStyles = {
   width: '.1875rem',
@@ -77,7 +77,14 @@ export const UserSideBar: FC = () => {
   return (
     <>
       {/* The tabs content */}
-      {tabReady && tabs.map((tab) => tab.active && tab.name === 'speed_dial' && <SpeedDial />)}
+      {tabReady &&
+        tabs.map((tab, i) => {
+          if (tab.active && tab.name === 'speed_dial') {
+            return <SpeedDial key={i} />
+          } else if (tab.active && tab.name === 'last_calls') {
+            return <LastCalls key={i} />
+          }
+        })}
       {/* The side menu */}
       <div
         style={{ width: '3.125rem' }}

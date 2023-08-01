@@ -8,6 +8,7 @@ import { loadPreference } from './storage'
 import { getOperatorByPhoneNumber, openShowOperatorDrawer } from './operators'
 import { cloneDeep } from 'lodash'
 import { eventDispatch } from './hooks/eventDispatch'
+import { getNMonthsAgoDate } from './utils'
 
 export const PAGE_SIZE = 10
 export const DEFAULT_CALL_TYPE_FILTER = 'user'
@@ -208,4 +209,52 @@ export const callUser = (user: any, event: any = undefined) => {
   if (event) {
     event.stopPropagation()
   }
+}
+
+export const getLastCalls = async (
+  username: string,
+  dateFrom: string,
+  dateTo: string,
+): Promise<LastCallsResponse> => {
+  try {
+    const requestUrl = `${getHistoryUrl()}/webrest/historycall/interval/user/${username}/${dateFrom}/${dateTo}?offset=0&limit=10&sort=time%20desc&removeLostCalls=undefined`
+    const { data, status } = await axios.get(requestUrl)
+
+    if (status === 200) {
+      return data
+    } else {
+      throw "Error retrieving the last calls"
+    }
+  } catch (error) {
+    handleNetworkError(error)
+    throw error
+  }
+}
+
+export interface CallTypes {
+  time: number
+  channel: string
+  dstchannel: string
+  uniqueid: string
+  linkedid: string
+  userfield: string
+  duration: number
+  billsec: number
+  disposition: string
+  dcontext: string
+  recordingfile: string
+  cnum: string
+  cnam: string
+  ccompany: string
+  src: string
+  dst: string
+  dst_cnam: string
+  dst_ccompany: string
+  clid: string
+  direction: 'in' | 'out'
+}
+
+export interface LastCallsResponse {
+  count: number
+  rows: CallTypes[]
 }
