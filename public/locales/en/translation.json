@@ -400,5 +400,9 @@
     "Cannot import speed dial": "Cannot import speed dial",
     "Upload failed": "Upload failed",
     "Speed dial delete message": "Speed dial {{deletingName}} will be deleted"
+  },
+  "LastCalls": {
+    "Last calls": "Last calls",
+    "No calls": "No calls"
   }
 }

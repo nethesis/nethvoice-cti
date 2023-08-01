@@ -293,6 +293,10 @@
     "Cannot delete speed dial": "Impossibile cancellare le chiamate rapide",
     "Cannot import speed dial": "Impossibile importare le chiamate rapide"
   },
+  "LastCalls": {
+    "Last calls": "Ultime chiamate",
+    "No calls": "Nessuna chiamata"
+  },
   "Notifications": {
     "Mark as read": "Contrassegna come letto",
     "Chat": "Chat",
