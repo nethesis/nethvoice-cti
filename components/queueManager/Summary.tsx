@@ -14,7 +14,6 @@ import { exactDistanceToNowLoc, formatDurationLoc } from '../../lib/dateTime'
 import {
   faChevronDown,
   faChevronUp,
-  faCheck,
   faHeadset,
   faCircleNotch,
   faChevronRight,
@@ -35,7 +34,6 @@ import {
   getFilterValuesSummary,
 } from '../../lib/queueManager'
 import { debounce, isEmpty } from 'lodash'
-import { invertObject } from '../../lib/utils'
 import InfiniteScroll from 'react-infinite-scroll-component'
 import { getInfiniteScrollOperatorsPageSize } from '../../lib/operators'
 import { savePreference } from '../../lib/storage'
@@ -58,10 +56,6 @@ export const Summary: FC<SummaryProps> = ({ className }): JSX.Element => {
 
   const queueManagerStore = useSelector((state: RootState) => state.queueManagerQueues)
 
-  const [selectedValue, setSelectedValue] = useState<any>(
-    Object.keys(queueManagerStore.queues)?.[0] || '',
-  )
-
   const auth = useSelector((state: RootState) => state.authentication)
 
   const [expandedQueuesSummary, setExpandedQueuesSummary] = useState(false)
@@ -74,6 +68,7 @@ export const Summary: FC<SummaryProps> = ({ className }): JSX.Element => {
       correctExpandedOperatorsSummary,
       auth.username,
     )
+    applyFiltersOperators()
   }
 
   const toggleQueuesSummary = () => {
@@ -104,87 +99,8 @@ export const Summary: FC<SummaryProps> = ({ className }): JSX.Element => {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [])
 
-  const [firstRenderQueuesList, setFirstRenderQueuesList]: any = useState(true)
-  const [isLoadedQueues, setLoadedQueues] = useState(false)
-  const [queuesList, setQueuesList] = useState<any>({})
-
-  //get queues list
-  useEffect(() => {
-    // Avoid api double calling
-    if (firstRenderQueuesList) {
-      setFirstRenderQueuesList(false)
-      return
-    }
-    async function getQueuesInformation() {
-      setLoadedQueues(false)
-      try {
-        const res = await getQueues()
-        setQueuesList(res)
-      } catch (err) {
-        console.error(err)
-      }
-      setLoadedQueues(true)
-    }
-    if (!isLoadedQueues) {
-      getQueuesInformation()
-    }
-  }, [firstRenderQueuesList, isLoadedQueues])
-
-  const [allQueuesStats, setAllQueuesStats] = useState(false)
-  const [firstRenderQueuesStats, setFirstRenderQueuesStats]: any = useState(true)
-  const [isLoadedQueuesStats, setLoadedQueuesStats] = useState(false)
-
-  //get selected queue status information
-  useEffect(() => {
-    // Avoid api double calling
-    if (firstRenderQueuesStats) {
-      setFirstRenderQueuesStats(false)
-      return
-    }
-    async function getQueuesStats() {
-      //set loaded status to false
-      setLoadedQueuesStats(false)
-      try {
-        setAllQueuesStats(false)
-        //get list of queues from queue manager store
-        const queuesName = Object.keys(queuesList)
-        //get number of queues
-        const queuesLength = queuesName.length
-
-        // Get statuses for each queue from webrest/astproxy/qmanager_qstats/name queue
-        for (let i = 0; i < queuesLength; i++) {
-          const key = queuesName[i]
-          const res = await getQueueStats(key)
-
-          if (queuesList[key]) {
-            queuesList[key].qstats = res
-          }
-        }
-
-        setAllQueuesStats(true)
-      } catch (err) {
-        console.error(err)
-      }
-    }
-    if (!isLoadedQueuesStats) {
-      getQueuesStats()
-    }
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [queuesList, selectedValue, firstRenderQueuesStats])
-
-  const [summaryAgent, setSummaryAgent] = useState<any>({})
-  const [summaryAgentConvertedArray, setSummaryAgentConvertedArray] = useState<any>([])
-  const [invertedOperatorInformation, setInvertedOperatorInformation] = useState<any>()
-
   // load operators information from the store
   const operatorsStore = useSelector((state: RootState) => state.operators) as Record<string, any>
-
-  // invert key to use getAvatarData function
-  useEffect(() => {
-    if (operatorsStore) {
-      setInvertedOperatorInformation(invertObject(operatorsStore.operators))
-    }
-  }, [operatorsStore])
 
   const [infiniteScrollOperators, setInfiniteScrollOperators] = useState<any>([])
   const infiniteScrollOperatorsPageSize = getInfiniteScrollOperatorsPageSize()
@@ -284,6 +200,7 @@ export const Summary: FC<SummaryProps> = ({ className }): JSX.Element => {
   }, [debouncedUpdateTextFilterOperator])
 
   const [queuesFilterOperators, setQueuesFilterOperators]: any = useState([])
+
   const updateQueuesFilterOperators = (newQueuesFilter: string[]) => {
     setQueuesFilterOperators(newQueuesFilter)
     // setCallsLoaded(false)
@@ -343,127 +260,181 @@ export const Summary: FC<SummaryProps> = ({ className }): JSX.Element => {
     getRealTimeAgents()
   }, [queueManagerStore])
 
+  const [stats, setStats]: any = useState({})
+
   const fetchStats = async () => {
     try {
-      // Fetch agent stats using getAgentsStats() (assuming it returns a promise)
+      // Fetch agent stats using getAgentsStats()
       const res = await getAgentsStats()
+      // get operators stats
+      const agentsRealTimeStats = res
+      let updatedStats = {} as Record<string, any>
 
-      const agentsSummaryStats = res
-
-      // Create an empty dictionary to store the combined data
-      const combinedData = {} as Record<string, any>
-
-      // Iterate through each element in realTimeAgentConvertedArray
-      for (const agent of realTimeAgentConvertedArray) {
-        const name = agent.name
-        // Check if the name exists in the fetched agent stats (res)
-        if (res[name]) {
-          // Copy the information from res to the 'queues' field of the current agent
-          agent.queues = {
-            ...agent.queues,
-            ...res[name],
+      if (realTimeAgent) {
+        //cycle trough all the operators
+        for (const agentId in realTimeAgent) {
+          const agent = realTimeAgent[agentId]
+          // Get external values
+          let lastLogin = 0
+          let lastLogout = 0
+          let lastCall = 0
+          let answeredCalls = 0
+          let missedCalls = 0
+          for (const agentName in agentsRealTimeStats) {
+            if (agent.name === agentName) {
+              agent.queues.allCalls = agentsRealTimeStats[agent.name].allCalls
+              agent.queues.allQueues = agentsRealTimeStats[agent.name].allQueues
+              agent.queues.incomingCalls = agentsRealTimeStats[agent.name].incomingCalls
+              agent.queues.outgoingCalls = agentsRealTimeStats[agent.name].outgoingCalls
+            }
           }
-          // Add the current agent to the combined dictionary using the name as the key
-          combinedData[name] = agent
-          // Remove the corresponding information from the fetched agent stats (res)
-          delete res[name]
-        } else {
-          // If the name doesn't exist in res, add the agent to the combined dictionary with empty queues
-          combinedData[name] = agent
+          for (const queueId in agent.queues) {
+            const queue = agent.queues[queueId]
+            // Check if the real-time stats exist for the agent and queue
+            if (agentsRealTimeStats[agent.name] && agentsRealTimeStats[agent.name][queueId]) {
+              queue.stats = agentsRealTimeStats[agent.name][queueId]
+              // Last login
+              if (queue?.stats?.last_login_time) {
+                if (!lastLogin || lastLogin < queue?.stats?.last_login_time) {
+                  lastLogin = queue?.stats?.last_login_time
+                }
+              }
+
+              // Last logout
+              if (queue?.stats?.last_logout_time) {
+                if (!lastLogout || lastLogout < queue?.stats?.last_logout_time) {
+                  lastLogout = queue?.stats?.last_logout_time
+                }
+              }
+
+              // Last call
+              if (queue?.stats?.last_call_time) {
+                if (!lastCall || lastCall < queue?.stats?.last_call_time) {
+                  lastCall = queue?.stats?.last_call_time
+                }
+              }
+
+              // Answered calls
+              if (queue?.stats?.calls_taken) {
+                answeredCalls += queue?.stats?.calls_taken
+              }
+
+              // Missed calls
+              if (queue?.stats?.no_answer_calls) {
+                missedCalls += queue?.stats?.no_answer_calls
+              }
+
+              // Update answered calls count
+              if (queue?.stats?.calls_taken) {
+                queue.answeredcalls = queue.stats.calls_taken
+              }
+
+              // Update no answered calls count
+              if (queue?.stats?.no_answer_calls) {
+                queue.noAnswerCalls = queue.stats.no_answer_calls
+              }
+
+              // Update last call time
+              if (queue?.stats?.last_call_time) {
+                const lastCallTime = queue?.stats?.last_call_time
+                if (lastCallTime > agent?.queues?.lastcall) {
+                  queue.lastcall = new Date(lastCallTime * 1000).toLocaleTimeString()
+                }
+              }
+
+              // Update last pause time
+              if (queue?.stats?.last_paused_time) {
+                queue.lastPause = new Date(
+                  queue?.stats?.last_paused_time * 1000,
+                ).toLocaleTimeString()
+              }
+
+              // Update since last pause time
+              if (queue?.stats?.last_unpaused_time) {
+                queue.lastEndPause = new Date(
+                  queue.stats.last_unpaused_time * 1000,
+                ).toLocaleTimeString()
+                queue.sinceLastPause = exactDistanceToNowLoc(
+                  new Date(queue.stats.last_unpaused_time * 1000),
+                )
+              }
+
+              // Update from last call time
+              if (queue?.stats?.last_call_time) {
+                queue.lastCall = new Date(queue.stats.last_call_time * 1000).toLocaleTimeString()
+                queue.sinceLastCall = exactDistanceToNowLoc(
+                  new Date(queue.stats.last_call_time * 1000),
+                )
+              }
+              // Update and save queue inside updatedStat
+              if (!updatedStats[agent.name]) {
+                updatedStats[agent.name] = {}
+              }
+              updatedStats[agent.name][queueId] = queue
+            }
+          }
+          // Update the agent's data with the calculated values
+          //Last login
+          if (lastLogin) {
+            agent.queues.lastLogin = new Date(lastLogin * 1000).toLocaleTimeString()
+          }
+
+          //Last logout
+          if (lastLogout) {
+            agent.queues.lastLogout = new Date(lastLogout * 1000).toLocaleTimeString()
+          }
+
+          //Last calls
+          if (lastCall) {
+            agent.queues.fromLastCall = exactDistanceToNowLoc(new Date(lastCall * 1000))
+          }
+
+          //Answered calls
+          agent.queues.answeredCalls = answeredCalls
+
+          //Missed calls
+          agent.queues.missedCalls = missedCalls
+
+          // Time at phone
+          agent.queues.timeAtPhone = formatDurationLoc(
+            (agent?.queues?.outgoingCalls?.duration_outgoing || 0) +
+              (agent?.queues?.incomingCalls?.duration_incoming || 0),
+          )
+
+          //Recall time
+          agent.queues.recallTime = formatDurationLoc(
+            agent?.queues?.allQueues?.avg_recall_time || 0,
+          )
+
+          // Minimum time
+          agent.queues.timeMinimum = formatDurationLoc(agent?.queues?.allCalls?.min_duration || 0)
+
+          // Maximum time
+          agent.queues.timeMaximum = formatDurationLoc(agent?.queues?.allCalls?.max_duration || 0)
+
+          // Average time
+          agent.queues.timeAverage = formatDurationLoc(agent?.queues?.allCalls?.avg_duration || 0)
+
+          // Incoming total time
+          agent.queues.timeTotalIncoming = formatDurationLoc(
+            agent?.queues?.incomingCalls?.duration_incoming || 0,
+          )
+
+          // Outgoing total time
+          agent.queues.timeTotalOutgoing = formatDurationLoc(
+            agent?.queues?.outgoingCalls?.duration_outgoing || 0,
+          )
         }
       }
-
-      // Calculate lastLogin, lastLogout, lastCall, answeredCalls, and missedCalls for each agent
-      for (const name in combinedData) {
-        const queueData = combinedData[name].queues
-
-        let lastLogin = 0
-        let lastLogout = 0
-        let lastCall = 0
-        let answeredCalls = 0
-        let missedCalls = 0
-
-        Object.values(queueData).forEach((queue: any) => {
-          // Last login
-          if (queue.last_login_time) {
-            if (!lastLogin || lastLogin < queue.last_login_time) {
-              lastLogin = queue.last_login_time
-            }
-          }
-
-          // Last logout
-          if (queue.last_logout_time) {
-            if (!lastLogout || lastLogout < queue.last_logout_time) {
-              lastLogout = queue.last_logout_time
-            }
-          }
-
-          // Last call
-          if (queue.last_call_time) {
-            if (!lastCall || lastCall < queue.last_call_time) {
-              lastCall = queue.last_call_time
-            }
-          }
-
-          // Answered calls
-          if (queue.calls_taken) {
-            answeredCalls += queue.calls_taken
-          }
-
-          // Missed calls
-          if (queue.no_answer_calls) {
-            missedCalls += queue.no_answer_calls
-          }
-        })
-
-        // Update the agent's data with the calculated values
-        if (lastLogin) {
-          combinedData[name].lastLogin = new Date(lastLogin * 1000).toLocaleTimeString()
-        }
-
-        if (lastLogout) {
-          combinedData[name].lastLogout = new Date(lastLogout * 1000).toLocaleTimeString()
-        }
-
-        if (lastCall) {
-          combinedData[name].fromLastCall = exactDistanceToNowLoc(new Date(lastCall * 1000))
-        }
-
-        combinedData[name].answeredCalls = answeredCalls
-        combinedData[name].missedCalls = missedCalls
-
-        // Time at phone
-        combinedData[name].timeAtPhone = formatDurationLoc(
-          (queueData?.outgoingCalls?.duration_outgoing || 0) +
-            (queueData?.incomingCalls?.duration_incoming || 0),
-        )
-
-        // Minimum time
-        combinedData[name].timeMinimum = formatDurationLoc(queueData?.allCalls?.min_duration || 0)
-
-        // Maximum time
-        combinedData[name].timeMaximum = formatDurationLoc(queueData?.allCalls?.max_duration || 0)
-
-        // Average time
-        combinedData[name].timeAverage = formatDurationLoc(queueData?.allCalls?.avg_duration || 0)
-
-        // Incoming total time
-        combinedData[name].timeTotalIncoming = formatDurationLoc(
-          queueData?.incomingCalls?.duration_incoming || 0,
-        )
-
-        // Outgoing total time
-        combinedData[name].timeTotalOutgoing = formatDurationLoc(
-          queueData?.outgoingCalls?.duration_outgoing || 0,
-        )
-      }
+      setStats(updatedStats)
     } catch (e) {
       console.error(e)
     }
   }
 
+  console.log('this is infinite', infiniteScrollOperators)
   const [firstRender, setFirstRender]: any = useState(true)
-  const STATS_UPDATE_INTERVAL = 200000 // .. seconds
+  const STATS_UPDATE_INTERVAL = 10000 // .. seconds
 
   // retrieve stats
   useEffect(() => {
@@ -490,10 +461,12 @@ export const Summary: FC<SummaryProps> = ({ className }): JSX.Element => {
         clearInterval(intervalId)
       }
     }
-  }, [firstRender, realTimeAgent])
+  }, [firstRender, realTimeAgent, expanded])
 
+  // Operators section filters
   const applyFiltersOperators = () => {
     // text filter
+
     let filteredAgentMembers: any = Object.values(realTimeAgentConvertedArray).filter((op) =>
       searchOperatorsInQueuesMembers(op, textFilterOperators, queuesFilterOperators),
     )
@@ -507,11 +480,68 @@ export const Summary: FC<SummaryProps> = ({ className }): JSX.Element => {
 
   // filtered operators
   useEffect(() => {
-    if (realTimeAgentConvertedArray) {
-      applyFiltersOperators()
-    }
+    applyFiltersOperators()
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [realTimeAgentConvertedArray, textFilterOperators, queuesFilterOperators])
+
+  // //get queues list information
+  // useEffect(() => {
+  //   // Avoid api double calling
+  //   if (firstRenderQueuesList) {
+  //     setFirstRenderQueuesList(false)
+  //     return
+  //   }
+  //   async function getQueuesInformation() {
+  //     setLoadedQueues(false)
+  //     try {
+  //       const res = await getQueues()
+  //       setQueuesList(res)
+  //     } catch (err) {
+  //       console.error(err)
+  //     }
+  //     setLoadedQueues(true)
+  //   }
+  //   if (!isLoadedQueues) {
+  //     getQueuesInformation()
+  //   }
+  // }, [firstRenderQueuesList, isLoadedQueues])
+
+  // //get queues status information
+  // useEffect(() => {
+  //   // Avoid api double calling
+  //   if (firstRenderQueuesStats) {
+  //     setFirstRenderQueuesStats(false)
+  //     return
+  //   }
+  //   async function getQueuesStats() {
+  //     setLoadedQueuesStats(false)
+  //     try {
+  //       setAllQueuesStats(false)
+  //       //get list of queues from queuesList
+  //       const queuesName = Object.keys(queuesList)
+  //       //get number of queues
+  //       const queuesLength = queuesName.length
+
+  //       // Get statuses for each queue
+  //       for (let i = 0; i < queuesLength; i++) {
+  //         const key = queuesName[i]
+  //         const res = await getQueueStats(key)
+
+  //         if (queuesList[key]) {
+  //           queuesList[key].qstats = res
+  //         }
+  //       }
+
+  //       setAllQueuesStats(true)
+  //     } catch (err) {
+  //       console.error(err)
+  //     }
+  //   }
+  //   if (!isLoadedQueuesStats) {
+  //     getQueuesStats()
+  //   }
+  //   // eslint-disable-next-line react-hooks/exhaustive-deps
+  // }, [queuesList, firstRenderQueuesStats])
 
   return (
     <>
@@ -777,7 +807,7 @@ export const Summary: FC<SummaryProps> = ({ className }): JSX.Element => {
                                         {t('Queues.Last login')}
                                       </div>
                                       <div className='w-1/2 flex justify-end mr-4'>
-                                        {operator?.lastLogin || '-'}
+                                        {operator?.queues?.lastLogin || '-'}
                                       </div>
                                     </div>
                                     {/* last logout */}
@@ -786,10 +816,9 @@ export const Summary: FC<SummaryProps> = ({ className }): JSX.Element => {
                                         {t('Queues.Last logout')}
                                       </div>
                                       <div className='w-1/2 flex justify-end mr-4'>
-                                        {operator?.lastLogout || '-'}
+                                        {operator?.queues?.lastLogout || '-'}
                                       </div>
                                     </div>
-                                    {/* last login */}
                                   </div>
 
                                   {/* calls stats */}
@@ -814,7 +843,7 @@ export const Summary: FC<SummaryProps> = ({ className }): JSX.Element => {
                                             {t('QueueManager.Answered calls')}
                                           </div>
                                           <div className='w-1/2 flex justify-end mr-4'>
-                                            {operator?.answeredCalls || '-'}
+                                            {operator?.queues?.answeredCalls || '-'}
                                           </div>
                                         </div>
                                         {/* outgoing calls */}
@@ -823,7 +852,7 @@ export const Summary: FC<SummaryProps> = ({ className }): JSX.Element => {
                                             {t('QueueManager.Outgoing calls')}
                                           </div>
                                           <div className='w-1/2 flex justify-end mr-4'>
-                                            {operator?.outgoingCall?.outgoing_calls || '-'}
+                                            {operator?.queues?.outgoingCalls?.outgoing_calls || '-'}
                                           </div>
                                         </div>
                                         {/* missed calls */}
@@ -832,25 +861,34 @@ export const Summary: FC<SummaryProps> = ({ className }): JSX.Element => {
                                             {t('QueueManager.Missed calls')}
                                           </div>
                                           <div className='w-1/2 flex justify-end mr-4'>
-                                            {operator?.missedCalls || '-'}
+                                            {operator?.queues?.missedCalls || '-'}
                                           </div>
                                         </div>
-                                        {/* missed calls */}
+                                        {/* from last calls */}
                                         <div className='flex py-2 px-3'>
                                           <div className='w-1/2 flex justify-start text-gray-500 dark:text-gray-400'>
                                             {t('QueueManager.Since last call')}
                                           </div>
                                           <div className='w-1/2 flex justify-end mr-4'>
-                                            {operator?.fromLastCall || '-'}
+                                            {operator?.queues?.fromLastCall || '-'}
                                           </div>
                                         </div>
-                                        {/* missed calls */}
+                                        {/* time at phone */}
                                         <div className='flex py-2 px-3'>
                                           <div className='w-1/2 flex justify-start text-gray-500 dark:text-gray-400'>
                                             {t('QueueManager.Time at phone')}
                                           </div>
                                           <div className='w-1/2 flex justify-end mr-4'>
-                                            {operator?.timeAtPhone || '-'}
+                                            {operator?.queues?.timeAtPhone || '-'}
+                                          </div>
+                                        </div>
+                                        {/* recall time */}
+                                        <div className='flex py-2 px-3'>
+                                          <div className='w-1/2 flex justify-start text-gray-500 dark:text-gray-400'>
+                                            {t('QueueManager.Recall time')}
+                                          </div>
+                                          <div className='w-1/2 flex justify-end mr-4'>
+                                            {operator?.queues?.recallTime || '-'}
                                           </div>
                                         </div>
                                       </div>
@@ -873,49 +911,49 @@ export const Summary: FC<SummaryProps> = ({ className }): JSX.Element => {
                                       </div>
                                       {/* card body */}
                                       <div className='flex flex-col divide-y divide-gray-200 dark:divide-gray-700'>
-                                        {/* answered calls */}
+                                        {/* Minimum time */}
                                         <div className='flex py-2 px-3'>
                                           <div className='w-1/2 flex justify-start text-gray-500 dark:text-gray-400'>
                                             {t('QueueManager.Minimum')}
                                           </div>
                                           <div className='w-1/2 flex justify-end mr-4'>
-                                            {operator?.timeMinimum || '-'}
+                                            {operator?.queues?.timeMinimum || '-'}
                                           </div>
                                         </div>
-                                        {/* outgoing calls */}
+                                        {/* maximum time */}
                                         <div className='flex py-2 px-3'>
                                           <div className='w-1/2 flex justify-start text-gray-500 dark:text-gray-400'>
                                             {t('QueueManager.Maximum')}
                                           </div>
                                           <div className='w-1/2 flex justify-end mr-4'>
-                                            {operator?.timeMaximum || '-'}
+                                            {operator?.queues?.timeMaximum || '-'}
                                           </div>
                                         </div>
-                                        {/* missed calls */}
+                                        {/* Average time */}
                                         <div className='flex py-2 px-3'>
                                           <div className='w-1/2 flex justify-start text-gray-500 dark:text-gray-400'>
                                             {t('QueueManager.Average')}
                                           </div>
                                           <div className='w-1/2 flex justify-end mr-4'>
-                                            {operator?.timeAverage || '-'}
+                                            {operator?.queues?.timeAverage || '-'}
                                           </div>
                                         </div>
-                                        {/* missed calls */}
+                                        {/* total time incoming */}
                                         <div className='flex py-2 px-3'>
                                           <div className='w-1/2 flex justify-start text-gray-500 dark:text-gray-400'>
                                             {t('QueueManager.Incoming total')}
                                           </div>
                                           <div className='w-1/2 flex justify-end mr-4'>
-                                            {operator?.timeTotalIncoming || '-'}
+                                            {operator?.queues?.timeTotalIncoming || '-'}
                                           </div>
                                         </div>
-                                        {/* missed calls */}
+                                        {/* total time outgoing */}
                                         <div className='flex py-2 px-3'>
                                           <div className='w-1/2 flex justify-start text-gray-500 dark:text-gray-400'>
                                             {t('QueueManager.Outgoing total')}
                                           </div>
                                           <div className='w-1/2 flex justify-end mr-4'>
-                                            {operator?.timeTotalOutgoing || '-'}
+                                            {operator?.queues?.timeTotalOutgoing || '-'}
                                           </div>
                                         </div>
                                       </div>

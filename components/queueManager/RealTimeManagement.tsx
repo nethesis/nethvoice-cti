@@ -20,7 +20,6 @@ import {
   faHeadset,
   faStar as faStarSolid,
   faCircleNotch,
-  faStopwatch,
   faUser,
   faPhone,
   faCircleXmark,
@@ -76,8 +75,6 @@ export const RealTimeManagement: FC<RealTimeManagementProps> = ({ className }): 
   const authStore = useSelector((state: RootState) => state.authentication)
 
   const queueManagerStore = useSelector((state: RootState) => state.queueManagerQueues)
-
-  const REFRESH_TIME = 5000
 
   // load extensions information from the store
   const { operators } = useSelector((state: RootState) => state.operators) as Record<string, any>
@@ -263,6 +260,7 @@ export const RealTimeManagement: FC<RealTimeManagementProps> = ({ className }): 
 
   const [realTimeAgentCounters, setRealTimeAgentCounters] = useState<any>({})
 
+  //update agents counters
   useEffect(() => {
     const updateCounters = () => {
       let updatedCounters: Record<string, any> = {
