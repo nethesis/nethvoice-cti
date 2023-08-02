@@ -1,45 +1,24 @@
 // Copyright (C) 2023 Nethesis S.r.l.
 // SPDX-License-Identifier: AGPL-3.0-or-later
 
-import type { SpeedDialType } from '../../services/types'
-import { useState, useEffect, useRef, MutableRefObject, useCallback } from 'react'
-import { Button, Avatar, Modal, Dropdown, InlineNotification, EmptyState } from '../common'
-import {
-  deleteSpeedDial,
-  deleteAllSpeedDials,
-  getSpeedDials,
-  importCsvSpeedDial,
-} from '../../services/phonebook'
-import {
-  sortSpeedDials,
-  openCreateSpeedDialDrawer,
-  openEditSpeedDialDrawer,
-  exportSpeedDial,
-} from '../../lib/speedDial'
+import { useState, useEffect, useRef, useCallback } from 'react'
+import { Button, Avatar, EmptyState, Dropdown } from '../common'
 import { useSelector } from 'react-redux'
 import { RootState } from '../../store'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
-import {
-  faPhone,
-  faEllipsisVertical,
-  faPen,
-  faBolt,
-  faTrashCan,
-  faFileImport,
-  faFileArrowDown,
-  faCheckCircle,
-} from '@nethesis/nethesis-solid-svg-icons'
+import { faPhone, faChevronDown, faRotate } from '@nethesis/nethesis-solid-svg-icons'
 import { callPhoneNumber } from '../../lib/utils'
 import { useTranslation } from 'react-i18next'
-import { getJSONItem } from '../../lib/storage'
-import { getLastCalls } from '../../lib/history'
+import { CallTypes, getLastCalls } from '../../lib/history'
 import { getNMonthsAgoDate } from '../../lib/utils'
 import { formatDateLoc } from '../../lib/dateTime'
-import { type LastCallsResponse } from '../../lib/history'
-
-interface AvatarTypes {
-  [key: string]: string
-}
+import type { LastCallsResponse, SortTypes } from '../../lib/history'
+import { UserCallStatusIcon } from '../history/UserCallStatusIcon'
+import { CallsDate } from '../history/CallsDate'
+import { CallsDestination } from '../history/CallsDestination'
+import { getCallName } from '../history/CallsDestination'
+import { StatusTypes } from '../../theme/Types'
+import { getJSONItem, setJSONItem } from '../../lib/storage'
 
 export const LastCalls = () => {
   const { t } = useTranslation()
@@ -50,36 +29,78 @@ export const LastCalls = () => {
 
   const [lastCalls, setLastCalls] = useState<LastCallsResponse>()
 
-  useEffect(() => {
-    // console.warn('operators')
-    // console.warn(operators)
-  }, [operators])
-
-  useEffect(() => {
-    // console.warn('avatars')
-    // console.warn(avatars)
-  }, [avatars])
-
   const firstLoadedRef = useRef<boolean>(false)
 
-  const getLastCallsList = useCallback(async () => {
-    const dateStart = getNMonthsAgoDate(2)
-    const dateEnd = getNMonthsAgoDate()
-    const dateStartString = formatDateLoc(dateStart, 'yyyyMMdd')
-    const dateEndString = formatDateLoc(dateEnd, 'yyyyMMdd')
-    const lastCalls = await getLastCalls(username, dateStartString, dateEndString)
-    console.warn(lastCalls)
-    if (lastCalls) {
-      setLastCalls(lastCalls)
-    }
-  }, [username])
+  const [isLoading, setIsLoading] = useState<boolean>(false)
+  const updateIntervalId = useRef<ReturnType<typeof setTimeout>>()
+
+  const defaultSort: string = getJSONItem(`preferences-${username}`).lastUserCallsSort || ''
+  const [sort, setSort] = useState<SortTypes>(defaultSort || 'time_desc')
+
+  const getLastCallsList = useCallback(
+    async (newSort: SortTypes) => {
+      const dateStart = getNMonthsAgoDate(2)
+      const dateEnd = getNMonthsAgoDate()
+      const dateStartString = formatDateLoc(dateStart, 'yyyyMMdd')
+      const dateEndString = formatDateLoc(dateEnd, 'yyyyMMdd')
+      const lastCalls = await getLastCalls(username, dateStartString, dateEndString, newSort)
+      if (lastCalls) {
+        setLastCalls(lastCalls)
+        setIsLoading(false)
+      }
+    },
+    [username],
+  )
 
   useEffect(() => {
     if (username && !firstLoadedRef.current) {
       firstLoadedRef.current = true
-      getLastCallsList()
+      setIsLoading(true)
+      getLastCallsList(sort) 
     }
+  // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [username, getLastCallsList])
+
+  function getOperator(call: CallTypes) {
+    const callName = getCallName(call)
+    const operator: any = Object.values(operators).find(
+      (operator: any) => operator.name === callName,
+    )
+    return operator
+  }
+
+  function checkOperatorsAvatar(call: CallTypes): string {
+    const avatarUsername: string = getOperator(call)?.username
+    return username ? avatars[avatarUsername] || '' : ''
+  }
+
+  function checkOperatorPresence(call: CallTypes): StatusTypes | undefined {
+    const operatorPresence: string = getOperator(call)?.mainPresence
+    if (operatorPresence) {
+      return operatorPresence === 'online'
+        ? 'online'
+        : operatorPresence === 'offline'
+        ? 'offline'
+        : 'busy'
+    } else {
+      return undefined
+    }
+  }
+
+  function sortCalls(newSort: SortTypes): void {
+    getLastCallsList(newSort)
+    setSort(newSort)
+    const preferences = getJSONItem(`preferences-${username}`)
+    preferences['lastUserCallsSort'] = newSort
+    setJSONItem(`preferences-${username}`, preferences)
+  }
+
+  useEffect(() => {
+    updateIntervalId.current = setInterval(() => {
+      getLastCallsList(sort)
+    }, 1000 * 20)
+    return () => clearInterval(updateIntervalId.current)
+  }, [sort, getLastCallsList])
 
   return (
     <>
@@ -91,7 +112,38 @@ export const LastCalls = () => {
               <h2 className='text-lg font-medium text-gray-700 dark:text-gray-300'>
                 {t('LastCalls.Last calls')}
               </h2>
-              <div className='flex gap-2 items-center'> </div>
+              <div className='flex gap-1'>
+                <Dropdown
+                  items={
+                    <>
+                      <Dropdown.Item onClick={() => sortCalls('time_desc')}>
+                        <input
+                          type='radio'
+                          checked={sort === 'time_desc'}
+                          onChange={() => sortCalls('time_desc')}
+                          className='h-4 w-4 border-gray-300 text-primary focus:ring-primaryLight dark:border-gray-600 dark:text-primary dark:focus:ring-primaryDark'
+                        />
+                        {t('LastCalls.Newest')}
+                      </Dropdown.Item>
+                      <Dropdown.Item onClick={() => sortCalls('time_asc')}>
+                        <input
+                          type='radio'
+                          checked={sort === 'time_asc'}
+                          onChange={() => sortCalls('time_asc')}
+                          className='h-4 w-4 border-gray-300 text-primary focus:ring-primaryLight dark:border-gray-600 dark:text-primary dark:focus:ring-primaryDark'
+                        />
+                        {t('LastCalls.Oldest')}
+                      </Dropdown.Item>
+                    </>
+                  }
+                  position='left'
+                >
+                  <Button className='flex gap-2' variant='white'>
+                    {t('LastCalls.Sort by')}
+                    <FontAwesomeIcon icon={faChevronDown} />
+                  </Button>
+                </Dropdown>
+              </div>
             </div>
           </div>
           <span className='border-b border-gray-200 dark:border-gray-700'></span>
@@ -100,22 +152,23 @@ export const LastCalls = () => {
             className='flex-1 divide-y overflow-y-auto divide-gray-200 dark:divide-gray-700'
           >
             {/* skeleton */}
-            {Array.from(Array(4)).map((e, index) => (
-              <li key={index}>
-                <div className='flex items-center px-4 py-4 sm:px-6'>
-                  {/* avatar skeleton */}
-                  <div className='animate-pulse rounded-full h-12 w-12 bg-gray-300 dark:bg-gray-600'></div>
-                  <div className='min-w-0 flex-1 px-4'>
-                    <div className='flex flex-col justify-center'>
-                      {/* line skeleton */}
-                      <div className='animate-pulse h-3 rounded bg-gray-300 dark:bg-gray-600'></div>
+            {isLoading &&
+              Array.from(Array(4)).map((e, index) => (
+                <li key={index}>
+                  <div className='flex items-center px-4 py-4 sm:px-6'>
+                    {/* avatar skeleton */}
+                    <div className='animate-pulse rounded-full h-12 w-12 bg-gray-300 dark:bg-gray-600'></div>
+                    <div className='min-w-0 flex-1 px-4'>
+                      <div className='flex flex-col justify-center'>
+                        {/* line skeleton */}
+                        <div className='animate-pulse h-3 rounded bg-gray-300 dark:bg-gray-600'></div>
+                      </div>
                     </div>
                   </div>
-                </div>
-              </li>
-            ))}
+                </li>
+              ))}
             {/* empty state */}
-            {
+            {lastCalls?.rows?.length === 0 && (
               <EmptyState
                 title={t('LastCalls.No calls')}
                 icon={
@@ -126,49 +179,68 @@ export const LastCalls = () => {
                   />
                 }
               ></EmptyState>
-            }
+            )}
             {/* Iterate through speed dial list */}
-            {[{ name: 'aaa', speeddial_num: 1234 }].map((speedDial, key) => (
-              <li key={key}>
-                <div className='group relative flex items-center py-6 px-5'>
-                  <div
-                    className='absolute inset-0 group-hover:bg-gray-50 dark:group-hover:bg-gray-800'
-                    aria-hidden='true'
-                  />
-                  <div className='relative flex min-w-0 flex-1 items-center justify-between'>
-                    <div className='flex items-center'>
-                      <span className='text-gray-300 dark:text-gray-600'>
-                        <Avatar size='base' placeholderType='person' />
-                      </span>
-                      <div className='ml-4 truncate'>
-                        <p className='truncate text-sm font-medium text-gray-700 dark:text-gray-200'>
-                          {speedDial.name}
-                        </p>
-                        <div className='truncate text-sm mt-1 text-primary dark:text-primary'>
-                          <div className='flex items-center'>
-                            <FontAwesomeIcon
-                              icon={faPhone}
-                              className='mr-1.5 h-4 w-4 flex-shrink-0 text-gray-400 dark:text-gray-500'
-                              aria-hidden='true'
-                            />
-                            <span className='cursor-pointer hover:underline' onClick={() => {}}>
-                              {speedDial.speeddial_num}
-                            </span>
+            {lastCalls?.rows?.length! > 0 &&
+              lastCalls?.rows.map((call, key) => (
+                <li key={key}>
+                  <div className='group relative flex items-center py-6 px-5'>
+                    <div
+                      className='absolute inset-0 group-hover:bg-gray-50 dark:group-hover:bg-gray-800'
+                      aria-hidden='true'
+                    />
+                    <div className='relative flex min-w-0 flex-1 items-center justify-between'>
+                      <div className='flex items-center'>
+                        <span className='text-gray-300 dark:text-gray-600'>
+                          <Avatar
+                            size='base'
+                            placeholderType='person'
+                            src={checkOperatorsAvatar(call)}
+                            status={checkOperatorPresence(call)}
+                          />
+                        </span>
+                        <div className='ml-4 truncate flex flex-col gap-1.5'>
+                          <div className='truncate text-sm font-medium text-gray-700 dark:text-gray-200'>
+                            <CallsDestination call={call} operators={operators} hideName={true} />
                           </div>
+                          <div className='truncate text-sm text-primary dark:text-primary'>
+                            <div className='flex items-center'>
+                              <UserCallStatusIcon call={call} />
+                              <span
+                                className='cursor-pointer hover:underline'
+                                onClick={() => callPhoneNumber(call.dst)}
+                              >
+                                {call.dst_cnam !== '' || call.dst_ccompany !== '' ? (
+                                  <CallsDestination
+                                    call={call}
+                                    operators={operators}
+                                    hideNumber={true}
+                                    highlightNumber={true}
+                                  />
+                                ) : (
+                                  call.dst
+                                )}
+                              </span>
+                            </div>
+                          </div>
+                          <CallsDate call={call} spaced={true} />
                         </div>
                       </div>
-                    </div>
-                    <div className='flex gap-2'>
-                      {/* Actions */}
-                      <Button variant='white' className='gap-2'>
-                        <FontAwesomeIcon icon={faPhone} size='lg' className='text-gray-500' />
-                        Call
-                      </Button>
+                      <div className='flex gap-2'>
+                        {/* Actions */}
+                        <Button
+                          variant='white'
+                          className='gap-2'
+                          onClick={() => callPhoneNumber(call.cnum)}
+                        >
+                          <FontAwesomeIcon icon={faPhone} size='lg' className='text-gray-500' />
+                          Call
+                        </Button>
+                      </div>
                     </div>
                   </div>
-                </div>
-              </li>
-            ))}
+                </li>
+              ))}
           </ul>
         </div>
       </aside>

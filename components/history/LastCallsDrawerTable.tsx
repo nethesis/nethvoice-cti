@@ -1,7 +1,7 @@
 // Copyright (C) 2023 Nethesis S.r.l.
 // SPDX-License-Identifier: AGPL-3.0-or-later
 
-import { ComponentPropsWithRef, forwardRef, useEffect, useState } from 'react'
+import { ComponentPropsWithRef, forwardRef, useEffect, useState, FC } from 'react'
 import { searchDrawerHistoryUser, searchDrawerHistorySwitchboard } from '../../lib/history'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import {
@@ -23,6 +23,9 @@ import { Tooltip } from 'react-tooltip'
 import classNames from 'classnames'
 import { cleanString } from '../../lib/utils'
 import { isEqual } from 'lodash'
+import { UserCallStatusIcon } from './UserCallStatusIcon'
+import { CallsDate } from './CallsDate'
+import { CallsDestination } from './CallsDestination'
 
 export interface LastCallsDrawerTableProps extends ComponentPropsWithRef<'div'> {
   callType: string
@@ -122,70 +125,6 @@ export const LastCallsDrawerTable = forwardRef<HTMLButtonElement, LastCallsDrawe
 
       // limit the number of calls to show
       return relevantCalls.slice(0, limit)
-    }
-
-    //Check the icon for the status column
-    function checkIconUser(call: any) {
-      return (
-        <div className='mt-1 text-sm md:mt-0 flex'>
-          <div>
-            {call.direction === 'in' && (
-              <div>
-                {call.disposition === 'ANSWERED' ? (
-                  <>
-                    <FontAwesomeIcon
-                      icon={faPhoneArrowDown}
-                      className='tooltip-incoming-answered mr-2 h-5 w-3.5 text-green-600 dark:text-green-500'
-                      aria-hidden='true'
-                    />
-                    <Tooltip anchorSelect='.tooltip-incoming-answered' place='left'>
-                      {t('History.Incoming answered') || ''}
-                    </Tooltip>
-                  </>
-                ) : (
-                  <>
-                    <FontAwesomeIcon
-                      icon={faPhoneMissed}
-                      className='tooltip-incoming-missed mr-2 h-5 w-4 text-red-400'
-                      aria-hidden='true'
-                    />
-                    <Tooltip anchorSelect='.tooltip-incoming-missed' place='left'>
-                      {t('History.Incoming missed') || ''}
-                    </Tooltip>
-                  </>
-                )}
-              </div>
-            )}
-            {call.direction === 'out' && (
-              <div>
-                {call.disposition === 'ANSWERED' ? (
-                  <>
-                    <FontAwesomeIcon
-                      icon={faPhoneArrowUp}
-                      className='tooltip-outgoing-answered mr-2 h-5 w-3.5 text-green-600 dark:text-green-500'
-                      aria-hidden='true'
-                    />
-                    <Tooltip anchorSelect='.tooltip-outgoing-answered' place='left'>
-                      {t('History.Outgoing answered') || ''}
-                    </Tooltip>
-                  </>
-                ) : (
-                  <>
-                    <FontAwesomeIcon
-                      icon={faPhoneXmark}
-                      className='tooltip-outgoing-missed mr-2 h-5 w-3.5 text-red-400'
-                      aria-hidden='true'
-                    />
-                    <Tooltip anchorSelect='.tooltip-outgoing-missed' place='left'>
-                      {t('History.Outgoing missed') || ''}
-                    </Tooltip>
-                  </>
-                )}
-              </div>
-            )}
-          </div>
-        </div>
-      )
     }
 
     function checkIconSwitchboard(call: any) {
@@ -406,16 +345,7 @@ export const LastCallsDrawerTable = forwardRef<HTMLButtonElement, LastCallsDrawe
                   <li key={index}>
                     <div className='flex items-center justify-between gap-4 py-4 text-sm'>
                       {/* Date column */}
-                      <div className='flex flex-col justify-center flex-shrink-0'>
-                        <div className=''>
-                          <div className='text-sm text-gray-900 dark:text-gray-100'>
-                            {formatDateLoc(call.time * 1000, 'PP')}
-                          </div>
-                          <div className='text-sm text-gray-500'>
-                            {getCallTimeToDisplay(call.time * 1000)}
-                          </div>
-                        </div>
-                      </div>
+                      <CallsDate call={call} />
                       {/* Source column  */}
                       {sourceColumn(call)}
                       {/* Arrow column */}
@@ -425,8 +355,8 @@ export const LastCallsDrawerTable = forwardRef<HTMLButtonElement, LastCallsDrawe
                         aria-hidden='true'
                       />
                       {/* Destination column */}
-                      {destinationColumn(call)}
-                      {callType === 'user' && checkIconUser(call)}
+                      <CallsDestination call={call} operators={operators} />
+                      {callType === 'user' && <UserCallStatusIcon call={call} />}
                       {callType === 'switchboard' && checkIconSwitchboard(call)}
                     </div>
                   </li>
