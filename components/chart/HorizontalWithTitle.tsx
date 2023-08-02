@@ -15,7 +15,7 @@ interface BarChartHorizontalWithTitleProps {
   labels: string[]
   datasets: any[]
   tickColor?: string
-  titleText: string
+  titleText?: string
 }
 
 const BarChartHorizontalWithTitle: FC<BarChartHorizontalWithTitleProps> = ({

@@ -665,7 +665,7 @@ export const Summary: FC<SummaryProps> = ({ className }): JSX.Element => {
             </Popover.Group>
           </div>
 
-          <SummaryChart></SummaryChart>
+          <SummaryChart selectedQueues={selectedQueues}></SummaryChart>
         </>
       )}
 
