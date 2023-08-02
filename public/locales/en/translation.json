@@ -403,6 +403,9 @@
   },
   "LastCalls": {
     "Last calls": "Last calls",
-    "No calls": "No calls"
+    "No calls": "No calls",
+    "Sort by": "Sort by",
+    "Newest": "Newest",
+    "Oldest": "Oldest"
   }
 }

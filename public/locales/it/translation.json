@@ -295,7 +295,10 @@
   },
   "LastCalls": {
     "Last calls": "Ultime chiamate",
-    "No calls": "Nessuna chiamata"
+    "No calls": "Nessuna chiamata",
+    "Sort by": "Ordina per",
+    "Newest": "Più recenti",
+    "Oldest": "Più vecchie"
   },
   "Notifications": {
     "Mark as read": "Contrassegna come letto",

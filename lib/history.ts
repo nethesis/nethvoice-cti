@@ -215,15 +215,22 @@ export const getLastCalls = async (
   username: string,
   dateFrom: string,
   dateTo: string,
+  sort: SortTypes = 'time_desc',
 ): Promise<LastCallsResponse> => {
   try {
-    const requestUrl = `${getHistoryUrl()}/webrest/historycall/interval/user/${username}/${dateFrom}/${dateTo}?offset=0&limit=10&sort=time%20desc&removeLostCalls=undefined`
+    if ((sort === 'time_desc')) {
+      sort = 'time%20desc'
+    } else if ((sort === 'time_asc')) {
+      sort = 'time%20asc'
+    }
+
+    const requestUrl = `${getHistoryUrl()}/webrest/historycall/interval/user/${username}/${dateFrom}/${dateTo}?offset=0&limit=15&sort=${sort}&removeLostCalls=undefined`
     const { data, status } = await axios.get(requestUrl)
 
     if (status === 200) {
       return data
     } else {
-      throw "Error retrieving the last calls"
+      throw 'Error retrieving the last calls'
     }
   } catch (error) {
     handleNetworkError(error)
@@ -258,3 +265,5 @@ export interface LastCallsResponse {
   count: number
   rows: CallTypes[]
 }
+
+export type SortTypes = 'time_desc' | 'time_asc' | string
