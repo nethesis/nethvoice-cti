@@ -10,8 +10,9 @@ import {
   Legend,
 } from 'chart.js'
 import { getRandomColor } from '../../lib/queueManager'
+import ChartDataLabels from 'chartjs-plugin-datalabels'
 
-ChartJS.register(CategoryScale, LinearScale, BarElement, Title, Tooltip, Legend)
+ChartJS.register(CategoryScale, LinearScale, BarElement, ChartDataLabels, Title, Tooltip, Legend)
 
 interface BarChartHorizontalNoLabelsProps {
   datasets: any[]
@@ -31,10 +32,12 @@ const BarChartHorizontalNoLabels: FC<BarChartHorizontalNoLabelsProps> = ({
     elements: {
       bar: {
         borderWidth: 0,
+        borderRadius: 10,
       },
     },
     scales: {
       y: {
+        display: false,
         beginAtZero: true,
         grid: {
           display: false,
@@ -47,7 +50,6 @@ const BarChartHorizontalNoLabels: FC<BarChartHorizontalNoLabelsProps> = ({
           font: {
             size: 14,
           },
-          //   mirror:true,
         },
       },
       x: {
@@ -77,7 +79,20 @@ const BarChartHorizontalNoLabels: FC<BarChartHorizontalNoLabelsProps> = ({
           size: 16,
         },
       },
+      datalabels: {
+        color: 'white',
+        font: {
+          size: 14,
+        },
+        formatter: (value: any, context: any) => {
+          const queueLabel = context.chart.data.labels[context.dataIndex]
+          return queueLabel
+        },
+        display: 'auto',
+      },
     },
+    //max height for graph bars
+    maxBarThickness: 50,
   }
 
   const data = {
@@ -90,7 +105,7 @@ const BarChartHorizontalNoLabels: FC<BarChartHorizontalNoLabelsProps> = ({
     ],
   }
 
-  return <Bar data={data} options={options} />
+  return <Bar data={data} plugins={[ChartDataLabels]} options={options} />
 }
 
 export default BarChartHorizontalNoLabels

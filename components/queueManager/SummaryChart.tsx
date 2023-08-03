@@ -66,44 +66,6 @@ export const SummaryChart: FC<SummaryChartProps> = ({ className, selectedQueues 
   const [labelsCalls, setLabelsCalls] = useState<string[]>([])
   const [totalCallsPie, setTotalCallsPie] = useState(0)
 
-  // useEffect(() => {
-  //   const createChartData = () => {
-  //     const newData = [];
-  //     let totalCalls = 0;
-
-  //     if (queuesStatus && selectedQueues.length > 0) {
-  //       totalCalls = selectedQueues.reduce((total:any, queueKey:any) => {
-  //         const queue = queuesStatus[queueKey];
-  //         if (queue) {
-  //           return total + (queue.tot || 0);
-  //         }
-  //         return total;
-  //       }, 0);
-
-  //       setLabelsCalls(selectedQueues);
-  //       for (const queueKey of selectedQueues) {
-  //         const queue = queuesStatus[queueKey];
-  //         if (queue) {
-  //           const queueData = [(queue.tot || 0) / totalCalls * 100];
-  //           const colors = ['#059669', '#064E3B', '#E5E7EB'];
-  //           const label = `Queue ${queue.queueman}`;
-
-  //           newData.push({
-  //             label,
-  //             data: queueData,
-  //             backgroundColor: colors,
-  //           });
-  //         }
-  //       }
-  //     }
-
-  //     setDatasetsQueues(newData);
-  //     setTotalCallsPie(totalCalls);
-  //   };
-
-  //   createChartData();
-  // }, [queuesStatus, selectedQueues]);
-
   // selected queues alphabetically ordered
   selectedQueues.sort((a: any, b: any) => parseInt(a) - parseInt(b))
 
@@ -112,7 +74,7 @@ export const SummaryChart: FC<SummaryChartProps> = ({ className, selectedQueues 
       const newData = []
       let totalValue = 0
 
-      if (queuesStatus && selectedQueues.length > 0) {
+      if (queuesStatus) {
         totalValue = selectedQueues.reduce((total: any, queueKey: any) => {
           const queue = queuesStatus[queueKey]
           if (queue) {
@@ -154,7 +116,7 @@ export const SummaryChart: FC<SummaryChartProps> = ({ className, selectedQueues 
           <div className='grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-3'>
             {/* Total calls */}
             <div className='pt-8'>
-              <div className='flex flex-col border-b rounded-lg shadow-md border-gray-200 dark:border-gray-700 bg-white dark:bg-gray-900 px-5 py-3 sm:mt-1 relative items-center h-auto w-full overflow-auto'>
+              <div className='flex flex-col border-b rounded-lg shadow-md border-gray-200 dark:border-gray-700 bg-white dark:bg-gray-900 px-5 py-3 sm:mt-1 relative items-center h-auto w-full'>
                 <div className='flex items-center'>
                   <span className='text-sm font-medium leading-6 text-gray-700 dark:text-gray-100'>
                     {t('QueueManager.Total calls')}
@@ -165,12 +127,12 @@ export const SummaryChart: FC<SummaryChartProps> = ({ className, selectedQueues 
                       className='h-5 w-5 pl-2 py-2 cursor-pointer flex items-center tooltip-total-calls'
                       aria-hidden='true'
                     />
-                    <Tooltip anchorSelect='.tooltip-total-calls' place='left'>
+                    <Tooltip anchorSelect='.tooltip-total-calls' place='right'>
                       {t('QueueManager.SummaryTotalCallChartDescription') || ''}
                     </Tooltip>
                   </div>
                 </div>
-                <div className='mt-3 mx-auto h-56 w-full overflow-auto'>
+                <div className='mt-3 mx-auto h-80 w-full overflow-auto'>
                   <BarChartHorizontalNoLabels
                     datasets={datasetsQueues}
                     titleText={`${t('QueueManager.Total')}: ${totalCallsPie}`}
