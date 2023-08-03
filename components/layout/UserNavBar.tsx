@@ -95,7 +95,7 @@ export const UserNavBar: FC = () => {
             key={i}
             onClick={() => changeTab(tab.name, true)}
             className={`${
-              tab.active ? 'bg-gray-100 dark:bg-gray-700 text-gray-900' : 'text-gray-600 hover:text-gray-900'
+              tab.active ? 'bg-gray-100 dark:bg-gray-700 text-gray-900 dark:text-gray-50' : 'text-gray-600 dark:text-gray-400 hover:text-gray-900 dark:hover:text-gray-50'
             } hover:bg-gray-100 hover:dark:bg-gray-700 w-8 h-8 rounded flex justify-center items-center relative cursor-pointer`}
           >
             <FontAwesomeIcon size='lg' icon={tab.icon} />

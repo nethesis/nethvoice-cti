@@ -56,9 +56,9 @@ export const UserLastCalls = () => {
     if (username && !firstLoadedRef.current) {
       firstLoadedRef.current = true
       setIsLoading(true)
-      getLastCallsList(sort) 
+      getLastCallsList(sort)
     }
-  // eslint-disable-next-line react-hooks/exhaustive-deps
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [username, getLastCallsList])
 
   function getOperator(call: CallTypes) {
@@ -234,7 +234,7 @@ export const UserLastCalls = () => {
                           onClick={() => callPhoneNumber(call.cnum)}
                         >
                           <FontAwesomeIcon icon={faPhone} size='lg' className='text-gray-500' />
-                          Call
+                          {t('LastCalls.Call')}
                         </Button>
                       </div>
                     </div>

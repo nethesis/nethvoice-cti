@@ -31,7 +31,7 @@ const activeStyles = {
 
 export const NavBar: FC<NavBarProps> = ({ items }) => {
   return (
-    <div className='hidden w-20 overflow-y-auto md:block border-r border-gray-200 bg-white dark:bg-gray-700'>
+    <div className='hidden w-20 overflow-y-auto md:block border-r border-gray-200 dark:border-gray-700 bg-white dark:bg-gray-900'>
       <div className='flex w-full flex-col items-center py-2 h-full'>
         <div className='flex flex-shrink-0 items-center'>
           <Link href='/operators'>
@@ -53,8 +53,8 @@ export const NavBar: FC<NavBarProps> = ({ items }) => {
                 <a
                   className={classNames(
                     item.current
-                      ? 'text-grey-900 bg-gray-100 dark:bg-gray-500'
-                      : 'text-gray-600 hover:text-gray-900 hover:bg-gray-100 dark:hover:bg-gray-500',
+                      ? 'text-grey-900 bg-gray-100 dark:bg-gray-800 dark:text-gray-50'
+                      : 'text-gray-600 dark:text-gray-300 hover:text-gray-900 hover:bg-gray-100 dark:hover:bg-gray-800 dark:hover:text-gray-50',
                     'group rounded-md flex flex-col items-center text-xs font-medium justify-center',
                     `tooltip-${item.name}`,
                     'relative'
