@@ -98,7 +98,7 @@ export const LastCalls = () => {
   useEffect(() => {
     updateIntervalId.current = setInterval(() => {
       getLastCallsList(sort)
-    }, 1000 * 20)
+    }, 1000 * 10)
     return () => clearInterval(updateIntervalId.current)
   }, [sort, getLastCallsList])
 
