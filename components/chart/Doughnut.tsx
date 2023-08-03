@@ -1,68 +1,60 @@
-import React from 'react'
-import { FC } from 'react'
-import { Doughnut } from 'react-chartjs-2'
-import {
-  Chart as ChartJS,
-  CategoryScale,
-  LinearScale,
-  BarElement,
-  Title,
-  Tooltip,
-  Legend,
-  ArcElement,
-} from 'chart.js'
+import React from 'react';
+import { FC } from 'react';
+import { Doughnut } from 'react-chartjs-2';
+import { Chart as ChartJS, ArcElement, Title, Tooltip, Legend } from 'chart.js';
 
-ChartJS.register(ArcElement, CategoryScale, LinearScale, BarElement, Title, Tooltip, Legend)
+ChartJS.register(ArcElement, Title, Tooltip, Legend);
 
 interface DoughnutChartProps {
-  labels: string[]
-  datasets: any[]
-  titleText: string
+  datasets: any[];
+  titleText: string;
+  total?: number; // Campo opzionale per il valore totale
 }
 
-const DoughnutChart: FC<DoughnutChartProps> = ({ labels, datasets, titleText }) => {
+const DoughnutChart: FC<DoughnutChartProps> = ({ datasets, titleText, total }) => {
+  // Funzione per sommare i valori di tutti i datasets
+  const getTotalValue = () => {
+    return datasets.reduce((total: number, dataset: any) => {
+      const queueData = dataset.data;
+      return total + queueData.reduce((acc: number, value: number) => acc + value, 0);
+    }, 0);
+  };
+
+  const totalValue = total || getTotalValue();
+
   const options = {
     responsive: true,
-    layout: {
-      padding: {
-        top: 20,
-        bottom: 20,
-      },
-    },
+    cutoutPercentage: 50, // Regola la dimensione del cerchio interno (50% crea una forma di anello)
     plugins: {
       legend: {
-        position: 'right' as 'right',
-        labels: {
-          usePointStyle: true,
-        },
+        display: false, // Nascondi la legenda
       },
       tooltip: {
         callbacks: {
           title: function (tooltipItem: any) {
-            return ''
+            return tooltipItem[0].label;
           },
           label: function (context: any) {
-            const value = context.parsed ? context.parsed : 0
-            return value.toFixed(2) + '%'
+            const value = context.parsed ? context.parsed : 0;
+            const queueName = context.dataset.label;
+            return `${queueName}: ${value.toFixed(2)}%`;
           },
         },
       },
       title: {
         display: true,
-        text: titleText,
-        font: {
+        text: titleText.includes('{total}') ? titleText.replace('{total}', totalValue.toString()) : titleText,        font: {
           size: 16,
         },
       },
     },
-  }
+  };
 
   const data = {
-    labels,
-    datasets,
-  }
+    datasets: datasets,
+  };
 
-  return <Doughnut data={data} options={options} />
-}
+  return <Doughnut data={data} options={options} />;
+};
 
-export default DoughnutChart
+export default DoughnutChart;

@@ -8,7 +8,7 @@ import { Tooltip } from 'react-tooltip'
 import { getQueueStats } from '../../lib/queueManager'
 
 import { faCircleInfo } from '@fortawesome/free-solid-svg-icons'
-import BarChartHorizontalWithTitle from '../chart/HorizontalWithTitle'
+import BarChartHorizontalNoLabels from '../chart/HorizontalNoLabel'
 
 export interface SummaryChartProps extends ComponentProps<'div'> {
   selectedQueues: any
@@ -62,48 +62,88 @@ export const SummaryChart: FC<SummaryChartProps> = ({ className, selectedQueues 
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [firstRenderQueuesStats, selectedQueues])
 
- const [datasetsQueues, setDatasetsQueues] = useState<any[]>([]);
-const [labelsCalls, setLabelsCalls] = useState<string[]>([]);
+  const [datasetsQueues, setDatasetsQueues] = useState<any[]>([])
+  const [labelsCalls, setLabelsCalls] = useState<string[]>([])
+  const [totalCallsPie, setTotalCallsPie] = useState(0)
 
-// Cycle through queuesStatus
-useEffect(() => {
-  // Funzione per creare i dati del grafico in base alle code selezionate
-  const createChartData = () => {
-    const newData = [];
-    const newLabels = [];
+  // useEffect(() => {
+  //   const createChartData = () => {
+  //     const newData = [];
+  //     let totalCalls = 0;
 
-    if (queuesStatus && selectedQueues.length > 0) {
-      for (const queueKey of selectedQueues) {
-        const queue = queuesStatus[queueKey];
-        if (queue) {
-          const queueData = [queue.tot || 0]; // Total Calls
-          const colors = ['#059669', '#064E3B', '#E5E7EB'];
-          const label = `Queue ${queue.queueman}`;
+  //     if (queuesStatus && selectedQueues.length > 0) {
+  //       totalCalls = selectedQueues.reduce((total:any, queueKey:any) => {
+  //         const queue = queuesStatus[queueKey];
+  //         if (queue) {
+  //           return total + (queue.tot || 0);
+  //         }
+  //         return total;
+  //       }, 0);
 
-          newData.push({
-            label: label,
-            data: queueData,
-            backgroundColor: colors,
-            borderRadius: 10,
-            barPercentage: 1,
-            borderWidth: 0,
-            borderSkipped: false,
-            categorySpacing: 6,
-            barThickness: 25,
-          });
+  //       setLabelsCalls(selectedQueues);
+  //       for (const queueKey of selectedQueues) {
+  //         const queue = queuesStatus[queueKey];
+  //         if (queue) {
+  //           const queueData = [(queue.tot || 0) / totalCalls * 100];
+  //           const colors = ['#059669', '#064E3B', '#E5E7EB'];
+  //           const label = `Queue ${queue.queueman}`;
 
-          newLabels.push(label); // Aggiungi l'etichetta al nuovo array
+  //           newData.push({
+  //             label,
+  //             data: queueData,
+  //             backgroundColor: colors,
+  //           });
+  //         }
+  //       }
+  //     }
+
+  //     setDatasetsQueues(newData);
+  //     setTotalCallsPie(totalCalls);
+  //   };
+
+  //   createChartData();
+  // }, [queuesStatus, selectedQueues]);
+
+  // selected queues alphabetically ordered
+  selectedQueues.sort((a: any, b: any) => parseInt(a) - parseInt(b))
+
+  useEffect(() => {
+    const createChartData = () => {
+      const newData = []
+      let totalValue = 0
+
+      if (queuesStatus && selectedQueues.length > 0) {
+        totalValue = selectedQueues.reduce((total: any, queueKey: any) => {
+          const queue = queuesStatus[queueKey]
+          if (queue) {
+            return total + (queue.tot || 0)
+          }
+          return total
+        }, 0)
+
+        setLabelsCalls(selectedQueues)
+        for (const queueKey of selectedQueues) {
+          const queue = queuesStatus[queueKey]
+          if (queue) {
+            const queueData = [((queue.tot || 0) / totalValue) * 100]
+            const colors = ['#059669', '#064E3B', '#E5E7EB']
+            const label = `${queue.queueman}`
+
+            newData.push({
+              label,
+              data: queueData,
+              backgroundColor: colors,
+            })
+          }
         }
+
+        setDatasetsQueues(newData)
+        setTotalCallsPie(totalValue)
       }
     }
 
-    setDatasetsQueues(newData);
-    setLabelsCalls(newLabels); // Imposta il nuovo array di etichette
-  };
-
-  // Chiamiamo la funzione per creare i dati del grafico ogni volta che selectedQueues cambia
-  createChartData();
-}, [selectedQueues, queuesStatus]);
+    createChartData()
+  }, [queuesStatus, selectedQueues])
 
   return (
     <>
@@ -114,7 +154,7 @@ useEffect(() => {
           <div className='grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-3'>
             {/* Total calls */}
             <div className='pt-8'>
-              <div className='flex flex-col border-b rounded-lg shadow-md border-gray-200 dark:border-gray-700 bg-white dark:bg-gray-900 px-5 py-3 sm:mt-1 relative items-center'>
+              <div className='flex flex-col border-b rounded-lg shadow-md border-gray-200 dark:border-gray-700 bg-white dark:bg-gray-900 px-5 py-3 sm:mt-1 relative items-center h-auto w-full overflow-auto'>
                 <div className='flex items-center'>
                   <span className='text-sm font-medium leading-6 text-gray-700 dark:text-gray-100'>
                     {t('QueueManager.Total calls')}
@@ -130,12 +170,10 @@ useEffect(() => {
                     </Tooltip>
                   </div>
                 </div>
-
-                <div className='mt-3 mx-auto h-auto w-full'>
-                  <BarChartHorizontalWithTitle
-                    labels={labelsCalls}
+                <div className='mt-3 mx-auto h-56 w-full overflow-auto'>
+                  <BarChartHorizontalNoLabels
                     datasets={datasetsQueues}
-                    tickColor='#374151'
+                    titleText={`${t('QueueManager.Total')}: ${totalCallsPie}`}
                   />
                 </div>
               </div>
