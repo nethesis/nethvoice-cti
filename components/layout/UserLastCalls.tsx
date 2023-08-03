@@ -23,7 +23,7 @@ import { getJSONItem, setJSONItem } from '../../lib/storage'
 export const UserLastCalls = () => {
   const { t } = useTranslation()
 
-  const avatars = useSelector((state: RootState) => state.operators.avatars)
+  const avatars: any = useSelector((state: RootState) => state.operators.avatars)
   const operators = useSelector((state: RootState) => state.operators.operators)
   const username = useSelector((state: RootState) => state.user.username)
 
