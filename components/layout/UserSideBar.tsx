@@ -95,10 +95,10 @@ export const UserSideBar: FC = () => {
             key={i}
             onClick={() => changeTab(tab.name, true)}
             className={`${
-              tab.active ? 'bg-gray-100 dark:bg-gray-700' : ''
+              tab.active ? 'bg-gray-100 dark:bg-gray-700 text-gray-900' : 'text-gray-600 hover:text-gray-900'
             } hover:bg-gray-100 hover:dark:bg-gray-700 w-8 h-8 rounded flex justify-center items-center relative cursor-pointer`}
           >
-            <FontAwesomeIcon className='text-gray-600 dark:text-white' size='lg' icon={tab.icon} />
+            <FontAwesomeIcon size='lg' icon={tab.icon} />
             {tab.active && <div style={activeStyles} className='bg-primary' />}
           </div>
         ))}
