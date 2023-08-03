@@ -9,7 +9,7 @@ import { faBolt, faPhone, type IconDefinition } from '@nethesis/nethesis-solid-s
 import { getJSONItem, setJSONItem } from '../../lib/storage'
 import { RootState } from '../../store'
 import { useSelector } from 'react-redux'
-import { LastCalls } from './LastCalls'
+import { UserLastCalls } from './UserLastCalls'
 
 const activeStyles = {
   width: '.1875rem',
@@ -21,7 +21,7 @@ const activeStyles = {
   position: 'absolute',
 } as React.CSSProperties
 
-export const UserSideBar: FC = () => {
+export const UserNavBar: FC = () => {
   const [tabs, setTabs] = useState<TabTypes[]>([
     {
       icon: faBolt,
@@ -82,7 +82,7 @@ export const UserSideBar: FC = () => {
           if (tab.active && tab.name === 'speed_dial') {
             return <SpeedDial key={i} />
           } else if (tab.active && tab.name === 'last_calls') {
-            return <LastCalls key={i} />
+            return <UserLastCalls key={i} />
           }
         })}
       {/* The side menu */}

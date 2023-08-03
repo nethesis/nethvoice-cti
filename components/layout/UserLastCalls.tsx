@@ -20,7 +20,7 @@ import { getCallName } from '../history/CallsDestination'
 import { StatusTypes } from '../../theme/Types'
 import { getJSONItem, setJSONItem } from '../../lib/storage'
 
-export const LastCalls = () => {
+export const UserLastCalls = () => {
   const { t } = useTranslation()
 
   const avatars = useSelector((state: RootState) => state.operators.avatars)
