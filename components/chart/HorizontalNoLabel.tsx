@@ -17,6 +17,7 @@ ChartJS.register(CategoryScale, LinearScale, BarElement, ChartDataLabels, Title,
 interface BarChartHorizontalNoLabelsProps {
   datasets: any[]
   titleText: string
+  queuedata: any
 }
 
 // type Align = 'start' | 'center' | 'end' | 'left' | 'right' | 'top' | 'bottom' | number | ((context: any) => Align);
@@ -24,7 +25,17 @@ interface BarChartHorizontalNoLabelsProps {
 const BarChartHorizontalNoLabels: FC<BarChartHorizontalNoLabelsProps> = ({
   datasets,
   titleText,
+  queuedata,
 }) => {
+  const validQueueData = queuedata || []
+
+  const queueDataMap: { [label: string]: any } = {}
+  if (Array.isArray(validQueueData)) {
+    validQueueData.forEach((data) => {
+      queueDataMap[data.label] = data
+    })
+  }
+
   const options = {
     indexAxis: 'y' as const,
     responsive: true,
@@ -37,7 +48,9 @@ const BarChartHorizontalNoLabels: FC<BarChartHorizontalNoLabelsProps> = ({
     },
     scales: {
       y: {
-        display: false,
+        // display: false,
+        display: true,
+
         beginAtZero: true,
         grid: {
           display: false,
@@ -86,7 +99,14 @@ const BarChartHorizontalNoLabels: FC<BarChartHorizontalNoLabelsProps> = ({
         },
         formatter: (value: any, context: any) => {
           const queueLabel = context.chart.data.labels[context.dataIndex]
-          return queueLabel
+          const queueData = queueDataMap[queueLabel]
+
+          if (queueData) {
+            const originalValue = queueData.originalData[0] || 0
+            return originalValue.toString()
+          }
+
+          return ''
         },
         display: 'auto',
       },

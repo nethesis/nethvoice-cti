@@ -62,12 +62,13 @@ export const SummaryChart: FC<SummaryChartProps> = ({ className, selectedQueues 
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [firstRenderQueuesStats, selectedQueues])
 
-  const [datasetsQueues, setDatasetsQueues] = useState<any[]>([])
-  const [labelsCalls, setLabelsCalls] = useState<string[]>([])
-  const [totalCallsPie, setTotalCallsPie] = useState(0)
-
   // selected queues alphabetically ordered
   selectedQueues.sort((a: any, b: any) => parseInt(a) - parseInt(b))
+
+  // Total calls section
+  const [datasetsQueues, setDatasetsQueues] = useState<any[]>([])
+  const [totalCalls, setTotalCalls] = useState(0)
+  const [queueData, setQueueData] = useState<any>(null)
 
   useEffect(() => {
     const createChartData = () => {
@@ -83,11 +84,11 @@ export const SummaryChart: FC<SummaryChartProps> = ({ className, selectedQueues 
           return total
         }, 0)
 
-        setLabelsCalls(selectedQueues)
         for (const queueKey of selectedQueues) {
           const queue = queuesStatus[queueKey]
           if (queue) {
             const queueData = [((queue.tot || 0) / totalValue) * 100]
+            const originalData = [queue.tot || 0]
             const colors = ['#059669', '#064E3B', '#E5E7EB']
             const label = `${queue.queueman}`
 
@@ -95,12 +96,61 @@ export const SummaryChart: FC<SummaryChartProps> = ({ className, selectedQueues 
               label,
               data: queueData,
               backgroundColor: colors,
+              originalData: originalData,
             })
           }
         }
 
         setDatasetsQueues(newData)
-        setTotalCallsPie(totalValue)
+        setTotalCalls(totalValue)
+
+        setQueueData(newData)
+      }
+    }
+
+    createChartData()
+  }, [queuesStatus, selectedQueues])
+
+  // Calls before sla section
+  const [datasetsQueuesLessSla, setDatasetsQueuesLessSla] = useState<any[]>([])
+  const [totalCallsBeforeLevel, setTotalCallsBeforeLevel] = useState(0)
+  const [queueDataBeforeLevel, setQueueDataBeforeLevel] = useState<any>(null)
+
+  useEffect(() => {
+    const createChartData = () => {
+      const newData = []
+      let totalValue = 0
+
+      if (queuesStatus) {
+        totalValue = selectedQueues.reduce((total: any, queueKey: any) => {
+          const queue = queuesStatus[queueKey]
+          if (queue) {
+            return total + (queue.processed_less_sla || 0)
+          }
+          return total
+        }, 0)
+
+        for (const queueKey of selectedQueues) {
+          const queue = queuesStatus[queueKey]
+          if (queue) {
+            const queueData = [((queue.processed_less_sla || 0) / totalValue) * 100]
+            const originalData = [queue.processed_less_sla || 0]
+            const colors = ['#059669', '#064E3B', '#E5E7EB']
+            const label = `${queue.queueman}`
+
+            newData.push({
+              label,
+              data: queueData,
+              backgroundColor: colors,
+              originalData: originalData,
+            })
+          }
+        }
+
+        setDatasetsQueuesLessSla(newData)
+        setTotalCallsBeforeLevel(totalValue)
+
+        setQueueDataBeforeLevel(newData)
       }
     }
 
@@ -124,7 +174,7 @@ export const SummaryChart: FC<SummaryChartProps> = ({ className, selectedQueues 
                   <div className='flex items-center'>
                     <FontAwesomeIcon
                       icon={faCircleInfo}
-                      className='h-5 w-5 pl-2 py-2 cursor-pointer flex items-center tooltip-total-calls'
+                      className='h-5 w-5 pl-2 py-2 flex items-center tooltip-total-calls'
                       aria-hidden='true'
                     />
                     <Tooltip anchorSelect='.tooltip-total-calls' place='right'>
@@ -135,7 +185,8 @@ export const SummaryChart: FC<SummaryChartProps> = ({ className, selectedQueues 
                 <div className='mt-3 mx-auto h-80 w-full overflow-auto'>
                   <BarChartHorizontalNoLabels
                     datasets={datasetsQueues}
-                    titleText={`${t('QueueManager.Total')}: ${totalCallsPie}`}
+                    titleText={`${t('QueueManager.Total')}: ${totalCalls}`}
+                    queuedata={queueData}
                   />
                 </div>
               </div>
@@ -143,15 +194,15 @@ export const SummaryChart: FC<SummaryChartProps> = ({ className, selectedQueues 
 
             {/* Calls answered before service level */}
             <div className='pt-8'>
-              <div className='border-b rounded-lg shadow-md border-gray-200 dark:border-gray-700 bg-white dark:bg-gray-900 px-5 py-3 sm:mt-1 relative flex items-center'>
-                <div className='flex items-center justify-between w-full'>
+              <div className='flex flex-col border-b rounded-lg shadow-md border-gray-200 dark:border-gray-700 bg-white dark:bg-gray-900 px-5 py-3 sm:mt-1 relative items-center h-auto w-full'>
+                <div className='flex items-center'>
                   <span className='text-sm font-medium leading-6 text-gray-700 dark:text-gray-100'>
                     {t('QueueManager.Calls answered before service level')}
                   </span>
                   <div className='flex items-center'>
                     <FontAwesomeIcon
                       icon={faCircleInfo}
-                      className='h-5 w-5 pl-2 py-2 cursor-pointer flex items-center tooltip-answered-before-service'
+                      className='h-5 w-5 pl-2 py-2 flex items-center tooltip-answered-before-service'
                       aria-hidden='true'
                     />
                     <Tooltip anchorSelect='.tooltip-answered-before-service' place='left'>
@@ -159,11 +210,18 @@ export const SummaryChart: FC<SummaryChartProps> = ({ className, selectedQueues 
                     </Tooltip>
                   </div>
                 </div>
+                <div className='mt-3 mx-auto h-80 w-full overflow-auto'>
+                  <BarChartHorizontalNoLabels
+                    datasets={datasetsQueuesLessSla}
+                    titleText={`${t('QueueManager.Total')}: ${totalCallsBeforeLevel}`}
+                    queuedata={queueDataBeforeLevel}
+                  />
+                </div>
               </div>
             </div>
 
             {/* Unanswered calls */}
-            <div>
+            <div className='pt-8'>
               <div className='border-b rounded-lg shadow-md border-gray-200 dark:border-gray-700 bg-white dark:bg-gray-900 px-5 py-3 sm:mt-1 relative flex items-center'>
                 <div className='flex items-center justify-between w-full'>
                   <span className='text-sm font-medium leading-6 text-gray-700 dark:text-gray-100'>
@@ -184,7 +242,7 @@ export const SummaryChart: FC<SummaryChartProps> = ({ className, selectedQueues 
             </div>
 
             {/* Reasons for unanswered calls */}
-            <div>
+            <div className='pt-8 lg:pt-0'>
               <div className='border-b rounded-lg shadow-md border-gray-200 dark:border-gray-700 bg-white dark:bg-gray-900 px-5 py-3 sm:mt-1 relative flex items-center'>
                 <div className='flex items-center justify-between w-full'>
                   <span className='text-sm font-medium leading-6 text-gray-700 dark:text-gray-100'>
