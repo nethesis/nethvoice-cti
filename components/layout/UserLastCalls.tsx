@@ -6,72 +6,57 @@ import { Button, Avatar, EmptyState, Dropdown } from '../common'
 import { useSelector } from 'react-redux'
 import { RootState } from '../../store'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
-import { faPhone, faChevronDown, faRotate } from '@nethesis/nethesis-solid-svg-icons'
+import { faPhone, faChevronDown } from '@nethesis/nethesis-solid-svg-icons'
 import { callPhoneNumber } from '../../lib/utils'
 import { useTranslation } from 'react-i18next'
 import { CallTypes, getLastCalls } from '../../lib/history'
 import { getNMonthsAgoDate } from '../../lib/utils'
 import { formatDateLoc } from '../../lib/dateTime'
-import type { LastCallsResponse, SortTypes } from '../../lib/history'
+import type { SortTypes } from '../../lib/history'
 import { UserCallStatusIcon } from '../history/UserCallStatusIcon'
 import { CallsDate } from '../history/CallsDate'
 import { CallsDestination } from '../history/CallsDestination'
-import { getCallName } from '../history/CallsDestination'
 import { StatusTypes } from '../../theme/Types'
 import { getJSONItem, setJSONItem } from '../../lib/storage'
 
+interface LastCallTypes extends CallTypes {
+  avatar?: string
+  presence?: StatusTypes | undefined
+}
+
+type LastCallsTypes = LastCallTypes[]
+
 export const UserLastCalls = () => {
   const { t } = useTranslation()
-
   const avatars: any = useSelector((state: RootState) => state.operators.avatars)
   const operators = useSelector((state: RootState) => state.operators.operators)
   const username = useSelector((state: RootState) => state.user.username)
-
-  const [lastCalls, setLastCalls] = useState<LastCallsResponse>()
-
+  const [lastCalls, setLastCalls] = useState<LastCallsTypes>()
   const firstLoadedRef = useRef<boolean>(false)
-
   const [isLoading, setIsLoading] = useState<boolean>(false)
-  const updateIntervalId = useRef<ReturnType<typeof setTimeout>>()
-
+  const updateIntervalId = useRef<ReturnType<typeof setInterval>>()
   const defaultSort: string = getJSONItem(`preferences-${username}`).lastUserCallsSort || ''
   const [sort, setSort] = useState<SortTypes>(defaultSort || 'time_desc')
 
-  const getLastCallsList = useCallback(
-    async (newSort: SortTypes) => {
-      const dateStart = getNMonthsAgoDate(2)
-      const dateEnd = getNMonthsAgoDate()
-      const dateStartString = formatDateLoc(dateStart, 'yyyyMMdd')
-      const dateEndString = formatDateLoc(dateEnd, 'yyyyMMdd')
-      const lastCalls = await getLastCalls(username, dateStartString, dateEndString, newSort)
-      if (lastCalls) {
-        setLastCalls(lastCalls)
-        setIsLoading(false)
-      }
-    },
-    [username],
-  )
-
-  useEffect(() => {
-    if (username && !firstLoadedRef.current) {
-      firstLoadedRef.current = true
-      setIsLoading(true)
-      getLastCallsList(sort)
-    }
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [username, getLastCallsList])
-
   function getOperator(call: CallTypes) {
-    const callName = getCallName(call)
-    const operator: any = Object.values(operators).find(
-      (operator: any) => operator.name === callName,
-    )
+    let callName = call.dst_cnam || call.dst_ccompany
+    let operator: any = null
+    if (callName) {
+      operator = Object.values(operators).find(
+        (operator: any) => operator.name === callName,
+      )
+    } else {
+      operator = Object.values(operators).find((operator: any) => {
+        const isExten = operator.endpoints.extension.find((exten: any) => exten.id === call.dst)
+        return isExten ? true : false
+      })
+    }
     return operator
   }
 
   function checkOperatorsAvatar(call: CallTypes): string {
-    const avatarUsername: string = getOperator(call)?.username
-    return username ? avatars[avatarUsername] || '' : ''
+    const operatorUsername: string = getOperator(call)?.username
+    return username ? avatars[operatorUsername] || '' : ''
   }
 
   function checkOperatorPresence(call: CallTypes): StatusTypes | undefined {
@@ -87,6 +72,36 @@ export const UserLastCalls = () => {
     }
   }
 
+  function addOperatorsProps(calls: LastCallsTypes) {
+    for (let i = 0; i < calls.length; i++) {
+      const avatar = checkOperatorsAvatar(calls[i])
+      if (avatar) {
+        calls[i].avatar = avatar
+      }
+      const presence = checkOperatorPresence(calls[i])
+      if (presence) {
+        calls[i].presence = presence
+      }
+    }
+  }
+
+  const getLastCallsList = useCallback(
+    async (newSort: SortTypes) => {
+      const dateStart = getNMonthsAgoDate(2)
+      const dateEnd = getNMonthsAgoDate()
+      const dateStartString = formatDateLoc(dateStart, 'yyyyMMdd')
+      const dateEndString = formatDateLoc(dateEnd, 'yyyyMMdd')
+      const callsData = await getLastCalls(username, dateStartString, dateEndString, newSort)
+      if (callsData) {
+        addOperatorsProps(callsData.rows)
+        setLastCalls(callsData.rows)
+        setIsLoading(false)
+      }
+    },
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+    [username],
+  )
+
   function sortCalls(newSort: SortTypes): void {
     getLastCallsList(newSort)
     setSort(newSort)
@@ -96,11 +111,22 @@ export const UserLastCalls = () => {
   }
 
   useEffect(() => {
-    updateIntervalId.current = setInterval(() => {
+    if (username && !firstLoadedRef.current) {
+      firstLoadedRef.current = true
+      setIsLoading(true)
       getLastCallsList(sort)
-    }, 1000 * 10)
-    return () => clearInterval(updateIntervalId.current)
-  }, [sort, getLastCallsList])
+
+      // Set the interval for update
+      updateIntervalId.current = setInterval(() => {
+        getLastCallsList(sort)
+      }, 1000 * 10)
+    }
+
+    return () => {
+      updateIntervalId.current && !firstLoadedRef.current  && clearInterval(updateIntervalId.current)
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [username])
 
   return (
     <>
@@ -168,7 +194,7 @@ export const UserLastCalls = () => {
                 </li>
               ))}
             {/* empty state */}
-            {lastCalls?.rows?.length === 0 && (
+            {lastCalls?.length === 0 && (
               <EmptyState
                 title={t('LastCalls.No calls')}
                 icon={
@@ -181,8 +207,8 @@ export const UserLastCalls = () => {
               ></EmptyState>
             )}
             {/* Iterate through speed dial list */}
-            {lastCalls?.rows?.length! > 0 &&
-              lastCalls?.rows.map((call, key) => (
+            {lastCalls?.length! > 0 &&
+              lastCalls?.map((call, key) => (
                 <li key={key}>
                   <div className='group relative flex items-center py-6 px-5'>
                     <div
@@ -195,8 +221,8 @@ export const UserLastCalls = () => {
                           <Avatar
                             size='base'
                             placeholderType='person'
-                            src={checkOperatorsAvatar(call)}
-                            status={checkOperatorPresence(call)}
+                            src={call.avatar}
+                            status={call.presence}
                           />
                         </span>
                         <div className='ml-4 truncate flex flex-col gap-1.5'>
