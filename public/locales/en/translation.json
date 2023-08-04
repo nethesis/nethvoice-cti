@@ -408,5 +408,9 @@
     "Newest": "Newest",
     "Oldest": "Oldest",
     "Call": "Call"
+  },
+  "NavBars": {
+    "Speed dials": "Speed dials",
+    "Last calls": "Last calls"
   }
 }

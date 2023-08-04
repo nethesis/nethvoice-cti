@@ -10,6 +10,8 @@ import { getJSONItem, setJSONItem } from '../../lib/storage'
 import { RootState } from '../../store'
 import { useSelector } from 'react-redux'
 import { UserLastCalls } from './UserLastCalls'
+import { Tooltip } from 'react-tooltip'
+import { useTranslation } from 'react-i18next'
 
 const activeStyles = {
   width: '.1875rem',
@@ -22,21 +24,24 @@ const activeStyles = {
 } as React.CSSProperties
 
 export const UserNavBar: FC = () => {
+  const { t } = useTranslation()
+  const username = useSelector((state: RootState) => state.user.username)
+  const [tabReady, setTabReady] = useState<boolean>(false)
+
   const [tabs, setTabs] = useState<TabTypes[]>([
     {
       icon: faBolt,
       name: 'speed_dial',
       active: false,
+      label: t('NavBars.Speed dial'),
     },
     {
       icon: faPhone,
       name: 'last_calls',
       active: false,
+      label: t('NavBars.Last calls'),
     },
   ])
-
-  const username = useSelector((state: RootState) => state.user.username)
-  const [tabReady, setTabReady] = useState<boolean>(false)
 
   const changeTab = useCallback(
     (name: string, save: boolean = false): void => {
@@ -95,14 +100,19 @@ export const UserNavBar: FC = () => {
             key={i}
             onClick={() => changeTab(tab.name, true)}
             className={`${
-              tab.active ? 'bg-gray-100 dark:bg-gray-700 text-gray-900 dark:text-gray-50' : 'text-gray-600 dark:text-gray-400 hover:text-gray-900 dark:hover:text-gray-50'
+              tab.active
+                ? 'bg-gray-100 dark:bg-gray-700 text-gray-900 dark:text-gray-50'
+                : 'text-gray-600 dark:text-gray-400 hover:text-gray-900 dark:hover:text-gray-50'
             } hover:bg-gray-100 hover:dark:bg-gray-700 w-8 h-8 rounded flex justify-center items-center relative cursor-pointer`}
+            data-tooltip-id={'tooltip'}
+            data-tooltip-content={tab.label}
           >
             <FontAwesomeIcon size='lg' icon={tab.icon} />
             {tab.active && <div style={activeStyles} className='bg-primary' />}
           </div>
         ))}
       </div>
+      <Tooltip id='tooltip' place='left' />
     </>
   )
 }
@@ -111,4 +121,5 @@ type TabTypes = {
   icon: IconDefinition
   name: 'speed_dial' | 'last_calls'
   active: boolean
+  label: string
 }
