@@ -402,5 +402,9 @@
     "Hold": "Trattieni",
     "outcome_ENTERQUEUE": "In coda",
     "Operator": "Operatore"
+  },
+  "NavBars": {
+    "Speed dial": "Chiamata rapida",
+    "Last calls": "Ultime chiamate"
   }
 }
