@@ -1,11 +1,7 @@
 import { FC } from 'react'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
-import {
-  faPhoneMissed,
-  faPhoneArrowDown,
-  faPhoneArrowUp,
-  faPhoneXmark,
-} from '@nethesis/nethesis-solid-svg-icons'
+import { faMissed } from '@nethesis/nethesis-solid-svg-icons'
+import { faXmark, faArrowLeft } from '@fortawesome/free-solid-svg-icons'
 import { Tooltip } from 'react-tooltip'
 import { useTranslation } from 'react-i18next'
 import { CallTypes } from '../../lib/history'
@@ -26,8 +22,8 @@ export const UserCallStatusIcon: FC<UserCallStatusIconProps> = ({ call }) => {
             {call.disposition === 'ANSWERED' ? (
               <>
                 <FontAwesomeIcon
-                  icon={faPhoneArrowDown}
-                  className='tooltip-incoming-answered mr-2 h-5 w-3.5 text-green-600 dark:text-green-500'
+                  icon={faArrowLeft}
+                  className='tooltip-switchboard-incoming-answered -rotate-45 h-5 w-3.5 text-green-600 dark:text-green-500'
                   aria-hidden='true'
                 />
                 <Tooltip anchorSelect='.tooltip-incoming-answered' place='left'>
@@ -37,8 +33,8 @@ export const UserCallStatusIcon: FC<UserCallStatusIconProps> = ({ call }) => {
             ) : (
               <>
                 <FontAwesomeIcon
-                  icon={faPhoneMissed}
-                  className='tooltip-incoming-missed mr-2 h-5 w-4 text-red-400'
+                  icon={faMissed}
+                  className='tooltip-switchboard-incoming-missed h-5 w-4 text-red-400'
                   aria-hidden='true'
                 />
                 <Tooltip anchorSelect='.tooltip-incoming-missed' place='left'>
@@ -53,8 +49,8 @@ export const UserCallStatusIcon: FC<UserCallStatusIconProps> = ({ call }) => {
             {call.disposition === 'ANSWERED' ? (
               <>
                 <FontAwesomeIcon
-                  icon={faPhoneArrowUp}
-                  className='tooltip-outgoing-answered mr-2 h-5 w-3.5 text-green-600 dark:text-green-500'
+                  icon={faArrowLeft}
+                  className='tooltip-switchboard-outgoing-answered h-5 w-3.5 rotate-[135deg] text-green-600 dark:text-green-500'
                   aria-hidden='true'
                 />
                 <Tooltip anchorSelect='.tooltip-outgoing-answered' place='left'>
@@ -64,8 +60,8 @@ export const UserCallStatusIcon: FC<UserCallStatusIconProps> = ({ call }) => {
             ) : (
               <>
                 <FontAwesomeIcon
-                  icon={faPhoneXmark}
-                  className='tooltip-outgoing-missed mr-2 h-5 w-3.5 text-red-400'
+                  icon={faXmark}
+                  className='tooltip-switchboard-outgoing-missed h-5 w-3.5 text-red-400'
                   aria-hidden='true'
                 />
                 <Tooltip anchorSelect='.tooltip-outgoing-missed' place='left'>

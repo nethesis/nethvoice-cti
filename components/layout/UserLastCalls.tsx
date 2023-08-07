@@ -6,7 +6,7 @@ import { Button, Avatar, EmptyState, Dropdown } from '../common'
 import { useSelector } from 'react-redux'
 import { RootState } from '../../store'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
-import { faPhone, faChevronDown } from '@nethesis/nethesis-solid-svg-icons'
+import { faPhone, faChevronDown } from '@fortawesome/free-solid-svg-icons'
 import { callPhoneNumber } from '../../lib/utils'
 import { useTranslation } from 'react-i18next'
 import { CallTypes, getLastCalls } from '../../lib/history'
@@ -42,9 +42,7 @@ export const UserLastCalls = () => {
     let callName = call.dst_cnam || call.dst_ccompany
     let operator: any = null
     if (callName) {
-      operator = Object.values(operators).find(
-        (operator: any) => operator.name === callName,
-      )
+      operator = Object.values(operators).find((operator: any) => operator.name === callName)
     } else {
       operator = Object.values(operators).find((operator: any) => {
         const isExten = operator.endpoints.extension.find((exten: any) => exten.id === call.dst)
@@ -123,7 +121,7 @@ export const UserLastCalls = () => {
     }
 
     return () => {
-      updateIntervalId.current && !firstLoadedRef.current  && clearInterval(updateIntervalId.current)
+      updateIntervalId.current && !firstLoadedRef.current && clearInterval(updateIntervalId.current)
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [username])
