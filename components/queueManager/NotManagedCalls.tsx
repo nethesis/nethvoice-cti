@@ -14,7 +14,12 @@ import {
   PAGE_SIZE,
   retrieveAndFilterQueueCalls,
 } from '../../lib/queueManager'
-import { faChevronRight, faChevronLeft, faPhone } from '@fortawesome/free-solid-svg-icons'
+import {
+  faChevronRight,
+  faChevronLeft,
+  faPhone,
+  faDownload,
+} from '@fortawesome/free-solid-svg-icons'
 import classNames from 'classnames'
 import { exactDistanceToNowLoc, formatDateLoc, getCallTimeToDisplay } from '../../lib/dateTime'
 import { NotManagedCallsFilter } from './NotManagedCallsFilter'
@@ -179,6 +184,45 @@ export const NotManagedCalls: FC<NotManagedCallsProps> = ({ className }): JSX.El
     return t('Common.time_distance_ago', { timeDistance })
   }
 
+  // export to csv section
+  const [exportData, setExportData] = useState([])
+
+  const formatDataAsCSV = (data: any) => {
+    const headers = ['Time', 'Queue', 'Name', 'Company', 'Outcome']
+
+    const csvContent = [
+      headers.join(','),
+      ...data.map((row: any) =>
+        [
+          formatDateLoc(row.time * 1000, 'PP'),
+          row.queueName,
+          row.name || row.cid,
+          row.company || '-',
+          t(`Queues.outcome_${row.event}`),
+        ]
+          .map((value) => `"${value}"`)
+          .join(','),
+      ),
+    ].join('\n')
+
+    return csvContent
+  }
+
+  const handleExportCSV = () => {
+    const dataToExport = calls?.rows || []
+    setExportData(dataToExport)
+
+    const csvContent = formatDataAsCSV(dataToExport)
+    const blob = new Blob([csvContent], { type: 'text/csv' })
+    const url = URL.createObjectURL(blob)
+    const link = document.createElement('a')
+    link.href = url
+    link.setAttribute('download', 'table_data.csv')
+    document.body.appendChild(link)
+    link.click()
+    document.body.removeChild(link)
+  }
+
   return (
     <div className={classNames(className)}>
       <div className='flex flex-col flex-wrap xl:flex-row justify-between gap-x-4 xl:items-end'>
@@ -188,16 +232,22 @@ export const NotManagedCalls: FC<NotManagedCallsProps> = ({ className }): JSX.El
           updateQueuesFilter={updateQueuesFilter}
         />
         <div className='flex items-center justify-end text-sm pb-4 xl:pb-7'>
-          <div className='flex items-center'>
+          <div className='flex items-center justify-between'>
+            <div className='flex items-center mr-2'>
+              <Button variant='primary' onClick={handleExportCSV}>
+                <FontAwesomeIcon
+                  icon={faDownload}
+                  className='mr-2 h-4 w-4 text-gray-100 dark:text-gray-100'
+                />{' '}
+                <span>{t('QueueManager.Download')}</span>
+              </Button>
+            </div>
             <span className='mr-2'>
               <span className='text-gray-900'>{t('Queues.Last update')}:</span>{' '}
               <span className='text-gray-500 dark:text-gray-500'>
                 {lastUpdated ? formatDateLoc(new Date(), 'HH:mm:ss') : '-'}
               </span>
             </span>
-            {/* <div className='w-8 h-8 mr-3'>
-              <ProgressionRing seconds={callsRefreshInterval} size={24} />
-            </div> */}
           </div>
           <Link href={{ pathname: '/settings', query: { section: 'Queues' } }}>
             <a className='hover:underline text-gray-900 font-semibold dark:text-gray-100'>

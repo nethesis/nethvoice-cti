@@ -543,6 +543,7 @@
     "SummaryUnansweredForReasonsChartDescription": "Failed calls for reasons: abandon, full, timeout, nobody at the entrance, no agent and with ivr for every queue",
     "SummaryInvalidCallsChartDescription": "Number of invalid calls for every queue and percentage on queue total entered calls",
     "SummaryWaitingTimesChartDescription": "Waiting calls minimum, average and maximum duration for every queue",
-    "SummaryCallsDurationChartDescription": "Calls duration minimum, average and maximum for every queue"
+    "SummaryCallsDurationChartDescription": "Calls duration minimum, average and maximum for every queue",
+    "Download": "Download"
   }
 }

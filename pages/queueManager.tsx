@@ -15,10 +15,20 @@ import { useSelector } from 'react-redux'
 import { RootState, store } from '../store'
 import { savePreference } from '../lib/storage'
 import { getSelectedTabQueueManager } from '../lib/queueManager'
+import { Button } from '../components/common'
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
+import { faArrowUpRightFromSquare } from '@fortawesome/free-solid-svg-icons'
+import { getApiEndpoint } from '../lib/utils'
+import { getApiScheme } from '../lib/utils'
 
 const QueueManager: NextPage = () => {
   const { t } = useTranslation()
   const queuesStore = useSelector((state: RootState) => state.queues)
+
+  const apiEnpoint = getApiEndpoint()
+  const apiScheme = getApiScheme()
+  const pbxReportUrl = apiScheme + apiEnpoint + '/pbx-report/'
+
   const [currentTab, setCurrentTab] = useState('')
   const auth = useSelector((state: RootState) => state.authentication)
 
@@ -56,12 +66,26 @@ const QueueManager: NextPage = () => {
   return (
     <>
       <div>
-        <h1 className='text-2xl font-semibold mb-6 text-gray-900 dark:text-gray-100'>
-          {t('QueueManager.Queue manager')}
-        </h1>
+        <div className='flex items-center justify-between'>
+          <h1 className='text-2xl font-semibold text-gray-900 dark:text-gray-100'>
+            {t('QueueManager.Queue manager')}
+          </h1>
+          <div className='text-gray-900 dark:text-gray-100 text-sm flex items-center'>
+            <Button size='small' variant='white'>
+              <FontAwesomeIcon
+                icon={faArrowUpRightFromSquare}
+                className='mr-2 h-4 w-4 text-gray-500 dark:text-gray-500'
+              />{' '}
+              <a href={pbxReportUrl} target='_blank' rel='noreferrer'>
+                {t('Applications.Open PBX Report')}
+              </a>
+            </Button>
+          </div>
+        </div>
+
         {/* tabs */}
         <>
-          <div className='mb-6'>
+          <div className='mb-6 mt-6'>
             {/* mobile tabs */}
             <div className='sm:hidden'>
               <label htmlFor='tabs' className='sr-only'>
