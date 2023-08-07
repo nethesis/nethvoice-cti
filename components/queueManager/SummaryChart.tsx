@@ -157,6 +157,144 @@ export const SummaryChart: FC<SummaryChartProps> = ({ className, selectedQueues 
     createChartData()
   }, [queuesStatus, selectedQueues])
 
+  // Total calls failed section
+  const [datasetsQueuesFailed, setDatasetsQueuesFailed] = useState<any[]>([])
+  const [totalCallsFailed, setTotalCallsFailed] = useState(0)
+  const [queueDataFailed, setQueueDataFailed] = useState<any>(null)
+
+  useEffect(() => {
+    const createChartData = () => {
+      const newData = []
+      let totalValueFailed = 0
+
+      if (queuesStatus) {
+        totalValueFailed = selectedQueues.reduce((total: any, queueKey: any) => {
+          const queue = queuesStatus[queueKey]
+          if (queue) {
+            return total + (queue.tot_failed || 0)
+          }
+          return total
+        }, 0)
+
+        for (const queueKey of selectedQueues) {
+          const queue = queuesStatus[queueKey]
+          if (queue) {
+            const queueData = [((queue.tot_failed || 0) / totalValueFailed) * 100]
+            const originalData = [queue.tot_failed || 0]
+            const colors = ['#059669', '#064E3B', '#E5E7EB']
+            const label = `${queue.queueman}`
+
+            newData.push({
+              label,
+              data: queueData,
+              backgroundColor: colors,
+              originalData: originalData,
+            })
+          }
+        }
+
+        setDatasetsQueuesFailed(newData)
+        setTotalCallsFailed(totalValueFailed)
+
+        setQueueDataFailed(newData)
+      }
+    }
+
+    createChartData()
+  }, [queuesStatus, selectedQueues])
+
+  // Call back time section
+  const [datasetsCallBack, setDatasetsCallBack] = useState<any[]>([])
+  const [totalCallBack, setTotalCallBack] = useState(0)
+  const [callBack, setCallBack] = useState<any>(null)
+
+  useEffect(() => {
+    const createChartData = () => {
+      const newData = []
+      let totalCallBack = 0
+
+      if (queuesStatus) {
+        totalCallBack = selectedQueues.reduce((total: any, queueKey: any) => {
+          const queue = queuesStatus[queueKey]
+          if (queue) {
+            return total + (queue.avg_recall_time || 0)
+          }
+          return total
+        }, 0)
+
+        for (const queueKey of selectedQueues) {
+          const queue = queuesStatus[queueKey]
+          if (queue) {
+            const queueData = [((queue.avg_recall_time || 0) / totalCallBack) * 100]
+            const originalData = [queue.avg_recall_time || 0]
+            const colors = ['#059669', '#064E3B', '#E5E7EB']
+            const label = `${queue.queueman}`
+
+            newData.push({
+              label,
+              data: queueData,
+              backgroundColor: colors,
+              originalData: originalData,
+            })
+          }
+        }
+
+        setDatasetsCallBack(newData)
+        setTotalCallBack(totalCallBack)
+
+        setCallBack(newData)
+      }
+    }
+
+    createChartData()
+  }, [queuesStatus, selectedQueues])
+
+  // Invalid call section
+  const [datasetsInvalidCalls, setDatasetsInvalidCalls] = useState<any[]>([])
+  const [totalInvalidCalls, setTotalInvalidCalls] = useState(0)
+  const [invalidCalls, setInvalidCalls] = useState<any>(null)
+
+  useEffect(() => {
+    const createChartData = () => {
+      const newData = []
+      let totalInvalid = 0
+
+      if (queuesStatus) {
+        totalInvalid = selectedQueues.reduce((total: any, queueKey: any) => {
+          const queue = queuesStatus[queueKey]
+          if (queue) {
+            return total + (queue.tot_null || 0)
+          }
+          return total
+        }, 0)
+
+        for (const queueKey of selectedQueues) {
+          const queue = queuesStatus[queueKey]
+          if (queue) {
+            const queueData = [((queue.tot_null || 0) / totalInvalid) * 100]
+            const originalData = [queue.tot_null || 0]
+            const colors = ['#059669', '#064E3B', '#E5E7EB']
+            const label = `${queue.queueman}`
+
+            newData.push({
+              label,
+              data: queueData,
+              backgroundColor: colors,
+              originalData: originalData,
+            })
+          }
+        }
+
+        setDatasetsInvalidCalls(newData)
+        setTotalInvalidCalls(totalInvalid)
+
+        setInvalidCalls(newData)
+      }
+    }
+
+    createChartData()
+  }, [queuesStatus, selectedQueues])
+
   return (
     <>
       {/* Queues summary */}
@@ -222,8 +360,8 @@ export const SummaryChart: FC<SummaryChartProps> = ({ className, selectedQueues 
 
             {/* Unanswered calls */}
             <div className='pt-8'>
-              <div className='border-b rounded-lg shadow-md border-gray-200 dark:border-gray-700 bg-white dark:bg-gray-900 px-5 py-3 sm:mt-1 relative flex items-center'>
-                <div className='flex items-center justify-between w-full'>
+              <div className='flex flex-col border-b rounded-lg shadow-md border-gray-200 dark:border-gray-700 bg-white dark:bg-gray-900 px-5 py-3 sm:mt-1 relative items-center h-auto w-full'>
+                <div className='flex items-center'>
                   <span className='text-sm font-medium leading-6 text-gray-700 dark:text-gray-100'>
                     {t('QueueManager.Unanswered calls')}
                   </span>
@@ -237,6 +375,13 @@ export const SummaryChart: FC<SummaryChartProps> = ({ className, selectedQueues 
                       {t('QueueManager.SummaryUnansweredChartDescription') || ''}
                     </Tooltip>
                   </div>
+                </div>
+                <div className='mt-3 mx-auto h-80 w-full overflow-auto'>
+                  <BarChartHorizontalNoLabels
+                    datasets={datasetsQueuesFailed}
+                    titleText={`${t('QueueManager.Total')}: ${totalCallsFailed}`}
+                    queuedata={queueDataFailed}
+                  />
                 </div>
               </div>
             </div>
@@ -263,9 +408,9 @@ export const SummaryChart: FC<SummaryChartProps> = ({ className, selectedQueues 
             </div>
 
             {/* Callback time */}
-            <div>
-              <div className='border-b rounded-lg shadow-md border-gray-200 dark:border-gray-700 bg-white dark:bg-gray-900 px-5 py-3 sm:mt-1 relative flex items-center'>
-                <div className='flex items-center justify-between w-full'>
+            <div className='pt-8'>
+              <div className='flex flex-col border-b rounded-lg shadow-md border-gray-200 dark:border-gray-700 bg-white dark:bg-gray-900 px-5 py-3 sm:mt-1 relative items-center h-auto w-full'>
+                <div className='flex items-center'>
                   <span className='text-sm font-medium leading-6 text-gray-700 dark:text-gray-100'>
                     {t('QueueManager.Callback time')}
                   </span>
@@ -280,13 +425,21 @@ export const SummaryChart: FC<SummaryChartProps> = ({ className, selectedQueues 
                     </Tooltip>
                   </div>
                 </div>
+                <div className='mt-3 mx-auto h-80 w-full overflow-auto'>
+                  <BarChartHorizontalNoLabels
+                    datasets={datasetsCallBack}
+                    titleText={`${t('QueueManager.Total')}: ${totalCallBack}`}
+                    queuedata={callBack}
+                  />
+                </div>
               </div>
             </div>
 
             {/* Invalid calls */}
-            <div>
-              <div className='border-b rounded-lg shadow-md border-gray-200 dark:border-gray-700 bg-white dark:bg-gray-900 px-5 py-3 sm:mt-1 relative flex items-center'>
-                <div className='flex items-center justify-between w-full'>
+
+            <div className='pt-8'>
+              <div className='flex flex-col border-b rounded-lg shadow-md border-gray-200 dark:border-gray-700 bg-white dark:bg-gray-900 px-5 py-3 sm:mt-1 relative items-center h-auto w-full'>
+                <div className='flex items-center'>
                   <span className='text-sm font-medium leading-6 text-gray-700 dark:text-gray-100'>
                     {t('QueueManager.Invalid calls')}
                   </span>
@@ -300,6 +453,13 @@ export const SummaryChart: FC<SummaryChartProps> = ({ className, selectedQueues 
                       {t('QueueManager.SummaryInvalidCallsChartDescription') || ''}
                     </Tooltip>
                   </div>
+                </div>
+                <div className='mt-3 mx-auto h-80 w-full overflow-auto'>
+                  <BarChartHorizontalNoLabels
+                    datasets={datasetsInvalidCalls}
+                    titleText={`${t('QueueManager.Total')}: ${totalInvalidCalls}`}
+                    queuedata={invalidCalls}
+                  />
                 </div>
               </div>
             </div>

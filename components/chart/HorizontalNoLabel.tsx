@@ -12,7 +12,7 @@ import {
 import { getRandomColor } from '../../lib/queueManager'
 import ChartDataLabels from 'chartjs-plugin-datalabels'
 
-ChartJS.register(CategoryScale, LinearScale, BarElement, ChartDataLabels, Title, Tooltip, Legend)
+ChartJS.register(CategoryScale, LinearScale, BarElement, Title, Tooltip, Legend)
 
 interface BarChartHorizontalNoLabelsProps {
   datasets: any[]
