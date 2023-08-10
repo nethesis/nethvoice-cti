@@ -582,6 +582,12 @@ export const DEFAULT_QUEUES_MANAGEMENT_SELECTED_QUEUE = {}
 export const DEFAULT_EXPANDED_REALTIME_QUEUES_STATISTICS = false
 export const DEFAULT_EXPANDED_REALTIME_OPERATOR_STATISTICS = false
 
+export const DEFAULT_REALTIME_ROW_NUMBERS = 5
+export const DEFAULT_REALTIME_FIRST_QUEUE_SELECTED = {}
+export const DEFAULT_REALTIME_SECOND_QUEUE_SELECTED = {}
+export const DEFAULT_REALTIME_IS_SECOND_CARD_VISIBLE = false
+
+
 // Set default queue manager tab to dashboard
 export const DEFAULT_SELECTED_TAB_QUEUE_MANAGER = 'dashboard'
 
@@ -689,6 +695,24 @@ export const getExpandedRealtimeValue = (currentUsername: string) => {
     DEFAULT_EXPANDED_REALTIME_OPERATOR_STATISTICS
 
   return { expandedQueuesStatistics, expandedOperatorsStatistics }
+}
+
+export const getMonitorValue = (currentUsername: string) => {
+  const rowNumbers =
+    loadPreference('monitorRowNumbers', currentUsername) || DEFAULT_REALTIME_ROW_NUMBERS
+
+  const selectedFirstQueue =
+    loadPreference('monitorFirstQueueSelected', currentUsername) ||
+    DEFAULT_REALTIME_FIRST_QUEUE_SELECTED
+
+  const selectedSecondQueue =
+    loadPreference('monitorSecondQueueSelected', currentUsername) ||
+    DEFAULT_REALTIME_FIRST_QUEUE_SELECTED
+
+  const isSecondCardVisible =
+    loadPreference('monitorSecondCardIsVisible', currentUsername) ||
+    DEFAULT_REALTIME_IS_SECOND_CARD_VISIBLE
+  return { rowNumbers, selectedFirstQueue, selectedSecondQueue, isSecondCardVisible }
 }
 
 //find totals
