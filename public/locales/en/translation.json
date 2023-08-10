@@ -544,6 +544,7 @@
     "SummaryInvalidCallsChartDescription": "Number of invalid calls for every queue and percentage on queue total entered calls",
     "SummaryWaitingTimesChartDescription": "Waiting calls minimum, average and maximum duration for every queue",
     "SummaryCallsDurationChartDescription": "Calls duration minimum, average and maximum for every queue",
-    "Download": "Download"
+    "Download": "Download",
+    "Exit fullscreen description": "Exit fullscreen ( click here or press ESCAPE button )"
   }
 }
