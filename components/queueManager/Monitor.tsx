@@ -26,6 +26,8 @@ import { Listbox, Transition } from '@headlessui/react'
 
 import { savePreference } from '../../lib/storage'
 
+import { CallDuration } from '../operators/CallDuration'
+
 export interface MonitorProps extends ComponentProps<'div'> {}
 
 const numbers = Array.from({ length: 20 }, (_, index) => index + 1)
@@ -433,8 +435,8 @@ export const Monitor: FC<MonitorProps> = ({ className }): JSX.Element => {
                                           <div
                                             className={`${
                                               isFullscreen ? 'w-10 h-10' : 'w-6 h-6'
-                                            }  rounded-full bg-${
-                                              isDataPresent ? 'orange-50' : 'emerald-50'
+                                            } rounded-full bg-${
+                                              isDataPresent ? 'orange-100' : 'emerald-50'
                                             } flex items-center justify-center`}
                                           >
                                             <span
@@ -449,17 +451,17 @@ export const Monitor: FC<MonitorProps> = ({ className }): JSX.Element => {
                                       </td>
                                       <td
                                         className={`whitespace-nowrap  py-4 text-gray-500 ${
-                                          isFullscreen ? 'text-xl' : 'text-sm px-3'
+                                          isFullscreen ? 'text-xl' : 'text-sm'
                                         }`}
                                       >
                                         {isDataPresent ? caller.name : '-'}
                                       </td>
                                       <td
                                         className={`whitespace-nowrap  py-4 text-gray-500 ${
-                                          isFullscreen ? 'text-xl' : 'text-sm px-3'
+                                          isFullscreen ? 'text-xl' : 'text-sm'
                                         }`}
                                       >
-                                        {isDataPresent ? caller.waitingTime : '00:00:00'}
+                                        <CallDuration startTime={caller?.waitingTime} />
                                       </td>
                                     </tr>
                                   )
@@ -680,17 +682,17 @@ export const Monitor: FC<MonitorProps> = ({ className }): JSX.Element => {
                                         </td>
                                         <td
                                           className={`whitespace-nowrap  py-4 text-gray-500 ${
-                                            isFullscreen ? 'text-xl' : 'text-sm px-3'
+                                            isFullscreen ? 'text-xl' : 'text-sm'
                                           }`}
                                         >
                                           {isDataPresent ? caller.name : '-'}
                                         </td>
                                         <td
                                           className={`whitespace-nowrap  py-4 text-gray-500 ${
-                                            isFullscreen ? 'text-xl' : 'text-sm px-3'
+                                            isFullscreen ? 'text-xl' : 'text-sm'
                                           }`}
                                         >
-                                          {isDataPresent ? caller.waitingTime : '00:00:00'}
+                                          <CallDuration startTime={caller?.waitingTime} />
                                         </td>
                                       </tr>
                                     )
