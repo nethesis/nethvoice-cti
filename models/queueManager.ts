@@ -147,7 +147,7 @@ export const queueManagerQueues = createModel<RootModel>()({
           numPausedOperators++
         }
       })
-      queueData.numAPausedOperators = numPausedOperators
+      queueData.numPausedOperators = numPausedOperators
 
       let totalOperators = 0
       Object.values(queueData.members).forEach((operator: any) => {

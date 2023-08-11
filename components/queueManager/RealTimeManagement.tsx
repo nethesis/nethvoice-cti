@@ -317,7 +317,9 @@ export const RealTimeManagement: FC<RealTimeManagementProps> = ({ className }): 
             pausedCount += 1
           }
 
-          const memberConversations = operatorsStore.extensions[m]?.conversations
+          const usernameMember = member.shortname
+          const operatorconversation = operatorsStore.operators
+          const memberConversations = operatorconversation[usernameMember]?.conversations
           if (
             memberConversations &&
             Object.keys(memberConversations).length > 0 &&
@@ -332,10 +334,11 @@ export const RealTimeManagement: FC<RealTimeManagementProps> = ({ className }): 
         }
       }
 
-      for (const e in operatorsStore.extensions) {
-        const conversations = operatorsStore.extensions[e].conversations
+      for (const e in operatorsStore.operators) {
+        const conversations = operatorsStore.operators[e].conversations
         for (const c in conversations) {
           const conversation = conversations[c]
+          //check if exists and is inside queue
           if (
             conversation.connected === true &&
             conversation.throughQueue === true &&
@@ -868,7 +871,7 @@ export const RealTimeManagement: FC<RealTimeManagementProps> = ({ className }): 
             </div>
           </div>
 
-          {/* Busy operators ( out queue ) */}
+          {/* Busy operators ( out queue )
           <div>
             <div className='border-b rounded-lg shadow-md border-gray-200 dark:border-gray-700 bg-white dark:bg-gray-900 px-5 py-1 sm: mt-1 relative flex items-center'>
               <div className='flex items-center space-x-4'>
@@ -881,7 +884,7 @@ export const RealTimeManagement: FC<RealTimeManagementProps> = ({ className }): 
                 </div>
                 <div className='flex justify-center'>
                   <p className='text-3xl font-semibold tracking-tight text-left text-gray-900 dark:text-gray-100'>
-                    0
+                    {realTimeAgentCounters.busyOutside}
                   </p>
                 </div>
                 <span className='text-sm flex justify-center font-medium leading-6 text-center text-gray-700 dark:text-gray-100'>
@@ -889,7 +892,8 @@ export const RealTimeManagement: FC<RealTimeManagementProps> = ({ className }): 
                 </span>
               </div>
             </div>
-          </div>
+          </div> */}
+
         </div>
         {/* ... */}
       </div>
@@ -963,6 +967,7 @@ export const RealTimeManagement: FC<RealTimeManagementProps> = ({ className }): 
               {queueManagerStore.isLoaded &&
                 Object.keys(filteredQueues).map((key) => {
                   const queue = filteredQueues[key]
+                  let realtimeAgentCountersChartData = realTimeAgentCounters.counters[queue.queue]
                   const datasetsQueues = [
                     {
                       label: 'Calls',
@@ -989,10 +994,12 @@ export const RealTimeManagement: FC<RealTimeManagementProps> = ({ className }): 
                       label: 'Operators',
                       data: [
                         queue.onlineOperators || 0,
-                        queue.numAPausedOperators || 0,
-                        queue.totalOperators - queue.numActiveOperators || 0,
-                        queue.busyOperators || 0,
-                        queue.numActiveOperators - queue.busyOperators || 0,
+                        queue.numPausedOperators || 0,
+                        realtimeAgentCountersChartData.offline || 0,
+                        realtimeAgentCountersChartData.busy || 0,
+                        queue.onlineOperators -
+                          realtimeAgentCountersChartData.busy -
+                          queue.numPausedOperators || 0,
                       ],
                       backgroundColor: [
                         '#059669', // Online
