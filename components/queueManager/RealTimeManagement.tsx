@@ -893,7 +893,6 @@ export const RealTimeManagement: FC<RealTimeManagementProps> = ({ className }): 
               </div>
             </div>
           </div> */}
-
         </div>
         {/* ... */}
       </div>
@@ -973,8 +972,9 @@ export const RealTimeManagement: FC<RealTimeManagementProps> = ({ className }): 
                       label: 'Calls',
                       data: [
                         queue.waitingCallersList.length || 0,
-                        queue.connectedCalls.length || 0,
-                        queue.waitingCallersList.length + queue.connectedCalls.length || 0,
+                        realtimeAgentCountersChartData.connected || 0,
+                        queue.waitingCallersList.length +
+                          realtimeAgentCountersChartData.connected || 0,
                       ],
                       backgroundColor: [
                         '#059669', // Lost calls

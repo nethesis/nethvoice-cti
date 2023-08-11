@@ -621,6 +621,7 @@ export const QueueManagement: FC<QueueManagementProps> = ({ className }): JSX.El
         agentCounters[q].busy = 0
 
         for (const m in queueManagerStore.queues[q].members) {
+          let shortNameUser = queueManagerStore.queues[q].members[m].shortname
           if (queueManagerStore.queues[q].members[m].loggedIn) {
             agentCounters[q].online += 1
           } else {
@@ -632,20 +633,20 @@ export const QueueManagement: FC<QueueManagementProps> = ({ className }): JSX.El
 
           if (
             operatorsStore &&
-            operatorsStore.extensions &&
-            operatorsStore.extensions[m] &&
-            Object.keys(operatorsStore.extensions[m].conversations).length > 0
+            operatorsStore.operators &&
+            operatorsStore.operators[shortNameUser] &&
+            Object.keys(operatorsStore.operators[shortNameUser]).length > 0
           ) {
-            for (const c in operatorsStore.extensions[m].conversations) {
+            for (const c in operatorsStore.operators[shortNameUser].conversations) {
               if (
-                operatorsStore.extensions[m].conversations[c].throughQueue &&
-                operatorsStore.extensions[m].conversations[c].queueId === q &&
-                operatorsStore.extensions[m].conversations[c].connected
+                operatorsStore.operators[shortNameUser].conversations &&
+                operatorsStore.operators[shortNameUser].conversations[c].queueId === q &&
+                operatorsStore.operators[shortNameUser].conversations[c].connected
               ) {
                 agentCounters[q].connected += 1
               } else if (
-                operatorsStore.extensions[m].conversations[c].queueId !== q &&
-                operatorsStore.extensions[m].conversations[c].connected
+                operatorsStore.operators[shortNameUser].conversations[c].queueId !== q &&
+                operatorsStore.operators[shortNameUser].conversations[c].connected
               ) {
                 agentCounters[q].busy += 1
               }
