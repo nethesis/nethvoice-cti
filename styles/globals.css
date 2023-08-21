@@ -70,3 +70,9 @@
     opacity: 0;
   }
 }
+
+.slick-prev:before,
+.slick-next:before {
+  color: #4b5563!important;
+  font-size: 30px !important;
+}
