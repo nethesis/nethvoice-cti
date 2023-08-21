@@ -3,29 +3,19 @@
 
 import { FC, ComponentProps, useState, useEffect } from 'react'
 import { useTranslation } from 'react-i18next'
-import { Avatar, Button, Dropdown } from '../common'
+import { Avatar, Button, Dropdown } from '../../common'
 import { isEmpty } from 'lodash'
 import { useSelector } from 'react-redux'
-import { RootState } from '../../store'
+import { RootState } from '../../../store'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
-import { faMissed } from '@nethesis/nethesis-solid-svg-icons'
-import { savePreference } from '../../lib/storage'
+import { savePreference } from '../../../lib/storage'
 import {
-  faPause,
   faChevronDown,
-  faTriangleExclamation,
-  faPhone,
-  faExpand,
-  faPhoneSlash,
-  faArrowLeft,
   faChevronUp,
   faArrowUpWideShort,
   faArrowDownWideShort,
-  faClock,
-  faUsers,
 } from '@fortawesome/free-solid-svg-icons'
 import {
-  getAlarm,
   getQueues,
   getAgentsStats,
   getQueueStats,
@@ -33,27 +23,19 @@ import {
   sortAgentsData,
   convertToHumanReadable,
   getQueuesHistory,
-  groupDataByHour,
-  groupDataByHourLineChart,
-  getRandomColor,
-  groupDataByHourLineCallsChart,
-  groupDataFailedCallsHourLineChart,
   getExpandedQueueManagerDashboardValue,
-  initTopSparklineChartsData,
-  initHourlyChartsDataPerQueues,
   getFullUsername,
   getQueuesDashboardRank,
   agentsDashboardRanks,
   getQueueName,
   setOperatorInformationDrawer,
-  getFormattedTimeFromAlarmsList,
-  getAlarmDescription,
-} from '../../lib/queueManager'
-import { invertObject } from '../../lib/utils'
-import BarChart from '../chart/BarChart'
-import LineChart from '../chart/LineChart'
+  retrieveOnlyNotManaged,
+} from '../../../lib/queueManager'
+import { invertObject } from '../../../lib/utils'
+import { QueueManagerDashboardChart } from '../Chart/QueueManagerDashboardChart'
+import { QueueManagerDashboardHeader } from './QueueManagerDashboardHeader'
 
-import { openShowOperatorDrawer } from '../../lib/operators'
+import { openShowOperatorDrawer } from '../../../lib/operators'
 
 export interface QueueManagerDashboardProps extends ComponentProps<'div'> {}
 
@@ -66,11 +48,8 @@ export const QueueManagerDashboard: FC<QueueManagerDashboardProps> = ({
   const [firstRenderQueuesStats, setFirstRenderQueuesStats]: any = useState(true)
   const [firstRenderQueuesHistory, setFirstRenderQueuesHistory]: any = useState(true)
   const [firstRenderQueuesAgents, setFirstRenderQueuesAgents]: any = useState(true)
-  const [firstRenderAlarmList, setFirstRenderAlarmList]: any = useState(true)
 
   const { operators } = useSelector((state: RootState) => state.operators)
-  // Call api interval update ( every 2 minutes)
-  const [updateDashboardInterval, SetUpdateDashboardInterval] = useState(120000)
 
   // load operators information from the store
   const operatorsStore = useSelector((state: RootState) => state.operators)
@@ -83,19 +62,6 @@ export const QueueManagerDashboard: FC<QueueManagerDashboardProps> = ({
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [])
-
-  //zoom sections
-  const [zoomedCardIndices, setZoomedCardIndices] = useState<number[]>([])
-
-  const handleZoom = (index: number) => {
-    if (zoomedCardIndices.includes(index)) {
-      // Remove index if the card is already zoomed
-      setZoomedCardIndices(zoomedCardIndices.filter((i) => i !== index))
-    } else {
-      // Add index if the card is not zoomed
-      setZoomedCardIndices([...zoomedCardIndices, index])
-    }
-  }
 
   const [expandedOperators, setExpandedOperators] = useState(false)
   const [expandedQueues, setExpandedQueues] = useState(true)
@@ -134,13 +100,27 @@ export const QueueManagerDashboard: FC<QueueManagerDashboardProps> = ({
 
   const [queuesList, setQueuesList] = useState<any>({})
   const [agentsStatsList, setAgentsStatsList] = useState<any>({})
-  const [isLoadedQueues, setLoadedQueues] = useState(false)
   const [isLoadedQueuesStats, setLoadedQueuesStats] = useState(false)
   const [isLoadedQueuesAgents, setLoadedQueuesAgents] = useState(false)
   const [isLoadedQueuesHistory, setLoadedQueuesHistory] = useState(false)
-  const [isLoadedAlarms, setLoadedAlarms] = useState(false)
   const [queuesHistory, setQueuesHistory] = useState<any>({})
-  const [alarmsList, setAlarmsList] = useState<any>({})
+  const [isLoadedQueues, setLoadedQueues] = useState(false)
+
+  // Call api interval update ( every 2 minutes)
+  const [updateDashboardInterval, SetUpdateDashboardInterval] = useState(120000)
+
+  useEffect(() => {
+    //every tot seconds set loaded queues to false to call api
+    const interval = setInterval(() => {
+      setLoadedQueues(false)
+    }, updateDashboardInterval)
+
+    // After unmount clean interval
+    return () => {
+      clearInterval(interval)
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [])
 
   //get queues list information
   useEffect(() => {
@@ -164,104 +144,49 @@ export const QueueManagerDashboard: FC<QueueManagerDashboardProps> = ({
     }
   }, [firstRenderQueuesList, isLoadedQueues])
 
-  // const [calls, setCalls]: any = useState({})
-  // const [firstRenderNotManaged, setFirstRenderNotManaged]: any = useState(true)
-  // const [isLoadedQueuesNotManaged, setLoadedQueuesNotManaged] = useState(false)
+  const [notManaged, setNotManaged]: any = useState({})
+  const [firstRenderNotManaged, setFirstRenderNotManaged]: any = useState(true)
+  const [isLoadedQueuesNotManaged, setLoadedQueuesNotManaged] = useState(false)
+  const [queueManagerQueues, setQueueManagerQueues]: any = useState({})
+  const queueManagerStore = useSelector((state: RootState) => state.queueManagerQueues)
 
-  // //get queues list information
-  // useEffect(() => {
-  //   let selectedQueues: any = {}
+  // //set all queue manager queues
+  // let selectedQueues = Object.keys(queueManagerStore.queues)
 
-  //   if (isEmpty(selectedQueues)) {
-  //     selectedQueues = Object.keys(queueManagerStore.queues)
-  //   }
-  //   // Avoid api double calling
-  //   if (firstRenderNotManaged) {
-  //     setFirstRenderNotManaged(false)
-  //     return
-  //   }
-  //   async function getQueuesNotManaged() {
-  //     setLoadedQueuesNotManaged(false)
-  //     try {
-  //       const res = await retrieveOnlyNotManaged(selectedQueues)
-  //       setCalls(res)
-  //     } catch (err) {
-  //       console.error(err)
-  //     }
-  //     setLoadedQueuesNotManaged(true)
-  //   }
-  //   if (!isLoadedQueuesNotManaged) {
-  //     getQueuesNotManaged()
-  //   }
-  // }, [firstRenderNotManaged, isLoadedQueuesNotManaged, queueManagerStore.isLoaded])
+  useEffect(() => {
+    if (queueManagerStore.queues) {
+      setQueueManagerQueues(Object.keys(queueManagerStore.queues))
+    }
+  }, [queueManagerStore.isLoaded, queueManagerStore.queues])
 
-  // Alarms section
-
-  // Create a object with all alarms type and description
-  const alarmsType = {
-    queuefewop: {
-      description: `${t('QueueManager.queuefewop alarm')}`,
-    },
-    queueholdtime: {
-      description: `${t('QueueManager.queueholdtime alarm')}`,
-    },
-    queueload: {
-      description: `${t('QueueManager.queueload alarm')}`,
-    },
-    queuemaxwait: {
-      description: `${t('QueueManager.queuemaxwait alarm')}`,
-    },
-  }
-
-  // Alarm list example to test
-  // const alarmListExample = {
-  //   list: {
-  //     '211': {
-  //       queuefewop: {
-  //         status: 'warning',
-  //         date: new Date().getTime(),
-  //       },
-  //     },
-  //   },
-  //   status: true,
-  // }
-
-  //get alarm list information
+  //get queues list information
   useEffect(() => {
     // Avoid api double calling
-    if (firstRenderAlarmList) {
-      setFirstRenderAlarmList(false)
+    if (firstRenderNotManaged) {
+      setFirstRenderNotManaged(false)
       return
     }
-    async function getAlarmList() {
-      setLoadedAlarms(false)
-      try {
-        const res = await getAlarm()
-        setAlarmsList(res)
-        // only for testing
-        // setAlarmsList(alarmListExample)
-      } catch (err) {
-        console.error(err)
+    async function getQueuesNotManaged() {
+      if (!isEmpty(queueManagerQueues)) {
+        setLoadedQueuesNotManaged(false)
+        try {
+          const res = await retrieveOnlyNotManaged(queueManagerQueues)
+          setNotManaged(res)
+        } catch (err) {
+          console.error(err)
+        }
+        setLoadedQueuesNotManaged(true)
       }
-      setLoadedAlarms(true)
     }
-    if (!isLoadedAlarms) {
-      getAlarmList()
+    if (!isLoadedQueuesNotManaged) {
+      getQueuesNotManaged()
     }
-  }, [firstRenderAlarmList, isLoadedAlarms])
-
-  useEffect(() => {
-    //every tot seconds set loaded queues to false to call api
-    const interval = setInterval(() => {
-      setLoadedQueues(false)
-    }, updateDashboardInterval)
-
-    // After unmount clean interval
-    return () => {
-      clearInterval(interval)
-    }
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [])
+  }, [
+    firstRenderNotManaged,
+    isLoadedQueuesNotManaged,
+    queueManagerStore.isLoaded,
+    queueManagerQueues,
+  ])
 
   // Get queues history information
   useEffect(() => {
@@ -284,169 +209,6 @@ export const QueueManagerDashboard: FC<QueueManagerDashboardProps> = ({
       getQueueHistory()
     }
   }, [firstRenderQueuesHistory, isLoadedQueuesHistory, isLoadedQueues])
-
-  const [dashboardData, setDashboardData] = useState<any>(0)
-
-  useEffect(() => {
-    if (isLoadedQueuesHistory && queuesHistory && queuesList) {
-      let totalChartsData = initTopSparklineChartsData(queuesHistory)
-      extractStartHour(totalChartsData)
-    }
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [isLoadedQueuesHistory, queuesHistory, queuesList, isLoadedQueues])
-
-  useEffect(() => {
-    if (isLoadedQueuesHistory && queuesHistory && queuesList && dashboardData !== 0) {
-      let hourlydistribution = initHourlyChartsDataPerQueues(
-        queuesHistory,
-        dashboardData,
-        queuesList,
-      )
-      creationBarChart(hourlydistribution.stackedBarComparison)
-      creationLineChartCallsHour(hourlydistribution.lineTotal)
-      creationIncomingCallsHour(hourlydistribution.stacked)
-      creationFailedCallsHour(hourlydistribution.lineFailed)
-    }
-  }, [dashboardData, isLoadedQueuesHistory, queuesHistory, queuesList])
-
-  const [labelsOutcome, setLabelsOutcome] = useState<any>([])
-  const [datasetsOutcome, setDatasetsOutcome] = useState<any>([])
-
-  const [labelsCallsHour, setLabelsCallsHour] = useState<any>([])
-  const [datasetsCallsHour, setDatasetsCallsHour] = useState<any>([])
-
-  const [labelsIncomingCallsHour, setLabelsIncomingCallsHour] = useState<any>([])
-  const [datasetsIncomingCallsHour, setDatasetsIncomingCallsHour] = useState<any>([])
-
-  const [labelsFailedCallsHour, setLabelsFailedCallsHour] = useState<any>([])
-  const [datasetsFailedCallsHour, setDatasetsFailedCallsHour] = useState<any>([])
-
-  const creationBarChart = (chartValue: any) => {
-    let groupedChartInformation = groupDataByHour(chartValue)
-    const labels = Object.keys(groupedChartInformation)
-    setLabelsOutcome(labels)
-    const datasets = [
-      {
-        label: 'Answered',
-        data: [] as number[],
-        backgroundColor: '#10B981',
-        borderRadius: 5,
-      },
-      {
-        label: 'Failed',
-        data: [] as number[],
-        backgroundColor: '#6b7280',
-        borderRadius: 5,
-      },
-      {
-        label: 'Invalid',
-        data: [] as number[],
-        backgroundColor: '#ff0000',
-        borderRadius: 5,
-      },
-    ]
-
-    labels.forEach((label) => {
-      const data = groupedChartInformation[label]
-      datasets[0].data.push(data.answered)
-      datasets[1].data.push(data.failed)
-      datasets[2].data.push(data.invalid)
-    })
-
-    setDatasetsOutcome(datasets)
-  }
-
-  //line chart hourly distribution of incoming calls
-  const creationLineChartCallsHour = (chartValue: any) => {
-    const groupedLineChartInformation = groupDataByHourLineChart(chartValue)
-    const labels = Object.keys(groupedLineChartInformation)
-    setLabelsCallsHour(labels)
-
-    const datasets = labels.map((label, index) => {
-      const randomColor = getRandomColor(index)
-      return {
-        label: label,
-        data: groupedLineChartInformation[label],
-        backgroundColor: randomColor,
-        borderRadius: 5,
-        tension: 0.4,
-        fill: true,
-      }
-    })
-
-    setDatasetsCallsHour(datasets)
-  }
-
-  //line chart failed call hours
-  const creationFailedCallsHour = (chartValue: any) => {
-    const groupedLineChartInformation = groupDataFailedCallsHourLineChart(chartValue)
-    const labels = Object.keys(groupedLineChartInformation)
-    //first label should keep all the hours values
-    const hours = Object.keys(groupedLineChartInformation[labels[0]])
-    setLabelsFailedCallsHour(hours)
-
-    const datasets = labels.map((label, index) => {
-      const randomColor = getRandomColor(index)
-      const data = hours.map((hour) => groupedLineChartInformation[label][hour])
-      return {
-        label: label,
-        data: data,
-        backgroundColor: randomColor,
-        borderRadius: 5,
-        tension: 0.4,
-        fill: true,
-      }
-    })
-
-    setDatasetsFailedCallsHour(datasets)
-  }
-
-  //line chart incoming call hours
-  const creationIncomingCallsHour = (chartValue: any) => {
-    const groupedLineChartCallsHourInformation = groupDataByHourLineCallsChart(chartValue)
-
-    const labels = Object.keys(groupedLineChartCallsHourInformation)
-    //first label should keep all the hours values
-    const hours = Object.keys(groupedLineChartCallsHourInformation[labels[0]])
-
-    setLabelsIncomingCallsHour(hours)
-
-    const datasets = labels.map((label, index) => {
-      const randomColor = getRandomColor(index)
-      const data = hours.map((hour) => groupedLineChartCallsHourInformation[label][hour])
-      return {
-        label: label,
-        data: data,
-        backgroundColor: randomColor,
-        borderRadius: 5,
-        tension: 0.4,
-        fill: true,
-      }
-    })
-
-    setDatasetsIncomingCallsHour(datasets)
-  }
-
-  //Get start hours for graphs
-  const extractStartHour = (totalizedData: any) => {
-    let beginTime = 0
-    for (var h in totalizedData.total) {
-      if (totalizedData.total[h].value > 0) {
-        beginTime = new Date(totalizedData.total[h].fullDate).getTime() - 3600000
-        setDashboardData(beginTime)
-        break
-      }
-    }
-
-    for (var c in totalizedData) {
-      for (var h in totalizedData[c]) {
-        if (new Date(totalizedData[c][h].fullDate).getTime() < beginTime) {
-          delete totalizedData[c][h]
-        }
-      }
-    }
-    return totalizedData
-  }
 
   // initialize allQueuesStats to false
   // it will be true only if all queues have been populated with states
@@ -622,10 +384,9 @@ export const QueueManagerDashboard: FC<QueueManagerDashboardProps> = ({
       let totalAnsweredCount = 0
       let totalFailedCount = 0
       let totalInvalidCount = 0
-      let totalInProgressCount = 0
 
       // Iterate over each queue in calculatedRank and calculate the totals
-      calculatedRank.forEach((queue) => {
+      calculatedRank.forEach((queue: any) => {
         totalAllCount += queue.values.tot
         totalAnsweredCount += queue.values.tot_processed
         totalFailedCount += queue.values.tot_failed
@@ -858,383 +619,25 @@ export const QueueManagerDashboard: FC<QueueManagerDashboardProps> = ({
     sortOrderInCallPercentage,
   ])
 
-  const dropdownItems = (
-    <>
-      <div
-        className={`cursor-default py-2 w-96 px-2 ${
-          isEmpty(alarmsList.list) ? 'bg-gray-100' : 'bg-red-50'
-        }`}
-      >
-        <Dropdown.Header>
-          {!isEmpty(alarmsList.list) ? (
-            <>
-              {/* Header dropdown  */}
-              <span className='text-lg font-semibold flex justify-start text-center mb-2'>
-                {t('QueueManager.Alarm error detected')}
-              </span>
-              {/* Divider  */}
-              <div className='relative'>
-                <div className='absolute inset-0 flex items-center' aria-hidden='true'>
-                  <div className='w-full border-t  border-gray-300 dark:border-gray-600' />
-                </div>
-              </div>
-
-              {/* Body dropdown */}
-              <div className='flex flex-col'>
-                {/* First row */}
-                <div className='flex items-center pt-3 space-x-3'>
-                  <FontAwesomeIcon
-                    icon={faClock}
-                    className='h-5 w-5 py-2 cursor-pointer flex items-center text-gray-500 dark:text-gray-400'
-                    aria-hidden='true'
-                  />
-                  <div className='flex justify-center items-center'>
-                    <p className='text-md font-semibold tracking-tight text-left text-gray-900 dark:text-gray-900 mr-1'>
-                      {t('QueueManager.Begin hour')}
-                    </p>
-                    <p className='text-md font-bold leading-6 text-center text-gray-900 dark:text-gray-900'>
-                      {getFormattedTimeFromAlarmsList(alarmsList)}
-                    </p>
-                  </div>
-                </div>
-
-                {/* Second row */}
-                {/* <div className='flex items-center pt-2 space-x-3'>
-                  <FontAwesomeIcon
-                    icon={faUsers}
-                    className='h-5 w-5 py-2 cursor-pointer flex items-center text-gray-500 dark:text-gray-400'
-                    aria-hidden='true'
-                  />
-                  <div className='flex justify-center items-center'>
-                    <p className='text-md font-semibold tracking-tight text-left text-gray-900 dark:text-gray-900 mr-1'>
-                      {t('QueueManager.Queue')}:
-                    </p>
-                    <p className='text-md font-bold leading-6 text-center mr-1 text-gray-900 dark:text-gray-900'>
-                      Assistenza Clienti
-                    </p>
-                    <p className='text-md font-bold leading-6 text-center text-gray-900 dark:text-gray-900'>
-                      500
-                    </p>
-                  </div>
-                </div> */}
-
-                {/* Third row */}
-                <span className='pt-3 text-sm'>{getAlarmDescription(alarmsList, alarmsType)}</span>
-              </div>
-            </>
-          ) : (
-            <span className='text-sm text-gray-900 dark:text-gray-900 font-medium flex justify-center text-center '>
-              {' '}
-              {t('QueueManager.No alarm detected')}
-            </span>
-          )}
-        </Dropdown.Header>
-      </div>
-    </>
-  )
-
   return (
     <>
       {/* Top page section */}
-      <div className='border-b rounded-md shadow-md border-gray-200 dark:border-gray-700 bg-white dark:bg-gray-900 px-4 py-1 sm:px-6'>
-        <div className=''>
-          <div className='mx-auto'>
-            <div className='grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-6'>
-              {/* Alarms section */}
-              <Dropdown items={dropdownItems} position='left' divider={true} className='pl-3 pt-3'>
-                <div
-                  className={`flex items-center justify-between px-4 mt-1 mb-2 bg-gray-100 rounded-md py-1 ${
-                    !isEmpty(alarmsList.list) ? 'bg-red-50' : ''
-                  }`}
-                >
-                  <div className='flex items-center'>
-                    <FontAwesomeIcon
-                      icon={faTriangleExclamation}
-                      className={`h-6 w-6 pr-6 py-2 cursor-pointer flex items-center ${
-                        !isEmpty(alarmsList.list)
-                          ? 'text-red-600'
-                          : 'text-gray-500 dark:text-gray-400'
-                      }`}
-                      aria-hidden='true'
-                    />
-                    <div className='flex flex-col justify-center'>
-                      <p className='text-3xl font-semibold tracking-tight text-left text-gray-900 dark:text-gray-900'>
-                        {(alarmsList.list && Object.keys(alarmsList.list).length) ?? 0}
-                      </p>
-                      <p className='text-sm font-medium leading-6 text-center text-gray-500 dark:text-gray-400'>
-                        {alarmsList.list && Object.keys(alarmsList.list).length === 1
-                          ? t('QueueManager.Alarm')
-                          : t('QueueManager.Alarms')}
-                      </p>
-                    </div>
-                  </div>
-                  <FontAwesomeIcon
-                    icon={faChevronDown}
-                    className='h-3.5 w-3.5 pl-2 py-2 cursor-pointer flex items-center'
-                    aria-hidden='true'
-                  />
-                </div>
-              </Dropdown>
-
-              {/* Not managed customers section
-              <div className='flex items-center justify-between px-4 mt-2 mb-2'>
-                <div className='flex items-center'>
-                  <div className='h-14 w-14 flex items-center justify-center rounded-md bg-emerald-50'>
-                    <FontAwesomeIcon
-                      icon={faPhone}
-                      className='h-6 w-6 cursor-pointer text-emerald-600 dark:text-emerald-600'
-                      aria-hidden='true'
-                    />
-                  </div>
-                  <div className='flex flex-col justify-center ml-4'>
-                    <p className='text-3xl font-semibold tracking-tight text-left text-gray-900 dark:text-gray-100'>
-                      {calls.count}
-                    </p>
-                    <p className='text-sm font-medium leading-6 text-center text-gray-500 dark:text-gray-400'>
-                      {t('QueueManager.Not managed customers')}
-                    </p>
-                  </div>
-                </div>
-              </div> */}
-              {/* Total calls section */}
-              <div className='flex items-center justify-between px-4 mt-2 mb-2'>
-                <div className='flex items-center'>
-                  <div className='h-14 w-14 flex items-center justify-center rounded-md bg-emerald-50'>
-                    <FontAwesomeIcon
-                      icon={faPhone}
-                      className='h-6 w-6 cursor-pointer text-emerald-600 dark:text-emerald-600'
-                      aria-hidden='true'
-                    />
-                  </div>
-                  <div className='flex flex-col justify-center ml-4'>
-                    <p className='text-3xl font-semibold tracking-tight text-left text-gray-900 dark:text-gray-100'>
-                      {totalAll}
-                    </p>
-                    <p className='text-sm font-medium leading-6 text-center text-gray-500 dark:text-gray-400'>
-                      {t('QueueManager.Total calls')}
-                    </p>
-                  </div>
-                </div>
-              </div>
-
-              {/* Answered calls section */}
-              <div className='flex items-center justify-between px-4 mt-2 mb-2'>
-                <div className='flex items-center'>
-                  <div className='h-14 w-14 flex items-center justify-center rounded-md bg-emerald-50'>
-                    <FontAwesomeIcon
-                      icon={faArrowLeft}
-                      className='h-6 w-6 cursor-pointer -rotate-45 text-emerald-600 dark:text-emerald-600'
-                      aria-hidden='true'
-                    />
-                  </div>
-                  <div className='flex flex-col justify-center ml-4'>
-                    <p className='text-3xl font-semibold tracking-tight text-left text-gray-900 dark:text-gray-100'>
-                      {totalAnswered}
-                    </p>
-                    <p className='text-sm font-medium leading-6 text-center text-gray-500 dark:text-gray-400'>
-                      {t('QueueManager.Answered calls')}
-                    </p>
-                  </div>
-                </div>
-              </div>
-
-              {/* Lost calls section */}
-              <div className='flex items-center justify-between px-4 mt-2 mb-2'>
-                <div className='flex items-center'>
-                  <div className='h-14 w-14 flex items-center justify-center rounded-md bg-emerald-50'>
-                    <FontAwesomeIcon
-                      icon={faMissed}
-                      className='h-6 w-6 cursor-pointer text-emerald-600 dark:text-emerald-600'
-                      aria-hidden='true'
-                    />
-                  </div>
-                  <div className='flex flex-col justify-center ml-4'>
-                    <p className='text-3xl font-semibold tracking-tight text-left text-gray-900 dark:text-gray-100'>
-                      {totalFailed}
-                    </p>
-                    <p className='text-sm font-medium leading-6 text-center text-gray-500 dark:text-gray-400'>
-                      {t('QueueManager.Lost calls')}
-                    </p>
-                  </div>
-                </div>
-              </div>
-
-              {/* Invalid calls section */}
-              <div className='flex items-center justify-between px-4 mt-2 mb-2'>
-                <div className='flex items-center'>
-                  <div className='h-14 w-14 flex items-center justify-center rounded-md bg-emerald-50'>
-                    <FontAwesomeIcon
-                      icon={faPhoneSlash}
-                      className='h-6 w-6 cursor-pointer text-emerald-600 dark:text-emerald-600'
-                      aria-hidden='true'
-                    />
-                  </div>
-                  <div className='flex flex-col justify-center ml-4'>
-                    <p className='text-3xl font-semibold tracking-tight text-left text-gray-900 dark:text-gray-100'>
-                      {totalInvalid}
-                    </p>
-                    <p className='text-sm font-medium leading-6 text-center text-gray-500 dark:text-gray-400'>
-                      {t('QueueManager.Invalid calls')}
-                    </p>
-                  </div>
-                </div>
-              </div>
-
-              {/* In progress calls section */}
-              <div className='flex items-center justify-between px-4 mt-5 mb-5'>
-                <div className='flex items-center'>
-                  <div className='h-14 w-14 flex items-center justify-center rounded-md bg-emerald-50'>
-                    <FontAwesomeIcon
-                      icon={faPause}
-                      className='h-6 w-6 cursor-pointer text-emerald-600 dark:text-emerald-600'
-                      aria-hidden='true'
-                    />
-                  </div>
-                  <div className='flex flex-col justify-center ml-4'>
-                    <p className='text-3xl font-semibold tracking-tight text-left text-gray-900 dark:text-gray-100'>
-                      {totalInProgress}
-                    </p>
-                    <p className='text-sm font-medium leading-6 text-center text-gray-500 dark:text-gray-400'>
-                      {t('QueueManager.In progress')}
-                    </p>
-                  </div>
-                </div>
-              </div>
-            </div>
-          </div>
-        </div>
-      </div>
-
+      <QueueManagerDashboardHeader
+        totalAll={totalAll}
+        totalAnswered={totalAnswered}
+        totalFailed={totalFailed}
+        totalInvalid={totalInvalid}
+        totalInProgress={totalInProgress}
+        notManaged={notManaged}
+      ></QueueManagerDashboardHeader>
       {/* Chart section */}
-      <div className='grid grid-cols-1 gap-4 sm:grid-cols-1 lg:grid-cols-2'>
-        {/* Hourly distribution of incoming calls section*/}
-        <div className={`pt-8 ${zoomedCardIndices.includes(0) ? 'col-span-2' : 'col-span-1'}`}>
-          {/* title */}
-          <h2 className='text-md ml-4 font-semibold mb-4'>
-            {t('QueueManager.Hourly distribution of incoming calls')}
-          </h2>
-
-          <div className='border-b rounded-md shadow-md bg-white border-gray-200 dark:border-gray-700 dark:bg-gray-900 px-4 py-5 sm:px-6 mt-1 relative w-full min-h-full'>
-            <div className='flex space-x-3 h-96'>
-              <div className='min-w-0 flex-1 '>
-                {/* ... */}
-                <LineChart labels={labelsOutcome} datasets={datasetsCallsHour} />
-              </div>
-            </div>
-            {/* Zoom button */}
-            <div className='absolute top-2 right-2 pt-3 pr-3'>
-              <Button
-                className='h-10 w-10 flex items-center justify-center rounded-md'
-                variant='white'
-                onClick={() => handleZoom(0)}
-              >
-                <FontAwesomeIcon
-                  icon={faExpand}
-                  className='h-6 w-6 cursor-pointer text-gray-500 dark:text-gray-400'
-                  aria-hidden='true'
-                />
-              </Button>
-            </div>
-          </div>
-        </div>
-
-        {/* Hourly distribution of call results */}
-        <div
-          className={`pt-8 ${zoomedCardIndices.includes(1) ? 'col-span-2 ' : 'col-span-1'} ${
-            zoomedCardIndices.includes(0) ? 'mt-4' : ''
-          }`}
-        >
-          {/* title */}
-          <h2 className='text-md ml-4 font-semibold mb-4'>
-            {t('QueueManager.Hourly distribution of call results')}
-          </h2>
-
-          <div className='border-b rounded-md shadow-md bg-white border-gray-200 dark:border-gray-700 dark:bg-gray-900 px-4 py-5 sm:px-6 mt-1 relative w-full h-full'>
-            <div className='flex space-x-3 h-96'>
-              <div className='flex-1 w-full'>
-                {/* ... */}
-                <BarChart labels={labelsOutcome} datasets={datasetsOutcome} />
-              </div>
-            </div>
-            {/* Zoom button */}
-            <div className='absolute top-2 right-2 pt-3 pr-3'>
-              <Button
-                className='h-10 w-10 flex items-center justify-center rounded-md'
-                variant='white'
-                onClick={() => handleZoom(1)}
-              >
-                <FontAwesomeIcon
-                  icon={faExpand}
-                  className='h-6 w-6 cursor-pointer text-gray-500 dark:text-gray-400'
-                  aria-hidden='true'
-                />
-              </Button>
-            </div>
-          </div>
-        </div>
-
-        {/* Hourly distribution of calls answered*/}
-        <div className={`pt-12 ${zoomedCardIndices.includes(2) ? 'col-span-2' : 'col-span-1'}`}>
-          {/* title */}
-          <h2 className='text-md ml-4 font-semibold mb-4'>
-            {t('QueueManager.Hourly distribution of calls answered')}
-          </h2>
-
-          <div className='border-b rounded-md shadow-md bg-white border-gray-200 dark:border-gray-700 dark:bg-gray-900 px-4 py-5 sm:px-6 mt-1 relative w-full h-full'>
-            <div className='flex space-x-3 h-96'>
-              <div className='min-w-0 flex-1 '>
-                {/* ... */}
-                <LineChart labels={labelsIncomingCallsHour} datasets={datasetsIncomingCallsHour} />
-              </div>
-            </div>
-            {/* Zoom button */}
-            <div className='absolute top-2 right-2 pt-3 pr-3'>
-              <Button
-                className='h-10 w-10 flex items-center justify-center rounded-md'
-                variant='white'
-                onClick={() => handleZoom(2)}
-              >
-                <FontAwesomeIcon
-                  icon={faExpand}
-                  className='h-6 w-6 cursor-pointer text-gray-500 dark:text-gray-400'
-                  aria-hidden='true'
-                />
-              </Button>
-            </div>
-          </div>
-        </div>
-
-        {/* Hourly distribution of not answered calls*/}
-        <div className={`pt-12 ${zoomedCardIndices.includes(3) ? 'col-span-2' : 'col-span-1'}`}>
-          {' '}
-          {/* title */}
-          <h2 className='text-md ml-4 font-semibold mb-4'>
-            {t('QueueManager.Hourly distribution of not answered calls')}
-          </h2>
-          <div className='border-b rounded-md shadow-md bg-white border-gray-200 dark:border-gray-700 dark:bg-gray-900 px-4 py-5 sm:px-6 mt-1 relative w-full h-full'>
-            <div className='flex space-x-3 h-96'>
-              <div className='min-w-0 flex-1 '>
-                {/* ... */}
-                <LineChart labels={labelsFailedCallsHour} datasets={datasetsFailedCallsHour} />
-              </div>
-            </div>
-            {/* Zoom button */}
-            <div className='absolute top-2 right-2 pt-3 pr-3'>
-              <Button
-                className='h-10 w-10 flex items-center justify-center rounded-md'
-                variant='white'
-                onClick={() => handleZoom(3)}
-              >
-                <FontAwesomeIcon
-                  icon={faExpand}
-                  className='h-6 w-6 cursor-pointer text-gray-500 dark:text-gray-400'
-                  aria-hidden='true'
-                />
-              </Button>
-            </div>
-          </div>
-        </div>
-      </div>
+      <QueueManagerDashboardChart
+        isLoadedQueuesHistory={isLoadedQueuesHistory}
+        queuesHistory={queuesHistory}
+        queuesList={queueManagerStore.queues}
+        isLoadedQueues={isLoadedQueues}
+        notManaged={notManaged}
+      ></QueueManagerDashboardChart>
 
       {/* Operator statistics section */}
       <div className='py-12 mt-8 relative'>

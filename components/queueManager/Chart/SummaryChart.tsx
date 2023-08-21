@@ -5,10 +5,10 @@ import { FC, ComponentProps, useEffect, useState } from 'react'
 import { useTranslation } from 'react-i18next'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { Tooltip } from 'react-tooltip'
-import { getQueueStats } from '../../lib/queueManager'
+import { getQueueStats } from '../../../lib/queueManager'
 
 import { faCircleInfo } from '@fortawesome/free-solid-svg-icons'
-import BarChartHorizontalNoLabels from '../chart/HorizontalNoLabel'
+import BarChartHorizontalNoLabels from '../../chart/HorizontalNoLabel'
 
 export interface SummaryChartProps extends ComponentProps<'div'> {
   selectedQueues: any

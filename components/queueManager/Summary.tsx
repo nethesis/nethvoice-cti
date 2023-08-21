@@ -37,7 +37,7 @@ import { debounce, isEmpty } from 'lodash'
 import InfiniteScroll from 'react-infinite-scroll-component'
 import { getInfiniteScrollOperatorsPageSize } from '../../lib/operators'
 import { savePreference } from '../../lib/storage'
-import { SummaryChart } from './SummaryChart'
+import { SummaryChart } from './Chart/SummaryChart'
 import { RealTimeOperatorsFilter } from './RealTimeOperatorsFilter'
 
 export interface SummaryProps extends ComponentProps<'div'> {}
