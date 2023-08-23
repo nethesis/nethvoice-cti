@@ -10,7 +10,7 @@ import { QueueManagement } from '../components/queueManager/QueueManagement/Queu
 import { NotManagedCalls } from '../components/queueManager/NotManaged/NotManagedCalls'
 import { RealTimeManagement } from '../components/queueManager/Realtime/RealTimeManagement'
 import { Summary } from '../components/queueManager/Summary/Summary'
-import { Monitor } from '../components/queueManager/Monitor'
+import { Monitor } from '../components/queueManager/Monitor/Monitor'
 import { useSelector } from 'react-redux'
 import { RootState, store } from '../store'
 import { savePreference } from '../lib/storage'
