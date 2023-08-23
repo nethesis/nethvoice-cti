@@ -4,12 +4,12 @@
 import { FC, ComponentProps, useState, useEffect, useMemo, useRef } from 'react'
 import { useTranslation } from 'react-i18next'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
-import { Avatar, EmptyState, IconSwitch, TextInput, Button, Dropdown } from '../common'
+import { Avatar, EmptyState, IconSwitch, TextInput, Button, Dropdown } from '../../common'
 import { useSelector } from 'react-redux'
-import { RootState, store } from '../../store'
+import { RootState, store } from '../../../store'
 import { Tooltip } from 'react-tooltip'
 import { debounce, isEmpty } from 'lodash'
-import { exactDistanceToNowLoc } from '../../lib/dateTime'
+import { exactDistanceToNowLoc } from '../../../lib/dateTime'
 import { Popover } from '@headlessui/react'
 import {
   faChevronDown,
@@ -39,16 +39,16 @@ import {
   getAgentsStats,
   getExpandedRealtimeValue,
   searchOperatorsInQueuesMembers,
-} from '../../lib/queueManager'
+} from '../../../lib/queueManager'
 import InfiniteScroll from 'react-infinite-scroll-component'
-import { getInfiniteScrollOperatorsPageSize } from '../../lib/operators'
-import { sortByProperty, sortByFavorite } from '../../lib/utils'
-import { savePreference } from '../../lib/storage'
-import BarChartHorizontalWithTitle from '../chart/HorizontalWithTitle'
+import { getInfiniteScrollOperatorsPageSize } from '../../../lib/operators'
+import { sortByProperty, sortByFavorite } from '../../../lib/utils'
+import { savePreference } from '../../../lib/storage'
+import BarChartHorizontalWithTitle from '../../chart/HorizontalWithTitle'
 import { RealTimeOperatorsFilter } from './RealTimeOperatorsFilter'
-import { openShowOperatorDrawer } from '../../lib/operators'
-import { LoggedStatus } from '../queues'
-import { unpauseQueue, pauseQueue, loginToQueue, logoutFromQueue } from '../../lib/queuesLib'
+import { openShowOperatorDrawer } from '../../../lib/operators'
+import { LoggedStatus } from '../../queues'
+import { unpauseQueue, pauseQueue, loginToQueue, logoutFromQueue } from '../../../lib/queuesLib'
 
 export interface RealTimeManagementProps extends ComponentProps<'div'> {}
 

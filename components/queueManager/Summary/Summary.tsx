@@ -3,13 +3,13 @@
 
 import { FC, ComponentProps, useState, useEffect, Fragment, useMemo } from 'react'
 import { useTranslation } from 'react-i18next'
-import { EmptyState, Avatar } from '../common'
+import { EmptyState, Avatar } from '../../common'
 import { useSelector } from 'react-redux'
-import { RootState } from '../../store'
+import { RootState } from '../../../store'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { Popover } from '@headlessui/react'
 import { cloneDeep } from 'lodash'
-import { exactDistanceToNowLoc, formatDurationLoc } from '../../lib/dateTime'
+import { exactDistanceToNowLoc, formatDurationLoc } from '../../../lib/dateTime'
 
 import {
   faChevronDown,
@@ -21,8 +21,8 @@ import {
   faPhone,
   faUser,
 } from '@fortawesome/free-solid-svg-icons'
-import { LoggedStatus } from '../queues'
-import { openShowOperatorDrawer } from '../../lib/operators'
+import { LoggedStatus } from '../../queues'
+import { openShowOperatorDrawer } from '../../../lib/operators'
 
 import { Transition } from '@headlessui/react'
 import {
@@ -32,13 +32,13 @@ import {
   getExpandedSummaryValue,
   searchOperatorsInQueuesMembers,
   getFilterValuesSummary,
-} from '../../lib/queueManager'
+} from '../../../lib/queueManager'
 import { debounce, isEmpty } from 'lodash'
 import InfiniteScroll from 'react-infinite-scroll-component'
-import { getInfiniteScrollOperatorsPageSize } from '../../lib/operators'
-import { savePreference } from '../../lib/storage'
-import { SummaryChart } from './Chart/SummaryChart'
-import { RealTimeOperatorsFilter } from './RealTimeOperatorsFilter'
+import { getInfiniteScrollOperatorsPageSize } from '../../../lib/operators'
+import { savePreference } from '../../../lib/storage'
+import { SummaryChart } from '../Chart/SummaryChart'
+import { RealTimeOperatorsFilter } from '../Realtime/RealTimeOperatorsFilter'
 
 export interface SummaryProps extends ComponentProps<'div'> {}
 

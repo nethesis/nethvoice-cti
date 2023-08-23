@@ -3,28 +3,28 @@
 
 import { ComponentPropsWithRef, forwardRef, useRef } from 'react'
 import classNames from 'classnames'
-import { TextInput } from '../common'
+import { TextInput } from '../../common'
 import { Fragment, useState, useEffect } from 'react'
 import { Dialog, Disclosure, Popover, Transition } from '@headlessui/react'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { faChevronDown, faCircleXmark, faXmark } from '@fortawesome/free-solid-svg-icons'
 import { useSelector } from 'react-redux'
-import { RootState } from '../../store'
-import { savePreference } from '../../lib/storage'
+import { RootState } from '../../../store'
+import { savePreference } from '../../../lib/storage'
 import {
-  DEFAULT_SORT_BY_REALTIME,
-  DEFAULT_STATUS_FILTER_REALTIME,
-  getFilterValuesRealtime,
-} from '../../lib/queueManager'
+  DEFAULT_SORT_BY_SUMMARY,
+  DEFAULT_STATUS_FILTER_SUMMARY,
+  getFilterValuesSummary,
+} from '../../../lib/queueManager'
 import { useTranslation } from 'react-i18next'
 import { cloneDeep, isEmpty } from 'lodash'
 
-export interface RealTimeOperatorsFilterProps extends ComponentPropsWithRef<'div'> {
+export interface SummaryQueuesFilterProps extends ComponentPropsWithRef<'div'> {
   updateTextFilter: Function
   updateQueuesFilter: Function
 }
 
-export const RealTimeOperatorsFilter = forwardRef<HTMLButtonElement, RealTimeOperatorsFilterProps>(
+export const SummaryQueuesFilter = forwardRef<HTMLButtonElement, SummaryQueuesFilterProps>(
   ({ className, updateTextFilter, updateQueuesFilter, ...props }, ref) => {
     const auth = useSelector((state: RootState) => state.authentication)
     const [selectedQueues, setSelectedQueues]: any = useState([])
@@ -65,7 +65,7 @@ export const RealTimeOperatorsFilter = forwardRef<HTMLButtonElement, RealTimeOpe
         newSelectedQueues.splice(index, 1)
         setSelectedQueues(newSelectedQueues)
       }
-      savePreference('realtimeSelectedQueues', newSelectedQueues, auth.username)
+      savePreference('summaryOperatorSelectedQueuesOperator', newSelectedQueues, auth.username)
 
       // notify parent component
       updateQueuesFilter(newSelectedQueues)
@@ -83,9 +83,9 @@ export const RealTimeOperatorsFilter = forwardRef<HTMLButtonElement, RealTimeOpe
 
     // retrieve filter values from local storage
     useEffect(() => {
-      const filterValues = getFilterValuesRealtime(auth.username)
+      const filterValues = getFilterValuesSummary(auth.username)
 
-      if (isEmpty(filterValues.selectedQueues)) {
+      if (isEmpty(filterValues.selectedQueuesOperator)) {
         // select all queues
         const allQueueCodes = Object.values(queueManagerStore.queues).map((queue: any) => {
           return queue.queue
@@ -94,15 +94,15 @@ export const RealTimeOperatorsFilter = forwardRef<HTMLButtonElement, RealTimeOpe
         updateQueuesFilter(allQueueCodes)
       } else {
         // select queues from preferences
-        setSelectedQueues(filterValues.selectedQueues)
-        updateQueuesFilter(filterValues.selectedQueues)
+        setSelectedQueues(filterValues.selectedQueuesOperator)
+        updateQueuesFilter(filterValues.selectedQueuesOperator)
       }
     }, [])
 
     const resetFilters = () => {
       setTextFilter('')
-      savePreference('realtimeStatusFilter', DEFAULT_STATUS_FILTER_REALTIME, auth.username)
-      savePreference('realtimeStatusSortBy', DEFAULT_SORT_BY_REALTIME, auth.username)
+      savePreference('summaryOperatorStatusFilter', DEFAULT_STATUS_FILTER_SUMMARY, auth.username)
+      savePreference('summaryOperatorSortBy', DEFAULT_SORT_BY_SUMMARY, auth.username)
 
       // notify parent component
       updateTextFilter('')
@@ -113,7 +113,7 @@ export const RealTimeOperatorsFilter = forwardRef<HTMLButtonElement, RealTimeOpe
       })
       setSelectedQueues(allQueueCodes)
       updateQueuesFilter(allQueueCodes)
-      savePreference('realtimeSelectedQueues', allQueueCodes, auth.username)
+      savePreference('summaryOperatorSelectedQueuesOperator', allQueueCodes, auth.username)
     }
 
     const clearTextFilter = () => {
@@ -361,4 +361,4 @@ export const RealTimeOperatorsFilter = forwardRef<HTMLButtonElement, RealTimeOpe
   },
 )
 
-RealTimeOperatorsFilter.displayName = 'RealTimeOperatorsFilter'
+SummaryQueuesFilter.displayName = 'RealTimeOperatorsFilter'

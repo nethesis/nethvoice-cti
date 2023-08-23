@@ -3,7 +3,7 @@
 
 import { FC, ComponentProps, useState, useEffect, useMemo } from 'react'
 import { useTranslation } from 'react-i18next'
-import { Button, EmptyState, InlineNotification, ProgressionRing } from '../common'
+import { Button, EmptyState, InlineNotification, ProgressionRing } from '../../common'
 import { isEmpty, debounce } from 'lodash'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import {
@@ -13,7 +13,7 @@ import {
   openShowQueueCallDrawer,
   PAGE_SIZE,
   retrieveAndFilterQueueCalls,
-} from '../../lib/queueManager'
+} from '../../../lib/queueManager'
 import {
   faChevronRight,
   faChevronLeft,
@@ -21,12 +21,12 @@ import {
   faDownload,
 } from '@fortawesome/free-solid-svg-icons'
 import classNames from 'classnames'
-import { exactDistanceToNowLoc, formatDateLoc, getCallTimeToDisplay } from '../../lib/dateTime'
+import { exactDistanceToNowLoc, formatDateLoc, getCallTimeToDisplay } from '../../../lib/dateTime'
 import { NotManagedCallsFilter } from './NotManagedCallsFilter'
 import { utcToZonedTime } from 'date-fns-tz'
 import { useSelector } from 'react-redux'
-import { RootState } from '../../store'
-import { loadPreference } from '../../lib/storage'
+import { RootState } from '../../../store'
+import { loadPreference } from '../../../lib/storage'
 import Link from 'next/link'
 
 export interface NotManagedCallsProps extends ComponentProps<'div'> {}

@@ -3,7 +3,7 @@
 
 import { ComponentPropsWithRef, forwardRef, useRef } from 'react'
 import classNames from 'classnames'
-import { TextInput, SideDrawerCloseIcon } from '../common'
+import { TextInput, SideDrawerCloseIcon } from '../../common'
 import { Fragment, useState, useEffect } from 'react'
 import { Dialog, Disclosure, Popover, Transition } from '@headlessui/react'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
@@ -12,10 +12,10 @@ import {
   DEFAULT_SORT_BY_QUEUE_MANAGEMENT,
   DEFAULT_STATUS_FILTER_QUEUE_MANAGEMENT,
   getFilterValuesQueuesManagement,
-} from '../../lib/queueManager'
+} from '../../../lib/queueManager'
 import { useSelector } from 'react-redux'
-import { RootState } from '../../store'
-import { savePreference } from '../../lib/storage'
+import { RootState } from '../../../store'
+import { savePreference } from '../../../lib/storage'
 import { useTranslation } from 'react-i18next'
 
 const sortFilter = {

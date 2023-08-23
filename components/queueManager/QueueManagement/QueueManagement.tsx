@@ -4,12 +4,12 @@
 import { FC, ComponentProps, useState, useEffect, Fragment, useMemo } from 'react'
 import { useTranslation } from 'react-i18next'
 import { useSelector } from 'react-redux'
-import { RootState } from '../../store'
+import { RootState } from '../../../store'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
-import { formatDateLoc, getCallTimeToDisplay } from '../../lib/dateTime'
+import { formatDateLoc, getCallTimeToDisplay } from '../../../lib/dateTime'
 import { Tooltip } from 'react-tooltip'
-import { savePreference } from '../../lib/storage'
-import { LoggedStatus } from '../queues'
+import { savePreference } from '../../../lib/storage'
+import { LoggedStatus } from '../../queues'
 import Link from 'next/link'
 
 import {
@@ -28,7 +28,7 @@ import {
   faUser,
 } from '@fortawesome/free-solid-svg-icons'
 
-import { openShowOperatorDrawer, getInfiniteScrollOperatorsPageSize } from '../../lib/operators'
+import { openShowOperatorDrawer, getInfiniteScrollOperatorsPageSize } from '../../../lib/operators'
 
 import { Listbox, Transition } from '@headlessui/react'
 import { QueueManagementFilterOperators } from './QueueManagementFilterOperators'
@@ -38,16 +38,16 @@ import {
   retrieveSelectedNotManaged,
   openShowQueueCallDrawer,
   getCallIcon,
-} from '../../lib/queueManager'
+} from '../../../lib/queueManager'
 
-import { getQueues, getQueueStats } from '../../lib/queueManager'
+import { getQueues, getQueueStats } from '../../../lib/queueManager'
 import { isEmpty, debounce } from 'lodash'
-import { EmptyState, Avatar } from '../common'
+import { EmptyState, Avatar } from '../../common'
 import InfiniteScroll from 'react-infinite-scroll-component'
-import { CallDuration } from '../operators/CallDuration'
-import { sortByProperty, sortByBooleanProperty } from '../../lib/utils'
-import BarChartHorizontal from '../chart/HorizontalBarChart'
-import LineChart from '../chart/LineChart'
+import { CallDuration } from '../../operators/CallDuration'
+import { sortByProperty, sortByBooleanProperty } from '../../../lib/utils'
+import BarChartHorizontal from '../../chart/HorizontalBarChart'
+import LineChart from '../../chart/LineChart'
 
 export interface QueueManagementProps extends ComponentProps<'div'> {}
 

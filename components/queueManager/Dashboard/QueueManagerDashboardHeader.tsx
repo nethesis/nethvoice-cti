@@ -22,7 +22,7 @@ import {
   getAlarm,
   getAlarmDescription,
 } from '../../../lib/queueManager'
-import { NotManagedCalls } from '../NotManagedCalls'
+import { NotManagedCalls } from '../NotManaged/NotManagedCalls'
 
 export interface QueueManagerDashboardHeaderProps extends ComponentProps<'div'> {
   totalAll: any
