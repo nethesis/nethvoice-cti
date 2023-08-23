@@ -10,6 +10,7 @@ import {
   Legend,
 } from 'chart.js'
 import ChartDataLabels from 'chartjs-plugin-datalabels'
+import { convertToHumanReadable } from '../../lib/queueManager'
 
 ChartJS.register(CategoryScale, LinearScale, BarElement, Title, Tooltip, Legend)
 
@@ -17,12 +18,14 @@ interface MultipleInformationChartProps {
   datasets: any[]
   // titleText: string
   failureTypes: string[]
+  isTime: boolean
 }
 
 const MultipleInformationChart: FC<MultipleInformationChartProps> = ({
   datasets,
   // titleText,
   failureTypes,
+  isTime,
 }) => {
   const categoryColors = [
     '#fdba74',
@@ -89,9 +92,17 @@ const MultipleInformationChart: FC<MultipleInformationChartProps> = ({
         callbacks: {
           label: function (context: any) {
             const datasetIndex = context.datasetIndex
-            const value = context.raw
-            const type = failureTypes[datasetIndex]
-            return `${type}: ${value}`
+            if (!isTime) {
+              const value = context.raw
+              const type = failureTypes[datasetIndex]
+              return `${type}: ${value}`
+            } else {
+              const dataIndex = context.dataIndex
+              const type = failureTypes[datasetIndex]
+              const originalValue = datasets[datasetIndex].data[dataIndex]
+              const formattedValue = convertToHumanReadable(originalValue)
+              return `${type}: ${formattedValue}`
+            }
           },
           title: function () {
             return ''
@@ -110,7 +121,7 @@ const MultipleInformationChart: FC<MultipleInformationChartProps> = ({
         font: {
           size: 10,
         },
-        display: (context: any) => context.raw !== 0,
+        display: (context: any) => !isTime && context.raw !== 0,
       },
     },
     maxBarThickness: 50,

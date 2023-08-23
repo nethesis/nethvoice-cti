@@ -545,6 +545,12 @@
     "SummaryWaitingTimesChartDescription": "Waiting calls minimum, average and maximum duration for every queue",
     "SummaryCallsDurationChartDescription": "Calls duration minimum, average and maximum for every queue",
     "Download": "Download",
-    "Exit fullscreen description": "Exit fullscreen ( click here or press ESCAPE button )"
+    "Exit fullscreen description": "Exit fullscreen ( click here or press ESCAPE button )",
+    "min_wait": "Min wait",
+    "avg_wait": "Avg wait",
+    "max_wait": "Max wait",
+    "min_duration": "Min duration",
+    "avg_duration": "Avg duration",
+    "max_duration": "Max duration"
   }
 }

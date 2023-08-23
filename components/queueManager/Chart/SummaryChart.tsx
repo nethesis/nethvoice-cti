@@ -341,6 +341,77 @@ export const SummaryChart: FC<SummaryChartProps> = ({ className, selectedQueues 
     createChartData()
   }, [queuesStatus, selectedQueues])
 
+  // Waiting call section
+  const [waitingCalls, setWaitingCalls] = useState<any[]>([])
+
+  useEffect(() => {
+    const createChartData = () => {
+      const newData = []
+      const waitTypes = ['min_wait', 'avg_wait', 'max_wait']
+
+      if (queuesStatus) {
+        for (const queueKey of selectedQueues) {
+          const queue = queuesStatus[queueKey]
+          if (queue) {
+            const totalFailedInQueue = waitTypes.reduce((sum, type) => sum + (queue[type] || 0), 0)
+            const queueData = waitTypes.map((type) => queue[type] || 0)
+            const colors = ['#059669', '#064E3B', '#E5E7EB']
+            const label = queue.queueman
+
+            newData.push({
+              label,
+              data: queueData,
+              backgroundColor: colors,
+              originalData: queueData,
+              totalFailedInQueue,
+            })
+          }
+        }
+
+        setWaitingCalls(newData)
+      }
+    }
+
+    createChartData()
+  }, [queuesStatus, selectedQueues])
+
+  // Duration call section
+  const [durationCalls, setDurationCalls] = useState<any[]>([])
+
+  useEffect(() => {
+    const createChartData = () => {
+      const newData = []
+      const durationTypes = ['min_duration', 'avg_duration', 'max_duration']
+
+      if (queuesStatus) {
+        for (const queueKey of selectedQueues) {
+          const queue = queuesStatus[queueKey]
+          if (queue) {
+            const totalFailedInQueue = durationTypes.reduce(
+              (sum, type) => sum + (queue[type] || 0),
+              0,
+            )
+            const queueData = durationTypes.map((type) => queue[type] || 0)
+            const colors = ['#059669', '#064E3B', '#E5E7EB']
+            const label = queue.queueman
+
+            newData.push({
+              label,
+              data: queueData,
+              backgroundColor: colors,
+              originalData: queueData,
+              totalFailedInQueue,
+            })
+          }
+        }
+
+        setDurationCalls(newData)
+      }
+    }
+
+    createChartData()
+  }, [queuesStatus, selectedQueues])
+
   return (
     <>
       {/* Queues summary */}
@@ -462,6 +533,7 @@ export const SummaryChart: FC<SummaryChartProps> = ({ className, selectedQueues 
                       `${t('QueueManager.failed_full')}`,
                       `${t('QueueManager.failed_outqueue_noagents')}`,
                     ]}
+                    isTime={false}
                   />
                 </div>
               </div>
@@ -496,7 +568,6 @@ export const SummaryChart: FC<SummaryChartProps> = ({ className, selectedQueues 
             </div>
 
             {/* Invalid calls */}
-
             <div className='pt-8'>
               <div className='flex flex-col border-b rounded-lg shadow-md border-gray-200 dark:border-gray-700 bg-white dark:bg-gray-900 px-5 py-3 sm:mt-1 relative items-center h-auto w-full'>
                 <div className='flex items-center'>
@@ -524,10 +595,10 @@ export const SummaryChart: FC<SummaryChartProps> = ({ className, selectedQueues 
               </div>
             </div>
 
-            {/* Waiting time */}
-            <div>
-              <div className='border-b rounded-lg shadow-md border-gray-200 dark:border-gray-700 bg-white dark:bg-gray-900 px-5 py-3 sm:mt-1 relative flex items-center'>
-                <div className='flex items-center justify-between w-full'>
+            {/* Reasons for unanswered calls */}
+            <div className='pt-8'>
+              <div className='flex flex-col border-b rounded-lg shadow-md border-gray-200 dark:border-gray-700 bg-white dark:bg-gray-900 px-5 py-3 sm:mt-1 relative items-center h-auto w-full'>
+                <div className='flex items-center'>
                   <span className='text-sm font-medium leading-6 text-gray-700 dark:text-gray-100'>
                     {t('QueueManager.Waiting times')}
                   </span>
@@ -542,13 +613,24 @@ export const SummaryChart: FC<SummaryChartProps> = ({ className, selectedQueues 
                     </Tooltip>
                   </div>
                 </div>
+                <div className='mt-3 mx-auto w-full h-80 overflow-auto'>
+                  <MultipleInformationChart
+                    datasets={waitingCalls}
+                    failureTypes={[
+                      `${t('QueueManager.min_wait')}`,
+                      `${t('QueueManager.avg_wait')}`,
+                      `${t('QueueManager.max_wait')}`,
+                    ]}
+                    isTime={true}
+                  />
+                </div>
               </div>
             </div>
 
             {/* Calls duration */}
-            <div>
-              <div className='border-b rounded-lg shadow-md border-gray-200 dark:border-gray-700 bg-white dark:bg-gray-900 px-5 py-3 sm:mt-1 relative flex items-center'>
-                <div className='flex items-center justify-between w-full'>
+            <div className='pt-8'>
+              <div className='flex flex-col border-b rounded-lg shadow-md border-gray-200 dark:border-gray-700 bg-white dark:bg-gray-900 px-5 py-3 sm:mt-1 relative items-center h-auto w-full'>
+                <div className='flex items-center'>
                   <span className='text-sm font-medium leading-6 text-gray-700 dark:text-gray-100'>
                     {t('QueueManager.Calls duration')}
                   </span>
@@ -562,6 +644,17 @@ export const SummaryChart: FC<SummaryChartProps> = ({ className, selectedQueues 
                       {t('QueueManager.SummaryCallsDurationChartDescription') || ''}
                     </Tooltip>
                   </div>
+                </div>
+                <div className='mt-3 mx-auto w-full h-80 overflow-auto'>
+                  <MultipleInformationChart
+                    datasets={durationCalls}
+                    failureTypes={[
+                      `${t('QueueManager.min_duration')}`,
+                      `${t('QueueManager.avg_duration')}`,
+                      `${t('QueueManager.max_duration')}`,
+                    ]}
+                    isTime={true}
+                  />
                 </div>
               </div>
             </div>
