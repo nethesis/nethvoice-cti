@@ -9,6 +9,7 @@ import { getQueueStats } from '../../../lib/queueManager'
 
 import { faCircleInfo } from '@fortawesome/free-solid-svg-icons'
 import BarChartHorizontalNoLabels from '../../chart/HorizontalNoLabel'
+import MultipleInformationChart from '../../chart/MultipleInformationBarChart'
 
 export interface SummaryChartProps extends ComponentProps<'div'> {
   selectedQueues: any
@@ -295,6 +296,51 @@ export const SummaryChart: FC<SummaryChartProps> = ({ className, selectedQueues 
     createChartData()
   }, [queuesStatus, selectedQueues])
 
+  // Failed call section
+  const [datasetsFailedCalls, setDatasetsFailedCalls] = useState<any[]>([])
+  // const [totalFailedCalls, setTotalFailedCalls] = useState(0)
+
+  useEffect(() => {
+    const createChartData = () => {
+      const newData = []
+      const failureTypes = [
+        'failed_inqueue_noagents',
+        'failed_withkey',
+        'failed_timeout',
+        'failed_abandon',
+        'failed_full',
+        'failed_outqueue_noagents',
+      ]
+
+      if (queuesStatus) {
+        for (const queueKey of selectedQueues) {
+          const queue = queuesStatus[queueKey]
+          if (queue) {
+            const totalFailedInQueue = failureTypes.reduce(
+              (sum, type) => sum + (queue[type] || 0),
+              0,
+            )
+            const queueData = failureTypes.map((type) => queue[type] || 0)
+            const colors = ['#059669', '#064E3B', '#E5E7EB']
+            const label = queue.queueman
+
+            newData.push({
+              label,
+              data: queueData,
+              backgroundColor: colors,
+              originalData: queueData,
+              totalFailedInQueue,
+            })
+          }
+        }
+
+        setDatasetsFailedCalls(newData)
+      }
+    }
+
+    createChartData()
+  }, [queuesStatus, selectedQueues])
+
   return (
     <>
       {/* Queues summary */}
@@ -387,9 +433,9 @@ export const SummaryChart: FC<SummaryChartProps> = ({ className, selectedQueues 
             </div>
 
             {/* Reasons for unanswered calls */}
-            <div className='pt-8 lg:pt-0'>
-              <div className='border-b rounded-lg shadow-md border-gray-200 dark:border-gray-700 bg-white dark:bg-gray-900 px-5 py-3 sm:mt-1 relative flex items-center'>
-                <div className='flex items-center justify-between w-full'>
+            <div className='pt-8'>
+              <div className='flex flex-col border-b rounded-lg shadow-md border-gray-200 dark:border-gray-700 bg-white dark:bg-gray-900 px-5 py-3 sm:mt-1 relative items-center h-auto w-full'>
+                <div className='flex items-center'>
                   <span className='text-sm font-medium leading-6 text-gray-700 dark:text-gray-100'>
                     {t('QueueManager.Reasons for unanswered calls')}
                   </span>
@@ -403,6 +449,20 @@ export const SummaryChart: FC<SummaryChartProps> = ({ className, selectedQueues 
                       {t('QueueManager.SummaryUnansweredForReasonsChartDescription') || ''}
                     </Tooltip>
                   </div>
+                </div>
+                <div className='mt-3 mx-auto w-full h-80 overflow-auto'>
+                  <MultipleInformationChart
+                    datasets={datasetsFailedCalls}
+                    // titleText={`Total: ${totalFailedCalls}`}
+                    failureTypes={[
+                      `${t('QueueManager.failed_inqueue_noagents')}`,
+                      `${t('QueueManager.failed_withkey')}`,
+                      `${t('QueueManager.failed_timeout')}`,
+                      `${t('QueueManager.failed_abandon')}`,
+                      `${t('QueueManager.failed_full')}`,
+                      `${t('QueueManager.failed_outqueue_noagents')}`,
+                    ]}
+                  />
                 </div>
               </div>
             </div>

@@ -102,7 +102,8 @@ const BarChartHorizontalNoLabels: FC<BarChartHorizontalNoLabelsProps> = ({
           const queueData = queueDataMap[queueLabel]
 
           if (queueData) {
-            const originalValue = queueData.originalData[0] || 0
+            // if not empty show value else empty space
+            const originalValue = queueData.originalData[0] || ''
             return originalValue.toString()
           }
 
