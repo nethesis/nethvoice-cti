@@ -20,47 +20,74 @@ import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { faArrowUpRightFromSquare } from '@fortawesome/free-solid-svg-icons'
 import { getApiEndpoint } from '../lib/utils'
 import { getApiScheme } from '../lib/utils'
+import { useRouter } from 'next/router'
+
+interface tabsType {
+  name: string
+  href: string
+  current: boolean
+}
 
 const QueueManager: NextPage = () => {
   const { t } = useTranslation()
-  const queuesStore = useSelector((state: RootState) => state.queues)
 
   const apiEnpoint = getApiEndpoint()
   const apiScheme = getApiScheme()
   const pbxReportUrl = apiScheme + apiEnpoint + '/pbx-report/'
 
-  const [currentTab, setCurrentTab] = useState('')
   const auth = useSelector((state: RootState) => state.authentication)
+  const router = useRouter()
 
-  const tabs = [
-    { name: t('QueueManager.Dashboard'), value: 'dashboard' },
-    { name: t('QueueManager.Queues management'), value: 'queueManagement' },
-    { name: t('QueueManager.Not managed customers'), value: 'notManagedCustomers' },
-    { name: t('QueueManager.Live'), value: 'live' },
-    { name: t('QueueManager.Summary'), value: 'summary' },
-    { name: t('QueueManager.Monitor'), value: 'monitor' },
+  const tabs: tabsType[] = [
+    { name: t('QueueManager.Dashboard'), href: '#', current: false },
+    { name: t('QueueManager.Queues management'), href: '#', current: false },
+    { name: t('QueueManager.Not managed customers'), href: '#', current: false },
+    { name: t('QueueManager.Live'), href: '#', current: false },
+    { name: t('QueueManager.Summary'), href: '#', current: false },
+    { name: t('QueueManager.Monitor'), href: '#', current: false },
   ]
 
-  const changeTab = (tabName: string) => {
-    const selectedTab = tabs.find((tab) => tab.name === tabName)
+  const [items, setItems] = useState<tabsType[]>(tabs)
+  const [currentSection, setCurrentSection] = useState<string>(tabs[0].name)
+  const [firstRender, setFirstRender]: any = useState(true)
 
-    if (selectedTab) {
-      setCurrentTab(selectedTab.value)
-      let currentSelectedTab = selectedTab.value
-      savePreference('queueManagerSelectedTab', currentSelectedTab, auth.username)
+  useEffect(() => {
+    if (firstRender) {
+      setFirstRender(false)
+      return
     }
+    let section = router.query.section as string
+
+    if (!currentSection && !section) {
+      section = 'Dashboard'
+    }
+    changeSection(section)
+  }, [firstRender])
+
+  const changeSection = (sectionName: string) => {
+    const currentItems = items.map((route) => {
+      if (sectionName === route.name) {
+        route.current = true
+        setCurrentSection(sectionName)
+        savePreference('queueManagerSelectedTab', sectionName, auth.username)
+      } else {
+        route.current = false
+      }
+      return route
+    })
+    setItems(currentItems)
   }
 
   //Load selected tab values from local storage
   useEffect(() => {
-    const selectedTab = getSelectedTabQueueManager(auth.username)
-    setCurrentTab(selectedTab.selectedQueueManagerTab)
+    const currentSection = getSelectedTabQueueManager(auth.username)
+    setCurrentSection(currentSection.selectedQueueManagerTab)
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [])
 
   // load queues when navigating to queues page
   useEffect(() => {
-    store.dispatch.queues.setLoaded(false)
+    store.dispatch.queueManagerQueues.setLoaded(false)
   }, [])
 
   return (
@@ -95,11 +122,11 @@ const QueueManager: NextPage = () => {
                 id='tabs'
                 name='tabs'
                 className='block w-full rounded-md py-2 pl-3 pr-10 text-base focus:outline-none sm:text-sm border-gray-300 focus:border-primary focus:ring-primary dark:border-gray-600 dark:focus:border-primary dark:focus:ring-primary dark:bg-gray-900'
-                defaultValue={currentTab}
-                onChange={(event) => changeTab(event.target.value)}
+                defaultValue={currentSection}
+                onChange={(event) => changeSection(event.target.value)}
               >
-                {tabs.map((tab) => (
-                  <option key={tab.value}>{tab.name}</option>
+                {items.map((item) => (
+                  <option key={item.name}>{item.name}</option>
                 ))}
               </select>
             </div>
@@ -107,19 +134,19 @@ const QueueManager: NextPage = () => {
             <div className='hidden sm:block'>
               <div className='border-b border-gray-300 dark:border-gray-600'>
                 <nav className='-mb-px flex space-x-8' aria-label='Tabs'>
-                  {tabs.map((tab) => (
+                  {items.map((item: any) => (
                     <a
-                      key={tab.name}
-                      onClick={() => changeTab(tab.name)}
+                      key={item.name}
+                      onClick={() => changeSection(item.name)}
                       className={classNames(
-                        tab.value === currentTab
+                        item.name === currentSection
                           ? 'border-primary text-primary'
                           : 'border-transparent text-gray-500 hover:text-gray-700 hover:border-gray-300 dark:text-gray-400 dark:hover:text-gray-200 dark:hover:border-gray-600',
                         'cursor-pointer whitespace-nowrap py-4 px-1 border-b-2 font-medium text-sm',
                       )}
-                      aria-current={tab.value === currentTab ? 'page' : undefined}
+                      aria-current={item.current ? 'page' : undefined}
                     >
-                      {tab.name}
+                      {t(`QueueManager.${item.name}`)}
                     </a>
                   ))}
                 </nav>
@@ -127,17 +154,17 @@ const QueueManager: NextPage = () => {
             </div>
           </div>
           <div>
-            {currentTab === 'dashboard' ? (
+            {currentSection === 'Dashboard' ? (
               <QueueManagerDashboard />
-            ) : currentTab === 'queueManagement' ? (
+            ) : currentSection === 'Queues management' ? (
               <QueueManagement />
-            ) : currentTab === 'notManagedCustomers' ? (
+            ) : currentSection === 'Not managed customers' ? (
               <NotManagedCalls />
-            ) : currentTab === 'live' ? (
+            ) : currentSection === 'Live' ? (
               <RealTimeManagement />
-            ) : currentTab === 'summary' ? (
+            ) : currentSection === 'Summary' ? (
               <Summary />
-            ) : currentTab === 'monitor' ? (
+            ) : currentSection === 'Monitor' ? (
               <Monitor />
             ) : null}
           </div>

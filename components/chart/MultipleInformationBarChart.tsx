@@ -83,7 +83,7 @@ const MultipleInformationChart: FC<MultipleInformationChartProps> = ({
       legend: {
         display: true,
         // display: false,
-        position: 'bottom' as const,
+        position: 'top' as const,
         labels: {
           usePointStyle: true,
         },

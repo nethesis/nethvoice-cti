@@ -1223,14 +1223,20 @@ export const QueueManagement: FC<QueueManagementProps> = ({ className }): JSX.El
                   </div>
                   <div className='pt-8 px-4 flex items-center justify-between'>
                     <Link
-                      href={{ pathname: '/queueuManager', query: { section: 'notManagedCalls' } }}
+                      href={{
+                        pathname: '/queueManager',
+                        query: { section: 'Not managed customers' },
+                      }}
                     >
                       <a className='hover:underline text-gray-900 font-semibold dark:text-gray-100'>
                         {t('QueueManager.Go to not managed customers')}
                       </a>
                     </Link>
                     <Link
-                      href={{ pathname: '/queueuManager', query: { section: 'notManagedCalls' } }}
+                      href={{
+                        pathname: '/queueManager',
+                        query: { section: 'Not managed customers' },
+                      }}
                     >
                       <FontAwesomeIcon
                         icon={faArrowRight}

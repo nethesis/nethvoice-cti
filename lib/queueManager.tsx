@@ -588,7 +588,7 @@ export const DEFAULT_REALTIME_SECOND_QUEUE_SELECTED = {}
 export const DEFAULT_REALTIME_IS_SECOND_CARD_VISIBLE = false
 
 // Set default queue manager tab to dashboard
-export const DEFAULT_SELECTED_TAB_QUEUE_MANAGER = 'dashboard'
+export const DEFAULT_SELECTED_TAB_QUEUE_MANAGER = 'Dashboard'
 
 export const getExpandedSummaryValue = (currentUsername: string) => {
   const expandedOperators =
