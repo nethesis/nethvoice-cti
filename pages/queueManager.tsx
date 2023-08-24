@@ -154,17 +154,17 @@ const QueueManager: NextPage = () => {
             </div>
           </div>
           <div>
-            {currentSection === 'Dashboard' ? (
+            {currentSection === `${t('QueueManager.Dashboard')}` ? (
               <QueueManagerDashboard />
-            ) : currentSection === 'Queues management' ? (
+            ) : currentSection === `${t('QueueManager.Queues management')}` ? (
               <QueueManagement />
-            ) : currentSection === 'Not managed customers' ? (
+            ) : currentSection === `${t('QueueManager.Not managed customers')}` ? (
               <NotManagedCalls />
-            ) : currentSection === 'Live' ? (
+            ) : currentSection === `${t('QueueManager.Live')}` ? (
               <RealTimeManagement />
-            ) : currentSection === 'Summary' ? (
+            ) : currentSection === `${t('QueueManager.Summary')}` ? (
               <Summary />
-            ) : currentSection === 'Monitor' ? (
+            ) : currentSection === `${t('QueueManager.Monitor')}` ? (
               <Monitor />
             ) : null}
           </div>

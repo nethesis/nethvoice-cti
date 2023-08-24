@@ -420,3 +420,12 @@ export const sortByLoggedStatus = (operator1: any, operator2: any) => {
   }
   return 0
 }
+
+// Set default queue tab to Queues management
+export const DEFAULT_SELECTED_TAB_QUEUE = 'Queues management'
+
+export const getSelectedTabQueue = (currentUsername: string) => {
+  const selectedQueueTab =
+    loadPreference('queueSelectedTab', currentUsername) || DEFAULT_SELECTED_TAB_QUEUE
+  return { selectedQueueTab }
+}
