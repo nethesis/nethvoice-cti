@@ -3,7 +3,7 @@
 
 import { FC, ComponentProps, useState, useEffect, useMemo } from 'react'
 import { useTranslation } from 'react-i18next'
-import { Button, EmptyState, InlineNotification, ProgressionRing } from '../../common'
+import { Button, EmptyState, InlineNotification } from '../../common'
 import { isEmpty, debounce } from 'lodash'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import {

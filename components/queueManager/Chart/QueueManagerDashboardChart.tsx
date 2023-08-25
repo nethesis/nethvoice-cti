@@ -521,8 +521,8 @@ export const QueueManagerDashboardChart: FC<QueueManagerDashboardChartProps> = (
         </div>
 
         {/* Hourly distribution of call results */}
-        <div className={`pt-12 ${zoomedCardIndices.includes(4) ? 'col-span-2' : 'col-span-1'}`}>
-          {/* title */}
+        {/* <div className={`pt-12 ${zoomedCardIndices.includes(4) ? 'col-span-2' : 'col-span-1'}`}>
+          
           <h2 className='text-md ml-4 font-semibold mb-4'>
             {t('QueueManager.Hourly distribution of call results')}
           </h2>
@@ -530,11 +530,11 @@ export const QueueManagerDashboardChart: FC<QueueManagerDashboardChartProps> = (
           <div className='border-b rounded-md shadow-md bg-white border-gray-200 dark:border-gray-700 dark:bg-gray-900 px-4 py-5 sm:px-6 mt-1 relative w-full h-full'>
             <div className='flex space-x-3 h-96'>
               <div className='flex-1 w-full'>
-                {/* ... */}
+                
                 <BarChart labels={labelsNotManaged} datasets={datasetsNotManaged} />
               </div>
             </div>
-            {/* Zoom button */}
+            
             <div className='absolute top-2 right-2 pt-3 pr-3'>
               <Button
                 className='h-10 w-10 flex items-center justify-center rounded-md'
@@ -549,7 +549,7 @@ export const QueueManagerDashboardChart: FC<QueueManagerDashboardChartProps> = (
               </Button>
             </div>
           </div>
-        </div>
+        </div> */}
       </div>
     </>
   )
