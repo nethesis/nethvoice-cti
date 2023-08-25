@@ -526,10 +526,10 @@ export const SummaryChart: FC<SummaryChartProps> = ({ className, selectedQueues 
                     datasets={datasetsFailedCalls}
                     // titleText={`Total: ${totalFailedCalls}`}
                     failureTypes={[
-                      `${t('QueueManager.failed_abandon')}`,
                       `${t('QueueManager.failed_inqueue_noagents')}`,
                       `${t('QueueManager.failed_withkey')}`,
                       `${t('QueueManager.failed_timeout')}`,
+                      `${t('QueueManager.failed_abandon')}`,
                       `${t('QueueManager.failed_full')}`,
                       `${t('QueueManager.failed_outqueue_noagents')}`,
                     ]}

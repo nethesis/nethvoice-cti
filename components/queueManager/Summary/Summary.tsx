@@ -614,7 +614,6 @@ export const Summary: FC<SummaryProps> = ({ className }): JSX.Element => {
               >
                 <div>
                   <Popover.Button className='px-3 py-2 flex items-center w-60 text-sm leading-4 p-2 rounded border shadow-sm border-gray-300 bg-white text-gray-700 hover:bg-gray-100 focus:ring-primaryLight dark:border-gray-600 dark:bg-gray-900 dark:text-gray-100 dark:hover:bg-gray-800 dark:focus:ring-primaryDark group justify-between font-medium hover:text-gray-900 dark:hover:text-gray-100'>
-                    {/* TO DO DECIDE STRING NAME FOR EMPTY QUEUES SELECTION */}
                     <span className='flex justify-start overflow-hidden truncate w-40'>
                       {selectedQueues.length > 0
                         ? selectedQueues.join(', ')

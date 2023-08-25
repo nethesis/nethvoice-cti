@@ -416,11 +416,7 @@ export function sortAgentsData(data: any[], sortOrder: any) {
 
 //convert from seconds to human readable format
 export function convertToHumanReadable(seconds: number | undefined) {
-  if (seconds === 0) {
-    return '00:00:00'
-  }
-
-  if (seconds === undefined) {
+  if (seconds === 0 || seconds === undefined) {
     return '00:00:00'
   }
 

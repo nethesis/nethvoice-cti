@@ -91,17 +91,12 @@ const MultipleInformationChart: FC<MultipleInformationChartProps> = ({
       tooltip: {
         callbacks: {
           label: function (context: any) {
-            const datasetIndex = context.datasetIndex
             if (!isTime) {
               const value = context.raw
-              const type = failureTypes[datasetIndex]
-              return `${type}: ${value}`
+              return `${context.dataset.label}: ${value}`
             } else {
-              const dataIndex = context.dataIndex
-              const type = failureTypes[datasetIndex]
-              const originalValue = datasets[datasetIndex].data[dataIndex]
-              const formattedValue = convertToHumanReadable(originalValue)
-              return `${type}: ${formattedValue}`
+              const formattedValue = convertToHumanReadable(context.raw)
+              return `${context.dataset.label}: ${(formattedValue)}`
             }
           },
           title: function () {
