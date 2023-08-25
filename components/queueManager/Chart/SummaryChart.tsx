@@ -526,10 +526,10 @@ export const SummaryChart: FC<SummaryChartProps> = ({ className, selectedQueues 
                     datasets={datasetsFailedCalls}
                     // titleText={`Total: ${totalFailedCalls}`}
                     failureTypes={[
+                      `${t('QueueManager.failed_abandon')}`,
                       `${t('QueueManager.failed_inqueue_noagents')}`,
                       `${t('QueueManager.failed_withkey')}`,
                       `${t('QueueManager.failed_timeout')}`,
-                      `${t('QueueManager.failed_abandon')}`,
                       `${t('QueueManager.failed_full')}`,
                       `${t('QueueManager.failed_outqueue_noagents')}`,
                     ]}
@@ -595,7 +595,7 @@ export const SummaryChart: FC<SummaryChartProps> = ({ className, selectedQueues 
               </div>
             </div>
 
-            {/* Reasons for unanswered calls */}
+            {/* Waiting times duration */}
             <div className='pt-8'>
               <div className='flex flex-col border-b rounded-lg shadow-md border-gray-200 dark:border-gray-700 bg-white dark:bg-gray-900 px-5 py-3 sm:mt-1 relative items-center h-auto w-full'>
                 <div className='flex items-center'>

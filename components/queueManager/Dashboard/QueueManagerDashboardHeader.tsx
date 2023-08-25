@@ -109,7 +109,7 @@ export const QueueManagerDashboardHeader: FC<QueueManagerDashboardHeaderProps> =
     <>
       <div
         className={`cursor-default py-2 w-96 px-2 ${
-          isEmpty(alarmsList.list) ? 'bg-gray-100' : 'bg-red-50'
+          isEmpty(alarmsList.list) ? 'bg-gray-100 border-b rounded-lg shadow-md' : 'bg-red-50 border-b rounded-lg shadow-md'
         }`}
       >
         <Dropdown.Header>
@@ -163,42 +163,46 @@ export const QueueManagerDashboardHeader: FC<QueueManagerDashboardHeaderProps> =
   return (
     <>
       <div>
-        <div className='grid grid-cols-1 gap-4 sm:grid-cols-2 md:grid-cols-2 lg:grid-cols-2 xl:grid-cols-3'>
+        <div className='grid grid-cols-1 gap-4 lg:grid-cols-2 xl:grid-cols-3'>
           {/* Alarm */}
-          <div className='border-b rounded-lg shadow-md border-gray-200 dark:border-gray-700 bg-white dark:bg-gray-900 px-5 py-1 sm: mt-1 relative flex items-center'>
-            <div className='mx-3'>
+          <div className='border-b rounded-lg shadow-md border-gray-200 dark:border-gray-700 bg-white dark:bg-gray-900 px-5 py-1 sm:mt-1 flex items-center'>
+            <div className='mx-3 pt-1 w-full'>
               <Dropdown items={dropdownItems} position='left' divider={true} className=''>
-                <div
-                  className={`flex items-center justify-between px-4 mt-1 mb-2 bg-gray-100 rounded-md py-1 ${
-                    !isEmpty(alarmsList.list) ? 'bg-red-50' : ''
-                  }`}
-                >
-                  <div className='flex items-center'>
+                <div className='flex justify-between items-center'>
+                  <div className={`h-14 w-14 flex items-center justify-center rounded-md ${
+                        !isEmpty(alarmsList.list)
+                          ? 'bg-red-50 dark:bg-emerald-50'
+                          : 'bg-emerald-50 dark:bg-emerald-50'
+                      }`}>
                     <FontAwesomeIcon
                       icon={faTriangleExclamation}
-                      className={`h-6 w-6 pr-6 py-2 cursor-pointer flex items-center ${
+                      className={`h-6 w-6 py-2 cursor-pointer flex items-center ${
                         !isEmpty(alarmsList.list)
                           ? 'text-red-600'
-                          : 'text-gray-500 dark:text-gray-400'
+                          : 'text-emerald-600 dark:text-emerald-600'
                       }`}
                       aria-hidden='true'
                     />
-                    <div className='flex flex-col justify-center'>
-                      <p className='text-3xl font-semibold tracking-tight text-left text-gray-900 dark:text-gray-900'>
-                        {(alarmsList.list && Object.keys(alarmsList.list).length) ?? 0}
-                      </p>
-                      <p className='text-sm font-medium leading-6 text-center text-gray-500 dark:text-gray-400'>
-                        {alarmsList.list && Object.keys(alarmsList.list).length === 1
-                          ? t('QueueManager.Alarm')
-                          : t('QueueManager.Alarms')}
-                      </p>
-                    </div>
                   </div>
-                  <FontAwesomeIcon
-                    icon={faChevronDown}
-                    className='h-3.5 w-3.5 pl-2 py-2 cursor-pointer flex items-center'
-                    aria-hidden='true'
-                  />
+                  <div className='flex flex-col justify-center ml-4'>
+                    <p className='text-3xl font-semibold tracking-tight text-left text-gray-900 dark:text-gray-100'>
+                      {(alarmsList.list && Object.keys(alarmsList.list).length) ?? 0}
+                    </p>
+                    <p className='text-sm font-medium leading-6 text-left text-gray-500 dark:text-gray-400'>
+                      {alarmsList.list && Object.keys(alarmsList.list).length === 1
+                        ? t('QueueManager.Alarm')
+                        : t('QueueManager.Alarms')}
+                    </p>
+                  </div>
+                  <div className='flex items-center ml-auto'>
+                    {' '}
+                    {/* Utilizzo della classe justify-end */}
+                    <FontAwesomeIcon
+                      icon={faChevronDown}
+                      className='h-3.5 w-3.5 cursor-pointer text-gray-500 dark:text-gray-400 hover:text-gray-600 hover:dark:text-gray-500'
+                      aria-hidden='true'
+                    />
+                  </div>
                 </div>
               </Dropdown>
             </div>

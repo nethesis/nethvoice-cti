@@ -47,7 +47,7 @@ const Queues: NextPage = () => {
     let section = router.query.section as string
 
     if (!currentSection && !section) {
-      section = 'Calls'
+      section = `${t('Queues.Queues management')}`
     }
     changeSection(section)
   }, [firstRender])
