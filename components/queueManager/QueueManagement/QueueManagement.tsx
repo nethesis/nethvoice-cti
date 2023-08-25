@@ -1,53 +1,36 @@
 // Copyright (C) 2023 Nethesis S.r.l.
 // SPDX-License-Identifier: AGPL-3.0-or-later
 
-import { FC, ComponentProps, useState, useEffect, Fragment, useMemo } from 'react'
+import { FC, ComponentProps, useState, useEffect, Fragment } from 'react'
 import { useTranslation } from 'react-i18next'
 import { useSelector } from 'react-redux'
 import { RootState } from '../../../store'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
-import { formatDateLoc, getCallTimeToDisplay } from '../../../lib/dateTime'
-import { Tooltip } from 'react-tooltip'
 import { savePreference } from '../../../lib/storage'
-import { LoggedStatus } from '../../queues'
-import Link from 'next/link'
+import { QueueManagementHeader } from './QueueManagementHeader'
+import { QueueManagementOperators } from './QueueManagementOperators'
 
 import {
   faChevronDown,
   faChevronUp,
   faCheck,
-  faUserCheck,
-  faUserClock,
-  faUserXmark,
-  faHeadset,
   faPause,
   faDownLeftAndUpRightToCenter,
-  faChevronRight,
-  faCircleNotch,
-  faArrowRight,
-  faUser,
 } from '@fortawesome/free-solid-svg-icons'
 
-import { openShowOperatorDrawer, getInfiniteScrollOperatorsPageSize } from '../../../lib/operators'
+import { openShowOperatorDrawer } from '../../../lib/operators'
 
 import { Listbox, Transition } from '@headlessui/react'
-import { QueueManagementFilterOperators } from './QueueManagementFilterOperators'
 import {
-  searchStringInQueuesMembers,
   getExpandedQueueManagamentValue,
   retrieveSelectedNotManaged,
-  openShowQueueCallDrawer,
-  getCallIcon,
 } from '../../../lib/queueManager'
 
 import { getQueues, getQueueStats } from '../../../lib/queueManager'
-import { isEmpty, debounce } from 'lodash'
-import { EmptyState, Avatar } from '../../common'
-import InfiniteScroll from 'react-infinite-scroll-component'
+import { isEmpty } from 'lodash'
+import { Avatar } from '../../common'
 import { CallDuration } from '../../operators/CallDuration'
-import { sortByProperty, sortByBooleanProperty } from '../../../lib/utils'
-import BarChartHorizontal from '../../chart/HorizontalBarChart'
-import LineChart from '../../chart/LineChart'
+import { QueueManagementChart } from '../Chart/QueueManagementChart'
 
 export interface QueueManagementProps extends ComponentProps<'div'> {}
 
@@ -60,20 +43,11 @@ export const QueueManagement: FC<QueueManagementProps> = ({ className }): JSX.El
 
   const auth = useSelector((state: RootState) => state.authentication)
 
-  const infiniteScrollOperatorsPageSize = getInfiniteScrollOperatorsPageSize()
-  const [infiniteScrollLastIndex, setInfiniteScrollLastIndex] = useState(
-    infiniteScrollOperatorsPageSize,
-  )
-  const [infiniteScrollOperators, setInfiniteScrollOperators] = useState([])
-  const [infiniteScrollHasMore, setInfiniteScrollHasMore] = useState(false)
-
   const [expandedDashboard, setExpandedDashboard] = useState(true)
 
   const [expandedWaitingCall, setExpandedWaitingCall] = useState(false)
 
   const [expandedConnectedCall, setExpandedConnectedCall] = useState(false)
-
-  const [expandedQueueOperators, setExpandedQueueOperators] = useState(false)
 
   const queueManagerStore = useSelector((state: RootState) => state.queueManagerQueues)
 
@@ -107,21 +81,10 @@ export const QueueManagement: FC<QueueManagementProps> = ({ className }): JSX.El
     )
   }
 
-  const toggleQueueOperators = () => {
-    setExpandedQueueOperators(!expandedQueueOperators)
-    let correctExpandedQueueOperators = !expandedQueueOperators
-    savePreference(
-      'queueManagementQueueOperatorsExpandedPreference',
-      correctExpandedQueueOperators,
-      auth.username,
-    )
-  }
-
   //Load expanded chevron values from local storage
   useEffect(() => {
     const expandedValues = getExpandedQueueManagamentValue(auth.username)
     setExpandedDashboard(expandedValues.expandedQueueDashboard)
-    setExpandedQueueOperators(expandedValues.expandedQueueOperators)
     setExpandedConnectedCall(expandedValues.expandedConnectedCalls)
     setExpandedWaitingCall(expandedValues.expandedWaitingCalls)
     setSelectedValue(expandedValues.selectedQueue)
@@ -216,389 +179,6 @@ export const QueueManagement: FC<QueueManagementProps> = ({ className }): JSX.El
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [isLoadedQueues, isLoadedQueuesStats, firstRenderQueuesStats])
 
-  // const queueManagerStore = useSelector((state: RootState) => state.queueManagerQueues)
-  const [calls, setCalls]: any = useState({})
-  const [firstRenderNotManaged, setFirstRenderNotManaged]: any = useState(true)
-  const [isLoadedQueuesNotManaged, setLoadedQueuesNotManaged] = useState(false)
-
-  //get not managed information for selected queue
-  useEffect(() => {
-    // Avoid api double calling
-    if (firstRenderNotManaged) {
-      setFirstRenderNotManaged(false)
-      return
-    }
-    if (isEmpty(selectedValue)) {
-      return
-    }
-    async function getQueuesNotManaged() {
-      setLoadedQueuesNotManaged(false)
-      try {
-        let selectedQueue = selectedValue.queue
-        const res = await retrieveSelectedNotManaged(selectedQueue)
-        setCalls(res)
-      } catch (err) {
-        console.error(err)
-      }
-      setLoadedQueuesNotManaged(true)
-    }
-    if (!isLoadedQueuesNotManaged) {
-      getQueuesNotManaged()
-    }
-  }, [firstRenderNotManaged, isLoadedQueuesNotManaged, queueManagerStore.isLoaded, selectedValue])
-
-  // Chart functions section
-
-  // Connected calls
-  const [mininumConnectedCallsDatasets, setMininumConnectedCallsDatasets] = useState(0)
-  const [averageConnectedCallsDatasets, setAverageConnectedCallsDatasets] = useState(0)
-  const [maximumConnectedCallsDatasets, setMaximumConnectedCallsDatasets] = useState(0)
-
-  // Waiting calls
-  const [mininumWaitingCallsDatasets, setMininumWaitingCallsDatasets] = useState(0)
-  const [averageWaitingCallsDatasets, setAverageWaitingCallsDatasets] = useState(0)
-  const [maximumWaitingCallsDatasets, setMaximumWaitingCallsDatasets] = useState(0)
-
-  // Calls status
-
-  //Totals
-  const [totalCallsStatus, setTotalCallsStatus] = useState(0)
-  const [totalCallsAnsweredStatus, setTotalCallsAnsweredStatus] = useState(0)
-  const [totalCallsMissedStatus, setTotalCallsMissedStatus] = useState(0)
-  const [totalNullCalls, setTotalNullCalls] = useState(0)
-  const [inProgress, setInProgress] = useState(0)
-
-  //Details answered
-  const [answeredBeforeSeconds, setAnsweredBeforeSeconds] = useState(0)
-  const [answeredAfterSeconds, setAnsweredAfterSeconds] = useState(0)
-
-  //Details failed
-  const [expiredTime, setExpiredTime] = useState(0)
-  const [abandonedCalls, setAbandonedCalls] = useState(0)
-  const [failedNoagentsOutqueue, setFailedNoagentsOutqueue] = useState(0)
-  const [failedNoagentsInqueue, setFailedNoagentsInqueue] = useState(0)
-
-  useEffect(() => {
-    //check if queue list is already loaded and queue is selected
-    if (queuesList && selectedValue?.queue && allQueuesStats) {
-      const qstats = queuesList[selectedValue.queue]?.qstats || {}
-
-      if (!isEmpty(qstats)) {
-        const connectedCallsStats = calculateConnectedCallsStats(qstats)
-        const waitingCallsStats = calculateWaitingCallsStats(qstats)
-        const callStatus = calculateCallsStats(qstats)
-
-        // Calls duration charts status
-
-        // Connected calls
-        setMininumConnectedCallsDatasets(connectedCallsStats.minimum)
-        setAverageConnectedCallsDatasets(connectedCallsStats.average)
-        setMaximumConnectedCallsDatasets(connectedCallsStats.maximum)
-
-        // Waiting calls
-        setMininumWaitingCallsDatasets(waitingCallsStats.minimum)
-        setAverageWaitingCallsDatasets(waitingCallsStats.average)
-        setMaximumWaitingCallsDatasets(waitingCallsStats.maximum)
-
-        // Calls chart status
-
-        // Total calls section
-        // Total calls
-        setTotalCallsStatus(callStatus.total)
-        // Answered calls
-        setTotalCallsAnsweredStatus(callStatus.answered)
-        // Lost calls
-        setTotalCallsMissedStatus(callStatus.notAnswerCalls)
-        // Null calls
-        setTotalNullCalls(callStatus.totNull)
-        // In progress call
-        let inProgressValue =
-          callStatus.total - callStatus.answered - callStatus.notAnswerCalls - callStatus.totNull
-        setInProgress(inProgressValue)
-
-        // Answred calls details
-        // Answered before seconds
-        setAnsweredBeforeSeconds(callStatus.beforeSecondsCalls)
-        setAnsweredAfterSeconds(callStatus.afterSecondsCalls)
-
-        // Failed section details
-        setExpiredTime(callStatus.expiredTime)
-        setAbandonedCalls(callStatus.abandon)
-        setFailedNoagentsOutqueue(callStatus.outqueueNoAgents)
-        setFailedNoagentsInqueue(callStatus.inqueueNoAgents)
-      }
-    }
-  }, [queuesList, selectedValue, allQueuesStats])
-
-  //Connected calls chart values
-  function calculateConnectedCallsStats(qstats: any) {
-    const minDurationConnected = qstats.min_duration || 0
-    const avgDurationConnected = qstats.avg_duration || 0
-    const maxDurationConnected = qstats.max_duration || 0
-
-    return {
-      minimum: minDurationConnected,
-      average: avgDurationConnected,
-      maximum: maxDurationConnected,
-    }
-  }
-
-  //Connected calls chart values
-  function calculateWaitingCallsStats(qstats: any) {
-    const minDurationWaiting = qstats.min_wait || 0
-    const avgDurationWaiting = qstats.avg_wait || 0
-    const maxDurationWaiting = qstats.max_wait || 0
-
-    return {
-      minimum: minDurationWaiting,
-      average: avgDurationWaiting,
-      maximum: maxDurationWaiting,
-    }
-  }
-
-  //Customers to manage calls values
-  function calculateCallsStats(qstats: any) {
-    //total sections
-    const totalCalls = qstats.tot || 0
-    const notAnswerCalls = qstats.tot_failed || 0
-    const answeredCalls = qstats.tot_processed || 0
-    const totNull = qstats.tot_null || 0
-
-    //details answered section
-    const beforeSecondsCalls = qstats.processed_less_sla || 0
-    const afterSecondsCalls = qstats.processed_greater_sla || 0
-
-    //details failed section
-    const expiredTime = qstats.failed_timeout || 0
-    const abandon = qstats.failed_abandon || 0
-    const outqueueNoAgents = qstats.failed_outqueue_noagents || 0
-    const inqueueNoAgents = qstats.failed_inqueue_noagents || 0
-
-    return {
-      //total sections
-      total: totalCalls,
-      answered: answeredCalls,
-      notAnswerCalls: notAnswerCalls,
-      totNull: totNull,
-
-      //details answered section
-      beforeSecondsCalls: beforeSecondsCalls,
-      afterSecondsCalls: afterSecondsCalls,
-
-      //details failed section
-      expiredTime: expiredTime,
-      abandon: abandon,
-      outqueueNoAgents: outqueueNoAgents,
-      inqueueNoAgents: inqueueNoAgents,
-    }
-  }
-
-  //Connected calls chart functions section
-  const connectedCallsLabels = [t('QueueManager.Connected calls')]
-
-  const ConnectedCallsDatasets = [
-    {
-      label: `${t('Queues.Minimum')}`,
-      data: [mininumConnectedCallsDatasets],
-      backgroundColor: '#6EE7B7',
-      // borderRadius: [20, 20, 10, 10],
-      borderRadius: 10,
-      barPercentage: 0.5,
-      borderWidth: 0,
-
-      borderSkipped: false,
-    },
-    {
-      label: `${t('Queues.Average')}`,
-      data: [averageConnectedCallsDatasets],
-      backgroundColor: '#10B981',
-      // borderRadius: [20, 20, 10, 10],
-      borderRadius: 10,
-      barPercentage: 0.5,
-      borderWidth: 0,
-      borderSkipped: false,
-    },
-    {
-      label: `${t('Queues.Maximum')}`,
-      data: [maximumConnectedCallsDatasets],
-      backgroundColor: '#047857',
-      // borderRadius: [20, 20, 10, 10],
-      borderRadius: 10,
-      barPercentage: 0.5,
-      borderWidth: 0,
-      borderSkipped: false,
-    },
-  ]
-
-  //Waiting calls chart functions section
-  const waitingCallsLabels = [t('QueueManager.Waiting calls')]
-
-  const WaitingCallsDatasets = [
-    {
-      label: `${t('Queues.Minimum')}`,
-      data: [mininumWaitingCallsDatasets],
-      backgroundColor: '#D1D5DB',
-      borderRadius: 10,
-      barPercentage: 0.5,
-      borderWidth: 0,
-      borderSkipped: false,
-    },
-    {
-      label: `${t('Queues.Average')}`,
-      data: [averageWaitingCallsDatasets],
-      backgroundColor: '#6B7280',
-      borderRadius: 10,
-      barPercentage: 0.5,
-      borderWidth: 0,
-      borderSkipped: false,
-    },
-    {
-      label: `${t('Queues.Maximum')}`,
-      data: [maximumWaitingCallsDatasets],
-      backgroundColor: '#374151',
-      borderRadius: 10,
-      barPercentage: 0.5,
-      borderWidth: 0,
-      borderSkipped: false,
-    },
-  ]
-
-  //total calls chart functions section
-  const totalCallsLabels = [t('QueueManager.Total calls')]
-
-  const totalCallsDatasets = [
-    {
-      label: `${t('QueueManager.Null')}`,
-      data: [totalNullCalls],
-      backgroundColor: '#a7f3d0',
-      // borderRadius: [20, 20, 10, 10],
-      borderRadius: 10,
-      barPercentage: 0.5,
-      borderWidth: 0,
-      borderSkipped: false,
-    },
-    {
-      label: `${t('QueueManager.Failed')}`,
-      data: [totalCallsMissedStatus],
-      backgroundColor: '#6EE7B7',
-      // borderRadius: [20, 20, 10, 10],
-      borderRadius: 10,
-      barPercentage: 0.5,
-      borderWidth: 0,
-
-      borderSkipped: false,
-    },
-    {
-      label: `${t('QueueManager.Answered')}`,
-      data: [totalCallsAnsweredStatus],
-      backgroundColor: '#10B981',
-      // borderRadius: [20, 20, 10, 10],
-      borderRadius: 10,
-      barPercentage: 0.5,
-      borderWidth: 0,
-      borderSkipped: false,
-    },
-    {
-      label: `${t('QueueManager.In progress')}`,
-      data: [inProgress],
-      backgroundColor: '#047857',
-      // borderRadius: [20, 20, 10, 10],
-      borderRadius: 10,
-      barPercentage: 0.5,
-      borderWidth: 0,
-      borderSkipped: false,
-    },
-  ]
-
-  const AnsweredCallsLabels = [t('QueueManager.Answered details')]
-
-  const AnsweredCallsDatasets = [
-    {
-      label: `${t('QueueManager.Before 60s')}`,
-      data: [answeredBeforeSeconds],
-      backgroundColor: '#6EE7B7',
-      // borderRadius: [20, 20, 10, 10],
-      borderRadius: 10,
-      barPercentage: 0.5,
-      borderWidth: 0,
-
-      borderSkipped: false,
-    },
-    {
-      label: `${t('QueueManager.After 60s')}`,
-      data: [answeredAfterSeconds],
-      backgroundColor: '#10B981',
-      // borderRadius: [20, 20, 10, 10],
-      borderRadius: 10,
-      barPercentage: 0.5,
-      borderWidth: 0,
-      borderSkipped: false,
-    },
-  ]
-
-  const failedCallsLabels = [t('QueueManager.Failed details')]
-
-  const failedCallsDatasets = [
-    {
-      label: `${t('QueueManager.Expired')}`,
-      data: [expiredTime],
-      backgroundColor: '#6EE7B7',
-      // borderRadius: [20, 20, 10, 10],
-      borderRadius: 10,
-      barPercentage: 0.5,
-      borderWidth: 0,
-      borderSkipped: false,
-    },
-    {
-      label: `${t('QueueManager.Abandoned')}`,
-      data: [abandonedCalls],
-      backgroundColor: '#10B981',
-      // borderRadius: [20, 20, 10, 10],
-      borderRadius: 10,
-      barPercentage: 0.5,
-      borderWidth: 0,
-      borderSkipped: false,
-    },
-    {
-      label: `${t('QueueManager.No agents outqueue')}`,
-      data: [failedNoagentsOutqueue],
-      backgroundColor: '#10B981',
-      // borderRadius: [20, 20, 10, 10],
-      borderRadius: 10,
-      barPercentage: 1,
-      borderWidth: 0.5,
-      borderSkipped: false,
-    },
-    {
-      label: `${t('QueueManager.No agents inqueue')}`,
-      data: [failedNoagentsInqueue],
-      backgroundColor: '#10B981',
-      // borderRadius: [20, 20, 10, 10],
-      borderRadius: 10,
-      barPercentage: 1,
-      borderWidth: 0.5,
-      borderSkipped: false,
-    },
-  ]
-
-  const labelsOutcome = ['January', 'February', 'March', 'April', 'May', 'June']
-  const datasetsCallsHour = [
-    {
-      label: 'Dataset 1',
-      data: [10, 20, 15, 25, 18, 30],
-      fill: false,
-      borderColor: 'rgb(75, 192, 192)',
-      tension: 0.1,
-    },
-    {
-      label: 'Dataset 2',
-      data: [5, 12, 8, 20, 10, 15],
-      fill: false,
-      borderColor: 'rgb(192, 75, 192)',
-      tension: 0.1,
-    },
-  ]
-
   // load extensions information from the store
   const operatorsStore = useSelector((state: RootState) => state.operators) as Record<string, any>
 
@@ -673,98 +253,36 @@ export const QueueManagement: FC<QueueManagementProps> = ({ className }): JSX.El
 
   const [agentCountersSelectedQueue, setAgentCountersSelectedQueue] = useState<any>({})
 
-  //set agent for selected queue
+  // const queueManagerStore = useSelector((state: RootState) => state.queueManagerQueues)
+  const [calls, setCalls]: any = useState({})
+  const [firstRenderNotManaged, setFirstRenderNotManaged]: any = useState(true)
+  const [isLoadedQueuesNotManaged, setLoadedQueuesNotManaged] = useState(false)
+
+  //get not managed information for selected queue
   useEffect(() => {
-    if (selectedValue && !isEmpty(agentCounters)) {
-      const selectedQueue = selectedValue.queue
-      const selectedQueueAgents = agentCounters[selectedQueue]
-      setAgentCountersSelectedQueue(selectedQueueAgents)
-
-      // setAgentMembers(Object.values(queuesList[selectedQueue]?.members ?? {}))
-    }
-  }, [selectedValue, agentCounters])
-
-  const [textFilter, setTextFilter]: any = useState('')
-  const updateTextFilter = (newTextFilter: string) => {
-    setTextFilter(newTextFilter)
-  }
-
-  const debouncedUpdateTextFilter = useMemo(() => debounce(updateTextFilter, 400), [])
-
-  // stop invocation of debounced function after unmounting
-  useEffect(() => {
-    return () => {
-      debouncedUpdateTextFilter.cancel()
-    }
-  }, [debouncedUpdateTextFilter])
-
-  const [statusFilter, setStatusFilter]: any = useState('')
-  const updateStatusFilter = (newStatusFilter: string) => {
-    setStatusFilter(newStatusFilter)
-  }
-
-  const [sortByFilter, setSortByFilter]: any = useState('')
-  const updateSort = (newSortBy: string) => {
-    setSortByFilter(newSortBy)
-  }
-
-  const showMoreInfiniteScrollOperators = () => {
-    const lastIndex = infiniteScrollLastIndex + infiniteScrollOperatorsPageSize
-    setInfiniteScrollLastIndex(lastIndex)
-    setInfiniteScrollOperators(filteredAgentMembers.slice(0, lastIndex))
-    const hasMore = lastIndex < filteredAgentMembers.length
-    setInfiniteScrollHasMore(hasMore)
-  }
-
-  const [isApplyingFilters, setApplyingFilters]: any = useState(false)
-  const [filteredAgentMembers, setFilteredAgentMembers]: any = useState([])
-
-  // apply selected filters
-  const applyFilters = (operators: any) => {
-    if (!(statusFilter && sortByFilter)) {
+    // Avoid api double calling
+    if (firstRenderNotManaged) {
+      setFirstRenderNotManaged(false)
       return
     }
-    setApplyingFilters(true)
-    // text filter
-    let filteredAgentMembers: any = Object.values(operators).filter((op) =>
-      searchStringInQueuesMembers(op, textFilter),
-    )
-
-    // status filter
-    filteredAgentMembers = filteredAgentMembers.filter((member: any) => {
-      return (
-        statusFilter === 'all' ||
-        (statusFilter === 'connected' && member.loggedIn) ||
-        (statusFilter === 'disconnected' && !member.loggedIn)
-      )
-    })
-    // sort operators
-    switch (sortByFilter) {
-      case 'name':
-        filteredAgentMembers.sort(sortByProperty('name'))
-        break
-      case 'status':
-        filteredAgentMembers.sort(sortByBooleanProperty('loggedIn'))
-        break
+    if (isEmpty(selectedValue)) {
+      return
     }
-
-    setFilteredAgentMembers(filteredAgentMembers)
-
-    setInfiniteScrollOperators(filteredAgentMembers.slice(0, infiniteScrollLastIndex))
-    const hasMore = infiniteScrollLastIndex < filteredAgentMembers.length
-    setInfiniteScrollHasMore(hasMore)
-    setApplyingFilters(false)
-  }
-
-  // apply filters when operators data has been loaded and operator menu is opened
-  useEffect(() => {
-    if (
-      queueManagerStore?.isLoaded &&
-      queueManagerStore?.queues[selectedValue?.queue]?.allQueueOperators
-    ) {
-      applyFilters(queueManagerStore?.queues[selectedValue?.queue]?.allQueueOperators)
+    async function getQueuesNotManaged() {
+      setLoadedQueuesNotManaged(false)
+      try {
+        let selectedQueue = selectedValue.queue
+        const res = await retrieveSelectedNotManaged(selectedQueue)
+        setCalls(res)
+      } catch (err) {
+        console.error(err)
+      }
+      setLoadedQueuesNotManaged(true)
     }
-  }, [selectedValue, textFilter, sortByFilter, statusFilter, queueManagerStore.isLoaded])
+    if (!isLoadedQueuesNotManaged) {
+      getQueuesNotManaged()
+    }
+  }, [firstRenderNotManaged, isLoadedQueuesNotManaged, queueManagerStore.isLoaded, selectedValue])
 
   // on change of selected queue
   const handleSelectedValue = (newValueQueue: any) => {
@@ -775,6 +293,17 @@ export const QueueManagement: FC<QueueManagementProps> = ({ className }): JSX.El
   }
 
   const { operators } = useSelector((state: RootState) => state.operators)
+
+  //set agent for selected queue
+  useEffect(() => {
+    if (selectedValue && !isEmpty(agentCounters)) {
+      const selectedQueue = selectedValue.queue
+      const selectedQueueAgents = agentCounters[selectedQueue]
+      setAgentCountersSelectedQueue(selectedQueueAgents)
+
+      // setAgentMembers(Object.values(queuesList[selectedQueue]?.members ?? {}))
+    }
+  }, [selectedValue, agentCounters])
 
   return (
     <>
@@ -879,375 +408,19 @@ export const QueueManagement: FC<QueueManagementProps> = ({ className }): JSX.El
         {/* Dashboard queue active section */}
         {expandedDashboard && (
           <div>
-            <div className='grid grid-cols-1 gap-4 sm:grid-cols-2 md:grid-cols-2 lg:grid-cols-2 xl:grid-cols-3'>
-              {/* Online operators */}
-              <div>
-                <div className='border-b rounded-lg shadow-md border-gray-200 dark:border-gray-700 bg-white dark:bg-gray-900 px-5 py-1 sm: mt-1 relative flex items-center'>
-                  <div className='flex items-center space-x-4'>
-                    <div className='h-10 w-10 flex items-center justify-center rounded-xl bg-emerald-50 mt-1 mb-1'>
-                      <FontAwesomeIcon
-                        icon={faUserCheck}
-                        className='h-6 w-6 cursor-pointer text-emerald-600 dark:text-emerald-600'
-                        aria-hidden='true'
-                      />
-                    </div>
-                    <div className='flex justify-center'>
-                      <p className='text-3xl font-semibold tracking-tight text-left text-gray-900 dark:text-gray-100'>
-                        {agentCountersSelectedQueue?.online
-                          ? agentCountersSelectedQueue?.online
-                          : 0}
-                      </p>
-                    </div>
-                    <span className='text-sm flex justify-center font-medium leading-6 text-center text-gray-700 dark:text-gray-100'>
-                      {t('QueueManager.Online operators')}
-                    </span>
-                  </div>
-                </div>
-              </div>
-
-              {/* On break operators */}
-              <div>
-                <div className='border-b rounded-lg shadow-md border-gray-200 dark:border-gray-700 bg-white dark:bg-gray-900 px-5 py-1 sm: mt-1 relative flex items-center'>
-                  <div className='flex items-center space-x-4'>
-                    <div className='h-10 w-10 flex items-center justify-center rounded-xl bg-emerald-50 mt-1 mb-1'>
-                      <FontAwesomeIcon
-                        icon={faUserClock}
-                        className='h-6 w-6 cursor-pointer text-emerald-600 dark:text-emerald-600'
-                        aria-hidden='true'
-                      />
-                    </div>
-                    <div className='flex justify-center'>
-                      <p className='text-3xl font-semibold tracking-tight text-left text-gray-900 dark:text-gray-100'>
-                        {agentCountersSelectedQueue?.paused
-                          ? agentCountersSelectedQueue?.paused
-                          : 0}
-                      </p>
-                    </div>
-                    <span className='text-sm flex justify-center font-medium leading-6 text-center text-gray-700 dark:text-gray-100'>
-                      {t('QueueManager.On break operators')}
-                    </span>
-                  </div>
-                </div>
-              </div>
-
-              {/* Offline operators */}
-              <div>
-                <div className='border-b rounded-lg shadow-md border-gray-200 dark:border-gray-700 bg-white dark:bg-gray-900 px-5 py-1 sm: mt-1 relative flex items-center'>
-                  <div className='flex items-center space-x-4'>
-                    <div className='h-10 w-10 flex items-center justify-center rounded-xl bg-emerald-50 mt-1 mb-1'>
-                      <FontAwesomeIcon
-                        icon={faUserXmark}
-                        className='h-6 w-6 cursor-pointer text-emerald-600 dark:text-emerald-600'
-                        aria-hidden='true'
-                      />
-                    </div>
-                    <div className='flex justify-center'>
-                      <p className='text-3xl font-semibold tracking-tight text-left text-gray-900 dark:text-gray-100'>
-                        {agentCountersSelectedQueue?.offline
-                          ? agentCountersSelectedQueue?.offline
-                          : 0}
-                      </p>
-                    </div>
-                    <span className='text-sm flex justify-center font-medium leading-6 text-center text-gray-700 dark:text-gray-100'>
-                      {t('QueueManager.Offline operators')}
-                    </span>
-                  </div>
-                </div>
-              </div>
-
-              {/* Free operators */}
-              <div>
-                <div className='border-b rounded-lg shadow-md border-gray-200 dark:border-gray-700 bg-white dark:bg-gray-900 px-5 py-1 sm: mt-1 relative flex items-center'>
-                  <div className='flex items-center space-x-4'>
-                    <div className='h-10 w-10 flex items-center justify-center rounded-xl bg-emerald-50 mt-1 mb-1'>
-                      <FontAwesomeIcon
-                        icon={faHeadset}
-                        className='h-6 w-6 cursor-pointer text-emerald-600 dark:text-emerald-600'
-                        aria-hidden='true'
-                      />
-                    </div>
-                    <div className='flex justify-center'>
-                      <p className='text-3xl font-semibold tracking-tight text-left text-gray-900 dark:text-gray-100'>
-                        {agentCountersSelectedQueue?.free ? agentCountersSelectedQueue?.free : 0}
-                      </p>
-                    </div>
-                    <span className='text-sm flex justify-center font-medium leading-6 text-center text-gray-700 dark:text-gray-100'>
-                      {t('QueueManager.Free operators')}
-                    </span>
-                  </div>
-                </div>
-              </div>
-
-              {/* Busy operators ( in queue ) */}
-              <div>
-                <div className='border-b rounded-lg shadow-md border-gray-200 dark:border-gray-700 bg-white dark:bg-gray-900 px-5 py-1 sm: mt-1 relative flex items-center'>
-                  <div className='flex items-center space-x-4'>
-                    <div className='h-10 w-10 flex items-center justify-center rounded-xl bg-emerald-50 mt-1 mb-1'>
-                      <FontAwesomeIcon
-                        icon={faHeadset}
-                        className='h-6 w-6 cursor-pointer text-emerald-600 dark:text-emerald-600'
-                        aria-hidden='true'
-                      />
-                    </div>
-                    <div className='flex justify-center'>
-                      <p className='text-3xl font-semibold tracking-tight text-left text-gray-900 dark:text-gray-100'>
-                        {agentCountersSelectedQueue?.connected
-                          ? agentCountersSelectedQueue?.connected
-                          : 0}
-                      </p>
-                    </div>
-                    <span className='text-sm flex justify-center font-medium leading-6 text-center text-gray-700 dark:text-gray-100'>
-                      {t('QueueManager.Busy operators (in queue)')}
-                    </span>
-                  </div>
-                </div>
-              </div>
-
-              {/* Busy operators ( out queue ) */}
-              <div>
-                <div className='border-b rounded-lg shadow-md border-gray-200 dark:border-gray-700 bg-white dark:bg-gray-900 px-5 py-1 sm: mt-1 relative flex items-center'>
-                  <div className='flex items-center space-x-4'>
-                    <div className='h-10 w-10 flex items-center justify-center rounded-xl bg-emerald-50 mt-1 mb-1'>
-                      <FontAwesomeIcon
-                        icon={faHeadset}
-                        className='h-6 w-6 cursor-pointer text-emerald-600 dark:text-emerald-600'
-                        aria-hidden='true'
-                      />
-                    </div>
-                    <div className='flex justify-center'>
-                      <p className='text-3xl font-semibold tracking-tight text-left text-gray-900 dark:text-gray-100'>
-                        {agentCountersSelectedQueue?.busy ? agentCountersSelectedQueue?.busy : 0}
-                      </p>
-                    </div>
-                    <span className='text-sm flex justify-center font-medium leading-6 text-center text-gray-700 dark:text-gray-100'>
-                      {t('QueueManager.Busy operators (out queue)')}
-                    </span>
-                  </div>
-                </div>
-              </div>
-            </div>
+            {/* Counter section */}
+            <QueueManagementHeader
+              agentCountersSelectedQueue={agentCountersSelectedQueue}
+            ></QueueManagementHeader>
 
             {/* Chart section  */}
-            <div className='grid grid-cols-1 gap-4 sm:grid-cols-1 md:grid-cols-1 lg:grid-cols-2 xl:grid-cols-3'>
-              {/* Calls duration */}
-
-              <div className='pt-8'>
-                <div className='border-b rounded-lg shadow-md border-gray-200 dark:border-gray-700 bg-white dark:bg-gray-900 px-5 py-1 sm: mt-1 relative h-full'>
-                  <div className='pt-3'>
-                    <span className='text-lg font-semibold leading-6 text-center text-gray-700 dark:text-gray-100'>
-                      {t('QueueManager.Calls duration')}
-                    </span>
-                  </div>
-                  <div className='flex justify-center pt-2'>
-                    <div className='w-full h-full'>
-                      <BarChartHorizontal
-                        labels={connectedCallsLabels}
-                        datasets={ConnectedCallsDatasets}
-                        titleText={t('QueueManager.Connected calls')}
-                        numericTooltip={false}
-                      />
-                      <BarChartHorizontal
-                        labels={waitingCallsLabels}
-                        datasets={WaitingCallsDatasets}
-                        titleText={t('QueueManager.Waiting calls')}
-                        numericTooltip={false}
-                      />
-                    </div>
-                  </div>
-                </div>
-              </div>
-
-              {/* Calls */}
-              <div className='pt-8'>
-                <div className='border-b rounded-lg shadow-md border-gray-200 dark:border-gray-700 bg-white dark:bg-gray-900 px-5 py-1 sm:mt-1 relative w-full h-full'>
-                  <div className='flex'>
-                    <div className='pt-3'>
-                      <span className='text-lg font-semibold leading-6 text-center text-gray-700 dark:text-gray-100'>
-                        {t('QueueManager.Calls')}
-                      </span>
-                    </div>
-                  </div>
-                  <div className='flex justify-center items-center px-3 pt-2'>
-                    <div className='w-full h-full flex flex-col space-y-4'>
-                      <BarChartHorizontal
-                        labels={totalCallsLabels}
-                        datasets={totalCallsDatasets}
-                        titleText={`${t('QueueManager.Total calls')}: ${totalCallsStatus}`}
-                        numericTooltip={true}
-                      />
-                      <BarChartHorizontal
-                        labels={AnsweredCallsLabels}
-                        datasets={AnsweredCallsDatasets}
-                        titleText={`${t(
-                          'QueueManager.Answered calls',
-                        )}: ${totalCallsAnsweredStatus}`}
-                        numericTooltip={true}
-                      />
-                      <BarChartHorizontal
-                        labels={failedCallsLabels}
-                        datasets={failedCallsDatasets}
-                        titleText={`${t('QueueManager.Failed calls')}: ${totalCallsMissedStatus}`}
-                        numericTooltip={true}
-                      />
-                    </div>
-                  </div>
-                  <div className='w-full h-full flex '></div>
-                </div>
-              </div>
-
-              {/* Customers to manage */}
-              <div className='pt-8'>
-                <div className='border-b rounded-lg shadow-md border-gray-200 dark:border-gray-700 bg-white dark:bg-gray-900 px-5 py-1 sm: mt-1 relative h-full'>
-                  <div className='flex'>
-                    <div className='pt-3'>
-                      <span className='text-lg font-semibold leading-6 text-center text-gray-700 dark:text-gray-100'>
-                        {t('QueueManager.Customers to manage')}
-                      </span>
-                    </div>
-                  </div>
-                  <div className='flex flex-col justify-center items-center px-4'>
-                    <div className='w-full h-full'>
-                      <LineChart labels={labelsOutcome} datasets={datasetsCallsHour} />
-                    </div>
-                    <div className='overflow-auto mt-12 h-56 w-full'>
-                      <ul
-                        role='list'
-                        className=' divide-gray-300 dark:divide-gray-600 bg-white dark:bg-gray-900'
-                      >
-                        <li className='flex items-center justify-between gap-x-6 border-b rounded-lg shadow-md border-gray-200 dark:border-gray-700 bg-gray-200 py-2 px-2'>
-                          <div className='py-1 px-2'>
-                            <strong>{t('QueueManager.Date')}</strong>
-                          </div>
-                          <div className='px-3'>
-                            <strong>{t('QueueManager.Caller')}</strong>
-                          </div>
-                          <div className='px-3'>
-                            <strong>{t('QueueManager.Outcome')}</strong>
-                          </div>
-                        </li>
-                        {isLoadedQueuesNotManaged && calls.count === 0 && (
-                          <EmptyState
-                            title={t('QueueManager.No customers to manage')}
-                            description={t('QueueManager.There are no customers to manage') || ''}
-                            icon={
-                              <FontAwesomeIcon
-                                icon={faUser}
-                                className='mx-auto h-12 w-12'
-                                aria-hidden='true'
-                              />
-                            }
-                            className='bg-white dark:bg-gray-900'
-                          ></EmptyState>
-                        )}
-                        {/* skeleton */}
-                        {!isLoadedQueuesNotManaged &&
-                          Array.from(Array(6)).map((e, index) => (
-                            <li key={index}>
-                              <div className='flex items-center py-4'>
-                                {/* avatar skeleton */}
-                                <div className='min-w-0 flex-1 px-2 py-2'>
-                                  <div className='flex flex-col justify-center'>
-                                    {/* line skeleton */}
-                                    <div className='animate-pulse h-3 rounded bg-gray-300 dark:bg-gray-600'></div>
-                                  </div>
-                                </div>
-                              </div>
-                            </li>
-                          ))}
-                        {isLoadedQueuesNotManaged &&
-                          calls?.rows?.map((call: any, index: number) => (
-                            <li
-                              key={index}
-                              className='flex justify-between gap-x-6 pt-1 items-center'
-                            >
-                              {/* time */}
-                              <div className='py-4 px-2 pr-3'>
-                                <div className='flex flex-col'>
-                                  <div>{formatDateLoc(call.time * 1000, 'PP')}</div>
-                                  <div className='text-gray-500 dark:text-gray-500'>
-                                    {getCallTimeToDisplay(call.time * 1000)}
-                                  </div>
-                                </div>
-                              </div>
-
-                              {/* name / number */}
-                              <div className='px-3 py-4'>
-                                {call.name && (
-                                  <div
-                                    onClick={() =>
-                                      openShowQueueCallDrawer(call, queueManagerStore.queues)
-                                    }
-                                  >
-                                    <span
-                                      className={classNames(
-                                        call.cid && 'cursor-pointer hover:underline',
-                                      )}
-                                    >
-                                      {call.name}
-                                    </span>
-                                  </div>
-                                )}
-                                <div
-                                  onClick={() =>
-                                    openShowQueueCallDrawer(call, queueManagerStore.queues)
-                                  }
-                                  className={classNames(
-                                    call.name && 'text-gray-500 dark:text-gray-500',
-                                  )}
-                                >
-                                  <span className='cursor-pointer hover:underline'>{call.cid}</span>
-                                </div>
-                              </div>
-
-                              {/* outcome */}
-                              <div className='whitespace-nowrap px-3 py-4'>
-                                <div className='flex items-center'>
-                                  <span
-                                    className='tooltip-outcome-value'
-                                    id={`tooltip-outcome-value-${index}`}
-                                  >
-                                    {getCallIcon(call)}
-                                  </span>
-                                  <Tooltip
-                                    anchorSelect={`#tooltip-outcome-value-${index}`}
-                                    place='left'
-                                  >
-                                    {t(`Queues.outcome_${call.event}`)}
-                                  </Tooltip>
-                                </div>
-                              </div>
-                            </li>
-                          ))}
-                      </ul>
-                    </div>
-                  </div>
-                  <div className='pt-8 px-4 flex items-center justify-between'>
-                    <Link
-                      href={{
-                        pathname: '/queueManager',
-                        query: { section: 'Not managed customers' },
-                      }}
-                    >
-                      <a className='hover:underline text-gray-900 font-semibold dark:text-gray-100'>
-                        {t('QueueManager.Go to not managed customers')}
-                      </a>
-                    </Link>
-                    <Link
-                      href={{
-                        pathname: '/queueManager',
-                        query: { section: 'Not managed customers' },
-                      }}
-                    >
-                      <FontAwesomeIcon
-                        icon={faArrowRight}
-                        className='h-5 w-5 pr-2 cursor-pointer text-gray-600 dark:text-gray-200'
-                        aria-hidden='true'
-                      />
-                    </Link>
-                  </div>
-                </div>
-              </div>
-            </div>
+            <QueueManagementChart
+              queuesList={queuesList}
+              selectedValue={selectedValue}
+              allQueuesStats={allQueuesStats}
+              isLoadedQueuesNotManaged={isLoadedQueuesNotManaged}
+              calls={calls}
+            ></QueueManagementChart>
           </div>
         )}
       </div>
@@ -1459,161 +632,12 @@ export const QueueManagement: FC<QueueManagementProps> = ({ className }): JSX.El
             )}
           </div>
 
-          {/* Footer right  */}
-          <div className='w-2/3 ml-8'>
-            {/* Queue operators */}
-            <div className='flex items-center'>
-              <div className='flex items-center'>
-                <FontAwesomeIcon
-                  icon={faHeadset}
-                  className='h-4 w-4 mr-2 py-2 cursor-pointer flex items-center'
-                  aria-hidden='true'
-                />
-                <h2 className='text-md font-semibold text-gray-900 dark:text-gray-100 mr-4'>
-                  {t('QueueManager.Queue operators')}
-                </h2>
-              </div>
-              <div className='flex-grow'></div>
-              <div className='flex items-center justify-end h-6 w-6'>
-                <FontAwesomeIcon
-                  icon={expandedQueueOperators ? faChevronDown : faChevronUp}
-                  className='h-3.5 w-3.5 pl-2 py-2 cursor-pointer flex items-center'
-                  aria-hidden='true'
-                  onClick={toggleQueueOperators}
-                />
-              </div>
-            </div>
-
-            {/* divider */}
-            <div className='flex-grow border-b border-gray-200 dark:border-gray-700 mt-1'></div>
-            {expandedQueueOperators && (
-              <div className='pt-6'>
-                <QueueManagementFilterOperators
-                  updateTextFilter={debouncedUpdateTextFilter}
-                  updateStatusFilter={updateStatusFilter}
-                  updateSort={updateSort}
-                ></QueueManagementFilterOperators>
-                <div className='mx-auto text-center max-w-7xl 5xl:max-w-screen-2xl'>
-                  {/* empty state */}
-                  {allQueuesStats &&
-                    isEmpty(queueManagerStore?.queues[selectedValue.queue]?.members) && (
-                      <EmptyState
-                        title='No operators'
-                        description='There is no operator configured'
-                        icon={
-                          <FontAwesomeIcon
-                            icon={faHeadset}
-                            className='mx-auto h-12 w-12'
-                            aria-hidden='true'
-                          />
-                        }
-                      ></EmptyState>
-                    )}
-                  {/* skeleton */}
-                  {!allQueuesStats && !queueManagerStore?.isLoaded && (
-                    <ul
-                      role='list'
-                      className='mt-4 grid grid-cols-1 gap-4 sm:grid-cols-2 2xl:grid-cols-3 5xl:grid-cols-4 5xl:max-w-screen-2xl'
-                    >
-                      {Array.from(Array(24)).map((e, index) => (
-                        <li key={index} className='px-1'>
-                          <button
-                            type='button'
-                            className='group flex w-full items-center justify-between space-x-3 rounded-lg p-2 text-left focus:outline-none focus:ring-2 focus:ring-offset-2 bg-white dark:bg-gray-900 cursor-default'
-                          >
-                            <div className='flex min-w-0 flex-1 items-center space-x-3'>
-                              <div className='block flex-shrink-0'>
-                                <div className='animate-pulse rounded-full h-10 w-10 mx-auto bg-gray-300 dark:bg-gray-600'></div>
-                              </div>
-                              <span className='block min-w-0 flex-1'>
-                                <div className='animate-pulse h-4 rounded bg-gray-300 dark:bg-gray-600'></div>
-                              </span>
-                            </div>
-                            <span className='inline-flex h-10 w-10 flex-shrink-0 items-center justify-center'>
-                              <FontAwesomeIcon
-                                icon={faChevronRight}
-                                className='h-3 w-3 text-gray-400 dark:text-gray-500'
-                                aria-hidden='true'
-                              />
-                            </span>
-                          </button>
-                        </li>
-                      ))}
-                    </ul>
-                  )}
-                  {/* compact layout operators */}
-                  {allQueuesStats &&
-                    queueManagerStore?.queues[selectedValue.queue]?.allQueueOperators?.length >
-                      0 && (
-                      <InfiniteScroll
-                        dataLength={infiniteScrollOperators.length}
-                        next={showMoreInfiniteScrollOperators}
-                        hasMore={infiniteScrollHasMore}
-                        scrollableTarget='main-content'
-                        loader={
-                          <FontAwesomeIcon
-                            icon={faCircleNotch}
-                            className='inline-block text-center fa-spin h-8 m-10 text-gray-400 dark:text-gray-500'
-                          />
-                        }
-                      >
-                        <ul
-                          role='list'
-                          className='mt-4 grid grid-cols-1 gap-4 sm:grid-cols-2 2xl:grid-cols-3 5xl:grid-cols-4 5xl:max-w-screen-2xl'
-                        >
-                          {infiniteScrollOperators.map((operator: any, index) => {
-                            return (
-                              <li key={index} className='px-1'>
-                                <button
-                                  type='button'
-                                  onClick={() =>
-                                    openShowOperatorDrawer(operators[operator.shortname])
-                                  }
-                                  className='group flex w-full items-center justify-between space-x-3 rounded-lg p-2 text-left focus:outline-none focus:ring-2 focus:ring-offset-2 bg-white dark:bg-gray-900 hover:bg-gray-200 dark:hover:bg-gray-700 focus:ring-primary dark:focus:ring-primary'
-                                >
-                                  <span className='flex min-w-0 flex-1 items-center space-x-3'>
-                                    <span className='block flex-shrink-0'>
-                                      <Avatar
-                                        rounded='full'
-                                        src={operators[operator.shortname]?.avatarBase64}
-                                        placeholderType='operator'
-                                        size='small'
-                                        status={operators[operator.shortname]?.mainPresence}
-                                        onClick={() =>
-                                          openShowOperatorDrawer(operators[operator.shortname])
-                                        }
-                                      />
-                                    </span>
-                                    <span className='block min-w-0 flex-1'>
-                                      <span className='block truncate text-sm font-medium text-gray-900 dark:text-gray-100'>
-                                        {operator.name}
-                                      </span>
-                                      <span className='block truncate mt-1 text-sm font-medium text-gray-500 dark:text-gray-500'>
-                                        <LoggedStatus
-                                          loggedIn={operator.loggedIn}
-                                          paused={operator.paused}
-                                        />
-                                      </span>
-                                    </span>
-                                  </span>
-                                  <span className='inline-flex h-10 w-10 flex-shrink-0 items-center justify-center m-2'>
-                                    <FontAwesomeIcon
-                                      icon={faChevronRight}
-                                      className='h-3 w-3 text-gray-400 dark:text-gray-500 cursor-pointer'
-                                      aria-hidden='true'
-                                    />
-                                  </span>
-                                </button>
-                              </li>
-                            )
-                          })}
-                        </ul>
-                      </InfiniteScroll>
-                    )}
-                </div>
-              </div>
-            )}
-          </div>
+          {/* Footer right ( Operators ) */}
+          <QueueManagementOperators
+            selectedValue={selectedValue}
+            agentCounters={agentCounters}
+            allQueuesStats={allQueuesStats}
+          ></QueueManagementOperators>
         </div>
       </div>
     </>
