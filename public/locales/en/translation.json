@@ -551,6 +551,8 @@
     "max_wait": "Max wait",
     "min_duration": "Min duration",
     "avg_duration": "Avg duration",
-    "max_duration": "Max duration"
+    "max_duration": "Max duration",
+    "Not managed customers details": "Not managed customers details",
+    "Total not managed": "Total not managed"
   }
 }

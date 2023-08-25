@@ -6,12 +6,8 @@ import { useTranslation } from 'react-i18next'
 import { RootState } from '../../../store'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { useSelector } from 'react-redux'
-import {
-  getCallIcon,
-  openShowQueueCallDrawer,
-} from '../../../lib/queueManager'
+import { getCallIcon, openShowQueueCallDrawer } from '../../../lib/queueManager'
 import BarChartHorizontal from '../../chart/HorizontalBarChart'
-import LineChart from '../../chart/LineChart'
 import { EmptyState } from '../../common'
 import { Tooltip } from 'react-tooltip'
 import { faArrowRight, faUser } from '@fortawesome/free-solid-svg-icons'
@@ -40,8 +36,7 @@ export const QueueManagementChart: FC<QueueManagementChartProps> = ({
   calls,
 }): JSX.Element => {
   const { t } = useTranslation()
-    const queueManagerStore = useSelector((state: RootState) => state.queueManagerQueues)
-
+  const queueManagerStore = useSelector((state: RootState) => state.queueManagerQueues)
 
   // Chart functions section
 
@@ -78,7 +73,6 @@ export const QueueManagementChart: FC<QueueManagementChartProps> = ({
     //check if queue list is already loaded and queue is selected
     if (queuesList && selectedValue?.queue && allQueuesStats) {
       const qstats = queuesList[selectedValue.queue]?.qstats || {}
-
       if (!isEmpty(qstats)) {
         const connectedCallsStats = calculateConnectedCallsStats(qstats)
         const waitingCallsStats = calculateWaitingCallsStats(qstats)
@@ -125,6 +119,101 @@ export const QueueManagementChart: FC<QueueManagementChartProps> = ({
       }
     }
   }, [queuesList, selectedValue, allQueuesStats])
+
+  function processCallData(callData: any) {
+    const eventMappings: any = {
+      ABANDON: 'ABANDON',
+      FAILED: 'FAILED',
+      NO_ANSWER: 'NO_ANSWER',
+      EXITWITHTIMEOUT: 'EXITWITHTIMEOUT',
+    }
+
+    const processedData: any = {
+      queueman: callData.rows[0]?.queuename || '',
+      tot: callData.count,
+      ABANDON: 0,
+      FAILED: 0,
+      NO_ANSWER: 0,
+      EXITWITHTIMEOUT: 0,
+    }
+
+    callData.rows.forEach((call: any) => {
+      if (eventMappings.hasOwnProperty(call.event)) {
+        const eventProperty = eventMappings[call.event]
+        processedData[eventProperty]++
+      }
+    })
+
+    return processedData
+  }
+
+  // Not managed customers
+  const [abandonedNotManaged, setAbandonedNotManaged] = useState(0)
+  const [failedNotManaged, setFailedNotManaged] = useState(0)
+  const [noAnswereNotManaged, setNoAnswereNotManaged] = useState(0)
+  const [exitWithTimeoutNotManaged, setExitWithTimeoutNotManaged] = useState(0)
+  const [totalNotManaged, setTotalNotManaged] = useState(0)
+
+  useEffect(() => {
+    if (calls && isLoadedQueuesNotManaged) {
+      const eventsGrouped = processCallData(calls)
+      if (!isEmpty(eventsGrouped)) {
+        const abandonedNotManagedChart = eventsGrouped.ABANDON || 0
+        const failedNotManagedChart = eventsGrouped.FAILED || 0
+        const noAnswereNotManagedChart = eventsGrouped.NO_ANSWER || 0
+        const exitWithTimeoutNotManagedChart = eventsGrouped.EXITWITHTIMEOUT || 0
+        const totNotManaged = eventsGrouped.tot || 0
+
+        setFailedNotManaged(failedNotManagedChart)
+        setAbandonedNotManaged(abandonedNotManagedChart)
+        setNoAnswereNotManaged(noAnswereNotManagedChart)
+        setExitWithTimeoutNotManaged(exitWithTimeoutNotManagedChart)
+        setTotalNotManaged(totNotManaged)
+      }
+    }
+  }, [calls, isLoadedQueuesNotManaged])
+
+  const notManagedCustomersLabels = [t('QueueManager.Not managed customers details')]
+
+  const notManagedCustomersDataset = [
+    {
+      label: `${t('Queues.outcome_ABANDON')}`,
+      data: [abandonedNotManaged],
+      backgroundColor: '#fdba74',
+      borderRadius: 10,
+      barPercentage: 0.5,
+      borderWidth: 0,
+
+      borderSkipped: false,
+    },
+    {
+      label: `${t('Queues.outcome_FAILED')}`,
+      data: [failedNotManaged],
+      backgroundColor: '#fcd34d',
+      borderRadius: 10,
+      barPercentage: 0.5,
+      borderWidth: 0,
+      borderSkipped: false,
+    },
+    {
+      label: `${t('Queues.outcome_NO ANSWER')}`,
+      data: [noAnswereNotManaged],
+      backgroundColor: '#60a5fa',
+      borderRadius: 10,
+      barPercentage: 0.5,
+      borderWidth: 0,
+      borderSkipped: false,
+    },
+    {
+      label: `${t('Queues.outcome_EXITWITHTIMEOUT')}`,
+      data: [exitWithTimeoutNotManaged],
+      backgroundColor: '#f472b6',
+      borderRadius: 10,
+      barPercentage: 0.5,
+      borderWidth: 0,
+      borderSkipped: false,
+    },
+  ]
 
   //Connected calls chart values
   function calculateConnectedCallsStats(qstats: any) {
@@ -376,24 +465,6 @@ export const QueueManagementChart: FC<QueueManagementChartProps> = ({
     },
   ]
 
-  const labelsOutcome = ['January', 'February', 'March', 'April', 'May', 'June']
-  const datasetsCallsHour = [
-    {
-      label: 'Dataset 1',
-      data: [10, 20, 15, 25, 18, 30],
-      fill: false,
-      borderColor: 'rgb(75, 192, 192)',
-      tension: 0.1,
-    },
-    {
-      label: 'Dataset 2',
-      data: [5, 12, 8, 20, 10, 15],
-      fill: false,
-      borderColor: 'rgb(192, 75, 192)',
-      tension: 0.1,
-    },
-  ]
-
   return (
     <>
       <div className='grid grid-cols-1 gap-4 sm:grid-cols-1 md:grid-cols-1 lg:grid-cols-2 xl:grid-cols-3'>
@@ -471,9 +542,14 @@ export const QueueManagementChart: FC<QueueManagementChartProps> = ({
                 </span>
               </div>
             </div>
-            <div className='flex flex-col justify-center items-center px-4'>
+            <div className='flex flex-col justify-center items-center px-4 mt-2'>
               <div className='w-full h-full'>
-                <LineChart labels={labelsOutcome} datasets={datasetsCallsHour} />
+                <BarChartHorizontal
+                  labels={notManagedCustomersLabels}
+                  datasets={notManagedCustomersDataset}
+                  titleText={`${t('QueueManager.Total not managed')}: ${totalNotManaged}`}
+                  numericTooltip={true}
+                />
               </div>
               <div className='overflow-auto mt-12 h-56 w-full'>
                 <ul
