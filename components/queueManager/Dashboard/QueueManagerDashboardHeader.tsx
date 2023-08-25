@@ -4,7 +4,6 @@
 import { FC, ComponentProps, useEffect, useState } from 'react'
 import { useTranslation } from 'react-i18next'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
-import SliderCarousel from '../../SlideCarousel'
 import {
   faPause,
   faChevronDown,
@@ -22,7 +21,6 @@ import {
   getAlarm,
   getAlarmDescription,
 } from '../../../lib/queueManager'
-import { NotManagedCalls } from '../NotManaged/NotManagedCalls'
 
 export interface QueueManagerDashboardHeaderProps extends ComponentProps<'div'> {
   totalAll: any
@@ -349,23 +347,186 @@ export const QueueManagerDashboardHeader: FC<QueueManagerDashboardHeaderProps> =
 
   return (
     <>
-      <div className='border-b rounded-md shadow-md border-gray-200 dark:border-gray-700 bg-white dark:bg-gray-900 px-4 py-4'>
-        <SliderCarousel>
-          {cardGroups.map((cardGroup, groupIndex) => (
-            <div key={groupIndex} className='flex items-center'>
-              {cardGroup.map((card, cardIndex) => (
+      <div>
+        <div className='grid grid-cols-1 gap-4 sm:grid-cols-2 md:grid-cols-2 lg:grid-cols-2 xl:grid-cols-3'>
+          {/* Alarm */}
+          <div className='border-b rounded-lg shadow-md border-gray-200 dark:border-gray-700 bg-white dark:bg-gray-900 px-5 py-1 sm: mt-1 relative flex items-center'>
+            <div className='mx-3'>
+              <Dropdown items={dropdownItems} position='left' divider={true} className=''>
                 <div
-                  key={cardIndex}
-                  className={`col-span-1 mx-3 ${
-                    cardIndex === cardGroup.length - 1 ? 'mb-0' : 'mb-4'
+                  className={`flex items-center justify-between px-4 mt-1 mb-2 bg-gray-100 rounded-md py-1 ${
+                    !isEmpty(alarmsList.list) ? 'bg-red-50' : ''
                   }`}
                 >
-                  {card}
+                  <div className='flex items-center'>
+                    <FontAwesomeIcon
+                      icon={faTriangleExclamation}
+                      className={`h-6 w-6 pr-6 py-2 cursor-pointer flex items-center ${
+                        !isEmpty(alarmsList.list)
+                          ? 'text-red-600'
+                          : 'text-gray-500 dark:text-gray-400'
+                      }`}
+                      aria-hidden='true'
+                    />
+                    <div className='flex flex-col justify-center'>
+                      <p className='text-3xl font-semibold tracking-tight text-left text-gray-900 dark:text-gray-900'>
+                        {(alarmsList.list && Object.keys(alarmsList.list).length) ?? 0}
+                      </p>
+                      <p className='text-sm font-medium leading-6 text-center text-gray-500 dark:text-gray-400'>
+                        {alarmsList.list && Object.keys(alarmsList.list).length === 1
+                          ? t('QueueManager.Alarm')
+                          : t('QueueManager.Alarms')}
+                      </p>
+                    </div>
+                  </div>
+                  <FontAwesomeIcon
+                    icon={faChevronDown}
+                    className='h-3.5 w-3.5 pl-2 py-2 cursor-pointer flex items-center'
+                    aria-hidden='true'
+                  />
                 </div>
-              ))}
+              </Dropdown>
             </div>
-          ))}
-        </SliderCarousel>
+          </div>
+
+          {/* not Managed */}
+          <div className='border-b rounded-lg shadow-md border-gray-200 dark:border-gray-700 bg-white dark:bg-gray-900 px-5 py-1 sm: mt-1 relative flex items-center'>
+            <div className='mx-3 pt-1'>
+              <div className='flex items-center w-full'>
+                <div className='h-14 w-14 flex items-center justify-center rounded-md bg-emerald-50'>
+                  <FontAwesomeIcon
+                    icon={faPhone}
+                    className='h-6 w-6 cursor-pointer text-emerald-600 dark:text-emerald-600'
+                    aria-hidden='true'
+                  />
+                </div>
+                <div className='flex flex-col justify-center ml-4'>
+                  <p className='text-3xl font-semibold tracking-tight text-left text-gray-900 dark:text-gray-100'>
+                    {notManaged.count}
+                  </p>
+                  <p className='text-sm font-medium leading-6 text-center text-gray-500 dark:text-gray-400'>
+                    {t('QueueManager.Not managed customers')}
+                  </p>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          {/* total calls */}
+          <div className='border-b rounded-lg shadow-md border-gray-200 dark:border-gray-700 bg-white dark:bg-gray-900 px-5 py-1 sm: mt-1 relative flex items-center'>
+            <div key='totalAll' className='mx-3 pt-1'>
+              <div className='flex items-center w-full'>
+                <div className='h-14 w-14 flex items-center justify-center rounded-md bg-emerald-50'>
+                  <FontAwesomeIcon
+                    icon={faPhone}
+                    className='h-6 w-6 cursor-pointer text-emerald-600 dark:text-emerald-600'
+                    aria-hidden='true'
+                  />
+                </div>
+                <div className='flex flex-col justify-center ml-4'>
+                  <p className='text-3xl font-semibold tracking-tight text-left text-gray-900 dark:text-gray-100'>
+                    {totalAll}
+                  </p>
+                  <p className='text-sm font-medium leading-6 text-center text-gray-500 dark:text-gray-400'>
+                    {t('QueueManager.Total calls')}
+                  </p>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          {/* total answered */}
+          <div className='border-b rounded-lg shadow-md border-gray-200 dark:border-gray-700 bg-white dark:bg-gray-900 px-5 py-1 sm: mt-1 relative flex items-center'>
+            <div key='totalAnswered' className='mx-3 pt-1'>
+              <div className='flex items-center w-full'>
+                <div className='h-14 w-14 flex items-center justify-center rounded-md bg-emerald-50'>
+                  <FontAwesomeIcon
+                    icon={faArrowLeft}
+                    className='h-6 w-6 cursor-pointer -rotate-45 text-emerald-600 dark:text-emerald-600'
+                    aria-hidden='true'
+                  />
+                </div>
+                <div className='flex flex-col justify-center ml-4'>
+                  <p className='text-3xl font-semibold tracking-tight text-left text-gray-900 dark:text-gray-100'>
+                    {totalAnswered}
+                  </p>
+                  <p className='text-sm font-medium leading-6 text-center text-gray-500 dark:text-gray-400'>
+                    {t('QueueManager.Answered calls')}
+                  </p>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          {/*lostCalls */}
+          <div className='border-b rounded-lg shadow-md border-gray-200 dark:border-gray-700 bg-white dark:bg-gray-900 px-5 py-1 sm: mt-1 relative flex items-center'>
+            <div key='lostCalls' className='mx-3 pt-1'>
+              <div className='flex items-center w-full'>
+                <div className='h-14 w-14 flex items-center justify-center rounded-md bg-emerald-50'>
+                  <FontAwesomeIcon
+                    icon={faMissed}
+                    className='h-6 w-6 cursor-pointer text-emerald-600 dark:text-emerald-600'
+                    aria-hidden='true'
+                  />
+                </div>
+                <div className='flex flex-col justify-center ml-4'>
+                  <p className='text-3xl font-semibold tracking-tight text-left text-gray-900 dark:text-gray-100'>
+                    {totalFailed}
+                  </p>
+                  <p className='text-sm font-medium leading-6 text-center text-gray-500 dark:text-gray-400'>
+                    {t('QueueManager.Lost calls')}
+                  </p>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          {/* totalInvalid */}
+          <div className='border-b rounded-lg shadow-md border-gray-200 dark:border-gray-700 bg-white dark:bg-gray-900 px-5 py-1 sm: mt-1 relative flex items-center'>
+            <div key='totalInvalid' className='mx-3 pt-1'>
+              <div className='flex items-center w-full'>
+                <div className='h-14 w-14 flex items-center justify-center rounded-md bg-emerald-50'>
+                  <FontAwesomeIcon
+                    icon={faPhoneSlash}
+                    className='h-6 w-6 cursor-pointer text-emerald-600 dark:text-emerald-600'
+                    aria-hidden='true'
+                  />
+                </div>
+                <div className='flex flex-col justify-center ml-4'>
+                  <p className='text-3xl font-semibold tracking-tight text-left text-gray-900 dark:text-gray-100'>
+                    {totalInvalid}
+                  </p>
+                  <p className='text-sm font-medium leading-6 text-center text-gray-500 dark:text-gray-400'>
+                    {t('QueueManager.Invalid calls')}
+                  </p>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          {/* In progress */}
+          <div className='border-b rounded-lg shadow-md border-gray-200 dark:border-gray-700 bg-white dark:bg-gray-900 px-5 py-1 sm: mt-1 relative flex items-center'>
+            <div key='inProgress' className='mx-3 pt-1'>
+              <div className='flex items-center w-full'>
+                <div className='h-14 w-14 flex items-center justify-center rounded-md bg-emerald-50'>
+                  <FontAwesomeIcon
+                    icon={faPause}
+                    className='h-6 w-6 cursor-pointer text-emerald-600 dark:text-emerald-600'
+                    aria-hidden='true'
+                  />
+                </div>
+                <div className='flex flex-col justify-center ml-4'>
+                  <p className='text-3xl font-semibold tracking-tight text-left text-gray-900 dark:text-gray-100'>
+                    {totalInProgress}
+                  </p>
+                  <p className='text-sm font-medium leading-6 text-center text-gray-500 dark:text-gray-400'>
+                    {t('QueueManager.In progress')}
+                  </p>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
       </div>
     </>
   )

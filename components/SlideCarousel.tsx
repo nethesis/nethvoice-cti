@@ -35,7 +35,7 @@ const SliderCarousel: React.FC<SliderCarouselProps> = ({ children }) => {
     centerPadding: '60px',
     dots: true,
     infinite: true,
-    speed: 500,
+    speed: 600,
     slidesToShow: 4,
     slidesToScroll: 4,
     nextArrow: <SampleNextArrow />,
@@ -80,14 +80,7 @@ const SliderCarousel: React.FC<SliderCarouselProps> = ({ children }) => {
     ],
   }
 
-  return (
-    <Slider {...settings}>
-      {children}
-      <div style={{ textAlign: 'center' }}>
-        {' '}
-      </div>
-    </Slider>
-  )
+  return <Slider {...settings}>{children}</Slider>
 }
 
 export default SliderCarousel
