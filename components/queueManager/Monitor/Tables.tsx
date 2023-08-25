@@ -6,13 +6,7 @@ import { useTranslation } from 'react-i18next'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { useSelector } from 'react-redux'
 import { RootState } from '../../../store'
-import {
-  faChevronDown,
-  faCheck,
-  faMinus,
-  faPlus,
-  faUsers,
-} from '@fortawesome/free-solid-svg-icons'
+import { faChevronDown, faCheck, faMinus, faPlus, faUsers } from '@fortawesome/free-solid-svg-icons'
 import { savePreference } from '../../../lib/storage'
 import { CallDuration } from '../../operators/CallDuration'
 import { getMonitorValue } from '../../../lib/queueManager'
@@ -28,7 +22,11 @@ function classNames(...classes: any) {
   return classes.filter(Boolean).join(' ')
 }
 
-export const MonitorTables: FC<MonitorTablesProps> = ({ className, isFullscreen, selectedRow }): JSX.Element => {
+export const MonitorTables: FC<MonitorTablesProps> = ({
+  className,
+  isFullscreen,
+  selectedRow,
+}): JSX.Element => {
   const { t } = useTranslation()
 
   const queueManagerStore = useSelector((state: RootState) => state.queueManagerQueues)
@@ -112,8 +110,16 @@ export const MonitorTables: FC<MonitorTablesProps> = ({ className, isFullscreen,
                       <>
                         <div className='flex items-center'>
                           <div className='relative'>
-                            <Listbox.Button className='relative w-48 cursor-default rounded-md bg-white dark:bg-gray-900 py-1.5 pr-10 text-left text-gray-900 dark:text-gray-100 focus:outline-none sm:text-sm sm:leading-6'>
-                              <span className='block truncate mr-1 font-semibold'>
+                            <Listbox.Button
+                              className={`relative  cursor-default rounded-md bg-white dark:bg-gray-900 py-1.5 pr-10 text-left text-gray-900 dark:text-gray-100 focus:outline-none sm:text-sm sm:leading-6 ${
+                                isFullscreen ? 'w-96' : 'w-48'
+                              }  `}
+                            >
+                              <span
+                                className={`block truncate mr-1 font-semibold ${
+                                  isFullscreen ? 'text-2xl' : 'text-md'
+                                }  `}
+                              >
                                 {selectedQueueFirstTable.name
                                   ? selectedQueueFirstTable.name +
                                     ' ' +
@@ -147,6 +153,7 @@ export const MonitorTables: FC<MonitorTablesProps> = ({ className, isFullscreen,
                                             ? 'bg-primary text-white'
                                             : 'text-gray-900 dark:text-gray-100',
                                           'relative cursor-default select-none py-2 pl-8 pr-4',
+                                          `${isFullscreen ? 'text-2xl' : 'text-md'}  `,
                                         )
                                       }
                                       value={queueInfo}
@@ -195,15 +202,26 @@ export const MonitorTables: FC<MonitorTablesProps> = ({ className, isFullscreen,
               <div className='flex items-center ml-auto space-x-5'>
                 {/* Number of waiting calls */}
                 <div className='text-sm text-gray-500'>
-                  <span className='mr-2 font-semibold text-orange-700'>
+                  <span
+                    className={`text-orange-700 font-semibold mr-2 ${
+                      isFullscreen ? 'text-2xl' : 'text-md'
+                    }  `}
+                  >
                     {getWaitingCallsCount(selectedQueueFirstTable.queue)}
                   </span>
-                  <span className='text-md text-orange-700'>{t('QueueManager.Waiting calls')}</span>
+                  <span className={`text-orange-700 ${isFullscreen ? 'text-2xl' : 'text-md'}  `}>
+                    {t('QueueManager.Waiting calls')}
+                  </span>
                 </div>
 
                 {/* Remove or add queue card */}
                 {!showSecondCard && (
-                  <Button variant='white' className='ml-2' onClick={toggleAddQueueCard}>
+                  <Button
+                    variant='white'
+                    className='ml-2'
+                    onClick={toggleAddQueueCard}
+                    size={isFullscreen ? 'large' : 'base'}
+                  >
                     <FontAwesomeIcon icon={faPlus} className='text-gray-500' />
                     <span className='ml-2'>{t('QueueManager.Add queue')} </span>
                   </Button>
@@ -343,8 +361,16 @@ export const MonitorTables: FC<MonitorTablesProps> = ({ className, isFullscreen,
                                 {t('QueueManager.Calls to show')}
                               </Listbox.Label> */}
                             <div className='relative'>
-                              <Listbox.Button className='relative w-48 cursor-default rounded-md bg-white dark:bg-gray-900 py-1.5 pr-10 text-left text-gray-900 dark:text-gray-100 focus:outline-none sm:text-sm sm:leading-6'>
-                                <span className='block truncate mr-1 font-semibold'>
+                              <Listbox.Button
+                                className={`relative  cursor-default rounded-md bg-white dark:bg-gray-900 py-1.5 pr-10 text-left text-gray-900 dark:text-gray-100 focus:outline-none sm:text-sm sm:leading-6 ${
+                                  isFullscreen ? 'w-96' : 'w-48'
+                                }  `}
+                              >
+                                <span
+                                  className={`block truncate mr-1 font-semibold ${
+                                    isFullscreen ? 'text-2xl' : 'text-md'
+                                  }  `}
+                                >
                                   {selectedQueueSecondTable.name
                                     ? selectedQueueSecondTable.name +
                                       ' ' +
@@ -378,6 +404,7 @@ export const MonitorTables: FC<MonitorTablesProps> = ({ className, isFullscreen,
                                               ? 'bg-primary text-white'
                                               : 'text-gray-900 dark:text-gray-100',
                                             'relative cursor-default select-none py-2 pl-8 pr-4',
+                                            `${isFullscreen ? 'text-2xl' : 'text-md'}  `,
                                           )
                                         }
                                         value={queueInfo}
@@ -426,14 +453,23 @@ export const MonitorTables: FC<MonitorTablesProps> = ({ className, isFullscreen,
                 <div className='flex items-center ml-auto space-x-5'>
                   {/* Number of waiting calls */}
                   <div className='text-sm text-gray-500'>
-                    <span className='mr-2 font-semibold text-orange-700'>
+                    <span
+                      className={`text-orange-700 font-semibold mr-2 ${
+                        isFullscreen ? 'text-2xl' : 'text-md'
+                      }  `}
+                    >
                       {getWaitingCallsCount(selectedQueueSecondTable.queue)}
                     </span>
-                    <span className='text-md text-orange-700'>
+                    <span className={`text-orange-700 ${isFullscreen ? 'text-2xl' : 'text-md'}  `}>
                       {t('QueueManager.Waiting calls')}
                     </span>
                   </div>
-                  <Button variant='white' className='ml-2' onClick={toggleAddQueueCard}>
+                  <Button
+                    variant='white'
+                    className='ml-2'
+                    onClick={toggleAddQueueCard}
+                    size={isFullscreen ? 'large' : 'base'}
+                  >
                     <FontAwesomeIcon icon={faMinus} className='text-gray-500' />
                     <span className='ml-2'>{t('QueueManager.Remove')}</span>
                   </Button>
