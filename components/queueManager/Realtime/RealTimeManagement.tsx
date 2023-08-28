@@ -694,7 +694,7 @@ export const RealTimeManagement: FC<RealTimeManagementProps> = ({ className }): 
                 <div className='h-10 w-10 flex items-center justify-center rounded-xl bg-emerald-50 mt-1 mb-1'>
                   <FontAwesomeIcon
                     icon={faUserCheck}
-                    className='h-6 w-6 cursor-pointer text-emerald-600 dark:text-emerald-600'
+                    className='h-6 w-6 text-emerald-600 dark:text-emerald-600'
                     aria-hidden='true'
                   />
                 </div>
@@ -717,7 +717,7 @@ export const RealTimeManagement: FC<RealTimeManagementProps> = ({ className }): 
                 <div className='h-10 w-10 flex items-center justify-center rounded-xl bg-emerald-50 mt-1 mb-1'>
                   <FontAwesomeIcon
                     icon={faUserClock}
-                    className='h-6 w-6 cursor-pointer text-emerald-600 dark:text-emerald-600'
+                    className='h-6 w-6 text-emerald-600 dark:text-emerald-600'
                     aria-hidden='true'
                   />
                 </div>
@@ -740,7 +740,7 @@ export const RealTimeManagement: FC<RealTimeManagementProps> = ({ className }): 
                 <div className='h-10 w-10 flex items-center justify-center rounded-xl bg-emerald-50 mt-1 mb-1'>
                   <FontAwesomeIcon
                     icon={faHeadset}
-                    className='h-6 w-6 cursor-pointer text-emerald-600 dark:text-emerald-600'
+                    className='h-6 w-6 text-emerald-600 dark:text-emerald-600'
                     aria-hidden='true'
                   />
                 </div>
@@ -763,7 +763,7 @@ export const RealTimeManagement: FC<RealTimeManagementProps> = ({ className }): 
                 <div className='h-10 w-10 flex items-center justify-center rounded-xl bg-emerald-50 mt-1 mb-1'>
                   <FontAwesomeIcon
                     icon={faHeadset}
-                    className='h-6 w-6 cursor-pointer text-emerald-600 dark:text-emerald-600'
+                    className='h-6 w-6 text-emerald-600 dark:text-emerald-600'
                     aria-hidden='true'
                   />
                 </div>
@@ -786,7 +786,7 @@ export const RealTimeManagement: FC<RealTimeManagementProps> = ({ className }): 
                 <div className='h-10 w-10 flex items-center justify-center rounded-xl bg-emerald-50 mt-1 mb-1'>
                   <FontAwesomeIcon
                     icon={faUserXmark}
-                    className='h-6 w-6 cursor-pointer text-emerald-600 dark:text-emerald-600'
+                    className='h-6 w-6 text-emerald-600 dark:text-emerald-600'
                     aria-hidden='true'
                   />
                 </div>
@@ -809,7 +809,7 @@ export const RealTimeManagement: FC<RealTimeManagementProps> = ({ className }): 
                 <div className='h-10 w-10 flex items-center justify-center rounded-xl bg-emerald-50 mt-1 mb-1'>
                   <FontAwesomeIcon
                     icon={faHeadset}
-                    className='h-6 w-6 cursor-pointer text-emerald-600 dark:text-emerald-600'
+                    className='h-6 w-6 text-emerald-600 dark:text-emerald-600'
                     aria-hidden='true'
                   />
                 </div>
@@ -832,7 +832,7 @@ export const RealTimeManagement: FC<RealTimeManagementProps> = ({ className }): 
                 <div className='h-10 w-10 flex items-center justify-center rounded-xl bg-emerald-50 mt-1 mb-1'>
                   <FontAwesomeIcon
                     icon={faHeadset}
-                    className='h-6 w-6 cursor-pointer text-emerald-600 dark:text-emerald-600'
+                    className='h-6 w-6 text-emerald-600 dark:text-emerald-600'
                     aria-hidden='true'
                   />
                 </div>
@@ -855,7 +855,7 @@ export const RealTimeManagement: FC<RealTimeManagementProps> = ({ className }): 
                 <div className='h-10 w-10 flex items-center justify-center rounded-xl bg-emerald-50 mt-1 mb-1'>
                   <FontAwesomeIcon
                     icon={faHeadset}
-                    className='h-6 w-6 cursor-pointer text-emerald-600 dark:text-emerald-600'
+                    className='h-6 w-6 text-emerald-600 dark:text-emerald-600'
                     aria-hidden='true'
                   />
                 </div>
@@ -870,31 +870,7 @@ export const RealTimeManagement: FC<RealTimeManagementProps> = ({ className }): 
               </div>
             </div>
           </div>
-
-          {/* Busy operators ( out queue )
-          <div>
-            <div className='border-b rounded-lg shadow-md border-gray-200 dark:border-gray-700 bg-white dark:bg-gray-900 px-5 py-1 sm: mt-1 relative flex items-center'>
-              <div className='flex items-center space-x-4'>
-                <div className='h-10 w-10 flex items-center justify-center rounded-xl bg-emerald-50 mt-1 mb-1'>
-                  <FontAwesomeIcon
-                    icon={faHeadset}
-                    className='h-6 w-6 cursor-pointer text-emerald-600 dark:text-emerald-600'
-                    aria-hidden='true'
-                  />
-                </div>
-                <div className='flex justify-center'>
-                  <p className='text-3xl font-semibold tracking-tight text-left text-gray-900 dark:text-gray-100'>
-                    {realTimeAgentCounters.busyOutside}
-                  </p>
-                </div>
-                <span className='text-sm flex justify-center font-medium leading-6 text-center text-gray-700 dark:text-gray-100'>
-                  {t('QueueManager.Busy operators (out queue)')}
-                </span>
-              </div>
-            </div>
-          </div> */}
         </div>
-        {/* ... */}
       </div>
 
       {/* Queues statistics*/}
@@ -908,7 +884,7 @@ export const RealTimeManagement: FC<RealTimeManagementProps> = ({ className }): 
           <div className='flex items-center justify-end h-6 w-6'>
             <FontAwesomeIcon
               icon={queuesStatisticsExpanded ? faChevronDown : faChevronUp}
-              className='h-4 w-4 text-gray-600 dark:text-gray-500 pl-2 py-2 cursor-pointer flex items-center'
+              className='h-4 w-4 text-gray-600 dark:text-gray-500 pl-2 py-2 flex items-center'
               aria-hidden='true'
               onClick={toggleExpandQueuesStatistics}
             />

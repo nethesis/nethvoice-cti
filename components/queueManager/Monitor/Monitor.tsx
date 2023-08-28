@@ -160,7 +160,7 @@ export const Monitor: FC<MonitorProps> = ({ className }): JSX.Element => {
 
       {/* Queue Dashboard*/}
       <div
-         className={`transition-all duration-300 ${
+        className={`transition-all duration-300 ${
           isFullscreen
             ? 'fixed top-0 left-0 right-0 bottom-0 w-screen h-screen z-50 bg-white overflow-auto'
             : ''
@@ -178,7 +178,6 @@ export const Monitor: FC<MonitorProps> = ({ className }): JSX.Element => {
               </Button>
             )}
             <MonitorTables isFullscreen={isFullscreen} selectedRow={selected}></MonitorTables>
-            {/* ... */}
           </div>
         </div>
       </div>

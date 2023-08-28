@@ -215,7 +215,7 @@ export const MonitorTables: FC<MonitorTablesProps> = ({
                 </div>
 
                 {/* Remove or add queue card */}
-                {!showSecondCard && (
+                {!showSecondCard && !isFullscreen && (
                   <Button
                     variant='white'
                     className='ml-2'
@@ -464,15 +464,17 @@ export const MonitorTables: FC<MonitorTablesProps> = ({
                       {t('QueueManager.Waiting calls')}
                     </span>
                   </div>
-                  <Button
-                    variant='white'
-                    className='ml-2'
-                    onClick={toggleAddQueueCard}
-                    size={isFullscreen ? 'large' : 'base'}
-                  >
-                    <FontAwesomeIcon icon={faMinus} className='text-gray-500' />
-                    <span className='ml-2'>{t('QueueManager.Remove')}</span>
-                  </Button>
+                  {!isFullscreen && (
+                    <Button
+                      variant='white'
+                      className='ml-2'
+                      onClick={toggleAddQueueCard}
+                      size={isFullscreen ? 'large' : 'base'}
+                    >
+                      <FontAwesomeIcon icon={faMinus} className='text-gray-500' />
+                      <span className='ml-2'>{t('QueueManager.Remove')}</span>
+                    </Button>
+                  )}
                 </div>
               </div>
 

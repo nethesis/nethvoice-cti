@@ -30,7 +30,7 @@ export const QueueManagementHeader: FC<QueueManagementHeaderProps> = ({
               <div className='h-10 w-10 flex items-center justify-center rounded-xl bg-emerald-50 mt-1 mb-1'>
                 <FontAwesomeIcon
                   icon={faUserCheck}
-                  className='h-6 w-6 cursor-pointer text-emerald-600 dark:text-emerald-600'
+                  className='h-6 w-6 text-emerald-600 dark:text-emerald-600'
                   aria-hidden='true'
                 />
               </div>
@@ -53,7 +53,7 @@ export const QueueManagementHeader: FC<QueueManagementHeaderProps> = ({
               <div className='h-10 w-10 flex items-center justify-center rounded-xl bg-emerald-50 mt-1 mb-1'>
                 <FontAwesomeIcon
                   icon={faUserClock}
-                  className='h-6 w-6 cursor-pointer text-emerald-600 dark:text-emerald-600'
+                  className='h-6 w-6 text-emerald-600 dark:text-emerald-600'
                   aria-hidden='true'
                 />
               </div>
@@ -76,7 +76,7 @@ export const QueueManagementHeader: FC<QueueManagementHeaderProps> = ({
               <div className='h-10 w-10 flex items-center justify-center rounded-xl bg-emerald-50 mt-1 mb-1'>
                 <FontAwesomeIcon
                   icon={faUserXmark}
-                  className='h-6 w-6 cursor-pointer text-emerald-600 dark:text-emerald-600'
+                  className='h-6 w-6 text-emerald-600 dark:text-emerald-600'
                   aria-hidden='true'
                 />
               </div>
@@ -99,7 +99,7 @@ export const QueueManagementHeader: FC<QueueManagementHeaderProps> = ({
               <div className='h-10 w-10 flex items-center justify-center rounded-xl bg-emerald-50 mt-1 mb-1'>
                 <FontAwesomeIcon
                   icon={faHeadset}
-                  className='h-6 w-6 cursor-pointer text-emerald-600 dark:text-emerald-600'
+                  className='h-6 w-6 text-emerald-600 dark:text-emerald-600'
                   aria-hidden='true'
                 />
               </div>
@@ -122,7 +122,7 @@ export const QueueManagementHeader: FC<QueueManagementHeaderProps> = ({
               <div className='h-10 w-10 flex items-center justify-center rounded-xl bg-emerald-50 mt-1 mb-1'>
                 <FontAwesomeIcon
                   icon={faHeadset}
-                  className='h-6 w-6 cursor-pointer text-emerald-600 dark:text-emerald-600'
+                  className='h-6 w-6 text-emerald-600 dark:text-emerald-600'
                   aria-hidden='true'
                 />
               </div>
@@ -147,7 +147,7 @@ export const QueueManagementHeader: FC<QueueManagementHeaderProps> = ({
               <div className='h-10 w-10 flex items-center justify-center rounded-xl bg-emerald-50 mt-1 mb-1'>
                 <FontAwesomeIcon
                   icon={faHeadset}
-                  className='h-6 w-6 cursor-pointer text-emerald-600 dark:text-emerald-600'
+                  className='h-6 w-6 text-emerald-600 dark:text-emerald-600'
                   aria-hidden='true'
                 />
               </div>
