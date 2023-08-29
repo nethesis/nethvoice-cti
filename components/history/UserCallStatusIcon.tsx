@@ -23,7 +23,7 @@ export const UserCallStatusIcon: FC<UserCallStatusIconProps> = ({ call }) => {
               <>
                 <FontAwesomeIcon
                   icon={faArrowLeft}
-                  className='tooltip-switchboard-incoming-answered -rotate-45 h-5 w-3.5 text-green-600 dark:text-green-500'
+                  className='tooltip-switchboard-incoming-answered mr-2 -rotate-45 h-5 w-3.5 text-green-600 dark:text-green-500'
                   aria-hidden='true'
                 />
                 <Tooltip anchorSelect='.tooltip-incoming-answered' place='left'>
@@ -34,7 +34,7 @@ export const UserCallStatusIcon: FC<UserCallStatusIconProps> = ({ call }) => {
               <>
                 <FontAwesomeIcon
                   icon={faMissed}
-                  className='tooltip-switchboard-incoming-missed h-5 w-4 text-red-400'
+                  className='tooltip-switchboard-incoming-missed mr-2 h-5 w-4 text-red-400'
                   aria-hidden='true'
                 />
                 <Tooltip anchorSelect='.tooltip-incoming-missed' place='left'>
@@ -50,7 +50,7 @@ export const UserCallStatusIcon: FC<UserCallStatusIconProps> = ({ call }) => {
               <>
                 <FontAwesomeIcon
                   icon={faArrowLeft}
-                  className='tooltip-switchboard-outgoing-answered h-5 w-3.5 rotate-[135deg] text-green-600 dark:text-green-500'
+                  className='tooltip-switchboard-outgoing-answered mr-2 h-5 w-3.5 rotate-[135deg] text-green-600 dark:text-green-500'
                   aria-hidden='true'
                 />
                 <Tooltip anchorSelect='.tooltip-outgoing-answered' place='left'>
@@ -61,7 +61,7 @@ export const UserCallStatusIcon: FC<UserCallStatusIconProps> = ({ call }) => {
               <>
                 <FontAwesomeIcon
                   icon={faXmark}
-                  className='tooltip-switchboard-outgoing-missed h-5 w-3.5 text-red-400'
+                  className='tooltip-switchboard-outgoing-missed mr-2 h-5 w-3.5 text-red-400'
                   aria-hidden='true'
                 />
                 <Tooltip anchorSelect='.tooltip-outgoing-missed' place='left'>
