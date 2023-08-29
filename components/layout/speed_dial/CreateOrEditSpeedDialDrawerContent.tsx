@@ -2,6 +2,7 @@
 // SPDX-License-Identifier: AGPL-3.0-or-later
 
 import { ComponentPropsWithRef, forwardRef } from 'react'
+import { useTranslation } from 'react-i18next'
 import classNames from 'classnames'
 import { TextInput, Button, InlineNotification, SideDrawerCloseIcon } from '../../common'
 import { useState, useRef, useEffect } from 'react'
@@ -19,6 +20,7 @@ export const CreateOrEditSpeedDialDrawerContent = forwardRef<
   HTMLButtonElement,
   CreateOrEditSpeedDialDrawerContentProps
 >(({ config, className, ...props }, ref) => {
+  const { t } = useTranslation()
   const nameRef = useRef() as React.MutableRefObject<HTMLInputElement>
   const phoneNumberRef = useRef() as React.MutableRefObject<HTMLInputElement>
 
@@ -121,7 +123,9 @@ export const CreateOrEditSpeedDialDrawerContent = forwardRef<
       <div className='bg-gray-100 dark:bg-gray-800 py-6 px-6'>
         <div className='flex items-center justify-between'>
           <div className='text-lg font-medium dark:text-gray-200 text-gray-700'>
-            {config.isEdit ? 'Edit speed dial' : 'Create speed dial'}
+            {config.isEdit
+              ? `${t('SpeedDial.Edit speed dial')}`
+              : `${t('SpeedDial.Create speed dial')}`}
           </div>
           <div className='flex items-center h-7'>
             <SideDrawerCloseIcon />
@@ -159,7 +163,7 @@ export const CreateOrEditSpeedDialDrawerContent = forwardRef<
           {config.isEdit ? (
             <Button variant='primary' type='submit' onClick={prepareEditSpeedDial} className='mb-4'>
               <FontAwesomeIcon icon={faPen} className='mr-2 h-4 w-4' />
-              Save speed dial
+              {t('SpeedDial.Save speed dial')}
             </Button>
           ) : (
             <Button
@@ -169,11 +173,11 @@ export const CreateOrEditSpeedDialDrawerContent = forwardRef<
               className='mb-4'
             >
               <FontAwesomeIcon icon={faPlus} className='mr-2 h-4 w-4' />
-              Create speed dial
+              {t('SpeedDial.Create speed dial')}
             </Button>
           )}
           <Button variant='white' type='submit' onClick={closeSideDrawer} className='ml-4 mb-4'>
-            Cancel
+            {t('Common.Cancel')}
           </Button>
         </div>
       </div>
