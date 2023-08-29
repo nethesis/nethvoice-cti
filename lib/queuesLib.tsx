@@ -10,6 +10,7 @@ import { store } from '../store'
 import { exactDistanceToNowLoc, formatDurationLoc } from './dateTime'
 import { loadPreference, savePreference } from './storage'
 import { handleNetworkError } from './utils'
+import { useTranslation } from 'react-i18next'
 
 export const PAGE_SIZE = 10
 export const DEFAULT_OUTCOME_FILTER = 'lost'
@@ -421,11 +422,11 @@ export const sortByLoggedStatus = (operator1: any, operator2: any) => {
   return 0
 }
 
+
 // Set default queue tab to Queues management
-export const DEFAULT_SELECTED_TAB_QUEUE = 'Queues management'
 
 export const getSelectedTabQueue = (currentUsername: string) => {
   const selectedQueueTab =
-    loadPreference('queueSelectedTab', currentUsername) || DEFAULT_SELECTED_TAB_QUEUE
+    loadPreference('queueSelectedTab', currentUsername) || ''
   return { selectedQueueTab }
 }

@@ -164,7 +164,6 @@ export const QueueManagerDashboardChart: FC<QueueManagerDashboardChartProps> = (
   //   line chart hourly distribution of not managed calls
   const creationBarChartNotManaged = (chartValue: any) => {
     if (!Array.isArray(chartValue)) {
-      console.error('chartValue is not an array')
       return
     }
 
