@@ -36,7 +36,7 @@ import {
   faFileImport,
   faFileArrowDown,
   faCheckCircle,
-} from '@nethesis/nethesis-solid-svg-icons'
+} from '@fortawesome/free-solid-svg-icons'
 import { callPhoneNumber } from '../../lib/utils'
 import { useTranslation } from 'react-i18next'
 

@@ -12,6 +12,7 @@ import { operators } from './operators'
 import { notifications } from './notifications'
 import { globalSearch } from './globalSearch'
 import { queues } from './queues'
+import { queueManagerQueues } from './queueManager'
 import { ctiStatus } from './ctiStatus'
 import { lines } from './lines'
 import { phoneLines } from './phoneLines'
@@ -28,6 +29,7 @@ export interface RootModel extends Models<RootModel> {
   notifications: typeof notifications
   globalSearch: typeof globalSearch
   queues: typeof queues
+  queueManagerQueues: typeof queueManagerQueues
   ctiStatus: typeof ctiStatus
   lines: typeof lines
   phoneLines: typeof phoneLines
@@ -45,6 +47,7 @@ export const models: RootModel = {
   notifications,
   globalSearch,
   queues,
+  queueManagerQueues,
   ctiStatus,
   lines,
   phoneLines,

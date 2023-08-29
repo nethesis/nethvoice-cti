@@ -8,8 +8,7 @@ import { RootState, store } from '../../store'
 import { callPhoneNumber } from '../../lib/utils'
 import { formatInTimeZoneLoc } from '../../lib/dateTime'
 import { Badge, EmptyState, IconSwitch, SideDrawerCloseIcon } from '../common'
-import { faPhoneXmark, faCircleCheck, faPhone } from '@nethesis/nethesis-solid-svg-icons'
-import { faBell, faCommentDots } from '@fortawesome/free-regular-svg-icons'
+import { faBell, faCommentDots, faCircleCheck, faPhone, faXmark } from '@fortawesome/free-solid-svg-icons'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { utcToZonedTime } from 'date-fns-tz'
 import { humanDistanceToNowLoc } from '../../lib/dateTime'
@@ -60,7 +59,7 @@ export const NotificationsDrawerContent = forwardRef<
         {notification.type === 'missedCall' && (
           <>
             <FontAwesomeIcon
-              icon={faPhoneXmark}
+              icon={faXmark}
               className={classNames(
                 'h-5 w-3.5 text-red-400 dark:text-red-500',
                 `tooltip-${notification.id}`,

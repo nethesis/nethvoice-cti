@@ -374,7 +374,7 @@ export const GlobalSearch: FC<GlobalSearchProps> = () => {
                       activeOption &&
                       activeOption.resultType &&
                       ['operator', 'contact'].includes(activeOption.resultType) && (
-                        <div className='hidden h-96 w-1/2 flex-none flex-col overflow-y-auto lg:flex p-5'>
+                        <div className='hidden h-96 w-1/2 flex-none flex-col overflow-y-auto md:flex p-5'>
                           {/* operator */}
                           {activeOption.resultType === 'operator' && (
                             <OperatorSummary

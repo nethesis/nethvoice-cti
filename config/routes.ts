@@ -1,14 +1,16 @@
 // Copyright (C) 2023 Nethesis S.r.l.
 // SPDX-License-Identifier: AGPL-3.0-or-later
 
+import { faGrid2 as faGridSolid } from '@nethesis/nethesis-solid-svg-icons'
+
 import {
-  faClockRotateLeft as faClockRotateLeftSolid,
+  faUsers as faUsersSolid,
+  faChartLine as faChartLineSolid,
   faHeadset as faHeadsetSolid,
   faAddressBook as faAddressBookSolid,
   faGear as faGearSolid,
-  faGrid2 as faGridSolid,
-  faUsers as faUsersSolid,
-} from '@nethesis/nethesis-solid-svg-icons'
+  faClockRotateLeft as faClockRotateLeftSolid,
+} from '@fortawesome/free-solid-svg-icons'
 
 import {
   faClockRotateLeft as faClockRotateLeftLight,
@@ -17,6 +19,7 @@ import {
   faGear as faGearLight,
   faGrid2 as faGridLight,
   faUsers as faUsersLight,
+  faChartLine as faChartLineLight,
 } from '@nethesis/nethesis-light-svg-icons'
 
 import { IconDefinition } from '@fortawesome/fontawesome-common-types'
@@ -50,6 +53,13 @@ export const navItems: NavItemsProps[] = [
     href: '/history',
     icon: faClockRotateLeftLight,
     iconActive: faClockRotateLeftSolid,
+    current: false,
+  },
+  {
+    name: 'QueueManager',
+    href: '/queueManager',
+    icon: faChartLineLight,
+    iconActive: faChartLineSolid,
     current: false,
   },
   {

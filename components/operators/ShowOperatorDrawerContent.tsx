@@ -7,16 +7,15 @@ import { Button, Dropdown, SideDrawerCloseIcon } from '../common'
 import { useEffect } from 'react'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import {
+  faEarListen,
+  faTicket,
+  faPhoneSlash,
+  faPhone,
   faCircle,
   faEllipsisVertical,
   faHandPointUp,
-  faPhone,
-  faPhoneSlash,
-  faTicket,
-  faPhoneArrowDown,
-  faPhoneArrowUp,
-  faEar,
-} from '@nethesis/nethesis-solid-svg-icons'
+  faArrowLeft
+} from '@fortawesome/free-solid-svg-icons'
 import { useSelector } from 'react-redux'
 import { RootState } from '../../store'
 import { CallDuration } from './CallDuration'
@@ -45,7 +44,7 @@ export const ShowOperatorDrawerContent = forwardRef<
     <>
       <Dropdown.Item icon={faTicket}>{t('OperatorDrawer.Book')}</Dropdown.Item>
       <Dropdown.Item icon={faPhoneSlash}> {t('OperatorDrawer.Hangup')}</Dropdown.Item>
-      <Dropdown.Item icon={faEar}> {t('OperatorDrawer.Listen')}</Dropdown.Item>
+      <Dropdown.Item icon={faEarListen}> {t('OperatorDrawer.Listen')}</Dropdown.Item>
       <Dropdown.Item icon={faHandPointUp}> {t('OperatorDrawer.Intrude')}</Dropdown.Item>
       <Dropdown.Item icon={faCircle}> {t('OperatorDrawer.Record')}</Dropdown.Item>
     </>
@@ -122,8 +121,8 @@ export const ShowOperatorDrawerContent = forwardRef<
                       {config.conversations[0].direction == 'out' && (
                         <div className='flex items-center text-sm'>
                           <FontAwesomeIcon
-                            icon={faPhoneArrowUp}
-                            className='mr-2 h-5 w-3.5 text-green-600 dark:text-green-500'
+                            icon={faArrowLeft}
+                            className='mr-2 h-5 w-3.5 rotate-[135deg] text-green-600 dark:text-green-500'
                             aria-hidden='true'
                           />
                           <span className='truncate'> {t('OperatorDrawer.Outgoing')}</span>
@@ -132,8 +131,8 @@ export const ShowOperatorDrawerContent = forwardRef<
                       {config.conversations[0].direction == 'in' && (
                         <div className='flex items-center text-sm'>
                           <FontAwesomeIcon
-                            icon={faPhoneArrowDown}
-                            className='mr-2 h-5 w-3.5 text-green-600 dark:text-green-500'
+                            icon={faArrowLeft}
+                            className='mr-2 h-5 w-3.5 -rotate-45 text-green-600 dark:text-green-500'
                             aria-hidden='true'
                           />
                           <span className='truncate'>{t('OperatorDrawer.Incoming')}</span>

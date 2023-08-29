@@ -24,7 +24,7 @@ import {
   faPhone,
   faStar as faStarSolid,
   faVideo,
-} from '@nethesis/nethesis-solid-svg-icons'
+} from '@fortawesome/free-solid-svg-icons'
 import { faStar as faStarLight } from '@nethesis/nethesis-light-svg-icons'
 
 export interface OperatorSummaryProps extends ComponentPropsWithRef<'div'> {

@@ -13,7 +13,7 @@ interface CallsDestinationProps {
   operators: any
 }
 
-export function getCallName (call: CallTypes): string {
+export function getCallName(call: CallTypes): string {
   return call.dst_cnam || call.dst_ccompany || call.dst || ''
 }
 
@@ -22,9 +22,8 @@ export const CallsDestination: FC<CallsDestinationProps> = ({
   hideName,
   hideNumber,
   highlightNumber,
-  operators
+  operators,
 }) => {
-
   //Check if a user does not have a name and add the name of the operator
   if (call.dst_cnam === '') {
     const operatorFound: any = getOperatorByPhoneNumber(call.dst, operators)
@@ -56,13 +55,7 @@ export const CallsDestination: FC<CallsDestinationProps> = ({
       </Tooltip>
       {/* phone number */}
       {!hideName && (call.dst_cnam !== '' || call.dst_ccompany !== '') && (
-        <div
-          className={`truncate ${
-            highlightNumber
-              ? 'text-primary'
-              : 'text-gray-500'
-          }`}
-        >
+        <div className={`truncate ${highlightNumber ? 'text-primary' : 'text-gray-500'}`}>
           {call.dst}
         </div>
       )}

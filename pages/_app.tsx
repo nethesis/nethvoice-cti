@@ -22,6 +22,7 @@ function MyApp({ Component, pageProps }: AppProps) {
   const [isLoading, setIsLoading] = useState<boolean>(true)
   const router = useRouter()
   const [firstRenderI18n, setFirstRenderI18n] = useState(true)
+  const [firstRenderAscii, setFirstRenderAscii] = useState(true)
 
   useEffect(() => {
     const { username, token } = getCredentials()
@@ -50,6 +51,23 @@ function MyApp({ Component, pageProps }: AppProps) {
       setFirstRenderI18n(false)
     }
   }, [firstRenderI18n])
+
+  const welcomeMsg = [
+    '  _   _        _    _  __      __     _               _____  _______  _____ ',
+    ' | \\ | |      | |  | | \\ \\    / /    (_)             / ____||__   __||_   _|',
+    ' |  \\| |  ___ | |_ | |__\\ \\  / /___   _   ___  ___  | |        | |     | |  ',
+    " | . ` | / _ \\| __|| '_ \\\\ \\/ // _ \\ | | / __|/ _ \\ | |        | |     | |  ",
+    ' | |\\  ||  __/| |_ | | | |\\  /| (_) || || (__|  __/ | |____    | |    _| |_ ',
+    ' |_| \\_| \\___| \\__||_| |_| \\/  \\___/ |_| \\___|\\___|  \\_____|   |_|   |_____|',
+    '                                                                            ',
+  ].join('\n')
+
+  useEffect(() => {
+    if (firstRenderAscii) {
+      console.log('%c' + welcomeMsg, 'background: #059669; color: white;')
+      setFirstRenderAscii(false)
+    }
+  }, [firstRenderAscii])
 
   // check if dark theme should be enabled
   useEffect(() => {

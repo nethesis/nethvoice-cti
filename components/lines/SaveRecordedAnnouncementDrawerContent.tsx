@@ -6,7 +6,7 @@ import classNames from 'classnames'
 import { SideDrawerCloseIcon } from '../common'
 
 import { useTranslation } from 'react-i18next'
-import { faFloppyDisk, faCircleXmark } from '@nethesis/nethesis-solid-svg-icons'
+import { faCircleXmark, faFloppyDisk } from '@fortawesome/free-solid-svg-icons'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { closeSideDrawer } from '../../lib/utils'
 import { TextInput, Button, Modal } from '../common'
@@ -136,7 +136,13 @@ export const SaveRecordedAnnouncementDrawerContent = forwardRef<
 
         <div className='flex mt-7'>
           <>
-            <Button variant='primary' type='submit' onClick={enableAnnouncement} className='mb-4' disabled={textFilter ? false : true}>
+            <Button
+              variant='primary'
+              type='submit'
+              onClick={enableAnnouncement}
+              className='mb-4'
+              disabled={textFilter ? false : true}
+            >
               <FontAwesomeIcon icon={faFloppyDisk} className='mr-2 h-4 w-4' />
               {t('Common.Save')}
             </Button>

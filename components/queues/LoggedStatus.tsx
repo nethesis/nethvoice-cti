@@ -4,7 +4,7 @@
 import { FC, ComponentProps, useState, useEffect } from 'react'
 import classNames from 'classnames'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
-import { faUserCheck, faUserClock, faUserXmark } from '@nethesis/nethesis-solid-svg-icons'
+import { faUserCheck, faUserClock, faUserXmark } from '@fortawesome/free-solid-svg-icons'
 import { useTranslation } from 'react-i18next'
 
 export interface LoggedStatusProps extends ComponentProps<'div'> {

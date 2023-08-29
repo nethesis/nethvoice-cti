@@ -57,11 +57,11 @@ export const NavBar: FC<NavBarProps> = ({ items }) => {
                       : 'text-gray-600 dark:text-gray-300 hover:text-gray-900 hover:bg-gray-100 dark:hover:bg-gray-800 dark:hover:text-gray-50',
                     'group rounded-md flex flex-col items-center text-xs font-medium justify-center',
                     `tooltip-${item.name}`,
-                    'relative'
+                    'relative',
                   )}
                   style={{
                     height: '3.125rem',
-                    width: '3.125rem'
+                    width: '3.125rem',
                   }}
                   aria-current={item.current ? 'page' : undefined}
                 >

@@ -10,14 +10,14 @@ import {
   faPhone,
   faBullhorn,
   faVoicemail,
-  faArrowTurnDownRight,
+  faTurnDown,
   faFloppyDisk,
   faChevronDown,
   faChevronUp,
   faCalendar,
   faPlay,
   faCircleXmark,
-} from '@nethesis/nethesis-solid-svg-icons'
+} from '@fortawesome/free-solid-svg-icons'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { callPhoneNumber, closeSideDrawer, playFileAudio } from '../../lib/utils'
 import { TextInput, Button } from '../common'
@@ -984,8 +984,8 @@ export const ShowPhoneLinesDrawerContent = forwardRef<
           <div className='flex items-center justify-between mt-6'>
             <div className='flex items-center'>
               <FontAwesomeIcon
-                icon={faArrowTurnDownRight}
-                className='mr-4 h-4 w-4 flex-shrink-0 text-gray-400 dark:text-gray-500'
+                icon={faTurnDown}
+                className='mr-4 h-4 w-4 rotate-[270deg] flex-shrink-0 text-gray-400 dark:text-gray-500'
                 aria-hidden='true'
               />
               <h4 className='text-md font-medium text-gray-700 dark:text-gray-200'>

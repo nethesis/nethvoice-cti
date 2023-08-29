@@ -4,15 +4,14 @@
 import { ComponentPropsWithRef, forwardRef, useEffect, useState, FC } from 'react'
 import { searchDrawerHistoryUser, searchDrawerHistorySwitchboard } from '../../lib/history'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
+import { faMissed } from '@nethesis/nethesis-solid-svg-icons'
 import {
   faBuilding,
   faArrowRight,
   faPhone,
-  faPhoneMissed,
-  faPhoneArrowDown,
-  faPhoneArrowUp,
-  faPhoneXmark,
-} from '@nethesis/nethesis-solid-svg-icons'
+  faXmark,
+  faArrowLeft,
+} from '@fortawesome/free-solid-svg-icons'
 import { formatDateLoc, getCallTimeToDisplay } from '../../lib/dateTime'
 import { useSelector } from 'react-redux'
 import { RootState } from '../../store'
@@ -166,8 +165,8 @@ export const LastCallsDrawerTable = forwardRef<HTMLButtonElement, LastCallsDrawe
                       {call.disposition === 'ANSWERED' ? (
                         <>
                           <FontAwesomeIcon
-                            icon={faPhoneArrowDown}
-                            className='tooltip-switchboard-incoming-answered h-5 w-3.5 text-green-600 dark:text-green-500'
+                            icon={faArrowLeft}
+                            className='tooltip-switchboard-incoming-answered -rotate-45 h-5 w-3.5 text-green-600 dark:text-green-500'
                             aria-hidden='true'
                           />
                           <Tooltip
@@ -180,7 +179,7 @@ export const LastCallsDrawerTable = forwardRef<HTMLButtonElement, LastCallsDrawe
                       ) : (
                         <>
                           <FontAwesomeIcon
-                            icon={faPhoneMissed}
+                            icon={faMissed}
                             className='tooltip-switchboard-incoming-missed h-5 w-4 text-red-400'
                             aria-hidden='true'
                           />
@@ -196,8 +195,8 @@ export const LastCallsDrawerTable = forwardRef<HTMLButtonElement, LastCallsDrawe
                       {call.disposition === 'ANSWERED' ? (
                         <>
                           <FontAwesomeIcon
-                            icon={faPhoneArrowUp}
-                            className='tooltip-switchboard-outgoing-answered h-5 w-3.5 text-green-600 dark:text-green-500'
+                            icon={faArrowLeft}
+                            className='tooltip-switchboard-outgoing-answered h-5 w-3.5 rotate-[135deg] text-green-600 dark:text-green-500'
                             aria-hidden='true'
                           />
                           <Tooltip
@@ -210,7 +209,7 @@ export const LastCallsDrawerTable = forwardRef<HTMLButtonElement, LastCallsDrawe
                       ) : (
                         <>
                           <FontAwesomeIcon
-                            icon={faPhoneXmark}
+                            icon={faXmark}
                             className='tooltip-switchboard-outgoing-missed h-5 w-3.5 text-red-400'
                             aria-hidden='true'
                           />

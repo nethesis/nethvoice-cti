@@ -12,18 +12,17 @@ import {
 } from 'react'
 import classNames from 'classnames'
 import { InlineNotification, SideDrawerCloseIcon, Dropdown } from '../common'
-
 import { useTranslation } from 'react-i18next'
-import {
-  faFloppyDisk,
-  faCircleXmark,
-  faFileMusic,
-  faXmark,
-  faTrashCan,
-  faEllipsisVertical,
-  faTriangleExclamation,
-} from '@nethesis/nethesis-solid-svg-icons'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
+import {
+  faFileAudio,
+  faTriangleExclamation,
+  faEllipsisVertical,
+  faTrashCan,
+  faXmark,
+  faCircleXmark,
+  faFloppyDisk,
+} from '@fortawesome/free-solid-svg-icons'
 import { callPhoneNumber, closeSideDrawer, formatFileSize } from '../../lib/utils'
 import { TextInput, Button, Modal } from '../common'
 import { isEmpty } from 'lodash'
@@ -62,7 +61,7 @@ export const EditAnnouncementDrawerContent = forwardRef<
 
   const contactMenuItems = (
     <>
-      <Dropdown.Item icon={faTrashCan} onClick={() => deleteAnnouncement(config.id)}>
+      <Dropdown.Item icon={faTrashCan} onClick={() => deleteAnnouncement(config.announcement_id)}>
         {t('Common.Delete')}
       </Dropdown.Item>
     </>
@@ -319,7 +318,7 @@ export const EditAnnouncementDrawerContent = forwardRef<
                   >
                     <div className='flex flex-col items-center justify-center pt-5 pb-6'>
                       <FontAwesomeIcon
-                        icon={faFileMusic}
+                        icon={faFileAudio}
                         className='w-10 h-10 mb-3 text-gray-400 dark:text-gray-200'
                       />
                       <p className='mb-2 text-md text-gray-900 dark:text-gray-100'>
@@ -345,7 +344,7 @@ export const EditAnnouncementDrawerContent = forwardRef<
                       <div className='flex w-0 flex-1 items-center pl-2'>
                         <div className='h-9 w-9 bg-emerald-50 dark:bg-emerald-200 flex items-center rounded-sm justify-center'>
                           <FontAwesomeIcon
-                            icon={faFileMusic}
+                            icon={faFileAudio}
                             className='h-4 w-4 text-primary dark:text-primaryDark'
                             aria-hidden='true'
                             onClick={() => recordingAnnouncement()}

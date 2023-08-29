@@ -29,7 +29,7 @@ import {
   faMoon,
   faBell,
   faChevronRight,
-} from '@nethesis/nethesis-solid-svg-icons'
+} from '@fortawesome/free-solid-svg-icons'
 import { getUserInfo } from '../../services/user'
 import { setTheme } from '../../lib/darkTheme'
 import { loadNotificationsFromStorage } from '../../lib/notifications'
@@ -171,7 +171,7 @@ export const TopBar: FC<TopBarProps> = ({ openMobileCb }) => {
                 'relative text-left cursor-pointer px-5 py-2 text-sm flex items-center gap-3 w-full ',
               )}
             >
-              <StatusDot status={mainPresence} className='flex' />
+              <StatusDot status={mainPresence} className='flex mr-1' />
               {t('TopBar.Presence')}
               <FontAwesomeIcon
                 icon={faChevronRight}

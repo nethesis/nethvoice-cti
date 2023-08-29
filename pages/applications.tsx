@@ -4,14 +4,14 @@
 import type { NextPage } from 'next'
 import { useTranslation } from 'react-i18next'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
+import { faCameraSecurity } from '@nethesis/nethesis-solid-svg-icons'
 import {
-  faArrowRight,
-  faPhoneVolume,
-  faCameraSecurity,
   faVideo,
   faChartSimple,
+  faPhoneVolume,
+  faArrowRight,
   faArrowUpRightFromSquare,
-} from '@nethesis/nethesis-solid-svg-icons'
+} from '@fortawesome/free-solid-svg-icons'
 import { Button } from '../components/common'
 import { getApiEndpoint } from '../lib/utils'
 import { getApiScheme } from '../lib/utils'

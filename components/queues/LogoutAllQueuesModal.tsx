@@ -3,7 +3,7 @@
 
 import { FC, ComponentProps, useRef, MutableRefObject } from 'react'
 import { useTranslation } from 'react-i18next'
-import { faTriangleExclamation } from '@nethesis/nethesis-solid-svg-icons'
+import { faTriangleExclamation } from '@fortawesome/free-solid-svg-icons'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { Button, Modal } from '../common'
 

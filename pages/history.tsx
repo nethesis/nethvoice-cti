@@ -10,18 +10,17 @@ import { RootState } from '../store'
 import { useSelector } from 'react-redux'
 import { debounce } from 'lodash'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
+import { faMissed } from '@nethesis/nethesis-solid-svg-icons'
 import {
   faBuilding,
   faPlay,
   faArrowRight,
   faChevronRight,
   faChevronLeft,
-  faPhoneMissed,
-  faPhoneArrowDown,
-  faPhoneArrowUp,
-  faPhoneXmark,
   faPhone,
-} from '@nethesis/nethesis-solid-svg-icons'
+  faXmark,
+  faArrowLeft,
+} from '@fortawesome/free-solid-svg-icons'
 import { formatDateLoc, getCallTimeToDisplay } from '../lib/dateTime'
 import { subDays, startOfDay } from 'date-fns'
 import { useTranslation } from 'react-i18next'
@@ -357,8 +356,8 @@ const History: NextPage = () => {
                 {call.disposition === 'ANSWERED' ? (
                   <div className='flex flex-nowrap items-center'>
                     <FontAwesomeIcon
-                      icon={faPhoneArrowDown}
-                      className='mr-2 h-5 w-3.5 text-green-600 dark:text-green-500'
+                      icon={faArrowLeft}
+                      className='mr-2 h-5 w-3.5 -rotate-45 text-green-600 dark:text-green-500'
                       aria-hidden='true'
                     />
                     <span className='text-gray-900 dark:text-gray-100'>
@@ -369,7 +368,7 @@ const History: NextPage = () => {
                 ) : (
                   <div className='flex flex-nowrap items-center'>
                     <FontAwesomeIcon
-                      icon={faPhoneMissed}
+                      icon={faMissed}
                       className='mr-2 h-5 w-4 text-red-400'
                       aria-hidden='true'
                     />
@@ -385,8 +384,8 @@ const History: NextPage = () => {
                 {call.disposition === 'ANSWERED' ? (
                   <div className='flex flex-nowrap items-center'>
                     <FontAwesomeIcon
-                      icon={faPhoneArrowUp}
-                      className='mr-2 h-5 w-3.5 text-green-600 dark:text-green-500'
+                      icon={faArrowLeft}
+                      className='mr-2 h-5 w-3.5 rotate-[135deg] text-green-600 dark:text-green-500'
                       aria-hidden='true'
                     />
                     <span className='text-gray-900 dark:text-gray-100'>
@@ -397,7 +396,7 @@ const History: NextPage = () => {
                 ) : (
                   <div className='flex flex-nowrap items-center'>
                     <FontAwesomeIcon
-                      icon={faPhoneXmark}
+                      icon={faXmark}
                       className='mr-2 h-5 w-3.5 text-red-400'
                       aria-hidden='true'
                     />
@@ -453,8 +452,8 @@ const History: NextPage = () => {
                     {call.disposition === 'ANSWERED' ? (
                       <div className='flex flex-nowrap items-center'>
                         <FontAwesomeIcon
-                          icon={faPhoneArrowDown}
-                          className='mr-2 h-5 w-3.5 text-green-600 dark:text-green-500'
+                          icon={faArrowLeft}
+                          className='mr-2 h-5 w-3.5 -rotate-45 text-green-600 dark:text-green-500'
                           aria-hidden='true'
                         />
                         <span className='text-gray-900 dark:text-gray-100'>
@@ -464,7 +463,7 @@ const History: NextPage = () => {
                     ) : (
                       <div className='flex flex-nowrap'>
                         <FontAwesomeIcon
-                          icon={faPhoneMissed}
+                          icon={faMissed}
                           className='mr-2 h-5 w-4 text-red-400'
                           aria-hidden='true'
                         />
@@ -482,8 +481,8 @@ const History: NextPage = () => {
                     {call.disposition === 'ANSWERED' ? (
                       <div className='flex flex-nowrap items-center'>
                         <FontAwesomeIcon
-                          icon={faPhoneArrowUp}
-                          className='mr-2 h-5 w-3.5 text-green-600 dark:text-green-500'
+                          icon={faArrowLeft}
+                          className='mr-2 h-5 w-3.5 rotate-[135deg] text-green-600 dark:text-green-500'
                           aria-hidden='true'
                         />
                         <span className='text-gray-900 dark:text-gray-100'>
@@ -494,7 +493,7 @@ const History: NextPage = () => {
                     ) : (
                       <div className='flex flex-nowrap'>
                         <FontAwesomeIcon
-                          icon={faPhoneXmark}
+                          icon={faXmark}
                           className='mr-2 h-5 w-3.5 text-red-400'
                           aria-hidden='true'
                         />

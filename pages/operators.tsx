@@ -23,7 +23,7 @@ import { faChevronRight, faFilter, faHeadset } from '@fortawesome/free-solid-svg
 import { store } from '../store'
 import { CallDuration } from '../components/operators/CallDuration'
 import InfiniteScroll from 'react-infinite-scroll-component'
-import { faCircleNotch } from '@nethesis/nethesis-solid-svg-icons'
+import { faCircleNotch } from '@fortawesome/free-solid-svg-icons'
 
 //// use i18n where there is operator.mainPresence
 

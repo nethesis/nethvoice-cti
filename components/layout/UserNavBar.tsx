@@ -5,7 +5,7 @@
 import { FC, useCallback, useEffect, useState } from 'react'
 import { SpeedDial } from './SpeedDial'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
-import { faBolt, faPhone, type IconDefinition } from '@nethesis/nethesis-solid-svg-icons'
+import { faBolt, faPhone, type IconDefinition } from '@fortawesome/free-solid-svg-icons'
 import { getJSONItem, setJSONItem } from '../../lib/storage'
 import { RootState } from '../../store'
 import { useSelector } from 'react-redux'

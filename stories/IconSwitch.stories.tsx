@@ -4,7 +4,7 @@
 import { IconSwitch, IconSwitchProps } from '../components/common'
 import { Story, Meta } from '@storybook/react'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
-import { faStar as faStarSolid } from '@nethesis/nethesis-solid-svg-icons'
+import { faStar as faStarSolid } from '@fortawesome/free-solid-svg-icons'
 import { faStar as faStarLight } from '@nethesis/nethesis-light-svg-icons'
 
 const meta = {

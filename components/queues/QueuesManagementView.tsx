@@ -21,23 +21,23 @@ import {
   unpauseQueue,
 } from '../../lib/queuesLib'
 import {
-  faChevronDown,
-  faCircleXmark,
-  faFilter,
-  faHeadset,
-  faPause,
-  faPhone,
+  faMugSaucer,
+  faThumbTack,
+  faCircleNotch,
   faStar as faStarSolid,
-  faArrowDownLeftAndArrowUpRightToCenter,
   faChevronUp,
+  faPhone,
+  faPause,
+  faHeadset,
+  faFilter,
+  faChevronDown,
+  faDownLeftAndUpRightToCenter,
+  faCircleExclamation,
+  faCircleXmark,
   faUserClock,
   faUserCheck,
   faUserXmark,
-  faMug,
-  faLightEmergencyOn,
-  faThumbTack,
-  faCircleNotch,
-} from '@nethesis/nethesis-solid-svg-icons'
+} from '@fortawesome/free-solid-svg-icons'
 import { faStar as faStarLight } from '@nethesis/nethesis-light-svg-icons'
 import { getOperatorByPhoneNumber, openShowOperatorDrawer } from '../../lib/operators'
 import classNames from 'classnames'
@@ -331,10 +331,10 @@ export const QueuesManagementView: FC<QueuesManagementViewProps> = ({ className 
       <Dropdown.Item icon={faUserClock} onClick={() => pauseAllQueues('')}>
         {t('Queues.Pause')}
       </Dropdown.Item>
-      <Dropdown.Item icon={faMug} onClick={() => pauseAllQueues('Lunch break')}>
+      <Dropdown.Item icon={faMugSaucer} onClick={() => pauseAllQueues('Lunch break')}>
         {t('Queues.Lunch break')}
       </Dropdown.Item>
-      <Dropdown.Item icon={faLightEmergencyOn} onClick={() => pauseAllQueues('Emergency')}>
+      <Dropdown.Item icon={faCircleExclamation} onClick={() => pauseAllQueues('Emergency')}>
         {t('Queues.Emergency')}
       </Dropdown.Item>
       <Dropdown.Item icon={faThumbTack} onClick={() => pauseAllQueues('Backend')}>
@@ -348,10 +348,13 @@ export const QueuesManagementView: FC<QueuesManagementViewProps> = ({ className 
       <Dropdown.Item icon={faUserClock} onClick={() => pauseSingleQueue(queue, '')}>
         {t('Queues.Pause')}
       </Dropdown.Item>
-      <Dropdown.Item icon={faMug} onClick={() => pauseSingleQueue(queue, 'Lunch break')}>
+      <Dropdown.Item icon={faMugSaucer} onClick={() => pauseSingleQueue(queue, 'Lunch break')}>
         {t('Queues.Lunch break')}
       </Dropdown.Item>
-      <Dropdown.Item icon={faLightEmergencyOn} onClick={() => pauseSingleQueue(queue, 'Emergency')}>
+      <Dropdown.Item
+        icon={faCircleExclamation}
+        onClick={() => pauseSingleQueue(queue, 'Emergency')}
+      >
         {t('Queues.Emergency')}
       </Dropdown.Item>
       <Dropdown.Item icon={faThumbTack} onClick={() => pauseSingleQueue(queue, 'Backend')}>
@@ -571,7 +574,7 @@ export const QueuesManagementView: FC<QueuesManagementViewProps> = ({ className 
                           )}
                         >
                           <FontAwesomeIcon
-                            icon={faArrowDownLeftAndArrowUpRightToCenter}
+                            icon={faDownLeftAndUpRightToCenter}
                             className='h-4 w-4 text-gray-400 dark:text-gray-500'
                           />
                           <span>{queue.connectedCalls.length}</span>
@@ -802,7 +805,7 @@ export const QueuesManagementView: FC<QueuesManagementViewProps> = ({ className 
                             <div className='flex justify-between items-center'>
                               <div className='font-medium flex items-center'>
                                 <FontAwesomeIcon
-                                  icon={faArrowDownLeftAndArrowUpRightToCenter}
+                                  icon={faDownLeftAndUpRightToCenter}
                                   aria-hidden='true'
                                   className='h-4 w-4 mr-2'
                                 />
