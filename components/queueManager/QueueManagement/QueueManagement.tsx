@@ -311,7 +311,7 @@ export const QueueManagement: FC<QueueManagementProps> = ({ className }): JSX.El
         {({ open }) => (
           <>
             <div className='flex items-center'>
-              <Listbox.Label className='block text-sm font-medium leading-6 dark:text-gray-200 text-gray-700 mr-8'>
+              <Listbox.Label className='block text-sm font-medium leading-6 dark:text-gray-200 text-gray- mr-8'>
                 {t('QueueManager.Select queue')}
               </Listbox.Label>
               <div className='relative'>
@@ -394,7 +394,7 @@ export const QueueManagement: FC<QueueManagementProps> = ({ className }): JSX.El
           </div>
           <div className='flex items-center justify-end h-6 w-6'>
             <FontAwesomeIcon
-              icon={expandedDashboard ? faChevronDown : faChevronUp}
+              icon={expandedDashboard ? faChevronUp : faChevronDown}
               className='h-3.5 w-3.5 pl-2 py-2 cursor-pointer flex items-center'
               aria-hidden='true'
               onClick={toggleExpandDashboard}
@@ -446,7 +446,7 @@ export const QueueManagement: FC<QueueManagementProps> = ({ className }): JSX.El
               <div className='flex-grow'></div>
               <div className='flex items-center justify-end h-6 w-6'>
                 <FontAwesomeIcon
-                  icon={expandedWaitingCall ? faChevronDown : faChevronUp}
+                  icon={expandedWaitingCall ? faChevronUp : faChevronDown}
                   className='h-3.5 w-3.5 pl-2 py-2 cursor-pointer flex items-center'
                   aria-hidden='true'
                   onClick={toggleWaitingCall}
@@ -463,7 +463,7 @@ export const QueueManagement: FC<QueueManagementProps> = ({ className }): JSX.El
                     {queueManagerStore &&
                     queueManagerStore?.isLoaded &&
                     queueManagerStore?.queues[selectedValue?.queue] &&
-                    isEmpty(queueManagerStore?.queues[selectedValue.queue]?.waitingCallersList) ? (
+                    isEmpty(queueManagerStore?.queues[selectedValue.queue]?.waitingCallersList) && selectedValue ? (
                       <div className='p-4'>{t('Queues.No calls')}</div>
                     ) : (
                       <div className='-my-2 -mx-4 overflow-x-auto sm:-mx-6 lg:-mx-8'>
@@ -535,7 +535,7 @@ export const QueueManagement: FC<QueueManagementProps> = ({ className }): JSX.El
               <div className='flex-grow'></div>
               <div className='flex items-center justify-end h-6 w-6'>
                 <FontAwesomeIcon
-                  icon={expandedConnectedCall ? faChevronDown : faChevronUp}
+                  icon={expandedConnectedCall ? faChevronUp : faChevronDown}
                   className='h-3.5 w-3.5 pl-2 py-2 cursor-pointer flex items-center'
                   aria-hidden='true'
                   onClick={toggleConnectedCall}
@@ -552,7 +552,7 @@ export const QueueManagement: FC<QueueManagementProps> = ({ className }): JSX.El
                   {queueManagerStore &&
                   queueManagerStore?.isLoaded &&
                   queueManagerStore?.queues[selectedValue?.queue] &&
-                  isEmpty(queueManagerStore?.queues[selectedValue.queue]?.connectedCalls) ? (
+                  isEmpty(queueManagerStore?.queues[selectedValue.queue]?.connectedCalls) && selectedValue ? (
                     <div className='p-4'>{t('Queues.No calls')}</div>
                   ) : (
                     <div className='-my-2 -mx-4 overflow-x-auto sm:-mx-6 lg:-mx-8'>

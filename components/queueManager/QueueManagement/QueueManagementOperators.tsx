@@ -174,7 +174,7 @@ export const QueueManagementOperators: FC<QueueManagementOperatorsProps> = ({
           <div className='flex-grow'></div>
           <div className='flex items-center justify-end h-6 w-6'>
             <FontAwesomeIcon
-              icon={expandedQueueOperators ? faChevronDown : faChevronUp}
+              icon={expandedQueueOperators ? faChevronUp : faChevronDown}
               className='h-3.5 w-3.5 pl-2 py-2 cursor-pointer flex items-center'
               aria-hidden='true'
               onClick={toggleQueueOperators}

@@ -165,7 +165,7 @@ export const RealTimeQueues: FC<RealTimeQueuesProps> = ({
           </div>
           <div className='flex items-center justify-end h-6 w-6'>
             <FontAwesomeIcon
-              icon={queuesStatisticsExpanded ? faChevronDown : faChevronUp}
+              icon={queuesStatisticsExpanded ? faChevronUp : faChevronDown}
               className='h-4 w-4 text-gray-600 dark:text-gray-500 pl-2 py-2 flex items-center'
               aria-hidden='true'
               onClick={toggleExpandQueuesStatistics}

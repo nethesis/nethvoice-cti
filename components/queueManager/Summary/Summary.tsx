@@ -585,7 +585,7 @@ export const Summary: FC<SummaryProps> = ({ className }): JSX.Element => {
         </div>
         <div className='flex items-center justify-end h-6 w-6'>
           <FontAwesomeIcon
-            icon={expandedQueuesSummary ? faChevronDown : faChevronUp}
+            icon={expandedQueuesSummary ? faChevronUp : faChevronDown}
             className='h-3.5 w-3.5 pl-2 py-2 cursor-pointer flex items-center'
             aria-hidden='true'
             onClick={toggleQueuesSummary}
@@ -677,7 +677,7 @@ export const Summary: FC<SummaryProps> = ({ className }): JSX.Element => {
         </div>
         <div className='flex items-center justify-end h-6 w-6'>
           <FontAwesomeIcon
-            icon={expanded ? faChevronDown : faChevronUp}
+            icon={expanded ? faChevronUp : faChevronDown}
             className='h-3.5 w-3.5 pl-2 py-2 cursor-pointer flex items-center'
             aria-hidden='true'
             onClick={toggleExpandQueue}

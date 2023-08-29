@@ -272,7 +272,7 @@ export const RealTimeOperators: FC<RealTimeOperatorsProps> = ({
           </div>
           <div className='flex items-center justify-end h-6 w-6'>
             <FontAwesomeIcon
-              icon={operatorsStatisticsExpanded ? faChevronDown : faChevronUp}
+              icon={operatorsStatisticsExpanded ? faChevronUp : faChevronDown}
               className='h-4 w-4 pl-2 py-2  text-gray-600 dark:text-gray-500cursor-pointer flex items-center'
               aria-hidden='true'
               onClick={toggleExpandOperatorsStatistics}
