@@ -243,7 +243,7 @@ export const NotManagedCalls: FC<NotManagedCallsProps> = ({ className }): JSX.El
               </Button>
             </div>
             <span className='mr-2'>
-              <span className='text-gray-900'>{t('Queues.Last update')}:</span>{' '}
+              <span className='text-gray-500 dark:text-gray-500'>{t('Queues.Last update')}:</span>{' '}
               <span className='text-gray-500 dark:text-gray-500'>
                 {lastUpdated ? formatDateLoc(new Date(), 'HH:mm:ss') : '-'}
               </span>

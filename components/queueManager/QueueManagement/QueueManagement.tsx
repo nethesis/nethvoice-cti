@@ -311,7 +311,7 @@ export const QueueManagement: FC<QueueManagementProps> = ({ className }): JSX.El
         {({ open }) => (
           <>
             <div className='flex items-center'>
-              <Listbox.Label className='block text-sm font-medium leading-6 text-gray-500 mr-8'>
+              <Listbox.Label className='block text-sm font-medium leading-6 dark:text-gray-200 text-gray-700 mr-8'>
                 {t('QueueManager.Select queue')}
               </Listbox.Label>
               <div className='relative'>
