@@ -556,7 +556,7 @@ export const QueueManagementChart: FC<QueueManagementChartProps> = ({
                   role='list'
                   className=' divide-gray-300 dark:divide-gray-600 bg-white dark:bg-gray-900'
                 >
-                  <li className='flex items-center justify-between gap-x-6 border-b rounded-lg shadow-md border-gray-200 dark:border-gray-700 bg-gray-200 py-2 px-2'>
+                  <li className='flex items-center justify-between gap-x-6 rounded-md bg-gray-100 dark:bg-gray-700 py-2 px-2'>
                     <div className='py-1 px-2'>
                       <strong>{t('QueueManager.Date')}</strong>
                     </div>

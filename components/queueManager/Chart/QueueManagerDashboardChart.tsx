@@ -105,7 +105,7 @@ export const QueueManagerDashboardChart: FC<QueueManagerDashboardChartProps> = (
     if (isLoadedQueuesHistory && queuesHistory && queuesList) {
       let totalChartsData = initTopSparklineChartsData(queuesHistory)
       extractStartHour(totalChartsData)
-    //   extractStartHourNotManaged(groupedNotManagedWithConvertedTimeState)
+      //   extractStartHourNotManaged(groupedNotManagedWithConvertedTimeState)
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [isLoadedQueuesHistory, queuesHistory, queuesList, isLoadedQueues])
@@ -188,15 +188,13 @@ export const QueueManagerDashboardChart: FC<QueueManagerDashboardChartProps> = (
       const { topic, dates } = entry
 
       dates.forEach((dateItem: any) => {
-        
         const { date, value } = dateItem
         const roundedTime = date.split('-')[3] + ':30'
-        
 
         const matchingDataset = datasets.find(
           (dataset) => dataset.label === queueManagerStore.queues[topic].name,
         )
-        
+
         if (matchingDataset) {
           const existingIndex = matchingDataset.data.findIndex(
             (dataItem) => dataItem.label === roundedTime,
@@ -357,38 +355,6 @@ export const QueueManagerDashboardChart: FC<QueueManagerDashboardChartProps> = (
 
   const [notManagedStart, setNotManagedStart] = useState<any>(0)
 
-//   const extractStartHourNotManaged = (groupedNotManagedWithConvertedTime: any) => {
-//     let beginTime = Infinity
-
-//     
-//     for (const queueName in groupedNotManagedWithConvertedTime) {
-//       for (const item of groupedNotManagedWithConvertedTime[queueName].dates) {
-//         if (item && item.fullDate) {
-//           const timestamp = new Date(item.fullDate).getTime()
-//           if (timestamp < beginTime) {
-//             beginTime = timestamp
-//           }
-//         }
-//       }
-//     }
-
-//     
-//     beginTime -= 7200000
-
-//     setNotManagedStart(beginTime)
-
-//     
-//     for (const queueName in groupedNotManagedWithConvertedTime) {
-//       groupedNotManagedWithConvertedTime[queueName].dates = groupedNotManagedWithConvertedTime[
-//         queueName
-//       ].dates.filter((item: any) => {
-//         return item && item.fullDate && new Date(item.fullDate).getTime() >= beginTime
-//       })
-//     }
-
-//     return groupedNotManagedWithConvertedTime
-//   }
-
   return (
     <>
       <div className='grid grid-cols-1 gap-4 sm:grid-cols-1 lg:grid-cols-2'>
@@ -519,37 +485,6 @@ export const QueueManagerDashboardChart: FC<QueueManagerDashboardChartProps> = (
             </div>
           </div>
         </div>
-
-        {/* Hourly distribution of call results */}
-        {/* <div className={`pt-12 ${zoomedCardIndices.includes(4) ? 'col-span-2' : 'col-span-1'}`}>
-          
-          <h2 className='text-md ml-4 font-semibold mb-4'>
-            {t('QueueManager.Hourly distribution of call results')}
-          </h2>
-
-          <div className='border-b rounded-md shadow-md bg-white border-gray-200 dark:border-gray-700 dark:bg-gray-900 px-4 py-5 sm:px-6 mt-1 relative w-full h-full'>
-            <div className='flex space-x-3 h-96'>
-              <div className='flex-1 w-full'>
-                
-                <BarChart labels={labelsNotManaged} datasets={datasetsNotManaged} />
-              </div>
-            </div>
-            
-            <div className='absolute top-2 right-2 pt-3 pr-3'>
-              <Button
-                className='h-10 w-10 flex items-center justify-center rounded-md'
-                variant='white'
-                onClick={() => handleZoom(4)}
-              >
-                <FontAwesomeIcon
-                  icon={faExpand}
-                  className='h-6 w-6 cursor-pointer text-gray-500 dark:text-gray-400'
-                  aria-hidden='true'
-                />
-              </Button>
-            </div>
-          </div>
-        </div> */}
       </div>
     </>
   )
