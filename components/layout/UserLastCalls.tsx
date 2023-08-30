@@ -19,6 +19,8 @@ import { CallsDestination } from '../history/CallsDestination'
 import { CallsSource } from '../history/CallsSource'
 import { getJSONItem, setJSONItem } from '../../lib/storage'
 import { StatusTypes } from '../../theme/Types'
+import { useEventListener } from '../../lib/hooks/useEventListener'
+import { isEmpty } from 'lodash'
 
 interface LastCallTypes extends CallTypes {
   avatar?: string
@@ -29,6 +31,8 @@ type LastCallsTypes = LastCallTypes[]
 
 export const UserLastCalls = () => {
   const { t } = useTranslation()
+  const authStore = useSelector((state: RootState) => state.authentication)
+  const currentUsername = authStore.username
   const operators = useSelector((state: RootState) => state.operators.operators)
   const username = useSelector((state: RootState) => state.user.username)
   const [lastCalls, setLastCalls] = useState<LastCallsTypes>()
@@ -94,18 +98,20 @@ export const UserLastCalls = () => {
       firstLoadedRef.current = true
       setIsLoading(true)
       getLastCallsList(sort)
-
-      // Set the interval for update
-      updateIntervalId.current = setInterval(() => {
-        getLastCallsList(sort)
-      }, 1000 * 10)
     }
 
     return () => {
-      updateIntervalId.current && !firstLoadedRef.current && clearInterval(updateIntervalId.current)
+      !firstLoadedRef.current
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [username])
+
+  useEventListener('phone-island-conversations', (data) => {
+    if (isEmpty(data[currentUsername]?.conversations)) {
+      // setIsLoading(true)
+      getLastCallsList(sort)
+    }
+  })
 
   return (
     <>
