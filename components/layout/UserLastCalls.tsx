@@ -18,12 +18,20 @@ import { CallsDate } from '../history/CallsDate'
 import { CallsDestination } from '../history/CallsDestination'
 import { CallsSource } from '../history/CallsSource'
 import { getJSONItem, setJSONItem } from '../../lib/storage'
+import { StatusTypes } from '../../theme/Types'
+
+interface LastCallTypes extends CallTypes {
+  avatar?: string
+  presence?: StatusTypes | undefined
+}
+
+type LastCallsTypes = LastCallTypes[]
 
 export const UserLastCalls = () => {
   const { t } = useTranslation()
   const operators = useSelector((state: RootState) => state.operators.operators)
   const username = useSelector((state: RootState) => state.user.username)
-  const [lastCalls, setLastCalls] = useState<any>()
+  const [lastCalls, setLastCalls] = useState<LastCallsTypes>()
   const firstLoadedRef = useRef<boolean>(false)
   const [isLoading, setIsLoading] = useState<boolean>(false)
   const updateIntervalId = useRef<ReturnType<typeof setInterval>>()
@@ -47,7 +55,7 @@ export const UserLastCalls = () => {
     [username],
   )
 
-  const getLastCallsUsername = (callsData: any) => {
+  const getLastCallsUsername = (callsData: CallTypes[]) => {
     if (callsData) {
       const updatedCalls = callsData.map((call: CallTypes) => {
         let callName =
