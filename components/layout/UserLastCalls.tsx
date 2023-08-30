@@ -23,8 +23,7 @@ import { useEventListener } from '../../lib/hooks/useEventListener'
 import { isEmpty } from 'lodash'
 
 interface LastCallTypes extends CallTypes {
-  avatar?: string
-  presence?: StatusTypes | undefined
+  username: string
 }
 
 type LastCallsTypes = LastCallTypes[]
@@ -193,7 +192,7 @@ export const UserLastCalls = () => {
             )}
             {/* Iterate through speed dial list */}
             {lastCalls?.length! > 0 &&
-              lastCalls?.map((call: any, key: any) => (
+              lastCalls?.map((call, key) => (
                 <li key={key}>
                   <div className='group relative flex items-center py-6 px-5'>
                     <div
