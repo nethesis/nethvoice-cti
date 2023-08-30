@@ -5,7 +5,7 @@ import { getOperatorByPhoneNumber } from '../../lib/operators'
 import classNames from 'classnames'
 import { cleanString } from '../../lib/utils'
 
-interface CallsDestinationProps {
+interface CallsSourceProps {
   call: CallTypes
   hideName?: boolean
   hideNumber?: boolean
@@ -14,10 +14,10 @@ interface CallsDestinationProps {
 }
 
 export function getCallName(call: CallTypes): string {
-  return call.dst_cnam || call.dst_ccompany || call.dst || ''
+  return call.cnam || call.ccompany || call.cnum || '-'
 }
 
-export const CallsDestination: FC<CallsDestinationProps> = ({
+export const CallsSource: FC<CallsSourceProps> = ({
   call,
   hideName,
   hideNumber,
@@ -25,11 +25,11 @@ export const CallsDestination: FC<CallsDestinationProps> = ({
   operators,
 }) => {
   //Check if a user does not have a name and add the name of the operator
-  if (call.dst_cnam === '') {
-    const operatorFound: any = getOperatorByPhoneNumber(call.dst, operators)
+  if (call.cnam === '') {
+    const operatorFound: any = getOperatorByPhoneNumber(call.cnum, operators)
 
     if (operatorFound) {
-      call.dst_cnam = operatorFound.name
+      call.cnam = operatorFound.name
     }
   }
 
@@ -39,20 +39,20 @@ export const CallsDestination: FC<CallsDestinationProps> = ({
       {!hideNumber && (
         <div
           className={classNames(
-            `tooltip-dest-${cleanString(getCallName(call) || '-')}`,
+            `tooltip-source-${cleanString(getCallName(call) || '-')}`,
             'truncate',
           )}
         >
           {getCallName(call) || '-'}
         </div>
       )}
-      <Tooltip anchorSelect={`.tooltip-dest-${cleanString(getCallName(call) || '-')}`}>
+      <Tooltip anchorSelect={`.tooltip-source-${cleanString(getCallName(call) || '-')}`}>
         {getCallName(call) || '-'}
       </Tooltip>
       {/* phone number */}
-      {!hideName && (call.dst_cnam !== '' || call.dst_ccompany !== '') && (
+      {!hideName && call.cnum !== '' && (
         <div className={`truncate ${highlightNumber ? 'text-primary' : 'text-gray-500'}`}>
-          {call.dst}
+          {call.src}
         </div>
       )}
     </div>

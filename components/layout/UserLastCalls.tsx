@@ -16,72 +16,19 @@ import type { SortTypes } from '../../lib/history'
 import { UserCallStatusIcon } from '../history/UserCallStatusIcon'
 import { CallsDate } from '../history/CallsDate'
 import { CallsDestination } from '../history/CallsDestination'
-import { StatusTypes } from '../../theme/Types'
+import { CallsSource } from '../history/CallsSource'
 import { getJSONItem, setJSONItem } from '../../lib/storage'
-
-interface LastCallTypes extends CallTypes {
-  avatar?: string
-  presence?: StatusTypes | undefined
-}
-
-type LastCallsTypes = LastCallTypes[]
 
 export const UserLastCalls = () => {
   const { t } = useTranslation()
-  const avatars: any = useSelector((state: RootState) => state.operators.avatars)
   const operators = useSelector((state: RootState) => state.operators.operators)
   const username = useSelector((state: RootState) => state.user.username)
-  const [lastCalls, setLastCalls] = useState<LastCallsTypes>()
+  const [lastCalls, setLastCalls] = useState<any>()
   const firstLoadedRef = useRef<boolean>(false)
   const [isLoading, setIsLoading] = useState<boolean>(false)
   const updateIntervalId = useRef<ReturnType<typeof setInterval>>()
   const defaultSort: string = getJSONItem(`preferences-${username}`).lastUserCallsSort || ''
   const [sort, setSort] = useState<SortTypes>(defaultSort || 'time_desc')
-
-  function getOperator(call: CallTypes) {
-    let callName = call.dst_cnam || call.dst_ccompany
-    let operator: any = null
-    if (callName) {
-      operator = Object.values(operators).find((operator: any) => operator.name === callName)
-    } else {
-      operator = Object.values(operators).find((operator: any) => {
-        const isExten = operator.endpoints.extension.find((exten: any) => exten.id === call.dst)
-        return isExten ? true : false
-      })
-    }
-    return operator
-  }
-
-  function checkOperatorsAvatar(call: CallTypes): string {
-    const operatorUsername: string = getOperator(call)?.username
-    return username ? avatars[operatorUsername] || '' : ''
-  }
-
-  function checkOperatorPresence(call: CallTypes): StatusTypes | undefined {
-    const operatorPresence: string = getOperator(call)?.mainPresence
-    if (operatorPresence) {
-      return operatorPresence === 'online'
-        ? 'online'
-        : operatorPresence === 'offline'
-        ? 'offline'
-        : 'busy'
-    } else {
-      return undefined
-    }
-  }
-
-  function addOperatorsProps(calls: LastCallsTypes) {
-    for (let i = 0; i < calls.length; i++) {
-      const avatar = checkOperatorsAvatar(calls[i])
-      if (avatar) {
-        calls[i].avatar = avatar
-      }
-      const presence = checkOperatorPresence(calls[i])
-      if (presence) {
-        calls[i].presence = presence
-      }
-    }
-  }
 
   const getLastCallsList = useCallback(
     async (newSort: SortTypes) => {
@@ -91,14 +38,40 @@ export const UserLastCalls = () => {
       const dateEndString = formatDateLoc(dateEnd, 'yyyyMMdd')
       const callsData = await getLastCalls(username, dateStartString, dateEndString, newSort)
       if (callsData) {
-        addOperatorsProps(callsData.rows)
-        setLastCalls(callsData.rows)
+        const callsFinalInformations = getLastCallsUsername(callsData.rows)
+        setLastCalls(callsFinalInformations)
         setIsLoading(false)
       }
     },
     // eslint-disable-next-line react-hooks/exhaustive-deps
     [username],
   )
+
+  const getLastCallsUsername = (callsData: any) => {
+    if (callsData) {
+      const updatedCalls = callsData.map((call: CallTypes) => {
+        let callName =
+          call.direction === 'out'
+            ? call.dst_cnam || call.dst_ccompany
+            : call.direction === 'in'
+            ? call.cnam || call.ccompany
+            : ''
+
+        let operator: any = null
+
+        if (callName) {
+          operator = Object.values(operators).find((operator: any) => operator.name === callName)
+        } else {
+          operator = Object.values(operators).find((operator: any) => {
+            const isExten = operator.endpoints.extension.find((exten: any) => exten.id === call.dst)
+            return isExten ? true : false
+          })
+        }
+        return { ...call, username: operator?.username || '' }
+      })
+      return updatedCalls
+    }
+  }
 
   function sortCalls(newSort: SortTypes): void {
     getLastCallsList(newSort)
@@ -206,7 +179,7 @@ export const UserLastCalls = () => {
             )}
             {/* Iterate through speed dial list */}
             {lastCalls?.length! > 0 &&
-              lastCalls?.map((call, key) => (
+              lastCalls?.map((call: any, key: any) => (
                 <li key={key}>
                   <div className='group relative flex items-center py-6 px-5'>
                     <div
@@ -219,13 +192,27 @@ export const UserLastCalls = () => {
                           <Avatar
                             size='base'
                             placeholderType='person'
-                            src={call.avatar}
-                            status={call.presence}
+                            src={operators[call.username]?.avatarBase64}
+                            status={operators[call.username]?.mainPresence}
                           />
                         </span>
                         <div className='ml-4 truncate flex flex-col gap-1.5'>
                           <div className='truncate text-sm font-medium text-gray-700 dark:text-gray-200'>
-                            <CallsDestination call={call} operators={operators} hideName={true} />
+                            {call.direction === 'in' ? (
+                              <>
+                                {' '}
+                                <CallsSource call={call} operators={operators} hideName={true} />
+                              </>
+                            ) : (
+                              <>
+                                {' '}
+                                <CallsDestination
+                                  call={call}
+                                  operators={operators}
+                                  hideName={true}
+                                />{' '}
+                              </>
+                            )}
                           </div>
                           <div className='truncate text-sm text-primary dark:text-primary'>
                             <div className='flex items-center'>
@@ -234,15 +221,20 @@ export const UserLastCalls = () => {
                                 className='cursor-pointer hover:underline'
                                 onClick={() => callPhoneNumber(call.dst)}
                               >
-                                {call.dst_cnam !== '' || call.dst_ccompany !== '' ? (
-                                  <CallsDestination
+                                {call.direction === 'in' ? (
+                                  <CallsSource
                                     call={call}
                                     operators={operators}
                                     hideNumber={true}
                                     highlightNumber={true}
                                   />
                                 ) : (
-                                  call.dst
+                                  <CallsDestination
+                                    call={call}
+                                    operators={operators}
+                                    hideNumber={true}
+                                    highlightNumber={true}
+                                  />
                                 )}
                               </span>
                             </div>
@@ -255,7 +247,11 @@ export const UserLastCalls = () => {
                         <Button
                           variant='white'
                           className='gap-2'
-                          onClick={() => callPhoneNumber(call.cnum)}
+                          onClick={() =>
+                            call.direction === 'in'
+                              ? callPhoneNumber(call.src)
+                              : callPhoneNumber(call.dst)
+                          }
                         >
                           <FontAwesomeIcon icon={faPhone} size='lg' className='text-gray-500' />
                           {t('LastCalls.Call')}
