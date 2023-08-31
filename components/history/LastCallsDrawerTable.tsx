@@ -12,19 +12,17 @@ import {
   faXmark,
   faArrowLeft,
 } from '@fortawesome/free-solid-svg-icons'
-import { formatDateLoc, getCallTimeToDisplay } from '../../lib/dateTime'
+import { formatDateLoc } from '../../lib/dateTime'
 import { useSelector } from 'react-redux'
 import { RootState } from '../../store'
 import { EmptyState, InlineNotification } from '../common'
-import { getOperatorByPhoneNumber } from '../../lib/operators'
 import { useTranslation } from 'react-i18next'
 import { Tooltip } from 'react-tooltip'
-import classNames from 'classnames'
-import { cleanString } from '../../lib/utils'
 import { isEqual } from 'lodash'
 import { UserCallStatusIcon } from './UserCallStatusIcon'
 import { CallsDate } from './CallsDate'
 import { CallsDestination } from './CallsDestination'
+import { CallsSource } from './CallsSource'
 
 export interface LastCallsDrawerTableProps extends ComponentPropsWithRef<'div'> {
   callType: string
@@ -228,76 +226,6 @@ export const LastCallsDrawerTable = forwardRef<HTMLButtonElement, LastCallsDrawe
       )
     }
 
-    function sourceColumn(call: any) {
-      //Check if a user does not have a name and add the name of the operator
-      if (call.cnam === '') {
-        const operatorFound: any = getOperatorByPhoneNumber(call.cnum, operators)
-
-        if (operatorFound) {
-          call.cnam = operatorFound.name
-        }
-      }
-
-      return (
-        <div className='flex flex-col justify-center overflow-hidden'>
-          {/* name */}
-          <div
-            className={classNames(
-              `tooltip-source-${cleanString(call.cnam || call.ccompany || call.cnum)}`,
-              'truncate',
-            )}
-          >
-            {call.cnam || call.ccompany || call.cnum || '-'}
-          </div>
-          <Tooltip
-            anchorSelect={`.tooltip-source-${cleanString(call.cnam || call.ccompany || call.cnum)}`}
-          >
-            {call.cnam || call.ccompany || call.cnum || '-'}
-          </Tooltip>
-          {/* phone number */}
-          {call.cnum !== '' && (
-            <div className='truncate text-gray-500 dark:text-gray-500'>{call.src}</div>
-          )}
-        </div>
-      )
-    }
-
-    function destinationColumn(call: any) {
-      //Check if a user does not have a name and add the name of the operator
-      if (call.dst_cnam === '') {
-        const operatorFound: any = getOperatorByPhoneNumber(call.dst, operators)
-
-        if (operatorFound) {
-          call.dst_cnam = operatorFound.name
-        }
-      }
-
-      return (
-        <div className='flex flex-col justify-center overflow-hidden'>
-          {/* name */}
-          <div
-            className={classNames(
-              `tooltip-dest-${cleanString(call.dst_cnam || call.dst_ccompany || call.dst)}`,
-              'truncate',
-            )}
-          >
-            {call.dst_cnam || call.dst_ccompany || call.dst || '-'}
-          </div>
-          <Tooltip
-            anchorSelect={`.tooltip-dest-${cleanString(
-              call.dst_cnam || call.dst_ccompany || call.dst,
-            )}`}
-          >
-            {call.dst_cnam || call.dst_ccompany || call.dst || '-'}
-          </Tooltip>
-          {/* phone number */}
-          {(call.dst_cnam !== '' || call.dst_ccompany !== '') && (
-            <div className='truncate text-gray-500 dark:text-gray-500'>{call.dst}</div>
-          )}
-        </div>
-      )
-    }
-
     return (
       <>
         {/* Last calls title */}
@@ -346,7 +274,7 @@ export const LastCallsDrawerTable = forwardRef<HTMLButtonElement, LastCallsDrawe
                       {/* Date column */}
                       <CallsDate call={call} />
                       {/* Source column  */}
-                      {sourceColumn(call)}
+                      <CallsSource call={call} operators={operators} />
                       {/* Arrow column */}
                       <FontAwesomeIcon
                         icon={faArrowRight}

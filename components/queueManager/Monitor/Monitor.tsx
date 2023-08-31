@@ -162,20 +162,22 @@ export const Monitor: FC<MonitorProps> = ({ className }): JSX.Element => {
       <div
         className={`transition-all duration-300 ${
           isFullscreen
-            ? 'fixed top-0 left-0 right-0 bottom-0 w-screen h-screen z-50 bg-white overflow-auto'
+            ? 'fixed top-0 left-0 right-0 bottom-0 w-screen h-screen z-50 bg-white dark:bg-gray-800 overflow-auto'
             : ''
         }`}
       >
         <div>
           {/* Card section */}
-          <div>
+          <div className='flex flex-col'>
             {isFullscreen && (
-              <Button variant='ghost' onClick={() => setIsFullscreen(false)}>
-                <FontAwesomeIcon
-                  className='h-5 w-5 cursor-pointer dark:text-gray-200 text-gray-700'
-                  icon={faXmark}
-                />
-              </Button>
+              <div className='flex justify-end'>
+                <Button variant='ghost' className='w-8 h-8' onClick={() => setIsFullscreen(false)}>
+                  <FontAwesomeIcon
+                    className='h-5 w-5 cursor-pointer dark:text-gray-200 text-gray-700'
+                    icon={faXmark}
+                  />
+                </Button>
+              </div>
             )}
             <MonitorTables isFullscreen={isFullscreen} selectedRow={selected}></MonitorTables>
           </div>
