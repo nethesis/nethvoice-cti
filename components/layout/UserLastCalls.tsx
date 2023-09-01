@@ -2,7 +2,7 @@
 // SPDX-License-Identifier: AGPL-3.0-or-later
 
 import { useState, useEffect, useRef, useCallback } from 'react'
-import { Button, Avatar, EmptyState, Dropdown } from '../common'
+import { Button, Avatar, EmptyState, Dropdown, Badge } from '../common'
 import { useSelector } from 'react-redux'
 import { RootState } from '../../store'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
@@ -210,21 +210,33 @@ export const UserLastCalls = () => {
                           />
                         </span>
                         <div className='ml-4 truncate flex flex-col gap-1.5'>
-                          <div className='truncate text-sm font-medium text-gray-700 dark:text-gray-200'>
-                            {call.direction === 'in' ? (
-                              <>
-                                {' '}
-                                <CallsSource call={call} operators={operators} hideName={true} />
-                              </>
-                            ) : (
-                              <>
-                                {' '}
-                                <CallsDestination
-                                  call={call}
-                                  operators={operators}
-                                  hideName={true}
-                                />{' '}
-                              </>
+                          <div className='flex items-center'>
+                            <div className='w-24 truncate text-sm font-medium text-gray-700 dark:text-gray-200'>
+                              {call.direction === 'in' ? (
+                                <>
+                                  {' '}
+                                  <CallsSource call={call} operators={operators} hideName={true} />
+                                </>
+                              ) : (
+                                <>
+                                  {' '}
+                                  <CallsDestination
+                                    call={call}
+                                    operators={operators}
+                                    hideName={true}
+                                  />{' '}
+                                </>
+                              )}
+                            </div>
+                            {call.channel.includes('from-queue') && (
+                              <Badge
+                                size='small'
+                                variant='offline'
+                                rounded='full'
+                                className='overflow-hidden'
+                              >
+                                <div className='truncate'>{t('QueueManager.Queue')}</div>
+                              </Badge>
                             )}
                           </div>
                           <div className='truncate text-sm text-primary dark:text-primary'>
