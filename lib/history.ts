@@ -259,6 +259,7 @@ export interface CallTypes {
   dst_ccompany: string
   clid: string
   direction: 'in' | 'out'
+  queue: string
 }
 
 export interface LastCallsResponse {
