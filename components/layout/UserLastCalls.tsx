@@ -2,11 +2,11 @@
 // SPDX-License-Identifier: AGPL-3.0-or-later
 
 import { useState, useEffect, useRef, useCallback } from 'react'
-import { Button, Avatar, EmptyState, Dropdown } from '../common'
+import { Button, Avatar, EmptyState, Dropdown, Badge } from '../common'
 import { useSelector } from 'react-redux'
 import { RootState } from '../../store'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
-import { faPhone, faChevronDown } from '@fortawesome/free-solid-svg-icons'
+import { faPhone, faChevronDown, faUsers } from '@fortawesome/free-solid-svg-icons'
 import { callPhoneNumber } from '../../lib/utils'
 import { useTranslation } from 'react-i18next'
 import { CallTypes, getLastCalls } from '../../lib/history'
@@ -18,9 +18,9 @@ import { CallsDate } from '../history/CallsDate'
 import { CallsDestination } from '../history/CallsDestination'
 import { CallsSource } from '../history/CallsSource'
 import { getJSONItem, setJSONItem } from '../../lib/storage'
-import { StatusTypes } from '../../theme/Types'
 import { useEventListener } from '../../lib/hooks/useEventListener'
 import { isEmpty } from 'lodash'
+import { Tooltip } from 'react-tooltip'
 
 interface LastCallTypes extends CallTypes {
   username: string
@@ -34,10 +34,10 @@ export const UserLastCalls = () => {
   const currentUsername = authStore.username
   const operators = useSelector((state: RootState) => state.operators.operators)
   const username = useSelector((state: RootState) => state.user.username)
+  const queuesStore = useSelector((state: RootState) => state.queues)
   const [lastCalls, setLastCalls] = useState<LastCallsTypes>()
   const firstLoadedRef = useRef<boolean>(false)
   const [isLoading, setIsLoading] = useState<boolean>(false)
-  const updateIntervalId = useRef<ReturnType<typeof setInterval>>()
   const defaultSort: string = getJSONItem(`preferences-${username}`).lastUserCallsSort || ''
   const [sort, setSort] = useState<SortTypes>(defaultSort || 'time_desc')
 
@@ -210,20 +210,49 @@ export const UserLastCalls = () => {
                           />
                         </span>
                         <div className='ml-4 truncate flex flex-col gap-1.5'>
-                          <div className='truncate text-sm font-medium text-gray-700 dark:text-gray-200'>
-                            {call.direction === 'in' ? (
+                          <div className='flex items-center'>
+                            <div className='w-24 lg:w-16 xl:w-24 truncate text-sm font-medium text-gray-700 dark:text-gray-200'>
+                              {call.direction === 'in' ? (
+                                <>
+                                  {' '}
+                                  <CallsSource call={call} operators={operators} hideName={true} />
+                                </>
+                              ) : (
+                                <>
+                                  {' '}
+                                  <CallsDestination
+                                    call={call}
+                                    operators={operators}
+                                    hideName={true}
+                                  />{' '}
+                                </>
+                              )}
+                            </div>
+                            {call.channel.includes('from-queue') && (
                               <>
-                                {' '}
-                                <CallsSource call={call} operators={operators} hideName={true} />
-                              </>
-                            ) : (
-                              <>
-                                {' '}
-                                <CallsDestination
-                                  call={call}
-                                  operators={operators}
-                                  hideName={true}
-                                />{' '}
+                                <Badge
+                                  size='small'
+                                  variant='offline'
+                                  rounded='full'
+                                  className='overflow-hidden ml-1 tooltip-queue-name'
+                                >
+                                  {' '}
+                                  <FontAwesomeIcon
+                                    icon={faUsers}
+                                    className='h-4 w-4 mr-1 ml-1'
+                                    aria-hidden='true'
+                                  />
+                                  <div className='truncate w-20 lg:w-16 xl:w-20'>
+                                    {queuesStore?.queues[call?.queue]?.name
+                                      ? queuesStore?.queues[call?.queue]?.name + '' + call?.queue
+                                      : t('QueueManager.Queue')}
+                                  </div>
+                                </Badge>
+                                <Tooltip anchorSelect={'.tooltip-queue-name'}>
+                                  {queuesStore?.queues[call?.queue]?.name
+                                    ? queuesStore?.queues[call?.queue]?.name + '' + call?.queue
+                                    : t('QueueManager.Queue')}{' '}
+                                </Tooltip>
                               </>
                             )}
                           </div>
@@ -255,8 +284,7 @@ export const UserLastCalls = () => {
                           <CallsDate call={call} spaced={true} />
                         </div>
                       </div>
-                      <div className='flex gap-2'>
-                        {/* Actions */}
+                      <div className='absolute right-0 top-1/2 transform -translate-y-1/2 flex gap-2'>
                         <Button
                           variant='white'
                           className='gap-2'
