@@ -13,6 +13,13 @@ import QRCodeStyling, {
   Options,
 } from 'qr-code-styling'
 
+import { faDownload } from '@fortawesome/free-solid-svg-icons'
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
+
+import { t } from 'i18next'
+
+import { Button } from '../common'
+
 interface QRCodeTypes {
   data: string
 }
@@ -74,8 +81,14 @@ export default function QRCode({ data }: QRCodeTypes) {
   }, [data])
 
   return (
-    <div className='App'>
+    <div className='flex flex-col gap-5'>
       <div ref={ref} />
+      <div>
+        <Button variant='white' onClick={() => qrCode.download()}>
+          <span>{t('Common.Download')}</span>
+          <FontAwesomeIcon icon={faDownload} className='ml-2 h-4 w-4' />
+        </Button>
+      </div>
     </div>
   )
 }
