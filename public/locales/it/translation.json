@@ -29,7 +29,8 @@
     "Remove from favorites": "Rimuovi dai preferiti",
     "time_distance_ago": "{{ timeDistance }} fa",
     "Try changing your search filters": "Prova a modificare i filtri di ricerca",
-    "Reset to defaults": "Ripristina valori predefiniti"
+    "Reset to defaults": "Ripristina valori predefiniti",
+    "Download": "Scarica"
   },
   "Login": {
     "User": "Utente",

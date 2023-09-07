@@ -31,7 +31,8 @@
     "Delete": "Delete",
     "Edit": "Edit",
     "DD/MM/YYYY": "DD/MM/YYYY",
-    "Queuemanager": "Queue manager"
+    "Queuemanager": "Queue manager",
+    "Download": "Download"
   },
   "Login": {
     "User": "User",
