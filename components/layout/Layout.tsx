@@ -427,6 +427,11 @@ export const Layout: FC<LayoutProps> = ({ children }) => {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [firstRenderFaviconCheck])
 
+  //check if server reloaded
+  useEventListener('phone-island-server-reloaded', () => {
+    setUserInfoLoaded(false)
+  })
+
   return (
     <>
       <div>
