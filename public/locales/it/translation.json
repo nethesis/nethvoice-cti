@@ -150,7 +150,14 @@
     "Refresh calls every": "Aggiorna le chiamate ogni",
     "Load calls of last": "Carica le chiamate delle ultime",
     "Cache cleared": "Cache svuotata",
-    "Queues": "Code"
+    "Queues": "Code",
+    "Mobile App": "App mobile",
+    "Generate QR code": "Genera codice QR",
+    "New QR code creation": "Creazione nuovo codice QR",
+    "Generate": "Genera",
+    "mobile_app_qrcode_description": "Per accedere alla mobile app con l'utente corrente, è necessario generare un nuovo codice QR tramite il pulsante sottostante e scansionare il contenuto una volta generato.",
+    "mobile_app_qrcode_warning": "Eventuali app mobile già configurate smetteranno di funzionare.",
+    "mobile_app_qrcode_info": "Scansiona il codice QR utilizzando l'app mobile. Il codice QR verrà visualizzato una sola volta, se in futuro avrai bisogno di scansionarlo dovrai crearne uno nuovo."
   },
   "TopBar": {
     "Signed in as": "Accesso effettuato come",

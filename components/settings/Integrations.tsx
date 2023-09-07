@@ -85,7 +85,7 @@ export const Integrations = () => {
     <>
       {/* The Integration section */}
       <section aria-labelledby='phone-configuration-heading'>
-        <div className='shadow sm:overflow-hidden w-full dark:bg-gray-900'>
+        <div className='sm:overflow-hidden w-full dark:bg-gray-900'>
           <div className='bg-white py-6 px-4 sm:p-6 w-full dark:bg-gray-900'>
             <div>
               <h2 className='text-lg font-medium leading-6 text-gray-900 dark:text-gray-100 mb-6'>
