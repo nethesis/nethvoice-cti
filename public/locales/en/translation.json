@@ -156,7 +156,14 @@
     "Queue calls": "Queue calls",
     "Refresh calls every": "Refresh calls every",
     "Load calls of last": "Load calls of last",
-    "Cache cleared": "Cache cleared"
+    "Cache cleared": "Cache cleared",
+    "Mobile App": "Mobile App",
+    "Generate QR code": "Generate QR code",
+    "New QR code creation": "New QR code creation",
+    "Generate": "Regenerate",
+    "mobile_app_qrcode_description": "To access the mobile app using the current user, you need to generate a new QR code through the button below and to scan the content once generated.",
+    "mobile_app_qrcode_warning": "Any mobile apps already configured will stop working.",
+    "mobile_app_qrcode_info": "Scan the QR code using the mobile app. The qr code will only be displayed once, if you'll need to scan it in the future you will have to create a new one."
   },
   "TopBar": {
     "Signed in as": "Signed in as",

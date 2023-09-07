@@ -58,3 +58,19 @@ export const removePhoneIslandToken = async () => {
     throw error
   }
 }
+
+/**
+ * Generate a persistent authentication token
+ *
+ * @returns The username and the token
+ */
+
+export const generateQRcodeToken = async () => {
+  try {
+    const res = await axios.post(`${PATH}/persistent_token_login`)
+    return res.data
+  } catch (error) {
+    handleNetworkError(error)
+    throw error
+  }
+}

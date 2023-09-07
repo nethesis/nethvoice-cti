@@ -27,6 +27,8 @@ import Head from 'next/head'
 import { capitalize } from 'lodash'
 import { doLogout } from '../../services/login'
 import { UserNavBar } from './UserNavBar'
+import { getProfilingInfo } from '../../services/profiling'
+import { ProfilingTypes } from '../../models/profiling'
 
 interface LayoutProps {
   children: ReactNode
@@ -111,6 +113,20 @@ export const Layout: FC<LayoutProps> = ({ children }) => {
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [isUserInfoLoaded, firstRenderUserInfo])
+
+  // get profiling data on page load
+  useEffect(() => {
+    const fetchProfilingInfo = async () => {
+      const profilingInfo: ProfilingTypes = await getProfilingInfo()
+
+      if (profilingInfo) {
+        dispatch.profiling.update(profilingInfo)
+      }
+    }
+
+    fetchProfilingInfo()
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [])
 
   // get operators on page load
   useEffect(() => {

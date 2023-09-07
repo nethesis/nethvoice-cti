@@ -17,6 +17,7 @@ import { ctiStatus } from './ctiStatus'
 import { lines } from './lines'
 import { phoneLines } from './phoneLines'
 import { announcement } from './announcement'
+import { profiling } from './profiling'
 
 export interface RootModel extends Models<RootModel> {
   authentication: typeof authentication
@@ -34,6 +35,7 @@ export interface RootModel extends Models<RootModel> {
   lines: typeof lines
   phoneLines: typeof phoneLines
   announcement: typeof announcement
+  profiling: typeof profiling
 }
 
 export const models: RootModel = {
@@ -52,4 +54,5 @@ export const models: RootModel = {
   lines,
   phoneLines,
   announcement,
+  profiling
 }

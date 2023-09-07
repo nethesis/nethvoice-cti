@@ -8,6 +8,7 @@ import {
   faBorderAll,
   IconDefinition,
   faDatabase,
+  faMobile,
   faUsers,
 } from '@fortawesome/free-solid-svg-icons'
 import classNames from 'classnames'
@@ -20,6 +21,7 @@ import { useTranslation } from 'react-i18next'
 import { Queues } from '../components/settings/Queues'
 import { useRouter } from 'next/router'
 import { Theme } from '../components/settings/Theme'
+import { MobileApp } from '../components/settings/MobileApp'
 
 interface SettingsMenuTypes {
   name: string
@@ -39,6 +41,7 @@ const Settings: NextPage = () => {
     { name: 'Queues', href: '#', icon: faUsers, current: false },
     { name: 'Integrations', href: '#', icon: faBorderAll, current: false },
     { name: 'Cache', href: '#', icon: faDatabase, current: false },
+    { name: 'Mobile App', href: '#', icon: faMobile, current: false },
   ]
 
   const [items, setItems] = useState<SettingsMenuTypes[]>(settingsMenu)
@@ -169,18 +172,8 @@ const Settings: NextPage = () => {
                 {currentSection === 'Integrations' && <Integrations />}
                 {/* Clean cache */}
                 {currentSection === 'Cache' && <ClearCache />}
-                {/* //// remove test buttons */}
-                {/* <div className='my-6'>
-                  <Button variant='white' onClick={() => createCallNotif()}>
-                    <span>Create personal call notif</span>
-                  </Button>
-                  <Button variant='white' onClick={() => createQueueCallNotif()} className='ml-2'>
-                    <span>Create queue call notif</span>
-                  </Button>
-                  <Button variant='white' onClick={() => createChatNotif()} className='ml-2'>
-                    <span>Create chat notif</span>
-                  </Button>
-                </div> */}
+                {/* Clean cache */}
+                {currentSection === 'Mobile App' && <MobileApp />}
               </div>
             </div>
           </div>
