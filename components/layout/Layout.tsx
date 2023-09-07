@@ -102,6 +102,13 @@ export const Layout: FC<LayoutProps> = ({ children }) => {
           avatar: userInfo.data.settings.avatar,
         })
         setUserInfoLoaded(true)
+      } else {
+        if (!ctiStatus.isUserInformationMissing) {
+          // update global store
+          store.dispatch.ctiStatus.setUserInformationMissing(true)
+          // force logout
+          doLogout()
+        }
       }
     }
 
@@ -128,8 +135,8 @@ export const Layout: FC<LayoutProps> = ({ children }) => {
       if (document.visibilityState === 'visible') {
         fetchUserInfo()
       }
-      // Set timer to 60 minutes
-    }, 3600000)
+      // Set timer to 50 minutes
+    }, 1000 * 50 * 60)
 
     // Clean interval if user leave the page
     return () => {

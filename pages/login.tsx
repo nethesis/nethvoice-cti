@@ -48,6 +48,14 @@ export default function Login() {
         </InlineNotification>
       </div>
     </div>
+  ) : ctiStatus.isUserInformationMissing ? (
+    <div className='relative w-full'>
+      <div className='absolute -bottom-[104px] w-full'>
+        <InlineNotification type='error' title={t('Common.Warning')}>
+          <p>{t('Login.Session expired, log in again')}</p>
+        </InlineNotification>
+      </div>
+    </div>
   ) : (
     <></>
   )
@@ -61,6 +69,9 @@ export default function Login() {
     setLoading(true)
     if (ctiStatus.webRtcError) {
       store.dispatch.ctiStatus.setWebRtcError(false)
+    }
+    if (ctiStatus.isUserInformationMissing) {
+      store.dispatch.ctiStatus.setUserInformationMissing(false)
     }
     if (window !== undefined) {
       const username = usernameRef.current.value
