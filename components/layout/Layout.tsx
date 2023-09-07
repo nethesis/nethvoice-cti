@@ -84,6 +84,8 @@ export const Layout: FC<LayoutProps> = ({ children }) => {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [router])
 
+  const [resfreshUserInfo, setResfreshUserInfo] = useState(true)
+
   // get logged user data on page load
   useEffect(() => {
     const fetchUserInfo = async () => {
@@ -103,16 +105,38 @@ export const Layout: FC<LayoutProps> = ({ children }) => {
       }
     }
 
-    if (firstRenderUserInfo) {
-      setFirstRenderUserInfo(false)
-      return
+    // visibilityChangeHandler do not manage refresh, this is only for refresh case
+    if (resfreshUserInfo) {
+      fetchUserInfo()
+      setResfreshUserInfo(false)
+    }
+    const visibilityChangeHandler = () => {
+      if (document.visibilityState === 'visible') {
+        setResfreshUserInfo(false)
+        setUserInfoLoaded(false)
+        fetchUserInfo()
+      } else {
+        // TODO Implement actions when the visibility is off
+      }
     }
 
-    if (!isUserInfoLoaded) {
-      fetchUserInfo()
+    // Manage change of visibility
+    document.addEventListener('visibilitychange', visibilityChangeHandler)
+
+    // Refresh api every hours
+    const reloadInterval = setInterval(() => {
+      if (document.visibilityState === 'visible') {
+        fetchUserInfo()
+      }
+      // Set timer to 60 minutes
+    }, 3600000)
+
+    // Clean interval if user leave the page
+    return () => {
+      clearInterval(reloadInterval)
+      document.removeEventListener('visibilitychange', visibilityChangeHandler)
     }
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [isUserInfoLoaded, firstRenderUserInfo])
+  }, [isUserInfoLoaded])
 
   // get profiling data on page load
   useEffect(() => {
