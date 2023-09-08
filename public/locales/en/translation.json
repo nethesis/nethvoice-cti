@@ -38,7 +38,8 @@
     "User": "User",
     "Password": "Password",
     "Sign in": "Sign in",
-    "The application is open in another window": "The application is open in another window"
+    "The application is open in another window": "The application is open in another window",
+    "Session expired, log in again": "Session expired, log in again"
   },
   "Phonebook": {
     "Phonebook": "Phonebook",

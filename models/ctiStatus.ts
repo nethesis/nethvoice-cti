@@ -8,6 +8,7 @@ const defaultState = {
   webRtcError: false,
   isPhoneRinging: false,
   idInterval: 0,
+  isUserInformationMissing: false
 }
 
 export const ctiStatus = createModel<RootModel>()({
@@ -23,6 +24,10 @@ export const ctiStatus = createModel<RootModel>()({
     },
     setIdInterval: (state, idInterval: any) => {
       state.idInterval = idInterval
+      return state
+    },
+    setUserInformationMissing: (state, isUserInformationMissing: boolean) => {
+      state.isUserInformationMissing = isUserInformationMissing
       return state
     },
     reset: () => {

@@ -234,7 +234,7 @@ export const UserLastCalls = () => {
                                   size='small'
                                   variant='offline'
                                   rounded='full'
-                                  className='overflow-hidden ml-1 tooltip-queue-name'
+                                  className={`overflow-hidden ml-1 tooltip-queue-${call?.queue}`}
                                 >
                                   {' '}
                                   <FontAwesomeIcon
@@ -242,15 +242,19 @@ export const UserLastCalls = () => {
                                     className='h-4 w-4 mr-1 ml-1'
                                     aria-hidden='true'
                                   />
-                                  <div className='truncate w-20 lg:w-16 xl:w-20'>
+                                  <div
+                                    className={`truncate ${
+                                      call?.queue ? 'w-20 lg:w-16 xl:w-20' : ''
+                                    }`}
+                                  >
                                     {queuesStore?.queues[call?.queue]?.name
-                                      ? queuesStore?.queues[call?.queue]?.name + '' + call?.queue
+                                      ? queuesStore?.queues[call?.queue]?.name + ' ' + call?.queue
                                       : t('QueueManager.Queue')}
                                   </div>
                                 </Badge>
-                                <Tooltip anchorSelect={'.tooltip-queue-name'}>
+                                <Tooltip anchorSelect={`.tooltip-queue-${call?.queue}`}>
                                   {queuesStore?.queues[call?.queue]?.name
-                                    ? queuesStore?.queues[call?.queue]?.name + '' + call?.queue
+                                    ? queuesStore?.queues[call?.queue]?.name + ' ' + call?.queue
                                     : t('QueueManager.Queue')}{' '}
                                 </Tooltip>
                               </>
