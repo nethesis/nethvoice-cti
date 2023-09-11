@@ -32,10 +32,14 @@ export interface LastCallsDrawerTableProps extends ComponentPropsWithRef<'div'> 
   limit: number
   // search a single phone number or all extensions of an operator (main extension must be at the first position of array)
   phoneNumbers: string[]
+  isCustomerCard?: boolean
 }
 
 export const LastCallsDrawerTable = forwardRef<HTMLButtonElement, LastCallsDrawerTableProps>(
-  ({ callType, dateFrom, dateTo, limit, phoneNumbers, className, ...props }, ref) => {
+  (
+    { callType, dateFrom, dateTo, limit, phoneNumbers, isCustomerCard, className, ...props },
+    ref,
+  ) => {
     const { t } = useTranslation()
     const [isLoaded, setLoaded] = useState(false)
     const [errorMessage, setErrorMessage] = useState('')
@@ -230,7 +234,13 @@ export const LastCallsDrawerTable = forwardRef<HTMLButtonElement, LastCallsDrawe
       <>
         {/* Last calls title */}
         <h4 className='mt-6 text-md font-medium text-gray-700 dark:text-gray-200'>
-          {callType === 'switchboard' ? 'Last switchboard calls' : 'Last personal calls'}
+          {callType === 'switchboard' && !isCustomerCard
+            ? `${t('Phonebook.Last switchboard calls')}`
+            : callType === 'personal' && !isCustomerCard
+            ? `${t('Phonebook.Last personal calls')}`
+            : isCustomerCard
+            ? `${t('Phonebook.Last calls')}`
+            : ''}
         </h4>
         {/* Divider */}
         <div className='mt-4 border-t border-gray-200 dark:border-gray-700'></div>

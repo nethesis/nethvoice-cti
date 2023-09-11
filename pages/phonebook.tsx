@@ -25,10 +25,11 @@ import {
   faAddressBook,
   faMobileScreenButton,
   faFilter,
-  faChevronLeft,
+  faChevronLeft
 } from '@fortawesome/free-solid-svg-icons'
 import { callPhoneNumber } from '../lib/utils'
 import { useTranslation } from 'react-i18next'
+import { useRouter } from 'next/router'
 
 const Phonebook: NextPage = () => {
   const [isPhonebookLoaded, setPhonebookLoaded] = useState(false)
@@ -213,13 +214,14 @@ const Phonebook: NextPage = () => {
                         <tbody className='divide-y divide-gray-200 dark:divide-gray-700 bg-white dark:bg-gray-900 text-gray-700 text-sm'>
                           {/* Not empty state  */}
                           {phonebook.rows.map((contact: any, index: number) => (
-                            <tr key={index}>
+                            <tr
+                              key={index}
+                              className='cursor-pointer'
+                              onClick={() => openShowContactDrawer(contact)}
+                            >
                               {/* Name */}
                               <td className='py-4 px-4 sm:pl-6 '>
-                                <div
-                                  className='flex items-center'
-                                  onClick={() => openShowContactDrawer(contact)}
-                                >
+                                <div className='flex items-center'>
                                   <div className='h-10 w-10 flex-shrink-0'>
                                     {' '}
                                     {contact.kind == 'person' ? (
@@ -234,10 +236,7 @@ const Phonebook: NextPage = () => {
                                   <div className='ml-4'>
                                     <div className='font-medium text-gray-700 dark:text-gray-100'>
                                       {' '}
-                                      <span
-                                        className='cursor-pointer hover:underline'
-                                        onClick={() => openShowContactDrawer(contact)}
-                                      >
+                                      <span className='cursor-pointer hover:underline'>
                                         {contact.displayName}
                                       </span>
                                     </div>
@@ -327,7 +326,6 @@ const Phonebook: NextPage = () => {
                                     icon={faChevronRight}
                                     className='h-3 w-3 text-gray-400 dark:text-gray-500 cursor-pointer'
                                     aria-hidden='true'
-                                    onClick={() => openShowContactDrawer(contact)}
                                   />
                                 </div>
                               </td>

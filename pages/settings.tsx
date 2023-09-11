@@ -10,6 +10,7 @@ import {
   faDatabase,
   faMobile,
   faUsers,
+  faIdCardClip,
 } from '@fortawesome/free-solid-svg-icons'
 import classNames from 'classnames'
 import { useSelector } from 'react-redux'
@@ -22,6 +23,7 @@ import { Queues } from '../components/settings/Queues'
 import { useRouter } from 'next/router'
 import { Theme } from '../components/settings/Theme'
 import { MobileApp } from '../components/settings/MobileApp'
+import { CustomerCards } from '../components/settings/CustomerCards'
 
 interface SettingsMenuTypes {
   name: string
@@ -42,6 +44,7 @@ const Settings: NextPage = () => {
     { name: 'Integrations', href: '#', icon: faBorderAll, current: false },
     { name: 'Cache', href: '#', icon: faDatabase, current: false },
     { name: 'Mobile App', href: '#', icon: faMobile, current: false },
+    { name: 'Customer cards', href: '#', icon: faIdCardClip, current: false },
   ]
 
   const [items, setItems] = useState<SettingsMenuTypes[]>(settingsMenu)
@@ -172,8 +175,10 @@ const Settings: NextPage = () => {
                 {currentSection === 'Integrations' && <Integrations />}
                 {/* Clean cache */}
                 {currentSection === 'Cache' && <ClearCache />}
-                {/* Clean cache */}
+                {/* Mobile app */}
                 {currentSection === 'Mobile App' && <MobileApp />}
+                {/* Customer cards */}
+                {currentSection === 'Customer cards' && <CustomerCards />}
               </div>
             </div>
           </div>

@@ -32,7 +32,9 @@
     "Edit": "Edit",
     "DD/MM/YYYY": "DD/MM/YYYY",
     "Queuemanager": "Queue manager",
-    "Download": "Download"
+    "Download": "Download",
+    "Customercards": "Customer cards",
+    "Permission error": "Permissions error"
   },
   "Login": {
     "User": "User",
@@ -59,11 +61,26 @@
     "There is no contact in your phonebook": "There is no contact in your phonebook",
     "Primary phone": "Primary phone",
     "Mobile phone": "Mobile phone",
+    "Extension": "Extension",
+    "Home phone": "Home phone",
+    "Work phone": "Work phone",
     "Contact details": "Contact details",
+    "Company contacts": "Company contacts",
+    "Email": "Email",
+    "Notes": "Notes",
     "Type": "Type",
     "Work": "Work",
     "Mobile": "Mobile",
-    "Try changing your search filters": "Try changing your search filters"
+    "Try changing your search filters": "Try changing your search filters",
+    "Delete contact": "Delete contact",
+    "Visibility": "Visibility",
+    "Only me": "Only me",
+    "Public": "Public",
+    "Open contact menu": "Open contact menu",
+    "Last switchboard calls": "Last switchboard calls",
+    "Last personal calls": "Last personal calls",
+    "Calls": "Calls",
+    "Last calls": "Last calls"
   },
   "History": {
     "History": "History",
@@ -165,7 +182,15 @@
     "Generate": "Regenerate",
     "mobile_app_qrcode_description": "To access the mobile app using the current user, you need to generate a new QR code through the button below and to scan the content once generated.",
     "mobile_app_qrcode_warning": "Any mobile apps already configured will stop working.",
-    "mobile_app_qrcode_info": "Scan the QR code using the mobile app. The qr code will only be displayed once, if you'll need to scan it in the future you will have to create a new one."
+    "mobile_app_qrcode_info": "Scan the QR code using the mobile app. The qr code will only be displayed once, if you'll need to scan it in the future you will have to create a new one.",
+    "Customer cards": "Customer cards",
+    "Show customer card": "Show customer card",
+    "Customer card show type": "Customer card show type",
+    "Never": "Never",
+    "On incoming call": "On incoming call",
+    "On answer": "On answer",
+    "No customer cards available": "No customer cards available",
+    "Create a new customer card": "Create a new customer card"
   },
   "TopBar": {
     "Signed in as": "Signed in as",
@@ -397,7 +422,7 @@
     "Export CSV": "Export CSV",
     "Create speed dial": "Create speed dial",
     "Edit speed dial": "Edit speed dial",
-    "Save speed dial":"Save speed dial",
+    "Save speed dial": "Save speed dial",
     "Open speed dial menu": "Open speed dial menu",
     "Delete speed dial": "Delete speed dial",
     "Delete all speed dials": "Delete all speed dials",
@@ -565,5 +590,28 @@
     "max_duration": "Max duration",
     "Not managed customers details": "Not managed customers details",
     "Total not managed": "Total not managed"
+  },
+  "CustomerCards": {
+    "Customer data": "Customer data",
+    "General info": "General info",
+    "Select a tab": "Select a tab",
+    "Business name": "Business name",
+    "VAT number": "VAT number",
+    "Notes": "Notes",
+    "City": "City",
+    "Call": "Call",
+    "Contacts": "Contacts",
+    "No contacts found": "No contacts found",
+    "This company has no contacts": "This company has no contacts",
+    "Office": "Office",
+    "Mobile": "Mobile",
+    "Email": "Email",
+    "Open customer card": "Open customer card",
+    "Contact name": "Contact name",
+    "Company": "Company",
+    "No company found": "No company found",
+    "This user has no company informations": "This user has no company informations",
+    "Address": "Address",
+    "Customer Card Order (drag to set your order)": "Customer Card Order (drag to set your order)"
   }
 }

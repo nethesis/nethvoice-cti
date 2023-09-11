@@ -225,3 +225,9 @@ export function invertObject(obj: any) {
   }
   return invertedObj
 }
+
+//Open selected email manager
+export const openEmailClient = (emailAddress: any) => {
+  const mailtoLink = `mailto:${emailAddress}`
+  window.location.href = mailtoLink
+}
