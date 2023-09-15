@@ -213,6 +213,12 @@ export const GlobalSearch: FC<GlobalSearchProps> = () => {
                   className='h-[63px] w-full border-0 bg-transparent pl-12 pr-4 focus:ring-0 sm:text-sm text-gray-800 placeholder-gray-400 dark:text-gray-100 dark:placeholder-gray-500'
                   placeholder='Search or compose...'
                   onChange={debouncedChangeQuery}
+                  // Avoid press enter button before global search is open
+                  onKeyDown={(e:any) => {
+                    if (!globalSearchStore.isOpen && e.key === 'Enter') {
+                      e.preventDefault()
+                    }
+                  }}
                 />
               </div>
 

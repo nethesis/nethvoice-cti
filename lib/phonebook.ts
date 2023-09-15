@@ -200,3 +200,14 @@ export const mapPhonebookResponse = (phonebookResponse: any) => {
   phonebookResponse.totalPages = Math.ceil(phonebookResponse.count / PAGE_SIZE)
   return phonebookResponse
 }
+
+// Retrieve contact information trough id
+export async function retrieveContact(contactId: any) {
+  try {
+    const { data, status } = await axios.get('/phonebook/contact/' + contactId)
+    return data
+  } catch (error) {
+    handleNetworkError(error)
+    throw error
+  }
+}

@@ -654,7 +654,7 @@ export const QueueManagementChart: FC<QueueManagementChartProps> = ({
             <div className='pt-8 px-4 flex items-center justify-between'>
               <Link
                 href={{
-                  pathname: '/queueManager',
+                  pathname: '/queuemanager',
                   query: { section: 'Not managed customers' },
                 }}
               >
@@ -664,7 +664,7 @@ export const QueueManagementChart: FC<QueueManagementChartProps> = ({
               </Link>
               <Link
                 href={{
-                  pathname: '/queueManager',
+                  pathname: '/queuemanager',
                   query: { section: 'Not managed customers' },
                 }}
               >

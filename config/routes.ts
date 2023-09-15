@@ -56,8 +56,8 @@ export const navItems: NavItemsProps[] = [
     current: false,
   },
   {
-    name: 'QueueManager',
-    href: '/queueManager',
+    name: 'Queuemanager',
+    href: '/queuemanager',
     icon: faChartLineLight,
     iconActive: faChartLineSolid,
     current: false,

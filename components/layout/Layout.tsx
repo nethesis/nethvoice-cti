@@ -41,7 +41,7 @@ export const Layout: FC<LayoutProps> = ({ children }) => {
   const [items, setItems] = useState<NavItemsProps[]>(navItems)
   const dispatch = useDispatch<Dispatch>()
   const sideDrawer = useSelector((state: RootState) => state.sideDrawer)
-  const operatorsStore = useSelector((state: RootState) => state.operators)
+  const operatorsStore: any = useSelector((state: RootState) => state.operators)
   const [firstRenderOperators, setFirstRenderOperators] = useState(true)
   const [firstRenderUserInfo, setFirstRenderUserInfo] = useState(true)
   const [firstRenderGlobalSearchListener, setFirstRenderGlobalSearchListener] = useState(true)
@@ -100,6 +100,7 @@ export const Layout: FC<LayoutProps> = ({ children }) => {
           endpoints: userInfo.data.endpoints,
           profile: userInfo.data.profile,
           avatar: userInfo.data.settings.avatar,
+          settings: userInfo.data.settings,
         })
         setUserInfoLoaded(true)
       } else {
@@ -269,6 +270,13 @@ export const Layout: FC<LayoutProps> = ({ children }) => {
     }
   })
 
+  const currentUsername = authStore.username
+  const { operators } = useSelector((state: RootState) => state.operators)
+  const { profile } = useSelector((state: RootState) => state.user)
+
+  //Get user information from store
+  const userInformation = useSelector((state: RootState) => state.user)
+
   useEventListener('phone-island-conversations', (data) => {
     const opName = Object.keys(data)[0]
     const conversations = data[opName].conversations
@@ -308,6 +316,115 @@ export const Layout: FC<LayoutProps> = ({ children }) => {
       const connectedQueueManagerCalls = queueManagerConnectedCalls[queueId]
       store.dispatch.queueManagerQueues.setConnectedCalls(queueId, connectedQueueManagerCalls)
     })
+
+    /* CUSTOMER CARDS SECTION
+     * On phone-island-conversations event must be checked if user:
+     * - Has customer card permissions
+     * - Which type of customer card permissions has selected ( never, incoming )
+     * - If path if different from customer card
+     * - Which type of mainPresence status has got ( ringing, busy )
+     * - Check if counterpartNum is not present in allExtension api call result
+     */
+
+    // If status is equal to ringing and customer card equal to incoming
+    if (
+      data[currentUsername] &&
+      operators[currentUsername] &&
+      operators[currentUsername]?.mainPresence === 'ringing' &&
+      profile?.macro_permissions?.customer_card?.value &&
+      data[currentUsername]?.conversations &&
+      !router.pathname.includes('customercards') &&
+      userInformation?.settings?.open_ccard === 'incoming'
+    ) {
+      if (data[currentUsername]?.conversations) {
+        // Get key from first element of conversation
+        const firstConversationKey = Object.keys(data[currentUsername].conversations)[0]
+        //set customer type default type to person
+        const customerType = 'person'
+
+        // Check if key exist and number of caller is not internal
+        if (
+          firstConversationKey &&
+          !operatorsStore?.extensions[
+            data[currentUsername]?.conversations[firstConversationKey]?.counterpartNum
+          ]
+        ) {
+          // Get counterpartName from first element of conversation
+          const customerCardNumber =
+            data[currentUsername]?.conversations[firstConversationKey]?.counterpartNum
+          if (customerType && customerCardNumber) {
+            let ccardObject: any = '#' + customerCardNumber + '-' + customerType
+            dispatch.customerCards.updateCallerCustomerCardInformation(ccardObject)
+          }
+          // If all conditions are satisfied go to customercards and set in to the store number and type
+          router
+            .replace(
+              {
+                pathname: `/customercards`,
+              },
+              undefined,
+              {
+                shallow: true,
+              },
+            )
+            .catch((e) => {
+              if (!e.cancelled) {
+                throw e
+              }
+            })
+        }
+      }
+    }
+
+    // If status is equal to busy and customer card equal to connected
+    if (
+      data[currentUsername] &&
+      operators[currentUsername] &&
+      operators[currentUsername]?.mainPresence === 'busy' &&
+      profile?.macro_permissions?.customer_card?.value &&
+      data[currentUsername]?.conversations &&
+      !router.pathname.includes('customercards') &&
+      userInformation?.settings?.open_ccard === 'connected'
+    ) {
+      if (data[currentUsername]?.conversations) {
+        // Get key from first element of conversation
+        const firstConversationKey = Object.keys(data[currentUsername].conversations)[0]
+        //set customer type default type to person
+        const customerType = 'person'
+
+        // Check if key exist and number of caller is not internal
+        if (
+          firstConversationKey &&
+          !operatorsStore?.extensions[
+            data[currentUsername]?.conversations[firstConversationKey]?.counterpartNum
+          ]
+        ) {
+          // Get counterpartName from first element of conversation
+          const customerCardNumber =
+            data[currentUsername]?.conversations[firstConversationKey]?.counterpartNum
+          if (customerType && customerCardNumber) {
+            let ccardObject: any = '#' + customerCardNumber + '-' + customerType
+            dispatch.customerCards.updateCallerCustomerCardInformation(ccardObject)
+          }
+          // If all conditions are satisfied go to customercards and set in to the store number and type
+          router
+            .replace(
+              {
+                pathname: `/customercards`,
+              },
+              undefined,
+              {
+                shallow: true,
+              },
+            )
+            .catch((e) => {
+              if (!e.cancelled) {
+                throw e
+              }
+            })
+        }
+      }
+    }
   })
 
   useEventListener('phone-island-queue-update', (data: any) => {

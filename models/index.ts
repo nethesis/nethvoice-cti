@@ -18,6 +18,7 @@ import { lines } from './lines'
 import { phoneLines } from './phoneLines'
 import { announcement } from './announcement'
 import { profiling } from './profiling'
+import { customerCards } from './customerCards'
 
 export interface RootModel extends Models<RootModel> {
   authentication: typeof authentication
@@ -36,6 +37,7 @@ export interface RootModel extends Models<RootModel> {
   phoneLines: typeof phoneLines
   announcement: typeof announcement
   profiling: typeof profiling
+  customerCards: typeof customerCards
 }
 
 export const models: RootModel = {
@@ -54,5 +56,6 @@ export const models: RootModel = {
   lines,
   phoneLines,
   announcement,
-  profiling
+  profiling,
+  customerCards,
 }

@@ -116,6 +116,7 @@ export const TopBar: FC<TopBarProps> = ({ openMobileCb }) => {
             endpoints: userInfo.data.endpoints,
             profile: userInfo.data.profile,
             avatar: userInfo.data.settings.avatar,
+            settings: userInfo?.data?.settings,
           })
         }
       } catch (err) {
@@ -139,6 +140,7 @@ export const TopBar: FC<TopBarProps> = ({ openMobileCb }) => {
           endpoints: userInfo.data.endpoints,
           profile: userInfo.data.profile,
           avatar: userInfo.data.settings.avatar,
+          settings: userInfo?.data?.settings,
         })
       }
     } catch (err) {
