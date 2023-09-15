@@ -214,7 +214,7 @@ export const GlobalSearch: FC<GlobalSearchProps> = () => {
                   placeholder='Search or compose...'
                   onChange={debouncedChangeQuery}
                   // Avoid press enter button before global search is open
-                  onKeyDown={(e) => {
+                  onKeyDown={(e:any) => {
                     if (!globalSearchStore.isOpen && e.key === 'Enter') {
                       e.preventDefault()
                     }

@@ -21,6 +21,7 @@ const CustomerCards: NextPage = () => {
 
   //Get user information from store
   const userInformation = useSelector((state: RootState) => state.user)
+  const customerCardsInformation = useSelector((state: RootState) => state.customerCards)
 
   //Get ccard list from store
   // "ccard_order": [
@@ -28,22 +29,40 @@ const CustomerCards: NextPage = () => {
   //    "example2",
   //    ................
   // ],
-  const ccardList = userInformation.settings?.ccard_order
 
+  const [ccardList, setCCardList]: any = useState([])
   const [customerCardsList, setCustomerCardsList]: any = useState({})
-  const [isCustomerCardsListLoaded, setIsCustomerCardsListLoaded] = useState(false)
-  const [customerCardError, setCustomerCardError] = useState('')
+
+  useEffect(() => {
+    if (!window.location.hash.includes('#')) {
+      const newUrl = `${window.location.pathname}${customerCardsInformation?.settings?.caller_info}`
+      window.history.pushState({ path: newUrl }, '', newUrl)
+    }
+  }, [customerCardsInformation])
 
   //Get extension and contact type value from URL path or if it's empty get from store
   //(Is empty on redirect after phone-island events)
   const urlParts =
     location?.href?.split('#')[1]?.split('-') ||
-    userInformation?.settings?.caller_info?.split('#')[1]?.split('-') ||
+    customerCardsInformation?.settings?.caller_info?.split('#')[1]?.split('-') ||
     ''
   //Is user or company main extension
   const companyExtension = urlParts[0]
+
   //ContactType can be "company" or "person"
   const contactType = urlParts[1]
+
+  useEffect(() => {
+    if (userInformation.settings?.ccard_order) {
+      setCCardList(userInformation.settings?.ccard_order)
+    } else {
+      const initialOrder = Object.keys(customerCardsList)
+      setCCardList(initialOrder)
+    }
+  }, [userInformation])
+
+  const [isCustomerCardsListLoaded, setIsCustomerCardsListLoaded] = useState(false)
+  const [customerCardError, setCustomerCardError] = useState('')
 
   const [companyInformation, setCompanyInformations]: any = useState()
 
@@ -101,7 +120,7 @@ const CustomerCards: NextPage = () => {
       const tabs = [
         { name: t('CustomerCards.General info'), value: 'generalInfo' },
         ...ccardList
-          .map((ccard) => {
+          .map((ccard: any) => {
             const cardData = customerCardsList[ccard]
             if (cardData) {
               return {
@@ -115,7 +134,7 @@ const CustomerCards: NextPage = () => {
       ]
       setDynamicTabs(tabs)
     }
-  }, [ccardList, customerCardsList, isCustomerCardsListLoaded])
+  }, [ccardList, customerCardsList, dynamicTabs, isCustomerCardsListLoaded])
 
   return (
     <>
@@ -170,21 +189,50 @@ const CustomerCards: NextPage = () => {
               <div className='hidden sm:block'>
                 <div className='border-b border-gray-300 dark:border-gray-600'>
                   <nav className='-mb-px flex space-x-8' aria-label='Tabs'>
-                    {dynamicTabs.map((tab) => (
-                      <a
-                        key={tab.value}
-                        onClick={() => changeTab(tab.value)}
-                        className={classNames(
-                          tab.value === currentTab
-                            ? 'border-primary text-primary'
-                            : 'border-transparent text-gray-500 hover:text-gray-700 hover:border-gray-300 dark:text-gray-400 dark:hover:text-gray-200 dark:hover:border-gray-600',
-                          'cursor-pointer whitespace-nowrap py-4 px-1 border-b-2 font-medium text-sm',
-                        )}
-                        aria-current={tab.value === currentTab ? 'page' : undefined}
-                      >
-                        {tab.name}
-                      </a>
-                    ))}
+                    {!isEmpty(customerCardsList) ? (
+                      // Render real tabs when customerCardList is defined
+                      dynamicTabs.map((tab) => (
+                        <a
+                          key={tab.value}
+                          onClick={() => changeTab(tab.value)}
+                          className={classNames(
+                            tab.value === currentTab
+                              ? 'border-primary text-primary'
+                              : 'border-transparent text-gray-500 hover:text-gray-700 hover:border-gray-300 dark:text-gray-400 dark:hover:text-gray-200 dark:hover:border-gray-600',
+                            'cursor-pointer whitespace-nowrap py-4 px-1 border-b-2 font-medium text-sm',
+                          )}
+                          aria-current={tab.value === currentTab ? 'page' : undefined}
+                        >
+                          {tab.name}
+                        </a>
+                      ))
+                    ) : (
+                      // Render "General info" tab and loading skeleton when customerCardList is undefined
+                      <>
+                        <a
+                          className={classNames(
+                            'border-primary text-primary',
+                            'cursor-pointer whitespace-nowrap py-4 px-1 border-b-2 font-medium text-sm',
+                          )}
+                          onClick={() => changeTab('generalInfo')}
+                          aria-current='page'
+                        >
+                          {t('CustomerCards.General info')}
+                        </a>
+                        {/* Pulsating effect for "Loading" */}
+                        <div className='flex space-x-8 whitespace-nowrap py-4 px-1 border-b-2 font-medium text-sm'>
+                          <div className='w-1/4'>
+                            <div className='animate-pulse h-3 w-12 rounded bg-gray-300 dark:bg-gray-600 inline-block'></div>
+                          </div>
+                          <div className='w-1/4'>
+                            <div className='animate-pulse h-3 w-12 rounded bg-gray-300 dark:bg-gray-600 inline-block'></div>
+                          </div>
+                          <div className='w-1/4'>
+                            <div className='animate-pulse h-3 w-12 rounded bg-gray-300 dark:bg-gray-600 inline-block'></div>
+                          </div>
+                        </div>
+                      </>
+                    )}
                   </nav>
                 </div>
               </div>

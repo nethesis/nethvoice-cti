@@ -354,7 +354,7 @@ export const Layout: FC<LayoutProps> = ({ children }) => {
             data[currentUsername]?.conversations[firstConversationKey]?.counterpartNum
           if (customerType && customerCardNumber) {
             let ccardObject: any = '#' + customerCardNumber + '-' + customerType
-            dispatch.user.updateCallerCustomerCardInformation(ccardObject)
+            dispatch.customerCards.updateCallerCustomerCardInformation(ccardObject)
           }
           // If all conditions are satisfied go to customercards and set in to the store number and type
           router
@@ -404,7 +404,7 @@ export const Layout: FC<LayoutProps> = ({ children }) => {
             data[currentUsername]?.conversations[firstConversationKey]?.counterpartNum
           if (customerType && customerCardNumber) {
             let ccardObject: any = '#' + customerCardNumber + '-' + customerType
-            dispatch.user.updateCallerCustomerCardInformation(ccardObject)
+            dispatch.customerCards.updateCallerCustomerCardInformation(ccardObject)
           }
           // If all conditions are satisfied go to customercards and set in to the store number and type
           router
