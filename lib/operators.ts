@@ -282,10 +282,11 @@ export const buildOperators = (operatorsStore: any) => {
 
   // favorites
 
-  for (const username of operatorsStore.favorites) {
-    operators[username].favorite = true
+  for (const username of operatorsStore?.favorites) {
+    if (operators[username]) {
+      operators[username].favorite = true
+    }
   }
-
   // avatars
 
   for (const [username, avatarBase64] of Object.entries(operatorsStore.avatars)) {

@@ -316,6 +316,17 @@ export const Layout: FC<LayoutProps> = ({ children }) => {
               window.focus()
             }
           }
+        } else {
+          Notification.requestPermission()
+
+            .then((permission) => {
+              if (permission === 'granted') {
+                showNotification()
+              }
+            })
+            .catch((error) => {
+              console.error('No permissions', error)
+            })
         }
       }
     }
