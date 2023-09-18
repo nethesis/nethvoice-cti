@@ -144,7 +144,7 @@ export const CustomerCards = () => {
                             />
                             <label
                               htmlFor={notificationMethod.id}
-                              className='ml-3 block text-sm font-medium leading-6 text-gray-900'
+                              className='ml-3 block text-sm font-medium leading-6 text-gray-900 dark:text-gray-200'
                             >
                               {notificationMethod.title}
                             </label>

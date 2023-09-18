@@ -24,7 +24,7 @@ import { useEventListener } from '../../lib/hooks/useEventListener'
 import { retrieveQueues } from '../../lib/queuesLib'
 import { retrieveQueueManager } from '../../lib/queueManager'
 import Head from 'next/head'
-import { capitalize } from 'lodash'
+import { capitalize, isEmpty } from 'lodash'
 import { doLogout } from '../../services/login'
 import { UserNavBar } from './UserNavBar'
 import { getProfilingInfo } from '../../services/profiling'
@@ -277,6 +277,53 @@ export const Layout: FC<LayoutProps> = ({ children }) => {
   //Get user information from store
   const userInformation = useSelector((state: RootState) => state.user)
 
+  const [conversationObject, setConversationObject]: any = useState({})
+
+  const [variableCheck, setVariableCheck] = useState(false)
+
+  useEffect(() => {
+    function showNotification() {
+      if (document.visibilityState !== 'visible' && variableCheck) {
+        if (Notification.permission === 'granted') {
+          let iconUrl = ''
+
+          if (conversationObject) {
+            if (conversationObject?.avatar && conversationObject?.avatar != '') {
+              //If caller has avatar use it
+              iconUrl = conversationObject?.avatar
+            } else {
+              //Else use default icon
+              const svgString = `
+                <svg class="h-full w-full text-gray-600 bg-white" viewBox="0 0 24 24">
+                  <path d="M24 20.993V24H0v-2.996A14.977 14.977 0 0112.004 15c4.904 0 9.26 2.354 11.996 5.993zM16.002 8.999a4 4 0 11-8 0 4 4 0 018 0z" />
+                </svg>
+              `
+              // Convert svg icon
+              const blob = new Blob([svgString], { type: 'image/svg+xml' })
+              iconUrl = URL.createObjectURL(blob)
+            }
+
+            // Create notification with caller informations
+            const notification = new Notification(`${conversationObject?.name}`, {
+              body: `${conversationObject?.number}`,
+              icon: iconUrl,
+            })
+
+            setVariableCheck(false)
+
+            notification.onclick = function () {
+              notification.close()
+              window.focus()
+            }
+          }
+        }
+      }
+    }
+
+    showNotification()
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [variableCheck])
+
   useEventListener('phone-island-conversations', (data) => {
     const opName = Object.keys(data)[0]
     const conversations = data[opName].conversations
@@ -316,6 +363,33 @@ export const Layout: FC<LayoutProps> = ({ children }) => {
       const connectedQueueManagerCalls = queueManagerConnectedCalls[queueId]
       store.dispatch.queueManagerQueues.setConnectedCalls(queueId, connectedQueueManagerCalls)
     })
+
+    setVariableCheck(false)
+    if (
+      data[currentUsername] &&
+      data[currentUsername]?.conversations &&
+      operators[currentUsername]?.mainPresence === 'ringing'
+    ) {
+      const firstElementConversation = Object.keys(data[currentUsername].conversations)[0]
+
+      if (firstElementConversation && !isEmpty(data[currentUsername]?.conversations)) {
+        let callerInfo =
+          operatorsStore?.extensions[
+            data[currentUsername]?.conversations[firstElementConversation]?.counterpartNum
+          ]
+
+        let callerUsername = callerInfo?.username
+        let callerAvatar = operatorsStore.avatars[callerUsername]
+        let notificationObject: any = {
+          number: data[currentUsername]?.conversations[firstElementConversation]?.counterpartNum,
+          name: data[currentUsername]?.conversations[firstElementConversation]?.counterpartName,
+          avatar: callerAvatar || '',
+        }
+        //Set all the content that will be displayed on notification
+        setConversationObject(notificationObject)
+        setVariableCheck(true)
+      }
+    }
 
     /* CUSTOMER CARDS SECTION
      * On phone-island-conversations event must be checked if user:
