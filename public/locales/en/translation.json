@@ -137,7 +137,8 @@
     "Layout": "Layout",
     "Filter operators": "Filter operators",
     "Status": "Status",
-    "Recall on busy message": "Call booked! You are number {{extensionWaiting}} waiting"
+    "Recall on busy message": "Call booked! You are number {{extensionWaiting}} in waiting list",
+    "Recall on busy": "Recall on busy"
   },
   "Applications": {
     "Applications": "Applications",

@@ -323,3 +323,13 @@ export async function postRecallOnBusy(obj: any) {
     throw error
   }
 }
+
+export async function hangup(obj: any) {
+  try {
+    const { data, status } = await axios.post('/astproxy/hangup', obj)
+    return data
+  } catch (error) {
+    handleNetworkError(error)
+    throw error
+  }
+}

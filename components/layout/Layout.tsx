@@ -649,7 +649,7 @@ export const Layout: FC<LayoutProps> = ({ children }) => {
       //  Timeout for toast
       setTimeout(() => {
         closeToast()
-      }, 1500)
+      }, 3000)
     }
   }, [toast])
 

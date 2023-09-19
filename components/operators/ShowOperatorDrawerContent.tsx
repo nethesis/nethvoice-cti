@@ -24,7 +24,7 @@ import { startOfDay, subDays } from 'date-fns'
 import { OperatorSummary } from './OperatorSummary'
 import { useTranslation } from 'react-i18next'
 import { isEmpty } from 'lodash'
-import { postRecallOnBusy } from '../../lib/operators'
+import { postRecallOnBusy, hangup } from '../../lib/operators'
 import { openToast } from '../../lib/utils'
 
 export interface ShowOperatorDrawerContentProps extends ComponentPropsWithRef<'div'> {
@@ -67,31 +67,63 @@ export const ShowOperatorDrawerContent = forwardRef<
     }
   }
 
+  async function hangupConversation(objectHangupConversation: any) {
+    if (objectHangupConversation?.conversations[0]?.id) {
+      const conversationId = objectHangupConversation?.conversations[0]?.id
+      let numberToClose = ''
+      if (conversationId) {
+        // Get number to close from conversation id
+        const numberToClose = conversationId?.match(/\/(\d+)-/)
+        if (numberToClose) {
+          const endpointId = numberToClose[1]
+
+          const hangupInformations = {
+            convid: conversationId.toString(),
+            endpointId: endpointId.toString(),
+          }
+
+          if (!isEmpty(hangupInformations)) {
+            try {
+              await hangup(hangupInformations)
+            } catch (e) {
+              console.error(e)
+              return []
+            }
+          }
+        }
+      }
+    }
+  }
+
   const showToast = (extensionWaiting: any) => {
-    openToast('info', `${t('Operators.Recall on busy message', { extensionWaiting })}`, 'tytle')
+    openToast(
+      'success',
+      `${t('Operators.Recall on busy message', { extensionWaiting })}`,
+      `${t('Operators.Recall on busy', { extensionWaiting })}`,
+    )
   }
 
   const getCallActionsMenu = (config: any) => {
-    if (
-      config?.conversations[0]?.chDest?.callerName != profile.name &&
-      config?.conversations[0]?.chSource?.callerName != profile.name
-    ) {
-      return (
-        <>
-          {profile?.recallOnBusy && (
-            <>
-              <Dropdown.Item icon={faTicket} onClick={() => recallOnBusyPost(config)}>
-                {t('OperatorDrawer.Book')}
-              </Dropdown.Item>
-            </>
-          )}
-          <Dropdown.Item icon={faPhoneSlash}> {t('OperatorDrawer.Hangup')}</Dropdown.Item>
-          <Dropdown.Item icon={faEarListen}> {t('OperatorDrawer.Listen')}</Dropdown.Item>
-          <Dropdown.Item icon={faHandPointUp}> {t('OperatorDrawer.Intrude')}</Dropdown.Item>
-          <Dropdown.Item icon={faCircle}> {t('OperatorDrawer.Record')}</Dropdown.Item>
-        </>
-      )
-    }
+    return (
+      <>
+        {profile?.recallOnBusy && (
+          <>
+            <Dropdown.Item icon={faTicket} onClick={() => recallOnBusyPost(config)}>
+              {t('OperatorDrawer.Book')}
+            </Dropdown.Item>
+          </>
+        )}
+        {profile?.profile?.macro_permissions?.presence_panel?.permissions?.hangup?.value && (
+          <Dropdown.Item icon={faPhoneSlash} onClick={() => hangupConversation(config)}>
+            {' '}
+            {t('OperatorDrawer.Hangup')}
+          </Dropdown.Item>
+        )}
+        <Dropdown.Item icon={faEarListen}> {t('OperatorDrawer.Listen')}</Dropdown.Item>
+        <Dropdown.Item icon={faHandPointUp}> {t('OperatorDrawer.Intrude')}</Dropdown.Item>
+        <Dropdown.Item icon={faCircle}> {t('OperatorDrawer.Record')}</Dropdown.Item>
+      </>
+    )
   }
 
   return (
@@ -119,13 +151,22 @@ export const ShowOperatorDrawerContent = forwardRef<
                 <h4 className='text-md font-medium text-gray-700 dark:text-gray-200'>
                   {t('OperatorDrawer.Current call')}
                 </h4>
-                {/* ongoing call menu */}
-                <Dropdown items={getCallActionsMenu(config)} position='left'>
-                  <Button variant='ghost'>
-                    <FontAwesomeIcon icon={faEllipsisVertical} className='h-4 w-4' />
-                    <span className='sr-only'>{t('OperatorDrawer.Open call actions menu')}</span>
-                  </Button>
-                </Dropdown>
+                <div>
+                  {config?.conversations[0]?.chDest?.callerName != profile?.name &&
+                    config?.conversations[0]?.chSource?.callerName != profile?.name && (
+                      <>
+                        {/* ongoing call menu */}
+                        <Dropdown items={getCallActionsMenu(config)} position='left'>
+                          <Button variant='ghost'>
+                            <FontAwesomeIcon icon={faEllipsisVertical} className='h-4 w-4' />
+                            <span className='sr-only'>
+                              {t('OperatorDrawer.Open call actions menu')}
+                            </span>
+                          </Button>
+                        </Dropdown>
+                      </>
+                    )}
+                </div>
               </div>
               <div className='mt-4 border-t border-gray-200 dark:border-gray-700'>
                 <dl>
