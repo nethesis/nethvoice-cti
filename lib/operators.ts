@@ -313,3 +313,13 @@ export const getInfiniteScrollOperatorsPageSize = () => {
   }
   return pageSize
 }
+
+export async function postRecallOnBusy(obj: any) {
+  try {
+    const { data, status } = await axios.post('/astproxy/recall_on_busy', obj)
+    return data
+  } catch (error) {
+    handleNetworkError(error)
+    throw error
+  }
+}

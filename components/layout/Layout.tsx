@@ -10,7 +10,7 @@ import { useDispatch } from 'react-redux'
 import { Dispatch } from '../../store'
 import { RootState } from '../../store'
 import { useSelector } from 'react-redux'
-import { closeSideDrawer, getProductName, getHtmlFaviconElement } from '../../lib/utils'
+import { closeSideDrawer, getProductName, getHtmlFaviconElement, closeToast } from '../../lib/utils'
 import { store } from '../../store'
 import {
   buildOperators,
@@ -34,6 +34,7 @@ interface LayoutProps {
   children: ReactNode
 }
 import { useTranslation } from 'react-i18next'
+import Toast from '../common/Toast'
 
 export const Layout: FC<LayoutProps> = ({ children }) => {
   const [openMobileMenu, setOpenMobileMenu] = useState<boolean>(false)
@@ -41,6 +42,7 @@ export const Layout: FC<LayoutProps> = ({ children }) => {
   const [items, setItems] = useState<NavItemsProps[]>(navItems)
   const dispatch = useDispatch<Dispatch>()
   const sideDrawer = useSelector((state: RootState) => state.sideDrawer)
+  const toast = useSelector((state: RootState) => state.toast)
   const operatorsStore: any = useSelector((state: RootState) => state.operators)
   const [firstRenderOperators, setFirstRenderOperators] = useState(true)
   const [firstRenderUserInfo, setFirstRenderUserInfo] = useState(true)
@@ -101,6 +103,7 @@ export const Layout: FC<LayoutProps> = ({ children }) => {
           profile: userInfo.data.profile,
           avatar: userInfo.data.settings.avatar,
           settings: userInfo.data.settings,
+          recallOnBusy: userInfo?.data?.recallOnBusy,
         })
         setUserInfoLoaded(true)
       } else {
@@ -641,6 +644,15 @@ export const Layout: FC<LayoutProps> = ({ children }) => {
     setUserInfoLoaded(false)
   })
 
+  useEffect(() => {
+    if (toast?.isShown) {
+      //  Timeout for toast
+      setTimeout(() => {
+        closeToast()
+      }, 1500)
+    }
+  }, [toast])
+
   return (
     <>
       <div>
@@ -680,6 +692,20 @@ export const Layout: FC<LayoutProps> = ({ children }) => {
               config={sideDrawer.config}
               drawerClosed={() => closeSideDrawer()}
             />
+            <div>
+              {toast?.isShown && (
+                <div className='absolute top-[5rem] left-[12rem] sm:top-[5rem] sm:left-[16rem] md:top-[5rem] md:left-[25rem] lg:top-[5rem] lg:left-[36rem] xl:top-[5rem] xl:left-[53rem] 2xl:top-[5rem] 2xl:left-[92rem] w-full z-50'>
+                  <Toast
+                    type={toast?.contentType || 'info'}
+                    title={toast?.tytle || ''}
+                    onClose={() => closeToast()}
+                    show={toast?.isShown}
+                  >
+                    {toast?.message}
+                  </Toast>
+                </div>
+              )}
+            </div>
           </div>
         </div>
       </div>

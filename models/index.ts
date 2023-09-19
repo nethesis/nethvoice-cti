@@ -19,6 +19,7 @@ import { phoneLines } from './phoneLines'
 import { announcement } from './announcement'
 import { profiling } from './profiling'
 import { customerCards } from './customerCards'
+import { toast } from './toast'
 
 export interface RootModel extends Models<RootModel> {
   authentication: typeof authentication
@@ -38,6 +39,7 @@ export interface RootModel extends Models<RootModel> {
   announcement: typeof announcement
   profiling: typeof profiling
   customerCards: typeof customerCards
+  toast: typeof toast
 }
 
 export const models: RootModel = {
@@ -58,4 +60,5 @@ export const models: RootModel = {
   announcement,
   profiling,
   customerCards,
+  toast
 }

@@ -409,6 +409,37 @@ const theme = {
       success: 'mt-2 text-sm text-green-700 dark:text-green-200',
     },
   },
+  toast: {
+    base: 'pointer-events-auto w-full max-w-sm overflow-hidden rounded-lg bg-white shadow-lg ring-1 ring-black ring-opacity-5 rounded-md p-4 w-full flex',
+    type: {
+      info: '',
+      error: '',
+      warning: '',
+      success: '',
+      failed: '',
+    },
+    titleStyle: {
+      info: 'text-sm font-medium text-blue-800 dark:text-blue-100',
+      error: 'text-sm font-medium text-red-800 dark:text-red-100',
+      warning: 'text-sm font-medium text-yellow-800 dark:text-yellow-100',
+      success: 'text-sm font-medium text-green-800 dark:text-green-100',
+      failed: 'border-green-400 bg-red-100 dark:border-green-500 dark:bg-green-800',
+    },
+    iconStyle: {
+      info: 'h-4 w-4 relative -top-0.5 text-blue-400 dark:text-blue-300',
+      error: 'h-4 w-4 relative -top-0.5 text-red-400 dark:text-red-300',
+      warning: 'h-4 w-4 relative -top-0.5 text-yellow-600 dark:text-yellow-300',
+      success: 'h-4 w-4 relative -top-0.5 text-green-600 dark:text-green-300',
+      failed: 'border-green-400 bg-red-100 dark:border-green-500 dark:bg-green-800',
+    },
+    childrenText: {
+      info: 'mt-2 text-sm text-blue-700 dark:text-blue-200',
+      error: 'mt-2 text-sm text-red-700 dark:text-red-200',
+      warning: 'mt-2 text-sm text-yellow-700 dark:text-yellow-200',
+      success: 'mt-2 text-sm text-green-700 dark:text-green-200',
+      failed: 'border-green-400 bg-red-100 dark:border-green-500 dark:bg-green-800',
+    },
+  },
   timePicker: {
     base: 'bg-white mt-1 w-full border-gray-300 dark:bg-gray-900 dark:border-gray-600 dark:disabled:bg-gray-900 dark:disabled:border-gray-700 dark:disabled:text-gray-400 dark:focus:border-primaryDark dark:focus:ring-primaryDark dark:placeholder:text-gray-500 dark:text-gray-100 disabled:bg-gray-50 disabled:border-gray-200 disabled:cursor-not-allowed disabled:text-gray-500 focus:border-primaryLight focus:ring-primaryLight placeholder:text-gray-500 rounded-md sm:text-sm text-gray-900',
   },

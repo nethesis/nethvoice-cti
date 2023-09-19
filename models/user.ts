@@ -45,6 +45,7 @@ interface DefaultState {
   profile: ProfileTypes
   avatar: string
   settings: SettingsTypes
+  recallOnBusy: any
 }
 
 const defaultState: DefaultState = {
@@ -82,6 +83,7 @@ const defaultState: DefaultState = {
     company_extension: '',
     caller_info: '',
   },
+  recallOnBusy: '',
 }
 
 export const user = createModel<RootModel>()({
@@ -96,6 +98,7 @@ export const user = createModel<RootModel>()({
       state.profile = payload.profile
       state.avatar = payload.avatar
       state.settings = payload.settings
+      state.recallOnBusy = payload.recallOnBusy
       return state
     },
     updateMainPresence: (state, mainPresence) => {
