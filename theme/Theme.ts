@@ -410,7 +410,7 @@ const theme = {
     },
   },
   toast: {
-    base: 'pointer-events-auto w-full max-w-sm overflow-hidden rounded-lg bg-white shadow-lg ring-1 ring-black ring-opacity-5 rounded-md p-4 w-full flex',
+    base: 'pointer-events-auto max-w-lg overflow-hidden rounded-lg bg-white shadow-lg ring-1 ring-black ring-opacity-5 rounded-md p-5 w-full flex items-center',
     type: {
       info: '',
       error: '',
