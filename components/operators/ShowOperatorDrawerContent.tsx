@@ -24,7 +24,7 @@ import { startOfDay, subDays } from 'date-fns'
 import { OperatorSummary } from './OperatorSummary'
 import { useTranslation } from 'react-i18next'
 import { isEmpty } from 'lodash'
-import { postRecallOnBusy, hangup } from '../../lib/operators'
+import { postRecallOnBusy, hangup, startListen } from '../../lib/operators'
 import { openToast } from '../../lib/utils'
 
 export interface ShowOperatorDrawerContentProps extends ComponentPropsWithRef<'div'> {
@@ -36,8 +36,12 @@ export const ShowOperatorDrawerContent = forwardRef<
   ShowOperatorDrawerContentProps
 >(({ config, className, ...props }, ref) => {
   const profile = useSelector((state: RootState) => state.user)
+  const operators = useSelector((state: RootState) => state.operators)
   const [isFavorite, setFavorite] = useState(false)
   const { t } = useTranslation()
+
+  const auth = useSelector((state: RootState) => state.authentication)
+  const username = auth.username
 
   useEffect(() => {
     setFavorite(config.favorite)
@@ -95,6 +99,45 @@ export const ShowOperatorDrawerContent = forwardRef<
     }
   }
 
+  async function listenConversation(objectListenConversation: any) {
+    // if main user is not in conversation enable listen conversation
+
+    if (
+      objectListenConversation?.conversations[0]?.id &&
+      isEmpty(operators?.operators[username]?.conversations)
+    ) {
+      // console.log('you can')
+      const conversationId = objectListenConversation?.conversations[0]?.id
+      let numberToClose = ''
+      let numberToSendCall = ''
+      if (operators?.operators[username].endpoints?.mainextension[0]?.id) {
+        numberToSendCall =
+          operators?.operators[username].endpoints?.mainextension[0]?.id?.toString()
+      }
+      if (conversationId) {
+        const numberToListen = conversationId?.match(/\/(\d+)-/)
+        if (numberToListen) {
+          const endpointId = numberToListen[1]
+
+          const listenInformations = {
+            convid: conversationId.toString(),
+            destId: numberToSendCall,
+            endpointId: endpointId.toString(),
+          }
+
+          if (!isEmpty(listenInformations)) {
+            try {
+              await startListen(listenInformations)
+            } catch (e) {
+              console.error(e)
+              return []
+            }
+          }
+        }
+      }
+    }
+  }
+
   const showToast = (extensionWaiting: any) => {
     openToast(
       'success',
@@ -119,7 +162,12 @@ export const ShowOperatorDrawerContent = forwardRef<
             {t('OperatorDrawer.Hangup')}
           </Dropdown.Item>
         )}
-        <Dropdown.Item icon={faEarListen}> {t('OperatorDrawer.Listen')}</Dropdown.Item>
+        {profile?.profile?.macro_permissions?.presence_panel?.permissions?.spy?.value && (
+          <Dropdown.Item icon={faEarListen} onClick={() => listenConversation(config)}>
+            {' '}
+            {t('OperatorDrawer.Listen')}
+          </Dropdown.Item>
+        )}
         <Dropdown.Item icon={faHandPointUp}> {t('OperatorDrawer.Intrude')}</Dropdown.Item>
         <Dropdown.Item icon={faCircle}> {t('OperatorDrawer.Record')}</Dropdown.Item>
       </>

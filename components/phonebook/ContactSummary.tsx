@@ -337,7 +337,7 @@ export const ContactSummary = forwardRef<HTMLButtonElement, ContactSummaryProps>
                     />
                     <span
                       className='truncate cursor-pointer hover:underline'
-                      onClick={() => callPhoneNumber(contact.cellphone)}
+                      onClick={() => callPhoneNumber(contact.homephone)}
                     >
                       {contact.homephone}
                     </span>
