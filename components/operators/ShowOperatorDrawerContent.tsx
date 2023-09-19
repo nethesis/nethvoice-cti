@@ -26,7 +26,7 @@ import { startOfDay, subDays } from 'date-fns'
 import { OperatorSummary } from './OperatorSummary'
 import { useTranslation } from 'react-i18next'
 import { isEmpty } from 'lodash'
-import { postRecallOnBusy, hangup, startListen, toggleRecord } from '../../lib/operators'
+import { postRecallOnBusy, hangup, startListen, toggleRecord, intrude } from '../../lib/operators'
 import { openToast } from '../../lib/utils'
 
 export interface ShowOperatorDrawerContentProps extends ComponentPropsWithRef<'div'> {
@@ -108,9 +108,7 @@ export const ShowOperatorDrawerContent = forwardRef<
       objectListenConversation?.conversations[0]?.id &&
       isEmpty(operators?.operators[username]?.conversations)
     ) {
-      // console.log('you can')
       const conversationId = objectListenConversation?.conversations[0]?.id
-      let numberToClose = ''
       let numberToSendCall = ''
       if (operators?.operators[username].endpoints?.mainextension[0]?.id) {
         numberToSendCall =
@@ -140,9 +138,42 @@ export const ShowOperatorDrawerContent = forwardRef<
     }
   }
 
-  // ($scope.currentCall.isRecord, $scope.currentCall.recorded
-  // const [callIsRecord, setCallIsRecord] = useState(false)
-  // const [callIsRecorded, setCallIsRecorded] = useState(false)
+  async function intrudeConversation(objectIntrudeConversation: any) {
+    // if main user is not in conversation enable intrude in to conversation
+
+    if (
+      objectIntrudeConversation?.conversations[0]?.id &&
+      isEmpty(operators?.operators[username]?.conversations)
+    ) {
+      const conversationId = objectIntrudeConversation?.conversations[0]?.id
+      let numberToSendCall = ''
+      if (operators?.operators[username].endpoints?.mainextension[0]?.id) {
+        numberToSendCall =
+          operators?.operators[username].endpoints?.mainextension[0]?.id?.toString()
+      }
+      if (conversationId) {
+        const numberToIntrude = conversationId?.match(/\/(\d+)-/)
+        if (numberToIntrude) {
+          const endpointId = numberToIntrude[1]
+
+          const intrudeInformations = {
+            convid: conversationId.toString(),
+            destId: numberToSendCall,
+            endpointId: endpointId.toString(),
+          }
+
+          if (!isEmpty(intrudeInformations)) {
+            try {
+              await intrude(intrudeInformations)
+            } catch (e) {
+              console.error(e)
+              return []
+            }
+          }
+        }
+      }
+    }
+  }
 
   async function recordConversation(objectListenConversation: any) {
     // if main user is not in conversation enable listen conversation
@@ -221,23 +252,32 @@ export const ShowOperatorDrawerContent = forwardRef<
           </Dropdown.Item>
         )}
         {profile?.profile?.macro_permissions?.presence_panel?.permissions?.intrude?.value && (
-          <Dropdown.Item icon={faHandPointUp}> {t('OperatorDrawer.Intrude')}</Dropdown.Item>
+          <Dropdown.Item icon={faHandPointUp} onClick={() => intrudeConversation(config)}>
+            {' '}
+            {t('OperatorDrawer.Intrude')}
+          </Dropdown.Item>
         )}
 
         {profile?.profile?.macro_permissions?.presence_panel?.permissions?.ad_recording?.value && (
           <Dropdown.Item
             icon={
+              operators?.operators[username]?.conversations &&
+              operators?.operators[username]?.conversations[0]?.recording &&
               operators?.operators[username]?.conversations[0]?.recording === 'true'
                 ? faCirclePause
-                : operators?.operators[username]?.conversations[0]?.recording === 'false'
+                : operators?.operators[username]?.conversations &&
+                  operators?.operators[username]?.conversations[0]?.recording === 'false'
                 ? faCircle
                 : faMicrophoneSlash
             }
             onClick={() => recordConversation(config)}
           >
-            {operators?.operators[username]?.conversations[0]?.recording === 'true'
+            {operators?.operators[username]?.conversations &&
+            operators?.operators[username]?.conversations[0]?.recording &&
+            operators?.operators[username]?.conversations[0]?.recording === 'true'
               ? t('OperatorDrawer.Stop recording')
-              : operators?.operators[username]?.conversations[0]?.recording === 'false'
+              : operators?.operators[username]?.conversations &&
+                operators?.operators[username]?.conversations[0]?.recording === 'false'
               ? t('OperatorDrawer.Start recording')
               : t('OperatorDrawer.Restart recording')}
           </Dropdown.Item>

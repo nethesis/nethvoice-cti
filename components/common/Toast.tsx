@@ -12,6 +12,7 @@ import {
   faCircleXmark,
 } from '@fortawesome/free-solid-svg-icons'
 import { t } from 'i18next'
+import { ProgressionRing } from './ProgressionRing'
 
 export interface ToastProps extends ComponentProps<'div'> {
   type: 'info' | 'warning' | 'success' | 'error' | 'failed'
@@ -20,6 +21,7 @@ export interface ToastProps extends ComponentProps<'div'> {
   className?: string
   onClose: () => void
   show: boolean
+  timeout: number
 }
 
 export const Toast: FC<ToastProps> = ({
@@ -29,13 +31,18 @@ export const Toast: FC<ToastProps> = ({
   className,
   onClose,
   show,
+  timeout,
 }): JSX.Element => {
   const { toast: theme } = useTheme().theme
 
   let checkIcon =
     type === 'info' ? (
       <div className={`bg-blue-100 text-white rounded-full py-2 px-3`}>
-        <FontAwesomeIcon icon={faCircleInfo} className={theme?.iconStyle[type]} aria-hidden='true' />
+        <FontAwesomeIcon
+          icon={faCircleInfo}
+          className={theme?.iconStyle[type]}
+          aria-hidden='true'
+        />
       </div>
     ) : type === 'warning' ? (
       <div className={`bg-yellow-100 text-white rounded-full py-2 px-3`}>
@@ -75,22 +82,19 @@ export const Toast: FC<ToastProps> = ({
       leaveTo='opacity-0'
     >
       <div
-        className={classNames(theme?.base, type ? theme?.type[type] : theme.type.success, className)}
+        className={classNames(
+          theme?.base,
+          type ? theme?.type[type] : theme.type.success,
+          className,
+        )}
       >
-        <div className='flex-shrink-0'>{checkIcon}</div>
-        <div className='ml-3 w-0 flex-1 pt-0.5'>
+        <div>{checkIcon}</div>
+        <div className='ml-6 mr-12 flex-1 pt-0.5'>
           <p className='text-sm font-medium text-gray-900'>{title}</p>
           <p className='mt-1 text-sm text-gray-500'>{children}</p>
         </div>
-        <div className='ml-4 flex flex-shrink-0'>
-          <button
-            type='button'
-            className='inline-flex rounded-md text-gray-400 hover:text-gray-500 focus:outline-none focus:ring-2 focus:ring-primary focus:ring-offset-2'
-            onClick={onClose}
-          >
-            <span className='sr-only'>{t('Common.Close')}</span>
-            <FontAwesomeIcon icon={faClose} className='h-4 w-4' />
-          </button>
+        <div className='absolute top-0 right-0 mt-4 mr-1'>
+          <ProgressionRing seconds={timeout} size={20} />
         </div>
       </div>
     </Transition>

@@ -373,3 +373,13 @@ export async function toggleRecord(recordingType: any, obj: any) {
     }
   }
 }
+
+export async function intrude(obj: any) {
+  try {
+    const { data, status } = await axios.post('/astproxy/intrude', obj)
+    return data
+  } catch (error) {
+    handleNetworkError(error)
+    throw error
+  }
+}

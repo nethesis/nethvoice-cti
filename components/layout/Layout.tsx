@@ -643,13 +643,15 @@ export const Layout: FC<LayoutProps> = ({ children }) => {
   useEventListener('phone-island-server-reloaded', () => {
     setUserInfoLoaded(false)
   })
+  
+  let timeoutSeconds = 3000
 
   useEffect(() => {
     if (toast?.isShown) {
       //  Timeout for toast
       setTimeout(() => {
         closeToast()
-      }, 3000)
+      }, timeoutSeconds)
     }
   }, [toast])
 
@@ -684,28 +686,30 @@ export const Layout: FC<LayoutProps> = ({ children }) => {
                 {children}
               </section>
             </main>
-            {/* Secondary column (hidden on smaller screens) */}
-            <UserNavBar />
-            <SideDrawer
-              isShown={sideDrawer.isShown}
-              contentType={sideDrawer.contentType}
-              config={sideDrawer.config}
-              drawerClosed={() => closeSideDrawer()}
-            />
-            <div>
+            <div className=' absolute right-4 z-50'>
               {toast?.isShown && (
-                <div className='absolute top-[5rem] left-[12rem] sm:top-[5rem] sm:left-[16rem] md:top-[5rem] md:left-[25rem] lg:top-[5rem] lg:left-[36rem] xl:top-[5rem] xl:left-[53rem] 2xl:top-[5rem] 2xl:left-[92rem] w-full z-50'>
+                <div>
                   <Toast
                     type={toast?.contentType || 'info'}
                     title={toast?.tytle || ''}
                     onClose={() => closeToast()}
                     show={toast?.isShown}
+                    timeout={timeoutSeconds / 1000}
                   >
                     {toast?.message}
                   </Toast>
                 </div>
               )}
             </div>
+            {/* Secondary column (hidden on smaller screens) */}
+            <UserNavBar />
+
+            <SideDrawer
+              isShown={sideDrawer.isShown}
+              contentType={sideDrawer.contentType}
+              config={sideDrawer.config}
+              drawerClosed={() => closeSideDrawer()}
+            />
           </div>
         </div>
       </div>
