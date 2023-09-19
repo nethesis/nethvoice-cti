@@ -333,3 +333,13 @@ export async function hangup(obj: any) {
     throw error
   }
 }
+
+export async function startListen(obj: any) {
+  try {
+    const { data, status } = await axios.post('/astproxy/start_spy', obj)
+    return data
+  } catch (error) {
+    handleNetworkError(error)
+    throw error
+  }
+}
