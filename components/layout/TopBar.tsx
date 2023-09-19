@@ -117,6 +117,7 @@ export const TopBar: FC<TopBarProps> = ({ openMobileCb }) => {
             profile: userInfo.data.profile,
             avatar: userInfo.data.settings.avatar,
             settings: userInfo?.data?.settings,
+            recallOnBusy: userInfo?.data?.recallOnBusy,
           })
         }
       } catch (err) {
@@ -141,6 +142,7 @@ export const TopBar: FC<TopBarProps> = ({ openMobileCb }) => {
           profile: userInfo.data.profile,
           avatar: userInfo.data.settings.avatar,
           settings: userInfo?.data?.settings,
+          recallOnBusy: userInfo?.data?.recallOnBusy,
         })
       }
     } catch (err) {

@@ -231,3 +231,16 @@ export const openEmailClient = (emailAddress: any) => {
   const mailtoLink = `mailto:${emailAddress}`
   window.location.href = mailtoLink
 }
+
+export const closeToast = () => {
+  store.dispatch.toast.setShownToast(false)
+}
+
+export const openToast = (toastType: any, messageToast: any, toastTytle: any) => {
+  store.dispatch.toast.updateToast({
+    isShown: true,
+    contentType: toastType.toString(),
+    message: messageToast,
+    tytle: toastTytle,
+  })
+}

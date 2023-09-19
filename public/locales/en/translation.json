@@ -34,7 +34,8 @@
     "Queuemanager": "Queue manager",
     "Download": "Download",
     "Customercards": "Customer cards",
-    "Permission error": "Permissions error"
+    "Permission error": "Permissions error",
+    "Close": "Close"
   },
   "Login": {
     "User": "User",
@@ -135,7 +136,8 @@
     "Compact": "Compact",
     "Layout": "Layout",
     "Filter operators": "Filter operators",
-    "Status": "Status"
+    "Status": "Status",
+    "Recall on busy message": "Call booked! You are number {{extensionWaiting}} waiting"
   },
   "Applications": {
     "Applications": "Applications",
