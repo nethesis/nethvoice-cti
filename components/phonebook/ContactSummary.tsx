@@ -443,7 +443,7 @@ export const ContactSummary = forwardRef<HTMLButtonElement, ContactSummaryProps>
             </div>
 
             {/* check if user has customer cards permission */}
-            {profile.macro_permissions?.customer_card?.value && (
+            {profile?.macro_permissions?.customer_card?.value && (
               <div className='flex pt-4 pb-8 px-5'>
                 <Button
                   size='small'

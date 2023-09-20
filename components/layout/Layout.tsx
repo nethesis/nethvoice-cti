@@ -435,31 +435,36 @@ export const Layout: FC<LayoutProps> = ({ children }) => {
           firstConversationKey &&
           !operatorsStore?.extensions[
             data[currentUsername]?.conversations[firstConversationKey]?.counterpartNum
-          ]
+          ] &&
+          operatorsStore?.extensions[
+            data[currentUsername]?.conversations[firstConversationKey]?.counterpartNum
+          ] !== '<unknown>'
         ) {
           // Get counterpartName from first element of conversation
           const customerCardNumber =
             data[currentUsername]?.conversations[firstConversationKey]?.counterpartNum
-          if (customerType && customerCardNumber) {
+
+          console.log('this is wrong number', customerCardNumber)
+          if (customerType && customerCardNumber && customerCardNumber !== 'unknown') {
             let ccardObject: any = '#' + customerCardNumber + '-' + customerType
             dispatch.customerCards.updateCallerCustomerCardInformation(ccardObject)
+            // If all conditions are satisfied go to customercards and set in to the store number and type
+            router
+              .replace(
+                {
+                  pathname: `/customercards`,
+                },
+                undefined,
+                {
+                  shallow: true,
+                },
+              )
+              .catch((e) => {
+                if (!e.cancelled) {
+                  throw e
+                }
+              })
           }
-          // If all conditions are satisfied go to customercards and set in to the store number and type
-          router
-            .replace(
-              {
-                pathname: `/customercards`,
-              },
-              undefined,
-              {
-                shallow: true,
-              },
-            )
-            .catch((e) => {
-              if (!e.cancelled) {
-                throw e
-              }
-            })
         }
       }
     }
@@ -485,31 +490,35 @@ export const Layout: FC<LayoutProps> = ({ children }) => {
           firstConversationKey &&
           !operatorsStore?.extensions[
             data[currentUsername]?.conversations[firstConversationKey]?.counterpartNum
-          ]
+          ] &&
+          operatorsStore?.extensions[
+            data[currentUsername]?.conversations[firstConversationKey]?.counterpartNum
+          ] !== '<unknown>'
         ) {
           // Get counterpartName from first element of conversation
           const customerCardNumber =
             data[currentUsername]?.conversations[firstConversationKey]?.counterpartNum
-          if (customerType && customerCardNumber) {
+          if (customerType && customerCardNumber && customerCardNumber !== 'unknown') {
             let ccardObject: any = '#' + customerCardNumber + '-' + customerType
             dispatch.customerCards.updateCallerCustomerCardInformation(ccardObject)
+
+            // If all conditions are satisfied go to customercards and set in to the store number and type
+            router
+              .replace(
+                {
+                  pathname: `/customercards`,
+                },
+                undefined,
+                {
+                  shallow: true,
+                },
+              )
+              .catch((e) => {
+                if (!e.cancelled) {
+                  throw e
+                }
+              })
           }
-          // If all conditions are satisfied go to customercards and set in to the store number and type
-          router
-            .replace(
-              {
-                pathname: `/customercards`,
-              },
-              undefined,
-              {
-                shallow: true,
-              },
-            )
-            .catch((e) => {
-              if (!e.cancelled) {
-                throw e
-              }
-            })
         }
       }
     }
@@ -643,7 +652,7 @@ export const Layout: FC<LayoutProps> = ({ children }) => {
   useEventListener('phone-island-server-reloaded', () => {
     setUserInfoLoaded(false)
   })
-  
+
   let timeoutSeconds = 3000
 
   useEffect(() => {
