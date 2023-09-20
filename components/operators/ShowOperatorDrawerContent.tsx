@@ -19,7 +19,7 @@ import {
   faRecordVinyl,
 } from '@fortawesome/free-solid-svg-icons'
 import { useSelector } from 'react-redux'
-import { RootState } from '../../store'
+import { RootState, store } from '../../store'
 import { CallDuration } from './CallDuration'
 import { LastCallsDrawerTable } from '../history/LastCallsDrawerTable'
 import { startOfDay, subDays } from 'date-fns'
@@ -125,6 +125,13 @@ export const ShowOperatorDrawerContent = forwardRef<
             endpointId: endpointId.toString(),
           }
 
+          let listeningInformations: any = {}
+          listeningInformations = {
+            isListening: true,
+            listening_id: conversationId.toString(),
+          }
+          store.dispatch.userActions.updateListeningInformation(listeningInformations)
+
           if (!isEmpty(listenInformations)) {
             try {
               await startListen(listenInformations)
@@ -161,6 +168,13 @@ export const ShowOperatorDrawerContent = forwardRef<
             destId: numberToSendCall,
             endpointId: endpointId.toString(),
           }
+
+          let iconIntrudeInformations: any = {}
+          iconIntrudeInformations = {
+            isIntrude: true,
+            intrude_id: conversationId.toString(),
+          }
+          store.dispatch.userActions.updateIntrudeInformation(iconIntrudeInformations)
 
           if (!isEmpty(intrudeInformations)) {
             try {

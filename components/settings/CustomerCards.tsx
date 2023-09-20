@@ -163,23 +163,6 @@ export const CustomerCards = () => {
                       </p>
 
                       {/* List header */}
-                      {/* <div className='flex items-center justify-between py-2'>
-                        <div className='flex items-center'>
-                          <span className='faBadge faBadge-circle faBadge-success mr-2'>
-                            <FontAwesomeIcon icon={faIdCardClip} className='text-white' />
-                          </span>
-                          <span className='text-sm font-semibold leading-6 text-gray-900 dark:text-gray-200'>
-                          </span>
-                        </div>
-                        <span className='px-2 py-1 bg-blue-500 text-white rounded-full'>
-                        </span>
-                      </div> */}
-                      {/* Divider */}
-                      {/* <div className='relative'>
-                        <div className='absolute inset-0 flex items-center' aria-hidden='true'>
-                          <div className='w-full border-t  border-gray-300 dark:border-gray-600' />
-                        </div>
-                      </div> */}
                     </div>
 
                     <div className='pt-4'>

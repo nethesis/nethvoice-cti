@@ -21,7 +21,9 @@ import { sortByFavorite, sortByProperty } from '../lib/utils'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import {
   faChevronRight,
+  faEarListen,
   faFilter,
+  faHandPointUp,
   faHeadset,
   faRecordVinyl,
 } from '@fortawesome/free-solid-svg-icons'
@@ -43,7 +45,9 @@ const Operators: NextPage = () => {
   const [infiniteScrollLastIndex, setInfiniteScrollLastIndex] = useState(
     infiniteScrollOperatorsPageSize,
   )
+  const actionInformation = useSelector((state: RootState) => state.userActions)
 
+  console.log("actionInformation", actionInformation)
   const [textFilter, setTextFilter]: any = useState('')
   const updateTextFilter = (newTextFilter: string) => {
     setTextFilter(newTextFilter)
@@ -301,7 +305,19 @@ const Operators: NextPage = () => {
                                           {operator?.conversations[0]?.recording === 'true' && (
                                             <FontAwesomeIcon
                                               icon={faRecordVinyl}
-                                              className='inline-block text-center h-4 w-4 text-gray-400 dark:text-gray-500'
+                                              className='inline-block text-center h-4 w-4'
+                                            />
+                                          )}
+                                          {operator?.conversations[0]?.id === actionInformation?.listeningInfo?.listening_id && (
+                                            <FontAwesomeIcon
+                                              icon={faEarListen}
+                                              className='inline-block text-center h-4 w-4'
+                                            />
+                                          )}
+                                          {operator?.conversations[0]?.id === actionInformation?.intrudeInfo?.intrude_id && (
+                                            <FontAwesomeIcon
+                                              icon={faHandPointUp}
+                                              className='inline-block text-center h-4 w-4'
                                             />
                                           )}
                                         </Badge>
