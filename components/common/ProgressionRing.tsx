@@ -43,8 +43,8 @@ export const ProgressionRing: React.FC<ProgressionRingProps> = ({ seconds, size 
   }, [seconds, totalTime])
 
   return (
-    <div className=''>
-      <svg className={`w-${size} h-${size} pl-12`}>
+    <div>
+      <svg className={`w-${size} h-${size} pl-9`}>
         <circle
           className='text-gray-300'
           strokeWidth='5'

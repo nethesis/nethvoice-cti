@@ -11,12 +11,12 @@ import {
   faTicket,
   faPhoneSlash,
   faPhone,
-  faCircle,
   faEllipsisVertical,
   faHandPointUp,
   faArrowLeft,
   faCirclePause,
   faMicrophoneSlash,
+  faRecordVinyl,
 } from '@fortawesome/free-solid-svg-icons'
 import { useSelector } from 'react-redux'
 import { RootState } from '../../store'
@@ -181,42 +181,43 @@ export const ShowOperatorDrawerContent = forwardRef<
     if (
       objectListenConversation?.conversations[0]?.id != '' &&
       operators?.operators[username]?.endpoints?.mainextension[0]?.id !== '' &&
-      operators?.operators[username]?.conversations[0]?.recording
+      operators?.operators[objectListenConversation.username]?.conversations &&
+      operators?.operators[objectListenConversation.username]?.conversations[0]?.recording
     ) {
       const conversationId = objectListenConversation?.conversations[0]?.id
-      let numberToSendCall = ''
-      if (operators?.operators[username].endpoints?.mainextension[0]?.id) {
-        numberToSendCall =
-          operators?.operators[username].endpoints?.mainextension[0]?.id?.toString()
-      }
       if (conversationId) {
-        const listenInformations = {
-          convid: conversationId.toString(),
-          endpointId: numberToSendCall,
-        }
+        const numberToSendCall = conversationId?.match(/\/(\d+)-/)
+        if (numberToSendCall) {
+          const endpointId = numberToSendCall[1]
+          const listenInformations = {
+            convid: conversationId.toString(),
+            endpointId: endpointId.toString(),
+          }
+          let recordingValues = ''
+          switch (
+            operators?.operators[objectListenConversation.username]?.conversations[0]?.recording
+          ) {
+            case 'false':
+              recordingValues = 'not_started'
+              break
+            case 'true':
+              recordingValues = 'started'
+              break
+            case 'mute':
+              recordingValues = 'muted'
+              break
+            default:
+              recordingValues = ''
+              break
+          }
 
-        let recordingValues = ''
-        switch (operators?.operators[username]?.conversations[0]?.recording) {
-          case 'false':
-            recordingValues = 'not_started'
-            break
-          case 'true':
-            recordingValues = 'started'
-            break
-          case 'mute':
-            recordingValues = 'muted'
-            break
-          default:
-            recordingValues = ''
-            break
-        }
-
-        if (!isEmpty(listenInformations)) {
-          try {
-            await toggleRecord(recordingValues, listenInformations)
-          } catch (e) {
-            console.error(e)
-            return []
+          if (!isEmpty(listenInformations)) {
+            try {
+              await toggleRecord(recordingValues, listenInformations)
+            } catch (e) {
+              console.error(e)
+              return []
+            }
           }
         }
       }
@@ -261,23 +262,23 @@ export const ShowOperatorDrawerContent = forwardRef<
         {profile?.profile?.macro_permissions?.presence_panel?.permissions?.ad_recording?.value && (
           <Dropdown.Item
             icon={
-              operators?.operators[username]?.conversations &&
-              operators?.operators[username]?.conversations[0]?.recording &&
-              operators?.operators[username]?.conversations[0]?.recording === 'true'
+              operators?.operators[config.username]?.conversations &&
+              operators?.operators[config.username]?.conversations[0]?.recording &&
+              operators?.operators[config.username]?.conversations[0]?.recording === 'true'
                 ? faCirclePause
-                : operators?.operators[username]?.conversations &&
-                  operators?.operators[username]?.conversations[0]?.recording === 'false'
-                ? faCircle
+                : operators?.operators[config.username]?.conversations &&
+                  operators?.operators[config.username]?.conversations[0]?.recording === 'false'
+                ? faRecordVinyl
                 : faMicrophoneSlash
             }
             onClick={() => recordConversation(config)}
           >
-            {operators?.operators[username]?.conversations &&
-            operators?.operators[username]?.conversations[0]?.recording &&
-            operators?.operators[username]?.conversations[0]?.recording === 'true'
+            {operators?.operators[config.username]?.conversations &&
+            operators?.operators[config.username]?.conversations[0]?.recording &&
+            operators?.operators[config.username]?.conversations[0]?.recording === 'true'
               ? t('OperatorDrawer.Stop recording')
-              : operators?.operators[username]?.conversations &&
-                operators?.operators[username]?.conversations[0]?.recording === 'false'
+              : operators?.operators[config.username]?.conversations &&
+                operators?.operators[config.username]?.conversations[0]?.recording === 'false'
               ? t('OperatorDrawer.Start recording')
               : t('OperatorDrawer.Restart recording')}
           </Dropdown.Item>
