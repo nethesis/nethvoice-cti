@@ -686,7 +686,7 @@ export const Layout: FC<LayoutProps> = ({ children }) => {
                 {children}
               </section>
             </main>
-            <div className=' absolute right-4 z-50'>
+            <div className=' absolute bottom-6 right-9 z-50'>
               {toast?.isShown && (
                 <div>
                   <Toast

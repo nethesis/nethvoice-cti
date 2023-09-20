@@ -19,7 +19,12 @@ import { RootState } from '../store'
 import { Filter, OperatorStatusBadge } from '../components/operators'
 import { sortByFavorite, sortByProperty } from '../lib/utils'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
-import { faChevronRight, faFilter, faHeadset } from '@fortawesome/free-solid-svg-icons'
+import {
+  faChevronRight,
+  faFilter,
+  faHeadset,
+  faRecordVinyl,
+} from '@fortawesome/free-solid-svg-icons'
 import { store } from '../store'
 import { CallDuration } from '../components/operators/CallDuration'
 import InfiniteScroll from 'react-infinite-scroll-component'
@@ -291,8 +296,14 @@ const Operators: NextPage = () => {
                                           </span>
                                           <CallDuration
                                             startTime={operator.conversations[0].startTime}
-                                            className='font-mono relative top-px'
+                                            className='font-mono relative top-px mr-1.5'
                                           />
+                                          {operator?.conversations[0]?.recording === 'true' && (
+                                            <FontAwesomeIcon
+                                              icon={faRecordVinyl}
+                                              className='inline-block text-center h-4 w-4 text-gray-400 dark:text-gray-500'
+                                            />
+                                          )}
                                         </Badge>
                                       ) : (
                                         <OperatorStatusBadge
@@ -408,8 +419,14 @@ const Operators: NextPage = () => {
                                     </span>
                                     <CallDuration
                                       startTime={operator.conversations[0].startTime}
-                                      className='font-mono relative top-px'
+                                      className='font-mono relative top-px mr-1.5'
                                     />
+                                    {operator?.conversations[0]?.recording === 'true' && (
+                                      <FontAwesomeIcon
+                                        icon={faRecordVinyl}
+                                        className='inline-block text-center h-4 w-4 text-gray-400 dark:text-gray-500'
+                                      />
+                                    )}
                                   </Badge>
                                 ) : (
                                   <OperatorStatusBadge
