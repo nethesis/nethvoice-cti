@@ -35,6 +35,7 @@ interface LayoutProps {
 }
 import { useTranslation } from 'react-i18next'
 import Toast from '../common/Toast'
+import { getCustomerCardsList, setUserSettings } from '../../lib/customerCard'
 
 export const Layout: FC<LayoutProps> = ({ children }) => {
   const [openMobileMenu, setOpenMobileMenu] = useState<boolean>(false)
@@ -378,6 +379,24 @@ export const Layout: FC<LayoutProps> = ({ children }) => {
       store.dispatch.queueManagerQueues.setConnectedCalls(queueId, connectedQueueManagerCalls)
     })
 
+    // When user close listen call set to false and empty id conversation
+    if (data[currentUsername] && isEmpty(data[currentUsername]?.conversations)) {
+      let listeningInformations = {
+        isListening: false,
+        listening_id: '',
+      }
+      store.dispatch.userActions.updateListeningInformation(listeningInformations)
+    }
+
+    // When user close intrude call set to false and empty id conversation
+    if (data[currentUsername] && isEmpty(data[currentUsername]?.conversations)) {
+      let intrudeInfo = {
+        isIntrude: false,
+        intrude_id: '',
+      }
+      store.dispatch.userActions.updateIntrudeInformation(intrudeInfo)
+    }
+
     setVariableCheck(false)
     if (
       data[currentUsername] &&
@@ -444,7 +463,6 @@ export const Layout: FC<LayoutProps> = ({ children }) => {
           const customerCardNumber =
             data[currentUsername]?.conversations[firstConversationKey]?.counterpartNum
 
-          console.log('this is wrong number', customerCardNumber)
           if (customerType && customerCardNumber && customerCardNumber !== 'unknown') {
             let ccardObject: any = '#' + customerCardNumber + '-' + customerType
             dispatch.customerCards.updateCallerCustomerCardInformation(ccardObject)
@@ -663,6 +681,48 @@ export const Layout: FC<LayoutProps> = ({ children }) => {
       }, timeoutSeconds)
     }
   }, [toast])
+
+  //Avoid to see customer card if customer list is empty and preferences is not setted to never show
+  const [customerCardsList, setCustomerCardsList]: any = useState({})
+  const [isCustomerCardsListLoaded, setIsCustomerCardsListLoaded] = useState(false)
+  const [customerCardError, setCustomerCardError] = useState('')
+
+  // retrieve customer cards
+  useEffect(() => {
+    async function getCustomerCards() {
+      if (!isCustomerCardsListLoaded) {
+        try {
+          setCustomerCardError('')
+          const res = await getCustomerCardsList()
+          setCustomerCardsList(res)
+        } catch (e) {
+          console.error(e)
+          setCustomerCardError('Cannot retrieve customer cards list')
+        }
+        setIsCustomerCardsListLoaded(true)
+      }
+    }
+    getCustomerCards()
+  }, [isCustomerCardsListLoaded, customerCardsList])
+
+  const ccardStatus = userInformation.settings?.open_ccard
+  useEffect(() => {
+    if (isEmpty(customerCardsList) && ccardStatus !== 'never') {
+      const ccardObject = {} as Record<string, any>
+      ccardObject.open_ccard = 'never'
+      changeCCardSettings(ccardObject)
+      dispatch.user.updateSettings(ccardObject)
+    }
+  }, [customerCardsList])
+
+  async function changeCCardSettings(ccardObject: any) {
+    try {
+      await setUserSettings(ccardObject)
+      dispatch.user.updateSettings(ccardObject)
+    } catch (e) {
+      console.error(e)
+    }
+  }
 
   return (
     <>
