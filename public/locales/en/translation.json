@@ -138,7 +138,10 @@
     "Filter operators": "Filter operators",
     "Status": "Status",
     "Recall on busy message": "Call booked! You are number {{extensionWaiting}} in waiting list",
-    "Recall on busy": "Recall on busy"
+    "Recall on busy": "Recall on busy",
+    "Transfer": "Transfer",
+    "Blind transfer": "Blind transfer",
+    "Attend transfer": "Attend transfer"
   },
   "Applications": {
     "Applications": "Applications",

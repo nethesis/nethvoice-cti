@@ -26,11 +26,14 @@ import {
   faHandPointUp,
   faHeadset,
   faRecordVinyl,
+  faRightLeft,
 } from '@fortawesome/free-solid-svg-icons'
 import { store } from '../store'
 import { CallDuration } from '../components/operators/CallDuration'
 import InfiniteScroll from 'react-infinite-scroll-component'
 import { faCircleNotch } from '@fortawesome/free-solid-svg-icons'
+import { t } from 'i18next'
+import { eventDispatch } from '../lib/hooks/eventDispatch'
 
 //// use i18n where there is operator.mainPresence
 
@@ -47,7 +50,6 @@ const Operators: NextPage = () => {
   )
   const actionInformation = useSelector((state: RootState) => state.userActions)
 
-  console.log("actionInformation", actionInformation)
   const [textFilter, setTextFilter]: any = useState('')
   const updateTextFilter = (newTextFilter: string) => {
     setTextFilter(newTextFilter)
@@ -164,6 +166,16 @@ const Operators: NextPage = () => {
     setInfiniteScrollHasMore(hasMore)
   }
 
+  async function transferCall(operatorBadgeInformations: any) {
+    if (operatorBadgeInformations?.endpoints?.mainextension[0]?.id) {
+      let destinationNumber = operatorBadgeInformations?.endpoints?.mainextension[0]?.id
+
+      if (destinationNumber) {
+        eventDispatch('phone-island-transfer-call', { to: destinationNumber })
+      }
+    }
+  }
+
   return (
     <>
       <div>
@@ -268,11 +280,11 @@ const Operators: NextPage = () => {
                           <li key={index}>
                             <div className='space-y-4'>
                               <Avatar
-                                src={operator.avatarBase64}
+                                src={operator?.avatarBase64}
                                 placeholderType='operator'
                                 size='extra_large'
                                 bordered
-                                star={operator.favorite}
+                                star={operator?.favorite}
                                 onClick={() => openShowOperatorDrawer(operator)}
                                 className='mx-auto cursor-pointer'
                               />
@@ -282,24 +294,25 @@ const Operators: NextPage = () => {
                                     className='cursor-pointer hover:underline'
                                     onClick={() => openShowOperatorDrawer(operator)}
                                   >
-                                    {operator.name}
+                                    {operator?.name}
                                   </h3>
                                   <div className='mt-3'>
                                     <span className='block truncate mt-1 text-sm font-medium text-gray-500 dark:text-gray-500'>
-                                      {operator.conversations?.length &&
-                                      (operator.conversations[0].connected ||
-                                        operator.conversations[0].inConference ||
-                                        operator.conversations[0].chDest?.inConference == true) ? (
+                                      {operator?.conversations?.length &&
+                                      (operator?.conversations[0]?.connected ||
+                                        operator?.conversations[0]?.inConference ||
+                                        operator?.conversations[0]?.chDest?.inConference ==
+                                          true) ? (
                                         <Badge
                                           rounded='full'
                                           variant='busy'
                                           className='flex items-center'
                                         >
                                           <span className='mr-1.5'>
-                                            {capitalize(operator.mainPresence)}
+                                            {capitalize(operator?.mainPresence)}
                                           </span>
                                           <CallDuration
-                                            startTime={operator.conversations[0].startTime}
+                                            startTime={operator?.conversations[0]?.startTime}
                                             className='font-mono relative top-px mr-1.5'
                                           />
                                           {operator?.conversations[0]?.recording === 'true' && (
@@ -308,19 +321,38 @@ const Operators: NextPage = () => {
                                               className='inline-block text-center h-4 w-4'
                                             />
                                           )}
-                                          {operator?.conversations[0]?.id === actionInformation?.listeningInfo?.listening_id && (
+                                          {operator?.conversations[0]?.id ===
+                                            actionInformation?.listeningInfo?.listening_id && (
                                             <FontAwesomeIcon
                                               icon={faEarListen}
                                               className='inline-block text-center h-4 w-4'
                                             />
                                           )}
-                                          {operator?.conversations[0]?.id === actionInformation?.intrudeInfo?.intrude_id && (
+                                          {operator?.conversations[0]?.id ===
+                                            actionInformation?.intrudeInfo?.intrude_id && (
                                             <FontAwesomeIcon
                                               icon={faHandPointUp}
                                               className='inline-block text-center h-4 w-4'
                                             />
                                           )}
                                         </Badge>
+                                      ) : operatorsStore?.operators[authStore.username]
+                                          ?.mainPresence === 'busy' &&
+                                        operator?.mainPresence === 'online' ? (
+                                        <>
+                                          <Badge
+                                            rounded='full'
+                                            variant='online'
+                                            className='flex items-center cursor-pointer'
+                                            onClick={() => transferCall(operator)}
+                                          >
+                                            <FontAwesomeIcon
+                                              icon={faRightLeft}
+                                              className='inline-block text-center h-3.5 w-3.5 mr-1.5 rotate-90'
+                                            />
+                                            <span>{t('Operators.Transfer')}</span>
+                                          </Badge>
+                                        </>
                                       ) : (
                                         <OperatorStatusBadge
                                           operator={operator}
