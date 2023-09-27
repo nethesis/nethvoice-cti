@@ -20,7 +20,7 @@ export const CustomerCards = () => {
   const dispatch = useDispatch<Dispatch>()
 
   const notificationMethods = [
-    { id: 'never', title: `${t('Settings.Never')}` },
+    { id: 'disabled', title: `${t('Settings.Never')}` },
     { id: 'incoming', title: `${t('Settings.On incoming call')}` },
     { id: 'connected', title: `${t('Settings.On answer')}` },
   ]
@@ -35,7 +35,7 @@ export const CustomerCards = () => {
   const userInformation = useSelector((state: RootState) => state.user)
 
   //Get ccard information from store
-  //Status can be of three types: - never - incoming - connected
+  //Status can be of three types: - disabled - incoming - connected
   const ccardStatus = userInformation.settings?.open_ccard
 
   // retrieve customer cards
