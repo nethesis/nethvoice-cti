@@ -160,7 +160,7 @@ export const CustomerCardsCustomerData: FC<CustomerCardsCustomerDataViewProps> =
             <div className='border-b rounded-md border-gray-200 dark:border-gray-800 bg-white dark:bg-gray-900 px-4 py-1 sm:px-6 h-full max-h-[337px] overflow-auto'>
               <LastCallsDrawerTable
                 callType={'switchboard'}
-                dateFrom={startOfDay(subDays(new Date(), 7))}
+                dateFrom={startOfDay(subDays(new Date(), 160))}
                 dateTo={new Date()}
                 phoneNumbers={[companyExtension]}
                 limit={5}

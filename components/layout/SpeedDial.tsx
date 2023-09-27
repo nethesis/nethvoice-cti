@@ -305,7 +305,7 @@ export const SpeedDial = () => {
                         </span>
                         <div className='ml-4 truncate'>
                           <p className='truncate text-sm font-medium text-gray-700 dark:text-gray-200'>
-                            {speedDial.name}
+                            {speedDial?.name || speedDial?.company || '-'}
                           </p>
                           <div className='truncate text-sm mt-1 text-primary dark:text-primary'>
                             <div className='flex items-center'>

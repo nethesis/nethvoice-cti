@@ -445,7 +445,11 @@
     "Cannot delete speed dial": "Cannot delete speed dial",
     "Cannot import speed dial": "Cannot import speed dial",
     "Upload failed": "Upload failed",
-    "Speed dial delete message": "Speed dial {{deletingName}} will be deleted"
+    "Speed dial delete message": "Speed dial {{deletingName}} will be deleted",
+    "Speed dial creation message": "You've just created a new speed dial: {{extensionWaiting}}",
+    "Speed dial created": "Speed dial created",
+    "Speed dial edit message": "You've just edited a speed dial: {{extensionWaiting}}",
+    "Speed dial edited": "Speed dial edited"
   },
   "LastCalls": {
     "Last calls": "Last calls",

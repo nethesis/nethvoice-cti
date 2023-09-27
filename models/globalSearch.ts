@@ -7,6 +7,7 @@ import type { RootModel } from '.'
 const defaultState = {
   isOpen: false,
   isFocused: false,
+  isCustomerCardsRedirect: false,
 }
 
 export const globalSearch = createModel<RootModel>()({
@@ -18,6 +19,11 @@ export const globalSearch = createModel<RootModel>()({
     },
     setFocused: (state, isFocused: boolean) => {
       state.isFocused = isFocused
+      return state
+    },
+    // On global search click of customer cards hide focus of global search
+    setCustomerCardsRedirect: (state, isCustomerCardsRedirect: boolean) => {
+      state.isCustomerCardsRedirect = isCustomerCardsRedirect
       return state
     },
     reset: () => {

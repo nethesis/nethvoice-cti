@@ -60,6 +60,12 @@ export const ContactSummary = forwardRef<HTMLButtonElement, ContactSummaryProps>
     const cancelDeleteButtonRef = useRef() as MutableRefObject<HTMLButtonElement>
     const { profile } = useSelector((state: RootState) => state.user)
 
+    //Get sideDrawer status from store
+    const sideDrawer = useSelector((state: RootState) => state.sideDrawer)
+
+    //Get global search status from store
+    const globalSearchStore = useSelector((state: RootState) => state.globalSearch)
+
     const contactMenuItems = (
       <>
         <Dropdown.Item icon={faPen} onClick={() => openEditContactDrawer(contact)}>
@@ -118,6 +124,17 @@ export const ContactSummary = forwardRef<HTMLButtonElement, ContactSummaryProps>
       // If phoneNumber and contactType is defined, add to customercards path
       if (phoneNumber && contactType) {
         router.push(`/customercards#${phoneNumber}-${contactType}`)
+
+        // Close side drawer after click open customer cards
+        if (sideDrawer?.isShown) {
+          store.dispatch.sideDrawer.setShown(false)
+        }
+
+        // Close global search after click open customer cards
+        if (globalSearchStore?.isOpen) {
+          store.dispatch.globalSearch.setOpen(false)
+          store.dispatch.globalSearch.setCustomerCardsRedirect(true)
+        }
       }
     }
 

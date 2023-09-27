@@ -36,6 +36,9 @@ export interface OperatorSummaryProps extends ComponentPropsWithRef<'div'> {
 export const OperatorSummary = forwardRef<HTMLButtonElement, OperatorSummaryProps>(
   ({ operator, isShownFavorite, isShownSideDrawerLink = false, className, ...props }, ref) => {
     const auth = useSelector((state: RootState) => state.authentication)
+    // Get selected operator information from operators store
+    const operatorsStore = useSelector((state: RootState) => state.operators)
+    const currentOperatorInformations = operatorsStore?.operators[operator.username]
     const [isFavorite, setFavorite] = useState(false)
 
     useEffect(() => {
@@ -103,7 +106,7 @@ export const OperatorSummary = forwardRef<HTMLButtonElement, OperatorSummaryProp
                 )}
               </div>
               <OperatorStatusBadge
-                operator={operator}
+                operator={currentOperatorInformations}
                 currentUsername={auth.username}
                 callEnabled={false}
                 size='small'

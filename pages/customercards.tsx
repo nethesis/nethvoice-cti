@@ -66,10 +66,16 @@ const CustomerCards: NextPage = () => {
 
   const [companyInformation, setCompanyInformations]: any = useState()
 
+  const [firstRender, setFirstRender]: any = useState(true)
+
   // If company api call company contacType else person contactType
   useEffect(() => {
+    if (firstRender) {
+      setFirstRender(false)
+      return
+    }
     async function searchCompanyExtensionInformation() {
-      if (isEmpty(companyInformation) && companyExtension !== '' && contactType) {
+      if (companyExtension !== '' && contactType) {
         try {
           //remove space and slash characters
           let noSlashCharactersCompanyExtension = companyExtension?.replace(/\//g, '')
@@ -82,7 +88,7 @@ const CustomerCards: NextPage = () => {
       }
     }
     searchCompanyExtensionInformation()
-  }, [companyExtension])
+  }, [companyExtension, firstRender])
 
   // retrieve customer cards
   useEffect(() => {

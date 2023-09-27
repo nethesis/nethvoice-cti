@@ -427,7 +427,7 @@ export const Layout: FC<LayoutProps> = ({ children }) => {
     /* CUSTOMER CARDS SECTION
      * On phone-island-conversations event must be checked if user:
      * - Has customer card permissions
-     * - Which type of customer card permissions has selected ( never, incoming )
+     * - Which type of customer card permissions has selected ( disabled, incoming )
      * - If path if different from customer card
      * - Which type of mainPresence status has got ( ringing, busy )
      * - Check if counterpartNum is not present in allExtension api call result
@@ -707,9 +707,9 @@ export const Layout: FC<LayoutProps> = ({ children }) => {
 
   const ccardStatus = userInformation.settings?.open_ccard
   useEffect(() => {
-    if (isEmpty(customerCardsList) && ccardStatus !== 'never') {
+    if (isEmpty(customerCardsList) && ccardStatus !== 'disabled') {
       const ccardObject = {} as Record<string, any>
-      ccardObject.open_ccard = 'never'
+      ccardObject.open_ccard = 'disabled'
       changeCCardSettings(ccardObject)
       dispatch.user.updateSettings(ccardObject)
     }

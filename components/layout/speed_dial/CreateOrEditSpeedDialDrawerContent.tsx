@@ -11,6 +11,7 @@ import { reloadSpeedDial } from '../../../lib/speedDial'
 import { closeSideDrawer } from '../../../lib/utils'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { faPlus, faPen } from '@fortawesome/free-solid-svg-icons'
+import { openToast } from '../../../lib/utils'
 
 export interface CreateOrEditSpeedDialDrawerContentProps extends ComponentPropsWithRef<'div'> {
   config: any
@@ -73,6 +74,22 @@ export const CreateOrEditSpeedDialDrawerContent = forwardRef<
     return isValidationOk
   }
 
+  const showToastCreationSpeedDial = (extensionWaiting: any) => {
+    openToast(
+      'success',
+      `${t('SpeedDial.Speed dial creation message', { extensionWaiting })}`,
+      `${t('SpeedDial.Speed dial created')}`,
+    )
+  }
+
+  const showToastEditSpeedDial = (extensionWaiting: any) => {
+    openToast(
+      'success',
+      `${t('SpeedDial.Speed dial edit message', { extensionWaiting })}`,
+      `${t('SpeedDial.Speed dial edited')}`,
+    )
+  }
+
   const prepareCreateSpeedDial = async () => {
     if (!validateCreateOrEditSpeedDial()) {
       return
@@ -83,22 +100,29 @@ export const CreateOrEditSpeedDialDrawerContent = forwardRef<
         name: nameRef.current.value,
         speeddial_num: phoneNumberRef.current.value,
       })
+      showToastCreationSpeedDial(nameRef.current.value)
     } catch (error) {
       setCreateSpeedDialError('Cannot create speed dial')
       return
     }
 
-    //// TODO: show toast notification success
-
     reloadSpeedDial()
     closeSideDrawer()
   }
+
+  const saveButtonRef = useRef<HTMLButtonElement | null>(null)
+
+  useEffect(() => {
+    // Setted focus to save
+    if (config.isEdit && saveButtonRef.current) {
+      saveButtonRef.current.focus()
+    }
+  }, [config.isEdit])
 
   const prepareEditSpeedDial = async () => {
     if (!validateCreateOrEditSpeedDial()) {
       return
     }
-
     try {
       const edit = await editSpeedDial(
         {
@@ -107,6 +131,7 @@ export const CreateOrEditSpeedDialDrawerContent = forwardRef<
         },
         config.speedDial,
       )
+      showToastEditSpeedDial(nameRef.current.value)
     } catch (error) {
       setEditSpeedDialError('Cannot edit speed dial')
       return
@@ -161,7 +186,13 @@ export const CreateOrEditSpeedDialDrawerContent = forwardRef<
         )}
         <div className='flex'>
           {config.isEdit ? (
-            <Button variant='primary' type='submit' onClick={prepareEditSpeedDial} className='mb-4'>
+            <Button
+              ref={saveButtonRef}
+              variant='primary'
+              type='submit'
+              onClick={prepareEditSpeedDial}
+              className='mb-4'
+            >
               <FontAwesomeIcon icon={faPen} className='mr-2 h-4 w-4' />
               {t('SpeedDial.Save speed dial')}
             </Button>

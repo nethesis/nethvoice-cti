@@ -37,6 +37,7 @@ export const GlobalSearch: FC<GlobalSearchProps> = () => {
   const globalSearchRef = useRef() as MutableRefObject<HTMLButtonElement>
 
   const searchOperators = (cleanQuery: string, cleanRegex: RegExp) => {
+    store.dispatch.globalSearch.setCustomerCardsRedirect(false)
     let operatorsResults = Object.values(operatorsStore.operators).filter((op: any) => {
       return (
         new RegExp(cleanQuery, 'i').test(op.name.replace(cleanRegex, '')) ||
@@ -187,7 +188,7 @@ export const GlobalSearch: FC<GlobalSearchProps> = () => {
 
   return (
     <>
-      {globalSearchStore.isFocused && (
+      {globalSearchStore.isFocused && !globalSearchStore?.isCustomerCardsRedirect &&(
         <>
           <div className='bg-opacity-75 dark:bg-opacity-75 fixed left-0 md:left-20 top-16 right-0 bottom-0 opacity-100 transition-opacity bg-gray-500 dark:bg-gray-500'></div>
           <div className='fixed left-0 md:left-20 top-16 right-0 bottom-0 z-50 overflow-y-auto'></div>
@@ -214,7 +215,7 @@ export const GlobalSearch: FC<GlobalSearchProps> = () => {
                   placeholder='Search or compose...'
                   onChange={debouncedChangeQuery}
                   // Avoid press enter button before global search is open
-                  onKeyDown={(e:any) => {
+                  onKeyDown={(e: any) => {
                     if (!globalSearchStore.isOpen && e.key === 'Enter') {
                       e.preventDefault()
                     }
