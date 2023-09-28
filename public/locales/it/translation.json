@@ -70,7 +70,7 @@
     "Date": "Data",
     "Sort by": "Ordina per",
     "Newest": "Più recenti",
-    "Oldest": "Più vecchie",
+    "Oldest": "Meno recenti",
     "From": "Da",
     "To": "A",
     "You": "Tu",
@@ -306,7 +306,7 @@
     "No calls": "Nessuna chiamata",
     "Sort by": "Ordina per",
     "Newest": "Più recenti",
-    "Oldest": "Più vecchie",
+    "Oldest": "Meno recenti",
     "Call": "Chiama"
   },
   "Notifications": {
