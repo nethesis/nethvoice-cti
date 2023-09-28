@@ -3,7 +3,7 @@
 
 import type { NextPage } from 'next'
 import { Filter } from '../components/history/Filter'
-import { Button, InlineNotification } from '../components/common'
+import { Button, EmptyState, InlineNotification } from '../components/common'
 import { useState, useEffect, useMemo } from 'react'
 import { search, PAGE_SIZE, openDrawerHistory } from '../lib/history'
 import { RootState } from '../store'
@@ -20,8 +20,9 @@ import {
   faXmark,
   faArrowLeft,
   faVoicemail,
+  faPhone,
 } from '@fortawesome/free-solid-svg-icons'
-import { formatDateLoc} from '../lib/dateTime'
+import { formatDateLoc } from '../lib/dateTime'
 import { subDays, startOfDay } from 'date-fns'
 import { useTranslation } from 'react-i18next'
 import { playFileAudio } from '../lib/utils'
@@ -374,7 +375,7 @@ const History: NextPage = () => {
                         aria-hidden='true'
                       />
                     )}
-                    <Tooltip anchorSelect='.tooltip-user-internal-answered-voicemail' place='left'>
+                    <Tooltip anchorSelect='.tooltip-user-internal-answered-voicemail' place='top'>
                       {t('History.Call in Voicemail') || ''}
                     </Tooltip>
                   </div>
@@ -453,7 +454,7 @@ const History: NextPage = () => {
                     )}
                     <Tooltip
                       anchorSelect='.tooltip-switchboard-internal-answered-voicemail'
-                      place='left'
+                      place='top'
                     >
                       {t('History.Call in Voicemail') || ''}
                     </Tooltip>
@@ -496,7 +497,7 @@ const History: NextPage = () => {
                         )}
                         <Tooltip
                           anchorSelect='.tooltip-switchboard-not-internal-answered-voicemail'
-                          place='left'
+                          place='top'
                         >
                           {t('History.Call in Voicemail') || ''}
                         </Tooltip>
@@ -583,9 +584,23 @@ const History: NextPage = () => {
               <div className='-my-2 -mx-4 overflow-x-auto sm:-mx-6 lg:-mx-8'>
                 <div className='inline-block min-w-full py-2 align-middle px-2 md:px-6 lg:px-8'>
                   <div className='shadow ring-1 ring-black ring-opacity-5 md:rounded-lg'>
+                    {/* empty state */}
+                    {isHistoryLoaded && history?.count === 0 && (
+                      <EmptyState
+                        title={t('History.No calls')}
+                        description={t('History.There are no calls in your history') || ''}
+                        icon={
+                          <FontAwesomeIcon
+                            icon={faPhone}
+                            className='mx-auto h-12 w-12'
+                            aria-hidden='true'
+                          />
+                        }
+                      ></EmptyState>
+                    )}
                     {isHistoryLoaded && history?.count !== 0 && (
                       <div className='overflow-y-auto scrollbar-thin scrollbar-thumb-gray-400 dark:scrollbar-thumb-gray-400 scrollbar-thumb-rounded-full scrollbar-thumb-opacity-50 scrollbar-track-gray-200 dark:scrollbar-track-gray-900 scrollbar-track-rounded-full scrollbar-track-opacity-25'>
-                        <div className='max-h-[40rem]'>
+                        <div className='max-h-[36rem]'>
                           <table className='min-w-full divide-y divide-gray-300 dark:divide-gray-700'>
                             <thead className='sticky top-0 bg-white dark:bg-gray-900 z-[1]'>
                               <tr>
