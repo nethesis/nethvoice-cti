@@ -538,175 +538,167 @@ const History: NextPage = () => {
         )}
         {!historyError && (
           <div className='mx-auto'>
-            <div className='flex flex-col overflow-hidden'>
+            <div className='flex flex-col'>
               <div className='-my-2 -mx-4 overflow-x-auto sm:-mx-6 lg:-mx-8'>
                 <div className='inline-block min-w-full py-2 align-middle px-2 md:px-6 lg:px-8'>
-                  <div className='overflow-hidden shadow ring-1 ring-black ring-opacity-5 md:rounded-lg'>
-                    {/* empty state */}
-                    {isHistoryLoaded && history?.count === 0 && (
-                      <EmptyState
-                        title={t('History.No calls')}
-                        description={t('History.There are no calls in your history') || ''}
-                        icon={
-                          <FontAwesomeIcon
-                            icon={faPhone}
-                            className='mx-auto h-12 w-12'
-                            aria-hidden='true'
-                          />
-                        }
-                      ></EmptyState>
-                    )}
+                  <div className='shadow ring-1 ring-black ring-opacity-5 md:rounded-lg'>
                     {isHistoryLoaded && history?.count !== 0 && (
-                      <table className='min-w-full divide-y divide-gray-300 dark:divide-gray-700'>
-                        <thead className='bg-white dark:bg-gray-900'>
-                          <tr>
-                            <th
-                              scope='col'
-                              className='py-3.5 pl-4 pr-3 text-left text-sm font-semibold text-gray-700 dark:text-gray-100 sm:pl-6'
-                            >
-                              {t('History.Date')}
-                            </th>
-                            <th
-                              scope='col'
-                              className='px-3 py-3.5 text-left text-sm font-semibold text-gray-700 dark:text-gray-100'
-                            >
-                              {t('History.Source')}
-                            </th>
-                            {/* Arrow column */}
-                            <th
-                              scope='col'
-                              className='px-3 py-3.5 text-left text-sm font-semibold text-gray-700 dark:text-gray-100'
-                            ></th>
-                            <th
-                              scope='col'
-                              className='px-3 py-3.5 text-left text-sm font-semibold text-gray-700 dark:text-gray-100'
-                            >
-                              {t('History.Destination')}
-                            </th>
-                            <th
-                              scope='col'
-                              className='px-3 py-3.5 text-left text-sm font-semibold text-gray-700 dark:text-gray-100'
-                            >
-                              {t('History.Duration')}
-                            </th>
-                            <th
-                              scope='col'
-                              className='px-3 py-3.5 text-left text-sm font-semibold text-gray-700 dark:text-gray-100'
-                            >
-                              {t('History.Outcome')}
-                            </th>
-                            <th
-                              scope='col'
-                              className='px-3 py-3.5 text-left text-sm font-semibold text-gray-700 dark:text-gray-100'
-                            >
-                              {t('History.Recording')}
-                            </th>
-                          </tr>
-                        </thead>
-                        <tbody className='divide-y divide-gray-200 dark:divide-gray-700 bg-white dark:bg-gray-900 text-gray-700 text-sm'>
-                          {/* Not empty state  */}
-                          {isHistoryLoaded &&
-                            history?.rows &&
-                            history.rows.map((call: any, index: number) => (
-                              <tr key={index}>
-                                {/* Date */}
-                                <td className='whitespace-nowrap py-4 pl-4 pr-3 sm:pl-6'>
-                                  <div className='flex flex-col'>
-                                    <div className='text-sm text-gray-900 dark:text-gray-100'>
-                                      {formatDateLoc(call.time * 1000, 'PP')}
-                                    </div>
-                                    <div className='text-gray-500 dark:text-gray-500'>
-                                      {getCallTimeToDisplay(call.time * 1000)}
-                                    </div>
-                                  </div>
-                                </td>
-
-                                {/* Source */}
-                                <td className='px-3 py-4'>
-                                  <div
-                                    onClick={() => {
-                                      openDrawerHistory(
-                                        call.cnam,
-                                        call.ccompany,
-                                        call.cnum || call.src,
-                                        callType,
-                                        operators,
-                                      )
-                                    }}
-                                  >
-                                    {checkTypeSource(call)}
-                                  </div>
-                                </td>
-
-                                {/* Icon column */}
-                                <td className='pl-2 pr-6 py-4'>
-                                  <FontAwesomeIcon
-                                    icon={faArrowRight}
-                                    className='ml-0 h-4 w-4 flex-shrink-0 text-gray-500 dark:text-gray-600'
-                                    aria-hidden='true'
-                                  />
-                                </td>
-
-                                {/* Destination */}
-                                <td className='px-3 py-4'>
-                                  <div
-                                    onClick={() =>
-                                      openDrawerHistory(
-                                        call.dst_cnam,
-                                        call.dst_ccompany,
-                                        call.dst,
-                                        callType,
-                                        operators,
-                                      )
-                                    }
-                                  >
-                                    {checkTypeDestination(call)}
-                                  </div>
-                                </td>
-
-                                {/* Duration */}
-                                <td className='px-3 py-4'>
-                                  <div className='text-sm text-gray-900 dark:text-gray-100'>
-                                    {!call.duration
-                                      ? '0 second'
-                                      : toDaysMinutesSeconds(call.duration)}
-                                  </div>
-                                </td>
-
-                                {/* Outcome */}
-                                <td className='px-3 py-4'>
-                                  <div>{checkIconUser(call)}</div>
-                                </td>
-
-                                {/* Recording */}
-                                {call.recordingfile && (
-                                  <td className='px-3 py-4'>
-                                    <div>
-                                      {' '}
-                                      <Button
-                                        variant='white'
-                                        onClick={() => playSelectedAudioFile(call.uniqueid)}
-                                      >
-                                        <FontAwesomeIcon
-                                          icon={faPlay}
-                                          className='h-4 w-4 mr-2 text-gray-900 dark:text-gray-100'
-                                          aria-hidden='true'
-                                        />{' '}
-                                        {t('History.Play')}
-                                      </Button>
-                                    </div>
-                                  </td>
-                                )}
-                                {/* No recording file available */}
-                                {!call.recordingfile && (
-                                  <td className='px-3 py-4'>
-                                    <div className='flex text-gray-500 dark:text-gray-600'> - </div>
-                                  </td>
-                                )}
+                      <div className='overflow-y-auto scrollbar-thin scrollbar-thumb-gray-400 dark:scrollbar-thumb-gray-400 scrollbar-thumb-rounded-full scrollbar-thumb-opacity-50 scrollbar-track-gray-200 dark:scrollbar-track-gray-900 scrollbar-track-rounded-full scrollbar-track-opacity-25'>
+                        <div className='max-h-[40rem]'>
+                          <table className='min-w-full divide-y divide-gray-300 dark:divide-gray-700'>
+                            <thead className='sticky top-0 bg-white dark:bg-gray-900 z-50'>
+                              <tr>
+                                <th
+                                  scope='col'
+                                  className='py-3.5 pl-4 pr-3 text-left text-sm font-semibold text-gray-700 dark:text-gray-100 sm:pl-6'
+                                >
+                                  {t('History.Date')}
+                                </th>
+                                <th
+                                  scope='col'
+                                  className='px-3 py-3.5 text-left text-sm font-semibold text-gray-700 dark:text-gray-100'
+                                >
+                                  {t('History.Source')}
+                                </th>
+                                {/* Arrow column */}
+                                <th
+                                  scope='col'
+                                  className='px-3 py-3.5 text-left text-sm font-semibold text-gray-700 dark:text-gray-100'
+                                ></th>
+                                <th
+                                  scope='col'
+                                  className='px-3 py-3.5 text-left text-sm font-semibold text-gray-700 dark:text-gray-100'
+                                >
+                                  {t('History.Destination')}
+                                </th>
+                                <th
+                                  scope='col'
+                                  className='px-3 py-3.5 text-left text-sm font-semibold text-gray-700 dark:text-gray-100'
+                                >
+                                  {t('History.Duration')}
+                                </th>
+                                <th
+                                  scope='col'
+                                  className='px-3 py-3.5 text-left text-sm font-semibold text-gray-700 dark:text-gray-100'
+                                >
+                                  {t('History.Outcome')}
+                                </th>
+                                <th
+                                  scope='col'
+                                  className='px-3 py-3.5 text-left text-sm font-semibold text-gray-700 dark:text-gray-100'
+                                >
+                                  {t('History.Recording')}
+                                </th>
                               </tr>
-                            ))}
-                        </tbody>
-                      </table>
+                            </thead>
+                            <tbody className='divide-y divide-gray-200 dark:divide-gray-700 bg-white dark:bg-gray-900 text-gray-700 text-sm'>
+                              {/* Not empty state  */}
+                              {isHistoryLoaded &&
+                                history?.rows &&
+                                history.rows.map((call: any, index: number) => (
+                                  <tr key={index}>
+                                    {/* Date */}
+                                    <td className='whitespace-nowrap py-4 pl-4 pr-3 sm:pl-6'>
+                                      <div className='flex flex-col'>
+                                        <div className='text-sm text-gray-900 dark:text-gray-100'>
+                                          {formatDateLoc(call.time * 1000, 'PP')}
+                                        </div>
+                                        <div className='text-gray-500 dark:text-gray-500'>
+                                          {getCallTimeToDisplay(call.time * 1000)}
+                                        </div>
+                                      </div>
+                                    </td>
+
+                                    {/* Source */}
+                                    <td className='px-3 py-4'>
+                                      <div
+                                        onClick={() => {
+                                          openDrawerHistory(
+                                            call.cnam,
+                                            call.ccompany,
+                                            call.cnum || call.src,
+                                            callType,
+                                            operators,
+                                          )
+                                        }}
+                                      >
+                                        {checkTypeSource(call)}
+                                      </div>
+                                    </td>
+
+                                    {/* Icon column */}
+                                    <td className='pl-2 pr-6 py-4'>
+                                      <FontAwesomeIcon
+                                        icon={faArrowRight}
+                                        className='ml-0 h-4 w-4 flex-shrink-0 text-gray-500 dark:text-gray-600'
+                                        aria-hidden='true'
+                                      />
+                                    </td>
+
+                                    {/* Destination */}
+                                    <td className='px-3 py-4'>
+                                      <div
+                                        onClick={() =>
+                                          openDrawerHistory(
+                                            call.dst_cnam,
+                                            call.dst_ccompany,
+                                            call.dst,
+                                            callType,
+                                            operators,
+                                          )
+                                        }
+                                      >
+                                        {checkTypeDestination(call)}
+                                      </div>
+                                    </td>
+
+                                    {/* Duration */}
+                                    <td className='px-3 py-4'>
+                                      <div className='text-sm text-gray-900 dark:text-gray-100'>
+                                        {!call.duration
+                                          ? '0 second'
+                                          : toDaysMinutesSeconds(call.duration)}
+                                      </div>
+                                    </td>
+
+                                    {/* Outcome */}
+                                    <td className='px-3 py-4'>
+                                      <div>{checkIconUser(call)}</div>
+                                    </td>
+
+                                    {/* Recording */}
+                                    {call.recordingfile && (
+                                      <td className='px-3 py-4'>
+                                        <div>
+                                          {' '}
+                                          <Button
+                                            variant='white'
+                                            onClick={() => playSelectedAudioFile(call.uniqueid)}
+                                          >
+                                            <FontAwesomeIcon
+                                              icon={faPlay}
+                                              className='h-4 w-4 mr-2 text-gray-900 dark:text-gray-100'
+                                              aria-hidden='true'
+                                            />{' '}
+                                            {t('History.Play')}
+                                          </Button>
+                                        </div>
+                                      </td>
+                                    )}
+                                    {/* No recording file available */}
+                                    {!call.recordingfile && (
+                                      <td className='px-3 py-4'>
+                                        <div className='flex text-gray-500 dark:text-gray-600'>
+                                          -
+                                        </div>
+                                      </td>
+                                    )}
+                                  </tr>
+                                ))}
+                            </tbody>
+                          </table>
+                        </div>
+                      </div>
                     )}
                   </div>
                 </div>
