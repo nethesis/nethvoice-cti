@@ -408,7 +408,7 @@ export const RealTimeOperators: FC<RealTimeOperatorsProps> = ({
                                   <div className='flex-grow border-b border-gray-200 dark:border-gray-700 mt-1'></div>
 
                                   {/* login stats */}
-                                  <div className='pt-2 h-96 overflow-auto'>
+                                  <div className='pt-2 h-96 overflow-auto  scrollbar-thin scrollbar-thumb-gray-400 dark:scrollbar-thumb-gray-400 scrollbar-thumb-rounded-full scrollbar-thumb-opacity-50 scrollbar-track-gray-200 dark:scrollbar-track-gray-900 scrollbar-track-rounded-full scrollbar-track-opacity-25'>
                                     {Object.values(operator.queues).map(
                                       (queue: any, queueIndex: number) => (
                                         <div

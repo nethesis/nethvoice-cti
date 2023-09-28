@@ -91,7 +91,7 @@ export const MobileNavBar: FC<MobileNavBarProps> = ({ closeMobileMenu, show, ite
                     height={50}
                   />
                 </div>
-                <div className='mt-4 h-0 flex-1 overflow-y-auto px-4'>
+                <div className='mt-4 h-0 flex-1 overflow-y-auto scrollbar-thin scrollbar-thumb-gray-400 dark:scrollbar-thumb-gray-400 scrollbar-thumb-rounded-full scrollbar-thumb-opacity-50 scrollbar-track-gray-200 dark:scrollbar-track-gray-900 scrollbar-track-rounded-full scrollbar-track-opacity-25 px-4'>
                   <nav className='flex h-full flex-col'>
                     <div className='space-y-1'>
                       {items.map((item) => (

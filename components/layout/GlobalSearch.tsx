@@ -188,10 +188,10 @@ export const GlobalSearch: FC<GlobalSearchProps> = () => {
 
   return (
     <>
-      {globalSearchStore.isFocused && !globalSearchStore?.isCustomerCardsRedirect &&(
+      {globalSearchStore.isFocused && !globalSearchStore?.isCustomerCardsRedirect && (
         <>
           <div className='bg-opacity-75 dark:bg-opacity-75 fixed left-0 md:left-20 top-16 right-0 bottom-0 opacity-100 transition-opacity bg-gray-500 dark:bg-gray-500'></div>
-          <div className='fixed left-0 md:left-20 top-16 right-0 bottom-0 z-50 overflow-y-auto'></div>
+          <div className='fixed left-0 md:left-20 top-16 right-0 bottom-0 z-50 overflow-y-auto scrollbar-thin scrollbar-thumb-gray-400 dark:scrollbar-thumb-gray-400 scrollbar-thumb-rounded-full scrollbar-thumb-opacity-50 scrollbar-track-gray-200 dark:scrollbar-track-gray-900 scrollbar-track-rounded-full scrollbar-track-opacity-25'></div>
         </>
       )}
       <div
@@ -241,7 +241,7 @@ export const GlobalSearch: FC<GlobalSearchProps> = () => {
                   >
                     <div
                       className={classNames(
-                        'max-h-96 min-w-0 flex-auto scroll-py-4 overflow-y-auto px-6 py-4',
+                        'max-h-96 min-w-0 flex-auto scroll-py-4 overflow-y-auto scrollbar-thin scrollbar-thumb-gray-400 dark:scrollbar-thumb-gray-400 scrollbar-thumb-rounded-full scrollbar-thumb-opacity-50 scrollbar-track-gray-200 dark:scrollbar-track-gray-900 scrollbar-track-rounded-full scrollbar-track-opacity-25 px-6 py-4',
                       )}
                     >
                       <div className='-mx-2 text-sm text-gray-700 dark:text-gray-200'>
@@ -381,7 +381,7 @@ export const GlobalSearch: FC<GlobalSearchProps> = () => {
                       activeOption &&
                       activeOption.resultType &&
                       ['operator', 'contact'].includes(activeOption.resultType) && (
-                        <div className='hidden h-96 w-1/2 flex-none flex-col overflow-y-auto md:flex p-5'>
+                        <div className='hidden h-96 w-1/2 flex-none flex-col overflow-y-auto scrollbar-thin scrollbar-thumb-gray-400 dark:scrollbar-thumb-gray-400 scrollbar-thumb-rounded-full scrollbar-thumb-opacity-50 scrollbar-track-gray-200 dark:scrollbar-track-gray-900 scrollbar-track-rounded-full scrollbar-track-opacity-25 md:flex p-5'>
                           {/* operator */}
                           {activeOption.resultType === 'operator' && (
                             <OperatorSummary

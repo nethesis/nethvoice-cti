@@ -252,7 +252,7 @@ export const SpeedDial = () => {
           <span className='border-b border-gray-200 dark:border-gray-700'></span>
           <ul
             role='list'
-            className='flex-1 divide-y overflow-y-auto divide-gray-200 dark:divide-gray-700'
+            className='flex-1 divide-y overflow-y-auto scrollbar-thin scrollbar-thumb-gray-400 dark:scrollbar-thumb-gray-400 scrollbar-thumb-rounded-full scrollbar-thumb-opacity-50 scrollbar-track-gray-200 dark:scrollbar-track-gray-900 scrollbar-track-rounded-full scrollbar-track-opacity-25 divide-gray-200 dark:divide-gray-700'
           >
             {/* get speed dial error */}
             {getSpeedDialError && (
@@ -293,7 +293,7 @@ export const SpeedDial = () => {
             {isSpeedDialLoaded &&
               speedDials.map((speedDial, key) => (
                 <li key={key}>
-                  <div className='group relative flex items-center py-6 px-5'>
+                  <div className='group relative flex items-center py-2 px-5'>
                     <div
                       className='absolute inset-0 group-hover:bg-gray-50 dark:group-hover:bg-gray-800'
                       aria-hidden='true'

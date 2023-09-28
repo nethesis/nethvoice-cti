@@ -44,7 +44,7 @@ export const SideDrawer: FC<SideDrawerProps> = ({ isShown, contentType, config, 
               leaveTo='translate-x-full'
             >
               <Dialog.Panel className='relative flex w-[80vw] md:w-[60vw] lg:w-[40vw] 2xl:w-[33vw] 3xl:w-[36rem] flex-1 flex-col shadow-[0px_20px_40px_0_rgba(0,0,0,0.2)] bg-white dark:bg-gray-900 dark:shadow-[0px_20px_40px_0_rgba(0,0,0,0.6)]'>
-                <div className='h-0 flex-1 overflow-y-auto'>
+                <div className='h-0 flex-1 overflow-y-auto scrollbar-thin scrollbar-thumb-gray-400 dark:scrollbar-thumb-gray-400 scrollbar-thumb-rounded-full scrollbar-thumb-opacity-50 scrollbar-track-gray-200 dark:scrollbar-track-gray-900 scrollbar-track-rounded-full scrollbar-track-opacity-25'>
                   <nav className='flex h-full flex-col'>
                     <div className='overflow-x-hidden relative'>
                       {contentType === 'createOrEditContact' ? (

@@ -745,7 +745,7 @@ export const QueuesManagementView: FC<QueuesManagementViewProps> = ({ className 
                                   ) : (
                                     <div className='-my-2 -mx-4 overflow-x-auto sm:-mx-6 lg:-mx-8'>
                                       <div className='inline-block min-w-full py-2 align-middle sm:px-6 lg:px-8'>
-                                        <div className='sm:rounded-md max-h-[12.7rem] overflow-auto'>
+                                        <div className='sm:rounded-md max-h-[12.7rem] overflow-auto  scrollbar-thin scrollbar-thumb-gray-400 dark:scrollbar-thumb-gray-400 scrollbar-thumb-rounded-full scrollbar-thumb-opacity-50 scrollbar-track-gray-200 dark:scrollbar-track-gray-900 scrollbar-track-rounded-full scrollbar-track-opacity-25'>
                                           <table className='min-w-full divide-y divide-gray-300 dark:divide-gray-600'>
                                             <thead className='bg-gray-100 dark:bg-gray-800'>
                                               <tr>
@@ -829,7 +829,7 @@ export const QueuesManagementView: FC<QueuesManagementViewProps> = ({ className 
                                   ) : (
                                     <div className='-my-2 -mx-4 overflow-x-auto sm:-mx-6 lg:-mx-8'>
                                       <div className='inline-block min-w-full py-2 align-middle sm:px-6 lg:px-8'>
-                                        <div className='sm:rounded-md max-h-[17rem] overflow-auto'>
+                                        <div className='sm:rounded-md max-h-[17rem] overflow-auto  scrollbar-thin scrollbar-thumb-gray-400 dark:scrollbar-thumb-gray-400 scrollbar-thumb-rounded-full scrollbar-thumb-opacity-50 scrollbar-track-gray-200 dark:scrollbar-track-gray-900 scrollbar-track-rounded-full scrollbar-track-opacity-25'>
                                           <table className='min-w-full divide-y divide-gray-300 dark:divide-gray-600'>
                                             <thead className='bg-gray-100 dark:bg-gray-800'>
                                               <tr>
@@ -950,7 +950,7 @@ export const QueuesManagementView: FC<QueuesManagementViewProps> = ({ className 
                                     ) : (
                                       <div
                                         id={`queue-operators-${queue.queue}`}
-                                        className='flex flex-col gap-2 border rounded-md max-h-56 overflow-auto border-gray-200 dark:border-gray-700'
+                                        className='flex flex-col gap-2 border rounded-md max-h-56 overflow-auto scrollbar-thin scrollbar-thumb-gray-400 dark:scrollbar-thumb-gray-400 scrollbar-thumb-rounded-full scrollbar-thumb-opacity-50 scrollbar-track-gray-200 dark:scrollbar-track-gray-900 scrollbar-track-rounded-full scrollbar-track-opacity-25 border-gray-200 dark:border-gray-700'
                                       >
                                         <InfiniteScroll
                                           dataLength={

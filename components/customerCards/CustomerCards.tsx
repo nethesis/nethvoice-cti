@@ -96,7 +96,7 @@ export const CustomerCardsCustomerData: FC<CustomerCardsCustomerDataViewProps> =
           {' '}
           {/* Middle left  */}
           <div>
-            <div className='border-b border-gray-600 dark:border-gray-100 rounded-md bg-gray-700 dark:bg-gray-200 px-4 py-5 sm:px-6 flex-col h-[337px] overflow-auto'>
+            <div className='border-b border-gray-600 dark:border-gray-100 rounded-md bg-gray-700 dark:bg-gray-200 px-4 py-5 sm:px-6 flex-col h-[337px] overflow-auto  scrollbar-thin scrollbar-thumb-gray-400 dark:scrollbar-thumb-gray-400 scrollbar-thumb-rounded-full scrollbar-thumb-opacity-50 scrollbar-track-gray-200 dark:scrollbar-track-gray-900 scrollbar-track-rounded-full scrollbar-track-opacity-25'>
               {contactType === 'company' ? (
                 <>
                   {/* Company name  */}
@@ -157,7 +157,7 @@ export const CustomerCardsCustomerData: FC<CustomerCardsCustomerDataViewProps> =
           </div>
           {/* Middle right ( Operators ) */}
           <div className='sm:col-span-2'>
-            <div className='border-b rounded-md border-gray-200 dark:border-gray-800 bg-white dark:bg-gray-900 px-4 py-1 sm:px-6 h-full max-h-[337px] overflow-auto'>
+            <div className='border-b rounded-md border-gray-200 dark:border-gray-800 bg-white dark:bg-gray-900 px-4 py-1 sm:px-6 h-full max-h-[337px] overflow-auto  scrollbar-thin scrollbar-thumb-gray-400 dark:scrollbar-thumb-gray-400 scrollbar-thumb-rounded-full scrollbar-thumb-opacity-50 scrollbar-track-gray-200 dark:scrollbar-track-gray-900 scrollbar-track-rounded-full scrollbar-track-opacity-25'>
               <LastCallsDrawerTable
                 callType={'switchboard'}
                 dateFrom={startOfDay(subDays(new Date(), 160))}
