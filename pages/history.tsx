@@ -3,7 +3,7 @@
 
 import type { NextPage } from 'next'
 import { Filter } from '../components/history/Filter'
-import { Button, EmptyState, InlineNotification } from '../components/common'
+import { Button, InlineNotification } from '../components/common'
 import { useState, useEffect, useMemo } from 'react'
 import { search, PAGE_SIZE, openDrawerHistory } from '../lib/history'
 import { RootState } from '../store'
@@ -17,14 +17,15 @@ import {
   faArrowRight,
   faChevronRight,
   faChevronLeft,
-  faPhone,
   faXmark,
   faArrowLeft,
+  faVoicemail,
 } from '@fortawesome/free-solid-svg-icons'
 import { formatDateLoc, getCallTimeToDisplay } from '../lib/dateTime'
 import { subDays, startOfDay } from 'date-fns'
 import { useTranslation } from 'react-i18next'
 import { playFileAudio } from '../lib/utils'
+import { Tooltip } from 'react-tooltip'
 
 const History: NextPage = () => {
   const [isHistoryLoaded, setHistoryLoaded] = useState(false)
@@ -364,6 +365,17 @@ const History: NextPage = () => {
                       {' '}
                       {t('History.Incoming answered')}
                     </span>
+                    {/* Answered by voicemail */}
+                    {call.lastapp === 'VoiceMail' && (
+                      <FontAwesomeIcon
+                        icon={faVoicemail}
+                        className='ml-2 h-4 w-4 text-green-600 dark:text-green-500 tooltip-user-internal-answered-voicemail'
+                        aria-hidden='true'
+                      />
+                    )}
+                    <Tooltip anchorSelect='.tooltip-user-internal-answered-voicemail' place='left'>
+                      {t('History.Call in Voicemail') || ''}
+                    </Tooltip>
                   </div>
                 ) : (
                   <div className='flex flex-nowrap items-center'>
@@ -430,6 +442,20 @@ const History: NextPage = () => {
                       {' '}
                       {t('History.Internal answered')}
                     </span>
+                    {/* Answered by voicemail */}
+                    {call.lastapp === 'VoiceMail' && (
+                      <FontAwesomeIcon
+                        icon={faVoicemail}
+                        className='ml-2 h-4 w-4 text-green-600 dark:text-green-500 tooltip-switchboard-internal-answered-voicemail'
+                        aria-hidden='true'
+                      />
+                    )}
+                    <Tooltip
+                      anchorSelect='.tooltip-switchboard-internal-answered-voicemail'
+                      place='left'
+                    >
+                      {t('History.Call in Voicemail') || ''}
+                    </Tooltip>
                   </div>
                 ) : (
                   <div className='flex flex-nowrap'>
@@ -459,6 +485,20 @@ const History: NextPage = () => {
                         <span className='text-gray-900 dark:text-gray-100'>
                           {t('History.Incoming answered')}
                         </span>
+                        {/* Answered by voicemail */}
+                        {call.lastapp === 'VoiceMail' && (
+                          <FontAwesomeIcon
+                            icon={faVoicemail}
+                            className='ml-2 h-4 w-4 text-green-600 dark:text-green-500 tooltip-switchboard-not-internal-answered-voicemail'
+                            aria-hidden='true'
+                          />
+                        )}
+                        <Tooltip
+                          anchorSelect='.tooltip-switchboard-not-internal-answered-voicemail'
+                          place='left'
+                        >
+                          {t('History.Call in Voicemail') || ''}
+                        </Tooltip>
                       </div>
                     ) : (
                       <div className='flex flex-nowrap'>
