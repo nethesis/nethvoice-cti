@@ -357,7 +357,7 @@ const History: NextPage = () => {
                   <div className='flex flex-nowrap items-center'>
                     <FontAwesomeIcon
                       icon={faArrowLeft}
-                      className='mr-2 h-5 w-3.5 -rotate-45 text-green-600 dark:text-green-500'
+                      className='mr-2 h-5 w-3.5 -rotate-45 text-green-600 dark:text-green-500 z-0'
                       aria-hidden='true'
                     />
                     <span className='text-gray-900 dark:text-gray-100'>
@@ -385,7 +385,7 @@ const History: NextPage = () => {
                   <div className='flex flex-nowrap items-center'>
                     <FontAwesomeIcon
                       icon={faArrowLeft}
-                      className='mr-2 h-5 w-3.5 rotate-[135deg] text-green-600 dark:text-green-500'
+                      className='mr-2 h-5 w-3.5 rotate-[135deg] text-green-600 dark:text-green-500 z-0'
                       aria-hidden='true'
                     />
                     <span className='text-gray-900 dark:text-gray-100'>
@@ -453,7 +453,7 @@ const History: NextPage = () => {
                       <div className='flex flex-nowrap items-center'>
                         <FontAwesomeIcon
                           icon={faArrowLeft}
-                          className='mr-2 h-5 w-3.5 -rotate-45 text-green-600 dark:text-green-500'
+                          className='mr-2 h-5 w-3.5 -rotate-45 text-green-600 dark:text-green-500 z-0'
                           aria-hidden='true'
                         />
                         <span className='text-gray-900 dark:text-gray-100'>
@@ -482,7 +482,7 @@ const History: NextPage = () => {
                       <div className='flex flex-nowrap items-center'>
                         <FontAwesomeIcon
                           icon={faArrowLeft}
-                          className='mr-2 h-5 w-3.5 rotate-[135deg] text-green-600 dark:text-green-500'
+                          className='mr-2 h-5 w-3.5 rotate-[135deg] text-green-600 dark:text-green-500 z-0'
                           aria-hidden='true'
                         />
                         <span className='text-gray-900 dark:text-gray-100'>
@@ -546,7 +546,7 @@ const History: NextPage = () => {
                       <div className='overflow-y-auto scrollbar-thin scrollbar-thumb-gray-400 dark:scrollbar-thumb-gray-400 scrollbar-thumb-rounded-full scrollbar-thumb-opacity-50 scrollbar-track-gray-200 dark:scrollbar-track-gray-900 scrollbar-track-rounded-full scrollbar-track-opacity-25'>
                         <div className='max-h-[40rem]'>
                           <table className='min-w-full divide-y divide-gray-300 dark:divide-gray-700'>
-                            <thead className='sticky top-0 bg-white dark:bg-gray-900 z-50'>
+                            <thead className='sticky top-0 bg-white dark:bg-gray-900 z-[1]'>
                               <tr>
                                 <th
                                   scope='col'
