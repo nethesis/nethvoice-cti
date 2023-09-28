@@ -21,11 +21,12 @@ import {
   faArrowLeft,
   faVoicemail,
 } from '@fortawesome/free-solid-svg-icons'
-import { formatDateLoc, getCallTimeToDisplay } from '../lib/dateTime'
+import { formatDateLoc} from '../lib/dateTime'
 import { subDays, startOfDay } from 'date-fns'
 import { useTranslation } from 'react-i18next'
 import { playFileAudio } from '../lib/utils'
 import { Tooltip } from 'react-tooltip'
+import { CallsDate } from '../components/history/CallsDate'
 
 const History: NextPage = () => {
   const [isHistoryLoaded, setHistoryLoaded] = useState(false)
@@ -639,14 +640,7 @@ const History: NextPage = () => {
                                   <tr key={index}>
                                     {/* Date */}
                                     <td className='whitespace-nowrap py-4 pl-4 pr-3 sm:pl-6'>
-                                      <div className='flex flex-col'>
-                                        <div className='text-sm text-gray-900 dark:text-gray-100'>
-                                          {formatDateLoc(call.time * 1000, 'PP')}
-                                        </div>
-                                        <div className='text-gray-500 dark:text-gray-500'>
-                                          {getCallTimeToDisplay(call.time * 1000)}
-                                        </div>
-                                      </div>
+                                      <CallsDate call={call} />
                                     </td>
 
                                     {/* Source */}
