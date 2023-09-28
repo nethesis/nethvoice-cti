@@ -29,6 +29,7 @@ import { doLogout } from '../../services/login'
 import { UserNavBar } from './UserNavBar'
 import { getProfilingInfo } from '../../services/profiling'
 import { ProfilingTypes } from '../../models/profiling'
+import { Portal } from '@headlessui/react'
 
 interface LayoutProps {
   children: ReactNode
@@ -378,6 +379,11 @@ export const Layout: FC<LayoutProps> = ({ children }) => {
       const connectedQueueManagerCalls = queueManagerConnectedCalls[queueId]
       store.dispatch.queueManagerQueues.setConnectedCalls(queueId, connectedQueueManagerCalls)
     })
+
+    // If user start a call or receive a call close side drawer
+    if (data[currentUsername] && isEmpty(data[currentUsername]?.conversations)) {
+      dispatch.sideDrawer.setShown(false)
+    }
 
     // When user close listen call set to false and empty id conversation
     if (data[currentUsername] && isEmpty(data[currentUsername]?.conversations)) {
@@ -745,7 +751,10 @@ export const Layout: FC<LayoutProps> = ({ children }) => {
           />
           {/* Main content */}
           <div className='flex flex-1 items-stretch overflow-hidden'>
-            <main className='flex-1 overflow-y-auto scrollbar-thin scrollbar-thumb-gray-400 dark:scrollbar-thumb-gray-400 scrollbar-thumb-rounded-full scrollbar-thumb-opacity-50 scrollbar-track-gray-200 dark:scrollbar-track-gray-900 scrollbar-track-rounded-full scrollbar-track-opacity-25' id='main-content'>
+            <main
+              className='flex-1 overflow-y-auto scrollbar-thin scrollbar-thumb-gray-400 dark:scrollbar-thumb-gray-400 scrollbar-thumb-rounded-full scrollbar-thumb-opacity-50 scrollbar-track-gray-200 dark:scrollbar-track-gray-900 scrollbar-track-rounded-full scrollbar-track-opacity-25'
+              id='main-content'
+            >
               {/* Primary column */}
               <section
                 aria-labelledby='primary-heading'
@@ -754,6 +763,14 @@ export const Layout: FC<LayoutProps> = ({ children }) => {
                 {/* The page content */}
                 {children}
               </section>
+              <Portal>
+                <SideDrawer
+                  isShown={sideDrawer.isShown}
+                  contentType={sideDrawer.contentType}
+                  config={sideDrawer.config}
+                  drawerClosed={() => closeSideDrawer()}
+                />
+              </Portal>
             </main>
             <div className=' absolute bottom-6 right-9 z-50'>
               {toast?.isShown && (
@@ -772,13 +789,6 @@ export const Layout: FC<LayoutProps> = ({ children }) => {
             </div>
             {/* Secondary column (hidden on smaller screens) */}
             <UserNavBar />
-
-            <SideDrawer
-              isShown={sideDrawer.isShown}
-              contentType={sideDrawer.contentType}
-              config={sideDrawer.config}
-              drawerClosed={() => closeSideDrawer()}
-            />
           </div>
         </div>
       </div>
