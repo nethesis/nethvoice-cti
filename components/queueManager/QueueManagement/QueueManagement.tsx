@@ -335,7 +335,7 @@ export const QueueManagement: FC<QueueManagementProps> = ({ className }): JSX.El
                   leaveFrom='opacity-100'
                   leaveTo='opacity-0'
                 >
-                  <Listbox.Options className='absolute z-10 mt-1 w-full overflow-auto rounded-md bg-white py-1 text-base shadow-lg ring-1 dark:bg-gray-900 ring-black ring-opacity-5 focus:outline-none sm:text-sm h-auto'>
+                  <Listbox.Options className='absolute z-10 mt-1 w-full overflow-auto scrollbar-thin scrollbar-thumb-gray-400 dark:scrollbar-thumb-gray-400 scrollbar-thumb-rounded-full scrollbar-thumb-opacity-50 scrollbar-track-gray-200 dark:scrollbar-track-gray-900 scrollbar-track-rounded-full scrollbar-track-opacity-25 rounded-md bg-white py-1 text-base shadow-lg ring-1 dark:bg-gray-900 ring-black ring-opacity-5 focus:outline-none sm:text-sm h-auto'>
                     {Object.entries<any>(queueManagerStore.queues).map(([queueId, queueInfo]) => (
                       <Listbox.Option
                         key={queueId}
@@ -463,12 +463,13 @@ export const QueueManagement: FC<QueueManagementProps> = ({ className }): JSX.El
                     {queueManagerStore &&
                     queueManagerStore?.isLoaded &&
                     queueManagerStore?.queues[selectedValue?.queue] &&
-                    isEmpty(queueManagerStore?.queues[selectedValue.queue]?.waitingCallersList) && selectedValue ? (
+                    isEmpty(queueManagerStore?.queues[selectedValue.queue]?.waitingCallersList) &&
+                    selectedValue ? (
                       <div className='p-4'>{t('Queues.No calls')}</div>
                     ) : (
                       <div className='-my-2 -mx-4 overflow-x-auto sm:-mx-6 lg:-mx-8'>
                         <div className='inline-block min-w-full py-2 align-middle sm:px-6 lg:px-8'>
-                          <div className='sm:rounded-md max-h-[12.7rem] overflow-auto'>
+                          <div className='sm:rounded-md max-h-[12.7rem] overflow-auto scrollbar-thin scrollbar-thumb-gray-400 dark:scrollbar-thumb-gray-400 scrollbar-thumb-rounded-full scrollbar-thumb-opacity-50 scrollbar-track-gray-200 dark:scrollbar-track-gray-900 scrollbar-track-rounded-full scrollbar-track-opacity-25'>
                             <table className='min-w-full divide-y divide-gray-300 dark:divide-gray-600'>
                               <thead className='bg-gray-100 dark:bg-gray-800'>
                                 <tr>
@@ -552,12 +553,13 @@ export const QueueManagement: FC<QueueManagementProps> = ({ className }): JSX.El
                   {queueManagerStore &&
                   queueManagerStore?.isLoaded &&
                   queueManagerStore?.queues[selectedValue?.queue] &&
-                  isEmpty(queueManagerStore?.queues[selectedValue.queue]?.connectedCalls) && selectedValue ? (
+                  isEmpty(queueManagerStore?.queues[selectedValue.queue]?.connectedCalls) &&
+                  selectedValue ? (
                     <div className='p-4'>{t('Queues.No calls')}</div>
                   ) : (
                     <div className='-my-2 -mx-4 overflow-x-auto sm:-mx-6 lg:-mx-8'>
                       <div className='inline-block min-w-full py-2 align-middle sm:px-6 lg:px-8'>
-                        <div className='sm:rounded-md max-h-[17rem] overflow-auto'>
+                        <div className='sm:rounded-md max-h-[17rem] overflow-auto scrollbar-thin scrollbar-thumb-gray-400 dark:scrollbar-thumb-gray-400 scrollbar-thumb-rounded-full scrollbar-thumb-opacity-50 scrollbar-track-gray-200 dark:scrollbar-track-gray-900 scrollbar-track-rounded-full scrollbar-track-opacity-25'>
                           <table className='min-w-full divide-y divide-gray-300 dark:divide-gray-600'>
                             <thead className='bg-gray-100 dark:bg-gray-800'>
                               <tr>

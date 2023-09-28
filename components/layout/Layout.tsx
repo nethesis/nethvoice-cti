@@ -745,7 +745,7 @@ export const Layout: FC<LayoutProps> = ({ children }) => {
           />
           {/* Main content */}
           <div className='flex flex-1 items-stretch overflow-hidden'>
-            <main className='flex-1 overflow-y-auto' id='main-content'>
+            <main className='flex-1 overflow-y-auto scrollbar-thin scrollbar-thumb-gray-400 dark:scrollbar-thumb-gray-400 scrollbar-thumb-rounded-full scrollbar-thumb-opacity-50 scrollbar-track-gray-200 dark:scrollbar-track-gray-900 scrollbar-track-rounded-full scrollbar-track-opacity-25' id='main-content'>
               {/* Primary column */}
               <section
                 aria-labelledby='primary-heading'

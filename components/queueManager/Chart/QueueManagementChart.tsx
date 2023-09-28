@@ -551,7 +551,7 @@ export const QueueManagementChart: FC<QueueManagementChartProps> = ({
                   numericTooltip={true}
                 />
               </div>
-              <div className='overflow-auto mt-12 h-56 w-full'>
+              <div className='overflow-auto  scrollbar-thin scrollbar-thumb-gray-400 dark:scrollbar-thumb-gray-400 scrollbar-thumb-rounded-full scrollbar-thumb-opacity-50 scrollbar-track-gray-200 dark:scrollbar-track-gray-900 scrollbar-track-rounded-full scrollbar-track-opacity-25 mt-12 h-56 w-full'>
                 <ul
                   role='list'
                   className=' divide-gray-300 dark:divide-gray-600 bg-white dark:bg-gray-900'

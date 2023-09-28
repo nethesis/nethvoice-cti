@@ -814,7 +814,7 @@ export const Summary: FC<SummaryProps> = ({ className }): JSX.Element => {
                                 <div className='flex-grow border-b border-gray-200 dark:border-gray-700 mt-1'></div>
 
                                 {/* User statistics  */}
-                                <div className='h-96 overflow-auto pt-2'>
+                                <div className='h-96 overflow-auto  scrollbar-thin scrollbar-thumb-gray-400 dark:scrollbar-thumb-gray-400 scrollbar-thumb-rounded-full scrollbar-thumb-opacity-50 scrollbar-track-gray-200 dark:scrollbar-track-gray-900 scrollbar-track-rounded-full scrollbar-track-opacity-25 pt-2'>
                                   <div className='px-3 py-4 '>
                                     <h3 className='truncate text-base leading-6 font-medium flex items-center'>
                                       <FontAwesomeIcon
@@ -990,7 +990,7 @@ export const Summary: FC<SummaryProps> = ({ className }): JSX.Element => {
                                 </div>
 
                                 {/* Queues body */}
-                                <div className='pt-6 overflow-auto h-56'>
+                                <div className='pt-6 overflow-auto scrollbar-thin scrollbar-thumb-gray-400 dark:scrollbar-thumb-gray-400 scrollbar-thumb-rounded-full scrollbar-thumb-opacity-50 scrollbar-track-gray-200 dark:scrollbar-track-gray-900 scrollbar-track-rounded-full scrollbar-track-opacity-25 h-56'>
                                   {Object.entries(operator.queues).map(
                                     ([queueNum, queue]: [string, any], queueIndex: number) => {
                                       if (isNaN(Number(queueNum))) {

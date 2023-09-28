@@ -33,7 +33,7 @@ export const UserNavBar: FC = () => {
       icon: faBolt,
       name: 'speed_dial',
       active: false,
-      label: t('NavBars.Speed dial'),
+      label: t('NavBars.Speed dials'),
     },
     {
       icon: faPhone,

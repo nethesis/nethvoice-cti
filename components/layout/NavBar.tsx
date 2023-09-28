@@ -31,7 +31,7 @@ const activeStyles = {
 
 export const NavBar: FC<NavBarProps> = ({ items }) => {
   return (
-    <div className='hidden w-20 overflow-y-auto md:block border-r border-gray-200 dark:border-gray-700 bg-white dark:bg-gray-900'>
+    <div className='hidden w-20 overflow-y-auto scrollbar-thin scrollbar-thumb-gray-400 dark:scrollbar-thumb-gray-400 scrollbar-thumb-rounded-full scrollbar-thumb-opacity-50 scrollbar-track-gray-200 dark:scrollbar-track-gray-900 scrollbar-track-rounded-full scrollbar-track-opacity-25 md:block border-r border-gray-200 dark:border-gray-700 bg-white dark:bg-gray-900'>
       <div className='flex w-full flex-col items-center py-2 h-full'>
         <div className='flex flex-shrink-0 items-center'>
           <Link href='/operators'>

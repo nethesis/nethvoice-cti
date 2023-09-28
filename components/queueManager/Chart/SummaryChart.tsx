@@ -437,7 +437,7 @@ export const SummaryChart: FC<SummaryChartProps> = ({ className, selectedQueues 
                     </Tooltip>
                   </div>
                 </div>
-                <div className='mt-3 mx-auto h-80 w-full overflow-auto'>
+                <div className='mt-3 mx-auto h-80 w-full overflow-auto  scrollbar-thin scrollbar-thumb-gray-400 dark:scrollbar-thumb-gray-400 scrollbar-thumb-rounded-full scrollbar-thumb-opacity-50 scrollbar-track-gray-200 dark:scrollbar-track-gray-900 scrollbar-track-rounded-full scrollbar-track-opacity-25'>
                   <BarChartHorizontalNoLabels
                     datasets={datasetsQueues}
                     titleText={`${t('QueueManager.Total')}: ${totalCalls}`}
@@ -465,7 +465,7 @@ export const SummaryChart: FC<SummaryChartProps> = ({ className, selectedQueues 
                     </Tooltip>
                   </div>
                 </div>
-                <div className='mt-3 mx-auto h-80 w-full overflow-auto'>
+                <div className='mt-3 mx-auto h-80 w-full overflow-auto  scrollbar-thin scrollbar-thumb-gray-400 dark:scrollbar-thumb-gray-400 scrollbar-thumb-rounded-full scrollbar-thumb-opacity-50 scrollbar-track-gray-200 dark:scrollbar-track-gray-900 scrollbar-track-rounded-full scrollbar-track-opacity-25'>
                   <BarChartHorizontalNoLabels
                     datasets={datasetsQueuesLessSla}
                     titleText={`${t('QueueManager.Total')}: ${totalCallsBeforeLevel}`}
@@ -521,7 +521,7 @@ export const SummaryChart: FC<SummaryChartProps> = ({ className, selectedQueues 
                     </Tooltip>
                   </div>
                 </div>
-                <div className='mt-3 mx-auto w-full h-80 overflow-auto'>
+                <div className='mt-3 mx-auto w-full h-80 overflow-auto  scrollbar-thin scrollbar-thumb-gray-400 dark:scrollbar-thumb-gray-400 scrollbar-thumb-rounded-full scrollbar-thumb-opacity-50 scrollbar-track-gray-200 dark:scrollbar-track-gray-900 scrollbar-track-rounded-full scrollbar-track-opacity-25'>
                   <MultipleInformationChart
                     datasets={datasetsFailedCalls}
                     // titleText={`Total: ${totalFailedCalls}`}
@@ -557,7 +557,7 @@ export const SummaryChart: FC<SummaryChartProps> = ({ className, selectedQueues 
                     </Tooltip>
                   </div>
                 </div>
-                <div className='mt-3 mx-auto h-80 w-full overflow-auto'>
+                <div className='mt-3 mx-auto h-80 w-full overflow-auto scrollbar-thin scrollbar-thumb-gray-400 dark:scrollbar-thumb-gray-400 scrollbar-thumb-rounded-full scrollbar-thumb-opacity-50 scrollbar-track-gray-200 dark:scrollbar-track-gray-900 scrollbar-track-rounded-full scrollbar-track-opacity-25'>
                   <BarChartHorizontalNoLabels
                     datasets={datasetsCallBack}
                     titleText={`${t('QueueManager.Total')}: ${totalCallBack}`}
@@ -585,7 +585,7 @@ export const SummaryChart: FC<SummaryChartProps> = ({ className, selectedQueues 
                     </Tooltip>
                   </div>
                 </div>
-                <div className='mt-3 mx-auto h-80 w-full overflow-auto'>
+                <div className='mt-3 mx-auto h-80 w-full overflow-auto scrollbar-thin scrollbar-thumb-gray-400 dark:scrollbar-thumb-gray-400 scrollbar-thumb-rounded-full scrollbar-thumb-opacity-50 scrollbar-track-gray-200 dark:scrollbar-track-gray-900 scrollbar-track-rounded-full scrollbar-track-opacity-25'>
                   <BarChartHorizontalNoLabels
                     datasets={datasetsInvalidCalls}
                     titleText={`${t('QueueManager.Total')}: ${totalInvalidCalls}`}
@@ -613,7 +613,7 @@ export const SummaryChart: FC<SummaryChartProps> = ({ className, selectedQueues 
                     </Tooltip>
                   </div>
                 </div>
-                <div className='mt-3 mx-auto w-full h-80 overflow-auto'>
+                <div className='mt-3 mx-auto w-full h-80 overflow-auto scrollbar-thin scrollbar-thumb-gray-400 dark:scrollbar-thumb-gray-400 scrollbar-thumb-rounded-full scrollbar-thumb-opacity-50 scrollbar-track-gray-200 dark:scrollbar-track-gray-900 scrollbar-track-rounded-full scrollbar-track-opacity-25'>
                   <MultipleInformationChart
                     datasets={waitingCalls}
                     failureTypes={[
@@ -645,7 +645,7 @@ export const SummaryChart: FC<SummaryChartProps> = ({ className, selectedQueues 
                     </Tooltip>
                   </div>
                 </div>
-                <div className='mt-3 mx-auto w-full h-80 overflow-auto'>
+                <div className='mt-3 mx-auto w-full h-80 overflow-auto scrollbar-thin scrollbar-thumb-gray-400 dark:scrollbar-thumb-gray-400 scrollbar-thumb-rounded-full scrollbar-thumb-opacity-50 scrollbar-track-gray-200 dark:scrollbar-track-gray-900 scrollbar-track-rounded-full scrollbar-track-opacity-25'>
                   <MultipleInformationChart
                     datasets={durationCalls}
                     failureTypes={[
