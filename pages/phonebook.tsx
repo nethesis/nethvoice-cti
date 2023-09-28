@@ -25,7 +25,7 @@ import {
   faAddressBook,
   faMobileScreenButton,
   faFilter,
-  faChevronLeft
+  faChevronLeft,
 } from '@fortawesome/free-solid-svg-icons'
 import { callPhoneNumber } from '../lib/utils'
 import { useTranslation } from 'react-i18next'
@@ -138,10 +138,10 @@ const Phonebook: NextPage = () => {
 
         {!phonebookError && (
           <div className='mx-auto'>
-            <div className='flex flex-col overflow-hidden'>
+            <div className='flex flex-col'>
               <div className='-my-2 -mx-4 overflow-x-auto sm:-mx-6 lg:-mx-8'>
                 <div className='inline-block min-w-full py-2 align-middle px-2 md:px-6 lg:px-8'>
-                  <div className='overflow-hidden shadow ring-1 ring-black ring-opacity-5 md:rounded-lg'>
+                  <div className='shadow ring-1 ring-black ring-opacity-5 md:rounded-lg'>
                     {/* empty state */}
                     {isPhonebookLoaded &&
                       phonebook?.rows &&
@@ -184,155 +184,162 @@ const Phonebook: NextPage = () => {
                         />
                       )}
                     {isPhonebookLoaded && phonebook?.rows && !!phonebook.rows.length && (
-                      <table className='min-w-full divide-y divide-gray-300 dark:divide-gray-700'>
-                        <thead className='bg-white dark:bg-gray-900'>
-                          <tr>
-                            <th
-                              scope='col'
-                              className='py-3.5 pl-4 pr-3 text-left text-sm font-semibold text-gray-700 dark:text-gray-100 sm:pl-6'
-                            >
-                              {t('Phonebook.Name')}
-                            </th>
-                            <th
-                              scope='col'
-                              className='px-3 py-3.5 text-left text-sm font-semibold text-gray-700 dark:text-gray-100'
-                            >
-                              {t('Phonebook.Primary phone')}
-                            </th>
-                            <th
-                              scope='col'
-                              className='px-3 py-3.5 text-left text-sm font-semibold text-gray-700 dark:text-gray-100'
-                            >
-                              {t('Phonebook.Mobile phone')}
-                            </th>
-                            <th
-                              scope='col'
-                              className='px-8 py-3.5 text-right text-sm font-semibold text-gray-700 dark:text-gray-100 sm:pr-6'
-                            ></th>
-                          </tr>
-                        </thead>
-                        <tbody className='divide-y divide-gray-200 dark:divide-gray-700 bg-white dark:bg-gray-900 text-gray-700 text-sm'>
-                          {/* Not empty state  */}
-                          {phonebook.rows.map((contact: any, index: number) => (
-                            <tr
-                              key={index}
-                              className='cursor-pointer'
-                              onClick={() => openShowContactDrawer(contact)}
-                            >
-                              {/* Name */}
-                              <td className='py-4 px-4 sm:pl-6 '>
-                                <div className='flex items-center'>
-                                  <div className='h-10 w-10 flex-shrink-0'>
-                                    {' '}
-                                    {contact.kind == 'person' ? (
-                                      <Avatar className='cursor-pointer' placeholderType='person' />
-                                    ) : (
-                                      <Avatar
-                                        className='cursor-pointer'
-                                        placeholderType='company'
-                                      />
-                                    )}{' '}
-                                  </div>
-                                  <div className='ml-4'>
-                                    <div className='font-medium text-gray-700 dark:text-gray-100'>
-                                      {' '}
-                                      <span className='cursor-pointer hover:underline'>
-                                        {contact.displayName}
-                                      </span>
-                                    </div>
-                                    {/* extension */}
-                                    {contact.extension && (
-                                      <div className='mt-1 flex items-center text-sm text-gray-500 dark:text-gray-400'>
-                                        <FontAwesomeIcon
-                                          icon={faPhone}
-                                          className='mr-2 h-4 w-4 flex-shrink-0 text-gray-400 dark:text-gray-500'
-                                          aria-hidden='true'
-                                        />
-                                        <span
-                                          className='truncate text-primary dark:text-primary cursor-pointer'
-                                          onClick={() => callPhoneNumber(contact.extension)}
-                                        >
-                                          {contact.extension}
-                                        </span>
+                      <div className='overflow-y-auto scrollbar-thin scrollbar-thumb-gray-400 dark:scrollbar-thumb-gray-400 scrollbar-thumb-rounded-full scrollbar-thumb-opacity-50 scrollbar-track-gray-200 dark:scrollbar-track-gray-900 scrollbar-track-rounded-full scrollbar-track-opacity-25'>
+                        <div className='max-h-[32rem]'>
+                          <table className='min-w-full divide-y divide-gray-300 dark:divide-gray-700'>
+                            <thead className='sticky top-0 bg-white dark:bg-gray-900 z-[1]'>
+                              <tr>
+                                <th
+                                  scope='col'
+                                  className='py-3.5 pl-4 pr-3 text-left text-sm font-semibold text-gray-700 dark:text-gray-100 sm:pl-6'
+                                >
+                                  {t('Phonebook.Name')}
+                                </th>
+                                <th
+                                  scope='col'
+                                  className='px-3 py-3.5 text-left text-sm font-semibold text-gray-700 dark:text-gray-100'
+                                >
+                                  {t('Phonebook.Primary phone')}
+                                </th>
+                                <th
+                                  scope='col'
+                                  className='px-3 py-3.5 text-left text-sm font-semibold text-gray-700 dark:text-gray-100'
+                                >
+                                  {t('Phonebook.Mobile phone')}
+                                </th>
+                                <th
+                                  scope='col'
+                                  className='px-8 py-3.5 text-right text-sm font-semibold text-gray-700 dark:text-gray-100 sm:pr-6'
+                                ></th>
+                              </tr>
+                            </thead>
+                            <tbody className='divide-y divide-gray-200 dark:divide-gray-700 bg-white dark:bg-gray-900 text-gray-700 text-sm'>
+                              {/* Not empty state  */}
+                              {phonebook.rows.map((contact: any, index: number) => (
+                                <tr
+                                  key={index}
+                                  className='cursor-pointer'
+                                  onClick={() => openShowContactDrawer(contact)}
+                                >
+                                  {/* Name */}
+                                  <td className='py-4 px-4 sm:pl-6 '>
+                                    <div className='flex items-center'>
+                                      <div className='h-10 w-10 flex-shrink-0'>
+                                        {' '}
+                                        {contact.kind == 'person' ? (
+                                          <Avatar
+                                            className='cursor-pointer'
+                                            placeholderType='person'
+                                          />
+                                        ) : (
+                                          <Avatar
+                                            className='cursor-pointer'
+                                            placeholderType='company'
+                                          />
+                                        )}{' '}
                                       </div>
-                                    )}
-                                    {/* company name */}
-                                    {contact.kind == 'person' &&
-                                      contact.company &&
-                                      !contact.extension && (
-                                        <div className='mt-1 flex items-center text-sm text-gray-500 dark:text-gray-400'>
+                                      <div className='ml-4'>
+                                        <div className='font-medium text-gray-700 dark:text-gray-100'>
+                                          {' '}
+                                          <span className='cursor-pointer hover:underline'>
+                                            {contact.displayName}
+                                          </span>
+                                        </div>
+                                        {/* extension */}
+                                        {contact.extension && (
+                                          <div className='mt-1 flex items-center text-sm text-gray-500 dark:text-gray-400'>
+                                            <FontAwesomeIcon
+                                              icon={faPhone}
+                                              className='mr-2 h-4 w-4 flex-shrink-0 text-gray-400 dark:text-gray-500'
+                                              aria-hidden='true'
+                                            />
+                                            <span
+                                              className='truncate text-primary dark:text-primary cursor-pointer'
+                                              onClick={() => callPhoneNumber(contact.extension)}
+                                            >
+                                              {contact.extension}
+                                            </span>
+                                          </div>
+                                        )}
+                                        {/* company name */}
+                                        {contact.kind == 'person' &&
+                                          contact.company &&
+                                          !contact.extension && (
+                                            <div className='mt-1 flex items-center text-sm text-gray-500 dark:text-gray-400'>
+                                              <FontAwesomeIcon
+                                                icon={faSuitcase}
+                                                className='mr-2 h-4 w-4 flex-shrink-0 text-gray-400 dark:text-gray-500'
+                                                aria-hidden='true'
+                                              />
+                                              <span className='truncate'>{contact.company}</span>
+                                            </div>
+                                          )}
+                                        <div className='text-gray-500'></div>
+                                      </div>
+                                    </div>
+                                  </td>
+
+                                  {/* work phone */}
+                                  <td className='py-4 px-4'>
+                                    <div>
+                                      {contact.workphone ? (
+                                        <div className='mt-1 flex items-center text-sm text-primary dark:text-primary'>
                                           <FontAwesomeIcon
-                                            icon={faSuitcase}
+                                            icon={faPhone}
                                             className='mr-2 h-4 w-4 flex-shrink-0 text-gray-400 dark:text-gray-500'
                                             aria-hidden='true'
                                           />
-                                          <span className='truncate'>{contact.company}</span>
+                                          <span
+                                            className='truncate cursor-pointer hover:underline'
+                                            onClick={() => callPhoneNumber(contact.workphone)}
+                                          >
+                                            {contact.workphone}
+                                          </span>
                                         </div>
+                                      ) : (
+                                        '-'
                                       )}
-                                    <div className='text-gray-500'></div>
-                                  </div>
-                                </div>
-                              </td>
+                                    </div>
+                                  </td>
 
-                              {/* work phone */}
-                              <td className='py-4 px-4'>
-                                <div>
-                                  {contact.workphone ? (
-                                    <div className='mt-1 flex items-center text-sm text-primary dark:text-primary'>
+                                  {/* mobile phone */}
+                                  <td className='py-4 px-4'>
+                                    <div>
+                                      {contact.cellphone ? (
+                                        <div className='mt-1 flex items-center text-sm text-primary dark:text-primary'>
+                                          <FontAwesomeIcon
+                                            icon={faMobileScreenButton}
+                                            className='mr-2 h-4 w-4 flex-shrink-0 text-gray-400 dark:text-gray-500'
+                                            aria-hidden='true'
+                                          />
+                                          <span
+                                            className='truncate cursor-pointer hover:underline'
+                                            onClick={() => callPhoneNumber(contact.cellphone)}
+                                          >
+                                            {contact.cellphone}
+                                          </span>
+                                        </div>
+                                      ) : (
+                                        '-'
+                                      )}
+                                    </div>
+                                  </td>
+
+                                  <td className='py-4 px-4 sm:pr-8'>
+                                    <div className='flex items-center justify-end'>
                                       <FontAwesomeIcon
-                                        icon={faPhone}
-                                        className='mr-2 h-4 w-4 flex-shrink-0 text-gray-400 dark:text-gray-500'
+                                        icon={faChevronRight}
+                                        className='h-3 w-3 text-gray-400 dark:text-gray-500 cursor-pointer'
                                         aria-hidden='true'
                                       />
-                                      <span
-                                        className='truncate cursor-pointer hover:underline'
-                                        onClick={() => callPhoneNumber(contact.workphone)}
-                                      >
-                                        {contact.workphone}
-                                      </span>
                                     </div>
-                                  ) : (
-                                    '-'
-                                  )}
-                                </div>
-                              </td>
-
-                              {/* mobile phone */}
-                              <td className='py-4 px-4'>
-                                <div>
-                                  {contact.cellphone ? (
-                                    <div className='mt-1 flex items-center text-sm text-primary dark:text-primary'>
-                                      <FontAwesomeIcon
-                                        icon={faMobileScreenButton}
-                                        className='mr-2 h-4 w-4 flex-shrink-0 text-gray-400 dark:text-gray-500'
-                                        aria-hidden='true'
-                                      />
-                                      <span
-                                        className='truncate cursor-pointer hover:underline'
-                                        onClick={() => callPhoneNumber(contact.cellphone)}
-                                      >
-                                        {contact.cellphone}
-                                      </span>
-                                    </div>
-                                  ) : (
-                                    '-'
-                                  )}
-                                </div>
-                              </td>
-
-                              <td className='py-4 px-4 sm:pr-8'>
-                                <div className='flex items-center justify-end'>
-                                  <FontAwesomeIcon
-                                    icon={faChevronRight}
-                                    className='h-3 w-3 text-gray-400 dark:text-gray-500 cursor-pointer'
-                                    aria-hidden='true'
-                                  />
-                                </div>
-                              </td>
-                            </tr>
-                          ))}
-                        </tbody>
-                      </table>
+                                  </td>
+                                </tr>
+                              ))}
+                            </tbody>
+                          </table>
+                        </div>
+                      </div>
                     )}
                   </div>
                 </div>
