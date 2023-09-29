@@ -548,6 +548,39 @@ export const Layout: FC<LayoutProps> = ({ children }) => {
     }
   })
 
+  // Save prev user main presence state
+  const [prevOperatorState, setPrevOperatorState] = useState<string | null>(null)
+
+  const currentOperator = operators[currentUsername]
+
+  //check if user has closed current calls
+  const [closedCall, setClosedCall] = useState(false)
+
+  //check previous user mainPresence
+  useEffect(() => {
+    if (
+      currentOperator &&
+      currentOperator.mainPresence === 'online' &&
+      (prevOperatorState === 'busy' || prevOperatorState === 'ringing') &&
+      !closedCall
+    ) {
+      setClosedCall(true)
+    } else {
+      setClosedCall(false)
+    }
+
+    setPrevOperatorState(currentOperator ? currentOperator.mainPresence : null)
+  }, [currentOperator, prevOperatorState, closedCall])
+
+  // If user has closed phone island call let reload last calls
+  useEffect(() => {
+    if (closedCall) {
+      store.dispatch.lastCalls.setReloadLastCalls(true)
+    } else {
+      store.dispatch.lastCalls.setReloadLastCalls(false)
+    }
+  }, [closedCall])
+
   useEventListener('phone-island-queue-update', (data: any) => {
     const queueId = Object.keys(data)[0]
     const queueData = data[queueId]

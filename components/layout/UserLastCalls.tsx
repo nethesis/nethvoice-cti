@@ -4,7 +4,7 @@
 import { useState, useEffect, useRef, useCallback } from 'react'
 import { Button, Avatar, EmptyState, Dropdown, Badge } from '../common'
 import { useSelector } from 'react-redux'
-import { RootState } from '../../store'
+import { RootState, store } from '../../store'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { faPhone, faChevronDown, faUsers } from '@fortawesome/free-solid-svg-icons'
 import { callPhoneNumber } from '../../lib/utils'
@@ -92,7 +92,13 @@ export const UserLastCalls = () => {
     setJSONItem(`preferences-${username}`, preferences)
   }
 
+  const [firstRender, setFirstRender]: any = useState(true)
+
   useEffect(() => {
+    if (firstRender) {
+      setFirstRender(false)
+      return
+    }
     if (username && !firstLoadedRef.current) {
       firstLoadedRef.current = true
       setIsLoading(true)
@@ -103,14 +109,16 @@ export const UserLastCalls = () => {
       !firstLoadedRef.current
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [username])
+  }, [username, firstRender])
 
-  useEventListener('phone-island-conversations', (data) => {
-    if (isEmpty(data[currentUsername]?.conversations)) {
-      // setIsLoading(true)
+  const lastCallsUpdate = useSelector((state: RootState) => state.lastCalls)
+
+  useEffect(() => {
+    if (lastCallsUpdate.isReload) {
+      setIsLoading(true)
       getLastCallsList(sort)
     }
-  })
+  }, [lastCallsUpdate.isReload])
 
   return (
     <>
