@@ -33,7 +33,7 @@ import { CallDuration } from '../components/operators/CallDuration'
 import InfiniteScroll from 'react-infinite-scroll-component'
 import { faCircleNotch } from '@fortawesome/free-solid-svg-icons'
 import { t } from 'i18next'
-import { eventDispatch } from '../lib/hooks/eventDispatch'
+import { transferCall } from '../lib/utils'
 
 //// use i18n where there is operator.mainPresence
 
@@ -164,16 +164,6 @@ const Operators: NextPage = () => {
     setInfiniteScrollOperators(filteredOperators.slice(0, lastIndex))
     const hasMore = lastIndex < filteredOperators.length
     setInfiniteScrollHasMore(hasMore)
-  }
-
-  async function transferCall(operatorBadgeInformations: any) {
-    if (operatorBadgeInformations?.endpoints?.mainextension[0]?.id) {
-      let destinationNumber = operatorBadgeInformations?.endpoints?.mainextension[0]?.id
-
-      if (destinationNumber) {
-        eventDispatch('phone-island-transfer-call', { to: destinationNumber })
-      }
-    }
   }
 
   return (

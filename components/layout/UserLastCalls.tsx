@@ -167,7 +167,7 @@ export const UserLastCalls = () => {
           <span className='border-b border-gray-200 dark:border-gray-700'></span>
           <ul
             role='list'
-            className='flex-1 divide-y overflow-y-auto divide-gray-200 dark:divide-gray-700'
+            className='flex-1 divide-y overflow-y-auto scrollbar-thin scrollbar-thumb-gray-400 dark:scrollbar-thumb-gray-400 scrollbar-thumb-rounded-full scrollbar-thumb-opacity-50 scrollbar-track-gray-200 dark:scrollbar-track-gray-900 scrollbar-track-rounded-full scrollbar-track-opacity-25 divide-gray-200 dark:divide-gray-700'
           >
             {/* skeleton */}
             {isLoading &&

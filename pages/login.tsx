@@ -40,22 +40,25 @@ export default function Login() {
         </InlineNotification>
       </div>
     </div>
-  ) : ctiStatus.webRtcError ? (
-    <div className='relative w-full'>
-      <div className='absolute -bottom-[104px] w-full'>
-        <InlineNotification type='error' title={t('Common.Warning')}>
-          <p>{t('Login.The application is open in another window')}</p>
-        </InlineNotification>
+  ) : ctiStatus.webRtcError || window.location.hash.includes('#') ? (
+    ctiStatus.isUserInformationMissing ||
+    window.location.hash.includes('#isUserInformationMissing') ? (
+      <div className='relative w-full'>
+        <div className='absolute -bottom-[104px] w-full'>
+          <InlineNotification type='error' title={t('Common.Warning')}>
+            <p>{t('Login.Session expired, log in again')}</p>
+          </InlineNotification>
+        </div>
       </div>
-    </div>
-  ) : ctiStatus.isUserInformationMissing ? (
-    <div className='relative w-full'>
-      <div className='absolute -bottom-[104px] w-full'>
-        <InlineNotification type='error' title={t('Common.Warning')}>
-          <p>{t('Login.Session expired, log in again')}</p>
-        </InlineNotification>
+    ) : (
+      <div className='relative w-full'>
+        <div className='absolute -bottom-[104px] w-full'>
+          <InlineNotification type='error' title={t('Common.Warning')}>
+            <p>{t('Login.The application is open in another window')}</p>
+          </InlineNotification>
+        </div>
       </div>
-    </div>
+    )
   ) : (
     <></>
   )
@@ -67,10 +70,13 @@ export default function Login() {
   const doLogin = async (e: React.FormEvent) => {
     e.preventDefault()
     setLoading(true)
-    if (ctiStatus.webRtcError) {
+    if (ctiStatus.webRtcError || window.location.hash.includes('#webrtcError')) {
       store.dispatch.ctiStatus.setWebRtcError(false)
     }
-    if (ctiStatus.isUserInformationMissing) {
+    if (
+      ctiStatus.isUserInformationMissing ||
+      window.location.hash.includes('#isUserInformationMissing')
+    ) {
       store.dispatch.ctiStatus.setUserInformationMissing(false)
     }
     if (window !== undefined) {

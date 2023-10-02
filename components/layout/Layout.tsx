@@ -112,8 +112,12 @@ export const Layout: FC<LayoutProps> = ({ children }) => {
         if (!ctiStatus.isUserInformationMissing) {
           // update global store
           store.dispatch.ctiStatus.setUserInformationMissing(true)
+          store.dispatch.ctiStatus.setWebRtcError(true)
           // force logout
-          doLogout()
+          let isLogoutError: any = {
+            isUserInformationMissing: true,
+          }
+          doLogout(isLogoutError)
         }
       }
     }
@@ -136,13 +140,11 @@ export const Layout: FC<LayoutProps> = ({ children }) => {
     // Manage change of visibility
     document.addEventListener('visibilitychange', visibilityChangeHandler)
 
-    // Refresh api every hours
+    // Refresh api every 45 minutes
     const reloadInterval = setInterval(() => {
-      if (document.visibilityState === 'visible') {
-        fetchUserInfo()
-      }
-      // Set timer to 50 minutes
-    }, 1000 * 50 * 60)
+      fetchUserInfo()
+      // Set timer to 45 minutes
+    }, 1000 * 45 * 60)
 
     // Clean interval if user leave the page
     return () => {
@@ -290,35 +292,63 @@ export const Layout: FC<LayoutProps> = ({ children }) => {
     function showNotification() {
       if (document.visibilityState !== 'visible' && variableCheck) {
         if (Notification.permission === 'granted') {
-          let iconUrl = ''
+          if (ctiStatus.webRtcError) {
+            if (ctiStatus.isUserInformationMissing) {
+              // Create notification with caller informations
+              const notification = new Notification(`Session expired`, {
+                body: `Click to redirect`,
+              })
 
-          if (conversationObject) {
-            if (conversationObject?.avatar && conversationObject?.avatar != '') {
-              //If caller has avatar use it
-              iconUrl = conversationObject?.avatar
+              setVariableCheck(false)
+
+              notification.onclick = function () {
+                notification.close()
+                window.focus()
+              }
             } else {
-              //Else use default icon
-              const svgString = `
+              // Create notification with caller informations
+              const notification = new Notification(`User double login`, {
+                body: `You have made login in another tab`,
+              })
+
+              setVariableCheck(false)
+
+              notification.onclick = function () {
+                notification.close()
+                window.focus()
+              }
+            }
+          } else {
+            let iconUrl = ''
+
+            if (conversationObject) {
+              if (conversationObject?.avatar && conversationObject?.avatar != '') {
+                //If caller has avatar use it
+                iconUrl = conversationObject?.avatar
+              } else {
+                //Else use default icon
+                const svgString = `
                 <svg class="h-full w-full text-gray-600 bg-white" viewBox="0 0 24 24">
                   <path d="M24 20.993V24H0v-2.996A14.977 14.977 0 0112.004 15c4.904 0 9.26 2.354 11.996 5.993zM16.002 8.999a4 4 0 11-8 0 4 4 0 018 0z" />
                 </svg>
               `
-              // Convert svg icon
-              const blob = new Blob([svgString], { type: 'image/svg+xml' })
-              iconUrl = URL.createObjectURL(blob)
-            }
+                // Convert svg icon
+                const blob = new Blob([svgString], { type: 'image/svg+xml' })
+                iconUrl = URL.createObjectURL(blob)
+              }
 
-            // Create notification with caller informations
-            const notification = new Notification(`${conversationObject?.name}`, {
-              body: `${conversationObject?.number}`,
-              icon: iconUrl,
-            })
+              // Create notification with caller informations
+              const notification = new Notification(`${conversationObject?.name}`, {
+                body: `${conversationObject?.number}`,
+                icon: iconUrl,
+              })
 
-            setVariableCheck(false)
+              setVariableCheck(false)
 
-            notification.onclick = function () {
-              notification.close()
-              window.focus()
+              notification.onclick = function () {
+                notification.close()
+                window.focus()
+              }
             }
           }
         } else {
@@ -629,15 +659,20 @@ export const Layout: FC<LayoutProps> = ({ children }) => {
       // update global store
       store.dispatch.ctiStatus.setWebRtcError(true)
       // force logout
-      doLogout()
+      let isLogoutError: any = {
+        isWebrtcError: true,
+      }
+      doLogout(isLogoutError)
     }
   })
 
   const [idInterval, setIdInterval] = useState<any>(0)
 
   function manageFaviconInterval() {
-    const warningMessageFavicon = t('Common.Warning')
+    const warningMessageFavicon = t('Common.DoubleLogin')
     const callingMessageFavicon = t('Common.Calling')
+    const sessionExpiredMessageFavicon = t('Common.SessionExpired')
+    setVariableCheck(true)
     setLinkHtmlFaviconElement(getHtmlFaviconElement())
     let flashFavicon = true
     if (ctiStatus.webRtcError || ctiStatus.isPhoneRinging) {
@@ -648,7 +683,11 @@ export const Layout: FC<LayoutProps> = ({ children }) => {
               ;('you are entered wrong')
               linkHtmlFaviconElement.href = 'favicon-warn.ico'
             }
-            window.document.title = warningMessageFavicon
+            if (ctiStatus.isUserInformationMissing) {
+              window.document.title = sessionExpiredMessageFavicon
+            } else {
+              window.document.title = warningMessageFavicon
+            }
           } else {
             if (linkHtmlFaviconElement) {
               linkHtmlFaviconElement.href = 'favicon-call.ico'

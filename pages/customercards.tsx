@@ -52,15 +52,6 @@ const CustomerCards: NextPage = () => {
   //ContactType can be "company" or "person"
   const contactType = urlParts[1]
 
-  useEffect(() => {
-    if (userInformation.settings?.ccard_order) {
-      setCCardList(userInformation.settings?.ccard_order)
-    } else {
-      const initialOrder = Object.keys(customerCardsList)
-      setCCardList(initialOrder)
-    }
-  }, [userInformation])
-
   const [isCustomerCardsListLoaded, setIsCustomerCardsListLoaded] = useState(false)
   const [customerCardError, setCustomerCardError] = useState('')
 
@@ -102,6 +93,12 @@ const CustomerCards: NextPage = () => {
           setCustomerCardError('')
           const res = await getCustomerCards(companyExtension)
           setCustomerCardsList(res)
+          if (userInformation?.settings?.ccard_order?.length > 0) {
+            setCCardList(userInformation?.settings?.ccard_order)
+          } else {
+            const initialOrder = Object.keys(res)
+            setCCardList(initialOrder)
+          }
         } catch (e) {
           console.error(e)
           setCustomerCardError('Cannot retrieve customer cards list')

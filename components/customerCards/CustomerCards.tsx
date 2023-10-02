@@ -96,7 +96,7 @@ export const CustomerCardsCustomerData: FC<CustomerCardsCustomerDataViewProps> =
           {' '}
           {/* Middle left  */}
           <div>
-            <div className='border-b border-gray-600 dark:border-gray-100 rounded-md bg-gray-700 dark:bg-gray-200 px-4 py-5 sm:px-6 flex-col h-[337px] overflow-auto  scrollbar-thin scrollbar-thumb-gray-400 dark:scrollbar-thumb-gray-400 scrollbar-thumb-rounded-full scrollbar-thumb-opacity-50 scrollbar-track-gray-200 dark:scrollbar-track-gray-900 scrollbar-track-rounded-full scrollbar-track-opacity-25'>
+            <div className='border-b border-gray-600 dark:border-gray-100 rounded-md bg-gray-700 dark:bg-gray-200 px-4 py-5 sm:px-6 flex-col h-[337px] overflow-auto scrollbar-thin scrollbar-thumb-gray-400 dark:scrollbar-thumb-gray-400 scrollbar-thumb-rounded-full scrollbar-thumb-opacity-50 scrollbar-track-gray-200 dark:scrollbar-track-gray-900 scrollbar-track-rounded-full scrollbar-track-opacity-25'>
               {contactType === 'company' ? (
                 <>
                   {/* Company name  */}

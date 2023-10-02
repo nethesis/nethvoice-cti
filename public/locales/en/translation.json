@@ -36,7 +36,9 @@
     "Download": "Download",
     "Customercards": "Customer cards",
     "Permission error": "Permissions error",
-    "Close": "Close"
+    "Close": "Close",
+    "SessionExpired": "Session expired",
+    "DoubleLogin": "Login duplicated"
   },
   "Login": {
     "User": "User",
@@ -143,7 +145,8 @@
     "Recall on busy": "Recall on busy",
     "Transfer": "Transfer",
     "Blind transfer": "Blind transfer",
-    "Attend transfer": "Attend transfer"
+    "Attend transfer": "Attend transfer",
+    "Call": "Call"
   },
   "Applications": {
     "Applications": "Applications",
