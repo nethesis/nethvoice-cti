@@ -6,6 +6,8 @@ import axios from 'axios'
 import { store } from '../store'
 import { eventDispatch } from './hooks/eventDispatch'
 import { doLogout } from '../services/login'
+import { isEmpty } from 'lodash'
+import router from 'next/router'
 
 export interface ClearProps {
   key: string
@@ -243,4 +245,39 @@ export const openToast = (toastType: any, messageToast: any, toastTytle: any) =>
     message: messageToast,
     tytle: toastTytle,
   })
+}
+
+export async function transferCall(operatorBadgeInformations: any) {
+  if (operatorBadgeInformations?.endpoints?.mainextension[0]?.id) {
+    let destinationNumber = operatorBadgeInformations?.endpoints?.mainextension[0]?.id
+
+    if (destinationNumber) {
+      eventDispatch('phone-island-transfer-call', { to: destinationNumber })
+    }
+  }
+}
+
+export const clearLocalStorageAndCache = (isLogoutError?: any) => {
+  // Delete all the elements from local storage
+  localStorage.clear()
+
+  // Delete browser caches
+  if (caches && caches.keys) {
+    caches.keys().then(function (names) {
+      for (let name of names) {
+        caches.delete(name)
+      }
+    })
+  }
+
+  // Refresh pages
+  if (!isEmpty(isLogoutError)) {
+    if (isLogoutError.isUserInformationMissing) {
+      router.push(`/login#isUserInformationMissing`)
+    } else {
+      router.push(`/login#webrtcError`)
+    }
+  } else {
+    window.location.reload()
+  }
 }

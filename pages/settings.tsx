@@ -39,12 +39,12 @@ const Settings: NextPage = () => {
   const router = useRouter()
 
   const settingsMenu: SettingsMenuTypes[] = [
-    { name: 'Theme', href: '#', icon: faPalette, current: true },
-    { name: 'Queues', href: '#', icon: faUsers, current: false },
-    { name: 'Integrations', href: '#', icon: faBorderAll, current: false },
     { name: 'Cache', href: '#', icon: faDatabase, current: false },
-    { name: 'Mobile App', href: '#', icon: faMobile, current: false },
     { name: 'Customer cards', href: '#', icon: faIdCardClip, current: false },
+    { name: 'Integrations', href: '#', icon: faBorderAll, current: false },
+    { name: 'Queues', href: '#', icon: faUsers, current: false },
+    { name: 'Mobile App', href: '#', icon: faMobile, current: false },
+    { name: 'Theme', href: '#', icon: faPalette, current: true },
   ]
 
   const [items, setItems] = useState<SettingsMenuTypes[]>(settingsMenu)

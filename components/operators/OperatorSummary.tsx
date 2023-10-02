@@ -3,7 +3,7 @@
 
 import { ComponentPropsWithRef, forwardRef, useState } from 'react'
 import classNames from 'classnames'
-import { Avatar, Button, IconSwitch } from '../common'
+import { Avatar, Badge, Button, IconSwitch } from '../common'
 import { useEffect } from 'react'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { faComment, faEnvelope } from '@nethesis/nethesis-regular-svg-icons'
@@ -22,10 +22,13 @@ import { callPhoneNumber } from '../../lib/utils'
 import {
   faMobileScreenButton,
   faPhone,
+  faRightLeft,
   faStar as faStarSolid,
   faVideo,
 } from '@fortawesome/free-solid-svg-icons'
 import { faStar as faStarLight } from '@nethesis/nethesis-light-svg-icons'
+import { t } from 'i18next'
+import { transferCall } from '../../lib/utils'
 
 export interface OperatorSummaryProps extends ComponentPropsWithRef<'div'> {
   operator: any
@@ -39,6 +42,7 @@ export const OperatorSummary = forwardRef<HTMLButtonElement, OperatorSummaryProp
     // Get selected operator information from operators store
     const operatorsStore = useSelector((state: RootState) => state.operators)
     const currentOperatorInformations = operatorsStore?.operators[operator.username]
+    const authStore = useSelector((state: RootState) => state.authentication)
     const [isFavorite, setFavorite] = useState(false)
 
     useEffect(() => {
@@ -116,16 +120,32 @@ export const OperatorSummary = forwardRef<HTMLButtonElement, OperatorSummaryProp
           </div>
         </div>
         <div className='mt-8'>
-          <Button
-            variant='primary'
-            onClick={() => callOperator(operator)}
-            disabled={!isOperatorCallable(operator, auth.username)}
-            className='mr-2'
-          >
-            <FontAwesomeIcon icon={faPhone} className='h-4 w-4 xl:mr-2' />
-            <span className='hidden xl:inline-block'>Call</span>
-            <span className='sr-only'>Call</span>
-          </Button>
+          {operatorsStore?.operators[authStore.username]?.mainPresence === 'busy' &&
+          operator?.mainPresence === 'online' ? (
+            <Badge
+              rounded='full'
+              variant='online'
+              className='flex items-center cursor-pointer'
+              onClick={() => transferCall(operator)}
+            >
+              <FontAwesomeIcon
+                icon={faRightLeft}
+                className='inline-block text-center h-3.5 w-3.5 mr-1.5 rotate-90'
+              />
+              <span>{t('Operators.Transfer')}</span>
+            </Badge>
+          ) : (
+            <Button
+              variant='primary'
+              onClick={() => callOperator(operator)}
+              disabled={!isOperatorCallable(operator, auth.username)}
+              className='mr-2'
+            >
+              <FontAwesomeIcon icon={faPhone} className='h-4 w-4 mr-2' />
+              <span className='inline-block'>{t('Operators.Call')}</span>
+              <span className='sr-only'>{t('Operators.Call')}</span>
+            </Button>
+          )}
 
           {/* HIDDEN AT THE MOMENT */}
           {/* <Button

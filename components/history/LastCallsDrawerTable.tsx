@@ -102,7 +102,8 @@ export const LastCallsDrawerTable = forwardRef<HTMLButtonElement, LastCallsDrawe
       if (!isLoaded) {
         retrieveLastCalls()
       }
-    }, [firstRender, isLoaded, dateFrom, dateTo, callType])
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+    }, [firstRender, isLoaded])
 
     useEffect(() => {
       if (isEqual(phoneNumbers, previousPhoneNumbers)) {
