@@ -155,6 +155,11 @@ export const TopBar: FC<TopBarProps> = ({ openMobileCb }) => {
     setForwardPresence(numberInputRef.current?.value)
   }
 
+  const disconnectionFunction = () => {
+    let emptyObjectLogout: any = {}
+    doLogout(emptyObjectLogout)
+  }
+
   const dropdownItems = (
     <>
       <div className='cursor-default'>
@@ -253,7 +258,7 @@ export const TopBar: FC<TopBarProps> = ({ openMobileCb }) => {
           ? `${t('TopBar.Switch to light theme')}`
           : `${t('TopBar.Switch to dark theme')}`}
       </Dropdown.Item>
-      <Dropdown.Item icon={faArrowRightFromBracket} onClick={doLogout}>
+      <Dropdown.Item icon={faArrowRightFromBracket} onClick={() => disconnectionFunction()}>
         {t('TopBar.Logout')}
       </Dropdown.Item>
     </>

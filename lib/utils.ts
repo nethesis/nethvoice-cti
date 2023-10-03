@@ -281,3 +281,11 @@ export const clearLocalStorageAndCache = (isLogoutError?: any) => {
     window.location.reload()
   }
 }
+
+export function getProductSubname() {
+  if (typeof window === 'undefined') {
+    return ''
+  }
+  // @ts-ignore
+  return `${window.CONFIG.PRODUCT_SUBNAME}`
+}
