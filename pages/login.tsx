@@ -3,7 +3,7 @@
 
 import Image from 'next/image'
 import { saveCredentials } from '../lib/login'
-import { useState, useRef } from 'react'
+import { useState, useRef, useEffect } from 'react'
 import { TextInput, InlineNotification, Button } from '../components/common'
 import hmacSHA1 from 'crypto-js/hmac-sha1'
 import Background from '../public/login_background.png'
@@ -16,8 +16,15 @@ import { faPhone } from '@nethesis/nethesis-thin-svg-icons'
 import { store } from '../store'
 import { useSelector } from 'react-redux'
 import { RootState } from '../store'
-import { getProductName, getProductSubname } from '../lib/utils'
+import {
+  getHtmlFaviconElement,
+  getProductName,
+  getProductSubname,
+  getSavedQueryParams,
+  reloadPage,
+} from '../lib/utils'
 import Head from 'next/head'
+import { capitalize } from 'lodash'
 
 export default function Login() {
   const [pwdVisible, setPwdVisible] = useState(false)
@@ -27,11 +34,179 @@ export default function Login() {
   const ctiStatus = useSelector((state: RootState) => state.ctiStatus)
 
   const { t } = useTranslation()
+
+  const queryParams = getSavedQueryParams()
+
+  const [idInterval, setIdInterval] = useState<any>(0)
+  const [linkHtmlFaviconElement, setLinkHtmlFaviconElement] = useState<any>(null)
+  const [variableCheck, setVariableCheck] = useState(false)
+
+  useEffect(() => {
+    if (queryParams != undefined && queryParams.includes('error')) {
+      const newUrl = `login?${queryParams}`
+
+      window.history.pushState({ path: newUrl }, '', newUrl)
+      if (queryParams === 'error=sessionExpired') {
+        store.dispatch.ctiStatus.setUserInformationMissing(true)
+        store.dispatch.ctiStatus.setWebRtcError(true)
+      } else {
+        store.dispatch.ctiStatus.setWebRtcError(true)
+      }
+      setLinkHtmlFaviconElement(getHtmlFaviconElement())
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [queryParams, window.location.href])
+
+  const visibilityChangeHandler = () => {
+    if (
+      document?.visibilityState &&
+      queryParams &&
+      queryParams != undefined &&
+      queryParams.includes('error') && 
+      window.location.href.includes('/login')
+    ) {
+      reloadPage()
+    }
+  }
+
+  // Manage change of visibility
+  document.addEventListener('visibilitychange', visibilityChangeHandler)
+
+  useEffect(() => {
+    if (linkHtmlFaviconElement) {
+      manageFaviconInterval()
+      return () => {
+        clearFaviconInterval()
+      }
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [ctiStatus.webRtcError, ctiStatus.isPhoneRinging, window.location, linkHtmlFaviconElement])
+
+  function manageFaviconInterval() {
+    const warningMessageFavicon = t('Common.DoubleLogin')
+    const callingMessageFavicon = t('Common.Calling')
+    const sessionExpiredMessageFavicon = t('Common.SessionExpired')
+    setVariableCheck(true)
+    // setVariableCheck(true)
+
+    let flashFavicon = true
+    if (ctiStatus.webRtcError || ctiStatus.isPhoneRinging) {
+      const intervalId = setInterval(() => {
+        if (flashFavicon) {
+          if (ctiStatus.webRtcError) {
+            if (linkHtmlFaviconElement) {
+              linkHtmlFaviconElement.href = 'favicon-warn.ico'
+            }
+            if (ctiStatus.isUserInformationMissing) {
+              window.document.title = sessionExpiredMessageFavicon
+              linkHtmlFaviconElement.href = 'favicon-warn.ico'
+            } else {
+              window.document.title = warningMessageFavicon
+            }
+          } else {
+            if (linkHtmlFaviconElement) {
+              linkHtmlFaviconElement.href = 'favicon-call.ico'
+            }
+            window.document.title = callingMessageFavicon
+          }
+        } else {
+          if (linkHtmlFaviconElement) {
+            linkHtmlFaviconElement.href = 'favicon.ico'
+          }
+          window.document.title = productName
+        }
+        flashFavicon = !flashFavicon
+      }, 800)
+      store.dispatch.ctiStatus.setIdInterval(intervalId)
+      setIdInterval(intervalId)
+    } else {
+      clearFaviconInterval()
+    }
+  }
+
+  // Get current page name, clean the path from / and capitalize page name
+  function cleanProductNamePageTitle() {
+    if (router.pathname) {
+      // Delete slash at the beginning of the path
+      const cleanRouterPath: string = router.pathname.replace(/^\/|\/$/g, '')
+      // Return path with the uppercase first character
+      return t(`Common.${capitalize(cleanRouterPath)}`) + ' - ' + productName
+    }
+  }
+
+  function clearFaviconInterval() {
+    let cleanTitlePageName: any = cleanProductNamePageTitle()
+
+    if (idInterval > 0) {
+      clearInterval(idInterval)
+    } else {
+      // Use the interval id from the store
+      clearInterval(ctiStatus.idInterval)
+    }
+
+    if (linkHtmlFaviconElement) {
+      linkHtmlFaviconElement.href = 'favicon.ico'
+    }
+    window.document.title = cleanTitlePageName
+  }
+
   let iconSelect = loading ? (
     <FontAwesomeIcon icon={faCircleNotch} className='fa-spin loader fa-lg' />
   ) : (
     <></>
   )
+
+  useEffect(() => {
+    function showNotification() {
+      if (document.visibilityState !== 'visible' && variableCheck) {
+        if (Notification.permission === 'granted') {
+          if (ctiStatus.webRtcError) {
+            if (ctiStatus.isUserInformationMissing) {
+              // Create notification with caller informations
+              const notification = new Notification(`${t('Common.Session expired')}`, {
+                body: `${t('Common.Click to redirect')}`,
+              })
+
+              setVariableCheck(false)
+
+              notification.onclick = function () {
+                notification.close()
+                window.focus()
+              }
+            } else {
+              // Create notification with caller informations
+              const notification = new Notification(`${t('Common.User login duplicated')}`, {
+                body: `${t('Common.You have made login in another tab')}`,
+              })
+
+              setVariableCheck(false)
+
+              notification.onclick = function () {
+                notification.close()
+                window.focus()
+              }
+            }
+          }
+        } else {
+          Notification.requestPermission()
+
+            .then((permission) => {
+              if (permission === 'granted') {
+                showNotification()
+              }
+            })
+            .catch((error) => {
+              console.error('No permissions', error)
+            })
+        }
+      }
+    }
+
+    showNotification()
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [variableCheck])
+
+  // console.log('check value', ctiStatus.webRtcError)
   let errorAlert = onError ? (
     <div className='relative w-full'>
       <div className='absolute -bottom-[104px] w-full'>
@@ -40,9 +215,8 @@ export default function Login() {
         </InlineNotification>
       </div>
     </div>
-  ) : ctiStatus.webRtcError || window.location.hash.includes('#') ? (
-    ctiStatus.isUserInformationMissing ||
-    window.location.hash.includes('#isUserInformationMissing') ? (
+  ) : ctiStatus.webRtcError || window.location.href.includes('?error') ? (
+    ctiStatus.isUserInformationMissing || window.location.href.includes('sessionExpired') ? (
       <div className='relative w-full'>
         <div className='absolute -bottom-[104px] w-full'>
           <InlineNotification type='error' title={t('Common.Warning')}>
@@ -70,19 +244,12 @@ export default function Login() {
   const doLogin = async (e: React.FormEvent) => {
     e.preventDefault()
     setLoading(true)
-    if (ctiStatus.webRtcError || window.location.hash.includes('#webrtcError')) {
-      store.dispatch.ctiStatus.setWebRtcError(false)
-    }
-    if (
-      ctiStatus.isUserInformationMissing ||
-      window.location.hash.includes('#isUserInformationMissing')
-    ) {
-      store.dispatch.ctiStatus.setUserInformationMissing(false)
-    }
+
     if (window !== undefined) {
       const username = usernameRef.current.value
       const password = passwordRef.current.value
       setOnError(false)
+
       const res = await fetch(
         // @ts-ignore
         window.CONFIG.API_SCHEME + window.CONFIG.API_ENDPOINT + '/webrest/authentication/login',
@@ -97,24 +264,38 @@ export default function Login() {
           }),
         },
       )
+
       const callStatus = res.status
       const nonce = res.headers.get('www-authenticate')?.split(' ')[1]
       const token = nonce ? hmacSHA1(`${username}:${password}:${nonce}`, password).toString() : ''
-      if (token) {
-        saveCredentials(username, token)
-        router.push('/')
-        setLoading(false)
-        checkDarkTheme()
-      } else {
-        if (callStatus === 401) {
-          setOnError(true)
-          setMessaggeError('Wrong username or password.')
-        } else if (callStatus === 404) {
-          setOnError(true)
-          setMessaggeError('The network connection is lost')
-        }
-        setLoading(false)
+
+      handleLogin(callStatus, token, username)
+    }
+  }
+
+  const handleLogin = (callStatus: any, token: any, username: any) => {
+    if (token) {
+      saveCredentials(username, token)
+      router.push('/')
+      // clean errors from storage
+      sessionStorage.clear()
+      if (ctiStatus.webRtcError || window.location.href.includes('webrtcError')) {
+        store.dispatch.ctiStatus.setWebRtcError(false)
       }
+      if (ctiStatus.isUserInformationMissing || window.location.href.includes('sessionExpired')) {
+        store.dispatch.ctiStatus.setUserInformationMissing(false)
+      }
+      setLoading(false)
+      checkDarkTheme()
+    } else {
+      if (callStatus === 401) {
+        setOnError(true)
+        setMessaggeError('Wrong username or password.')
+      } else if (callStatus === 404) {
+        setOnError(true)
+        setMessaggeError('The network connection is lost')
+      }
+      setLoading(false)
     }
   }
 

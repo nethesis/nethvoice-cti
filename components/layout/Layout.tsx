@@ -127,6 +127,7 @@ export const Layout: FC<LayoutProps> = ({ children }) => {
       fetchUserInfo()
       setResfreshUserInfo(false)
     }
+
     const visibilityChangeHandler = () => {
       if (document.visibilityState === 'visible') {
         setResfreshUserInfo(false)
@@ -292,63 +293,34 @@ export const Layout: FC<LayoutProps> = ({ children }) => {
     function showNotification() {
       if (document.visibilityState !== 'visible' && variableCheck) {
         if (Notification.permission === 'granted') {
-          if (ctiStatus.webRtcError) {
-            if (ctiStatus.isUserInformationMissing) {
-              // Create notification with caller informations
-              const notification = new Notification(`Session expired`, {
-                body: `Click to redirect`,
-              })
-
-              setVariableCheck(false)
-
-              notification.onclick = function () {
-                notification.close()
-                window.focus()
-              }
+          let iconUrl = ''
+          if (conversationObject) {
+            if (conversationObject?.avatar && conversationObject?.avatar != '') {
+              //If caller has avatar use it
+              iconUrl = conversationObject?.avatar
             } else {
-              // Create notification with caller informations
-              const notification = new Notification(`User double login`, {
-                body: `You have made login in another tab`,
-              })
-
-              setVariableCheck(false)
-
-              notification.onclick = function () {
-                notification.close()
-                window.focus()
-              }
-            }
-          } else {
-            let iconUrl = ''
-
-            if (conversationObject) {
-              if (conversationObject?.avatar && conversationObject?.avatar != '') {
-                //If caller has avatar use it
-                iconUrl = conversationObject?.avatar
-              } else {
-                //Else use default icon
-                const svgString = `
+              //Else use default icon
+              const svgString = `
                 <svg class="h-full w-full text-gray-600 bg-white" viewBox="0 0 24 24">
                   <path d="M24 20.993V24H0v-2.996A14.977 14.977 0 0112.004 15c4.904 0 9.26 2.354 11.996 5.993zM16.002 8.999a4 4 0 11-8 0 4 4 0 018 0z" />
                 </svg>
               `
-                // Convert svg icon
-                const blob = new Blob([svgString], { type: 'image/svg+xml' })
-                iconUrl = URL.createObjectURL(blob)
-              }
+              // Convert svg icon
+              const blob = new Blob([svgString], { type: 'image/svg+xml' })
+              iconUrl = URL.createObjectURL(blob)
+            }
 
-              // Create notification with caller informations
-              const notification = new Notification(`${conversationObject?.name}`, {
-                body: `${conversationObject?.number}`,
-                icon: iconUrl,
-              })
+            // Create notification with caller informations
+            const notification = new Notification(`${conversationObject?.name}`, {
+              body: `${conversationObject?.number}`,
+              icon: iconUrl,
+            })
 
-              setVariableCheck(false)
+            setVariableCheck(false)
 
-              notification.onclick = function () {
-                notification.close()
-                window.focus()
-              }
+            notification.onclick = function () {
+              notification.close()
+              window.focus()
             }
           }
         } else {
@@ -665,84 +637,6 @@ export const Layout: FC<LayoutProps> = ({ children }) => {
       doLogout(isLogoutError)
     }
   })
-
-  const [idInterval, setIdInterval] = useState<any>(0)
-
-  function manageFaviconInterval() {
-    const warningMessageFavicon = t('Common.DoubleLogin')
-    const callingMessageFavicon = t('Common.Calling')
-    const sessionExpiredMessageFavicon = t('Common.SessionExpired')
-    setVariableCheck(true)
-    setLinkHtmlFaviconElement(getHtmlFaviconElement())
-    let flashFavicon = true
-    if (ctiStatus.webRtcError || ctiStatus.isPhoneRinging) {
-      const intervalId = setInterval(() => {
-        if (flashFavicon) {
-          if (ctiStatus.webRtcError) {
-            if (linkHtmlFaviconElement) {
-              ;('you are entered wrong')
-              linkHtmlFaviconElement.href = 'favicon-warn.ico'
-            }
-            if (ctiStatus.isUserInformationMissing) {
-              window.document.title = sessionExpiredMessageFavicon
-            } else {
-              window.document.title = warningMessageFavicon
-            }
-          } else {
-            if (linkHtmlFaviconElement) {
-              linkHtmlFaviconElement.href = 'favicon-call.ico'
-            }
-            window.document.title = callingMessageFavicon
-          }
-        } else {
-          if (linkHtmlFaviconElement) {
-            linkHtmlFaviconElement.href = 'favicon.ico'
-          }
-          window.document.title = productName
-        }
-        flashFavicon = !flashFavicon
-      }, 800)
-      store.dispatch.ctiStatus.setIdInterval(intervalId)
-      setIdInterval(intervalId)
-    } else {
-      clearFaviconInterval()
-    }
-  }
-
-  function clearFaviconInterval() {
-    let cleanTitlePageName: any = cleanProductNamePageTitle()
-    if (idInterval > 0) {
-      clearInterval(idInterval)
-    } else {
-      // Use the interval id from the store
-      clearInterval(ctiStatus.idInterval)
-    }
-
-    if (linkHtmlFaviconElement) {
-      linkHtmlFaviconElement.href = 'favicon.ico'
-    }
-    window.document.title = cleanTitlePageName
-  }
-
-  useEffect(() => {
-    manageFaviconInterval()
-    return () => {
-      clearFaviconInterval()
-    }
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [ctiStatus.webRtcError, ctiStatus.isPhoneRinging])
-
-  // Check if the user is in the main page but have the wrong icon
-  useEffect(() => {
-    if (firstRenderFaviconCheck) {
-      setFirstRenderFaviconCheck(false)
-      return
-    }
-    if (idInterval === 0 && !ctiStatus.webRtcError && linkHtmlFaviconElement) {
-      linkHtmlFaviconElement.href = 'favicon.ico'
-    }
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [firstRenderFaviconCheck])
 
   //check if server reloaded
   useEventListener('phone-island-server-reloaded', () => {

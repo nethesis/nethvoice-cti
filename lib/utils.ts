@@ -257,7 +257,7 @@ export async function transferCall(operatorBadgeInformations: any) {
   }
 }
 
-export const clearLocalStorageAndCache = (isLogoutError?: any) => {
+export const clearLocalStorageAndCache = () => {
   // Delete all the elements from local storage
   localStorage.clear()
 
@@ -269,17 +269,19 @@ export const clearLocalStorageAndCache = (isLogoutError?: any) => {
       }
     })
   }
+}
 
-  // Refresh pages
-  if (!isEmpty(isLogoutError)) {
-    if (isLogoutError.isUserInformationMissing) {
-      router.push(`/login#isUserInformationMissing`)
-    } else {
-      router.push(`/login#webrtcError`)
-    }
-  } else {
-    window.location.reload()
-  }
+export const reloadPage = () => {
+  window.location.reload()
+}
+
+export function saveQueryParams(query: any) {
+  sessionStorage.setItem('queryParams', query)
+}
+
+export function getSavedQueryParams() {
+  const savedQueryParams = sessionStorage.getItem('queryParams')
+  return savedQueryParams ? savedQueryParams : null
 }
 
 export function getProductSubname() {
