@@ -16,7 +16,7 @@ import { faPhone } from '@nethesis/nethesis-thin-svg-icons'
 import { store } from '../store'
 import { useSelector } from 'react-redux'
 import { RootState } from '../store'
-import { getProductName } from '../lib/utils'
+import { getProductName, getProductSubname } from '../lib/utils'
 import Head from 'next/head'
 
 export default function Login() {
@@ -121,6 +121,8 @@ export default function Login() {
   // Get product name to show in the tab
   const productName = getProductName()
 
+  const productSubname = getProductSubname()
+
   return (
     <>
       <div>
@@ -144,7 +146,7 @@ export default function Login() {
                   className='mr-1.5 h-5 w-5 flex-shrink-0'
                   aria-hidden='true'
                 />
-                CTI
+                {productSubname}
               </div>
             </div>
             <div className='mt-8'>
