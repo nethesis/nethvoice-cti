@@ -38,7 +38,13 @@
     "Permission error": "Permissions error",
     "Close": "Close",
     "SessionExpired": "Session expired",
-    "DoubleLogin": "Login duplicated"
+    "DoubleLogin": "Login duplicated",
+    "Session expired": "Session expired",
+    "User login duplicated": "User login duplicated",
+    "You have made login in another tab": "You have made login in another tab",
+    "Click to redirect": "Click to redirect",
+    "": "Login",
+    "Login": "Login"
   },
   "Login": {
     "User": "User",
