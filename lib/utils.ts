@@ -30,10 +30,10 @@ export function handleNetworkError(error: any) {
   if (axios.isAxiosError(error)) {
     console.error('error: ', error.message)
 
-    if (!error.status) {
-      // the request probably failed because auth token is expired (and CORS policy misconfigured)
-      doLogout()
-    }
+    // if (!error.status) {
+    //   // the request probably failed because auth token is expired (and CORS policy misconfigured)
+    //   doLogout()
+    // }
     return null
   } else {
     console.error('unexpected error: ', error)

@@ -63,11 +63,13 @@ export const SpeedDial = () => {
   const [getSpeedDialError, setGetSpeedDialError] = useState('')
   const { t } = useTranslation()
 
+  const { profile } = useSelector((state: RootState) => state.user)
+
   useEffect(() => {
     // Initialize the speed dial list the first time
     // and every time a reload is required
     const initSpeedDials = async () => {
-      if (!isSpeedDialLoaded) {
+      if (!isSpeedDialLoaded && profile?.macro_permissions?.phonebook?.value) {
         try {
           setGetSpeedDialError('')
           const speedDials: SpeedDialType[] | undefined = await getSpeedDials()
@@ -80,7 +82,7 @@ export const SpeedDial = () => {
       }
     }
     initSpeedDials()
-  }, [isSpeedDialLoaded])
+  }, [isSpeedDialLoaded, profile?.macro_permissions?.phonebook?.value])
 
   const speedDialStore = useSelector((state: RootState) => state.speedDial)
 

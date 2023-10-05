@@ -15,6 +15,8 @@ import type { NavItemsProps } from '../../config/routes'
 import Link from 'next/link'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { Tooltip } from 'react-tooltip'
+import { useSelector } from 'react-redux'
+import { RootState } from '../../store'
 
 interface NavBarProps {
   items: NavItemsProps[]
@@ -30,6 +32,24 @@ const activeStyles = {
 } as React.CSSProperties
 
 export const NavBar: FC<NavBarProps> = ({ items }) => {
+  const { profile } = useSelector((state: RootState) => state.user)
+
+  const permissionsUser: any = {
+    Operators: profile?.macro_permissions?.operator_panel?.value ? true : false,
+    Phonebook: profile?.macro_permissions?.phonebook?.value ? true : false,
+    History: profile?.macro_permissions?.cdr?.value ? true : false,
+    Queues: profile?.macro_permissions?.queue_agent?.value ? true : false,
+    Queuemanager: profile?.macro_permissions?.qmanager?.value ? true : false,
+    Applications: true,
+    Settings: profile?.macro_permissions?.settings?.value ? true : false,
+  }
+
+  // New user object to manage page permissions
+  const itemsWithPermissions = items.map((item: any) => ({
+    ...item,
+    permission: permissionsUser[item.name],
+  }))
+
   return (
     <div className='hidden w-20 overflow-y-auto scrollbar-thin scrollbar-thumb-gray-400 dark:scrollbar-thumb-gray-400 scrollbar-thumb-rounded-full scrollbar-thumb-opacity-50 scrollbar-track-gray-200 dark:scrollbar-track-gray-900 scrollbar-track-rounded-full scrollbar-track-opacity-25 md:block border-r border-gray-200 dark:border-gray-700 bg-white dark:bg-gray-900'>
       <div className='flex w-full flex-col items-center py-2 h-full'>
@@ -47,8 +67,8 @@ export const NavBar: FC<NavBarProps> = ({ items }) => {
           </Link>
         </div>
         <div className='mt-6 w-fit h-full flex flex-col space-y-5 px-2.5 justify-center'>
-          {items.map((item, index: number) => (
-            <div key={index}>
+          {itemsWithPermissions.map((item, index: number) => (
+            <div key={index} className={`${item.permission ? '' : 'hidden'}`}>
               <Link href={item.href}>
                 <a
                   className={classNames(

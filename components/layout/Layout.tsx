@@ -168,24 +168,30 @@ export const Layout: FC<LayoutProps> = ({ children }) => {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [])
 
+  const currentUsername = authStore.username
+  const { operators } = useSelector((state: RootState) => state.operators)
+  const { profile } = useSelector((state: RootState) => state.user)
+
   // get operators on page load
   useEffect(() => {
     async function fetchOperators() {
-      if (!operatorsStore.isOperatorsLoaded && !operatorsStore.isLoading) {
-        store.dispatch.operators.setLoading(true)
-        store.dispatch.operators.setOperatorsLoaded(false)
-        store.dispatch.operators.setErrorMessage('')
+      if (profile?.macro_permissions?.operator_panel?.value) {
+        if (!operatorsStore.isOperatorsLoaded && !operatorsStore.isLoading) {
+          store.dispatch.operators.setLoading(true)
+          store.dispatch.operators.setOperatorsLoaded(false)
+          store.dispatch.operators.setErrorMessage('')
 
-        try {
-          retrieveUserEndpoints()
-          retrieveGroups()
-          retrieveExtensions()
-          retrieveAvatars(authStore)
-          retrieveFavoriteOperators(authStore)
-        } catch (e) {
-          store.dispatch.operators.setErrorMessage('Cannot retrieve operators')
-          store.dispatch.operators.setOperatorsLoaded(true)
-          store.dispatch.operators.setLoading(false)
+          try {
+            retrieveUserEndpoints()
+            retrieveGroups()
+            retrieveExtensions()
+            retrieveAvatars(authStore)
+            retrieveFavoriteOperators(authStore)
+          } catch (e) {
+            store.dispatch.operators.setErrorMessage('Cannot retrieve operators')
+            store.dispatch.operators.setOperatorsLoaded(true)
+            store.dispatch.operators.setLoading(false)
+          }
         }
       }
     }
@@ -196,7 +202,11 @@ export const Layout: FC<LayoutProps> = ({ children }) => {
       fetchOperators()
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [operatorsStore.isOperatorsLoaded, firstRenderOperators])
+  }, [
+    operatorsStore.isOperatorsLoaded,
+    firstRenderOperators,
+    profile?.macro_permissions?.operator_panel?.value,
+  ])
 
   // detect when operators data has been loaded
   useEffect(() => {
@@ -227,17 +237,37 @@ export const Layout: FC<LayoutProps> = ({ children }) => {
 
   // load / reload queues
   useEffect(() => {
-    if (mainextension && operatorsStore.isOperatorsLoaded && !queuesStore.isLoaded) {
+    if (
+      mainextension &&
+      operatorsStore.isOperatorsLoaded &&
+      !queuesStore.isLoaded &&
+      profile?.macro_permissions?.queue_agent?.value
+    ) {
       retrieveQueues(authStore.username, mainextension, operatorsStore.operators)
     }
-  }, [queuesStore.isLoaded, operatorsStore.isOperatorsLoaded, mainextension])
+  }, [
+    queuesStore.isLoaded,
+    operatorsStore.isOperatorsLoaded,
+    mainextension,
+    profile?.macro_permissions?.queue_agent?.value,
+  ])
 
   //load / reload queue manager queues
   useEffect(() => {
-    if (mainextension && operatorsStore.isOperatorsLoaded && !queueManagerStore.isLoaded) {
+    if (
+      mainextension &&
+      operatorsStore.isOperatorsLoaded &&
+      !queueManagerStore.isLoaded &&
+      profile?.macro_permissions?.qmanager?.value
+    ) {
       retrieveQueueManager(authStore.username, mainextension, operatorsStore.operators)
     }
-  }, [queueManagerStore.isLoaded, operatorsStore.isOperatorsLoaded, mainextension])
+  }, [
+    queueManagerStore.isLoaded,
+    operatorsStore.isOperatorsLoaded,
+    mainextension,
+    profile?.macro_permissions?.qmanager?.value,
+  ])
 
   const globalSearchClick = (event: any) => {
     const globalSearch = document.querySelector('#globalSearch')
@@ -277,10 +307,6 @@ export const Layout: FC<LayoutProps> = ({ children }) => {
       dispatch.user.updateMainPresence(mainPresence)
     }
   })
-
-  const currentUsername = authStore.username
-  const { operators } = useSelector((state: RootState) => state.operators)
-  const { profile } = useSelector((state: RootState) => state.user)
 
   //Get user information from store
   const userInformation = useSelector((state: RootState) => state.user)
@@ -643,6 +669,20 @@ export const Layout: FC<LayoutProps> = ({ children }) => {
     setUserInfoLoaded(false)
   })
 
+  //check if server reloaded
+  useEventListener('phone-island-socket-disconnected', () => {
+    if (!ctiStatus.isUserInformationMissing) {
+      // update global store
+      store.dispatch.ctiStatus.setUserInformationMissing(true)
+      store.dispatch.ctiStatus.setWebRtcError(true)
+      // force logout
+      let isLogoutError: any = {
+        isUserInformationMissing: true,
+      }
+      doLogout(isLogoutError)
+    }
+  })
+
   let timeoutSeconds = 3000
 
   useEffect(() => {
@@ -662,7 +702,7 @@ export const Layout: FC<LayoutProps> = ({ children }) => {
   // retrieve customer cards
   useEffect(() => {
     async function getCustomerCards() {
-      if (!isCustomerCardsListLoaded) {
+      if (!isCustomerCardsListLoaded && profile?.macro_permissions?.customer_card?.value) {
         try {
           setCustomerCardError('')
           const res = await getCustomerCardsList()
@@ -675,7 +715,11 @@ export const Layout: FC<LayoutProps> = ({ children }) => {
       }
     }
     getCustomerCards()
-  }, [isCustomerCardsListLoaded, customerCardsList])
+  }, [
+    isCustomerCardsListLoaded,
+    customerCardsList,
+    profile?.macro_permissions?.customer_card?.value,
+  ])
 
   const ccardStatus = userInformation.settings?.open_ccard
   useEffect(() => {

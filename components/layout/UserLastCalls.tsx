@@ -40,22 +40,25 @@ export const UserLastCalls = () => {
   const [isLoading, setIsLoading] = useState<boolean>(false)
   const defaultSort: string = getJSONItem(`preferences-${username}`).lastUserCallsSort || ''
   const [sort, setSort] = useState<SortTypes>(defaultSort || 'time_desc')
+  const { profile } = useSelector((state: RootState) => state.user)
 
   const getLastCallsList = useCallback(
     async (newSort: SortTypes) => {
-      const dateStart = getNMonthsAgoDate(2)
-      const dateEnd = getNMonthsAgoDate()
-      const dateStartString = formatDateLoc(dateStart, 'yyyyMMdd')
-      const dateEndString = formatDateLoc(dateEnd, 'yyyyMMdd')
-      const callsData = await getLastCalls(username, dateStartString, dateEndString, newSort)
-      if (callsData) {
-        const callsFinalInformations = getLastCallsUsername(callsData.rows)
-        setLastCalls(callsFinalInformations)
-        setIsLoading(false)
+      if (profile?.macro_permissions?.cdr?.value) {
+        const dateStart = getNMonthsAgoDate(2)
+        const dateEnd = getNMonthsAgoDate()
+        const dateStartString = formatDateLoc(dateStart, 'yyyyMMdd')
+        const dateEndString = formatDateLoc(dateEnd, 'yyyyMMdd')
+        const callsData = await getLastCalls(username, dateStartString, dateEndString, newSort)
+        if (callsData) {
+          const callsFinalInformations = getLastCallsUsername(callsData.rows)
+          setLastCalls(callsFinalInformations)
+          setIsLoading(false)
+        }
       }
     },
     // eslint-disable-next-line react-hooks/exhaustive-deps
-    [username],
+    [username, profile?.macro_permissions?.cdr?.value],
   )
 
   const getLastCallsUsername = (callsData: CallTypes[]) => {
