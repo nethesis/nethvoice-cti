@@ -35,7 +35,7 @@
     "Queuemanager": "Queue manager",
     "Download": "Download",
     "Customercards": "Customer cards",
-    "Permission error": "Permissions error",
+    "Permission error": "You don't have permission to access this page",
     "Close": "Close",
     "SessionExpired": "Session expired",
     "DoubleLogin": "Login duplicated",
