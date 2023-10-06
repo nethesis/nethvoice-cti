@@ -175,7 +175,7 @@ export const Layout: FC<LayoutProps> = ({ children }) => {
   // get operators on page load
   useEffect(() => {
     async function fetchOperators() {
-      if (profile?.macro_permissions?.operator_panel?.value) {
+      if (profile?.macro_permissions?.presence_panel?.value) {
         if (!operatorsStore.isOperatorsLoaded && !operatorsStore.isLoading) {
           store.dispatch.operators.setLoading(true)
           store.dispatch.operators.setOperatorsLoaded(false)
@@ -205,7 +205,7 @@ export const Layout: FC<LayoutProps> = ({ children }) => {
   }, [
     operatorsStore.isOperatorsLoaded,
     firstRenderOperators,
-    profile?.macro_permissions?.operator_panel?.value,
+    profile?.macro_permissions?.presence_panel?.value,
   ])
 
   // detect when operators data has been loaded
