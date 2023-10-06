@@ -171,7 +171,7 @@ const Operators: NextPage = () => {
 
   return (
     <>
-      {profile?.macro_permissions?.operator_panel?.value ? (
+      {profile?.macro_permissions?.presence_panel?.value ? (
         <div>
           <h1 className='text-2xl font-semibold mb-6 text-gray-900 dark:text-gray-100'>
             Operators

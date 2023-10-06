@@ -35,7 +35,7 @@ export const NavBar: FC<NavBarProps> = ({ items }) => {
   const { profile } = useSelector((state: RootState) => state.user)
 
   const permissionsUser: any = {
-    Operators: profile?.macro_permissions?.operator_panel?.value ? true : false,
+    Operators: profile?.macro_permissions?.presence_panel?.value ? true : false,
     Phonebook: profile?.macro_permissions?.phonebook?.value ? true : false,
     History: profile?.macro_permissions?.cdr?.value ? true : false,
     Queues: profile?.macro_permissions?.queue_agent?.value ? true : false,
