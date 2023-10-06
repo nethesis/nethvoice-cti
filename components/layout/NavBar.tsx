@@ -41,7 +41,7 @@ export const NavBar: FC<NavBarProps> = ({ items }) => {
     Queues: profile?.macro_permissions?.queue_agent?.value ? true : false,
     Queuemanager: profile?.macro_permissions?.qmanager?.value ? true : false,
     Applications: true,
-    Settings: profile?.macro_permissions?.settings?.value ? true : false,
+    Settings: true,
   }
 
   // New user object to manage page permissions
