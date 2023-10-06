@@ -152,7 +152,7 @@ export const Layout: FC<LayoutProps> = ({ children }) => {
       clearInterval(reloadInterval)
       document.removeEventListener('visibilitychange', visibilityChangeHandler)
     }
-  }, [isUserInfoLoaded])
+  }, [isUserInfoLoaded, resfreshUserInfo])
 
   // get profiling data on page load
   useEffect(() => {
@@ -666,7 +666,7 @@ export const Layout: FC<LayoutProps> = ({ children }) => {
 
   //check if server reloaded
   useEventListener('phone-island-server-reloaded', () => {
-    setUserInfoLoaded(false)
+    setResfreshUserInfo(true)
   })
 
   //check if server reloaded
