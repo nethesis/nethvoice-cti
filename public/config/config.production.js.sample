@@ -1,6 +1,7 @@
 window.CONFIG = {
   PRODUCT_NAME: 'NethVoice CTI',
   COMPANY_NAME: 'Nethesis',
+  COMPANY_SUBNAME: 'CTI',
   COMPANY_URL: 'https://www.nethesis.it/',
   API_ENDPOINT:
     window.location.hostname +
