@@ -637,5 +637,10 @@
     "This user has no company informations": "This user has no company informations",
     "Address": "Address",
     "Customer Card Order (drag to set your order)": "Customer Card Order (drag to set your order)"
+  },
+  "Parks": {
+    "Pick up": "Pick up",
+    "Parking": "Parking",
+    "Hold": "Hold"
   }
 }

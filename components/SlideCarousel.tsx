@@ -1,86 +1,71 @@
-import React, { ReactNode } from 'react'
+import React from 'react'
 import Slider from 'react-slick'
 import 'slick-carousel/slick/slick.css'
 import 'slick-carousel/slick/slick-theme.css'
 
 interface SliderCarouselProps {
-  children: ReactNode
+  cards: any
 }
 
-function SampleNextArrow(props: any) {
-  const { className, style, onClick } = props
-  return (
-    <div
-      className={className}
-      style={{ ...style, display: 'block', background: 'transparent', cursor: 'pointer' }}
-      onClick={onClick}
-    ></div>
-  )
-}
+const SliderCarousel: React.FC<SliderCarouselProps> = ({ cards }) => {
+  const spacedCards = cards.map((card: any, index: any) => (
+    <div key={index} className=''>
+      {card}
+    </div>
+  ))
 
-function SamplePrevArrow(props: any) {
-  const { className, style, onClick } = props
-  return (
-    <div
-      className={className}
-      style={{ ...style, display: 'block', background: 'transparent', cursor: 'pointer' }}
-      onClick={onClick}
-    ></div>
-  )
-}
-
-const SliderCarousel: React.FC<SliderCarouselProps> = ({ children }) => {
   const settings = {
-    className: 'center',
-    centerPadding: '60px',
-    dots: true,
-    infinite: true,
-    speed: 600,
-    slidesToShow: 4,
-    slidesToScroll: 4,
-    nextArrow: <SampleNextArrow />,
-    prevArrow: <SamplePrevArrow />,
-    appendDots: (dots: any) => (
-      <div
-        style={{
-          padding: '10px',
-        }}
-      >
-        <ul style={{ margin: '0px' }}> {dots} </ul>
-      </div>
-    ),
-    afterChange: function (index: any) {
-      console.log(`Slider Changed to: ${index + 1}, background: #222; color: #bada55`)
-    },
+    className: 'pl-5',
+    centerMode: false,
+    // centerMode: true,
+    centerPadding: '10px',
+    slidesToShow: 3,
+    speed: 500,
+    slidesToScroll: 1,
+    arrows: true,
+    dots: false,
+    infinite: false,
     responsive: [
       {
         breakpoint: 1024,
         settings: {
+          arrows: true,
           slidesToShow: 3,
-          slidesToScroll: 3,
-          infinite: true,
-          dots: true,
+        },
+      },
+      {
+        breakpoint: 780,
+        settings: {
+          arrows: true,
+          slidesToShow: 2,
         },
       },
       {
         breakpoint: 600,
         settings: {
-          slidesToShow: 2,
-          slidesToScroll: 2,
-          initialSlide: 2,
+          arrows: true,
+          slidesToShow: 1,
         },
       },
       {
-        breakpoint: 480,
+        breakpoint: 320,
         settings: {
+          arrows: true,
           slidesToShow: 1,
-          slidesToScroll: 1,
         },
       },
     ],
   }
 
-  return <Slider {...settings}>{children}</Slider>
+  return (
+    <Slider {...settings} 
+    //
+    variableWidth={true} adaptiveHeight={true}
+    //
+    >
+      {spacedCards}
+    </Slider>
+  )
 }
 
 export default SliderCarousel

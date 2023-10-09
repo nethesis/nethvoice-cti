@@ -22,6 +22,7 @@ import { customerCards } from './customerCards'
 import { toast } from './toast'
 import { userActions } from './userActions'
 import { lastCalls } from './lastCalls'
+import { park } from './park'
 
 export interface RootModel extends Models<RootModel> {
   authentication: typeof authentication
@@ -44,6 +45,7 @@ export interface RootModel extends Models<RootModel> {
   toast: typeof toast
   userActions: typeof userActions
   lastCalls: typeof lastCalls
+  park: typeof park
 }
 
 export const models: RootModel = {
@@ -67,4 +69,5 @@ export const models: RootModel = {
   toast,
   userActions,
   lastCalls,
+  park,
 }

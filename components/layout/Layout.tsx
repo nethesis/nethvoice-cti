@@ -30,6 +30,7 @@ import { UserNavBar } from './UserNavBar'
 import { getProfilingInfo } from '../../services/profiling'
 import { ProfilingTypes } from '../../models/profiling'
 import { Portal } from '@headlessui/react'
+import { ParkCards } from '../parks/parkCards'
 
 interface LayoutProps {
   children: ReactNode
@@ -37,6 +38,7 @@ interface LayoutProps {
 import { useTranslation } from 'react-i18next'
 import Toast from '../common/Toast'
 import { getCustomerCardsList, setUserSettings } from '../../lib/customerCard'
+import { retrieveParksList } from '../../lib/park'
 
 export const Layout: FC<LayoutProps> = ({ children }) => {
   const [openMobileMenu, setOpenMobileMenu] = useState<boolean>(false)
@@ -97,6 +99,7 @@ export const Layout: FC<LayoutProps> = ({ children }) => {
 
       if (userInfo && userInfo.data) {
         dispatch.user.update({
+          default_device: userInfo.data.default_device,
           name: userInfo.data.name,
           username: userInfo.data.username,
           mainextension: userInfo.data.endpoints.mainextension[0].id,
@@ -740,6 +743,21 @@ export const Layout: FC<LayoutProps> = ({ children }) => {
     }
   }
 
+  const parkingInfo = useSelector((state: RootState) => state.park)
+
+  useEffect(() => {
+    if (parkingInfo?.isParkingCallTaken) {
+      console.log('hai preso la chiamata parcheggiata')
+      retrieveParksList()
+      store.dispatch.park.setParkingCallTaken(false)
+    }
+  }, [parkingInfo?.isParkingCallTaken])
+
+  useEventListener('phone-island-call-parked', () => {
+    console.log('stai ricaricando la lista dei parcheggi')
+    retrieveParksList()
+  })
+
   return (
     <>
       <div>
@@ -761,28 +779,41 @@ export const Layout: FC<LayoutProps> = ({ children }) => {
           />
           {/* Main content */}
           <div className='flex flex-1 items-stretch overflow-hidden'>
-            <main
-              className='flex-1 overflow-y-auto scrollbar-thin scrollbar-thumb-gray-400 dark:scrollbar-thumb-gray-400 scrollbar-thumb-rounded-full scrollbar-thumb-opacity-50 scrollbar-track-gray-200 dark:scrollbar-track-gray-900 scrollbar-track-rounded-full scrollbar-track-opacity-25'
-              id='main-content'
-            >
-              {/* Primary column */}
-              <section
-                aria-labelledby='primary-heading'
-                className='flex min-w-0 flex-1 flex-col lg:order-last p-8'
-              >
-                {/* The page content */}
-                {children}
-              </section>
-              <Portal>
-                <SideDrawer
-                  isShown={sideDrawer.isShown}
-                  contentType={sideDrawer.contentType}
-                  config={sideDrawer.config}
-                  drawerClosed={() => closeSideDrawer()}
-                />
-              </Portal>
+            <main className='flex-1' id='main-content'>
+              <div className='overflow-y-auto scrollbar-thin scrollbar-thumb-gray-400 dark:scrollbar-thumb-gray-400 scrollbar-thumb-rounded-full scrollbar-thumb-opacity-50 scrollbar-track-gray-200 dark:scrollbar-track-gray-900 scrollbar-track-rounded-full scrollbar-track-opacity-25'>
+                {/* Primary column */}
+                <section
+                  aria-labelledby='primary-heading'
+                  className='flex min-w-0 flex-1 flex-col lg:order-last p-8'
+                >
+                  {/* The page content */}
+                  {children}
+                  {/* Park section */}
+                </section>
+                <Portal>
+                  <SideDrawer
+                    isShown={sideDrawer.isShown}
+                    contentType={sideDrawer.contentType}
+                    config={sideDrawer.config}
+                    drawerClosed={() => closeSideDrawer()}
+                  />
+                </Portal>
+              </div>
+              {/* Divider */}
+              <div className='relative pt-6'>
+                <div className='absolute inset-0 flex items-center' aria-hidden='true'>
+                  <div className='w-full border-t border-gray-300 dark:border-gray-600' />
+                </div>
+              </div>
+              <div>
+                <div className='container w-[40rem] lg:w-[60rem] xl:w-[60rem] 2xl:w-[80rem] pl-4'>
+                  <ParkCards></ParkCards>
+                </div>
+              </div>
             </main>
-            <div className=' absolute bottom-6 right-9 z-50'>
+            {/* Secondary column (hidden on smaller screens) */}
+            <UserNavBar />
+            <div className='absolute bottom-6 right-9 z-50'>
               {toast?.isShown && (
                 <div>
                   <Toast
@@ -797,8 +828,6 @@ export const Layout: FC<LayoutProps> = ({ children }) => {
                 </div>
               )}
             </div>
-            {/* Secondary column (hidden on smaller screens) */}
-            <UserNavBar />
           </div>
         </div>
       </div>

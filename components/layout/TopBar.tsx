@@ -109,6 +109,7 @@ export const TopBar: FC<TopBarProps> = ({ openMobileCb }) => {
 
         if (userInfo && userInfo.data) {
           dispatch.user.update({
+            default_device: userInfo.data.default_device,
             name: userInfo.data.name,
             username: userInfo.data.username,
             mainextension: userInfo.data.endpoints.mainextension[0].id,
@@ -134,6 +135,7 @@ export const TopBar: FC<TopBarProps> = ({ openMobileCb }) => {
 
       if (userInfo && userInfo.data) {
         dispatch.user.update({
+          default_device: userInfo.data.default_device,
           name: userInfo.data.name,
           username: userInfo.data.username,
           mainextension: userInfo.data.endpoints.mainextension[0].id,

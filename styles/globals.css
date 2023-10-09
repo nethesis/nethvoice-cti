@@ -3,7 +3,7 @@
   PDX-License-Identifier: AGPL-3.0-or-later
 */
 
-@import url('https://rsms.me/inter/inter.css');
+@import url('https://fonts.googleapis.com/css?family=Poppins');
 
 @tailwind base;
 @tailwind components;
@@ -11,7 +11,7 @@
 
 @layer base {
   html {
-    font-family: Inter, system-ui, sans-serif;
+    font-family: Poppins, system-ui, sans-serif;
     @apply h-full;
   }
   body {
@@ -73,6 +73,41 @@
 
 .slick-prev:before,
 .slick-next:before {
-  color: #6b7280 !important;
+  color: #059669 !important;
   font-size: 30px !important;
+  z-index: 999 !important;
 }
+
+.slick-prev,
+.slick-next {
+  z-index: 999 !important;
+  top:36px !important
+}
+.slick-prev {
+  left: 0px !important;
+}
+.slick-next {
+  right: 5px !important;
+}
+
+/* .slick-slider {
+  width: 100%;
+  overflow: hidden;
+} */
+.slick-list {
+  position: relative;
+  display: block !important;
+  width: 100%;
+  /* overflow: visible !important; */
+}
+.slick-slide div {
+  width: auto;
+  margin-right: 10px;
+}
+/* .slick-slide img {
+  width: calc(100% - 10px) !important;
+} */
+
+
+
+

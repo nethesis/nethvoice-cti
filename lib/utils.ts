@@ -289,5 +289,5 @@ export function getProductSubname() {
     return ''
   }
   // @ts-ignore
-  return `${window.CONFIG.PRODUCT_SUBNAME}`
+  return `${window.CONFIG.COMPANY_SUBNAME}`
 }
