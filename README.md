@@ -131,6 +131,7 @@ It is possible to specify some variables through environment:
 ```
 PRODUCT_NAME (default: "NethVoice CTI")
 COMPANY_NAME (default: "Nethesis")
+COMPANY_SUBNAME (default: "CTI")
 COMPANY_URL (default: "https://www.nethesis.it/")
 NAVBAR_LOGO_URL (rebranding of navbar logo: specify a URL to a PNG image)
 LOGIN_LOGO_URL (rebranding of login logo: specify a URL to a PNG image)
