@@ -39,6 +39,7 @@ import { useTranslation } from 'react-i18next'
 import Toast from '../common/Toast'
 import { getCustomerCardsList, setUserSettings } from '../../lib/customerCard'
 import { retrieveParksList } from '../../lib/park'
+import { Button } from '../common'
 
 export const Layout: FC<LayoutProps> = ({ children }) => {
   const [openMobileMenu, setOpenMobileMenu] = useState<boolean>(false)
@@ -672,17 +673,17 @@ export const Layout: FC<LayoutProps> = ({ children }) => {
     setResfreshUserInfo(true)
   })
 
-  //check if server reloaded
+  //check if server restart
   useEventListener('phone-island-socket-disconnected', () => {
     if (!ctiStatus.isUserInformationMissing) {
       // update global store
-      store.dispatch.ctiStatus.setUserInformationMissing(true)
-      store.dispatch.ctiStatus.setWebRtcError(true)
-      // force logout
-      let isLogoutError: any = {
-        isUserInformationMissing: true,
-      }
-      doLogout(isLogoutError)
+      // store.dispatch.ctiStatus.setUserInformationMissing(true)
+      // store.dispatch.ctiStatus.setWebRtcError(true)
+      // // force logout
+      // let isLogoutError: any = {
+      //   isUserInformationMissing: true,
+      // }
+      // doLogout(isLogoutError)
     }
   })
 
@@ -747,14 +748,12 @@ export const Layout: FC<LayoutProps> = ({ children }) => {
 
   useEffect(() => {
     if (parkingInfo?.isParkingCallTaken) {
-      console.log('hai preso la chiamata parcheggiata')
       retrieveParksList()
       store.dispatch.park.setParkingCallTaken(false)
     }
   }, [parkingInfo?.isParkingCallTaken])
 
   useEventListener('phone-island-call-parked', () => {
-    console.log('stai ricaricando la lista dei parcheggi')
     retrieveParksList()
   })
 

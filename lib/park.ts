@@ -8,20 +8,39 @@ import { isEmpty } from 'lodash'
 
 // Retrieve contact information trough id
 export async function retrieveParksList() {
-  store.dispatch.park.setLoading(true);
-  store.dispatch.park.setLoaded(false);
-  let parkObject: any = null;
+  store.dispatch.park.setLoading(true)
+  store.dispatch.park.setLoaded(false)
+  let parkObject: any = null
   try {
-    const { data, status } = await axios.get('/astproxy/parkings');
-    parkObject = data;
-    store.dispatch.park.setParks(parkObject);
-    store.dispatch.park.setLoaded(true);
-    store.dispatch.park.setLoading(false);
+    const { data, status } = await axios.get('/astproxy/parkings')
+    parkObject = data
+    store.dispatch.park.setParks(parkObject)
+    store.dispatch.park.setLoaded(true)
+    store.dispatch.park.setLoading(false)
+    store.dispatch.park.setParkingCallTaken(false)
+    //check if there is at least one park not empty
+    isParkingEmpty(parkObject)
+
   } catch (error) {
-    handleNetworkError(error);
-    store.dispatch.park.setLoaded(true);
-    store.dispatch.park.setLoading(false);
-    throw error;
+    handleNetworkError(error)
+    store.dispatch.park.setLoaded(true)
+    store.dispatch.park.setLoading(false)
+    throw error
+  }
+}
+
+export function isParkingEmpty(parkingList: any) {
+  const filteredParks = Object.keys(parkingList)
+    .filter((key) => !isEmpty(parkingList[key].parkedCaller))
+    .reduce((obj: any, key: any) => {
+      obj[key] = parkingList[key]
+      return obj
+    }, {})
+    // If there is at least one park not empty show parking footerbar section
+  if (!isEmpty(filteredParks)) {
+    store.dispatch.park.setParkingCallFooterVisibility(true)
+  } else {
+    store.dispatch.park.setParkingCallFooterVisibility(false)
   }
 }
 

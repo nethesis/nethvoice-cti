@@ -1,6 +1,6 @@
 // Copyright (C) 2023 Nethesis S.r.l.
 // SPDX-License-Identifier: AGPL-3.0-or-later
-import { FC, ComponentProps, useState, useEffect, useRef } from 'react'
+import { FC, ComponentProps, useState, useRef } from 'react'
 import { useTranslation } from 'react-i18next'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { faListCheck, faParking, faPhone } from '@fortawesome/free-solid-svg-icons'
@@ -20,8 +20,6 @@ export const ParkCards: FC<ParkCardsProps> = ({ className }): JSX.Element => {
   const parkingInfo = useSelector((state: RootState) => state.park)
 
   async function pickParking(parkingInfoDetails: any) {
-    console.log('Hai cliccato e le info sono', parkingInfoDetails)
-    console.log('Questo invece è il current user', currentUser)
     let parkingObjectInformations: any = {}
     if (!isEmpty(parkingInfoDetails) && !isEmpty(currentUser.default_device)) {
       parkingObjectInformations = {
@@ -153,9 +151,6 @@ export const ParkCards: FC<ParkCardsProps> = ({ className }): JSX.Element => {
   return (
     <div>
       <SlideCarousel cards={parkCardsData.map((card: any) => card.content)} />
-      <Button variant='primary' onClick={() => reloadParkList()}>
-        Reload park list
-      </Button>
     </div>
   )
 }
