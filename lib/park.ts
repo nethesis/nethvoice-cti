@@ -20,7 +20,6 @@ export async function retrieveParksList() {
     store.dispatch.park.setParkingCallTaken(false)
     //check if there is at least one park not empty
     isParkingEmpty(parkObject)
-
   } catch (error) {
     handleNetworkError(error)
     store.dispatch.park.setLoaded(true)
@@ -36,7 +35,9 @@ export function isParkingEmpty(parkingList: any) {
       obj[key] = parkingList[key]
       return obj
     }, {})
-    // If there is at least one park not empty show parking footerbar section
+  // If there is at least one park not empty show parking footerbar section
+  const numberOfElements = Object.keys(filteredParks).length
+  store.dispatch.park.setNumberOfNotEmptyParkings(numberOfElements)
   if (!isEmpty(filteredParks)) {
     store.dispatch.park.setParkingCallFooterVisibility(true)
   } else {

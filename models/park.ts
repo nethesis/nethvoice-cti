@@ -10,6 +10,7 @@ interface DefaultState {
   isLoading: boolean
   isParkingCallTaken: boolean
   isParkingFooterVisible: boolean
+  notEmptyParking: number
 }
 
 const defaultState: DefaultState = {
@@ -18,6 +19,7 @@ const defaultState: DefaultState = {
   isLoading: false,
   isParkingCallTaken: false,
   isParkingFooterVisible: false,
+  notEmptyParking: 0,
 }
 
 export const park = createModel<RootModel>()({
@@ -41,6 +43,10 @@ export const park = createModel<RootModel>()({
     },
     setParkingCallFooterVisibility: (state, isParkingFooterVisible: boolean) => {
       state.isParkingFooterVisible = isParkingFooterVisible
+      return state
+    },
+    setNumberOfNotEmptyParkings: (state, notEmptyParking: any) => {
+      state.notEmptyParking = notEmptyParking
       return state
     },
   },

@@ -674,19 +674,22 @@ export const Layout: FC<LayoutProps> = ({ children }) => {
   })
 
   //check if server restart
-  useEventListener('phone-island-socket-disconnected', () => {
+  useEventListener('phone-island-server-disconnected', () => {
     if (!ctiStatus.isUserInformationMissing) {
       // update global store
-      // store.dispatch.ctiStatus.setUserInformationMissing(true)
-      // store.dispatch.ctiStatus.setWebRtcError(true)
-      // // force logout
-      // let isLogoutError: any = {
-      //   isUserInformationMissing: true,
-      // }
-      // doLogout(isLogoutError)
+      store.dispatch.ctiStatus.setUserInformationMissing(true)
+      store.dispatch.ctiStatus.setWebRtcError(true)
+      // force logout
+      let isLogoutError: any = {
+        isUserInformationMissing: true,
+      }
+      doLogout(isLogoutError)
     }
   })
 
+  //check if socket reconnect
+  useEventListener('phone-island-socket-disconnected', () => {})
+  
   let timeoutSeconds = 3000
 
   useEffect(() => {
@@ -746,14 +749,9 @@ export const Layout: FC<LayoutProps> = ({ children }) => {
 
   const parkingInfo = useSelector((state: RootState) => state.park)
 
-  useEffect(() => {
-    if (parkingInfo?.isParkingCallTaken) {
-      retrieveParksList()
-      store.dispatch.park.setParkingCallTaken(false)
-    }
-  }, [parkingInfo?.isParkingCallTaken])
 
-  useEventListener('phone-island-call-parked', () => {
+  useEventListener('phone-island-parking-update', () => {
+    // On phone island event reload park lists
     retrieveParksList()
   })
 
@@ -778,8 +776,21 @@ export const Layout: FC<LayoutProps> = ({ children }) => {
           />
           {/* Main content */}
           <div className='flex flex-1 items-stretch overflow-hidden'>
-            <main className='flex-1' id='main-content'>
-              <div className='overflow-y-auto scrollbar-thin scrollbar-thumb-gray-400 dark:scrollbar-thumb-gray-400 scrollbar-thumb-rounded-full scrollbar-thumb-opacity-50 scrollbar-track-gray-200 dark:scrollbar-track-gray-900 scrollbar-track-rounded-full scrollbar-track-opacity-25'>
+            <main
+              className={`${
+                parkingInfo.isParkingFooterVisible
+                  ? ''
+                  : 'overflow-y-auto scrollbar-thin scrollbar-thumb-gray-400 dark:scrollbar-thumb-gray-400 scrollbar-thumb-rounded-full scrollbar-thumb-opacity-50 scrollbar-track-gray-200 dark:scrollbar-track-gray-900 scrollbar-track-rounded-full scrollbar-track-opacity-25'
+              } flex-1`}
+              id='main-content'
+            >
+              <div
+                className={`${
+                  parkingInfo.isParkingFooterVisible
+                    ? 'h-[51rem] overflow-y-auto scrollbar-thin scrollbar-thumb-gray-400 dark:scrollbar-thumb-gray-400 scrollbar-thumb-rounded-full scrollbar-thumb-opacity-50 scrollbar-track-gray-200 dark:scrollbar-track-gray-900 scrollbar-track-rounded-full scrollbar-track-opacity-25'
+                    : ''
+                } `}
+              >
                 {/* Primary column */}
                 <section
                   aria-labelledby='primary-heading'
@@ -787,7 +798,6 @@ export const Layout: FC<LayoutProps> = ({ children }) => {
                 >
                   {/* The page content */}
                   {children}
-                  {/* Park section */}
                 </section>
                 <Portal>
                   <SideDrawer
@@ -798,17 +808,24 @@ export const Layout: FC<LayoutProps> = ({ children }) => {
                   />
                 </Portal>
               </div>
-              {/* Divider */}
-              <div className='relative pt-6'>
-                <div className='absolute inset-0 flex items-center' aria-hidden='true'>
-                  <div className='w-full border-t border-gray-300 dark:border-gray-600' />
-                </div>
-              </div>
-              <div>
-                <div className='container w-[40rem] lg:w-[60rem] xl:w-[60rem] 2xl:w-[80rem] pl-4'>
-                  <ParkCards></ParkCards>
-                </div>
-              </div>
+              {/* Park section */}
+              {parkingInfo?.isParkingFooterVisible ? (
+                <>
+                  {/* Divider */}
+                  <div className='relative'>
+                    <div className='absolute inset-0 flex items-center' aria-hidden='true'>
+                      <div className='w-full border-t border-gray-300 dark:border-gray-600' />
+                    </div>
+                  </div>
+                  <div className='pt-3'>
+                    <div className='container w-[25rem] sm:w-[40rem] md:w-[35rem] lg:w-[45rem] xl:w-[50rem] 2xl:w-[75rem] pl-4'>
+                      <ParkCards></ParkCards>
+                    </div>
+                  </div>
+                </>
+              ) : (
+                <></>
+              )}
             </main>
             {/* Secondary column (hidden on smaller screens) */}
             <UserNavBar />
