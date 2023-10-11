@@ -109,6 +109,7 @@ export const TopBar: FC<TopBarProps> = ({ openMobileCb }) => {
 
         if (userInfo && userInfo.data) {
           dispatch.user.update({
+            default_device: userInfo.data.default_device,
             name: userInfo.data.name,
             username: userInfo.data.username,
             mainextension: userInfo.data.endpoints.mainextension[0].id,
@@ -134,6 +135,7 @@ export const TopBar: FC<TopBarProps> = ({ openMobileCb }) => {
 
       if (userInfo && userInfo.data) {
         dispatch.user.update({
+          default_device: userInfo.data.default_device,
           name: userInfo.data.name,
           username: userInfo.data.username,
           mainextension: userInfo.data.endpoints.mainextension[0].id,
@@ -266,7 +268,7 @@ export const TopBar: FC<TopBarProps> = ({ openMobileCb }) => {
 
   return (
     <header className='w-full'>
-      <div className='relative z-10 flex h-16 flex-shrink-0 border-b shadow-sm border-gray-200 bg-white dark:border-gray-700 dark:bg-gray-900'>
+      <div className='relative z-50 flex h-16 flex-shrink-0 border-b shadow-sm border-gray-200 bg-white dark:border-gray-700 dark:bg-gray-900'>
         <button
           type='button'
           className='border-r px-4 focus:outline-none focus:ring-2 focus:ring-inset md:hidden focus:ring-primaryLight border-gray-200 text-gray-500 dark:focus:ring-primaryDark dark:border-gray-700 dark:text-gray-400'

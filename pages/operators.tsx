@@ -504,13 +504,15 @@ const Operators: NextPage = () => {
               )}
           </div>
         </div>
-      ) : (
+      ) : operatorsStore.isOperatorsLoaded ? (
         <div className='flex items-center justify-center h-screen'>
           <div className='text-center'>
             <FontAwesomeIcon icon={faExclamationTriangle} className='text-red-500 text-6xl mb-4' />
             <p className='text-xl text-red-500'>{t('Common.Permission error')}</p>
           </div>
         </div>
+      ) : (
+        <> </>
       )}
     </>
   )

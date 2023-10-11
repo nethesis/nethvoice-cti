@@ -36,7 +36,18 @@ interface SettingsTypes {
   company_extension: any
   caller_info: any
 }
+
+interface Default_device {
+  action: any[]
+  description: any
+  id: any
+  proxy_port: any
+  secret: any
+  type: any
+  username: any
+}
 interface DefaultState {
+  default_device: Default_device
   name: string
   username: string
   mainextension: string
@@ -49,6 +60,15 @@ interface DefaultState {
 }
 
 const defaultState: DefaultState = {
+  default_device: {
+    action: [],
+    description: '',
+    id: '',
+    proxy_port: '',
+    secret: '',
+    type: '',
+    username: '',
+  },
   name: '',
   username: '',
   mainextension: '',
@@ -90,6 +110,7 @@ export const user = createModel<RootModel>()({
   state: defaultState,
   reducers: {
     update: (state, payload: DefaultState) => {
+      state.default_device = payload.default_device
       state.name = payload.name
       state.username = payload.username
       state.mainextension = payload.mainextension

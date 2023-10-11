@@ -206,7 +206,6 @@ export default function Login() {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [variableCheck])
 
-  // console.log('check value', ctiStatus.webRtcError)
   let errorAlert = onError ? (
     <div className='relative w-full'>
       <div className='absolute -bottom-[104px] w-full'>

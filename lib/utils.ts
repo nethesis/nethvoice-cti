@@ -258,9 +258,16 @@ export async function transferCall(operatorBadgeInformations: any) {
 }
 
 export const clearLocalStorageAndCache = () => {
-  // Delete all the elements from local storage
-  localStorage.clear()
+  // Delete credentials and caches element from local storage
+  localStorage.removeItem('credentials')
 
+  for (let i = 0; i < localStorage.length; i++) {
+    const key: any = localStorage.key(i)
+
+    if (key.includes('caches')) {
+      localStorage.removeItem(key)
+    }
+  }
   // Delete browser caches
   if (caches && caches.keys) {
     caches.keys().then(function (names) {
@@ -289,5 +296,5 @@ export function getProductSubname() {
     return ''
   }
   // @ts-ignore
-  return `${window.CONFIG.PRODUCT_SUBNAME}`
+  return `${window.CONFIG.COMPANY_SUBNAME}`
 }

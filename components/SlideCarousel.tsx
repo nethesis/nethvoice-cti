@@ -1,86 +1,135 @@
-import React, { ReactNode } from 'react'
+import React, { useState, useEffect } from 'react'
 import Slider from 'react-slick'
 import 'slick-carousel/slick/slick.css'
 import 'slick-carousel/slick/slick-theme.css'
+import { Button } from './common'
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
+import { faChevronLeft, faChevronRight } from '@fortawesome/free-solid-svg-icons'
 
 interface SliderCarouselProps {
-  children: ReactNode
+  cards: any
+  numberOfParkingNotEmpty: number
 }
 
-function SampleNextArrow(props: any) {
-  const { className, style, onClick } = props
-  return (
-    <div
-      className={className}
-      style={{ ...style, display: 'block', background: 'transparent', cursor: 'pointer' }}
-      onClick={onClick}
-    ></div>
-  )
-}
+const SliderCarousel: React.FC<SliderCarouselProps> = ({ cards, numberOfParkingNotEmpty }) => {
+  const spacedCards = cards.map((card: any, index: any) => (
+    <div key={index} className=''>
+      {card}
+    </div>
+  ))
 
-function SamplePrevArrow(props: any) {
-  const { className, style, onClick } = props
-  return (
-    <div
-      className={className}
-      style={{ ...style, display: 'block', background: 'transparent', cursor: 'pointer' }}
-      onClick={onClick}
-    ></div>
-  )
-}
-
-const SliderCarousel: React.FC<SliderCarouselProps> = ({ children }) => {
-  const settings = {
-    className: 'center',
-    centerPadding: '60px',
-    dots: true,
-    infinite: true,
-    speed: 600,
-    slidesToShow: 4,
-    slidesToScroll: 4,
-    nextArrow: <SampleNextArrow />,
-    prevArrow: <SamplePrevArrow />,
-    appendDots: (dots: any) => (
-      <div
-        style={{
-          padding: '10px',
-        }}
+  const ArrowButtonPrevious = ({ onClick, currentSlide }: any) => {
+    return (
+      <Button
+        variant='primary'
+        onClick={onClick}
+        className={`${
+          currentSlide === 0 ? 'hidden' : 'absolute top-1/2 left-0 transform -translate-y-1/2 z-10'
+        }`}
       >
-        <ul style={{ margin: '0px' }}> {dots} </ul>
-      </div>
-    ),
-    afterChange: function (index: any) {
-      console.log(`Slider Changed to: ${index + 1}, background: #222; color: #bada55`)
-    },
+        <FontAwesomeIcon className='' icon={faChevronLeft} />
+      </Button>
+    )
+  }
+
+  const ArrowButtonNext = ({ onClick, currentSlide, slideCount }: any) => {
+    const isLastSlide = currentSlide === numberOfParkingNotEmpty - 1
+
+    return (
+      <Button
+        variant='primary'
+        onClick={onClick}
+        disabled={isLastSlide}
+        className={`absolute top-1/2 right-0 transform -translate-y-1/2 ${
+          isLastSlide ? 'invisible' : ''
+        }`}
+      >
+        <FontAwesomeIcon className='' icon={faChevronRight} />
+      </Button>
+    )
+  }
+
+  const [numToShow, setNumToShow]: any = useState(
+    window.innerWidth > 1024 ? 2 : window.innerWidth > 780 ? 2 : 1,
+  )
+
+  const settings = {
+    className: 'w-[27.5rem] sm:w-[37rem] md:w-[40rem] lg:w-[38rem] xl:w-[50rem] 2xl:w-[86rem]',
+    centerMode: false,
+    centerPadding: '10px',
+    slidesToShow: numToShow,
+    speed: 500,
+    slidesToScroll: 1,
+    arrows: numToShow < numberOfParkingNotEmpty ? true : false,
+    dots: false,
+    infinite: false,
+    initialSlide: 0,
+    swipeToSlide: numToShow < numberOfParkingNotEmpty ? true : false,
+    draggable: numToShow < numberOfParkingNotEmpty ? true : false,
+    touchMove: numToShow < numberOfParkingNotEmpty ? true : false,
+    swipe: numToShow < numberOfParkingNotEmpty ? true : false,
+    prevArrow: <ArrowButtonPrevious />,
+    nextArrow: <ArrowButtonNext />,
     responsive: [
       {
         breakpoint: 1024,
         settings: {
-          slidesToShow: 3,
-          slidesToScroll: 3,
-          infinite: true,
-          dots: true,
+          arrows: numToShow < numberOfParkingNotEmpty && numberOfParkingNotEmpty > 2 ? true : false,
+          slidesToShow: numToShow,
+          swipeToSlide: numToShow < numberOfParkingNotEmpty ? true : false,
+          infinite: false,
+        },
+      },
+      {
+        breakpoint: 900,
+        settings: {
+          arrows: numToShow < numberOfParkingNotEmpty && numberOfParkingNotEmpty > 2 ? true : false,
+          slidesToShow: numToShow,
+          swipeToSlide: numToShow < numberOfParkingNotEmpty ? true : false,
+          infinite: false,
+        },
+      },
+      {
+        breakpoint: 780,
+        settings: {
+          arrows: numToShow < numberOfParkingNotEmpty && numberOfParkingNotEmpty > 2 ? true : false,
+          slidesToShow: numToShow,
+          swipeToSlide: numToShow < numberOfParkingNotEmpty ? true : false,
+          infinite: false,
         },
       },
       {
         breakpoint: 600,
         settings: {
-          slidesToShow: 2,
-          slidesToScroll: 2,
-          initialSlide: 2,
+          arrows: numToShow < numberOfParkingNotEmpty && numberOfParkingNotEmpty > 1 ? true : false,
+          slidesToShow: numToShow,
+          swipeToSlide: numToShow < numberOfParkingNotEmpty ? true : false,
+          infinite: false,
         },
       },
       {
-        breakpoint: 480,
+        breakpoint: 320,
         settings: {
-          slidesToShow: 1,
-          slidesToScroll: 1,
+          arrows: numToShow < numberOfParkingNotEmpty && numberOfParkingNotEmpty > 1 ? true : false,
+          slidesToShow: numToShow,
+          swipeToSlide: numToShow < numberOfParkingNotEmpty ? true : false,
+          infinite: false,
         },
       },
     ],
   }
 
-  return <Slider {...settings}>{children}</Slider>
+  useEffect(() => {
+    window.addEventListener('resize', () => {
+      setNumToShow(window.innerWidth > 1024 ? 2 : window.innerWidth > 900 ? 2 : 1)
+    })
+  }, [])
+
+  return (
+    <Slider {...settings} variableWidth={true}>
+      {spacedCards}
+    </Slider>
+  )
 }
 
 export default SliderCarousel

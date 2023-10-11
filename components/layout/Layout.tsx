@@ -30,6 +30,8 @@ import { UserNavBar } from './UserNavBar'
 import { getProfilingInfo } from '../../services/profiling'
 import { ProfilingTypes } from '../../models/profiling'
 import { Portal } from '@headlessui/react'
+import { ParkCards } from '../parks/parkCards'
+import { motion, useAnimation } from 'framer-motion'
 
 interface LayoutProps {
   children: ReactNode
@@ -37,6 +39,8 @@ interface LayoutProps {
 import { useTranslation } from 'react-i18next'
 import Toast from '../common/Toast'
 import { getCustomerCardsList, setUserSettings } from '../../lib/customerCard'
+import { retrieveParksList } from '../../lib/park'
+import { Tooltip } from 'react-tooltip'
 
 export const Layout: FC<LayoutProps> = ({ children }) => {
   const [openMobileMenu, setOpenMobileMenu] = useState<boolean>(false)
@@ -97,6 +101,7 @@ export const Layout: FC<LayoutProps> = ({ children }) => {
 
       if (userInfo && userInfo.data) {
         dispatch.user.update({
+          default_device: userInfo.data.default_device,
           name: userInfo.data.name,
           username: userInfo.data.username,
           mainextension: userInfo.data.endpoints.mainextension[0].id,
@@ -669,8 +674,8 @@ export const Layout: FC<LayoutProps> = ({ children }) => {
     setResfreshUserInfo(true)
   })
 
-  //check if server reloaded
-  useEventListener('phone-island-socket-disconnected', () => {
+  //check if server restart
+  useEventListener('phone-island-server-disconnected', () => {
     if (!ctiStatus.isUserInformationMissing) {
       // update global store
       store.dispatch.ctiStatus.setUserInformationMissing(true)
@@ -682,6 +687,9 @@ export const Layout: FC<LayoutProps> = ({ children }) => {
       doLogout(isLogoutError)
     }
   })
+
+  //check if socket reconnect
+  useEventListener('phone-island-socket-disconnected', () => {})
 
   let timeoutSeconds = 3000
 
@@ -721,7 +729,7 @@ export const Layout: FC<LayoutProps> = ({ children }) => {
     profile?.macro_permissions?.customer_card?.value,
   ])
 
-  const ccardStatus = userInformation.settings?.open_ccard
+  const ccardStatus = userInformation?.settings?.open_ccard
   useEffect(() => {
     if (isEmpty(customerCardsList) && ccardStatus !== 'disabled') {
       const ccardObject = {} as Record<string, any>
@@ -739,6 +747,31 @@ export const Layout: FC<LayoutProps> = ({ children }) => {
       console.error(e)
     }
   }
+
+  const parkingInfo = useSelector((state: RootState) => state.park)
+
+  useEventListener('phone-island-parking-update', () => {
+    // On phone island event reload park lists
+    retrieveParksList()
+  })
+
+  const [firstRenderPark, setFirstRenderPark] = useState(true)
+  useEffect(() => {
+    if (firstRenderPark) {
+      setFirstRenderPark(false)
+      return
+    }
+
+    retrieveParksList()
+  }, [firstRenderPark])
+
+  const controls = useAnimation()
+
+  useEffect(() => {
+    if (parkingInfo?.isParkingFooterVisible) {
+      controls.start({ y: 0, transition: { type: 'spring', damping: 10, stiffness: 200 } })
+    }
+  }, [parkingInfo?.isParkingFooterVisible, controls])
 
   return (
     <>
@@ -762,7 +795,12 @@ export const Layout: FC<LayoutProps> = ({ children }) => {
           {/* Main content */}
           <div className='flex flex-1 items-stretch overflow-hidden'>
             <main
-              className='flex-1 overflow-y-auto scrollbar-thin scrollbar-thumb-gray-400 dark:scrollbar-thumb-gray-400 scrollbar-thumb-rounded-full scrollbar-thumb-opacity-50 scrollbar-track-gray-200 dark:scrollbar-track-gray-900 scrollbar-track-rounded-full scrollbar-track-opacity-25'
+              className={`flex-1 overflow-y-auto scrollbar-thin scrollbar-thumb-gray-400 dark:scrollbar-thumb-gray-400 scrollbar-thumb-rounded-full scrollbar-thumb-opacity-50 scrollbar-track-gray-200 dark:scrollbar-track-gray-900 scrollbar-track-rounded-full scrollbar-track-opacity-25 ${
+                parkingInfo?.isParkingFooterVisible &&
+                profile?.macro_permissions?.settings?.permissions?.parkings?.value
+                  ? 'h-[55rem]'
+                  : ''
+              }`}
               id='main-content'
             >
               {/* Primary column */}
@@ -782,7 +820,10 @@ export const Layout: FC<LayoutProps> = ({ children }) => {
                 />
               </Portal>
             </main>
-            <div className=' absolute bottom-6 right-9 z-50'>
+
+            {/* Secondary column (hidden on smaller screens) */}
+            <UserNavBar />
+            <div className='absolute bottom-6 right-9 z-50'>
               {toast?.isShown && (
                 <div>
                   <Toast
@@ -797,8 +838,22 @@ export const Layout: FC<LayoutProps> = ({ children }) => {
                 </div>
               )}
             </div>
-            {/* Secondary column (hidden on smaller screens) */}
-            <UserNavBar />
+
+            {parkingInfo?.isParkingFooterVisible &&
+            profile?.macro_permissions?.settings?.permissions?.parkings?.value ? (
+              <motion.div
+                className='absolute bottom-0 left:0 sm:bottom-0 sm:left-0 md:bottom-0 md:left-20'
+                initial={{ y: 100 }}
+                animate={controls}
+              >
+                <ParkCards />
+                <Tooltip anchorSelect='.tooltip-parking-button' className='relative z-30'>
+                  {t('Parks.Click and hold to take current parking in call')}
+                </Tooltip>
+              </motion.div>
+            ) : (
+              <></>
+            )}
           </div>
         </div>
       </div>
