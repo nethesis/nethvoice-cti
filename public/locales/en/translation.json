@@ -641,6 +641,7 @@
   "Parks": {
     "Pick up": "Pick up",
     "Parking": "Parking",
-    "Hold": "Hold"
+    "Hold": "Hold",
+    "Click and hold to take current parking in call": "Click and hold to take current parking in call"
   }
 }

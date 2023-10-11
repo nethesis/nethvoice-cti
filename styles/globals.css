@@ -81,32 +81,25 @@
 .slick-prev,
 .slick-next {
   z-index: 999 !important;
-  top:36px !important
+  top:30px !important
 }
 .slick-prev {
   left: 0px !important;
 }
 .slick-next {
-  right: 5px !important;
+  right: 0px !important;
 }
 
-/* .slick-slider {
-  width: 100%;
-  overflow: hidden;
-} */
 .slick-list {
   position: relative;
-  display: block !important;
-  width: 100%;
-  /* overflow: visible !important; */
 }
 .slick-slide div {
   width: auto;
   margin-right: 10px;
 }
-/* .slick-slide img {
+.slick-slide img {
   width: calc(100% - 10px) !important;
-} */
+}
 
 
 

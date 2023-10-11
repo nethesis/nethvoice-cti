@@ -74,27 +74,24 @@ export const ShowOperatorDrawerContent = forwardRef<
   }
 
   async function hangupConversation(objectHangupConversation: any) {
-    if (objectHangupConversation?.conversations[0]?.id) {
+    if (
+      objectHangupConversation?.conversations[0]?.id &&
+      objectHangupConversation?.conversations[0]?.owner
+    ) {
       const conversationId = objectHangupConversation?.conversations[0]?.id
-      let numberToClose = ''
-      if (conversationId) {
-        // Get number to close from conversation id
-        const numberToClose = conversationId?.match(/\/(\d+)-/)
-        if (numberToClose) {
-          const endpointId = numberToClose[1]
+      let numberToClose = objectHangupConversation?.conversations[0]?.owner
+      if (conversationId && numberToClose) {
+        const hangupInformations = {
+          convid: conversationId.toString(),
+          endpointId: numberToClose.toString(),
+        }
 
-          const hangupInformations = {
-            convid: conversationId.toString(),
-            endpointId: endpointId.toString(),
-          }
-
-          if (!isEmpty(hangupInformations)) {
-            try {
-              await hangup(hangupInformations)
-            } catch (e) {
-              console.error(e)
-              return []
-            }
+        if (!isEmpty(hangupInformations)) {
+          try {
+            await hangup(hangupInformations)
+          } catch (e) {
+            console.error(e)
+            return []
           }
         }
       }
@@ -110,9 +107,8 @@ export const ShowOperatorDrawerContent = forwardRef<
     ) {
       const conversationId = objectListenConversation?.conversations[0]?.id
       let numberToSendCall = ''
-      if (operators?.operators[username].endpoints?.mainextension[0]?.id) {
-        numberToSendCall =
-          operators?.operators[username].endpoints?.mainextension[0]?.id?.toString()
+      if (!isEmpty(profile?.default_device)) {
+        numberToSendCall = profile?.default_device?.id?.toString()
       }
       if (conversationId) {
         const numberToListen = conversationId?.match(/\/(\d+)-/)
@@ -154,9 +150,8 @@ export const ShowOperatorDrawerContent = forwardRef<
     ) {
       const conversationId = objectIntrudeConversation?.conversations[0]?.id
       let numberToSendCall = ''
-      if (operators?.operators[username].endpoints?.mainextension[0]?.id) {
-        numberToSendCall =
-          operators?.operators[username].endpoints?.mainextension[0]?.id?.toString()
+      if (!isEmpty(profile?.default_device)) {
+        numberToSendCall = profile?.default_device?.id?.toString()
       }
       if (conversationId) {
         const numberToIntrude = conversationId?.match(/\/(\d+)-/)

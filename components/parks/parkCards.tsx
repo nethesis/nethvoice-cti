@@ -3,15 +3,15 @@
 import { FC, ComponentProps, useState, useRef } from 'react'
 import { useTranslation } from 'react-i18next'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
-import { faListCheck, faParking, faPhone } from '@fortawesome/free-solid-svg-icons'
+import { faParking, faPhone } from '@fortawesome/free-solid-svg-icons'
 import { motion } from 'framer-motion'
 import SlideCarousel from '../SlideCarousel'
 import { Button } from '../common'
-import { retrieveParksList } from '../../lib/park'
 import { getParking } from '../../lib/park'
 import { useSelector } from 'react-redux'
 import { RootState, store } from '../../store'
 import { isEmpty } from 'lodash'
+import { CountdownTimer } from '../Countdown'
 
 export interface ParkCardsProps extends ComponentProps<'div'> {}
 export const ParkCards: FC<ParkCardsProps> = ({ className }): JSX.Element => {
@@ -21,7 +21,7 @@ export const ParkCards: FC<ParkCardsProps> = ({ className }): JSX.Element => {
 
   async function pickParking(parkingInfoDetails: any) {
     let parkingObjectInformations: any = {}
-    if (!isEmpty(parkingInfoDetails) && !isEmpty(currentUser.default_device)) {
+    if (!isEmpty(parkingInfoDetails) && !isEmpty(currentUser?.default_device)) {
       parkingObjectInformations = {
         parking: parkingInfoDetails?.parking,
         destId: currentUser?.default_device?.id,
@@ -39,6 +39,7 @@ export const ParkCards: FC<ParkCardsProps> = ({ className }): JSX.Element => {
   }
 
   const [cardPressStates, setCardPressStates]: any = useState({})
+
   const animationControls: any = useRef(null)
 
   const parkCardsData: any[] = Object.keys(parkingInfo.parks).map(
@@ -82,24 +83,27 @@ export const ParkCards: FC<ParkCardsProps> = ({ className }): JSX.Element => {
           content: (
             <div
               key={parkingKey}
-              className='border-b rounded-lg shadow-sm border-gray-200 dark:border-gray-700 bg-white dark:bg-gray-900 px-4 py-3 sm:mt-1 relative flex items-center'
+              className='border-b rounded-lg shadow-sm border-gray-200 dark:border-gray-700 bg-white dark:bg-gray-900 px-4 py-1 mt-2 relative flex items-center'
             >
-              <div className='flex flex-col flex-grow'>
-                <div className='flex items-center text-left'>
+              <div className='flex flex-col flex-grow '>
+                <div className='flex items-center text-left truncate w-full'>
                   <FontAwesomeIcon
                     icon={faParking}
                     className='h-4 w-4 text-amber-600 dark:text-amber-600'
                     aria-hidden='true'
                   />
                   <span className='text-sm font-semibold text-gray-700 dark:text-gray-100 ml-2'>
-                    {t('Parks.Parking')} {parkingDetails.name}
+                    {t('Parks.Parking')} {parkingDetails?.name}
                   </span>
                 </div>
                 <div className='flex'>
-                  <span className='text-sm text-left text-gray-900 dark:text-gray-100'>
-                    {parkingDetails.parkedCaller.name}
+                  <span className='text-sm text-left text-gray-900 dark:text-gray-100 w-16 truncate'>
+                    {parkingDetails?.parkedCaller?.name}
                   </span>
                 </div>
+              </div>
+              <div className='flex'>
+                <CountdownTimer seconds={parkingDetails?.parkedCaller?.timeout} />
               </div>
               <div className='flex-grow' />
               <div
@@ -108,12 +112,14 @@ export const ParkCards: FC<ParkCardsProps> = ({ className }): JSX.Element => {
                 onMouseUp={handleButtonUp}
                 onMouseLeave={handleButtonUp}
               >
-                <Button variant='white'>
+                <Button variant='white' className='tooltip-parking-button'>
                   <FontAwesomeIcon
                     icon={faPhone}
                     className='h-4 w-4 text-gray-500 dark:text-gray-200 mr-2'
                   />
-                  <span>{t('Parks.Pick up')}</span>
+                  <span className='w-14'>
+                    {cardPressStates[index] ? `${t('Parks.Hold')}` : `${t('Parks.Pick up')}`}
+                  </span>
                 </Button>
                 <motion.div
                   initial={{ width: 0 }}
@@ -148,12 +154,20 @@ export const ParkCards: FC<ParkCardsProps> = ({ className }): JSX.Element => {
   )
 
   return (
-    <div>
-      <SlideCarousel
-        cards={parkCardsData.map((card: any) => card?.content)}
-        numberOfParkingNotEmpty={parkingInfo.notEmptyParking}
-      />
-    </div>
+    <>
+      {/* Divider */}
+      <div className='relative pt-0.5'>
+        <div className='absolute inset-0 flex items-center' aria-hidden='true'>
+          <div className='w-full border-t border-gray-300 dark:border-gray-600' />
+        </div>
+      </div>
+      <div className='relative container z-0 w-[200rem] pl-2 flex h-16 border-b shadow-sm border-gray-200 bg-gray-100 dark:border-gray-700 dark:bg-gray-800'>
+        <SlideCarousel
+          cards={parkCardsData.map((card: any) => card?.content)}
+          numberOfParkingNotEmpty={parkingInfo.notEmptyParking}
+        />
+      </div>
+    </>
   )
 }
 ParkCards.displayName = 'ParkCards'

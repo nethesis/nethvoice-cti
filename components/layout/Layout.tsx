@@ -31,6 +31,7 @@ import { getProfilingInfo } from '../../services/profiling'
 import { ProfilingTypes } from '../../models/profiling'
 import { Portal } from '@headlessui/react'
 import { ParkCards } from '../parks/parkCards'
+import { motion, useAnimation } from 'framer-motion'
 
 interface LayoutProps {
   children: ReactNode
@@ -39,7 +40,7 @@ import { useTranslation } from 'react-i18next'
 import Toast from '../common/Toast'
 import { getCustomerCardsList, setUserSettings } from '../../lib/customerCard'
 import { retrieveParksList } from '../../lib/park'
-import { Button } from '../common'
+import { Tooltip } from 'react-tooltip'
 
 export const Layout: FC<LayoutProps> = ({ children }) => {
   const [openMobileMenu, setOpenMobileMenu] = useState<boolean>(false)
@@ -689,7 +690,7 @@ export const Layout: FC<LayoutProps> = ({ children }) => {
 
   //check if socket reconnect
   useEventListener('phone-island-socket-disconnected', () => {})
-  
+
   let timeoutSeconds = 3000
 
   useEffect(() => {
@@ -728,7 +729,7 @@ export const Layout: FC<LayoutProps> = ({ children }) => {
     profile?.macro_permissions?.customer_card?.value,
   ])
 
-  const ccardStatus = userInformation.settings?.open_ccard
+  const ccardStatus = userInformation?.settings?.open_ccard
   useEffect(() => {
     if (isEmpty(customerCardsList) && ccardStatus !== 'disabled') {
       const ccardObject = {} as Record<string, any>
@@ -749,11 +750,28 @@ export const Layout: FC<LayoutProps> = ({ children }) => {
 
   const parkingInfo = useSelector((state: RootState) => state.park)
 
-
   useEventListener('phone-island-parking-update', () => {
     // On phone island event reload park lists
     retrieveParksList()
   })
+
+  const [firstRenderPark, setFirstRenderPark] = useState(true)
+  useEffect(() => {
+    if (firstRenderPark) {
+      setFirstRenderPark(false)
+      return
+    }
+
+    retrieveParksList()
+  }, [firstRenderPark])
+
+  const controls = useAnimation()
+
+  useEffect(() => {
+    if (parkingInfo?.isParkingFooterVisible) {
+      controls.start({ y: 0, transition: { type: 'spring', damping: 10, stiffness: 200 } })
+    }
+  }, [parkingInfo?.isParkingFooterVisible, controls])
 
   return (
     <>
@@ -777,56 +795,32 @@ export const Layout: FC<LayoutProps> = ({ children }) => {
           {/* Main content */}
           <div className='flex flex-1 items-stretch overflow-hidden'>
             <main
-              className={`${
-                parkingInfo.isParkingFooterVisible
-                  ? ''
-                  : 'overflow-y-auto scrollbar-thin scrollbar-thumb-gray-400 dark:scrollbar-thumb-gray-400 scrollbar-thumb-rounded-full scrollbar-thumb-opacity-50 scrollbar-track-gray-200 dark:scrollbar-track-gray-900 scrollbar-track-rounded-full scrollbar-track-opacity-25'
-              } flex-1`}
+              className={`flex-1 overflow-y-auto scrollbar-thin scrollbar-thumb-gray-400 dark:scrollbar-thumb-gray-400 scrollbar-thumb-rounded-full scrollbar-thumb-opacity-50 scrollbar-track-gray-200 dark:scrollbar-track-gray-900 scrollbar-track-rounded-full scrollbar-track-opacity-25 ${
+                parkingInfo?.isParkingFooterVisible &&
+                profile?.macro_permissions?.settings?.permissions?.parkings?.value
+                  ? 'h-[55rem]'
+                  : ''
+              }`}
               id='main-content'
             >
-              <div
-                className={`${
-                  parkingInfo.isParkingFooterVisible
-                    ? 'h-[51rem] overflow-y-auto scrollbar-thin scrollbar-thumb-gray-400 dark:scrollbar-thumb-gray-400 scrollbar-thumb-rounded-full scrollbar-thumb-opacity-50 scrollbar-track-gray-200 dark:scrollbar-track-gray-900 scrollbar-track-rounded-full scrollbar-track-opacity-25'
-                    : ''
-                } `}
+              {/* Primary column */}
+              <section
+                aria-labelledby='primary-heading'
+                className='flex min-w-0 flex-1 flex-col lg:order-last p-8'
               >
-                {/* Primary column */}
-                <section
-                  aria-labelledby='primary-heading'
-                  className='flex min-w-0 flex-1 flex-col lg:order-last p-8'
-                >
-                  {/* The page content */}
-                  {children}
-                </section>
-                <Portal>
-                  <SideDrawer
-                    isShown={sideDrawer.isShown}
-                    contentType={sideDrawer.contentType}
-                    config={sideDrawer.config}
-                    drawerClosed={() => closeSideDrawer()}
-                  />
-                </Portal>
-              </div>
-              {/* Park section */}
-              {parkingInfo?.isParkingFooterVisible ? (
-                <>
-                  {/* Divider */}
-                  <div className='relative'>
-                    <div className='absolute inset-0 flex items-center' aria-hidden='true'>
-                      <div className='w-full border-t border-gray-300 dark:border-gray-600' />
-                    </div>
-                  </div>
-                  <div className='pt-3'>
-                    <div className='container w-[25rem] sm:w-[40rem] md:w-[35rem] lg:w-[45rem] xl:w-[50rem] 2xl:w-[75rem] pl-4'>
-                      <ParkCards></ParkCards>
-                    </div>
-                  </div>
-                </>
-              ) : (
-                <></>
-              )}
+                {/* The page content */}
+                {children}
+              </section>
+              <Portal>
+                <SideDrawer
+                  isShown={sideDrawer.isShown}
+                  contentType={sideDrawer.contentType}
+                  config={sideDrawer.config}
+                  drawerClosed={() => closeSideDrawer()}
+                />
+              </Portal>
             </main>
+
             {/* Secondary column (hidden on smaller screens) */}
             <UserNavBar />
             <div className='absolute bottom-6 right-9 z-50'>
@@ -844,6 +838,22 @@ export const Layout: FC<LayoutProps> = ({ children }) => {
                 </div>
               )}
             </div>
+
+            {parkingInfo?.isParkingFooterVisible &&
+            profile?.macro_permissions?.settings?.permissions?.parkings?.value ? (
+              <motion.div
+                className='absolute bottom-0 left:0 sm:bottom-0 sm:left-0 md:bottom-0 md:left-20'
+                initial={{ y: 100 }}
+                animate={controls}
+              >
+                <ParkCards />
+                <Tooltip anchorSelect='.tooltip-parking-button' className='relative z-30'>
+                  {t('Parks.Click and hold to take current parking in call')}
+                </Tooltip>
+              </motion.div>
+            ) : (
+              <></>
+            )}
           </div>
         </div>
       </div>
