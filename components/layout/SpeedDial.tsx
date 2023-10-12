@@ -65,6 +65,8 @@ export const SpeedDial = () => {
 
   const { profile } = useSelector((state: RootState) => state.user)
 
+  const rightSideStatus: any = useSelector((state: RootState) => state.rightSideMenu)
+
   useEffect(() => {
     // Initialize the speed dial list the first time
     // and every time a reload is required
@@ -224,7 +226,13 @@ export const SpeedDial = () => {
   return (
     <>
       {/* Secondary column (hidden on smaller screens) */}
-      <aside className='relative z-20 hidden lg:w-72 xl:w-80 2xl:w-96 border-l lg:block h-full border-gray-200 bg-white dark:border-gray-700 dark:bg-gray-900'>
+      <aside
+        className={`${
+          rightSideStatus.isShown
+            ? 'relative z-20 hidden lg:w-72 xl:w-80 2xl:w-96 border-l lg:block h-full border-gray-200 bg-white dark:border-gray-700 dark:bg-gray-900'
+            : 'hidden'
+        }`}
+      >
         <div className='flex h-full flex-col bg-white dark:bg-gray-900'>
           <div className='py-6 px-5'>
             <div className='flex items-center justify-between'>
