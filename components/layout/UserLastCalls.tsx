@@ -131,7 +131,7 @@ export const UserLastCalls = () => {
       <aside
         className={`${
           rightSideStatus.isShown
-            ? 'relative z-20 hidden lg:w-72 xl:w-80 2xl:w-96 border-l lg:block h-full border-gray-200 bg-white dark:border-gray-700 dark:bg-gray-900'
+            ? 'relative z-20 lg:w-72 xl:w-80 2xl:w-96 border-l lg:block h-full border-gray-200 bg-white dark:border-gray-700 dark:bg-gray-900'
             : 'hidden'
         }`}
       >
@@ -219,7 +219,7 @@ export const UserLastCalls = () => {
                       aria-hidden='true'
                     />
                     <div className='relative flex min-w-0 flex-1 items-center justify-between'>
-                      <div className='flex items-center'>
+                      <div className='flex items-start'>
                         <span className='text-gray-300 dark:text-gray-600'>
                           <Avatar
                             size='base'
@@ -247,37 +247,6 @@ export const UserLastCalls = () => {
                                 </>
                               )}
                             </div>
-                            {call.channel.includes('from-queue') && (
-                              <>
-                                <Badge
-                                  size='small'
-                                  variant='offline'
-                                  rounded='full'
-                                  className={`overflow-hidden ml-1 tooltip-queue-${call?.queue}`}
-                                >
-                                  {' '}
-                                  <FontAwesomeIcon
-                                    icon={faUsers}
-                                    className='h-4 w-4 mr-1 ml-1'
-                                    aria-hidden='true'
-                                  />
-                                  <div
-                                    className={`truncate ${
-                                      call?.queue ? 'w-20 lg:w-16 xl:w-20' : ''
-                                    }`}
-                                  >
-                                    {queuesStore?.queues[call?.queue]?.name
-                                      ? queuesStore?.queues[call?.queue]?.name + ' ' + call?.queue
-                                      : t('QueueManager.Queue')}
-                                  </div>
-                                </Badge>
-                                <Tooltip anchorSelect={`.tooltip-queue-${call?.queue}`}>
-                                  {queuesStore?.queues[call?.queue]?.name
-                                    ? queuesStore?.queues[call?.queue]?.name + ' ' + call?.queue
-                                    : t('QueueManager.Queue')}{' '}
-                                </Tooltip>
-                              </>
-                            )}
                           </div>
                           <div className='truncate text-sm text-primary dark:text-primary'>
                             <div className='flex items-center'>
@@ -307,19 +276,36 @@ export const UserLastCalls = () => {
                           <CallsDate call={call} spaced={true} />
                         </div>
                       </div>
-                      <div className='absolute right-0 top-1/2 transform -translate-y-1/2 flex gap-2'>
-                        <Button
-                          variant='white'
-                          className='gap-2'
-                          onClick={() =>
-                            call.direction === 'in'
-                              ? callPhoneNumber(call.src)
-                              : callPhoneNumber(call.dst)
-                          }
-                        >
-                          <FontAwesomeIcon icon={faPhone} size='lg' className='text-gray-500' />
-                          {t('LastCalls.Call')}
-                        </Button>
+                      <div className='absolute right-0 top-[1rem] transform -translate-y-1/2 flex gap-2'>
+                        {call.channel.includes('from-queue') && (
+                          <>
+                            <Badge
+                              size='small'
+                              variant='offline'
+                              rounded='full'
+                              className={`overflow-hidden ml-1 tooltip-queue-${call?.queue}`}
+                            >
+                              {' '}
+                              <FontAwesomeIcon
+                                icon={faUsers}
+                                className='h-4 w-4 mr-2 ml-1'
+                                aria-hidden='true'
+                              />
+                              <div
+                                className={`truncate ${call?.queue ? 'w-20 lg:w-16 xl:w-20' : ''}`}
+                              >
+                                {queuesStore?.queues[call?.queue]?.name
+                                  ? queuesStore?.queues[call?.queue]?.name + ' ' + call?.queue
+                                  : t('QueueManager.Queue')}
+                              </div>
+                            </Badge>
+                            <Tooltip anchorSelect={`.tooltip-queue-${call?.queue}`}>
+                              {queuesStore?.queues[call?.queue]?.name
+                                ? queuesStore?.queues[call?.queue]?.name + ' ' + call?.queue
+                                : t('QueueManager.Queue')}{' '}
+                            </Tooltip>
+                          </>
+                        )}
                       </div>
                     </div>
                   </div>

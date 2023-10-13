@@ -229,7 +229,7 @@ export const SpeedDial = () => {
       <aside
         className={`${
           rightSideStatus.isShown
-            ? 'relative z-20 hidden lg:w-72 xl:w-80 2xl:w-96 border-l lg:block h-full border-gray-200 bg-white dark:border-gray-700 dark:bg-gray-900'
+            ? 'relative z-20 lg:w-72 xl:w-80 2xl:w-96 border-l lg:block h-full border-gray-200 bg-white dark:border-gray-700 dark:bg-gray-900'
             : 'hidden'
         }`}
       >
