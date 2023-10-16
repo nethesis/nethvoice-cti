@@ -40,7 +40,7 @@ export const CallsSource: FC<CallsSourceProps> = ({
         <div
           className={classNames(
             `tooltip-source-${cleanString(getCallName(call) || '-')}`,
-            'truncate',
+            'truncate text-gray-900 dark:text-gray-200 leading-4 font-medium text-sm',
           )}
         >
           {getCallName(call) || '-'}

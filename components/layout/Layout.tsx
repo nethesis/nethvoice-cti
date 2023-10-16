@@ -2,7 +2,7 @@
 // SPDX-License-Identifier: AGPL-3.0-or-later
 
 import { FC, ReactNode, useState, useEffect } from 'react'
-import { NavBar, TopBar, MobileNavBar, SpeedDial, SideDrawer } from '.'
+import { NavBar, TopBar, MobileNavBar, SpeedDial, SideDrawer, UserSidebarDrawer } from '.'
 import { navItems, NavItemsProps } from '../../config/routes'
 import { useRouter } from 'next/router'
 import { getUserInfo } from '../../services/user'
@@ -773,6 +773,8 @@ export const Layout: FC<LayoutProps> = ({ children }) => {
     }
   }, [parkingInfo?.isParkingFooterVisible, controls])
 
+  const rightSideStatus: any = useSelector((state: RootState) => state.rightSideMenu)
+
   return (
     <>
       <div>
@@ -819,10 +821,16 @@ export const Layout: FC<LayoutProps> = ({ children }) => {
                   drawerClosed={() => closeSideDrawer()}
                 />
               </Portal>
+              <Portal>
+                <UserSidebarDrawer
+                  isShown={rightSideStatus.isShown}
+                  drawerClosed={() => closeSideDrawer()}
+                />
+              </Portal>
             </main>
 
             {/* Secondary column (hidden on smaller screens) */}
-            <UserNavBar />
+            <UserNavBar/>
             <div className='absolute bottom-6 right-9 z-50'>
               {toast?.isShown && (
                 <div>

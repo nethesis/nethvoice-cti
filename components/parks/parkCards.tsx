@@ -42,6 +42,8 @@ export const ParkCards: FC<ParkCardsProps> = ({ className }): JSX.Element => {
 
   const animationControls: any = useRef(null)
 
+  const nameText = useRef<null | HTMLDivElement>(null)
+
   const parkCardsData: any[] = Object.keys(parkingInfo.parks).map(
     (parkingKey: any, index: number) => {
       const parkingDetails: any = parkingInfo.parks[parkingKey]
@@ -97,8 +99,19 @@ export const ParkCards: FC<ParkCardsProps> = ({ className }): JSX.Element => {
                   </span>
                 </div>
                 <div className='flex'>
-                  <span className='text-sm text-left text-gray-900 dark:text-gray-100 w-16 truncate'>
-                    {parkingDetails?.parkedCaller?.name}
+                  <span className='text-sm text-left text-gray-900 dark:text-gray-100 w-44 truncate tooltip-parked-user'>
+                    <div className='scrolling-text-container' ref={nameText}>
+                      {nameText?.current?.clientWidth &&  nameText?.current?.clientWidth > 180 ? (
+                        <>
+                          <div className='scrolling-text'>{parkingDetails?.parkedCaller?.name}</div>
+                          <div className='scrolling-text'>{parkingDetails?.parkedCaller?.name}</div>
+                        </>
+                      ) : (
+                        <>
+                          <div >{parkingDetails?.parkedCaller?.name}</div>
+                        </>
+                      )}
+                    </div>
                   </span>
                 </div>
               </div>

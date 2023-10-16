@@ -79,7 +79,7 @@
 .slick-prev,
 .slick-next {
   z-index: 999 !important;
-  top:30px !important
+  top: 30px !important;
 }
 .slick-prev {
   left: 0px !important;
@@ -99,6 +99,22 @@
   width: calc(100% - 10px) !important;
 }
 
+.scrolling-text-container {
+  width: 100%; 
+  overflow: hidden;
+}
 
+.scrolling-text {
+  display: inline-block;
+  white-space: nowrap;
+  animation: scrollText 10s linear infinite;
+}
 
-
+@keyframes scrollText {
+  0% {
+    transform: translateX(0);
+  }
+  100% {
+    transform: translateX(-100%);
+  }
+}

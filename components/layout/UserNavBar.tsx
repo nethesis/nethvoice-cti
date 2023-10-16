@@ -84,7 +84,8 @@ export const UserNavBar: FC = () => {
   const clickedTab = (tabName: any, save: boolean) => {
     // Check if selected tab is already active
     const isTabActive = tabs.find((tab) => tab.name === tabName)?.active
-
+    // on click update selected tab name inside store
+    store.dispatch.rightSideMenu.updateTab(tabName)
     if (isTabActive) {
       // Close side menu if tab is already active
       setRightSideMenuOpened(!rightSideMenuOpened)
