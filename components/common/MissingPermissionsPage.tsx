@@ -17,24 +17,29 @@ export const MissingPermission = ({}): JSX.Element => {
         <p className='text-2xl text-gray-900 dark:text-gray-300 pt-8 font-semibold	'>
           {t('Common.Permission error')}
         </p>
-        <p className='text-2xl text-gray-600 dark:text-gray-300 pt-[1rem] font-medium'>
+        <p className='text-md text-gray-600 dark:text-gray-300 pt-[1rem] font-medium'>
           {t('Common.Permission error message content')}
         </p>
-        <p className='text-2xl text-gray-600 dark:text-gray-300 pt-0.5 pb-[1rem] font-medium'>
-          {t('Common.Permission error message content link')}
-        </p>
-        <div className='text-gray-900 dark:text-gray-100 text-sm flex items-center justify-center'>
-          <Link href={'/operators'}>
-            <a className='flex justify-center items-center '>
-              <span className='font-semibold text-gray-900 dark:text-gray-100 hover:text-primary hover:dark:text-primaryDark hover:underline'>
-                {t('Common.Main page')}
-              </span>
-              <FontAwesomeIcon
-                icon={faArrowRight}
-                className='h-4 w-4 m-3 rounded-lg text-gray-900 dark:text-gray-100 hover:text-primary hover:dark:text-primaryDark'
-              />
-            </a>
-          </Link>
+        <div className='flex items-center justify-center'>
+          <div className='flex items-center justify-center '>
+            <p className='text-md text-gray-600 dark:text-gray-300 font-medium mr-2'>
+              {t('Common.Permission error message content link')}
+            </p>
+          </div>
+
+          <div className='flex items-center justify-center text-gray-900 dark:text-gray-100 text-sm '>
+            <Link href={'/operators'}>
+              <a className='flex justify-center items-center '>
+                <span className='font-semibold text-gray-900 dark:text-gray-100 hover:text-primary hover:dark:text-primaryDark hover:underline'>
+                  {t('Common.Main page')}
+                </span>
+                <FontAwesomeIcon
+                  icon={faArrowRight}
+                  className='h-4 w-4 m-3 rounded-lg text-gray-900 dark:text-gray-100 hover:text-primary hover:dark:text-primaryDark'
+                />
+              </a>
+            </Link>
+          </div>
         </div>
       </div>
     </div>

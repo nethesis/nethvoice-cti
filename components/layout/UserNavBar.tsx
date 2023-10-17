@@ -67,17 +67,32 @@ export const UserNavBar: FC = () => {
     [username],
   )
 
+  const rightSideStatus: any = useSelector((state: RootState) => state.rightSideMenu)
+
+  const [defaultTabSelected, setDefaultTabSelected] = useState('')
+
   useEffect(() => {
     if (username) {
       const preferences = getJSONItem(`preferences-${username}`) || {}
-      if (preferences.userSideBarTab) {
-        changeTab(preferences.userSideBarTab)
+      if (preferences?.userSideBarTab) {
+        changeTab(preferences?.userSideBarTab)
+        //set default if user has not changed tab
+        setDefaultTabSelected(preferences?.userSideBarTab)
       } else {
         changeTab('speed_dial')
+        //set default if user has not changed tab
+        setDefaultTabSelected('speed_dial')
       }
       setTabReady(true)
     }
   }, [username])
+
+  //On first render of page get value of tab from local storage
+  useEffect(() => {
+    if (!rightSideStatus?.actualTab && defaultTabSelected !== '') {
+      store.dispatch.rightSideMenu.updateTab(defaultTabSelected)
+    }
+  }, [rightSideStatus?.actualTab, defaultTabSelected])
 
   const [rightSideMenuOpened, setRightSideMenuOpened] = useState(true)
 
