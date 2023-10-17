@@ -35,6 +35,7 @@ import InfiniteScroll from 'react-infinite-scroll-component'
 import { faCircleNotch } from '@fortawesome/free-solid-svg-icons'
 import { t } from 'i18next'
 import { transferCall } from '../lib/utils'
+import { MissingPermission } from '../components/common/MissingPermissionsPage'
 
 //// use i18n where there is operator.mainPresence
 
@@ -505,12 +506,7 @@ const Operators: NextPage = () => {
           </div>
         </div>
       ) : operatorsStore.isOperatorsLoaded ? (
-        <div className='flex items-center justify-center h-screen'>
-          <div className='text-center'>
-            <FontAwesomeIcon icon={faExclamationTriangle} className='text-red-500 text-6xl mb-4' />
-            <p className='text-xl text-red-500'>{t('Common.Permission error')}</p>
-          </div>
-        </div>
+        <MissingPermission />
       ) : (
         <> </>
       )}

@@ -2,7 +2,7 @@
 // SPDX-License-Identifier: AGPL-3.0-or-later
 
 import { FC, ReactNode, useState, useEffect } from 'react'
-import { NavBar, TopBar, MobileNavBar, SpeedDial, SideDrawer } from '.'
+import { NavBar, TopBar, MobileNavBar, SpeedDial, SideDrawer, UserSidebarDrawer } from '.'
 import { navItems, NavItemsProps } from '../../config/routes'
 import { useRouter } from 'next/router'
 import { getUserInfo } from '../../services/user'
@@ -332,7 +332,7 @@ export const Layout: FC<LayoutProps> = ({ children }) => {
             } else {
               //Else use default icon
               const svgString = `
-                <svg class="h-full w-full text-gray-600 bg-white" viewBox="0 0 24 24">
+                <svg className="h-full w-full text-gray-600 bg-white" viewBox="0 0 24 24">
                   <path d="M24 20.993V24H0v-2.996A14.977 14.977 0 0112.004 15c4.904 0 9.26 2.354 11.996 5.993zM16.002 8.999a4 4 0 11-8 0 4 4 0 018 0z" />
                 </svg>
               `
@@ -773,6 +773,8 @@ export const Layout: FC<LayoutProps> = ({ children }) => {
     }
   }, [parkingInfo?.isParkingFooterVisible, controls])
 
+  const rightSideStatus: any = useSelector((state: RootState) => state.rightSideMenu)
+
   return (
     <>
       <div>
@@ -819,10 +821,16 @@ export const Layout: FC<LayoutProps> = ({ children }) => {
                   drawerClosed={() => closeSideDrawer()}
                 />
               </Portal>
+              <Portal>
+                <UserSidebarDrawer
+                  isShown={rightSideStatus.isShown}
+                  drawerClosed={() => closeSideDrawer()}
+                />
+              </Portal>
             </main>
 
             {/* Secondary column (hidden on smaller screens) */}
-            <UserNavBar />
+            <UserNavBar/>
             <div className='absolute bottom-6 right-9 z-50'>
               {toast?.isShown && (
                 <div>

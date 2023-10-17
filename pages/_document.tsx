@@ -6,6 +6,7 @@ export default function Document() {
     <Html>
       <Head>
         <link rel='icon' href='/favicon.ico' />
+        <link href="https://fonts.googleapis.com/css?family=Poppins&display=swap" rel="stylesheet" />
       </Head>
       <body className='bg-gray-100 dark:bg-gray-800 text-gray-700 dark:text-gray-100'>
         <Main />

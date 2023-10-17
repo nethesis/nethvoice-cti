@@ -15,6 +15,7 @@ import { faExclamationTriangle, faUsers } from '@fortawesome/free-solid-svg-icon
 import { useRouter } from 'next/router'
 import { savePreference } from '../lib/storage'
 import { getSelectedTabQueue } from '../lib/queuesLib'
+import { MissingPermission } from '../components/common/MissingPermissionsPage'
 
 interface tabsType {
   name: string
@@ -159,12 +160,7 @@ const Queues: NextPage = () => {
           )}
         </div>
       ) : (
-        <div className='flex items-center justify-center h-screen'>
-          <div className='text-center'>
-            <FontAwesomeIcon icon={faExclamationTriangle} className='text-red-500 text-6xl mb-4' />
-            <p className='text-xl text-red-500'>{t('Common.Permission error')}</p>
-          </div>
-        </div>
+        <MissingPermission />
       )}
     </>
   )

@@ -12,6 +12,7 @@ import { getPhonebook } from '../lib/phonebook'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { faExclamationTriangle, faPhone } from '@fortawesome/free-solid-svg-icons'
 import { callPhoneNumber } from '../lib/utils'
+import { MissingPermission } from '../components/common/MissingPermissionsPage'
 
 const CustomerCards: NextPage = () => {
   const { t } = useTranslation()
@@ -254,12 +255,7 @@ const CustomerCards: NextPage = () => {
           </>
         </div>
       ) : (
-        <div className='flex items-center justify-center h-screen'>
-          <div className='text-center'>
-            <FontAwesomeIcon icon={faExclamationTriangle} className='text-red-500 text-6xl mb-4' />
-            <p className='text-xl text-red-500'>{t('Common.Permission error')}</p>
-          </div>
-        </div>
+        <MissingPermission />
       )}
     </>
   )

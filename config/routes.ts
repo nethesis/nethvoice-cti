@@ -1,8 +1,6 @@
 // Copyright (C) 2023 Nethesis S.r.l.
 // SPDX-License-Identifier: AGPL-3.0-or-later
 
-import { faGrid2 as faGridSolid } from '@nethesis/nethesis-solid-svg-icons'
-
 import {
   faUsers as faUsersSolid,
   faChartLine as faChartLineSolid,
@@ -10,6 +8,7 @@ import {
   faAddressBook as faAddressBookSolid,
   faGear as faGearSolid,
   faClockRotateLeft as faClockRotateLeftSolid,
+  faCubes as faCubesSolid,
 } from '@fortawesome/free-solid-svg-icons'
 
 import {
@@ -17,7 +16,7 @@ import {
   faHeadset as faHeadsetLight,
   faAddressBook as faAddressBookLight,
   faGear as faGearLight,
-  faGrid2 as faGridLight,
+  faCubes as faCubesLight,
   faUsers as faUsersLight,
   faChartLine as faChartLineLight,
 } from '@nethesis/nethesis-light-svg-icons'
@@ -65,8 +64,8 @@ export const navItems: NavItemsProps[] = [
   {
     name: 'Applications',
     href: '/applications',
-    icon: faGridLight,
-    iconActive: faGridSolid,
+    icon: faCubesLight,
+    iconActive: faCubesSolid,
     current: false,
   },
   {

@@ -7,7 +7,7 @@ import { SpeedDial } from './SpeedDial'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { faBolt, faPhone, type IconDefinition } from '@fortawesome/free-solid-svg-icons'
 import { getJSONItem, setJSONItem } from '../../lib/storage'
-import { RootState } from '../../store'
+import { RootState, store } from '../../store'
 import { useSelector } from 'react-redux'
 import { UserLastCalls } from './UserLastCalls'
 import { Tooltip } from 'react-tooltip'
@@ -67,17 +67,51 @@ export const UserNavBar: FC = () => {
     [username],
   )
 
+  const rightSideStatus: any = useSelector((state: RootState) => state.rightSideMenu)
+
+  const [defaultTabSelected, setDefaultTabSelected] = useState('')
+
   useEffect(() => {
     if (username) {
       const preferences = getJSONItem(`preferences-${username}`) || {}
-      if (preferences.userSideBarTab) {
-        changeTab(preferences.userSideBarTab)
+      if (preferences?.userSideBarTab) {
+        changeTab(preferences?.userSideBarTab)
+        //set default if user has not changed tab
+        setDefaultTabSelected(preferences?.userSideBarTab)
       } else {
         changeTab('speed_dial')
+        //set default if user has not changed tab
+        setDefaultTabSelected('speed_dial')
       }
       setTabReady(true)
     }
   }, [username])
+
+  //On first render of page get value of tab from local storage
+  useEffect(() => {
+    if (!rightSideStatus?.actualTab && defaultTabSelected !== '') {
+      store.dispatch.rightSideMenu.updateTab(defaultTabSelected)
+    }
+  }, [rightSideStatus?.actualTab, defaultTabSelected])
+
+  const [rightSideMenuOpened, setRightSideMenuOpened] = useState(true)
+
+  const clickedTab = (tabName: any, save: boolean) => {
+    // Check if selected tab is already active
+    const isTabActive = tabs.find((tab) => tab.name === tabName)?.active
+    // on click update selected tab name inside store
+    store.dispatch.rightSideMenu.updateTab(tabName)
+    if (isTabActive) {
+      // Close side menu if tab is already active
+      setRightSideMenuOpened(!rightSideMenuOpened)
+      store.dispatch.rightSideMenu.setShown(!rightSideMenuOpened)
+    } else {
+      // Otherwise open side menu
+      setRightSideMenuOpened(true)
+      store.dispatch.rightSideMenu.setShown(true)
+      changeTab(tabName, save)
+    }
+  }
 
   return (
     <>
@@ -98,7 +132,7 @@ export const UserNavBar: FC = () => {
         {tabs.map((tab, i) => (
           <div
             key={i}
-            onClick={() => changeTab(tab.name, true)}
+            onClick={() => clickedTab(tab.name, true)}
             className={`${
               tab.active
                 ? 'bg-gray-100 dark:bg-gray-700 text-gray-900 dark:text-gray-50'
