@@ -259,7 +259,7 @@ export const UserLastCallsContent = () => {
                         <CallsDate call={call} spaced={true} />
                       </div>
                     </div>
-                    <div className='absolute right-0 top-[1rem] transform -translate-y-1/2 flex gap-2'>
+                    <div className='absolute right-0 top-[0.7rem] transform -translate-y-1/2 flex gap-2'>
                       {call.channel.includes('from-queue') && (
                         <>
                           <Badge

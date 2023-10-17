@@ -21,6 +21,7 @@ import { faArrowUpRightFromSquare, faExclamationTriangle } from '@fortawesome/fr
 import { getApiEndpoint } from '../lib/utils'
 import { getApiScheme } from '../lib/utils'
 import { useRouter } from 'next/router'
+import { MissingPermission } from '../components/common/MissingPermissionsPage'
 
 interface tabsType {
   name: string
@@ -174,12 +175,7 @@ const QueueManager: NextPage = () => {
           </>
         </div>
       ) : (
-        <div className='flex items-center justify-center h-screen'>
-          <div className='text-center'>
-            <FontAwesomeIcon icon={faExclamationTriangle} className='text-red-500 text-6xl mb-4' />
-            <p className='text-xl text-red-500'>{t('Common.Permission error')}</p>
-          </div>
-        </div>
+        <MissingPermission />
       )}
     </>
   )
