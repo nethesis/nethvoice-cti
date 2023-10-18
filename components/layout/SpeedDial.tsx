@@ -7,26 +7,14 @@
  * @return The fixed right bar with speed dials as the default
  */
 
-import { useSelector } from 'react-redux'
-import { RootState } from '../../store'
 import { SpeedDialContent } from '../common/UserRightSideMenu/SpeedDialContent'
 
 export const SpeedDial = () => {
-  const rightSideStatus: any = useSelector((state: RootState) => state.rightSideMenu)
-
   return (
     <>
-        <aside
-          className={`${
-            rightSideStatus.isShown
-              ? 'relative z-20 hidden lg:w-72 xl:w-80 2xl:w-96 border-l lg:block h-full border-gray-200 bg-white dark:border-gray-700 dark:bg-gray-900'
-              : 'hidden'
-          }`}
-        >
-          <SpeedDialContent />
-        </aside>
-
-      {/* Secondary column (hidden on smaller screens) */}
+      <aside className='relative z-20 hidden lg:w-72 xl:w-80 2xl:w-96 border-l lg:block h-full border-gray-200 bg-white dark:border-gray-700 dark:bg-gray-900'>
+        <SpeedDialContent />
+      </aside>
     </>
   )
 }

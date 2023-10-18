@@ -99,19 +99,47 @@ export const UserNavBar: FC = () => {
   const clickedTab = (tabName: any, save: boolean) => {
     // Check if selected tab is already active
     const isTabActive = tabs.find((tab) => tab.name === tabName)?.active
+
     // on click update selected tab name inside store
     store.dispatch.rightSideMenu.updateTab(tabName)
     if (isTabActive) {
       // Close side menu if tab is already active
       setRightSideMenuOpened(!rightSideMenuOpened)
       store.dispatch.rightSideMenu.setShown(!rightSideMenuOpened)
+      saveTabStatusToStorage(!rightSideMenuOpened)
     } else {
       // Otherwise open side menu
-      setRightSideMenuOpened(true)
       store.dispatch.rightSideMenu.setShown(true)
+      setRightSideMenuOpened(true)
+      saveTabStatusToStorage(true)
       changeTab(tabName, save)
     }
   }
+
+  const saveTabStatusToStorage = (isRightTabOpen: any) => {
+    const preferences = getJSONItem(`preferences-${username}`)
+    preferences['rightTabStatus'] = isRightTabOpen
+    setJSONItem(`preferences-${username}`, preferences)
+  }
+
+  const [firstRender, setFirstRender] = useState(true)
+
+  const userPreferences = getJSONItem(`preferences-${username}`) || {}
+
+  //Get the selected filter from the local storage
+  useEffect(() => {
+    if (firstRender && username && userPreferences) {
+      setFirstRender(false)
+      return
+    }
+    if (username && userPreferences) {
+      if (userPreferences?.rightTabStatus !== undefined) {
+        store.dispatch.rightSideMenu.setShown(userPreferences?.rightTabStatus)
+
+        setRightSideMenuOpened(userPreferences?.rightTabStatus)
+      }
+    }
+  }, [firstRender, username, userPreferences?.rightTabStatus])
 
   return (
     <>

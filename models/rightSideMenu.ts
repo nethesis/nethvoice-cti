@@ -7,8 +7,8 @@ interface DefaultState {
   actualTab: string
 }
 const defaultState: DefaultState = {
-  isShown: true,
-  actualTab: ''
+  isShown: false,
+  actualTab: '',
 }
 export const rightSideMenu = createModel<RootModel>()({
   state: defaultState,
