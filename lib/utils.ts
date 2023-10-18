@@ -1,13 +1,10 @@
 // Copyright (C) 2023 Nethesis S.r.l.
 // SPDX-License-Identifier: AGPL-3.0-or-later
 
-import { PropsWithChildren, useState } from 'react'
+import { PropsWithChildren } from 'react'
 import axios from 'axios'
 import { store } from '../store'
 import { eventDispatch } from './hooks/eventDispatch'
-import { doLogout } from '../services/login'
-import { isEmpty } from 'lodash'
-import router from 'next/router'
 
 export interface ClearProps {
   key: string
@@ -43,6 +40,11 @@ export function handleNetworkError(error: any) {
 
 export const closeSideDrawer = () => {
   store.dispatch.sideDrawer.setShown(false)
+}
+
+export const closeRightSideDrawer = () => {
+  store.dispatch.rightSideMenu.setShown(false)
+  store.dispatch.rightSideMenu.setRightSideMenuOpened(false)
 }
 
 /**

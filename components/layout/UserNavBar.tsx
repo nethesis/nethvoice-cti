@@ -94,9 +94,8 @@ export const UserNavBar: FC = () => {
     }
   }, [rightSideStatus?.actualTab, defaultTabSelected])
 
-  const [rightSideMenuOpened, setRightSideMenuOpened] = useState(true)
-
   const clickedTab = (tabName: any, save: boolean) => {
+    let rightSideMenuOpened = rightSideStatus?.isSideMenuOpened
     // Check if selected tab is already active
     const isTabActive = tabs.find((tab) => tab.name === tabName)?.active
 
@@ -104,13 +103,14 @@ export const UserNavBar: FC = () => {
     store.dispatch.rightSideMenu.updateTab(tabName)
     if (isTabActive) {
       // Close side menu if tab is already active
-      setRightSideMenuOpened(!rightSideMenuOpened)
+      store.dispatch.rightSideMenu.setRightSideMenuOpened(!rightSideMenuOpened)
+
       store.dispatch.rightSideMenu.setShown(!rightSideMenuOpened)
       saveTabStatusToStorage(!rightSideMenuOpened)
     } else {
       // Otherwise open side menu
       store.dispatch.rightSideMenu.setShown(true)
-      setRightSideMenuOpened(true)
+      store.dispatch.rightSideMenu.setRightSideMenuOpened(true)
       saveTabStatusToStorage(true)
       changeTab(tabName, save)
     }
@@ -136,7 +136,7 @@ export const UserNavBar: FC = () => {
       if (userPreferences?.rightTabStatus !== undefined) {
         store.dispatch.rightSideMenu.setShown(userPreferences?.rightTabStatus)
 
-        setRightSideMenuOpened(userPreferences?.rightTabStatus)
+        store.dispatch.rightSideMenu.setRightSideMenuOpened(userPreferences?.rightTabStatus)
       }
     }
   }, [firstRender, username, userPreferences?.rightTabStatus])

@@ -10,7 +10,7 @@ import { useDispatch } from 'react-redux'
 import { Dispatch } from '../../store'
 import { RootState } from '../../store'
 import { useSelector } from 'react-redux'
-import { closeSideDrawer, getProductName, getHtmlFaviconElement, closeToast } from '../../lib/utils'
+import { closeSideDrawer, getProductName, closeToast } from '../../lib/utils'
 import { store } from '../../store'
 import {
   buildOperators,
@@ -820,17 +820,12 @@ export const Layout: FC<LayoutProps> = ({ children }) => {
                   config={sideDrawer.config}
                   drawerClosed={() => closeSideDrawer()}
                 />
-              </Portal>
-              <Portal>
-                <UserSidebarDrawer
-                  isShown={rightSideStatus.isShown}
-                  drawerClosed={() => closeSideDrawer()}
-                />
+                <UserSidebarDrawer isShown={rightSideStatus.isShown} />
               </Portal>
             </main>
 
             {/* Secondary column (hidden on smaller screens) */}
-            <UserNavBar/>
+            <UserNavBar />
             <div className='absolute bottom-6 right-9 z-50'>
               {toast?.isShown && (
                 <div>
