@@ -17,7 +17,7 @@ import { isEmpty, debounce, capitalize } from 'lodash'
 import { useSelector } from 'react-redux'
 import { RootState } from '../store'
 import { Filter, OperatorStatusBadge } from '../components/operators'
-import { sortByFavorite, sortByProperty } from '../lib/utils'
+import { closeRightSideDrawer, sortByFavorite, sortByProperty } from '../lib/utils'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import {
   faChevronRight,
@@ -170,6 +170,14 @@ const Operators: NextPage = () => {
 
   const { profile } = useSelector((state: RootState) => state.user)
 
+  const openDrawerOperator = (operator: any) => {
+    if(operator){
+      closeRightSideDrawer()
+      openShowOperatorDrawer(operator)
+      
+    }
+  }
+
   return (
     <>
       {profile?.macro_permissions?.presence_panel?.value ? (
@@ -286,14 +294,14 @@ const Operators: NextPage = () => {
                                   size='extra_large'
                                   bordered
                                   star={operator?.favorite}
-                                  onClick={() => openShowOperatorDrawer(operator)}
+                                  onClick={() => openDrawerOperator(operator)}
                                   className='mx-auto cursor-pointer'
                                 />
                                 <div className='space-y-2'>
                                   <div className='text-xs font-medium lg:text-sm'>
                                     <h3
                                       className='cursor-pointer hover:underline'
-                                      onClick={() => openShowOperatorDrawer(operator)}
+                                      onClick={() => openDrawerOperator(operator)}
                                     >
                                       {operator?.name}
                                     </h3>
@@ -433,7 +441,7 @@ const Operators: NextPage = () => {
                         <li key={index} className='px-1'>
                           <button
                             type='button'
-                            onClick={() => openShowOperatorDrawer(operator)}
+                            onClick={() => openDrawerOperator(operator)}
                             className='group flex w-full items-center justify-between space-x-3 rounded-lg p-2 text-left focus:outline-none focus:ring-2 focus:ring-offset-2 bg-white dark:bg-gray-900 hover:bg-gray-200 dark:hover:bg-gray-700 focus:ring-primary dark:focus:ring-primary'
                           >
                             <span className='flex min-w-0 flex-1 items-center space-x-3'>
@@ -444,7 +452,7 @@ const Operators: NextPage = () => {
                                   size='large'
                                   bordered
                                   star={operator.favorite}
-                                  onClick={() => openShowOperatorDrawer(operator)}
+                                  onClick={() => openDrawerOperator(operator)}
                                   className='mx-auto cursor-pointer'
                                 />
                               </span>

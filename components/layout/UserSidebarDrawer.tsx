@@ -2,7 +2,7 @@
 // SPDX-License-Identifier: AGPL-3.0-or-later
 
 import { Transition, Dialog } from '@headlessui/react'
-import { FC, Fragment } from 'react'
+import { FC, Fragment, useState } from 'react'
 import { SpeedDialContent } from '../common/UserRightSideMenu/SpeedDialContent'
 import { useSelector } from 'react-redux'
 import { RootState } from '../../store'
@@ -10,11 +10,12 @@ import { UserLastCallsContent } from '../common/UserRightSideMenu/UserLastCallsC
 
 interface UserSidebarDrawerProps {
   isShown: boolean
-  drawerClosed: () => void
 }
 
-export const UserSidebarDrawer: FC<UserSidebarDrawerProps> = ({ isShown, drawerClosed }) => {
+export const UserSidebarDrawer: FC<UserSidebarDrawerProps> = ({ isShown }) => {
   const rightSideStatus: any = useSelector((state: RootState) => state.rightSideMenu)
+
+  let [isOpen, setIsOpen] = useState(true)
 
   return (
     <>
@@ -22,7 +23,7 @@ export const UserSidebarDrawer: FC<UserSidebarDrawerProps> = ({ isShown, drawerC
         <Dialog
           as='div'
           className={`${rightSideStatus.isShown ? 'relative z-20 lg:hidden' : 'hidden'}`}
-          onClose={drawerClosed}
+          onClose={() => setIsOpen(false)}
         >
           <div className='fixed top-16 right-[3.2rem] bottom-0 z-40 flex'>
             <Transition.Child
