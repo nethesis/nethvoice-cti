@@ -6,7 +6,6 @@ import classNames from 'classnames'
 import { Avatar, Badge, Button, IconSwitch } from '../common'
 import { useEffect } from 'react'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
-import { faComment, faEnvelope } from '@nethesis/nethesis-regular-svg-icons'
 import { OperatorStatusBadge } from './OperatorStatusBadge'
 import {
   addOperatorToFavorites,
@@ -25,6 +24,8 @@ import {
   faRightLeft,
   faStar as faStarSolid,
   faVideo,
+  faComment,
+  faEnvelope,
 } from '@fortawesome/free-solid-svg-icons'
 import { faStar as faStarLight } from '@nethesis/nethesis-light-svg-icons'
 import { t } from 'i18next'

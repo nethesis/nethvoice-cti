@@ -8,13 +8,12 @@ import { RootState, store } from '../../store'
 import { callPhoneNumber } from '../../lib/utils'
 import { formatInTimeZoneLoc } from '../../lib/dateTime'
 import { Badge, EmptyState, IconSwitch, SideDrawerCloseIcon } from '../common'
-import { faBell, faCommentDots, faCircleCheck, faPhone, faXmark } from '@fortawesome/free-solid-svg-icons'
+import { faBell, faCommentDots, faCircleCheck, faPhone, faXmark, faCircle } from '@fortawesome/free-solid-svg-icons'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { utcToZonedTime } from 'date-fns-tz'
 import { humanDistanceToNowLoc } from '../../lib/dateTime'
 import { Tooltip } from 'react-tooltip'
 import { useTranslation } from 'react-i18next'
-import { faCircle } from '@nethesis/nethesis-regular-svg-icons'
 
 export interface NotificationsDrawerContentProps extends ComponentPropsWithRef<'div'> {}
 
