@@ -6,7 +6,7 @@ import { saveCredentials } from '../lib/login'
 import { useState, useRef, useEffect } from 'react'
 import { TextInput, InlineNotification, Button } from '../components/common'
 import hmacSHA1 from 'crypto-js/hmac-sha1'
-import Background from '../public/login_background.png'
+import Background from '../public/nethvoice_cti_1300x2000.png'
 import { useRouter } from 'next/router'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { faCircleNotch, faEye, faEyeSlash, faPhone } from '@fortawesome/free-solid-svg-icons'
@@ -61,7 +61,7 @@ export default function Login() {
       document?.visibilityState &&
       queryParams &&
       queryParams != undefined &&
-      queryParams.includes('error') && 
+      queryParams.includes('error') &&
       window.location.href.includes('/login')
     ) {
       reloadPage()
@@ -392,9 +392,10 @@ export default function Login() {
         </div>
         <div className='relative hidden w-0 flex-1 lg:block'>
           {/* Nextjs <Image> is not suitable for rebranding: it always uses the aspect ratio of the original image  */}
+          {/* eslint-disable-next-line @next/next/no-img-element */}
           <img
             className='absolute inset-0 h-full w-full object-cover'
-            src='/login_background.png'
+            src='/nethvoice_cti_1300x2000.png'
             alt='background image'
           />
         </div>
