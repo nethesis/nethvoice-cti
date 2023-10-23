@@ -28,6 +28,7 @@ import { useTranslation } from 'react-i18next'
 import { isEmpty } from 'lodash'
 import { postRecallOnBusy, hangup, startListen, toggleRecord, intrude } from '../../lib/operators'
 import { openToast } from '../../lib/utils'
+import { eventDispatch } from '../../lib/hooks/eventDispatch'
 
 export interface ShowOperatorDrawerContentProps extends ComponentPropsWithRef<'div'> {
   config: any
@@ -131,6 +132,7 @@ export const ShowOperatorDrawerContent = forwardRef<
           if (!isEmpty(listenInformations)) {
             try {
               await startListen(listenInformations)
+              eventDispatch('phone-island-listen-call', { to: listenInformations?.endpointId })
             } catch (e) {
               console.error(e)
               return []
@@ -174,6 +176,7 @@ export const ShowOperatorDrawerContent = forwardRef<
           if (!isEmpty(intrudeInformations)) {
             try {
               await intrude(intrudeInformations)
+              eventDispatch('phone-island-intrude-call', { to: intrudeInformations?.endpointId })
             } catch (e) {
               console.error(e)
               return []
