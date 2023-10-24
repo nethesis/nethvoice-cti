@@ -30,7 +30,9 @@
     "time_distance_ago": "{{ timeDistance }} fa",
     "Try changing your search filters": "Prova a modificare i filtri di ricerca",
     "Reset to defaults": "Ripristina valori predefiniti",
-    "Download": "Scarica"
+    "Download": "Scarica",
+    "Intrude": "Intromesso",
+    "Listen": "Ascolto"
   },
   "Login": {
     "User": "Utente",
@@ -414,5 +416,26 @@
   "NavBars": {
     "Speed dial": "Chiamata rapida",
     "Last calls": "Ultime chiamate"
+  },
+  "Tooltip": {
+    "Hangup": "Chiudi",
+    "Pause": "Pausa",
+    "Play": "Riproduci",
+    "Mute": "Muto",
+    "Unmute": "Togli muto",
+    "Transfer": "Trasferisci",
+    "Cancel transfer": "Annulla trasferimento",
+    "Collapse": "Riduci",
+    "Expand": "Espandi",
+    "Keyboard": "Tastiera",
+    "Park": "Parcheggia",
+    "Back to call": "Torna alla chiamata",
+    "Stop": "Stop",
+    "Delete": "Elimina",
+    "Confirm": "Conferma",
+    "Start recording": "Inizia registrazione",
+    "Switch call": "Scambia chiamata",
+    "Call to transfer": "Chiamata da trasferire",
+    "Hangup and transfer": "Chiudi e trasferisci"
   }
 }
