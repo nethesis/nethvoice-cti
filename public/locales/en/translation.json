@@ -38,7 +38,7 @@
     "Permission error": "Permission error",
     "Permission error message content": "Sorry, it seems that you don’t have the permission to access this page.",
     "Permission error message content link": "Fortunately you can go back to",
-    "Main page":"Main page",
+    "Main page": "Main page",
     "Close": "Close",
     "SessionExpired": "Session expired",
     "DoubleLogin": "Login duplicated",
@@ -47,7 +47,9 @@
     "You have made login in another tab": "You have made login in another tab",
     "Click to redirect": "Click to redirect",
     "": "Login",
-    "Login": "Login"
+    "Login": "Login",
+    "Intrude": "Intrude",
+    "Listen": "Listen"
   },
   "Login": {
     "User": "User",
@@ -646,5 +648,26 @@
     "Parking": "Parking",
     "Hold": "Hold",
     "Click and hold to take current parking in call": "Click and hold to take current parking in call"
+  },
+  "Tooltip": {
+    "Hangup": "Hangup",
+    "Pause": "Pause",
+    "Play": "Play",
+    "Mute": "Mute",
+    "Unmute": "Unmute",
+    "Transfer": "Transfer",
+    "Cancel transfer": "Cancel transfer",
+    "Collapse": "Collapse",
+    "Expand": "Expand",
+    "Keyboard": "Keyboard",
+    "Park": "Park",
+    "Back to call": "Back to call",
+    "Stop": "Stop",
+    "Delete": "Delete",
+    "Confirm": "Confirm",
+    "Start recording": "Start recording",
+    "Switch call": "Switch call",
+    "Call to transfer": "Call to transfer",
+    "Hangup and transfer": "Hangup and transfer"
   }
 }
