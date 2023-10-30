@@ -102,7 +102,7 @@ export const LastCallsDrawerTable = forwardRef<HTMLButtonElement, LastCallsDrawe
       if (!isLoaded) {
         retrieveLastCalls()
       }
-    // eslint-disable-next-line react-hooks/exhaustive-deps
+      // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [firstRender, isLoaded])
 
     useEffect(() => {
@@ -275,31 +275,64 @@ export const LastCallsDrawerTable = forwardRef<HTMLButtonElement, LastCallsDrawe
         )}
         {/* Last calls list */}
         {isLoaded && !errorMessage && lastCalls?.rows && !!lastCalls.rows.length && (
-          <div className='overflow-hidden sm:rounded-md bg-white dark:bg-gray-900'>
-            <ul role='list' className='divide-y divide-gray-200 dark:divide-gray-700'>
-              {isLoaded &&
-                lastCalls?.rows &&
-                lastCalls.rows.map((call: any, index: number) => (
-                  <li key={index}>
-                    <div className='flex items-center justify-between gap-4 py-4 text-sm'>
-                      {/* Date column */}
-                      <CallsDate call={call} />
-                      {/* Source column  */}
-                      <CallsSource call={call} operators={operators} />
-                      {/* Arrow column */}
-                      <FontAwesomeIcon
-                        icon={faArrowRight}
-                        className='h-4 w-4 flex-shrink-0 text-gray-500 dark:text-gray-600'
-                        aria-hidden='true'
-                      />
-                      {/* Destination column */}
-                      <CallsDestination call={call} operators={operators} />
-                      {callType === 'user' && <UserCallStatusIcon call={call} />}
-                      {callType === 'switchboard' && checkIconSwitchboard(call)}
-                    </div>
-                  </li>
-                ))}
-            </ul>
+          <div className='mx-auto'>
+            <div className='flex flex-col'>
+              <div className='-my-2 -mx-4 overflow-x-hidden'>
+                <div className='inline-block min-w-full py-2 align-middle px-2 md:px-6 lg:px-8'>
+                  <div className='shadow ring-1 ring-black ring-opacity-5 md:rounded-lg'>
+                    {isLoaded && lastCalls?.rows && (
+                      <div className='overflow-y-auto scrollbar-thin scrollbar-thumb-gray-400 dark:scrollbar-thumb-gray-400 scrollbar-thumb-rounded-full scrollbar-thumb-opacity-50 scrollbar-track-gray-200 dark:scrollbar-track-gray-900 scrollbar-track-rounded-full scrollbar-track-opacity-25'>
+                        <div className='max-h-[36rem]'>
+                          <table className='min-w-full divide-y divide-gray-300 dark:divide-gray-700'>
+                            <tbody className='divide-y divide-gray-200 dark:divide-gray-700 bg-white dark:bg-gray-900 text-gray-700 text-sm'>
+                              {/* Not empty state  */}
+                              {isLoaded &&
+                                lastCalls?.rows &&
+                                lastCalls.rows.map((call: any, index: number) => (
+                                  <tr key={index}>
+                                    {/* Date */}
+                                    <td className='whitespace-nowrap py-4 pr-3'>
+                                      {/* Date column */}
+                                      <CallsDate call={call} />
+                                    </td>
+
+                                    {/* Source */}
+                                    <td className='px-3 py-4 whitespace-nowrap'>
+                                      <CallsSource call={call} operators={operators} />
+                                    </td>
+
+                                    {/* Icon column */}
+                                    <td className='pl-2 pr-6 py-4'>
+                                      <FontAwesomeIcon
+                                        icon={faArrowRight}
+                                        className='ml-0 h-4 w-4 flex-shrink-0 text-gray-500 dark:text-gray-600'
+                                        aria-hidden='true'
+                                      />
+                                    </td>
+
+                                    {/* Destination */}
+                                    <td className='px-3 py-4 whitespace-nowrap'>
+                                      {/* Destination column */}
+                                      <CallsDestination call={call} operators={operators} />
+                                    </td>
+
+                                    {/* Outcome */}
+                                    <td className='px-3 py-4'>
+                                      {callType === 'user' && <UserCallStatusIcon call={call} />}
+                                      {callType === 'switchboard' &&
+                                        checkIconSwitchboard(call)}{' '}
+                                    </td>
+                                  </tr>
+                                ))}
+                            </tbody>
+                          </table>
+                        </div>
+                      </div>
+                    )}
+                  </div>
+                </div>
+              </div>
+            </div>
           </div>
         )}
       </>
