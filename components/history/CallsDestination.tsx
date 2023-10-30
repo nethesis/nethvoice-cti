@@ -40,7 +40,7 @@ export const CallsDestination: FC<CallsDestinationProps> = ({
         <div
           className={classNames(
             `tooltip-dest-${cleanString(getCallName(call) || '-')}`,
-            'truncate text-gray-900 dark:text-gray-200 leading-4 font-medium text-sm',
+            'truncate text-gray-900 dark:text-gray-200 leading-4 font-medium text-sm w-28 whitespace-nowrap',
           )}
         >
           {getCallName(call) || '-'}
