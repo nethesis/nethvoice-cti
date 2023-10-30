@@ -234,7 +234,7 @@ export const QueuesManagementView: FC<QueuesManagementViewProps> = ({ className 
   }
 
   const loginSingleQueue = (queue: any) => {
-    loginToQueue(mainextension, queue.queue)
+    loginToQueue(mainextension, queue?.queue)
   }
 
   const logoutSingleQueue = (queue: any) => {

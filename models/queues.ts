@@ -84,6 +84,15 @@ export const queues = createModel<RootModel>()({
       queue.operatorsExpanded = expanded
       return state
     },
+    updateActiveOperators: (state, queueId: string, isMemberActive: boolean) => {
+      const queue = state.queues[queueId]
+      if (isMemberActive && queue?.numActiveOperators) {
+        queue.numActiveOperators += 1
+      } else {
+        queue.numActiveOperators -= 1
+      }
+      return state
+    },
     processQueue: (state, payload: ProcessQueueProps) => {
       let queueData = payload.queueData
       let queueId = queueData.queue

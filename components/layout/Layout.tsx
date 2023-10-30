@@ -654,6 +654,14 @@ export const Layout: FC<LayoutProps> = ({ children }) => {
     const queueMemberData = data[opMainExtension]
     store.dispatch.queues.setQueueMember(queueMemberData)
     store.dispatch.queueManagerQueues.setQueueMember(queueMemberData)
+    const queueId = queueMemberData?.queue
+    let isMemberActive = false
+    if (queueMemberData?.loggedIn && !queueMemberData?.paused) {
+      isMemberActive = true
+    } else {
+      isMemberActive = false
+    }
+    store.dispatch.queues.updateActiveOperators(queueId, isMemberActive)
   })
 
   //check if the user makes a double login
