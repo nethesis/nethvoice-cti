@@ -315,19 +315,22 @@ export const ShowOperatorDrawerContent = forwardRef<
         <OperatorSummary operator={config} isShownFavorite={true} isShownSideDrawerLink={false} />
 
         {/* ongoing call info */}
-        {!!config?.conversations?.length &&
-          (config?.conversations[0]?.connected ||
-            config?.conversations[0]?.inConference ||
-            config?.conversations[0]?.chDest?.inConference == true ||
-            !isEmpty(config?.conversations[0])) && (
+        {!!operators?.operators[config?.username]?.conversations?.length &&
+          (operators?.operators[config?.username]?.conversations[0]?.connected ||
+            operators?.operators[config?.username]?.conversations[0]?.inConference ||
+            operators?.operators[config?.username]?.conversations[0]?.chDest?.inConference ==
+              true ||
+            !isEmpty(operators?.operators[config?.username]?.conversations[0])) && (
             <div>
               <div className='mt-6 flex items-end justify-between'>
                 <h4 className='text-md font-medium text-gray-700 dark:text-gray-200'>
                   {t('OperatorDrawer.Current call')}
                 </h4>
                 <div>
-                  {config?.conversations[0]?.chDest?.callerName != profile?.name &&
-                    config?.conversations[0]?.chSource?.callerName != profile?.name && (
+                  {operators?.operators[config?.username]?.conversations[0]?.chDest?.callerName !=
+                    profile?.name &&
+                    operators?.operators[config?.username]?.conversations[0]?.chSource
+                      ?.callerName != profile?.name && (
                       <>
                         {/* ongoing call menu */}
                         <Dropdown items={getCallActionsMenu(config)} position='left'>
@@ -350,11 +353,13 @@ export const ShowOperatorDrawerContent = forwardRef<
                       {t('OperatorDrawer.Contact')}
                     </dt>
                     <dd className='mt-1 text-sm text-gray-900 dark:text-gray-100 sm:col-span-2 sm:mt-0'>
-                      {config?.conversations[0]?.counterpartName !==
-                        config?.conversations[0]?.counterpartNum && (
+                      {operators?.operators[config?.username]?.conversations[0]?.counterpartName !==
+                        operators?.operators[config?.username]?.conversations[0]
+                          ?.counterpartNum && (
                         <div className='mb-1.5 flex items-center text-sm'>
                           <span className='truncate'>
-                            {config?.conversations[0]?.counterpartName || '-'}
+                            {operators?.operators[config?.username]?.conversations[0]
+                              ?.counterpartName || '-'}
                           </span>
                         </div>
                       )}
@@ -366,7 +371,8 @@ export const ShowOperatorDrawerContent = forwardRef<
                           aria-hidden='true'
                         />
                         <span className='truncate'>
-                          {config?.conversations[0]?.counterpartNum || '-'}
+                          {operators?.operators[config?.username]?.conversations[0]
+                            ?.counterpartNum || '-'}
                         </span>
                       </div>
                     </dd>
@@ -377,7 +383,8 @@ export const ShowOperatorDrawerContent = forwardRef<
                       {t('OperatorDrawer.Direction')}
                     </dt>
                     <dd className='mt-1 text-sm text-gray-900 dark:text-gray-100 sm:col-span-2 sm:mt-0'>
-                      {config?.conversations[0]?.direction == 'out' && (
+                      {operators?.operators[config?.username]?.conversations[0]?.direction ==
+                        'out' && (
                         <div className='flex items-center text-sm'>
                           <FontAwesomeIcon
                             icon={faArrowLeft}
@@ -387,7 +394,8 @@ export const ShowOperatorDrawerContent = forwardRef<
                           <span className='truncate'> {t('OperatorDrawer.Outgoing')}</span>
                         </div>
                       )}
-                      {config?.conversations[0]?.direction == 'in' && (
+                      {operators?.operators[config?.username]?.conversations[0]?.direction ==
+                        'in' && (
                         <div className='flex items-center text-sm'>
                           <FontAwesomeIcon
                             icon={faArrowLeft}
@@ -407,9 +415,13 @@ export const ShowOperatorDrawerContent = forwardRef<
                     <dd className='mt-1 text-sm text-gray-900 dark:text-gray-100 sm:col-span-2 sm:mt-0'>
                       <div
                         className='flex items-center text-sm'
-                        key={`callDuration-${config?.username}`}
+                        key={`callDuration-${operators?.operators[config?.username]?.username}`}
                       >
-                        <CallDuration startTime={config?.conversations[0]?.startTime} />
+                        <CallDuration
+                          startTime={
+                            operators?.operators[config?.username]?.conversations[0]?.startTime
+                          }
+                        />
                       </div>
                     </dd>
                   </div>
