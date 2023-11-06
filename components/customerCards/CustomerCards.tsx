@@ -16,7 +16,7 @@ import { LastCallsDrawerTable } from '../history/LastCallsDrawerTable'
 import { startOfDay, subDays } from 'date-fns'
 import { isEmpty } from 'lodash'
 import { Avatar, EmptyState } from '../common'
-import { getPhonebook, retrieveContact } from '../../lib/phonebook'
+import { getPhonebook, openShowContactDrawer, retrieveContact } from '../../lib/phonebook'
 import { callPhoneNumber, openEmailClient } from '../../lib/utils'
 import { Tooltip } from 'react-tooltip'
 
@@ -88,6 +88,22 @@ export const CustomerCardsCustomerData: FC<CustomerCardsCustomerDataViewProps> =
     searchCompanyCardInformation()
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [companyInformation])
+
+  const openCustomerCardOperatorDrawer = (operatorInformation: any, contactType: any) => {
+    const updatedOperatorInformation = { ...operatorInformation };
+  
+    if (contactType === 'person') {
+      updatedOperatorInformation.displayName = updatedOperatorInformation?.name || '-';
+      updatedOperatorInformation.kind = 'person';
+    } else {
+      updatedOperatorInformation.displayName = updatedOperatorInformation?.company || '-';
+      updatedOperatorInformation.kind = 'company';
+    }
+  
+    if (updatedOperatorInformation) {
+      openShowContactDrawer(updatedOperatorInformation);
+    }
+  }
 
   return (
     <>
@@ -197,7 +213,7 @@ export const CustomerCardsCustomerData: FC<CustomerCardsCustomerDataViewProps> =
                     />
                   )}
                   <ul role='list' className='grid grid-cols-1 gap-6 xl:grid-cols-2 3xl:grid-cols-3'>
-                    {companyContacts.map((contact, index) => {
+                    {companyContacts?.map((contact, index) => {
                       return (
                         <li
                           key={index}
@@ -214,13 +230,17 @@ export const CustomerCardsCustomerData: FC<CustomerCardsCustomerDataViewProps> =
                                       <Avatar
                                         className='cursor-pointer'
                                         placeholderType='person'
-                                        // onClick={() => openShowContactDrawer(contact)}
+                                        onClick={() =>
+                                          openCustomerCardOperatorDrawer(contact, 'person')
+                                        }
                                       />
                                     </div>
                                     <div className='ml-4'>
                                       <div
                                         className='font-medium text-gray-700 dark:text-gray-100'
-                                        // onClick={() => openShowContactDrawer(contact)}
+                                        onClick={() =>
+                                          openCustomerCardOperatorDrawer(contact, 'person')
+                                        }
                                       >
                                         {' '}
                                         <span className='cursor-pointer hover:underline'>
@@ -356,13 +376,23 @@ export const CustomerCardsCustomerData: FC<CustomerCardsCustomerDataViewProps> =
                                     <Avatar
                                       // className='cursor-pointer'
                                       placeholderType='company'
-                                      // onClick={() => openShowContactDrawer(contact)}
+                                      // onClick={() =>
+                                      //   openCustomerCardOperatorDrawer(
+                                      //     companyCardInformation,
+                                      //     'company',
+                                      //   )
+                                      // }
                                     />
                                   </div>
                                   <div className='ml-4'>
                                     <div
                                       className='font-medium text-gray-700 dark:text-gray-100'
-                                      // onClick={() => openShowContactDrawer(contact)}
+                                      // onClick={() =>
+                                      //   openCustomerCardOperatorDrawer(
+                                      //     companyCardInformation,
+                                      //     'company',
+                                      //   )
+                                      // }
                                     >
                                       {' '}
                                       <span
