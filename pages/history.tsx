@@ -21,7 +21,6 @@ import {
   faArrowLeft,
   faVoicemail,
   faPhone,
-  faExclamationTriangle,
 } from '@fortawesome/free-solid-svg-icons'
 import { formatDateLoc } from '../lib/dateTime'
 import { subDays, startOfDay } from 'date-fns'

@@ -373,6 +373,15 @@ export const Layout: FC<LayoutProps> = ({ children }) => {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [variableCheck])
 
+  function isObjectEmpty(obj: any) {
+    for (const key in obj) {
+      if (obj.hasOwnProperty(key)) {
+        return false
+      }
+    }
+    return true
+  }
+
   useEventListener('phone-island-conversations', (data) => {
     const opName = Object.keys(data)[0]
     const conversations = data[opName].conversations
@@ -385,7 +394,7 @@ export const Layout: FC<LayoutProps> = ({ children }) => {
     let queueManagerConnectedCalls: any = {}
 
     Object.values(conversations).forEach((conversation: any) => {
-      if (conversation.throughQueue && conversation.connected && conversation.queueId) {
+      if (conversation?.throughQueue && conversation?.connected && conversation?.queueId) {
         const queueFound = queuesStore.queues[conversation.queueId]
         const queueManagerFound = queueManagerStore.queues[conversation.queueId]
 
@@ -405,17 +414,36 @@ export const Layout: FC<LayoutProps> = ({ children }) => {
 
     Object.keys(queueConnectedCalls).forEach((queueId: string) => {
       const connectedCalls = queueConnectedCalls[queueId]
-      store.dispatch.queues.setConnectedCalls(queueId, connectedCalls)
+      store?.dispatch?.queues?.setConnectedCalls(queueId, connectedCalls)
     })
 
     Object.keys(queueConnectedCalls).forEach((queueId: string) => {
       const connectedQueueManagerCalls = queueManagerConnectedCalls[queueId]
-      store.dispatch.queueManagerQueues.setConnectedCalls(queueId, connectedQueueManagerCalls)
+      store?.dispatch?.queueManagerQueues?.setConnectedCalls(queueId, connectedQueueManagerCalls)
     })
+
+    // To delete connected calls we need to check user inside store
+    // and also user inside data received from phone island event
+    for (const queueId in queuesStore?.queues) {
+      const queue = queuesStore?.queues[queueId]
+
+      if (!isObjectEmpty(queue?.connectedCalls)) {
+        const updatedConnectedCalls = queue.connectedCalls.filter((call: any) => {
+          if (data[call?.operatorUsername]) {
+            const conversation = data[call?.operatorUsername].conversations
+            return !isObjectEmpty(conversation)
+          }
+
+          return true
+        })
+
+        store.dispatch.queues.setConnectedCalls(queueId, updatedConnectedCalls)
+      }
+    }
 
     // If user start a call or receive a call close side drawer
     if (data[currentUsername] && isEmpty(data[currentUsername]?.conversations)) {
-      dispatch.sideDrawer.setShown(false)
+      dispatch?.sideDrawer?.setShown(false)
     }
 
     // When user close listen call set to false and empty id conversation
@@ -424,7 +452,7 @@ export const Layout: FC<LayoutProps> = ({ children }) => {
         isListening: false,
         listening_id: '',
       }
-      store.dispatch.userActions.updateListeningInformation(listeningInformations)
+      store?.dispatch?.userActions?.updateListeningInformation(listeningInformations)
     }
 
     // When user close intrude call set to false and empty id conversation
@@ -433,7 +461,7 @@ export const Layout: FC<LayoutProps> = ({ children }) => {
         isIntrude: false,
         intrude_id: '',
       }
-      store.dispatch.userActions.updateIntrudeInformation(intrudeInfo)
+      store?.dispatch?.userActions?.updateIntrudeInformation(intrudeInfo)
     }
 
     setVariableCheck(false)
@@ -652,23 +680,15 @@ export const Layout: FC<LayoutProps> = ({ children }) => {
   useEventListener('phone-island-queue-member-update', (data: any) => {
     const opMainExtension = Object.keys(data)[0]
     const queueMemberData = data[opMainExtension]
-    store.dispatch.queues.setQueueMember(queueMemberData)
-    store.dispatch.queueManagerQueues.setQueueMember(queueMemberData)
-    const queueId = queueMemberData?.queue
-    let isMemberActive = false
-    if (queueMemberData?.loggedIn && !queueMemberData?.paused) {
-      isMemberActive = true
-    } else {
-      isMemberActive = false
-    }
-    store.dispatch.queues.updateActiveOperators(queueId, isMemberActive)
+    store?.dispatch?.queues?.setQueueMember(queueMemberData)
+    store?.dispatch?.queueManagerQueues?.setQueueMember(queueMemberData)
   })
 
   //check if the user makes a double login
   useEventListener('phone-island-user-already-login', () => {
-    if (!ctiStatus.webRtcError) {
+    if (!ctiStatus?.webRtcError) {
       // update global store
-      store.dispatch.ctiStatus.setWebRtcError(true)
+      store?.dispatch?.ctiStatus?.setWebRtcError(true)
       // force logout
       let isLogoutError: any = {
         isWebrtcError: true,
@@ -708,6 +728,7 @@ export const Layout: FC<LayoutProps> = ({ children }) => {
         closeToast()
       }, timeoutSeconds)
     }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [toast])
 
   //Avoid to see customer card if customer list is empty and preferences is not setted to never show

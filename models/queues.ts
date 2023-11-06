@@ -85,10 +85,10 @@ export const queues = createModel<RootModel>()({
       return state
     },
     updateActiveOperators: (state, queueId: string, isMemberActive: boolean) => {
-      const queue = state.queues[queueId]
+      const queue = state?.queues[queueId]
       if (isMemberActive && queue?.numActiveOperators) {
         queue.numActiveOperators += 1
-      } else {
+      } else if (!isMemberActive && queue?.numActiveOperators !== 0) {
         queue.numActiveOperators -= 1
       }
       return state

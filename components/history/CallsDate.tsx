@@ -7,7 +7,7 @@ import { utcToZonedTime } from 'date-fns-tz'
 import { formatDistanceToNow, intervalToDuration } from 'date-fns'
 
 interface CallsDateProps {
-  call: CallTypes
+  call: any
   spaced?: boolean
 }
 
@@ -46,7 +46,7 @@ export const CallsDate: FC<CallsDateProps> = ({ call, spaced }) => {
         {getCallDistanceToNowTemplate(call.time * 1000)}
       </div>
       <div className='text-sm text-gray-600 dark:text-gray-100 font-normal leading-5	'>
-      ({formatDateLoc(call.time * 1000, 'PP')} {getCallTimeToDisplay(call.time * 1000)})
+        ({formatDateLoc(call.time * 1000, 'PP')} {getCallTimeToDisplay(call.time * 1000)})
       </div>
     </div>
   )
