@@ -126,15 +126,15 @@ export const queueManagerQueues = createModel<RootModel>()({
       queueData.members = updatedMembers
 
       let numActiveOperators = 0
-      Object.values(queueData.members).forEach((operator: any) => {
-        if (operator.loggedIn && !operator.paused) {
+      Object.values(queueData?.members).forEach((operator: any) => {
+        if (operator?.loggedIn && !operator?.paused) {
           numActiveOperators++
         }
       })
       queueData.numActiveOperators = numActiveOperators
 
       let onlineOperators = 0
-      Object.values(queueData.members).forEach((operator: any) => {
+      Object.values(queueData?.members).forEach((operator: any) => {
         if (operator.loggedIn) {
           onlineOperators++
         }

@@ -23,6 +23,7 @@ import { useSelector } from 'react-redux'
 import { RootState } from '../../store'
 import { loadPreference } from '../../lib/storage'
 import Link from 'next/link'
+import { CallsDate } from '../history/CallsDate'
 
 export interface CallsViewProps extends ComponentProps<'div'> {}
 
@@ -278,16 +279,8 @@ export const CallsView: FC<CallsViewProps> = ({ className }): JSX.Element => {
                           calls?.rows?.map((call: any, index: number) => (
                             <tr key={index}>
                               {/* time */}
-                              <td className='py-4 pl-4 pr-3 sm:pl-6'>
-                                <div className='flex flex-col'>
-                                  <div>{formatDateLoc(call.time * 1000, 'PP')}</div>
-                                  <div className='text-gray-500 dark:text-gray-500'>
-                                    {getCallTimeToDisplay(call.time * 1000) +
-                                      ' (' +
-                                      getCallDistanceToNowTemplate(call.time * 1000) +
-                                      ')'}
-                                  </div>
-                                </div>
+                              <td className='whitespace-nowrap py-4 pl-4 pr-3 sm:pl-6'>
+                                <CallsDate call={call} />
                               </td>
                               {/* queue */}
                               <td className='px-3 py-4'>

@@ -213,7 +213,7 @@ export const QueuesManagementView: FC<QueuesManagementViewProps> = ({ className 
     })
 
     queuesToLogin.forEach((queue: any) => {
-      loginToQueue(mainextension, queue.queue)
+      loginSingleQueue(queue)
     })
   }
 
@@ -228,17 +228,22 @@ export const QueuesManagementView: FC<QueuesManagementViewProps> = ({ className 
 
   const logoutAllQueues = () => {
     queuesToLogout.forEach((queue: any) => {
-      logoutFromQueue(mainextension, queue.queue)
+      logoutSingleQueue(queue)
     })
     setShowLogoutAllQueuesModal(false)
   }
 
   const loginSingleQueue = (queue: any) => {
+    let isMemberActive = false
     loginToQueue(mainextension, queue?.queue)
+    isMemberActive = true
+    store.dispatch.queues.updateActiveOperators(queue?.queue, isMemberActive)
   }
 
   const logoutSingleQueue = (queue: any) => {
+    let isMemberActive = false
     logoutFromQueue(mainextension, queue.queue)
+    store.dispatch.queues.updateActiveOperators(queue?.queue, isMemberActive)
   }
 
   const pauseAllQueues = (reason: string) => {
@@ -551,17 +556,17 @@ export const QueuesManagementView: FC<QueuesManagementViewProps> = ({ className 
                         <div
                           className={classNames(
                             'flex items-center gap-2',
-                            `tooltip-waiting-calls-${queue.queue}`,
+                            `tooltip-waiting-calls-${queue?.queue}`,
                           )}
                         >
                           <FontAwesomeIcon
                             icon={faPause}
                             className='h-4 w-4 text-gray-400 dark:text-gray-500'
                           />
-                          <span>{queue.waitingCallersList.length}</span>
+                          <span>{queue?.waitingCallersList?.length}</span>
                         </div>
                         <Tooltip
-                          anchorSelect={`.tooltip-waiting-calls-${queue.queue}`}
+                          anchorSelect={`.tooltip-waiting-calls-${queue?.queue}`}
                           place='bottom'
                         >
                           {t('Queues.Waiting calls')}
@@ -570,17 +575,17 @@ export const QueuesManagementView: FC<QueuesManagementViewProps> = ({ className 
                         <div
                           className={classNames(
                             'flex items-center gap-2',
-                            `tooltip-connected-calls-${queue.queue}`,
+                            `tooltip-connected-calls-${queue?.queue}`,
                           )}
                         >
                           <FontAwesomeIcon
                             icon={faDownLeftAndUpRightToCenter}
                             className='h-4 w-4 text-gray-400 dark:text-gray-500'
                           />
-                          <span>{queue.connectedCalls.length}</span>
+                          <span>{queue?.connectedCalls?.length}</span>
                         </div>
                         <Tooltip
-                          anchorSelect={`.tooltip-connected-calls-${queue.queue}`}
+                          anchorSelect={`.tooltip-connected-calls-${queue?.queue}`}
                           place='bottom'
                         >
                           {t('Queues.Connected calls')}
@@ -589,17 +594,17 @@ export const QueuesManagementView: FC<QueuesManagementViewProps> = ({ className 
                         <div
                           className={classNames(
                             'flex items-center gap-2',
-                            `tooltip-active-operators-${queue.queue}`,
+                            `tooltip-active-operators-${queue?.queue}`,
                           )}
                         >
                           <FontAwesomeIcon
                             icon={faHeadset}
                             className='h-4 w-4 text-gray-400 dark:text-gray-500'
                           />
-                          <span>{queue.numActiveOperators}</span>
+                          <span>{queue?.numActiveOperators}</span>
                         </div>
                         <Tooltip
-                          anchorSelect={`.tooltip-active-operators-${queue.queue}`}
+                          anchorSelect={`.tooltip-active-operators-${queue?.queue}`}
                           place='bottom'
                         >
                           {t('Queues.Active operators')}
@@ -621,21 +626,21 @@ export const QueuesManagementView: FC<QueuesManagementViewProps> = ({ className 
                           <div className='flex flex-col text-sm overflow-hidden'>
                             <div className='truncate'>{name}</div>
                             <LoggedStatus
-                              loggedIn={queue.members[mainextension].loggedIn}
-                              paused={queue.members[mainextension].paused}
+                              loggedIn={queue?.members[mainextension]?.loggedIn}
+                              paused={queue?.members[mainextension]?.paused}
                             />
                           </div>
                         </div>
                         {/* login/logout and pause buttons */}
                         <div className='flex items-center shrink-0'>
-                          {queue.members[mainextension].loggedIn ? (
+                          {queue?.members[mainextension]?.loggedIn ? (
                             <>
                               {/* logout button */}
                               <Button
                                 variant='white'
                                 className='mr-2'
                                 onClick={() => logoutSingleQueue(queue)}
-                                disabled={queue.members[mainextension].type !== 'dynamic'}
+                                disabled={queue?.members[mainextension]?.type !== 'dynamic'}
                               >
                                 <FontAwesomeIcon
                                   icon={faUserXmark}
@@ -651,7 +656,7 @@ export const QueuesManagementView: FC<QueuesManagementViewProps> = ({ className 
                                 variant='white'
                                 className='mr-2'
                                 onClick={() => loginSingleQueue(queue)}
-                                disabled={queue.members[mainextension].type !== 'dynamic'}
+                                disabled={queue?.members[mainextension]?.type !== 'dynamic'}
                               >
                                 <FontAwesomeIcon
                                   icon={faUserCheck}
@@ -661,13 +666,13 @@ export const QueuesManagementView: FC<QueuesManagementViewProps> = ({ className 
                               </Button>
                             </>
                           )}
-                          {queue.members[mainextension].paused ? (
+                          {queue?.members[mainextension]?.paused ? (
                             <>
                               {/* unpause button */}
                               <Button
                                 variant='white'
                                 onClick={() => unpauseSingleQueue(queue)}
-                                disabled={!queue.members[mainextension].loggedIn}
+                                disabled={!queue?.members[mainextension]?.loggedIn}
                               >
                                 <FontAwesomeIcon
                                   icon={faUserClock}
@@ -681,7 +686,7 @@ export const QueuesManagementView: FC<QueuesManagementViewProps> = ({ className 
                               {/* pause menu */}
                               <Dropdown
                                 items={
-                                  queue.members[mainextension].loggedIn
+                                  queue?.members[mainextension]?.loggedIn
                                     ? getPauseSingleQueueItemsMenu(queue)
                                     : null
                                 }
@@ -689,7 +694,7 @@ export const QueuesManagementView: FC<QueuesManagementViewProps> = ({ className 
                               >
                                 <Button
                                   variant='white'
-                                  disabled={!queue.members[mainextension].loggedIn}
+                                  disabled={!queue?.members[mainextension]?.loggedIn}
                                 >
                                   <span>{t('Queues.Pause')}</span>
                                   <FontAwesomeIcon
@@ -714,7 +719,7 @@ export const QueuesManagementView: FC<QueuesManagementViewProps> = ({ className 
                         </div>
                       </div>
                       {/* expand sections */}
-                      {queue.expanded && (
+                      {queue?.expanded && (
                         <div className='flex flex-col gap-5 mt-5 text-left'>
                           {/* waiting calls */}
                           <div>
@@ -729,7 +734,7 @@ export const QueuesManagementView: FC<QueuesManagementViewProps> = ({ className 
                               </div>
                               <div>
                                 <FontAwesomeIcon
-                                  icon={queue.waitingCallsExpanded ? faChevronUp : faChevronDown}
+                                  icon={queue?.waitingCallsExpanded ? faChevronUp : faChevronDown}
                                   onClick={() => toggleWaitingCallsExpanded(queue)}
                                   className='h-3.5 w-3.5 pl-2 py-2 cursor-pointer'
                                   aria-hidden='true'
