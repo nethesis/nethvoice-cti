@@ -424,6 +424,7 @@ export const Layout: FC<LayoutProps> = ({ children }) => {
 
     // To delete connected calls we need to check user inside store
     // and also user inside data received from phone island event
+    //Queues
     for (const queueId in queuesStore?.queues) {
       const queue = queuesStore?.queues[queueId]
 
@@ -440,6 +441,27 @@ export const Layout: FC<LayoutProps> = ({ children }) => {
         store.dispatch.queues.setConnectedCalls(queueId, updatedConnectedCalls)
       }
     }
+
+    //Queue manager
+    for (const queueId in queueManagerStore?.queues) {
+      const queueManagerQueues = queueManagerStore?.queues[queueId]
+
+      if (!isObjectEmpty(queueManagerQueues?.connectedCalls)) {
+        const updatedConnectedCalls = queueManagerQueues.connectedCalls.filter((call: any) => {
+          if (data[call?.operatorUsername]) {
+            const conversation = data[call?.operatorUsername].conversations
+            return !isObjectEmpty(conversation)
+          }
+
+          return true
+        })
+
+        store.dispatch.queueManagerQueues.setConnectedCalls(queueId, updatedConnectedCalls)
+      }
+    }
+
+
+
 
     // If user start a call or receive a call close side drawer
     if (data[currentUsername] && isEmpty(data[currentUsername]?.conversations)) {
