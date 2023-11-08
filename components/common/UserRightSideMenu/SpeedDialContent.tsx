@@ -57,6 +57,7 @@ export const SpeedDialContent = () => {
   const [getSpeedDialError, setGetSpeedDialError] = useState('')
 
   const { profile } = useSelector((state: RootState) => state.user)
+  const operators: any = useSelector((state: RootState) => state.operators)
 
   const [firstRender, setFirstRender] = useState(true)
 
@@ -219,6 +220,7 @@ export const SpeedDialContent = () => {
       )}
     </>
   )
+
   return (
     <>
       <div className='flex h-full flex-col bg-white dark:bg-gray-900'>
@@ -289,7 +291,7 @@ export const SpeedDialContent = () => {
           )}
           {/* Iterate through speed dial list */}
           {isSpeedDialLoaded &&
-            speedDials.map((speedDial, key) => (
+            speedDials.map((speedDial: any, key: any) => (
               <li key={key}>
                 <div className='group relative flex items-center py-2 px-5'>
                   <div
@@ -299,7 +301,22 @@ export const SpeedDialContent = () => {
                   <div className='relative flex min-w-0 flex-1 items-center justify-between'>
                     <div className='flex items-center'>
                       <span className='text-gray-300 dark:text-gray-600'>
-                        <Avatar size='base' placeholderType='person' />
+                        {/* <Avatar size='base' placeholderType='person' /> */}
+
+                        <Avatar
+                          size='base'
+                          src={
+                            operators?.avatars[
+                              operators?.extensions[speedDial?.speeddial_num]?.username
+                            ]
+                          }
+                          status={
+                            operators?.operators[
+                              operators?.extensions[speedDial?.speeddial_num]?.username
+                            ]?.mainPresence
+                          }
+                          placeholderType='operator'
+                        />
                       </span>
                       <div className='ml-4 truncate'>
                         <p className='truncate text-sm font-medium text-gray-700 dark:text-gray-200'>
