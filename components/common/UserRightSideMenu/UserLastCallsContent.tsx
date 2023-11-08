@@ -236,7 +236,6 @@ export const UserLastCallsContent = () => {
                             <UserCallStatusIcon call={call} />
                             <span
                               className='cursor-pointer hover:underline'
-                              onClick={() => callPhoneNumber(call.dst)}
                             >
                               {call.direction === 'in' ? (
                                 <CallsSource
@@ -244,6 +243,7 @@ export const UserLastCallsContent = () => {
                                   operators={operators}
                                   hideNumber={true}
                                   highlightNumber={true}
+                                  isExtensionNumberLastCalls={true}
                                 />
                               ) : (
                                 <CallsDestination
@@ -251,6 +251,7 @@ export const UserLastCallsContent = () => {
                                   operators={operators}
                                   hideNumber={true}
                                   highlightNumber={true}
+                                  isExtensionNumberLastCalls={true}
                                 />
                               )}
                             </span>

@@ -3,7 +3,7 @@ import { CallTypes } from '../../lib/history'
 import { Tooltip } from 'react-tooltip'
 import { getOperatorByPhoneNumber } from '../../lib/operators'
 import classNames from 'classnames'
-import { cleanString } from '../../lib/utils'
+import { callPhoneNumber, cleanString } from '../../lib/utils'
 
 interface CallsSourceProps {
   call: CallTypes
@@ -11,6 +11,7 @@ interface CallsSourceProps {
   hideNumber?: boolean
   highlightNumber?: boolean
   operators: any
+  isExtensionNumberLastCalls?: boolean
 }
 
 export function getCallName(call: CallTypes): string {
@@ -23,6 +24,7 @@ export const CallsSource: FC<CallsSourceProps> = ({
   hideNumber,
   highlightNumber,
   operators,
+  isExtensionNumberLastCalls,
 }) => {
   //Check if a user does not have a name and add the name of the operator
   if (call.cnam === '') {
@@ -34,26 +36,38 @@ export const CallsSource: FC<CallsSourceProps> = ({
   }
 
   return (
-    <div className='flex flex-col justify-center overflow-hidden'>
-      {/* name */}
-      {!hideNumber && (
-        <div
-          className={classNames(
-            `tooltip-source-${cleanString(getCallName(call) || '-')}`,
-            'truncate text-gray-900 dark:text-gray-200 leading-4 font-medium text-sm w-28 whitespace-nowrap',
+    <div className='flex flex-col justify-center overflow-hidden truncate w-16'>
+      {!isExtensionNumberLastCalls ? (
+        <>
+          {/* name */}
+          {!hideNumber && (
+            <div
+              className={classNames(
+                `tooltip-source-${cleanString(getCallName(call) || '-')}`,
+                'truncate text-gray-900 dark:text-gray-200 leading-4 font-medium text-sm whitespace-nowrap',
+              )}
+            >
+              {getCallName(call) || '-'}
+            </div>
           )}
-        >
-          {getCallName(call) || '-'}
-        </div>
-      )}
-      <Tooltip anchorSelect={`.tooltip-source-${cleanString(getCallName(call) || '-')}`}>
-        {getCallName(call) || '-'}
-      </Tooltip>
-      {/* phone number */}
-      {!hideName && call.cnum !== '' && (
-        <div className={`truncate ${highlightNumber ? 'text-primary' : 'text-gray-500'}`}>
-          {call.src}
-        </div>
+          <Tooltip anchorSelect={`.tooltip-source-${cleanString(getCallName(call) || '-')}`}>
+            {getCallName(call) || '-'}
+          </Tooltip>
+          {/* phone number */}
+          {!hideName && call.cnum !== '' && (
+            <div className={`truncate ${highlightNumber ? 'text-primary' : 'text-gray-500'}`}>
+              {call.src}
+            </div>
+          )}
+        </>
+      ) : (
+        <>
+          {call.cnum && (
+            <div className='truncate text-primary' onClick={() => callPhoneNumber(call.cnum)}>
+              {call.cnum}
+            </div>
+          )}
+        </>
       )}
     </div>
   )
