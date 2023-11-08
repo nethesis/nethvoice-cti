@@ -32,7 +32,9 @@
     "Reset to defaults": "Ripristina valori predefiniti",
     "Download": "Scarica",
     "Intrude": "Intromesso",
-    "Listen": "Ascolto"
+    "Listen": "Ascolto",
+    "0 minutes ago": "0 minuti fa",
+    "ago":"fa"
   },
   "Login": {
     "User": "Utente",
