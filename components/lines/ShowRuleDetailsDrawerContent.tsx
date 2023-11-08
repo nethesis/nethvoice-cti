@@ -161,7 +161,7 @@ export const ShowRuleDetailsContent = forwardRef<HTMLButtonElement, ShowRuleDeta
         <div className={classNames(className, 'p-5')} {...props}>
           {/* announcement name */}
           <div className='flex flex-col'>
-            <h4 className='text-md font-medium text-gray-700 dark:text-gray-200 mb-3'>
+            <h4 className='text-base font-medium text-gray-700 dark:text-gray-200 mb-3'>
               {t('Lines.Rule name')}
             </h4>
             <TextInput
@@ -178,7 +178,7 @@ export const ShowRuleDetailsContent = forwardRef<HTMLButtonElement, ShowRuleDeta
 
           {/* Activate Rule switch  */}
           <div className='flex items-center justify-between mt-6'>
-            <h4 className='text-md font-medium text-gray-700 dark:text-gray-200'>
+            <h4 className='text-base font-medium text-gray-700 dark:text-gray-200'>
               {t('Lines.Activate rule')}
             </h4>
             {/* <IconSwitch
@@ -201,7 +201,7 @@ export const ShowRuleDetailsContent = forwardRef<HTMLButtonElement, ShowRuleDeta
                 className='mr-4 h-4 w-4 flex-shrink-0 text-gray-400 dark:text-gray-500'
                 aria-hidden='true'
               />
-              <h4 className='text-md font-medium text-gray-700 dark:text-gray-200'>
+              <h4 className='text-base font-medium text-gray-700 dark:text-gray-200'>
                 {t('Lines.Activate announcement')}
               </h4>
             </div>
@@ -306,7 +306,7 @@ export const ShowRuleDetailsContent = forwardRef<HTMLButtonElement, ShowRuleDeta
                 className='mr-4 h-4 w-4 flex-shrink-0 text-gray-400 dark:text-gray-500'
                 aria-hidden='true'
               />
-              <h4 className='text-md font-medium text-gray-700 dark:text-gray-200'>
+              <h4 className='text-base font-medium text-gray-700 dark:text-gray-200'>
                 {t('Lines.Activate announcement + voicemail')}
               </h4>
             </div>
@@ -330,7 +330,7 @@ export const ShowRuleDetailsContent = forwardRef<HTMLButtonElement, ShowRuleDeta
                 className='mr-4 h-4 w-4 rotate-[270deg] flex-shrink-0 text-gray-400 dark:text-gray-500'
                 aria-hidden='true'
               />
-              <h4 className='text-md font-medium text-gray-700 dark:text-gray-200'>
+              <h4 className='text-base font-medium text-gray-700 dark:text-gray-200'>
                 {t('Lines.Activate forward')}
               </h4>
             </div>
@@ -352,7 +352,7 @@ export const ShowRuleDetailsContent = forwardRef<HTMLButtonElement, ShowRuleDeta
 
           {/* Lines select checkbox  */}
           <div className='flex items-center justify-between mt-6'>
-            <h4 className='text-md font-medium text-gray-700 dark:text-gray-200'>
+            <h4 className='text-base font-medium text-gray-700 dark:text-gray-200'>
               {t('Lines.Lines select')}
             </h4>
             <div className='flex items-center'>

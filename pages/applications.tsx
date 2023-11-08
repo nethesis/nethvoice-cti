@@ -38,7 +38,7 @@ const Applications: NextPage = () => {
           profile?.macro_permissions?.streaming?.value ||
           profile?.macro_permissions?.settings?.permissions?.video_conference?.value) && (
             <div>
-              <span className='text-md font-normal mb-4 text-gray-600 dark:text-gray-100'>
+              <span className='text-base font-normal mb-4 text-gray-600 dark:text-gray-100'>
                 {t('Applications.Internal')}
               </span>
               <div className='grid grid-cols-1 gap-6 md:grid-cols-2 2xl:grid-cols-3'>
@@ -153,7 +153,7 @@ const Applications: NextPage = () => {
 
         {/* External applications */}
         <div className='pt-8'>
-          <span className='text-md font-normal mb-4  text-gray-600 dark:text-gray-100'>
+          <span className='text-base font-normal mb-4  text-gray-600 dark:text-gray-100'>
             {t('Applications.External')}
           </span>
           <div className='grid grid-cols-1 gap-6 md:grid-cols-2 2xl:grid-cols-3'>

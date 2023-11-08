@@ -126,7 +126,7 @@ export const CustomerCards = () => {
                 </label>
                 <div className='flex justify-between'>
                   <div className=''>
-                    <p className='text-md font-regular text-gray-900 dark:text-gray-200 pt-4'>
+                    <p className='text-base font-regular text-gray-900 dark:text-gray-200 pt-4'>
                       {t('Settings.Show customer card')}
                     </p>
                     <fieldset className='pt-7'>
@@ -158,7 +158,7 @@ export const CustomerCards = () => {
                   <div className='w-1/2 pr-4'>
                     <div className='mb-2'>
                       {/* Right section title */}
-                      <p className='text-md font-regular text-gray-900 dark:text-gray-200 pt-4'>
+                      <p className='text-base font-regular text-gray-900 dark:text-gray-200 pt-4'>
                         {t('CustomerCards.Customer Card Order (drag to set your order)')}
                       </p>
 

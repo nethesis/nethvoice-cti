@@ -234,7 +234,7 @@ export const LastCallsDrawerTable = forwardRef<HTMLButtonElement, LastCallsDrawe
     return (
       <>
         {/* Last calls title */}
-        <h4 className='mt-6 text-md font-medium text-gray-700 dark:text-gray-200'>
+        <h4 className='mt-6 text-base font-medium text-gray-700 dark:text-gray-200'>
           {callType === 'switchboard' && !isCustomerCard
             ? `${t('Phonebook.Last switchboard calls')}`
             : callType === 'personal' && !isCustomerCard

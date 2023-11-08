@@ -154,7 +154,7 @@ export const ParkCards: FC<ParkCardsProps> = ({ className }): JSX.Element => {
                         icon={faPhone}
                         className='h-4 w-4 text-gray-100 dark:text-gray-200 ml-2 mr-2'
                       />
-                      <span className='text-gray-100 text-md'>{t('Parks.Hold')}</span>
+                      <span className='text-gray-100 text-base'>{t('Parks.Hold')}</span>
                     </div>
                   </motion.button>
                 </motion.div>

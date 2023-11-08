@@ -643,7 +643,7 @@ export const QueueManagerDashboard: FC<QueueManagerDashboardProps> = ({
       <div className='py-12 mt-8 relative'>
         <div className='flex items-center space-x-1'>
           <div className='flex-grow'>
-            <h2 className='text-md font-semibold ml-2'>{t('QueueManager.Operators statistics')}</h2>
+            <h2 className='text-base font-semibold ml-2'>{t('QueueManager.Operators statistics')}</h2>
           </div>
           <div className='flex items-center justify-end h-6 w-6'>
             <FontAwesomeIcon
@@ -1392,7 +1392,7 @@ export const QueueManagerDashboard: FC<QueueManagerDashboardProps> = ({
       <div className='py-2 relative'>
         <div className='flex items-center space-x-1'>
           <div className='flex-grow'>
-            <h2 className='text-md font-semibold ml-2'>{t('QueueManager.Queues statistics')}</h2>
+            <h2 className='text-base font-semibold ml-2'>{t('QueueManager.Queues statistics')}</h2>
           </div>
           <div className='flex items-center justify-end h-6 w-6'>
             <FontAwesomeIcon

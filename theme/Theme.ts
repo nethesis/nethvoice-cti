@@ -46,7 +46,7 @@ const theme = {
     base: 'transition-colors duration-200 transform focus:outline-none focus:ring-2 focus:z-20 focus:ring-offset-2 disabled:opacity-50 disabled:cursor-not-allowed inline-block cursor-pointer rounded-md text-gray-700 hover:bg-gray-200 focus:ring-primaryLight dark:text-gray-100 dark:hover:bg-gray-900 dark:focus:ring-primaryDark',
     sizes: {
       small: 'px-1.5 py-1 text-xs',
-      base: 'px-2 py-1 text-md',
+      base: 'px-2 py-1 text-base',
       large: 'px-2 py-1 text-lg',
       extra_large: 'px-2 py-1 text-2xl',
       full_h: 'h-full',
@@ -72,7 +72,7 @@ const theme = {
     },
     size: {
       base: 'px-3 py-2 sm:text-sm',
-      large: 'px-4 py-3 sm:text-md',
+      large: 'px-4 py-3 sm:text-base',
     },
     colors: {
       gray: 'border-gray-300 focus:border-primaryLight focus:ring-primaryLight placeholder:text-gray-400 dark:border-gray-600 dark:focus:border-primaryDark dark:focus:ring-primaryDark dark:placeholder:text-gray-500',

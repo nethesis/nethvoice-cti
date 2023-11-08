@@ -240,7 +240,7 @@ export const EditAnnouncementDrawerContent = forwardRef<
 
         {/* announcement name */}
         <div className='flex flex-col'>
-          <h4 className='text-md font-medium text-gray-700 dark:text-gray-200 mb-3'>
+          <h4 className='text-base font-medium text-gray-700 dark:text-gray-200 mb-3'>
             {t('Lines.Announcement name')}
           </h4>
           <TextInput
@@ -255,7 +255,7 @@ export const EditAnnouncementDrawerContent = forwardRef<
         </div>
         {/* Privacy name section */}
         <div className='flex items-center justify-between mt-8'>
-          <h4 className='text-md font-medium text-gray-700 dark:text-gray-200'>
+          <h4 className='text-base font-medium text-gray-700 dark:text-gray-200'>
             {t('Lines.Privacy')}
           </h4>
         </div>
@@ -293,7 +293,7 @@ export const EditAnnouncementDrawerContent = forwardRef<
           <>
             {/* Announcement name section */}
             <div className='flex items-center justify-between mt-8'>
-              <h4 className='text-md font-medium text-gray-700 dark:text-gray-200'>
+              <h4 className='text-base font-medium text-gray-700 dark:text-gray-200'>
                 {t('Lines.Select audio file')}
               </h4>
             </div>
@@ -321,7 +321,7 @@ export const EditAnnouncementDrawerContent = forwardRef<
                         icon={faFileAudio}
                         className='w-10 h-10 mb-3 text-gray-400 dark:text-gray-200'
                       />
-                      <p className='mb-2 text-md text-gray-900 dark:text-gray-100'>
+                      <p className='mb-2 text-base text-gray-900 dark:text-gray-100'>
                         <span className='font-normal'>
                           {t('Lines.Select or drag an audio file here')}
                         </span>
@@ -350,7 +350,7 @@ export const EditAnnouncementDrawerContent = forwardRef<
                             onClick={() => recordingAnnouncement()}
                           />
                         </div>
-                        <div className='text-md flex flex-col pl-3'>
+                        <div className='text-base flex flex-col pl-3'>
                           <span className='font-semibold text-gray-900 dark:text-gray-100'>
                             {selectedFile.name}
                           </span>

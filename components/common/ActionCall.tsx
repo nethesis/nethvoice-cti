@@ -293,7 +293,7 @@ export const ActionCall: React.FC<ActionCallProps> = ({ config }) => {
   return (
     <div>
       <div className='mt-6 flex items-end justify-between'>
-        <h4 className='text-md font-medium text-gray-700 dark:text-gray-200'>
+        <h4 className='text-base font-medium text-gray-700 dark:text-gray-200'>
           {t('OperatorDrawer.Current call')}
         </h4>
         <div>
