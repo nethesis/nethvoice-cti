@@ -3,7 +3,7 @@
 
 import { ComponentPropsWithRef, forwardRef, useState } from 'react'
 import classNames from 'classnames'
-import { Avatar, Badge, Button, IconSwitch } from '../common'
+import { ActionCall, Avatar, Badge, Button, IconSwitch } from '../common'
 import { useEffect } from 'react'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { OperatorStatusBadge } from './OperatorStatusBadge'
@@ -30,6 +30,7 @@ import {
 import { faStar as faStarLight } from '@nethesis/nethesis-light-svg-icons'
 import { t } from 'i18next'
 import { transferCall } from '../../lib/utils'
+import { isEmpty } from 'lodash'
 
 export interface OperatorSummaryProps extends ComponentPropsWithRef<'div'> {
   operator: any
@@ -170,6 +171,15 @@ export const OperatorSummary = forwardRef<HTMLButtonElement, OperatorSummaryProp
             <span className='sr-only'>Chat</span>
           </Button> */}
         </div>
+        {/* ongoing call info */}
+        {!!operatorsStore?.operators[operator?.username]?.conversations?.length &&
+          (operatorsStore?.operators[operator?.username]?.conversations[0]?.connected ||
+            operatorsStore?.operators[operator?.username]?.conversations[0]?.inConference ||
+            operatorsStore?.operators[operator?.username]?.conversations[0]?.chDest?.inConference ==
+              true ||
+            !isEmpty(operatorsStore?.operators[operator?.username]?.conversations[0])) && (
+            <ActionCall config={operator}></ActionCall>
+          )}
         <div className='mt-6 border-t border-gray-200 dark:border-gray-700'>
           <dl>
             {/* extension */}
@@ -185,9 +195,9 @@ export const OperatorSummary = forwardRef<HTMLButtonElement, OperatorSummaryProp
                     />
                     <span
                       className='truncate cursor-pointer hover:underline'
-                      onClick={() => callPhoneNumber(operator.endpoints.mainextension[0].id)}
+                      onClick={() => callPhoneNumber(operator?.endpoints?.mainextension[0]?.id)}
                     >
-                      {operator.endpoints.mainextension[0].id}
+                      {operator?.endpoints?.mainextension[0]?.id}
                     </span>
                   </div>
                 </dd>
