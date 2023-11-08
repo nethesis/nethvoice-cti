@@ -17,12 +17,12 @@ export const MissingPermission = ({}): JSX.Element => {
         <p className='text-2xl text-gray-900 dark:text-gray-300 pt-8 font-semibold	'>
           {t('Common.Permission error')}
         </p>
-        <p className='text-md text-gray-600 dark:text-gray-300 pt-[1rem] font-medium'>
+        <p className='text-base text-gray-600 dark:text-gray-300 pt-[1rem] font-medium'>
           {t('Common.Permission error message content')}
         </p>
         <div className='flex items-center justify-center'>
           <div className='flex items-center justify-center '>
-            <p className='text-md text-gray-600 dark:text-gray-300 font-medium mr-2'>
+            <p className='text-base text-gray-600 dark:text-gray-300 font-medium mr-2'>
               {t('Common.Permission error message content link')}
             </p>
           </div>

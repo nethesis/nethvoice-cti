@@ -467,7 +467,7 @@ export const ShowPhoneLinesDrawerContent = forwardRef<
   //       <div className='px-5'>
   //         {/* Title */}
   //         <div className='flex items-center justify-between mt-8'>
-  //           <h4 className='text-md font-medium text-gray-700 dark:text-gray-200'>
+  //           <h4 className='text-base font-medium text-gray-700 dark:text-gray-200'>
   //             {t('Lines.Select rule')}
   //           </h4>
   //         </div>
@@ -514,7 +514,7 @@ export const ShowPhoneLinesDrawerContent = forwardRef<
   //               {openPanel === dateRuleInformation.id && (
   //                 <div className='bg-gray-100 px-5 py-3'>
   //                   <div className='flex flex-col'>
-  //                     <h1 className='flex text-md font-medium text-gray-700 dark:text-gray-200'>
+  //                     <h1 className='flex text-base font-medium text-gray-700 dark:text-gray-200'>
   //                       {t('Lines.Rule details')}
   //                     </h1>
   //                     {/* TO DO GET DATA FROM API */}
@@ -524,7 +524,7 @@ export const ShowPhoneLinesDrawerContent = forwardRef<
   //                         className='mr-4 h-4 w-4 flex-shrink-0 text-gray-400 dark:text-gray-500'
   //                         aria-hidden='true'
   //                       />
-  //                       <h4 className='text-md text-gray-700 dark:text-gray-200'>
+  //                       <h4 className='text-base text-gray-700 dark:text-gray-200'>
   //                         {t('Lines.Activate announcement and voicemail')}
   //                       </h4>
   //                     </div>
@@ -534,7 +534,7 @@ export const ShowPhoneLinesDrawerContent = forwardRef<
   //                         className='mr-4 h-4 w-4 flex-shrink-0 text-gray-400 dark:text-gray-500'
   //                         aria-hidden='true'
   //                       />
-  //                       <h4 className='text-md text-gray-700 dark:text-gray-200'>
+  //                       <h4 className='text-base text-gray-700 dark:text-gray-200'>
   //                         {t('Lines.Begin')}
   //                       </h4>
   //                     </div>
@@ -544,7 +544,7 @@ export const ShowPhoneLinesDrawerContent = forwardRef<
   //                         className='mr-4 h-4 w-4 flex-shrink-0 text-gray-400 dark:text-gray-500'
   //                         aria-hidden='true'
   //                       />
-  //                       <h4 className='text-md text-gray-700 dark:text-gray-200'>
+  //                       <h4 className='text-base text-gray-700 dark:text-gray-200'>
   //                         {t('Lines.End')}
   //                       </h4>
   //                     </div>
@@ -805,7 +805,7 @@ export const ShowPhoneLinesDrawerContent = forwardRef<
       <>
         <div className='px-5 pt-8 pb-2'>
           <div className='flex items-center justify-between mt-1'>
-            <h4 className=' text-md font-medium text-gray-700 dark:text-gray-200'>
+            <h4 className=' text-base font-medium text-gray-700 dark:text-gray-200'>
               {t('Lines.Select period')}
             </h4>
           </div>
@@ -859,7 +859,7 @@ export const ShowPhoneLinesDrawerContent = forwardRef<
               className='mr-4 h-4 w-4 flex-shrink-0 text-gray-400 dark:text-gray-500'
               aria-hidden='true'
             />
-            <h4 className='text-md font-medium text-gray-700 dark:text-gray-200'>
+            <h4 className='text-base font-medium text-gray-700 dark:text-gray-200'>
               {t('Lines.Announcement')}
             </h4>
           </div>
@@ -914,7 +914,7 @@ export const ShowPhoneLinesDrawerContent = forwardRef<
                 className='mr-4 h-4 w-4 flex-shrink-0 text-gray-400 dark:text-gray-500'
                 aria-hidden='true'
               />
-              <h4 className='text-md font-medium text-gray-700 dark:text-gray-200'>
+              <h4 className='text-base font-medium text-gray-700 dark:text-gray-200'>
                 {t('Lines.Announcement and voicemail')}
               </h4>
             </div>
@@ -988,7 +988,7 @@ export const ShowPhoneLinesDrawerContent = forwardRef<
                 className='mr-4 h-4 w-4 rotate-[270deg] flex-shrink-0 text-gray-400 dark:text-gray-500'
                 aria-hidden='true'
               />
-              <h4 className='text-md font-medium text-gray-700 dark:text-gray-200'>
+              <h4 className='text-base font-medium text-gray-700 dark:text-gray-200'>
                 {t('Lines.Forward')}
               </h4>
             </div>
@@ -1020,7 +1020,7 @@ export const ShowPhoneLinesDrawerContent = forwardRef<
         {/* Typology title */}
         <div className='px-5 pt-8 pb-2'>
           <div className='flex items-center justify-between mt-1'>
-            <h4 className=' text-md font-medium text-gray-700 dark:text-gray-200'>
+            <h4 className=' text-base font-medium text-gray-700 dark:text-gray-200'>
               {t('Lines.Typology configuration')}
             </h4>
           </div>
@@ -1143,7 +1143,7 @@ export const ShowPhoneLinesDrawerContent = forwardRef<
         {/* Activate configuration */}
         <div className='px-5 pt-8'>
           <div className='flex items-center justify-between mt-1'>
-            <h4 className=' text-md font-medium text-gray-700 dark:text-gray-200'>
+            <h4 className=' text-base font-medium text-gray-700 dark:text-gray-200'>
               {t('Lines.Activate configuration')}
             </h4>
             <Switch on={isConfigurationActive} changed={() => toggleConfigurationActive()}></Switch>

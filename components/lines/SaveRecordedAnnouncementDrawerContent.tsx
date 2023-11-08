@@ -84,7 +84,7 @@ export const SaveRecordedAnnouncementDrawerContent = forwardRef<
       <div className={classNames(className, 'p-5')} {...props}>
         {/* announcement name */}
         <div className='flex flex-col'>
-          <h4 className='text-md font-medium text-gray-700 dark:text-gray-200 mb-3'>
+          <h4 className='text-base font-medium text-gray-700 dark:text-gray-200 mb-3'>
             {t('Lines.Announcement name')}
           </h4>
           <TextInput
@@ -99,7 +99,7 @@ export const SaveRecordedAnnouncementDrawerContent = forwardRef<
         </div>
         {/* Privacy name section */}
         <div className='flex items-center justify-between mt-8'>
-          <h4 className='text-md font-medium text-gray-700 dark:text-gray-200'>
+          <h4 className='text-base font-medium text-gray-700 dark:text-gray-200'>
             {t('Lines.Privacy')}
           </h4>
         </div>

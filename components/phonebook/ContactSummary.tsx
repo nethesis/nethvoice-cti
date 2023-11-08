@@ -474,7 +474,7 @@ export const ContactSummary = forwardRef<HTMLButtonElement, ContactSummaryProps>
                     icon={faArrowUpRightFromSquare}
                     className='mr-2 h-4 w-4 text-gray-200 dark:text-gray-200'
                   />
-                  <span className='text-md font-semibold text-gray-50 dark:text-gray-100'>
+                  <span className='text-base font-semibold text-gray-50 dark:text-gray-100'>
                     {t('CustomerCards.Open customer card')}
                   </span>
                 </Button>
@@ -488,7 +488,7 @@ export const ContactSummary = forwardRef<HTMLButtonElement, ContactSummaryProps>
                   <h3 className='flex text-base font-semibold leading-6 text-gray-100 dark:text-gray-700'>
                     {t('CustomerCards.Business name')}
                   </h3>
-                  <span className='flex pt-2 text-md font-medium text-primaryLight dark:text-primary'>
+                  <span className='flex pt-2 text-base font-medium text-primaryLight dark:text-primary'>
                     {companyInformation.company || '-'}
                   </span>
 
@@ -496,7 +496,7 @@ export const ContactSummary = forwardRef<HTMLButtonElement, ContactSummaryProps>
                   <h3 className='flex text-base font-semibold leading-6 text-gray-100 dark:text-gray-700 pt-6'>
                     {t('CustomerCards.City')}
                   </h3>
-                  <span className='flex pt-2 text-md font-normal text-gray-100 dark:text-primary'>
+                  <span className='flex pt-2 text-base font-normal text-gray-100 dark:text-primary'>
                     {companyInformation?.workcity || '-'}
                   </span>
 
@@ -504,7 +504,7 @@ export const ContactSummary = forwardRef<HTMLButtonElement, ContactSummaryProps>
                   <h3 className='flex text-base font-semibold leading-6 text-gray-100 dark:text-gray-700 pt-6'>
                     {t('CustomerCards.Notes')}
                   </h3>
-                  <span className='flex pt-2 text-md font-normal text-gray-100 dark:text-primary'>
+                  <span className='flex pt-2 text-base font-normal text-gray-100 dark:text-primary'>
                     {companyInformation?.notes || '-'}
                   </span>
                 </div>

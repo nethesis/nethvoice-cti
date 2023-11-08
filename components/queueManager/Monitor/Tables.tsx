@@ -117,7 +117,7 @@ export const MonitorTables: FC<MonitorTablesProps> = ({
                             >
                               <span
                                 className={`block truncate mr-1 font-semibold ${
-                                  isFullscreen ? 'text-2xl' : 'text-md'
+                                  isFullscreen ? 'text-2xl' : 'text-base'
                                 }  `}
                               >
                                 {selectedQueueFirstTable.name
@@ -153,7 +153,7 @@ export const MonitorTables: FC<MonitorTablesProps> = ({
                                             ? 'bg-primary text-white'
                                             : 'text-gray-900 dark:text-gray-100',
                                           'relative cursor-default select-none py-2 pl-8 pr-4',
-                                          `${isFullscreen ? 'text-2xl' : 'text-md'}  `,
+                                          `${isFullscreen ? 'text-2xl' : 'text-base'}  `,
                                         )
                                       }
                                       value={queueInfo}
@@ -204,12 +204,12 @@ export const MonitorTables: FC<MonitorTablesProps> = ({
                 <div className='text-sm text-gray-500'>
                   <span
                     className={`text-orange-700 font-semibold mr-2 ${
-                      isFullscreen ? 'text-2xl' : 'text-md'
+                      isFullscreen ? 'text-2xl' : 'text-base'
                     }  `}
                   >
                     {getWaitingCallsCount(selectedQueueFirstTable.queue)}
                   </span>
-                  <span className={`text-orange-700 ${isFullscreen ? 'text-2xl' : 'text-md'}  `}>
+                  <span className={`text-orange-700 ${isFullscreen ? 'text-2xl' : 'text-base'}  `}>
                     {t('QueueManager.Waiting calls')}
                   </span>
                 </div>
@@ -368,7 +368,7 @@ export const MonitorTables: FC<MonitorTablesProps> = ({
                               >
                                 <span
                                   className={`block truncate mr-1 font-semibold ${
-                                    isFullscreen ? 'text-2xl' : 'text-md'
+                                    isFullscreen ? 'text-2xl' : 'text-base'
                                   }  `}
                                 >
                                   {selectedQueueSecondTable.name
@@ -404,7 +404,7 @@ export const MonitorTables: FC<MonitorTablesProps> = ({
                                               ? 'bg-primary text-white'
                                               : 'text-gray-900 dark:text-gray-100',
                                             'relative cursor-default select-none py-2 pl-8 pr-4',
-                                            `${isFullscreen ? 'text-2xl' : 'text-md'}  `,
+                                            `${isFullscreen ? 'text-2xl' : 'text-base'}  `,
                                           )
                                         }
                                         value={queueInfo}
@@ -455,12 +455,12 @@ export const MonitorTables: FC<MonitorTablesProps> = ({
                   <div className='text-sm text-gray-500'>
                     <span
                       className={`text-orange-700 font-semibold mr-2 ${
-                        isFullscreen ? 'text-2xl' : 'text-md'
+                        isFullscreen ? 'text-2xl' : 'text-base'
                       }  `}
                     >
                       {getWaitingCallsCount(selectedQueueSecondTable.queue)}
                     </span>
-                    <span className={`text-orange-700 ${isFullscreen ? 'text-2xl' : 'text-md'}  `}>
+                    <span className={`text-orange-700 ${isFullscreen ? 'text-2xl' : 'text-base'}  `}>
                       {t('QueueManager.Waiting calls')}
                     </span>
                   </div>

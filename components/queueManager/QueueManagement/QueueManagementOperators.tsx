@@ -167,7 +167,7 @@ export const QueueManagementOperators: FC<QueueManagementOperatorsProps> = ({
               className='h-4 w-4 mr-2 py-2 cursor-pointer flex items-center'
               aria-hidden='true'
             />
-            <h2 className='text-md font-semibold text-gray-900 dark:text-gray-100 mr-4'>
+            <h2 className='text-base font-semibold text-gray-900 dark:text-gray-100 mr-4'>
               {t('QueueManager.Queue operators')}
             </h2>
           </div>

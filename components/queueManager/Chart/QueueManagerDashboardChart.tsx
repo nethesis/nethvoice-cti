@@ -360,7 +360,7 @@ export const QueueManagerDashboardChart: FC<QueueManagerDashboardChartProps> = (
         {/* Hourly distribution of incoming calls section*/}
         <div className={`pt-8 ${zoomedCardIndices.includes(0) ? 'col-span-2' : 'col-span-1'}`}>
           {/* title */}
-          <h2 className='text-md ml-4 font-semibold mb-4'>
+          <h2 className='text-base ml-4 font-semibold mb-4'>
             {t('QueueManager.Hourly distribution of incoming calls')}
           </h2>
 
@@ -395,7 +395,7 @@ export const QueueManagerDashboardChart: FC<QueueManagerDashboardChartProps> = (
           }`}
         >
           {/* title */}
-          <h2 className='text-md ml-4 font-semibold mb-4'>
+          <h2 className='text-base ml-4 font-semibold mb-4'>
             {t('QueueManager.Hourly distribution of call results')}
           </h2>
 
@@ -426,7 +426,7 @@ export const QueueManagerDashboardChart: FC<QueueManagerDashboardChartProps> = (
         {/* Hourly distribution of calls answered*/}
         <div className={`pt-12 ${zoomedCardIndices.includes(2) ? 'col-span-2' : 'col-span-1'}`}>
           {/* title */}
-          <h2 className='text-md ml-4 font-semibold mb-4'>
+          <h2 className='text-base ml-4 font-semibold mb-4'>
             {t('QueueManager.Hourly distribution of calls answered')}
           </h2>
 
@@ -458,7 +458,7 @@ export const QueueManagerDashboardChart: FC<QueueManagerDashboardChartProps> = (
         <div className={`pt-12 ${zoomedCardIndices.includes(3) ? 'col-span-2' : 'col-span-1'}`}>
           {' '}
           {/* title */}
-          <h2 className='text-md ml-4 font-semibold mb-4'>
+          <h2 className='text-base ml-4 font-semibold mb-4'>
             {t('QueueManager.Hourly distribution of not answered calls')}
           </h2>
           <div className='border-b rounded-md shadow-md bg-white border-gray-200 dark:border-gray-700 dark:bg-gray-900 px-4 py-5 sm:px-6 mt-1 relative w-full h-full'>

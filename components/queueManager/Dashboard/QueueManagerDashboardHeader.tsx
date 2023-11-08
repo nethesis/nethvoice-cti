@@ -139,10 +139,10 @@ export const QueueManagerDashboardHeader: FC<QueueManagerDashboardHeaderProps> =
                     aria-hidden='true'
                   />
                   <div className='flex justify-center items-center'>
-                    <p className='text-md font-semibold tracking-tight text-left text-gray-900 dark:text-gray-900 mr-1'>
+                    <p className='text-base font-semibold tracking-tight text-left text-gray-900 dark:text-gray-900 mr-1'>
                       {t('QueueManager.Begin hour')}
                     </p>
-                    <p className='text-md font-bold leading-6 text-center text-gray-900 dark:text-gray-900'>
+                    <p className='text-base font-bold leading-6 text-center text-gray-900 dark:text-gray-900'>
                       {getFormattedTimeFromAlarmsList(alarmsList)}
                     </p>
                   </div>

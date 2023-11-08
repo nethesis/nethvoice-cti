@@ -192,7 +192,7 @@ export const ShowQueueCallDrawerContent = forwardRef<
           )}
         </dl>
         {/* call management */}
-        <h4 className='mt-6 text-md font-medium text-gray-700 dark:text-gray-200'>
+        <h4 className='mt-6 text-base font-medium text-gray-700 dark:text-gray-200'>
           {t('Queues.Call management')}
         </h4>
         {/* Divider */}
