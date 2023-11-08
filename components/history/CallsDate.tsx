@@ -18,13 +18,13 @@ const customFormatDistance = (date: any) => {
   })
 
   if (duration.months > 0) {
-    return `${duration.months} m ${duration.days} d`
+    return `${duration.months} m ${duration.days} d ${t('Common.ago')}`
   } else if (duration.days > 0) {
-    return `${duration.days} d ${duration.hours} h`
+    return `${duration.days} d ${duration.hours} h ${t('Common.ago')}`
   } else if (duration.hours > 0) {
-    return `${duration.hours} h ${duration.minutes} min`
+    return `${duration.hours} h ${duration.minutes} min ${t('Common.ago')}`
   } else {
-    return `${duration.minutes} min`
+    return `${duration.minutes} min ${t('Common.ago')}`
   }
 }
 
@@ -35,7 +35,7 @@ const getCallDistanceToNowTemplate = (callTime: any) => {
   if (timeDistance !== '') {
     return customFormatDistance(callDate)
   } else {
-    return t('Common.0 minutes')
+    return t('Common.0 minutes ago')
   }
 }
 
