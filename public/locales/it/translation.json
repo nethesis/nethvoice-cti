@@ -34,7 +34,7 @@
     "Intrude": "Intromesso",
     "Listen": "Ascolto",
     "0 minutes ago": "0 minuti fa",
-    "ago":"fa"
+    "ago": "fa"
   },
   "Login": {
     "User": "Utente",
@@ -115,7 +115,14 @@
     "Compact": "Compatto",
     "Layout": "Layout",
     "Filter operators": "Filtra operatori",
-    "Status": "Stato"
+    "Status": "Stato",
+    "Recall on busy message": "Chiamata prenotata! Sei il numero {{extensionWaiting}} nella lista d'attesa",
+    "Recall on busy": "Richiama su occupato",
+    "Transfer": "Trasferisci",
+    "Blind transfer": "Trasferimento cieco",
+    "Attend transfer": "Trasferimento consultativo",
+    "Call": "Chiama",
+    "Open user devices": "Apri dispositivi utente"
   },
   "Applications": {
     "Applications": "Applicazioni",

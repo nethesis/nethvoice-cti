@@ -3,29 +3,23 @@
 
 import { ComponentPropsWithRef, forwardRef, useState } from 'react'
 import classNames from 'classnames'
-import { ActionCall, Avatar, Badge, Button, IconSwitch } from '../common'
+import { ActionCall, Avatar, Badge, Button, ButtonDropdown, IconSwitch } from '../common'
 import { useEffect } from 'react'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { OperatorStatusBadge } from './OperatorStatusBadge'
 import {
   addOperatorToFavorites,
-  callOperator,
-  isOperatorCallable,
   openShowOperatorDrawer,
   reloadOperators,
   removeOperatorFromFavorites,
 } from '../../lib/operators'
 import { useSelector } from 'react-redux'
 import { RootState, store } from '../../store'
-import { callPhoneNumber } from '../../lib/utils'
 import {
-  faMobileScreenButton,
-  faPhone,
   faRightLeft,
   faStar as faStarSolid,
   faVideo,
   faComment,
-  faEnvelope,
 } from '@fortawesome/free-solid-svg-icons'
 import { faStar as faStarLight } from '@nethesis/nethesis-light-svg-icons'
 import { t } from 'i18next'
@@ -70,6 +64,20 @@ export const OperatorSummary = forwardRef<HTMLButtonElement, OperatorSummaryProp
       store.dispatch.globalSearch.setOpen(false)
       store.dispatch.globalSearch.setFocused(false)
     }
+
+    const [operatorDevices, setOperatorDevices]: any = useState({})
+
+    useEffect(() => {
+      if (operator && operator.endpoints) {
+        const mainExtension = operator?.endpoints?.mainextension[0]?.id || null
+        const cellphone = operator?.endpoints?.cellphone[0]?.id || null
+
+        setOperatorDevices({
+          mainExtension,
+          cellphone,
+        })
+      }
+    }, [operator])
 
     return (
       <>
@@ -137,16 +145,7 @@ export const OperatorSummary = forwardRef<HTMLButtonElement, OperatorSummaryProp
               <span>{t('Operators.Transfer')}</span>
             </Badge>
           ) : (
-            <Button
-              variant='primary'
-              onClick={() => callOperator(operator)}
-              disabled={!isOperatorCallable(operator, auth.username)}
-              className='mr-2'
-            >
-              <FontAwesomeIcon icon={faPhone} className='h-4 w-4 mr-2' />
-              <span className='inline-block'>{t('Operators.Call')}</span>
-              <span className='sr-only'>{t('Operators.Call')}</span>
-            </Button>
+            <ButtonDropdown operatorDevices={operatorDevices} operator={operator}></ButtonDropdown>
           )}
 
           {/* HIDDEN AT THE MOMENT */}
@@ -180,75 +179,6 @@ export const OperatorSummary = forwardRef<HTMLButtonElement, OperatorSummaryProp
             !isEmpty(operatorsStore?.operators[operator?.username]?.conversations[0])) && (
             <ActionCall config={operator}></ActionCall>
           )}
-        <div className='mt-6 border-t border-gray-200 dark:border-gray-700'>
-          <dl>
-            {/* extension */}
-            {operator.endpoints?.mainextension[0]?.id && (
-              <div className='py-4 sm:grid sm:grid-cols-3 sm:gap-4 sm:py-5'>
-                <dt className='text-sm font-medium text-gray-500 dark:text-gray-400'>Extension</dt>
-                <dd className='mt-1 text-sm text-gray-900 dark:text-gray-100 sm:col-span-2 sm:mt-0'>
-                  <div className='flex items-center text-sm text-primary dark:text-primary'>
-                    <FontAwesomeIcon
-                      icon={faPhone}
-                      className='mr-2 h-4 w-4 flex-shrink-0 text-gray-400 dark:text-gray-500'
-                      aria-hidden='true'
-                    />
-                    <span
-                      className='truncate cursor-pointer hover:underline'
-                      onClick={() => callPhoneNumber(operator?.endpoints?.mainextension[0]?.id)}
-                    >
-                      {operator?.endpoints?.mainextension[0]?.id}
-                    </span>
-                  </div>
-                </dd>
-              </div>
-            )}
-            {/* cellphone */}
-            {operator.endpoints?.cellphone[0]?.id && (
-              <div className='py-4 sm:grid sm:grid-cols-3 sm:gap-4 sm:py-5'>
-                <dt className='text-sm font-medium text-gray-500 dark:text-gray-400'>Mobile</dt>
-                <dd className='mt-1 text-sm text-gray-900 dark:text-gray-100 sm:col-span-2 sm:mt-0'>
-                  <div className='flex items-center text-sm text-primary dark:text-primary'>
-                    <FontAwesomeIcon
-                      icon={faMobileScreenButton}
-                      className='mr-2 h-4 w-4 flex-shrink-0 text-gray-400 dark:text-gray-500'
-                      aria-hidden='true'
-                    />
-                    <span
-                      className='truncate cursor-pointer hover:underline'
-                      onClick={() => callPhoneNumber(operator.endpoints.cellphone[0].id)}
-                    >
-                      {operator.endpoints.cellphone[0].id}
-                    </span>
-                  </div>
-                </dd>
-              </div>
-            )}
-            {/* email */}
-            {operator.endpoints?.email[0]?.id && (
-              <div className='py-4 sm:grid sm:grid-cols-3 sm:gap-4 sm:py-5'>
-                <dt className='text-sm font-medium text-gray-500 dark:text-gray-400'>Email</dt>
-                <dd className='mt-1 text-sm text-gray-900 dark:text-gray-100 sm:col-span-2 sm:mt-0'>
-                  <div className='flex items-center text-sm'>
-                    <FontAwesomeIcon
-                      icon={faEnvelope}
-                      className='mr-2 h-4 w-4 flex-shrink-0 text-gray-400 dark:text-gray-500'
-                      aria-hidden='true'
-                    />
-                    <a
-                      target='_blank'
-                      rel='noreferrer'
-                      href={`mailto: ${operator.endpoints.email[0].id}`}
-                      className='truncate hover:underline text-gray-700 dark:text-gray-200'
-                    >
-                      {operator.endpoints.email[0].id}
-                    </a>
-                  </div>
-                </dd>
-              </div>
-            )}
-          </dl>
-        </div>
       </>
     )
   },

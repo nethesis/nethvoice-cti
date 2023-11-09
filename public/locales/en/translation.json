@@ -50,7 +50,7 @@
     "Login": "Login",
     "Intrude": "Intrude",
     "Listen": "Listen",
-    "ago":"ago"
+    "ago": "ago"
   },
   "Login": {
     "User": "User",
@@ -158,7 +158,8 @@
     "Transfer": "Transfer",
     "Blind transfer": "Blind transfer",
     "Attend transfer": "Attend transfer",
-    "Call": "Call"
+    "Call": "Call",
+    "Open user devices": "Open user devices"
   },
   "Applications": {
     "Applications": "Applications",
