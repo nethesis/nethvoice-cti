@@ -218,127 +218,136 @@ const Phonebook: NextPage = () => {
                               </thead>
                               <tbody className='divide-y divide-gray-200 dark:divide-gray-700 bg-white dark:bg-gray-900 text-gray-700 text-sm'>
                                 {/* Not empty state  */}
-                                {phonebook.rows.map((contact: any, index: number) => (
-                                  <tr
-                                    key={index}
-                                    className='cursor-pointer'
-                                    onClick={() => openShowContactDrawer(contact)}
-                                  >
-                                    {/* Name */}
-                                    <td className='py-4 px-4 sm:pl-6 '>
-                                      <div className='flex items-center'>
-                                        <div className='h-10 w-10 flex-shrink-0'>
-                                          {' '}
-                                          {contact.kind == 'person' ? (
-                                            <Avatar
-                                              className='cursor-pointer'
-                                              placeholderType='person'
-                                            />
-                                          ) : (
-                                            <Avatar
-                                              className='cursor-pointer'
-                                              placeholderType='company'
-                                            />
-                                          )}{' '}
-                                        </div>
-                                        <div className='ml-4'>
-                                          <div className='font-medium text-gray-700 dark:text-gray-100'>
+                                {phonebook.rows
+                                  .filter(
+                                    (contact: any) =>
+                                      contact.displayName !== undefined &&
+                                      contact.displayName !== null &&
+                                      contact.displayName !== '',
+                                  )
+                                  .map((contact: any, index: number) => (
+                                    <tr
+                                      key={index}
+                                      className='cursor-pointer'
+                                      onClick={() => openShowContactDrawer(contact)}
+                                    >
+                                      {/* Name */}
+                                      <td className='py-4 px-4 sm:pl-6 '>
+                                        <div className='flex items-center'>
+                                          <div className='h-10 w-10 flex-shrink-0'>
                                             {' '}
-                                            <span className='cursor-pointer hover:underline'>
-                                              {contact.displayName}
-                                            </span>
+                                            {contact.kind == 'person' ? (
+                                              <Avatar
+                                                className='cursor-pointer'
+                                                placeholderType='person'
+                                              />
+                                            ) : (
+                                              <Avatar
+                                                className='cursor-pointer'
+                                                placeholderType='company'
+                                              />
+                                            )}{' '}
                                           </div>
-                                          {/* extension */}
-                                          {contact.extension && (
-                                            <div className='mt-1 flex items-center text-sm text-gray-500 dark:text-gray-400'>
+                                          <div className='ml-4'>
+                                            <div className='font-medium text-gray-700 dark:text-gray-100'>
+                                              {' '}
+                                              <span className='cursor-pointer hover:underline'>
+                                                {contact.displayName}
+                                              </span>
+                                            </div>
+                                            {/* extension */}
+                                            {contact.extension && (
+                                              <div className='mt-1 flex items-center text-sm text-gray-500 dark:text-gray-400'>
+                                                <FontAwesomeIcon
+                                                  icon={faPhone}
+                                                  className='mr-2 h-4 w-4 flex-shrink-0 text-gray-400 dark:text-gray-500'
+                                                  aria-hidden='true'
+                                                />
+                                                <span
+                                                  className='truncate text-primary dark:text-primary cursor-pointer'
+                                                  onClick={() => callPhoneNumber(contact.extension)}
+                                                >
+                                                  {contact.extension}
+                                                </span>
+                                              </div>
+                                            )}
+                                            {/* company name */}
+                                            {contact.kind == 'person' &&
+                                              contact.company &&
+                                              !contact.extension && (
+                                                <div className='mt-1 flex items-center text-sm text-gray-500 dark:text-gray-400'>
+                                                  <FontAwesomeIcon
+                                                    icon={faSuitcase}
+                                                    className='mr-2 h-4 w-4 flex-shrink-0 text-gray-400 dark:text-gray-500'
+                                                    aria-hidden='true'
+                                                  />
+                                                  <span className='truncate'>
+                                                    {contact.company}
+                                                  </span>
+                                                </div>
+                                              )}
+                                            <div className='text-gray-500'></div>
+                                          </div>
+                                        </div>
+                                      </td>
+
+                                      {/* work phone */}
+                                      <td className='py-4 px-4'>
+                                        <div>
+                                          {contact.workphone ? (
+                                            <div className='mt-1 flex items-center text-sm text-primary dark:text-primary'>
                                               <FontAwesomeIcon
                                                 icon={faPhone}
                                                 className='mr-2 h-4 w-4 flex-shrink-0 text-gray-400 dark:text-gray-500'
                                                 aria-hidden='true'
                                               />
                                               <span
-                                                className='truncate text-primary dark:text-primary cursor-pointer'
-                                                onClick={() => callPhoneNumber(contact.extension)}
+                                                className='truncate cursor-pointer hover:underline'
+                                                onClick={() => callPhoneNumber(contact.workphone)}
                                               >
-                                                {contact.extension}
+                                                {contact.workphone}
                                               </span>
                                             </div>
+                                          ) : (
+                                            '-'
                                           )}
-                                          {/* company name */}
-                                          {contact.kind == 'person' &&
-                                            contact.company &&
-                                            !contact.extension && (
-                                              <div className='mt-1 flex items-center text-sm text-gray-500 dark:text-gray-400'>
-                                                <FontAwesomeIcon
-                                                  icon={faSuitcase}
-                                                  className='mr-2 h-4 w-4 flex-shrink-0 text-gray-400 dark:text-gray-500'
-                                                  aria-hidden='true'
-                                                />
-                                                <span className='truncate'>{contact.company}</span>
-                                              </div>
-                                            )}
-                                          <div className='text-gray-500'></div>
                                         </div>
-                                      </div>
-                                    </td>
+                                      </td>
 
-                                    {/* work phone */}
-                                    <td className='py-4 px-4'>
-                                      <div>
-                                        {contact.workphone ? (
-                                          <div className='mt-1 flex items-center text-sm text-primary dark:text-primary'>
-                                            <FontAwesomeIcon
-                                              icon={faPhone}
-                                              className='mr-2 h-4 w-4 flex-shrink-0 text-gray-400 dark:text-gray-500'
-                                              aria-hidden='true'
-                                            />
-                                            <span
-                                              className='truncate cursor-pointer hover:underline'
-                                              onClick={() => callPhoneNumber(contact.workphone)}
-                                            >
-                                              {contact.workphone}
-                                            </span>
-                                          </div>
-                                        ) : (
-                                          '-'
-                                        )}
-                                      </div>
-                                    </td>
+                                      {/* mobile phone */}
+                                      <td className='py-4 px-4'>
+                                        <div>
+                                          {contact.cellphone ? (
+                                            <div className='mt-1 flex items-center text-sm text-primary dark:text-primary'>
+                                              <FontAwesomeIcon
+                                                icon={faMobileScreenButton}
+                                                className='mr-2 h-4 w-4 flex-shrink-0 text-gray-400 dark:text-gray-500'
+                                                aria-hidden='true'
+                                              />
+                                              <span
+                                                className='truncate cursor-pointer hover:underline'
+                                                onClick={() => callPhoneNumber(contact.cellphone)}
+                                              >
+                                                {contact.cellphone}
+                                              </span>
+                                            </div>
+                                          ) : (
+                                            '-'
+                                          )}
+                                        </div>
+                                      </td>
 
-                                    {/* mobile phone */}
-                                    <td className='py-4 px-4'>
-                                      <div>
-                                        {contact.cellphone ? (
-                                          <div className='mt-1 flex items-center text-sm text-primary dark:text-primary'>
-                                            <FontAwesomeIcon
-                                              icon={faMobileScreenButton}
-                                              className='mr-2 h-4 w-4 flex-shrink-0 text-gray-400 dark:text-gray-500'
-                                              aria-hidden='true'
-                                            />
-                                            <span
-                                              className='truncate cursor-pointer hover:underline'
-                                              onClick={() => callPhoneNumber(contact.cellphone)}
-                                            >
-                                              {contact.cellphone}
-                                            </span>
-                                          </div>
-                                        ) : (
-                                          '-'
-                                        )}
-                                      </div>
-                                    </td>
-
-                                    <td className='py-4 px-4 sm:pr-8'>
-                                      <div className='flex items-center justify-end'>
-                                        <FontAwesomeIcon
-                                          icon={faChevronRight}
-                                          className='h-3 w-3 text-gray-400 dark:text-gray-500 cursor-pointer'
-                                          aria-hidden='true'
-                                        />
-                                      </div>
-                                    </td>
-                                  </tr>
-                                ))}
+                                      <td className='py-4 px-4 sm:pr-8'>
+                                        <div className='flex items-center justify-end'>
+                                          <FontAwesomeIcon
+                                            icon={faChevronRight}
+                                            className='h-3 w-3 text-gray-400 dark:text-gray-500 cursor-pointer'
+                                            aria-hidden='true'
+                                          />
+                                        </div>
+                                      </td>
+                                    </tr>
+                                  ))}
                               </tbody>
                             </table>
                           </div>

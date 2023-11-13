@@ -460,9 +460,6 @@ export const Layout: FC<LayoutProps> = ({ children }) => {
       }
     }
 
-
-
-
     // If user start a call or receive a call close side drawer
     if (data[currentUsername] && isEmpty(data[currentUsername]?.conversations)) {
       dispatch?.sideDrawer?.setShown(false)
