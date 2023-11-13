@@ -23,7 +23,7 @@ export const ButtonDropdown: React.FC<ButtonDropdownProps> = ({ operatorDevices,
   const operatorsStore = useSelector((state: RootState) => state.operators)
 
   return (
-    <div className='inline-flex rounded-md shadow-sm pb-5'>
+    <div className='inline-flex pb-5'>
       <button
         type='button'
         className='relative inline-flex items-center rounded-l-md px-3 text-sm font-medium leading-5 ring-gray-300 focus:z-10 bg-primary text-white hover:bg-primaryDark  dark:bg-primary dark:text-white dark:hover:bg-primaryDark focus:ring-primaryLight disabled:opacity-50 disabled:cursor-not-allowed'
