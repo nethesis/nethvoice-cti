@@ -4,8 +4,8 @@
 import { FC, ComponentProps, useEffect, useState, useMemo } from 'react'
 import { useTranslation } from 'react-i18next'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
-import { debounce, isEmpty } from 'lodash'
-import { Avatar, Button, Dropdown, EmptyState } from '../../common'
+import { debounce } from 'lodash'
+import { Avatar, EmptyState } from '../../common'
 import InfiniteScroll from 'react-infinite-scroll-component'
 import { LoggedStatus } from '../../queues'
 import { savePreference } from '../../../lib/storage'
@@ -21,26 +21,16 @@ import {
   faUser,
   faPhone,
   faChevronRight,
-  faCaretDown,
   faPause,
-  faPlay,
-  faUserXmark,
-  faUserClock,
 } from '@fortawesome/free-solid-svg-icons'
-import { Popover } from '@headlessui/react'
 import { RealTimeOperatorsFilter } from './RealTimeOperatorsFilter'
-import { unpauseQueue, pauseQueue, loginToQueue, logoutFromQueue } from '../../../lib/queuesLib'
+import { UserActionInQueue } from '../Common/UserActionInQueue'
 
 export interface RealTimeOperatorsProps extends ComponentProps<'div'> {
   realTimeAgentConvertedArray: any
 }
 
-function classNames(...classes: any) {
-  return classes.filter(Boolean).join(' ')
-}
-
 export const RealTimeOperators: FC<RealTimeOperatorsProps> = ({
-  className,
   realTimeAgentConvertedArray,
 }): JSX.Element => {
   const { t } = useTranslation()
@@ -145,122 +135,6 @@ export const RealTimeOperators: FC<RealTimeOperatorsProps> = ({
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [])
 
-  // User queues actions
-
-  const pauseUserQueue = (queue: any, reason: string) => {
-    //member is user extension
-    pauseQueue(queue.member, queue.queue, reason)
-  }
-
-  // Unpause user queue
-  const unpauseUserQueue = (queue: any) => {
-    //member is user extension
-    unpauseQueue(queue.member, queue.queue)
-  }
-
-  const loginUserQueue = (queue: any) => {
-    loginToQueue(queue.member, queue.queue)
-  }
-
-  const logoutUserQueue = (queue: any) => {
-    logoutFromQueue(queue.member, queue.queue)
-  }
-
-  const dropdownItems = (queue: any) => (
-    <>
-      {/* If user is not logged in */}
-      {!queue.loggedIn ? (
-        <Popover className='md:relative hover:bg-gray-200 dark:hover:bg-gray-700'>
-          {({ open }) => (
-            <>
-              <Popover.Button
-                className={classNames(
-                  open ? '' : '',
-                  'relative text-left cursor-pointer px-5 py-3 text-sm flex items-center gap-3 w-full',
-                )}
-                onClick={() => loginUserQueue(queue)}
-                disabled={queue.type !== 'dynamic'}
-              >
-                <FontAwesomeIcon
-                  icon={faPlay}
-                  className='h-4 w-4 flex justify-start text-gray-400 dark:text-gray-500'
-                />
-                <span>{t('QueueManager.Login')}</span>
-              </Popover.Button>
-            </>
-          )}
-        </Popover>
-      ) : (
-        // If user is loggedIn
-        <>
-          <Popover className='md:relative hover:bg-gray-200 dark:hover:bg-gray-700'>
-            {({ open }) => (
-              <>
-                <Popover.Button
-                  className={classNames(
-                    open ? '' : '',
-                    'relative text-left cursor-pointer px-5 py-3 text-sm flex items-center gap-3 w-full ',
-                  )}
-                  onClick={() => logoutUserQueue(queue)}
-                  disabled={queue?.type !== 'dynamic'}
-                >
-                  <FontAwesomeIcon
-                    icon={faUserXmark}
-                    className='h-4 w-4 flex justify-start text-red-400 dark:text-red-500'
-                  />
-                  <span>{t('QueueManager.Logout')}</span>
-                </Popover.Button>
-              </>
-            )}
-          </Popover>
-          {/* User is in pause */}
-          {queue.paused ? (
-            <Popover className='md:relative hover:bg-gray-200 dark:hover:bg-gray-700'>
-              {({ open }) => (
-                <>
-                  <Popover.Button
-                    className={classNames(
-                      open ? '' : '',
-                      'relative text-left cursor-pointer px-5 py-3 text-sm flex items-center gap-3 w-full ',
-                    )}
-                    onClick={() => unpauseUserQueue(queue)}
-                  >
-                    <FontAwesomeIcon
-                      icon={faUserClock}
-                      className='h-4 w-4 flex justify-start text-gray-400 dark:text-gray-500'
-                    />
-                    <span>{t('QueueManager.End pause')}</span>
-                  </Popover.Button>
-                </>
-              )}
-            </Popover>
-          ) : (
-            // User is not in pause
-            <Popover className='md:relative hover:bg-gray-200 dark:hover:bg-gray-700'>
-              {({ open }) => (
-                <>
-                  <Popover.Button
-                    className={classNames(
-                      open ? '' : '',
-                      'relative text-left cursor-pointer px-5 py-3 text-sm flex items-center gap-3 w-full ',
-                    )}
-                    onClick={() => pauseUserQueue(queue, '')}
-                  >
-                    <FontAwesomeIcon
-                      icon={faPause}
-                      className='h-4 w-4 flex justify-start text-gray-400 dark:text-gray-500 -ml-0.5'
-                    />
-                    <span>{t('QueueManager.Pause')}</span>
-                  </Popover.Button>
-                </>
-              )}
-            </Popover>
-          )}
-        </>
-      )}
-    </>
-  )
-
   return (
     <>
       <div className='py-8 relative'>
@@ -273,7 +147,7 @@ export const RealTimeOperators: FC<RealTimeOperatorsProps> = ({
           <div className='flex items-center justify-end h-6 w-6'>
             <FontAwesomeIcon
               icon={operatorsStatisticsExpanded ? faChevronUp : faChevronDown}
-              className='h-4 w-4 pl-2 py-2  text-gray-600 dark:text-gray-500cursor-pointer flex items-center'
+              className='h-4 w-4 pl-2 py-2  text-gray-600 dark:text-gray-500 cursor-pointer flex items-center'
               aria-hidden='true'
               onClick={toggleExpandOperatorsStatistics}
             />
@@ -372,24 +246,24 @@ export const RealTimeOperators: FC<RealTimeOperatorsProps> = ({
                                     <span className='block flex-shrink-0'>
                                       <Avatar
                                         rounded='full'
-                                        src={operators[operator.shortname]?.avatarBase64}
+                                        src={operators[operator?.shortname]?.avatarBase64}
                                         placeholderType='operator'
                                         bordered
                                         size='large'
-                                        star={operators[operator.shortname]?.favorite}
-                                        status={operators[operator.shortname]?.mainPresence}
+                                        star={operators[operator?.shortname]?.favorite}
+                                        status={operators[operator?.shortname]?.mainPresence}
                                         onClick={() =>
-                                          openShowOperatorDrawer(operators[operator.shortname])
+                                          openShowOperatorDrawer(operators[operator?.shortname])
                                         }
                                         className='cursor-pointer'
                                       />
                                     </span>
                                     <div className='flex-1 pl-2'>
                                       <h3 className='truncate text-lg leading-6 font-medium'>
-                                        {operator.name}
+                                        {operator?.name}
                                       </h3>
                                       <span className='block truncate mt-1 text-sm text-left font-medium text-gray-500 dark:text-gray-500'>
-                                        <span>{operator.member}</span>
+                                        <span>{operator?.member}</span>
                                       </span>
                                     </div>
                                   </div>
@@ -409,7 +283,7 @@ export const RealTimeOperators: FC<RealTimeOperatorsProps> = ({
 
                                   {/* login stats */}
                                   <div className='pt-2 h-96 overflow-auto  scrollbar-thin scrollbar-thumb-gray-400 dark:scrollbar-thumb-gray-400 scrollbar-thumb-rounded-full scrollbar-thumb-opacity-50 scrollbar-track-gray-200 dark:scrollbar-track-gray-900 scrollbar-track-rounded-full scrollbar-track-opacity-25'>
-                                    {Object.values(operator.queues).map(
+                                    {Object.values(operator?.queues).map(
                                       (queue: any, queueIndex: number) => (
                                         <div
                                           key={queueIndex}
@@ -420,34 +294,17 @@ export const RealTimeOperators: FC<RealTimeOperatorsProps> = ({
                                             <div className='flex flex-grow justify-between'>
                                               <div className='flex flex-col'>
                                                 <div className='truncate text-base leading-6 font-medium flex items-center space-x-2'>
-                                                  <span>{queue.qname}</span>
-                                                  <span>{queue.queue}</span>
+                                                  <span>{queue?.qname}</span>
+                                                  <span>{queue?.queue}</span>
                                                 </div>
                                                 <div className='flex pt-1'>
                                                   <LoggedStatus
-                                                    loggedIn={queue.loggedIn}
-                                                    paused={queue.paused}
+                                                    loggedIn={queue?.loggedIn}
+                                                    paused={queue?.paused}
                                                   />
                                                 </div>
                                               </div>
-                                              <Dropdown
-                                                items={dropdownItems(queue)}
-                                                position='left'
-                                                divider={true}
-                                                className='pl-3'
-                                              >
-                                                <span className='sr-only'>
-                                                  {t('TopBar.Open user menu')}
-                                                </span>
-                                                <Button variant='white'>
-                                                  <span>{t('QueueManager.Actions')}</span>
-                                                  <FontAwesomeIcon
-                                                    icon={faCaretDown}
-                                                    className='h-4 w-4 ml-2'
-                                                    aria-hidden='true'
-                                                  />
-                                                </Button>
-                                              </Dropdown>
+                                              <UserActionInQueue queue={queue} />
                                             </div>
                                           </div>
                                           <div className='px-3 py-4'>
