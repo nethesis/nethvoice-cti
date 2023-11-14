@@ -338,7 +338,7 @@ export const NotManagedCalls: FC<NotManagedCallsProps> = ({ className }): JSX.El
                             <tr key={index}>
                               {/* time */}
                               <td className='whitespace-nowrap py-4 pl-4 pr-3 sm:pl-6'>
-                                <CallsDate call={call} />
+                                <CallsDate call={call} isInQueue={true}/>
                               </td>
                               {/* queue */}
                               <td className='px-3 py-4'>

@@ -22,6 +22,16 @@ export const formatInTimeZoneLoc = (date: any, fmt: string, tz: any) => {
   return format(utcToZonedTime(date, tz), fmt, { timeZone: tz, locale: getLocale() })
 }
 
+export function formatDateLocIsDifferentTimezone(date: any, fmt: string) {
+  const timeZone = Intl.DateTimeFormat().resolvedOptions().timeZone
+  return format(utcToZonedTime(date, timeZone), fmt, { locale: getLocale() })
+}
+
+export const getCallTimeToDisplayIsDifferentTimezone = (date: any) => {
+  const timeZone = Intl.DateTimeFormat().resolvedOptions().timeZone
+  return format(utcToZonedTime(date, timeZone), 'HH:mm', { timeZone, locale: getLocale() })
+}
+
 /**
  * Format a call duration expressed in seconds to HH:MM:SS. E.g. 189 -> 03:09
  *
