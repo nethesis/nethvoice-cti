@@ -25,6 +25,7 @@ import { useSelector } from 'react-redux'
 import { RootState } from '../../../store'
 import { getInfiniteScrollOperatorsPageSize, openShowOperatorDrawer } from '../../../lib/operators'
 import { sortByBooleanProperty, sortByProperty } from '../../../lib/utils'
+import { UserActionInQueue } from '../Common/UserActionInQueue'
 
 export interface QueueManagementOperatorsProps extends ComponentProps<'div'> {
   selectedValue: any
@@ -32,12 +33,7 @@ export interface QueueManagementOperatorsProps extends ComponentProps<'div'> {
   allQueuesStats: boolean
 }
 
-function classNames(...classes: any) {
-  return classes.filter(Boolean).join(' ')
-}
-
 export const QueueManagementOperators: FC<QueueManagementOperatorsProps> = ({
-  className,
   selectedValue,
   agentCounters,
   allQueuesStats,
@@ -147,6 +143,7 @@ export const QueueManagementOperators: FC<QueueManagementOperatorsProps> = ({
     ) {
       applyFilters(queueManagerStore?.queues[selectedValue?.queue]?.allQueueOperators)
     }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [selectedValue, textFilter, sortByFilter, statusFilter, queueManagerStore.isLoaded])
 
   // stop invocation of debounced function after unmounting
@@ -194,7 +191,7 @@ export const QueueManagementOperators: FC<QueueManagementOperatorsProps> = ({
             <div className='mx-auto text-center max-w-7xl 5xl:max-w-screen-2xl'>
               {/* empty state */}
               {allQueuesStats &&
-                isEmpty(queueManagerStore?.queues[selectedValue.queue]?.members) && (
+                isEmpty(queueManagerStore?.queues[selectedValue?.queue]?.members) && (
                   <EmptyState
                     title='No operators'
                     description='There is no operator configured'
@@ -211,7 +208,7 @@ export const QueueManagementOperators: FC<QueueManagementOperatorsProps> = ({
               {!allQueuesStats && !queueManagerStore?.isLoaded && (
                 <ul
                   role='list'
-                  className='mt-4 grid grid-cols-1 gap-4 sm:grid-cols-2 2xl:grid-cols-3 5xl:grid-cols-4 5xl:max-w-screen-2xl'
+                  className='mt-4 grid grid-cols-1 gap-4 sm:grid-cols-2 2xl:grid-cols-2 5xl:grid-cols-4 5xl:max-w-screen-2xl'
                 >
                   {Array.from(Array(24)).map((e, index) => (
                     <li key={index} className='px-1'>
@@ -241,7 +238,7 @@ export const QueueManagementOperators: FC<QueueManagementOperatorsProps> = ({
               )}
               {/* compact layout operators */}
               {allQueuesStats &&
-                queueManagerStore?.queues[selectedValue.queue]?.allQueueOperators?.length > 0 && (
+                queueManagerStore?.queues[selectedValue?.queue]?.allQueueOperators?.length > 0 && (
                   <InfiniteScroll
                     dataLength={infiniteScrollOperators.length}
                     next={showMoreInfiniteScrollOperators}
@@ -256,49 +253,58 @@ export const QueueManagementOperators: FC<QueueManagementOperatorsProps> = ({
                   >
                     <ul
                       role='list'
-                      className='mt-4 grid grid-cols-1 gap-4 sm:grid-cols-2 2xl:grid-cols-3 5xl:grid-cols-4 5xl:max-w-screen-2xl'
+                      className='mt-4 grid grid-cols-1 gap-4 sm:grid-cols-2 2xl:grid-cols-2 5xl:grid-cols-4 5xl:max-w-screen-2xl'
                     >
                       {infiniteScrollOperators.map((operator: any, index) => {
                         return (
                           <li key={index} className='px-1'>
-                            <button
-                              type='button'
-                              onClick={() => openShowOperatorDrawer(operators[operator.shortname])}
-                              className='group flex w-full items-center justify-between space-x-3 rounded-lg p-2 text-left focus:outline-none focus:ring-2 focus:ring-offset-2 bg-white dark:bg-gray-900 hover:bg-gray-200 dark:hover:bg-gray-700 focus:ring-primary dark:focus:ring-primary'
-                            >
+                            <div className='group flex w-full items-center justify-between space-x-3 rounded-lg p-2 text-left focus:outline-none focus:ring-2 focus:ring-offset-2 bg-white dark:bg-gray-900 hover:bg-gray-200 dark:hover:bg-gray-700 focus:ring-primary dark:focus:ring-primary'>
                               <span className='flex min-w-0 flex-1 items-center space-x-3'>
-                                <span className='block flex-shrink-0'>
+                                <span className='block flex-shrink-0 cursor-pointer'>
                                   <Avatar
                                     rounded='full'
-                                    src={operators[operator.shortname]?.avatarBase64}
+                                    src={operators[operator?.shortname]?.avatarBase64}
                                     placeholderType='operator'
                                     size='small'
-                                    status={operators[operator.shortname]?.mainPresence}
+                                    status={operators[operator?.shortname]?.mainPresence}
                                     onClick={() =>
-                                      openShowOperatorDrawer(operators[operator.shortname])
+                                      openShowOperatorDrawer(operators[operator?.shortname])
                                     }
                                   />
                                 </span>
                                 <span className='block min-w-0 flex-1'>
-                                  <span className='block truncate text-sm font-medium text-gray-900 dark:text-gray-100'>
+                                  <span
+                                    className='block truncate text-sm font-medium text-gray-900 dark:text-gray-100 cursor-pointer'
+                                    onClick={() =>
+                                      openShowOperatorDrawer(operators[operator?.shortname])
+                                    }
+                                  >
                                     {operator.name}
                                   </span>
                                   <span className='block truncate mt-1 text-sm font-medium text-gray-500 dark:text-gray-500'>
                                     <LoggedStatus
-                                      loggedIn={operator.loggedIn}
-                                      paused={operator.paused}
+                                      loggedIn={
+                                        queueManagerStore?.queues[selectedValue?.queue]?.members[
+                                          operator?.member
+                                        ]?.loggedIn
+                                      }
+                                      paused={
+                                        queueManagerStore?.queues[selectedValue?.queue]?.members[
+                                          operator?.member
+                                        ]?.paused
+                                      }
                                     />
                                   </span>
                                 </span>
                               </span>
-                              <span className='inline-flex h-10 w-10 flex-shrink-0 items-center justify-center m-2'>
-                                <FontAwesomeIcon
-                                  icon={faChevronRight}
-                                  className='h-3 w-3 text-gray-400 dark:text-gray-500 cursor-pointer'
-                                  aria-hidden='true'
-                                />
-                              </span>
-                            </button>
+                              <UserActionInQueue
+                                queue={
+                                  queueManagerStore?.queues[selectedValue?.queue]?.members[
+                                    operator?.member
+                                  ]
+                                }
+                              />
+                            </div>
                           </li>
                         )
                       })}

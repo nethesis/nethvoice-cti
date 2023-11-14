@@ -250,6 +250,7 @@ export const Layout: FC<LayoutProps> = ({ children }) => {
     ) {
       retrieveQueues(authStore.username, mainextension, operatorsStore.operators)
     }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [
     queuesStore.isLoaded,
     operatorsStore.isOperatorsLoaded,
@@ -267,6 +268,7 @@ export const Layout: FC<LayoutProps> = ({ children }) => {
     ) {
       retrieveQueueManager(authStore.username, mainextension, operatorsStore.operators)
     }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [
     queueManagerStore.isLoaded,
     operatorsStore.isOperatorsLoaded,
@@ -676,17 +678,17 @@ export const Layout: FC<LayoutProps> = ({ children }) => {
       return
     }
 
-    // queue manager
-    if (!knownQueueManagerQueues.includes(queueId)) {
-      return
-    }
-
     store.dispatch.queues.processQueue({
       queueData,
       username: authStore.username,
       mainextension,
       operators: operatorsStore.operators,
     })
+
+    // // queue manager
+    if (!knownQueueManagerQueues.includes(queueId)) {
+      return
+    }
 
     store.dispatch.queueManagerQueues.processQueue({
       queueData,
