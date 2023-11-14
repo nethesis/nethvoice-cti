@@ -27,6 +27,7 @@ import { getApiEndpoint, getApiScheme, sortByProperty, playFileAudio } from '../
 import { openShowOperatorDrawer } from '../../lib/operators'
 import { openEditAnnouncementDrawer, openCreateAnnouncementDrawer } from '../../lib/lines'
 import { useEventListener } from '../../lib/hooks/useEventListener'
+import { CallsDate } from '../history/CallsDate'
 
 export interface AnnouncementViewProps extends ComponentProps<'div'> {}
 
@@ -410,12 +411,7 @@ export const AnnouncementView: FC<AnnouncementViewProps> = ({ className }): JSX.
                               {/* Date */}
                               <td className='px-3 py-4'>
                                 <div className='flex flex-col'>
-                                  <div className='text-sm text-gray-900 dark:text-gray-100'>
-                                    {dateCreationShowed(lines[key].date_creation)}
-                                  </div>
-                                  <div className='text-gray-500 dark:text-gray-500'>
-                                    {hourCreationShowed(lines[key].time_creation)}
-                                  </div>
+                                  <CallsDate call={lines[key]} isInAnnouncement={true} />
                                 </div>
                               </td>
 
