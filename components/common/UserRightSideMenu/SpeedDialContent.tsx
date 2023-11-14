@@ -301,7 +301,6 @@ export const SpeedDialContent = () => {
                   <div className='relative flex min-w-0 flex-1 items-center justify-between'>
                     <div className='flex items-center'>
                       <span className='text-gray-300 dark:text-gray-600'>
-                        {/* <Avatar size='base' placeholderType='person' /> */}
 
                         <Avatar
                           size='base'
