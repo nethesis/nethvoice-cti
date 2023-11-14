@@ -167,6 +167,7 @@ export const ContactSummary = forwardRef<HTMLButtonElement, ContactSummaryProps>
         }
       }
       searchCompanyInformation()
+      // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [contact])
 
     return (
@@ -229,26 +230,31 @@ export const ContactSummary = forwardRef<HTMLButtonElement, ContactSummaryProps>
                 isShownSideDrawerLink && 'cursor-pointer hover:underline',
               )}
             >
-              {contact.displayName}
+              {contact?.displayName}
             </h2>
           </div>
 
           {/* contact menu */}
-          {isShownContactMenu && contact.owner_id === auth.username && (
-            <div>
-              <Dropdown
-                items={contactMenuItems}
-                position='left'
-                divider={true}
-                className='mt-1 mr-2'
-              >
-                <Button variant='ghost'>
-                  <FontAwesomeIcon icon={faEllipsisVertical} className='h-4 w-4' />
-                  <span className='sr-only'>{t('Phonebook.Open contact menu')}</span>
-                </Button>
-              </Dropdown>
-            </div>
-          )}
+          {isShownContactMenu &&
+            (contact?.owner_id === auth?.username ||
+              (!(contact?.owner_id === auth?.username) &&
+                contact?.source === 'cti' &&
+                profile?.macro_permissions?.phonebook?.permissions?.ad_phonebook?.value &&
+                contact?.type === 'public')) && (
+              <div>
+                <Dropdown
+                  items={contactMenuItems}
+                  position='left'
+                  divider={true}
+                  className='mt-1 mr-2'
+                >
+                  <Button variant='ghost'>
+                    <FontAwesomeIcon icon={faEllipsisVertical} className='h-4 w-4' />
+                    <span className='sr-only'>{t('Phonebook.Open contact menu')}</span>
+                  </Button>
+                </Dropdown>
+              </div>
+            )}
         </div>
         <div className='mt-5 border-t border-gray-200 dark:border-gray-700 pb-5'>
           <dl>
@@ -265,7 +271,7 @@ export const ContactSummary = forwardRef<HTMLButtonElement, ContactSummaryProps>
                       className='mr-2 h-4 w-4 flex-shrink-0 text-gray-400 dark:text-gray-500'
                       aria-hidden='true'
                     />
-                    <span>{contact.company}</span>
+                    <span>{contact?.company}</span>
                   </div>
                 </dd>
               </div>
@@ -287,7 +293,7 @@ export const ContactSummary = forwardRef<HTMLButtonElement, ContactSummaryProps>
                       className='truncate cursor-pointer hover:underline'
                       onClick={() => callPhoneNumber(contact.extension)}
                     >
-                      {contact.extension}
+                      {contact?.extension}
                     </span>
                   </div>
                 </dd>
@@ -333,7 +339,7 @@ export const ContactSummary = forwardRef<HTMLButtonElement, ContactSummaryProps>
                       className='truncate cursor-pointer hover:underline'
                       onClick={() => callPhoneNumber(contact.cellphone)}
                     >
-                      {contact.cellphone}
+                      {contact?.cellphone}
                     </span>
                   </div>
                 </dd>
@@ -354,9 +360,9 @@ export const ContactSummary = forwardRef<HTMLButtonElement, ContactSummaryProps>
                     />
                     <span
                       className='truncate cursor-pointer hover:underline'
-                      onClick={() => callPhoneNumber(contact.homephone)}
+                      onClick={() => callPhoneNumber(contact?.homephone)}
                     >
-                      {contact.homephone}
+                      {contact?.homephone}
                     </span>
                   </div>
                 </dd>
@@ -378,17 +384,17 @@ export const ContactSummary = forwardRef<HTMLButtonElement, ContactSummaryProps>
                     <a
                       target='_blank'
                       rel='noreferrer'
-                      href={`mailto: ${contact.workemail}`}
+                      href={`mailto: ${contact?.workemail}`}
                       className='truncate hover:underline text-gray-900 dark:text-gray-100'
                     >
-                      {contact.workemail}
+                      {contact?.workemail}
                     </a>
                   </div>
                 </dd>
               </div>
             )}
             {/* notes */}
-            {contact.notes && (
+            {contact?.notes && (
               <div className='py-4 sm:grid sm:grid-cols-3 sm:gap-4 sm:py-5 px-5 '>
                 <dt className='text-sm font-medium text-gray-500 dark:text-gray-400'>
                   {t('Phonebook.Notes')}
@@ -400,13 +406,13 @@ export const ContactSummary = forwardRef<HTMLButtonElement, ContactSummaryProps>
                       className='mr-2 h-4 w-4 flex-shrink-0 text-gray-400 dark:text-gray-500'
                       aria-hidden='true'
                     />
-                    <div>{contact.notes}</div>
+                    <div>{contact?.notes}</div>
                   </div>
                 </dd>
               </div>
             )}
             {/* company contacts */}
-            {contact.contacts && contact.contacts.length ? (
+            {contact?.contacts && contact?.contacts?.length ? (
               <div className='py-4 sm:grid sm:grid-cols-3 sm:gap-4 sm:py-5 px-5 '>
                 <dt className='text-sm font-medium text-gray-500 dark:text-gray-400'>
                   {t('Phonebook.Company contacts')}
@@ -426,9 +432,9 @@ export const ContactSummary = forwardRef<HTMLButtonElement, ContactSummaryProps>
                           />
                           <span
                             className='ml-2 w-0 flex-1 truncate text-primary dark:text-primary cursor-pointer'
-                            onClick={() => fetchContact(contact.id, contact.source)}
+                            onClick={() => fetchContact(contact?.id, contact?.source)}
                           >
-                            {contact.name}
+                            {contact?.name}
                           </span>
                         </div>
                       </li>
@@ -451,7 +457,7 @@ export const ContactSummary = forwardRef<HTMLButtonElement, ContactSummaryProps>
                     aria-hidden='true'
                   />
                   <span className='truncate'>
-                    {contact.type === 'private' && contact.source === 'cti'
+                    {contact?.type === 'private' && contact?.source === 'cti'
                       ? `${t('Phonebook.Only me')}`
                       : `${t('Phonebook.Public')}`}
                   </span>
@@ -466,7 +472,7 @@ export const ContactSummary = forwardRef<HTMLButtonElement, ContactSummaryProps>
                   size='small'
                   variant='primary'
                   className={`${
-                    contact.workphone || contact.homephone || contact.cellphone ? '' : 'hidden'
+                    contact?.workphone || contact?.homephone || contact?.cellphone ? '' : 'hidden'
                   }`}
                   onClick={() => goToCCardCompany(contact)}
                 >
@@ -489,7 +495,7 @@ export const ContactSummary = forwardRef<HTMLButtonElement, ContactSummaryProps>
                     {t('CustomerCards.Business name')}
                   </h3>
                   <span className='flex pt-2 text-base font-medium text-primaryLight dark:text-primary'>
-                    {companyInformation.company || '-'}
+                    {companyInformation?.company || '-'}
                   </span>
 
                   {/* Company city address */}
