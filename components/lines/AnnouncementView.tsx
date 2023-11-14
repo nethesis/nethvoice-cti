@@ -21,11 +21,10 @@ import classNames from 'classnames'
 import { AnnouncementFilter } from './AnnouncementFilter'
 import { useDispatch, useSelector } from 'react-redux'
 import { Dispatch, RootState } from '../../store'
-import { formatDateLoc, getCallTimeToDisplay } from '../../lib/dateTime'
 import { capitalize } from 'lodash'
 import { getApiEndpoint, getApiScheme, sortByProperty, playFileAudio } from '../../lib/utils'
 import { openShowOperatorDrawer } from '../../lib/operators'
-import { openEditAnnouncementDrawer, openCreateAnnouncementDrawer } from '../../lib/lines'
+import { openEditAnnouncementDrawer } from '../../lib/lines'
 import { useEventListener } from '../../lib/hooks/useEventListener'
 import { CallsDate } from '../history/CallsDate'
 
@@ -44,6 +43,9 @@ export const AnnouncementView: FC<AnnouncementViewProps> = ({ className }): JSX.
   const apiEnpoint = getApiEndpoint()
   const apiScheme = getApiScheme()
   const downloadUrl = apiScheme + apiEnpoint + '/webrest/static/'
+
+  //Get operators information from store
+  const operators: any = useSelector((state: RootState) => state.operators)
 
   const dispatch = useDispatch<Dispatch>()
 
@@ -90,6 +92,7 @@ export const AnnouncementView: FC<AnnouncementViewProps> = ({ className }): JSX.
   })
 
   const [dataPagination, setDataPagination]: any = useState({})
+
   //Get Lines information
   useEffect(() => {
     async function fetchLines() {
@@ -162,6 +165,7 @@ export const AnnouncementView: FC<AnnouncementViewProps> = ({ className }): JSX.
 
   const [isListeningAnnouncements, setIsListeningAnnouncements] = useState(false)
   const [idAnnouncementInPlay, setIdAnnouncementInPlay] = useState('')
+
   async function playSelectedAnnouncement(announcementId: any) {
     if (announcementId) {
       playFileAudio(announcementId, 'announcement')
@@ -200,93 +204,6 @@ export const AnnouncementView: FC<AnnouncementViewProps> = ({ className }): JSX.
 
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [sortBy, isLinesLoaded])
-
-  function dateCreationShowed(dateCreation: any) {
-    if (typeof dateCreation === 'string') {
-      const dateObject = new Date(dateCreation.split('/').reverse().join('-'))
-      const formattedDate = formatDateLoc(dateObject, 'PP')
-      return formattedDate
-    } else {
-      return ''
-    }
-  }
-
-  function hourCreationShowed(hourCreation: any) {
-    const formattedTime = getCallTimeToDisplay(`1970-01-01T${hourCreation}Z`)
-    return formattedTime
-  }
-
-  // load operators information from the store
-  const operatorsStore = useSelector((state: RootState) => state.operators)
-  const [avatarIcon, setAvatarIcon] = useState<any>()
-  const [operatorInformation, setOperatorInformation] = useState<any>()
-
-  // get operator avatar base64 from the store
-  useEffect(() => {
-    if (operatorsStore && !avatarIcon) {
-      setAvatarIcon(operatorsStore.avatars)
-    }
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [])
-
-  // get operator information from the store
-  useEffect(() => {
-    if (operatorsStore && !operatorInformation) {
-      setOperatorInformation(operatorsStore.operators)
-    }
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [])
-
-  function getAvatarData(announcement: any) {
-    let userAvatarData = ''
-    if (announcement.username && avatarIcon) {
-      for (const username in avatarIcon) {
-        if (username === announcement.username) {
-          userAvatarData = avatarIcon[username]
-          break
-        }
-      }
-    }
-    return userAvatarData
-  }
-
-  function getAvatarMainPresence(announcement: any) {
-    let userMainPresence = null
-    if (announcement.username && operatorInformation) {
-      for (const username in operatorInformation) {
-        if (username === announcement.username) {
-          userMainPresence = operatorInformation[username].presence
-        }
-      }
-    }
-    return userMainPresence
-  }
-
-  function getFullUsername(announcement: any) {
-    let fullName = null
-    if (announcement.username && operatorInformation) {
-      for (const username in operatorInformation) {
-        if (username === announcement.username) {
-          fullName = operatorInformation[username].name
-        }
-      }
-    }
-    return fullName
-  }
-
-  function setOperatorInformationDrawer(operatorData: any) {
-    let operatorInformationDataDrawer = null
-    if (operatorData.username && operatorInformation) {
-      for (const username in operatorInformation) {
-        if (username === operatorData.username) {
-          operatorInformationDataDrawer = operatorInformation[username]
-          openShowOperatorDrawer(operatorInformationDataDrawer)
-        }
-      }
-    }
-
-    return
-  }
 
   return (
     <div className={classNames(className)}>
@@ -375,21 +292,21 @@ export const AnnouncementView: FC<AnnouncementViewProps> = ({ className }): JSX.
                                 <div className='flex flex-col'>
                                   <div
                                     className={` ${
-                                      auth.username === lines[key].username
+                                      auth?.username === lines[key]?.username
                                         ? 'cursor-pointer hover:underline'
                                         : ''
                                     } `}
                                     onClick={() => {
-                                      auth.username === lines[key].username
+                                      auth?.username === lines[key]?.username
                                         ? openEditAnnouncementDrawer(
-                                            lines[key].description,
-                                            lines[key].id,
-                                            lines[key].privacy,
+                                            lines[key]?.description,
+                                            lines[key]?.id,
+                                            lines[key]?.privacy,
                                           )
                                         : ''
                                     }}
                                   >
-                                    {lines[key].description}{' '}
+                                    {lines[key]?.description}{' '}
                                   </div>
                                 </div>
                               </td>
@@ -397,15 +314,20 @@ export const AnnouncementView: FC<AnnouncementViewProps> = ({ className }): JSX.
                               <td className='px-3 py-4'>
                                 <div className='flex items-center'>
                                   <Avatar
-                                    src={getAvatarData(lines[key])}
+                                    src={operators?.avatars[lines[key]?.username]}
                                     placeholderType='operator'
-                                    size='small'
-                                    bordered
+                                    size='base'
                                     className='mr-3 cursor-pointer'
-                                    onClick={() => setOperatorInformationDrawer(lines[key])}
-                                    status={getAvatarMainPresence(lines[key])}
+                                    onClick={() =>
+                                      openShowOperatorDrawer(
+                                        operators?.operators[lines[key]?.username],
+                                      )
+                                    }
+                                    status={
+                                      operators?.operators[lines[key]?.username]?.mainPresence
+                                    }
                                   />
-                                  <div>{getFullUsername(lines[key])}</div>
+                                  <div>{operators?.operators[lines[key]?.username]?.name}</div>
                                 </div>
                               </td>
                               {/* Date */}
