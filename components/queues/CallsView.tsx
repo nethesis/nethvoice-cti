@@ -16,9 +16,8 @@ import {
 } from '../../lib/queuesLib'
 import { faChevronRight, faChevronLeft, faPhone } from '@fortawesome/free-solid-svg-icons'
 import classNames from 'classnames'
-import { exactDistanceToNowLoc, formatDateLoc, getCallTimeToDisplay } from '../../lib/dateTime'
+import { formatDateLoc } from '../../lib/dateTime'
 import { CallsViewFilter } from './CallsViewFilter'
-import { utcToZonedTime } from 'date-fns-tz'
 import { useSelector } from 'react-redux'
 import { RootState } from '../../store'
 import { loadPreference } from '../../lib/storage'
@@ -118,7 +117,7 @@ export const CallsView: FC<CallsViewProps> = ({ className }): JSX.Element => {
 
     async function fetchCallsInterval() {
       const numHours =
-        loadPreference('queuesCallsLoadPeriod', authStore.username) || DEFAULT_CALLS_LOAD_PERIOD
+        loadPreference('queuesCallsLoadPeriod', authStore?.username) || DEFAULT_CALLS_LOAD_PERIOD
 
       // fetch stats immediately and set interval
       fetchCalls(numHours)
@@ -129,7 +128,7 @@ export const CallsView: FC<CallsViewProps> = ({ className }): JSX.Element => {
       }
 
       const refreshInterval =
-        loadPreference('queuesCallsRefreshInterval', authStore.username) ||
+        loadPreference('queuesCallsRefreshInterval', authStore?.username) ||
         DEFAULT_CALLS_REFRESH_INTERVAL
 
       setCallsRefreshInterval(refreshInterval)
@@ -170,15 +169,6 @@ export const CallsView: FC<CallsViewProps> = ({ className }): JSX.Element => {
     return !isCallsLoaded || pageNum >= calls?.totalPages
   }
 
-  const getCallDistanceToNowTemplate = (callTime: any) => {
-    const timeDistance = exactDistanceToNowLoc(utcToZonedTime(new Date(callTime), 'UTC'), {
-      addSuffix: true,
-      hideSeconds: true,
-    })
-
-    return t('Common.time_distance_ago', { timeDistance })
-  }
-
   return (
     <div className={classNames(className)}>
       <div className='flex flex-col flex-wrap xl:flex-row justify-between gap-x-4 xl:items-end'>
@@ -207,7 +197,7 @@ export const CallsView: FC<CallsViewProps> = ({ className }): JSX.Element => {
               <div className='inline-block min-w-full py-2 align-middle px-2 md:px-6 lg:px-8'>
                 <div className='overflow-hidden shadow ring-1 md:rounded-lg ring-opacity-5 dark:ring-opacity-5 ring-gray-900 dark:ring-gray-100'>
                   {/* empty state */}
-                  {isCallsLoaded && isEmpty(calls.rows) && (
+                  {isCallsLoaded && isEmpty(calls?.rows) && (
                     <EmptyState
                       title={t('Queues.No queue calls')}
                       description={t('Queues.There are no recent calls with current filters') || ''}
@@ -221,7 +211,7 @@ export const CallsView: FC<CallsViewProps> = ({ className }): JSX.Element => {
                       className='bg-white dark:bg-gray-900'
                     ></EmptyState>
                   )}
-                  {(!isCallsLoaded || !isEmpty(calls.rows)) && (
+                  {(!isCallsLoaded || !isEmpty(calls?.rows)) && (
                     <table className='min-w-full divide-y divide-gray-300 dark:divide-gray-600'>
                       <thead className='bg-white dark:bg-gray-900'>
                         <tr>
@@ -280,21 +270,21 @@ export const CallsView: FC<CallsViewProps> = ({ className }): JSX.Element => {
                             <tr key={index}>
                               {/* time */}
                               <td className='whitespace-nowrap py-4 pl-4 pr-3 sm:pl-6'>
-                                <CallsDate call={call} />
+                                <CallsDate call={call} isInQueue={true} />
                               </td>
                               {/* queue */}
                               <td className='px-3 py-4'>
-                                <div>{call.queueName}</div>
+                                <div>{call?.queueName}</div>
                                 <div className='text-gray-500 dark:text-gray-500'>
-                                  {call.queueId}
+                                  {call?.queueId}
                                 </div>
                               </td>
                               {/* name / number */}
                               <td className='px-3 py-4'>
-                                {call.name && (
+                                {call?.name && (
                                   <div
                                     onClick={() =>
-                                      openShowQueueCallDrawer(call, queuesStore.queues)
+                                      openShowQueueCallDrawer(call, queuesStore?.queues)
                                     }
                                   >
                                     <span
@@ -302,26 +292,26 @@ export const CallsView: FC<CallsViewProps> = ({ className }): JSX.Element => {
                                         call.cid && 'cursor-pointer hover:underline',
                                       )}
                                     >
-                                      {call.name}
+                                      {call?.name}
                                     </span>
                                   </div>
                                 )}
                                 <div
-                                  onClick={() => openShowQueueCallDrawer(call, queuesStore.queues)}
+                                  onClick={() => openShowQueueCallDrawer(call, queuesStore?.queues)}
                                   className={classNames(
-                                    call.name && 'text-gray-500 dark:text-gray-500',
+                                    call?.name && 'text-gray-500 dark:text-gray-500',
                                   )}
                                 >
-                                  <span className='cursor-pointer hover:underline'>{call.cid}</span>
+                                  <span className='cursor-pointer hover:underline'>{call?.cid}</span>
                                 </div>
                               </td>
                               {/* company */}
-                              <td className='px-3 py-4'>{call.company || '-'}</td>
+                              <td className='px-3 py-4'>{call?.company || '-'}</td>
                               {/* outcome */}
                               <td className='whitespace-nowrap px-3 py-4'>
                                 <div className='flex items-center'>
                                   <span>{getCallIcon(call)}</span>
-                                  <span>{t(`Queues.outcome_${call.event}`)}</span>
+                                  <span>{t(`Queues.outcome_${call?.event}`)}</span>
                                 </div>
                               </td>
                               {/* show details */}
@@ -330,7 +320,7 @@ export const CallsView: FC<CallsViewProps> = ({ className }): JSX.Element => {
                                   icon={faChevronRight}
                                   className='h-3 w-3 p-2 cursor-pointer text-gray-500 dark:text-gray-500'
                                   aria-hidden='true'
-                                  onClick={() => openShowQueueCallDrawer(call, queuesStore.queues)}
+                                  onClick={() => openShowQueueCallDrawer(call, queuesStore?.queues)}
                                 />
                               </td>
                             </tr>
