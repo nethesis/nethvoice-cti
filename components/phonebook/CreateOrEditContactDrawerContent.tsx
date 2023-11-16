@@ -63,7 +63,7 @@ export const CreateOrEditContactDrawerContent = forwardRef<
       setFirstRender(false)
       return
     }
-    if (config.isEdit) {
+    if (config?.isEdit) {
       // editing contact
       if (config.contact.kind) {
         setContactType(config.contact.kind)
@@ -108,6 +108,17 @@ export const CreateOrEditContactDrawerContent = forwardRef<
       }
       emailRef.current.value = config.contact.workemail || ''
       notesRef.current.value = config.contact.notes || ''
+    } else if (config?.isCreateContactUserLastCalls) {
+      setContactType('person')
+      setContactVisibility('public')
+
+      nameRef.current.value = ''
+      companyRef.current.value = ''
+      extensionRef.current.value = config?.contact?.extension || ''
+      workPhoneRef.current.value = ''
+      mobilePhoneRef.current.value = ''
+      emailRef.current.value = ''
+      notesRef.current.value = ''
     } else {
       // creating contact
       setContactType('person')

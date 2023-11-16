@@ -34,7 +34,8 @@
     "Intrude": "Intromesso",
     "Listen": "Ascolto",
     "0 minutes ago": "0 minuti fa",
-    "ago": "fa"
+    "ago": "fa",
+    "Unknown": "Sconosciuto"
   },
   "Login": {
     "User": "Utente",
@@ -64,7 +65,8 @@
     "Type": "Tipo",
     "Work": "Lavoro",
     "Mobile": "Cellulare",
-    "Try changing your search filters": "Prova a cambiare i tuoi filtri di ricerca"
+    "Try changing your search filters": "Prova a cambiare i tuoi filtri di ricerca",
+    "Show contact": "Visualizza contatto"
   },
   "History": {
     "History": "Storico",

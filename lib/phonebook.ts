@@ -178,6 +178,14 @@ export const openAddToContactDrawer = (contact: any, phone: any) => {
   })
 }
 
+export const openCreateLastCallContact = (contact: any) => {
+  store.dispatch.sideDrawer.update({
+    isShown: true,
+    contentType: 'createOrEditContact',
+    config: { isEdit: false, isCreateContactUserLastCalls: true, contact: contact },
+  })
+}
+
 export const getFilterValues = (currentUsername: string) => {
   const contactType =
     loadPreference('phonebookContactTypeFilter', currentUsername) || DEFAULT_CONTACT_TYPE_FILTER

@@ -50,7 +50,8 @@
     "Login": "Login",
     "Intrude": "Intrude",
     "Listen": "Listen",
-    "ago": "ago"
+    "ago": "ago",
+    "Unknown": "Unknown"
   },
   "Login": {
     "User": "User",
@@ -96,7 +97,8 @@
     "Last switchboard calls": "Last switchboard calls",
     "Last personal calls": "Last personal calls",
     "Calls": "Calls",
-    "Last calls": "Last calls"
+    "Last calls": "Last calls",
+    "Show contact": "Show contact"
   },
   "History": {
     "History": "History",

@@ -5,7 +5,6 @@ import { useState, useEffect, useRef, useCallback } from 'react'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { faPhone, faChevronDown, faUsers } from '@fortawesome/free-solid-svg-icons'
 import { Button, Avatar, EmptyState, Dropdown, Badge } from '../../common'
-import { callPhoneNumber } from '../../../lib/utils'
 import { useSelector } from 'react-redux'
 import { RootState } from '../../../store'
 import { useTranslation } from 'react-i18next'
@@ -19,6 +18,7 @@ import { CallsDestination } from '../../history/CallsDestination'
 import { CallsSource } from '../../history/CallsSource'
 import { getJSONItem, setJSONItem } from '../../../lib/storage'
 import { Tooltip } from 'react-tooltip'
+import { openCreateLastCallContact, openShowContactDrawer } from '../../../lib/phonebook'
 
 interface LastCallTypes extends CallTypes {
   username: string
@@ -120,6 +120,47 @@ export const UserLastCallsContent = () => {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [lastCallsUpdate.isReload])
 
+  const openLastCardUserDrawer = (userInformation: any) => {
+    let updatedUserInformation: any = {}
+    let createContactObject: any = {}
+
+    if (userInformation?.direction === 'in') {
+      if (userInformation?.cnam || userInformation?.ccompany) {
+        updatedUserInformation.displayName =
+          userInformation?.cnam || userInformation?.ccompany || '-'
+        updatedUserInformation.kind = 'person'
+        if (userInformation?.src) {
+          updatedUserInformation.extension = userInformation?.src
+        }
+        if (updatedUserInformation) {
+          openShowContactDrawer(updatedUserInformation)
+        }
+      } else {
+        if (userInformation?.src) {
+          createContactObject.extension = userInformation?.src
+          openCreateLastCallContact(createContactObject)
+        }
+      }
+    } else {
+      if (userInformation?.dst_cnam || userInformation?.dst_ccompany) {
+        updatedUserInformation.displayName =
+          userInformation?.dst_cnam || userInformation?.dst_ccompany || '-'
+        updatedUserInformation.kind = 'person'
+        if (userInformation?.dst) {
+          updatedUserInformation.extension = userInformation?.dst
+        }
+        if (updatedUserInformation) {
+          openShowContactDrawer(updatedUserInformation)
+        }
+      } else {
+        if (userInformation?.dst) {
+          createContactObject.extension = userInformation?.dst
+          openCreateLastCallContact(createContactObject)
+        }
+      }
+    }
+  }
+
   return (
     <>
       <div className='flex h-full flex-col bg-white dark:bg-gray-900'>
@@ -203,18 +244,19 @@ export const UserLastCallsContent = () => {
                   />
                   <div className='relative flex min-w-0 flex-1 items-center justify-between'>
                     <div className='flex items-start'>
-                      <span className='text-gray-300 dark:text-gray-600'>
+                      <span className='text-gray-300 dark:text-gray-600 cursor-pointer'>
                         <Avatar
                           size='base'
                           placeholderType='person'
                           src={operators[call.username]?.avatarBase64}
                           status={operators[call.username]?.mainPresence}
+                          onClick={() => openLastCardUserDrawer(call)}
                         />
                       </span>
                       <div className='ml-4 truncate flex flex-col gap-1.5'>
                         <div className='flex items-center'>
                           <div className='w-24 lg:w-16 xl:w-24 truncate text-sm font-medium text-gray-700 dark:text-gray-200'>
-                            {call.direction === 'in' ? (
+                            {call?.direction === 'in' ? (
                               <>
                                 {' '}
                                 <CallsSource call={call} operators={operators} hideName={true} />
@@ -234,9 +276,7 @@ export const UserLastCallsContent = () => {
                         <div className='truncate text-sm text-primary dark:text-primary'>
                           <div className='flex items-center'>
                             <UserCallStatusIcon call={call} />
-                            <span
-                              className='cursor-pointer hover:underline'
-                            >
+                            <span className='cursor-pointer hover:underline'>
                               {call.direction === 'in' ? (
                                 <CallsSource
                                   call={call}
@@ -260,7 +300,7 @@ export const UserLastCallsContent = () => {
                         <CallsDate call={call} spaced={true} />
                       </div>
                     </div>
-                    <div className='absolute right-0 top-[0.7rem] transform -translate-y-1/2 flex gap-2'>
+                    <div className='absolute right-0 top-[1.0rem] transform -translate-y-1/2 flex gap-2'>
                       {call.channel.includes('from-queue') && (
                         <>
                           <Badge
