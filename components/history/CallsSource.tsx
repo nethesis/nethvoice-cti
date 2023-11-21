@@ -3,9 +3,11 @@ import { CallTypes } from '../../lib/history'
 import { Tooltip } from 'react-tooltip'
 import { getOperatorByPhoneNumber } from '../../lib/operators'
 import classNames from 'classnames'
-import { callPhoneNumber, cleanString } from '../../lib/utils'
+import { callPhoneNumber, cleanString, transferCallToExtension } from '../../lib/utils'
 import { t } from 'i18next'
 import { openCreateLastCallContact, openShowContactDrawer } from '../../lib/phonebook'
+import { useSelector } from 'react-redux'
+import { RootState } from '../../store'
 
 interface CallsSourceProps {
   call: CallTypes
@@ -29,6 +31,9 @@ export const CallsSource: FC<CallsSourceProps> = ({
   operators,
   isExtensionNumberLastCalls,
 }) => {
+  const authStore = useSelector((state: RootState) => state.authentication)
+  const operatorsStore = useSelector((state: RootState) => state.operators)
+
   //Check if a user does not have a name and add the name of the operator
   if (call.cnam === '') {
     const operatorFound: any = getOperatorByPhoneNumber(call?.cnum, operators)
@@ -90,7 +95,14 @@ export const CallsSource: FC<CallsSourceProps> = ({
       ) : (
         <>
           {call?.cnum && (
-            <div className='truncate text-primary' onClick={() => callPhoneNumber(call?.cnum)}>
+            <div
+              className='truncate text-primary'
+              onClick={() =>
+                operatorsStore?.operators[authStore?.username]?.mainPresence === 'busy'
+                  ? transferCallToExtension(call?.cnum)
+                  : callPhoneNumber(call?.cnum)
+              }
+            >
               {call?.cnum}
             </div>
           )}

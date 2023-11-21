@@ -259,6 +259,13 @@ export async function transferCall(operatorBadgeInformations: any) {
   }
 }
 
+// Function to transfer call from every page
+export async function transferCallToExtension(extensionToTransfer: any) {
+  if (extensionToTransfer) {
+    eventDispatch('phone-island-transfer-call', { to: extensionToTransfer })
+  }
+}
+
 export const clearLocalStorageAndCache = () => {
   // Delete credentials and caches element from local storage
   localStorage.removeItem('credentials')

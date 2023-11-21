@@ -67,7 +67,7 @@ export const LastCallsDrawerTable = forwardRef<HTMLButtonElement, LastCallsDrawe
         if (callType === 'user') {
           try {
             const res = await searchDrawerHistoryUser(
-              authStore.username,
+              authStore?.username,
               dateStart,
               dateEnd,
               phoneNumbers[0],

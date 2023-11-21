@@ -13,7 +13,7 @@ import {
   faUser,
 } from '@fortawesome/free-solid-svg-icons'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
-import { callPhoneNumber } from '../../lib/utils'
+import { callPhoneNumber, transferCallToExtension } from '../../lib/utils'
 import { getCallIcon, retrieveQueueCallInfo } from '../../lib/queuesLib'
 import { formatCallDuration, formatDateLoc, getCallTimeToDisplay } from '../../lib/dateTime'
 import { useSelector } from 'react-redux'
@@ -34,6 +34,7 @@ export const ShowQueueCallDrawerContent = forwardRef<
   const [isLoaded, setLoaded] = useState(false)
   const [errorMessage, setErrorMessage] = useState('')
   const operatorsStore = useSelector((state: RootState) => state.operators)
+  const authStore = useSelector((state: RootState) => state.authentication)
 
   const retrieveCallInformation = async () => {
     try {
@@ -182,9 +183,13 @@ export const ShowQueueCallDrawerContent = forwardRef<
                   />
                   <span
                     className='truncate cursor-pointer hover:underline'
-                    onClick={() => callPhoneNumber(config.cid)}
+                    onClick={() =>
+                      operatorsStore?.operators[authStore?.username]?.mainPresence === 'busy'
+                        ? transferCallToExtension(config?.cid)
+                        : callPhoneNumber(config?.cid)
+                    }
                   >
-                    {config.cid}
+                    {config?.cid}
                   </span>
                 </div>
               </dd>

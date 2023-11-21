@@ -19,13 +19,20 @@ import {
   faCircleXmark,
 } from '@fortawesome/free-solid-svg-icons'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
-import { callPhoneNumber, closeSideDrawer, playFileAudio } from '../../lib/utils'
+import {
+  callPhoneNumber,
+  closeSideDrawer,
+  playFileAudio,
+  transferCallToExtension,
+} from '../../lib/utils'
 import { TextInput, Button } from '../common'
 import { formatDateLoc, formatInTimeZoneLoc } from '../../lib/dateTime'
 import { setOffHour, getAnnouncements, reloadPhoneLines } from '../../lib/lines'
 import { format, parse } from 'date-fns'
 import Datepicker from 'react-tailwindcss-datepicker'
 import { useTheme } from '../../theme/Context'
+import { useSelector } from 'react-redux'
+import { RootState } from '../../store'
 
 export interface ShowPhoneLinesDrawerContentProps extends ComponentPropsWithRef<'div'> {
   config: any
@@ -44,6 +51,9 @@ export const ShowPhoneLinesDrawerContent = forwardRef<
   const [selectedAnnouncementInfo, setSelectedAnnouncementInfo] = useState<any>(null)
   const [firstRender, setFirstRender]: any = useState(true)
   const { timePicker: timePickerTheme, datePicker: datePickerTheme } = useTheme().theme
+
+  const authStore = useSelector((state: RootState) => state.authentication)
+  const operatorsStore = useSelector((state: RootState) => state.operators)
 
   function changeAnnouncementSelect(event: any) {
     const listAnnouncementValue = event.target.value
@@ -1106,7 +1116,11 @@ export const ShowPhoneLinesDrawerContent = forwardRef<
                   />
                   <span
                     className='truncate cursor-pointer hover:underline'
-                    onClick={() => callPhoneNumber(config.number)}
+                    onClick={() =>
+                      operatorsStore?.operators[authStore?.username]?.mainPresence === 'busy'
+                        ? transferCallToExtension(config?.number)
+                        : callPhoneNumber(config?.number)
+                    }
                   >
                     {config.number}
                   </span>
