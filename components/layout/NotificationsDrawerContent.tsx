@@ -5,10 +5,17 @@ import { ComponentPropsWithRef, forwardRef } from 'react'
 import classNames from 'classnames'
 import { useSelector } from 'react-redux'
 import { RootState, store } from '../../store'
-import { callPhoneNumber } from '../../lib/utils'
+import { callPhoneNumber, transferCallToExtension } from '../../lib/utils'
 import { formatInTimeZoneLoc } from '../../lib/dateTime'
 import { Badge, EmptyState, IconSwitch, SideDrawerCloseIcon } from '../common'
-import { faBell, faCommentDots, faCircleCheck, faPhone, faXmark, faCircle } from '@fortawesome/free-solid-svg-icons'
+import {
+  faBell,
+  faCommentDots,
+  faCircleCheck,
+  faPhone,
+  faXmark,
+  faCircle,
+} from '@fortawesome/free-solid-svg-icons'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { utcToZonedTime } from 'date-fns-tz'
 import { humanDistanceToNowLoc } from '../../lib/dateTime'
@@ -24,6 +31,8 @@ export const NotificationsDrawerContent = forwardRef<
   const { t } = useTranslation()
   const authStore = useSelector((state: RootState) => state.authentication)
   const notificationsStore = useSelector((state: RootState) => state.notifications)
+
+  const operatorsStore = useSelector((state: RootState) => state.operators)
 
   const toggleNotificationRead = (notification: any) => {
     store.dispatch.notifications.setNotificationRead({
@@ -136,7 +145,11 @@ export const NotificationsDrawerContent = forwardRef<
               />
               <span
                 className='cursor-pointer hover:underline'
-                onClick={() => callPhoneNumber(notification.number)}
+                onClick={() =>
+                  operatorsStore?.operators[authStore.username]?.mainPresence === 'busy'
+                    ? transferCallToExtension(notification?.number)
+                    : callPhoneNumber(notification?.number)
+                }
               >
                 {notification.number}
               </span>

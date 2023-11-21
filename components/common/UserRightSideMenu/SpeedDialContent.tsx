@@ -30,7 +30,7 @@ import {
   exportSpeedDial,
 } from '../../../lib/speedDial'
 import { t } from 'i18next'
-import { callPhoneNumber } from '../../../lib/utils'
+import { callPhoneNumber, transferCallToExtension } from '../../../lib/utils'
 import { useSelector } from 'react-redux'
 import { RootState } from '../../../store'
 
@@ -58,6 +58,8 @@ export const SpeedDialContent = () => {
 
   const { profile } = useSelector((state: RootState) => state.user)
   const operators: any = useSelector((state: RootState) => state.operators)
+
+  const authStore = useSelector((state: RootState) => state.authentication)
 
   const [firstRender, setFirstRender] = useState(true)
 
@@ -152,7 +154,14 @@ export const SpeedDialContent = () => {
   }
 
   const callSpeedDial = (speedDial: any) => {
-    callPhoneNumber(speedDial.speeddial_num)
+    if (
+      operators?.operators[authStore?.username]?.mainPresence &&
+      operators?.operators[authStore?.username]?.mainPresence === 'busy'
+    ) {
+      transferCallToExtension(speedDial.extension)
+    } else {
+      callPhoneNumber(speedDial.speeddial_num)
+    }
   }
 
   function importSpeedDial(selectedFile: any) {
@@ -301,7 +310,6 @@ export const SpeedDialContent = () => {
                   <div className='relative flex min-w-0 flex-1 items-center justify-between'>
                     <div className='flex items-center'>
                       <span className='text-gray-300 dark:text-gray-600'>
-
                         <Avatar
                           size='base'
                           src={

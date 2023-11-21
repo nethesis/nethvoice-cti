@@ -19,7 +19,12 @@ import { cloneDeep, debounce } from 'lodash'
 import { Avatar, EmptyState, InlineNotification } from '../common'
 import { openShowOperatorDrawer } from '../../lib/operators'
 import { getPhonebook, mapPhonebookResponse, openShowContactDrawer } from '../../lib/phonebook'
-import { callPhoneNumber, isMobileDevice, sortByProperty } from '../../lib/utils'
+import {
+  callPhoneNumber,
+  isMobileDevice,
+  sortByProperty,
+  transferCallToExtension,
+} from '../../lib/utils'
 import { OperatorSummary } from '../operators/OperatorSummary'
 import { ContactSummary } from '../phonebook/ContactSummary'
 import { openAddToPhonebookDrawer } from '../../lib/history'
@@ -35,6 +40,7 @@ export const GlobalSearch: FC<GlobalSearchProps> = () => {
   const [isLoaded, setLoaded]: any[] = useState(true)
   const [phonebookError, setPhonebookError] = useState('')
   const globalSearchRef = useRef() as MutableRefObject<HTMLButtonElement>
+  const authStore = useSelector((state: RootState) => state.authentication)
 
   const searchOperators = (cleanQuery: string, cleanRegex: RegExp) => {
     store.dispatch.globalSearch.setCustomerCardsRedirect(false)
@@ -152,7 +158,14 @@ export const GlobalSearch: FC<GlobalSearchProps> = () => {
 
     switch (result.resultType) {
       case 'callPhoneNumber':
-        callPhoneNumber(result.phoneNumber)
+        if (
+          operatorsStore?.operators[authStore?.username]?.mainPresence &&
+          operatorsStore?.operators[authStore?.username]?.mainPresence === 'busy'
+        ) {
+          transferCallToExtension(result.phoneNumber)
+        } else {
+          callPhoneNumber(result?.phoneNumber)
+        }
         break
       case 'addToPhonebook':
         openAddToPhonebookDrawer(result.phoneNumber)

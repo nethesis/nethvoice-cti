@@ -3,9 +3,11 @@ import { CallTypes } from '../../lib/history'
 import { Tooltip } from 'react-tooltip'
 import { getOperatorByPhoneNumber } from '../../lib/operators'
 import classNames from 'classnames'
-import { callPhoneNumber, cleanString } from '../../lib/utils'
+import { callPhoneNumber, cleanString, transferCallToExtension } from '../../lib/utils'
 import { t } from 'i18next'
 import { openCreateLastCallContact, openShowContactDrawer } from '../../lib/phonebook'
+import { useSelector } from 'react-redux'
+import { RootState } from '../../store'
 
 interface CallsDestinationProps {
   call: CallTypes
@@ -28,6 +30,10 @@ export const CallsDestination: FC<CallsDestinationProps> = ({
   operators,
   isExtensionNumberLastCalls,
 }) => {
+
+  const authStore = useSelector((state: RootState) => state.authentication)
+  const operatorsStore = useSelector((state: RootState) => state.operators)
+
   //Check if a user does not have a name and add the name of the operator
   if (call?.dst_cnam === '') {
     const operatorFound: any = getOperatorByPhoneNumber(call?.dst, operators)
@@ -91,7 +97,14 @@ export const CallsDestination: FC<CallsDestinationProps> = ({
       ) : (
         <>
           {call?.dst && (
-            <div className='truncate text-primary' onClick={() => callPhoneNumber(call?.dst)}>
+            <div
+              className='truncate text-primary'
+              onClick={() =>
+                operatorsStore?.operators[authStore?.username]?.mainPresence === 'busy'
+                  ? transferCallToExtension(call?.dst)
+                  : callPhoneNumber(call?.dst)
+              }
+            >
               {call?.dst}
             </div>
           )}

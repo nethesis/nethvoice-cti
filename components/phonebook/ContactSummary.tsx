@@ -14,7 +14,7 @@ import { Avatar, Button, Dropdown, Modal } from '../common'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { useSelector } from 'react-redux'
 import { RootState, store } from '../../store'
-import { callPhoneNumber, closeSideDrawer } from '../../lib/utils'
+import { callPhoneNumber, closeSideDrawer, transferCallToExtension } from '../../lib/utils'
 import { startOfDay, subDays } from 'date-fns'
 import {
   faArrowUpRightFromSquare,
@@ -59,6 +59,8 @@ export const ContactSummary = forwardRef<HTMLButtonElement, ContactSummaryProps>
     const [contactToDelete, setContactToDelete] = useState<any>(null)
     const cancelDeleteButtonRef = useRef() as MutableRefObject<HTMLButtonElement>
     const { profile } = useSelector((state: RootState) => state.user)
+
+    const operatorsStore = useSelector((state: RootState) => state.operators)
 
     //Get sideDrawer status from store
     const sideDrawer = useSelector((state: RootState) => state.sideDrawer)
@@ -291,7 +293,11 @@ export const ContactSummary = forwardRef<HTMLButtonElement, ContactSummaryProps>
                     />
                     <span
                       className='truncate cursor-pointer hover:underline'
-                      onClick={() => callPhoneNumber(contact.extension)}
+                      onClick={() =>
+                        operatorsStore?.operators[auth.username]?.mainPresence === 'busy'
+                          ? transferCallToExtension(contact?.extension)
+                          : callPhoneNumber(contact?.extension)
+                      }
                     >
                       {contact?.extension}
                     </span>
@@ -314,7 +320,11 @@ export const ContactSummary = forwardRef<HTMLButtonElement, ContactSummaryProps>
                     />
                     <span
                       className='truncate cursor-pointer hover:underline'
-                      onClick={() => callPhoneNumber(contact.workphone)}
+                      onClick={() =>
+                        operatorsStore?.operators[auth.username]?.mainPresence === 'busy'
+                          ? transferCallToExtension(contact?.workphone)
+                          : callPhoneNumber(contact?.workphone)
+                      }
                     >
                       {contact.workphone}
                     </span>
@@ -337,7 +347,11 @@ export const ContactSummary = forwardRef<HTMLButtonElement, ContactSummaryProps>
                     />
                     <span
                       className='truncate cursor-pointer hover:underline'
-                      onClick={() => callPhoneNumber(contact.cellphone)}
+                      onClick={() =>
+                        operatorsStore?.operators[auth.username]?.mainPresence === 'busy'
+                          ? transferCallToExtension(contact?.cellphone)
+                          : callPhoneNumber(contact?.cellphone)
+                      }
                     >
                       {contact?.cellphone}
                     </span>
@@ -360,7 +374,11 @@ export const ContactSummary = forwardRef<HTMLButtonElement, ContactSummaryProps>
                     />
                     <span
                       className='truncate cursor-pointer hover:underline'
-                      onClick={() => callPhoneNumber(contact?.homephone)}
+                      onClick={() =>
+                        operatorsStore?.operators[auth.username]?.mainPresence === 'busy'
+                          ? transferCallToExtension(contact?.homephone)
+                          : callPhoneNumber(contact?.homephone)
+                      }
                     >
                       {contact?.homephone}
                     </span>

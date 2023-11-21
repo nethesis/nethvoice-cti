@@ -130,20 +130,13 @@ export const OperatorSummary = forwardRef<HTMLButtonElement, OperatorSummaryProp
           </div>
         </div>
         <div className='mt-8'>
-          {operatorsStore?.operators[authStore.username]?.mainPresence === 'busy' &&
+          {operatorsStore?.operators[authStore?.username]?.mainPresence === 'busy' &&
           operator?.mainPresence === 'online' ? (
-            <Badge
-              rounded='full'
-              variant='online'
-              className='flex items-center cursor-pointer'
-              onClick={() => transferCall(operator)}
-            >
-              <FontAwesomeIcon
-                icon={faRightLeft}
-                className='inline-block text-center h-3.5 w-3.5 mr-1.5 rotate-90'
-              />
-              <span>{t('Operators.Transfer')}</span>
-            </Badge>
+            <ButtonDropdown
+              operatorDevices={operatorDevices}
+              operator={operator}
+              isTransfer={true}
+            ></ButtonDropdown>
           ) : (
             <ButtonDropdown operatorDevices={operatorDevices} operator={operator}></ButtonDropdown>
           )}

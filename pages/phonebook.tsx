@@ -27,7 +27,7 @@ import {
   faFilter,
   faChevronLeft,
 } from '@fortawesome/free-solid-svg-icons'
-import { callPhoneNumber } from '../lib/utils'
+import { callPhoneNumber, transferCallToExtension } from '../lib/utils'
 import { useTranslation } from 'react-i18next'
 import { MissingPermission } from '../components/common/MissingPermissionsPage'
 
@@ -35,6 +35,9 @@ const Phonebook: NextPage = () => {
   const [isPhonebookLoaded, setPhonebookLoaded] = useState(false)
   const [phonebook, setPhonebook]: any = useState({})
   const [pageNum, setPageNum]: any = useState(1)
+  const operatorsStore = useSelector((state: RootState) => state.operators)
+  const authStore = useSelector((state: RootState) => state.authentication)
+
   const { t } = useTranslation()
 
   const [textFilter, setTextFilter]: any = useState('')
@@ -265,7 +268,12 @@ const Phonebook: NextPage = () => {
                                                 />
                                                 <span
                                                   className='truncate text-primary dark:text-primary cursor-pointer'
-                                                  onClick={() => callPhoneNumber(contact.extension)}
+                                                  onClick={() =>
+                                                    operatorsStore?.operators[authStore?.username]
+                                                      ?.mainPresence === 'busy'
+                                                      ? transferCallToExtension(contact.extension)
+                                                      : callPhoneNumber(contact.extension)
+                                                  }
                                                 >
                                                   {contact.extension}
                                                 </span>

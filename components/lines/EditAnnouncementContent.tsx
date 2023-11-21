@@ -23,13 +23,11 @@ import {
   faCircleXmark,
   faFloppyDisk,
 } from '@fortawesome/free-solid-svg-icons'
-import { callPhoneNumber, closeSideDrawer, formatFileSize } from '../../lib/utils'
+import { closeSideDrawer, formatFileSize } from '../../lib/utils'
 import { TextInput, Button, Modal } from '../common'
-import { isEmpty } from 'lodash'
 import {
   uploadAudioMsg,
   reloadAnnouncement,
-  enableMsg,
   recordingAnnouncement,
   modifyMsg,
   deleteMsg,

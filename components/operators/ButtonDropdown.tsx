@@ -5,10 +5,10 @@ import React from 'react'
 import { Fragment } from 'react'
 import { Menu, Transition } from '@headlessui/react'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
-import { faChevronDown, faMobileScreenButton, faPhone } from '@fortawesome/free-solid-svg-icons'
+import { faChevronDown, faMobileScreenButton, faPhone, faRightLeft } from '@fortawesome/free-solid-svg-icons'
 import classNames from 'classnames'
 import { t } from 'i18next'
-import { callPhoneNumber } from '../../lib/utils'
+import { callPhoneNumber, transferCall } from '../../lib/utils'
 import { callOperator } from '../../lib/operators'
 import { useSelector } from 'react-redux'
 import { RootState } from '../../store'
@@ -16,32 +16,51 @@ import { RootState } from '../../store'
 interface ButtonDropdownProps {
   operatorDevices?: any
   operator: any
+  isTransfer?: boolean
 }
 
-export const ButtonDropdown: React.FC<ButtonDropdownProps> = ({ operatorDevices, operator }) => {
+export const ButtonDropdown: React.FC<ButtonDropdownProps> = ({
+  operatorDevices,
+  operator,
+  isTransfer,
+}) => {
   const auth = useSelector((state: RootState) => state.authentication)
   const operatorsStore = useSelector((state: RootState) => state.operators)
 
   return (
     <div className='inline-flex pb-5'>
-      <button
-        type='button'
-        className='relative inline-flex items-center rounded-l-md px-3 text-sm font-medium leading-5 ring-gray-300 focus:z-10 bg-primary text-white hover:bg-primaryDark  dark:bg-primary dark:text-white dark:hover:bg-primaryDark focus:ring-primaryLight disabled:opacity-50 disabled:cursor-not-allowed'
-        onClick={() => callOperator(operator)}
-        disabled={
-          operatorsStore?.operators[operator?.username]?.endpoints?.extension?.length === 0 ||
-          operatorsStore?.operators[operator?.username]?.mainPresence === 'busy' ||
-          operatorsStore?.operators[operator?.username]?.status === 'busy' ||
-          operatorsStore?.operators[operator?.username]?.status === 'onhold' ||
-          operatorsStore?.operators[operator?.username]?.username === auth?.username
-            ? true
-            : false
-        }
-      >
-        <FontAwesomeIcon icon={faPhone} className='h-4 w-4 mr-2' />
-        <span className='inline-block'>{t('Operators.Call')}</span>
-        <span className='sr-only'>{t('Operators.Call')}</span>
-      </button>
+      {isTransfer ? (
+        <button
+          type='button'
+          className='relative inline-flex items-center rounded-l-md px-3 text-sm font-medium leading-5 ring-gray-300 focus:z-10 bg-primary text-white hover:bg-primaryDark  dark:bg-primary dark:text-white dark:hover:bg-primaryDark focus:ring-primaryLight disabled:opacity-50 disabled:cursor-not-allowed'
+          onClick={() => transferCall(operator)}
+        >
+          <FontAwesomeIcon
+            icon={faRightLeft}
+            className='inline-block text-center h-3.5 w-3.5 mr-1.5 rotate-90'
+          />
+          <span>{t('Operators.Transfer')}</span>
+        </button>
+      ) : (
+        <button
+          type='button'
+          className='relative inline-flex items-center rounded-l-md px-3 text-sm font-medium leading-5 ring-gray-300 focus:z-10 bg-primary text-white hover:bg-primaryDark  dark:bg-primary dark:text-white dark:hover:bg-primaryDark focus:ring-primaryLight disabled:opacity-50 disabled:cursor-not-allowed'
+          onClick={() => callOperator(operator)}
+          disabled={
+            operatorsStore?.operators[operator?.username]?.endpoints?.extension?.length === 0 ||
+            operatorsStore?.operators[operator?.username]?.mainPresence === 'busy' ||
+            operatorsStore?.operators[operator?.username]?.status === 'busy' ||
+            operatorsStore?.operators[operator?.username]?.status === 'onhold' ||
+            operatorsStore?.operators[operator?.username]?.username === auth?.username
+              ? true
+              : false
+          }
+        >
+          <FontAwesomeIcon icon={faPhone} className='h-4 w-4 mr-2' />
+          <span className='inline-block'>{t('Operators.Call')}</span>
+          <span className='sr-only'>{t('Operators.Call')}</span>
+        </button>
+      )}
 
       {/* Vertical divider */}
       <div className='inline-block w-0.5 self-stretch bg-neutral-100 opacity-100 dark:opacity-600 disabled:opacity-50 disabled:cursor-not-allowed'></div>
@@ -71,7 +90,7 @@ export const ButtonDropdown: React.FC<ButtonDropdownProps> = ({ operatorDevices,
           leaveFrom='transform opacity-100 scale-100'
           leaveTo='transform opacity-0 scale-95'
         >
-          <Menu.Items className='absolute right-[-5rem] z-10 -mr-1 mt-2 w-56 origin-top-right rounded-md shadow-lg ring-1 ring-black ring-opacity-5 focus:outline-none bg-white text-gray-400 '>
+          <Menu.Items className='absolute right-[-7.5rem] z-10 -mr-1 mt-2 w-56 origin-top-right rounded-md shadow-lg ring-1 ring-black ring-opacity-5 focus:outline-none bg-white text-gray-400 '>
             <div className='py-1 flex-col overflow-hidden shadow-lg ring-1 ring-gray-200 dark:ring-gray-700 ring-opacity-1 rounded-md dark:border-gray-700 dark:bg-gray-900'>
               {Object.entries(operatorDevices)
                 .filter(([key, value]) => value !== undefined && value !== null)

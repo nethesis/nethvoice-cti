@@ -17,8 +17,10 @@ import { startOfDay, subDays } from 'date-fns'
 import { isEmpty } from 'lodash'
 import { Avatar, EmptyState } from '../common'
 import { getPhonebook, openShowContactDrawer, retrieveContact } from '../../lib/phonebook'
-import { callPhoneNumber, openEmailClient } from '../../lib/utils'
+import { callPhoneNumber, openEmailClient, transferCallToExtension } from '../../lib/utils'
 import { Tooltip } from 'react-tooltip'
+import { useSelector } from 'react-redux'
+import { RootState } from '../../store'
 
 export interface CustomerCardsCustomerDataViewProps extends ComponentProps<'div'> {
   companyInformation: any
@@ -35,6 +37,10 @@ export const CustomerCardsCustomerData: FC<CustomerCardsCustomerDataViewProps> =
   const { t } = useTranslation()
 
   const [companyContacts, setCompanyContacts] = useState<any[]>([])
+
+  const operatorsStore: any = useSelector((state: RootState) => state.operators)
+
+  const authStore = useSelector((state: RootState) => state.authentication)
 
   useEffect(() => {
     if (
@@ -90,18 +96,18 @@ export const CustomerCardsCustomerData: FC<CustomerCardsCustomerDataViewProps> =
   }, [companyInformation])
 
   const openCustomerCardOperatorDrawer = (operatorInformation: any, contactType: any) => {
-    const updatedOperatorInformation = { ...operatorInformation };
-  
+    const updatedOperatorInformation = { ...operatorInformation }
+
     if (contactType === 'person') {
-      updatedOperatorInformation.displayName = updatedOperatorInformation?.name || '-';
-      updatedOperatorInformation.kind = 'person';
+      updatedOperatorInformation.displayName = updatedOperatorInformation?.name || '-'
+      updatedOperatorInformation.kind = 'person'
     } else {
-      updatedOperatorInformation.displayName = updatedOperatorInformation?.company || '-';
-      updatedOperatorInformation.kind = 'company';
+      updatedOperatorInformation.displayName = updatedOperatorInformation?.company || '-'
+      updatedOperatorInformation.kind = 'company'
     }
-  
+
     if (updatedOperatorInformation) {
-      openShowContactDrawer(updatedOperatorInformation);
+      openShowContactDrawer(updatedOperatorInformation)
     }
   }
 
@@ -275,7 +281,12 @@ export const CustomerCardsCustomerData: FC<CustomerCardsCustomerDataViewProps> =
                                         />
                                         <span
                                           className='truncate dark:text-primary cursor-pointer text-primary ml-2'
-                                          onClick={() => callPhoneNumber(contact.workphone)}
+                                          onClick={() =>
+                                            operatorsStore?.operators[authStore?.username]
+                                              ?.mainPresence === 'busy'
+                                              ? transferCallToExtension(contact.workphone)
+                                              : callPhoneNumber(contact.workphone)
+                                          }
                                         >
                                           {contact.workphone || '-'}
                                         </span>
@@ -295,7 +306,12 @@ export const CustomerCardsCustomerData: FC<CustomerCardsCustomerDataViewProps> =
                                         />
                                         <span
                                           className='truncate dark:text-primary cursor-pointer text-primary ml-2'
-                                          onClick={() => callPhoneNumber(contact.cellphone)}
+                                          onClick={() =>
+                                            operatorsStore?.operators[authStore.username]
+                                              ?.mainPresence === 'busy'
+                                              ? transferCallToExtension(contact.cellphone)
+                                              : callPhoneNumber(contact.cellphone)
+                                          }
                                         >
                                           {contact.cellphone || '-'}
                                         </span>
@@ -429,7 +445,12 @@ export const CustomerCardsCustomerData: FC<CustomerCardsCustomerDataViewProps> =
                                       <span
                                         className='truncate dark:text-primary cursor-pointer text-primary ml-2'
                                         onClick={() =>
-                                          callPhoneNumber(companyCardInformation?.workphone)
+                                          operatorsStore?.operators[authStore?.username]
+                                            ?.mainPresence === 'busy'
+                                            ? transferCallToExtension(
+                                                companyCardInformation.workphone,
+                                              )
+                                            : callPhoneNumber(companyCardInformation.workphone)
                                         }
                                       >
                                         {companyCardInformation?.workphone || '-'}
@@ -449,7 +470,12 @@ export const CustomerCardsCustomerData: FC<CustomerCardsCustomerDataViewProps> =
                                       <span
                                         className='truncate dark:text-primary cursor-pointer text-primary ml-2'
                                         onClick={() =>
-                                          callPhoneNumber(companyCardInformation?.cellphone)
+                                          operatorsStore?.operators[authStore?.username]
+                                            ?.mainPresence === 'busy'
+                                            ? transferCallToExtension(
+                                                companyCardInformation.cellphone,
+                                              )
+                                            : callPhoneNumber(companyCardInformation.cellphone)
                                         }
                                       >
                                         {companyCardInformation?.cellphone || '-'}
