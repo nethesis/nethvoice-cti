@@ -254,6 +254,17 @@ export const openShowPhoneLinesDrawer = (object: any) => {
   })
 }
 
+// Call this drawer if user select multiple lines
+export const openEditMultipleLinesDrawer = (object: any) => {
+  const config = object
+
+  store.dispatch.sideDrawer.update({
+    isShown: true,
+    contentType: 'showMultiplePhoneLines',
+    config: config,
+  })
+}
+
 export const openCreateAnnouncementDrawer = () => {
   store.dispatch.sideDrawer.update({
     isShown: true,

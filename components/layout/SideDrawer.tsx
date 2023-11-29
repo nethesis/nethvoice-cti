@@ -20,6 +20,7 @@ import { ShowPhoneLinesDrawerContent } from '../lines/ShowPhoneLinesDrawerConten
 import { EditAnnouncementDrawerContent } from '../lines'
 import { ShowRuleDetailsContent } from '../lines'
 import { SaveRecordedAnnouncementDrawerContent } from '../lines'
+import { ShowMultiplePhoneLinesDrawerContent } from '../lines'
 
 interface SideDrawerProps {
   isShown: boolean
@@ -65,6 +66,8 @@ export const SideDrawer: FC<SideDrawerProps> = ({ isShown, contentType, config, 
                         <ShowQueueCallDrawerContent config={config} />
                       ) : contentType === 'showPhoneLines' ? (
                         <ShowPhoneLinesDrawerContent config={config} />
+                      ) : contentType === 'showMultiplePhoneLines' ? (
+                        <ShowMultiplePhoneLinesDrawerContent config={config} />
                       ) : contentType === 'showTelephoneAnnouncement' ? (
                         <EditAnnouncementDrawerContent config={config} />
                       ) : contentType === 'showSaveRecordedAnnouncement' ? (

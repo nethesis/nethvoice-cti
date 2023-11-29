@@ -450,9 +450,9 @@ export const LinesView: FC<LinesViewProps> = ({ className }): JSX.Element => {
                                           ? 'bg-gray-50 dark:bg-gray-800'
                                           : undefined
                                       }
-                                      // onClick={() => {
-                                      //   checkObjectDrawer(line)
-                                      // }}
+                                      onClick={() => {
+                                        checkObjectDrawer(line)
+                                      }}
                                     >
                                       {/* Checkbox */}
                                       <td className='relative px-7 sm:w-12 sm:px-6'>
