@@ -8,7 +8,12 @@ import { isEmpty, debounce } from 'lodash'
 import { useSelector } from 'react-redux'
 import { RootState } from '../../store'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
-import { openShowPhoneLinesDrawer, retrieveLines, PAGE_SIZE } from '../../lib/lines'
+import {
+  openShowPhoneLinesDrawer,
+  retrieveLines,
+  PAGE_SIZE,
+  openEditMultipleLinesDrawer,
+} from '../../lib/lines'
 import {
   faChevronRight,
   faChevronLeft,
@@ -331,6 +336,14 @@ export const LinesView: FC<LinesViewProps> = ({ className }): JSX.Element => {
     setIndeterminate(false)
   }
 
+  const checkSelectedLines = (selectedLines: any) => {
+    if (selectedLines.length === 1) {
+      checkObjectDrawer(selectedLines[0])
+    } else {
+      openEditMultipleLinesDrawer(selectedLines)
+    }
+  }
+
   return (
     <div className={classNames(className)}>
       <div className='flex flex-col flex-wrap xl:flex-row justify-between gap-x-4 xl:items-end'>
@@ -372,6 +385,9 @@ export const LinesView: FC<LinesViewProps> = ({ className }): JSX.Element => {
                                 <button
                                   type='button'
                                   className='inline-flex items-center rounded bg-white px-2 py-1 text-sm font-semibold text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 hover:bg-gray-50 disabled:cursor-not-allowed disabled:opacity-30 disabled:hover:bg-white'
+                                  onClick={() => {
+                                    checkSelectedLines(selectedLines)
+                                  }}
                                 >
                                   {t('Lines.Open details')}
                                 </button>
@@ -431,7 +447,7 @@ export const LinesView: FC<LinesViewProps> = ({ className }): JSX.Element => {
                                 {!isLinesLoaded &&
                                   Array.from(Array(5)).map((e, i) => (
                                     <tr key={i}>
-                                      {Array.from(Array(6)).map((e, j) => (
+                                      {Array.from(Array(7)).map((e, j) => (
                                         <td key={j}>
                                           <div className='px-4 py-6'>
                                             <div className='animate-pulse h-5 rounded bg-gray-300 dark:bg-gray-600'></div>
@@ -450,9 +466,6 @@ export const LinesView: FC<LinesViewProps> = ({ className }): JSX.Element => {
                                           ? 'bg-gray-50 dark:bg-gray-800'
                                           : undefined
                                       }
-                                      onClick={() => {
-                                        checkObjectDrawer(line)
-                                      }}
                                     >
                                       {/* Checkbox */}
                                       <td className='relative px-7 sm:w-12 sm:px-6'>
@@ -476,11 +489,21 @@ export const LinesView: FC<LinesViewProps> = ({ className }): JSX.Element => {
                                         />
                                       </td>
                                       {/* Description */}
-                                      <td className='py-4 pl-4 pr-3 sm:pl-6'>
+                                      <td
+                                        className='py-4 pr-3 cursor-pointer'
+                                        onClick={() => {
+                                          checkObjectDrawer(line)
+                                        }}
+                                      >
                                         {line.description ? line.description : '-'}
                                       </td>
                                       {/* Phone line */}
-                                      <td className='px-3 py-4'>
+                                      <td
+                                        className='px-3 py-4 cursor-pointer'
+                                        onClick={() => {
+                                          checkObjectDrawer(line)
+                                        }}
+                                      >
                                         <div className='flex flex-col'>
                                           <div>
                                             <div>{line.calledIdNum ? line.calledIdNum : '-'}</div>
@@ -488,15 +511,30 @@ export const LinesView: FC<LinesViewProps> = ({ className }): JSX.Element => {
                                         </div>
                                       </td>
                                       {/* Caller number */}
-                                      <td className='px-3 py-4'>
+                                      <td
+                                        className='px-3 py-4 cursor-pointer'
+                                        onClick={() => {
+                                          checkObjectDrawer(line)
+                                        }}
+                                      >
                                         <div>{line.callerIdNum ? line.callerIdNum : '-'}</div>
                                       </td>
                                       {/* Costum configuration */}
-                                      <td className='whitespace-nowrap px-3 py-4'>
+                                      <td
+                                        className='whitespace-nowrap px-3 py-4 cursor-pointer'
+                                        onClick={() => {
+                                          checkObjectDrawer(line)
+                                        }}
+                                      >
                                         {getConfiguration(line)}
                                       </td>
                                       {/* Configuration status */}
-                                      <td className='whitespace-nowrap px-3 py-4'>
+                                      <td
+                                        className='whitespace-nowrap px-3 py-4 cursor-pointer'
+                                        onClick={() => {
+                                          checkObjectDrawer(line)
+                                        }}
+                                      >
                                         <Badge
                                           variant={getConfigurationStatus(line)}
                                           rounded='full'
@@ -509,7 +547,12 @@ export const LinesView: FC<LinesViewProps> = ({ className }): JSX.Element => {
                                       </td>
 
                                       {/* Show details */}
-                                      <td className='relative whitespace-nowrap py-4 pl-3 pr-4 text-right text-sm font-medium sm:pr-6'>
+                                      <td
+                                        className='relative whitespace-nowrap py-4 pl-3 pr-4 text-right text-sm font-medium sm:pr-6 cursor-pointer'
+                                        onClick={() => {
+                                          checkObjectDrawer(line)
+                                        }}
+                                      >
                                         <FontAwesomeIcon
                                           icon={faChevronRight}
                                           className='h-3 w-3 p-2 cursor-pointer text-gray-500 dark:text-gray-500'

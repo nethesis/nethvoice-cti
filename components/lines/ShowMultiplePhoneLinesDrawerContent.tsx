@@ -15,10 +15,7 @@ import {
   faCircleXmark,
 } from '@fortawesome/free-solid-svg-icons'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
-import {
-  closeSideDrawer,
-  playFileAudio,
-} from '../../lib/utils'
+import { closeSideDrawer, playFileAudio } from '../../lib/utils'
 import { TextInput, Button } from '../common'
 import { formatDateLoc, formatInTimeZoneLoc } from '../../lib/dateTime'
 import { setOffHour, getAnnouncements, reloadPhoneLines } from '../../lib/lines'
@@ -487,23 +484,33 @@ export const ShowMultiplePhoneLinesDrawerContent = forwardRef<
 
   const [uploadOffHourError, setuploadOffHourError] = useState('')
 
-  async function setOffHourObject(obj: any) {
-    try {
-      await setOffHour(obj)
-    } catch (error) {
-      setuploadOffHourError('Cannot upload announcement')
-      return
+  async function setOffHourObject(OffhourObject: any) {
+    if (config) {
+      for (const key in config) {
+        OffhourObject = {
+          ...OffhourObject,
+          calledIdNum: config[key]?.calledIdNum?.toString() || '',
+          callerIdNum: config[key]?.callerIdNum?.toString() || '',
+        }
+        if (OffhourObject) {
+          try {
+            await setOffHour(OffhourObject)
+          } catch (error) {
+            setuploadOffHourError('Cannot upload announcement')
+            return
+          }
+        }
+      }
     }
   }
 
   const [missingAudiomessageAnnouncement, setMissingAudiomessageAnnouncement] = useState(false)
+
   function saveEditPhoneLines() {
     if (isConfigurationActive) {
       let objectToSendApi = {
         action: selectedConfigurationTypology,
         announcement_id: selectedConfigurationTypology !== 'redirect' ? '' : null,
-        calledIdNum: config.number.toString(),
-        callerIdNum: config.callerNumber.toString(),
         enabled: '',
         end_date: changeTypeDate === 'period' ? '' : null,
         start_date: changeTypeDate === 'period' ? '' : null,
@@ -607,8 +614,6 @@ export const ShowMultiplePhoneLinesDrawerContent = forwardRef<
       }
     } else {
       let turnOffPhoneLinesObj = {
-        calledIdNum: config.number.toString(),
-        callerIdNum: config.callerNumber.toString(),
         enabled: 'never',
       }
       if (turnOffPhoneLinesObj) {
@@ -902,7 +907,7 @@ export const ShowMultiplePhoneLinesDrawerContent = forwardRef<
         <div className='mt-4 px-5'>
           {/* Typology input select */}
           <fieldset>
-            <legend className='sr-only'>Typology Configuration </legend>
+            <legend className='sr-only'>{t('Lines.Typology configuration')}</legend>
             <div className='space-y-4'>
               {announcementTypologyConfiguration.options.map((typology) => (
                 <div key={typology.value} className='flex items-center'>
@@ -939,7 +944,7 @@ export const ShowMultiplePhoneLinesDrawerContent = forwardRef<
       <div className='bg-gray-100 dark:bg-gray-800 py-6 px-6'>
         <div className='flex items-center justify-between'>
           <div className='text-lg font-medium text-gray-700 dark:text-gray-200'>
-            {t('Lines.Lines configure')}
+            {t('Lines.Configure all lines selected')}
           </div>
           <div className='flex items-center h-7'>
             <SideDrawerCloseIcon />
@@ -947,7 +952,6 @@ export const ShowMultiplePhoneLinesDrawerContent = forwardRef<
         </div>
       </div>
       <div className={classNames(className)} {...props}>
-
         {/* Activate configuration */}
         <div className='px-5 pt-8'>
           <div className='flex items-center justify-between mt-1'>
@@ -964,13 +968,11 @@ export const ShowMultiplePhoneLinesDrawerContent = forwardRef<
         {/* configuration type select */}
         {isConfigurationActive && (
           <>
-
             {/* Period select */}
             {periodSelect()}
 
             {/* Activate announcement field */}
             {typologyConfiguration()}
-            {/* {changeConfigurationRadio === 'customize' ? customTypeSelected() : ruleTypeSelected()} */}
 
             {/* Choose which type of field you want to activate: */}
             {selectedConfigurationTypology === 'audiomsg' && <>{announcementSelect()}</>}

@@ -294,7 +294,8 @@
     "Announcement successfully saved": "Annuncio salvato con successo",
     "Error saving the announcement": "Errore durante il salvataggio dell'annuncio",
     "Open details": "Apri dettagli",
-    "Lines configure": "Configura linee"
+    "Lines configure": "Configura linee",
+    "Configure all lines selected": "Configura tutte le linee selezionate"
   },
   "SpeedDial": {
     "Create": "Crea",
