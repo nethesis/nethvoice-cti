@@ -22,6 +22,8 @@ import { setOffHour, getAnnouncements, reloadPhoneLines } from '../../lib/lines'
 import { format, parse } from 'date-fns'
 import Datepicker from 'react-tailwindcss-datepicker'
 import { useTheme } from '../../theme/Context'
+import { useSelector } from 'react-redux'
+import { RootState, store } from '../../store'
 
 export interface ShowMultiplePhoneLinesDrawerContentProps extends ComponentPropsWithRef<'div'> {
   config: any
@@ -32,6 +34,7 @@ export const ShowMultiplePhoneLinesDrawerContent = forwardRef<
   ShowMultiplePhoneLinesDrawerContentProps
 >(({ config, className, ...props }, ref) => {
   const { t } = useTranslation()
+  const linesStore = useSelector((state: RootState) => state.lines)
   const [isConfigurationActive, setConfigurationActive] = useState(false)
   const [announcementSelected, setAnnouncementSelected] = useState<any>(null)
 
@@ -484,8 +487,12 @@ export const ShowMultiplePhoneLinesDrawerContent = forwardRef<
 
   const [uploadOffHourError, setuploadOffHourError] = useState('')
 
+  // Cycle through all the phone lines and upload the offhour configuration
   async function setOffHourObject(OffhourObject: any) {
     if (config) {
+      // set lines store in loading
+      store.dispatch.lines.setLoading(true)
+      // Begin cycle
       for (const key in config) {
         OffhourObject = {
           ...OffhourObject,
@@ -501,6 +508,8 @@ export const ShowMultiplePhoneLinesDrawerContent = forwardRef<
           }
         }
       }
+      // At the end of the cycle, set lines store not in loading
+      store.dispatch.lines.setLoading(false)
     }
   }
 

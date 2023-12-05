@@ -24,6 +24,7 @@ import {
 import classNames from 'classnames'
 import { LinesFilter } from './LinesFilter'
 import { sortByProperty } from '../../lib/utils'
+import { store } from '../../store'
 
 // Interface for lines structure
 interface Line {
@@ -64,6 +65,7 @@ export const LinesView: FC<LinesViewProps> = ({ className }): JSX.Element => {
   const [linesError, setLinesError] = useState('')
   const [pageNum, setPageNum]: any = useState(1)
   const [firstRender, setFirstRender]: any = useState(true)
+  const linesStore = useSelector((state: RootState) => state.lines)
 
   const [textFilter, setTextFilter]: any = useState('')
   const updateTextFilter = (newTextFilter: string) => {
@@ -89,7 +91,7 @@ export const LinesView: FC<LinesViewProps> = ({ className }): JSX.Element => {
       return
     }
     async function fetchLines() {
-      if (!isLinesLoaded) {
+      if (!isLinesLoaded && !linesStore?.isLoading) {
         try {
           setLinesError('')
           const res = await retrieveLines(textFilter.trim(), pageNum, configurationType)
@@ -100,32 +102,39 @@ export const LinesView: FC<LinesViewProps> = ({ className }): JSX.Element => {
           console.error(e)
           setLinesError(t('Lines.Cannot retrieve lines') || '')
         }
+        store.dispatch.lines.setLoaded(true)
         setLinesLoaded(true)
+        setSelectedLines([])
       }
     }
     fetchLines()
 
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [isLinesLoaded, pageNum, firstRender])
+  }, [isLinesLoaded, pageNum, firstRender, linesStore?.isLoading])
 
   const phoneLines = useSelector((state: RootState) => state.phoneLines)
 
   useEffect(() => {
     // reload phone lines
+    store.dispatch.lines.setLoaded(false)
     setLinesLoaded(false)
   }, [phoneLines])
 
   function goToPreviousPage() {
     if (pageNum > 1) {
       setPageNum(pageNum - 1)
+      store.dispatch.lines.setLoaded(false)
       setLinesLoaded(false)
+      setSelectedLines([])
     }
   }
 
   function goToNextPage() {
     if (pageNum < dataPagination.totalPages) {
       setPageNum(pageNum + 1)
+      store.dispatch.lines.setLoaded(false)
       setLinesLoaded(false)
+      setSelectedLines([])
     }
   }
 
@@ -149,6 +158,7 @@ export const LinesView: FC<LinesViewProps> = ({ className }): JSX.Element => {
 
   const updateConfigurationTypeFilter = (newConfigurationType: string) => {
     setConfigurationType(newConfigurationType)
+    store.dispatch.lines.setLoaded(false)
     setLinesLoaded(false)
   }
 
@@ -324,11 +334,13 @@ export const LinesView: FC<LinesViewProps> = ({ className }): JSX.Element => {
   const [selectedLines, setSelectedLines] = useState<Line[]>([])
 
   useEffect(() => {
-    const isIndeterminate = selectedLines.length > 0 && selectedLines.length < lines.length
-    setChecked(selectedLines.length === lines.length)
+    const isIndeterminate = selectedLines?.length > 0 && selectedLines?.length < lines?.length
+    setChecked(selectedLines.length === lines?.length)
     setIndeterminate(isIndeterminate)
-    checkbox.current.indeterminate = isIndeterminate
-  }, [selectedLines, lines])
+    if (lines.length > 0) {
+      checkbox.current.indeterminate = isIndeterminate
+    }
+  }, [selectedLines, lines, linesStore?.isLoading])
 
   function toggleAllLines() {
     setSelectedLines(checked || indeterminate ? [] : lines)
@@ -397,7 +409,7 @@ export const LinesView: FC<LinesViewProps> = ({ className }): JSX.Element => {
                                       scope='col'
                                       className='min-w-[12rem] pr-3 text-left text-sm font-semibold text-gray-700 dark:text-gray-200'
                                     >
-                                      {selectedLines.length > 0 ? (
+                                      {selectedLines?.length > 0 ? (
                                         <button
                                           type='button'
                                           className='inline-flex items-center rounded bg-white dark:bg-gray-600 px-2 py-1 text-sm font-semibold shadow-sm ring-1 ring-inset ring-gray-300 hover:bg-gray-50 disabled:cursor-not-allowed disabled:opacity-30 disabled:hover:bg-white dark:hover:bg-gray-500'
@@ -405,7 +417,9 @@ export const LinesView: FC<LinesViewProps> = ({ className }): JSX.Element => {
                                             checkSelectedLines(selectedLines)
                                           }}
                                         >
-                                          {t('Lines.Open details')}
+                                          {selectedLines?.length === 1
+                                            ? t('Lines.Show selected')
+                                            : t('Lines.Show all')}
                                         </button>
                                       ) : (
                                         t('Lines.Description')
