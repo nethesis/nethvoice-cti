@@ -182,7 +182,7 @@ export const CustomerCardsCustomerData: FC<CustomerCardsCustomerDataViewProps> =
             <div className='border-b rounded-md border-gray-200 dark:border-gray-800 bg-white dark:bg-gray-900 px-4 py-1 sm:px-6 h-full max-h-[337px] overflow-auto  scrollbar-thin scrollbar-thumb-gray-400 dark:scrollbar-thumb-gray-400 scrollbar-thumb-rounded-full scrollbar-thumb-opacity-50 scrollbar-track-gray-200 dark:scrollbar-track-gray-900 scrollbar-track-rounded-full scrollbar-track-opacity-25'>
               <LastCallsDrawerTable
                 callType={'switchboard'}
-                dateFrom={startOfDay(subDays(new Date(), 160))}
+                dateFrom={startOfDay(subDays(new Date(), 60))}
                 dateTo={new Date()}
                 phoneNumbers={[companyExtension]}
                 limit={5}

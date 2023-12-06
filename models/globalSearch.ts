@@ -8,6 +8,7 @@ const defaultState = {
   isOpen: false,
   isFocused: false,
   isCustomerCardsRedirect: false,
+  isRightSideTitleClicked: false,
 }
 
 export const globalSearch = createModel<RootModel>()({
@@ -24,6 +25,10 @@ export const globalSearch = createModel<RootModel>()({
     // On global search click of customer cards hide focus of global search
     setCustomerCardsRedirect: (state, isCustomerCardsRedirect: boolean) => {
       state.isCustomerCardsRedirect = isCustomerCardsRedirect
+      return state
+    },
+    setRightSideTitleClicked: (state, isRightSideTitleClicked: boolean) => {
+      state.isRightSideTitleClicked = isRightSideTitleClicked
       return state
     },
     reset: () => {

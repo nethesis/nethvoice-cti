@@ -105,6 +105,9 @@ export const ContactSummary = forwardRef<HTMLButtonElement, ContactSummaryProps>
       openShowContactDrawer(contact)
       store.dispatch.globalSearch.setOpen(false)
       store.dispatch.globalSearch.setFocused(false)
+      
+      // To avoid blur effect when click on operator information
+      store.dispatch.globalSearch.setRightSideTitleClicked(true)
     }
 
     const router = useRouter()
@@ -231,6 +234,7 @@ export const ContactSummary = forwardRef<HTMLButtonElement, ContactSummaryProps>
                 'text-xl font-medium text-gray-900 dark:text-gray-100',
                 isShownSideDrawerLink && 'cursor-pointer hover:underline',
               )}
+              onClick={() => maybeShowSideDrawer(contact)}
             >
               {contact?.displayName}
             </h2>
