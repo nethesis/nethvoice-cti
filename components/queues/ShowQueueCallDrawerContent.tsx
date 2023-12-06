@@ -15,10 +15,11 @@ import {
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { callPhoneNumber, transferCallToExtension } from '../../lib/utils'
 import { getCallIcon, retrieveQueueCallInfo } from '../../lib/queuesLib'
-import { formatCallDuration, formatDateLoc, getCallTimeToDisplay } from '../../lib/dateTime'
+import { formatCallDuration } from '../../lib/dateTime'
 import { useSelector } from 'react-redux'
 import { RootState } from '../../store'
 import { openShowOperatorDrawer } from '../../lib/operators'
+import { CallsDate } from '../history/CallsDate'
 
 export interface ShowQueueCallDrawerContentProps extends ComponentPropsWithRef<'div'> {
   config: any
@@ -75,7 +76,8 @@ export const ShowQueueCallDrawerContent = forwardRef<
       return
     }
     retrieveCallInformation()
-  }, [firstRender, config.cid, config.queueId])
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [firstRender, config?.cid, config?.queueId])
 
   const toggleExpandCall = (index: number) => {
     // good example of how to update an object inside an array managed by useState
@@ -133,7 +135,7 @@ export const ShowQueueCallDrawerContent = forwardRef<
       <div className={classNames(className, 'p-5')} {...props}>
         <dl>
           {/* name */}
-          {config.name && (
+          {config?.name && (
             <div className='py-4 sm:grid sm:grid-cols-3 sm:gap-4 sm:py-5'>
               <dt className='text-sm font-medium text-gray-500 dark:text-gray-400'>
                 {t('Queues.Name')}
@@ -145,13 +147,13 @@ export const ShowQueueCallDrawerContent = forwardRef<
                     className='mr-2 h-4 w-4 flex-shrink-0 text-gray-400 dark:text-gray-500'
                     aria-hidden='true'
                   />
-                  <span>{config.name}</span>
+                  <span>{config?.name}</span>
                 </div>
               </dd>
             </div>
           )}
           {/* company */}
-          {config.company && (
+          {config?.company && (
             <div className='py-4 sm:grid sm:grid-cols-3 sm:gap-4 sm:py-5'>
               <dt className='text-sm font-medium text-gray-500 dark:text-gray-400'>
                 {t('Queues.Company')}
@@ -163,13 +165,13 @@ export const ShowQueueCallDrawerContent = forwardRef<
                     className='mr-2 h-4 w-4 flex-shrink-0 text-gray-400 dark:text-gray-500'
                     aria-hidden='true'
                   />
-                  <span>{config.company}</span>
+                  <span>{config?.company}</span>
                 </div>
               </dd>
             </div>
           )}
           {/* phone number */}
-          {config.cid && (
+          {config?.cid && (
             <div className='py-4 sm:grid sm:grid-cols-3 sm:gap-4 sm:py-5'>
               <dt className='text-sm font-medium text-gray-500 dark:text-gray-400'>
                 {t('Common.Phone number')}
@@ -222,32 +224,27 @@ export const ShowQueueCallDrawerContent = forwardRef<
           </ul>
         )}
         {/* call information */}
-        {isLoaded && !errorMessage && !!callInfo.length && (
+        {isLoaded && !errorMessage && !!callInfo?.length && (
           <div className='text-sm overflow-hidden sm:rounded-md bg-white dark:bg-gray-900'>
             <ul role='list' className='divide-y divide-gray-200 dark:divide-gray-700'>
               {isLoaded &&
-                callInfo.length &&
+                callInfo?.length &&
                 callInfo.map((call: any, index: number) => (
                   <li key={index} className='py-5'>
                     <div className='flex items-center'>
                       <div className='flex min-w-0 flex-1 items-center'>
                         <div className='min-w-0 flex-1 grid grid-cols-2 gap-4'>
                           {/* time */}
-                          <div className='flex flex-col justify-center'>
-                            <div>{formatDateLoc(call.time * 1000, 'PP')}</div>
-                            <div className='text-gray-500 dark:text-gray-500'>
-                              {getCallTimeToDisplay(call.time * 1000)}
-                            </div>
-                          </div>
+                          <CallsDate call={call} isInQueue={true} />
                           <div className='flex justify-between'>
                             {/* outcome */}
                             <div className='flex items-center'>
                               {getCallIcon(call)}
-                              <span>{t(`Queues.outcome_${call.event}`)}</span>
+                              <span>{t(`Queues.outcome_${call?.event}`)}</span>
                             </div>
                             {/* chevron */}
                             <FontAwesomeIcon
-                              icon={call.expanded ? faChevronUp : faChevronDown}
+                              icon={call?.expanded ? faChevronUp : faChevronDown}
                               className='h-3.5 w-3.5 px-2 py-2 cursor-pointer'
                               aria-hidden='true'
                               onClick={() => toggleExpandCall(index)}
@@ -267,7 +264,7 @@ export const ShowQueueCallDrawerContent = forwardRef<
                             </dt>
                             <dd className='mt-1 sm:col-span-2 sm:mt-0 text-gray-900 dark:text-gray-100'>
                               <div className='flex items-center'>
-                                <span>{`${call.queueName} (${call.queueId})`}</span>
+                                <span>{`${call?.queueName} (${call?.queueId})`}</span>
                               </div>
                             </dd>
                           </div>
@@ -278,7 +275,7 @@ export const ShowQueueCallDrawerContent = forwardRef<
                             </dt>
                             <dd className='mt-1 sm:col-span-2 sm:mt-0 text-gray-900 dark:text-gray-100'>
                               <div className='flex items-center'>
-                                <span>{formatCallDuration(call.duration)}</span>
+                                <span>{formatCallDuration(call?.duration)}</span>
                               </div>
                             </dd>
                           </div>
@@ -289,7 +286,7 @@ export const ShowQueueCallDrawerContent = forwardRef<
                             </dt>
                             <dd className='mt-1 sm:col-span-2 sm:mt-0 text-gray-900 dark:text-gray-100'>
                               <div className='flex items-center'>
-                                <span>{formatCallDuration(call.hold)}</span>
+                                <span>{formatCallDuration(call?.hold)}</span>
                               </div>
                             </dd>
                           </div>
@@ -300,7 +297,7 @@ export const ShowQueueCallDrawerContent = forwardRef<
                                 {t('Queues.Operator')}
                               </dt>
                               <dd className='mt-1 sm:col-span-2 sm:mt-0 text-gray-900 dark:text-gray-100'>
-                                <div>{getOperatorTemplate(call.agent)}</div>
+                                <div>{getOperatorTemplate(call?.agent)}</div>
                               </dd>
                             </div>
                           )}

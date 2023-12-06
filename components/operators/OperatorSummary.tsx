@@ -1,7 +1,7 @@
 // Copyright (C) 2023 Nethesis S.r.l.
 // SPDX-License-Identifier: AGPL-3.0-or-later
 
-import { ComponentPropsWithRef, forwardRef, useState } from 'react'
+import { ComponentPropsWithRef, forwardRef, useRef, useState } from 'react'
 import classNames from 'classnames'
 import { ActionCall, Avatar, Badge, Button, ButtonDropdown, IconSwitch } from '../common'
 import { useEffect } from 'react'
@@ -63,6 +63,9 @@ export const OperatorSummary = forwardRef<HTMLButtonElement, OperatorSummaryProp
       openShowOperatorDrawer(operator)
       store.dispatch.globalSearch.setOpen(false)
       store.dispatch.globalSearch.setFocused(false)
+      
+      // To avoid blur effect when click on operator information
+      store.dispatch.globalSearch.setRightSideTitleClicked(true)
     }
 
     const [operatorDevices, setOperatorDevices]: any = useState({})

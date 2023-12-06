@@ -443,7 +443,10 @@
     "Record announcement": "Record announcement",
     "Upload announcement": "Upload announcement",
     "Announcement successfully saved": "Announcement successfully saved",
-    "Error saving the announcement": "Error saving the announcement"
+    "Error saving the announcement": "Error saving the announcement",
+    "Configure all lines selected": "Configure all lines selected",
+    "Show selected": "Show selected",
+    "Show all": "Show all"
   },
   "SpeedDial": {
     "Create": "Create",

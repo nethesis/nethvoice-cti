@@ -108,6 +108,9 @@ export const GlobalSearch: FC<GlobalSearchProps> = () => {
     () =>
       debounce(async (event: any) => {
         const query = event.target.value
+        if (globalSearchStore?.isRightSideTitleClicked) {
+          store.dispatch.globalSearch.setRightSideTitleClicked(false)
+        }
         setQuery(query)
         setResults([])
         store.dispatch.globalSearch.setOpen(false)
@@ -141,7 +144,8 @@ export const GlobalSearch: FC<GlobalSearchProps> = () => {
         setResults(results)
         setLoaded(true)
       }, 400),
-    [operatorsStore.operators],
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+    [operatorsStore?.operators],
   )
 
   // Stop invocation of debounced function after unmounting
@@ -156,19 +160,19 @@ export const GlobalSearch: FC<GlobalSearchProps> = () => {
       return
     }
 
-    switch (result.resultType) {
+    switch (result?.resultType) {
       case 'callPhoneNumber':
         if (
           operatorsStore?.operators[authStore?.username]?.mainPresence &&
           operatorsStore?.operators[authStore?.username]?.mainPresence === 'busy'
         ) {
-          transferCallToExtension(result.phoneNumber)
+          transferCallToExtension(result?.phoneNumber)
         } else {
           callPhoneNumber(result?.phoneNumber)
         }
         break
       case 'addToPhonebook':
-        openAddToPhonebookDrawer(result.phoneNumber)
+        openAddToPhonebookDrawer(result?.phoneNumber)
         break
       case 'operator':
         openShowOperatorDrawer(result)
@@ -201,17 +205,24 @@ export const GlobalSearch: FC<GlobalSearchProps> = () => {
 
   return (
     <>
-      {globalSearchStore.isFocused && !globalSearchStore?.isCustomerCardsRedirect && (
+      {globalSearchStore?.isFocused && !globalSearchStore?.isCustomerCardsRedirect && (
         <>
-          <div className='bg-opacity-75 dark:bg-opacity-75 fixed left-0 md:left-20 top-16 right-0 bottom-0 opacity-100 transition-opacity bg-gray-500 dark:bg-gray-500'></div>
-          <div className='fixed left-0 md:left-20 top-16 right-0 bottom-0 z-50 overflow-y-auto scrollbar-thin scrollbar-thumb-gray-400 dark:scrollbar-thumb-gray-400 scrollbar-thumb-rounded-full scrollbar-thumb-opacity-50 scrollbar-track-gray-200 dark:scrollbar-track-gray-900 scrollbar-track-rounded-full scrollbar-track-opacity-25'></div>
+          {/* Blur effect */}
+          {/* If right side drawer is just been opened avoid to show blur effect */}
+          <div
+            className={`bg-opacity-75 dark:bg-opacity-75 fixed left-0 md:left-20 top-16 right-0 bottom-0 opacity-100 transition-opacity ${
+              globalSearchStore?.isRightSideTitleClicked ? '' : 'bg-gray-500 dark:bg-gray-500'
+            }`}
+          />
+          {/* Scrollbar */}
+          <div className='fixed left-0 md:left-20 top-16 right-0 bottom-0 z-50 overflow-y-auto scrollbar-thin scrollbar-thumb-gray-400 dark:scrollbar-thumb-gray-400 scrollbar-thumb-rounded-full scrollbar-thumb-opacity-50 scrollbar-track-gray-200 dark:scrollbar-track-gray-900 scrollbar-track-rounded-full scrollbar-track-opacity-25' />
         </>
       )}
       <div
         id='globalSearch'
         className={classNames(
           'absolute left-[53px] md:left-0 sm:w-[70%] md:w-[75%] 2xl:w-[50vw] transform divide-y overflow-hidden transition-all rounded-lg z-[60] bg-white divide-gray-200 dark:bg-gray-900 dark:divide-gray-700',
-          globalSearchStore.isFocused ? 'w-[calc(100vw - 52px)]' : 'w-[50%]',
+          globalSearchStore?.isFocused ? 'w-[calc(100vw - 52px)]' : 'w-[50%]',
         )}
       >
         <Combobox onChange={resultSelected} nullable>
@@ -309,7 +320,7 @@ export const GlobalSearch: FC<GlobalSearchProps> = () => {
                         )}
                         {/* results */}
                         {isLoaded &&
-                          !!results.length &&
+                          !!results?.length &&
                           results.map((result: any, index: number) => (
                             <Combobox.Option
                               as='div'
@@ -326,7 +337,7 @@ export const GlobalSearch: FC<GlobalSearchProps> = () => {
                               {({ active }) => (
                                 <>
                                   {/* call phone number */}
-                                  {result.resultType === 'callPhoneNumber' && (
+                                  {result?.resultType === 'callPhoneNumber' && (
                                     <>
                                       <div className='w-10 text-center'>
                                         <FontAwesomeIcon
@@ -340,7 +351,7 @@ export const GlobalSearch: FC<GlobalSearchProps> = () => {
                                     </>
                                   )}
                                   {/* add to phonebook */}
-                                  {result.resultType === 'addToPhonebook' && (
+                                  {result?.resultType === 'addToPhonebook' && (
                                     <>
                                       <div className='w-10 text-center'>
                                         <FontAwesomeIcon
@@ -354,16 +365,18 @@ export const GlobalSearch: FC<GlobalSearchProps> = () => {
                                     </>
                                   )}
                                   {/* operator */}
-                                  {result.resultType === 'operator' && (
+                                  {result?.resultType === 'operator' && (
                                     <>
                                       <Avatar
                                         rounded='full'
-                                        src={result.avatarBase64}
+                                        src={result?.avatarBase64}
                                         placeholderType='operator'
                                         size='base'
-                                        status={result.mainPresence}
+                                        status={result?.mainPresence}
                                       />
-                                      <span className='ml-2 flex-auto truncate'>{result.name}</span>
+                                      <span className='ml-2 flex-auto truncate'>
+                                        {result?.name}
+                                      </span>
                                     </>
                                   )}
                                   {/* phonebook contact */}

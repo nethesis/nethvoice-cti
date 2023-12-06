@@ -292,7 +292,11 @@
     "Record announcement": "Registra annuncio",
     "Upload announcement": "Carica annuncio",
     "Announcement successfully saved": "Annuncio salvato con successo",
-    "Error saving the announcement": "Errore durante il salvataggio dell'annuncio"
+    "Error saving the announcement": "Errore durante il salvataggio dell'annuncio",
+    "Lines configure": "Configura linee",
+    "Configure all lines selected": "Configura tutte le linee selezionate",
+    "Show selected": "Mostra selezionato",
+    "Show all": "Mostra tutti"
   },
   "SpeedDial": {
     "Create": "Crea",
