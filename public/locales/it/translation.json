@@ -188,7 +188,13 @@
     "Select image": "Seleziona immagine",
     "Drag here": "Trascina qui",
     "Preview": "Anteprima",
-    "Profile picture": "Immagine profilo"
+    "Profile picture": "Immagine profilo",
+    "Upload profile picture": "Carica immagine profilo",
+    "Image": "Immagine",
+    "Select or drag image here": "Seleziona o trascina qui un' immagine",
+    "Upload image to continue": "Carica immagine per continuare",
+    "Wrong file type": "Formato file errato",
+    "Delete profile picture": "Elimina immagine profilo"
   },
   "TopBar": {
     "Signed in as": "Accesso effettuato come",

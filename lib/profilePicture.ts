@@ -13,6 +13,14 @@ export const openShowGravatarDrawer = (emptyString: any) => {
   })
 }
 
+export const openShowUploadProfilePictureDrawer = (emptyString: any) => {
+  store.dispatch.sideDrawer.update({
+    isShown: true,
+    contentType: 'showUploadProfilePicture',
+    config: emptyString,
+  })
+}
+
 export async function removeAvatar(obj: any) {
   try {
     const { data, status } = await axios.delete('/user/setting/avatar')

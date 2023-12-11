@@ -1,5 +1,6 @@
 // Copyright (C) 2023 Nethesis S.r.l.
 // SPDX-License-Identifier: AGPL-3.0-or-later
+
 import { ComponentPropsWithRef, forwardRef } from 'react'
 import classNames from 'classnames'
 import { Button } from '../Button'
@@ -17,6 +18,7 @@ import { useSelector } from 'react-redux'
 import { RootState } from '../../../store'
 import { retrieveAvatars } from '../../../lib/operators'
 import { isEmpty } from 'lodash'
+import { InlineNotification } from '../InlineNotification'
 
 export interface GravatarIconDrawerContentProps extends ComponentPropsWithRef<'div'> {
   config: any
@@ -29,6 +31,9 @@ export const GravatarIconDrawerContent = forwardRef<
   const [textFilter, setTextFilter] = useState('')
   const textFilterRef = useRef() as React.MutableRefObject<HTMLInputElement>
   const [avatarBase64, setAvatarBase64]: any = useState({})
+  const [errorEmptyFile, setErrorEmptyFile] = useState(false)
+  const [errorUpload, setErrorUpload] = useState(false)
+
   // clear text filter
   const clearTextFilter = () => {
     setTextFilter('')
@@ -41,7 +46,6 @@ export const GravatarIconDrawerContent = forwardRef<
   }
 
   const authenticationStore = useSelector((state: RootState) => state.authentication)
-  const operators = useSelector((state: RootState) => state.operators.operators)
 
   const [previewImage, setPreviewImage]: any = useState(null)
 
@@ -81,10 +85,11 @@ export const GravatarIconDrawerContent = forwardRef<
       try {
         await uploadProfilePicture(userInformationObject)
       } catch (error) {
-        // setEditContactError('Cannot edit contact')
+        setErrorUpload(true)
         return
       }
     } else {
+      setErrorEmptyFile(true)
     }
 
     localStorage.removeItem('caches-' + authenticationStore.username)
@@ -106,10 +111,24 @@ export const GravatarIconDrawerContent = forwardRef<
       </div>
       <div className={classNames(className, 'm-1 p-5')} {...props}>
         <div className='mb-6 flex flex-col'>
+          {/* Upload error */}
+          {errorUpload ||
+            (errorEmptyFile && (
+              <InlineNotification
+                title={
+                  errorEmptyFile
+                    ? t('Settings.Upload image to continue')
+                    : t('Settings.Wrong file type')
+                }
+                type='error'
+                className='mt-2'
+              ></InlineNotification>
+            ))}
           {/* Email */}
           <label className='text-sm mb-2 font-medium text-gray-700 dark:text-gray-200'>
             {t('Settings.Email address')}
           </label>
+
           <div className='flex justify-between space-x-2'>
             <TextInput
               placeholder={t('Settings.Type to insert email address') || ''}

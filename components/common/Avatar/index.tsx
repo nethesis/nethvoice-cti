@@ -126,7 +126,7 @@ const AvatarComponent: FC<AvatarProps> = ({
         />
       )}
       {deleteAvatar && (
-        <button className={classNames(theme.deleteAvatar.button)}>
+        <button className={classNames(theme.deleteAvatar.button, 'tooltip-remove-profile-picture')}>
           <FontAwesomeIcon
             icon={faTimes}
             aria-hidden='true'

@@ -16,9 +16,10 @@ import { RootState } from '../store'
 // import sixth from '../public/defaultAvatars/standard6.svg'
 // import seventh from '../public/defaultAvatars/standard7.svg'
 // import eighth from '../public/defaultAvatars/standard8.svg'
-import { openShowGravatarDrawer } from '../lib/profilePicture'
+import { openShowGravatarDrawer, openShowUploadProfilePictureDrawer } from '../lib/profilePicture'
 import { faUpload, faUserAstronaut } from '@fortawesome/free-solid-svg-icons'
 import React from 'react'
+import { Tooltip } from 'react-tooltip'
 
 const Profile: NextPage = () => {
   const { t } = useTranslation()
@@ -81,7 +82,10 @@ const Profile: NextPage = () => {
                 src={operators[profile?.username]?.avatarBase64}
                 deleteAvatar={true}
               />
-              <Button variant='white' onClick={() => showModalUploadAvatar()}>
+              <Tooltip anchorSelect='.tooltip-remove-profile-picture' place='left'>
+                {t('Settings.Delete profile picture') || ''}
+              </Tooltip>
+              <Button variant='white' onClick={() => openShowUploadProfilePictureDrawer('')}>
                 <FontAwesomeIcon icon={faUpload} className='mr-2' />
                 {t('Settings.Upload')}
               </Button>

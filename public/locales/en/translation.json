@@ -223,12 +223,18 @@
     "Preset": "Preset",
     "Email address": "Email address",
     "Save avatar": "Save avatar",
-    "Type to insert email address":"Type to insert email address",
+    "Type to insert email address": "Type to insert email address",
     "Upload profile image": "Upload profile image",
     "Select image": "Select image",
     "Drag here": "Drag here",
-    "Preview" : "Preview",
-    "Profile picture": "Profile picture"
+    "Preview": "Preview",
+    "Profile picture": "Profile picture",
+    "Upload profile picture": "Upload profile picture",
+    "Image": "Image",
+    "Select or drag image here": "Select or drag image here",
+    "Upload image to continue": "Upload image to continue",
+    "Wrong file type": "Wrong file type",
+    "Delete profile picture": "Delete profile picture"
   },
   "TopBar": {
     "Signed in as": "Signed in as",
