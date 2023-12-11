@@ -63,6 +63,8 @@ export const Layout: FC<LayoutProps> = ({ children }) => {
   const queueManagerStore = useSelector((state: RootState) => state.queueManagerQueues)
 
   const ctiStatus = useSelector((state: RootState) => state.ctiStatus)
+
+  const profilePicture = useSelector((state: RootState) => state.profilePicture)
   const [linkHtmlFaviconElement, setLinkHtmlFaviconElement] = useState<any>(null)
 
   const productName = getProductName()
@@ -176,6 +178,16 @@ export const Layout: FC<LayoutProps> = ({ children }) => {
   const currentUsername = authStore.username
   const { operators } = useSelector((state: RootState) => state.operators)
   const { profile } = useSelector((state: RootState) => state.user)
+
+  // check here
+  useEffect(() => {
+    if (profilePicture?.isProfileEdite) {
+      localStorage.removeItem('caches-' + authStore.username)
+      retrieveAvatars(authStore)
+      store?.dispatch?.profilePicture?.setEditedProfile(false)
+    }
+  // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [profilePicture?.isProfileEdite])
 
   // get operators on page load
   useEffect(() => {

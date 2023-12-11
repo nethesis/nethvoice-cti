@@ -23,3 +23,12 @@ export async function removeAvatar(obj: any) {
     throw error
   }
 }
+
+export async function uploadProfilePicture(userInformationObject: any) {
+  try {
+    const { data } = await axios.post('/user/settings', userInformationObject)
+    return data
+  } catch (error) {
+    console.error(error)
+  }
+}
