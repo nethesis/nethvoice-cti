@@ -216,7 +216,19 @@
     "On incoming call": "On incoming call",
     "On answer": "On answer",
     "No customer cards available": "No customer cards available",
-    "Create a new customer card": "Create a new customer card"
+    "Create a new customer card": "Create a new customer card",
+    "Avatar": "Avatar",
+    "Upload": "Upload",
+    "Gravatar": "Gravatar",
+    "Preset": "Preset",
+    "Email address": "Email address",
+    "Save avatar": "Save avatar",
+    "Type to insert email address":"Type to insert email address",
+    "Upload profile image": "Upload profile image",
+    "Select image": "Select image",
+    "Drag here": "Drag here",
+    "Preview" : "Preview",
+    "Profile picture": "Profile picture"
   },
   "TopBar": {
     "Signed in as": "Signed in as",

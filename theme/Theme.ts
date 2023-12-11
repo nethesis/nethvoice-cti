@@ -328,6 +328,11 @@ const theme = {
         extra_large: 'h-4 w-4',
       },
     },
+    deleteAvatar: {
+      button:
+        'absolute -top-1 -right-1 block bg-gray-200 dark:bg-gray-500 hover:bg-gray-400 hover:dark:bg-gray-600 rounded-full h-8 w-8  flex items-center justify-center p-[0.25 rem] text-gray-500 hover:text-gray-300 dark:text-gray-300',
+      base: 'h-5 w-5',
+    },
     rounded: {
       base: 'rounded-md',
       full: 'rounded-full',

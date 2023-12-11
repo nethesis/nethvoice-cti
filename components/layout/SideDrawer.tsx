@@ -1,11 +1,11 @@
 // Copyright (C) 2023 Nethesis S.r.l.
 // SPDX-License-Identifier: AGPL-3.0-or-later
-
 /**
  *
  * The SideDrawer component
  *
  */
+
 import { Transition, Dialog } from '@headlessui/react'
 import { FC, Fragment } from 'react'
 import { ShowOperatorDrawerContent } from '../operators/ShowOperatorDrawerContent'
@@ -21,7 +21,7 @@ import { EditAnnouncementDrawerContent } from '../lines'
 import { ShowRuleDetailsContent } from '../lines'
 import { SaveRecordedAnnouncementDrawerContent } from '../lines'
 import { ShowMultiplePhoneLinesDrawerContent } from '../lines'
-
+import { GravatarIconDrawerContent } from '../common/Gravatar/GravatarIconDrawerContent'
 interface SideDrawerProps {
   isShown: boolean
   contentType: string
@@ -74,6 +74,8 @@ export const SideDrawer: FC<SideDrawerProps> = ({ isShown, contentType, config, 
                         <SaveRecordedAnnouncementDrawerContent config={config} />
                       ) : contentType === 'showRuleDetails' ? (
                         <ShowRuleDetailsContent config={config} />
+                      ) : contentType === 'showGravatar' ? (
+                        <GravatarIconDrawerContent config={config} />
                       ) : null}
                     </div>
                   </nav>
