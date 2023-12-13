@@ -41,7 +41,12 @@
     "User": "Utente",
     "Password": "Password",
     "Sign in": "Accedi",
-    "The application is open in another window": "L'applicazione è aperta in un'altra finestra"
+    "The application is open in another window": "L'applicazione è aperta in un'altra finestra",
+    "User not autorized": "Utente non autorizzato",
+    "Contact administrator for access": "Contatta l' amministratore per l' accesso",
+    "Wrong username or password": "Nome utente o password errati",
+    "Network connection is lost": "Connessione di rete persa",
+    "Login failed": "Accesso fallito"
   },
   "Phonebook": {
     "Phonebook": "Rubrica",

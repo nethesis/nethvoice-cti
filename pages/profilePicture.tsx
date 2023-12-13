@@ -10,6 +10,7 @@ import { useSelector } from 'react-redux'
 import { RootState } from '../store'
 import { openShowGravatarDrawer, openShowUploadProfilePictureDrawer } from '../lib/profilePicture'
 import { faUpload, faUserAstronaut } from '@fortawesome/free-solid-svg-icons'
+import { faGravatar } from '@nethesis/nethesis-brands-svg-icons'
 import React from 'react'
 import { Tooltip } from 'react-tooltip'
 import { PresetProfilePictureContent } from '../components/common/ProfilePicture/PresetProfilePictureContent'
@@ -48,7 +49,7 @@ const Profile: NextPage = () => {
                 {t('Settings.Upload')}
               </Button>
               <Button variant='white' onClick={() => openShowGravatarDrawer('')}>
-                <FontAwesomeIcon icon={faUserAstronaut} className='mr-2' />
+                <FontAwesomeIcon icon={faGravatar} className='mr-2' />
                 {t('Settings.Gravatar')}
               </Button>
               <div className='flex'>

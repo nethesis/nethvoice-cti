@@ -58,7 +58,12 @@
     "Password": "Password",
     "Sign in": "Sign in",
     "The application is open in another window": "The application is open in another window",
-    "Session expired, log in again": "Session expired, log in again"
+    "Session expired, log in again": "Session expired, log in again",
+    "User not autorized": "User not autorized",
+    "Contact administrator for access": "Contact administrator for access",
+    "Wrong username or password": "Wrong username or password",
+    "Network connection is lost": "Network connection is lost",
+    "Login failed": "Login failed"
   },
   "Phonebook": {
     "Phonebook": "Phonebook",

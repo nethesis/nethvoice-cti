@@ -19,11 +19,39 @@ const PATH = '/user'
  * @returns The user info
  */
 
+export function getLoginUrl() {
+  if (window == undefined) {
+    return ''
+  }
+  // @ts-ignore
+  return `${window.CONFIG.API_SCHEME + window.CONFIG.API_ENDPOINT}`
+}
+
 export const getUserInfo = async () => {
   try {
     const res = await axios.get(`${PATH}/me`)
     return res
   } catch (error) {
     console.error(error)
+  }
+}
+
+export const loginBeforeDashboard = async (username: any, token: any) => {
+  try {
+    let apiUrl = getLoginUrl()
+    let userUrlApi = apiUrl + '/webrest' + PATH
+
+    const res = await axios.get(`${userUrlApi}/me`, {
+      headers: {
+        'Content-Type': 'application/json',
+        Authorization: `${username}:${token}`,
+      },
+    })
+
+    return res.data
+  } catch (error) {
+    console.error(error)
+
+    throw new Error('Error')
   }
 }
