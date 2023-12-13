@@ -189,8 +189,12 @@ export const SelectProfilePictureDrawerContent = forwardRef<
                 <div className='rounded-md border border-emerald-500'>
                   <div className='flex items-center justify-between py-4 pl-3 pr-4'>
                     <div className='flex w-0 flex-1 items-center pl-2'>
-                      <div className='h-9 w-9 bg-emerald-50 dark:bg-emerald-200 flex items-center rounded-sm justify-center'>
-                        <Avatar size='extra_small' placeholderType='person' />
+                      <div className='h-9 w-9 bg-emerald-50 dark:bg-emerald-200 flex items-center rounded-lg justify-center'>
+                        <Avatar
+                          size='extra_small'
+                          placeholderType='person'
+                          className='bg-primary'
+                        />
                       </div>
                       <div className='text-base flex flex-col pl-3'>
                         <span className='font-semibold text-gray-900 dark:text-gray-100'>
@@ -215,18 +219,21 @@ export const SelectProfilePictureDrawerContent = forwardRef<
           )}
         </>
 
-        <div className='mt-4 mb-8 text-left'>
-          <h4 className='mb-2 text-sm font-medium text-gray-700 dark:text-gray-300'>
-            {t('Settings.Preview')}
-          </h4>
-          <Avatar
-            size='extra_large'
-            placeholderType='person'
-            src={previewImage}
-            deleteAvatar={false}
-          ></Avatar>
-        </div>
-        <div className='flex'>
+        {previewImage && (
+          <div className='mt-4 mb-8 text-left'>
+            <h4 className='mb-2 text-sm font-medium text-gray-700 dark:text-gray-300'>
+              {t('Settings.Preview')}
+            </h4>
+            <Avatar
+              size='extra_large'
+              placeholderType='person'
+              src={previewImage}
+              deleteAvatar={false}
+            ></Avatar>
+          </div>
+        )}
+
+        <div className={`${previewImage ? '' : 'pt-8'} flex`}>
           <Button
             variant='primary'
             type='submit'
@@ -234,8 +241,7 @@ export const SelectProfilePictureDrawerContent = forwardRef<
             className='mb-4'
             disabled={isEmpty(selectedFileBase64)}
           >
-            <FontAwesomeIcon icon={faSave} className='mr-2 h-4 w-4' />
-            {t('Settings.Save avatar')}
+            {t('Settings.Upload')}
           </Button>
           <Button variant='white' type='submit' onClick={closeSideDrawer} className='ml-4 mb-4'>
             {t('Common.Cancel')}
