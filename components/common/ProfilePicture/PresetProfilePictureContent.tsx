@@ -8,14 +8,14 @@ import { uploadProfilePicture } from '../../../lib/profilePicture'
 import { useSelector } from 'react-redux'
 import { RootState } from '../../../store'
 import { retrieveAvatars } from '../../../lib/operators'
-// import first from '../public/defaultAvatars/standard1.svg'
-// import second from '../public/defaultAvatars/standard2.svg'
-// import third from '../public/defaultAvatars/standard3.svg'
-// import fourth from '../public/defaultAvatars/standard4.svg'
-// import fifth from '../public/defaultAvatars/standard5.svg'
-// import sixth from '../public/defaultAvatars/standard6.svg'
-// import seventh from '../public/defaultAvatars/standard7.svg'
-// import eighth from '../public/defaultAvatars/standard8.svg'
+import { firstDefaultAvatar } from '../../../public/defaultAvatars/firstDefaultPicture'
+import { secondDefaultAvatar } from '../../../public/defaultAvatars/secondDefaultPicture'
+import { thirdDefaultAvatar } from '../../../public/defaultAvatars/thirdDefaultPicture'
+import { fourthDefaultAvatar } from '../../../public/defaultAvatars/fourthDefaultPicture'
+import { fifthDefaultAvatar } from '../../../public/defaultAvatars/fifthDefaultPicture'
+import { sixthDefaultAvatar } from '../../../public/defaultAvatars/sixthDefaultPicture'
+import { seventhDefaultAvatar } from '../../../public/defaultAvatars/seventhDefaultPicture'
+import { eighthDefaultAvatar } from '../../../public/defaultAvatars/eightDefaultPicture'
 
 export interface PresetProfilePictureContentProps extends ComponentPropsWithRef<'div'> {}
 
@@ -27,10 +27,40 @@ export const PresetProfilePictureContent = forwardRef<
 
   const authenticationStore = useSelector((state: RootState) => state.authentication)
 
-  const prepareUploadPicture = async (selectedFileBase64: any) => {
+  const prepareUploadPicture = async (selectedAvatarNumber: number) => {
+    let selectedAvatarPicture = ''
+    switch (selectedAvatarNumber) {
+      case 0:
+        selectedAvatarPicture = firstDefaultAvatar
+        break
+      case 1:
+        selectedAvatarPicture = secondDefaultAvatar
+        break
+      case 2:
+        selectedAvatarPicture = thirdDefaultAvatar
+        break
+      case 3:
+        selectedAvatarPicture = fourthDefaultAvatar
+        break
+      case 4:
+        selectedAvatarPicture = fifthDefaultAvatar
+        break
+      case 5:
+        selectedAvatarPicture = sixthDefaultAvatar
+        break
+      case 6:
+        selectedAvatarPicture = seventhDefaultAvatar
+        break
+      case 7:
+        selectedAvatarPicture = eighthDefaultAvatar
+        break
+      default:
+        selectedAvatarPicture = firstDefaultAvatar
+        break
+    }
     let userInformationObject: any = {}
-    if (!isEmpty(selectedFileBase64)) {
-      userInformationObject.avatar = selectedFileBase64
+    if (!isEmpty(selectedAvatarPicture)) {
+      userInformationObject.avatar = selectedAvatarPicture
 
       try {
         await uploadProfilePicture(userInformationObject)
@@ -57,67 +87,59 @@ export const PresetProfilePictureContent = forwardRef<
         {/* Preset avatars */}
         <Avatar
           size='extra_large'
-          placeholderType='person'
-          // src={first}
+          src={firstDefaultAvatar}
           deleteAvatar={false}
           className='cursor-pointer'
-          onClick={() => prepareUploadPicture('')}
+          onClick={() => prepareUploadPicture(0)}
         />
         <Avatar
           size='extra_large'
-          placeholderType='person'
-          // src={second}
+          src={secondDefaultAvatar}
           deleteAvatar={false}
           className='cursor-pointer'
-          onClick={() => prepareUploadPicture('')}
+          onClick={() => prepareUploadPicture(1)}
         />
         <Avatar
           size='extra_large'
-          placeholderType='person'
-          // src={third}
+          src={thirdDefaultAvatar}
           deleteAvatar={false}
           className='cursor-pointer'
-          onClick={() => prepareUploadPicture('')}
+          onClick={() => prepareUploadPicture(2)}
         />
         <Avatar
           size='extra_large'
-          placeholderType='person'
-          // src={fourth}
+          src={fourthDefaultAvatar}
           deleteAvatar={false}
           className='cursor-pointer'
-          onClick={() => prepareUploadPicture('')}
+          onClick={() => prepareUploadPicture(3)}
         />
         <Avatar
           size='extra_large'
-          placeholderType='person'
-          // src={fifth}
+          src={fifthDefaultAvatar}
           deleteAvatar={false}
           className='cursor-pointer'
-          onClick={() => prepareUploadPicture('')}
+          onClick={() => prepareUploadPicture(4)}
         />
         <Avatar
           size='extra_large'
-          placeholderType='person'
-          // src={sixth}
+          src={sixthDefaultAvatar}
           deleteAvatar={false}
           className='cursor-pointer'
-          onClick={() => prepareUploadPicture('')}
+          onClick={() => prepareUploadPicture(5)}
         />
         <Avatar
           size='extra_large'
-          placeholderType='person'
-          // src={seventh}
+          src={seventhDefaultAvatar}
           deleteAvatar={false}
           className='cursor-pointer'
-          onClick={() => prepareUploadPicture('')}
+          onClick={() => prepareUploadPicture(6)}
         />
         <Avatar
           size='extra_large'
-          placeholderType='person'
-          // src={eighth}
+          src={eighthDefaultAvatar}
           deleteAvatar={false}
           className='cursor-pointer'
-          onClick={() => prepareUploadPicture('')}
+          onClick={() => prepareUploadPicture(7)}
         />
       </div>
     </>
