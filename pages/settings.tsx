@@ -12,6 +12,7 @@ import {
   faUsers,
   faIdCardClip,
   faExclamationTriangle,
+  faUser,
 } from '@fortawesome/free-solid-svg-icons'
 import classNames from 'classnames'
 import { useSelector } from 'react-redux'
@@ -25,6 +26,7 @@ import { useRouter } from 'next/router'
 import { Theme } from '../components/settings/Theme'
 import { MobileApp } from '../components/settings/MobileApp'
 import { CustomerCards } from '../components/settings/CustomerCards'
+import Profile from './profilePicture'
 
 interface SettingsMenuTypes {
   name: string
@@ -45,25 +47,23 @@ const Settings: NextPage = () => {
     { name: 'Integrations', href: '#', icon: faBorderAll, current: false },
     { name: 'Queues', href: '#', icon: faUsers, current: false },
     { name: 'Mobile App', href: '#', icon: faMobile, current: false },
+    { name: 'Profile picture', href: '#', icon: faUser, current: true },
     { name: 'Theme', href: '#', icon: faPalette, current: true },
   ]
 
   const [items, setItems] = useState<SettingsMenuTypes[]>(settingsMenu)
   const [currentSection, setCurrentSection] = useState<string>(settingsMenu[0].name)
-
   useEffect(() => {
     if (firstRender) {
       setFirstRender(false)
       return
     }
     let section = router.query.section as string
-
     if (!section) {
-      section = 'Theme'
+      section = 'Profile picture'
     }
     changeSection(section)
   }, [firstRender])
-
   const changeSection = (sectionName: string) => {
     const currentItems = items.map((route) => {
       if (sectionName === route.name) {
@@ -76,7 +76,6 @@ const Settings: NextPage = () => {
     })
     setItems(currentItems)
   }
-
   //// remove mock
   const createCallNotif = () => {
     const notif = {
@@ -92,7 +91,6 @@ const Settings: NextPage = () => {
       currentUsername: authStore.username,
     })
   }
-
   //// remove mock
   const createQueueCallNotif = () => {
     const notif = {
@@ -109,7 +107,6 @@ const Settings: NextPage = () => {
       currentUsername: authStore.username,
     })
   }
-
   //// remove mock
   const createChatNotif = () => {
     const notif = {
@@ -126,9 +123,7 @@ const Settings: NextPage = () => {
       currentUsername: authStore.username,
     })
   }
-
   const { profile } = useSelector((state: RootState) => state.user)
-
   return (
     <>
       <div>
@@ -182,6 +177,8 @@ const Settings: NextPage = () => {
                 {currentSection === 'Mobile App' && <MobileApp />}
                 {/* Customer cards */}
                 {currentSection === 'Customer cards' && <CustomerCards />}
+                {/* Profile section */}
+                {currentSection === 'Profile picture' && <Profile />}
               </div>
             </div>
           </div>
@@ -190,5 +187,4 @@ const Settings: NextPage = () => {
     </>
   )
 }
-
 export default Settings

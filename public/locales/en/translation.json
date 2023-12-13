@@ -58,7 +58,12 @@
     "Password": "Password",
     "Sign in": "Sign in",
     "The application is open in another window": "The application is open in another window",
-    "Session expired, log in again": "Session expired, log in again"
+    "Session expired, log in again": "Session expired, log in again",
+    "User not autorized": "User not autorized",
+    "Contact administrator for access": "Contact administrator for access",
+    "Wrong username or password": "Wrong username or password",
+    "Network connection is lost": "Network connection is lost",
+    "Login failed": "Login failed"
   },
   "Phonebook": {
     "Phonebook": "Phonebook",
@@ -216,7 +221,25 @@
     "On incoming call": "On incoming call",
     "On answer": "On answer",
     "No customer cards available": "No customer cards available",
-    "Create a new customer card": "Create a new customer card"
+    "Create a new customer card": "Create a new customer card",
+    "Avatar": "Avatar",
+    "Upload": "Upload",
+    "Gravatar": "Gravatar",
+    "Preset": "Preset",
+    "Email address": "Email address",
+    "Save avatar": "Save avatar",
+    "Type to insert email address": "Type to insert email address",
+    "Upload profile image": "Upload profile image",
+    "Select image": "Select image",
+    "Drag here": "Drag here",
+    "Preview": "Preview",
+    "Profile picture": "Profile picture",
+    "Upload profile picture": "Upload profile picture",
+    "Image": "Image",
+    "Select or drag image here": "Select or drag image here",
+    "Upload image to continue": "Upload image to continue",
+    "Wrong file type": "Wrong file type",
+    "Delete profile picture": "Delete profile picture"
   },
   "TopBar": {
     "Signed in as": "Signed in as",

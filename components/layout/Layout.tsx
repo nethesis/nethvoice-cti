@@ -2,7 +2,7 @@
 // SPDX-License-Identifier: AGPL-3.0-or-later
 
 import { FC, ReactNode, useState, useEffect } from 'react'
-import { NavBar, TopBar, MobileNavBar, SpeedDial, SideDrawer, UserSidebarDrawer } from '.'
+import { NavBar, TopBar, MobileNavBar, SideDrawer, UserSidebarDrawer } from '.'
 import { navItems, NavItemsProps } from '../../config/routes'
 import { useRouter } from 'next/router'
 import { getUserInfo } from '../../services/user'
@@ -51,9 +51,7 @@ export const Layout: FC<LayoutProps> = ({ children }) => {
   const toast = useSelector((state: RootState) => state.toast)
   const operatorsStore: any = useSelector((state: RootState) => state.operators)
   const [firstRenderOperators, setFirstRenderOperators] = useState(true)
-  const [firstRenderUserInfo, setFirstRenderUserInfo] = useState(true)
   const [firstRenderGlobalSearchListener, setFirstRenderGlobalSearchListener] = useState(true)
-  const [firstRenderFaviconCheck, setFirstRenderFaviconCheck]: any = useState(true)
 
   const [isUserInfoLoaded, setUserInfoLoaded] = useState(false)
   const authStore = useSelector((state: RootState) => state.authentication)
@@ -63,7 +61,8 @@ export const Layout: FC<LayoutProps> = ({ children }) => {
   const queueManagerStore = useSelector((state: RootState) => state.queueManagerQueues)
 
   const ctiStatus = useSelector((state: RootState) => state.ctiStatus)
-  const [linkHtmlFaviconElement, setLinkHtmlFaviconElement] = useState<any>(null)
+
+  const profilePicture = useSelector((state: RootState) => state.profilePicture)
 
   const productName = getProductName()
   // Get current page name, clean the path from / and capitalize page name
@@ -176,6 +175,16 @@ export const Layout: FC<LayoutProps> = ({ children }) => {
   const currentUsername = authStore.username
   const { operators } = useSelector((state: RootState) => state.operators)
   const { profile } = useSelector((state: RootState) => state.user)
+
+  // check here
+  useEffect(() => {
+    if (profilePicture?.isProfileEdite) {
+      localStorage.removeItem('caches-' + authStore.username)
+      retrieveAvatars(authStore)
+      store?.dispatch?.profilePicture?.setEditedProfile(false)
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [profilePicture?.isProfileEdite])
 
   // get operators on page load
   useEffect(() => {

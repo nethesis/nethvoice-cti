@@ -1,12 +1,10 @@
 // Copyright (C) 2023 Nethesis S.r.l.
 // SPDX-License-Identifier: AGPL-3.0-or-later
 
-import Image from 'next/image'
 import { saveCredentials } from '../lib/login'
 import { useState, useRef, useEffect } from 'react'
 import { TextInput, InlineNotification, Button } from '../components/common'
 import hmacSHA1 from 'crypto-js/hmac-sha1'
-import Background from '../public/nethvoice_cti_1300x2000.png'
 import { useRouter } from 'next/router'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { faCircleNotch, faEye, faEyeSlash, faPhone } from '@fortawesome/free-solid-svg-icons'
@@ -24,6 +22,7 @@ import {
 } from '../lib/utils'
 import Head from 'next/head'
 import { capitalize } from 'lodash'
+import { loginBeforeDashboard } from '../services/user'
 
 export default function Login() {
   const [pwdVisible, setPwdVisible] = useState(false)
@@ -205,10 +204,15 @@ export default function Login() {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [variableCheck])
 
+  const [userNotAuthorized, setUserNotAuthorized] = useState(false)
+
   let errorAlert = onError ? (
     <div className='relative w-full'>
       <div className='absolute -bottom-[104px] w-full'>
-        <InlineNotification type='error' title='Login Failed'>
+        <InlineNotification
+          type='error'
+          title={userNotAuthorized ? t('Login.User not autorized') : t('Login.Login failed')}
+        >
           <p>{messageError}</p>
         </InlineNotification>
       </div>
@@ -271,27 +275,46 @@ export default function Login() {
     }
   }
 
-  const handleLogin = (callStatus: any, token: any, username: any) => {
+  const handleLogin = async (callStatus: any, token: any, username: any) => {
     if (token) {
       saveCredentials(username, token)
-      router.push('/')
+      let userPreferenceOnLogin: any = {}
+      try {
+        userPreferenceOnLogin = await loginBeforeDashboard(username, token)
+        if (
+          // TO DO - remove this check when the backend will be ready
+          userPreferenceOnLogin?.profile?.macro_permissions?.nethvoice_cti?.value === undefined ||
+          // not this
+          userPreferenceOnLogin?.profile?.macro_permissions?.nethvoice_cti?.value
+        ) {
+          setUserNotAuthorized(false)
+          router.push('/')
+        } else {
+          setUserNotAuthorized(true)
+          setOnError(true)
+          setMessaggeError(`${t('Login.Contact administrator for access')}`)
+        }
+      } catch (error) {
+        console.log(error)
+      }
+
       // clean errors from storage
       sessionStorage.clear()
       if (ctiStatus.webRtcError || window.location.href.includes('webrtcError')) {
-        store.dispatch.ctiStatus.setWebRtcError(false)
+        store?.dispatch?.ctiStatus?.setWebRtcError(false)
       }
       if (ctiStatus.isUserInformationMissing || window.location.href.includes('sessionExpired')) {
-        store.dispatch.ctiStatus.setUserInformationMissing(false)
+        store?.dispatch?.ctiStatus?.setUserInformationMissing(false)
       }
       setLoading(false)
       checkDarkTheme()
     } else {
       if (callStatus === 401) {
         setOnError(true)
-        setMessaggeError('Wrong username or password.')
+        setMessaggeError(`${t('Login.Wrong username or password')}`)
       } else if (callStatus === 404) {
         setOnError(true)
-        setMessaggeError('The network connection is lost')
+        setMessaggeError(`${t('Login.Network connection is lost')}`)
       }
       setLoading(false)
     }

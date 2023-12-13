@@ -24,7 +24,7 @@ import { userActions } from './userActions'
 import { lastCalls } from './lastCalls'
 import { park } from './park'
 import { rightSideMenu } from './rightSideMenu'
-
+import { profilePicture } from './profilePicture'
 export interface RootModel extends Models<RootModel> {
   authentication: typeof authentication
   user: typeof user
@@ -48,6 +48,7 @@ export interface RootModel extends Models<RootModel> {
   lastCalls: typeof lastCalls
   park: typeof park
   rightSideMenu: typeof rightSideMenu
+  profilePicture: typeof profilePicture
 }
 
 export const models: RootModel = {
@@ -73,4 +74,5 @@ export const models: RootModel = {
   lastCalls,
   park,
   rightSideMenu,
+  profilePicture,
 }

@@ -29,13 +29,14 @@ import {
   faMoon,
   faBell,
   faChevronRight,
+  faUser,
 } from '@fortawesome/free-solid-svg-icons'
 import { getUserInfo } from '../../services/user'
 import { setTheme } from '../../lib/darkTheme'
 import { loadNotificationsFromStorage } from '../../lib/notifications'
 import { GlobalSearch } from './GlobalSearch'
 import { useTranslation } from 'react-i18next'
-
+import Link from 'next/link'
 interface TopBarProps {
   openMobileCb: () => void
 }
@@ -50,6 +51,9 @@ export const TopBar: FC<TopBarProps> = ({ openMobileCb }) => {
   const [firstNotificationsRender, setFirstNotificationsRender]: any = useState(true)
   const authStore = useSelector((state: RootState) => state.authentication)
   const notificationsStore = useSelector((state: RootState) => state.notifications)
+  const operators = useSelector((state: RootState) => state.operators.operators)
+  const profile = useSelector((state: RootState) => state.user)
+
   const { t } = useTranslation()
 
   // get notifications on page load
@@ -260,6 +264,11 @@ export const TopBar: FC<TopBarProps> = ({ openMobileCb }) => {
           ? `${t('TopBar.Switch to light theme')}`
           : `${t('TopBar.Switch to dark theme')}`}
       </Dropdown.Item>
+      <Dropdown.Item icon={faUser}>
+        <Link href={{ pathname: '/settings', query: { section: 'Profile picture' } }}>
+          <a>{t('Settings.Profile picture')}</a>
+        </Link>
+      </Dropdown.Item>
       <Dropdown.Item icon={faArrowRightFromBracket} onClick={() => disconnectionFunction()}>
         {t('TopBar.Logout')}
       </Dropdown.Item>
@@ -312,11 +321,11 @@ export const TopBar: FC<TopBarProps> = ({ openMobileCb }) => {
             <Dropdown items={dropdownItems} position='left' divider={true} className='pl-3'>
               <span className='sr-only'>{t('TopBar.Open user menu')}</span>
               <Avatar
-                rounded='full'
-                src={avatar}
-                placeholderType='operator'
                 size='small'
-                status={mainPresence}
+                rounded='full'
+                placeholderType='person'
+                src={operators[profile?.username]?.avatarBase64}
+                status={operators[profile?.username]?.mainPresence}
               />
             </Dropdown>
           </div>

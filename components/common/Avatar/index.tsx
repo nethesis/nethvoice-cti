@@ -1,6 +1,5 @@
 // Copyright (C) 2023 Nethesis S.r.l.
 // SPDX-License-Identifier: AGPL-3.0-or-later
-
 /**
  *
  * It can be used to render a Avatar or User's profile image.
@@ -24,9 +23,9 @@ import Image from 'next/image'
 import { AvatarGroup, AvatarGroupProps as GroupProps } from './AvatarGroup'
 import type { StatusTypes } from '../../../theme/Types'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
-import { faUser, faBuilding, faStar, faHeadset } from '@fortawesome/free-solid-svg-icons'
+import { faUser, faBuilding, faStar, faHeadset, faTimes } from '@fortawesome/free-solid-svg-icons'
 import { StatusDot } from '../StatusDot'
-
+import { removeAvatar } from '../../../lib/profilePicture'
 export type AvatarGroupProps = GroupProps
 
 export interface AvatarProps extends Omit<ComponentProps<'div'>, 'placeholder'> {
@@ -41,6 +40,8 @@ export interface AvatarProps extends Omit<ComponentProps<'div'>, 'placeholder'> 
   size?: 'extra_small' | 'small' | 'base' | 'large' | 'extra_large'
   unoptimized?: boolean
   star?: boolean
+  deleteAvatar?: boolean
+  isUploadAvatar?: boolean
 }
 
 const AvatarComponent: FC<AvatarProps> = ({
@@ -55,6 +56,8 @@ const AvatarComponent: FC<AvatarProps> = ({
   size = 'base',
   unoptimized = true,
   star,
+  deleteAvatar,
+  isUploadAvatar,
   className,
   ...props
 }) => {
@@ -121,6 +124,16 @@ const AvatarComponent: FC<AvatarProps> = ({
           aria-hidden='true'
           className={classNames(theme.star.base, theme.star.sizes[size])}
         />
+      )}
+      {deleteAvatar && (
+        <button className={classNames(theme.deleteAvatar.button, 'tooltip-remove-profile-picture')}>
+          <FontAwesomeIcon
+            icon={faTimes}
+            aria-hidden='true'
+            className={classNames(theme.deleteAvatar.base)}
+            onClick={() => removeAvatar('')}
+          />
+        </button>
       )}
     </div>
   )
