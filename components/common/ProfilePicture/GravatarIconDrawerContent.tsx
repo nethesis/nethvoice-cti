@@ -19,6 +19,7 @@ import { RootState } from '../../../store'
 import { retrieveAvatars } from '../../../lib/operators'
 import { isEmpty } from 'lodash'
 import { InlineNotification } from '../InlineNotification'
+import { MD5 } from 'crypto-js'
 
 export interface GravatarIconDrawerContentProps extends ComponentPropsWithRef<'div'> {
   config: any
@@ -49,31 +50,31 @@ export const GravatarIconDrawerContent = forwardRef<
 
   const [previewImage, setPreviewImage]: any = useState(null)
 
-  const convertGravatarToBase64 = () => {
+  const getGravatarImageUrl = (email: string) => {
+    const hash = MD5(email.toLowerCase().trim())
+    const gravatarUrl = `https://www.gravatar.com/avatar/${hash}?d=identicon`
+
+    return gravatarUrl
+  }
+
+  const convertGravatarToBase64 = async () => {
     const email = textFilter
 
-    const gravatarUrl = gravatar.url(email, { protocol: 'https', s: '200' })
+    try {
+      const response = await fetch(getGravatarImageUrl(email))
+      const blob = await response.blob()
+      const reader = new FileReader()
 
-    const gravatarImage = new Image()
-
-    gravatarImage.crossOrigin = 'Anonymous'
-
-    gravatarImage.onload = () => {
-      const canvas = document.createElement('canvas')
-      const context = canvas.getContext('2d')
-
-      canvas.width = gravatarImage.width
-      canvas.height = gravatarImage.height
-
-      context?.drawImage(gravatarImage, 0, 0)
-
-      const avatar = canvas.toDataURL('image/png')
-
-      setAvatarBase64({ avatar })
+      reader.readAsDataURL(blob)
+      reader.onloadend = () => {
+        const gravatarBase64 = reader.result as string
+        setAvatarBase64({ avatar: gravatarBase64 })
+        setPreviewImage(gravatarBase64)
+      }
+    } catch (error) {
+      console.error('Error', error)
+      setErrorUpload(true)
     }
-
-    gravatarImage.src = gravatarUrl
-    setPreviewImage(gravatarImage?.src)
   }
 
   const prepareEditContact = async () => {
