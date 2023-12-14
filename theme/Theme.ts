@@ -161,7 +161,7 @@ const theme = {
         base: 'bg-red-200 text-red-900 dark:bg-red-900 dark:text-red-100',
       },
       avatar: {
-        dot: 'bg-red-500 dark:bg-red-500',
+        dot: 'bg-gray-900 dark:bg-gray-900',
       },
       card: {
         border: 'border-gray-500 dark:border-green-500',
@@ -238,7 +238,7 @@ const theme = {
         base: 'bg-gray-300 text-gray-700 dark:bg-gray-700 dark:text-gray-300',
       },
       avatar: {
-        dot: 'bg-gray-500 dark:bg-gray-500',
+        dot: 'bg-gray-400 dark:bg-gray-400',
       },
       card: {
         border: 'border-gray-500 dark:border-gray-500',

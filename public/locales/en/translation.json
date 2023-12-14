@@ -166,7 +166,9 @@
     "Blind transfer": "Blind transfer",
     "Attend transfer": "Attend transfer",
     "Call": "Call",
-    "Open user devices": "Open user devices"
+    "Open user devices": "Open user devices",
+    "Busy": "Busy",
+    "Ringing": "Ringing"
   },
   "Applications": {
     "Applications": "Applications",

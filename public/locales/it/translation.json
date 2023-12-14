@@ -129,7 +129,9 @@
     "Blind transfer": "Trasferimento cieco",
     "Attend transfer": "Trasferimento consultativo",
     "Call": "Chiama",
-    "Open user devices": "Apri dispositivi utente"
+    "Open user devices": "Apri dispositivi utente",
+    "Busy": "Occupato",
+    "Ringing": "Ringing"
   },
   "Applications": {
     "Applications": "Applicazioni",

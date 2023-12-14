@@ -3,7 +3,7 @@
 
 import type { NextPage } from 'next'
 import { useEffect, useMemo, useState } from 'react'
-import { Avatar, Badge, EmptyState, InlineNotification } from '../components/common'
+import { Avatar, Badge, Button, EmptyState, InlineNotification } from '../components/common'
 import {
   AVAILABLE_STATUSES,
   callOperator,
@@ -26,6 +26,7 @@ import {
   faFilter,
   faHandPointUp,
   faHeadset,
+  faPhone,
   faRecordVinyl,
   faRightLeft,
 } from '@fortawesome/free-solid-svg-icons'
@@ -171,10 +172,9 @@ const Operators: NextPage = () => {
   const { profile } = useSelector((state: RootState) => state.user)
 
   const openDrawerOperator = (operator: any) => {
-    if(operator){
+    if (operator) {
       closeRightSideDrawer()
       openShowOperatorDrawer(operator)
-      
     }
   }
 
@@ -183,7 +183,7 @@ const Operators: NextPage = () => {
       {profile?.macro_permissions?.presence_panel?.value ? (
         <div>
           <h1 className='text-2xl font-semibold mb-6 text-gray-900 dark:text-gray-100'>
-            Operators
+            {t('Operators.Operators')}
           </h1>
           <Filter
             groups={operatorsStore.groups}
@@ -288,6 +288,7 @@ const Operators: NextPage = () => {
                           <div key={index}>
                             <li key={index}>
                               <div className='space-y-4'>
+                                {/* Operator avatar  */}
                                 <Avatar
                                   src={operator?.avatarBase64}
                                   placeholderType='operator'
@@ -296,6 +297,7 @@ const Operators: NextPage = () => {
                                   star={operator?.favorite}
                                   onClick={() => openDrawerOperator(operator)}
                                   className='mx-auto cursor-pointer'
+                                  status={operator?.mainPresence}
                                 />
                                 <div className='space-y-2'>
                                   <div className='text-xs font-medium lg:text-sm'>
@@ -307,69 +309,109 @@ const Operators: NextPage = () => {
                                     </h3>
                                     <div className='mt-3'>
                                       <span className='block truncate mt-1 text-sm font-medium text-gray-500 dark:text-gray-500'>
-                                        {operator?.conversations?.length &&
-                                        (operator?.conversations[0]?.connected ||
-                                          operator?.conversations[0]?.inConference ||
-                                          operator?.conversations[0]?.chDest?.inConference ==
-                                            true) ? (
-                                          <Badge
-                                            rounded='full'
-                                            variant='busy'
-                                            className='flex items-center'
-                                          >
-                                            <span className='mr-1.5'>
-                                              {capitalize(operator?.mainPresence)}
-                                            </span>
-                                            <CallDuration
-                                              startTime={operator?.conversations[0]?.startTime}
-                                              className='font-mono relative top-px mr-1.5'
-                                            />
-                                            {operator?.conversations[0]?.recording === 'true' && (
-                                              <FontAwesomeIcon
-                                                icon={faRecordVinyl}
-                                                className='inline-block text-center h-4 w-4'
+                                        {/* If operator is in call */}
+                                        {
+                                          operator?.conversations?.length &&
+                                          (operator?.conversations[0]?.connected ||
+                                            operator?.conversations[0]?.inConference ||
+                                            operator?.conversations[0]?.chDest?.inConference ==
+                                              true) ? (
+                                            <div>
+                                              {/* Operator in call */}
+                                              <CallDuration
+                                                startTime={operator?.conversations[0]?.startTime}
+                                                className='relative top-px mr-1.5 text-red-700 leading-5 text-sm font-medium font-mono'
                                               />
-                                            )}
-                                            {operator?.conversations[0]?.id ===
-                                              actionInformation?.listeningInfo?.listening_id && (
-                                              <FontAwesomeIcon
-                                                icon={faEarListen}
-                                                className='inline-block text-center h-4 w-4'
-                                              />
-                                            )}
-                                            {operator?.conversations[0]?.id ===
-                                              actionInformation?.intrudeInfo?.intrude_id && (
-                                              <FontAwesomeIcon
-                                                icon={faHandPointUp}
-                                                className='inline-block text-center h-4 w-4'
-                                              />
-                                            )}
-                                          </Badge>
-                                        ) : operatorsStore?.operators[authStore.username]
-                                            ?.mainPresence === 'busy' &&
-                                          operator?.mainPresence === 'online' ? (
-                                          <>
-                                            <Badge
-                                              rounded='full'
-                                              variant='online'
-                                              className='flex items-center cursor-pointer'
+
+                                              {/* Operator recording call  */}
+                                              {operator?.conversations[0]?.recording === 'true' && (
+                                                <FontAwesomeIcon
+                                                  icon={faRecordVinyl}
+                                                  className='inline-block text-center h-4 w-4'
+                                                />
+                                              )}
+
+                                              {/* Operator is listening */}
+                                              {operator?.conversations[0]?.id ===
+                                                actionInformation?.listeningInfo?.listening_id && (
+                                                <FontAwesomeIcon
+                                                  icon={faEarListen}
+                                                  className='inline-block text-center h-4 w-4'
+                                                />
+                                              )}
+
+                                              {/* Operator is intrude */}
+                                              {operator?.conversations[0]?.id ===
+                                                actionInformation?.intrudeInfo?.intrude_id && (
+                                                <FontAwesomeIcon
+                                                  icon={faHandPointUp}
+                                                  className='inline-block text-center h-4 w-4'
+                                                />
+                                              )}
+                                            </div>
+                                          ) : // If main user is in call Transfer button is shown
+                                          operatorsStore?.operators[authStore.username]
+                                              ?.mainPresence === 'busy' &&
+                                            operator?.mainPresence === 'online' ? (
+                                            <Button
+                                              variant='ghost'
                                               onClick={() => transferCall(operator)}
+                                              className='text-primary dark:text-primaryDark'
                                             >
                                               <FontAwesomeIcon
                                                 icon={faRightLeft}
-                                                className='inline-block text-center h-3.5 w-3.5 mr-1.5 rotate-90'
+                                                className='inline-block text-center h-3.5 w-3.5 mr-1.5 rotate-90 '
                                               />
-                                              <span>{t('Operators.Transfer')}</span>
-                                            </Badge>
-                                          </>
-                                        ) : (
-                                          <OperatorStatusBadge
-                                            operator={operator}
-                                            currentUsername={authStore.username}
-                                            callEnabled={true}
-                                            onCall={callOperator}
-                                          />
-                                        )}
+                                              <span className=''>{t('Operators.Transfer')}</span>
+                                            </Button>
+                                          ) : (
+                                            <Button
+                                              variant='ghost'
+                                              className={`${
+                                                operator?.mainPresence === 'online' ||
+                                                operator?.mainPresence === 'offline' ||
+                                                operator?.mainPresence === 'dnd'
+                                                  ? 'text-primary dark:text-primaryDark'
+                                                  : 'text-red-700 dark:text-red-500'
+                                              }`}
+                                              // Button is active only if operator is online
+                                              disabled={
+                                                operator?.mainPresence === 'offline' ||
+                                                operator?.mainPresence === 'dnd' ||
+                                                operator?.mainPresence === 'busy' ||
+                                                operator?.mainPresence === 'ringing'
+                                              }
+                                              onClick={() => callOperator(operator)}
+                                            >
+                                              {operator?.mainPresence === 'busy' ? (
+                                                <span className=''>{t('Operators.Busy')}</span>
+                                              ) : operator?.mainPresence === 'ringing' ? (
+                                                <div className='flex items-center'>
+                                                  {/* ringing icon */}
+                                                  <span className='ringing-animation mr-2'></span>
+                                                  <span>{t('Operators.Ringing')}</span>
+                                                </div>
+                                              ) : (
+                                                <>
+                                                  <FontAwesomeIcon
+                                                    icon={faPhone}
+                                                    className='inline-block text-center h-4 w-4 mr-1.5'
+                                                  />
+                                                  <span className=''>{t('Operators.Call')}</span>
+                                                </>
+                                              )}
+                                            </Button>
+                                          )
+                                          // : (
+                                          // If operator is not in call
+                                          // <OperatorStatusBadge
+                                          //   operator={operator}
+                                          //   currentUsername={authStore.username}
+                                          //   callEnabled={true}
+                                          //   onCall={callOperator}
+                                          // />
+                                          // )
+                                        }
                                       </span>
                                     </div>
                                   </div>
@@ -447,13 +489,14 @@ const Operators: NextPage = () => {
                             <span className='flex min-w-0 flex-1 items-center space-x-3'>
                               <span className='block flex-shrink-0'>
                                 <Avatar
-                                  src={operator.avatarBase64}
+                                  src={operator?.avatarBase64}
                                   placeholderType='operator'
                                   size='large'
                                   bordered
-                                  star={operator.favorite}
+                                  star={operator?.favorite}
                                   onClick={() => openDrawerOperator(operator)}
                                   className='mx-auto cursor-pointer'
+                                  status={operator?.mainPresence}
                                 />
                               </span>
                               <span className='block min-w-0 flex-1'>
