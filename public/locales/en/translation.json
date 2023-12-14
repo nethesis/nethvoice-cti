@@ -275,7 +275,8 @@
     "Duration": "Duration",
     "Stop recording": "Stop recording",
     "Restart recording": "Restart recording",
-    "Start recording": "Start recording"
+    "Start recording": "Start recording",
+    "Toggle favorite operator": "Toggle favorite operator"
   },
   "Notifications": {
     "Mark as read": "Mark as read",

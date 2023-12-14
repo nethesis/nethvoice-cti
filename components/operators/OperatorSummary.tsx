@@ -3,10 +3,9 @@
 
 import { ComponentPropsWithRef, forwardRef, useRef, useState } from 'react'
 import classNames from 'classnames'
-import { ActionCall, Avatar, Badge, Button, ButtonDropdown, IconSwitch } from '../common'
+import { ActionCall, Avatar, Button, ButtonDropdown, IconSwitch } from '../common'
 import { useEffect } from 'react'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
-import { OperatorStatusBadge } from './OperatorStatusBadge'
 import {
   addOperatorToFavorites,
   openShowOperatorDrawer,
@@ -16,14 +15,12 @@ import {
 import { useSelector } from 'react-redux'
 import { RootState, store } from '../../store'
 import {
-  faRightLeft,
   faStar as faStarSolid,
   faVideo,
   faComment,
 } from '@fortawesome/free-solid-svg-icons'
 import { faStar as faStarLight } from '@nethesis/nethesis-light-svg-icons'
 import { t } from 'i18next'
-import { transferCall } from '../../lib/utils'
 import { isEmpty } from 'lodash'
 
 export interface OperatorSummaryProps extends ComponentPropsWithRef<'div'> {
@@ -47,9 +44,9 @@ export const OperatorSummary = forwardRef<HTMLButtonElement, OperatorSummaryProp
 
     const toggleFavorite = () => {
       if (isFavorite) {
-        removeOperatorFromFavorites(operator.username, auth.username)
+        removeOperatorFromFavorites(operator?.username, auth?.username)
       } else {
-        addOperatorToFavorites(operator.username, auth.username)
+        addOperatorToFavorites(operator?.username, auth?.username)
       }
       setFavorite(!isFavorite)
       reloadOperators()
@@ -61,17 +58,17 @@ export const OperatorSummary = forwardRef<HTMLButtonElement, OperatorSummaryProp
       }
       // close global search
       openShowOperatorDrawer(operator)
-      store.dispatch.globalSearch.setOpen(false)
-      store.dispatch.globalSearch.setFocused(false)
-      
+      store?.dispatch?.globalSearch?.setOpen(false)
+      store?.dispatch?.globalSearch?.setFocused(false)
+
       // To avoid blur effect when click on operator information
-      store.dispatch.globalSearch.setRightSideTitleClicked(true)
+      store?.dispatch?.globalSearch?.setRightSideTitleClicked(true)
     }
 
     const [operatorDevices, setOperatorDevices]: any = useState({})
 
     useEffect(() => {
-      if (operator && operator.endpoints) {
+      if (operator && operator?.endpoints) {
         const mainExtension = operator?.endpoints?.mainextension[0]?.id || null
         const cellphone = operator?.endpoints?.cellphone[0]?.id || null
 
@@ -92,14 +89,15 @@ export const OperatorSummary = forwardRef<HTMLButtonElement, OperatorSummaryProp
             <div className='flex-shrink-0 mr-4'>
               <Avatar
                 size='extra_large'
-                src={operator.avatarBase64}
+                src={operator?.avatarBase64}
                 placeholderType='operator'
                 onClick={() => maybeShowSideDrawer(operator)}
                 className={classNames(isShownSideDrawerLink && 'cursor-pointer')}
+                status={operator?.mainPresence}
               />
             </div>
             <div>
-              <div>
+              <div className='ml-2'>
                 <h2
                   className={classNames(
                     'text-xl inline-block font-medium text-gray-700 dark:text-gray-200 mr-2',
@@ -107,7 +105,7 @@ export const OperatorSummary = forwardRef<HTMLButtonElement, OperatorSummaryProp
                   )}
                   onClick={() => maybeShowSideDrawer(operator)}
                 >
-                  {operator.name}
+                  {operator?.name}
                 </h2>
                 {isShownFavorite && (
                   <IconSwitch
@@ -118,17 +116,13 @@ export const OperatorSummary = forwardRef<HTMLButtonElement, OperatorSummaryProp
                     changed={() => toggleFavorite()}
                     className={'mr-5'}
                   >
-                    <span className='sr-only'>Toggle favorite operator</span>
+                    <span className='sr-only'>{t("Operator.Toggle favorite operator")}</span>
                   </IconSwitch>
                 )}
               </div>
-              <OperatorStatusBadge
-                operator={currentOperatorInformations}
-                currentUsername={auth.username}
-                callEnabled={false}
-                size='small'
-                className='mt-1'
-              />
+              <span className='text-md font-medium leading-5 text-gray-500 dark:text-gray-300 ml-2'>
+                {operator?.endpoints?.mainextension[0]?.id}
+              </span>
             </div>
           </div>
         </div>

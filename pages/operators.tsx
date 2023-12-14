@@ -38,6 +38,7 @@ import { faCircleNotch } from '@fortawesome/free-solid-svg-icons'
 import { t } from 'i18next'
 import { transferCall } from '../lib/utils'
 import { MissingPermission } from '../components/common/MissingPermissionsPage'
+import { Tooltip } from 'react-tooltip'
 
 //// use i18n where there is operator.mainPresence
 
@@ -377,7 +378,9 @@ const Operators: NextPage = () => {
                                               icon={faRightLeft}
                                               className='inline-block text-center h-3.5 w-3.5 mr-1.5 rotate-90 '
                                             />
-                                            <span className=''>{t('Operators.Transfer')}</span>
+                                            <span className='text-sm not-italic font-medium leading-5'>
+                                              {t('Operators.Transfer')}
+                                            </span>
                                           </Button>
                                         ) : (
                                           <Button
@@ -526,44 +529,53 @@ const Operators: NextPage = () => {
                                   (operator?.conversations[0]?.connected ||
                                     operator?.conversations[0]?.inConference ||
                                     operator?.conversations[0]?.chDest?.inConference == true) ? (
-                                    <Button variant='ghost'>
-                                      <div className='flex'>
-                                        <CallDuration
-                                          startTime={operator?.conversations[0]?.startTime}
-                                          className='relative top-px mr-1.5 text-red-700 dark:text-red-400 leading-5 text-sm font-medium font-mono'
-                                        />{' '}
-                                        <span className='text-sm not-italic font-medium leading-5 text-red-700 dark:text-red-400'>
-                                          -{' '}
-                                          {capitalize(operator?.conversations[0]?.counterpartName)}
-                                        </span>
-                                      </div>
+                                    <div className={`tooltip-operator-information-${index}`}>
+                                      <Button variant='ghost' disabled={true}>
+                                        <div className='flex w-44'>
+                                          <CallDuration
+                                            startTime={operator?.conversations[0]?.startTime}
+                                            className='relative top-px mr-1.5 text-red-700 dark:text-red-400 leading-5 text-sm font-medium font-mono'
+                                          />{' '}
+                                          <span className='truncate text-sm not-italic font-medium leading-5 text-red-700 dark:text-red-400'>
+                                            -{' '}
+                                            {capitalize(
+                                              operator?.conversations[0]?.counterpartName,
+                                            )}
+                                          </span>
+                                        </div>
 
-                                      {/* Operator recording call  */}
-                                      {operator?.conversations[0]?.recording === 'true' && (
-                                        <FontAwesomeIcon
-                                          icon={faRecordVinyl}
-                                          className='inline-block text-center h-4 w-4'
-                                        />
-                                      )}
+                                        {/* Operator recording call  */}
+                                        {operator?.conversations[0]?.recording === 'true' && (
+                                          <FontAwesomeIcon
+                                            icon={faRecordVinyl}
+                                            className='inline-block text-center h-4 w-4'
+                                          />
+                                        )}
 
-                                      {/* Operator is listening */}
-                                      {operator?.conversations[0]?.id ===
-                                        actionInformation?.listeningInfo?.listening_id && (
-                                        <FontAwesomeIcon
-                                          icon={faEarListen}
-                                          className='inline-block text-center h-4 w-4'
-                                        />
-                                      )}
+                                        {/* Operator is listening */}
+                                        {operator?.conversations[0]?.id ===
+                                          actionInformation?.listeningInfo?.listening_id && (
+                                          <FontAwesomeIcon
+                                            icon={faEarListen}
+                                            className='inline-block text-center h-4 w-4'
+                                          />
+                                        )}
 
-                                      {/* Operator is intrude */}
-                                      {operator?.conversations[0]?.id ===
-                                        actionInformation?.intrudeInfo?.intrude_id && (
-                                        <FontAwesomeIcon
-                                          icon={faHandPointUp}
-                                          className='inline-block text-center h-4 w-4'
-                                        />
-                                      )}
-                                    </Button>
+                                        {/* Operator is intrude */}
+                                        {operator?.conversations[0]?.id ===
+                                          actionInformation?.intrudeInfo?.intrude_id && (
+                                          <FontAwesomeIcon
+                                            icon={faHandPointUp}
+                                            className='inline-block text-center h-4 w-4'
+                                          />
+                                        )}
+                                      </Button>
+                                      <Tooltip
+                                        anchorSelect={`.tooltip-operator-information-${index}`}
+                                      >
+                                        {operator?.conversations[0]?.counterpartName || '-'}
+                                      </Tooltip>
+                                    </div>
                                   ) : // If main user is in call Transfer button is shown
                                   operatorsStore?.operators[authStore.username]?.mainPresence ===
                                       'busy' && operator?.mainPresence === 'online' ? (
@@ -574,9 +586,11 @@ const Operators: NextPage = () => {
                                     >
                                       <FontAwesomeIcon
                                         icon={faRightLeft}
-                                        className='inline-block text-center h-3.5 w-3.5 mr-1.5 rotate-90 '
+                                        className='inline-block text-center h-4 w-4 mr-1.5 rotate-90'
                                       />
-                                      <span className=''>{t('Operators.Transfer')}</span>
+                                      <span className='text-sm not-italic font-medium leading-5'>
+                                        {t('Operators.Transfer')}
+                                      </span>
                                     </Button>
                                   ) : (
                                     <Button
