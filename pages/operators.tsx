@@ -333,7 +333,7 @@ const Operators: NextPage = () => {
                                           operator?.conversations[0]?.inConference ||
                                           operator?.conversations[0]?.chDest?.inConference ==
                                             true) ? (
-                                          <Button variant='dashboard' disabled={true}>
+                                          <div className='py-2 px-3'>
                                             <CallDuration
                                               startTime={operator?.conversations[0]?.startTime}
                                               className='relative top-px mr-1.5 text-red-700 dark:text-red-400 leading-5 text-sm font-medium font-mono'
@@ -364,7 +364,7 @@ const Operators: NextPage = () => {
                                                 className='inline-block text-center h-4 w-4'
                                               />
                                             )}
-                                          </Button>
+                                          </div>
                                         ) : // If main user is in call Transfer button is shown
                                         operatorsStore?.operators[authStore.username]
                                             ?.mainPresence === 'busy' &&
