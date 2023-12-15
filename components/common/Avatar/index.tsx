@@ -117,7 +117,9 @@ const AvatarComponent: FC<AvatarProps> = ({
         <div>
           <StatusDot
             status={status}
-            className={`absolute bottom-0 right-0 ${size === 'extra_large' ? 'h-5 w-5' : size === 'large' ? 'h-3 w-3' : 'h-2 w-2'}`}
+            className={`absolute bottom-0 right-0 ${
+              size === 'extra_large' ? 'h-5 w-5' : size === 'large' ? 'h-3 w-3' : 'h-2 w-2'
+            }`}
           />
         </div>
       )}

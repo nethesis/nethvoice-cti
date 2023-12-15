@@ -14,11 +14,7 @@ import {
 } from '../../lib/operators'
 import { useSelector } from 'react-redux'
 import { RootState, store } from '../../store'
-import {
-  faStar as faStarSolid,
-  faVideo,
-  faComment,
-} from '@fortawesome/free-solid-svg-icons'
+import { faStar as faStarSolid, faVideo, faComment } from '@fortawesome/free-solid-svg-icons'
 import { faStar as faStarLight } from '@nethesis/nethesis-light-svg-icons'
 import { t } from 'i18next'
 import { isEmpty } from 'lodash'
@@ -116,7 +112,7 @@ export const OperatorSummary = forwardRef<HTMLButtonElement, OperatorSummaryProp
                     changed={() => toggleFavorite()}
                     className={'mr-5'}
                   >
-                    <span className='sr-only'>{t("Operator.Toggle favorite operator")}</span>
+                    <span className='sr-only'>{t('Operator.Toggle favorite operator')}</span>
                   </IconSwitch>
                 )}
               </div>

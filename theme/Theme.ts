@@ -3,17 +3,19 @@
 
 const theme = {
   button: {
-    base: 'inline-flex content-center items-center justify-center font-medium tracking-wide transition-colors duration-200 transform focus:outline-none focus:ring-2 focus:z-20 focus:ring-offset-2 disabled:opacity-50 disabled:cursor-not-allowed',
+    base: 'inline-flex content-center items-center justify-center font-medium tracking-wide transition-colors duration-200 transform focus:outline-none focus:z-20 disabled:opacity-50 disabled:cursor-not-allowed',
     primary:
-      'border border-transparent bg-primary text-white hover:bg-primaryDark focus:ring-primaryLight dark:bg-primary dark:text-white dark:hover:bg-primaryDark focus:ring-primaryLight',
+      'border border-transparent bg-primary text-white hover:bg-primaryDark focus:ring-primaryLight dark:bg-primary dark:text-white dark:hover:bg-primaryDark focus:ring-primaryLight focus:ring-2 focus:ring-offset-2',
     secondary:
-      'border border-transparent focus:ring-primaryLight bg-primaryLighter text-primaryDark hover:bg-primaryLighter dark:focus:ring-primaryDark dark:bg-primaryDarker dark:text-primaryLight dark:hover:bg-primaryDarker',
+      'border border-transparent focus:ring-primaryLight bg-primaryLighter text-primaryDark hover:bg-primaryLighter dark:focus:ring-primaryDark dark:bg-primaryDarker dark:text-primaryLight dark:hover:bg-primaryDarker focus:ring-2 focus:ring-offset-2',
     white:
-      'border shadow-sm border-gray-300 bg-white text-gray-700 hover:bg-gray-100 focus:ring-primaryLight dark:border-gray-600 dark:bg-gray-900 dark:text-gray-100 dark:hover:bg-gray-800 dark:focus:ring-primaryDark',
+      'border shadow-sm border-gray-300 bg-white text-gray-700 hover:bg-gray-100 focus:ring-primaryLight dark:border-gray-600 dark:bg-gray-900 dark:text-gray-100 dark:hover:bg-gray-800 dark:focus:ring-primaryDark focus:ring-2 focus:ring-offset-2',
     ghost:
       'border-gray-300 text-gray-700 hover:bg-gray-200 focus:ring-primaryLight dark:border-gray-600 dark:text-gray-100 dark:hover:bg-gray-700 dark:focus:ring-primaryDark',
+    dashboard:
+      'border-gray-300 text-gray-700 hover:bg-gray-200 dark:border-gray-600 dark:text-gray-100 dark:hover:bg-gray-700 dark:focus:ring-primaryDark',
     danger:
-      'border border-transparent focus:ring-red-500 bg-red-600 hover:bg-red-700 text-white dark:focus:ring-red-600 dark:bg-red-700 dark:hover:bg-red-800 dark:text-white',
+      'border border-transparent focus:ring-red-500 bg-red-600 hover:bg-red-700 text-white dark:focus:ring-red-600 dark:bg-red-700 dark:hover:bg-red-800 dark:text-white focus:ring-2 focus:ring-offset-2',
     rounded: {
       small: 'rounded',
       base: 'rounded-md',

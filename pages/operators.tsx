@@ -333,7 +333,7 @@ const Operators: NextPage = () => {
                                           operator?.conversations[0]?.inConference ||
                                           operator?.conversations[0]?.chDest?.inConference ==
                                             true) ? (
-                                          <Button variant='ghost' disabled={true}>
+                                          <Button variant='dashboard' disabled={true}>
                                             <CallDuration
                                               startTime={operator?.conversations[0]?.startTime}
                                               className='relative top-px mr-1.5 text-red-700 dark:text-red-400 leading-5 text-sm font-medium font-mono'
@@ -370,7 +370,7 @@ const Operators: NextPage = () => {
                                             ?.mainPresence === 'busy' &&
                                           operator?.mainPresence === 'online' ? (
                                           <Button
-                                            variant='ghost'
+                                            variant='dashboard'
                                             onClick={() => transferCall(operator)}
                                             className='text-primary dark:text-primaryDark'
                                           >
@@ -382,9 +382,26 @@ const Operators: NextPage = () => {
                                               {t('Operators.Transfer')}
                                             </span>
                                           </Button>
+                                        ) : operator?.mainPresence === 'busy' ||
+                                          operator?.mainPresence === 'ringing' ? (
+                                          <div className='py-2 px-3 flex justify-center'>
+                                            {operator?.mainPresence === 'busy' ? (
+                                              <span className='text-sm not-italic font-medium leading-5 text-red-700 dark:text-red-500'>
+                                                {t('Operators.Busy')}
+                                              </span>
+                                            ) : (
+                                              <div className='flex items-center text-red-700 dark:text-red-500'>
+                                                {/* ringing icon */}
+                                                <span className='ringing-animation mr-2 h-4 w-4'></span>
+                                                <span className='text-sm not-italic font-medium leading-5'>
+                                                  {t('Operators.Ringing')}
+                                                </span>
+                                              </div>
+                                            )}
+                                          </div>
                                         ) : (
                                           <Button
-                                            variant='ghost'
+                                            variant='dashboard'
                                             className={`${
                                               operator?.mainPresence === 'online' ||
                                               operator?.mainPresence === 'offline' ||
@@ -530,7 +547,7 @@ const Operators: NextPage = () => {
                                     operator?.conversations[0]?.inConference ||
                                     operator?.conversations[0]?.chDest?.inConference == true) ? (
                                     <div className={`tooltip-operator-information-${index}`}>
-                                      <Button variant='ghost' disabled={true}>
+                                      <div className='py-2 px-3'>
                                         <div className='flex w-44'>
                                           <CallDuration
                                             startTime={operator?.conversations[0]?.startTime}
@@ -569,7 +586,7 @@ const Operators: NextPage = () => {
                                             className='inline-block text-center h-4 w-4'
                                           />
                                         )}
-                                      </Button>
+                                      </div>
                                       <Tooltip
                                         anchorSelect={`.tooltip-operator-information-${index}`}
                                       >
@@ -580,7 +597,7 @@ const Operators: NextPage = () => {
                                   operatorsStore?.operators[authStore.username]?.mainPresence ===
                                       'busy' && operator?.mainPresence === 'online' ? (
                                     <Button
-                                      variant='ghost'
+                                      variant='dashboard'
                                       onClick={() => transferCall(operator)}
                                       className='text-primary dark:text-primaryDark'
                                     >
@@ -592,9 +609,26 @@ const Operators: NextPage = () => {
                                         {t('Operators.Transfer')}
                                       </span>
                                     </Button>
+                                  ) : operator?.mainPresence === 'busy' ||
+                                    operator?.mainPresence === 'ringing' ? (
+                                    <div className='py-2 px-3'>
+                                      {operator?.mainPresence === 'busy' ? (
+                                        <span className='text-sm not-italic font-medium leading-5 text-red-700 dark:text-red-500'>
+                                          {t('Operators.Busy')}
+                                        </span>
+                                      ) : (
+                                        <div className='flex items-center text-red-700 dark:text-red-500'>
+                                          {/* ringing icon */}
+                                          <span className='ringing-animation mr-2 h-4 w-4'></span>
+                                          <span className='text-sm not-italic font-medium leading-5'>
+                                            {t('Operators.Ringing')}
+                                          </span>
+                                        </div>
+                                      )}
+                                    </div>
                                   ) : (
                                     <Button
-                                      variant='ghost'
+                                      variant='dashboard'
                                       className={`${
                                         operator?.mainPresence === 'online' ||
                                         operator?.mainPresence === 'offline' ||
@@ -606,8 +640,6 @@ const Operators: NextPage = () => {
                                       disabled={
                                         operator?.mainPresence === 'offline' ||
                                         operator?.mainPresence === 'dnd' ||
-                                        operator?.mainPresence === 'busy' ||
-                                        operator?.mainPresence === 'ringing' ||
                                         operator?.username === authStore?.username
                                       }
                                       onClick={() => callOperator(operator)}
