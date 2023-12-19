@@ -36,11 +36,7 @@ export const CallDuration: FC<CallDurationProps> = ({ startTime, className }): J
     }
   }
 
-  return (
-    <>
-      <div className={classNames('font-mono', className)}>{formatCallDuration(duration)}</div>
-    </>
-  )
+  return <div className={classNames('font-mono', className)}>{formatCallDuration(duration)}</div>
 }
 
 CallDuration.displayName = 'CallDuration'

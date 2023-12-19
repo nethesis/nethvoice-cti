@@ -166,7 +166,9 @@
     "Blind transfer": "Blind transfer",
     "Attend transfer": "Attend transfer",
     "Call": "Call",
-    "Open user devices": "Open user devices"
+    "Open user devices": "Open user devices",
+    "Busy": "Busy",
+    "Ringing": "Ringing"
   },
   "Applications": {
     "Applications": "Applications",
@@ -273,7 +275,8 @@
     "Duration": "Duration",
     "Stop recording": "Stop recording",
     "Restart recording": "Restart recording",
-    "Start recording": "Start recording"
+    "Start recording": "Start recording",
+    "Toggle favorite operator": "Toggle favorite operator"
   },
   "Notifications": {
     "Mark as read": "Mark as read",

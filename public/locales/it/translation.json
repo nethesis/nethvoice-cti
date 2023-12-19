@@ -129,7 +129,9 @@
     "Blind transfer": "Trasferimento cieco",
     "Attend transfer": "Trasferimento consultativo",
     "Call": "Chiama",
-    "Open user devices": "Apri dispositivi utente"
+    "Open user devices": "Apri dispositivi utente",
+    "Busy": "Occupato",
+    "Ringing": "Ringing"
   },
   "Applications": {
     "Applications": "Applicazioni",
@@ -230,7 +232,8 @@
     "Direction": "Direzione",
     "Incoming": "In entrata",
     "Outgoing": "In uscita",
-    "Duration": "Durata"
+    "Duration": "Durata",
+    "Toggle favorite operator": "Attiva/disattiva l'operatore preferito"
   },
   "Lines": {
     "Lines management": "Gestione linee",
