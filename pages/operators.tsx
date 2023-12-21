@@ -372,7 +372,7 @@ const Operators: NextPage = () => {
                                           <Button
                                             variant='dashboard'
                                             onClick={() => transferCall(operator)}
-                                            className='text-primary dark:text-primaryDark'
+                                            className='text-primary dark:text-primaryDark dark:disabled:text-gray-700 dark:disabled:hover:text-gray-700 disabled:text-gray-400'
                                           >
                                             <FontAwesomeIcon
                                               icon={faRightLeft}
@@ -406,7 +406,7 @@ const Operators: NextPage = () => {
                                               operator?.mainPresence === 'online' ||
                                               operator?.mainPresence === 'offline' ||
                                               operator?.mainPresence === 'dnd'
-                                                ? 'text-primary dark:text-primaryDark'
+                                                ? 'text-primary dark:text-primaryDark dark:disabled:text-gray-600 dark:disabled:hover:text-gray-600 disabled:text-gray-400'
                                                 : 'text-red-700 dark:text-red-500'
                                             }`}
                                             // Button is active only if operator is online
@@ -599,7 +599,7 @@ const Operators: NextPage = () => {
                                     <Button
                                       variant='dashboard'
                                       onClick={() => transferCall(operator)}
-                                      className='text-primary dark:text-primaryDark'
+                                      className='text-primary dark:text-primaryDark dark:disabled:text-gray-700 dark:disabled:hover:text-gray-700 disabled:text-gray-400'
                                     >
                                       <FontAwesomeIcon
                                         icon={faRightLeft}
@@ -633,7 +633,7 @@ const Operators: NextPage = () => {
                                         operator?.mainPresence === 'online' ||
                                         operator?.mainPresence === 'offline' ||
                                         operator?.mainPresence === 'dnd'
-                                          ? 'text-primary dark:text-primaryDark'
+                                          ? 'text-primary dark:text-primaryDark dark:disabled:text-gray-700 dark:disabled:hover:text-gray-700 disabled:text-gray-400'
                                           : 'text-red-700 dark:text-red-500'
                                       }`}
                                       // Button is active only if operator is online

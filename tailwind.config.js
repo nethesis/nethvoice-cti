@@ -15,10 +15,14 @@ module.exports = {
   theme: {
     extend: {
       colors: {
-        primary: '#059669', // emerald-600
+        primary: '#047857', // emerald-700
+        primaryHover: '#065f46', // emerald-800
+        primaryFocus: '#10b981', // emerald-500
         primaryLighter: '#ecfdf5', // emerald-100
         primaryLight: '#10b981', // emerald-500
-        primaryDark: '#047857', // emerald-700
+        primaryDark: '#10b981', // emerald-500
+        primaryDarkHover: '#6ee7b7', // emerald-300
+        primaryDarkFocus: '#a7f3d0', // emerald-200
         primaryDarker: '#064e3b', // emerald-900
       },
       screens: {

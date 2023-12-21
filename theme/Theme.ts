@@ -3,7 +3,7 @@
 
 const theme = {
   button: {
-    base: 'inline-flex content-center items-center justify-center font-medium tracking-wide transition-colors duration-200 transform focus:outline-none focus:z-20 disabled:opacity-50 disabled:cursor-not-allowed',
+    base: 'inline-flex content-center items-center justify-center font-medium tracking-wide transition-colors duration-200 transform focus:outline-none focus:z-20 disabled:cursor-not-allowed',
     primary:
       'border border-transparent bg-primary text-white hover:bg-primaryDark focus:ring-primaryLight dark:bg-primary dark:text-white dark:hover:bg-primaryDark focus:ring-primaryLight focus:ring-2 focus:ring-offset-2',
     secondary:
@@ -13,7 +13,7 @@ const theme = {
     ghost:
       'border-gray-300 text-gray-700 hover:bg-gray-200 focus:ring-primaryLight dark:border-gray-600 dark:text-gray-100 dark:hover:bg-gray-700 dark:focus:ring-primaryDark',
     dashboard:
-      'border-gray-300 text-gray-700 hover:bg-gray-200 dark:border-gray-600 dark:text-gray-100 dark:hover:bg-gray-700 dark:focus:ring-primaryDark',
+      'border-gray-300 text-gray-700 hover:bg-gray-200 dark:border-gray-600 dark:text-gray-700 dark:hover:bg-gray-700 dark:hover:disabled:bg-transparent hover:disabled:bg-transparent dark:focus:ring-primaryDark',
     danger:
       'border border-transparent focus:ring-red-500 bg-red-600 hover:bg-red-700 text-white dark:focus:ring-red-600 dark:bg-red-700 dark:hover:bg-red-800 dark:text-white focus:ring-2 focus:ring-offset-2',
     rounded: {
@@ -152,7 +152,7 @@ const theme = {
         base: 'bg-emerald-200 text-emerald-900 dark:bg-emerald-800 dark:text-emerald-100',
       },
       avatar: {
-        dot: 'bg-emerald-500 dark:bg-emerald-500',
+        dot: 'bg-green-500 dark:bg-green-400',
       },
       card: {
         border: 'border-emerald-500 dark:border-emerald-500',
@@ -163,7 +163,7 @@ const theme = {
         base: 'bg-red-200 text-red-900 dark:bg-red-900 dark:text-red-100',
       },
       avatar: {
-        dot: 'bg-gray-900 dark:bg-gray-900',
+        dot: 'bg-gray-950 dark:bg-gray-950',
       },
       card: {
         border: 'border-gray-500 dark:border-green-500',
@@ -174,7 +174,7 @@ const theme = {
         base: 'bg-emerald-200 text-emerald-900 dark:bg-emerald-800 dark:text-emerald-100',
       },
       avatar: {
-        dot: 'bg-emerald-500 dark:bg-emerald-500',
+        dot: 'bg-green-500 dark:bg-green-400',
       },
       card: {
         border: 'border-orange-500 dark:border-orange-500',
@@ -185,7 +185,7 @@ const theme = {
         base: 'bg-emerald-200 text-emerald-900 dark:bg-emerald-800 dark:text-emerald-100',
       },
       avatar: {
-        dot: 'bg-emerald-500 dark:bg-emerald-500',
+        dot: 'bg-green-500 dark:bg-green-400',
       },
       card: {
         border: 'border-purple-500 dark:border-purple-500',
@@ -196,7 +196,7 @@ const theme = {
         base: 'bg-emerald-200 text-emerald-900 dark:bg-emerald-800 dark:text-emerald-100',
       },
       avatar: {
-        dot: 'bg-emerald-500 dark:bg-emerald-500',
+        dot: 'bg-green-500 dark:bg-green-400',
       },
       card: {
         border: 'border-yellow-500 dark:border-yellow-500',
@@ -207,7 +207,7 @@ const theme = {
         base: 'bg-red-200 text-red-900 dark:bg-red-900 dark:text-red-100',
       },
       avatar: {
-        dot: 'bg-red-500 dark:bg-red-500',
+        dot: 'bg-red-500 dark:bg-red-400',
       },
       card: {
         border: 'border-red-500 dark:border-red-500',
@@ -218,7 +218,7 @@ const theme = {
         base: 'bg-red-200 text-red-900 dark:bg-red-900 dark:text-red-100',
       },
       avatar: {
-        dot: 'bg-red-500 dark:bg-red-500',
+        dot: 'bg-red-500 dark:bg-red-400',
       },
       card: {
         border: 'border-sky-500 dark:border-sky-500',
@@ -229,7 +229,7 @@ const theme = {
         base: 'bg-red-200 text-red-900 dark:bg-red-900 dark:text-red-100',
       },
       avatar: {
-        dot: 'bg-red-500 dark:bg-red-500',
+        dot: 'bg-red-500 dark:bg-red-400',
       },
       card: {
         border: 'border-sky-500 dark:border-sky-500',
