@@ -386,11 +386,11 @@ const Operators: NextPage = () => {
                                           operator?.mainPresence === 'ringing' ? (
                                           <div className='py-2 px-3 flex justify-center'>
                                             {operator?.mainPresence === 'busy' ? (
-                                              <span className='text-sm not-italic font-medium leading-5 text-red-700 dark:text-red-500'>
+                                              <span className='text-sm not-italic font-medium leading-5 text-red-700 dark:text-red-400'>
                                                 {t('Operators.Busy')}
                                               </span>
                                             ) : (
-                                              <div className='flex items-center text-red-700 dark:text-red-500'>
+                                              <div className='flex items-center text-red-700 dark:text-red-400'>
                                                 {/* ringing icon */}
                                                 <span className='ringing-animation mr-2 h-4 w-4'></span>
                                                 <span className='text-sm not-italic font-medium leading-5'>
@@ -407,7 +407,7 @@ const Operators: NextPage = () => {
                                               operator?.mainPresence === 'offline' ||
                                               operator?.mainPresence === 'dnd'
                                                 ? 'text-primary dark:text-primaryDark dark:disabled:text-gray-600 dark:disabled:hover:text-gray-600 disabled:text-gray-400'
-                                                : 'text-red-700 dark:text-red-500'
+                                                : 'text-red-700 dark:text-red-400'
                                             }`}
                                             // Button is active only if operator is online
                                             disabled={
@@ -613,11 +613,11 @@ const Operators: NextPage = () => {
                                     operator?.mainPresence === 'ringing' ? (
                                     <div className='py-2 px-3'>
                                       {operator?.mainPresence === 'busy' ? (
-                                        <span className='text-sm not-italic font-medium leading-5 text-red-700 dark:text-red-500'>
+                                        <span className='text-sm not-italic font-medium leading-5 text-red-700 dark:text-red-400'>
                                           {t('Operators.Busy')}
                                         </span>
                                       ) : (
-                                        <div className='flex items-center text-red-700 dark:text-red-500'>
+                                        <div className='flex items-center text-red-700 dark:text-red-400'>
                                           {/* ringing icon */}
                                           <span className='ringing-animation mr-2 h-4 w-4'></span>
                                           <span className='text-sm not-italic font-medium leading-5'>
@@ -634,7 +634,7 @@ const Operators: NextPage = () => {
                                         operator?.mainPresence === 'offline' ||
                                         operator?.mainPresence === 'dnd'
                                           ? 'text-primary dark:text-primaryDark dark:disabled:text-gray-700 dark:disabled:hover:text-gray-700 disabled:text-gray-400'
-                                          : 'text-red-700 dark:text-red-500'
+                                          : 'text-red-700 dark:text-red-400'
                                       }`}
                                       // Button is active only if operator is online
                                       disabled={
