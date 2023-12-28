@@ -14,7 +14,7 @@ export const DEFAULT_CONFIGURATION_TYPE = 'all'
 
 const apiEnpoint = getApiEndpoint()
 const apiScheme = getApiScheme()
-const apiUrl = apiScheme + apiEnpoint + '/webrest/'
+const apiUrl = apiScheme + apiEnpoint + '/webrest'
 let type = ''
 
 export const searchStringInLines = (lines: any, queryText: string, type: string) => {
@@ -68,7 +68,7 @@ export const setFilteredListByConfigurations = (lines: any, configurations: any)
 
 // Get phone lines list
 export const retrieveLines = async (textFilter: string, pageNum: any, configuration: any) => {
-  let userUrlApi = apiUrl + 'offhour/list'
+  let userUrlApi = apiUrl + '/offhour/list'
   type = 'phoneLines'
 
   try {
@@ -166,7 +166,7 @@ export async function setOffHour(offHourElement: any) {
 
 // Enable message
 export async function enableMsg(msgElement: any) {
-  let userUrlApi = apiUrl + 'offhour/enable_announcement'
+  let userUrlApi = apiUrl + '/offhour/enable_announcement'
 
   try {
     const { data, status } = await axios.post(userUrlApi, msgElement)
