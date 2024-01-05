@@ -663,6 +663,8 @@
     "Status": "Stato",
     "Edit": "Modifica",
     "Set as main device": "Imposta come dispositivo principale",
-    "Main device": "Dispositivo principale"
+    "Main device": "Dispositivo principale",
+    "Online": "Online",
+    "Offline": "Offline"
   }
 }

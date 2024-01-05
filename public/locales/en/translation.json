@@ -712,6 +712,8 @@
     "Status": "Status",
     "Edit": "Edit",
     "Set as main device": "Set as main device",
-    "Main device": "Main device"
+    "Main device": "Main device",
+    "Online": "Online",
+    "Offline": "Offline"
   }
 }

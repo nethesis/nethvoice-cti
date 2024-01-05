@@ -8,7 +8,8 @@ import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { useSelector } from 'react-redux'
 import { RootState } from '../store'
 import {
-  faChevronRight,
+  faCircleCheck,
+  faCircleXmark,
   faHeadset,
 } from '@fortawesome/free-solid-svg-icons'
 import React from 'react'
@@ -17,12 +18,11 @@ import { openShowEditPhysicalPhone } from '../lib/devices'
 
 const Devices: NextPage = () => {
   const { t } = useTranslation()
-  const operators = useSelector((state: RootState) => state.operators.operators)
+  const operators: any = useSelector((state: RootState) => state.operators)
   const profile = useSelector((state: RootState) => state.user)
 
-  console.log('this is profile', profile)
-
   const [phoneData, setPhoneData]: any = useState([])
+  const [webrtcData, setWebrtcData]: any = useState([])
 
   useEffect(() => {
     // filter phone and insert only physical phones
@@ -30,6 +30,7 @@ const Devices: NextPage = () => {
       let endpointsInformation = profile?.endpoints
       if (endpointsInformation?.extension) {
         setPhoneData(endpointsInformation?.extension.filter((phone) => phone?.type === 'physical'))
+        setWebrtcData(endpointsInformation?.extension.filter((phone) => phone?.type === 'webrtc'))
       }
     }
   }, [profile?.endpoints])
@@ -69,13 +70,23 @@ const Devices: NextPage = () => {
                             {t('Devices.Web phone')}
                           </td>
                           <td className='whitespace-nowrap pl-3 py-4 text-sm text-gray-500'>
-                            <div className='flex items-center space-x-2'>
-                              <FontAwesomeIcon
-                                icon={faHeadset}
-                                className='h-4 w-4 flex justify-center text-gray-700 dark:text-gray-500'
-                              />
-                              <span>{t('Devices.Web phone')}</span>
-                            </div>
+                            {operators?.extensions[webrtcData[0]?.id]?.status === 'online' ? (
+                              <>
+                                <FontAwesomeIcon
+                                  icon={faCircleCheck}
+                                  className='mr-2 h-4 w-4 text-green-700'
+                                />
+                                {t('Devices.Online')}
+                              </>
+                            ) : (
+                              <>
+                                <FontAwesomeIcon
+                                  icon={faCircleXmark}
+                                  className='mr-2 h-4 w-4 text-gray-700'
+                                />
+                                {t('Devices.Offline')}
+                              </>
+                            )}
                           </td>
                           <td className='whitespace-nowrap pr-2 py-4 text-sm text-gray-500'>
                             Main device
@@ -83,9 +94,7 @@ const Devices: NextPage = () => {
                           <td className='whitespace-nowrap py-4 pl-2 pr-5 text-sm text-transparent'>
                             Edit
                           </td>
-                          <td className='relative whitespace-nowrap py-4 pl-3 pr-4 text-right text-sm font-medium sm:pr-6'>
-                            
-                          </td>
+                          <td className='relative whitespace-nowrap py-4 pl-3 pr-4 text-right text-sm font-medium sm:pr-6'></td>
                         </tr>
                       </tbody>
                     </table>
@@ -144,18 +153,38 @@ const Devices: NextPage = () => {
                         </tr>
                       </thead>
                       <tbody className='divide-y divide-gray-200 bg-white'>
-                        {phoneData.map((phone:any) => (
-                          <tr key={phone.id}>
-                            <td className='whitespace-nowrap py-4 pl-4 pr-3 text-sm font-medium text-gray-900 sm:pl-6'>
-                              {phone.description}
+                        {phoneData.map((phone: any) => (
+                          <tr key={phone.id} className=''>
+                            <td className='whitespace-nowrap py-4 pl-4 pr-3 text-sm font-medium text-gray-900 sm:pl-6 max-w-[3rem] overflow-hidden overflow-ellipsis'>
+                              {phone?.description}
                             </td>
                             <td className='whitespace-nowrap px-3 py-4 text-sm text-gray-500'>
-                              {/* {phone.status} */} Status
+                              {/* {phone.status} */}{' '}
+                              {operators?.extensions[phone?.id]?.status === 'online' ? (
+                                <>
+                                  <FontAwesomeIcon
+                                    icon={faCircleCheck}
+                                    className='mr-2 h-4 w-4 text-green-700'
+                                  />
+                                  {t('Devices.Online')}
+                                </>
+                              ) : (
+                                <>
+                                  <FontAwesomeIcon
+                                    icon={faCircleXmark}
+                                    className='mr-2 h-4 w-4 text-gray-700'
+                                  />
+                                  {t('Devices.Offline')}
+                                </>
+                              )}
                             </td>
                             <td className='whitespace-nowrap px-3 py-4 text-sm text-gray-500'>
                               {/* {phone.isMainDevice ? 'Yes' : 'No'} */}
                             </td>
-                            <td className='whitespace-nowrap px-3 py-4 text-sm text-gray-500' onClick={() => openShowEditPhysicalPhone('')}>
+                            <td
+                              className='whitespace-nowrap px-3 py-4 text-sm text-gray-500'
+                              onClick={() => openShowEditPhysicalPhone('')}
+                            >
                               Edit
                             </td>
                             <td className='relative whitespace-nowrap py-4 pl-3 pr-4 text-right text-sm font-medium sm:pr-6'>
