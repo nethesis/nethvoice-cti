@@ -10,11 +10,14 @@ import { RootState } from '../store'
 import {
   faCircleCheck,
   faCircleXmark,
+  faEllipsisVertical,
   faHeadset,
+  faPenToSquare,
 } from '@fortawesome/free-solid-svg-icons'
 import React from 'react'
 import { faOfficePhone } from '@nethesis/nethesis-solid-svg-icons'
 import { openShowEditPhysicalPhone } from '../lib/devices'
+import { Badge, Dropdown } from '../components/common'
 
 const Devices: NextPage = () => {
   const { t } = useTranslation()
@@ -34,6 +37,16 @@ const Devices: NextPage = () => {
       }
     }
   }, [profile?.endpoints])
+
+  const setMainDeviceMenu = () => (
+    <Dropdown.Item onClick={() => setSelectedAsMainDevice('')} variantTop={true}>
+      {t('Devices.Set as main device')}
+    </Dropdown.Item>
+  )
+
+  const setSelectedAsMainDevice = (id: string) => {
+    console.log('this is the id', id)
+  }
 
   return (
     <>
@@ -69,7 +82,7 @@ const Devices: NextPage = () => {
                           <td className='whitespace-nowrap py-4 pl-4 pr-3 text-sm font-medium text-gray-900 sm:pl-6'>
                             {t('Devices.Web phone')}
                           </td>
-                          <td className='whitespace-nowrap pl-3 py-4 text-sm text-gray-500'>
+                          <td className='whitespace-nowrap pl-[3.8rem] py-4 text-sm text-gray-500 sm:pl-[2.8rem]'>
                             {operators?.extensions[webrtcData[0]?.id]?.status === 'online' ? (
                               <>
                                 <FontAwesomeIcon
@@ -88,13 +101,33 @@ const Devices: NextPage = () => {
                               </>
                             )}
                           </td>
-                          <td className='whitespace-nowrap pr-2 py-4 text-sm text-gray-500'>
-                            Main device
+                          <td className='whitespace-nowrap px-2 py-4 text-sm text-gray-500'>
+                            {webrtcData[0]?.id === profile?.mainextension ? (
+                              <Badge size='small' variant='online' rounded='full'>
+                                <span>{t('Devices.Main device')}</span>
+                              </Badge>
+                            ) : (
+                              <span className='text-transparent'>{t('Devices.Main device')}</span>
+                            )}
                           </td>
-                          <td className='whitespace-nowrap py-4 pl-2 pr-5 text-sm text-transparent'>
-                            Edit
+                          <td
+                            className='whitespace-nowrap px-3 py-4 text-sm text-primary dark:text-primaryDark cursor-pointer'
+                            onClick={() => openShowEditPhysicalPhone('')}
+                          >
+                            <FontAwesomeIcon
+                              icon={faPenToSquare}
+                              className='mr-2 h-4 w-4 text-primary dark:text-primaryDark'
+                            />
+                            {t('Devices.Edit')}
                           </td>
-                          <td className='relative whitespace-nowrap py-4 pl-3 pr-4 text-right text-sm font-medium sm:pr-6'></td>
+                          <td className='relative whitespace-nowrap py-4 pr-4 text-right text-sm font-medium sm:pr-6 cursor-pointer'>
+                            <Dropdown items={setMainDeviceMenu()} position='top'>
+                              <FontAwesomeIcon
+                                icon={faEllipsisVertical}
+                                className='h-4 w-4 text-primary dark:text-primaryDark'
+                              />
+                            </Dropdown>
+                          </td>
                         </tr>
                       </tbody>
                     </table>
@@ -179,18 +212,31 @@ const Devices: NextPage = () => {
                               )}
                             </td>
                             <td className='whitespace-nowrap px-3 py-4 text-sm text-gray-500'>
-                              {/* {phone.isMainDevice ? 'Yes' : 'No'} */}
+                              {phone?.id === profile?.mainextension ? (
+                                <Badge size='small' variant='online' rounded='full'>
+                                  <span>{t('Devices.Main device')}</span>
+                                </Badge>
+                              ) : (
+                                <span className='text-transparent'>{t('Devices.Main device')}</span>
+                              )}
                             </td>
                             <td
-                              className='whitespace-nowrap px-3 py-4 text-sm text-gray-500'
+                              className='whitespace-nowrap px-3 py-4 text-sm text-primary dark:text-primaryDark cursor-pointer'
                               onClick={() => openShowEditPhysicalPhone('')}
                             >
-                              Edit
+                              <FontAwesomeIcon
+                                icon={faPenToSquare}
+                                className='mr-2 h-4 w-4 text-primary dark:text-primaryDark'
+                              />
+                              {t('Devices.Edit')}
                             </td>
-                            <td className='relative whitespace-nowrap py-4 pl-3 pr-4 text-right text-sm font-medium sm:pr-6'>
-                              <a href='#' className='text-indigo-600 hover:text-indigo-900'>
-                                Edit<span className='sr-only'>, Edit menu</span>
-                              </a>
+                            <td className='relative whitespace-nowrap py-4 pl-3 pr-4 text-right text-sm font-medium sm:pr-6 cursor-pointer'>
+                              <Dropdown items={setMainDeviceMenu()} position='top'>
+                                <FontAwesomeIcon
+                                  icon={faEllipsisVertical}
+                                  className='h-4 w-4 text-primary dark:text-primaryDark'
+                                />
+                              </Dropdown>
                             </td>
                           </tr>
                         ))}

@@ -11,7 +11,7 @@ import classNames from 'classnames'
 export interface DropdownProps extends ComponentProps<'div'> {
   items: ReactNode
   divider?: boolean
-  position?: 'left' | 'right'
+  position?: 'left' | 'right' | 'top' | 'bottom'
   size?: 'full'
 }
 
@@ -36,6 +36,7 @@ const DropdownComponent: FC<DropdownProps> = ({
             theme.items.base,
             divider && theme.items.divider,
             position ? theme.items.position[position] : theme.items.position.right,
+            position === 'top' ? 'py-1': ''
           )}
         >
           {items}
