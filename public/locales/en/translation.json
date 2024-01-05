@@ -241,7 +241,8 @@
     "Select or drag image here": "Select or drag image here",
     "Upload image to continue": "Upload image to continue",
     "Wrong file type": "Wrong file type",
-    "Delete profile picture": "Delete profile picture"
+    "Delete profile picture": "Delete profile picture",
+    "Devices": "Devices"
   },
   "TopBar": {
     "Signed in as": "Signed in as",
@@ -257,7 +258,8 @@
     "Enter phone number for call forward": "Enter phone number for call forward",
     "Open user menu": "Open user menu",
     "Presence": "Presence",
-    "Open sidebar": "Open sidebar"
+    "Open sidebar": "Open sidebar",
+    "Main device": "Main device"
   },
   "OperatorDrawer": {
     "Book": "Book",
@@ -702,5 +704,14 @@
     "Switch call": "Switch call",
     "Call to transfer": "Call to transfer",
     "Hangup and transfer": "Hangup and transfer"
+  },
+  "Devices": {
+    "Web phone": "Web phone",
+    "Landline phone": "Landline phone",
+    "Device name": "Device name",
+    "Status": "Status",
+    "Edit": "Edit",
+    "Set as main device": "Set as main device",
+    "Main device": "Main device"
   }
 }

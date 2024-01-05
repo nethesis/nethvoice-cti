@@ -201,7 +201,8 @@
     "Select or drag image here": "Seleziona o trascina qui un' immagine",
     "Upload image to continue": "Carica immagine per continuare",
     "Wrong file type": "Formato file errato",
-    "Delete profile picture": "Elimina immagine profilo"
+    "Delete profile picture": "Elimina immagine profilo",
+    "Devices": "Dispositivi"
   },
   "TopBar": {
     "Signed in as": "Accesso effettuato come",
@@ -217,7 +218,8 @@
     "Enter phone number for call forward": "Inserisci il numero di telefono per l'inoltro di chiamata",
     "Presence": "Presence",
     "Open user menu": "Open user menu",
-    "Open sidebar": "Open sidebar"
+    "Open sidebar": "Open sidebar",
+    "Main device": "Dispositivo principale"
   },
   "OperatorDrawer": {
     "Book": "Prenota",
@@ -653,5 +655,14 @@
     "Parking": "Parcheggio",
     "Hold": "Tieni premuto",
     "Click and hold to take current parking in call": "Clicca e tieni premuto per riprendere la chiamata parcheggiata"
+  },
+  "Devices": {
+    "Web phone": "Web phone",
+    "Landline phone": "Telefono fisso",
+    "Device name": "Nome dispositivo",
+    "Status": "Stato",
+    "Edit": "Modifica",
+    "Set as main device": "Imposta come dispositivo principale",
+    "Main device": "Dispositivo principale"
   }
 }

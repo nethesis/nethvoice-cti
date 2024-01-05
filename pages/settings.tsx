@@ -27,6 +27,8 @@ import { Theme } from '../components/settings/Theme'
 import { MobileApp } from '../components/settings/MobileApp'
 import { CustomerCards } from '../components/settings/CustomerCards'
 import Profile from './profilePicture'
+import Devices from './devices'
+import { faOfficePhone } from '@nethesis/nethesis-solid-svg-icons'
 
 interface SettingsMenuTypes {
   name: string
@@ -48,11 +50,13 @@ const Settings: NextPage = () => {
     { name: 'Queues', href: '#', icon: faUsers, current: false },
     { name: 'Mobile App', href: '#', icon: faMobile, current: false },
     { name: 'Profile picture', href: '#', icon: faUser, current: true },
-    { name: 'Theme', href: '#', icon: faPalette, current: true },
+    { name: 'Theme', href: '#', icon: faPalette, current: false },
+    { name: 'Devices', href: '#', icon: faOfficePhone, current: false },
   ]
 
   const [items, setItems] = useState<SettingsMenuTypes[]>(settingsMenu)
   const [currentSection, setCurrentSection] = useState<string>(settingsMenu[0].name)
+
   useEffect(() => {
     if (firstRender) {
       setFirstRender(false)
@@ -60,10 +64,12 @@ const Settings: NextPage = () => {
     }
     let section = router.query.section as string
     if (!section) {
-      section = 'Profile picture'
+      section = 'Devices'
     }
     changeSection(section)
+  // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [firstRender])
+
   const changeSection = (sectionName: string) => {
     const currentItems = items.map((route) => {
       if (sectionName === route.name) {
@@ -76,6 +82,7 @@ const Settings: NextPage = () => {
     })
     setItems(currentItems)
   }
+
   //// remove mock
   const createCallNotif = () => {
     const notif = {
@@ -91,6 +98,7 @@ const Settings: NextPage = () => {
       currentUsername: authStore.username,
     })
   }
+
   //// remove mock
   const createQueueCallNotif = () => {
     const notif = {
@@ -107,6 +115,7 @@ const Settings: NextPage = () => {
       currentUsername: authStore.username,
     })
   }
+
   //// remove mock
   const createChatNotif = () => {
     const notif = {
@@ -123,7 +132,9 @@ const Settings: NextPage = () => {
       currentUsername: authStore.username,
     })
   }
+
   const { profile } = useSelector((state: RootState) => state.user)
+  
   return (
     <>
       <div>
@@ -179,6 +190,8 @@ const Settings: NextPage = () => {
                 {currentSection === 'Customer cards' && <CustomerCards />}
                 {/* Profile section */}
                 {currentSection === 'Profile picture' && <Profile />}
+                {/* Devices section */}
+                {currentSection === 'Devices' && <Devices />}
               </div>
             </div>
           </div>

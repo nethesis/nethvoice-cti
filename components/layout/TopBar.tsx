@@ -30,6 +30,7 @@ import {
   faBell,
   faChevronRight,
   faUser,
+  faHeadset,
 } from '@fortawesome/free-solid-svg-icons'
 import { getUserInfo } from '../../services/user'
 import { setTheme } from '../../lib/darkTheme'
@@ -37,6 +38,8 @@ import { loadNotificationsFromStorage } from '../../lib/notifications'
 import { GlobalSearch } from './GlobalSearch'
 import { useTranslation } from 'react-i18next'
 import Link from 'next/link'
+import { faOfficePhone } from '@nethesis/nethesis-solid-svg-icons'
+
 interface TopBarProps {
   openMobileCb: () => void
 }
@@ -177,6 +180,8 @@ export const TopBar: FC<TopBarProps> = ({ openMobileCb }) => {
           </span>
         </Dropdown.Header>
       </div>
+
+      {/* Choose presence */}
       <Popover className='md:relative hover:bg-gray-200 dark:hover:bg-gray-700'>
         {({ open }) => (
           <>
@@ -226,6 +231,86 @@ export const TopBar: FC<TopBarProps> = ({ openMobileCb }) => {
                           {t('TopBar.Forward incoming calls to another phone number')}
                         </p>
                       </div>
+                    </Dropdown.Item>
+                    <div className='relative py-2'>
+                      <div className='absolute inset-0 flex items-center' aria-hidden='true'>
+                        <div className='w-full border-t  border-gray-300 dark:border-gray-600' />
+                      </div>
+                    </div>
+                    <Dropdown.Item onClick={() => setPresence('dnd')}>
+                      <div>
+                        <div className='flex items-center'>
+                          <StatusDot status='dnd' className='flex mr-2' />
+                          <p className='flex text-sm font-medium'>{t('TopBar.Do not disturb')}</p>
+                        </div>
+                        <p className='text-sm text-gray-500'>
+                          {t('TopBar.Do not receive any calls')}
+                        </p>
+                      </div>
+                    </Dropdown.Item>
+                  </div>
+                </div>
+              </Popover.Panel>
+            </Transition>
+          </>
+        )}
+      </Popover>
+
+      {/* Choose main device */}
+      <Popover className='md:relative hover:bg-gray-200 dark:hover:bg-gray-700'>
+        {({ open }) => (
+          <>
+            <Popover.Button
+              className={classNames(
+                open ? '' : '',
+                'relative text-left cursor-pointer px-5 py-2 text-sm flex items-center gap-3 w-full ',
+              )}
+            >
+              <FontAwesomeIcon
+                icon={faOfficePhone}
+                className='ml-auto h-3 w-3 flex justify-center text-gray-400 dark:text-gray-500'
+              />
+              {t('TopBar.Main device')}
+              <FontAwesomeIcon
+                icon={faChevronRight}
+                className='ml-auto h-3 w-3 flex justify-center text-gray-400 dark:text-gray-500'
+              />
+            </Popover.Button>
+            <Transition
+              as={Fragment}
+              enter='transition ease-out duration-200'
+              enterFrom='opacity-0 translate-y-1'
+              enterTo='opacity-100 translate-y-0'
+              leave='transition ease-in duration-150'
+              leaveFrom='opacity-100 translate-y-0'
+              leaveTo='opacity-0 translate-y-1'
+            >
+              {/* List of device to choose */}
+              <Popover.Panel className='absolute sm:mr-[4.788rem] sm:-mt-10 right-0 z-10 w-screen max-w-xs sm:-translate-x-1/2 transform px-0.5 sm:px-1 xs:mr-[6rem] '>
+                <div className='overflow-hidden shadow-lg ring-1 ring-gray-200 dark:ring-gray-700 ring-opacity-1 rounded-md'>
+                  <div className='relative bg-white dark:border-gray-700 dark:bg-gray-900 py-2'>
+                    <Dropdown.Item onClick={() => setPresence('online')}>
+                      <div>
+                        <div className='flex items-center'>
+                          <FontAwesomeIcon
+                            icon={faHeadset}
+                            className='ml-auto h-3 w-3 flex justify-center text-gray-400 dark:text-gray-500'
+                          />{' '}
+                          <p className='flex text-sm font-medium'>{t('TopBar.Online')}</p>
+                        </div>
+                      </div>
+                    </Dropdown.Item>
+                    <Dropdown.Item onClick={() => setPresence('callforward')}>
+                      <div className=''>
+                        <div className='flex items-center'>
+                          <StatusDot status='callforward' className='flex mr-2' />
+                          <p className='flex text-sm font-medium'> {t('TopBar.Call forward')}</p>
+                        </div>
+                        <p className='text-sm text-gray-500'>
+                          {t('TopBar.Forward incoming calls to another phone number')}
+                        </p>
+                      </div>
+                      
                     </Dropdown.Item>
                     <div className='relative py-2'>
                       <div className='absolute inset-0 flex items-center' aria-hidden='true'>
