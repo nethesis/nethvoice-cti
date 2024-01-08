@@ -16,8 +16,10 @@ import {
 } from '@fortawesome/free-solid-svg-icons'
 import React from 'react'
 import { faOfficePhone } from '@nethesis/nethesis-solid-svg-icons'
-import { openShowEditPhysicalPhone } from '../lib/devices'
+import { openShowEditPhysicalPhone, setMainDevice } from '../lib/devices'
 import { Badge, Dropdown } from '../components/common'
+import { useDispatch } from 'react-redux'
+import { Dispatch } from '../store'
 
 const Devices: NextPage = () => {
   const { t } = useTranslation()
@@ -26,6 +28,8 @@ const Devices: NextPage = () => {
 
   const [phoneData, setPhoneData]: any = useState([])
   const [webrtcData, setWebrtcData]: any = useState([])
+
+  const dispatch = useDispatch<Dispatch>()
 
   useEffect(() => {
     // filter phone and insert only physical phones
@@ -38,14 +42,23 @@ const Devices: NextPage = () => {
     }
   }, [profile?.endpoints])
 
-  const setMainDeviceMenu = () => (
-    <Dropdown.Item onClick={() => setSelectedAsMainDevice('')} variantTop={true}>
+  const setMainDeviceMenu = (deviceId: any) => (
+    <Dropdown.Item onClick={() => setSelectedAsMainDevice(deviceId)} variantTop={true}>
       {t('Devices.Set as main device')}
     </Dropdown.Item>
   )
 
-  const setSelectedAsMainDevice = (id: string) => {
-    console.log('this is the id', id)
+  const setSelectedAsMainDevice = async (deviceId: string) => {
+    let deviceIdInfo: any = {}
+    if (deviceId) {
+      deviceIdInfo.id = deviceId
+      try {
+        await setMainDevice(deviceIdInfo)
+        dispatch.user.updateDefaultDevice(deviceIdInfo)
+      } catch (err) {
+        console.log(err)
+      }
+    }
   }
 
   return (
@@ -102,7 +115,7 @@ const Devices: NextPage = () => {
                             )}
                           </td>
                           <td className='whitespace-nowrap px-2 py-4 text-sm text-gray-500'>
-                            {webrtcData[0]?.id === profile?.mainextension ? (
+                            {webrtcData[0]?.id === profile?.default_device?.id ? (
                               <Badge size='small' variant='online' rounded='full'>
                                 <span>{t('Devices.Main device')}</span>
                               </Badge>
@@ -110,18 +123,12 @@ const Devices: NextPage = () => {
                               <span className='text-transparent'>{t('Devices.Main device')}</span>
                             )}
                           </td>
-                          <td
-                            className='whitespace-nowrap px-3 py-4 text-sm text-primary dark:text-primaryDark cursor-pointer'
-                            onClick={() => openShowEditPhysicalPhone('')}
-                          >
-                            <FontAwesomeIcon
-                              icon={faPenToSquare}
-                              className='mr-2 h-4 w-4 text-primary dark:text-primaryDark'
-                            />
+                          <td className='whitespace-nowrap px-3 py-4 text-sm text-primary dark:text-primaryDark cursor-pointer text-transparent'>
+                            <FontAwesomeIcon icon={faPenToSquare} className='mr-2 h-4 w-4' />
                             {t('Devices.Edit')}
                           </td>
                           <td className='relative whitespace-nowrap py-4 pr-4 text-right text-sm font-medium sm:pr-6 cursor-pointer'>
-                            <Dropdown items={setMainDeviceMenu()} position='top'>
+                            <Dropdown items={setMainDeviceMenu(webrtcData[0]?.id)} position='top'>
                               <FontAwesomeIcon
                                 icon={faEllipsisVertical}
                                 className='h-4 w-4 text-primary dark:text-primaryDark'
@@ -212,7 +219,7 @@ const Devices: NextPage = () => {
                               )}
                             </td>
                             <td className='whitespace-nowrap px-3 py-4 text-sm text-gray-500'>
-                              {phone?.id === profile?.mainextension ? (
+                              {phone?.id === profile?.default_device?.id ? (
                                 <Badge size='small' variant='online' rounded='full'>
                                   <span>{t('Devices.Main device')}</span>
                                 </Badge>
@@ -231,7 +238,7 @@ const Devices: NextPage = () => {
                               {t('Devices.Edit')}
                             </td>
                             <td className='relative whitespace-nowrap py-4 pl-3 pr-4 text-right text-sm font-medium sm:pr-6 cursor-pointer'>
-                              <Dropdown items={setMainDeviceMenu()} position='top'>
+                              <Dropdown items={setMainDeviceMenu(phone?.id)} position='top'>
                                 <FontAwesomeIcon
                                   icon={faEllipsisVertical}
                                   className='h-4 w-4 text-primary dark:text-primaryDark'

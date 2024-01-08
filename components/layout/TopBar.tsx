@@ -42,6 +42,7 @@ import { useTranslation } from 'react-i18next'
 import Link from 'next/link'
 import { faOfficePhone } from '@nethesis/nethesis-solid-svg-icons'
 import { isEmpty } from 'lodash'
+import { setMainDevice } from '../../lib/devices'
 
 interface TopBarProps {
   openMobileCb: () => void
@@ -198,6 +199,19 @@ export const TopBar: FC<TopBarProps> = ({ openMobileCb }) => {
     doLogout(emptyObjectLogout)
   }
 
+  const setMainDeviceId = async (device: any) => {
+    let deviceIdInfo: any = {}
+    if (device) {
+      deviceIdInfo.id = device
+      try {
+        await setMainDevice(deviceIdInfo)
+        dispatch.user.updateDefaultDevice(deviceIdInfo)
+      } catch (err) {
+        console.log(err)
+      }
+    }
+  }
+
   const dropdownItems = (
     <>
       <div className='cursor-default'>
@@ -325,10 +339,10 @@ export const TopBar: FC<TopBarProps> = ({ openMobileCb }) => {
                 <div className='overflow-hidden shadow-lg ring-1 ring-gray-200 dark:ring-gray-700 ring-opacity-1 rounded-md'>
                   <div className='relative bg-white dark:border-gray-700 dark:bg-gray-900 py-2'>
                     {noMobileListDevice.map((device: any) => (
-                      <Dropdown.Item key={device.id} onClick={() => setPresence(device.type)}>
+                      <Dropdown.Item key={device?.id} onClick={() => setMainDeviceId(device?.id)}>
                         <div className='truncate'>
                           <div className='flex items-center space-x-2'>
-                            {device?.id === profile?.mainextension ? (
+                            {device?.id === profile?.default_device?.id ? (
                               <FontAwesomeIcon
                                 icon={faCheck}
                                 className='ml-auto mr-2 h-4 w-4 flex justify-center text-primary dark:text-gray-500'
@@ -349,7 +363,7 @@ export const TopBar: FC<TopBarProps> = ({ openMobileCb }) => {
                             )}
                             {device.type === 'physical' && (
                               <p className='flex text-sm font-medium max-w-[6rem] line-clamp-2'>
-                                {device.description}
+                                {device?.description}
                               </p>
                             )}
                           </div>

@@ -12,3 +12,14 @@ export const openShowEditPhysicalPhone = (emptyString: any) => {
     config: emptyString,
   })
 }
+
+// Set main device id
+export async function setMainDevice(deviceIdInformation: any) {
+  try {
+    const { data, status } = await axios.post('/user/default_device', deviceIdInformation)
+    return data
+  } catch (error) {
+    handleNetworkError(error)
+    throw error
+  }
+}
