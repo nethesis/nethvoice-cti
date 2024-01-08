@@ -229,7 +229,7 @@ const Devices: NextPage = () => {
                             </td>
                             <td
                               className='whitespace-nowrap px-3 py-4 text-sm text-primary dark:text-primaryDark cursor-pointer'
-                              onClick={() => openShowEditPhysicalPhone('')}
+                              onClick={() => openShowEditPhysicalPhone(phone)}
                             >
                               <FontAwesomeIcon
                                 icon={faPenToSquare}

@@ -714,6 +714,10 @@
     "Set as main device": "Set as main device",
     "Main device": "Main device",
     "Online": "Online",
-    "Offline": "Offline"
+    "Offline": "Offline",
+    "Optional": "Optional",
+    "PIN": "PIN",
+    "Pin information tooltip": "Create a PIN to set in your physical device",
+    "Generate random PIN": "Generate random PIN"
   }
 }

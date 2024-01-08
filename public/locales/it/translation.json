@@ -665,6 +665,10 @@
     "Set as main device": "Imposta come dispositivo principale",
     "Main device": "Dispositivo principale",
     "Online": "Online",
-    "Offline": "Offline"
+    "Offline": "Offline",
+    "Optional": "Opzionale",
+    "PIN": "PIN",
+    "Pin information tooltip": "Crea un PIN per il tuo telefono fisico",
+    "Generate random PIN": "Genera un PIN casuale"
   }
 }
