@@ -718,6 +718,8 @@
     "Optional": "Optional",
     "PIN": "PIN",
     "Pin information tooltip": "Create a PIN to set in your physical device",
-    "Generate random PIN": "Generate random PIN"
+    "Generate random PIN": "Generate random PIN",
+    "Configure keys": "Configure keys",
+    "Assign key to all operators": "Assign key to all operators"
   }
 }

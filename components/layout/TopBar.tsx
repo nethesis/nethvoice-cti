@@ -69,9 +69,9 @@ export const TopBar: FC<TopBarProps> = ({ openMobileCb }) => {
   useEffect(() => {
     if (profile?.endpoints) {
       let extensionObj: any = profile.endpoints
-      if (profile?.mainextension && !isEmpty(extensionObj)) {
+      if (profile?.default_device?.id && !isEmpty(extensionObj)) {
         const extensionType = extensionObj.extension.find(
-          (ext: any) => ext.id === profile?.mainextension,
+          (ext: any) => ext.id === profile?.default_device?.id,
         )
         if (extensionType?.type !== '') {
           setMainDeviceType(extensionType?.type)
@@ -85,7 +85,7 @@ export const TopBar: FC<TopBarProps> = ({ openMobileCb }) => {
       }
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [profile?.mainextension])
+  }, [profile?.default_device])
 
   const { t } = useTranslation()
 

@@ -23,3 +23,23 @@ export async function setMainDevice(deviceIdInformation: any) {
     throw error
   }
 }
+
+export async function getPhysicalDeviceButtonConfiguration(macAddress: any) {
+  try {
+    const { data, status } = await axios.get('/tancredi/api/v1/phones/' + macAddress + '?inherit=1')
+    return data
+  } catch (error) {
+    handleNetworkError(error)
+    throw error
+  }
+}
+
+export async function getPhoneModelData(model: any) {
+  try {
+    const { data, status } = await axios.get('/tancredi/api/v1/models/' + model)
+    return data
+  } catch (error) {
+    handleNetworkError(error)
+    throw error
+  }
+}

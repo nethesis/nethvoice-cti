@@ -669,6 +669,8 @@
     "Optional": "Opzionale",
     "PIN": "PIN",
     "Pin information tooltip": "Crea un PIN per il tuo telefono fisico",
-    "Generate random PIN": "Genera un PIN casuale"
+    "Generate random PIN": "Genera un PIN casuale",
+    "Configure keys": "Configura tasti",
+    "Assign key to all operators": "Assegna tasto a tutti gli operatori"
   }
 }

@@ -541,7 +541,7 @@ const Operators: NextPage = () => {
                                     />
                                   )}
                                 </div>
-                                <span className='block truncate mt-1 text-sm font-medium text-gray-500 dark:text-gray-500'>
+                                <span className='block truncate text-sm font-medium text-gray-500 dark:text-gray-500'>
                                   {operator?.conversations?.length &&
                                   (operator?.conversations[0]?.connected ||
                                     operator?.conversations[0]?.inConference ||
