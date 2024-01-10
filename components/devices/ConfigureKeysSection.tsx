@@ -5,6 +5,9 @@ import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import {
   faChevronDown,
   faGripVertical,
+  faCircleXmark,
+  faChevronRight,
+  faChevronLeft,
 } from '@fortawesome/free-solid-svg-icons'
 import { useSelector } from 'react-redux'
 import { RootState } from '../../store'
@@ -12,6 +15,7 @@ import { useTranslation } from 'react-i18next'
 import { DragDropContext, Draggable, Droppable } from 'react-beautiful-dnd'
 import { isEmpty } from 'lodash'
 import { getPhoneModelData, getPhysicalDeviceButtonConfiguration } from '../../lib/devices'
+import { Button, TextInput } from '../common'
 
 export interface ConfigureKeysSectionProps extends ComponentPropsWithRef<'div'> {
   deviceId: any
@@ -154,6 +158,7 @@ export const ConfigureKeysSection = forwardRef<HTMLButtonElement, ConfigureKeysS
 
     const [currentPage, setCurrentPage] = useState(1)
     const itemsPerPage = 10
+    const [filteredButtons, setFilteredButtons] = useState([])
 
     const handleDragEnd = (result: any) => {
       if (!result.destination) return
@@ -170,19 +175,56 @@ export const ConfigureKeysSection = forwardRef<HTMLButtonElement, ConfigureKeysS
 
       setButtonsStatusObject(updatedButtonsWithIndices)
     }
-    const indexOfLastItem = currentPage * itemsPerPage
-    const indexOfFirstItem = indexOfLastItem - itemsPerPage
-    const currentItems = buttonsStatusObject.slice(indexOfFirstItem, indexOfLastItem)
+
+    const [isLeftButtonVisible, setLeftButtonVisible] = useState(false)
+    const [isRightButtonVisible, setRightButtonVisible] = useState(true)
+
+    // Pagination section
+    const paginate = (pageNumber: any) => {
+      setCurrentPage(pageNumber)
+      setLeftButtonVisible(pageNumber > 1)
+
+      setRightButtonVisible(pageNumber < Math.ceil(filteredButtons?.length / itemsPerPage))
+    }
+
+    // Input field section
+    const [textFilter, setTextFilter] = useState('')
+
+    const textFilterRef = useRef() as React.MutableRefObject<HTMLInputElement>
+
+    const clearTextFilter = () => {
+      setTextFilter('')
+      textFilterRef.current.focus()
+    }
+
+    function changeTextFilter(event: any) {
+      const newTextFilter = event.target.value
+      setTextFilter(newTextFilter)
+    }
+
+    useEffect(() => {
+      setFilteredButtons(buttonsStatusObject)
+    }, [buttonsStatusObject, textFilter])
 
     const renderButtons = () => {
-      return currentItems.map((button: any, index: any) => (
+      const filteredButtons = buttonsStatusObject?.filter((button: any) => {
+        const buttonLabel = `${button?.id} - ${button?.label} (${button?.value})`.toLowerCase()
+        const filterText = textFilter.toLowerCase()
+        return buttonLabel.includes(filterText)
+      })
+
+      const indexOfLastItem = currentPage * itemsPerPage
+      const indexOfFirstItem = indexOfLastItem - itemsPerPage
+      const currentFilteredItems = filteredButtons.slice(indexOfFirstItem, indexOfLastItem)
+
+      return currentFilteredItems.map((button: any, index: any) => (
         <Draggable key={button?.id} draggableId={button?.id?.toString()} index={index}>
           {(provided) => (
             <li
               ref={provided?.innerRef}
               {...provided?.draggableProps}
               {...provided?.dragHandleProps}
-              className='grid items-center  py-2 px-4 grid-cols-[4rem,auto,1rem]'
+              className='grid items-center py-2 grid-cols-[4rem,auto,1rem]'
             >
               <div className='flex items-center'>
                 <FontAwesomeIcon
@@ -193,10 +235,9 @@ export const ConfigureKeysSection = forwardRef<HTMLButtonElement, ConfigureKeysS
               </div>
 
               <div className='flex items-center justify-start whitespace-nowrap'>
-                <span>{button?.label}</span>
-                <span className='ml-1'>({button?.value})</span>
+                <span>{button?.label !== '' ? button?.label : t('Devices.Not configurated')}</span>
+                {button?.value !== '' && <span className='ml-1'>({button?.value})</span>}
               </div>
-
               <div className='flex items-end justify-end'>
                 <FontAwesomeIcon
                   icon={faChevronDown}
@@ -216,11 +257,37 @@ export const ConfigureKeysSection = forwardRef<HTMLButtonElement, ConfigureKeysS
       ))
     }
 
-    const paginate = (pageNumber: any) => setCurrentPage(pageNumber)
+    const [visibleFilter, setVisibleFilter] = useState(false)
+
+    useEffect(() => {
+      const updatedFilteredButtons = buttonsStatusObject?.filter((button: any) => {
+        const buttonLabel = `${button?.id} - ${button?.label} (${button?.value})`.toLowerCase()
+        const filterText = textFilter.toLowerCase()
+        return buttonLabel.includes(filterText)
+      })
+
+      if (updatedFilteredButtons.length < 11) {
+        setVisibleFilter(false)
+      } else {
+        setVisibleFilter(true)
+      }
+    }, [buttonsStatusObject, textFilter])
 
     return (
       <>
-        <div className='pt-4'>
+        <div className='flex items-center'>
+          <TextInput
+            placeholder={t('Devices.Search') || ''}
+            className='max-w-xl py-4'
+            value={textFilter}
+            onChange={changeTextFilter}
+            ref={textFilterRef}
+            icon={textFilter?.length ? faCircleXmark : undefined}
+            onIconClick={() => clearTextFilter()}
+            trailingIcon={true}
+          />
+        </div>
+        <div className='pt-2'>
           <DragDropContext onDragEnd={handleDragEnd}>
             <Droppable droppableId='phoneKeysList'>
               {(provided) => (
@@ -233,15 +300,24 @@ export const ConfigureKeysSection = forwardRef<HTMLButtonElement, ConfigureKeysS
           </DragDropContext>
         </div>
 
-        {/* <div>
-          <ul className='pagination'>
-            {[...Array(Math.ceil(buttonsStatusObject.length / itemsPerPage))].map((_, index) => (
-              <li key={index} onClick={() => paginate(index + 1)}>
-                {index + 1}
-              </li>
-            ))}
-          </ul>
-        </div> */}
+        <div className='flex justify-between pt-4'>
+          <Button
+            variant='white'
+            onClick={() => paginate(currentPage - 1)}
+            disabled={!isLeftButtonVisible}
+            className={!isLeftButtonVisible ? 'invisible' : ''}
+          >
+            <FontAwesomeIcon icon={faChevronLeft} className='h-4 w-4' />
+          </Button>
+          <Button
+            variant='white'
+            onClick={() => paginate(currentPage + 1)}
+            disabled={!isRightButtonVisible}
+            className={!isRightButtonVisible || !visibleFilter ? 'invisible' : ''}
+          >
+            <FontAwesomeIcon icon={faChevronRight} className='h-4 w-4' />
+          </Button>
+        </div>
       </>
     )
   },

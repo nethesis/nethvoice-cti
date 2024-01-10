@@ -671,6 +671,8 @@
     "Pin information tooltip": "Crea un PIN per il tuo telefono fisico",
     "Generate random PIN": "Genera un PIN casuale",
     "Configure keys": "Configura tasti",
-    "Assign key to all operators": "Assegna tasto a tutti gli operatori"
+    "Assign key to all operators": "Assegna tasto a tutti gli operatori",
+    "Not configurated": "Non configurato",
+    "Search": "Cerca"
   }
 }
