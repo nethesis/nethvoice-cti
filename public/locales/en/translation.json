@@ -727,6 +727,16 @@
     "Search": "Search",
     "Assign keys for all operators": "Assign keys for all operators",
     "Assign key for all operators modal message": "This action will associate a key for all operators, sorting in ascending order by extension number",
-    "Assign keys": "Assign keys"
+    "Assign keys": "Assign keys",
+    "Key position": "Key position",
+    "Type": "Type",
+    "Choose type": "Choose type",
+    "Busy lamp field (BLF)": "Busy lamp field (BLF)",
+    "Line": "Line",
+    "Speed call": "Speed call",
+    "Do not disturb (DND)": "Do not disturb (DND)",
+    "Toggle login/logout queue": "Toggle login/logout queue",
+    "Name or number": "Name or number"
+    
   }
 }

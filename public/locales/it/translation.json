@@ -678,6 +678,15 @@
     "Search": "Cerca",
     "Assign keys for all operators": "Assegna tasti a tutti gli operatori",
     "Assign key for all operators modal message": "Questa azione assegnerà un tasto a tutti gli operatori, ordinando in ordine crescente per numero di estensione",
-    "Assign keys": "Assegna tasti"
+    "Assign keys": "Assegna tasti",
+    "Key position": "Posizione tasto",
+    "Type": "Tipo",
+    "Choose type": "Scegli tipo",
+    "Busy lamp field (BLF)": "Busy lamp field (BLF)",
+    "Line": "Linea",
+    "Speed call": "Chiamata rapida",
+    "Do not disturb (DND)": "Do not disturb (DND)",
+    "Toggle login/logout queue": "Alterna login/logout coda",
+    "Name or number": "Nome o numero"
   }
 }

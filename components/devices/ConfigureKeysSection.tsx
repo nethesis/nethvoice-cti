@@ -15,8 +15,9 @@ import {
   faCircleXmark,
   faChevronRight,
   faChevronLeft,
-  faTriangleExclamation,
   faCircleInfo,
+  faArrowRight,
+  faChevronUp,
 } from '@fortawesome/free-solid-svg-icons'
 import { useSelector } from 'react-redux'
 import { RootState } from '../../store'
@@ -24,8 +25,8 @@ import { useTranslation } from 'react-i18next'
 import { DragDropContext, Draggable, Droppable } from 'react-beautiful-dnd'
 import { isEmpty } from 'lodash'
 import { getPhoneModelData, getPhysicalDeviceButtonConfiguration } from '../../lib/devices'
-import { Button, InlineNotification, Modal, TextInput } from '../common'
-import { use } from 'i18next'
+import { Avatar, Button, InlineNotification, Modal, TextInput } from '../common'
+import { Tooltip } from 'react-tooltip'
 
 export interface ConfigureKeysSectionProps extends ComponentPropsWithRef<'div'> {
   deviceId: any
@@ -214,9 +215,45 @@ export const ConfigureKeysSection = forwardRef<HTMLButtonElement, ConfigureKeysS
       setTextFilter(newTextFilter)
     }
 
+    // key input field section
+    const [keyTextFilter, setKeyTextFilter] = useState('')
+
+    const keyTextFilterRef = useRef() as React.MutableRefObject<HTMLInputElement>
+
+    const clearKeyTextFilter = () => {
+      setKeyTextFilter('')
+      keyTextFilterRef.current.focus()
+    }
+
+    function changeKeyTextFilter(event: any) {
+      const newKeyTextFilter = event.target.value
+      setKeyTextFilter(newKeyTextFilter)
+    }
+
     useEffect(() => {
       setFilteredButtons(buttonsStatusObject)
     }, [buttonsStatusObject, textFilter])
+
+    const [selectedRowIndex, setSelectedRowIndex] = useState<number | null>(null)
+
+    const handleClickIcon = (clickedIndex: number) => {
+      setSelectedRowIndex((prevIndex) => (prevIndex === clickedIndex ? null : clickedIndex))
+    }
+
+    const [keysTypeSelected, setKeysTypeSelected] = useState<any>(null)
+
+    const typesList = [
+      { value: 'blf', label: `${t('Devices.Busy lamp field (BLF)')}` },
+      { value: 'line', label: `${t('Devices.Line')}` },
+      { value: 'dnd', label: `${t('Devices.Do not disturb (DND)')}` },
+      { value: 'speedCall', label: `${t('Devices.Speed call')}` },
+      { value: 'toggleQueue', label: `${t('Devices.Toggle login/logout queue')}` },
+    ]
+
+    const handleTypeChange = (event: any) => {
+      const selectedType = event.target.value
+      setKeysTypeSelected(selectedType)
+    }
 
     const renderButtons = () => {
       const filteredButtons = buttonsStatusObject?.filter((button: any) => {
@@ -229,36 +266,105 @@ export const ConfigureKeysSection = forwardRef<HTMLButtonElement, ConfigureKeysS
       const indexOfFirstItem = indexOfLastItem - itemsPerPage
       const currentFilteredItems = filteredButtons.slice(indexOfFirstItem, indexOfLastItem)
 
-      return currentFilteredItems.map((button: any, index: any) => (
+      return currentFilteredItems.map((button: any, index: number) => (
         <Draggable key={button?.id} draggableId={button?.id?.toString()} index={index}>
           {(provided) => (
             <li
               ref={provided?.innerRef}
               {...provided?.draggableProps}
               {...provided?.dragHandleProps}
-              className='grid items-center py-2 grid-cols-[4rem,auto,1rem]'
+              className=''
             >
-              <div className='flex items-center'>
-                <FontAwesomeIcon
-                  icon={faGripVertical}
-                  className='h-4 w-4 text-primary dark:text-primaryDark mr-2'
-                />
-                <span>{button?.id} -</span>
+              <div
+                className={`${
+                  selectedRowIndex === index ? 'bg-gray-100' : ''
+                } grid items-center py-4 px-2 grid-cols-[4rem,auto,1rem]`}
+              >
+                <div className='flex items-center'>
+                  <FontAwesomeIcon
+                    icon={faGripVertical}
+                    className='h-4 w-4 text-primary dark:text-primaryDark mr-2'
+                  />
+                  <span>{button?.id} -</span>
+                </div>
+
+                <div className='flex items-center justify-start whitespace-nowrap'>
+                  <span>
+                    {button?.label !== '' ? button?.label : t('Devices.Not configurated')}
+                  </span>
+                  {button?.value !== '' && <span className='ml-1'>({button?.value})</span>}
+                </div>
+                <div className='flex items-end justify-end'>
+                  <Button variant='ghost' onClick={() => handleClickIcon(index)}>
+                    <FontAwesomeIcon
+                      icon={selectedRowIndex === index ? faChevronUp : faChevronDown}
+                      className='h-4 w-4 text-primary dark:text-primaryDark cursor-pointer'
+                    />
+                  </Button>
+                </div>
               </div>
 
-              <div className='flex items-center justify-start whitespace-nowrap'>
-                <span>{button?.label !== '' ? button?.label : t('Devices.Not configurated')}</span>
-                {button?.value !== '' && <span className='ml-1'>({button?.value})</span>}
-              </div>
-              <div className='flex items-end justify-end'>
-                <FontAwesomeIcon
-                  icon={faChevronDown}
-                  className='h-4 w-4 text-primary dark:text-primaryDark mr-2'
-                />
-              </div>
+              {selectedRowIndex === index && (
+                <>
+                  <div className='flex items-center mt-4'>
+                    <span>{t('Devices.Key position')}</span>
+                    <FontAwesomeIcon
+                      icon={faCircleInfo}
+                      className='h-4 w-4 pl-2 text-primary dark:text-primaryDark flex items-center tooltip-configure-key-position-information'
+                      aria-hidden='true'
+                    />
+                    {/* Pin information tooltip */}
+                    <Tooltip
+                      anchorSelect='.tooltip-configure-key-position-information'
+                      place='right'
+                    >
+                      {t('Devices.Pin information tooltip') || ''}
+                    </Tooltip>
+                  </div>
+                  <div className='flex items-center'>
+                    <TextInput
+                      placeholder={t('Devices.Search') || ''}
+                      className='max-w-xl py-4'
+                      value={keyTextFilter}
+                      onChange={changeKeyTextFilter}
+                      ref={keyTextFilterRef}
+                      icon={keyTextFilter?.length ? faCircleXmark : undefined}
+                      onIconClick={() => clearKeyTextFilter()}
+                      trailingIcon={true}
+                    />
+                  </div>
+                  <div className='mb-2'>
+                    <span> {t('Devices.Type')}</span>
+                  </div>
+                  <div className='mb-6'>
+                    <select
+                      id='types'
+                      name='types'
+                      className='block w-full rounded-md py-2 pl-3 pr-10 text-base focus:outline-none sm:text-sm border-gray-300 focus:border-primary focus:ring-primary dark:border-gray-600 dark:focus:border-primary dark:focus:ring-primary dark:bg-gray-900'
+                      value={keysTypeSelected || ''}
+                      onChange={handleTypeChange}
+                    >
+                      {!keysTypeSelected && <option value=''>{t('Devices.Choose type')}</option>}
+                      {typesList.map((type) => (
+                        <option key={type?.value} value={type.value}>
+                          {type?.label}
+                        </option>
+                      ))}
+                    </select>
+                  </div>
 
+                  {(keysTypeSelected === 'blf' || keysTypeSelected === 'speedCall') && (
+                    <>
+                      <div className='mb-2'>
+                        <span> {t('Devices.Name or number')}</span>
+                      </div>
+                      <div className='mb-6'></div>
+                    </>
+                  )}
+                </>
+              )}
               {/* Divider */}
-              <div className='relative col-span-3 mt-2'>
+              <div className='relative col-span-3'>
                 <div className='absolute inset-0 flex items-center' aria-hidden='true'>
                   <div className='w-full border-t border-gray-300 dark:border-gray-600' />
                 </div>
@@ -289,6 +395,63 @@ export const ConfigureKeysSection = forwardRef<HTMLButtonElement, ConfigureKeysS
 
     // Set key to all operators function
     const handleAssignAllKeys = async () => {}
+
+    const renderDynamicRows = () => {
+      return Object.keys(operators?.extensions)
+        .slice(0, 2)
+        .map((key, index) => {
+          const exampleOperator = operators?.extensions[key]
+
+          return (
+            <div
+              key={key}
+              className='grid grid-cols-[8rem,2rem,3rem] whitespace-nowrap w-full items-center py-2'
+            >
+              {/* Operator avatar and name */}
+              <div className='flex space-x-2 items-center truncate'>
+                <Avatar
+                  size='base'
+                  placeholderType='person'
+                  src={operators?.avatars[exampleOperator?.username]}
+                  status={operators?.operators[exampleOperator?.username]?.mainPresence}
+                />
+                <div className='max-w-sm truncate'>
+                  <span>{`${exampleOperator?.name}`}</span>
+                </div>
+              </div>
+
+              {/* Arrow icon*/}
+              <div className='mx-2'>
+                <FontAwesomeIcon icon={faArrowRight} className='h-4 w-4' />
+              </div>
+
+              {/* Operator icon, name, and number */}
+              <div className='flex items-center ml-2'>
+                <FontAwesomeIcon
+                  icon={faGripVertical}
+                  className='h-4 w-4 text-primary dark:text-primaryDark mr-2'
+                />
+
+                {/* operator name */}
+                <span className='ml-2 mr-2'>{index + 1} -</span>
+
+                {/* extension */}
+                <div className=''>
+                  <span>{`${exampleOperator?.name}`}</span>
+                </div>
+
+                <span className='ml-1'>({`${exampleOperator?.exten || '-'}`})</span>
+              </div>
+              {/* Divider */}
+              {/* <div className='relative flex col-span-3 mt-2 w-full'>
+                <div className='absolute inset-x-0 bottom-0 flex items-center' aria-hidden='true'>
+                  <div className='w-full border-t border-gray-300 dark:border-gray-600' />
+                </div>
+              </div> */}
+            </div>
+          )
+        })
+    }
 
     return (
       <>
@@ -362,6 +525,7 @@ export const ConfigureKeysSection = forwardRef<HTMLButtonElement, ConfigureKeysS
               <span className='font-normal text-sm leading-5 text-gray-700 dark:text-gray-200'>
                 {t('Common.Example')}
               </span>
+              <div className='mt-2'>{renderDynamicRows()}</div>
             </div>
           </Modal.Content>
           <Modal.Actions>
