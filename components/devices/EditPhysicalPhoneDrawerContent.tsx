@@ -37,23 +37,23 @@ export const EditPhysicalPhoneDrawerContent = forwardRef<
     }
   }
 
-  const configureKeysDropdownMenu = (deviceId: any) => (
-    <Dropdown.Item onClick={() => setSelectedAsMainDevice(deviceId)}>
+  const [selectAllOperatorsModalStatus, setSelectAllOperatorsModalStatus] = useState(false)
+  const [viewAllOperatorsModal, setViewAllOperatorsModal] = useState(false)
+
+  const configureKeysDropdownMenu = () => (
+    <Dropdown.Item onClick={() => manageAllOperatorsKeyModalStatus()}>
       {t('Devices.Assign key to all operators')}
     </Dropdown.Item>
   )
 
-  const setSelectedAsMainDevice = async (deviceId: string) => {
-    // let deviceIdInfo: any = {}
-    // if (deviceId) {
-    //   deviceIdInfo.id = deviceId
-    //   try {
-    //     await setMainDevice(deviceIdInfo)
-    //     dispatch.user.updateDefaultDevice(deviceIdInfo)
-    //   } catch (err) {
-    //     console.log(err)
-    //   }
-    // }
+  const manageAllOperatorsKeyModalStatus = () => {
+    setViewAllOperatorsModal(true)
+    updateAllOperatorsModalStatus(true)
+  }
+
+  const updateAllOperatorsModalStatus = (statusModal: boolean) => {
+    setSelectAllOperatorsModalStatus(statusModal)
+    setViewAllOperatorsModal(statusModal)
   }
 
   return (
@@ -127,14 +127,18 @@ export const EditPhysicalPhoneDrawerContent = forwardRef<
               {t('Devices.Pin information tooltip') || ''}
             </Tooltip>
           </div>
-          <Dropdown items={configureKeysDropdownMenu('')} position='left'>
+          <Dropdown items={configureKeysDropdownMenu()} position='left'>
             <FontAwesomeIcon
               icon={faEllipsisVertical}
               className='h-4 w-4 text-primary dark:text-primaryDark'
             />
           </Dropdown>
         </div>
-        <ConfigureKeysSection deviceId={config?.id}></ConfigureKeysSection>
+        <ConfigureKeysSection
+          deviceId={config?.id}
+          modalAllOperatorsKeyStatus={updateAllOperatorsModalStatus}
+          viewModalAllKeys={viewAllOperatorsModal}
+        ></ConfigureKeysSection>
       </div>
     </>
   )

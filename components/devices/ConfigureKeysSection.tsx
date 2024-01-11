@@ -1,6 +1,13 @@
 // Copyright (C) 2023 Nethesis S.r.l.
 // SPDX-License-Identifier: AGPL-3.0-or-later
-import { ComponentPropsWithRef, forwardRef, useEffect, useRef, useState } from 'react'
+import {
+  ComponentPropsWithRef,
+  MutableRefObject,
+  forwardRef,
+  useEffect,
+  useRef,
+  useState,
+} from 'react'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import {
   faChevronDown,
@@ -8,6 +15,8 @@ import {
   faCircleXmark,
   faChevronRight,
   faChevronLeft,
+  faTriangleExclamation,
+  faCircleInfo,
 } from '@fortawesome/free-solid-svg-icons'
 import { useSelector } from 'react-redux'
 import { RootState } from '../../store'
@@ -15,14 +24,17 @@ import { useTranslation } from 'react-i18next'
 import { DragDropContext, Draggable, Droppable } from 'react-beautiful-dnd'
 import { isEmpty } from 'lodash'
 import { getPhoneModelData, getPhysicalDeviceButtonConfiguration } from '../../lib/devices'
-import { Button, TextInput } from '../common'
+import { Button, InlineNotification, Modal, TextInput } from '../common'
+import { use } from 'i18next'
 
 export interface ConfigureKeysSectionProps extends ComponentPropsWithRef<'div'> {
   deviceId: any
+  modalAllOperatorsKeyStatus: Function
+  viewModalAllKeys: boolean
 }
 
 export const ConfigureKeysSection = forwardRef<HTMLButtonElement, ConfigureKeysSectionProps>(
-  ({ deviceId, className, ...props }, ref) => {
+  ({ deviceId, modalAllOperatorsKeyStatus, viewModalAllKeys, className, ...props }, ref) => {
     const { t } = useTranslation()
     const auth = useSelector((state: RootState) => state.authentication)
     const operators: any = useSelector((state: RootState) => state.operators)
@@ -273,6 +285,11 @@ export const ConfigureKeysSection = forwardRef<HTMLButtonElement, ConfigureKeysS
       }
     }, [buttonsStatusObject, textFilter])
 
+    const cancelSetKeysToAllButtonRef = useRef() as MutableRefObject<HTMLButtonElement>
+
+    // Set key to all operators function
+    const handleAssignAllKeys = async () => {}
+
     return (
       <>
         <div className='flex items-center'>
@@ -318,6 +335,50 @@ export const ConfigureKeysSection = forwardRef<HTMLButtonElement, ConfigureKeysS
             <FontAwesomeIcon icon={faChevronRight} className='h-4 w-4' />
           </Button>
         </div>
+
+        {/* Set key to all operators modal */}
+        <Modal
+          show={viewModalAllKeys}
+          focus={cancelSetKeysToAllButtonRef}
+          onClose={() => modalAllOperatorsKeyStatus(false)}
+        >
+          <Modal.Content>
+            <div className='mx-auto flex h-12 w-12 flex-shrink-0 items-center justify-center rounded-full sm:mx-0 bg-blue-100 dark:bg-blue-900'>
+              <FontAwesomeIcon
+                icon={faCircleInfo}
+                className='h-5 w-5 text-blue-700 dark:text-blue-200'
+                aria-hidden='true'
+              />
+            </div>
+            <div className='mt-3 text-center sm:mt-0 sm:ml-4 sm:text-left'>
+              <h3 className='text-lg font-medium leading-6 text-gray-900 dark:text-gray-100'>
+                {t('Devices.Assign keys for all operators')}
+              </h3>
+              <div className='mt-3 mb-4'>
+                <p className='text-sm text-gray-500 dark:text-gray-400'>
+                  {t('Devices.Assign key for all operators modal message')}.
+                </p>
+              </div>
+              <span className='font-normal text-sm leading-5 text-gray-700 dark:text-gray-200'>
+                {t('Common.Example')}
+              </span>
+            </div>
+          </Modal.Content>
+          <Modal.Actions>
+            <Button variant='primary' onClick={() => handleAssignAllKeys()}>
+              {t('Devices.Assign keys')}
+            </Button>
+            <Button
+              variant='ghost'
+              onClick={() => modalAllOperatorsKeyStatus(false)}
+              ref={cancelSetKeysToAllButtonRef}
+            >
+              <span className='text-sm leading-5 font-mediun text-primary dark:text-primaryDark'>
+                {t('Common.Cancel')}
+              </span>
+            </Button>
+          </Modal.Actions>
+        </Modal>
       </>
     )
   },

@@ -35,7 +35,9 @@
     "Listen": "Ascolto",
     "0 minutes ago": "0 minuti fa",
     "ago": "fa",
-    "Unknown": "Sconosciuto"
+    "Unknown": "Sconosciuto",
+    "Confirm": "Conferma",
+    "Example": "Esempio"
   },
   "Login": {
     "User": "Utente",
@@ -673,6 +675,9 @@
     "Configure keys": "Configura tasti",
     "Assign key to all operators": "Assegna tasto a tutti gli operatori",
     "Not configurated": "Non configurato",
-    "Search": "Cerca"
+    "Search": "Cerca",
+    "Assign keys for all operators": "Assegna tasti a tutti gli operatori",
+    "Assign key for all operators modal message": "Questa azione assegnerà un tasto a tutti gli operatori, ordinando in ordine crescente per numero di estensione",
+    "Assign keys": "Assegna tasti"
   }
 }

@@ -51,7 +51,9 @@
     "Intrude": "Intrude",
     "Listen": "Listen",
     "ago": "ago",
-    "Unknown": "Unknown"
+    "Unknown": "Unknown",
+    "Confirm": "Confirm",
+    "Example": "Example"
   },
   "Login": {
     "User": "User",
@@ -722,6 +724,9 @@
     "Configure keys": "Configure keys",
     "Assign key to all operators": "Assign key to all operators",
     "Not configurated": "Not configurated",
-    "Search": "Search"
+    "Search": "Search",
+    "Assign keys for all operators": "Assign keys for all operators",
+    "Assign key for all operators modal message": "This action will associate a key for all operators, sorting in ascending order by extension number",
+    "Assign keys": "Assign keys"
   }
 }
