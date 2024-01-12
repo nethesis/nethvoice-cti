@@ -261,7 +261,9 @@
     "Open user menu": "Open user menu",
     "Presence": "Presence",
     "Open sidebar": "Open sidebar",
-    "Main device": "Main device"
+    "Main device": "Main device",
+    "Voicemail": "Voicemail",
+    "Activate voicemail": "Activate voicemail"
   },
   "OperatorDrawer": {
     "Book": "Book",
@@ -736,7 +738,8 @@
     "Speed call": "Speed call",
     "Do not disturb (DND)": "Do not disturb (DND)",
     "Toggle login/logout queue": "Toggle login/logout queue",
-    "Name or number": "Name or number"
-    
+    "Name or number": "Name or number",
+    "Add key": "Add key",
+    "New key": "New key"
   }
 }

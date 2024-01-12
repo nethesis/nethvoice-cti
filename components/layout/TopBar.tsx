@@ -275,6 +275,15 @@ export const TopBar: FC<TopBarProps> = ({ openMobileCb }) => {
                         </p>
                       </div>
                     </Dropdown.Item>
+                    <Dropdown.Item onClick={() => setPresence('voicemail')}>
+                      <div className=''>
+                        <div className='flex items-center'>
+                          <StatusDot status='voicemail' className='flex mr-2' />
+                          <p className='flex text-sm font-medium'> {t('TopBar.Voicemail')}</p>
+                        </div>
+                        <p className='text-sm text-gray-500'>{t('TopBar.Activate voicemail')}</p>
+                      </div>
+                    </Dropdown.Item>
                     <div className='relative py-2'>
                       <div className='absolute inset-0 flex items-center' aria-hidden='true'>
                         <div className='w-full border-t  border-gray-300 dark:border-gray-600' />

@@ -18,6 +18,7 @@ import {
   faCircleInfo,
   faArrowRight,
   faChevronUp,
+  faTrash,
 } from '@fortawesome/free-solid-svg-icons'
 import { useSelector } from 'react-redux'
 import { RootState } from '../../store'
@@ -27,6 +28,7 @@ import { isEmpty } from 'lodash'
 import { getPhoneModelData, getPhysicalDeviceButtonConfiguration } from '../../lib/devices'
 import { Avatar, Button, InlineNotification, Modal, TextInput } from '../common'
 import { Tooltip } from 'react-tooltip'
+import { closeSideDrawer } from '../../lib/utils'
 
 export interface ConfigureKeysSectionProps extends ComponentPropsWithRef<'div'> {
   deviceId: any
@@ -255,6 +257,7 @@ export const ConfigureKeysSection = forwardRef<HTMLButtonElement, ConfigureKeysS
       setKeysTypeSelected(selectedType)
     }
 
+    // Dynamic row list of physical phone keys
     const renderButtons = () => {
       const filteredButtons = buttonsStatusObject?.filter((button: any) => {
         const buttonLabel = `${button?.id} - ${button?.label} (${button?.value})`.toLowerCase()
@@ -305,7 +308,7 @@ export const ConfigureKeysSection = forwardRef<HTMLButtonElement, ConfigureKeysS
               </div>
 
               {selectedRowIndex === index && (
-                <>
+                <div className='px-2'>
                   <div className='flex items-center mt-4'>
                     <span>{t('Devices.Key position')}</span>
                     <FontAwesomeIcon
@@ -353,15 +356,30 @@ export const ConfigureKeysSection = forwardRef<HTMLButtonElement, ConfigureKeysS
                     </select>
                   </div>
 
+                  {/* Insert name or number only if type equal to blf or speedCall */}
                   {(keysTypeSelected === 'blf' || keysTypeSelected === 'speedCall') && (
                     <>
                       <div className='mb-2'>
                         <span> {t('Devices.Name or number')}</span>
                       </div>
-                      <div className='mb-6'></div>
+                      <div className=''></div>
                     </>
                   )}
-                </>
+
+                  {/* Delete key button */}
+                  <div className='flex items-center mb-6'>
+                    <Button variant='ghost'>
+                      <FontAwesomeIcon
+                        icon={faTrash}
+                        className='h-4 w-4 mr-3 text-primary dark:text-primaryDark flex items-center tooltip-configure-key-position-information'
+                        aria-hidden='true'
+                      ></FontAwesomeIcon>
+                      <span className='text-primary dark:text-primaryDark text-sm font-medium leading-5'>
+                        {t('Common.Delete')}
+                      </span>
+                    </Button>
+                  </div>
+                </div>
               )}
               {/* Divider */}
               <div className='relative col-span-3'>
@@ -396,6 +414,7 @@ export const ConfigureKeysSection = forwardRef<HTMLButtonElement, ConfigureKeysS
     // Set key to all operators function
     const handleAssignAllKeys = async () => {}
 
+    // Modal with example of first two operators of operators list
     const renderDynamicRows = () => {
       return Object.keys(operators?.extensions)
         .slice(0, 2)
@@ -453,6 +472,13 @@ export const ConfigureKeysSection = forwardRef<HTMLButtonElement, ConfigureKeysS
         })
     }
 
+    //Extra row status used to add or change id for keys
+    const [isExtraRowActive, setIsExtraRowActive] = useState(false)
+
+    const activateDeactivateExtraRow = () => {
+      setIsExtraRowActive(!isExtraRowActive)
+    }
+
     return (
       <>
         <div className='flex items-center'>
@@ -478,24 +504,127 @@ export const ConfigureKeysSection = forwardRef<HTMLButtonElement, ConfigureKeysS
               )}
             </Droppable>
           </DragDropContext>
+          {isExtraRowActive && (
+            <>
+              <div className='bg-gray-100 grid items-center py-4 px-2 grid-cols-2'>
+                <div className='flex items-center'>
+                  <FontAwesomeIcon
+                    icon={faGripVertical}
+                    className='h-4 w-4 text-primary dark:text-primaryDark mr-2'
+                  />
+                  <span>{t('Devices.New key')}</span>
+                </div>
+                <div className='flex items-end justify-end'>
+                  <Button variant='ghost'>
+                    <FontAwesomeIcon
+                      icon={faChevronUp}
+                      className='h-4 w-4 text-primary dark:text-primaryDark cursor-pointer'
+                    />
+                  </Button>
+                </div>
+              </div>
+
+              <div className='px-4'>
+                <div className='flex items-center mt-4'>
+                  <span>{t('Devices.Key position')}</span>
+                  <FontAwesomeIcon
+                    icon={faCircleInfo}
+                    className='h-4 w-4 pl-2 text-primary dark:text-primaryDark flex items-center tooltip-configure-key-position-information'
+                    aria-hidden='true'
+                  />
+                  {/* Pin information tooltip */}
+                  <Tooltip anchorSelect='.tooltip-configure-key-position-information' place='right'>
+                    {t('Devices.Pin information tooltip') || ''}
+                  </Tooltip>
+                </div>
+                <div className='flex items-center'>
+                  <TextInput
+                    placeholder={t('Devices.Search') || ''}
+                    className='max-w-xl py-4'
+                    value={keyTextFilter}
+                    onChange={changeKeyTextFilter}
+                    ref={keyTextFilterRef}
+                    icon={keyTextFilter?.length ? faCircleXmark : undefined}
+                    onIconClick={() => clearKeyTextFilter()}
+                    trailingIcon={true}
+                  />
+                </div>
+                <div className='mb-2'>
+                  <span> {t('Devices.Type')}</span>
+                </div>
+                <div className='mb-6'>
+                  <select
+                    id='types'
+                    name='types'
+                    className='block w-full rounded-md py-2 pl-3 pr-10 text-base focus:outline-none sm:text-sm border-gray-300 focus:border-primary focus:ring-primary dark:border-gray-600 dark:focus:border-primary dark:focus:ring-primary dark:bg-gray-900'
+                    value={keysTypeSelected || ''}
+                    onChange={handleTypeChange}
+                  >
+                    {!keysTypeSelected && <option value=''>{t('Devices.Choose type')}</option>}
+                    {typesList.map((type) => (
+                      <option key={type?.value} value={type.value}>
+                        {type?.label}
+                      </option>
+                    ))}
+                  </select>
+                </div>
+
+                {(keysTypeSelected === 'blf' || keysTypeSelected === 'speedCall') && (
+                  <>
+                    <div className='mb-2'>
+                      <span> {t('Devices.Name or number')}</span>
+                    </div>
+                    <div className='mb-6'></div>
+                  </>
+                )}
+              </div>
+            </>
+          )}
         </div>
 
         <div className='flex justify-between pt-4'>
-          <Button
-            variant='white'
-            onClick={() => paginate(currentPage - 1)}
-            disabled={!isLeftButtonVisible}
-            className={!isLeftButtonVisible ? 'invisible' : ''}
-          >
-            <FontAwesomeIcon icon={faChevronLeft} className='h-4 w-4' />
+          <div className='flex justify-start'>
+            <Button variant='white' onClick={() => activateDeactivateExtraRow()}>
+              <span className='text-primary dark:text-primaryDark leading-5 text-sm font-medium'>
+                {t('Devices.Add key')}
+              </span>
+            </Button>
+          </div>
+          <div className='flex justify-end space-x-2'>
+            <Button
+              variant='white'
+              onClick={() => paginate(currentPage - 1)}
+              disabled={!isLeftButtonVisible}
+              className={!isLeftButtonVisible ? 'invisible' : ''}
+            >
+              <FontAwesomeIcon icon={faChevronLeft} className='h-4 w-4' />
+            </Button>
+            <Button
+              variant='white'
+              onClick={() => paginate(currentPage + 1)}
+              disabled={!isRightButtonVisible}
+              className={!isRightButtonVisible || !visibleFilter ? 'invisible' : ''}
+            >
+              <FontAwesomeIcon icon={faChevronRight} className='h-4 w-4' />
+            </Button>
+          </div>
+        </div>
+
+        {/* Divider  */}
+        <div className='relative flex col-span-3 my-6 w-full'>
+          <div className='absolute inset-x-0 bottom-0 flex items-center' aria-hidden='true'>
+            <div className='w-full border-t border-gray-300 dark:border-gray-600' />
+          </div>
+        </div>
+
+        <div className='flex justify-end'>
+          <Button variant='white' type='submit' onClick={closeSideDrawer} className='mb-4'>
+            <span className='text-primary dark:text-primaryDark leading-5 text-sm font-medium'>
+              {t('Common.Cancel')}
+            </span>
           </Button>
-          <Button
-            variant='white'
-            onClick={() => paginate(currentPage + 1)}
-            disabled={!isRightButtonVisible}
-            className={!isRightButtonVisible || !visibleFilter ? 'invisible' : ''}
-          >
-            <FontAwesomeIcon icon={faChevronRight} className='h-4 w-4' />
+          <Button variant='primary' type='submit' className='mb-4 ml-4'>
+            <span className='leading-5 text-sm font-medium'>{t('Common.Edit')}</span>
           </Button>
         </div>
 

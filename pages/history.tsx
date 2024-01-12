@@ -369,7 +369,7 @@ const History: NextPage = () => {
                       {t('History.Incoming answered')}
                     </span>
                     {/* Answered by voicemail */}
-                    {call.lastapp === 'VoiceMail' && (
+                    {call?.lastapp === 'VoiceMail' && (
                       <FontAwesomeIcon
                         icon={faVoicemail}
                         className='ml-2 h-4 w-4 text-green-600 dark:text-green-500 tooltip-user-internal-answered-voicemail'

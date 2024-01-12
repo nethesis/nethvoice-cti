@@ -221,7 +221,9 @@
     "Presence": "Presence",
     "Open user menu": "Open user menu",
     "Open sidebar": "Open sidebar",
-    "Main device": "Dispositivo principale"
+    "Main device": "Dispositivo principale",
+    "Voicemail": "Voicemail",
+    "Activate voicemail": "Attiva voicemail"
   },
   "OperatorDrawer": {
     "Book": "Prenota",
@@ -687,6 +689,8 @@
     "Speed call": "Chiamata rapida",
     "Do not disturb (DND)": "Do not disturb (DND)",
     "Toggle login/logout queue": "Alterna login/logout coda",
-    "Name or number": "Nome o numero"
+    "Name or number": "Nome o numero",
+    "Add key": "Aggiungi tasto",
+    "New key": "Nuovo tasto"
   }
 }
