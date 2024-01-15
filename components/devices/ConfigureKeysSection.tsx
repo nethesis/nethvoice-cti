@@ -29,6 +29,8 @@ import { getPhoneModelData, getPhysicalDeviceButtonConfiguration } from '../../l
 import { Avatar, Button, InlineNotification, Modal, TextInput } from '../common'
 import { Tooltip } from 'react-tooltip'
 import { closeSideDrawer } from '../../lib/utils'
+import ComboboxNumber from '../common/ComboboxNumber'
+import { DeviceSectionOperatorSearch } from './DeviceSectionOperatorSearch'
 
 export interface ConfigureKeysSectionProps extends ComponentPropsWithRef<'div'> {
   deviceId: any
@@ -144,32 +146,36 @@ export const ConfigureKeysSection = forwardRef<HTMLButtonElement, ConfigureKeysS
     useEffect(() => {
       if (!isEmpty(deviceButtonConfigurationInformation)) {
         // Extract information on keys
-        const buttonsStatus = []
-        for (let i = 1; i <= 65; i++) {
-          const typeKey = `linekey_type_${i}`
-          const valueKey = `linekey_value_${i}`
-          const labelKey = `linekey_label_${i}`
+        if (usableKeys) {
+          const buttonsStatus = []
+          for (let i = 1; i <= usableKeys; i++) {
+            const typeKey = `linekey_type_${i}`
+            const valueKey = `linekey_value_${i}`
+            const labelKey = `linekey_label_${i}`
 
-          // Check if the keys exist in the object
-          const typeValue = deviceButtonConfigurationInformation?.variables[typeKey] ?? ''
-          const valueValue = deviceButtonConfigurationInformation?.variables[valueKey] ?? ''
-          const labelValue = deviceButtonConfigurationInformation?.variables[labelKey] ?? ''
+            // Check if the keys exist in the object
+            const typeValue = deviceButtonConfigurationInformation?.variables[typeKey] ?? ''
+            const valueValue = deviceButtonConfigurationInformation?.variables[valueKey] ?? ''
+            const labelValue = deviceButtonConfigurationInformation?.variables[labelKey] ?? ''
 
-          const buttonInfo = {
-            id: i,
-            type: typeValue,
-            value: valueValue,
-            label: labelValue,
+            const buttonInfo = {
+              id: i,
+              type: typeValue,
+              value: valueValue,
+              label: labelValue,
+            }
+
+            buttonsStatus.push(buttonInfo)
           }
 
-          buttonsStatus.push(buttonInfo)
-        }
-
-        if (!isEmpty(buttonsStatus)) {
-          setButtonsStatusObject(buttonsStatus)
+          if (!isEmpty(buttonsStatus)) {
+            setButtonsStatusObject(buttonsStatus)
+          }
+        } else {
+          return
         }
       }
-    }, [deviceButtonConfigurationInformation])
+    }, [deviceButtonConfigurationInformation, usableKeys])
 
     const [currentPage, setCurrentPage] = useState(1)
     const itemsPerPage = 10
@@ -324,19 +330,12 @@ export const ConfigureKeysSection = forwardRef<HTMLButtonElement, ConfigureKeysS
                       {t('Devices.Pin information tooltip') || ''}
                     </Tooltip>
                   </div>
-                  <div className='flex items-center'>
-                    <TextInput
-                      placeholder={t('Devices.Search') || ''}
-                      className='max-w-xl py-4'
-                      value={keyTextFilter}
-                      onChange={changeKeyTextFilter}
-                      ref={keyTextFilterRef}
-                      icon={keyTextFilter?.length ? faCircleXmark : undefined}
-                      onIconClick={() => clearKeyTextFilter()}
-                      trailingIcon={true}
-                    />
-                  </div>
-                  <div className='mb-2'>
+                  <ComboboxNumber
+                    maxNumber={usableKeys}
+                    onSelect={() => {}}
+                    defaultValue={selectedRowIndex + 1}
+                  />
+                  <div className='mb-2 mt-4'>
                     <span> {t('Devices.Type')}</span>
                   </div>
                   <div className='mb-6'>
@@ -362,7 +361,9 @@ export const ConfigureKeysSection = forwardRef<HTMLButtonElement, ConfigureKeysS
                       <div className='mb-2'>
                         <span> {t('Devices.Name or number')}</span>
                       </div>
-                      <div className=''></div>
+                      <DeviceSectionOperatorSearch
+                        typeSelected={keysTypeSelected}
+                      ></DeviceSectionOperatorSearch>
                     </>
                   )}
 
@@ -504,6 +505,8 @@ export const ConfigureKeysSection = forwardRef<HTMLButtonElement, ConfigureKeysS
               )}
             </Droppable>
           </DragDropContext>
+
+          {/* Button for add new row */}
           {isExtraRowActive && (
             <>
               <div className='bg-gray-100 grid items-center py-4 px-2 grid-cols-2'>
@@ -537,18 +540,7 @@ export const ConfigureKeysSection = forwardRef<HTMLButtonElement, ConfigureKeysS
                     {t('Devices.Pin information tooltip') || ''}
                   </Tooltip>
                 </div>
-                <div className='flex items-center'>
-                  <TextInput
-                    placeholder={t('Devices.Search') || ''}
-                    className='max-w-xl py-4'
-                    value={keyTextFilter}
-                    onChange={changeKeyTextFilter}
-                    ref={keyTextFilterRef}
-                    icon={keyTextFilter?.length ? faCircleXmark : undefined}
-                    onIconClick={() => clearKeyTextFilter()}
-                    trailingIcon={true}
-                  />
-                </div>
+                <ComboboxNumber maxNumber={usableKeys} onSelect={() => {}} />
                 <div className='mb-2'>
                   <span> {t('Devices.Type')}</span>
                 </div>
@@ -574,7 +566,9 @@ export const ConfigureKeysSection = forwardRef<HTMLButtonElement, ConfigureKeysS
                     <div className='mb-2'>
                       <span> {t('Devices.Name or number')}</span>
                     </div>
-                    <div className='mb-6'></div>
+                    <DeviceSectionOperatorSearch
+                      typeSelected={keysTypeSelected}
+                    ></DeviceSectionOperatorSearch>
                   </>
                 )}
               </div>

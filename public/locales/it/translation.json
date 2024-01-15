@@ -691,6 +691,7 @@
     "Toggle login/logout queue": "Alterna login/logout coda",
     "Name or number": "Nome o numero",
     "Add key": "Aggiungi tasto",
-    "New key": "Nuovo tasto"
+    "New key": "Nuovo tasto",
+    "Search physical phone index placeholder message": "Scrivi o cerca un indice da 1 a {{maxNumber}}"
   }
 }

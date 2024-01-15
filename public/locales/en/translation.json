@@ -740,6 +740,7 @@
     "Toggle login/logout queue": "Toggle login/logout queue",
     "Name or number": "Name or number",
     "Add key": "Add key",
-    "New key": "New key"
+    "New key": "New key",
+    "Search physical phone index placeholder message": "Type or search index from 1 to {{maxNumber}}"
   }
 }
