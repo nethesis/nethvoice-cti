@@ -2,7 +2,12 @@ import { FC, useEffect, useMemo, useState } from 'react'
 import { t } from 'i18next'
 import { Combobox, Transition } from '@headlessui/react'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
-import { faMagnifyingGlass, faPhone, faSearch } from '@fortawesome/free-solid-svg-icons'
+import {
+  faChevronDown,
+  faMagnifyingGlass,
+  faPhone,
+  faSearch,
+} from '@fortawesome/free-solid-svg-icons'
 import { cloneDeep, debounce } from 'lodash'
 import { useSelector } from 'react-redux'
 import { RootState } from '../../store'
@@ -24,7 +29,10 @@ export const DeviceSectionOperatorSearch: FC<DeviceSectionOperatorSearchProps> =
 
   const operators: any = useSelector((state: RootState) => state.operators)
 
+  const [selectedInformationUser, setSelectedInformationUser] = useState<any>(null)
   const resultSelected = (result: any) => {
+    console.log('this is result', result)
+    setSelectedInformationUser(result?.name)
     // To DO - handle result selection
   }
 
@@ -137,41 +145,47 @@ export const DeviceSectionOperatorSearch: FC<DeviceSectionOperatorSearchProps> =
     }
   }, [debouncedChangeQuery])
 
-  return (
-    <div
-      id='globalSearch'
-      className='divide-gray-200 dark:bg-gray-900 dark:divide-gray-700 border-gray-300 pb-4'
-    >
-      <Combobox onChange={resultSelected} nullable>
-        {({ open }: any) => (
-          <>
-            <div className='relative flex items-center border-gray-300'>
-              <Combobox.Input
-                className='w-full border-gray-300 bg-transparent pr-4 focus:ring-0 sm:text-sm text-gray-800 placeholder-gray-400 dark:text-gray-100 dark:placeholder-gray-500'
-                placeholder='Search or compose...'
-                onChange={debouncedChangeQuery}
-              />
-            </div>
+  const [showUserList, setShowUserList] = useState(false)
 
-            <Transition
-              show={open}
-              enter='transition duration-100 ease-out'
-              enterFrom='transform scale-95 opacity-0'
-              enterTo='transform scale-100 opacity-100'
-              leave='transition duration-75 ease-out'
-              leaveFrom='transform scale-100 opacity-100'
-              leaveTo='transform scale-95 opacity-0'
-            >
-              {query?.length >= 1 && (
+  return (
+    <Combobox as='div' onChange={resultSelected} value={selectedInformationUser}>
+      {({ open }: any) => (
+        <>
+          <div className='relative flex items-center border-gray-300 mb-4'>
+            <Combobox.Input
+              className='w-full rounded-md border-0 bg-white py-1.5 pl-3 pr-12 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 focus:ring-2 focus:ring-inset focus:ring-emerald-600 sm:text-sm sm:leading-6'
+              placeholder={`${t('Devices.Type to search')}`}
+              onChange={debouncedChangeQuery}
+            />
+          </div>
+          <Combobox.Button className='absolute inset-y-0 right-0 flex items-center rounded-r-md px-2 focus:outline-none'>
+            <FontAwesomeIcon
+              icon={faChevronDown}
+              className='h-4 w-4 flex items-center tooltip-configure-key-position-information'
+              aria-hidden='true'
+            />
+          </Combobox.Button>
+
+          <Transition
+            show={open}
+            enter='transition duration-100 ease-out'
+            enterFrom='transform scale-95 opacity-0'
+            enterTo='transform scale-100 opacity-100'
+            leave='transition duration-75 ease-out'
+            leaveFrom='transform scale-100 opacity-100'
+            leaveTo='transform scale-95 opacity-0'
+          >
+            {query?.length > 0 && (
+              <>
                 <Combobox.Options
                   as='div'
                   static
                   hold
-                  className='flex divide-x border divide-gray-100 dark:divide-gray-800 dark:border-gray-700'
+                  className='mt-[-0.7rem] max-h-60 w-full rounded-md bg-white py-1 text-base shadow-lg ring-1 ring-black ring-opacity-5 focus:outline-none sm:text-sm'
                 >
                   <div
                     className={classNames(
-                      'max-h-96 min-w-0 flex-auto scroll-py-4 overflow-y-auto scrollbar-thin scrollbar-thumb-gray-400 dark:scrollbar-thumb-gray-400 scrollbar-thumb-rounded-full scrollbar-thumb-opacity-50 scrollbar-track-gray-200 dark:scrollbar-track-gray-900 scrollbar-track-rounded-full scrollbar-track-opacity-25',
+                      'max-h-96 min-w-0 flex-auto scroll-py-4 overflow-y-auto overflow-x-hidden scrollbar-thin scrollbar-thumb-gray-400 dark:scrollbar-thumb-gray-400 scrollbar-thumb-rounded-full scrollbar-thumb-opacity-50 scrollbar-track-gray-200 dark:scrollbar-track-gray-900 scrollbar-track-rounded-full scrollbar-track-opacity-25',
                     )}
                   >
                     <div className='-mx-2 text-sm text-gray-700 dark:text-gray-200'>
@@ -248,11 +262,11 @@ export const DeviceSectionOperatorSearch: FC<DeviceSectionOperatorSearchProps> =
                     </div>
                   </div>
                 </Combobox.Options>
-              )}
-            </Transition>
-          </>
-        )}
-      </Combobox>
-    </div>
+              </>
+            )}
+          </Transition>
+        </>
+      )}
+    </Combobox>
   )
 }

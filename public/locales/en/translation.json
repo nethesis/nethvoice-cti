@@ -741,6 +741,8 @@
     "Name or number": "Name or number",
     "Add key": "Add key",
     "New key": "New key",
-    "Search physical phone index placeholder message": "Type or search index from 1 to {{maxNumber}}"
+    "Search physical phone index placeholder message": "Type or search index from 1 to {{maxNumber}}",
+    "Search or compose": "Search or compose",
+    "Type to search": "Type to search"
   }
 }

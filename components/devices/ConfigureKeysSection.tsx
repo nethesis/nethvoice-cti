@@ -2,6 +2,7 @@
 // SPDX-License-Identifier: AGPL-3.0-or-later
 import {
   ComponentPropsWithRef,
+  Fragment,
   MutableRefObject,
   forwardRef,
   useEffect,
@@ -19,6 +20,7 @@ import {
   faArrowRight,
   faChevronUp,
   faTrash,
+  faCheck,
 } from '@fortawesome/free-solid-svg-icons'
 import { useSelector } from 'react-redux'
 import { RootState } from '../../store'
@@ -31,6 +33,8 @@ import { Tooltip } from 'react-tooltip'
 import { closeSideDrawer } from '../../lib/utils'
 import ComboboxNumber from '../common/ComboboxNumber'
 import { DeviceSectionOperatorSearch } from './DeviceSectionOperatorSearch'
+import { Listbox, Transition } from '@headlessui/react'
+import classNames from 'classnames'
 
 export interface ConfigureKeysSectionProps extends ComponentPropsWithRef<'div'> {
   deviceId: any
@@ -259,7 +263,7 @@ export const ConfigureKeysSection = forwardRef<HTMLButtonElement, ConfigureKeysS
     ]
 
     const handleTypeChange = (event: any) => {
-      const selectedType = event.target.value
+      const selectedType = event
       setKeysTypeSelected(selectedType)
     }
 
@@ -339,20 +343,77 @@ export const ConfigureKeysSection = forwardRef<HTMLButtonElement, ConfigureKeysS
                     <span> {t('Devices.Type')}</span>
                   </div>
                   <div className='mb-6'>
-                    <select
-                      id='types'
-                      name='types'
-                      className='block w-full rounded-md py-2 pl-3 pr-10 text-base focus:outline-none sm:text-sm border-gray-300 focus:border-primary focus:ring-primary dark:border-gray-600 dark:focus:border-primary dark:focus:ring-primary dark:bg-gray-900'
-                      value={keysTypeSelected || ''}
-                      onChange={handleTypeChange}
-                    >
-                      {!keysTypeSelected && <option value=''>{t('Devices.Choose type')}</option>}
-                      {typesList.map((type) => (
-                        <option key={type?.value} value={type.value}>
-                          {type?.label}
-                        </option>
-                      ))}
-                    </select>
+                    <Listbox value={keysTypeSelected || ''} onChange={handleTypeChange}>
+                      {({ open }) => (
+                        <>
+                          <div className='relative mt-2'>
+                            <Listbox.Button className='relative w-full cursor-default rounded-md bg-white py-1.5 pl-3 pr-10 text-left text-gray-900 dark:text-gray-200 shadow-sm ring-1 ring-inset ring-gray-300 focus:outline-none focus:ring-2 focus:ring-emerald-600 sm:text-sm sm:leading-6'>
+                              <span className='block truncate'>
+                                {keysTypeSelected
+                                  ? typesList.find((type) => type.value === keysTypeSelected)?.label
+                                  : t('Devices.Choose type')}
+                              </span>
+                              <span className='pointer-events-none absolute inset-y-0 right-0 flex items-center pr-2'>
+                                <FontAwesomeIcon
+                                  icon={faChevronDown}
+                                  className='h-4 w-4 mr-1 text-primary dark:text-primaryDark cursor-pointer'
+                                />
+                              </span>
+                            </Listbox.Button>
+
+                            <Transition
+                              show={open}
+                              as={Fragment}
+                              leave='transition ease-in duration-100'
+                              leaveFrom='opacity-100'
+                              leaveTo='opacity-0'
+                            >
+                              <Listbox.Options className='absolute z-10 mt-1 max-h-60 w-full overflow-auto rounded-md bg-white py-1 text-base shadow-lg ring-1 ring-black ring-opacity-5 focus:outline-none sm:text-sm'>
+                                {typesList.map((type) => (
+                                  <Listbox.Option
+                                    key={type.value}
+                                    className={({ active }) =>
+                                      classNames(
+                                        active ? 'bg-emerald-600 text-white' : 'text-gray-900 dark:text-gray-200',
+                                        'relative cursor-default select-none py-2 pl-3 pr-9',
+                                      )
+                                    }
+                                    value={type.value}
+                                  >
+                                    {({ selected, active }) => (
+                                      <>
+                                        <span
+                                          className={classNames(
+                                            selected ? 'font-semibold' : 'font-normal',
+                                            'block truncate',
+                                          )}
+                                        >
+                                          {type.label}
+                                        </span>
+
+                                        {selected ? (
+                                          <span
+                                            className={classNames(
+                                              active ? 'text-white' : 'text-emerald-600',
+                                              'absolute inset-y-0 right-0 flex items-center pr-4',
+                                            )}
+                                          >
+                                            <FontAwesomeIcon
+                                              icon={faCheck}
+                                              className='h-4 w-4 text-primary dark:text-primaryDark cursor-pointer'
+                                            />
+                                          </span>
+                                        ) : null}
+                                      </>
+                                    )}
+                                  </Listbox.Option>
+                                ))}
+                              </Listbox.Options>
+                            </Transition>
+                          </div>
+                        </>
+                      )}
+                    </Listbox>
                   </div>
 
                   {/* Insert name or number only if type equal to blf or speedCall */}
