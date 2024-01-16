@@ -1,18 +1,12 @@
 import { FC, useEffect, useMemo, useState } from 'react'
 import { t } from 'i18next'
-import { Combobox, Transition } from '@headlessui/react'
+import { Combobox } from '@headlessui/react'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
-import {
-  faChevronDown,
-  faMagnifyingGlass,
-  faPhone,
-  faSearch,
-} from '@fortawesome/free-solid-svg-icons'
+import { faCircleUser, faHeadset } from '@fortawesome/free-solid-svg-icons'
 import { cloneDeep, debounce } from 'lodash'
 import { useSelector } from 'react-redux'
 import { RootState } from '../../store'
 import classNames from 'classnames'
-import { EmptyState } from '../common'
 import { sortByProperty } from '../../lib/utils'
 import { getPhonebook, mapPhonebookResponse } from '../../lib/phonebook'
 
@@ -29,12 +23,8 @@ export const DeviceSectionOperatorSearch: FC<DeviceSectionOperatorSearchProps> =
 
   const operators: any = useSelector((state: RootState) => state.operators)
 
-  const [selectedInformationUser, setSelectedInformationUser] = useState<any>(null)
-  const resultSelected = (result: any) => {
-    console.log('this is result', result)
-    setSelectedInformationUser(result?.name)
-    // To DO - handle result selection
-  }
+  const [selectedInformationUser, setSelectedInformationUser] = useState<any>([])
+  const [selectedNumber, setSelectedNumber] = useState<any>(null)
 
   const [phonebookError, setPhonebookError] = useState('')
 
@@ -147,126 +137,74 @@ export const DeviceSectionOperatorSearch: FC<DeviceSectionOperatorSearchProps> =
 
   const [showUserList, setShowUserList] = useState(false)
 
-  return (
-    <Combobox as='div' onChange={resultSelected} value={selectedInformationUser}>
-      {({ open }: any) => (
-        <>
-          <div className='relative flex items-center border-gray-300 mb-4'>
-            <Combobox.Input
-              className='w-full rounded-md border-0 bg-white py-1.5 pl-3 pr-12 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 focus:ring-2 focus:ring-inset focus:ring-emerald-600 sm:text-sm sm:leading-6'
-              placeholder={`${t('Devices.Type to search')}`}
-              onChange={debouncedChangeQuery}
-            />
-          </div>
-          <Combobox.Button className='absolute inset-y-0 right-0 flex items-center rounded-r-md px-2 focus:outline-none'>
-            <FontAwesomeIcon
-              icon={faChevronDown}
-              className='h-4 w-4 flex items-center tooltip-configure-key-position-information'
-              aria-hidden='true'
-            />
-          </Combobox.Button>
+  const resultSelected = (result: any) => {
+    const phoneProps = ['extension', 'cellphone', 'homephone', 'workphone']
+    if (result?.name) {
+      let selectedName = result?.name
+      setSelectedInformationUser(selectedName)
+    }
 
-          <Transition
-            show={open}
-            enter='transition duration-100 ease-out'
-            enterFrom='transform scale-95 opacity-0'
-            enterTo='transform scale-100 opacity-100'
-            leave='transition duration-75 ease-out'
-            leaveFrom='transform scale-100 opacity-100'
-            leaveTo='transform scale-95 opacity-0'
-          >
-            {query?.length > 0 && (
-              <>
-                <Combobox.Options
-                  as='div'
-                  static
-                  hold
-                  className='mt-[-0.7rem] max-h-60 w-full rounded-md bg-white py-1 text-base shadow-lg ring-1 ring-black ring-opacity-5 focus:outline-none sm:text-sm'
+    if (result) {
+      const operatorId =
+        result?.resultType === 'operator' ? result?.endpoints?.mainextension[0]?.id : ''
+
+      let selectNumber =
+        operatorId || phoneProps.map((prop) => result[prop]).find((value) => value) || ''
+      setSelectedNumber(selectNumber)
+      if (selectNumber) {
+        setSelectedInformationUser(selectNumber)
+      }
+    }
+
+    // const fullInformation = `${selectedName}(${selectNumber.toString()})`
+
+    // To DO - handle result selection
+  }
+
+  return (
+    <Combobox as='div' value={selectedInformationUser} onChange={setSelectedInformationUser}>
+      <div className='relative mt-2 mb-4'>
+        <Combobox.Input
+          className='w-full rounded-md border-0 bg-white py-1.5 pl-3 pr-12 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 focus:ring-2 focus:ring-inset focus:ring-emerald-600 sm:text-sm sm:leading-6'
+          onChange={debouncedChangeQuery}
+          displayValue={(informationUser) => selectedInformationUser?.name}
+        />
+
+        {query?.length > 0 && (
+          <Combobox.Options className='absolute z-10 mt-1 max-h-64 w-full rounded-md bg-white py-1 text-base shadow-lg ring-1 ring-black ring-opacity-5 focus:outline-none sm:text-sm max-h-42 '>
+            <div
+              className={classNames(
+                'max-h-64 min-w-0 flex-auto scroll-py-4 overflow-y-auto overflow-x-hidden scrollbar-thin scrollbar-thumb-gray-400 dark:scrollbar-thumb-gray-400 scrollbar-thumb-rounded-full scrollbar-thumb-opacity-50 scrollbar-track-gray-200 dark:scrollbar-track-gray-900 scrollbar-track-rounded-full scrollbar-track-opacity-25',
+              )}
+            >
+              {results.map((result: any, index: number) => (
+                <Combobox.Option
+                  key={'result-' + index}
+                  value={result}
+                  className={({ active }) =>
+                    classNames(
+                      'flex select-none items-center rounded-md p-2 h-14 cursor-pointer',
+                      active && 'bg-gray-100 text-gray-900 dark:bg-gray-800 dark:text-gray-100',
+                    )
+                  }
                 >
-                  <div
-                    className={classNames(
-                      'max-h-96 min-w-0 flex-auto scroll-py-4 overflow-y-auto overflow-x-hidden scrollbar-thin scrollbar-thumb-gray-400 dark:scrollbar-thumb-gray-400 scrollbar-thumb-rounded-full scrollbar-thumb-opacity-50 scrollbar-track-gray-200 dark:scrollbar-track-gray-900 scrollbar-track-rounded-full scrollbar-track-opacity-25',
-                    )}
-                  >
-                    <div className='-mx-2 text-sm text-gray-700 dark:text-gray-200'>
-                      {/* skeleton */}
-                      {!isLoaded &&
-                        Array.from(Array(4)).map((e, index) => (
-                          <Combobox.Option
-                            as='div'
-                            key={index}
-                            value={index}
-                            className={({ active: any }) =>
-                              classNames(
-                                'flex cursor-default select-none items-center rounded-md p-2 h-14',
-                              )
-                            }
-                          >
-                            <div className='animate-pulse rounded-full h-8 w-8 bg-gray-300 dark:bg-gray-600'></div>
-                            <div className='ml-2 animate-pulse h-3 rounded w-[40%] bg-gray-300 dark:bg-gray-600'></div>
-                          </Combobox.Option>
-                        ))}
-                      {/* no search results */}
-                      {isLoaded && !results.length && query?.length > 2 && (
-                        <Combobox.Option
-                          as='div'
-                          value={'no-results'}
-                          className={({ active }) =>
-                            classNames(
-                              'flex justify-center cursor-default select-none items-center rounded-md p-2',
-                            )
-                          }
-                        >
-                          <EmptyState
-                            title='No results'
-                            description='Try changing your search query'
-                            icon={
-                              <FontAwesomeIcon
-                                icon={faSearch}
-                                className='mx-auto h-14 w-14'
-                                aria-hidden='true'
-                              />
-                            }
-                          />
-                        </Combobox.Option>
-                      )}
-                      {/* results */}
-                      {isLoaded &&
-                        !!results?.length &&
-                        results.map((result: any, index: number) => (
-                          <Combobox.Option
-                            as='div'
-                            key={'result-' + index}
-                            value={result}
-                            className={({ active }) =>
-                              classNames(
-                                'flex select-none items-center rounded-md p-2 h-14 cursor-pointer',
-                                active &&
-                                  'bg-gray-100 text-gray-900 dark:bg-gray-800 dark:text-gray-100',
-                              )
-                            }
-                          >
-                            {({ active }) => (
-                              <>
-                                <div className='w-10 text-center'>
-                                  <FontAwesomeIcon
-                                    icon={faPhone}
-                                    className='h-4 w-4 text-gray-500 dark:text-gray-400'
-                                  />
-                                </div>
-                                <span className='ml-2 flex-auto truncate'>{result?.name}</span>
-                              </>
-                            )}
-                          </Combobox.Option>
-                        ))}
-                    </div>
-                  </div>
-                </Combobox.Options>
-              </>
-            )}
-          </Transition>
-        </>
-      )}
+                  {({ active, selected }) => (
+                    <>
+                      <div className='w-10 text-center'>
+                        <FontAwesomeIcon
+                          icon={result?.resultType === 'operator' ? faHeadset : faCircleUser}
+                          className='h-4 w-4 text-gray-500 dark:text-gray-400'
+                        />
+                      </div>
+                      <span className='ml-2 flex-auto truncate'>{result?.name}</span>
+                    </>
+                  )}
+                </Combobox.Option>
+              ))}
+            </div>
+          </Combobox.Options>
+        )}
+      </div>
     </Combobox>
   )
 }

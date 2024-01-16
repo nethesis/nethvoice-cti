@@ -28,13 +28,14 @@ import { useTranslation } from 'react-i18next'
 import { DragDropContext, Draggable, Droppable } from 'react-beautiful-dnd'
 import { isEmpty } from 'lodash'
 import { getPhoneModelData, getPhysicalDeviceButtonConfiguration } from '../../lib/devices'
-import { Avatar, Button, InlineNotification, Modal, TextInput } from '../common'
+import { Avatar, Button, Modal, TextInput } from '../common'
 import { Tooltip } from 'react-tooltip'
 import { closeSideDrawer } from '../../lib/utils'
 import ComboboxNumber from '../common/ComboboxNumber'
 import { DeviceSectionOperatorSearch } from './DeviceSectionOperatorSearch'
 import { Listbox, Transition } from '@headlessui/react'
 import classNames from 'classnames'
+import { ExtraRowKey } from './ExtraRowKey'
 
 export interface ConfigureKeysSectionProps extends ComponentPropsWithRef<'div'> {
   deviceId: any
@@ -374,7 +375,9 @@ export const ConfigureKeysSection = forwardRef<HTMLButtonElement, ConfigureKeysS
                                     key={type.value}
                                     className={({ active }) =>
                                       classNames(
-                                        active ? 'bg-emerald-600 text-white' : 'text-gray-900 dark:text-gray-200',
+                                        active
+                                          ? 'bg-emerald-600 text-white'
+                                          : 'text-gray-900 dark:text-gray-200',
                                         'relative cursor-default select-none py-2 pl-3 pr-9',
                                       )
                                     }
@@ -602,36 +605,11 @@ export const ConfigureKeysSection = forwardRef<HTMLButtonElement, ConfigureKeysS
                   </Tooltip>
                 </div>
                 <ComboboxNumber maxNumber={usableKeys} onSelect={() => {}} />
+
                 <div className='mb-2'>
                   <span> {t('Devices.Type')}</span>
+                  <ExtraRowKey></ExtraRowKey>
                 </div>
-                <div className='mb-6'>
-                  <select
-                    id='types'
-                    name='types'
-                    className='block w-full rounded-md py-2 pl-3 pr-10 text-base focus:outline-none sm:text-sm border-gray-300 focus:border-primary focus:ring-primary dark:border-gray-600 dark:focus:border-primary dark:focus:ring-primary dark:bg-gray-900'
-                    value={keysTypeSelected || ''}
-                    onChange={handleTypeChange}
-                  >
-                    {!keysTypeSelected && <option value=''>{t('Devices.Choose type')}</option>}
-                    {typesList.map((type) => (
-                      <option key={type?.value} value={type.value}>
-                        {type?.label}
-                      </option>
-                    ))}
-                  </select>
-                </div>
-
-                {(keysTypeSelected === 'blf' || keysTypeSelected === 'speedCall') && (
-                  <>
-                    <div className='mb-2'>
-                      <span> {t('Devices.Name or number')}</span>
-                    </div>
-                    <DeviceSectionOperatorSearch
-                      typeSelected={keysTypeSelected}
-                    ></DeviceSectionOperatorSearch>
-                  </>
-                )}
               </div>
             </>
           )}
