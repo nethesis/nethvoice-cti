@@ -10,7 +10,7 @@ function classNames(...classes: string[]) {
 
 interface ComboboxNumberProps {
   maxNumber: number
-  onSelect: (selectedNumber: any) => void
+  onSelect: (selectedNumber: number) => void
   defaultValue?: number
 }
 
@@ -33,12 +33,16 @@ export default function ComboboxNumber({ maxNumber, onSelect, defaultValue }: Co
           return number.toString().toLowerCase().includes(query.toLowerCase())
         })
 
+  const test = (value: any) => {
+    setSelectedNumber(value as number)
+    onSelect(value as number)
+  }
   return (
     <Combobox
       as='div'
       value={selectedNumber}
-      onChange={(value) => {
-        setSelectedNumber(value as number)
+      onChange={(value: any) => {
+        test(value)
         onSelect(value)
       }}
     >

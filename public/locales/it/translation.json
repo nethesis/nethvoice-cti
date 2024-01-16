@@ -693,6 +693,7 @@
     "Add key": "Aggiungi tasto",
     "New key": "Nuovo tasto",
     "Search physical phone index placeholder message": "Scrivi o cerca un indice da 1 a {{maxNumber}}",
+    "Search physical phone draggable row index placeholder message": "Scrivi o cerca un indice da 1 a {{usableKeys}}",
     "Search or compose": "Cerca o componi",
     "Type to search": "Digita per cercare"
   }
