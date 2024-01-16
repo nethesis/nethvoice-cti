@@ -268,6 +268,10 @@ export const ConfigureKeysSection = forwardRef<HTMLButtonElement, ConfigureKeysS
       setKeysTypeSelected(selectedType)
     }
 
+    const updateExtraRowVisbilityStatus = (status: boolean) => {
+      setIsExtraRowActive(status)
+    }
+
     // Dynamic row list of physical phone keys
     const renderButtons = () => {
       const filteredButtons = buttonsStatusObject?.filter((button: any) => {
@@ -572,57 +576,24 @@ export const ConfigureKeysSection = forwardRef<HTMLButtonElement, ConfigureKeysS
 
           {/* Button for add new row */}
           {isExtraRowActive && (
-            <>
-              <div className='bg-gray-100 grid items-center py-4 px-2 grid-cols-2'>
-                <div className='flex items-center'>
-                  <FontAwesomeIcon
-                    icon={faGripVertical}
-                    className='h-4 w-4 text-primary dark:text-primaryDark mr-2'
-                  />
-                  <span>{t('Devices.New key')}</span>
-                </div>
-                <div className='flex items-end justify-end'>
-                  <Button variant='ghost'>
-                    <FontAwesomeIcon
-                      icon={faChevronUp}
-                      className='h-4 w-4 text-primary dark:text-primaryDark cursor-pointer'
-                    />
-                  </Button>
-                </div>
-              </div>
-
-              <div className='px-4'>
-                <div className='flex items-center mt-4'>
-                  <span>{t('Devices.Key position')}</span>
-                  <FontAwesomeIcon
-                    icon={faCircleInfo}
-                    className='h-4 w-4 pl-2 text-primary dark:text-primaryDark flex items-center tooltip-configure-key-position-information'
-                    aria-hidden='true'
-                  />
-                  {/* Pin information tooltip */}
-                  <Tooltip anchorSelect='.tooltip-configure-key-position-information' place='right'>
-                    {t('Devices.Pin information tooltip') || ''}
-                  </Tooltip>
-                </div>
-                <ComboboxNumber maxNumber={usableKeys} onSelect={() => {}} />
-
-                <div className='mb-2'>
-                  <span> {t('Devices.Type')}</span>
-                  <ExtraRowKey></ExtraRowKey>
-                </div>
-              </div>
-            </>
+            <ExtraRowKey
+              usableKeys={usableKeys}
+              updateExtraRowVisbility={updateExtraRowVisbilityStatus}
+            ></ExtraRowKey>
           )}
         </div>
 
         <div className='flex justify-between pt-4'>
-          <div className='flex justify-start'>
-            <Button variant='white' onClick={() => activateDeactivateExtraRow()}>
-              <span className='text-primary dark:text-primaryDark leading-5 text-sm font-medium'>
-                {t('Devices.Add key')}
-              </span>
-            </Button>
-          </div>
+          {!isExtraRowActive && (
+            <div className='flex justify-start'>
+              <Button variant='white' onClick={() => activateDeactivateExtraRow()}>
+                <span className='text-primary dark:text-primaryDark leading-5 text-sm font-medium'>
+                  {t('Devices.Add key')}
+                </span>
+              </Button>
+            </div>
+          )}
+
           <div className='flex justify-end space-x-2'>
             <Button
               variant='white'
