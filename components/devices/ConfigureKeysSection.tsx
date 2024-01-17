@@ -233,6 +233,12 @@ export const ConfigureKeysSection = forwardRef<HTMLButtonElement, ConfigureKeysS
       setVisibleFilter(status)
     }
 
+    const [newButtonData, setNewButtonData] = useState(null);
+
+    const handleAddNewButton = (newButton:any) => {
+      setNewButtonData(newButton);
+    };
+
     return (
       <>
         <DraggableRows
@@ -242,12 +248,14 @@ export const ConfigureKeysSection = forwardRef<HTMLButtonElement, ConfigureKeysS
           itemsPerPage={itemsPerPage}
           onSelectFilteredButtons={handleSelectFilteredButtons}
           onVisibilityPagination={handleVisibilityPagination}
+          newButtonData={newButtonData}
         ></DraggableRows>
         {/* Button for add new row */}
         {isExtraRowActive && (
           <ExtraRowKey
             usableKeys={usableKeys}
             updateExtraRowVisbility={updateExtraRowVisbilityStatus}
+            onAddNewButton={handleAddNewButton}
           ></ExtraRowKey>
         )}
 

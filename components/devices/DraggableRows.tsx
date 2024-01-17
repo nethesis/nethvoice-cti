@@ -29,6 +29,7 @@ interface DraggableRowsProps {
   itemsPerPage: number
   onSelectFilteredButtons: (filteredButtons: any) => void
   onVisibilityPagination: (visibility: any) => void
+  newButtonData: any
 }
 
 export default function DraggableRows({
@@ -38,6 +39,7 @@ export default function DraggableRows({
   itemsPerPage,
   onSelectFilteredButtons,
   onVisibilityPagination,
+  newButtonData,
 }: DraggableRowsProps) {
   const [buttonsStatusObject, setButtonsStatusObject] = useState<any>([])
 
@@ -171,6 +173,23 @@ export default function DraggableRows({
     setFilteredButtons(updatedButtons)
     setButtonsStatusObject(updatedButtons)
   }
+
+  useEffect(() => {
+    if (newButtonData) {
+      // Find the index of the row to update with same id
+      const existingRowIndex = buttonsStatusObject.findIndex(
+        (button: any) => button.id === newButtonData.id,
+      )
+
+      if (existingRowIndex !== -1) {
+        //
+        const updatedButtons = [...buttonsStatusObject]
+        updatedButtons[existingRowIndex] = newButtonData
+        setButtonsStatusObject(updatedButtons)
+      }
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [newButtonData])
 
   const updateSelectedTypeKey = (newTypeKey: string) => {
     setKeysTypeSelected(newTypeKey)

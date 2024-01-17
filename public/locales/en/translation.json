@@ -744,6 +744,9 @@
     "Search physical phone index placeholder message": "Type or search index from 1 to {{maxNumber}}",
     "Search physical phone draggable row index placeholder message": "Type or search index from 1 to {{usableKeys}}",
     "Search or compose": "Search or compose",
-    "Type to search": "Type to search"
+    "Type to search": "Type to search",
+    "Fill in all the fields to continue": "Fill in all the fields to continue",
+    "Index not allowed": "Index not allowed",
+    "Index error message": "Insert index from 1 to {{usableKeys}}"
   }
 }
