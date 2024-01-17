@@ -14,7 +14,7 @@ import { DeviceSectionOperatorSearch } from './DeviceSectionOperatorSearch'
 import { DragDropContext, Draggable, Droppable } from 'react-beautiful-dnd'
 import { KeyTypeSelect } from './KeyTypeSelect'
 import { Tooltip } from 'react-tooltip'
-import { isEmpty } from 'lodash'
+import { filter, isEmpty } from 'lodash'
 import { Button, TextInput } from '../common'
 import { Combobox } from '@headlessui/react'
 
@@ -38,8 +38,7 @@ export default function DraggableRows({
   itemsPerPage,
   onSelectFilteredButtons,
   onVisibilityPagination,
-}: // updateSelectedRowIndex,
-DraggableRowsProps) {
+}: DraggableRowsProps) {
   const [buttonsStatusObject, setButtonsStatusObject] = useState<any>([])
 
   const [filteredButtons, setFilteredButtons] = useState([])
@@ -109,6 +108,7 @@ DraggableRowsProps) {
       setVisibleFilter(true)
       onVisibilityPagination(true)
     }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [buttonsStatusObject, textFilter])
 
   const [selectedRowIndex, setSelectedRowIndex] = useState<number | null>(null)
@@ -117,9 +117,60 @@ DraggableRowsProps) {
     setSelectedRowIndex(newIndex)
   }
 
-  const confirmEditRow = (rowData: any) => {}
+  const [editedRowIndex, setEditedRowIndex] = useState<number | null>(null)
 
-  const deleteRow = (rowData: any) => {}
+  const [isUserEditingIndex, setIsUserEditingIndex] = useState(false)
+
+  const confirmEditRow = (rowData: any) => {
+    if (editedRowIndex !== null) {
+      const targetIndex = rowData.id - 1
+
+      if (editedRowIndex !== targetIndex) {
+        const updatedButtons: any = [...filteredButtons]
+
+        // Save selected row data before swapping
+        const selectedRow: any = { ...updatedButtons[editedRowIndex] }
+
+        // Swap rows
+        updatedButtons[editedRowIndex] = {
+          ...updatedButtons[targetIndex],
+          id: editedRowIndex + 1,
+          type: keysTypeSelected,
+          label: 'test4',
+        }
+
+        updatedButtons[targetIndex] = {
+          ...selectedRow,
+          id: targetIndex + 1,
+        }
+
+        // Update status with new index
+        setFilteredButtons(updatedButtons)
+        setButtonsStatusObject(updatedButtons)
+      }
+    }
+  }
+
+  const deleteRow = (rowData: any) => {
+    const targetIndex = rowData.id - 1
+
+    const updatedButtons: any = [...filteredButtons]
+
+    // Remove row data
+    updatedButtons.splice(targetIndex, 1)
+
+    // Update index after delete
+    for (let i = targetIndex; i < updatedButtons.length; i++) {
+      updatedButtons[i] = {
+        ...updatedButtons[i],
+        id: i + 1,
+      }
+    }
+
+    // Update status
+    setFilteredButtons(updatedButtons)
+    setButtonsStatusObject(updatedButtons)
+  }
 
   const updateSelectedTypeKey = (newTypeKey: string) => {
     setKeysTypeSelected(newTypeKey)
@@ -132,9 +183,7 @@ DraggableRowsProps) {
   }
 
   const [query, setQuery] = useState('')
-  const [selectedNumber, setSelectedNumber] = useState<number | null>(null)
-
-  const [editedRowIndex, setEditedRowIndex] = useState<number | null>(null)
+  // const [selectedNumber, setSelectedNumber] = useState<number | null>(null)
 
   const numbers = Array.from({ length: usableKeys }, (_, index) => index + 1)
 
@@ -219,12 +268,6 @@ DraggableRowsProps) {
                     {t('Devices.Pin information tooltip') || ''}
                   </Tooltip>
                 </div>
-                {/* <ComboboxNumber
-                  maxNumber={usableKeys}
-                  onSelect={(selectedNumber) => setEditedRowIndex(selectedNumber)}
-                  defaultValue={selectedRowIndex + 1}
-                  // updateSelectedRowIndex={updateSelectedRowIndex}
-                /> */}
                 <Combobox
                   as='div'
                   value={editedRowIndex}
