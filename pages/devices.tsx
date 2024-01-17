@@ -20,6 +20,7 @@ import { openShowEditPhysicalPhone, setMainDevice } from '../lib/devices'
 import { Badge, Dropdown } from '../components/common'
 import { useDispatch } from 'react-redux'
 import { Dispatch } from '../store'
+import { eventDispatch } from '../lib/hooks/eventDispatch'
 
 const Devices: NextPage = () => {
   const { t } = useTranslation()
@@ -42,25 +43,34 @@ const Devices: NextPage = () => {
     }
   }, [profile?.endpoints])
 
-  const setMainDeviceMenu = (deviceId: any) => (
-    <Dropdown.Item onClick={() => setSelectedAsMainDevice(deviceId)} variantTop={true}>
+  const setMainDeviceMenu = (deviceId: any, type: string) => (
+    <Dropdown.Item onClick={() => setSelectedAsMainDevice(deviceId, type)} variantTop={true}>
       {t('Devices.Set as main device')}
     </Dropdown.Item>
   )
 
-  const setSelectedAsMainDevice = async (deviceId: string) => {
+  const setSelectedAsMainDevice = async (deviceId: string, devideType: string) => {
     let deviceIdInfo: any = {}
     if (deviceId) {
       deviceIdInfo.id = deviceId
       try {
         await setMainDevice(deviceIdInfo)
         dispatch.user.updateDefaultDevice(deviceIdInfo)
+        if (devideType !== '' && devideType === 'physical') {
+          eventDispatch('phone-island-janus-detach', {})
+          eventDispatch('phone-island-janus-destroy', {})
+        } else {
+          eventDispatch('phone-island-janus-create', {})
+          eventDispatch('phone-island-janus-attach', {})
+        }
       } catch (err) {
         console.log(err)
       }
     }
   }
 
+  console.log('this is phone', profile)
+  console.log('what', operators?.extensions[webrtcData[0]?.id])
   return (
     <>
       <section aria-labelledby='clear-cache-heading'>
@@ -96,11 +106,12 @@ const Devices: NextPage = () => {
                             {t('Devices.Web phone')}
                           </td>
                           <td className='whitespace-nowrap pl-[3.8rem] py-4 text-sm text-gray-500 sm:pl-[2.8rem]'>
-                            {operators?.extensions[webrtcData[0]?.id]?.status === 'online' ? (
+                            {operators?.extensions[webrtcData[0]?.id]?.exten ===
+                            profile?.default_device?.id ? (
                               <>
                                 <FontAwesomeIcon
                                   icon={faCircleCheck}
-                                  className='mr-2 h-4 w-4 text-green-700'
+                                  className='mr-2 ml-[2rem] h-4 w-4 text-green-700'
                                 />
                                 {t('Devices.Online')}
                               </>
@@ -108,7 +119,7 @@ const Devices: NextPage = () => {
                               <>
                                 <FontAwesomeIcon
                                   icon={faCircleXmark}
-                                  className='mr-2 h-4 w-4 text-gray-700'
+                                  className='mr-2 ml-[2.1rem] h-4 w-4 text-gray-700'
                                 />
                                 {t('Devices.Offline')}
                               </>
@@ -128,10 +139,13 @@ const Devices: NextPage = () => {
                             {t('Devices.Edit')}
                           </td>
                           <td className='relative whitespace-nowrap py-4 pr-4 text-right text-sm font-medium sm:pr-6 cursor-pointer'>
-                            <Dropdown items={setMainDeviceMenu(webrtcData[0]?.id)} position='top'>
+                            <Dropdown
+                              items={setMainDeviceMenu(webrtcData[0]?.id, 'webrtc')}
+                              position='top'
+                            >
                               <FontAwesomeIcon
                                 icon={faEllipsisVertical}
-                                className='h-4 w-4 text-primary dark:text-primaryDark'
+                                className='h-4 w-4 ml-[0.7rem] text-primary dark:text-primaryDark'
                               />
                             </Dropdown>
                           </td>
@@ -150,7 +164,12 @@ const Devices: NextPage = () => {
                   icon={faOfficePhone}
                   className='h-4 w-4 flex justify-center text-gray-700 dark:text-gray-500'
                 />
-                <span>{t('Devices.Landline phone')}</span>
+                {/* Check if physical is more than one   */}
+                <span>
+                  {phoneData.lengtht > 1
+                    ? t('Devices.Physical phones')
+                    : t('Devices.Physical phone')}
+                </span>
               </div>
             </div>
 
@@ -194,7 +213,7 @@ const Devices: NextPage = () => {
                       </thead>
                       <tbody className='divide-y divide-gray-200 bg-white'>
                         {phoneData.map((phone: any) => (
-                          <tr key={phone.id} className=''>
+                          <tr key={phone?.id} className=''>
                             <td className='whitespace-nowrap py-4 pl-4 pr-3 text-sm font-medium text-gray-900 sm:pl-6 max-w-[3rem] overflow-hidden overflow-ellipsis'>
                               {phone?.description}
                             </td>
@@ -238,7 +257,10 @@ const Devices: NextPage = () => {
                               {t('Devices.Edit')}
                             </td>
                             <td className='relative whitespace-nowrap py-4 pl-3 pr-4 text-right text-sm font-medium sm:pr-6 cursor-pointer'>
-                              <Dropdown items={setMainDeviceMenu(phone?.id)} position='top'>
+                              <Dropdown
+                                items={setMainDeviceMenu(phone?.id, 'physical')}
+                                position='top'
+                              >
                                 <FontAwesomeIcon
                                   icon={faEllipsisVertical}
                                   className='h-4 w-4 text-primary dark:text-primaryDark'
