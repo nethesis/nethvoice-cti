@@ -140,9 +140,17 @@ export const ConfigureKeysSection = forwardRef<HTMLButtonElement, ConfigureKeysS
     }
 
     const cancelSetKeysToAllButtonRef = useRef() as MutableRefObject<HTMLButtonElement>
+    const [isSetKeysToAllOperatorsClicked, setIsSetKeysToAllOperatorsClicked] = useState(false)
 
-    // Set key to all operators function
-    const handleAssignAllKeys = async () => {}
+    const handleAssignAllKeys = async () => {
+      setIsSetKeysToAllOperatorsClicked(true)
+    }
+
+    // On reset close modal and set status to false
+    const handleResetKeysToOperatorsClicked = () => {
+      setIsSetKeysToAllOperatorsClicked(false)
+      modalAllOperatorsKeyStatus(false)
+    }
 
     // Modal with example of first two operators of operators list
     const renderDynamicRows = () => {
@@ -233,11 +241,11 @@ export const ConfigureKeysSection = forwardRef<HTMLButtonElement, ConfigureKeysS
       setVisibleFilter(status)
     }
 
-    const [newButtonData, setNewButtonData] = useState(null);
+    const [newButtonData, setNewButtonData] = useState(null)
 
-    const handleAddNewButton = (newButton:any) => {
-      setNewButtonData(newButton);
-    };
+    const handleAddNewButton = (newButton: any) => {
+      setNewButtonData(newButton)
+    }
 
     return (
       <>
@@ -249,6 +257,8 @@ export const ConfigureKeysSection = forwardRef<HTMLButtonElement, ConfigureKeysS
           onSelectFilteredButtons={handleSelectFilteredButtons}
           onVisibilityPagination={handleVisibilityPagination}
           newButtonData={newButtonData}
+          isSetKeysToAllOperatorsClicked={isSetKeysToAllOperatorsClicked}
+          onResetKeysToOperatorsClicked={handleResetKeysToOperatorsClicked}
         ></DraggableRows>
         {/* Button for add new row */}
         {isExtraRowActive && (

@@ -14,9 +14,11 @@ import { DeviceSectionOperatorSearch } from './DeviceSectionOperatorSearch'
 import { DragDropContext, Draggable, Droppable } from 'react-beautiful-dnd'
 import { KeyTypeSelect } from './KeyTypeSelect'
 import { Tooltip } from 'react-tooltip'
-import { filter, isEmpty } from 'lodash'
+import { isEmpty } from 'lodash'
 import { Button, TextInput } from '../common'
 import { Combobox } from '@headlessui/react'
+import { useSelector } from 'react-redux'
+import { RootState } from '../../store'
 
 function classNames(...classes: string[]) {
   return classes.filter(Boolean).join(' ')
@@ -30,6 +32,8 @@ interface DraggableRowsProps {
   onSelectFilteredButtons: (filteredButtons: any) => void
   onVisibilityPagination: (visibility: any) => void
   newButtonData: any
+  isSetKeysToAllOperatorsClicked: any
+  onResetKeysToOperatorsClicked: () => void
 }
 
 export default function DraggableRows({
@@ -40,12 +44,16 @@ export default function DraggableRows({
   onSelectFilteredButtons,
   onVisibilityPagination,
   newButtonData,
+  isSetKeysToAllOperatorsClicked,
+  onResetKeysToOperatorsClicked,
 }: DraggableRowsProps) {
   const [buttonsStatusObject, setButtonsStatusObject] = useState<any>([])
 
   const [filteredButtons, setFilteredButtons] = useState([])
 
   const textFilterRef = useRef() as React.MutableRefObject<HTMLInputElement>
+
+  const operators: any = useSelector((state: RootState) => state.operators)
 
   const clearTextFilter = () => {
     setTextFilter('')
@@ -90,6 +98,43 @@ export default function DraggableRows({
       }
     }
   }, [deviceButtonConfigurationInformation, usableKeys])
+
+  useEffect(() => {
+    if (isSetKeysToAllOperatorsClicked) {
+      const updatedButtons: any = [...buttonsStatusObject]
+      const blfRowsToAdd: any[] = []
+
+      Object.keys(operators?.extensions || {}).forEach((exten, index) => {
+        // Check max number of keys
+        if (index < usableKeys) {
+          const operator: any = operators?.extensions[exten]
+
+          // New row information
+          const newButton: any = {
+            id: index + 1,
+            type: 'blf',
+            label: `${operator?.name} ${exten}`,
+            value: exten,
+          }
+
+          blfRowsToAdd.push(newButton)
+        }
+      })
+
+      updatedButtons.splice(0, blfRowsToAdd.length, ...blfRowsToAdd)
+
+      const updatedButtonsWithIndices = updatedButtons.map((button: any, index: number) => ({
+        ...button,
+        id: index + 1,
+      }))
+
+      setFilteredButtons(updatedButtonsWithIndices)
+      setButtonsStatusObject(updatedButtonsWithIndices)
+
+      // Set modal to false
+      onResetKeysToOperatorsClicked()
+    }
+  }, [isSetKeysToAllOperatorsClicked, operators?.extensions])
 
   // Input field section
   const [textFilter, setTextFilter] = useState('')
