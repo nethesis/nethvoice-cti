@@ -1,4 +1,4 @@
-import { FC, Fragment, useState } from 'react'
+import { FC, Fragment, useEffect, useState } from 'react'
 import { t } from 'i18next'
 import { Listbox, Transition } from '@headlessui/react'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
@@ -14,7 +14,7 @@ export const KeyTypeSelect: FC<keyTypeSelectProps> = ({
   defaultSelectedType,
   updateSelectedTypeKey,
 }) => {
-  const [keysTypeSelected, setKeysTypeSelected] = useState<string | null>(
+  const [keysTypeSelected, setKeysTypeSelected]: any = useState<string | null>(
     defaultSelectedType || null,
   )
 
@@ -51,7 +51,7 @@ export const KeyTypeSelect: FC<keyTypeSelectProps> = ({
                   <span className='pointer-events-none absolute inset-y-0 right-0 flex items-center pr-2'>
                     <FontAwesomeIcon
                       icon={faChevronDown}
-                      className='h-4 w-4 mr-1 text-primary dark:text-primaryDark cursor-pointer'
+                      className='h-4 w-4 mr-1 cursor-pointer'
                     />
                   </span>
                 </Listbox.Button>

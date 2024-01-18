@@ -170,7 +170,7 @@ export default function DraggableRows({
 
   const confirmEditRow = (rowData: any) => {
     if (editedRowIndex !== null) {
-      const targetIndex = rowData.id - 1
+      const targetIndex = rowData?.id
 
       if (editedRowIndex !== targetIndex) {
         const updatedButtons: any = [...filteredButtons]
@@ -183,7 +183,8 @@ export default function DraggableRows({
           ...updatedButtons[targetIndex],
           id: editedRowIndex + 1,
           type: keysTypeSelected,
-          label: 'test4',
+          value: selectedUserInformation,
+          label: operators?.extensions[selectedUserInformation]?.name || '-',
         }
 
         updatedButtons[targetIndex] = {
@@ -238,6 +239,12 @@ export default function DraggableRows({
 
   const updateSelectedTypeKey = (newTypeKey: string) => {
     setKeysTypeSelected(newTypeKey)
+  }
+
+  const [selectedUserInformation, setSelectedUserNumber] = useState<any>(null)
+
+  const updateSelectedUserInformation = (newUserInformation: string) => {
+    setSelectedUserNumber(newUserInformation)
   }
 
   const [keysTypeSelected, setKeysTypeSelected] = useState<any>(null)
@@ -312,7 +319,7 @@ export default function DraggableRows({
                 <Button variant='ghost' onClick={() => handleClickIcon(index)}>
                   <FontAwesomeIcon
                     icon={selectedRowIndex === index ? faChevronUp : faChevronDown}
-                    className='h-4 w-4 text-primary dark:text-primaryDark cursor-pointer'
+                    className='h-4 w-4 cursor-pointer'
                   />
                 </Button>
               </div>
@@ -332,6 +339,8 @@ export default function DraggableRows({
                     {t('Devices.Pin information tooltip') || ''}
                   </Tooltip>
                 </div>
+
+                {/* Choose new index for selected key */}
                 <Combobox
                   as='div'
                   value={editedRowIndex}
@@ -352,6 +361,8 @@ export default function DraggableRows({
                         },
                       )}`}
                     />
+
+                    {/* Choose a number from 1 to {usableKeys} */}
                     <Combobox.Button className='absolute inset-y-0 right-0 flex items-center rounded-r-md px-2 focus:outline-none'>
                       <FontAwesomeIcon
                         icon={faChevronDown}
@@ -406,19 +417,30 @@ export default function DraggableRows({
                   </div>
                 </Combobox>
 
+                {/* Choose new type for selected key */}
                 <KeyTypeSelect
                   defaultSelectedType={buttonRow?.type}
                   updateSelectedTypeKey={updateSelectedTypeKey}
                 />
 
                 {/* Insert name or number only if type equal to blf or speedCall */}
-                {(keysTypeSelected === 'blf' || keysTypeSelected === 'speedCall') && (
+                {(buttonRow?.type === 'blf' ||
+                  buttonRow?.type === 'speedCall' ||
+                  keysTypeSelected === 'blf' ||
+                  keysTypeSelected === 'speedCall') && (
                   <>
                     <div className='mb-2'>
-                      <span> {t('Devices.Name or number')}</span>
+                      <span>
+                        {keysTypeSelected === 'blf'
+                          ? t('Devices.Name or extension')
+                          : t('Devices.Name or number')}
+                      </span>
                     </div>
+                    {/* Search user input */}
                     <DeviceSectionOperatorSearch
                       typeSelected={keysTypeSelected}
+                      updateSelectedUserInformation={updateSelectedUserInformation}
+                      defaultValue={buttonRow?.label}
                     ></DeviceSectionOperatorSearch>
                   </>
                 )}
@@ -506,17 +528,19 @@ export default function DraggableRows({
           trailingIcon={true}
         />
       </div>
-      <div className='pt-2'>
-        <DragDropContext onDragEnd={handleDragEnd}>
-          <Droppable droppableId='phoneKeysList'>
-            {(provided) => (
-              <ul {...provided?.droppableProps} ref={provided?.innerRef}>
-                {renderButtons()}
-                {provided?.placeholder}
-              </ul>
-            )}
-          </Droppable>
-        </DragDropContext>
+      <div className='overflow-y-auto scrollbar-thin scrollbar-thumb-gray-400 dark:scrollbar-thumb-gray-400 scrollbar-thumb-rounded-full scrollbar-thumb-opacity-50 scrollbar-track-gray-200 dark:scrollbar-track-gray-900 scrollbar-track-rounded-full scrollbar-track-opacity-25'>
+        <div className='pt-2 max-h-[24rem]'>
+          <DragDropContext onDragEnd={handleDragEnd}>
+            <Droppable droppableId='phoneKeysList'>
+              {(provided) => (
+                <ul {...provided?.droppableProps} ref={provided?.innerRef}>
+                  {renderButtons()}
+                  {provided?.placeholder}
+                </ul>
+              )}
+            </Droppable>
+          </DragDropContext>
+        </div>
       </div>
     </>
   )

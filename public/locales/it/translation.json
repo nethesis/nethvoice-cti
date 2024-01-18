@@ -699,7 +699,9 @@
     "Fill in all the fields to continue": "Compila tutti i campi per continuare",
     "Index not allowed": "Indice non consentito",
     "Index error message": "Inserisci indice da 1 a {{usableKeys}}",
-    "Physical phone": "Telefoni fisico",
-    "Physical phones": "Telefono fisici"
+    "Physical phone": "Telefono fisico",
+    "Physical phones": "Telefoni fisici",
+    "Name or extension": "Nome o interno",
+    "Confirm edits": "Conferma modifiche"
   }
 }

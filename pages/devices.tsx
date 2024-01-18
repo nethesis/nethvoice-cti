@@ -69,8 +69,6 @@ const Devices: NextPage = () => {
     }
   }
 
-  console.log('this is phone', profile)
-  console.log('what', operators?.extensions[webrtcData[0]?.id])
   return (
     <>
       <section aria-labelledby='clear-cache-heading'>

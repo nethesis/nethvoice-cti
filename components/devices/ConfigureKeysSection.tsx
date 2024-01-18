@@ -285,15 +285,13 @@ export const ConfigureKeysSection = forwardRef<HTMLButtonElement, ConfigureKeysS
               variant='white'
               onClick={() => paginate(currentPage - 1)}
               disabled={!isLeftButtonVisible}
-              className={!isLeftButtonVisible ? 'invisible' : ''}
             >
               <FontAwesomeIcon icon={faChevronLeft} className='h-4 w-4' />
             </Button>
             <Button
               variant='white'
               onClick={() => paginate(currentPage + 1)}
-              disabled={!isRightButtonVisible}
-              className={!isRightButtonVisible || !visibleFilter ? 'invisible' : ''}
+              disabled={!isRightButtonVisible || !visibleFilter}
             >
               <FontAwesomeIcon icon={faChevronRight} className='h-4 w-4' />
             </Button>
@@ -314,7 +312,7 @@ export const ConfigureKeysSection = forwardRef<HTMLButtonElement, ConfigureKeysS
             </span>
           </Button>
           <Button variant='primary' type='submit' className='mb-4 ml-4'>
-            <span className='leading-5 text-sm font-medium'>{t('Common.Edit')}</span>
+            <span className='leading-5 text-sm font-medium'>{t('Devices.Confirm edits')}</span>
           </Button>
         </div>
 

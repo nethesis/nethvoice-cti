@@ -2,20 +2,25 @@ import { FC, useEffect, useMemo, useState } from 'react'
 import { t } from 'i18next'
 import { Combobox } from '@headlessui/react'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
-import { faCircleUser, faHeadset } from '@fortawesome/free-solid-svg-icons'
+import { faBuilding, faCircleUser } from '@fortawesome/free-solid-svg-icons'
 import { cloneDeep, debounce } from 'lodash'
 import { useSelector } from 'react-redux'
 import { RootState } from '../../store'
 import classNames from 'classnames'
 import { sortByProperty } from '../../lib/utils'
 import { getPhonebook, mapPhonebookResponse } from '../../lib/phonebook'
+import { Avatar } from '../common'
 
 interface DeviceSectionOperatorSearchProps {
   typeSelected: string
+  updateSelectedUserInformation: Function
+  defaultValue?: any
 }
 
 export const DeviceSectionOperatorSearch: FC<DeviceSectionOperatorSearchProps> = ({
   typeSelected,
+  updateSelectedUserInformation,
+  defaultValue,
 }) => {
   const [query, setQuery] = useState('')
   const [results, setResults]: any[] = useState([])
@@ -24,7 +29,6 @@ export const DeviceSectionOperatorSearch: FC<DeviceSectionOperatorSearchProps> =
   const operators: any = useSelector((state: RootState) => state.operators)
 
   const [selectedInformationUser, setSelectedInformationUser] = useState<any>([])
-  const [selectedNumber, setSelectedNumber] = useState<any>(null)
 
   const [phonebookError, setPhonebookError] = useState('')
 
@@ -45,9 +49,9 @@ export const DeviceSectionOperatorSearch: FC<DeviceSectionOperatorSearchProps> =
           contact.resultType = 'contact'
           if (isQueryPhoneNumber) {
             // check if contact has the queried number
-            const extensionNoSpaces = contact.extension?.replace(/\s/g, '')
-            const workphoneNoSpaces = contact.workphone?.replace(/\s/g, '')
-            const cellphoneNoSpaces = contact.cellphone?.replace(/\s/g, '')
+            const extensionNoSpaces = contact?.extension?.replace(/\s/g, '')
+            const workphoneNoSpaces = contact?.workphone?.replace(/\s/g, '')
+            const cellphoneNoSpaces = contact?.cellphone?.replace(/\s/g, '')
             const queryNoSpaces = query.replace(/\s/g, '')
 
             if ([extensionNoSpaces, workphoneNoSpaces, cellphoneNoSpaces].includes(queryNoSpaces)) {
@@ -66,7 +70,7 @@ export const DeviceSectionOperatorSearch: FC<DeviceSectionOperatorSearchProps> =
   }
 
   const searchOperators = (cleanQuery: string, cleanRegex: RegExp) => {
-    let operatorsResults = Object.values(operators.operators).filter((op: any) => {
+    let operatorsResults = Object.values(operators?.operators).filter((op: any) => {
       return (
         new RegExp(cleanQuery, 'i').test(op.name.replace(cleanRegex, '')) ||
         new RegExp(cleanQuery, 'i').test(op.endpoints?.mainextension[0]?.id)
@@ -106,16 +110,12 @@ export const DeviceSectionOperatorSearch: FC<DeviceSectionOperatorSearchProps> =
           if (/^\+?[0-9|\s]+$/.test(cleanQuery)) {
             // show "Call phone number" result
             isPhoneNumber = true
-            const callPhoneNumberResult = {
-              resultType: 'callPhoneNumber',
-              phoneNumber: query.trim(),
-            }
-            results.push(callPhoneNumberResult)
           }
 
           const operatorsResults = searchOperators(cleanQuery, cleanRegex)
           const phonebookResults = await searchPhonebook(query.trim(), isPhoneNumber)
-          results = results.concat(operatorsResults, phonebookResults)
+
+          results = results?.concat(operatorsResults, phonebookResults)
         } else {
           const operatorsResults = searchOperators(cleanQuery, cleanRegex)
           results = results.concat(operatorsResults)
@@ -125,7 +125,7 @@ export const DeviceSectionOperatorSearch: FC<DeviceSectionOperatorSearchProps> =
         setLoaded(true)
       }, 400),
     // eslint-disable-next-line react-hooks/exhaustive-deps
-    [operators?.operators],
+    [operators?.operators, typeSelected],
   )
 
   // Stop invocation of debounced function after unmounting
@@ -136,28 +136,37 @@ export const DeviceSectionOperatorSearch: FC<DeviceSectionOperatorSearchProps> =
   }, [debouncedChangeQuery])
 
   const [showUserList, setShowUserList] = useState(false)
+  const [userFullInformation, setUserFullInformation] = useState<any>(null)
 
   const resultSelected = (result: any) => {
     const phoneProps = ['extension', 'cellphone', 'homephone', 'workphone']
+    let selectedName = ''
+    let selectNumber = ''
     if (result?.name) {
-      let selectedName = result?.name
-      setSelectedInformationUser(selectedName)
+      selectedName = result?.name
+      // setSelectedInformationUser(selectedName)
     }
 
     if (result) {
       const operatorId =
         result?.resultType === 'operator' ? result?.endpoints?.mainextension[0]?.id : ''
 
-      let selectNumber =
+      selectNumber =
         operatorId || phoneProps.map((prop) => result[prop]).find((value) => value) || ''
-      setSelectedNumber(selectNumber)
-      if (selectNumber) {
-        setSelectedInformationUser(selectNumber)
-      }
+    }
+    if (selectNumber !== '') {
+      updateSelectedUserInformation(selectNumber)
+    }
+    let fullInformation = ''
+    if (selectNumber !== '' && selectedName !== '') {
+      fullInformation = `${selectedName} (${selectNumber.toString()})`
+
+      setUserFullInformation(fullInformation)
+    } else if (defaultValue !== '') {
+      fullInformation = defaultValue
     }
 
-    // const fullInformation = `${selectedName}(${selectNumber.toString()})`
-
+    return fullInformation
     // To DO - handle result selection
   }
 
@@ -167,7 +176,7 @@ export const DeviceSectionOperatorSearch: FC<DeviceSectionOperatorSearchProps> =
         <Combobox.Input
           className='w-full rounded-md border-0 bg-white py-1.5 pl-3 pr-12 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 focus:ring-2 focus:ring-inset focus:ring-emerald-600 sm:text-sm sm:leading-6'
           onChange={debouncedChangeQuery}
-          displayValue={(informationUser) => selectedInformationUser?.name}
+          displayValue={(informationUser) => resultSelected(informationUser)}
           placeholder={t('Devices.Type to search') || ''}
         />
 
@@ -191,13 +200,40 @@ export const DeviceSectionOperatorSearch: FC<DeviceSectionOperatorSearchProps> =
                 >
                   {({ active, selected }) => (
                     <>
-                      <div className='w-10 text-center'>
-                        <FontAwesomeIcon
-                          icon={result?.resultType === 'operator' ? faHeadset : faCircleUser}
-                          className='h-4 w-4 text-gray-500 dark:text-gray-400'
-                        />
+                      <div className='flex items-center px-2'>
+                        {result?.resultType === 'operator' ? (
+                          <Avatar
+                            size='extra_small'
+                            placeholderType='person'
+                            src={operators?.avatars[result?.username]}
+                            status={operators?.operators[result?.username]?.mainPresence}
+                          />
+                        ) : (
+                          <div className='flex items-center text-center'>
+                            <FontAwesomeIcon
+                              icon={
+                                result?.name !== '' && result?.name !== ' ' && result?.name !== null
+                                  ? faCircleUser
+                                  : faBuilding
+                              }
+                              className='h-6 w-6 text-gray-500 dark:text-gray-400'
+                            />
+                          </div>
+                        )}
+                        <span className='ml-2 flex items-center truncate'>
+                          {result?.name !== '' && result?.name !== ' ' && result?.name !== null
+                            ? result?.name
+                            : result?.displayName !== '' &&
+                              result?.displayName !== ' ' &&
+                              result?.displayName !== null
+                            ? result?.displayName
+                            : result?.company !== '' &&
+                              result?.company !== ' ' &&
+                              result?.company !== null
+                            ? result?.company
+                            : '-'}
+                        </span>
                       </div>
-                      <span className='ml-2 flex-auto truncate'>{result?.name}</span>
                     </>
                   )}
                 </Combobox.Option>

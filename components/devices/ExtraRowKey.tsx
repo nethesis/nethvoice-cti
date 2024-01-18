@@ -9,6 +9,8 @@ import ComboboxNumber from '../common/ComboboxNumber'
 import { Tooltip } from 'react-tooltip'
 import { Button, InlineNotification } from '../common'
 import { KeyTypeSelect } from './KeyTypeSelect'
+import { useSelector } from 'react-redux'
+import { RootState } from '../../store'
 
 interface ExtraRowKeyProps {
   usableKeys: number
@@ -36,14 +38,15 @@ export const ExtraRowKey: FC<ExtraRowKeyProps> = ({
   const [newKeyValue, setNewKeyValue] = useState<string>('')
   const [indexError, setIndexError] = useState<boolean>(false)
   const [missingInputError, setMissingInputError] = useState<boolean>(false)
+  const operators: any = useSelector((state: RootState) => state.operators)
 
   const confirmAddRow = () => {
     if (selectedRowIndex !== null && keysTypeSelected !== null) {
       const newKey = {
         id: selectedRowIndex + 1,
         type: keysTypeSelected,
-        value: 2,
-        label: 'test',
+        value: selectedUserInformation,
+        label: operators?.extensions[selectedUserInformation]?.name || '-',
       }
 
       onAddNewButton(newKey)
@@ -77,6 +80,12 @@ export const ExtraRowKey: FC<ExtraRowKeyProps> = ({
   ) : (
     <></>
   )
+
+  const [selectedUserInformation, setSelectedUserNumber] = useState<any>(null)
+
+  const updateSelectedUserInformation = (newUserInformation: string) => {
+    setSelectedUserNumber(newUserInformation)
+  }
 
   return (
     <>
@@ -131,6 +140,7 @@ export const ExtraRowKey: FC<ExtraRowKeyProps> = ({
               </div>
               <DeviceSectionOperatorSearch
                 typeSelected={keysTypeSelected}
+                updateSelectedUserInformation={updateSelectedUserInformation}
               ></DeviceSectionOperatorSearch>
             </>
           )}

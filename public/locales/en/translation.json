@@ -749,6 +749,8 @@
     "Index not allowed": "Index not allowed",
     "Index error message": "Insert index from 1 to {{usableKeys}}",
     "Physical phones": "Physical phones",
-    "Physical phone": "Physical phone"
+    "Physical phone": "Physical phone",
+    "Name or extension": "Name or extension",
+    "Confirm edits": "Confirm edits"
   }
 }
