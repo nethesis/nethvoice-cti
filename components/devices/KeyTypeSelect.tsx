@@ -1,3 +1,6 @@
+// Copyright (C) 2024 Nethesis S.r.l.
+// SPDX-License-Identifier: AGPL-3.0-or-later
+
 import { FC, Fragment, useEffect, useState } from 'react'
 import { t } from 'i18next'
 import { Listbox, Transition } from '@headlessui/react'
@@ -49,10 +52,7 @@ export const KeyTypeSelect: FC<keyTypeSelectProps> = ({
                       : t('Devices.Choose type')}
                   </span>
                   <span className='pointer-events-none absolute inset-y-0 right-0 flex items-center pr-2'>
-                    <FontAwesomeIcon
-                      icon={faChevronDown}
-                      className='h-4 w-4 mr-1 cursor-pointer'
-                    />
+                    <FontAwesomeIcon icon={faChevronDown} className='h-4 w-4 mr-1 cursor-pointer' />
                   </span>
                 </Listbox.Button>
 

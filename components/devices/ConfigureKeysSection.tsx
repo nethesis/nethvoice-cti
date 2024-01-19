@@ -1,5 +1,6 @@
-// Copyright (C) 2023 Nethesis S.r.l.
+// Copyright (C) 2024 Nethesis S.r.l.
 // SPDX-License-Identifier: AGPL-3.0-or-later
+
 import {
   ComponentPropsWithRef,
   MutableRefObject,
@@ -268,9 +269,8 @@ export const ConfigureKeysSection = forwardRef<HTMLButtonElement, ConfigureKeysS
             onAddNewButton={handleAddNewButton}
           ></ExtraRowKey>
         )}
-
-        <div className='flex justify-between pt-4'>
-          {!isExtraRowActive && (
+        {!isExtraRowActive ? (
+          <div className='flex justify-between pt-4'>
             <div className='flex justify-start'>
               <Button variant='white' onClick={() => activateDeactivateExtraRow()}>
                 <span className='text-primary dark:text-primaryDark leading-5 text-sm font-medium'>
@@ -278,25 +278,43 @@ export const ConfigureKeysSection = forwardRef<HTMLButtonElement, ConfigureKeysS
                 </span>
               </Button>
             </div>
-          )}
-
-          <div className='flex justify-end space-x-2'>
-            <Button
-              variant='white'
-              onClick={() => paginate(currentPage - 1)}
-              disabled={!isLeftButtonVisible}
-            >
-              <FontAwesomeIcon icon={faChevronLeft} className='h-4 w-4' />
-            </Button>
-            <Button
-              variant='white'
-              onClick={() => paginate(currentPage + 1)}
-              disabled={!isRightButtonVisible || !visibleFilter}
-            >
-              <FontAwesomeIcon icon={faChevronRight} className='h-4 w-4' />
-            </Button>
+            <div className='flex justify-end space-x-2'>
+              <Button
+                variant='white'
+                onClick={() => paginate(currentPage - 1)}
+                disabled={!isLeftButtonVisible}
+              >
+                <FontAwesomeIcon icon={faChevronLeft} className='h-4 w-4' />
+              </Button>
+              <Button
+                variant='white'
+                onClick={() => paginate(currentPage + 1)}
+                disabled={!isRightButtonVisible || !visibleFilter}
+              >
+                <FontAwesomeIcon icon={faChevronRight} className='h-4 w-4' />
+              </Button>
+            </div>
           </div>
-        </div>
+        ) : (
+          <>
+            <div className='flex justify-end space-x-2'>
+              <Button
+                variant='white'
+                onClick={() => paginate(currentPage - 1)}
+                disabled={!isLeftButtonVisible}
+              >
+                <FontAwesomeIcon icon={faChevronLeft} className='h-4 w-4' />
+              </Button>
+              <Button
+                variant='white'
+                onClick={() => paginate(currentPage + 1)}
+                disabled={!isRightButtonVisible || !visibleFilter}
+              >
+                <FontAwesomeIcon icon={faChevronRight} className='h-4 w-4' />
+              </Button>
+            </div>
+          </>
+        )}
 
         {/* Divider  */}
         <div className='relative flex col-span-3 my-6 w-full'>
@@ -305,15 +323,17 @@ export const ConfigureKeysSection = forwardRef<HTMLButtonElement, ConfigureKeysS
           </div>
         </div>
 
-        <div className='flex justify-end'>
-          <Button variant='white' type='submit' onClick={closeSideDrawer} className='mb-4'>
-            <span className='text-primary dark:text-primaryDark leading-5 text-sm font-medium'>
-              {t('Common.Cancel')}
-            </span>
-          </Button>
-          <Button variant='primary' type='submit' className='mb-4 ml-4'>
-            <span className='leading-5 text-sm font-medium'>{t('Devices.Confirm edits')}</span>
-          </Button>
+        <div className='flex justify-between pt-4'>
+          <div className='flex justify-end'>
+            <Button variant='white' type='submit' onClick={closeSideDrawer} className='mb-4'>
+              <span className='text-primary dark:text-primaryDark leading-5 text-sm font-medium'>
+                {t('Common.Cancel')}
+              </span>
+            </Button>
+            <Button variant='primary' type='submit' className='mb-4 ml-4'>
+              <span className='leading-5 text-sm font-medium'>{t('Devices.Confirm edits')}</span>
+            </Button>
+          </div>
         </div>
 
         {/* Set key to all operators modal */}

@@ -1,3 +1,6 @@
+// Copyright (C) 2024 Nethesis S.r.l.
+// SPDX-License-Identifier: AGPL-3.0-or-later
+
 import { useState, useEffect, useRef } from 'react'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import {
@@ -14,8 +17,8 @@ import { DeviceSectionOperatorSearch } from './DeviceSectionOperatorSearch'
 import { DragDropContext, Draggable, Droppable } from 'react-beautiful-dnd'
 import { KeyTypeSelect } from './KeyTypeSelect'
 import { Tooltip } from 'react-tooltip'
-import { isEmpty } from 'lodash'
-import { Button, TextInput } from '../common'
+import { isEmpty, isEqual } from 'lodash'
+import { Button, InlineNotification, TextInput } from '../common'
 import { Combobox } from '@headlessui/react'
 import { useSelector } from 'react-redux'
 import { RootState } from '../../store'
@@ -50,6 +53,15 @@ export default function DraggableRows({
   const [buttonsStatusObject, setButtonsStatusObject] = useState<any>([])
 
   const [filteredButtons, setFilteredButtons] = useState([])
+  const [originalButtonsStatus, setOriginalButtonsStatus]: any = useState([])
+  const [isEditing, setIsEditing] = useState(false)
+  const [missingInputError, setMissingInputError] = useState<boolean>(false)
+  const [indexError, setIndexError] = useState<boolean>(false)
+  const [keysTypeSelected, setKeysTypeSelected] = useState<any>(null)
+
+  const updateSelectedTypeKey = (newTypeKey: string) => {
+    setKeysTypeSelected(newTypeKey)
+  }
 
   const textFilterRef = useRef() as React.MutableRefObject<HTMLInputElement>
 
@@ -92,6 +104,7 @@ export default function DraggableRows({
 
         if (!isEmpty(buttonsStatus)) {
           setButtonsStatusObject(buttonsStatus)
+          setOriginalButtonsStatus(buttonsStatus)
         }
       } else {
         return
@@ -168,35 +181,58 @@ export default function DraggableRows({
 
   const [isUserEditingIndex, setIsUserEditingIndex] = useState(false)
 
-  const confirmEditRow = (rowData: any) => {
-    if (editedRowIndex !== null) {
-      const targetIndex = rowData?.id
+  const resetInput = () => {
+    setSelectedUserNumber(null)
+    setKeysTypeSelected(null)
+    setEditedRowIndex(null)
+    setIsUserEditingIndex(false)
+  }
 
-      if (editedRowIndex !== targetIndex) {
+  const confirmEditRow = (rowData: any) => {
+    if (editedRowIndex !== null && keysTypeSelected !== null) {
+      const targetIndex = editedRowIndex - 1
+
+      if (targetIndex >= 0 && targetIndex < filteredButtons.length) {
         const updatedButtons: any = [...filteredButtons]
 
         // Save selected row data before swapping
-        const selectedRow: any = { ...updatedButtons[editedRowIndex] }
+        const selectedRow: any = { ...updatedButtons[targetIndex] }
 
-        // Swap rows
-        updatedButtons[editedRowIndex] = {
-          ...updatedButtons[targetIndex],
-          id: editedRowIndex + 1,
+        // Update the row with new data
+        updatedButtons[targetIndex] = {
+          ...selectedRow,
           type: keysTypeSelected,
           value: selectedUserInformation,
           label: operators?.extensions[selectedUserInformation]?.name || '-',
         }
 
-        updatedButtons[targetIndex] = {
-          ...selectedRow,
-          id: targetIndex + 1,
-        }
-
-        // Update status with new index
+        // Update status with new data
         setFilteredButtons(updatedButtons)
         setButtonsStatusObject(updatedButtons)
+
+        setIsEditing(true)
+        setMissingInputError(false)
+        resetInput()
+        const changes = getChanges(originalButtonsStatus, updatedButtons)
+      }
+    } else {
+      setMissingInputError(true)
+    }
+  }
+
+  const getChanges = (original: any[], updated: any[]) => {
+    const changes = []
+
+    for (let i = 0; i < original.length; i++) {
+      if (!isEqual(original[i], updated[i])) {
+        changes.push({
+          original: original[i],
+          updated: updated[i],
+        })
       }
     }
+
+    return changes
   }
 
   const deleteRow = (rowData: any) => {
@@ -218,6 +254,7 @@ export default function DraggableRows({
     // Update status
     setFilteredButtons(updatedButtons)
     setButtonsStatusObject(updatedButtons)
+    setIsEditing(true)
   }
 
   useEffect(() => {
@@ -237,20 +274,15 @@ export default function DraggableRows({
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [newButtonData])
 
-  const updateSelectedTypeKey = (newTypeKey: string) => {
-    setKeysTypeSelected(newTypeKey)
-  }
-
   const [selectedUserInformation, setSelectedUserNumber] = useState<any>(null)
 
   const updateSelectedUserInformation = (newUserInformation: string) => {
     setSelectedUserNumber(newUserInformation)
   }
 
-  const [keysTypeSelected, setKeysTypeSelected] = useState<any>(null)
-
   const handleClickIcon = (clickedIndex: number) => {
     setSelectedRowIndex((prevIndex) => (prevIndex === clickedIndex ? null : clickedIndex))
+    setIsEditing(false)
   }
 
   const [query, setQuery] = useState('')
@@ -298,7 +330,7 @@ export default function DraggableRows({
           >
             <div
               className={`${
-                selectedRowIndex === index ? 'bg-gray-100' : ''
+                selectedRowIndex === index && !isEditing ? 'bg-gray-100' : ''
               } grid items-center py-4 px-2 grid-cols-[4rem,auto,1rem]`}
             >
               <div className='flex items-center'>
@@ -318,14 +350,14 @@ export default function DraggableRows({
               <div className='flex items-end justify-end'>
                 <Button variant='ghost' onClick={() => handleClickIcon(index)}>
                   <FontAwesomeIcon
-                    icon={selectedRowIndex === index ? faChevronUp : faChevronDown}
+                    icon={selectedRowIndex === index && !isEditing ? faChevronUp : faChevronDown}
                     className='h-4 w-4 cursor-pointer'
                   />
                 </Button>
               </div>
             </div>
 
-            {selectedRowIndex === index && (
+            {selectedRowIndex === index && !isEditing && (
               <div className='px-2'>
                 <div className='flex items-center mt-4'>
                   <span>{t('Devices.Key position')}</span>
@@ -514,6 +546,30 @@ export default function DraggableRows({
     setButtonsStatusObject(updatedButtonsWithIndices)
   }
 
+  let errorAlert = missingInputError ? (
+    <div className='relative w-full'>
+      <div className='w-full'>
+        <InlineNotification type='error' title={t('Common.Warning')}>
+          <p>{t('Devices.Fill in all the fields to continue')}</p>
+        </InlineNotification>
+      </div>
+    </div>
+  ) : indexError ? (
+    <div className='relative w-full'>
+      <div className='w-full'>
+        <InlineNotification type='error' title={t('Devices.Index not allowed')}>
+          <p>
+            {t('Devices.Insert index from 1 to', {
+              usableKeys,
+            })}
+          </p>
+        </InlineNotification>
+      </div>
+    </div>
+  ) : (
+    <></>
+  )
+
   return (
     <>
       <div className='flex items-center'>
@@ -528,6 +584,7 @@ export default function DraggableRows({
           trailingIcon={true}
         />
       </div>
+      <div>{errorAlert}</div>
       <div className='overflow-y-auto scrollbar-thin scrollbar-thumb-gray-400 dark:scrollbar-thumb-gray-400 scrollbar-thumb-rounded-full scrollbar-thumb-opacity-50 scrollbar-track-gray-200 dark:scrollbar-track-gray-900 scrollbar-track-rounded-full scrollbar-track-opacity-25'>
         <div className='pt-2 max-h-[24rem]'>
           <DragDropContext onDragEnd={handleDragEnd}>

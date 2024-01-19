@@ -1,3 +1,6 @@
+// Copyright (C) 2024 Nethesis S.r.l.
+// SPDX-License-Identifier: AGPL-3.0-or-later
+
 import { FC, useEffect, useMemo, useState } from 'react'
 import { t } from 'i18next'
 import { Combobox } from '@headlessui/react'
