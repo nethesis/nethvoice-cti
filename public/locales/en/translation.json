@@ -751,6 +751,11 @@
     "Physical phones": "Physical phones",
     "Physical phone": "Physical phone",
     "Name or extension": "Name or extension",
-    "Confirm edits": "Confirm edits"
+    "Confirm edits": "Confirm edits",
+    "Type selection is required": "Type selection is required",
+    "Number selection is required": "Number selection is required",
+    "Edit inline information message one row": "{{isInformationLineShow}} change row",
+    "Edit inline information message multiple rows": "{{isInformationLineShow}} changes rows",
+    "Edit done": "Edit done"
   }
 }

@@ -37,6 +37,7 @@ interface DraggableRowsProps {
   newButtonData: any
   isSetKeysToAllOperatorsClicked: any
   onResetKeysToOperatorsClicked: () => void
+  onChangeKeysObject: (numberEdited: any) => void
 }
 
 export default function DraggableRows({
@@ -49,6 +50,7 @@ export default function DraggableRows({
   newButtonData,
   isSetKeysToAllOperatorsClicked,
   onResetKeysToOperatorsClicked,
+  onChangeKeysObject,
 }: DraggableRowsProps) {
   const [buttonsStatusObject, setButtonsStatusObject] = useState<any>([])
 
@@ -62,6 +64,13 @@ export default function DraggableRows({
   const updateSelectedTypeKey = (newTypeKey: string) => {
     setKeysTypeSelected(newTypeKey)
   }
+
+  //check if user select a type from combobox
+  useEffect(() => {
+    if (keysTypeSelected !== null && keysTypeSelected !== '') {
+      setMissingInputError(false)
+    }
+  }, [keysTypeSelected])
 
   const textFilterRef = useRef() as React.MutableRefObject<HTMLInputElement>
 
@@ -147,6 +156,7 @@ export default function DraggableRows({
       // Set modal to false
       onResetKeysToOperatorsClicked()
     }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [isSetKeysToAllOperatorsClicked, operators?.extensions])
 
   // Input field section
@@ -188,6 +198,8 @@ export default function DraggableRows({
     setIsUserEditingIndex(false)
   }
 
+  const [numberOfKeysEdited, setNumberOfkeysEdited] = useState<number>(0)
+
   const confirmEditRow = (rowData: any) => {
     if (editedRowIndex !== null && keysTypeSelected !== null) {
       const targetIndex = editedRowIndex - 1
@@ -214,6 +226,10 @@ export default function DraggableRows({
         setMissingInputError(false)
         resetInput()
         const changes = getChanges(originalButtonsStatus, updatedButtons)
+        if (changes?.length > 0) {
+          setNumberOfkeysEdited(changes?.length)
+          onChangeKeysObject(changes?.length)
+        }
       }
     } else {
       setMissingInputError(true)
@@ -223,7 +239,7 @@ export default function DraggableRows({
   const getChanges = (original: any[], updated: any[]) => {
     const changes = []
 
-    for (let i = 0; i < original.length; i++) {
+    for (let i = 0; i < original?.length; i++) {
       if (!isEqual(original[i], updated[i])) {
         changes.push({
           original: original[i],
@@ -453,6 +469,7 @@ export default function DraggableRows({
                 <KeyTypeSelect
                   defaultSelectedType={buttonRow?.type}
                   updateSelectedTypeKey={updateSelectedTypeKey}
+                  inputMissing={missingInputError}
                 />
 
                 {/* Insert name or number only if type equal to blf or speedCall */}
@@ -546,30 +563,6 @@ export default function DraggableRows({
     setButtonsStatusObject(updatedButtonsWithIndices)
   }
 
-  let errorAlert = missingInputError ? (
-    <div className='relative w-full'>
-      <div className='w-full'>
-        <InlineNotification type='error' title={t('Common.Warning')}>
-          <p>{t('Devices.Fill in all the fields to continue')}</p>
-        </InlineNotification>
-      </div>
-    </div>
-  ) : indexError ? (
-    <div className='relative w-full'>
-      <div className='w-full'>
-        <InlineNotification type='error' title={t('Devices.Index not allowed')}>
-          <p>
-            {t('Devices.Insert index from 1 to', {
-              usableKeys,
-            })}
-          </p>
-        </InlineNotification>
-      </div>
-    </div>
-  ) : (
-    <></>
-  )
-
   return (
     <>
       <div className='flex items-center'>
@@ -584,7 +577,6 @@ export default function DraggableRows({
           trailingIcon={true}
         />
       </div>
-      <div>{errorAlert}</div>
       <div className='overflow-y-auto scrollbar-thin scrollbar-thumb-gray-400 dark:scrollbar-thumb-gray-400 scrollbar-thumb-rounded-full scrollbar-thumb-opacity-50 scrollbar-track-gray-200 dark:scrollbar-track-gray-900 scrollbar-track-rounded-full scrollbar-track-opacity-25'>
         <div className='pt-2 max-h-[24rem]'>
           <DragDropContext onDragEnd={handleDragEnd}>

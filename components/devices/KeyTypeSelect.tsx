@@ -11,11 +11,13 @@ import classNames from 'classnames'
 interface keyTypeSelectProps {
   defaultSelectedType?: string
   updateSelectedTypeKey: Function
+  inputMissing?: boolean
 }
 
 export const KeyTypeSelect: FC<keyTypeSelectProps> = ({
   defaultSelectedType,
   updateSelectedTypeKey,
+  inputMissing,
 }) => {
   const [keysTypeSelected, setKeysTypeSelected]: any = useState<string | null>(
     defaultSelectedType || null,
@@ -45,7 +47,12 @@ export const KeyTypeSelect: FC<keyTypeSelectProps> = ({
           {({ open }) => (
             <>
               <div className='relative mt-2'>
-                <Listbox.Button className='relative w-full cursor-default rounded-md bg-white py-1.5 pl-3 pr-10 text-left text-gray-900 dark:text-gray-200 shadow-sm ring-1 ring-inset ring-gray-300 focus:outline-none focus:ring-2 focus:ring-emerald-600 sm:text-sm sm:leading-6'>
+                <Listbox.Button
+                  className={classNames(
+                    inputMissing ? 'border-2 rounded-lg border-rose-500' : ' ring-gray-300',
+                    'relative w-full cursor-default rounded-md bg-white py-1.5 pl-3 pr-10 text-left text-gray-900 dark:text-gray-200 shadow-sm ring-1 ring-inset focus:outline-none focus:ring-2 focus:ring-emerald-600 sm:text-sm sm:leading-6',
+                  )}
+                >
                   <span className='block truncate'>
                     {keysTypeSelected
                       ? typesList.find((type) => type.value === keysTypeSelected)?.label
@@ -55,6 +62,12 @@ export const KeyTypeSelect: FC<keyTypeSelectProps> = ({
                     <FontAwesomeIcon icon={faChevronDown} className='h-4 w-4 mr-1 cursor-pointer' />
                   </span>
                 </Listbox.Button>
+
+                {inputMissing && (
+                  <div className='text-rose-500 text-sm mt-1 ml-2'>
+                    {t('Devices.Type selection is required')}.
+                  </div>
+                )}
 
                 <Transition
                   show={open}

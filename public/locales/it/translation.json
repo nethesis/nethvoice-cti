@@ -702,6 +702,11 @@
     "Physical phone": "Telefono fisico",
     "Physical phones": "Telefoni fisici",
     "Name or extension": "Nome o interno",
-    "Confirm edits": "Conferma modifiche"
+    "Confirm edits": "Conferma modifiche",
+    "Type selection is required": "La selezione del tipo è obbligatoria",
+    "Number selection is required": "La selezione del numero è obbligatoria",
+    "Edit inline information message one row": "{{isInformationLineShow}} riga modificata",
+    "Edit inline information message multiple rows": "{{isInformationLineShow}} righe modificate",
+    "Edit done": "Modifiche effettuate"
   }
 }

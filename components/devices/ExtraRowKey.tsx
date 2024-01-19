@@ -1,16 +1,15 @@
 // Copyright (C) 2024 Nethesis S.r.l.
 // SPDX-License-Identifier: AGPL-3.0-or-later
 
-import { FC, Fragment, useEffect, useState } from 'react'
+import { FC, useEffect, useState } from 'react'
 import { t } from 'i18next'
-import { Listbox, Transition } from '@headlessui/react'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { faCircleInfo, faGripVertical, faXmark } from '@fortawesome/free-solid-svg-icons'
 
 import { DeviceSectionOperatorSearch } from './DeviceSectionOperatorSearch'
 import ComboboxNumber from '../common/ComboboxNumber'
 import { Tooltip } from 'react-tooltip'
-import { Button, InlineNotification } from '../common'
+import { Button } from '../common'
 import { KeyTypeSelect } from './KeyTypeSelect'
 import { useSelector } from 'react-redux'
 import { RootState } from '../../store'
@@ -37,13 +36,26 @@ export const ExtraRowKey: FC<ExtraRowKeyProps> = ({
     setKeysTypeSelected(newTypeKey)
   }
 
+  //check if user select a type from combobox
+  useEffect(() => {
+    if (keysTypeSelected !== null && keysTypeSelected !== '') {
+      setMissingInputError(false)
+    }
+  }, [keysTypeSelected])
+
   const [newKeyLabel, setNewKeyLabel] = useState<string>('')
   const [newKeyValue, setNewKeyValue] = useState<string>('')
   const [indexError, setIndexError] = useState<boolean>(false)
   const [missingInputError, setMissingInputError] = useState<boolean>(false)
   const operators: any = useSelector((state: RootState) => state.operators)
+  const [selectedUserInformation, setSelectedUserNumber] = useState<any>(null)
 
   const confirmAddRow = () => {
+    if (selectedRowIndex !== null) {
+      setIndexError(false)
+    } else {
+      setIndexError(true)
+    }
     if (selectedRowIndex !== null && keysTypeSelected !== null) {
       const newKey = {
         id: selectedRowIndex + 1,
@@ -60,31 +72,11 @@ export const ExtraRowKey: FC<ExtraRowKeyProps> = ({
     }
   }
 
-  let errorAlert = missingInputError ? (
-    <div className='relative w-full'>
-      <div className='w-full'>
-        <InlineNotification type='error' title={t('Common.Warning')}>
-          <p>{t('Devices.Fill in all the fields to continue')}</p>
-        </InlineNotification>
-      </div>
-    </div>
-  ) : indexError ? (
-    <div className='relative w-full'>
-      <div className='w-full'>
-        <InlineNotification type='error' title={t('Devices.Index not allowed')}>
-          <p>
-            {t('Devices.Insert index from 1 to', {
-              usableKeys,
-            })}
-          </p>
-        </InlineNotification>
-      </div>
-    </div>
-  ) : (
-    <></>
-  )
-
-  const [selectedUserInformation, setSelectedUserNumber] = useState<any>(null)
+  useEffect(() => {
+    if (selectedRowIndex !== null) {
+      setIndexError(false)
+    }
+  }, [selectedRowIndex])
 
   const updateSelectedUserInformation = (newUserInformation: string) => {
     setSelectedUserNumber(newUserInformation)
@@ -131,10 +123,14 @@ export const ExtraRowKey: FC<ExtraRowKeyProps> = ({
         <ComboboxNumber
           maxNumber={usableKeys}
           onSelect={(selectedNumber) => setSelectedRowIndex(selectedNumber - 1)}
+          missingkeyError={indexError}
         />
 
         <div className='mb-2'>
-          <KeyTypeSelect updateSelectedTypeKey={updateSelectedTypeKey}></KeyTypeSelect>
+          <KeyTypeSelect
+            updateSelectedTypeKey={updateSelectedTypeKey}
+            inputMissing={missingInputError}
+          ></KeyTypeSelect>
 
           {(keysTypeSelected === 'blf' || keysTypeSelected === 'speedCall') && (
             <>
@@ -159,7 +155,6 @@ export const ExtraRowKey: FC<ExtraRowKeyProps> = ({
               <span className='text-sm font-medium leading-5'>{t('Common.Confirm')}</span>
             </Button>
           </div>
-          {errorAlert}
         </div>
       </div>
     </>

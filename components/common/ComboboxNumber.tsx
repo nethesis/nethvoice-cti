@@ -12,9 +12,15 @@ interface ComboboxNumberProps {
   maxNumber: number
   onSelect: (selectedNumber: number) => void
   defaultValue?: number
+  missingkeyError?: boolean
 }
 
-export default function ComboboxNumber({ maxNumber, onSelect, defaultValue }: ComboboxNumberProps) {
+export default function ComboboxNumber({
+  maxNumber,
+  onSelect,
+  defaultValue,
+  missingkeyError,
+}: ComboboxNumberProps) {
   const [query, setQuery] = useState('')
   const [selectedNumber, setSelectedNumber] = useState<number | null>(defaultValue || null)
 
@@ -48,14 +54,22 @@ export default function ComboboxNumber({ maxNumber, onSelect, defaultValue }: Co
     >
       <div className='relative mt-2 mb-4'>
         <Combobox.Input
-          className='w-full rounded-md border-0 bg-white py-1.5 pl-3 pr-12 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 focus:ring-2 focus:ring-inset focus:ring-emerald-600 sm:text-sm sm:leading-6'
+          className={classNames(
+            missingkeyError ? 'border-2 rounded-lg border-rose-500' : 'ring-gray-300',
+            'w-full rounded-md border-0 bg-white py-1.5 pl-3 pr-12 text-gray-900 shadow-sm ring-1 ring-inset focus:ring-2 focus:ring-inset focus:ring-emerald-600 sm:text-sm sm:leading-6',
+          )}
           onChange={(event) => setQuery(event?.target?.value)}
           displayValue={(number: any) => number?.toString()}
           placeholder={`${t('Devices.Search physical phone index placeholder message', {
             maxNumber,
           })}`}
         />
-        <Combobox.Button className='absolute inset-y-0 right-0 flex items-center rounded-r-md px-2 focus:outline-none'>
+        <Combobox.Button
+          className={classNames(
+            missingkeyError ? 'inset-y-2 mb-[1.5rem]' : 'inset-y-0',
+            'absolute right-0 flex items-center rounded-r-md px-2 focus:outline-none',
+          )}
+        >
           <FontAwesomeIcon
             icon={faChevronDown}
             className='h-4 w-4 mr-1 flex items-center'
@@ -63,6 +77,11 @@ export default function ComboboxNumber({ maxNumber, onSelect, defaultValue }: Co
           />
         </Combobox.Button>
 
+        {missingkeyError && (
+          <div className='text-rose-500 text-sm mt-1 ml-2'>
+            {t('Devices.Number selection is required')}.
+          </div>
+        )}
         {filteredNumbers.length > 0 && (
           <Combobox.Options className='absolute z-10 mt-1 max-h-60 w-full overflow-auto rounded-md bg-white py-1 text-base shadow-lg ring-1 ring-black ring-opacity-5 focus:outline-none sm:text-sm'>
             {filteredNumbers.map((number) => (

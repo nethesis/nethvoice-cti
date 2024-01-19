@@ -22,7 +22,7 @@ import { RootState } from '../../store'
 import { useTranslation } from 'react-i18next'
 import { isEmpty } from 'lodash'
 import { getPhoneModelData, getPhysicalDeviceButtonConfiguration } from '../../lib/devices'
-import { Avatar, Button, Modal } from '../common'
+import { Avatar, Button, InlineNotification, Modal } from '../common'
 import { closeSideDrawer } from '../../lib/utils'
 import { ExtraRowKey } from './ExtraRowKey'
 import DraggableRows from './DraggableRows'
@@ -142,6 +142,7 @@ export const ConfigureKeysSection = forwardRef<HTMLButtonElement, ConfigureKeysS
 
     const cancelSetKeysToAllButtonRef = useRef() as MutableRefObject<HTMLButtonElement>
     const [isSetKeysToAllOperatorsClicked, setIsSetKeysToAllOperatorsClicked] = useState(false)
+    const [isInformationLineShow, setIsInformationLineShow] = useState(0)
 
     const handleAssignAllKeys = async () => {
       setIsSetKeysToAllOperatorsClicked(true)
@@ -151,6 +152,11 @@ export const ConfigureKeysSection = forwardRef<HTMLButtonElement, ConfigureKeysS
     const handleResetKeysToOperatorsClicked = () => {
       setIsSetKeysToAllOperatorsClicked(false)
       modalAllOperatorsKeyStatus(false)
+    }
+
+    // On change of list index
+    const handleIsInformationLineShow = (numberOfKeysEdited: any) => {
+      setIsInformationLineShow(numberOfKeysEdited)
     }
 
     // Modal with example of first two operators of operators list
@@ -260,6 +266,7 @@ export const ConfigureKeysSection = forwardRef<HTMLButtonElement, ConfigureKeysS
           newButtonData={newButtonData}
           isSetKeysToAllOperatorsClicked={isSetKeysToAllOperatorsClicked}
           onResetKeysToOperatorsClicked={handleResetKeysToOperatorsClicked}
+          onChangeKeysObject={handleIsInformationLineShow}
         ></DraggableRows>
         {/* Button for add new row */}
         {isExtraRowActive && (
@@ -323,7 +330,36 @@ export const ConfigureKeysSection = forwardRef<HTMLButtonElement, ConfigureKeysS
           </div>
         </div>
 
-        <div className='flex justify-between pt-4'>
+        {isInformationLineShow > 0 ? (
+          <div className='flex justify-between space-x-3 items-center'>
+            <div className='relative '>
+              <InlineNotification
+                type='info'
+                title={t('Devices.Edit done')}
+              >
+                <p>
+                  {isInformationLineShow === 1
+                    ? t('Devices.Edit inline information message one row', {
+                        isInformationLineShow,
+                      })
+                    : t('Devices.Edit inline information message multiple rows', {
+                        isInformationLineShow,
+                      })}
+                </p>
+              </InlineNotification>
+            </div>
+            <div className='flex justify-end'>
+              <Button variant='white' type='submit' onClick={closeSideDrawer} className='mb-4'>
+                <span className='text-primary dark:text-primaryDark leading-5 text-sm font-medium'>
+                  {t('Common.Cancel')}
+                </span>
+              </Button>
+              <Button variant='primary' type='submit' className='mb-4 ml-4'>
+                <span className='leading-5 text-sm font-medium'>{t('Devices.Confirm edits')}</span>
+              </Button>
+            </div>
+          </div>
+        ) : (
           <div className='flex justify-end'>
             <Button variant='white' type='submit' onClick={closeSideDrawer} className='mb-4'>
               <span className='text-primary dark:text-primaryDark leading-5 text-sm font-medium'>
@@ -334,7 +370,7 @@ export const ConfigureKeysSection = forwardRef<HTMLButtonElement, ConfigureKeysS
               <span className='leading-5 text-sm font-medium'>{t('Devices.Confirm edits')}</span>
             </Button>
           </div>
-        </div>
+        )}
 
         {/* Set key to all operators modal */}
         <Modal
