@@ -49,6 +49,13 @@ export const ExtraRowKey: FC<ExtraRowKeyProps> = ({
   const [missingInputError, setMissingInputError] = useState<boolean>(false)
   const operators: any = useSelector((state: RootState) => state.operators)
   const [selectedUserInformation, setSelectedUserNumber] = useState<any>(null)
+  const [selectedUserNameInformation, setSelectedUserNameInformation] = useState<any>(null)
+
+  const [isContactSelected, setIsContactSelected] = useState<boolean>(false)
+
+  const updatePhonebookContactInformation = (statusModal: boolean) => {
+    setIsContactSelected(statusModal)
+  }
 
   const confirmAddRow = () => {
     if (selectedRowIndex !== null) {
@@ -57,11 +64,36 @@ export const ExtraRowKey: FC<ExtraRowKeyProps> = ({
       setIndexError(true)
     }
     if (selectedRowIndex !== null && keysTypeSelected !== null) {
+      let typeSelectedLabelValue = ''
+      switch (keysTypeSelected) {
+        case 'blf':
+          typeSelectedLabelValue = operators?.extensions[selectedUserInformation]?.name || '-'
+          break
+        case 'speedCall':
+          typeSelectedLabelValue = isContactSelected
+            ? selectedUserNameInformation !== ''
+              ? selectedUserNameInformation
+              : '-'
+            : '-'
+          break
+        case 'line':
+          typeSelectedLabelValue = t('Devices.Line')
+          break
+        case 'dnd':
+          typeSelectedLabelValue = t('Devices.Do not disturb (DND)')
+          break
+        case 'toggleQueue':
+          typeSelectedLabelValue = t('Devices.Toggle login/logout queue')
+          break
+        default:
+          break
+      }
+
       const newKey = {
         id: selectedRowIndex + 1,
         type: keysTypeSelected,
         value: selectedUserInformation,
-        label: operators?.extensions[selectedUserInformation]?.name || '-',
+        label: typeSelectedLabelValue || '-',
       }
 
       onAddNewButton(newKey)
@@ -78,8 +110,12 @@ export const ExtraRowKey: FC<ExtraRowKeyProps> = ({
     }
   }, [selectedRowIndex])
 
-  const updateSelectedUserInformation = (newUserInformation: string) => {
-    setSelectedUserNumber(newUserInformation)
+  const updateSelectedUserNumber = (newUserNumberInformation: string) => {
+    setSelectedUserNumber(newUserNumberInformation)
+  }
+
+  const updateSelectedUserName = (newUserNameInformation: string) => {
+    setSelectedUserNameInformation(newUserNameInformation)
   }
 
   return (
@@ -139,7 +175,9 @@ export const ExtraRowKey: FC<ExtraRowKeyProps> = ({
               </div>
               <DeviceSectionOperatorSearch
                 typeSelected={keysTypeSelected}
-                updateSelectedUserInformation={updateSelectedUserInformation}
+                updateSelectedUserNumber={updateSelectedUserNumber}
+                updatePhonebookContactInformation={updatePhonebookContactInformation}
+                updateSelectedUserName={updateSelectedUserName}
               ></DeviceSectionOperatorSearch>
             </>
           )}

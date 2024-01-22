@@ -21,7 +21,12 @@ import { useSelector } from 'react-redux'
 import { RootState } from '../../store'
 import { useTranslation } from 'react-i18next'
 import { isEmpty } from 'lodash'
-import { getPhoneModelData, getPhysicalDeviceButtonConfiguration } from '../../lib/devices'
+import {
+  getPhoneModelData,
+  getPhysicalDeviceButtonConfiguration,
+  reloadPhysicalPhone,
+  saveBtnsConfig,
+} from '../../lib/devices'
 import { Avatar, Button, InlineNotification, Modal } from '../common'
 import { closeSideDrawer } from '../../lib/utils'
 import { ExtraRowKey } from './ExtraRowKey'
@@ -159,6 +164,12 @@ export const ConfigureKeysSection = forwardRef<HTMLButtonElement, ConfigureKeysS
       setIsInformationLineShow(numberOfKeysEdited)
     }
 
+    const [newKeyInformationObject, setNewKeyInformationObject] = useState<any>([])
+    // On change of key information
+    const handleEditNewKeysObject = (newKeyPosition: any) => {
+      setNewKeyInformationObject(newKeyPosition)
+    }
+
     // Modal with example of first two operators of operators list
     const renderDynamicRows = () => {
       return Object.keys(operators?.extensions)
@@ -254,6 +265,43 @@ export const ConfigureKeysSection = forwardRef<HTMLButtonElement, ConfigureKeysS
       setNewButtonData(newButton)
     }
 
+    const handleUpdateKeysList = async () => {
+      let editedObject: any[] = newKeyInformationObject
+
+      let newObject: any = {
+        variables: {},
+      }
+
+      editedObject.forEach((item: any, index: number) => {
+        newObject.variables['linekey_type_' + (index + 1)] = item?.type || ''
+        newObject.variables['linekey_value_' + (index + 1)] = item?.value || ''
+        newObject.variables['linekey_label_' + (index + 1)] = item?.label || ''
+      })
+      if (!isEmpty(newObject)) {
+        try {
+          // setDeviceNewConfigurationLoaded(false)
+          //setDeviceNewConfigurationisLoading(true)
+          await saveBtnsConfig(macAddressDevice, newObject)
+          // After new configuration upload reload physical phone
+          if (deviceId !== '' || deviceId !== undefined) {
+            reloadPhysicalPhone(deviceId)
+          }
+          // setDeviceNewConfigurationLoaded(true)
+          //setDeviceNewConfigurationisLoading(false)
+        } catch (error) {
+          setGetConfigurationInformationError('Cannot retrieve configuration information')
+        }
+      }
+    }
+
+    const reloadPhysicalPhone = async (id: string) => {
+      try {
+        await reloadPhysicalPhone(id)
+      } catch (error) {
+        console.log('error reloading physical phone', error)
+      }
+    }
+
     return (
       <>
         <DraggableRows
@@ -267,6 +315,7 @@ export const ConfigureKeysSection = forwardRef<HTMLButtonElement, ConfigureKeysS
           isSetKeysToAllOperatorsClicked={isSetKeysToAllOperatorsClicked}
           onResetKeysToOperatorsClicked={handleResetKeysToOperatorsClicked}
           onChangeKeysObject={handleIsInformationLineShow}
+          onChangeFinalkeysObject={handleEditNewKeysObject}
         ></DraggableRows>
         {/* Button for add new row */}
         {isExtraRowActive && (
@@ -333,10 +382,7 @@ export const ConfigureKeysSection = forwardRef<HTMLButtonElement, ConfigureKeysS
         {isInformationLineShow > 0 ? (
           <div className='flex justify-between space-x-3 items-center'>
             <div className='relative '>
-              <InlineNotification
-                type='info'
-                title={t('Devices.Edit done')}
-              >
+              <InlineNotification type='info' title={t('Devices.Edit done')}>
                 <p>
                   {isInformationLineShow === 1
                     ? t('Devices.Edit inline information message one row', {
@@ -354,7 +400,12 @@ export const ConfigureKeysSection = forwardRef<HTMLButtonElement, ConfigureKeysS
                   {t('Common.Cancel')}
                 </span>
               </Button>
-              <Button variant='primary' type='submit' className='mb-4 ml-4'>
+              <Button
+                variant='primary'
+                type='submit'
+                className='mb-4 ml-4'
+                onClick={() => handleUpdateKeysList()}
+              >
                 <span className='leading-5 text-sm font-medium'>{t('Devices.Confirm edits')}</span>
               </Button>
             </div>
@@ -366,7 +417,12 @@ export const ConfigureKeysSection = forwardRef<HTMLButtonElement, ConfigureKeysS
                 {t('Common.Cancel')}
               </span>
             </Button>
-            <Button variant='primary' type='submit' className='mb-4 ml-4'>
+            <Button
+              variant='primary'
+              type='submit'
+              className='mb-4 ml-4'
+              onClick={() => handleUpdateKeysList()}
+            >
               <span className='leading-5 text-sm font-medium'>{t('Devices.Confirm edits')}</span>
             </Button>
           </div>

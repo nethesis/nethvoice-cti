@@ -38,6 +38,7 @@ interface DraggableRowsProps {
   isSetKeysToAllOperatorsClicked: any
   onResetKeysToOperatorsClicked: () => void
   onChangeKeysObject: (numberEdited: any) => void
+  onChangeFinalkeysObject: (finalKeysObject: any) => void
 }
 
 export default function DraggableRows({
@@ -51,6 +52,7 @@ export default function DraggableRows({
   isSetKeysToAllOperatorsClicked,
   onResetKeysToOperatorsClicked,
   onChangeKeysObject,
+  onChangeFinalkeysObject,
 }: DraggableRowsProps) {
   const [buttonsStatusObject, setButtonsStatusObject] = useState<any>([])
 
@@ -63,6 +65,17 @@ export default function DraggableRows({
 
   const updateSelectedTypeKey = (newTypeKey: string) => {
     setKeysTypeSelected(newTypeKey)
+  }
+
+  const [isContactSelected, setIsContactSelected] = useState<boolean>(false)
+
+  const updatePhonebookContactInformation = (statusModal: boolean) => {
+    setIsContactSelected(statusModal)
+  }
+
+  const [selectedUserNameInformation, setSelectedUserNameInformation] = useState<any>(null)
+  const updateSelectedUserName = (newUserNameInformation: string) => {
+    setSelectedUserNumber(newUserNameInformation)
   }
 
   //check if user select a type from combobox
@@ -121,6 +134,7 @@ export default function DraggableRows({
     }
   }, [deviceButtonConfigurationInformation, usableKeys])
 
+  // Insert new key information from operators store
   useEffect(() => {
     if (isSetKeysToAllOperatorsClicked) {
       const updatedButtons: any = [...buttonsStatusObject]
@@ -135,7 +149,7 @@ export default function DraggableRows({
           const newButton: any = {
             id: index + 1,
             type: 'blf',
-            label: `${operator?.name} ${exten}`,
+            label: `${operator?.name}`,
             value: exten,
           }
 
@@ -171,7 +185,7 @@ export default function DraggableRows({
       return buttonLabel.includes(filterText)
     })
 
-    if (updatedFilteredButtons.length < 11) {
+    if (updatedFilteredButtons?.length < 11) {
       setVisibleFilter(false)
       onVisibilityPagination(false)
     } else {
@@ -209,13 +223,37 @@ export default function DraggableRows({
 
         // Save selected row data before swapping
         const selectedRow: any = { ...updatedButtons[targetIndex] }
+        let typeSelectedLabelValue = ''
+        switch (keysTypeSelected) {
+          case 'blf':
+            typeSelectedLabelValue = operators?.extensions[selectedUserInformation]?.name || '-'
+            break
+          case 'speedCall':
+            typeSelectedLabelValue = !isContactSelected
+              ? operators?.extensions[selectedUserInformation]?.name || '-'
+              : selectedUserInformation !== ''
+              ? selectedUserInformation
+              : '-'
+            break
+          case 'line':
+            typeSelectedLabelValue = t('Devices.Line')
+            break
+          case 'dnd':
+            typeSelectedLabelValue = t('Devices.Do not disturb (DND)')
+            break
+          case 'toggleQueue':
+            typeSelectedLabelValue = t('Devices.Toggle login/logout queue')
+            break
+          default:
+            break
+        }
 
         // Update the row with new data
         updatedButtons[targetIndex] = {
           ...selectedRow,
           type: keysTypeSelected,
           value: selectedUserInformation,
-          label: operators?.extensions[selectedUserInformation]?.name || '-',
+          label: typeSelectedLabelValue || '-',
         }
 
         // Update status with new data
@@ -277,7 +315,7 @@ export default function DraggableRows({
     if (newButtonData) {
       // Find the index of the row to update with same id
       const existingRowIndex = buttonsStatusObject.findIndex(
-        (button: any) => button.id === newButtonData.id,
+        (button: any) => button?.id === newButtonData?.id,
       )
 
       if (existingRowIndex !== -1) {
@@ -361,7 +399,9 @@ export default function DraggableRows({
                 <span>
                   {buttonRow?.label !== '' ? buttonRow?.label : t('Devices.Not configurated')}
                 </span>
-                {buttonRow?.value !== '' && <span className='ml-1'>({buttonRow?.value})</span>}
+                {buttonRow?.type !== 'dnd' &&
+                  buttonRow?.type !== 'line' &&
+                  buttonRow?.value !== '' && <span className='ml-1'>({buttonRow?.value})</span>}
               </div>
               <div className='flex items-end justify-end'>
                 <Button variant='ghost' onClick={() => handleClickIcon(index)}>
@@ -488,8 +528,10 @@ export default function DraggableRows({
                     {/* Search user input */}
                     <DeviceSectionOperatorSearch
                       typeSelected={keysTypeSelected}
-                      updateSelectedUserInformation={updateSelectedUserInformation}
+                      updateSelectedUserNumber={updateSelectedUserInformation}
                       defaultValue={buttonRow?.label}
+                      updatePhonebookContactInformation={updatePhonebookContactInformation}
+                      updateSelectedUserName={updateSelectedUserName}
                     ></DeviceSectionOperatorSearch>
                   </>
                 )}
@@ -541,6 +583,7 @@ export default function DraggableRows({
 
   useEffect(() => {
     setFilteredButtons(buttonsStatusObject)
+    onChangeFinalkeysObject(buttonsStatusObject)
   }, [buttonsStatusObject, textFilter])
 
   useEffect(() => {

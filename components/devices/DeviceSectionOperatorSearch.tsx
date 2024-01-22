@@ -16,14 +16,20 @@ import { Avatar } from '../common'
 
 interface DeviceSectionOperatorSearchProps {
   typeSelected: string
-  updateSelectedUserInformation: Function
+  updateSelectedUserNumber: Function
+  updateSelectedUserName: Function
+  // Check if row is not empty
   defaultValue?: any
+  //check if a user is a operator or a contact
+  updatePhonebookContactInformation: Function
 }
 
 export const DeviceSectionOperatorSearch: FC<DeviceSectionOperatorSearchProps> = ({
   typeSelected,
-  updateSelectedUserInformation,
+  updateSelectedUserNumber,
+  updateSelectedUserName,
   defaultValue,
+  updatePhonebookContactInformation,
 }) => {
   const [query, setQuery] = useState('')
   const [results, setResults]: any[] = useState([])
@@ -145,6 +151,8 @@ export const DeviceSectionOperatorSearch: FC<DeviceSectionOperatorSearchProps> =
     const phoneProps = ['extension', 'cellphone', 'homephone', 'workphone']
     let selectedName = ''
     let selectNumber = ''
+    let selectedContactsPhonebook = ''
+
     if (result?.name) {
       selectedName = result?.name
       // setSelectedInformationUser(selectedName)
@@ -156,15 +164,40 @@ export const DeviceSectionOperatorSearch: FC<DeviceSectionOperatorSearchProps> =
 
       selectNumber =
         operatorId || phoneProps.map((prop) => result[prop]).find((value) => value) || ''
+
+      if (result?.resultType === 'contact') {
+        selectedContactsPhonebook =
+          result?.name !== '' && result?.name !== ' ' && result?.name !== null
+            ? result?.name
+            : result?.displayName !== '' &&
+              result?.displayName !== ' ' &&
+              result?.displayName !== null
+            ? result?.displayName
+            : result?.company !== '' && result?.company !== ' ' && result?.company !== null
+            ? result?.company
+            : '-'
+      }
     }
     if (selectNumber !== '') {
-      updateSelectedUserInformation(selectNumber)
+      updateSelectedUserNumber(selectNumber)
     }
     let fullInformation = ''
-    if (selectNumber !== '' && selectedName !== '') {
+
+    // check if selected user is an operator or a contact
+    if (selectNumber !== '' && selectedName !== '' && result?.resultType === 'operator') {
       fullInformation = `${selectedName} (${selectNumber.toString()})`
 
-      setUserFullInformation(fullInformation)
+      updatePhonebookContactInformation(false)
+      // setUserFullInformation(fullInformation)
+    } else if (
+      selectNumber !== '' &&
+      selectedContactsPhonebook !== '' &&
+      result?.resultType === 'contact'
+    ) {
+      fullInformation = `${selectedContactsPhonebook}`
+      updatePhonebookContactInformation(true)
+      setUserFullInformation(selectedContactsPhonebook)
+      updateSelectedUserName(fullInformation)
     } else if (defaultValue !== '') {
       fullInformation = defaultValue
     }
