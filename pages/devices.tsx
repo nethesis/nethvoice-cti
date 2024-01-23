@@ -96,14 +96,14 @@ const Devices: NextPage = () => {
             <div className='mt-4 flow-root'>
               <div className='-mx-4 -my-2 overflow-x-auto sm:-mx-6 lg:-mx-8'>
                 <div className='inline-block min-w-full py-2 align-middle sm:px-6 lg:px-8'>
-                  <div className='overflow-hidden shadow ring-1 ring-black ring-opacity-5 sm:rounded-lg'>
-                    <table className='min-w-full divide-y divide-gray-300'>
-                      <tbody className='divide-y divide-gray-200 bg-white'>
+                  <div className='overflow-hidden shadow ring-1 ring-black dark:ring-gray-500 ring-opacity-5 sm:rounded-lg'>
+                    <table className='min-w-full divide-y divide-gray-600 dark:divide-gray-500'>
+                      <tbody className='divide-y divide-gray-200 dark:divide-gray-500 bg-white dark:bg-gray-700'>
                         <tr>
-                          <td className='whitespace-nowrap py-4 pl-4 pr-3 text-sm font-medium text-gray-900 sm:pl-6'>
+                          <td className='whitespace-nowrap py-4 pl-4 pr-3 text-sm font-medium sm:pl-6'>
                             {t('Devices.Web phone')}
                           </td>
-                          <td className='whitespace-nowrap pl-[3.8rem] py-4 text-sm text-gray-500 sm:pl-[2.8rem]'>
+                          <td className='whitespace-nowrap pl-[3.8rem] py-4 text-sm sm:pl-[2.8rem]'>
                             {operators?.extensions[webrtcData[0]?.id]?.exten ===
                             profile?.default_device?.id ? (
                               <>
@@ -117,9 +117,11 @@ const Devices: NextPage = () => {
                               <>
                                 <FontAwesomeIcon
                                   icon={faCircleXmark}
-                                  className='mr-2 ml-[2.1rem] h-4 w-4 text-gray-700'
+                                  className='mr-2 ml-[2.1rem] h-4 w-4 text-gray-700 dark:text-gray-400'
                                 />
-                                {t('Devices.Offline')}
+                                <span className='text-gray-500 dark:text-gray-200'>
+                                  {t('Devices.Offline')}
+                                </span>
                               </>
                             )}
                           </td>
@@ -175,20 +177,17 @@ const Devices: NextPage = () => {
             <div className='mt-4 flow-root'>
               <div className='-mx-4 -my-2 overflow-x-auto sm:-mx-6 lg:-mx-8'>
                 <div className='inline-block min-w-full py-2 align-middle sm:px-6 lg:px-8'>
-                  <div className='overflow-hidden shadow ring-1 ring-black ring-opacity-5 sm:rounded-lg'>
-                    <table className='min-w-full divide-y divide-gray-300'>
-                      <thead className='bg-gray-50'>
-                        <tr>
+                  <div className='overflow-hidden shadow ring-1 ring-black dark:ring-gray-500 ring-opacity-5 sm:rounded-lg'>
+                    <table className='min-w-full divide-y divide-gray-300 dark:divide-gray-500'>
+                      <thead className='bg-gray-50 dark:bg-gray-800'>
+                        <tr className=''>
                           <th
                             scope='col'
-                            className='py-3.5 pl-4 pr-3 text-left text-sm font-semibold text-gray-900 sm:pl-6'
+                            className='py-3.5 pl-4 pr-3 text-left text-sm font-semibold sm:pl-6'
                           >
                             {t('Devices.Device name')}
                           </th>
-                          <th
-                            scope='col'
-                            className='px-3 py-3.5 text-left text-sm font-semibold text-gray-900'
-                          >
+                          <th scope='col' className='px-3 py-3.5 text-left text-sm font-semibold'>
                             {t('Devices.Status')}
                           </th>
                           <th
@@ -199,23 +198,23 @@ const Devices: NextPage = () => {
                           </th>
                           <th
                             scope='col'
-                            className='px-3 py-3.5 text-left text-sm font-semibold text-gray-900 sr-only'
+                            className='px-3 py-3.5 text-left text-sm font-semibold sr-only'
                           >
                             {t('Devices.Edit')}
                           </th>
 
-                          <th scope='col' className='relative py-3.5 text-gray-900 sm:pr-6'>
+                          <th scope='col' className='relative py-3.5 sm:pr-6'>
                             <span className='sr-only'>{t('Devices.Set as main device')}</span>
                           </th>
                         </tr>
                       </thead>
-                      <tbody className='divide-y divide-gray-200 bg-white'>
+                      <tbody className='divide-y divide-gray-200 dark:divide-gray-500 bg-white dark:bg-gray-700'>
                         {phoneData.map((phone: any) => (
                           <tr key={phone?.id} className=''>
-                            <td className='whitespace-nowrap py-4 pl-4 pr-3 text-sm font-medium text-gray-900 sm:pl-6 max-w-[3rem] overflow-hidden overflow-ellipsis'>
+                            <td className='whitespace-nowrap py-4 pl-4 pr-3 text-sm font-medium sm:pl-6 max-w-[3rem] overflow-hidden overflow-ellipsis'>
                               {phone?.description}
                             </td>
-                            <td className='whitespace-nowrap px-3 py-4 text-sm text-gray-500'>
+                            <td className='whitespace-nowrap px-3 py-4 text-sm'>
                               {/* {phone.status} */}{' '}
                               {operators?.extensions[phone?.id]?.status === 'online' ? (
                                 <>
@@ -229,9 +228,11 @@ const Devices: NextPage = () => {
                                 <>
                                   <FontAwesomeIcon
                                     icon={faCircleXmark}
-                                    className='mr-2 h-4 w-4 text-gray-700'
+                                    className='mr-2 h-4 w-4 text-gray-700 dark:text-gray-400'
                                   />
-                                  {t('Devices.Offline')}
+                                  <span className='text-gray-500 dark:text-gray-200'>
+                                    {t('Devices.Offline')}
+                                  </span>
                                 </>
                               )}
                             </td>
