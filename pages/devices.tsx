@@ -16,7 +16,7 @@ import {
 } from '@fortawesome/free-solid-svg-icons'
 import React from 'react'
 import { faOfficePhone } from '@nethesis/nethesis-solid-svg-icons'
-import { openShowEditPhysicalPhone, setMainDevice } from '../lib/devices'
+import { getDevicesPin, openShowEditPhysicalPhone, setMainDevice } from '../lib/devices'
 import { Badge, Dropdown } from '../components/common'
 import { useDispatch } from 'react-redux'
 import { Dispatch } from '../store'
@@ -68,6 +68,27 @@ const Devices: NextPage = () => {
       }
     }
   }
+
+  const [firstRender, setFirstRender] = useState(true)
+  const [getPinError, setGetPinError] = useState('')
+  const [pinObject, setPinObject] = useState<any>({})
+
+  useEffect(() => {
+    if (firstRender) {
+      setFirstRender(false)
+      return
+    }
+    const retrievePinStatus = async () => {
+      try {
+        setGetPinError('')
+        const pin = await getDevicesPin()
+        setPinObject(pin)
+      } catch (error) {
+        setGetPinError('Cannot retrieve pin information')
+      }
+    }
+    retrievePinStatus()
+  }, [firstRender])
 
   return (
     <>
@@ -247,7 +268,7 @@ const Devices: NextPage = () => {
                             </td>
                             <td
                               className='whitespace-nowrap px-3 py-4 text-sm text-primary dark:text-primaryDark cursor-pointer'
-                              onClick={() => openShowEditPhysicalPhone(phone)}
+                              onClick={() => openShowEditPhysicalPhone(phone, pinObject)}
                             >
                               <FontAwesomeIcon
                                 icon={faPenToSquare}

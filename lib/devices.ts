@@ -5,11 +5,16 @@ import axios from 'axios'
 import { handleNetworkError } from './utils'
 import { store } from '../store'
 
-export const openShowEditPhysicalPhone = (emptyString: any) => {
+export const openShowEditPhysicalPhone = (phoneInformation: any, pinstatus: any) => {
+  let phoneModel: any = {}
+  phoneModel = {
+    ...phoneInformation,
+    pinStatus: pinstatus,
+  }
   store.dispatch.sideDrawer.update({
     isShown: true,
     contentType: 'showEditPhysicalPhone',
-    config: emptyString,
+    config: phoneModel,
   })
 }
 
@@ -66,6 +71,26 @@ export async function saveBtnsConfig(macAddress: any, keyUpdatedObject: any) {
 export async function reloadPhysicalPhone(exten: any) {
   try {
     const { data, status } = await axios.post('/astproxy/phone_reload', { exten: exten })
+    return data
+  } catch (error) {
+    handleNetworkError(error)
+    throw error
+  }
+}
+
+export async function getDevicesPin() {
+  try {
+    const { data, status } = await axios.get('/astproxy/pinstatus')
+    return data
+  } catch (error) {
+    handleNetworkError(error)
+    throw error
+  }
+}
+
+export async function setPin(obj: any) {
+  try {
+    const { data, status } = await axios.post('/astproxy/pin', obj)
     return data
   } catch (error) {
     handleNetworkError(error)

@@ -14,14 +14,14 @@ import {
 } from '@fortawesome/free-solid-svg-icons'
 import { t } from 'i18next'
 import { DeviceSectionOperatorSearch } from './DeviceSectionOperatorSearch'
-import { DragDropContext, Draggable, Droppable } from 'react-beautiful-dnd'
 import { KeyTypeSelect } from './KeyTypeSelect'
 import { Tooltip } from 'react-tooltip'
-import { isEmpty, isEqual } from 'lodash'
-import { Button, InlineNotification, TextInput } from '../common'
+import { isEmpty, isEqual, set } from 'lodash'
+import { Button, TextInput } from '../common'
 import { Combobox } from '@headlessui/react'
 import { useSelector } from 'react-redux'
 import { RootState } from '../../store'
+import { motion } from 'framer-motion'
 
 function classNames(...classes: string[]) {
   return classes.filter(Boolean).join(' ')
@@ -74,16 +74,10 @@ export default function DraggableRows({
   }
 
   const [selectedUserNameInformation, setSelectedUserNameInformation] = useState<any>(null)
-  const updateSelectedUserName = (newUserNameInformation: string) => {
-    setSelectedUserNumber(newUserNameInformation)
-  }
 
-  //check if user select a type from combobox
-  useEffect(() => {
-    if (keysTypeSelected !== null && keysTypeSelected !== '') {
-      setMissingInputError(false)
-    }
-  }, [keysTypeSelected])
+  const updateSelectedUserName = (newUserNameInformation: string) => {
+    setSelectedUserNameInformation(newUserNameInformation)
+  }
 
   const textFilterRef = useRef() as React.MutableRefObject<HTMLInputElement>
 
@@ -178,14 +172,25 @@ export default function DraggableRows({
 
   const [visibleFilter, setVisibleFilter] = useState(false)
 
-  useEffect(() => {
+  const [updatedFilterButtons, setUpdatedFilterButtons] = useState<any>([])
+  const [currentFilteredItems, setCurrentFilteredItems] = useState<any>([])
+
+  const updateFilterButtonsValue = () => {
     const updatedFilteredButtons = buttonsStatusObject?.filter((button: any) => {
       const buttonLabel = `${button?.id} - ${button?.label} (${button?.value})`.toLowerCase()
       const filterText = textFilter.toLowerCase()
       return buttonLabel.includes(filterText)
     })
+    setUpdatedFilterButtons(updatedFilteredButtons)
+    const indexOfLastItem = currentPage * itemsPerPage
+    const indexOfFirstItem = indexOfLastItem - itemsPerPage
+    const currentFilterItems = updatedFilteredButtons.slice(indexOfFirstItem, indexOfLastItem)
+    setCurrentFilteredItems(currentFilterItems)
+  }
 
-    if (updatedFilteredButtons?.length < 11) {
+  useEffect(() => {
+    updateFilterButtonsValue()
+    if (updatedFilterButtons?.length < 11) {
       setVisibleFilter(false)
       onVisibilityPagination(false)
     } else {
@@ -193,13 +198,17 @@ export default function DraggableRows({
       onVisibilityPagination(true)
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [buttonsStatusObject, textFilter])
+  }, [
+    buttonsStatusObject,
+    textFilter,
+    currentPage,
+    itemsPerPage,
+    usableKeys,
+    deviceButtonConfigurationInformation,
+    filteredButtons,
+  ])
 
   const [selectedRowIndex, setSelectedRowIndex] = useState<number | null>(null)
-
-  const updateSelectedRowIndex = (newIndex: number) => {
-    setSelectedRowIndex(newIndex)
-  }
 
   const [editedRowIndex, setEditedRowIndex] = useState<number | null>(null)
 
@@ -207,9 +216,11 @@ export default function DraggableRows({
 
   const resetInput = () => {
     setSelectedUserNumber(null)
+    setSelectedUserNameInformation(null)
     setKeysTypeSelected(null)
     setEditedRowIndex(null)
     setIsUserEditingIndex(false)
+    setSelectedRowIndex(null)
   }
 
   const [numberOfKeysEdited, setNumberOfkeysEdited] = useState<number>(0)
@@ -226,14 +237,22 @@ export default function DraggableRows({
         let typeSelectedLabelValue = ''
         switch (keysTypeSelected) {
           case 'blf':
-            typeSelectedLabelValue = operators?.extensions[selectedUserInformation]?.name || '-'
+            typeSelectedLabelValue && selectedUserNumber !== null
+              ? (typeSelectedLabelValue = operators?.extensions[selectedUserNumber]?.name || '-')
+              : rowData?.label
+              ? (typeSelectedLabelValue = rowData?.label)
+              : '-'
             break
           case 'speedCall':
-            typeSelectedLabelValue = !isContactSelected
-              ? operators?.extensions[selectedUserInformation]?.name || '-'
-              : selectedUserInformation !== ''
-              ? selectedUserInformation
-              : '-'
+            isContactSelected && selectedUserNumber !== null
+              ? selectedUserNameInformation !== ''
+                ? (typeSelectedLabelValue = selectedUserNameInformation)
+                : rowData?.label
+                ? (typeSelectedLabelValue = rowData?.label)
+                : (typeSelectedLabelValue = '-')
+              : rowData?.label
+              ? (typeSelectedLabelValue = rowData?.label)
+              : (typeSelectedLabelValue = '-')
             break
           case 'line':
             typeSelectedLabelValue = t('Devices.Line')
@@ -248,29 +267,39 @@ export default function DraggableRows({
             break
         }
 
-        // Update the row with new data
-        updatedButtons[targetIndex] = {
-          ...selectedRow,
-          type: keysTypeSelected,
-          value: selectedUserInformation,
-          label: typeSelectedLabelValue || '-',
-        }
+        if (keysTypeSelected === '' || keysTypeSelected === null) {
+          setMissingInputError(true)
+        } else {
+          setMissingInputError(false)
+          // Update the row with new data
+          updatedButtons[targetIndex] = {
+            ...selectedRow,
+            type: keysTypeSelected,
+            // if user doesn't type anything, keep the previous value
+            value:
+              selectedUserNumber !== null
+                ? selectedUserNumber
+                : rowData?.value !== null &&
+                  keysTypeSelected !== 'blf' &&
+                  keysTypeSelected !== 'speedCall'
+                ? rowData?.value
+                : null,
+            label: typeSelectedLabelValue || '-',
+          }
 
-        // Update status with new data
-        setFilteredButtons(updatedButtons)
-        setButtonsStatusObject(updatedButtons)
+          // Update status with new data
+          setFilteredButtons(updatedButtons)
+          setButtonsStatusObject(updatedButtons)
 
-        setIsEditing(true)
-        setMissingInputError(false)
-        resetInput()
-        const changes = getChanges(originalButtonsStatus, updatedButtons)
-        if (changes?.length > 0) {
-          setNumberOfkeysEdited(changes?.length)
-          onChangeKeysObject(changes?.length)
+          setIsEditing(true)
+          resetInput()
+          const changes = getChanges(originalButtonsStatus, updatedButtons)
+          if (changes?.length > 0) {
+            setNumberOfkeysEdited(changes?.length)
+            onChangeKeysObject(changes?.length)
+          }
         }
       }
-    } else {
-      setMissingInputError(true)
     }
   }
 
@@ -328,15 +357,16 @@ export default function DraggableRows({
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [newButtonData])
 
-  const [selectedUserInformation, setSelectedUserNumber] = useState<any>(null)
+  const [selectedUserNumber, setSelectedUserNumber] = useState<any>(null)
 
-  const updateSelectedUserInformation = (newUserInformation: string) => {
-    setSelectedUserNumber(newUserInformation)
+  const updateSelectedUserNumber = (newUserNumberInformation: string) => {
+    setSelectedUserNumber(newUserNumberInformation)
   }
 
-  const handleClickIcon = (clickedIndex: number) => {
+  const handleClickIcon = (clickedIndex: number, typeSelected: string) => {
     setSelectedRowIndex((prevIndex) => (prevIndex === clickedIndex ? null : clickedIndex))
     setIsEditing(false)
+    setKeysTypeSelected((prevIndex: any) => (prevIndex === clickedIndex ? undefined : typeSelected))
   }
 
   const [query, setQuery] = useState('')
@@ -361,258 +391,6 @@ export default function DraggableRows({
     }
   }, [selectedRowIndex])
 
-  // Dynamic row list of physical phone keys
-  const renderButtons = () => {
-    const filteredButtons = buttonsStatusObject?.filter((button: any) => {
-      const buttonLabel = `${button?.id} - ${button?.label} (${button?.value})`.toLowerCase()
-      const filterText = textFilter.toLowerCase()
-      return buttonLabel.includes(filterText)
-    })
-
-    const indexOfLastItem = currentPage * itemsPerPage
-    const indexOfFirstItem = indexOfLastItem - itemsPerPage
-    const currentFilteredItems = filteredButtons.slice(indexOfFirstItem, indexOfLastItem)
-
-    return (
-      <DragDropContext onDragEnd={handleDragEnd}>
-        <Droppable droppableId='phoneKeysList'>
-          {(provided) => (
-            <ul {...provided?.droppableProps} ref={provided?.innerRef}>
-              {currentFilteredItems.map((buttonRow: any, index: number) => (
-                <Draggable
-                  key={buttonRow?.id}
-                  draggableId={buttonRow?.id?.toString()}
-                  index={index}
-                >
-                  {(provided, snapshot) => (
-                    <li
-                      ref={provided?.innerRef}
-                      {...provided?.draggableProps}
-                      {...provided?.dragHandleProps}
-                      className={`${snapshot?.isDragging ? 'bg-gray-100' : ''}`}
-                    >
-                      <div
-                        className={`${
-                          selectedRowIndex === index && !isEditing ? 'bg-gray-100' : ''
-                        } grid items-center py-4 px-2 grid-cols-[4rem,auto,1rem]`}
-                      >
-                        <div className='flex items-center'>
-                          <FontAwesomeIcon
-                            icon={faGripVertical}
-                            className='h-4 w-4 text-primary dark:text-primaryDark mr-2'
-                          />
-                          <span>{buttonRow?.id} -</span>
-                        </div>
-
-                        <div className='flex items-center justify-start whitespace-nowrap'>
-                          <span>
-                            {buttonRow?.label !== ''
-                              ? buttonRow?.label
-                              : t('Devices.Not configurated')}
-                          </span>
-                          {buttonRow?.type !== 'dnd' &&
-                            buttonRow?.type !== 'line' &&
-                            buttonRow?.value !== '' && (
-                              <span className='ml-1'>({buttonRow?.value})</span>
-                            )}
-                        </div>
-                        <div className='flex items-end justify-end'>
-                          <Button variant='ghost' onClick={() => handleClickIcon(index)}>
-                            <FontAwesomeIcon
-                              icon={
-                                selectedRowIndex === index && !isEditing
-                                  ? faChevronUp
-                                  : faChevronDown
-                              }
-                              className='h-4 w-4 cursor-pointer'
-                            />
-                          </Button>
-                        </div>
-                      </div>
-
-                      {selectedRowIndex === index && !isEditing && (
-                        <div className='px-2'>
-                          <div className='flex items-center mt-4'>
-                            <span>{t('Devices.Key position')}</span>
-                            <FontAwesomeIcon
-                              icon={faCircleInfo}
-                              className='h-4 w-4 pl-2 text-primary dark:text-primaryDark flex items-center tooltip-configure-key-position-information'
-                              aria-hidden='true'
-                            />
-                            {/* Pin information tooltip */}
-                            <Tooltip
-                              anchorSelect='.tooltip-configure-key-position-information'
-                              place='right'
-                            >
-                              {t('Devices.Pin information tooltip') || ''}
-                            </Tooltip>
-                          </div>
-
-                          {/* Choose new index for selected key */}
-                          <Combobox
-                            as='div'
-                            value={editedRowIndex}
-                            onChange={(value: any) => {
-                              selectNewRowIndex(value)
-                            }}
-                            defaultValue={selectedRowIndex + 1}
-                          >
-                            <div className='relative mt-2 mb-4'>
-                              <Combobox.Input
-                                className='w-full rounded-md border-0 bg-white py-1.5 pl-3 pr-12 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 focus:ring-2 focus:ring-inset focus:ring-emerald-600 sm:text-sm sm:leading-6'
-                                onChange={(event) => setQuery(event?.target?.value)}
-                                displayValue={(number: any) => number?.toString()}
-                                placeholder={`${t(
-                                  'Devices.Search physical phone draggable row index placeholder message',
-                                  {
-                                    usableKeys,
-                                  },
-                                )}`}
-                              />
-
-                              {/* Choose a number from 1 to {usableKeys} */}
-                              <Combobox.Button className='absolute inset-y-0 right-0 flex items-center rounded-r-md px-2 focus:outline-none'>
-                                <FontAwesomeIcon
-                                  icon={faChevronDown}
-                                  className='h-4 w-4 mr-1 flex items-center'
-                                  aria-hidden='true'
-                                />
-                              </Combobox.Button>
-
-                              {filteredNumbers?.length > 0 && (
-                                <Combobox.Options className='absolute z-10 mt-1 max-h-60 w-full overflow-auto rounded-md bg-white py-1 text-base shadow-lg ring-1 ring-black ring-opacity-5 focus:outline-none sm:text-sm'>
-                                  {filteredNumbers.map((number) => (
-                                    <Combobox.Option
-                                      key={number}
-                                      value={number}
-                                      className={({ active }) =>
-                                        classNames(
-                                          'relative cursor-default select-none py-2 pl-8 pr-4',
-                                          active
-                                            ? 'bg-emerald-600 text-white'
-                                            : 'text-gray-900 dark:text-gray-200',
-                                        )
-                                      }
-                                    >
-                                      {({ active, selected }) => (
-                                        <>
-                                          <span
-                                            className={`${
-                                              selected ? 'block truncate font-semibold' : ''
-                                            } `}
-                                          >
-                                            {number}
-                                          </span>
-
-                                          {selected && (
-                                            <span
-                                              className={classNames(
-                                                'absolute inset-y-0 left-0 flex items-center pl-1.5',
-                                                active ? 'text-white' : 'text-emerald-600',
-                                              )}
-                                            >
-                                              <FontAwesomeIcon
-                                                icon={faCheck}
-                                                className='h-4 w-4 mr-3 text-primary dark:text-primaryDark flex items-center tooltip-configure-key-position-information'
-                                                aria-hidden='true'
-                                              />
-                                            </span>
-                                          )}
-                                        </>
-                                      )}
-                                    </Combobox.Option>
-                                  ))}
-                                </Combobox.Options>
-                              )}
-                            </div>
-                          </Combobox>
-
-                          {/* Choose new type for selected key */}
-                          <KeyTypeSelect
-                            defaultSelectedType={buttonRow?.type}
-                            updateSelectedTypeKey={updateSelectedTypeKey}
-                            inputMissing={missingInputError}
-                          />
-
-                          {/* Insert name or number only if type equal to blf or speedCall */}
-                          {(buttonRow?.type === 'blf' ||
-                            buttonRow?.type === 'speedCall' ||
-                            keysTypeSelected === 'blf' ||
-                            keysTypeSelected === 'speedCall') && (
-                            <>
-                              <div className='mb-2'>
-                                <span>
-                                  {keysTypeSelected === 'blf'
-                                    ? t('Devices.Name or extension')
-                                    : t('Devices.Name or number')}
-                                </span>
-                              </div>
-                              {/* Search user input */}
-                              <DeviceSectionOperatorSearch
-                                typeSelected={keysTypeSelected}
-                                updateSelectedUserNumber={updateSelectedUserInformation}
-                                defaultValue={buttonRow?.label}
-                                updatePhonebookContactInformation={
-                                  updatePhonebookContactInformation
-                                }
-                                updateSelectedUserName={updateSelectedUserName}
-                              ></DeviceSectionOperatorSearch>
-                            </>
-                          )}
-                          <div className='flex items-center space-x-3'>
-                            {/* Confirm button */}
-                            <div className='flex items-center mb-6'>
-                              <Button
-                                variant='primary'
-                                onClick={() => {
-                                  confirmEditRow(buttonRow)
-                                }}
-                              >
-                                <span className='text-sm font-medium leading-5'>
-                                  {t('Common.Confirm')}
-                                </span>
-                              </Button>
-                            </div>
-
-                            {/* Delete key button */}
-                            <div className='flex items-center mb-6'>
-                              <Button
-                                variant='ghost'
-                                onClick={() => {
-                                  deleteRow(buttonRow)
-                                }}
-                              >
-                                <FontAwesomeIcon
-                                  icon={faTrash}
-                                  className='h-4 w-4 mr-3 text-primary dark:text-primaryDark flex items-center tooltip-configure-key-position-information'
-                                  aria-hidden='true'
-                                ></FontAwesomeIcon>
-                                <span className='text-primary dark:text-primaryDark text-sm font-medium leading-5'>
-                                  {t('Common.Delete')}
-                                </span>
-                              </Button>
-                            </div>
-                          </div>
-                        </div>
-                      )}
-                      {/* Divider */}
-                      <div className='relative col-span-3'>
-                        <div className='absolute inset-0 flex items-center' aria-hidden='true'>
-                          <div className='w-full border-t border-gray-300 dark:border-gray-600' />
-                        </div>
-                      </div>
-                    </li>
-                  )}
-                </Draggable>
-              ))}
-              {provided?.placeholder}
-            </ul>
-          )}
-        </Droppable>
-      </DragDropContext>
-    )
-  }
-
   useEffect(() => {
     setFilteredButtons(buttonsStatusObject)
     onChangeFinalkeysObject(buttonsStatusObject)
@@ -622,20 +400,43 @@ export default function DraggableRows({
     onSelectFilteredButtons(filteredButtons)
   }, [filteredButtons, onSelectFilteredButtons])
 
-  const handleDragEnd = (result: any) => {
-    if (!result.destination) return
+  const [draggedIndex, setDraggedIndex] = useState(null)
+  const [dragOverIndex, setDragOverIndex] = useState(null)
 
-    const updatedButtonsStatus = [...buttonsStatusObject]
-    const [draggedButton] = updatedButtonsStatus.splice(result?.source?.index, 1)
-    updatedButtonsStatus.splice(result?.destination?.index, 0, draggedButton)
+  const handleDragStart = (e: any, index: any) => {
+    e.dataTransfer.setData('text/plain', index)
+    setDraggedIndex(index)
+  }
 
-    // Update index after drag
-    const updatedButtonsWithIndices = updatedButtonsStatus.map((button, index) => ({
-      ...button,
+  const handleDragOver = (e: any, index: any) => {
+    e.preventDefault()
+    setDragOverIndex(index)
+  }
+
+  const handleDragEnter = (index: any) => {
+    setDragOverIndex(index)
+  }
+
+  const handleDragLeave = () => {
+    setDragOverIndex(null)
+  }
+
+  const handleDrop = (e: any, targetIndex: any) => {
+    e.preventDefault()
+    const droppedIndex = Number(e.dataTransfer.getData('text/plain'))
+    const newItems = [...currentFilteredItems]
+
+    const [removed] = newItems.splice(droppedIndex, 1)
+    newItems.splice(targetIndex, 0, removed)
+
+    const updatedItems = newItems.map((item, index) => ({
+      ...item,
       id: index + 1,
     }))
 
-    setButtonsStatusObject(updatedButtonsWithIndices)
+    setCurrentFilteredItems(updatedItems)
+    setDraggedIndex(null)
+    setDragOverIndex(null)
   }
 
   return (
@@ -653,7 +454,237 @@ export default function DraggableRows({
         />
       </div>
       <div className='overflow-y-auto scrollbar-thin scrollbar-thumb-gray-400 dark:scrollbar-thumb-gray-400 scrollbar-thumb-rounded-full scrollbar-thumb-opacity-50 scrollbar-track-gray-200 dark:scrollbar-track-gray-900 scrollbar-track-rounded-full scrollbar-track-opacity-25'>
-        <div className='pt-2 max-h-[24rem]'>{renderButtons()}</div>
+        <div className='pt-2 max-h-[24rem]'>
+          <ul>
+            {currentFilteredItems.map((buttonRow: any, index: number) => (
+              <motion.li
+                key={buttonRow?.id}
+                draggable
+                onDragStart={(e) => handleDragStart(e, index)}
+                onDragOver={(e) => handleDragOver(e, index)}
+                onDragEnter={() => handleDragEnter(index)}
+                onDragLeave={handleDragLeave}
+                onDrop={(e) => handleDrop(e, index)}
+                initial={{ opacity: 1, y: 0 }}
+                animate={{
+                  opacity: draggedIndex === index ? 0.5 : 1,
+                  y: draggedIndex === index ? 0 : 0,
+                }}
+                transition={{ duration: 0.2 }}
+              >
+                <div
+                  className={`${selectedRowIndex === index && !isEditing ? 'bg-gray-100' : ''}
+                   grid items-center py-4 px-2 grid-cols-[4rem,auto,1rem]`}
+                  style={{
+                    background:
+                      dragOverIndex === index
+                        ? '#d1fae5'
+                        : draggedIndex === index
+                        ? '#f0f0f0'
+                        : 'transparent',
+                  }}
+                >
+                  <div className='flex items-center'>
+                    <FontAwesomeIcon
+                      icon={faGripVertical}
+                      className='h-4 w-4 text-primary dark:text-primaryDark mr-2'
+                    />
+                    <span>{buttonRow?.id} -</span>
+                  </div>
+
+                  <div className='flex items-center justify-start whitespace-nowrap'>
+                    <span>
+                      {buttonRow?.label !== '' ? buttonRow?.label : t('Devices.Not configurated')}
+                    </span>
+                    {buttonRow?.type !== 'dnd' &&
+                      buttonRow?.type !== 'line' &&
+                      buttonRow?.value !== '' && <span className='ml-1'>({buttonRow?.value})</span>}
+                  </div>
+                  <div className='flex items-end justify-end'>
+                    <Button variant='ghost' onClick={() => handleClickIcon(index, buttonRow?.type)}>
+                      <FontAwesomeIcon
+                        icon={
+                          selectedRowIndex === index && !isEditing ? faChevronUp : faChevronDown
+                        }
+                        className='h-4 w-4 cursor-pointer'
+                      />
+                    </Button>
+                  </div>
+                </div>
+
+                {selectedRowIndex === index && !isEditing && (
+                  <div className='px-2'>
+                    <div className='flex items-center mt-4'>
+                      <span>{t('Devices.Key position')}</span>
+                      <FontAwesomeIcon
+                        icon={faCircleInfo}
+                        className='h-4 w-4 pl-2 text-primary dark:text-primaryDark flex items-center tooltip-configure-key-position-information'
+                        aria-hidden='true'
+                      />
+                      {/* Pin information tooltip */}
+                      <Tooltip
+                        anchorSelect='.tooltip-configure-key-position-information'
+                        place='right'
+                      >
+                        {t('Devices.Pin information tooltip') || ''}
+                      </Tooltip>
+                    </div>
+
+                    {/* Choose new index for selected key */}
+                    <Combobox
+                      as='div'
+                      value={editedRowIndex}
+                      onChange={(value: any) => {
+                        selectNewRowIndex(value)
+                      }}
+                      defaultValue={selectedRowIndex + 1}
+                    >
+                      <div className='relative mt-2 mb-4'>
+                        <Combobox.Input
+                          className='w-full rounded-md border-0 bg-white py-1.5 pl-3 pr-12 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 focus:ring-2 focus:ring-inset focus:ring-emerald-600 sm:text-sm sm:leading-6'
+                          onChange={(event) => setQuery(event?.target?.value)}
+                          displayValue={(number: any) => number?.toString()}
+                          placeholder={`${t(
+                            'Devices.Search physical phone draggable row index placeholder message',
+                            {
+                              usableKeys,
+                            },
+                          )}`}
+                        />
+
+                        {/* Choose a number from 1 to {usableKeys} */}
+                        <Combobox.Button className='absolute inset-y-0 right-0 flex items-center rounded-r-md px-2 focus:outline-none'>
+                          <FontAwesomeIcon
+                            icon={faChevronDown}
+                            className='h-4 w-4 mr-1 flex items-center'
+                            aria-hidden='true'
+                          />
+                        </Combobox.Button>
+
+                        {filteredNumbers?.length > 0 && (
+                          <Combobox.Options className='absolute z-10 mt-1 max-h-60 w-full overflow-auto rounded-md bg-white py-1 text-base shadow-lg ring-1 ring-black ring-opacity-5 focus:outline-none sm:text-sm'>
+                            {filteredNumbers.map((number) => (
+                              <Combobox.Option
+                                key={number}
+                                value={number}
+                                className={({ active }) =>
+                                  classNames(
+                                    'relative cursor-default select-none py-2 pl-8 pr-4',
+                                    active
+                                      ? 'bg-emerald-600 text-white'
+                                      : 'text-gray-900 dark:text-gray-200',
+                                  )
+                                }
+                              >
+                                {({ active, selected }) => (
+                                  <>
+                                    <span
+                                      className={`${
+                                        selected ? 'block truncate font-semibold' : ''
+                                      } `}
+                                    >
+                                      {number}
+                                    </span>
+
+                                    {selected && (
+                                      <span
+                                        className={classNames(
+                                          'absolute inset-y-0 left-0 flex items-center pl-1.5',
+                                          active ? 'text-white' : 'text-emerald-600',
+                                        )}
+                                      >
+                                        <FontAwesomeIcon
+                                          icon={faCheck}
+                                          className='h-4 w-4 mr-3 text-primary dark:text-primaryDark flex items-center tooltip-configure-key-position-information'
+                                          aria-hidden='true'
+                                        />
+                                      </span>
+                                    )}
+                                  </>
+                                )}
+                              </Combobox.Option>
+                            ))}
+                          </Combobox.Options>
+                        )}
+                      </div>
+                    </Combobox>
+
+                    {/* Choose new type for selected key */}
+                    <KeyTypeSelect
+                      defaultSelectedType={buttonRow?.type}
+                      updateSelectedTypeKey={updateSelectedTypeKey}
+                      inputMissing={missingInputError}
+                    />
+
+                    {/* Insert name or number only if type equal to blf or speedCall */}
+                    {((keysTypeSelected === undefined && buttonRow?.type === 'blf') ||
+                      (keysTypeSelected === undefined && buttonRow?.type === 'speedCall') ||
+                      keysTypeSelected === 'blf' ||
+                      keysTypeSelected === 'speedCall') && (
+                      <>
+                        <div className='mb-2'>
+                          <span>
+                            {keysTypeSelected === 'blf'
+                              ? t('Devices.Name or extension')
+                              : t('Devices.Name or number')}
+                          </span>
+                        </div>
+                        {/* Search user input */}
+                        <DeviceSectionOperatorSearch
+                          typeSelected={keysTypeSelected}
+                          updateSelectedUserNumber={updateSelectedUserNumber}
+                          defaultValue={buttonRow?.label}
+                          updatePhonebookContactInformation={updatePhonebookContactInformation}
+                          updateSelectedUserName={updateSelectedUserName}
+                        ></DeviceSectionOperatorSearch>
+                      </>
+                    )}
+                    <div className='flex items-center space-x-3'>
+                      {/* Confirm button */}
+                      <div className='flex items-center mb-6'>
+                        <Button
+                          variant='primary'
+                          onClick={() => {
+                            confirmEditRow(buttonRow)
+                          }}
+                        >
+                          <span className='text-sm font-medium leading-5'>
+                            {t('Common.Confirm')}
+                          </span>
+                        </Button>
+                      </div>
+
+                      {/* Delete key button */}
+                      <div className='flex items-center mb-6'>
+                        <Button
+                          variant='ghost'
+                          onClick={() => {
+                            deleteRow(buttonRow)
+                          }}
+                        >
+                          <FontAwesomeIcon
+                            icon={faTrash}
+                            className='h-4 w-4 mr-3 text-primary dark:text-primaryDark flex items-center tooltip-configure-key-position-information'
+                            aria-hidden='true'
+                          ></FontAwesomeIcon>
+                          <span className='text-primary dark:text-primaryDark text-sm font-medium leading-5'>
+                            {t('Common.Delete')}
+                          </span>
+                        </Button>
+                      </div>
+                    </div>
+                  </div>
+                )}
+                {/* Divider */}
+                <div className='relative col-span-3'>
+                  <div className='absolute inset-0 flex items-center' aria-hidden='true'>
+                    <div className='w-full border-t border-gray-300 dark:border-gray-600 mr-3' />
+                  </div>
+                </div>
+              </motion.li>
+            ))}
+          </ul>
+        </div>
       </div>
     </>
   )
