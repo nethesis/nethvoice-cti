@@ -203,26 +203,40 @@ export const DeviceSectionOperatorSearch: FC<DeviceSectionOperatorSearchProps> =
     }
 
     return fullInformation
-    // To DO - handle result selection
   }
 
   return (
     <Combobox as='div' value={selectedInformationUser} onChange={setSelectedInformationUser}>
       <div className='relative mt-2 mb-4'>
         <Combobox.Input
-          className='w-full rounded-md border-0 bg-white py-1.5 pl-3 pr-12 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 focus:ring-2 focus:ring-inset focus:ring-emerald-600 sm:text-sm sm:leading-6'
+          className='w-full rounded-md border-0 bg-white dark:bg-gray-600 py-1.5 pl-3 pr-12 text-gray-900 dark:text-gray-200 shadow-sm ring-1 ring-inset ring-gray-300 dark:ring-gray-400 focus:ring-2 focus:ring-inset focus:ring-emerald-600 sm:text-sm sm:leading-6 placeholder:dark:text-gray-200'
           onChange={debouncedChangeQuery}
           displayValue={(informationUser) => resultSelected(informationUser)}
           placeholder={t('Devices.Type to search') || ''}
         />
 
         {query?.length > 0 && (
-          <Combobox.Options className='absolute z-10 mt-1 max-h-64 w-full rounded-md bg-white py-1 text-base shadow-lg ring-1 ring-black ring-opacity-5 focus:outline-none sm:text-sm max-h-42 '>
+          <Combobox.Options className='absolute z-10 mt-1 max-h-64 w-full rounded-md bg-white dark:bg-gray-700 py-1 text-base shadow-lg ring-1 ring-black ring-opacity-5 focus:outline-none sm:text-sm max-h-42 '>
             <div
               className={classNames(
-                'max-h-64 min-w-0 flex-auto scroll-py-4 overflow-y-auto overflow-x-hidden scrollbar-thin scrollbar-thumb-gray-400 dark:scrollbar-thumb-gray-400 scrollbar-thumb-rounded-full scrollbar-thumb-opacity-50 scrollbar-track-gray-200 dark:scrollbar-track-gray-900 scrollbar-track-rounded-full scrollbar-track-opacity-25',
+                'max-h-60 min-w-0 flex-auto scroll-py-4 overflow-y-auto overflow-x-hidden scrollbar-thin scrollbar-thumb-gray-400 dark:scrollbar-thumb-gray-400 scrollbar-thumb-rounded-full scrollbar-thumb-opacity-50 scrollbar-track-gray-200 dark:scrollbar-track-gray-900 scrollbar-track-rounded-full scrollbar-track-opacity-25',
               )}
             >
+              {/* {/* skeleton */}
+              {!isLoaded &&
+                Array.from(Array(4)).map((e, index) => (
+                  <Combobox.Option
+                    as='div'
+                    key={index}
+                    value={index}
+                    className={({ active }) =>
+                      classNames('flex cursor-default select-none items-center rounded-md p-2 h-14')
+                    }
+                  >
+                    <div className='animate-pulse rounded-full h-8 w-8 bg-gray-300 dark:bg-gray-600'></div>
+                    <div className='ml-2 animate-pulse h-3 rounded w-[40%] bg-gray-300 dark:bg-gray-600'></div>
+                  </Combobox.Option>
+                ))}
               {results.map((result: any, index: number) => (
                 <Combobox.Option
                   key={'result-' + index}

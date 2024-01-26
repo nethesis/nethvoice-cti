@@ -10,14 +10,15 @@ import {
   faCircleInfo,
   faCircleXmark,
   faGripVertical,
+  faSearch,
   faTrash,
 } from '@fortawesome/free-solid-svg-icons'
 import { t } from 'i18next'
 import { DeviceSectionOperatorSearch } from './DeviceSectionOperatorSearch'
 import { KeyTypeSelect } from './KeyTypeSelect'
 import { Tooltip } from 'react-tooltip'
-import { isEmpty, isEqual, set } from 'lodash'
-import { Button, TextInput } from '../common'
+import { isEmpty, isEqual } from 'lodash'
+import { Button, EmptyState, TextInput } from '../common'
 import { Combobox } from '@headlessui/react'
 import { useSelector } from 'react-redux'
 import { RootState } from '../../store'
@@ -39,6 +40,8 @@ interface DraggableRowsProps {
   onResetKeysToOperatorsClicked: () => void
   onChangeKeysObject: (numberEdited: any) => void
   onChangeFinalkeysObject: (finalKeysObject: any) => void
+  onChangeExtraRowVisibility: Function
+  isExtraRowButtonClicked: boolean
 }
 
 export default function DraggableRows({
@@ -53,6 +56,8 @@ export default function DraggableRows({
   onResetKeysToOperatorsClicked,
   onChangeKeysObject,
   onChangeFinalkeysObject,
+  onChangeExtraRowVisibility,
+  isExtraRowButtonClicked,
 }: DraggableRowsProps) {
   const [buttonsStatusObject, setButtonsStatusObject] = useState<any>([])
 
@@ -60,8 +65,12 @@ export default function DraggableRows({
   const [originalButtonsStatus, setOriginalButtonsStatus]: any = useState([])
   const [isEditing, setIsEditing] = useState(false)
   const [missingInputError, setMissingInputError] = useState<boolean>(false)
-  const [indexError, setIndexError] = useState<boolean>(false)
   const [keysTypeSelected, setKeysTypeSelected] = useState<any>(null)
+  const [selectedUserNumber, setSelectedUserNumber] = useState<any>(null)
+
+  const updateSelectedUserNumber = (newUserNumberInformation: string) => {
+    setSelectedUserNumber(newUserNumberInformation)
+  }
 
   const updateSelectedTypeKey = (newTypeKey: string) => {
     setKeysTypeSelected(newTypeKey)
@@ -92,11 +101,13 @@ export default function DraggableRows({
     const newTextFilter = event.target.value
     setTextFilter(newTextFilter)
   }
-
+  const [keyInformationJsonLoaded, setKeyInformationJsonLoaded] = useState(false)
+  //create a json with all the information of the keys
   useEffect(() => {
     if (!isEmpty(deviceButtonConfigurationInformation)) {
       // Extract information on keys
       if (usableKeys) {
+        setKeyInformationJsonLoaded(false)
         const buttonsStatus = []
         for (let i = 1; i <= usableKeys; i++) {
           const typeKey = `linekey_type_${i}`
@@ -121,6 +132,7 @@ export default function DraggableRows({
         if (!isEmpty(buttonsStatus)) {
           setButtonsStatusObject(buttonsStatus)
           setOriginalButtonsStatus(buttonsStatus)
+          setKeyInformationJsonLoaded(true)
         }
       } else {
         return
@@ -228,16 +240,18 @@ export default function DraggableRows({
   const confirmEditRow = (rowData: any) => {
     if (editedRowIndex !== null && keysTypeSelected !== null) {
       const targetIndex = editedRowIndex - 1
+      const oldIndex = rowData?.id - 1
 
       if (targetIndex >= 0 && targetIndex < filteredButtons.length) {
         const updatedButtons: any = [...filteredButtons]
 
         // Save selected row data before swapping
-        const selectedRow: any = { ...updatedButtons[targetIndex] }
+        const selectedOldRow: any = { ...updatedButtons[targetIndex] }
+
         let typeSelectedLabelValue = ''
         switch (keysTypeSelected) {
           case 'blf':
-            typeSelectedLabelValue && selectedUserNumber !== null
+            selectedUserNumber !== null
               ? (typeSelectedLabelValue = operators?.extensions[selectedUserNumber]?.name || '-')
               : rowData?.label
               ? (typeSelectedLabelValue = rowData?.label)
@@ -250,9 +264,11 @@ export default function DraggableRows({
                 : rowData?.label
                 ? (typeSelectedLabelValue = rowData?.label)
                 : (typeSelectedLabelValue = '-')
+              : !isContactSelected && selectedUserNumber !== null
+              ? (typeSelectedLabelValue = operators?.extensions[selectedUserNumber]?.name || '-')
               : rowData?.label
               ? (typeSelectedLabelValue = rowData?.label)
-              : (typeSelectedLabelValue = '-')
+              : '-'
             break
           case 'line':
             typeSelectedLabelValue = t('Devices.Line')
@@ -273,18 +289,23 @@ export default function DraggableRows({
           setMissingInputError(false)
           // Update the row with new data
           updatedButtons[targetIndex] = {
-            ...selectedRow,
+            ...selectedOldRow,
             type: keysTypeSelected,
             // if user doesn't type anything, keep the previous value
             value:
               selectedUserNumber !== null
                 ? selectedUserNumber
-                : rowData?.value !== null &&
-                  keysTypeSelected !== 'blf' &&
-                  keysTypeSelected !== 'speedCall'
+                : rowData?.value !== null
                 ? rowData?.value
                 : null,
             label: typeSelectedLabelValue || '-',
+          }
+
+          if (oldIndex !== targetIndex) {
+            updatedButtons[oldIndex] = {
+              ...selectedOldRow,
+              id: oldIndex + 1,
+            }
           }
 
           // Update status with new data
@@ -357,17 +378,21 @@ export default function DraggableRows({
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [newButtonData])
 
-  const [selectedUserNumber, setSelectedUserNumber] = useState<any>(null)
-
-  const updateSelectedUserNumber = (newUserNumberInformation: string) => {
-    setSelectedUserNumber(newUserNumberInformation)
-  }
+  const [rowSelectedStatus, setRowSelectedStatus] = useState(false)
 
   const handleClickIcon = (clickedIndex: number, typeSelected: string) => {
     setSelectedRowIndex((prevIndex) => (prevIndex === clickedIndex ? null : clickedIndex))
     setIsEditing(false)
     setKeysTypeSelected((prevIndex: any) => (prevIndex === clickedIndex ? undefined : typeSelected))
+    setRowSelectedStatus(!rowSelectedStatus)
+    onChangeExtraRowVisibility(!rowSelectedStatus)
   }
+
+  useEffect(() => {
+    if (isExtraRowButtonClicked) {
+      resetInput()
+    }
+  }, [isExtraRowButtonClicked])
 
   const [query, setQuery] = useState('')
   // const [selectedNumber, setSelectedNumber] = useState<number | null>(null)
@@ -392,9 +417,9 @@ export default function DraggableRows({
   }, [selectedRowIndex])
 
   useEffect(() => {
-    setFilteredButtons(buttonsStatusObject)
+    setButtonsStatusObject(buttonsStatusObject)
     onChangeFinalkeysObject(buttonsStatusObject)
-  }, [buttonsStatusObject, textFilter])
+  }, [buttonsStatusObject, filteredButtons, textFilter])
 
   useEffect(() => {
     onSelectFilteredButtons(filteredButtons)
@@ -424,7 +449,7 @@ export default function DraggableRows({
   const handleDrop = (e: any, targetIndex: any) => {
     e.preventDefault()
     const droppedIndex = Number(e.dataTransfer.getData('text/plain'))
-    const newItems = [...currentFilteredItems]
+    const newItems = [...buttonsStatusObject]
 
     const [removed] = newItems.splice(droppedIndex, 1)
     newItems.splice(targetIndex, 0, removed)
@@ -434,7 +459,13 @@ export default function DraggableRows({
       id: index + 1,
     }))
 
-    setCurrentFilteredItems(updatedItems)
+    const changes = getChanges(originalButtonsStatus, updatedItems)
+    if (changes?.length > 0) {
+      setNumberOfkeysEdited(changes?.length)
+      onChangeKeysObject(changes?.length)
+    }
+
+    setButtonsStatusObject(updatedItems)
     setDraggedIndex(null)
     setDragOverIndex(null)
   }
@@ -444,7 +475,7 @@ export default function DraggableRows({
       <div className='flex items-center'>
         <TextInput
           placeholder={t('Devices.Search') || ''}
-          className='max-w-xl py-4'
+          className='max-w-xl py-4 placeholder:dark:text-gray-100'
           value={textFilter}
           onChange={changeTextFilter}
           ref={textFilterRef}
@@ -456,6 +487,33 @@ export default function DraggableRows({
       <div className='overflow-y-auto scrollbar-thin scrollbar-thumb-gray-400 dark:scrollbar-thumb-gray-400 scrollbar-thumb-rounded-full scrollbar-thumb-opacity-50 scrollbar-track-gray-200 dark:scrollbar-track-gray-900 scrollbar-track-rounded-full scrollbar-track-opacity-25'>
         <div className='pt-2 max-h-[24rem]'>
           <ul>
+            {/* skeleton */}
+            {!keyInformationJsonLoaded &&
+              Array.from(Array(4)).map((e, index) => (
+                <div
+                  key={index}
+                  className='flex cursor-default select-none items-center rounded-md p-2 h-14'
+                >
+                  <div className='animate-pulse rounded-full h-8 w-8 bg-gray-300 dark:bg-gray-600'></div>
+                  <div className='ml-2 animate-pulse h-3 rounded w-[40%] bg-gray-300 dark:bg-gray-600'></div>
+                </div>
+              ))}
+            {/* no search results */}
+            {currentFilteredItems?.length === 0 && (
+              <div className='flex justify-center cursor-default select-none items-center rounded-md p-2'>
+                <EmptyState
+                  title={t('Devices.No results') || ''}
+                  description={t('Devices.Try changing your search query') || ''}
+                  icon={
+                    <FontAwesomeIcon
+                      icon={faSearch}
+                      className='mx-auto h-14 w-14'
+                      aria-hidden='true'
+                    />
+                  }
+                />
+              </div>
+            )}
             {currentFilteredItems.map((buttonRow: any, index: number) => (
               <motion.li
                 key={buttonRow?.id}
@@ -465,31 +523,33 @@ export default function DraggableRows({
                 onDragEnter={() => handleDragEnter(index)}
                 onDragLeave={handleDragLeave}
                 onDrop={(e) => handleDrop(e, index)}
-                initial={{ opacity: 1, y: 0 }}
+                initial={{ opacity: 2, y: 0 }}
                 animate={{
                   opacity: draggedIndex === index ? 0.5 : 1,
-                  y: draggedIndex === index ? 0 : 0,
+                  y: draggedIndex === index ? -0.1 : 0,
                 }}
                 transition={{ duration: 0.2 }}
               >
                 <div
                   className={`${selectedRowIndex === index && !isEditing ? 'bg-gray-100' : ''}
+                  ${draggedIndex === index ? 'dark:text-gray-600' : ''}
                    grid items-center py-4 px-2 grid-cols-[4rem,auto,1rem]`}
                   style={{
                     background:
                       dragOverIndex === index
                         ? '#d1fae5'
                         : draggedIndex === index
-                        ? '#f0f0f0'
+                        ? '#f3f4f6'
                         : 'transparent',
+                    border: draggedIndex === index ? '2px dashed #10b981' : 'none',
                   }}
                 >
                   <div className='flex items-center'>
                     <FontAwesomeIcon
                       icon={faGripVertical}
-                      className='h-4 w-4 text-primary dark:text-primaryDark mr-2'
+                      className='h-4 w-4 text-gray-700 dark:text-gray-400 mr-2'
                     />
-                    <span>{buttonRow?.id} -</span>
+                    <span className=''>{buttonRow?.id} -</span>
                   </div>
 
                   <div className='flex items-center justify-start whitespace-nowrap'>
@@ -521,12 +581,12 @@ export default function DraggableRows({
                         className='h-4 w-4 pl-2 text-primary dark:text-primaryDark flex items-center tooltip-configure-key-position-information'
                         aria-hidden='true'
                       />
-                      {/* Pin information tooltip */}
+                      {/* key position information tooltip */}
                       <Tooltip
                         anchorSelect='.tooltip-configure-key-position-information'
                         place='right'
                       >
-                        {t('Devices.Pin information tooltip') || ''}
+                        {t('Devices.Key position information tooltip') || ''}
                       </Tooltip>
                     </div>
 

@@ -73,7 +73,14 @@
     "Work": "Lavoro",
     "Mobile": "Cellulare",
     "Try changing your search filters": "Prova a cambiare i tuoi filtri di ricerca",
-    "Show contact": "Visualizza contatto"
+    "Show contact": "Visualizza contatto",
+    "Add phone number": "Aggiungi numero telefonico",
+    "Edit contact": "Modifica contatto",
+    "Visibility": "Visibilità",
+    "Email": "Email",
+    "Work phone": "Telefono lavoro",
+    "Notes": "Note",
+    "Extension": "Interno"
   },
   "History": {
     "History": "Storico",
@@ -672,7 +679,7 @@
     "Offline": "Offline",
     "Optional": "Opzionale",
     "PIN": "PIN",
-    "Pin information tooltip": "Crea un PIN per il tuo telefono fisico",
+    "Pin information tooltip": "Crea o elimina un PIN per il tuo telefono fisico",
     "Generate random PIN": "Genera un PIN casuale",
     "Configure keys": "Configura tasti",
     "Assign key to all operators": "Assegna tasto a tutti gli operatori",
@@ -707,6 +714,13 @@
     "Number selection is required": "La selezione del numero è obbligatoria",
     "Edit inline information message one row": "{{isInformationLineShow}} riga modificata",
     "Edit inline information message multiple rows": "{{isInformationLineShow}} righe modificate",
-    "Edit done": "Modifiche effettuate"
+    "Edit done": "Modifiche effettuate",
+    "Edit completed": "Modifiche completate",
+    "New phone configuration saved": "Nuova configurazione telefono salvata",
+    "Create a pin": "Crea un pin",
+    "No results": "Nessun risultato",
+    "Try changing your search query": "Prova a cambiare la tua ricerca",
+    "Keys configuration information tooltip": "Configura i tasti linea del tuo telefono",
+    "Key position information tooltip": "Scegli una posizione per il pulsante"
   }
 }

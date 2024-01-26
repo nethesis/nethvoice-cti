@@ -55,8 +55,10 @@ export default function ComboboxNumber({
       <div className='relative mt-2 mb-4'>
         <Combobox.Input
           className={classNames(
-            missingkeyError ? 'border-2 rounded-lg border-rose-500' : 'ring-gray-300',
-            'w-full rounded-md border-0 bg-white py-1.5 pl-3 pr-12 text-gray-900 shadow-sm ring-1 ring-inset focus:ring-2 focus:ring-inset focus:ring-emerald-600 sm:text-sm sm:leading-6',
+            missingkeyError
+              ? 'border-2 rounded-lg border-rose-500'
+              : 'ring-gray-300 dark:ring-gray-400',
+            'w-full rounded-md border-0 bg-white dark:bg-gray-600 py-1.5 pl-3 pr-12 text-gray-900 dark:text-gray-200 shadow-sm ring-1 ring-inset focus:ring-2 focus:ring-inset focus:ring-emerald-600 sm:text-sm sm:leading-6 placeholder:dark:text-gray-200',
           )}
           onChange={(event) => setQuery(event?.target?.value)}
           displayValue={(number: any) => number?.toString()}
@@ -83,7 +85,7 @@ export default function ComboboxNumber({
           </div>
         )}
         {filteredNumbers.length > 0 && (
-          <Combobox.Options className='absolute z-10 mt-1 max-h-60 w-full overflow-auto rounded-md bg-white py-1 text-base shadow-lg ring-1 ring-black ring-opacity-5 focus:outline-none sm:text-sm'>
+          <Combobox.Options className='absolute z-10 mt-1 max-h-60 w-full overflow-auto rounded-md bg-white dark:bg-gray-600 py-1 text-base shadow-lg ring-1 ring-black ring-opacity-5 focus:outline-none sm:text-sm'>
             {filteredNumbers.map((number) => (
               <Combobox.Option
                 key={number}
@@ -91,7 +93,9 @@ export default function ComboboxNumber({
                 className={({ active }) =>
                   classNames(
                     'relative cursor-default select-none py-2 pl-8 pr-4',
-                    active ? 'bg-emerald-600 text-white' : 'text-gray-900 dark:text-gray-200',
+                    active
+                      ? 'bg-emerald-600 text-white dark:text-gray-300'
+                      : 'text-gray-900 dark:text-gray-200',
                   )
                 }
               >

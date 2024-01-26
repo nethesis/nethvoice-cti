@@ -120,11 +120,11 @@ export const ExtraRowKey: FC<ExtraRowKeyProps> = ({
 
   return (
     <>
-      <div className='bg-gray-100 grid items-center py-4 px-2 grid-cols-2'>
+      <div className='bg-gray-100 dark:bg-gray-700 grid items-center py-4 px-2 mr-2 grid-cols-2'>
         <div className='flex items-center'>
           <FontAwesomeIcon
             icon={faGripVertical}
-            className='h-4 w-4 text-primary dark:text-primaryDark mr-2'
+            className='h-4 w-4 text-gray-700 dark:text-gray-400 mr-2'
           />
           <span>{t('Devices.New key')}</span>
         </div>
@@ -148,12 +148,15 @@ export const ExtraRowKey: FC<ExtraRowKeyProps> = ({
           <span>{t('Devices.Key position')}</span>
           <FontAwesomeIcon
             icon={faCircleInfo}
-            className='h-4 w-4 pl-2 text-primary dark:text-primaryDark flex items-center tooltip-configure-key-position-information'
+            className='h-4 w-4 pl-2 text-primary dark:text-primaryDark flex items-center tooltip-configure-key-position-information-extra-key'
             aria-hidden='true'
           />
-          {/* Pin information tooltip */}
-          <Tooltip anchorSelect='.tooltip-configure-key-position-information' place='right'>
-            {t('Devices.Pin information tooltip') || ''}
+          {/* key position information tooltip */}
+          <Tooltip
+            anchorSelect='.tooltip-configure-key-position-information-extra-key'
+            place='right'
+          >
+            {t('Devices.Key position information tooltip') || ''}
           </Tooltip>
         </div>
         <ComboboxNumber

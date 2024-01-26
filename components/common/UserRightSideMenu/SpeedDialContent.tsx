@@ -158,9 +158,12 @@ export const SpeedDialContent = () => {
       operators?.operators[authStore?.username]?.mainPresence &&
       operators?.operators[authStore?.username]?.mainPresence === 'busy'
     ) {
-      transferCallToExtension(speedDial.extension)
-    } else {
-      callPhoneNumber(speedDial.speeddial_num)
+      transferCallToExtension(speedDial?.speeddial_num)
+    } else if (
+      operators?.operators[authStore?.username]?.endpoints?.mainextension[0]?.id !==
+      speedDial?.speeddial_num
+    ) {
+      callPhoneNumber(speedDial?.speeddial_num)
     }
   }
 

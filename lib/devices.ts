@@ -97,3 +97,13 @@ export async function setPin(obj: any) {
     throw error
   }
 }
+
+export async function getDevicesPinStatusForDevice() {
+  try {
+    const { data, status } = await axios.get('/astproxy/pin')
+    return data
+  } catch (error) {
+    handleNetworkError(error)
+    throw error
+  }
+}

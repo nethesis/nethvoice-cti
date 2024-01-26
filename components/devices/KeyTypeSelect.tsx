@@ -49,11 +49,13 @@ export const KeyTypeSelect: FC<keyTypeSelectProps> = ({
               <div className='relative mt-2'>
                 <Listbox.Button
                   className={classNames(
-                    inputMissing ? 'border-2 rounded-lg border-rose-500' : ' ring-gray-300',
-                    'relative w-full cursor-default rounded-md bg-white py-1.5 pl-3 pr-10 text-left text-gray-900 dark:text-gray-200 shadow-sm ring-1 ring-inset focus:outline-none focus:ring-2 focus:ring-emerald-600 sm:text-sm sm:leading-6',
+                    inputMissing
+                      ? 'border-2 rounded-lg border-rose-500'
+                      : ' ring-gray-300 dark:ring-gray-400',
+                    'relative w-full cursor-default rounded-md bg-white dark:bg-gray-600 py-1.5 pl-3 pr-10 text-left text-gray-900 dark:text-gray-200 shadow-sm ring-1 ring-inset focus:outline-none focus:ring-2 focus:ring-emerald-600 sm:text-sm sm:leading-6 placeholder:dark:text-gray-200',
                   )}
                 >
-                  <span className='block truncate'>
+                  <span className='block truncate '>
                     {keysTypeSelected
                       ? typesList.find((type) => type.value === keysTypeSelected)?.label
                       : t('Devices.Choose type')}
@@ -76,14 +78,14 @@ export const KeyTypeSelect: FC<keyTypeSelectProps> = ({
                   leaveFrom='opacity-100'
                   leaveTo='opacity-0'
                 >
-                  <Listbox.Options className='absolute z-10 mt-1 max-h-60 w-full overflow-auto rounded-md bg-white py-1 text-base shadow-lg ring-1 ring-black ring-opacity-5 focus:outline-none sm:text-sm'>
+                  <Listbox.Options className='absolute z-10 mt-1 max-h-60 w-full overflow-auto rounded-md bg-white dark:bg-gray-600 py-1 text-base shadow-lg ring-1 ring-black ring-opacity-5 focus:outline-none sm:text-sm'>
                     {typesList.map((type) => (
                       <Listbox.Option
                         key={type.value}
                         className={({ active }) =>
                           classNames(
                             active
-                              ? 'bg-emerald-600 text-white'
+                              ? 'bg-emerald-600 text-white dark:text-gray-300'
                               : 'text-gray-900 dark:text-gray-200',
                             'relative cursor-default select-none py-2 pl-3 pr-9',
                           )
@@ -95,10 +97,10 @@ export const KeyTypeSelect: FC<keyTypeSelectProps> = ({
                             <span
                               className={classNames(
                                 selected ? 'font-semibold' : 'font-normal',
-                                'block truncate',
+                                'block truncate dark:text-gray-200',
                               )}
                             >
-                              {type.label}
+                              {type?.label}
                             </span>
 
                             {selected ? (

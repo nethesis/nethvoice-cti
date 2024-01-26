@@ -105,7 +105,9 @@
     "Last personal calls": "Last personal calls",
     "Calls": "Calls",
     "Last calls": "Last calls",
-    "Show contact": "Show contact"
+    "Show contact": "Show contact",
+    "Add phone number": "Add phone number",
+    "Edit contact": "Edit contact"
   },
   "History": {
     "History": "History",
@@ -721,7 +723,8 @@
     "Offline": "Offline",
     "Optional": "Optional",
     "PIN": "PIN",
-    "Pin information tooltip": "Create a PIN to set in your physical device",
+    "Pin information tooltip": "Create or delete a PIN to set in your physical device",
+    "Pin information tooltip body": "Or leave it blank to deactivate",
     "Generate random PIN": "Generate random PIN",
     "Configure keys": "Configure keys",
     "Assign key to all operators": "Assign key to all operators",
@@ -756,6 +759,13 @@
     "Number selection is required": "Number selection is required",
     "Edit inline information message one row": "{{isInformationLineShow}} change row",
     "Edit inline information message multiple rows": "{{isInformationLineShow}} changes rows",
-    "Edit done": "Edit done"
+    "Edit done": "Edit done",
+    "Edit completed": "Edit completed",
+    "New phone configuration saved": "New phone configuration saved",
+    "Create a pin": "Create a pin",
+    "No results": "No results",
+    "Try changing your search query": "Try changing your search query",
+    "Keys configuration information tooltip": "Configure line keys of your physical device",
+    "Key position information tooltip": "Choose a position for your key"
   }
 }

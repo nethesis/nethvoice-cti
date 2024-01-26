@@ -159,17 +159,19 @@ const Devices: NextPage = () => {
                             <FontAwesomeIcon icon={faPenToSquare} className='mr-2 h-4 w-4' />
                             {t('Devices.Edit')}
                           </td>
-                          <td className='relative whitespace-nowrap py-4 pr-4 text-right text-sm font-medium sm:pr-6 cursor-pointer'>
-                            <Dropdown
-                              items={setMainDeviceMenu(webrtcData[0]?.id, 'webrtc')}
-                              position='top'
-                            >
-                              <FontAwesomeIcon
-                                icon={faEllipsisVertical}
-                                className='h-4 w-4 ml-[0.7rem] text-primary dark:text-primaryDark'
-                              />
-                            </Dropdown>
-                          </td>
+                          {webrtcData[0]?.id !== profile?.default_device?.id && (
+                            <td className='relative whitespace-nowrap py-4 pr-4 text-right text-sm font-medium sm:pr-6 cursor-pointer'>
+                              <Dropdown
+                                items={setMainDeviceMenu(webrtcData[0]?.id, 'webrtc')}
+                                position='top'
+                              >
+                                <FontAwesomeIcon
+                                  icon={faEllipsisVertical}
+                                  className='h-4 w-4 ml-[0.7rem] text-primary dark:text-primaryDark'
+                                />
+                              </Dropdown>
+                            </td>
+                          )}
                         </tr>
                       </tbody>
                     </table>
@@ -276,17 +278,19 @@ const Devices: NextPage = () => {
                               />
                               {t('Devices.Edit')}
                             </td>
-                            <td className='relative whitespace-nowrap py-4 pl-3 pr-4 text-right text-sm font-medium sm:pr-6 cursor-pointer'>
-                              <Dropdown
-                                items={setMainDeviceMenu(phone?.id, 'physical')}
-                                position='top'
-                              >
-                                <FontAwesomeIcon
-                                  icon={faEllipsisVertical}
-                                  className='h-4 w-4 text-primary dark:text-primaryDark'
-                                />
-                              </Dropdown>
-                            </td>
+                            {phone?.id !== profile?.default_device?.id && (
+                              <td className='relative whitespace-nowrap py-4 pl-3 pr-4 text-right text-sm font-medium sm:pr-6 cursor-pointer'>
+                                <Dropdown
+                                  items={setMainDeviceMenu(phone?.id, 'physical')}
+                                  position='top'
+                                >
+                                  <FontAwesomeIcon
+                                    icon={faEllipsisVertical}
+                                    className='h-4 w-4 text-primary dark:text-primaryDark'
+                                  />
+                                </Dropdown>
+                              </td>
+                            )}
                           </tr>
                         ))}
                       </tbody>

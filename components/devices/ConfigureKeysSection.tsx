@@ -26,21 +26,34 @@ import {
   getPhysicalDeviceButtonConfiguration,
   reloadPhysicalPhone,
   saveBtnsConfig,
+  setPin,
 } from '../../lib/devices'
 import { Avatar, Button, InlineNotification, Modal } from '../common'
 import { closeSideDrawer } from '../../lib/utils'
 import { ExtraRowKey } from './ExtraRowKey'
 import DraggableRows from './DraggableRows'
-import { stat } from 'fs'
 
 export interface ConfigureKeysSectionProps extends ComponentPropsWithRef<'div'> {
   deviceId: any
   modalAllOperatorsKeyStatus: Function
   viewModalAllKeys: boolean
+  pinValue: any
+  updateDrawerVisibility: Function
 }
 
 export const ConfigureKeysSection = forwardRef<HTMLButtonElement, ConfigureKeysSectionProps>(
-  ({ deviceId, modalAllOperatorsKeyStatus, viewModalAllKeys, className, ...props }, ref) => {
+  (
+    {
+      deviceId,
+      modalAllOperatorsKeyStatus,
+      viewModalAllKeys,
+      pinValue,
+      updateDrawerVisibility,
+      className,
+      ...props
+    },
+    ref,
+  ) => {
     const { t } = useTranslation()
     const operators: any = useSelector((state: RootState) => state.operators)
     const profile = useSelector((state: RootState) => state.user)
@@ -170,6 +183,12 @@ export const ConfigureKeysSection = forwardRef<HTMLButtonElement, ConfigureKeysS
       setNewKeyInformationObject(newKeyPosition)
     }
 
+    const [extraRowVisibility, setExtraRowVisibity] = useState(false)
+    // On change of draggable row card open or close
+    const handleExtraRowVisibility = (extraRowVisibilityStatus: boolean) => {
+      setExtraRowVisibity(extraRowVisibilityStatus)
+    }
+
     // Modal with example of first two operators of operators list
     const renderDynamicRows = () => {
       return Object.keys(operators?.extensions)
@@ -204,7 +223,7 @@ export const ConfigureKeysSection = forwardRef<HTMLButtonElement, ConfigureKeysS
               <div className='flex items-center ml-2'>
                 <FontAwesomeIcon
                   icon={faGripVertical}
-                  className='h-4 w-4 text-primary dark:text-primaryDark mr-2'
+                  className='h-4 w-4 text-gray-700 dark:text-gray-400 mr-2'
                 />
 
                 {/* operator name */}
@@ -234,6 +253,7 @@ export const ConfigureKeysSection = forwardRef<HTMLButtonElement, ConfigureKeysS
     const activateDeactivateExtraRow = () => {
       setIsExtraRowActive(!isExtraRowActive)
     }
+
     const [isLeftButtonVisible, setLeftButtonVisible] = useState(false)
     const [isRightButtonVisible, setRightButtonVisible] = useState(true)
 
@@ -265,11 +285,28 @@ export const ConfigureKeysSection = forwardRef<HTMLButtonElement, ConfigureKeysS
       setNewButtonData(newButton)
     }
 
+    const generateRandomPIN = () => {
+      return Array.from({ length: 4 }, () => Math.floor(Math.random() * 10)).join('')
+    }
+
     const handleUpdateKeysList = async () => {
       let editedObject: any[] = newKeyInformationObject
 
       let newObject: any = {
         variables: {},
+      }
+
+      let pinObjectStatus: any = {}
+      if (pinValue !== '') {
+        pinObjectStatus.enabled = true
+        pinObjectStatus.pin = pinValue
+      } else {
+        pinObjectStatus.enabled = false
+        let randomNumber = generateRandomPIN()
+        pinObjectStatus.pin = randomNumber
+      }
+      if (deviceId !== '') {
+        pinObjectStatus.extension = deviceId
       }
 
       editedObject.forEach((item: any, index: number) => {
@@ -281,26 +318,28 @@ export const ConfigureKeysSection = forwardRef<HTMLButtonElement, ConfigureKeysS
         try {
           // setDeviceNewConfigurationLoaded(false)
           //setDeviceNewConfigurationisLoading(true)
+          if (!isEmpty(pinObjectStatus)) {
+            await setPin(pinObjectStatus)
+          }
           await saveBtnsConfig(macAddressDevice, newObject)
           // After new configuration upload reload physical phone
-          if (deviceId !== '' || deviceId !== undefined) {
-            reloadPhysicalPhone(deviceId)
+          if (deviceId !== undefined && deviceId !== '') {
+            await reloadPhysicalPhone(deviceId)
           }
-          // setDeviceNewConfigurationLoaded(true)
-          //setDeviceNewConfigurationisLoading(false)
+          updateDrawerVisibility(true)
+          closeSideDrawer()
         } catch (error) {
           setGetConfigurationInformationError('Cannot retrieve configuration information')
         }
       }
     }
 
-    const reloadPhysicalPhone = async (id: string) => {
-      try {
-        await reloadPhysicalPhone(id)
-      } catch (error) {
-        console.log('error reloading physical phone', error)
+    // when open draggable list row close extra row card
+    useEffect(() => {
+      if (extraRowVisibility) {
+        setIsExtraRowActive(false)
       }
-    }
+    }, [extraRowVisibility])
 
     return (
       <>
@@ -316,6 +355,8 @@ export const ConfigureKeysSection = forwardRef<HTMLButtonElement, ConfigureKeysS
           onResetKeysToOperatorsClicked={handleResetKeysToOperatorsClicked}
           onChangeKeysObject={handleIsInformationLineShow}
           onChangeFinalkeysObject={handleEditNewKeysObject}
+          onChangeExtraRowVisibility={handleExtraRowVisibility}
+          isExtraRowButtonClicked={isExtraRowActive}
         ></DraggableRows>
         {/* Button for add new row */}
         {isExtraRowActive && (

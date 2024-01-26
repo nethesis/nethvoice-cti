@@ -1,6 +1,6 @@
 // Copyright (C) 2023 Nethesis S.r.l.
 // SPDX-License-Identifier: AGPL-3.0-or-later
-import { ComponentPropsWithRef, forwardRef, useRef, useState } from 'react'
+import { ComponentPropsWithRef, forwardRef, useEffect, useRef, useState } from 'react'
 import { Button, Dropdown, SideDrawerCloseIcon, TextInput } from '../common'
 import { t } from 'i18next'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
@@ -13,6 +13,8 @@ import {
 
 import { Tooltip } from 'react-tooltip'
 import { ConfigureKeysSection } from './ConfigureKeysSection'
+import { getDevicesPinStatusForDevice } from '../../lib/devices'
+import { openToast } from '../../lib/utils'
 
 export interface EditPhysicalPhoneDrawerContentProps extends ComponentPropsWithRef<'div'> {
   config: any
@@ -25,6 +27,43 @@ export const EditPhysicalPhoneDrawerContent = forwardRef<
   const [pinVisible, setPinVisible] = useState(false)
   const pinRef = useRef() as React.MutableRefObject<HTMLInputElement>
 
+  const [firstRender, setFirstRender] = useState(true)
+  const [getPinError, setGetPinError] = useState('')
+  const [pinObjectInformation, setPinObjectInformation] = useState<any>({})
+
+  const [pinValue, setPinValue] = useState('')
+
+  const handlePinChange = (event: any) => {
+    setPinValue(event.target.value)
+  }
+
+  const [initialPinSet, setInitialPinSet] = useState(false)
+
+  useEffect(() => {
+    if (firstRender) {
+      setFirstRender(false)
+      return
+    }
+    const retrievePinStatus = async () => {
+      try {
+        setGetPinError('')
+        const pin = await getDevicesPinStatusForDevice()
+        setPinObjectInformation(pin)
+        setInitialPinSet(false)
+      } catch (error) {
+        setGetPinError('Cannot retrieve pin information')
+      }
+    }
+    retrievePinStatus()
+  }, [firstRender])
+
+  useEffect(() => {
+    if (!initialPinSet && pinObjectInformation[config?.id]?.pin !== '') {
+      setPinValue(pinObjectInformation[config?.id]?.pin)
+      setInitialPinSet(true)
+    }
+  }, [pinObjectInformation, config?.id])
+
   const handleButtonClick = () => {
     // Generate a random PIN of 4 digits
     const generateRandomPIN = () => {
@@ -34,6 +73,7 @@ export const EditPhysicalPhoneDrawerContent = forwardRef<
     // Set the random PIN to the input field
     if (pinRef.current) {
       pinRef.current.value = randomPIN
+      setPinValue(randomPIN)
     }
   }
 
@@ -56,6 +96,19 @@ export const EditPhysicalPhoneDrawerContent = forwardRef<
     setViewAllOperatorsModal(statusModal)
   }
 
+  const [isEditComplete, setIsEditComplete] = useState(false)
+
+  const updateDrawerVisibility = (editCompleteValue: boolean) => {
+    setIsEditComplete(editCompleteValue)
+    if (editCompleteValue) {
+      openToast(
+        'success',
+        `${t('Devices.New phone configuration saved')}`,
+        `${t('Devices.Edit completed')}`,
+      )
+    }
+  }
+
   return (
     <>
       {/* Drawer header */}
@@ -72,47 +125,57 @@ export const EditPhysicalPhoneDrawerContent = forwardRef<
       </div>
       <div className='m-1 py-5 pl-5 pr-9'>
         {/* Pin section */}
-        <div className='flex items-center justify-between'>
-          <div className='flex items-center'>
-            <span>{t('Devices.PIN')}</span>
-            <FontAwesomeIcon
-              icon={faCircleInfo}
-              className='h-4 w-4 pl-2 py-2 text-primary dark:text-primaryDark flex items-center tooltip-pin-information'
-              aria-hidden='true'
-            />
-            {/* Pin information tooltip */}
-            <Tooltip anchorSelect='.tooltip-pin-information' place='right'>
-              {t('Devices.Pin information tooltip') || ''}
-            </Tooltip>
-          </div>
-          <div className='flex'>
-            <span className='text-sm text-gray-700 leading-5'>{t('Devices.Optional')}</span>
-          </div>
-        </div>
-        {/* Pin input section */}
-        <form action='#' className='space-y-6' autoComplete='off'>
-          <div className='mt-1 pb-4'>
-            <TextInput
-              placeholder=''
-              name='pin'
-              type={pinVisible ? 'text' : 'password'}
-              icon={pinVisible ? faEye : faEyeSlash}
-              onIconClick={() => setPinVisible(!pinVisible)}
-              trailingIcon={true}
-              ref={pinRef}
-              pattern='[0-9]*'
-              maxLength={10}
-            />
-          </div>
-        </form>
-        {/* Generate random PIN button */}
-        <Button
-          variant='dashboard'
-          className='text-primary dark:text-primaryDark text-sm font-medium leading-5'
-          onClick={handleButtonClick}
-        >
-          {t('Devices.Generate random PIN')}
-        </Button>
+        {/* Check if user has pin enabled */}
+        {config?.pinStatus && (
+          <>
+            <div className='flex items-center justify-between'>
+              <div className='flex items-center'>
+                <span>{t('Devices.PIN')}</span>
+                <FontAwesomeIcon
+                  icon={faCircleInfo}
+                  className='h-4 w-4 pl-2 py-2 text-primary dark:text-primaryDark flex items-center tooltip-pin-information'
+                  aria-hidden='true'
+                />
+                {/* Pin information tooltip */}
+                <Tooltip anchorSelect='.tooltip-pin-information' place='right'>
+                  {t('Devices.Pin information tooltip') || ''}
+                </Tooltip>
+              </div>
+              <div className='flex'>
+                <span className='text-sm text-gray-700 dark:text-gray-200 leading-5'>
+                  {t('Devices.Optional')}
+                </span>
+              </div>
+            </div>{' '}
+            {/* Pin input section */}
+            <form action='#' className='space-y-6' autoComplete='off'>
+              <div className='mt-1 pb-4'>
+                <TextInput
+                  placeholder={t('Devices.Create a pin') || ''}
+                  name='pin'
+                  type={pinVisible ? 'text' : 'password'}
+                  icon={pinVisible ? faEye : faEyeSlash}
+                  onIconClick={() => setPinVisible(!pinVisible)}
+                  trailingIcon={true}
+                  ref={pinRef}
+                  pattern='[0-9]*'
+                  maxLength={10}
+                  value={pinValue}
+                  onChange={handlePinChange}
+                />
+              </div>
+            </form>
+            {/* Generate random PIN button */}
+            <Button
+              variant='dashboard'
+              className='text-primary dark:text-primaryDark text-sm font-medium leading-5'
+              onClick={handleButtonClick}
+            >
+              {t('Devices.Generate random PIN')}
+            </Button>
+          </>
+        )}
+
         {/* Keys configuration section */}
         <div className='flex items-center justify-between pt-8'>
           <div className='flex items-center'>
@@ -122,9 +185,9 @@ export const EditPhysicalPhoneDrawerContent = forwardRef<
               className='h-4 w-4 pl-2 text-primary dark:text-primaryDark flex items-center tooltip-configure-keys-information'
               aria-hidden='true'
             />
-            {/* Pin information tooltip */}
+            {/* keys configuration information tooltip */}
             <Tooltip anchorSelect='.tooltip-configure-keys-information' place='right'>
-              {t('Devices.Pin information tooltip') || ''}
+              {t('Devices.Keys configuration information tooltip') || ''}
             </Tooltip>
           </div>
           <Dropdown items={configureKeysDropdownMenu()} position='left'>
@@ -138,6 +201,8 @@ export const EditPhysicalPhoneDrawerContent = forwardRef<
           deviceId={config?.id}
           modalAllOperatorsKeyStatus={updateAllOperatorsModalStatus}
           viewModalAllKeys={viewAllOperatorsModal}
+          pinValue={pinValue}
+          updateDrawerVisibility={updateDrawerVisibility}
         ></ConfigureKeysSection>
       </div>
     </>
