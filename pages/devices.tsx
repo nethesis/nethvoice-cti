@@ -49,14 +49,14 @@ const Devices: NextPage = () => {
     </Dropdown.Item>
   )
 
-  const setSelectedAsMainDevice = async (deviceId: string, devideType: string) => {
+  const setSelectedAsMainDevice = async (deviceId: string, deviceType: string) => {
     let deviceIdInfo: any = {}
     if (deviceId) {
       deviceIdInfo.id = deviceId
       try {
         await setMainDevice(deviceIdInfo)
         dispatch.user.updateDefaultDevice(deviceIdInfo)
-        if (devideType !== '' && devideType === 'physical') {
+        if (deviceType !== '' && deviceType === 'physical') {
           eventDispatch('phone-island-janus-detach', {})
           eventDispatch('phone-island-janus-destroy', {})
         } else {

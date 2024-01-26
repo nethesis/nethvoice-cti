@@ -43,6 +43,7 @@ import Link from 'next/link'
 import { faOfficePhone } from '@nethesis/nethesis-solid-svg-icons'
 import { isEmpty } from 'lodash'
 import { setMainDevice } from '../../lib/devices'
+import { eventDispatch } from '../../lib/hooks/eventDispatch'
 
 interface TopBarProps {
   openMobileCb: () => void
@@ -199,13 +200,20 @@ export const TopBar: FC<TopBarProps> = ({ openMobileCb }) => {
     doLogout(emptyObjectLogout)
   }
 
-  const setMainDeviceId = async (device: any) => {
+  const setMainDeviceId = async (device: any, deviceType: string) => {
     let deviceIdInfo: any = {}
     if (device) {
       deviceIdInfo.id = device
       try {
         await setMainDevice(deviceIdInfo)
         dispatch.user.updateDefaultDevice(deviceIdInfo)
+        if (deviceType !== '' && deviceType === 'physical') {
+          eventDispatch('phone-island-janus-detach', {})
+          eventDispatch('phone-island-janus-destroy', {})
+        } else {
+          eventDispatch('phone-island-janus-create', {})
+          eventDispatch('phone-island-janus-attach', {})
+        }
       } catch (err) {
         console.log(err)
       }
@@ -348,7 +356,10 @@ export const TopBar: FC<TopBarProps> = ({ openMobileCb }) => {
                 <div className='overflow-hidden shadow-lg ring-1 ring-gray-200 dark:ring-gray-700 ring-opacity-1 rounded-md'>
                   <div className='relative bg-white dark:border-gray-700 dark:bg-gray-900 py-2'>
                     {noMobileListDevice.map((device: any) => (
-                      <Dropdown.Item key={device?.id} onClick={() => setMainDeviceId(device?.id)}>
+                      <Dropdown.Item
+                        key={device?.id}
+                        onClick={() => setMainDeviceId(device?.id, device?.type)}
+                      >
                         <div className='truncate'>
                           <div className='flex items-center space-x-2'>
                             {device?.id === profile?.default_device?.id ? (
@@ -364,7 +375,7 @@ export const TopBar: FC<TopBarProps> = ({ openMobileCb }) => {
                             )}
 
                             <FontAwesomeIcon
-                              icon={device.type === 'webrtc' ? faHeadset : faOfficePhone}
+                              icon={device?.type === 'webrtc' ? faHeadset : faOfficePhone}
                               className='ml-auto h-4 w-4 flex justify-center text-gray-700 dark:text-gray-500'
                             />
                             {device.type === 'webrtc' && (
