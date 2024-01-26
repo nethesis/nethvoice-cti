@@ -202,7 +202,7 @@ const Operators: NextPage = () => {
               title={operatorsStore.errorMessage}
             ></InlineNotification>
           )}
-          <div className='mx-auto text-center max-w-7xl 5xl:max-w-screen-2xl'>
+          <div className='mx-auto text-center 5xl:max-w-screen-2xl'>
             {/* empty state */}
             {operatorsStore.isOperatorsLoaded &&
               !operatorsStore.errorMessage &&
