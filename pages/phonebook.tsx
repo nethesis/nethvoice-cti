@@ -271,9 +271,9 @@ const Phonebook: NextPage = () => {
                                                     contact?.extension !==
                                                     operatorsStore?.operators[authStore?.username]
                                                       ?.endpoints?.mainextension[0]?.id
-                                                      ? 'cursor-pointer hover:underline'
-                                                      : ''
-                                                  } truncate text-primary dark:text-primary `}
+                                                      ? 'cursor-pointer hover:underline text-primary dark:text-primary'
+                                                      : 'text-gray-700 dark:text-gray-200'
+                                                  } truncate  `}
                                                   onClick={() =>
                                                     operatorsStore?.operators[authStore?.username]
                                                       ?.mainPresence === 'busy'
@@ -326,7 +326,7 @@ const Phonebook: NextPage = () => {
                                                   operatorsStore?.operators[authStore?.username]
                                                     ?.endpoints?.mainextension[0]?.id
                                                     ? 'cursor-pointer hover:underline'
-                                                    : ''
+                                                    : 'text-gray-700 dark:text-gray-200'
                                                 } truncate `}
                                                 onClick={() =>
                                                   operatorsStore?.operators[authStore?.username]

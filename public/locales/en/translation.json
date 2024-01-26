@@ -766,6 +766,7 @@
     "No results": "No results",
     "Try changing your search query": "Try changing your search query",
     "Keys configuration information tooltip": "Configure line keys of your physical device",
-    "Key position information tooltip": "Choose a position for your key"
+    "Key position information tooltip": "Choose a position for your key",
+    "Click on confirm": "Click on Confirm"
   }
 }

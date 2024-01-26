@@ -424,15 +424,7 @@ export const ConfigureKeysSection = forwardRef<HTMLButtonElement, ConfigureKeysS
           <div className='flex justify-between space-x-3 items-center'>
             <div className='relative '>
               <InlineNotification type='info' title={t('Devices.Edit done')}>
-                <p>
-                  {isInformationLineShow === 1
-                    ? t('Devices.Edit inline information message one row', {
-                        isInformationLineShow,
-                      })
-                    : t('Devices.Edit inline information message multiple rows', {
-                        isInformationLineShow,
-                      })}
-                </p>
+                <p>{t('Devices.Click on confirm')}</p>
               </InlineNotification>
             </div>
             <div className='flex justify-end'>
