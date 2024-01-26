@@ -51,7 +51,9 @@
     "Intrude": "Intrude",
     "Listen": "Listen",
     "ago": "ago",
-    "Unknown": "Unknown"
+    "Unknown": "Unknown",
+    "Confirm": "Confirm",
+    "Example": "Example"
   },
   "Login": {
     "User": "User",
@@ -103,7 +105,9 @@
     "Last personal calls": "Last personal calls",
     "Calls": "Calls",
     "Last calls": "Last calls",
-    "Show contact": "Show contact"
+    "Show contact": "Show contact",
+    "Add phone number": "Add phone number",
+    "Edit contact": "Edit contact"
   },
   "History": {
     "History": "History",
@@ -241,7 +245,8 @@
     "Select or drag image here": "Select or drag image here",
     "Upload image to continue": "Upload image to continue",
     "Wrong file type": "Wrong file type",
-    "Delete profile picture": "Delete profile picture"
+    "Delete profile picture": "Delete profile picture",
+    "Devices": "Devices"
   },
   "TopBar": {
     "Signed in as": "Signed in as",
@@ -257,7 +262,10 @@
     "Enter phone number for call forward": "Enter phone number for call forward",
     "Open user menu": "Open user menu",
     "Presence": "Presence",
-    "Open sidebar": "Open sidebar"
+    "Open sidebar": "Open sidebar",
+    "Main device": "Main device",
+    "Voicemail": "Voicemail",
+    "Activate voicemail": "Activate voicemail"
   },
   "OperatorDrawer": {
     "Book": "Book",
@@ -702,5 +710,63 @@
     "Switch call": "Switch call",
     "Call to transfer": "Call to transfer",
     "Hangup and transfer": "Hangup and transfer"
+  },
+  "Devices": {
+    "Web phone": "Web phone",
+    "Landline phone": "Landline phone",
+    "Device name": "Device name",
+    "Status": "Status",
+    "Edit": "Edit",
+    "Set as main device": "Set as main device",
+    "Main device": "Main device",
+    "Online": "Online",
+    "Offline": "Offline",
+    "Optional": "Optional",
+    "PIN": "PIN",
+    "Pin information tooltip": "Create or delete a PIN to set in your physical device",
+    "Pin information tooltip body": "Or leave it blank to deactivate",
+    "Generate random PIN": "Generate random PIN",
+    "Configure keys": "Configure keys",
+    "Assign key to all operators": "Assign key to all operators",
+    "Not configurated": "Not configurated",
+    "Search": "Search",
+    "Assign keys for all operators": "Assign keys for all operators",
+    "Assign key for all operators modal message": "This action will associate a key for all operators, sorting in ascending order by extension number",
+    "Assign keys": "Assign keys",
+    "Key position": "Key position",
+    "Type": "Type",
+    "Choose type": "Choose type",
+    "Busy lamp field (BLF)": "Busy lamp field (BLF)",
+    "Line": "Line",
+    "Speed call": "Speed call",
+    "Do not disturb (DND)": "Do not disturb (DND)",
+    "Toggle login/logout queue": "Toggle login/logout queue",
+    "Name or number": "Name or number",
+    "Add key": "Add key",
+    "New key": "New key",
+    "Search physical phone index placeholder message": "Type or search index from 1 to {{maxNumber}}",
+    "Search physical phone draggable row index placeholder message": "Type or search index from 1 to {{usableKeys}}",
+    "Search or compose": "Search or compose",
+    "Type to search": "Type to search",
+    "Fill in all the fields to continue": "Fill in all the fields to continue",
+    "Index not allowed": "Index not allowed",
+    "Index error message": "Insert index from 1 to {{usableKeys}}",
+    "Physical phones": "Physical phones",
+    "Physical phone": "Physical phone",
+    "Name or extension": "Name or extension",
+    "Confirm edits": "Confirm edits",
+    "Type selection is required": "Type selection is required",
+    "Number selection is required": "Number selection is required",
+    "Edit inline information message one row": "{{isInformationLineShow}} change row",
+    "Edit inline information message multiple rows": "{{isInformationLineShow}} changes rows",
+    "Edit done": "Edit done",
+    "Edit completed": "Edit completed",
+    "New phone configuration saved": "New phone configuration saved",
+    "Create a pin": "Create a pin",
+    "No results": "No results",
+    "Try changing your search query": "Try changing your search query",
+    "Keys configuration information tooltip": "Configure line keys of your physical device",
+    "Key position information tooltip": "Choose a position for your key",
+    "Click on confirm": "Click on Confirm"
   }
 }

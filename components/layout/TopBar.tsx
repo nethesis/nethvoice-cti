@@ -30,6 +30,9 @@ import {
   faBell,
   faChevronRight,
   faUser,
+  faHeadset,
+  faMobile,
+  faCheck,
 } from '@fortawesome/free-solid-svg-icons'
 import { getUserInfo } from '../../services/user'
 import { setTheme } from '../../lib/darkTheme'
@@ -37,6 +40,11 @@ import { loadNotificationsFromStorage } from '../../lib/notifications'
 import { GlobalSearch } from './GlobalSearch'
 import { useTranslation } from 'react-i18next'
 import Link from 'next/link'
+import { faOfficePhone } from '@nethesis/nethesis-solid-svg-icons'
+import { isEmpty } from 'lodash'
+import { setMainDevice } from '../../lib/devices'
+import { eventDispatch } from '../../lib/hooks/eventDispatch'
+
 interface TopBarProps {
   openMobileCb: () => void
 }
@@ -53,6 +61,32 @@ export const TopBar: FC<TopBarProps> = ({ openMobileCb }) => {
   const notificationsStore = useSelector((state: RootState) => state.notifications)
   const operators = useSelector((state: RootState) => state.operators.operators)
   const profile = useSelector((state: RootState) => state.user)
+
+  const [mainDeviceType, setMainDeviceType] = useState('')
+  const [noMobileListDevice, setNoMobileListDevice]: any = useState([])
+
+  // Check wich type of device is the main device
+  // also filter all the device except the mobile one
+  useEffect(() => {
+    if (profile?.endpoints) {
+      let extensionObj: any = profile.endpoints
+      if (profile?.default_device?.id && !isEmpty(extensionObj)) {
+        const extensionType = extensionObj.extension.find(
+          (ext: any) => ext.id === profile?.default_device?.id,
+        )
+        if (extensionType?.type !== '') {
+          setMainDeviceType(extensionType?.type)
+        }
+      }
+      if (!isEmpty(extensionObj)) {
+        const filteredDevices = extensionObj?.extension?.filter(
+          (device: any) => device?.type !== 'mobile',
+        )
+        setNoMobileListDevice(filteredDevices)
+      }
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [profile?.default_device])
 
   const { t } = useTranslation()
 
@@ -166,6 +200,27 @@ export const TopBar: FC<TopBarProps> = ({ openMobileCb }) => {
     doLogout(emptyObjectLogout)
   }
 
+  const setMainDeviceId = async (device: any, deviceType: string) => {
+    let deviceIdInfo: any = {}
+    if (device) {
+      deviceIdInfo.id = device
+      try {
+        await setMainDevice(deviceIdInfo)
+        dispatch.user.updateDefaultDevice(deviceIdInfo)
+        if (deviceType !== '' && deviceType === 'physical') {
+          eventDispatch('phone-island-janus-detach', {})
+          eventDispatch('phone-island-janus-destroy', {})
+        } else {
+          eventDispatch('phone-island-janus-create', {})
+          eventDispatch('phone-island-janus-attach', {})
+        }
+      } catch (err) {
+        console.log(err)
+      }
+    }
+  }
+
+  
   const dropdownItems = (
     <>
       <div className='cursor-default'>
@@ -177,6 +232,8 @@ export const TopBar: FC<TopBarProps> = ({ openMobileCb }) => {
           </span>
         </Dropdown.Header>
       </div>
+
+      {/* Choose presence */}
       <Popover className='md:relative hover:bg-gray-200 dark:hover:bg-gray-700'>
         {({ open }) => (
           <>
@@ -187,10 +244,10 @@ export const TopBar: FC<TopBarProps> = ({ openMobileCb }) => {
               )}
             >
               <StatusDot status={mainPresence} className='flex mr-1' />
-              {t('TopBar.Presence')}
+              <span className='text-sm font-normal'>{t('TopBar.Presence')}</span>
               <FontAwesomeIcon
                 icon={faChevronRight}
-                className='ml-auto h-3 w-3 flex justify-center text-gray-400 dark:text-gray-500'
+                className='ml-auto h-4 w-4 flex justify-center text-gray-700 dark:text-gray-500'
               />
             </Popover.Button>
             <Transition
@@ -227,6 +284,15 @@ export const TopBar: FC<TopBarProps> = ({ openMobileCb }) => {
                         </p>
                       </div>
                     </Dropdown.Item>
+                    <Dropdown.Item onClick={() => setPresence('voicemail')}>
+                      <div className=''>
+                        <div className='flex items-center'>
+                          <StatusDot status='voicemail' className='flex mr-2' />
+                          <p className='flex text-sm font-medium'> {t('TopBar.Voicemail')}</p>
+                        </div>
+                        <p className='text-sm text-gray-500'>{t('TopBar.Activate voicemail')}</p>
+                      </div>
+                    </Dropdown.Item>
                     <div className='relative py-2'>
                       <div className='absolute inset-0 flex items-center' aria-hidden='true'>
                         <div className='w-full border-t  border-gray-300 dark:border-gray-600' />
@@ -243,6 +309,88 @@ export const TopBar: FC<TopBarProps> = ({ openMobileCb }) => {
                         </p>
                       </div>
                     </Dropdown.Item>
+                  </div>
+                </div>
+              </Popover.Panel>
+            </Transition>
+          </>
+        )}
+      </Popover>
+
+      {/* Choose main device */}
+      <Popover className='md:relative hover:bg-gray-200 dark:hover:bg-gray-700'>
+        {({ open }) => (
+          <>
+            <Popover.Button
+              className={classNames(
+                open ? '' : '',
+                'relative text-left cursor-pointer px-4 py-2 text-sm flex items-center gap-3 w-full ',
+              )}
+            >
+              <FontAwesomeIcon
+                icon={
+                  mainDeviceType === 'webrtc'
+                    ? faHeadset
+                    : mainDeviceType === 'physical'
+                    ? faOfficePhone
+                    : faMobile
+                }
+                className='h-4 w-4 flex justify-center text-gray-700 dark:text-gray-400'
+              />
+              <span className='text-sm font-normal'>{t('TopBar.Main device')}</span>
+              <FontAwesomeIcon
+                icon={faChevronRight}
+                className='h-4 w-4 flex justify-center text-gray-700 dark:text-gray-400'
+              />
+            </Popover.Button>
+            <Transition
+              as={Fragment}
+              enter='transition ease-out duration-200'
+              enterFrom='opacity-0 translate-y-1'
+              enterTo='opacity-100 translate-y-0'
+              leave='transition ease-in duration-150'
+              leaveFrom='opacity-100 translate-y-0'
+              leaveTo='opacity-0 translate-y-1'
+            >
+              {/* List of device to choose */}
+              <Popover.Panel className='absolute sm:mr-[4.788rem] sm:-mt-10 right-0 z-10 w-screen max-w-xs sm:-translate-x-1/2 transform px-0.5 sm:px-1 xs:mr-[6rem] '>
+                <div className='overflow-hidden shadow-lg ring-1 ring-gray-200 dark:ring-gray-700 ring-opacity-1 rounded-md'>
+                  <div className='relative bg-white dark:border-gray-700 dark:bg-gray-900 py-2'>
+                    {noMobileListDevice.map((device: any) => (
+                      <Dropdown.Item
+                        key={device?.id}
+                        onClick={() => setMainDeviceId(device?.id, device?.type)}
+                      >
+                        <div className='truncate'>
+                          <div className='flex items-center space-x-2'>
+                            {device?.id === profile?.default_device?.id ? (
+                              <FontAwesomeIcon
+                                icon={faCheck}
+                                className='ml-auto mr-2 h-4 w-4 flex justify-center text-primary dark:text-gray-500'
+                              />
+                            ) : (
+                              <FontAwesomeIcon
+                                icon={faCheck}
+                                className='ml-auto mr-2 h-4 w-4 flex justify-center text-primary dark:text-gray-500 invisible'
+                              />
+                            )}
+
+                            <FontAwesomeIcon
+                              icon={device?.type === 'webrtc' ? faHeadset : faOfficePhone}
+                              className='ml-auto h-4 w-4 flex justify-center text-gray-700 dark:text-gray-500'
+                            />
+                            {device.type === 'webrtc' && (
+                              <p className='text-sm'>{t('Devices.Web phone')}</p>
+                            )}
+                            {device.type === 'physical' && (
+                              <p className='flex text-sm font-medium max-w-[6rem] line-clamp-2'>
+                                {device?.description}
+                              </p>
+                            )}
+                          </div>
+                        </div>
+                      </Dropdown.Item>
+                    ))}
                   </div>
                 </div>
               </Popover.Panel>

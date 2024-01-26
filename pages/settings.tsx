@@ -11,8 +11,9 @@ import {
   faMobile,
   faUsers,
   faIdCardClip,
-  faExclamationTriangle,
   faUser,
+  faCircleUser,
+  faPuzzlePiece,
 } from '@fortawesome/free-solid-svg-icons'
 import classNames from 'classnames'
 import { useSelector } from 'react-redux'
@@ -27,6 +28,8 @@ import { Theme } from '../components/settings/Theme'
 import { MobileApp } from '../components/settings/MobileApp'
 import { CustomerCards } from '../components/settings/CustomerCards'
 import Profile from './profilePicture'
+import Devices from './devices'
+import { faOfficePhone } from '@nethesis/nethesis-solid-svg-icons'
 
 interface SettingsMenuTypes {
   name: string
@@ -42,17 +45,19 @@ const Settings: NextPage = () => {
   const router = useRouter()
 
   const settingsMenu: SettingsMenuTypes[] = [
-    { name: 'Cache', href: '#', icon: faDatabase, current: false },
-    { name: 'Customer cards', href: '#', icon: faIdCardClip, current: false },
-    { name: 'Integrations', href: '#', icon: faBorderAll, current: false },
-    { name: 'Queues', href: '#', icon: faUsers, current: false },
+    { name: 'Devices', href: '#', icon: faOfficePhone, current: false },
     { name: 'Mobile App', href: '#', icon: faMobile, current: false },
-    { name: 'Profile picture', href: '#', icon: faUser, current: true },
-    { name: 'Theme', href: '#', icon: faPalette, current: true },
+    { name: 'Customer cards', href: '#', icon: faIdCardClip, current: false },
+    { name: 'Queues', href: '#', icon: faUsers, current: false },
+    { name: 'Profile picture', href: '#', icon: faCircleUser, current: true },
+    { name: 'Theme', href: '#', icon: faPalette, current: false },
+    { name: 'Integrations', href: '#', icon: faPuzzlePiece, current: false },
+    { name: 'Cache', href: '#', icon: faDatabase, current: false },
   ]
 
   const [items, setItems] = useState<SettingsMenuTypes[]>(settingsMenu)
   const [currentSection, setCurrentSection] = useState<string>(settingsMenu[0].name)
+
   useEffect(() => {
     if (firstRender) {
       setFirstRender(false)
@@ -60,10 +65,12 @@ const Settings: NextPage = () => {
     }
     let section = router.query.section as string
     if (!section) {
-      section = 'Profile picture'
+      section = 'Devices'
     }
     changeSection(section)
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [firstRender])
+
   const changeSection = (sectionName: string) => {
     const currentItems = items.map((route) => {
       if (sectionName === route.name) {
@@ -76,6 +83,7 @@ const Settings: NextPage = () => {
     })
     setItems(currentItems)
   }
+
   //// remove mock
   const createCallNotif = () => {
     const notif = {
@@ -91,6 +99,7 @@ const Settings: NextPage = () => {
       currentUsername: authStore.username,
     })
   }
+
   //// remove mock
   const createQueueCallNotif = () => {
     const notif = {
@@ -107,6 +116,7 @@ const Settings: NextPage = () => {
       currentUsername: authStore.username,
     })
   }
+
   //// remove mock
   const createChatNotif = () => {
     const notif = {
@@ -123,7 +133,9 @@ const Settings: NextPage = () => {
       currentUsername: authStore.username,
     })
   }
+
   const { profile } = useSelector((state: RootState) => state.user)
+
   return (
     <>
       <div>
@@ -138,27 +150,25 @@ const Settings: NextPage = () => {
                 <nav className='space-y-1'>
                   {items.map((item: any) => (
                     <a
-                      key={item.name}
-                      onClick={() => changeSection(item.name)}
+                      key={item?.name}
+                      onClick={() => changeSection(item?.name)}
                       className={classNames(
-                        item.current
-                          ? 'bg-primaryLighter border-primaryLight text-primaryDark hover:bg-primaryLighter hover:text-primaryDark dark:bg-primaryDarker dark:border-primaryDark dark:text-primaryLight dark:hover:bg-primaryDarker dark:hover:text-primaryLight'
-                          : 'border-transparent text-gray-900 hover:bg-gray-50 hover:text-gray-900 dark:text-gray-100 dark:hover:bg-gray-900 dark:hover:text-gray-100',
-                        'group border-l-4 px-3 py-3 flex items-center text-sm font-medium cursor-pointer',
+                        item?.current
+                          ? 'text-grey-900 bg-gray-100 dark:bg-gray-800 dark:text-gray-50 border-l-4 border-primary'
+                          : 'text-gray-600 dark:text-gray-300 hover:text-gray-900 hover:bg-gray-100 dark:hover:bg-gray-800 dark:hover:text-gray-50',
+
+                        'group rounded-md flex items-center text-xs font-medium justify-start space-x-2 w-74 mx-4 h-[3rem] cursor-pointer',
                       )}
                       aria-current={item.current ? 'page' : undefined}
                     >
                       <FontAwesomeIcon
-                        icon={item.icon}
+                        icon={item?.icon}
                         className={classNames(
-                          item.current
-                            ? 'text-primary group-hover:text-primary dark:text-primaryLight dark:group-hover:text-primaryLight'
-                            : 'text-gray-400 group-hover:text-gray-500 dark:text-gray-500 dark:group-hover:text-gray-400',
-                          'flex-shrink-0 -ml-1 mr-3 h-4 w-4',
-                        )}
+                          item?.current ? 'ml-3 text-gray-900 dark:text-gray-100' : 'ml-4 text-gray-700 dark:text-gray-300'
+                        , 'h-4 w-4' )}
                         aria-hidden='true'
                       />
-                      <span className='truncate'>{t(`Settings.${item.name}`)}</span>
+                      <span className='truncate leading-5 font-normal text-xs'>{t(`Settings.${item.name}`)}</span>
                     </a>
                   ))}
                 </nav>
@@ -179,6 +189,8 @@ const Settings: NextPage = () => {
                 {currentSection === 'Customer cards' && <CustomerCards />}
                 {/* Profile section */}
                 {currentSection === 'Profile picture' && <Profile />}
+                {/* Devices section */}
+                {currentSection === 'Devices' && <Devices />}
               </div>
             </div>
           </div>

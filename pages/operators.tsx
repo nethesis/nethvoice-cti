@@ -202,7 +202,7 @@ const Operators: NextPage = () => {
               title={operatorsStore.errorMessage}
             ></InlineNotification>
           )}
-          <div className='mx-auto text-center max-w-7xl 5xl:max-w-screen-2xl'>
+          <div className='mx-auto text-center 5xl:max-w-screen-2xl'>
             {/* empty state */}
             {operatorsStore.isOperatorsLoaded &&
               !operatorsStore.errorMessage &&
@@ -541,7 +541,7 @@ const Operators: NextPage = () => {
                                     />
                                   )}
                                 </div>
-                                <span className='block truncate mt-1 text-sm font-medium text-gray-500 dark:text-gray-500'>
+                                <span className='block truncate text-sm font-medium text-gray-500 dark:text-gray-500'>
                                   {operator?.conversations?.length &&
                                   (operator?.conversations[0]?.connected ||
                                     operator?.conversations[0]?.inConference ||

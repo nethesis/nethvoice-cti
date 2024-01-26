@@ -139,6 +139,10 @@ export const user = createModel<RootModel>()({
       state.settings.caller_info = callerInformations
       return state
     },
+    updateDefaultDevice: (state, defaultDevice) => {
+      state.default_device = defaultDevice
+      return state
+    },
     reset: () => {
       return defaultState
     },

@@ -9,6 +9,7 @@ import { createContact, editContact, reloadPhonebook, fetchContact } from '../..
 import { closeSideDrawer } from '../../lib/utils'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { faUserPlus, faPen } from '@fortawesome/free-solid-svg-icons'
+import { t } from 'i18next'
 export interface CreateOrEditContactDrawerContentProps extends ComponentPropsWithRef<'div'> {
   config: any
 }
@@ -152,11 +153,15 @@ export const CreateOrEditContactDrawerContent = forwardRef<
     let isValidationOk = true
 
     // name
-    if (contactType === 'person' && !nameRef.current.value.trim()) {
+    if (
+      contactType === 'person' &&
+      !nameRef?.current?.value?.trim() &&
+      !companyRef?.current?.value?.trim()
+    ) {
       setNameError('Required')
 
       if (isValidationOk) {
-        nameRef.current.focus()
+        nameRef?.current?.focus()
         isValidationOk = false
       }
     }
@@ -189,6 +194,8 @@ export const CreateOrEditContactDrawerContent = forwardRef<
 
     if (contactType === 'person' && nameRef.current.value) {
       contactData.name = nameRef.current.value
+    } else if (contactType === 'company' && !nameRef.current.value && companyRef.current.value) {
+      contactData.name = '-'
     }
 
     if (companyRef.current.value) {
@@ -234,19 +241,19 @@ export const CreateOrEditContactDrawerContent = forwardRef<
     }
 
     let contactData: any = {
-      id: config.contact.id.toString(),
-      owner_id: config.contact.owner_id,
-      source: config.contact.source,
-      speeddial_num: config.contact.speeddial_num,
+      id: config.contact?.id?.toString(),
+      owner_id: config?.contact?.owner_id,
+      source: config?.contact?.source,
+      speeddial_num: config?.contact?.speeddial_num,
       name: null,
       privacy: contactVisibility,
       favorite: false,
-      selectedPrefNum: config.contact.selectedPrefNum,
+      selectedPrefNum: config?.contact?.selectedPrefNum,
       type: contactVisibility,
-      company: companyRef.current.value || null,
-      extension: extensionRef.current.value || null,
-      workphone: workPhoneRef.current.value || '',
-      cellphone: mobilePhoneRef.current.value || null,
+      company: companyRef?.current?.value || null,
+      extension: extensionRef?.current?.value || null,
+      workphone: workPhoneRef?.current?.value || '',
+      cellphone: mobilePhoneRef?.current?.value || null,
       workemail: emailRef.current.value || null,
       notes: notesRef.current.value || null,
       homeemail: config.contact.homeemail,
@@ -282,7 +289,7 @@ export const CreateOrEditContactDrawerContent = forwardRef<
     //// TODO: show toast notification success
 
     reloadPhonebook()
-    fetchContact(config.contact.id, config.contact.source)
+    fetchContact(config?.contact?.id, config?.contact?.source)
   }
 
   return (
@@ -290,11 +297,11 @@ export const CreateOrEditContactDrawerContent = forwardRef<
       <div className='bg-gray-100 dark:bg-gray-800 py-6 px-6'>
         <div className='flex items-center justify-between'>
           <div className='text-lg font-medium dark:text-gray-200 text-gray-700'>
-            {config.isEdit
-              ? config.contact.phone
-                ? 'Add phone number: ' + config.contact.phone
-                : 'Edit contact'
-              : 'Create contact'}
+            {config?.isEdit
+              ? config?.contact?.phone
+                ? t('Phonebook.Add phone number') + ': ' + config?.contact?.phone
+                : t('Phonebook.Edit contact')
+              : t('Phonebook.Create contact')}
           </div>
           <div className='flex items-center h-7'>
             <SideDrawerCloseIcon />
@@ -304,9 +311,11 @@ export const CreateOrEditContactDrawerContent = forwardRef<
       <div className={classNames(className, 'm-1 p-5')} {...props}>
         {/* contact visibility */}
         <div className='mb-6'>
-          <label className='text-sm font-medium text-gray-700 dark:text-gray-200'>Visibility</label>
+          <label className='text-sm font-medium text-gray-700 dark:text-gray-200'>
+            {t('Phonebook.Visibility')}
+          </label>
           <fieldset className='mt-2'>
-            <legend className='sr-only'>Visibility</legend>
+            <legend className='sr-only'>{t('Phonebook.Visibility')}</legend>
             <div className='space-y-4 sm:flex sm:items-center sm:space-y-0 sm:space-x-10'>
               {contactVisibilityOptions.map((option) => (
                 <div key={option.id} className='flex items-center'>
@@ -331,9 +340,11 @@ export const CreateOrEditContactDrawerContent = forwardRef<
         </div>
         {/* contact type */}
         <div className='mb-6'>
-          <label className='text-sm font-medium text-gray-700 dark:text-gray-200'>Type</label>
+          <label className='text-sm font-medium text-gray-700 dark:text-gray-200'>
+            {t('Phonebook.Type')}
+          </label>
           <fieldset className='mt-2'>
-            <legend className='sr-only'>Type</legend>
+            <legend className='sr-only'>{t('Phonebook.Type')}</legend>
             <div className='space-y-4 sm:flex sm:items-center sm:space-y-0 sm:space-x-10'>
               {contactTypeOptions.map((option) => (
                 <div key={option.id} className='flex items-center'>
@@ -368,18 +379,43 @@ export const CreateOrEditContactDrawerContent = forwardRef<
           />
         )}
         <TextInput
-          label='Company'
+          label={t('Phonebook.Company') || ''}
           name='company'
           ref={companyRef}
           className='mb-4'
           error={!!companyError}
           helper={companyError}
         />
-        <TextInput label='Extension' name='extension' ref={extensionRef} className='mb-4' />
-        <TextInput label='Work phone' name='workPhone' ref={workPhoneRef} className='mb-4' />
-        <TextInput label='Mobile phone' name='mobilePhone' ref={mobilePhoneRef} className='mb-4' />
-        <TextInput label='Email' name='email' ref={emailRef} className='mb-4' />
-        <TextInput label='Notes' name='notes' ref={notesRef} className='mb-6' />
+        <TextInput
+          label={t('Phonebook.Extension') || ''}
+          name='extension'
+          ref={extensionRef}
+          className='mb-4'
+        />
+        <TextInput
+          label={t('Phonebook.Work phone') || ''}
+          name='workPhone'
+          ref={workPhoneRef}
+          className='mb-4'
+        />
+        <TextInput
+          label={t('Phonebook.Mobile phone') || ''}
+          name='mobilePhone'
+          ref={mobilePhoneRef}
+          className='mb-4'
+        />
+        <TextInput
+          label={t('Phonebook.Email') || ''}
+          name='email'
+          ref={emailRef}
+          className='mb-4'
+        />
+        <TextInput
+          label={t('Phonebook.Notes') || ''}
+          name='notes'
+          ref={notesRef}
+          className='mb-6'
+        />
         {/* create contact error */}
         {createContactError && (
           <InlineNotification type='error' title={createContactError} className='mb-4' />

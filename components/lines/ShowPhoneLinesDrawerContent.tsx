@@ -895,7 +895,7 @@ export const ShowPhoneLinesDrawerContent = forwardRef<
             <div className='ml-4 flex-shrink-0'>
               <Button
                 variant='white'
-                onClick={() => playSelectedAnnouncement(selectedAnnouncementInfo.id)}
+                onClick={() => playSelectedAnnouncement(selectedAnnouncementInfo?.id)}
                 disabled={!announcementSelected}
               >
                 <FontAwesomeIcon

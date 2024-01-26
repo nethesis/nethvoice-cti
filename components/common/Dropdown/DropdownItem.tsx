@@ -13,6 +13,7 @@ export interface DropdownItemProps extends Omit<ComponentProps<'div'>, 'classNam
   onClick?: () => void
   icon?: IconDefinition
   centered?: boolean
+  variantTop?: boolean
 }
 
 export const DropdownItem: FC<DropdownItemProps> = ({
@@ -20,6 +21,7 @@ export const DropdownItem: FC<DropdownItemProps> = ({
   onClick,
   icon: Icon,
   centered,
+  variantTop,
   ...props
 }) => {
   const { dropdown: theme } = useTheme().theme
@@ -33,6 +35,7 @@ export const DropdownItem: FC<DropdownItemProps> = ({
             theme.item.base,
             active ? theme.item.active : theme.item.light,
             centered && theme.item.centered,
+            variantTop ? '' : 'py-2',
           )}
           onClick={onClick}
           {...theirProps}

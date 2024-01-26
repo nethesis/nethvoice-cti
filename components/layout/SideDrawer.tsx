@@ -23,6 +23,8 @@ import { SaveRecordedAnnouncementDrawerContent } from '../lines'
 import { ShowMultiplePhoneLinesDrawerContent } from '../lines'
 import { GravatarIconDrawerContent } from '../common/ProfilePicture/GravatarIconDrawerContent'
 import { SelectProfilePictureDrawerContent } from '../common/ProfilePicture/SelectProfilePictureDrawerContent'
+import { EditPhysicalPhoneDrawerContent } from '../devices/EditPhysicalPhoneDrawerContent'
+
 interface SideDrawerProps {
   isShown: boolean
   contentType: string
@@ -79,6 +81,8 @@ export const SideDrawer: FC<SideDrawerProps> = ({ isShown, contentType, config, 
                         <GravatarIconDrawerContent config={config} />
                       ) : contentType === 'showUploadProfilePicture' ? (
                         <SelectProfilePictureDrawerContent config={config} />
+                      ) : contentType === 'showEditPhysicalPhone' ? (
+                        <EditPhysicalPhoneDrawerContent config={config} />
                       ) : null}
                     </div>
                   </nav>

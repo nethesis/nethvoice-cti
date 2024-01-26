@@ -35,7 +35,9 @@
     "Listen": "Ascolto",
     "0 minutes ago": "0 minuti fa",
     "ago": "fa",
-    "Unknown": "Sconosciuto"
+    "Unknown": "Sconosciuto",
+    "Confirm": "Conferma",
+    "Example": "Esempio"
   },
   "Login": {
     "User": "Utente",
@@ -71,7 +73,14 @@
     "Work": "Lavoro",
     "Mobile": "Cellulare",
     "Try changing your search filters": "Prova a cambiare i tuoi filtri di ricerca",
-    "Show contact": "Visualizza contatto"
+    "Show contact": "Visualizza contatto",
+    "Add phone number": "Aggiungi numero telefonico",
+    "Edit contact": "Modifica contatto",
+    "Visibility": "Visibilità",
+    "Email": "Email",
+    "Work phone": "Telefono lavoro",
+    "Notes": "Note",
+    "Extension": "Interno"
   },
   "History": {
     "History": "Storico",
@@ -201,7 +210,8 @@
     "Select or drag image here": "Seleziona o trascina qui un' immagine",
     "Upload image to continue": "Carica immagine per continuare",
     "Wrong file type": "Formato file errato",
-    "Delete profile picture": "Elimina immagine profilo"
+    "Delete profile picture": "Elimina immagine profilo",
+    "Devices": "Dispositivi"
   },
   "TopBar": {
     "Signed in as": "Accesso effettuato come",
@@ -217,7 +227,10 @@
     "Enter phone number for call forward": "Inserisci il numero di telefono per l'inoltro di chiamata",
     "Presence": "Presence",
     "Open user menu": "Open user menu",
-    "Open sidebar": "Open sidebar"
+    "Open sidebar": "Open sidebar",
+    "Main device": "Dispositivo principale",
+    "Voicemail": "Voicemail",
+    "Activate voicemail": "Attiva voicemail"
   },
   "OperatorDrawer": {
     "Book": "Prenota",
@@ -653,5 +666,62 @@
     "Parking": "Parcheggio",
     "Hold": "Tieni premuto",
     "Click and hold to take current parking in call": "Clicca e tieni premuto per riprendere la chiamata parcheggiata"
+  },
+  "Devices": {
+    "Web phone": "Web phone",
+    "Landline phone": "Telefono fisso",
+    "Device name": "Nome dispositivo",
+    "Status": "Stato",
+    "Edit": "Modifica",
+    "Set as main device": "Imposta come dispositivo principale",
+    "Main device": "Dispositivo principale",
+    "Online": "Online",
+    "Offline": "Offline",
+    "Optional": "Opzionale",
+    "PIN": "PIN",
+    "Pin information tooltip": "Crea o elimina un PIN per il tuo telefono fisico",
+    "Generate random PIN": "Genera un PIN casuale",
+    "Configure keys": "Configura tasti",
+    "Assign key to all operators": "Assegna tasto a tutti gli operatori",
+    "Not configurated": "Non configurato",
+    "Search": "Cerca",
+    "Assign keys for all operators": "Assegna tasti a tutti gli operatori",
+    "Assign key for all operators modal message": "Questa azione assegnerà un tasto a tutti gli operatori, ordinando in ordine crescente per numero di estensione",
+    "Assign keys": "Assegna tasti",
+    "Key position": "Posizione tasto",
+    "Type": "Tipo",
+    "Choose type": "Scegli tipo",
+    "Busy lamp field (BLF)": "Busy lamp field (BLF)",
+    "Line": "Linea",
+    "Speed call": "Chiamata rapida",
+    "Do not disturb (DND)": "Do not disturb (DND)",
+    "Toggle login/logout queue": "Alterna login/logout coda",
+    "Name or number": "Nome o numero",
+    "Add key": "Aggiungi tasto",
+    "New key": "Nuovo tasto",
+    "Search physical phone index placeholder message": "Scrivi o cerca un indice da 1 a {{maxNumber}}",
+    "Search physical phone draggable row index placeholder message": "Scrivi o cerca un indice da 1 a {{usableKeys}}",
+    "Search or compose": "Cerca o componi",
+    "Type to search": "Digita per cercare",
+    "Fill in all the fields to continue": "Compila tutti i campi per continuare",
+    "Index not allowed": "Indice non consentito",
+    "Index error message": "Inserisci indice da 1 a {{usableKeys}}",
+    "Physical phone": "Telefono fisico",
+    "Physical phones": "Telefoni fisici",
+    "Name or extension": "Nome o interno",
+    "Confirm edits": "Conferma modifiche",
+    "Type selection is required": "La selezione del tipo è obbligatoria",
+    "Number selection is required": "La selezione del numero è obbligatoria",
+    "Edit inline information message one row": "{{isInformationLineShow}} riga modificata",
+    "Edit inline information message multiple rows": "{{isInformationLineShow}} righe modificate",
+    "Edit done": "Modifiche effettuate",
+    "Edit completed": "Modifiche completate",
+    "New phone configuration saved": "Nuova configurazione telefono salvata",
+    "Create a pin": "Crea un pin",
+    "No results": "Nessun risultato",
+    "Try changing your search query": "Prova a cambiare la tua ricerca",
+    "Keys configuration information tooltip": "Configura i tasti linea del tuo telefono",
+    "Key position information tooltip": "Scegli una posizione per il pulsante",
+    "Click on confirm": "Clicca su Conferma"
   }
 }

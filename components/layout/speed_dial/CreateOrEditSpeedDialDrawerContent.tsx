@@ -26,10 +26,10 @@ export const CreateOrEditSpeedDialDrawerContent = forwardRef<
   const phoneNumberRef = useRef() as React.MutableRefObject<HTMLInputElement>
 
   useEffect(() => {
-    if (config.isEdit) {
+    if (config?.isEdit) {
       // editing speed dial
-      nameRef.current.value = config.speedDial.name || ''
-      phoneNumberRef.current.value = config.speedDial.speeddial_num || ''
+      nameRef.current.value = config?.speedDial?.name || ''
+      phoneNumberRef.current.value = config?.speedDial?.speeddial_num || ''
     } else {
       // creating speed dial
       nameRef.current.value = ''

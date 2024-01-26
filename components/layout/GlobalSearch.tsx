@@ -167,7 +167,10 @@ export const GlobalSearch: FC<GlobalSearchProps> = () => {
           operatorsStore?.operators[authStore?.username]?.mainPresence === 'busy'
         ) {
           transferCallToExtension(result?.phoneNumber)
-        } else {
+        } else if (
+          operatorsStore?.operators[authStore?.username]?.endpoints?.mainextension[0]?.id !==
+          result?.phoneNumber
+        ) {
           callPhoneNumber(result?.phoneNumber)
         }
         break

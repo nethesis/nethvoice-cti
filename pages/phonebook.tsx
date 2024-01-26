@@ -221,12 +221,12 @@ const Phonebook: NextPage = () => {
                               </thead>
                               <tbody className='divide-y divide-gray-200 dark:divide-gray-700 bg-white dark:bg-gray-900 text-gray-700 text-sm'>
                                 {/* Not empty state  */}
-                                {phonebook.rows
+                                {phonebook?.rows
                                   .filter(
                                     (contact: any) =>
-                                      contact.displayName !== undefined &&
-                                      contact.displayName !== null &&
-                                      contact.displayName !== '',
+                                      contact?.displayName !== undefined &&
+                                      contact?.displayName !== null &&
+                                      contact?.displayName !== '',
                                   )
                                   .map((contact: any, index: number) => (
                                     <tr
@@ -239,7 +239,7 @@ const Phonebook: NextPage = () => {
                                         <div className='flex items-center'>
                                           <div className='h-10 w-10 flex-shrink-0'>
                                             {' '}
-                                            {contact.kind == 'person' ? (
+                                            {contact?.kind == 'person' ? (
                                               <Avatar
                                                 className='cursor-pointer'
                                                 placeholderType='person'
@@ -252,10 +252,10 @@ const Phonebook: NextPage = () => {
                                             )}{' '}
                                           </div>
                                           <div className='ml-4'>
+                                            {/* User name */}
                                             <div className='font-medium text-gray-700 dark:text-gray-100'>
-                                              {' '}
                                               <span className='cursor-pointer hover:underline'>
-                                                {contact.displayName}
+                                                {contact?.displayName}
                                               </span>
                                             </div>
                                             {/* extension */}
@@ -267,15 +267,26 @@ const Phonebook: NextPage = () => {
                                                   aria-hidden='true'
                                                 />
                                                 <span
-                                                  className='truncate text-primary dark:text-primary cursor-pointer'
+                                                  className={`${
+                                                    contact?.extension !==
+                                                    operatorsStore?.operators[authStore?.username]
+                                                      ?.endpoints?.mainextension[0]?.id
+                                                      ? 'cursor-pointer hover:underline text-primary dark:text-primary'
+                                                      : 'text-gray-700 dark:text-gray-200'
+                                                  } truncate  `}
                                                   onClick={() =>
                                                     operatorsStore?.operators[authStore?.username]
                                                       ?.mainPresence === 'busy'
-                                                      ? transferCallToExtension(contact.extension)
-                                                      : callPhoneNumber(contact.extension)
+                                                      ? transferCallToExtension(contact?.extension)
+                                                      : contact?.extension !==
+                                                        operatorsStore?.operators[
+                                                          authStore?.username
+                                                        ]?.endpoints?.mainextension[0]?.id
+                                                      ? callPhoneNumber(contact?.extension)
+                                                      : ''
                                                   }
                                                 >
-                                                  {contact.extension}
+                                                  {contact?.extension}
                                                 </span>
                                               </div>
                                             )}
@@ -310,8 +321,23 @@ const Phonebook: NextPage = () => {
                                                 aria-hidden='true'
                                               />
                                               <span
-                                                className='truncate cursor-pointer hover:underline'
-                                                onClick={() => callPhoneNumber(contact.workphone)}
+                                                className={`${
+                                                  contact?.workphone !==
+                                                  operatorsStore?.operators[authStore?.username]
+                                                    ?.endpoints?.mainextension[0]?.id
+                                                    ? 'cursor-pointer hover:underline'
+                                                    : 'text-gray-700 dark:text-gray-200'
+                                                } truncate `}
+                                                onClick={() =>
+                                                  operatorsStore?.operators[authStore?.username]
+                                                    ?.mainPresence === 'busy'
+                                                    ? transferCallToExtension(contact?.workphone)
+                                                    : contact?.workphone !==
+                                                      operatorsStore?.operators[authStore?.username]
+                                                        ?.endpoints?.mainextension[0]?.id
+                                                    ? callPhoneNumber(contact?.workphone)
+                                                    : ''
+                                                }
                                               >
                                                 {contact.workphone}
                                               </span>

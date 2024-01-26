@@ -349,17 +349,19 @@ const theme = {
       full: 'w-full h-full',
     },
     item: {
-      base: 'block px-4 py-2 text-sm flex items-center gap-3 mt-1 mb-1 cursor-pointer',
+      base: 'block px-4 text-sm flex items-center gap-3 mt-1 mb-1 cursor-pointer',
       light: 'text-gray-700 dark:text-gray-300',
       active: 'bg-gray-200 text-gray-900 dark:bg-gray-700 dark:text-gray-100',
       icon: 'h-4 w-4 flex text-gray-500 dark:text-gray-400',
       centered: 'justify-center',
     },
     items: {
-      base: 'absolute z-10 mt-2 w-60 origin-top-right rounded-md  shadow-lg ring-1 ring-opacity-5 focus:outline-none bg-white ring-black dark:bg-gray-900 dark:ring-gray-700',
+      base: 'absolute z-10 origin-top-right rounded-md  shadow-lg ring-1 ring-opacity-5 focus:outline-none bg-white ring-black dark:bg-gray-900 dark:ring-gray-700',
       position: {
-        right: 'left-0',
-        left: 'right-0',
+        right: 'left-0 w-60 mt-2',
+        left: 'right-0 w-60 mt-2',
+        top:'right-[3rem] top-0',
+        bottom:'bottom-0',
       },
       divider: 'divide-y divide-gray-200 dark:divide-gray-700',
       header: 'block px-4 py-3 text-sm cursor-normal text-gray-700 dark:text-gray-300',
