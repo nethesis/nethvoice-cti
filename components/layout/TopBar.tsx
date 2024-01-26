@@ -220,6 +220,7 @@ export const TopBar: FC<TopBarProps> = ({ openMobileCb }) => {
     }
   }
 
+  
   const dropdownItems = (
     <>
       <div className='cursor-default'>

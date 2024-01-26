@@ -58,9 +58,15 @@ export const EditPhysicalPhoneDrawerContent = forwardRef<
   }, [firstRender])
 
   useEffect(() => {
-    if (!initialPinSet && pinObjectInformation[config?.id]?.pin !== '') {
+    if (
+      !initialPinSet &&
+      pinObjectInformation[config?.id]?.pin !== '' &&
+      pinObjectInformation[config?.id]?.enabled
+    ) {
       setPinValue(pinObjectInformation[config?.id]?.pin)
       setInitialPinSet(true)
+    } else {
+      setPinValue('')
     }
   }, [pinObjectInformation, config?.id])
 

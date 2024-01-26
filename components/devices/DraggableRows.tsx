@@ -241,8 +241,7 @@ export default function DraggableRows({
     if (editedRowIndex !== null && keysTypeSelected !== null) {
       const targetIndex = editedRowIndex - 1
       const oldIndex = rowData?.id - 1
-
-      if (targetIndex >= 0 && targetIndex < filteredButtons.length) {
+      if (targetIndex >= 0 && targetIndex < filteredButtons?.length) {
         const updatedButtons: any = [...filteredButtons]
 
         // Save selected row data before swapping
@@ -340,7 +339,7 @@ export default function DraggableRows({
   }
 
   const deleteRow = (rowData: any) => {
-    const targetIndex = rowData.id - 1
+    const targetIndex = rowData?.id - 1
 
     const updatedButtons: any = [...filteredButtons]
 
@@ -417,7 +416,7 @@ export default function DraggableRows({
   }, [selectedRowIndex])
 
   useEffect(() => {
-    setButtonsStatusObject(buttonsStatusObject)
+    setFilteredButtons(buttonsStatusObject)
     onChangeFinalkeysObject(buttonsStatusObject)
   }, [buttonsStatusObject, filteredButtons, textFilter])
 
@@ -499,7 +498,7 @@ export default function DraggableRows({
                 </div>
               ))}
             {/* no search results */}
-            {currentFilteredItems?.length === 0 && (
+            {keyInformationJsonLoaded && currentFilteredItems?.length === 0 && (
               <div className='flex justify-center cursor-default select-none items-center rounded-md p-2'>
                 <EmptyState
                   title={t('Devices.No results') || ''}
