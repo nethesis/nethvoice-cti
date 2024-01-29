@@ -124,13 +124,13 @@ const Devices: NextPage = () => {
                           <td className='whitespace-nowrap py-4 pl-4 pr-3 text-sm font-medium sm:pl-6'>
                             {t('Devices.Web phone')}
                           </td>
-                          <td className='whitespace-nowrap pl-[3.8rem] py-4 text-sm sm:pl-[2.8rem]'>
+                          <td className='whitespace-nowrap py-4 text-sm sm:pl-[2.8rem]'>
                             {operators?.extensions[webrtcData[0]?.id]?.exten ===
                             profile?.default_device?.id ? (
                               <>
                                 <FontAwesomeIcon
                                   icon={faCircleCheck}
-                                  className='mr-2 ml-[2rem] h-4 w-4 text-green-700'
+                                  className='mr-2 h-4 w-4 text-green-700'
                                 />
                                 {t('Devices.Online')}
                               </>
@@ -152,10 +152,12 @@ const Devices: NextPage = () => {
                                 <span>{t('Devices.Main device')}</span>
                               </Badge>
                             ) : (
-                              <span className='text-transparent'>{t('Devices.Main device')}</span>
+                              <span className='text-transparent cursor-default'>
+                                {t('Devices.Main device')}
+                              </span>
                             )}
                           </td>
-                          <td className='whitespace-nowrap px-3 py-4 text-sm text-primary dark:text-primaryDark cursor-pointer text-transparent'>
+                          <td className='px-3 py-4 text-sm text-white dark:text-gray-700 text-transparent cursor-default'>
                             <FontAwesomeIcon icon={faPenToSquare} className='mr-2 h-4 w-4' />
                             {t('Devices.Edit')}
                           </td>
@@ -180,125 +182,144 @@ const Devices: NextPage = () => {
               </div>
             </div>
 
-            {/* Physical phones section */}
-            <div className='pt-16'>
-              <div className='flex items-center space-x-2'>
-                <FontAwesomeIcon
-                  icon={faOfficePhone}
-                  className='h-4 w-4 flex justify-center text-gray-700 dark:text-gray-500'
-                />
-                {/* Check if physical is more than one   */}
-                <span>
-                  {phoneData.lengtht > 1
-                    ? t('Devices.Physical phones')
-                    : t('Devices.Physical phone')}
-                </span>
-              </div>
-            </div>
-
-            {/* Physical phones table */}
-            <div className='mt-4 flow-root'>
-              <div className='-mx-4 -my-2 overflow-x-auto sm:-mx-6 lg:-mx-8'>
-                <div className='inline-block min-w-full py-2 align-middle sm:px-6 lg:px-8'>
-                  <div className='overflow-hidden shadow ring-1 ring-black dark:ring-gray-500 ring-opacity-5 sm:rounded-lg'>
-                    <table className='min-w-full divide-y divide-gray-300 dark:divide-gray-500'>
-                      <thead className='bg-gray-50 dark:bg-gray-800'>
-                        <tr className=''>
-                          <th
-                            scope='col'
-                            className='py-3.5 pl-4 pr-3 text-left text-sm font-semibold sm:pl-6'
-                          >
-                            {t('Devices.Device name')}
-                          </th>
-                          <th scope='col' className='px-3 py-3.5 text-left text-sm font-semibold'>
-                            {t('Devices.Status')}
-                          </th>
-                          <th
-                            scope='col'
-                            className='px-3 py-3.5 text-left text-sm font-semibold text-transparent '
-                          >
-                            {t('Devices.Main device')}
-                          </th>
-                          <th
-                            scope='col'
-                            className='px-3 py-3.5 text-left text-sm font-semibold sr-only'
-                          >
-                            {t('Devices.Edit')}
-                          </th>
-
-                          <th scope='col' className='relative py-3.5 sm:pr-6'>
-                            <span className='sr-only'>{t('Devices.Set as main device')}</span>
-                          </th>
-                        </tr>
-                      </thead>
-                      <tbody className='divide-y divide-gray-200 dark:divide-gray-500 bg-white dark:bg-gray-700'>
-                        {phoneData.map((phone: any) => (
-                          <tr key={phone?.id} className=''>
-                            <td className='whitespace-nowrap py-4 pl-4 pr-3 text-sm font-medium sm:pl-6 max-w-[3rem] overflow-hidden overflow-ellipsis'>
-                              {phone?.description}
-                            </td>
-                            <td className='whitespace-nowrap px-3 py-4 text-sm'>
-                              {/* {phone.status} */}{' '}
-                              {operators?.extensions[phone?.id]?.status === 'online' ? (
-                                <>
-                                  <FontAwesomeIcon
-                                    icon={faCircleCheck}
-                                    className='mr-2 h-4 w-4 text-green-700'
-                                  />
-                                  {t('Devices.Online')}
-                                </>
-                              ) : (
-                                <>
-                                  <FontAwesomeIcon
-                                    icon={faCircleXmark}
-                                    className='mr-2 h-4 w-4 text-gray-700 dark:text-gray-400'
-                                  />
-                                  <span className='text-gray-500 dark:text-gray-200'>
-                                    {t('Devices.Offline')}
-                                  </span>
-                                </>
-                              )}
-                            </td>
-                            <td className='whitespace-nowrap px-3 py-4 text-sm text-gray-500'>
-                              {phone?.id === profile?.default_device?.id ? (
-                                <Badge size='small' variant='online' rounded='full'>
-                                  <span>{t('Devices.Main device')}</span>
-                                </Badge>
-                              ) : (
-                                <span className='text-transparent'>{t('Devices.Main device')}</span>
-                              )}
-                            </td>
-                            <td
-                              className='whitespace-nowrap px-3 py-4 text-sm text-primary dark:text-primaryDark cursor-pointer'
-                              onClick={() => openShowEditPhysicalPhone(phone, pinObject)}
-                            >
-                              <FontAwesomeIcon
-                                icon={faPenToSquare}
-                                className='mr-2 h-4 w-4 text-primary dark:text-primaryDark'
-                              />
-                              {t('Devices.Edit')}
-                            </td>
-                            {phone?.id !== profile?.default_device?.id && (
-                              <td className='relative whitespace-nowrap py-4 pl-3 pr-4 text-right text-sm font-medium sm:pr-6 cursor-pointer'>
-                                <Dropdown
-                                  items={setMainDeviceMenu(phone?.id, 'physical')}
-                                  position='top'
-                                >
-                                  <FontAwesomeIcon
-                                    icon={faEllipsisVertical}
-                                    className='h-4 w-4 text-primary dark:text-primaryDark'
-                                  />
-                                </Dropdown>
-                              </td>
-                            )}
-                          </tr>
-                        ))}
-                      </tbody>
-                    </table>
+            {phoneData?.length > 0 && (
+              <>
+                {/* Physical phones section */}
+                <div className='pt-16'>
+                  <div className='flex items-center space-x-2'>
+                    <FontAwesomeIcon
+                      icon={faOfficePhone}
+                      className='h-4 w-4 flex justify-center text-gray-700 dark:text-gray-500'
+                    />
+                    {/* Check if physical is more than one   */}
+                    <span>
+                      {phoneData?.lengtht > 1
+                        ? t('Devices.Physical phones')
+                        : t('Devices.Physical phone')}
+                    </span>
                   </div>
                 </div>
-              </div>
-            </div>
+
+                {/* Physical phones table */}
+                <div className='mt-4 flow-root'>
+                  <div className='-mx-4 -my-2 overflow-x-auto sm:-mx-6 lg:-mx-8'>
+                    <div className='inline-block min-w-full py-2 align-middle sm:px-6 lg:px-8'>
+                      <div className='overflow-hidden shadow ring-1 ring-black dark:ring-gray-500 ring-opacity-5 sm:rounded-lg'>
+                        <table className='min-w-full divide-y divide-gray-300 dark:divide-gray-500'>
+                          <thead className='bg-gray-50 dark:bg-gray-800'>
+                            <tr className=''>
+                              <th
+                                scope='col'
+                                className='py-3.5 pl-4 pr-3 text-left text-sm font-semibold sm:pl-6 w-[15.5rem]'
+                              >
+                                {t('Devices.Device name')}
+                              </th>
+                              <th
+                                scope='col'
+                                className='px-3 py-3.5 text-left text-sm font-semibold'
+                              >
+                                <p className='ml-2'>{t('Devices.Status')}</p>
+                              </th>
+                              <th
+                                scope='col'
+                                className='px-3 py-3.5 text-left text-sm font-semibold text-transparent '
+                              >
+                                {t('Devices.Main device')}
+                              </th>
+                              <th
+                                scope='col'
+                                className='px-3 py-3.5 text-left text-sm font-semibold sr-only'
+                              >
+                                {t('Devices.Edit')}
+                              </th>
+
+                              <th scope='col' className='relative py-3.5 sm:pr-6'>
+                                <span className='sr-only'>{t('Devices.Set as main device')}</span>
+                              </th>
+                            </tr>
+                          </thead>
+                          <tbody className='divide-y divide-gray-200 dark:divide-gray-500 bg-white dark:bg-gray-700'>
+                            {phoneData.map((phone: any) => (
+                              <tr key={phone?.id} className=''>
+                                <td className='truncate py-4 pl-4 pr-3 text-sm font-medium sm:pl-6 max-w-sm overflow-hidden overflow-ellipsis'>
+                                  <p className='truncate w-36'>{phone?.description}</p>
+                                </td>
+                                <td className='whitespace-nowrap px-3 py-4 text-sm'>
+                                  {/* {phone.status} */}{' '}
+                                  {operators?.extensions[phone?.id]?.status === 'online' ? (
+                                    <>
+                                      <FontAwesomeIcon
+                                        icon={faCircleCheck}
+                                        className={`${
+                                          phone?.id === profile?.default_device?.id
+                                            ? 'ml-2'
+                                            : 'ml-2'
+                                        } mr-2 h-4 w-4 text-green-700`}
+                                      />
+                                      {t('Devices.Online')}
+                                    </>
+                                  ) : (
+                                    <>
+                                      <FontAwesomeIcon
+                                        icon={faCircleXmark}
+                                        className={`${
+                                          phone?.id === profile?.default_device?.id
+                                            ? 'ml-2'
+                                            : 'ml-2'
+                                        } mr-2 h-4 w-4 text-gray-700 dark:text-gray-400`}
+                                      />
+                                      <span className='text-gray-500 dark:text-gray-200'>
+                                        {t('Devices.Offline')}
+                                      </span>
+                                    </>
+                                  )}
+                                </td>
+                                <td className='whitespace-nowrap px-3 py-2 text-sm text-gray-500'>
+                                  {phone?.id === profile?.default_device?.id ? (
+                                    <Badge size='small' variant='online' rounded='full'>
+                                      <span>{t('Devices.Main device')}</span>
+                                    </Badge>
+                                  ) : (
+                                    <span className='text-transparent'>
+                                      {t('Devices.Main device')}
+                                    </span>
+                                  )}
+                                </td>
+                                <td
+                                  className='whitespace-nowrap px-3 py-4 text-sm text-primary dark:text-primaryDark cursor-pointer'
+                                  onClick={() => openShowEditPhysicalPhone(phone, pinObject)}
+                                >
+                                  <FontAwesomeIcon
+                                    icon={faPenToSquare}
+                                    className='mr-2 h-4 w-4 text-primary dark:text-primaryDark'
+                                  />
+                                  {t('Devices.Edit')}
+                                </td>
+                                {phone?.id !== profile?.default_device?.id ? (
+                                  <td className='relative whitespace-nowrap py-4 pl-3 pr-4 text-right text-sm font-medium sm:pr-6 cursor-pointer'>
+                                    <Dropdown
+                                      items={setMainDeviceMenu(phone?.id, 'physical')}
+                                      position='top'
+                                    >
+                                      <FontAwesomeIcon
+                                        icon={faEllipsisVertical}
+                                        className='h-4 w-4 text-primary dark:text-primaryDark'
+                                      />
+                                    </Dropdown>
+                                  </td>
+                                ) : (
+                                  <td></td>
+                                )}
+                              </tr>
+                            ))}
+                          </tbody>
+                        </table>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </>
+            )}
           </div>
         </div>
       </section>
