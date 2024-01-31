@@ -57,11 +57,11 @@ const Devices: NextPage = () => {
         await setMainDevice(deviceIdInfo)
         dispatch.user.updateDefaultDevice(deviceIdInfo)
         if (deviceType !== '' && deviceType === 'physical') {
-          eventDispatch('phone-island-janus-detach', {})
-          eventDispatch('phone-island-janus-destroy', {})
+          eventDispatch('phone-island-detach', {})
+          eventDispatch('phone-island-destroy', {})
         } else {
-          eventDispatch('phone-island-janus-create', {})
-          eventDispatch('phone-island-janus-attach', {})
+          eventDispatch('phone-island-create', {})
+          eventDispatch('phone-island-attach', {})
         }
       } catch (err) {
         console.log(err)
