@@ -1,4 +1,7 @@
 import { FC } from 'react'
+import { formatDistanceToNow, intervalToDuration } from 'date-fns'
+import { utcToZonedTime } from 'date-fns-tz'
+import { t } from 'i18next'
 import {
   formatDateLoc,
   formatDateLocIsDifferentTimezone,
@@ -7,9 +10,6 @@ import {
   getCallTimeToDisplayIsAnnouncement,
 } from '../../lib/dateTime'
 import { getCallTimeToDisplay } from '../../lib/dateTime'
-import { t } from 'i18next'
-import { utcToZonedTime } from 'date-fns-tz'
-import { formatDistanceToNow, intervalToDuration } from 'date-fns'
 
 interface CallsDateProps {
   call: any
@@ -34,21 +34,10 @@ const customFormatDistance = (date: any) => {
     return `${duration?.minutes} min ${t('Common.ago')}`
   }
 }
+let browserTimeZone = Intl.DateTimeFormat().resolvedOptions().timeZone
 
-const getCallDistanceToNowTemplate = (callTime: any) => {
-  const callDate = utcToZonedTime(new Date(callTime), 'UTC')
-  const timeDistance = formatDistanceToNow(callDate, { addSuffix: true, includeSeconds: false })
-
-  if (timeDistance !== '') {
-    return customFormatDistance(callDate)
-  } else {
-    return t('Common.0 minutes ago')
-  }
-}
-
-const getCallDistanceToNowIsInQueue = (callTime: any) => {
-  const timeZone = Intl.DateTimeFormat().resolvedOptions().timeZone
-  const callDate = utcToZonedTime(new Date(callTime), timeZone)
+const getCallDistanceToNow = (callTime: number) => {
+  const callDate = utcToZonedTime(new Date(callTime * 1000), browserTimeZone)
   const timeDistance = formatDistanceToNow(callDate, { addSuffix: true, includeSeconds: false })
 
   if (timeDistance !== '') {
@@ -74,7 +63,7 @@ const getCallDistanceToNowTemplateIsAnnouncement = (date: any) => {
   const second = parseInt(timeParts[2], 10)
 
   const dateHour = new Date(year, month, day, hour, minute, second)
-  const callDate = utcToZonedTime(dateHour, 'UTC')
+  const callDate = utcToZonedTime(dateHour, browserTimeZone)
   const timeDistance = formatDistanceToNow(callDate, { addSuffix: true, includeSeconds: false })
 
   if (timeDistance !== '') {
@@ -89,8 +78,8 @@ export const CallsDate: FC<CallsDateProps> = ({ call, spaced, isInQueue, isInAnn
     <>
       {isInAnnouncement ? (
         <div className={`flex flex-col justify-center flex-shrink-0 ${spaced ? 'gap-1.5' : ''}`}>
-          <div className='text-sm font-medium text-gray-600 dark:text-gray-100 leading-5	'>
-            {getCallDistanceToNowTemplateIsAnnouncement(call)}
+          <div className='text-sm font-medium text-gray-600 dark:text-gray-100 leading-5'>
+            {getCallDistanceToNowTemplateIsAnnouncement(call)}{' '}
           </div>
           <div className='text-sm text-gray-600 dark:text-gray-100 font-normal leading-5'>
             ({formatDateLocIsAnnouncement(call)} {getCallTimeToDisplayIsAnnouncement(call)})
@@ -98,21 +87,22 @@ export const CallsDate: FC<CallsDateProps> = ({ call, spaced, isInQueue, isInAnn
         </div>
       ) : !isInQueue ? (
         <div className={`flex flex-col justify-center flex-shrink-0 ${spaced ? 'gap-1.5' : ''}`}>
-          <div className='text-sm font-medium text-gray-600 dark:text-gray-100 leading-5	'>
-            {getCallDistanceToNowTemplate(call?.time * 1000)}
+          <div className='text-sm font-medium text-gray-600 dark:text-gray-100 leading-5'>
+            {getCallDistanceToNow(call.time)}
           </div>
-          <div className='text-sm text-gray-600 dark:text-gray-100 font-normal leading-5	'>
-            ({formatDateLoc(call?.time * 1000, 'PP')} {getCallTimeToDisplay(call?.time * 1000)})
+          <div className='text-sm text-gray-600 dark:text-gray-100 font-normal leading-5'>
+            ({formatDateLoc(call.time * 1000, 'PP')}{' '}
+            {getCallTimeToDisplay(call.time * 1000, browserTimeZone)})
           </div>
         </div>
       ) : (
         <div className={`flex flex-col justify-center flex-shrink-0 ${spaced ? 'gap-1.5' : ''}`}>
-          <div className='text-sm font-medium text-gray-600 dark:text-gray-100 leading-5	'>
-            {getCallDistanceToNowIsInQueue(call?.time * 1000)}
+          <div className='text-sm font-medium text-gray-600 dark:text-gray-100 leading-5'>
+            {getCallDistanceToNow(call.time)}
           </div>
-          <div className='text-sm text-gray-600 dark:text-gray-100 font-normal leading-5	'>
-            ({formatDateLocIsDifferentTimezone(call?.time * 1000, 'PP')}{' '}
-            {getCallTimeToDisplayIsDifferentTimezone(call?.time * 1000)})
+          <div className='text-sm text-gray-600 dark:text-gray-100 font-normal leading-5'>
+            ({formatDateLocIsDifferentTimezone(call.time * 1000, 'PP')}{' '}
+            {getCallTimeToDisplayIsDifferentTimezone(call.time * 1000)})
           </div>
         </div>
       )}
