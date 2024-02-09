@@ -1,4 +1,4 @@
-// Copyright (C) 2023 Nethesis S.r.l.
+// Copyright (C) 2024 Nethesis S.r.l.
 // SPDX-License-Identifier: AGPL-3.0-or-later
 
 import { FC, ComponentProps, useEffect, useState } from 'react'
@@ -465,6 +465,8 @@ export const QueueManagementChart: FC<QueueManagementChartProps> = ({
     },
   ]
 
+  let browserTimeZone = Intl.DateTimeFormat().resolvedOptions().timeZone
+
   return (
     <>
       <div className='grid grid-cols-1 gap-4 sm:grid-cols-1 md:grid-cols-1 lg:grid-cols-2 xl:grid-cols-3'>
@@ -604,7 +606,7 @@ export const QueueManagementChart: FC<QueueManagementChartProps> = ({
                           <div className='flex flex-col'>
                             <div>{formatDateLoc(call.time * 1000, 'PP')}</div>
                             <div className='text-gray-500 dark:text-gray-500'>
-                              {getCallTimeToDisplay(call.time * 1000)}
+                              {getCallTimeToDisplay(call.time * 1000, browserTimeZone)}
                             </div>
                           </div>
                         </div>
