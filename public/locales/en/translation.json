@@ -768,5 +768,13 @@
     "Keys configuration information tooltip": "Configure line keys of your physical device",
     "Key position information tooltip": "Choose a position for your key",
     "Click on confirm": "Click on Confirm"
+  },
+  "DropdownContent": {
+    "Microphones": "MICROPHONES",
+    "Speakers": "SPEAKERS"
+  },
+  "Call": {
+    "In progress...": "In progress...",
+    "Outgoing call": "Outgoing call"
   }
 }

@@ -723,5 +723,13 @@
     "Keys configuration information tooltip": "Configura i tasti linea del tuo telefono",
     "Key position information tooltip": "Scegli una posizione per il pulsante",
     "Click on confirm": "Clicca su Conferma"
+  },
+  "DropdownContent": {
+    "Microphones": "MICROFONI",
+    "Speakers": "ALTOPARLANTI"
+  },
+  "Call": {
+    "In progress...": "In corso...",
+    "Outgoing call": "Chiamata in uscita"
   }
 }
