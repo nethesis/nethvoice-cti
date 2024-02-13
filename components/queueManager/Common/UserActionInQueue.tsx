@@ -43,7 +43,7 @@ export const UserActionInQueue: React.FC<UserActionInQueueProps> = ({ queue }) =
   const dropdownItems = (queue: any) => (
     <>
       {/* If user is not logged in */}
-      {!queue.loggedIn ? (
+      {!queue?.loggedIn ? (
         <Popover className='md:relative hover:bg-gray-200 dark:hover:bg-gray-700'>
           {({ open }) => (
             <>

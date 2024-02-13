@@ -1013,13 +1013,13 @@ export const Summary: FC<SummaryProps> = ({ className }): JSX.Element => {
                                                 <div className='flex flex-grow justify-between'>
                                                   <div className='flex flex-col'>
                                                     <div className='truncate text-base leading-6 font-medium flex items-center space-x-2'>
-                                                      <span>{queue.qname}</span>
-                                                      <span>{queue.queue}</span>
+                                                      <span>{queue?.qname}</span>
+                                                      <span>{queue?.queue}</span>
                                                     </div>
                                                     <div className='flex pt-1'>
                                                       <LoggedStatus
-                                                        loggedIn={queue.loggedIn}
-                                                        paused={queue.paused}
+                                                        loggedIn={queue?.loggedIn}
+                                                        paused={queue?.paused}
                                                       />
                                                     </div>
                                                   </div>

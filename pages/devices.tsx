@@ -285,16 +285,22 @@ const Devices: NextPage = () => {
                                     </span>
                                   )}
                                 </td>
-                                <td
-                                  className='whitespace-nowrap px-3 py-4 text-sm text-primary dark:text-primaryDark cursor-pointer'
-                                  onClick={() => openShowEditPhysicalPhone(phone, pinObject)}
-                                >
-                                  <FontAwesomeIcon
-                                    icon={faPenToSquare}
-                                    className='mr-2 h-4 w-4 text-primary dark:text-primaryDark'
-                                  />
-                                  {t('Devices.Edit')}
-                                </td>
+                                {profile?.profile.macro_permissions.nethvoice_cti.permissions
+                                  .phone_buttons.value ? (
+                                  <td
+                                    className='whitespace-nowrap px-3 py-4 text-sm text-primary dark:text-primaryDark cursor-pointer'
+                                    onClick={() => openShowEditPhysicalPhone(phone, pinObject)}
+                                  >
+                                    <FontAwesomeIcon
+                                      icon={faPenToSquare}
+                                      className='mr-2 h-4 w-4 text-primary dark:text-primaryDark'
+                                    />
+                                    {t('Devices.Edit')}
+                                  </td>
+                                ) : (
+                                  <td></td>
+                                )}
+
                                 {phone?.id !== profile?.default_device?.id ? (
                                   <td className='relative whitespace-nowrap py-4 pl-3 pr-4 text-right text-sm font-medium sm:pr-6 cursor-pointer'>
                                     <Dropdown
