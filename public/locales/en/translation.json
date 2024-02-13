@@ -253,8 +253,11 @@
     "Login from queue automatically": "Login from queue automatically",
     "Pause from queue automatically": "Pause from queue automatically",
     "When you exit the app": "When you exit the app",
-    "Forward": "Forward",
-    "Do not disturb": "Do not disturb"
+    "When you enter the app": "When you enter the app",
+    "For the following states": "For the following states",
+    "Callforward": "Forward",
+    "Do not disturb": "Do not disturb",
+    "Available presence": "Available presence"
   },
   "TopBar": {
     "Signed in as": "Signed in as",

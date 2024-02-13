@@ -155,7 +155,7 @@ export const user = createModel<RootModel>()({
       state.settings.queue_auto_pause_onpresence = pauseStatus
       return state
     },
-    updateQueueAutopausePresencelist: (state, autoPausePresenceList:any) => {
+    updateQueueAutopausePresencelist: (state, autoPausePresenceList: any) => {
       state.settings.queue_autopause_presencelist = autoPausePresenceList
       return state
     },

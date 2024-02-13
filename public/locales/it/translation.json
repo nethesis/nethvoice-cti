@@ -214,12 +214,15 @@
     "Devices": "Dispositivi",
     "Time preferences": "Preferenze di tempo",
     "Login/logout preferences": "Preferenze di entrata/uscita",
-    "Logout from queue automatically": "Logout from queue automatically",
-    "Login from queue automatically": "Login from queue automatically",
-    "Pause from queue automatically": "Pause from queue automatically",
-    "When you exit the app": "When you exit the app",
-    "Forward": "Inoltro",
-    "Do not disturb": "Non disturbare"
+    "Logout from queue automatically": "Esci dalla coda automaticamente",
+    "Login from queue automatically": "Entra dalla coda automaticamente",
+    "Pause from queue automatically": "Pausa dalla coda automaticamente",
+    "When you exit the app": "Quando esci dall'app",
+    "When you enter the app": "Quando entri nell'app",
+    "For the following states": "Per i seguenti stati",
+    "Callforward": "Inoltro",
+    "Do not disturb": "Non disturbare",
+    "Available presence": "Presence disponibili"
   },
   "TopBar": {
     "Signed in as": "Accesso effettuato come",

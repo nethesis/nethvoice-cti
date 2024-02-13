@@ -65,7 +65,7 @@ const Settings: NextPage = () => {
     }
     let section = router.query.section as string
     if (!section) {
-      section = 'Queues'
+      section = 'Devices'
     }
     changeSection(section)
     // eslint-disable-next-line react-hooks/exhaustive-deps

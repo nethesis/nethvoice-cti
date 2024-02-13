@@ -123,7 +123,7 @@ export const Queues = () => {
                 <div className='w-1/2 pr-4'>
                   <div className='mb-2'>
                     {/* Right section title */}
-                    <p className='text-base font-regular text-gray-900 dark:text-gray-200 pt-4'>
+                    <p className='text-sm font-regular text-gray-900 dark:text-gray-200 pt-4'>
                       {t('Settings.Login/logout preferences')}
                     </p>
                   </div>
