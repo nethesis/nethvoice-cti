@@ -7,19 +7,21 @@ import { Avatar, Badge, Button, EmptyState, InlineNotification } from '../compon
 import {
   AVAILABLE_STATUSES,
   callOperator,
+  getFilterValues,
   getInfiniteScrollOperatorsPageSize,
   openShowOperatorDrawer,
   searchStringInOperator,
   sortByOperatorStatus,
   UNAVAILABLE_STATUSES,
 } from '../lib/operators'
-import { isEmpty, debounce, capitalize } from 'lodash'
+import { isEmpty, debounce, capitalize, set } from 'lodash'
 import { useSelector } from 'react-redux'
 import { RootState } from '../store'
 import { Filter, OperatorStatusBadge } from '../components/operators'
 import { closeRightSideDrawer, sortByFavorite, sortByProperty } from '../lib/utils'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import {
+  faBars,
   faChevronRight,
   faEarListen,
   faExclamationTriangle,
@@ -39,6 +41,8 @@ import { t } from 'i18next'
 import { transferCall } from '../lib/utils'
 import { MissingPermission } from '../components/common/MissingPermissionsPage'
 import { Tooltip } from 'react-tooltip'
+import { faGrid2 } from '@nethesis/nethesis-solid-svg-icons'
+import { savePreference } from '../lib/storage'
 
 //// use i18n where there is operator.mainPresence
 
@@ -54,6 +58,7 @@ const Operators: NextPage = () => {
     infiniteScrollOperatorsPageSize,
   )
   const actionInformation = useSelector((state: RootState) => state.userActions)
+  const auth = useSelector((state: RootState) => state.authentication)
 
   const [textFilter, setTextFilter]: any = useState('')
   const updateTextFilter = (newTextFilter: string) => {
@@ -179,6 +184,29 @@ const Operators: NextPage = () => {
       openShowOperatorDrawer(operator)
     }
   }
+  const [selctedLayout, setSelectedLayout] = useState('standard')
+
+  const [isGroupedLayot, setIsGroupedLayout] = useState(false)
+
+  // edit selected operators layout
+  const selectLayoutOperators = (layout: string) => {
+    setSelectedLayout(layout)
+    setLayout(layout)
+    // save selected layout to local storage
+    savePreference('operatorsLayout', layout, auth.username)
+    if (layout === 'grouped') {
+      setIsGroupedLayout(true)
+    } else {
+      setIsGroupedLayout(false)
+    }
+  }
+
+  // retrieve layout values from local storage
+  useEffect(() => {
+    const filterValues = getFilterValues(auth.username)
+    setLayout(filterValues.layout)
+    setSelectedLayout(filterValues.layout)
+  }, [])
 
   return (
     <>
@@ -187,14 +215,51 @@ const Operators: NextPage = () => {
           <h1 className='text-2xl font-semibold mb-6 text-gray-900 dark:text-gray-100'>
             {t('Operators.Operators')}
           </h1>
-          <Filter
-            groups={operatorsStore.groups}
-            updateTextFilter={debouncedUpdateTextFilter}
-            updateGroupFilter={updateGroupFilter}
-            updateStatusFilter={updateStatusFilter}
-            updateSort={updateSort}
-            updateLayout={updateLayout}
-          />
+          <div className='grid grid-cols-2'>
+            <div>
+              <Filter
+                groups={operatorsStore.groups}
+                updateTextFilter={debouncedUpdateTextFilter}
+                updateGroupFilter={updateGroupFilter}
+                updateStatusFilter={updateStatusFilter}
+                updateSort={updateSort}
+                isGroupedLayot={isGroupedLayot}
+              />
+            </div>
+            <div className='flex justify-end space-x-4'>
+              <button className='bg-transparent' onClick={() => selectLayoutOperators('standard')}>
+                <FontAwesomeIcon
+                  icon={faGrid2}
+                  className={`${
+                    selctedLayout === 'standard'
+                      ? 'text-primary dark:text-primaryDark'
+                      : 'text-gray-600 dark:text-gray-300'
+                  }, inline-block text-center h-5 w-5 cursor-pointer`}
+                />
+              </button>
+              <button className='bg-transparent' onClick={() => selectLayoutOperators('compact')}>
+                <FontAwesomeIcon
+                  icon={faBars}
+                  className={`${
+                    selctedLayout === 'compact'
+                      ? 'text-primary dark:text-primaryDark'
+                      : 'text-gray-600 dark:text-gray-300'
+                  }, inline-block text-center h-5 w-5 cursor-pointer`}
+                />
+              </button>
+              <button className='bg-transparent' onClick={() => selectLayoutOperators('grouped')}>
+                <FontAwesomeIcon
+                  icon={faGrid2}
+                  className={`${
+                    selctedLayout === 'grouped'
+                      ? 'text-primary dark:text-primaryDark'
+                      : 'text-gray-600 dark:text-gray-300'
+                  }, inline-block text-center h-5 w-5 cursor-pointer`}
+                />
+              </button>
+            </div>
+          </div>
+
           {/* operators error */}
           {operatorsStore.errorMessage && (
             <InlineNotification
