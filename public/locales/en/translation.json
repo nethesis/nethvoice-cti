@@ -172,7 +172,17 @@
     "Call": "Call",
     "Open user devices": "Open user devices",
     "Busy": "Busy",
-    "Ringing": "Ringing"
+    "Ringing": "Ringing",
+    "Extension": "Extension",
+    "Alphabetic A-Z": "Alphabetic A-Z",
+    "Alphabetic Z-A": "Alphabetic Z-A",
+    "All": "All",
+    "Sort by": "Sort by",
+    "Group by": "Group by",
+    "Group": "Group",
+    "Team": "Team",
+    "Operators filters": "Operators filters",
+    "Filters": "Filters"
   },
   "Applications": {
     "Applications": "Applications",
@@ -491,7 +501,8 @@
     "Error saving the announcement": "Error saving the announcement",
     "Configure all lines selected": "Configure all lines selected",
     "Show selected": "Show selected",
-    "Show all": "Show all"
+    "Show all": "Show all",
+    "Insert announcement name": "Insert announcement name"
   },
   "SpeedDial": {
     "Create": "Create",

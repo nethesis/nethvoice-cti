@@ -140,7 +140,17 @@
     "Call": "Chiama",
     "Open user devices": "Apri dispositivi utente",
     "Busy": "Occupato",
-    "Ringing": "Ringing"
+    "Ringing": "Ringing",
+    "Extension": "Extension",
+    "Alphabetic A-Z": "Alphabetic A-Z",
+    "Alphabetic Z-A": "Alphabetic Z-A",
+    "All": "All",
+    "Sort by": "Sort by",
+    "Group by": "Group by",
+    "Group": "Group",
+    "Team": "Team",
+    "Operators filters": "Filtri operatori",
+    "Filters": "Filtri"
   },
   "Applications": {
     "Applications": "Applicazioni",

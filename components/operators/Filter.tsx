@@ -11,6 +11,8 @@ import { faChevronDown, faCircleXmark, faXmark } from '@fortawesome/free-solid-s
 import { RadioButtonType } from '../../services/types'
 import {
   DEFAULT_GROUP_FILTER,
+  DEFAULT_GROUP_LAYOUT_GROUP_BY,
+  DEFAULT_GROUP_LAYOUT_SORT_BY,
   DEFAULT_SORT_BY,
   DEFAULT_STATUS_FILTER,
   getFilterValues,
@@ -20,34 +22,14 @@ import { RootState } from '../../store'
 import { savePreference } from '../../lib/storage'
 import { useTranslation } from 'react-i18next'
 
-const sortFilter = {
-  id: 'sort',
-  name: 'Sort by',
-  options: [
-    { value: 'favorites', label: 'Favorites' },
-    { value: 'status', label: 'Status' },
-    { value: 'name', label: 'Name' },
-  ],
-}
-
-const statusFilter = {
-  id: 'status',
-  name: 'Status',
-  options: [
-    { value: 'all', label: 'All' },
-    { value: 'available', label: 'Available' },
-    { value: 'unavailable', label: 'Unavailable' },
-    { value: 'offline', label: 'Offline' },
-    { value: 'allExceptOffline', label: 'All except offline' },
-  ],
-}
-
 export interface FilterProps extends ComponentPropsWithRef<'div'> {
   groups: Object
   updateTextFilter: Function
   updateGroupFilter: Function
   updateStatusFilter: Function
   updateSort: Function
+  updateGroupedSort?: any
+  updateGroupedGroupBy?: any
   isGroupedLayot?: boolean
 }
 
@@ -60,11 +42,59 @@ export const Filter = forwardRef<HTMLButtonElement, FilterProps>(
       updateGroupFilter,
       updateStatusFilter,
       updateSort,
+      updateGroupedSort,
+      updateGroupedGroupBy,
       isGroupedLayot,
       ...props
     },
     ref,
   ) => {
+    const { t } = useTranslation()
+
+    const sortFilter = {
+      id: 'sort',
+      name: 'Sort by',
+      options: [
+        { value: 'favorites', label: `${t('Operators.Favorites') || ''}` },
+        { value: 'status', label: `${t('Operators.Status') || ''}` },
+        { value: 'name', label: `${t('Operators.Name') || ''}` },
+      ],
+    }
+
+    const groupedLayoutSortFilter = {
+      id: 'groupedSortBy',
+      name: 'Sort by',
+      options: [
+        { value: 'az', label: `${t('Operators.Alphabetic A-Z') || ''}` },
+        { value: 'za', label: `${t('Operators.Alphabetic Z-A') || ''}` },
+        { value: 'team', label: `${t('Operators.Team') || ''}` },
+        { value: 'status', label: `${t('Operators.Status') || ''}` },
+      ],
+    }
+
+    const statusFilter = {
+      id: 'status',
+      name: 'Status',
+      options: [
+        { value: 'all', label: `${t('Operators.All') || ''}` },
+        { value: 'available', label: `${t('Operators.Available') || ''}` },
+        { value: 'unavailable', label: `${t('Operators.Unavailable') || ''}` },
+        { value: 'offline', label: `${t('Operators.Offline') || ''}` },
+        { value: 'allExceptOffline', label: `${t('Operators.All except offline') || ''}` },
+      ],
+    }
+
+    const groupedLayoutGroupByFilter = {
+      id: 'groupedGroupBy',
+      name: 'Group by',
+      options: [
+        { value: 'favorites', label: `${t('Operators.Favorites') || ''}` },
+        { value: 'Extension', label: `${t('Operators.Extension') || ''}` },
+        { value: 'az', label: `${t('Operators.Alphabetic A-Z') || ''}` },
+        { value: 'za', label: `${t('Operators.Alphabetic Z-A') || ''}` },
+      ],
+    }
+
     const auth = useSelector((state: RootState) => state.authentication)
 
     const [groupFilter, setGroupFilter] = useState({
@@ -156,16 +186,41 @@ export const Filter = forwardRef<HTMLButtonElement, FilterProps>(
       updateSort(newSortBy)
     }
 
+    const [groupedSortBy, setGroupedSortBy]: any = useState('')
+    function changeGroupedSortBy(event: any) {
+      const newGroupedSortBy = event.target.id.split('sort-')[1]
+      setGroupedSortBy(newGroupedSortBy)
+
+      savePreference('operatorsGroupLayoutSortBy', newGroupedSortBy, auth.username)
+
+      // update operators (notify parent component)
+      updateGroupedSort(newGroupedSortBy)
+    }
+
+    const [groupedGroupBy, setGroupedGroupBy]: any = useState('')
+    function changeGroupedGroupBy(event: any) {
+      const newGroupedGroupBy = event.target.id.split('group-')[1]
+      setGroupedGroupBy(newGroupedGroupBy)
+      savePreference('operatorsGroupLayoutGroupBy', newGroupedGroupBy, auth.username)
+
+      // update operators (notify parent component)
+      updateGroupedGroupBy(newGroupedGroupBy)
+    }
+
     // retrieve filter values from local storage
     useEffect(() => {
       const filterValues = getFilterValues(auth.username)
       setGroup(filterValues.group)
       setStatus(filterValues.status)
       setSortBy(filterValues.sortBy)
+      setGroupedSortBy(filterValues.groupLayoutSortBy)
+      setGroupedGroupBy(filterValues.groupLayoutGroupBy)
 
       updateGroupFilter(filterValues.group)
       updateStatusFilter(filterValues.status)
       updateSort(filterValues.sortBy)
+      updateGroupedSort(filterValues.groupLayoutSortBy)
+      updateGroupedGroupBy(filterValues.groupLayoutGroupBy)
     }, [])
 
     // group label
@@ -206,15 +261,22 @@ export const Filter = forwardRef<HTMLButtonElement, FilterProps>(
       setGroup(DEFAULT_GROUP_FILTER)
       setStatus(DEFAULT_STATUS_FILTER)
       setSortBy(DEFAULT_SORT_BY)
+      setGroupedSortBy(DEFAULT_GROUP_LAYOUT_SORT_BY)
+      setGroupedGroupBy(DEFAULT_GROUP_LAYOUT_GROUP_BY)
+
       savePreference('operatorsGroupFilter', DEFAULT_GROUP_FILTER, auth.username)
       savePreference('operatorsStatusFilter', DEFAULT_STATUS_FILTER, auth.username)
       savePreference('operatorsSortBy', DEFAULT_SORT_BY, auth.username)
+      savePreference('operatorsGroupLayoutSortBy', DEFAULT_GROUP_LAYOUT_SORT_BY, auth.username)
+      savePreference('operatorsGroupLayoutGroupBy', DEFAULT_GROUP_LAYOUT_GROUP_BY, auth.username)
 
       // notify parent component
       updateTextFilter('')
       updateGroupFilter(DEFAULT_GROUP_FILTER)
       updateStatusFilter(DEFAULT_STATUS_FILTER)
       updateSort(DEFAULT_SORT_BY)
+      updateGroupedSort(DEFAULT_GROUP_LAYOUT_SORT_BY)
+      updateGroupedGroupBy(DEFAULT_GROUP_LAYOUT_GROUP_BY)
     }
 
     const clearTextFilter = () => {
@@ -227,8 +289,6 @@ export const Filter = forwardRef<HTMLButtonElement, FilterProps>(
       setGroupTextFilter('')
       groupTextFilterRef.current.focus()
     }
-
-    const { t } = useTranslation()
 
     return (
       <div className={classNames(className)} {...props}>
@@ -764,7 +824,147 @@ export const Filter = forwardRef<HTMLButtonElement, FilterProps>(
             </div>
           </div>
         ) : (
-          <></>
+          <>
+            {/* Grouped layout  */}
+            <div className='mx-auto text-center'>
+              <section aria-labelledby='filter-heading' className='pb-6'>
+                <h2 id='filter-heading' className='sr-only'>
+                  {t('Operators.Operators filters')}
+                </h2>
+
+                <div className='flex items-center space-x-8'>
+                  <div className='flex items-center'>
+                    <TextInput
+                      placeholder='Filter operators'
+                      className='max-w-sm'
+                      value={textFilter}
+                      onChange={changeTextFilter}
+                      ref={textFilterRef}
+                      icon={textFilter.length ? faCircleXmark : undefined}
+                      onIconClick={() => clearTextFilter()}
+                      trailingIcon={true}
+                    />
+                  </div>
+
+                  <div className='flex ml-4'>
+                    <Popover.Group className='hidden sm:flex sm:items-baseline sm:space-x-4'>
+                      {/* group layout sort by filter */}
+                      <Popover
+                        as='div'
+                        key={groupedLayoutSortFilter?.name}
+                        id={`desktop-menu-${groupedLayoutSortFilter?.id}`}
+                        className='relative inline-block text-left shrink-0'
+                      >
+                        <div>
+                          <Popover.Button className='px-3 py-2 text-sm leading-4 p-2 rounded border shadow-sm border-gray-300 bg-white text-gray-700 hover:bg-gray-100 focus:ring-primaryLight dark:border-gray-600 dark:bg-gray-900 dark:text-gray-100 dark:hover:bg-gray-800 dark:focus:ring-primaryDark group inline-flex items-center justify-center font-medium  hover:text-gray-900 dark:hover:text-gray-100'>
+                            <span>{groupedLayoutSortFilter?.name}</span>
+                            <FontAwesomeIcon
+                              icon={faChevronDown}
+                              className='ml-2 h-3 w-3 flex-shrink-0 text-gray-400 group-hover:text-gray-500 dark:text-gray-500 dark:group-hover:text-gray-400'
+                              aria-hidden='true'
+                            />
+                          </Popover.Button>
+                        </div>
+
+                        <Transition
+                          as={Fragment}
+                          enter='transition ease-out duration-100'
+                          enterFrom='transform opacity-0 scale-95'
+                          enterTo='transform opacity-100 scale-100'
+                          leave='transition ease-in duration-75'
+                          leaveFrom='transform opacity-100 scale-100'
+                          leaveTo='transform opacity-0 scale-95'
+                        >
+                          <Popover.Panel className='absolute right-0 z-10 mt-2 origin-top-right rounded-md p-4 shadow-2xl ring-1 ring-opacity-5 focus:outline-none bg-white ring-black dark:bg-gray-900 dark:ring-gray-600'>
+                            <form className='space-y-4'>
+                              {groupedLayoutSortFilter?.options.map((option) => (
+                                <div key={option.value} className='flex items-center'>
+                                  <input
+                                    id={`sort-${option?.value}`}
+                                    name={`filter-${groupedLayoutSortFilter?.id}`}
+                                    type='radio'
+                                    defaultChecked={option.value === groupedSortBy}
+                                    onChange={changeGroupedSortBy}
+                                    className='h-4 w-4 border-gray-300 text-primary focus:ring-primaryLight dark:border-gray-600 dark:text-primary dark:focus:ring-primaryDark'
+                                  />
+                                  <label
+                                    htmlFor={`sort-${option?.value}`}
+                                    className='ml-3 block text-sm font-medium text-gray-700 dark:text-gray-200'
+                                  >
+                                    {option?.label}
+                                  </label>
+                                </div>
+                              ))}
+                            </form>
+                          </Popover.Panel>
+                        </Transition>
+                      </Popover>
+
+                      {/* group layout group by filter */}
+                      <Popover
+                        as='div'
+                        key={groupedLayoutGroupByFilter?.name}
+                        id={`desktop-menu-${groupedLayoutGroupByFilter?.id}`}
+                        className='relative inline-block text-left shrink-0'
+                      >
+                        <div>
+                          <Popover.Button className='px-3 py-2 text-sm leading-4 p-2 rounded border shadow-sm border-gray-300 bg-white text-gray-700 hover:bg-gray-100 focus:ring-primaryLight dark:border-gray-600 dark:bg-gray-900 dark:text-gray-100 dark:hover:bg-gray-800 dark:focus:ring-primaryDark group inline-flex items-center justify-center font-medium  hover:text-gray-900 dark:hover:text-gray-100'>
+                            <span>{groupedLayoutGroupByFilter?.name}</span>
+                            <FontAwesomeIcon
+                              icon={faChevronDown}
+                              className='ml-2 h-3 w-3 flex-shrink-0 text-gray-400 group-hover:text-gray-500 dark:text-gray-500 dark:group-hover:text-gray-400'
+                              aria-hidden='true'
+                            />
+                          </Popover.Button>
+                        </div>
+
+                        <Transition
+                          as={Fragment}
+                          enter='transition ease-out duration-100'
+                          enterFrom='transform opacity-0 scale-95'
+                          enterTo='transform opacity-100 scale-100'
+                          leave='transition ease-in duration-75'
+                          leaveFrom='transform opacity-100 scale-100'
+                          leaveTo='transform opacity-0 scale-95'
+                        >
+                          <Popover.Panel className='absolute right-0 z-10 mt-2 origin-top-right rounded-md p-4 shadow-2xl ring-1 ring-opacity-5 focus:outline-none bg-white ring-black dark:bg-gray-900 dark:ring-gray-600'>
+                            <form className='space-y-4'>
+                              {groupedLayoutGroupByFilter?.options.map((option) => (
+                                <div key={option?.value} className='flex items-center'>
+                                  <input
+                                    id={`group-${option?.value}`}
+                                    name={`filter-${groupedLayoutGroupByFilter?.id}`}
+                                    type='radio'
+                                    defaultChecked={option.value === groupedGroupBy}
+                                    onChange={changeGroupedGroupBy}
+                                    className='h-4 w-4 border-gray-300 text-primary focus:ring-primaryLight dark:border-gray-600 dark:text-primary dark:focus:ring-primaryDark'
+                                  />
+                                  <label
+                                    htmlFor={`group-${option?.value}`}
+                                    className='ml-3 block text-sm font-medium text-gray-700 dark:text-gray-200'
+                                  >
+                                    {option?.label}
+                                  </label>
+                                </div>
+                              ))}
+                            </form>
+                          </Popover.Panel>
+                        </Transition>
+                      </Popover>
+                    </Popover.Group>
+
+                    <button
+                      type='button'
+                      className='inline-block text-sm font-medium sm:hidden text-gray-700 hover:text-gray-900 dark:text-gray-200 dark:hover:text-gray-100'
+                      onClick={() => setOpen(true)}
+                    >
+                      {t('Operators.Filters')}
+                    </button>
+                  </div>
+                </div>
+              </section>
+            </div>
+          </>
         )}
       </div>
     )

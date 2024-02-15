@@ -13,6 +13,8 @@ export const DEFAULT_GROUP_FILTER = 'all'
 export const DEFAULT_STATUS_FILTER = 'all'
 export const DEFAULT_SORT_BY = 'favorites'
 export const DEFAULT_LAYOUT = 'standard'
+export const DEFAULT_GROUP_LAYOUT_GROUP_BY = 'team'
+export const DEFAULT_GROUP_LAYOUT_SORT_BY = 'extension'
 export const AVATARS_EXPIRATION_MILLIS = 24 * 60 * 60 * 1000 // 24 hours
 
 export async function getUserEndpointsAll() {
@@ -166,7 +168,13 @@ export const getFilterValues = (currentUsername: string) => {
 
   const layout = loadPreference('operatorsLayout', currentUsername) || DEFAULT_LAYOUT
 
-  return { group, status, sortBy, layout }
+  const groupLayoutGroupBy =
+    loadPreference('operatorsGroupLayoutGroupBy', currentUsername) || DEFAULT_GROUP_LAYOUT_GROUP_BY
+
+  const groupLayoutSortBy =
+    loadPreference('operatorsGroupLayoutSortBy', currentUsername) || DEFAULT_GROUP_LAYOUT_SORT_BY
+
+  return { group, status, sortBy, layout, groupLayoutGroupBy, groupLayoutSortBy }
 }
 
 export const retrieveUserEndpoints = async () => {
