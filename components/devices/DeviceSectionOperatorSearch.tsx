@@ -97,7 +97,7 @@ export const DeviceSectionOperatorSearch: FC<DeviceSectionOperatorSearchProps> =
     return operatorsResults
   }
 
-  const debouncedChangeQuery = useMemo(
+  const debouncedChangeQuery:any = useMemo(
     () =>
       debounce(async (event: any) => {
         const query = event.target.value

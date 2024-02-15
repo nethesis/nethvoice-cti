@@ -422,11 +422,19 @@ export const sortByLoggedStatus = (operator1: any, operator2: any) => {
   return 0
 }
 
-
 // Set default queue tab to Queues management
 
 export const getSelectedTabQueue = (currentUsername: string) => {
-  const selectedQueueTab =
-    loadPreference('queueSelectedTab', currentUsername) || ''
+  const selectedQueueTab = loadPreference('queueSelectedTab', currentUsername) || ''
   return { selectedQueueTab }
+}
+
+export async function setQueueUserPreferences(settingsStatus: any) {
+  try {
+    const { data, status } = await axios.post('/user/settings', settingsStatus)
+    return data
+  } catch (error) {
+    handleNetworkError(error)
+    throw error
+  }
 }

@@ -35,6 +35,8 @@ interface SettingsTypes {
   queue_auto_logout: any
   company_extension: any
   caller_info: any
+  queue_auto_pause_onpresence: any
+  queue_autopause_presencelist: any
 }
 
 interface Default_device {
@@ -102,6 +104,8 @@ const defaultState: DefaultState = {
     queue_auto_logout: '',
     company_extension: '',
     caller_info: '',
+    queue_auto_pause_onpresence: '',
+    queue_autopause_presencelist: [],
   },
   recallOnBusy: '',
 }
@@ -137,6 +141,22 @@ export const user = createModel<RootModel>()({
     },
     updateCallerCustomerCardInformation: (state, callerInformations) => {
       state.settings.caller_info = callerInformations
+      return state
+    },
+    updateLogoutQueue: (state, logoutStatus) => {
+      state.settings.queue_auto_logout = logoutStatus
+      return state
+    },
+    updateLoginQueue: (state, loginStatus) => {
+      state.settings.queue_auto_login = loginStatus
+      return state
+    },
+    updatePauseQueue: (state, pauseStatus) => {
+      state.settings.queue_auto_pause_onpresence = pauseStatus
+      return state
+    },
+    updateQueueAutopausePresencelist: (state, autoPausePresenceList: any) => {
+      state.settings.queue_autopause_presencelist = autoPausePresenceList
       return state
     },
     updateDefaultDevice: (state, defaultDevice) => {

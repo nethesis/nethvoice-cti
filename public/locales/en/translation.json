@@ -246,7 +246,18 @@
     "Upload image to continue": "Upload image to continue",
     "Wrong file type": "Wrong file type",
     "Delete profile picture": "Delete profile picture",
-    "Devices": "Devices"
+    "Devices": "Devices",
+    "Time preferences": "Time preferences",
+    "Login/logout preferences": "Login/logout preferences",
+    "Logout from queue automatically": "Logout from queue automatically",
+    "Login from queue automatically": "Login from queue automatically",
+    "Pause from queue automatically": "Pause from queue automatically",
+    "When you exit the app": "When you exit the app",
+    "When you enter the app": "When you enter the app",
+    "For the following states": "For the following states",
+    "Callforward": "Forward",
+    "Do not disturb": "Do not disturb",
+    "Available presence": "Available presence"
   },
   "TopBar": {
     "Signed in as": "Signed in as",

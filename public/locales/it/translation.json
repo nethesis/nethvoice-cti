@@ -211,7 +211,18 @@
     "Upload image to continue": "Carica immagine per continuare",
     "Wrong file type": "Formato file errato",
     "Delete profile picture": "Elimina immagine profilo",
-    "Devices": "Dispositivi"
+    "Devices": "Dispositivi",
+    "Time preferences": "Preferenze di tempo",
+    "Login/logout preferences": "Preferenze di entrata/uscita",
+    "Logout from queue automatically": "Esci dalla coda automaticamente",
+    "Login from queue automatically": "Entra dalla coda automaticamente",
+    "Pause from queue automatically": "Pausa dalla coda automaticamente",
+    "When you exit the app": "Quando esci dall'app",
+    "When you enter the app": "Quando entri nell'app",
+    "For the following states": "Per i seguenti stati",
+    "Callforward": "Inoltro",
+    "Do not disturb": "Non disturbare",
+    "Available presence": "Presence disponibili"
   },
   "TopBar": {
     "Signed in as": "Accesso effettuato come",
