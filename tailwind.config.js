@@ -10,7 +10,7 @@ module.exports = {
     './.storybook/**/*.{js,jsx,ts,tsx}',
     './node_modules/react-tailwindcss-datepicker/dist/index.esm.js',
   ],
-  plugins: [require('@tailwindcss/forms'), require('tailwind-scrollbar')({ nocompatible: true })],
+  plugins: [require('@tailwindcss/forms'), require('tailwind-scrollbar')({ nocompatible: true, preferredStrategy: 'pseudoelements',  })],
   darkMode: 'class',
   theme: {
     extend: {

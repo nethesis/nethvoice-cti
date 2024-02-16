@@ -1,4 +1,4 @@
-// Copyright (C) 2023 Nethesis S.r.l.
+// Copyright (C) 2024 Nethesis S.r.l.
 // SPDX-License-Identifier: AGPL-3.0-or-later
 
 export type StatusTypes =
@@ -12,3 +12,4 @@ export type StatusTypes =
   | 'incoming'
   | 'ringing'
   | 'offline'
+  | 'category'
