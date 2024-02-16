@@ -346,7 +346,7 @@ export const SummaryQueuesFilter = forwardRef<HTMLButtonElement, SummaryQueuesFi
                     <button
                       type='button'
                       onClick={() => resetFilters()}
-                      className='text-sm hover:underline text-gray-900 dark:text-gray-100'
+                      className='text-sm hover:underline text-primary dark:text-primaryDark'
                     >
                       {t('Common.Reset filters')}
                     </button>

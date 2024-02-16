@@ -56,8 +56,9 @@ export const Filter = forwardRef<HTMLButtonElement, FilterProps>(
       name: 'Sort by',
       options: [
         { value: 'favorites', label: `${t('Operators.Favorites') || ''}` },
-        { value: 'status', label: `${t('Operators.Status') || ''}` },
-        { value: 'name', label: `${t('Operators.Name') || ''}` },
+        { value: 'extension', label: `${t('Operators.Extension') || ''}` },
+        { value: 'az', label: `${t('Operators.Alphabetic A-Z') || ''}` },
+        { value: 'za', label: `${t('Operators.Alphabetic Z-A') || ''}` },
       ],
     }
 
@@ -189,6 +190,7 @@ export const Filter = forwardRef<HTMLButtonElement, FilterProps>(
 
     const [groupedSortBy, setGroupedSortBy]: any = useState('')
     function changeGroupedSortBy(event: any) {
+      console.log('entrato qui')
       const newGroupedSortBy = event.target.id.split('sort-')[1]
       setGroupedSortBy(newGroupedSortBy)
 
@@ -355,14 +357,14 @@ export const Filter = forwardRef<HTMLButtonElement, FilterProps>(
                     <Dialog.Panel className='relative ml-auto flex h-full w-full max-w-xs flex-col overflow-y-auto scrollbar-thin scrollbar-thumb-gray-400 dark:scrollbar-thumb-gray-400 scrollbar-thumb-rounded-full scrollbar-thumb-opacity-50 scrollbar-track-gray-200 dark:scrollbar-track-gray-900 scrollbar-track-rounded-full scrollbar-track-opacity-25 py-4 pb-6 shadow-xl bg-white dark:bg-gray-900'>
                       <div className='flex items-center justify-between px-4'>
                         <h2 className='text-lg font-medium text-gray-900 dark:text-gray-100'>
-                          Filters
+                          {t('Operators.Filters')}
                         </h2>
                         <button
                           type='button'
                           className='-mr-2 flex h-10 w-10 items-center justify-center rounded-md focus:outline-none focus:ring-2 p-2 bg-white text-gray-400 hover:bg-gray-50 focus:ring-primaryLight dark:bg-gray-900 dark:text-gray-400 dark:hover:bg-gray-800 dark:focus:ring-primaryDark'
                           onClick={() => setOpen(false)}
                         >
-                          <span className='sr-only'>Close menu</span>
+                          <span className='sr-only'>{t('Operators.Close menu')}</span>
                           <FontAwesomeIcon icon={faXmark} className='h-5 w-5' aria-hidden='true' />
                         </button>
                       </div>
@@ -846,7 +848,7 @@ export const Filter = forwardRef<HTMLButtonElement, FilterProps>(
                       <button
                         type='button'
                         onClick={() => resetFilters()}
-                        className='text-sm hover:underline text-gray-900 dark:text-gray-100'
+                        className='text-sm hover:underline text-primary dark:text-primaryDark'
                       >
                         {t('Common.Reset filters')}
                       </button>
@@ -858,7 +860,221 @@ export const Filter = forwardRef<HTMLButtonElement, FilterProps>(
           </div>
         ) : (
           <>
-            {/* Grouped layout  */}
+            {/* Grouped layout mobile filter dialog */}
+            <Transition.Root show={open} as={Fragment}>
+              <Dialog as='div' className='relative z-[1000] mt-2 sm:hidden' onClose={setOpen}>
+                <Transition.Child
+                  as={Fragment}
+                  enter='transition-opacity ease-linear duration-300'
+                  enterFrom='opacity-0'
+                  enterTo='opacity-100'
+                  leave='transition-opacity ease-linear duration-300'
+                  leaveFrom='opacity-100'
+                  leaveTo='opacity-0'
+                >
+                  <div className='fixed inset-0 bg-black bg-opacity-25 dark:bg-black dark:bg-opacity-25' />
+                </Transition.Child>
+
+                <div className='fixed inset-0 z-40 flex'>
+                  <Transition.Child
+                    as={Fragment}
+                    enter='transition ease-in-out duration-300 transform'
+                    enterFrom='translate-x-full'
+                    enterTo='translate-x-0'
+                    leave='transition ease-in-out duration-300 transform'
+                    leaveFrom='translate-x-0'
+                    leaveTo='translate-x-full'
+                  >
+                    <Dialog.Panel className='relative ml-auto flex h-full w-full max-w-xs flex-col overflow-y-auto scrollbar-thin scrollbar-thumb-gray-400 dark:scrollbar-thumb-gray-400 scrollbar-thumb-rounded-full scrollbar-thumb-opacity-50 scrollbar-track-gray-200 dark:scrollbar-track-gray-900 scrollbar-track-rounded-full scrollbar-track-opacity-25 py-4 pb-6 shadow-xl bg-white dark:bg-gray-900'>
+                      <div className='flex items-center justify-between px-4'>
+                        <h2 className='text-lg font-medium text-gray-900 dark:text-gray-100'>
+                          {t('Operators.Filters')}
+                        </h2>
+                        <button
+                          type='button'
+                          className='-mr-2 flex h-10 w-10 items-center justify-center rounded-md focus:outline-none focus:ring-2 p-2 bg-white text-gray-400 hover:bg-gray-50 focus:ring-primaryLight dark:bg-gray-900 dark:text-gray-400 dark:hover:bg-gray-800 dark:focus:ring-primaryDark'
+                          onClick={() => setOpen(false)}
+                        >
+                          <span className='sr-only'>{t('Operators.Close menu')}</span>
+                          <FontAwesomeIcon icon={faXmark} className='h-5 w-5' aria-hidden='true' />
+                        </button>
+                      </div>
+
+                      {/* Filters (mobile) */}
+                      <form className='mt-4'>
+                        {/* sort by filter (mobile) */}
+                        <Disclosure
+                          as='div'
+                          key={groupedLayoutSortFilter?.name}
+                          className='border-t px-4 py-6 border-gray-200 dark:border-gray-700'
+                        >
+                          {({ open }) => (
+                            <>
+                              <h3 className='-mx-2 -my-3 flow-root'>
+                                <Disclosure.Button className='flex w-full items-center justify-between px-2 py-3 text-sm bg-white text-gray-400 dark:bg-gray-900 dark:text-gray-500'>
+                                  <span className='font-medium text-gray-900 dark:text-gray-100'>
+                                    {groupedLayoutSortFilter?.name}
+                                  </span>
+                                  <span className='ml-6 flex items-center'>
+                                    <FontAwesomeIcon
+                                      icon={faChevronDown}
+                                      className={classNames(
+                                        open ? '-rotate-180' : 'rotate-0',
+                                        'h-3 w-3 transform',
+                                      )}
+                                      aria-hidden='true'
+                                    />
+                                  </span>
+                                </Disclosure.Button>
+                              </h3>
+                              <Disclosure.Panel className='pt-6'>
+                                <fieldset>
+                                  <legend className='sr-only'>
+                                    {groupedLayoutSortFilter?.name}{' '}
+                                  </legend>
+                                  <div className='space-y-4'>
+                                    {groupedLayoutSortFilter?.options.map((option) => (
+                                      <div key={option.value} className='flex items-center'>
+                                        <input
+                                          id={`sort-${option?.value}`}
+                                          name={`filter-${groupedLayoutSortFilter?.id}`}
+                                          type='radio'
+                                          defaultChecked={option.value === groupedSortBy}
+                                          onChange={changeGroupedSortBy}
+                                          className='h-4 w-4 border-gray-300 text-primary focus:ring-primaryLight dark:border-gray-600 dark:text-primary dark:focus:ring-primaryDark'
+                                        />
+                                        <label
+                                          htmlFor={`sort-${option?.value}`}
+                                          className='ml-3 block text-sm font-medium text-gray-700 dark:text-gray-200'
+                                        >
+                                          {option?.label}
+                                        </label>
+                                      </div>
+                                    ))}
+                                  </div>
+                                </fieldset>
+                              </Disclosure.Panel>
+                            </>
+                          )}
+                        </Disclosure>
+
+                        {/* group by filter (mobile) */}
+                        <Disclosure
+                          as='div'
+                          key={groupedLayoutGroupByFilter?.name}
+                          className='border-t px-4 py-6 border-gray-200 dark:border-gray-700'
+                        >
+                          {({ open }) => (
+                            <>
+                              <h3 className='-mx-2 -my-3 flow-root'>
+                                <Disclosure.Button className='flex w-full items-center justify-between px-2 py-3 text-sm bg-white text-gray-400 dark:bg-gray-900 dark:text-gray-500'>
+                                  <span className='font-medium text-gray-900 dark:text-gray-100'>
+                                    {groupedLayoutGroupByFilter?.name}
+                                  </span>
+                                  <span className='ml-6 flex items-center'>
+                                    <FontAwesomeIcon
+                                      icon={faChevronDown}
+                                      className={classNames(
+                                        open ? '-rotate-180' : 'rotate-0',
+                                        'h-3 w-3 transform',
+                                      )}
+                                      aria-hidden='true'
+                                    />
+                                  </span>
+                                </Disclosure.Button>
+                              </h3>
+                              <Disclosure.Panel className='pt-6'>
+                                <fieldset>
+                                  <legend className='sr-only'>
+                                    {groupedLayoutGroupByFilter?.name}{' '}
+                                  </legend>
+                                  <div className='space-y-4'>
+                                    {groupedLayoutGroupByFilter?.options.map((option) => (
+                                      <div key={option?.value} className='flex items-center'>
+                                        <input
+                                          id={`group-${option?.value}`}
+                                          name={`filter-${groupedLayoutGroupByFilter?.id}`}
+                                          type='radio'
+                                          defaultChecked={option.value === groupedGroupBy}
+                                          onChange={changeGroupedGroupBy}
+                                          className='h-4 w-4 border-gray-300 text-primary focus:ring-primaryLight dark:border-gray-600 dark:text-primary dark:focus:ring-primaryDark'
+                                        />
+                                        <label
+                                          htmlFor={`group-${option?.value}`}
+                                          className='ml-3 block text-sm font-medium text-gray-700 dark:text-gray-200'
+                                        >
+                                          {option?.label}
+                                        </label>
+                                      </div>
+                                    ))}
+                                  </div>
+                                </fieldset>
+                              </Disclosure.Panel>
+                            </>
+                          )}
+                        </Disclosure>
+
+                        {/* status filter (mobile) */}
+                        <Disclosure
+                          as='div'
+                          key={statusFilter.name}
+                          className='border-t px-4 py-6 border-gray-200 dark:border-gray-700'
+                        >
+                          {({ open }) => (
+                            <>
+                              <h3 className='-mx-2 -my-3 flow-root'>
+                                <Disclosure.Button className='flex w-full items-center justify-between px-2 py-3 text-sm bg-white text-gray-400 dark:bg-gray-900 dark:text-gray-500'>
+                                  <span className='font-medium text-gray-900 dark:text-gray-100'>
+                                    {statusFilter.name}
+                                  </span>
+                                  <span className='ml-6 flex items-center'>
+                                    <FontAwesomeIcon
+                                      icon={faChevronDown}
+                                      className={classNames(
+                                        open ? '-rotate-180' : 'rotate-0',
+                                        'h-3 w-3 transform',
+                                      )}
+                                      aria-hidden='true'
+                                    />
+                                  </span>
+                                </Disclosure.Button>
+                              </h3>
+                              <Disclosure.Panel className='pt-6'>
+                                <fieldset>
+                                  <legend className='sr-only'>{statusFilter.name}</legend>
+                                  <div className='space-y-4'>
+                                    {statusFilter.options.map((option) => (
+                                      <div key={option.value} className='flex items-center'>
+                                        <input
+                                          id={`status-${option.value}`}
+                                          name={`filter-${statusFilter.id}`}
+                                          type='radio'
+                                          defaultChecked={option.value === status}
+                                          onChange={changeStatus}
+                                          className='h-4 w-4 border-gray-300 text-primary focus:ring-primaryLight dark:border-gray-600 dark:text-primary dark:focus:ring-primaryDark'
+                                        />
+                                        <label
+                                          htmlFor={`status-${option.value}`}
+                                          className='ml-3 block text-sm font-medium text-gray-700 dark:text-gray-200'
+                                        >
+                                          {option.label}
+                                        </label>
+                                      </div>
+                                    ))}
+                                  </div>
+                                </fieldset>
+                              </Disclosure.Panel>
+                            </>
+                          )}
+                        </Disclosure>
+                      </form>
+                    </Dialog.Panel>
+                  </Transition.Child>
+                </div>
+              </Dialog>
+            </Transition.Root>
+
+            {/* Grouped layout PC*/}
             <div className='mx-auto text-center'>
               <section aria-labelledby='filter-heading' className='pb-6'>
                 <h2 id='filter-heading' className='sr-only'>
@@ -1108,7 +1324,7 @@ export const Filter = forwardRef<HTMLButtonElement, FilterProps>(
                       <button
                         type='button'
                         onClick={() => resetFilters()}
-                        className='text-sm hover:underline text-gray-900 dark:text-gray-100'
+                        className='text-sm hover:underline text-primary dark:text-primaryDark'
                       >
                         {t('Common.Reset filters')}
                       </button>

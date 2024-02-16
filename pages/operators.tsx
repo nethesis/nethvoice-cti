@@ -125,17 +125,23 @@ const Operators: NextPage = () => {
 
       // sort operators
       switch (sortByFilter) {
-        case 'name':
-          filteredOperators.sort(sortByProperty('name'))
-          break
-        case 'status':
-          filteredOperators.sort(sortByProperty('name'))
-          filteredOperators.sort(sortByOperatorStatus)
-          break
         case 'favorites':
           filteredOperators.sort(sortByProperty('name'))
           // filteredOperators.sort(sortByOperatorStatus)
           filteredOperators.sort(sortByFavorite)
+          break
+        case 'extension':
+          filteredOperators.sort((a: any, b: any) =>
+            a?.endpoints?.extension[0]?.id > b?.endpoints?.extension[0]?.id ? 1 : -1,
+          )
+          break
+        case 'az':
+          // Sort operators alphabetically
+          filteredOperators.sort((a: any, b: any) => (a?.name > b?.name ? 1 : -1))
+          break
+        case 'za':
+          // Sort operators reverse alphabetically
+          filteredOperators.sort((a: any, b: any) => (a?.name < b?.name ? 1 : -1))
           break
       }
 
@@ -152,7 +158,9 @@ const Operators: NextPage = () => {
       // sort operators
       switch (groupedSortByFilter) {
         case 'extension':
-          filteredOperators.sort((a: any, b: any) => (a?.extension > b?.extension ? 1 : -1))
+          filteredOperators.sort((a: any, b: any) =>
+            a?.endpoints?.extension[0]?.id > b?.endpoints?.extension[0]?.id ? 1 : -1,
+          )
           break
         case 'az':
           // Sort operators alphabetically
@@ -266,7 +274,7 @@ const Operators: NextPage = () => {
           })
           break
       }
-      
+
       // status filter
       // Filter operators by status within each category
       filteredOperators.forEach((category: any) => {
@@ -380,8 +388,8 @@ const Operators: NextPage = () => {
           <h1 className='text-2xl font-semibold mb-6 text-gray-900 dark:text-gray-100'>
             {t('Operators.Operators')}
           </h1>
-          <div className='grid grid-cols-2'>
-            <div>
+          <div className='flex items-center'>
+            <div className='grow items-center'>
               {layout === 'grouped' ? (
                 <>
                   <Filter
@@ -410,7 +418,7 @@ const Operators: NextPage = () => {
                 </>
               )}
             </div>
-            <div className='flex justify-end space-x-4'>
+            <div className='hidden sm:flex sm:justify-end sm:space-x-4 sm:items-center'>
               <button className='bg-transparent' onClick={() => selectLayoutOperators('standard')}>
                 <FontAwesomeIcon
                   icon={faGrid2}
@@ -442,6 +450,38 @@ const Operators: NextPage = () => {
                 />
               </button>
             </div>
+          </div>
+          <div className='sm:hidden space-x-4'>
+            <button className='bg-transparent' onClick={() => selectLayoutOperators('standard')}>
+              <FontAwesomeIcon
+                icon={faGrid2}
+                className={`${
+                  selectedLayout === 'standard'
+                    ? 'text-primary dark:text-primaryDark'
+                    : 'text-gray-600 dark:text-gray-300'
+                }, inline-block text-center h-5 w-5 cursor-pointer`}
+              />
+            </button>
+            <button className='bg-transparent' onClick={() => selectLayoutOperators('compact')}>
+              <FontAwesomeIcon
+                icon={faBars}
+                className={`${
+                  selectedLayout === 'compact'
+                    ? 'text-primary dark:text-primaryDark'
+                    : 'text-gray-600 dark:text-gray-300'
+                }, inline-block text-center h-5 w-5 cursor-pointer`}
+              />
+            </button>
+            <button className='bg-transparent' onClick={() => selectLayoutOperators('grouped')}>
+              <FontAwesomeIcon
+                icon={faGridDividers}
+                className={`${
+                  selectedLayout === 'grouped'
+                    ? 'text-primary dark:text-primaryDark'
+                    : 'text-gray-600 dark:text-gray-300'
+                }, inline-block text-center h-5 w-5 cursor-pointer`}
+              />
+            </button>
           </div>
 
           {/* operators error */}
