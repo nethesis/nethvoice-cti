@@ -53,6 +53,11 @@
   "Phonebook": {
     "Phonebook": "Rubrica",
     "Create contact": "Crea contatto",
+    "Save contact": "Salva contatto",
+    "Contact creation message": "Hai creato un nuovo contatto",
+    "Contact created": "Contatto creato",
+    "Contact edit message": "Hai modificato un contatto",
+    "Contact edited": "Contatto modificato",
     "Group": "Gruppo",
     "Status": "Stato",
     "Sort by": "Ordina per",

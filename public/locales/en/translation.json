@@ -70,6 +70,11 @@
   "Phonebook": {
     "Phonebook": "Phonebook",
     "Create contact": "Create contact",
+    "Save contact": "Save contact",
+    "Contact creation message": "You've just created a new contact",
+    "Contact created": "Contact created",
+    "Contact edit message": "You've just edit a contact",
+    "Contact edited": "Contact edited",
     "Group": "Group",
     "Status": "Status",
     "Sort by": "Sort by",
