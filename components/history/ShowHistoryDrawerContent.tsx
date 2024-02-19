@@ -120,7 +120,7 @@ export const ShowHistoryDrawerContent = forwardRef<
                     Phone number
                   </dt>
                   <dd className='mt-1 text-sm text-gray-900 dark:text-gray-100 sm:col-span-2 sm:mt-0'>
-                    <div className='flex items-center text-sm text-primary dark:text-primary'>
+                    <div className='flex items-center text-sm text-primary dark:text-primaryDark'>
                       <FontAwesomeIcon
                         icon={faPhone}
                         className='mr-2 h-4 w-4 flex-shrink-0 text-gray-400 dark:text-gray-500'
@@ -144,7 +144,7 @@ export const ShowHistoryDrawerContent = forwardRef<
                     Phone number
                   </dt>
                   <dd className='mt-1 text-sm text-gray-900 dark:text-gray-100 sm:col-span-2 sm:mt-0'>
-                    <div className='flex items-center text-sm text-primary dark:text-primary'>
+                    <div className='flex items-center text-sm text-primary dark:text-primaryDark'>
                       <FontAwesomeIcon
                         icon={faPhone}
                         className='mr-2 h-4 w-4 flex-shrink-0 text-gray-400 dark:text-gray-500'

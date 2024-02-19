@@ -147,7 +147,7 @@ const Phonebook: NextPage = () => {
               <div className='flex flex-col'>
                 <div className='-my-2 -mx-4 overflow-x-auto sm:-mx-6 lg:-mx-8'>
                   <div className='inline-block min-w-full py-2 align-middle px-2 md:px-6 lg:px-8'>
-                    <div className='shadow ring-1 ring-black ring-opacity-5 md:rounded-lg'>
+                    <div className='overflow-hidden shadow ring-1 md:rounded-lg ring-opacity-5 dark:ring-opacity-5 ring-gray-900 dark:ring-gray-100'>
                       {/* empty state */}
                       {isPhonebookLoaded &&
                         phonebook?.rows &&
@@ -271,7 +271,7 @@ const Phonebook: NextPage = () => {
                                                     contact?.extension !==
                                                     operatorsStore?.operators[authStore?.username]
                                                       ?.endpoints?.mainextension[0]?.id
-                                                      ? 'cursor-pointer hover:underline text-primary dark:text-primary'
+                                                      ? 'cursor-pointer hover:underline text-primary dark:text-primaryDark'
                                                       : 'text-gray-700 dark:text-gray-200'
                                                   } truncate  `}
                                                   onClick={() =>
@@ -314,7 +314,7 @@ const Phonebook: NextPage = () => {
                                       <td className='py-4 px-4'>
                                         <div>
                                           {contact.workphone ? (
-                                            <div className='mt-1 flex items-center text-sm text-primary dark:text-primary'>
+                                            <div className='mt-1 flex items-center text-sm text-primary dark:text-primaryDark'>
                                               <FontAwesomeIcon
                                                 icon={faPhone}
                                                 className='mr-2 h-4 w-4 flex-shrink-0 text-gray-400 dark:text-gray-500'
@@ -352,7 +352,7 @@ const Phonebook: NextPage = () => {
                                       <td className='py-4 px-4'>
                                         <div>
                                           {contact.cellphone ? (
-                                            <div className='mt-1 flex items-center text-sm text-primary dark:text-primary'>
+                                            <div className='mt-1 flex items-center text-sm text-primary dark:text-primaryDark'>
                                               <FontAwesomeIcon
                                                 icon={faMobileScreenButton}
                                                 className='mr-2 h-4 w-4 flex-shrink-0 text-gray-400 dark:text-gray-500'

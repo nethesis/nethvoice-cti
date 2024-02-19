@@ -151,7 +151,7 @@ const CustomerCards: NextPage = () => {
                 ? companyInformation?.rows[0]?.company
                 : companyInformation?.rows[0]?.name}
             </h1>
-            <div className='flex items-center text-sm text-primary dark:text-primary'>
+            <div className='flex items-center text-sm text-primary dark:text-primaryDark'>
               <FontAwesomeIcon
                 icon={faPhone}
                 className='mr-2 h-4 w-4 flex-shrink-0 text-gray-400 dark:text-gray-500'
@@ -201,7 +201,7 @@ const CustomerCards: NextPage = () => {
                           onClick={() => changeTab(tab.value)}
                           className={classNames(
                             tab.value === currentTab
-                              ? 'border-primary text-primary'
+                              ? 'border-primary text-primary dark:text-primaryDark'
                               : 'border-transparent text-gray-500 hover:text-gray-700 hover:border-gray-300 dark:text-gray-400 dark:hover:text-gray-200 dark:hover:border-gray-600',
                             'cursor-pointer whitespace-nowrap py-4 px-1 border-b-2 font-medium text-sm',
                           )}
@@ -215,7 +215,7 @@ const CustomerCards: NextPage = () => {
                       <>
                         <a
                           className={classNames(
-                            'border-primary text-primary',
+                            'border-primary text-primary dark:text-primaryDark',
                             'cursor-pointer whitespace-nowrap py-4 px-1 border-b-2 font-medium text-sm',
                           )}
                           onClick={() => changeTab('generalInfo')}

@@ -416,7 +416,7 @@ const Operators: NextPage = () => {
                 </>
               )}
             </div>
-            <div className='hidden sm:flex sm:justify-end sm:space-x-4 sm:items-center'>
+            <div className='hidden sm:flex sm:justify-end sm:space-x-4 sm:items-center mt-7'>
               <button className='bg-transparent' onClick={() => selectLayoutOperators('standard')}>
                 <FontAwesomeIcon
                   icon={faGrid2}
@@ -1034,7 +1034,7 @@ const Operators: NextPage = () => {
                           size='small'
                           variant='category'
                           rounded='full'
-                          className='overflow-hidden ml-1 mb-5 mt-6'
+                          className='overflow-hidden ml-1 mb-5 mt-4'
                         >
                           <div className='truncate w-20 lg:w-16 xl:w-20'>
                             {upperCaseFirstLetter(category?.category)}

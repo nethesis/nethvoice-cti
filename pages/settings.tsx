@@ -1,4 +1,4 @@
-// Copyright (C) 2023 Nethesis S.r.l.
+// Copyright (C) 2024 Nethesis S.r.l.
 // SPDX-License-Identifier: AGPL-3.0-or-later
 
 import type { NextPage } from 'next'
@@ -157,7 +157,7 @@ const Settings: NextPage = () => {
                           ? 'text-grey-900 bg-gray-100 dark:bg-gray-800 dark:text-gray-50 border-l-4 border-primary'
                           : 'text-gray-600 dark:text-gray-300 hover:text-gray-900 hover:bg-gray-100 dark:hover:bg-gray-800 dark:hover:text-gray-50',
 
-                        'group rounded-md flex items-center text-xs font-medium justify-start space-x-2 w-74 mx-4 h-[3rem] cursor-pointer',
+                        'group rounded-md flex items-center text-sm font-medium justify-start space-x-2 w-74 mx-4 h-[3rem] cursor-pointer',
                       )}
                       aria-current={item.current ? 'page' : undefined}
                     >
@@ -168,7 +168,7 @@ const Settings: NextPage = () => {
                         , 'h-4 w-4' )}
                         aria-hidden='true'
                       />
-                      <span className='truncate leading-5 font-normal text-xs'>{t(`Settings.${item.name}`)}</span>
+                      <span className='truncate leading-5 font-normal text-sm'>{t(`Settings.${item.name}`)}</span>
                     </a>
                   ))}
                 </nav>

@@ -289,7 +289,7 @@ export const ContactSummary = forwardRef<HTMLButtonElement, ContactSummaryProps>
                   {t('Phonebook.Extension')}
                 </dt>
                 <dd className='mt-1 text-sm text-gray-900 dark:text-gray-100 sm:col-span-2 sm:mt-0'>
-                  <div className='flex items-center text-sm text-primary dark:text-primary'>
+                  <div className='flex items-center text-sm text-primary dark:text-primaryDark'>
                     <FontAwesomeIcon
                       icon={faPhone}
                       className='mr-2 h-4 w-4 flex-shrink-0 text-gray-400 dark:text-gray-500'
@@ -316,7 +316,7 @@ export const ContactSummary = forwardRef<HTMLButtonElement, ContactSummaryProps>
                   {t('Phonebook.Work phone')}
                 </dt>
                 <dd className='mt-1 text-sm text-gray-900 dark:text-gray-100 sm:col-span-2 sm:mt-0'>
-                  <div className='flex items-center text-sm text-primary dark:text-primary'>
+                  <div className='flex items-center text-sm text-primary dark:text-primaryDark'>
                     <FontAwesomeIcon
                       icon={faPhone}
                       className='mr-2 h-4 w-4 flex-shrink-0 text-gray-400 dark:text-gray-500'
@@ -343,7 +343,7 @@ export const ContactSummary = forwardRef<HTMLButtonElement, ContactSummaryProps>
                   {t('Phonebook.Mobile phone')}
                 </dt>
                 <dd className='mt-1 text-sm text-gray-900 dark:text-gray-100 sm:col-span-2 sm:mt-0'>
-                  <div className='flex items-center text-sm text-primary dark:text-primary'>
+                  <div className='flex items-center text-sm text-primary dark:text-primaryDark'>
                     <FontAwesomeIcon
                       icon={faPhone}
                       className='mr-2 h-4 w-4 flex-shrink-0 text-gray-400 dark:text-gray-500'
@@ -370,7 +370,7 @@ export const ContactSummary = forwardRef<HTMLButtonElement, ContactSummaryProps>
                   {t('Phonebook.Home phone')}
                 </dt>
                 <dd className='mt-1 text-sm text-gray-900 dark:text-gray-100 sm:col-span-2 sm:mt-0'>
-                  <div className='flex items-center text-sm text-primary dark:text-primary'>
+                  <div className='flex items-center text-sm text-primary dark:text-primaryDark'>
                     <FontAwesomeIcon
                       icon={faPhone}
                       className='mr-2 h-4 w-4 flex-shrink-0 text-gray-400 dark:text-gray-500'
@@ -453,7 +453,7 @@ export const ContactSummary = forwardRef<HTMLButtonElement, ContactSummaryProps>
                             aria-hidden='true'
                           />
                           <span
-                            className='ml-2 w-0 flex-1 truncate text-primary dark:text-primary cursor-pointer'
+                            className='ml-2 w-0 flex-1 truncate text-primary dark:text-primaryDark cursor-pointer'
                             onClick={() => fetchContact(contact?.id, contact?.source)}
                           >
                             {contact?.name}
@@ -516,7 +516,7 @@ export const ContactSummary = forwardRef<HTMLButtonElement, ContactSummaryProps>
                   <h3 className='flex text-base font-semibold leading-6 text-gray-100 dark:text-gray-700'>
                     {t('CustomerCards.Business name')}
                   </h3>
-                  <span className='flex pt-2 text-base font-medium text-primaryLight dark:text-primary'>
+                  <span className='flex pt-2 text-base font-medium text-primary dark:text-primaryDark'>
                     {companyInformation?.company || '-'}
                   </span>
 
@@ -524,7 +524,7 @@ export const ContactSummary = forwardRef<HTMLButtonElement, ContactSummaryProps>
                   <h3 className='flex text-base font-semibold leading-6 text-gray-100 dark:text-gray-700 pt-6'>
                     {t('CustomerCards.City')}
                   </h3>
-                  <span className='flex pt-2 text-base font-normal text-gray-100 dark:text-primary'>
+                  <span className='flex pt-2 text-base font-normal text-gray-100 dark:text-primaryDark'>
                     {companyInformation?.workcity || '-'}
                   </span>
 
@@ -532,7 +532,7 @@ export const ContactSummary = forwardRef<HTMLButtonElement, ContactSummaryProps>
                   <h3 className='flex text-base font-semibold leading-6 text-gray-100 dark:text-gray-700 pt-6'>
                     {t('CustomerCards.Notes')}
                   </h3>
-                  <span className='flex pt-2 text-base font-normal text-gray-100 dark:text-primary'>
+                  <span className='flex pt-2 text-base font-normal text-gray-100 dark:text-primaryDark'>
                     {companyInformation?.notes || '-'}
                   </span>
                 </div>

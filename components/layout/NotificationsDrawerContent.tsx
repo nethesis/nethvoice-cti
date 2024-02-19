@@ -131,7 +131,7 @@ export const NotificationsDrawerContent = forwardRef<
           <div
             className={classNames(
               'truncate text-sm text-primary',
-              notification.isRead ? 'dark:text-primary' : 'dark:text-primaryLight',
+              notification.isRead ? 'dark:text-primaryDark' : 'dark:text-primaryLight',
             )}
           >
             <div className='flex items-center'>

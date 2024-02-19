@@ -361,7 +361,7 @@ export const QueueManagement: FC<QueueManagementProps> = ({ className }): JSX.El
                             {selected || selectedValue.queue === queueId ? (
                               <span
                                 className={classNames(
-                                  active ? 'text-white' : 'text-primary',
+                                  active ? 'text-white dark:text-gray-200' : 'text-primary dark:text-primaryDark',
                                   'absolute inset-y-0 left-0 flex items-center pl-1.5',
                                 )}
                               >

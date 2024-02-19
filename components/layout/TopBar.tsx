@@ -442,7 +442,7 @@ export const TopBar: FC<TopBarProps> = ({ openMobileCb }) => {
                   className={
                     'h-5 w-5 py-1 px-0.5 flex-shrink-0 ' +
                     (sideDrawer.isShown && sideDrawer.contentType === 'notifications'
-                      ? ' text-primary dark:text-primary'
+                      ? ' text-primary dark:text-primaryDark'
                       : ' text-gray-500 dark:text-gray-400')
                   }
                   aria-hidden='true'

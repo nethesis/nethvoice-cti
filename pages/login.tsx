@@ -342,7 +342,7 @@ export default function Login() {
                 src='/login_logo.svg'
                 alt='logo'
               />
-              <div className='flex items-center text-primary p-4'>
+              <div className='flex items-center text-primary dark:text-primaryDark p-4'>
                 <FontAwesomeIcon
                   icon={faPhone}
                   className='mr-1.5 h-5 w-5 flex-shrink-0'

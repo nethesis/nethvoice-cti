@@ -1,4 +1,4 @@
-// Copyright (C) 2023 Nethesis S.r.l.
+// Copyright (C) 2024 Nethesis S.r.l.
 // SPDX-License-Identifier: AGPL-3.0-or-later
 
 import 'react-tooltip/dist/react-tooltip.css'
@@ -84,7 +84,7 @@ function MyApp({ Component, pageProps }: AppProps) {
         </Head>
       </div>
       {!isLoading && (
-        <Provider store={store}>
+        <Provider store={store} >
           {router.pathname !== '/login' ? (
             <>
               <Service>

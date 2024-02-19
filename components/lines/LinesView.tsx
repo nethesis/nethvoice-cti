@@ -388,18 +388,18 @@ export const LinesView: FC<LinesViewProps> = ({ className }): JSX.Element => {
                     ></EmptyState>
                   )}
                   {(!isLinesLoaded || !isEmpty(lines)) && (
-                    <div className='mt-8 flow-root'>
+                    <div className='flow-root'>
                       <div className='-mx-4 -my-2 overflow-x-auto sm:-mx-6 lg:-mx-8'>
-                        <div className='inline-block min-w-full py-2 align-middle sm:px-6 lg:px-8'>
+                        <div className='inline-block min-w-full align-middle sm:px-6 lg:px-8'>
                           <div className='relative'>
-                            <div className='mt-8 overflow-y-auto scrollbar-thin scrollbar-thumb-gray-400 dark:scrollbar-thumb-gray-400 scrollbar-thumb-rounded-full scrollbar-thumb-opacity-50 scrollbar-track-gray-200 dark:scrollbar-track-gray-900 scrollbar-track-rounded-full scrollbar-track-opacity-25  max-h-[32rem]'>
+                            <div className='overflow-y-auto scrollbar-thin scrollbar-thumb-gray-400 dark:scrollbar-thumb-gray-400 scrollbar-thumb-rounded-full scrollbar-thumb-opacity-50 scrollbar-track-gray-200 dark:scrollbar-track-gray-900 scrollbar-track-rounded-full scrollbar-track-opacity-25  max-h-[32rem]'>
                               <table className='min-w-full divide-y divide-gray-300 dark:divide-gray-600'>
                                 <thead className='sticky top-0 bg-white dark:bg-gray-900 z-[1]'>
                                   <tr>
                                     <th scope='col' className='relative px-7 sm:w-12 sm:px-6 py-5'>
                                       <input
                                         type='checkbox'
-                                        className='absolute left-4 top-1/2 -mt-2 h-4 w-4 rounded border-gray-300 text-primary focus:ring-primary'
+                                        className='absolute left-4 top-1/2 -mt-2 h-4 w-4 rounded border-gray-300 text-primary dark:text-primaryDark focus:ring-primary dark:focus:ring-primaryDark'
                                         ref={checkbox}
                                         checked={checked}
                                         onChange={toggleAllLines}
@@ -488,7 +488,7 @@ export const LinesView: FC<LinesViewProps> = ({ className }): JSX.Element => {
                                           )}
                                           <input
                                             type='checkbox'
-                                            className='absolute left-4 top-1/2 -mt-2 h-4 w-4 rounded border-gray-300 text-primary focus:ring-primary'
+                                            className='absolute left-4 top-1/2 -mt-2 h-4 w-4 rounded border-gray-300 text-primary dark:text-primaryDark focus:ring-primary dark:focus:ring-primaryDark'
                                             value={line.calledIdNum}
                                             checked={selectedLines.includes(line)}
                                             onChange={(e) =>

@@ -1,4 +1,4 @@
-// Copyright (C) 2023 Nethesis S.r.l.
+// Copyright (C) 2024 Nethesis S.r.l.
 // SPDX-License-Identifier: AGPL-3.0-or-later
 
 import type { NextPage } from 'next'
@@ -587,7 +587,7 @@ const History: NextPage = () => {
               <div className='flex flex-col'>
                 <div className='-my-2 -mx-4 overflow-x-auto sm:-mx-6 lg:-mx-8'>
                   <div className='inline-block min-w-full py-2 align-middle px-2 md:px-6 lg:px-8'>
-                    <div className='shadow ring-1 ring-black ring-opacity-5 md:rounded-lg'>
+                    <div className='overflow-hidden shadow ring-1 md:rounded-lg ring-opacity-5 dark:ring-opacity-5 ring-gray-900 dark:ring-gray-100'>
                       {/* empty state */}
                       {isHistoryLoaded && history?.count === 0 && (
                         <EmptyState

@@ -252,7 +252,7 @@ export const ShowRuleDetailsContent = forwardRef<HTMLButtonElement, ShowRuleDeta
                           name='date-select'
                           type='radio'
                           defaultChecked={dateSelectionInput.id === 'specifyDay'}
-                          className='h-4 w-4 border-gray-300 text-primary dark:border-gray-600 focus:ring-primaryLight dark:focus:ring-primaryDark dark:text-primary'
+                          className='h-4 w-4 border-gray-300 text-primary dark:text-primaryDark dark:border-gray-600 focus:ring-primaryLight dark:focus:ring-primaryDark'
                           onChange={changeTypeSelected}
                         />
                         <label
@@ -361,7 +361,7 @@ export const ShowRuleDetailsContent = forwardRef<HTMLButtonElement, ShowRuleDeta
                   type='checkbox'
                   onChange={toggleSelectAll}
                   checked={selectedLines.size === linesList.length}
-                  className='h-4 w-4 border-gray-300 text-primary focus:ring-primaryLight dark:border-gray-600 dark:text-primary dark:focus:ring-primaryDark'
+                  className='h-4 w-4 border-gray-300 text-primary focus:ring-primaryLight dark:border-gray-600 dark:text-primaryDark dark:focus:ring-primaryDark'
                 />
                 <span className='ml-2'>{t('Lines.Select all')}</span>
               </label>

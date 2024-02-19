@@ -93,7 +93,7 @@ export const NavBar: FC<NavBarProps> = ({ items }) => {
                     className='h-6 w-6'
                     aria-hidden='true'
                   />
-                  {item.current && <div style={activeStyles} className='bg-primary' />}
+                  {item.current && <div style={activeStyles} className='bg-primary dark:bg-primaryDark' />}
                 </a>
               </Link>
               <Tooltip anchorSelect={`.tooltip-${item.name}`} place='right' offset={20}>

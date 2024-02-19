@@ -713,8 +713,8 @@ export const ShowMultiplePhoneLinesDrawerContent = forwardRef<
                     checked={dateSelectionInput.value === selectedType}
                     className={`h-4 w-4 border-gray-300 text-primary focus:ring-primaryLight ${
                       selectedType === dateSelectionInput.value
-                        ? 'dark:text-primary dark:bg-primaryLight'
-                        : 'dark:text-primary dark:bg-gray-700'
+                        ? 'dark:text-primaryDark dark:bg-primaryLight'
+                        : 'dark:text-primaryDark dark:bg-gray-700'
                     } dark:border-gray-600 dark:focus:ring-primaryDark`}
                     onChange={changeTypeSelected}
                   />

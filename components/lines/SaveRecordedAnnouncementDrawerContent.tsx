@@ -115,7 +115,7 @@ export const SaveRecordedAnnouncementDrawerContent = forwardRef<
                     name='date-select'
                     type='radio'
                     defaultChecked={dateRuleInformation.id === 'private'}
-                    className={`h-4 w-4 border-gray-300 text-primary focus:ring-primaryLight dark:focus:ring-primaryDark ${
+                    className={`h-4 w-4 border-gray-300 text-primary dark:text-primaryDark focus:ring-primaryLight dark:focus:ring-primaryDark ${
                       modalAnnouncementType === dateRuleInformation.id
                         ? 'dark:bg-primaryLight dark:text-primary dark:border-gray-600'
                         : 'dark:bg-gray-700 dark:text-white dark:border-gray-600'

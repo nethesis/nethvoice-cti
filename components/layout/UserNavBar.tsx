@@ -170,7 +170,7 @@ export const UserNavBar: FC = () => {
             data-tooltip-content={tab.label}
           >
             <FontAwesomeIcon size='lg' icon={tab.icon} />
-            {tab.active && <div style={activeStyles} className='bg-primary' />}
+            {tab.active && <div style={activeStyles} className='bg-primary dark:bg-primaryDark' />}
           </div>
         ))}
       </div>

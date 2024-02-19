@@ -1,4 +1,4 @@
-// Copyright (C) 2023 Nethesis S.r.l.
+// Copyright (C) 2024 Nethesis S.r.l.
 // SPDX-License-Identifier: AGPL-3.0-or-later
 
 import React, { useState, useEffect, useRef } from 'react'
@@ -55,7 +55,7 @@ export const ProgressionRing: React.FC<ProgressionRingProps> = ({ seconds, size 
           cy={size / 2}
         />
         <circle
-          className='text-primary'
+          className='text-primary dark:text-primaryDark'
           strokeWidth='5'
           strokeDasharray={circumference}
           strokeDashoffset={circumference - (progress / 100) * circumference}

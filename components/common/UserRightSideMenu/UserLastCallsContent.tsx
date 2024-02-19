@@ -1,4 +1,4 @@
-// Copyright (C) 2023 Nethesis S.r.l.
+// Copyright (C) 2024 Nethesis S.r.l.
 // SPDX-License-Identifier: AGPL-3.0-or-later
 
 import { useState, useEffect, useRef, useCallback } from 'react'
@@ -178,7 +178,7 @@ export const UserLastCallsContent = () => {
                         type='radio'
                         checked={sort === 'time_desc'}
                         onChange={() => sortCalls('time_desc')}
-                        className='h-4 w-4 border-gray-300 text-primary focus:ring-primaryLight dark:border-gray-600 dark:text-primary dark:focus:ring-primaryDark'
+                        className='h-4 w-4 border-gray-300 text-primary focus:ring-primaryLight dark:border-gray-600 dark:text-primaryDark dark:focus:ring-primaryDark'
                       />
                       {t('LastCalls.Newest')}
                     </Dropdown.Item>
@@ -187,7 +187,7 @@ export const UserLastCallsContent = () => {
                         type='radio'
                         checked={sort === 'time_asc'}
                         onChange={() => sortCalls('time_asc')}
-                        className='h-4 w-4 border-gray-300 text-primary focus:ring-primaryLight dark:border-gray-600 dark:text-primary dark:focus:ring-primaryDark'
+                        className='h-4 w-4 border-gray-300 text-primary focus:ring-primaryLight dark:border-gray-600 dark:text-primaryDark dark:focus:ring-primaryDark'
                       />
                       {t('LastCalls.Oldest')}
                     </Dropdown.Item>
@@ -273,7 +273,7 @@ export const UserLastCallsContent = () => {
                             )}
                           </div>
                         </div>
-                        <div className='truncate text-sm text-primary dark:text-primary'>
+                        <div className='truncate text-sm text-primary dark:text-primaryDark'>
                           <div className='flex items-center'>
                             <UserCallStatusIcon call={call} />
                             <span className='cursor-pointer hover:underline'>

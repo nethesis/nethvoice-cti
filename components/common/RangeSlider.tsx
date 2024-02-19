@@ -34,7 +34,7 @@ export const RangeSlider = <T extends number | readonly number[]>(_props: ReactS
               'w-1/4 left-1/2 -translate-x-1/2': isVertical,
               'rounded-full': true,
               'bg-gray-300 dark:bg-gray-400': isMulti ? isFirst || isLast : isLast,
-              'bg-primaryLight dark:bg-primary': isMulti ? !isFirst || !isLast : isFirst,
+              'bg-primaryLight dark:bg-primaryDark': isMulti ? !isFirst || !isLast : isFirst,
             })}
           ></div>
         )

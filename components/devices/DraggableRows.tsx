@@ -735,7 +735,7 @@ export default function DraggableRows({
                   </div>
                 )}
                 {/* Divider */}
-                <div className='relative col-span-3'>
+                <div className='relative col-span-3 z-0'>
                   <div className='absolute inset-0 flex items-center' aria-hidden='true'>
                     <div className='w-full border-t border-gray-300 dark:border-gray-600 mr-3' />
                   </div>

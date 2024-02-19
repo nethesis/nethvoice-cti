@@ -54,7 +54,7 @@ const theme = {
       full_h: 'h-full',
       full_w: 'w-full',
     },
-    iconEnabled: 'text-primary dark:text-primary',
+    iconEnabled: 'text-primary dark:text-primaryDark',
     iconEnabledLighterOnDark: 'text-primary dark:text-primaryLight',
     iconDisabled: 'text-gray-500 dark:text-gray-400',
   },

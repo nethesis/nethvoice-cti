@@ -125,7 +125,7 @@ const QueueManager: NextPage = () => {
                 <select
                   id='tabs'
                   name='tabs'
-                  className='block w-full rounded-md py-2 pl-3 pr-10 text-base focus:outline-none sm:text-sm border-gray-300 focus:border-primary focus:ring-primary dark:border-gray-600 dark:focus:border-primary dark:focus:ring-primary dark:bg-gray-900'
+                  className='block w-full rounded-md py-2 pl-3 pr-10 text-base focus:outline-none sm:text-sm border-gray-300 focus:border-primary focus:ring-primary dark:border-gray-600 dark:focus:border-primaryDark dark:focus:ring-primaryDark dark:bg-gray-900'
                   defaultValue={currentSection}
                   onChange={(event) => changeSection(event.target.value)}
                 >
@@ -144,7 +144,7 @@ const QueueManager: NextPage = () => {
                         onClick={() => changeSection(item.name)}
                         className={classNames(
                           item.name === currentSection
-                            ? 'border-primary text-primary'
+                            ? 'border-primary dark:border-primaryDark text-primary dark:text-primaryDark'
                             : 'border-transparent text-gray-500 hover:text-gray-700 hover:border-gray-300 dark:text-gray-400 dark:hover:text-gray-200 dark:hover:border-gray-600',
                           'cursor-pointer whitespace-nowrap py-4 px-1 border-b-2 font-medium text-sm',
                         )}

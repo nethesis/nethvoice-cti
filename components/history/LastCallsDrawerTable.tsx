@@ -1,4 +1,4 @@
-// Copyright (C) 2023 Nethesis S.r.l.
+// Copyright (C) 2024 Nethesis S.r.l.
 // SPDX-License-Identifier: AGPL-3.0-or-later
 
 import { ComponentPropsWithRef, forwardRef, useEffect, useState, FC } from 'react'
@@ -267,7 +267,7 @@ export const LastCallsDrawerTable = forwardRef<HTMLButtonElement, LastCallsDrawe
         {/* empty state */}
         {isLoaded && !errorMessage && lastCalls?.rows && !lastCalls.rows.length && (
           <EmptyState
-            title={t('Phonebook.No recent calls') || ""}
+            title={t('Phonebook.No recent calls') || ''}
             icon={
               <FontAwesomeIcon icon={faPhone} className='mx-auto h-12 w-12' aria-hidden='true' />
             }
@@ -281,7 +281,7 @@ export const LastCallsDrawerTable = forwardRef<HTMLButtonElement, LastCallsDrawe
                 <div className='inline-block min-w-full py-2 align-middle px-2 md:px-6 lg:px-8'>
                   {isLoaded && lastCalls?.rows && (
                     <div className='overflow-y-auto scrollbar-thin scrollbar-thumb-gray-400 dark:scrollbar-thumb-gray-400 scrollbar-thumb-rounded-full scrollbar-thumb-opacity-50 scrollbar-track-gray-200 dark:scrollbar-track-gray-900 scrollbar-track-rounded-full scrollbar-track-opacity-25'>
-                      <div className='max-h-[36rem]'>
+                      <div>
                         <table className='min-w-full divide-y divide-gray-300 dark:divide-gray-700'>
                           <tbody className='divide-y divide-gray-200 dark:divide-gray-700 bg-white dark:bg-gray-900 text-gray-700 text-sm'>
                             {/* Not empty state  */}

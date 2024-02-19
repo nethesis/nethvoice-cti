@@ -489,7 +489,7 @@ export const Filter = forwardRef<HTMLButtonElement, FilterProps>(
                                           type='radio'
                                           defaultChecked={option.value === status}
                                           onChange={changeStatus}
-                                          className='h-4 w-4 border-gray-300 text-primary focus:ring-primaryLight dark:border-gray-600 dark:text-primary dark:focus:ring-primaryDark'
+                                          className='h-4 w-4 border-gray-300 text-primary focus:ring-primaryLight dark:border-gray-600 dark:text-primaryDark dark:focus:ring-primaryDark'
                                         />
                                         <label
                                           htmlFor={`status-${option.value}`}
@@ -542,7 +542,7 @@ export const Filter = forwardRef<HTMLButtonElement, FilterProps>(
                                           type='radio'
                                           defaultChecked={option.value === sortBy}
                                           onChange={changeSortBy}
-                                          className='h-4 w-4 border-gray-300 text-primary focus:ring-primaryLight dark:border-gray-600 dark:text-primary dark:focus:ring-primaryDark'
+                                          className='h-4 w-4 border-gray-300 text-primary focus:ring-primaryLight dark:border-gray-600 dark:text-primaryDark dark:focus:ring-primaryDark'
                                         />
                                         <label
                                           htmlFor={`sort-${option.value}`}
@@ -625,7 +625,7 @@ export const Filter = forwardRef<HTMLButtonElement, FilterProps>(
                                     type='radio'
                                     defaultChecked={option.value === sortBy}
                                     onChange={changeSortBy}
-                                    className='h-4 w-4 border-gray-300 text-primary focus:ring-primaryLight dark:border-gray-600 dark:text-primary dark:focus:ring-primaryDark'
+                                    className='h-4 w-4 border-gray-300 text-primary focus:ring-primaryLight dark:border-gray-600 dark:text-primaryDark dark:focus:ring-primaryDark'
                                   />
                                   <label
                                     htmlFor={`sort-${option.value}`}
@@ -705,7 +705,7 @@ export const Filter = forwardRef<HTMLButtonElement, FilterProps>(
                                         type='radio'
                                         defaultChecked={option.value === group}
                                         onChange={changeGroup}
-                                        className='h-4 w-4 border-gray-300 text-primary focus:ring-primaryLight dark:border-gray-600 dark:text-primary dark:focus:ring-primaryDark'
+                                        className='h-4 w-4 border-gray-300 text-primary focus:ring-primaryLight dark:border-gray-600 dark:text-primaryDark dark:focus:ring-primaryDark'
                                       />
                                       <label
                                         htmlFor={`group-${option.value}`}
@@ -759,7 +759,7 @@ export const Filter = forwardRef<HTMLButtonElement, FilterProps>(
                                     type='radio'
                                     defaultChecked={option.value === status}
                                     onChange={changeStatus}
-                                    className='h-4 w-4 border-gray-300 text-primary focus:ring-primaryLight dark:border-gray-600 dark:text-primary dark:focus:ring-primaryDark'
+                                    className='h-4 w-4 border-gray-300 text-primary focus:ring-primaryLight dark:border-gray-600 dark:text-primaryDark dark:focus:ring-primaryDark'
                                   />
                                   <label
                                     htmlFor={`status-${option.value}`}
@@ -939,7 +939,7 @@ export const Filter = forwardRef<HTMLButtonElement, FilterProps>(
                                           type='radio'
                                           defaultChecked={option.value === groupedSortBy}
                                           onChange={changeGroupedSortBy}
-                                          className='h-4 w-4 border-gray-300 text-primary focus:ring-primaryLight dark:border-gray-600 dark:text-primary dark:focus:ring-primaryDark'
+                                          className='h-4 w-4 border-gray-300 text-primary focus:ring-primaryLight dark:border-gray-600 dark:text-primaryDark dark:focus:ring-primaryDark'
                                         />
                                         <label
                                           htmlFor={`sort-${option?.value}`}
@@ -995,7 +995,7 @@ export const Filter = forwardRef<HTMLButtonElement, FilterProps>(
                                           type='radio'
                                           defaultChecked={option.value === groupedGroupBy}
                                           onChange={changeGroupedGroupBy}
-                                          className='h-4 w-4 border-gray-300 text-primary focus:ring-primaryLight dark:border-gray-600 dark:text-primary dark:focus:ring-primaryDark'
+                                          className='h-4 w-4 border-gray-300 text-primary focus:ring-primaryLight dark:border-gray-600 dark:text-primaryDark dark:focus:ring-primaryDark'
                                         />
                                         <label
                                           htmlFor={`group-${option?.value}`}
@@ -1049,7 +1049,7 @@ export const Filter = forwardRef<HTMLButtonElement, FilterProps>(
                                           type='radio'
                                           defaultChecked={option.value === status}
                                           onChange={changeStatus}
-                                          className='h-4 w-4 border-gray-300 text-primary focus:ring-primaryLight dark:border-gray-600 dark:text-primary dark:focus:ring-primaryDark'
+                                          className='h-4 w-4 border-gray-300 text-primary focus:ring-primaryLight dark:border-gray-600 dark:text-primaryDark dark:focus:ring-primaryDark'
                                         />
                                         <label
                                           htmlFor={`status-${option.value}`}
@@ -1132,7 +1132,7 @@ export const Filter = forwardRef<HTMLButtonElement, FilterProps>(
                                     type='radio'
                                     defaultChecked={option.value === groupedSortBy}
                                     onChange={changeGroupedSortBy}
-                                    className='h-4 w-4 border-gray-300 text-primary focus:ring-primaryLight dark:border-gray-600 dark:text-primary dark:focus:ring-primaryDark'
+                                    className='h-4 w-4 border-gray-300 text-primary focus:ring-primaryLight dark:border-gray-600 dark:text-primaryDark dark:focus:ring-primaryDark'
                                   />
                                   <label
                                     htmlFor={`sort-${option?.value}`}
@@ -1184,7 +1184,7 @@ export const Filter = forwardRef<HTMLButtonElement, FilterProps>(
                                     type='radio'
                                     defaultChecked={option.value === groupedGroupBy}
                                     onChange={changeGroupedGroupBy}
-                                    className='h-4 w-4 border-gray-300 text-primary focus:ring-primaryLight dark:border-gray-600 dark:text-primary dark:focus:ring-primaryDark'
+                                    className='h-4 w-4 border-gray-300 text-primary focus:ring-primaryLight dark:border-gray-600 dark:text-primaryDark dark:focus:ring-primaryDark'
                                   />
                                   <label
                                     htmlFor={`group-${option?.value}`}
@@ -1235,7 +1235,7 @@ export const Filter = forwardRef<HTMLButtonElement, FilterProps>(
                                     type='radio'
                                     defaultChecked={option?.value === status}
                                     onChange={changeStatus}
-                                    className='h-4 w-4 border-gray-300 text-primary focus:ring-primaryLight dark:border-gray-600 dark:text-primary dark:focus:ring-primaryDark'
+                                    className='h-4 w-4 border-gray-300 text-primary focus:ring-primaryLight dark:border-gray-600 dark:text-primaryDark dark:focus:ring-primaryDark'
                                   />
                                   <label
                                     htmlFor={`status-${option?.value}`}

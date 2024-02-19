@@ -66,7 +66,7 @@ const Lines: NextPage = () => {
                       onClick={() => changeTab(tab.name)}
                       className={classNames(
                         tab.value === currentTab
-                          ? 'border-primary text-primary'
+                          ? 'border-primary text-primary dark:border-primaryDark dark:text-primaryDark'
                           : 'border-transparent text-gray-500 hover:text-gray-700 hover:border-gray-300 dark:text-gray-400 dark:hover:text-gray-200 dark:hover:border-gray-600',
                         'cursor-pointer whitespace-nowrap py-4 px-1 border-b-2 font-medium text-sm',
                       )}

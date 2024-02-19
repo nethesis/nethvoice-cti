@@ -1,4 +1,4 @@
-// Copyright (C) 2023 Nethesis S.r.l.
+// Copyright (C) 2024 Nethesis S.r.l.
 // SPDX-License-Identifier: AGPL-3.0-or-later
 
 import { FC, ComponentProps, useState, useEffect } from 'react'
@@ -125,21 +125,21 @@ export const CustomerCardsCustomerData: FC<CustomerCardsCustomerDataViewProps> =
                   <h3 className='flex text-base font-semibold leading-6 text-gray-100 dark:text-gray-700'>
                     {t('CustomerCards.Business name')}
                   </h3>
-                  <span className='flex pt-2 text-base font-medium text-primaryLight dark:text-primary'>
+                  <span className='flex pt-2 text-base font-medium text-primary dark:text-primaryDark'>
                     {companyInformation?.company || '-'}
                   </span>
                   {/* Company city address */}
                   <h3 className='flex text-base font-semibold leading-6 text-gray-100 dark:text-gray-700 pt-6'>
                     {t('CustomerCards.City')}
                   </h3>
-                  <span className='flex pt-2 text-base font-normal text-gray-100 dark:text-primary'>
+                  <span className='flex pt-2 text-base font-normal text-gray-100 dark:text-gray-600'>
                     {companyInformation?.city || '-'}
                   </span>
                   {/* Company notes  */}
                   <h3 className='flex text-base font-semibold leading-6 text-gray-100 dark:text-gray-700 pt-6'>
                     {t('CustomerCards.Notes')}
                   </h3>
-                  <span className='flex pt-2 text-base font-normal text-gray-100 dark:text-primary'>
+                  <span className='flex pt-2 text-base font-normal text-gray-100 dark:text-gray-600'>
                     {companyInformation?.notes || '-'}
                   </span>{' '}
                 </>
@@ -149,28 +149,28 @@ export const CustomerCardsCustomerData: FC<CustomerCardsCustomerDataViewProps> =
                   <h3 className='flex text-base font-semibold leading-6 text-gray-100 dark:text-gray-700'>
                     {t('CustomerCards.Contact name')}
                   </h3>
-                  <span className='flex pt-2 text-base font-medium text-primaryLight dark:text-primary'>
+                  <span className='flex pt-2 text-base font-medium text-primary dark:text-primaryDark'>
                     {companyInformation?.name || '-'}
                   </span>
                   {/* Contact city address */}
                   <h3 className='flex text-base font-semibold leading-6 text-gray-100 dark:text-gray-700 pt-6'>
                     {t('CustomerCards.City')}
                   </h3>
-                  <span className='flex pt-2 text-base font-normal text-gray-100 dark:text-primary'>
+                  <span className='flex pt-2 text-base font-normal text-gray-100 dark:text-gray-600'>
                     {companyInformation?.workcity || '-'}
                   </span>
                   {/* Contact email  */}
                   <h3 className='flex text-base font-semibold leading-6 text-gray-100 dark:text-gray-700 pt-6'>
                     {t('CustomerCards.Email')}
                   </h3>
-                  <span className='flex pt-2 text-base font-normal text-gray-100 dark:text-primary'>
+                  <span className='flex pt-2 text-base font-normal text-gray-100 dark:text-600'>
                     {companyInformation?.homeemail || companyInformation?.workemail || '-'}
                   </span>{' '}
                   {/* Contact notes  */}
                   <h3 className='flex text-base font-semibold leading-6 text-gray-100 dark:text-gray-700 pt-6'>
                     {t('CustomerCards.Notes')}
                   </h3>
-                  <span className='flex pt-2 text-base font-normal text-gray-100 dark:text-primary'>
+                  <span className='flex pt-2 text-base font-normal text-gray-100 dark:text-gray-600'>
                     {companyInformation?.notes || '-'}
                   </span>{' '}
                 </>
@@ -280,7 +280,7 @@ export const CustomerCardsCustomerData: FC<CustomerCardsCustomerDataViewProps> =
                                           aria-hidden='true'
                                         />
                                         <span
-                                          className='truncate dark:text-primary cursor-pointer text-primary ml-2'
+                                          className='truncate dark:text-primaryDark cursor-pointer text-primary ml-2'
                                           onClick={() =>
                                             operatorsStore?.operators[authStore?.username]
                                               ?.mainPresence === 'busy'
@@ -305,7 +305,7 @@ export const CustomerCardsCustomerData: FC<CustomerCardsCustomerDataViewProps> =
                                           aria-hidden='true'
                                         />
                                         <span
-                                          className='truncate dark:text-primary cursor-pointer text-primary ml-2'
+                                          className='truncate dark:text-primaryDark cursor-pointer text-primary ml-2'
                                           onClick={() =>
                                             operatorsStore?.operators[authStore.username]
                                               ?.mainPresence === 'busy'
@@ -330,7 +330,7 @@ export const CustomerCardsCustomerData: FC<CustomerCardsCustomerDataViewProps> =
                                           aria-hidden='true'
                                         />
                                         <span
-                                          className='truncate dark:text-primary cursor-pointer text-primary ml-2'
+                                          className='truncate dark:text-primaryDark cursor-pointer text-primary ml-2'
                                           onClick={() =>
                                             openEmailClient(
                                               contact.workemail || contact.homeemail || '',
@@ -443,7 +443,7 @@ export const CustomerCardsCustomerData: FC<CustomerCardsCustomerDataViewProps> =
                                         aria-hidden='true'
                                       />
                                       <span
-                                        className='truncate dark:text-primary cursor-pointer text-primary ml-2'
+                                        className='truncate dark:text-primaryDark cursor-pointer text-primary ml-2'
                                         onClick={() =>
                                           operatorsStore?.operators[authStore?.username]
                                             ?.mainPresence === 'busy'
@@ -468,7 +468,7 @@ export const CustomerCardsCustomerData: FC<CustomerCardsCustomerDataViewProps> =
                                         aria-hidden='true'
                                       />
                                       <span
-                                        className='truncate dark:text-primary cursor-pointer text-primary ml-2'
+                                        className='truncate dark:text-primaryDark cursor-pointer text-primary ml-2'
                                         onClick={() =>
                                           operatorsStore?.operators[authStore?.username]
                                             ?.mainPresence === 'busy'
@@ -493,7 +493,7 @@ export const CustomerCardsCustomerData: FC<CustomerCardsCustomerDataViewProps> =
                                         aria-hidden='true'
                                       />
                                       <span
-                                        className='truncate dark:text-primary cursor-pointer text-primary ml-2'
+                                        className='truncate dark:text-primaryDark cursor-pointer text-primary ml-2'
                                         onClick={() =>
                                           openEmailClient(
                                             companyCardInformation?.workemail ||

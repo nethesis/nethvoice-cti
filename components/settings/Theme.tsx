@@ -56,7 +56,7 @@ export const Theme = () => {
                     type='radio'
                     defaultChecked={themeOption.id === theme}
                     onChange={onChangeTheme}
-                    className='h-4 w-4 border-gray-300 text-primary focus:ring-primary dark:border-gray-600 dark:text-primary dark:focus:ring-primary'
+                    className='h-4 w-4 border-gray-300 text-primary focus:ring-primary dark:border-gray-600 dark:text-primaryDark dark:focus:ring-primaryDark'
                   />
                 </div>
                 <div className='ml-3 text-sm leading-6'>

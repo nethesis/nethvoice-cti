@@ -89,7 +89,7 @@ export const CallsDestination: FC<CallsDestinationProps> = ({
           </Tooltip>
           {/* phone number */}
           {!hideName && (call?.dst_cnam !== '' || call?.dst_ccompany !== '') && (
-            <div className={`truncate ${highlightNumber ? 'text-primary' : 'text-gray-500'}`}>
+            <div className={`truncate ${highlightNumber ? 'text-primary dark:text-primaryDark' : 'text-gray-500 dark:text-gray-200'}`}>
               {call?.dst}
             </div>
           )}
@@ -98,7 +98,7 @@ export const CallsDestination: FC<CallsDestinationProps> = ({
         <>
           {call?.dst && (
             <div
-              className='truncate text-primary'
+              className='truncate text-primary dark:text-primaryDark'
               onClick={() =>
                 operatorsStore?.operators[authStore?.username]?.mainPresence === 'busy'
                   ? transferCallToExtension(call?.dst)

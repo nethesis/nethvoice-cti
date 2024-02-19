@@ -137,7 +137,7 @@ const Devices: NextPage = () => {
                               <>
                                 <FontAwesomeIcon
                                   icon={faCircleCheck}
-                                  className='mr-2 h-4 w-4 text-green-700'
+                                  className='mr-2 h-4 w-4 text-green-700 dark:text-green-600'
                                 />
                                 {t('Devices.Online')}
                               </>
@@ -265,7 +265,7 @@ const Devices: NextPage = () => {
                                           phone?.id === profile?.default_device?.id
                                             ? 'ml-2'
                                             : 'ml-2'
-                                        } mr-2 h-4 w-4 text-green-700`}
+                                        } mr-2 h-4 w-4 text-green-700 dark:text-green-600`}
                                       />
                                       {t('Devices.Online')}
                                     </>

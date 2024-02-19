@@ -140,7 +140,7 @@ export const CustomerCards = () => {
                               type='radio'
                               defaultChecked={notificationMethod.id === customerCardSelection}
                               onChange={changeCallDirection}
-                              className='h-4 w-4 border-gray-300 text-primary focus:ring-primary'
+                              className='h-4 w-4 border-gray-300 text-primary focus:ring-primary dark:text-primaryDark dark:focus:ring-primaryDark'
                             />
                             <label
                               htmlFor={notificationMethod.id}

@@ -1,4 +1,4 @@
-// Copyright (C) 2023 Nethesis S.r.l.
+// Copyright (C) 2024 Nethesis S.r.l.
 // SPDX-License-Identifier: AGPL-3.0-or-later
 
 import type { SpeedDialType } from '../../../services/types'
@@ -332,7 +332,7 @@ export const SpeedDialContent = () => {
                         <p className='truncate text-sm font-medium text-gray-700 dark:text-gray-200'>
                           {speedDial?.name || speedDial?.company || '-'}
                         </p>
-                        <div className='truncate text-sm mt-1 text-primary dark:text-primary'>
+                        <div className='truncate text-sm mt-1 text-primary dark:text-primaryDark'>
                           <div className='flex items-center'>
                             <FontAwesomeIcon
                               icon={faPhone}
