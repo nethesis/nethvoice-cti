@@ -124,7 +124,7 @@ export const MonitorTables: FC<MonitorTablesProps> = ({
                                   ? selectedQueueFirstTable.name +
                                     ' ' +
                                     selectedQueueFirstTable.queue
-                                  : 'Select queue'}
+                                  : t('QueueManager.Select queue')}
                               </span>
                               <span className='pointer-events-none absolute inset-y-0 right-0 flex items-center pr-2'>
                                 <FontAwesomeIcon
@@ -235,7 +235,7 @@ export const MonitorTables: FC<MonitorTablesProps> = ({
                 {/* empty state */}
 
                 <EmptyState
-                  title='No queue selected'
+                  title={t('QueueManager.No queue selected') || ""}
                   description='Please select a queue'
                   icon={
                     <FontAwesomeIcon
@@ -483,7 +483,7 @@ export const MonitorTables: FC<MonitorTablesProps> = ({
                 <>
                   {/* empty state */}
                   <EmptyState
-                    title='No queue selected'
+                    title={t('QueueManager.No queue selected') || ""}
                     description='Please select a queue'
                     icon={
                       <FontAwesomeIcon

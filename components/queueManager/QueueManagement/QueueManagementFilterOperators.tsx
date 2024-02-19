@@ -18,25 +18,6 @@ import { RootState } from '../../../store'
 import { savePreference } from '../../../lib/storage'
 import { useTranslation } from 'react-i18next'
 
-const sortFilter = {
-  id: 'sort',
-  name: 'Sort by',
-  options: [
-    { value: 'name', label: 'Name' },
-    { value: 'status', label: 'Status' },
-  ],
-}
-
-const statusFilter = {
-  id: 'status',
-  name: 'Status',
-  options: [
-    { value: 'all', label: 'All' },
-    { value: 'connected', label: 'Connected' },
-    { value: 'disconnected', label: 'Disconnected' },
-  ],
-}
-
 export interface QueueManagementFilterOperatorsProps extends ComponentPropsWithRef<'div'> {
   updateTextFilter: Function
   updateStatusFilter: Function
@@ -47,6 +28,27 @@ export const QueueManagementFilterOperators = forwardRef<
   HTMLButtonElement,
   QueueManagementFilterOperatorsProps
 >(({ className, updateTextFilter, updateStatusFilter, updateSort, ...props }, ref) => {
+  const { t } = useTranslation()
+
+  const sortFilter = {
+    id: 'sort',
+    name: t('Operators.Sort by'),
+    options: [
+      { value: 'name', label: 'Name' },
+      { value: 'status', label: 'Status' },
+    ],
+  }
+
+  const statusFilter = {
+    id: 'status',
+    name: t('Operators.Status'),
+    options: [
+      { value: 'all', label: 'All' },
+      { value: 'connected', label: 'Connected' },
+      { value: 'disconnected', label: 'Disconnected' },
+    ],
+  }
+
   const auth = useSelector((state: RootState) => state.authentication)
 
   const [open, setOpen] = useState(false)
@@ -136,8 +138,6 @@ export const QueueManagementFilterOperators = forwardRef<
     updateTextFilter('')
     textFilterRef.current.focus()
   }
-
-  const { t } = useTranslation()
 
   return (
     <div className={classNames(className)} {...props}>
@@ -306,7 +306,7 @@ export const QueueManagementFilterOperators = forwardRef<
             <div className='flex items-center space-x-8'>
               <div className='flex items-center'>
                 <TextInput
-                  placeholder='Filter operators'
+                  placeholder={t('Operators.Filter operators') || ""}
                   className='max-w-sm'
                   value={textFilter}
                   onChange={changeTextFilter}
@@ -478,7 +478,7 @@ export const QueueManagementFilterOperators = forwardRef<
                   <button
                     type='button'
                     onClick={() => resetFilters()}
-                    className='text-sm hover:underline text-gray-900 dark:text-gray-100'
+                    className='text-sm hover:underline text-primary dark:text-primaryDark'
                   >
                     {t('Common.Reset filters')}
                   </button>

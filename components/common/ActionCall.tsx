@@ -250,12 +250,12 @@ export const ActionCall: React.FC<ActionCallProps> = ({ config }) => {
             {t('OperatorDrawer.Hangup')}
           </Dropdown.Item>
         )}
-        {profile?.profile?.macro_permissions?.presence_panel?.permissions?.spy?.value && (
+        {profile?.profile?.macro_permissions?.settings?.permissions?.spy?.value && (
           <Dropdown.Item icon={faEarListen} onClick={() => listenConversation()}>
             {t('OperatorDrawer.Listen')}
           </Dropdown.Item>
         )}
-        {profile?.profile?.macro_permissions?.presence_panel?.permissions?.intrude?.value && (
+        {profile?.profile?.macro_permissions?.settings?.permissions?.intrude?.value && (
           <Dropdown.Item icon={faHandPointUp} onClick={() => intrudeConversation()}>
             {' '}
             {t('OperatorDrawer.Intrude')}

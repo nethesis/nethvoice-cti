@@ -1,4 +1,4 @@
-// Copyright (C) 2023 Nethesis S.r.l.
+// Copyright (C) 2024 Nethesis S.r.l.
 // SPDX-License-Identifier: AGPL-3.0-or-later
 
 import { ComponentPropsWithRef, forwardRef } from 'react'
@@ -10,6 +10,8 @@ import { closeSideDrawer } from '../../lib/utils'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { faUserPlus, faPen } from '@fortawesome/free-solid-svg-icons'
 import { t } from 'i18next'
+import { openToast } from '../../lib/utils'
+
 export interface CreateOrEditContactDrawerContentProps extends ComponentPropsWithRef<'div'> {
   config: any
 }
@@ -21,22 +23,22 @@ export const CreateOrEditContactDrawerContent = forwardRef<
   const contactTypeOptions = [
     {
       id: 'person',
-      title: 'Person',
+      title: t('Phonebook.Person'),
     },
     {
       id: 'company',
-      title: 'Company',
+      title: t('Phonebook.Company'),
     },
   ]
 
   const contactVisibilityOptions = [
     {
       id: 'public',
-      title: 'Everybody',
+      title: t('Phonebook.Public'),
     },
     {
       id: 'private',
-      title: 'Only me',
+      title: t('Phonebook.Only me'),
     },
   ]
 
@@ -167,7 +169,7 @@ export const CreateOrEditContactDrawerContent = forwardRef<
     }
 
     // company
-    if (contactType === 'company' && !companyRef.current.value.trim()) {
+    if (contactType === 'company' && !companyRef?.current?.value?.trim()) {
       setCompanyError('Required')
 
       if (isValidationOk) {
@@ -192,34 +194,38 @@ export const CreateOrEditContactDrawerContent = forwardRef<
       type: contactVisibility,
     }
 
-    if (contactType === 'person' && nameRef.current.value) {
-      contactData.name = nameRef.current.value
-    } else if (contactType === 'company' && !nameRef.current.value && companyRef.current.value) {
+    if (contactType === 'person' && nameRef?.current?.value) {
+      contactData.name = nameRef?.current?.value
+    } else if (
+      contactType === 'company' &&
+      !nameRef?.current?.value &&
+      companyRef?.current?.value
+    ) {
       contactData.name = '-'
     }
 
     if (companyRef.current.value) {
-      contactData.company = companyRef.current.value
+      contactData.company = companyRef?.current?.value
     }
 
     if (extensionRef.current.value) {
-      contactData.extension = extensionRef.current.value
+      contactData.extension = extensionRef?.current?.value
     }
 
     if (workPhoneRef.current.value) {
-      contactData.workphone = workPhoneRef.current.value
+      contactData.workphone = workPhoneRef?.current?.value
     }
 
     if (mobilePhoneRef.current.value) {
-      contactData.cellphone = mobilePhoneRef.current.value
+      contactData.cellphone = mobilePhoneRef?.current?.value
     }
 
     if (emailRef.current.value) {
-      contactData.workemail = emailRef.current.value
+      contactData.workemail = emailRef?.current?.value
     }
 
     if (notesRef.current.value) {
-      contactData.notes = notesRef.current.value
+      contactData.notes = notesRef?.current?.value
     }
 
     try {
@@ -228,9 +234,8 @@ export const CreateOrEditContactDrawerContent = forwardRef<
       setCreateContactError('Cannot create contact')
       return
     }
-
-    //// TODO: show toast notification success or show contact in drawer
-
+    // show toast message
+    showToastCreationContact()
     reloadPhonebook()
     closeSideDrawer()
   }
@@ -241,7 +246,7 @@ export const CreateOrEditContactDrawerContent = forwardRef<
     }
 
     let contactData: any = {
-      id: config.contact?.id?.toString(),
+      id: config?.contact?.id?.toString(),
       owner_id: config?.contact?.owner_id,
       source: config?.contact?.source,
       speeddial_num: config?.contact?.speeddial_num,
@@ -254,29 +259,29 @@ export const CreateOrEditContactDrawerContent = forwardRef<
       extension: extensionRef?.current?.value || null,
       workphone: workPhoneRef?.current?.value || '',
       cellphone: mobilePhoneRef?.current?.value || null,
-      workemail: emailRef.current.value || null,
-      notes: notesRef.current.value || null,
-      homeemail: config.contact.homeemail,
-      homephone: config.contact.homephone,
-      fax: config.contact.fax,
-      title: config.contact.title,
-      homestreet: config.contact.homestreet,
-      homepob: config.contact.homepob,
-      homecity: config.contact.homecity,
-      homeprovince: config.contact.homeprovince,
-      homepostalcode: config.contact.homepostalcode,
-      homecountry: config.contact.homecountry,
-      workstreet: config.contact.workstreet,
-      workpob: config.contact.workpob,
-      workcity: config.contact.workcity,
-      workprovince: config.contact.workprovince,
-      workpostalcode: config.contact.workpostalcode,
-      workcountry: config.contact.workcountry,
-      url: config.contact.url,
+      workemail: emailRef?.current?.value || null,
+      notes: notesRef?.current?.value || null,
+      homeemail: config?.contact?.homeemail,
+      homephone: config?.contact?.homephone,
+      fax: config?.contact?.fax,
+      title: config?.contact?.title,
+      homestreet: config?.contact?.homestreet,
+      homepob: config?.contact?.homepob,
+      homecity: config?.contact?.homecity,
+      homeprovince: config?.contact?.homeprovince,
+      homepostalcode: config?.contact?.homepostalcode,
+      homecountry: config?.contact?.homecountry,
+      workstreet: config?.contact?.workstreet,
+      workpob: config?.contact?.workpob,
+      workcity: config?.contact?.workcity,
+      workprovince: config?.contact?.workprovince,
+      workpostalcode: config?.contact?.workpostalcode,
+      workcountry: config?.contact?.workcountry,
+      url: config?.contact?.url,
     }
 
     if (contactType === 'person' && nameRef.current.value) {
-      contactData.name = nameRef.current.value
+      contactData.name = nameRef?.current?.value
     }
 
     try {
@@ -285,11 +290,26 @@ export const CreateOrEditContactDrawerContent = forwardRef<
       setEditContactError('Cannot edit contact')
       return
     }
-
-    //// TODO: show toast notification success
-
+    // show toast message
+    showToastEditContact()
     reloadPhonebook()
     fetchContact(config?.contact?.id, config?.contact?.source)
+  }
+
+  const showToastEditContact = () => {
+    openToast(
+      'success',
+      `${t('Phonebook.Contact edit message')}`,
+      `${t('Phonebook.Contact edited')}`,
+    )
+  }
+
+  const showToastCreationContact = () => {
+    openToast(
+      'success',
+      `${t('Phonebook.Contact creation message')}`,
+      `${t('Phonebook.Contact created')}`,
+    )
   }
 
   return (
@@ -318,9 +338,9 @@ export const CreateOrEditContactDrawerContent = forwardRef<
             <legend className='sr-only'>{t('Phonebook.Visibility')}</legend>
             <div className='space-y-4 sm:flex sm:items-center sm:space-y-0 sm:space-x-10'>
               {contactVisibilityOptions.map((option) => (
-                <div key={option.id} className='flex items-center'>
+                <div key={option?.id} className='flex items-center'>
                   <input
-                    id={option.id}
+                    id={option?.id}
                     name='contact-visibility'
                     type='radio'
                     checked={option.id === contactVisibility}
@@ -328,10 +348,10 @@ export const CreateOrEditContactDrawerContent = forwardRef<
                     className='h-4 w-4 border-gray-300 text-primary focus:ring-primaryLight dark:border-gray-600 dark:text-primary dark:focus:ring-primaryDark'
                   />
                   <label
-                    htmlFor={option.id}
+                    htmlFor={option?.id}
                     className='ml-3 block text-sm font-medium text-gray-700 dark:text-gray-200'
                   >
-                    {option.title}
+                    {option?.title}
                   </label>
                 </div>
               ))}
@@ -347,9 +367,9 @@ export const CreateOrEditContactDrawerContent = forwardRef<
             <legend className='sr-only'>{t('Phonebook.Type')}</legend>
             <div className='space-y-4 sm:flex sm:items-center sm:space-y-0 sm:space-x-10'>
               {contactTypeOptions.map((option) => (
-                <div key={option.id} className='flex items-center'>
+                <div key={option?.id} className='flex items-center'>
                   <input
-                    id={option.id}
+                    id={option?.id}
                     name='contact-type'
                     type='radio'
                     checked={option.id === contactType}
@@ -357,10 +377,10 @@ export const CreateOrEditContactDrawerContent = forwardRef<
                     className='h-4 w-4 border-gray-300 text-primary focus:ring-primaryLight dark:border-gray-600 dark:text-primary dark:focus:ring-primaryDark'
                   />
                   <label
-                    htmlFor={option.id}
+                    htmlFor={option?.id}
                     className='ml-3 block text-sm font-medium text-gray-700 dark:text-gray-200'
                   >
-                    {option.title}
+                    {option?.title}
                   </label>
                 </div>
               ))}
@@ -428,16 +448,16 @@ export const CreateOrEditContactDrawerContent = forwardRef<
           {config.isEdit ? (
             <Button variant='primary' type='submit' onClick={prepareEditContact} className='mb-4'>
               <FontAwesomeIcon icon={faPen} className='mr-2 h-4 w-4' />
-              Save contact
+              {t('Phonebook.Save contact')}
             </Button>
           ) : (
             <Button variant='primary' type='submit' onClick={prepareCreateContact} className='mb-4'>
               <FontAwesomeIcon icon={faUserPlus} className='mr-2 h-4 w-4' />
-              Create contact
+              {t('Phonebook.Create contact')}
             </Button>
           )}
           <Button variant='white' type='submit' onClick={closeSideDrawer} className='ml-4 mb-4'>
-            Cancel
+            {t('Common.Cancel')}
           </Button>
         </div>
       </div>

@@ -246,6 +246,11 @@ const theme = {
         border: 'border-gray-500 dark:border-gray-500',
       },
     },
+    category: {
+      badge: {
+        base: 'bg-blue-100 text-blue-800 dark:bg-blue-700 dark:text-blue-100',
+      },
+    },
   },
   statusDot: {
     base: 'block ring-2 ring-white rounded-full',
@@ -258,7 +263,7 @@ const theme = {
     },
   },
   badge: {
-    base: 'inline-flex items-center font-medium',
+    base: 'inline-flex font-medium items-center',
     rounded: {
       base: 'rounded',
       full: 'rounded-full',
@@ -360,8 +365,8 @@ const theme = {
       position: {
         right: 'left-0 w-60 mt-2',
         left: 'right-0 w-60 mt-2',
-        top:'right-[3rem] top-0',
-        bottom:'bottom-0',
+        top: 'right-[3rem] top-0',
+        bottom: 'bottom-0',
       },
       divider: 'divide-y divide-gray-200 dark:divide-gray-700',
       header: 'block px-4 py-3 text-sm cursor-normal text-gray-700 dark:text-gray-300',

@@ -17,6 +17,7 @@ import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { Tooltip } from 'react-tooltip'
 import { useSelector } from 'react-redux'
 import { RootState } from '../../store'
+import { useTranslation } from 'react-i18next'
 
 interface NavBarProps {
   items: NavItemsProps[]
@@ -49,6 +50,8 @@ export const NavBar: FC<NavBarProps> = ({ items }) => {
     ...item,
     permission: permissionsUser[item.name],
   }))
+
+  const { t } = useTranslation()
 
   return (
     <div className='hidden w-20 overflow-y-auto scrollbar-thin scrollbar-thumb-gray-400 dark:scrollbar-thumb-gray-400 scrollbar-thumb-rounded-full scrollbar-thumb-opacity-50 scrollbar-track-gray-200 dark:scrollbar-track-gray-900 scrollbar-track-rounded-full scrollbar-track-opacity-25 md:block border-r border-gray-200 dark:border-gray-700 bg-white dark:bg-gray-900'>
@@ -94,7 +97,7 @@ export const NavBar: FC<NavBarProps> = ({ items }) => {
                 </a>
               </Link>
               <Tooltip anchorSelect={`.tooltip-${item.name}`} place='right' offset={20}>
-                {item.name}
+                {t('Common.' + item.name)}
               </Tooltip>
             </div>
           ))}

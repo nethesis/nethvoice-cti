@@ -181,13 +181,13 @@ export const NotificationsDrawerContent = forwardRef<
           <div className='flex items-stretch xl:items-center justify-between'>
             <div className='flex justify-between grow flex-col xl:flex-row xl:items-center'>
               <div className='text-lg font-medium dark:text-gray-200 text-gray-700 mr-4'>
-                Notifications
+                {t('Notifications.Notifications')}
               </div>
               <div
                 className='text-sm cursor-pointer hover:underline mt-2 xl:mt-0 text-gray-700 dark:text-gray-200 mr-5'
                 onClick={markAllAsRead}
               >
-                Mark all as read
+                {t('Notifications.Mark all as read')}
               </div>
             </div>
 
@@ -211,7 +211,7 @@ export const NotificationsDrawerContent = forwardRef<
         {/* empty state */}
         {notificationsStore.isLoaded && !notificationsStore.notifications?.length && (
           <EmptyState
-            title='No notifications'
+            title={t('Notifications.No notifications') || ""}
             icon={
               <FontAwesomeIcon icon={faBell} className='mx-auto h-12 w-12' aria-hidden='true' />
             }

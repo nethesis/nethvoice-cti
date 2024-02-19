@@ -237,7 +237,7 @@ export const RealTimeOperatorsFilter = forwardRef<HTMLButtonElement, RealTimeOpe
               <div className='flex items-center space-x-8'>
                 <div className='flex items-center'>
                   <TextInput
-                    placeholder='Filter operators'
+                    placeholder={t('Operators.Filter operators') || ""}
                     className='max-w-sm'
                     value={textFilter}
                     onChange={changeTextFilter}
@@ -346,7 +346,7 @@ export const RealTimeOperatorsFilter = forwardRef<HTMLButtonElement, RealTimeOpe
                     <button
                       type='button'
                       onClick={() => resetFilters()}
-                      className='text-sm hover:underline text-gray-900 dark:text-gray-100'
+                      className='text-sm hover:underline text-primary dark:text-primaryDark'
                     >
                       {t('Common.Reset filters')}
                     </button>

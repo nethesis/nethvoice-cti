@@ -336,7 +336,7 @@ export const NotManagedCallsFilter = forwardRef<HTMLButtonElement, NotManagedCal
               <div className='flex items-center'>
                 <div className='flex items-center'>
                   <TextInput
-                    placeholder='Filter calls'
+                    placeholder={t('Queues.Filter calls') || ""}
                     className='max-w-sm'
                     value={textFilter}
                     onChange={changeTextFilter}
@@ -525,7 +525,7 @@ export const NotManagedCallsFilter = forwardRef<HTMLButtonElement, NotManagedCal
                     <button
                       type='button'
                       onClick={() => resetFilters()}
-                      className='text-sm hover:underline text-gray-900 dark:text-gray-100'
+                      className='text-sm hover:underline text-primary dark:text-primaryDark'
                     >
                       {t('Common.Reset filters')}
                     </button>

@@ -273,7 +273,7 @@ export const ShowRuleDetailsContent = forwardRef<HTMLButtonElement, ShowRuleDeta
                 <div className='flex mt-3 items-center justify-between'>
                   <TextInput
                     type='datetime-local'
-                    placeholder='Select date start'
+                    placeholder={t('Lines.Select date start') || ""}
                     className='max-w-sm mr-4'
                     id='meeting-time'
                     name='meeting-time'
@@ -284,7 +284,7 @@ export const ShowRuleDetailsContent = forwardRef<HTMLButtonElement, ShowRuleDeta
                   />
                   <TextInput
                     type='datetime-local'
-                    placeholder='Select date end'
+                    placeholder={t('Lines.Select date end') || ""}
                     className='max-w-sm'
                     id='meeting-time'
                     name='meeting-time'
