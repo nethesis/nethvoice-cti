@@ -1,4 +1,4 @@
-// Copyright (C) 2023 Nethesis S.r.l.
+// Copyright (C) 2024 Nethesis S.r.l.
 // SPDX-License-Identifier: AGPL-3.0-or-later
 
 /**
@@ -200,7 +200,7 @@ export const TopBar: FC<TopBarProps> = ({ openMobileCb }) => {
     doLogout(emptyObjectLogout)
   }
 
-  const setMainDeviceId = async (device: any, deviceType: string) => {
+  const setMainDeviceId = async (device: any, deviceType: string, deviceInformationObject: any) => {
     let deviceIdInfo: any = {}
     if (device) {
       deviceIdInfo.id = device
@@ -208,11 +208,9 @@ export const TopBar: FC<TopBarProps> = ({ openMobileCb }) => {
         await setMainDevice(deviceIdInfo)
         dispatch.user.updateDefaultDevice(deviceIdInfo)
         if (deviceType !== '' && deviceType === 'physical') {
-          eventDispatch('phone-island-detach', {})
-          eventDispatch('phone-island-destroy', {})
+          eventDispatch('phone-island-detach', { deviceInformationObject })
         } else {
-          eventDispatch('phone-island-create', {})
-          eventDispatch('phone-island-attach', {})
+          eventDispatch('phone-island-attach', { deviceInformationObject })
         }
       } catch (err) {
         console.log(err)
@@ -220,7 +218,6 @@ export const TopBar: FC<TopBarProps> = ({ openMobileCb }) => {
     }
   }
 
-  
   const dropdownItems = (
     <>
       <div className='cursor-default'>
@@ -359,7 +356,7 @@ export const TopBar: FC<TopBarProps> = ({ openMobileCb }) => {
                     {noMobileListDevice.map((device: any) => (
                       <Dropdown.Item
                         key={device?.id}
-                        onClick={() => setMainDeviceId(device?.id, device?.type)}
+                        onClick={() => setMainDeviceId(device?.id, device?.type, device)}
                       >
                         <div className='truncate'>
                           <div className='flex items-center space-x-2'>

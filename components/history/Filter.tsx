@@ -23,6 +23,8 @@ import { parse, subDays, startOfDay } from 'date-fns'
 import { useTranslation } from 'react-i18next'
 import Datepicker from 'react-tailwindcss-datepicker'
 import { useTheme } from '../../theme/Context'
+import LanguageDetector from 'i18next-browser-languagedetector'
+import i18next from 'i18next'
 
 //Filter for the sort
 const sortFilter = {
@@ -285,6 +287,15 @@ export const Filter = forwardRef<HTMLButtonElement, FilterProps>(
         setCallDirectionLabel(callDirectionFound.label)
       }
     }, [callDirection])
+
+    const [selectedLanguage, setSelectedLanguage] = useState('')
+
+    useEffect(() => {
+      if (i18next?.languages[0] !== '') {
+        setSelectedLanguage(i18next?.languages[0])
+      }
+      // eslint-disable-next-line react-hooks/exhaustive-deps
+    }, [i18next?.languages[0]])
 
     //Get the selected filter from the local storage
     useEffect(() => {
@@ -579,10 +590,11 @@ export const Filter = forwardRef<HTMLButtonElement, FilterProps>(
                               </div>
 
                               <Datepicker
+                                i18n={selectedLanguage?.toString()}
                                 value={dateValue}
                                 onChange={changeDateBegin}
                                 primaryColor={'emerald'}
-                                showShortcuts={true}
+                                showShortcuts={false}
                                 separator={t('History.to') || ''}
                                 placeholder={t('History.Choose a date range') || ''}
                                 inputClassName={classNames(datePickerTheme.base)}
@@ -858,10 +870,11 @@ export const Filter = forwardRef<HTMLButtonElement, FilterProps>(
                           </div>
 
                           <Datepicker
+                            i18n={selectedLanguage?.toString()}
                             value={dateValue}
                             onChange={changeDateBegin}
                             primaryColor={'emerald'}
-                            showShortcuts={true}
+                            showShortcuts={false}
                             separator={t('History.to') || ''}
                             placeholder={t('History.Choose a date range') || ''}
                             displayFormat={'DD/MM/YYYY'}

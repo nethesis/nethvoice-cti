@@ -132,7 +132,10 @@
     "No calls": "Nessuna chiamata",
     "There are no calls in your history": "Non è presente nessuna chiamata nel tuo storico",
     "Play": "Riproduci",
-    "Type to search contact": "Digita per cercare un contatto"
+    "Type to search contact": "Digita per cercare un contatto",
+    "Start time": "Tempo di inizio",
+    "End time": "Tempo di fine",
+    "Choose a date range": "Scegli un intervallo"
   },
   "Operators": {
     "Operators": "Operatori",

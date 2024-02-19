@@ -54,7 +54,7 @@
     "react-redux": "^8.0.4",
     "react-slick": "^0.29.0",
     "react-slider": "^2.0.4",
-    "react-tailwindcss-datepicker": "^1.6.1",
+    "react-tailwindcss-datepicker": "^1.6.6",
     "react-tooltip": "^5.10.0",
     "slick-carousel": "^1.8.1",
     "socket.io": "^4.5.2",

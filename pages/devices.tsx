@@ -43,13 +43,20 @@ const Devices: NextPage = () => {
     }
   }, [profile?.endpoints])
 
-  const setMainDeviceMenu = (deviceId: any, type: string) => (
-    <Dropdown.Item onClick={() => setSelectedAsMainDevice(deviceId, type)} variantTop={true}>
+  const setMainDeviceMenu = (deviceId: any, type: string, selectedDeviceInfo: any) => (
+    <Dropdown.Item
+      onClick={() => setSelectedAsMainDevice(deviceId, type, selectedDeviceInfo)}
+      variantTop={true}
+    >
       {t('Devices.Set as main device')}
     </Dropdown.Item>
   )
 
-  const setSelectedAsMainDevice = async (deviceId: string, deviceType: string) => {
+  const setSelectedAsMainDevice = async (
+    deviceId: string,
+    deviceType: string,
+    deviceInformationObject: any,
+  ) => {
     let deviceIdInfo: any = {}
     if (deviceId) {
       deviceIdInfo.id = deviceId
@@ -57,11 +64,11 @@ const Devices: NextPage = () => {
         await setMainDevice(deviceIdInfo)
         dispatch.user.updateDefaultDevice(deviceIdInfo)
         if (deviceType !== '' && deviceType === 'physical') {
-          eventDispatch('phone-island-detach', {})
+          eventDispatch('phone-island-detach', { deviceInformationObject })
           eventDispatch('phone-island-destroy', {})
         } else {
           eventDispatch('phone-island-create', {})
-          eventDispatch('phone-island-attach', {})
+          eventDispatch('phone-island-attach', { deviceInformationObject })
         }
       } catch (err) {
         console.log(err)
@@ -164,7 +171,11 @@ const Devices: NextPage = () => {
                           {webrtcData[0]?.id !== profile?.default_device?.id && (
                             <td className='relative whitespace-nowrap py-4 pr-4 text-right text-sm font-medium sm:pr-6 cursor-pointer'>
                               <Dropdown
-                                items={setMainDeviceMenu(webrtcData[0]?.id, 'webrtc')}
+                                items={setMainDeviceMenu(
+                                  webrtcData[0]?.id,
+                                  'webrtc',
+                                  webrtcData[0],
+                                )}
                                 position='top'
                               >
                                 <FontAwesomeIcon
@@ -304,7 +315,7 @@ const Devices: NextPage = () => {
                                 {phone?.id !== profile?.default_device?.id ? (
                                   <td className='relative whitespace-nowrap py-4 pl-3 pr-4 text-right text-sm font-medium sm:pr-6 cursor-pointer'>
                                     <Dropdown
-                                      items={setMainDeviceMenu(phone?.id, 'physical')}
+                                      items={setMainDeviceMenu(phone?.id, 'physical', phone)}
                                       position='top'
                                     >
                                       <FontAwesomeIcon
