@@ -1,4 +1,4 @@
-// Copyright (C) 2023 Nethesis S.r.l.
+// Copyright (C) 2024 Nethesis S.r.l.
 // SPDX-License-Identifier: AGPL-3.0-or-later
 
 import { ComponentPropsWithRef, forwardRef, useRef, useState } from 'react'
@@ -112,7 +112,7 @@ export const OperatorSummary = forwardRef<HTMLButtonElement, OperatorSummaryProp
                     changed={() => toggleFavorite()}
                     className={'mr-5'}
                   >
-                    <span className='sr-only'>{t('Operator.Toggle favorite operator')}</span>
+                    <span className='sr-only'>{t('OperatorDrawer.Toggle favorite operator')}</span>
                   </IconSwitch>
                 )}
               </div>

@@ -231,7 +231,7 @@ const Operators: NextPage = () => {
             .forEach((team: string) => {
               filteredOperators.push({
                 category: team,
-                members: teams[team].sort((a: any, b: any) => (a.name > b.name ? 1 : -1)),
+                members: teams[team],
               })
             })
           break
@@ -266,9 +266,7 @@ const Operators: NextPage = () => {
               // Push category with sorted members according to custom order
               filteredOperators.push({
                 category: status,
-                members: statusGroups[status].sort((a: any, b: any) =>
-                  a?.name > b?.name ? 1 : -1,
-                ),
+                members: statusGroups[status],
               })
             }
           })
