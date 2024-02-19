@@ -104,7 +104,7 @@
     "Delete contact": "Delete contact",
     "Visibility": "Visibility",
     "Only me": "Only me",
-    "Public": "Public",
+    "Public": "Everybody",
     "Open contact menu": "Open contact menu",
     "Last switchboard calls": "Last switchboard calls",
     "Last personal calls": "Last personal calls",
@@ -112,7 +112,8 @@
     "Last calls": "Last calls",
     "Show contact": "Show contact",
     "Add phone number": "Add phone number",
-    "Edit contact": "Edit contact"
+    "Edit contact": "Edit contact",
+    "No recent calls": "No recent calls"
   },
   "History": {
     "History": "History",
@@ -154,7 +155,8 @@
     "Start time": "Start time",
     "End time": "End time",
     "Choose a date range": "Choose a date range",
-    "Call in Voicemail": "Call in Voicemail"
+    "Call in Voicemail": "Call in Voicemail",
+    "Type to search contact": "Type to search contact"
   },
   "Operators": {
     "Operators": "Operators",
@@ -168,6 +170,7 @@
     "Compact": "Compact",
     "Layout": "Layout",
     "Filter operators": "Filter operators",
+    "Filter groups": "Filter groups",
     "Status": "Status",
     "Recall on busy message": "Call booked! You are number {{extensionWaiting}} in waiting list",
     "Recall on busy": "Recall on busy",
@@ -187,6 +190,7 @@
     "Group": "Group",
     "Team": "Team",
     "Operators filters": "Operators filters",
+    "Operators groups": "Operators groups",
     "Filters": "Filters",
     "Close menu": "Close menu"
   },
@@ -314,10 +318,13 @@
     "Toggle favorite operator": "Toggle favorite operator"
   },
   "Notifications": {
+    "Mark all as read": "Mark all as read",
     "Mark as read": "Mark as read",
     "Mark as unread": "Mark as unread",
     "Missed call": "Missed call",
-    "Chat": "Chat"
+    "Chat": "Chat",
+    "No notifications": "No notifications",
+    "Notifications": "Notifications"
   },
   "Queues": {
     "Queues": "Queues",
@@ -413,7 +420,8 @@
     "Caller": "Caller",
     "Wait": "Wait",
     "Position": "Position",
-    "You are about to logout from the following queues": "You are about to logout from the following queues"
+    "You are about to logout from the following queues": "You are about to logout from the following queues",
+    "Filter calls": "Filter calls"
   },
   "Lines": {
     "Lines management": "Lines management",
@@ -508,7 +516,9 @@
     "Configure all lines selected": "Configure all lines selected",
     "Show selected": "Show selected",
     "Show all": "Show all",
-    "Insert announcement name": "Insert announcement name"
+    "Insert announcement name": "Insert announcement name",
+    "Select date start": "Select date start",
+    "Select date end": "Select date end"
   },
   "SpeedDial": {
     "Create": "Create",
@@ -601,12 +611,12 @@
     "In call percentage": "In call percentage",
     "Order": "Order",
     "Missed call reasons": "Missed call reasons",
-    "failed_abandon": "Failed abandon",
-    "failed_full": "Failed full",
-    "failed_inqueue_noagents": "Failed inqueue agents",
-    "failed_outqueue_noagents": "Failed outqueue agents",
-    "failed_timeout": "Failed timeout",
-    "failed_withkey": "Failed withkey",
+    "failed_abandon": "Abandon",
+    "failed_full": "Full",
+    "failed_inqueue_noagents": "Agents left",
+    "failed_outqueue_noagents": "No agents",
+    "failed_timeout": "Timeout",
+    "failed_withkey": "IVR",
     "Logged_in": "Logged in",
     "Logged_out": "Logged out",
     "Fullscreen": "Fullscreen",
@@ -687,7 +697,10 @@
     "avg_duration": "Avg duration",
     "max_duration": "Max duration",
     "Not managed customers details": "Not managed customers details",
-    "Total not managed": "Total not managed"
+    "Total not managed": "Total not managed",
+    "No queue selected": "No queue selected",
+    "No operators": "No operators",
+    "No agents": "No agents"
   },
   "CustomerCards": {
     "Customer data": "Customer data",
@@ -710,7 +723,7 @@
     "No company found": "No company found",
     "This user has no company informations": "This user has no company informations",
     "Address": "Address",
-    "Customer Card Order (drag to set your order)": "Customer Card Order (drag to set your order)"
+    "Customer Card Order (drag to set your order)": "Customer card order (drag to set your order)"
   },
   "Parks": {
     "Pick up": "Pick up",

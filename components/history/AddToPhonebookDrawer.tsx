@@ -26,6 +26,7 @@ import {
   openAddToContactDrawer,
 } from '../../lib/phonebook'
 import { debounce } from 'lodash'
+import { useTranslation } from 'react-i18next'
 
 export interface AddToPhonebookDrawerContentProps extends ComponentPropsWithRef<'div'> {
   config: any
@@ -41,6 +42,8 @@ export const AddToPhonebookDrawerContent = forwardRef<
   const [phonebook, setPhonebook]: any = useState({})
   const [phonebookError, setPhonebookError] = useState('')
   const [isUserTyping, setUserTyping] = useState(false)
+
+  const { t } = useTranslation()
 
   const debouncedSearchPhonebook = useMemo(
     () =>
@@ -143,7 +146,7 @@ export const AddToPhonebookDrawerContent = forwardRef<
         <span className='flex text-sm font-medium mt-7'>Add to existing contact</span>
         <div className='mt-4'>
           <TextInput
-            placeholder='Type to search contact'
+            placeholder={t('Type to search contact') || ""}
             className='max-w-lg'
             value={textFilter}
             onChange={changeTextFilter}
@@ -182,7 +185,7 @@ export const AddToPhonebookDrawerContent = forwardRef<
               !phonebook.rows.length &&
               !!textFilter.length && (
                 <EmptyState
-                  title='No contacts'
+                  title={t('Phonebook.No contacts') || ""}
                   description='Try changing your search query'
                   icon={
                     <FontAwesomeIcon

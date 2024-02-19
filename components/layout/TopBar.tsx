@@ -489,7 +489,7 @@ export const TopBar: FC<TopBarProps> = ({ openMobileCb }) => {
                     {t('TopBar.Enter phone number for call forward')}
                   </h3>
                   <div className='mt-3 flex flex-col gap-2'>
-                    <TextInput placeholder='Phone number' name='number' ref={numberInputRef} />
+                    <TextInput placeholder={t('Common.Phone number') || ""} name='number' ref={numberInputRef} />
                   </div>
                 </div>
               </Modal.Content>

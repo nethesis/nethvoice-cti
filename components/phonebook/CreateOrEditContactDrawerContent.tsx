@@ -23,22 +23,22 @@ export const CreateOrEditContactDrawerContent = forwardRef<
   const contactTypeOptions = [
     {
       id: 'person',
-      title: 'Person',
+      title: t('Phonebook.Person'),
     },
     {
       id: 'company',
-      title: 'Company',
+      title: t('Phonebook.Company'),
     },
   ]
 
   const contactVisibilityOptions = [
     {
       id: 'public',
-      title: 'Everybody',
+      title: t('Phonebook.Public'),
     },
     {
       id: 'private',
-      title: 'Only me',
+      title: t('Phonebook.Only me'),
     },
   ]
 

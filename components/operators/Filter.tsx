@@ -53,7 +53,7 @@ export const Filter = forwardRef<HTMLButtonElement, FilterProps>(
 
     const sortFilter = {
       id: 'sort',
-      name: 'Sort by',
+      name: t('Operators.Sort by'),
       options: [
         { value: 'favorites', label: `${t('Operators.Favorites') || ''}` },
         { value: 'extension', label: `${t('Operators.Extension') || ''}` },
@@ -64,7 +64,7 @@ export const Filter = forwardRef<HTMLButtonElement, FilterProps>(
 
     const statusFilter = {
       id: 'status',
-      name: 'Status',
+      name: t('Operators.Status'),
       options: [
         { value: 'all', label: `${t('Operators.All') || ''}` },
         { value: 'available', label: `${t('Operators.Available') || ''}` },
@@ -76,7 +76,7 @@ export const Filter = forwardRef<HTMLButtonElement, FilterProps>(
 
     const groupedLayoutGroupByFilter = {
       id: 'groupedGroupBy',
-      name: 'Group by',
+      name: t('Operators.Group by'),
       options: [
         { value: 'az', label: `${t('Operators.Alphabetic A-Z') || ''}` },
         { value: 'za', label: `${t('Operators.Alphabetic Z-A') || ''}` },
@@ -87,8 +87,7 @@ export const Filter = forwardRef<HTMLButtonElement, FilterProps>(
 
     const groupedLayoutSortFilter = {
       id: 'groupedSortBy',
-      name: 'Sort by',
-
+      name: t('Operators.Sort by'),
       options: [
         { value: 'favorites', label: `${t('Operators.Favorites') || ''}` },
         { value: 'extension', label: `${t('Operators.Extension') || ''}` },
@@ -101,7 +100,7 @@ export const Filter = forwardRef<HTMLButtonElement, FilterProps>(
 
     const [groupFilter, setGroupFilter] = useState({
       id: 'group',
-      name: 'Group',
+      name: t('Operators.Group'),
       options: [] as RadioButtonType[],
     })
 
@@ -109,8 +108,8 @@ export const Filter = forwardRef<HTMLButtonElement, FilterProps>(
 
     useEffect(() => {
       groupFilter.options = [
-        { value: 'all', label: 'All' },
-        { value: 'favorites', label: 'Favorites' },
+        { value: 'all', label: t('Operators.All'), },
+        { value: 'favorites', label: t('Operators.Favorites'), },
         { value: 'divider1', label: '-' },
       ]
 
@@ -400,7 +399,7 @@ export const Filter = forwardRef<HTMLButtonElement, FilterProps>(
                                   <legend className='sr-only'>{groupFilter.name}</legend>
                                   <div className='space-y-4'>
                                     <TextInput
-                                      placeholder='Filter groups'
+                                      placeholder={t('Operators.Filter groups') || ''}
                                       value={groupTextFilter}
                                       onChange={changeGroupTextFilter}
                                       autoFocus
@@ -576,7 +575,7 @@ export const Filter = forwardRef<HTMLButtonElement, FilterProps>(
                 <div className='flex items-center space-x-8'>
                   <div className='flex items-center'>
                     <TextInput
-                      placeholder='Filter operators'
+                      placeholder={t('Operators.Filter operators') || ''}
                       className='max-w-sm'
                       value={textFilter}
                       onChange={changeTextFilter}
@@ -671,7 +670,7 @@ export const Filter = forwardRef<HTMLButtonElement, FilterProps>(
                           <Popover.Panel className='absolute right-0 z-10 mt-2 origin-top-right rounded-md p-4 shadow-2xl ring-1 ring-opacity-5 focus:outline-none bg-white ring-black dark:bg-gray-900 dark:ring-gray-700'>
                             <form className='space-y-4'>
                               <TextInput
-                                placeholder='Filter groups'
+                                placeholder={t('Operators.Filter groups') || ''}
                                 value={groupTextFilter}
                                 onChange={changeGroupTextFilter}
                                 autoFocus
@@ -1083,7 +1082,7 @@ export const Filter = forwardRef<HTMLButtonElement, FilterProps>(
                 <div className='flex items-center space-x-8'>
                   <div className='flex items-center'>
                     <TextInput
-                      placeholder='Filter operators'
+                      placeholder={t('Operators.Filter operators') || ''}
                       className='max-w-sm'
                       value={textFilter}
                       onChange={changeTextFilter}

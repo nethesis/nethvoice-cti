@@ -267,7 +267,7 @@ export const LastCallsDrawerTable = forwardRef<HTMLButtonElement, LastCallsDrawe
         {/* empty state */}
         {isLoaded && !errorMessage && lastCalls?.rows && !lastCalls.rows.length && (
           <EmptyState
-            title='No recent calls'
+            title={t('Phonebook.No recent calls') || ""}
             icon={
               <FontAwesomeIcon icon={faPhone} className='mx-auto h-12 w-12' aria-hidden='true' />
             }

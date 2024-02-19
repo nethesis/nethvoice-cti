@@ -237,7 +237,7 @@ export const SummaryQueuesFilter = forwardRef<HTMLButtonElement, SummaryQueuesFi
               <div className='flex items-center space-x-8'>
                 <div className='flex items-center'>
                   <TextInput
-                    placeholder='Filter operators'
+                    placeholder={t('Operators.Filter operators') || ""}
                     className='max-w-sm'
                     value={textFilter}
                     onChange={changeTextFilter}

@@ -335,7 +335,7 @@ export const CallsViewFilter = forwardRef<HTMLButtonElement, CallsViewFilterProp
               <div className='flex items-center'>
                 <div className='flex items-center'>
                   <TextInput
-                    placeholder='Filter calls'
+                    placeholder={t('Queues.Filter calls') || ""}
                     className='max-w-sm'
                     value={textFilter}
                     onChange={changeTextFilter}

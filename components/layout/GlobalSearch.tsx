@@ -29,6 +29,7 @@ import { OperatorSummary } from '../operators/OperatorSummary'
 import { ContactSummary } from '../phonebook/ContactSummary'
 import { openAddToPhonebookDrawer } from '../../lib/history'
 import { useHotkeys } from 'react-hotkeys-hook'
+import { useTranslation } from 'react-i18next'
 
 interface GlobalSearchProps extends ComponentProps<'div'> {}
 
@@ -41,6 +42,8 @@ export const GlobalSearch: FC<GlobalSearchProps> = () => {
   const [phonebookError, setPhonebookError] = useState('')
   const globalSearchRef = useRef() as MutableRefObject<HTMLButtonElement>
   const authStore = useSelector((state: RootState) => state.authentication)
+
+  const { t } = useTranslation()
 
   const searchOperators = (cleanQuery: string, cleanRegex: RegExp) => {
     store.dispatch.globalSearch.setCustomerCardsRedirect(false)
@@ -239,7 +242,7 @@ export const GlobalSearch: FC<GlobalSearchProps> = () => {
                 />
                 <Combobox.Input
                   className='h-[63px] w-full border-0 bg-transparent pl-12 pr-4 focus:ring-0 sm:text-sm text-gray-800 placeholder-gray-400 dark:text-gray-100 dark:placeholder-gray-500'
-                  placeholder='Search or compose...'
+                  placeholder={t('Devices.Search or compose') + '...' || ""}
                   onChange={debouncedChangeQuery}
                   // Avoid press enter button before global search is open
                   onKeyDown={(e: any) => {
@@ -309,7 +312,7 @@ export const GlobalSearch: FC<GlobalSearchProps> = () => {
                             }
                           >
                             <EmptyState
-                              title='No results'
+                              title={t('Phonebook.No results') || ""}
                               description='Try changing your search query'
                               icon={
                                 <FontAwesomeIcon
