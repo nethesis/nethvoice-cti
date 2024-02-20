@@ -47,6 +47,8 @@ export async function search(
   let userUrlApi = apiUrl + '/webrest/'
   if (callType === 'switchboard') {
     userUrlApi += 'histcallswitch/interval'
+  } else if (callType === 'group') {
+    userUrlApi += 'histcallsgroups/interval'
   } else {
     userUrlApi += 'historycall/interval/' + callType + '/' + username
   }
@@ -63,7 +65,7 @@ export async function search(
       userUrlApi += '&removeLostCalls=' + removeLostCalls
     }
   }
-  if (callType === 'switchboard') {
+  if (callType === 'switchboard' || callType === 'groups') {
     if (type != 'all') {
       userUrlApi += '&type=' + type + '&removeLostCalls=' + removeLostCalls
     } else {
@@ -216,9 +218,9 @@ export const getLastCalls = async (
   sort: SortTypes = 'time_desc',
 ): Promise<LastCallsResponse> => {
   try {
-    if ((sort === 'time_desc')) {
+    if (sort === 'time_desc') {
       sort = 'time%20desc'
-    } else if ((sort === 'time_asc')) {
+    } else if (sort === 'time_asc') {
       sort = 'time%20asc'
     }
 
