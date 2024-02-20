@@ -49,6 +49,7 @@ const callTypeFilter = {
   options: [
     { value: 'user', label: 'Personal' },
     { value: 'switchboard', label: 'Switchboard' },
+    { value: 'group', label: 'Groups' },
   ],
 }
 
@@ -263,9 +264,9 @@ export const Filter = forwardRef<HTMLButtonElement, FilterProps>(
 
     //Set the label for the selected call type
     useEffect(() => {
-      const callTypeFound = callTypeFilter.options.find((option) => option.value === callType)
+      const callTypeFound = callTypeFilter?.options?.find((option) => option?.value === callType)
       if (callTypeFound) {
-        setCallTypeLabel(callTypeFound.label)
+        setCallTypeLabel(callTypeFound?.label)
       }
     }, [callType])
 
@@ -284,7 +285,7 @@ export const Filter = forwardRef<HTMLButtonElement, FilterProps>(
         (option) => option.value === callDirection,
       )
       if (callDirectionFound) {
-        setCallDirectionLabel(callDirectionFound.label)
+        setCallDirectionLabel(callDirectionFound?.label)
       }
     }, [callDirection])
 
@@ -398,7 +399,7 @@ export const Filter = forwardRef<HTMLButtonElement, FilterProps>(
                       {/* call type filter (mobile) */}
                       <Disclosure
                         as='div'
-                        key={callTypeFilter.name}
+                        key={callTypeFilter?.name}
                         className='border-t border-gray-200 px-4 py-6 dark:border-gray-700'
                       >
                         {({ open }) => (
@@ -406,7 +407,7 @@ export const Filter = forwardRef<HTMLButtonElement, FilterProps>(
                             <h3 className='-mx-2 -my-3 flow-root'>
                               <Disclosure.Button className='flex w-full items-center justify-between px-2 py-3 text-sm bg-white text-gray-400 dark:bg-gray-900 dark:text-gray-500'>
                                 <span className='font-medium text-gray-900 dark:text-gray-100'>
-                                  {t(`History.${callTypeFilter.name}`)}
+                                  {t(`History.${callTypeFilter?.name}`)}
                                 </span>
                                 <span className='ml-6 flex items-center'>
                                   <FontAwesomeIcon
@@ -422,27 +423,27 @@ export const Filter = forwardRef<HTMLButtonElement, FilterProps>(
                             </h3>
                             <Disclosure.Panel className='pt-6 flex flex-col space-y-2'>
                               <fieldset>
-                                <legend className='sr-only'>{callTypeFilter.name}</legend>
+                                <legend className='sr-only'>{callTypeFilter?.name}</legend>
                               </fieldset>
                               {/* show call type filter only if user has cdr permissions */}
-                              {profile.macro_permissions?.cdr?.permissions?.ad_cdr?.value && (
+                              {profile?.macro_permissions?.cdr?.permissions?.ad_cdr?.value && (
                                 <>
                                   <div className='space-y-4'>
-                                    {callTypeFilter.options.map((option) => (
-                                      <div key={option.value} className='flex items-center'>
+                                    {callTypeFilter?.options?.map((option) => (
+                                      <div key={option?.value} className='flex items-center'>
                                         <input
-                                          id={option.value}
-                                          name={`filter-${callTypeFilter.id}`}
+                                          id={option?.value}
+                                          name={`filter-${callTypeFilter?.id}`}
                                           type='radio'
-                                          defaultChecked={option.value === callType}
+                                          defaultChecked={option?.value === callType}
                                           onChange={changeCallType}
                                           className='h-4 w-4 border-gray-300 text-primary focus:ring-primary dark:border-gray-600 dark:text-primaryDark dark:focus:ring-primaryDark'
                                         />
                                         <label
-                                          htmlFor={option.value}
+                                          htmlFor={option?.value}
                                           className='ml-3 block text-sm font-medium text-gray-700 dark:text-gray-200'
                                         >
-                                          {t(`History.${option.label}`)}
+                                          {t(`History.${option?.label}`)}
                                         </label>
                                       </div>
                                     ))}
@@ -461,14 +462,14 @@ export const Filter = forwardRef<HTMLButtonElement, FilterProps>(
                               )}
 
                               <fieldset>
-                                <legend className='sr-only'>{callDirectionFilter.name}</legend>
+                                <legend className='sr-only'>{callDirectionFilter?.name}</legend>
                               </fieldset>
 
                               {/* Call direction filter (mobile) */}
                               {internalUsed && (
                                 <div className='space-y-4'>
                                   {callDirectionFilter.options.map((option) => (
-                                    <div key={option.value} className='flex items-center'>
+                                    <div key={option?.value} className='flex items-center'>
                                       <input
                                         id={option.value}
                                         name={`filter-${callDirectionFilter.id}`}
@@ -693,13 +694,13 @@ export const Filter = forwardRef<HTMLButtonElement, FilterProps>(
                     {/* call type filter */}
                     <Popover
                       as='div'
-                      key={callTypeFilter.name}
-                      id={`desktop-menu-${callTypeFilter.id}`}
+                      key={callTypeFilter?.name}
+                      id={`desktop-menu-${callTypeFilter?.id}`}
                       className='relative inline-block text-left'
                     >
                       <div>
                         <Popover.Button className='px-3 py-2 text-sm leading-4 rounded border shadow-sm border-gray-300 bg-white text-gray-700 hover:bg-gray-100 focus:ring-primaryLight dark:border-gray-600 dark:bg-gray-900 dark:text-gray-100 dark:hover:bg-gray-800 dark:focus:ring-primaryDark group inline-flex items-center justify-center font-medium  hover:text-gray-900 dark:hover:text-gray-100'>
-                          <span> {t(`History.${callTypeFilter.name}`)}</span>
+                          <span> {t(`History.${callTypeFilter?.name}`)}</span>
                           <FontAwesomeIcon
                             icon={faChevronDown}
                             className='ml-2 h-3 w-3 flex-shrink-0 text-gray-400 group-hover:text-gray-500 dark:text-gray-500 dark:group-hover:text-gray-400'
@@ -718,41 +719,51 @@ export const Filter = forwardRef<HTMLButtonElement, FilterProps>(
                       >
                         <Popover.Panel className='absolute right-0 z-10 mt-2 origin-top-right rounded-md flex flex-col space-y-4 bg-white p-4 shadow-2xl ring-1 ring-black ring-opacity-5 focus:outline-none dark:bg-gray-900 dark:ring-gray-700 '>
                           {/* Call type */}
-                          {/* show call type filter only if user has cdr permissions */}
-                          {profile.macro_permissions?.cdr?.permissions?.ad_cdr?.value && (
-                            <>
-                              <form className='space-y-4'>
-                                {callTypeFilter.options.map((option) => (
-                                  <div key={option.value} className='flex items-center'>
+                          <>
+                            <form className='space-y-4'>
+                              {callTypeFilter?.options
+                                ?.filter((option) => {
+                                  // check user permissions for switchboard and groups type
+                                  if (option.value === 'switchboard') {
+                                    return profile?.macro_permissions?.cdr?.permissions?.ad_cdr
+                                      ?.value
+                                  } else if (option.value === 'group') {
+                                    return profile?.macro_permissions?.cdr?.permissions?.group_cdr
+                                      ?.value
+                                  } else {
+                                    return true
+                                  }
+                                })
+                                .map((option) => (
+                                  <div key={option?.value} className='flex items-center'>
                                     <input
-                                      id={option.value}
-                                      name={`filter-${callTypeFilter.id}`}
+                                      id={option?.value}
+                                      name={`filter-${callTypeFilter?.id}`}
                                       type='radio'
-                                      defaultChecked={option.value === callType}
+                                      defaultChecked={option?.value === callType}
                                       onChange={changeCallType}
                                       className='h-4 w-4 border-gray-300 text-primary focus:ring-primary dark:border-gray-600 dark:text-primaryDark dark:focus:ring-primaryDark'
                                     />
                                     <label
-                                      htmlFor={option.value}
+                                      htmlFor={option?.value}
                                       className='ml-3 block text-sm font-medium text-gray-700 dark:text-gray-200'
                                     >
-                                      {t(`History.${option.label}`)}
+                                      {t(`History.${option?.label}`)}
                                     </label>
                                   </div>
                                 ))}
-                              </form>
+                            </form>
 
-                              {/* Divider */}
-                              <div className='relative '>
-                                <div
-                                  className='absolute inset-0 flex items-center'
-                                  aria-hidden='true'
-                                >
-                                  <div className='w-full border-t border-gray-300 dark:border-gray-600' />
-                                </div>
+                            {/* Divider */}
+                            <div className='relative '>
+                              <div
+                                className='absolute inset-0 flex items-center'
+                                aria-hidden='true'
+                              >
+                                <div className='w-full border-t border-gray-300 dark:border-gray-600' />
                               </div>
-                            </>
-                          )}
+                            </div>
+                          </>
 
                           {/* Call direction */}
                           {internalUsed && (

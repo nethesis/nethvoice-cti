@@ -135,7 +135,8 @@
     "Type to search contact": "Digita per cercare un contatto",
     "Start time": "Tempo di inizio",
     "End time": "Tempo di fine",
-    "Choose a date range": "Scegli un intervallo"
+    "Choose a date range": "Scegli un intervallo",
+    "Groups": "Gruppi"
   },
   "Operators": {
     "Operators": "Operatori",
