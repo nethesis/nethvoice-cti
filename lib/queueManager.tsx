@@ -675,8 +675,7 @@ export const getExpandedQueueManagamentValue = (currentUsername: string) => {
 }
 
 export const getSelectedTabQueueManager = (currentUsername: string) => {
-  const selectedQueueManagerTab =
-    loadPreference('queueManagerSelectedTab', currentUsername) || ""
+  const selectedQueueManagerTab = loadPreference('queueManagerSelectedTab', currentUsername) || ''
   return { selectedQueueManagerTab }
 }
 

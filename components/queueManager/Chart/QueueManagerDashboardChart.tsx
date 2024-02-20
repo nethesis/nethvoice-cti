@@ -220,13 +220,18 @@ export const QueueManagerDashboardChart: FC<QueueManagerDashboardChartProps> = (
   const creationLineChartCallsHour = (chartValue: any) => {
     const groupedLineChartInformation = groupDataByHourLineChart(chartValue)
     const labels = Object.keys(groupedLineChartInformation)
-    setLabelsCallsHour(labels)
+
+    const hours = Object.keys(groupedLineChartInformation[labels[0]])
+
+    setLabelsCallsHour(hours)
 
     const datasets = labels.map((label, index) => {
       const randomColor = getRandomColor(index)
+      const data = hours.map((hour) => groupedLineChartInformation[label][hour])
+
       return {
         label: label,
-        data: groupedLineChartInformation[label],
+        data: data,
         backgroundColor: randomColor,
         borderRadius: 5,
         tension: 0.4,

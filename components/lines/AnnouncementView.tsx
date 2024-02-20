@@ -236,184 +236,190 @@ export const AnnouncementView: FC<AnnouncementViewProps> = ({ className }): JSX.
                     ></EmptyState>
                   )}
                   {(!isLinesLoaded || !isEmpty(lines)) && (
-                    <table className='min-w-full divide-y divide-gray-300 dark:divide-gray-600'>
-                      <thead className='bg-white dark:bg-gray-900'>
-                        <tr>
-                          <th
-                            scope='col'
-                            className='py-3.5 pl-4 pr-3 text-left text-sm font-semibold sm:pl-6 text-gray-700 dark:text-gray-200'
-                          >
-                            {t('Lines.Name')}
-                          </th>
-                          <th
-                            scope='col'
-                            className='px-3 py-3.5 text-left text-sm font-semibold text-gray-700 dark:text-gray-200'
-                          >
-                            {t('Lines.Author')}
-                          </th>
-                          <th
-                            scope='col'
-                            className='px-3 py-3.5 text-left text-sm font-semibold text-gray-700 dark:text-gray-200'
-                          >
-                            {t('Lines.Creation date')}
-                          </th>
-                          <th
-                            scope='col'
-                            className='px-3 py-3.5 text-left text-sm font-semibold text-gray-700 dark:text-gray-200'
-                          >
-                            {t('Lines.Privacy')}
-                          </th>
-                          <th scope='col' className='relative py-3.5 pl-3 pr-4 sm:pr-6'>
-                            <span className='sr-only'>{t('Lines.Details')}</span>
-                          </th>
-                        </tr>
-                      </thead>
-                      <tbody className=' text-sm divide-y divide-gray-200 bg-white text-gray-700 dark:divide-gray-700 dark:bg-gray-900 dark:text-gray-200'>
-                        {/* skeleton */}
-                        {!isLinesLoaded &&
-                          Array.from(Array(5)).map((e, i) => (
-                            <tr key={i}>
-                              {Array.from(Array(5)).map((e, j) => (
-                                <td key={j}>
-                                  <div className='px-4 py-6'>
-                                    <div className='animate-pulse h-5 rounded bg-gray-300 dark:bg-gray-600'></div>
-                                  </div>
-                                </td>
-                              ))}
+                    <div className='overflow-y-auto scrollbar-thin scrollbar-thumb-gray-400 dark:scrollbar-thumb-gray-400 scrollbar-thumb-rounded-full scrollbar-thumb-opacity-50 scrollbar-track-gray-200 dark:scrollbar-track-gray-900 scrollbar-track-rounded-full scrollbar-track-opacity-25'>
+                      <div className='max-h-[32rem]'>
+                        <table className='min-w-full divide-y divide-gray-300 dark:divide-gray-700'>
+                          <thead className='sticky top-0 bg-white dark:bg-gray-900 z-[1]'>
+                            <tr>
+                              <th
+                                scope='col'
+                                className='py-3.5 pl-4 pr-3 text-left text-sm font-semibold sm:pl-6 text-gray-700 dark:text-gray-200'
+                              >
+                                {t('Lines.Name')}
+                              </th>
+                              <th
+                                scope='col'
+                                className='px-3 py-3.5 text-left text-sm font-semibold text-gray-700 dark:text-gray-200'
+                              >
+                                {t('Lines.Author')}
+                              </th>
+                              <th
+                                scope='col'
+                                className='px-3 py-3.5 text-left text-sm font-semibold text-gray-700 dark:text-gray-200'
+                              >
+                                {t('Lines.Creation date')}
+                              </th>
+                              <th
+                                scope='col'
+                                className='px-3 py-3.5 text-left text-sm font-semibold text-gray-700 dark:text-gray-200'
+                              >
+                                {t('Lines.Privacy')}
+                              </th>
+                              <th scope='col' className='relative py-3.5 pl-3 pr-4 sm:pr-6'>
+                                <span className='sr-only'>{t('Lines.Details')}</span>
+                              </th>
                             </tr>
-                          ))}
+                          </thead>
+                          <tbody className=' text-sm divide-y divide-gray-200 bg-white text-gray-700 dark:divide-gray-700 dark:bg-gray-900 dark:text-gray-200'>
+                            {/* skeleton */}
+                            {!isLinesLoaded &&
+                              Array.from(Array(5)).map((e, i) => (
+                                <tr key={i}>
+                                  {Array.from(Array(5)).map((e, j) => (
+                                    <td key={j}>
+                                      <div className='px-4 py-6'>
+                                        <div className='animate-pulse h-5 rounded bg-gray-300 dark:bg-gray-600'></div>
+                                      </div>
+                                    </td>
+                                  ))}
+                                </tr>
+                              ))}
 
-                        {/* Announcement */}
-                        {isLinesLoaded &&
-                          Object.keys(lines).map((key) => (
-                            <tr key={key}>
-                              {/* Name */}
-                              <td className='py-4 pl-4 pr-3 sm:pl-6'>
-                                <div className='flex flex-col'>
-                                  <div
-                                    className={` ${
-                                      auth?.username === lines[key]?.username
-                                        ? 'cursor-pointer hover:underline'
-                                        : ''
-                                    } `}
-                                    onClick={() => {
-                                      auth?.username === lines[key]?.username
-                                        ? openEditAnnouncementDrawer(
-                                            lines[key]?.description,
-                                            lines[key]?.id,
-                                            lines[key]?.privacy,
+                            {/* Announcement */}
+                            {isLinesLoaded &&
+                              Object.keys(lines).map((key) => (
+                                <tr key={key}>
+                                  {/* Name */}
+                                  <td className='py-4 pl-4 pr-3 sm:pl-6'>
+                                    <div className='flex flex-col'>
+                                      <div
+                                        className={` ${
+                                          auth?.username === lines[key]?.username
+                                            ? 'cursor-pointer hover:underline'
+                                            : ''
+                                        } `}
+                                        onClick={() => {
+                                          auth?.username === lines[key]?.username
+                                            ? openEditAnnouncementDrawer(
+                                                lines[key]?.description,
+                                                lines[key]?.id,
+                                                lines[key]?.privacy,
+                                              )
+                                            : ''
+                                        }}
+                                      >
+                                        {lines[key]?.description}{' '}
+                                      </div>
+                                    </div>
+                                  </td>
+                                  {/* Author */}
+                                  <td className='px-3 py-4'>
+                                    <div className='flex items-center'>
+                                      <Avatar
+                                        src={operators?.avatars[lines[key]?.username]}
+                                        placeholderType='operator'
+                                        size='base'
+                                        className='mr-3 cursor-pointer'
+                                        onClick={() =>
+                                          openShowOperatorDrawer(
+                                            operators?.operators[lines[key]?.username],
                                           )
-                                        : ''
-                                    }}
-                                  >
-                                    {lines[key]?.description}{' '}
-                                  </div>
-                                </div>
-                              </td>
-                              {/* Author */}
-                              <td className='px-3 py-4'>
-                                <div className='flex items-center'>
-                                  <Avatar
-                                    src={operators?.avatars[lines[key]?.username]}
-                                    placeholderType='operator'
-                                    size='base'
-                                    className='mr-3 cursor-pointer'
-                                    onClick={() =>
-                                      openShowOperatorDrawer(
-                                        operators?.operators[lines[key]?.username],
-                                      )
-                                    }
-                                    status={
-                                      operators?.operators[lines[key]?.username]?.mainPresence
-                                    }
-                                  />
-                                  <div>{operators?.operators[lines[key]?.username]?.name}</div>
-                                </div>
-                              </td>
-                              {/* Date */}
-                              <td className='px-3 py-4'>
-                                <div className='flex flex-col'>
-                                  <CallsDate call={lines[key]} isInAnnouncement={true} />
-                                </div>
-                              </td>
+                                        }
+                                        status={
+                                          operators?.operators[lines[key]?.username]?.mainPresence
+                                        }
+                                      />
+                                      <div>{operators?.operators[lines[key]?.username]?.name}</div>
+                                    </div>
+                                  </td>
+                                  {/* Date */}
+                                  <td className='px-3 py-4'>
+                                    <div className='flex flex-col'>
+                                      <CallsDate call={lines[key]} isInAnnouncement={true} />
+                                    </div>
+                                  </td>
 
-                              {/* Privacy */}
-                              <td className='px-3 py-4'>
-                                <div className='flex items-center'>
-                                  {/* The ternary operator is required because the open lock icon takes up
+                                  {/* Privacy */}
+                                  <td className='px-3 py-4'>
+                                    <div className='flex items-center'>
+                                      {/* The ternary operator is required because the open lock icon takes up
                             more right margin */}
-                                  <FontAwesomeIcon
-                                    icon={lines[key].privacy === 'private' ? faLock : faLockOpen}
-                                    className={`h-4 text-gray-500 dark:text-gray-500 ${
-                                      lines[key].privacy === 'private' ? 'mr-3' : 'mr-2'
-                                    }`}
-                                    aria-hidden='true'
-                                  />
-                                  <span>{t(`Lines.${capitalize(lines[key].privacy)}`)} </span>
-                                </div>
-                              </td>
-                              {/* Action button */}
-                              <td className='px-3 py-4 flex gap-2 justify-end'>
-                                <div>
-                                  {' '}
-                                  {/* Play button */}
-                                  <Button
-                                    variant='white'
-                                    onClick={() => playSelectedAnnouncement(lines[key].id)}
-                                  >
-                                    <FontAwesomeIcon
-                                      icon={faPlay}
-                                      className='h-4 w-4 mr-2 text-gray-500 dark:text-gray-500'
-                                      aria-hidden='true'
-                                    />{' '}
-                                    {t('Lines.Play')}
-                                  </Button>
-                                </div>
-                                <div>
-                                  {' '}
-                                  {/* Download button */}
-                                  <Button
-                                    variant='white'
-                                    onClick={() => donwloadSelectedAnnouncement(lines[key].id)}
-                                  >
-                                    <FontAwesomeIcon
-                                      icon={faDownload}
-                                      className='h-4 w-4 mr-2 text-gray-500 dark:text-gray-500'
-                                      aria-hidden='true'
-                                    />{' '}
-                                    {t('Lines.Download')}
-                                  </Button>
-                                </div>
+                                      <FontAwesomeIcon
+                                        icon={
+                                          lines[key].privacy === 'private' ? faLock : faLockOpen
+                                        }
+                                        className={`h-4 text-gray-500 dark:text-gray-500 ${
+                                          lines[key].privacy === 'private' ? 'mr-3' : 'mr-2'
+                                        }`}
+                                        aria-hidden='true'
+                                      />
+                                      <span>{t(`Lines.${capitalize(lines[key].privacy)}`)} </span>
+                                    </div>
+                                  </td>
+                                  {/* Action button */}
+                                  <td className='px-3 py-4 flex gap-2 justify-end'>
+                                    <div>
+                                      {' '}
+                                      {/* Play button */}
+                                      <Button
+                                        variant='white'
+                                        onClick={() => playSelectedAnnouncement(lines[key].id)}
+                                      >
+                                        <FontAwesomeIcon
+                                          icon={faPlay}
+                                          className='h-4 w-4 mr-2 text-gray-500 dark:text-gray-500'
+                                          aria-hidden='true'
+                                        />{' '}
+                                        {t('Lines.Play')}
+                                      </Button>
+                                    </div>
+                                    <div>
+                                      {' '}
+                                      {/* Download button */}
+                                      <Button
+                                        variant='white'
+                                        onClick={() => donwloadSelectedAnnouncement(lines[key].id)}
+                                      >
+                                        <FontAwesomeIcon
+                                          icon={faDownload}
+                                          className='h-4 w-4 mr-2 text-gray-500 dark:text-gray-500'
+                                          aria-hidden='true'
+                                        />{' '}
+                                        {t('Lines.Download')}
+                                      </Button>
+                                    </div>
 
-                                {/* Disabled at the moment */}
-                                {/* lines[key].privacy === 'public' ||
+                                    {/* Disabled at the moment */}
+                                    {/* lines[key].privacy === 'public' ||
                                 profile?.macro_permissions?.off_hour?.permissions?.ad_off_hour
                                   ?.value || */}
-                                {/* Edit announcement */}
-                                {auth.username === lines[key].username ? (
-                                  <FontAwesomeIcon
-                                    icon={faChevronRight}
-                                    className='h-3 w-3 ml-4 mr-1 p-2 cursor-pointer text-gray-500 dark:text-gray-500'
-                                    aria-hidden='true'
-                                    onClick={() => {
-                                      openEditAnnouncementDrawer(
-                                        lines[key].description,
-                                        lines[key].id,
-                                        lines[key].privacy,
-                                      )
-                                    }}
-                                  />
-                                ) : (
-                                  <FontAwesomeIcon
-                                    icon={faTrashCan}
-                                    className='h-4 w-4 ml-4 p-2 invisible'
-                                  />
-                                )}
-                              </td>
-                            </tr>
-                          ))}
-                      </tbody>
-                    </table>
+                                    {/* Edit announcement */}
+                                    {auth.username === lines[key].username ? (
+                                      <FontAwesomeIcon
+                                        icon={faChevronRight}
+                                        className='h-3 w-3 ml-4 mr-1 p-2 cursor-pointer text-gray-500 dark:text-gray-500'
+                                        aria-hidden='true'
+                                        onClick={() => {
+                                          openEditAnnouncementDrawer(
+                                            lines[key].description,
+                                            lines[key].id,
+                                            lines[key].privacy,
+                                          )
+                                        }}
+                                      />
+                                    ) : (
+                                      <FontAwesomeIcon
+                                        icon={faTrashCan}
+                                        className='h-4 w-4 ml-4 p-2 invisible'
+                                      />
+                                    )}
+                                  </td>
+                                </tr>
+                              ))}
+                          </tbody>
+                        </table>
+                      </div>
+                    </div>
                   )}
                 </div>
               </div>
