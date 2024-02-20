@@ -389,197 +389,204 @@ export const LinesView: FC<LinesViewProps> = ({ className }): JSX.Element => {
                   )}
                   {(!isLinesLoaded || !isEmpty(lines)) && (
                     <div className='flow-root'>
-                      <div className='-mx-4 -my-2 overflow-x-auto sm:-mx-6 lg:-mx-8'>
+                      <div className='-mx-4 overflow-x-auto sm:-mx-6 lg:-mx-8'>
                         <div className='inline-block min-w-full align-middle sm:px-6 lg:px-8'>
                           <div className='relative'>
-                            <div className='overflow-y-auto scrollbar-thin scrollbar-thumb-gray-400 dark:scrollbar-thumb-gray-400 scrollbar-thumb-rounded-full scrollbar-thumb-opacity-50 scrollbar-track-gray-200 dark:scrollbar-track-gray-900 scrollbar-track-rounded-full scrollbar-track-opacity-25  max-h-[32rem]'>
-                              <table className='min-w-full divide-y divide-gray-300 dark:divide-gray-600'>
-                                <thead className='sticky top-0 bg-white dark:bg-gray-900 z-[1]'>
-                                  <tr>
-                                    <th scope='col' className='relative px-7 sm:w-12 sm:px-6 py-5'>
-                                      <input
-                                        type='checkbox'
-                                        className='absolute left-4 top-1/2 -mt-2 h-4 w-4 rounded border-gray-300 text-primary dark:text-primaryDark focus:ring-primary dark:focus:ring-primaryDark'
-                                        ref={checkbox}
-                                        checked={checked}
-                                        onChange={toggleAllLines}
-                                      />
-                                    </th>
-                                    <th
-                                      scope='col'
-                                      className='min-w-[12rem] pr-3 text-left text-sm font-semibold text-gray-700 dark:text-gray-200'
-                                    >
-                                      {selectedLines?.length > 0 ? (
-                                        <button
-                                          type='button'
-                                          className='inline-flex items-center rounded bg-white dark:bg-gray-600 px-2 py-1 text-sm font-semibold shadow-sm ring-1 ring-inset ring-gray-300 hover:bg-gray-50 disabled:cursor-not-allowed disabled:opacity-30 disabled:hover:bg-white dark:hover:bg-gray-500'
-                                          onClick={() => {
-                                            checkSelectedLines(selectedLines)
-                                          }}
-                                        >
-                                          {selectedLines?.length === 1
-                                            ? t('Lines.Show selected')
-                                            : t('Lines.Show all')}
-                                        </button>
-                                      ) : (
-                                        t('Lines.Description')
-                                      )}
-                                    </th>
-                                    <th
-                                      scope='col'
-                                      className='px-3 py-3.5 text-left text-sm font-semibold text-gray-700 dark:text-gray-200'
-                                    >
-                                      {t('Lines.Line number')}
-                                    </th>
-                                    <th
-                                      scope='col'
-                                      className='px-3 py-3.5 text-left text-sm font-semibold text-gray-700 dark:text-gray-200'
-                                    >
-                                      {t('Lines.Caller number')}
-                                    </th>
-                                    <th
-                                      scope='col'
-                                      className='px-3 py-3.5 text-left text-sm font-semibold text-gray-700 dark:text-gray-200'
-                                    >
-                                      {t('Lines.Custom configuration')}
-                                    </th>
-
-                                    <th
-                                      scope='col'
-                                      className='px-3 py-3.5 text-left text-sm font-semibold text-gray-700 dark:text-gray-200'
-                                    >
-                                      {t('Lines.Configuration status')}
-                                    </th>
-
-                                    <th scope='col' className='relative py-3.5 pl-3 pr-4 sm:pr-3'>
-                                      <span className='sr-only'>{t('Lines.Details')}</span>
-                                    </th>
-                                  </tr>
-                                </thead>
-                                <tbody className='text-sm divide-y divide-gray-200 bg-white text-gray-700 dark:divide-gray-700 dark:bg-gray-900 dark:text-gray-200'>
-                                  {/* skeleton */}
-                                  {!isLinesLoaded &&
-                                    Array.from(Array(5)).map((e, i) => (
-                                      <tr key={i}>
-                                        {Array.from(Array(7)).map((e, j) => (
-                                          <td key={j}>
-                                            <div className='px-4 py-6'>
-                                              <div className='animate-pulse h-5 rounded bg-gray-300 dark:bg-gray-600'></div>
-                                            </div>
-                                          </td>
-                                        ))}
-                                      </tr>
-                                    ))}
-                                  {/* Lines */}
-                                  {isLinesLoaded &&
-                                    lines?.map((line: Line, index: any) => (
-                                      <tr
-                                        key={index}
-                                        className={
-                                          selectedLines.includes(line)
-                                            ? 'bg-gray-50 dark:bg-gray-800'
-                                            : undefined
-                                        }
+                            <div className='overflow-y-auto scrollbar-thin scrollbar-thumb-gray-400 dark:scrollbar-thumb-gray-400 scrollbar-thumb-rounded-full scrollbar-thumb-opacity-50 scrollbar-track-gray-200 dark:scrollbar-track-gray-900 scrollbar-track-rounded-full scrollbar-track-opacity-25'>
+                              <div className='  max-h-[32rem]'>
+                                <table className='min-w-full divide-y divide-gray-300 dark:divide-gray-700'>
+                                  <thead className='sticky top-0 bg-white dark:bg-gray-900 z-[1]'>
+                                    <tr className='py-2'>
+                                      <th
+                                        scope='col'
+                                        className='relative px-7 sm:w-12 sm:px-6 py-5'
                                       >
-                                        {/* Checkbox */}
-                                        <td className='relative px-7 sm:w-12 sm:px-6'>
-                                          {selectedLines.includes(line) && (
-                                            <div className='absolute inset-y-0 left-0 w-0.5 bg-primary dark:bg-primaryDark' />
-                                          )}
-                                          <input
-                                            type='checkbox'
-                                            className='absolute left-4 top-1/2 -mt-2 h-4 w-4 rounded border-gray-300 text-primary dark:text-primaryDark focus:ring-primary dark:focus:ring-primaryDark'
-                                            value={line.calledIdNum}
-                                            checked={selectedLines.includes(line)}
-                                            onChange={(e) =>
-                                              setSelectedLines(
-                                                e.target.checked
-                                                  ? [...selectedLines, line]
-                                                  : selectedLines.filter(
-                                                      (selectedLine) => selectedLine !== line,
-                                                    ),
-                                              )
-                                            }
-                                          />
-                                        </td>
-                                        {/* Description */}
-                                        <td
-                                          className='py-4 pr-3 cursor-pointer'
-                                          onClick={() => {
-                                            checkObjectDrawer(line)
-                                          }}
-                                        >
-                                          {line.description ? line.description : '-'}
-                                        </td>
-                                        {/* Phone line */}
-                                        <td
-                                          className='px-3 py-4 cursor-pointer'
-                                          onClick={() => {
-                                            checkObjectDrawer(line)
-                                          }}
-                                        >
-                                          <div className='flex flex-col'>
-                                            <div>
-                                              <div>{line.calledIdNum ? line.calledIdNum : '-'}</div>
-                                            </div>
-                                          </div>
-                                        </td>
-                                        {/* Caller number */}
-                                        <td
-                                          className='px-3 py-4 cursor-pointer'
-                                          onClick={() => {
-                                            checkObjectDrawer(line)
-                                          }}
-                                        >
-                                          <div>{line.callerIdNum ? line.callerIdNum : '-'}</div>
-                                        </td>
-                                        {/* Costum configuration */}
-                                        <td
-                                          className='whitespace-nowrap px-3 py-4 cursor-pointer'
-                                          onClick={() => {
-                                            checkObjectDrawer(line)
-                                          }}
-                                        >
-                                          {getConfiguration(line)}
-                                        </td>
-                                        {/* Configuration status */}
-                                        <td
-                                          className='whitespace-nowrap px-3 py-4 cursor-pointer'
-                                          onClick={() => {
-                                            checkObjectDrawer(line)
-                                          }}
-                                        >
-                                          <Badge
-                                            variant={getConfigurationStatus(line)}
-                                            rounded='full'
+                                        <input
+                                          type='checkbox'
+                                          className='absolute left-4 top-1/2 -mt-2 h-4 w-4 rounded border-gray-300 text-primary dark:text-primaryDark focus:ring-primary dark:focus:ring-primaryDark'
+                                          ref={checkbox}
+                                          checked={checked}
+                                          onChange={toggleAllLines}
+                                        />
+                                      </th>
+                                      <th
+                                        scope='col'
+                                        className='min-w-[12rem] pr-3 py-3.5 text-left text-sm font-semibold text-gray-700 dark:text-gray-200'
+                                      >
+                                        {selectedLines?.length > 0 ? (
+                                          <button
+                                            type='button'
+                                            className='inline-flex items-center rounded bg-white dark:bg-gray-600 px-2 py-1 text-sm font-semibold shadow-sm ring-1 ring-inset ring-gray-300 hover:bg-gray-50 disabled:cursor-not-allowed disabled:opacity-30 disabled:hover:bg-white dark:hover:bg-gray-500'
+                                            onClick={() => {
+                                              checkSelectedLines(selectedLines)
+                                            }}
                                           >
-                                            {' '}
-                                            {line.offhour && line.offhour.enabled !== 'never'
-                                              ? t('Lines.Active')
-                                              : t('Lines.Not active')}
-                                          </Badge>
-                                        </td>
+                                            {selectedLines?.length === 1
+                                              ? t('Lines.Show selected')
+                                              : t('Lines.Show all')}
+                                          </button>
+                                        ) : (
+                                          t('Lines.Description')
+                                        )}
+                                      </th>
+                                      <th
+                                        scope='col'
+                                        className='px-3 py-3.5 text-left text-sm font-semibold text-gray-700 dark:text-gray-200'
+                                      >
+                                        {t('Lines.Line number')}
+                                      </th>
+                                      <th
+                                        scope='col'
+                                        className='px-3 py-3.5 text-left text-sm font-semibold text-gray-700 dark:text-gray-200'
+                                      >
+                                        {t('Lines.Caller number')}
+                                      </th>
+                                      <th
+                                        scope='col'
+                                        className='px-3 py-3.5 text-left text-sm font-semibold text-gray-700 dark:text-gray-200'
+                                      >
+                                        {t('Lines.Custom configuration')}
+                                      </th>
 
-                                        {/* Show details */}
-                                        <td
-                                          className='relative whitespace-nowrap py-4 pl-3 pr-4 text-right text-sm font-medium sm:pr-6 cursor-pointer'
-                                          onClick={() => {
-                                            checkObjectDrawer(line)
-                                          }}
+                                      <th
+                                        scope='col'
+                                        className='px-3 py-3.5 text-left text-sm font-semibold text-gray-700 dark:text-gray-200'
+                                      >
+                                        {t('Lines.Configuration status')}
+                                      </th>
+
+                                      <th scope='col' className='relative py-3.5 pl-3 pr-4 sm:pr-3'>
+                                        <span className='sr-only'>{t('Lines.Details')}</span>
+                                      </th>
+                                    </tr>
+                                  </thead>
+                                  <tbody className='text-sm divide-y divide-gray-200 bg-white text-gray-700 dark:divide-gray-700 dark:bg-gray-900 dark:text-gray-200'>
+                                    {/* skeleton */}
+                                    {!isLinesLoaded &&
+                                      Array.from(Array(5)).map((e, i) => (
+                                        <tr key={i}>
+                                          {Array.from(Array(7)).map((e, j) => (
+                                            <td key={j}>
+                                              <div className='px-4 py-6'>
+                                                <div className='animate-pulse h-5 rounded bg-gray-300 dark:bg-gray-600'></div>
+                                              </div>
+                                            </td>
+                                          ))}
+                                        </tr>
+                                      ))}
+                                    {/* Lines */}
+                                    {isLinesLoaded &&
+                                      lines?.map((line: Line, index: any) => (
+                                        <tr
+                                          key={index}
+                                          className={
+                                            selectedLines.includes(line)
+                                              ? 'bg-gray-50 dark:bg-gray-800'
+                                              : undefined
+                                          }
                                         >
-                                          <FontAwesomeIcon
-                                            icon={faChevronRight}
-                                            className='h-3 w-3 p-2 cursor-pointer text-gray-500 dark:text-gray-500'
-                                            aria-hidden='true'
+                                          {/* Checkbox */}
+                                          <td className='relative px-7 sm:w-12 sm:px-6'>
+                                            {selectedLines.includes(line) && (
+                                              <div className='absolute inset-y-0 left-0 w-0.5 bg-primary dark:bg-primaryDark' />
+                                            )}
+                                            <input
+                                              type='checkbox'
+                                              className='absolute left-4 top-1/2 -mt-2 h-4 w-4 rounded border-gray-300 text-primary dark:text-primaryDark focus:ring-primary dark:focus:ring-primaryDark'
+                                              value={line.calledIdNum}
+                                              checked={selectedLines.includes(line)}
+                                              onChange={(e) =>
+                                                setSelectedLines(
+                                                  e.target.checked
+                                                    ? [...selectedLines, line]
+                                                    : selectedLines.filter(
+                                                        (selectedLine) => selectedLine !== line,
+                                                      ),
+                                                )
+                                              }
+                                            />
+                                          </td>
+                                          {/* Description */}
+                                          <td
+                                            className='py-4 pr-3 cursor-pointer'
                                             onClick={() => {
                                               checkObjectDrawer(line)
                                             }}
-                                          />
-                                        </td>
-                                      </tr>
-                                    ))}
-                                </tbody>
-                              </table>
+                                          >
+                                            {line.description ? line.description : '-'}
+                                          </td>
+                                          {/* Phone line */}
+                                          <td
+                                            className='px-3 py-4 cursor-pointer'
+                                            onClick={() => {
+                                              checkObjectDrawer(line)
+                                            }}
+                                          >
+                                            <div className='flex flex-col'>
+                                              <div>
+                                                <div>
+                                                  {line.calledIdNum ? line.calledIdNum : '-'}
+                                                </div>
+                                              </div>
+                                            </div>
+                                          </td>
+                                          {/* Caller number */}
+                                          <td
+                                            className='px-3 py-4 cursor-pointer'
+                                            onClick={() => {
+                                              checkObjectDrawer(line)
+                                            }}
+                                          >
+                                            <div>{line.callerIdNum ? line.callerIdNum : '-'}</div>
+                                          </td>
+                                          {/* Costum configuration */}
+                                          <td
+                                            className='whitespace-nowrap px-3 py-4 cursor-pointer'
+                                            onClick={() => {
+                                              checkObjectDrawer(line)
+                                            }}
+                                          >
+                                            {getConfiguration(line)}
+                                          </td>
+                                          {/* Configuration status */}
+                                          <td
+                                            className='whitespace-nowrap px-3 py-4 cursor-pointer'
+                                            onClick={() => {
+                                              checkObjectDrawer(line)
+                                            }}
+                                          >
+                                            <Badge
+                                              variant={getConfigurationStatus(line)}
+                                              rounded='full'
+                                            >
+                                              {' '}
+                                              {line.offhour && line.offhour.enabled !== 'never'
+                                                ? t('Lines.Active')
+                                                : t('Lines.Not active')}
+                                            </Badge>
+                                          </td>
+
+                                          {/* Show details */}
+                                          <td
+                                            className='relative whitespace-nowrap py-4 pl-3 pr-4 text-right text-sm font-medium sm:pr-6 cursor-pointer'
+                                            onClick={() => {
+                                              checkObjectDrawer(line)
+                                            }}
+                                          >
+                                            <FontAwesomeIcon
+                                              icon={faChevronRight}
+                                              className='h-3 w-3 p-2 cursor-pointer text-gray-500 dark:text-gray-500'
+                                              aria-hidden='true'
+                                              onClick={() => {
+                                                checkObjectDrawer(line)
+                                              }}
+                                            />
+                                          </td>
+                                        </tr>
+                                      ))}
+                                  </tbody>
+                                </table>
+                              </div>
                             </div>
                           </div>
                         </div>
