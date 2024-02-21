@@ -18,6 +18,15 @@ export const openShowEditPhysicalPhone = (phoneInformation: any, pinstatus: any)
   })
 }
 
+export const openShowSwitchAudioInput = (status:any) => {
+
+  store.dispatch.sideDrawer.update({
+    isShown: true,
+    contentType: 'showSwitchDeviceInputOutput',
+    config: status,
+  })
+}
+
 // Set main device id
 export async function setMainDevice(deviceIdInformation: any) {
   try {

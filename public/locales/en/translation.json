@@ -809,7 +809,14 @@
     "Try changing your search query": "Try changing your search query",
     "Keys configuration information tooltip": "Configure line keys of your physical device",
     "Key position information tooltip": "Choose a position for your key",
-    "Click on confirm": "Click on Confirm"
+    "Click on confirm": "Click on Confirm",
+    "Audio settings": "Audio settings",
+    "Audio input": "Audio input",
+    "Audio output": "Audio output",
+    "Audio input information tooltip": "Choose the audio input device",
+    "Audio output information tooltip": "Choose the audio output device",
+    "Select audio input": "Select audio input",
+    "Select audio output": "Select audio output"
   },
   "DropdownContent": {
     "Microphones": "MICROPHONES",

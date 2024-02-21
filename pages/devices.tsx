@@ -16,7 +16,12 @@ import {
 } from '@fortawesome/free-solid-svg-icons'
 import React from 'react'
 import { faOfficePhone } from '@nethesis/nethesis-solid-svg-icons'
-import { getDevicesPin, openShowEditPhysicalPhone, setMainDevice } from '../lib/devices'
+import {
+  getDevicesPin,
+  openShowEditPhysicalPhone,
+  setMainDevice,
+  openShowSwitchAudioInput,
+} from '../lib/devices'
 import { Badge, Dropdown } from '../components/common'
 import { useDispatch } from 'react-redux'
 import { Dispatch } from '../store'
@@ -125,19 +130,49 @@ const Devices: NextPage = () => {
               <div className='-mx-4 -my-2 overflow-x-auto sm:-mx-6 lg:-mx-8'>
                 <div className='inline-block min-w-full py-2 align-middle sm:px-6 lg:px-8'>
                   <div className='overflow-hidden shadow ring-1 ring-black dark:ring-gray-500 ring-opacity-5 sm:rounded-lg'>
-                    <table className='min-w-full divide-y divide-gray-600 dark:divide-gray-500'>
+                    <table className='min-w-full divide-y divide-gray-300 dark:divide-gray-500'>
+                      <thead className='bg-gray-50 dark:bg-gray-800'>
+                        <tr className=''>
+                          <th
+                            scope='col'
+                            className='py-3.5 pl-4 pr-3 text-left text-sm font-semibold sm:pl-6 w-[15.5rem]'
+                          >
+                            {t('Devices.Device name')}
+                          </th>
+                          <th scope='col' className='px-3 py-3.5 text-left text-sm font-semibold'>
+                            <p className='ml-2'>{t('Devices.Status')}</p>
+                          </th>
+                          <th
+                            scope='col'
+                            className='px-3 py-3.5 text-left text-sm font-semibold text-transparent '
+                          >
+                            {t('Devices.Main device')}
+                          </th>
+                          <th
+                            scope='col'
+                            className='px-3 py-3.5 text-left text-sm font-semibold sr-only'
+                          >
+                            {t('Devices.Edit')}
+                          </th>
+
+                          <th scope='col' className='relative py-3.5 sm:pr-6'>
+                            <span className='sr-only'>{t('Devices.Set as main device')}</span>
+                          </th>
+                        </tr>
+                      </thead>
                       <tbody className='divide-y divide-gray-200 dark:divide-gray-500 bg-white dark:bg-gray-700'>
                         <tr>
-                          <td className='whitespace-nowrap py-4 pl-4 pr-3 text-sm font-medium sm:pl-6'>
-                            {t('Devices.Web phone')}
+                          <td className='truncate py-4 pl-4 pr-3 text-sm font-medium sm:pl-6 max-w-sm overflow-hidden overflow-ellipsis'>
+                            <p className='truncate w-36'> {t('Devices.Web phone')}</p>
                           </td>
-                          <td className='whitespace-nowrap py-4 text-sm sm:pl-[2.8rem]'>
+                          <td className='whitespace-nowrap px-3 py-4 text-sm'>
+                            {/* {phone.status} */}{' '}
                             {operators?.extensions[webrtcData[0]?.id]?.exten ===
                             profile?.default_device?.id ? (
                               <>
                                 <FontAwesomeIcon
                                   icon={faCircleCheck}
-                                  className='mr-2 h-4 w-4 text-green-700 dark:text-green-600'
+                                  className='mr-2 ml-2 h-4 w-4 text-green-700 dark:text-green-600'
                                 />
                                 {t('Devices.Online')}
                               </>
@@ -145,7 +180,7 @@ const Devices: NextPage = () => {
                               <>
                                 <FontAwesomeIcon
                                   icon={faCircleXmark}
-                                  className='mr-2 ml-[2.1rem] h-4 w-4 text-gray-700 dark:text-gray-400'
+                                  className='mr-2 ml-[0.6rem] h-4 w-4 text-gray-700 dark:text-gray-400'
                                 />
                                 <span className='text-gray-500 dark:text-gray-200'>
                                   {t('Devices.Offline')}
@@ -153,7 +188,7 @@ const Devices: NextPage = () => {
                               </>
                             )}
                           </td>
-                          <td className='whitespace-nowrap px-2 py-4 text-sm text-gray-500'>
+                          <td className='whitespace-nowrap px-3 py-2 text-sm text-gray-500'>
                             {webrtcData[0]?.id === profile?.default_device?.id ? (
                               <Badge size='small' variant='online' rounded='full'>
                                 <span>{t('Devices.Main device')}</span>
@@ -164,12 +199,28 @@ const Devices: NextPage = () => {
                               </span>
                             )}
                           </td>
-                          <td className='px-3 py-4 text-sm text-white dark:text-gray-700 text-transparent cursor-default'>
-                            <FontAwesomeIcon icon={faPenToSquare} className='mr-2 h-4 w-4' />
-                            {t('Devices.Edit')}
+
+                          <td
+                            className='whitespace-nowrap px-3 py-4 text-sm text-primary dark:text-primaryDark cursor-pointer'
+                            onClick={() => openShowSwitchAudioInput('')}
+                          >
+                            <div
+                              className={`${
+                                webrtcData[0]?.id !== profile?.default_device?.id
+                                  ? ''
+                                  : 'mr-[1.6rem]'
+                              }`}
+                            >
+                              <FontAwesomeIcon
+                                icon={faPenToSquare}
+                                className='mr-2 h-4 w-4 text-primary dark:text-primaryDark'
+                              />
+                              {t('Devices.Audio settings')}
+                            </div>
                           </td>
-                          {webrtcData[0]?.id !== profile?.default_device?.id && (
-                            <td className='relative whitespace-nowrap py-4 pr-4 text-right text-sm font-medium sm:pr-6 cursor-pointer'>
+
+                          {webrtcData[0]?.id !== profile?.default_device?.id ? (
+                            <td className='relative whitespace-nowrap py-4 pl-3 pr-4 text-right text-sm font-medium sm:pr-6 cursor-pointer'>
                               <Dropdown
                                 items={setMainDeviceMenu(
                                   webrtcData[0]?.id,
@@ -180,10 +231,12 @@ const Devices: NextPage = () => {
                               >
                                 <FontAwesomeIcon
                                   icon={faEllipsisVertical}
-                                  className='h-4 w-4 ml-[0.7rem] text-primary dark:text-primaryDark'
+                                  className='h-4 w-4 text-primary dark:text-primaryDark'
                                 />
                               </Dropdown>
                             </td>
+                          ) : (
+                            <td></td>
                           )}
                         </tr>
                       </tbody>
@@ -302,11 +355,19 @@ const Devices: NextPage = () => {
                                     className='whitespace-nowrap px-3 py-4 text-sm text-primary dark:text-primaryDark cursor-pointer'
                                     onClick={() => openShowEditPhysicalPhone(phone, pinObject)}
                                   >
-                                    <FontAwesomeIcon
-                                      icon={faPenToSquare}
-                                      className='mr-2 h-4 w-4 text-primary dark:text-primaryDark'
-                                    />
-                                    {t('Devices.Edit')}
+                                    <div
+                                      className={`${
+                                        phone?.id !== profile?.default_device?.id
+                                          ? ''
+                                          : 'mr-[1.6rem]'
+                                      }`}
+                                    >
+                                      <FontAwesomeIcon
+                                        icon={faPenToSquare}
+                                        className='mr-2 h-4 w-4 text-primary dark:text-primaryDark'
+                                      />
+                                      {t('Devices.Edit')}
+                                    </div>
                                   </td>
                                 ) : (
                                   <td></td>
