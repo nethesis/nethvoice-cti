@@ -77,7 +77,7 @@ export const AnnouncementView: FC<AnnouncementViewProps> = ({ className }): JSX.
   }
 
   // Show modal announcement
-  useEventListener('phone-island-recording-save', (modalAnnouncementObjInformation) => {
+  useEventListener('phone-island-recording-saved', (modalAnnouncementObjInformation) => {
     if (modalAnnouncementObjInformation?.tempFileName) {
       dispatch.sideDrawer.update({
         isShown: true,

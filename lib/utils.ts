@@ -254,7 +254,7 @@ export async function transferCall(operatorBadgeInformations: any) {
     let destinationNumber = operatorBadgeInformations?.endpoints?.mainextension[0]?.id
 
     if (destinationNumber) {
-      eventDispatch('phone-island-transfer-call', { to: destinationNumber })
+      eventDispatch('phone-island-call-transfer', { to: destinationNumber })
     }
   }
 }
@@ -262,7 +262,7 @@ export async function transferCall(operatorBadgeInformations: any) {
 // Function to transfer call from every page
 export async function transferCallToExtension(extensionToTransfer: any) {
   if (extensionToTransfer) {
-    eventDispatch('phone-island-transfer-call', { to: extensionToTransfer })
+    eventDispatch('phone-island-call-transfer', { to: extensionToTransfer })
   }
 }
 

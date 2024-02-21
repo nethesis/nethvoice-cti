@@ -121,7 +121,7 @@ export const ActionCall: React.FC<ActionCallProps> = ({ config }) => {
           if (!isEmpty(listenInformations)) {
             try {
               await startListen(listenInformations)
-              eventDispatch('phone-island-listen-call', { to: listenInformations?.endpointId })
+              eventDispatch('phone-island-call-listen', { to: listenInformations?.endpointId })
             } catch (e) {
               console.error(e)
               return []
@@ -168,7 +168,7 @@ export const ActionCall: React.FC<ActionCallProps> = ({ config }) => {
           if (!isEmpty(intrudeInformations)) {
             try {
               await intrude(intrudeInformations)
-              eventDispatch('phone-island-intrude-call', { to: intrudeInformations?.endpointId })
+              eventDispatch('phone-island-call-intrude', { to: intrudeInformations?.endpointId })
             } catch (e) {
               console.error(e)
               return []
