@@ -15,6 +15,7 @@ import { RootState } from '../../store'
 import { useSelector } from 'react-redux'
 import { getInputOutputLocalStorageValue } from '../../lib/devices'
 import { eventDispatch } from '../../lib/hooks/eventDispatch'
+import { isEmpty } from 'lodash'
 
 export interface SwitchInputOutputDrawerContentProps extends ComponentPropsWithRef<'div'> {
   config: any
@@ -67,18 +68,40 @@ export const SwitchInputOutputDrawerContent = forwardRef<
     setSelectedAudioOutput(newAudioOutputSelected)
   }
 
+  const [inputValueStore, setInputValueStore] = useState<any>('')
+  const [outputValueStore, setOutputValueStore] = useState<any>('')
+
   const handleUpdateAudioDevices = () => {
-    eventDispatch('phone-island-audio-input-change', { selectedAudioInput })
-    eventDispatch('phone-island-audio-output-change', { selectedAudioOutput })
+    eventDispatch('phone-island-audio-input-change', { deviceId: selectedAudioInput?.deviceId })
+    eventDispatch('phone-island-audio-output-change', { deviceId: selectedAudioInput?.deviceId })
+    closeSideDrawer()
   }
 
   //Get input/output value from local storage
   useEffect(() => {
     const inputOutputValues = getInputOutputLocalStorageValue(auth?.username)
-    setSelectedAudioInput(inputOutputValues?.audioInputType)
-    setSelectedAudioOutput(inputOutputValues?.audioOutputType)
+    setInputValueStore(inputOutputValues?.audioInputType)
+    setOutputValueStore(inputOutputValues?.audioOutputType)
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [])
+
+  useEffect(() => {
+    if (!isEmpty(inputValueStore) && !isEmpty(audioInputs)) {
+      const selectedInput = audioInputs.find(
+        (input: any) => input.deviceId === inputValueStore?.deviceId,
+      )
+      setSelectedAudioInput(selectedInput)
+    }
+  }, [inputValueStore, audioInputs])
+
+  useEffect(() => {
+    if (!isEmpty(outputValueStore) && !isEmpty(audioOutputs)) {
+      const selectedOutput = audioOutputs.find(
+        (output: any) => output.deviceId === outputValueStore?.deviceId,
+      )
+      setSelectedAudioOutput(selectedOutput)
+    }
+  }, [outputValueStore, audioOutputs])
 
   return (
     <>

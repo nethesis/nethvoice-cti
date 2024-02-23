@@ -366,7 +366,7 @@ const Devices: NextPage = () => {
                                         icon={faPenToSquare}
                                         className='mr-2 h-4 w-4 text-primary dark:text-primaryDark'
                                       />
-                                      {t('Devices.Edit')}
+                                      {t('Devices.Device settings')}
                                     </div>
                                   </td>
                                 ) : (

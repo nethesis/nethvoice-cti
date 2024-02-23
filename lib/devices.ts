@@ -4,7 +4,7 @@
 import axios from 'axios'
 import { handleNetworkError } from './utils'
 import { store } from '../store'
-import { loadPreference } from './storage'
+import { getJSONItem, loadPreference } from './storage'
 
 export const openShowEditPhysicalPhone = (phoneInformation: any, pinstatus: any) => {
   let phoneModel: any = {}
@@ -28,9 +28,9 @@ export const openShowSwitchAudioInput = (status: any) => {
 }
 
 export const getInputOutputLocalStorageValue = (currentUsername: string) => {
-  const audioInputType = loadPreference('phone-island-audio-input-device', currentUsername) || ''
+  const audioInputType = getJSONItem('phone-island-audio-input-device') || ''
 
-  const audioOutputType = loadPreference('phone-island-audio-output-device', currentUsername) || ''
+  const audioOutputType = getJSONItem('phone-island-audio-output-device') || ''
 
   return { audioInputType, audioOutputType }
 }

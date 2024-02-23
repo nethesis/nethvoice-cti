@@ -154,7 +154,7 @@ const Settings: NextPage = () => {
                       onClick={() => changeSection(item?.name)}
                       className={classNames(
                         item?.current
-                          ? 'text-grey-900 bg-gray-100 dark:bg-gray-800 dark:text-gray-50 border-l-4 border-primary'
+                          ? 'text-grey-900 bg-gray-100 dark:bg-gray-800 dark:text-gray-50 border-l-4 border-primary dark:border-primaryDark'
                           : 'text-gray-600 dark:text-gray-300 hover:text-gray-900 hover:bg-gray-100 dark:hover:bg-gray-800 dark:hover:text-gray-50',
 
                         'group rounded-md flex items-center text-sm font-medium justify-start space-x-2 w-74 mx-4 h-[3rem] cursor-pointer',
@@ -164,11 +164,16 @@ const Settings: NextPage = () => {
                       <FontAwesomeIcon
                         icon={item?.icon}
                         className={classNames(
-                          item?.current ? 'ml-3 text-gray-900 dark:text-gray-100' : 'ml-4 text-gray-700 dark:text-gray-300'
-                        , 'h-4 w-4' )}
+                          item?.current
+                            ? 'ml-3 text-gray-900 dark:text-gray-100'
+                            : 'ml-4 text-gray-700 dark:text-gray-300',
+                          'h-4 w-4',
+                        )}
                         aria-hidden='true'
                       />
-                      <span className='truncate leading-5 font-normal text-sm'>{t(`Settings.${item.name}`)}</span>
+                      <span className='truncate leading-5 font-normal text-sm'>
+                        {t(`Settings.${item.name}`)}
+                      </span>
                     </a>
                   ))}
                 </nav>

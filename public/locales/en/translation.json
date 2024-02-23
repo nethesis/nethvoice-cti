@@ -816,7 +816,8 @@
     "Audio input information tooltip": "Choose the audio input device",
     "Audio output information tooltip": "Choose the audio output device",
     "Select audio input": "Select audio input",
-    "Select audio output": "Select audio output"
+    "Select audio output": "Select audio output",
+    "Device settings": "Device settings"
   },
   "DropdownContent": {
     "Microphones": "MICROPHONES",
