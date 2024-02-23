@@ -38,7 +38,9 @@
     "ago": "fa",
     "Unknown": "Sconosciuto",
     "Confirm": "Conferma",
-    "Example": "Esempio"
+    "Example": "Esempio",
+    "Start recording message before": "Clica il bottone per iniziare a registrare la chiamata",
+    "Start recording message after": "Puoi parlare tra poco..."
   },
   "Login": {
     "User": "Utente",

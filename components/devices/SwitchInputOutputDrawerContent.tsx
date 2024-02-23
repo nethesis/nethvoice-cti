@@ -73,7 +73,7 @@ export const SwitchInputOutputDrawerContent = forwardRef<
 
   const handleUpdateAudioDevices = () => {
     eventDispatch('phone-island-audio-input-change', { deviceId: selectedAudioInput?.deviceId })
-    eventDispatch('phone-island-audio-output-change', { deviceId: selectedAudioInput?.deviceId })
+    eventDispatch('phone-island-audio-output-change', { deviceId: selectedAudioOutput?.deviceId })
     closeSideDrawer()
   }
 

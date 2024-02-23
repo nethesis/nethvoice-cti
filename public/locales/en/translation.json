@@ -53,7 +53,9 @@
     "ago": "ago",
     "Unknown": "Unknown",
     "Confirm": "Confirm",
-    "Example": "Example"
+    "Example": "Example",
+    "Start recording message before": "Click the button below to start recording",
+    "Start recording message after": "You can speak in a moment..."
   },
   "Login": {
     "User": "User",
