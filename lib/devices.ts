@@ -28,11 +28,9 @@ export const openShowSwitchAudioInput = (status: any) => {
 }
 
 export const getInputOutputLocalStorageValue = (currentUsername: string) => {
-  const audioInputType =
-    loadPreference('audioInputDeviceSelected', currentUsername) || ''
+  const audioInputType = loadPreference('phone-island-audio-input-device', currentUsername) || ''
 
-  const audioOutputType =
-    loadPreference('audioOutputDeviceSelected', currentUsername) || ''
+  const audioOutputType = loadPreference('phone-island-audio-output-device', currentUsername) || ''
 
   return { audioInputType, audioOutputType }
 }

@@ -59,23 +59,17 @@ export const SwitchInputOutputDrawerContent = forwardRef<
     }
   }, [])
 
-  const authStore = useSelector((state: RootState) => state.authentication)
-
   const handleSelectedAudioInput = (newAudioInputSelected: any) => {
     setSelectedAudioInput(newAudioInputSelected)
-    let currentSelectedAudioInput = newAudioInputSelected
-    savePreference('audioInputDeviceSelected', currentSelectedAudioInput, authStore?.username)
   }
 
   const handleSelectedAudioOutput = (newAudioOutputSelected: any) => {
     setSelectedAudioOutput(newAudioOutputSelected)
-    let currentSelectedAudioOutput = newAudioOutputSelected
-    savePreference('audioOutputDeviceSelected', currentSelectedAudioOutput, authStore?.username)
   }
 
   const handleUpdateAudioDevices = () => {
-    eventDispatch('phone-island-call-input-switch', { selectedAudioInput })
-    eventDispatch('phone-island-call-output-switch', { selectedAudioOutput })
+    eventDispatch('phone-island-audio-input-change', { selectedAudioInput })
+    eventDispatch('phone-island-audio-output-change', { selectedAudioOutput })
   }
 
   //Get input/output value from local storage
