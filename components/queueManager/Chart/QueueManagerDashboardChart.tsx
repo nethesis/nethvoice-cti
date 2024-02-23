@@ -118,10 +118,10 @@ export const QueueManagerDashboardChart: FC<QueueManagerDashboardChartProps> = (
         queuesList,
       )
 
-      creationBarChart(hourlydistribution.stackedBarComparison)
-      creationLineChartCallsHour(hourlydistribution.lineTotal)
-      creationIncomingCallsHour(hourlydistribution.stacked)
-      creationFailedCallsHour(hourlydistribution.lineFailed)
+      creationBarChart(hourlydistribution?.stackedBarComparison)
+      creationLineChartCallsHour(hourlydistribution?.lineTotal)
+      creationIncomingCallsHour(hourlydistribution?.stacked)
+      creationFailedCallsHour(hourlydistribution?.lineFailed)
       creationBarChartNotManaged(groupedNotManagedWithConvertedTimeState)
     }
   }, [dashboardData, isLoadedQueuesHistory, queuesHistory, queuesList])
@@ -130,6 +130,7 @@ export const QueueManagerDashboardChart: FC<QueueManagerDashboardChartProps> = (
     let groupedChartInformation = groupDataByHour(chartValue)
     const labels = Object.keys(groupedChartInformation)
     setLabelsOutcome(labels)
+
     const datasets = [
       {
         label: 'Answered',
@@ -373,7 +374,7 @@ export const QueueManagerDashboardChart: FC<QueueManagerDashboardChartProps> = (
             <div className='flex space-x-3 h-96'>
               <div className='min-w-0 flex-1 '>
                 {/* ... */}
-                <LineChart labels={labelsOutcome} datasets={datasetsCallsHour} />
+                <LineChart labels={labelsCallsHour} datasets={datasetsCallsHour} />
               </div>
             </div>
             {/* Zoom button */}
@@ -408,7 +409,7 @@ export const QueueManagerDashboardChart: FC<QueueManagerDashboardChartProps> = (
             <div className='flex space-x-3 h-96'>
               <div className='flex-1 w-full'>
                 {/* ... */}
-                <BarChart labels={labelsOutcome} datasets={datasetsOutcome} />
+                <BarChart labels={labelsCallsHour} datasets={datasetsOutcome} />
               </div>
             </div>
             {/* Zoom button */}
