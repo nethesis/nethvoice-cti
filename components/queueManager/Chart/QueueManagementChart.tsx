@@ -606,7 +606,7 @@ export const QueueManagementChart: FC<QueueManagementChartProps> = ({
                           <div className='flex flex-col'>
                             <div>{formatDateLoc(call.time * 1000, 'PP')}</div>
                             <div className='text-gray-500 dark:text-gray-500'>
-                              {getCallTimeToDisplay(call.time * 1000, browserTimeZone)}
+                              {getCallTimeToDisplay(call.time * 1000)}
                             </div>
                           </div>
                         </div>

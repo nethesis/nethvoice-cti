@@ -36,8 +36,20 @@ const customFormatDistance = (date: any) => {
 }
 let browserTimeZone = Intl.DateTimeFormat().resolvedOptions().timeZone
 
-const getCallDistanceToNow = (callTime: number) => {
-  const callDate = utcToZonedTime(new Date(callTime * 1000), browserTimeZone)
+const getCallDistanceToNowTemplate = (callTime: any) => {
+  const callDate = utcToZonedTime(new Date(callTime), 'UTC')
+  const timeDistance = formatDistanceToNow(callDate, { addSuffix: true, includeSeconds: false })
+
+  if (timeDistance !== '') {
+    return customFormatDistance(callDate)
+  } else {
+    return t('Common.0 minutes ago')
+  }
+}
+
+const getCallDistanceToNowIsInQueue = (callTime: any) => {
+  const timeZone = Intl.DateTimeFormat().resolvedOptions().timeZone
+  const callDate = utcToZonedTime(new Date(callTime), timeZone)
   const timeDistance = formatDistanceToNow(callDate, { addSuffix: true, includeSeconds: false })
 
   if (timeDistance !== '') {
@@ -87,22 +99,21 @@ export const CallsDate: FC<CallsDateProps> = ({ call, spaced, isInQueue, isInAnn
         </div>
       ) : !isInQueue ? (
         <div className={`flex flex-col justify-center flex-shrink-0 ${spaced ? 'gap-1.5' : ''}`}>
-          <div className='text-sm font-medium text-gray-600 dark:text-gray-100 leading-5'>
-            {getCallDistanceToNow(call.time)}
+          <div className='text-sm font-medium text-gray-600 dark:text-gray-100 leading-5	'>
+            {getCallDistanceToNowTemplate(call?.time * 1000)}
           </div>
-          <div className='text-sm text-gray-600 dark:text-gray-100 font-normal leading-5'>
-            ({formatDateLoc(call.time * 1000, 'PP')}{' '}
-            {getCallTimeToDisplay(call.time * 1000, browserTimeZone)})
+          <div className='text-sm text-gray-600 dark:text-gray-100 font-normal leading-5	'>
+            ({formatDateLoc(call?.time * 1000, 'PP')} {getCallTimeToDisplay(call?.time * 1000)})
           </div>
         </div>
       ) : (
         <div className={`flex flex-col justify-center flex-shrink-0 ${spaced ? 'gap-1.5' : ''}`}>
-          <div className='text-sm font-medium text-gray-600 dark:text-gray-100 leading-5'>
-            {getCallDistanceToNow(call.time)}
+          <div className='text-sm font-medium text-gray-600 dark:text-gray-100 leading-5	'>
+            {getCallDistanceToNowIsInQueue(call?.time * 1000)}
           </div>
-          <div className='text-sm text-gray-600 dark:text-gray-100 font-normal leading-5'>
-            ({formatDateLocIsDifferentTimezone(call.time * 1000, 'PP')}{' '}
-            {getCallTimeToDisplayIsDifferentTimezone(call.time * 1000)})
+          <div className='text-sm text-gray-600 dark:text-gray-100 font-normal leading-5	'>
+            ({formatDateLocIsDifferentTimezone(call?.time * 1000, 'PP')}{' '}
+            {getCallTimeToDisplayIsDifferentTimezone(call?.time * 1000)})
           </div>
         </div>
       )}

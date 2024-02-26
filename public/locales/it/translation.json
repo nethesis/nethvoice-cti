@@ -38,7 +38,9 @@
     "ago": "fa",
     "Unknown": "Sconosciuto",
     "Confirm": "Conferma",
-    "Example": "Esempio"
+    "Example": "Esempio",
+    "Start recording message before": "Clica il bottone per iniziare a registrare la chiamata",
+    "Start recording message after": "Puoi parlare tra poco..."
   },
   "Login": {
     "User": "Utente",
@@ -785,7 +787,15 @@
     "Try changing your search query": "Prova a cambiare la tua ricerca",
     "Keys configuration information tooltip": "Configura i tasti linea del tuo telefono",
     "Key position information tooltip": "Scegli una posizione per il pulsante",
-    "Click on confirm": "Clicca su Conferma"
+    "Click on confirm": "Clicca su Conferma",
+    "Audio settings": "Impostazioni audio",
+    "Audio input": "Audio input",
+    "Audio output": "Audio in ingresso",
+    "Audio input information tooltip": "Scegli il dispositivo di ingresso audio",
+    "Audio output information tooltip": "Scegli il dispositivo di uscita audio",
+    "Select audio input": "Seleziona l'ingresso audio",
+    "Select audio output": "Seleziona l'uscita audio",
+    "Device settings": "Impostazioni dispositivo"
   },
   "DropdownContent": {
     "Microphones": "MICROFONI",

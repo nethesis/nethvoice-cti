@@ -423,8 +423,8 @@ const Operators: NextPage = () => {
                   className={`${
                     selectedLayout === 'standard'
                       ? 'text-primary dark:text-primaryDark'
-                      : 'text-gray-600 dark:text-gray-300'
-                  }, inline-block text-center h-5 w-5 cursor-pointer`}
+                      : 'text-gray-600 dark:text-gray-500'
+                  } inline-block text-center h-5 w-5 cursor-pointer`}
                 />
               </button>
               <button className='bg-transparent' onClick={() => selectLayoutOperators('compact')}>
@@ -433,8 +433,8 @@ const Operators: NextPage = () => {
                   className={`${
                     selectedLayout === 'compact'
                       ? 'text-primary dark:text-primaryDark'
-                      : 'text-gray-600 dark:text-gray-300'
-                  }, inline-block text-center h-5 w-5 cursor-pointer`}
+                      : 'text-gray-600 dark:text-gray-500'
+                  } inline-block text-center h-5 w-5 cursor-pointer`}
                 />
               </button>
               <button className='bg-transparent' onClick={() => selectLayoutOperators('grouped')}>
@@ -443,8 +443,8 @@ const Operators: NextPage = () => {
                   className={`${
                     selectedLayout === 'grouped'
                       ? 'text-primary dark:text-primaryDark'
-                      : 'text-gray-600 dark:text-gray-300'
-                  }, inline-block text-center h-5 w-5 cursor-pointer`}
+                      : 'text-gray-600 dark:text-gray-500'
+                  } inline-block text-center h-5 w-5 cursor-pointer`}
                 />
               </button>
             </div>

@@ -24,6 +24,7 @@ import { ShowMultiplePhoneLinesDrawerContent } from '../lines'
 import { GravatarIconDrawerContent } from '../common/ProfilePicture/GravatarIconDrawerContent'
 import { SelectProfilePictureDrawerContent } from '../common/ProfilePicture/SelectProfilePictureDrawerContent'
 import { EditPhysicalPhoneDrawerContent } from '../devices/EditPhysicalPhoneDrawerContent'
+import { SwitchInputOutputDrawerContent } from '../devices/SwitchInputOutputDrawerContent'
 
 interface SideDrawerProps {
   isShown: boolean
@@ -83,6 +84,8 @@ export const SideDrawer: FC<SideDrawerProps> = ({ isShown, contentType, config, 
                         <SelectProfilePictureDrawerContent config={config} />
                       ) : contentType === 'showEditPhysicalPhone' ? (
                         <EditPhysicalPhoneDrawerContent config={config} />
+                      ) : contentType === 'showSwitchDeviceInputOutput' ? (
+                        <SwitchInputOutputDrawerContent config={config} />
                       ) : null}
                     </div>
                   </nav>
