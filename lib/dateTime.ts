@@ -14,8 +14,8 @@ export function formatDateLoc(date: any, fmt: string) {
   return format(date, fmt, { locale: getLocale() })
 }
 
-export const getCallTimeToDisplay = (date: any, timeZone: string) => {
-  return format(new Date(date), 'HH:mm', { timeZone })
+export const getCallTimeToDisplay = (date: any) => {
+  return formatInTimeZoneLoc(new Date(date), 'HH:mm', 'UTC')
 }
 
 export const formatInTimeZoneLoc = (date: any, fmt: string, tz: any) => {

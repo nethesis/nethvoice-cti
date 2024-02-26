@@ -125,11 +125,11 @@ export const SwitchInputOutputDrawerContent = forwardRef<
               <span>{t('Devices.Audio input')}</span>
               <FontAwesomeIcon
                 icon={faCircleInfo}
-                className='h-4 w-4 pl-2 py-2 text-primary dark:text-primaryDark flex items-center tooltip-pin-information'
+                className='h-4 w-4 pl-2 py-2 text-primary dark:text-primaryDark flex items-center tooltip-input-information'
                 aria-hidden='true'
               />
               {/* Audio input information tooltip */}
-              <Tooltip anchorSelect='.tooltip-pin-information' place='right'>
+              <Tooltip anchorSelect='.tooltip-input-information' place='right'>
                 {t('Devices.Audio input information tooltip') || ''}
               </Tooltip>
             </div>
@@ -221,11 +221,11 @@ export const SwitchInputOutputDrawerContent = forwardRef<
               <span>{t('Devices.Audio output')}</span>
               <FontAwesomeIcon
                 icon={faCircleInfo}
-                className='h-4 w-4 pl-2 py-2 text-primary dark:text-primaryDark flex items-center tooltip-pin-information'
+                className='h-4 w-4 pl-2 py-2 text-primary dark:text-primaryDark flex items-center tooltip-output-information'
                 aria-hidden='true'
               />
               {/* Audio output information tooltip */}
-              <Tooltip anchorSelect='.tooltip-pin-information' place='right'>
+              <Tooltip anchorSelect='.tooltip-output-information' place='right'>
                 {t('Devices.Audio output information tooltip') || ''}
               </Tooltip>
             </div>
