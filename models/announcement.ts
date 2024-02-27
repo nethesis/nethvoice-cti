@@ -5,18 +5,18 @@ import { createModel } from '@rematch/core'
 import type { RootModel } from '.'
 
 interface DefaultState {
-  reloadCommand: boolean
+  reloadValue: boolean
 }
 
 const defaultState: DefaultState = {
-  reloadCommand: false,
+  reloadValue: false,
 }
 
 export const announcement = createModel<RootModel>()({
   state: defaultState,
   reducers: {
     reload: (state) => {
-      state.reloadCommand = !state.reloadCommand
+      state.reloadValue = !state.reloadValue
       return state
     },
   },

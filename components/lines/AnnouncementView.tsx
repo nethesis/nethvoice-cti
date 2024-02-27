@@ -39,6 +39,7 @@ export const AnnouncementView: FC<AnnouncementViewProps> = ({ className }): JSX.
   const [firstRender, setFirstRender]: any = useState(true)
   const [textFilter, setTextFilter]: any = useState('')
   const [donwloadAudioMessageError, setDownloadAudioMessageError] = useState('')
+  const reloadValue = useSelector((state: RootState) => state.announcement.reloadValue)
 
   const apiEnpoint = getApiEndpoint()
   const apiScheme = getApiScheme()
@@ -115,7 +116,7 @@ export const AnnouncementView: FC<AnnouncementViewProps> = ({ className }): JSX.
     }
     fetchLines()
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [isLinesLoaded, firstRender])
+  }, [isLinesLoaded, firstRender, reloadValue])
 
   const announcement = useSelector((state: RootState) => state.announcement)
 

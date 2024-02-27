@@ -30,12 +30,12 @@ export const OperatorSummary = forwardRef<HTMLButtonElement, OperatorSummaryProp
     const auth = useSelector((state: RootState) => state.authentication)
     // Get selected operator information from operators store
     const operatorsStore = useSelector((state: RootState) => state.operators)
-    const currentOperatorInformations = operatorsStore?.operators[operator.username]
+    const currentOperatorInformations = operatorsStore?.operators[operator?.username]
     const authStore = useSelector((state: RootState) => state.authentication)
     const [isFavorite, setFavorite] = useState(false)
 
     useEffect(() => {
-      setFavorite(operator.favorite)
+      setFavorite(operator?.favorite)
     }, [operator])
 
     const toggleFavorite = () => {

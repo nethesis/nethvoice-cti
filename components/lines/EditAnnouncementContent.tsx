@@ -32,6 +32,7 @@ import {
   modifyMsg,
   deleteMsg,
 } from '../../lib/lines'
+import { store } from '../../store'
 
 export interface EditAnnouncementContentProps extends ComponentPropsWithRef<'div'> {
   config: any
@@ -59,7 +60,7 @@ export const EditAnnouncementDrawerContent = forwardRef<
 
   const contactMenuItems = (
     <>
-      <Dropdown.Item icon={faTrashCan} onClick={() => deleteAnnouncement(config.announcement_id)}>
+      <Dropdown.Item icon={faTrashCan} onClick={() => deleteAnnouncement(config?.announcement_id)}>
         {t('Common.Delete')}
       </Dropdown.Item>
     </>
@@ -76,6 +77,8 @@ export const EditAnnouncementDrawerContent = forwardRef<
     if (deleteAnnouncementId) {
       try {
         await deleteMsg(deleteAnnouncementId)
+        store.dispatch.announcement.reload()
+        closeSideDrawer()
       } catch (error) {
         setDeleteAudioMessageError('Cannot play announcement')
         return

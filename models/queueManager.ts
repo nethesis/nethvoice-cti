@@ -164,7 +164,7 @@ export const queueManagerQueues = createModel<RootModel>()({
             conversation.connected &&
             conversation.queueId === queueId
           ) {
-            connectedCalls.push({ conversation, operatorUsername: operator.username })
+            connectedCalls.push({ conversation, operatorUsername: operator?.username })
           }
         })
       })
