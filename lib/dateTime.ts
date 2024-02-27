@@ -1,10 +1,16 @@
 // Copyright (C) 2024 Nethesis S.r.l.
 // SPDX-License-Identifier: AGPL-3.0-or-later
 
-import { formatDistanceToNowStrict, formatDuration, intervalToDuration } from 'date-fns'
+import {
+  differenceInHours,
+  formatDistanceToNowStrict,
+  formatDuration,
+  intervalToDuration,
+} from 'date-fns'
 import { padStart } from 'lodash'
 import { enGB, it } from 'date-fns/locale'
-import { format, utcToZonedTime } from 'date-fns-tz'
+import { format, utcToZonedTime, zonedTimeToUtc } from 'date-fns-tz'
+import { getTimezone } from './utils'
 
 /**
  * Format a date expressed in milliseconds to current locale
@@ -156,4 +162,18 @@ export const exactDistanceToNowLoc = (date: any, options: any = {}) => {
   }
 
   return formatDuration(duration, { ...options, locale: getLocale() })
+}
+
+export const getTimeDifference = () => {
+  const serverTimeZone: any = getTimezone() || 'UTC'
+  const localTimeZone: any = Intl.DateTimeFormat().resolvedOptions().timeZone
+
+  const timeData1 = { date: new Date(), timezone: serverTimeZone }
+  const timeData2 = { date: new Date(), timezone: localTimeZone }
+
+  const t2 = zonedTimeToUtc(timeData1.date, timeData1.timezone)
+  const t1 = zonedTimeToUtc(timeData2.date, timeData2.timezone)
+
+  const differenceValueBetweenTimezone = differenceInHours(t2, t1)
+  return differenceValueBetweenTimezone
 }
