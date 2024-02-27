@@ -33,7 +33,7 @@ export const MobileApp = () => {
     const profiling = store.getState().profiling
     if (Object.keys(profiling).length > 0) {
       const hostname = profiling.publichost || profiling.hostname || window.location.hostname
-      let qrString = authData.username + ';' + authData.token + ';' + hostname
+      let qrString = `csc:${encodeURIComponent(authData.username)}@${encodeURIComponent(hostname)}:${encodeURIComponent(authData.token)}@qrcode`
       setQRString(qrString)
       setGenerated(true)
     }
