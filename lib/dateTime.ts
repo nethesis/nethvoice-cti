@@ -168,11 +168,11 @@ export const getTimeDifference = () => {
   const serverTimeZone: any = getTimezone() || 'UTC'
   const localTimeZone: any = Intl.DateTimeFormat().resolvedOptions().timeZone
 
-  const timeData1 = { date: new Date(), timezone: serverTimeZone }
-  const timeData2 = { date: new Date(), timezone: localTimeZone }
+  const timeDataServer = { date: new Date(), timezone: serverTimeZone }
+  const timeDataLocal = { date: new Date(), timezone: localTimeZone }
 
-  const t2 = zonedTimeToUtc(timeData1.date, timeData1.timezone)
-  const t1 = zonedTimeToUtc(timeData2.date, timeData2.timezone)
+  const t2 = zonedTimeToUtc(timeDataServer.date, timeDataServer.timezone)
+  const t1 = zonedTimeToUtc(timeDataLocal.date, timeDataLocal.timezone)
 
   const differenceValueBetweenTimezone = differenceInHours(t2, t1)
   return differenceValueBetweenTimezone
