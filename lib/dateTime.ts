@@ -49,7 +49,7 @@ export function formatDateLocIsAnnouncement(date: any) {
   return format(formattedDate, 'PP', { locale: getLocale() })
 }
 
-export const getCallTimeToDisplayIsAnnouncement = (date: any) => {
+export const getCallTimeToDisplayIsAnnouncement = (date: any, differenceInHours: any) => {
   const timeParts = date?.time_creation.split(':')
   const hour = parseInt(timeParts[0], 10)
   const minute = parseInt(timeParts[1], 10)
@@ -57,26 +57,7 @@ export const getCallTimeToDisplayIsAnnouncement = (date: any) => {
 
   const formattedTime = new Date(0, 0, 0, hour, minute, second)
 
-  return formatInTimeZoneLoc(formattedTime, 'HH:mm', 'UTC')
-}
-
-export const formatInTimeZoneLocIsAnnouncement = (date: any, fmt: string, tz: any) => {
-  const dateParts = date?.date_creation.split('/')
-  const timeParts = date?.time_creation.split('/')
-
-  const year = parseInt(dateParts[2], 10)
-  const month = parseInt(dateParts[1], 10) - 1
-  const day = parseInt(dateParts[0], 10)
-  const hour = parseInt(timeParts[0], 10)
-  const minute = parseInt(timeParts[1], 10)
-  const second = parseInt(timeParts[2], 10)
-
-  const formattedDateAndTime = new Date(year, month, day, hour, minute, second)
-
-  return format(utcToZonedTime(formattedDateAndTime, tz), fmt, {
-    timeZone: tz,
-    locale: getLocale(),
-  })
+  return formatInTimeZoneLoc(formattedTime, 'HH:mm', differenceInHours)
 }
 
 /**
