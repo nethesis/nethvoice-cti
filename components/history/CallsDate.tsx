@@ -1,5 +1,5 @@
 import { FC, useEffect, useState } from 'react'
-import { formatDistance } from 'date-fns'
+import { formatDistance, getUnixTime, parse, toDate } from 'date-fns'
 import { format } from 'date-fns-tz'
 import { utcToZonedTime } from 'date-fns-tz'
 import { enGB, it } from 'date-fns/locale'
@@ -9,6 +9,7 @@ import {
   getTimeDifference,
 } from '../../lib/dateTime'
 import i18next from 'i18next'
+import { UTCDate } from '@date-fns/utc'
 
 interface CallsDateProps {
   call: any
@@ -77,16 +78,12 @@ export const CallsDate: FC<CallsDateProps> = ({ call, spaced, isInQueue, isInAnn
       const minute = parseInt(timeParts[1], 10)
       const second = parseInt(timeParts[2], 10)
 
-      const callDate = new Date(year, month, day, hour, minute, second)
-
-      if (isNaN(callDate.getTime())) {
-        return 'Invalid date or time format'
-      }
+      const utcDate = new UTCDate(year, month, day, hour, minute, second)
 
       return (
         <div className='text-sm font-medium text-gray-600 dark:text-gray-100 leading-5'>
           {formatDistance(
-            utcToZonedTime(callDate, differenceBetweenTimezone),
+            utcToZonedTime(utcDate, differenceBetweenTimezone),
             utcToZonedTime(new Date(), localTimeZone),
             {
               addSuffix: true,
