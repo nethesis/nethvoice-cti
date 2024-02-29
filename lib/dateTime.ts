@@ -1,10 +1,17 @@
 // Copyright (C) 2024 Nethesis S.r.l.
 // SPDX-License-Identifier: AGPL-3.0-or-later
 
-import { formatDistanceToNowStrict, formatDuration, intervalToDuration } from 'date-fns'
+import {
+  differenceInHours,
+  formatDistanceToNowStrict,
+  formatDuration,
+  intervalToDuration,
+} from 'date-fns'
 import { padStart } from 'lodash'
 import { enGB, it } from 'date-fns/locale'
-import { format, utcToZonedTime } from 'date-fns-tz'
+import { format, utcToZonedTime, zonedTimeToUtc } from 'date-fns-tz'
+import { getTimezone } from './utils'
+import { UTCDate } from '@date-fns/utc'
 
 /**
  * Format a date expressed in milliseconds to current locale
@@ -43,34 +50,15 @@ export function formatDateLocIsAnnouncement(date: any) {
   return format(formattedDate, 'PP', { locale: getLocale() })
 }
 
-export const getCallTimeToDisplayIsAnnouncement = (date: any) => {
+export const getCallTimeToDisplayIsAnnouncement = (date: any, differenceInHours: any) => {
   const timeParts = date?.time_creation.split(':')
   const hour = parseInt(timeParts[0], 10)
   const minute = parseInt(timeParts[1], 10)
   const second = parseInt(timeParts[2], 10)
 
-  const formattedTime = new Date(0, 0, 0, hour, minute, second)
+  const formattedTime = new UTCDate(0, 0, 0, hour, minute, second)
 
-  return formatInTimeZoneLoc(formattedTime, 'HH:mm', 'UTC')
-}
-
-export const formatInTimeZoneLocIsAnnouncement = (date: any, fmt: string, tz: any) => {
-  const dateParts = date?.date_creation.split('/')
-  const timeParts = date?.time_creation.split('/')
-
-  const year = parseInt(dateParts[2], 10)
-  const month = parseInt(dateParts[1], 10) - 1
-  const day = parseInt(dateParts[0], 10)
-  const hour = parseInt(timeParts[0], 10)
-  const minute = parseInt(timeParts[1], 10)
-  const second = parseInt(timeParts[2], 10)
-
-  const formattedDateAndTime = new Date(year, month, day, hour, minute, second)
-
-  return format(utcToZonedTime(formattedDateAndTime, tz), fmt, {
-    timeZone: tz,
-    locale: getLocale(),
-  })
+  return formatInTimeZoneLoc(formattedTime, 'HH:mm', differenceInHours)
 }
 
 /**
@@ -156,4 +144,23 @@ export const exactDistanceToNowLoc = (date: any, options: any = {}) => {
   }
 
   return formatDuration(duration, { ...options, locale: getLocale() })
+}
+
+export const getTimeDifference = (isInQueue: boolean) => {
+  const serverTimeZone: any = getTimezone() || 'UTC'
+  const localTimeZone: any = Intl.DateTimeFormat().resolvedOptions().timeZone
+
+  const timeDataServer = { date: new Date(), timezone: serverTimeZone }
+  const timeDataLocal = { date: new Date(), timezone: localTimeZone }
+
+  const t2 = zonedTimeToUtc(timeDataServer.date, timeDataServer.timezone)
+  const t1 = zonedTimeToUtc(timeDataLocal.date, timeDataLocal.timezone)
+
+  let differenceValueBetweenTimezone = differenceInHours(t2, t1)
+
+  if (isInQueue) {
+    differenceValueBetweenTimezone += 1
+  }
+
+  return differenceValueBetweenTimezone
 }

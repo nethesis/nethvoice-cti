@@ -111,6 +111,14 @@ export function getProductName() {
   return `${window.CONFIG.PRODUCT_NAME}`
 }
 
+export function getTimezone() {
+  if (typeof window === 'undefined') {
+    return ''
+  }
+  // @ts-ignore
+  return `${window.CONFIG.TIMEZONE}`
+}
+
 export function getApiEndpoint() {
   if (typeof window === 'undefined') {
     return ''

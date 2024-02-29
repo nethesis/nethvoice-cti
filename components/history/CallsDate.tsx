@@ -1,15 +1,15 @@
-import { FC } from 'react'
-import { formatDistanceToNow, intervalToDuration } from 'date-fns'
+import { FC, useEffect, useState } from 'react'
+import { formatDistance, getUnixTime, parse, toDate } from 'date-fns'
+import { format } from 'date-fns-tz'
 import { utcToZonedTime } from 'date-fns-tz'
-import { t } from 'i18next'
+import { enGB, it } from 'date-fns/locale'
 import {
-  formatDateLoc,
-  formatDateLocIsDifferentTimezone,
   formatDateLocIsAnnouncement,
-  getCallTimeToDisplayIsDifferentTimezone,
   getCallTimeToDisplayIsAnnouncement,
+  getTimeDifference,
 } from '../../lib/dateTime'
-import { getCallTimeToDisplay } from '../../lib/dateTime'
+import i18next from 'i18next'
+import { UTCDate } from '@date-fns/utc'
 
 interface CallsDateProps {
   call: any
@@ -18,105 +18,138 @@ interface CallsDateProps {
   isInAnnouncement?: boolean
 }
 
-const customFormatDistance = (date: any) => {
-  const duration: any = intervalToDuration({
-    start: date,
-    end: new Date(),
-  })
-
-  if (duration?.months > 0) {
-    return `${duration?.months} m ${duration?.days} d ${t('Common.ago')}`
-  } else if (duration?.days > 0) {
-    return `${duration?.days} d ${duration?.hours} h ${t('Common.ago')}`
-  } else if (duration?.hours > 0) {
-    return `${duration?.hours} h ${duration?.minutes} min ${t('Common.ago')}`
-  } else {
-    return `${duration?.minutes} min ${t('Common.ago')}`
-  }
-}
-let browserTimeZone = Intl.DateTimeFormat().resolvedOptions().timeZone
-
-const getCallDistanceToNowTemplate = (callTime: any) => {
-  const callDate = utcToZonedTime(new Date(callTime), 'UTC')
-  const timeDistance = formatDistanceToNow(callDate, { addSuffix: true, includeSeconds: false })
-
-  if (timeDistance !== '') {
-    return customFormatDistance(callDate)
-  } else {
-    return t('Common.0 minutes ago')
-  }
-}
-
-const getCallDistanceToNowIsInQueue = (callTime: any) => {
-  const timeZone = Intl.DateTimeFormat().resolvedOptions().timeZone
-  const callDate = utcToZonedTime(new Date(callTime), timeZone)
-  const timeDistance = formatDistanceToNow(callDate, { addSuffix: true, includeSeconds: false })
-
-  if (timeDistance !== '') {
-    return customFormatDistance(callDate)
-  } else {
-    return t('Common.0 minutes ago')
-  }
-}
-
-const getCallDistanceToNowTemplateIsAnnouncement = (date: any) => {
-  const dateParts = date?.date_creation.split('/')
-  const timeParts = date?.time_creation.split(':')
-
-  if (dateParts.length !== 3 || timeParts.length !== 3) {
-    return 'Invalid date or time format'
-  }
-
-  const year = parseInt(dateParts[2], 10)
-  const month = parseInt(dateParts[1], 10) - 1
-  const day = parseInt(dateParts[0], 10)
-  const hour = parseInt(timeParts[0], 10)
-  const minute = parseInt(timeParts[1], 10)
-  const second = parseInt(timeParts[2], 10)
-
-  const dateHour = new Date(year, month, day, hour, minute, second)
-  const callDate = utcToZonedTime(dateHour, browserTimeZone)
-  const timeDistance = formatDistanceToNow(callDate, { addSuffix: true, includeSeconds: false })
-
-  if (timeDistance !== '') {
-    return customFormatDistance(callDate)
-  } else {
-    return t('Common.0 minutes ago')
-  }
-}
-
 export const CallsDate: FC<CallsDateProps> = ({ call, spaced, isInQueue, isInAnnouncement }) => {
+  const [selectedLanguage, setSelectedLanguage] = useState('')
+
+  // trasform the diff value to the format +hhmm or -hhmm
+  const diffValueConversation = (diffValueOriginal: any) => {
+    // determine the sign
+    const sign = diffValueOriginal >= 0 ? '+' : '-'
+
+    // convert hours to string and pad with leading zeros if necessary
+    const hours = Math.abs(diffValueOriginal).toString().padStart(2, '0')
+
+    // minutes are always '00'
+    const minutes = '00'
+    return `${sign}${hours}${minutes}`
+  }
+
+  // get the local timezone offset in the format +hhmm or -hhmm
+  const getLocalTimezoneOffset = () => {
+    let localTimezone = Intl.DateTimeFormat().resolvedOptions().timeZone
+    const now = new Date()
+    const offset = format(now, 'xx', { timeZone: localTimezone })
+    return offset
+  }
+
+  // get the difference between the local timezone and the timezone of the server
+  const getDifferenceBetweenTimezone = (isInQueue: boolean) => {
+    let differenceValueBetweenTimezone: any
+    if (isInQueue) {
+      differenceValueBetweenTimezone = getTimeDifference(true)
+    } else {
+      differenceValueBetweenTimezone = getTimeDifference(false)
+    }
+
+    let diffValueEditedFormat = diffValueConversation(differenceValueBetweenTimezone)
+    return diffValueEditedFormat
+  }
+
+  const getHeader = (call: any, isInAnnouncement: boolean) => {
+    let localTimeZone = getLocalTimezoneOffset()
+    let differenceBetweenTimezone = ''
+    if (isInQueue) {
+      differenceBetweenTimezone = getDifferenceBetweenTimezone(true)
+    } else {
+      differenceBetweenTimezone = getDifferenceBetweenTimezone(false)
+    }
+    if (isInAnnouncement) {
+      const dateParts = call?.date_creation.split('/')
+      const timeParts = call?.time_creation.split(':')
+
+      if (dateParts.length !== 3 || timeParts.length !== 3) {
+        return 'Invalid date or time format'
+      }
+
+      const day = parseInt(dateParts[0], 10)
+      const month = parseInt(dateParts[1], 10) - 1
+      const year = parseInt(dateParts[2], 10)
+      const hour = parseInt(timeParts[0], 10)
+      const minute = parseInt(timeParts[1], 10)
+      const second = parseInt(timeParts[2], 10)
+
+      const utcDate = new UTCDate(year, month, day, hour, minute, second)
+
+      return (
+        <div className='text-sm font-medium text-gray-600 dark:text-gray-100 leading-5'>
+          {formatDistance(
+            utcToZonedTime(utcDate, differenceBetweenTimezone),
+            utcToZonedTime(new Date(), localTimeZone),
+            {
+              addSuffix: true,
+              includeSeconds: true,
+              locale: selectedLanguage === 'it' ? it : enGB,
+            },
+          )}
+        </div>
+      )
+    } else {
+      return (
+        <div className='text-sm font-medium text-gray-600 dark:text-gray-100 leading-5'>
+          {formatDistance(
+            utcToZonedTime(call?.time * 1000, differenceBetweenTimezone),
+            utcToZonedTime(new Date(), localTimeZone),
+            {
+              addSuffix: true,
+              includeSeconds: true,
+              locale: selectedLanguage === 'it' ? it : enGB,
+            },
+          )}
+        </div>
+      )
+    }
+  }
+
+  const getBody = (call: any, isInAnnouncement: boolean) => {
+    let differenceBetweenTimezone = ''
+    if (isInQueue) {
+      differenceBetweenTimezone = getDifferenceBetweenTimezone(true)
+    } else {
+      differenceBetweenTimezone = getDifferenceBetweenTimezone(false)
+    }
+
+    if (isInAnnouncement) {
+      return (
+        <div className='text-sm text-gray-600 dark:text-gray-100 font-normal leading-5'>
+          ({formatDateLocIsAnnouncement(call)}{' '}
+          {getCallTimeToDisplayIsAnnouncement(call, differenceBetweenTimezone)})
+        </div>
+      )
+    } else {
+      return (
+        <div className='text-sm text-gray-600 dark:text-gray-100 font-normal leading-5'>
+          (
+          {format(utcToZonedTime(call?.time * 1000, differenceBetweenTimezone), 'd MMM yyyy HH:mm')}
+          )
+        </div>
+      )
+    }
+  }
+
+  // check browser language and set the selected language
+  useEffect(() => {
+    if (i18next?.languages[0] !== '') {
+      setSelectedLanguage(i18next?.languages[0])
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [i18next?.languages[0]])
+
   return (
     <>
-      {isInAnnouncement ? (
-        <div className={`flex flex-col justify-center flex-shrink-0 ${spaced ? 'gap-1.5' : ''}`}>
-          <div className='text-sm font-medium text-gray-600 dark:text-gray-100 leading-5'>
-            {getCallDistanceToNowTemplateIsAnnouncement(call)}{' '}
-          </div>
-          <div className='text-sm text-gray-600 dark:text-gray-100 font-normal leading-5'>
-            ({formatDateLocIsAnnouncement(call)} {getCallTimeToDisplayIsAnnouncement(call)})
-          </div>
-        </div>
-      ) : !isInQueue ? (
-        <div className={`flex flex-col justify-center flex-shrink-0 ${spaced ? 'gap-1.5' : ''}`}>
-          <div className='text-sm font-medium text-gray-600 dark:text-gray-100 leading-5	'>
-            {getCallDistanceToNowTemplate(call?.time * 1000)}
-          </div>
-          <div className='text-sm text-gray-600 dark:text-gray-100 font-normal leading-5	'>
-            ({formatDateLoc(call?.time * 1000, 'PP')} {getCallTimeToDisplay(call?.time * 1000)})
-          </div>
-        </div>
-      ) : (
-        <div className={`flex flex-col justify-center flex-shrink-0 ${spaced ? 'gap-1.5' : ''}`}>
-          <div className='text-sm font-medium text-gray-600 dark:text-gray-100 leading-5	'>
-            {getCallDistanceToNowIsInQueue(call?.time * 1000)}
-          </div>
-          <div className='text-sm text-gray-600 dark:text-gray-100 font-normal leading-5	'>
-            ({formatDateLocIsDifferentTimezone(call?.time * 1000, 'PP')}{' '}
-            {getCallTimeToDisplayIsDifferentTimezone(call?.time * 1000)})
-          </div>
-        </div>
-      )}
+      <div className={`flex flex-col justify-center flex-shrink-0 ${spaced ? 'gap-1.5' : ''}`}>
+        {getHeader(call, isInAnnouncement ? true : false)}
+        {getBody(call, isInAnnouncement ? true : false)}
+      </div>
     </>
   )
 }
