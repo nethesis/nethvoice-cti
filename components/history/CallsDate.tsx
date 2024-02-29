@@ -42,15 +42,26 @@ export const CallsDate: FC<CallsDateProps> = ({ call, spaced, isInQueue, isInAnn
   }
 
   // get the difference between the local timezone and the timezone of the server
-  const getDifferenceBetweenTimezone = () => {
-    let differenceValueBetweenTimezone = getTimeDifference()
+  const getDifferenceBetweenTimezone = (isInQueue: boolean) => {
+    let differenceValueBetweenTimezone: any
+    if (isInQueue) {
+      differenceValueBetweenTimezone = getTimeDifference(true)
+    } else {
+      differenceValueBetweenTimezone = getTimeDifference(false)
+    }
+
     let diffValueEditedFormat = diffValueConversation(differenceValueBetweenTimezone)
     return diffValueEditedFormat
   }
 
   const getHeader = (call: any, isInAnnouncement: boolean) => {
     let localTimeZone = getLocalTimezoneOffset()
-    let differenceBetweenTimezone = getDifferenceBetweenTimezone()
+    let differenceBetweenTimezone = ''
+    if (isInQueue) {
+      differenceBetweenTimezone = getDifferenceBetweenTimezone(true)
+    } else {
+      differenceBetweenTimezone = getDifferenceBetweenTimezone(false)
+    }
     if (isInAnnouncement) {
       const dateParts = call?.date_creation.split('/')
       const timeParts = call?.time_creation.split(':')
@@ -71,9 +82,6 @@ export const CallsDate: FC<CallsDateProps> = ({ call, spaced, isInQueue, isInAnn
       if (isNaN(callDate.getTime())) {
         return 'Invalid date or time format'
       }
-
-      let differenceBetweenTimezone = getDifferenceBetweenTimezone()
-      let localTimeZone = getLocalTimezoneOffset()
 
       return (
         <div className='text-sm font-medium text-gray-600 dark:text-gray-100 leading-5'>
@@ -106,7 +114,13 @@ export const CallsDate: FC<CallsDateProps> = ({ call, spaced, isInQueue, isInAnn
   }
 
   const getBody = (call: any, isInAnnouncement: boolean) => {
-    let differenceBetweenTimezone = getDifferenceBetweenTimezone()
+    let differenceBetweenTimezone = ''
+    if (isInQueue) {
+      differenceBetweenTimezone = getDifferenceBetweenTimezone(true)
+    } else {
+      differenceBetweenTimezone = getDifferenceBetweenTimezone(false)
+    }
+
     if (isInAnnouncement) {
       return (
         <div className='text-sm text-gray-600 dark:text-gray-100 font-normal leading-5'>
