@@ -40,7 +40,8 @@
     "Confirm": "Conferma",
     "Example": "Esempio",
     "Start recording message before": "Clica il bottone per iniziare a registrare la chiamata",
-    "Start recording message after": "Puoi parlare tra poco..."
+    "Start recording message after": "Puoi parlare tra poco...",
+    "Permission error": "Errore di permessi?"
   },
   "Login": {
     "User": "Utente",
