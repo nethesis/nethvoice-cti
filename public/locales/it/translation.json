@@ -48,7 +48,8 @@
     "Permission error message content link": "Fortunatamente puoi tornare a",
     "Close": "Chiudi",
     "Main page": "Pagina principale",
-    "SessionExpired": "Sessione scaduta"
+    "SessionExpired": "Sessione scaduta",
+    "DoubleLogin": "Accesso duplicato"
   },
   "Login": {
     "User": "Utente",
