@@ -41,7 +41,9 @@
     "Example": "Esempio",
     "Start recording message before": "Clica il bottone per iniziare a registrare la chiamata",
     "Start recording message after": "Puoi parlare tra poco...",
-    "Permission error": "Errore di permessi?"
+    "Permission error": "Errore di permessi?",
+    "DD/MM/YYYY": "DD/MM/YYYY",
+    "Customercards": "Schede clienti"
   },
   "Login": {
     "User": "Utente",
