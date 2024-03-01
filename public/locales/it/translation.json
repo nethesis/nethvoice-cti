@@ -41,9 +41,13 @@
     "Example": "Esempio",
     "Start recording message before": "Clica il bottone per iniziare a registrare la chiamata",
     "Start recording message after": "Puoi parlare tra poco...",
-    "Permission error": "Errore di permessi?",
+    "Permission error": "Errore di permessi",
     "DD/MM/YYYY": "DD/MM/YYYY",
-    "Customercards": "Schede clienti"
+    "Customercards": "Schede clienti",
+    "Permission error message content": "Spiacenti, sembra che non hai il permesso di accedere a questa pagina.",
+    "Permission error message content link": "Fortunatamente puoi tornare a",
+    "Close": "Chiudi",
+    "Main page": "Pagina principale"
   },
   "Login": {
     "User": "Utente",
