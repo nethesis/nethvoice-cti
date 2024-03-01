@@ -50,7 +50,12 @@
     "Main page": "Pagina principale",
     "SessionExpired": "Sessione scaduta",
     "DoubleLogin": "Accesso duplicato",
-    "Session expired": "Sessione scaduta"
+    "Session expired": "Sessione scaduta",
+    "User login duplicated": "Accesso utente duplicato",
+    "You have made login in another tab": "Hai fatto l'accesso in un'altra scheda",
+    "Login": "Accesso",
+    "": "Accesso",
+    "Click to redirect": "Clicca per reindirizzare"
   },
   "Login": {
     "User": "Utente",
@@ -61,7 +66,8 @@
     "Contact administrator for access": "Contatta l' amministratore per l' accesso",
     "Wrong username or password": "Nome utente o password errati",
     "Network connection is lost": "Connessione di rete persa",
-    "Login failed": "Accesso fallito"
+    "Login failed": "Accesso fallito",
+    "Session expired, log in again": "Sessione scaduta, accedi nuovamente"
   },
   "Phonebook": {
     "Phonebook": "Rubrica",
@@ -106,7 +112,11 @@
     "Last calls": "Ultime chiamate",
     "No recent calls": "Nessuna chiamata",
     "Company contacts": "Contatti aziendali",
-    "No results": "Nessun risultato"
+    "No results": "Nessun risultato",
+    "Delete contact": "Elimina contatto",
+    "Open contact menu": "Apri menu contatto",
+    "Home phone": "Telefono abitazione",
+    "Calls": "Chiamate"
   },
   "History": {
     "History": "Storico",
@@ -148,7 +158,9 @@
     "Start time": "Tempo di inizio",
     "End time": "Tempo di fine",
     "Choose a date range": "Scegli un intervallo",
-    "Groups": "Gruppi"
+    "Groups": "Gruppi",
+    "Call in Voicemail": "Chiamata segreteria",
+    "to": "a"
   },
   "Operators": {
     "Operators": "Operatori",
@@ -268,7 +280,8 @@
     "Do not disturb": "Non disturbare",
     "Available presence": "Presence disponibili",
     "Show customer card": "Mostra schede cliente",
-    "Customer cards": "Schede cliente"
+    "Customer cards": "Schede cliente",
+    "Customer card show type": "Visualizza tipo scheda clienti"
   },
   "TopBar": {
     "Signed in as": "Accesso effettuato come",
@@ -303,7 +316,10 @@
     "Incoming": "In entrata",
     "Outgoing": "In uscita",
     "Duration": "Durata",
-    "Toggle favorite operator": "Attiva/disattiva l'operatore preferito"
+    "Toggle favorite operator": "Attiva/disattiva l'operatore preferito",
+    "Restart recording": "Riprendi registrazione",
+    "Stop recording": "Ferma registrazione",
+    "Start recording": "Inizia registrazione"
   },
   "Lines": {
     "Lines management": "Gestione linee",
@@ -424,7 +440,13 @@
     "Speed dial delete message": "La chiamata rapida {{deletingName}} verrà eliminata",
     "Upload failed": "Caricamento fallito",
     "Cannot delete speed dial": "Impossibile cancellare le chiamate rapide",
-    "Cannot import speed dial": "Impossibile importare le chiamate rapide"
+    "Cannot import speed dial": "Impossibile importare le chiamate rapide",
+    "Edit speed dial": "Modifica chiamata rapida",
+    "Speed dial edit message": "Hai appena modificato una chiamata rapida: {{extensionWaiting}}",
+    "Speed dial edited": "Chiamata rapida modificata",
+    "Save speed dial": "Salva chiamata rapida",
+    "Speed dial creation message": "Avete appena creato una nuova chiamata rapida: {{extensionWaiting}}",
+    "Speed dial created": "Creata chiamata rapida"
   },
   "LastCalls": {
     "Last calls": "Ultime chiamate",
@@ -542,7 +564,8 @@
   },
   "NavBars": {
     "Speed dial": "Chiamata rapida",
-    "Last calls": "Ultime chiamate"
+    "Last calls": "Ultime chiamate",
+    "Speed dials": "Chiamate rapide"
   },
   "Tooltip": {
     "Hangup": "Chiudi",
@@ -807,7 +830,8 @@
     "Audio output information tooltip": "Scegli il dispositivo di uscita audio",
     "Select audio input": "Seleziona l'ingresso audio",
     "Select audio output": "Seleziona l'uscita audio",
-    "Device settings": "Impostazioni dispositivo"
+    "Device settings": "Impostazioni dispositivo",
+    "Pin information tooltip body": "O lasciare vuoto per disattivare"
   },
   "DropdownContent": {
     "Microphones": "MICROFONI",
