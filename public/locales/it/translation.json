@@ -47,7 +47,8 @@
     "Permission error message content": "Spiacenti, sembra che non hai il permesso di accedere a questa pagina.",
     "Permission error message content link": "Fortunatamente puoi tornare a",
     "Close": "Chiudi",
-    "Main page": "Pagina principale"
+    "Main page": "Pagina principale",
+    "SessionExpired": "Sessione scaduta"
   },
   "Login": {
     "User": "Utente",
