@@ -1,1 +1,33 @@
-{}
+{
+  "Common": {
+    "Reset filters": "Reestablecer filtros",
+    "Previous page": "Página anterior",
+    "Try changing your search filters": "Intenta cambiar tus filtros de búsqueda",
+    "Add to favorites": "Añadir a favoritos",
+    "Remove from favorites": "Eliminar de favoritos",
+    "Warning": "Advertencia",
+    "Calling": "Llamando",
+    "Settings": "Ajustes",
+    "Queues": "Colas",
+    "or": "ó",
+    "Queuemanager": "Administración de cola",
+    "Permission error": "Error de permisos",
+    "Showing": "Mostrando",
+    "of": "de",
+    "Close menu": "Cerrar menú",
+    "Active filters": "Filtros activos",
+    "Filters": "Filtros",
+    "Next page": "Página siguiente",
+    "Coming soon": "Próximamente",
+    "Cancel": "Cancelar",
+    "Save": "Guardar",
+    "Phone number": "Número de teléfono",
+    "Operators": "Operadores",
+    "time_distance_ago": "Hace {{ timeDistance }}",
+    "0 minutes ago": "Hace 0 minutos",
+    "Phonebook": "Agenda",
+    "History": "Historial",
+    "Applications": "Aplicaciones",
+    "Customercards": "Tarjetas de cliente"
+  }
+}
