@@ -28,6 +28,13 @@
     "Phonebook": "Agenda",
     "History": "Historial",
     "Applications": "Aplicaciones",
-    "Customercards": "Tarjetas de cliente"
+    "Customercards": "Tarjetas de cliente",
+    "Reset to defaults": "Restablecer a predeterminados",
+    "Loading": "Cargando",
+    "Delete": "Eliminar",
+    "Edit": "Editar",
+    "Lines": "Líneas",
+    "DD/MM/YYYY": "DD/MM/YYYY",
+    "Download": "Descarga"
   }
 }
