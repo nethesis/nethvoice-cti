@@ -110,6 +110,7 @@ export const Layout: FC<LayoutProps> = ({ children }) => {
           avatar: userInfo.data.settings.avatar,
           settings: userInfo.data.settings,
           recallOnBusy: userInfo?.data?.recallOnBusy,
+          lkhash: userInfo?.data?.lkhash,
         })
         setUserInfoLoaded(true)
       } else {

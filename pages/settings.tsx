@@ -41,6 +41,8 @@ interface SettingsMenuTypes {
 const Settings: NextPage = () => {
   const { t } = useTranslation()
   const authStore = useSelector((state: RootState) => state.authentication)
+  const profile = useSelector((state: RootState) => state.user)
+
   const [firstRender, setFirstRender]: any = useState(true)
   const router = useRouter()
 
@@ -56,6 +58,43 @@ const Settings: NextPage = () => {
   ]
 
   const [items, setItems] = useState<SettingsMenuTypes[]>(settingsMenu)
+
+  //Hidden at the moment, waiting for lkhash value
+  // const [integrationsPresent, setIntegrationsPresent] = useState(false)
+  // const [mobileAppPresent, setMobileAppPresent] = useState(false)
+
+  // useEffect(() => {
+  //   // Check if "Integrations" is present and the permission is defined and not empty, set the indicator to true
+  //   if (!integrationsPresent && profile?.lkhash !== undefined && profile?.lkhash !== '') {
+  //     setIntegrationsPresent(true)
+  //     setItems((prevItems) => [
+  //       ...prevItems,
+  //       { name: 'Integrations', href: '#', icon: faPuzzlePiece, current: false },
+  //     ])
+  //   }
+
+  //   // If "Integrations" is present but the permission becomes an empty string or undefined, remove "Integrations"
+  //   if (integrationsPresent && (profile?.lkhash === undefined || profile?.lkhash === '')) {
+  //     setItems((prevItems) => prevItems.filter((item) => item.name !== 'Integrations'))
+  //     setIntegrationsPresent(false)
+  //   }
+
+  //   // Check if "Mobile App" is present and the permission is defined and not empty, set the indicator to true
+  //   if (!mobileAppPresent && profile?.lkhash !== undefined && profile?.lkhash !== '') {
+  //     setMobileAppPresent(true)
+  //     setItems((prevItems) => [
+  //       ...prevItems,
+  //       { name: 'Mobile App', href: '#', icon: faMobile, current: false },
+  //     ])
+  //   }
+
+  //   // If "Mobile App" is present but the permission becomes an empty string or undefined, remove "Mobile App"
+  //   if (mobileAppPresent && (profile?.lkhash === undefined || profile?.lkhash === '')) {
+  //     setItems((prevItems) => prevItems.filter((item) => item.name !== 'Mobile App'))
+  //     setMobileAppPresent(false)
+  //   }
+  // }, [profile?.lkhash, integrationsPresent, mobileAppPresent])
+
   const [currentSection, setCurrentSection] = useState<string>(settingsMenu[0].name)
 
   useEffect(() => {
@@ -133,8 +172,6 @@ const Settings: NextPage = () => {
       currentUsername: authStore.username,
     })
   }
-
-  const { profile } = useSelector((state: RootState) => state.user)
 
   return (
     <>
