@@ -280,7 +280,9 @@
     "For the following states": "For the following states",
     "Callforward": "Forward",
     "Do not disturb": "Do not disturb",
-    "Available presence": "Available presence"
+    "Available presence": "Available presence",
+    "NethLink configuration": "NethLink configuration",
+    "Get NethLink configuration": "Get configuration"
   },
   "TopBar": {
     "Signed in as": "Signed in as",

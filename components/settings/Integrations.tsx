@@ -1,4 +1,4 @@
-// Copyright (C) 2023 Nethesis S.r.l.
+// Copyright (C) 2024 Nethesis S.r.l.
 // SPDX-License-Identifier: AGPL-3.0-or-later
 
 import { RefObject, createRef, useState, useEffect } from 'react'
@@ -81,6 +81,87 @@ export const Integrations = () => {
     checkPhoneIslandToken()
   }, [])
 
+  const phoneIslandSection = () => {
+    return (
+      <div>
+        <h4
+          id='phone-configuration-heading'
+          className='text-sm font-medium leading-6 text-gray-900 dark:text-gray-100'
+        >
+          {t('Settings.Phone Island configuration')}
+        </h4>
+        <p className='mt-1 text-sm text-gray-500 dark:text-gray-400'>
+          {t('Settings.phone_island_integration_description', { productName })}
+        </p>
+        <p className='mt-6 flex items-center gap-2'>
+          {loading && (
+            <Button variant='white' disabled>
+              {t('Common.Loading')}{' '}
+              <FontAwesomeIcon icon={faCircleNotch} className='fa-spin ml-2' />
+            </Button>
+          )}
+          {!loading && !tokenExists && (
+            <Button variant='white' onClick={newConfig}>
+              {t('Settings.Get Phone Island configuration')}{' '}
+            </Button>
+          )}
+          {!loading && tokenExists && (
+            <Button variant='white' onClick={() => setShowMondal(true)}>
+              {t('Settings.Revoke configuration')}
+            </Button>
+          )}
+        </p>
+
+        {config && (
+          <>
+            <InlineNotification className='mt-5' type='warning' title={t('Common.Warning')}>
+              <p>
+                {t(
+                  'Settings.The configuration string below is shown only once. If you will need it later, please save it in a safe place',
+                )}
+              </p>
+            </InlineNotification>
+            <div className='mt-5 bg-gray-50 dark:bg-gray-900 dark:border dark:border-gray-800 p-5 rounded-lg text-gray-900 dark:text-gray-100 flex gap-5 items-center'>
+              <div className='text-sm break-all'>{config}</div>
+              <CopyToClipboard text={config} onCopy={() => setCopied(true)}>
+                <Button variant='white' className='h-9 w-9'>
+                  {copied ? (
+                    <FontAwesomeIcon
+                      className='w-4 h-4 text-green-600'
+                      icon={faCheck}
+                      aria-hidden='true'
+                    />
+                  ) : (
+                    <FontAwesomeIcon className='w-4 h-4' icon={faClipboard} aria-hidden='true' />
+                  )}
+                </Button>
+              </CopyToClipboard>
+            </div>
+          </>
+        )}
+      </div>
+    )
+  }
+
+  const nethLinkSection = () => {
+    return (
+      <div>
+        <h4
+          id='neth-link-heading'
+          className='text-sm font-medium leading-6 text-gray-900 dark:text-gray-100 pt-6'
+        >
+          {t('Settings.NethLink configuration')}
+        </h4>
+        <p className='mt-1 text-sm text-gray-500 dark:text-gray-400'>{t('Common.Coming soon')}</p>
+        <p className='mt-6 flex items-center gap-2'>
+          <Button variant='white' disabled>
+            {t('Settings.Get NethLink configuration')}
+          </Button>
+        </p>
+      </div>
+    )
+  }
+
   return (
     <>
       {/* The Integration section */}
@@ -92,67 +173,8 @@ export const Integrations = () => {
                 {t('Settings.Integrations')}
               </h2>
             </div>
-            <div>
-              <h4
-                id='phone-configuration-heading'
-                className='text-sm font-medium leading-6 text-gray-900 dark:text-gray-100'
-              >
-                {t('Settings.Phone Island configuration')}
-              </h4>
-              <p className='mt-1 text-sm text-gray-500 dark:text-gray-400'>
-                {t('Settings.phone_island_integration_description', { productName })}
-              </p>
-              <p className='mt-6 flex items-center gap-2'>
-                {loading && (
-                  <Button variant='white' disabled>
-                    {t('Common.Loading')}{' '}
-                    <FontAwesomeIcon icon={faCircleNotch} className='fa-spin ml-2' />
-                  </Button>
-                )}
-                {!loading && !tokenExists && (
-                  <Button variant='white' onClick={newConfig}>
-                    {t('Settings.Get Phone Island configuration')}{' '}
-                  </Button>
-                )}
-                {!loading && tokenExists && (
-                  <Button variant='white' onClick={() => setShowMondal(true)}>
-                    {t('Settings.Revoke configuration')}
-                  </Button>
-                )}
-              </p>
-
-              {config && (
-                <>
-                  <InlineNotification className='mt-5' type='warning' title={t('Common.Warning')}>
-                    <p>
-                      {t(
-                        'Settings.The configuration string below is shown only once. If you will need it later, please save it in a safe place',
-                      )}
-                    </p>
-                  </InlineNotification>
-                  <div className='mt-5 bg-gray-50 dark:bg-gray-900 dark:border dark:border-gray-800 p-5 rounded-lg text-gray-900 dark:text-gray-100 flex gap-5 items-center'>
-                    <div className='text-sm break-all'>{config}</div>
-                    <CopyToClipboard text={config} onCopy={() => setCopied(true)}>
-                      <Button variant='white' className='h-9 w-9'>
-                        {copied ? (
-                          <FontAwesomeIcon
-                            className='w-4 h-4 text-green-600'
-                            icon={faCheck}
-                            aria-hidden='true'
-                          />
-                        ) : (
-                          <FontAwesomeIcon
-                            className='w-4 h-4'
-                            icon={faClipboard}
-                            aria-hidden='true'
-                          />
-                        )}
-                      </Button>
-                    </CopyToClipboard>
-                  </div>
-                </>
-              )}
-            </div>
+            {phoneIslandSection()}
+            {nethLinkSection()}
           </div>
         </div>
       </section>
