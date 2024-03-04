@@ -258,7 +258,9 @@
     "Do not disturb": "Non disturbare",
     "Available presence": "Presence disponibili",
     "Show customer card": "Mostra schede cliente",
-    "Customer cards": "Schede cliente"
+    "Customer cards": "Schede cliente",
+    "NethLink configuration": "Configurazione NethLink",
+    "Get NethLink configuration": "Ottieni la configurazione"
   },
   "TopBar": {
     "Signed in as": "Accesso effettuato come",

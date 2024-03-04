@@ -41,6 +41,8 @@ interface SettingsMenuTypes {
 const Settings: NextPage = () => {
   const { t } = useTranslation()
   const authStore = useSelector((state: RootState) => state.authentication)
+  const profile = useSelector((state: RootState) => state.user)
+
   const [firstRender, setFirstRender]: any = useState(true)
   const router = useRouter()
 
@@ -51,11 +53,17 @@ const Settings: NextPage = () => {
     { name: 'Queues', href: '#', icon: faUsers, current: false },
     { name: 'Profile picture', href: '#', icon: faCircleUser, current: true },
     { name: 'Theme', href: '#', icon: faPalette, current: false },
-    { name: 'Integrations', href: '#', icon: faPuzzlePiece, current: false },
+    {
+      name: 'Integrations',
+      href: '#',
+      icon: faPuzzlePiece,
+      current: false,
+    },
     { name: 'Cache', href: '#', icon: faDatabase, current: false },
   ]
 
   const [items, setItems] = useState<SettingsMenuTypes[]>(settingsMenu)
+
   const [currentSection, setCurrentSection] = useState<string>(settingsMenu[0].name)
 
   useEffect(() => {
@@ -134,8 +142,6 @@ const Settings: NextPage = () => {
     })
   }
 
-  const { profile } = useSelector((state: RootState) => state.user)
-
   return (
     <>
       <div>
@@ -148,7 +154,7 @@ const Settings: NextPage = () => {
               {/* settings menu */}
               <aside className='py-6 lg:col-span-3'>
                 <nav className='space-y-1'>
-                  {items.map((item: any) => (
+                  {items?.map((item: any) => (
                     <a
                       key={item?.name}
                       onClick={() => changeSection(item?.name)}
@@ -156,7 +162,10 @@ const Settings: NextPage = () => {
                         item?.current
                           ? 'text-grey-900 bg-gray-100 dark:bg-gray-800 dark:text-gray-50 border-l-4 border-primary dark:border-primaryDark'
                           : 'text-gray-600 dark:text-gray-300 hover:text-gray-900 hover:bg-gray-100 dark:hover:bg-gray-800 dark:hover:text-gray-50',
-
+                        (item?.name === 'Mobile App' || item?.name === 'Integrations') &&
+                          (profile?.lkhash === undefined || profile?.lkhash === '')
+                          ? 'hidden'
+                          : '',
                         'group rounded-md flex items-center text-sm font-medium justify-start space-x-2 w-74 mx-4 h-[3rem] cursor-pointer',
                       )}
                       aria-current={item.current ? 'page' : undefined}
@@ -172,7 +181,7 @@ const Settings: NextPage = () => {
                         aria-hidden='true'
                       />
                       <span className='truncate leading-5 font-normal text-sm'>
-                        {t(`Settings.${item.name}`)}
+                        {t(`Settings.${item?.name}`)}
                       </span>
                     </a>
                   ))}

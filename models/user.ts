@@ -1,4 +1,4 @@
-// Copyright (C) 2023 Nethesis S.r.l.
+// Copyright (C) 2024 Nethesis S.r.l.
 // SPDX-License-Identifier: AGPL-3.0-or-later
 
 import { createModel } from '@rematch/core'
@@ -59,6 +59,7 @@ interface DefaultState {
   avatar: string
   settings: SettingsTypes
   recallOnBusy: any
+  lkhash: string
 }
 
 const defaultState: DefaultState = {
@@ -108,6 +109,7 @@ const defaultState: DefaultState = {
     queue_autopause_presencelist: [],
   },
   recallOnBusy: '',
+  lkhash: '',
 }
 
 export const user = createModel<RootModel>()({
@@ -124,6 +126,7 @@ export const user = createModel<RootModel>()({
       state.avatar = payload.avatar
       state.settings = payload.settings
       state.recallOnBusy = payload.recallOnBusy
+      state.lkhash = payload.lkhash
       return state
     },
     updateMainPresence: (state, mainPresence) => {
