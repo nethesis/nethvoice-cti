@@ -458,7 +458,7 @@ export default function Login() {
           {imageTemplate()}
 
           {/* login card */}
-          <div className='absolute top-1/3 left-20'>
+          <div className='absolute top-1/4 left-40'>
             <div className='border-b border-gray-200 dark:border-gray-700 rounded-lg bg-gray-50 dark:bg-gray-900 px-10 py-10'>
               {loginTemplate()}
             </div>
