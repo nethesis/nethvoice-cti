@@ -207,32 +207,26 @@ export default function Login() {
   const [userNotAuthorized, setUserNotAuthorized] = useState(false)
 
   let errorAlert = onError ? (
-    <div className='relative w-full'>
-      <div className='absolute -bottom-[104px] w-full'>
-        <InlineNotification
-          type='error'
-          title={userNotAuthorized ? t('Login.User not autorized') : t('Login.Login failed')}
-        >
-          <p>{messageError}</p>
-        </InlineNotification>
-      </div>
+    <div className='relative w-full mt-6'>
+      <InlineNotification
+        type='error'
+        title={userNotAuthorized ? t('Login.User not autorized') : t('Login.Login failed')}
+      >
+        <p>{messageError}</p>
+      </InlineNotification>
     </div>
   ) : ctiStatus.webRtcError || window.location.href.includes('?error') ? (
     ctiStatus.isUserInformationMissing || window.location.href.includes('sessionExpired') ? (
-      <div className='relative w-full'>
-        <div className='absolute -bottom-[104px] w-full'>
-          <InlineNotification type='error' title={t('Common.Warning')}>
-            <p>{t('Login.Session expired, log in again')}</p>
-          </InlineNotification>
-        </div>
+      <div className='relative w-full mt-6'>
+        <InlineNotification type='error' title={t('Common.Warning')}>
+          <p>{t('Login.Session expired, log in again')}</p>
+        </InlineNotification>
       </div>
     ) : (
-      <div className='relative w-full'>
-        <div className='absolute -bottom-[104px] w-full'>
-          <InlineNotification type='error' title={t('Common.Warning')}>
-            <p>{t('Login.The application is open in another window')}</p>
-          </InlineNotification>
-        </div>
+      <div className='relative w-full mt-6'>
+        <InlineNotification type='error' title={t('Common.Warning')}>
+          <p>{t('Login.The application is open in another window')}</p>
+        </InlineNotification>
       </div>
     )
   ) : (
@@ -325,22 +319,35 @@ export default function Login() {
 
   const productSubname = getProductSubname()
 
+  const [isFirsThemeControl, setIsFirsThemeControl] = useState(true)
+  const [isDarkTheme, setIsDarkTheme] = useState(false)
+
+  useEffect(() => {
+    if (isFirsThemeControl) {
+      setIsFirsThemeControl(false)
+      return
+    }
+    if (window.matchMedia('(prefers-color-scheme: dark)').matches) {
+      console.log('dark theme')
+      setIsDarkTheme(true)
+    } else {
+      console.log('light theme')
+      setIsDarkTheme(false)
+    }
+  }, [isFirsThemeControl])
+
   const loginTemplate = () => {
     return (
       <div className='mx-auto w-full max-w-sm lg:w-96'>
         <div className='flex flex-col items-center justify-center'>
           {/* Nextjs <Image> is not suitable for rebranding: it always uses the aspect ratio of the original logo  */}
+          {/* eslint-disable-next-line @next/next/no-img-element */}
           <img
-            className='mx-auto w-auto items-center object-contain object-bottom'
-            src='/login_logo.svg'
+            className='mx-auto w-auto items-center object-contain object-bottom fill-current text-primary dark:text-primaryDark'
+            src={!isDarkTheme ? '/login_logo.svg' : '/login_logo_dark.svg'}
             alt='logo'
           />
-          <div className='flex items-center text-primary dark:text-primaryDark p-4'>
-            <FontAwesomeIcon
-              icon={faPhone}
-              className='mr-1.5 h-5 w-5 flex-shrink-0'
-              aria-hidden='true'
-            />
+          <div className='text-primary dark:text-primaryDark p-4 text-lg font-regular'>
             {productSubname}
           </div>
         </div>
@@ -452,7 +459,7 @@ export default function Login() {
 
           {/* login card */}
           <div className='absolute top-1/3 left-20'>
-            <div className='border-b border-gray-200 dark:border-gray-700 rounded-lg bg-gray-50 dark:bg-gray-900 px-8 py-10'>
+            <div className='border-b border-gray-200 dark:border-gray-700 rounded-lg bg-gray-50 dark:bg-gray-900 px-10 py-10'>
               {loginTemplate()}
             </div>
           </div>
