@@ -325,6 +325,101 @@ export default function Login() {
 
   const productSubname = getProductSubname()
 
+  const loginTemplate = () => {
+    return (
+      <div className='mx-auto w-full max-w-sm lg:w-96'>
+        <div className='flex flex-col items-center justify-center'>
+          {/* Nextjs <Image> is not suitable for rebranding: it always uses the aspect ratio of the original logo  */}
+          <img
+            className='mx-auto w-auto items-center object-contain object-bottom'
+            src='/login_logo.svg'
+            alt='logo'
+          />
+          <div className='flex items-center text-primary dark:text-primaryDark p-4'>
+            <FontAwesomeIcon
+              icon={faPhone}
+              className='mr-1.5 h-5 w-5 flex-shrink-0'
+              aria-hidden='true'
+            />
+            {productSubname}
+          </div>
+        </div>
+        <div className='pt-2'>
+          <form action='#' method='POST' onSubmit={doLogin} className='space-y-6'>
+            <div>
+              <label
+                htmlFor='email'
+                className='block text-sm font-medium text-gray-700 dark:text-gray-200'
+              >
+                {t('Login.User')}
+              </label>
+              <div className='mt-1'>
+                <TextInput
+                  placeholder=''
+                  name='username'
+                  ref={usernameRef}
+                  error={onError ? true : false}
+                  required
+                  autoComplete='username'
+                  autoFocus
+                ></TextInput>
+              </div>
+            </div>
+            <div className='space-y-1'>
+              <label
+                htmlFor='password'
+                className='block text-sm font-medium text-gray-700 dark:text-gray-200'
+              >
+                {t('Login.Password')}
+              </label>
+              <div className='mt-1'>
+                <TextInput
+                  placeholder=''
+                  name='password'
+                  type={pwdVisible ? 'text' : 'password'}
+                  icon={pwdVisible ? faEye : faEyeSlash}
+                  onIconClick={() => setPwdVisible(!pwdVisible)}
+                  trailingIcon={true}
+                  error={onError ? true : false}
+                  ref={passwordRef}
+                  required
+                  autoComplete='current-password'
+                />
+              </div>
+            </div>
+            <div>
+              <Button
+                size='large'
+                fullHeight={true}
+                fullWidth={true}
+                variant='primary'
+                type='submit'
+              >
+                {t('Login.Sign in')}
+                {iconSelect}
+              </Button>
+            </div>
+          </form>
+          {errorAlert}
+        </div>
+      </div>
+    )
+  }
+
+  const imageTemplate = () => {
+    return (
+      <div>
+        {/* Nextjs <Image> is not suitable for rebranding: it always uses the aspect ratio of the original image  */}
+        {/* eslint-disable-next-line @next/next/no-img-element */}
+        <img
+          className='absolute inset-0 h-full w-full object-cover'
+          src='/nethvoice_cti_1300x2000.png'
+          alt='background image'
+        />
+      </div>
+    )
+  }
+
   return (
     <>
       <div>
@@ -332,95 +427,26 @@ export default function Login() {
           <title>{productName}</title>
         </Head>
       </div>
-      <div className='flex min-h-full'>
-        <div className='flex flex-1 flex-col justify-center py-12 px-4 sm:px-6 lg:flex-none lg:px-20 xl:px-24 2xl:px-32'>
-          <div className='mx-auto w-full max-w-sm lg:w-96'>
-            <div className='flex flex-col items-center justify-center'>
-              {/* Nextjs <Image> is not suitable for rebranding: it always uses the aspect ratio of the original logo  */}
-              <img
-                className='mx-auto w-auto items-center object-contain object-bottom'
-                src='/login_logo.svg'
-                alt='logo'
-              />
-              <div className='flex items-center text-primary dark:text-primaryDark p-4'>
-                <FontAwesomeIcon
-                  icon={faPhone}
-                  className='mr-1.5 h-5 w-5 flex-shrink-0'
-                  aria-hidden='true'
-                />
-                {productSubname}
-              </div>
-            </div>
-            <div className='mt-8'>
-              <div className='mt-6'>
-                <form action='#' method='POST' onSubmit={doLogin} className='space-y-6'>
-                  <div>
-                    <label
-                      htmlFor='email'
-                      className='block text-sm font-medium text-gray-700 dark:text-gray-200'
-                    >
-                      {t('Login.User')}
-                    </label>
-                    <div className='mt-1'>
-                      <TextInput
-                        placeholder=''
-                        name='username'
-                        ref={usernameRef}
-                        error={onError ? true : false}
-                        required
-                        autoComplete='username'
-                        autoFocus
-                      ></TextInput>
-                    </div>
-                  </div>
-                  <div className='space-y-1'>
-                    <label
-                      htmlFor='password'
-                      className='block text-sm font-medium text-gray-700 dark:text-gray-200'
-                    >
-                      {t('Login.Password')}
-                    </label>
-                    <div className='mt-1'>
-                      <TextInput
-                        placeholder=''
-                        name='password'
-                        type={pwdVisible ? 'text' : 'password'}
-                        icon={pwdVisible ? faEye : faEyeSlash}
-                        onIconClick={() => setPwdVisible(!pwdVisible)}
-                        trailingIcon={true}
-                        error={onError ? true : false}
-                        ref={passwordRef}
-                        required
-                        autoComplete='current-password'
-                      />
-                    </div>
-                  </div>
-                  <div>
-                    <Button
-                      size='large'
-                      fullHeight={true}
-                      fullWidth={true}
-                      variant='primary'
-                      type='submit'
-                    >
-                      {t('Login.Sign in')}
-                      {iconSelect}
-                    </Button>
-                  </div>
-                </form>
-                {errorAlert}
-              </div>
-            </div>
+
+      {/* pc view */}
+      <div className='hidden lg:block'>
+        {/* background image */}
+        {/* Nextjs <Image> is not suitable for rebranding: it always uses the aspect ratio of the original image  */}
+        {imageTemplate()}
+
+        {/* login card */}
+        <div className='absolute top-1/3 left-20'>
+          <div className='border-b border-gray-200 dark:border-gray-700 rounded-lg bg-gray-50 dark:bg-gray-900 px-8 py-10'>
+            {loginTemplate()}
           </div>
         </div>
-        <div className='relative hidden w-0 flex-1 lg:block'>
-          {/* Nextjs <Image> is not suitable for rebranding: it always uses the aspect ratio of the original image  */}
-          {/* eslint-disable-next-line @next/next/no-img-element */}
-          <img
-            className='absolute inset-0 h-full w-full object-cover'
-            src='/nethvoice_cti_1300x2000.png'
-            alt='background image'
-          />
+      </div>
+
+      {/* mobile view */}
+      <div className='flex min-h-full lg:hidden'>
+        {/* login card only for small monitor and mobile devices */}
+        <div className='flex flex-1 flex-col justify-center py-12 px-4 sm:px-6 lg:flex-none lg:px-20 xl:px-24 2xl:px-32'>
+          {loginTemplate()}
         </div>
       </div>
     </>
