@@ -152,7 +152,7 @@ const theme = {
         base: 'bg-emerald-200 text-emerald-900 dark:bg-emerald-800 dark:text-emerald-100',
       },
       avatar: {
-        dot: 'bg-green-500 dark:bg-green-400',
+        dot: 'bg-green-500 dark:bg-green-500',
       },
       card: {
         border: 'border-emerald-500 dark:border-emerald-500',
@@ -174,7 +174,7 @@ const theme = {
         base: 'bg-emerald-200 text-emerald-900 dark:bg-emerald-800 dark:text-emerald-100',
       },
       avatar: {
-        dot: 'bg-green-500 dark:bg-green-400',
+        dot: 'bg-green-500 dark:bg-green-500',
       },
       card: {
         border: 'border-orange-500 dark:border-orange-500',
@@ -185,7 +185,7 @@ const theme = {
         base: 'bg-emerald-200 text-emerald-900 dark:bg-emerald-800 dark:text-emerald-100',
       },
       avatar: {
-        dot: 'bg-green-500 dark:bg-green-400',
+        dot: 'bg-green-500 dark:bg-green-500',
       },
       card: {
         border: 'border-purple-500 dark:border-purple-500',
@@ -196,7 +196,7 @@ const theme = {
         base: 'bg-emerald-200 text-emerald-900 dark:bg-emerald-800 dark:text-emerald-100',
       },
       avatar: {
-        dot: 'bg-green-500 dark:bg-green-400',
+        dot: 'bg-green-500 dark:bg-green-500',
       },
       card: {
         border: 'border-yellow-500 dark:border-yellow-500',
@@ -207,7 +207,7 @@ const theme = {
         base: 'bg-red-200 text-red-900 dark:bg-red-900 dark:text-red-100',
       },
       avatar: {
-        dot: 'bg-red-500 dark:bg-red-400',
+        dot: 'bg-red-500 dark:bg-red-500',
       },
       card: {
         border: 'border-red-500 dark:border-red-500',
@@ -218,7 +218,7 @@ const theme = {
         base: 'bg-red-200 text-red-900 dark:bg-red-900 dark:text-red-100',
       },
       avatar: {
-        dot: 'bg-red-500 dark:bg-red-400',
+        dot: 'bg-red-500 dark:bg-red-500',
       },
       card: {
         border: 'border-sky-500 dark:border-sky-500',
@@ -229,7 +229,7 @@ const theme = {
         base: 'bg-red-200 text-red-900 dark:bg-red-900 dark:text-red-100',
       },
       avatar: {
-        dot: 'bg-red-500 dark:bg-red-400',
+        dot: 'bg-red-500 dark:bg-red-500',
       },
       card: {
         border: 'border-sky-500 dark:border-sky-500',
@@ -240,7 +240,7 @@ const theme = {
         base: 'bg-gray-300 text-gray-700 dark:bg-gray-700 dark:text-gray-300',
       },
       avatar: {
-        dot: 'bg-gray-400 dark:bg-gray-400',
+        dot: 'bg-gray-500 dark:bg-gray-500',
       },
       card: {
         border: 'border-gray-500 dark:border-gray-500',
