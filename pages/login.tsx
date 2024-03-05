@@ -248,8 +248,8 @@ export default function Login() {
     setLoading(true)
 
     if (window !== undefined) {
-      const username = usernameRef.current.value
-      const password = passwordRef.current.value
+      const username = usernameRef?.current?.value
+      const password = passwordRef?.current?.value
       setOnError(false)
 
       const res = await fetch(
@@ -348,7 +348,7 @@ export default function Login() {
           <form action='#' method='POST' onSubmit={doLogin} className='space-y-6'>
             <div>
               <label
-                htmlFor='email'
+                htmlFor='username'
                 className='block text-sm font-medium text-gray-700 dark:text-gray-200'
               >
                 {t('Login.User')}
@@ -362,6 +362,7 @@ export default function Login() {
                   required
                   autoComplete='username'
                   autoFocus
+                  id='username'
                 ></TextInput>
               </div>
             </div>
@@ -384,6 +385,7 @@ export default function Login() {
                   ref={passwordRef}
                   required
                   autoComplete='current-password'
+                  id='password'
                 />
               </div>
             </div>
@@ -420,6 +422,21 @@ export default function Login() {
     )
   }
 
+  const [windowWidth, setWindowWidth] = useState(window.innerWidth)
+
+  // Update window width to manage responsive view
+  useEffect(() => {
+    const updateWindowWidth = () => {
+      setWindowWidth(window.innerWidth)
+    }
+
+    window.addEventListener('resize', updateWindowWidth)
+
+    return () => {
+      window.removeEventListener('resize', updateWindowWidth)
+    }
+  }, [])
+
   return (
     <>
       <div>
@@ -427,28 +444,28 @@ export default function Login() {
           <title>{productName}</title>
         </Head>
       </div>
-
       {/* pc view */}
-      <div className='hidden lg:block'>
-        {/* background image */}
-        {/* Nextjs <Image> is not suitable for rebranding: it always uses the aspect ratio of the original image  */}
-        {imageTemplate()}
+      {windowWidth > 1024 ? (
+        <div className='hidden lg:block'>
+          {/* background image */}
+          {imageTemplate()}
 
-        {/* login card */}
-        <div className='absolute top-1/3 left-20'>
-          <div className='border-b border-gray-200 dark:border-gray-700 rounded-lg bg-gray-50 dark:bg-gray-900 px-8 py-10'>
+          {/* login card */}
+          <div className='absolute top-1/3 left-20'>
+            <div className='border-b border-gray-200 dark:border-gray-700 rounded-lg bg-gray-50 dark:bg-gray-900 px-8 py-10'>
+              {loginTemplate()}
+            </div>
+          </div>
+        </div>
+      ) : (
+        <div className='flex min-h-full lg:hidden'>
+          {/* mobile view */}
+          {/* login card only for small monitor and mobile devices */}
+          <div className='flex flex-1 flex-col justify-center py-12 px-4 sm:px-6 lg:flex-none lg:px-20 xl:px-24 2xl:px-32'>
             {loginTemplate()}
           </div>
         </div>
-      </div>
-
-      {/* mobile view */}
-      <div className='flex min-h-full lg:hidden'>
-        {/* login card only for small monitor and mobile devices */}
-        <div className='flex flex-1 flex-col justify-center py-12 px-4 sm:px-6 lg:flex-none lg:px-20 xl:px-24 2xl:px-32'>
-          {loginTemplate()}
-        </div>
-      </div>
+      )}
     </>
   )
 }
