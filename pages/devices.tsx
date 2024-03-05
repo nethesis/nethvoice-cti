@@ -349,7 +349,7 @@ const Devices: NextPage = () => {
                                     </span>
                                   )}
                                 </td>
-                                {profile?.profile.macro_permissions.nethvoice_cti.permissions
+                                {profile?.profile?.macro_permissions?.nethvoice_cti?.permissions
                                   .phone_buttons.value ? (
                                   <td
                                     className='whitespace-nowrap px-3 py-4 text-sm text-primary dark:text-primaryDark cursor-pointer'

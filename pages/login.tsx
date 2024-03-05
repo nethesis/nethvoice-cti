@@ -207,32 +207,26 @@ export default function Login() {
   const [userNotAuthorized, setUserNotAuthorized] = useState(false)
 
   let errorAlert = onError ? (
-    <div className='relative w-full'>
-      <div className='absolute -bottom-[104px] w-full'>
-        <InlineNotification
-          type='error'
-          title={userNotAuthorized ? t('Login.User not autorized') : t('Login.Login failed')}
-        >
-          <p>{messageError}</p>
-        </InlineNotification>
-      </div>
+    <div className='relative w-full mt-6'>
+      <InlineNotification
+        type='error'
+        title={userNotAuthorized ? t('Login.User not autorized') : t('Login.Login failed')}
+      >
+        <p>{messageError}</p>
+      </InlineNotification>
     </div>
   ) : ctiStatus.webRtcError || window.location.href.includes('?error') ? (
     ctiStatus.isUserInformationMissing || window.location.href.includes('sessionExpired') ? (
-      <div className='relative w-full'>
-        <div className='absolute -bottom-[104px] w-full'>
-          <InlineNotification type='error' title={t('Common.Warning')}>
-            <p>{t('Login.Session expired, log in again')}</p>
-          </InlineNotification>
-        </div>
+      <div className='relative w-full mt-6'>
+        <InlineNotification type='error' title={t('Common.Warning')}>
+          <p>{t('Login.Session expired, log in again')}</p>
+        </InlineNotification>
       </div>
     ) : (
-      <div className='relative w-full'>
-        <div className='absolute -bottom-[104px] w-full'>
-          <InlineNotification type='error' title={t('Common.Warning')}>
-            <p>{t('Login.The application is open in another window')}</p>
-          </InlineNotification>
-        </div>
+      <div className='relative w-full mt-6'>
+        <InlineNotification type='error' title={t('Common.Warning')}>
+          <p>{t('Login.The application is open in another window')}</p>
+        </InlineNotification>
       </div>
     )
   ) : (
@@ -248,8 +242,8 @@ export default function Login() {
     setLoading(true)
 
     if (window !== undefined) {
-      const username = usernameRef.current.value
-      const password = passwordRef.current.value
+      const username = usernameRef?.current?.value
+      const password = passwordRef?.current?.value
       setOnError(false)
 
       const res = await fetch(
@@ -325,6 +319,131 @@ export default function Login() {
 
   const productSubname = getProductSubname()
 
+  const [isFirsThemeControl, setIsFirsThemeControl] = useState(true)
+  const [isDarkTheme, setIsDarkTheme] = useState(false)
+
+  useEffect(() => {
+    if (isFirsThemeControl) {
+      setIsFirsThemeControl(false)
+      return
+    }
+    if (window.matchMedia('(prefers-color-scheme: dark)').matches) {
+      console.log('dark theme')
+      setIsDarkTheme(true)
+    } else {
+      console.log('light theme')
+      setIsDarkTheme(false)
+    }
+  }, [isFirsThemeControl])
+
+  const loginTemplate = () => {
+    return (
+      <div className='mx-auto w-full max-w-sm lg:w-96'>
+        <div className='flex flex-col items-center justify-center'>
+          {/* Nextjs <Image> is not suitable for rebranding: it always uses the aspect ratio of the original logo  */}
+          {/* eslint-disable-next-line @next/next/no-img-element */}
+          <img
+            className='mx-auto w-auto items-center object-contain object-bottom fill-current text-primary dark:text-primaryDark'
+            src={!isDarkTheme ? '/login_logo.svg' : '/login_logo_dark.svg'}
+            alt='logo'
+          />
+          <div className='text-primary dark:text-primaryDark p-4 text-lg font-regular'>
+            {productSubname}
+          </div>
+        </div>
+        <div className='pt-2'>
+          <form action='#' method='POST' onSubmit={doLogin} className='space-y-6'>
+            <div>
+              <label
+                htmlFor='username'
+                className='block text-sm font-medium text-gray-700 dark:text-gray-200'
+              >
+                {t('Login.User')}
+              </label>
+              <div className='mt-1'>
+                <TextInput
+                  placeholder=''
+                  name='username'
+                  ref={usernameRef}
+                  error={onError ? true : false}
+                  required
+                  autoComplete='username'
+                  autoFocus
+                  id='username'
+                ></TextInput>
+              </div>
+            </div>
+            <div className='space-y-1'>
+              <label
+                htmlFor='password'
+                className='block text-sm font-medium text-gray-700 dark:text-gray-200'
+              >
+                {t('Login.Password')}
+              </label>
+              <div className='mt-1'>
+                <TextInput
+                  placeholder=''
+                  name='password'
+                  type={pwdVisible ? 'text' : 'password'}
+                  icon={pwdVisible ? faEye : faEyeSlash}
+                  onIconClick={() => setPwdVisible(!pwdVisible)}
+                  trailingIcon={true}
+                  error={onError ? true : false}
+                  ref={passwordRef}
+                  required
+                  autoComplete='current-password'
+                  id='password'
+                />
+              </div>
+            </div>
+            <div>
+              <Button
+                size='large'
+                fullHeight={true}
+                fullWidth={true}
+                variant='primary'
+                type='submit'
+              >
+                {t('Login.Sign in')}
+                {iconSelect}
+              </Button>
+            </div>
+          </form>
+          {errorAlert}
+        </div>
+      </div>
+    )
+  }
+
+  const imageTemplate = () => {
+    return (
+      <div>
+        {/* Nextjs <Image> is not suitable for rebranding: it always uses the aspect ratio of the original image  */}
+        {/* eslint-disable-next-line @next/next/no-img-element */}
+        <img
+          className='absolute inset-0 h-full w-full object-cover'
+          src='/nethvoice_cti_1300x2000.png'
+          alt='background image'
+        />
+      </div>
+    )
+  }
+
+  const [windowWidth, setWindowWidth] = useState(window.innerWidth)
+
+  // Update window width to manage responsive view
+  useEffect(() => {
+    const updateWindowWidth = () => {
+      setWindowWidth(window.innerWidth)
+    }
+
+    window.addEventListener('resize', updateWindowWidth)
+
+    return () => {
+      window.removeEventListener('resize', updateWindowWidth)
+    }
+  }, [])
+
   return (
     <>
       <div>
@@ -332,97 +451,28 @@ export default function Login() {
           <title>{productName}</title>
         </Head>
       </div>
-      <div className='flex min-h-full'>
-        <div className='flex flex-1 flex-col justify-center py-12 px-4 sm:px-6 lg:flex-none lg:px-20 xl:px-24 2xl:px-32'>
-          <div className='mx-auto w-full max-w-sm lg:w-96'>
-            <div className='flex flex-col items-center justify-center'>
-              {/* Nextjs <Image> is not suitable for rebranding: it always uses the aspect ratio of the original logo  */}
-              <img
-                className='mx-auto w-auto items-center object-contain object-bottom'
-                src='/login_logo.svg'
-                alt='logo'
-              />
-              <div className='flex items-center text-primary dark:text-primaryDark p-4'>
-                <FontAwesomeIcon
-                  icon={faPhone}
-                  className='mr-1.5 h-5 w-5 flex-shrink-0'
-                  aria-hidden='true'
-                />
-                {productSubname}
-              </div>
-            </div>
-            <div className='mt-8'>
-              <div className='mt-6'>
-                <form action='#' method='POST' onSubmit={doLogin} className='space-y-6'>
-                  <div>
-                    <label
-                      htmlFor='email'
-                      className='block text-sm font-medium text-gray-700 dark:text-gray-200'
-                    >
-                      {t('Login.User')}
-                    </label>
-                    <div className='mt-1'>
-                      <TextInput
-                        placeholder=''
-                        name='username'
-                        ref={usernameRef}
-                        error={onError ? true : false}
-                        required
-                        autoComplete='username'
-                        autoFocus
-                      ></TextInput>
-                    </div>
-                  </div>
-                  <div className='space-y-1'>
-                    <label
-                      htmlFor='password'
-                      className='block text-sm font-medium text-gray-700 dark:text-gray-200'
-                    >
-                      {t('Login.Password')}
-                    </label>
-                    <div className='mt-1'>
-                      <TextInput
-                        placeholder=''
-                        name='password'
-                        type={pwdVisible ? 'text' : 'password'}
-                        icon={pwdVisible ? faEye : faEyeSlash}
-                        onIconClick={() => setPwdVisible(!pwdVisible)}
-                        trailingIcon={true}
-                        error={onError ? true : false}
-                        ref={passwordRef}
-                        required
-                        autoComplete='current-password'
-                      />
-                    </div>
-                  </div>
-                  <div>
-                    <Button
-                      size='large'
-                      fullHeight={true}
-                      fullWidth={true}
-                      variant='primary'
-                      type='submit'
-                    >
-                      {t('Login.Sign in')}
-                      {iconSelect}
-                    </Button>
-                  </div>
-                </form>
-                {errorAlert}
-              </div>
+      {/* pc view */}
+      {windowWidth > 1024 ? (
+        <div className='hidden lg:block'>
+          {/* background image */}
+          {imageTemplate()}
+
+          {/* login card */}
+          <div className='absolute top-1/3 left-20'>
+            <div className='border-b border-gray-200 dark:border-gray-700 rounded-lg bg-gray-50 dark:bg-gray-900 px-10 py-10'>
+              {loginTemplate()}
             </div>
           </div>
         </div>
-        <div className='relative hidden w-0 flex-1 lg:block'>
-          {/* Nextjs <Image> is not suitable for rebranding: it always uses the aspect ratio of the original image  */}
-          {/* eslint-disable-next-line @next/next/no-img-element */}
-          <img
-            className='absolute inset-0 h-full w-full object-cover'
-            src='/nethvoice_cti_1300x2000.png'
-            alt='background image'
-          />
+      ) : (
+        <div className='flex min-h-full lg:hidden'>
+          {/* mobile view */}
+          {/* login card only for small monitor and mobile devices */}
+          <div className='flex flex-1 flex-col justify-center py-12 px-4 sm:px-6 lg:flex-none lg:px-20 xl:px-24 2xl:px-32'>
+            {loginTemplate()}
+          </div>
         </div>
-      </div>
+      )}
     </>
   )
 }

@@ -376,9 +376,9 @@ export const ActionCall: React.FC<ActionCallProps> = ({ config }) => {
             <dt className='text-sm font-medium text-gray-500 dark:text-gray-400'>
               {t('OperatorDrawer.Duration')}
             </dt>
-            <dd className='mt-1 text-sm text-gray-900 dark:text-gray-100 sm:col-span-2 sm:mt-0'>
+            <dd className='mt-1 text-sm sm:col-span-2 sm:mt-0'>
               <div
-                className='flex items-center text-sm'
+                className='flex items-center text-sm text-red-700 dark:text-red-400'
                 key={`callDuration-${operators?.operators[config?.username]?.username}`}
               >
                 <CallDuration
