@@ -554,7 +554,7 @@
     "Confirm": "Conferma",
     "Start recording": "Inizia registrazione",
     "Switch call": "Scambia chiamata",
-    "Call to transfer": "Chiamata da trasferire",
+    "Call to transfer": "Clicca per trasferire",
     "Hangup and transfer": "Trasferisci",
     "Answer": "Rispondi",
     "Settings": "Impostazioni"
@@ -722,7 +722,7 @@
     "Office": "Ufficio",
     "Mobile": "Cellulare",
     "Email": "Email",
-    "Open customer card": "Apri carta cliente",
+    "Open customer card": "Apri scheda cliente",
     "Contact name": "Nome contatto",
     "Company": "Azienda",
     "No company found": "Nessun azienda trovata",
@@ -803,10 +803,16 @@
   },
   "DropdownContent": {
     "Microphones": "MICROFONI",
-    "Speakers": "ALTOPARLANTI"
+    "Speakers": "ALTOPARLANTI",
+    "Theme": "TEMA",
+    "Dark": "Scuro",
+    "Light": "Chiaro"
   },
   "Call": {
     "In progress...": "In corso...",
     "Outgoing call": "Chiamata in uscita"
+  },
+  "Transfer": {
+    "No users found": "Nessun utente trovato"
   }
 }

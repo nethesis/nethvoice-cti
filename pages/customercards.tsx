@@ -118,8 +118,8 @@ const CustomerCards: NextPage = () => {
     if (
       !isEmpty(customerCardsList) &&
       ccardList &&
-      ccardList.length > 0 &&
-      dynamicTabs.length === 0
+      ccardList?.length > 0 &&
+      dynamicTabs?.length === 0
     ) {
       const tabs = [
         { name: t('CustomerCards.General info'), value: 'generalInfo' },
@@ -128,7 +128,7 @@ const CustomerCards: NextPage = () => {
             const cardData = customerCardsList[ccard]
             if (cardData) {
               return {
-                name: cardData.descr,
+                name: cardData?.descr,
                 value: ccard,
               }
             }

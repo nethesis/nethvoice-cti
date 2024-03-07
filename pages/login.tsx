@@ -328,10 +328,8 @@ export default function Login() {
       return
     }
     if (window.matchMedia('(prefers-color-scheme: dark)').matches) {
-      console.log('dark theme')
       setIsDarkTheme(true)
     } else {
-      console.log('light theme')
       setIsDarkTheme(false)
     }
   }, [isFirsThemeControl])

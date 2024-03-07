@@ -754,7 +754,7 @@
     "Confirm": "Confirm",
     "Start recording": "Start recording",
     "Switch call": "Switch call",
-    "Call to transfer": "Call to transfer",
+    "Call to transfer": "Click to transfer",
     "Hangup and transfer": "Transfer",
     "Answer": "Answer",
     "Settings": "Settings"
@@ -827,10 +827,16 @@
   },
   "DropdownContent": {
     "Microphones": "MICROPHONES",
-    "Speakers": "SPEAKERS"
+    "Speakers": "SPEAKERS",
+    "Theme": "THEME",
+    "Dark": "Dark",
+    "Light": "Light"
   },
   "Call": {
     "In progress...": "In progress...",
     "Outgoing call": "Outgoing call"
+  },
+  "Transfer": {
+    "No users found": "No users found"
   }
 }
