@@ -5,7 +5,7 @@ const theme = {
   button: {
     base: 'inline-flex content-center items-center justify-center font-medium tracking-wide transition-colors duration-200 transform focus:outline-none focus:z-20 disabled:cursor-not-allowed',
     primary:
-      'border border-transparent bg-primary text-white hover:bg-primaryDark focus:ring-primaryLight dark:bg-primaryDark dark:text-gray-950 dark:hover:bg-primaryDark focus:ring-primaryLight focus:ring-2 focus:ring-offset-2',
+      'border border-transparent bg-primary text-white hover:bg-primaryDark focus:ring-primaryLight dark:bg-emerald-700 dark:text-gray-200 dark:hover:bg-primaryDark focus:ring-primaryLight focus:ring-2 focus:ring-offset-2',
     secondary:
       'border border-transparent focus:ring-primaryLight bg-primaryLighter text-primaryDark hover:bg-primaryLighter dark:focus:ring-primaryDark dark:bg-primaryDarker dark:text-primaryLight dark:hover:bg-primaryDarker focus:ring-2 focus:ring-offset-2',
     white:
