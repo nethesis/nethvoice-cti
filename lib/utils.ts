@@ -116,7 +116,7 @@ export function getTimezone() {
     return ''
   }
   // @ts-ignore
-  return `${window.CONFIG.TIMEZONE}`
+  return `${window.CONFIG.TIMEZONE || 'UTC'}`
 }
 
 export function getApiEndpoint() {

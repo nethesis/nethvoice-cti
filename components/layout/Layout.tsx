@@ -41,6 +41,7 @@ import Toast from '../common/Toast'
 import { getCustomerCardsList, setUserSettings } from '../../lib/customerCard'
 import { retrieveParksList } from '../../lib/park'
 import { Tooltip } from 'react-tooltip'
+import { getJSONItem, setJSONItem } from '../../lib/storage'
 
 export const Layout: FC<LayoutProps> = ({ children }) => {
   const [openMobileMenu, setOpenMobileMenu] = useState<boolean>(false)
@@ -834,6 +835,26 @@ export const Layout: FC<LayoutProps> = ({ children }) => {
   }, [parkingInfo?.isParkingFooterVisible, controls])
 
   const rightSideStatus: any = useSelector((state: RootState) => state.rightSideMenu)
+
+  const { theme } = useSelector((state: RootState) => state?.darkTheme)
+  const phoneIslandThemePreference = getJSONItem(`phone-island-theme-selected`) || ''
+
+  useEffect(() => {
+    if (
+      phoneIslandThemePreference === null ||
+      phoneIslandThemePreference === undefined ||
+      phoneIslandThemePreference === ''
+    ) {
+      if (
+        theme === 'dark' ||
+        (theme === 'system' && window.matchMedia('(prefers-color-scheme: dark)').matches)
+      ) {
+        setJSONItem('phone-island-theme-selected', { themeSelected: 'light' })
+      } else {
+        setJSONItem('phone-island-theme-selected', { themeSelected: 'dark' })
+      }
+    }
+  }, [phoneIslandThemePreference, theme])
 
   return (
     <>

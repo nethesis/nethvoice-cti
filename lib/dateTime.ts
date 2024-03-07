@@ -147,7 +147,7 @@ export const exactDistanceToNowLoc = (date: any, options: any = {}) => {
 }
 
 export const getTimeDifference = (isInQueue: boolean) => {
-  const serverTimeZone: any = getTimezone() || 'UTC'
+  const serverTimeZone: any = getTimezone()
   const localTimeZone: any = Intl.DateTimeFormat().resolvedOptions().timeZone
 
   const timeDataServer = { date: new Date(), timezone: serverTimeZone }
