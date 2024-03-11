@@ -1,4 +1,4 @@
-// Copyright (C) 2023 Nethesis S.r.l.
+// Copyright (C) 2024 Nethesis S.r.l.
 // SPDX-License-Identifier: AGPL-3.0-or-later
 
 import { FC } from 'react'
@@ -12,6 +12,10 @@ import {
   Tooltip,
   Legend,
 } from 'chart.js'
+import { useSelector } from 'react-redux'
+import { RootState } from '../../store'
+import { GRAY_200, GRAY_700 } from '../../lib/colors'
+
 ChartJS.register(CategoryScale, LinearScale, BarElement, Title, Tooltip, Legend)
 
 interface BarChartProps {
@@ -20,12 +24,22 @@ interface BarChartProps {
 }
 
 const BarChart: FC<BarChartProps> = ({ labels, datasets }) => {
+  const { theme } = useSelector((state: RootState) => state.darkTheme)
+
   const options = {
     responsive: true,
     maintainAspectRatio: false,
     scales: {
       y: {
         beginAtZero: true,
+        ticks: {
+          color: theme === 'dark' ? GRAY_200 : GRAY_700,
+        },
+      },
+      x: {
+        ticks: {
+          color: theme === 'dark' ? GRAY_200 : GRAY_700,
+        },
       },
     },
     plugins: {

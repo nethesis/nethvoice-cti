@@ -43,8 +43,6 @@ import { Tooltip } from 'react-tooltip'
 import { faGrid2, faGridDividers } from '@nethesis/nethesis-solid-svg-icons'
 import { savePreference } from '../lib/storage'
 
-//// use i18n where there is operator.mainPresence
-
 const Operators: NextPage = () => {
   const [filteredOperators, setFilteredOperators]: any = useState([])
   const authStore = useSelector((state: RootState) => state.authentication)

@@ -22,6 +22,7 @@ import { Button } from '../../common'
 import { faExpand } from '@fortawesome/free-solid-svg-icons'
 import { isEmpty } from 'lodash'
 import { formatInTimeZoneLoc } from '../../../lib/dateTime'
+import { EMERALD_500, GRAY_500, RED_500 } from '../../../lib/colors'
 
 export interface QueueManagerDashboardChartProps extends ComponentProps<'div'> {
   isLoadedQueuesHistory: any
@@ -61,6 +62,7 @@ export const QueueManagerDashboardChart: FC<QueueManagerDashboardChartProps> = (
   const [datasetsFailedCallsHour, setDatasetsFailedCallsHour] = useState<any>([])
 
   const queueManagerStore = useSelector((state: RootState) => state.queueManagerQueues)
+  const { theme } = useSelector((state: RootState) => state.darkTheme)
 
   //zoom sections
   const [zoomedCardIndices, setZoomedCardIndices] = useState<number[]>([])
@@ -135,19 +137,20 @@ export const QueueManagerDashboardChart: FC<QueueManagerDashboardChartProps> = (
       {
         label: 'Answered',
         data: [] as number[],
-        backgroundColor: '#10B981',
+        backgroundColor: theme === 'dark' ? EMERALD_500 : EMERALD_500,
+        borderColor: '#b91c1c',
         borderRadius: 5,
       },
       {
         label: 'Failed',
         data: [] as number[],
-        backgroundColor: '#6b7280',
+        backgroundColor: theme === 'dark' ? GRAY_500 : GRAY_500,
         borderRadius: 5,
       },
       {
         label: 'Invalid',
         data: [] as number[],
-        backgroundColor: '#ff0000',
+        backgroundColor: theme === 'dark' ? RED_500 : RED_500,
         borderRadius: 5,
       },
     ]
