@@ -7,8 +7,6 @@
     "build": "next build",
     "start": "next start",
     "lint": "next lint",
-    "storybook": "start-storybook -p 6006",
-    "build-storybook": "build-storybook",
     "format": "prettier --write './**/*.{js,jsx,ts,tsx,css,md,json}' --config ./.prettierrc"
   },
   "dependencies": {
@@ -63,15 +61,6 @@
   },
   "devDependencies": {
     "@babel/core": "^7.19.3",
-    "@storybook/addon-actions": "^6.5.12",
-    "@storybook/addon-essentials": "^6.5.12",
-    "@storybook/addon-interactions": "^6.5.12",
-    "@storybook/addon-links": "^6.5.12",
-    "@storybook/addon-postcss": "^2.0.0",
-    "@storybook/builder-webpack5": "^6.5.12",
-    "@storybook/manager-webpack5": "^6.5.12",
-    "@storybook/react": "^6.5.12",
-    "@storybook/testing-library": "^0.0.13",
     "@tailwindcss/forms": "^0.5.3",
     "@types/gravatar": "^1.8.6",
     "@types/lodash": "^4.14.188",
@@ -88,7 +77,6 @@
     "eslint": "8.25.0",
     "eslint-config-next": "12.3.1",
     "eslint-config-prettier": "^8.5.0",
-    "eslint-plugin-storybook": "^0.6.6",
     "exports-loader": "^4.0.0",
     "postcss": "^8.4.17",
     "prettier": "^2.8.0",
