@@ -183,7 +183,10 @@ export const QueueManagerDashboardChart: FC<QueueManagerDashboardChartProps> = (
       datasets.push({
         label: queueManagerStore.queues[queue].name,
         data: [],
-        backgroundColor: theme === 'dark' ? getRandomColor(datasets?.length) : getRandomColorDark(datasets?.length),
+        backgroundColor:
+          theme === 'dark'
+            ? getRandomColor(datasets?.length)
+            : getRandomColorDark(datasets?.length),
         borderRadius: 5,
       })
     })
@@ -226,13 +229,19 @@ export const QueueManagerDashboardChart: FC<QueueManagerDashboardChartProps> = (
     const groupedLineChartInformation = groupDataByHourLineChart(chartValue)
     const labels = Object.keys(groupedLineChartInformation)
 
-    const hours = Object.keys(groupedLineChartInformation[labels[0]])
+    let hours: any
 
+    for (const label of labels) {
+      if (Object.keys(groupedLineChartInformation[label]).length > 0) {
+        hours = Object.keys(groupedLineChartInformation[label])
+        break
+      }
+    }
     setLabelsCallsHour(hours)
 
     const datasets = labels.map((label, index) => {
       const randomColor = getRandomColor(index)
-      const data = hours.map((hour) => groupedLineChartInformation[label][hour])
+      const data = hours.map((hour: any) => groupedLineChartInformation[label][hour])
 
       return {
         label: label,
@@ -253,13 +262,21 @@ export const QueueManagerDashboardChart: FC<QueueManagerDashboardChartProps> = (
 
     const labels = Object.keys(groupedLineChartCallsHourInformation)
     //first label should keep all the hours values
-    const hours = Object.keys(groupedLineChartCallsHourInformation[labels[0]])
+
+    let hours: any
+
+    for (const label of labels) {
+      if (Object.keys(groupedLineChartCallsHourInformation[label]).length > 0) {
+        hours = Object.keys(groupedLineChartCallsHourInformation[label])
+        break
+      }
+    }
 
     setLabelsIncomingCallsHour(hours)
 
     const datasets = labels.map((label, index) => {
       const randomColor = getRandomColor(index)
-      const data = hours.map((hour) => groupedLineChartCallsHourInformation[label][hour])
+      const data = hours.map((hour: any) => groupedLineChartCallsHourInformation[label][hour])
       return {
         label: label,
         data: data,
@@ -278,12 +295,19 @@ export const QueueManagerDashboardChart: FC<QueueManagerDashboardChartProps> = (
     const groupedLineChartInformation = groupDataFailedCallsHourLineChart(chartValue)
     const labels = Object.keys(groupedLineChartInformation)
     //first label should keep all the hours values
-    const hours = Object.keys(groupedLineChartInformation[labels[0]])
+    let hours: any
+
+    for (const label of labels) {
+      if (Object.keys(groupedLineChartInformation[label]).length > 0) {
+        hours = Object.keys(groupedLineChartInformation[label])
+        break
+      }
+    }
     setLabelsFailedCallsHour(hours)
 
     const datasets = labels.map((label, index) => {
       const randomColor = getRandomColor(index)
-      const data = hours.map((hour) => groupedLineChartInformation[label][hour])
+      const data = hours.map((hour: any) => groupedLineChartInformation[label][hour])
       return {
         label: label,
         data: data,
