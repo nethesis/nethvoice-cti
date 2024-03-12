@@ -138,20 +138,32 @@ export const QueueManagerDashboardChart: FC<QueueManagerDashboardChartProps> = (
       {
         label: 'Answered',
         data: [] as number[],
-        backgroundColor: theme === 'dark' ? EMERALD_500 : EMERALD_500,
+        backgroundColor:
+          theme === 'dark' ||
+          (theme === 'system' && window.matchMedia('(prefers-color-scheme: dark)').matches)
+            ? EMERALD_500
+            : EMERALD_500,
         borderColor: '#b91c1c',
         borderRadius: 5,
       },
       {
         label: 'Failed',
         data: [] as number[],
-        backgroundColor: theme === 'dark' ? GRAY_500 : GRAY_500,
+        backgroundColor:
+          theme === 'dark' ||
+          (theme === 'system' && window.matchMedia('(prefers-color-scheme: dark)').matches)
+            ? GRAY_500
+            : GRAY_500,
         borderRadius: 5,
       },
       {
         label: 'Invalid',
         data: [] as number[],
-        backgroundColor: theme === 'dark' ? RED_500 : RED_500,
+        backgroundColor:
+          theme === 'dark' ||
+          (theme === 'system' && window.matchMedia('(prefers-color-scheme: dark)').matches)
+            ? RED_500
+            : RED_500,
         borderRadius: 5,
       },
     ]
@@ -184,7 +196,8 @@ export const QueueManagerDashboardChart: FC<QueueManagerDashboardChartProps> = (
         label: queueManagerStore.queues[queue].name,
         data: [],
         backgroundColor:
-          theme === 'dark'
+          theme === 'dark' ||
+          (theme === 'system' && window.matchMedia('(prefers-color-scheme: dark)').matches)
             ? getRandomColor(datasets?.length)
             : getRandomColorDark(datasets?.length),
         borderRadius: 5,

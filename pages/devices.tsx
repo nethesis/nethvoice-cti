@@ -1,4 +1,4 @@
-// Copyright (C) 2023 Nethesis S.r.l.
+// Copyright (C) 2024 Nethesis S.r.l.
 // SPDX-License-Identifier: AGPL-3.0-or-later
 
 import type { NextPage } from 'next'
@@ -10,8 +10,8 @@ import { RootState } from '../store'
 import {
   faCircleCheck,
   faCircleXmark,
+  faDownload,
   faEllipsisVertical,
-  faHeadset,
   faPenToSquare,
 } from '@fortawesome/free-solid-svg-icons'
 import React from 'react'
@@ -108,11 +108,17 @@ const Devices: NextPage = () => {
     retrievePinStatus()
   }, [firstRender])
 
+  const openNethLinkSettings = () => {
+    // TO DO
+  }
+
   const nethLinkTable = () => {
+    const downloadLink = ''
+
     return (
       <>
         {/* title */}
-        <div className='pt-6'>{titleTable('nethLink')}</div>
+        <div className='pt-8'>{titleTable('nethLink')}</div>
 
         {/* NethLink table */}
         <div className='mt-4 flow-root'>
@@ -155,30 +161,43 @@ const Devices: NextPage = () => {
                             <span>{t('Devices.Main device')}</span>
                           </Badge>
                         ) : (
-                          <span className='text-transparent cursor-default'>
+                          <span className='hidden text-transparent cursor-default'>
                             {t('Devices.Main device')}
                           </span>
                         )}
                       </td>
 
-                      <td
-                        className='whitespace-nowrap px-3 py-4 text-sm text-primary dark:text-primaryDark cursor-pointer'
-                        onClick={() => openShowSwitchAudioInput('')}
-                      >
-                        <div
-                          className={`${
-                            nethLinkData[0]?.id !== profile?.default_device?.id ? '' : 'mr-[1.6rem]'
-                          }`}
-                        >
-                          <FontAwesomeIcon
-                            icon={faPenToSquare}
-                            className='mr-2 h-4 w-4 text-primary dark:text-primaryDark'
-                          />
-                          {t('Devices.NethLink settings')}
-                        </div>
+                      <td className='whitespace-nowrap px-3 py-4 text-sm text-primary dark:text-primaryDark cursor-pointer'>
+                        {nethLinkData?.length === 0 ? (
+                          <div
+                            className={`${
+                              nethLinkData[0]?.id === profile?.default_device?.id ? '' : ''
+                            } pr-[0.5rem]`}
+                            onClick={() => openNethLinkSettings()}
+                          >
+                            <FontAwesomeIcon
+                              icon={faPenToSquare}
+                              className='mr-2 h-4 w-4 text-primary dark:text-primaryDark'
+                            />
+                            {t('Devices.NethLink settings')}
+                          </div>
+                        ) : (
+                          <a
+                            href={downloadLink}
+                            download='nethLink.bin'
+                            className='underline dark:hover:text-primaryDark hover:text-primary pr-[2.8rem]'
+                          >
+                            <FontAwesomeIcon
+                              icon={faDownload}
+                              className='mr-2 h-4 w-4 text-primary dark:text-primaryDark'
+                            />
+                            {t('Devices.Download NethLink')}
+                          </a>
+                        )}
                       </td>
 
-                      {nethLinkData[0]?.id !== profile?.default_device?.id ? (
+                      {nethLinkData[0]?.id !== profile?.default_device?.id &&
+                      nethLinkData?.length !== 0 ? (
                         <td className='relative whitespace-nowrap py-4 pl-3 pr-4 text-right text-sm font-medium sm:pr-6 cursor-pointer'>
                           <Dropdown
                             items={setMainDeviceMenu(webrtcData[0]?.id, 'webrtc', webrtcData[0])}
@@ -199,28 +218,6 @@ const Devices: NextPage = () => {
               </div>
             </div>
           </div>
-        </div>
-      </>
-    )
-  }
-
-  const nethLinkGetBinary = () => {
-    const downloadLink = ''
-
-    return (
-      <>
-        {/* title */}
-        <div className='pt-6'>{titleTable('nethLink')}</div>
-        {/* Download link */}
-        <div className='pt-2'>
-          <span>{t('Devices.Click here to start download')}: </span>
-          <a
-            href={downloadLink}
-            download='nethLink.bin'
-            className='underline dark:hover:text-primaryDark hover:text-primary'
-          >
-            {t('Common.Download')}
-          </a>
         </div>
       </>
     )
@@ -284,7 +281,7 @@ const Devices: NextPage = () => {
                                 <span>{t('Devices.Main device')}</span>
                               </Badge>
                             ) : (
-                              <span className='text-transparent cursor-default'>
+                              <span className='text-transparent cursor-default hidden'>
                                 {t('Devices.Main device')}
                               </span>
                             )}
@@ -337,13 +334,15 @@ const Devices: NextPage = () => {
             </div>
 
             {/* nethLink section */}
-            {nethLinkData?.lenght > 0 ? nethLinkTable() : nethLinkGetBinary()}
+
+            {/* Hidden at the moment */}
+            {/* {nethLinkTable()} */}
 
             {/* Physical phones section */}
             {phoneData?.length > 0 && (
               <>
                 {/* title */}
-                <div className='pt-16'>
+                <div className='pt-8'>
                   <div className='flex items-center space-x-2'>
                     <FontAwesomeIcon
                       icon={faOfficePhone}
@@ -368,7 +367,7 @@ const Devices: NextPage = () => {
                           <tbody className='divide-y divide-gray-200 dark:divide-gray-500 bg-white dark:bg-gray-700'>
                             {phoneData.map((phone: any) => (
                               <tr key={phone?.id} className=''>
-                                <td className='truncate py-4 pl-4 pr-3 text-sm font-medium sm:pl-6 max-w-sm overflow-hidden overflow-ellipsis'>
+                                <td className='truncate py-4 pl-4 pr-7 text-sm font-medium sm:pl-6 max-w-sm overflow-hidden overflow-ellipsis'>
                                   <p className='truncate w-36'>{phone?.description}</p>
                                 </td>
                                 <td className='whitespace-nowrap px-3 py-4 text-sm'>
@@ -407,13 +406,13 @@ const Devices: NextPage = () => {
                                       <span>{t('Devices.Main device')}</span>
                                     </Badge>
                                   ) : (
-                                    <span className='text-transparent'>
+                                    <span className='text-transparent hidden'>
                                       {t('Devices.Main device')}
                                     </span>
                                   )}
                                 </td>
                                 {profile?.profile?.macro_permissions?.nethvoice_cti?.permissions
-                                  .phone_buttons.value ? (
+                                  ?.phone_buttons?.value ? (
                                   <td
                                     className='whitespace-nowrap px-3 py-4 text-sm text-primary dark:text-primaryDark cursor-pointer'
                                     onClick={() => openShowEditPhysicalPhone(phone, pinObject)}

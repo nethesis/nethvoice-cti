@@ -33,19 +33,35 @@ const BarChart: FC<BarChartProps> = ({ labels, datasets }) => {
       y: {
         beginAtZero: true,
         ticks: {
-          color: theme === 'dark' ? GRAY_200 : GRAY_700,
+          color:
+            theme === 'dark' ||
+            (theme === 'system' && window.matchMedia('(prefers-color-scheme: dark)').matches)
+              ? GRAY_200
+              : GRAY_700,
         },
         grid: {
-          color: theme === 'dark' ? GRAY_800 : GRAY_300,
+          color:
+            theme === 'dark' ||
+            (theme === 'system' && window.matchMedia('(prefers-color-scheme: dark)').matches)
+              ? GRAY_800
+              : GRAY_300,
           z: -1,
         },
       },
       x: {
         ticks: {
-          color: theme === 'dark' ? GRAY_200 : GRAY_700,
+          color:
+            theme === 'dark' ||
+            (theme === 'system' && window.matchMedia('(prefers-color-scheme: dark)').matches)
+              ? GRAY_200
+              : GRAY_700,
         },
         grid: {
-          color: theme === 'dark' ? GRAY_800 : GRAY_300,
+          color:
+            theme === 'dark' ||
+            (theme === 'system' && window.matchMedia('(prefers-color-scheme: dark)').matches)
+              ? GRAY_800
+              : GRAY_300,
           z: -1,
         },
       },
@@ -54,7 +70,11 @@ const BarChart: FC<BarChartProps> = ({ labels, datasets }) => {
       legend: {
         position: 'bottom' as const,
         labels: {
-          color: theme === 'dark' ? GRAY_300 : GRAY_600,
+          color:
+            theme === 'dark' ||
+            (theme === 'system' && window.matchMedia('(prefers-color-scheme: dark)').matches)
+              ? GRAY_300
+              : GRAY_600,
         },
       },
       title: {

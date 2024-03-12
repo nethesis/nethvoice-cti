@@ -17,11 +17,9 @@ import { RootState } from '../../store'
 import {
   GRAY_200,
   GRAY_300,
-  GRAY_500,
   GRAY_600,
   GRAY_700,
   GRAY_800,
-  RED_700,
 } from '../../lib/colors'
 
 ChartJS.register(
@@ -52,19 +50,35 @@ const LineChart: FC<LineChartProps> = ({ labels, datasets }) => {
         //Add space at the top of the chart
         grace: '5%',
         ticks: {
-          color: theme === 'dark' ? GRAY_200 : GRAY_700,
+          color:
+            theme === 'dark' ||
+            (theme === 'system' && window.matchMedia('(prefers-color-scheme: dark)').matches)
+              ? GRAY_200
+              : GRAY_700,
         },
         grid: {
-          color: theme === 'dark' ? GRAY_800 : GRAY_300,
+          color:
+            theme === 'dark' ||
+            (theme === 'system' && window.matchMedia('(prefers-color-scheme: dark)').matches)
+              ? GRAY_800
+              : GRAY_300,
           z: -1,
         },
       },
       x: {
         ticks: {
-          color: theme === 'dark' ? GRAY_200 : GRAY_700,
+          color:
+            theme === 'dark' ||
+            (theme === 'system' && window.matchMedia('(prefers-color-scheme: dark)').matches)
+              ? GRAY_200
+              : GRAY_700,
         },
         grid: {
-          color: theme === 'dark' ? GRAY_800 : GRAY_300,
+          color:
+            theme === 'dark' ||
+            (theme === 'system' && window.matchMedia('(prefers-color-scheme: dark)').matches)
+              ? GRAY_800
+              : GRAY_300,
           z: -1,
         },
       },
@@ -73,7 +87,11 @@ const LineChart: FC<LineChartProps> = ({ labels, datasets }) => {
       legend: {
         position: 'bottom' as const,
         labels: {
-          color: theme === 'dark' ? GRAY_300 : GRAY_600,
+          color:
+            theme === 'dark' ||
+            (theme === 'system' && window.matchMedia('(prefers-color-scheme: dark)').matches)
+              ? GRAY_300
+              : GRAY_600,
         },
       },
       title: {
