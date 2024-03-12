@@ -5,6 +5,9 @@ import axios from 'axios'
 import { handleNetworkError } from './utils'
 import { store } from '../store'
 import { getJSONItem, loadPreference } from './storage'
+import { t } from 'i18next'
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
+import { faHeadset } from '@fortawesome/free-solid-svg-icons'
 
 export const openShowEditPhysicalPhone = (phoneInformation: any, pinstatus: any) => {
   let phoneModel: any = {}
@@ -123,4 +126,45 @@ export async function getDevicesPinStatusForDevice() {
     handleNetworkError(error)
     throw error
   }
+}
+
+export const tableHeader = () => {
+  return (
+    <thead className='bg-gray-50 dark:bg-gray-800'>
+      <tr className=''>
+        <th
+          scope='col'
+          className='py-3.5 pl-4 pr-3 text-left text-sm font-semibold sm:pl-6 w-[15.5rem]'
+        >
+          {t('Devices.Device name')}
+        </th>
+        <th scope='col' className='px-3 py-3.5 text-left text-sm font-semibold'>
+          <p className='ml-2'>{t('Devices.Status')}</p>
+        </th>
+        <th scope='col' className='px-3 py-3.5 text-left text-sm font-semibold text-transparent '>
+          {t('Devices.Main device')}
+        </th>
+        <th scope='col' className='px-3 py-3.5 text-left text-sm font-semibold sr-only'>
+          {t('Devices.Edit')}
+        </th>
+
+        <th scope='col' className='relative py-3.5 sm:pr-6'>
+          <span className='sr-only'>{t('Devices.Set as main device')}</span>
+        </th>
+      </tr>
+    </thead>
+  )
+}
+
+export const titleTable = (deviceType: string) => {
+  return (
+    
+      <div className='flex items-center space-x-2'>
+        <FontAwesomeIcon
+          icon={deviceType === 'webrtc' ? faHeadset : faHeadset}
+          className='h-4 w-4 flex justify-center text-gray-700 dark:text-gray-500'
+        />
+        <span>{deviceType === 'webrtc' ? t('Devices.Web phone') : t('Devices.NethLink')}</span>
+      </div>
+  )
 }

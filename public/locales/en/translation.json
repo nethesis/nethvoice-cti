@@ -823,7 +823,10 @@
     "Audio output information tooltip": "Choose the audio output device",
     "Select audio input": "Select audio input",
     "Select audio output": "Select audio output",
-    "Device settings": "Device settings"
+    "Device settings": "Device settings",
+    "NethLink": "NethLink",
+    "NethLink settings": "NethLink settings",
+    "Click here to start download": "Click here to start download"
   },
   "DropdownContent": {
     "Microphones": "MICROPHONES",
