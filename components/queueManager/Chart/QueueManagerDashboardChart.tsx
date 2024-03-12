@@ -1,4 +1,4 @@
-// Copyright (C) 2023 Nethesis S.r.l.
+// Copyright (C) 2024 Nethesis S.r.l.
 // SPDX-License-Identifier: AGPL-3.0-or-later
 
 import { FC, ComponentProps, useEffect, useState } from 'react'
@@ -14,6 +14,7 @@ import {
   getRandomColor,
   groupDataByHourLineCallsChart,
   groupDataFailedCallsHourLineChart,
+  getRandomColorDark,
 } from '../../../lib/queueManager'
 import LineChart from '../../chart/LineChart'
 import BarChart from '../../chart/BarChart'
@@ -182,7 +183,7 @@ export const QueueManagerDashboardChart: FC<QueueManagerDashboardChartProps> = (
       datasets.push({
         label: queueManagerStore.queues[queue].name,
         data: [],
-        backgroundColor: getRandomColor(datasets.length),
+        backgroundColor: theme === 'dark' ? getRandomColor(datasets?.length) : getRandomColorDark(datasets?.length),
         borderRadius: 5,
       })
     })

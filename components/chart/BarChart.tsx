@@ -14,7 +14,7 @@ import {
 } from 'chart.js'
 import { useSelector } from 'react-redux'
 import { RootState } from '../../store'
-import { GRAY_200, GRAY_700 } from '../../lib/colors'
+import { GRAY_200, GRAY_300, GRAY_600, GRAY_700, GRAY_800 } from '../../lib/colors'
 
 ChartJS.register(CategoryScale, LinearScale, BarElement, Title, Tooltip, Legend)
 
@@ -35,16 +35,27 @@ const BarChart: FC<BarChartProps> = ({ labels, datasets }) => {
         ticks: {
           color: theme === 'dark' ? GRAY_200 : GRAY_700,
         },
+        grid: {
+          color: theme === 'dark' ? GRAY_800 : GRAY_300,
+          z: -1,
+        },
       },
       x: {
         ticks: {
           color: theme === 'dark' ? GRAY_200 : GRAY_700,
+        },
+        grid: {
+          color: theme === 'dark' ? GRAY_800 : GRAY_300,
+          z: -1,
         },
       },
     },
     plugins: {
       legend: {
         position: 'bottom' as const,
+        labels: {
+          color: theme === 'dark' ? GRAY_300 : GRAY_600,
+        },
       },
       title: {
         display: true,
