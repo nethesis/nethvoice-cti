@@ -805,7 +805,9 @@
     "NethLink": "NethLink",
     "NethLink settings": "Impostazioni NethLink",
     "Click here to start download": "Clicca qui per iniziare il download",
-    "Download NethLink": "Scarica NethLink"
+    "Download NethLink": "Scarica NethLink",
+    "Not configured": "Non configurato",
+    "IP phone": "Telefono IP"
   },
   "DropdownContent": {
     "Microphones": "MICROFONI",

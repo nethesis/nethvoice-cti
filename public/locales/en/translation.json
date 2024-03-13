@@ -829,7 +829,9 @@
     "NethLink": "NethLink",
     "NethLink settings": "NethLink settings",
     "Click here to start download": "Click here to start download",
-    "Download NethLink": "Download NethLink"
+    "Download NethLink": "Download NethLink",
+    "Not configured": "Not configured",
+    "IP phone": "IP phone"
   },
   "DropdownContent": {
     "Microphones": "MICROPHONES",

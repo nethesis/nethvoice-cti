@@ -134,8 +134,7 @@ const Devices: NextPage = () => {
                       </td>
                       <td className='whitespace-nowrap px-3 py-4 text-sm'>
                         {/* NethLink status */}
-                        {operators?.extensions[nethLinkData[0]?.id]?.exten ===
-                        profile?.default_device?.id ? (
+                        {operators?.extensions[nethLinkData?.id]?.status === 'online' ? (
                           <>
                             <FontAwesomeIcon
                               icon={faCircleCheck}
@@ -168,7 +167,7 @@ const Devices: NextPage = () => {
                       </td>
 
                       <td className='whitespace-nowrap px-3 py-4 text-sm text-primary dark:text-primaryDark cursor-pointer'>
-                        {nethLinkData?.length === 0 ? (
+                        {operators?.extensions[nethLinkData?.id]?.status === 'online' ? (
                           <div
                             className={`${
                               nethLinkData[0]?.id === profile?.default_device?.id ? '' : ''
@@ -185,7 +184,7 @@ const Devices: NextPage = () => {
                           <a
                             href={downloadLink}
                             download='nethLink.bin'
-                            className='underline dark:hover:text-primaryDark hover:text-primary pr-[2.8rem]'
+                            className='hover:underline dark:hover:text-primaryDark hover:text-primary pr-[1.1rem]'
                           >
                             <FontAwesomeIcon
                               icon={faDownload}
@@ -196,8 +195,7 @@ const Devices: NextPage = () => {
                         )}
                       </td>
 
-                      {nethLinkData[0]?.id !== profile?.default_device?.id &&
-                      nethLinkData?.length !== 0 ? (
+                      {operators?.extensions[nethLinkData?.id]?.status !== 'online' ? (
                         <td className='relative whitespace-nowrap py-4 pl-3 pr-4 text-right text-sm font-medium sm:pr-6 cursor-pointer'>
                           <Dropdown
                             items={setMainDeviceMenu(webrtcData[0]?.id, 'webrtc', webrtcData[0])}
@@ -336,7 +334,8 @@ const Devices: NextPage = () => {
             {/* nethLink section */}
 
             {/* Hidden at the moment */}
-            {/* {nethLinkTable()} */}
+            {/* check if user has lkhash permission */}
+            {profile?.lkhash !== undefined && nethLinkData?.length !== 0 && <>{nethLinkTable()}</>}
 
             {/* Physical phones section */}
             {phoneData?.length > 0 && (
@@ -368,7 +367,11 @@ const Devices: NextPage = () => {
                             {phoneData.map((phone: any) => (
                               <tr key={phone?.id} className=''>
                                 <td className='truncate py-4 pl-4 pr-7 text-sm font-medium sm:pl-6 max-w-sm overflow-hidden overflow-ellipsis'>
-                                  <p className='truncate w-36'>{phone?.description}</p>
+                                  <p className='truncate w-36'>
+                                    {phone?.description !== ''
+                                      ? phone?.description
+                                      : t('Devices.IP phone')}
+                                  </p>
                                 </td>
                                 <td className='whitespace-nowrap px-3 py-4 text-sm'>
                                   {/* {phone.status} */}{' '}
