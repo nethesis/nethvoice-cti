@@ -396,7 +396,9 @@
     "Show selected": "Mostra selezionato",
     "Show all": "Mostra tutti",
     "Select date start": "Seleziona data inizio",
-    "Select date end": "Seleziona data fine"
+    "Select date end": "Seleziona data fine",
+    "Newest": "Più recenti",
+    "Oldest": "Meno recenti"
   },
   "SpeedDial": {
     "Create": "Crea",

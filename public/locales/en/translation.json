@@ -523,7 +523,9 @@
     "Show all": "Show all",
     "Insert announcement name": "Insert announcement name",
     "Select date start": "Select date start",
-    "Select date end": "Select date end"
+    "Select date end": "Select date end",
+    "Newest": "Newest",
+    "Oldest": "Oldest"
   },
   "SpeedDial": {
     "Create": "Create",

@@ -1,4 +1,4 @@
-// Copyright (C) 2023 Nethesis S.r.l.
+// Copyright (C) 2024 Nethesis S.r.l.
 // SPDX-License-Identifier: AGPL-3.0-or-later
 
 import { ComponentPropsWithRef, forwardRef, useRef } from 'react'
@@ -42,6 +42,8 @@ export const AnnouncementFilter = forwardRef<HTMLButtonElement, AnnouncementFilt
       options: [
         { value: 'username', label: t('Lines.Author') },
         { value: 'description', label: t('Lines.Name') },
+        { value: 'asc', label: t('Lines.Oldest') },
+        { value: 'desc', label: t('Lines.Newest') },
       ],
     }
 
@@ -51,7 +53,7 @@ export const AnnouncementFilter = forwardRef<HTMLButtonElement, AnnouncementFilt
     function changeSortBy(event: any) {
       const newSortBy = event.target.id
       setSortBy(newSortBy)
-      savePreference('phoneAnnouncementSortBy', newSortBy, auth.username)
+      savePreference('phoneAnnouncementSortBy', newSortBy, auth?.username)
 
       // notify parent component
       updateSortFilter(newSortBy)
@@ -59,16 +61,16 @@ export const AnnouncementFilter = forwardRef<HTMLButtonElement, AnnouncementFilt
 
     const [sortByLabel, setSortByLabel] = useState('')
     useEffect(() => {
-      const found = sortFilter.options.find((option) => option.value === sortBy)
+      const found = sortFilter.options.find((option) => option?.value === sortBy)
 
       if (found) {
-        setSortByLabel(found.label)
+        setSortByLabel(found?.label)
       }
       // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [sortBy])
 
     function changeTextFilter(event: any) {
-      const newTextFilter = event.target.value
+      const newTextFilter = event?.target?.value
       setTextFilter(newTextFilter)
 
       // notify parent component
