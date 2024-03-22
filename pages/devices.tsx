@@ -28,6 +28,7 @@ import { Badge, Dropdown } from '../components/common'
 import { useDispatch } from 'react-redux'
 import { Dispatch } from '../store'
 import { eventDispatch } from '../lib/hooks/eventDispatch'
+import { getTimestamp } from '../services/user'
 
 const Devices: NextPage = () => {
   const { t } = useTranslation()
@@ -54,13 +55,47 @@ const Devices: NextPage = () => {
     }
   }, [profile?.endpoints])
 
-  const setMainDeviceMenu = (deviceId: any, type: string, selectedDeviceInfo: any) => (
-    <Dropdown.Item
-      onClick={() => setSelectedAsMainDevice(deviceId, type, selectedDeviceInfo)}
-      variantTop={true}
-    >
-      {t('Devices.Set as main device')}
-    </Dropdown.Item>
+  let nethLinkDownloadComponent = (isInDropwdown: boolean) => {
+    const downloadLink = ''
+    return (
+      <a
+        href={downloadLink}
+        download='nethLink.bin'
+        className={`${
+          isInDropwdown ? '' : 'hover:underline dark:hover:text-primaryDark hover:text-primary'
+        } `}
+      >
+        {!isInDropwdown && (
+          <FontAwesomeIcon
+            icon={faDownload}
+            className='mr-2 h-4 w-4 text-primary dark:text-primaryDark'
+          />
+        )}
+        {t('Devices.Download NethLink')}
+      </a>
+    )
+  }
+
+  const setMainDeviceMenu = (
+    deviceId: any,
+    type: string,
+    selectedDeviceInfo: any,
+    isNethLinkSection: boolean,
+  ) => (
+    <>
+      {/* check if the device is already the main device */}
+      {operators?.extensions[nethLinkData?.id]?.status !== 'online' && (
+        <Dropdown.Item
+          onClick={() => setSelectedAsMainDevice(deviceId, type, selectedDeviceInfo)}
+          variantTop={true}
+        >
+          {t('Devices.Set as main device')}
+        </Dropdown.Item>
+      )}
+      {isNethLinkSection && (
+        <Dropdown.Item variantTop={true}>{nethLinkDownloadComponent(true)}</Dropdown.Item>
+      )}
+    </>
   )
 
   const setSelectedAsMainDevice = async (
@@ -112,9 +147,36 @@ const Devices: NextPage = () => {
     // TO DO
   }
 
-  const nethLinkTable = () => {
-    const downloadLink = ''
+  const [nethLinkFirstRender, setNethLinkFirstRender]: any = useState(true)
+  const [nethLinkTimeStampError, setNethLinkTimeStampError] = useState('')
+  const [nethLinkTimestamp, setNethLinkTimestamp]: any = useState({})
+  const [nethLinkTimestampLoaded, setNethLinkTimestampLoaded] = useState(false)
 
+  useEffect(() => {
+    if (nethLinkFirstRender) {
+      setNethLinkFirstRender(false)
+      return
+    }
+    // and every time a reload is required
+    // res is like this: { timestamp: '2024-03-21 10:23:44.087' }
+    const getNethLinkValue = async () => {
+      if (!nethLinkTimestampLoaded && profile?.lkhash !== undefined) {
+        try {
+          setNethLinkTimeStampError('')
+          const nethLinkTimeStampRes = await getTimestamp()
+          // Sort the speed dials and update the list
+          setNethLinkTimestamp(nethLinkTimeStampRes)
+          setNethLinkTimestampLoaded(true)
+        } catch (error) {
+          setNethLinkTimeStampError('Cannot retrieve timestamp information')
+        }
+      }
+    }
+    getNethLinkValue()
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [nethLinkFirstRender, nethLinkTimestampLoaded, profile?.lkhash])
+
+  const nethLinkTable = () => {
     return (
       <>
         {/* title */}
@@ -166,8 +228,12 @@ const Devices: NextPage = () => {
                         )}
                       </td>
 
-                      <td className='whitespace-nowrap px-3 py-4 text-sm text-primary dark:text-primaryDark cursor-pointer'>
-                        {operators?.extensions[nethLinkData?.id]?.status === 'online' ? (
+                      {/* Show nethlink settings only if timestamp is not null or empty or if the device
+                      is the main device */}
+                      <td className='whitespace-nowrap py-4 text-sm text-primary dark:text-primaryDark cursor-pointer'>
+                        {operators?.extensions[nethLinkData?.id]?.status === 'online' ||
+                        nethLinkTimestamp?.timestamp !== null ||
+                        nethLinkTimestamp?.timestamp !== '' ? (
                           <div
                             className={`${
                               nethLinkData[0]?.id === profile?.default_device?.id ? '' : ''
@@ -181,25 +247,20 @@ const Devices: NextPage = () => {
                             {t('Devices.NethLink settings')}
                           </div>
                         ) : (
-                          <a
-                            href={downloadLink}
-                            download='nethLink.bin'
-                            className='hover:underline dark:hover:text-primaryDark hover:text-primary pr-[1.1rem]'
-                          >
-                            <FontAwesomeIcon
-                              icon={faDownload}
-                              className='mr-2 h-4 w-4 text-primary dark:text-primaryDark'
-                            />
-                            {t('Devices.Download NethLink')}
-                          </a>
+                          nethLinkDownloadComponent(false)
                         )}
                       </td>
 
                       {operators?.extensions[nethLinkData?.id]?.status !== 'online' ? (
                         <td className='relative whitespace-nowrap py-4 pl-3 pr-4 text-right text-sm font-medium sm:pr-6 cursor-pointer'>
                           <Dropdown
-                            items={setMainDeviceMenu(webrtcData[0]?.id, 'webrtc', webrtcData[0])}
-                            position='top'
+                            items={setMainDeviceMenu(
+                              nethLinkData[0]?.id,
+                              'webrtc',
+                              nethLinkData[0],
+                              true,
+                            )}
+                            position='topMultipleItem'
                           >
                             <FontAwesomeIcon
                               icon={faEllipsisVertical}
@@ -311,8 +372,9 @@ const Devices: NextPage = () => {
                                   webrtcData[0]?.id,
                                   'webrtc',
                                   webrtcData[0],
+                                  false,
                                 )}
-                                position='top'
+                                position='topMultipleItem'
                               >
                                 <FontAwesomeIcon
                                   icon={faEllipsisVertical}
@@ -441,8 +503,8 @@ const Devices: NextPage = () => {
                                 {phone?.id !== profile?.default_device?.id ? (
                                   <td className='relative whitespace-nowrap py-4 pl-3 pr-4 text-right text-sm font-medium sm:pr-6 cursor-pointer'>
                                     <Dropdown
-                                      items={setMainDeviceMenu(phone?.id, 'physical', phone)}
-                                      position='top'
+                                      items={setMainDeviceMenu(phone?.id, 'physical', phone, false)}
+                                      position='topMultipleItem'
                                     >
                                       <FontAwesomeIcon
                                         icon={faEllipsisVertical}

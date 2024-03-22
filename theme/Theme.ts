@@ -366,6 +366,7 @@ const theme = {
         right: 'left-0 w-60 mt-2',
         left: 'right-0 w-60 mt-2',
         top: 'right-[3rem] top-0',
+        topMultipleItem: 'right-[3rem] top-[-1rem]',
         bottom: 'bottom-0',
       },
       divider: 'divide-y divide-gray-200 dark:divide-gray-700',

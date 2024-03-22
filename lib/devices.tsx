@@ -158,13 +158,12 @@ export const tableHeader = () => {
 
 export const titleTable = (deviceType: string) => {
   return (
-    
-      <div className='flex items-center space-x-2'>
-        <FontAwesomeIcon
-          icon={deviceType === 'webrtc' ? faHeadset : faHeadset}
-          className='h-4 w-4 flex justify-center text-gray-700 dark:text-gray-500'
-        />
-        <span>{deviceType === 'webrtc' ? t('Devices.Web phone') : t('Devices.NethLink')}</span>
-      </div>
+    <div className='flex items-center space-x-2'>
+      <FontAwesomeIcon
+        icon={deviceType === 'webrtc' ? faHeadset : faHeadset}
+        className='h-4 w-4 flex justify-center text-gray-700 dark:text-gray-500'
+      />
+      <span>{deviceType === 'webrtc' ? t('Devices.Web phone') : t('Devices.NethLink')}</span>
+    </div>
   )
 }
