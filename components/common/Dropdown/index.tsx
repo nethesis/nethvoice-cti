@@ -1,4 +1,4 @@
-// Copyright (C) 2023 Nethesis S.r.l.
+// Copyright (C) 2024 Nethesis S.r.l.
 // SPDX-License-Identifier: AGPL-3.0-or-later
 
 import { FC, ComponentProps, Fragment, ReactNode } from 'react'
@@ -11,7 +11,7 @@ import classNames from 'classnames'
 export interface DropdownProps extends ComponentProps<'div'> {
   items: ReactNode
   divider?: boolean
-  position?: 'left' | 'right' | 'top' | 'bottom' | 'topMultipleItem'
+  position?: 'left' | 'right' | 'top' | 'bottom' | 'topCard' | 'topMultipleItem'
   size?: 'full'
 }
 

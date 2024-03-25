@@ -131,25 +131,21 @@ export async function getDevicesPinStatusForDevice() {
 export const tableHeader = () => {
   return (
     <thead className='bg-gray-50 dark:bg-gray-800'>
-      <tr className=''>
-        <th
-          scope='col'
-          className='py-3.5 pl-4 pr-3 text-left text-sm font-semibold sm:pl-6 w-[15.5rem]'
-        >
+      <tr>
+        <th scope='col' className='py-3.5 pl-4 pr-3 text-left text-sm font-semibold sm:pl-6'>
           {t('Devices.Device name')}
         </th>
         <th scope='col' className='px-3 py-3.5 text-left text-sm font-semibold'>
-          <p className='ml-2'>{t('Devices.Status')}</p>
+          {t('Devices.Status')}
         </th>
-        <th scope='col' className='px-3 py-3.5 text-left text-sm font-semibold text-transparent '>
-          {t('Devices.Main device')}
+        <th scope='col' className='px-3 py-3.5 text-left text-sm font-semibold'>
+          <span className='sr-only'> {t('Devices.Edit')}</span>
         </th>
-        <th scope='col' className='px-3 py-3.5 text-left text-sm font-semibold sr-only'>
-          {t('Devices.Edit')}
+        <th scope='col' className='py-3.5 text-right text-sm font-semibold'>
+          <span className='sr-only'> {t('Devices.Edit')}</span>
         </th>
-
-        <th scope='col' className='relative py-3.5 sm:pr-6'>
-          <span className='sr-only'>{t('Devices.Set as main device')}</span>
+        <th scope='col' className='relative py-3.5 pl-3 pr-4 text-right'>
+          <span className='sr-only'> {t('Devices.Edit')}</span>
         </th>
       </tr>
     </thead>
@@ -163,7 +159,7 @@ export const titleTable = (deviceType: string) => {
         icon={deviceType === 'webrtc' ? faHeadset : faHeadset}
         className='h-4 w-4 flex justify-center text-gray-700 dark:text-gray-500'
       />
-      <span>{deviceType === 'webrtc' ? t('Devices.Web phone') : t('Devices.NethLink')}</span>
+      <span>{deviceType === 'webrtc' ? t('Devices.Web phone') : t('Devices.PhoneLink')}</span>
     </div>
   )
 }

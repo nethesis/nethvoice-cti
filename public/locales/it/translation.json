@@ -259,8 +259,8 @@
     "Available presence": "Presence disponibili",
     "Show customer card": "Mostra schede cliente",
     "Customer cards": "Schede cliente",
-    "NethLink configuration": "Configurazione NethLink",
-    "Get NethLink configuration": "Ottieni la configurazione"
+    "PhoneLink configuration": "Configurazione Phone link",
+    "Get PhoneLink configuration": "Ottieni la configurazione"
   },
   "TopBar": {
     "Signed in as": "Accesso effettuato come",
@@ -802,10 +802,10 @@
     "Select audio input": "Seleziona l'ingresso audio",
     "Select audio output": "Seleziona l'uscita audio",
     "Device settings": "Impostazioni dispositivo",
-    "NethLink": "NethLink",
-    "NethLink settings": "Impostazioni NethLink",
+    "PhoneLink": "Phone link",
+    "PhoneLink settings": "Apri Phone link",
     "Click here to start download": "Clicca qui per iniziare il download",
-    "Download NethLink": "Scarica NethLink",
+    "Download PhoneLink": "Scarica Phone link",
     "Not configured": "Non configurato",
     "IP phone": "Telefono IP"
   },
