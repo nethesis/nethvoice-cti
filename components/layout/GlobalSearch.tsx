@@ -227,7 +227,7 @@ export const GlobalSearch: FC<GlobalSearchProps> = () => {
       <div
         id='globalSearch'
         className={classNames(
-          'absolute left-[53px] md:left-0 sm:w-[70%] md:w-[75%] 2xl:w-[50vw] transform divide-y overflow-hidden transition-all rounded-lg z-[60] bg-white divide-gray-200 dark:bg-gray-900 dark:divide-gray-700',
+          'absolute left-[53px] md:left-0 sm:w-[70%] md:w-[75%] 2xl:w-[50vw] transform divide-y overflow-hidden transition-all rounded-lg z-[60] bg-topbar dark:bg-topbarDark divide-gray-200  dark:divide-gray-700',
           globalSearchStore?.isFocused ? 'w-[calc(100vw - 52px)]' : 'w-[50%]',
         )}
       >
@@ -237,11 +237,11 @@ export const GlobalSearch: FC<GlobalSearchProps> = () => {
               <div className='relative flex items-center'>
                 <FontAwesomeIcon
                   icon={faMagnifyingGlass}
-                  className='pointer-events-none absolute left-4 h-5 w-5 text-gray-400 dark:text-gray-500'
+                  className='pointer-events-none absolute left-4 h-5 w-5 text-topBarText dark:text-topBarTextDark'
                   aria-hidden='true'
                 />
                 <Combobox.Input
-                  className='h-[63px] w-full border-0 bg-transparent pl-12 pr-4 focus:ring-0 sm:text-sm text-gray-800 placeholder-gray-400 dark:text-gray-100 dark:placeholder-gray-500'
+                  className='h-[63px] w-full border-0 bg-transparent pl-12 pr-4 focus:ring-0 sm:text-sm text-gray-800 dark:text-gray-100 placeholder-topBarText  dark:placeholder-topBarTextDark'
                   placeholder={t('Devices.Search or compose') + '...' || ""}
                   onChange={debouncedChangeQuery}
                   // Avoid press enter button before global search is open

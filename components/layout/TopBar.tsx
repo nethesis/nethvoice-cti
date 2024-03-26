@@ -424,7 +424,7 @@ export const TopBar: FC<TopBarProps> = ({ openMobileCb }) => {
 
   return (
     <header className='w-full'>
-      <div className='relative z-50 flex h-16 flex-shrink-0 border-b shadow-sm border-gray-200 bg-white dark:border-gray-700 dark:bg-gray-900'>
+      <div className='relative z-50 flex h-16 flex-shrink-0 border-b shadow-sm border-gray-200 dark:border-gray-700 bg-topbar dark:bg-topbarDark'>
         <button
           type='button'
           className='border-r px-4 focus:outline-none focus:ring-2 focus:ring-inset md:hidden focus:ring-primaryLight border-gray-200 text-gray-500 dark:focus:ring-primaryDark dark:border-gray-700 dark:text-gray-400'
@@ -443,9 +443,9 @@ export const TopBar: FC<TopBarProps> = ({ openMobileCb }) => {
                   icon={faBell}
                   className={
                     'h-5 w-5 py-1 px-0.5 flex-shrink-0 ' +
-                    (sideDrawer.isShown && sideDrawer.contentType === 'notifications'
+                    (sideDrawer?.isShown && sideDrawer?.contentType === 'notifications'
                       ? ' text-primary dark:text-primaryDark'
-                      : ' text-gray-500 dark:text-gray-400')
+                      : ' text-topBarText dark:text-topBarTextDark')
                   }
                   aria-hidden='true'
                 />

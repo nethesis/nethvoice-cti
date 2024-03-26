@@ -33,7 +33,7 @@ export const MobileNavBar: FC<MobileNavBarProps> = ({ closeMobileMenu, show, ite
     <>
       {/* Mobile menu */}
       <Transition.Root show={show} as={Fragment}>
-        <Dialog as='div' className='relative z-20 md:hidden' onClose={closeMobileMenu}>
+        <Dialog as='div' className='relative z-[1000] md:hidden' onClose={closeMobileMenu}>
           <Transition.Child
             as={Fragment}
             enter='transition-opacity ease-linear duration-300'

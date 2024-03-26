@@ -182,7 +182,7 @@ export const UserNavBar: FC = () => {
       {/* The side menu */}
       <div
         style={{ width: '3.125rem' }}
-        className='border-gray-200 dark:border-gray-700 border-l bg-white dark:bg-gray-900 py-6 flex flex-col items-center gap-6 relative z-10'
+        className='border-gray-200 dark:border-gray-700 border-l bg-sidebar dark:bg-sidebarDark py-6 flex flex-col items-center gap-6 relative z-10'
       >
         {tabs.map((tab, i) => (
           <div
@@ -190,14 +190,19 @@ export const UserNavBar: FC = () => {
             onClick={() => clickedTab(tab?.name, true)}
             className={`${
               tab.active
-                ? 'bg-gray-100 dark:bg-gray-700 text-gray-900 dark:text-gray-50'
-                : 'text-gray-600 dark:text-gray-400 hover:text-gray-900 dark:hover:text-gray-50'
-            } hover:bg-gray-100 hover:dark:bg-gray-700 w-8 h-8 rounded flex justify-center items-center relative cursor-pointer`}
+                ? 'text-currentSidebarIconText dark:text-currentSidebarIconTextDark bg-sidebarIconBackground dark:bg-sidebarIconBackgroundDark'
+                : 'text-sidebarIconText dark:text-sidebarIconTextDark dark:hover:text-currentSidebarIconTextDark hover:text-currentSidebarIconText hover:bg-sidebarIconBackground dark:hover:bg-sidebarIconBackgroundDark'
+            } w-8 h-8 rounded flex justify-center items-center relative cursor-pointer`}
             data-tooltip-id={'tooltip-side-menu'}
             data-tooltip-content={tab?.label}
           >
             <FontAwesomeIcon size='lg' icon={tab.icon} />
-            {tab?.active && <div style={activeStyles} className='bg-primary dark:bg-primaryDark' />}
+            {tab?.active && (
+              <div
+                style={activeStyles}
+                className='bg-currentBadgePrimary dark:bg-currentBadgePrimaryDark'
+              />
+            )}
           </div>
         ))}
       </div>
