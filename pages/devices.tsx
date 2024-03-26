@@ -89,7 +89,7 @@ const Devices: NextPage = () => {
   ) => (
     <>
       {/* check if the device is already the main device */}
-      {operators?.extensions[phoneLinkData?.id]?.status !== 'online' && (
+      {!isPhoneLinkSection && operators?.extensions[phoneLinkData?.id]?.status !== 'online' ? (
         <Dropdown.Item
           icon={faRocket}
           onClick={() =>
@@ -100,6 +100,19 @@ const Devices: NextPage = () => {
         >
           {t('Devices.Set as main device')}
         </Dropdown.Item>
+      ) : isPhoneLinkSection && phoneLinkData[0]?.id !== profile?.default_device?.id ? (
+        <Dropdown.Item
+          icon={faRocket}
+          onClick={() =>
+            isPhoneLinkSection && isEmpty(phoneLinkTimestamp)
+              ? ''
+              : setSelectedAsMainDevice(deviceId, type, selectedDeviceInfo)
+          }
+        >
+          {t('Devices.Set as main device')}
+        </Dropdown.Item>
+      ) : (
+        <></>
       )}
       {isPhoneLinkSection && (
         <Dropdown.Item icon={faDownload}>{phoneLinkDownloadComponent(true)}</Dropdown.Item>
@@ -151,10 +164,6 @@ const Devices: NextPage = () => {
     }
     retrievePinStatus()
   }, [firstRender])
-
-  const openPhoneLinkSettings = () => {
-    // TO DO
-  }
 
   const [phoneLinkFirstRender, setPhoneLinkFirstRender]: any = useState(true)
   const [phoneLinkTimeStampError, setPhoneLinkTimeStampError] = useState('')
@@ -347,8 +356,8 @@ const Devices: NextPage = () => {
                               className={`${
                                 phoneLinkData[0]?.id === profile?.default_device?.id ? '' : ''
                               } text-right`}
-                              onClick={() => openPhoneLinkSettings()}
                             >
+                              <a href='nethlink://open' target='_blank' rel='noreferrer' />
                               <FontAwesomeIcon
                                 icon={faArrowUpFromBracket}
                                 className='mr-2 h-4 w-4 text-primary dark:text-primaryDark'
