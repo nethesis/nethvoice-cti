@@ -1,4 +1,4 @@
-// Copyright (C) 2023 Nethesis S.r.l.
+// Copyright (C) 2024 Nethesis S.r.l.
 // SPDX-License-Identifier: AGPL-3.0-or-later
 
 import { FC, ComponentProps, useEffect, useState } from 'react'
@@ -14,6 +14,7 @@ import {
   getRandomColor,
   groupDataByHourLineCallsChart,
   groupDataFailedCallsHourLineChart,
+  getRandomColorDark,
 } from '../../../lib/queueManager'
 import LineChart from '../../chart/LineChart'
 import BarChart from '../../chart/BarChart'
@@ -22,6 +23,7 @@ import { Button } from '../../common'
 import { faExpand } from '@fortawesome/free-solid-svg-icons'
 import { isEmpty } from 'lodash'
 import { formatInTimeZoneLoc } from '../../../lib/dateTime'
+import { EMERALD_500, GRAY_500, RED_500 } from '../../../lib/colors'
 
 export interface QueueManagerDashboardChartProps extends ComponentProps<'div'> {
   isLoadedQueuesHistory: any
@@ -61,6 +63,7 @@ export const QueueManagerDashboardChart: FC<QueueManagerDashboardChartProps> = (
   const [datasetsFailedCallsHour, setDatasetsFailedCallsHour] = useState<any>([])
 
   const queueManagerStore = useSelector((state: RootState) => state.queueManagerQueues)
+  const { theme } = useSelector((state: RootState) => state.darkTheme)
 
   //zoom sections
   const [zoomedCardIndices, setZoomedCardIndices] = useState<number[]>([])
@@ -135,19 +138,32 @@ export const QueueManagerDashboardChart: FC<QueueManagerDashboardChartProps> = (
       {
         label: 'Answered',
         data: [] as number[],
-        backgroundColor: '#10B981',
+        backgroundColor:
+          theme === 'dark' ||
+          (theme === 'system' && window.matchMedia('(prefers-color-scheme: dark)').matches)
+            ? EMERALD_500
+            : EMERALD_500,
+        borderColor: '#b91c1c',
         borderRadius: 5,
       },
       {
         label: 'Failed',
         data: [] as number[],
-        backgroundColor: '#6b7280',
+        backgroundColor:
+          theme === 'dark' ||
+          (theme === 'system' && window.matchMedia('(prefers-color-scheme: dark)').matches)
+            ? GRAY_500
+            : GRAY_500,
         borderRadius: 5,
       },
       {
         label: 'Invalid',
         data: [] as number[],
-        backgroundColor: '#ff0000',
+        backgroundColor:
+          theme === 'dark' ||
+          (theme === 'system' && window.matchMedia('(prefers-color-scheme: dark)').matches)
+            ? RED_500
+            : RED_500,
         borderRadius: 5,
       },
     ]
@@ -179,7 +195,11 @@ export const QueueManagerDashboardChart: FC<QueueManagerDashboardChartProps> = (
       datasets.push({
         label: queueManagerStore.queues[queue].name,
         data: [],
-        backgroundColor: getRandomColor(datasets.length),
+        backgroundColor:
+          theme === 'dark' ||
+          (theme === 'system' && window.matchMedia('(prefers-color-scheme: dark)').matches)
+            ? getRandomColor(datasets?.length)
+            : getRandomColorDark(datasets?.length),
         borderRadius: 5,
       })
     })
@@ -222,13 +242,19 @@ export const QueueManagerDashboardChart: FC<QueueManagerDashboardChartProps> = (
     const groupedLineChartInformation = groupDataByHourLineChart(chartValue)
     const labels = Object.keys(groupedLineChartInformation)
 
-    const hours = Object.keys(groupedLineChartInformation[labels[0]])
+    let hours: any
 
+    for (const label of labels) {
+      if (Object.keys(groupedLineChartInformation[label]).length > 0) {
+        hours = Object.keys(groupedLineChartInformation[label])
+        break
+      }
+    }
     setLabelsCallsHour(hours)
 
     const datasets = labels.map((label, index) => {
       const randomColor = getRandomColor(index)
-      const data = hours.map((hour) => groupedLineChartInformation[label][hour])
+      const data = hours.map((hour: any) => groupedLineChartInformation[label][hour])
 
       return {
         label: label,
@@ -249,13 +275,21 @@ export const QueueManagerDashboardChart: FC<QueueManagerDashboardChartProps> = (
 
     const labels = Object.keys(groupedLineChartCallsHourInformation)
     //first label should keep all the hours values
-    const hours = Object.keys(groupedLineChartCallsHourInformation[labels[0]])
+
+    let hours: any
+
+    for (const label of labels) {
+      if (Object.keys(groupedLineChartCallsHourInformation[label]).length > 0) {
+        hours = Object.keys(groupedLineChartCallsHourInformation[label])
+        break
+      }
+    }
 
     setLabelsIncomingCallsHour(hours)
 
     const datasets = labels.map((label, index) => {
       const randomColor = getRandomColor(index)
-      const data = hours.map((hour) => groupedLineChartCallsHourInformation[label][hour])
+      const data = hours.map((hour: any) => groupedLineChartCallsHourInformation[label][hour])
       return {
         label: label,
         data: data,
@@ -274,12 +308,19 @@ export const QueueManagerDashboardChart: FC<QueueManagerDashboardChartProps> = (
     const groupedLineChartInformation = groupDataFailedCallsHourLineChart(chartValue)
     const labels = Object.keys(groupedLineChartInformation)
     //first label should keep all the hours values
-    const hours = Object.keys(groupedLineChartInformation[labels[0]])
+    let hours: any
+
+    for (const label of labels) {
+      if (Object.keys(groupedLineChartInformation[label]).length > 0) {
+        hours = Object.keys(groupedLineChartInformation[label])
+        break
+      }
+    }
     setLabelsFailedCallsHour(hours)
 
     const datasets = labels.map((label, index) => {
       const randomColor = getRandomColor(index)
-      const data = hours.map((hour) => groupedLineChartInformation[label][hour])
+      const data = hours.map((hour: any) => groupedLineChartInformation[label][hour])
       return {
         label: label,
         data: data,

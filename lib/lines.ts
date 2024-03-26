@@ -113,11 +113,13 @@ export async function getAnnouncementsFiltered(textFilter: string, pageNum: any)
     const allFilteredCalls = Object.values(data).filter((calls: any) => {
       return searchStringInLines(calls, textFilter, type)
     })
-    data.count = allFilteredCalls.length
-    data.totalPages = Math.ceil(allFilteredCalls.length / PAGE_SIZE)
-    const start = (pageNum - 1) * PAGE_SIZE
-    const end = start + PAGE_SIZE
-    data.rows = allFilteredCalls.slice(start, end)
+    data.count = allFilteredCalls?.length
+    data.totalPages = Math.ceil(allFilteredCalls?.length / PAGE_SIZE)
+
+    data.start = (pageNum - 1) * PAGE_SIZE
+    data.end = data.start + PAGE_SIZE
+    data.rows = allFilteredCalls
+
     return data
   } catch (error) {
     handleNetworkError(error)

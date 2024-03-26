@@ -281,8 +281,8 @@
     "Callforward": "Forward",
     "Do not disturb": "Do not disturb",
     "Available presence": "Available presence",
-    "NethLink configuration": "NethLink configuration",
-    "Get NethLink configuration": "Get configuration"
+    "PhoneLink configuration": "Phone link configuration",
+    "Get PhoneLink configuration": "Get configuration"
   },
   "TopBar": {
     "Signed in as": "Signed in as",
@@ -523,7 +523,9 @@
     "Show all": "Show all",
     "Insert announcement name": "Insert announcement name",
     "Select date start": "Select date start",
-    "Select date end": "Select date end"
+    "Select date end": "Select date end",
+    "Newest": "Newest",
+    "Oldest": "Oldest"
   },
   "SpeedDial": {
     "Create": "Create",
@@ -823,7 +825,13 @@
     "Audio output information tooltip": "Choose the audio output device",
     "Select audio input": "Select audio input",
     "Select audio output": "Select audio output",
-    "Device settings": "Device settings"
+    "Device settings": "Device settings",
+    "PhoneLink": "Phone link",
+    "PhoneLink settings": "Open Phone link",
+    "Click here to start download": "Click here to start download",
+    "Download PhoneLink": "Download Phone link",
+    "Not configured": "Not configured",
+    "IP phone": "IP phone"
   },
   "DropdownContent": {
     "Microphones": "MICROPHONES",

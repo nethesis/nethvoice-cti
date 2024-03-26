@@ -209,10 +209,10 @@ export const TopBar: FC<TopBarProps> = ({ openMobileCb }) => {
       try {
         await setMainDevice(deviceIdInfo)
         dispatch.user.updateDefaultDevice(deviceIdInfo)
-        if (deviceType !== '' && deviceType === 'physical') {
-          eventDispatch('phone-island-detach', { deviceInformationObject })
-        } else {
+        if (deviceType === 'webrtc') {
           eventDispatch('phone-island-attach', { deviceInformationObject })
+        } else {
+          eventDispatch('phone-island-detach', { deviceInformationObject })
         }
       } catch (err) {
         console.log(err)

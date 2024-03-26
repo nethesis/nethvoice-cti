@@ -143,25 +143,6 @@ export const Integrations = () => {
     )
   }
 
-  const nethLinkSection = () => {
-    return (
-      <div>
-        <h4
-          id='neth-link-heading'
-          className='text-sm font-medium leading-6 text-gray-900 dark:text-gray-100 pt-6'
-        >
-          {t('Settings.NethLink configuration')}
-        </h4>
-        <p className='mt-1 text-sm text-gray-500 dark:text-gray-400'>{t('Common.Coming soon')}</p>
-        <p className='mt-6 flex items-center gap-2'>
-          <Button variant='white' disabled>
-            {t('Settings.Get NethLink configuration')}
-          </Button>
-        </p>
-      </div>
-    )
-  }
-
   return (
     <>
       {/* The Integration section */}
@@ -174,7 +155,6 @@ export const Integrations = () => {
               </h2>
             </div>
             {phoneIslandSection()}
-            {nethLinkSection()}
           </div>
         </div>
       </section>

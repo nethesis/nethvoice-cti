@@ -7,15 +7,18 @@ import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { useTranslation } from 'react-i18next'
 import { useDispatch } from 'react-redux'
 import { Dispatch } from '../../store'
-import { getCustomerCardsList, setUserSettings } from '../../lib/customerCard'
+import { getCustomerCardsList, getOrderValues, setUserSettings } from '../../lib/customerCard'
 import { Badge, EmptyState } from '../common'
 import { isEmpty } from 'lodash'
 import { useSelector } from 'react-redux'
 import { RootState } from '../../store'
 import { DragDropContext, Draggable, Droppable } from 'react-beautiful-dnd'
+import { getJSONItem, setJSONItem } from '../../lib/storage'
 
 export const CustomerCards = () => {
   const { t } = useTranslation()
+  const username = useSelector((state: RootState) => state.user.username)
+  const auth = useSelector((state: RootState) => state.authentication)
 
   const dispatch = useDispatch<Dispatch>()
 
@@ -83,6 +86,13 @@ export const CustomerCards = () => {
     changeCCardSettings()
   }, [customerCardOrder, customerCardSelection])
 
+  //Get order from local storage
+  useEffect(() => {
+    const orderValueLocalStorage = getOrderValues(auth.username)
+    setCustomerCardOrder(orderValueLocalStorage?.orderValue)
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [])
+
   //Get customer card selection from store
   useEffect(() => {
     if (customerCardSelection == '' && ccardStatus) {
@@ -91,7 +101,7 @@ export const CustomerCards = () => {
   }, [])
 
   useEffect(() => {
-    if (!isEmpty(customerCardsList)) {
+    if (!isEmpty(customerCardsList) && customerCardOrder?.length === 0) {
       const initialOrder = Object.keys(customerCardsList)
       setCustomerCardOrder(initialOrder)
     }
@@ -112,6 +122,11 @@ export const CustomerCards = () => {
 
     // Save new order
     setCustomerCardOrder(currentOrder)
+
+    // Save order inside local storage
+    const preferences = getJSONItem(`preferences-${username}`) || {}
+    preferences['customerCardOrder'] = currentOrder
+    setJSONItem(`preferences-${username}`, preferences)
   }
 
   return (
@@ -188,7 +203,7 @@ export const CustomerCards = () => {
                                               className='h-4 w-4 flex-shrink-0 text-gray-400 dark:text-gray-500'
                                             />
                                           </span>
-                                          {customerCardsList[cardId].descr}
+                                          {customerCardsList[cardId]?.descr}
                                         </div>
 
                                         {/* Order position */}

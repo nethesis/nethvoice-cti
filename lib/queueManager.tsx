@@ -1,4 +1,4 @@
-// Copyright (C) 2023 Nethesis S.r.l.
+// Copyright (C) 2024 Nethesis S.r.l.
 // SPDX-License-Identifier: AGPL-3.0-or-later
 
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
@@ -11,6 +11,36 @@ import { loadPreference, savePreference } from './storage'
 import { handleNetworkError } from './utils'
 import { intervalToDuration, format } from 'date-fns'
 import { openShowOperatorDrawer } from '../lib/operators'
+import {
+  AMBER_600_SHADOW,
+  BLUE_600_SHADOW,
+  CYAN_600_SHADOW,
+  EMERALD_600_SHADOW,
+  EMERALD_800_SHADOW,
+  GREEN_600_SHADOW,
+  GREEN_800_SHADOW,
+  INDIGO_600_SHADOW,
+  LIME_600_SHADOW,
+  PINK_600_SHADOW,
+  PURPLE_600_SHADOW,
+  ROSE_600_SHADOW,
+  SKY_600_SHADOW,
+  TEAL_600_SHADOW,
+  VIOLET_600_SHADOW,
+  YELLOW_600_SHADOW,
+  TEAL_800_SHADOW,
+  CYAN_800_SHADOW,
+  SKY_800_SHADOW,
+  BLUE_800_SHADOW,
+  INDIGO_800_SHADOW,
+  VIOLET_800_SHADOW,
+  PURPLE_800_SHADOW,
+  PINK_800_SHADOW,
+  ROSE_800_SHADOW,
+  AMBER_800_SHADOW,
+  YELLOW_800_SHADOW,
+  LIME_800_SHADOW,
+} from './colors'
 
 export const PAGE_SIZE = 10
 
@@ -474,33 +504,62 @@ export const groupDataByHourLineChart = (data: any) => {
 // Get color for line chart
 export const getRandomColor = (index: number) => {
   const colors = [
-    'rgba(22, 163, 74, 0.5)',
-    'rgba(5, 150, 105, 0.5)',
-    'rgba(13, 148, 136, 0.5)',
-    'rgba(8, 145, 178, 0.5)',
-    'rgba(71, 85, 105, 0.5)',
-    'rgba(75, 85, 99, 0.5)',
-    'rgba(82, 82, 91, 0.5)',
-    'rgba(82, 82, 82, 0.5)',
-    'rgba(87, 83, 78, 0.5)',
-    'rgba(220, 38, 38, 0.5)',
-    'rgba(234, 88, 12, 0.5)',
-    'rgba(217, 119, 6, 0.5)',
-    'rgba(202, 138, 4, 0.5)',
-    'rgba(101, 163, 13, 0.5)',
-
-    'rgba(2, 132, 199, 0.5)',
-    'rgba(37, 99, 235, 0.5)',
-    'rgba(79, 70, 229, 0.5)',
-    'rgba(124, 58, 237, 0.5)',
-    'rgba(147, 51, 234, 0.5)',
-    'rgba(192, 38, 211, 0.5)',
-    'rgba(219, 39, 119, 0.5)',
-    'rgba(225, 29, 72, 0.5)',
+    GREEN_600_SHADOW,
+    EMERALD_600_SHADOW,
+    TEAL_600_SHADOW,
+    CYAN_600_SHADOW,
+    SKY_600_SHADOW,
+    BLUE_600_SHADOW,
+    INDIGO_600_SHADOW,
+    VIOLET_600_SHADOW,
+    PURPLE_600_SHADOW,
+    PINK_600_SHADOW,
+    ROSE_600_SHADOW,
+    AMBER_600_SHADOW,
+    YELLOW_600_SHADOW,
+    LIME_600_SHADOW,
+    SKY_600_SHADOW,
+    BLUE_600_SHADOW,
+    INDIGO_600_SHADOW,
+    VIOLET_600_SHADOW,
+    PURPLE_600_SHADOW,
+    PINK_600_SHADOW,
+    ROSE_600_SHADOW,
+    AMBER_600_SHADOW,
   ]
 
-  const colorIndex = index % colors.length
+  const colorIndex = index % colors?.length
   return colors[colorIndex]
+}
+
+export const getRandomColorDark = (index: number) => {
+  const colorsDarkTheme = [
+    GREEN_800_SHADOW,
+    EMERALD_800_SHADOW,
+    TEAL_800_SHADOW,
+    CYAN_800_SHADOW,
+    SKY_800_SHADOW,
+    BLUE_800_SHADOW,
+    INDIGO_800_SHADOW,
+    VIOLET_800_SHADOW,
+    PURPLE_800_SHADOW,
+    PINK_800_SHADOW,
+    ROSE_800_SHADOW,
+    AMBER_800_SHADOW,
+    YELLOW_800_SHADOW,
+    LIME_800_SHADOW,
+    SKY_800_SHADOW,
+    BLUE_800_SHADOW,
+    INDIGO_800_SHADOW,
+    VIOLET_800_SHADOW,
+    PURPLE_800_SHADOW,
+    PINK_800_SHADOW,
+    ROSE_800_SHADOW,
+    AMBER_800_SHADOW,
+  ]
+
+  const colorIndex = index % colorsDarkTheme?.length
+  return colorsDarkTheme[colorIndex]
 }
 
 //Get line chart values for each hours and each queue

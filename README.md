@@ -35,7 +35,6 @@ To better understand the needs of the different types of user who use NethVoice 
 - **services** - contains the requests to the server's APIs
 - **store** - contains the stores for rematch
   - Check the [rematch store docs](https://rematchjs.org/docs/api-reference/store) for more info
-- **stories** - contains the stories for storybook (useful to develop reusable components in isolation)
 - **styles** - contains the styling files
 - **theme** - contains classes used by the common components
 

@@ -1,4 +1,4 @@
-// Copyright (C) 2023 Nethesis S.r.l.
+// Copyright (C) 2024 Nethesis S.r.l.
 // SPDX-License-Identifier: AGPL-3.0-or-later
 
 import { PropsWithChildren } from 'react'
@@ -61,6 +61,26 @@ export const sortByProperty = (property: string | number) => {
     }
     return 0
   }
+}
+
+// Parse a date string in the format "dd/mm/yyyy" to a Date object
+const parseDate = (dateString: any) => {
+  const [day, month, year] = dateString.split('/')
+  return new Date(`${year}-${month}-${day}`)
+}
+
+// Sort function to order array elements by date in ascending order
+export const sortByDateAsc = (a: any, b: any) => {
+  const dateA: any = parseDate(a.date_creation)
+  const dateB: any = parseDate(b.date_creation)
+  return dateA - dateB
+}
+
+// Sort function to order array elements by date in descending order
+export const sortByDateDesc = (a: any, b: any) => {
+  const dateA: any = parseDate(a.date_creation)
+  const dateB: any = parseDate(b.date_creation)
+  return dateB - dateA
 }
 
 /**

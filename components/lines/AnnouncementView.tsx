@@ -22,7 +22,14 @@ import { AnnouncementFilter } from './AnnouncementFilter'
 import { useDispatch, useSelector } from 'react-redux'
 import { Dispatch, RootState } from '../../store'
 import { capitalize } from 'lodash'
-import { getApiEndpoint, getApiScheme, sortByProperty, playFileAudio } from '../../lib/utils'
+import {
+  getApiEndpoint,
+  getApiScheme,
+  sortByProperty,
+  playFileAudio,
+  sortByDateAsc,
+  sortByDateDesc,
+} from '../../lib/utils'
 import { openShowOperatorDrawer } from '../../lib/operators'
 import { openEditAnnouncementDrawer } from '../../lib/lines'
 import { useEventListener } from '../../lib/hooks/useEventListener'
@@ -94,6 +101,10 @@ export const AnnouncementView: FC<AnnouncementViewProps> = ({ className }): JSX.
 
   const [dataPagination, setDataPagination]: any = useState({})
 
+  const [startPage, setStartPage]: any = useState(0)
+  const [endPage, setEndPage]: any = useState(0)
+  const [cleanLines, setCleanLines]: any = useState([])
+
   //Get Lines information
   useEffect(() => {
     async function fetchLines() {
@@ -105,7 +116,12 @@ export const AnnouncementView: FC<AnnouncementViewProps> = ({ className }): JSX.
         try {
           setLinesError('')
           const res = await getAnnouncementsFiltered(textFilter.trim(), pageNum)
-          setLines(res.rows)
+          setLines(res?.rows)
+          //use another state to keep the original lines (not paginated for sorting)
+          setCleanLines(res?.rows)
+          setStartPage(res?.start)
+          setEndPage(res?.end)
+
           setDataPagination(res)
         } catch (e) {
           console.error(e)
@@ -133,7 +149,7 @@ export const AnnouncementView: FC<AnnouncementViewProps> = ({ className }): JSX.
   }
 
   function goToNextPage() {
-    if (pageNum < dataPagination.totalPages) {
+    if (pageNum < dataPagination?.totalPages) {
       setPageNum(pageNum + 1)
       setLinesLoaded(false)
     }
@@ -144,7 +160,7 @@ export const AnnouncementView: FC<AnnouncementViewProps> = ({ className }): JSX.
   }
 
   function isNextPageButtonDisabled() {
-    return !isLinesLoaded || pageNum >= dataPagination.totalPages
+    return !isLinesLoaded || pageNum >= dataPagination?.totalPages
   }
 
   async function donwloadSelectedAnnouncement(announcementId: any) {
@@ -188,20 +204,43 @@ export const AnnouncementView: FC<AnnouncementViewProps> = ({ className }): JSX.
     setSortBy(newSortBy)
   }
 
+  const paginateTable = (filteredLines: any) => {
+    let newLinesPaginate = filteredLines?.slice(startPage, endPage)
+    return newLinesPaginate
+  }
+
   useEffect(() => {
-    let newLines = null
-    switch (sortBy) {
-      case 'username':
-        newLines = Array.from(lines).sort(sortByProperty('username'))
-        break
-      case 'description':
-        newLines = Array.from(lines).sort(sortByProperty('description'))
-        break
-      default:
-        newLines = Array.from(lines)
-        break
+    if (isLinesLoaded) {
+      let newLines = null
+      let filteredLinesPaginate = null
+      switch (sortBy) {
+        case 'username':
+          newLines = Array.from(cleanLines).sort(sortByProperty('username'))
+          filteredLinesPaginate = paginateTable(newLines)
+
+          break
+        case 'description':
+          newLines = Array.from(cleanLines).sort(sortByProperty('description'))
+          filteredLinesPaginate = paginateTable(newLines)
+          break
+        case 'desc':
+          newLines = Array.from(cleanLines).sort(sortByDateDesc)
+          filteredLinesPaginate = paginateTable(newLines)
+          break
+        case 'asc':
+          newLines = Array.from(cleanLines).sort(sortByDateAsc)
+          filteredLinesPaginate = paginateTable(newLines)
+
+          break
+        default:
+          newLines = Array.from(cleanLines)
+          filteredLinesPaginate = paginateTable(newLines)
+
+          break
+      }
+
+      setLines(filteredLinesPaginate)
     }
-    setLines(newLines)
 
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [sortBy, isLinesLoaded])
