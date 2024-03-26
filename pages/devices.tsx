@@ -242,7 +242,7 @@ const Devices: NextPage = () => {
                               <span>{t('Devices.Main device')}</span>
                             </Badge>
                           ) : (
-                            <span className='text-gray-700 cursor-default py-4 select-none'>
+                            <span className='text-transparent cursor-default py-4 select-none'>
                               {t('Devices.Main device')}
                             </span>
                           )}
@@ -344,7 +344,7 @@ const Devices: NextPage = () => {
                               <span>{t('Devices.Main device')}</span>
                             </Badge>
                           ) : (
-                            <span className='text-gray-700 cursor-default py-4 select-none'>
+                            <span className='text-transparent cursor-default py-4 select-none'>
                               {t('Devices.Main device')}
                             </span>
                           )}
@@ -480,7 +480,7 @@ const Devices: NextPage = () => {
                                 <span>{t('Devices.Main device')}</span>
                               </Badge>
                             ) : (
-                              <span className='text-gray-700 cursor-default py-4 select-none'>
+                              <span className='text-transparent cursor-default py-4 select-none'>
                                 {t('Devices.Main device')}
                               </span>
                             )}
