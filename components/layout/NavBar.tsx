@@ -50,11 +50,12 @@ export const NavBar: FC<NavBarProps> = ({ items }) => {
     ...item,
     permission: permissionsUser[item.name],
   }))
+  const { theme } = useSelector((state: RootState) => state.darkTheme)
 
   const { t } = useTranslation()
 
   return (
-    <div className='hidden w-20 overflow-y-auto scrollbar-thin scrollbar-thumb-gray-400 dark:scrollbar-thumb-gray-400 scrollbar-thumb-rounded-full scrollbar-thumb-opacity-50 scrollbar-track-gray-200 dark:scrollbar-track-gray-900 scrollbar-track-rounded-full scrollbar-track-opacity-25 md:block border-r border-gray-200 dark:border-gray-700 bg-white dark:bg-gray-900'>
+    <div className='hidden w-20 overflow-y-auto scrollbar-thin scrollbar-thumb-gray-400 dark:scrollbar-thumb-gray-400 scrollbar-thumb-rounded-full scrollbar-thumb-opacity-50 scrollbar-track-gray-200 dark:scrollbar-track-gray-900 scrollbar-track-rounded-full scrollbar-track-opacity-25 md:block border-r border-gray-200 dark:border-gray-700 bg-sidebar dark:bg-sidebarDark'>
       <div className='flex w-full flex-col items-center py-2 h-full'>
         <div className='flex flex-shrink-0 items-center'>
           <Link href='/operators'>
@@ -63,7 +64,12 @@ export const NavBar: FC<NavBarProps> = ({ items }) => {
               {/* eslint-disable-next-line @next/next/no-img-element */}
               <img
                 className='px-2.5 w-auto cursor-pointer object-contain object-top'
-                src='/navbar_logo.svg'
+                src={`${
+                  theme === 'dark' ||
+                  (theme === 'system' && window.matchMedia('(prefers-color-scheme: dark)').matches)
+                    ? '/navbar_logo_dark.svg'
+                    : '/navbar_logo.svg'
+                }`}
                 alt='logo'
               />
             </div>
@@ -76,8 +82,8 @@ export const NavBar: FC<NavBarProps> = ({ items }) => {
                 <a
                   className={classNames(
                     item.current
-                      ? 'text-grey-900 bg-gray-100 dark:bg-gray-800 dark:text-gray-50'
-                      : 'text-gray-600 dark:text-gray-300 hover:text-gray-900 hover:bg-gray-100 dark:hover:bg-gray-800 dark:hover:text-gray-50',
+                      ? 'text-currentSidebarIconText dark:text-currentSidebarIconTextDark bg-sidebarIconBackground dark:bg-sidebarIconBackgroundDark'
+                      : 'text-sidebarIconText dark:text-sidebarIconTextDark dark:hover:text-currentSidebarIconTextDark hover:text-currentSidebarIconText hover:bg-sidebarIconBackground dark:hover:bg-sidebarIconBackgroundDark ',
                     'group rounded-md flex flex-col items-center text-xs font-medium justify-center',
                     `tooltip-${item.name}`,
                     'relative',
@@ -93,7 +99,9 @@ export const NavBar: FC<NavBarProps> = ({ items }) => {
                     className='h-6 w-6'
                     aria-hidden='true'
                   />
-                  {item.current && <div style={activeStyles} className='bg-primary dark:bg-primaryDark' />}
+                  {item.current && (
+                    <div style={activeStyles} className='bg-currentBadgePrimary dark:bg-currentBadgePrimaryDark' />
+                  )}
                 </a>
               </Link>
               <Tooltip anchorSelect={`.tooltip-${item.name}`} place='right' offset={20}>
