@@ -163,10 +163,10 @@ export const UserLastCallsContent = () => {
 
   return (
     <>
-      <div className='flex h-full flex-col bg-white dark:bg-gray-900'>
+      <div className='flex h-full flex-col bg-sidebar dark:bg-sidebarDark'>
         <div className='py-6 px-5'>
           <div className='flex items-center justify-between'>
-            <h2 className='text-lg font-medium text-gray-700 dark:text-gray-300 leading-7'>
+            <h2 className='text-lg font-medium text-textLight dark:text-textDark leading-7'>
               {t('LastCalls.Last calls')}
             </h2>
             <div className='flex gap-1'>
@@ -239,37 +239,25 @@ export const UserLastCallsContent = () => {
               <li key={key}>
                 <div className='group relative flex items-center py-6 px-5'>
                   <div
-                    className='absolute inset-0 group-hover:bg-gray-50 dark:group-hover:bg-gray-800'
+                    className='absolute inset-0 group-hover:bg-dropdownBgHover dark:group-hover:bg-dropdownBgHoverDark'
                     aria-hidden='true'
                   />
                   <div className='relative flex min-w-0 flex-1 items-center justify-between'>
                     <div className='flex items-start'>
-                      <span className='text-gray-300 dark:text-gray-600 cursor-pointer'>
-                        <Avatar
-                          size='base'
-                          placeholderType='person'
-                          src={operators[call.username]?.avatarBase64}
-                          status={operators[call.username]?.mainPresence}
-                          onClick={() => openLastCardUserDrawer(call)}
-                        />
-                      </span>
+                      <Avatar
+                        size='base'
+                        placeholderType='person'
+                        src={operators[call.username]?.avatarBase64}
+                        status={operators[call.username]?.mainPresence}
+                        onClick={() => openLastCardUserDrawer(call)}
+                      />
                       <div className='ml-4 truncate flex flex-col gap-1.5'>
                         <div className='flex items-center'>
                           <div className='w-24 lg:w-16 xl:w-24 truncate text-sm font-medium text-gray-700 dark:text-gray-200'>
                             {call?.direction === 'in' ? (
-                              <>
-                                {' '}
-                                <CallsSource call={call} operators={operators} hideName={true} />
-                              </>
+                              <CallsSource call={call} operators={operators} hideName={true} />
                             ) : (
-                              <>
-                                {' '}
-                                <CallsDestination
-                                  call={call}
-                                  operators={operators}
-                                  hideName={true}
-                                />{' '}
-                              </>
+                              <CallsDestination call={call} operators={operators} hideName={true} />
                             )}
                           </div>
                         </div>

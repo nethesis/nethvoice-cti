@@ -381,7 +381,7 @@ const Operators: NextPage = () => {
     <>
       {profile?.macro_permissions?.presence_panel?.value ? (
         <div>
-          <h1 className='text-2xl font-semibold mb-6 text-gray-900 dark:text-gray-100'>
+          <h1 className='text-2xl font-semibold mb-6 text-title dark:text-titleDark'>
             {t('Operators.Operators')}
           </h1>
           <div className='flex items-center'>
@@ -621,7 +621,7 @@ const Operators: NextPage = () => {
                                           <div className='py-2 px-3'>
                                             <CallDuration
                                               startTime={operator?.conversations[0]?.startTime}
-                                              className='relative top-px mr-1.5 text-red-700 dark:text-red-400 leading-5 text-sm font-medium font-mono'
+                                              className='relative top-px mr-1.5 text-cardTextBusy dark:text-cardTextBusy leading-5 text-sm font-medium font-mono'
                                             />
 
                                             {/* Operator recording call  */}
@@ -671,11 +671,11 @@ const Operators: NextPage = () => {
                                           operator?.mainPresence === 'ringing' ? (
                                           <div className='py-2 px-3 flex justify-center'>
                                             {operator?.mainPresence === 'busy' ? (
-                                              <span className='text-sm not-italic font-medium leading-5 text-red-700 dark:text-red-400'>
+                                              <span className='text-sm not-italic font-medium leading-5 text-cardTextBusy dark:text-cardTextBusy'>
                                                 {t('Operators.Busy')}
                                               </span>
                                             ) : (
-                                              <div className='flex items-center text-red-700 dark:text-red-400'>
+                                              <div className='flex items-center text-cardTextBusy dark:text-cardTextBusy'>
                                                 {/* ringing icon */}
                                                 <span className='ringing-animation mr-2 h-4 w-4'></span>
                                                 <span className='text-sm not-italic font-medium leading-5'>
@@ -692,7 +692,7 @@ const Operators: NextPage = () => {
                                               operator?.mainPresence === 'offline' ||
                                               operator?.mainPresence === 'dnd'
                                                 ? 'text-primary dark:text-primaryDark dark:disabled:text-gray-600 dark:disabled:hover:text-gray-600 disabled:text-gray-400'
-                                                : 'text-red-700 dark:text-red-400'
+                                                : 'text-cardTextBusy dark:text-cardTextBusy'
                                             }`}
                                             // Button is active only if operator is online
                                             disabled={
@@ -766,7 +766,7 @@ const Operators: NextPage = () => {
                       <span className='inline-flex h-10 w-10 flex-shrink-0 items-center justify-center'>
                         <FontAwesomeIcon
                           icon={faChevronRight}
-                          className='h-3 w-3 text-gray-400 dark:text-gray-500'
+                          className='h-3 w-3 text-cardIcon dark:text-cardIconDark'
                           aria-hidden='true'
                         />
                       </span>
@@ -799,7 +799,7 @@ const Operators: NextPage = () => {
                     {infiniteScrollOperators.map((operator: any, index) => {
                       return (
                         <li key={index} className='px-1'>
-                          <div className='group flex w-full items-center justify-between space-x-3 rounded-lg p-2 text-left focus:outline-none focus:ring-2 focus:ring-offset-2 bg-white dark:bg-gray-900 focus:ring-primary dark:focus:ring-primary'>
+                          <div className='group flex w-full items-center justify-between space-x-3 rounded-lg p-2 text-left focus:outline-none focus:ring-2 focus:ring-offset-2 bg-cardBackgroud dark:bg-cardBackgroudDark focus:ring-primary dark:focus:ring-primary'>
                             <span className='flex min-w-0 flex-1 items-center space-x-3'>
                               <span className='block flex-shrink-0'>
                                 <Avatar
@@ -815,7 +815,7 @@ const Operators: NextPage = () => {
                               <span className='block min-w-0 flex-1'>
                                 <div className='flex items-center space-x-2'>
                                   <span
-                                    className='block truncate text-sm font-medium text-gray-900 dark:text-gray-100 ml-3 cursor-pointer hover:underline'
+                                    className='block truncate text-sm font-medium text-cardText dark:text-cardTextDark ml-3 cursor-pointer hover:underline'
                                     onClick={() => openDrawerOperator(operator)}
                                   >
                                     {operator?.name}
@@ -837,9 +837,9 @@ const Operators: NextPage = () => {
                                         <div className='flex w-44'>
                                           <CallDuration
                                             startTime={operator?.conversations[0]?.startTime}
-                                            className='relative top-px mr-1.5 text-red-700 dark:text-red-400 leading-5 text-sm font-medium font-mono'
+                                            className='relative top-px mr-1.5 text-cardTextBusy dark:text-cardTextBusy leading-5 text-sm font-medium font-mono'
                                           />{' '}
-                                          <span className='truncate text-sm not-italic font-medium leading-5 text-red-700 dark:text-red-400'>
+                                          <span className='truncate text-sm not-italic font-medium leading-5 text-cardTextBusy dark:text-cardTextBusy'>
                                             -{' '}
                                             {capitalize(
                                               operator?.conversations[0]?.counterpartName,
@@ -899,11 +899,11 @@ const Operators: NextPage = () => {
                                     operator?.mainPresence === 'ringing' ? (
                                     <div className='py-2 px-3'>
                                       {operator?.mainPresence === 'busy' ? (
-                                        <span className='text-sm not-italic font-medium leading-5 text-red-700 dark:text-red-400'>
+                                        <span className='text-sm not-italic font-medium leading-5 text-cardTextBusy dark:text-cardTextBusy'>
                                           {t('Operators.Busy')}
                                         </span>
                                       ) : (
-                                        <div className='flex items-center text-red-700 dark:text-red-400'>
+                                        <div className='flex items-center text-cardTextBusy dark:text-cardTextBusy'>
                                           {/* ringing icon */}
                                           <span className='ringing-animation mr-2 h-4 w-4'></span>
                                           <span className='text-sm not-italic font-medium leading-5'>
@@ -920,7 +920,7 @@ const Operators: NextPage = () => {
                                         operator?.mainPresence === 'offline' ||
                                         operator?.mainPresence === 'dnd'
                                           ? 'text-primary dark:text-primaryDark dark:disabled:text-gray-700 dark:disabled:hover:text-gray-700 disabled:text-gray-400'
-                                          : 'text-red-700 dark:text-red-400'
+                                          : 'text-cardTextBusy dark:text-cardTextBusy'
                                       }`}
                                       // Button is active only if operator is online
                                       disabled={
@@ -962,7 +962,7 @@ const Operators: NextPage = () => {
                               <span className='inline-flex flex-shrink-0 items-center justify-center'>
                                 <FontAwesomeIcon
                                   icon={faChevronRight}
-                                  className='h-4 w-4 text-gray-400 dark:text-gray-500 cursor-pointer'
+                                  className='h-4 w-4 text-cardIcon dark:text-cardIconDark cursor-pointer'
                                   aria-hidden='true'
                                 />
                               </span>
@@ -998,7 +998,7 @@ const Operators: NextPage = () => {
                       <span className='inline-flex h-10 w-10 flex-shrink-0 items-center justify-center'>
                         <FontAwesomeIcon
                           icon={faChevronRight}
-                          className='h-3 w-3 text-gray-400 dark:text-gray-500'
+                          className='h-3 w-3 text-cardIcon dark:text-cardIconDark'
                           aria-hidden='true'
                         />
                       </span>
@@ -1084,9 +1084,9 @@ const Operators: NextPage = () => {
                                           <div className='flex w-44'>
                                             <CallDuration
                                               startTime={operator?.conversations[0]?.startTime}
-                                              className='relative top-px mr-1.5 text-red-700 dark:text-red-400 leading-5 text-sm font-medium font-mono'
+                                              className='relative top-px mr-1.5 text-cardTextBusy dark:text-cardTextBusy leading-5 text-sm font-medium font-mono'
                                             />{' '}
-                                            <span className='truncate text-sm not-italic font-medium leading-5 text-red-700 dark:text-red-400'>
+                                            <span className='truncate text-sm not-italic font-medium leading-5 text-cardTextBusy dark:text-cardTextBusy'>
                                               -{' '}
                                               {capitalize(
                                                 operator?.conversations[0]?.counterpartName,
@@ -1146,11 +1146,11 @@ const Operators: NextPage = () => {
                                       operator?.mainPresence === 'ringing' ? (
                                       <div className='py-2 px-3'>
                                         {operator?.mainPresence === 'busy' ? (
-                                          <span className='text-sm not-italic font-medium leading-5 text-red-700 dark:text-red-400'>
+                                          <span className='text-sm not-italic font-medium leading-5 text-cardTextBusy dark:text-cardTextBusy'>
                                             {t('Operators.Busy')}
                                           </span>
                                         ) : (
-                                          <div className='flex items-center text-red-700 dark:text-red-400'>
+                                          <div className='flex items-center text-cardTextBusy dark:text-cardTextBusy'>
                                             {/* ringing icon */}
                                             <span className='ringing-animation mr-2 h-4 w-4'></span>
                                             <span className='text-sm not-italic font-medium leading-5'>
@@ -1167,7 +1167,7 @@ const Operators: NextPage = () => {
                                           operator?.mainPresence === 'offline' ||
                                           operator?.mainPresence === 'dnd'
                                             ? 'text-primary dark:text-primaryDark dark:disabled:text-gray-700 dark:disabled:hover:text-gray-700 disabled:text-gray-400'
-                                            : 'text-red-700 dark:text-red-400'
+                                            : 'text-cardTextBusy dark:text-cardTextBusy'
                                         }`}
                                         // Button is active only if operator is online
                                         disabled={
@@ -1209,7 +1209,7 @@ const Operators: NextPage = () => {
                                 <span className='inline-flex flex-shrink-0 items-center justify-center'>
                                   <FontAwesomeIcon
                                     icon={faChevronRight}
-                                    className='h-4 w-4 text-gray-400 dark:text-gray-500 cursor-pointer'
+                                    className='h-4 w-4 text-cardIcon dark:text-cardIconDark cursor-pointer'
                                     aria-hidden='true'
                                   />
                                 </span>

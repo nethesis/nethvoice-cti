@@ -7,7 +7,7 @@ import { store } from '../store'
 import { getJSONItem, loadPreference } from './storage'
 import { t } from 'i18next'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
-import { faHeadset } from '@fortawesome/free-solid-svg-icons'
+import { faDesktop, faHeadset } from '@fortawesome/free-solid-svg-icons'
 
 export const openShowEditPhysicalPhone = (phoneInformation: any, pinstatus: any) => {
   let phoneModel: any = {}
@@ -156,7 +156,7 @@ export const titleTable = (deviceType: string) => {
   return (
     <div className='flex items-center space-x-2'>
       <FontAwesomeIcon
-        icon={deviceType === 'webrtc' ? faHeadset : faHeadset}
+        icon={deviceType === 'webrtc' ? faHeadset : faDesktop}
         className='h-4 w-4 flex justify-center text-gray-700 dark:text-gray-500'
       />
       <span>{deviceType === 'webrtc' ? t('Devices.Web phone') : t('Devices.PhoneLink')}</span>

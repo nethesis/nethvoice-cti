@@ -33,7 +33,7 @@ const Lines: NextPage = () => {
   return (
     <>
       <div>
-        <h1 className='text-2xl font-semibold mb-6 text-gray-900 dark:text-gray-100'>
+        <h1 className='text-2xl font-semibold mb-6 text-title dark:text-titleDark'>
           {t('Applications.Phone lines and announcements')}
         </h1>
         {/* tabs */}

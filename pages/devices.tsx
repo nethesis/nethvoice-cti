@@ -9,12 +9,12 @@ import { useSelector } from 'react-redux'
 import { RootState } from '../store'
 import {
   faArrowUpFromBracket,
+  faAward,
   faCircleCheck,
   faCircleXmark,
   faDownload,
   faEllipsisVertical,
   faPenToSquare,
-  faRocket,
 } from '@fortawesome/free-solid-svg-icons'
 import React from 'react'
 import { faOfficePhone } from '@nethesis/nethesis-solid-svg-icons'
@@ -91,7 +91,7 @@ const Devices: NextPage = () => {
       {/* check if the device is already the main device */}
       {!isPhoneLinkSection && operators?.extensions[phoneLinkData?.id]?.status !== 'online' ? (
         <Dropdown.Item
-          icon={faRocket}
+          icon={faAward}
           onClick={() =>
             isPhoneLinkSection && isEmpty(phoneLinkTimestamp)
               ? ''
@@ -102,7 +102,7 @@ const Devices: NextPage = () => {
         </Dropdown.Item>
       ) : isPhoneLinkSection && phoneLinkData[0]?.id !== profile?.default_device?.id ? (
         <Dropdown.Item
-          icon={faRocket}
+          icon={faAward}
           onClick={() =>
             isPhoneLinkSection && isEmpty(phoneLinkTimestamp)
               ? ''

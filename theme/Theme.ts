@@ -1,11 +1,11 @@
-// Copyright (C) 2023 Nethesis S.r.l.
+// Copyright (C) 2024 Nethesis S.r.l.
 // SPDX-License-Identifier: AGPL-3.0-or-later
 
 const theme = {
   button: {
     base: 'inline-flex content-center items-center justify-center font-medium tracking-wide transition-colors duration-200 transform focus:outline-none focus:z-20 disabled:cursor-not-allowed',
     primary:
-      'border border-transparent bg-primary text-white hover:bg-primaryDark focus:ring-primaryLight dark:bg-emerald-700 dark:text-gray-200 dark:hover:bg-primaryDark focus:ring-primaryLight focus:ring-2 focus:ring-offset-2',
+      'border border-transparent bg-primary dark:bg-primaryDark text-white dark:text-primaryButtonTextDark hover:bg-primaryHover  dark:hover:bg-primaryDarkHover focus:ring-2 focus:ring-primaryRing dark:focus:ring-primaryRingDark ring-offset-2 ring-offset-slate-50 dark:ring-offset-slate-900',
     secondary:
       'border border-transparent focus:ring-primaryLight bg-primaryLighter text-primaryDark hover:bg-primaryLighter dark:focus:ring-primaryDark dark:bg-primaryDarker dark:text-primaryLight dark:hover:bg-primaryDarker focus:ring-2 focus:ring-offset-2',
     white:
@@ -59,10 +59,10 @@ const theme = {
     iconDisabled: 'text-gray-500 dark:text-gray-400',
   },
   input: {
-    base: 'block w-full relative focus:z-[8] disabled:cursor-not-allowed bg-white text-gray-900 dark:bg-gray-900 dark:text-gray-100  disabled:border-gray-200 disabled:bg-gray-50 disabled:text-gray-500 dark:disabled:border-gray-700 dark:disabled:bg-gray-900 dark:disabled:text-gray-400',
-    label: 'text-sm font-medium text-gray-700 dark:text-gray-200',
+    base: 'block w-full relative focus:z-[8] disabled:cursor-not-allowed bg-bgInput dark:bg-bgInputDark text-gray-900  dark:text-gray-100  disabled:border-gray-200 disabled:bg-gray-50 disabled:text-gray-500 dark:disabled:border-gray-700 dark:disabled:bg-gray-900 dark:disabled:text-gray-400',
+    label: 'text-sm font-medium text-inputText dark:text-inputTextDark',
     placeholder: {
-      base: 'placeholder:text-gray-500 dark:placeholder:text-gray-400',
+      base: 'placeholder:text-placeHolderInputText dark:placeholder:text-placeHolderInputTextDark',
       error: '',
     },
     helper: {
@@ -357,7 +357,7 @@ const theme = {
       base: 'block px-4 text-sm flex items-center gap-3 mt-1 mb-1 cursor-pointer',
       light: 'text-gray-700 dark:text-gray-300',
       active: 'bg-gray-200 text-gray-900 dark:bg-gray-700 dark:text-gray-100',
-      icon: 'h-4 w-4 flex text-gray-500 dark:text-gray-400',
+      icon: 'h-4 w-4 flex text-dropdownText dark:text-dropdownTextDark',
       centered: 'justify-center',
     },
     items: {

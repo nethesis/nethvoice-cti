@@ -146,7 +146,7 @@ const Settings: NextPage = () => {
     <>
       <div>
         <div className='mx-auto'>
-          <h1 className='text-2xl font-semibold mb-6 text-gray-900 dark:text-gray-100'>
+          <h1 className='text-2xl font-semibold mb-6 text-title dark:text-titleDark'>
             {t('Settings.Settings')}
           </h1>
           <div className='overflow-hidden rounded-lg bg-white shadow dark:bg-gray-900'>

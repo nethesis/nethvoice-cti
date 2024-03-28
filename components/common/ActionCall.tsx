@@ -378,7 +378,7 @@ export const ActionCall: React.FC<ActionCallProps> = ({ config }) => {
             </dt>
             <dd className='mt-1 text-sm sm:col-span-2 sm:mt-0'>
               <div
-                className='flex items-center text-sm text-red-700 dark:text-red-400'
+                className='flex items-center text-sm text-cardTextBusy dark:text-cardTextBusy'
                 key={`callDuration-${operators?.operators[config?.username]?.username}`}
               >
                 <CallDuration
