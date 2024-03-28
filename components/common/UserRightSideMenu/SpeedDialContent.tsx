@@ -235,10 +235,10 @@ export const SpeedDialContent = () => {
 
   return (
     <>
-      <div className='flex h-full flex-col bg-white dark:bg-gray-900'>
+      <div className='flex h-full flex-col bg-sidebar dark:bg-sidebarDark'>
         <div className='py-6 px-5'>
           <div className='flex items-center justify-between'>
-            <h2 className='text-lg font-medium text-gray-700 dark:text-gray-300'>
+            <h2 className='text-lg font-medium text-textLight dark:text-textDark'>
               {t('SpeedDial.Speed dial')}
             </h2>
             <div className='flex gap-2 items-center'>
@@ -307,29 +307,27 @@ export const SpeedDialContent = () => {
               <li key={key}>
                 <div className='group relative flex items-center py-2 px-5'>
                   <div
-                    className='absolute inset-0 group-hover:bg-gray-50 dark:group-hover:bg-gray-800'
+                    className='absolute inset-0 group-hover:bg-dropdownBgHover dark:group-hover:bg-dropdownBgHoverDark'
                     aria-hidden='true'
                   />
                   <div className='relative flex min-w-0 flex-1 items-center justify-between'>
                     <div className='flex items-center'>
-                      <span className='text-gray-300 dark:text-gray-600'>
-                        <Avatar
-                          size='base'
-                          src={
-                            operators?.avatars[
-                              operators?.extensions[speedDial?.speeddial_num]?.username
-                            ]
-                          }
-                          status={
-                            operators?.operators[
-                              operators?.extensions[speedDial?.speeddial_num]?.username
-                            ]?.mainPresence
-                          }
-                          placeholderType='operator'
-                        />
-                      </span>
+                      <Avatar
+                        size='base'
+                        src={
+                          operators?.avatars[
+                            operators?.extensions[speedDial?.speeddial_num]?.username
+                          ]
+                        }
+                        status={
+                          operators?.operators[
+                            operators?.extensions[speedDial?.speeddial_num]?.username
+                          ]?.mainPresence
+                        }
+                        placeholderType='operator'
+                      />
                       <div className='ml-4 truncate'>
-                        <p className='truncate text-sm font-medium text-gray-700 dark:text-gray-200'>
+                        <p className='truncate text-sm font-medium text-speedDialText dark:text-speedDialTextDark'>
                           {speedDial?.name || speedDial?.company || '-'}
                         </p>
                         <div className='truncate text-sm mt-1 text-primary dark:text-primaryDark'>

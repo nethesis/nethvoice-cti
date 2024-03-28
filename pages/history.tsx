@@ -568,7 +568,7 @@ const History: NextPage = () => {
     <>
       {profile?.macro_permissions?.cdr?.value ? (
         <div>
-          <h1 className='text-2xl font-semibold mb-6 text-gray-900 dark:text-gray-100'>
+          <h1 className='text-2xl font-semibold mb-6 text-title dark:text-titleDark'>
             {t('History.History')}
           </h1>
           <Filter

@@ -71,7 +71,7 @@ export const KeyTypeSelect: FC<keyTypeSelectProps> = ({
         value={announcementSelected || ''}
         onChange={changeAnnouncementSelect}
       >
-        {!announcementSelected && <option value=''>{t('Lines.Announcement select')}</option>}
+        {!announcementSelected && <option value=''>{t('Devices.Key type select')}</option>}
         {Object.keys(typesList).map((key: any) => (
           <option key={key} value={typesList[key].id}>
             {typesList[key].label}

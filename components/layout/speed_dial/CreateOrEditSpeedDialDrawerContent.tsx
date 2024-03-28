@@ -160,7 +160,7 @@ export const CreateOrEditSpeedDialDrawerContent = forwardRef<
       <div className={classNames(className, 'm-1 p-5')} {...props}>
         {/* name */}
         <TextInput
-          label='Name'
+          label={t('Phonebook.Name') || ''}
           name='name'
           ref={nameRef}
           className='mb-4'
@@ -169,7 +169,7 @@ export const CreateOrEditSpeedDialDrawerContent = forwardRef<
         />
         {/* phone number */}
         <TextInput
-          label='Phone number'
+          label={t('Common.Phone number') || ''}
           name='phoneNumber'
           ref={phoneNumberRef}
           className='mb-6'

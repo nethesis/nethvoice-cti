@@ -17,15 +17,65 @@ module.exports = {
   theme: {
     extend: {
       colors: {
-        primary: '#047857', // emerald-700
-        primaryHover: '#065f46', // emerald-800
         primaryFocus: '#10b981', // emerald-500
         primaryLighter: '#ecfdf5', // emerald-100
         primaryLight: '#10b981', // emerald-500
-        primaryDark: '#10b981', // emerald-500
-        primaryDarkHover: '#6ee7b7', // emerald-300
+
         primaryDarkFocus: '#a7f3d0', // emerald-200
         primaryDarker: '#064e3b', // emerald-900
+
+        //primary
+        primary: '#047857', // emerald-700
+        primaryHover: '#065f46', // emerald-800
+        primaryRing: '#10b981', // emerald-500
+        //primary dark
+        primaryDark: '#10b981', // emerald-500
+        primaryDarkHover: '#6ee7b7', // emerald-300
+        primaryRingDark: '#a7f3d0', // emerald-200
+
+        //text
+        textLight: '#374151', // gray-700
+        //text dark
+        textDark: '#E5E7EB', // gray-200
+
+        //page title
+        title: '#111827', // gray-900
+        //page title dark
+        titleDark: '#F9FAFB', // gray-50
+
+        //buttonPrimary
+        primaryButtonText: '#fff', // white
+        //buttonPrimaryDark
+        primaryButtonTextDark: '#030712', // gray-950
+
+        //card
+        cardBackgroud: '#fff', // white
+        cardText: '#111827', // gray-900
+        cardTextBusy: '#b91c1c', // red-700
+        cardIcon: '#9ca3af', // gray-400
+        //cardDark
+        cardBackgroudDark: '#030712', // gray-950
+        cardTextDark: '#F9FAFB', // gray-50
+        cardTextBusy: '#EF4444', // red-500
+        cardIconDark: '#9ca3af', // gray-400
+
+        //dropdown
+        dropdownBg: '#fff', // white
+        dropdownBgHover: '#F9FAFB', // gray-50
+        dropdownText: '#374151', // gray-700
+        //dropDown dark
+        dropdownBgDark: '#111827', // gray-900
+        dropdownBgHoverDark: '#374151', // gray-700
+        dropdownTextDark: '#F9FAFB', // gray-50
+
+        //input
+        bgInput: '#fff', // white
+        inputText: '#374151', // gray-700
+        placeHolderInputText: '#6b7280', // gray-500
+        //input dark
+        bgInputDark: '#030712', // gray-950
+        inputTextDark: '#F9FAFB', // gray-50
+        placeHolderInputTextDark: '#d1d5db', // gray-300
 
         //main page light
         body: '#E5E7EB', // gray-200
@@ -35,7 +85,7 @@ module.exports = {
         //left/right sidebar light
         sidebar: '#fff', // white
         sidebarButtonSelected: '#E5E7EB', // gray-200
-        sidebarIconText: '#4B5563', // gray-600
+        sidebarIconText: '#374151', // gray-700
         currentSidebarIconText: '#111827', // gray-900
         sidebarIconBackground: '#f3f4f6', // gray-100
         currentBadgePrimary: '#047857', // emerald-700

@@ -125,7 +125,7 @@ const Phonebook: NextPage = () => {
     <>
       {profile?.macro_permissions?.phonebook?.value ? (
         <div>
-          <h1 className='text-2xl font-semibold mb-6 text-gray-900 dark:text-gray-100'>
+          <h1 className='text-2xl font-semibold mb-6 text-title dark:text-titleDark'>
             {t('Phonebook.Phonebook')}
           </h1>
           <Button variant='primary' onClick={() => openCreateContactDrawer()} className='mb-6'>

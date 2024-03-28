@@ -282,8 +282,7 @@
     "Callforward": "Forward",
     "Do not disturb": "Do not disturb",
     "Available presence": "Available presence",
-    "PhoneLink configuration": "Phone link configuration",
-    "Get PhoneLink configuration": "Get configuration"
+    "PhoneLink configuration": "Desktop phone configuration"
   },
   "TopBar": {
     "Signed in as": "Signed in as",
@@ -827,12 +826,13 @@
     "Select audio input": "Select audio input",
     "Select audio output": "Select audio output",
     "Device settings": "Device settings",
-    "PhoneLink": "Phone link",
-    "PhoneLink settings": "Open Phone link",
+    "PhoneLink": "Desktop phone",
+    "PhoneLink settings": "Open Desktop phone",
     "Click here to start download": "Click here to start download",
-    "Download PhoneLink": "Download Phone link",
+    "Download PhoneLink": "Download Desktop phone",
     "Not configured": "Not configured",
-    "IP phone": "IP phone"
+    "IP phone": "IP phone",
+    "Key type select": "Key type select"
   },
   "DropdownContent": {
     "Microphones": "MICROPHONES",
