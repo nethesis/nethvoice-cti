@@ -5,7 +5,7 @@ const theme = {
   button: {
     base: 'inline-flex content-center items-center justify-center font-medium tracking-wide transition-colors duration-200 transform focus:outline-none focus:z-20 disabled:cursor-not-allowed',
     primary:
-      'border border-transparent bg-primary dark:bg-primaryDark text-white dark:text-primaryButtonTextDark hover:bg-primaryHover  dark:hover:bg-primaryDarkHover focus:ring-2 focus:ring-primaryRing dark:focus:ring-primaryRingDark ring-offset-2 ring-offset-slate-50 dark:ring-offset-slate-900',
+      'border border-transparent bg-primary dark:bg-primaryDark text-white dark:text-primaryButtonTextDark hover:bg-primaryHover dark:hover:bg-primaryDarkHover focus:ring-2 focus:ring-primaryRing dark:focus:ring-primaryRingDark ring-offset-2 ring-offset-slate-50 dark:ring-offset-slate-900',
     secondary:
       'border border-transparent focus:ring-primaryLight bg-primaryLighter text-primaryDark hover:bg-primaryLighter dark:focus:ring-primaryDark dark:bg-primaryDarker dark:text-primaryLight dark:hover:bg-primaryDarker focus:ring-2 focus:ring-offset-2',
     white:
@@ -59,7 +59,7 @@ const theme = {
     iconDisabled: 'text-gray-500 dark:text-gray-400',
   },
   input: {
-    base: 'block w-full relative focus:z-[8] disabled:cursor-not-allowed bg-bgInput dark:bg-bgInputDark text-gray-900  dark:text-gray-100  disabled:border-gray-200 disabled:bg-gray-50 disabled:text-gray-500 dark:disabled:border-gray-700 dark:disabled:bg-gray-900 dark:disabled:text-gray-400',
+    base: 'block w-full relative focus:z-[8] disabled:cursor-not-allowed bg-bgInput dark:bg-bgInputDark text-gray-900  dark:text-gray-100  disabled:border-gray-200 disabled:bg-gray-50 disabled:text-gray-500 dark:disabled:border-gray-700 dark:disabled:bg-gray-900 dark:disabled:text-gray-400 autofill:border-orange-500 ',
     label: 'text-sm font-medium text-inputText dark:text-inputTextDark',
     placeholder: {
       base: 'placeholder:text-placeHolderInputText dark:placeholder:text-placeHolderInputTextDark',
@@ -73,8 +73,8 @@ const theme = {
       },
     },
     size: {
-      base: 'px-3 py-2 sm:text-sm',
-      large: 'px-4 py-3 sm:text-base',
+      base: 'px-3 py-2 text-sm',
+      large: 'px-4 py-3 text-base',
     },
     colors: {
       gray: 'border-gray-300 focus:border-primaryLight focus:ring-primaryLight placeholder:text-gray-400 dark:border-gray-600 dark:focus:border-primaryDark dark:focus:ring-primaryDark dark:placeholder:text-gray-500',
@@ -83,7 +83,7 @@ const theme = {
     },
     icon: {
       base: 'absolute flex items-center z-[9]',
-      gray: 'text-gray-400 dark:text-gray-500',
+      gray: 'text-inputIcon dark:text-inputIconDark autofill:text-red-500',
       red: 'text-red-500 dark:text-red-400',
       left: 'inset-y-0 left-0 pl-3',
       right: 'inset-y-0 right-0 pr-3',

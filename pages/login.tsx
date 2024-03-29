@@ -336,7 +336,7 @@ export default function Login() {
 
   const loginTemplate = () => {
     return (
-      <div className='mx-auto w-full max-w-sm lg:w-96'>
+      <div className='max-w-sm sm:w-96'>
         <div className='flex flex-col items-center justify-center'>
           {/* Nextjs <Image> is not suitable for rebranding: it always uses the aspect ratio of the original logo  */}
           {/* eslint-disable-next-line @next/next/no-img-element */}
@@ -345,12 +345,12 @@ export default function Login() {
             src={!isDarkTheme ? '/login_logo.svg' : '/login_logo_dark.svg'}
             alt='logo'
           />
-          <div className='text-primary dark:text-primaryDark p-4 text-lg font-regular'>
+          <div className='text-primary dark:text-primaryDark pt-5 pb-6 text-lg font-regular'>
             {productSubname}
           </div>
         </div>
-        <div className='pt-2'>
-          <form action='#' method='POST' onSubmit={doLogin} className='space-y-6'>
+        <div>
+          <form action='#' method='POST' onSubmit={doLogin} className='space-y-8'>
             <div>
               <label
                 htmlFor='username'
@@ -358,7 +358,7 @@ export default function Login() {
               >
                 {t('Login.User')}
               </label>
-              <div className='mt-1'>
+              <div className='mt-2'>
                 <TextInput
                   placeholder=''
                   name='username'
@@ -371,14 +371,14 @@ export default function Login() {
                 ></TextInput>
               </div>
             </div>
-            <div className='space-y-1'>
+            <div>
               <label
                 htmlFor='password'
                 className='block text-sm font-medium text-gray-700 dark:text-gray-200'
               >
                 {t('Login.Password')}
               </label>
-              <div className='mt-1'>
+              <div className='mt-2'>
                 <TextInput
                   placeholder=''
                   name='password'
@@ -402,7 +402,7 @@ export default function Login() {
                 variant='primary'
                 type='submit'
               >
-                {t('Login.Sign in')}
+                <span className='font-medium leading-5 text-sm'>{t('Login.Sign in')}</span>
                 {iconSelect}
               </Button>
             </div>
@@ -413,35 +413,6 @@ export default function Login() {
     )
   }
 
-  const imageTemplate = () => {
-    return (
-      <div>
-        {/* Nextjs <Image> is not suitable for rebranding: it always uses the aspect ratio of the original image  */}
-        {/* eslint-disable-next-line @next/next/no-img-element */}
-        <img
-          className='absolute inset-0 h-full w-full object-cover'
-          src='/nethvoice_cti_1300x2000.png'
-          alt='background image'
-        />
-      </div>
-    )
-  }
-
-  const [windowWidth, setWindowWidth] = useState(window.innerWidth)
-
-  // Update window width to manage responsive view
-  useEffect(() => {
-    const updateWindowWidth = () => {
-      setWindowWidth(window.innerWidth)
-    }
-
-    window.addEventListener('resize', updateWindowWidth)
-
-    return () => {
-      window.removeEventListener('resize', updateWindowWidth)
-    }
-  }, [])
-
   return (
     <>
       <div>
@@ -449,28 +420,23 @@ export default function Login() {
           <title>{productName}</title>
         </Head>
       </div>
-      {/* pc view */}
-      {windowWidth > 1024 ? (
-        <div className='hidden lg:block'>
-          {/* background image */}
-          {imageTemplate()}
-
-          {/* login card */}
-          <div className='absolute top-1/4 left-40'>
-            <div className='border-b border-gray-200 dark:border-gray-700 rounded-lg bg-gray-50 dark:bg-gray-900 px-10 py-10'>
+      <div>
+        <div className='absolute inset-0 z-[-5] hidden lg:block'>
+          <img
+            className=' w-full h-full object-contain transform -translate-x-[-20rem] xl:-translate-x-[-16rem] lg:scale-[40%] xl:scale-[60%] 2xl:scale-75'
+            src='/action_voice-cti.svg'
+            alt='image'
+          />
+        </div>
+        {/* login card */}
+        <div className='w-1/2'>
+          <div className='absolute top-1/2 left-1/2 lg:left-40 transform -translate-y-1/2 -translate-x-1/2 lg:-translate-x-0'>
+            <div className='border-b border-gray-200 dark:border-gray-700 rounded-lg bg-gray-50 dark:bg-gray-900 p-10'>
               {loginTemplate()}
             </div>
           </div>
         </div>
-      ) : (
-        <div className='flex min-h-full lg:hidden'>
-          {/* mobile view */}
-          {/* login card only for small monitor and mobile devices */}
-          <div className='flex flex-1 flex-col justify-center py-12 px-4 sm:px-6 lg:flex-none lg:px-20 xl:px-24 2xl:px-32'>
-            {loginTemplate()}
-          </div>
-        </div>
-      )}
+      </div>
     </>
   )
 }

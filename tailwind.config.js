@@ -71,11 +71,15 @@ module.exports = {
         //input
         bgInput: '#fff', // white
         inputText: '#374151', // gray-700
+        inputLabelTitle: '#374151', // gray-700
         placeHolderInputText: '#6b7280', // gray-500
+        inputIcon: '#9ca3af', // gray-400
         //input dark
         bgInputDark: '#030712', // gray-950
         inputTextDark: '#F9FAFB', // gray-50
+        inputLabelTitleDark: '#E5E7EB', // gray-200
         placeHolderInputTextDark: '#d1d5db', // gray-300
+        inputIconDark: '#F9FAFB', // gray-50
 
         //main page light
         body: '#E5E7EB', // gray-200
