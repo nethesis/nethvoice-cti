@@ -352,7 +352,7 @@ export const Filter = forwardRef<HTMLButtonElement, FilterProps>(
     const { t } = useTranslation()
 
     return (
-      <div className={classNames('bg-gray-100 dark:bg-gray-800', className)} {...props}>
+      <div className={classNames('bg-body dark:bg-bodyDark', className)} {...props}>
         <div className=''>
           {/* Drawer filter mobile */}
           <Transition.Root show={open} as={Fragment}>

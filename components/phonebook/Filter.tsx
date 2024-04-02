@@ -1,18 +1,32 @@
-// Copyright (C) 2023 Nethesis S.r.l.
+// Copyright (C) 2024 Nethesis S.r.l.
 // SPDX-License-Identifier: AGPL-3.0-or-later
 
 import { ComponentPropsWithRef, forwardRef, useRef } from 'react'
 import classNames from 'classnames'
-import { TextInput } from '../common'
+import { Button, Dropdown, TextInput } from '../common'
 import { Fragment, useState, useEffect } from 'react'
 import { Dialog, Disclosure, Popover, Transition } from '@headlessui/react'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
-import { faChevronDown, faCircleXmark, faXmark } from '@fortawesome/free-solid-svg-icons'
-import { DEFAULT_CONTACT_TYPE_FILTER, DEFAULT_SORT_BY, getFilterValues } from '../../lib/phonebook'
+import {
+  faChevronDown,
+  faCircleXmark,
+  faFileAudio,
+  faPlus,
+  faRecordVinyl,
+  faUserPlus,
+  faXmark,
+} from '@fortawesome/free-solid-svg-icons'
+import {
+  DEFAULT_CONTACT_TYPE_FILTER,
+  DEFAULT_SORT_BY,
+  getFilterValues,
+  openCreateContactDrawer,
+} from '../../lib/phonebook'
 import { useSelector } from 'react-redux'
 import { RootState } from '../../store'
 import { savePreference } from '../../lib/storage'
 import { useTranslation } from 'react-i18next'
+import { recordingAnnouncement } from '../../lib/lines'
 
 const sortFilter = {
   id: 'sort',
@@ -44,6 +58,13 @@ export const Filter = forwardRef<HTMLButtonElement, FilterProps>(
     const { t } = useTranslation()
     const auth = useSelector((state: RootState) => state.authentication)
     const [open, setOpen] = useState(false)
+
+    const handleCreateContantButtonMobileView = () => {
+      setOpen(false)
+      setTimeout(() => {
+        openCreateContactDrawer()
+      }, 5)
+    }
 
     const [textFilter, setTextFilter] = useState('')
     const textFilterRef = useRef() as React.MutableRefObject<HTMLInputElement>
@@ -131,7 +152,7 @@ export const Filter = forwardRef<HTMLButtonElement, FilterProps>(
         <div>
           {/* Mobile filter dialog */}
           <Transition.Root show={open} as={Fragment}>
-            <Dialog as='div' className='relative z-40 sm:hidden' onClose={setOpen}>
+            <Dialog as='div' className='relative z-[1000] sm:hidden' onClose={setOpen}>
               <Transition.Child
                 as={Fragment}
                 enter='transition-opacity ease-linear duration-300'
@@ -285,83 +306,86 @@ export const Filter = forwardRef<HTMLButtonElement, FilterProps>(
             </Dialog>
           </Transition.Root>
 
+          {/* pc view filters */}
           <div className='mx-auto text-center'>
             <section aria-labelledby='filter-heading' className='pb-6'>
               <h2 id='filter-heading' className='sr-only'>
                 {t('Phonebook.Phonebook filters')}
               </h2>
 
-              <div className='flex items-center space-x-8'>
+              <div className='flex flex-col-reverse sm:flex-row justify-between sm:items-center'>
+                {/* First container to manage text input and filter */}
                 <div className='flex items-center'>
-                  <TextInput
-                    placeholder={t('Phonebook.Filter contacts') || ''}
-                    className='max-w-sm'
-                    value={textFilter}
-                    onChange={changeTextFilter}
-                    ref={textFilterRef}
-                    icon={textFilter.length ? faCircleXmark : undefined}
-                    onIconClick={() => clearTextFilter()}
-                    trailingIcon={true}
-                  />
-                </div>
+                  <div className='items-center'>
+                    <TextInput
+                      placeholder={t('Phonebook.Filter contacts') || ''}
+                      className='max-w-sm'
+                      value={textFilter}
+                      onChange={changeTextFilter}
+                      ref={textFilterRef}
+                      icon={textFilter.length ? faCircleXmark : undefined}
+                      onIconClick={() => clearTextFilter()}
+                      trailingIcon={true}
+                    />
+                  </div>
 
-                <div className='flex ml-4'>
-                  <Popover.Group className='hidden sm:flex sm:items-baseline sm:space-x-4'>
-                    {/* contact type filter */}
-                    <Popover
-                      as='div'
-                      key={contactTypeFilter.name}
-                      id={`desktop-menu-${contactTypeFilter.id}`}
-                      className='relative inline-block text-left shrink-0'
-                    >
-                      <div>
-                        <Popover.Button className='px-3 py-2 text-sm leading-4 rounded border shadow-sm border-gray-300 bg-white text-gray-700 hover:bg-gray-100 focus:ring-primaryLight dark:border-gray-600 dark:bg-gray-900 dark:text-gray-100 dark:hover:bg-gray-800 dark:focus:ring-primaryDark group inline-flex items-center justify-center font-medium  hover:text-gray-900 dark:hover:text-gray-100'>
-                          <span>{t(`Phonebook.${contactTypeFilter.name}`)}</span>
-                          <FontAwesomeIcon
-                            icon={faChevronDown}
-                            className='ml-2 h-3 w-3 flex-shrink-0 text-gray-400 group-hover:text-gray-500 dark:text-gray-500 dark:group-hover:text-gray-400'
-                            aria-hidden='true'
-                          />
-                        </Popover.Button>
-                      </div>
-
-                      <Transition
-                        as={Fragment}
-                        enter='transition ease-out duration-100'
-                        enterFrom='transform opacity-0 scale-95'
-                        enterTo='transform opacity-100 scale-100'
-                        leave='transition ease-in duration-75'
-                        leaveFrom='transform opacity-100 scale-100'
-                        leaveTo='transform opacity-0 scale-95'
+                  <div className='flex ml-4'>
+                    <Popover.Group className='hidden sm:flex sm:items-baseline sm:space-x-4'>
+                      {/* contact type filter */}
+                      <Popover
+                        as='div'
+                        key={contactTypeFilter.name}
+                        id={`desktop-menu-${contactTypeFilter.id}`}
+                        className='relative inline-block text-left shrink-0'
                       >
-                        <Popover.Panel className='absolute right-0 z-10 mt-2 origin-top-right rounded-md p-4 shadow-2xl ring-1 ring-opacity-5 focus:outline-none bg-white ring-black dark:bg-gray-900 dark:ring-gray-700'>
-                          <form className='space-y-4'>
-                            {contactTypeFilter.options.map((option) => (
-                              <div key={option.value} className='flex items-center'>
-                                <input
-                                  id={option.value}
-                                  name={`filter-${contactTypeFilter.id}`}
-                                  type='radio'
-                                  defaultChecked={option.value === contactType}
-                                  onChange={changeContactType}
-                                  className='h-4 w-4 border-gray-300 text-primary focus:ring-primaryLight dark:border-gray-600 dark:text-primary dark:focus:ring-primaryDark'
-                                />
-                                <label
-                                  htmlFor={option.value}
-                                  className='ml-3 block text-sm font-medium text-gray-700 dark:text-gray-200'
-                                >
-                                  {t(`Phonebook.${option.label}`)}
-                                </label>
-                              </div>
-                            ))}
-                          </form>
-                        </Popover.Panel>
-                      </Transition>
-                    </Popover>
+                        <div>
+                          <Popover.Button className='px-3 py-2 text-sm leading-4 rounded border shadow-sm border-gray-300 bg-white text-gray-700 hover:bg-gray-100 focus:ring-primaryLight dark:border-gray-600 dark:bg-gray-900 dark:text-gray-100 dark:hover:bg-gray-800 dark:focus:ring-primaryDark group inline-flex items-center justify-center font-medium  hover:text-gray-900 dark:hover:text-gray-100'>
+                            <span>{t(`Phonebook.${contactTypeFilter.name}`)}</span>
+                            <FontAwesomeIcon
+                              icon={faChevronDown}
+                              className='ml-2 h-3 w-3 flex-shrink-0 text-gray-400 group-hover:text-gray-500 dark:text-gray-500 dark:group-hover:text-gray-400'
+                              aria-hidden='true'
+                            />
+                          </Popover.Button>
+                        </div>
 
-                    {/* sort by filter */}
-                    {/* //// sort by company is currently not implemented on CTI server */}
-                    {/* <Popover
+                        <Transition
+                          as={Fragment}
+                          enter='transition ease-out duration-100'
+                          enterFrom='transform opacity-0 scale-95'
+                          enterTo='transform opacity-100 scale-100'
+                          leave='transition ease-in duration-75'
+                          leaveFrom='transform opacity-100 scale-100'
+                          leaveTo='transform opacity-0 scale-95'
+                        >
+                          <Popover.Panel className='absolute right-0 z-10 mt-2 origin-top-right rounded-md p-4 shadow-2xl ring-1 ring-opacity-5 focus:outline-none bg-white ring-black dark:bg-gray-900 dark:ring-gray-700'>
+                            <form className='space-y-4'>
+                              {contactTypeFilter.options.map((option) => (
+                                <div key={option.value} className='flex items-center'>
+                                  <input
+                                    id={option.value}
+                                    name={`filter-${contactTypeFilter.id}`}
+                                    type='radio'
+                                    defaultChecked={option.value === contactType}
+                                    onChange={changeContactType}
+                                    className='h-4 w-4 border-gray-300 text-primary focus:ring-primaryLight dark:border-gray-600 dark:text-primary dark:focus:ring-primaryDark'
+                                  />
+                                  <label
+                                    htmlFor={option.value}
+                                    className='ml-3 block text-sm font-medium text-gray-700 dark:text-gray-200'
+                                  >
+                                    {t(`Phonebook.${option.label}`)}
+                                  </label>
+                                </div>
+                              ))}
+                            </form>
+                          </Popover.Panel>
+                        </Transition>
+                      </Popover>
+
+                      {/* sort by filter */}
+                      {/* //// sort by company is currently not implemented on CTI server */}
+                      {/* <Popover
                       as='div'
                       key={sortFilter.name}
                       id={`desktop-menu-${sortFilter.id}`}
@@ -411,15 +435,23 @@ export const Filter = forwardRef<HTMLButtonElement, FilterProps>(
                         </Popover.Panel>
                       </Transition>
                     </Popover> */}
-                  </Popover.Group>
+                    </Popover.Group>
 
-                  <button
-                    type='button'
-                    className='inline-block text-sm font-medium sm:hidden text-gray-700 hover:text-gray-900 dark:text-gray-200 dark:hover:text-gray-100'
-                    onClick={() => setOpen(true)}
-                  >
-                    {t('Common.Filters')}
-                  </button>
+                    <button
+                      type='button'
+                      className='inline-block text-sm font-medium sm:hidden text-gray-700 hover:text-gray-900 dark:text-gray-200 dark:hover:text-gray-100'
+                      onClick={() => setOpen(true)}
+                    >
+                      {t('Common.Filters')}
+                    </button>
+                  </div>
+                </div>
+                {/* Container for add announcement button  */}
+                <div className='text-left pb-6 sm:pb-0'>
+                  <Button variant='primary' onClick={() => openCreateContactDrawer()}>
+                    <FontAwesomeIcon icon={faUserPlus} className='mr-2 h-4 w-4' />
+                    <span>{t('Phonebook.Create contact')}</span>
+                  </Button>
                 </div>
               </div>
 

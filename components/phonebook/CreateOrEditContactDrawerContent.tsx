@@ -444,7 +444,7 @@ export const CreateOrEditContactDrawerContent = forwardRef<
         {editContactError && (
           <InlineNotification type='error' title={editContactError} className='mb-4' />
         )}
-        <div className='flex'>
+        <div className='flex items-center justify-end'>
           {config.isEdit ? (
             <Button variant='primary' type='submit' onClick={prepareEditContact} className='mb-4'>
               <FontAwesomeIcon icon={faPen} className='mr-2 h-4 w-4' />

@@ -236,10 +236,7 @@ export const NotManagedCalls: FC<NotManagedCallsProps> = ({ className }): JSX.El
           <div className='flex items-center justify-between'>
             <div className='flex items-center mr-2'>
               <Button variant='primary' onClick={handleExportCSV}>
-                <FontAwesomeIcon
-                  icon={faDownload}
-                  className='mr-2 h-4 w-4 text-gray-100 dark:text-gray-100'
-                />{' '}
+                <FontAwesomeIcon icon={faDownload} className='mr-2 h-4 w-4' />{' '}
                 <span>{t('QueueManager.Download')}</span>
               </Button>
             </div>
@@ -276,12 +273,12 @@ export const NotManagedCalls: FC<NotManagedCallsProps> = ({ className }): JSX.El
                           aria-hidden='true'
                         />
                       }
-                      className='bg-white dark:bg-gray-900'
+                      className='bg-white dark:bg-gray-950'
                     ></EmptyState>
                   )}
                   {(!isCallsLoaded || !isEmpty(calls.rows)) && (
                     <table className='min-w-full divide-y divide-gray-300 dark:divide-gray-600'>
-                      <thead className='bg-white dark:bg-gray-900'>
+                      <thead className='bg-white dark:bg-gray-950'>
                         <tr>
                           <th
                             scope='col'
@@ -318,7 +315,7 @@ export const NotManagedCalls: FC<NotManagedCallsProps> = ({ className }): JSX.El
                           </th>
                         </tr>
                       </thead>
-                      <tbody className=' text-sm divide-y divide-gray-200 bg-white text-gray-700 dark:divide-gray-700 dark:bg-gray-900 dark:text-gray-200'>
+                      <tbody className=' text-sm divide-y divide-gray-200 bg-white dark:bg-gray-950 text-gray-700 dark:divide-gray-700 dark:text-gray-200'>
                         {/* skeleton */}
                         {!isCallsLoaded &&
                           Array.from(Array(5)).map((e, i) => (
@@ -338,7 +335,7 @@ export const NotManagedCalls: FC<NotManagedCallsProps> = ({ className }): JSX.El
                             <tr key={index}>
                               {/* time */}
                               <td className='whitespace-nowrap py-4 pl-4 pr-3 sm:pl-6'>
-                                <CallsDate call={call} isInQueue={true}/>
+                                <CallsDate call={call} isInQueue={true} />
                               </td>
                               {/* queue */}
                               <td className='px-3 py-4'>

@@ -128,10 +128,6 @@ const Phonebook: NextPage = () => {
           <h1 className='text-2xl font-semibold mb-6 text-title dark:text-titleDark'>
             {t('Phonebook.Phonebook')}
           </h1>
-          <Button variant='primary' onClick={() => openCreateContactDrawer()} className='mb-6'>
-            <FontAwesomeIcon icon={faUserPlus} className='mr-2 h-4 w-4' />
-            <span>{t('Phonebook.Create contact')}</span>
-          </Button>
           <Filter
             updateTextFilter={debouncedUpdateTextFilter}
             updateContactTypeFilter={updateContactTypeFilter}
@@ -163,7 +159,7 @@ const Phonebook: NextPage = () => {
                                 aria-hidden='true'
                               />
                             }
-                            className='md:rounded-md bg-white dark:bg-gray-900'
+                            className='md:rounded-md bg-white dark:bg-gray-950'
                           >
                             <Button variant='primary' onClick={() => openCreateContactDrawer()}>
                               <FontAwesomeIcon icon={faPlus} className='mr-2 h-4 w-4' />
@@ -186,14 +182,14 @@ const Phonebook: NextPage = () => {
                                 aria-hidden='true'
                               />
                             }
-                            className='md:rounded-md bg-white dark:bg-gray-900'
+                            className='md:rounded-md bg-white dark:bg-gray-950'
                           />
                         )}
                       {isPhonebookLoaded && phonebook?.rows && !!phonebook.rows.length && (
                         <div className='overflow-y-auto scrollbar-thin scrollbar-thumb-gray-400 dark:scrollbar-thumb-gray-400 scrollbar-thumb-rounded-full scrollbar-thumb-opacity-50 scrollbar-track-gray-200 dark:scrollbar-track-gray-900 scrollbar-track-rounded-full scrollbar-track-opacity-25'>
                           <div className='max-h-[32rem]'>
                             <table className='min-w-full divide-y divide-gray-300 dark:divide-gray-700'>
-                              <thead className='sticky top-0 bg-white dark:bg-gray-900 z-[1]'>
+                              <thead className='sticky top-0 bg-white dark:bg-gray-950 z-[1]'>
                                 <tr>
                                   <th
                                     scope='col'
@@ -219,7 +215,7 @@ const Phonebook: NextPage = () => {
                                   ></th>
                                 </tr>
                               </thead>
-                              <tbody className='divide-y divide-gray-200 dark:divide-gray-700 bg-white dark:bg-gray-900 text-gray-700 text-sm'>
+                              <tbody className='divide-y divide-gray-200 dark:divide-gray-700 bg-white dark:bg-gray-950 text-gray-700 text-sm'>
                                 {/* Not empty state  */}
                                 {phonebook?.rows
                                   .filter(
@@ -396,7 +392,7 @@ const Phonebook: NextPage = () => {
 
           {/* skeleton  */}
           {!isPhonebookLoaded && (
-            <table className='min-w-full divide-y divide-gray-300 dark:divide-gray-700 bg-white dark:bg-gray-900 rounded-md overflow-hidden'>
+            <table className='min-w-full divide-y divide-gray-300 dark:divide-gray-700 bg-white dark:bg-gray-950 rounded-md overflow-hidden'>
               <thead>
                 <tr>
                   {Array.from(Array(4)).map((_, index) => (

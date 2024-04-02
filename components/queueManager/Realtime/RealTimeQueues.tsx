@@ -276,7 +276,7 @@ export const RealTimeQueues: FC<RealTimeQueuesProps> = ({
                   ]
                   return (
                     <div key={queue.queue}>
-                      <li className='col-span-1 rounded-md shadow divide-gray-200 bg-white dark:divide-gray-700 dark:bg-gray-900'>
+                      <li className='col-span-1 rounded-md shadow divide-gray-200 bg-cardBackgroud dark:bg-cardBackgroudDark dark:divide-gray-700'>
                         {/* card header */}
                         <div className='flex flex-col pt-3 pb-5 px-5'>
                           <div className='flex w-full items-center justify-between space-x-6'>

@@ -272,14 +272,14 @@ export const AnnouncementView: FC<AnnouncementViewProps> = ({ className }): JSX.
                           aria-hidden='true'
                         />
                       }
-                      className='bg-white dark:bg-gray-900'
+                      className='bg-white dark:bg-gray-950'
                     ></EmptyState>
                   )}
                   {(!isLinesLoaded || !isEmpty(lines)) && (
                     <div className='overflow-y-auto scrollbar-thin scrollbar-thumb-gray-400 dark:scrollbar-thumb-gray-400 scrollbar-thumb-rounded-full scrollbar-thumb-opacity-50 scrollbar-track-gray-200 dark:scrollbar-track-gray-900 scrollbar-track-rounded-full scrollbar-track-opacity-25'>
                       <div className='max-h-[32rem]'>
                         <table className='min-w-full divide-y divide-gray-300 dark:divide-gray-700'>
-                          <thead className='sticky top-0 bg-white dark:bg-gray-900 z-[1]'>
+                          <thead className='sticky top-0 bg-white dark:bg-gray-950 z-[1]'>
                             <tr>
                               <th
                                 scope='col'
@@ -310,7 +310,7 @@ export const AnnouncementView: FC<AnnouncementViewProps> = ({ className }): JSX.
                               </th>
                             </tr>
                           </thead>
-                          <tbody className=' text-sm divide-y divide-gray-200 bg-white text-gray-700 dark:divide-gray-700 dark:bg-gray-900 dark:text-gray-200'>
+                          <tbody className=' text-sm divide-y divide-gray-200 bg-white dark:bg-gray-950 text-gray-700 dark:divide-gray-700 dark:text-gray-200'>
                             {/* skeleton */}
                             {!isLinesLoaded &&
                               Array.from(Array(5)).map((e, i) => (
@@ -407,7 +407,7 @@ export const AnnouncementView: FC<AnnouncementViewProps> = ({ className }): JSX.
                                       >
                                         <FontAwesomeIcon
                                           icon={faPlay}
-                                          className='h-4 w-4 mr-2 text-gray-500 dark:text-gray-500'
+                                          className='h-4 w-4 mr-2'
                                           aria-hidden='true'
                                         />{' '}
                                         {t('Lines.Play')}
@@ -422,7 +422,7 @@ export const AnnouncementView: FC<AnnouncementViewProps> = ({ className }): JSX.
                                       >
                                         <FontAwesomeIcon
                                           icon={faDownload}
-                                          className='h-4 w-4 mr-2 text-gray-500 dark:text-gray-500'
+                                          className='h-4 w-4 mr-2'
                                           aria-hidden='true'
                                         />{' '}
                                         {t('Lines.Download')}

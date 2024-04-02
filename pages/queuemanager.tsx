@@ -103,10 +103,7 @@ const QueueManager: NextPage = () => {
             </h1>
             <div className='text-gray-900 dark:text-gray-100 text-sm flex items-center'>
               <Button size='small' variant='white'>
-                <FontAwesomeIcon
-                  icon={faArrowUpRightFromSquare}
-                  className='mr-2 h-4 w-4 text-gray-500 dark:text-gray-500'
-                />{' '}
+                <FontAwesomeIcon icon={faArrowUpRightFromSquare} className='mr-2 h-4 w-4' />
                 <a href={pbxReportUrl} target='_blank' rel='noreferrer'>
                   {t('Applications.Open PBX Report')}
                 </a>

@@ -43,6 +43,8 @@ const Applications: NextPage = () => {
             </span>
             <div className='grid grid-cols-1 gap-6 md:grid-cols-2 2xl:grid-cols-3'>
               {/* Check if the user has offhour permission enabled */}
+
+              {/* off hour */}
               {profile?.macro_permissions?.off_hour?.value && (
                 <div className='mt-5 bg-white border-gray-200 rounded-lg shadow dark:bg-gray-900 dark:border-gray-700'>
                   <div className='bg-emerald-50 rounded-lg flex flex-col justify-center items-center'>
@@ -59,7 +61,7 @@ const Applications: NextPage = () => {
                       </h5>
                     </div>
                   </div>
-                  <div className='bg-white dark:bg-gray-900 p-5 px-12 rounded-lg flex flex-col justify-center'>
+                  <div className='bg-cardBackgroud dark:bg-cardBackgroudDark p-5 px-12 rounded-lg flex flex-col justify-center'>
                     <div className='mb-8 font-normal text-xs justify-center items-center text-gray-600 dark:text-gray-400'>
                       <p className='text-center'>
                         {t(
@@ -69,22 +71,19 @@ const Applications: NextPage = () => {
                     </div>
                     <div className='text-gray-900 dark:text-gray-100 text-sm flex items-center justify-center'>
                       <Link href={'/lines'}>
-                        <a className='flex justify-center items-center'>
-                          <span className='font-semibold text-gray-900 dark:text-gray-100'>
-                            {t('Applications.Go to Phone lines and announcements')}
-                          </span>
-                          <FontAwesomeIcon
-                            icon={faArrowRight}
-                            className='h-4 w-4 m-3 rounded-lg text-gray-900 dark:text-gray-100'
-                          />
+                        <a className='flex justify-center items-center text-primary dark:text-primaryDark text-sm	 leading-5 font-medium'>
+                          <span>{t('Applications.Go to Phone lines and announcements')}</span>
+                          <FontAwesomeIcon icon={faArrowRight} className='h-4 w-4 m-3 rounded-lg' />
                         </a>
                       </Link>
                     </div>
                   </div>
                 </div>
               )}
+
+              {/* streaming */}
               {profile?.macro_permissions?.streaming?.value && (
-                <div className='mt-5 bg-white border-gray-200 rounded-lg shadow dark:bg-gray-900 dark:border-gray-700'>
+                <div className='mt-5 bg-cardBackgroud dark:bg-cardBackgroudDark border-gray-200 rounded-lg shadow  dark:border-gray-700'>
                   <div className='bg-emerald-50 rounded-lg flex flex-col justify-center items-center'>
                     <span className='h-10 w-10 overflow-hidden rounded-full bg-emerald-600 dark:bg-emerald-500 flex relative top-[-1.25rem]'>
                       <FontAwesomeIcon
@@ -99,7 +98,7 @@ const Applications: NextPage = () => {
                       </h5>
                     </div>
                   </div>
-                  <div className='bg-white dark:bg-gray-900 p-5 px-12 rounded-lg flex flex-col justify-center'>
+                  <div className='bg-cardBackgroud dark:bg-cardBackgroudDark p-5 px-12 rounded-lg flex flex-col justify-center'>
                     <div className='mb-8 font-normal text-xs justify-center items-center text-gray-600 dark:text-gray-400'>
                       <p className='text-center'>
                         {t(
@@ -115,8 +114,10 @@ const Applications: NextPage = () => {
                   </div>
                 </div>
               )}
+
+              {/* video conference */}
               {profile?.macro_permissions?.settings?.permissions?.video_conference?.value && (
-                <div className='mt-5 bg-white border-gray-200 rounded-lg shadow dark:bg-gray-900 dark:border-gray-700'>
+                <div className='mt-5 bg-cardBackgroud dark:bg-cardBackgroudDark border-gray-200 rounded-lg shadow dark:border-gray-700'>
                   <div className='bg-emerald-50 rounded-lg flex flex-col justify-center items-center'>
                     <span className='h-10 w-10 overflow-hidden rounded-full bg-emerald-600 dark:bg-emerald-500 flex relative top-[-1.25rem]'>
                       <FontAwesomeIcon
@@ -131,7 +132,7 @@ const Applications: NextPage = () => {
                       </h5>
                     </div>
                   </div>
-                  <div className='bg-white dark:bg-gray-900 p-5 px-12 rounded-lg flex flex-col justify-center'>
+                  <div className='bg-cardBackgroud dark:bg-cardBackgroudDark p-5 px-12 rounded-lg flex flex-col justify-center'>
                     <div className='mb-8 font-normal text-xs justify-center items-center text-gray-600 dark:text-gray-400'>
                       <p className='text-center'>
                         {t(
@@ -152,12 +153,14 @@ const Applications: NextPage = () => {
         )}
 
         {/* External applications */}
+
+        {/* pbx report */}
         <div className='pt-8'>
           <span className='text-base font-normal mb-4  text-gray-600 dark:text-gray-100'>
             {t('Applications.External')}
           </span>
           <div className='grid grid-cols-1 gap-6 md:grid-cols-2 2xl:grid-cols-3'>
-            <div className='mt-5 bg-white border-gray-200 rounded-lg shadow dark:bg-gray-900 dark:border-gray-700'>
+            <div className='mt-5 bg-cardBackgroud dark:bg-cardBackgroudDark border-gray-200 rounded-lg shadow dark:border-gray-700'>
               <div className='bg-emerald-50 rounded-lg flex flex-col justify-center items-center'>
                 <span className='h-10 w-10 overflow-hidden rounded-full bg-emerald-600 dark:bg-emerald-500 flex relative top-[-1.25rem]'>
                   <FontAwesomeIcon
@@ -172,18 +175,15 @@ const Applications: NextPage = () => {
                   </h5>
                 </div>
               </div>
-              <div className='bg-white dark:bg-gray-900 p-5 px-12 rounded-lg flex flex-col justify-center'>
+              <div className='bg-cardBackgroud dark:bg-cardBackgroudDark p-5 px-12 rounded-lg flex flex-col justify-center'>
                 <div className='mb-8 font-normal text-xs justify-center items-center text-gray-600 dark:text-gray-400'>
                   <p className='text-center'>
                     {t('Applications.Access the complete tool for consulting reports')}
                   </p>
                 </div>
-                <div className='text-gray-900 dark:text-gray-100 text-sm flex items-center justify-center'>
+                <div className='flex items-center justify-center'>
                   <Button size='small' variant='white'>
-                    <FontAwesomeIcon
-                      icon={faArrowUpRightFromSquare}
-                      className='mr-2 h-4 w-4 text-gray-500 dark:text-gray-500'
-                    />{' '}
+                    <FontAwesomeIcon icon={faArrowUpRightFromSquare} className='mr-2 h-4 w-4' />{' '}
                     <a href={pbxReportUrl} target='_blank' rel='noreferrer'>
                       {t('Applications.Open PBX Report')}
                     </a>

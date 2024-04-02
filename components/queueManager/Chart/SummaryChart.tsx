@@ -421,7 +421,7 @@ export const SummaryChart: FC<SummaryChartProps> = ({ className, selectedQueues 
           <div className='grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-3'>
             {/* Total calls */}
             <div className='pt-8'>
-              <div className='flex flex-col border-b rounded-lg shadow-md border-gray-200 dark:border-gray-700 bg-white dark:bg-gray-900 px-5 py-3 sm:mt-1 relative items-center h-auto w-full'>
+              <div className='flex flex-col border-b rounded-lg shadow-md border-gray-200 dark:border-gray-700 bg-cardBackgroud dark:bg-cardBackgroudDark px-5 py-3 sm:mt-1 relative items-center h-auto w-full'>
                 <div className='flex items-center'>
                   <span className='text-sm font-medium leading-6 text-gray-700 dark:text-gray-100'>
                     {t('QueueManager.Total calls')}
@@ -449,7 +449,7 @@ export const SummaryChart: FC<SummaryChartProps> = ({ className, selectedQueues 
 
             {/* Calls answered before service level */}
             <div className='pt-8'>
-              <div className='flex flex-col border-b rounded-lg shadow-md border-gray-200 dark:border-gray-700 bg-white dark:bg-gray-900 px-5 py-3 sm:mt-1 relative items-center h-auto w-full'>
+              <div className='flex flex-col border-b rounded-lg shadow-md border-gray-200 dark:border-gray-700 bg-cardBackgroud dark:bg-cardBackgroudDark px-5 py-3 sm:mt-1 relative items-center h-auto w-full'>
                 <div className='flex items-center'>
                   <span className='text-sm font-medium leading-6 text-gray-700 dark:text-gray-100'>
                     {t('QueueManager.Calls answered before service level')}
@@ -477,7 +477,7 @@ export const SummaryChart: FC<SummaryChartProps> = ({ className, selectedQueues 
 
             {/* Unanswered calls */}
             <div className='pt-8'>
-              <div className='flex flex-col border-b rounded-lg shadow-md border-gray-200 dark:border-gray-700 bg-white dark:bg-gray-900 px-5 py-3 sm:mt-1 relative items-center h-auto w-full'>
+              <div className='flex flex-col border-b rounded-lg shadow-md border-gray-200 dark:border-gray-700 bg-cardBackgroud dark:bg-cardBackgroudDark px-5 py-3 sm:mt-1 relative items-center h-auto w-full'>
                 <div className='flex items-center'>
                   <span className='text-sm font-medium leading-6 text-gray-700 dark:text-gray-100'>
                     {t('QueueManager.Unanswered calls')}
@@ -505,7 +505,7 @@ export const SummaryChart: FC<SummaryChartProps> = ({ className, selectedQueues 
 
             {/* Reasons for unanswered calls */}
             <div className='pt-8'>
-              <div className='flex flex-col border-b rounded-lg shadow-md border-gray-200 dark:border-gray-700 bg-white dark:bg-gray-900 px-5 py-3 sm:mt-1 relative items-center h-auto w-full'>
+              <div className='flex flex-col border-b rounded-lg shadow-md border-gray-200 dark:border-gray-700 bg-cardBackgroud dark:bg-cardBackgroudDark px-5 py-3 sm:mt-1 relative items-center h-auto w-full'>
                 <div className='flex items-center'>
                   <span className='text-sm font-medium leading-6 text-gray-700 dark:text-gray-100'>
                     {t('QueueManager.Reasons for unanswered calls')}
@@ -541,7 +541,7 @@ export const SummaryChart: FC<SummaryChartProps> = ({ className, selectedQueues 
 
             {/* Callback time */}
             <div className='pt-8'>
-              <div className='flex flex-col border-b rounded-lg shadow-md border-gray-200 dark:border-gray-700 bg-white dark:bg-gray-900 px-5 py-3 sm:mt-1 relative items-center h-auto w-full'>
+              <div className='flex flex-col border-b rounded-lg shadow-md border-gray-200 dark:border-gray-700 bg-cardBackgroud dark:bg-cardBackgroudDark px-5 py-3 sm:mt-1 relative items-center h-auto w-full'>
                 <div className='flex items-center'>
                   <span className='text-sm font-medium leading-6 text-gray-700 dark:text-gray-100'>
                     {t('QueueManager.Callback time')}
@@ -569,7 +569,7 @@ export const SummaryChart: FC<SummaryChartProps> = ({ className, selectedQueues 
 
             {/* Invalid calls */}
             <div className='pt-8'>
-              <div className='flex flex-col border-b rounded-lg shadow-md border-gray-200 dark:border-gray-700 bg-white dark:bg-gray-900 px-5 py-3 sm:mt-1 relative items-center h-auto w-full'>
+              <div className='flex flex-col border-b rounded-lg shadow-md border-gray-200 dark:border-gray-700 bg-cardBackgroud dark:bg-cardBackgroudDark px-5 py-3 sm:mt-1 relative items-center h-auto w-full'>
                 <div className='flex items-center'>
                   <span className='text-sm font-medium leading-6 text-gray-700 dark:text-gray-100'>
                     {t('QueueManager.Invalid calls')}
@@ -597,7 +597,7 @@ export const SummaryChart: FC<SummaryChartProps> = ({ className, selectedQueues 
 
             {/* Waiting times duration */}
             <div className='pt-8'>
-              <div className='flex flex-col border-b rounded-lg shadow-md border-gray-200 dark:border-gray-700 bg-white dark:bg-gray-900 px-5 py-3 sm:mt-1 relative items-center h-auto w-full'>
+              <div className='flex flex-col border-b rounded-lg shadow-md border-gray-200 dark:border-gray-700 bg-cardBackgroud dark:bg-cardBackgroudDark px-5 py-3 sm:mt-1 relative items-center h-auto w-full'>
                 <div className='flex items-center'>
                   <span className='text-sm font-medium leading-6 text-gray-700 dark:text-gray-100'>
                     {t('QueueManager.Waiting times')}
@@ -629,7 +629,7 @@ export const SummaryChart: FC<SummaryChartProps> = ({ className, selectedQueues 
 
             {/* Calls duration */}
             <div className='pt-8'>
-              <div className='flex flex-col border-b rounded-lg shadow-md border-gray-200 dark:border-gray-700 bg-white dark:bg-gray-900 px-5 py-3 sm:mt-1 relative items-center h-auto w-full'>
+              <div className='flex flex-col border-b rounded-lg shadow-md border-gray-200 dark:border-gray-700 bg-cardBackgroud dark:bg-cardBackgroudDark px-5 py-3 sm:mt-1 relative items-center h-auto w-full'>
                 <div className='flex items-center'>
                   <span className='text-sm font-medium leading-6 text-gray-700 dark:text-gray-100'>
                     {t('QueueManager.Calls duration')}

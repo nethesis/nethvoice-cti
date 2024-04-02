@@ -643,7 +643,9 @@ export const QueueManagerDashboard: FC<QueueManagerDashboardProps> = ({
       <div className='py-12 mt-8 relative'>
         <div className='flex items-center space-x-1'>
           <div className='flex-grow'>
-            <h2 className='text-base font-semibold ml-2'>{t('QueueManager.Operators statistics')}</h2>
+            <h2 className='text-base font-semibold ml-2'>
+              {t('QueueManager.Operators statistics')}
+            </h2>
           </div>
           <div className='flex items-center justify-end h-6 w-6'>
             <FontAwesomeIcon
@@ -660,7 +662,7 @@ export const QueueManagerDashboard: FC<QueueManagerDashboardProps> = ({
             <div className='grid grid-cols-1 gap-6 xl:grid-cols-2 3xl:grid-cols-3 pt-6'>
               {/* Number of answered calls  */}
               <div>
-                <div className='col-span-1 rounded-md divide-y shadow divide-gray-200 bg-white dark:divide-gray-700 dark:bg-gray-900'>
+                <div className='col-span-1 rounded-md divide-y shadow divide-gray-200 bg-cardBackgroud dark:bg-cardBackgroudDark dark:divide-gray-700'>
                   {/* card header */}
                   <div className='flex flex-col pt-3 pb-5 px-5'>
                     <div className='flex w-full items-center justify-between space-x-6'>
@@ -703,7 +705,7 @@ export const QueueManagerDashboard: FC<QueueManagerDashboardProps> = ({
                     <div className='-mx-4 -my-2 overflow-x-auto sm:-mx-6 pl-2 pr-2'>
                       <div className='inline-block min-w-full py-2 align-middle sm:px-6 lg:px-8'>
                         <table className='min-w-full divide-y divide-gray-300'>
-                          <tbody className='divide-y divide-gray-200 dark:divide-gray-700 bg-white dark:bg-gray-900'>
+                          <tbody className='divide-y divide-gray-200 dark:divide-gray-700'>
                             {/* skeleton */}
                             {!isLoadedQueues &&
                               Array.from(Array(5)).map((e, i) => (
@@ -779,7 +781,7 @@ export const QueueManagerDashboard: FC<QueueManagerDashboardProps> = ({
 
               {/* Number of unanswered calls  */}
               <div>
-                <div className='col-span-1 rounded-md divide-y shadow divide-gray-200 bg-white dark:divide-gray-700 dark:bg-gray-900'>
+                <div className='col-span-1 rounded-md divide-y shadow divide-gray-200 bg-cardBackgroud dark:bg-cardBackgroudDark dark:divide-gray-700'>
                   {/* card header */}
                   <div className='flex flex-col pt-3 pb-5 px-5'>
                     <div className='flex w-full items-center justify-between space-x-6'>
@@ -825,7 +827,7 @@ export const QueueManagerDashboard: FC<QueueManagerDashboardProps> = ({
                     <div className='-mx-4 -my-2 overflow-x-auto sm:-mx-6 pl-2 pr-2'>
                       <div className='inline-block min-w-full py-2 align-middle sm:px-6 lg:px-8'>
                         <table className='min-w-full divide-y divide-gray-300'>
-                          <tbody className='divide-y divide-gray-200 dark:divide-gray-700 bg-white dark:bg-gray-900'>
+                          <tbody className='divide-y divide-gray-200 dark:divide-gray-700'>
                             {/* skeleton */}
                             {!isLoadedQueues &&
                               Array.from(Array(5)).map((e, i) => (
@@ -901,7 +903,7 @@ export const QueueManagerDashboard: FC<QueueManagerDashboardProps> = ({
 
               {/* Pause on login  */}
               <div>
-                <div className='col-span-1 rounded-md divide-y shadow divide-gray-200 bg-white dark:divide-gray-700 dark:bg-gray-900'>
+                <div className='col-span-1 rounded-md divide-y shadow divide-gray-200 bg-cardBackgroud dark:bg-cardBackgroudDark dark:divide-gray-700'>
                   {/* card header */}
                   <div className='flex flex-col pt-3 pb-5 px-5'>
                     <div className='flex w-full items-center justify-between space-x-6'>
@@ -944,7 +946,7 @@ export const QueueManagerDashboard: FC<QueueManagerDashboardProps> = ({
                     <div className='-mx-4 -my-2 overflow-x-auto sm:-mx-6 pl-2 pr-2'>
                       <div className='inline-block min-w-full py-2 align-middle sm:px-6 lg:px-8'>
                         <table className='min-w-full divide-y divide-gray-300'>
-                          <tbody className='divide-y divide-gray-200 dark:divide-gray-700 bg-white dark:bg-gray-900'>
+                          <tbody className='divide-y divide-gray-200 dark:divide-gray-700'>
                             {/* skeleton */}
                             {!isLoadedQueues &&
                               Array.from(Array(5)).map((e, i) => (
@@ -1020,7 +1022,7 @@ export const QueueManagerDashboard: FC<QueueManagerDashboardProps> = ({
 
               {/* Time on login  */}
               <div>
-                <div className='col-span-1 rounded-md divide-y shadow divide-gray-200 bg-white dark:divide-gray-700 dark:bg-gray-900'>
+                <div className='col-span-1 rounded-md divide-y shadow divide-gray-200 bg-cardBackgroud dark:bg-cardBackgroudDark dark:divide-gray-700'>
                   {/* card header */}
                   <div className='flex flex-col pt-3 pb-5 px-5'>
                     <div className='flex w-full items-center justify-between space-x-6'>
@@ -1066,7 +1068,7 @@ export const QueueManagerDashboard: FC<QueueManagerDashboardProps> = ({
                     <div className='-mx-4 -my-2 overflow-x-auto sm:-mx-6 pl-2 pr-2'>
                       <div className='inline-block min-w-full py-2 align-middle sm:px-6 lg:px-8'>
                         <table className='min-w-full divide-y divide-gray-300'>
-                          <tbody className='divide-y divide-gray-200 dark:divide-gray-700 bg-white dark:bg-gray-900'>
+                          <tbody className='divide-y divide-gray-200 dark:divide-gray-700'>
                             {/* skeleton */}
                             {!isLoadedQueues &&
                               Array.from(Array(5)).map((e, i) => (
@@ -1142,7 +1144,7 @@ export const QueueManagerDashboard: FC<QueueManagerDashboardProps> = ({
 
               {/* Pause time  */}
               <div>
-                <div className='col-span-1 rounded-md divide-y shadow divide-gray-200 bg-white dark:divide-gray-700 dark:bg-gray-900'>
+                <div className='col-span-1 rounded-md divide-y shadow divide-gray-200 bg-cardBackgroud dark:bg-cardBackgroudDark dark:divide-gray-700'>
                   {/* card header */}
                   <div className='flex flex-col pt-3 pb-5 px-5'>
                     <div className='flex w-full items-center justify-between space-x-6'>
@@ -1188,7 +1190,7 @@ export const QueueManagerDashboard: FC<QueueManagerDashboardProps> = ({
                     <div className='-mx-4 -my-2 overflow-x-auto sm:-mx-6 pl-2 pr-2'>
                       <div className='inline-block min-w-full py-2 align-middle sm:px-6 lg:px-8'>
                         <table className='min-w-full divide-y divide-gray-300'>
-                          <tbody className='divide-y divide-gray-200 dark:divide-gray-700 bg-white dark:bg-gray-900'>
+                          <tbody className='divide-y divide-gray-200 dark:divide-gray-700'>
                             {/* skeleton */}
                             {!isLoadedQueues &&
                               Array.from(Array(5)).map((e, i) => (
@@ -1264,7 +1266,7 @@ export const QueueManagerDashboard: FC<QueueManagerDashboardProps> = ({
 
               {/* In call percentage */}
               <div>
-                <div className='col-span-1 rounded-md divide-y shadow divide-gray-200 bg-white dark:divide-gray-700 dark:bg-gray-900'>
+                <div className='col-span-1 rounded-md divide-y shadow divide-gray-200 bg-cardBackgroud dark:bg-cardBackgroudDark dark:divide-gray-700'>
                   {/* card header */}
                   <div className='flex flex-col pt-3 pb-5 px-5'>
                     <div className='flex w-full items-center justify-between space-x-6'>
@@ -1310,7 +1312,7 @@ export const QueueManagerDashboard: FC<QueueManagerDashboardProps> = ({
                     <div className='-mx-4 -my-2 overflow-x-auto sm:-mx-6 pl-2 pr-2'>
                       <div className='inline-block min-w-full py-2 align-middle sm:px-6 lg:px-8'>
                         <table className='min-w-full divide-y divide-gray-300'>
-                          <tbody className='divide-y divide-gray-200 dark:divide-gray-700 bg-white dark:bg-gray-900'>
+                          <tbody className='divide-y divide-gray-200 dark:divide-gray-700'>
                             {/* skeleton */}
                             {!isLoadedQueues &&
                               Array.from(Array(5)).map((e, i) => (
@@ -1409,7 +1411,7 @@ export const QueueManagerDashboard: FC<QueueManagerDashboardProps> = ({
             <div className='grid grid-cols-1 gap-6 xl:grid-cols-2 3xl:grid-cols-3 pt-6'>
               {/* Total calls  */}
               <div>
-                <div className='col-span-1 rounded-md divide-y shadow divide-gray-200 bg-white dark:divide-gray-700 dark:bg-gray-900'>
+                <div className='col-span-1 rounded-md divide-y shadow divide-gray-200 bg-cardBackgroud dark:bg-cardBackgroudDark dark:divide-gray-700'>
                   {/* card header */}
                   <div className='flex flex-col pt-3 pb-5 px-5'>
                     <div className='flex w-full items-center justify-between space-x-6'>
@@ -1455,7 +1457,7 @@ export const QueueManagerDashboard: FC<QueueManagerDashboardProps> = ({
                     <div className='-mx-4 -my-2 overflow-x-auto sm:-mx-6 pl-2 pr-2'>
                       <div className='inline-block min-w-full py-2 align-middle sm:px-6 lg:px-8'>
                         <table className='min-w-full divide-y divide-gray-300'>
-                          <tbody className='divide-y divide-gray-200 dark:divide-gray-700 bg-white dark:bg-gray-900'>
+                          <tbody className='divide-y divide-gray-200 dark:divide-gray-700'>
                             {/* skeleton */}
                             {!isLoadedQueues &&
                               Array.from(Array(5)).map((e, i) => (
@@ -1499,7 +1501,7 @@ export const QueueManagerDashboard: FC<QueueManagerDashboardProps> = ({
 
               {/* Unanswered calls  */}
               <div>
-                <div className='col-span-1 rounded-md divide-y shadow divide-gray-200 bg-white dark:divide-gray-700 dark:bg-gray-900'>
+                <div className='col-span-1 rounded-md divide-y shadow divide-gray-200 bg-cardBackgroud dark:bg-cardBackgroudDark dark:divide-gray-700'>
                   {/* card header */}
                   <div className='flex flex-col pt-3 pb-5 px-5'>
                     <div className='flex w-full items-center justify-between space-x-6'>
@@ -1545,7 +1547,7 @@ export const QueueManagerDashboard: FC<QueueManagerDashboardProps> = ({
                     <div className='-mx-4 -my-2 overflow-x-auto sm:-mx-6 pl-2 pr-2'>
                       <div className='inline-block min-w-full py-2 align-middle sm:px-6 lg:px-8'>
                         <table className='min-w-full divide-y divide-gray-300'>
-                          <tbody className='divide-y  dark:divide-gray-700 bg-white dark:bg-gray-900'>
+                          <tbody className='divide-y  dark:divide-gray-700'>
                             {/* skeleton */}
                             {!isLoadedQueues &&
                               Array.from(Array(5)).map((e, i) => (
@@ -1589,7 +1591,7 @@ export const QueueManagerDashboard: FC<QueueManagerDashboardProps> = ({
 
               {/* Invalid calls  */}
               <div>
-                <div className='col-span-1 rounded-md divide-y shadow divide-gray-200 bg-white dark:divide-gray-700 dark:bg-gray-900'>
+                <div className='col-span-1 rounded-md divide-y shadow divide-gray-200 bg-cardBackgroud dark:bg-cardBackgroudDark dark:divide-gray-700'>
                   {/* card header */}
                   <div className='flex flex-col pt-3 pb-5 px-5'>
                     <div className='flex w-full items-center justify-between space-x-6'>
@@ -1635,7 +1637,7 @@ export const QueueManagerDashboard: FC<QueueManagerDashboardProps> = ({
                     <div className='-mx-4 -my-2 overflow-x-auto sm:-mx-6 pl-2 pr-2'>
                       <div className='inline-block min-w-full py-2 align-middle sm:px-6 lg:px-8'>
                         <table className='min-w-full divide-y divide-gray-300'>
-                          <tbody className='divide-y divide-gray-200 dark:divide-gray-700 bg-white dark:bg-gray-900'>
+                          <tbody className='divide-y divide-gray-200 dark:divide-gray-700'>
                             {/* skeleton */}
                             {!isLoadedQueues &&
                               Array.from(Array(5)).map((e, i) => (
@@ -1679,7 +1681,7 @@ export const QueueManagerDashboard: FC<QueueManagerDashboardProps> = ({
 
               {/* Missed call reasons  */}
               <div>
-                <div className='col-span-1 rounded-md divide-y shadow divide-gray-200 bg-white dark:divide-gray-700 dark:bg-gray-900'>
+                <div className='col-span-1 rounded-md divide-y shadow divide-gray-200 bg-cardBackgroud dark:bg-cardBackgroudDark dark:divide-gray-700'>
                   {/* card header */}
                   <div className='flex flex-col pt-3 pb-5 px-5'>
                     <div className='flex w-full items-center justify-between space-x-6'>
@@ -1722,7 +1724,7 @@ export const QueueManagerDashboard: FC<QueueManagerDashboardProps> = ({
                     <div className='-mx-4 -my-2 overflow-x-auto sm:-mx-6 pl-2 pr-2'>
                       <div className='inline-block min-w-full py-2 align-middle sm:px-6 lg:px-8'>
                         <table className='min-w-full divide-y divide-gray-300'>
-                          <tbody className='divide-y divide-gray-200  dark:divide-gray-700 bg-white dark:bg-gray-900'>
+                          <tbody className='divide-y divide-gray-200  dark:divide-gray-700'>
                             {/* skeleton */}
                             {!isLoadedQueues &&
                               Array.from(Array(5)).map((e, i) => (
@@ -1769,7 +1771,7 @@ export const QueueManagerDashboard: FC<QueueManagerDashboardProps> = ({
 
               {/* Average call time */}
               <div>
-                <div className='col-span-1 rounded-md divide-y shadow divide-gray-200 bg-white dark:divide-gray-700 dark:bg-gray-900'>
+                <div className='col-span-1 rounded-md divide-y shadow divide-gray-200 bg-cardBackgroud dark:bg-cardBackgroudDark dark:divide-gray-700'>
                   {/* card header */}
                   <div className='flex flex-col pt-3 pb-5 px-5'>
                     <div className='flex w-full items-center justify-between space-x-6'>
@@ -1815,7 +1817,7 @@ export const QueueManagerDashboard: FC<QueueManagerDashboardProps> = ({
                     <div className='-mx-4 -my-2 overflow-x-auto sm:-mx-6 pl-2 pr-2'>
                       <div className='inline-block min-w-full py-2 align-middle sm:px-6 lg:px-8'>
                         <table className='min-w-full divide-y divide-gray-300'>
-                          <tbody className='divide-y divide-gray-200 dark:divide-gray-700 bg-white dark:bg-gray-900'>
+                          <tbody className='divide-y divide-gray-200 dark:divide-gray-700'>
                             {/* skeleton */}
                             {!isLoadedQueues &&
                               Array.from(Array(5)).map((e, i) => (
@@ -1893,7 +1895,7 @@ export const QueueManagerDashboard: FC<QueueManagerDashboardProps> = ({
 
               {/* Average callback time */}
               <div>
-                <div className='col-span-1 rounded-md divide-y shadow divide-gray-200 bg-white dark:divide-gray-700 dark:bg-gray-900'>
+                <div className='col-span-1 rounded-md divide-y shadow divide-gray-200 bg-cardBackgroud dark:bg-cardBackgroudDark dark:divide-gray-700'>
                   {/* card header */}
                   <div className='flex flex-col pt-3 pb-5 px-5'>
                     <div className='flex w-full items-center justify-between space-x-6'>
@@ -1939,7 +1941,7 @@ export const QueueManagerDashboard: FC<QueueManagerDashboardProps> = ({
                     <div className='-mx-4 -my-2 overflow-x-auto sm:-mx-6 pl-2 pr-2'>
                       <div className='inline-block min-w-full py-2 align-middle sm:px-6 lg:px-8'>
                         <table className='min-w-full divide-y divide-gray-300'>
-                          <tbody className='divide-y divide-gray-200 dark:divide-gray-700 bg-white dark:bg-gray-900'>
+                          <tbody className='divide-y divide-gray-200 dark:divide-gray-700'>
                             {/* skeleton */}
                             {!isLoadedQueues &&
                               Array.from(Array(5)).map((e, i) => (

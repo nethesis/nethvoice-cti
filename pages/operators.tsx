@@ -757,7 +757,7 @@ const Operators: NextPage = () => {
                     >
                       <div className='flex min-w-0 flex-1 items-center space-x-3'>
                         <div className='block flex-shrink-0'>
-                          <div className='animate-pulse rounded-full h-10 w-10 mx-auto bg-gray-300 dark:bg-gray-600'></div>
+                          <div className='animate-pulse rounded-full h-10 w-10 mx-auto bg-cardBackgroud dark:bg-cardBackgroudDark '></div>
                         </div>
                         <span className='block min-w-0 flex-1'>
                           <div className='animate-pulse h-4 rounded bg-gray-300 dark:bg-gray-600'></div>
@@ -985,7 +985,7 @@ const Operators: NextPage = () => {
                   <li key={index} className='px-1'>
                     <button
                       type='button'
-                      className='group flex w-full items-center justify-between space-x-3 rounded-lg p-2 text-left focus:outline-none focus:ring-2 focus:ring-offset-2 bg-white dark:bg-gray-900 cursor-default'
+                      className='group flex w-full items-center justify-between space-x-3 rounded-lg p-2 text-left focus:outline-none focus:ring-2 focus:ring-offset-2 bg-cardBackgroud dark:bg-cardBackgroudDark  cursor-default'
                     >
                       <div className='flex min-w-0 flex-1 items-center space-x-3'>
                         <div className='block flex-shrink-0'>
@@ -1046,7 +1046,7 @@ const Operators: NextPage = () => {
                       >
                         {category?.members?.map((operator: any, operatorIndex: number) => (
                           <li key={operatorIndex} className='px-1'>
-                            <div className='group flex w-full items-center justify-between space-x-3 rounded-lg p-2 text-left focus:outline-none focus:ring-2 focus:ring-offset-2 bg-white dark:bg-gray-900 focus:ring-primary dark:focus:ring-primary'>
+                            <div className='group flex w-full items-center justify-between space-x-3 rounded-lg p-2 text-left focus:outline-none focus:ring-2 focus:ring-offset-2 bg-cardBackgroud dark:bg-cardBackgroudDark  focus:ring-primary dark:focus:ring-primary'>
                               <span className='flex min-w-0 flex-1 items-center space-x-3'>
                                 <span className='block flex-shrink-0'>
                                   <Avatar

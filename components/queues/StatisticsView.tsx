@@ -95,10 +95,7 @@ export const StatisticsView: FC<StatisticsViewProps> = ({ className }): JSX.Elem
                 className='mb-4'
                 title={t('Common.Coming soon') || ''}
               >
-                <FontAwesomeIcon
-                  icon={faDownload}
-                  className='h-4 w-4 mr-2 text-gray-500 dark:text-gray-400'
-                />
+                <FontAwesomeIcon icon={faDownload} className='h-4 w-4 mr-2' />
                 <span>{t('Queues.Download stats')}</span>
               </Button>
             </div>
@@ -127,7 +124,7 @@ export const StatisticsView: FC<StatisticsViewProps> = ({ className }): JSX.Elem
                 <>
                   {/* login stats */}
                   <div>
-                    <li className='col-span-1 rounded-lg divide-y shadow divide-gray-200 bg-white text-gray-700 dark:divide-gray-700 dark:bg-gray-900 dark:text-gray-200'>
+                    <li className='col-span-1 rounded-lg divide-y shadow divide-gray-200 bg-cardBackgroud dark:bg-cardBackgroudDark text-gray-700 dark:divide-gray-700  dark:text-gray-200'>
                       {/* card header */}
                       <div className='px-5 py-4'>
                         <h3 className='truncate text-base leading-6 font-medium'>
@@ -159,7 +156,7 @@ export const StatisticsView: FC<StatisticsViewProps> = ({ className }): JSX.Elem
                     </li>
                   </div>
                   {/* call stats */}
-                  <li className='col-span-1 rounded-lg divide-y shadow divide-gray-200 bg-white text-gray-700 dark:divide-gray-700 dark:bg-gray-900 dark:text-gray-200'>
+                  <li className='col-span-1 rounded-lg divide-y shadow divide-gray-200 bg-cardBackgroud dark:bg-cardBackgroudDark text-gray-700 dark:divide-gray-700 dark:text-gray-200'>
                     {/* card header */}
                     <div className='px-5 py-4'>
                       <h3 className='truncate text-base leading-6 font-medium'>
@@ -211,7 +208,7 @@ export const StatisticsView: FC<StatisticsViewProps> = ({ className }): JSX.Elem
                     </div>
                   </li>
                   {/* calls duration */}
-                  <li className='col-span-1 rounded-lg divide-y shadow divide-gray-200 bg-white text-gray-700 dark:divide-gray-700 dark:bg-gray-900 dark:text-gray-200'>
+                  <li className='col-span-1 rounded-lg divide-y shadow divide-gray-200 bg-cardBackgroud dark:bg-cardBackgroudDark text-gray-700 dark:divide-gray-700 dark:text-gray-200'>
                     {/* card header */}
                     <div className='px-5 py-4'>
                       <h3 className='truncate text-base leading-6 font-medium'>
@@ -287,10 +284,7 @@ export const StatisticsView: FC<StatisticsViewProps> = ({ className }): JSX.Elem
                 className='mb-4'
                 title={t('Common.Coming soon') || ''}
               >
-                <FontAwesomeIcon
-                  icon={faDownload}
-                  className='h-4 w-4 mr-2 text-gray-500 dark:text-gray-400'
-                />
+                <FontAwesomeIcon icon={faDownload} className='h-4 w-4 mr-2' />
                 <span>{t('Queues.Download stats')}</span>
               </Button>
             </div>
@@ -321,7 +315,7 @@ export const StatisticsView: FC<StatisticsViewProps> = ({ className }): JSX.Elem
                   const queue = queuesStore.queues[key]
                   return (
                     <div key={index}>
-                      <li className='col-span-1 rounded-lg divide-y shadow divide-gray-200 bg-white text-gray-700 dark:divide-gray-700 dark:bg-gray-900 dark:text-gray-200'>
+                      <li className='col-span-1 rounded-lg divide-y shadow divide-gray-200 bg-cardBackgroud dark:bg-cardBackgroudDark text-gray-700 dark:divide-gray-700 dark:text-gray-200'>
                         {/* card header */}
                         <div className='flex justify-between items-center px-5 py-4 space-x-4'>
                           <div className='flex overflow-hidden items-center space-x-2'>

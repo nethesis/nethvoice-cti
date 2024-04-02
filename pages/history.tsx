@@ -606,7 +606,7 @@ const History: NextPage = () => {
                         <div className='overflow-y-auto scrollbar-thin scrollbar-thumb-gray-400 dark:scrollbar-thumb-gray-400 scrollbar-thumb-rounded-full scrollbar-thumb-opacity-50 scrollbar-track-gray-200 dark:scrollbar-track-gray-900 scrollbar-track-rounded-full scrollbar-track-opacity-25'>
                           <div className='max-h-[36rem]'>
                             <table className='min-w-full divide-y divide-gray-300 dark:divide-gray-700'>
-                              <thead className='sticky top-0 bg-white dark:bg-gray-900 z-[1]'>
+                              <thead className='sticky top-0 bg-white dark:bg-gray-950 z-[1]'>
                                 <tr>
                                   <th
                                     scope='col'
@@ -651,7 +651,7 @@ const History: NextPage = () => {
                                   </th>
                                 </tr>
                               </thead>
-                              <tbody className='divide-y divide-gray-200 dark:divide-gray-700 bg-white dark:bg-gray-900 text-gray-700 text-sm'>
+                              <tbody className='divide-y divide-gray-200 dark:divide-gray-700 bg-white dark:bg-gray-950 text-gray-700 text-sm'>
                                 {/* Not empty state  */}
                                 {isHistoryLoaded &&
                                   history?.rows &&
@@ -762,7 +762,7 @@ const History: NextPage = () => {
 
           {/* skeleton  */}
           {!isHistoryLoaded && (
-            <table className='min-w-full divide-y divide-gray-300 dark:divide-gray-700 bg-white dark:bg-gray-900 overflow-hidden rounded-lg'>
+            <table className='min-w-full divide-y divide-gray-300 dark:divide-gray-700 bg-white dark:bg-gray-950 overflow-hidden rounded-lg'>
               <thead>
                 <tr>
                   {Array.from(Array(6)).map((_, index) => (
@@ -793,7 +793,7 @@ const History: NextPage = () => {
           {/* pagination */}
           {totalPages > 1 && (
             <nav
-              className='flex items-center justify-between border-t px-0 py-4 border-gray-100 bg-gray-100 dark:border-gray-800 dark:bg-gray-800'
+              className='flex items-center justify-between border-t px-0 py-4 border-gray-100 bg-body dark:bg-bodyDark dark:border-gray-800 '
               aria-label='Pagination'
             >
               <div className='hidden sm:block'>

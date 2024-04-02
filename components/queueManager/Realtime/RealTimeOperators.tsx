@@ -168,7 +168,7 @@ export const RealTimeOperators: FC<RealTimeOperatorsProps> = ({
                 {/* empty state */}
                 {filteredAgentMembers.length === 0 && (
                   <EmptyState
-                    title={t('QueueManager.No agents') || ""}
+                    title={t('QueueManager.No agents') || ''}
                     description='There is no agent'
                     icon={
                       <FontAwesomeIcon
@@ -189,7 +189,7 @@ export const RealTimeOperators: FC<RealTimeOperatorsProps> = ({
                       <li key={index} className='px-1'>
                         <button
                           type='button'
-                          className='group flex w-full items-center justify-between space-x-3 rounded-lg p-2 text-left focus:outline-none focus:ring-2 focus:ring-offset-2 bg-white dark:bg-gray-900 cursor-default'
+                          className='group flex w-full items-center justify-between space-x-3 rounded-lg p-2 text-left focus:outline-none focus:ring-2 focus:ring-offset-2 bg-cardBackgroud dark:bg-cardBackgroudDark cursor-default'
                         >
                           <div className='flex min-w-0 flex-1 items-center space-x-3'>
                             <div className='block flex-shrink-0'>
@@ -234,7 +234,7 @@ export const RealTimeOperators: FC<RealTimeOperatorsProps> = ({
                         return (
                           <li
                             key={index}
-                            className={`col-span-1 rounded-md divide-y shadow divide-gray-200 bg-white dark:divide-gray-700 dark:bg-gray-900 ${
+                            className={`col-span-1 rounded-md divide-y shadow divide-gray-200 bg-cardBackgroud dark:bg-cardBackgroudDark dark:divide-gray-700 ${
                               isCardOpen ? 'h-full' : 'h-20'
                             }`}
                           >
@@ -287,7 +287,7 @@ export const RealTimeOperators: FC<RealTimeOperatorsProps> = ({
                                       (queue: any, queueIndex: number) => (
                                         <div
                                           key={queueIndex}
-                                          className='col-span-1 pt-2 divide-gray-200 bg-white text-gray-700 dark:divide-gray-700 dark:bg-gray-900 dark:text-gray-200 pb-4'
+                                          className='col-span-1 pt-2 divide-gray-200 text-gray-700 dark:divide-gray-700 dark:text-gray-200 pb-4'
                                         >
                                           {/* card header */}
                                           <div className='flex items-center justify-between py-3 px-4 bg-gray-100 dark:bg-gray-700 rounded-md'>
@@ -344,7 +344,7 @@ export const RealTimeOperators: FC<RealTimeOperatorsProps> = ({
 
                                           {/* Pause stats */}
                                           <div className='pt-4'>
-                                            <div className='col-span-1 divide-y divide-gray-200 bg-white text-gray-700 dark:divide-gray-700 dark:bg-gray-900 dark:text-gray-200'>
+                                            <div className='col-span-1 divide-y divide-gray-200 text-gray-700 dark:divide-gray-700 dark:text-gray-200'>
                                               {/* card header */}
                                               <div className='px-3 py-4'>
                                                 <h3 className='truncate text-base leading-6 font-medium flex items-center justify-start'>
@@ -391,7 +391,7 @@ export const RealTimeOperators: FC<RealTimeOperatorsProps> = ({
 
                                           {/* call stats */}
                                           <div className='pt-4'>
-                                            <div className='col-span-1 divide-y divide-gray-200 bg-white text-gray-700 dark:divide-gray-700 dark:bg-gray-900 dark:text-gray-200'>
+                                            <div className='col-span-1 divide-y divide-gray-200 text-gray-700 dark:divide-gray-700 dark:text-gray-200'>
                                               {/* card header */}
                                               <div className='px-3 py-4'>
                                                 <h3 className='truncate text-base leading-6 font-medium flex items-center justify-start'>

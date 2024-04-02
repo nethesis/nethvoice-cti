@@ -303,6 +303,7 @@ export const AnnouncementFilter = forwardRef<HTMLButtonElement, AnnouncementFilt
                 {/* Container for add announcement button  */}
                 <Dropdown
                   position='left'
+                  className='pb-6 sm:pb-0'
                   items={
                     <>
                       <Dropdown.Item onClick={recordingAnnouncement}>

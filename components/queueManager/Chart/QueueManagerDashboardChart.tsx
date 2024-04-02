@@ -411,7 +411,7 @@ export const QueueManagerDashboardChart: FC<QueueManagerDashboardChartProps> = (
             {t('QueueManager.Hourly distribution of incoming calls')}
           </h2>
 
-          <div className='border-b rounded-md shadow-md bg-white border-gray-200 dark:border-gray-700 dark:bg-gray-900 px-4 py-5 sm:px-6 mt-1 relative w-full min-h-full'>
+          <div className='border-b rounded-md shadow-md bg-cardBackgroud dark:bg-cardBackgroudDark border-gray-200 dark:border-gray-700 px-4 py-5 sm:px-6 mt-1 relative w-full min-h-full'>
             <div className='flex space-x-3 h-96'>
               <div className='min-w-0 flex-1 '>
                 {/* ... */}
@@ -446,7 +446,7 @@ export const QueueManagerDashboardChart: FC<QueueManagerDashboardChartProps> = (
             {t('QueueManager.Hourly distribution of call results')}
           </h2>
 
-          <div className='border-b rounded-md shadow-md bg-white border-gray-200 dark:border-gray-700 dark:bg-gray-900 px-4 py-5 sm:px-6 mt-1 relative w-full h-full'>
+          <div className='border-b rounded-md shadow-md bg-cardBackgroud dark:bg-cardBackgroudDark border-gray-200 dark:border-gray-700 px-4 py-5 sm:px-6 mt-1 relative w-full h-full'>
             <div className='flex space-x-3 h-96'>
               <div className='flex-1 w-full'>
                 {/* ... */}
@@ -477,7 +477,7 @@ export const QueueManagerDashboardChart: FC<QueueManagerDashboardChartProps> = (
             {t('QueueManager.Hourly distribution of calls answered')}
           </h2>
 
-          <div className='border-b rounded-md shadow-md bg-white border-gray-200 dark:border-gray-700 dark:bg-gray-900 px-4 py-5 sm:px-6 mt-1 relative w-full h-full'>
+          <div className='border-b rounded-md shadow-md bg-cardBackgroud dark:bg-cardBackgroudDark border-gray-200 dark:border-gray-700 px-4 py-5 sm:px-6 mt-1 relative w-full h-full'>
             <div className='flex space-x-3 h-96'>
               <div className='min-w-0 flex-1 '>
                 {/* ... */}
@@ -508,7 +508,7 @@ export const QueueManagerDashboardChart: FC<QueueManagerDashboardChartProps> = (
           <h2 className='text-base ml-4 font-semibold mb-4'>
             {t('QueueManager.Hourly distribution of not answered calls')}
           </h2>
-          <div className='border-b rounded-md shadow-md bg-white border-gray-200 dark:border-gray-700 dark:bg-gray-900 px-4 py-5 sm:px-6 mt-1 relative w-full h-full'>
+          <div className='border-b rounded-md shadow-md bg-cardBackgroud dark:bg-cardBackgroudDark border-gray-200 dark:border-gray-700 px-4 py-5 sm:px-6 mt-1 relative w-full h-full'>
             <div className='flex space-x-3 h-96'>
               <div className='min-w-0 flex-1 '>
                 {/* ... */}
