@@ -139,6 +139,14 @@ export function getTimezone() {
   return `${window.CONFIG.TIMEZONE || 'UTC'}`
 }
 
+export function getNumericTimezone() {
+  if (typeof window === 'undefined') {
+    return ''
+  }
+  // @ts-ignore
+  return `${window.CONFIG.NUMERIC_TIMEZONE || '+0100'}`
+}
+
 export function getApiEndpoint() {
   if (typeof window === 'undefined') {
     return ''
