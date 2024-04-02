@@ -12,7 +12,7 @@ window.CONFIG = {
   COMPANY_SUBNAME: '${COMPANY_SUBNAME:=CTI}',
   COMPANY_URL: '${COMPANY_URL:=https://www.nethesis.it/}',
   NUMERIC_TIMEZONE: '$(date +'%z')',
-  TIMEZONE: '$TIMEZONE',
+  TIMEZONE: '${TIMEZONE:=UTC}',
 EOF
 
 if [ -z $API_ENDPOINT ]; then
