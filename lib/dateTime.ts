@@ -147,7 +147,10 @@ export const exactDistanceToNowLoc = (date: any, options: any = {}) => {
 }
 
 export const getTimeDifference = (isInQueue: boolean) => {
-  const serverTimeZone: any = getTimezone()
+  let serverTimeZone: any = getTimezone()
+  if (serverTimeZone !== '' && serverTimeZone === 'CEST') {
+    serverTimeZone = 'Europe/Rome'
+  }
   const localTimeZone: any = Intl.DateTimeFormat().resolvedOptions().timeZone
 
   const timeDataServer = { date: new Date(), timezone: serverTimeZone }
