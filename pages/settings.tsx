@@ -138,7 +138,7 @@ const Settings: NextPage = () => {
     }
     store.dispatch.notifications.addNotification({
       notification: notif,
-      currentUsername: authStore.username,
+      currentUsername: authStore?.username,
     })
   }
 
@@ -149,7 +149,7 @@ const Settings: NextPage = () => {
           <h1 className='text-2xl font-semibold mb-6 text-title dark:text-titleDark'>
             {t('Settings.Settings')}
           </h1>
-          <div className='overflow-hidden rounded-lg bg-white shadow dark:bg-gray-900'>
+          <div className='overflow-hidden rounded-lg bg-white dark:bg-gray-950 shadow '>
             <div className='divide-y divide-gray-200 dark:divide-gray-700 lg:grid lg:grid-cols-12 lg:divide-y-0 lg:divide-x'>
               {/* settings menu */}
               <aside className='py-6 lg:col-span-3'>
@@ -160,24 +160,19 @@ const Settings: NextPage = () => {
                       onClick={() => changeSection(item?.name)}
                       className={classNames(
                         item?.current
-                          ? 'text-grey-900 bg-gray-100 dark:bg-gray-800 dark:text-gray-50 border-l-4 border-primary dark:border-primaryDark'
-                          : 'text-gray-600 dark:text-gray-300 hover:text-gray-900 hover:bg-gray-100 dark:hover:bg-gray-800 dark:hover:text-gray-50',
+                          ? 'text-gray-900 bg-gray-100 dark:bg-gray-800 dark:text-gray-50 border-l-4 border-primary dark:border-primaryDark'
+                          : 'text-gray-600 dark:text-gray-100 hover:text-gray-900 hover:bg-gray-100 dark:hover:bg-gray-800 dark:hover:text-gray-50',
                         (item?.name === 'Mobile App' || item?.name === 'Integrations') &&
                           (profile?.lkhash === undefined || profile?.lkhash === '')
                           ? 'hidden'
                           : '',
                         'group rounded-md flex items-center text-sm font-medium justify-start space-x-2 w-74 mx-4 h-[3rem] cursor-pointer',
                       )}
-                      aria-current={item.current ? 'page' : undefined}
+                      aria-current={item?.current ? 'page' : undefined}
                     >
                       <FontAwesomeIcon
                         icon={item?.icon}
-                        className={classNames(
-                          item?.current
-                            ? 'ml-3 text-gray-900 dark:text-gray-100'
-                            : 'ml-4 text-gray-700 dark:text-gray-300',
-                          'h-4 w-4',
-                        )}
+                        className={classNames(item?.current ? 'ml-3' : 'ml-4', 'h-4 w-4')}
                         aria-hidden='true'
                       />
                       <span className='truncate leading-5 font-normal text-sm'>

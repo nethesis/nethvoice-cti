@@ -64,7 +64,7 @@ export const Queues = () => {
     <>
       <section aria-labelledby='clear-cache-heading'>
         <div className='sm:overflow-hidden w-full dark:bg-gray-900'>
-          <div className='bg-white py-6 px-4 sm:p-6 w-full dark:bg-gray-900'>
+          <div className='bg-cardBackgroud dark:bg-cardBackgroudDark py-6 px-4 sm:p-6 w-full '>
             <div>
               <label className='text-base font-semibold text-gray-900 dark:text-gray-200'>
                 {t('Settings.Queues')}

@@ -130,7 +130,7 @@ export async function getDevicesPinStatusForDevice() {
 
 export const tableHeader = () => {
   return (
-    <thead className='bg-gray-50 dark:bg-gray-800'>
+    <thead className='bg-gray-100 dark:bg-gray-800'>
       <tr>
         <th scope='col' className='py-3.5 pl-4 pr-3 text-left text-sm font-semibold sm:pl-6'>
           {t('Devices.Device name')}

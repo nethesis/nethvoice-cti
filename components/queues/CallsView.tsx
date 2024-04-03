@@ -195,7 +195,7 @@ export const CallsView: FC<CallsViewProps> = ({ className }): JSX.Element => {
           <div className='flex flex-col'>
             <div className='-my-2 -mx-4 overflow-x-auto sm:-mx-6 lg:-mx-8'>
               <div className='inline-block min-w-full py-2 align-middle px-2 md:px-6 lg:px-8'>
-                <div className='overflow-hidden shadow ring-1 md:rounded-lg ring-opacity-5 dark:ring-opacity-5 ring-gray-900 dark:ring-gray-100'>
+                <div className='overflow-hidden shadow ring-1 md:rounded-lg ring-opacity-5 dark:ring-opacity-5 ring-gray-900 dark:ring-gray-100 border-[1px] border-solid rounded-xl dark:border-gray-600'>
                   {/* empty state */}
                   {isCallsLoaded && isEmpty(calls?.rows) && (
                     <EmptyState
@@ -215,7 +215,7 @@ export const CallsView: FC<CallsViewProps> = ({ className }): JSX.Element => {
                     <div className='overflow-y-auto scrollbar-thin scrollbar-thumb-gray-400 dark:scrollbar-thumb-gray-400 scrollbar-thumb-rounded-full scrollbar-thumb-opacity-50 scrollbar-track-gray-200 dark:scrollbar-track-gray-900 scrollbar-track-rounded-full scrollbar-track-opacity-25'>
                       <div className='max-h-[32rem]'>
                         <table className='min-w-full divide-y divide-gray-300 dark:divide-gray-600'>
-                          <thead className='sticky top-0 bg-white dark:bg-gray-950 z-[1]'>
+                          <thead className='sticky top-0 bg-gray-100 dark:bg-gray-800 z-[1]'>
                             <tr>
                               <th
                                 scope='col'
@@ -252,7 +252,7 @@ export const CallsView: FC<CallsViewProps> = ({ className }): JSX.Element => {
                               </th>
                             </tr>
                           </thead>
-                          <tbody className=' text-sm divide-y divide-gray-200 bg-white dark:bg-gray-950 text-gray-700 dark:divide-gray-700 dark:text-gray-200'>
+                          <tbody className='text-sm bg-white dark:bg-gray-950 text-gray-700  dark:text-gray-200'>
                             {/* skeleton */}
                             {!isCallsLoaded &&
                               Array.from(Array(5)).map((e, i) => (
@@ -271,18 +271,34 @@ export const CallsView: FC<CallsViewProps> = ({ className }): JSX.Element => {
                               calls?.rows?.map((call: any, index: number) => (
                                 <tr key={index}>
                                   {/* time */}
-                                  <td className='whitespace-nowrap py-4 pl-4 pr-3 sm:pl-6'>
+                                  <td className='whitespace-nowrap py-4 pl-4 pr-3 sm:pl-6 relative'>
                                     <CallsDate call={call} isInQueue={true} />
+                                    {/* row divider  */}
+                                    {index !== 0 ? (
+                                      <div className='absolute -top-[0.03rem] left-6 right-0 h-px bg-gray-300 dark:bg-gray-600' />
+                                    ) : null}
                                   </td>
                                   {/* queue */}
-                                  <td className='px-3 py-4'>
+                                  <td
+                                    className={`${
+                                      index === 0
+                                        ? ''
+                                        : 'border-t border-gray-300 dark:border-gray-600'
+                                    } py-4 px-3 relative`}
+                                  >
                                     <div>{call?.queueName}</div>
                                     <div className='text-gray-500 dark:text-gray-500'>
                                       {call?.queueId}
                                     </div>
                                   </td>
                                   {/* name / number */}
-                                  <td className='px-3 py-4'>
+                                  <td
+                                    className={`${
+                                      index === 0
+                                        ? ''
+                                        : 'border-t border-gray-300 dark:border-gray-600'
+                                    } py-4 px-3 relative`}
+                                  >
                                     {call?.name && (
                                       <div
                                         onClick={() =>
@@ -312,9 +328,23 @@ export const CallsView: FC<CallsViewProps> = ({ className }): JSX.Element => {
                                     </div>
                                   </td>
                                   {/* company */}
-                                  <td className='px-3 py-4'>{call?.company || '-'}</td>
+                                  <td
+                                    className={`${
+                                      index === 0
+                                        ? ''
+                                        : 'border-t border-gray-300 dark:border-gray-600'
+                                    } py-4 px-3 relative`}
+                                  >
+                                    {call?.company || '-'}
+                                  </td>
                                   {/* outcome */}
-                                  <td className='whitespace-nowrap px-3 py-4'>
+                                  <td
+                                    className={`${
+                                      index === 0
+                                        ? ''
+                                        : 'border-t border-gray-300 dark:border-gray-600'
+                                    } whitespace-nowrap py-4 px-3 relative`}
+                                  >
                                     <div className='flex items-center'>
                                       <span>{getCallIcon(call)}</span>
                                       <span>{t(`Queues.outcome_${call?.event}`)}</span>
@@ -330,6 +360,9 @@ export const CallsView: FC<CallsViewProps> = ({ className }): JSX.Element => {
                                         openShowQueueCallDrawer(call, queuesStore?.queues)
                                       }
                                     />
+                                    {index !== 0 ? (
+                                      <div className='absolute -top-[0.03rem] left-0 right-6 h-px bg-gray-300 dark:bg-gray-600' />
+                                    ) : null}
                                   </td>
                                 </tr>
                               ))}

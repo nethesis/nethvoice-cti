@@ -260,7 +260,7 @@ export const NotManagedCalls: FC<NotManagedCallsProps> = ({ className }): JSX.El
           <div className='flex flex-col overflow-hidden'>
             <div className='-my-2 -mx-4 overflow-x-auto sm:-mx-6 lg:-mx-8'>
               <div className='inline-block min-w-full py-2 align-middle px-2 md:px-6 lg:px-8'>
-                <div className='overflow-hidden shadow ring-1 md:rounded-lg ring-opacity-5 dark:ring-opacity-5 ring-gray-900 dark:ring-gray-100'>
+                <div className='overflow-hidden shadow ring-1 md:rounded-lg ring-opacity-5 dark:ring-opacity-5 ring-gray-900 dark:ring-gray-100 border-[1px] border-solid rounded-xl dark:border-gray-600'>
                   {/* empty state */}
                   {isCallsLoaded && isEmpty(calls.rows) && (
                     <EmptyState
@@ -277,125 +277,165 @@ export const NotManagedCalls: FC<NotManagedCallsProps> = ({ className }): JSX.El
                     ></EmptyState>
                   )}
                   {(!isCallsLoaded || !isEmpty(calls.rows)) && (
-                    <table className='min-w-full divide-y divide-gray-300 dark:divide-gray-600'>
-                      <thead className='bg-white dark:bg-gray-950'>
-                        <tr>
-                          <th
-                            scope='col'
-                            className='py-3.5 pl-4 pr-3 text-left text-sm font-semibold sm:pl-6 text-gray-700 dark:text-gray-200'
-                          >
-                            {t('Queues.Time')}
-                          </th>
-                          <th
-                            scope='col'
-                            className='px-3 py-3.5 text-left text-sm font-semibold text-gray-700 dark:text-gray-200'
-                          >
-                            {t('Queues.Queue')}
-                          </th>
-                          <th
-                            scope='col'
-                            className='px-3 py-3.5 text-left text-sm font-semibold text-gray-700 dark:text-gray-200'
-                          >
-                            {t('Queues.Name')}
-                          </th>
-                          <th
-                            scope='col'
-                            className='px-3 py-3.5 text-left text-sm font-semibold text-gray-700 dark:text-gray-200'
-                          >
-                            {t('Queues.Company')}
-                          </th>
-                          <th
-                            scope='col'
-                            className='px-3 py-3.5 text-left text-sm font-semibold text-gray-700 dark:text-gray-200'
-                          >
-                            {t('Queues.Outcome')}
-                          </th>
-                          <th scope='col' className='relative py-3.5 pl-3 pr-4 sm:pr-6'>
-                            <span className='sr-only'>{t('Queues.Details')}</span>
-                          </th>
-                        </tr>
-                      </thead>
-                      <tbody className=' text-sm divide-y divide-gray-200 bg-white dark:bg-gray-950 text-gray-700 dark:divide-gray-700 dark:text-gray-200'>
-                        {/* skeleton */}
-                        {!isCallsLoaded &&
-                          Array.from(Array(5)).map((e, i) => (
-                            <tr key={i}>
-                              {Array.from(Array(6)).map((e, j) => (
-                                <td key={j}>
-                                  <div className='px-4 py-6'>
-                                    <div className='animate-pulse h-5 rounded bg-gray-300 dark:bg-gray-600'></div>
-                                  </div>
-                                </td>
-                              ))}
+                    <div className='overflow-y-auto scrollbar-thin scrollbar-thumb-gray-400 dark:scrollbar-thumb-gray-400 scrollbar-thumb-rounded-full scrollbar-thumb-opacity-50 scrollbar-track-gray-200 dark:scrollbar-track-gray-900 scrollbar-track-rounded-full scrollbar-track-opacity-25'>
+                      <div className='max-h-[32rem]'>
+                        <table className='min-w-full divide-y divide-gray-300 dark:divide-gray-600'>
+                          <thead className='sticky top-0 bg-gray-100 dark:bg-gray-800 z-[1]'>
+                            <tr>
+                              <th
+                                scope='col'
+                                className='py-3.5 pl-4 pr-3 text-left text-sm font-semibold sm:pl-6 text-gray-700 dark:text-gray-200'
+                              >
+                                {t('Queues.Time')}
+                              </th>
+                              <th
+                                scope='col'
+                                className='px-3 py-3.5 text-left text-sm font-semibold text-gray-700 dark:text-gray-200'
+                              >
+                                {t('Queues.Queue')}
+                              </th>
+                              <th
+                                scope='col'
+                                className='px-3 py-3.5 text-left text-sm font-semibold text-gray-700 dark:text-gray-200'
+                              >
+                                {t('Queues.Name')}
+                              </th>
+                              <th
+                                scope='col'
+                                className='px-3 py-3.5 text-left text-sm font-semibold text-gray-700 dark:text-gray-200'
+                              >
+                                {t('Queues.Company')}
+                              </th>
+                              <th
+                                scope='col'
+                                className='px-3 py-3.5 text-left text-sm font-semibold text-gray-700 dark:text-gray-200'
+                              >
+                                {t('Queues.Outcome')}
+                              </th>
+                              <th scope='col' className='relative py-3.5 pl-3 pr-4 sm:pr-6'>
+                                <span className='sr-only'>{t('Queues.Details')}</span>
+                              </th>
                             </tr>
-                          ))}
-                        {/* calls */}
-                        {isCallsLoaded &&
-                          calls?.rows?.map((call: any, index: number) => (
-                            <tr key={index}>
-                              {/* time */}
-                              <td className='whitespace-nowrap py-4 pl-4 pr-3 sm:pl-6'>
-                                <CallsDate call={call} isInQueue={true} />
-                              </td>
-                              {/* queue */}
-                              <td className='px-3 py-4'>
-                                <div>{call.queueName}</div>
-                                <div className='text-gray-500 dark:text-gray-500'>
-                                  {call.queueId}
-                                </div>
-                              </td>
-                              {/* name / number */}
-                              <td className='px-3 py-4'>
-                                {call.name && (
-                                  <div
-                                    onClick={() =>
-                                      openShowQueueCallDrawer(call, queueManagerStore.queues)
-                                    }
+                          </thead>
+                          <tbody className='text-sm bg-white dark:bg-gray-950 text-gray-700  dark:text-gray-200'>
+                            {/* skeleton */}
+                            {!isCallsLoaded &&
+                              Array.from(Array(5)).map((e, i) => (
+                                <tr key={i}>
+                                  {Array.from(Array(6)).map((e, j) => (
+                                    <td key={j}>
+                                      <div className='px-4 py-6'>
+                                        <div className='animate-pulse h-5 rounded bg-gray-300 dark:bg-gray-600'></div>
+                                      </div>
+                                    </td>
+                                  ))}
+                                </tr>
+                              ))}
+                            {/* calls */}
+                            {isCallsLoaded &&
+                              calls?.rows?.map((call: any, index: number) => (
+                                <tr key={index}>
+                                  {/* time */}
+                                  <td className='whitespace-nowrap py-4 pl-4 pr-3 sm:pl-6 relative'>
+                                    <CallsDate call={call} isInQueue={true} />
+                                    {/* row divider  */}
+                                    {index !== 0 ? (
+                                      <div className='absolute -top-[0.03rem] left-6 right-0 h-px bg-gray-300 dark:bg-gray-600' />
+                                    ) : null}
+                                  </td>
+                                  {/* queue */}
+                                  <td
+                                    className={`${
+                                      index === 0
+                                        ? ''
+                                        : 'border-t border-gray-300 dark:border-gray-600'
+                                    } py-4 px-3 relative`}
                                   >
-                                    <span
+                                    {' '}
+                                    <div>{call.queueName}</div>
+                                    <div className='text-gray-500 dark:text-gray-500'>
+                                      {call.queueId}
+                                    </div>
+                                  </td>
+                                  {/* name / number */}
+                                  <td
+                                    className={`${
+                                      index === 0
+                                        ? ''
+                                        : 'border-t border-gray-300 dark:border-gray-600'
+                                    } py-4 px-3 relative`}
+                                  >
+                                    {call.name && (
+                                      <div
+                                        onClick={() =>
+                                          openShowQueueCallDrawer(call, queueManagerStore.queues)
+                                        }
+                                      >
+                                        <span
+                                          className={classNames(
+                                            call.cid && 'cursor-pointer hover:underline',
+                                          )}
+                                        >
+                                          {call.name}
+                                        </span>
+                                      </div>
+                                    )}
+                                    <div
+                                      onClick={() =>
+                                        openShowQueueCallDrawer(call, queueManagerStore.queues)
+                                      }
                                       className={classNames(
-                                        call.cid && 'cursor-pointer hover:underline',
+                                        call.name && 'text-gray-500 dark:text-gray-500',
                                       )}
                                     >
-                                      {call.name}
-                                    </span>
-                                  </div>
-                                )}
-                                <div
-                                  onClick={() =>
-                                    openShowQueueCallDrawer(call, queueManagerStore.queues)
-                                  }
-                                  className={classNames(
-                                    call.name && 'text-gray-500 dark:text-gray-500',
-                                  )}
-                                >
-                                  <span className='cursor-pointer hover:underline'>{call.cid}</span>
-                                </div>
-                              </td>
-                              {/* company */}
-                              <td className='px-3 py-4'>{call.company || '-'}</td>
-                              {/* outcome */}
-                              <td className='whitespace-nowrap px-3 py-4'>
-                                <div className='flex items-center'>
-                                  <span>{getCallIcon(call)}</span>
-                                  <span>{t(`Queues.outcome_${call.event}`)}</span>
-                                </div>
-                              </td>
-                              {/* show details */}
-                              <td className='relative whitespace-nowrap py-4 pl-3 pr-4 text-right text-sm font-medium sm:pr-6'>
-                                <FontAwesomeIcon
-                                  icon={faChevronRight}
-                                  className='h-3 w-3 p-2 cursor-pointer text-gray-500 dark:text-gray-500'
-                                  aria-hidden='true'
-                                  onClick={() =>
-                                    openShowQueueCallDrawer(call, queueManagerStore.queues)
-                                  }
-                                />
-                              </td>
-                            </tr>
-                          ))}
-                      </tbody>
-                    </table>
+                                      <span className='cursor-pointer hover:underline'>
+                                        {call.cid}
+                                      </span>
+                                    </div>
+                                  </td>
+                                  {/* company */}
+                                  <td
+                                    className={`${
+                                      index === 0
+                                        ? ''
+                                        : 'border-t border-gray-300 dark:border-gray-600'
+                                    } py-4 px-3 relative`}
+                                  >
+                                    {call.company || '-'}
+                                  </td>
+                                  {/* outcome */}
+                                  <td
+                                    className={`${
+                                      index === 0
+                                        ? ''
+                                        : 'border-t border-gray-300 dark:border-gray-600'
+                                    } whitespace-nowrap py-4 px-3 relative`}
+                                  >
+                                    <div className='flex items-center'>
+                                      <span>{getCallIcon(call)}</span>
+                                      <span>{t(`Queues.outcome_${call.event}`)}</span>
+                                    </div>
+                                  </td>
+                                  {/* show details */}
+                                  <td className='relative whitespace-nowrap py-4 pl-3 pr-4 text-right text-sm font-medium sm:pr-6'>
+                                    <FontAwesomeIcon
+                                      icon={faChevronRight}
+                                      className='h-3 w-3 p-2 cursor-pointer text-gray-500 dark:text-gray-500'
+                                      aria-hidden='true'
+                                      onClick={() =>
+                                        openShowQueueCallDrawer(call, queueManagerStore.queues)
+                                      }
+                                    />
+                                    {index !== 0 ? (
+                                      <div className='absolute -top-[0.03rem] left-0 right-6 h-px bg-gray-300 dark:bg-gray-600' />
+                                    ) : null}
+                                  </td>
+                                </tr>
+                              ))}
+                          </tbody>
+                        </table>
+                      </div>
+                    </div>
                   )}
                 </div>
               </div>

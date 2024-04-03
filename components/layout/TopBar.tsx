@@ -398,13 +398,13 @@ export const TopBar: FC<TopBarProps> = ({ openMobileCb }) => {
                               <p className='text-sm'>{t('Devices.Web phone')}</p>
                             )}
                             {device?.type === 'physical' && (
-                              <p className='flex text-sm font-medium max-w-[6rem] line-clamp-2'>
-                                {device?.description}
+                              <p className='truncate flex text-sm font-medium max-w-[6rem] line-clamp-2'>
+                                {device?.description || t('Devices.IP phone')}
                               </p>
                             )}
                             {device?.type === 'nethlink' && (
-                              <p className='flex text-sm font-medium max-w-[6rem] line-clamp-2'>
-                                {device?.description}
+                              <p className='flex text-sm font-medium line-clamp-2'>
+                                {t('Devices.PhoneLink')}
                               </p>
                             )}
                           </div>
