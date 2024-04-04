@@ -15,7 +15,7 @@ window.CONFIG = {
   TIMEZONE: '${TIMEZONE:=UTC}',
 EOF
 
-if [ -z $VOICE_ENDPOINT ]; then
+if [ -z $NETHVOICE_HOST ]; then
 	cat >> /app/public/config/config.production.js<<EOF
   VOICE_ENDPOINT:
     window.location.hostname +
