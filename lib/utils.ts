@@ -163,6 +163,15 @@ export function getApiScheme() {
   return `${window.CONFIG.API_SCHEME}`
 }
 
+export function getApiVoiceEndpoint() {
+  if (typeof window === 'undefined') {
+    return ''
+  }
+  // @ts-ignore
+  return `${window.CONFIG.VOICE_ENDPOINT}`
+}
+
+
 /**
  * Returns true if the device used by the user is using a mobile device. Useful to check if the user is using a touch screen, for example to disable hover features
  */

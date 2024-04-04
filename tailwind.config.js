@@ -33,6 +33,11 @@ module.exports = {
         primaryDarkHover: '#6ee7b7', // emerald-300
         primaryRingDark: '#a7f3d0', // emerald-200
 
+        //primaryIndigo
+        primaryIndigo: '#3730a3', // indigo-800
+        //primaryIndigo dark
+        primaryIndigoDark: '#a5b4fc', // indigo-300
+
         //text
         textLight: '#374151', // gray-700
         //text dark

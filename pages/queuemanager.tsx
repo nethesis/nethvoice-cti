@@ -18,7 +18,7 @@ import { getSelectedTabQueueManager } from '../lib/queueManager'
 import { Button } from '../components/common'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { faArrowUpRightFromSquare, faExclamationTriangle } from '@fortawesome/free-solid-svg-icons'
-import { getApiEndpoint } from '../lib/utils'
+import { getApiEndpoint, getApiVoiceEndpoint } from '../lib/utils'
 import { getApiScheme } from '../lib/utils'
 import { useRouter } from 'next/router'
 import { MissingPermission } from '../components/common/MissingPermissionsPage'
@@ -32,9 +32,9 @@ interface tabsType {
 const QueueManager: NextPage = () => {
   const { t } = useTranslation()
 
-  const apiEnpoint = getApiEndpoint()
+  const apiVoiceEnpoint = getApiVoiceEndpoint()
   const apiScheme = getApiScheme()
-  const pbxReportUrl = apiScheme + apiEnpoint + '/pbx-report/'
+  const pbxReportUrl = apiScheme + apiVoiceEnpoint + '/pbx-report/'
 
   const auth = useSelector((state: RootState) => state.authentication)
   const router = useRouter()

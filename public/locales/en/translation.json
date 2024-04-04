@@ -835,7 +835,9 @@
     "Not configured": "Not configured",
     "IP phone": "IP phone",
     "Key type select": "Key type select",
-    "Download App": "Download App"
+    "Download App": "Download App",
+    "Speaker": "Speaker",
+    "Microphone": "Microphone"
   },
   "DropdownContent": {
     "Microphones": "MICROPHONES",

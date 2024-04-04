@@ -810,7 +810,9 @@
     "Not configured": "Non configurato",
     "IP phone": "Telefono IP",
     "key type select": "Seleziona il tipo di tasto",
-    "Download App": "Scarica App"
+    "Download App": "Scarica App",
+    "Speaker": "Altoparlante",
+    "Microphone": "Microfono"
   },
   "DropdownContent": {
     "Microphones": "MICROFONI",

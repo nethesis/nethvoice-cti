@@ -111,7 +111,7 @@ export const MonitorTables: FC<MonitorTablesProps> = ({
                         <div className='flex items-center'>
                           <div className='relative'>
                             <Listbox.Button
-                              className={`relative  cursor-default rounded-md py-1.5 pr-10 text-left text-gray-900 dark:text-gray-100 focus:outline-none sm:text-sm sm:leading-6 ${
+                              className={`relative  cursor-default rounded-md py-1.5 pr-10 text-left text-gray-950 dark:text-gray-300 focus:outline-none sm:text-sm sm:leading-6 ${
                                 isFullscreen ? 'w-96' : 'w-48'
                               }  `}
                             >
@@ -362,7 +362,7 @@ export const MonitorTables: FC<MonitorTablesProps> = ({
                               </Listbox.Label> */}
                             <div className='relative'>
                               <Listbox.Button
-                                className={`relative  cursor-default rounded-md py-1.5 pr-10 text-left text-gray-900 dark:text-gray-100 focus:outline-none sm:text-sm sm:leading-6 ${
+                                className={`relative  cursor-default rounded-md py-1.5 pr-10 text-left text-gray-950 dark:text-gray-300 focus:outline-none sm:text-sm sm:leading-6 ${
                                   isFullscreen ? 'w-96' : 'w-48'
                                 }  `}
                               >

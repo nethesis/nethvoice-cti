@@ -13,7 +13,7 @@ import {
   faArrowUpRightFromSquare,
 } from '@fortawesome/free-solid-svg-icons'
 import { Button } from '../components/common'
-import { getApiEndpoint } from '../lib/utils'
+import { getApiEndpoint, getApiVoiceEndpoint } from '../lib/utils'
 import { getApiScheme } from '../lib/utils'
 import Link from 'next/link'
 import { useSelector } from 'react-redux'
@@ -21,9 +21,9 @@ import { RootState } from '../store'
 
 const Applications: NextPage = () => {
   const { t } = useTranslation()
-  const apiEnpoint = getApiEndpoint()
+  const apiVoiceEnpoint = getApiVoiceEndpoint()
   const apiScheme = getApiScheme()
-  const pbxReportUrl = apiScheme + apiEnpoint + '/pbx-report/'
+  const pbxReportUrl = apiScheme + apiVoiceEnpoint + '/pbx-report/'
   const { profile } = useSelector((state: RootState) => state.user)
 
   return (
