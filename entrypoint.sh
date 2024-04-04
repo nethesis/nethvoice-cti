@@ -12,8 +12,21 @@ window.CONFIG = {
   COMPANY_SUBNAME: '${COMPANY_SUBNAME:=CTI}',
   COMPANY_URL: '${COMPANY_URL:=https://www.nethesis.it/}',
   NUMERIC_TIMEZONE: '$(date +'%z')',
-  TIMEZONE: '$(date +'%Z')',
+  TIMEZONE: '${TIMEZONE:=UTC}',
 EOF
+
+if [ -z $VOICE_ENDPOINT ]; then
+	cat >> /app/public/config/config.production.js<<EOF
+  VOICE_ENDPOINT:
+    window.location.hostname +
+    (window.location.port ? ':' + window.location.port : '') +
+    window.location.pathname,
+EOF
+else
+	cat >> /app/public/config/config.production.js<<EOF
+  VOICE_ENDPOINT: '$VOICE_ENDPOINT',
+EOF
+fi
 
 if [ -z $API_ENDPOINT ]; then
 	cat >> /app/public/config/config.production.js<<EOF
