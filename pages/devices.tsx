@@ -10,9 +10,9 @@ import { RootState } from '../store'
 import {
   faArrowUpFromBracket,
   faAward,
+  faCircleArrowDown,
   faCircleCheck,
   faCircleXmark,
-  faDownload,
   faEllipsisVertical,
   faPenToSquare,
 } from '@fortawesome/free-solid-svg-icons'
@@ -25,8 +25,9 @@ import {
   openShowSwitchAudioInput,
   tableHeader,
   titleTable,
+  getDownloadLink,
 } from '../lib/devices'
-import { Badge, Dropdown } from '../components/common'
+import { Badge, Button, Dropdown } from '../components/common'
 import { useDispatch } from 'react-redux'
 import { Dispatch } from '../store'
 import { eventDispatch } from '../lib/hooks/eventDispatch'
@@ -58,25 +59,101 @@ const Devices: NextPage = () => {
     }
   }, [profile?.endpoints])
 
+  const [updatedDownloadLink, setUpdatedDownloadLink]: any = useState()
+  const [currentOS, setCurrentOS] = useState('')
+
+  const [firstRenderDownload, setFirstRenderDownload] = useState(true)
+  const [getDownloadUrlError, setGetDownloadUrlError] = useState('')
+
+  useEffect(() => {
+    if (firstRenderDownload) {
+      setFirstRenderDownload(false)
+      return
+    }
+    const userAgent = navigator.userAgent.toLowerCase()
+    if (userAgent.includes('win')) {
+      setCurrentOS('windows')
+    } else if (userAgent.includes('mac')) {
+      setCurrentOS('mac')
+    } else if (userAgent.includes('linux')) {
+      setCurrentOS('linux')
+    }
+
+    const initUrlDownload = async () => {
+      if (profile?.lkhash !== undefined && phoneLinkData?.length !== 0) {
+        try {
+          setGetDownloadUrlError('')
+          const response = await getDownloadLink()
+          const downloadUrls = response.assets
+            .filter(
+              (asset: any) =>
+                asset?.content_type === 'application/octet-stream' &&
+                !asset.browser_download_url.endsWith('.blockmap'),
+            )
+            .map((asset: any) => {
+              const url = asset.browser_download_url
+              if (url.includes('setup.exe')) {
+                return { windowsUrl: url }
+              } else if (url.includes('.AppImage')) {
+                return { linuxUrl: url }
+              } else if (url.includes('.dmg')) {
+                return { macUrl: url }
+              } else {
+                return null
+              }
+            })
+            .filter((download: any) => download !== null)
+
+          if (downloadUrls?.length > 0) {
+            setUpdatedDownloadLink(downloadUrls)
+          }
+        } catch (error) {
+          setGetDownloadUrlError('Cannot retrieve download url')
+        }
+      }
+    }
+    initUrlDownload()
+  }, [firstRenderDownload, profile?.lkhash, phoneLinkData])
+
+  const handleDownload = (url: any) => {
+    window.open(url?.linuxUrl || url?.macUrl || url?.windowsUrl, '_blank')
+  }
+
+  const [selectedLink, setSelectedLink] = useState('')
+  useEffect(() => {
+    if (
+      updatedDownloadLink &&
+      currentOS &&
+      profile?.lkhash !== undefined &&
+      phoneLinkData?.length !== 0
+    ) {
+      setSelectedLink(
+        updatedDownloadLink?.find((link: any) => link.hasOwnProperty(currentOS + 'Url')),
+      )
+    }
+  }, [updatedDownloadLink, currentOS, phoneLinkData, profile?.lkhash])
+
   let phoneLinkDownloadComponent = (isInDropwdown: boolean) => {
-    const downloadLink = ''
     return (
       <div className='text-right'>
-        <a
-          href={downloadLink}
-          download='phoneLink.bin'
-          className={`${
-            isInDropwdown ? '' : 'hover:underline dark:hover:text-primaryDark hover:text-primary'
-          } `}
-        >
-          {!isInDropwdown && (
-            <FontAwesomeIcon
-              icon={faDownload}
-              className='mr-2 h-4 w-4 text-primary dark:text-primaryDark'
-            />
-          )}
-          {t('Devices.Download PhoneLink')}
-        </a>
+        {!isInDropwdown ? (
+          <Button variant='ghost' onClick={() => handleDownload(selectedLink)}>
+            <FontAwesomeIcon icon={faCircleArrowDown} className='mr-2 h-4 w-4' />
+            {t('Devices.Download App')}
+          </Button>
+        ) : (
+          <a
+            href='#'
+            target='_blank'
+            rel='noreferrer'
+            onClick={(e) => {
+              e.preventDefault()
+              handleDownload(selectedLink)
+            }}
+          >
+            {t('Devices.Download App')}
+          </a>
+        )}
       </div>
     )
   }
@@ -115,7 +192,7 @@ const Devices: NextPage = () => {
         <></>
       )}
       {isPhoneLinkSection && (
-        <Dropdown.Item icon={faDownload}>{phoneLinkDownloadComponent(true)}</Dropdown.Item>
+        <Dropdown.Item icon={faCircleArrowDown}>{phoneLinkDownloadComponent(true)}</Dropdown.Item>
       )}
     </>
   )
@@ -206,7 +283,7 @@ const Devices: NextPage = () => {
               <div className='inline-block min-w-full py-2 align-middle sm:px-6 lg:px-8'>
                 <div className='overflow-hidden shadow ring-1 ring-black ring-opacity-5 border-[1px] border-solid dark:border-gray-600 rounded-lg'>
                   <table className='min-w-full divide-y divide-gray-300 dark:divide-gray-500'>
-                    {/* {tableHeader()} */}
+                    {tableHeader()}
                     <tbody className='divide-y divide-gray-200 dark:divide-gray-500 bg-transparent'>
                       <tr>
                         <td className='whitespace-nowrap py-4 pl-4 pr-3 text-sm font-medium sm:pl-6 w-[19rem]'>
@@ -246,19 +323,15 @@ const Devices: NextPage = () => {
                             </span>
                           )}
                         </td>
-                        <td className='whitespace-nowrap px-3 py-4 text-sm text-primary dark:text-primaryDark cursor-pointer w-[16.8rem]'>
-                          <div
-                            className={`${
-                              webrtcData[0]?.id !== profile?.default_device?.id ? '' : ''
-                            } text-right`}
+                        <td className='whitespace-nowrap px-3 py-4 text-sm text-primary dark:text-primaryDark cursor-pointer w-[16.8rem] text-right'>
+                          <Button
+                            variant='ghost'
                             onClick={() => openShowSwitchAudioInput('')}
+                            className='text-right'
                           >
-                            <FontAwesomeIcon
-                              icon={faPenToSquare}
-                              className='mr-2 h-4 w-4 text-primary dark:text-primaryDark'
-                            />
+                            <FontAwesomeIcon icon={faPenToSquare} className='mr-2 h-4 w-4' />
                             {t('Devices.Audio settings')}
-                          </div>
+                          </Button>
                         </td>
                         <td className='relative whitespace-nowrap py-4 pl-3 text-right text-sm font-medium pr-6'>
                           {webrtcData[0]?.id !== profile?.default_device?.id ? (
@@ -308,7 +381,7 @@ const Devices: NextPage = () => {
               <div className='inline-block min-w-full py-2 align-middle sm:px-6 lg:px-8'>
                 <div className='overflow-hidden shadow ring-1 ring-black ring-opacity-5 border-[1px] border-solid dark:border-gray-600 rounded-lg'>
                   <table className='min-w-full divide-y divide-gray-300 dark:divide-gray-500'>
-                    {/* {tableHeader()} */}
+                    {tableHeader()}
                     <tbody className='divide-y divide-gray-200 dark:divide-gray-500 bg-transparent'>
                       <tr>
                         <td className='whitespace-nowrap py-4 pl-4 pr-3 text-sm font-medium sm:pl-6 w-[19rem]'>
@@ -494,22 +567,17 @@ const Devices: NextPage = () => {
                         <td
                           className={`${
                             index === 0 ? '' : 'border-t border-gray-300 dark:border-gray-600'
-                          } whitespace-nowrap px-3 py-4 text-sm text-primary dark:text-primaryDark cursor-pointer w-[16.8rem] relative`}
+                          } whitespace-nowrap px-3 py-4 text-sm text-primary dark:text-primaryDark cursor-pointer w-[16.8rem] relative text-right`}
                         >
                           {profile?.profile?.macro_permissions?.nethvoice_cti?.permissions
                             ?.phone_buttons?.value ? (
-                            <div
-                              className={`${
-                                phone?.id !== profile?.default_device?.id ? '' : ''
-                              } text-right`}
+                            <Button
+                              variant='ghost'
                               onClick={() => openShowEditPhysicalPhone(phone, pinObject)}
                             >
-                              <FontAwesomeIcon
-                                icon={faPenToSquare}
-                                className='mr-2 h-4 w-4 text-primary dark:text-primaryDark'
-                              />
+                              <FontAwesomeIcon icon={faPenToSquare} className='mr-2 h-4 w-4' />
                               {t('Devices.Device settings')}
-                            </div>
+                            </Button>
                           ) : (
                             <div></div>
                           )}

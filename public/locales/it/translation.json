@@ -278,7 +278,9 @@
     "Open sidebar": "Open sidebar",
     "Main device": "Dispositivo principale",
     "Voicemail": "Voicemail",
-    "Activate voicemail": "Attiva voicemail"
+    "Activate voicemail": "Attiva voicemail",
+    "Cellphone": "Cellulare",
+    "Forward incoming calls to cellphone": "Inoltra le chiamate in entrata al cellulare"
   },
   "OperatorDrawer": {
     "Book": "Prenota",
@@ -807,7 +809,8 @@
     "Download PhoneLink": "Scarica Desktop phone",
     "Not configured": "Non configurato",
     "IP phone": "Telefono IP",
-    "key type select": "Seleziona il tipo di tasto"
+    "key type select": "Seleziona il tipo di tasto",
+    "Download App": "Scarica App"
   },
   "DropdownContent": {
     "Microphones": "MICROFONI",

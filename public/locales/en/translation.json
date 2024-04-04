@@ -301,7 +301,9 @@
     "Open sidebar": "Open sidebar",
     "Main device": "Main device",
     "Voicemail": "Voicemail",
-    "Activate voicemail": "Activate voicemail"
+    "Activate voicemail": "Activate voicemail",
+    "Cellphone": "Cellphone",
+    "Forward incoming calls to cellphone": "Forward incoming calls to cellphone"
   },
   "OperatorDrawer": {
     "Book": "Book",
@@ -832,7 +834,8 @@
     "Download PhoneLink": "Download Desktop phone",
     "Not configured": "Not configured",
     "IP phone": "IP phone",
-    "Key type select": "Key type select"
+    "Key type select": "Key type select",
+    "Download App": "Download App"
   },
   "DropdownContent": {
     "Microphones": "MICROPHONES",

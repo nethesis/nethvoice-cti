@@ -11,9 +11,9 @@ const theme = {
     white:
       'border shadow-sm border-gray-300 dark:border-gray-500 bg-transparent dark:bg-transparent text-primary dark:text-primaryDark hover:bg-gray-200 hover:bg-opacity-30 dark:hover:bg-gray-600 dark:hover:bg-opacity-30 focus:ring-primaryLight dark:focus:ring-primaryDark focus:ring-2 focus:ring-offset-2',
     ghost:
-      'border-gray-300 text-gray-700 hover:bg-gray-200 focus:ring-primaryLight dark:border-gray-600 dark:text-gray-100 dark:hover:bg-gray-700 dark:focus:ring-primaryDark',
+      'border-gray-300 text-primary dark:text-primaryDark  hover:bg-gray-200 hover:bg-opacity-30 dark:hover:bg-gray-600 dark:hover:bg-opacity-30  focus:ring-primaryLight dark:border-gray-600 dark:focus:ring-primaryDark',
     dashboard:
-      'border-gray-300 text-gray-700 hover:bg-gray-200 dark:border-gray-600 dark:text-gray-700 dark:hover:bg-gray-700 dark:hover:disabled:bg-transparent hover:disabled:bg-transparent dark:focus:ring-primaryDark',
+      'border-gray-300 text-primary dark:text-primaryDark hover:bg-gray-200 dark:border-gray-600  dark:hover:bg-gray-700 dark:hover:disabled:bg-transparent hover:disabled:bg-transparent dark:focus:ring-primaryDark',
     danger:
       'border border-transparent focus:ring-red-500 bg-red-600 hover:bg-red-700 text-white dark:focus:ring-red-600 dark:bg-red-700 dark:hover:bg-red-800 dark:text-white focus:ring-2 focus:ring-offset-2',
     rounded: {
