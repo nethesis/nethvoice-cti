@@ -812,7 +812,10 @@
     "key type select": "Seleziona il tipo di tasto",
     "Download App": "Scarica App",
     "Speaker": "Altoparlante",
-    "Microphone": "Microfono"
+    "Microphone": "Microfono",
+    "All download options": "Tutte le opzioni di download",
+    "Download destkop app": "Scarica l'app desktop",
+    "Operative system": "Sistema operativo"
   },
   "DropdownContent": {
     "Microphones": "MICROFONI",

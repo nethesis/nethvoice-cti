@@ -30,6 +30,14 @@ export const openShowSwitchAudioInput = (status: any) => {
   })
 }
 
+export const openShowDownloadLinkContent = (status: any) => {
+  store.dispatch.sideDrawer.update({
+    isShown: true,
+    contentType: 'showDownloadLinkContent',
+    config: status,
+  })
+}
+
 export const getInputOutputLocalStorageValue = (currentUsername: string) => {
   const audioInputType = getJSONItem('phone-island-audio-input-device') || ''
 

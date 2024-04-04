@@ -8,6 +8,7 @@ import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { useSelector } from 'react-redux'
 import { RootState } from '../store'
 import {
+  faArrowRightLong,
   faArrowUpFromBracket,
   faAward,
   faCircleArrowDown,
@@ -26,6 +27,7 @@ import {
   tableHeader,
   titleTable,
   getDownloadLink,
+  openShowDownloadLinkContent,
 } from '../lib/devices'
 import { Badge, Button, Dropdown } from '../components/common'
 import { useDispatch } from 'react-redux'
@@ -142,17 +144,9 @@ const Devices: NextPage = () => {
             {t('Devices.Download App')}
           </Button>
         ) : (
-          <a
-            href='#'
-            target='_blank'
-            rel='noreferrer'
-            onClick={(e) => {
-              e.preventDefault()
-              handleDownload(selectedLink)
-            }}
-          >
-            {t('Devices.Download App')}
-          </a>
+          <div onClick={() => openShowDownloadLinkContent(updatedDownloadLink)}>
+            {t('Devices.All download options')}
+          </div>
         )}
       </div>
     )
@@ -192,7 +186,7 @@ const Devices: NextPage = () => {
         <></>
       )}
       {isPhoneLinkSection && (
-        <Dropdown.Item icon={faCircleArrowDown}>{phoneLinkDownloadComponent(true)}</Dropdown.Item>
+        <Dropdown.Item icon={faArrowRightLong}>{phoneLinkDownloadComponent(true)}</Dropdown.Item>
       )}
     </>
   )

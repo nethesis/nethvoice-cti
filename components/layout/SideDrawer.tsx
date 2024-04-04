@@ -25,6 +25,7 @@ import { GravatarIconDrawerContent } from '../common/ProfilePicture/GravatarIcon
 import { SelectProfilePictureDrawerContent } from '../common/ProfilePicture/SelectProfilePictureDrawerContent'
 import { EditPhysicalPhoneDrawerContent } from '../devices/EditPhysicalPhoneDrawerContent'
 import { SwitchInputOutputDrawerContent } from '../devices/SwitchInputOutputDrawerContent'
+import { DownloadDesktopLinkContent } from '../devices/DownloadDesktopLinkContent'
 
 interface SideDrawerProps {
   isShown: boolean
@@ -86,6 +87,8 @@ export const SideDrawer: FC<SideDrawerProps> = ({ isShown, contentType, config, 
                         <EditPhysicalPhoneDrawerContent config={config} />
                       ) : contentType === 'showSwitchDeviceInputOutput' ? (
                         <SwitchInputOutputDrawerContent config={config} />
+                      ) : contentType === 'showDownloadLinkContent' ? (
+                        <DownloadDesktopLinkContent config={config} />
                       ) : null}
                     </div>
                   </nav>

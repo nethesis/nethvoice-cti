@@ -837,7 +837,10 @@
     "Key type select": "Key type select",
     "Download App": "Download App",
     "Speaker": "Speaker",
-    "Microphone": "Microphone"
+    "Microphone": "Microphone",
+    "All download options": "All download options",
+    "Download destkop app": "Download destkop app",
+    "Operative system": "Operative system"
   },
   "DropdownContent": {
     "Microphones": "MICROPHONES",
