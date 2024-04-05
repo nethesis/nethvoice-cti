@@ -218,7 +218,7 @@ export const ContactSummary = forwardRef<HTMLButtonElement, ContactSummaryProps>
           </Modal.Actions>
         </Modal>
         <div
-          className={classNames('flex min-w-0 items-center justify-between pt-5 px-5', className)}
+          className={classNames('flex min-w-0 items-center justify-between px-5', className)}
           {...props}
         >
           <div className='flex items-center'>
@@ -511,7 +511,7 @@ export const ContactSummary = forwardRef<HTMLButtonElement, ContactSummaryProps>
 
             {contact?.kind === 'person' && (
               <>
-                <div className='border-b border-gray-600 dark:border-gray-100 bg-gray-700 dark:bg-gray-200 px-4 py-5 sm:px-6 flex-col'>
+                <div className='border-b border-gray-600 dark:border-gray-100 bg-gray-700 dark:bg-gray-200 px-4 py-5 sm:px-5 flex-col'>
                   {/* Company name  */}
                   <h3 className='flex text-base font-semibold leading-6 text-gray-100 dark:text-gray-700'>
                     {t('CustomerCards.Business name')}

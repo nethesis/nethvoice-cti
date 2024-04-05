@@ -148,7 +148,7 @@ export const ShowRuleDetailsContent = forwardRef<HTMLButtonElement, ShowRuleDeta
 
     return (
       <>
-        <div className='bg-gray-100 dark:bg-gray-800 py-6 px-6'>
+        <div className='bg-white dark:bg-gray-900 pt-6 px-6'>
           <div className='flex items-center justify-between'>
             <div className='text-lg font-medium text-gray-700 dark:text-gray-200'>
               {t('Lines.Rule details')}
@@ -158,7 +158,13 @@ export const ShowRuleDetailsContent = forwardRef<HTMLButtonElement, ShowRuleDeta
             </div>
           </div>
         </div>
-        <div className={classNames(className, 'p-5')} {...props}>
+        <div className={classNames(className, 'px-5')} {...props}>
+          {/* Divider */}
+          <div className='relative pb-8'>
+            <div className='absolute inset-0 flex items-center' aria-hidden='true'>
+              <div className='w-full border-t border-gray-300 dark:border-gray-600' />
+            </div>
+          </div>
           {/* announcement name */}
           <div className='flex flex-col'>
             <h4 className='text-base font-medium text-gray-700 dark:text-gray-200 mb-3'>
@@ -273,7 +279,7 @@ export const ShowRuleDetailsContent = forwardRef<HTMLButtonElement, ShowRuleDeta
                 <div className='flex mt-3 items-center justify-between'>
                   <TextInput
                     type='datetime-local'
-                    placeholder={t('Lines.Select date start') || ""}
+                    placeholder={t('Lines.Select date start') || ''}
                     className='max-w-sm mr-4'
                     id='meeting-time'
                     name='meeting-time'
@@ -284,7 +290,7 @@ export const ShowRuleDetailsContent = forwardRef<HTMLButtonElement, ShowRuleDeta
                   />
                   <TextInput
                     type='datetime-local'
-                    placeholder={t('Lines.Select date end') || ""}
+                    placeholder={t('Lines.Select date end') || ''}
                     className='max-w-sm'
                     id='meeting-time'
                     name='meeting-time'
@@ -396,10 +402,15 @@ export const ShowRuleDetailsContent = forwardRef<HTMLButtonElement, ShowRuleDeta
               ))}
             </div>
           </fieldset>
-
+          {/* Divider */}
+          <div className='relative pb-10 pt-6'>
+            <div className='absolute inset-0 flex items-center' aria-hidden='true'>
+              <div className='w-full border-t border-gray-300 dark:border-gray-600' />
+            </div>
+          </div>
           {/* Save or delete button */}
           {/* fixed bottom-0 */}
-          <div className='flex mt-6'>
+          <div className='flex items-center justify-end'>
             <Button
               variant='primary'
               type='submit'

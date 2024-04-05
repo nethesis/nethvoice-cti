@@ -120,7 +120,7 @@ export const AddToPhonebookDrawerContent = forwardRef<
 
   return (
     <>
-      <div className='bg-gray-100 dark:bg-gray-800 py-6 px-6'>
+      <div className='bg-white dark:bg-gray-900 pt-6 px-6'>
         <div className='flex items-center justify-between'>
           <div className='text-lg font-medium dark:text-gray-200 text-gray-700'>
             Add to phonebook: {config}

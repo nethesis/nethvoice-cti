@@ -110,15 +110,16 @@ export const SwitchInputOutputDrawerContent = forwardRef<
         <div className='flex items-center justify-between'>
           {/* Title */}
           <div className='text-lg font-medium dark:text-gray-200 text-gray-700'>
-            {t('Devices.Audio settings')}
+            {t('Devices.Audio settings')}:{t('Devices.Web phone')}
           </div>
           <div className='flex items-center h-7'>
             <SideDrawerCloseIcon />
           </div>
         </div>
       </div>
-      {/* Divider */}
-      <div className='px-6'>
+
+      <div className='px-5'>
+        {/* Divider */}
         <div className='relative pb-8'>
           <div className='absolute inset-0 flex items-center' aria-hidden='true'>
             <div className='w-full border-t border-gray-300 dark:border-gray-600' />
@@ -148,8 +149,8 @@ export const SwitchInputOutputDrawerContent = forwardRef<
             {({ open }) => (
               <>
                 <div className='flex items-center mt-2'>
-                  <div className='relative'>
-                    <Listbox.Button className='relative cursor-default rounded-md bg-white dark:bg-gray-950 py-1.5 pr-10 text-left focus:outline-none sm:text-sm sm:leading-6 w-80 border dark:border-gray-700'>
+                  <div className='relative w-full'>
+                    <Listbox.Button className='relative w-full cursor-default rounded-md bg-white dark:bg-gray-950 py-1.5 pr-10 text-left focus:outline-none sm:text-sm sm:leading-6 border dark:border-gray-700'>
                       <span
                         className={`${
                           selectedAudioInput?.label
@@ -254,8 +255,8 @@ export const SwitchInputOutputDrawerContent = forwardRef<
             {({ open }) => (
               <>
                 <div className='flex items-center mt-2'>
-                  <div className='relative'>
-                    <Listbox.Button className='relative cursor-default rounded-md bg-white dark:bg-gray-950 py-1.5 pr-10 text-left text-gray-700 dark:text-gray-300 focus:outline-none sm:text-sm sm:leading-6 w-80 border dark:border-gray-700'>
+                  <div className='relative w-full'>
+                    <Listbox.Button className='relative w-full cursor-default rounded-md bg-white dark:bg-gray-950 py-1.5 pr-10 text-left text-gray-700 dark:text-gray-300 focus:outline-none sm:text-sm sm:leading-6 border dark:border-gray-700'>
                       <span
                         className={`${
                           selectedAudioOutput?.label

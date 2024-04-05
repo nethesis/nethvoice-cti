@@ -216,7 +216,7 @@ export const EditAnnouncementDrawerContent = forwardRef<
 
   return (
     <>
-      <div className='bg-gray-100 dark:bg-gray-800 py-6 px-6'>
+      <div className='bg-white dark:bg-gray-900 pt-6 px-6'>
         <div className='flex items-center justify-between'>
           <div className='text-lg font-medium text-gray-700 dark:text-gray-200'>
             {config.isEdit ? t('Lines.Announcement details') : t('Lines.Add announcement')}
@@ -226,7 +226,13 @@ export const EditAnnouncementDrawerContent = forwardRef<
           </div>
         </div>
       </div>
-      <div className={classNames(className, 'p-5')} {...props}>
+      <div className={classNames(className, 'px-5')} {...props}>
+        {/* Divider */}
+        <div className='relative pb-8'>
+          <div className='absolute inset-0 flex items-center' aria-hidden='true'>
+            <div className='w-full border-t border-gray-300 dark:border-gray-600' />
+          </div>
+        </div>
         {config.isEdit && (
           <div className='flex justify-end'>
             {/* delete announcement Dropdown menu */}
@@ -375,8 +381,14 @@ export const EditAnnouncementDrawerContent = forwardRef<
           </>
         )}
 
+        {/* Divider */}
+        <div className='relative pb-10 pt-6'>
+          <div className='absolute inset-0 flex items-center' aria-hidden='true'>
+            <div className='w-full border-t border-gray-300 dark:border-gray-600' />
+          </div>
+        </div>
         {/* fixed bottom-0 */}
-        <div className='flex mt-7'>
+        <div className='flex justify-end'>
           {config.isEdit ? (
             <>
               <Button variant='primary' type='submit' onClick={saveEditPhoneLines} className='mb-4'>

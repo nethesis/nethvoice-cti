@@ -100,7 +100,7 @@ export const GravatarIconDrawerContent = forwardRef<
 
   return (
     <>
-      <div className='bg-gray-100 dark:bg-gray-800 py-6 px-6'>
+      <div className='bg-white dark:bg-gray-900 pt-6 px-6'>
         <div className='flex items-center justify-between'>
           <div className='text-lg font-medium dark:text-gray-200 text-gray-700'>
             {t('Settings.Gravatar')}
@@ -110,7 +110,12 @@ export const GravatarIconDrawerContent = forwardRef<
           </div>
         </div>
       </div>
-      <div className={classNames(className, 'm-1 p-5')} {...props}>
+      <div className={classNames(className, 'px-5')} {...props}>
+        <div className='relative pb-8'>
+          <div className='absolute inset-0 flex items-center' aria-hidden='true'>
+            <div className='w-full border-t border-gray-300 dark:border-gray-600' />
+          </div>
+        </div>
         <div className='mb-6 flex flex-col'>
           {/* Upload error */}
           {errorUpload ||
@@ -157,7 +162,13 @@ export const GravatarIconDrawerContent = forwardRef<
             deleteAvatar={false}
           ></Avatar>
         </div>
-        <div className='flex'>
+        {/* Divider */}
+        <div className='relative pb-10 pt-6'>
+          <div className='absolute inset-0 flex items-center' aria-hidden='true'>
+            <div className='w-full border-t border-gray-300 dark:border-gray-600' />
+          </div>
+        </div>
+        <div className='flex items-center justify-end'>
           <Button
             variant='primary'
             type='submit'

@@ -1074,7 +1074,7 @@ export const ShowPhoneLinesDrawerContent = forwardRef<
   return (
     <>
       {/* Drawer title */}
-      <div className='bg-gray-100 dark:bg-gray-800 py-6 px-6'>
+      <div className='bg-white dark:bg-gray-900 pt-6 px-6'>
         <div className='flex items-center justify-between'>
           <div className='text-lg font-medium text-gray-700 dark:text-gray-200'>
             {t('Lines.Line details')}
@@ -1086,7 +1086,13 @@ export const ShowPhoneLinesDrawerContent = forwardRef<
       </div>
       <div className={classNames(className)} {...props}>
         {/* Contact details */}
-        <dl className='px-5 pt-5'>
+        <dl className='px-5'>
+          {/* Divider */}
+          <div className='relative pb-8'>
+            <div className='absolute inset-0 flex items-center' aria-hidden='true'>
+              <div className='w-full border-t border-gray-300 dark:border-gray-600' />
+            </div>
+          </div>
           {/* Description */}
           {config.name && (
             <div className='py-4 sm:grid sm:grid-cols-3 sm:gap-4 sm:py-5'>

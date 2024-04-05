@@ -68,7 +68,8 @@ export const TopBar: FC<TopBarProps> = ({ openMobileCb }) => {
   const [mainDeviceType, setMainDeviceType] = useState('')
   const [noMobileListDevice, setNoMobileListDevice]: any = useState([])
 
-  const operatorsTest: any = useSelector((state: RootState) => state.operators)
+  const operatorsStore: any = useSelector((state: RootState) => state.operators)
+
   // Check wich type of device is the main device
   // also filter all the device except the mobile one
   useEffect(() => {
@@ -174,6 +175,7 @@ export const TopBar: FC<TopBarProps> = ({ openMobileCb }) => {
     let presence: any = 'callforward'
     try {
       await forwardStatus(presence, number)
+      store.dispatch.operators.updateExtensions(profile?.mainextension, number)
       const userInfo = await getUserInfo()
 
       if (userInfo && userInfo.data) {
@@ -240,7 +242,7 @@ export const TopBar: FC<TopBarProps> = ({ openMobileCb }) => {
       {/* Divider */}
       <div className='relative pt-2'>
         <div className='absolute inset-0 flex items-center' aria-hidden='true'>
-          <div className='w-full border-t  border-gray-300 dark:border-gray-600' />
+          <div className='w-full border-t  border-gray-300 dark:border-gray-700' />
         </div>
       </div>
       {/* Choose presence */}
@@ -331,7 +333,7 @@ export const TopBar: FC<TopBarProps> = ({ openMobileCb }) => {
                     {/* divider  */}
                     <div className='relative py-2'>
                       <div className='absolute inset-0 flex items-center' aria-hidden='true'>
-                        <div className='w-full border-t border-gray-300 dark:border-gray-600' />
+                        <div className='w-full border-t border-gray-300 dark:border-gray-700' />
                       </div>
                     </div>
                     {/* check dnd permission */}
@@ -463,7 +465,7 @@ export const TopBar: FC<TopBarProps> = ({ openMobileCb }) => {
       {/* Divider */}
       <div className='relative pt-2'>
         <div className='absolute inset-0 flex items-center' aria-hidden='true'>
-          <div className='w-full border-t  border-gray-300 dark:border-gray-600' />
+          <div className='w-full border-t  border-gray-300 dark:border-gray-700' />
         </div>
       </div>
 
@@ -514,6 +516,7 @@ export const TopBar: FC<TopBarProps> = ({ openMobileCb }) => {
                 }
                 rounded='full'
                 size='small'
+                className='z-[100]'
               >
                 <span>
                   {mainPresence === 'callforward' || mainPresence === 'cellphone'
@@ -521,7 +524,11 @@ export const TopBar: FC<TopBarProps> = ({ openMobileCb }) => {
                     : t('TopBar.Voicemail')}
                 </span>
                 {profile?.endpoints?.cellphone[0]?.id &&
+                  mainPresence === 'cellphone' &&
                   `${': ' + profile?.endpoints?.cellphone[0]?.id}`}
+                {operatorsStore?.extensions[profile?.mainextension]?.cf !== '' &&
+                  mainPresence === 'callforward' &&
+                  `${': ' + operatorsStore?.extensions[profile?.mainextension]?.cf}`}
                 <FontAwesomeIcon
                   icon={
                     mainPresence === 'callforward' || mainPresence === 'cellphone'

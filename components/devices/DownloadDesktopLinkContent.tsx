@@ -55,7 +55,7 @@ export const DownloadDesktopLinkContent = forwardRef<
         <div className='flex items-center justify-between'>
           {/* Title */}
           <div className='text-lg font-medium dark:text-gray-200 text-gray-700'>
-            {t('Devices.Download destkop app')}
+            {t('Devices.Download Desktop app')}
           </div>
           <div className='flex items-center h-7'>
             <SideDrawerCloseIcon />
@@ -73,13 +73,17 @@ export const DownloadDesktopLinkContent = forwardRef<
         {/* title  */}
         <div>
           <span className='dark:text-gray-200 leading-5 text-sm font-medium'>
-            {t('Devices.Operative system')}
+            {t('Devices.Operating system')}
           </span>
         </div>
         <div className='grid grid-cols-1 gap-4 lg:grid-cols-2 xl:grid-cols-3'>
           {/* Linux */}
           <div
-            className='border-b rounded-lg shadow-md border-gray-200 dark:border-gray-700 bg-cardBackgroud dark:bg-cardBackgroudDark px-5 py-3 sm: mt-1 relative flex items-center'
+            className={`${
+              selectedOS === 'linux'
+                ? 'border-primary dark:border-primaryDark border-2'
+                : 'border-gray-200 dark:border-gray-500 border-[1px]'
+            } rounded-md bg-cardBackgroud dark:bg-cardBackgroudDark px-5 py-3 sm: mt-1 relative flex items-center `}
             onClick={() => handleSelectedOS('linux')}
           >
             <div className='flex items-center space-x-4'>
@@ -88,7 +92,7 @@ export const DownloadDesktopLinkContent = forwardRef<
                 Linux
               </span>
               {selectedOS === 'linux' && (
-                <div className='absolute bottom-0 right-0 mb-3 mr-3'>
+                <div className='absolute bottom-0 right-[0.75rem] mb-3 mr-3'>
                   <FontAwesomeIcon
                     icon={faCircleCheck}
                     className='h-3 w-3 text-primary dark:text-primaryDark'
@@ -99,7 +103,11 @@ export const DownloadDesktopLinkContent = forwardRef<
           </div>
           {/* Apple */}
           <div
-            className='border-b rounded-lg shadow-md border-gray-200 dark:border-gray-700 bg-cardBackgroud dark:bg-cardBackgroudDark px-5 py-3 sm: mt-1 relative flex items-center'
+            className={`${
+              selectedOS === 'apple'
+                ? 'border-primary dark:border-primaryDark border-2'
+                : 'border-gray-200 dark:border-gray-500 border-[1px]'
+            } rounded-md bg-cardBackgroud dark:bg-cardBackgroudDark px-5 py-3 sm: mt-1 relative flex items-center `}
             onClick={() => handleSelectedOS('apple')}
           >
             <div className='flex items-center space-x-4'>
@@ -119,7 +127,11 @@ export const DownloadDesktopLinkContent = forwardRef<
           </div>
           {/* Windows */}
           <div
-            className='border-b rounded-lg shadow-md border-gray-200 dark:border-gray-700 bg-cardBackgroud dark:bg-cardBackgroudDark px-5 py-3 sm: mt-1 relative flex items-center'
+            className={`${
+              selectedOS === 'windows'
+                ? 'border-primary dark:border-primaryDark border-2'
+                : 'border-gray-200 dark:border-gray-500 border-[1px]'
+            } rounded-md bg-cardBackgroud dark:bg-cardBackgroudDark px-5 py-3 sm: mt-1 relative flex items-center `}
             onClick={() => handleSelectedOS('windows')}
           >
             <div className='flex items-center space-x-4'>
@@ -128,7 +140,7 @@ export const DownloadDesktopLinkContent = forwardRef<
                 Windows
               </span>
               {selectedOS === 'windows' && (
-                <div className='absolute bottom-0 right-0 mb-3 mr-3'>
+                <div className='absolute bottom-0 right-[0.75rem] mb-3 mr-3'>
                   <FontAwesomeIcon
                     icon={faCircleCheck}
                     className='h-3 w-3 text-primary dark:text-primaryDark'
@@ -157,7 +169,7 @@ export const DownloadDesktopLinkContent = forwardRef<
             className='mb-4 ml-4'
             onClick={() => handleDownloadStart()}
           >
-            <span className='leading-5 text-sm font-medium'>{t('Common.Save')}</span>
+            <span className='leading-5 text-sm font-medium'>{t('Common.Download')}</span>
           </Button>
         </div>
       </div>

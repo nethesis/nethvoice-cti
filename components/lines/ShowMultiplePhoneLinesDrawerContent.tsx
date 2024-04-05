@@ -950,7 +950,7 @@ export const ShowMultiplePhoneLinesDrawerContent = forwardRef<
   return (
     <>
       {/* Drawer title */}
-      <div className='bg-gray-100 dark:bg-gray-800 py-6 px-6'>
+      <div className='bg-white dark:bg-gray-900 pt-6 px-6'>
         <div className='flex items-center justify-between'>
           <div className='text-lg font-medium text-gray-700 dark:text-gray-200'>
             {t('Lines.Configure all lines selected')}
@@ -962,7 +962,13 @@ export const ShowMultiplePhoneLinesDrawerContent = forwardRef<
       </div>
       <div className={classNames(className)} {...props}>
         {/* Activate configuration */}
-        <div className='px-5 pt-8'>
+        <div className='px-5'>
+          {/* Divider */}
+          <div className='relative pb-8'>
+            <div className='absolute inset-0 flex items-center' aria-hidden='true'>
+              <div className='w-full border-t border-gray-300 dark:border-gray-600' />
+            </div>
+          </div>
           <div className='flex items-center justify-between mt-1'>
             <h4 className=' text-base font-medium text-gray-700 dark:text-gray-200'>
               {t('Lines.Activate configuration')}
@@ -1004,8 +1010,15 @@ export const ShowMultiplePhoneLinesDrawerContent = forwardRef<
             )}
           </>
         )}
+        {/* Divider */}
+        <div className='relative pb-10 pt-6'>
+          <div className='absolute inset-0 flex items-center' aria-hidden='true'>
+            <div className='w-full border-t border-gray-300 dark:border-gray-600' />
+          </div>
+        </div>
+        {/* Footer section */}
         {/* Bottom button to Save or Cancel*/}
-        <div className='flex mt-6 px-5 pt-2'>
+        <div className='flex justify-end'>
           <Button variant='primary' type='submit' onClick={saveEditPhoneLines} className='mb-4'>
             <FontAwesomeIcon icon={faFloppyDisk} className='mr-2 h-4 w-4' />
             {t('Common.Save')}
