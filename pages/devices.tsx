@@ -144,7 +144,7 @@ const Devices: NextPage = () => {
             {t('Devices.Download App')}
           </Button>
         ) : (
-          <div onClick={() => openShowDownloadLinkContent(updatedDownloadLink)}>
+          <div onClick={() => openShowDownloadLinkContent(updatedDownloadLink, currentOS)}>
             {t('Devices.All download options')}
           </div>
         )}
@@ -435,7 +435,7 @@ const Devices: NextPage = () => {
                           )}
                         </td>
                         <td className='relative whitespace-nowrap py-4 pl-3 text-right text-sm font-medium pr-6'>
-                          {isEmpty(phoneLinkTimestamp) ? (
+                          {!isEmpty(phoneLinkTimestamp) ? (
                             <Dropdown
                               items={
                                 phoneLinkData[0]?.id === profile?.default_device?.id

@@ -30,11 +30,15 @@ export const openShowSwitchAudioInput = (status: any) => {
   })
 }
 
-export const openShowDownloadLinkContent = (status: any) => {
+export const openShowDownloadLinkContent = (status: any, defaultOS: string) => {
+  let objConfig = {
+    urlStatus: status,
+    selectedOS: defaultOS,
+  }
   store.dispatch.sideDrawer.update({
     isShown: true,
     contentType: 'showDownloadLinkContent',
-    config: status,
+    config: objConfig,
   })
 }
 

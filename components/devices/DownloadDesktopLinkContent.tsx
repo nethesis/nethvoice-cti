@@ -19,7 +19,7 @@ export const DownloadDesktopLinkContent = forwardRef<
   HTMLButtonElement,
   DownloadDesktopLinkContentProps
 >(({ config, className, ...props }, ref) => {
-  const [selectedOS, setSelectedOS] = useState('')
+  const [selectedOS, setSelectedOS] = useState(config?.selectedOS || '')
 
   const handleSelectedOS = (os: string) => {
     setSelectedOS(os)
@@ -30,13 +30,13 @@ export const DownloadDesktopLinkContent = forwardRef<
       let url
       switch (selectedOS) {
         case 'linux':
-          url = config.find((item: any) => item.linuxUrl)?.linuxUrl
+          url = config?.urlStatus?.find((item: any) => item.linuxUrl)?.linuxUrl
           break
         case 'apple':
-          url = config.find((item: any) => item.macUrl)?.macUrl
+          url = config?.urlStatus?.find((item: any) => item.macUrl)?.macUrl
           break
         case 'windows':
-          url = config.find((item: any) => item.windowsUrl)?.windowsUrl
+          url = config?.urlStatus?.find((item: any) => item.windowsUrl)?.windowsUrl
           break
         default:
           break

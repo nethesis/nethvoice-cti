@@ -519,8 +519,10 @@ export const TopBar: FC<TopBarProps> = ({ openMobileCb }) => {
                 className='z-[100]'
               >
                 <span>
-                  {mainPresence === 'callforward' || mainPresence === 'cellphone'
-                    ? `${t('TopBar.Call forward') + '' + ''}`
+                  {mainPresence === 'callforward'
+                    ? t('TopBar.Call forward')
+                    : mainPresence === 'cellphone'
+                    ? t('TopBar.Cellphone')
                     : t('TopBar.Voicemail')}
                 </span>
                 {profile?.endpoints?.cellphone[0]?.id &&
@@ -531,8 +533,10 @@ export const TopBar: FC<TopBarProps> = ({ openMobileCb }) => {
                   `${': ' + operatorsStore?.extensions[profile?.mainextension]?.cf}`}
                 <FontAwesomeIcon
                   icon={
-                    mainPresence === 'callforward' || mainPresence === 'cellphone'
+                    mainPresence === 'callforward'
                       ? faArrowRight
+                      : mainPresence === 'cellphone'
+                      ? faMobile
                       : faVoicemail
                   }
                   className='h-4 w-4 ml-2 text-topBarText dark:text-topBarTextDark'

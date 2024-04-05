@@ -110,7 +110,7 @@ export const SwitchInputOutputDrawerContent = forwardRef<
         <div className='flex items-center justify-between'>
           {/* Title */}
           <div className='text-lg font-medium dark:text-gray-200 text-gray-700'>
-            {t('Devices.Audio settings')}:{t('Devices.Web phone')}
+            {t('Devices.Audio settings')}: {t('Devices.Web phone')}
           </div>
           <div className='flex items-center h-7'>
             <SideDrawerCloseIcon />
