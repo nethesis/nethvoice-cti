@@ -71,10 +71,10 @@ const Applications: NextPage = () => {
                     </div>
                     <div className='text-gray-900 dark:text-gray-100 text-sm flex items-center justify-center'>
                       <Link href={'/lines'}>
-                        <a className='flex justify-center items-center text-primary dark:text-primaryDark text-sm	 leading-5 font-medium'>
+                        <div className='flex justify-center items-center text-primary dark:text-primaryDark text-sm	 leading-5 font-medium'>
                           <span>{t('Applications.Go to Phone lines and announcements')}</span>
                           <FontAwesomeIcon icon={faArrowRight} className='h-4 w-4 m-3 rounded-lg' />
-                        </a>
+                        </div>
                       </Link>
                     </div>
                   </div>

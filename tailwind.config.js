@@ -13,7 +13,7 @@ module.exports = {
     require('@tailwindcss/forms'),
     require('tailwind-scrollbar')({ nocompatible: true, preferredStrategy: 'pseudoelements' }),
   ],
-  darkMode: 'class',
+  darkMode: 'selector',
   theme: {
     extend: {
       colors: {

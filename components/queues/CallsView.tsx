@@ -183,9 +183,9 @@ export const CallsView: FC<CallsViewProps> = ({ className }): JSX.Element => {
             {t('Queues.every_time_interval_seconds', { timeInterval: callsRefreshInterval })})
           </div>
           <Link href={{ pathname: '/settings', query: { section: 'Queues' } }}>
-            <a className='hover:underline text-gray-900 dark:text-gray-100'>
+            <span className='hover:underline text-gray-900 dark:text-gray-100'>
               {t('Queues.Settings')}
-            </a>
+            </span>
           </Link>
         </div>
       </div>

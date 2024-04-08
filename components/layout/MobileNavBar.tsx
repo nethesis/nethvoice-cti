@@ -96,9 +96,7 @@ export const MobileNavBar: FC<MobileNavBarProps> = ({ closeMobileMenu, show, ite
                     <div className='space-y-1'>
                       {items.map((item) => (
                         <Link key={item.name} href={item.href}>
-                          <a
-                            key={item.name}
-                            href={item.href}
+                          <div
                             className={classNames(
                               item.current
                                 ? 'text-white bg-gray-700 dark:bg-gray-500'
@@ -118,7 +116,7 @@ export const MobileNavBar: FC<MobileNavBarProps> = ({ closeMobileMenu, show, ite
                               aria-hidden='true'
                             />
                             <span>{item.name}</span>
-                          </a>
+                          </div>
                         </Link>
                       ))}
                     </div>

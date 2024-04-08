@@ -79,7 +79,7 @@ export const NavBar: FC<NavBarProps> = ({ items }) => {
           {itemsWithPermissions.map((item, index: number) => (
             <div key={index} className={`${item.permission ? '' : 'hidden'}`}>
               <Link href={item.href}>
-                <a
+                <div
                   className={classNames(
                     item.current
                       ? 'text-currentSidebarIconText dark:text-currentSidebarIconTextDark bg-sidebarIconBackground dark:bg-sidebarIconBackgroundDark'
@@ -102,7 +102,7 @@ export const NavBar: FC<NavBarProps> = ({ items }) => {
                   {item.current && (
                     <div style={activeStyles} className='bg-currentBadgePrimary dark:bg-currentBadgePrimaryDark' />
                   )}
-                </a>
+                </div>
               </Link>
               <Tooltip anchorSelect={`.tooltip-${item.name}`} place='right' offset={20}>
                 {t('Common.' + item.name)}

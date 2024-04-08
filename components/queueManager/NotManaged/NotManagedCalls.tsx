@@ -248,9 +248,9 @@ export const NotManagedCalls: FC<NotManagedCallsProps> = ({ className }): JSX.El
             </span>
           </div>
           <Link href={{ pathname: '/settings', query: { section: 'Queues' } }}>
-            <a className='hover:underline text-gray-900 font-semibold dark:text-gray-100'>
+            <span className='hover:underline text-gray-900 font-semibold dark:text-gray-100'>
               {t('Queues.Settings')}
-            </a>
+            </span>
           </Link>
         </div>
       </div>

@@ -660,7 +660,7 @@ export const QueueManagementChart: FC<QueueManagementChartProps> = ({
                   query: { section: 'Not managed customers' },
                 }}
               >
-                <a className='hover:underline '>{t('QueueManager.Go to not managed customers')}</a>
+                <span className='hover:underline '>{t('QueueManager.Go to not managed customers')}</span>
               </Link>
               <Link
                 href={{

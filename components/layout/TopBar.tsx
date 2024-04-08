@@ -459,7 +459,7 @@ export const TopBar: FC<TopBarProps> = ({ openMobileCb }) => {
       {/* profile picture redirect */}
       <Dropdown.Item icon={faUser}>
         <Link href={{ pathname: '/settings', query: { section: 'Profile picture' } }}>
-          <a>{t('Settings.Profile picture')}</a>
+          <span>{t('Settings.Profile picture')}</span>
         </Link>
       </Dropdown.Item>
       {/* Divider */}
