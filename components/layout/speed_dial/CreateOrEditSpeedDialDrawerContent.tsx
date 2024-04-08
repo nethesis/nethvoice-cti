@@ -197,13 +197,16 @@ export const CreateOrEditSpeedDialDrawerContent = forwardRef<
           </div>
         </div>
         <div className='flex items-center justify-end'>
+          <Button variant='white' type='submit' onClick={closeSideDrawer} className='mb-4'>
+            {t('Common.Cancel')}
+          </Button>
           {config.isEdit ? (
             <Button
               ref={saveButtonRef}
               variant='primary'
               type='submit'
               onClick={prepareEditSpeedDial}
-              className='mb-4'
+              className='ml-4 mb-4'
             >
               <FontAwesomeIcon icon={faPen} className='mr-2 h-4 w-4' />
               {t('SpeedDial.Save speed dial')}
@@ -213,15 +216,12 @@ export const CreateOrEditSpeedDialDrawerContent = forwardRef<
               variant='primary'
               type='submit'
               onClick={prepareCreateSpeedDial}
-              className='mb-4'
+              className='ml-4 mb-4'
             >
               <FontAwesomeIcon icon={faPlus} className='mr-2 h-4 w-4' />
               {t('SpeedDial.Create speed dial')}
             </Button>
           )}
-          <Button variant='white' type='submit' onClick={closeSideDrawer} className='ml-4 mb-4'>
-            {t('Common.Cancel')}
-          </Button>
         </div>
       </div>
     </>

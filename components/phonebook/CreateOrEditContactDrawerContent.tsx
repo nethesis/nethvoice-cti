@@ -328,7 +328,13 @@ export const CreateOrEditContactDrawerContent = forwardRef<
           </div>
         </div>
       </div>
-      <div className={classNames(className, 'm-1 p-5')} {...props}>
+      <div className={classNames(className, 'px-5')} {...props}>
+        {/* Divider */}
+        <div className='relative pb-8'>
+          <div className='absolute inset-0 flex items-center' aria-hidden='true'>
+            <div className='w-full border-t border-gray-300 dark:border-gray-600' />
+          </div>
+        </div>
         {/* contact visibility */}
         <div className='mb-6'>
           <label className='text-sm font-medium text-gray-700 dark:text-gray-200'>
@@ -451,20 +457,20 @@ export const CreateOrEditContactDrawerContent = forwardRef<
           </div>
         </div>
         <div className='flex items-center justify-end'>
+          <Button variant='white' type='submit' onClick={closeSideDrawer} className='mb-4'>
+            {t('Common.Cancel')}
+          </Button>
           {config.isEdit ? (
-            <Button variant='primary' type='submit' onClick={prepareEditContact} className='mb-4'>
+            <Button variant='primary' type='submit' onClick={prepareEditContact} className='ml-4 mb-4'>
               <FontAwesomeIcon icon={faPen} className='mr-2 h-4 w-4' />
               {t('Phonebook.Save contact')}
             </Button>
           ) : (
-            <Button variant='primary' type='submit' onClick={prepareCreateContact} className='mb-4'>
+            <Button variant='primary' type='submit' onClick={prepareCreateContact} className='ml-4 mb-4'>
               <FontAwesomeIcon icon={faUserPlus} className='mr-2 h-4 w-4' />
               {t('Phonebook.Create contact')}
             </Button>
           )}
-          <Button variant='white' type='submit' onClick={closeSideDrawer} className='ml-4 mb-4'>
-            {t('Common.Cancel')}
-          </Button>
         </div>
       </div>
     </>

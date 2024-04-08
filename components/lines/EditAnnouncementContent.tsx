@@ -391,28 +391,33 @@ export const EditAnnouncementDrawerContent = forwardRef<
         <div className='flex justify-end'>
           {config.isEdit ? (
             <>
-              <Button variant='primary' type='submit' onClick={saveEditPhoneLines} className='mb-4'>
-                <FontAwesomeIcon icon={faFloppyDisk} className='mr-2 h-4 w-4' />
-                {t('Common.Save')}
-              </Button>
-              <Button variant='white' type='submit' onClick={closeSideDrawer} className='ml-4 mb-4'>
+              <Button variant='white' type='submit' onClick={closeSideDrawer} className='mb-4'>
                 {t('Common.Cancel')}
               </Button>
-            </>
-          ) : (
-            <>
               <Button
                 variant='primary'
                 type='submit'
-                onClick={saveCreatePhoneLines}
-                className='mb-4'
-                disabled={!selectedFile || !textFilter ? true : false}
+                onClick={saveEditPhoneLines}
+                className='ml-4 mb-4'
               >
                 <FontAwesomeIcon icon={faFloppyDisk} className='mr-2 h-4 w-4' />
                 {t('Common.Save')}
               </Button>
-              <Button variant='white' type='submit' onClick={closeSideDrawer} className='ml-4 mb-4'>
+            </>
+          ) : (
+            <>
+              <Button variant='white' type='submit' onClick={closeSideDrawer} className='mb-4'>
                 {t('Common.Cancel')}
+              </Button>
+              <Button
+                variant='primary'
+                type='submit'
+                onClick={saveCreatePhoneLines}
+                className='ml-4 mb-4'
+                disabled={!selectedFile || !textFilter ? true : false}
+              >
+                <FontAwesomeIcon icon={faFloppyDisk} className='mr-2 h-4 w-4' />
+                {t('Common.Save')}
               </Button>
             </>
           )}

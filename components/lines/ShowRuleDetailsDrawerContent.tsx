@@ -411,18 +411,18 @@ export const ShowRuleDetailsContent = forwardRef<HTMLButtonElement, ShowRuleDeta
           {/* Save or delete button */}
           {/* fixed bottom-0 */}
           <div className='flex items-center justify-end'>
+            <Button variant='white' type='submit' onClick={closeSideDrawer} className='mb-4'>
+              {t('Common.Cancel')}
+            </Button>
             <Button
               variant='primary'
               type='submit'
               onClick={saveEditPhoneLines}
-              className='mb-4'
+              className='ml-4 mb-4'
               disabled={!selectedFile ? true : false}
             >
               <FontAwesomeIcon icon={faFloppyDisk} className='mr-2 h-4 w-4' />
               {t('Common.Save')}
-            </Button>
-            <Button variant='white' type='submit' onClick={closeSideDrawer} className='ml-4 mb-4'>
-              {t('Common.Cancel')}
             </Button>
           </div>
         </div>

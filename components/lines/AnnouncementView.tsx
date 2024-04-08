@@ -54,6 +54,7 @@ export const AnnouncementView: FC<AnnouncementViewProps> = ({ className }): JSX.
 
   //Get operators information from store
   const operators: any = useSelector((state: RootState) => state.operators)
+  const profile: any = useSelector((state: RootState) => state.user)
 
   const dispatch = useDispatch<Dispatch>()
 
@@ -404,6 +405,12 @@ export const AnnouncementView: FC<AnnouncementViewProps> = ({ className }): JSX.
                                       <Button
                                         variant='white'
                                         onClick={() => playSelectedAnnouncement(lines[key].id)}
+                                        disabled={
+                                          profile?.mainPresence === 'busy' ||
+                                          profile?.mainPresence === 'incoming'
+                                            ? true
+                                            : false
+                                        }
                                       >
                                         <FontAwesomeIcon
                                           icon={faPlay}

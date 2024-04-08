@@ -74,7 +74,7 @@ export const SaveRecordedAnnouncementDrawerContent = forwardRef<
       <div className='bg-white dark:bg-gray-900 pt-6 px-6'>
         <div className='flex items-center justify-between'>
           <div className='text-lg font-medium text-gray-700 dark:text-gray-200'>
-            {config.isEdit ? t('Lines.Save recording') : 'Salva registrazione'}
+            {t('Lines.Save recording')}
           </div>
           <div className='flex items-center h-7'>
             <SideDrawerCloseIcon />
@@ -149,18 +149,18 @@ export const SaveRecordedAnnouncementDrawerContent = forwardRef<
         {/* Footer section */}
         <div className='flex justify-end'>
           <>
+            <Button variant='white' type='submit' onClick={closeSideDrawer} className='mb-4'>
+              {t('Common.Cancel')}
+            </Button>
             <Button
               variant='primary'
               type='submit'
               onClick={enableAnnouncement}
-              className='mb-4'
+              className='ml-4 mb-4'
               disabled={textFilter ? false : true}
             >
               <FontAwesomeIcon icon={faFloppyDisk} className='mr-2 h-4 w-4' />
               {t('Common.Save')}
-            </Button>
-            <Button variant='white' type='submit' onClick={closeSideDrawer} className='ml-4 mb-4'>
-              {t('Common.Cancel')}
             </Button>
           </>
         </div>

@@ -245,17 +245,17 @@ export const SelectProfilePictureDrawerContent = forwardRef<
           </div>
         </div>
         <div className={`${previewImage ? '' : 'pt-8'} flex items-center justify-end`}>
+          <Button variant='white' type='submit' onClick={closeSideDrawer} className='mb-4'>
+            {t('Common.Cancel')}
+          </Button>
           <Button
             variant='primary'
             type='submit'
             onClick={prepareUploadPicture}
-            className='mb-4'
+            className='ml-4 mb-4'
             disabled={isEmpty(selectedFileBase64)}
           >
             {t('Settings.Upload')}
-          </Button>
-          <Button variant='white' type='submit' onClick={closeSideDrawer} className='ml-4 mb-4'>
-            {t('Common.Cancel')}
           </Button>
         </div>
       </div>

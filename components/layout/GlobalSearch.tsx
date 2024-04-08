@@ -200,7 +200,6 @@ export const GlobalSearch: FC<GlobalSearchProps> = () => {
   const focusGlobalSearch = () => {
     store.dispatch.globalSearch.setFocused(true)
     const globalSearchInput: any = document.querySelector('#globalSearch input')
-
     if (globalSearchInput) {
       globalSearchInput.focus()
     }
@@ -242,12 +241,25 @@ export const GlobalSearch: FC<GlobalSearchProps> = () => {
                 />
                 <Combobox.Input
                   className='h-[63px] w-full border-0 bg-transparent pl-12 pr-4 focus:ring-0 sm:text-sm text-gray-800 dark:text-gray-100 placeholder-topBarText  dark:placeholder-topBarTextDark'
-                  placeholder={t('Devices.Search or compose') + '...' || ""}
+                  placeholder={t('Devices.Search or compose') + '...' || ''}
                   onChange={debouncedChangeQuery}
-                  // Avoid press enter button before global search is open
                   onKeyDown={(e: any) => {
-                    if (!globalSearchStore.isOpen && e.key === 'Enter') {
+                    if (!globalSearchStore?.isOpen && e.key === 'Enter') {
+                      let numberToCall = e.target.value.trim().replace(/\s/g, '')
+                      if (/^[\d*]+$/.test(numberToCall)) {
+                        callPhoneNumber(numberToCall)
+                      } else {
+                        e.preventDefault()
+                      }
+                    }
+                    // work aroud to move cursor to the end of the input or at the beginning
+                    if (e.key === 'Home') {
                       e.preventDefault()
+                      e?.target.setSelectionRange(0, 0)
+                    } else if (e?.key === 'End') {
+                      e?.preventDefault()
+                      const length = e?.target?.value?.length
+                      e?.target?.setSelectionRange(length, length)
                     }
                   }}
                 />
@@ -262,7 +274,7 @@ export const GlobalSearch: FC<GlobalSearchProps> = () => {
                 leaveFrom='transform scale-100 opacity-100'
                 leaveTo='transform scale-95 opacity-0'
               >
-                {globalSearchStore.isOpen && (
+                {globalSearchStore?.isOpen && (
                   <Combobox.Options
                     as='div'
                     static
@@ -312,7 +324,7 @@ export const GlobalSearch: FC<GlobalSearchProps> = () => {
                             }
                           >
                             <EmptyState
-                              title={t('Phonebook.No results') || ""}
+                              title={t('Phonebook.No results') || ''}
                               description='Try changing your search query'
                               icon={
                                 <FontAwesomeIcon

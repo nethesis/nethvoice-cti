@@ -169,18 +169,18 @@ export const GravatarIconDrawerContent = forwardRef<
           </div>
         </div>
         <div className='flex items-center justify-end'>
+          <Button variant='white' type='submit' onClick={closeSideDrawer} className='mb-4'>
+            {t('Common.Cancel')}
+          </Button>
           <Button
             variant='primary'
             type='submit'
             onClick={prepareEditContact}
-            className='mb-4'
+            className='ml-4 mb-4'
             disabled={isEmpty(avatarBase64)}
           >
             <FontAwesomeIcon icon={faSave} className='mr-2 h-4 w-4' />
             {t('Settings.Save avatar')}
-          </Button>
-          <Button variant='white' type='submit' onClick={closeSideDrawer} className='ml-4 mb-4'>
-            {t('Common.Cancel')}
           </Button>
         </div>
       </div>
