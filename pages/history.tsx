@@ -245,7 +245,7 @@ const History: NextPage = () => {
               ? call.ccompany
               : call.cnum !== mainextension
               ? call.cnum
-              : 'You'}
+              : t('History.You')}
           </div>
           {call.cnum !== '' &&
             call.cnum !== mainextension &&
@@ -304,7 +304,7 @@ const History: NextPage = () => {
               ? call.dst_ccompany
               : call.dst !== mainextension
               ? call.dst
-              : 'You'}
+              : t('History.You')}
           </div>
           {call.dst !== '' &&
             call.dst !== mainextension &&

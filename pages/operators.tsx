@@ -747,7 +747,7 @@ const Operators: NextPage = () => {
             {((layout === 'compact' && !operatorsStore.isOperatorsLoaded) || isApplyingFilters) && (
               <ul
                 role='list'
-                className='mt-4 grid grid-cols-1 gap-4 sm:grid-cols-2 2xl:grid-cols-3 5xl:grid-cols-4 5xl:max-w-screen-2xl'
+                className='grid grid-cols-1 gap-4 sm:grid-cols-2 2xl:grid-cols-3 5xl:grid-cols-4 5xl:max-w-screen-2xl'
               >
                 {Array.from(Array(24)).map((e, index) => (
                   <li key={index} className='px-1'>
@@ -794,7 +794,7 @@ const Operators: NextPage = () => {
                 >
                   <ul
                     role='list'
-                    className='mt-4 grid grid-cols-1 gap-4 sm:grid-cols-2 2xl:grid-cols-3 5xl:grid-cols-4 5xl:max-w-screen-2xl'
+                    className='grid grid-cols-1 gap-4 sm:grid-cols-2 2xl:grid-cols-3 5xl:grid-cols-4 5xl:max-w-screen-2xl'
                   >
                     {infiniteScrollOperators.map((operator: any, index) => {
                       return (
@@ -979,7 +979,7 @@ const Operators: NextPage = () => {
             {((layout === 'grouped' && !operatorsStore.isOperatorsLoaded) || isApplyingFilters) && (
               <ul
                 role='list'
-                className='mt-4 grid grid-cols-1 gap-4 sm:grid-cols-2 2xl:grid-cols-3 5xl:grid-cols-4 5xl:max-w-screen-2xl'
+                className='grid grid-cols-1 gap-4 sm:grid-cols-2 2xl:grid-cols-3 5xl:grid-cols-4 5xl:max-w-screen-2xl'
               >
                 {Array.from(Array(24)).map((e, index) => (
                   <li key={index} className='px-1'>

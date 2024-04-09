@@ -308,7 +308,7 @@ export const Filter = forwardRef<HTMLButtonElement, FilterProps>(
 
           {/* pc view filters */}
           <div className='mx-auto text-center'>
-            <section aria-labelledby='filter-heading' className='pb-6'>
+            <section aria-labelledby='filter-heading' className='pb-8'>
               <h2 id='filter-heading' className='sr-only'>
                 {t('Phonebook.Phonebook filters')}
               </h2>

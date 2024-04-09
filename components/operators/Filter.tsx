@@ -567,7 +567,7 @@ export const Filter = forwardRef<HTMLButtonElement, FilterProps>(
 
             {/* PC filter */}
             <div className='mx-auto text-center'>
-              <section aria-labelledby='filter-heading' className='pb-6'>
+              <section aria-labelledby='filter-heading' className='pb-8'>
                 <h2 id='filter-heading' className='sr-only'>
                   Operators filters
                 </h2>

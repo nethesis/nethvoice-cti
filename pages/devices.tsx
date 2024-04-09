@@ -163,31 +163,26 @@ const Devices: NextPage = () => {
       {!isPhoneLinkSection && operators?.extensions[phoneLinkData?.id]?.status !== 'online' ? (
         <Dropdown.Item
           icon={faAward}
-          onClick={() =>
-            isPhoneLinkSection && isEmpty(phoneLinkTimestamp)
-              ? ''
-              : setSelectedAsMainDevice(deviceId, type, selectedDeviceInfo)
-          }
+          onClick={() => setSelectedAsMainDevice(deviceId, type, selectedDeviceInfo)}
         >
           {t('Devices.Set as main device')}
         </Dropdown.Item>
       ) : isPhoneLinkSection && phoneLinkData[0]?.id !== profile?.default_device?.id ? (
-        <Dropdown.Item
-          icon={faAward}
-          onClick={() =>
-            isPhoneLinkSection && isEmpty(phoneLinkTimestamp)
-              ? ''
-              : setSelectedAsMainDevice(deviceId, type, selectedDeviceInfo)
-          }
-        >
-          {t('Devices.Set as main device')}
-        </Dropdown.Item>
+        <>
+          {/* You can set as main device only if user has downloaded the desktop app */}
+          {!isEmpty(phoneLinkTimestamp) && (
+            <Dropdown.Item
+              icon={faAward}
+              onClick={() => setSelectedAsMainDevice(deviceId, type, selectedDeviceInfo)}
+            >
+              {t('Devices.Set as main device')}
+            </Dropdown.Item>
+          )}
+        </>
       ) : (
         <></>
       )}
-      {isPhoneLinkSection && (
-        <Dropdown.Item icon={faArrowRightLong}>{phoneLinkDownloadComponent(true)}</Dropdown.Item>
-      )}
+      <Dropdown.Item icon={faArrowRightLong}>{phoneLinkDownloadComponent(true)}</Dropdown.Item>
     </>
   )
 
@@ -414,56 +409,45 @@ const Devices: NextPage = () => {
                             </span>
                           )}
                         </td>
-                        <td className='whitespace-nowrap px-3 py-4 text-sm text-primary dark:text-primaryDark cursor-pointer w-[16.8rem]'>
+                        <td className='whitespace-nowrap px-3 py-4 text-sm text-primary dark:text-primaryDark cursor-pointer w-[16.8rem] text-right'>
                           {!isEmpty(phoneLinkTimestamp) ? (
                             // if timestamp is not empty phone link settings is shown in table
-                            <div
+                            <a
+                              href='nethlink://open'
+                              target='_blank'
+                              rel='noreferrer'
                               className={`${
                                 phoneLinkData[0]?.id === profile?.default_device?.id ? '' : ''
-                              } text-right`}
+                              }`}
                             >
-                              <a href='nethlink://open' target='_blank' rel='noreferrer' />
                               <FontAwesomeIcon
                                 icon={faArrowUpFromBracket}
                                 className='mr-2 h-4 w-4 text-primary dark:text-primaryDark'
                               />
                               {t('Devices.PhoneLink settings')}
-                            </div>
+                            </a>
                           ) : (
                             // if timestamp is empty phone link download is shown in table
                             phoneLinkDownloadComponent(false)
                           )}
                         </td>
                         <td className='relative whitespace-nowrap py-4 pl-3 text-right text-sm font-medium pr-6'>
-                          {!isEmpty(phoneLinkTimestamp) ? (
-                            <Dropdown
-                              items={
-                                phoneLinkData[0]?.id === profile?.default_device?.id
-                                  ? setMainDeviceMenu(
-                                      phoneLinkData[0]?.id,
-                                      'nethLink',
-                                      phoneLinkData[0],
-                                      true,
-                                    )
-                                  : setMainDeviceMenu(
-                                      phoneLinkData[0]?.id,
-                                      'nethLink',
-                                      phoneLinkData[0],
-                                      true,
-                                    )
-                              }
-                              //if timestamp is empty phone link download is already shown in table
-                              position={'topMultipleItem'}
-                              className='text-right'
-                            >
-                              <FontAwesomeIcon
-                                icon={faEllipsisVertical}
-                                className='h-4 w-4 text-primary dark:text-primaryDark'
-                              />
-                            </Dropdown>
-                          ) : (
-                            ''
-                          )}
+                          <Dropdown
+                            items={setMainDeviceMenu(
+                              phoneLinkData[0]?.id,
+                              'nethLink',
+                              phoneLinkData[0],
+                              true,
+                            )}
+                            //if timestamp is empty phone link download is already shown in table
+                            position={'topMultipleItem'}
+                            className='text-right'
+                          >
+                            <FontAwesomeIcon
+                              icon={faEllipsisVertical}
+                              className='h-4 w-4 text-primary dark:text-primaryDark'
+                            />
+                          </Dropdown>
                         </td>
                       </tr>
                     </tbody>
