@@ -40,7 +40,8 @@
     "Confirm": "Conferma",
     "Example": "Esempio",
     "Start recording message before": "Clica il bottone per iniziare a registrare la chiamata",
-    "Start recording message after": "Puoi parlare tra poco..."
+    "Start recording message after": "Puoi parlare tra poco...",
+    "Required": "Richiesto"
   },
   "Login": {
     "User": "Utente",
@@ -96,7 +97,8 @@
     "Last calls": "Ultime chiamate",
     "No recent calls": "Nessuna chiamata",
     "Company contacts": "Contatti aziendali",
-    "No results": "Nessun risultato"
+    "No results": "Nessun risultato",
+    "Please enter a valid phone number": "Inserisci un numero di telefono valido"
   },
   "History": {
     "History": "Storico",

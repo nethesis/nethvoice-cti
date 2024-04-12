@@ -55,7 +55,8 @@
     "Confirm": "Confirm",
     "Example": "Example",
     "Start recording message before": "Click the button below to start recording",
-    "Start recording message after": "You can speak in a moment..."
+    "Start recording message after": "You can speak in a moment...",
+    "Required": "Required"
   },
   "Login": {
     "User": "Username",
@@ -116,7 +117,8 @@
     "Add phone number": "Add phone number",
     "Edit contact": "Edit contact",
     "No recent calls": "No recent calls",
-    "No results": "No results"
+    "No results": "No results",
+    "Please enter a valid phone number": "Please enter a valid phone number"
   },
   "History": {
     "History": "History",

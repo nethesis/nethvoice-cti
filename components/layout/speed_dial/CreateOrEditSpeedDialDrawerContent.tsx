@@ -38,8 +38,8 @@ export const CreateOrEditSpeedDialDrawerContent = forwardRef<
     nameRef.current.focus()
   }, [config])
 
-  const [nameError, setNameError] = useState('')
-  const [phoneNumberError, setPhoneNumberError] = useState('')
+  const [nameError, setNameError]: any = useState('')
+  const [phoneNumberError, setPhoneNumberError]: any = useState('')
   const [createSpeedDialError, setCreateSpeedDialError] = useState('')
   const [editSpeedDialError, setEditSpeedDialError] = useState('')
 
@@ -54,7 +54,7 @@ export const CreateOrEditSpeedDialDrawerContent = forwardRef<
 
     // name
     if (!nameRef.current.value.trim()) {
-      setNameError('Required')
+      setNameError(t('Common.Required'))
 
       if (isValidationOk) {
         nameRef.current.focus()
@@ -64,11 +64,19 @@ export const CreateOrEditSpeedDialDrawerContent = forwardRef<
 
     // phone number
     if (!phoneNumberRef.current.value.trim()) {
-      setPhoneNumberError('Required')
-
+      setPhoneNumberError(t('Common.Required'))
       if (isValidationOk) {
         phoneNumberRef.current.focus()
         isValidationOk = false
+      }
+    } else {
+      let speedDialNumber = phoneNumberRef.current.value.trim()
+      if (!/[0-9*#+]/.test(speedDialNumber)) {
+        setPhoneNumberError(t('Phonebook.Please enter a valid phone number'))
+        if (isValidationOk) {
+          nameRef.current.focus()
+          isValidationOk = false
+        }
       }
     }
     return isValidationOk

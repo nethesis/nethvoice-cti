@@ -33,6 +33,7 @@ import { t } from 'i18next'
 import { callPhoneNumber, transferCallToExtension } from '../../../lib/utils'
 import { useSelector } from 'react-redux'
 import { RootState } from '../../../store'
+import { Tooltip } from 'react-tooltip'
 
 export const SpeedDialContent = () => {
   // The state for the delete modal
@@ -326,8 +327,12 @@ export const SpeedDialContent = () => {
                         }
                         placeholderType='operator'
                       />
-                      <div className='ml-4 truncate'>
-                        <p className='truncate text-sm font-medium text-speedDialText dark:text-speedDialTextDark'>
+                      <div className='ml-4 truncate max-w-40'>
+                        <p
+                          className='truncate text-sm font-medium text-speedDialText dark:text-speedDialTextDark'
+                          data-tooltip-id='tooltip-speed-dial-name'
+                          data-tooltip-content={speedDial?.name || speedDial?.company || '-'}
+                        >
                           {speedDial?.name || speedDial?.company || '-'}
                         </p>
                         <div className='truncate text-sm mt-1 text-primary dark:text-primaryDark'>
@@ -489,6 +494,7 @@ export const SpeedDialContent = () => {
           </Button>
         </Modal.Actions>
       </Modal>
+      <Tooltip id='tooltip-speed-dial-name' place='top' />
     </>
   )
 }
