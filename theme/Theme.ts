@@ -59,7 +59,7 @@ const theme = {
     iconDisabled: 'text-gray-500 dark:text-gray-400',
   },
   input: {
-    base: 'block w-full relative focus:z-[8] disabled:cursor-not-allowed bg-bgInput dark:bg-bgInputDark text-gray-900  dark:text-gray-100  disabled:border-gray-200 disabled:bg-gray-50 disabled:text-gray-500 dark:disabled:border-gray-700 dark:disabled:bg-gray-900 dark:disabled:text-gray-400 autofill:border-orange-500 ',
+    base: 'block w-full relative focus:z-[8] disabled:cursor-not-allowed bg-bgInput dark:bg-bgInputDark text-gray-900  dark:text-gray-100  disabled:border-gray-200 disabled:bg-gray-50 disabled:text-gray-500 dark:disabled:border-gray-700 dark:disabled:bg-gray-900 dark:disabled:text-gray-400',
     label: 'text-sm font-medium text-inputText dark:text-inputTextDark',
     placeholder: {
       base: 'placeholder:text-placeHolderInputText dark:placeholder:text-placeHolderInputTextDark',
