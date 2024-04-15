@@ -245,7 +245,7 @@ const History: NextPage = () => {
               ? call.ccompany
               : call.cnum !== mainextension
               ? call.cnum
-              : 'You'}
+              : t('History.You')}
           </div>
           {call.cnum !== '' &&
             call.cnum !== mainextension &&
@@ -304,7 +304,7 @@ const History: NextPage = () => {
               ? call.dst_ccompany
               : call.dst !== mainextension
               ? call.dst
-              : 'You'}
+              : t('History.You')}
           </div>
           {call.dst !== '' &&
             call.dst !== mainextension &&
@@ -568,7 +568,7 @@ const History: NextPage = () => {
     <>
       {profile?.macro_permissions?.cdr?.value ? (
         <div>
-          <h1 className='text-2xl font-semibold mb-6 text-gray-900 dark:text-gray-100'>
+          <h1 className='text-2xl font-semibold mb-6 text-title dark:text-titleDark'>
             {t('History.History')}
           </h1>
           <Filter
@@ -587,7 +587,8 @@ const History: NextPage = () => {
               <div className='flex flex-col'>
                 <div className='-my-2 -mx-4 overflow-x-auto sm:-mx-6 lg:-mx-8'>
                   <div className='inline-block min-w-full py-2 align-middle px-2 md:px-6 lg:px-8'>
-                    <div className='overflow-hidden shadow ring-1 md:rounded-lg ring-opacity-5 dark:ring-opacity-5 ring-gray-900 dark:ring-gray-100'>
+                    <div className='overflow-hidden shadow ring-1 md:rounded-lg ring-opacity-5 dark:ring-opacity-5 ring-gray-900 dark:ring-gray-100 border-[1px] border-solid rounded-xl dark:border-gray-600'>
+                      {' '}
                       {/* empty state */}
                       {isHistoryLoaded && history?.count === 0 && (
                         <EmptyState
@@ -606,7 +607,7 @@ const History: NextPage = () => {
                         <div className='overflow-y-auto scrollbar-thin scrollbar-thumb-gray-400 dark:scrollbar-thumb-gray-400 scrollbar-thumb-rounded-full scrollbar-thumb-opacity-50 scrollbar-track-gray-200 dark:scrollbar-track-gray-900 scrollbar-track-rounded-full scrollbar-track-opacity-25'>
                           <div className='max-h-[36rem]'>
                             <table className='min-w-full divide-y divide-gray-300 dark:divide-gray-700'>
-                              <thead className='sticky top-0 bg-white dark:bg-gray-900 z-[1]'>
+                              <thead className='sticky top-0 bg-gray-100 dark:bg-gray-800 z-[1]'>
                                 <tr>
                                   <th
                                     scope='col'
@@ -651,19 +652,28 @@ const History: NextPage = () => {
                                   </th>
                                 </tr>
                               </thead>
-                              <tbody className='divide-y divide-gray-200 dark:divide-gray-700 bg-white dark:bg-gray-900 text-gray-700 text-sm'>
+                              <tbody className='bg-white dark:bg-gray-950 text-gray-700 text-sm'>
                                 {/* Not empty state  */}
                                 {isHistoryLoaded &&
                                   history?.rows &&
                                   history.rows.map((call: any, index: number) => (
                                     <tr key={index}>
                                       {/* Date */}
-                                      <td className='whitespace-nowrap py-4 pl-4 pr-3 sm:pl-6'>
+                                      <td className='whitespace-nowrap py-4 pl-4 pr-3 sm:pl-6 relative'>
                                         <CallsDate call={call} />
+                                        {/* row divider  */}
+                                        {index !== 0 ? (
+                                          <div className='absolute -top-[0.03rem] left-6 right-0 h-px bg-gray-300 dark:bg-gray-600' />
+                                        ) : null}
                                       </td>
-
                                       {/* Source */}
-                                      <td className='px-3 py-4'>
+                                      <td
+                                        className={`${
+                                          index === 0
+                                            ? ''
+                                            : 'border-t border-gray-300 dark:border-gray-600'
+                                        } py-4 px-3 relative`}
+                                      >
                                         <div
                                           onClick={() => {
                                             openDrawerHistory(
@@ -680,7 +690,13 @@ const History: NextPage = () => {
                                       </td>
 
                                       {/* Icon column */}
-                                      <td className='pl-2 pr-6 py-4'>
+                                      <td
+                                        className={`${
+                                          index === 0
+                                            ? ''
+                                            : 'border-t border-gray-300 dark:border-gray-600'
+                                        } pl-2 pr-6 py-4`}
+                                      >
                                         <FontAwesomeIcon
                                           icon={faArrowRight}
                                           className='ml-0 h-4 w-4 flex-shrink-0 text-gray-500 dark:text-gray-600'
@@ -689,7 +705,13 @@ const History: NextPage = () => {
                                       </td>
 
                                       {/* Destination */}
-                                      <td className='px-3 py-4'>
+                                      <td
+                                        className={`${
+                                          index === 0
+                                            ? ''
+                                            : 'border-t border-gray-300 dark:border-gray-600'
+                                        } px-3 py-4`}
+                                      >
                                         <div
                                           onClick={() =>
                                             openDrawerHistory(
@@ -706,7 +728,13 @@ const History: NextPage = () => {
                                       </td>
 
                                       {/* Duration */}
-                                      <td className='px-3 py-4'>
+                                      <td
+                                        className={`${
+                                          index === 0
+                                            ? ''
+                                            : 'border-t border-gray-300 dark:border-gray-600'
+                                        } px-3 py-4`}
+                                      >
                                         <div className='text-sm text-gray-900 dark:text-gray-100'>
                                           {!call.duration
                                             ? '0 second'
@@ -715,37 +743,40 @@ const History: NextPage = () => {
                                       </td>
 
                                       {/* Outcome */}
-                                      <td className='px-3 py-4'>
+                                      <td
+                                        className={`${
+                                          index === 0
+                                            ? ''
+                                            : 'border-t border-gray-300 dark:border-gray-600'
+                                        } px-3 py-4`}
+                                      >
                                         <div>{checkIconUser(call)}</div>
                                       </td>
 
                                       {/* Recording */}
-                                      {call.recordingfile && (
-                                        <td className='px-3 py-4'>
-                                          <div>
-                                            {' '}
-                                            <Button
-                                              variant='white'
-                                              onClick={() => playSelectedAudioFile(call.uniqueid)}
-                                            >
-                                              <FontAwesomeIcon
-                                                icon={faPlay}
-                                                className='h-4 w-4 mr-2 text-gray-900 dark:text-gray-100'
-                                                aria-hidden='true'
-                                              />{' '}
-                                              {t('History.Play')}
-                                            </Button>
-                                          </div>
-                                        </td>
-                                      )}
-                                      {/* No recording file available */}
-                                      {!call.recordingfile && (
-                                        <td className='px-3 py-4'>
+
+                                      <td className='px-3 py-4 relative'>
+                                        {call?.recordingfile ? (
+                                          <Button
+                                            variant='white'
+                                            onClick={() => playSelectedAudioFile(call.uniqueid)}
+                                          >
+                                            <FontAwesomeIcon
+                                              icon={faPlay}
+                                              className='h-4 w-4 mr-2 text-gray-900 dark:text-gray-100'
+                                              aria-hidden='true'
+                                            />{' '}
+                                            {t('History.Play')}
+                                          </Button>
+                                        ) : (
                                           <div className='flex text-gray-500 dark:text-gray-600'>
                                             -
                                           </div>
-                                        </td>
-                                      )}
+                                        )}
+                                        {index !== 0 ? (
+                                          <div className='absolute -top-[0.03rem] left-0 right-6 h-px bg-gray-300 dark:bg-gray-600' />
+                                        ) : null}
+                                      </td>
                                     </tr>
                                   ))}
                               </tbody>
@@ -762,7 +793,7 @@ const History: NextPage = () => {
 
           {/* skeleton  */}
           {!isHistoryLoaded && (
-            <table className='min-w-full divide-y divide-gray-300 dark:divide-gray-700 bg-white dark:bg-gray-900 overflow-hidden rounded-lg'>
+            <table className='min-w-full divide-y divide-gray-300 dark:divide-gray-700 bg-white dark:bg-gray-950 overflow-hidden rounded-lg'>
               <thead>
                 <tr>
                   {Array.from(Array(6)).map((_, index) => (
@@ -793,7 +824,7 @@ const History: NextPage = () => {
           {/* pagination */}
           {totalPages > 1 && (
             <nav
-              className='flex items-center justify-between border-t px-0 py-4 border-gray-100 bg-gray-100 dark:border-gray-800 dark:bg-gray-800'
+              className='flex items-center justify-between border-t px-0 py-4 border-gray-100 bg-body dark:bg-bodyDark dark:border-gray-800 '
               aria-label='Pagination'
             >
               <div className='hidden sm:block'>

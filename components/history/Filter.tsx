@@ -352,7 +352,7 @@ export const Filter = forwardRef<HTMLButtonElement, FilterProps>(
     const { t } = useTranslation()
 
     return (
-      <div className={classNames('bg-gray-100 dark:bg-gray-800', className)} {...props}>
+      <div className={classNames('bg-body dark:bg-bodyDark', className)} {...props}>
         <div className=''>
           {/* Drawer filter mobile */}
           <Transition.Root show={open} as={Fragment}>
@@ -671,7 +671,7 @@ export const Filter = forwardRef<HTMLButtonElement, FilterProps>(
 
           {/* Filter pc */}
           <div className='mx-auto text-center'>
-            <section aria-labelledby='filter-heading' className='pb-4'>
+            <section aria-labelledby='filter-heading' className='pb-8'>
               <h2 id='filter-heading' className='sr-only'>
                 {t('History.History filters')}
               </h2>
@@ -966,7 +966,7 @@ export const Filter = forwardRef<HTMLButtonElement, FilterProps>(
                   {/* separator */}
                   <div
                     aria-hidden='true'
-                    className='h-5 w-px ml-4 block bg-gray-300 dark:bg-gray-600'
+                    className='h-5 w-px block bg-gray-300 dark:bg-gray-600'
                   />
                   {/* show selected call type only if user has cdr permissions */}
                   {profile.macro_permissions?.cdr?.permissions?.ad_cdr?.value && (

@@ -18,7 +18,7 @@ import { getSelectedTabQueueManager } from '../lib/queueManager'
 import { Button } from '../components/common'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { faArrowUpRightFromSquare, faExclamationTriangle } from '@fortawesome/free-solid-svg-icons'
-import { getApiEndpoint } from '../lib/utils'
+import { getApiEndpoint, getApiVoiceEndpoint } from '../lib/utils'
 import { getApiScheme } from '../lib/utils'
 import { useRouter } from 'next/router'
 import { MissingPermission } from '../components/common/MissingPermissionsPage'
@@ -32,9 +32,9 @@ interface tabsType {
 const QueueManager: NextPage = () => {
   const { t } = useTranslation()
 
-  const apiEnpoint = getApiEndpoint()
+  const apiVoiceEnpoint = getApiVoiceEndpoint()
   const apiScheme = getApiScheme()
-  const pbxReportUrl = apiScheme + apiEnpoint + '/pbx-report/'
+  const pbxReportUrl = apiScheme + apiVoiceEnpoint + '/pbx-report/'
 
   const auth = useSelector((state: RootState) => state.authentication)
   const router = useRouter()
@@ -103,10 +103,7 @@ const QueueManager: NextPage = () => {
             </h1>
             <div className='text-gray-900 dark:text-gray-100 text-sm flex items-center'>
               <Button size='small' variant='white'>
-                <FontAwesomeIcon
-                  icon={faArrowUpRightFromSquare}
-                  className='mr-2 h-4 w-4 text-gray-500 dark:text-gray-500'
-                />{' '}
+                <FontAwesomeIcon icon={faArrowUpRightFromSquare} className='mr-2 h-4 w-4' />
                 <a href={pbxReportUrl} target='_blank' rel='noreferrer'>
                   {t('Applications.Open PBX Report')}
                 </a>

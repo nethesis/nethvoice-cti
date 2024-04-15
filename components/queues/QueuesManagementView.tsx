@@ -37,6 +37,10 @@ import {
   faUserClock,
   faUserCheck,
   faUserXmark,
+  faClock,
+  faCheck,
+  faCircle,
+  faCircleCheck,
 } from '@fortawesome/free-solid-svg-icons'
 import { faStar as faStarLight } from '@nethesis/nethesis-light-svg-icons'
 import { getOperatorByPhoneNumber, openShowOperatorDrawer } from '../../lib/operators'
@@ -397,10 +401,7 @@ export const QueuesManagementView: FC<QueuesManagementViewProps> = ({ className 
                 <>
                   {/* login from all queues */}
                   <Button variant='white' className='mr-2 mb-2' onClick={loginAllQueues}>
-                    <FontAwesomeIcon
-                      icon={faUserCheck}
-                      className='h-4 w-4 mr-2 text-gray-500 dark:text-gray-400'
-                    />
+                    <FontAwesomeIcon icon={faCircleCheck} className='h-4 w-4 mr-2' />
                     <span>{t('Queues.Login to all queues')}</span>
                   </Button>
                 </>
@@ -426,6 +427,7 @@ export const QueuesManagementView: FC<QueuesManagementViewProps> = ({ className 
                   {/* pause on all queues */}
                   <Dropdown items={getPauseAllQueuesItemsMenu()} position='left' className='mb-3'>
                     <Button variant='primary'>
+                      <FontAwesomeIcon icon={faClock} className='h-4 w-4 mr-2' aria-hidden='true' />
                       <span>{t('Queues.Pause on all queues')}</span>
                       <FontAwesomeIcon
                         icon={faChevronDown}
@@ -452,7 +454,7 @@ export const QueuesManagementView: FC<QueuesManagementViewProps> = ({ className 
           {/* expand/collapse all queues */}
           <div
             onClick={() => toggleExpandAllQueues()}
-            className='cursor-pointer hover:underline text-sm text-gray-900 dark:text-gray-100'
+            className='cursor-pointer hover:underline text-primary dark:text-primaryDark leading-5 text-sm font-medium'
           >
             {areAllQueuesExpanded()
               ? t('Queues.Collapse all queues')
@@ -496,7 +498,7 @@ export const QueuesManagementView: FC<QueuesManagementViewProps> = ({ className 
               const queue = filteredQueues[key]
               return (
                 <div key={queue.queue}>
-                  <li className='col-span-1 rounded-md divide-y shadow divide-gray-200 bg-white dark:divide-gray-700 dark:bg-gray-900'>
+                  <li className='col-span-1 rounded-md divide-y shadow divide-gray-200 bg-cardBackgroud dark:bg-cardBackgroudDark dark:divide-gray-700 '>
                     {/* card header */}
                     <div className='flex flex-col pt-3 pb-5 px-5'>
                       <div className='flex w-full items-center justify-between space-x-6'>

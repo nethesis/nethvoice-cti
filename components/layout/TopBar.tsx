@@ -11,7 +11,7 @@ import React from 'react'
 
 import { FC, useEffect, useState, createRef, RefObject } from 'react'
 
-import { Avatar, Dropdown, Modal, TextInput, Button } from '../common'
+import { Avatar, Dropdown, Modal, TextInput, Button, Badge } from '../common'
 import { doLogout } from '../../services/login'
 import { store } from '../../store'
 import { useSelector, useDispatch } from 'react-redux'
@@ -33,6 +33,9 @@ import {
   faHeadset,
   faMobile,
   faCheck,
+  faVoicemail,
+  faArrowRight,
+  faDesktop,
 } from '@fortawesome/free-solid-svg-icons'
 import { getUserInfo } from '../../services/user'
 import { setTheme } from '../../lib/darkTheme'
@@ -51,7 +54,7 @@ interface TopBarProps {
 
 export const TopBar: FC<TopBarProps> = ({ openMobileCb }) => {
   const { name, mainextension, mainPresence, avatar } = useSelector(
-    (state: RootState) => state.user,
+    (state: RootState) => state?.user,
   )
   const { theme } = useSelector((state: RootState) => state.darkTheme)
   const auth = useSelector((state: RootState) => state.authentication)
@@ -64,6 +67,8 @@ export const TopBar: FC<TopBarProps> = ({ openMobileCb }) => {
 
   const [mainDeviceType, setMainDeviceType] = useState('')
   const [noMobileListDevice, setNoMobileListDevice]: any = useState([])
+
+  const operatorsStore: any = useSelector((state: RootState) => state.operators)
 
   // Check wich type of device is the main device
   // also filter all the device except the mobile one
@@ -170,6 +175,7 @@ export const TopBar: FC<TopBarProps> = ({ openMobileCb }) => {
     let presence: any = 'callforward'
     try {
       await forwardStatus(presence, number)
+      store.dispatch.operators.updateExtensions(profile?.mainextension, number)
       const userInfo = await getUserInfo()
 
       if (userInfo && userInfo.data) {
@@ -224,14 +230,21 @@ export const TopBar: FC<TopBarProps> = ({ openMobileCb }) => {
     <>
       <div className='cursor-default'>
         <Dropdown.Header>
-          <span className='block text-sm mb-1'>{t('TopBar.Signed in as')}</span>
-          <span className='text-sm font-medium flex justify-between'>
+          <span className='block text-sm mb-1 text-dropdownText dark:text-dropdownTextDark'>
+            {t('TopBar.Signed in as')}
+          </span>
+          <span className='text-sm font-medium flex justify-between text-dropdownText dark:text-dropdownTextDark'>
             <span className='truncate pr-2'>{name}</span>
             <span className='text-sm font-normal'>{mainextension}</span>
           </span>
         </Dropdown.Header>
       </div>
-
+      {/* Divider */}
+      <div className='relative pt-2'>
+        <div className='absolute inset-0 flex items-center' aria-hidden='true'>
+          <div className='w-full border-t  border-gray-300 dark:border-gray-700' />
+        </div>
+      </div>
       {/* Choose presence */}
       <Popover className='md:relative hover:bg-gray-200 dark:hover:bg-gray-700'>
         {({ open }) => (
@@ -239,14 +252,14 @@ export const TopBar: FC<TopBarProps> = ({ openMobileCb }) => {
             <Popover.Button
               className={classNames(
                 open ? '' : '',
-                'relative text-left cursor-pointer px-5 py-2 text-sm flex items-center gap-3 w-full ',
+                'relative text-left cursor-pointer px-5 py-2 text-sm flex items-center gap-3 w-full text-dropdownText dark:text-dropdownTextDark',
               )}
             >
               <StatusDot status={mainPresence} className='flex mr-1' />
               <span className='text-sm font-normal'>{t('TopBar.Presence')}</span>
               <FontAwesomeIcon
                 icon={faChevronRight}
-                className='ml-auto h-4 w-4 flex justify-center text-gray-700 dark:text-gray-500'
+                className='ml-auto h-4 w-4 flex justify-center'
               />
             </Popover.Button>
             <Transition
@@ -260,54 +273,81 @@ export const TopBar: FC<TopBarProps> = ({ openMobileCb }) => {
             >
               <Popover.Panel className='absolute sm:mr-[4.788rem] sm:-mt-10 right-0 z-10 w-screen max-w-xs sm:-translate-x-1/2 transform px-0.5 sm:px-1 xs:mr-[6rem] '>
                 <div className='overflow-hidden shadow-lg ring-1 ring-gray-200 dark:ring-gray-700 ring-opacity-1 rounded-md'>
-                  <div className='relative bg-white dark:border-gray-700 dark:bg-gray-900 py-2'>
+                  <div className='relative bg-dropdownBg dark:bg-dropdownBgDark dark:border-gray-700 py-2'>
                     <Dropdown.Item onClick={() => setPresence('online')}>
-                      <div>
+                      <div className='text-dropdownText dark:text-dropdownTextDark'>
                         <div className='flex items-center'>
                           <StatusDot status='online' className='flex mr-2' />
                           <p className='flex text-sm font-medium'>{t('TopBar.Online')}</p>
                         </div>
-                        <p className='text-sm text-gray-500'>
-                          {t('TopBar.Make and receive phone calls')}
-                        </p>
+                        <p className='text-sm mt-2'>{t('TopBar.Make and receive phone calls')}</p>
                       </div>
                     </Dropdown.Item>
-                    <Dropdown.Item onClick={() => setPresence('callforward')}>
-                      <div className=''>
-                        <div className='flex items-center'>
-                          <StatusDot status='callforward' className='flex mr-2' />
-                          <p className='flex text-sm font-medium'> {t('TopBar.Call forward')}</p>
+                    {/* check callforward permission */}
+                    {profile.profile?.macro_permissions?.settings?.permissions?.call_forward
+                      ?.value && (
+                      <Dropdown.Item onClick={() => setPresence('callforward')}>
+                        <div className='text-dropdownText dark:text-dropdownTextDark'>
+                          <div className='flex items-center'>
+                            <StatusDot status='callforward' className='flex mr-2' />
+                            <p className='flex text-sm font-medium'> {t('TopBar.Call forward')}</p>
+                            <FontAwesomeIcon icon={faArrowRight} className='h-4 w-4 ml-2' />
+                          </div>
+                          <p className='text-sm mt-2'>
+                            {t('TopBar.Forward incoming calls to another phone number')}
+                          </p>
                         </div>
-                        <p className='text-sm text-gray-500'>
-                          {t('TopBar.Forward incoming calls to another phone number')}
-                        </p>
-                      </div>
-                    </Dropdown.Item>
-                    <Dropdown.Item onClick={() => setPresence('voicemail')}>
-                      <div className=''>
-                        <div className='flex items-center'>
-                          <StatusDot status='voicemail' className='flex mr-2' />
-                          <p className='flex text-sm font-medium'> {t('TopBar.Voicemail')}</p>
+                      </Dropdown.Item>
+                    )}
+                    {/* check cellphone permission */}
+                    {!isEmpty(profile?.endpoints?.cellphone) && (
+                      <Dropdown.Item
+                        onClick={() => setForwardPresence(profile?.endpoints?.cellphone[0]?.id)}
+                      >
+                        {/* setPresence('cellphone') */}
+                        <div className='text-dropdownText dark:text-dropdownTextDark'>
+                          <div className='flex items-center'>
+                            <StatusDot status='callforward' className='flex mr-2' />
+                            <p className='flex text-sm font-medium'> {t('TopBar.Cellphone')}</p>
+                            <FontAwesomeIcon icon={faMobile} className='h-4 w-4 ml-2' />
+                          </div>
+                          <p className='text-sm mt-2'>
+                            {t('TopBar.Forward incoming calls to cellphone')}
+                          </p>
                         </div>
-                        <p className='text-sm text-gray-500'>{t('TopBar.Activate voicemail')}</p>
-                      </div>
-                    </Dropdown.Item>
+                      </Dropdown.Item>
+                    )}
+                    {/* check voicemail permission */}
+                    {!isEmpty(profile?.endpoints?.voicemail) && (
+                      <Dropdown.Item onClick={() => setPresence('voicemail')}>
+                        <div className='text-dropdownText dark:text-dropdownTextDark'>
+                          <div className='flex items-center'>
+                            <StatusDot status='voicemail' className='flex mr-2' />
+                            <p className='flex text-sm font-medium'> {t('TopBar.Voicemail')}</p>
+                            <FontAwesomeIcon icon={faVoicemail} className='h-4 w-4 ml-2' />
+                          </div>
+                          <p className='text-sm mt-2'>{t('TopBar.Activate voicemail')}</p>
+                        </div>
+                      </Dropdown.Item>
+                    )}
+                    {/* divider  */}
                     <div className='relative py-2'>
                       <div className='absolute inset-0 flex items-center' aria-hidden='true'>
-                        <div className='w-full border-t  border-gray-300 dark:border-gray-600' />
+                        <div className='w-full border-t border-gray-300 dark:border-gray-700' />
                       </div>
                     </div>
-                    <Dropdown.Item onClick={() => setPresence('dnd')}>
-                      <div>
-                        <div className='flex items-center'>
-                          <StatusDot status='dnd' className='flex mr-2' />
-                          <p className='flex text-sm font-medium'>{t('TopBar.Do not disturb')}</p>
+                    {/* check dnd permission */}
+                    {profile.profile?.macro_permissions?.settings?.permissions?.dnd?.value && (
+                      <Dropdown.Item onClick={() => setPresence('dnd')}>
+                        <div className='text-dropdownText dark:text-dropdownTextDark'>
+                          <div className='flex items-center'>
+                            <StatusDot status='dnd' className='flex mr-2' />
+                            <p className='flex text-sm font-medium'>{t('TopBar.Do not disturb')}</p>
+                          </div>
+                          <p className='text-sm mt-2'>{t('TopBar.Do not receive any calls')}</p>
                         </div>
-                        <p className='text-sm text-gray-500'>
-                          {t('TopBar.Do not receive any calls')}
-                        </p>
-                      </div>
-                    </Dropdown.Item>
+                      </Dropdown.Item>
+                    )}
                   </div>
                 </div>
               </Popover.Panel>
@@ -323,7 +363,7 @@ export const TopBar: FC<TopBarProps> = ({ openMobileCb }) => {
             <Popover.Button
               className={classNames(
                 open ? '' : '',
-                'relative text-left cursor-pointer px-4 py-2 text-sm flex items-center gap-3 w-full ',
+                'relative text-left cursor-pointer px-5 py-2 text-sm flex items-center gap-3 w-full text-dropdownText dark:text-dropdownTextDark',
               )}
             >
               <FontAwesomeIcon
@@ -332,14 +372,16 @@ export const TopBar: FC<TopBarProps> = ({ openMobileCb }) => {
                     ? faHeadset
                     : mainDeviceType === 'physical'
                     ? faOfficePhone
-                    : faMobile
+                    : mainDeviceType === 'nethlink'
+                    ? faDesktop
+                    : faHeadset
                 }
-                className='h-4 w-4 flex justify-center text-gray-700 dark:text-gray-400'
+                className='ml-[-0.2rem] h-4 w-4 flex justify-center '
               />
               <span className='text-sm font-normal'>{t('TopBar.Main device')}</span>
               <FontAwesomeIcon
                 icon={faChevronRight}
-                className='h-4 w-4 flex justify-center text-gray-700 dark:text-gray-400'
+                className='ml-auto h-4 w-4 flex justify-center'
               />
             </Popover.Button>
             <Transition
@@ -355,41 +397,57 @@ export const TopBar: FC<TopBarProps> = ({ openMobileCb }) => {
               <Popover.Panel className='absolute sm:mr-[4.788rem] sm:-mt-10 right-0 z-10 w-screen max-w-xs sm:-translate-x-1/2 transform px-0.5 sm:px-1 xs:mr-[6rem] '>
                 <div className='overflow-hidden shadow-lg ring-1 ring-gray-200 dark:ring-gray-700 ring-opacity-1 rounded-md'>
                   <div className='relative bg-white dark:border-gray-700 dark:bg-gray-900 py-2'>
-                    {noMobileListDevice.map((device: any) => (
-                      <Dropdown.Item
-                        key={device?.id}
-                        onClick={() => setMainDeviceId(device?.id, device?.type, device)}
-                      >
-                        <div className='truncate'>
-                          <div className='flex items-center space-x-2'>
-                            {device?.id === profile?.default_device?.id ? (
-                              <FontAwesomeIcon
-                                icon={faCheck}
-                                className='ml-auto mr-2 h-4 w-4 flex justify-center text-primary dark:text-gray-500'
-                              />
-                            ) : (
-                              <FontAwesomeIcon
-                                icon={faCheck}
-                                className='ml-auto mr-2 h-4 w-4 flex justify-center text-primary dark:text-gray-500 invisible'
-                              />
-                            )}
+                    {noMobileListDevice
+                      .sort((a: any, b: any) => {
+                        const order = ['webrtc', 'nethlink', 'physical']
+                        return order.indexOf(a.type) - order.indexOf(b.type)
+                      })
+                      .map((device: any) => (
+                        <Dropdown.Item
+                          key={device?.id}
+                          onClick={() => setMainDeviceId(device?.id, device?.type, device)}
+                        >
+                          <div className='truncate'>
+                            <div className='flex items-center space-x-2'>
+                              {device?.id === profile?.default_device?.id ? (
+                                <FontAwesomeIcon
+                                  icon={faCheck}
+                                  className='ml-auto mr-2 h-4 w-4 flex justify-center text-primary dark:text-dropdownTextDark'
+                                />
+                              ) : (
+                                <FontAwesomeIcon
+                                  icon={faCheck}
+                                  className='ml-auto mr-2 h-4 w-4 flex justify-center text-primary dark:text-dropdownTextDark invisible select-none'
+                                />
+                              )}
 
-                            <FontAwesomeIcon
-                              icon={device?.type === 'webrtc' ? faHeadset : faOfficePhone}
-                              className='ml-auto h-4 w-4 flex justify-center text-gray-700 dark:text-gray-500'
-                            />
-                            {device.type === 'webrtc' && (
-                              <p className='text-sm'>{t('Devices.Web phone')}</p>
-                            )}
-                            {device.type === 'physical' && (
-                              <p className='flex text-sm font-medium max-w-[6rem] line-clamp-2'>
-                                {device?.description}
-                              </p>
-                            )}
+                              <FontAwesomeIcon
+                                icon={
+                                  device?.type === 'webrtc'
+                                    ? faHeadset
+                                    : device?.type === 'physical'
+                                    ? faOfficePhone
+                                    : faDesktop
+                                }
+                                className='ml-auto h-4 w-4 flex justify-center text-dropdownText dark:text-dropdownTextDark'
+                              />
+                              {device?.type === 'webrtc' && (
+                                <p className='text-sm'>{t('Devices.Web phone')}</p>
+                              )}
+                              {device?.type === 'nethlink' && (
+                                <p className='flex text-sm font-medium line-clamp-2'>
+                                  {t('Devices.PhoneLink')}
+                                </p>
+                              )}
+                              {device?.type === 'physical' && (
+                                <p className='truncate flex text-sm font-medium max-w-[6rem] line-clamp-2'>
+                                  {device?.description || t('Devices.IP phone')}
+                                </p>
+                              )}
+                            </div>
                           </div>
-                        </div>
-                      </Dropdown.Item>
-                    ))}
+                        </Dropdown.Item>
+                      ))}
                   </div>
                 </div>
               </Popover.Panel>
@@ -397,6 +455,21 @@ export const TopBar: FC<TopBarProps> = ({ openMobileCb }) => {
           </>
         )}
       </Popover>
+
+      {/* profile picture redirect */}
+      <Dropdown.Item icon={faUser}>
+        <Link href={{ pathname: '/settings', query: { section: 'Profile picture' } }}>
+          <span>{t('Settings.Profile picture')}</span>
+        </Link>
+      </Dropdown.Item>
+      {/* Divider */}
+      <div className='relative pt-2'>
+        <div className='absolute inset-0 flex items-center' aria-hidden='true'>
+          <div className='w-full border-t  border-gray-300 dark:border-gray-700' />
+        </div>
+      </div>
+
+      {/* toggle light/dark theme  */}
       <Dropdown.Item
         icon={
           theme === 'dark' ||
@@ -411,11 +484,6 @@ export const TopBar: FC<TopBarProps> = ({ openMobileCb }) => {
           ? `${t('TopBar.Switch to light theme')}`
           : `${t('TopBar.Switch to dark theme')}`}
       </Dropdown.Item>
-      <Dropdown.Item icon={faUser}>
-        <Link href={{ pathname: '/settings', query: { section: 'Profile picture' } }}>
-          <a>{t('Settings.Profile picture')}</a>
-        </Link>
-      </Dropdown.Item>
       <Dropdown.Item icon={faArrowRightFromBracket} onClick={() => disconnectionFunction()}>
         {t('TopBar.Logout')}
       </Dropdown.Item>
@@ -424,7 +492,7 @@ export const TopBar: FC<TopBarProps> = ({ openMobileCb }) => {
 
   return (
     <header className='w-full'>
-      <div className='relative z-50 flex h-16 flex-shrink-0 border-b shadow-sm border-gray-200 bg-white dark:border-gray-700 dark:bg-gray-900'>
+      <div className='relative z-50 flex h-16 flex-shrink-0 border-b shadow-sm border-gray-200 dark:border-gray-700 bg-topbar dark:bg-topbarDark'>
         <button
           type='button'
           className='border-r px-4 focus:outline-none focus:ring-2 focus:ring-inset md:hidden focus:ring-primaryLight border-gray-200 text-gray-500 dark:focus:ring-primaryDark dark:border-gray-700 dark:text-gray-400'
@@ -436,6 +504,47 @@ export const TopBar: FC<TopBarProps> = ({ openMobileCb }) => {
         <div className='flex flex-1 justify-end px-4 sm:px-6'>
           <GlobalSearch />
           <div className='ml-2 flex items-center space-x-2'>
+            {/* status badge ( voicemail or callforward) */}
+            {(mainPresence === 'callforward' ||
+              mainPresence === 'voicemail' ||
+              mainPresence === 'cellphone') && (
+              <Badge
+                variant={
+                  mainPresence === 'callforward' || mainPresence === 'cellphone'
+                    ? 'callforward'
+                    : 'voicemail'
+                }
+                rounded='full'
+                size='small'
+                className='z-[100]'
+              >
+                <span>
+                  {mainPresence === 'callforward'
+                    ? t('TopBar.Call forward')
+                    : mainPresence === 'cellphone'
+                    ? t('TopBar.Cellphone')
+                    : t('TopBar.Voicemail')}
+                </span>
+                {profile?.endpoints?.cellphone[0]?.id &&
+                  mainPresence === 'cellphone' &&
+                  `${': ' + profile?.endpoints?.cellphone[0]?.id}`}
+                {operatorsStore?.extensions[profile?.mainextension]?.cf !== '' &&
+                  mainPresence === 'callforward' &&
+                  `${': ' + operatorsStore?.extensions[profile?.mainextension]?.cf}`}
+                <FontAwesomeIcon
+                  icon={
+                    mainPresence === 'callforward'
+                      ? faArrowRight
+                      : mainPresence === 'cellphone'
+                      ? faMobile
+                      : faVoicemail
+                  }
+                  className='h-4 w-4 ml-2 text-topBarText dark:text-topBarTextDark'
+                  aria-hidden='true'
+                />
+              </Badge>
+            )}
+
             {/* Notifications drawer */}
             <Button variant='ghost' onClick={() => openNotificationsDrawer()}>
               <span className='relative inline-block'>
@@ -443,9 +552,9 @@ export const TopBar: FC<TopBarProps> = ({ openMobileCb }) => {
                   icon={faBell}
                   className={
                     'h-5 w-5 py-1 px-0.5 flex-shrink-0 ' +
-                    (sideDrawer.isShown && sideDrawer.contentType === 'notifications'
+                    (sideDrawer?.isShown && sideDrawer?.contentType === 'notifications'
                       ? ' text-primary dark:text-primaryDark'
-                      : ' text-gray-500 dark:text-gray-400')
+                      : ' text-topBarText dark:text-topBarTextDark')
                   }
                   aria-hidden='true'
                 />
@@ -465,7 +574,7 @@ export const TopBar: FC<TopBarProps> = ({ openMobileCb }) => {
               </span>
             </Button>
             {/* Profile dropdown */}
-            <Dropdown items={dropdownItems} position='left' divider={true} className='pl-3'>
+            <Dropdown items={dropdownItems} position='left' className='pl-3'>
               <span className='sr-only'>{t('TopBar.Open user menu')}</span>
               <Avatar
                 size='small'

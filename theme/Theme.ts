@@ -1,19 +1,19 @@
-// Copyright (C) 2023 Nethesis S.r.l.
+// Copyright (C) 2024 Nethesis S.r.l.
 // SPDX-License-Identifier: AGPL-3.0-or-later
 
 const theme = {
   button: {
     base: 'inline-flex content-center items-center justify-center font-medium tracking-wide transition-colors duration-200 transform focus:outline-none focus:z-20 disabled:cursor-not-allowed',
     primary:
-      'border border-transparent bg-primary text-white hover:bg-primaryDark focus:ring-primaryLight dark:bg-emerald-700 dark:text-gray-200 dark:hover:bg-primaryDark focus:ring-primaryLight focus:ring-2 focus:ring-offset-2',
+      'border border-transparent bg-primary dark:bg-primaryDark text-white dark:text-primaryButtonTextDark hover:bg-primaryHover dark:hover:bg-primaryDarkHover focus:ring-2 focus:ring-primaryRing dark:focus:ring-primaryRingDark ring-offset-2 ring-offset-slate-50 dark:ring-offset-slate-900',
     secondary:
       'border border-transparent focus:ring-primaryLight bg-primaryLighter text-primaryDark hover:bg-primaryLighter dark:focus:ring-primaryDark dark:bg-primaryDarker dark:text-primaryLight dark:hover:bg-primaryDarker focus:ring-2 focus:ring-offset-2',
     white:
-      'border shadow-sm border-gray-300 bg-white text-gray-700 hover:bg-gray-100 focus:ring-primaryLight dark:border-gray-600 dark:bg-gray-900 dark:text-gray-100 dark:hover:bg-gray-800 dark:focus:ring-primaryDark focus:ring-2 focus:ring-offset-2',
+      'border shadow-sm border-gray-300 dark:border-gray-500 bg-transparent dark:bg-transparent text-primary dark:text-primaryDark hover:bg-gray-200 hover:bg-opacity-30 dark:hover:bg-gray-600 dark:hover:bg-opacity-30 focus:ring-primaryLight dark:focus:ring-primaryDark focus:ring-2 focus:ring-offset-2',
     ghost:
-      'border-gray-300 text-gray-700 hover:bg-gray-200 focus:ring-primaryLight dark:border-gray-600 dark:text-gray-100 dark:hover:bg-gray-700 dark:focus:ring-primaryDark',
+      'border-gray-300 text-primary dark:text-primaryDark  hover:bg-gray-200 hover:bg-opacity-30 dark:hover:bg-gray-600 dark:hover:bg-opacity-30  focus:ring-primaryLight dark:border-gray-600 dark:focus:ring-primaryDark',
     dashboard:
-      'border-gray-300 text-gray-700 hover:bg-gray-200 dark:border-gray-600 dark:text-gray-700 dark:hover:bg-gray-700 dark:hover:disabled:bg-transparent hover:disabled:bg-transparent dark:focus:ring-primaryDark',
+      'border-gray-300 text-primary dark:text-primaryDark hover:bg-gray-200 dark:border-gray-600  dark:hover:bg-gray-700 dark:hover:disabled:bg-transparent hover:disabled:bg-transparent dark:focus:ring-primaryDark',
     danger:
       'border border-transparent focus:ring-red-500 bg-red-600 hover:bg-red-700 text-white dark:focus:ring-red-600 dark:bg-red-700 dark:hover:bg-red-800 dark:text-white focus:ring-2 focus:ring-offset-2',
     rounded: {
@@ -59,10 +59,10 @@ const theme = {
     iconDisabled: 'text-gray-500 dark:text-gray-400',
   },
   input: {
-    base: 'block w-full relative focus:z-[8] disabled:cursor-not-allowed bg-white text-gray-900 dark:bg-gray-900 dark:text-gray-100  disabled:border-gray-200 disabled:bg-gray-50 disabled:text-gray-500 dark:disabled:border-gray-700 dark:disabled:bg-gray-900 dark:disabled:text-gray-400',
-    label: 'text-sm font-medium text-gray-700 dark:text-gray-200',
+    base: 'block w-full relative focus:z-[8] disabled:cursor-not-allowed bg-bgInput dark:bg-bgInputDark text-gray-900  dark:text-gray-100  disabled:border-gray-200 disabled:bg-gray-50 disabled:text-gray-500 dark:disabled:border-gray-700 dark:disabled:bg-gray-900 dark:disabled:text-gray-400 autofill:border-orange-500 ',
+    label: 'text-sm font-medium text-inputText dark:text-inputTextDark',
     placeholder: {
-      base: 'placeholder:text-gray-500 dark:placeholder:text-gray-400',
+      base: 'placeholder:text-placeHolderInputText dark:placeholder:text-placeHolderInputTextDark',
       error: '',
     },
     helper: {
@@ -73,8 +73,8 @@ const theme = {
       },
     },
     size: {
-      base: 'px-3 py-2 sm:text-sm',
-      large: 'px-4 py-3 sm:text-base',
+      base: 'px-3 py-2 text-sm',
+      large: 'px-4 py-3 text-base',
     },
     colors: {
       gray: 'border-gray-300 focus:border-primaryLight focus:ring-primaryLight placeholder:text-gray-400 dark:border-gray-600 dark:focus:border-primaryDark dark:focus:ring-primaryDark dark:placeholder:text-gray-500',
@@ -83,7 +83,7 @@ const theme = {
     },
     icon: {
       base: 'absolute flex items-center z-[9]',
-      gray: 'text-gray-400 dark:text-gray-500',
+      gray: 'text-inputIcon dark:text-inputIconDark autofill:text-red-500',
       red: 'text-red-500 dark:text-red-400',
       left: 'inset-y-0 left-0 pl-3',
       right: 'inset-y-0 right-0 pr-3',
@@ -357,7 +357,7 @@ const theme = {
       base: 'block px-4 text-sm flex items-center gap-3 mt-1 mb-1 cursor-pointer',
       light: 'text-gray-700 dark:text-gray-300',
       active: 'bg-gray-200 text-gray-900 dark:bg-gray-700 dark:text-gray-100',
-      icon: 'h-4 w-4 flex text-gray-500 dark:text-gray-400',
+      icon: 'h-4 w-4 flex text-dropdownText dark:text-dropdownTextDark',
       centered: 'justify-center',
     },
     items: {

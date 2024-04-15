@@ -14,7 +14,7 @@ export const RangeSlider = <T extends number | readonly number[]>(_props: ReactS
           className={cn({
             'h-full': !isVertical,
             'w-full': isVertical,
-            'aspect-square rounded-full text-xs flex items-center justify-center cursor-grab border bg-white border-gray-400 dark:bg-gray-900 dark:border-gray-500':
+            'aspect-square rounded-full text-xs flex items-center justify-center cursor-grab border bg-white border-gray-400 dark:bg-gray-600 dark:border-gray-300':
               true,
           })}
         ></div>
@@ -33,7 +33,7 @@ export const RangeSlider = <T extends number | readonly number[]>(_props: ReactS
               'h-1/4 top-1/2 -translate-y-1/2': !isVertical,
               'w-1/4 left-1/2 -translate-x-1/2': isVertical,
               'rounded-full': true,
-              'bg-gray-300 dark:bg-gray-400': isMulti ? isFirst || isLast : isLast,
+              'bg-gray-300 dark:bg-gray-100': isMulti ? isFirst || isLast : isLast,
               'bg-primaryLight dark:bg-primaryDark': isMulti ? !isFirst || !isLast : isFirst,
             })}
           ></div>

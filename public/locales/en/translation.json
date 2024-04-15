@@ -55,10 +55,11 @@
     "Confirm": "Confirm",
     "Example": "Example",
     "Start recording message before": "Click the button below to start recording",
-    "Start recording message after": "You can speak in a moment..."
+    "Start recording message after": "You can speak in a moment...",
+    "Required": "Required"
   },
   "Login": {
-    "User": "User",
+    "User": "Username",
     "Password": "Password",
     "Sign in": "Sign in",
     "The application is open in another window": "The application is open in another window",
@@ -115,7 +116,9 @@
     "Show contact": "Show contact",
     "Add phone number": "Add phone number",
     "Edit contact": "Edit contact",
-    "No recent calls": "No recent calls"
+    "No recent calls": "No recent calls",
+    "No results": "No results",
+    "Please enter a valid phone number": "Please enter a valid phone number"
   },
   "History": {
     "History": "History",
@@ -281,8 +284,7 @@
     "Callforward": "Forward",
     "Do not disturb": "Do not disturb",
     "Available presence": "Available presence",
-    "PhoneLink configuration": "Phone link configuration",
-    "Get PhoneLink configuration": "Get configuration"
+    "PhoneLink configuration": "Desktop phone configuration"
   },
   "TopBar": {
     "Signed in as": "Signed in as",
@@ -301,7 +303,9 @@
     "Open sidebar": "Open sidebar",
     "Main device": "Main device",
     "Voicemail": "Voicemail",
-    "Activate voicemail": "Activate voicemail"
+    "Activate voicemail": "Activate voicemail",
+    "Cellphone": "Cellphone",
+    "Forward incoming calls to cellphone": "Forward incoming calls to cellphone"
   },
   "OperatorDrawer": {
     "Book": "Book",
@@ -334,10 +338,10 @@
   "Queues": {
     "Queues": "Queues",
     "Filter queues": "Filter queues",
-    "Login to all queues": "Login to all queues",
-    "Logout from all queues": "Logout from all queues",
-    "Pause on all queues": "Pause on all queues",
-    "End pause on all queues": "End pause on all queues",
+    "Login to all queues": "Login all queues",
+    "Logout from all queues": "Logout all queues",
+    "Pause on all queues": "Pause all queues",
+    "End pause on all queues": "End pause all queues",
     "Collapse all queues": "Collapse all queues",
     "Expand all queues": "Expand all queues",
     "No queues": "No queues",
@@ -525,7 +529,8 @@
     "Select date start": "Select date start",
     "Select date end": "Select date end",
     "Newest": "Newest",
-    "Oldest": "Oldest"
+    "Oldest": "Oldest",
+    "Save recording": "Save recording"
   },
   "SpeedDial": {
     "Create": "Create",
@@ -826,12 +831,19 @@
     "Select audio input": "Select audio input",
     "Select audio output": "Select audio output",
     "Device settings": "Device settings",
-    "PhoneLink": "Phone link",
-    "PhoneLink settings": "Open Phone link",
+    "PhoneLink": "Desktop phone",
+    "PhoneLink settings": "Open Desktop phone",
     "Click here to start download": "Click here to start download",
-    "Download PhoneLink": "Download Phone link",
+    "Download PhoneLink": "Download Desktop phone",
     "Not configured": "Not configured",
-    "IP phone": "IP phone"
+    "IP phone": "IP phone",
+    "Key type select": "Key type select",
+    "Download App": "Download App",
+    "Speaker": "Speaker",
+    "Microphone": "Microphone",
+    "All download options": "All download options",
+    "Download Desktop app": "Download Desktop phone app",
+    "Operating system": "Operating system"
   },
   "DropdownContent": {
     "Microphones": "MICROPHONES",

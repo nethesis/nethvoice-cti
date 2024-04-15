@@ -98,7 +98,7 @@ export const MonitorTables: FC<MonitorTablesProps> = ({
           }`}
         >
           {/* First Queue card  */}
-          <div className='border-b rounded-lg shadow-md border-gray-200 dark:border-gray-700 bg-white dark:bg-gray-900 px-5 py-4 sm:mt-1 relative'>
+          <div className='border-b rounded-lg shadow-md border-gray-200 dark:border-gray-700 bg-cardBackgroud dark:bg-cardBackgroudDark px-5 py-4 sm:mt-1 relative'>
             {/* Header section */}
             <div className='flex items-center space-x-2'>
               {/* left side */}
@@ -111,7 +111,7 @@ export const MonitorTables: FC<MonitorTablesProps> = ({
                         <div className='flex items-center'>
                           <div className='relative'>
                             <Listbox.Button
-                              className={`relative  cursor-default rounded-md bg-white dark:bg-gray-900 py-1.5 pr-10 text-left text-gray-900 dark:text-gray-100 focus:outline-none sm:text-sm sm:leading-6 ${
+                              className={`relative  cursor-default rounded-md py-1.5 pr-10 text-left text-gray-950 dark:text-gray-300 focus:outline-none sm:text-sm sm:leading-6 ${
                                 isFullscreen ? 'w-96' : 'w-48'
                               }  `}
                             >
@@ -222,7 +222,7 @@ export const MonitorTables: FC<MonitorTablesProps> = ({
                     onClick={toggleAddQueueCard}
                     size={isFullscreen ? 'large' : 'base'}
                   >
-                    <FontAwesomeIcon icon={faPlus} className='text-gray-500' />
+                    <FontAwesomeIcon icon={faPlus} />
                     <span className='ml-2'>{t('QueueManager.Add queue')} </span>
                   </Button>
                 )}
@@ -235,7 +235,7 @@ export const MonitorTables: FC<MonitorTablesProps> = ({
                 {/* empty state */}
 
                 <EmptyState
-                  title={t('QueueManager.No queue selected') || ""}
+                  title={t('QueueManager.No queue selected') || ''}
                   description='Please select a queue'
                   icon={
                     <FontAwesomeIcon
@@ -347,7 +347,7 @@ export const MonitorTables: FC<MonitorTablesProps> = ({
         {/* Second Queue card  */}
         {showSecondCard && (
           <div className={`${!isFullscreen ? 'pt-8' : 'pt-1'}`}>
-            <div className='border-b rounded-lg shadow-md border-gray-200 dark:border-gray-700 bg-white dark:bg-gray-900 px-5 py-4 sm:mt-1 relative'>
+            <div className='border-b rounded-lg shadow-md border-gray-200 dark:border-gray-700 bg-cardBackgroud dark:bg-cardBackgroudDark px-5 py-4 sm:mt-1 relative'>
               {/* Header section */}
               <div className='flex items-center space-x-2'>
                 {/* left side */}
@@ -362,7 +362,7 @@ export const MonitorTables: FC<MonitorTablesProps> = ({
                               </Listbox.Label> */}
                             <div className='relative'>
                               <Listbox.Button
-                                className={`relative  cursor-default rounded-md bg-white dark:bg-gray-900 py-1.5 pr-10 text-left text-gray-900 dark:text-gray-100 focus:outline-none sm:text-sm sm:leading-6 ${
+                                className={`relative  cursor-default rounded-md py-1.5 pr-10 text-left text-gray-950 dark:text-gray-300 focus:outline-none sm:text-sm sm:leading-6 ${
                                   isFullscreen ? 'w-96' : 'w-48'
                                 }  `}
                               >
@@ -460,7 +460,9 @@ export const MonitorTables: FC<MonitorTablesProps> = ({
                     >
                       {getWaitingCallsCount(selectedQueueSecondTable.queue)}
                     </span>
-                    <span className={`text-orange-700 ${isFullscreen ? 'text-2xl' : 'text-base'}  `}>
+                    <span
+                      className={`text-orange-700 ${isFullscreen ? 'text-2xl' : 'text-base'}  `}
+                    >
                       {t('QueueManager.Waiting calls')}
                     </span>
                   </div>
@@ -471,7 +473,7 @@ export const MonitorTables: FC<MonitorTablesProps> = ({
                       onClick={toggleAddQueueCard}
                       size={isFullscreen ? 'large' : 'base'}
                     >
-                      <FontAwesomeIcon icon={faMinus} className='text-gray-500' />
+                      <FontAwesomeIcon icon={faMinus} />
                       <span className='ml-2'>{t('QueueManager.Remove')}</span>
                     </Button>
                   )}
@@ -483,7 +485,7 @@ export const MonitorTables: FC<MonitorTablesProps> = ({
                 <>
                   {/* empty state */}
                   <EmptyState
-                    title={t('QueueManager.No queue selected') || ""}
+                    title={t('QueueManager.No queue selected') || ''}
                     description='Please select a queue'
                     icon={
                       <FontAwesomeIcon

@@ -35,6 +35,7 @@ export const AnnouncementFilter = forwardRef<HTMLButtonElement, AnnouncementFilt
     const [textFilter, setTextFilter] = useState('')
     const textFilterRef = useRef() as React.MutableRefObject<HTMLInputElement>
     const [open, setOpen] = useState(false)
+    const profile: any = useSelector((state: RootState) => state.user)
 
     const sortFilter = {
       id: 'sort',
@@ -303,15 +304,19 @@ export const AnnouncementFilter = forwardRef<HTMLButtonElement, AnnouncementFilt
                 {/* Container for add announcement button  */}
                 <Dropdown
                   position='left'
+                  className='pb-6 sm:pb-0'
                   items={
                     <>
-                      <Dropdown.Item onClick={recordingAnnouncement}>
-                        <FontAwesomeIcon
-                          icon={faRecordVinyl}
-                          className='mr-2 h-4 w-4 text-gray-500'
-                        />
-                        {t('Lines.Record announcement')}
-                      </Dropdown.Item>
+                      {profile?.mainPresence !== 'busy' && profile?.mainPresence !== 'incoming' && (
+                        <Dropdown.Item onClick={recordingAnnouncement}>
+                          <FontAwesomeIcon
+                            icon={faRecordVinyl}
+                            className='mr-2 h-4 w-4 text-gray-500'
+                          />
+                          {t('Lines.Record announcement')}
+                        </Dropdown.Item>
+                      )}
+
                       <Dropdown.Item onClick={openCreateAnnouncementDrawer}>
                         <FontAwesomeIcon
                           icon={faFileAudio}

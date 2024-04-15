@@ -38,8 +38,8 @@ export const CreateOrEditSpeedDialDrawerContent = forwardRef<
     nameRef.current.focus()
   }, [config])
 
-  const [nameError, setNameError] = useState('')
-  const [phoneNumberError, setPhoneNumberError] = useState('')
+  const [nameError, setNameError]: any = useState('')
+  const [phoneNumberError, setPhoneNumberError]: any = useState('')
   const [createSpeedDialError, setCreateSpeedDialError] = useState('')
   const [editSpeedDialError, setEditSpeedDialError] = useState('')
 
@@ -54,7 +54,7 @@ export const CreateOrEditSpeedDialDrawerContent = forwardRef<
 
     // name
     if (!nameRef.current.value.trim()) {
-      setNameError('Required')
+      setNameError(t('Common.Required'))
 
       if (isValidationOk) {
         nameRef.current.focus()
@@ -64,11 +64,19 @@ export const CreateOrEditSpeedDialDrawerContent = forwardRef<
 
     // phone number
     if (!phoneNumberRef.current.value.trim()) {
-      setPhoneNumberError('Required')
-
+      setPhoneNumberError(t('Common.Required'))
       if (isValidationOk) {
         phoneNumberRef.current.focus()
         isValidationOk = false
+      }
+    } else {
+      let speedDialNumber = phoneNumberRef.current.value.trim()
+      if (!/[0-9*#+]/.test(speedDialNumber)) {
+        setPhoneNumberError(t('Phonebook.Please enter a valid phone number'))
+        if (isValidationOk) {
+          nameRef.current.focus()
+          isValidationOk = false
+        }
       }
     }
     return isValidationOk
@@ -145,7 +153,7 @@ export const CreateOrEditSpeedDialDrawerContent = forwardRef<
 
   return (
     <>
-      <div className='bg-gray-100 dark:bg-gray-800 py-6 px-6'>
+      <div className='bg-white dark:bg-gray-900 pt-6 px-6'>
         <div className='flex items-center justify-between'>
           <div className='text-lg font-medium dark:text-gray-200 text-gray-700'>
             {config.isEdit
@@ -157,10 +165,16 @@ export const CreateOrEditSpeedDialDrawerContent = forwardRef<
           </div>
         </div>
       </div>
-      <div className={classNames(className, 'm-1 p-5')} {...props}>
+      <div className={classNames(className, 'px-5')} {...props}>
+        {/* Divider */}
+        <div className='relative pb-8'>
+          <div className='absolute inset-0 flex items-center' aria-hidden='true'>
+            <div className='w-full border-t border-gray-300 dark:border-gray-600' />
+          </div>
+        </div>
         {/* name */}
         <TextInput
-          label='Name'
+          label={t('Phonebook.Name') || ''}
           name='name'
           ref={nameRef}
           className='mb-4'
@@ -169,7 +183,7 @@ export const CreateOrEditSpeedDialDrawerContent = forwardRef<
         />
         {/* phone number */}
         <TextInput
-          label='Phone number'
+          label={t('Common.Phone number') || ''}
           name='phoneNumber'
           ref={phoneNumberRef}
           className='mb-6'
@@ -184,14 +198,23 @@ export const CreateOrEditSpeedDialDrawerContent = forwardRef<
         {editSpeedDialError && (
           <InlineNotification type='error' title={editSpeedDialError} className='mb-6' />
         )}
-        <div className='flex'>
+        {/* Divider */}
+        <div className='relative pb-10 pt-6'>
+          <div className='absolute inset-0 flex items-center' aria-hidden='true'>
+            <div className='w-full border-t border-gray-300 dark:border-gray-600' />
+          </div>
+        </div>
+        <div className='flex items-center justify-end'>
+          <Button variant='white' type='submit' onClick={closeSideDrawer} className='mb-4'>
+            {t('Common.Cancel')}
+          </Button>
           {config.isEdit ? (
             <Button
               ref={saveButtonRef}
               variant='primary'
               type='submit'
               onClick={prepareEditSpeedDial}
-              className='mb-4'
+              className='ml-4 mb-4'
             >
               <FontAwesomeIcon icon={faPen} className='mr-2 h-4 w-4' />
               {t('SpeedDial.Save speed dial')}
@@ -201,15 +224,12 @@ export const CreateOrEditSpeedDialDrawerContent = forwardRef<
               variant='primary'
               type='submit'
               onClick={prepareCreateSpeedDial}
-              className='mb-4'
+              className='ml-4 mb-4'
             >
               <FontAwesomeIcon icon={faPlus} className='mr-2 h-4 w-4' />
               {t('SpeedDial.Create speed dial')}
             </Button>
           )}
-          <Button variant='white' type='submit' onClick={closeSideDrawer} className='ml-4 mb-4'>
-            {t('Common.Cancel')}
-          </Button>
         </div>
       </div>
     </>

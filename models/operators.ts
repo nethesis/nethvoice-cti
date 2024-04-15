@@ -121,5 +121,16 @@ export const operators = createModel<RootModel>()({
 
       return state
     },
+    updateExtensions: (state: any, operatorName: string, newExtensions: any) => {
+      const op = state.extensions[operatorName]
+
+      if (!op) {
+        return
+      }
+
+      op.cf = newExtensions
+      return state
+      // opExtension = newExtensions
+    },
   },
 })

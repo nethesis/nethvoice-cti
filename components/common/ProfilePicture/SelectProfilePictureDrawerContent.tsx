@@ -125,7 +125,7 @@ export const SelectProfilePictureDrawerContent = forwardRef<
 
   return (
     <>
-      <div className='bg-gray-100 dark:bg-gray-800 py-6 px-6'>
+      <div className='bg-white dark:bg-gray-900 pt-6 px-6'>
         <div className='flex items-center justify-between'>
           <div className='text-lg font-medium dark:text-gray-200 text-gray-700'>
             {t('Settings.Upload profile picture')}
@@ -135,7 +135,13 @@ export const SelectProfilePictureDrawerContent = forwardRef<
           </div>
         </div>
       </div>
-      <div className={classNames(className, 'm-1 p-5')} {...props}>
+      <div className={classNames(className, 'px-5')} {...props}>
+        {/* Divider */}
+        <div className='relative pb-8'>
+          <div className='absolute inset-0 flex items-center' aria-hidden='true'>
+            <div className='w-full border-t border-gray-300 dark:border-gray-600' />
+          </div>
+        </div>
         <>
           {/* Profile picture drawer section */}
           <div className='flex items-center justify-between mt-2'>
@@ -232,19 +238,24 @@ export const SelectProfilePictureDrawerContent = forwardRef<
             ></Avatar>
           </div>
         )}
-
-        <div className={`${previewImage ? '' : 'pt-8'} flex`}>
+        {/* Divider */}
+        <div className='relative pb-10 pt-6'>
+          <div className='absolute inset-0 flex items-center' aria-hidden='true'>
+            <div className='w-full border-t border-gray-300 dark:border-gray-600' />
+          </div>
+        </div>
+        <div className={`${previewImage ? '' : 'pt-8'} flex items-center justify-end`}>
+          <Button variant='white' type='submit' onClick={closeSideDrawer} className='mb-4'>
+            {t('Common.Cancel')}
+          </Button>
           <Button
             variant='primary'
             type='submit'
             onClick={prepareUploadPicture}
-            className='mb-4'
+            className='ml-4 mb-4'
             disabled={isEmpty(selectedFileBase64)}
           >
             {t('Settings.Upload')}
-          </Button>
-          <Button variant='white' type='submit' onClick={closeSideDrawer} className='ml-4 mb-4'>
-            {t('Common.Cancel')}
           </Button>
         </div>
       </div>

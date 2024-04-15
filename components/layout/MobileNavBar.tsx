@@ -33,7 +33,7 @@ export const MobileNavBar: FC<MobileNavBarProps> = ({ closeMobileMenu, show, ite
     <>
       {/* Mobile menu */}
       <Transition.Root show={show} as={Fragment}>
-        <Dialog as='div' className='relative z-20 md:hidden' onClose={closeMobileMenu}>
+        <Dialog as='div' className='relative z-[1000] md:hidden' onClose={closeMobileMenu}>
           <Transition.Child
             as={Fragment}
             enter='transition-opacity ease-linear duration-300'
@@ -96,9 +96,7 @@ export const MobileNavBar: FC<MobileNavBarProps> = ({ closeMobileMenu, show, ite
                     <div className='space-y-1'>
                       {items.map((item) => (
                         <Link key={item.name} href={item.href}>
-                          <a
-                            key={item.name}
-                            href={item.href}
+                          <div
                             className={classNames(
                               item.current
                                 ? 'text-white bg-gray-700 dark:bg-gray-500'
@@ -118,7 +116,7 @@ export const MobileNavBar: FC<MobileNavBarProps> = ({ closeMobileMenu, show, ite
                               aria-hidden='true'
                             />
                             <span>{item.name}</span>
-                          </a>
+                          </div>
                         </Link>
                       ))}
                     </div>

@@ -25,7 +25,7 @@ export const QueueManagementHeader: FC<QueueManagementHeaderProps> = ({
       <div className='grid grid-cols-1 gap-4 sm:grid-cols-2 md:grid-cols-2 lg:grid-cols-2 xl:grid-cols-3'>
         {/* Online operators */}
         <div>
-          <div className='border-b rounded-lg shadow-md border-gray-200 dark:border-gray-700 bg-white dark:bg-gray-900 px-5 py-1 sm: mt-1 relative flex items-center'>
+          <div className='border-b rounded-lg shadow-md border-gray-200 dark:border-gray-700 bg-cardBackgroud dark:bg-cardBackgroudDark px-5 py-1 sm: mt-1 relative flex items-center'>
             <div className='flex items-center space-x-4'>
               <div className='h-10 w-10 flex items-center justify-center rounded-xl bg-emerald-50 mt-1 mb-1'>
                 <FontAwesomeIcon
@@ -48,7 +48,7 @@ export const QueueManagementHeader: FC<QueueManagementHeaderProps> = ({
 
         {/* On break operators */}
         <div>
-          <div className='border-b rounded-lg shadow-md border-gray-200 dark:border-gray-700 bg-white dark:bg-gray-900 px-5 py-1 sm: mt-1 relative flex items-center'>
+          <div className='border-b rounded-lg shadow-md border-gray-200 dark:border-gray-700 bg-cardBackgroud dark:bg-cardBackgroudDark px-5 py-1 sm: mt-1 relative flex items-center'>
             <div className='flex items-center space-x-4'>
               <div className='h-10 w-10 flex items-center justify-center rounded-xl bg-emerald-50 mt-1 mb-1'>
                 <FontAwesomeIcon
@@ -71,7 +71,7 @@ export const QueueManagementHeader: FC<QueueManagementHeaderProps> = ({
 
         {/* Offline operators */}
         <div>
-          <div className='border-b rounded-lg shadow-md border-gray-200 dark:border-gray-700 bg-white dark:bg-gray-900 px-5 py-1 sm: mt-1 relative flex items-center'>
+          <div className='border-b rounded-lg shadow-md border-gray-200 dark:border-gray-700 bg-cardBackgroud dark:bg-cardBackgroudDark px-5 py-1 sm: mt-1 relative flex items-center'>
             <div className='flex items-center space-x-4'>
               <div className='h-10 w-10 flex items-center justify-center rounded-xl bg-emerald-50 mt-1 mb-1'>
                 <FontAwesomeIcon
@@ -94,7 +94,7 @@ export const QueueManagementHeader: FC<QueueManagementHeaderProps> = ({
 
         {/* Free operators */}
         <div>
-          <div className='border-b rounded-lg shadow-md border-gray-200 dark:border-gray-700 bg-white dark:bg-gray-900 px-5 py-1 sm: mt-1 relative flex items-center'>
+          <div className='border-b rounded-lg shadow-md border-gray-200 dark:border-gray-700 bg-cardBackgroud dark:bg-cardBackgroudDark px-5 py-1 sm: mt-1 relative flex items-center'>
             <div className='flex items-center space-x-4'>
               <div className='h-10 w-10 flex items-center justify-center rounded-xl bg-emerald-50 mt-1 mb-1'>
                 <FontAwesomeIcon
@@ -117,7 +117,7 @@ export const QueueManagementHeader: FC<QueueManagementHeaderProps> = ({
 
         {/* Busy operators ( in queue ) */}
         <div>
-          <div className='border-b rounded-lg shadow-md border-gray-200 dark:border-gray-700 bg-white dark:bg-gray-900 px-5 py-1 sm: mt-1 relative flex items-center'>
+          <div className='border-b rounded-lg shadow-md border-gray-200 dark:border-gray-700 bg-cardBackgroud dark:bg-cardBackgroudDark px-5 py-1 sm: mt-1 relative flex items-center'>
             <div className='flex items-center space-x-4'>
               <div className='h-10 w-10 flex items-center justify-center rounded-xl bg-emerald-50 mt-1 mb-1'>
                 <FontAwesomeIcon
@@ -142,7 +142,7 @@ export const QueueManagementHeader: FC<QueueManagementHeaderProps> = ({
 
         {/* Busy operators ( out queue ) */}
         <div>
-          <div className='border-b rounded-lg shadow-md border-gray-200 dark:border-gray-700 bg-white dark:bg-gray-900 px-5 py-1 sm: mt-1 relative flex items-center'>
+          <div className='border-b rounded-lg shadow-md border-gray-200 dark:border-gray-700 bg-cardBackgroud dark:bg-cardBackgroudDark px-5 py-1 sm: mt-1 relative flex items-center'>
             <div className='flex items-center space-x-4'>
               <div className='h-10 w-10 flex items-center justify-center rounded-xl bg-emerald-50 mt-1 mb-1'>
                 <FontAwesomeIcon

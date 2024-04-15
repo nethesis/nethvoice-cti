@@ -193,7 +193,7 @@ export const QueueManagementOperators: FC<QueueManagementOperatorsProps> = ({
               {allQueuesStats &&
                 isEmpty(queueManagerStore?.queues[selectedValue?.queue]?.members) && (
                   <EmptyState
-                    title={t('QueueManager.No operators') || ""}
+                    title={t('QueueManager.No operators') || ''}
                     description='There is no operator configured'
                     icon={
                       <FontAwesomeIcon
@@ -214,7 +214,7 @@ export const QueueManagementOperators: FC<QueueManagementOperatorsProps> = ({
                     <li key={index} className='px-1'>
                       <button
                         type='button'
-                        className='group flex w-full items-center justify-between space-x-3 rounded-lg p-2 text-left focus:outline-none focus:ring-2 focus:ring-offset-2 bg-white dark:bg-gray-900 cursor-default'
+                        className='group flex w-full items-center justify-between space-x-3 rounded-lg p-2 text-left focus:outline-none focus:ring-2 focus:ring-offset-2 bg-cardBackgroud dark:bg-cardBackgroudDark cursor-default'
                       >
                         <div className='flex min-w-0 flex-1 items-center space-x-3'>
                           <div className='block flex-shrink-0'>
@@ -258,7 +258,7 @@ export const QueueManagementOperators: FC<QueueManagementOperatorsProps> = ({
                       {infiniteScrollOperators.map((operator: any, index) => {
                         return (
                           <li key={index} className='px-1'>
-                            <div className='group flex w-full items-center justify-between space-x-3 rounded-lg p-2 text-left focus:outline-none focus:ring-2 focus:ring-offset-2 bg-white dark:bg-gray-900 hover:bg-gray-200 dark:hover:bg-gray-700 focus:ring-primary dark:focus:ring-primary'>
+                            <div className='group flex w-full items-center justify-between space-x-3 rounded-lg p-2 text-left focus:outline-none focus:ring-2 focus:ring-offset-2 bg-cardBackgroud dark:bg-cardBackgroudDark hover:bg-gray-200 dark:hover:bg-gray-700 focus:ring-primary dark:focus:ring-primary'>
                               <span className='flex min-w-0 flex-1 items-center space-x-3'>
                                 <span className='block flex-shrink-0 cursor-pointer'>
                                   <Avatar

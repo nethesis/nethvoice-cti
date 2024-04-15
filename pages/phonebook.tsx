@@ -125,13 +125,9 @@ const Phonebook: NextPage = () => {
     <>
       {profile?.macro_permissions?.phonebook?.value ? (
         <div>
-          <h1 className='text-2xl font-semibold mb-6 text-gray-900 dark:text-gray-100'>
+          <h1 className='text-2xl font-semibold mb-6 text-title dark:text-titleDark'>
             {t('Phonebook.Phonebook')}
           </h1>
-          <Button variant='primary' onClick={() => openCreateContactDrawer()} className='mb-6'>
-            <FontAwesomeIcon icon={faUserPlus} className='mr-2 h-4 w-4' />
-            <span>{t('Phonebook.Create contact')}</span>
-          </Button>
           <Filter
             updateTextFilter={debouncedUpdateTextFilter}
             updateContactTypeFilter={updateContactTypeFilter}
@@ -147,7 +143,7 @@ const Phonebook: NextPage = () => {
               <div className='flex flex-col'>
                 <div className='-my-2 -mx-4 overflow-x-auto sm:-mx-6 lg:-mx-8'>
                   <div className='inline-block min-w-full py-2 align-middle px-2 md:px-6 lg:px-8'>
-                    <div className='overflow-hidden shadow ring-1 md:rounded-lg ring-opacity-5 dark:ring-opacity-5 ring-gray-900 dark:ring-gray-100'>
+                    <div className='overflow-hidden shadow ring-1 md:rounded-lg ring-opacity-5 dark:ring-opacity-5 ring-gray-900 dark:ring-gray-100 border-[1px] border-solid rounded-xl dark:border-gray-600'>
                       {/* empty state */}
                       {isPhonebookLoaded &&
                         phonebook?.rows &&
@@ -163,7 +159,7 @@ const Phonebook: NextPage = () => {
                                 aria-hidden='true'
                               />
                             }
-                            className='md:rounded-md bg-white dark:bg-gray-900'
+                            className='md:rounded-md bg-white dark:bg-gray-950'
                           >
                             <Button variant='primary' onClick={() => openCreateContactDrawer()}>
                               <FontAwesomeIcon icon={faPlus} className='mr-2 h-4 w-4' />
@@ -186,14 +182,14 @@ const Phonebook: NextPage = () => {
                                 aria-hidden='true'
                               />
                             }
-                            className='md:rounded-md bg-white dark:bg-gray-900'
+                            className='md:rounded-md bg-white dark:bg-gray-950'
                           />
                         )}
                       {isPhonebookLoaded && phonebook?.rows && !!phonebook.rows.length && (
                         <div className='overflow-y-auto scrollbar-thin scrollbar-thumb-gray-400 dark:scrollbar-thumb-gray-400 scrollbar-thumb-rounded-full scrollbar-thumb-opacity-50 scrollbar-track-gray-200 dark:scrollbar-track-gray-900 scrollbar-track-rounded-full scrollbar-track-opacity-25'>
                           <div className='max-h-[32rem]'>
                             <table className='min-w-full divide-y divide-gray-300 dark:divide-gray-700'>
-                              <thead className='sticky top-0 bg-white dark:bg-gray-900 z-[1]'>
+                              <thead className='sticky top-0 bg-gray-100 dark:bg-gray-800 z-[1]'>
                                 <tr>
                                   <th
                                     scope='col'
@@ -219,7 +215,7 @@ const Phonebook: NextPage = () => {
                                   ></th>
                                 </tr>
                               </thead>
-                              <tbody className='divide-y divide-gray-200 dark:divide-gray-700 bg-white dark:bg-gray-900 text-gray-700 text-sm'>
+                              <tbody className='bg-white dark:bg-gray-950 text-gray-700 text-sm'>
                                 {/* Not empty state  */}
                                 {phonebook?.rows
                                   .filter(
@@ -235,7 +231,7 @@ const Phonebook: NextPage = () => {
                                       onClick={() => openShowContactDrawer(contact)}
                                     >
                                       {/* Name */}
-                                      <td className='py-4 px-4 sm:pl-6 '>
+                                      <td className='py-4 px-4 sm:pl-6 text-sm relative'>
                                         <div className='flex items-center'>
                                           <div className='h-10 w-10 flex-shrink-0'>
                                             {' '}
@@ -308,10 +304,20 @@ const Phonebook: NextPage = () => {
                                             <div className='text-gray-500'></div>
                                           </div>
                                         </div>
+                                        {/* row divider  */}
+                                        {index !== 0 ? (
+                                          <div className='absolute -top-0 left-6 right-0 h-px bg-gray-300 dark:bg-gray-600' />
+                                        ) : null}
                                       </td>
 
                                       {/* work phone */}
-                                      <td className='py-4 px-4'>
+                                      <td
+                                        className={`${
+                                          index === 0
+                                            ? ''
+                                            : 'border-t border-gray-300 dark:border-gray-600'
+                                        } py-4 px-4 relative`}
+                                      >
                                         <div>
                                           {contact.workphone ? (
                                             <div className='mt-1 flex items-center text-sm text-primary dark:text-primaryDark'>
@@ -349,7 +355,13 @@ const Phonebook: NextPage = () => {
                                       </td>
 
                                       {/* mobile phone */}
-                                      <td className='py-4 px-4'>
+                                      <td
+                                        className={`${
+                                          index === 0
+                                            ? ''
+                                            : 'border-t border-gray-300 dark:border-gray-600'
+                                        } py-4 px-4 relative`}
+                                      >
                                         <div>
                                           {contact.cellphone ? (
                                             <div className='mt-1 flex items-center text-sm text-primary dark:text-primaryDark'>
@@ -371,7 +383,7 @@ const Phonebook: NextPage = () => {
                                         </div>
                                       </td>
 
-                                      <td className='py-4 px-4 sm:pr-8'>
+                                      <td className='py-4 px-4 sm:pr-8 text-sm relative'>
                                         <div className='flex items-center justify-end'>
                                           <FontAwesomeIcon
                                             icon={faChevronRight}
@@ -379,6 +391,9 @@ const Phonebook: NextPage = () => {
                                             aria-hidden='true'
                                           />
                                         </div>
+                                        {index !== 0 ? (
+                                          <div className='absolute -top-0 left-0 right-6 h-px bg-gray-300 dark:bg-gray-600' />
+                                        ) : null}
                                       </td>
                                     </tr>
                                   ))}
@@ -396,7 +411,7 @@ const Phonebook: NextPage = () => {
 
           {/* skeleton  */}
           {!isPhonebookLoaded && (
-            <table className='min-w-full divide-y divide-gray-300 dark:divide-gray-700 bg-white dark:bg-gray-900 rounded-md overflow-hidden'>
+            <table className='min-w-full divide-y divide-gray-300 dark:divide-gray-700 bg-white dark:bg-gray-950 rounded-md overflow-hidden'>
               <thead>
                 <tr>
                   {Array.from(Array(4)).map((_, index) => (

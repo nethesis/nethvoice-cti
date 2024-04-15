@@ -82,7 +82,7 @@ const AvatarComponent: FC<AvatarProps> = ({
           className={classNames(theme.image, theme.rounded[rounded])}
           src={src}
           alt={altText}
-          layout='fill'
+          fill
           unoptimized={unoptimized}
         />
       )}

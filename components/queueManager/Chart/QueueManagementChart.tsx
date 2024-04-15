@@ -473,7 +473,7 @@ export const QueueManagementChart: FC<QueueManagementChartProps> = ({
         {/* Calls duration */}
 
         <div className='pt-8'>
-          <div className='border-b rounded-lg shadow-md border-gray-200 dark:border-gray-700 bg-white dark:bg-gray-900 px-5 py-1 sm: mt-1 relative h-full'>
+          <div className='border-b rounded-lg shadow-md border-gray-200 dark:border-gray-700 bg-cardBackgroud dark:bg-cardBackgroudDark px-5 py-1 sm: mt-1 relative h-full'>
             <div className='pt-3'>
               <span className='text-lg font-semibold leading-6 text-center text-gray-700 dark:text-gray-100'>
                 {t('QueueManager.Calls duration')}
@@ -500,7 +500,7 @@ export const QueueManagementChart: FC<QueueManagementChartProps> = ({
 
         {/* Calls */}
         <div className='pt-8'>
-          <div className='border-b rounded-lg shadow-md border-gray-200 dark:border-gray-700 bg-white dark:bg-gray-900 px-5 py-1 sm:mt-1 relative w-full h-full'>
+          <div className='border-b rounded-lg shadow-md border-gray-200 dark:border-gray-700 bg-cardBackgroud dark:bg-cardBackgroudDark px-5 py-1 sm:mt-1 relative w-full h-full'>
             <div className='flex'>
               <div className='pt-3'>
                 <span className='text-lg font-semibold leading-6 text-center text-gray-700 dark:text-gray-100'>
@@ -536,7 +536,7 @@ export const QueueManagementChart: FC<QueueManagementChartProps> = ({
 
         {/* Customers to manage */}
         <div className='pt-8'>
-          <div className='border-b rounded-lg shadow-md border-gray-200 dark:border-gray-700 bg-white dark:bg-gray-900 px-5 py-1 sm: mt-1 relative h-full'>
+          <div className='border-b rounded-lg shadow-md border-gray-200 dark:border-gray-700 bg-cardBackgroud dark:bg-cardBackgroudDark px-5 py-1 sm: mt-1 relative h-full'>
             <div className='flex'>
               <div className='pt-3'>
                 <span className='text-lg font-semibold leading-6 text-center text-gray-700 dark:text-gray-100'>
@@ -556,7 +556,7 @@ export const QueueManagementChart: FC<QueueManagementChartProps> = ({
               <div className='overflow-auto  scrollbar-thin scrollbar-thumb-gray-400 dark:scrollbar-thumb-gray-400 scrollbar-thumb-rounded-full scrollbar-thumb-opacity-50 scrollbar-track-gray-200 dark:scrollbar-track-gray-900 scrollbar-track-rounded-full scrollbar-track-opacity-25 mt-12 h-56 w-full'>
                 <ul
                   role='list'
-                  className=' divide-gray-300 dark:divide-gray-600 bg-white dark:bg-gray-900'
+                  className=' divide-gray-300 dark:divide-gray-600 bg-cardBackgroud dark:bg-cardBackgroudDark'
                 >
                   <li className='flex items-center justify-between gap-x-6 rounded-md bg-gray-100 dark:bg-gray-700 py-2 px-2'>
                     <div className='py-1 px-2'>
@@ -653,16 +653,14 @@ export const QueueManagementChart: FC<QueueManagementChartProps> = ({
                 </ul>
               </div>
             </div>
-            <div className='pt-8 px-4 flex items-center justify-between'>
+            <div className='pt-8 px-4 flex items-center justify-between text-primary font-medium dark:text-primaryDark'>
               <Link
                 href={{
                   pathname: '/queuemanager',
                   query: { section: 'Not managed customers' },
                 }}
               >
-                <a className='hover:underline text-gray-900 font-semibold dark:text-gray-100'>
-                  {t('QueueManager.Go to not managed customers')}
-                </a>
+                <span className='hover:underline '>{t('QueueManager.Go to not managed customers')}</span>
               </Link>
               <Link
                 href={{
@@ -672,7 +670,7 @@ export const QueueManagementChart: FC<QueueManagementChartProps> = ({
               >
                 <FontAwesomeIcon
                   icon={faArrowRight}
-                  className='h-5 w-5 pr-2 cursor-pointer text-gray-600 dark:text-gray-200'
+                  className='h-5 w-5 pr-2 cursor-pointer'
                   aria-hidden='true'
                 />
               </Link>

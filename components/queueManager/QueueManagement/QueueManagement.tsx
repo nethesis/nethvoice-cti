@@ -315,7 +315,7 @@ export const QueueManagement: FC<QueueManagementProps> = ({ className }): JSX.El
                 {t('QueueManager.Select queue')}
               </Listbox.Label>
               <div className='relative'>
-                <Listbox.Button className='relative cursor-default rounded-md bg-white dark:bg-gray-900 py-1.5 pl-3 pr-10 text-left w-60 text-gray-900 dark:text-gray-100 shadow-sm ring-1 ring-inset ring-gray-300 focus:outline-none focus:ring-2 focus:ring-primary sm:text-sm sm:leading-6 inline-block'>
+                <Listbox.Button className='relative cursor-default rounded-md bg-white dark:bg-gray-950 py-1.5 pl-3 pr-10 text-left w-60 text-gray-900 dark:text-gray-300 shadow-sm ring-1 ring-inset ring-gray-300 focus:outline-none focus:ring-2 focus:ring-primary sm:text-sm sm:leading-6 inline-block'>
                   <span className='block truncate'>
                     {selectedValue.name ? selectedValue.name : t('QueueManager.Select queue')}
                   </span>
@@ -361,7 +361,9 @@ export const QueueManagement: FC<QueueManagementProps> = ({ className }): JSX.El
                             {selected || selectedValue.queue === queueId ? (
                               <span
                                 className={classNames(
-                                  active ? 'text-white dark:text-gray-200' : 'text-primary dark:text-primaryDark',
+                                  active
+                                    ? 'text-white dark:text-gray-200'
+                                    : 'text-primary dark:text-primaryDark',
                                   'absolute inset-y-0 left-0 flex items-center pl-1.5',
                                 )}
                               >
@@ -471,7 +473,7 @@ export const QueueManagement: FC<QueueManagementProps> = ({ className }): JSX.El
                         <div className='inline-block min-w-full py-2 align-middle sm:px-6 lg:px-8'>
                           <div className='sm:rounded-md max-h-[12.7rem] overflow-auto scrollbar-thin scrollbar-thumb-gray-400 dark:scrollbar-thumb-gray-400 scrollbar-thumb-rounded-full scrollbar-thumb-opacity-50 scrollbar-track-gray-200 dark:scrollbar-track-gray-900 scrollbar-track-rounded-full scrollbar-track-opacity-25'>
                             <table className='min-w-full divide-y divide-gray-300 dark:divide-gray-600'>
-                              <thead className='bg-gray-100 dark:bg-gray-800'>
+                              <thead className='bg-body dark:bg-bodyDark'>
                                 <tr>
                                   <th
                                     scope='col'
@@ -561,7 +563,7 @@ export const QueueManagement: FC<QueueManagementProps> = ({ className }): JSX.El
                       <div className='inline-block min-w-full py-2 align-middle sm:px-6 lg:px-8'>
                         <div className='sm:rounded-md max-h-[17rem] overflow-auto scrollbar-thin scrollbar-thumb-gray-400 dark:scrollbar-thumb-gray-400 scrollbar-thumb-rounded-full scrollbar-thumb-opacity-50 scrollbar-track-gray-200 dark:scrollbar-track-gray-900 scrollbar-track-rounded-full scrollbar-track-opacity-25'>
                           <table className='min-w-full divide-y divide-gray-300 dark:divide-gray-600'>
-                            <thead className='bg-gray-100 dark:bg-gray-800'>
+                            <thead className='bg-body dark:bg-bodyDark'>
                               <tr>
                                 <th scope='col' className='py-3 pl-4 pr-2 text-left font-semibold'>
                                   {t('Queues.Caller')}

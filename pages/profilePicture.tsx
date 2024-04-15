@@ -26,8 +26,8 @@ const Profile: NextPage = () => {
   return (
     <>
       <section aria-labelledby='clear-cache-heading'>
-        <div className='sm:overflow-hidden w-full dark:bg-gray-900'>
-          <div className='bg-white py-6 px-4 sm:p-6 w-full dark:bg-gray-900'>
+        <div className='sm:overflow-hidden w-full'>
+          <div className='py-6 px-4 sm:p-6 w-full'>
             <div>
               <h2 className='text-lg font-medium leading-6 text-gray-900 dark:text-gray-100 mb-6'>
                 {t('Settings.Profile picture')}

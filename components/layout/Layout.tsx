@@ -876,7 +876,7 @@ export const Layout: FC<LayoutProps> = ({ children }) => {
             closeMobileMenu={() => setOpenMobileMenu(false)}
           />
           {/* Main content */}
-          <div className='flex flex-1 items-stretch overflow-hidden'>
+          <div className='flex flex-1 items-stretch overflow-hidden bg-body dark:bg-bodyDark'>
             <main
               className={`flex-1 overflow-y-auto scrollbar-thin scrollbar-thumb-gray-400 dark:scrollbar-thumb-gray-400 scrollbar-thumb-rounded-full scrollbar-thumb-opacity-50 scrollbar-track-gray-200 dark:scrollbar-track-gray-900 scrollbar-track-rounded-full scrollbar-track-opacity-25 ${
                 parkingInfo?.isParkingFooterVisible &&

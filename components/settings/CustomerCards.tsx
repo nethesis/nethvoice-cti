@@ -132,8 +132,8 @@ export const CustomerCards = () => {
   return (
     <>
       <section aria-labelledby='phone-configuration-heading'>
-        <div className='sm:overflow-hidden w-full dark:bg-gray-900'>
-          <div className='bg-white py-6 px-4 sm:p-6 w-full dark:bg-gray-900'>
+        <div className='sm:overflow-hidden w-full'>
+          <div className='py-6 px-4 sm:p-6 w-full'>
             {!isEmpty(customerCardsList) ? (
               <div>
                 <label className='text-base font-semibold text-gray-900 dark:text-gray-200'>

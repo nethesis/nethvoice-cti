@@ -85,7 +85,7 @@ const Queues: NextPage = () => {
     <>
       {profile?.macro_permissions?.queue_agent?.value ? (
         <div>
-          <h1 className='text-2xl font-semibold mb-6 text-gray-900 dark:text-gray-100'>
+          <h1 className='text-2xl font-semibold mb-6 text-title dark:text-titleDark'>
             {t('Queues.Queues')}
           </h1>
           {/* queues error */}

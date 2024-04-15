@@ -71,17 +71,23 @@ export const SaveRecordedAnnouncementDrawerContent = forwardRef<
 
   return (
     <>
-      <div className='bg-gray-100 dark:bg-gray-800 py-6 px-6'>
+      <div className='bg-white dark:bg-gray-900 pt-6 px-6'>
         <div className='flex items-center justify-between'>
           <div className='text-lg font-medium text-gray-700 dark:text-gray-200'>
-            {config.isEdit ? t('Lines.Save recording') : 'Salva registrazione'}
+            {t('Lines.Save recording')}
           </div>
           <div className='flex items-center h-7'>
             <SideDrawerCloseIcon />
           </div>
         </div>
       </div>
-      <div className={classNames(className, 'p-5')} {...props}>
+      <div className={classNames(className, 'px-5')} {...props}>
+        {/* Divider */}
+        <div className='relative pb-8'>
+          <div className='absolute inset-0 flex items-center' aria-hidden='true'>
+            <div className='w-full border-t border-gray-300 dark:border-gray-600' />
+          </div>
+        </div>
         {/* announcement name */}
         <div className='flex flex-col'>
           <h4 className='text-base font-medium text-gray-700 dark:text-gray-200 mb-3'>
@@ -134,20 +140,27 @@ export const SaveRecordedAnnouncementDrawerContent = forwardRef<
           </div>
         </fieldset>
 
-        <div className='flex mt-7'>
+        {/* Divider */}
+        <div className='relative pb-10 pt-6'>
+          <div className='absolute inset-0 flex items-center' aria-hidden='true'>
+            <div className='w-full border-t border-gray-300 dark:border-gray-600' />
+          </div>
+        </div>
+        {/* Footer section */}
+        <div className='flex justify-end'>
           <>
+            <Button variant='white' type='submit' onClick={closeSideDrawer} className='mb-4'>
+              {t('Common.Cancel')}
+            </Button>
             <Button
               variant='primary'
               type='submit'
               onClick={enableAnnouncement}
-              className='mb-4'
+              className='ml-4 mb-4'
               disabled={textFilter ? false : true}
             >
               <FontAwesomeIcon icon={faFloppyDisk} className='mr-2 h-4 w-4' />
               {t('Common.Save')}
-            </Button>
-            <Button variant='white' type='submit' onClick={closeSideDrawer} className='ml-4 mb-4'>
-              {t('Common.Cancel')}
             </Button>
           </>
         </div>

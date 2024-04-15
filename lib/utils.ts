@@ -163,6 +163,15 @@ export function getApiScheme() {
   return `${window.CONFIG.API_SCHEME}`
 }
 
+export function getApiVoiceEndpoint() {
+  if (typeof window === 'undefined') {
+    return ''
+  }
+  // @ts-ignore
+  return `${window.CONFIG.VOICE_ENDPOINT}`
+}
+
+
 /**
  * Returns true if the device used by the user is using a mobile device. Useful to check if the user is using a touch screen, for example to disable hover features
  */
@@ -342,4 +351,35 @@ export function getProductSubname() {
   }
   // @ts-ignore
   return `${window.CONFIG.COMPANY_SUBNAME}`
+}
+
+export function getNethvoiceUrl() {
+  if (typeof window == 'undefined') {
+    return ''
+  }
+  // @ts-ignore
+  return `${window.CONFIG.API_SCHEME + window.CONFIG.VOICE_ENDPOINT}`
+}
+
+export const voiceRequest = async (methodVoice: string, url: any, object?: any) => {
+  try {
+    const { username, token } = store.getState().authentication
+    const res = await fetch(
+      // @ts-ignore
+      window.CONFIG.API_SCHEME +
+        // @ts-ignore
+        window.CONFIG.VOICE_ENDPOINT +
+        url,
+      {
+        method: methodVoice,
+        headers: {
+          'Content-Type': 'application/json',
+          Authorization: `${username}:${token}`,
+        },
+      },
+    )
+    return res
+  } catch (error) {
+    console.error(error)
+  }
 }

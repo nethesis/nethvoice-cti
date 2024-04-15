@@ -27,7 +27,7 @@ export const ShowOperatorDrawerContent = forwardRef<
 
   return (
     <>
-      <div className='bg-gray-100 dark:bg-gray-800 py-6 px-6'>
+      <div className='bg-white dark:bg-gray-900 pt-6 px-6'>
         <div className='flex items-center justify-between'>
           <div className='text-lg font-medium dark:text-gray-200 text-gray-700'>
             {t('OperatorDrawer.Operator details')}
@@ -37,7 +37,12 @@ export const ShowOperatorDrawerContent = forwardRef<
           </div>
         </div>
       </div>
-      <div className={classNames('p-5', className)} {...props}>
+      <div className={classNames('px-6', className)} {...props}>
+        <div className='relative pb-8'>
+          <div className='absolute inset-0 flex items-center' aria-hidden='true'>
+            <div className='w-full border-t border-gray-300 dark:border-gray-600' />
+          </div>
+        </div>
         <OperatorSummary operator={config} isShownFavorite={true} isShownSideDrawerLink={false} />
 
         {/* last calls: search all operator extensions */}

@@ -8,13 +8,14 @@ import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { useSelector } from 'react-redux'
 import { RootState } from '../store'
 import {
+  faArrowRightLong,
   faArrowUpFromBracket,
+  faAward,
+  faCircleArrowDown,
   faCircleCheck,
   faCircleXmark,
-  faDownload,
   faEllipsisVertical,
   faPenToSquare,
-  faRocket,
 } from '@fortawesome/free-solid-svg-icons'
 import React from 'react'
 import { faOfficePhone } from '@nethesis/nethesis-solid-svg-icons'
@@ -25,8 +26,10 @@ import {
   openShowSwitchAudioInput,
   tableHeader,
   titleTable,
+  getDownloadLink,
+  openShowDownloadLinkContent,
 } from '../lib/devices'
-import { Badge, Dropdown } from '../components/common'
+import { Badge, Button, Dropdown } from '../components/common'
 import { useDispatch } from 'react-redux'
 import { Dispatch } from '../store'
 import { eventDispatch } from '../lib/hooks/eventDispatch'
@@ -58,25 +61,93 @@ const Devices: NextPage = () => {
     }
   }, [profile?.endpoints])
 
+  const [updatedDownloadLink, setUpdatedDownloadLink]: any = useState()
+  const [currentOS, setCurrentOS] = useState('')
+
+  const [firstRenderDownload, setFirstRenderDownload] = useState(true)
+  const [getDownloadUrlError, setGetDownloadUrlError] = useState('')
+
+  useEffect(() => {
+    if (firstRenderDownload) {
+      setFirstRenderDownload(false)
+      return
+    }
+    const userAgent = navigator.userAgent.toLowerCase()
+    if (userAgent.includes('win')) {
+      setCurrentOS('windows')
+    } else if (userAgent.includes('mac')) {
+      setCurrentOS('mac')
+    } else if (userAgent.includes('linux')) {
+      setCurrentOS('linux')
+    }
+
+    const initUrlDownload = async () => {
+      if (profile?.lkhash !== undefined && phoneLinkData?.length !== 0) {
+        try {
+          setGetDownloadUrlError('')
+          const response = await getDownloadLink()
+          const downloadUrls = response.assets
+            .filter(
+              (asset: any) =>
+                asset?.content_type === 'application/octet-stream' &&
+                !asset.browser_download_url.endsWith('.blockmap'),
+            )
+            .map((asset: any) => {
+              const url = asset.browser_download_url
+              if (url.includes('setup.exe')) {
+                return { windowsUrl: url }
+              } else if (url.includes('.AppImage')) {
+                return { linuxUrl: url }
+              } else if (url.includes('.dmg')) {
+                return { macUrl: url }
+              } else {
+                return null
+              }
+            })
+            .filter((download: any) => download !== null)
+
+          if (downloadUrls?.length > 0) {
+            setUpdatedDownloadLink(downloadUrls)
+          }
+        } catch (error) {
+          setGetDownloadUrlError('Cannot retrieve download url')
+        }
+      }
+    }
+    initUrlDownload()
+  }, [firstRenderDownload, profile?.lkhash, phoneLinkData])
+
+  const handleDownload = (url: any) => {
+    window.open(url?.linuxUrl || url?.macUrl || url?.windowsUrl, '_blank')
+  }
+
+  const [selectedLink, setSelectedLink] = useState('')
+  useEffect(() => {
+    if (
+      updatedDownloadLink &&
+      currentOS &&
+      profile?.lkhash !== undefined &&
+      phoneLinkData?.length !== 0
+    ) {
+      setSelectedLink(
+        updatedDownloadLink?.find((link: any) => link.hasOwnProperty(currentOS + 'Url')),
+      )
+    }
+  }, [updatedDownloadLink, currentOS, phoneLinkData, profile?.lkhash])
+
   let phoneLinkDownloadComponent = (isInDropwdown: boolean) => {
-    const downloadLink = ''
     return (
       <div className='text-right'>
-        <a
-          href={downloadLink}
-          download='phoneLink.bin'
-          className={`${
-            isInDropwdown ? '' : 'hover:underline dark:hover:text-primaryDark hover:text-primary'
-          } `}
-        >
-          {!isInDropwdown && (
-            <FontAwesomeIcon
-              icon={faDownload}
-              className='mr-2 h-4 w-4 text-primary dark:text-primaryDark'
-            />
-          )}
-          {t('Devices.Download PhoneLink')}
-        </a>
+        {!isInDropwdown ? (
+          <Button variant='ghost' onClick={() => handleDownload(selectedLink)}>
+            <FontAwesomeIcon icon={faCircleArrowDown} className='mr-2 h-4 w-4' />
+            {t('Devices.Download App')}
+          </Button>
+        ) : (
+          <div onClick={() => openShowDownloadLinkContent(updatedDownloadLink, currentOS)}>
+            {t('Devices.All download options')}
+          </div>
+        )}
       </div>
     )
   }
@@ -91,32 +162,27 @@ const Devices: NextPage = () => {
       {/* check if the device is already the main device */}
       {!isPhoneLinkSection && operators?.extensions[phoneLinkData?.id]?.status !== 'online' ? (
         <Dropdown.Item
-          icon={faRocket}
-          onClick={() =>
-            isPhoneLinkSection && isEmpty(phoneLinkTimestamp)
-              ? ''
-              : setSelectedAsMainDevice(deviceId, type, selectedDeviceInfo)
-          }
+          icon={faAward}
+          onClick={() => setSelectedAsMainDevice(deviceId, type, selectedDeviceInfo)}
         >
           {t('Devices.Set as main device')}
         </Dropdown.Item>
       ) : isPhoneLinkSection && phoneLinkData[0]?.id !== profile?.default_device?.id ? (
-        <Dropdown.Item
-          icon={faRocket}
-          onClick={() =>
-            isPhoneLinkSection && isEmpty(phoneLinkTimestamp)
-              ? ''
-              : setSelectedAsMainDevice(deviceId, type, selectedDeviceInfo)
-          }
-        >
-          {t('Devices.Set as main device')}
-        </Dropdown.Item>
+        <>
+          {/* You can set as main device only if user has downloaded the desktop app */}
+          {!isEmpty(phoneLinkTimestamp) && (
+            <Dropdown.Item
+              icon={faAward}
+              onClick={() => setSelectedAsMainDevice(deviceId, type, selectedDeviceInfo)}
+            >
+              {t('Devices.Set as main device')}
+            </Dropdown.Item>
+          )}
+        </>
       ) : (
         <></>
       )}
-      {isPhoneLinkSection && (
-        <Dropdown.Item icon={faDownload}>{phoneLinkDownloadComponent(true)}</Dropdown.Item>
-      )}
+      <Dropdown.Item icon={faArrowRightLong}>{phoneLinkDownloadComponent(true)}</Dropdown.Item>
     </>
   )
 
@@ -201,14 +267,13 @@ const Devices: NextPage = () => {
         <div className='pt-6'>{titleTable('webrtc')}</div>
 
         <div className=''>
-          <div className='mt-8 flow-root'>
+          <div className='mt-4 flow-root'>
             <div className='-mx-4 -my-2 overflow-x-auto sm:-mx-6 lg:-mx-8'>
               <div className='inline-block min-w-full py-2 align-middle sm:px-6 lg:px-8'>
-                <div className='overflow-hidden shadow ring-1 ring-black ring-opacity-5 sm:rounded-lg'>
+                <div className='overflow-hidden shadow ring-1 ring-black ring-opacity-5 border-[1px] border-solid dark:border-gray-600 rounded-lg'>
                   <table className='min-w-full divide-y divide-gray-300 dark:divide-gray-500'>
                     {tableHeader()}
-
-                    <tbody className='divide-y divide-gray-200 dark:divide-gray-500 bg-white dark:bg-gray-700'>
+                    <tbody className='divide-y divide-gray-200 dark:divide-gray-500 bg-transparent'>
                       <tr>
                         <td className='whitespace-nowrap py-4 pl-4 pr-3 text-sm font-medium sm:pl-6 w-[19rem]'>
                           <p className=''> {t('Devices.Web phone')}</p>
@@ -247,19 +312,15 @@ const Devices: NextPage = () => {
                             </span>
                           )}
                         </td>
-                        <td className='whitespace-nowrap px-3 py-4 text-sm text-primary dark:text-primaryDark cursor-pointer w-[16.8rem]'>
-                          <div
-                            className={`${
-                              webrtcData[0]?.id !== profile?.default_device?.id ? '' : ''
-                            } text-right`}
+                        <td className='whitespace-nowrap px-3 py-4 text-sm text-primary dark:text-primaryDark cursor-pointer w-[16.8rem] text-right'>
+                          <Button
+                            variant='ghost'
                             onClick={() => openShowSwitchAudioInput('')}
+                            className='text-right'
                           >
-                            <FontAwesomeIcon
-                              icon={faPenToSquare}
-                              className='mr-2 h-4 w-4 text-primary dark:text-primaryDark'
-                            />
+                            <FontAwesomeIcon icon={faPenToSquare} className='mr-2 h-4 w-4' />
                             {t('Devices.Audio settings')}
-                          </div>
+                          </Button>
                         </td>
                         <td className='relative whitespace-nowrap py-4 pl-3 text-right text-sm font-medium pr-6'>
                           {webrtcData[0]?.id !== profile?.default_device?.id ? (
@@ -302,16 +363,15 @@ const Devices: NextPage = () => {
       <>
         {' '}
         {/* title */}
-        <div className='pt-8'>{titleTable('phoneLink')}</div>
+        <div className='pt-16'>{titleTable('phoneLink')}</div>
         <div className=''>
-          <div className='mt-8 flow-root'>
+          <div className='mt-4 flow-root'>
             <div className='-mx-4 -my-2 overflow-x-auto sm:-mx-6 lg:-mx-8'>
               <div className='inline-block min-w-full py-2 align-middle sm:px-6 lg:px-8'>
-                <div className='overflow-hidden shadow ring-1 ring-black ring-opacity-5 sm:rounded-lg'>
+                <div className='overflow-hidden shadow ring-1 ring-black ring-opacity-5 border-[1px] border-solid dark:border-gray-600 rounded-lg'>
                   <table className='min-w-full divide-y divide-gray-300 dark:divide-gray-500'>
                     {tableHeader()}
-
-                    <tbody className='divide-y divide-gray-200 dark:divide-gray-500 bg-white dark:bg-gray-700'>
+                    <tbody className='divide-y divide-gray-200 dark:divide-gray-500 bg-transparent'>
                       <tr>
                         <td className='whitespace-nowrap py-4 pl-4 pr-3 text-sm font-medium sm:pl-6 w-[19rem]'>
                           <p className=''> {t('Devices.PhoneLink')}</p>
@@ -349,56 +409,45 @@ const Devices: NextPage = () => {
                             </span>
                           )}
                         </td>
-                        <td className='whitespace-nowrap px-3 py-4 text-sm text-primary dark:text-primaryDark cursor-pointer w-[16.8rem]'>
+                        <td className='whitespace-nowrap px-3 py-4 text-sm text-primary dark:text-primaryDark cursor-pointer w-[16.8rem] text-right'>
                           {!isEmpty(phoneLinkTimestamp) ? (
                             // if timestamp is not empty phone link settings is shown in table
-                            <div
+                            <a
+                              href='nethlink://open'
+                              target='_blank'
+                              rel='noreferrer'
                               className={`${
                                 phoneLinkData[0]?.id === profile?.default_device?.id ? '' : ''
-                              } text-right`}
+                              }`}
                             >
-                              <a href='nethlink://open' target='_blank' rel='noreferrer' />
                               <FontAwesomeIcon
                                 icon={faArrowUpFromBracket}
                                 className='mr-2 h-4 w-4 text-primary dark:text-primaryDark'
                               />
                               {t('Devices.PhoneLink settings')}
-                            </div>
+                            </a>
                           ) : (
                             // if timestamp is empty phone link download is shown in table
                             phoneLinkDownloadComponent(false)
                           )}
                         </td>
                         <td className='relative whitespace-nowrap py-4 pl-3 text-right text-sm font-medium pr-6'>
-                          {!isEmpty(phoneLinkTimestamp) ? (
-                            <Dropdown
-                              items={
-                                phoneLinkData[0]?.id === profile?.default_device?.id
-                                  ? setMainDeviceMenu(
-                                      phoneLinkData[0]?.id,
-                                      'nethLink',
-                                      phoneLinkData[0],
-                                      true,
-                                    )
-                                  : setMainDeviceMenu(
-                                      phoneLinkData[0]?.id,
-                                      'nethLink',
-                                      phoneLinkData[0],
-                                      true,
-                                    )
-                              }
-                              //if timestamp is empty phone link download is already shown in table
-                              position={'topMultipleItem'}
-                              className='text-right'
-                            >
-                              <FontAwesomeIcon
-                                icon={faEllipsisVertical}
-                                className='h-4 w-4 text-primary dark:text-primaryDark'
-                              />
-                            </Dropdown>
-                          ) : (
-                            ''
-                          )}
+                          <Dropdown
+                            items={setMainDeviceMenu(
+                              phoneLinkData[0]?.id,
+                              'nethLink',
+                              phoneLinkData[0],
+                              true,
+                            )}
+                            //if timestamp is empty phone link download is already shown in table
+                            position={'topMultipleItem'}
+                            className='text-right'
+                          >
+                            <FontAwesomeIcon
+                              icon={faEllipsisVertical}
+                              className='h-4 w-4 text-primary dark:text-primaryDark'
+                            />
+                          </Dropdown>
                         </td>
                       </tr>
                     </tbody>
@@ -416,7 +465,7 @@ const Devices: NextPage = () => {
     return (
       <>
         {/* title */}
-        <div className='pt-8'>
+        <div className='pt-16'>
           <div className='flex items-center space-x-2'>
             <FontAwesomeIcon
               icon={faOfficePhone}
@@ -429,102 +478,111 @@ const Devices: NextPage = () => {
           </div>
         </div>
 
-        <div className=''>
-          <div className='mt-8 flow-root'>
-            <div className='-mx-4 -my-2 overflow-x-auto sm:-mx-6 lg:-mx-8'>
-              <div className='inline-block min-w-full py-2 align-middle sm:px-6 lg:px-8'>
-                <div className='overflow-hidden shadow ring-1 ring-black ring-opacity-5 sm:rounded-lg'>
-                  <table className='min-w-full divide-y divide-gray-300 dark:divide-gray-500'>
-                    {tableHeader()}
-
-                    <tbody className='divide-y divide-gray-200 dark:divide-gray-500 bg-white dark:bg-gray-700'>
-                      {phoneData.map((phone: any) => (
-                        <tr key={phone?.id}>
-                          <td className='truncate whitespace-nowrap py-4 pl-4 pr-3 text-sm font-medium sm:pl-6 w-[19rem]'>
-                            <p className='truncate'>
-                              {phone?.description !== ''
-                                ? phone?.description
-                                : t('Devices.IP phone')}
-                            </p>
-                          </td>
-                          <td className='whitespace-nowrap px-3 py-4 text-sm w-2'>
-                            {/* {phone.status} */}
-                            {operators?.extensions[phone?.id]?.status === 'online' ? (
-                              <>
-                                <FontAwesomeIcon
-                                  icon={faCircleCheck}
-                                  className={`${
-                                    phone?.id === profile?.default_device?.id ? '' : ''
-                                  } mr-2 h-4 w-4 text-green-700 dark:text-green-600`}
-                                />
-                                {t('Devices.Online')}
-                              </>
-                            ) : (
-                              <>
-                                <FontAwesomeIcon
-                                  icon={faCircleXmark}
-                                  className={`${
-                                    phone?.id === profile?.default_device?.id ? '' : ''
-                                  } mr-2 h-4 w-4 text-gray-700 dark:text-gray-400`}
-                                />
-                                <span className='text-gray-500 dark:text-gray-200'>
-                                  {t('Devices.Offline')}
-                                </span>
-                              </>
-                            )}
-                          </td>
-
-                          <td className='whitespace-nowrap px-3 text-sm text-gray-500 relative text-right w-[14rem]'>
-                            {phone?.id === profile?.default_device?.id ? (
-                              <Badge size='small' variant='online' rounded='full'>
-                                <span>{t('Devices.Main device')}</span>
-                              </Badge>
-                            ) : (
-                              <span className='text-transparent cursor-default py-4 select-none'>
-                                {t('Devices.Main device')}
-                              </span>
-                            )}
-                          </td>
-                          <td className='whitespace-nowrap px-3 py-4 text-sm text-primary dark:text-primaryDark cursor-pointer w-[16.8rem]'>
-                            {profile?.profile?.macro_permissions?.nethvoice_cti?.permissions
-                              ?.phone_buttons?.value ? (
-                              <div
+        <div className='mt-4 flow-root'>
+          <div className='-mx-4 -my-2 overflow-x-auto sm:-mx-6 lg:-mx-8'>
+            <div className='inline-block min-w-full py-2 align-middle sm:px-6 lg:px-8'>
+              <div className='overflow-hidden shadow ring-1 md:rounded-lg ring-opacity-5 dark:ring-opacity-5 ring-gray-900 dark:ring-gray-100 border-[1px] border-solid rounded-xl dark:border-gray-600'>
+                <table className='min-w-full divide-y divide-gray-300 dark:divide-gray-500'>
+                  {tableHeader()}
+                  <tbody className='bg-white dark:bg-gray-950'>
+                    {phoneData.map((phone: any, index: number) => (
+                      <tr key={phone?.id}>
+                        <td className='truncate whitespace-nowrap py-4 pl-4 pr-3 text-sm font-medium sm:pl-6 w-[19rem] relative'>
+                          <p className='truncate'>
+                            {phone?.description !== '' ? phone?.description : t('Devices.IP phone')}
+                          </p>
+                          {/* row divider  */}
+                          {index !== 0 ? (
+                            <div className='absolute -top-[0.03rem] left-6 right-0 h-px bg-gray-300 dark:bg-gray-600' />
+                          ) : null}
+                        </td>
+                        <td
+                          className={`${
+                            index === 0 ? '' : 'border-t border-gray-300 dark:border-gray-600'
+                          } whitespace-nowrap px-3 py-4 text-sm w-2 relative`}
+                        >
+                          {/* {phone.status} */}
+                          {operators?.extensions[phone?.id]?.status === 'online' ? (
+                            <>
+                              <FontAwesomeIcon
+                                icon={faCircleCheck}
                                 className={`${
-                                  phone?.id !== profile?.default_device?.id ? '' : ''
-                                } text-right`}
-                                onClick={() => openShowEditPhysicalPhone(phone, pinObject)}
-                              >
-                                <FontAwesomeIcon
-                                  icon={faPenToSquare}
-                                  className='mr-2 h-4 w-4 text-primary dark:text-primaryDark'
-                                />
-                                {t('Devices.Device settings')}
-                              </div>
-                            ) : (
-                              <div></div>
-                            )}
-                          </td>
-                          <td className='relative whitespace-nowrap py-4 pl-3 text-sm font-medium pr-6'>
-                            {phone?.id !== profile?.default_device?.id ? (
-                              <Dropdown
-                                items={setMainDeviceMenu(phone?.id, 'physical', phone, false)}
-                                position='topCard'
-                                className='text-right'
-                              >
-                                <FontAwesomeIcon
-                                  icon={faEllipsisVertical}
-                                  className='h-4 w-4 text-primary dark:text-primaryDark'
-                                />
-                              </Dropdown>
-                            ) : (
-                              ''
-                            )}
-                          </td>
-                        </tr>
-                      ))}
-                    </tbody>
-                  </table>
-                </div>
+                                  phone?.id === profile?.default_device?.id ? '' : ''
+                                } mr-2 h-4 w-4 text-green-700 dark:text-green-600`}
+                              />
+                              {t('Devices.Online')}
+                            </>
+                          ) : (
+                            <>
+                              <FontAwesomeIcon
+                                icon={faCircleXmark}
+                                className={`${
+                                  phone?.id === profile?.default_device?.id ? '' : ''
+                                } mr-2 h-4 w-4 text-gray-700 dark:text-gray-400`}
+                              />
+                              <span className='text-gray-500 dark:text-gray-200'>
+                                {t('Devices.Offline')}
+                              </span>
+                            </>
+                          )}
+                        </td>
+
+                        <td
+                          className={`${
+                            index === 0 ? '' : 'border-t border-gray-300 dark:border-gray-600'
+                          } whitespace-nowrap px-3 text-sm text-gray-500 relative text-right w-[14rem]`}
+                        >
+                          {phone?.id === profile?.default_device?.id ? (
+                            <Badge size='small' variant='online' rounded='full'>
+                              <span>{t('Devices.Main device')}</span>
+                            </Badge>
+                          ) : (
+                            <span className='text-transparent cursor-default py-4 select-none'>
+                              {t('Devices.Main device')}
+                            </span>
+                          )}
+                        </td>
+                        <td
+                          className={`${
+                            index === 0 ? '' : 'border-t border-gray-300 dark:border-gray-600'
+                          } whitespace-nowrap px-3 py-4 text-sm text-primary dark:text-primaryDark cursor-pointer w-[16.8rem] relative text-right`}
+                        >
+                          {profile?.profile?.macro_permissions?.nethvoice_cti?.permissions
+                            ?.phone_buttons?.value ? (
+                            <Button
+                              variant='ghost'
+                              onClick={() => openShowEditPhysicalPhone(phone, pinObject)}
+                            >
+                              <FontAwesomeIcon icon={faPenToSquare} className='mr-2 h-4 w-4' />
+                              {t('Devices.Device settings')}
+                            </Button>
+                          ) : (
+                            <div></div>
+                          )}
+                        </td>
+                        <td className='relative whitespace-nowrap py-4 pl-3 text-sm font-medium pr-6'>
+                          {phone?.id !== profile?.default_device?.id ? (
+                            <Dropdown
+                              items={setMainDeviceMenu(phone?.id, 'physical', phone, false)}
+                              position='topCard'
+                              className='text-right'
+                            >
+                              <FontAwesomeIcon
+                                icon={faEllipsisVertical}
+                                className='h-4 w-4 text-primary dark:text-primaryDark'
+                              />
+                            </Dropdown>
+                          ) : (
+                            ''
+                          )}
+                          {index !== 0 ? (
+                            <div className='absolute -top-[0.03rem] left-0 right-6 h-px bg-gray-300 dark:bg-gray-600' />
+                          ) : null}
+                        </td>
+                      </tr>
+                    ))}
+                  </tbody>
+                </table>
               </div>
             </div>
           </div>
@@ -536,8 +594,8 @@ const Devices: NextPage = () => {
   return (
     <>
       <section aria-labelledby='clear-cache-heading'>
-        <div className='sm:overflow-hidden w-full dark:bg-gray-900'>
-          <div className='bg-white py-6 px-4 sm:p-6 w-full dark:bg-gray-900'>
+        <div className='sm:overflow-hidden w-full'>
+          <div className='py-6 px-4 sm:p-6 w-full'>
             {/* webphone section */}
             {webphoneTable()}
 

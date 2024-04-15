@@ -40,7 +40,8 @@
     "Confirm": "Conferma",
     "Example": "Esempio",
     "Start recording message before": "Clica il bottone per iniziare a registrare la chiamata",
-    "Start recording message after": "Puoi parlare tra poco..."
+    "Start recording message after": "Puoi parlare tra poco...",
+    "Required": "Richiesto"
   },
   "Login": {
     "User": "Utente",
@@ -96,7 +97,8 @@
     "Last calls": "Ultime chiamate",
     "No recent calls": "Nessuna chiamata",
     "Company contacts": "Contatti aziendali",
-    "No results": "Nessun risultato"
+    "No results": "Nessun risultato",
+    "Please enter a valid phone number": "Inserisci un numero di telefono valido"
   },
   "History": {
     "History": "Storico",
@@ -259,8 +261,7 @@
     "Available presence": "Presence disponibili",
     "Show customer card": "Mostra schede cliente",
     "Customer cards": "Schede cliente",
-    "PhoneLink configuration": "Configurazione Phone link",
-    "Get PhoneLink configuration": "Ottieni la configurazione"
+    "PhoneLink configuration": "Configurazione Desktop phone"
   },
   "TopBar": {
     "Signed in as": "Accesso effettuato come",
@@ -279,7 +280,9 @@
     "Open sidebar": "Open sidebar",
     "Main device": "Dispositivo principale",
     "Voicemail": "Voicemail",
-    "Activate voicemail": "Attiva voicemail"
+    "Activate voicemail": "Attiva voicemail",
+    "Cellphone": "Cellulare",
+    "Forward incoming calls to cellphone": "Inoltra le chiamate in entrata al cellulare"
   },
   "OperatorDrawer": {
     "Book": "Prenota",
@@ -398,7 +401,8 @@
     "Select date start": "Seleziona data inizio",
     "Select date end": "Seleziona data fine",
     "Newest": "Più recenti",
-    "Oldest": "Meno recenti"
+    "Oldest": "Meno recenti",
+    "Save recording": "Salva registrazione"
   },
   "SpeedDial": {
     "Create": "Crea",
@@ -535,7 +539,7 @@
     "Filter queues": "Filtra code"
   },
   "NavBars": {
-    "Speed dial": "Chiamata rapida",
+    "Speed dials": "Chiamata rapida",
     "Last calls": "Ultime chiamate"
   },
   "Tooltip": {
@@ -802,12 +806,19 @@
     "Select audio input": "Seleziona l'ingresso audio",
     "Select audio output": "Seleziona l'uscita audio",
     "Device settings": "Impostazioni dispositivo",
-    "PhoneLink": "Phone link",
-    "PhoneLink settings": "Apri Phone link",
+    "PhoneLink": "Desktop phone",
+    "PhoneLink settings": "Apri Desktop phone",
     "Click here to start download": "Clicca qui per iniziare il download",
-    "Download PhoneLink": "Scarica Phone link",
+    "Download PhoneLink": "Scarica Desktop phone",
     "Not configured": "Non configurato",
-    "IP phone": "Telefono IP"
+    "IP phone": "Telefono IP",
+    "key type select": "Seleziona il tipo di tasto",
+    "Download App": "Scarica App",
+    "Speaker": "Altoparlante",
+    "Microphone": "Microfono",
+    "All download options": "Tutte le opzioni di download",
+    "Download Desktop app": "Scarica l'app desktop",
+    "Operating system": "Sistema operativo"
   },
   "DropdownContent": {
     "Microphones": "MICROFONI",

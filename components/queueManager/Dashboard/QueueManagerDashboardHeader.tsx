@@ -168,7 +168,7 @@ export const QueueManagerDashboardHeader: FC<QueueManagerDashboardHeaderProps> =
       <div>
         <div className='grid grid-cols-1 gap-4 lg:grid-cols-2 xl:grid-cols-3'>
           {/* Alarm */}
-          <div className='border-b rounded-lg shadow-md border-gray-200 dark:border-gray-700 bg-white dark:bg-gray-900 px-5 py-1 sm: mt-1 relative flex items-center'>
+          <div className='border-b rounded-lg shadow-md border-gray-200 dark:border-gray-700 bg-cardBackgroud dark:bg-cardBackgroudDark px-5 py-1 sm: mt-1 relative flex items-center'>
             <div className='w-full'>
               <Dropdown items={dropdownItems} position='left' divider={true} className=''>
                 <div className='flex justify-between items-center'>
@@ -212,7 +212,7 @@ export const QueueManagerDashboardHeader: FC<QueueManagerDashboardHeaderProps> =
           </div>
 
           {/* not Managed */}
-          <div className='border-b rounded-lg shadow-md border-gray-200 dark:border-gray-700 bg-white dark:bg-gray-900 px-5 py-1 sm: mt-1 relative flex items-center'>
+          <div className='border-b rounded-lg shadow-md border-gray-200 dark:border-gray-700 bg-cardBackgroud dark:bg-cardBackgroudDark px-5 py-1 sm: mt-1 relative flex items-center'>
             <div className='flex items-center space-x-4'>
               <div className='h-10 w-10 flex items-center justify-center rounded-xl bg-emerald-50 mt-1 mb-1'>
                 <FontAwesomeIcon
@@ -233,7 +233,7 @@ export const QueueManagerDashboardHeader: FC<QueueManagerDashboardHeaderProps> =
           </div>
 
           {/* total calls */}
-          <div className='border-b rounded-lg shadow-md border-gray-200 dark:border-gray-700 bg-white dark:bg-gray-900 px-5 py-1 sm: mt-1 relative flex items-center'>
+          <div className='border-b rounded-lg shadow-md border-gray-200 dark:border-gray-700 bg-cardBackgroud dark:bg-cardBackgroudDark px-5 py-1 sm: mt-1 relative flex items-center'>
             <div className='flex items-center space-x-4'>
               <div className='h-10 w-10 flex items-center justify-center rounded-xl bg-emerald-50 mt-1 mb-1'>
                 <FontAwesomeIcon
@@ -254,7 +254,7 @@ export const QueueManagerDashboardHeader: FC<QueueManagerDashboardHeaderProps> =
           </div>
 
           {/* total answered */}
-          <div className='border-b rounded-lg shadow-md border-gray-200 dark:border-gray-700 bg-white dark:bg-gray-900 px-5 py-1 sm: mt-1 relative flex items-center'>
+          <div className='border-b rounded-lg shadow-md border-gray-200 dark:border-gray-700 bg-cardBackgroud dark:bg-cardBackgroudDark px-5 py-1 sm: mt-1 relative flex items-center'>
             <div className='flex items-center space-x-4'>
               <div className='h-10 w-10 flex items-center justify-center rounded-xl bg-emerald-50 mt-1 mb-1'>
                 <FontAwesomeIcon
@@ -275,7 +275,7 @@ export const QueueManagerDashboardHeader: FC<QueueManagerDashboardHeaderProps> =
           </div>
 
           {/*lostCalls */}
-          <div className='border-b rounded-lg shadow-md border-gray-200 dark:border-gray-700 bg-white dark:bg-gray-900 px-5 py-1 sm: mt-1 relative flex items-center'>
+          <div className='border-b rounded-lg shadow-md border-gray-200 dark:border-gray-700 bg-cardBackgroud dark:bg-cardBackgroudDark px-5 py-1 sm: mt-1 relative flex items-center'>
             <div className='flex items-center space-x-4'>
               <div className='h-10 w-10 flex items-center justify-center rounded-xl bg-emerald-50 mt-1 mb-1'>
                 <FontAwesomeIcon
@@ -296,7 +296,7 @@ export const QueueManagerDashboardHeader: FC<QueueManagerDashboardHeaderProps> =
           </div>
 
           {/* totalInvalid */}
-          <div className='border-b rounded-lg shadow-md border-gray-200 dark:border-gray-700 bg-white dark:bg-gray-900 px-5 py-1 sm: mt-1 relative flex items-center'>
+          <div className='border-b rounded-lg shadow-md border-gray-200 dark:border-gray-700 bg-cardBackgroud dark:bg-cardBackgroudDark px-5 py-1 sm: mt-1 relative flex items-center'>
             <div className='flex items-center space-x-4'>
               <div className='h-10 w-10 flex items-center justify-center rounded-xl bg-emerald-50 mt-1 mb-1'>
                 <FontAwesomeIcon
@@ -317,7 +317,7 @@ export const QueueManagerDashboardHeader: FC<QueueManagerDashboardHeaderProps> =
           </div>
 
           {/* In progress */}
-          <div className='border-b rounded-lg shadow-md border-gray-200 dark:border-gray-700 bg-white dark:bg-gray-900 px-5 py-1 sm: mt-1 relative flex items-center'>
+          <div className='border-b rounded-lg shadow-md border-gray-200 dark:border-gray-700 bg-cardBackgroud dark:bg-cardBackgroudDark px-5 py-1 sm: mt-1 relative flex items-center'>
             <div className='flex items-center space-x-4'>
               <div className='h-10 w-10 flex items-center justify-center rounded-xl bg-emerald-50 mt-1 mb-1'>
                 <FontAwesomeIcon

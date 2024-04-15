@@ -1,5 +1,5 @@
 /*
-  Copyright (C) 2023 Nethesis S.r.l.
+  Copyright (C) 2024 Nethesis S.r.l.
   PDX-License-Identifier: AGPL-3.0-or-later
 */
 
@@ -18,6 +18,14 @@
   #__next {
     @apply h-full;
   }
+}
+
+/* fix browser autofill color */
+input:-webkit-autofill,
+textarea:-webkit-autofill,
+select:-webkit-autofill {
+  -webkit-box-shadow: 0 0 0 1000px #030712 inset !important;
+  -webkit-text-fill-color: white !important;
 }
 
 :root {
