@@ -76,7 +76,7 @@ export const DownloadDesktopLinkContent = forwardRef<
             {t('Devices.Operating system')}
           </span>
         </div>
-        <div className='grid grid-cols-1 gap-4 lg:grid-cols-2 xl:grid-cols-3'>
+        <div className='grid grid-cols-1 gap-4 lg:grid-cols-2 xl:grid-cols-3 hover:cursor-pointer'>
           {/* Linux */}
           <div
             className={`${
