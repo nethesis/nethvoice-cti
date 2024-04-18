@@ -444,7 +444,12 @@ const Devices: NextPage = () => {
                               true,
                             )}
                             //if timestamp is empty phone link download is already shown in table
-                            position={'topMultipleItem'}
+                            position={
+                              phoneLinkData[0]?.id !== profile?.default_device?.id &&
+                              !isEmpty(phoneLinkTimestamp)
+                                ? 'topMultipleItem'
+                                : 'topCard'
+                            }
                             className='text-right'
                           >
                             <FontAwesomeIcon
