@@ -87,6 +87,9 @@ export const Layout: FC<LayoutProps> = ({ children }) => {
       }
       return route
     })
+    if (router?.pathname?.includes('/lines')) {
+      items[5].current = true
+    }
 
     setItems(currentItems)
     // eslint-disable-next-line react-hooks/exhaustive-deps

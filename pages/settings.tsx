@@ -142,6 +142,19 @@ const Settings: NextPage = () => {
     })
   }
 
+  const [mobileExtension, setMobileExtension] = useState<any>([])
+  useEffect(() => {
+    // filter phone and insert only mobile phone
+    if (profile?.endpoints) {
+      let endpointsInformation = profile?.endpoints
+      if (endpointsInformation?.extension) {
+        setMobileExtension(
+          endpointsInformation?.extension.filter((phone) => phone?.type === 'mobile'),
+        )
+      }
+    }
+  }, [profile?.endpoints])
+
   return (
     <>
       <div>
@@ -162,7 +175,8 @@ const Settings: NextPage = () => {
                         item?.current
                           ? 'text-gray-900 bg-gray-100 dark:bg-gray-800 dark:text-gray-50 border-l-4 border-primary dark:border-primaryDark'
                           : 'text-gray-600 dark:text-gray-100 hover:text-gray-900 hover:bg-gray-100 dark:hover:bg-gray-800 dark:hover:text-gray-50',
-                        (item?.name === 'Mobile App' || item?.name === 'Integrations') &&
+                        ((item?.name === 'Mobile App' && mobileExtension?.length === 0) ||
+                          item?.name === 'Integrations') &&
                           (profile?.lkhash === undefined || profile?.lkhash === '')
                           ? 'hidden'
                           : '',

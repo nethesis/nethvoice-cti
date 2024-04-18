@@ -272,7 +272,7 @@ const Devices: NextPage = () => {
 
         <div className=''>
           <div className='mt-4 flow-root'>
-            <div className='-mx-4 -my-2 overflow-x-auto sm:-mx-6 lg:-mx-8'>
+            <div className='-mx-4 -my-2 overflow-x-none sm:-mx-6 lg:-mx-8'>
               <div className='inline-block min-w-full py-2 align-middle sm:px-6 lg:px-8'>
                 <div className='overflow-hidden shadow ring-1 ring-black ring-opacity-5 border-[1px] border-solid dark:border-gray-600 rounded-lg'>
                   <table className='min-w-full divide-y divide-gray-300 dark:divide-gray-500'>
@@ -370,7 +370,7 @@ const Devices: NextPage = () => {
         <div className='pt-16'>{titleTable('phoneLink')}</div>
         <div className=''>
           <div className='mt-4 flow-root'>
-            <div className='-mx-4 -my-2 overflow-x-auto sm:-mx-6 lg:-mx-8'>
+            <div className='-mx-4 -my-2 overflow-x-none sm:-mx-6 lg:-mx-8'>
               <div className='inline-block min-w-full py-2 align-middle sm:px-6 lg:px-8'>
                 <div className='overflow-hidden shadow ring-1 ring-black ring-opacity-5 border-[1px] border-solid dark:border-gray-600 rounded-lg'>
                   <table className='min-w-full divide-y divide-gray-300 dark:divide-gray-500'>
@@ -488,7 +488,7 @@ const Devices: NextPage = () => {
         </div>
 
         <div className='mt-4 flow-root'>
-          <div className='-mx-4 -my-2 overflow-x-auto sm:-mx-6 lg:-mx-8'>
+          <div className='-mx-4 -my-2 overflow-x-none sm:-mx-6 lg:-mx-8'>
             <div className='inline-block min-w-full py-2 align-middle sm:px-6 lg:px-8'>
               <div className='overflow-hidden shadow ring-1 md:rounded-lg ring-opacity-5 dark:ring-opacity-5 ring-gray-900 dark:ring-gray-100 border-[1px] border-solid rounded-xl dark:border-gray-600'>
                 <table className='min-w-full divide-y divide-gray-300 dark:divide-gray-500'>

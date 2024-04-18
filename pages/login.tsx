@@ -207,7 +207,7 @@ export default function Login() {
   const [userNotAuthorized, setUserNotAuthorized] = useState(false)
 
   let errorAlert = onError ? (
-    <div className='relative w-full mt-6'>
+    <div className='relative w-full mt-2'>
       <InlineNotification
         type='error'
         title={userNotAuthorized ? t('Login.User not autorized') : t('Login.Login failed')}
@@ -345,11 +345,12 @@ export default function Login() {
             src={!isDarkTheme ? '/login_logo.svg' : '/login_logo_dark.svg'}
             alt='logo'
           />
-          <div className='text-primary dark:text-primaryDark pt-5 pb-6 text-lg font-regular'>
+          <div className='text-primary dark:text-primaryDark pt-5 text-lg font-regular'>
             {productSubname}
           </div>
         </div>
-        <div>
+        {errorAlert}
+        <div className='pt-6'>
           <form action='#' method='POST' onSubmit={doLogin} className='space-y-8'>
             <div>
               <label
@@ -407,7 +408,6 @@ export default function Login() {
               </Button>
             </div>
           </form>
-          {errorAlert}
         </div>
       </div>
     )

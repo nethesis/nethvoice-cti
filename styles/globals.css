@@ -19,19 +19,29 @@
     @apply h-full;
   }
 }
+:root {
+  /* react tooltip opacity */
+  --rt-opacity: 1; 
+  --autofill-bg: white;
+  --autofill-text: #030712;
+}
+
+@media (prefers-color-scheme: dark) {
+  :root {
+    --autofill-bg: #030712;
+    --autofill-text: white;
+  }
+}
 
 /* fix browser autofill color */
 input:-webkit-autofill,
 textarea:-webkit-autofill,
 select:-webkit-autofill {
-  -webkit-box-shadow: 0 0 0 1000px #030712 inset !important;
-  -webkit-text-fill-color: white !important;
+  -webkit-box-shadow: 0 0 0 1000px var(--autofill-bg) inset !important;
+  -webkit-text-fill-color: var(--autofill-text) !important;
 }
 
-:root {
-  /* react tooltip opacity */
-  --rt-opacity: 1;
-}
+
 
 .react-tooltip {
   @apply z-50 bg-gray-700 text-white dark:bg-gray-300 dark:text-gray-900;

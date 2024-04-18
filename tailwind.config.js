@@ -87,7 +87,7 @@ module.exports = {
         inputIconDark: '#F9FAFB', // gray-50
 
         //main page light
-        body: '#E5E7EB', // gray-200
+        body: '#f8fafc', // gray-50
         //main page dark
         bodyDark: '#111827', // gray-900
 
