@@ -182,7 +182,11 @@ const Devices: NextPage = () => {
       ) : (
         <></>
       )}
-      <Dropdown.Item icon={faArrowRightLong}>{phoneLinkDownloadComponent(true)}</Dropdown.Item>
+      {isPhoneLinkSection && (
+        <>
+          <Dropdown.Item icon={faArrowRightLong}>{phoneLinkDownloadComponent(true)}</Dropdown.Item>
+        </>
+      )}
     </>
   )
 
