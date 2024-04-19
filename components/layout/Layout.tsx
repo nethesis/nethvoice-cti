@@ -42,6 +42,7 @@ import { getCustomerCardsList, setUserSettings } from '../../lib/customerCard'
 import { retrieveParksList } from '../../lib/park'
 import { Tooltip } from 'react-tooltip'
 import { getJSONItem, setJSONItem } from '../../lib/storage'
+import { eventDispatch } from '../../lib/hooks/eventDispatch'
 
 export const Layout: FC<LayoutProps> = ({ children }) => {
   const [openMobileMenu, setOpenMobileMenu] = useState<boolean>(false)
@@ -64,6 +65,10 @@ export const Layout: FC<LayoutProps> = ({ children }) => {
   const ctiStatus = useSelector((state: RootState) => state.ctiStatus)
 
   const profilePicture = useSelector((state: RootState) => state.profilePicture)
+
+  const currentUsername = authStore.username
+  const { operators } = useSelector((state: RootState) => state.operators)
+  const { profile } = useSelector((state: RootState) => state.user)
 
   const productName = getProductName()
   // Get current page name, clean the path from / and capitalize page name
@@ -116,6 +121,7 @@ export const Layout: FC<LayoutProps> = ({ children }) => {
           recallOnBusy: userInfo?.data?.recallOnBusy,
           lkhash: userInfo?.data?.lkhash,
         })
+        // check if default device is different from webrtc
         setUserInfoLoaded(true)
       } else {
         if (!ctiStatus.isUserInformationMissing) {
@@ -176,10 +182,6 @@ export const Layout: FC<LayoutProps> = ({ children }) => {
     fetchProfilingInfo()
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [])
-
-  const currentUsername = authStore.username
-  const { operators } = useSelector((state: RootState) => state.operators)
-  const { profile } = useSelector((state: RootState) => state.user)
 
   // check here
   useEffect(() => {
@@ -331,6 +333,20 @@ export const Layout: FC<LayoutProps> = ({ children }) => {
 
   //Get user information from store
   const userInformation = useSelector((state: RootState) => state.user)
+
+  useEventListener('phone-island-webrtc-registered', () => {
+    // If user is registered to webrtc, detach from phone island
+    if (
+      userInformation?.default_device?.type &&
+      userInformation?.default_device?.type !== null &&
+      userInformation?.default_device?.type !== 'webrtc'
+    ) {
+      let defaultDevice = userInformation?.default_device
+      eventDispatch('phone-island-detach', { defaultDevice })
+    }
+  })
+
+  useEventListener('phone-island-webrtc-unregistered', (data: any) => {})
 
   const [conversationObject, setConversationObject]: any = useState({})
 
@@ -721,15 +737,15 @@ export const Layout: FC<LayoutProps> = ({ children }) => {
 
   //check if the user makes a double login
   useEventListener('phone-island-user-already-login', () => {
-    if (!ctiStatus?.webRtcError) {
-      // update global store
-      store?.dispatch?.ctiStatus?.setWebRtcError(true)
-      // force logout
-      let isLogoutError: any = {
-        isWebrtcError: true,
-      }
-      doLogout(isLogoutError)
-    }
+    // if (!ctiStatus?.webRtcError) {
+    //   // update global store
+    //   store?.dispatch?.ctiStatus?.setWebRtcError(true)
+    //   // force logout
+    //   let isLogoutError: any = {
+    //     isWebrtcError: true,
+    //   }
+    //   doLogout(isLogoutError)
+    // }
   })
 
   //check if server reloaded
