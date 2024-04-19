@@ -400,7 +400,7 @@ export const QueuesManagementView: FC<QueuesManagementViewProps> = ({ className 
               {isEmpty(getQueuesUserLoggedIn()) ? (
                 <>
                   {/* login from all queues */}
-                  <Button variant='white' className='mr-2 mb-2' onClick={loginAllQueues}>
+                  <Button variant='white' className='mr-2' onClick={loginAllQueues}>
                     <FontAwesomeIcon icon={faCircleCheck} className='h-4 w-4 mr-2' />
                     <span>{t('Queues.Login to all queues')}</span>
                   </Button>
@@ -408,11 +408,7 @@ export const QueuesManagementView: FC<QueuesManagementViewProps> = ({ className 
               ) : (
                 <>
                   {/* logout from all queues */}
-                  <Button
-                    variant='white'
-                    className='mr-2 mb-2'
-                    onClick={prepareLogoutAllQueuesModal}
-                  >
+                  <Button variant='white' className='mr-2' onClick={prepareLogoutAllQueuesModal}>
                     <FontAwesomeIcon
                       icon={faUserXmark}
                       className='h-4 w-4 mr-2 text-gray-500 dark:text-gray-400'
@@ -425,7 +421,7 @@ export const QueuesManagementView: FC<QueuesManagementViewProps> = ({ className 
               {isEmpty(getQueuesUserPaused()) ? (
                 <>
                   {/* pause on all queues */}
-                  <Dropdown items={getPauseAllQueuesItemsMenu()} position='left' className='mb-3'>
+                  <Dropdown items={getPauseAllQueuesItemsMenu()} position='left' className=''>
                     <Button variant='primary'>
                       <FontAwesomeIcon icon={faClock} className='h-4 w-4 mr-2' aria-hidden='true' />
                       <span>{t('Queues.Pause on all queues')}</span>
@@ -440,7 +436,7 @@ export const QueuesManagementView: FC<QueuesManagementViewProps> = ({ className 
               ) : (
                 <>
                   {/* end pause on all queues */}
-                  <Button variant='primary' className='mb-3' onClick={unpauseAllQueues}>
+                  <Button variant='primary' className='' onClick={unpauseAllQueues}>
                     <FontAwesomeIcon
                       icon={faUserClock}
                       className='h-4 w-4 mr-2 text-white dark:text-white'
@@ -454,7 +450,7 @@ export const QueuesManagementView: FC<QueuesManagementViewProps> = ({ className 
           {/* expand/collapse all queues */}
           <div
             onClick={() => toggleExpandAllQueues()}
-            className='cursor-pointer hover:underline text-primary dark:text-primaryDark leading-5 text-sm font-medium'
+            className='cursor-pointer hover:underline text-primary dark:text-primaryDark leading-5 text-sm font-medium mt-4 mb-2'
           >
             {areAllQueuesExpanded()
               ? t('Queues.Collapse all queues')
@@ -462,6 +458,7 @@ export const QueuesManagementView: FC<QueuesManagementViewProps> = ({ className 
           </div>
         </div>
       </div>
+
       <div className='mx-auto text-center'>
         {/* no search results */}
         {queuesStore.isLoaded && isEmpty(filteredQueues) && (

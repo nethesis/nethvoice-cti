@@ -69,7 +69,7 @@ const theme = {
       base: 'mt-2 text-sm',
       color: {
         base: 'text-gray-500 dark:text-gray-400',
-        error: 'text-red-600 dark:text-red-400',
+        error: 'text-rose-600 dark:text-rose-400',
       },
     },
     size: {
@@ -79,7 +79,7 @@ const theme = {
     colors: {
       gray: 'border-gray-300 focus:border-primaryLight focus:ring-primaryLight placeholder:text-gray-400 dark:border-gray-600 dark:focus:border-primaryDark dark:focus:ring-primaryDark dark:placeholder:text-gray-500',
       error:
-        'border-red-500 focus:border-red-500 focus:ring-red-500 dark:border-red-400 dark:focus:border-red-400 dark:focus:ring-red-400',
+        'border-rose-500 focus:border-rose-500 focus:ring-rose-500 dark:border-rose-400 dark:focus:border-rose-400 dark:focus:ring-rose-400',
     },
     icon: {
       base: 'absolute flex items-center z-[9]',
@@ -402,25 +402,25 @@ const theme = {
     base: 'border-l-4 rounded-md p-4 w-full flex',
     type: {
       info: 'border-blue-400 bg-blue-100 dark:border-blue-500 dark:bg-blue-800',
-      error: 'border-red-400 bg-red-100 dark:border-red-500 dark:bg-red-900',
+      error: 'border-rose-500 bg-rose-100 dark:border-rose-300 dark:bg-rose-900',
       warning: 'border-yellow-400 bg-yellow-100 dark:border-yellow-500 dark:bg-yellow-700',
       success: 'border-green-400 bg-green-100 dark:border-green-500 dark:bg-green-800',
     },
     titleStyle: {
       info: 'text-sm font-medium text-blue-800 dark:text-blue-100',
-      error: 'text-sm font-medium text-red-800 dark:text-red-100',
+      error: 'text-sm font-medium text-rose-800 dark:text-rose-100',
       warning: 'text-sm font-medium text-yellow-800 dark:text-yellow-100',
       success: 'text-sm font-medium text-green-800 dark:text-green-100',
     },
     iconStyle: {
       info: 'h-4 w-4 relative -top-0.5 text-blue-400 dark:text-blue-300',
-      error: 'h-4 w-4 relative -top-0.5 text-red-400 dark:text-red-300',
+      error: 'h-4 w-4 relative -top-0.5 text-rose-700 dark:text-rose-200',
       warning: 'h-4 w-4 relative -top-0.5 text-yellow-600 dark:text-yellow-300',
       success: 'h-4 w-4 relative -top-0.5 text-green-600 dark:text-green-300',
     },
     childrenText: {
       info: 'mt-2 text-sm text-blue-700 dark:text-blue-200',
-      error: 'mt-2 text-sm text-red-700 dark:text-red-200',
+      error: 'mt-2 text-sm text-rose-700 dark:text-rose-200',
       warning: 'mt-2 text-sm text-yellow-700 dark:text-yellow-200',
       success: 'mt-2 text-sm text-green-700 dark:text-green-200',
     },
