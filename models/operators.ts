@@ -121,7 +121,8 @@ export const operators = createModel<RootModel>()({
 
       return state
     },
-    updateExtensions: (state: any, operatorName: string, newExtensions: any) => {
+    //update call forward status
+    updateUserCallForwardStatus: (state: any, operatorName: string, newExtensions: any) => {
       const op = state.extensions[operatorName]
 
       if (!op) {
@@ -131,6 +132,24 @@ export const operators = createModel<RootModel>()({
       op.cf = newExtensions
       return state
       // opExtension = newExtensions
+    },
+    //update extensions for user when receiving an exten update from WS
+    updateExten: (state: any, operatorName: string, newExtensions: any) => {
+      let op = state.extensions[operatorName]
+
+      if (!op) {
+        return
+      }
+
+      for (let prop in newExtensions) {
+        if (newExtensions.hasOwnProperty(prop)) {
+          if (op.hasOwnProperty(prop)) {
+            op[prop] = newExtensions[prop]
+          }
+        }
+      }
+
+      return state
     },
   },
 })

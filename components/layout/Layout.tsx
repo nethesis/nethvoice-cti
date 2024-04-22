@@ -121,7 +121,6 @@ export const Layout: FC<LayoutProps> = ({ children }) => {
           recallOnBusy: userInfo?.data?.recallOnBusy,
           lkhash: userInfo?.data?.lkhash,
         })
-        // check if default device is different from webrtc
         setUserInfoLoaded(true)
       } else {
         if (!ctiStatus.isUserInformationMissing) {
@@ -658,6 +657,16 @@ export const Layout: FC<LayoutProps> = ({ children }) => {
         }
       }
     }
+
+    let extenUpdateObject: any = {
+      status: data[currentUsername]?.status,
+      dnd: data[currentUsername]?.dnd,
+      port: data[currentUsername]?.port,
+      sipuseragent: data[currentUsername]?.sipuseragent,
+      username: data[currentUsername]?.username,
+    }
+    // Update user extension
+    store.dispatch.operators.updateExten(data[currentUsername]?.number, extenUpdateObject)
   })
 
   // Save prev user main presence state

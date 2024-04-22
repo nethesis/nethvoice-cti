@@ -175,7 +175,7 @@ export const TopBar: FC<TopBarProps> = ({ openMobileCb }) => {
     let presence: any = 'callforward'
     try {
       await forwardStatus(presence, number)
-      store.dispatch.operators.updateExtensions(profile?.mainextension, number)
+      store.dispatch.operators.updateUserCallForwardStatus(profile?.mainextension, number)
       const userInfo = await getUserInfo()
 
       if (userInfo && userInfo.data) {
