@@ -746,15 +746,15 @@ export const Layout: FC<LayoutProps> = ({ children }) => {
 
   //check if the user makes a double login
   useEventListener('phone-island-user-already-login', () => {
-    // if (!ctiStatus?.webRtcError) {
-    //   // update global store
-    //   store?.dispatch?.ctiStatus?.setWebRtcError(true)
-    //   // force logout
-    //   let isLogoutError: any = {
-    //     isWebrtcError: true,
-    //   }
-    //   doLogout(isLogoutError)
-    // }
+    if (!ctiStatus?.webRtcError) {
+      // update global store
+      store?.dispatch?.ctiStatus?.setWebRtcError(true)
+      // force logout
+      let isLogoutError: any = {
+        isWebrtcError: true,
+      }
+      doLogout(isLogoutError)
+    }
   })
 
   //check if server reloaded
