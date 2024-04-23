@@ -42,6 +42,7 @@ import { getCustomerCardsList, setUserSettings } from '../../lib/customerCard'
 import { retrieveParksList } from '../../lib/park'
 import { Tooltip } from 'react-tooltip'
 import { getJSONItem, setJSONItem } from '../../lib/storage'
+import { eventDispatch } from '../../lib/hooks/eventDispatch'
 
 export const Layout: FC<LayoutProps> = ({ children }) => {
   const [openMobileMenu, setOpenMobileMenu] = useState<boolean>(false)
@@ -64,6 +65,10 @@ export const Layout: FC<LayoutProps> = ({ children }) => {
   const ctiStatus = useSelector((state: RootState) => state.ctiStatus)
 
   const profilePicture = useSelector((state: RootState) => state.profilePicture)
+
+  const currentUsername = authStore.username
+  const { operators } = useSelector((state: RootState) => state.operators)
+  const { profile } = useSelector((state: RootState) => state.user)
 
   const productName = getProductName()
   // Get current page name, clean the path from / and capitalize page name
@@ -176,10 +181,6 @@ export const Layout: FC<LayoutProps> = ({ children }) => {
     fetchProfilingInfo()
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [])
-
-  const currentUsername = authStore.username
-  const { operators } = useSelector((state: RootState) => state.operators)
-  const { profile } = useSelector((state: RootState) => state.user)
 
   // check here
   useEffect(() => {
@@ -331,6 +332,20 @@ export const Layout: FC<LayoutProps> = ({ children }) => {
 
   //Get user information from store
   const userInformation = useSelector((state: RootState) => state.user)
+
+  useEventListener('phone-island-webrtc-registered', () => {
+    // If user is registered to webrtc, detach from phone island
+    if (
+      userInformation?.default_device?.type &&
+      userInformation?.default_device?.type !== null &&
+      userInformation?.default_device?.type !== 'webrtc'
+    ) {
+      let defaultDevice = userInformation?.default_device
+      eventDispatch('phone-island-detach', { defaultDevice })
+    }
+  })
+
+  useEventListener('phone-island-webrtc-unregistered', (data: any) => {})
 
   const [conversationObject, setConversationObject]: any = useState({})
 
@@ -642,6 +657,16 @@ export const Layout: FC<LayoutProps> = ({ children }) => {
         }
       }
     }
+
+    let extenUpdateObject: any = {
+      status: data[currentUsername]?.status,
+      dnd: data[currentUsername]?.dnd,
+      port: data[currentUsername]?.port,
+      sipuseragent: data[currentUsername]?.sipuseragent,
+      username: data[currentUsername]?.username,
+    }
+    // Update user extension
+    store.dispatch.operators.updateExten(data[currentUsername]?.number, extenUpdateObject)
   })
 
   // Save prev user main presence state

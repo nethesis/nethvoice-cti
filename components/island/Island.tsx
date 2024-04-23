@@ -45,5 +45,5 @@ export function Island() {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [auth.token, currentUser.endpoints.extension])
 
-  return <>{config && <PhoneIsland dataConfig={config} />}</>
+  return <>{config && <PhoneIsland dataConfig={config} uaType={'desktop'}/>}</>
 }

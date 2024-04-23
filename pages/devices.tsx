@@ -284,8 +284,7 @@ const Devices: NextPage = () => {
                         </td>
                         <td className='whitespace-nowrap px-3 py-4 text-sm w-2'>
                           {/* {phone.status} */}{' '}
-                          {operators?.extensions[webrtcData[0]?.id]?.exten ===
-                          profile?.default_device?.id ? (
+                          {operators?.extensions[webrtcData[0]?.id]?.status === 'online' ? (
                             <>
                               <FontAwesomeIcon
                                 icon={faCircleCheck}
@@ -382,7 +381,7 @@ const Devices: NextPage = () => {
                         </td>
                         <td className='whitespace-nowrap px-3 py-4 text-sm w-2'>
                           {/* Phone Link status */}
-                          {operators?.extensions[phoneLinkData?.id]?.status === 'online' ? (
+                          {operators?.extensions[phoneLinkData[0]?.id]?.status === 'online' ? (
                             <>
                               <FontAwesomeIcon
                                 icon={faCircleCheck}
