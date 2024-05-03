@@ -11,18 +11,21 @@ import { faChevronDown, faCircleXmark, faXmark } from '@fortawesome/free-solid-s
 import { useSelector } from 'react-redux'
 import { RootState } from '../../../store'
 import { savePreference } from '../../../lib/storage'
-import { DEFAULT_OUTCOME_FILTER, getFilterValues } from '../../../lib/queuesLib'
+import { DEFAULT_OUTCOME_FILTER, getFilterValues } from '../../../lib/queueManager'
 import { useTranslation } from 'react-i18next'
 import { cloneDeep, isEmpty } from 'lodash'
 
 export interface NotManagedCallsFilterProps extends ComponentPropsWithRef<'div'> {
   updateTextFilter: Function
   updateOutcomeFilter: Function
-  updateQueuesFilter: Function
+  updateQueueManagerFilter: Function
 }
 
 export const NotManagedCallsFilter = forwardRef<HTMLButtonElement, NotManagedCallsFilterProps>(
-  ({ updateTextFilter, updateOutcomeFilter, updateQueuesFilter, className, ...props }, ref) => {
+  (
+    { updateTextFilter, updateOutcomeFilter, updateQueueManagerFilter, className, ...props },
+    ref,
+  ) => {
     const { t } = useTranslation()
     const auth = useSelector((state: RootState) => state.authentication)
     const [textFilter, setTextFilter] = useState('')
@@ -43,7 +46,7 @@ export const NotManagedCallsFilter = forwardRef<HTMLButtonElement, NotManagedCal
       ],
     }
 
-    const queuesFilter = {
+    const queueManagerFilter = {
       id: 'queues',
       name: t('Queues.Queues'),
       options: Object.values(queueManagerStore.queues).map((queue: any) => {
@@ -59,7 +62,7 @@ export const NotManagedCallsFilter = forwardRef<HTMLButtonElement, NotManagedCal
       updateTextFilter(newTextFilter)
     }
 
-    function changeQueuesFilter(event: any) {
+    function changeQueueManagerFilter(event: any) {
       const isChecked = event.target.checked
       const newSelectedQueues = cloneDeep(selectedQueues)
 
@@ -71,10 +74,10 @@ export const NotManagedCallsFilter = forwardRef<HTMLButtonElement, NotManagedCal
         newSelectedQueues.splice(index, 1)
         setSelectedQueues(newSelectedQueues)
       }
-      savePreference('queuesSelectedQueues', newSelectedQueues, auth.username)
+      savePreference('queueManagerSelectedQueues', newSelectedQueues, auth.username)
 
       // notify parent component
-      updateQueuesFilter(newSelectedQueues)
+      updateQueueManagerFilter(newSelectedQueues)
     }
 
     function changeOutcomeFilter(event: any) {
@@ -99,11 +102,11 @@ export const NotManagedCallsFilter = forwardRef<HTMLButtonElement, NotManagedCal
           return queue.queue
         })
         setSelectedQueues(allQueueCodes)
-        updateQueuesFilter(allQueueCodes)
+        updateQueueManagerFilter(allQueueCodes)
       } else {
         // select queues from preferences
         setSelectedQueues(filterValues.selectedQueues)
-        updateQueuesFilter(filterValues.selectedQueues)
+        updateQueueManagerFilter(filterValues.selectedQueues)
       }
     }, [])
 
@@ -126,10 +129,10 @@ export const NotManagedCallsFilter = forwardRef<HTMLButtonElement, NotManagedCal
         setQueuesLabel(selectedQueues.join(', '))
       } else {
         // if no queues are selected, it's equivalent to select all of them
-        const allQueueCodes = queuesFilter.options.map((queue: any) => queue.value)
+        const allQueueCodes = queueManagerFilter.options.map((queue: any) => queue.value)
         setQueuesLabel(allQueueCodes.join(', '))
       }
-    }, [selectedQueues, queuesFilter.options])
+    }, [selectedQueues, queueManagerFilter.options])
 
     const resetFilters = () => {
       setTextFilter('')
@@ -144,8 +147,8 @@ export const NotManagedCallsFilter = forwardRef<HTMLButtonElement, NotManagedCal
         return queue.queue
       })
       setSelectedQueues(allQueueCodes)
-      updateQueuesFilter(allQueueCodes)
-      savePreference('queuesSelectedQueues', allQueueCodes, auth.username)
+      updateQueueManagerFilter(allQueueCodes)
+      savePreference('queueManagerSelectedQueues', allQueueCodes, auth.username)
     }
 
     const clearTextFilter = () => {
@@ -269,7 +272,7 @@ export const NotManagedCallsFilter = forwardRef<HTMLButtonElement, NotManagedCal
                       {/* queues filter (mobile) */}
                       <Disclosure
                         as='div'
-                        key={queuesFilter.name}
+                        key={queueManagerFilter.name}
                         className='border-t px-4 py-6 border-gray-200 dark:border-gray-700'
                       >
                         {({ open }) => (
@@ -277,7 +280,7 @@ export const NotManagedCallsFilter = forwardRef<HTMLButtonElement, NotManagedCal
                             <h3 className='-mx-2 -my-3 flow-root'>
                               <Disclosure.Button className='flex w-full items-center justify-between px-2 py-3 text-sm bg-white text-gray-400 dark:bg-gray-900 dark:text-gray-500'>
                                 <span className='font-medium text-gray-900 dark:text-gray-100'>
-                                  {queuesFilter.name}
+                                  {queueManagerFilter.name}
                                 </span>
                                 <span className='ml-6 flex items-center'>
                                   <FontAwesomeIcon
@@ -293,17 +296,17 @@ export const NotManagedCallsFilter = forwardRef<HTMLButtonElement, NotManagedCal
                             </h3>
                             <Disclosure.Panel className='pt-6'>
                               <fieldset>
-                                <legend className='sr-only'>{queuesFilter.name}</legend>
+                                <legend className='sr-only'>{queueManagerFilter.name}</legend>
                                 <div className='space-y-4'>
-                                  {queuesFilter.options.map((option) => (
+                                  {queueManagerFilter.options.map((option) => (
                                     <div key={option.value} className='flex items-center'>
                                       <input
                                         id={`queues-${option.value}`}
-                                        name={`filter-${queuesFilter.id}`}
+                                        name={`filter-${queueManagerFilter.id}`}
                                         type='checkbox'
                                         defaultChecked={selectedQueues.includes(option.value)}
                                         value={option.value}
-                                        onChange={changeQueuesFilter}
+                                        onChange={changeQueueManagerFilter}
                                         className='h-4 w-4 border-gray-300 text-primary focus:ring-primaryLight dark:border-gray-600 dark:text-primary dark:focus:ring-primaryDark'
                                       />
                                       <label
@@ -336,7 +339,7 @@ export const NotManagedCallsFilter = forwardRef<HTMLButtonElement, NotManagedCal
               <div className='flex items-center'>
                 <div className='flex items-center'>
                   <TextInput
-                    placeholder={t('Queues.Filter calls') || ""}
+                    placeholder={t('Queues.Filter calls') || ''}
                     className='max-w-sm'
                     value={textFilter}
                     onChange={changeTextFilter}
@@ -419,13 +422,13 @@ export const NotManagedCallsFilter = forwardRef<HTMLButtonElement, NotManagedCal
 
                     <Popover
                       as='div'
-                      key={queuesFilter.name}
-                      id={`desktop-menu-${queuesFilter.id}`}
+                      key={queueManagerFilter.name}
+                      id={`desktop-menu-${queueManagerFilter.id}`}
                       className='relative inline-block text-left shrink-0'
                     >
                       <div>
                         <Popover.Button className='px-3 py-2 text-sm leading-4 p-2 rounded border shadow-sm border-gray-300 bg-white text-gray-700 hover:bg-gray-100 focus:ring-primaryLight dark:border-gray-600 dark:bg-gray-900 dark:text-gray-100 dark:hover:bg-gray-800 dark:focus:ring-primaryDark group inline-flex items-center justify-center font-medium  hover:text-gray-900 dark:hover:text-gray-100'>
-                          <span>{queuesFilter.name}</span>
+                          <span>{queueManagerFilter.name}</span>
                           <FontAwesomeIcon
                             icon={faChevronDown}
                             className='ml-2 h-3 w-3 flex-shrink-0 text-gray-400 group-hover:text-gray-500 dark:text-gray-500 dark:group-hover:text-gray-400'
@@ -445,15 +448,15 @@ export const NotManagedCallsFilter = forwardRef<HTMLButtonElement, NotManagedCal
                       >
                         <Popover.Panel className='absolute right-0 z-10 mt-2 origin-top-right rounded-md min-w-max p-4 shadow-2xl ring-1 focus:outline-none ring-opacity-5 bg-white ring-black dark:ring-opacity-5 dark:bg-gray-900 dark:ring-gray-700'>
                           <form className='space-y-4'>
-                            {queuesFilter.options.map((option) => (
+                            {queueManagerFilter.options.map((option) => (
                               <div key={option.value} className='flex items-center'>
                                 <input
                                   id={`queues-${option.value}`}
-                                  name={`filter-${queuesFilter.id}`}
+                                  name={`filter-${queueManagerFilter.id}`}
                                   type='checkbox'
                                   defaultChecked={selectedQueues.includes(option.value)}
                                   value={option.value}
-                                  onChange={changeQueuesFilter}
+                                  onChange={changeQueueManagerFilter}
                                   className='h-4 w-4 rounded border-gray-300 text-primary focus:ring-primaryLight dark:border-gray-600 dark:text-primary dark:focus:ring-primaryDark'
                                 />
                                 <label

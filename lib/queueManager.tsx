@@ -659,7 +659,7 @@ export const getExpandedSummaryValue = (currentUsername: string) => {
 
 export const getFilterValues = (currentUsername: string) => {
   const outcome = loadPreference('queuesOutcomeFilter', currentUsername) || DEFAULT_OUTCOME_FILTER
-  const selectedQueues = loadPreference('queuesSelectedQueues', currentUsername) || []
+  const selectedQueues = loadPreference('queueManagerSelectedQueues', currentUsername) || []
   return { outcome, selectedQueues }
 }
 
