@@ -42,6 +42,7 @@ import { MissingPermission } from '../components/common/MissingPermissionsPage'
 import { Tooltip } from 'react-tooltip'
 import { faGrid2, faGridDividers } from '@nethesis/nethesis-solid-svg-icons'
 import { savePreference } from '../lib/storage'
+import TextScroll from '../components/common/TextScroll'
 
 const Operators: NextPage = () => {
   const [filteredOperators, setFilteredOperators]: any = useState([])
@@ -834,17 +835,16 @@ const Operators: NextPage = () => {
                                     operator?.conversations[0]?.chDest?.inConference == true) ? (
                                     <div className={`tooltip-operator-information-${index}`}>
                                       <div className='py-2 px-3'>
-                                        <div className='flex w-44'>
+                                        <div className='flex w-45'>
                                           <CallDuration
                                             startTime={operator?.conversations[0]?.startTime}
                                             className='relative top-px mr-1.5 text-cardTextBusy dark:text-cardTextBusy leading-5 text-sm font-medium font-mono'
                                           />{' '}
-                                          <span className='truncate text-sm not-italic font-medium leading-5 text-cardTextBusy dark:text-cardTextBusy'>
-                                            -{' '}
-                                            {capitalize(
+                                          <TextScroll
+                                            text={capitalize(
                                               operator?.conversations[0]?.counterpartName,
                                             )}
-                                          </span>
+                                          ></TextScroll>
                                         </div>
 
                                         {/* Operator recording call  */}
@@ -1081,17 +1081,16 @@ const Operators: NextPage = () => {
                                       operator?.conversations[0]?.chDest?.inConference == true) ? (
                                       <div className={`tooltip-operator-information-${index}`}>
                                         <div className='py-2 px-3'>
-                                          <div className='flex w-44'>
+                                          <div className='flex w-45'>
                                             <CallDuration
                                               startTime={operator?.conversations[0]?.startTime}
                                               className='relative top-px mr-1.5 text-cardTextBusy dark:text-cardTextBusy leading-5 text-sm font-medium font-mono'
                                             />{' '}
-                                            <span className='truncate text-sm not-italic font-medium leading-5 text-cardTextBusy dark:text-cardTextBusy'>
-                                              -{' '}
-                                              {capitalize(
+                                            <TextScroll
+                                              text={capitalize(
                                                 operator?.conversations[0]?.counterpartName,
                                               )}
-                                            </span>
+                                            ></TextScroll>
                                           </div>
 
                                           {/* Operator recording call  */}

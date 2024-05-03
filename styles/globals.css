@@ -21,7 +21,7 @@
 }
 :root {
   /* react tooltip opacity */
-  --rt-opacity: 1; 
+  --rt-opacity: 1;
   --autofill-bg: white;
   --autofill-text: #030712;
 }
@@ -40,8 +40,6 @@ select:-webkit-autofill {
   -webkit-box-shadow: 0 0 0 1000px var(--autofill-bg) inset !important;
   -webkit-text-fill-color: var(--autofill-text) !important;
 }
-
-
 
 .react-tooltip {
   @apply z-50 bg-gray-700 text-white dark:bg-gray-300 dark:text-gray-900;
@@ -118,7 +116,7 @@ select:-webkit-autofill {
 }
 
 .scrolling-text-container {
-  width: 100%; 
+  width: 100%;
   overflow: hidden;
 }
 
@@ -133,6 +131,17 @@ select:-webkit-autofill {
     transform: translateX(0);
   }
   100% {
-    transform: translateX(-100%);
+    transform: translateX(-50%);
   }
+}
+
+.text-container {
+  width: 200px;
+  overflow: hidden;
+}
+
+.text-wrapper {
+  display: inline-block;
+  white-space: nowrap;
+  animation: scrollText 15s linear infinite;
 }
