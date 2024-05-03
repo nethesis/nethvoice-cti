@@ -337,14 +337,13 @@ export const Layout: FC<LayoutProps> = ({ children }) => {
   const userInformation = useSelector((state: RootState) => state.user)
 
   useEventListener('phone-island-webrtc-registered', () => {
-    // If user is registered to webrtc, detach from phone island
     if (
       userInformation?.default_device?.type &&
       userInformation?.default_device?.type !== null &&
       userInformation?.default_device?.type !== 'webrtc'
     ) {
       let defaultDevice = userInformation?.default_device
-      eventDispatch('phone-island-detach', { defaultDevice })
+      eventDispatch('phone-island-default-device-change', { defaultDevice })
     }
   })
 
@@ -714,9 +713,9 @@ export const Layout: FC<LayoutProps> = ({ children }) => {
       if (firstRenderDetach) {
         setMainDeviceId(desktopPhoneDevice[0]?.id)
         dispatch.user.updateDefaultDevice(desktopPhoneDevice[0]?.id)
-        let deviceInformationObject = webrtcData[0]
+        let deviceInformationObject = desktopPhoneDevice[0]
         setFirstRenderDetach(false)
-        eventDispatch('phone-island-detach', { deviceInformationObject })
+        eventDispatch('phone-island-default-device-change', { deviceInformationObject })
       }
     } else if (
       data[currentUsername]?.number === desktopPhoneDevice[0]?.id &&
@@ -730,7 +729,7 @@ export const Layout: FC<LayoutProps> = ({ children }) => {
         dispatch.user.updateDefaultDevice(webrtcData[0]?.id)
         let deviceInformationObject = webrtcData[0]
         setFirstRenderAttach(false)
-        eventDispatch('phone-island-attach', { deviceInformationObject })
+        eventDispatch('phone-island-default-device-change', { deviceInformationObject })
       }
     }
   })

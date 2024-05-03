@@ -98,7 +98,11 @@
     "No recent calls": "Nessuna chiamata",
     "Company contacts": "Contatti aziendali",
     "No results": "Nessun risultato",
-    "Please enter a valid phone number": "Inserisci un numero di telefono valido"
+    "Please enter a valid phone number": "Inserisci un numero di telefono valido",
+    "Cannot retrieve last calls of user": "Impossibile recuperare le ultime chiamate dell'utente",
+    "Cannot retrieve last calls of switchboard": "Impossibile recuperare le ultime chiamate del centralino",
+    "Delete contact": "Elimina contatto",
+    "contactDeletionMessage": "Il contatto {{name}} verrà eliminato permanentemente"
   },
   "History": {
     "History": "Storico",

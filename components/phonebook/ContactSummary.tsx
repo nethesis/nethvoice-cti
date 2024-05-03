@@ -105,7 +105,7 @@ export const ContactSummary = forwardRef<HTMLButtonElement, ContactSummaryProps>
       openShowContactDrawer(contact)
       store.dispatch.globalSearch.setOpen(false)
       store.dispatch.globalSearch.setFocused(false)
-      
+
       // To avoid blur effect when click on operator information
       store.dispatch.globalSearch.setRightSideTitleClicked(true)
     }
@@ -198,8 +198,7 @@ export const ContactSummary = forwardRef<HTMLButtonElement, ContactSummaryProps>
               </h3>
               <div className='mt-3'>
                 <p className='text-sm text-gray-500 dark:text-gray-400'>
-                  Contact <strong>{contactToDelete?.displayName || ''}</strong> will be permanently
-                  deleted.
+                  {t('contactDeletionMessage', { name: contactToDelete?.displayName || '' })}
                 </p>
               </div>
             </div>

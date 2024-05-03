@@ -841,9 +841,7 @@ const Operators: NextPage = () => {
                                             className='relative top-px mr-1.5 text-cardTextBusy dark:text-cardTextBusy leading-5 text-sm font-medium font-mono'
                                           />{' '}
                                           <TextScroll
-                                            text={capitalize(
-                                              operator?.conversations[0]?.counterpartName,
-                                            )}
+                                            text={operator?.conversations[0]?.counterpartName}
                                           ></TextScroll>
                                         </div>
 
@@ -1087,9 +1085,7 @@ const Operators: NextPage = () => {
                                               className='relative top-px mr-1.5 text-cardTextBusy dark:text-cardTextBusy leading-5 text-sm font-medium font-mono'
                                             />{' '}
                                             <TextScroll
-                                              text={capitalize(
-                                                operator?.conversations[0]?.counterpartName,
-                                              )}
+                                              text={operator?.conversations[0]?.counterpartName}
                                             ></TextScroll>
                                           </div>
 
