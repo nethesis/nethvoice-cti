@@ -444,6 +444,37 @@ export const Layout: FC<LayoutProps> = ({ children }) => {
     }
   }
 
+  const [isFirstLogin, setIsFirstLogin] = useState(true)
+
+  useEffect(() => {
+    if (isFirstLogin) {
+      setIsFirstLogin(false)
+      return
+    }
+    //set webrtc as default device if desktop phone is offline and if is setted as default device
+    if (
+      desktopPhoneDevice?.length > 0 &&
+      desktopPhoneDevice[0]?.id !== '' &&
+      operatorsStore?.extensions[desktopPhoneDevice[0]?.id]?.status &&
+      operatorsStore?.extensions[desktopPhoneDevice[0]?.id]?.status === 'offline' &&
+      userInformation?.default_device?.type === 'nethlink' &&
+      webrtcData?.length > 0
+    ) {
+      let deviceIdInfo: any = {}
+      deviceIdInfo = webrtcData[0]?.id
+      setMainDeviceId(deviceIdInfo)
+      dispatch.user.updateDefaultDevice(webrtcData[0]?.id)
+      let deviceInformationObject = webrtcData[0]
+      setIsFirstLogin(false)
+      eventDispatch('phone-island-default-device-change', { deviceInformationObject })
+    }
+    // if default_device is setted to physical device detach phone island to avoid problems
+    if (userInformation?.default_device?.type === 'physical') {
+      let deviceInformationObject = webrtcData[0]
+      eventDispatch('phone-island-detach', { deviceInformationObject })
+    }
+  }, [desktopPhoneDevice, operatorsStore?.extensions, webrtcData, userInformation?.default_device?.type])
+
   useEventListener('phone-island-conversations', (data) => {
     const opName = Object.keys(data)[0]
     const conversations = data[opName].conversations
@@ -730,6 +761,7 @@ export const Layout: FC<LayoutProps> = ({ children }) => {
         let deviceInformationObject = webrtcData[0]
         setFirstRenderAttach(false)
         eventDispatch('phone-island-default-device-change', { deviceInformationObject })
+        eventDispatch('phone-island-attach', { deviceInformationObject })
       }
     }
   })
