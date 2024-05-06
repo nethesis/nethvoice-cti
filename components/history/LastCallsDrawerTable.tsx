@@ -78,7 +78,7 @@ export const LastCallsDrawerTable = forwardRef<HTMLButtonElement, LastCallsDrawe
             res.rows = filterLastCalls(res)
             setLastCalls(res)
           } catch (e) {
-            setErrorMessage('Cannot retrieve last calls of user')
+            setErrorMessage(t('Phonebook.Cannot retrieve last calls of user') || '')
           }
           setLoaded(true)
         } else if (callType === 'switchboard') {
@@ -93,7 +93,7 @@ export const LastCallsDrawerTable = forwardRef<HTMLButtonElement, LastCallsDrawe
             res.rows = filterLastCalls(res)
             setLastCalls(res)
           } catch (e) {
-            setErrorMessage('Cannot retrieve last calls of switchboard')
+            setErrorMessage(t('Phonebook.Cannot retrieve last calls of switchboard') || '')
           }
           setLoaded(true)
         }

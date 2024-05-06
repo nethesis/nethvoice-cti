@@ -167,18 +167,6 @@ const Devices: NextPage = () => {
         >
           {t('Devices.Set as main device')}
         </Dropdown.Item>
-      ) : isPhoneLinkSection && phoneLinkData[0]?.id !== profile?.default_device?.id ? (
-        <>
-          {/* You can set as main device only if user has downloaded the desktop app */}
-          {!isEmpty(phoneLinkTimestamp) && (
-            <Dropdown.Item
-              icon={faAward}
-              onClick={() => setSelectedAsMainDevice(deviceId, type, selectedDeviceInfo)}
-            >
-              {t('Devices.Set as main device')}
-            </Dropdown.Item>
-          )}
-        </>
       ) : (
         <></>
       )}
@@ -326,7 +314,8 @@ const Devices: NextPage = () => {
                           </Button>
                         </td>
                         <td className='relative whitespace-nowrap py-4 pl-3 text-right text-sm font-medium pr-6'>
-                          {webrtcData[0]?.id !== profile?.default_device?.id ? (
+                          {webrtcData[0]?.id !== profile?.default_device?.id &&
+                          phoneLinkData[0]?.id !== profile?.default_device?.id ? (
                             <Dropdown
                               items={setMainDeviceMenu(
                                 webrtcData[0]?.id,

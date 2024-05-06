@@ -69,15 +69,15 @@ export const NotManagedCalls: FC<NotManagedCallsProps> = ({ className }): JSX.El
     setPageNum(1)
   }
 
-  const [queuesFilter, setQueuesFilter]: any = useState([])
-  const updateQueuesFilter = (newQueuesFilter: string[]) => {
-    setQueuesFilter(newQueuesFilter)
+  const [queueManagerFilter, setQueueManagerFilter]: any = useState([])
+  const updateQueueManagerFilter = (newQueuesFilter: string[]) => {
+    setQueueManagerFilter(newQueuesFilter)
     setPageNum(1)
     setCallsLoaded(false)
   }
 
   const fetchCalls = async (numHours: number) => {
-    let selectedQueues = queuesFilter
+    let selectedQueues = queueManagerFilter
 
     if (isEmpty(selectedQueues)) {
       selectedQueues = Object.keys(queueManagerStore.queues)
@@ -154,7 +154,7 @@ export const NotManagedCalls: FC<NotManagedCallsProps> = ({ className }): JSX.El
         clearInterval(newIntervalId)
       }
     }
-  }, [firstRender, pageNum, textFilter, outcomeFilter, queuesFilter])
+  }, [firstRender, pageNum, textFilter, outcomeFilter, queueManagerFilter])
 
   function goToPreviousPage() {
     if (pageNum > 1) {
@@ -230,7 +230,7 @@ export const NotManagedCalls: FC<NotManagedCallsProps> = ({ className }): JSX.El
         <NotManagedCallsFilter
           updateTextFilter={debouncedUpdateTextFilter}
           updateOutcomeFilter={updateOutcomeFilter}
-          updateQueuesFilter={updateQueuesFilter}
+          updateQueueManagerFilter={updateQueueManagerFilter}
         />
         <div className='flex items-center justify-end text-sm pb-4 xl:pb-7'>
           <div className='flex items-center justify-between'>

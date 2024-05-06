@@ -43,6 +43,7 @@ import { retrieveParksList } from '../../lib/park'
 import { Tooltip } from 'react-tooltip'
 import { getJSONItem, setJSONItem } from '../../lib/storage'
 import { eventDispatch } from '../../lib/hooks/eventDispatch'
+import { setMainDevice } from '../../lib/devices'
 
 export const Layout: FC<LayoutProps> = ({ children }) => {
   const [openMobileMenu, setOpenMobileMenu] = useState<boolean>(false)
@@ -54,6 +55,8 @@ export const Layout: FC<LayoutProps> = ({ children }) => {
   const operatorsStore: any = useSelector((state: RootState) => state.operators)
   const [firstRenderOperators, setFirstRenderOperators] = useState(true)
   const [firstRenderGlobalSearchListener, setFirstRenderGlobalSearchListener] = useState(true)
+  const [firstRenderAttach, setFirstRenderAttach] = useState(true)
+  const [firstRenderDetach, setFirstRenderDetach] = useState(true)
 
   const [isUserInfoLoaded, setUserInfoLoaded] = useState(false)
   const authStore = useSelector((state: RootState) => state.authentication)
@@ -334,14 +337,13 @@ export const Layout: FC<LayoutProps> = ({ children }) => {
   const userInformation = useSelector((state: RootState) => state.user)
 
   useEventListener('phone-island-webrtc-registered', () => {
-    // If user is registered to webrtc, detach from phone island
     if (
       userInformation?.default_device?.type &&
       userInformation?.default_device?.type !== null &&
       userInformation?.default_device?.type !== 'webrtc'
     ) {
       let defaultDevice = userInformation?.default_device
-      eventDispatch('phone-island-detach', { defaultDevice })
+      eventDispatch('phone-island-default-device-change', { defaultDevice })
     }
   })
 
@@ -413,11 +415,76 @@ export const Layout: FC<LayoutProps> = ({ children }) => {
     return true
   }
 
+  //set desktop phone device information
+  const [desktopPhoneDevice, setDesktopPhoneDevice]: any = useState({})
+  const [webrtcData, setWebrtcData]: any = useState({})
+
+  useEffect(() => {
+    if (userInformation?.endpoints) {
+      let endpointsInformation = userInformation?.endpoints
+      if (endpointsInformation?.extension) {
+        setDesktopPhoneDevice(
+          endpointsInformation?.extension.filter((phone) => phone?.type === 'nethlink'),
+        )
+        setWebrtcData(endpointsInformation?.extension.filter((phone) => phone?.type === 'webrtc'))
+      }
+    }
+  }, [userInformation?.endpoints])
+
+  const setMainDeviceId = async (device: any) => {
+    let deviceIdInfo: any = {}
+    if (device) {
+      deviceIdInfo.id = device
+      try {
+        await setMainDevice(deviceIdInfo)
+        dispatch.user.updateDefaultDevice(deviceIdInfo)
+      } catch (err) {
+        console.log(err)
+      }
+    }
+  }
+
+  const [isFirstLogin, setIsFirstLogin] = useState(true)
+
+  useEffect(() => {
+    if (isFirstLogin) {
+      setIsFirstLogin(false)
+      return
+    }
+    //set webrtc as default device if desktop phone is offline and if is setted as default device
+    if (
+      desktopPhoneDevice?.length > 0 &&
+      desktopPhoneDevice[0]?.id !== '' &&
+      operatorsStore?.extensions[desktopPhoneDevice[0]?.id]?.status &&
+      operatorsStore?.extensions[desktopPhoneDevice[0]?.id]?.status === 'offline' &&
+      userInformation?.default_device?.type === 'nethlink' &&
+      webrtcData?.length > 0
+    ) {
+      let deviceIdInfo: any = {}
+      deviceIdInfo = webrtcData[0]?.id
+      setMainDeviceId(deviceIdInfo)
+      dispatch.user.updateDefaultDevice(webrtcData[0]?.id)
+      let deviceInformationObject = webrtcData[0]
+      setIsFirstLogin(false)
+      eventDispatch('phone-island-default-device-change', { deviceInformationObject })
+    }
+    // if default_device is setted to physical device detach phone island to avoid problems
+    if (userInformation?.default_device?.type === 'physical') {
+      let deviceInformationObject = webrtcData[0]
+      eventDispatch('phone-island-detach', { deviceInformationObject })
+    }
+  }, [desktopPhoneDevice, operatorsStore?.extensions, webrtcData, userInformation?.default_device?.type])
+
   useEventListener('phone-island-conversations', (data) => {
     const opName = Object.keys(data)[0]
     const conversations = data[opName].conversations
     store.dispatch.operators.updateConversations(opName, conversations)
-
+    if (!firstRenderAttach) {
+      setFirstRenderAttach(true)
+    }
+    if (!firstRenderDetach) {
+      setFirstRenderDetach(true)
+    }
     // update queue connected calls
 
     let queueConnectedCalls: any = {}
@@ -665,8 +732,38 @@ export const Layout: FC<LayoutProps> = ({ children }) => {
       sipuseragent: data[currentUsername]?.sipuseragent,
       username: data[currentUsername]?.username,
     }
+    //check type of extenUpdate event
     // Update user extension
     store.dispatch.operators.updateExten(data[currentUsername]?.number, extenUpdateObject)
+    if (
+      !isEmpty(desktopPhoneDevice) &&
+      data[currentUsername]?.number === desktopPhoneDevice[0]?.id &&
+      data[currentUsername]?.status === 'online' &&
+      isEmpty(data[currentUsername]?.conversation)
+    ) {
+      if (firstRenderDetach) {
+        setMainDeviceId(desktopPhoneDevice[0]?.id)
+        dispatch.user.updateDefaultDevice(desktopPhoneDevice[0]?.id)
+        let deviceInformationObject = desktopPhoneDevice[0]
+        setFirstRenderDetach(false)
+        eventDispatch('phone-island-default-device-change', { deviceInformationObject })
+      }
+    } else if (
+      data[currentUsername]?.number === desktopPhoneDevice[0]?.id &&
+      data[currentUsername]?.status === 'offline' &&
+      isEmpty(data[currentUsername]?.conversation)
+    ) {
+      if (firstRenderAttach) {
+        let deviceIdInfo: any = {}
+        deviceIdInfo = webrtcData[0]?.id
+        setMainDeviceId(deviceIdInfo)
+        dispatch.user.updateDefaultDevice(webrtcData[0]?.id)
+        let deviceInformationObject = webrtcData[0]
+        setFirstRenderAttach(false)
+        eventDispatch('phone-island-default-device-change', { deviceInformationObject })
+        eventDispatch('phone-island-attach', { deviceInformationObject })
+      }
+    }
   })
 
   // Save prev user main presence state

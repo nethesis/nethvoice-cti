@@ -118,7 +118,10 @@
     "Edit contact": "Edit contact",
     "No recent calls": "No recent calls",
     "No results": "No results",
-    "Please enter a valid phone number": "Please enter a valid phone number"
+    "Please enter a valid phone number": "Please enter a valid phone number",
+    "Cannot retrieve last calls of user": "Cannot retrieve last calls of user",
+    "Cannot retrieve last calls of switchboard": "Cannot retrieve last calls of switchboard",
+    "contactDeletionMessage": "Contact {{name}} will be permanently deleted."
   },
   "History": {
     "History": "History",
