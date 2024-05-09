@@ -22,6 +22,7 @@ import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import {
   callPhoneNumber,
   closeSideDrawer,
+  getTimezone,
   playFileAudio,
   transferCallToExtension,
 } from '../../lib/utils'
@@ -186,13 +187,16 @@ export const ShowPhoneLinesDrawerContent = forwardRef<
 
   const [changeTypeDate, setChangeTypeDate] = useState('')
 
+  //get server timezone to correctly format the date
+  let timezone = getTimezone()
+
   function convertDateSpecifyFormat() {
     const dateBeginConversion = parse(dateBeginToShow, "yyyy-MM-dd'T'HH:mm", new Date())
 
     let dateBeginConversionUTC = formatInTimeZoneLoc(
       new Date(dateBeginConversion),
       "yyyy-MM-dd'T'HH:mm",
-      'UTC',
+      timezone,
     )
 
     const dateBeginConversionIso = new Date(dateBeginConversionUTC).toISOString()
@@ -202,7 +206,7 @@ export const ShowPhoneLinesDrawerContent = forwardRef<
     let dateEndConversionUTC = formatInTimeZoneLoc(
       new Date(dateEndConversion),
       "yyyy-MM-dd'T'HH:mm",
-      'UTC',
+      timezone,
     )
 
     const dateEndConversionIso = new Date(dateEndConversionUTC).toISOString()

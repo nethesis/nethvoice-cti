@@ -272,7 +272,7 @@ const Devices: NextPage = () => {
                         </td>
                         <td className='whitespace-nowrap px-3 py-4 text-sm w-2'>
                           {/* {phone.status} */}{' '}
-                          {operators?.extensions[webrtcData[0]?.id]?.status === 'online' ? (
+                          {operators?.extensions[webrtcData[0]?.id]?.status !== 'offline' ? (
                             <>
                               <FontAwesomeIcon
                                 icon={faCircleCheck}
@@ -370,7 +370,7 @@ const Devices: NextPage = () => {
                         </td>
                         <td className='whitespace-nowrap px-3 py-4 text-sm w-2'>
                           {/* Phone Link status */}
-                          {operators?.extensions[phoneLinkData[0]?.id]?.status === 'online' ? (
+                          {operators?.extensions[phoneLinkData[0]?.id]?.status !== 'offline' ? (
                             <>
                               <FontAwesomeIcon
                                 icon={faCircleCheck}
@@ -499,7 +499,7 @@ const Devices: NextPage = () => {
                           } whitespace-nowrap px-3 py-4 text-sm w-2 relative`}
                         >
                           {/* {phone.status} */}
-                          {operators?.extensions[phone?.id]?.status === 'online' ? (
+                          {operators?.extensions[phone?.id]?.status !== 'offline' ? (
                             <>
                               <FontAwesomeIcon
                                 icon={faCircleCheck}
