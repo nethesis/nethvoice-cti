@@ -29,7 +29,7 @@ import {
 import { TextInput, Button } from '../common'
 import { formatDateLoc, formatInTimeZoneLoc } from '../../lib/dateTime'
 import { setOffHour, getAnnouncements, reloadPhoneLines } from '../../lib/lines'
-import { format, parse } from 'date-fns'
+import { endOfDay, format, parse, startOfDay } from 'date-fns'
 import Datepicker from 'react-tailwindcss-datepicker'
 import { useTheme } from '../../theme/Context'
 import { useSelector } from 'react-redux'
@@ -218,24 +218,28 @@ export const ShowPhoneLinesDrawerContent = forwardRef<
   }
 
   function convertDateOnlyDayFormat() {
-    const dateEndConversionNoHour = `${dateBeginToShowNoHour}T21:59:59.000Z`
-    const dateBeginConversionNoHour = `${dateBeginToShowNoHour}T00:00:00.000Z`
 
-    const dateEndConversion = formatInTimeZoneLoc(
-      new Date(dateBeginConversionNoHour),
-      "yyyy-MM-dd'T'HH:mm:ss.SSS'Z'",
-      'UTC',
+    const dateEndTest = endOfDay(new Date(dateBeginToShowNoHour))
+    const dateBeginTest = startOfDay(new Date(dateBeginToShowNoHour))
+
+    let dateBeginConversionUTC = formatInTimeZoneLoc(
+      new Date(dateBeginTest),
+      "yyyy-MM-dd'T'HH:mm",
+      timezone,
     )
 
-    const dateBeginConversion = formatInTimeZoneLoc(
-      new Date(dateEndConversionNoHour),
-      "yyyy-MM-dd'T'HH:mm:ss.SSS'Z'",
-      'UTC',
+    const dateBeginConversionIso = new Date(dateBeginConversionUTC).toISOString()
+
+    let dateEndConversionUTC = formatInTimeZoneLoc(
+      new Date(dateEndTest),
+      "yyyy-MM-dd'T'HH:mm",
+      timezone,
     )
 
+    const dateEndConversionIso = new Date(dateEndConversionUTC).toISOString()
     return {
-      dateBegin: dateBeginConversion,
-      dateEnd: dateEndConversion,
+      dateBegin: dateBeginConversionIso,
+      dateEnd: dateEndConversionIso,
     }
   }
   const changeStartTimeNoHours = (startTimeNoHoursObject: any) => {
