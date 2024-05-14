@@ -1,4 +1,4 @@
-// Copyright (C) 2023 Nethesis S.r.l.
+// Copyright (C) 2024 Nethesis S.r.l.
 // SPDX-License-Identifier: AGPL-3.0-or-later
 
 import { ComponentPropsWithRef, forwardRef, useEffect, useState, useRef } from 'react'
@@ -15,11 +15,11 @@ import {
   faCircleXmark,
 } from '@fortawesome/free-solid-svg-icons'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
-import { closeSideDrawer, playFileAudio } from '../../lib/utils'
+import { closeSideDrawer, getTimezone, playFileAudio } from '../../lib/utils'
 import { TextInput, Button } from '../common'
 import { formatDateLoc, formatInTimeZoneLoc } from '../../lib/dateTime'
 import { setOffHour, getAnnouncements, reloadPhoneLines } from '../../lib/lines'
-import { format, parse } from 'date-fns'
+import { endOfDay, format, parse, startOfDay } from 'date-fns'
 import Datepicker from 'react-tailwindcss-datepicker'
 import { useTheme } from '../../theme/Context'
 import { useSelector } from 'react-redux'
@@ -174,6 +174,8 @@ export const ShowMultiplePhoneLinesDrawerContent = forwardRef<
   }, [])
 
   const [changeTypeDate, setChangeTypeDate] = useState('')
+  //get server timezone to correctly format the date
+  let timezone = getTimezone()
 
   function convertDateSpecifyFormat() {
     const dateBeginConversion = parse(dateBeginToShow, "yyyy-MM-dd'T'HH:mm", new Date())
@@ -181,7 +183,7 @@ export const ShowMultiplePhoneLinesDrawerContent = forwardRef<
     let dateBeginConversionUTC = formatInTimeZoneLoc(
       new Date(dateBeginConversion),
       "yyyy-MM-dd'T'HH:mm",
-      'UTC',
+      timezone,
     )
 
     const dateBeginConversionIso = new Date(dateBeginConversionUTC).toISOString()
@@ -191,7 +193,7 @@ export const ShowMultiplePhoneLinesDrawerContent = forwardRef<
     let dateEndConversionUTC = formatInTimeZoneLoc(
       new Date(dateEndConversion),
       "yyyy-MM-dd'T'HH:mm",
-      'UTC',
+      timezone,
     )
 
     const dateEndConversionIso = new Date(dateEndConversionUTC).toISOString()
@@ -203,26 +205,30 @@ export const ShowMultiplePhoneLinesDrawerContent = forwardRef<
   }
 
   function convertDateOnlyDayFormat() {
-    const dateEndConversionNoHour = `${dateBeginToShowNoHour}T21:59:59.000Z`
-    const dateBeginConversionNoHour = `${dateBeginToShowNoHour}T00:00:00.000Z`
+    const dateEndTest = endOfDay(new Date(dateBeginToShowNoHour))
+    const dateBeginTest = startOfDay(new Date(dateBeginToShowNoHour))
 
-    const dateEndConversion = formatInTimeZoneLoc(
-      new Date(dateBeginConversionNoHour),
-      "yyyy-MM-dd'T'HH:mm:ss.SSS'Z'",
-      'UTC',
+    let dateBeginConversionUTC = formatInTimeZoneLoc(
+      new Date(dateBeginTest),
+      "yyyy-MM-dd'T'HH:mm",
+      timezone,
     )
 
-    const dateBeginConversion = formatInTimeZoneLoc(
-      new Date(dateEndConversionNoHour),
-      "yyyy-MM-dd'T'HH:mm:ss.SSS'Z'",
-      'UTC',
+    const dateBeginConversionIso = new Date(dateBeginConversionUTC).toISOString()
+
+    let dateEndConversionUTC = formatInTimeZoneLoc(
+      new Date(dateEndTest),
+      "yyyy-MM-dd'T'HH:mm",
+      timezone,
     )
 
+    const dateEndConversionIso = new Date(dateEndConversionUTC).toISOString()
     return {
-      dateBegin: dateBeginConversion,
-      dateEnd: dateEndConversion,
+      dateBegin: dateBeginConversionIso,
+      dateEnd: dateEndConversionIso,
     }
   }
+
   const changeStartTimeNoHours = (startTimeNoHoursObject: any) => {
     if (startTimeNoHoursObject) {
       const startTimeNoHours = new Date(startTimeNoHoursObject.startDate)

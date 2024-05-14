@@ -336,17 +336,6 @@ export const Layout: FC<LayoutProps> = ({ children }) => {
   //Get user information from store
   const userInformation = useSelector((state: RootState) => state.user)
 
-  useEventListener('phone-island-webrtc-registered', () => {
-    if (
-      userInformation?.default_device?.type &&
-      userInformation?.default_device?.type !== null &&
-      userInformation?.default_device?.type !== 'webrtc'
-    ) {
-      let defaultDevice = userInformation?.default_device
-      eventDispatch('phone-island-default-device-change', { defaultDevice })
-    }
-  })
-
   useEventListener('phone-island-webrtc-unregistered', (data: any) => {})
 
   const [conversationObject, setConversationObject]: any = useState({})
@@ -473,7 +462,12 @@ export const Layout: FC<LayoutProps> = ({ children }) => {
       let deviceInformationObject = webrtcData[0]
       eventDispatch('phone-island-detach', { deviceInformationObject })
     }
-  }, [desktopPhoneDevice, operatorsStore?.extensions, webrtcData, userInformation?.default_device?.type])
+  }, [
+    desktopPhoneDevice,
+    operatorsStore?.extensions,
+    webrtcData,
+    userInformation?.default_device?.type,
+  ])
 
   useEventListener('phone-island-conversations', (data) => {
     const opName = Object.keys(data)[0]
