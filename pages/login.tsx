@@ -420,23 +420,25 @@ export default function Login() {
           <title>{productName}</title>
         </Head>
       </div>
-      <div>
-        <div className='absolute inset-0 z-[-5] hidden lg:block'>
-          <img
-            className=' w-full h-full object-contain transform -translate-x-[-20rem] xl:-translate-x-[-16rem] lg:scale-[40%] xl:scale-[60%] 2xl:scale-75'
-            src='/action_voice-cti.svg'
-            alt='image'
-          />
-        </div>
-        {/* login card */}
-        <div className='w-1/2'>
-          <div className='absolute top-1/2 left-1/2 lg:left-40 transform -translate-y-1/2 -translate-x-1/2 lg:-translate-x-0'>
-            <div className='border-b border-gray-200 dark:border-gray-700 rounded-lg bg-gray-50 dark:bg-gray-900 p-10'>
-              {loginTemplate()}
+      <body className='bg-[url(../public/sfondo_voice.svg)] bg-cover text-gray-700 dark:text-gray-100'>
+        <div>
+          <div className='absolute inset-0 z-[1000rem] hidden lg:block'>
+            <img
+              className=' w-full h-full object-contain transform -translate-x-[-20rem] xl:-translate-x-[-16rem] lg:scale-[40%] xl:scale-[60%] 2xl:scale-75'
+              src='/action_voice-cti.svg'
+              alt='image'
+            />
+          </div>
+          {/* login card */}
+          <div className='w-1/2'>
+            <div className='absolute top-1/2 left-1/2 lg:left-40 transform -translate-y-1/2 -translate-x-1/2 lg:-translate-x-0'>
+              <div className='border-b border-gray-200 dark:border-gray-700 rounded-lg bg-gray-50 dark:bg-gray-900 p-10'>
+                {loginTemplate()}
+              </div>
             </div>
           </div>
         </div>
-      </div>
+      </body>
     </>
   )
 }
