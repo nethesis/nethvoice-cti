@@ -12,23 +12,23 @@ const TextScroll: React.FC<TextScrollProps> = ({ text }) => {
 
   useEffect(() => {
     if (text.length > 30) {
-        setScrollText(true)
+      setScrollText(true)
     } else {
-        setScrollText(false)
+      setScrollText(false)
     }
   }, [text])
 
   return (
     <>
       {scrollText ? (
-        <div className='text-container'>
+        <div className='text-container mr-4'>
           <div className='text-wrapper text-sm not-italic font-medium leading-5 text-cardTextBusy dark:text-cardTextBusy'>
             <span>{text}</span>
-            <span className='ml-2'>{text}</span>
+            <span className='ml-4'>{text}</span>
           </div>
         </div>
       ) : (
-        <div className='text-sm not-italic font-medium leading-5 text-cardTextBusy dark:text-cardTextBusy'>
+        <div className='text-sm not-italic font-medium leading-5 text-cardTextBusy dark:text-cardTextBusy mr-4'>
           <span>{text}</span>
         </div>
       )}

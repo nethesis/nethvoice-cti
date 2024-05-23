@@ -834,12 +834,12 @@ const Operators: NextPage = () => {
                                     operator?.conversations[0]?.inConference ||
                                     operator?.conversations[0]?.chDest?.inConference == true) ? (
                                     <div className={`tooltip-operator-information-${index}`}>
-                                      <div className='py-2 px-3'>
-                                        <div className='flex w-45'>
+                                      <div className='py-2 px-3 flex items-center'>
+                                        <div className='flex w-45 items-center'>
                                           <CallDuration
                                             startTime={operator?.conversations[0]?.startTime}
                                             className='relative top-px mr-1.5 text-cardTextBusy dark:text-cardTextBusy leading-5 text-sm font-medium font-mono'
-                                          />{' '}
+                                          />
                                           <TextScroll
                                             text={operator?.conversations[0]?.counterpartName}
                                           ></TextScroll>
@@ -1078,8 +1078,8 @@ const Operators: NextPage = () => {
                                       operator?.conversations[0]?.inConference ||
                                       operator?.conversations[0]?.chDest?.inConference == true) ? (
                                       <div className={`tooltip-operator-information-${index}`}>
-                                        <div className='py-2 px-3'>
-                                          <div className='flex w-45'>
+                                        <div className='py-2 px-3 flex items-center'>
+                                          <div className='flex w-45 items-center'>
                                             <CallDuration
                                               startTime={operator?.conversations[0]?.startTime}
                                               className='relative top-px mr-1.5 text-cardTextBusy dark:text-cardTextBusy leading-5 text-sm font-medium font-mono'
