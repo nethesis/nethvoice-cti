@@ -24,7 +24,7 @@ export const KeyTypeSelect: FC<keyTypeSelectProps> = ({
     { id: 1, description: 'blf', label: `${t('Devices.Busy lamp field (BLF)')}` },
     { id: 2, description: 'line', label: `${t('Devices.Line')}` },
     { id: 3, description: 'dnd', label: `${t('Devices.Do not disturb (DND)')}` },
-    { id: 4, description: 'speedCall', label: `${t('Devices.Speed call')}` },
+    { id: 4, description: 'speed_dial', label: `${t('Devices.Speed call')}` },
     { id: 5, description: 'toggleQueue', label: `${t('Devices.Toggle login/logout queue')}` },
   ]
 

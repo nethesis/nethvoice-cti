@@ -69,7 +69,7 @@ export const ExtraRowKey: FC<ExtraRowKeyProps> = ({
         case 'blf':
           typeSelectedLabelValue = operators?.extensions[selectedUserInformation]?.name || '-'
           break
-        case 'speedCall':
+        case 'speed_dial':
           typeSelectedLabelValue = isContactSelected
             ? selectedUserNameInformation !== ''
               ? selectedUserNameInformation
@@ -171,7 +171,7 @@ export const ExtraRowKey: FC<ExtraRowKeyProps> = ({
             inputMissing={missingInputError}
           ></KeyTypeSelect>
 
-          {(keysTypeSelected === 'blf' || keysTypeSelected === 'speedCall') && (
+          {(keysTypeSelected === 'blf' || keysTypeSelected === 'speed_dial') && (
             <>
               <div className='mb-2'>
                 <span> {t('Devices.Name or number')}</span>
