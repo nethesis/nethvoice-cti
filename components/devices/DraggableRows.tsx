@@ -256,7 +256,7 @@ export default function DraggableRows({
               ? (typeSelectedLabelValue = rowData?.label)
               : '-'
             break
-          case 'speedCall':
+          case 'speed_dial':
             isContactSelected && selectedUserNumber !== null
               ? selectedUserNameInformation !== ''
                 ? (typeSelectedLabelValue = selectedUserNameInformation)
@@ -675,11 +675,11 @@ export default function DraggableRows({
                       inputMissing={missingInputError}
                     />
 
-                    {/* Insert name or number only if type equal to blf or speedCall */}
+                    {/* Insert name or number only if type equal to blf or speed_dial */}
                     {((keysTypeSelected === undefined && buttonRow?.type === 'blf') ||
-                      (keysTypeSelected === undefined && buttonRow?.type === 'speedCall') ||
+                      (keysTypeSelected === undefined && buttonRow?.type === 'speed_dial') ||
                       keysTypeSelected === 'blf' ||
-                      keysTypeSelected === 'speedCall') && (
+                      keysTypeSelected === 'speed_dial') && (
                       <>
                         <div className='mb-2'>
                           <span>

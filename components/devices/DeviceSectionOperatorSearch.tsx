@@ -114,7 +114,7 @@ export const DeviceSectionOperatorSearch: FC<DeviceSectionOperatorSearchProps> =
         setLoaded(false)
         let isPhoneNumber = false
 
-        if (typeSelected === 'speedCall') {
+        if (typeSelected === 'speed_dial') {
           // is it a phone number?
           if (/^\+?[0-9|\s]+$/.test(cleanQuery)) {
             // show "Call phone number" result
