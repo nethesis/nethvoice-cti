@@ -7,7 +7,12 @@ import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { useTranslation } from 'react-i18next'
 import { useDispatch } from 'react-redux'
 import { Dispatch } from '../../store'
-import { getCustomerCardsList, getOrderValues, setUserSettings } from '../../lib/customerCard'
+import {
+  getCustomerCardsList,
+  getCustomerCardsPreference,
+  getOrderValues,
+  setUserSettings,
+} from '../../lib/customerCard'
 import { Badge, EmptyState } from '../common'
 import { isEmpty } from 'lodash'
 import { useSelector } from 'react-redux'
@@ -28,7 +33,7 @@ export const CustomerCards = () => {
     { id: 'connected', title: `${t('Settings.On answer')}` },
   ]
 
-  const [customerCardSelection, setCustomerCardSelection] = useState('')
+  const [customerCardSelection, setCustomerCardSelection]: any = useState('')
 
   const [customerCardsList, setCustomerCardsList]: any = useState({})
   const [isCustomerCardsListLoaded, setIsCustomerCardsListLoaded] = useState(false)
@@ -63,6 +68,11 @@ export const CustomerCards = () => {
   function changeCallDirection(event: any) {
     const newCustomerCardSelection = event.target.id
     setCustomerCardSelection(newCustomerCardSelection)
+
+    // Save selection inside local storage
+    const preferences = getJSONItem(`preferences-${username}`) || {}
+    preferences['customerCardPreference'] = newCustomerCardSelection
+    setJSONItem(`preferences-${username}`, preferences)
   }
 
   //Customer cards list order
@@ -86,18 +96,20 @@ export const CustomerCards = () => {
     changeCCardSettings()
   }, [customerCardOrder, customerCardSelection])
 
-  //Get order from local storage
+  //Get order and selection from local storage
   useEffect(() => {
     const orderValueLocalStorage = getOrderValues(auth.username)
     setCustomerCardOrder(orderValueLocalStorage?.orderValue)
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [])
 
-  //Get customer card selection from store
-  useEffect(() => {
-    if (customerCardSelection == '' && ccardStatus) {
-      setCustomerCardSelection(ccardStatus)
+    const selectionFromLocalStorage = getCustomerCardsPreference(auth.username)
+    // If no selection is found inside local storage, set default to disabled
+    if (selectionFromLocalStorage.customerCardsPreference.length === 0) {
+      setCustomerCardSelection('disabled')
+    } else {
+      setCustomerCardSelection(selectionFromLocalStorage.customerCardsPreference)
     }
+
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [])
 
   useEffect(() => {

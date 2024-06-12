@@ -43,3 +43,9 @@ export const getOrderValues = (currentUsername: string) => {
 
   return { orderValue }
 }
+
+export const getCustomerCardsPreference = (currentUsername: string) => {
+  const customerCardsPreference = loadPreference('customerCardPreference', currentUsername) || []
+
+  return { customerCardsPreference }
+}

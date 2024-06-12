@@ -30,6 +30,8 @@ import { CustomerCards } from '../components/settings/CustomerCards'
 import Profile from './profilePicture'
 import Devices from './devices'
 import { faOfficePhone } from '@nethesis/nethesis-solid-svg-icons'
+import { savePreference } from '../lib/storage'
+import { getSelectedSettingsPage } from '../lib/settings'
 
 interface SettingsMenuTypes {
   name: string
@@ -43,7 +45,6 @@ const Settings: NextPage = () => {
   const authStore = useSelector((state: RootState) => state.authentication)
   const profile = useSelector((state: RootState) => state.user)
 
-  const [firstRender, setFirstRender]: any = useState(true)
   const router = useRouter()
 
   const settingsMenu: SettingsMenuTypes[] = [
@@ -51,7 +52,7 @@ const Settings: NextPage = () => {
     { name: 'Mobile App', href: '#', icon: faMobile, current: false },
     { name: 'Customer cards', href: '#', icon: faIdCardClip, current: false },
     { name: 'Queues', href: '#', icon: faUsers, current: false },
-    { name: 'Profile picture', href: '#', icon: faCircleUser, current: true },
+    { name: 'Profile picture', href: '#', icon: faCircleUser, current: false },
     { name: 'Theme', href: '#', icon: faPalette, current: false },
     {
       name: 'Integrations',
@@ -63,8 +64,8 @@ const Settings: NextPage = () => {
   ]
 
   const [items, setItems] = useState<SettingsMenuTypes[]>(settingsMenu)
-
   const [currentSection, setCurrentSection] = useState<string>(settingsMenu[0].name)
+  const [firstRender, setFirstRender]: any = useState(true)
 
   useEffect(() => {
     if (firstRender) {
@@ -72,8 +73,8 @@ const Settings: NextPage = () => {
       return
     }
     let section = router.query.section as string
-    if (!section) {
-      section = 'Devices'
+    if (!section && currentSection) {
+      section = currentSection
     }
     changeSection(section)
     // eslint-disable-next-line react-hooks/exhaustive-deps
@@ -84,6 +85,7 @@ const Settings: NextPage = () => {
       if (sectionName === route.name) {
         route.current = true
         setCurrentSection(sectionName)
+        savePreference('settingsSelectedPage', sectionName, authStore.username)
       } else {
         route.current = false
       }
@@ -91,6 +93,18 @@ const Settings: NextPage = () => {
     })
     setItems(currentItems)
   }
+
+  //Load selected tab values from local storage
+  useEffect(() => {
+    const currentSection = getSelectedSettingsPage(authStore.username)
+    setCurrentSection(currentSection.selectedSettingsPage)
+    if (currentSection.selectedSettingsPage) {
+      changeSection(currentSection.selectedSettingsPage)
+    } else {
+      changeSection('Devices')
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [])
 
   //// remove mock
   const createCallNotif = () => {
