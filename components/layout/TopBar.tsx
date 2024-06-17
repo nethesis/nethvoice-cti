@@ -518,6 +518,17 @@ export const TopBar: FC<TopBarProps> = ({ openMobileCb }) => {
                 size='small'
                 className='z-[100]'
               >
+                <FontAwesomeIcon
+                  icon={
+                    mainPresence === 'callforward'
+                      ? faArrowRight
+                      : mainPresence === 'cellphone'
+                      ? faMobile
+                      : faVoicemail
+                  }
+                  className='h-4 w-4 mr-1 text-primary dark:text-topBarTextDark'
+                  aria-hidden='true'
+                />
                 <span>
                   {mainPresence === 'callforward'
                     ? t('TopBar.Call forward')
@@ -531,17 +542,6 @@ export const TopBar: FC<TopBarProps> = ({ openMobileCb }) => {
                 {operatorsStore?.extensions[profile?.mainextension]?.cf !== '' &&
                   mainPresence === 'callforward' &&
                   `${': ' + operatorsStore?.extensions[profile?.mainextension]?.cf}`}
-                <FontAwesomeIcon
-                  icon={
-                    mainPresence === 'callforward'
-                      ? faArrowRight
-                      : mainPresence === 'cellphone'
-                      ? faMobile
-                      : faVoicemail
-                  }
-                  className='h-4 w-4 ml-2 text-topBarText dark:text-topBarTextDark'
-                  aria-hidden='true'
-                />
               </Badge>
             )}
 

@@ -510,15 +510,18 @@ export const QueuesManagementView: FC<QueuesManagementViewProps> = ({ className 
                               offIcon={<FontAwesomeIcon icon={faStarLight} />}
                               changed={() => toggleFavoriteQueue(queue)}
                               key={queue.queue}
-                              className={`tooltip-favorite-${queue.queue}`}
+                              data-tooltip-id={`tooltip-favorite-${queue.queue}`}
+                              data-tooltip-content={
+                                queue.favorite ? 'Remove from favorites' : 'Add to favorites'
+                              }
                             >
                               <span className='sr-only'>{t('Queues.Toggle favorite queue')}</span>
                             </IconSwitch>
-                            <Tooltip anchorSelect={`.tooltip-favorite-${queue.queue}`} place='top'>
-                              {queue.favorite
-                                ? t('Common.Remove from favorites') || ''
-                                : t('Common.Add to favorites') || ''}
-                            </Tooltip>
+                            <Tooltip
+                              className='pi-z-20'
+                              id={`tooltip-favorite-${queue.queue}`}
+                              place='top'
+                            />
                           </div>
                         </div>
                         <FontAwesomeIcon
@@ -532,10 +535,9 @@ export const QueuesManagementView: FC<QueuesManagementViewProps> = ({ className 
                       <div className='flex justify-evenly mt-1 text-gray-500 dark:text-gray-400'>
                         {/* total calls */}
                         <div
-                          className={classNames(
-                            'flex items-center gap-2',
-                            `tooltip-total-calls-${queue.queue}`,
-                          )}
+                          className={classNames('flex items-center gap-2')}
+                          data-tooltip-id={`tooltip-total-calls-${queue.queue}`}
+                          data-tooltip-content={t('Queues.Total calls')}
                         >
                           <FontAwesomeIcon
                             icon={faPhone}
@@ -546,17 +548,15 @@ export const QueuesManagementView: FC<QueuesManagementViewProps> = ({ className 
                           </span>
                         </div>
                         <Tooltip
-                          anchorSelect={`.tooltip-total-calls-${queue.queue}`}
+                          className='pi-z-20'
+                          id={`tooltip-total-calls-${queue.queue}`}
                           place='bottom'
-                        >
-                          {t('Queues.Total calls')}
-                        </Tooltip>
+                        />
                         {/* waiting calls */}
                         <div
-                          className={classNames(
-                            'flex items-center gap-2',
-                            `tooltip-waiting-calls-${queue?.queue}`,
-                          )}
+                          className={classNames('flex items-center gap-2')}
+                          data-tooltip-id={`tooltip-waiting-calls-${queue?.queue}`}
+                          data-tooltip-content={t('Queues.Waiting calls')}
                         >
                           <FontAwesomeIcon
                             icon={faPause}
@@ -565,17 +565,15 @@ export const QueuesManagementView: FC<QueuesManagementViewProps> = ({ className 
                           <span>{queue?.waitingCallersList?.length}</span>
                         </div>
                         <Tooltip
-                          anchorSelect={`.tooltip-waiting-calls-${queue?.queue}`}
+                          className='pi-z-20'
+                          id={`tooltip-waiting-calls-${queue?.queue}`}
                           place='bottom'
-                        >
-                          {t('Queues.Waiting calls')}
-                        </Tooltip>
+                        />
                         {/* connected calls */}
                         <div
-                          className={classNames(
-                            'flex items-center gap-2',
-                            `tooltip-connected-calls-${queue?.queue}`,
-                          )}
+                          className={classNames('flex items-center gap-2')}
+                          data-tooltip-id={`tooltip-connected-calls-${queue?.queue}`}
+                          data-tooltip-content={t('Queues.Connected calls')}
                         >
                           <FontAwesomeIcon
                             icon={faDownLeftAndUpRightToCenter}
@@ -584,17 +582,15 @@ export const QueuesManagementView: FC<QueuesManagementViewProps> = ({ className 
                           <span>{queue?.connectedCalls?.length}</span>
                         </div>
                         <Tooltip
-                          anchorSelect={`.tooltip-connected-calls-${queue?.queue}`}
+                          className='pi-z-20'
+                          id={`.tooltip-connected-calls-${queue?.queue}`}
                           place='bottom'
-                        >
-                          {t('Queues.Connected calls')}
-                        </Tooltip>
+                        />
                         {/* active operators */}
                         <div
-                          className={classNames(
-                            'flex items-center gap-2',
-                            `tooltip-active-operators-${queue?.queue}`,
-                          )}
+                          className={classNames('flex items-center gap-2')}
+                          data-tooltip-id={`tooltip-active-operators-${queue?.queue}`}
+                          data-tooltip-content={t('Queues.Active operators')}
                         >
                           <FontAwesomeIcon
                             icon={faHeadset}
@@ -603,11 +599,10 @@ export const QueuesManagementView: FC<QueuesManagementViewProps> = ({ className 
                           <span>{queue?.numActiveOperators}</span>
                         </div>
                         <Tooltip
-                          anchorSelect={`.tooltip-active-operators-${queue?.queue}`}
+                          className='pi-z-20'
+                          id={`.tooltip-active-operators-${queue?.queue}`}
                           place='bottom'
-                        >
-                          {t('Queues.Active operators')}
-                        </Tooltip>
+                        />
                       </div>
                     </div>
                     {/* card body */}
