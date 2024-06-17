@@ -1,7 +1,7 @@
 import { useState, useEffect } from 'react'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { faCheck, faChevronDown } from '@fortawesome/free-solid-svg-icons'
-import { Combobox } from '@headlessui/react'
+import { Combobox, ComboboxButton, ComboboxInput, ComboboxOption, ComboboxOptions } from '@headlessui/react'
 import { t } from 'i18next'
 
 function classNames(...classes: string[]) {
@@ -53,7 +53,7 @@ export default function ComboboxNumber({
       }}
     >
       <div className='relative mt-2 mb-4'>
-        <Combobox.Input
+        <ComboboxInput
           className={classNames(
             missingkeyError
               ? 'border-2 rounded-lg border-rose-500'
@@ -66,7 +66,7 @@ export default function ComboboxNumber({
             maxNumber,
           })}`}
         />
-        <Combobox.Button
+        <ComboboxButton
           className={classNames(
             missingkeyError ? 'inset-y-2 mb-[1.5rem]' : 'inset-y-0',
             'absolute right-0 flex items-center rounded-r-md px-2 focus:outline-none',
@@ -77,7 +77,7 @@ export default function ComboboxNumber({
             className='h-4 w-4 mr-1 flex items-center'
             aria-hidden='true'
           />
-        </Combobox.Button>
+        </ComboboxButton>
 
         {missingkeyError && (
           <div className='text-rose-500 text-sm mt-1 ml-2'>
@@ -85,9 +85,9 @@ export default function ComboboxNumber({
           </div>
         )}
         {filteredNumbers.length > 0 && (
-          <Combobox.Options className='absolute z-10 mt-1 max-h-60 w-full overflow-auto rounded-md bg-white dark:bg-gray-600 py-1 text-base shadow-lg ring-1 ring-black ring-opacity-5 focus:outline-none sm:text-sm'>
+          <ComboboxOptions className='absolute z-10 mt-1 max-h-60 w-full overflow-auto rounded-md bg-white dark:bg-gray-600 py-1 text-base shadow-lg ring-1 ring-black ring-opacity-5 focus:outline-none sm:text-sm'>
             {filteredNumbers.map((number) => (
-              <Combobox.Option
+              <ComboboxOption
                 key={number}
                 value={number}
                 className={({ active }) =>
@@ -121,9 +121,9 @@ export default function ComboboxNumber({
                     )}
                   </>
                 )}
-              </Combobox.Option>
+              </ComboboxOption>
             ))}
-          </Combobox.Options>
+          </ComboboxOptions>
         )}
       </div>
     </Combobox>

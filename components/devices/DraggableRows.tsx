@@ -19,7 +19,7 @@ import { KeyTypeSelect } from './KeyTypeSelect'
 import { Tooltip } from 'react-tooltip'
 import { isEmpty, isEqual } from 'lodash'
 import { Button, EmptyState, TextInput } from '../common'
-import { Combobox } from '@headlessui/react'
+import { Combobox, ComboboxButton, ComboboxInput, ComboboxOption, ComboboxOptions } from '@headlessui/react'
 import { useSelector } from 'react-redux'
 import { RootState } from '../../store'
 import { motion } from 'framer-motion'
@@ -599,7 +599,7 @@ export default function DraggableRows({
                       defaultValue={selectedRowIndex + 1}
                     >
                       <div className='relative mt-2 mb-4'>
-                        <Combobox.Input
+                        <ComboboxInput
                           className='w-full rounded-md border-0 bg-white py-1.5 pl-3 pr-12 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 focus:ring-2 focus:ring-inset focus:ring-emerald-600 sm:text-sm sm:leading-6'
                           onChange={(event) => setQuery(event?.target?.value)}
                           displayValue={(number: any) => number?.toString()}
@@ -612,18 +612,18 @@ export default function DraggableRows({
                         />
 
                         {/* Choose a number from 1 to {usableKeys} */}
-                        <Combobox.Button className='absolute inset-y-0 right-0 flex items-center rounded-r-md px-2 focus:outline-none'>
+                        <ComboboxButton className='absolute inset-y-0 right-0 flex items-center rounded-r-md px-2 focus:outline-none'>
                           <FontAwesomeIcon
                             icon={faChevronDown}
                             className='h-4 w-4 mr-1 flex items-center'
                             aria-hidden='true'
                           />
-                        </Combobox.Button>
+                        </ComboboxButton>
 
                         {filteredNumbers?.length > 0 && (
-                          <Combobox.Options className='absolute z-10 mt-1 max-h-60 w-full overflow-auto rounded-md bg-white py-1 text-base shadow-lg ring-1 ring-black ring-opacity-5 focus:outline-none sm:text-sm'>
+                          <ComboboxOptions className='absolute z-10 mt-1 max-h-60 w-full overflow-auto rounded-md bg-white py-1 text-base shadow-lg ring-1 ring-black ring-opacity-5 focus:outline-none sm:text-sm'>
                             {filteredNumbers.map((number) => (
-                              <Combobox.Option
+                              <ComboboxOption
                                 key={number}
                                 value={number}
                                 className={({ active }) =>
@@ -661,9 +661,9 @@ export default function DraggableRows({
                                     )}
                                   </>
                                 )}
-                              </Combobox.Option>
+                              </ComboboxOption>
                             ))}
-                          </Combobox.Options>
+                          </ComboboxOptions>
                         )}
                       </div>
                     </Combobox>
