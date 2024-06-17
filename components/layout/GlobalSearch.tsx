@@ -230,7 +230,7 @@ export const GlobalSearch: FC<GlobalSearchProps> = () => {
           globalSearchStore?.isFocused ? 'w-[calc(100vw - 52px)]' : 'w-[50%]',
         )}
       >
-        <Combobox onChange={resultSelected} nullable>
+        <Combobox onChange={resultSelected}>
           {({ open, activeOption }: any) => (
             <>
               <div className='relative flex items-center'>
