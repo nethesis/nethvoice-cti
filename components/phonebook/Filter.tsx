@@ -5,7 +5,7 @@ import { ComponentPropsWithRef, forwardRef, useRef } from 'react'
 import classNames from 'classnames'
 import { Button, Dropdown, TextInput } from '../common'
 import { Fragment, useState, useEffect } from 'react'
-import { Dialog, Disclosure, Popover, Transition } from '@headlessui/react'
+import { Dialog, DialogPanel, Disclosure, DisclosureButton, DisclosurePanel, Popover, PopoverButton, PopoverGroup, PopoverPanel, Transition, TransitionChild } from '@headlessui/react'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import {
   faChevronDown,
@@ -151,9 +151,9 @@ export const Filter = forwardRef<HTMLButtonElement, FilterProps>(
       <div className={classNames(className)} {...props}>
         <div>
           {/* Mobile filter dialog */}
-          <Transition.Root show={open} as={Fragment}>
+          <Transition show={open} as={Fragment}>
             <Dialog as='div' className='relative z-[1000] sm:hidden' onClose={setOpen}>
-              <Transition.Child
+              <TransitionChild
                 as={Fragment}
                 enter='transition-opacity ease-linear duration-300'
                 enterFrom='opacity-0'
@@ -163,10 +163,10 @@ export const Filter = forwardRef<HTMLButtonElement, FilterProps>(
                 leaveTo='opacity-0'
               >
                 <div className='fixed inset-0 bg-black bg-opacity-25 dark:bg-black dark:bg-opacity-25' />
-              </Transition.Child>
+              </TransitionChild>
 
               <div className='fixed inset-0 z-40 flex'>
-                <Transition.Child
+                <TransitionChild
                   as={Fragment}
                   enter='transition ease-in-out duration-300 transform'
                   enterFrom='translate-x-full'
@@ -175,7 +175,7 @@ export const Filter = forwardRef<HTMLButtonElement, FilterProps>(
                   leaveFrom='translate-x-0'
                   leaveTo='translate-x-full'
                 >
-                  <Dialog.Panel className='relative ml-auto flex h-full w-full max-w-xs flex-col overflow-y-auto scrollbar-thin scrollbar-thumb-gray-400 dark:scrollbar-thumb-gray-400 scrollbar-thumb-rounded-full scrollbar-thumb-opacity-50 scrollbar-track-gray-200 dark:scrollbar-track-gray-900 scrollbar-track-rounded-full scrollbar-track-opacity-25 py-4 pb-6 shadow-xl bg-white dark:bg-gray-900'>
+                  <DialogPanel className='relative ml-auto flex h-full w-full max-w-xs flex-col overflow-y-auto scrollbar-thin scrollbar-thumb-gray-400 dark:scrollbar-thumb-gray-400 scrollbar-thumb-rounded-full scrollbar-thumb-opacity-50 scrollbar-track-gray-200 dark:scrollbar-track-gray-900 scrollbar-track-rounded-full scrollbar-track-opacity-25 py-4 pb-6 shadow-xl bg-white dark:bg-gray-900'>
                     <div className='flex items-center justify-between px-4'>
                       <h2 className='text-lg font-medium text-gray-900 dark:text-gray-100'>
                         {t('Common.Filters')}
@@ -201,7 +201,7 @@ export const Filter = forwardRef<HTMLButtonElement, FilterProps>(
                         {({ open }) => (
                           <>
                             <h3 className='-mx-2 -my-3 flow-root'>
-                              <Disclosure.Button className='flex w-full items-center justify-between px-2 py-3 text-sm bg-white text-gray-400 dark:bg-gray-900 dark:text-gray-500'>
+                              <DisclosureButton className='flex w-full items-center justify-between px-2 py-3 text-sm bg-white text-gray-400 dark:bg-gray-900 dark:text-gray-500'>
                                 <span className='font-medium text-gray-900 dark:text-gray-100'>
                                   {t(`Phonebook.${contactTypeFilter.name}`)}
                                 </span>
@@ -215,9 +215,9 @@ export const Filter = forwardRef<HTMLButtonElement, FilterProps>(
                                     aria-hidden='true'
                                   />
                                 </span>
-                              </Disclosure.Button>
+                              </DisclosureButton>
                             </h3>
-                            <Disclosure.Panel className='pt-6'>
+                            <DisclosurePanel className='pt-6'>
                               <fieldset>
                                 <legend className='sr-only'>{contactTypeFilter.name}</legend>
                                 <div className='space-y-4'>
@@ -241,7 +241,7 @@ export const Filter = forwardRef<HTMLButtonElement, FilterProps>(
                                   ))}
                                 </div>
                               </fieldset>
-                            </Disclosure.Panel>
+                            </DisclosurePanel>
                           </>
                         )}
                       </Disclosure>
@@ -255,7 +255,7 @@ export const Filter = forwardRef<HTMLButtonElement, FilterProps>(
                         {({ open }) => (
                           <>
                             <h3 className='-mx-2 -my-3 flow-root'>
-                              <Disclosure.Button className='flex w-full items-center justify-between px-2 py-3 text-sm bg-white text-gray-400 dark:bg-gray-900 dark:text-gray-500'>
+                              <DisclosureButton className='flex w-full items-center justify-between px-2 py-3 text-sm bg-white text-gray-400 dark:bg-gray-900 dark:text-gray-500'>
                                 <span className='font-medium text-gray-900 dark:text-gray-100'>
                                   {t(`Phonebook.${sortFilter.name}`)}
                                 </span>
@@ -269,9 +269,9 @@ export const Filter = forwardRef<HTMLButtonElement, FilterProps>(
                                     aria-hidden='true'
                                   />
                                 </span>
-                              </Disclosure.Button>
+                              </DisclosureButton>
                             </h3>
-                            <Disclosure.Panel className='pt-6'>
+                            <DisclosurePanel className='pt-6'>
                               <fieldset>
                                 <legend className='sr-only'>{sortFilter.name}</legend>
                                 <div className='space-y-4'>
@@ -295,16 +295,16 @@ export const Filter = forwardRef<HTMLButtonElement, FilterProps>(
                                   ))}
                                 </div>
                               </fieldset>
-                            </Disclosure.Panel>
+                            </DisclosurePanel>
                           </>
                         )}
                       </Disclosure> */}
                     </form>
-                  </Dialog.Panel>
-                </Transition.Child>
+                  </DialogPanel>
+                </TransitionChild>
               </div>
             </Dialog>
-          </Transition.Root>
+          </Transition>
 
           {/* pc view filters */}
           <div className='mx-auto text-center'>
@@ -330,7 +330,7 @@ export const Filter = forwardRef<HTMLButtonElement, FilterProps>(
                   </div>
 
                   <div className='flex ml-4'>
-                    <Popover.Group className='hidden sm:flex sm:items-baseline sm:space-x-4'>
+                    <PopoverGroup className='hidden sm:flex sm:items-baseline sm:space-x-4'>
                       {/* contact type filter */}
                       <Popover
                         as='div'
@@ -339,14 +339,14 @@ export const Filter = forwardRef<HTMLButtonElement, FilterProps>(
                         className='relative inline-block text-left shrink-0'
                       >
                         <div>
-                          <Popover.Button className='px-3 py-2 text-sm leading-4 rounded border shadow-sm border-gray-300 bg-white text-gray-700 hover:bg-gray-100 focus:ring-primaryLight dark:border-gray-600 dark:bg-gray-900 dark:text-gray-100 dark:hover:bg-gray-800 dark:focus:ring-primaryDark group inline-flex items-center justify-center font-medium  hover:text-gray-900 dark:hover:text-gray-100'>
+                          <PopoverButton className='px-3 py-2 text-sm leading-4 rounded border shadow-sm border-gray-300 bg-white text-gray-700 hover:bg-gray-100 focus:ring-primaryLight dark:border-gray-600 dark:bg-gray-900 dark:text-gray-100 dark:hover:bg-gray-800 dark:focus:ring-primaryDark group inline-flex items-center justify-center font-medium  hover:text-gray-900 dark:hover:text-gray-100'>
                             <span>{t(`Phonebook.${contactTypeFilter.name}`)}</span>
                             <FontAwesomeIcon
                               icon={faChevronDown}
                               className='ml-2 h-3 w-3 flex-shrink-0 text-gray-400 group-hover:text-gray-500 dark:text-gray-500 dark:group-hover:text-gray-400'
                               aria-hidden='true'
                             />
-                          </Popover.Button>
+                          </PopoverButton>
                         </div>
 
                         <Transition
@@ -358,7 +358,7 @@ export const Filter = forwardRef<HTMLButtonElement, FilterProps>(
                           leaveFrom='transform opacity-100 scale-100'
                           leaveTo='transform opacity-0 scale-95'
                         >
-                          <Popover.Panel className='absolute right-0 z-10 mt-2 origin-top-right rounded-md p-4 shadow-2xl ring-1 ring-opacity-5 focus:outline-none bg-white ring-black dark:bg-gray-900 dark:ring-gray-700'>
+                          <PopoverPanel className='absolute right-0 z-10 mt-2 origin-top-right rounded-md p-4 shadow-2xl ring-1 ring-opacity-5 focus:outline-none bg-white ring-black dark:bg-gray-900 dark:ring-gray-700'>
                             <form className='space-y-4'>
                               {contactTypeFilter.options.map((option) => (
                                 <div key={option.value} className='flex items-center'>
@@ -379,7 +379,7 @@ export const Filter = forwardRef<HTMLButtonElement, FilterProps>(
                                 </div>
                               ))}
                             </form>
-                          </Popover.Panel>
+                          </PopoverPanel>
                         </Transition>
                       </Popover>
 
@@ -392,14 +392,14 @@ export const Filter = forwardRef<HTMLButtonElement, FilterProps>(
                       className='relative inline-block text-left shrink-0'
                     >
                       <div>
-                        <Popover.Button className='group inline-flex items-center justify-center text-sm font-medium text-gray-700 hover:text-gray-900 dark:text-gray-200 dark:hover:text-gray-100'>
+                        <PopoverButton className='group inline-flex items-center justify-center text-sm font-medium text-gray-700 hover:text-gray-900 dark:text-gray-200 dark:hover:text-gray-100'>
                           <span>{t(`Phonebook.${sortFilter.name}`)}</span>
                           <FontAwesomeIcon
                             icon={faChevronDown}
                             className='ml-2 h-3 w-3 flex-shrink-0 text-gray-400 group-hover:text-gray-500 dark:text-gray-500 dark:group-hover:text-gray-400'
                             aria-hidden='true'
                           />
-                        </Popover.Button>
+                        </PopoverButton>
                       </div>
 
                       <Transition
@@ -435,7 +435,7 @@ export const Filter = forwardRef<HTMLButtonElement, FilterProps>(
                         </Popover.Panel>
                       </Transition>
                     </Popover> */}
-                    </Popover.Group>
+                    </PopoverGroup>
 
                     <button
                       type='button'

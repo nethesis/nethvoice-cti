@@ -2,7 +2,7 @@
 // SPDX-License-Identifier: AGPL-3.0-or-later
 
 import React from 'react'
-import { Popover } from '@headlessui/react'
+import { Popover, PopoverButton } from '@headlessui/react'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import {
   faCaretDown,
@@ -47,7 +47,7 @@ export const UserActionInQueue: React.FC<UserActionInQueueProps> = ({ queue }) =
         <Popover className='md:relative hover:bg-gray-200 dark:hover:bg-gray-700'>
           {({ open }) => (
             <>
-              <Popover.Button
+              <PopoverButton
                 className={classNames(
                   open ? '' : '',
                   'relative text-left cursor-pointer px-5 py-3 text-sm flex items-center gap-3 w-full',
@@ -60,7 +60,7 @@ export const UserActionInQueue: React.FC<UserActionInQueueProps> = ({ queue }) =
                   className='h-4 w-4 flex justify-start text-gray-400 dark:text-gray-500'
                 />
                 <span>{t('QueueManager.Login')}</span>
-              </Popover.Button>
+              </PopoverButton>
             </>
           )}
         </Popover>
@@ -70,7 +70,7 @@ export const UserActionInQueue: React.FC<UserActionInQueueProps> = ({ queue }) =
           <Popover className='md:relative hover:bg-gray-200 dark:hover:bg-gray-700'>
             {({ open }) => (
               <>
-                <Popover.Button
+                <PopoverButton
                   className={classNames(
                     open ? '' : '',
                     'relative text-left cursor-pointer px-5 py-3 text-sm flex items-center gap-3 w-full ',
@@ -83,7 +83,7 @@ export const UserActionInQueue: React.FC<UserActionInQueueProps> = ({ queue }) =
                     className='h-4 w-4 flex justify-start text-red-400 dark:text-red-500'
                   />
                   <span>{t('QueueManager.Logout')}</span>
-                </Popover.Button>
+                </PopoverButton>
               </>
             )}
           </Popover>
@@ -92,7 +92,7 @@ export const UserActionInQueue: React.FC<UserActionInQueueProps> = ({ queue }) =
             <Popover className='md:relative hover:bg-gray-200 dark:hover:bg-gray-700'>
               {({ open }) => (
                 <>
-                  <Popover.Button
+                  <PopoverButton
                     className={classNames(
                       open ? '' : '',
                       'relative text-left cursor-pointer px-5 py-3 text-sm flex items-center gap-3 w-full ',
@@ -104,7 +104,7 @@ export const UserActionInQueue: React.FC<UserActionInQueueProps> = ({ queue }) =
                       className='h-4 w-4 flex justify-start text-gray-400 dark:text-gray-500'
                     />
                     <span>{t('QueueManager.End pause')}</span>
-                  </Popover.Button>
+                  </PopoverButton>
                 </>
               )}
             </Popover>
@@ -113,7 +113,7 @@ export const UserActionInQueue: React.FC<UserActionInQueueProps> = ({ queue }) =
             <Popover className='md:relative hover:bg-gray-200 dark:hover:bg-gray-700'>
               {({ open }) => (
                 <>
-                  <Popover.Button
+                  <PopoverButton
                     className={classNames(
                       open ? '' : '',
                       'relative text-left cursor-pointer px-5 py-3 text-sm flex items-center gap-3 w-full ',
@@ -125,7 +125,7 @@ export const UserActionInQueue: React.FC<UserActionInQueueProps> = ({ queue }) =
                       className='h-4 w-4 flex justify-start text-gray-400 dark:text-gray-500 -ml-0.5'
                     />
                     <span>{t('QueueManager.Pause')}</span>
-                  </Popover.Button>
+                  </PopoverButton>
                 </>
               )}
             </Popover>

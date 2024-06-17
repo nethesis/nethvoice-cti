@@ -19,7 +19,7 @@ import { useTheme } from '../../../theme/Context'
 import { cleanClassName } from '../../../lib/utils'
 import { ModalContent } from './ModalContent'
 import { ModalActions } from './ModalActions'
-import { Transition, Dialog } from '@headlessui/react'
+import { Transition, Dialog, TransitionChild, DialogPanel } from '@headlessui/react'
 import classNames from 'classnames'
 
 export interface ModalProps extends PropsWithChildren<ComponentProps<'div'>> {
@@ -44,7 +44,7 @@ const ModalComponent: FC<ModalProps> = ({
   const cleanProps = cleanClassName(props)
 
   return (
-    <Transition.Root show={show} as={Fragment} afterLeave={() => afterLeave && afterLeave()}>
+    <Transition show={show} as={Fragment} afterLeave={() => afterLeave && afterLeave()}>
       <Dialog
         as='div'
         className={classNames('relative', 'z-50', className)}
@@ -52,18 +52,18 @@ const ModalComponent: FC<ModalProps> = ({
         initialFocus={focus && focus}
         {...cleanProps}
       >
-        <Transition.Child as={Fragment} {...theme.panel.transition}>
+        <TransitionChild as={Fragment} {...theme.panel.transition}>
           <div className={theme.background.base} />
-        </Transition.Child>
+        </TransitionChild>
         <div className='fixed inset-0 z-50 overflow-y-auto scrollbar-thin scrollbar-thumb-gray-400 dark:scrollbar-thumb-gray-400 scrollbar-thumb-rounded-full scrollbar-thumb-opacity-50 scrollbar-track-gray-200 dark:scrollbar-track-gray-900 scrollbar-track-rounded-full scrollbar-track-opacity-25'>
           <div className='flex min-h-full items-end justify-center p-4 text-center sm:items-center sm:p-0'>
-            <Transition.Child as={Fragment} {...theme.background.transition}>
-              <Dialog.Panel className={theme.panel.base}>{children}</Dialog.Panel>
-            </Transition.Child>
+            <TransitionChild as={Fragment} {...theme.background.transition}>
+              <DialogPanel className={theme.panel.base}>{children}</DialogPanel>
+            </TransitionChild>
           </div>
         </div>
       </Dialog>
-    </Transition.Root>
+    </Transition>
   )
 }
 

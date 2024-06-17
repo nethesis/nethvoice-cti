@@ -1,7 +1,7 @@
 // Copyright (C) 2023 Nethesis S.r.l.
 // SPDX-License-Identifier: AGPL-3.0-or-later
 
-import { Transition, Dialog } from '@headlessui/react'
+import { Transition, Dialog, TransitionChild, DialogPanel } from '@headlessui/react'
 import { FC, Fragment, useState } from 'react'
 import { SpeedDialContent } from '../common/UserRightSideMenu/SpeedDialContent'
 import { useSelector } from 'react-redux'
@@ -19,14 +19,14 @@ export const UserSidebarDrawer: FC<UserSidebarDrawerProps> = ({ isShown }) => {
 
   return (
     <>
-      <Transition.Root show={isShown} as={Fragment}>
+      <Transition show={isShown} as={Fragment}>
         <Dialog
           as='div'
           className={`${rightSideStatus.isShown ? 'relative z-20 lg:hidden' : 'hidden'}`}
           onClose={() => setIsOpen(false)}
         >
           <div className='fixed top-16 right-[3.2rem] bottom-0 z-40 flex'>
-            <Transition.Child
+            <TransitionChild
               as={Fragment}
               enter='transition ease-in-out duration-300 transform'
               enterFrom='translate-x-full'
@@ -35,7 +35,7 @@ export const UserSidebarDrawer: FC<UserSidebarDrawerProps> = ({ isShown }) => {
               leaveFrom='translate-x-0'
               leaveTo='translate-x-full'
             >
-              <Dialog.Panel className='relative flex w-72 lg:w-72 xl:w-80 2xl:w-96 flex-1 flex-col shadow-[0px_20px_40px_0_rgba(0,0,0,0.2)] bg-sidebar dark:bg-sidebarDark dark:shadow-[0px_20px_40px_0_rgba(0,0,0,0.6)]'>
+              <DialogPanel className='relative flex w-72 lg:w-72 xl:w-80 2xl:w-96 flex-1 flex-col shadow-[0px_20px_40px_0_rgba(0,0,0,0.2)] bg-sidebar dark:bg-sidebarDark dark:shadow-[0px_20px_40px_0_rgba(0,0,0,0.6)]'>
                 <div className='h-0 flex-1 overflow-y-auto scrollbar-thin scrollbar-thumb-gray-400 dark:scrollbar-thumb-gray-400 scrollbar-thumb-rounded-full scrollbar-thumb-opacity-50 scrollbar-track-gray-200 dark:scrollbar-track-gray-900 scrollbar-track-rounded-full scrollbar-track-opacity-25'>
                   <nav className='flex h-full flex-col'>
                     <div className='overflow-x-hidden relative'>
@@ -48,11 +48,11 @@ export const UserSidebarDrawer: FC<UserSidebarDrawerProps> = ({ isShown }) => {
                     </div>
                   </nav>
                 </div>
-              </Dialog.Panel>
-            </Transition.Child>
+              </DialogPanel>
+            </TransitionChild>
           </div>
         </Dialog>
-      </Transition.Root>
+      </Transition>
     </>
   )
 }

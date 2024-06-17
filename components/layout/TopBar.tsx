@@ -19,7 +19,7 @@ import { RootState, Dispatch } from '../../store'
 import classNames from 'classnames'
 import { changeStatusPresence, forwardStatus } from '../../lib/topBar'
 import { Fragment } from 'react'
-import { Popover, Transition } from '@headlessui/react'
+import { Popover, PopoverButton, PopoverPanel, Transition } from '@headlessui/react'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { StatusDot } from '../common'
 import {
@@ -249,7 +249,7 @@ export const TopBar: FC<TopBarProps> = ({ openMobileCb }) => {
       <Popover className='md:relative hover:bg-gray-200 dark:hover:bg-gray-700'>
         {({ open }) => (
           <>
-            <Popover.Button
+            <PopoverButton
               className={classNames(
                 open ? '' : '',
                 'relative text-left cursor-pointer px-5 py-2 text-sm flex items-center gap-3 w-full text-dropdownText dark:text-dropdownTextDark',
@@ -261,7 +261,7 @@ export const TopBar: FC<TopBarProps> = ({ openMobileCb }) => {
                 icon={faChevronRight}
                 className='ml-auto h-4 w-4 flex justify-center'
               />
-            </Popover.Button>
+            </PopoverButton>
             <Transition
               as={Fragment}
               enter='transition ease-out duration-200'
@@ -271,7 +271,7 @@ export const TopBar: FC<TopBarProps> = ({ openMobileCb }) => {
               leaveFrom='opacity-100 translate-y-0'
               leaveTo='opacity-0 translate-y-1'
             >
-              <Popover.Panel className='absolute sm:mr-[4.788rem] sm:-mt-10 right-0 z-10 w-screen max-w-xs sm:-translate-x-1/2 transform px-0.5 sm:px-1 xs:mr-[6rem] '>
+              <PopoverPanel className='absolute sm:mr-[4.788rem] sm:-mt-10 right-0 z-10 w-screen max-w-xs sm:-translate-x-1/2 transform px-0.5 sm:px-1 xs:mr-[6rem] '>
                 <div className='overflow-hidden shadow-lg ring-1 ring-gray-200 dark:ring-gray-700 ring-opacity-1 rounded-md'>
                   <div className='relative bg-dropdownBg dark:bg-dropdownBgDark dark:border-gray-700 py-2'>
                     <Dropdown.Item onClick={() => setPresence('online')}>
@@ -350,7 +350,7 @@ export const TopBar: FC<TopBarProps> = ({ openMobileCb }) => {
                     )}
                   </div>
                 </div>
-              </Popover.Panel>
+              </PopoverPanel>
             </Transition>
           </>
         )}
@@ -360,7 +360,7 @@ export const TopBar: FC<TopBarProps> = ({ openMobileCb }) => {
       <Popover className='md:relative hover:bg-gray-200 dark:hover:bg-gray-700'>
         {({ open }) => (
           <>
-            <Popover.Button
+            <PopoverButton
               className={classNames(
                 open ? '' : '',
                 'relative text-left cursor-pointer px-5 py-2 text-sm flex items-center gap-3 w-full text-dropdownText dark:text-dropdownTextDark',
@@ -383,7 +383,7 @@ export const TopBar: FC<TopBarProps> = ({ openMobileCb }) => {
                 icon={faChevronRight}
                 className='ml-auto h-4 w-4 flex justify-center'
               />
-            </Popover.Button>
+            </PopoverButton>
             <Transition
               as={Fragment}
               enter='transition ease-out duration-200'
@@ -394,7 +394,7 @@ export const TopBar: FC<TopBarProps> = ({ openMobileCb }) => {
               leaveTo='opacity-0 translate-y-1'
             >
               {/* List of device to choose */}
-              <Popover.Panel className='absolute sm:mr-[4.788rem] sm:-mt-10 right-0 z-10 w-screen max-w-xs sm:-translate-x-1/2 transform px-0.5 sm:px-1 xs:mr-[6rem] '>
+              <PopoverPanel className='absolute sm:mr-[4.788rem] sm:-mt-10 right-0 z-10 w-screen max-w-xs sm:-translate-x-1/2 transform px-0.5 sm:px-1 xs:mr-[6rem] '>
                 <div className='overflow-hidden shadow-lg ring-1 ring-gray-200 dark:ring-gray-700 ring-opacity-1 rounded-md'>
                   <div className='relative bg-white dark:border-gray-700 dark:bg-gray-900 py-2'>
                     {noMobileListDevice
@@ -450,7 +450,7 @@ export const TopBar: FC<TopBarProps> = ({ openMobileCb }) => {
                       ))}
                   </div>
                 </div>
-              </Popover.Panel>
+              </PopoverPanel>
             </Transition>
           </>
         )}
