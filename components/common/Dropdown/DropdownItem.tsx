@@ -1,8 +1,8 @@
-// Copyright (C) 2023 Nethesis S.r.l.
+// Copyright (C) 2024 Nethesis S.r.l.
 // SPDX-License-Identifier: AGPL-3.0-or-later
 
 import { FC, ComponentProps } from 'react'
-import { Menu } from '@headlessui/react'
+import { Menu, MenuItem } from '@headlessui/react'
 import classNames from 'classnames'
 import { useTheme } from '../../../theme/Context'
 import { cleanClassName } from '../../../lib/utils'
@@ -28,7 +28,7 @@ export const DropdownItem: FC<DropdownItemProps> = ({
   const theirProps = cleanClassName(props)
 
   return (
-    <Menu.Item>
+    <MenuItem>
       {({ active }) => (
         <div
           className={classNames(
@@ -44,6 +44,6 @@ export const DropdownItem: FC<DropdownItemProps> = ({
           {children}
         </div>
       )}
-    </Menu.Item>
+    </MenuItem>
   )
 }
