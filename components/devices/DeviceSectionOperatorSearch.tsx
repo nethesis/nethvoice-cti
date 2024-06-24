@@ -97,7 +97,7 @@ export const DeviceSectionOperatorSearch: FC<DeviceSectionOperatorSearchProps> =
     return operatorsResults
   }
 
-  const debouncedChangeQuery:any = useMemo(
+  const debouncedChangeQuery: any = useMemo(
     () =>
       debounce(async (event: any) => {
         const query = event.target.value
@@ -229,9 +229,7 @@ export const DeviceSectionOperatorSearch: FC<DeviceSectionOperatorSearchProps> =
                     as='div'
                     key={index}
                     value={index}
-                    className={({ active }) =>
-                      classNames('flex cursor-default select-none items-center rounded-md p-2 h-14')
-                    }
+                    className='flex select-none items-center rounded-md p-2 h-14 cursor-pointer'
                   >
                     <div className='animate-pulse rounded-full h-8 w-8 bg-gray-300 dark:bg-gray-600'></div>
                     <div className='ml-2 animate-pulse h-3 rounded w-[40%] bg-gray-300 dark:bg-gray-600'></div>
@@ -241,14 +239,9 @@ export const DeviceSectionOperatorSearch: FC<DeviceSectionOperatorSearchProps> =
                 <ComboboxOption
                   key={'result-' + index}
                   value={result}
-                  className={({ active }) =>
-                    classNames(
-                      'flex select-none items-center rounded-md p-2 h-14 cursor-pointer',
-                      active && 'bg-gray-100 text-gray-900 dark:bg-gray-800 dark:text-gray-100',
-                    )
-                  }
+                  className='flex select-none items-center rounded-md p-2 h-14 cursor-pointer data-[focus]:bg-gray-100 data-[focus]:text-gray-900 data-[focus]:dark:bg-gray-800 data-[focus]:dark:text-gray-100'
                 >
-                  {({ active, selected }) => (
+                  {({ selected }) => (
                     <>
                       <div className='flex items-center px-2'>
                         {result?.resultType === 'operator' ? (

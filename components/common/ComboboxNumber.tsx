@@ -1,7 +1,13 @@
 import { useState, useEffect } from 'react'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { faCheck, faChevronDown } from '@fortawesome/free-solid-svg-icons'
-import { Combobox, ComboboxButton, ComboboxInput, ComboboxOption, ComboboxOptions } from '@headlessui/react'
+import {
+  Combobox,
+  ComboboxButton,
+  ComboboxInput,
+  ComboboxOption,
+  ComboboxOptions,
+} from '@headlessui/react'
 import { t } from 'i18next'
 
 function classNames(...classes: string[]) {
@@ -90,28 +96,16 @@ export default function ComboboxNumber({
               <ComboboxOption
                 key={number}
                 value={number}
-                className={({ active }) =>
-                  classNames(
-                    'relative cursor-default select-none py-2 pl-8 pr-4',
-                    active
-                      ? 'bg-emerald-600 text-white dark:text-gray-300'
-                      : 'text-gray-900 dark:text-gray-200',
-                  )
-                }
+                className='relative cursor-default select-none py-2 pl-8 pr-4 data-[focus]:bg-primary data-[focus]:text-white data-[focus]:dark:text-gray-900 text-gray-900 dark:text-gray-200'
               >
-                {({ active, selected }) => (
+                {({ selected }) => (
                   <>
                     <span className={`${selected ? 'block truncate font-semibold' : ''} `}>
                       {number}
                     </span>
 
                     {selected && (
-                      <span
-                        className={classNames(
-                          'absolute inset-y-0 left-0 flex items-center pl-1.5',
-                          active ? 'text-white' : 'text-emerald-600',
-                        )}
-                      >
+                      <span className='absolute inset-y-0 left-0 flex items-center pl-1.5 data-[focus]:text-white text-emerald-600'>
                         <FontAwesomeIcon
                           icon={faCheck}
                           className='h-4 w-4 mr-3 text-primary dark:text-primaryDark flex items-center tooltip-configure-key-position-information'

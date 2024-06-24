@@ -16,7 +16,6 @@ import {
   ListboxOptions,
   Transition,
 } from '@headlessui/react'
-import { savePreference } from '../../lib/storage'
 import { RootState } from '../../store'
 import { useSelector } from 'react-redux'
 import { getInputOutputLocalStorageValue } from '../../lib/devices'

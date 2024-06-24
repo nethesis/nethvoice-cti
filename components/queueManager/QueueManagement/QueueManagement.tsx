@@ -20,7 +20,14 @@ import {
 
 import { openShowOperatorDrawer } from '../../../lib/operators'
 
-import { Listbox, Transition } from '@headlessui/react'
+import {
+  Label,
+  Listbox,
+  ListboxButton,
+  ListboxOption,
+  ListboxOptions,
+  Transition,
+} from '@headlessui/react'
 import {
   getExpandedQueueManagamentValue,
   retrieveSelectedNotManaged,
@@ -311,11 +318,11 @@ export const QueueManagement: FC<QueueManagementProps> = ({ className }): JSX.El
         {({ open }) => (
           <>
             <div className='flex items-center'>
-              <Listbox.Label className='block text-sm font-medium leading-6 dark:text-gray-200 text-gray- mr-8'>
+              <Label className='block text-sm font-medium leading-6 dark:text-gray-200 text-gray- mr-8'>
                 {t('QueueManager.Select queue')}
-              </Listbox.Label>
+              </Label>
               <div className='relative'>
-                <Listbox.Button className='relative cursor-default rounded-md bg-white dark:bg-gray-950 py-1.5 pl-3 pr-10 text-left w-60 text-gray-900 dark:text-gray-300 shadow-sm ring-1 ring-inset ring-gray-300 focus:outline-none focus:ring-2 focus:ring-primary sm:text-sm sm:leading-6 inline-block'>
+                <ListboxButton className='relative cursor-default rounded-md bg-white dark:bg-gray-950 py-1.5 pl-3 pr-10 text-left w-60 text-gray-900 dark:text-gray-300 shadow-sm ring-1 ring-inset ring-gray-300 focus:outline-none focus:ring-2 focus:ring-primary sm:text-sm sm:leading-6 inline-block'>
                   <span className='block truncate'>
                     {selectedValue.name ? selectedValue.name : t('QueueManager.Select queue')}
                   </span>
@@ -326,7 +333,7 @@ export const QueueManagement: FC<QueueManagementProps> = ({ className }): JSX.El
                       aria-hidden='true'
                     />
                   </span>
-                </Listbox.Button>
+                </ListboxButton>
 
                 <Transition
                   show={open}
@@ -335,16 +342,11 @@ export const QueueManagement: FC<QueueManagementProps> = ({ className }): JSX.El
                   leaveFrom='opacity-100'
                   leaveTo='opacity-0'
                 >
-                  <Listbox.Options className='absolute z-10 mt-1 w-full overflow-auto scrollbar-thin scrollbar-thumb-gray-400 dark:scrollbar-thumb-gray-400 scrollbar-thumb-rounded-full scrollbar-thumb-opacity-50 scrollbar-track-gray-200 dark:scrollbar-track-gray-900 scrollbar-track-rounded-full scrollbar-track-opacity-25 rounded-md bg-white py-1 text-base shadow-lg ring-1 dark:bg-gray-900 ring-black ring-opacity-5 focus:outline-none sm:text-sm h-auto'>
+                  <ListboxOptions className='absolute z-10 mt-1 w-full overflow-auto scrollbar-thin scrollbar-thumb-gray-400 dark:scrollbar-thumb-gray-400 scrollbar-thumb-rounded-full scrollbar-thumb-opacity-50 scrollbar-track-gray-200 dark:scrollbar-track-gray-900 scrollbar-track-rounded-full scrollbar-track-opacity-25 rounded-md bg-white py-1 text-base shadow-lg ring-1 dark:bg-gray-900 ring-black ring-opacity-5 focus:outline-none sm:text-sm h-auto'>
                     {Object.entries<any>(queueManagerStore.queues).map(([queueId, queueInfo]) => (
-                      <Listbox.Option
+                      <ListboxOption
                         key={queueId}
-                        className={({ active }) =>
-                          classNames(
-                            active ? 'bg-primary text-white' : 'text-gray-900 dark:text-gray-100',
-                            'relative cursor-default select-none py-2 pl-8 pr-4',
-                          )
-                        }
+                        className='relative cursor-default select-none py-2 pl-8 pr-4 data-[focus]:bg-primary data-[focus]:text-white text-gray-900 dark:text-gray-100'
                         value={queueInfo}
                       >
                         {({ selected, active }) => (
@@ -359,14 +361,7 @@ export const QueueManagement: FC<QueueManagementProps> = ({ className }): JSX.El
                             </span>
 
                             {selected || selectedValue.queue === queueId ? (
-                              <span
-                                className={classNames(
-                                  active
-                                    ? 'text-white dark:text-gray-200'
-                                    : 'text-primary dark:text-primaryDark',
-                                  'absolute inset-y-0 left-0 flex items-center pl-1.5',
-                                )}
-                              >
+                              <span className='data-[focus]:text-white data-[focus]:dark:text-gray-200 text-primary dark:text-primaryDark absolute inset-y-0 left-0 flex items-center pl-1.5'>
                                 <FontAwesomeIcon
                                   icon={faCheck}
                                   className='h-3.5 w-3.5 pl-2 py-2 cursor-pointer flex items-center'
@@ -376,9 +371,9 @@ export const QueueManagement: FC<QueueManagementProps> = ({ className }): JSX.El
                             ) : null}
                           </>
                         )}
-                      </Listbox.Option>
+                      </ListboxOption>
                     ))}
-                  </Listbox.Options>
+                  </ListboxOptions>
                 </Transition>
               </div>
             </div>
