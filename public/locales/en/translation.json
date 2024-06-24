@@ -767,7 +767,10 @@
     "Call to transfer": "Click to transfer",
     "Hangup and transfer": "Transfer",
     "Answer": "Answer",
-    "Settings": "Settings"
+    "Settings": "Settings",
+    "Record": "Record",
+    "Stop recording": "Stop recording",
+    "Recording": "Recording"
   },
   "Devices": {
     "Web phone": "Web phone",
