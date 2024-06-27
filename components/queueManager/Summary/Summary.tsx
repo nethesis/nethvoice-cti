@@ -7,7 +7,7 @@ import { EmptyState, Avatar } from '../../common'
 import { useSelector } from 'react-redux'
 import { RootState } from '../../../store'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
-import { Popover } from '@headlessui/react'
+import { Popover, PopoverButton, PopoverGroup, PopoverPanel } from '@headlessui/react'
 import { cloneDeep } from 'lodash'
 import { exactDistanceToNowLoc, formatDurationLoc } from '../../../lib/dateTime'
 
@@ -604,7 +604,7 @@ export const Summary: FC<SummaryProps> = ({ className }): JSX.Element => {
                 {t('QueueManager.Select queue')}
               </span>
             </div>
-            <Popover.Group className='pl-20 flex items-center'>
+            <PopoverGroup className='pl-20 flex items-center'>
               {/* queues filter */}
               <Popover
                 as='div'
@@ -613,7 +613,7 @@ export const Summary: FC<SummaryProps> = ({ className }): JSX.Element => {
                 className='relative inline-block text-left shrink-0'
               >
                 <div>
-                  <Popover.Button className='px-3 py-2 flex items-center w-60 text-sm leading-4 p-2 rounded border shadow-sm border-gray-300 bg-white text-gray-700 hover:bg-gray-100 focus:ring-primaryLight dark:border-gray-600 dark:bg-gray-900 dark:text-gray-100 dark:hover:bg-gray-800 dark:focus:ring-primaryDark group justify-between font-medium hover:text-gray-900 dark:hover:text-gray-100'>
+                  <PopoverButton className='px-3 py-2 flex items-center w-60 text-sm leading-4 p-2 rounded border shadow-sm border-gray-300 bg-white text-gray-700 hover:bg-gray-100 focus:ring-primaryLight dark:border-gray-600 dark:bg-gray-900 dark:text-gray-100 dark:hover:bg-gray-800 dark:focus:ring-primaryDark group justify-between font-medium hover:text-gray-900 dark:hover:text-gray-100'>
                     <span className='flex justify-start overflow-hidden truncate w-40'>
                       {selectedQueues.length > 0
                         ? selectedQueues.join(', ')
@@ -624,7 +624,7 @@ export const Summary: FC<SummaryProps> = ({ className }): JSX.Element => {
                       className='ml-2 h-3 w-3 text-gray-400 group-hover:text-gray-500 dark:text-gray-500 dark:group-hover:text-gray-400'
                       aria-hidden='true'
                     />
-                  </Popover.Button>
+                  </PopoverButton>
                 </div>
 
                 <Transition
@@ -636,7 +636,7 @@ export const Summary: FC<SummaryProps> = ({ className }): JSX.Element => {
                   leaveFrom='transform opacity-100 scale-100'
                   leaveTo='transform opacity-0 scale-95'
                 >
-                  <Popover.Panel className='absolute right-0 z-10 mt-2 origin-top-right rounded-md min-w-max p-4 shadow-2xl ring-1 focus:outline-none ring-opacity-5 bg-white ring-black dark:ring-opacity-5 dark:bg-gray-900 dark:ring-gray-700'>
+                  <PopoverPanel className='absolute right-0 z-10 mt-2 origin-top-right rounded-md min-w-max p-4 shadow-2xl ring-1 focus:outline-none ring-opacity-5 bg-white ring-black dark:ring-opacity-5 dark:bg-gray-900 dark:ring-gray-700'>
                     <form className='space-y-4'>
                       {queuesFilterQueues.options.map((option) => (
                         <div key={option.value} className='flex items-center'>
@@ -658,10 +658,10 @@ export const Summary: FC<SummaryProps> = ({ className }): JSX.Element => {
                         </div>
                       ))}
                     </form>
-                  </Popover.Panel>
+                  </PopoverPanel>
                 </Transition>
               </Popover>
-            </Popover.Group>
+            </PopoverGroup>
           </div>
 
           <SummaryChart selectedQueues={selectedQueues}></SummaryChart>

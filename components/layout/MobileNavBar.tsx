@@ -11,7 +11,7 @@
  *
  */
 
-import { Transition, Dialog } from '@headlessui/react'
+import { Transition, Dialog, TransitionChild, DialogPanel } from '@headlessui/react'
 import { FC, Fragment } from 'react'
 import classNames from 'classnames'
 import type { NavItemsProps } from '../../config/routes'
@@ -32,9 +32,9 @@ export const MobileNavBar: FC<MobileNavBarProps> = ({ closeMobileMenu, show, ite
   return (
     <>
       {/* Mobile menu */}
-      <Transition.Root show={show} as={Fragment}>
+      <Transition show={show} as={Fragment}>
         <Dialog as='div' className='relative z-[1000] md:hidden' onClose={closeMobileMenu}>
-          <Transition.Child
+          <TransitionChild
             as={Fragment}
             enter='transition-opacity ease-linear duration-300'
             enterFrom='opacity-0'
@@ -44,10 +44,10 @@ export const MobileNavBar: FC<MobileNavBarProps> = ({ closeMobileMenu, show, ite
             leaveTo='opacity-0'
           >
             <div className='fixed inset-0 bg-opacity-75 dark:bg-opacity-75 bg-gray-600 dark:bg-gray-600' />
-          </Transition.Child>
+          </TransitionChild>
 
           <div className='fixed inset-0 z-40 flex'>
-            <Transition.Child
+            <TransitionChild
               as={Fragment}
               enter='transition ease-in-out duration-300 transform'
               enterFrom='-translate-x-full'
@@ -56,8 +56,8 @@ export const MobileNavBar: FC<MobileNavBarProps> = ({ closeMobileMenu, show, ite
               leaveFrom='translate-x-0'
               leaveTo='-translate-x-full'
             >
-              <Dialog.Panel className='relative flex w-full max-w-xs flex-1 flex-col pt-4 pb-4 bg-gray-600 dark:bg-gray-700'>
-                <Transition.Child
+              <DialogPanel className='relative flex w-full max-w-xs flex-1 flex-col pt-4 pb-4 bg-gray-600 dark:bg-gray-700'>
+                <TransitionChild
                   as={Fragment}
                   enter='ease-in-out duration-300'
                   enterFrom='opacity-0'
@@ -80,7 +80,7 @@ export const MobileNavBar: FC<MobileNavBarProps> = ({ closeMobileMenu, show, ite
                       <span className='sr-only'>Close sidebar</span>
                     </button>
                   </div>
-                </Transition.Child>
+                </TransitionChild>
                 <div className='flex flex-shrink-0 items-center px-4'>
                   <Image
                     className='h-8 w-auto cursor-pointer object-contain object-top'
@@ -122,14 +122,14 @@ export const MobileNavBar: FC<MobileNavBarProps> = ({ closeMobileMenu, show, ite
                     </div>
                   </nav>
                 </div>
-              </Dialog.Panel>
-            </Transition.Child>
+              </DialogPanel>
+            </TransitionChild>
             <div className='w-14 flex-shrink-0' aria-hidden='true'>
               {/* Dummy element to force sidebar to shrink to fit close icon */}
             </div>
           </div>
         </Dialog>
-      </Transition.Root>
+      </Transition>
     </>
   )
 }

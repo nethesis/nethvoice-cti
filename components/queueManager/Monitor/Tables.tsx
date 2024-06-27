@@ -10,7 +10,13 @@ import { faChevronDown, faCheck, faMinus, faPlus, faUsers } from '@fortawesome/f
 import { savePreference } from '../../../lib/storage'
 import { CallDuration } from '../../operators/CallDuration'
 import { getMonitorValue } from '../../../lib/queueManager'
-import { Listbox, Transition } from '@headlessui/react'
+import {
+  Listbox,
+  ListboxButton,
+  ListboxOption,
+  ListboxOptions,
+  Transition,
+} from '@headlessui/react'
 import { Button, EmptyState } from '../../common'
 
 export interface MonitorTablesProps extends ComponentProps<'div'> {
@@ -110,7 +116,7 @@ export const MonitorTables: FC<MonitorTablesProps> = ({
                       <>
                         <div className='flex items-center'>
                           <div className='relative'>
-                            <Listbox.Button
+                            <ListboxButton
                               className={`relative  cursor-default rounded-md py-1.5 pr-10 text-left text-gray-950 dark:text-gray-300 focus:outline-none sm:text-sm sm:leading-6 ${
                                 isFullscreen ? 'w-96' : 'w-48'
                               }  `}
@@ -133,7 +139,7 @@ export const MonitorTables: FC<MonitorTablesProps> = ({
                                   aria-hidden='true'
                                 />
                               </span>
-                            </Listbox.Button>
+                            </ListboxButton>
 
                             <Transition
                               show={open}
@@ -142,23 +148,20 @@ export const MonitorTables: FC<MonitorTablesProps> = ({
                               leaveFrom='opacity-100'
                               leaveTo='opacity-0'
                             >
-                              <Listbox.Options className='absolute z-10 mt-1 w-full overflow-auto  scrollbar-thin scrollbar-thumb-gray-400 dark:scrollbar-thumb-gray-400 scrollbar-thumb-rounded-full scrollbar-thumb-opacity-50 scrollbar-track-gray-200 dark:scrollbar-track-gray-900 scrollbar-track-rounded-full scrollbar-track-opacity-25 rounded-md bg-white py-1 text-base shadow-lg ring-1 dark:bg-gray-900 ring-black ring-opacity-5 focus:outline-none sm:text-sm h-auto'>
+                              <ListboxOptions className='absolute z-10 mt-1 w-full overflow-auto  scrollbar-thin scrollbar-thumb-gray-400 dark:scrollbar-thumb-gray-400 scrollbar-thumb-rounded-full scrollbar-thumb-opacity-50 scrollbar-track-gray-200 dark:scrollbar-track-gray-900 scrollbar-track-rounded-full scrollbar-track-opacity-25 rounded-md bg-white py-1 text-base shadow-lg ring-1 dark:bg-gray-900 ring-black ring-opacity-5 focus:outline-none sm:text-sm h-auto'>
                                 {Object.entries<any>(queueManagerStore.queues).map(
                                   ([queueId, queueInfo]) => (
-                                    <Listbox.Option
+                                    <ListboxOption
                                       key={queueId}
-                                      className={({ active }) =>
+                                      className={() =>
                                         classNames(
-                                          active
-                                            ? 'bg-primary text-white'
-                                            : 'text-gray-900 dark:text-gray-100',
-                                          'relative cursor-default select-none py-2 pl-8 pr-4',
-                                          `${isFullscreen ? 'text-2xl' : 'text-base'}  `,
+                                          'relative cursor-default select-none py-2 pl-8 pr-4 data-[focus]:text-white data-[focus]:bg-primary text-gray-900 dark:text-gray-100',
+                                          `${isFullscreen ? 'text-2xl' : 'text-base'}`,
                                         )
                                       }
                                       value={queueInfo}
                                     >
-                                      {({ selected, active }) => (
+                                      {({ selected }) => (
                                         <>
                                           <span
                                             className={classNames(
@@ -170,12 +173,7 @@ export const MonitorTables: FC<MonitorTablesProps> = ({
                                           </span>
 
                                           {selected || selectedQueueFirstTable.queue === queueId ? (
-                                            <span
-                                              className={classNames(
-                                                active ? 'text-white' : 'text-primary',
-                                                'absolute inset-y-0 left-0 flex items-center pl-1.5',
-                                              )}
-                                            >
+                                            <span className='data-[focus]:text-white text-primary absolute inset-y-0 left-0 flex items-center pl-1.5'>
                                               <FontAwesomeIcon
                                                 icon={faCheck}
                                                 className='h-3.5 w-3.5 pl-2 py-2 cursor-pointer flex items-center'
@@ -185,10 +183,10 @@ export const MonitorTables: FC<MonitorTablesProps> = ({
                                           ) : null}
                                         </>
                                       )}
-                                    </Listbox.Option>
+                                    </ListboxOption>
                                   ),
                                 )}
-                              </Listbox.Options>
+                              </ListboxOptions>
                             </Transition>
                           </div>
                         </div>
@@ -361,7 +359,7 @@ export const MonitorTables: FC<MonitorTablesProps> = ({
                                 {t('QueueManager.Calls to show')}
                               </Listbox.Label> */}
                             <div className='relative'>
-                              <Listbox.Button
+                              <ListboxButton
                                 className={`relative  cursor-default rounded-md py-1.5 pr-10 text-left text-gray-950 dark:text-gray-300 focus:outline-none sm:text-sm sm:leading-6 ${
                                   isFullscreen ? 'w-96' : 'w-48'
                                 }  `}
@@ -384,7 +382,7 @@ export const MonitorTables: FC<MonitorTablesProps> = ({
                                     aria-hidden='true'
                                   />
                                 </span>
-                              </Listbox.Button>
+                              </ListboxButton>
 
                               <Transition
                                 show={open}
@@ -393,17 +391,14 @@ export const MonitorTables: FC<MonitorTablesProps> = ({
                                 leaveFrom='opacity-100'
                                 leaveTo='opacity-0'
                               >
-                                <Listbox.Options className='absolute z-10 mt-1 w-full overflow-auto  scrollbar-thin scrollbar-thumb-gray-400 dark:scrollbar-thumb-gray-400 scrollbar-thumb-rounded-full scrollbar-thumb-opacity-50 scrollbar-track-gray-200 dark:scrollbar-track-gray-900 scrollbar-track-rounded-full scrollbar-track-opacity-25 rounded-md bg-white py-1 text-base shadow-lg ring-1 dark:bg-gray-900 ring-black ring-opacity-5 focus:outline-none sm:text-sm h-auto'>
+                                <ListboxOptions className='absolute z-10 mt-1 w-full overflow-auto  scrollbar-thin scrollbar-thumb-gray-400 dark:scrollbar-thumb-gray-400 scrollbar-thumb-rounded-full scrollbar-thumb-opacity-50 scrollbar-track-gray-200 dark:scrollbar-track-gray-900 scrollbar-track-rounded-full scrollbar-track-opacity-25 rounded-md bg-white py-1 text-base shadow-lg ring-1 dark:bg-gray-900 ring-black ring-opacity-5 focus:outline-none sm:text-sm h-auto'>
                                   {Object.entries<any>(queueManagerStore.queues).map(
                                     ([queueId, queueInfo]) => (
-                                      <Listbox.Option
+                                      <ListboxOption
                                         key={queueId}
-                                        className={({ active }) =>
+                                        className={() =>
                                           classNames(
-                                            active
-                                              ? 'bg-primary text-white'
-                                              : 'text-gray-900 dark:text-gray-100',
-                                            'relative cursor-default select-none py-2 pl-8 pr-4',
+                                            'relative cursor-default select-none py-2 pl-8 pr-4 data-[focus]:text-white data-[focus]:bg-primary text-gray-900 dark:text-gray-100',
                                             `${isFullscreen ? 'text-2xl' : 'text-base'}  `,
                                           )
                                         }
@@ -422,12 +417,7 @@ export const MonitorTables: FC<MonitorTablesProps> = ({
 
                                             {selected ||
                                             selectedQueueSecondTable.queue === queueId ? (
-                                              <span
-                                                className={classNames(
-                                                  active ? 'text-white' : 'text-primary',
-                                                  'absolute inset-y-0 left-0 flex items-center pl-1.5',
-                                                )}
-                                              >
+                                              <span className='data-[focus]:text-white text-primary absolute inset-y-0 left-0 flex items-center pl-1.5'>
                                                 <FontAwesomeIcon
                                                   icon={faCheck}
                                                   className='h-3.5 w-3.5 pl-2 py-2 cursor-pointer flex items-center'
@@ -437,10 +427,10 @@ export const MonitorTables: FC<MonitorTablesProps> = ({
                                             ) : null}
                                           </>
                                         )}
-                                      </Listbox.Option>
+                                      </ListboxOption>
                                     ),
                                   )}
-                                </Listbox.Options>
+                                </ListboxOptions>
                               </Transition>
                             </div>
                           </div>

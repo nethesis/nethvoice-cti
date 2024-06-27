@@ -26,6 +26,7 @@ import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { faUser, faBuilding, faStar, faHeadset, faTimes } from '@fortawesome/free-solid-svg-icons'
 import { StatusDot } from '../StatusDot'
 import { removeAvatar } from '../../../lib/profilePicture'
+import { t } from 'i18next'
 export type AvatarGroupProps = GroupProps
 
 export interface AvatarProps extends Omit<ComponentProps<'div'>, 'placeholder'> {
@@ -131,7 +132,11 @@ const AvatarComponent: FC<AvatarProps> = ({
         />
       )}
       {deleteAvatar && (
-        <button className={classNames(theme.deleteAvatar.button, 'tooltip-remove-profile-picture')}>
+        <button
+          className={classNames(theme.deleteAvatar.button)}
+          data-tooltip-id={'tooltip-remove-profile-picture'}
+          data-tooltip-content={t('Settings.Delete profile picture') || ''}
+        >
           <FontAwesomeIcon
             icon={faTimes}
             aria-hidden='true'

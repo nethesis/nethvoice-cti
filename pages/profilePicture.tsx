@@ -41,9 +41,7 @@ const Profile: NextPage = () => {
                 src={operators[profile?.username]?.avatarBase64}
                 deleteAvatar={true}
               />
-              <Tooltip anchorSelect='.tooltip-remove-profile-picture' place='left'>
-                {t('Settings.Delete profile picture') || ''}
-              </Tooltip>
+              <Tooltip className='pi-z-20' id={'tooltip-remove-profile-picture'} place='left'/>
               <Button variant='white' onClick={() => openShowUploadProfilePictureDrawer('')}>
                 <FontAwesomeIcon icon={faUpload} className='mr-2' />
                 {t('Settings.Upload')}

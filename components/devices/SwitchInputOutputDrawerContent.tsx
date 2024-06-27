@@ -9,8 +9,13 @@ import { faCheck, faChevronDown, faCircleInfo } from '@fortawesome/free-solid-sv
 
 import { Tooltip } from 'react-tooltip'
 import { closeSideDrawer } from '../../lib/utils'
-import { Listbox, Transition } from '@headlessui/react'
-import { savePreference } from '../../lib/storage'
+import {
+  Listbox,
+  ListboxButton,
+  ListboxOption,
+  ListboxOptions,
+  Transition,
+} from '@headlessui/react'
 import { RootState } from '../../store'
 import { useSelector } from 'react-redux'
 import { getInputOutputLocalStorageValue } from '../../lib/devices'
@@ -134,13 +139,13 @@ export const SwitchInputOutputDrawerContent = forwardRef<
               </span>
               <FontAwesomeIcon
                 icon={faCircleInfo}
-                className='h-4 w-4 pl-2 py-2 text-primaryIndigo dark:text-primaryIndigoDark flex items-center tooltip-input-information'
+                className='h-4 w-4 pl-2 py-2 text-primaryIndigo dark:text-primaryIndigoDark flex items-center'
                 aria-hidden='true'
+                data-tooltip-id='tooltip-input-information'
+                data-tooltip-content={t('Devices.Audio input information tooltip') || ''}
               />
               {/* Audio input information tooltip */}
-              <Tooltip anchorSelect='.tooltip-input-information' place='right'>
-                {t('Devices.Audio input information tooltip') || ''}
-              </Tooltip>
+              <Tooltip id='tooltip-input-information' place='right' />
             </div>
           </div>
 
@@ -150,7 +155,7 @@ export const SwitchInputOutputDrawerContent = forwardRef<
               <>
                 <div className='flex items-center mt-2'>
                   <div className='relative w-full'>
-                    <Listbox.Button className='relative w-full cursor-default rounded-md bg-white dark:bg-gray-950 py-1.5 pr-10 text-left focus:outline-none sm:text-sm sm:leading-6 border dark:border-gray-700'>
+                    <ListboxButton className='relative w-full cursor-default rounded-md bg-white dark:bg-gray-950 py-1.5 pr-10 text-left focus:outline-none sm:text-sm sm:leading-6 border dark:border-gray-700'>
                       <span
                         className={`${
                           selectedAudioInput?.label
@@ -169,7 +174,7 @@ export const SwitchInputOutputDrawerContent = forwardRef<
                           aria-hidden='true'
                         />
                       </span>
-                    </Listbox.Button>
+                    </ListboxButton>
 
                     <Transition
                       show={open}
@@ -178,19 +183,11 @@ export const SwitchInputOutputDrawerContent = forwardRef<
                       leaveFrom='opacity-100'
                       leaveTo='opacity-0'
                     >
-                      <Listbox.Options className='absolute z-10 mt-1 w-full overflow-auto  scrollbar-thin scrollbar-thumb-gray-400 dark:scrollbar-thumb-gray-400 scrollbar-thumb-rounded-full scrollbar-thumb-opacity-50 scrollbar-track-gray-200 dark:scrollbar-track-gray-900 scrollbar-track-rounded-full scrollbar-track-opacity-25 rounded-md bg-white py-1 text-base shadow-lg ring-1 dark:bg-gray-950 ring-black dark:ring-gray-600 ring-opacity-5 focus:outline-none sm:text-sm h-auto'>
+                      <ListboxOptions className='absolute z-10 mt-1 w-full overflow-auto  scrollbar-thin scrollbar-thumb-gray-400 dark:scrollbar-thumb-gray-400 scrollbar-thumb-rounded-full scrollbar-thumb-opacity-50 scrollbar-track-gray-200 dark:scrollbar-track-gray-900 scrollbar-track-rounded-full scrollbar-track-opacity-25 rounded-md bg-white py-1 text-base shadow-lg ring-1 dark:bg-gray-950 ring-black dark:ring-gray-600 ring-opacity-5 focus:outline-none sm:text-sm h-auto'>
                         {Object.entries<any>(audioInputs)?.map(([audioInputId, audioInputInfo]) => (
-                          <Listbox.Option
+                          <ListboxOption
                             key={audioInputId}
-                            className={({ active }) =>
-                              classNames(
-                                active
-                                  ? 'bg-gray-100 dark:bg-gray-800 text-gray-950 dark:text-gray-100'
-                                  : 'text-gray-900 dark:text-gray-200',
-                                'relative cursor-default select-none py-2 pl-8 pr-4',
-                                ``,
-                              )
-                            }
+                            className='data-[focus]:bg-gray-100 data-[focus]:dark:bg-gray-800 data-[focus]:text-gray-950 data-[focus]:dark:text-gray-100 text-gray-900 dark:text-gray-200 relative cursor-default select-none py-2 pl-8 pr-4'
                             value={audioInputInfo}
                           >
                             {({ selected, active }) => (
@@ -205,14 +202,7 @@ export const SwitchInputOutputDrawerContent = forwardRef<
                                 </span>
 
                                 {selected || selectedAudioInput?.label === audioInputInfo?.label ? (
-                                  <span
-                                    className={classNames(
-                                      active
-                                        ? 'text-primary dark:text-primaryDark'
-                                        : 'text-primary dark:text-primaryDark',
-                                      'absolute inset-y-0 left-0 flex items-center pl-1.5',
-                                    )}
-                                  >
+                                  <span className='text-primary dark:text-primaryDark absolute inset-y-0 left-0 flex items-center pl-1.5'>
                                     <FontAwesomeIcon
                                       icon={faCheck}
                                       className='h-3.5 w-3.5 pl-2 py-2 cursor-pointer flex items-center'
@@ -222,9 +212,9 @@ export const SwitchInputOutputDrawerContent = forwardRef<
                                 ) : null}
                               </>
                             )}
-                          </Listbox.Option>
+                          </ListboxOption>
                         ))}
-                      </Listbox.Options>
+                      </ListboxOptions>
                     </Transition>
                   </div>
                 </div>
@@ -242,11 +232,11 @@ export const SwitchInputOutputDrawerContent = forwardRef<
                 icon={faCircleInfo}
                 className='h-4 w-4 pl-2 py-2 text-primaryIndigo dark:text-primaryIndigoDark flex items-center tooltip-output-information'
                 aria-hidden='true'
+                data-tooltip-id='tooltip-output-information'
+                data-tooltip-content={t('Devices.Audio output information tooltip') || ''}
               />
               {/* Audio output information tooltip */}
-              <Tooltip anchorSelect='.tooltip-output-information' place='right'>
-                {t('Devices.Audio output information tooltip') || ''}
-              </Tooltip>
+              <Tooltip id='tooltip-output-information' place='right' />
             </div>
           </div>
 
@@ -256,7 +246,7 @@ export const SwitchInputOutputDrawerContent = forwardRef<
               <>
                 <div className='flex items-center mt-2'>
                   <div className='relative w-full'>
-                    <Listbox.Button className='relative w-full cursor-default rounded-md bg-white dark:bg-gray-950 py-1.5 pr-10 text-left text-gray-700 dark:text-gray-300 focus:outline-none sm:text-sm sm:leading-6 border dark:border-gray-700'>
+                    <ListboxButton className='relative w-full cursor-default rounded-md bg-white dark:bg-gray-950 py-1.5 pr-10 text-left text-gray-700 dark:text-gray-300 focus:outline-none sm:text-sm sm:leading-6 border dark:border-gray-700'>
                       <span
                         className={`${
                           selectedAudioOutput?.label
@@ -276,7 +266,7 @@ export const SwitchInputOutputDrawerContent = forwardRef<
                           aria-hidden='true'
                         />
                       </span>
-                    </Listbox.Button>
+                    </ListboxButton>
 
                     <Transition
                       show={open}
@@ -285,23 +275,15 @@ export const SwitchInputOutputDrawerContent = forwardRef<
                       leaveFrom='opacity-100'
                       leaveTo='opacity-0'
                     >
-                      <Listbox.Options className='absolute z-10 mt-1 w-full overflow-auto  scrollbar-thin scrollbar-thumb-gray-400 dark:scrollbar-thumb-gray-400 scrollbar-thumb-rounded-full scrollbar-thumb-opacity-50 scrollbar-track-gray-200 dark:scrollbar-track-gray-900 scrollbar-track-rounded-full scrollbar-track-opacity-25 rounded-md bg-white py-1 text-base shadow-lg ring-1 dark:bg-gray-950 ring-black dark:ring-gray-600 ring-opacity-5 focus:outline-none sm:text-sm h-auto'>
+                      <ListboxOptions className='absolute z-10 mt-1 w-full overflow-auto  scrollbar-thin scrollbar-thumb-gray-400 dark:scrollbar-thumb-gray-400 scrollbar-thumb-rounded-full scrollbar-thumb-opacity-50 scrollbar-track-gray-200 dark:scrollbar-track-gray-900 scrollbar-track-rounded-full scrollbar-track-opacity-25 rounded-md bg-white py-1 text-base shadow-lg ring-1 dark:bg-gray-950 ring-black dark:ring-gray-600 ring-opacity-5 focus:outline-none sm:text-sm h-auto'>
                         {Object.entries<any>(audioOutputs)?.map(
                           ([audioOutputId, audioOutputInfo]) => (
-                            <Listbox.Option
+                            <ListboxOption
                               key={audioOutputId}
-                              className={({ active }) =>
-                                classNames(
-                                  active
-                                    ? 'bg-primary text-white'
-                                    : 'text-gray-900 dark:text-gray-100',
-                                  'relative cursor-default select-none py-2 pl-8 pr-4',
-                                  ``,
-                                )
-                              }
+                              className='data-[focus]:bg-gray-100 data-[focus]:dark:bg-gray-800 data-[focus]:text-gray-950 data-[focus]:dark:text-gray-100 text-gray-900 dark:text-gray-100 relative cursor-default select-none py-2 pl-8 pr-4'
                               value={audioOutputInfo}
                             >
-                              {({ selected, active }) => (
+                              {({ selected }) => (
                                 <>
                                   <span
                                     className={classNames(
@@ -314,12 +296,7 @@ export const SwitchInputOutputDrawerContent = forwardRef<
 
                                   {selected ||
                                   selectedAudioOutput?.label === audioOutputInfo?.label ? (
-                                    <span
-                                      className={classNames(
-                                        active ? 'text-white' : 'text-primary',
-                                        'absolute inset-y-0 left-0 flex items-center pl-1.5',
-                                      )}
-                                    >
+                                    <span className='data-[focus]:text-white text-primary dark:text-primaryDark absolute inset-y-0 left-0 flex items-center pl-1.5'>
                                       <FontAwesomeIcon
                                         icon={faCheck}
                                         className='h-3.5 w-3.5 pl-2 py-2 cursor-pointer flex items-center'
@@ -329,10 +306,10 @@ export const SwitchInputOutputDrawerContent = forwardRef<
                                   ) : null}
                                 </>
                               )}
-                            </Listbox.Option>
+                            </ListboxOption>
                           ),
                         )}
-                      </Listbox.Options>
+                      </ListboxOptions>
                     </Transition>
                   </div>
                 </div>

@@ -6,7 +6,7 @@
  *
  */
 
-import { Transition, Dialog } from '@headlessui/react'
+import { Transition, Dialog, TransitionChild, DialogPanel } from '@headlessui/react'
 import { FC, Fragment } from 'react'
 import { ShowOperatorDrawerContent } from '../operators/ShowOperatorDrawerContent'
 import { CreateOrEditContactDrawerContent } from '../phonebook/CreateOrEditContactDrawerContent'
@@ -37,10 +37,10 @@ interface SideDrawerProps {
 export const SideDrawer: FC<SideDrawerProps> = ({ isShown, contentType, config, drawerClosed }) => {
   return (
     <>
-      <Transition.Root show={isShown} as={Fragment}>
+      <Transition show={isShown} as={Fragment}>
         <Dialog as='div' className='relative z-20' onClose={drawerClosed}>
           <div className='fixed top-16 right-0 bottom-0 z-40 flex'>
-            <Transition.Child
+            <TransitionChild
               as={Fragment}
               enter='transition ease-in-out duration-300 transform'
               enterFrom='translate-x-full'
@@ -49,7 +49,7 @@ export const SideDrawer: FC<SideDrawerProps> = ({ isShown, contentType, config, 
               leaveFrom='translate-x-0'
               leaveTo='translate-x-full'
             >
-              <Dialog.Panel className='relative flex w-[80vw] md:w-[60vw] lg:w-[40vw] 2xl:w-[33vw] 3xl:w-[36rem] flex-1 flex-col shadow-[0px_20px_40px_0_rgba(0,0,0,0.2)] bg-white dark:bg-gray-900 dark:shadow-[0px_20px_40px_0_rgba(0,0,0,0.6)]'>
+              <DialogPanel className='relative flex w-[80vw] md:w-[60vw] lg:w-[40vw] 2xl:w-[33vw] 3xl:w-[36rem] flex-1 flex-col shadow-[0px_20px_40px_0_rgba(0,0,0,0.2)] bg-white dark:bg-gray-900 dark:shadow-[0px_20px_40px_0_rgba(0,0,0,0.6)]'>
                 <div className='h-0 flex-1 overflow-y-auto scrollbar-thin scrollbar-thumb-gray-400 dark:scrollbar-thumb-gray-400 scrollbar-thumb-rounded-full scrollbar-thumb-opacity-50 scrollbar-track-gray-200 dark:scrollbar-track-gray-900 scrollbar-track-rounded-full scrollbar-track-opacity-25'>
                   <nav className='flex h-full flex-col'>
                     <div className='relative'>
@@ -93,11 +93,11 @@ export const SideDrawer: FC<SideDrawerProps> = ({ isShown, contentType, config, 
                     </div>
                   </nav>
                 </div>
-              </Dialog.Panel>
-            </Transition.Child>
+              </DialogPanel>
+            </TransitionChild>
           </div>
         </Dialog>
-      </Transition.Root>
+      </Transition>
     </>
   )
 }

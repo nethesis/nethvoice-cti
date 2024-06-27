@@ -198,7 +198,7 @@ export const ContactSummary = forwardRef<HTMLButtonElement, ContactSummaryProps>
               </h3>
               <div className='mt-3'>
                 <p className='text-sm text-gray-500 dark:text-gray-400'>
-                  {t('contactDeletionMessage', { name: contactToDelete?.displayName || '' })}
+                  {t('contactDeletionMessage', { name: contactToDelete?.displayName || '-' })}
                 </p>
               </div>
             </div>

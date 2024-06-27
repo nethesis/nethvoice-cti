@@ -1,10 +1,15 @@
-// Copyright (C) 2023 Nethesis S.r.l.
+// Copyright (C) 2024 Nethesis S.r.l.
 // SPDX-License-Identifier: AGPL-3.0-or-later
 
 import React, { ComponentProps, MutableRefObject, useEffect, useMemo, useRef } from 'react'
 import { FC, useState } from 'react'
 import classNames from 'classnames'
-import { Transition, Combobox } from '@headlessui/react'
+import {
+  Combobox,
+  ComboboxInput,
+  ComboboxOptions,
+  ComboboxOption,
+} from '@headlessui/react'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import {
   faMagnifyingGlass,
@@ -230,7 +235,7 @@ export const GlobalSearch: FC<GlobalSearchProps> = () => {
           globalSearchStore?.isFocused ? 'w-[calc(100vw - 52px)]' : 'w-[50%]',
         )}
       >
-        <Combobox onChange={resultSelected} nullable>
+        <Combobox onChange={resultSelected}>
           {({ open, activeOption }: any) => (
             <>
               <div className='relative flex items-center'>
@@ -239,7 +244,7 @@ export const GlobalSearch: FC<GlobalSearchProps> = () => {
                   className='pointer-events-none absolute left-4 h-5 w-5 text-topBarText dark:text-topBarTextDark'
                   aria-hidden='true'
                 />
-                <Combobox.Input
+                <ComboboxInput
                   className='h-[63px] w-full border-0 bg-transparent pl-12 pr-4 focus:ring-0 sm:text-sm text-gray-800 dark:text-gray-100 placeholder-topBarText  dark:placeholder-topBarTextDark'
                   placeholder={t('Devices.Search or compose') + '...' || ''}
                   onChange={debouncedChangeQuery}
@@ -265,188 +270,176 @@ export const GlobalSearch: FC<GlobalSearchProps> = () => {
                 />
               </div>
 
-              <Transition
-                show={open}
-                enter='transition duration-100 ease-out'
-                enterFrom='transform scale-95 opacity-0'
-                enterTo='transform scale-100 opacity-100'
-                leave='transition duration-75 ease-out'
-                leaveFrom='transform scale-100 opacity-100'
-                leaveTo='transform scale-95 opacity-0'
-              >
-                {globalSearchStore?.isOpen && (
-                  <Combobox.Options
-                    as='div'
-                    static
-                    hold
-                    className='flex divide-x border divide-gray-100 dark:divide-gray-800 dark:border-gray-700'
+              {globalSearchStore?.isOpen && (
+                <ComboboxOptions
+                  as='div'
+                  static
+                  hold
+                  className='flex divide-x border divide-gray-100 dark:divide-gray-800 dark:border-gray-700'
+                >
+                  <div
+                    className={classNames(
+                      'max-h-96 min-w-0 flex-auto scroll-py-4 overflow-y-auto scrollbar-thin scrollbar-thumb-gray-400 dark:scrollbar-thumb-gray-400 scrollbar-thumb-rounded-full scrollbar-thumb-opacity-50 scrollbar-track-gray-200 dark:scrollbar-track-gray-900 scrollbar-track-rounded-full scrollbar-track-opacity-25 px-6 py-4',
+                    )}
                   >
-                    <div
-                      className={classNames(
-                        'max-h-96 min-w-0 flex-auto scroll-py-4 overflow-y-auto scrollbar-thin scrollbar-thumb-gray-400 dark:scrollbar-thumb-gray-400 scrollbar-thumb-rounded-full scrollbar-thumb-opacity-50 scrollbar-track-gray-200 dark:scrollbar-track-gray-900 scrollbar-track-rounded-full scrollbar-track-opacity-25 px-6 py-4',
+                    <div className='-mx-2 text-sm text-gray-700 dark:text-gray-200'>
+                      {/* phonebook error */}
+                      {phonebookError && (
+                        <InlineNotification
+                          type='error'
+                          title={phonebookError}
+                          className='mb-4'
+                        ></InlineNotification>
                       )}
-                    >
-                      <div className='-mx-2 text-sm text-gray-700 dark:text-gray-200'>
-                        {/* phonebook error */}
-                        {phonebookError && (
-                          <InlineNotification
-                            type='error'
-                            title={phonebookError}
-                            className='mb-4'
-                          ></InlineNotification>
-                        )}
-                        {/* skeleton */}
-                        {!isLoaded &&
-                          Array.from(Array(4)).map((e, index) => (
-                            <Combobox.Option
-                              as='div'
-                              key={index}
-                              value={index}
-                              className={({ active }) =>
-                                classNames(
-                                  'flex cursor-default select-none items-center rounded-md p-2 h-14',
-                                )
-                              }
-                            >
-                              <div className='animate-pulse rounded-full h-8 w-8 bg-gray-300 dark:bg-gray-600'></div>
-                              <div className='ml-2 animate-pulse h-3 rounded w-[40%] bg-gray-300 dark:bg-gray-600'></div>
-                            </Combobox.Option>
-                          ))}
-                        {/* no search results */}
-                        {isLoaded && !results.length && query.length > 2 && (
-                          <Combobox.Option
+                      {/* skeleton */}
+                      {!isLoaded &&
+                        Array.from(Array(4)).map((e, index) => (
+                          <ComboboxOption
                             as='div'
-                            value={'no-results'}
+                            key={index}
+                            value={index}
                             className={({ active }) =>
                               classNames(
-                                'flex justify-center cursor-default select-none items-center rounded-md p-2',
+                                'flex cursor-default select-none items-center rounded-md p-2 h-14',
                               )
                             }
                           >
-                            <EmptyState
-                              title={t('Phonebook.No results') || ''}
-                              description={t('Devices.Try changing your search query') || ''}
-                              icon={
-                                <FontAwesomeIcon
-                                  icon={faSearch}
-                                  className='mx-auto h-14 w-14'
-                                  aria-hidden='true'
-                                />
-                              }
-                            />
-                          </Combobox.Option>
-                        )}
-                        {/* results */}
-                        {isLoaded &&
-                          !!results?.length &&
-                          results.map((result: any, index: number) => (
-                            <Combobox.Option
-                              as='div'
-                              key={'result-' + index}
-                              value={result}
-                              className={({ active }) =>
-                                classNames(
-                                  'flex select-none items-center rounded-md p-2 h-14 cursor-pointer',
-                                  active &&
-                                    'bg-gray-100 text-gray-900 dark:bg-gray-800 dark:text-gray-100',
-                                )
-                              }
-                            >
-                              {({ active }) => (
-                                <>
-                                  {/* call phone number */}
-                                  {result?.resultType === 'callPhoneNumber' && (
-                                    <>
-                                      <div className='w-10 text-center'>
-                                        <FontAwesomeIcon
-                                          icon={faPhone}
-                                          className='h-4 w-4 text-gray-500 dark:text-gray-400'
-                                        />
-                                      </div>
-                                      <span className='ml-2 flex-auto truncate'>
-                                        Call {result.phoneNumber}
-                                      </span>
-                                    </>
-                                  )}
-                                  {/* add to phonebook */}
-                                  {result?.resultType === 'addToPhonebook' && (
-                                    <>
-                                      <div className='w-10 text-center'>
-                                        <FontAwesomeIcon
-                                          icon={faUserPlus}
-                                          className='h-4 w-4 text-gray-500 dark:text-gray-400'
-                                        />
-                                      </div>
-                                      <span className='ml-2 flex-auto truncate'>
-                                        Add {result.phoneNumber} to phonebook
-                                      </span>
-                                    </>
-                                  )}
-                                  {/* operator */}
-                                  {result?.resultType === 'operator' && (
-                                    <>
-                                      <Avatar
-                                        rounded='full'
-                                        src={result?.avatarBase64}
-                                        placeholderType='operator'
-                                        size='base'
-                                        status={result?.mainPresence}
-                                      />
-                                      <span className='ml-2 flex-auto truncate'>
-                                        {result?.name}
-                                      </span>
-                                    </>
-                                  )}
-                                  {/* phonebook contact */}
-                                  {result.resultType === 'contact' && (
-                                    <>
-                                      <Avatar placeholderType={result.kind} size='base' />
-                                      <span className='ml-2 flex-auto truncate'>
-                                        {result.displayName}
-                                      </span>
-                                    </>
-                                  )}
-                                  {active && (
-                                    <FontAwesomeIcon
-                                      icon={faChevronRight}
-                                      className='mr-2 h-3 w-3 flex-none text-gray-400 dark:text-gray-500'
-                                      aria-hidden='true'
-                                    />
-                                  )}
-                                </>
-                              )}
-                            </Combobox.Option>
-                          ))}
-                      </div>
-                    </div>
-                    {/* right frame */}
-                    {!isMobileDevice() &&
-                      isLoaded &&
-                      activeOption &&
-                      activeOption.resultType &&
-                      ['operator', 'contact'].includes(activeOption.resultType) && (
-                        <div className='hidden h-96 w-1/2 flex-none flex-col overflow-y-auto scrollbar-thin scrollbar-thumb-gray-400 dark:scrollbar-thumb-gray-400 scrollbar-thumb-rounded-full scrollbar-thumb-opacity-50 scrollbar-track-gray-200 dark:scrollbar-track-gray-900 scrollbar-track-rounded-full scrollbar-track-opacity-25 md:flex p-5'>
-                          {/* operator */}
-                          {activeOption.resultType === 'operator' && (
-                            <OperatorSummary
-                              operator={activeOption}
-                              isShownFavorite={false}
-                              isShownSideDrawerLink={true}
-                            />
-                          )}
-                          {/* phonebook contact */}
-                          {activeOption.resultType === 'contact' && (
-                            <ContactSummary
-                              contact={activeOption}
-                              isShownContactMenu={false}
-                              isShownSideDrawerLink={true}
-                            />
-                          )}
-                        </div>
+                            <div className='animate-pulse rounded-full h-8 w-8 bg-gray-300 dark:bg-gray-600'></div>
+                            <div className='ml-2 animate-pulse h-3 rounded w-[40%] bg-gray-300 dark:bg-gray-600'></div>
+                          </ComboboxOption>
+                        ))}
+                      {/* no search results */}
+                      {isLoaded && !results.length && query.length > 2 && (
+                        <ComboboxOption
+                          as='div'
+                          value={'no-results'}
+                          className={({ active }) =>
+                            classNames(
+                              'flex justify-center cursor-default select-none items-center rounded-md p-2',
+                            )
+                          }
+                        >
+                          <EmptyState
+                            title={t('Phonebook.No results') || ''}
+                            description={t('Devices.Try changing your search query') || ''}
+                            icon={
+                              <FontAwesomeIcon
+                                icon={faSearch}
+                                className='mx-auto h-14 w-14'
+                                aria-hidden='true'
+                              />
+                            }
+                          />
+                        </ComboboxOption>
                       )}
-                  </Combobox.Options>
-                )}
-              </Transition>
+                      {/* results */}
+                      {isLoaded &&
+                        !!results?.length &&
+                        results.map((result: any, index: number) => (
+                          <ComboboxOption
+                            as='div'
+                            key={'result-' + index}
+                            value={result}
+                            className={({ active }) =>
+                              classNames(
+                                'flex select-none items-center rounded-md p-2 h-14 cursor-pointer',
+                                active &&
+                                  'bg-gray-100 text-gray-900 dark:bg-gray-800 dark:text-gray-100',
+                              )
+                            }
+                          >
+                            {({ active }) => (
+                              <>
+                                {/* call phone number */}
+                                {result?.resultType === 'callPhoneNumber' && (
+                                  <>
+                                    <div className='w-10 text-center'>
+                                      <FontAwesomeIcon
+                                        icon={faPhone}
+                                        className='h-4 w-4 text-gray-500 dark:text-gray-400'
+                                      />
+                                    </div>
+                                    <span className='ml-2 flex-auto truncate'>
+                                      Call {result.phoneNumber}
+                                    </span>
+                                  </>
+                                )}
+                                {/* add to phonebook */}
+                                {result?.resultType === 'addToPhonebook' && (
+                                  <>
+                                    <div className='w-10 text-center'>
+                                      <FontAwesomeIcon
+                                        icon={faUserPlus}
+                                        className='h-4 w-4 text-gray-500 dark:text-gray-400'
+                                      />
+                                    </div>
+                                    <span className='ml-2 flex-auto truncate'>
+                                      Add {result.phoneNumber} to phonebook
+                                    </span>
+                                  </>
+                                )}
+                                {/* operator */}
+                                {result?.resultType === 'operator' && (
+                                  <>
+                                    <Avatar
+                                      rounded='full'
+                                      src={result?.avatarBase64}
+                                      placeholderType='operator'
+                                      size='base'
+                                      status={result?.mainPresence}
+                                    />
+                                    <span className='ml-2 flex-auto truncate'>{result?.name}</span>
+                                  </>
+                                )}
+                                {/* phonebook contact */}
+                                {result.resultType === 'contact' && (
+                                  <>
+                                    <Avatar placeholderType={result.kind} size='base' />
+                                    <span className='ml-2 flex-auto truncate'>
+                                      {result.displayName}
+                                    </span>
+                                  </>
+                                )}
+                                {active && (
+                                  <FontAwesomeIcon
+                                    icon={faChevronRight}
+                                    className='mr-2 h-3 w-3 flex-none text-gray-400 dark:text-gray-500'
+                                    aria-hidden='true'
+                                  />
+                                )}
+                              </>
+                            )}
+                          </ComboboxOption>
+                        ))}
+                    </div>
+                  </div>
+                  {/* right frame */}
+                  {!isMobileDevice() &&
+                    isLoaded &&
+                    activeOption &&
+                    activeOption.resultType &&
+                    ['operator', 'contact'].includes(activeOption.resultType) && (
+                      <div className='hidden h-96 w-1/2 flex-none flex-col overflow-y-auto scrollbar-thin scrollbar-thumb-gray-400 dark:scrollbar-thumb-gray-400 scrollbar-thumb-rounded-full scrollbar-thumb-opacity-50 scrollbar-track-gray-200 dark:scrollbar-track-gray-900 scrollbar-track-rounded-full scrollbar-track-opacity-25 md:flex p-5'>
+                        {/* operator */}
+                        {activeOption.resultType === 'operator' && (
+                          <OperatorSummary
+                            operator={activeOption}
+                            isShownFavorite={false}
+                            isShownSideDrawerLink={true}
+                          />
+                        )}
+                        {/* phonebook contact */}
+                        {activeOption.resultType === 'contact' && (
+                          <ContactSummary
+                            contact={activeOption}
+                            isShownContactMenu={false}
+                            isShownSideDrawerLink={true}
+                          />
+                        )}
+                      </div>
+                    )}
+                </ComboboxOptions>
+              )}
             </>
           )}
         </Combobox>

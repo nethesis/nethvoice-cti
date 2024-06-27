@@ -2,7 +2,7 @@
 // SPDX-License-Identifier: AGPL-3.0-or-later
 
 import { FC, ComponentProps, Fragment, ReactNode } from 'react'
-import { Menu, Transition } from '@headlessui/react'
+import { Menu, MenuButton, MenuItems, Transition } from '@headlessui/react'
 import { DropdownItem } from './DropdownItem'
 import { DropdownHeader } from './DropdownHeader'
 import { useTheme } from '../../../theme/Context'
@@ -27,20 +27,20 @@ const DropdownComponent: FC<DropdownProps> = ({
 
   return (
     <Menu as='div' className={classNames(theme.base, className)}>
-      <Menu.Button as='div' className={classNames(size && theme.size[size])}>
+      <MenuButton as='div' className={classNames(size && theme.size[size])}>
         {children}
-      </Menu.Button>
+      </MenuButton>
       <Transition as={Fragment} {...theme.items.transition}>
-        <Menu.Items
+        <MenuItems
           className={classNames(
             theme.items.base,
             divider && theme.items.divider,
             position ? theme.items.position[position] : theme.items.position.right,
-            position === 'top' ? 'py-1': ''
+            position === 'top' ? 'py-1' : '',
           )}
         >
           {items}
-        </Menu.Items>
+        </MenuItems>
       </Transition>
     </Menu>
   )

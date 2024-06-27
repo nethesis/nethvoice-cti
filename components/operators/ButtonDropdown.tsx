@@ -3,9 +3,14 @@
 
 import React from 'react'
 import { Fragment } from 'react'
-import { Menu, Transition } from '@headlessui/react'
+import { Menu, MenuButton, MenuItem, MenuItems, Transition } from '@headlessui/react'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
-import { faChevronDown, faMobileScreenButton, faPhone, faRightLeft } from '@fortawesome/free-solid-svg-icons'
+import {
+  faChevronDown,
+  faMobileScreenButton,
+  faPhone,
+  faRightLeft,
+} from '@fortawesome/free-solid-svg-icons'
 import classNames from 'classnames'
 import { t } from 'i18next'
 import { callPhoneNumber, transferCall } from '../../lib/utils'
@@ -66,7 +71,7 @@ export const ButtonDropdown: React.FC<ButtonDropdownProps> = ({
       <div className='inline-block w-0.5 self-stretch bg-neutral-100 opacity-100 dark:opacity-600 disabled:opacity-50 disabled:cursor-not-allowed'></div>
 
       <Menu as='div' className='relative -ml-px block '>
-        <Menu.Button
+        <MenuButton
           className='relative inline-flex items-center rounded-r-md px-2 py-2 bg-primary dark:bg-primaryDark hover:bg-primaryHover dark:hover:bg-primaryDarkHover text-sm text-primaryButtonText dark:text-primaryButtonTextDark focus:ring-2 focus:ring-primaryRing dark:focus:ring-primaryRingDark ring-offset-2 ring-offset-slate-50 dark:ring-offset-slate-900 disabled:opacity-50 disabled:cursor-not-allowed'
           disabled={
             operatorsStore?.operators[operator?.username]?.endpoints?.extension?.length === 0 ||
@@ -80,7 +85,7 @@ export const ButtonDropdown: React.FC<ButtonDropdownProps> = ({
         >
           <span className='sr-only'>{t('Operators.Open user devices')}</span>
           <FontAwesomeIcon icon={faChevronDown} className='h-4 w-4' aria-hidden='true' />
-        </Menu.Button>
+        </MenuButton>
         <Transition
           as={Fragment}
           enter='transition ease-out duration-100'
@@ -90,21 +95,14 @@ export const ButtonDropdown: React.FC<ButtonDropdownProps> = ({
           leaveFrom='transform opacity-100 scale-100'
           leaveTo='transform opacity-0 scale-95'
         >
-          <Menu.Items className='absolute right-[-7.5rem] z-10 -mr-1 mt-2 w-56 origin-top-right rounded-md shadow-lg ring-1 ring-black ring-opacity-5 focus:outline-none bg-white text-gray-400 '>
+          <MenuItems className='absolute right-[-7.5rem] z-10 -mr-1 mt-2 w-56 origin-top-right rounded-md shadow-lg ring-1 ring-black ring-opacity-5 focus:outline-none bg-white text-gray-400 '>
             <div className='py-1 flex-col overflow-hidden shadow-lg ring-1 ring-gray-200 dark:ring-gray-700 ring-opacity-1 rounded-md dark:border-gray-700 dark:bg-gray-900'>
               {Object.entries(operatorDevices)
                 .filter(([key, value]) => value !== undefined && value !== null)
                 .map(([key, value]: [any, any]) => (
-                  <Menu.Item key={key}>
-                    {({ active }) => (
-                      <div
-                        className={classNames(
-                          'py-1 px-3.5',
-                          active
-                            ? 'bg-gray-100 dark:bg-gray-700 text-gray-900'
-                            : 'text-gray-700 dark:text-gray-200',
-                        )}
-                      >
+                  <MenuItem key={key}>
+                    {() => (
+                      <div className='py-1 px-3.5 data-[focus]:bg-gray-100 data-[focus]:text-gray-900 data-[focus]:dark:bg-gray-700 text-gray-700 dark:text-gray-200'>
                         {key === 'mainExtension' && (
                           <div
                             className='py-2 sm:grid sm:grid-cols-2 sm:gap-3 cursor-pointer'
@@ -141,10 +139,10 @@ export const ButtonDropdown: React.FC<ButtonDropdownProps> = ({
                         )}
                       </div>
                     )}
-                  </Menu.Item>
+                  </MenuItem>
                 ))}
             </div>
-          </Menu.Items>
+          </MenuItems>
         </Transition>
       </Menu>
     </div>
