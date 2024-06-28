@@ -41,7 +41,22 @@
     "Example": "Esempio",
     "Start recording message before": "Clica il bottone per iniziare a registrare la chiamata",
     "Start recording message after": "Puoi parlare tra poco...",
-    "Required": "Richiesto"
+    "Required": "Richiesto",
+    "Permission error message content link": "Fortunately you can go back to",
+    "Permission error": "Permission error",
+    "DD/MM/YYYY": "DD/MM/YYYY",
+    "SessionExpired": "Session expired",
+    "Session expired": "Session expired",
+    "": "Login",
+    "Click to redirect": "Click to redirect",
+    "DoubleLogin": "Login duplicated",
+    "User login duplicated": "User login duplicated",
+    "You have made login in another tab": "You have made login in another tab",
+    "Permission error message content": "Sorry, it seems that you don’t have the permission to access this page.",
+    "Login": "Login",
+    "Close": "Close",
+    "Customercards": "Customer cards",
+    "Main page": "Main page"
   },
   "Login": {
     "User": "Utente",
@@ -52,7 +67,8 @@
     "Contact administrator for access": "Contatta l' amministratore per l' accesso",
     "Wrong username or password": "Nome utente o password errati",
     "Network connection is lost": "Connessione di rete persa",
-    "Login failed": "Accesso fallito"
+    "Login failed": "Accesso fallito",
+    "Session expired, log in again": "Session expired, log in again"
   },
   "Phonebook": {
     "Phonebook": "Rubrica",
@@ -102,7 +118,10 @@
     "Cannot retrieve last calls of user": "Impossibile recuperare le ultime chiamate dell'utente",
     "Cannot retrieve last calls of switchboard": "Impossibile recuperare le ultime chiamate del centralino",
     "Delete contact": "Elimina contatto",
-    "contactDeletionMessage": "Il contatto {{name}} verrà eliminato permanentemente"
+    "contactDeletionMessage": "Il contatto {{name}} verrà eliminato permanentemente",
+    "Home phone": "Home phone",
+    "Calls": "Calls",
+    "Open contact menu": "Open contact menu"
   },
   "History": {
     "History": "Storico",
@@ -144,7 +163,9 @@
     "Start time": "Tempo di inizio",
     "End time": "Tempo di fine",
     "Choose a date range": "Scegli un intervallo",
-    "Groups": "Gruppi"
+    "Groups": "Gruppi",
+    "Call in Voicemail": "Call in Voicemail",
+    "to": "to"
   },
   "Operators": {
     "Operators": "Operatori",
@@ -265,7 +286,8 @@
     "Available presence": "Presence disponibili",
     "Show customer card": "Mostra schede cliente",
     "Customer cards": "Schede cliente",
-    "PhoneLink configuration": "Configurazione Desktop phone"
+    "PhoneLink configuration": "Configurazione Desktop phone",
+    "Customer card show type": "Customer card show type"
   },
   "TopBar": {
     "Signed in as": "Accesso effettuato come",
@@ -302,7 +324,10 @@
     "Incoming": "In entrata",
     "Outgoing": "In uscita",
     "Duration": "Durata",
-    "Toggle favorite operator": "Attiva/disattiva l'operatore preferito"
+    "Toggle favorite operator": "Attiva/disattiva l'operatore preferito",
+    "Restart recording": "Restart recording",
+    "Start recording": "Start recording",
+    "Stop recording": "Stop recording"
   },
   "Lines": {
     "Lines management": "Gestione linee",
@@ -320,14 +345,12 @@
     "Activate configuration": "Attiva configurazione",
     "Customize": "Personalizza",
     "Choose rule": "Scegli regola",
-    "Activate announcement": "Attiva annuncio",
     "Select period": "Seleziona periodo",
     "Begin": "Inizio",
     "End": "Fine",
     "Only for a day": "Solo per per un giorno",
     "Active every day": "Attivo tutti i giorni",
     "Active 24h": "Attivo 24h",
-    "Activate forward": "Attiva inoltro",
     "Select rule": "Seleziona regola",
     "Select a type": "Seleziona un tipo",
     "Rule details": "Dettagli regola",
@@ -391,14 +414,12 @@
     "End time": "Tempo fine",
     "Start date": "Data inizio",
     "End date": "Data fine",
-    "No lines available": "Nessuna linea disponibile",
     "Insert voicemail": "Inserire la segreteria telefonica",
     "New announcement": "Nuovo annuncio",
     "Record announcement": "Registra annuncio",
     "Upload announcement": "Carica annuncio",
     "Announcement successfully saved": "Annuncio salvato con successo",
     "Error saving the announcement": "Errore durante il salvataggio dell'annuncio",
-    "Lines configure": "Configura linee",
     "Configure all lines selected": "Configura tutte le linee selezionate",
     "Show selected": "Mostra selezionato",
     "Show all": "Mostra tutti",
@@ -426,7 +447,13 @@
     "Speed dial delete message": "La chiamata rapida {{deletingName}} verrà eliminata",
     "Upload failed": "Caricamento fallito",
     "Cannot delete speed dial": "Impossibile cancellare le chiamate rapide",
-    "Cannot import speed dial": "Impossibile importare le chiamate rapide"
+    "Cannot import speed dial": "Impossibile importare le chiamate rapide",
+    "Speed dial edit message": "You've just edited a speed dial: {{extensionWaiting}}",
+    "Speed dial edited": "Speed dial edited",
+    "Speed dial creation message": "You've just created a new speed dial: {{extensionWaiting}}",
+    "Speed dial created": "Speed dial created",
+    "Save speed dial": "Save speed dial",
+    "Edit speed dial": "Edit speed dial"
   },
   "LastCalls": {
     "Last calls": "Ultime chiamate",
@@ -575,12 +602,9 @@
   "QueueManager": {
     "Dashboard": "Dashboard",
     "Queues management": "Gestione code",
-    "Gestione code": "Gestione code",
     "Not managed calls": "Chiamate non gestite",
     "Live": "In tempo reale",
-    "In tempo reale": "In tempo reale",
     "Summary": "Statistiche",
-    "Statistiche": "Statistiche",
     "Monitor": "Monitor",
     "Queue manager": "Gestore code",
     "Alarms": "Allarmi",
@@ -655,7 +679,6 @@
     "Average": "Medio",
     "Answered": "Risposto",
     "Not managed customers": "Clienti non gestiti",
-    "Clienti non gestiti": "Clienti non gestiti",
     "Before 60s": "Prima dei 60s",
     "After 60s": "Dopo 60s",
     "Failed calls": "Chiamate fallite",
@@ -819,13 +842,14 @@
     "Download PhoneLink": "Scarica Desktop phone",
     "Not configured": "Non configurato",
     "IP phone": "Telefono IP",
-    "key type select": "Seleziona il tipo di tasto",
     "Download App": "Scarica App",
     "Speaker": "Altoparlante",
     "Microphone": "Microfono",
     "All download options": "Tutte le opzioni di download",
     "Download Desktop app": "Scarica l'app desktop",
-    "Operating system": "Sistema operativo"
+    "Operating system": "Sistema operativo",
+    "Pin information tooltip body": "Or leave it blank to deactivate",
+    "Key type select": "Key type select"
   },
   "DropdownContent": {
     "Microphones": "MICROFONI",
