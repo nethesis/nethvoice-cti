@@ -41,7 +41,9 @@
     "Example": "Esempio",
     "Start recording message before": "Clica il bottone per iniziare a registrare la chiamata",
     "Start recording message after": "Puoi parlare tra poco...",
-    "Required": "Richiesto"
+    "Required": "Richiesto",
+    "Recording": "Registrazione",
+    "Answer phone to start recording": "Rispondi al telefono per iniziare la registrazione"
   },
   "Login": {
     "User": "Utente",
@@ -570,7 +572,8 @@
     "Settings": "Impostazioni",
     "Record": "Registra",
     "Stop recording": "Ferma registrazione",
-    "Recording": "Registrando"
+    "Recording": "Registrando",
+    "Interrupt recording": "Interrompi registrazione"
   },
   "QueueManager": {
     "Dashboard": "Dashboard",

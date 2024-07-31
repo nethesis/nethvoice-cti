@@ -26,7 +26,6 @@ import { useSelector } from 'react-redux'
 import { RootState } from '../../store'
 import { savePreference } from '../../lib/storage'
 import { useTranslation } from 'react-i18next'
-import { recordingAnnouncement } from '../../lib/lines'
 
 const sortFilter = {
   id: 'sort',

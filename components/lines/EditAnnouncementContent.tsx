@@ -1,4 +1,4 @@
-// Copyright (C) 2023 Nethesis S.r.l.
+// Copyright (C) 2024 Nethesis S.r.l.
 // SPDX-License-Identifier: AGPL-3.0-or-later
 
 import {
@@ -32,7 +32,8 @@ import {
   modifyMsg,
   deleteMsg,
 } from '../../lib/lines'
-import { store } from '../../store'
+import { store, RootState } from '../../store'
+import { useSelector } from 'react-redux'
 
 export interface EditAnnouncementContentProps extends ComponentPropsWithRef<'div'> {
   config: any
@@ -57,6 +58,7 @@ export const EditAnnouncementDrawerContent = forwardRef<
 
   const [firstRender, setFirstRender] = useState(true)
   const cancelButtonRef: RefObject<HTMLButtonElement> = createRef()
+  const user = useSelector((state: RootState) => state.user)
 
   const contactMenuItems = (
     <>
@@ -214,6 +216,15 @@ export const EditAnnouncementDrawerContent = forwardRef<
     setTextFilter(newTextFilter)
   }
 
+     //Start recording announcement function
+     const startRecordingAnnouncement = () => {
+      if (user.default_device.type === 'physical') {
+        recordingAnnouncement('physical')
+      } else {
+        recordingAnnouncement('webrtc')
+      }
+    }
+
   return (
     <>
       <div className='bg-white dark:bg-gray-900 pt-6 px-6'>
@@ -354,7 +365,7 @@ export const EditAnnouncementDrawerContent = forwardRef<
                             icon={faFileAudio}
                             className='h-4 w-4 text-primary dark:text-primaryDark'
                             aria-hidden='true'
-                            onClick={() => recordingAnnouncement()}
+                            onClick={() => startRecordingAnnouncement()}
                           />
                         </div>
                         <div className='text-base flex flex-col pl-3'>

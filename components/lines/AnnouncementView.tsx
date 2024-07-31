@@ -100,6 +100,21 @@ export const AnnouncementView: FC<AnnouncementViewProps> = ({ className }): JSX.
     }
   })
 
+  useEventListener('phone-island-physical-recording-saved', (modalAnnouncementObjInformation) => {
+    if (modalAnnouncementObjInformation?.tempFileName) {
+      dispatch.sideDrawer.update({
+        isShown: true,
+        contentType: 'showSaveRecordedAnnouncement',
+        config: {
+          isEdit: false,
+          recordedFilename: modalAnnouncementObjInformation.tempFileName,
+          announcementSavedCallback: announcementSavedCallback,
+        },
+        avoidClose: true,
+      })
+    }
+  })
+
   const [dataPagination, setDataPagination]: any = useState({})
 
   const [startPage, setStartPage]: any = useState(0)

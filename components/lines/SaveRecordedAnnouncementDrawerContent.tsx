@@ -12,6 +12,7 @@ import { closeSideDrawer } from '../../lib/utils'
 import { TextInput, Button, Modal } from '../common'
 import { enableMsg } from '../../lib/lines'
 import { InlineNotification } from '../common'
+import { store } from '../../store'
 
 export interface SaveRecordedAnnouncementDrawerContentProps extends ComponentPropsWithRef<'div'> {
   config: any
@@ -60,6 +61,7 @@ export const SaveRecordedAnnouncementDrawerContent = forwardRef<
       setAnnouncementSaveError(true)
       return
     }
+    store.dispatch.sideDrawer.setAvoidClose(false)
   }
 
   useEffect(() => {
@@ -68,6 +70,12 @@ export const SaveRecordedAnnouncementDrawerContent = forwardRef<
       setAnnouncementSaveError(false)
     }
   }, [])
+
+  const closeSideDrawerAnnouncement = () => {
+    store.dispatch.sideDrawer.setAvoidClose(false)
+
+    closeSideDrawer()
+  }
 
   return (
     <>
@@ -149,7 +157,12 @@ export const SaveRecordedAnnouncementDrawerContent = forwardRef<
         {/* Footer section */}
         <div className='flex justify-end'>
           <>
-            <Button variant='white' type='submit' onClick={closeSideDrawer} className='mb-4'>
+            <Button
+              variant='white'
+              type='submit'
+              onClick={() => closeSideDrawerAnnouncement()}
+              className='mb-4'
+            >
               {t('Common.Cancel')}
             </Button>
             <Button

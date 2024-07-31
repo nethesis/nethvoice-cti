@@ -235,7 +235,13 @@ export const ContactSummary = forwardRef<HTMLButtonElement, ContactSummaryProps>
               )}
               onClick={() => maybeShowSideDrawer(contact)}
             >
-              {contact?.displayName}
+              {contact?.displayName !== '' && contact?.displayName !== ' '
+                ? contact?.displayName
+                : contact?.name !== '' && contact?.name !== ' '
+                ? contact?.name
+                : contact?.company && contact?.company !== '' && contact?.company !== ' '
+                ? contact?.company
+                : '-'}
             </h2>
           </div>
 

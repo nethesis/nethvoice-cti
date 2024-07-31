@@ -326,6 +326,10 @@ export function reloadAnnouncement() {
 //phone island events
 
 // The event to show the recording view.
-export function recordingAnnouncement() {
-  eventDispatch('phone-island-recording-open', {})
+export function recordingAnnouncement(type: string) {
+  if (type === 'physical') {
+    eventDispatch('phone-island-physical-recording-view', {})
+  } else {
+    eventDispatch('phone-island-recording-open', {})
+  }
 }
