@@ -355,7 +355,7 @@ export const SpeedDialContent = () => {
                     <div className='flex gap-2'>
                       {/* Actions */}
                       <Dropdown items={getItemsMenu(speedDial)} position='left'>
-                        <Button variant='ghost'>
+                        <Button variant='ghost' className='dark:hover:bg-gray-700'>
                           <FontAwesomeIcon icon={faEllipsisVertical} className='h-4 w-4' />
                           <span className='sr-only'>{t('SpeedDial.Open speed dial menu')}</span>
                         </Button>

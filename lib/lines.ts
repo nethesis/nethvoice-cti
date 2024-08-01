@@ -1,4 +1,4 @@
-// Copyright (C) 2023 Nethesis S.r.l.
+// Copyright (C) 2024 Nethesis S.r.l.
 // SPDX-License-Identifier: AGPL-3.0-or-later
 
 import axios from 'axios'
@@ -332,4 +332,9 @@ export function recordingAnnouncement(type: string) {
   } else {
     eventDispatch('phone-island-recording-open', {})
   }
+}
+
+export const getSelectedLinesManager = (currentUsername: string) => {
+  const selectedLinesTab = loadPreference('linesSelectedTab', currentUsername) || ''
+  return { selectedLinesTab }
 }

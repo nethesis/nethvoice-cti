@@ -657,15 +657,17 @@ export const QueueManagementChart: FC<QueueManagementChartProps> = ({
               <Link
                 href={{
                   pathname: '/queuemanager',
-                  query: { section: 'Not managed customers' },
+                  query: { section: 'Customers management' },
                 }}
               >
-                <span className='hover:underline '>{t('QueueManager.Go to not managed customers')}</span>
+                <span className='hover:underline '>
+                  {t('QueueManager.Go to not managed customers')}
+                </span>
               </Link>
               <Link
                 href={{
                   pathname: '/queuemanager',
-                  query: { section: 'Not managed customers' },
+                  query: { section: 'Customers management' },
                 }}
               >
                 <FontAwesomeIcon

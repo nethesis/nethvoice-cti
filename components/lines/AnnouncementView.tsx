@@ -110,8 +110,8 @@ export const AnnouncementView: FC<AnnouncementViewProps> = ({ className }): JSX.
           recordedFilename: modalAnnouncementObjInformation.tempFileName,
           announcementSavedCallback: announcementSavedCallback,
         },
-        avoidClose: true,
       })
+      dispatch.sideDrawer.setAvoidClose(true)
     }
   })
 

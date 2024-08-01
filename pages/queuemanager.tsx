@@ -42,7 +42,7 @@ const QueueManager: NextPage = () => {
   const tabs: tabsType[] = [
     { name: t('QueueManager.Dashboard'), href: '#', current: false },
     { name: t('QueueManager.Queues management'), href: '#', current: false },
-    { name: t('QueueManager.Not managed customers'), href: '#', current: false },
+    { name: t('QueueManager.Customers management'), href: '#', current: false },
     { name: t('QueueManager.Live'), href: '#', current: false },
     { name: t('QueueManager.Summary'), href: '#', current: false },
     { name: t('QueueManager.Monitor'), href: '#', current: false },
@@ -159,7 +159,7 @@ const QueueManager: NextPage = () => {
                 <QueueManagerDashboard />
               ) : currentSection === `${t('QueueManager.Queues management')}` ? (
                 <QueueManagement />
-              ) : currentSection === `${t('QueueManager.Not managed customers')}` ? (
+              ) : currentSection === `${t('QueueManager.Customers management')}` ? (
                 <NotManagedCalls />
               ) : currentSection === `${t('QueueManager.Live')}` ? (
                 <RealTimeManagement />
