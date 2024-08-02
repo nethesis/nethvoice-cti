@@ -72,6 +72,7 @@ export const Layout: FC<LayoutProps> = ({ children }) => {
   const currentUsername = authStore.username
   const { operators } = useSelector((state: RootState) => state.operators)
   const { profile } = useSelector((state: RootState) => state.user)
+  const {avoidClose} = useSelector((state: RootState) => state.sideDrawer)
 
   const productName = getProductName()
   // Get current page name, clean the path from / and capitalize page name
@@ -553,7 +554,7 @@ export const Layout: FC<LayoutProps> = ({ children }) => {
     }
 
     // If user start a call or receive a call close side drawer
-    if (data[currentUsername] && isEmpty(data[currentUsername]?.conversations)) {
+    if (data[currentUsername] && isEmpty(data[currentUsername]?.conversations) && !avoidClose) {
       dispatch?.sideDrawer?.setShown(false)
     }
 

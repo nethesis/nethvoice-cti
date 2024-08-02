@@ -89,8 +89,9 @@ const Devices: NextPage = () => {
           const downloadUrls = response.assets
             .filter(
               (asset: any) =>
-                asset?.content_type === 'application/octet-stream' &&
-                !asset.browser_download_url.endsWith('.blockmap'),
+                (asset?.content_type === 'application/octet-stream' ||
+                  asset?.content_type === 'application/x-ms-dos-executable') &&
+                !asset?.browser_download_url.endsWith('.blockmap'),
             )
             .map((asset: any) => {
               const url = asset.browser_download_url

@@ -7,24 +7,68 @@ import { useTranslation } from 'react-i18next'
 import classNames from 'classnames'
 import { RootState, store } from '../store'
 import { LinesView, AnnouncementView, RulesView } from '../components/lines'
+import { useSelector } from 'react-redux'
+import { useRouter } from 'next/router'
+import { savePreference } from '../lib/storage'
+import { getSelectedLinesManager } from '../lib/lines'
+
+interface tabsType {
+  name: string
+  href: string
+  current: boolean
+}
 
 const Lines: NextPage = () => {
   const { t } = useTranslation()
   const [currentTab, setCurrentTab] = useState('lines')
 
-  const tabs = [
-    { name: t('Lines.Lines management'), value: 'lines' },
-    { name: t('Lines.Ads'), value: 'ads' },
-    // { name: t('Lines.Rules'), value: 'rules' },
+  const auth = useSelector((state: RootState) => state.authentication)
+  const router = useRouter()
+
+  const tabs: tabsType[] = [
+    { name: t('Lines.Lines management'), href: '#', current: false },
+    { name: t('Lines.Ads'), href: '#', current: false },
+    // { name: t('Lines.Rules'), href: '#', current: false },
   ]
 
-  const changeTab = (tabName: string) => {
-    const selectedTab = tabs.find((tab) => tab.name === tabName)
+  const [items, setItems] = useState<tabsType[]>(tabs)
+  const [currentSection, setCurrentSection] = useState<string>(tabs[0].name)
+  const [firstRender, setFirstRender]: any = useState(true)
 
-    if (selectedTab) {
-      setCurrentTab(selectedTab.value)
+  useEffect(() => {
+    if (firstRender) {
+      setFirstRender(false)
+      return
     }
+    let section = router.query.section as string
+
+    if (!currentSection && !section) {
+      section = `${t('Lines.Lines management')}`
+    }
+    changeSection(section)
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [firstRender])
+
+  const changeSection = (sectionName: string) => {
+    const currentItems = items.map((route) => {
+      if (sectionName === route.name) {
+        route.current = true
+        setCurrentSection(sectionName)
+        savePreference('linesSelectedTab', sectionName, auth.username)
+      } else {
+        route.current = false
+      }
+      return route
+    })
+    setItems(currentItems)
   }
+
+  //Load selected tab values from local storage
+  useEffect(() => {
+    const currentSection = getSelectedLinesManager(auth.username)
+    setCurrentSection(currentSection.selectedLinesTab)
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [])
 
   useEffect(() => {
     store.dispatch.lines.setLoaded(false)
@@ -47,12 +91,12 @@ const Lines: NextPage = () => {
               <select
                 id='tabs'
                 name='tabs'
-                className='block w-full rounded-md border-gray-300 py-2 pl-3 pr-10 text-base focus:border-primary-500 focus:outline-none focus:ring-primary-500 sm:text-sm dark:bg-gray-900'
-                defaultValue={currentTab}
-                onChange={(event) => changeTab(event.target.value)}
+                className='block w-full rounded-md py-2 pl-3 pr-10 text-base focus:outline-none sm:text-sm border-gray-300 focus:border-primary focus:ring-primary dark:border-gray-600 dark:focus:border-primary dark:focus:ring-primary dark:bg-gray-900'
+                defaultValue={currentSection}
+                onChange={(event) => changeSection(event.target.value)}
               >
-                {tabs.map((tab) => (
-                  <option key={tab.value}>{tab.name}</option>
+                {items.map((item) => (
+                  <option key={item.name}>{item.name}</option>
                 ))}
               </select>
             </div>
@@ -60,19 +104,19 @@ const Lines: NextPage = () => {
             <div className='hidden sm:block'>
               <div className='border-b border-gray-300 dark:border-gray-600'>
                 <nav className='-mb-px flex space-x-8' aria-label='Tabs'>
-                  {tabs.map((tab) => (
+                  {items.map((item: any) => (
                     <a
-                      key={tab.name}
-                      onClick={() => changeTab(tab.name)}
+                      key={item.name}
+                      onClick={() => changeSection(item.name)}
                       className={classNames(
-                        tab.value === currentTab
-                          ? 'border-primary text-primary dark:border-primaryDark dark:text-primaryDark'
+                        item.name === currentSection
+                          ? 'border-primary text-primary dark:text-primaryDark'
                           : 'border-transparent text-gray-500 hover:text-gray-700 hover:border-gray-300 dark:text-gray-400 dark:hover:text-gray-200 dark:hover:border-gray-600',
                         'cursor-pointer whitespace-nowrap py-4 px-1 border-b-2 font-medium text-sm',
                       )}
-                      aria-current={tab.value === currentTab ? 'page' : undefined}
+                      aria-current={item.current ? 'page' : undefined}
                     >
-                      {tab.name}
+                      {item.name}
                     </a>
                   ))}
                 </nav>
@@ -80,13 +124,13 @@ const Lines: NextPage = () => {
             </div>
           </div>
           <div>
-            {currentTab === 'lines' ? (
+            {currentSection === `${t('Lines.Lines management')}` ? (
               <LinesView />
-            ) : currentTab === 'ads' ? (
+            ) : currentSection === `${t('Lines.Ads')}` ? (
               <AnnouncementView />
-            ) : // ) : currentTab === 'rules' ? (
-            //   <RulesView />
-            null}
+            ) : currentSection === `${t('Lines.Rules')}` ? (
+              <RulesView />
+            ) : null}
           </div>
         </>
       </div>

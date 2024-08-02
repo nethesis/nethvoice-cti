@@ -5,7 +5,19 @@ import { ComponentPropsWithRef, forwardRef, useRef } from 'react'
 import classNames from 'classnames'
 import { TextInput, Button, Dropdown } from '../common'
 import { Fragment, useState, useEffect } from 'react'
-import { Dialog, Popover, Transition, Disclosure, PopoverButton, PopoverGroup, DialogPanel, DisclosureButton, DisclosurePanel, PopoverPanel, TransitionChild } from '@headlessui/react'
+import {
+  Dialog,
+  Popover,
+  Transition,
+  Disclosure,
+  PopoverButton,
+  PopoverGroup,
+  DialogPanel,
+  DisclosureButton,
+  DisclosurePanel,
+  PopoverPanel,
+  TransitionChild,
+} from '@headlessui/react'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import {
   faCircleXmark,
@@ -32,6 +44,7 @@ export const AnnouncementFilter = forwardRef<HTMLButtonElement, AnnouncementFilt
   ({ updateTextFilter, updateSortFilter, className, ...props }, ref) => {
     const { t } = useTranslation()
     const auth = useSelector((state: RootState) => state.authentication)
+    const user = useSelector((state: RootState) => state.user)
     const [textFilter, setTextFilter] = useState('')
     const textFilterRef = useRef() as React.MutableRefObject<HTMLInputElement>
     const [open, setOpen] = useState(false)
@@ -103,6 +116,14 @@ export const AnnouncementFilter = forwardRef<HTMLButtonElement, AnnouncementFilt
       // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [])
 
+    //Start recording announcement function
+    const startRecordingAnnouncement = () => {
+      if (user.default_device.type === 'physical') {
+        recordingAnnouncement('physical')
+      } else {
+        recordingAnnouncement('webrtc')
+      }
+    }
     return (
       <div className={classNames(className)} {...props}>
         <div className=''>
@@ -308,7 +329,7 @@ export const AnnouncementFilter = forwardRef<HTMLButtonElement, AnnouncementFilt
                   items={
                     <>
                       {profile?.mainPresence !== 'busy' && profile?.mainPresence !== 'incoming' && (
-                        <Dropdown.Item onClick={recordingAnnouncement}>
+                        <Dropdown.Item onClick={() => startRecordingAnnouncement()}>
                           <FontAwesomeIcon
                             icon={faRecordVinyl}
                             className='mr-2 h-4 w-4 text-gray-500'

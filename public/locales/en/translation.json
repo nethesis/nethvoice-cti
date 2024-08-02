@@ -56,7 +56,9 @@
     "Example": "Example",
     "Start recording message before": "Click the button below to start recording",
     "Start recording message after": "You can speak in a moment...",
-    "Required": "Required"
+    "Required": "Required",
+    "Recording": "Recording",
+    "Answer phone to start recording": "Answer phone to start recording"
   },
   "Login": {
     "User": "Username",
@@ -371,6 +373,7 @@
     "No operators": "No operators",
     "Select a tab": "Select a tab",
     "Queues management": "Queues management",
+    "CallTabTitle": "Customers management",
     "Calls": "Calls",
     "calls": "calls",
     "Statistics": "Statistics",
@@ -653,6 +656,7 @@
     "Average": "Average",
     "Answered": "Answered",
     "Not managed customers": "Not managed customers",
+    "Customers management": "Customers management",
     "Before 60s": "Before 60s",
     "After 60s": "After 60s",
     "Failed calls": "Failed calls",
@@ -668,7 +672,7 @@
     "No not managed customers": "No not managed customers",
     "Date": "Date",
     "Caller": "Caller",
-    "Go to not managed customers": "Go to not managed customers",
+    "Go to not managed customers": "Go to customers management",
     "No customers to manage": "No customers to manage",
     "There are no customers to manage": "There are no customers to manage",
     "Queues": "Queues",
@@ -770,7 +774,8 @@
     "Settings": "Settings",
     "Record": "Record",
     "Stop recording": "Stop recording",
-    "Recording": "Recording"
+    "Recording": "Recording",
+    "Interrupt recording": "Interrupt recording"
   },
   "Devices": {
     "Web phone": "Web phone",

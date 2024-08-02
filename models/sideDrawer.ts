@@ -7,13 +7,15 @@ import type { RootModel } from '.'
 interface DefaultState {
   isShown: boolean
   contentType: string
-  config: any,
+  config: any
+  avoidClose?: boolean
 }
 
 const defaultState: DefaultState = {
   isShown: false,
   contentType: '',
   config: null,
+  avoidClose: false,
 }
 
 export const sideDrawer = createModel<RootModel>()({
@@ -27,6 +29,10 @@ export const sideDrawer = createModel<RootModel>()({
     },
     setShown: (state, isShown: boolean) => {
       state.isShown = isShown
+      return state
+    },
+    setAvoidClose: (state, avoidClose: boolean) => {
+      state.avoidClose = avoidClose
       return state
     },
     reset: () => {

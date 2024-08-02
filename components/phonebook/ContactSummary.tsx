@@ -198,7 +198,7 @@ export const ContactSummary = forwardRef<HTMLButtonElement, ContactSummaryProps>
               </h3>
               <div className='mt-3'>
                 <p className='text-sm text-gray-500 dark:text-gray-400'>
-                  {t('contactDeletionMessage', { name: contactToDelete?.displayName || '-' })}
+                  {t('Phonebook.contactDeletionMessage', { name: contactToDelete?.displayName || '-' } || '')}
                 </p>
               </div>
             </div>
@@ -235,7 +235,13 @@ export const ContactSummary = forwardRef<HTMLButtonElement, ContactSummaryProps>
               )}
               onClick={() => maybeShowSideDrawer(contact)}
             >
-              {contact?.displayName}
+              {contact?.displayName !== '' && contact?.displayName !== ' '
+                ? contact?.displayName
+                : contact?.name !== '' && contact?.name !== ' '
+                ? contact?.name
+                : contact?.company && contact?.company !== '' && contact?.company !== ' '
+                ? contact?.company
+                : '-'}
             </h2>
           </div>
 
@@ -497,11 +503,8 @@ export const ContactSummary = forwardRef<HTMLButtonElement, ContactSummaryProps>
                   }`}
                   onClick={() => goToCCardCompany(contact)}
                 >
-                  <FontAwesomeIcon
-                    icon={faArrowUpRightFromSquare}
-                    className='mr-2 h-4 w-4 text-gray-200 dark:text-gray-200'
-                  />
-                  <span className='text-base font-semibold text-gray-50 dark:text-gray-100'>
+                  <FontAwesomeIcon icon={faArrowUpRightFromSquare} className='mr-2 h-4 w-4' />
+                  <span className='text-base font-semibold'>
                     {t('CustomerCards.Open customer card')}
                   </span>
                 </Button>

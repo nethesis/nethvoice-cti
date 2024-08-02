@@ -32,7 +32,7 @@ const Queues: NextPage = () => {
 
   const tabs: tabsType[] = [
     { name: t('Queues.Queues management'), href: '#', current: false },
-    { name: t('Queues.Calls'), href: '#', current: false },
+    { name: t('Queues.CallTabTitle'), href: '#', current: false },
     { name: t('Queues.Statistics'), href: '#', current: false },
   ]
 
@@ -150,7 +150,7 @@ const Queues: NextPage = () => {
               <div>
                 {currentSection === `${t('Queues.Queues management')}` ? (
                   <QueuesManagementView />
-                ) : currentSection === `${t('Queues.Calls')}` ? (
+                ) : currentSection === `${t('Queues.CallTabTitle')}` ? (
                   <CallsView />
                 ) : currentSection === `${t('Queues.Statistics')}` ? (
                   <StatisticsView />

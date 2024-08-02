@@ -1,4 +1,4 @@
-// Copyright (C) 2023 Nethesis S.r.l.
+// Copyright (C) 2024 Nethesis S.r.l.
 // SPDX-License-Identifier: AGPL-3.0-or-later
 
 import axios from 'axios'
@@ -326,6 +326,15 @@ export function reloadAnnouncement() {
 //phone island events
 
 // The event to show the recording view.
-export function recordingAnnouncement() {
-  eventDispatch('phone-island-recording-open', {})
+export function recordingAnnouncement(type: string) {
+  if (type === 'physical') {
+    eventDispatch('phone-island-physical-recording-view', {})
+  } else {
+    eventDispatch('phone-island-recording-open', {})
+  }
+}
+
+export const getSelectedLinesManager = (currentUsername: string) => {
+  const selectedLinesTab = loadPreference('linesSelectedTab', currentUsername) || ''
+  return { selectedLinesTab }
 }

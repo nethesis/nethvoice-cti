@@ -41,7 +41,9 @@
     "Example": "Esempio",
     "Start recording message before": "Clica il bottone per iniziare a registrare la chiamata",
     "Start recording message after": "Puoi parlare tra poco...",
-    "Required": "Richiesto"
+    "Required": "Richiesto",
+    "Recording": "Registrazione",
+    "Answer phone to start recording": "Rispondi al telefono per iniziare la registrazione"
   },
   "Login": {
     "User": "Utente",
@@ -102,7 +104,7 @@
     "Cannot retrieve last calls of user": "Impossibile recuperare le ultime chiamate dell'utente",
     "Cannot retrieve last calls of switchboard": "Impossibile recuperare le ultime chiamate del centralino",
     "Delete contact": "Elimina contatto",
-    "contactDeletionMessage": "Il contatto {{name}} verrà eliminato permanentemente"
+    "contactDeletionMessage": "Il contatto {{name}} verrà eliminato permanentemente."
   },
   "History": {
     "History": "Storico",
@@ -479,6 +481,7 @@
     "Max wait": "Attesa massima",
     "Queues management": "Gestione delle code",
     "Cannot retrieve calls": "Impossibile recuperare le chiamate",
+    "CallTabTitle": "Gestione clienti",
     "Calls": "Chiamate",
     "calls": "Chiamate",
     "Statistics": "Statistiche",
@@ -570,7 +573,8 @@
     "Settings": "Impostazioni",
     "Record": "Registra",
     "Stop recording": "Ferma registrazione",
-    "Recording": "Registrando"
+    "Recording": "Registrando",
+    "Interrupt recording": "Interrompi registrazione"
   },
   "QueueManager": {
     "Dashboard": "Dashboard",
@@ -654,6 +658,7 @@
     "Maximum": "Massimo",
     "Average": "Medio",
     "Answered": "Risposto",
+    "Customers management": "Gestione clienti",
     "Not managed customers": "Clienti non gestiti",
     "Clienti non gestiti": "Clienti non gestiti",
     "Before 60s": "Prima dei 60s",

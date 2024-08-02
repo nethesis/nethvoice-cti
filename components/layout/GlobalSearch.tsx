@@ -4,12 +4,7 @@
 import React, { ComponentProps, MutableRefObject, useEffect, useMemo, useRef } from 'react'
 import { FC, useState } from 'react'
 import classNames from 'classnames'
-import {
-  Combobox,
-  ComboboxInput,
-  ComboboxOptions,
-  ComboboxOption,
-} from '@headlessui/react'
+import { Combobox, ComboboxInput, ComboboxOptions, ComboboxOption } from '@headlessui/react'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import {
   faMagnifyingGlass,
@@ -396,7 +391,15 @@ export const GlobalSearch: FC<GlobalSearchProps> = () => {
                                   <>
                                     <Avatar placeholderType={result.kind} size='base' />
                                     <span className='ml-2 flex-auto truncate'>
-                                      {result.displayName}
+                                      {result?.displayName !== '' && result?.displayName !== ' '
+                                        ? result?.displayName
+                                        : result?.name !== '' && result?.name !== ' '
+                                        ? result?.name
+                                        : result?.company &&
+                                          result?.company !== '' &&
+                                          result?.company !== ' '
+                                        ? result?.company
+                                        : '-'}
                                     </span>
                                   </>
                                 )}
