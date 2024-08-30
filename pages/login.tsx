@@ -420,7 +420,7 @@ export default function Login() {
           <title>{productName}</title>
         </Head>
       </div>
-      <body className='bg-[url(../public/sfondo_voice.svg)] bg-cover text-gray-700 dark:text-gray-100'>
+      <body className='bg-[url(../public/login_background.svg)] bg-cover text-gray-700 dark:text-gray-100'>
         <div>
           <div className='absolute inset-0 z-[1000rem] hidden lg:block'>
             <img

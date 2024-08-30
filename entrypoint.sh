@@ -96,7 +96,7 @@ fi
 
 if [ ! -z $LOGIN_BACKGROUND_URL ]; then
   # login background image rebranding
-  /usr/bin/wget --timeout=60 $LOGIN_BACKGROUND_URL -O /app/public/login_background.png
+  /usr/bin/wget --timeout=60 $LOGIN_BACKGROUND_URL -O /app/public/login_background.svg
 fi
 
 exec "$@"
