@@ -89,6 +89,11 @@ if [ ! -z $LOGIN_LOGO_URL ]; then
   /usr/bin/wget --timeout=60 $LOGIN_LOGO_URL -O /app/public/login_logo.svg
 fi
 
+if [ ! -z $LOGIN_LOGO_DARK_URL ]; then
+  # login logo rebranding
+  /usr/bin/wget --timeout=60 $LOGIN_LOGO_DARK_URL -O /app/public/login_logo_dark.svg
+fi
+
 if [ ! -z $FAVICON_URL ]; then
   # favicon rebranding
   /usr/bin/wget --timeout=60 $FAVICON_URL -O /app/public/favicon.ico
