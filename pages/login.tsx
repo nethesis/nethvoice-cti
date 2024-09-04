@@ -15,6 +15,7 @@ import { useSelector } from 'react-redux'
 import { RootState } from '../store'
 import {
   getHtmlFaviconElement,
+  getPeopleImageVisibilityValue,
   getProductName,
   getProductSubname,
   getSavedQueryParams,
@@ -334,6 +335,8 @@ export default function Login() {
     }
   }, [isFirsThemeControl])
 
+  const showPeopleImage = getPeopleImageVisibilityValue()
+
   const loginTemplate = () => {
     return (
       <div className='max-w-sm sm:w-96'>
@@ -427,11 +430,13 @@ export default function Login() {
       />
       <div className='text-gray-700 dark:text-gray-100'>
         <div className='absolute inset-0 z-[1000rem] hidden lg:block'>
-          <img
-            className='w-full h-full object-contain transform -translate-x-[-20rem] xl:-translate-x-[-16rem] lg:scale-[40%] xl:scale-[60%] 2xl:scale-75'
-            src='/action_voice-cti.svg'
-            alt='image'
-          />
+          {showPeopleImage === 'show' && (
+            <img
+              className='w-full h-full object-contain transform -translate-x-[-20rem] xl:-translate-x-[-16rem] lg:scale-[40%] xl:scale-[60%] 2xl:scale-75'
+              src='/action_voice-cti.svg'
+              alt='image'
+            />
+          )}
         </div>
 
         {/* login card */}
