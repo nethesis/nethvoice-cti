@@ -15,6 +15,7 @@ import { useSelector } from 'react-redux'
 import { RootState } from '../store'
 import {
   getHtmlFaviconElement,
+  getPeopleImageVisibilityValue,
   getProductName,
   getProductSubname,
   getSavedQueryParams,
@@ -334,6 +335,8 @@ export default function Login() {
     }
   }, [isFirsThemeControl])
 
+  const showPeopleImage = getPeopleImageVisibilityValue()
+
   const loginTemplate = () => {
     return (
       <div className='max-w-sm sm:w-96'>
@@ -414,31 +417,37 @@ export default function Login() {
   }
 
   return (
-    <>
-      <div>
-        <Head>
-          <title>{productName}</title>
-        </Head>
-      </div>
-      <body className='bg-[url(../public/sfondo_voice.svg)] bg-cover text-gray-700 dark:text-gray-100'>
-        <div>
-          <div className='absolute inset-0 z-[1000rem] hidden lg:block'>
+    <div className='relative min-h-screen'>
+      <Head>
+        <title>{productName}</title>
+      </Head>
+
+      {/* Background image */}
+      <img
+        className='absolute inset-0 w-full h-full object-cover z-[-1]'
+        src='/login_background.svg'
+        alt='background'
+      />
+      <div className='text-gray-700 dark:text-gray-100'>
+        <div className='absolute inset-0 z-[1000rem] hidden lg:block'>
+          {showPeopleImage === 'show' && (
             <img
-              className=' w-full h-full object-contain transform -translate-x-[-20rem] xl:-translate-x-[-16rem] lg:scale-[40%] xl:scale-[60%] 2xl:scale-75'
+              className='w-full h-full object-contain transform -translate-x-[-20rem] xl:-translate-x-[-16rem] lg:scale-[40%] xl:scale-[60%] 2xl:scale-75'
               src='/action_voice-cti.svg'
               alt='image'
             />
-          </div>
-          {/* login card */}
-          <div className='w-1/2'>
-            <div className='absolute top-1/2 left-1/2 lg:left-40 transform -translate-y-1/2 -translate-x-1/2 lg:-translate-x-0'>
-              <div className='border-b border-gray-200 dark:border-gray-700 rounded-lg bg-gray-50 dark:bg-gray-900 p-10'>
-                {loginTemplate()}
-              </div>
+          )}
+        </div>
+
+        {/* login card */}
+        <div className='w-1/2'>
+          <div className='absolute top-1/2 left-1/2 lg:left-40 transform -translate-y-1/2 -translate-x-1/2 lg:-translate-x-0'>
+            <div className='border-b border-gray-200 dark:border-gray-700 rounded-lg bg-gray-50 dark:bg-gray-900 p-10'>
+              {loginTemplate()}
             </div>
           </div>
         </div>
-      </body>
-    </>
+      </div>
+    </div>
   )
 }

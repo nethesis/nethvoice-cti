@@ -361,6 +361,14 @@ export function getNethvoiceUrl() {
   return `${window.CONFIG.API_SCHEME + window.CONFIG.VOICE_ENDPOINT}`
 }
 
+export function getPeopleImageVisibilityValue() {
+  if (typeof window === 'undefined') {
+    return ''
+  }
+  // @ts-ignore
+  return `${window.CONFIG.LOGIN_PEOPLE}`
+}
+
 export const voiceRequest = async (methodVoice: string, url: any, object?: any) => {
   try {
     const { username, token } = store.getState().authentication

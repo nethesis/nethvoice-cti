@@ -74,19 +74,36 @@ cat >> /app/public/config/config.production.js<<EOF
   SIP_PORT: '${SIP_PORT:-5060}',
 EOF
 
+#login people icon rebrandind ( show or hide string )
+cat >> /app/public/config/config.production.js<<EOF
+  LOGIN_PEOPLE: '${LOGIN_PEOPLE:-show}',
+EOF
+
 cat >> /app/public/config/config.production.js<<EOF
 }
 
 EOF
+
+
 
 if [ ! -z $NAVBAR_LOGO_URL ]; then
   # navbar logo rebranding
   /usr/bin/wget --timeout=60 $NAVBAR_LOGO_URL -O /app/public/navbar_logo.svg
 fi
 
+if [ ! -z $NAVBAR_LOGO_DARK_URL ]; then
+  # navbar logo rebranding
+  /usr/bin/wget --timeout=60 $NAVBAR_LOGO_DARK_URL -O /app/public/navbar_logo_dark.svg
+fi
+
 if [ ! -z $LOGIN_LOGO_URL ]; then
   # login logo rebranding
   /usr/bin/wget --timeout=60 $LOGIN_LOGO_URL -O /app/public/login_logo.svg
+fi
+
+if [ ! -z $LOGIN_LOGO_DARK_URL ]; then
+  # login logo rebranding
+  /usr/bin/wget --timeout=60 $LOGIN_LOGO_DARK_URL -O /app/public/login_logo_dark.svg
 fi
 
 if [ ! -z $FAVICON_URL ]; then
@@ -96,7 +113,7 @@ fi
 
 if [ ! -z $LOGIN_BACKGROUND_URL ]; then
   # login background image rebranding
-  /usr/bin/wget --timeout=60 $LOGIN_BACKGROUND_URL -O /app/public/login_background.png
+  /usr/bin/wget --timeout=60 $LOGIN_BACKGROUND_URL -O /app/public/login_background.svg
 fi
 
 exec "$@"
