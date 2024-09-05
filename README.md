@@ -145,11 +145,42 @@ WS_ENDPOINT (default: wss://host + port + path + "/ws")
 SIP_HOST (default: "127.0.0.1")
 SIP_PORT (default: "5060")
 ```
+### Rebranding
+
+To change the logos and background of application you have to set these enviroment variables (reference of variables type above):
+
+- LOGIN_PEOPLE
+- NAVBAR_LOGO_URL
+- NAVBAR_LOGO__DARK_URL
+- LOGIN_LOGO_URL
+- LOGIN_LOGO_DARK_URL
+- FAVICON_URL
+- LOGIN_BACKGROUND_URL
+
+### Running
 
 Run the container specifying an API endpoint :
 
 ```
 podman run --rm --name nethvoice-cti --env='API_ENDPOINT=nethvoice.nethesis.it' -p 3000:3000/tcp ghcr.io/nethesis/nethvoice-cti:latest
+```
+
+Run the container with custom logos and background :
+
+```
+podman run --tz='Europe/Rome' --rm --name nethvoice-cti \
+  --env='API_ENDPOINT=cti.nethesis.it' \
+  --env='API_SCHEME=https://' \
+  --env='LOGIN_PEOPLE=hide' \
+  --env="TIMEZONE=Europe/Rome" \
+  --env="HOST=127.0.0.1" \
+  --env='LOGIN_BACKGROUND_URL=https://upload.wikimedia.org/wikipedia/commons/6/6b/Bitmap_VS_SVG.svg' \
+  --env='FAVICON_URL=https://www.favicon.cc/logo3d/85805.png' \
+  --env='NAVBAR_LOGO_URL=https://upload.wikimedia.org/wikipedia/commons/8/80/Atom_editor_logo.svg' \
+  --env='NAVBAR_LOGO_DARK_URL=https://upload.wikimedia.org/wikipedia/commons/8/80/Atom_editor_logo.svg' \
+  --env='LOGIN_LOGO_URL=https://upload.wikimedia.org/wikipedia/commons/4/4f/SVG_Logo.svg' \
+  --env='LOGIN_LOGO_DARK_URL=https://upload.wikimedia.org/wikipedia/commons/4/4f/SVG_Logo.svg' \
+  -p 3000:3000 ghcr.io/nethesis/nethvoice-cti:latest
 ```
 
 _If port 3000 is already in use, replace it with a free one._
