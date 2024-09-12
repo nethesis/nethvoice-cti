@@ -135,7 +135,7 @@ export const SwitchInputOutputDrawerContent = forwardRef<
           <div className='flex items-center justify-between'>
             <div className='flex items-center'>
               <span className='dark:text-gray-200 leading-5 text-sm font-medium'>
-                {t('Devices.Speaker')}
+                {t('Devices.Microphone')}
               </span>
               <FontAwesomeIcon
                 icon={faCircleInfo}
@@ -226,7 +226,7 @@ export const SwitchInputOutputDrawerContent = forwardRef<
           <div className='flex items-center justify-between pt-6'>
             <div className='flex items-center'>
               <span className='dark:text-gray-200 leading-5 text-sm font-medium'>
-                {t('Devices.Microphone')}
+                {t('Devices.Speaker')}
               </span>
               <FontAwesomeIcon
                 icon={faCircleInfo}
