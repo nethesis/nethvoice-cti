@@ -21,11 +21,12 @@ import {
   faArrowLeft,
   faVoicemail,
   faPhone,
+  faArrowUpRightFromSquare,
 } from '@fortawesome/free-solid-svg-icons'
 import { formatDateLoc } from '../lib/dateTime'
 import { subDays, startOfDay } from 'date-fns'
 import { useTranslation } from 'react-i18next'
-import { playFileAudio } from '../lib/utils'
+import { getApiScheme, getApiVoiceEndpoint, playFileAudio } from '../lib/utils'
 import { Tooltip } from 'react-tooltip'
 import { CallsDate } from '../components/history/CallsDate'
 import { MissingPermission } from '../components/common/MissingPermissionsPage'
@@ -564,13 +565,28 @@ const History: NextPage = () => {
 
   const { profile } = useSelector((state: RootState) => state.user)
 
+  const apiVoiceEnpoint = getApiVoiceEndpoint()
+  const apiScheme = getApiScheme()
+  //report page link
+  const pbxReportUrl = apiScheme + apiVoiceEnpoint + '/pbx-report/'
+
   return (
     <>
       {profile?.macro_permissions?.cdr?.value ? (
         <div>
-          <h1 className='text-2xl font-semibold mb-6 text-title dark:text-titleDark'>
-            {t('History.History')}
-          </h1>
+          <div className='flex items-center justify-between mb-6'>
+            <h1 className='text-2xl font-semibold text-title dark:text-titleDark'>
+              {t('History.History')}
+            </h1>
+            <div className='text-gray-900 dark:text-gray-100 text-sm flex items-center'>
+              <Button size='small' variant='white'>
+                <FontAwesomeIcon icon={faArrowUpRightFromSquare} className='mr-2 h-4 w-4' />
+                <a href={pbxReportUrl} target='_blank' rel='noreferrer'>
+                  {t('Applications.Open PBX Report')}
+                </a>
+              </Button>
+            </div>
+          </div>
           <Filter
             updateFilterText={debouncedUpdateFilterText}
             updateCallTypeFilter={updateCallTypeFilter}
