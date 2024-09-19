@@ -70,6 +70,8 @@ export const NotManagedCalls: FC<NotManagedCallsProps> = ({ className }): JSX.El
   }
 
   const [queueManagerFilter, setQueueManagerFilter]: any = useState([])
+  const [emptyQueueFilter, setEmptyQueueFilter]: any = useState(false)
+
   const updateQueueManagerFilter = (newQueuesFilter: string[]) => {
     setQueueManagerFilter(newQueuesFilter)
     setPageNum(1)
@@ -79,38 +81,40 @@ export const NotManagedCalls: FC<NotManagedCallsProps> = ({ className }): JSX.El
   const fetchCalls = async (numHours: number) => {
     let selectedQueues = queueManagerFilter
 
-    if (isEmpty(selectedQueues)) {
-      selectedQueues = Object.keys(queueManagerStore.queues)
+    if (!isEmpty(selectedQueues)) {
+      setEmptyQueueFilter(false)
+      try {
+        setCallsError('')
+        setCallsLoaded(false)
+
+        const res = await retrieveAndFilterQueueCalls(
+          pageNum,
+          textFilter.trim(),
+          outcomeFilter,
+          selectedQueues,
+          numHours,
+        )
+
+        res.rows = res.rows.map((call: any) => {
+          call.queueId = call.queuename
+          call.queueName = queueManagerStore.queues[call.queuename]?.name
+
+          // queuename attribute name is misleading
+          delete call.queuename
+
+          return call
+        })
+        setCalls(res)
+        setLastUpdated(new Date())
+      } catch (e) {
+        console.error(e)
+        setCallsError(t('Queues.Cannot retrieve calls') || '')
+      }
+      setCallsLoaded(true)
+    } else {
+      setCallsLoaded(true)
+      setEmptyQueueFilter(true)
     }
-
-    try {
-      setCallsError('')
-      setCallsLoaded(false)
-
-      const res = await retrieveAndFilterQueueCalls(
-        pageNum,
-        textFilter.trim(),
-        outcomeFilter,
-        selectedQueues,
-        numHours,
-      )
-
-      res.rows = res.rows.map((call: any) => {
-        call.queueId = call.queuename
-        call.queueName = queueManagerStore.queues[call.queuename]?.name
-
-        // queuename attribute name is misleading
-        delete call.queuename
-
-        return call
-      })
-      setCalls(res)
-      setLastUpdated(new Date())
-    } catch (e) {
-      console.error(e)
-      setCallsError(t('Queues.Cannot retrieve calls') || '')
-    }
-    setCallsLoaded(true)
   }
 
   // retrieve calls

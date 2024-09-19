@@ -5,7 +5,19 @@ import { ComponentPropsWithRef, forwardRef, useRef } from 'react'
 import classNames from 'classnames'
 import { TextInput } from '../../common'
 import { Fragment, useState, useEffect } from 'react'
-import { Dialog, DialogPanel, Disclosure, DisclosureButton, DisclosurePanel, Popover, PopoverButton, PopoverGroup, PopoverPanel, Transition, TransitionChild } from '@headlessui/react'
+import {
+  Dialog,
+  DialogPanel,
+  Disclosure,
+  DisclosureButton,
+  DisclosurePanel,
+  Popover,
+  PopoverButton,
+  PopoverGroup,
+  PopoverPanel,
+  Transition,
+  TransitionChild,
+} from '@headlessui/react'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { faChevronDown, faCircleXmark, faXmark } from '@fortawesome/free-solid-svg-icons'
 import { useSelector } from 'react-redux'
@@ -97,10 +109,8 @@ export const NotManagedCallsFilter = forwardRef<HTMLButtonElement, NotManagedCal
       updateOutcomeFilter(filterValues.outcome)
 
       if (isEmpty(filterValues.selectedQueues)) {
-        // select all queues
-        const allQueueCodes = Object.values(queueManagerStore.queues).map((queue: any) => {
-          return queue.queue
-        })
+        // set empty array if no queues are selected
+        const allQueueCodes: any = []
         setSelectedQueues(allQueueCodes)
         updateQueueManagerFilter(allQueueCodes)
       } else {
@@ -108,6 +118,7 @@ export const NotManagedCallsFilter = forwardRef<HTMLButtonElement, NotManagedCal
         setSelectedQueues(filterValues.selectedQueues)
         updateQueueManagerFilter(filterValues.selectedQueues)
       }
+      // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [])
 
     // outcome label
@@ -128,8 +139,8 @@ export const NotManagedCallsFilter = forwardRef<HTMLButtonElement, NotManagedCal
       if (!isEmpty(selectedQueues)) {
         setQueuesLabel(selectedQueues.join(', '))
       } else {
-        // if no queues are selected, it's equivalent to select all of them
-        const allQueueCodes = queueManagerFilter.options.map((queue: any) => queue.value)
+        // if no queues are selected, set label to an empty array
+        const allQueueCodes: any = []
         setQueuesLabel(allQueueCodes.join(', '))
       }
     }, [selectedQueues, queueManagerFilter.options])
@@ -142,10 +153,8 @@ export const NotManagedCallsFilter = forwardRef<HTMLButtonElement, NotManagedCal
       updateOutcomeFilter(DEFAULT_OUTCOME_FILTER) // notify parent component
       savePreference('queuesOutcomeFilter', DEFAULT_OUTCOME_FILTER, auth.username)
 
-      // select all queues
-      const allQueueCodes = Object.values(queueManagerStore.queues).map((queue: any) => {
-        return queue.queue
-      })
+      // deselect all queues
+      const allQueueCodes: any = []
       setSelectedQueues(allQueueCodes)
       updateQueueManagerFilter(allQueueCodes)
       savePreference('queueManagerSelectedQueues', allQueueCodes, auth.username)
