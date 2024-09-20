@@ -26,6 +26,7 @@ import { savePreference } from '../../lib/storage'
 import { DEFAULT_OUTCOME_FILTER, getFilterValues } from '../../lib/queuesLib'
 import { useTranslation } from 'react-i18next'
 import { cloneDeep, isEmpty } from 'lodash'
+import { Tooltip } from 'react-tooltip'
 
 export interface CallsViewFilterProps extends ComponentPropsWithRef<'div'> {
   updateTextFilter: Function
@@ -110,11 +111,11 @@ export const CallsViewFilter = forwardRef<HTMLButtonElement, CallsViewFilterProp
         setSelectedQueues(allQueueCodes)
         updateQueuesFilter(allQueueCodes)
       } else {
-        // select queues from preferences 
+        // select queues from preferences
         setSelectedQueues(filterValues.selectedQueues)
         updateQueuesFilter(filterValues.selectedQueues)
       }
-    // eslint-disable-next-line react-hooks/exhaustive-deps
+      // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [])
 
     // outcome label
@@ -512,15 +513,22 @@ export const CallsViewFilter = forwardRef<HTMLButtonElement, CallsViewFilterProp
                   <div className='mt-0'>
                     <div className='-m-1 flex flex-wrap items-center'>
                       <span className='m-1 inline-flex items-center rounded-full border py-1.5 px-3 text-sm font-medium border-gray-300 text-gray-700 dark:border-gray-600 dark:text-gray-100'>
-                        <span>
+                        <span className='truncate max-w-64'>
+                          {' '}
                           <span className='text-gray-600 dark:text-gray-300'>
-                            {t('Queues.Queues')}:
-                          </span>{' '}
-                          {queuesLabel}
+                            {t('Queues.Queues')}:{' '}
+                          </span>
+                          <span
+                            data-tooltip-id='tooltip-queues-filter'
+                            data-tooltip-content={queuesLabel}
+                          >
+                            {queuesLabel}
+                          </span>
                         </span>
                       </span>
                     </div>
                   </div>
+                  <Tooltip id='tooltip-queues-filter' place='top' />
 
                   {/* separator */}
                   <div

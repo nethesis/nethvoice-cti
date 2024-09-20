@@ -26,6 +26,7 @@ import { savePreference } from '../../../lib/storage'
 import { DEFAULT_OUTCOME_FILTER, getFilterValues } from '../../../lib/queueManager'
 import { useTranslation } from 'react-i18next'
 import { cloneDeep, isEmpty } from 'lodash'
+import { Tooltip } from 'react-tooltip'
 
 export interface NotManagedCallsFilterProps extends ComponentPropsWithRef<'div'> {
   updateTextFilter: Function
@@ -517,15 +518,22 @@ export const NotManagedCallsFilter = forwardRef<HTMLButtonElement, NotManagedCal
                   <div className='mt-0'>
                     <div className='-m-1 flex flex-wrap items-center'>
                       <span className='m-1 inline-flex items-center rounded-full border py-1.5 px-3 text-sm font-medium border-gray-300 text-gray-700 dark:border-gray-600 dark:text-gray-100'>
-                        <span>
+                        <span className='truncate max-w-64'>
+                          {' '}
                           <span className='text-gray-600 dark:text-gray-300'>
-                            {t('Queues.Queues')}:
-                          </span>{' '}
-                          {queuesLabel}
+                            {t('Queues.Queues')}:{' '}
+                          </span>
+                          <span
+                            data-tooltip-id='tooltip-queues-manager-filter'
+                            data-tooltip-content={queuesLabel}
+                          >
+                            {queuesLabel}
+                          </span>
                         </span>
                       </span>
                     </div>
                   </div>
+                  <Tooltip id='tooltip-queues-manager-filter' place='top' />
 
                   {/* separator */}
                   <div
