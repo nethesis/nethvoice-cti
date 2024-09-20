@@ -5,7 +5,19 @@ import { ComponentPropsWithRef, forwardRef, useRef } from 'react'
 import classNames from 'classnames'
 import { TextInput } from '../common'
 import { Fragment, useState, useEffect } from 'react'
-import { Dialog, DialogPanel, Disclosure, DisclosureButton, DisclosurePanel, Popover, PopoverButton, PopoverGroup, PopoverPanel, Transition, TransitionChild } from '@headlessui/react'
+import {
+  Dialog,
+  DialogPanel,
+  Disclosure,
+  DisclosureButton,
+  DisclosurePanel,
+  Popover,
+  PopoverButton,
+  PopoverGroup,
+  PopoverPanel,
+  Transition,
+  TransitionChild,
+} from '@headlessui/react'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { faChevronDown, faCircleXmark, faXmark } from '@fortawesome/free-solid-svg-icons'
 import { useSelector } from 'react-redux'
@@ -14,6 +26,7 @@ import { savePreference } from '../../lib/storage'
 import { DEFAULT_OUTCOME_FILTER, getFilterValues } from '../../lib/queuesLib'
 import { useTranslation } from 'react-i18next'
 import { cloneDeep, isEmpty } from 'lodash'
+import { Tooltip } from 'react-tooltip'
 
 export interface CallsViewFilterProps extends ComponentPropsWithRef<'div'> {
   updateTextFilter: Function
@@ -93,10 +106,8 @@ export const CallsViewFilter = forwardRef<HTMLButtonElement, CallsViewFilterProp
       updateOutcomeFilter(filterValues.outcome)
 
       if (isEmpty(filterValues.selectedQueues)) {
-        // select all queues
-        const allQueueCodes = Object.values(queuesStore.queues).map((queue: any) => {
-          return queue.queue
-        })
+        // set empty array if no queues are selected
+        const allQueueCodes: any = []
         setSelectedQueues(allQueueCodes)
         updateQueuesFilter(allQueueCodes)
       } else {
@@ -104,6 +115,7 @@ export const CallsViewFilter = forwardRef<HTMLButtonElement, CallsViewFilterProp
         setSelectedQueues(filterValues.selectedQueues)
         updateQueuesFilter(filterValues.selectedQueues)
       }
+      // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [])
 
     // outcome label
@@ -124,8 +136,8 @@ export const CallsViewFilter = forwardRef<HTMLButtonElement, CallsViewFilterProp
       if (!isEmpty(selectedQueues)) {
         setQueuesLabel(selectedQueues.join(', '))
       } else {
-        // if no queues are selected, it's equivalent to select all of them
-        const allQueueCodes = queuesFilter.options.map((queue: any) => queue.value)
+        // if no queues are selected, set label to an empty array
+        const allQueueCodes: any = []
         setQueuesLabel(allQueueCodes.join(', '))
       }
     }, [selectedQueues, queuesFilter.options])
@@ -137,11 +149,8 @@ export const CallsViewFilter = forwardRef<HTMLButtonElement, CallsViewFilterProp
       setOutcome(DEFAULT_OUTCOME_FILTER)
       updateOutcomeFilter(DEFAULT_OUTCOME_FILTER) // notify parent component
       savePreference('queuesOutcomeFilter', DEFAULT_OUTCOME_FILTER, auth.username)
-
-      // select all queues
-      const allQueueCodes = Object.values(queuesStore.queues).map((queue: any) => {
-        return queue.queue
-      })
+      // deselect all queues
+      const allQueueCodes: any = []
       setSelectedQueues(allQueueCodes)
       updateQueuesFilter(allQueueCodes)
       savePreference('queuesSelectedQueues', allQueueCodes, auth.username)
@@ -335,7 +344,7 @@ export const CallsViewFilter = forwardRef<HTMLButtonElement, CallsViewFilterProp
               <div className='flex items-center'>
                 <div className='flex items-center'>
                   <TextInput
-                    placeholder={t('Queues.Filter calls') || ""}
+                    placeholder={t('Queues.Filter calls') || ''}
                     className='max-w-sm'
                     value={textFilter}
                     onChange={changeTextFilter}
@@ -504,15 +513,22 @@ export const CallsViewFilter = forwardRef<HTMLButtonElement, CallsViewFilterProp
                   <div className='mt-0'>
                     <div className='-m-1 flex flex-wrap items-center'>
                       <span className='m-1 inline-flex items-center rounded-full border py-1.5 px-3 text-sm font-medium border-gray-300 text-gray-700 dark:border-gray-600 dark:text-gray-100'>
-                        <span>
+                        <span className='truncate max-w-64'>
+                          {' '}
                           <span className='text-gray-600 dark:text-gray-300'>
-                            {t('Queues.Queues')}:
-                          </span>{' '}
-                          {queuesLabel}
+                            {t('Queues.Queues')}:{' '}
+                          </span>
+                          <span
+                            data-tooltip-id='tooltip-queues-filter'
+                            data-tooltip-content={queuesLabel}
+                          >
+                            {queuesLabel}
+                          </span>
                         </span>
                       </span>
                     </div>
                   </div>
+                  <Tooltip id='tooltip-queues-filter' place='top' />
 
                   {/* separator */}
                   <div
