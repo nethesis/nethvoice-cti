@@ -158,11 +158,11 @@ export const queueManagerQueues = createModel<RootModel>()({
 
       let connectedCalls: any[] = []
       Object.values(operators).forEach((operator: any) => {
-        operator.conversations?.forEach((conversation: any) => {
+        operator?.conversations?.forEach((conversation: any) => {
           if (
-            conversation.throughQueue &&
-            conversation.connected &&
-            conversation.queueId === queueId
+            conversation?.throughQueue &&
+            conversation?.connected &&
+            conversation?.queueId === queueId
           ) {
             connectedCalls.push({ conversation, operatorUsername: operator?.username })
           }
