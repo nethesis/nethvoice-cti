@@ -72,7 +72,7 @@ export const Layout: FC<LayoutProps> = ({ children }) => {
   const currentUsername = authStore.username
   const { operators } = useSelector((state: RootState) => state.operators)
   const { profile } = useSelector((state: RootState) => state.user)
-  const {avoidClose} = useSelector((state: RootState) => state.sideDrawer)
+  const { avoidClose } = useSelector((state: RootState) => state.sideDrawer)
 
   const productName = getProductName()
   // Get current page name, clean the path from / and capitalize page name
@@ -470,6 +470,25 @@ export const Layout: FC<LayoutProps> = ({ children }) => {
     userInformation?.default_device?.type,
   ])
 
+  useEventListener('phone-island-extensions-update', (data) => {
+    const opName: any = Object.keys(data)[0]
+
+    let extensionInformation: any = {
+      conversations: data[opName]?.conversations,
+      dnd: data[opName]?.dnd,
+      ip: data[opName]?.ip,
+      number: data[opName]?.number,
+      port: data[opName]?.port,
+      sipuseragent: data[opName]?.sipuseragent,
+      status: data[opName]?.status,
+      username: data[opName]?.username,
+      exten: data[opName]?.exten,
+      name: data[opName]?.name,
+    }
+
+    store.dispatch.operators.updateExten(data[opName]?.number, extensionInformation)
+  })
+  
   useEventListener('phone-island-conversations', (data) => {
     const opName = Object.keys(data)[0]
     const conversations = data[opName].conversations

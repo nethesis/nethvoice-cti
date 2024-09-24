@@ -110,8 +110,8 @@ export const RealTimeManagement: FC<RealTimeManagementProps> = ({ className }): 
           const conversation = conversations[c]
           //check if exists and is inside queue
           if (
-            conversation.connected === true &&
-            conversation.throughQueue === true &&
+            conversation?.connected === true &&
+            conversation?.throughQueue === true &&
             queueManagerStore?.queues[conversation.queueId] !== undefined
           ) {
             const queueId = conversation.queueId
