@@ -49,6 +49,34 @@ export const createSpeedDial = async (create: NewSpeedDialType) => {
       setInput: '',
       type: 'speeddial',
       speeddial_num: create.speeddial_num,
+      notes: "speeddial-basic",
+    }
+    await axios.post(`${PATH}/create`, newSpeedDial)
+    return newSpeedDial
+  } catch (error) {
+    handleNetworkError(error)
+    throw error
+  }
+}
+
+/**
+ *
+ * Create a new speed dial, type favorite
+ *
+ * @returns The speed dials
+ */
+
+export const createSpeedDialFavorite = async (create: NewSpeedDialType) => {
+  try {
+    const newSpeedDial: NewSpeedDialType = {
+      name: create.name,
+      privacy: 'private',
+      favorite: true,
+      selectedPrefNum: 'extension',
+      setInput: '',
+      type: 'speeddial',
+      speeddial_num: create.speeddial_num,
+      notes: "speeddial-favorite",
     }
     await axios.post(`${PATH}/create`, newSpeedDial)
     return newSpeedDial

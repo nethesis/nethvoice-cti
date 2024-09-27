@@ -39,5 +39,6 @@ export interface NewSpeedDialType {
   selectedPrefNum?: string
   setInput?: string
   type?: string
-  speeddial_num?: string
+  speeddial_num?: string,
+  notes?: string,
 }
