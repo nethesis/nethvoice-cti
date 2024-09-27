@@ -40,5 +40,6 @@ export interface NewSpeedDialType {
   setInput?: string
   type?: string
   speeddial_num?: string,
-  notes?: string
+  notes?: string,
+  company?: string
 }

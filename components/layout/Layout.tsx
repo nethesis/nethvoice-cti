@@ -210,7 +210,7 @@ export const Layout: FC<LayoutProps> = ({ children }) => {
             retrieveGroups()
             retrieveExtensions()
             retrieveAvatars(authStore)
-            retrieveFavoriteOperators(authStore)
+            retrieveFavoriteOperators(authStore, operatorsStore?.operators)
           } catch (e) {
             store.dispatch.operators.setErrorMessage('Cannot retrieve operators')
             store.dispatch.operators.setOperatorsLoaded(true)

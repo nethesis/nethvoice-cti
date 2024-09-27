@@ -76,8 +76,10 @@ export const SpeedDialContent = () => {
         try {
           setGetSpeedDialError('')
           const speedDials: SpeedDialType[] | undefined = await getSpeedDials()
+          // remove operators favorite contacts
+          const filteredSpeedDials = speedDials.filter((speedDial) => speedDial.notes !== 'speeddial-favorite')
           // Sort the speed dials and update the list
-          setSpeedDials(sortSpeedDials(speedDials))
+          setSpeedDials(sortSpeedDials(filteredSpeedDials))
           setSpeedDialLoaded(true)
         } catch (error) {
           setGetSpeedDialError('Cannot retrieve speed dial')

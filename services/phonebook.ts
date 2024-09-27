@@ -77,6 +77,7 @@ export const createSpeedDialFavorite = async (create: NewSpeedDialType) => {
       type: 'speeddial',
       speeddial_num: create.speeddial_num,
       notes: "speeddial-favorite",
+      company: create.company,
     }
     await axios.post(`${PATH}/create`, newSpeedDial)
     return newSpeedDial

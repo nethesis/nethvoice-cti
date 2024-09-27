@@ -4,8 +4,9 @@
 import axios from 'axios'
 import { callPhoneNumber, handleNetworkError } from '../lib/utils'
 import { store } from '../store'
-import { loadCache, loadPreference, saveCache, savePreference } from './storage'
+import { loadCache, loadPreference, saveCache, savePreference, clearPreference } from './storage'
 import { isEmpty, cloneDeep } from 'lodash'
+import { createSpeedDialFavorite, deleteSpeedDial, getSpeedDials } from '../services/phonebook'
 
 export const AVAILABLE_STATUSES = ['online', 'cellphone', 'callforward', 'voicemail']
 export const UNAVAILABLE_STATUSES = ['dnd', 'busy', 'incoming', 'ringing']
@@ -143,16 +144,35 @@ export const isOperatorCallable = (operator: any, currentUsername: string) => {
   )
 }
 
-export const addOperatorToFavorites = (operatorToAdd: string, currentUsername: string) => {
-  const favoriteOperators = loadPreference('favoriteOperators', currentUsername) || []
-  favoriteOperators.push(operatorToAdd)
-  savePreference('favoriteOperators', favoriteOperators, currentUsername)
+export const addOperatorToFavorites = async (
+  operatorToAdd: string,
+  mainExtension: string,
+  realUserName: string,
+) => {
+  try {
+    await createSpeedDialFavorite({
+      name: operatorToAdd,
+      speeddial_num: mainExtension,
+      company: realUserName,
+    })
+  } catch (error) {
+    return
+  }
 }
 
-export const removeOperatorFromFavorites = (operatorToRemove: string, currentUsername: string) => {
-  let favoriteOperators = loadPreference('favoriteOperators', currentUsername) || []
+export const removeOperatorFromFavorites = async (
+  operatorToRemove: string,
+  currentUsername: string,
+  favoriteOperators: any,
+  favoriteOperatoreSpeedDialId: any,
+) => {
+  store.dispatch.operators.setFavoritesLoaded(false)
+  await deleteSpeedDial({
+    id: favoriteOperatoreSpeedDialId.id.toString(),
+  })
   favoriteOperators = favoriteOperators.filter((op: any) => op !== operatorToRemove)
-  savePreference('favoriteOperators', favoriteOperators, currentUsername)
+  store.dispatch.operators.setFavorites(favoriteOperators)
+  store.dispatch.operators.setFavoritesLoaded(true)
 }
 
 export function reloadOperators() {
@@ -244,10 +264,34 @@ export const retrieveAvatars = async (authStore: any) => {
   }
 }
 
-export const retrieveFavoriteOperators = (authStore: any) => {
+export const retrieveFavoriteOperators = async (authStore: any, operatorObject: any) => {
   store.dispatch.operators.setFavoritesLoaded(false)
-  const favoriteOperators = loadPreference('favoriteOperators', authStore.username) || []
-  store.dispatch.operators.setFavorites(favoriteOperators)
+  const speedDials = await getSpeedDials()
+  const speedDialMap: any = speedDials.reduce((acc: any, speedDial: any) => {
+    acc[speedDial?.name] = { id: speedDial?.id }
+    return acc
+  }, {})
+  store.dispatch.operators.setFavoritesObjectComplete(speedDialMap)
+
+  const favoriteOperatorsLocalStorage =
+    loadPreference('favoriteOperators', authStore.username) || []
+
+  if (favoriteOperatorsLocalStorage.length > 0) {
+    for (const operatorName of favoriteOperatorsLocalStorage) {
+      const operatorSpeedDial = speedDials.find((speedDial: any) => speedDial.name === operatorName)
+      const mainExtension = operatorSpeedDial?.speeddial_num
+      if (mainExtension) {
+        let operatorRealName = operatorObject[operatorName]?.name
+        await addOperatorToFavorites(operatorName, mainExtension, operatorRealName)
+      }
+    }
+
+    clearPreference('favoriteOperators', authStore?.username)
+  }
+
+  const speedDialOwners = speedDials.map((speedDial: any) => speedDial?.name)
+
+  store.dispatch.operators.setFavorites(speedDialOwners)
   store.dispatch.operators.setFavoritesLoaded(true)
 }
 

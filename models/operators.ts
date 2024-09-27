@@ -18,6 +18,7 @@ interface DefaultState {
   avatars: Object
   isAvatarsLoaded: boolean
   favorites: string[]
+  favoritesObject: any
   isFavoritesLoaded: boolean
 }
 
@@ -35,6 +36,7 @@ const defaultState: DefaultState = {
   avatars: {},
   isAvatarsLoaded: false,
   favorites: [],
+  favoritesObject: {},
   isFavoritesLoaded: false,
 }
 
@@ -91,6 +93,10 @@ export const operators = createModel<RootModel>()({
     },
     setFavorites: (state, favorites: string[]) => {
       state.favorites = favorites
+      return state
+    },
+    setFavoritesObjectComplete: (state, favorites: any) => {
+      state.favoritesObject = favorites
       return state
     },
     setFavoritesLoaded: (state, isFavoritesLoaded: boolean) => {

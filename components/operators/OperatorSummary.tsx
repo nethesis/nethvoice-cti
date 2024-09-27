@@ -40,9 +40,14 @@ export const OperatorSummary = forwardRef<HTMLButtonElement, OperatorSummaryProp
 
     const toggleFavorite = () => {
       if (isFavorite) {
-        removeOperatorFromFavorites(operator?.username, auth?.username)
+        removeOperatorFromFavorites(
+          operator?.username,
+          auth?.username,
+          operatorsStore?.favorites,
+          operatorsStore?.favoritesObject[operator?.username],
+        )
       } else {
-        addOperatorToFavorites(operator?.username, auth?.username)
+        addOperatorToFavorites(operator?.username, operator?.endpoints?.mainextension[0]?.id, operator?.name)
       }
       setFavorite(!isFavorite)
       reloadOperators()

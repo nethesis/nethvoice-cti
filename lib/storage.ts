@@ -82,6 +82,25 @@ export const loadPreference = (preferenceName: string, currentUsername: string) 
 }
 
 /**
+ * Used to clear a specific user preference from the local storage entry "preferences-username"
+ *
+ * @param preferenceName name of the preference to be cleared
+ * @param username username currently logged in
+ */
+export const clearPreference = (preferenceName: string, username: string) => {
+  // Retrieve preferences from localStorage
+  const preferences = getJSONItem(`preferences-${username}`) || {}
+
+  // Remove the key corresponding to the preference
+  if (preferences[preferenceName]) {
+    delete preferences[preferenceName]
+
+    // Save the updated preferences object back to localStorage
+    localStorage.setItem(`preferences-${username}`, JSON.stringify(preferences))
+  }
+}
+
+/**
  * Used to save data to cache inside a local storage entry "caches-username"
  *
  * @param cacheName name of the cache
