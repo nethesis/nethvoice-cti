@@ -206,11 +206,11 @@ export const Layout: FC<LayoutProps> = ({ children }) => {
           store.dispatch.operators.setErrorMessage('')
 
           try {
-            retrieveUserEndpoints()
+            const userEndpoints = await retrieveUserEndpoints()
             retrieveGroups()
             retrieveExtensions()
             retrieveAvatars(authStore)
-            retrieveFavoriteOperators(authStore, operatorsStore?.operators)
+            retrieveFavoriteOperators(authStore, userEndpoints)
           } catch (e) {
             store.dispatch.operators.setErrorMessage('Cannot retrieve operators')
             store.dispatch.operators.setOperatorsLoaded(true)
@@ -227,7 +227,7 @@ export const Layout: FC<LayoutProps> = ({ children }) => {
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [
-    operatorsStore.isOperatorsLoaded,
+    operatorsStore?.isOperatorsLoaded,
     firstRenderOperators,
     profile?.macro_permissions?.presence_panel?.value,
   ])
@@ -488,7 +488,7 @@ export const Layout: FC<LayoutProps> = ({ children }) => {
 
     store.dispatch.operators.updateExten(data[opName]?.number, extensionInformation)
   })
-  
+
   useEventListener('phone-island-conversations', (data) => {
     const opName = Object.keys(data)[0]
     const conversations = data[opName].conversations

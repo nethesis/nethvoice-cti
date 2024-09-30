@@ -204,11 +204,13 @@ export const retrieveUserEndpoints = async () => {
     const endpoints = await getUserEndpointsAll()
     store.dispatch.operators.setUserEndpoints(endpoints)
     store.dispatch.operators.setUserEndpointsLoaded(true)
+    return endpoints
   } catch (e) {
     console.error(e)
     store.dispatch.operators.setErrorMessage('Cannot retrieve user endpoints')
     store.dispatch.operators.setOperatorsLoaded(true)
     store.dispatch.operators.setLoading(false)
+    return null
   }
 }
 
@@ -276,13 +278,26 @@ export const retrieveFavoriteOperators = async (authStore: any, operatorObject: 
   const favoriteOperatorsLocalStorage =
     loadPreference('favoriteOperators', authStore.username) || []
 
+  //check if the favoriteOperatorsLocalStorage is not empty
   if (favoriteOperatorsLocalStorage.length > 0) {
+    // Cycle through all the favorite operators in local storage
     for (const operatorName of favoriteOperatorsLocalStorage) {
-      const operatorSpeedDial = speedDials.find((speedDial: any) => speedDial.name === operatorName)
-      const mainExtension = operatorSpeedDial?.speeddial_num
-      if (mainExtension) {
-        let operatorRealName = operatorObject[operatorName]?.name
-        await addOperatorToFavorites(operatorName, mainExtension, operatorRealName)
+      // Check if the operator already exists in the speed dials
+      const operatorAlreadyExists = speedDials.some(
+        (speedDial: any) => speedDial?.name === operatorName,
+      )
+
+      // If the operator does not exist in the speed dials, add it
+      if (!operatorAlreadyExists) {
+        const operatorSpeedDial = operatorObject[operatorName]
+        if (operatorSpeedDial) {
+          const mainExtension = operatorSpeedDial?.endpoints?.mainextension[0]?.id
+          const operatorRealName = operatorSpeedDial?.name
+
+          if (mainExtension && operatorRealName) {
+            await addOperatorToFavorites(operatorName, mainExtension, operatorRealName)
+          }
+        }
       }
     }
 
