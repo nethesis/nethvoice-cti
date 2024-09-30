@@ -34,6 +34,7 @@ import { callPhoneNumber, transferCallToExtension } from '../../../lib/utils'
 import { useSelector } from 'react-redux'
 import { RootState } from '../../../store'
 import { Tooltip } from 'react-tooltip'
+import { store } from '../../../store'
 
 export const SpeedDialContent = () => {
   // The state for the delete modal
@@ -77,7 +78,9 @@ export const SpeedDialContent = () => {
           setGetSpeedDialError('')
           const speedDials: SpeedDialType[] | undefined = await getSpeedDials()
           // remove operators favorite contacts
-          const filteredSpeedDials = speedDials.filter((speedDial) => speedDial.notes !== 'speeddial-favorite')
+          const filteredSpeedDials = speedDials.filter(
+            (speedDial) => speedDial.notes !== 'speeddial-favorite',
+          )
           // Sort the speed dials and update the list
           setSpeedDials(sortSpeedDials(filteredSpeedDials))
           setSpeedDialLoaded(true)
@@ -114,6 +117,7 @@ export const SpeedDialContent = () => {
   const handleDeleteAllItems = async () => {
     try {
       const deleted = await deleteAllSpeedDials()
+      store.dispatch.operators.setOperatorsLoaded(false)
     } catch (error) {
       setDeleteSpeedDialError(t('SpeedDial.Cannot delete speed dial') || '')
       return
@@ -431,6 +435,11 @@ export const SpeedDialContent = () => {
               {t('SpeedDial.Delete all speed dials')}
             </h3>
             <div className='mt-3'>
+              <p className='mb-2'>
+                <span className='text-sm text-gray-500 dark:text-gray-400'>
+                  {t('SpeedDial.Delete all speed dials message')}
+                </span>
+              </p>
               <p className='text-sm text-gray-500 dark:text-gray-400'>
                 {t('SpeedDial.Are you sure?')}
               </p>
