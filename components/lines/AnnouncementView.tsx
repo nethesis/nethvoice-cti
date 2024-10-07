@@ -10,7 +10,7 @@ import { getAnnouncementsFiltered, downloadMsg, PAGE_SIZE } from '../../lib/line
 import {
   faPlay,
   faDownload,
-  faTrashCan,
+  faTrash,
   faLock,
   faLockOpen,
   faChevronLeft,
@@ -471,7 +471,7 @@ export const AnnouncementView: FC<AnnouncementViewProps> = ({ className }): JSX.
                                       />
                                     ) : (
                                       <FontAwesomeIcon
-                                        icon={faTrashCan}
+                                        icon={faTrash}
                                         className='h-4 w-4 ml-4 p-2 invisible'
                                       />
                                     )}

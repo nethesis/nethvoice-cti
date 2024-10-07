@@ -800,7 +800,7 @@ const Operators: NextPage = () => {
                     {infiniteScrollOperators.map((operator: any, index) => {
                       return (
                         <li key={index} className='px-1'>
-                          <div className='group flex w-full items-center justify-between space-x-3 rounded-lg p-2 text-left focus:outline-none focus:ring-2 focus:ring-offset-2 bg-cardBackgroud dark:bg-cardBackgroudDark focus:ring-primary dark:focus:ring-primary'>
+                          <div className='group flex w-full items-center justify-between space-x-3 rounded-lg py-2 pr-2 pl-6 text-left focus:outline-none focus:ring-2 focus:ring-offset-2 bg-cardBackgroud dark:bg-cardBackgroudDark focus:ring-primary dark:focus:ring-primary'>
                             <span className='flex min-w-0 flex-1 items-center space-x-3'>
                               <span className='block flex-shrink-0'>
                                 <Avatar
@@ -1044,7 +1044,7 @@ const Operators: NextPage = () => {
                       >
                         {category?.members?.map((operator: any, operatorIndex: number) => (
                           <li key={operatorIndex} className='px-1'>
-                            <div className='group flex w-full items-center justify-between space-x-3 rounded-lg p-2 text-left focus:outline-none focus:ring-2 focus:ring-offset-2 bg-cardBackgroud dark:bg-cardBackgroudDark  focus:ring-primary dark:focus:ring-primary'>
+                            <div className='group flex w-full items-center justify-between space-x-3 rounded-lg py-2 pr-2 pl-6 text-left focus:outline-none focus:ring-2 focus:ring-offset-2 bg-cardBackgroud dark:bg-cardBackgroudDark  focus:ring-primary dark:focus:ring-primary'>
                               <span className='flex min-w-0 flex-1 items-center space-x-3'>
                                 <span className='block flex-shrink-0'>
                                   <Avatar

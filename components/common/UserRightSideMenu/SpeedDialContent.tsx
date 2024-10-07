@@ -11,7 +11,7 @@ import {
   faEllipsisVertical,
   faPen,
   faBolt,
-  faTrashCan,
+  faTrash,
   faFileImport,
   faFileArrowDown,
   faCheckCircle,
@@ -192,7 +192,7 @@ export const SpeedDialContent = () => {
       <Dropdown.Item icon={faPen} onClick={() => openEditSpeedDialDrawer(speedDial)}>
         {t('Common.Edit')}
       </Dropdown.Item>
-      <Dropdown.Item icon={faTrashCan} onClick={() => confirmDeleteItem(speedDial)}>
+      <Dropdown.Item icon={faTrash} onClick={() => confirmDeleteItem(speedDial)}>
         {t('Common.Delete')}
       </Dropdown.Item>
     </>
@@ -226,7 +226,7 @@ export const SpeedDialContent = () => {
               <div className='w-full border-t  border-gray-300 dark:border-gray-600' />
             </div>
           </div>
-          <Dropdown.Item icon={faTrashCan} onClick={() => confirmDeleteAllItems()}>
+          <Dropdown.Item icon={faTrash} onClick={() => confirmDeleteAllItems()}>
             {t('SpeedDial.Delete all')}
           </Dropdown.Item>
         </>

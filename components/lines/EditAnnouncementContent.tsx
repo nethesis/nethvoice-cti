@@ -18,7 +18,7 @@ import {
   faFileAudio,
   faTriangleExclamation,
   faEllipsisVertical,
-  faTrashCan,
+  faTrash,
   faXmark,
   faCircleXmark,
   faFloppyDisk,
@@ -62,7 +62,7 @@ export const EditAnnouncementDrawerContent = forwardRef<
 
   const contactMenuItems = (
     <>
-      <Dropdown.Item icon={faTrashCan} onClick={() => deleteAnnouncement(config?.announcement_id)}>
+      <Dropdown.Item icon={faTrash} onClick={() => deleteAnnouncement(config?.announcement_id)}>
         {t('Common.Delete')}
       </Dropdown.Item>
     </>
