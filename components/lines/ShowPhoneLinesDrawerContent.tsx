@@ -509,7 +509,7 @@ export const ShowPhoneLinesDrawerContent = forwardRef<
   //                     name='date-select'
   //                     type='radio'
   //                     defaultChecked={dateRuleInformation.id === 'ferie'}
-  //                     className='h-4 w-4 border-gray-300 text-primary dark:border-gray-600 focus:ring-primaryLight dark:focus:ring-primaryDark dark:text-primary'
+  //                     className='h-4 w-4 border-gray-300 text-primary dark:border-gray-600 focus:ring-primaryLight dark:focus:ring-primaryDark dark:text-primaryDark'
   //                     onChange={changeDateSelected}
   //                   />
   //                   <label
@@ -845,8 +845,8 @@ export const ShowPhoneLinesDrawerContent = forwardRef<
                     checked={dateSelectionInput.value === selectedType}
                     className={`h-4 w-4 border-gray-300 text-primary focus:ring-primaryLight ${
                       selectedType === dateSelectionInput.value
-                        ? 'dark:text-primary dark:bg-primaryLight'
-                        : 'dark:text-primary dark:bg-gray-700'
+                        ? 'dark:text-primaryDark dark:bg-primaryLight'
+                        : 'dark:text-primaryDark dark:bg-gray-700'
                     } dark:border-gray-600 dark:focus:ring-primaryDark`}
                     onChange={changeTypeSelected}
                   />
@@ -1059,8 +1059,8 @@ export const ShowPhoneLinesDrawerContent = forwardRef<
                     checked={typology.value === selectedConfigurationTypology}
                     className={`h-4 w-4 border-gray-300 text-primary focus:ring-primaryLight ${
                       selectedConfigurationTypology === typology.value
-                        ? 'dark:text-primary dark:bg-primaryLight'
-                        : 'dark:text-primary dark:bg-gray-700'
+                        ? 'dark:text-primaryDark dark:bg-primaryLight'
+                        : 'dark:text-primaryDark dark:bg-gray-700'
                     } dark:border-gray-600 dark:focus:ring-primaryDark`}
                     onChange={changeAnnouncementTypologySelected}
                   />
@@ -1195,7 +1195,7 @@ export const ShowPhoneLinesDrawerContent = forwardRef<
                       name='configuration-type'
                       type='radio'
                       defaultChecked={configuration.id === 'customize'}
-                      className='h-4 w-4 border-gray-300 text-primary dark:border-gray-600 focus:ring-primaryLight dark:focus:ring-primaryDark dark:text-primary'
+                      className='h-4 w-4 border-gray-300 text-primary dark:border-gray-600 focus:ring-primaryLight dark:focus:ring-primaryDark dark:text-primaryDark'
                       onChange={changeConfiguration}
                     />
                     <label

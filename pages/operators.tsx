@@ -154,6 +154,17 @@ const Operators: NextPage = () => {
         )
       })
     } else {
+      // group filter
+      if (groupFilter === 'favorites') {
+        filteredOperators = filteredOperators.filter((op: any) => {
+          return op.favorite
+        })
+      } else {
+        filteredOperators = filteredOperators.filter((op: any) => {
+          return groupFilter === 'all' || op.groups?.includes(groupFilter)
+        })
+      }
+
       // sort operators
       switch (groupedSortByFilter) {
         case 'extension':

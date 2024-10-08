@@ -247,7 +247,7 @@ export const SpeedDialContent = () => {
               {isSpeedDialLoaded && !!speedDials.length && (
                 <div className='ml-3 h-7 flex items-center'>
                   <Button variant='white' onClick={() => openCreateSpeedDialDrawer()}>
-                    <FontAwesomeIcon icon={faPlus} className='xl:mr-2 h-4 w-4' />
+                    <FontAwesomeIcon icon={faPlus} className='xl:mr-2 h-4 w-4'/>
                     <span className='hidden xl:inline-block'>{t('SpeedDial.Create')}</span>
                     <span className='sr-only'>{t('SpeedDial.Create speed dial')}</span>
                   </Button>

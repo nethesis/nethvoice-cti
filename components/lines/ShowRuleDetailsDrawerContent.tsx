@@ -390,7 +390,7 @@ export const ShowRuleDetailsContent = forwardRef<HTMLButtonElement, ShowRuleDeta
                     value={listSelectionInput.value}
                     onChange={() => toggleLine(listSelectionInput.id)}
                     checked={selectedLines.has(listSelectionInput.id)}
-                    className='h-4 w-4 border-gray-300 text-primary focus:ring-primaryLight dark:border-gray-600 dark:text-primary dark:focus:ring-primaryDark'
+                    className='h-4 w-4 border-gray-300 text-primary focus:ring-primaryLight dark:border-gray-600 dark:text-primaryDark dark:focus:ring-primaryDark'
                   />
                   <label
                     htmlFor={listSelectionInput.id}

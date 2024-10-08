@@ -351,7 +351,7 @@ export const CreateOrEditContactDrawerContent = forwardRef<
                     type='radio'
                     checked={option.id === contactVisibility}
                     onChange={onContactVisibilityChanged}
-                    className='h-4 w-4 border-gray-300 text-primary focus:ring-primaryLight dark:border-gray-600 dark:text-primary dark:focus:ring-primaryDark'
+                    className='h-4 w-4 border-gray-300 text-primary focus:ring-primaryLight dark:border-gray-600 dark:text-primaryDark dark:focus:ring-primaryDark'
                   />
                   <label
                     htmlFor={option?.id}
@@ -380,7 +380,7 @@ export const CreateOrEditContactDrawerContent = forwardRef<
                     type='radio'
                     checked={option.id === contactType}
                     onChange={onContactTypeChanged}
-                    className='h-4 w-4 border-gray-300 text-primary focus:ring-primaryLight dark:border-gray-600 dark:text-primary dark:focus:ring-primaryDark'
+                    className='h-4 w-4 border-gray-300 text-primary focus:ring-primaryLight dark:border-gray-600 dark:text-primaryDark dark:focus:ring-primaryDark'
                   />
                   <label
                     htmlFor={option?.id}

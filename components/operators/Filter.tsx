@@ -5,7 +5,19 @@ import { ComponentPropsWithRef, forwardRef, useRef } from 'react'
 import classNames from 'classnames'
 import { TextInput } from '../common'
 import { Fragment, useState, useEffect } from 'react'
-import { Dialog, DialogPanel, Disclosure, DisclosureButton, DisclosurePanel, Popover, PopoverButton, PopoverGroup, PopoverPanel, Transition, TransitionChild } from '@headlessui/react'
+import {
+  Dialog,
+  DialogPanel,
+  Disclosure,
+  DisclosureButton,
+  DisclosurePanel,
+  Popover,
+  PopoverButton,
+  PopoverGroup,
+  PopoverPanel,
+  Transition,
+  TransitionChild,
+} from '@headlessui/react'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { faChevronDown, faCircleXmark, faXmark } from '@fortawesome/free-solid-svg-icons'
 import { RadioButtonType } from '../../services/types'
@@ -108,8 +120,8 @@ export const Filter = forwardRef<HTMLButtonElement, FilterProps>(
 
     useEffect(() => {
       groupFilter.options = [
-        { value: 'all', label: t('Operators.All'), },
-        { value: 'favorites', label: t('Operators.Favorites'), },
+        { value: 'all', label: t('Operators.All') },
+        { value: 'favorites', label: t('Operators.Favorites') },
         { value: 'divider1', label: '-' },
       ]
 
@@ -434,7 +446,7 @@ export const Filter = forwardRef<HTMLButtonElement, FilterProps>(
                                               type='radio'
                                               defaultChecked={option.value === group}
                                               onChange={changeGroup}
-                                              className='h-4 w-4 border-gray-300 text-primary focus:ring-primaryLight dark:border-gray-600 dark:text-primary dark:focus:ring-primaryDark'
+                                              className='h-4 w-4 border-gray-300 text-primary focus:ring-primaryLight dark:border-gray-600 dark:text-primaryDark dark:focus:ring-primaryDark'
                                             />
                                             <label
                                               htmlFor={`group-${option.value}`}
@@ -1140,6 +1152,88 @@ export const Filter = forwardRef<HTMLButtonElement, FilterProps>(
                                   >
                                     {option?.label}
                                   </label>
+                                </div>
+                              ))}
+                            </form>
+                          </PopoverPanel>
+                        </Transition>
+                      </Popover>
+
+                      {/* group filter */}
+                      <Popover
+                        as='div'
+                        key={groupFilter.name}
+                        id={`desktop-menu-${groupFilter.id}`}
+                        className='relative inline-block text-left shrink-0'
+                      >
+                        <div>
+                          <PopoverButton className='px-3 py-2 text-sm leading-4 p-2 rounded border shadow-sm border-gray-300 bg-white text-gray-700 hover:bg-gray-100 focus:ring-primaryLight dark:border-gray-600 dark:bg-gray-900 dark:text-gray-100 dark:hover:bg-gray-800 dark:focus:ring-primaryDark group inline-flex items-center justify-center font-medium  hover:text-gray-900 dark:hover:text-gray-100'>
+                            <span>{groupFilter.name}</span>
+                            <FontAwesomeIcon
+                              icon={faChevronDown}
+                              className='ml-2 h-3 w-3 flex-shrink-0 text-gray-400 group-hover:text-gray-500 dark:text-gray-500 dark:group-hover:text-gray-400'
+                              aria-hidden='true'
+                            />
+                          </PopoverButton>
+                        </div>
+
+                        <Transition
+                          as={Fragment}
+                          enter='transition ease-out duration-100'
+                          enterFrom='transform opacity-0 scale-95'
+                          enterTo='transform opacity-100 scale-100'
+                          leave='transition ease-in duration-75'
+                          leaveFrom='transform opacity-100 scale-100'
+                          leaveTo='transform opacity-0 scale-95'
+                        >
+                          <PopoverPanel className='absolute right-0 z-10 mt-2 origin-top-right rounded-md p-4 shadow-2xl ring-1 ring-opacity-5 focus:outline-none bg-white ring-black dark:bg-gray-900 dark:ring-gray-700'>
+                            <form className='space-y-4'>
+                              <TextInput
+                                placeholder={t('Operators.Filter groups') || ''}
+                                value={groupTextFilter}
+                                onChange={changeGroupTextFilter}
+                                autoFocus
+                                ref={groupTextFilterRef}
+                                icon={groupTextFilter.length ? faCircleXmark : undefined}
+                                onIconClick={() => clearGroupTextFilter()}
+                                trailingIcon={true}
+                                className='min-w-[10rem]'
+                              />
+                              {!filteredGroups.length && (
+                                <div className='text-sm text-gray-500 dark:text-gray-400'>
+                                  <span>No groups</span>
+                                </div>
+                              )}
+                              {filteredGroups.map((option) => (
+                                <div key={option.value}>
+                                  {option.value.startsWith('divider') ? (
+                                    <div className='relative'>
+                                      <div
+                                        className='absolute inset-0 flex items-center'
+                                        aria-hidden='true'
+                                      >
+                                        <div className='w-full border-t border-gray-300 dark:border-gray-600' />
+                                      </div>
+                                      <div className='relative flex justify-center'></div>
+                                    </div>
+                                  ) : (
+                                    <div className='flex items-center'>
+                                      <input
+                                        id={`group-${option.value}`}
+                                        name={`filter-${groupFilter.id}`}
+                                        type='radio'
+                                        defaultChecked={option.value === group}
+                                        onChange={changeGroup}
+                                        className='h-4 w-4 border-gray-300 text-primary focus:ring-primaryLight dark:border-gray-600 dark:text-primaryDark dark:focus:ring-primaryDark'
+                                      />
+                                      <label
+                                        htmlFor={`group-${option.value}`}
+                                        className='ml-3 block text-sm font-medium text-gray-700 dark:text-gray-200'
+                                      >
+                                        {option.label}
+                                      </label>
+                                    </div>
+                                  )}
                                 </div>
                               ))}
                             </form>
