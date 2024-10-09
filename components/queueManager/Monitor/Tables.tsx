@@ -201,13 +201,17 @@ export const MonitorTables: FC<MonitorTablesProps> = ({
                 {/* Number of waiting calls */}
                 <div className='text-sm text-gray-500'>
                   <span
-                    className={`text-orange-700 font-semibold mr-2 ${
+                    className={`text-amber-700 dark:text-amber-500 font-semibold mr-2 ${
                       isFullscreen ? 'text-2xl' : 'text-base'
                     }  `}
                   >
                     {getWaitingCallsCount(selectedQueueFirstTable.queue)}
                   </span>
-                  <span className={`text-orange-700 ${isFullscreen ? 'text-2xl' : 'text-base'}  `}>
+                  <span
+                    className={`text-amber-700 dark:text-amber-500 ${
+                      isFullscreen ? 'text-2xl' : 'text-base'
+                    }  `}
+                  >
                     {t('QueueManager.Waiting calls')}
                   </span>
                 </div>
@@ -302,12 +306,16 @@ export const MonitorTables: FC<MonitorTablesProps> = ({
                                       className={`${
                                         isFullscreen ? 'w-12 h-12' : 'w-6 h-6'
                                       } rounded-full bg-${
-                                        isDataPresent ? 'orange-100' : 'emerald-50'
-                                      } flex items-center justify-center`}
+                                          isDataPresent
+                                            ? 'amber-50 dark:bg-amber-700'
+                                            : 'emerald-50 dark:bg-emerald-700'
+                                        } flex items-center justify-center`}
                                     >
                                       <span
                                         className={`text-${
-                                          isDataPresent ? 'orange-600' : 'primary'
+                                          isDataPresent
+                                            ? 'amber-600 dark:text-amber-50'
+                                            : 'primary dark:text-green-50'
                                         } ${isFullscreen ? 'text-2xl' : 'text-sm'}`}
                                       >
                                         {index + 1}
@@ -316,14 +324,14 @@ export const MonitorTables: FC<MonitorTablesProps> = ({
                                   </div>
                                 </td>
                                 <td
-                                  className={`whitespace-nowrap  py-4 text-gray-500 ${
+                                  className={`whitespace-nowrap  py-4 text-gray-500 dark:text-gray-300 leading-5 font-norma ${
                                     isFullscreen ? 'text-2xl' : 'text-sm'
                                   }`}
                                 >
                                   {isDataPresent ? caller.name : '-'}
                                 </td>
                                 <td
-                                  className={`whitespace-nowrap  py-4 text-gray-500 ${
+                                  className={`whitespace-nowrap  py-4 text-gray-500 dark:text-gray-300 leading-5 font-normatext-gray-500 ${
                                     isFullscreen ? 'text-2xl' : 'text-sm'
                                   }`}
                                 >
@@ -444,14 +452,16 @@ export const MonitorTables: FC<MonitorTablesProps> = ({
                   {/* Number of waiting calls */}
                   <div className='text-sm text-gray-500'>
                     <span
-                      className={`text-orange-700 font-semibold mr-2 ${
+                      className={`text-amber-700 dark:text-amber-500 font-semibold mr-2 ${
                         isFullscreen ? 'text-2xl' : 'text-base'
                       }  `}
                     >
                       {getWaitingCallsCount(selectedQueueSecondTable.queue)}
                     </span>
                     <span
-                      className={`text-orange-700 ${isFullscreen ? 'text-2xl' : 'text-base'}  `}
+                      className={`text-amber-700 dark:text-amber-500 ${
+                        isFullscreen ? 'text-2xl' : 'text-base'
+                      }  `}
                     >
                       {t('QueueManager.Waiting calls')}
                     </span>
@@ -543,13 +553,17 @@ export const MonitorTables: FC<MonitorTablesProps> = ({
                                       <div
                                         className={`${
                                           isFullscreen ? 'w-12 h-12' : 'w-6 h-6'
-                                        }  rounded-full bg-${
-                                          isDataPresent ? 'orange-50' : 'emerald-50'
+                                        } rounded-full bg-${
+                                          isDataPresent
+                                            ? 'amber-50 dark:bg-amber-700'
+                                            : 'emerald-50 dark:bg-emerald-700'
                                         } flex items-center justify-center`}
                                       >
                                         <span
                                           className={`text-${
-                                            isDataPresent ? 'orange-600' : 'primary'
+                                            isDataPresent
+                                              ? 'amber-600 dark:text-amber-50'
+                                              : 'primary dark:text-green-50'
                                           } ${isFullscreen ? 'text-2xl' : 'text-sm'}`}
                                         >
                                           {index + 1}
@@ -558,14 +572,14 @@ export const MonitorTables: FC<MonitorTablesProps> = ({
                                     </div>
                                   </td>
                                   <td
-                                    className={`whitespace-nowrap  py-4 text-gray-500 ${
+                                    className={`whitespace-nowrap py-4 text-gray-500 dark:text-gray-300 leading-5 font-normal ${
                                       isFullscreen ? 'text-2xl' : 'text-sm'
                                     }`}
                                   >
                                     {isDataPresent ? caller.name : '-'}
                                   </td>
                                   <td
-                                    className={`whitespace-nowrap  py-4 text-gray-500 ${
+                                    className={`whitespace-nowrap py-4 text-gray-500 dark:text-gray-300 leading-5 font-normal ${
                                       isFullscreen ? 'text-2xl' : 'text-sm'
                                     }`}
                                   >

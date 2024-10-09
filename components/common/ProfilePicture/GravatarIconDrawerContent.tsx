@@ -7,11 +7,10 @@ import { Button } from '../Button'
 import { useState, useRef } from 'react'
 import { closeSideDrawer } from '../../../lib/utils'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
-import { faCircleXmark, faSave, faSearch } from '@fortawesome/free-solid-svg-icons'
+import { faCircleXmark, faSearch } from '@fortawesome/free-solid-svg-icons'
 import { SideDrawerCloseIcon } from '../SideDrawerCloseIcon'
 import { t } from 'i18next'
 import { TextInput } from '../TextInput'
-import gravatar from 'gravatar'
 import { Avatar } from '../Avatar'
 import { uploadProfilePicture } from '../../../lib/profilePicture'
 import { useSelector } from 'react-redux'
@@ -169,7 +168,7 @@ export const GravatarIconDrawerContent = forwardRef<
           </div>
         </div>
         <div className='flex items-center justify-end'>
-          <Button variant='white' type='submit' onClick={closeSideDrawer} className='mb-4'>
+          <Button variant='ghost' type='submit' onClick={closeSideDrawer} className='mb-4'>
             {t('Common.Cancel')}
           </Button>
           <Button
@@ -179,7 +178,6 @@ export const GravatarIconDrawerContent = forwardRef<
             className='ml-4 mb-4'
             disabled={isEmpty(avatarBase64)}
           >
-            <FontAwesomeIcon icon={faSave} className='mr-2 h-4 w-4' />
             {t('Settings.Save avatar')}
           </Button>
         </div>

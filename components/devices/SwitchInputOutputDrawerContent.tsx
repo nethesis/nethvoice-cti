@@ -21,6 +21,7 @@ import { useSelector } from 'react-redux'
 import { getInputOutputLocalStorageValue } from '../../lib/devices'
 import { eventDispatch } from '../../lib/hooks/eventDispatch'
 import { isEmpty } from 'lodash'
+import { setJSONItem } from '../../lib/storage'
 
 export interface SwitchInputOutputDrawerContentProps extends ComponentPropsWithRef<'div'> {
   config: any
@@ -78,7 +79,9 @@ export const SwitchInputOutputDrawerContent = forwardRef<
 
   const handleUpdateAudioDevices = () => {
     eventDispatch('phone-island-audio-input-change', { deviceId: selectedAudioInput?.deviceId })
+    setJSONItem('phone-island-audio-input-device', { deviceId: selectedAudioInput?.deviceId })
     eventDispatch('phone-island-audio-output-change', { deviceId: selectedAudioOutput?.deviceId })
+    setJSONItem('phone-island-audio-output-device', { deviceId: selectedAudioOutput?.deviceId })
     closeSideDrawer()
   }
 
@@ -325,10 +328,8 @@ export const SwitchInputOutputDrawerContent = forwardRef<
         </div>
         {/* Footer section */}
         <div className='flex justify-end'>
-          <Button variant='white' type='submit' onClick={closeSideDrawer} className='mb-4'>
-            <span className='text-primary dark:text-primaryDark leading-5 text-sm font-medium'>
-              {t('Common.Cancel')}
-            </span>
+          <Button variant='ghost' type='submit' onClick={closeSideDrawer} className='mb-4'>
+            {t('Common.Cancel')}
           </Button>
           <Button
             variant='primary'
@@ -336,7 +337,7 @@ export const SwitchInputOutputDrawerContent = forwardRef<
             className='mb-4 ml-4'
             onClick={() => handleUpdateAudioDevices()}
           >
-            <span className='leading-5 text-sm font-medium'>{t('Common.Save')}</span>
+            {t('Common.Save')}
           </Button>
         </div>
       </div>

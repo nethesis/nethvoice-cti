@@ -608,7 +608,7 @@ export const TopBar: FC<TopBarProps> = ({ openMobileCb }) => {
             <form onSubmit={handleSubmit}>
               <Modal.Content>
                 <div className='mt-3 text-center sm:mt-0 sm:text-left w-full'>
-                  <h3 className='text-lg font-medium leading-6 text-center text-gray-900 dark:text-gray-100'>
+                  <h3 className='text-lg text-left font-medium leading-6 text-gray-900 dark:text-gray-100'>
                     {t('TopBar.Enter phone number for call forward')}
                   </h3>
                   <div className='mt-3 flex flex-col gap-2'>

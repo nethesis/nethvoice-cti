@@ -92,6 +92,7 @@ export const RealTimeQueues: FC<RealTimeQueuesProps> = ({
 
   const debouncedUpdateTextFilter = useMemo(
     () => debounce(toggleDebouncedTextFilter, 400),
+    // eslint-disable-next-line react-hooks/exhaustive-deps
     [debouncedTextFilter],
   )
 
@@ -326,7 +327,6 @@ export const RealTimeQueues: FC<RealTimeQueuesProps> = ({
                               <BarChartHorizontalWithTitle
                                 labels={labelsCalls}
                                 datasets={datasetsQueues}
-                                tickColor='#374151'
                                 titleText='Calls'
                               />
                             </div>
@@ -334,7 +334,6 @@ export const RealTimeQueues: FC<RealTimeQueuesProps> = ({
                               <BarChartHorizontalWithTitle
                                 labels={labelsOperators}
                                 datasets={datasetsOperators}
-                                tickColor='#374151'
                                 titleText='Operators'
                               />
                             </div>

@@ -223,18 +223,6 @@ const CustomerCards: NextPage = () => {
                         >
                           {t('CustomerCards.General info')}
                         </a>
-                        {/* Pulsating effect for "Loading" */}
-                        <div className='flex space-x-8 whitespace-nowrap py-4 px-1 border-b-2 font-medium text-sm'>
-                          <div className='w-1/4'>
-                            <div className='animate-pulse h-3 w-12 rounded bg-gray-300 dark:bg-gray-600 inline-block'></div>
-                          </div>
-                          <div className='w-1/4'>
-                            <div className='animate-pulse h-3 w-12 rounded bg-gray-300 dark:bg-gray-600 inline-block'></div>
-                          </div>
-                          <div className='w-1/4'>
-                            <div className='animate-pulse h-3 w-12 rounded bg-gray-300 dark:bg-gray-600 inline-block'></div>
-                          </div>
-                        </div>
                       </>
                     )}
                   </nav>

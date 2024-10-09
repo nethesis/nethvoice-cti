@@ -73,14 +73,11 @@ export const SelectProfilePictureDrawerContent = forwardRef<
       const reader = new FileReader()
 
       reader.readAsDataURL(file)
+      //to prevent local storage from becoming full
       reader.onloadend = () => {
-        setSelectedFileBase64(reader.result)
-        setPreviewImage(reader.result)
+        resizeImage(reader.result as string, 30 * 1024)
       }
 
-      if (selectedFileBase64) {
-        setPreviewImage(selectedFileBase64)
-      }
       if (errorUpload) {
         setErrorUpload(false)
       }
@@ -98,9 +95,10 @@ export const SelectProfilePictureDrawerContent = forwardRef<
       const reader = new FileReader()
 
       reader.readAsDataURL(file)
+
+      //to prevent local storage from becoming full
       reader.onloadend = () => {
-        setSelectedFileBase64(reader.result)
-        setPreviewImage(reader.result)
+        resizeImage(reader.result as string, 30 * 1024)
       }
 
       if (errorUpload) {
@@ -108,6 +106,67 @@ export const SelectProfilePictureDrawerContent = forwardRef<
       }
     } else {
       setErrorUpload(true)
+    }
+  }
+
+  // Function to resize the image
+  function resizeImage(dataUrl: string, maxFileSize: number) {
+    const img = new Image()
+    img.src = dataUrl
+
+    img.onload = () => {
+      const canvas = document.createElement('canvas')
+      const ctx = canvas.getContext('2d')
+
+      // Set the maximum width and height for the image
+      const MAX_WIDTH = 800
+      const MAX_HEIGHT = 800
+
+      let width = img.width
+      let height = img.height
+
+      if (width > height) {
+        if (width > MAX_WIDTH) {
+          height = (height * MAX_WIDTH) / width
+          width = MAX_WIDTH
+        }
+      } else {
+        if (height > MAX_HEIGHT) {
+          width = (width * MAX_HEIGHT) / height
+          height = MAX_HEIGHT
+        }
+      }
+
+      canvas.width = width
+      canvas.height = height
+
+      ctx?.drawImage(img, 0, 0, width, height)
+
+      // Reduce the quality of the image
+      canvas.toBlob(
+        (blob) => {
+          if (blob) {
+            const reader = new FileReader()
+            reader.readAsDataURL(blob)
+
+            reader.onloadend = () => {
+              const compressedBase64 = reader.result as string
+              const size = blob.size
+
+              // Check if the size of the image is less than the maximum size
+              if (size <= maxFileSize) {
+                setSelectedFileBase64(compressedBase64)
+                setPreviewImage(compressedBase64)
+              } else {
+                // If the size of the image is greater than the maximum size, compress it again
+                resizeImage(compressedBase64, maxFileSize)
+              }
+            }
+          }
+        },
+        'image/jpeg',
+        0.7,
+      )
     }
   }
 
@@ -169,15 +228,14 @@ export const SelectProfilePictureDrawerContent = forwardRef<
               <div className='flex items-center justify-center w-full mt-2'>
                 <label
                   htmlFor='dropzone-file'
-                  className='flex flex-col items-center justify-center w-full py-2 border-2 border-primary border-dashed rounded-lg cursor-pointer bg-emerald-50 dark:hover:bg-emerald-800 dark:bg-primaryDark hover:bg-emerald-100 dark:border-gray-400 dark:hover:border-gray-500 '
+                  className='flex flex-col items-center justify-center w-full border-2 border-dashed border-gray-300 rounded-lg cursor-pointer bg-gray-100 dark:hover:bg-gray-700 dark:bg-gray-800 hover:bg-gray-200 hover:border-gray-400 dark:border-gray-600 dark:hover:border-gray-500'
                   onDragOver={handleDragOver}
                   onDrop={handleDrop}
                 >
-                  <div className='flex flex-col items-center justify-center pt-5 pb-6'>
-                    <Avatar size='large' placeholderType='person' />
-
-                    <p className='mt-2 text-base text-gray-900 dark:text-gray-100'>
-                      <span className='font-normal'>{t('Settings.Select or drag image here')}</span>
+                  <div className='flex flex-col items-center justify-center pt-6 text-gray-600 dark:text-gray-300'>
+                    <Avatar size='large' placeholderType='person' className='mb-4' />
+                    <p className='mb-4 text-base font-medium'>
+                      {t('Settings.Select or drag image here')}
                     </p>
                   </div>
                   <input
@@ -192,14 +250,14 @@ export const SelectProfilePictureDrawerContent = forwardRef<
           ) : (
             <>
               <div className='py-3'>
-                <div className='rounded-md border border-emerald-500'>
+                <div className='rounded-md border-2 border-gray-400 bg-gray-200 dark:bg-gray-700 dark:border-gray-500'>
                   <div className='flex items-center justify-between py-4 pl-3 pr-4'>
                     <div className='flex w-0 flex-1 items-center pl-2'>
-                      <div className='h-9 w-9 bg-emerald-50 dark:bg-emerald-200 flex items-center rounded-lg justify-center'>
+                      <div className='h-9 w-9 bg-gray-100 dark:bg-gray-800 flex items-center rounded justify-center'>
                         <Avatar
                           size='extra_small'
                           placeholderType='person'
-                          className='bg-primary'
+                          className='text-gray-600 dark:text-gray-300'
                         />
                       </div>
                       <div className='text-base flex flex-col pl-3'>
@@ -213,7 +271,7 @@ export const SelectProfilePictureDrawerContent = forwardRef<
                       <Button variant='ghost' onClick={() => deleteUploadedAnnouncement()}>
                         <FontAwesomeIcon
                           icon={faXmark}
-                          className='h-4 w-4 text-gray-500 dark:text-gray-500'
+                          className='h-4 w-4 text-gray-400 dark:text-gray-400'
                           aria-hidden='true'
                         />
                       </Button>
@@ -245,7 +303,7 @@ export const SelectProfilePictureDrawerContent = forwardRef<
           </div>
         </div>
         <div className={`${previewImage ? '' : 'pt-8'} flex items-center justify-end`}>
-          <Button variant='white' type='submit' onClick={closeSideDrawer} className='mb-4'>
+          <Button variant='ghost' type='submit' onClick={closeSideDrawer} className='mb-4'>
             {t('Common.Cancel')}
           </Button>
           <Button

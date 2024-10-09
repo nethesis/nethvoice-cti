@@ -5,13 +5,13 @@ const theme = {
   button: {
     base: 'inline-flex content-center items-center justify-center font-medium tracking-wide transition-colors duration-200 transform focus:outline-none focus:z-20 disabled:cursor-not-allowed',
     primary:
-      'border border-transparent bg-primary dark:bg-primaryDark text-white dark:text-primaryButtonTextDark hover:bg-primaryHover dark:hover:bg-primaryDarkHover focus:ring-2 focus:ring-primaryRing dark:focus:ring-primaryRingDark ring-offset-2 ring-offset-gray-50 dark:ring-offset-gray-900',
+      'border border-transparent bg-primary dark:bg-primaryDark text-white dark:text-primaryButtonTextDark hover:bg-primaryHover dark:hover:bg-primaryDarkHover focus:ring-2 focus:ring-primaryRing dark:focus:ring-primaryRingDark ring-offset-2 ring-offset-gray-50 dark:ring-offset-gray-900 font-medium leading-5 text-sm',
     secondary:
       'border border-transparent focus:ring-primaryLight bg-primaryLighter text-primaryDark hover:bg-primaryLighter dark:focus:ring-primaryDark dark:bg-primaryDarker dark:text-primaryLight dark:hover:bg-primaryDarker focus:ring-2 focus:ring-offset-2',
     white:
-      'border shadow-sm border-gray-300 dark:border-gray-500 bg-transparent dark:bg-transparent text-primary dark:text-primaryDark hover:bg-gray-200 hover:bg-opacity-30 dark:hover:bg-gray-600 dark:hover:bg-opacity-30 focus:ring-primaryLight dark:focus:ring-primaryDark focus:ring-2 focus:ring-offset-2',
+      'border shadow-sm border-gray-300 dark:border-gray-500 bg-transparent dark:bg-transparent text-primary dark:text-primaryDark hover:bg-gray-200 hover:bg-opacity-30 dark:hover:bg-gray-600 dark:hover:bg-opacity-30 focus:ring-primaryLight dark:focus:ring-primaryDark focus:ring-2 focus:ring-offset-2 leading-5 text-sm font-medium',
     ghost:
-      'border-gray-300 text-primary dark:text-primaryDark  hover:bg-gray-200 hover:bg-opacity-30 dark:hover:bg-gray-600 dark:hover:bg-opacity-30  focus:ring-primaryLight dark:border-gray-600 dark:focus:ring-primaryDark',
+      'border-gray-300 text-primary dark:text-primaryDark  hover:bg-gray-200 hover:bg-opacity-30 dark:hover:bg-gray-600 dark:hover:bg-opacity-30 focus:ring-primaryLight dark:border-gray-600 dark:focus:ring-primaryDark leading-5 text-sm font-medium',
     dashboard:
       'border-gray-300 text-primary dark:text-primaryDark hover:bg-gray-200 dark:border-gray-600  dark:hover:bg-gray-700 dark:hover:disabled:bg-transparent hover:disabled:bg-transparent dark:focus:ring-primaryDark',
     danger:

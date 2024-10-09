@@ -41,6 +41,8 @@ import {
   faCheck,
   faCircle,
   faCircleCheck,
+  faArrowRightFromBracket,
+  faArrowRightToBracket,
 } from '@fortawesome/free-solid-svg-icons'
 import { faStar as faStarLight } from '@nethesis/nethesis-light-svg-icons'
 import { getOperatorByPhoneNumber, openShowOperatorDrawer } from '../../lib/operators'
@@ -400,19 +402,16 @@ export const QueuesManagementView: FC<QueuesManagementViewProps> = ({ className 
               {isEmpty(getQueuesUserLoggedIn()) ? (
                 <>
                   {/* login from all queues */}
-                  <Button variant='white' className='mr-2' onClick={loginAllQueues}>
-                    <FontAwesomeIcon icon={faCircleCheck} className='h-4 w-4 mr-2' />
+                  <Button variant='ghost' className='mr-2' onClick={loginAllQueues}>
+                    <FontAwesomeIcon icon={faArrowRightToBracket} className='h-4 w-4 mr-2' />
                     <span>{t('Queues.Login to all queues')}</span>
                   </Button>
                 </>
               ) : (
                 <>
                   {/* logout from all queues */}
-                  <Button variant='white' className='mr-2' onClick={prepareLogoutAllQueuesModal}>
-                    <FontAwesomeIcon
-                      icon={faUserXmark}
-                      className='h-4 w-4 mr-2 text-gray-500 dark:text-gray-400'
-                    />
+                  <Button variant='ghost' className='mr-2' onClick={prepareLogoutAllQueuesModal}>
+                    <FontAwesomeIcon icon={faArrowRightFromBracket} className='h-4 w-4 mr-2' />
                     <span>{t('Queues.Logout from all queues')}</span>
                   </Button>
                 </>
@@ -437,10 +436,7 @@ export const QueuesManagementView: FC<QueuesManagementViewProps> = ({ className 
                 <>
                   {/* end pause on all queues */}
                   <Button variant='primary' className='' onClick={unpauseAllQueues}>
-                    <FontAwesomeIcon
-                      icon={faUserClock}
-                      className='h-4 w-4 mr-2 text-white dark:text-white'
-                    />
+                    <FontAwesomeIcon icon={faClock} className='h-4 w-4 mr-2' />
                     <span>{t('Queues.End pause on all queues')}</span>
                   </Button>
                 </>
@@ -615,10 +611,8 @@ export const QueuesManagementView: FC<QueuesManagementViewProps> = ({ className 
                             src={avatar}
                             placeholderType='operator'
                             size='small'
-                            status={mainPresence}
                           />
                           <div className='flex flex-col text-sm overflow-hidden'>
-                            <div className='truncate'>{name}</div>
                             <LoggedStatus
                               loggedIn={queue?.members[mainextension]?.loggedIn}
                               paused={queue?.members[mainextension]?.paused}
@@ -631,14 +625,14 @@ export const QueuesManagementView: FC<QueuesManagementViewProps> = ({ className 
                             <>
                               {/* logout button */}
                               <Button
-                                variant='white'
+                                variant='ghost'
                                 className='mr-2'
                                 onClick={() => logoutSingleQueue(queue)}
                                 disabled={queue?.members[mainextension]?.type !== 'dynamic'}
                               >
                                 <FontAwesomeIcon
-                                  icon={faUserXmark}
-                                  className='h-4 w-4 mr-2 text-gray-500 dark:text-gray-400'
+                                  icon={faArrowRightFromBracket}
+                                  className='h-4 w-4 mr-2'
                                 />
                                 <span>{t('Queues.Logout')}</span>
                               </Button>
@@ -647,14 +641,14 @@ export const QueuesManagementView: FC<QueuesManagementViewProps> = ({ className 
                             <>
                               {/* login button */}
                               <Button
-                                variant='white'
+                                variant='ghost'
                                 className='mr-2'
                                 onClick={() => loginSingleQueue(queue)}
                                 disabled={queue?.members[mainextension]?.type !== 'dynamic'}
                               >
                                 <FontAwesomeIcon
-                                  icon={faUserCheck}
-                                  className='h-4 w-4 mr-2 text-gray-500 dark:text-gray-400'
+                                  icon={faArrowRightToBracket}
+                                  className='h-4 w-4 mr-2'
                                 />
                                 <span>{t('Queues.Login')}</span>
                               </Button>

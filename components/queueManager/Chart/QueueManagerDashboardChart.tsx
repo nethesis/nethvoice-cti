@@ -414,7 +414,6 @@ export const QueueManagerDashboardChart: FC<QueueManagerDashboardChartProps> = (
           <div className='border-b rounded-md shadow-md bg-cardBackgroud dark:bg-cardBackgroudDark border-gray-200 dark:border-gray-700 px-4 py-5 sm:px-6 mt-1 relative w-full min-h-full'>
             <div className='flex space-x-3 h-96'>
               <div className='min-w-0 flex-1 '>
-                {/* ... */}
                 <LineChart labels={labelsCallsHour} datasets={datasetsCallsHour} />
               </div>
             </div>

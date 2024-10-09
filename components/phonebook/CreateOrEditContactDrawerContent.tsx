@@ -7,8 +7,6 @@ import { TextInput, Button, InlineNotification, SideDrawerCloseIcon } from '../c
 import { useState, useRef, useEffect } from 'react'
 import { createContact, editContact, reloadPhonebook, fetchContact } from '../../lib/phonebook'
 import { closeSideDrawer } from '../../lib/utils'
-import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
-import { faUserPlus, faPen } from '@fortawesome/free-solid-svg-icons'
 import { t } from 'i18next'
 import { openToast } from '../../lib/utils'
 
@@ -457,17 +455,25 @@ export const CreateOrEditContactDrawerContent = forwardRef<
           </div>
         </div>
         <div className='flex items-center justify-end'>
-          <Button variant='white' type='submit' onClick={closeSideDrawer} className='mb-4'>
+          <Button variant='ghost' type='submit' onClick={closeSideDrawer} className='mb-4'>
             {t('Common.Cancel')}
           </Button>
-          {config.isEdit ? (
-            <Button variant='primary' type='submit' onClick={prepareEditContact} className='ml-4 mb-4'>
-              <FontAwesomeIcon icon={faPen} className='mr-2 h-4 w-4' />
+          {config?.isEdit ? (
+            <Button
+              variant='primary'
+              type='submit'
+              onClick={prepareEditContact}
+              className='ml-4 mb-4'
+            >
               {t('Phonebook.Save contact')}
             </Button>
           ) : (
-            <Button variant='primary' type='submit' onClick={prepareCreateContact} className='ml-4 mb-4'>
-              <FontAwesomeIcon icon={faUserPlus} className='mr-2 h-4 w-4' />
+            <Button
+              variant='primary'
+              type='submit'
+              onClick={prepareCreateContact}
+              className='ml-4 mb-4'
+            >
               {t('Phonebook.Create contact')}
             </Button>
           )}

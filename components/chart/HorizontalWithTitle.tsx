@@ -9,21 +9,28 @@ import {
   Tooltip,
   Legend,
 } from 'chart.js'
+import { useSelector } from 'react-redux'
+import { RootState } from '../../store'
+import {
+  GRAY_200,
+  GRAY_300,
+  GRAY_600,
+  GRAY_700,
+} from '../../lib/colors'
 ChartJS.register(CategoryScale, LinearScale, BarElement, Title, Tooltip, Legend)
 
 interface BarChartHorizontalWithTitleProps {
   labels: string[]
   datasets: any[]
-  tickColor?: string
   titleText?: string
 }
 
 const BarChartHorizontalWithTitle: FC<BarChartHorizontalWithTitleProps> = ({
   labels,
   datasets,
-  tickColor,
   titleText,
 }) => {
+  const { theme } = useSelector((state: RootState) => state.darkTheme)
   const options = {
     indexAxis: 'y' as const,
     responsive: true,
@@ -45,7 +52,11 @@ const BarChartHorizontalWithTitle: FC<BarChartHorizontalWithTitleProps> = ({
         },
         ticks: {
           stepSize: 2,
-          color: tickColor,
+          color:
+            theme === 'dark' ||
+            (theme === 'system' && window.matchMedia('(prefers-color-scheme: dark)').matches)
+              ? GRAY_200
+              : GRAY_700,
           font: {
             size: 14,
           },
@@ -62,6 +73,13 @@ const BarChartHorizontalWithTitle: FC<BarChartHorizontalWithTitleProps> = ({
       legend: {
         position: 'bottom' as const,
         display: false,
+        labels: {
+          color:
+            theme === 'dark' ||
+            (theme === 'system' && window.matchMedia('(prefers-color-scheme: dark)').matches)
+              ? GRAY_300
+              : GRAY_600,
+        },
       },
       title: {
         display: true,
@@ -69,6 +87,11 @@ const BarChartHorizontalWithTitle: FC<BarChartHorizontalWithTitleProps> = ({
         font: {
           size: 16,
         },
+        color:
+            theme === 'dark' ||
+            (theme === 'system' && window.matchMedia('(prefers-color-scheme: dark)').matches)
+              ? GRAY_300
+              : GRAY_600,
         padding: {
           top: 0,
           bottom: 4,

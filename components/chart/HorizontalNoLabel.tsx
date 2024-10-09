@@ -11,6 +11,12 @@ import {
 } from 'chart.js'
 import { getRandomColor } from '../../lib/queueManager'
 import ChartDataLabels from 'chartjs-plugin-datalabels'
+import {
+  GRAY_200,
+  GRAY_700,
+} from '../../lib/colors'
+import { useSelector } from 'react-redux'
+import { RootState } from '../../store'
 
 ChartJS.register(CategoryScale, LinearScale, BarElement, Title, Tooltip, Legend)
 
@@ -20,13 +26,12 @@ interface BarChartHorizontalNoLabelsProps {
   queuedata: any
 }
 
-// type Align = 'start' | 'center' | 'end' | 'left' | 'right' | 'top' | 'bottom' | number | ((context: any) => Align);
-
 const BarChartHorizontalNoLabels: FC<BarChartHorizontalNoLabelsProps> = ({
   datasets,
   titleText,
   queuedata,
 }) => {
+  const { theme } = useSelector((state: RootState) => state.darkTheme)
   const validQueueData = queuedata || []
 
   const queueDataMap: { [label: string]: any } = {}
@@ -48,7 +53,6 @@ const BarChartHorizontalNoLabels: FC<BarChartHorizontalNoLabelsProps> = ({
     },
     scales: {
       y: {
-        // display: false,
         display: true,
 
         beginAtZero: true,
@@ -63,6 +67,11 @@ const BarChartHorizontalNoLabels: FC<BarChartHorizontalNoLabelsProps> = ({
           font: {
             size: 14,
           },
+          color:
+          theme === 'dark' ||
+          (theme === 'system' && window.matchMedia('(prefers-color-scheme: dark)').matches)
+            ? GRAY_200
+            : GRAY_700,
         },
       },
       x: {
@@ -91,6 +100,11 @@ const BarChartHorizontalNoLabels: FC<BarChartHorizontalNoLabelsProps> = ({
         font: {
           size: 16,
         },
+        color:
+        theme === 'dark' ||
+        (theme === 'system' && window.matchMedia('(prefers-color-scheme: dark)').matches)
+          ? GRAY_200
+          : GRAY_700,
       },
       datalabels: {
         color: 'white',
