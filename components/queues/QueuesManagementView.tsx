@@ -193,13 +193,14 @@ export const QueuesManagementView: FC<QueuesManagementViewProps> = ({ className 
   }
 
   const getQueuesUserLoggedIn = () => {
-    return Object.values(queuesStore.queues)
+    return Object.values(queuesStore?.queues)
       .filter((queue: any) => {
         return (
-          queue.members[mainextension].loggedIn && queue.members[mainextension].type !== 'static'
+          queue?.members[mainextension]?.loggedIn &&
+          queue?.members[mainextension]?.type !== 'static'
         )
       })
-      .map((queue: any) => queue.queue)
+      .map((queue: any) => queue?.queue)
   }
 
   const getQueuesUserPaused = () => {
@@ -641,7 +642,7 @@ export const QueuesManagementView: FC<QueuesManagementViewProps> = ({ className 
                             <>
                               {/* login button */}
                               <Button
-                                variant='ghost'
+                                variant='white'
                                 className='mr-2'
                                 onClick={() => loginSingleQueue(queue)}
                                 disabled={queue?.members[mainextension]?.type !== 'dynamic'}
@@ -654,44 +655,48 @@ export const QueuesManagementView: FC<QueuesManagementViewProps> = ({ className 
                               </Button>
                             </>
                           )}
-                          {queue?.members[mainextension]?.paused ? (
+                          {queue.members[mainextension]?.loggedIn && (
                             <>
-                              {/* unpause button */}
-                              <Button
-                                variant='white'
-                                onClick={() => unpauseSingleQueue(queue)}
-                                disabled={!queue?.members[mainextension]?.loggedIn}
-                              >
-                                <FontAwesomeIcon
-                                  icon={faUserClock}
-                                  className='h-4 w-4 mr-2 text-gray-500 dark:text-gray-400'
-                                />
-                                <span>{t('Queues.End pause')}</span>
-                              </Button>
-                            </>
-                          ) : (
-                            <>
-                              {/* pause menu */}
-                              <Dropdown
-                                items={
-                                  queue?.members[mainextension]?.loggedIn
-                                    ? getPauseSingleQueueItemsMenu(queue)
-                                    : null
-                                }
-                                position='left'
-                              >
-                                <Button
-                                  variant='white'
-                                  disabled={!queue?.members[mainextension]?.loggedIn}
-                                >
-                                  <span>{t('Queues.Pause')}</span>
-                                  <FontAwesomeIcon
-                                    icon={faChevronDown}
-                                    className='ml-2 h-3 w-3 flex-shrink-0'
-                                    aria-hidden='true'
-                                  />
-                                </Button>
-                              </Dropdown>
+                              {queue?.members[mainextension]?.paused ? (
+                                <>
+                                  {/* unpause button */}
+                                  <Button
+                                    variant='white'
+                                    onClick={() => unpauseSingleQueue(queue)}
+                                    disabled={!queue?.members[mainextension]?.loggedIn}
+                                  >
+                                    <FontAwesomeIcon
+                                      icon={faUserClock}
+                                      className='h-4 w-4 mr-2 text-gray-500 dark:text-gray-400'
+                                    />
+                                    <span>{t('Queues.End pause')}</span>
+                                  </Button>
+                                </>
+                              ) : (
+                                <>
+                                  {/* pause menu */}
+                                  <Dropdown
+                                    items={
+                                      queue?.members[mainextension]?.loggedIn
+                                        ? getPauseSingleQueueItemsMenu(queue)
+                                        : null
+                                    }
+                                    position='left'
+                                  >
+                                    <Button
+                                      variant='white'
+                                      disabled={!queue?.members[mainextension]?.loggedIn}
+                                    >
+                                      <span>{t('Queues.Pause')}</span>
+                                      <FontAwesomeIcon
+                                        icon={faChevronDown}
+                                        className='ml-2 h-3 w-3 flex-shrink-0'
+                                        aria-hidden='true'
+                                      />
+                                    </Button>
+                                  </Dropdown>
+                                </>
+                              )}
                             </>
                           )}
                         </div>

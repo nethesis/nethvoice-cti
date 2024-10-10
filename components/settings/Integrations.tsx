@@ -183,7 +183,7 @@ export const Integrations = () => {
           <Button variant='danger' onClick={removeConfig}>
             {t('Settings.Revoke')}
           </Button>
-          <Button variant='white' onClick={() => setShowMondal(false)} ref={cancelButtonRef}>
+          <Button variant='ghost' onClick={() => setShowMondal(false)} ref={cancelButtonRef}>
             {t('Common.Cancel')}
           </Button>
         </Modal.Actions>

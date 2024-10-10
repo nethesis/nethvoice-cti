@@ -115,7 +115,7 @@ export const MobileApp = () => {
           <Button variant='danger' onClick={newQRcode}>
             {t('Settings.Generate')}
           </Button>
-          <Button variant='white' onClick={() => setShowMondal(false)} ref={cancelButtonRef}>
+          <Button variant='ghost' onClick={() => setShowMondal(false)} ref={cancelButtonRef}>
             {t('Common.Cancel')}
           </Button>
         </Modal.Actions>

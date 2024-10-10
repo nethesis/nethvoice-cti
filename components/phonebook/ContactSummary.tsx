@@ -241,7 +241,7 @@ export const ContactSummary = forwardRef<HTMLButtonElement, ContactSummaryProps>
               {t('Phonebook.Delete contact')}
             </Button>
             <Button
-              variant='white'
+              variant='ghost'
               onClick={() => setShowDeleteModal(false)}
               ref={cancelDeleteButtonRef}
             >

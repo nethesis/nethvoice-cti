@@ -54,7 +54,7 @@ export const LogoutAllQueuesModal: FC<LogoutAllQueuesModalProps> = ({
         <Button variant='danger' onClick={() => onConfirm()}>
           {t('Queues.Logout')}
         </Button>
-        <Button variant='white' onClick={() => onClose()} ref={cancelButtonRef}>
+        <Button variant='ghost' onClick={() => onClose()} ref={cancelButtonRef}>
           {t('Common.Cancel')}
         </Button>
       </Modal.Actions>

@@ -10,10 +10,7 @@ import {
   Legend,
 } from 'chart.js'
 import { convertToHumanReadable } from '../../lib/queueManager'
-import {
-  GRAY_200,
-  GRAY_700,
-} from '../../lib/colors'
+import { GRAY_200, GRAY_700 } from '../../lib/colors'
 import { useSelector } from 'react-redux'
 import { RootState } from '../../store'
 ChartJS.register(CategoryScale, LinearScale, BarElement, Title, Tooltip, Legend)
@@ -62,6 +59,11 @@ const BarChartHorizontal: FC<BarChartHorizontalProps> = ({
         position: 'bottom' as const,
         labels: {
           usePointStyle: true,
+          color:
+            theme === 'dark' ||
+            (theme === 'system' && window.matchMedia('(prefers-color-scheme: dark)').matches)
+              ? GRAY_200
+              : GRAY_700,
         },
       },
       title: {
@@ -71,10 +73,10 @@ const BarChartHorizontal: FC<BarChartHorizontalProps> = ({
           size: 16,
         },
         color:
-        theme === 'dark' ||
-        (theme === 'system' && window.matchMedia('(prefers-color-scheme: dark)').matches)
-          ? GRAY_200
-          : GRAY_700,
+          theme === 'dark' ||
+          (theme === 'system' && window.matchMedia('(prefers-color-scheme: dark)').matches)
+            ? GRAY_200
+            : GRAY_700,
       },
       tooltip: {
         callbacks: {

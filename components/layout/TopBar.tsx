@@ -627,7 +627,7 @@ export const TopBar: FC<TopBarProps> = ({ openMobileCb }) => {
                 <Button variant='primary' onClick={() => closedModalSaved()}>
                   {t('Common.Save')}
                 </Button>
-                <Button variant='white' onClick={() => setShowPresenceModal(false)}>
+                <Button variant='ghost' onClick={() => setShowPresenceModal(false)}>
                   {t('Common.Cancel')}
                 </Button>
               </Modal.Actions>

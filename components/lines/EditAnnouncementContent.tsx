@@ -456,7 +456,7 @@ export const EditAnnouncementDrawerContent = forwardRef<
           <Button variant='danger' onClick={() => closedModalDeleteAnnouncement()}>
             {t('Common.Delete')}
           </Button>
-          <Button variant='white' onClick={() => setShowDeleteModal(false)} ref={cancelButtonRef}>
+          <Button variant='ghost' onClick={() => setShowDeleteModal(false)} ref={cancelButtonRef}>
             {t('Common.Cancel')}
           </Button>
         </Modal.Actions>
