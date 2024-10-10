@@ -561,7 +561,9 @@ export const TopBar: FC<TopBarProps> = ({ openMobileCb }) => {
             )}
 
             {/* Notifications drawer */}
-            <Button variant='ghost' onClick={() => openNotificationsDrawer()}>
+            
+            {/* HIDDEN AT THE MOMENT WAITING FOR SERVER SIDE IMPLEMENTATION */}
+            {/* <Button variant='ghost' onClick={() => openNotificationsDrawer()}>
               <span className='relative inline-block'>
                 <FontAwesomeIcon
                   icon={faBell}
@@ -573,7 +575,7 @@ export const TopBar: FC<TopBarProps> = ({ openMobileCb }) => {
                   }
                   aria-hidden='true'
                 />
-                {/* badge with notifications number */}
+                // badge with notifications number
                 {notificationsStore.unreadCount > 0 && (
                   <span
                     className={
@@ -587,7 +589,8 @@ export const TopBar: FC<TopBarProps> = ({ openMobileCb }) => {
                   </span>
                 )}
               </span>
-            </Button>
+            </Button> */}
+
             {/* Profile dropdown */}
             <Dropdown items={dropdownItems} position='left' className='pl-3'>
               <span className='sr-only'>{t('TopBar.Open user menu')}</span>

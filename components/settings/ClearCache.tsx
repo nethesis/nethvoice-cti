@@ -1,4 +1,4 @@
-// Copyright (C) 2023 Nethesis S.r.l.
+// Copyright (C) 2024 Nethesis S.r.l.
 // SPDX-License-Identifier: AGPL-3.0-or-later
 
 import { Button, InlineNotification } from '../common'
@@ -54,8 +54,8 @@ export const ClearCache = () => {
                   }}
                   disabled={isCacheCleared}
                 >
+                  <FontAwesomeIcon icon={faTrash} className='mr-2 h-4 w-4' />
                   <span>{t('Settings.Clear cache')}</span>
-                  <FontAwesomeIcon icon={faTrash} className='ml-2 h-4 w-4' />
                 </Button>
                 {isCacheCleared && (
                   <InlineNotification

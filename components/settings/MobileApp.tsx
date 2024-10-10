@@ -1,4 +1,4 @@
-// Copyright (C) 2023 Nethesis S.r.l.
+// Copyright (C) 2024 Nethesis S.r.l.
 // SPDX-License-Identifier: AGPL-3.0-or-later
 
 import { RefObject, createRef, useState } from 'react'
@@ -33,7 +33,9 @@ export const MobileApp = () => {
     const profiling = store.getState().profiling
     if (Object.keys(profiling).length > 0) {
       const hostname = profiling.publichost || profiling.hostname || window.location.hostname
-      let qrString = `csc:${encodeURIComponent(authData.username)}@${encodeURIComponent(hostname)}:${encodeURIComponent(authData.token)}@qrcode`
+      let qrString = `csc:${encodeURIComponent(authData.username)}@${encodeURIComponent(
+        hostname,
+      )}:${encodeURIComponent(authData.token)}@qrcode`
       setQRString(qrString)
       setGenerated(true)
     }
@@ -70,8 +72,8 @@ export const MobileApp = () => {
                 )}
                 {!loading && (
                   <Button variant='white' onClick={() => setShowMondal(true)}>
+                    <FontAwesomeIcon icon={faQrcode} className='mr-2 h-4 w-4' />
                     <span>{t('Settings.Generate QR code')}</span>
-                    <FontAwesomeIcon icon={faQrcode} className='ml-2 h-4 w-4' />
                   </Button>
                 )}
               </p>

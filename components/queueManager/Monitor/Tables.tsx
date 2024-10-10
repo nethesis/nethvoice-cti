@@ -1,4 +1,4 @@
-// Copyright (C) 2023 Nethesis S.r.l.
+// Copyright (C) 2024 Nethesis S.r.l.
 // SPDX-License-Identifier: AGPL-3.0-or-later
 
 import { FC, ComponentProps, useEffect, useState, Fragment } from 'react'
@@ -306,10 +306,10 @@ export const MonitorTables: FC<MonitorTablesProps> = ({
                                       className={`${
                                         isFullscreen ? 'w-12 h-12' : 'w-6 h-6'
                                       } rounded-full bg-${
-                                          isDataPresent
-                                            ? 'amber-50 dark:bg-amber-700'
-                                            : 'emerald-50 dark:bg-emerald-700'
-                                        } flex items-center justify-center`}
+                                        isDataPresent
+                                          ? 'amber-50 dark:bg-amber-700'
+                                          : 'emerald-50 dark:bg-emerald-700'
+                                      } flex items-center justify-center`}
                                     >
                                       <span
                                         className={`text-${
@@ -381,7 +381,7 @@ export const MonitorTables: FC<MonitorTablesProps> = ({
                                     ? selectedQueueSecondTable.name +
                                       ' ' +
                                       selectedQueueSecondTable.queue
-                                    : 'Select queue'}
+                                    : t('QueueManager.Select queue')}
                                 </span>
                                 <span className='pointer-events-none absolute inset-y-0 right-0 flex items-center pr-2'>
                                   <FontAwesomeIcon
