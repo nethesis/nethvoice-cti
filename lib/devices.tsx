@@ -44,7 +44,6 @@ export const openShowDownloadLinkContent = (status: any, defaultOS: string) => {
 
 export const getInputOutputLocalStorageValue = (currentUsername: string) => {
   const audioInputType = getJSONItem('phone-island-audio-input-device') || ''
-
   const audioOutputType = getJSONItem('phone-island-audio-output-device') || ''
 
   return { audioInputType, audioOutputType }

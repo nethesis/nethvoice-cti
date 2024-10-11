@@ -41,6 +41,7 @@ import {
   YELLOW_800_SHADOW,
   LIME_800_SHADOW,
 } from './colors'
+import { t } from 'i18next'
 
 export const PAGE_SIZE = 10
 
@@ -1046,4 +1047,30 @@ export function getAlarmDescription(alarmsList: any, alarmsTypeObject: any) {
   const alarmDescription = alarmsTypeObject[alarmType]?.description || ''
 
   return alarmDescription
+}
+
+export const cardContent = (icon: any, number: number, description: string) => {
+  return (
+    <>
+      <div className='rounded-lg shadow-md border-gray-200 dark:border-gray-700 bg-cardBackgroud dark:bg-cardBackgroudDark px-5 py-1 sm: mt-1 relative flex items-center'>
+        <div className='flex items-center space-x-4'>
+          <div className='h-10 w-10 flex items-center justify-center rounded-xl bg-emerald-50 dark:bg-emerald-800 mt-1 mb-1'>
+            <FontAwesomeIcon
+              icon={icon}
+              className='h-6 w-6 text-emerald-600 dark:text-emerald-100'
+              aria-hidden='true'
+            />
+          </div>
+          <div className='flex justify-center text-gray-900 dark:text-white'>
+            <p className='text-3xl font-medium tracking-tight text-left leading-10'>
+              {number || 0}
+            </p>
+          </div>
+          <span className='text-sm flex justify-center font-medium leading-6 text-center'>
+            {t(`QueueManager.${description}`)}
+          </span>
+        </div>
+      </div>
+    </>
+  )
 }

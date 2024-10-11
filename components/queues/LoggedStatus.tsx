@@ -1,10 +1,10 @@
-// Copyright (C) 2023 Nethesis S.r.l.
+// Copyright (C) 2024 Nethesis S.r.l.
 // SPDX-License-Identifier: AGPL-3.0-or-later
 
 import { FC, ComponentProps, useState, useEffect } from 'react'
 import classNames from 'classnames'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
-import { faUserCheck, faUserClock, faUserXmark } from '@fortawesome/free-solid-svg-icons'
+import { faCircleCheck, faCircleXmark, faClock, faUserClock } from '@fortawesome/free-solid-svg-icons'
 import { useTranslation } from 'react-i18next'
 
 export interface LoggedStatusProps extends ComponentProps<'div'> {
@@ -53,7 +53,7 @@ export const LoggedStatus: FC<LoggedStatusProps> = ({
       >
         <FontAwesomeIcon
           icon={
-            status === 'loggedIn' ? faUserCheck : status === 'paused' ? faUserClock : faUserXmark
+            status === 'loggedIn' ? faCircleCheck : status === 'paused' ? faClock : faCircleXmark
           }
           className='h-4 w-4'
         />

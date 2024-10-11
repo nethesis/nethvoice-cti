@@ -15,13 +15,12 @@ import { InlineNotification, SideDrawerCloseIcon, Dropdown } from '../common'
 import { useTranslation } from 'react-i18next'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import {
-  faFileAudio,
   faTriangleExclamation,
   faEllipsisVertical,
-  faTrashCan,
+  faTrash,
   faXmark,
   faCircleXmark,
-  faFloppyDisk,
+  faFileArrowUp,
 } from '@fortawesome/free-solid-svg-icons'
 import { closeSideDrawer, formatFileSize } from '../../lib/utils'
 import { TextInput, Button, Modal } from '../common'
@@ -62,7 +61,7 @@ export const EditAnnouncementDrawerContent = forwardRef<
 
   const contactMenuItems = (
     <>
-      <Dropdown.Item icon={faTrashCan} onClick={() => deleteAnnouncement(config?.announcement_id)}>
+      <Dropdown.Item icon={faTrash} onClick={() => deleteAnnouncement(config?.announcement_id)}>
         {t('Common.Delete')}
       </Dropdown.Item>
     </>
@@ -216,14 +215,14 @@ export const EditAnnouncementDrawerContent = forwardRef<
     setTextFilter(newTextFilter)
   }
 
-     //Start recording announcement function
-     const startRecordingAnnouncement = () => {
-      if (user.default_device.type === 'physical') {
-        recordingAnnouncement('physical')
-      } else {
-        recordingAnnouncement('webrtc')
-      }
+  //Start recording announcement function
+  const startRecordingAnnouncement = () => {
+    if (user.default_device.type === 'physical') {
+      recordingAnnouncement('physical')
+    } else {
+      recordingAnnouncement('webrtc')
     }
+  }
 
   return (
     <>
@@ -291,7 +290,7 @@ export const EditAnnouncementDrawerContent = forwardRef<
                     defaultChecked={dateRuleInformation.id === 'private'}
                     className={`h-4 w-4 border-gray-300 text-primary dark:text-primaryDark focus:ring-primary dark:focus:ring-primaryDark ${
                       selectedType === dateRuleInformation.id
-                        ? 'dark:bg-primaryLight dark:text-primary dark:border-gray-600'
+                        ? 'dark:bg-primaryLight dark:text-primaryDark dark:border-gray-600'
                         : 'dark:bg-gray-700 dark:text-white dark:border-gray-600'
                     }`}
                     onChange={changeTypeSelected}
@@ -330,19 +329,14 @@ export const EditAnnouncementDrawerContent = forwardRef<
                 <div className='flex items-center justify-center w-full mt-2'>
                   <label
                     htmlFor='dropzone-file'
-                    className='flex flex-col items-center justify-center w-full py-2 border-2 border-primary border-dashed rounded-lg cursor-pointer bg-emerald-50 dark:hover:bg-emerald-800 dark:bg-primaryDark hover:bg-emerald-100 dark:border-gray-400 dark:hover:border-gray-500 '
+                    className='flex flex-col items-center justify-center w-full border-2 border-dashed border-gray-300 rounded-lg cursor-pointer bg-gray-100 dark:hover:bg-gray-700 dark:bg-gray-800 hover:bg-gray-200 hover:border-gray-400 dark:border-gray-600 dark:hover:border-gray-500'
                     onDragOver={handleDragOver}
                     onDrop={handleDrop}
                   >
-                    <div className='flex flex-col items-center justify-center pt-5 pb-6'>
-                      <FontAwesomeIcon
-                        icon={faFileAudio}
-                        className='w-10 h-10 mb-3 text-gray-400 dark:text-gray-200'
-                      />
-                      <p className='mb-2 text-base text-gray-900 dark:text-gray-100'>
-                        <span className='font-normal'>
-                          {t('Lines.Select or drag an audio file here')}
-                        </span>
+                    <div className='flex flex-col items-center justify-center pt-6 text-gray-600 dark:text-gray-300'>
+                      <FontAwesomeIcon icon={faFileArrowUp} className='w-8 h-8 mb-4' />
+                      <p className='mb-4 text-base font-medium'>
+                        {t('Lines.Drag and drop or click to upload')}
                       </p>
                     </div>
                     <input
@@ -357,13 +351,13 @@ export const EditAnnouncementDrawerContent = forwardRef<
             ) : (
               <>
                 <div className='py-3'>
-                  <div className='rounded-md border border-emerald-500'>
+                  <div className='rounded-md border-2 border-gray-400 bg-gray-200 dark:bg-gray-700 dark:border-gray-500'>
                     <div className='flex items-center justify-between py-4 pl-3 pr-4'>
                       <div className='flex w-0 flex-1 items-center pl-2'>
-                        <div className='h-9 w-9 bg-emerald-50 dark:bg-emerald-200 flex items-center rounded-sm justify-center'>
+                        <div className='h-9 w-9 bg-gray-100 dark:bg-gray-800 flex items-center rounded justify-center'>
                           <FontAwesomeIcon
-                            icon={faFileAudio}
-                            className='h-4 w-4 text-primary dark:text-primaryDark'
+                            icon={faFileArrowUp}
+                            className='h-4 w-4 text-gray-600 dark:text-gray-300'
                             aria-hidden='true'
                             onClick={() => startRecordingAnnouncement()}
                           />
@@ -379,7 +373,7 @@ export const EditAnnouncementDrawerContent = forwardRef<
                         <Button variant='ghost' onClick={() => deleteUploadedAnnouncement()}>
                           <FontAwesomeIcon
                             icon={faXmark}
-                            className='h-4 w-4 text-gray-500 dark:text-gray-500'
+                            className='h-4 w-4 text-gray-600 dark:text-gray-300'
                             aria-hidden='true'
                           />
                         </Button>
@@ -402,7 +396,7 @@ export const EditAnnouncementDrawerContent = forwardRef<
         <div className='flex justify-end'>
           {config.isEdit ? (
             <>
-              <Button variant='white' type='submit' onClick={closeSideDrawer} className='mb-4'>
+              <Button variant='ghost' type='submit' onClick={closeSideDrawer} className='mb-4'>
                 {t('Common.Cancel')}
               </Button>
               <Button
@@ -411,13 +405,12 @@ export const EditAnnouncementDrawerContent = forwardRef<
                 onClick={saveEditPhoneLines}
                 className='ml-4 mb-4'
               >
-                <FontAwesomeIcon icon={faFloppyDisk} className='mr-2 h-4 w-4' />
                 {t('Common.Save')}
               </Button>
             </>
           ) : (
             <>
-              <Button variant='white' type='submit' onClick={closeSideDrawer} className='mb-4'>
+              <Button variant='ghost' type='submit' onClick={closeSideDrawer} className='mb-4'>
                 {t('Common.Cancel')}
               </Button>
               <Button
@@ -427,7 +420,6 @@ export const EditAnnouncementDrawerContent = forwardRef<
                 className='ml-4 mb-4'
                 disabled={!selectedFile || !textFilter ? true : false}
               >
-                <FontAwesomeIcon icon={faFloppyDisk} className='mr-2 h-4 w-4' />
                 {t('Common.Save')}
               </Button>
             </>
@@ -464,7 +456,7 @@ export const EditAnnouncementDrawerContent = forwardRef<
           <Button variant='danger' onClick={() => closedModalDeleteAnnouncement()}>
             {t('Common.Delete')}
           </Button>
-          <Button variant='white' onClick={() => setShowDeleteModal(false)} ref={cancelButtonRef}>
+          <Button variant='ghost' onClick={() => setShowDeleteModal(false)} ref={cancelButtonRef}>
             {t('Common.Cancel')}
           </Button>
         </Modal.Actions>

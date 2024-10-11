@@ -118,59 +118,59 @@ export const CustomerCardsCustomerData: FC<CustomerCardsCustomerDataViewProps> =
           {' '}
           {/* Middle left  */}
           <div>
-            <div className='border-b border-gray-600 dark:border-gray-100 rounded-md bg-gray-700 dark:bg-gray-200 px-4 py-5 sm:px-6 flex-col h-[337px] overflow-auto scrollbar-thin scrollbar-thumb-gray-400 dark:scrollbar-thumb-gray-400 scrollbar-thumb-rounded-full scrollbar-thumb-opacity-50 scrollbar-track-gray-200 dark:scrollbar-track-gray-900 scrollbar-track-rounded-full scrollbar-track-opacity-25'>
+            <div className='border-b border-gray-200 dark:border-gray-900 rounded-md bg-gray-100 dark:bg-gray-800 px-4 py-5 sm:px-6 flex-col h-[337px] overflow-auto scrollbar-thin scrollbar-thumb-gray-400 dark:scrollbar-thumb-gray-400 scrollbar-thumb-rounded-full scrollbar-thumb-opacity-50 scrollbar-track-gray-200 dark:scrollbar-track-gray-900 scrollbar-track-rounded-full scrollbar-track-opacity-25'>
               {contactType === 'company' ? (
                 <>
                   {/* Company name  */}
-                  <h3 className='flex text-base font-semibold leading-6 text-gray-100 dark:text-gray-700'>
+                  <h3 className='flex text-base font-medium leading-6 text-gray-900 dark:text-gray-50'>
                     {t('CustomerCards.Business name')}
                   </h3>
-                  <span className='flex pt-2 text-base font-medium text-primary dark:text-primaryDark'>
+                  <span className='flex pt-2 text-sm font-normal leading-5 text-gray-600 dark:text-gray-300'>
                     {companyInformation?.company || '-'}
                   </span>
                   {/* Company city address */}
-                  <h3 className='flex text-base font-semibold leading-6 text-gray-100 dark:text-gray-700 pt-6'>
+                  <h3 className='flex text-base font-medium leading-6 text-gray-900 dark:text-gray-50 pt-6'>
                     {t('CustomerCards.City')}
                   </h3>
-                  <span className='flex pt-2 text-base font-normal text-gray-100 dark:text-gray-600'>
+                  <span className='flex pt-2 text-sm font-normal leading-5 text-gray-600 dark:text-gray-300'>
                     {companyInformation?.city || '-'}
                   </span>
                   {/* Company notes  */}
-                  <h3 className='flex text-base font-semibold leading-6 text-gray-100 dark:text-gray-700 pt-6'>
+                  <h3 className='flex text-base font-medium leading-6 text-gray-900 dark:text-gray-50 pt-6'>
                     {t('CustomerCards.Notes')}
                   </h3>
-                  <span className='flex pt-2 text-base font-normal text-gray-100 dark:text-gray-600'>
+                  <span className='flex pt-2 text-sm font-normal leading-5 text-gray-600 dark:text-gray-300'>
                     {companyInformation?.notes || '-'}
                   </span>{' '}
                 </>
               ) : (
                 <>
                   {/* Contact name  */}
-                  <h3 className='flex text-base font-semibold leading-6 text-gray-100 dark:text-gray-700'>
+                  <h3 className='flex text-base font-medium leading-6 text-gray-900 dark:text-gray-50'>
                     {t('CustomerCards.Contact name')}
                   </h3>
-                  <span className='flex pt-2 text-base font-medium text-primary dark:text-primaryDark'>
+                  <span className='flex pt-2 text-sm font-normal leading-5 text-gray-600 dark:text-gray-300'>
                     {companyInformation?.name || '-'}
                   </span>
                   {/* Contact city address */}
-                  <h3 className='flex text-base font-semibold leading-6 text-gray-100 dark:text-gray-700 pt-6'>
+                  <h3 className='flex text-base font-medium leading-6 text-gray-900 dark:text-gray-50 pt-6'>
                     {t('CustomerCards.City')}
                   </h3>
-                  <span className='flex pt-2 text-base font-normal text-gray-100 dark:text-gray-600'>
+                  <span className='flex pt-2 text-sm font-normal leading-5 text-gray-600 dark:text-gray-300'>
                     {companyInformation?.workcity || '-'}
                   </span>
                   {/* Contact email  */}
-                  <h3 className='flex text-base font-semibold leading-6 text-gray-100 dark:text-gray-700 pt-6'>
+                  <h3 className='flex text-base font-medium leading-6 text-gray-900 dark:text-gray-50 pt-6'>
                     {t('CustomerCards.Email')}
                   </h3>
-                  <span className='flex pt-2 text-base font-normal text-gray-100 dark:text-600'>
+                  <span className='flex pt-2 text-sm font-normal leading-5 text-gray-600 dark:text-gray-300'>
                     {companyInformation?.homeemail || companyInformation?.workemail || '-'}
                   </span>{' '}
                   {/* Contact notes  */}
-                  <h3 className='flex text-base font-semibold leading-6 text-gray-100 dark:text-gray-700 pt-6'>
+                  <h3 className='flex text-base font-medium leading-6 text-gray-900 dark:text-gray-50 pt-6'>
                     {t('CustomerCards.Notes')}
                   </h3>
-                  <span className='flex pt-2 text-base font-normal text-gray-100 dark:text-gray-600'>
+                  <span className='flex pt-2 text-sm font-normal leading-5 text-gray-600 dark:text-gray-300'>
                     {companyInformation?.notes || '-'}
                   </span>{' '}
                 </>
@@ -380,7 +380,7 @@ export const CustomerCardsCustomerData: FC<CustomerCardsCustomerDataViewProps> =
                       role='list'
                       className='grid grid-cols-1 gap-6 xl:grid-cols-2 3xl:grid-cols-3'
                     >
-                      <li className='col-span-1 rounded-md shadow divide-gray-200 bg-white dark:divide-gray-700 dark:bg-gray-900'>
+                      <li className='col-span-1 rounded-md shadow divide-gray-200 bg-white dark:divide-gray-700 dark:bg-gray-950'>
                         {/* card header */}
                         <div className='flex flex-col pt-3 pb-5 px-5'>
                           <div className='flex w-full items-center justify-between space-x-6'>
@@ -400,9 +400,9 @@ export const CustomerCardsCustomerData: FC<CustomerCardsCustomerDataViewProps> =
                                       // }
                                     />
                                   </div>
-                                  <div className='ml-4'>
+                                  <div className='ml-8 text-gray-500'>
                                     <div
-                                      className='font-medium text-gray-700 dark:text-gray-100'
+                                      className='font-medium text-gray-900 dark:text-gray-50 leading-5'
                                       // onClick={() =>
                                       //   openCustomerCardOperatorDrawer(
                                       //     companyCardInformation,
@@ -425,21 +425,30 @@ export const CustomerCardsCustomerData: FC<CustomerCardsCustomerDataViewProps> =
                                         </span>
                                       </div>
                                     )}
-                                    <div className='text-gray-500'></div>
                                   </div>
                                 </div>
                               </div>
 
-                              <table className='min-w-full divide-y divide-gray-300 dark:divide-gray-600 '>
-                                <tbody className='divide-y divide-gray-200 dark:divide-gray-500'>
+                              {/* Divider */}
+                              <div className='relative pt-1 mb-4'>
+                                <div
+                                  className='absolute inset-0 flex items-center'
+                                  aria-hidden='true'
+                                >
+                                  <div className='w-full border-t border-gray-300 dark:border-gray-600' />
+                                </div>
+                              </div>
+
+                              <table className='min-w-full divide-y divide-gray-300 dark:divide-gray-600'>
+                                <tbody>
                                   <tr>
-                                    <td className='py-4 text-left text-sm font-semibold text-gray-900 dark:text-gray-200'>
+                                    <td className='py-4 text-left text-sm font-medium text-gray-700 dark:text-gray-200 leading-5'>
                                       {t('CustomerCards.Office')}
                                     </td>
                                     <td className='flex items-center px-3 py-4 text-sm text-gray-500'>
                                       <FontAwesomeIcon
                                         icon={faPhone}
-                                        className='h-4 w-4 mr-2 flex-shrink-0 text-gray-400 dark:text-gray-500'
+                                        className='h-4 w-4 mr-2 flex-shrink-0 text-gray-600 dark:text-gray-300'
                                         aria-hidden='true'
                                       />
                                       <span
@@ -458,13 +467,13 @@ export const CustomerCardsCustomerData: FC<CustomerCardsCustomerDataViewProps> =
                                     </td>
                                   </tr>
                                   <tr>
-                                    <td className='py-4 text-left text-sm font-semibold text-gray-900 dark:text-gray-200'>
+                                    <td className='py-4 text-left text-sm font-medium text-gray-700 dark:text-gray-200 leading-5'>
                                       {t('CustomerCards.Mobile')}
                                     </td>
                                     <td className='flex items-center px-3 py-4 text-sm text-gray-500'>
                                       <FontAwesomeIcon
                                         icon={faMobileScreenButton}
-                                        className='h-4 w-4 mr-2 flex-shrink-0 text-gray-400 dark:text-gray-500'
+                                        className='h-4 w-4 mr-2 flex-shrink-0 text-gray-600 dark:text-gray-300'
                                         aria-hidden='true'
                                       />
                                       <span
@@ -483,13 +492,13 @@ export const CustomerCardsCustomerData: FC<CustomerCardsCustomerDataViewProps> =
                                     </td>
                                   </tr>
                                   <tr>
-                                    <td className='py-4 text-left text-sm font-semibold text-gray-900 dark:text-gray-200'>
+                                    <td className='py-4 text-left text-sm font-medium text-gray-700 dark:text-gray-200 leading-5'>
                                       {t('CustomerCards.Email')}
                                     </td>
                                     <td className='flex items-center px-3 py-4 text-sm text-gray-500'>
                                       <FontAwesomeIcon
                                         icon={faEnvelope}
-                                        className='h-4 w-4 mr-2 flex-shrink-0 text-gray-400 dark:text-gray-500'
+                                        className='h-4 w-4 mr-2 flex-shrink-0 text-gray-600 dark:text-gray-300'
                                         aria-hidden='true'
                                       />
                                       <span
@@ -509,16 +518,16 @@ export const CustomerCardsCustomerData: FC<CustomerCardsCustomerDataViewProps> =
                                     </td>
                                   </tr>
                                   <tr>
-                                    <td className='py-4 text-left text-sm font-semibold text-gray-900 dark:text-gray-200'>
+                                    <td className='py-4 text-left text-sm font-medium text-gray-700 dark:text-gray-200 leading-5'>
                                       {t('CustomerCards.Notes')}
                                     </td>
                                     <td className='flex items-center px-3 py-4 text-sm text-gray-500'>
                                       <FontAwesomeIcon
                                         icon={faPen}
-                                        className='h-4 w-4 mr-2 flex-shrink-0 text-gray-400 dark:text-gray-500'
+                                        className='h-4 w-4 mr-2 flex-shrink-0 text-gray-600 dark:text-gray-300'
                                         aria-hidden='true'
                                       />
-                                      <span className='truncate dark:text-gray-200 text-gray-700 w-56 tooltip-notes ml-2'>
+                                      <span className='truncate dark:text-gray-300 text-gray-600 w-56 tooltip-notes ml-2 text-left leading-4'>
                                         {companyCardInformation?.notes || '-'}
                                       </span>
                                       <Tooltip anchorSelect='.tooltip-notes'>
@@ -527,16 +536,16 @@ export const CustomerCardsCustomerData: FC<CustomerCardsCustomerDataViewProps> =
                                     </td>
                                   </tr>
                                   <tr>
-                                    <td className='py-4 text-left text-sm font-semibold text-gray-900 dark:text-gray-200'>
+                                    <td className='py-4 text-left text-sm font-medium text-gray-700 dark:text-gray-200 leading-5'>
                                       {t('CustomerCards.Address')}
                                     </td>
                                     <td className='flex items-center px-3 py-4 text-sm text-gray-500'>
                                       <FontAwesomeIcon
                                         icon={faMapSigns}
-                                        className='h-4 w-4 mr-2 flex-shrink-0 text-gray-400 dark:text-gray-500'
+                                        className='h-4 w-4 mr-2 flex-shrink-0 text-gray-600 dark:text-gray-300'
                                         aria-hidden='true'
                                       />
-                                      <span className='truncate dark:text-gray-200 text-gray-700 w-56 tooltip-address ml-2'>
+                                      <span className='truncate dark:text-gray-300 text-gray-600 w-56 tooltip-address ml-2 text-left leading-4'>
                                         {companyCardInformation?.workstreet || '-'}
                                       </span>
                                       <Tooltip anchorSelect='.tooltip-address'>

@@ -63,6 +63,7 @@ const QueueManager: NextPage = () => {
       section = 'Dashboard'
     }
     changeSection(section)
+  // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [firstRender])
 
   const changeSection = (sectionName: string) => {
@@ -103,7 +104,7 @@ const QueueManager: NextPage = () => {
             </h1>
             <div className='text-gray-900 dark:text-gray-100 text-sm flex items-center'>
               <Button size='small' variant='white'>
-                <FontAwesomeIcon icon={faArrowUpRightFromSquare} className='mr-2 h-4 w-4' />
+                <FontAwesomeIcon icon={faArrowUpRightFromSquare} className='mr-2 h-5 w-4' />
                 <a href={pbxReportUrl} target='_blank' rel='noreferrer'>
                   {t('Applications.Open PBX Report')}
                 </a>

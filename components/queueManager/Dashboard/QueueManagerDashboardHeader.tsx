@@ -1,4 +1,4 @@
-// Copyright (C) 2023 Nethesis S.r.l.
+// Copyright (C) 2024 Nethesis S.r.l.
 // SPDX-License-Identifier: AGPL-3.0-or-later
 
 import { FC, ComponentProps, useEffect, useState } from 'react'
@@ -21,6 +21,7 @@ import {
   getFormattedTimeFromAlarmsList,
   getAlarm,
   getAlarmDescription,
+  cardContent,
 } from '../../../lib/queueManager'
 
 export interface QueueManagerDashboardHeaderProps extends ComponentProps<'div'> {
@@ -168,7 +169,7 @@ export const QueueManagerDashboardHeader: FC<QueueManagerDashboardHeaderProps> =
       <div>
         <div className='grid grid-cols-1 gap-4 lg:grid-cols-2 xl:grid-cols-3'>
           {/* Alarm */}
-          <div className='border-b rounded-lg shadow-md border-gray-200 dark:border-gray-700 bg-cardBackgroud dark:bg-cardBackgroudDark px-5 py-1 sm: mt-1 relative flex items-center'>
+          <div className='rounded-lg shadow-md border-gray-200 dark:border-gray-700 bg-cardBackgroud dark:bg-cardBackgroudDark px-5 py-1 sm: mt-1 relative flex items-center'>
             <div className='w-full'>
               <Dropdown items={dropdownItems} position='left' divider={true} className=''>
                 <div className='flex justify-between items-center'>
@@ -176,24 +177,24 @@ export const QueueManagerDashboardHeader: FC<QueueManagerDashboardHeaderProps> =
                     className={`h-10 w-10 flex items-center justify-center rounded-xl mt-1 mb-1 ${
                       !isEmpty(alarmsList.list)
                         ? 'bg-red-50 dark:bg-emerald-50'
-                        : 'bg-emerald-50 dark:bg-emerald-50'
+                        : 'bg-emerald-50 dark:bg-emerald-800'
                     }`}
                   >
                     <FontAwesomeIcon
                       icon={faTriangleExclamation}
                       className={`h-6 w-6 py-2 flex items-center ${
                         !isEmpty(alarmsList.list)
-                          ? 'text-red-600'
-                          : 'text-emerald-600 dark:text-emerald-600'
+                          ? 'text-rose-600'
+                          : 'text-emerald-600 dark:text-emerald-100'
                       }`}
                       aria-hidden='true'
                     />
                   </div>
-                  <div className='flex items-center ml-4'>
-                    <p className='text-3xl font-semibold tracking-tight text-left text-gray-900 dark:text-gray-100'>
+                  <div className='flex items-center ml-4 text-gray-900 dark:text-white'>
+                    <p className='text-3xl font-medium tracking-tight text-left leading-10'>
                       {(alarmsList.list && Object.keys(alarmsList.list).length) ?? 0}
                     </p>
-                    <p className='text-sm font-medium leading-6 text-left text-gray-500 dark:text-gray-400 ml-4'>
+                    <p className='text-sm font-normal leading-5 text-left ml-4'>
                       {alarmsList.list && Object.keys(alarmsList.list).length === 1
                         ? t('QueueManager.Alarm')
                         : t('QueueManager.Alarms')}
@@ -212,130 +213,22 @@ export const QueueManagerDashboardHeader: FC<QueueManagerDashboardHeaderProps> =
           </div>
 
           {/* not Managed */}
-          <div className='border-b rounded-lg shadow-md border-gray-200 dark:border-gray-700 bg-cardBackgroud dark:bg-cardBackgroudDark px-5 py-1 sm: mt-1 relative flex items-center'>
-            <div className='flex items-center space-x-4'>
-              <div className='h-10 w-10 flex items-center justify-center rounded-xl bg-emerald-50 mt-1 mb-1'>
-                <FontAwesomeIcon
-                  icon={faListCheck}
-                  className='h-6 w-6 text-emerald-600 dark:text-emerald-600'
-                  aria-hidden='true'
-                />
-              </div>
-              <div className='flex justify-center'>
-                <p className='text-3xl font-semibold tracking-tight text-left text-gray-900 dark:text-gray-100'>
-                  {notManaged.count || 0}
-                </p>
-              </div>
-              <span className='text-sm flex justify-center font-medium leading-6 text-center text-gray-700 dark:text-gray-100'>
-                {t('QueueManager.Not managed customers')}
-              </span>
-            </div>
-          </div>
+          {cardContent(faListCheck, notManaged?.count, 'Not managed customers')}
 
           {/* total calls */}
-          <div className='border-b rounded-lg shadow-md border-gray-200 dark:border-gray-700 bg-cardBackgroud dark:bg-cardBackgroudDark px-5 py-1 sm: mt-1 relative flex items-center'>
-            <div className='flex items-center space-x-4'>
-              <div className='h-10 w-10 flex items-center justify-center rounded-xl bg-emerald-50 mt-1 mb-1'>
-                <FontAwesomeIcon
-                  icon={faPhone}
-                  className='h-6 w-6 text-emerald-600 dark:text-emerald-600'
-                  aria-hidden='true'
-                />
-              </div>
-              <div className='flex justify-center'>
-                <p className='text-3xl font-semibold tracking-tight text-left text-gray-900 dark:text-gray-100'>
-                  {totalAll}
-                </p>
-              </div>
-              <span className='text-sm flex justify-center font-medium leading-6 text-center text-gray-700 dark:text-gray-100'>
-                {t('QueueManager.Total calls')}
-              </span>
-            </div>
-          </div>
+          {cardContent(faPhone, totalAll, 'Total calls')}
 
           {/* total answered */}
-          <div className='border-b rounded-lg shadow-md border-gray-200 dark:border-gray-700 bg-cardBackgroud dark:bg-cardBackgroudDark px-5 py-1 sm: mt-1 relative flex items-center'>
-            <div className='flex items-center space-x-4'>
-              <div className='h-10 w-10 flex items-center justify-center rounded-xl bg-emerald-50 mt-1 mb-1'>
-                <FontAwesomeIcon
-                  icon={faArrowLeft}
-                  className='h-6 w-6 -rotate-45 text-emerald-600 dark:text-emerald-600'
-                  aria-hidden='true'
-                />
-              </div>
-              <div className='flex justify-center'>
-                <p className='text-3xl font-semibold tracking-tight text-left text-gray-900 dark:text-gray-100'>
-                  {totalAnswered}
-                </p>
-              </div>
-              <span className='text-sm flex justify-center font-medium leading-6 text-center text-gray-700 dark:text-gray-100'>
-                {t('QueueManager.Answered calls')}
-              </span>
-            </div>
-          </div>
+          {cardContent(faArrowLeft, totalAnswered, 'Answered calls')}
 
           {/*lostCalls */}
-          <div className='border-b rounded-lg shadow-md border-gray-200 dark:border-gray-700 bg-cardBackgroud dark:bg-cardBackgroudDark px-5 py-1 sm: mt-1 relative flex items-center'>
-            <div className='flex items-center space-x-4'>
-              <div className='h-10 w-10 flex items-center justify-center rounded-xl bg-emerald-50 mt-1 mb-1'>
-                <FontAwesomeIcon
-                  icon={faMissed}
-                  className='h-6 w-6 text-emerald-600 dark:text-emerald-600'
-                  aria-hidden='true'
-                />
-              </div>
-              <div className='flex justify-center'>
-                <p className='text-3xl font-semibold tracking-tight text-left text-gray-900 dark:text-gray-100'>
-                  {totalFailed}
-                </p>
-              </div>
-              <span className='text-sm flex justify-center font-medium leading-6 text-center text-gray-700 dark:text-gray-100'>
-                {t('QueueManager.Lost calls')}
-              </span>
-            </div>
-          </div>
+          {cardContent(faMissed, totalFailed, 'Lost calls')}
 
           {/* totalInvalid */}
-          <div className='border-b rounded-lg shadow-md border-gray-200 dark:border-gray-700 bg-cardBackgroud dark:bg-cardBackgroudDark px-5 py-1 sm: mt-1 relative flex items-center'>
-            <div className='flex items-center space-x-4'>
-              <div className='h-10 w-10 flex items-center justify-center rounded-xl bg-emerald-50 mt-1 mb-1'>
-                <FontAwesomeIcon
-                  icon={faPhoneSlash}
-                  className='h-6 w-6 text-emerald-600 dark:text-emerald-600'
-                  aria-hidden='true'
-                />
-              </div>
-              <div className='flex justify-center'>
-                <p className='text-3xl font-semibold tracking-tight text-left text-gray-900 dark:text-gray-100'>
-                  {totalInvalid}
-                </p>
-              </div>
-              <span className='text-sm flex justify-center font-medium leading-6 text-center text-gray-700 dark:text-gray-100'>
-                {t('QueueManager.Invalid calls')}
-              </span>
-            </div>
-          </div>
+          {cardContent(faPhoneSlash, totalInvalid, 'Invalid calls')}
 
           {/* In progress */}
-          <div className='border-b rounded-lg shadow-md border-gray-200 dark:border-gray-700 bg-cardBackgroud dark:bg-cardBackgroudDark px-5 py-1 sm: mt-1 relative flex items-center'>
-            <div className='flex items-center space-x-4'>
-              <div className='h-10 w-10 flex items-center justify-center rounded-xl bg-emerald-50 mt-1 mb-1'>
-                <FontAwesomeIcon
-                  icon={faDownLeftAndUpRightToCenter}
-                  className='h-6 w-6 text-emerald-600 dark:text-emerald-600'
-                  aria-hidden='true'
-                />
-              </div>
-              <div className='flex justify-center'>
-                <p className='text-3xl font-semibold tracking-tight text-left text-gray-900 dark:text-gray-100'>
-                  {totalInProgress}
-                </p>
-              </div>
-              <span className='text-sm flex justify-center font-medium leading-6 text-center text-gray-700 dark:text-gray-100'>
-                {t('QueueManager.In progress')}
-              </span>
-            </div>
-          </div>
+          {cardContent(faDownLeftAndUpRightToCenter, totalInProgress, 'In progress')}
         </div>
       </div>
     </>

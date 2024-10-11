@@ -1,4 +1,4 @@
-// Copyright (C) 2023 Nethesis S.r.l.
+// Copyright (C) 2024 Nethesis S.r.l.
 // SPDX-License-Identifier: AGPL-3.0-or-later
 
 import { FC, ComponentProps, useState, useEffect, useMemo } from 'react'
@@ -10,7 +10,7 @@ import { getAnnouncementsFiltered, downloadMsg, PAGE_SIZE } from '../../lib/line
 import {
   faPlay,
   faDownload,
-  faTrashCan,
+  faTrash,
   faLock,
   faLockOpen,
   faChevronLeft,
@@ -471,7 +471,7 @@ export const AnnouncementView: FC<AnnouncementViewProps> = ({ className }): JSX.
                                       />
                                     ) : (
                                       <FontAwesomeIcon
-                                        icon={faTrashCan}
+                                        icon={faTrash}
                                         className='h-4 w-4 ml-4 p-2 invisible'
                                       />
                                     )}

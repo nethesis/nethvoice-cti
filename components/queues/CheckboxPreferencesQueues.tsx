@@ -195,7 +195,7 @@ export const CheckboxPreferencesQueues: FC<CheckboxPreferencesQueuesProps> = ({
                     )}
                     value={option?.value}
                     onChange={changePauseStatus}
-                    className='h-4 w-4 rounded border-gray-300 text-primary focus:ring-primaryLight dark:border-gray-600 dark:text-primary dark:focus:ring-primaryDark'
+                    className='h-4 w-4 rounded border-gray-300 text-primary focus:ring-primaryLight dark:border-gray-600 dark:text-primaryDark dark:focus:ring-primaryDark'
                   />
                   <label
                     htmlFor={`queues-${option?.value}`}

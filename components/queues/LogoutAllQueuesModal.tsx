@@ -1,4 +1,4 @@
-// Copyright (C) 2023 Nethesis S.r.l.
+// Copyright (C) 2024 Nethesis S.r.l.
 // SPDX-License-Identifier: AGPL-3.0-or-later
 
 import { FC, ComponentProps, useRef, MutableRefObject } from 'react'
@@ -54,7 +54,7 @@ export const LogoutAllQueuesModal: FC<LogoutAllQueuesModalProps> = ({
         <Button variant='danger' onClick={() => onConfirm()}>
           {t('Queues.Logout')}
         </Button>
-        <Button variant='white' onClick={() => onClose()} ref={cancelButtonRef}>
+        <Button variant='ghost' onClick={() => onClose()} ref={cancelButtonRef}>
           {t('Common.Cancel')}
         </Button>
       </Modal.Actions>

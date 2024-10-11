@@ -218,7 +218,6 @@ export const ShowPhoneLinesDrawerContent = forwardRef<
   }
 
   function convertDateOnlyDayFormat() {
-
     const dateEndTest = endOfDay(new Date(dateBeginToShowNoHour))
     const dateBeginTest = startOfDay(new Date(dateBeginToShowNoHour))
 
@@ -463,7 +462,7 @@ export const ShowPhoneLinesDrawerContent = forwardRef<
   //   setOpenPanel(openPanel === id ? '' : id)
   // }
   // const dateRuleInformations = [
-  //   { id: 'febbraio', value: 'Febbraio 2023' },
+  //   { id: 'febbraio', value: 'Febbraio 2024' },
   //   { id: 'ferie', value: 'Ferie' },
   //   { id: 'natale', value: 'Natale' },
   // ]
@@ -509,7 +508,7 @@ export const ShowPhoneLinesDrawerContent = forwardRef<
   //                     name='date-select'
   //                     type='radio'
   //                     defaultChecked={dateRuleInformation.id === 'ferie'}
-  //                     className='h-4 w-4 border-gray-300 text-primary dark:border-gray-600 focus:ring-primaryLight dark:focus:ring-primaryDark dark:text-primary'
+  //                     className='h-4 w-4 border-gray-300 text-primary dark:border-gray-600 focus:ring-primaryLight dark:focus:ring-primaryDark dark:text-primaryDark'
   //                     onChange={changeDateSelected}
   //                   />
   //                   <label
@@ -845,8 +844,8 @@ export const ShowPhoneLinesDrawerContent = forwardRef<
                     checked={dateSelectionInput.value === selectedType}
                     className={`h-4 w-4 border-gray-300 text-primary focus:ring-primaryLight ${
                       selectedType === dateSelectionInput.value
-                        ? 'dark:text-primary dark:bg-primaryLight'
-                        : 'dark:text-primary dark:bg-gray-700'
+                        ? 'dark:text-primaryDark dark:bg-primaryLight'
+                        : 'dark:text-primaryDark dark:bg-gray-700'
                     } dark:border-gray-600 dark:focus:ring-primaryDark`}
                     onChange={changeTypeSelected}
                   />
@@ -1059,8 +1058,8 @@ export const ShowPhoneLinesDrawerContent = forwardRef<
                     checked={typology.value === selectedConfigurationTypology}
                     className={`h-4 w-4 border-gray-300 text-primary focus:ring-primaryLight ${
                       selectedConfigurationTypology === typology.value
-                        ? 'dark:text-primary dark:bg-primaryLight'
-                        : 'dark:text-primary dark:bg-gray-700'
+                        ? 'dark:text-primaryDark dark:bg-primaryLight'
+                        : 'dark:text-primaryDark dark:bg-gray-700'
                     } dark:border-gray-600 dark:focus:ring-primaryDark`}
                     onChange={changeAnnouncementTypologySelected}
                   />
@@ -1195,7 +1194,7 @@ export const ShowPhoneLinesDrawerContent = forwardRef<
                       name='configuration-type'
                       type='radio'
                       defaultChecked={configuration.id === 'customize'}
-                      className='h-4 w-4 border-gray-300 text-primary dark:border-gray-600 focus:ring-primaryLight dark:focus:ring-primaryDark dark:text-primary'
+                      className='h-4 w-4 border-gray-300 text-primary dark:border-gray-600 focus:ring-primaryLight dark:focus:ring-primaryDark dark:text-primaryDark'
                       onChange={changeConfiguration}
                     />
                     <label
@@ -1239,7 +1238,7 @@ export const ShowPhoneLinesDrawerContent = forwardRef<
         )}
         {/* Bottom button to Save or Cancel*/}
         <div className='flex items-center justify-end mt-6 px-5 pt-2'>
-          <Button variant='white' type='submit' onClick={closeSideDrawer} className='mb-4'>
+          <Button variant='ghost' type='submit' onClick={closeSideDrawer} className='mb-4'>
             {t('Common.Cancel')}
           </Button>
           <Button
@@ -1248,7 +1247,6 @@ export const ShowPhoneLinesDrawerContent = forwardRef<
             onClick={saveEditPhoneLines}
             className='ml-4 mb-4'
           >
-            <FontAwesomeIcon icon={faFloppyDisk} className='mr-2 h-4 w-4' />
             {t('Common.Save')}
           </Button>
         </div>

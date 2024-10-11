@@ -561,7 +561,9 @@ export const TopBar: FC<TopBarProps> = ({ openMobileCb }) => {
             )}
 
             {/* Notifications drawer */}
-            <Button variant='ghost' onClick={() => openNotificationsDrawer()}>
+            
+            {/* HIDDEN AT THE MOMENT WAITING FOR SERVER SIDE IMPLEMENTATION */}
+            {/* <Button variant='ghost' onClick={() => openNotificationsDrawer()}>
               <span className='relative inline-block'>
                 <FontAwesomeIcon
                   icon={faBell}
@@ -573,7 +575,7 @@ export const TopBar: FC<TopBarProps> = ({ openMobileCb }) => {
                   }
                   aria-hidden='true'
                 />
-                {/* badge with notifications number */}
+                // badge with notifications number
                 {notificationsStore.unreadCount > 0 && (
                   <span
                     className={
@@ -587,7 +589,8 @@ export const TopBar: FC<TopBarProps> = ({ openMobileCb }) => {
                   </span>
                 )}
               </span>
-            </Button>
+            </Button> */}
+
             {/* Profile dropdown */}
             <Dropdown items={dropdownItems} position='left' className='pl-3'>
               <span className='sr-only'>{t('TopBar.Open user menu')}</span>
@@ -608,7 +611,7 @@ export const TopBar: FC<TopBarProps> = ({ openMobileCb }) => {
             <form onSubmit={handleSubmit}>
               <Modal.Content>
                 <div className='mt-3 text-center sm:mt-0 sm:text-left w-full'>
-                  <h3 className='text-lg font-medium leading-6 text-center text-gray-900 dark:text-gray-100'>
+                  <h3 className='text-lg text-left font-medium leading-6 text-gray-900 dark:text-gray-100'>
                     {t('TopBar.Enter phone number for call forward')}
                   </h3>
                   <div className='mt-3 flex flex-col gap-2'>
@@ -624,7 +627,7 @@ export const TopBar: FC<TopBarProps> = ({ openMobileCb }) => {
                 <Button variant='primary' onClick={() => closedModalSaved()}>
                   {t('Common.Save')}
                 </Button>
-                <Button variant='white' onClick={() => setShowPresenceModal(false)}>
+                <Button variant='ghost' onClick={() => setShowPresenceModal(false)}>
                   {t('Common.Cancel')}
                 </Button>
               </Modal.Actions>

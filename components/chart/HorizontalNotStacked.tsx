@@ -9,6 +9,14 @@ import {
   Tooltip,
   Legend,
 } from 'chart.js'
+import {
+  GRAY_200,
+  GRAY_300,
+  GRAY_600,
+  GRAY_700,
+} from '../../lib/colors'
+import { useSelector } from 'react-redux'
+import { RootState } from '../../store'
 ChartJS.register(CategoryScale, LinearScale, BarElement, Title, Tooltip, Legend)
 
 interface BarChartHorizontalNotStackedProps {
@@ -24,6 +32,7 @@ const BarChartHorizontalNotStacked: FC<BarChartHorizontalNotStackedProps> = ({
   tickColor,
   titleText
 }) => {
+  const { theme } = useSelector((state: RootState) => state.darkTheme)
   const options = {
     indexAxis: 'y' as const,
     responsive: true,
@@ -45,7 +54,11 @@ const BarChartHorizontalNotStacked: FC<BarChartHorizontalNotStackedProps> = ({
         },
         ticks: {
           stepSize: 1,
-          color: tickColor,
+          color:
+            theme === 'dark' ||
+            (theme === 'system' && window.matchMedia('(prefers-color-scheme: dark)').matches)
+              ? GRAY_200
+              : GRAY_700,
           font:{
             size:14,
           },
@@ -74,6 +87,11 @@ const BarChartHorizontalNotStacked: FC<BarChartHorizontalNotStackedProps> = ({
         font: {
           size: 16,
         },
+        color:
+            theme === 'dark' ||
+            (theme === 'system' && window.matchMedia('(prefers-color-scheme: dark)').matches)
+              ? GRAY_300
+              : GRAY_600,
       },
     },
   }

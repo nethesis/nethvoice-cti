@@ -1,4 +1,4 @@
-// Copyright (C) 2023 Nethesis S.r.l.
+// Copyright (C) 2024 Nethesis S.r.l.
 // SPDX-License-Identifier: AGPL-3.0-or-later
 
 import { ComponentPropsWithRef, forwardRef } from 'react'
@@ -33,7 +33,9 @@ export const ShowContactDrawerContent = forwardRef<
           </div>
         </div>
       </div>
-      <div className={classNames(className)} {...props}>
+
+      <div className={classNames(className, 'px-5')} {...props}>
+        {/* divider */}
         <div className='relative pb-8'>
           <div className='absolute inset-0 flex items-center' aria-hidden='true'>
             <div className='w-full border-t border-gray-300 dark:border-gray-600' />

@@ -1,4 +1,4 @@
-// Copyright (C) 2023 Nethesis S.r.l.
+// Copyright (C) 2024 Nethesis S.r.l.
 // SPDX-License-Identifier: AGPL-3.0-or-later
 
 import { FC, ComponentProps, useEffect, useState, useMemo, useRef } from 'react'
@@ -92,6 +92,7 @@ export const RealTimeQueues: FC<RealTimeQueuesProps> = ({
 
   const debouncedUpdateTextFilter = useMemo(
     () => debounce(toggleDebouncedTextFilter, 400),
+    // eslint-disable-next-line react-hooks/exhaustive-deps
     [debouncedTextFilter],
   )
 
@@ -326,7 +327,6 @@ export const RealTimeQueues: FC<RealTimeQueuesProps> = ({
                               <BarChartHorizontalWithTitle
                                 labels={labelsCalls}
                                 datasets={datasetsQueues}
-                                tickColor='#374151'
                                 titleText='Calls'
                               />
                             </div>
@@ -334,7 +334,6 @@ export const RealTimeQueues: FC<RealTimeQueuesProps> = ({
                               <BarChartHorizontalWithTitle
                                 labels={labelsOperators}
                                 datasets={datasetsOperators}
-                                tickColor='#374151'
                                 titleText='Operators'
                               />
                             </div>

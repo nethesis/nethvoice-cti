@@ -158,10 +158,8 @@ export const DownloadDesktopLinkContent = forwardRef<
         </div>
         {/* Footer section */}
         <div className='flex justify-end'>
-          <Button variant='white' type='submit' onClick={closeSideDrawer} className='mb-4'>
-            <span className='text-primary dark:text-primaryDark leading-5 text-sm font-medium'>
-              {t('Common.Cancel')}
-            </span>
+          <Button variant='ghost' type='submit' onClick={closeSideDrawer} className='mb-4'>
+            {t('Common.Cancel')}
           </Button>
           <Button
             variant='primary'
@@ -169,7 +167,7 @@ export const DownloadDesktopLinkContent = forwardRef<
             className='mb-4 ml-4'
             onClick={() => handleDownloadStart()}
           >
-            <span className='leading-5 text-sm font-medium'>{t('Common.Download')}</span>
+            {t('Common.Download')}
           </Button>
         </div>
       </div>

@@ -933,8 +933,8 @@ export const ShowMultiplePhoneLinesDrawerContent = forwardRef<
                     checked={typology.value === selectedConfigurationTypology}
                     className={`h-4 w-4 border-gray-300 text-primary focus:ring-primaryLight ${
                       selectedConfigurationTypology === typology.value
-                        ? 'dark:text-primary dark:bg-primaryLight'
-                        : 'dark:text-primary dark:bg-gray-700'
+                        ? 'dark:text-primaryDark dark:bg-primaryLight'
+                        : 'dark:text-primaryDark dark:bg-gray-700'
                     } dark:border-gray-600 dark:focus:ring-primaryDark`}
                     onChange={changeAnnouncementTypologySelected}
                   />
@@ -1024,13 +1024,17 @@ export const ShowMultiplePhoneLinesDrawerContent = forwardRef<
         </div>
         {/* Footer section */}
         {/* Bottom button to Save or Cancel*/}
-        <div className='flex justify-end'>
-          <Button variant='primary' type='submit' onClick={saveEditPhoneLines} className='mb-4'>
-            <FontAwesomeIcon icon={faFloppyDisk} className='mr-2 h-4 w-4' />
-            {t('Common.Save')}
-          </Button>
-          <Button variant='white' type='submit' onClick={closeSideDrawer} className='ml-4 mb-4'>
+        <div className='flex items-center justify-end mt-6 px-5 pt-2'>
+          <Button variant='ghost' type='submit' onClick={closeSideDrawer} className='mb-4'>
             {t('Common.Cancel')}
+          </Button>
+          <Button
+            variant='primary'
+            type='submit'
+            onClick={saveEditPhoneLines}
+            className='ml-4 mb-4'
+          >
+            {t('Common.Save')}
           </Button>
         </div>
       </div>

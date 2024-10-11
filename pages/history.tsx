@@ -578,9 +578,9 @@ const History: NextPage = () => {
             <h1 className='text-2xl font-semibold text-title dark:text-titleDark'>
               {t('History.History')}
             </h1>
-            <div className='text-gray-900 dark:text-gray-100 text-sm flex items-center'>
+            <div className='text-gray-900 dark:text-gray-100 flex items-center'>
               <Button size='small' variant='white'>
-                <FontAwesomeIcon icon={faArrowUpRightFromSquare} className='mr-2 h-4 w-4' />
+                <FontAwesomeIcon icon={faArrowUpRightFromSquare} className='mr-2 w-4 h-5' />
                 <a href={pbxReportUrl} target='_blank' rel='noreferrer'>
                   {t('Applications.Open PBX Report')}
                 </a>

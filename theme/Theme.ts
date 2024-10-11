@@ -5,17 +5,17 @@ const theme = {
   button: {
     base: 'inline-flex content-center items-center justify-center font-medium tracking-wide transition-colors duration-200 transform focus:outline-none focus:z-20 disabled:cursor-not-allowed',
     primary:
-      'border border-transparent bg-primary dark:bg-primaryDark text-white dark:text-primaryButtonTextDark hover:bg-primaryHover dark:hover:bg-primaryDarkHover focus:ring-2 focus:ring-primaryRing dark:focus:ring-primaryRingDark ring-offset-2 ring-offset-slate-50 dark:ring-offset-slate-900',
+      'border border-transparent bg-primary dark:bg-primaryDark text-white dark:text-primaryButtonTextDark hover:bg-primaryHover dark:hover:bg-primaryDarkHover focus:ring-2 focus:ring-primaryRing dark:focus:ring-primaryRingDark ring-offset-2 ring-offset-gray-50 dark:ring-offset-gray-900 font-medium leading-5 text-sm',
     secondary:
       'border border-transparent focus:ring-primaryLight bg-primaryLighter text-primaryDark hover:bg-primaryLighter dark:focus:ring-primaryDark dark:bg-primaryDarker dark:text-primaryLight dark:hover:bg-primaryDarker focus:ring-2 focus:ring-offset-2',
     white:
-      'border shadow-sm border-gray-300 dark:border-gray-500 bg-transparent dark:bg-transparent text-primary dark:text-primaryDark hover:bg-gray-200 hover:bg-opacity-30 dark:hover:bg-gray-600 dark:hover:bg-opacity-30 focus:ring-primaryLight dark:focus:ring-primaryDark focus:ring-2 focus:ring-offset-2',
+      'border shadow-sm border-gray-300 dark:border-gray-500 bg-transparent dark:bg-transparent text-primary dark:text-primaryDark hover:bg-gray-200 hover:bg-opacity-30 dark:hover:bg-gray-600 dark:hover:bg-opacity-30 focus:ring-primaryLight dark:focus:ring-primaryDark focus:ring-2 focus:ring-offset-2 leading-5 text-sm font-medium',
     ghost:
-      'border-gray-300 text-primary dark:text-primaryDark  hover:bg-gray-200 hover:bg-opacity-30 dark:hover:bg-gray-600 dark:hover:bg-opacity-30  focus:ring-primaryLight dark:border-gray-600 dark:focus:ring-primaryDark',
+      'border-gray-300 text-primary dark:text-primaryDark  hover:bg-gray-200 hover:bg-opacity-30 dark:hover:bg-gray-600 dark:hover:bg-opacity-30 focus:ring-primaryLight dark:border-gray-600 dark:focus:ring-primaryDark leading-5 text-sm font-medium',
     dashboard:
       'border-gray-300 text-primary dark:text-primaryDark hover:bg-gray-200 dark:border-gray-600  dark:hover:bg-gray-700 dark:hover:disabled:bg-transparent hover:disabled:bg-transparent dark:focus:ring-primaryDark',
     danger:
-      'border border-transparent focus:ring-red-500 bg-red-600 hover:bg-red-700 text-white dark:focus:ring-red-600 dark:bg-red-700 dark:hover:bg-red-800 dark:text-white focus:ring-2 focus:ring-offset-2',
+      'border border-transparent focus:ring-rose-500 bg-rose-600 hover:bg-rose-700 text-white dark:focus:ring-rose-600 dark:bg-rose-700 dark:hover:bg-rose-800 dark:text-white focus:ring-2 focus:ring-offset-2',
     rounded: {
       small: 'rounded',
       base: 'rounded-md',
@@ -128,8 +128,7 @@ const theme = {
         leaveTo: 'opacity-0 translate-y-4 sm:translate-y-0 sm:scale-95',
       },
     },
-    actions:
-      'px-4 py-3 flex flex-col sm:flex-row-reverse  sm:px-6 gap-3 bg-gray-50 dark:bg-gray-800',
+    actions: 'px-4 py-3 flex flex-col sm:flex-row-reverse  sm:px-6 gap-3 bg-white dark:bg-gray-900',
     sizes: {
       base: '',
       large: '',
@@ -296,8 +295,8 @@ const theme = {
       background: 'bg-gray-100',
     },
     placeholderType: {
-      base: 'text-white w-full h-full fill-white flex justify-center items-center',
-      background: 'bg-gray-400 dark:bg-gray-600',
+      base: 'text-white dark:text-gray-950 w-full h-full fill-white flex justify-center items-center',
+      background: 'bg-gray-700 dark:bg-gray-200',
       sizes: {
         extra_small: 'h-3 w-3',
         small: 'h-4 w-4',

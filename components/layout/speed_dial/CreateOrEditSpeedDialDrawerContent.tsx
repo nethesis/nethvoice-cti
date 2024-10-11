@@ -1,4 +1,4 @@
-// Copyright (C) 2023 Nethesis S.r.l.
+// Copyright (C) 2024 Nethesis S.r.l.
 // SPDX-License-Identifier: AGPL-3.0-or-later
 
 import { ComponentPropsWithRef, forwardRef } from 'react'
@@ -9,8 +9,6 @@ import { useState, useRef, useEffect } from 'react'
 import { createSpeedDial, editSpeedDial } from '../../../services/phonebook'
 import { reloadSpeedDial } from '../../../lib/speedDial'
 import { closeSideDrawer } from '../../../lib/utils'
-import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
-import { faPlus, faPen } from '@fortawesome/free-solid-svg-icons'
 import { openToast } from '../../../lib/utils'
 
 export interface CreateOrEditSpeedDialDrawerContentProps extends ComponentPropsWithRef<'div'> {
@@ -205,7 +203,7 @@ export const CreateOrEditSpeedDialDrawerContent = forwardRef<
           </div>
         </div>
         <div className='flex items-center justify-end'>
-          <Button variant='white' type='submit' onClick={closeSideDrawer} className='mb-4'>
+          <Button variant='ghost' type='submit' onClick={closeSideDrawer} className='mb-4'>
             {t('Common.Cancel')}
           </Button>
           {config.isEdit ? (
@@ -216,7 +214,6 @@ export const CreateOrEditSpeedDialDrawerContent = forwardRef<
               onClick={prepareEditSpeedDial}
               className='ml-4 mb-4'
             >
-              <FontAwesomeIcon icon={faPen} className='mr-2 h-4 w-4' />
               {t('SpeedDial.Save speed dial')}
             </Button>
           ) : (
@@ -226,7 +223,6 @@ export const CreateOrEditSpeedDialDrawerContent = forwardRef<
               onClick={prepareCreateSpeedDial}
               className='ml-4 mb-4'
             >
-              <FontAwesomeIcon icon={faPlus} className='mr-2 h-4 w-4' />
               {t('SpeedDial.Create speed dial')}
             </Button>
           )}

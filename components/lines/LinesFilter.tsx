@@ -1,4 +1,4 @@
-// Copyright (C) 2023 Nethesis S.r.l.
+// Copyright (C) 2024 Nethesis S.r.l.
 // SPDX-License-Identifier: AGPL-3.0-or-later
 
 import { ComponentPropsWithRef, forwardRef, useRef } from 'react'
@@ -221,7 +221,7 @@ export const LinesFilter = forwardRef<HTMLButtonElement, LinesFilterProps>(
                                         onChange={changeSortBy}
                                         className={`h-4 w-4 border-gray-300 text-primary dark:text-primaryDark focus:ring-primaryLight dark:focus:ring-primaryDark ${
                                           sortBy === option.value
-                                            ? 'dark:bg-primaryLight dark:text-primary dark:border-gray-600'
+                                            ? 'dark:bg-primaryLight dark:text-primaryDark dark:border-gray-600'
                                             : 'dark:bg-gray-700 dark:text-white dark:border-gray-600'
                                         }`}
                                       />
@@ -279,7 +279,7 @@ export const LinesFilter = forwardRef<HTMLButtonElement, LinesFilterProps>(
                                         onChange={changeConfigurationType}
                                         className={`h-4 w-4 border-gray-300 text-primary dark:text-primaryDark focus:ring-primaryLight dark:focus:ring-primaryDark ${
                                           configurationType === option.value
-                                            ? 'dark:bg-primaryLight dark:text-primary dark:border-gray-600'
+                                            ? 'dark:bg-primaryLight dark:text-primaryDark dark:border-gray-600'
                                             : 'dark:bg-gray-700 dark:text-white dark:border-gray-600'
                                         }`}
                                       />
@@ -365,7 +365,7 @@ export const LinesFilter = forwardRef<HTMLButtonElement, LinesFilterProps>(
                                   onChange={changeSortBy}
                                   className={`h-4 w-4 border-gray-300 text-primary dark:text-primaryDark focus:ring-primaryLight dark:focus:ring-primaryDark ${
                                     sortBy === option.value
-                                      ? 'dark:bg-primaryLight dark:text-primary dark:border-gray-600'
+                                      ? 'dark:bg-primaryLight dark:text-primaryDark dark:border-gray-600'
                                       : 'dark:bg-gray-700 dark:text-white dark:border-gray-600'
                                   }`}
                                 />
@@ -420,7 +420,7 @@ export const LinesFilter = forwardRef<HTMLButtonElement, LinesFilterProps>(
                                   onChange={changeConfigurationType}
                                   className={`h-4 w-4 border-gray-300 text-primary dark:text-primaryDark focus:ring-primaryLight dark:focus:ring-primaryDark ${
                                     configurationType === option.value
-                                      ? 'dark:bg-primaryLight dark:text-primary dark:border-gray-600'
+                                      ? 'dark:bg-primaryLight dark:text-primaryDark dark:border-gray-600'
                                       : 'dark:bg-gray-700 dark:text-white dark:border-gray-600'
                                   }`}
                                 />

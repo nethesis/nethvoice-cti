@@ -197,6 +197,7 @@
     "External": "Esterne",
     "Access the complete tool for consulting reports": "Accedi al tool completo per la consultazione dei report.",
     "Open PBX Report": "Apri PBX Report",
+    "PBX Report": "PBX Report",
     "Go to Phone lines and announcements": "Vai a Linee telefoniche e annunci"
   },
   "Settings": {
@@ -346,7 +347,7 @@
     "Public": "Pubblico",
     "Private": "Privato",
     "Announcement": "Annuncio",
-    "Select or drag an audio file here": "Seleziona o trascina qui un file audio",
+    "Drag and drop or click to upload": "Trascina qui o clicca per caricare",
     "or click and drag here": "o clicca e trascina quì",
     "Record now": "Registra ora",
     "Activation": "Attivazione",
@@ -581,6 +582,7 @@
     "Dashboard": "Dashboard",
     "Queues management": "Gestione code",
     "Gestione code": "Gestione code",
+    "Gestione clienti": "Gestione clienti",
     "Not managed calls": "Chiamate non gestite",
     "Live": "In tempo reale",
     "In tempo reale": "In tempo reale",

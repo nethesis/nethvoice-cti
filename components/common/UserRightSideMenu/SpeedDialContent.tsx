@@ -11,7 +11,7 @@ import {
   faEllipsisVertical,
   faPen,
   faBolt,
-  faTrashCan,
+  faTrash,
   faFileImport,
   faFileArrowDown,
   faCheckCircle,
@@ -198,7 +198,7 @@ export const SpeedDialContent = () => {
       <Dropdown.Item icon={faPen} onClick={() => openEditSpeedDialDrawer(speedDial)}>
         {t('Common.Edit')}
       </Dropdown.Item>
-      <Dropdown.Item icon={faTrashCan} onClick={() => confirmDeleteItem(speedDial)}>
+      <Dropdown.Item icon={faTrash} onClick={() => confirmDeleteItem(speedDial)}>
         {t('Common.Delete')}
       </Dropdown.Item>
     </>
@@ -232,7 +232,7 @@ export const SpeedDialContent = () => {
               <div className='w-full border-t  border-gray-300 dark:border-gray-600' />
             </div>
           </div>
-          <Dropdown.Item icon={faTrashCan} onClick={() => confirmDeleteAllItems()}>
+          <Dropdown.Item icon={faTrash} onClick={() => confirmDeleteAllItems()}>
             {t('SpeedDial.Delete all')}
           </Dropdown.Item>
         </>
@@ -408,7 +408,7 @@ export const SpeedDialContent = () => {
             {t('Common.Delete')}
           </Button>
           <Button
-            variant='white'
+            variant='ghost'
             onClick={() => setShowDeleteModal(false)}
             ref={cancelDeleteButtonRef}
           >
@@ -455,7 +455,7 @@ export const SpeedDialContent = () => {
             {t('Common.Delete')}
           </Button>
           <Button
-            variant='white'
+            variant='ghost'
             onClick={() => setShowDeleteAllSpeedDialModal(false)}
             ref={cancelDeleteButtonRef}
           >
@@ -497,7 +497,7 @@ export const SpeedDialContent = () => {
             {t('SpeedDial.Import CSV')}
           </Button>
           <Button
-            variant='white'
+            variant='ghost'
             onClick={() => setShowImportCsvModal(false)}
             ref={cancelDeleteButtonRef}
           >
