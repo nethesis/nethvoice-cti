@@ -43,7 +43,10 @@
     "Start recording message after": "Puoi parlare tra poco...",
     "Required": "Richiesto",
     "Recording": "Registrazione",
-    "Answer phone to start recording": "Rispondi al telefono per iniziare la registrazione"
+    "Answer phone to start recording": "Rispondi al telefono per iniziare la registrazione",
+    "Close the call to stop recording": "Chiudi la chiamata per fermare la registrazione",
+    "Search or type a contact": "Cerca o digita un contatto",
+    "Enter a phone number": "Digita un numero"
   },
   "Login": {
     "User": "Utente",

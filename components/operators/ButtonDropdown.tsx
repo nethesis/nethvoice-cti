@@ -37,7 +37,7 @@ export const ButtonDropdown: React.FC<ButtonDropdownProps> = ({
       {isTransfer ? (
         <button
           type='button'
-          className='relative inline-flex items-center rounded-l-md px-3 text-sm font-medium leading-5 ring-gray-300 z-10 focus:z-10 bg-primary text-white hover:bg-primaryDark  dark:bg-primary dark:text-white dark:hover:bg-primaryDark focus:ring-primaryLight disabled:opacity-50 disabled:cursor-not-allowed'
+          className='relative inline-flex items-center rounded-l-md px-3 text-sm font-medium leading-5 ring-gray-300 z-10 bg-primary text-white hover:bg-primaryDark  dark:bg-primary dark:text-white dark:hover:bg-primaryDark focus:ring-primaryLight disabled:opacity-50 disabled:cursor-not-allowed'
           onClick={() => transferCall(operator)}
         >
           <FontAwesomeIcon
@@ -49,7 +49,7 @@ export const ButtonDropdown: React.FC<ButtonDropdownProps> = ({
       ) : (
         <button
           type='button'
-          className='relative inline-flex items-center rounded-l-md px-3 bg-primary dark:bg-primaryDark hover:bg-primaryHover dark:hover:bg-primaryDarkHover text-sm text-primaryButtonText z-10 dark:text-primaryButtonTextDark font-medium leading-5  focus:ring-2 focus:ring-primaryRing dark:focus:ring-primaryRingDark ring-offset-2 ring-offset-slate-50 dark:ring-offset-slate-900 focus:z-10 disabled:opacity-50 disabled:cursor-not-allowed'
+          className='relative inline-flex items-center rounded-l-md px-3 bg-primary dark:bg-primaryDark hover:bg-primaryHover dark:hover:bg-primaryDarkHover text-sm text-primaryButtonText z-10 dark:text-primaryButtonTextDark font-medium leading-5 focus:ring-2 focus:ring-primaryRing dark:focus:ring-primaryRingDark ring-offset-2 ring-offset-slate-50 dark:ring-offset-slate-900 focus:z-10 disabled:opacity-50 disabled:cursor-not-allowed'
           onClick={() => callOperator(operator)}
           disabled={
             operatorsStore?.operators[operator?.username]?.endpoints?.extension?.length === 0 ||
@@ -68,7 +68,7 @@ export const ButtonDropdown: React.FC<ButtonDropdownProps> = ({
       )}
 
       {/* Vertical divider */}
-      <button className='disabled absolute bg-primary dark:bg-primaryDark z-[0] h-8 rounded-2xl w-32 cursor-none' />
+      <button className='disabled absolute bg-primary dark:bg-primaryDark z-[0] h-8 rounded-2xl w-32 2xl:w-[6rem]cursor-none'/>
       <div className='inline-block w-1 h-5 bg-primaryButtonText dark:bg-primaryButtonTextDark opacity-60 self-center' />
 
       <Menu as='div' className='relative -ml-px block'>
