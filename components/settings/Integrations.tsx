@@ -4,9 +4,9 @@
 import { RefObject, createRef, useState, useEffect } from 'react'
 import {
   faCheck,
-  faClipboard,
   faTriangleExclamation,
   faCircleNotch,
+  faCopy,
 } from '@fortawesome/free-solid-svg-icons'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { Button, InlineNotification, Modal } from '../common'
@@ -124,7 +124,7 @@ export const Integrations = () => {
             <div className='mt-5 bg-gray-50 dark:bg-gray-900 dark:border dark:border-gray-800 p-5 rounded-lg text-gray-900 dark:text-gray-100 flex gap-5 items-center'>
               <div className='text-sm break-all'>{config}</div>
               <CopyToClipboard text={config} onCopy={() => setCopied(true)}>
-                <Button variant='white' className='h-9 w-9'>
+                <Button variant='ghost' className='h-9 w-9'>
                   {copied ? (
                     <FontAwesomeIcon
                       className='w-4 h-4 text-green-600'
@@ -132,7 +132,7 @@ export const Integrations = () => {
                       aria-hidden='true'
                     />
                   ) : (
-                    <FontAwesomeIcon className='w-4 h-4' icon={faClipboard} aria-hidden='true' />
+                    <FontAwesomeIcon className='w-4 h-4' icon={faCopy} aria-hidden='true' />
                   )}
                 </Button>
               </CopyToClipboard>

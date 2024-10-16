@@ -77,8 +77,9 @@ export const DownloadDesktopLinkContent = forwardRef<
           </span>
         </div>
         <div className='grid grid-cols-1 gap-4 lg:grid-cols-2 xl:grid-cols-3 hover:cursor-pointer'>
+          {/* Hidden at the moment, but it will be back when it will be the support for Linux */}
           {/* Linux */}
-          <div
+          {/* <div
             className={`${
               selectedOS === 'linux'
                 ? 'border-primary dark:border-primaryDark border-2'
@@ -100,7 +101,7 @@ export const DownloadDesktopLinkContent = forwardRef<
                 </div>
               )}
             </div>
-          </div>
+          </div> */}
           {/* Apple */}
           <div
             className={`${
