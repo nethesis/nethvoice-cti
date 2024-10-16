@@ -68,7 +68,7 @@ export const ButtonDropdown: React.FC<ButtonDropdownProps> = ({
       )}
 
       {/* Vertical divider */}
-      <button className='disabled absolute bg-primary dark:bg-primaryDark z-[0] h-8 rounded-2xl w-32 2xl:w-[6rem]cursor-none'/>
+      <button className='disabled absolute bg-primary dark:bg-primaryDark z-[0] h-8 rounded-2xl w-32 2xl:w-[6rem] cursor-none'/>
       <div className='inline-block w-1 h-5 bg-primaryButtonText dark:bg-primaryButtonTextDark opacity-60 self-center' />
 
       <Menu as='div' className='relative -ml-px block'>
