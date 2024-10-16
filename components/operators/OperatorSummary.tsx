@@ -18,6 +18,7 @@ import { faStar as faStarSolid, faVideo, faComment } from '@fortawesome/free-sol
 import { faStar as faStarLight } from '@nethesis/nethesis-light-svg-icons'
 import { t } from 'i18next'
 import { isEmpty } from 'lodash'
+import { Tooltip } from 'react-tooltip'
 
 export interface OperatorSummaryProps extends ComponentPropsWithRef<'div'> {
   operator: any
@@ -47,7 +48,11 @@ export const OperatorSummary = forwardRef<HTMLButtonElement, OperatorSummaryProp
           operatorsStore?.favoritesObject[operator?.username],
         )
       } else {
-        addOperatorToFavorites(operator?.username, operator?.endpoints?.mainextension[0]?.id, operator?.name)
+        addOperatorToFavorites(
+          operator?.username,
+          operator?.endpoints?.mainextension[0]?.id,
+          operator?.name,
+        )
       }
       setFavorite(!isFavorite)
       reloadOperators()
@@ -94,7 +99,7 @@ export const OperatorSummary = forwardRef<HTMLButtonElement, OperatorSummaryProp
                 placeholderType='operator'
                 onClick={() => maybeShowSideDrawer(operator)}
                 className={classNames(isShownSideDrawerLink && 'cursor-pointer')}
-                status={operator?.mainPresence}
+                status={currentOperatorInformations?.mainPresence}
               />
             </div>
             <div>
@@ -109,18 +114,31 @@ export const OperatorSummary = forwardRef<HTMLButtonElement, OperatorSummaryProp
                   {operator?.name}
                 </h2>
                 {isShownFavorite && (
-                  <IconSwitch
-                    on={isFavorite}
-                    size='large'
-                    onIcon={<FontAwesomeIcon icon={faStarSolid} />}
-                    offIcon={<FontAwesomeIcon icon={faStarLight} />}
-                    changed={() => toggleFavorite()}
-                    className={'mr-5'}
-                  >
-                    <span className='sr-only'>{t('OperatorDrawer.Toggle favorite operator')}</span>
-                  </IconSwitch>
+                  <>
+                    <IconSwitch
+                      on={isFavorite}
+                      size='large'
+                      onIcon={<FontAwesomeIcon icon={faStarSolid} />}
+                      offIcon={<FontAwesomeIcon icon={faStarLight} />}
+                      changed={() => toggleFavorite()}
+                      className={'mr-5'}
+                      data-tooltip-id={'tooltip-toggle-favorite'}
+                      data-tooltip-content={
+                        isFavorite
+                          ? t('OperatorDrawer.Set favorite operator') || ''
+                          : t('OperatorDrawer.Remove favorite operator') || ''
+                      }
+                    >
+                      <span className='sr-only'>
+                        {t('OperatorDrawer.Toggle favorite operator')}
+                      </span>
+                    </IconSwitch>
+                    {/* Tooltip for favorite operators toggle */}
+                    <Tooltip className='pi-z-20' id={'tooltip-toggle-favorite'} place='left' />
+                  </>
                 )}
               </div>
+
               <span className='text-md font-medium leading-5 text-gray-500 dark:text-gray-300 ml-2'>
                 {operator?.endpoints?.mainextension[0]?.id}
               </span>

@@ -333,7 +333,9 @@
     "Stop recording": "Stop recording",
     "Restart recording": "Restart recording",
     "Start recording": "Start recording",
-    "Toggle favorite operator": "Toggle favorite operator"
+    "Toggle favorite operator": "Toggle favorite operator",
+    "Set favorite operator": "Set favorite operator",
+    "Remove favorite operator": "Remove favorite operator"
   },
   "Notifications": {
     "Mark all as read": "Mark all as read",
