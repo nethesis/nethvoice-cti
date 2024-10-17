@@ -41,9 +41,6 @@ import {
 import { useTranslation } from 'react-i18next'
 import { useRouter } from 'next/router'
 import { LastCallsDrawerTable } from '../history/LastCallsDrawerTable'
-import CopyToClipboard from 'react-copy-to-clipboard'
-import { motion, AnimatePresence } from 'framer-motion'
-import { Tooltip } from 'react-tooltip'
 import CopyComponent from '../common/CopyComponent'
 
 export interface ContactSummaryProps extends ComponentPropsWithRef<'div'> {
@@ -354,7 +351,7 @@ export const ContactSummary = forwardRef<HTMLButtonElement, ContactSummaryProps>
                       {contact?.extension}
                     </span>
                     {/* copy component */}
-                    <CopyComponent number={contact?.homephone} id='extension' />
+                    <CopyComponent number={contact?.extension} id='extension' />
                   </div>
                 </dd>
               </div>
@@ -383,7 +380,7 @@ export const ContactSummary = forwardRef<HTMLButtonElement, ContactSummaryProps>
                       {contact?.workphone}
                     </span>
                     {/* copy component */}
-                    <CopyComponent number={contact?.homephone} id='workphone' />
+                    <CopyComponent number={contact?.workphone} id='workphone' />
                   </div>
                 </dd>
               </div>
@@ -412,7 +409,7 @@ export const ContactSummary = forwardRef<HTMLButtonElement, ContactSummaryProps>
                       {contact?.cellphone}
                     </span>
                     {/* copy component */}
-                    <CopyComponent number={contact?.homephone} id='mobile-phone' />
+                    <CopyComponent number={contact?.cellphone} id='mobile-phone' />
                   </div>
                 </dd>
               </div>
