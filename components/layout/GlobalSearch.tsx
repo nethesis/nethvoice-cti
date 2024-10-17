@@ -208,6 +208,31 @@ export const GlobalSearch: FC<GlobalSearchProps> = () => {
   // global keyborad shortcut
   useHotkeys('ctrl+shift+f', () => focusGlobalSearch(), [])
 
+  const removeFocus = () => {
+    store.dispatch.globalSearch.setFocused(false)
+    store.dispatch.globalSearch.setOpen(false)
+    store.dispatch.globalSearch.setRightSideTitleClicked(false)
+  }
+
+  // remove focus on globals search
+  useHotkeys('esc', () => removeFocus(), [])
+
+  const inputRef = useRef<HTMLInputElement>(null)
+
+  useEffect(() => {
+    const handleVisibilityChange = () => {
+      if (document.visibilityState === 'visible') {
+        inputRef.current?.focus()
+      }
+    }
+
+    document.addEventListener('visibilitychange', handleVisibilityChange)
+
+    return () => {
+      document.removeEventListener('visibilitychange', handleVisibilityChange)
+    }
+  }, [])
+
   return (
     <>
       {globalSearchStore?.isFocused && !globalSearchStore?.isCustomerCardsRedirect && (
@@ -307,7 +332,7 @@ export const GlobalSearch: FC<GlobalSearchProps> = () => {
                       {isLoaded && !results.length && query.length > 2 && (
                         <ComboboxOption
                           as='div'
-                          value={'no-results'}
+                          value={''}
                           className={({ active }) =>
                             classNames(
                               'flex justify-center cursor-default select-none items-center rounded-md p-2',
@@ -437,6 +462,7 @@ export const GlobalSearch: FC<GlobalSearchProps> = () => {
                             contact={activeOption}
                             isShownContactMenu={false}
                             isShownSideDrawerLink={true}
+                            isGlobalSearch={true}
                           />
                         )}
                       </div>

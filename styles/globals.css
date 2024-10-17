@@ -152,7 +152,6 @@ select:-webkit-autofill {
 }
 
 .custom-circle-dot-wrapper .fa-circle-dot {
-  color: white;
   font-size: 24px;
 }
 
@@ -161,6 +160,10 @@ select:-webkit-autofill {
   top: 50%;
   left: 50%;
   transform: translate(-50%, -50%);
-  color: red;
   font-size: 12px;
+}
+
+input::placeholder {
+  font-size: 14px;
+  opacity: 1;
 }

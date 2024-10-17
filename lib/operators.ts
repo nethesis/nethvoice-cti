@@ -125,6 +125,9 @@ export const callOperator = (operator: any, event: any = undefined) => {
   const phoneNumber = operator.endpoints.mainextension[0].id
   callPhoneNumber(phoneNumber)
 
+  store.dispatch.globalSearch.setFocused(false)
+  store.dispatch.globalSearch.setOpen(false)
+  store.dispatch.globalSearch.setRightSideTitleClicked(true)
   // stop propagation of click event
   if (event) {
     event.stopPropagation()

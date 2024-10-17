@@ -43,7 +43,12 @@
     "Start recording message after": "Puoi parlare tra poco...",
     "Required": "Richiesto",
     "Recording": "Registrazione",
-    "Answer phone to start recording": "Rispondi al telefono per iniziare la registrazione"
+    "Answer phone to start recording": "Rispondi al telefono per iniziare la registrazione",
+    "Close the call to stop recording": "Chiudi la chiamata per fermare la registrazione",
+    "Search or type a contact": "Cerca o digita un contatto",
+    "Enter a phone number": "Digita un numero",
+    "Copied in clipboard": "Copiato negli appunti",
+    "Copy to clipboard": "Copia negli appunti"
   },
   "Login": {
     "User": "Utente",
@@ -305,7 +310,9 @@
     "Incoming": "In entrata",
     "Outgoing": "In uscita",
     "Duration": "Durata",
-    "Toggle favorite operator": "Attiva/disattiva l'operatore preferito"
+    "Toggle favorite operator": "Attiva/disattiva l'operatore preferito",
+    "Set favorite operator": "Imposta operatore preferito",
+    "Remove favorite operator": "Rimuovi operatore preferito"
   },
   "Lines": {
     "Lines management": "Gestione linee",
@@ -732,7 +739,7 @@
     "Customer data": "Informazioni cliente",
     "General info": "Informazione generale",
     "Select a tab": "Seleziona un tab",
-    "Business name": "Name azienda",
+    "Business name": "Nome azienda",
     "VAT number": "Numero VAT",
     "Notes": "Note",
     "City": "Citta",

@@ -44,6 +44,7 @@ import { Tooltip } from 'react-tooltip'
 import { getJSONItem, setJSONItem } from '../../lib/storage'
 import { eventDispatch } from '../../lib/hooks/eventDispatch'
 import { setMainDevice } from '../../lib/devices'
+import { useHotkeys } from 'react-hotkeys-hook'
 
 export const Layout: FC<LayoutProps> = ({ children }) => {
   const [openMobileMenu, setOpenMobileMenu] = useState<boolean>(false)
@@ -994,6 +995,12 @@ export const Layout: FC<LayoutProps> = ({ children }) => {
       }
     }
   }, [phoneIslandThemePreference, theme])
+
+  const closePhoneIslandCall = () => {
+    eventDispatch('phone-island-call-end', {})
+  }
+   // global keyborad shortcut
+   useHotkeys('ctrl+alt+c', () => closePhoneIslandCall(), [])
 
   return (
     <>

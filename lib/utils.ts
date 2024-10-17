@@ -120,6 +120,12 @@ export const sortByFavorite = (a: any, b: any) => {
 export function callPhoneNumber(phoneNumber: string) {
   eventDispatch('phone-island-call-start', { number: phoneNumber })
 
+  setTimeout(() => {
+    store.dispatch.globalSearch.setFocused(false)
+    store.dispatch.globalSearch.setOpen(false)
+    store.dispatch.globalSearch.setRightSideTitleClicked(true)
+  }, 350)
+
   console.log('callPhoneNumber', phoneNumber) ////
 }
 
