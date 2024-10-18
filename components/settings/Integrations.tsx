@@ -21,6 +21,7 @@ import {
 } from '../../services/authentication'
 import { useTranslation } from 'react-i18next'
 import { getProductName } from '../../lib/utils'
+import CopyComponent from '../common/CopyComponent'
 
 export const Integrations = () => {
   const [copied, setCopied] = useState<boolean>(false)
@@ -123,19 +124,7 @@ export const Integrations = () => {
             </InlineNotification>
             <div className='mt-5 bg-gray-50 dark:bg-gray-900 dark:border dark:border-gray-800 p-5 rounded-lg text-gray-900 dark:text-gray-100 flex gap-5 items-center'>
               <div className='text-sm break-all'>{config}</div>
-              <CopyToClipboard text={config} onCopy={() => setCopied(true)}>
-                <Button variant='ghost' className='h-9 w-9'>
-                  {copied ? (
-                    <FontAwesomeIcon
-                      className='w-4 h-4 text-green-600'
-                      icon={faCheck}
-                      aria-hidden='true'
-                    />
-                  ) : (
-                    <FontAwesomeIcon className='w-4 h-4' icon={faCopy} aria-hidden='true' />
-                  )}
-                </Button>
-              </CopyToClipboard>
+              <CopyComponent number={config} id='phone-island-config' />
             </div>
           </>
         )}

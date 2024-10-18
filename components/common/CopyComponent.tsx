@@ -1,5 +1,4 @@
 import React, { useState } from 'react'
-import { CopyToClipboard } from 'react-copy-to-clipboard'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { faClone } from '@fortawesome/free-solid-svg-icons'
 import { motion, AnimatePresence } from 'framer-motion'
@@ -7,32 +6,36 @@ import { Tooltip } from 'react-tooltip'
 import { Button } from './Button'
 import { t } from 'i18next'
 
-interface CopyComponentProps {
+interface CopyToClipboardProps {
   number: string
   id: string
 }
 
-const CopyComponent: React.FC<CopyComponentProps> = ({ number, id }) => {
+const CopyToClipboard: React.FC<CopyToClipboardProps> = ({ number, id }) => {
   const [showMessage, setShowMessage] = useState(false)
 
-  const handleCopy = () => {
-    setShowMessage(true)
-    setTimeout(() => setShowMessage(false), 2000)
+  const handleCopy = (event: React.MouseEvent) => {
+    event.preventDefault()
+    event.stopPropagation()
+
+    navigator.clipboard.writeText(number).then(() => {
+      setShowMessage(true)
+      setTimeout(() => setShowMessage(false), 2000)
+    })
   }
 
   return (
     <>
       <div className='relative'>
-        <CopyToClipboard text={number} onCopy={handleCopy}>
-          <Button
-            variant='ghost'
-            className='ml-2 h-9 w-9'
-            data-tooltip-id={`tooltip-${id}`}
-            data-tooltip-content={t('Common.Copy to clipboard') || ''}
-          >
-            <FontAwesomeIcon className='w-4 h-4 text-green-600' icon={faClone} aria-hidden='true' />
-          </Button>
-        </CopyToClipboard>
+        <Button
+          variant='ghost'
+          className='ml-2 h-9 w-9'
+          data-tooltip-id={`tooltip-${id}`}
+          data-tooltip-content={t('Common.Copy to clipboard') || ''}
+          onClick={handleCopy}
+        >
+          <FontAwesomeIcon className='w-4 h-4 text-green-600' icon={faClone} aria-hidden='true' />
+        </Button>
       </div>
       <AnimatePresence>
         {showMessage && (
@@ -52,4 +55,4 @@ const CopyComponent: React.FC<CopyComponentProps> = ({ number, id }) => {
   )
 }
 
-export default CopyComponent
+export default CopyToClipboard

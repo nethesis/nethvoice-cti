@@ -1,7 +1,14 @@
 // Copyright (C) 2024 Nethesis S.r.l.
 // SPDX-License-Identifier: AGPL-3.0-or-later
 
-import React, { ComponentProps, MutableRefObject, useEffect, useMemo, useRef } from 'react'
+import React, {
+  ComponentProps,
+  Fragment,
+  MutableRefObject,
+  useEffect,
+  useMemo,
+  useRef,
+} from 'react'
 import { FC, useState } from 'react'
 import classNames from 'classnames'
 import { Combobox, ComboboxInput, ComboboxOptions, ComboboxOption } from '@headlessui/react'
@@ -30,6 +37,7 @@ import { ContactSummary } from '../phonebook/ContactSummary'
 import { openAddToPhonebookDrawer } from '../../lib/history'
 import { useHotkeys } from 'react-hotkeys-hook'
 import { useTranslation } from 'react-i18next'
+import clsx from 'clsx'
 
 interface GlobalSearchProps extends ComponentProps<'div'> {}
 
@@ -256,7 +264,7 @@ export const GlobalSearch: FC<GlobalSearchProps> = () => {
         )}
       >
         <Combobox onChange={resultSelected}>
-          {({ open, activeOption }: any) => (
+          {({ activeOption }: any) => (
             <>
               <div className='relative flex items-center'>
                 <FontAwesomeIcon
@@ -318,11 +326,9 @@ export const GlobalSearch: FC<GlobalSearchProps> = () => {
                             as='div'
                             key={index}
                             value={index}
-                            className={({ active }) =>
-                              classNames(
-                                'flex cursor-default select-none items-center rounded-md p-2 h-14',
-                              )
-                            }
+                            className={classNames(
+                              'flex cursor-default select-none items-center rounded-md p-2 h-14',
+                            )}
                           >
                             <div className='animate-pulse rounded-full h-8 w-8 bg-gray-300 dark:bg-gray-600'></div>
                             <div className='ml-2 animate-pulse h-3 rounded w-[40%] bg-gray-300 dark:bg-gray-600'></div>
@@ -333,11 +339,9 @@ export const GlobalSearch: FC<GlobalSearchProps> = () => {
                         <ComboboxOption
                           as='div'
                           value={''}
-                          className={({ active }) =>
-                            classNames(
-                              'flex justify-center cursor-default select-none items-center rounded-md p-2',
-                            )
-                          }
+                          className={classNames(
+                            'flex justify-center cursor-default select-none items-center rounded-md p-2',
+                          )}
                         >
                           <EmptyState
                             title={t('Phonebook.No results') || ''}
@@ -356,21 +360,16 @@ export const GlobalSearch: FC<GlobalSearchProps> = () => {
                       {isLoaded &&
                         !!results?.length &&
                         results.map((result: any, index: number) => (
-                          <ComboboxOption
-                            as='div'
-                            key={'result-' + index}
-                            value={result}
-                            className={({ active }) =>
-                              classNames(
-                                'flex select-none items-center rounded-md p-2 h-14 cursor-pointer',
-                                active &&
-                                  'bg-gray-100 text-gray-900 dark:bg-gray-800 dark:text-gray-100',
-                              )
-                            }
-                          >
-                            {({ active }) => (
-                              <>
-                                {/* call phone number */}
+                          <ComboboxOption as={Fragment} key={`result-${index}`} value={result}>
+                            {({ active }: any) => (
+                              <div
+                                className={clsx(
+                                  'flex select-none items-center rounded-md p-2 h-14 cursor-pointer',
+                                  active &&
+                                    'bg-gray-100 text-gray-900 dark:bg-gray-800 dark:text-gray-100',
+                                )}
+                              >
+                                {/* Call phone number */}
                                 {result?.resultType === 'callPhoneNumber' && (
                                   <>
                                     <div className='w-10 text-center'>
@@ -384,7 +383,8 @@ export const GlobalSearch: FC<GlobalSearchProps> = () => {
                                     </span>
                                   </>
                                 )}
-                                {/* add to phonebook */}
+
+                                {/* Add to phonebook */}
                                 {result?.resultType === 'addToPhonebook' && (
                                   <>
                                     <div className='w-10 text-center'>
@@ -398,7 +398,8 @@ export const GlobalSearch: FC<GlobalSearchProps> = () => {
                                     </span>
                                   </>
                                 )}
-                                {/* operator */}
+
+                                {/* Operator */}
                                 {result?.resultType === 'operator' && (
                                   <>
                                     <Avatar
@@ -411,23 +412,21 @@ export const GlobalSearch: FC<GlobalSearchProps> = () => {
                                     <span className='ml-2 flex-auto truncate'>{result?.name}</span>
                                   </>
                                 )}
-                                {/* phonebook contact */}
-                                {result.resultType === 'contact' && (
+
+                                {/* Phonebook contact */}
+                                {result?.resultType === 'contact' && (
                                   <>
                                     <Avatar placeholderType={result.kind} size='base' />
                                     <span className='ml-2 flex-auto truncate'>
-                                      {result?.displayName !== '' && result?.displayName !== ' '
-                                        ? result?.displayName
-                                        : result?.name !== '' && result?.name !== ' '
-                                        ? result?.name
-                                        : result?.company &&
-                                          result?.company !== '' &&
-                                          result?.company !== ' '
-                                        ? result?.company
-                                        : '-'}
+                                      {result?.displayName?.trim() ||
+                                        result?.name?.trim() ||
+                                        result?.company?.trim() ||
+                                        '-'}
                                     </span>
                                   </>
                                 )}
+
+                                {/* Icon when active */}
                                 {active && (
                                   <FontAwesomeIcon
                                     icon={faChevronRight}
@@ -435,7 +434,7 @@ export const GlobalSearch: FC<GlobalSearchProps> = () => {
                                     aria-hidden='true'
                                   />
                                 )}
-                              </>
+                              </div>
                             )}
                           </ComboboxOption>
                         ))}
