@@ -58,7 +58,12 @@
     "Start recording message after": "You can speak in a moment...",
     "Required": "Required",
     "Recording": "Recording",
-    "Answer phone to start recording": "Answer phone to start recording"
+    "Answer phone to start recording": "Answer phone to start recording",
+    "Close the call to stop recording": "Close the call to stop recording",
+    "Search or type a contact": "Search or type a contact",
+    "Enter a phone number": "Enter a phone number",
+    "Copied in clipboard": "Copied in clipboard",
+    "Copy to clipboard": "Copy to clipboard"
   },
   "Login": {
     "User": "Username",
@@ -330,7 +335,9 @@
     "Stop recording": "Stop recording",
     "Restart recording": "Restart recording",
     "Start recording": "Start recording",
-    "Toggle favorite operator": "Toggle favorite operator"
+    "Toggle favorite operator": "Toggle favorite operator",
+    "Set favorite operator": "Set favorite operator",
+    "Remove favorite operator": "Remove favorite operator"
   },
   "Notifications": {
     "Mark all as read": "Mark all as read",

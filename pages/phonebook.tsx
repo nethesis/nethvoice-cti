@@ -297,7 +297,7 @@ const Phonebook: NextPage = () => {
                                                     aria-hidden='true'
                                                   />
                                                   <span className='truncate'>
-                                                    {contact.company}
+                                                    {contact?.company}
                                                   </span>
                                                 </div>
                                               )}
@@ -345,7 +345,7 @@ const Phonebook: NextPage = () => {
                                                     : ''
                                                 }
                                               >
-                                                {contact.workphone}
+                                                {contact?.workphone}
                                               </span>
                                             </div>
                                           ) : (
@@ -363,7 +363,7 @@ const Phonebook: NextPage = () => {
                                         } py-4 px-4 relative`}
                                       >
                                         <div>
-                                          {contact.cellphone ? (
+                                          {contact?.cellphone ? (
                                             <div className='mt-1 flex items-center text-sm text-primary dark:text-primaryDark'>
                                               <FontAwesomeIcon
                                                 icon={faMobileScreenButton}

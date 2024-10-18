@@ -17,7 +17,6 @@ import { RootState, store } from '../../store'
 import { callPhoneNumber, closeSideDrawer, transferCallToExtension } from '../../lib/utils'
 import { startOfDay, subDays } from 'date-fns'
 import {
-  faArrowUpRightFromSquare,
   faEllipsisVertical,
   faPen,
   faPhone,
@@ -28,6 +27,7 @@ import {
   faFileLines,
   faTrash,
   faUser,
+  faClone,
 } from '@fortawesome/free-solid-svg-icons'
 import {} from '@fortawesome/free-regular-svg-icons'
 import {
@@ -37,27 +37,39 @@ import {
   openEditContactDrawer,
   openShowContactDrawer,
   reloadPhonebook,
-  retrieveContact,
 } from '../../lib/phonebook'
 import { useTranslation } from 'react-i18next'
 import { useRouter } from 'next/router'
-import { isEmpty } from 'lodash'
 import { LastCallsDrawerTable } from '../history/LastCallsDrawerTable'
+import CopyComponent from '../common/CopyComponent'
 
 export interface ContactSummaryProps extends ComponentPropsWithRef<'div'> {
   contact: any
   isShownContactMenu: boolean
   isShownSideDrawerLink: boolean
+  isGlobalSearch?: boolean
 }
 
 export const ContactSummary = forwardRef<HTMLButtonElement, ContactSummaryProps>(
-  ({ contact, isShownContactMenu, isShownSideDrawerLink = false, className, ...props }, ref) => {
+  (
+    {
+      contact,
+      isShownContactMenu,
+      isShownSideDrawerLink = false,
+      isGlobalSearch,
+      className,
+      ...props
+    },
+    ref,
+  ) => {
     const { t } = useTranslation()
     const auth = useSelector((state: RootState) => state.authentication)
     const [showDeleteModal, setShowDeleteModal] = useState<boolean>(false)
     const [contactToDelete, setContactToDelete] = useState<any>(null)
     const cancelDeleteButtonRef = useRef() as MutableRefObject<HTMLButtonElement>
     const { profile } = useSelector((state: RootState) => state.user)
+
+    const [copied, setCopied] = useState<boolean>(false)
 
     const operatorsStore = useSelector((state: RootState) => state.operators)
 
@@ -147,12 +159,7 @@ export const ContactSummary = forwardRef<HTMLButtonElement, ContactSummaryProps>
     // Get all company information
     useEffect(() => {
       async function searchCompanyInformation() {
-        if (
-          isEmpty(companyInformation) &&
-          contact &&
-          contact?.kind === 'person' &&
-          contact?.company
-        ) {
+        if (contact && contact?.kind === 'person' && contact?.company) {
           try {
             //Remove space and slash characters
             let noSlashCharactersCompanyInformation = contact?.company?.replace(/\//g, '')
@@ -323,7 +330,7 @@ export const ContactSummary = forwardRef<HTMLButtonElement, ContactSummaryProps>
             {/* extension */}
             {contact.extension && (
               <div className='py-4 sm:grid sm:grid-cols-3 sm:gap-4 sm:py-5'>
-                <dt className='text-sm font-medium text-gray-700 dark:text-gray-200 leading-5'>
+                <dt className='flex items-center text-sm font-medium text-gray-700 dark:text-gray-200 leading-5'>
                   {t('Phonebook.Extension')}
                 </dt>
                 <dd className='mt-1 text-sm text-gray-900 dark:text-gray-100 sm:col-span-2 sm:mt-0'>
@@ -343,6 +350,8 @@ export const ContactSummary = forwardRef<HTMLButtonElement, ContactSummaryProps>
                     >
                       {contact?.extension}
                     </span>
+                    {/* copy component */}
+                    <CopyComponent number={contact?.extension} id='extension' />
                   </div>
                 </dd>
               </div>
@@ -350,7 +359,7 @@ export const ContactSummary = forwardRef<HTMLButtonElement, ContactSummaryProps>
             {/* work phone */}
             {contact.workphone && (
               <div className='py-4 sm:grid sm:grid-cols-3 sm:gap-4 sm:py-5'>
-                <dt className='text-sm font-medium text-gray-700 dark:text-gray-200 leading-5'>
+                <dt className='flex items-center text-sm font-medium text-gray-700 dark:text-gray-200 leading-5'>
                   {t('Phonebook.Work phone')}
                 </dt>
                 <dd className='mt-1 text-sm text-gray-900 dark:text-gray-100 sm:col-span-2 sm:mt-0'>
@@ -368,8 +377,10 @@ export const ContactSummary = forwardRef<HTMLButtonElement, ContactSummaryProps>
                           : callPhoneNumber(contact?.workphone)
                       }
                     >
-                      {contact.workphone}
+                      {contact?.workphone}
                     </span>
+                    {/* copy component */}
+                    <CopyComponent number={contact?.workphone} id='workphone' />
                   </div>
                 </dd>
               </div>
@@ -377,7 +388,7 @@ export const ContactSummary = forwardRef<HTMLButtonElement, ContactSummaryProps>
             {/* mobile phone */}
             {contact.cellphone && (
               <div className='py-4 sm:grid sm:grid-cols-3 sm:gap-4 sm:py-5'>
-                <dt className='text-sm font-medium text-gray-700 dark:text-gray-200 leading-5'>
+                <dt className='flex items-center text-sm font-medium text-gray-700 dark:text-gray-200 leading-5'>
                   {t('Phonebook.Mobile phone')}
                 </dt>
                 <dd className='mt-1 text-sm text-gray-900 dark:text-gray-100 sm:col-span-2 sm:mt-0'>
@@ -397,6 +408,8 @@ export const ContactSummary = forwardRef<HTMLButtonElement, ContactSummaryProps>
                     >
                       {contact?.cellphone}
                     </span>
+                    {/* copy component */}
+                    <CopyComponent number={contact?.cellphone} id='mobile-phone' />
                   </div>
                 </dd>
               </div>
@@ -404,7 +417,7 @@ export const ContactSummary = forwardRef<HTMLButtonElement, ContactSummaryProps>
             {/* home phone */}
             {contact.homephone && (
               <div className='py-4 sm:grid sm:grid-cols-3 sm:gap-4 sm:py-5'>
-                <dt className='text-sm font-medium text-gray-700 dark:text-gray-200 leading-5'>
+                <dt className='flex items-center text-sm font-medium text-gray-700 dark:text-gray-200 leading-5'>
                   {t('Phonebook.Home phone')}
                 </dt>
                 <dd className='mt-1 text-sm text-gray-900 dark:text-gray-100 sm:col-span-2 sm:mt-0'>
@@ -424,6 +437,8 @@ export const ContactSummary = forwardRef<HTMLButtonElement, ContactSummaryProps>
                     >
                       {contact?.homephone}
                     </span>
+                    {/* copy component */}
+                    <CopyComponent number={contact?.homephone} id='home-phone' />
                   </div>
                 </dd>
               </div>
