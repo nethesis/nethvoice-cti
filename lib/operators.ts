@@ -272,10 +272,16 @@ export const retrieveAvatars = async (authStore: any) => {
 export const retrieveFavoriteOperators = async (authStore: any, operatorObject: any) => {
   store.dispatch.operators.setFavoritesLoaded(false)
   const speedDials = await getSpeedDials()
+
+  // Avoid to add a favorite operator if you add it in the speed dials form
   const speedDialMap: any = speedDials.reduce((acc: any, speedDial: any) => {
-    acc[speedDial?.name] = { id: speedDial?.id }
+    if (speedDial?.notes === 'speeddial-favorite') {
+      acc[speedDial?.name] = { id: speedDial?.id }
+    }
     return acc
   }, {})
+
+  // Retrieve the favorite operators from the speed dials Object
   store.dispatch.operators.setFavoritesObjectComplete(speedDialMap)
 
   const favoriteOperatorsLocalStorage =
@@ -307,7 +313,9 @@ export const retrieveFavoriteOperators = async (authStore: any, operatorObject: 
     clearPreference('favoriteOperators', authStore?.username)
   }
 
-  const speedDialOwners = speedDials.map((speedDial: any) => speedDial?.name)
+  const speedDialOwners = speedDials
+    .filter((speedDial: any) => speedDial?.notes === 'speeddial-favorite')
+    .map((speedDial: any) => speedDial?.name)
 
   store.dispatch.operators.setFavorites(speedDialOwners)
   store.dispatch.operators.setFavoritesLoaded(true)
