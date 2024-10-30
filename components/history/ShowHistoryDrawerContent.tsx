@@ -11,6 +11,7 @@ import { LastCallsDrawerTable } from './LastCallsDrawerTable'
 import { startOfDay, subDays } from 'date-fns'
 import { useSelector } from 'react-redux'
 import { RootState } from '../../store'
+import { t } from 'i18next'
 
 export interface ShowHistoryDrawerContentProps extends ComponentPropsWithRef<'div'> {
   config: any
@@ -24,7 +25,7 @@ function checkTitle(config: any) {
           <Avatar size='large' placeholderType='person' />
         </div>
         <div>
-          <h2 className='text-xl font-medium text-gray-700 dark:text-gray-200'>{config.name}</h2>
+          <h2 className='text-xl font-medium text-gray-700 dark:text-gray-200'>{config?.name}</h2>
         </div>
       </div>
     )
@@ -35,7 +36,7 @@ function checkTitle(config: any) {
           <Avatar size='large' placeholderType='company' />
         </div>
         <div className='flex-shrink-0 mr-4'>
-          <h2 className='text-xl font-medium text-gray-700 dark:text-gray-200'>{config.company}</h2>
+          <h2 className='text-xl font-medium text-gray-700 dark:text-gray-200'>{config?.company}</h2>
         </div>
       </div>
     )
@@ -46,7 +47,7 @@ function checkTitle(config: any) {
           <Avatar size='large' placeholderType='person' />
         </div>
         <div>
-          <h2 className='text-xl font-medium text-gray-700 dark:text-gray-200'>{config.number}</h2>
+          <h2 className='text-xl font-medium text-gray-700 dark:text-gray-200'>{config?.number}</h2>
         </div>
       </div>
     )
@@ -64,7 +65,7 @@ export const ShowHistoryDrawerContent = forwardRef<
       <div className='bg-white dark:bg-gray-900 pt-6 px-6'>
         <div className='flex items-center justify-between'>
           <div className='text-lg dark:text-gray-200 text-gray-700 font-medium'>
-            History details
+            {t('Common.History details')}
           </div>
           <div className='flex items-center h-7'>
             <SideDrawerCloseIcon className='p-0.5' />
@@ -84,12 +85,12 @@ export const ShowHistoryDrawerContent = forwardRef<
           <div>
             <Button variant='primary' className='mr-2' onClick={() => callUser(config)}>
               <FontAwesomeIcon icon={faPhone} className='h-4 w-4 xl:mr-2' />
-              <span className='hidden xl:inline-block'>Call</span>
-              <span className='sr-only'>Call</span>
+              <span className='hidden xl:inline-block'>{t('Common.Call')}</span>
+              <span className='sr-only'>{t('Common.Call')}</span>
             </Button>
           </div>
           <div>
-            {!config.name && !config.company && (
+            {!config?.name && !config?.company && (
               <Button
                 variant='white'
                 className='mr-2'
@@ -99,31 +100,31 @@ export const ShowHistoryDrawerContent = forwardRef<
                   icon={faPlus}
                   className='h-4 w-4 xl:mr-2 text-gray-500 dark:text-gray-400'
                 />
-                <span className='hidden xl:inline-block'>Add to phonebook</span>
-                <span className='sr-only'>Add to phonebook</span>
+                <span className='hidden xl:inline-block'>{t('Common.Add to phonebook')}</span>
+                <span className='sr-only'>{t('Common.Add to phonebook')}</span>
               </Button>
             )}
           </div>
         </div>
         <div>
-          {config.company && (
+          {config?.company && (
             <div className='mt-6 border-t border-gray-200 dark:border-gray-700'>
               <dl className='sm:divide-y sm:divide-gray-200 dark:sm:divide-gray-700'>
                 {/* Company name */}
                 <div className='py-4 sm:grid sm:grid-cols-3 sm:gap-4 sm:py-5'>
                   <dt className='text-sm font-medium text-gray-500 dark:text-gray-400'>
-                    Company name
+                    {t('Common.Company name')}
                   </dt>
                   <dd className='mt-1 text-sm text-gray-900 dark:text-gray-100 sm:col-span-2 sm:mt-0'>
                     <div className='flex items-center text-sm'>
-                      <span className='truncate '>{config.company}</span>
+                      <span className='truncate '>{config?.company}</span>
                     </div>
                   </dd>
                 </div>
                 {/* Phone number */}
                 <div className='py-4 sm:grid sm:grid-cols-3 sm:gap-4 sm:py-5'>
                   <dt className='text-sm font-medium text-gray-500 dark:text-gray-400'>
-                    Phone number
+                    {t('Common.Phone number')}
                   </dt>
                   <dd className='mt-1 text-sm text-gray-900 dark:text-gray-100 sm:col-span-2 sm:mt-0'>
                     <div className='flex items-center text-sm text-primary dark:text-primaryDark'>
@@ -133,7 +134,7 @@ export const ShowHistoryDrawerContent = forwardRef<
                         aria-hidden='true'
                       />
                       <span className='truncate cursor-pointer hover:underline'>
-                        {config.number}
+                        {config?.number}
                       </span>
                     </div>
                   </dd>
@@ -141,13 +142,13 @@ export const ShowHistoryDrawerContent = forwardRef<
               </dl>
             </div>
           )}
-          {config.name && !config.company && config.number && (
+          {config?.name && !config?.company && config?.number && (
             <div className='mt-6 border-t border-gray-200 dark:border-gray-700'>
               <dl className='sm:divide-y sm:divide-gray-200 dark:sm:divide-gray-700'>
                 {/* Phone number */}
                 <div className='py-4 sm:grid sm:grid-cols-3 sm:gap-4 sm:py-5'>
                   <dt className='text-sm font-medium text-gray-500 dark:text-gray-400'>
-                    Phone number
+                    {t('Common.Phone number')}
                   </dt>
                   <dd className='mt-1 text-sm text-gray-900 dark:text-gray-100 sm:col-span-2 sm:mt-0'>
                     <div className='flex items-center text-sm text-primary dark:text-primaryDark'>
@@ -157,7 +158,7 @@ export const ShowHistoryDrawerContent = forwardRef<
                         aria-hidden='true'
                       />
                       <span className='truncate cursor-pointer hover:underline'>
-                        {config.number}
+                        {config?.number}
                       </span>
                     </div>
                   </dd>
@@ -168,12 +169,12 @@ export const ShowHistoryDrawerContent = forwardRef<
         </div>
 
         {/* last calls */}
-        {profile.macro_permissions?.cdr?.permissions?.ad_cdr?.value && (
+        {profile?.macro_permissions?.cdr?.permissions?.ad_cdr?.value && (
           <LastCallsDrawerTable
-            callType={config.callType}
+            callType={config?.callType}
             dateFrom={startOfDay(subDays(new Date(), 7))}
             dateTo={new Date()}
-            phoneNumbers={[config.number]}
+            phoneNumbers={[config?.number]}
             limit={10}
           />
         )}
