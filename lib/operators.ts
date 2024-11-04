@@ -122,7 +122,7 @@ export const sortByOperatorStatus = (operator1: any, operator2: any) => {
 }
 
 export const callOperator = (operator: any, event: any = undefined) => {
-  const phoneNumber = operator.endpoints.mainextension[0].id
+  const phoneNumber = operator?.endpoints?.mainextension[0]?.id
   callPhoneNumber(phoneNumber)
 
   store.dispatch.globalSearch.setFocused(false)
