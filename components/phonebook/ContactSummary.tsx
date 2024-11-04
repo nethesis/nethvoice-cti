@@ -459,11 +459,13 @@ export const ContactSummary = forwardRef<HTMLButtonElement, ContactSummaryProps>
                     <a
                       target='_blank'
                       rel='noreferrer'
-                      href={`mailto: ${contact?.workemail}`}
+                      href={`mailto:${contact?.workemail?.trim()}`}
                       className='truncate hover:underline text-gray-900 dark:text-gray-100'
                     >
                       {contact?.workemail}
                     </a>
+                    {/* copy component */}
+                    <CopyComponent number={contact?.workemail} id='work-email' />
                   </div>
                 </dd>
               </div>
