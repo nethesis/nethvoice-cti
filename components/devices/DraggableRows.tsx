@@ -380,12 +380,15 @@ export default function DraggableRows({
   const [rowSelectedStatus, setRowSelectedStatus] = useState(false)
 
   const handleClickIcon = (clickedIndex: number, typeSelected: string) => {
-    setSelectedRowIndex((prevIndex) => (prevIndex === clickedIndex ? null : clickedIndex))
-    setIsEditing(false)
-    setKeysTypeSelected((prevIndex: any) => (prevIndex === clickedIndex ? undefined : typeSelected))
-    setRowSelectedStatus(!rowSelectedStatus)
-    onChangeExtraRowVisibility(!rowSelectedStatus)
-  }
+    const correctPage = currentPage - 1;
+    const globalIndex = clickedIndex + correctPage * itemsPerPage;
+
+    setSelectedRowIndex((prevIndex) => (prevIndex === globalIndex ? null : globalIndex));
+    setIsEditing(false);
+    setKeysTypeSelected((prevIndex: any) => (prevIndex === globalIndex ? undefined : typeSelected));
+    setRowSelectedStatus(!rowSelectedStatus);
+    onChangeExtraRowVisibility(!rowSelectedStatus);
+};
 
   useEffect(() => {
     if (isExtraRowButtonClicked) {
@@ -571,7 +574,7 @@ export default function DraggableRows({
                   </div>
                 </div>
 
-                {selectedRowIndex === index && !isEditing && (
+                {selectedRowIndex === (index + (currentPage - 1) * itemsPerPage) && !isEditing && (
                   <div className='px-2'>
                     <div className='flex items-center mt-4'>
                       <span>{t('Devices.Key position')}</span>
