@@ -844,7 +844,13 @@ const Operators: NextPage = () => {
                                   (operator?.conversations[0]?.connected ||
                                     operator?.conversations[0]?.inConference ||
                                     operator?.conversations[0]?.chDest?.inConference == true) ? (
-                                    <div className={`tooltip-operator-information-${index}`}>
+                                    <div
+                                      className={`tooltip-operator-information-${index}`}
+                                      data-tooltip-id={`tooltip-operator-information-${index}`}
+                                      data-tooltip-content={
+                                        operator?.conversations[0]?.counterpartName || '-'
+                                      }
+                                    >
                                       <div className='py-2 px-3 flex items-center'>
                                         <div className='flex w-45 items-center'>
                                           <CallDuration
@@ -882,11 +888,11 @@ const Operators: NextPage = () => {
                                           />
                                         )}
                                       </div>
+
                                       <Tooltip
-                                        anchorSelect={`.tooltip-operator-information-${index}`}
-                                      >
-                                        {operator?.conversations[0]?.counterpartName || '-'}
-                                      </Tooltip>
+                                        id={`tooltip-operator-information-${index}`}
+                                        className='pi-z-20'
+                                      />
                                     </div>
                                   ) : // If main user is in call Transfer button is shown
                                   operatorsStore?.operators[authStore.username]?.mainPresence ===
@@ -1088,13 +1094,19 @@ const Operators: NextPage = () => {
                                     (operator?.conversations[0]?.connected ||
                                       operator?.conversations[0]?.inConference ||
                                       operator?.conversations[0]?.chDest?.inConference == true) ? (
-                                      <div className={`tooltip-operator-information-${index}`}>
+                                      <div
+                                        className={`tooltip-operator-information-${index}`}
+                                        data-tooltip-id={`tooltip-operator-information-${index}`}
+                                        data-tooltip-content={
+                                          operator?.conversations[0]?.counterpartName || '-'
+                                        }
+                                      >
                                         <div className='py-2 px-3 flex items-center'>
                                           <div className='flex w-45 items-center'>
                                             <CallDuration
                                               startTime={operator?.conversations[0]?.startTime}
                                               className='relative top-px mr-1.5 text-cardTextBusy dark:text-cardTextBusy leading-5 text-sm font-medium font-mono'
-                                            />{' '}
+                                            />
                                             <TextScroll
                                               text={operator?.conversations[0]?.counterpartName}
                                             ></TextScroll>
@@ -1126,11 +1138,11 @@ const Operators: NextPage = () => {
                                             />
                                           )}
                                         </div>
+
                                         <Tooltip
-                                          anchorSelect={`.tooltip-operator-information-${index}`}
-                                        >
-                                          {operator?.conversations[0]?.counterpartName || '-'}
-                                        </Tooltip>
+                                          id={`tooltip-operator-information-${index}`}
+                                          className='pi-z-20'
+                                        />
                                       </div>
                                     ) : // If main user is in call Transfer button is shown
                                     operatorsStore?.operators[authStore.username]?.mainPresence ===

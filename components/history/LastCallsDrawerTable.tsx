@@ -21,8 +21,7 @@ import { Tooltip } from 'react-tooltip'
 import { isEqual } from 'lodash'
 import { UserCallStatusIcon } from './UserCallStatusIcon'
 import { CallsDate } from './CallsDate'
-import { CallsDestination } from './CallsDestination'
-import { CallsSource } from './CallsSource'
+import { CallDetails } from './CallDetails'
 
 export interface LastCallsDrawerTableProps extends ComponentPropsWithRef<'div'> {
   callType: string
@@ -142,10 +141,15 @@ export const LastCallsDrawerTable = forwardRef<HTMLButtonElement, LastCallsDrawe
                         icon={faBuilding}
                         className='tooltip-switchboard-internal-answered h-4 w-4 text-green-600 dark:text-green-500'
                         aria-hidden='true'
+                        data-tooltip-id='tooltip-switchboard-internal-answered'
+                        data-tooltip-content={t('History.Internal answered') || ''}
                       />
-                      <Tooltip anchorSelect='.tooltip-switchboard-internal-answered' place='left'>
-                        {t('History.Internal answered') || ''}
-                      </Tooltip>
+
+                      <Tooltip
+                        id='tooltip-switchboard-internal-answered'
+                        place='left'
+                        className='pi-z-20'
+                      />
                     </>
                   ) : (
                     <>
@@ -153,10 +157,15 @@ export const LastCallsDrawerTable = forwardRef<HTMLButtonElement, LastCallsDrawe
                         icon={faBuilding}
                         className='tooltip-switchboard-internal-missed h-4 w-4 text-red-400'
                         aria-hidden='true'
+                        data-tooltip-id='tooltip-switchboard-internal-missed'
+                        data-tooltip-content={t('History.Internal missed') || ''}
                       />
-                      <Tooltip anchorSelect='.tooltip-switchboard-internal-missed' place='left'>
-                        {t('History.Internal missed') || ''}
-                      </Tooltip>
+
+                      <Tooltip
+                        id='tooltip-switchboard-internal-missed'
+                        place='left'
+                        className='pi-z-20'
+                      />
                     </>
                   )}
                 </div>
@@ -171,13 +180,15 @@ export const LastCallsDrawerTable = forwardRef<HTMLButtonElement, LastCallsDrawe
                             icon={faArrowLeft}
                             className='tooltip-switchboard-incoming-answered -rotate-45 h-5 w-3.5 text-green-600 dark:text-green-500'
                             aria-hidden='true'
+                            data-tooltip-id='tooltip-switchboard-incoming-answered'
+                            data-tooltip-content={t('History.Incoming answered') || ''}
                           />
+
                           <Tooltip
-                            anchorSelect='.tooltip-switchboard-incoming-answered'
+                            id='tooltip-switchboard-incoming-answered'
                             place='left'
-                          >
-                            {t('History.Incoming answered') || ''}
-                          </Tooltip>
+                            className='pi-z-20'
+                          />
                         </>
                       ) : (
                         <>
@@ -185,10 +196,15 @@ export const LastCallsDrawerTable = forwardRef<HTMLButtonElement, LastCallsDrawe
                             icon={faMissed}
                             className='tooltip-switchboard-incoming-missed h-5 w-4 text-red-400'
                             aria-hidden='true'
+                            data-tooltip-id='tooltip-switchboard-incoming-missed'
+                            data-tooltip-content={t('History.Incoming missed') || ''}
                           />
-                          <Tooltip anchorSelect='.tooltip-switchboard-incoming-missed' place='left'>
-                            {t('History.Incoming missed') || ''}
-                          </Tooltip>
+
+                          <Tooltip
+                            id='tooltip-switchboard-incoming-missed'
+                            place='left'
+                            className='pi-z-20'
+                          />
                         </>
                       )}
                     </div>
@@ -201,13 +217,15 @@ export const LastCallsDrawerTable = forwardRef<HTMLButtonElement, LastCallsDrawe
                             icon={faArrowLeft}
                             className='tooltip-switchboard-outgoing-answered h-5 w-3.5 rotate-[135deg] text-green-600 dark:text-green-500'
                             aria-hidden='true'
+                            data-tooltip-id='tooltip-switchboard-outgoing-answered'
+                            data-tooltip-content={t('History.Outgoing answered') || ''}
                           />
+
                           <Tooltip
-                            anchorSelect='.tooltip-switchboard-outgoing-answered'
+                            id='tooltip-switchboard-outgoing-answered'
                             place='left'
-                          >
-                            {t('History.Outgoing answered') || ''}
-                          </Tooltip>
+                            className='pi-z-20'
+                          />
                         </>
                       ) : (
                         <>
@@ -215,10 +233,15 @@ export const LastCallsDrawerTable = forwardRef<HTMLButtonElement, LastCallsDrawe
                             icon={faXmark}
                             className='tooltip-switchboard-outgoing-missed h-5 w-3.5 text-red-400'
                             aria-hidden='true'
+                            data-tooltip-id='tooltip-switchboard-outgoing-missed'
+                            data-tooltip-content={t('History.Outgoing missed') || ''}
                           />
-                          <Tooltip anchorSelect='.tooltip-switchboard-outgoing-missed' place='left'>
-                            {t('History.Outgoing missed') || ''}
-                          </Tooltip>
+
+                          <Tooltip
+                            id='tooltip-switchboard-outgoing-missed'
+                            place='left'
+                            className='pi-z-20'
+                          />
                         </>
                       )}
                     </div>
@@ -297,7 +320,12 @@ export const LastCallsDrawerTable = forwardRef<HTMLButtonElement, LastCallsDrawe
 
                                   {/* Source */}
                                   <td className='px-3 py-4 whitespace-nowrap'>
-                                    <CallsSource call={call} operators={operators} />
+                                    <CallDetails
+                                      call={call}
+                                      operators={operators}
+                                      fromHistory
+                                      direction='in'
+                                    />
                                   </td>
 
                                   {/* Icon column */}
@@ -312,7 +340,12 @@ export const LastCallsDrawerTable = forwardRef<HTMLButtonElement, LastCallsDrawe
                                   {/* Destination */}
                                   <td className='px-3 py-4 whitespace-nowrap'>
                                     {/* Destination column */}
-                                    <CallsDestination call={call} operators={operators} />
+                                    <CallDetails
+                                      call={call}
+                                      operators={operators}
+                                      fromHistory
+                                      direction='out'
+                                    />
                                   </td>
 
                                   {/* Outcome */}

@@ -14,11 +14,10 @@ import { formatDateLoc } from '../../../lib/dateTime'
 import type { SortTypes } from '../../../lib/history'
 import { UserCallStatusIcon } from '../../history/UserCallStatusIcon'
 import { CallsDate } from '../../history/CallsDate'
-import { CallsDestination } from '../../history/CallsDestination'
-import { CallsSource } from '../../history/CallsSource'
 import { getJSONItem, setJSONItem } from '../../../lib/storage'
 import { Tooltip } from 'react-tooltip'
 import { openCreateLastCallContact, openShowContactDrawer } from '../../../lib/phonebook'
+import { CallDetails } from '../../history/CallDetails'
 
 interface LastCallTypes extends CallTypes {
   username: string
@@ -253,11 +252,35 @@ export const UserLastCallsContent = () => {
                       />
                       <div className='ml-4 truncate flex flex-col gap-1.5'>
                         <div className='flex items-center'>
-                          <div className='w-24 lg:w-16 xl:w-24 truncate text-sm font-medium text-gray-700 dark:text-gray-200'>
+                          <div
+                            className={` text-sm font-medium text-gray-700 dark:text-gray-200 ${
+                              call.channel.includes('from-queue')
+                                ? 'w-24 lg:w-16 xl:w-24 truncate'
+                                : 'w-64'
+                            }`}
+                          >
                             {call?.direction === 'in' ? (
-                              <CallsSource call={call} operators={operators} hideName={true} />
+                              <CallDetails
+                                call={call}
+                                operators={operators}
+                                hideName={true}
+                                fromHistory={false}
+                                isQueueBadgeAvailable={
+                                  call.channel.includes('from-queue') ? true : false
+                                }
+                                direction='in'
+                              />
                             ) : (
-                              <CallsDestination call={call} operators={operators} hideName={true} />
+                              <CallDetails
+                                call={call}
+                                operators={operators}
+                                hideName={true}
+                                fromHistory={false}
+                                isQueueBadgeAvailable={
+                                  call.channel.includes('from-queue') ? true : false
+                                }
+                                direction='out'
+                              />
                             )}
                           </div>
                         </div>
@@ -266,20 +289,22 @@ export const UserLastCallsContent = () => {
                             <UserCallStatusIcon call={call} />
                             <span className='cursor-pointer hover:underline'>
                               {call.direction === 'in' ? (
-                                <CallsSource
+                                <CallDetails
                                   call={call}
                                   operators={operators}
                                   hideNumber={true}
                                   highlightNumber={true}
                                   isExtensionNumberLastCalls={true}
+                                  direction='in'
                                 />
                               ) : (
-                                <CallsDestination
+                                <CallDetails
                                   call={call}
                                   operators={operators}
                                   hideNumber={true}
                                   highlightNumber={true}
                                   isExtensionNumberLastCalls={true}
+                                  direction='out'
                                 />
                               )}
                             </span>
@@ -296,8 +321,13 @@ export const UserLastCallsContent = () => {
                             variant='offline'
                             rounded='full'
                             className={`overflow-hidden ml-1 tooltip-queue-${call?.queue}`}
+                            data-tooltip-id={`tooltip-queue-${call?.queue}`}
+                            data-tooltip-content={
+                              queuesStore?.queues[call?.queue]?.name
+                                ? `${queuesStore.queues[call.queue].name} ${call.queue}`
+                                : t('QueueManager.Queue')
+                            }
                           >
-                            {' '}
                             <FontAwesomeIcon
                               icon={faUsers}
                               className='h-4 w-4 mr-2 ml-1'
@@ -307,15 +337,12 @@ export const UserLastCallsContent = () => {
                               className={`truncate ${call?.queue ? 'w-20 lg:w-16 xl:w-20' : ''}`}
                             >
                               {queuesStore?.queues[call?.queue]?.name
-                                ? queuesStore?.queues[call?.queue]?.name + ' ' + call?.queue
+                                ? `${queuesStore.queues[call.queue].name} ${call.queue}`
                                 : t('QueueManager.Queue')}
                             </div>
                           </Badge>
-                          <Tooltip anchorSelect={`.tooltip-queue-${call?.queue}`}>
-                            {queuesStore?.queues[call?.queue]?.name
-                              ? queuesStore?.queues[call?.queue]?.name + ' ' + call?.queue
-                              : t('QueueManager.Queue')}{' '}
-                          </Tooltip>
+
+                          <Tooltip id={`tooltip-queue-${call?.queue}`} className='pi-z-20' />
                         </>
                       )}
                     </div>

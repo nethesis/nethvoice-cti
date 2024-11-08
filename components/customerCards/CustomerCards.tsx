@@ -527,12 +527,15 @@ export const CustomerCardsCustomerData: FC<CustomerCardsCustomerDataViewProps> =
                                         className='h-4 w-4 mr-2 flex-shrink-0 text-gray-600 dark:text-gray-300'
                                         aria-hidden='true'
                                       />
-                                      <span className='truncate dark:text-gray-300 text-gray-600 w-56 tooltip-notes ml-2 text-left leading-4'>
+                                      <span
+                                        className='truncate dark:text-gray-300 text-gray-600 w-56 tooltip-notes ml-2 text-left leading-4'
+                                        data-tooltip-id='tooltip-notes'
+                                        data-tooltip-content={companyCardInformation?.notes || '-'}
+                                      >
                                         {companyCardInformation?.notes || '-'}
                                       </span>
-                                      <Tooltip anchorSelect='.tooltip-notes'>
-                                        {companyCardInformation?.notes || '-'}
-                                      </Tooltip>
+
+                                      <Tooltip id='tooltip-notes' className='pi-z-20' />
                                     </td>
                                   </tr>
                                   <tr>
@@ -545,12 +548,17 @@ export const CustomerCardsCustomerData: FC<CustomerCardsCustomerDataViewProps> =
                                         className='h-4 w-4 mr-2 flex-shrink-0 text-gray-600 dark:text-gray-300'
                                         aria-hidden='true'
                                       />
-                                      <span className='truncate dark:text-gray-300 text-gray-600 w-56 tooltip-address ml-2 text-left leading-4'>
+                                      <span
+                                        className='truncate dark:text-gray-300 text-gray-600 w-56 tooltip-address ml-2 text-left leading-4'
+                                        data-tooltip-id='tooltip-address'
+                                        data-tooltip-content={
+                                          companyCardInformation?.workstreet || '-'
+                                        }
+                                      >
                                         {companyCardInformation?.workstreet || '-'}
                                       </span>
-                                      <Tooltip anchorSelect='.tooltip-address'>
-                                        {companyCardInformation?.workstreet || '-'}
-                                      </Tooltip>
+
+                                      <Tooltip id='tooltip-address' className='pi-z-20' />
                                     </td>
                                   </tr>
                                 </tbody>
