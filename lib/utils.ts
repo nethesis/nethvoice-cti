@@ -131,6 +131,8 @@ export function callPhoneNumber(phoneNumber: string) {
   } else if (default_device?.type === 'nethlink' || hasNethlinkExtension) {
     console.log('callto://', phoneNumber)
     window.location.href = `callto://${phoneNumber}`
+  } else if (default_device?.type === 'physical') {
+    eventDispatch('phone-island-call-start', { number: phoneNumber })
   }
 
   setTimeout(() => {

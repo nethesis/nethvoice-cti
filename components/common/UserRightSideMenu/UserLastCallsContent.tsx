@@ -342,7 +342,7 @@ export const UserLastCallsContent = () => {
                             </div>
                           </Badge>
 
-                          <Tooltip id={`tooltip-queue-${call?.queue}`} className='pi-z-20' />
+                          <Tooltip id={`tooltip-queue-${call?.queue}`} className='pi-z-20' place='left'/>
                         </>
                       )}
                     </div>
