@@ -129,8 +129,28 @@ export function callPhoneNumber(phoneNumber: string) {
   if (default_device?.type === 'webrtc') {
     eventDispatch('phone-island-call-start', { number: phoneNumber })
   } else if (default_device?.type === 'nethlink' || hasNethlinkExtension) {
-    console.log('callto://', phoneNumber)
+    console.log('Attempting callto://', phoneNumber)
+
+    let hasBlurred = false
+
+    const onBlur = () => {
+      hasBlurred = true
+      window.removeEventListener('blur', onBlur)
+    }
+
+    window.addEventListener('blur', onBlur)
+
+    // Use callto:// protocol to start a call
     window.location.href = `callto://${phoneNumber}`
+
+    // Fallback to tel:// if the callto:// protocol is not supported
+    setTimeout(() => {
+      window.removeEventListener('blur', onBlur)
+      if (!hasBlurred) {
+        console.log('Fallback to tel://', phoneNumber)
+        window.location.href = `tel://${phoneNumber}`
+      }
+    }, 2000)
   } else if (default_device?.type === 'physical') {
     eventDispatch('phone-island-call-start', { number: phoneNumber })
   }
