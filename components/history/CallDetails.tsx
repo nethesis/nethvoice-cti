@@ -83,7 +83,7 @@ export const CallDetails: FC<CallDetailsProps> = ({
   return (
     <div
       className={`flex flex-col justify-center overflow-hidden truncate${
-        fromHistory || (!fromHistory && isQueueBadgeAvailable) ? ' truncate w-24' : ' w-36'
+        fromHistory || (!fromHistory && isQueueBadgeAvailable) ? ' truncate w-24' : ' w-64'
       }`}
     >
       {!isExtensionNumberLastCalls ? (

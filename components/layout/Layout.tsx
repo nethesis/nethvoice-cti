@@ -462,10 +462,10 @@ export const Layout: FC<LayoutProps> = ({ children }) => {
   }
 
   useEffect(() => {
-    if (isFirstRunRef.current && userInformation?.default_device?.type === '') {
+    if (isFirstRunRef?.current && userInformation?.default_device?.type === '' && isEmpty(operatorsStore?.extensions)) {
       isFirstRunRef.current = true
     }
-    if (isFirstRunRef.current && userInformation?.default_device?.type !== '') {
+    if (isFirstRunRef?.current && userInformation?.default_device?.type !== '' && !isEmpty(operatorsStore?.extensions)) {
       isFirstRunRef.current = false
       handleWebRTCAsDefaultDevice()
       handlePhysicalDeviceDetach()

@@ -208,17 +208,17 @@ export const TopBar: FC<TopBarProps> = ({ openMobileCb }) => {
     doLogout(emptyObjectLogout)
   }
 
-  const setMainDeviceId = async (device: any, deviceType: string, deviceInformationObject: any) => {
-    let deviceIdInfo: any = {}
+  const setMainDeviceId = async (device: any) => {
+    let deviceExtension: any = {}
     if (device) {
-      deviceIdInfo.id = device
+      deviceExtension.id = device?.id
       try {
-        await setMainDevice(deviceIdInfo)
-        dispatch.user.updateDefaultDevice(deviceIdInfo)
-        if (deviceType === 'webrtc') {
-          eventDispatch('phone-island-attach', { deviceInformationObject })
+        await setMainDevice(deviceExtension)
+        dispatch.user.updateDefaultDevice(device)
+        if (device?.type === 'webrtc') {
+          eventDispatch('phone-island-attach', { device })
         } else {
-          eventDispatch('phone-island-detach', { deviceInformationObject })
+          eventDispatch('phone-island-detach', { device })
         }
       } catch (err) {
         console.log(err)
@@ -417,11 +417,18 @@ export const TopBar: FC<TopBarProps> = ({ openMobileCb }) => {
                         const order = ['webrtc', 'nethlink', 'physical']
                         return order.indexOf(a.type) - order.indexOf(b.type)
                       })
+                      .filter((device: any) => {
+                        const defaultType = profile?.default_device?.type
+                        if (
+                          (defaultType === 'webrtc' && device?.type === 'nethlink') ||
+                          (defaultType === 'nethlink' && device?.type === 'webrtc')
+                        ) {
+                          return false
+                        }
+                        return true
+                      })
                       .map((device: any) => (
-                        <Dropdown.Item
-                          key={device?.id}
-                          onClick={() => setMainDeviceId(device?.id, device?.type, device)}
-                        >
+                        <Dropdown.Item key={device?.id} onClick={() => setMainDeviceId(device)}>
                           <div className='truncate'>
                             <div className='flex items-center space-x-2'>
                               {device?.id === profile?.default_device?.id ? (
@@ -561,7 +568,7 @@ export const TopBar: FC<TopBarProps> = ({ openMobileCb }) => {
             )}
 
             {/* Notifications drawer */}
-            
+
             {/* HIDDEN AT THE MOMENT WAITING FOR SERVER SIDE IMPLEMENTATION */}
             {/* <Button variant='ghost' onClick={() => openNotificationsDrawer()}>
               <span className='relative inline-block'>
