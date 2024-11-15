@@ -146,11 +146,11 @@ export const EditPhysicalPhoneDrawerContent = forwardRef<
                   icon={faCircleInfo}
                   className='h-4 w-4 pl-2 py-2 text-primary dark:text-primaryDark flex items-center tooltip-pin-information'
                   aria-hidden='true'
+                  data-tooltip-id='tooltip-pin-information'
+                  data-tooltip-content={t('Devices.Pin information tooltip') || ''}
                 />
-                {/* Pin information tooltip */}
-                <Tooltip anchorSelect='.tooltip-pin-information' place='right'>
-                  {t('Devices.Pin information tooltip') || ''}
-                </Tooltip>
+
+                <Tooltip id='tooltip-pin-information' place='right' className='pi-z-20' />
               </div>
               <div className='flex'>
                 <span className='text-sm text-gray-700 dark:text-gray-200 leading-5'>
@@ -195,11 +195,11 @@ export const EditPhysicalPhoneDrawerContent = forwardRef<
               icon={faCircleInfo}
               className='h-4 w-4 pl-2 text-primary dark:text-primaryDark flex items-center tooltip-configure-keys-information'
               aria-hidden='true'
+              data-tooltip-id='tooltip-configure-keys-information'
+              data-tooltip-content={t('Devices.Keys configuration information tooltip') || ''}
             />
-            {/* keys configuration information tooltip */}
-            <Tooltip anchorSelect='.tooltip-configure-keys-information' place='right'>
-              {t('Devices.Keys configuration information tooltip') || ''}
-            </Tooltip>
+
+            <Tooltip id='tooltip-configure-keys-information' place='right' className='pi-z-20' />
           </div>
           <Dropdown items={configureKeysDropdownMenu()} position='left'>
             <FontAwesomeIcon

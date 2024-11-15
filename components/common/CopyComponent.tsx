@@ -18,7 +18,7 @@ const CopyToClipboard: React.FC<CopyToClipboardProps> = ({ number, id }) => {
     event.preventDefault()
     event.stopPropagation()
 
-    navigator.clipboard.writeText(number).then(() => {
+    navigator.clipboard.writeText(number?.trim()).then(() => {
       setShowMessage(true)
       setTimeout(() => setShowMessage(false), 2000)
     })

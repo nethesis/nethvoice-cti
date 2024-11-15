@@ -25,10 +25,11 @@ export const UserCallStatusIcon: FC<UserCallStatusIconProps> = ({ call }) => {
                   icon={faArrowLeft}
                   className='tooltip-incoming-answered mr-2 -rotate-45 h-5 w-3.5 text-green-600 dark:text-green-500'
                   aria-hidden='true'
+                  data-tooltip-id='tooltip-incoming-answered'
+                  data-tooltip-content={t('History.Incoming answered') || ''}
                 />
-                <Tooltip anchorSelect='.tooltip-incoming-answered' place='left'>
-                  {t('History.Incoming answered') || ''}
-                </Tooltip>
+
+                <Tooltip id='tooltip-incoming-answered' place='left' className='pi-z-20' />
               </>
             ) : (
               <>
@@ -36,10 +37,11 @@ export const UserCallStatusIcon: FC<UserCallStatusIconProps> = ({ call }) => {
                   icon={faMissed}
                   className='tooltip-incoming-missed mr-2 h-5 w-4 text-red-400'
                   aria-hidden='true'
+                  data-tooltip-id='tooltip-incoming-missed'
+                  data-tooltip-content={t('History.Incoming missed') || ''}
                 />
-                <Tooltip anchorSelect='.tooltip-incoming-missed' place='left'>
-                  {t('History.Incoming missed') || ''}
-                </Tooltip>
+
+                <Tooltip id='tooltip-incoming-missed' place='left' className='pi-z-20' />
               </>
             )}
           </div>
@@ -52,10 +54,11 @@ export const UserCallStatusIcon: FC<UserCallStatusIconProps> = ({ call }) => {
                   icon={faArrowLeft}
                   className='tooltip-outgoing-answered mr-2 h-5 w-3.5 rotate-[135deg] text-green-600 dark:text-green-500'
                   aria-hidden='true'
+                  data-tooltip-id='tooltip-outgoing-answered'
+                  data-tooltip-content={t('History.Outgoing answered') || ''}
                 />
-                <Tooltip anchorSelect='.tooltip-outgoing-answered' place='left'>
-                  {t('History.Outgoing answered') || ''}
-                </Tooltip>
+
+                <Tooltip id='tooltip-outgoing-answered' place='left' className='pi-z-20' />
               </>
             ) : (
               <>
@@ -63,10 +66,11 @@ export const UserCallStatusIcon: FC<UserCallStatusIconProps> = ({ call }) => {
                   icon={faXmark}
                   className='tooltip-outgoing-missed mr-2 h-5 w-3.5 text-red-400'
                   aria-hidden='true'
+                  data-tooltip-id='tooltip-outgoing-missed'
+                  data-tooltip-content={t('History.Outgoing missed') || ''}
                 />
-                <Tooltip anchorSelect='.tooltip-outgoing-missed' place='left'>
-                  {t('History.Outgoing missed') || ''}
-                </Tooltip>
+
+                <Tooltip id='tooltip-outgoing-missed' place='left' className='pi-z-20' />
               </>
             )}
           </div>

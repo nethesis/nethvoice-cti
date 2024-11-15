@@ -19,7 +19,13 @@ import { KeyTypeSelect } from './KeyTypeSelect'
 import { Tooltip } from 'react-tooltip'
 import { isEmpty, isEqual } from 'lodash'
 import { Button, EmptyState, TextInput } from '../common'
-import { Combobox, ComboboxButton, ComboboxInput, ComboboxOption, ComboboxOptions } from '@headlessui/react'
+import {
+  Combobox,
+  ComboboxButton,
+  ComboboxInput,
+  ComboboxOption,
+  ComboboxOptions,
+} from '@headlessui/react'
 import { useSelector } from 'react-redux'
 import { RootState } from '../../store'
 import { motion } from 'framer-motion'
@@ -380,9 +386,12 @@ export default function DraggableRows({
   const [rowSelectedStatus, setRowSelectedStatus] = useState(false)
 
   const handleClickIcon = (clickedIndex: number, typeSelected: string) => {
-    setSelectedRowIndex((prevIndex) => (prevIndex === clickedIndex ? null : clickedIndex))
+    const correctPage = currentPage - 1
+    const globalIndex = clickedIndex + correctPage * itemsPerPage
+
+    setSelectedRowIndex((prevIndex) => (prevIndex === globalIndex ? null : globalIndex))
     setIsEditing(false)
-    setKeysTypeSelected((prevIndex: any) => (prevIndex === clickedIndex ? undefined : typeSelected))
+    setKeysTypeSelected((prevIndex: any) => (prevIndex === globalIndex ? undefined : typeSelected))
     setRowSelectedStatus(!rowSelectedStatus)
     onChangeExtraRowVisibility(!rowSelectedStatus)
   }
@@ -571,7 +580,7 @@ export default function DraggableRows({
                   </div>
                 </div>
 
-                {selectedRowIndex === index && !isEditing && (
+                {selectedRowIndex === index + (currentPage - 1) * itemsPerPage && !isEditing && (
                   <div className='px-2'>
                     <div className='flex items-center mt-4'>
                       <span>{t('Devices.Key position')}</span>
@@ -579,14 +588,15 @@ export default function DraggableRows({
                         icon={faCircleInfo}
                         className='h-4 w-4 pl-2 text-primary dark:text-primaryDark flex items-center tooltip-configure-key-position-information'
                         aria-hidden='true'
+                        data-tooltip-id='tooltip-configure-key-position-information'
+                        data-tooltip-content={t('Devices.Key position information tooltip') || ''}
                       />
-                      {/* key position information tooltip */}
+
                       <Tooltip
-                        anchorSelect='.tooltip-configure-key-position-information'
+                        id='tooltip-configure-key-position-information'
                         place='right'
-                      >
-                        {t('Devices.Key position information tooltip') || ''}
-                      </Tooltip>
+                        className='pi-z-20'
+                      />
                     </div>
 
                     {/* Choose new index for selected key */}

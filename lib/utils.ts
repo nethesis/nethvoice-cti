@@ -118,7 +118,42 @@ export const sortByFavorite = (a: any, b: any) => {
 }
 
 export function callPhoneNumber(phoneNumber: string) {
-  eventDispatch('phone-island-call-start', { number: phoneNumber })
+  const { default_device, username } = store.getState().user
+  const userExtensions = store.getState().operators?.operators[username]?.endpoints?.extension
+
+  // Check if there is an extension with type 'nethlink' that matches the id of default_device
+  const hasNethlinkExtension = userExtensions.some(
+    (ext: any) => ext.type === 'nethlink' && ext.id === default_device?.id,
+  )
+
+  if (default_device?.type === 'webrtc') {
+    eventDispatch('phone-island-call-start', { number: phoneNumber })
+  } else if (default_device?.type === 'nethlink' || hasNethlinkExtension) {
+    console.log('Attempting callto://', phoneNumber)
+
+    let hasBlurred = false
+
+    const onBlur = () => {
+      hasBlurred = true
+      window.removeEventListener('blur', onBlur)
+    }
+
+    window.addEventListener('blur', onBlur)
+
+    // Use callto:// protocol to start a call
+    window.location.href = `callto://${phoneNumber}`
+
+    // Fallback to tel:// if the callto:// protocol is not supported
+    setTimeout(() => {
+      window.removeEventListener('blur', onBlur)
+      if (!hasBlurred) {
+        console.log('Fallback to tel://', phoneNumber)
+        window.location.href = `tel://${phoneNumber}`
+      }
+    }, 2000)
+  } else if (default_device?.type === 'physical') {
+    eventDispatch('phone-island-call-start', { number: phoneNumber })
+  }
 
   setTimeout(() => {
     store.dispatch.globalSearch.setFocused(false)
@@ -176,7 +211,6 @@ export function getApiVoiceEndpoint() {
   // @ts-ignore
   return `${window.CONFIG.VOICE_ENDPOINT}`
 }
-
 
 /**
  * Returns true if the device used by the user is using a mobile device. Useful to check if the user is using a touch screen, for example to disable hover features
@@ -283,7 +317,7 @@ export function invertObject(obj: any) {
 
 //Open selected email manager
 export const openEmailClient = (emailAddress: any) => {
-  const mailtoLink = `mailto:${emailAddress}`
+  const mailtoLink = `mailto:${emailAddress.trim()}`
   window.location.href = mailtoLink
 }
 

@@ -10,7 +10,6 @@ import {
 } from '@fortawesome/free-solid-svg-icons'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { Button, InlineNotification, Modal } from '../common'
-import { CopyToClipboard } from 'react-copy-to-clipboard'
 import { useSelector } from 'react-redux'
 import { RootState } from '../../store'
 import { newIslandConfig } from '../../lib/settings'

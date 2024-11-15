@@ -1,7 +1,7 @@
 // Copyright (C) 2024 Nethesis S.r.l.
 // SPDX-License-Identifier: AGPL-3.0-or-later
 
-import { FC, ReactNode, useState, useEffect } from 'react'
+import { FC, ReactNode, useState, useEffect, useRef } from 'react'
 import { NavBar, TopBar, MobileNavBar, SideDrawer, UserSidebarDrawer } from '.'
 import { navItems, NavItemsProps } from '../../config/routes'
 import { useRouter } from 'next/router'
@@ -423,46 +423,52 @@ export const Layout: FC<LayoutProps> = ({ children }) => {
   }, [userInformation?.endpoints])
 
   const setMainDeviceId = async (device: any) => {
-    let deviceIdInfo: any = {}
+    let deviceExtension: any = {}
     if (device) {
-      deviceIdInfo.id = device
+      deviceExtension.id = device?.id
       try {
-        await setMainDevice(deviceIdInfo)
-        dispatch.user.updateDefaultDevice(deviceIdInfo)
+        await setMainDevice(deviceExtension)
+        dispatch.user.updateDefaultDevice(device)
       } catch (err) {
         console.log(err)
       }
     }
   }
 
-  const [isFirstLogin, setIsFirstLogin] = useState(true)
-
-  useEffect(() => {
-    if (isFirstLogin) {
-      setIsFirstLogin(false)
-      return
-    }
-    //set webrtc as default device if desktop phone is offline and if is setted as default device
+  const isFirstRunRef = useRef(true)
+  const handleWebRTCAsDefaultDevice = () => {
     if (
       desktopPhoneDevice?.length > 0 &&
       desktopPhoneDevice[0]?.id !== '' &&
-      operatorsStore?.extensions[desktopPhoneDevice[0]?.id]?.status &&
       operatorsStore?.extensions[desktopPhoneDevice[0]?.id]?.status === 'offline' &&
       userInformation?.default_device?.type === 'nethlink' &&
       webrtcData?.length > 0
     ) {
-      let deviceIdInfo: any = {}
-      deviceIdInfo = webrtcData[0]?.id
-      setMainDeviceId(deviceIdInfo)
-      dispatch.user.updateDefaultDevice(webrtcData[0]?.id)
-      let deviceInformationObject = webrtcData[0]
-      setIsFirstLogin(false)
-      eventDispatch('phone-island-default-device-change', { deviceInformationObject })
+      let deviceIdObject = webrtcData[0]
+      setMainDeviceId(deviceIdObject)
+      dispatch.user.updateDefaultDevice(deviceIdObject)
+      eventDispatch('phone-island-default-device-change', { deviceIdObject })
     }
-    // if default_device is setted to physical device detach phone island to avoid problems
+  }
+
+  const handlePhysicalDeviceDetach = () => {
     if (userInformation?.default_device?.type === 'physical') {
       let deviceInformationObject = webrtcData[0]
+      let physicalPhoneInformationObject = userInformation?.default_device
       eventDispatch('phone-island-detach', { deviceInformationObject })
+      eventDispatch('phone-island-destroy', {})
+      setMainDeviceId(physicalPhoneInformationObject)
+    }
+  }
+
+  useEffect(() => {
+    if (isFirstRunRef?.current && userInformation?.default_device?.type === '' && isEmpty(operatorsStore?.extensions)) {
+      isFirstRunRef.current = true
+    }
+    if (isFirstRunRef?.current && userInformation?.default_device?.type !== '' && !isEmpty(operatorsStore?.extensions)) {
+      isFirstRunRef.current = false
+      handleWebRTCAsDefaultDevice()
+      handlePhysicalDeviceDetach()
     }
   }, [
     desktopPhoneDevice,
@@ -470,6 +476,21 @@ export const Layout: FC<LayoutProps> = ({ children }) => {
     webrtcData,
     userInformation?.default_device?.type,
   ])
+
+  // Avoid webrtc register if user has a physical phone as main device
+  useEventListener('phone-island-webrtc-registered', (data) => {
+    if (
+      webrtcData?.length > 0 &&
+      userInformation?.default_device?.type !== '' &&
+      userInformation?.default_device?.type === 'physical'
+    ) {
+      let deviceIdObject = webrtcData[0]
+      let physicalPhoneInformationObject = userInformation?.default_device
+      eventDispatch('phone-island-detach', { deviceIdObject })
+      eventDispatch('phone-island-destroy', {})
+      setMainDeviceId(physicalPhoneInformationObject)
+    }
+  })
 
   useEventListener('phone-island-extensions-update', (data) => {
     const opName: any = Object.keys(data)[0]
@@ -757,11 +778,11 @@ export const Layout: FC<LayoutProps> = ({ children }) => {
       isEmpty(data[currentUsername]?.conversation)
     ) {
       if (firstRenderDetach) {
-        setMainDeviceId(desktopPhoneDevice[0]?.id)
-        dispatch.user.updateDefaultDevice(desktopPhoneDevice[0]?.id)
-        let deviceInformationObject = desktopPhoneDevice[0]
+        let desktopPhoneObject = desktopPhoneDevice[0]
+        setMainDeviceId(desktopPhoneObject)
+        dispatch.user.updateDefaultDevice(desktopPhoneObject)
         setFirstRenderDetach(false)
-        eventDispatch('phone-island-default-device-change', { deviceInformationObject })
+        eventDispatch('phone-island-default-device-change', { desktopPhoneObject })
       }
     } else if (
       data[currentUsername]?.number === desktopPhoneDevice[0]?.id &&
@@ -770,13 +791,12 @@ export const Layout: FC<LayoutProps> = ({ children }) => {
     ) {
       if (firstRenderAttach) {
         let deviceIdInfo: any = {}
-        deviceIdInfo = webrtcData[0]?.id
+        deviceIdInfo = webrtcData[0]
         setMainDeviceId(deviceIdInfo)
-        dispatch.user.updateDefaultDevice(webrtcData[0]?.id)
-        let deviceInformationObject = webrtcData[0]
+        dispatch.user.updateDefaultDevice(deviceIdInfo)
         setFirstRenderAttach(false)
-        eventDispatch('phone-island-default-device-change', { deviceInformationObject })
-        eventDispatch('phone-island-attach', { deviceInformationObject })
+        eventDispatch('phone-island-default-device-change', { deviceIdInfo })
+        eventDispatch('phone-island-attach', { deviceIdInfo })
       }
     }
   })
@@ -999,8 +1019,8 @@ export const Layout: FC<LayoutProps> = ({ children }) => {
   const closePhoneIslandCall = () => {
     eventDispatch('phone-island-call-end', {})
   }
-   // global keyborad shortcut
-   useHotkeys('ctrl+alt+c', () => closePhoneIslandCall(), [])
+  // global keyborad shortcut
+  useHotkeys('ctrl+alt+c', () => closePhoneIslandCall(), [])
 
   return (
     <>
