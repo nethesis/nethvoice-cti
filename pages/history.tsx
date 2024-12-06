@@ -3,9 +3,9 @@
 
 import type { NextPage } from 'next'
 import { Filter } from '../components/history/Filter'
-import { Button, EmptyState, InlineNotification } from '../components/common'
+import { Button, Dropdown, EmptyState, InlineNotification } from '../components/common'
 import { useState, useEffect, useMemo } from 'react'
-import { search, PAGE_SIZE, openDrawerHistory } from '../lib/history'
+import { search, PAGE_SIZE, openDrawerHistory, downloadCallRec, deleteRec } from '../lib/history'
 import { RootState } from '../store'
 import { useSelector } from 'react-redux'
 import { debounce } from 'lodash'
@@ -22,11 +22,15 @@ import {
   faVoicemail,
   faPhone,
   faArrowUpRightFromSquare,
+  faEllipsisVertical,
+  faFileImport,
+  faTrash,
+  faDownload,
 } from '@fortawesome/free-solid-svg-icons'
 import { formatDateLoc } from '../lib/dateTime'
 import { subDays, startOfDay } from 'date-fns'
 import { useTranslation } from 'react-i18next'
-import { getApiScheme, getApiVoiceEndpoint, playFileAudio } from '../lib/utils'
+import { getApiEndpoint, getApiScheme, getApiVoiceEndpoint, playFileAudio } from '../lib/utils'
 import { Tooltip } from 'react-tooltip'
 import { CallsDate } from '../components/history/CallsDate'
 import { MissingPermission } from '../components/common/MissingPermissionsPage'
@@ -567,8 +571,53 @@ const History: NextPage = () => {
 
   const apiVoiceEnpoint = getApiVoiceEndpoint()
   const apiScheme = getApiScheme()
+  const apiEndpoint = getApiEndpoint()
   //report page link
   const pbxReportUrl = apiScheme + apiVoiceEnpoint + '/pbx-report/'
+  // URL for the recording file
+  const recordingUrlPath = apiScheme + apiEndpoint + '/webrest/static/'
+
+  // Dropdown actions for the recording file
+  const getRecordingActions = (callId: string) => (
+    <>
+      <Dropdown.Item icon={faDownload} onClick={() => downloadRecordingFileAudio(callId)}>
+        {t('Common.Download')}
+      </Dropdown.Item>
+      <Dropdown.Item icon={faTrash} onClick={() => deleteRecordingAudioFile(callId)}>
+        {t('Common.Delete')}
+      </Dropdown.Item>
+    </>
+  )
+
+  const downloadRecordingFileAudio = async (callIdInformation: any) => {
+    if (callIdInformation !== '') {
+      try {
+        let fileName = await downloadCallRec(callIdInformation)
+
+        // Get the file URL
+        const fileUrl = `${recordingUrlPath + fileName}`
+
+        const link = document.createElement('a')
+        link.href = fileUrl
+        link.download = fileName
+        link.click()
+      } catch (err) {
+        console.log(err)
+      }
+    }
+  }
+
+  const deleteRecordingAudioFile = async (callIdInformation: string) => {
+    if (callIdInformation !== '') {
+      try {
+        await deleteRec(callIdInformation)
+        // reload the history
+        setHistoryLoaded(false)
+      } catch (err) {
+        console.log(err)
+      }
+    }
+  }
 
   return (
     <>
@@ -773,17 +822,33 @@ const History: NextPage = () => {
 
                                       <td className='px-3 py-4 relative'>
                                         {call?.recordingfile ? (
-                                          <Button
-                                            variant='white'
-                                            onClick={() => playSelectedAudioFile(call.uniqueid)}
-                                          >
-                                            <FontAwesomeIcon
-                                              icon={faPlay}
-                                              className='h-4 w-4 mr-2 text-gray-900 dark:text-gray-100'
-                                              aria-hidden='true'
-                                            />{' '}
-                                            {t('History.Play')}
-                                          </Button>
+                                          <div className='flex space-x-1 items-center'>
+                                            <Button
+                                              variant='white'
+                                              onClick={() => playSelectedAudioFile(call.uniqueid)}
+                                            >
+                                              <FontAwesomeIcon
+                                                icon={faPlay}
+                                                className='h-4 w-4 mr-2 text-gray-900 dark:text-gray-100'
+                                                aria-hidden='true'
+                                              />
+                                              {t('History.Play')}
+                                            </Button>
+                                            <Dropdown
+                                              items={getRecordingActions(call?.uniqueid)}
+                                              position='left'
+                                            >
+                                              <Button variant='ghost'>
+                                                <FontAwesomeIcon
+                                                  icon={faEllipsisVertical}
+                                                  className='h-4 w-4 text-gray-900 dark:text-gray-100'
+                                                />
+                                                <span className='sr-only'>
+                                                  {t('History.Open recording action modal')}
+                                                </span>
+                                              </Button>
+                                            </Dropdown>
+                                          </div>
                                         ) : (
                                           <div className='flex text-gray-500 dark:text-gray-600'>
                                             -

@@ -90,27 +90,35 @@ export const SelectProfilePictureDrawerContent = forwardRef<
     event.preventDefault()
     const file = event.target.files && event.target.files[0]
 
-    if (file && isImageFile(file)) {
-      setSelectedFile(file)
-      const reader = new FileReader()
+    if (!file) {
+      setErrorUpload(true)
+      return
+    }
 
-      reader.readAsDataURL(file)
+    if (!isImageFile(file)) {
+      setErrorUpload(true)
+      return
+    }
 
-      //to prevent local storage from becoming full
-      reader.onloadend = () => {
-        resizeImage(reader.result as string, 30 * 1024)
+    setSelectedFile(file)
+
+    const reader = new FileReader()
+    reader.onloadend = () => {
+      if (!reader.result) {
+        setErrorUpload(true)
+        return
       }
 
-      if (errorUpload) {
-        setErrorUpload(false)
-      }
-    } else {
+      resizeImage(reader.result as string, 30 * 1024)
+    }
+
+    reader.onerror = () => {
       setErrorUpload(true)
     }
+    reader.readAsDataURL(file)
   }
 
-  // Function to resize the image
-  function resizeImage(dataUrl: string, maxFileSize: number) {
+  function resizeImage(dataUrl: string, maxFileSize: number, quality = 0.7) {
     const img = new Image()
     img.src = dataUrl
 
@@ -118,55 +126,53 @@ export const SelectProfilePictureDrawerContent = forwardRef<
       const canvas = document.createElement('canvas')
       const ctx = canvas.getContext('2d')
 
-      // Set the maximum width and height for the image
-      const MAX_WIDTH = 800
-      const MAX_HEIGHT = 800
+      if (!ctx) {
+        return
+      }
 
-      let width = img.width
-      let height = img.height
+      let { width, height } = img
+      const MAX_SIZE = 800
 
       if (width > height) {
-        if (width > MAX_WIDTH) {
-          height = (height * MAX_WIDTH) / width
-          width = MAX_WIDTH
+        if (width > MAX_SIZE) {
+          height = (height * MAX_SIZE) / width
+          width = MAX_SIZE
         }
       } else {
-        if (height > MAX_HEIGHT) {
-          width = (width * MAX_HEIGHT) / height
-          height = MAX_HEIGHT
+        if (height > MAX_SIZE) {
+          width = (width * MAX_SIZE) / height
+          height = MAX_SIZE
         }
       }
 
       canvas.width = width
       canvas.height = height
 
-      ctx?.drawImage(img, 0, 0, width, height)
+      ctx.drawImage(img, 0, 0, width, height)
 
       // Reduce the quality of the image
-      canvas.toBlob(
-        (blob) => {
-          if (blob) {
-            const reader = new FileReader()
-            reader.readAsDataURL(blob)
-
-            reader.onloadend = () => {
-              const compressedBase64 = reader.result as string
-              const size = blob.size
-
-              // Check if the size of the image is less than the maximum size
-              if (size <= maxFileSize) {
-                setSelectedFileBase64(compressedBase64)
-                setPreviewImage(compressedBase64)
-              } else {
-                // If the size of the image is greater than the maximum size, compress it again
-                resizeImage(compressedBase64, maxFileSize)
+      function compressImage(currentQuality: number) {
+        canvas.toBlob(
+          (blob) => {
+            if (blob && blob.size <= maxFileSize) {
+              const reader = new FileReader()
+              reader.onloadend = () => {
+                setSelectedFileBase64(reader.result as string)
+                setPreviewImage(reader.result as string)
               }
+              reader.readAsDataURL(blob)
+            } else if (currentQuality > 0.1) {
+              compressImage(currentQuality - 0.1)
+            } else {
+              setErrorUpload(true)
             }
-          }
-        },
-        'image/jpeg',
-        0.7,
-      )
+          },
+          'image/jpeg',
+          currentQuality,
+        )
+      }
+
+      compressImage(quality)
     }
   }
 
