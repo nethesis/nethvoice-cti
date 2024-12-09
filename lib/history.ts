@@ -238,6 +238,38 @@ export const getLastCalls = async (
   }
 }
 
+export const downloadCallRec = async (idRecording: string) => {
+  try {
+    const requestUrl = `${getHistoryUrl()}/webrest/historycall/down_callrec/${idRecording}`
+    const { data, status } = await axios.get(requestUrl)
+
+    if (status === 200) {
+      return data
+    } else {
+      throw 'Error retrieving recording'
+    }
+  } catch (error) {
+    handleNetworkError(error)
+    throw error
+  }
+}
+
+export const deleteRec = async (idRecording: string) => {
+  try {
+    const requestUrl = `${getHistoryUrl()}/webrest/historycall/delete_callrec`
+    const { data, status } = await axios.post(requestUrl, { id: idRecording })
+
+    if (status === 200) {
+      return data
+    } else {
+      throw 'Error removing recording'
+    }
+  } catch (error) {
+    handleNetworkError(error)
+    throw error
+  }
+}
+
 export interface CallTypes {
   time: number
   channel: string
