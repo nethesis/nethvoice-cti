@@ -354,7 +354,7 @@ export async function transferCall(operatorBadgeInformations: any) {
       console.log('Attempting nethlink://transfer', destinationNumber)
 
       // Use callto:// protocol to start a call
-      window.location.href = `nethlink://transfer?number=${destinationNumber}`
+      window.location.href = `nethlink://transfer?to=${destinationNumber}`
     }
   }
 }
@@ -378,7 +378,7 @@ export async function transferCallToExtension(extensionToTransfer: any) {
     console.log('Attempting nethlink://transfer', extensionToTransfer)
 
     // Use callto:// protocol to start a call
-    window.location.href = `nethlink://transfer?number=${extensionToTransfer}`
+    window.location.href = `nethlink://transfer?to=${extensionToTransfer}`
   }
 }
 
