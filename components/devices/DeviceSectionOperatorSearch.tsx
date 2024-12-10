@@ -202,6 +202,12 @@ export const DeviceSectionOperatorSearch: FC<DeviceSectionOperatorSearchProps> =
       fullInformation = defaultValue
     }
 
+    // in case of missing name match
+    if (query !== '' && !result) {
+      updateSelectedUserNumber(query)
+      fullInformation = `${query.toString()}`
+      updateSelectedUserName(fullInformation)
+    }
     return fullInformation
   }
 
@@ -274,6 +280,8 @@ export const DeviceSectionOperatorSearch: FC<DeviceSectionOperatorSearchProps> =
                               result?.company !== ' ' &&
                               result?.company !== null
                             ? result?.company
+                            : query !== '' && !result
+                            ? query
                             : '-'}
                         </span>
                       </div>

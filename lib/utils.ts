@@ -337,17 +337,48 @@ export const openToast = (toastType: any, messageToast: any, toastTytle: any) =>
 export async function transferCall(operatorBadgeInformations: any) {
   if (operatorBadgeInformations?.endpoints?.mainextension[0]?.id) {
     let destinationNumber = operatorBadgeInformations?.endpoints?.mainextension[0]?.id
+    const { default_device, username } = store.getState().user
+    const userExtensions = store.getState().operators?.operators[username]?.endpoints?.extension
 
-    if (destinationNumber) {
+    // Check if there is an extension with type 'nethlink' that matches the id of default_device
+    const hasNethlinkExtension = userExtensions.some(
+      (ext: any) => ext.type === 'nethlink' && ext.id === default_device?.id,
+    )
+
+    if (
+      (default_device?.type === 'webrtc' || default_device?.type === 'physical') &&
+      destinationNumber
+    ) {
       eventDispatch('phone-island-call-transfer', { to: destinationNumber })
+    } else if (default_device?.type === 'nethlink' || hasNethlinkExtension) {
+      console.log('Attempting nethlink://transfer', destinationNumber)
+
+      // Use callto:// protocol to start a call
+      window.location.href = `nethlink://transfer?to=${destinationNumber}`
     }
   }
 }
 
 // Function to transfer call from every page
 export async function transferCallToExtension(extensionToTransfer: any) {
-  if (extensionToTransfer) {
+  const { default_device, username } = store.getState().user
+  const userExtensions = store.getState().operators?.operators[username]?.endpoints?.extension
+
+  // Check if there is an extension with type 'nethlink' that matches the id of default_device
+  const hasNethlinkExtension = userExtensions.some(
+    (ext: any) => ext.type === 'nethlink' && ext.id === default_device?.id,
+  )
+
+  if (
+    (default_device?.type === 'webrtc' || default_device?.type === 'physical') &&
+    extensionToTransfer
+  ) {
     eventDispatch('phone-island-call-transfer', { to: extensionToTransfer })
+  } else if (default_device?.type === 'nethlink' || hasNethlinkExtension) {
+    console.log('Attempting nethlink://transfer', extensionToTransfer)
+
+    // Use callto:// protocol to start a call
+    window.location.href = `nethlink://transfer?to=${extensionToTransfer}`
   }
 }
 
