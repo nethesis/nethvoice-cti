@@ -229,6 +229,20 @@ export const TopBar: FC<TopBarProps> = ({ openMobileCb }) => {
   const [presenceMenuOpen, setPresenceMenuOpen] = useState(false)
   const [deviceMenuOpen, setDeviceMenuOpen] = useState(false)
 
+  const [phoneLinkData, setPhoneLinkDataData]: any = useState([])
+
+  // on page load get phoneLink data to check if there is a phoneLink device
+  useEffect(() => {
+    if (profile?.endpoints) {
+      let endpointsInformation = profile?.endpoints
+      if (endpointsInformation?.extension) {
+        setPhoneLinkDataData(
+          endpointsInformation?.extension.filter((phone) => phone?.type === 'nethlink'),
+        )
+      }
+    }
+  }, [profile?.endpoints])
+
   const dropdownItems = (
     <>
       <div className='cursor-default'>
@@ -420,8 +434,16 @@ export const TopBar: FC<TopBarProps> = ({ openMobileCb }) => {
                       .filter((device: any) => {
                         const defaultType = profile?.default_device?.type
                         if (
+                          // Hide webrtc choose only if there is a nethlink device or nethlink device is the default one
                           (defaultType === 'webrtc' && device?.type === 'nethlink') ||
-                          (defaultType === 'nethlink' && device?.type === 'webrtc')
+                          (defaultType === 'physical' &&
+                            device?.type === 'webrtc' &&
+                            phoneLinkData?.length >= 1) ||
+                          // Hide nethlink choose only if there isn't a nethLink device or webrtc device is the default one
+                          (defaultType === 'nethlink' && device?.type === 'webrtc') ||
+                          (defaultType === 'physical' &&
+                            device?.type === 'nethlink' &&
+                            phoneLinkData?.length < 1)
                         ) {
                           return false
                         }
