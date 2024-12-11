@@ -446,7 +446,6 @@ export const Layout: FC<LayoutProps> = ({ children }) => {
     ) {
       let deviceIdObject = webrtcData[0]
       setMainDeviceId(deviceIdObject)
-      dispatch.user.updateDefaultDevice(deviceIdObject)
       eventDispatch('phone-island-default-device-change', { deviceIdObject })
     }
   }
@@ -462,10 +461,18 @@ export const Layout: FC<LayoutProps> = ({ children }) => {
   }
 
   useEffect(() => {
-    if (isFirstRunRef?.current && userInformation?.default_device?.type === '' && isEmpty(operatorsStore?.extensions)) {
+    if (
+      isFirstRunRef?.current &&
+      userInformation?.default_device?.type === '' &&
+      isEmpty(operatorsStore?.extensions)
+    ) {
       isFirstRunRef.current = true
     }
-    if (isFirstRunRef?.current && userInformation?.default_device?.type !== '' && !isEmpty(operatorsStore?.extensions)) {
+    if (
+      isFirstRunRef?.current &&
+      userInformation?.default_device?.type !== '' &&
+      !isEmpty(operatorsStore?.extensions)
+    ) {
       isFirstRunRef.current = false
       handleWebRTCAsDefaultDevice()
       handlePhysicalDeviceDetach()
@@ -779,10 +786,14 @@ export const Layout: FC<LayoutProps> = ({ children }) => {
     ) {
       if (firstRenderDetach) {
         let desktopPhoneObject = desktopPhoneDevice[0]
-        setMainDeviceId(desktopPhoneObject)
-        dispatch.user.updateDefaultDevice(desktopPhoneObject)
-        setFirstRenderDetach(false)
-        eventDispatch('phone-island-default-device-change', { desktopPhoneObject })
+        const isPhysicalDefault = userInformation.endpoints.extension.some(
+          (ext: any) => ext.type === 'physical' && ext.id === userInformation?.default_device?.id,
+        )
+        if (!isPhysicalDefault) {
+          setMainDeviceId(desktopPhoneObject)
+          setFirstRenderDetach(false)
+          eventDispatch('phone-island-default-device-change', { desktopPhoneObject })
+        }
       }
     } else if (
       data[currentUsername]?.number === desktopPhoneDevice[0]?.id &&
@@ -791,12 +802,16 @@ export const Layout: FC<LayoutProps> = ({ children }) => {
     ) {
       if (firstRenderAttach) {
         let deviceIdInfo: any = {}
-        deviceIdInfo = webrtcData[0]
-        setMainDeviceId(deviceIdInfo)
-        dispatch.user.updateDefaultDevice(deviceIdInfo)
-        setFirstRenderAttach(false)
-        eventDispatch('phone-island-default-device-change', { deviceIdInfo })
-        eventDispatch('phone-island-attach', { deviceIdInfo })
+        const isPhysicalDefault = userInformation.endpoints.extension.some(
+          (ext: any) => ext.type === 'physical' && ext.id === userInformation?.default_device?.id,
+        )
+        if (!isPhysicalDefault) {
+          deviceIdInfo = webrtcData[0]
+          setMainDeviceId(deviceIdInfo)
+          setFirstRenderAttach(false)
+          eventDispatch('phone-island-default-device-change', { deviceIdInfo })
+          eventDispatch('phone-island-attach', { deviceIdInfo })
+        }
       }
     }
   })

@@ -58,7 +58,10 @@ export function exportSpeedDial(speedDials: any) {
     for (const k in speedDial) {
       if (k !== '$$hashKey' && k !== 'id') {
         headers.push(k)
-        row[k] = speedDial[k]
+        row[k] =
+          k === 'notes' && (!speedDial[k] || speedDial[k].trim() === '')
+            ? 'speeddial-basic'
+            : speedDial[k]
       }
     }
     return row
