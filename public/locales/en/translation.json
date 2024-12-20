@@ -898,7 +898,7 @@
     "Web Phone can't access audio or camera on this device.": "Web Phone can't access audio or camera on this device.",
     "Web Phone connection is down.": "Web Phone not communicating with server.",
     "NethLink connection is down.": "Server connection is unavailable",
-    "Server connection is down.": "Server connection is unavailable.",
+    "Server connection is down.": "Server connection is unavailable",
     "Camera is used by another application.": "Webcam is used by another application.",
     "Unknown audio or camera permissions.": "Microphone or Webcam is unavailable",
     "No microphone or camera permissions.": "You must accept borwser permissions.",
