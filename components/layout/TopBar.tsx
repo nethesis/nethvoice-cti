@@ -74,7 +74,7 @@ export const TopBar: FC<TopBarProps> = ({ openMobileCb }) => {
   // also filter all the device except the mobile one
   useEffect(() => {
     if (profile?.endpoints) {
-      let extensionObj: any = profile.endpoints
+      let extensionObj: any = profile?.endpoints
       if (profile?.default_device?.id && !isEmpty(extensionObj)) {
         const extensionType = extensionObj.extension.find(
           (ext: any) => ext.id === profile?.default_device?.id,
@@ -438,12 +438,19 @@ export const TopBar: FC<TopBarProps> = ({ openMobileCb }) => {
                           (defaultType === 'webrtc' && device?.type === 'nethlink') ||
                           (defaultType === 'physical' &&
                             device?.type === 'webrtc' &&
-                            phoneLinkData?.length >= 1) ||
+                            phoneLinkData?.length >= 1 &&
+                            phoneLinkData[0]?.id !== '' &&
+                            !isEmpty(operatorsStore) &&
+                            operatorsStore?.extensions[phoneLinkData[0]?.id]?.status ===
+                              'online') ||
                           // Hide nethlink choose only if there isn't a nethLink device or webrtc device is the default one
                           (defaultType === 'nethlink' && device?.type === 'webrtc') ||
                           (defaultType === 'physical' &&
                             device?.type === 'nethlink' &&
-                            phoneLinkData?.length < 1)
+                            phoneLinkData?.length >= 1 &&
+                            device?.id !== '' &&
+                            !isEmpty(operatorsStore) &&
+                            operatorsStore?.extensions[device?.id]?.status === 'offline')
                         ) {
                           return false
                         }
