@@ -1113,9 +1113,8 @@ export const Layout: FC<LayoutProps> = ({ children }) => {
 
             {parkingInfo?.isParkingFooterVisible &&
             profile?.macro_permissions?.settings?.permissions?.parkings?.value &&
-            ( userInformation?.default_device &&
-            userInformation?.default_device?.type !== 'webrtc' &&
-            operatorsStore?.extensions[desktopPhoneDevice[0]?.id]?.status === 'offline' ) ? (
+            userInformation?.default_device &&
+            userInformation?.default_device?.type !== 'nethlink' ? (
               <motion.div
                 className='absolute bottom-0 left:0 sm:bottom-0 sm:left-0 md:bottom-0 md:left-20'
                 initial={{ y: 100 }}
