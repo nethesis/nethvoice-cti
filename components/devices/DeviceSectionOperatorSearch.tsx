@@ -106,7 +106,7 @@ export const DeviceSectionOperatorSearch: FC<DeviceSectionOperatorSearchProps> =
         const cleanRegex = /[^a-zA-Z0-9]/g
         const cleanQuery = query.replace(cleanRegex, '')
 
-        if (cleanQuery.length == 0) {
+        if (cleanQuery.length === 0) {
           return
         }
 
@@ -124,7 +124,7 @@ export const DeviceSectionOperatorSearch: FC<DeviceSectionOperatorSearchProps> =
           const operatorsResults = searchOperators(cleanQuery, cleanRegex)
           const phonebookResults = await searchPhonebook(query.trim(), isPhoneNumber)
 
-          results = results?.concat(operatorsResults, phonebookResults)
+          results = results?.concat(operatorsResults, explodePhonebookResults(phonebookResults))
         } else {
           const operatorsResults = searchOperators(cleanQuery, cleanRegex)
           results = results.concat(operatorsResults)
@@ -136,6 +136,48 @@ export const DeviceSectionOperatorSearch: FC<DeviceSectionOperatorSearchProps> =
     // eslint-disable-next-line react-hooks/exhaustive-deps
     [operators?.operators, typeSelected],
   )
+
+  const explodePhonebookResults = (results: any[]) => {
+    const exploded: any[] = []
+
+    results.forEach((result, index) => {
+      if (result.cellphone) {
+        exploded.push({
+          ...result,
+          number: result.cellphone,
+          description: 'Cellphone',
+          id: `${result.id || 'contact'}-cellphone-${index}`,
+        })
+      }
+
+      if (result.workphone) {
+        exploded.push({
+          ...result,
+          number: result.workphone,
+          description: 'Workphone',
+          id: `${result.id || 'contact'}-workphone-${index}`,
+        })
+      }
+
+      if (result.homephone) {
+        exploded.push({
+          ...result,
+          number: result.homephone,
+          description: 'Homephone',
+          id: `${result.id || 'contact'}-homephone-${index}`,
+        })
+      }
+
+      if (!result.cellphone && !result.workphone && !result.homephone) {
+        exploded.push({
+          ...result,
+          id: `${result.id || 'contact'}-no-phone-${index}`,
+        })
+      }
+    })
+
+    return exploded
+  }
 
   // Stop invocation of debounced function after unmounting
   useEffect(() => {
@@ -155,27 +197,24 @@ export const DeviceSectionOperatorSearch: FC<DeviceSectionOperatorSearchProps> =
 
     if (result?.name) {
       selectedName = result?.name
-      // setSelectedInformationUser(selectedName)
     }
 
     if (result) {
       const operatorId =
         result?.resultType === 'operator' ? result?.endpoints?.mainextension[0]?.id : ''
 
-      selectNumber =
-        operatorId || phoneProps.map((prop) => result[prop]).find((value) => value) || ''
+      const numberTypeFromId = result?.id?.split('-')?.[1]
+
+      if (numberTypeFromId && phoneProps.includes(numberTypeFromId)) {
+        selectNumber = result[numberTypeFromId] || ''
+      } else {
+        selectNumber =
+          operatorId || phoneProps.map((prop) => result[prop]).find((value) => value) || ''
+      }
 
       if (result?.resultType === 'contact') {
         selectedContactsPhonebook =
-          result?.name !== '' && result?.name !== ' ' && result?.name !== null
-            ? result?.name
-            : result?.displayName !== '' &&
-              result?.displayName !== ' ' &&
-              result?.displayName !== null
-            ? result?.displayName
-            : result?.company !== '' && result?.company !== ' ' && result?.company !== null
-            ? result?.company
-            : '-'
+          result?.name?.trim() || result?.displayName?.trim() || result?.company?.trim() || '-'
       }
     }
     if (selectNumber !== '') {
@@ -184,16 +223,10 @@ export const DeviceSectionOperatorSearch: FC<DeviceSectionOperatorSearchProps> =
     let fullInformation = ''
 
     // check if selected user is an operator or a contact
-    if (selectNumber !== '' && selectedName !== '' && result?.resultType === 'operator') {
+    if (selectNumber && selectedName && result?.resultType === 'operator') {
       fullInformation = `${selectedName} (${selectNumber.toString()})`
-
       updatePhonebookContactInformation(false)
-      // setUserFullInformation(fullInformation)
-    } else if (
-      selectNumber !== '' &&
-      selectedContactsPhonebook !== '' &&
-      result?.resultType === 'contact'
-    ) {
+    } else if (selectNumber && selectedContactsPhonebook && result?.resultType === 'contact') {
       fullInformation = `${selectedContactsPhonebook}`
       updatePhonebookContactInformation(true)
       setUserFullInformation(selectedContactsPhonebook)
@@ -203,7 +236,7 @@ export const DeviceSectionOperatorSearch: FC<DeviceSectionOperatorSearchProps> =
     }
 
     // in case of missing name match
-    if (query !== '' && !result) {
+    if (query && result?.resultType === 'manual') {
       updateSelectedUserNumber(query)
       fullInformation = `${query.toString()}`
       updateSelectedUserName(fullInformation)
@@ -212,17 +245,36 @@ export const DeviceSectionOperatorSearch: FC<DeviceSectionOperatorSearchProps> =
   }
 
   return (
-    <Combobox as='div' value={selectedInformationUser} onChange={setSelectedInformationUser}>
+    <Combobox
+      as='div'
+      value={selectedInformationUser}
+      onChange={(result) => setSelectedInformationUser(resultSelected(result))}
+    >
       <div className='relative mt-2 mb-4'>
         <ComboboxInput
           className='w-full rounded-md border-0 bg-white dark:bg-gray-600 py-1.5 pl-3 pr-12 text-gray-900 dark:text-gray-200 shadow-sm ring-1 ring-inset ring-gray-300 dark:ring-gray-400 focus:ring-2 focus:ring-inset focus:ring-emerald-600 sm:text-sm sm:leading-6 placeholder:dark:text-gray-200'
-          onChange={debouncedChangeQuery}
-          displayValue={(informationUser) => resultSelected(informationUser)}
+          onChange={(e) => {
+            const value = e.target.value
+            setQuery(value)
+            debouncedChangeQuery(e)
+          }}
+          onKeyDown={(e) => {
+            if (e.key === 'Enter' && query) {
+              const manualSelection = {
+                name: query,
+                resultType: 'manual',
+              }
+              setSelectedInformationUser(resultSelected(manualSelection))
+            }
+          }}
+          displayValue={(informationUser: any) => {
+            return selectedInformationUser || query || ''
+          }}
           placeholder={t('Devices.Type to search') || ''}
         />
 
         {query?.length > 0 && (
-          <ComboboxOptions className='absolute mt-1 max-h-64 w-full rounded-md bg-white dark:bg-gray-700 py-1 text-base shadow-lg ring-1 ring-black ring-opacity-5 focus:outline-none sm:text-sm max-h-42 z-[100]'>
+          <ComboboxOptions className='mt-1 w-full rounded-md bg-white dark:bg-gray-700 py-1 text-base shadow-lg ring-1 ring-black ring-opacity-5 focus:outline-none sm:text-sm relative z-1000'>
             <div
               className={classNames(
                 'max-h-60 min-w-0 flex-auto scroll-py-4 overflow-y-auto overflow-x-hidden scrollbar-thin scrollbar-thumb-gray-400 dark:scrollbar-thumb-gray-400 scrollbar-thumb-rounded-full scrollbar-thumb-opacity-50 scrollbar-track-gray-200 dark:scrollbar-track-gray-900 scrollbar-track-rounded-full scrollbar-track-opacity-25',
@@ -230,7 +282,7 @@ export const DeviceSectionOperatorSearch: FC<DeviceSectionOperatorSearchProps> =
             >
               {/* {/* skeleton */}
               {!isLoaded &&
-                Array.from(Array(4)).map((e, index) => (
+                Array.from(Array(4)).map((_, index) => (
                   <ComboboxOption
                     as='div'
                     key={index}
@@ -243,7 +295,7 @@ export const DeviceSectionOperatorSearch: FC<DeviceSectionOperatorSearchProps> =
                 ))}
               {results.map((result: any, index: number) => (
                 <ComboboxOption
-                  key={'result-' + index}
+                  key={result.id || `${index}`}
                   value={result}
                   className='flex select-none items-center rounded-md p-2 h-14 cursor-pointer data-[focus]:bg-gray-100 data-[focus]:text-gray-900 data-[focus]:dark:bg-gray-800 data-[focus]:dark:text-gray-100'
                 >
@@ -269,21 +321,14 @@ export const DeviceSectionOperatorSearch: FC<DeviceSectionOperatorSearchProps> =
                             />
                           </div>
                         )}
-                        <span className='ml-2 flex items-center truncate'>
-                          {result?.name !== '' && result?.name !== ' ' && result?.name !== null
-                            ? result?.name
-                            : result?.displayName !== '' &&
-                              result?.displayName !== ' ' &&
-                              result?.displayName !== null
-                            ? result?.displayName
-                            : result?.company !== '' &&
-                              result?.company !== ' ' &&
-                              result?.company !== null
-                            ? result?.company
-                            : query !== '' && !result
-                            ? query
-                            : '-'}
-                        </span>
+                        <div className='ml-4 flex flex-col items-start justify-center'>
+                          <span className='flex items-center truncate'>
+                            {result?.name || result?.displayName || result?.company || query || '-'}
+                          </span>
+                          <span className='text-gray-500 text-sm truncate'>
+                            {result?.number || result?.endpoints?.extension[0]?.id || '-'}
+                          </span>
+                        </div>
                       </div>
                     </>
                   )}
