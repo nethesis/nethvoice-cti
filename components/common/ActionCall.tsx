@@ -14,6 +14,7 @@ import {
   faCirclePause,
   faMicrophoneSlash,
   faRecordVinyl,
+  faHand,
 } from '@fortawesome/free-solid-svg-icons'
 import { Button, Dropdown } from '../common'
 import { useTranslation } from 'react-i18next'
@@ -21,7 +22,14 @@ import { useSelector } from 'react-redux'
 import { RootState, store } from '../../store'
 import { CallDuration } from '../operators/CallDuration'
 import { isEmpty } from 'lodash'
-import { postRecallOnBusy, hangup, startListen, toggleRecord, intrude } from '../../lib/operators'
+import {
+  postRecallOnBusy,
+  hangup,
+  startListen,
+  toggleRecord,
+  intrude,
+  pickup,
+} from '../../lib/operators'
 import { eventDispatch } from '../../lib/hooks/eventDispatch'
 import { openToast } from '../../lib/utils'
 
@@ -33,8 +41,6 @@ export const ActionCall: React.FC<ActionCallProps> = ({ config }) => {
   const { t } = useTranslation()
   const operators = useSelector((state: RootState) => state.operators)
   const profile = useSelector((state: RootState) => state.user)
-  const auth = useSelector((state: RootState) => state.authentication)
-  const username = auth.username
 
   async function recallOnBusyPost() {
     let recallOnBusyInformations: any = {}
@@ -179,6 +185,32 @@ export const ActionCall: React.FC<ActionCallProps> = ({ config }) => {
     }
   }
 
+  async function pickupConversation(operatorInformation: any) {
+    if (
+      operators?.operators[operatorInformation?.username]?.conversations[0]?.id &&
+      profile?.default_device?.id &&
+      operatorInformation?.endpoints?.mainextension[0]?.id
+    ) {
+      let conversationId = operators?.operators[operatorInformation?.username]?.conversations[0]?.id
+      let endpoint = operatorInformation?.endpoints?.mainextension[0]?.id
+      let destination = profile?.default_device?.id
+      const pickupInformations = {
+        convid: conversationId,
+        endpointId: endpoint,
+        destId: destination,
+      }
+
+      if (!isEmpty(pickupInformations)) {
+        try {
+          await pickup(pickupInformations)
+        } catch (e) {
+          console.error(e)
+          return []
+        }
+      }
+    }
+  }
+
   async function recordConversation() {
     // if main user is not in conversation enable listen conversation
 
@@ -238,54 +270,65 @@ export const ActionCall: React.FC<ActionCallProps> = ({ config }) => {
   const getCallActionsMenu = (configAction: any) => {
     return (
       <>
-        {profile?.recallOnBusy && (
-          <>
-            <Dropdown.Item icon={faTicket} onClick={() => recallOnBusyPost()}>
-              {t('OperatorDrawer.Book')}
-            </Dropdown.Item>
-          </>
-        )}
+        {profile?.recallOnBusy &&
+          operators?.operators[configAction?.username]?.mainPresence !== 'ringing' && (
+            <>
+              <Dropdown.Item icon={faTicket} onClick={() => recallOnBusyPost()}>
+                {t('OperatorDrawer.Book')}
+              </Dropdown.Item>
+            </>
+          )}
         {profile?.profile?.macro_permissions?.presence_panel?.permissions?.hangup?.value && (
           <Dropdown.Item icon={faPhoneSlash} onClick={() => hangupConversation()}>
             {t('OperatorDrawer.Hangup')}
           </Dropdown.Item>
         )}
-        {profile?.profile?.macro_permissions?.settings?.permissions?.spy?.value && (
-          <Dropdown.Item icon={faEarListen} onClick={() => listenConversation()}>
-            {t('OperatorDrawer.Listen')}
-          </Dropdown.Item>
-        )}
-        {profile?.profile?.macro_permissions?.settings?.permissions?.intrude?.value && (
-          <Dropdown.Item icon={faHandPointUp} onClick={() => intrudeConversation()}>
-            {' '}
-            {t('OperatorDrawer.Intrude')}
-          </Dropdown.Item>
-        )}
+        {profile?.profile?.macro_permissions?.settings?.permissions?.spy?.value &&
+          operators?.operators[configAction?.username]?.mainPresence !== 'ringing' && (
+            <Dropdown.Item icon={faEarListen} onClick={() => listenConversation()}>
+              {t('OperatorDrawer.Listen')}
+            </Dropdown.Item>
+          )}
+        {profile?.profile?.macro_permissions?.settings?.permissions?.intrude?.value &&
+          operators?.operators[configAction?.username]?.mainPresence !== 'ringing' && (
+            <Dropdown.Item icon={faHandPointUp} onClick={() => intrudeConversation()}>
+              {' '}
+              {t('OperatorDrawer.Intrude')}
+            </Dropdown.Item>
+          )}
+        {profile?.profile?.macro_permissions?.settings?.permissions?.pickup?.value &&
+          operators?.operators[configAction?.username]?.mainPresence === 'ringing' && (
+            <Dropdown.Item icon={faHand} onClick={() => pickupConversation(configAction)}>
+              {' '}
+              {t('OperatorDrawer.Pickup')}
+            </Dropdown.Item>
+          )}
 
-        {profile?.profile?.macro_permissions?.presence_panel?.permissions?.ad_recording?.value && (
-          <Dropdown.Item
-            icon={
-              operators?.operators[config.username]?.conversations &&
+        {profile?.profile?.macro_permissions?.presence_panel?.permissions?.ad_recording?.value &&
+          operators?.operators[configAction?.username]?.mainPresence !== 'ringing' && (
+            <Dropdown.Item
+              icon={
+                operators?.operators[config.username]?.conversations &&
+                operators?.operators[config.username]?.conversations[0]?.recording &&
+                operators?.operators[config.username]?.conversations[0]?.recording === 'true'
+                  ? faCirclePause
+                  : operators?.operators[config.username]?.conversations &&
+                    operators?.operators[config.username]?.conversations[0]?.recording === 'false'
+                  ? faRecordVinyl
+                  : faMicrophoneSlash
+              }
+              onClick={() => recordConversation()}
+            >
+              {operators?.operators[config.username]?.conversations &&
               operators?.operators[config.username]?.conversations[0]?.recording &&
               operators?.operators[config.username]?.conversations[0]?.recording === 'true'
-                ? faCirclePause
+                ? t('OperatorDrawer.Stop recording')
                 : operators?.operators[config.username]?.conversations &&
                   operators?.operators[config.username]?.conversations[0]?.recording === 'false'
-                ? faRecordVinyl
-                : faMicrophoneSlash
-            }
-            onClick={() => recordConversation()}
-          >
-            {operators?.operators[config.username]?.conversations &&
-            operators?.operators[config.username]?.conversations[0]?.recording &&
-            operators?.operators[config.username]?.conversations[0]?.recording === 'true'
-              ? t('OperatorDrawer.Stop recording')
-              : operators?.operators[config.username]?.conversations &&
-                operators?.operators[config.username]?.conversations[0]?.recording === 'false'
-              ? t('OperatorDrawer.Start recording')
-              : t('OperatorDrawer.Restart recording')}
-          </Dropdown.Item>
-        )}
+                ? t('OperatorDrawer.Start recording')
+                : t('OperatorDrawer.Restart recording')}
+            </Dropdown.Item>
+          )}
       </>
     )
   }

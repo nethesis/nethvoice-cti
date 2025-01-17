@@ -342,7 +342,8 @@
     "Start recording": "Start recording",
     "Toggle favorite operator": "Toggle favorite operator",
     "Set favorite operator": "Set favorite operator",
-    "Remove favorite operator": "Remove favorite operator"
+    "Remove favorite operator": "Remove favorite operator",
+    "Pickup": "Pickup"
   },
   "Notifications": {
     "Mark all as read": "Mark all as read",

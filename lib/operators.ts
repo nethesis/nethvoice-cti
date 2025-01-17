@@ -461,3 +461,13 @@ export async function intrude(obj: any) {
     throw error
   }
 }
+
+export async function pickup(obj: any) {
+  try {
+    const { data, status } = await axios.post('/astproxy/pickup_conv', obj)
+    return data
+  } catch (error) {
+    handleNetworkError(error)
+    throw error
+  }
+}
