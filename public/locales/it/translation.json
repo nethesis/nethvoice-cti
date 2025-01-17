@@ -317,7 +317,8 @@
     "Duration": "Durata",
     "Toggle favorite operator": "Attiva/disattiva l'operatore preferito",
     "Set favorite operator": "Imposta operatore preferito",
-    "Remove favorite operator": "Rimuovi operatore preferito"
+    "Remove favorite operator": "Rimuovi operatore preferito",
+    "Pickup": "Intercetta"
   },
   "Lines": {
     "Lines management": "Gestione linee",
