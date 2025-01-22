@@ -446,7 +446,6 @@ export const Layout: FC<LayoutProps> = ({ children }) => {
     ) {
       let deviceIdObject = webrtcData[0]
       setMainDeviceId(deviceIdObject)
-      eventDispatch('phone-island-default-device-change', { deviceIdObject })
     }
   }
 
@@ -799,7 +798,6 @@ export const Layout: FC<LayoutProps> = ({ children }) => {
         if (!isPhysicalDefault) {
           setMainDeviceId(desktopPhoneObject)
           setFirstRenderDetach(false)
-          eventDispatch('phone-island-default-device-change', { desktopPhoneObject })
         }
       }
     } else if (
@@ -816,7 +814,6 @@ export const Layout: FC<LayoutProps> = ({ children }) => {
           deviceIdInfo = webrtcData[0]
           setMainDeviceId(deviceIdInfo)
           setFirstRenderAttach(false)
-          eventDispatch('phone-island-default-device-change', { deviceIdInfo })
           eventDispatch('phone-island-attach', { deviceIdInfo })
         }
       }
