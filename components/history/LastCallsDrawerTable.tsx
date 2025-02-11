@@ -1,4 +1,4 @@
-// Copyright (C) 2024 Nethesis S.r.l.
+// Copyright (C) 2025 Nethesis S.r.l.
 // SPDX-License-Identifier: AGPL-3.0-or-later
 
 import { ComponentPropsWithRef, forwardRef, useEffect, useState, FC } from 'react'
@@ -47,6 +47,8 @@ export const LastCallsDrawerTable = forwardRef<HTMLButtonElement, LastCallsDrawe
     const { operators } = useSelector((state: RootState) => state.operators)
     const authStore = useSelector((state: RootState) => state.authentication)
     const [previousPhoneNumbers, setPreviousPhoneNumbers]: any = useState([])
+    const user = useSelector((state: RootState) => state.user)
+
     // history API returns irrelevant calls that need to be filtered, pageSize specifies the total number of calls to retrieve from backend
     const pageSize = 100
 
@@ -115,7 +117,10 @@ export const LastCallsDrawerTable = forwardRef<HTMLButtonElement, LastCallsDrawe
     }, [phoneNumbers])
 
     const filterLastCalls = (lastCalls: any) => {
-      // discard irrelevant calls (e.g. a call with 0721456229 while searching '229') but include calls of secondary extensions
+      // If privacy is active, not filter
+      if (user?.profile?.macro_permissions?.nethvoice_cti?.permissions?.privacy?.value) {
+        return lastCalls.rows.slice(0, limit)
+      }
       const relevantCalls = lastCalls.rows.filter((call: any) => {
         return (
           phoneNumbers.includes(call.src) ||
