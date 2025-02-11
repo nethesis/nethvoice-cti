@@ -52,7 +52,9 @@
     "Search or type a contact": "Cerca o digita un contatto",
     "Enter a phone number": "Digita un numero",
     "Copied in clipboard": "Copiato negli appunti",
-    "Copy to clipboard": "Copia negli appunti"
+    "Copy to clipboard": "Copia negli appunti",
+    "Close": "Chiudi",
+    "Back": "Indietro"
   },
   "Login": {
     "User": "Utente",
@@ -278,7 +280,9 @@
     "Available presence": "Presence disponibili",
     "Show customer card": "Mostra schede cliente",
     "Customer cards": "Schede cliente",
-    "PhoneLink configuration": "Configurazione Desktop phone"
+    "PhoneLink configuration": "Configurazione Desktop phone",
+    "Speakers": "Altoparlanti",
+    "Microphones": "Microfoni"
   },
   "TopBar": {
     "Signed in as": "Accesso effettuato come",
@@ -589,7 +593,11 @@
     "Record": "Registra",
     "Stop recording": "Ferma registrazione",
     "Recording": "Registrando",
-    "Interrupt recording": "Interrompi registrazione"
+    "Interrupt recording": "Interrompi registrazione",
+    "Other actions": "Altre azioni",
+    "Conference": "Aggiungi partecipante per chiamata in conferenza",
+    "Go to settings": "Vai alle impostazioni",
+    "Enable camera": "Abilita video"
   },
   "QueueManager": {
     "Dashboard": "Dashboard",
