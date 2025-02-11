@@ -44,8 +44,8 @@ export const Integrations = () => {
         hostname: window.CONFIG.API_ENDPOINT,
         username: data.username,
         auth_token: data.token,
-        sip_exten: webRTCExtension.id,
-        sip_secret: webRTCExtension.secret,
+        sip_exten: webRTCExtension?.id || '',
+        sip_secret: webRTCExtension?.secret || '',
         // @ts-ignore
         sip_host: window.CONFIG.SIP_HOST,
         // @ts-ignore

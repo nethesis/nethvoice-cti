@@ -22,17 +22,17 @@ export function Island() {
     // Create the configuration for the PhoneIsland
     if (auth.token && currentUser.endpoints.extension) {
       const webRTCExtension = currentUser.endpoints.extension.find(
-        (el: any) => el.type === 'webrtc',
+        (el: any) => el.type === 'webrtc' || el.type === 'nethlink',
       )
-      if (auth.token && currentUser.username && webRTCExtension) {
+      if (auth.token && currentUser.username) {
         setConfig(
           newIslandConfig({
             // @ts-ignore
             hostname: window.CONFIG.API_ENDPOINT,
             username: currentUser.username,
             auth_token: auth.token,
-            sip_exten: webRTCExtension.id,
-            sip_secret: webRTCExtension.secret,
+            sip_exten: webRTCExtension?.id || '',
+            sip_secret: webRTCExtension?.secret || '',
             // @ts-ignore
             sip_host: window.CONFIG.SIP_HOST,
             // @ts-ignore

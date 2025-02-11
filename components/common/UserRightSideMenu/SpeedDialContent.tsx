@@ -116,8 +116,21 @@ export const SpeedDialContent = () => {
   // Execute the service method to delete all items
   const handleDeleteAllItems = async () => {
     try {
-      const deleted = await deleteAllSpeedDials()
-      store.dispatch.operators.setOperatorsLoaded(false)
+      // Single delete post for every speed dial elements
+      for (const item of speedDials) {
+        if (item?.id) {
+          try {
+            await deleteSpeedDial({
+              id: item.id.toString(),
+            })
+          } catch (error) {
+            console.error(`Error deleting ${item.id}:`, error)
+            setDeleteSpeedDialError(t('SpeedDial.Cannot delete speed dial') || '')
+            continue
+          }
+        }
+      }
+
     } catch (error) {
       setDeleteSpeedDialError(t('SpeedDial.Cannot delete speed dial') || '')
       return

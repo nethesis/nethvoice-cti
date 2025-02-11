@@ -67,7 +67,8 @@
     "Search or type a contact": "Search or type a contact",
     "Enter a phone number": "Enter a phone number",
     "Copied in clipboard": "Copied in clipboard",
-    "Copy to clipboard": "Copy to clipboard"
+    "Copy to clipboard": "Copy to clipboard",
+    "Back": "Back"
   },
   "Login": {
     "User": "Username",
@@ -300,7 +301,9 @@
     "Callforward": "Forward",
     "Do not disturb": "Do not disturb",
     "Available presence": "Available presence",
-    "PhoneLink configuration": "Desktop phone configuration"
+    "PhoneLink configuration": "Desktop phone configuration",
+    "Speakers": "Speakers",
+    "Microphones": "Microphones"
   },
   "TopBar": {
     "Signed in as": "Signed in as",
@@ -790,7 +793,11 @@
     "Record": "Record",
     "Stop recording": "Stop recording",
     "Recording": "Recording",
-    "Interrupt recording": "Interrupt recording"
+    "Interrupt recording": "Interrupt recording",
+    "Other actions": "Other actions",
+    "Conference": "Add participant for conference call",
+    "Go to settings": "Go to settings",
+    "Enable camera": "Enable camera"
   },
   "Devices": {
     "Web phone": "Web phone",
