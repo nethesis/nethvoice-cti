@@ -1,0 +1,19 @@
+name: NethVoice CTI Release on tags
+
+on:
+    push:
+      tags:
+        - '**'
+
+env:
+  GH_TOKEN: ${{ secrets.NS8_MODULE_RELEASES_TOKEN }}
+
+jobs:
+  release-module:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Install NS8 Release Module Extension
+        run: gh extension install NethServer/gh-ns8-release-module
+
+      - name: Create Release
+        run: gh ns8-release-module create --repo ${{ github.repository }} --release-name ${{ github.ref }}
