@@ -1,4 +1,4 @@
-// Copyright (C) 2024 Nethesis S.r.l.
+// Copyright (C) 2025 Nethesis S.r.l.
 // SPDX-License-Identifier: AGPL-3.0-or-later
 
 import type { SpeedDialType } from '../../../services/types'
@@ -15,8 +15,9 @@ import {
   faFileImport,
   faFileArrowDown,
   faCheckCircle,
+  faVoicemail,
 } from '@fortawesome/free-solid-svg-icons'
-import { Button, Avatar, Modal, Dropdown, InlineNotification, EmptyState } from '../../common'
+import { Button, Avatar, Modal, Dropdown, InlineNotification, EmptyState } from '..'
 import {
   deleteSpeedDial,
   deleteAllSpeedDials,
@@ -36,7 +37,7 @@ import { RootState } from '../../../store'
 import { Tooltip } from 'react-tooltip'
 import { store } from '../../../store'
 
-export const SpeedDialContent = () => {
+export const VoiceMailContent = () => {
   // The state for the delete modal
   const [showDeleteModal, setShowDeleteModal] = useState<boolean>(false)
   // The state for delete all speed dial modal
@@ -130,7 +131,6 @@ export const SpeedDialContent = () => {
           }
         }
       }
-
     } catch (error) {
       setDeleteSpeedDialError(t('SpeedDial.Cannot delete speed dial') || '')
       return
@@ -259,7 +259,7 @@ export const SpeedDialContent = () => {
         <div className='py-6 px-5'>
           <div className='flex items-center justify-between'>
             <h2 className='text-lg font-medium text-textLight dark:text-textDark'>
-              {t('SpeedDial.Speed dial')}
+              {t('VoiceMail.Voicemail inbox')}
             </h2>
             <div className='flex gap-2 items-center'>
               {' '}
@@ -311,16 +311,12 @@ export const SpeedDialContent = () => {
           {isSpeedDialLoaded && !getSpeedDialError && !speedDials.length && (
             <div className='px-6 py-4'>
               <EmptyState
-                title={t('SpeedDial.No speed dials')}
+                title={t('VoiceMail.Voicemail empty')}
+                description={t('VoiceMail.Voicemail empty description') || ''}
                 icon={
-                  <FontAwesomeIcon icon={faBolt} className='mx-auto h-12 w-12' aria-hidden='true' />
+                  <FontAwesomeIcon icon={faVoicemail} className='mx-auto h-12 w-12' aria-hidden='true' />
                 }
-              >
-                <Button variant='white' onClick={() => openCreateSpeedDialDrawer()}>
-                  <FontAwesomeIcon icon={faPlus} className='mr-2 h-4 w-4' />
-                  <span>{t('SpeedDial.Create')}</span>
-                </Button>
-              </EmptyState>
+              />
             </div>
           )}
           {/* Iterate through speed dial list */}

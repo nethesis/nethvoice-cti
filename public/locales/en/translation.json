@@ -590,9 +590,15 @@
     "Oldest": "Oldest",
     "Call": "Call"
   },
+  "VoiceMail": {
+    "Voicemail inbox": "Voicemail inbox",
+    "Voicemail empty": "Voicemail inbox is empty",
+    "Voicemail empty description": "You don't have any voicemail yet"
+  },
   "NavBars": {
     "Speed dials": "Speed dials",
-    "Last calls": "Last calls"
+    "Last calls": "Last calls",
+    "Voice mail": "Voicemail inbox"
   },
   "QueueManager": {
     "Dashboard": "Dashboard",

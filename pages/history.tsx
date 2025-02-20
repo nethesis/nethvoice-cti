@@ -653,7 +653,6 @@ const History: NextPage = () => {
                 <div className='-my-2 -mx-4 overflow-x-auto sm:-mx-6 lg:-mx-8'>
                   <div className='inline-block min-w-full py-2 align-middle px-2 md:px-6 lg:px-8'>
                     <div className='overflow-hidden shadow ring-1 md:rounded-lg ring-opacity-5 dark:ring-opacity-5 ring-gray-900 dark:ring-gray-100 border-[1px] border-solid rounded-xl dark:border-gray-600'>
-                      {' '}
                       {/* empty state */}
                       {isHistoryLoaded && history?.count === 0 && (
                         <EmptyState
@@ -668,6 +667,7 @@ const History: NextPage = () => {
                           }
                         ></EmptyState>
                       )}
+                      {/* history table */}
                       {isHistoryLoaded && history?.count !== 0 && (
                         <div className='overflow-y-auto scrollbar-thin scrollbar-thumb-gray-400 dark:scrollbar-thumb-gray-400 scrollbar-thumb-rounded-full scrollbar-thumb-opacity-50 scrollbar-track-gray-200 dark:scrollbar-track-gray-900 scrollbar-track-rounded-full scrollbar-track-opacity-25'>
                           <div className='max-h-[36rem]'>
