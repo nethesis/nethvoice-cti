@@ -457,6 +457,11 @@
     "Oldest": "Meno recenti",
     "Call": "Chiama"
   },
+  "VoiceMail": {
+    "Voicemail inbox": "Casella vocale",
+    "Voicemail empty": "Nessuna segreteria telefonica",
+    "Voicemail empty description": "Non ci sono messaggi nella tua casella vocale"
+  },
   "Notifications": {
     "Mark all as read": "Contrassegna tutte come lette",
     "Mark as read": "Contrassegna come letto",
@@ -566,7 +571,8 @@
   },
   "NavBars": {
     "Speed dials": "Chiamata rapida",
-    "Last calls": "Ultime chiamate"
+    "Last calls": "Ultime chiamate",
+    "Voice mail" : "Segreteria telefonica"
   },
   "Tooltip": {
     "Hangup": "Chiudi",
