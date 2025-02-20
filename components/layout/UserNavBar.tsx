@@ -5,13 +5,14 @@
 import { FC, useCallback, useEffect, useState } from 'react'
 import { SpeedDial } from './SpeedDial'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
-import { faBolt, faPhone, type IconDefinition } from '@fortawesome/free-solid-svg-icons'
+import { faBolt, faPhone, faVoicemail, type IconDefinition } from '@fortawesome/free-solid-svg-icons'
 import { getJSONItem, loadPreference, setJSONItem } from '../../lib/storage'
 import { RootState, store } from '../../store'
 import { useSelector } from 'react-redux'
 import { UserLastCalls } from './UserLastCalls'
 import { Tooltip } from 'react-tooltip'
 import { useTranslation } from 'react-i18next'
+import { UserVoiceMail } from './UserVoiceMail'
 
 const activeStyles = {
   width: '.1875rem',
@@ -43,6 +44,12 @@ export const UserNavBar: FC = () => {
       active: false,
       label: t('NavBars.Last calls'),
     },
+    {
+      icon: faVoicemail,
+      name: 'voice_mail',
+      active: false,
+      label: t('NavBars.Voice mail'),
+    }
   ])
 
   const rightSideStatus: any = useSelector((state: RootState) => state.rightSideMenu)
@@ -177,6 +184,8 @@ export const UserNavBar: FC = () => {
             return <SpeedDial key={i} />
           } else if (tab.active && tab.name === 'last_calls') {
             return <UserLastCalls key={i} />
+          } else if (tab.active && tab.name === 'voice_mail') {
+            return <UserVoiceMail key={i} />
           }
         })}
       {/* The side menu */}
@@ -213,7 +222,7 @@ export const UserNavBar: FC = () => {
 
 type TabTypes = {
   icon: IconDefinition
-  name: 'speed_dial' | 'last_calls'
+  name: 'speed_dial' | 'last_calls' | 'voice_mail'
   active: boolean
   label: string
 }
