@@ -225,13 +225,15 @@ export const UserLastCallsContent = () => {
             ))}
           {/* empty state */}
           {lastCalls?.length === 0 && (
-            <EmptyState
-              title={t('LastCalls.No calls')}
-              icon={
-                <FontAwesomeIcon icon={faPhone} className='mx-auto h-12 w-12' aria-hidden='true' />
-              }
-            ></EmptyState>
-          )}
+            <div className='px-6 py-4'>
+              <EmptyState
+                title={t('LastCalls.No calls')}
+                icon={
+                  <FontAwesomeIcon icon={faPhone} className='mx-auto h-12 w-12' aria-hidden='true' />
+                }
+              ></EmptyState>
+            </div>
+            )}
           {/* Iterate through speed dial list */}
           {lastCalls?.length! > 0 &&
             lastCalls?.map((call: any, key: any) => (
