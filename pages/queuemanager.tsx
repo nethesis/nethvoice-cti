@@ -63,7 +63,7 @@ const QueueManager: NextPage = () => {
       section = 'Dashboard'
     }
     changeSection(section)
-  // eslint-disable-next-line react-hooks/exhaustive-deps
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [firstRender])
 
   const changeSection = (sectionName: string) => {
@@ -133,7 +133,7 @@ const QueueManager: NextPage = () => {
                 </select>
               </div>
               {/* desktop tabs */}
-              <div className='hidden sm:block'>
+              <div className='hidden sm:block overflow-y-hidden scrollbar-thin scrollbar-thumb-gray-400 dark:scrollbar-thumb-gray-400 scrollbar-thumb-rounded-full scrollbar-thumb-opacity-50 scrollbar-track-gray-200 dark:scrollbar-track-gray-900 scrollbar-track-rounded-full scrollbar-track-opacity-25'>
                 <div className='border-b border-gray-300 dark:border-gray-600'>
                   <nav className='-mb-px flex space-x-8' aria-label='Tabs'>
                     {items.map((item: any) => (
