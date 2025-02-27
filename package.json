@@ -11,7 +11,7 @@
     "publish:minor": "npm version minor --allow-same-version -m v%s --force",
     "publish:major": "npm version major --allow-same-version -m v%s --force",
     "publish:patch": "npm version patch --allow-same-version -m v%s --force",
-    "postversion": "git push --tags"
+    "postversion": "git push origin main --tags"
   },
   "dependencies": {
     "@babel/runtime": "^7.24.0",
