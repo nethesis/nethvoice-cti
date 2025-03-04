@@ -26,7 +26,7 @@ export const EmptyState: FC<EmptyStateProps> = ({
           {description && (
             <p className='mt-1 text-sm text-gray-500 dark:text-gray-400'>{description}</p>
           )}
-          {children && <div className='mt-6 flex flex-col items-center'>{children}</div>}
+          {children && <div className='mt-6 flex flex-col items-center leading-5'>{children}</div>}
         </div>
       </div>
     </>
