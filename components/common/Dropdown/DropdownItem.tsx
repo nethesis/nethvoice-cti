@@ -14,6 +14,7 @@ export interface DropdownItemProps extends Omit<ComponentProps<'div'>, 'classNam
   icon?: IconDefinition
   centered?: boolean
   variantTop?: boolean
+  isRed?: boolean
 }
 
 export const DropdownItem: FC<DropdownItemProps> = ({
@@ -22,6 +23,7 @@ export const DropdownItem: FC<DropdownItemProps> = ({
   icon: Icon,
   centered,
   variantTop,
+  isRed,
   ...props
 }) => {
   const { dropdown: theme } = useTheme().theme
@@ -32,15 +34,21 @@ export const DropdownItem: FC<DropdownItemProps> = ({
       {({ active }) => (
         <div
           className={classNames(
-            theme.item.base,
-            active ? theme.item.active : theme.item.light,
+            !isRed ? theme?.item?.base : theme?.item?.baseRed,
+            !isRed && active ? theme?.item?.active : isRed && active ? theme.item.activeRed : '',
+            isRed && !active ? theme.item.textRed : '',
             centered && theme.item.centered,
             variantTop ? '' : 'py-2',
           )}
           onClick={onClick}
           {...theirProps}
         >
-          {Icon && <FontAwesomeIcon icon={Icon} className={theme.item.icon} />}
+          {Icon && (
+            <FontAwesomeIcon
+              icon={Icon}
+              className={isRed && !active ? theme?.item?.iconRed : !isRed ? theme?.item?.icon : ''}
+            />
+          )}
           {children}
         </div>
       )}

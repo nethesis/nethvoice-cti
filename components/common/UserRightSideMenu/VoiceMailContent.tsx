@@ -12,20 +12,21 @@ import {
   faCheck,
   faPhone,
   faPlay,
+  faDownload,
+  faTrash,
+  faCircleArrowDown,
 } from '@fortawesome/free-solid-svg-icons'
 import { Avatar, Button, Dropdown, EmptyState, InlineNotification } from '..'
-import { callPhoneNumber, closeRightSideDrawer, transferCallToExtension } from '../../../lib/utils'
+import { callPhoneNumber, transferCallToExtension } from '../../../lib/utils'
 import { t } from 'i18next'
 import { useSelector } from 'react-redux'
 import { RootState } from '../../../store'
-import Link from 'next/link'
 import { VoiceMailType } from '../../../services/types'
 import { forEach, set } from 'lodash'
 import { openShowOperatorDrawer } from '../../../lib/operators'
 
 export const VoiceMailContent = () => {
   const username = useSelector((state: RootState) => state.user.username)
-  const { profile } = useSelector((state: RootState) => state.user)
   const operatorsStore = useSelector((state: RootState) => state.operators)
 
   const [isVoiceMailLoaded, setVoiceMailLoaded] = useState(false)
@@ -58,16 +59,24 @@ export const VoiceMailContent = () => {
       }
     }
     fetchVoicemails()
-  // eslint-disable-next-line react-hooks/exhaustive-deps
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [username, operatorsStore])
 
-  const getVoiceMailMenuTemplate = () => (
+  const getVoiceMailOptionsTemplate = (voicemail: VoiceMailType) => (
     <>
-      <Dropdown.Item icon={faArrowRightLong}>
-        <Link href={{ pathname: '/history' }}>{t('VoiceMail.Go to history')}</Link>
-      </Dropdown.Item>
-      <Dropdown.Item icon={faArrowRightLong}>
-        <Link href={{ pathname: '/settings' }}>{t('VoiceMail.Go to settings')}</Link>
+      <div className='border-b border-gray-200 dark:border-gray-700'>
+        <Dropdown.Item icon={faPhone}>
+          <span>{t('VoiceMail.Call back')}</span>
+        </Dropdown.Item>
+        <Dropdown.Item
+          icon={faCircleArrowDown}
+          onClick={() => quickCall(voicemail?.caller_operator)}
+        >
+          <span>{t('VoiceMail.Download')}</span>
+        </Dropdown.Item>
+      </div>
+      <Dropdown.Item icon={faTrash} isRed>
+        <span>{t('VoiceMail.Delete message')}</span>
       </Dropdown.Item>
     </>
   )
@@ -80,11 +89,37 @@ export const VoiceMailContent = () => {
         </Dropdown.Header>
         <Dropdown.Item onClick={() => setSortType('newest')}>
           <span className='font-poppins font-light'>{t('VoiceMail.Newest')}</span>
-          {sortType === 'newest' && <FontAwesomeIcon icon={faCheck} className='ml-auto text-emerald-700' />}
+          {sortType === 'newest' && (
+            <FontAwesomeIcon icon={faCheck} className='ml-auto text-emerald-700' />
+          )}
         </Dropdown.Item>
         <Dropdown.Item onClick={() => setSortType('oldest')}>
           <span className='font-poppins font-light'>{t('VoiceMail.Oldest')}</span>
-          {sortType === 'oldest' && <FontAwesomeIcon icon={faCheck} className='ml-auto text-emerald-700' />}
+          {sortType === 'oldest' && (
+            <FontAwesomeIcon icon={faCheck} className='ml-auto text-emerald-700' />
+          )}
+        </Dropdown.Item>
+      </div>
+    </>
+  )
+
+  const getVoiceMailMenuTemplate = () => (
+    <>
+      <div className='cursor-default'>
+        <Dropdown.Header>
+          <span className='font-poppins font-light'>{t('VoiceMail.Sort by')}</span>
+        </Dropdown.Header>
+        <Dropdown.Item onClick={() => setSortType('newest')}>
+          <span className='font-poppins font-light'>{t('VoiceMail.Newest')}</span>
+          {sortType === 'newest' && (
+            <FontAwesomeIcon icon={faCheck} className='ml-auto text-emerald-700' />
+          )}
+        </Dropdown.Item>
+        <Dropdown.Item onClick={() => setSortType('oldest')}>
+          <span className='font-poppins font-light'>{t('VoiceMail.Oldest')}</span>
+          {sortType === 'oldest' && (
+            <FontAwesomeIcon icon={faCheck} className='ml-auto text-emerald-700' />
+          )}
         </Dropdown.Item>
       </div>
     </>
@@ -123,7 +158,6 @@ export const VoiceMailContent = () => {
 
   const openDrawerOperator = (operator: any) => {
     if (operator) {
-      closeRightSideDrawer()
       openShowOperatorDrawer(operator)
     }
   }
@@ -181,13 +215,13 @@ export const VoiceMailContent = () => {
                     />
                   </div>
                   <div className='flex flex-col gap-1.5 w-full'>
-                    <span className='font-poppins text-sm leading-4 font-medium'>
+                    <span className='font-poppins text-sm leading-4 font-medium text-gray-900 dark:text-gray-50'>
                       {voicemail?.caller_operator?.name}
                     </span>
                     <div className='flex items-center truncate text-sm text-primary dark:text-primaryDark'>
                       <FontAwesomeIcon
                         icon={faPhone}
-                        className='mr-1.5 h-4 w-4 flex-shrink-0 text-gray-400 dark:text-gray-500'
+                        className='mr-1.5 h-4 w-4 flex-shrink-0 text-gray-600 dark:text-gray-300'
                         aria-hidden='true'
                       />
                       <span
@@ -221,10 +255,12 @@ export const VoiceMailContent = () => {
                       <FontAwesomeIcon icon={faPlay} className='h-4 w-4' />
                       <span className='sr-only'>{t('VoiceMail.Open voicemail menu')}</span>
                     </Button>
-                    <Button variant='ghost' className='py-2 !px-2 h-9 w-9'>
-                      <FontAwesomeIcon icon={faEllipsisVertical} className='h-4 w-4' />
-                      <span className='sr-only'>{t('VoiceMail.Open voicemail menu')}</span>
-                    </Button>
+                    <Dropdown items={getVoiceMailOptionsTemplate(voicemail)} position='left'>
+                      <Button variant='ghost' className='py-2 !px-2 h-9 w-9'>
+                        <FontAwesomeIcon icon={faEllipsisVertical} className='h-4 w-4' />
+                        <span className='sr-only'>{t('VoiceMail.Open voicemail menu')}</span>
+                      </Button>
+                    </Dropdown>
                   </div>
                 </div>
               </div>
@@ -232,24 +268,24 @@ export const VoiceMailContent = () => {
           ))}
           {/* skeleton */}
           {!isVoiceMailLoaded &&
-              !getVoiceMailError &&
-              Array.from(Array(4)).map((e, index) => (
-                <li key={index}>
-                  <div className='flex items-center px-4 py-4 sm:px-6'>
-                    {/* avatar skeleton */}
-                    <div className='animate-pulse rounded-full h-12 w-12 bg-gray-300 dark:bg-gray-600'></div>
-                    <div className='min-w-0 flex-1 px-4'>
-                      <div className='flex flex-col justify-center'>
-                        {/* line skeleton */}
-                        <div className='animate-pulse h-3 rounded bg-gray-300 dark:bg-gray-600'></div>
-                      </div>
+            !getVoiceMailError &&
+            Array.from(Array(4)).map((e, index) => (
+              <li key={index}>
+                <div className='flex items-center px-4 py-4 sm:px-6'>
+                  {/* avatar skeleton */}
+                  <div className='animate-pulse rounded-full h-12 w-12 bg-gray-300 dark:bg-gray-600'></div>
+                  <div className='min-w-0 flex-1 px-4'>
+                    <div className='flex flex-col justify-center'>
+                      {/* line skeleton */}
+                      <div className='animate-pulse h-3 rounded bg-gray-300 dark:bg-gray-600'></div>
                     </div>
                   </div>
-                </li>
-              ))}
-            {/* empty state */}
-            {isVoiceMailLoaded && !getVoiceMailError && voicemails?.length == 0 && (
-            <div className='px-6 py-4'>
+                </div>
+              </li>
+            ))}
+          {/* empty state */}
+          {isVoiceMailLoaded && !getVoiceMailError && voicemails?.length == 0 && (
+            <div className='py-4'>
               <EmptyState
                 title={t('VoiceMail.Voicemail empty')}
                 description={t('VoiceMail.Voicemail empty description') || ''}
@@ -262,8 +298,8 @@ export const VoiceMailContent = () => {
                 }
               />
             </div>
-          )}   
-        </ul>        
+          )}
+        </ul>
       </div>
     </>
   )
