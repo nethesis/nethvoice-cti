@@ -4,3 +4,4 @@
 export * from './phonebook'
 export * from './utils'
 export * from './authentication'
+export * from './voicemail'

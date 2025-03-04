@@ -2,9 +2,9 @@
 // SPDX-License-Identifier: AGPL-3.0-or-later
 
 /**
- * The SpeedDial component
+ * The VoiceMail component
  *
- * @return The fixed right bar with speed dials as the default
+ * @return The fixed right bar with voice mail as the default
  */
 
 import { VoiceMailContent } from '../common/UserRightSideMenu/VoiceMailContent'
