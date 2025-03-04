@@ -599,7 +599,11 @@
     "Go to settings": "Go to Settings",
     "Sort by": "SORT BY",
     "Newest": "Newest",
-    "Oldest": "Oldest"
+    "Oldest": "Oldest",
+    "Call back": "Call back",
+    "Open details": "Open details",
+    "Download": "Download",
+    "Delete message": "Delete message"
   },
   "NavBars": {
     "Speed dials": "Speed dials",
