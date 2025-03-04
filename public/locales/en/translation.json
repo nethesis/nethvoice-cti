@@ -593,7 +593,13 @@
   "VoiceMail": {
     "Voicemail inbox": "Voicemail inbox",
     "Voicemail empty": "Voicemail inbox is empty",
-    "Voicemail empty description": "You don't have any voicemail yet"
+    "Voicemail empty description": "You don't have any voicemail yet",
+    "Open voicemail menu": "Open voicemail menu",
+    "Go to history": "Go to History",
+    "Go to settings": "Go to Settings",
+    "Sort by": "SORT BY",
+    "Newest": "Newest",
+    "Oldest": "Oldest"
   },
   "NavBars": {
     "Speed dials": "Speed dials",

@@ -163,7 +163,7 @@ export const UserLastCallsContent = () => {
   return (
     <>
       <div className='flex h-full flex-col bg-sidebar dark:bg-sidebarDark'>
-        <div className='py-6 px-5'>
+        <div className='py-4 px-6'>
           <div className='flex items-center justify-between'>
             <h2 className='text-lg font-medium text-textLight dark:text-textDark leading-7'>
               {t('LastCalls.Last calls')}
@@ -194,7 +194,7 @@ export const UserLastCallsContent = () => {
                 }
                 position='left'
               >
-                <Button className='flex gap-2' variant='white'>
+                <Button className='flex gap-2 h-9' variant='white'>
                   {t('LastCalls.Sort by')}
                   <FontAwesomeIcon icon={faChevronDown} />
                 </Button>

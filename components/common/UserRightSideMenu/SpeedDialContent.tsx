@@ -256,16 +256,16 @@ export const SpeedDialContent = () => {
   return (
     <>
       <div className='flex h-full flex-col bg-sidebar dark:bg-sidebarDark'>
-        <div className='py-6 px-5'>
+        <div className='py-4 px-6'>
           <div className='flex items-center justify-between'>
             <h2 className='text-lg font-medium text-textLight dark:text-textDark'>
               {t('SpeedDial.Speed dial')}
             </h2>
             <div className='flex gap-2 items-center'>
               {' '}
-              {isSpeedDialLoaded && !!speedDials.length && (
-                <div className='ml-3 h-7 flex items-center'>
-                  <Button variant='white' onClick={() => openCreateSpeedDialDrawer()}>
+              {isSpeedDialLoaded && !speedDials.length && (
+                <div className='h-7 flex items-center'>
+                  <Button variant='white' className='h-9' onClick={() => openCreateSpeedDialDrawer()}>
                     <FontAwesomeIcon icon={faPlus} className='xl:mr-2 h-4 w-4' />
                     <span className='hidden xl:inline-block'>{t('SpeedDial.Create')}</span>
                     <span className='sr-only'>{t('SpeedDial.Create speed dial')}</span>
@@ -273,7 +273,7 @@ export const SpeedDialContent = () => {
                 </div>
               )}
               <Dropdown items={getSpeedDialMenuTemplate()} position='left'>
-                <Button variant='ghost'>
+                <Button variant='ghost' className='!py-2 !px-2 h-9 w-9'>
                   <FontAwesomeIcon icon={faEllipsisVertical} className='h-4 w-4' />
                   <span className='sr-only'>{t('SpeedDial.Open speed dial menu')}</span>
                 </Button>
@@ -327,7 +327,7 @@ export const SpeedDialContent = () => {
           {isSpeedDialLoaded &&
             speedDials.map((speedDial: any, key: any) => (
               <li key={key}>
-                <div className='group relative flex items-center py-2 px-5'>
+                <div className='group relative flex items-center py-2 px-6'>
                   <div
                     className='absolute inset-0 group-hover:bg-dropdownBgHover dark:group-hover:bg-dropdownBgHoverDark'
                     aria-hidden='true'
@@ -376,7 +376,7 @@ export const SpeedDialContent = () => {
                     <div className='flex gap-2'>
                       {/* Actions */}
                       <Dropdown items={getItemsMenu(speedDial)} position='left'>
-                        <Button variant='ghost' className='dark:hover:bg-gray-700'>
+                        <Button variant='ghost' className='dark:hover:bg-gray-700 h-9 w-9'>
                           <FontAwesomeIcon icon={faEllipsisVertical} className='h-4 w-4' />
                           <span className='sr-only'>{t('SpeedDial.Open speed dial menu')}</span>
                         </Button>
