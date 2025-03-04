@@ -19,7 +19,7 @@ import { isEmpty, debounce, capitalize } from 'lodash'
 import { useSelector } from 'react-redux'
 import { RootState } from '../store'
 import { Filter } from '../components/operators'
-import { closeRightSideDrawer, sortByFavorite, sortByProperty } from '../lib/utils'
+import { sortByFavorite, sortByProperty } from '../lib/utils'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import {
   faBars,
@@ -32,6 +32,7 @@ import {
   faRecordVinyl,
   faRightLeft,
   faStar,
+  IconDefinition,
 } from '@fortawesome/free-solid-svg-icons'
 import { store } from '../store'
 import { CallDuration } from '../components/operators/CallDuration'
@@ -373,7 +374,6 @@ const Operators: NextPage = () => {
 
   const openDrawerOperator = (operator: any) => {
     if (operator) {
-      closeRightSideDrawer()
       openShowOperatorDrawer(operator)
     }
   }
@@ -451,7 +451,7 @@ const Operators: NextPage = () => {
             <div className='hidden sm:flex sm:justify-end sm:space-x-4 sm:items-center mt-7'>
               <button className='bg-transparent' onClick={() => selectLayoutOperators('standard')}>
                 <FontAwesomeIcon
-                  icon={faGrid2}
+                  icon={faGrid2 as IconDefinition}
                   className={`${
                     selectedLayout === 'standard'
                       ? 'text-primary dark:text-primaryDark'
@@ -471,7 +471,7 @@ const Operators: NextPage = () => {
               </button>
               <button className='bg-transparent' onClick={() => selectLayoutOperators('grouped')}>
                 <FontAwesomeIcon
-                  icon={faGridDividers}
+                  icon={faGridDividers as IconDefinition}
                   className={`${
                     selectedLayout === 'grouped'
                       ? 'text-primary dark:text-primaryDark'
@@ -484,7 +484,7 @@ const Operators: NextPage = () => {
           <div className='sm:hidden space-x-4'>
             <button className='bg-transparent' onClick={() => selectLayoutOperators('standard')}>
               <FontAwesomeIcon
-                icon={faGrid2}
+                icon={faGrid2 as IconDefinition}
                 className={`${
                   selectedLayout === 'standard'
                     ? 'text-primary dark:text-primaryDark'
@@ -504,7 +504,7 @@ const Operators: NextPage = () => {
             </button>
             <button className='bg-transparent' onClick={() => selectLayoutOperators('grouped')}>
               <FontAwesomeIcon
-                icon={faGridDividers}
+                icon={faGridDividers as IconDefinition}
                 className={`${
                   selectedLayout === 'grouped'
                     ? 'text-primary dark:text-primaryDark'

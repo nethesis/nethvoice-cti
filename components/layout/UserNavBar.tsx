@@ -5,8 +5,13 @@
 import { FC, useCallback, useEffect, useState } from 'react'
 import { SpeedDial } from './SpeedDial'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
-import { faBolt, faPhone, faVoicemail, type IconDefinition } from '@fortawesome/free-solid-svg-icons'
-import { getJSONItem, loadPreference, setJSONItem } from '../../lib/storage'
+import {
+  faBolt,
+  faPhone,
+  faVoicemail,
+  type IconDefinition,
+} from '@fortawesome/free-solid-svg-icons'
+import { getJSONItem, loadPreference } from '../../lib/storage'
 import { RootState, store } from '../../store'
 import { useSelector } from 'react-redux'
 import { UserLastCalls } from './UserLastCalls'
@@ -46,69 +51,49 @@ export const UserNavBar: FC = () => {
     },
     {
       icon: faVoicemail,
-      name: 'voice_mail',
+      name: 'voice_mails',
       active: false,
       label: t('NavBars.Voice mail'),
-    }
+    },
   ])
 
-  const rightSideStatus: any = useSelector((state: RootState) => state.rightSideMenu)
+  const rightSideStatus = useSelector((state: RootState) => state.rightSideMenu)
 
   const [defaultTabSelected, setDefaultTabSelected] = useState('')
 
   //On first render of page get value of tab from local storage
   useEffect(() => {
     if (!rightSideStatus?.actualTab && defaultTabSelected !== '') {
-      store.dispatch.rightSideMenu.updateTab(defaultTabSelected)
+      store.dispatch.rightSideMenu.toggleSideMenu({
+        tabName: defaultTabSelected,
+        username,
+        force: rightSideStatus.isSideMenuOpened,
+      })
     }
   }, [rightSideStatus?.actualTab, defaultTabSelected])
 
   const [firstClickOnTab, setFirstClickOnTab] = useState(false)
 
-  const clickedTab = (tabName: any, save: boolean) => {
-    let rightSideMenuOpened = rightSideStatus?.isSideMenuOpened
+  const clickedTab = (tabName: any) => {
     // avoid conflict with useEffect
     if (!firstClickOnTab) {
       setFirstClickOnTab(true)
     }
     setDefaultTabSelected(tabName)
-    const preferences = getJSONItem(`preferences-${username}`) || {}
-    preferences['userSideBarTab'] = tabName
-    setJSONItem(`preferences-${username}`, preferences)
+
+    // Update active state in tabs
     setTabs((state) =>
       state.map((tab) => {
-        if (tab?.name === tabName) {
-          tab.active = true
-        } else {
-          tab.active = false
-        }
+        tab.active = tab.name === tabName
         return tab
       }),
     )
 
-    // Check if selected tab is already active
-    const isTabActive = tabs.find((tab) => tab.name === tabName)?.active
-
-    // on click update selected tab name inside store
-    store.dispatch.rightSideMenu.updateTab(tabName)
-    if (isTabActive) {
-      // Close side menu if tab is already active
-      store.dispatch.rightSideMenu.setRightSideMenuOpened(!rightSideMenuOpened)
-
-      store.dispatch.rightSideMenu.setShown(!rightSideMenuOpened)
-      saveTabStatusToStorage(!rightSideMenuOpened)
-    } else {
-      // Otherwise open side menu
-      store.dispatch.rightSideMenu.setShown(true)
-      store.dispatch.rightSideMenu.setRightSideMenuOpened(true)
-      saveTabStatusToStorage(true)
-    }
-  }
-
-  const saveTabStatusToStorage = (isRightTabOpen: any) => {
-    const preferences = getJSONItem(`preferences-${username}`)
-    preferences['rightTabStatus'] = isRightTabOpen
-    setJSONItem(`preferences-${username}`, preferences)
+    // Dispatch single action to handle all state changes
+    store.dispatch.rightSideMenu.toggleSideMenu({
+      tabName: tabName,
+      username,
+    })
   }
 
   const [firstRender, setFirstRender] = useState(true)
@@ -131,11 +116,7 @@ export const UserNavBar: FC = () => {
       if (!firstClickOnTab) {
         setTabs((state) =>
           state.map((tab) => {
-            if (tab?.name === localStorageTabValues?.rightSideMenuTabSelectedLocalStorage) {
-              tab.active = true
-            } else {
-              tab.active = false
-            }
+            tab.active = tab.name === localStorageTabValues?.rightSideMenuTabSelectedLocalStorage
             return tab
           }),
         )
@@ -145,11 +126,7 @@ export const UserNavBar: FC = () => {
       if (!firstClickOnTab) {
         setTabs((state) =>
           state.map((tab) => {
-            if (tab?.name === 'speed_dial') {
-              tab.active = true
-            } else {
-              tab.active = false
-            }
+            tab.active = tab.name === 'speed_dial'
             return tab
           }),
         )
@@ -168,9 +145,12 @@ export const UserNavBar: FC = () => {
     }
     if (username && userPreferences) {
       if (userPreferences?.rightTabStatus !== undefined) {
-        store.dispatch.rightSideMenu.setShown(userPreferences?.rightTabStatus)
-
-        store.dispatch.rightSideMenu.setRightSideMenuOpened(userPreferences?.rightTabStatus)
+        // Use the combined action to set both states
+        store.dispatch.rightSideMenu.toggleSideMenu({
+          tabName: userPreferences?.userSideBarTab || defaultTabSelected || 'speed_dial',
+          username,
+          force: userPreferences?.rightTabStatus,
+        })
       }
     }
   }, [firstRender, username, userPreferences?.rightTabStatus])
@@ -184,7 +164,7 @@ export const UserNavBar: FC = () => {
             return <SpeedDial key={i} />
           } else if (tab.active && tab.name === 'last_calls') {
             return <UserLastCalls key={i} />
-          } else if (tab.active && tab.name === 'voice_mail') {
+          } else if (tab.active && tab.name === 'voice_mails') {
             return <UserVoiceMail key={i} />
           }
         })}
@@ -196,7 +176,7 @@ export const UserNavBar: FC = () => {
         {tabs.map((tab, i) => (
           <div
             key={i}
-            onClick={() => clickedTab(tab?.name, true)}
+            onClick={() => clickedTab(tab?.name)}
             className={`${
               tab.active
                 ? 'text-currentSidebarIconText dark:text-currentSidebarIconTextDark bg-sidebarIconBackground dark:bg-sidebarIconBackgroundDark'
@@ -222,7 +202,7 @@ export const UserNavBar: FC = () => {
 
 type TabTypes = {
   icon: IconDefinition
-  name: 'speed_dial' | 'last_calls' | 'voice_mail'
+  name: 'speed_dial' | 'last_calls' | 'voice_mails'
   active: boolean
   label: string
 }
