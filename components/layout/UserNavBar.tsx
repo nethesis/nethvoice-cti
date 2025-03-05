@@ -79,21 +79,36 @@ export const UserNavBar: FC = () => {
     if (!firstClickOnTab) {
       setFirstClickOnTab(true)
     }
-    setDefaultTabSelected(tabName)
 
-    // Update active state in tabs
-    setTabs((state) =>
-      state.map((tab) => {
-        tab.active = tab.name === tabName
-        return tab
-      }),
-    )
-
-    // Dispatch single action to handle all state changes
-    store.dispatch.rightSideMenu.toggleSideMenu({
-      tabName: tabName,
-      username,
-    })
+    if (defaultTabSelected === tabName) {
+      // If the selected section is already open, close the navbar
+      store.dispatch.rightSideMenu.toggleSideMenu({
+        tabName: '',
+        username,
+        force: false,
+      })
+      setDefaultTabSelected('')
+      setTabs((state) =>
+        state.map((tab) => {
+          tab.active = false
+          return tab
+        }),
+      )
+    } else {
+      // Otherwise, change the section without closing the navbar
+      setDefaultTabSelected(tabName)
+      setTabs((state) =>
+        state.map((tab) => {
+          tab.active = tab.name === tabName
+          return tab
+        }),
+      )
+      store.dispatch.rightSideMenu.toggleSideMenu({
+        tabName: tabName,
+        username,
+        force: true,
+      })
+    }
   }
 
   const [firstRender, setFirstRender] = useState(true)

@@ -459,8 +459,23 @@
   },
   "VoiceMail": {
     "Voicemail inbox": "Casella vocale",
-    "Voicemail empty": "Nessuna segreteria telefonica",
-    "Voicemail empty description": "Non ci sono messaggi nella tua casella vocale"
+    "Voicemail empty": "La casella vocale è vuota",
+    "Voicemail empty description": "Non hai ancora nessun messaggio vocale",
+    "Open voicemail menu": "Apri menu casella vocale",
+    "Go to history": "Vai allo storico",
+    "Go to settings": "Vai alle impostazioni",
+    "Sort by": "Ordina per",
+    "Newest": "Più recenti",
+    "Oldest": "Meno recenti",
+    "Call back": "Richiama",
+    "Open details": "Apri dettagli",
+    "Download": "Scarica",
+    "Delete message": "Elimina messaggio"
+  },
+  "NavBars": {
+    "Speed dials": "Chiamate rapide",
+    "Last calls": "Ultime chiamate",
+    "Voice mail": "Casella vocale"
   },
   "Notifications": {
     "Mark all as read": "Contrassegna tutte come lette",
@@ -568,11 +583,6 @@
     "Operator": "Operatore",
     "Filter calls": "Filtra chiamate",
     "Filter queues": "Filtra code"
-  },
-  "NavBars": {
-    "Speed dials": "Chiamata rapida",
-    "Last calls": "Ultime chiamate",
-    "Voice mail" : "Segreteria telefonica"
   },
   "Tooltip": {
     "Hangup": "Chiudi",

@@ -5,6 +5,7 @@ import { PropsWithChildren } from 'react'
 import axios from 'axios'
 import { store } from '../store'
 import { eventDispatch } from './hooks/eventDispatch'
+import { parsePhoneNumberFromString } from 'libphonenumber-js'
 
 export interface ClearProps {
   key: string
@@ -460,3 +461,19 @@ export const voiceRequest = async (methodVoice: string, url: any, object?: any) 
     console.error(error)
   }
 }
+
+export const formatPhoneNumber = (rawNumber: string) => {
+  if (!rawNumber) return null;
+
+  // Convert "00" to "+" if necessary
+  const normalizedNumber = rawNumber.startsWith('00')
+    ? `+${rawNumber.slice(2)}`
+    : rawNumber;
+
+  console.log('Normalized Number:', normalizedNumber);
+
+  const phoneNumber = parsePhoneNumberFromString(normalizedNumber);
+  console.log('Parsed Phone Number:', phoneNumber);
+
+  return phoneNumber ? phoneNumber?.number : null;
+};
