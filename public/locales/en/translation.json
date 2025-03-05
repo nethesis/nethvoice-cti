@@ -603,7 +603,10 @@
     "Call back": "Call back",
     "Open details": "Open details",
     "Download": "Download",
-    "Delete message": "Delete message"
+    "Delete message": "Delete message",
+    "Unknown": "Unknown",
+    "Delete voicemail": "Delete voicemail message",
+    "voicemailDeletionMessage": "This message will be permanently deleted and cannot be recovered."
   },
   "NavBars": {
     "Speed dials": "Speed dials",

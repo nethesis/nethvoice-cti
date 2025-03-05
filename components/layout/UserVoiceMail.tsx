@@ -13,7 +13,6 @@ import { RootState, store } from '../../store'
 
 export const UserVoiceMail = () => {
   const rightSideStatus: any = useSelector((state: RootState) => state?.rightSideMenu)
-  console.log('this is rightSideMenu', rightSideStatus)
 
   return (
     <>
