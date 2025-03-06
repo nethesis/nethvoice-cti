@@ -282,7 +282,17 @@
     "Customer cards": "Schede cliente",
     "PhoneLink configuration": "Configurazione Desktop phone",
     "Speakers": "Altoparlanti",
-    "Microphones": "Microfoni"
+    "Microphones": "Microfoni",
+    "Voicemail": "Casella vocale",
+    "Greeting messages": "Messaggi di saluto",
+    "Upload message": "Carica messaggio",
+    "Record message": "Registra messaggio",
+    "Busy status": "Stato occupato",
+    "Unavailable status": "Stato non disponibile",
+    "Name": "Nome",
+    "Creation date": "Data creazione",
+    "Status": "Stato",
+    "Default": "Predefinito"
   },
   "TopBar": {
     "Signed in as": "Accesso effettuato come",

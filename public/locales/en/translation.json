@@ -303,7 +303,17 @@
     "Available presence": "Available presence",
     "PhoneLink configuration": "Desktop phone configuration",
     "Speakers": "Speakers",
-    "Microphones": "Microphones"
+    "Microphones": "Microphones",
+    "Voicemail": "Voicemail",
+    "Greeting messages": "Greeting messages",
+    "Upload message": "Upload message",
+    "Record message": "Record message",
+    "Busy status": "Busy status",
+    "Unavailable status": "Unavailable status",
+    "Name": "Name",
+    "Creation date": "Creation date",
+    "Status": "Status",
+    "Default": "Default"
   },
   "TopBar": {
     "Signed in as": "Signed in as",
