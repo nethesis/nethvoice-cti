@@ -394,7 +394,7 @@ export const SwitchInputOutputDrawerContent = forwardRef<
                       leaveTo='opacity-0'
                     >
                       <ListboxOptions className='absolute z-10 mt-1 w-full overflow-auto  scrollbar-thin scrollbar-thumb-gray-400 dark:scrollbar-thumb-gray-400 scrollbar-thumb-rounded-full scrollbar-thumb-opacity-50 scrollbar-track-gray-200 dark:scrollbar-track-gray-900 scrollbar-track-rounded-full scrollbar-track-opacity-25 rounded-md bg-white py-1 text-base shadow-lg ring-1 dark:bg-gray-950 ring-black dark:ring-gray-600 ring-opacity-5 focus:outline-none sm:text-sm h-auto'>
-                        {Object.entries<any>(videoInputs)?.map(([videoInputId, videoInputInfo]) => (
+                        {videoInputs?.map((videoInputInfo, videoInputId) => (
                           <ListboxOption
                             key={videoInputId}
                             className='data-[focus]:bg-gray-100 data-[focus]:dark:bg-gray-800 data-[focus]:text-gray-950 data-[focus]:dark:text-gray-100 text-gray-900 dark:text-gray-200 relative cursor-default select-none py-2 pl-8 pr-4'
