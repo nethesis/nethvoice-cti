@@ -37,9 +37,11 @@ export const SwitchInputOutputDrawerContent = forwardRef<
 >(({ config, className, ...props }, ref) => {
   const [selectedAudioInput, setSelectedAudioInput] = useState<any>('')
   const [selectedAudioOutput, setSelectedAudioOutput] = useState<any>('')
+  const [selectedVideoInput, setSelectedVideoInput] = useState<any>('')
 
   const [audioInputs, setAudioInputs] = useState<any[]>([])
   const [audioOutputs, setAudioOutputs] = useState<any[]>([])
+  const [videoInputs, setVideoInputs] = useState<any[]>([])
   const auth = useSelector((state: RootState) => state.authentication)
 
   useEffect(() => {
@@ -47,10 +49,12 @@ export const SwitchInputOutputDrawerContent = forwardRef<
       navigator.mediaDevices
         .enumerateDevices()
         .then((deviceInfos) => {
-          const inputs = deviceInfos.filter((device) => device.kind === 'audioinput')
-          const outputs = deviceInfos.filter((device) => device.kind === 'audiooutput')
-          setAudioInputs(inputs)
-          setAudioOutputs(outputs)
+          const audioInputs = deviceInfos.filter((device) => device.kind === 'audioinput')
+          const audioOutputs = deviceInfos.filter((device) => device.kind === 'audiooutput')
+          const videoInputs = deviceInfos.filter((device) => device.kind === 'videoinput')
+          setAudioInputs(audioInputs)
+          setAudioOutputs(audioOutputs)
+          setVideoInputs(videoInputs)
         })
         .catch((error) => {
           console.error('error', error)
@@ -74,42 +78,59 @@ export const SwitchInputOutputDrawerContent = forwardRef<
     setSelectedAudioOutput(newAudioOutputSelected)
   }
 
-  const [inputValueStore, setInputValueStore] = useState<any>('')
-  const [outputValueStore, setOutputValueStore] = useState<any>('')
+  const handleSelectedVideoInput = (newVideoInputSelected: any) => {
+    setSelectedVideoInput(newVideoInputSelected)
+  }
 
-  const handleUpdateAudioDevices = () => {
+  const [audioInputValueStore, setAudioInputValueStore] = useState<any>('')
+  const [audioOutputValueStore, setAudioOutputValueStore] = useState<any>('')
+  const [videoInputValueStore, setVideoInputValueStore] = useState<any>('')
+
+  const handleUpdateDevices = () => {
     eventDispatch('phone-island-audio-input-change', { deviceId: selectedAudioInput?.deviceId })
     setJSONItem('phone-island-audio-input-device', { deviceId: selectedAudioInput?.deviceId })
     eventDispatch('phone-island-audio-output-change', { deviceId: selectedAudioOutput?.deviceId })
     setJSONItem('phone-island-audio-output-device', { deviceId: selectedAudioOutput?.deviceId })
+    eventDispatch('phone-island-video-input-change', { deviceId: selectedVideoInput?.deviceId })
+    setJSONItem('phone-island-video-input-device', { deviceId: selectedVideoInput?.deviceId })
     closeSideDrawer()
   }
 
   //Get input/output value from local storage
   useEffect(() => {
     const inputOutputValues = getInputOutputLocalStorageValue(auth?.username)
-    setInputValueStore(inputOutputValues?.audioInputType)
-    setOutputValueStore(inputOutputValues?.audioOutputType)
+    setAudioInputValueStore(inputOutputValues?.audioInputType)
+    setAudioOutputValueStore(inputOutputValues?.audioOutputType)
+    setVideoInputValueStore(inputOutputValues?.videoInputType)
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [])
 
   useEffect(() => {
-    if (!isEmpty(inputValueStore) && !isEmpty(audioInputs)) {
+    if (!isEmpty(audioInputValueStore) && !isEmpty(audioInputs)) {
       const selectedInput = audioInputs.find(
-        (input: any) => input.deviceId === inputValueStore?.deviceId,
+        (input: any) => input.deviceId === audioInputValueStore?.deviceId,
       )
       setSelectedAudioInput(selectedInput)
     }
-  }, [inputValueStore, audioInputs])
+  }, [audioInputValueStore, audioInputs])
 
   useEffect(() => {
-    if (!isEmpty(outputValueStore) && !isEmpty(audioOutputs)) {
+    if (!isEmpty(audioOutputValueStore) && !isEmpty(audioOutputs)) {
       const selectedOutput = audioOutputs.find(
-        (output: any) => output.deviceId === outputValueStore?.deviceId,
+        (output: any) => output.deviceId === audioOutputValueStore?.deviceId,
       )
       setSelectedAudioOutput(selectedOutput)
     }
-  }, [outputValueStore, audioOutputs])
+  }, [audioOutputValueStore, audioOutputs])
+
+  useEffect(() => {
+    if (!isEmpty(videoInputValueStore) && !isEmpty(videoInputs)) {
+      const selectedInput = videoInputs.find(
+        (input: any) => input.deviceId === videoInputValueStore?.deviceId,
+      )
+      setSelectedVideoInput(selectedInput)
+    }
+  }, [videoInputValueStore, videoInputs])
 
   return (
     <>
@@ -118,7 +139,7 @@ export const SwitchInputOutputDrawerContent = forwardRef<
         <div className='flex items-center justify-between'>
           {/* Title */}
           <div className='text-lg font-medium dark:text-gray-200 text-gray-700'>
-            {t('Devices.Audio settings')}: {t('Devices.Web phone')}
+            {t('Devices.Audio and video settings')}: {t('Devices.Web phone')}
           </div>
           <div className='flex items-center h-7'>
             <SideDrawerCloseIcon />
@@ -319,6 +340,97 @@ export const SwitchInputOutputDrawerContent = forwardRef<
               </>
             )}
           </Listbox>
+
+          {/* Video input section */}
+          <div className='flex items-center justify-between pt-6'>
+            <div className='flex items-center'>
+              <span className='dark:text-gray-200 leading-5 text-sm font-medium'>
+                {t('Devices.Camera')}
+              </span>
+              <FontAwesomeIcon
+                icon={faCircleInfo}
+                className='h-4 w-4 pl-2 py-2 text-primaryIndigo dark:text-primaryIndigoDark flex items-center'
+                aria-hidden='true'
+                data-tooltip-id='tooltip-video-input-information'
+                data-tooltip-content={t('Devices.Video input information tooltip') || ''}
+              />
+              {/* Video input information tooltip */}
+              <Tooltip id='tooltip-video-input-information' place='right' />
+            </div>
+          </div>
+
+          {/* Video input select */}
+          <Listbox value={selectedVideoInput} onChange={handleSelectedVideoInput}>
+            {({ open }) => (
+              <>
+                <div className='flex items-center mt-2'>
+                  <div className='relative w-full'>
+                    <ListboxButton className='relative w-full cursor-default rounded-md bg-white dark:bg-gray-950 py-1.5 pr-10 text-left focus:outline-none sm:text-sm sm:leading-6 border dark:border-gray-700'>
+                      <span
+                        className={`${
+                          selectedVideoInput?.label
+                            ? 'text-gray-700 dark:text-gray-300'
+                            : 'text-gray-500 dark:text-gray-300'
+                        } block truncate mr-1 ml-4 font-medium`}
+                      >
+                        {selectedVideoInput?.label
+                          ? selectedVideoInput?.label
+                          : t('Devices.Select video input')}
+                      </span>
+                      <span className='pointer-events-none absolute inset-y-0 right-0 flex items-center pr-2'>
+                        <FontAwesomeIcon
+                          icon={faChevronDown}
+                          className='h-3.5 w-3.5 pl-2 py-2 cursor-pointer flex items-center'
+                          aria-hidden='true'
+                        />
+                      </span>
+                    </ListboxButton>
+
+                    <Transition
+                      show={open}
+                      as={Fragment}
+                      leave='transition ease-in duration-100'
+                      leaveFrom='opacity-100'
+                      leaveTo='opacity-0'
+                    >
+                      <ListboxOptions className='absolute z-10 mt-1 w-full overflow-auto  scrollbar-thin scrollbar-thumb-gray-400 dark:scrollbar-thumb-gray-400 scrollbar-thumb-rounded-full scrollbar-thumb-opacity-50 scrollbar-track-gray-200 dark:scrollbar-track-gray-900 scrollbar-track-rounded-full scrollbar-track-opacity-25 rounded-md bg-white py-1 text-base shadow-lg ring-1 dark:bg-gray-950 ring-black dark:ring-gray-600 ring-opacity-5 focus:outline-none sm:text-sm h-auto'>
+                        {Object.entries<any>(videoInputs)?.map(([videoInputId, videoInputInfo]) => (
+                          <ListboxOption
+                            key={videoInputId}
+                            className='data-[focus]:bg-gray-100 data-[focus]:dark:bg-gray-800 data-[focus]:text-gray-950 data-[focus]:dark:text-gray-100 text-gray-900 dark:text-gray-200 relative cursor-default select-none py-2 pl-8 pr-4'
+                            value={videoInputInfo}
+                          >
+                            {({ selected, active }) => (
+                              <>
+                                <span
+                                  className={classNames(
+                                    selected ? 'font-medium' : 'font-normal',
+                                    'block truncate',
+                                  )}
+                                >
+                                  {videoInputInfo?.label}
+                                </span>
+
+                                {selected || selectedVideoInput?.label === videoInputInfo?.label ? (
+                                  <span className='text-primary dark:text-primaryDark absolute inset-y-0 left-0 flex items-center pl-1.5'>
+                                    <FontAwesomeIcon
+                                      icon={faCheck}
+                                      className='h-3.5 w-3.5 pl-2 py-2 cursor-pointer flex items-center'
+                                      aria-hidden='true'
+                                    />
+                                  </span>
+                                ) : null}
+                              </>
+                            )}
+                          </ListboxOption>
+                        ))}
+                      </ListboxOptions>
+                    </Transition>
+                  </div>
+                </div>
+              </>
+            )}
+          </Listbox>
         </>
         {/* Divider */}
         <div className='relative pb-10 pt-6'>
@@ -335,7 +447,7 @@ export const SwitchInputOutputDrawerContent = forwardRef<
             variant='primary'
             type='submit'
             className='mb-4 ml-4'
-            onClick={() => handleUpdateAudioDevices()}
+            onClick={() => handleUpdateDevices()}
           >
             {t('Common.Save')}
           </Button>
