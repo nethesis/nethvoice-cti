@@ -22,7 +22,7 @@ export const openShowEditPhysicalPhone = (phoneInformation: any, pinstatus: any)
   })
 }
 
-export const openShowSwitchAudioInput = (status: any) => {
+export const openShowSwitchDeviceInputOutput = (status: any) => {
   store.dispatch.sideDrawer.update({
     isShown: true,
     contentType: 'showSwitchDeviceInputOutput',
@@ -45,8 +45,9 @@ export const openShowDownloadLinkContent = (status: any, defaultOS: string) => {
 export const getInputOutputLocalStorageValue = (currentUsername: string) => {
   const audioInputType = getJSONItem('phone-island-audio-input-device') || ''
   const audioOutputType = getJSONItem('phone-island-audio-output-device') || ''
+  const videoInputType = getJSONItem('phone-island-video-input-device') || ''
 
-  return { audioInputType, audioOutputType }
+  return { audioInputType, audioOutputType, videoInputType }
 }
 
 // Set main device id

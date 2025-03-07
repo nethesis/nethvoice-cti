@@ -23,7 +23,7 @@ import {
   getDevicesPin,
   openShowEditPhysicalPhone,
   setMainDevice,
-  openShowSwitchAudioInput,
+  openShowSwitchDeviceInputOutput,
   tableHeader,
   titleTable,
   getDownloadLink,
@@ -307,11 +307,11 @@ const Devices: NextPage = () => {
                         <td className='whitespace-nowrap px-3 py-4 text-sm text-primary dark:text-primaryDark cursor-pointer w-[16.8rem] text-right'>
                           <Button
                             variant='ghost'
-                            onClick={() => openShowSwitchAudioInput('')}
+                            onClick={() => openShowSwitchDeviceInputOutput('')}
                             className='text-right'
                           >
                             <FontAwesomeIcon icon={faPenToSquare} className='mr-2 h-4 w-4' />
-                            {t('Devices.Audio settings')}
+                            {t('Devices.Audio and video settings')}
                           </Button>
                         </td>
                         <td className='relative whitespace-nowrap py-4 pl-3 text-right text-sm font-medium pr-6'>
