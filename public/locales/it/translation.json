@@ -158,7 +158,10 @@
     "End time": "Tempo di fine",
     "Choose a date range": "Scegli un intervallo",
     "Groups": "Gruppi",
-    "Open recording action modal": "Apri modale azioni registrazione"
+    "Open recording action modal": "Apri modale azioni registrazione",
+    "Calls": "Chiamate",
+    "Voicemail inbox": "Casella vocale",
+    "Recordings": "Registrazioni"
   },
   "Operators": {
     "Operators": "Operatori",
