@@ -158,7 +158,10 @@
     "End time": "Tempo di fine",
     "Choose a date range": "Scegli un intervallo",
     "Groups": "Gruppi",
-    "Open recording action modal": "Apri modale azioni registrazione"
+    "Open recording action modal": "Apri modale azioni registrazione",
+    "Calls": "Chiamate",
+    "Voicemail inbox": "Casella vocale",
+    "Recordings": "Registrazioni"
   },
   "Operators": {
     "Operators": "Operatori",
@@ -282,7 +285,17 @@
     "Customer cards": "Schede cliente",
     "PhoneLink configuration": "Configurazione Desktop phone",
     "Speakers": "Altoparlanti",
-    "Microphones": "Microfoni"
+    "Microphones": "Microfoni",
+    "Voicemail": "Casella vocale",
+    "Greeting messages": "Messaggi di saluto",
+    "Upload message": "Carica messaggio",
+    "Record message": "Registra messaggio",
+    "Busy status": "Stato occupato",
+    "Unavailable status": "Stato non disponibile",
+    "Name": "Nome",
+    "Creation date": "Data creazione",
+    "Status": "Stato",
+    "Default": "Predefinito"
   },
   "TopBar": {
     "Signed in as": "Accesso effettuato come",
@@ -457,6 +470,26 @@
     "Oldest": "Meno recenti",
     "Call": "Chiama"
   },
+  "VoiceMail": {
+    "Voicemail inbox": "Casella vocale",
+    "Voicemail empty": "La casella vocale è vuota",
+    "Voicemail empty description": "Non hai ancora nessun messaggio vocale",
+    "Open voicemail menu": "Apri menu casella vocale",
+    "Go to history": "Vai allo storico",
+    "Go to settings": "Vai alle impostazioni",
+    "Sort by": "Ordina per",
+    "Newest": "Più recenti",
+    "Oldest": "Meno recenti",
+    "Call back": "Richiama",
+    "Open details": "Apri dettagli",
+    "Download": "Scarica",
+    "Delete message": "Elimina messaggio"
+  },
+  "NavBars": {
+    "Speed dials": "Chiamate rapide",
+    "Last calls": "Ultime chiamate",
+    "Voice mail": "Casella vocale"
+  },
   "Notifications": {
     "Mark all as read": "Contrassegna tutte come lette",
     "Mark as read": "Contrassegna come letto",
@@ -563,10 +596,6 @@
     "Operator": "Operatore",
     "Filter calls": "Filtra chiamate",
     "Filter queues": "Filtra code"
-  },
-  "NavBars": {
-    "Speed dials": "Chiamata rapida",
-    "Last calls": "Ultime chiamate"
   },
   "Tooltip": {
     "Hangup": "Chiudi",

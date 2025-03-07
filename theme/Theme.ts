@@ -354,9 +354,14 @@ const theme = {
     },
     item: {
       base: 'block px-4 text-sm flex items-center gap-3 mt-1 mb-1 cursor-pointer',
+      baseRed: 'block px-4 text-sm flex items-center gap-3 mt-1 mb-1 cursor-pointer',
+      textRed: 'text-rose-700 dark:text-rose-500',
       light: 'text-gray-700 dark:text-gray-300',
+      activeRed: 'bg-rose-700 text-white dark:bg-rose-500 dark:text-white',
       active: 'bg-gray-200 text-gray-900 dark:bg-gray-700 dark:text-gray-100',
       icon: 'h-4 w-4 flex text-dropdownText dark:text-dropdownTextDark',
+      iconRed: 'text-rose-700 dark:text-rose-500',
+      iconRedActive: 'text-white',
       centered: 'justify-center',
     },
     items: {

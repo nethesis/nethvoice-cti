@@ -2,17 +2,17 @@
 // SPDX-License-Identifier: AGPL-3.0-or-later
 
 /**
- * The SpeedDial component
+ * The VoiceMail component
  *
- * @return The fixed right bar with speed dials as the default
+ * @return The fixed right bar with voice mail as the default
  */
 
-import { SpeedDialContent } from '../common/UserRightSideMenu/SpeedDialContent'
+import { VoiceMailContent } from '../common/UserRightSideMenu/VoiceMailContent'
 import { useSelector } from 'react-redux'
 import { RootState, store } from '../../store'
 
-export const SpeedDial = () => {
-  const rightSideStatus: any = useSelector((state: RootState) => state.rightSideMenu)
+export const UserVoiceMail = () => {
+  const rightSideStatus: any = useSelector((state: RootState) => state?.rightSideMenu)
 
   return (
     <>
@@ -21,7 +21,7 @@ export const SpeedDial = () => {
           rightSideStatus?.isShown ? 'lg:w-72 xl:w-80 2xl:w-96' : ''
         } border-l lg:block h-full border-gray-200 bg-white dark:border-gray-700 dark:bg-gray-900`}
       >
-        {rightSideStatus?.isShown && <SpeedDialContent />}
+        {rightSideStatus?.isShown && <VoiceMailContent />}
       </aside>
     </>
   )

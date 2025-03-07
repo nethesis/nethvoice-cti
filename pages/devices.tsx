@@ -16,6 +16,7 @@ import {
   faCircleXmark,
   faEllipsisVertical,
   faPenToSquare,
+  IconDefinition,
 } from '@fortawesome/free-solid-svg-icons'
 import React from 'react'
 import { faOfficePhone } from '@nethesis/nethesis-solid-svg-icons'
@@ -466,7 +467,7 @@ const Devices: NextPage = () => {
         <div className='pt-16'>
           <div className='flex items-center space-x-2'>
             <FontAwesomeIcon
-              icon={faOfficePhone}
+              icon={faOfficePhone as IconDefinition}
               className='h-4 w-4 flex justify-center text-gray-700 dark:text-gray-500'
             />
             {/* Check if physical is more than one   */}

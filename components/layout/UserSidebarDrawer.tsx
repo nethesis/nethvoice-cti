@@ -7,6 +7,7 @@ import { SpeedDialContent } from '../common/UserRightSideMenu/SpeedDialContent'
 import { useSelector } from 'react-redux'
 import { RootState } from '../../store'
 import { UserLastCallsContent } from '../common/UserRightSideMenu/UserLastCallsContent'
+import { VoiceMailContent } from '../common/UserRightSideMenu/VoiceMailContent'
 
 interface UserSidebarDrawerProps {
   isShown: boolean
@@ -44,6 +45,9 @@ export const UserSidebarDrawer: FC<UserSidebarDrawerProps> = ({ isShown }) => {
                       ) : rightSideStatus?.actualTab &&
                         rightSideStatus?.actualTab === 'last_calls' ? (
                         <UserLastCallsContent />
+                      ) : rightSideStatus?.actualTab &&
+                        rightSideStatus?.actualTab === 'voice_mails' ? (
+                        <VoiceMailContent />
                       ) : null}
                     </div>
                   </nav>
