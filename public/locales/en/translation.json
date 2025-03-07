@@ -178,7 +178,10 @@
     "Call in Voicemail": "Call in Voicemail",
     "Type to search contact": "Type to search contact",
     "Groups": "Groups",
-    "Open recording action modal": "Open recording action modal"
+    "Open recording action modal": "Open recording action modal",
+    "Calls": "Calls",
+    "Voicemail inbox": "Voicemail inbox",
+    "Recordings": "Recordings"
   },
   "Operators": {
     "Operators": "Operators",

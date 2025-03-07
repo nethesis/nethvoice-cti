@@ -138,12 +138,12 @@ export const VoiceMailContent = () => {
 
   const getVoiceMailMenuTemplate = () => (
     <>
-      <Link href={{ pathname: '/history' }} className="w-full">
+      <Link href={{ pathname: '/history', query: { section: 'Voicemail inbox' } }} className="w-full">
         <Dropdown.Item icon={faArrowRightLong}>
           {t('VoiceMail.Go to history')}
         </Dropdown.Item>
       </Link>
-      <Link href={{ pathname: '/settings' }} className="w-full">
+      <Link href={{ pathname: '/settings', query: { section: 'Voicemail' }}} className="w-full">
         <Dropdown.Item icon={faArrowRightLong}>
           {t('VoiceMail.Go to settings')}
         </Dropdown.Item>
