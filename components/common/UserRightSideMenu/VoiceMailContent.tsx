@@ -27,7 +27,6 @@ import { openShowOperatorDrawer } from '../../../lib/operators'
 import Link from 'next/link'
 
 export const VoiceMailContent = () => {
-  const username = useSelector((state: RootState) => state.user.username)
   const operatorsStore = useSelector((state: RootState) => state.operators)
   const authStore = useSelector((state: RootState) => state.authentication)
 
@@ -44,6 +43,7 @@ export const VoiceMailContent = () => {
     if (!isEmpty(operatorsStore) && !operatorsStore.isOperatorsLoaded) {
       return
     }
+
     if (firstRender) {
       setFirstRender(false)
     } else {
@@ -175,19 +175,19 @@ export const VoiceMailContent = () => {
   }
 
   const quickCall = (voicemail: any) => {
-      if (
-        operatorsStore?.operators[authStore?.username]?.mainPresence &&
-        operatorsStore?.operators[authStore?.username]?.mainPresence === 'busy'
-      ) {
-        console.log('Transfer call to extension')
-        transferCallToExtension(voicemail?.caller_number)
-      } else if (
-        operatorsStore?.operators[authStore?.username]?.endpoints?.mainextension[0]?.id !==
-        voicemail?.caller_number
-      ) {
-        console.log('Call phone number1'),
-        callPhoneNumber(voicemail?.caller_number)
-      }
+    if (
+      operatorsStore?.operators[authStore?.username]?.mainPresence &&
+      operatorsStore?.operators[authStore?.username]?.mainPresence === 'busy'
+    ) {
+      console.log('Transfer call to extension')
+      transferCallToExtension(voicemail?.caller_number)
+    } else if (
+      operatorsStore?.operators[authStore?.username]?.endpoints?.mainextension[0]?.id !==
+      voicemail?.caller_number
+    ) {
+      console.log('Call phone number1'),
+      callPhoneNumber(voicemail?.caller_number)
+    }
   }
 
   const openDrawerOperator = (operator: any) => {
@@ -279,19 +279,22 @@ export const VoiceMailContent = () => {
               <li key={voicemail?.id}>
                 <div className='gap-4 py-4 px-0'>
                   <div className='flex justify-between gap-3'>
-                    <div className='flex shrink-0 gap-1 h-min items-center'>
+                    <div className='flex shrink-0 gap-1 h-min items-center min-w-[48px]'>
                       <Avatar
                         src={voicemail?.caller_operator?.avatarBase64}
                         placeholderType='operator'
                         size='large'
                         bordered
-                        onClick={() => openDrawerOperator(voicemail?.caller_operator)}
-                        className='mx-auto cursor-pointer'
+                        onClick={voicemail?.caller_operator ? () => openDrawerOperator(voicemail?.caller_operator) : undefined}
+                        className={`mx-auto ${voicemail?.caller_operator ? 'cursor-pointer' : 'cursor-default'}`}
                         status={voicemail?.caller_operator?.mainPresence}
                       />
                     </div>
-                    <div className='flex flex-col gap-1.5 w-full'>
-                      <span className='font-poppins text-sm leading-4 font-medium text-gray-900 dark:text-gray-50'>
+                    <div className='flex flex-col gap-1.5 min-w-0 flex-1'>
+                      <span 
+                        className='font-poppins text-sm leading-4 font-medium text-gray-900 dark:text-gray-50 truncate'
+                        title={voicemail?.caller_operator?.name || t('VoiceMail.Unknown')}
+                      >
                         {voicemail?.caller_operator?.name
                           ? voicemail.caller_operator.name
                           : t('VoiceMail.Unknown')}
@@ -303,13 +306,17 @@ export const VoiceMailContent = () => {
                           aria-hidden='true'
                         />
                         <span
-                          className='cursor-pointer hover:underline font-poppins text-sm leading-4 font-normal'
+                          className='cursor-pointer hover:underline font-poppins text-sm leading-4 font-normal truncate'
                           onClick={() => quickCall(voicemail)}
+                          title={voicemail?.caller_number}
                         >
                           {voicemail?.caller_number}
                         </span>
                       </div>
-                      <span className='font-poppins text-xs leading-4 font-normal text-gray-600 dark:text-gray-300'>
+                      <span 
+                        className='font-poppins text-xs leading-4 font-normal text-gray-600 dark:text-gray-300 truncate'
+                        title={formatTimestamp(voicemail?.origtime)}
+                      >
                         {formatTimestamp(voicemail?.origtime)}
                       </span>
                       <div className='flex'>
@@ -325,7 +332,7 @@ export const VoiceMailContent = () => {
                         )}
                       </div>
                     </div>
-                    <div className='flex gap-2 items-start'>
+                    <div className='flex gap-2 items-start shrink-0 min-w-0'>
                       <Button
                         variant='ghost'
                         className='border border-gray-300 dark:border-gray-500 py-2 !px-2 h-9 w-9 gap-3'
@@ -334,7 +341,7 @@ export const VoiceMailContent = () => {
                         <span className='sr-only'>{t('VoiceMail.Open voicemail menu')}</span>
                       </Button>
                       <Dropdown items={getVoiceMailOptionsTemplate(voicemail)} position='left'>
-                        <Button variant='ghost' className='py-2 !px-2 h-9 w-9'>
+                        <Button variant='ghost' className='py-2 px-2 h-9 w-9'>
                           <FontAwesomeIcon icon={faEllipsisVertical} className='h-4 w-4' />
                           <span className='sr-only'>{t('VoiceMail.Open voicemail menu')}</span>
                         </Button>
