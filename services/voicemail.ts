@@ -23,7 +23,7 @@ export const downloadVoicemail = async (id: any) => {
 
         const filename = response.data;
         if (!filename) {
-            console.error("Errore: il server non ha restituito il nome del file.");
+            console.error("Error: the server did not return the file name.");
             return;
         }
         const fileUrl = `${getApiScheme()}${getApiEndpoint()}/webrest/static/${filename}`;

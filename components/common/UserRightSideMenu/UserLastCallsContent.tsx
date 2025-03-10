@@ -3,7 +3,7 @@
 
 import { useState, useEffect, useRef, useCallback } from 'react'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
-import { faPhone, faChevronDown, faUsers } from '@fortawesome/free-solid-svg-icons'
+import { faPhone, faChevronDown, faUsers, faSortAmountAsc, faCheck } from '@fortawesome/free-solid-svg-icons'
 import { Button, Avatar, EmptyState, Dropdown, Badge } from '../../common'
 import { useSelector } from 'react-redux'
 import { RootState } from '../../../store'
@@ -172,31 +172,27 @@ export const UserLastCallsContent = () => {
               <Dropdown
                 items={
                   <>
+                    <Dropdown.Header>
+                      <span className='font-poppins font-light'>{t('VoiceMail.Sort by')}</span>
+                    </Dropdown.Header>
                     <Dropdown.Item onClick={() => sortCalls('time_desc')}>
-                      <input
-                        type='radio'
-                        checked={sort === 'time_desc'}
-                        onChange={() => sortCalls('time_desc')}
-                        className='h-4 w-4 border-gray-300 text-primary focus:ring-primaryLight dark:border-gray-600 dark:text-primaryDark dark:focus:ring-primaryDark'
-                      />
-                      {t('LastCalls.Newest')}
+                      <span className='font-poppins font-light'>{t('LastCalls.Newest')}</span>
+                      {sort === 'time_desc' && (
+                        <FontAwesomeIcon icon={faCheck} className='ml-auto text-emerald-700' />
+                      )}
                     </Dropdown.Item>
                     <Dropdown.Item onClick={() => sortCalls('time_asc')}>
-                      <input
-                        type='radio'
-                        checked={sort === 'time_asc'}
-                        onChange={() => sortCalls('time_asc')}
-                        className='h-4 w-4 border-gray-300 text-primary focus:ring-primaryLight dark:border-gray-600 dark:text-primaryDark dark:focus:ring-primaryDark'
-                      />
-                      {t('LastCalls.Oldest')}
+                      <span className='font-poppins font-light'>{t('LastCalls.Oldest')}</span>
+                      {sort === 'time_asc' && (
+                        <FontAwesomeIcon icon={faCheck} className='ml-auto text-emerald-700' />
+                      )}
                     </Dropdown.Item>
                   </>
                 }
                 position='left'
               >
-                <Button className='flex gap-2 h-9' variant='white'>
-                  {t('LastCalls.Sort by')}
-                  <FontAwesomeIcon icon={faChevronDown} />
+                <Button className='flex gap-2 h-9 w-9' variant='white'>
+                  <FontAwesomeIcon icon={faSortAmountAsc} className='h-4 w-4' />
                 </Button>
               </Dropdown>
             </div>
