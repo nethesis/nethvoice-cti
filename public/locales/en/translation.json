@@ -178,7 +178,10 @@
     "Call in Voicemail": "Call in Voicemail",
     "Type to search contact": "Type to search contact",
     "Groups": "Groups",
-    "Open recording action modal": "Open recording action modal"
+    "Open recording action modal": "Open recording action modal",
+    "Calls": "Calls",
+    "Voicemail inbox": "Voicemail inbox",
+    "Recordings": "Recordings"
   },
   "Operators": {
     "Operators": "Operators",
@@ -303,7 +306,17 @@
     "Available presence": "Available presence",
     "PhoneLink configuration": "Desktop phone configuration",
     "Speakers": "Speakers",
-    "Microphones": "Microphones"
+    "Microphones": "Microphones",
+    "Voicemail": "Voicemail",
+    "Greeting messages": "Greeting messages",
+    "Upload message": "Upload message",
+    "Record message": "Record message",
+    "Busy status": "Busy status",
+    "Unavailable status": "Unavailable status",
+    "Name": "Name",
+    "Creation date": "Creation date",
+    "Status": "Status",
+    "Default": "Default"
   },
   "TopBar": {
     "Signed in as": "Signed in as",
@@ -590,9 +603,28 @@
     "Oldest": "Oldest",
     "Call": "Call"
   },
+  "VoiceMail": {
+    "Voicemail inbox": "Voicemail inbox",
+    "Voicemail empty": "Voicemail inbox is empty",
+    "Voicemail empty description": "You don't have any voicemail yet",
+    "Open voicemail menu": "Open voicemail menu",
+    "Go to history": "Go to History",
+    "Go to settings": "Go to Settings",
+    "Sort by": "SORT BY",
+    "Newest": "Newest",
+    "Oldest": "Oldest",
+    "Call back": "Call back",
+    "Open details": "Open details",
+    "Download": "Download",
+    "Delete message": "Delete message",
+    "Unknown": "Unknown",
+    "Delete voicemail": "Delete voicemail message",
+    "voicemailDeletionMessage": "This message will be permanently deleted and cannot be recovered."
+  },
   "NavBars": {
     "Speed dials": "Speed dials",
-    "Last calls": "Last calls"
+    "Last calls": "Last calls",
+    "Voice mail": "Voicemail inbox"
   },
   "QueueManager": {
     "Dashboard": "Dashboard",
