@@ -208,10 +208,12 @@ export const SpeedDialContent = () => {
   // The dropdown items for every speed dial element
   const getItemsMenu = (speedDial: any) => (
     <>
-      <Dropdown.Item icon={faPen} onClick={() => openEditSpeedDialDrawer(speedDial)}>
-        {t('Common.Edit')}
-      </Dropdown.Item>
-      <Dropdown.Item icon={faTrash} onClick={() => confirmDeleteItem(speedDial)}>
+      <div className='border-b border-gray-200 dark:border-gray-700'>
+        <Dropdown.Item icon={faPen} onClick={() => openEditSpeedDialDrawer(speedDial)}>
+          {t('Common.Edit')}
+        </Dropdown.Item>
+      </div>
+      <Dropdown.Item icon={faTrash} isRed onClick={() => confirmDeleteItem(speedDial)}>
         {t('Common.Delete')}
       </Dropdown.Item>
     </>
@@ -245,7 +247,7 @@ export const SpeedDialContent = () => {
               <div className='w-full border-t  border-gray-300 dark:border-gray-600' />
             </div>
           </div>
-          <Dropdown.Item icon={faTrash} onClick={() => confirmDeleteAllItems()}>
+          <Dropdown.Item icon={faTrash} isRed onClick={() => confirmDeleteAllItems()}>
             {t('SpeedDial.Delete all')}
           </Dropdown.Item>
         </>

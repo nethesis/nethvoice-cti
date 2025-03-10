@@ -15,19 +15,25 @@ import {
   faCircleArrowDown,
   faTriangleExclamation,
   faArrowRightLong,
+  faCircle,
 } from '@fortawesome/free-solid-svg-icons'
 import { Avatar, Button, Dropdown, EmptyState, InlineNotification, Modal } from '..'
-import { callPhoneNumber, closeSideDrawer, formatPhoneNumber, transferCallToExtension } from '../../../lib/utils'
+import {
+  callPhoneNumber,
+  closeSideDrawer,
+  formatPhoneNumber,
+  playFileAudio,
+  transferCallToExtension,
+} from '../../../lib/utils'
 import { t } from 'i18next'
 import { useSelector } from 'react-redux'
 import { RootState } from '../../../store'
 import { VoiceMailType } from '../../../services/types'
-import { forEach, isEmpty } from 'lodash'
+import { forEach, isEmpty, set } from 'lodash'
 import { openShowOperatorDrawer } from '../../../lib/operators'
 import Link from 'next/link'
 
 export const VoiceMailContent = () => {
-  const username = useSelector((state: RootState) => state.user.username)
   const operatorsStore = useSelector((state: RootState) => state.operators)
   const authStore = useSelector((state: RootState) => state.authentication)
 
@@ -44,6 +50,7 @@ export const VoiceMailContent = () => {
     if (!isEmpty(operatorsStore) && !operatorsStore.isOperatorsLoaded) {
       return
     }
+
     if (firstRender) {
       setFirstRender(false)
     } else {
@@ -54,6 +61,11 @@ export const VoiceMailContent = () => {
       try {
         const response: any[] | undefined = await getAllVoicemails()
 
+        // Filter voicemails by type = inbox or old
+        const inboxVoicemails = response?.filter(
+          (voicemail) => voicemail.type === 'inbox' || voicemail.type === 'old',
+        )
+
         forEach(response, (voicemail) => {
           const callerIdMatch = (voicemail as VoiceMailType).callerid?.match(/<([^>]+)>/)
           const callerId = callerIdMatch ? callerIdMatch[1] : ''
@@ -62,16 +74,28 @@ export const VoiceMailContent = () => {
             operator.endpoints?.mainextension?.some((vm: { id: string }) => vm.id === callerId),
           )
 
-          if (!operator) {            
+          if (!operator) {
             voicemail.caller_number = formatPhoneNumber(callerId)
           } else {
             voicemail.caller_number = callerId
           }
           voicemail.caller_operator = operator
         })
-        if (response) {
-          setVoicemails(response)
+
+        if (inboxVoicemails) {
+          // Sort voicemails: first by type ('inbox' first, then 'old'), then by date (newest first)
+          const sortedVoicemails = inboxVoicemails.sort((a, b) => {
+            // Sort by type first (inbox before old)
+            if (a.type !== b.type) {
+              return a.type === 'inbox' ? -1 : 1
+            }
+            // Then sort by date (newest first)
+            return b.origtime - a.origtime
+          })
+
+          setVoicemails(sortedVoicemails)
         }
+
         setVoiceMailLoaded(true)
       } catch (error) {
         console.error(error)
@@ -138,15 +162,14 @@ export const VoiceMailContent = () => {
 
   const getVoiceMailMenuTemplate = () => (
     <>
-      <Link href={{ pathname: '/history', query: { section: 'Voicemail inbox' } }} className="w-full">
-        <Dropdown.Item icon={faArrowRightLong}>
-          {t('VoiceMail.Go to history')}
-        </Dropdown.Item>
+      <Link
+        href={{ pathname: '/history', query: { section: 'Voicemail inbox' } }}
+        className='w-full'
+      >
+        <Dropdown.Item icon={faArrowRightLong}>{t('VoiceMail.Go to history')}</Dropdown.Item>
       </Link>
-      <Link href={{ pathname: '/settings', query: { section: 'Voicemail' }}} className="w-full">
-        <Dropdown.Item icon={faArrowRightLong}>
-          {t('VoiceMail.Go to settings')}
-        </Dropdown.Item>
+      <Link href={{ pathname: '/settings', query: { section: 'Voicemail' } }} className='w-full'>
+        <Dropdown.Item icon={faArrowRightLong}>{t('VoiceMail.Go to settings')}</Dropdown.Item>
       </Link>
     </>
   )
@@ -175,25 +198,30 @@ export const VoiceMailContent = () => {
   }
 
   const quickCall = (voicemail: any) => {
-      if (
-        operatorsStore?.operators[authStore?.username]?.mainPresence &&
-        operatorsStore?.operators[authStore?.username]?.mainPresence === 'busy'
-      ) {
-        console.log('Transfer call to extension')
-        transferCallToExtension(voicemail?.caller_number)
-      } else if (
-        operatorsStore?.operators[authStore?.username]?.endpoints?.mainextension[0]?.id !==
-        voicemail?.caller_number
-      ) {
-        console.log('Call phone number1'),
-        callPhoneNumber(voicemail?.caller_number)
-      }
+    if (
+      operatorsStore?.operators[authStore?.username]?.mainPresence &&
+      operatorsStore?.operators[authStore?.username]?.mainPresence === 'busy'
+    ) {
+      transferCallToExtension(voicemail?.caller_number)
+    } else if (
+      operatorsStore?.operators[authStore?.username]?.endpoints?.mainextension[0]?.id !==
+      voicemail?.caller_number
+    ) {
+      callPhoneNumber(voicemail?.caller_number)
+    }
   }
 
   const openDrawerOperator = (operator: any) => {
     if (operator) {
       openShowOperatorDrawer(operator)
     }
+  }
+
+  async function playSelectedVoicemail(voicemail_id: any) {
+    if (voicemail_id) {
+      playFileAudio(voicemail_id, 'voicemail')
+    }
+    setFirstRender(true)
   }
 
   return (
@@ -279,19 +307,35 @@ export const VoiceMailContent = () => {
               <li key={voicemail?.id}>
                 <div className='gap-4 py-4 px-0'>
                   <div className='flex justify-between gap-3'>
-                    <div className='flex shrink-0 gap-1 h-min items-center'>
+                    <div className='flex shrink-0 h-min items-center min-w-[48px]'>
+                      <div className='h-2 w-2 flex'>
+                        {voicemail.type === 'inbox' ? (
+                          <FontAwesomeIcon icon={faCircle} className='h-2 w-2 text-rose-700' />
+                        ) : (
+                          <span className='h-2 w-2'></span>
+                        )}
+                      </div>
                       <Avatar
                         src={voicemail?.caller_operator?.avatarBase64}
                         placeholderType='operator'
                         size='large'
                         bordered
-                        onClick={() => openDrawerOperator(voicemail?.caller_operator)}
-                        className='mx-auto cursor-pointer'
+                        onClick={
+                          voicemail?.caller_operator
+                            ? () => openDrawerOperator(voicemail?.caller_operator)
+                            : undefined
+                        }
+                        className={`mx-auto ${
+                          voicemail?.caller_operator ? 'cursor-pointer' : 'cursor-default'
+                        } ml-0.5`}
                         status={voicemail?.caller_operator?.mainPresence}
                       />
                     </div>
-                    <div className='flex flex-col gap-1.5 w-full'>
-                      <span className='font-poppins text-sm leading-4 font-medium text-gray-900 dark:text-gray-50'>
+                    <div className='flex flex-col gap-1.5 min-w-0 flex-1'>
+                      <span
+                        className='font-poppins text-sm leading-4 font-medium text-gray-900 dark:text-gray-50 truncate'
+                        title={voicemail?.caller_operator?.name || t('VoiceMail.Unknown')}
+                      >
                         {voicemail?.caller_operator?.name
                           ? voicemail.caller_operator.name
                           : t('VoiceMail.Unknown')}
@@ -303,13 +347,17 @@ export const VoiceMailContent = () => {
                           aria-hidden='true'
                         />
                         <span
-                          className='cursor-pointer hover:underline font-poppins text-sm leading-4 font-normal'
+                          className='cursor-pointer hover:underline font-poppins text-sm leading-4 font-normal truncate'
                           onClick={() => quickCall(voicemail)}
+                          title={voicemail?.caller_number}
                         >
                           {voicemail?.caller_number}
                         </span>
                       </div>
-                      <span className='font-poppins text-xs leading-4 font-normal text-gray-600 dark:text-gray-300'>
+                      <span
+                        className='font-poppins text-xs leading-4 font-normal text-gray-600 dark:text-gray-300 truncate'
+                        title={formatTimestamp(voicemail?.origtime)}
+                      >
                         {formatTimestamp(voicemail?.origtime)}
                       </span>
                       <div className='flex'>
@@ -325,16 +373,17 @@ export const VoiceMailContent = () => {
                         )}
                       </div>
                     </div>
-                    <div className='flex gap-2 items-start'>
+                    <div className='flex gap-2 items-start shrink-0 min-w-0'>
                       <Button
                         variant='ghost'
                         className='border border-gray-300 dark:border-gray-500 py-2 !px-2 h-9 w-9 gap-3'
+                        onClick={() => playSelectedVoicemail(voicemail?.id)}
                       >
                         <FontAwesomeIcon icon={faPlay} className='h-4 w-4' />
-                        <span className='sr-only'>{t('VoiceMail.Open voicemail menu')}</span>
+                        <span className='sr-only'>{t('VoiceMail.Play voicemail')}</span>
                       </Button>
                       <Dropdown items={getVoiceMailOptionsTemplate(voicemail)} position='left'>
-                        <Button variant='ghost' className='py-2 !px-2 h-9 w-9'>
+                        <Button variant='ghost' className='py-2 px-2 h-9 w-9'>
                           <FontAwesomeIcon icon={faEllipsisVertical} className='h-4 w-4' />
                           <span className='sr-only'>{t('VoiceMail.Open voicemail menu')}</span>
                         </Button>
