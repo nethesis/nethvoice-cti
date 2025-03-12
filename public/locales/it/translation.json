@@ -54,7 +54,8 @@
     "Copied to clipboard": "Copiato negli appunti",
     "Copy to clipboard": "Copia negli appunti",
     "Close": "Chiudi",
-    "Back": "Indietro"
+    "Back": "Indietro",
+    "Delete all": "Elimina tutto"
   },
   "Login": {
     "User": "Utente",
@@ -161,7 +162,16 @@
     "Open recording action modal": "Apri modale azioni registrazione",
     "Calls": "Chiamate",
     "Voicemail inbox": "Casella vocale",
-    "Recordings": "Registrazioni"
+    "Recordings": "Registrazioni",
+    "Filter messages": "Filtra messaggi",
+    "Go to Settings": "Vai alle impostazioni",
+    "Actions": "Azioni",
+    "Caller": "Chiamante",
+    "Summary": "Sommario",
+    "Delete all messages": "Elimina tutti i messaggi",
+    "voicemailDeletionAllMessage": "Tutti i messaggi verranno eliminati permanentemente.",
+    "Delete voicemail": "Elimina messaggio",
+    "voicemailDeletionMessage": "Il messaggio verrà eliminato permanentemente."
   },
   "Operators": {
     "Operators": "Operatori",

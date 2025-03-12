@@ -501,7 +501,7 @@ export const Calls: FC<CallsProps> = ({ className }): JSX.Element => {
 
   async function playSelectedAudioFile(callId: any) {
     if (callId) {
-      playFileAudio(callId, 'recordingFile')
+      playFileAudio(callId, 'call_recording')
     }
   }
 
@@ -603,11 +603,16 @@ export const Calls: FC<CallsProps> = ({ className }): JSX.Element => {
     <>
       <div>
         {profile?.macro_permissions?.cdr?.value ? (
-          <div>
+          <div>            
+            <Filter
+              updateFilterText={debouncedUpdateFilterText}
+              updateCallTypeFilter={updateCallTypeFilter}
+              updateSortFilter={updateSortFilter}
+              updateCallDirectionFilter={updateCallDirectionFilter}
+              updateDateBeginFilter={updateDateBeginFilter}
+              updateDateEndFilter={updateDateEndFilter}
+            />
             <div className='flex items-center justify-between mb-6'>
-              <h1 className='text-2xl font-semibold text-title dark:text-titleDark'>
-                {t('History.History')}
-              </h1>
               <div className='text-gray-900 dark:text-gray-100 flex items-center'>
                 <Button size='small' variant='white'>
                   <FontAwesomeIcon icon={faArrowUpRightFromSquare} className='mr-2 w-4 h-5' />
@@ -617,14 +622,6 @@ export const Calls: FC<CallsProps> = ({ className }): JSX.Element => {
                 </Button>
               </div>
             </div>
-            <Filter
-              updateFilterText={debouncedUpdateFilterText}
-              updateCallTypeFilter={updateCallTypeFilter}
-              updateSortFilter={updateSortFilter}
-              updateCallDirectionFilter={updateCallDirectionFilter}
-              updateDateBeginFilter={updateDateBeginFilter}
-              updateDateEndFilter={updateDateEndFilter}
-            />
             {historyError && (
               <InlineNotification type='error' title={historyError}></InlineNotification>
             )}
@@ -712,6 +709,7 @@ export const Calls: FC<CallsProps> = ({ className }): JSX.Element => {
                                             <div className='absolute -top-[0.03rem] left-6 right-0 h-px bg-gray-300 dark:bg-gray-600' />
                                           ) : null}
                                         </td>
+
                                         {/* Source */}
                                         <td
                                           className={`${
@@ -800,7 +798,6 @@ export const Calls: FC<CallsProps> = ({ className }): JSX.Element => {
                                         </td>
 
                                         {/* Recording */}
-
                                         <td className='px-3 py-4 relative'>
                                           {call?.recordingfile ? (
                                             <div className='flex space-x-1 items-center'>
@@ -810,7 +807,7 @@ export const Calls: FC<CallsProps> = ({ className }): JSX.Element => {
                                               >
                                                 <FontAwesomeIcon
                                                   icon={faPlay}
-                                                  className='h-4 w-4 mr-2 text-gray-900 dark:text-gray-100'
+                                                  className='h-4 w-4 mr-2 text-primary dark:text-gray-100'
                                                   aria-hidden='true'
                                                 />
                                                 {t('History.Play')}
@@ -822,7 +819,7 @@ export const Calls: FC<CallsProps> = ({ className }): JSX.Element => {
                                                 <Button variant='ghost'>
                                                   <FontAwesomeIcon
                                                     icon={faEllipsisVertical}
-                                                    className='h-4 w-4 text-gray-900 dark:text-gray-100'
+                                                    className='h-4 w-4 text-primary dark:text-gray-100'
                                                   />
                                                   <span className='sr-only'>
                                                     {t('History.Open recording action modal')}

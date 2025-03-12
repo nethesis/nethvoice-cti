@@ -68,7 +68,8 @@
     "Enter a phone number": "Enter a phone number",
     "Copied to clipboard": "Copied to clipboard",
     "Copy to clipboard": "Copy to clipboard",
-    "Back": "Back"
+    "Back": "Back",
+    "Delete all": "Delete all"
   },
   "Login": {
     "User": "Username",
@@ -181,7 +182,16 @@
     "Open recording action modal": "Open recording action modal",
     "Calls": "Calls",
     "Voicemail inbox": "Voicemail inbox",
-    "Recordings": "Recordings"
+    "Recordings": "Recordings",
+    "Filter messages": "Filter messages",
+    "Go to Settings": "Go to Settings",
+    "Actions": "Actions",
+    "Caller": "Caller",
+    "Summary": "Summary",
+    "Delete all messages": "Delete all messages",
+    "voicemailDeletionAllMessage": "All voicemail messages will be permanently deleted and cannot be recovered.",
+    "Delete voicemail": "Delete voicemail",
+    "voicemailDeletionMessage": "The voicemail message will be permanently deleted and cannot be recovered."
   },
   "Operators": {
     "Operators": "Operators",

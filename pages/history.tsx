@@ -6,7 +6,7 @@ import { useEffect, useState } from 'react'
 import { RootState } from '../store'
 import { useSelector } from 'react-redux'
 import { useTranslation } from 'react-i18next'
-import { savePreference } from '../lib/storage'
+import { savePreference, loadPreference } from '../lib/storage'
 import classNames from 'classnames'
 import { useRouter } from 'next/router'
 import { VoicemailInbox } from '../components/history/voicemail inbox/VoicemailInbox'
@@ -34,15 +34,19 @@ const History: NextPage = () => {
   const [firstRender, setFirstRender]: any = useState(true)
 
   useEffect(() => {
-    if (firstRender) {
-      setFirstRender(false)
+    if (!firstRender) {
       return
     }
-    let section = router.query.section as string
-    if (!section && currentSection) {
-      section = currentSection
+    setFirstRender(false)
+
+    // Get saved tab preference
+    const savedTab = loadPreference('historySelectedTab', auth.username)
+    
+    if (savedTab) {
+      changeSection(savedTab)
+    } else {
+      changeSection(tabs[0].name)
     }
-    changeSection(section)
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [firstRender])
 
@@ -62,7 +66,10 @@ const History: NextPage = () => {
 
   return (
     <>
-      <div className='mb-6 mt-6'>
+      <div className='mb-6 gap-8'>
+        <h1 className='text-2xl font-semibold text-title dark:text-titleDark'>
+          {t('History.History')}
+        </h1>
         {/* mobile tabs */}
         <div className='sm:hidden'>
           <label htmlFor='tabs' className='sr-only'>
