@@ -11,6 +11,7 @@ import {
   faPhone,
   faXmark,
   faArrowLeft,
+  IconDefinition,
 } from '@fortawesome/free-solid-svg-icons'
 import { formatDateLoc } from '../../lib/dateTime'
 import { useSelector } from 'react-redux'
@@ -198,7 +199,7 @@ export const LastCallsDrawerTable = forwardRef<HTMLButtonElement, LastCallsDrawe
                       ) : (
                         <>
                           <FontAwesomeIcon
-                            icon={faMissed}
+                            icon={faMissed as IconDefinition}
                             className='tooltip-switchboard-incoming-missed h-5 w-4 text-red-400'
                             aria-hidden='true'
                             data-tooltip-id='tooltip-switchboard-incoming-missed'
