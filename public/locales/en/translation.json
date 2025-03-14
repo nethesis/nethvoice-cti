@@ -182,7 +182,6 @@
     "Open recording action modal": "Open recording action modal",
     "Calls": "Calls",
     "Voicemail inbox": "Voicemail inbox",
-    "Recordings": "Recordings",
     "Filter messages": "Filter messages",
     "Go to Settings": "Go to Settings",
     "Actions": "Actions",
@@ -191,7 +190,11 @@
     "Delete all messages": "Delete all messages",
     "voicemailDeletionAllMessage": "All voicemail messages will be permanently deleted and cannot be recovered.",
     "Delete voicemail": "Delete voicemail",
-    "voicemailDeletionMessage": "The voicemail message will be permanently deleted and cannot be recovered."
+    "voicemailDeletionMessage": "The voicemail message will be permanently deleted and cannot be recovered.",
+    "voicemails": "voicemails",
+    "No matching voicemails": "No matching voicemails",
+    "No voicemails match your search criteria": "No voicemails match your search criteria",
+    "Voicemail filters": "Voicemail filters"
   },
   "Operators": {
     "Operators": "Operators",
@@ -629,7 +632,8 @@
     "Delete message": "Delete message",
     "Unknown": "Unknown",
     "Delete voicemail": "Delete voicemail message",
-    "voicemailDeletionMessage": "This message will be permanently deleted and cannot be recovered."
+    "voicemailDeletionMessage": "This message will be permanently deleted and cannot be recovered.",
+    "Play voicemail": "Play voicemail"
   },
   "NavBars": {
     "Speed dials": "Speed dials",

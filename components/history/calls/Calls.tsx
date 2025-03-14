@@ -31,14 +31,18 @@ import { useSelector } from 'react-redux'
 import { RootState } from '../../../store'
 import { faMissed } from '@nethesis/nethesis-solid-svg-icons'
 import { Tooltip } from 'react-tooltip'
-import { getApiVoiceEndpoint, getApiScheme, getApiEndpoint, playFileAudio } from '../../../lib/utils'
+import {
+  getApiVoiceEndpoint,
+  getApiScheme,
+  getApiEndpoint,
+  playFileAudio,
+} from '../../../lib/utils'
 import { debounce } from 'lodash'
 import { formatDateLoc } from '../../../lib/dateTime'
 
 export interface CallsProps extends ComponentProps<'div'> {}
 
 export const Calls: FC<CallsProps> = ({ className }): JSX.Element => {
-
   const { operators } = useSelector((state: RootState) => state.operators)
   const { profile } = useSelector((state: RootState) => state.user)
   const { name, mainextension } = useSelector((state: RootState) => state.user)
@@ -56,7 +60,7 @@ export const Calls: FC<CallsProps> = ({ className }): JSX.Element => {
   const [dateBegin, setDateBegin]: any = useState('')
   const [callDirection, setCallDirection]: any = useState('all')
   const [totalPages, setTotalPages] = useState(0)
-  
+
   const apiVoiceEnpoint = getApiVoiceEndpoint()
   const apiScheme = getApiScheme()
   const apiEndpoint = getApiEndpoint()
@@ -73,69 +77,64 @@ export const Calls: FC<CallsProps> = ({ className }): JSX.Element => {
 
   useEffect(() => {
     if (!dateBegin) {
-      return setDateBegin(dateFrom.replace(/-/g, ''))
-    } else {
-      setDateBegin(dateBegin.replace(/-/g, ''))
+      setDateBegin(dateFrom.replace(/-/g, ''))
     }
-  }, [dateBegin, dateFrom])
-
-  useEffect(() => {
     if (!dateEnd) {
-      return setDateEnd(dateTo.replace(/-/g, ''))
-    } else {
-      setDateEnd(dateEnd.replace(/-/g, ''))
+      setDateEnd(dateTo.replace(/-/g, ''))
     }
-  }, [dateTo, dateEnd])
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [])
 
   //Get the history of the user
-    useEffect(() => {
-      async function fetchHistory() {
-        if (
-          !isHistoryLoaded &&
-          dateBegin &&
-          !checkDateType.test(dateBegin) &&
-          dateEnd &&
-          !checkDateType.test(dateEnd) &&
-          !(callType === 'user' && callDirection === 'internal')
-        ) {
-          try {
-            setHistoryError('')
-            const res = await search(
-              callType,
-              username,
-              dateBegin,
-              dateEnd,
-              filterText,
-              sortBy,
-              callDirection,
-              pageNum,
-            )
-            setHistory(res)
-          } catch (e) {
-            setHistoryError('Cannot retrieve history')
-          }
-          setHistoryLoaded(true)
+  useEffect(() => {
+    async function fetchHistory() {
+      if (
+        !isHistoryLoaded &&
+        dateBegin &&
+        !checkDateType.test(dateBegin) &&
+        dateEnd &&
+        !checkDateType.test(dateEnd) &&
+        !(callType === 'user' && callDirection === 'internal')
+      ) {
+        try {
+          setHistoryError('')
+          const res = await search(
+            callType,
+            username,
+            dateBegin,
+            dateEnd,
+            filterText,
+            sortBy,
+            callDirection,
+            pageNum,
+          )
+          setHistory(res)
+        } catch (e) {
+          setHistoryError('Cannot retrieve history')
         }
+        setHistoryLoaded(true)
       }
-      fetchHistory()
-      // eslint-disable-next-line react-hooks/exhaustive-deps
-    }, [
-      isHistoryLoaded,
-      history,
-      callType,
-      username,
-      dateBegin,
-      dateEnd,
-      filterText,
-      pageNum,
-      sortBy,
-      callDirection,
-    ])
+    }
+    fetchHistory()
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [
+    isHistoryLoaded,
+    callType,
+    username,
+    dateBegin,
+    dateEnd,
+    filterText,
+    pageNum,
+    sortBy,
+    callDirection,
+  ])
 
   //Calculate the total pages of the history
   useEffect(() => {
-    setTotalPages(Math.ceil(history.count / PAGE_SIZE))
-  }, [history])
+    if (history?.count) {
+      setTotalPages(Math.ceil(history.count / PAGE_SIZE))
+    }
+  }, [history?.count])
 
   //Check the icon for the status column
   function checkIconUser(call: any) {
@@ -349,11 +348,15 @@ export const Calls: FC<CallsProps> = ({ className }): JSX.Element => {
   // Dropdown actions for the recording file
   const getRecordingActions = (callId: string) => (
     <>
-      <Dropdown.Item icon={faDownload} onClick={() => downloadRecordingFileAudio(callId)}>
-        {t('Common.Download')}
-      </Dropdown.Item>
-      <Dropdown.Item icon={faTrash} onClick={() => deleteRecordingAudioFile(callId)}>
-        {t('Common.Delete')}
+      <div className='border-b border-gray-200 dark:border-gray-700'>
+        <Dropdown.Item icon={faDownload} onClick={() => downloadRecordingFileAudio(callId)}>
+          <span className='text-dropdownText dark:text-dropdownTextDark'>
+            {t('Common.Download')}
+          </span>
+        </Dropdown.Item>
+      </div>
+      <Dropdown.Item icon={faTrash} isRed onClick={() => deleteRecordingAudioFile(callId)}>
+        <span>{t('Common.Delete')}</span>
       </Dropdown.Item>
     </>
   )
@@ -603,7 +606,7 @@ export const Calls: FC<CallsProps> = ({ className }): JSX.Element => {
     <>
       <div>
         {profile?.macro_permissions?.cdr?.value ? (
-          <div>            
+          <div>
             <Filter
               updateFilterText={debouncedUpdateFilterText}
               updateCallTypeFilter={updateCallTypeFilter}

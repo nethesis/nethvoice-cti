@@ -16,8 +16,6 @@ import {
   faTrash,
   faTriangleExclamation,
   faArrowRight,
-  faPen,
-  faChevronDown,
   faCircle,
 } from '@fortawesome/free-solid-svg-icons'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
@@ -36,6 +34,7 @@ import { deleteVoicemail, downloadVoicemail, getAllVoicemails } from '../../../s
 import { PAGE_SIZE as DEFAULT_PAGE_SIZE } from '../../../lib/history'
 import { openShowOperatorDrawer } from '../../../lib/operators'
 import Link from 'next/link'
+import { useEventListener } from '../../../lib/hooks/useEventListener'
 
 export interface VoicemailInboxProps extends ComponentProps<'div'> {}
 
@@ -58,13 +57,20 @@ export const VoicemailInbox: FC<VoicemailInboxProps> = ({ className }): JSX.Elem
   const [isDeletingAll, setIsDeletingAll] = useState<boolean>(false)
   const [pageSize, setPageSize] = useState(DEFAULT_PAGE_SIZE)
 
-  // Add this computed value to get current page items
-  const currentPageVoicemails = voicemails.slice((pageNum - 1) * pageSize, pageNum * pageSize)
+  // Add search filter state
+  const [searchTerm, setSearchTerm] = useState<string>('')
+  const [filteredVoicemails, setFilteredVoicemails] = useState<any[]>([])
 
-  //Calculate the total pages of the history
-  useEffect(() => {
-    setTotalPages(Math.ceil(voicemails?.length / pageSize))
-  }, [voicemails, pageSize])
+  // Add this computed value to get current page items from filtered voicemails instead
+  const currentPageVoicemails = filteredVoicemails.slice(
+    (pageNum - 1) * pageSize,
+    pageNum * pageSize,
+  )
+
+  // Listen for audio player closed event
+  useEventListener('phone-island-audio-player-closed', () => {
+    setFirstRender(true)
+  })
 
   useEffect(() => {
     if (!isEmpty(operatorsStore) && !operatorsStore.isOperatorsLoaded) {
@@ -90,7 +96,7 @@ export const VoicemailInbox: FC<VoicemailInboxProps> = ({ className }): JSX.Elem
           const callerIdMatch = (voicemail as VoiceMailType).callerid?.match(/<([^>]+)>/)
           const callerId = callerIdMatch ? callerIdMatch[1] : ''
 
-          const operator: any = Object.values(operatorsStore.operators).find((operator: any) =>
+          let operator: any = Object.values(operatorsStore.operators).find((operator: any) =>
             operator.endpoints?.mainextension?.some((vm: { id: string }) => vm.id === callerId),
           )
 
@@ -99,17 +105,18 @@ export const VoicemailInbox: FC<VoicemailInboxProps> = ({ className }): JSX.Elem
           } else {
             voicemail.caller_number = callerId
           }
+
+          if (operator == undefined) {
+            operator = { name: t('VoiceMail.Unknown') }
+          }
+
           voicemail.caller_operator = operator
         })
 
         if (inboxVoicemails) {
-          // Sort voicemails: first by type ('inbox' first, then 'old'), then by date (newest first)
+          // Sort voicemails by date (newest first) as default
           const sortedVoicemails = inboxVoicemails.sort((a, b) => {
-            // Sort by type first (inbox before old)
-            if (a.type !== b.type) {
-              return a.type === 'inbox' ? -1 : 1
-            }
-            // Then sort by date (newest first)
+            // Default sort: newest first (descending)
             return b.origtime - a.origtime
           })
 
@@ -125,28 +132,58 @@ export const VoicemailInbox: FC<VoicemailInboxProps> = ({ className }): JSX.Elem
     fetchVoicemails()
   }, [firstRender, operatorsStore])
 
+  // Filter voicemails based on search term
+  useEffect(() => {
+    if (!voicemails || !voicemails?.length) {
+      setFilteredVoicemails([])
+      return
+    }
+
+    if (!searchTerm) {
+      setFilteredVoicemails(voicemails)
+      return
+    }
+
+    const searchTermLower = searchTerm.toLowerCase()
+
+    const filtered = voicemails.filter((voicemail) => {
+      // Search in caller number
+      const numberMatch =
+        voicemail.caller_number && voicemail.caller_number.toLowerCase().includes(searchTermLower)
+
+      // Search in caller name (if operator exists)
+      const nameMatch =
+        voicemail.caller_operator &&
+        voicemail.caller_operator.name &&
+        voicemail.caller_operator.name.toLowerCase().includes(searchTermLower)
+
+      return numberMatch || nameMatch
+    })
+
+    setFilteredVoicemails(filtered)
+    // Reset to first page when filtering
+    setPageNum(1)
+  }, [searchTerm, voicemails])
+
+  // Calculate the total pages of the history based on filtered voicemails
+  useEffect(() => {
+    setTotalPages(Math.ceil(filteredVoicemails?.length / pageSize))
+  }, [filteredVoicemails, pageSize])
+
   const updateSortFilter = (sort: string) => {
-    console.log(sort)
+    // Apply sorting to voicemails
+    if (voicemails && voicemails.length) {
+      const sortedVoicemails = [...voicemails].sort((a, b) => {
+        // Sort by date
+        return sort === 'asc' ? a.origtime - b.origtime : b.origtime - a.origtime
+      })
+      setVoicemails(sortedVoicemails)
+    }
   }
 
-  const updateCallTypeFilter = (callType: string) => {
-    console.log(callType)
-  }
-
-  const updateCallDirectionFilter = (callDirection: string) => {
-    console.log(callDirection)
-  }
-
+  // Update the search filter handler
   const debouncedUpdateFilterText = (text: string) => {
-    console.log(text)
-  }
-
-  const updateDateBeginFilter = (dateBegin: string) => {
-    console.log(dateBegin)
-  }
-
-  const updateDateEndFilter = (dateEnd: string) => {
-    console.log(dateEnd)
+    setSearchTerm(text)
   }
 
   function goToPreviousPage() {
@@ -184,7 +221,7 @@ export const VoicemailInbox: FC<VoicemailInboxProps> = ({ className }): JSX.Elem
   }
 
   const openDrawerOperator = (operator: any) => {
-    if (operator) {
+    if (operator && operator.name !== t('VoiceMail.Unknown')) {
       openShowOperatorDrawer(operator)
     }
   }
@@ -261,14 +298,6 @@ export const VoicemailInbox: FC<VoicemailInboxProps> = ({ className }): JSX.Elem
     }
   }
 
-  // The dropdown items for every speed dial element
-  const getActionsMenu = () => (
-    <>
-      <Dropdown.Item icon={faPen}>{t('Common.Edit')}</Dropdown.Item>
-      <Dropdown.Item icon={faTrash}>{t('Common.Delete')}</Dropdown.Item>
-    </>
-  )
-
   // Handle page size change
   const handlePageSizeChange = (newSize: number) => {
     setPageSize(newSize)
@@ -280,7 +309,6 @@ export const VoicemailInbox: FC<VoicemailInboxProps> = ({ className }): JSX.Elem
     if (voicemail_id) {
       playFileAudio(voicemail_id, 'voicemail')
     }
-    setFirstRender(true)
   }
 
   return (
@@ -371,18 +399,14 @@ export const VoicemailInbox: FC<VoicemailInboxProps> = ({ className }): JSX.Elem
           <div className='flex items-center justify-between mb-8'>
             <Filter
               updateFilterText={debouncedUpdateFilterText}
-              updateCallTypeFilter={updateCallTypeFilter}
               updateSortFilter={updateSortFilter}
-              updateCallDirectionFilter={updateCallDirectionFilter}
-              updateDateBeginFilter={updateDateBeginFilter}
-              updateDateEndFilter={updateDateEndFilter}
             />
             <div className='flex gap-4'>
               <Button
                 variant='ghost'
                 className='gap-2'
                 onClick={() => setShowDeleteAllModal(true)}
-                disabled={!voicemails || voicemails.length === 0}
+                disabled={!filteredVoicemails || filteredVoicemails.length === 0}
               >
                 <FontAwesomeIcon icon={faTrash} className='h-4 w-4' />
                 {t('History.Delete all messages')}
@@ -402,13 +426,19 @@ export const VoicemailInbox: FC<VoicemailInboxProps> = ({ className }): JSX.Elem
             <div className='mx-auto'>
               <div className='flex flex-col'>
                 <div className='-my-2 -mx-4 overflow-x-auto sm:-mx-6 lg:-mx-8'>
-                  <div className='inline-block min-w-full py-2 align-middle px-2 md:px-6 lg:px-8'>
+                  <div className='inline-block min-w-full align-middle px-2 pb-2 md:px-6 lg:px-8'>
                     <div className='overflow-hidden shadow ring-1 md:rounded-lg ring-opacity-5 dark:ring-opacity-5 ring-gray-900 dark:ring-gray-100 border-[1px] border-solid rounded-xl dark:border-gray-600'>
-                      {/* empty state */}
-                      {isVoicemailLoaded && voicemails?.length === 0 && (
+                      {/* empty state - show when filtered results are empty too */}
+                      {isVoicemailLoaded && filteredVoicemails?.length === 0 && (
                         <EmptyState
-                          title={t('History.No calls')}
-                          description={t('History.There are no calls in your history') || ''}
+                          title={
+                            searchTerm ? t('History.No matching voicemails') : t('History.No calls')
+                          }
+                          description={
+                            searchTerm
+                              ? t('History.No voicemails match your search criteria') || ''
+                              : t('History.There are no calls in your history') || ''
+                          }
                           icon={
                             <FontAwesomeIcon
                               icon={faPhone}
@@ -419,11 +449,11 @@ export const VoicemailInbox: FC<VoicemailInboxProps> = ({ className }): JSX.Elem
                         ></EmptyState>
                       )}
                       {/* history table */}
-                      {isVoicemailLoaded && voicemails?.length !== 0 && (
-                        <div className='flex flex-col'>
-                          <div className='overflow-y-auto scrollbar-thin scrollbar-thumb-gray-400 dark:scrollbar-thumb-gray-400 scrollbar-thumb-rounded-full scrollbar-thumb-opacity-50 scrollbar-track-gray-200 dark:scrollbar-track-gray-900 scrollbar-track-rounded-full scrollbar-track-opacity-25'>
-                            <table className='min-w-full'>
-                              <thead className='bg-gray-100 sticky top-0 z-10'>
+                      {isVoicemailLoaded && filteredVoicemails?.length !== 0 && (
+                        <div className='overflow-y-auto scrollbar-thin scrollbar-thumb-gray-400 dark:scrollbar-thumb-gray-400 scrollbar-thumb-rounded-full scrollbar-thumb-opacity-50 scrollbar-track-gray-200 dark:scrollbar-track-gray-900 scrollbar-track-rounded-full scrollbar-track-opacity-25'>
+                          <div className='max-h-[36rem]'>
+                            <table className='min-w-full divide-y divide-gray-300 dark:divide-gray-700'>
+                              <thead className='bg-gray-100 dark:bg-gray-800 sticky top-0 z-10'>
                                 <tr>
                                   <th
                                     scope='col'
@@ -485,14 +515,21 @@ export const VoicemailInbox: FC<VoicemailInboxProps> = ({ className }): JSX.Elem
                                             size='large'
                                             bordered
                                             onClick={() =>
+                                              voicemail?.caller_operator?.name !==
+                                                t('VoiceMail.Unknown') &&
                                               openDrawerOperator(voicemail?.caller_operator)
                                             }
-                                            className='mx-auto cursor-pointer mr-2 ml-0.5'
+                                            className={`mx-auto mr-2 ml-0.5 ${
+                                              voicemail?.caller_operator?.name !==
+                                              t('VoiceMail.Unknown')
+                                                ? 'cursor-pointer'
+                                                : 'cursor-default'
+                                            }`}
                                             status={voicemail?.caller_operator?.mainPresence}
                                           />
                                           <div className='flex flex-col gap-1.5 w-full'>
                                             <span className='font-poppins text-sm leading-4 font-medium text-gray-700 dark:text-gray-50'>
-                                              {voicemail?.caller_operator?.name
+                                              {voicemail?.caller_operator?.name !== 'unknown'
                                                 ? voicemail.caller_operator.name
                                                 : t('VoiceMail.Unknown')}
                                             </span>
@@ -586,83 +623,6 @@ export const VoicemailInbox: FC<VoicemailInboxProps> = ({ className }): JSX.Elem
                               </tbody>
                             </table>
                           </div>
-                          {totalPages > 0 && (
-                            <div className='border-t border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-950'>
-                              <nav
-                                className='flex items-center justify-between px-6 py-3'
-                                aria-label='Pagination'
-                              >
-                                <div className='hidden sm:flex items-center gap-4'>
-                                  <p className='text-sm text-gray-900 dark:text-gray-200'>
-                                    <span className='font-medium'>
-                                      {voicemails.length === 0 ? 0 : pageSize * (pageNum - 1) + 1}
-                                    </span>{' '}
-                                    -&nbsp;
-                                    <span className='font-medium'>
-                                      {Math.min(pageSize * pageNum, voicemails.length)}
-                                    </span>{' '}
-                                    {t('Common.of')}{' '}
-                                    <span className='font-medium'>{voicemails.length}</span>
-                                  </p>
-
-                                  <div className='relative inline-block z-20'>
-                                    <Dropdown
-                                      position='top'
-                                      className='z-30'
-                                      items={
-                                        <>
-                                          {[5, 10, 25, 50, 100].map((size) => (
-                                            <Dropdown.Item
-                                              key={`page-size-${size}`}
-                                              onClick={() => handlePageSizeChange(size)}
-                                            >
-                                              {size}
-                                            </Dropdown.Item>
-                                          ))}
-                                        </>
-                                      }
-                                    >
-                                      <Button
-                                        variant='white'
-                                        className='text-sm flex items-center gap-2'
-                                      >
-                                        {pageSize}
-                                        <FontAwesomeIcon icon={faChevronDown} className='h-3 w-3' />
-                                      </Button>
-                                    </Dropdown>
-                                  </div>
-                                </div>
-                                <div className='flex flex-1 justify-between sm:justify-end'>
-                                  <Button
-                                    type='button'
-                                    variant='white'
-                                    disabled={isPreviousPageButtonDisabled()}
-                                    onClick={() => goToPreviousPage()}
-                                    className='flex items-center'
-                                  >
-                                    <FontAwesomeIcon
-                                      icon={faChevronLeft}
-                                      className='mr-2 h-4 w-4'
-                                    />
-                                    <span>{t('Common.Previous page')}</span>
-                                  </Button>
-                                  <Button
-                                    type='button'
-                                    variant='white'
-                                    className='ml-3 flex items-center'
-                                    disabled={isNextPageButtonDisabled()}
-                                    onClick={() => goToNextPage()}
-                                  >
-                                    <span>{t('Common.Next page')}</span>
-                                    <FontAwesomeIcon
-                                      icon={faChevronRight}
-                                      className='ml-2 h-4 w-4'
-                                    />
-                                  </Button>
-                                </div>
-                              </nav>
-                            </div>
-                          )}
                         </div>
                       )}
                     </div>
@@ -699,6 +659,50 @@ export const VoicemailInbox: FC<VoicemailInboxProps> = ({ className }): JSX.Elem
                 ))}
               </tbody>
             </table>
+          )}
+
+          {/* pagination */}
+          {totalPages > 1 && (
+            <nav
+              className='flex items-center justify-between border-t px-0 py-4 border-gray-100 bg-body dark:bg-bodyDark dark:border-gray-800 '
+              aria-label='Pagination'
+            >
+              <div className='hidden sm:block'>
+                <p className='text-sm text-gray-700 dark:text-gray-200'>
+                  {t('Common.Showing')}{' '}
+                  <span className='font-medium'>{pageSize * (pageNum - 1) + 1}</span> -&nbsp;
+                  <span className='font-medium'>
+                    {pageSize * (pageNum - 1) + pageSize < filteredVoicemails?.length
+                      ? pageSize * (pageNum - 1) + pageSize
+                      : filteredVoicemails?.length}
+                  </span>{' '}
+                  {t('Common.of')} <span className='font-medium'>{filteredVoicemails?.length}</span>{' '}
+                  {t('History.voicemails')}
+                </p>
+              </div>
+              <div className='flex flex-1 justify-between sm:justify-end'>
+                <Button
+                  type='button'
+                  variant='white'
+                  disabled={isPreviousPageButtonDisabled()}
+                  onClick={() => goToPreviousPage()}
+                  className='flex items-center'
+                >
+                  <FontAwesomeIcon icon={faChevronLeft} className='mr-2 h-4 w-4' />
+                  <span>{t('Common.Previous page')}</span>
+                </Button>
+                <Button
+                  type='button'
+                  variant='white'
+                  className='ml-3 flex items-center'
+                  disabled={isNextPageButtonDisabled()}
+                  onClick={() => goToNextPage()}
+                >
+                  <span>{t('Common.Next page')}</span>
+                  <FontAwesomeIcon icon={faChevronRight} className='ml-2 h-4 w-4' />
+                </Button>
+              </div>
+            </nav>
           )}
         </div>
       ) : (

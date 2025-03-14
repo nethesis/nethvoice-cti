@@ -32,6 +32,7 @@ import { VoiceMailType } from '../../../services/types'
 import { forEach, isEmpty, set } from 'lodash'
 import { openShowOperatorDrawer } from '../../../lib/operators'
 import Link from 'next/link'
+import { useEventListener } from '../../../lib/hooks/useEventListener'
 
 export const VoiceMailContent = () => {
   const operatorsStore = useSelector((state: RootState) => state.operators)
@@ -45,6 +46,11 @@ export const VoiceMailContent = () => {
   const [showDeleteModal, setShowDeleteModal] = useState<boolean>(false)
   const [voicemailToDelete, setVoicemailToDelete] = useState<any>(null)
   const cancelDeleteButtonRef = useRef() as MutableRefObject<HTMLButtonElement>
+
+  // Listen for audio player closed event
+  useEventListener('phone-island-audio-player-closed', () => {
+    setFirstRender(true)
+  })
 
   useEffect(() => {
     if (!isEmpty(operatorsStore) && !operatorsStore.isOperatorsLoaded) {
@@ -70,7 +76,7 @@ export const VoiceMailContent = () => {
           const callerIdMatch = (voicemail as VoiceMailType).callerid?.match(/<([^>]+)>/)
           const callerId = callerIdMatch ? callerIdMatch[1] : ''
 
-          const operator: any = Object.values(operatorsStore.operators).find((operator: any) =>
+          let operator: any = Object.values(operatorsStore.operators).find((operator: any) =>
             operator.endpoints?.mainextension?.some((vm: { id: string }) => vm.id === callerId),
           )
 
@@ -79,17 +85,18 @@ export const VoiceMailContent = () => {
           } else {
             voicemail.caller_number = callerId
           }
+
+          if (operator == undefined) {
+            operator = { name: t('VoiceMail.Unknown') }
+          }
+
           voicemail.caller_operator = operator
         })
 
         if (inboxVoicemails) {
-          // Sort voicemails: first by type ('inbox' first, then 'old'), then by date (newest first)
+          // Sort voicemails by date (newest first) as default
           const sortedVoicemails = inboxVoicemails.sort((a, b) => {
-            // Sort by type first (inbox before old)
-            if (a.type !== b.type) {
-              return a.type === 'inbox' ? -1 : 1
-            }
-            // Then sort by date (newest first)
+            // Default sort: newest first (descending)
             return b.origtime - a.origtime
           })
 
@@ -105,6 +112,18 @@ export const VoiceMailContent = () => {
 
     fetchVoicemails()
   }, [operatorsStore, firstRender])
+
+  useEffect(() => {
+    // Apply sorting to voicemails
+    if (voicemails && voicemails.length) {
+      const sortedVoicemails = [...voicemails].sort((a, b) => {
+        // Sort by date
+        return sortType === 'oldest' ? a.origtime - b.origtime : b.origtime - a.origtime
+      })
+      setVoicemails(sortedVoicemails)
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [sortType])
 
   const showDeleteVoicemailModal = (voicemail: any) => {
     setVoicemailToDelete(voicemail)
@@ -217,11 +236,10 @@ export const VoiceMailContent = () => {
     }
   }
 
-  async function playSelectedVoicemail(voicemail_id: any) {
-    if (voicemail_id) {
-      playFileAudio(voicemail_id, 'voicemail')
+  async function playSelectedVoicemail(voicemail: any) {
+    if (voicemail) {
+      playFileAudio(voicemail.id, 'voicemail')
     }
-    setFirstRender(true)
   }
 
   return (
@@ -377,7 +395,7 @@ export const VoiceMailContent = () => {
                       <Button
                         variant='ghost'
                         className='border border-gray-300 dark:border-gray-500 py-2 !px-2 h-9 w-9 gap-3'
-                        onClick={() => playSelectedVoicemail(voicemail?.id)}
+                        onClick={() => playSelectedVoicemail(voicemail)}
                       >
                         <FontAwesomeIcon icon={faPlay} className='h-4 w-4' />
                         <span className='sr-only'>{t('VoiceMail.Play voicemail')}</span>

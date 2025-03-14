@@ -6,6 +6,7 @@ import axios from 'axios'
 import { store } from '../store'
 import { eventDispatch } from './hooks/eventDispatch'
 import { parsePhoneNumberFromString } from 'libphonenumber-js'
+import { normalize } from 'path'
 
 export interface ClearProps {
   key: string
@@ -247,14 +248,6 @@ export function formatFileSize(sizeInBytes: any) {
   return `${sizeFormatted} ${unit}`
 }
 
-/**
- * Checks if the input string contains only valid characters for a phone number.
- */
-function validatePhoneNumber(phoneNumber: any) {
-  const regex = /^[0-9*#+]*$/
-  return regex.test(phoneNumber)
-}
-
 // The event to show the audio player view and play an audio file.
 export function playFileAudio(audioFileId: any, typeFile: string) {
   let objectPlayAudioFile = {
@@ -465,12 +458,12 @@ export const voiceRequest = async (methodVoice: string, url: any, object?: any) 
 export const formatPhoneNumber = (rawNumber: string) => {
   if (!rawNumber) return null;
 
-  // Convert "00" to "+" if necessary
-  const normalizedNumber = rawNumber.startsWith('00')
-    ? `+${rawNumber.slice(2)}`
-    : rawNumber;
+  if (rawNumber.startsWith('00')) {
+    // Convert "00" to "+" if necessary
+    rawNumber = rawNumber.startsWith('00')
+      ? `+${rawNumber.slice(2)}`
+      : rawNumber;
+  }
 
-  const phoneNumber = parsePhoneNumberFromString(normalizedNumber);
-
-  return phoneNumber ? phoneNumber?.number : null;
+  return rawNumber;
 };

@@ -162,7 +162,6 @@
     "Open recording action modal": "Apri modale azioni registrazione",
     "Calls": "Chiamate",
     "Voicemail inbox": "Casella vocale",
-    "Recordings": "Registrazioni",
     "Filter messages": "Filtra messaggi",
     "Go to Settings": "Vai alle impostazioni",
     "Actions": "Azioni",
@@ -171,7 +170,11 @@
     "Delete all messages": "Elimina tutti i messaggi",
     "voicemailDeletionAllMessage": "Tutti i messaggi verranno eliminati permanentemente.",
     "Delete voicemail": "Elimina messaggio",
-    "voicemailDeletionMessage": "Il messaggio verrà eliminato permanentemente."
+    "voicemailDeletionMessage": "Il messaggio verrà eliminato permanentemente.",
+    "voicemails": "messaggi vocali",
+    "No matching voicemails": "Nessun messaggio vocale corrispondente",
+    "No voicemails match your search criteria": "Nessun messaggio vocale corrispondente ai tuoi criteri di ricerca",
+    "Voicemail filters": "Filtri messaggi vocali"
   },
   "Operators": {
     "Operators": "Operatori",
@@ -493,7 +496,11 @@
     "Call back": "Richiama",
     "Open details": "Apri dettagli",
     "Download": "Scarica",
-    "Delete message": "Elimina messaggio"
+    "Delete message": "Elimina messaggio",
+    "Unknown": "Sconosciuto",
+    "Delete voicemail": "Elimina messaggio",
+    "voicemailDeletionMessage": "Il messaggio verrà eliminato permanentemente.",
+    "Play voicemail": "Riproduci messaggio"
   },
   "NavBars": {
     "Speed dials": "Chiamate rapide",
