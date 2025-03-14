@@ -19,6 +19,7 @@ import { faStar as faStarLight } from '@nethesis/nethesis-light-svg-icons'
 import { t } from 'i18next'
 import { isEmpty } from 'lodash'
 import { Tooltip } from 'react-tooltip'
+import { IconProp } from '@fortawesome/fontawesome-svg-core'
 
 export interface OperatorSummaryProps extends ComponentPropsWithRef<'div'> {
   operator: any
@@ -119,7 +120,7 @@ export const OperatorSummary = forwardRef<HTMLButtonElement, OperatorSummaryProp
                       on={isFavorite}
                       size='large'
                       onIcon={<FontAwesomeIcon icon={faStarSolid} />}
-                      offIcon={<FontAwesomeIcon icon={faStarLight} />}
+                      offIcon={<FontAwesomeIcon icon={faStarLight as IconProp} />}
                       changed={() => toggleFavorite()}
                       className={'mr-5'}
                       data-tooltip-id={'tooltip-toggle-favorite'}

@@ -47,6 +47,7 @@ import { faOfficePhone } from '@nethesis/nethesis-solid-svg-icons'
 import { isEmpty } from 'lodash'
 import { setMainDevice } from '../../lib/devices'
 import { eventDispatch } from '../../lib/hooks/eventDispatch'
+import { IconProp } from '@fortawesome/fontawesome-svg-core'
 
 interface TopBarProps {
   openMobileCb: () => void
@@ -395,7 +396,7 @@ export const TopBar: FC<TopBarProps> = ({ openMobileCb }) => {
                   mainDeviceType === 'webrtc'
                     ? faHeadset
                     : mainDeviceType === 'physical'
-                    ? faOfficePhone
+                    ? (faOfficePhone as IconProp)
                     : mainDeviceType === 'nethlink'
                     ? faDesktop
                     : faHeadset
@@ -477,7 +478,7 @@ export const TopBar: FC<TopBarProps> = ({ openMobileCb }) => {
                                   device?.type === 'webrtc'
                                     ? faHeadset
                                     : device?.type === 'physical'
-                                    ? faOfficePhone
+                                    ? (faOfficePhone as IconProp)
                                     : faDesktop
                                 }
                                 className='ml-auto h-4 w-4 flex justify-center text-dropdownText dark:text-dropdownTextDark'

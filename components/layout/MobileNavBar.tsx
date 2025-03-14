@@ -19,7 +19,6 @@ import Image from 'next/image'
 import Link from 'next/link'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { faXmark } from '@fortawesome/free-solid-svg-icons'
-import { SideDrawerCloseIcon } from '../common'
 import Logo from '../../public/navbar_logo.svg'
 
 interface MobileNavBarProps {
@@ -106,7 +105,7 @@ export const MobileNavBar: FC<MobileNavBarProps> = ({ closeMobileMenu, show, ite
                             aria-current={item.current ? 'page' : undefined}
                           >
                             <FontAwesomeIcon
-                              icon={item.current ? item.iconActive : item.icon}
+                              icon={item.current ? (item.iconActive as any) : (item.icon as any)}
                               className={classNames(
                                 item.current
                                   ? 'text-white'
