@@ -311,6 +311,19 @@ export const VoicemailInbox: FC<VoicemailInboxProps> = ({ className }): JSX.Elem
     }
   }
 
+  const getDropdownPosition = (voicemail: any, index: number) => {
+    // Get total count of items on current page
+    const totalItemsOnPage = currentPageVoicemails.length;
+    
+    if (totalItemsOnPage === 1) {
+      return 'oneVoicemail';
+    } else if (totalItemsOnPage > 1 && totalItemsOnPage - index <= 1) {
+      return 'topVoicemail';
+    } else {
+      return 'leftVoicemail';
+    }
+  }
+
   return (
     <>
       {/* Delete all voicemails modal */}
@@ -488,7 +501,7 @@ export const VoicemailInbox: FC<VoicemailInboxProps> = ({ className }): JSX.Elem
                               <tbody>
                                 {/* Not empty state  */}
                                 {isVoicemailLoaded &&
-                                  currentPageVoicemails.map((voicemail) => (
+                                  currentPageVoicemails.map((voicemail, index) => (
                                     <tr key={voicemail?.id}>
                                       {/* Caller */}
                                       <td
@@ -597,19 +610,19 @@ export const VoicemailInbox: FC<VoicemailInboxProps> = ({ className }): JSX.Elem
                                           >
                                             <FontAwesomeIcon
                                               icon={faPlay}
-                                              className='h-4 w-4 mr-2 text-primary dark:text-gray-100'
+                                              className='h-4 w-4 mr-2'
                                               aria-hidden='true'
                                             />
                                             {t('History.Play')}
                                           </Button>
                                           <Dropdown
                                             items={getVoiceMailOptionsTemplate(voicemail)}
-                                            position='left'
+                                            position={getDropdownPosition(voicemail, index)}
                                           >
                                             <Button variant='ghost'>
                                               <FontAwesomeIcon
                                                 icon={faEllipsisVertical}
-                                                className='h-4 w-4 text-primary dark:text-gray-100'
+                                                className='h-4 w-4'
                                               />
                                               <span className='sr-only'>
                                                 {t('History.Open recording action modal')}
