@@ -50,7 +50,6 @@ const History: NextPage = () => {
   }, [firstRender])
 
   const changeSection = (sectionName: string) => {
-    console.log('sectionName', sectionName)
     const currentItems = items.map((route) => {
       if (sectionName === route.name) {
         route.current = true
