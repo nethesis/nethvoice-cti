@@ -76,7 +76,7 @@ export const TextInput = forwardRef<HTMLInputElement, TextInputProps>(
             <div className={classNames(theme.icon.base, theme.icon.left)}>
               <FontAwesomeIcon
                 icon={faSearch}
-                className='text-gray-900 h-4 w-4'
+                className='text-gray-900 h-4 w-4 dark:text-gray-200'
               />
             </div>
           )}
@@ -111,7 +111,7 @@ export const TextInput = forwardRef<HTMLInputElement, TextInputProps>(
               !error ? theme.colors.gray : theme.colors.error,
               (Icon && !trailingIcon) || showSearchIcon ? 'pl-10' : '',
               error ? theme.placeholder.error : theme.placeholder.base,
-              'text-gray-900'
+              'text-gray-900',
             )}
             {...cleanProps}
             ref={ref}

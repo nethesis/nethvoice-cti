@@ -23,14 +23,13 @@ const History: NextPage = () => {
   const router = useRouter()
 
   const tabs: tabsType[] = [
-    { name: t('History.Calls'), href: '#', current: false },
-    { name: t('History.Voicemail inbox'), href: '#', current: false },
-    { name: t('History.Recordings'), href: '#', current: false }
+    { name: 'Calls', href: '#', current: false },
+    { name: 'Voicemail inbox', href: '#', current: false },
   ]
 
   const [items, setItems] = useState<tabsType[]>(tabs)
   const [currentSection, setCurrentSection] = useState<string>(tabs[0].name)
-  const auth = useSelector((state: RootState) => state.authentication)  
+  const auth = useSelector((state: RootState) => state.authentication)
   const [firstRender, setFirstRender]: any = useState(true)
 
   useEffect(() => {
@@ -41,7 +40,7 @@ const History: NextPage = () => {
 
     // Get saved tab preference
     const savedTab = loadPreference('historySelectedTab', auth.username)
-    
+
     if (savedTab) {
       changeSection(savedTab)
     } else {
@@ -51,6 +50,7 @@ const History: NextPage = () => {
   }, [firstRender])
 
   const changeSection = (sectionName: string) => {
+    console.log('sectionName', sectionName)
     const currentItems = items.map((route) => {
       if (sectionName === route.name) {
         route.current = true
@@ -111,9 +111,9 @@ const History: NextPage = () => {
         </div>
       </div>
       <div>
-        {currentSection === `${t('History.Calls')}` ? (
+        {currentSection === 'Calls' ? (
           <Calls />
-        ) : currentSection === `${t('History.Voicemail inbox')}` ? (
+        ) : currentSection === 'Voicemail inbox' ? (
           <VoicemailInbox />
         ) : null}
       </div>

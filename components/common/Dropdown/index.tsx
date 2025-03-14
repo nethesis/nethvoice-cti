@@ -36,7 +36,7 @@ const DropdownComponent: FC<DropdownProps> = ({
             theme.items.base,
             divider && theme.items.divider,
             position ? theme.items.position[position] : theme.items.position.right,
-            position === 'top' ? 'py-1' : '',
+            position === 'top' ? 'py-1' : ''
           )}
         >
           {items}
