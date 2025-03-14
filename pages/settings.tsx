@@ -34,10 +34,11 @@ import { faOfficePhone } from '@nethesis/nethesis-solid-svg-icons'
 import { savePreference } from '../lib/storage'
 import { getSelectedSettingsPage } from '../lib/settings'
 import { Voicemail } from '../components/settings/Voicemail'
+import { IconProp } from '@fortawesome/fontawesome-svg-core'
 
 interface SettingsMenuTypes {
   name: string
-  icon: IconDefinition
+  icon: IconProp
   href: string
   current: boolean
 }
@@ -50,7 +51,7 @@ const Settings: NextPage = () => {
   const router = useRouter()
 
   const settingsMenu: SettingsMenuTypes[] = [
-    { name: 'Devices', href: '#', icon: faOfficePhone as IconDefinition, current: false },
+    { name: 'Devices', href: '#', icon: faOfficePhone as IconProp, current: false },
     { name: 'Mobile App', href: '#', icon: faMobile, current: false },
     { name: 'Customer cards', href: '#', icon: faIdCardClip, current: false },
     { name: 'Queues', href: '#', icon: faUsers, current: false },
@@ -203,7 +204,10 @@ const Settings: NextPage = () => {
                     >
                       <FontAwesomeIcon
                         icon={item?.icon}
-                        className={classNames(item?.current ? 'ml-3' : 'ml-4', 'h-4 w-4 text-gray-700 dark:text-gray-200')}
+                        className={classNames(
+                          item?.current ? 'ml-3' : 'ml-4',
+                          'h-4 w-4 text-gray-700 dark:text-gray-200',
+                        )}
                         aria-hidden='true'
                       />
                       <span className='truncate leading-5 font-normal text-sm text-gray-700 dark:text-gray-200'>

@@ -52,6 +52,7 @@ import { CallDuration } from '../operators/CallDuration'
 import { LogoutAllQueuesModal } from './LogoutAllQueuesModal'
 import { Tooltip } from 'react-tooltip'
 import InfiniteScroll from 'react-infinite-scroll-component'
+import { IconProp } from '@fortawesome/fontawesome-svg-core'
 
 export interface QueuesManagementViewProps extends ComponentProps<'div'> {}
 
@@ -504,7 +505,7 @@ export const QueuesManagementView: FC<QueuesManagementViewProps> = ({ className 
                               on={queue.favorite}
                               size='large'
                               onIcon={<FontAwesomeIcon icon={faStarSolid} />}
-                              offIcon={<FontAwesomeIcon icon={faStarLight} />}
+                              offIcon={<FontAwesomeIcon icon={faStarLight as IconProp} />}
                               changed={() => toggleFavoriteQueue(queue)}
                               key={queue.queue}
                               data-tooltip-id={`tooltip-favorite-${queue.queue}`}
