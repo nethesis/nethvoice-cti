@@ -5,8 +5,6 @@ import { PropsWithChildren } from 'react'
 import axios from 'axios'
 import { store } from '../store'
 import { eventDispatch } from './hooks/eventDispatch'
-import { parsePhoneNumberFromString } from 'libphonenumber-js'
-import { normalize } from 'path'
 
 export interface ClearProps {
   key: string
