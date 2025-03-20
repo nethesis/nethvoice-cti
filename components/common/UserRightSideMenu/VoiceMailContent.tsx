@@ -294,8 +294,8 @@ export const VoiceMailContent = () => {
             <div className='flex gap-2 items-center'>
               <Dropdown items={getVoiceMailSortTemplate()} position='left'>
                 <Button
-                  variant='ghost'
-                  className='border border-gray-300 dark:border-gray-500 py-2 px-2 gap-3 h-9 w-9'
+                  variant='white'
+                  className='py-2 px-2 gap-3 h-9 w-9'
                 >
                   <FontAwesomeIcon icon={faSortAmountAsc} className='h-4 w-4' />
                   <span className='sr-only'>{t('VoiceMail.Open voicemail menu')}</span>
@@ -393,7 +393,7 @@ export const VoiceMailContent = () => {
                     </div>
                     <div className='flex gap-2 items-start shrink-0 min-w-0'>
                       <Button
-                        variant='ghost'
+                        variant='white'
                         className='border border-gray-300 dark:border-gray-500 py-2 !px-2 h-9 w-9 gap-3'
                         onClick={() => playSelectedVoicemail(voicemail)}
                       >
