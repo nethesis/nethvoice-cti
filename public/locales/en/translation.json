@@ -329,7 +329,9 @@
     "Name": "Name",
     "Creation date": "Creation date",
     "Status": "Status",
-    "Default": "Default"
+    "Default": "Default",
+    "Play": "Play",
+    "Edit": "Edit"
   },
   "TopBar": {
     "Signed in as": "Signed in as",
@@ -579,7 +581,19 @@
     "Select date end": "Select date end",
     "Newest": "Newest",
     "Oldest": "Oldest",
-    "Save recording": "Save recording"
+    "Save recording": "Save recording",
+    "Upload message": "Upload message",
+    "Message name": "Message name",
+    "Insert message name": "Insert message name",
+    "Audio file": "Audio file",
+    "Accepted formats": "Accepted formats: .wav, .mp3, .gsm",
+    "Message category": "Message category",
+    "Greeating status": "Greeating status",
+    "Busy status": "Busy status",
+    "Unavailable status": "Unavailable status",
+    "Status": "Status",
+    "Enabled": "Enabled",
+    "Disabled": "Disabled"
   },
   "SpeedDial": {
     "Create": "Create",
@@ -614,7 +628,9 @@
     "Sort by": "Sort by",
     "Newest": "Newest",
     "Oldest": "Oldest",
-    "Call": "Call"
+    "Call": "Call",
+    "Go to history": "Go to History",
+    "Open lastcalls menu": "Open lastcalls menu"
   },
   "VoiceMail": {
     "Voicemail inbox": "Voicemail inbox",

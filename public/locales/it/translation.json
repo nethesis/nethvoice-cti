@@ -308,7 +308,9 @@
     "Name": "Nome",
     "Creation date": "Data creazione",
     "Status": "Stato",
-    "Default": "Predefinito"
+    "Default": "Predefinito",
+    "Play": "Riproduci",
+    "Edit": "Modifica"
   },
   "TopBar": {
     "Signed in as": "Accesso effettuato come",
@@ -452,7 +454,19 @@
     "Select date end": "Seleziona data fine",
     "Newest": "Più recenti",
     "Oldest": "Meno recenti",
-    "Save recording": "Salva registrazione"
+    "Save recording": "Salva registrazione",
+    "Upload message": "Carica messaggio",
+    "Message name": "Nome messaggio",
+    "Insert message name": "Inserisci nome messaggio",
+    "Audio file": "File audio",
+    "Accepted formats": "Formati validi: .wav, .mp3, .gsm",
+    "Message category": "Categoria messaggio",
+    "Greeating status": "Stato saluto",
+    "Busy status": "Stato occupato",
+    "Unavailable status": "Stato non disponibile",
+    "Status": "Stato",
+    "Enabled": "Abilitato",
+    "Disabled": "Disabilitato"
   },
   "SpeedDial": {
     "Create": "Crea",
@@ -481,7 +495,9 @@
     "Sort by": "Ordina per",
     "Newest": "Più recenti",
     "Oldest": "Meno recenti",
-    "Call": "Chiama"
+    "Call": "Chiama",
+    "Go to history": "Vai allo storico",
+    "Open lastcalls menu": "Apri menu ultime chiamate"
   },
   "VoiceMail": {
     "Voicemail inbox": "Casella vocale",
