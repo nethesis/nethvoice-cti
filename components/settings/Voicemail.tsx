@@ -30,10 +30,12 @@ const STYLES = {
   iconButton: 'text-emerald-700 dark:text-emerald-500 h-4 w-4',
   buttonText: 'font-poppins text-sm font-medium text-emerald-700 dark:text-emerald-500',
   ghostButton: 'gap-3 px-3 py-2',
+  skeletonBase: 'animate-pulse rounded bg-gray-300 dark:bg-gray-700',
 }
 
 export const Voicemail = () => {
   const [firstRender, setFirstRender] = useState(true)
+  const [isLoading, setIsLoading] = useState(true)
   const [tablesData, setTablesData] = useState([
     {
       title: t('Settings.Greet status'),
@@ -68,6 +70,7 @@ export const Voicemail = () => {
 
     // Fetch greeting message data when component mounts or type changes
     const fetchGreetingMessage = async () => {
+      setIsLoading(true)
       const updatedTables = [...tablesData]
       for (let i = 0; i < updatedTables.length; i++) {
         try {
@@ -78,6 +81,7 @@ export const Voicemail = () => {
         }
       }
       setTablesData(updatedTables)
+      setIsLoading(false)
     }
     fetchGreetingMessage()
   // eslint-disable-next-line react-hooks/exhaustive-deps
@@ -170,6 +174,47 @@ export const Voicemail = () => {
     }
   })
 
+  // Skeleton loader component for a single table
+  const TableSkeleton = ({ title }: { title: string }) => (
+    <div>
+      <span className='rounded-t-lg bg-indigo-300 dark:bg-indigo-800 pt-1 pb-3 px-6 gap-10 text-base font-normal font-poppins text-gray-900 dark:text-gray-50'>
+        {title}
+      </span>
+      <div className='relative overflow-hidden rounded-lg border border-gray-300 dark:border-gray-700'>
+        <table className='w-full'>
+          <thead>
+            <tr>
+              <th className={`${STYLES.tableHeader} w-4/12`}>
+                <div className={`${STYLES.skeletonBase} h-4 w-24`}></div>
+              </th>
+              <th className={`${STYLES.tableHeader} w-3/12`}>
+                <div className={`${STYLES.skeletonBase} h-4 w-20`}></div>
+              </th>
+              <th className={`${STYLES.tableHeader} w-3/12`}>
+                <div className={`${STYLES.skeletonBase} h-4 w-16`}></div>
+              </th>
+              <th className={`${STYLES.tableHeader} w-2/12`}></th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr className='border-t border-gray-300 dark:border-gray-700'>
+              <td className={STYLES.tableCell}>
+                <div className={`${STYLES.skeletonBase} h-4 w-32`}></div>
+              </td>
+              <td className={STYLES.tableCell}>
+                <div className={`${STYLES.skeletonBase} h-4 w-20`}></div>
+              </td>
+              <td className={STYLES.tableCell}>
+                <div className={`${STYLES.skeletonBase} h-4 w-24`}></div>
+              </td>
+              <td className={STYLES.tableCell}></td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+  )
+
   return (
     <>
       <div className='gap-8 p-6 flex flex-col'>
@@ -208,84 +253,94 @@ export const Voicemail = () => {
             </div>
           </div>
           <div className='flex flex-col gap-8'>
-            {tablesData.map((table, index) => (
-              <div key={index}>
-                <span className='rounded-t-lg bg-indigo-300 dark:bg-indigo-800 pt-1 pb-3 px-6 gap-10 text-base font-normal font-poppins text-gray-900 dark:text-gray-50'>
-                  {table.title}
-                </span>
-                <div className='relative overflow-hidden rounded-lg border border-gray-300 dark:border-gray-700'>
-                  <table className='w-full'>
-                    <thead>
-                      <tr>
-                        <th className={`${STYLES.tableHeader} w-4/12`}>{t('Settings.Name')}</th>
-                        <th className={`${STYLES.tableHeader} w-3/12`}>{t('Settings.Creation date')}</th>
-                        <th className={`${STYLES.tableHeader} w-3/12`}>{t('Settings.Status')}</th>
-                        <th className={`${STYLES.tableHeader} w-2/12`}></th>
-                      </tr>
-                    </thead>
-                    <tbody>
-                      <tr className='border-t border-gray-300 dark:border-gray-700'>
-                        <td className={STYLES.tableCell}>
-                          <div className='flex items-center'>
-                            <span>{t('Settings.Default')}</span>
-                            <FontAwesomeIcon icon={faVoicemail} className='ml-2 h-4 w-4 text-gray-700 dark:text-gray-200' />
-                          </div>
-                        </td>
-                        <td className={STYLES.tableCell}></td>
-                        <td className={STYLES.tableCell}>
-                          {!table.message && 
-                            <div className='flex items-center'>
-                              <FontAwesomeIcon icon={faCircleCheck} className='h-4 w-4 mr-2 text-green-700' />
-                              <span>{t('Settings.Enabled')}</span>
-                            </div>
-                          }
-                        </td>
-                        <td className={`${STYLES.tableCell} w-0 whitespace-nowrap text-right`}>
-                          <div className='flex items-center justify-end opacity-0'>
-                            <Button variant='ghost' disabled>
-                              <FontAwesomeIcon icon={faPlay} className='h-4 w-4 mr-2' />
-                              {t('Settings.Play')}
-                            </Button>
-                            <Button variant='ghost' disabled>
-                              <FontAwesomeIcon icon={faEllipsisVertical} className='h-4 w-4' />
-                            </Button>
-                          </div>
-                        </td>
-                      </tr>
-                      {table.message && (
+            {isLoading ? (
+              // Display skeleton loaders when loading
+              <>
+                <TableSkeleton title={tablesData[0].title} />
+                <TableSkeleton title={tablesData[1].title} />
+                <TableSkeleton title={tablesData[2].title} />
+              </>
+            ) : (
+              // Display actual data when loaded
+              tablesData.map((table, index) => (
+                <div key={index}>
+                  <span className='rounded-t-lg bg-indigo-300 dark:bg-indigo-800 pt-1 pb-3 px-6 gap-10 text-base font-normal font-poppins text-gray-900 dark:text-gray-50'>
+                    {table.title}
+                  </span>
+                  <div className='relative overflow-hidden rounded-lg border border-gray-300 dark:border-gray-700'>
+                    <table className='w-full'>
+                      <thead>
+                        <tr>
+                          <th className={`${STYLES.tableHeader} w-4/12`}>{t('Settings.Name')}</th>
+                          <th className={`${STYLES.tableHeader} w-3/12`}>{t('Settings.Creation date')}</th>
+                          <th className={`${STYLES.tableHeader} w-3/12`}>{t('Settings.Status')}</th>
+                          <th className={`${STYLES.tableHeader} w-2/12`}></th>
+                        </tr>
+                      </thead>
+                      <tbody>
                         <tr className='border-t border-gray-300 dark:border-gray-700'>
                           <td className={STYLES.tableCell}>
                             <div className='flex items-center'>
-                              <span>{t('Settings.Custom')}</span>
+                              <span>{t('Settings.Default')}</span>
+                              <FontAwesomeIcon icon={faVoicemail} className='ml-2 h-4 w-4 text-gray-700 dark:text-gray-200' />
                             </div>
                           </td>
                           <td className={STYLES.tableCell}></td>
                           <td className={STYLES.tableCell}>
-                            <div className='flex items-center'>
-                              <FontAwesomeIcon icon={faCircleCheck} className='h-4 w-4 mr-2 text-green-700' />
-                              <span>{t('Settings.Enabled')}</span>
-                            </div>
+                            {!table.message && 
+                              <div className='flex items-center'>
+                                <FontAwesomeIcon icon={faCircleCheck} className='h-4 w-4 mr-2 text-green-700' />
+                                <span>{t('Settings.Enabled')}</span>
+                              </div>
+                            }
                           </td>
                           <td className={`${STYLES.tableCell} w-0 whitespace-nowrap text-right`}>
-                            <div className='flex items-center justify-end'>
-                              <Button variant='ghost' onClick={() => playFileAudioBase64(table.message)}>
+                            <div className='flex items-center justify-end opacity-0'>
+                              <Button variant='ghost' disabled>
                                 <FontAwesomeIcon icon={faPlay} className='h-4 w-4 mr-2' />
                                 {t('Settings.Play')}
                               </Button>
-                              <Dropdown items={getVoiceMailOptionsTemplate(table.type)} position='top'>
-                                <Button variant='ghost'>
-                                  <FontAwesomeIcon icon={faEllipsisVertical} className='h-4 w-4' />
-                                </Button>
-                              </Dropdown>
+                              <Button variant='ghost' disabled>
+                                <FontAwesomeIcon icon={faEllipsisVertical} className='h-4 w-4' />
+                              </Button>
                             </div>
                           </td>
                         </tr>
-                      )}
-                    </tbody>
-                  </table>
+                        {table.message && (
+                          <tr className='border-t border-gray-300 dark:border-gray-700'>
+                            <td className={STYLES.tableCell}>
+                              <div className='flex items-center'>
+                                <span>{t('Settings.Custom')}</span>
+                              </div>
+                            </td>
+                            <td className={STYLES.tableCell}></td>
+                            <td className={STYLES.tableCell}>
+                              <div className='flex items-center'>
+                                <FontAwesomeIcon icon={faCircleCheck} className='h-4 w-4 mr-2 text-green-700' />
+                                <span>{t('Settings.Enabled')}</span>
+                              </div>
+                            </td>
+                            <td className={`${STYLES.tableCell} w-0 whitespace-nowrap text-right`}>
+                              <div className='flex items-center justify-end'>
+                                <Button variant='ghost' onClick={() => playFileAudioBase64(table.message)}>
+                                  <FontAwesomeIcon icon={faPlay} className='h-4 w-4 mr-2' />
+                                  {t('Settings.Play')}
+                                </Button>
+                                <Dropdown items={getVoiceMailOptionsTemplate(table.type)} position='top'>
+                                  <Button variant='ghost'>
+                                    <FontAwesomeIcon icon={faEllipsisVertical} className='h-4 w-4' />
+                                  </Button>
+                                </Dropdown>
+                              </div>
+                            </td>
+                          </tr>
+                        )}
+                      </tbody>
+                    </table>
+                  </div>
                 </div>
-              </div>
-            ))}
+              ))
+            )}
           </div>
         </div>
       </div>
