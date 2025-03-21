@@ -29,6 +29,7 @@ import {
   faFilter,
   faStar as faStarSolid,
 } from '@fortawesome/free-solid-svg-icons'
+import { IconProp } from '@fortawesome/fontawesome-svg-core'
 
 export interface RealTimeQueuesProps extends ComponentProps<'div'> {
   realTimeAgentCounters: any
@@ -291,7 +292,7 @@ export const RealTimeQueues: FC<RealTimeQueuesProps> = ({
                                   on={queue.favorite}
                                   size='large'
                                   onIcon={<FontAwesomeIcon icon={faStarSolid} />}
-                                  offIcon={<FontAwesomeIcon icon={faStarLight} />}
+                                  offIcon={<FontAwesomeIcon icon={faStarLight as IconProp} />}
                                   changed={() => toggleFavoriteQueue(queue)}
                                   key={queue.queue}
                                   className={`tooltip-favorite-${queue.queue}`}

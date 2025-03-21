@@ -5,15 +5,13 @@ import type { NextPage } from 'next'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import {
   faPalette,
-  faBorderAll,
-  IconDefinition,
   faDatabase,
   faMobile,
   faUsers,
   faIdCardClip,
-  faUser,
   faCircleUser,
   faPuzzlePiece,
+  faVoicemail,
 } from '@fortawesome/free-solid-svg-icons'
 import classNames from 'classnames'
 import { useSelector } from 'react-redux'
@@ -32,10 +30,12 @@ import Devices from './devices'
 import { faOfficePhone } from '@nethesis/nethesis-solid-svg-icons'
 import { savePreference } from '../lib/storage'
 import { getSelectedSettingsPage } from '../lib/settings'
+import { Voicemail } from '../components/settings/Voicemail'
+import { IconProp } from '@fortawesome/fontawesome-svg-core'
 
 interface SettingsMenuTypes {
   name: string
-  icon: IconDefinition
+  icon: IconProp
   href: string
   current: boolean
 }
@@ -48,7 +48,7 @@ const Settings: NextPage = () => {
   const router = useRouter()
 
   const settingsMenu: SettingsMenuTypes[] = [
-    { name: 'Devices', href: '#', icon: faOfficePhone, current: false },
+    { name: 'Devices', href: '#', icon: faOfficePhone as IconProp, current: false },
     { name: 'Mobile App', href: '#', icon: faMobile, current: false },
     { name: 'Customer cards', href: '#', icon: faIdCardClip, current: false },
     { name: 'Queues', href: '#', icon: faUsers, current: false },
@@ -61,6 +61,7 @@ const Settings: NextPage = () => {
       current: false,
     },
     { name: 'Cache', href: '#', icon: faDatabase, current: false },
+    { name: 'Voicemail', href: '#', icon: faVoicemail, current: false },
   ]
 
   const [items, setItems] = useState<SettingsMenuTypes[]>(settingsMenu)
@@ -176,7 +177,7 @@ const Settings: NextPage = () => {
           <h1 className='text-2xl font-semibold mb-6 text-title dark:text-titleDark'>
             {t('Settings.Settings')}
           </h1>
-          <div className='overflow-hidden rounded-lg bg-white dark:bg-gray-950 shadow '>
+          <div className='overflow-hidden rounded-lg bg-white dark:bg-gray-950 shadow'>
             <div className='divide-y divide-gray-200 dark:divide-gray-700 lg:grid lg:grid-cols-12 lg:divide-y-0 lg:divide-x'>
               {/* settings menu */}
               <aside className='py-6 lg:col-span-3'>
@@ -200,10 +201,13 @@ const Settings: NextPage = () => {
                     >
                       <FontAwesomeIcon
                         icon={item?.icon}
-                        className={classNames(item?.current ? 'ml-3' : 'ml-4', 'h-4 w-4')}
+                        className={classNames(
+                          item?.current ? 'ml-3' : 'ml-4',
+                          'h-4 w-4 text-gray-700 dark:text-gray-200',
+                        )}
                         aria-hidden='true'
                       />
-                      <span className='truncate leading-5 font-normal text-sm'>
+                      <span className='truncate leading-5 font-normal text-sm text-gray-700 dark:text-gray-200'>
                         {t(`Settings.${item?.name}`)}
                       </span>
                     </a>
@@ -228,6 +232,8 @@ const Settings: NextPage = () => {
                 {currentSection === 'Profile picture' && <Profile />}
                 {/* Devices section */}
                 {currentSection === 'Devices' && <Devices />}
+                {/* Voicemail section */}
+                {currentSection === 'Voicemail' && <Voicemail />}
               </div>
             </div>
           </div>

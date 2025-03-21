@@ -14,6 +14,7 @@ import { faGravatar } from '@nethesis/nethesis-brands-svg-icons'
 import React from 'react'
 import { Tooltip } from 'react-tooltip'
 import { PresetProfilePictureContent } from '../components/common/ProfilePicture/PresetProfilePictureContent'
+import { IconProp } from '@fortawesome/fontawesome-svg-core'
 
 const Profile: NextPage = () => {
   const { t } = useTranslation()
@@ -47,7 +48,7 @@ const Profile: NextPage = () => {
                 {t('Settings.Upload')}
               </Button>
               <Button variant='white' onClick={() => openShowGravatarDrawer('')}>
-                <FontAwesomeIcon icon={faGravatar} className='mr-2' />
+                <FontAwesomeIcon icon={faGravatar as IconProp} className='mr-2' />
                 {t('Settings.Gravatar')}
               </Button>
               <div className='flex'>

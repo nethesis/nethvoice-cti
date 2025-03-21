@@ -19,7 +19,7 @@ import { RootState, Dispatch } from '../../store'
 import classNames from 'classnames'
 import { changeStatusPresence, forwardStatus } from '../../lib/topBar'
 import { Fragment } from 'react'
-import { Popover, PopoverButton, PopoverPanel, Transition } from '@headlessui/react'
+import { Popover, PopoverPanel, Transition } from '@headlessui/react'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { StatusDot } from '../common'
 import {
@@ -27,7 +27,6 @@ import {
   faBars,
   faSun,
   faMoon,
-  faBell,
   faChevronRight,
   faUser,
   faHeadset,
@@ -47,6 +46,7 @@ import { faOfficePhone } from '@nethesis/nethesis-solid-svg-icons'
 import { isEmpty } from 'lodash'
 import { setMainDevice } from '../../lib/devices'
 import { eventDispatch } from '../../lib/hooks/eventDispatch'
+import { IconProp } from '@fortawesome/fontawesome-svg-core'
 
 interface TopBarProps {
   openMobileCb: () => void
@@ -108,6 +108,7 @@ export const TopBar: FC<TopBarProps> = ({ openMobileCb }) => {
       store.dispatch.notifications.setNotifications(notifications)
       store.dispatch.notifications.setLoaded(true)
     }
+  // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [firstNotificationsRender, notificationsStore.isLoaded])
 
   const dispatch = useDispatch<Dispatch>()
@@ -395,7 +396,7 @@ export const TopBar: FC<TopBarProps> = ({ openMobileCb }) => {
                   mainDeviceType === 'webrtc'
                     ? faHeadset
                     : mainDeviceType === 'physical'
-                    ? faOfficePhone
+                    ? (faOfficePhone as IconProp)
                     : mainDeviceType === 'nethlink'
                     ? faDesktop
                     : faHeadset
@@ -477,7 +478,7 @@ export const TopBar: FC<TopBarProps> = ({ openMobileCb }) => {
                                   device?.type === 'webrtc'
                                     ? faHeadset
                                     : device?.type === 'physical'
-                                    ? faOfficePhone
+                                    ? (faOfficePhone as IconProp)
                                     : faDesktop
                                 }
                                 className='ml-auto h-4 w-4 flex justify-center text-dropdownText dark:text-dropdownTextDark'
@@ -508,11 +509,11 @@ export const TopBar: FC<TopBarProps> = ({ openMobileCb }) => {
       </Popover>
 
       {/* profile picture redirect */}
-      <Dropdown.Item icon={faUser}>
-        <Link href={{ pathname: '/settings', query: { section: 'Profile picture' } }}>
+      <Link href={{ pathname: '/settings', query: { section: 'Profile picture' } }}>
+        <Dropdown.Item icon={faUser}>
           <span>{t('Settings.Profile picture')}</span>
-        </Link>
-      </Dropdown.Item>
+        </Dropdown.Item>
+      </Link>
       {/* Divider */}
       <div className='relative pt-2'>
         <div className='absolute inset-0 flex items-center' aria-hidden='true'>

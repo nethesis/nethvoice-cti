@@ -1,7 +1,7 @@
 import { FC } from 'react'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { faMissed } from '@nethesis/nethesis-solid-svg-icons'
-import { faXmark, faArrowLeft } from '@fortawesome/free-solid-svg-icons'
+import { faXmark, faArrowLeft, IconDefinition } from '@fortawesome/free-solid-svg-icons'
 import { Tooltip } from 'react-tooltip'
 import { useTranslation } from 'react-i18next'
 import { CallTypes } from '../../lib/history'
@@ -34,7 +34,7 @@ export const UserCallStatusIcon: FC<UserCallStatusIconProps> = ({ call }) => {
             ) : (
               <>
                 <FontAwesomeIcon
-                  icon={faMissed}
+                  icon={faMissed as IconDefinition}
                   className='tooltip-incoming-missed mr-2 h-5 w-4 text-red-400'
                   aria-hidden='true'
                   data-tooltip-id='tooltip-incoming-missed'

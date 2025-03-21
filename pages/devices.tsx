@@ -35,6 +35,7 @@ import { Dispatch } from '../store'
 import { eventDispatch } from '../lib/hooks/eventDispatch'
 import { getTimestamp } from '../services/user'
 import { isEmpty } from 'lodash'
+import { IconProp } from '@fortawesome/fontawesome-svg-core'
 
 const Devices: NextPage = () => {
   const { t } = useTranslation()
@@ -466,7 +467,7 @@ const Devices: NextPage = () => {
         <div className='pt-16'>
           <div className='flex items-center space-x-2'>
             <FontAwesomeIcon
-              icon={faOfficePhone}
+              icon={faOfficePhone as IconProp}
               className='h-4 w-4 flex justify-center text-gray-700 dark:text-gray-500'
             />
             {/* Check if physical is more than one   */}

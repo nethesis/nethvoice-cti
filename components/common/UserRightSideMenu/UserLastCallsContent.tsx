@@ -3,7 +3,7 @@
 
 import { useState, useEffect, useRef, useCallback } from 'react'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
-import { faPhone, faChevronDown, faUsers } from '@fortawesome/free-solid-svg-icons'
+import { faPhone, faChevronDown, faUsers, faSortAmountAsc, faCheck, faEllipsisVertical, faArrowRightLong } from '@fortawesome/free-solid-svg-icons'
 import { Button, Avatar, EmptyState, Dropdown, Badge } from '../../common'
 import { useSelector } from 'react-redux'
 import { RootState } from '../../../store'
@@ -18,6 +18,7 @@ import { getJSONItem, setJSONItem } from '../../../lib/storage'
 import { Tooltip } from 'react-tooltip'
 import { openCreateLastCallContact, openShowContactDrawer } from '../../../lib/phonebook'
 import { CallDetails } from '../../history/CallDetails'
+import Link from 'next/link'
 
 interface LastCallTypes extends CallTypes {
   username: string
@@ -163,40 +164,51 @@ export const UserLastCallsContent = () => {
   return (
     <>
       <div className='flex h-full flex-col bg-sidebar dark:bg-sidebarDark'>
-        <div className='py-6 px-5'>
+        <div className='py-4 px-6'>
           <div className='flex items-center justify-between'>
             <h2 className='text-lg font-medium text-textLight dark:text-textDark leading-7'>
               {t('LastCalls.Last calls')}
             </h2>
-            <div className='flex gap-1'>
+            <div className='flex gap-2 items-center'>
               <Dropdown
                 items={
                   <>
+                    <Dropdown.Header>
+                      <span className='font-poppins font-light'>{t('LastCalls.Sort by')}</span>
+                    </Dropdown.Header>
                     <Dropdown.Item onClick={() => sortCalls('time_desc')}>
-                      <input
-                        type='radio'
-                        checked={sort === 'time_desc'}
-                        onChange={() => sortCalls('time_desc')}
-                        className='h-4 w-4 border-gray-300 text-primary focus:ring-primaryLight dark:border-gray-600 dark:text-primaryDark dark:focus:ring-primaryDark'
-                      />
-                      {t('LastCalls.Newest')}
+                      <span className='font-poppins font-light'>{t('LastCalls.Newest')}</span>
+                      {sort === 'time_desc' && (
+                        <FontAwesomeIcon icon={faCheck} className='ml-auto text-emerald-700' />
+                      )}
                     </Dropdown.Item>
                     <Dropdown.Item onClick={() => sortCalls('time_asc')}>
-                      <input
-                        type='radio'
-                        checked={sort === 'time_asc'}
-                        onChange={() => sortCalls('time_asc')}
-                        className='h-4 w-4 border-gray-300 text-primary focus:ring-primaryLight dark:border-gray-600 dark:text-primaryDark dark:focus:ring-primaryDark'
-                      />
-                      {t('LastCalls.Oldest')}
+                      <span className='font-poppins font-light'>{t('LastCalls.Oldest')}</span>
+                      {sort === 'time_asc' && (
+                        <FontAwesomeIcon icon={faCheck} className='ml-auto text-emerald-700' />
+                      )}
                     </Dropdown.Item>
                   </>
                 }
                 position='left'
               >
-                <Button className='flex gap-2' variant='white'>
-                  {t('LastCalls.Sort by')}
-                  <FontAwesomeIcon icon={faChevronDown} />
+                <Button className='flex gap-2 h-9 w-9' variant='white'>
+                  <FontAwesomeIcon icon={faSortAmountAsc} className='h-4 w-4' />
+                </Button>
+              </Dropdown>
+              <Dropdown items={
+                <>
+                  <Link
+                    href={{ pathname: '/history', query: { section: 'Calls' } }}
+                    className='w-full'
+                  >
+                    <Dropdown.Item icon={faArrowRightLong}>{t('LastCalls.Go to history')}</Dropdown.Item>
+                  </Link>
+                </>
+              } position='left'>
+                <Button variant='ghost' className='py-2 px-2 h-9 w-9'>
+                  <FontAwesomeIcon icon={faEllipsisVertical} className='h-4 w-4' />
+                  <span className='sr-only'>{t('LastCalls.Open lastcalls menu')}</span>
                 </Button>
               </Dropdown>
             </div>
@@ -225,13 +237,15 @@ export const UserLastCallsContent = () => {
             ))}
           {/* empty state */}
           {lastCalls?.length === 0 && (
-            <EmptyState
-              title={t('LastCalls.No calls')}
-              icon={
-                <FontAwesomeIcon icon={faPhone} className='mx-auto h-12 w-12' aria-hidden='true' />
-              }
-            ></EmptyState>
-          )}
+            <div className='px-6 py-4'>
+              <EmptyState
+                title={t('LastCalls.No calls')}
+                icon={
+                  <FontAwesomeIcon icon={faPhone} className='mx-auto h-12 w-12' aria-hidden='true' />
+                }
+              ></EmptyState>
+            </div>
+            )}
           {/* Iterate through speed dial list */}
           {lastCalls?.length! > 0 &&
             lastCalls?.map((call: any, key: any) => (

@@ -3,7 +3,7 @@
 
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { faMissed } from '@nethesis/nethesis-solid-svg-icons'
-import { faXmark, faArrowLeft } from '@fortawesome/free-solid-svg-icons'
+import { faXmark, faArrowLeft, IconDefinition } from '@fortawesome/free-solid-svg-icons'
 import axios from 'axios'
 import { cloneDeep } from 'lodash'
 import { store } from '../store'
@@ -252,7 +252,7 @@ export const getCallIcon = (call: any) => {
         // negative outcome
         return (
           <FontAwesomeIcon
-            icon={faMissed}
+            icon={faMissed as IconDefinition}
             className='mr-2 h-5 w-4 text-red-400 dark:text-red-500'
             aria-hidden='true'
           />
