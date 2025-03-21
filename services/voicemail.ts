@@ -4,8 +4,9 @@
 import axios from 'axios';
 
 const PATH = '/voicemail';
+
 import { getApiEndpoint, getApiScheme, handleNetworkError } from '../lib/utils'
-import { getHistoryUrl } from '../lib/history';
+import { eventDispatch } from '../lib/hooks/eventDispatch';
 
 export const getAllVoicemails = async () => {
     try {
@@ -38,7 +39,6 @@ export const downloadVoicemail = async (id: any) => {
     }
 };
 
-
 export const deleteVoicemail = async (id: any) => {
     try {
         await axios.post(`${PATH}/delete`, { id: id.toString() });
@@ -46,4 +46,45 @@ export const deleteVoicemail = async (id: any) => {
         handleNetworkError(error);
         throw error;
     }
+}
+
+export const uploadVoicemailGreetingMessage = async (type: string, audio: string) => {
+    try {
+        console.log(audio);
+        await axios.post(`${PATH}/custom_msg`, {
+            'type': type,
+            'audio': audio
+        });
+    } catch (error) {
+        handleNetworkError(error);
+        throw error;
+    }
+}
+
+export const getVoicemailGreetingMessage = async (type: string) => {
+    try {
+        const response = await axios.get(`${PATH}/listen_custom_msg/${type}`);
+        return response.data;
+    } catch (error) {
+        handleNetworkError(error);
+        throw error;
+    }
+}
+
+export const deleteVoicemailGreetingMessage = async (type: string) => {
+    try {
+        await axios.delete(`${PATH}/custom_msg/${type}`);
+    } catch (error) {
+        handleNetworkError(error);
+        throw error;
+    }
+}
+
+// The event to show the recording view.
+export function recordingMessage(type: string) {
+  if (type === 'physical') {
+    eventDispatch('phone-island-physical-recording-view', {})
+  } else {
+    eventDispatch('phone-island-recording-open', {})
+  }
 }
