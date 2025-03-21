@@ -3,18 +3,28 @@
 
 import {
   faCircleArrowUp,
-  IconDefinition,
   faPlay,
   faEllipsisVertical,
   faVoicemail,
+  faPlus,
+  faCircleCheck,
+  faTrash,
+  faTriangleExclamation,
 } from '@fortawesome/free-solid-svg-icons'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { t } from 'i18next'
-import { Button } from '../common'
+import { Button, Dropdown, Modal } from '../common'
 import { faRecord } from '@nethesis/nethesis-solid-svg-icons'
+import { Icon } from '@fortawesome/fontawesome-svg-core'
+import { deleteVoicemailGreetingMessage, getVoicemailGreetingMessage, recordingMessage } from '../../services/voicemail'
+import { useEffect, useState } from 'react'
+import { playFileAudioBase64 } from '../../lib/utils'
+import { useDispatch, useSelector } from 'react-redux'
+import { Dispatch, RootState, store } from '../../store'
+import { useEventListener } from '../../lib/hooks/useEventListener'
 
 const STYLES = {
-  tableCell: 'px-6 py-4 gap-6 text-sm font-normal font-poppins text-gray-700 dark:text-gray-200',
+  tableCell: 'px-6 py-3 gap-6 text-sm font-normal font-poppins text-gray-700 dark:text-gray-200 h-14',
   tableHeader:
     'text-left relative px-6 py-3 gap-2 bg-gray-100 dark:bg-gray-800 font-poppins font-medium text-sm text-gray-900 dark:text-gray-50',
   iconButton: 'text-emerald-700 dark:text-emerald-500 h-4 w-4',
@@ -22,66 +32,144 @@ const STYLES = {
   ghostButton: 'gap-3 px-3 py-2',
 }
 
-interface VoicemailTableProps {
-  title: string
-}
-
-const VoicemailTable = ({ title }: VoicemailTableProps) => {
-  return (
-    <div>
-      <span className='rounded-t-lg bg-indigo-300 dark:bg-indigo-800 pt-1 pb-3 px-6 gap-10 text-base font-normal font-poppins text-gray-900 dark:text-gray-50'>
-        {title}
-      </span>
-      <div className='relative overflow-hidden rounded-lg border border-gray-300 dark:border-gray-700'>
-        <table className='w-full'>
-          <thead className='border-b border-gray-300 dark:border-gray-700'>
-            <tr>
-              <th className={STYLES.tableHeader}>{t('Settings.Name')}</th>
-              <th className={STYLES.tableHeader}>{t('Settings.Creation date')}</th>
-              <th className={STYLES.tableHeader}>{t('Settings.Status')}</th>
-              <th className={STYLES.tableHeader}></th>
-            </tr>
-          </thead>
-          <tbody>
-            <tr className='border-b border-gray-300 dark:border-gray-700'>
-              <td className={STYLES.tableCell}>
-                <span>{t('Settings.Default')}</span>
-                <FontAwesomeIcon icon={faVoicemail} className='ml-2 h-4 w-4 text-gray-400' />
-              </td>
-              <td className={STYLES.tableCell}></td>
-              <td className={STYLES.tableCell}></td>
-              <td className={`${STYLES.tableCell} text-right`}>
-                <Button variant='ghost' className={STYLES.ghostButton}>
-                  <FontAwesomeIcon icon={faPlay} className={STYLES.iconButton} />
-                  <span className={STYLES.buttonText}>Play</span>
-                </Button>
-                <Button variant='ghost' className={STYLES.ghostButton}>
-                  <FontAwesomeIcon icon={faEllipsisVertical} className={STYLES.iconButton} />
-                </Button>
-              </td>
-            </tr>
-            <tr>
-              <td className={STYLES.tableCell}></td>
-              <td className={STYLES.tableCell}></td>
-              <td className={STYLES.tableCell}></td>
-              <td className={`${STYLES.tableCell} text-right`}>
-                <Button variant='ghost' className={STYLES.ghostButton}>
-                  <FontAwesomeIcon icon={faPlay} className={STYLES.iconButton} />
-                  <span className={STYLES.buttonText}>Play</span>
-                </Button>
-                <Button variant='ghost' className={STYLES.ghostButton}>
-                  <FontAwesomeIcon icon={faEllipsisVertical} className={STYLES.iconButton} />
-                </Button>
-              </td>
-            </tr>
-          </tbody>
-        </table>
-      </div>
-    </div>
-  )
-}
-
 export const Voicemail = () => {
+  const [firstRender, setFirstRender] = useState(true)
+  const [tablesData, setTablesData] = useState([
+    {
+      title: t('Settings.Greet status'),
+      type: 'greet',
+      message: '',
+    },
+    {
+      title: t('Settings.Busy status'),
+      type: 'busy',
+      message: '',
+    },
+    {
+      title: t('Settings.Unavailable status'),
+      type: 'unavail',
+      message: '',
+    },
+  ])
+
+  const [deleteModal, setDeleteModal] = useState({
+    isOpen: false,
+    typeToDelete: ''
+  })
+
+  const user = useSelector((state: RootState) => state.user)
+  const dispatch = useDispatch<Dispatch>()
+
+  useEffect(() => {
+    if (firstRender) {
+      setFirstRender(false)
+      return
+    }
+
+    // Fetch greeting message data when component mounts or type changes
+    const fetchGreetingMessage = async () => {
+      const updatedTables = [...tablesData]
+      for (let i = 0; i < updatedTables.length; i++) {
+        try {
+          const message = await getVoicemailGreetingMessage(updatedTables[i].type)
+          updatedTables[i].message = message
+        } catch (error) {
+          console.error(`Error fetching ${updatedTables[i].type} greeting message:`, error)
+        }
+      }
+      setTablesData(updatedTables)
+    }
+    fetchGreetingMessage()
+  // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [firstRender])
+
+  const openUploadVoicemailDrawer = () => {
+    store.dispatch.sideDrawer.update({
+      isShown: true,
+      contentType: 'showUploadVoicemail',
+      config: { 
+        isRecorded: false,
+        onClose: () => {
+          setFirstRender(true)
+        }
+      },
+    })
+  }
+
+  const openDeleteModal = (type: string) => {
+    setDeleteModal({
+      isOpen: true,
+      typeToDelete: type
+    })
+  }
+
+  const closeDeleteModal = () => {
+    setDeleteModal({
+      isOpen: false,
+      typeToDelete: ''
+    })
+  }
+
+  const handleDeleteMessage = (type: string) => {
+    deleteVoicemailGreetingMessage(type)
+    // Update the UI after deleting the message
+    setTablesData(prevTables => 
+      prevTables.map(table => 
+        table.type === type ? { ...table, message: '' } : table
+      )
+    )
+    closeDeleteModal()
+  }
+
+  const getVoiceMailOptionsTemplate = (type: string) => (
+    <>
+      <Dropdown.Item icon={faTrash} isRed onClick={() => openDeleteModal(type)}>
+        <span>{t('Settings.Delete message')}</span>
+      </Dropdown.Item>
+    </>
+  )
+
+  // Start recording message function
+  const startRecordingMessage = () => {
+    if (user.default_device.type === 'physical') {
+      recordingMessage('physical')
+    } else {
+      recordingMessage('webrtc')
+    }
+  }
+
+  // Show modal announcement
+  useEventListener('phone-island-recording-saved', (object) => {
+    if (object?.tempFileName) {
+      dispatch.sideDrawer.update({
+        isShown: true,
+        contentType: 'showUploadVoicemail',
+        config: {
+          isRecorded: true,
+          tempFileName: object.tempFileName,
+          audioFileURL: object.audioFileURL,
+          onClose: () => {
+            setFirstRender(true)
+          }
+        },
+      })
+    }
+  })
+
+  useEventListener('phone-island-physical-recording-saved', (object) => {
+    if (object?.tempFileName) {
+      dispatch.sideDrawer.update({
+        isShown: true,
+        contentType: 'showUploadVoicemail',
+        config: {
+          isRecorded: true,
+          recordedFilename: object.tempFileName,
+        },
+      })
+      dispatch.sideDrawer.setAvoidClose(true)
+    }
+  })
+
   return (
     <>
       <div className='gap-8 p-6 flex flex-col'>
@@ -96,22 +184,148 @@ export const Voicemail = () => {
               {t('Settings.Greeting messages')}
             </h2>
             <div className='gap-4 flex flex-row'>
-              <Button variant='ghost' className={STYLES.ghostButton}>
-                <FontAwesomeIcon icon={faCircleArrowUp} className={STYLES.iconButton} />
-                <span className={STYLES.buttonText}>{t('Settings.Upload message')}</span>
-              </Button>
-              <Button variant='white' className={STYLES.ghostButton}>
-                <FontAwesomeIcon icon={faRecord as IconDefinition} className={STYLES.iconButton} />
-                <span className={STYLES.buttonText}>{t('Settings.Record message')}</span>
-              </Button>
+              <Dropdown
+                position='left'
+                className='pb-6 sm:pb-0'
+                items={
+                  <>
+                    <Dropdown.Item onClick={startRecordingMessage}>
+                      <FontAwesomeIcon icon={faRecord as Icon} className='text-gray-500'/>
+                      <span >{t('Settings.Record message')}</span>
+                    </Dropdown.Item>
+                    <Dropdown.Item onClick={openUploadVoicemailDrawer}>
+                      <FontAwesomeIcon icon={faCircleArrowUp} className='text-gray-500'/>
+                      <span>{t('Settings.Upload message')}</span>
+                    </Dropdown.Item>
+                  </>
+                }
+              >
+                <Button variant='primary'>
+                  <FontAwesomeIcon icon={faPlus} className='mr-2 h-4 w-4' />
+                  {t('Settings.New message')}
+                </Button>
+              </Dropdown>
             </div>
           </div>
           <div className='flex flex-col gap-8'>
-            <VoicemailTable title={t('Settings.Busy status')} />
-            <VoicemailTable title={t('Settings.Unavailable status')} />
+            {tablesData.map((table, index) => (
+              <div key={index}>
+                <span className='rounded-t-lg bg-indigo-300 dark:bg-indigo-800 pt-1 pb-3 px-6 gap-10 text-base font-normal font-poppins text-gray-900 dark:text-gray-50'>
+                  {table.title}
+                </span>
+                <div className='relative overflow-hidden rounded-lg border border-gray-300 dark:border-gray-700'>
+                  <table className='w-full'>
+                    <thead>
+                      <tr>
+                        <th className={`${STYLES.tableHeader} w-4/12`}>{t('Settings.Name')}</th>
+                        <th className={`${STYLES.tableHeader} w-3/12`}>{t('Settings.Creation date')}</th>
+                        <th className={`${STYLES.tableHeader} w-3/12`}>{t('Settings.Status')}</th>
+                        <th className={`${STYLES.tableHeader} w-2/12`}></th>
+                      </tr>
+                    </thead>
+                    <tbody>
+                      <tr className='border-t border-gray-300 dark:border-gray-700'>
+                        <td className={STYLES.tableCell}>
+                          <div className='flex items-center'>
+                            <span>{t('Settings.Default')}</span>
+                            <FontAwesomeIcon icon={faVoicemail} className='ml-2 h-4 w-4 text-gray-700 dark:text-gray-200' />
+                          </div>
+                        </td>
+                        <td className={STYLES.tableCell}></td>
+                        <td className={STYLES.tableCell}>
+                          {!table.message && 
+                            <div className='flex items-center'>
+                              <FontAwesomeIcon icon={faCircleCheck} className='h-4 w-4 mr-2 text-green-700' />
+                              <span>{t('Settings.Enabled')}</span>
+                            </div>
+                          }
+                        </td>
+                        <td className={`${STYLES.tableCell} w-0 whitespace-nowrap text-right`}>
+                          <div className='flex items-center justify-end opacity-0'>
+                            <Button variant='ghost' disabled>
+                              <FontAwesomeIcon icon={faPlay} className='h-4 w-4 mr-2' />
+                              {t('Settings.Play')}
+                            </Button>
+                            <Button variant='ghost' disabled>
+                              <FontAwesomeIcon icon={faEllipsisVertical} className='h-4 w-4' />
+                            </Button>
+                          </div>
+                        </td>
+                      </tr>
+                      {table.message && (
+                        <tr className='border-t border-gray-300 dark:border-gray-700'>
+                          <td className={STYLES.tableCell}>
+                            <div className='flex items-center'>
+                              <span>{t('Settings.Custom')}</span>
+                            </div>
+                          </td>
+                          <td className={STYLES.tableCell}></td>
+                          <td className={STYLES.tableCell}>
+                            <div className='flex items-center'>
+                              <FontAwesomeIcon icon={faCircleCheck} className='h-4 w-4 mr-2 text-green-700' />
+                              <span>{t('Settings.Enabled')}</span>
+                            </div>
+                          </td>
+                          <td className={`${STYLES.tableCell} w-0 whitespace-nowrap text-right`}>
+                            <div className='flex items-center justify-end'>
+                              <Button variant='ghost' onClick={() => playFileAudioBase64(table.message)}>
+                                <FontAwesomeIcon icon={faPlay} className='h-4 w-4 mr-2' />
+                                {t('Settings.Play')}
+                              </Button>
+                              <Dropdown items={getVoiceMailOptionsTemplate(table.type)} position='top'>
+                                <Button variant='ghost'>
+                                  <FontAwesomeIcon icon={faEllipsisVertical} className='h-4 w-4' />
+                                </Button>
+                              </Dropdown>
+                            </div>
+                          </td>
+                        </tr>
+                      )}
+                    </tbody>
+                  </table>
+                </div>
+              </div>
+            ))}
           </div>
         </div>
       </div>
+
+      {/* Delete confirmation modal */}
+      <Modal
+        show={deleteModal.isOpen}
+        onClose={closeDeleteModal}
+      >
+        <Modal.Content>
+          <div className='mx-auto flex h-12 w-12 flex-shrink-0 items-center justify-center rounded-full sm:mx-0 bg-red-100 dark:bg-red-900'>
+            <FontAwesomeIcon
+              icon={faTriangleExclamation}
+              className='h-6 w-6 text-red-600 dark:text-red-200'
+              aria-hidden='true'
+            />
+          </div>
+          <div className='mt-3 text-center sm:mt-0 sm:ml-4 sm:text-left'>
+            <h3 className='text-lg font-medium leading-6 text-gray-900 dark:text-gray-100'>
+              {t('Settings.Delete message')}
+            </h3>
+            <div className='mt-3'>
+              <p className='text-sm text-gray-500 dark:text-gray-400'>
+                {t('Settings.Are you sure to delete selected message?')}
+              </p>
+            </div>
+          </div>
+        </Modal.Content>
+        <Modal.Actions>
+          <Button variant='danger' onClick={() => handleDeleteMessage(deleteModal.typeToDelete)}>
+            {t('Common.Delete')}
+          </Button>
+          <Button
+            variant='ghost'
+            onClick={closeDeleteModal}
+          >
+            {t('Common.Cancel')}
+          </Button>
+        </Modal.Actions>
+      </Modal>
     </>
   )
 }

@@ -5,13 +5,10 @@ import type { NextPage } from 'next'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import {
   faPalette,
-  faBorderAll,
-  IconDefinition,
   faDatabase,
   faMobile,
   faUsers,
   faIdCardClip,
-  faUser,
   faCircleUser,
   faPuzzlePiece,
   faVoicemail,

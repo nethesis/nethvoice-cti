@@ -255,6 +255,14 @@ export function playFileAudio(audioFileId: any, typeFile: string) {
   eventDispatch('phone-island-audio-player-start', { ...objectPlayAudioFile })
 }
 
+// The event to show the audio player view and play an audio file.
+export function playFileAudioBase64(base64: string) {
+  let objectPlayAudioFile = {
+    base64_audio_file: base64
+  }
+  eventDispatch('phone-island-audio-player-start', { ...objectPlayAudioFile })
+}
+
 // Get favicon element
 export function getHtmlFaviconElement() {
   if (typeof window === 'undefined') {
