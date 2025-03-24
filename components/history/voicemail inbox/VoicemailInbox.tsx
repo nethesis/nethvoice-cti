@@ -488,12 +488,6 @@ export const VoicemailInbox: FC<VoicemailInboxProps> = ({ className }): JSX.Elem
                                   </th>
                                   <th
                                     scope='col'
-                                    className='w-full px-6 py-3 gap-2 text-left text-sm font-medium font-poppins text-gray-900 dark:text-gray-200'
-                                  >
-                                    {t('History.Summary')}
-                                  </th>
-                                  <th
-                                    scope='col'
                                     className='w-0 px-6 py-3 gap-2 text-right text-sm font-medium font-poppins text-gray-900 dark:text-gray-200'
                                   ></th>
                                 </tr>
@@ -585,15 +579,6 @@ export const VoicemailInbox: FC<VoicemailInboxProps> = ({ className }): JSX.Elem
                                           </span>
                                         </div>
                                       </td>
-
-                                      {/* Summary */}
-                                      <td
-                                        className={`${
-                                          voicemail?.id === 0
-                                            ? ''
-                                            : 'border-t border-gray-300 dark:border-gray-600'
-                                        }`}
-                                      ></td>
 
                                       {/* Buttons */}
                                       <td
