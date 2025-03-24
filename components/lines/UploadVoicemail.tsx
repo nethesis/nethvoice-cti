@@ -13,6 +13,7 @@ import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import {
   faXmark,
   faFileArrowUp,
+  faSpinner,
 } from '@fortawesome/free-solid-svg-icons'
 import { closeSideDrawer, formatFileSize } from '../../lib/utils'
 import { Button } from '../common'
@@ -38,6 +39,7 @@ export const UploadVoicemail = forwardRef<HTMLButtonElement, EditVoicemailConten
     const [selectedFile, setSelectedFile] = useState<any>(null)
     const [selectedFileBase64, setSelectedFileBase64] = useState<any>(null)
     const [uploadAudioMessageError, setUploadAudioMessageError] = useState('')
+    const [isValidatingAudio, setIsValidatingAudio] = useState(false)
 
     const user = useSelector((state: RootState) => state.user)
 
@@ -76,17 +78,52 @@ export const UploadVoicemail = forwardRef<HTMLButtonElement, EditVoicemailConten
       { id: 'unavail', value: t('Settings.Unavailable status') },
     ]
 
+    // Function to validate if audio file is playable
+    const validateAudioPlayability = (file: File): Promise<boolean> => {
+      return new Promise((resolve) => {
+        setIsValidatingAudio(true)
+        const audio = new Audio()
+        const fileURL = URL.createObjectURL(file)
+        
+        audio.src = fileURL
+        
+        // Set up event handlers
+        audio.oncanplaythrough = () => {
+          URL.revokeObjectURL(fileURL)
+          setIsValidatingAudio(false)
+          resolve(true)
+        }
+        
+        audio.onerror = () => {
+          URL.revokeObjectURL(fileURL)
+          setErrorFormatMessage(t('Settings.The audio file cannot be played') || '')
+          setIsValidatingAudio(false)
+          resolve(false)
+        }
+        
+        // Set a timeout in case the file takes too long to load
+        setTimeout(() => {
+          if (audio.readyState < 3) { // 3 = HAVE_FUTURE_DATA
+            URL.revokeObjectURL(fileURL)
+            setErrorFormatMessage(t('Settings.Audio file validation timed out') || '')
+            setIsValidatingAudio(false)
+            resolve(false)
+          }
+        }, 5000) // 5 seconds timeout
+      })
+    }
+
     // Function to validate audio file format
     const validateAudioFormat = (file: File): Promise<boolean> => {
       return new Promise((resolve) => {
-      if (!file.type.includes('audio/wav') && !file.type.includes('audio/x-wav') && !file.type.includes('audio/mpeg')) {
-        setErrorFormatMessage(t('Settings.File must be in WAV or MP3 format') || '')
-        resolve(false)
-        return
-      }
-      // File is valid
-      setErrorFormatMessage('')
-      resolve(true)
+        if (!file.type.includes('audio/wav') && !file.type.includes('audio/x-wav') && !file.type.includes('audio/mpeg')) {
+          setErrorFormatMessage(t('Settings.File must be in WAV or MP3 format') || '')
+          resolve(false)
+          return
+        }
+        // File is valid format
+        setErrorFormatMessage('')
+        resolve(true)
       })
     }
 
@@ -96,6 +133,16 @@ export const UploadVoicemail = forwardRef<HTMLButtonElement, EditVoicemailConten
         const isValidFormat = await validateAudioFormat(file)
         
         if (isValidFormat) {
+          // Add playability validation
+          const isPlayable = await validateAudioPlayability(file)
+          
+          if (!isPlayable) {
+            setErrorUpload(true)
+            setSelectedFile(null)
+            setSelectedFileBase64(null)
+            return false
+          }
+          
           setSelectedFile(file)
           const reader = new FileReader()
 
@@ -154,6 +201,9 @@ export const UploadVoicemail = forwardRef<HTMLButtonElement, EditVoicemailConten
 
     function deleteUploadedAnnouncement() {
       setSelectedFile(null)
+      setSelectedFileBase64(null)
+      setErrorUpload(false)
+      setErrorFormatMessage('')
     }
 
     async function saveCreatePhoneSettings() {
@@ -258,21 +308,33 @@ export const UploadVoicemail = forwardRef<HTMLButtonElement, EditVoicemailConten
                     <div className='flex items-center justify-center w-full mt-2'>
                       <label
                         htmlFor='dropzone-file'
-                        className='flex flex-col items-center justify-center w-full border-2 border-dashed border-gray-300 rounded-lg cursor-pointer bg-gray-100 dark:hover:bg-gray-700 dark:bg-gray-800 hover:bg-gray-200 hover:border-gray-400 dark:border-gray-600 dark:hover:border-gray-500'
+                        className={`flex flex-col items-center justify-center w-full border-2 border-dashed border-gray-300 rounded-lg cursor-pointer bg-gray-100 dark:hover:bg-gray-700 dark:bg-gray-800 hover:bg-gray-200 hover:border-gray-400 dark:border-gray-600 dark:hover:border-gray-500 ${isValidatingAudio ? 'opacity-70 pointer-events-none' : ''}`}
                         onDragOver={handleDragOver}
                         onDrop={handleDrop}
                       >
                         <div className='flex flex-col items-center justify-center pt-6 text-gray-600 dark:text-gray-300'>
-                          <FontAwesomeIcon icon={faFileArrowUp} className='w-8 h-8 mb-4' />
-                          <p className='mb-4 text-base font-medium'>
-                            {t('Settings.Drag and drop or click to upload')}
-                          </p>
+                          {isValidatingAudio ? (
+                            <>
+                              <FontAwesomeIcon icon={faSpinner} spin className='w-8 h-8 mb-4' />
+                              <p className='mb-4 text-base font-medium'>
+                                {t('Settings.Validating audio file...')}
+                              </p>
+                            </>
+                          ) : (
+                            <>
+                              <FontAwesomeIcon icon={faFileArrowUp} className='w-8 h-8 mb-4' />
+                              <p className='mb-4 text-base font-medium'>
+                                {t('Settings.Drag and drop or click to upload')}
+                              </p>
+                            </>
+                          )}
                         </div>
                         <input
                           id='dropzone-file'
                           type='file'
                           className='hidden'
                           onChange={handleFileSelect}
+                          disabled={isValidatingAudio}
                         />
                       </label>
                     </div>
@@ -374,7 +436,7 @@ export const UploadVoicemail = forwardRef<HTMLButtonElement, EditVoicemailConten
               type='submit'
               onClick={saveCreatePhoneSettings}
               className='ml-4 mb-4'
-              disabled={!selectedFile ? true : false}
+              disabled={!selectedFile || isValidatingAudio}
             >
               {t('Common.Save')}
             </Button>

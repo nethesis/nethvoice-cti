@@ -350,7 +350,10 @@
     "File must be an audio file": "File must be an audio file",
     "Cannot upload message": "Cannot upload message",
     "Cannot edit message": "Cannot edit message",
-    "Custom": "Custom"
+    "Custom": "Custom",
+    "The audio file cannot be played": "The audio file cannot be played",
+    "Audio file validation timed out": "Audio file validation timed out",
+    "Validating audio file...": "Validating audio file..."
   },
   "TopBar": {
     "Signed in as": "Signed in as",

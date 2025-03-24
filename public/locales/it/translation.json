@@ -329,7 +329,10 @@
     "File must be an audio file": "Il file deve essere un file audio",
     "Cannot upload message": "Impossibile caricare il messaggio",
     "Cannot edit message": "Impossibile modificare il messaggio",
-    "Custom": "Personalizzato"
+    "Custom": "Personalizzato",
+    "The audio file cannot be played": "Il file audio non può essere riprodotto",
+    "Audio file validation timed out": "Validazione del file audio scaduta",
+    "Validating audio file...": "Validazione del file audio in corso..."
   },
   "TopBar": {
     "Signed in as": "Accesso effettuato come",
