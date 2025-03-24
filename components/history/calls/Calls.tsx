@@ -607,16 +607,16 @@ export const Calls: FC<CallsProps> = ({ className }): JSX.Element => {
       <div>
         {profile?.macro_permissions?.cdr?.value ? (
           <div>
-            <Filter
-              updateFilterText={debouncedUpdateFilterText}
-              updateCallTypeFilter={updateCallTypeFilter}
-              updateSortFilter={updateSortFilter}
-              updateCallDirectionFilter={updateCallDirectionFilter}
-              updateDateBeginFilter={updateDateBeginFilter}
-              updateDateEndFilter={updateDateEndFilter}
-            />
-            <div className='flex items-center justify-between mb-6'>
-              <div className='text-gray-900 dark:text-gray-100 flex items-center'>
+            <div className='flex justify-between'>
+              <Filter
+                updateFilterText={debouncedUpdateFilterText}
+                updateCallTypeFilter={updateCallTypeFilter}
+                updateSortFilter={updateSortFilter}
+                updateCallDirectionFilter={updateCallDirectionFilter}
+                updateDateBeginFilter={updateDateBeginFilter}
+                updateDateEndFilter={updateDateEndFilter}
+              />
+              <div className='text-gray-900 dark:text-gray-100 flex items-start'>
                 <Button size='small' variant='white'>
                   <FontAwesomeIcon icon={faArrowUpRightFromSquare} className='mr-2 w-4 h-5' />
                   <a href={pbxReportUrl} target='_blank' rel='noreferrer'>
