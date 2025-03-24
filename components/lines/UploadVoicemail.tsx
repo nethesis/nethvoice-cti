@@ -30,7 +30,6 @@ export interface EditVoicemailContentProps extends ComponentPropsWithRef<'div'> 
 
 export const UploadVoicemail = forwardRef<HTMLButtonElement, EditVoicemailContentProps>(
   ({ config }) => {
-    console.log(config)
     const { t } = useTranslation()
 
     const [selectedType, setSelectedType] = useState('greet')
@@ -170,7 +169,6 @@ export const UploadVoicemail = forwardRef<HTMLButtonElement, EditVoicemailConten
           }
           
           // Proceed with upload regardless of deletion outcome
-          console.log(selectedFileBase64)
           await uploadVoicemailGreetingMessage(selectedType, selectedFileBase64)
         } catch (error) {
           setUploadAudioMessageError(t('Settings.Cannot upload message') || '')
