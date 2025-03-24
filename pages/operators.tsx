@@ -15,7 +15,7 @@ import {
   sortByOperatorStatus,
   UNAVAILABLE_STATUSES,
 } from '../lib/operators'
-import { isEmpty, debounce, capitalize } from 'lodash'
+import { isEmpty, debounce } from 'lodash'
 import { useSelector } from 'react-redux'
 import { RootState } from '../store'
 import { Filter } from '../components/operators'
@@ -1071,8 +1071,8 @@ const Operators: NextPage = () => {
                           rounded='full'
                           className='overflow-hidden ml-1 mb-5 mt-4'
                         >
-                          <div className='truncate w-20 lg:w-16 xl:w-20'>
-                            {upperCaseFirstLetter(category?.category || '')}
+                          <div className='w-auto max-w-[150px] px-1 truncate'>
+                            {upperCaseFirstLetter(category?.category)}
                           </div>
                         </Badge>
                       </div>
