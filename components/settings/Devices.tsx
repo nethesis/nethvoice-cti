@@ -157,7 +157,7 @@ const Devices: NextPage = () => {
         {!isInDropwdown ? (
           <Button variant='ghost' onClick={() => handleDownload(selectedLink)}>
             <FontAwesomeIcon icon={faCircleArrowDown} className='mr-0 lg:mr-2 h-4 w-4' />
-            <span className='hidden lg:inline'>{t('Devices.Download App')}</span>
+            <span className='hidden xl:inline'>{t('Devices.Download App')}</span>
           </Button>
         ) : (
           <div onClick={() => openShowDownloadLinkContent(updatedDownloadLink, currentOS)}>
@@ -335,7 +335,7 @@ const Devices: NextPage = () => {
                     <div className='flex items-center justify-end'>
                       <Button variant='ghost' onClick={() => openShowSwitchDeviceInputOutput('')}>
                         <FontAwesomeIcon icon={faPenToSquare} className='mr-0 lg:mr-2 h-4 w-4' />
-                        <span className='hidden lg:inline'>{t('Devices.Audio and video settings')}</span>
+                        <span className='hidden xl:inline'>{t('Devices.Audio and video settings')}</span>
                       </Button>
                       {webrtcData[0]?.id !== profile?.default_device?.id &&
                       phoneLinkData[0]?.id !== profile?.default_device?.id ? (
@@ -443,7 +443,7 @@ const Devices: NextPage = () => {
                         >
                           <Button variant='ghost'>
                             <FontAwesomeIcon icon={faArrowUpFromBracket} className='mr-0 lg:mr-2 h-4 w-4' />
-                            <span className='hidden lg:inline'>{t('Devices.PhoneLink settings')}</span>
+                            <span className='hidden xl:inline'>{t('Devices.PhoneLink settings')}</span>
                           </Button>
                         </a>
                       ) : (
@@ -554,13 +554,13 @@ const Devices: NextPage = () => {
                             onClick={() => openShowEditPhysicalPhone(phone, pinObject)}
                           >
                             <FontAwesomeIcon icon={faPenToSquare} className='mr-0 lg:mr-2 h-4 w-4' />
-                            <span className='hidden lg:inline'>{t('Devices.Device settings')}</span>
+                            <span className='hidden xl:inline'>{t('Devices.Device settings')}</span>
                           </Button>
                         )}
                         {phone?.id !== profile?.default_device?.id && (
                           <Dropdown
                             items={setMainDeviceMenu(phone?.id, 'physical', phone, false)}
-                            position='top'
+                            position='topMultipleItem'
                           >
                             <Button variant='ghost'>
                               <FontAwesomeIcon

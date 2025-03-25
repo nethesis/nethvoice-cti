@@ -242,6 +242,19 @@ export const VoiceMailContent = () => {
     }
   }
 
+  const getDropdownPosition = (index: number) => {
+    // Get total count of items on current page
+    const totalItemsOnPage = voicemails.length
+    
+    if (totalItemsOnPage === 1) {
+      return 'oneVoicemail';
+    } else if (totalItemsOnPage > 1 && totalItemsOnPage - index <= 1) {
+      return 'topVoicemail';
+    } else {
+      return 'leftVoicemail';
+    }
+  }
+
   return (
     <>
       {/* delete voicemail modal */}
@@ -321,7 +334,7 @@ export const VoiceMailContent = () => {
           )}
           {/* render voicemails */}
           {isVoiceMailLoaded &&
-            voicemails?.map((voicemail) => (
+            voicemails?.map((voicemail, index) => (
               <li key={voicemail?.id}>
                 <div className='gap-4 py-4 px-0'>
                   <div className='flex justify-between gap-3'>
@@ -400,7 +413,7 @@ export const VoiceMailContent = () => {
                         <FontAwesomeIcon icon={faPlay} className='h-4 w-4' />
                         <span className='sr-only'>{t('VoiceMail.Play voicemail')}</span>
                       </Button>
-                      <Dropdown items={getVoiceMailOptionsTemplate(voicemail)} position='left'>
+                      <Dropdown items={getVoiceMailOptionsTemplate(voicemail)} position={getDropdownPosition(index)}>
                         <Button variant='ghost' className='py-2 px-2 h-9 w-9'>
                           <FontAwesomeIcon icon={faEllipsisVertical} className='h-4 w-4' />
                           <span className='sr-only'>{t('VoiceMail.Open voicemail menu')}</span>

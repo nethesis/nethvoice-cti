@@ -311,7 +311,7 @@ export const VoicemailInbox: FC<VoicemailInboxProps> = ({ className }): JSX.Elem
     }
   }
 
-  const getDropdownPosition = (voicemail: any, index: number) => {
+  const getDropdownPosition = (index: number) => {
     // Get total count of items on current page
     const totalItemsOnPage = currentPageVoicemails.length;
     
@@ -602,7 +602,7 @@ export const VoicemailInbox: FC<VoicemailInboxProps> = ({ className }): JSX.Elem
                                           </Button>
                                           <Dropdown
                                             items={getVoiceMailOptionsTemplate(voicemail)}
-                                            position={getDropdownPosition(voicemail, index)}
+                                            position={getDropdownPosition(index)}
                                           >
                                             <Button variant='ghost'>
                                               <FontAwesomeIcon
