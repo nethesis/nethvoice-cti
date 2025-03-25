@@ -6,7 +6,7 @@ import { CallTypes } from '../../lib/history'
 import { Tooltip } from 'react-tooltip'
 import { getOperatorByPhoneNumber } from '../../lib/operators'
 import classNames from 'classnames'
-import { callPhoneNumber, cleanString, transferCallToExtension } from '../../lib/utils'
+import { callPhoneNumber, cleanString, formatPhoneNumber, transferCallToExtension } from '../../lib/utils'
 import { t } from 'i18next'
 import { openCreateLastCallContact, openShowContactDrawer } from '../../lib/phonebook'
 import { useSelector } from 'react-redux'
@@ -139,7 +139,7 @@ export const CallDetails: FC<CallDetailsProps> = ({
                   : callPhoneNumber(direction === 'in' ? call.cnum : call.dst)
               }
             >
-              {direction === 'in' ? call.cnum : call.dst}
+              {direction === 'in' ? formatPhoneNumber(call.cnum) : formatPhoneNumber(call.dst)}
             </div>
           )}
         </>

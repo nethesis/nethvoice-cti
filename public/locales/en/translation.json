@@ -321,10 +321,10 @@
     "Speakers": "Speakers",
     "Microphones": "Microphones",
     "Voicemail": "Voicemail",
-    "Greeting messages": "Greeting messages",
+    "My voicemail messages": "My voicemail messages",
     "Upload message": "Upload message",
     "Record message": "Record message",
-    "Greet status": "Greet status",
+    "Greeting message": "Greeting message",
     "Busy status": "Busy status",
     "Unavailable status": "Unavailable status",
     "Name": "Name",
@@ -353,7 +353,8 @@
     "Custom": "Custom",
     "The audio file cannot be played": "The audio file cannot be played",
     "Audio file validation timed out": "Audio file validation timed out",
-    "Validating audio file...": "Validating audio file..."
+    "Validating audio file...": "Validating audio file...",
+    "Recorded audio file": "Recorded audio file"
   },
   "TopBar": {
     "Signed in as": "Signed in as",
@@ -640,7 +641,8 @@
     "Oldest": "Oldest",
     "Call": "Call",
     "Go to history": "Go to History",
-    "Open lastcalls menu": "Open lastcalls menu"
+    "Open lastcalls menu": "Open lastcalls menu",
+    "Unknown": "Unknown"
   },
   "VoiceMail": {
     "Voicemail inbox": "Voicemail inbox",
@@ -951,7 +953,10 @@
     "Camera": "Camera",
     "All download options": "All download options",
     "Download Desktop app": "Download Desktop phone app",
-    "Operating system": "Operating system"
+    "Operating system": "Operating system",
+    "Devices": "Devices",
+    "Name": "Name",
+    "Default": "Default"
   },
   "DropdownContent": {
     "Microphones": "MICROPHONES",

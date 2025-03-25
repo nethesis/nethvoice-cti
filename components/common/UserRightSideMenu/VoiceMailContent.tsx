@@ -361,7 +361,7 @@ export const VoiceMailContent = () => {
                       <div className='flex items-center truncate text-sm text-primary dark:text-primaryDark'>
                         <FontAwesomeIcon
                           icon={faPhone}
-                          className='mr-1.5 h-4 w-4 flex-shrink-0 text-gray-600 dark:text-gray-300'
+                          className='mr-1.5 h-4 w-4 flex-shrink-0 text-gray-600 dark:text-gray-300 pb-2'
                           aria-hidden='true'
                         />
                         <span
@@ -373,7 +373,7 @@ export const VoiceMailContent = () => {
                         </span>
                       </div>
                       <span
-                        className='font-poppins text-xs leading-4 font-normal text-gray-600 dark:text-gray-300 truncate'
+                        className='font-poppins text-sm leading-4 font-normal text-gray-600 dark:text-gray-300 truncate'
                         title={formatTimestamp(voicemail?.origtime)}
                       >
                         {formatTimestamp(voicemail?.origtime)}
@@ -385,7 +385,7 @@ export const VoiceMailContent = () => {
                           aria-hidden='true'
                         />
                         {voicemail?.duration && (
-                          <span className='font-poppins text-xs leading-4 font-normal text-gray-600 dark:text-gray-300'>
+                          <span className='font-poppins text-sm leading-4 font-normal text-gray-600 dark:text-gray-300'>
                             {formatDuration(voicemail?.duration)}
                           </span>
                         )}

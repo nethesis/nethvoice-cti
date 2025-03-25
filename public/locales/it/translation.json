@@ -300,10 +300,10 @@
     "Speakers": "Altoparlanti",
     "Microphones": "Microfoni",
     "Voicemail": "Casella vocale",
-    "Greeting messages": "Messaggi di saluto",
+    "My voicemail messages": "I miei messaggi vocali",
     "Upload message": "Carica messaggio",
     "Record message": "Registra messaggio",
-    "Greet status": "Stato saluto",
+    "Greeting message": "Messaggio di saluto",
     "Busy status": "Stato occupato",
     "Unavailable status": "Stato non disponibile",
     "Name": "Nome",
@@ -332,7 +332,8 @@
     "Custom": "Personalizzato",
     "The audio file cannot be played": "Il file audio non può essere riprodotto",
     "Audio file validation timed out": "Validazione del file audio scaduta",
-    "Validating audio file...": "Validazione del file audio in corso..."
+    "Validating audio file...": "Validazione del file audio in corso...",
+    "Recorded audio file": "File audio registrato"
   },
   "TopBar": {
     "Signed in as": "Accesso effettuato come",
@@ -507,7 +508,8 @@
     "Oldest": "Meno recenti",
     "Call": "Chiama",
     "Go to history": "Vai allo storico",
-    "Open lastcalls menu": "Apri menu ultime chiamate"
+    "Open lastcalls menu": "Apri menu ultime chiamate",
+    "Unknown": "Sconosciuto"
   },
   "VoiceMail": {
     "Voicemail inbox": "Casella vocale",
@@ -929,7 +931,10 @@
     "Camera": "Video",
     "All download options": "Tutte le opzioni di download",
     "Download Desktop app": "Scarica l'app desktop",
-    "Operating system": "Sistema operativo"
+    "Operating system": "Sistema operativo",
+    "Devices": "Dispositivi",
+    "Name": "Nome",
+    "Default": "Predefinito"
   },
   "DropdownContent": {
     "Microphones": "MICROFONI",

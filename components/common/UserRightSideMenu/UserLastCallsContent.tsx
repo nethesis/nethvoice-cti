@@ -3,7 +3,7 @@
 
 import { useState, useEffect, useRef, useCallback } from 'react'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
-import { faPhone, faChevronDown, faUsers, faSortAmountAsc, faCheck, faEllipsisVertical, faArrowRightLong } from '@fortawesome/free-solid-svg-icons'
+import { faPhone, faUsers, faSortAmountAsc, faCheck, faEllipsisVertical, faArrowRightLong } from '@fortawesome/free-solid-svg-icons'
 import { Button, Avatar, EmptyState, Dropdown, Badge } from '../../common'
 import { useSelector } from 'react-redux'
 import { RootState } from '../../../store'
@@ -217,7 +217,7 @@ export const UserLastCallsContent = () => {
         <span className='border-b border-gray-200 dark:border-gray-700'></span>
         <ul
           role='list'
-          className='flex-1 divide-y overflow-y-auto scrollbar-thin scrollbar-thumb-gray-400 dark:scrollbar-thumb-gray-400 scrollbar-thumb-rounded-full scrollbar-thumb-opacity-50 scrollbar-track-gray-200 dark:scrollbar-track-gray-900 scrollbar-track-rounded-full scrollbar-track-opacity-25 divide-gray-200 dark:divide-gray-700'
+          className='px-6 flex-1 divide-y overflow-y-auto scrollbar-thin scrollbar-thumb-gray-400 dark:scrollbar-thumb-gray-400 scrollbar-thumb-rounded-full scrollbar-thumb-opacity-50 scrollbar-track-gray-200 dark:scrollbar-track-gray-900 scrollbar-track-rounded-full scrollbar-track-opacity-25 divide-gray-200 dark:divide-gray-700'
         >
           {/* skeleton */}
           {isLoading &&
@@ -237,7 +237,7 @@ export const UserLastCallsContent = () => {
             ))}
           {/* empty state */}
           {lastCalls?.length === 0 && (
-            <div className='px-6 py-4'>
+            <div className='py-4'>
               <EmptyState
                 title={t('LastCalls.No calls')}
                 icon={
@@ -250,91 +250,68 @@ export const UserLastCallsContent = () => {
           {lastCalls?.length! > 0 &&
             lastCalls?.map((call: any, key: any) => (
               <li key={key}>
-                <div className='group relative flex items-center py-6 px-5'>
-                  <div
-                    className='absolute inset-0 group-hover:bg-dropdownBgHover dark:group-hover:bg-dropdownBgHoverDark'
-                    aria-hidden='true'
-                  />
-                  <div className='relative flex min-w-0 flex-1 items-center justify-between'>
-                    <div className='flex items-start'>
+                <div className='gap-4 py-4 px-0'>
+                  <div className='flex justify-between gap-3'>
+                    <div className='flex shrink-0 h-min items-center min-w-[48px]'>
+                      <div className='h-2 w-2 flex'>
+                        <span className='h-2 w-2'></span>
+                      </div>
                       <Avatar
-                        size='base'
+                        size='large'
                         placeholderType='person'
                         src={operators[call.username]?.avatarBase64}
                         status={operators[call.username]?.mainPresence}
+                        bordered
                         onClick={() => openLastCardUserDrawer(call)}
+                        className='mx-auto cursor-pointer ml-0.5'
                       />
-                      <div className='ml-4 truncate flex flex-col gap-1.5'>
+                    </div>
+                    <div className='flex flex-col gap-1.5 min-w-0 flex-1'>
+                      <span
+                        className='font-poppins text-sm leading-4 font-medium text-gray-900 dark:text-gray-50 truncate'
+                      >
+                        {call?.cnam !== call?.cnum
+                          ? call?.cnam
+                          : t('LastCalls.Unknown')
+                        }
+                      </span>
+                      <div className='flex items-center truncate text-sm text-primary dark:text-primaryDark'>
                         <div className='flex items-center'>
-                          <div
-                            className={` text-sm font-medium text-gray-700 dark:text-gray-200 ${
-                              call.channel.includes('from-queue')
-                                ? 'w-24 lg:w-16 xl:w-24 truncate'
-                                : 'w-64'
-                            }`}
+                          <UserCallStatusIcon call={call} />
+                          <span 
+                            className='cursor-pointer hover:underline font-poppins text-sm leading-4 font-normal truncate'
+                            title={call.direction === 'in' ? call.src : call.dst}
                           >
-                            {call?.direction === 'in' ? (
+                            {call.direction === 'in' ? (
                               <CallDetails
                                 call={call}
                                 operators={operators}
-                                hideName={true}
-                                fromHistory={false}
-                                isQueueBadgeAvailable={
-                                  call.channel.includes('from-queue') ? true : false
-                                }
+                                hideNumber={true}
+                                highlightNumber={true}
+                                isExtensionNumberLastCalls={true}
                                 direction='in'
                               />
                             ) : (
                               <CallDetails
                                 call={call}
                                 operators={operators}
-                                hideName={true}
-                                fromHistory={false}
-                                isQueueBadgeAvailable={
-                                  call.channel.includes('from-queue') ? true : false
-                                }
+                                hideNumber={true}
+                                highlightNumber={true}
+                                isExtensionNumberLastCalls={true}
                                 direction='out'
                               />
                             )}
-                          </div>
+                          </span>
                         </div>
-                        <div className='truncate text-sm text-primary dark:text-primaryDark'>
-                          <div className='flex items-center'>
-                            <UserCallStatusIcon call={call} />
-                            <span className='cursor-pointer hover:underline'>
-                              {call.direction === 'in' ? (
-                                <CallDetails
-                                  call={call}
-                                  operators={operators}
-                                  hideNumber={true}
-                                  highlightNumber={true}
-                                  isExtensionNumberLastCalls={true}
-                                  direction='in'
-                                />
-                              ) : (
-                                <CallDetails
-                                  call={call}
-                                  operators={operators}
-                                  hideNumber={true}
-                                  highlightNumber={true}
-                                  isExtensionNumberLastCalls={true}
-                                  direction='out'
-                                />
-                              )}
-                            </span>
-                          </div>
-                        </div>
-                        <CallsDate call={call} spaced={true} />
                       </div>
-                    </div>
-                    <div className='absolute right-0 top-[1.0rem] transform -translate-y-1/2 flex gap-2'>
+                      <CallsDate call={call} spaced={true} />
                       {call.channel.includes('from-queue') && (
-                        <>
+                        <div className='flex'>
                           <Badge
                             size='small'
                             variant='offline'
                             rounded='full'
-                            className={`overflow-hidden ml-1 tooltip-queue-${call?.queue}`}
+                            className={`overflow-hidden tooltip-queue-${call?.queue}`}
                             data-tooltip-id={`tooltip-queue-${call?.queue}`}
                             data-tooltip-content={
                               queuesStore?.queues[call?.queue]?.name
@@ -357,7 +334,7 @@ export const UserLastCallsContent = () => {
                           </Badge>
 
                           <Tooltip id={`tooltip-queue-${call?.queue}`} className='pi-z-20' place='left'/>
-                        </>
+                        </div>
                       )}
                     </div>
                   </div>
