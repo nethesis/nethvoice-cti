@@ -38,7 +38,7 @@ export const Voicemail = () => {
   const [isLoading, setIsLoading] = useState(true)
   const [tablesData, setTablesData] = useState([
     {
-      title: t('Settings.Greet status'),
+      title: t('Settings.Greeting message'),
       type: 'greet',
       message: '',
     },
@@ -217,16 +217,16 @@ export const Voicemail = () => {
 
   return (
     <>
-      <div className='gap-8 p-6 flex flex-col'>
+      <div className='p-6 flex flex-col'>
         <div>
-          <h1 className='text-base font-medium text-gray-700 dark:text-gray-200'>
+          <h2 className='text-lg font-medium leading-6 text-gray-900 dark:text-gray-100 mb-6'>
             {t('Settings.Voicemail')}
-          </h1>
+          </h2>
         </div>
         <div className='gap-8 flex flex-col'>
           <div className='flex items-center justify-between'>
-            <h2 className='text-sm font-medium font-poppins text-gray-700 dark:text-gray-200'>
-              {t('Settings.Greeting messages')}
+            <h2 className='text-base font-medium font-poppins text-gray-700 dark:text-gray-200'>
+              {t('Settings.My voicemail messages')}
             </h2>
             <div className='gap-4 flex flex-row'>
               <Dropdown
