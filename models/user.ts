@@ -170,4 +170,15 @@ export const user = createModel<RootModel>()({
       return defaultState
     },
   },
+  selectors: (slice) => ({
+    allowedOperatorGroupsIds: () =>
+      slice((state) => {
+        const presencePermissions =
+          state.profile?.macro_permissions?.presence_panel?.permissions || []
+
+        return Object.keys(presencePermissions).filter(
+          (perm) => perm.startsWith('grp_') && presencePermissions[perm].value,
+        )
+      }),
+  }),
 })

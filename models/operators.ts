@@ -10,7 +10,7 @@ interface DefaultState {
   isLoading: boolean
   userEndpoints: Object
   isUserEndpointsLoaded: boolean
-  groups: Object
+  groups: { [key: string]: { users: string[] } }
   isGroupsLoaded: boolean
   errorMessage: string
   extensions: Object
@@ -63,7 +63,7 @@ export const operators = createModel<RootModel>()({
       state.isUserEndpointsLoaded = isUserEndpointsLoaded
       return state
     },
-    setGroups: (state, groups: Object) => {
+    setGroups: (state, groups: { [key: string]: { users: string[] } }) => {
       state.groups = groups
       return state
     },
