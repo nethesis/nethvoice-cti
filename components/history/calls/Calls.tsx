@@ -26,7 +26,7 @@ import { subDays, startOfDay } from 'date-fns'
 import { InlineNotification, EmptyState, Dropdown, Button } from '../../common'
 import { MissingPermission } from '../../common/MissingPermissionsPage'
 import { CallsDate } from '../CallsDate'
-import { Filter } from '../Filter'
+import { Filter } from './Filter'
 import { useSelector } from 'react-redux'
 import { RootState } from '../../../store'
 import { faMissed } from '@nethesis/nethesis-solid-svg-icons'
@@ -617,8 +617,8 @@ export const Calls: FC<CallsProps> = ({ className }): JSX.Element => {
                 updateDateEndFilter={updateDateEndFilter}
               />
               <div className='text-gray-900 dark:text-gray-100 flex items-start'>
-                <Button size='small' variant='white'>
-                  <FontAwesomeIcon icon={faArrowUpRightFromSquare} className='mr-2 w-4 h-5' />
+                <Button variant='white' className='gap-2'>
+                  <FontAwesomeIcon icon={faArrowUpRightFromSquare} className='w-4 h-4' />
                   <a href={pbxReportUrl} target='_blank' rel='noreferrer'>
                     {t('Applications.Open PBX Report')}
                   </a>
@@ -628,14 +628,14 @@ export const Calls: FC<CallsProps> = ({ className }): JSX.Element => {
             {historyError && (
               <InlineNotification type='error' title={historyError}></InlineNotification>
             )}
-            {!historyError && (
+            {!historyError && isHistoryLoaded && (
               <div className='mx-auto'>
                 <div className='flex flex-col'>
                   <div className='-my-2 -mx-4 overflow-x-auto sm:-mx-6 lg:-mx-8'>
                     <div className='inline-block min-w-full py-2 align-middle px-2 md:px-6 lg:px-8'>
                       <div className='overflow-hidden shadow ring-1 md:rounded-lg ring-opacity-5 dark:ring-opacity-5 ring-gray-900 dark:ring-gray-100 border-[1px] border-solid rounded-xl dark:border-gray-600'>
                         {/* empty state */}
-                        {isHistoryLoaded && history?.count === 0 && (
+                        {history?.count === 0 && (
                           <EmptyState
                             title={t('History.No calls')}
                             description={t('History.There are no calls in your history') || ''}
@@ -649,201 +649,175 @@ export const Calls: FC<CallsProps> = ({ className }): JSX.Element => {
                           ></EmptyState>
                         )}
                         {/* history table */}
-                        {isHistoryLoaded && history?.count !== 0 && (
+                        {history?.count !== 0 && (
                           <div className='overflow-y-auto scrollbar-thin scrollbar-thumb-gray-400 dark:scrollbar-thumb-gray-400 scrollbar-thumb-rounded-full scrollbar-thumb-opacity-50 scrollbar-track-gray-200 dark:scrollbar-track-gray-900 scrollbar-track-rounded-full scrollbar-track-opacity-25'>
-                            <div className='max-h-[36rem]'>
-                              <table className='min-w-full divide-y divide-gray-300 dark:divide-gray-700'>
-                                <thead className='sticky top-0 bg-gray-100 dark:bg-gray-800 z-[1]'>
-                                  <tr>
-                                    <th
-                                      scope='col'
-                                      className='py-3.5 pl-4 pr-3 text-left text-sm font-semibold text-gray-700 dark:text-gray-100 sm:pl-6'
+                            <table className='min-w-full divide-y divide-gray-300 dark:divide-gray-700'>
+                              <thead className='sticky top-0 bg-gray-100 dark:bg-gray-800 z-[1]'>
+                                <tr>
+                                  <th
+                                    scope='col'
+                                    className='px-6 py-3.5 text-left text-sm font-semibold text-gray-700 dark:text-gray-100'
+                                  >
+                                    {t('History.Date')}
+                                  </th>
+                                  <th
+                                    scope='col'
+                                    className='px-6 py-3.5 text-left text-sm font-semibold text-gray-700 dark:text-gray-100 w-0'
+                                  >
+                                    {t('History.Source')}
+                                  </th>
+                                  {/* Arrow column */}
+                                  <th
+                                    scope='col'
+                                    className='px-6 py-3.5 text-left text-sm font-semibold text-gray-700 dark:text-gray-100 w-0'
+                                  ></th>
+                                  <th
+                                    scope='col'
+                                    className='px-6 py-3.5 text-left text-sm font-semibold text-gray-700 dark:text-gray-100'
+                                  >
+                                    {t('History.Destination')}
+                                  </th>
+                                  <th
+                                    scope='col'
+                                    className='px-6 py-3.5 text-left text-sm font-semibold text-gray-700 dark:text-gray-100'
+                                  >
+                                    {t('History.Duration')}
+                                  </th>
+                                  <th
+                                    scope='col'
+                                    className='px-6 py-3.5 text-left text-sm font-semibold text-gray-700 dark:text-gray-100'
+                                  >
+                                    {t('History.Outcome')}
+                                  </th>
+                                  <th
+                                    scope='col'
+                                    className='px-6 py-3.5 text-left text-sm font-semibold text-gray-700 dark:text-gray-100'
+                                  >
+                                    {t('History.Recording')}
+                                  </th>
+                                </tr>
+                              </thead>
+                              <tbody className='bg-white dark:bg-gray-950 text-gray-700 text-sm'>
+                                {/* Not empty state  */}
+                                {history?.rows &&
+                                  history.rows.map((call: any, index: number) => (
+                                    <tr
+                                      key={index}
+                                      className={`${
+                                        index === 0
+                                          ? ''
+                                          : 'border-t border-gray-300 dark:border-gray-600'
+                                      } h-20`}
                                     >
-                                      {t('History.Date')}
-                                    </th>
-                                    <th
-                                      scope='col'
-                                      className='px-3 py-3.5 text-left text-sm font-semibold text-gray-700 dark:text-gray-100'
-                                    >
-                                      {t('History.Source')}
-                                    </th>
-                                    {/* Arrow column */}
-                                    <th
-                                      scope='col'
-                                      className='px-3 py-3.5 text-left text-sm font-semibold text-gray-700 dark:text-gray-100'
-                                    ></th>
-                                    <th
-                                      scope='col'
-                                      className='px-3 py-3.5 text-left text-sm font-semibold text-gray-700 dark:text-gray-100'
-                                    >
-                                      {t('History.Destination')}
-                                    </th>
-                                    <th
-                                      scope='col'
-                                      className='px-3 py-3.5 text-left text-sm font-semibold text-gray-700 dark:text-gray-100'
-                                    >
-                                      {t('History.Duration')}
-                                    </th>
-                                    <th
-                                      scope='col'
-                                      className='px-3 py-3.5 text-left text-sm font-semibold text-gray-700 dark:text-gray-100'
-                                    >
-                                      {t('History.Outcome')}
-                                    </th>
-                                    <th
-                                      scope='col'
-                                      className='px-3 py-3.5 text-left text-sm font-semibold text-gray-700 dark:text-gray-100'
-                                    >
-                                      {t('History.Recording')}
-                                    </th>
-                                  </tr>
-                                </thead>
-                                <tbody className='bg-white dark:bg-gray-950 text-gray-700 text-sm'>
-                                  {/* Not empty state  */}
-                                  {isHistoryLoaded &&
-                                    history?.rows &&
-                                    history.rows.map((call: any, index: number) => (
-                                      <tr key={index}>
-                                        {/* Date */}
-                                        <td className='whitespace-nowrap py-4 pl-4 pr-3 sm:pl-6 relative'>
-                                          <CallsDate call={call} />
-                                          {/* row divider  */}
-                                          {index !== 0 ? (
-                                            <div className='absolute -top-[0.03rem] left-6 right-0 h-px bg-gray-300 dark:bg-gray-600' />
-                                          ) : null}
-                                        </td>
+                                      {/* Date */}
+                                      <td className='whitespace-nowrap px-6 py-4 sm:pl-6'>
+                                        <CallsDate call={call} />
+                                        {/* row divider  */}
+                                        {index !== 0 ? (
+                                          <div className='absolute -top-[0.03rem] left-6 right-0 h-px bg-gray-300 dark:bg-gray-600' />
+                                        ) : null}
+                                      </td>
 
-                                        {/* Source */}
-                                        <td
-                                          className={`${
-                                            index === 0
-                                              ? ''
-                                              : 'border-t border-gray-300 dark:border-gray-600'
-                                          } py-4 px-3 relative`}
+                                      {/* Source */}
+                                      <td className='py-4 px-6'>
+                                        <div
+                                          onClick={() => {
+                                            openDrawerHistory(
+                                              call.cnam,
+                                              call.ccompany,
+                                              call.cnum || call.src,
+                                              callType,
+                                              operators,
+                                            )
+                                          }}
                                         >
-                                          <div
-                                            onClick={() => {
-                                              openDrawerHistory(
-                                                call.cnam,
-                                                call.ccompany,
-                                                call.cnum || call.src,
-                                                callType,
-                                                operators,
-                                              )
-                                            }}
-                                          >
-                                            {checkTypeSource(call)}
-                                          </div>
-                                        </td>
+                                          {checkTypeSource(call)}
+                                        </div>
+                                      </td>
 
-                                        {/* Icon column */}
-                                        <td
-                                          className={`${
-                                            index === 0
-                                              ? ''
-                                              : 'border-t border-gray-300 dark:border-gray-600'
-                                          } pl-2 pr-6 py-4`}
+                                      {/* Icon column */}
+                                      <td className='px-6 py-4'>
+                                        <FontAwesomeIcon
+                                          icon={faArrowRight}
+                                          className='ml-0 h-4 w-4 flex-shrink-0 text-gray-500 dark:text-gray-600'
+                                          aria-hidden='true'
+                                        />
+                                      </td>
+
+                                      {/* Destination */}
+                                      <td className='px-6 py-4'>
+                                        <div
+                                          onClick={() =>
+                                            openDrawerHistory(
+                                              call.dst_cnam,
+                                              call.dst_ccompany,
+                                              call.dst,
+                                              callType,
+                                              operators,
+                                            )
+                                          }
                                         >
-                                          <FontAwesomeIcon
-                                            icon={faArrowRight}
-                                            className='ml-0 h-4 w-4 flex-shrink-0 text-gray-500 dark:text-gray-600'
-                                            aria-hidden='true'
-                                          />
-                                        </td>
+                                          {checkTypeDestination(call)}
+                                        </div>
+                                      </td>
 
-                                        {/* Destination */}
-                                        <td
-                                          className={`${
-                                            index === 0
-                                              ? ''
-                                              : 'border-t border-gray-300 dark:border-gray-600'
-                                          } px-3 py-4`}
-                                        >
-                                          <div
-                                            onClick={() =>
-                                              openDrawerHistory(
-                                                call.dst_cnam,
-                                                call.dst_ccompany,
-                                                call.dst,
-                                                callType,
-                                                operators,
-                                              )
-                                            }
-                                          >
-                                            {checkTypeDestination(call)}
-                                          </div>
-                                        </td>
+                                      {/* Duration */}
+                                      <td className='px-6 py-4'>
+                                        <div className='text-sm text-gray-900 dark:text-gray-100'>
+                                          {!call.duration
+                                            ? '0 second'
+                                            : toDaysMinutesSeconds(call.duration)}
+                                        </div>
+                                      </td>
 
-                                        {/* Duration */}
-                                        <td
-                                          className={`${
-                                            index === 0
-                                              ? ''
-                                              : 'border-t border-gray-300 dark:border-gray-600'
-                                          } px-3 py-4`}
-                                        >
-                                          <div className='text-sm text-gray-900 dark:text-gray-100'>
-                                            {!call.duration
-                                              ? '0 second'
-                                              : toDaysMinutesSeconds(call.duration)}
-                                          </div>
-                                        </td>
+                                      {/* Outcome */}
+                                      <td className='px-6 py-4'>
+                                        <div>{checkIconUser(call)}</div>
+                                      </td>
 
-                                        {/* Outcome */}
-                                        <td
-                                          className={`${
-                                            index === 0
-                                              ? ''
-                                              : 'border-t border-gray-300 dark:border-gray-600'
-                                          } px-3 py-4`}
-                                        >
-                                          <div>{checkIconUser(call)}</div>
-                                        </td>
-
-                                        {/* Recording */}
-                                        <td className='px-3 py-4 relative'>
-                                          {call?.recordingfile ? (
-                                            <div className='flex space-x-1 items-center'>
-                                              <Button
-                                                variant='white'
-                                                onClick={() => playSelectedAudioFile(call.uniqueid)}
-                                              >
+                                      {/* Recording */}
+                                      <td className='px-6 py-4'>
+                                        {call?.recordingfile ? (
+                                          <div className='flex space-x-1 items-center'>
+                                            <Button
+                                              variant='white'
+                                              onClick={() => playSelectedAudioFile(call.uniqueid)}
+                                            >
+                                              <FontAwesomeIcon
+                                                icon={faPlay}
+                                                className='h-4 w-4 mr-2 text-primary dark:text-gray-100'
+                                                aria-hidden='true'
+                                              />
+                                              {t('History.Play')}
+                                            </Button>
+                                            <Dropdown
+                                              items={getRecordingActions(call?.uniqueid)}
+                                              position='left'
+                                            >
+                                              <Button variant='ghost'>
                                                 <FontAwesomeIcon
-                                                  icon={faPlay}
-                                                  className='h-4 w-4 mr-2 text-primary dark:text-gray-100'
-                                                  aria-hidden='true'
+                                                  icon={faEllipsisVertical}
+                                                  className='h-4 w-4 text-primary dark:text-gray-100'
                                                 />
-                                                {t('History.Play')}
+                                                <span className='sr-only'>
+                                                  {t('History.Open recording action modal')}
+                                                </span>
                                               </Button>
-                                              <Dropdown
-                                                items={getRecordingActions(call?.uniqueid)}
-                                                position='left'
-                                              >
-                                                <Button variant='ghost'>
-                                                  <FontAwesomeIcon
-                                                    icon={faEllipsisVertical}
-                                                    className='h-4 w-4 text-primary dark:text-gray-100'
-                                                  />
-                                                  <span className='sr-only'>
-                                                    {t('History.Open recording action modal')}
-                                                  </span>
-                                                </Button>
-                                              </Dropdown>
-                                            </div>
-                                          ) : (
-                                            <div className='flex text-gray-500 dark:text-gray-600'>
-                                              -
-                                            </div>
-                                          )}
-                                          {index !== 0 ? (
-                                            <div className='absolute -top-[0.03rem] left-0 right-6 h-px bg-gray-300 dark:bg-gray-600' />
-                                          ) : null}
-                                        </td>
-                                      </tr>
-                                    ))}
-                                </tbody>
-                              </table>
-                            </div>
+                                            </Dropdown>
+                                          </div>
+                                        ) : (
+                                          <div className='flex text-gray-500 dark:text-gray-600'>
+                                            -
+                                          </div>
+                                        )}
+                                        {index !== 0 ? (
+                                          <div className='absolute -top-[0.03rem] left-0 right-6 h-px bg-gray-300 dark:bg-gray-600' />
+                                        ) : null}
+                                      </td>
+                                    </tr>
+                                  ))}
+                              </tbody>
+                            </table>
                           </div>
                         )}
                       </div>
@@ -853,27 +827,26 @@ export const Calls: FC<CallsProps> = ({ className }): JSX.Element => {
               </div>
             )}
 
-            {/* skeleton  */}
+            {/* skeleton */}
             {!isHistoryLoaded && (
               <table className='min-w-full divide-y divide-gray-300 dark:divide-gray-700 bg-white dark:bg-gray-950 overflow-hidden rounded-lg'>
                 <thead>
                   <tr>
                     {Array.from(Array(6)).map((_, index) => (
-                      <th key={`th-${index}`}>
-                        <div className='px-6 py-3.5'>
-                          <div className='animate-pulse h-5 rounded bg-gray-300 dark:bg-gray-600'></div>
-                        </div>
+                      <th key={`th-${index}`} className='px-6 py-3.5'>
+                        <div className='animate-pulse h-5 rounded bg-gray-300 dark:bg-gray-600'></div>
                       </th>
                     ))}
                   </tr>
                 </thead>
                 <tbody>
-                  {Array.from(Array(8)).map((_, secondIndex) => (
-                    <tr key={`tr-${secondIndex}`}>
-                      {Array.from(Array(6)).map((_, thirdIndex) => (
-                        <td key={`td-${secondIndex}-${thirdIndex}`}>
-                          <div className='px-6 py-6'>
-                            <div className='animate-pulse h-5 rounded bg-gray-300 dark:bg-gray-600'></div>
+                  {Array.from(Array(8)).map((_, rowIndex) => (
+                    <tr key={`tr-${rowIndex}`} className='border-t border-gray-300 dark:border-gray-700'>
+                      {Array.from(Array(6)).map((_, colIndex) => (
+                        <td key={`td-${rowIndex}-${colIndex}`} className='px-6 py-4'>
+                          <div className='animate-pulse space-y-2'>
+                            <div className='h-4 rounded bg-gray-300 dark:bg-gray-600'></div>
+                            <div className='h-4 w-3/4 rounded bg-gray-300 dark:bg-gray-600'></div>
                           </div>
                         </td>
                       ))}
@@ -886,7 +859,7 @@ export const Calls: FC<CallsProps> = ({ className }): JSX.Element => {
             {/* pagination */}
             {totalPages > 1 && (
               <nav
-                className='flex items-center justify-between border-t px-0 py-4 border-gray-100 bg-body dark:bg-bodyDark dark:border-gray-800 '
+                className='flex items-center justify-between px-0 py-4 bg-body dark:bg-bodyDark'
                 aria-label='Pagination'
               >
                 <div className='hidden sm:block'>

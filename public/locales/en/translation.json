@@ -69,7 +69,8 @@
     "Copied to clipboard": "Copied to clipboard",
     "Copy to clipboard": "Copy to clipboard",
     "Back": "Back",
-    "Delete all": "Delete all"
+    "Delete all": "Delete all",
+    "Deleting...": "Deleting..."
   },
   "Login": {
     "User": "Username",
@@ -194,7 +195,9 @@
     "voicemails": "voicemails",
     "No matching voicemails": "No matching voicemails",
     "No voicemails match your search criteria": "No voicemails match your search criteria",
-    "Voicemail filters": "Voicemail filters"
+    "Voicemail filters": "Voicemail filters",
+    "No voicemails": "No voicemails",
+    "There are no voicemails in your history": "There are no voicemails in your history"
   },
   "Operators": {
     "Operators": "Operators",

@@ -15,7 +15,6 @@
  * @param rounded - The border radius of the input.
  * @param squared - The squared corners of the input.
  * @param onIconClick - The callback on icon click.
- * @param showSearchIcon - Whether to show a search icon in the placeholder.
  *
  */
 
@@ -25,7 +24,6 @@ import { useTheme } from '../../theme/Context'
 import classNames from 'classnames'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { IconDefinition } from '@fortawesome/fontawesome-common-types'
-import { faSearch } from '@fortawesome/free-solid-svg-icons'
 
 export interface TextInputProps extends Omit<ComponentProps<'input'>, 'ref' | 'color' | 'size'> {
   label?: string
@@ -38,7 +36,6 @@ export interface TextInputProps extends Omit<ComponentProps<'input'>, 'ref' | 'c
   rounded?: 'base' | 'full'
   squared?: 'left' | 'right' | 'top' | 'bottom'
   onIconClick?: () => void
-  showSearchIcon?: boolean
 }
 
 export const TextInput = forwardRef<HTMLInputElement, TextInputProps>(
@@ -57,7 +54,6 @@ export const TextInput = forwardRef<HTMLInputElement, TextInputProps>(
       onIconClick,
       id,
       className,
-      showSearchIcon,
       ...props
     },
     ref,
@@ -72,14 +68,6 @@ export const TextInput = forwardRef<HTMLInputElement, TextInputProps>(
           </label>
         )}
         <div className='relative'>
-          {showSearchIcon && (
-            <div className={classNames(theme.icon.base, theme.icon.left)}>
-              <FontAwesomeIcon
-                icon={faSearch}
-                className='text-gray-900 h-4 w-4 dark:text-gray-200'
-              />
-            </div>
-          )}
           {Icon && (
             <div
               className={classNames(
@@ -109,7 +97,7 @@ export const TextInput = forwardRef<HTMLInputElement, TextInputProps>(
               squared ? theme.squared[squared] : '',
               size && size === 'large' ? theme.size.large : theme.size.base,
               !error ? theme.colors.gray : theme.colors.error,
-              (Icon && !trailingIcon) || showSearchIcon ? 'pl-10' : '',
+              (Icon && !trailingIcon) ? 'pl-10' : '',
               error ? theme.placeholder.error : theme.placeholder.base,
               'text-gray-900',
             )}

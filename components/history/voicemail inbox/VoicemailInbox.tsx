@@ -17,6 +17,7 @@ import {
   faTriangleExclamation,
   faArrowRight,
   faCircle,
+  faVoicemail,
 } from '@fortawesome/free-solid-svg-icons'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { t } from 'i18next'
@@ -175,7 +176,7 @@ export const VoicemailInbox: FC<VoicemailInboxProps> = ({ className }): JSX.Elem
     if (voicemails && voicemails.length) {
       const sortedVoicemails = [...voicemails].sort((a, b) => {
         // Sort by date
-        return sort === 'asc' ? a.origtime - b.origtime : b.origtime - a.origtime
+        return sort === 'time%20asc' ? a.origtime - b.origtime : b.origtime - a.origtime
       })
       setVoicemails(sortedVoicemails)
     }
@@ -318,9 +319,9 @@ export const VoicemailInbox: FC<VoicemailInboxProps> = ({ className }): JSX.Elem
     if (totalItemsOnPage === 1) {
       return 'oneVoicemail';
     } else if (totalItemsOnPage > 1 && totalItemsOnPage - index <= 1) {
-      return 'topVoicemail';
+      return 'leftUpVoicemail';
     } else {
-      return 'leftVoicemail';
+      return 'leftDownVoicemail';
     }
   }
 
@@ -409,12 +410,12 @@ export const VoicemailInbox: FC<VoicemailInboxProps> = ({ className }): JSX.Elem
       </Modal>
       {profile?.macro_permissions?.cdr?.value ? (
         <div>
-          <div className='flex items-center justify-between mb-8'>
+          <div className='flex justify-between'>
             <Filter
               updateFilterText={debouncedUpdateFilterText}
               updateSortFilter={updateSortFilter}
             />
-            <div className='flex gap-4'>
+            <div className='flex gap-4 items-start'>
               <Button
                 variant='ghost'
                 className='gap-2'
@@ -435,26 +436,26 @@ export const VoicemailInbox: FC<VoicemailInboxProps> = ({ className }): JSX.Elem
           {voicemailError && (
             <InlineNotification type='error' title={voicemailError}></InlineNotification>
           )}
-          {!voicemailError && (
+          {!voicemailError && isVoicemailLoaded && (
             <div className='mx-auto'>
               <div className='flex flex-col'>
                 <div className='-my-2 -mx-4 overflow-x-auto sm:-mx-6 lg:-mx-8'>
-                  <div className='inline-block min-w-full align-middle px-2 pb-2 md:px-6 lg:px-8'>
+                  <div className='inline-block min-w-full py-2 align-middle px-2 md:px-6 lg:px-8'>
                     <div className='overflow-hidden shadow ring-1 md:rounded-lg ring-opacity-5 dark:ring-opacity-5 ring-gray-900 dark:ring-gray-100 border-[1px] border-solid rounded-xl dark:border-gray-600'>
                       {/* empty state - show when filtered results are empty too */}
-                      {isVoicemailLoaded && filteredVoicemails?.length === 0 && (
+                      {filteredVoicemails?.length === 0 && (
                         <EmptyState
                           title={
-                            searchTerm ? t('History.No matching voicemails') : t('History.No calls')
+                            searchTerm ? t('History.No matching voicemails') : t('History.No voicemails')
                           }
                           description={
                             searchTerm
                               ? t('History.No voicemails match your search criteria') || ''
-                              : t('History.There are no calls in your history') || ''
+                              : t('History.There are no voicemails in your history') || ''
                           }
                           icon={
                             <FontAwesomeIcon
-                              icon={faPhone}
+                              icon={faVoicemail}
                               className='mx-auto h-12 w-12'
                               aria-hidden='true'
                             />
@@ -462,165 +463,145 @@ export const VoicemailInbox: FC<VoicemailInboxProps> = ({ className }): JSX.Elem
                         ></EmptyState>
                       )}
                       {/* history table */}
-                      {isVoicemailLoaded && filteredVoicemails?.length !== 0 && (
+                      {filteredVoicemails?.length !== 0 && (
                         <div className='overflow-y-auto scrollbar-thin scrollbar-thumb-gray-400 dark:scrollbar-thumb-gray-400 scrollbar-thumb-rounded-full scrollbar-thumb-opacity-50 scrollbar-track-gray-200 dark:scrollbar-track-gray-900 scrollbar-track-rounded-full scrollbar-track-opacity-25'>
-                          <div className='max-h-[36rem]'>
-                            <table className='min-w-full divide-y divide-gray-300 dark:divide-gray-700'>
-                              <thead className='bg-gray-100 dark:bg-gray-800 sticky top-0 z-10'>
-                                <tr>
-                                  <th
-                                    scope='col'
-                                    className='w-0 px-6 py-3 gap-2 text-left text-sm font-medium font-poppins text-gray-900 dark:text-gray-200'
+                          <table className='min-w-full divide-y divide-gray-300 dark:divide-gray-700'>
+                            <thead className='bg-gray-100 dark:bg-gray-800 sticky top-0'>
+                              <tr>
+                                <th
+                                  scope='col'
+                                  className='px-6 py-3.5 gap-2 text-left text-sm font-semibold text-gray-700 dark:text-gray-100'
+                                >
+                                  {t('History.Caller')}
+                                </th>
+                                <th
+                                  scope='col'
+                                  className='px-6 py-3.5 gap-2 text-left text-sm font-semibold text-gray-700 dark:text-gray-100'
+                                >
+                                  {t('History.Date')}
+                                </th>
+                                <th
+                                  scope='col'
+                                  className='px-6 py-3.5 gap-2 text-left text-sm font-semibold text-gray-700 dark:text-gray-100'
+                                >
+                                  {t('History.Duration')}
+                                </th>
+                                <th
+                                  scope='col'
+                                  className='px-6 py-3.5 gap-2 text-left text-sm font-semibold text-gray-700 dark:text-gray-100'
+                                ></th>
+                              </tr>
+                            </thead>
+                            <tbody>
+                              {/* Not empty state  */}
+                              {currentPageVoicemails.map((voicemail, index) => (
+                                  <tr 
+                                    key={voicemail?.id}
+                                    className={`${
+                                      index === 0
+                                        ? ''
+                                        : 'border-t border-gray-300 dark:border-gray-600'
+                                    } h-20`}
                                   >
-                                    {t('History.Caller')}
-                                  </th>
-                                  <th
-                                    scope='col'
-                                    className='w-0 px-6 py-3 gap-2 text-left text-sm font-medium font-poppins text-gray-900 dark:text-gray-200'
-                                  >
-                                    {t('History.Date')}
-                                  </th>
-                                  <th
-                                    scope='col'
-                                    className='w-0 px-6 py-3 gap-2 text-left text-sm font-medium font-poppins text-gray-900 dark:text-gray-200'
-                                  >
-                                    {t('History.Duration')}
-                                  </th>
-                                  <th
-                                    scope='col'
-                                    className='w-0 px-6 py-3 gap-2 text-right text-sm font-medium font-poppins text-gray-900 dark:text-gray-200'
-                                  ></th>
-                                </tr>
-                              </thead>
-                              <tbody>
-                                {/* Not empty state  */}
-                                {isVoicemailLoaded &&
-                                  currentPageVoicemails.map((voicemail, index) => (
-                                    <tr key={voicemail?.id}>
-                                      {/* Caller */}
-                                      <td
-                                        className={`w-0 whitespace-nowrap ${
-                                          voicemail?.id === 0
-                                            ? ''
-                                            : 'border-t border-gray-300 dark:border-gray-600'
-                                        }`}
-                                      >
-                                        <div className='flex px-6 py-4 items-center'>
-                                          <div className='h-2 w-2 flex'>
-                                            {voicemail.type === 'inbox' ? (
-                                              <FontAwesomeIcon
-                                                icon={faCircle}
-                                                className='h-2 w-2 text-rose-700'
-                                              />
-                                            ) : (
-                                              <span className='h-2 w-2'></span>
-                                            )}
-                                          </div>
-                                          <Avatar
-                                            src={voicemail?.caller_operator?.avatarBase64}
-                                            placeholderType='operator'
-                                            size='large'
-                                            bordered
-                                            onClick={() =>
-                                              voicemail?.caller_operator?.name !==
-                                                t('VoiceMail.Unknown') &&
-                                              openDrawerOperator(voicemail?.caller_operator)
-                                            }
-                                            className={`mx-auto mr-2 ml-0.5 ${
-                                              voicemail?.caller_operator?.name !==
-                                              t('VoiceMail.Unknown')
-                                                ? 'cursor-pointer'
-                                                : 'cursor-default'
-                                            }`}
-                                            status={voicemail?.caller_operator?.mainPresence}
-                                          />
-                                          <div className='flex flex-col gap-1.5 w-full'>
-                                            <span className='font-poppins text-sm leading-4 font-medium text-gray-700 dark:text-gray-50'>
-                                              {voicemail?.caller_operator?.name !== 'unknown'
-                                                ? voicemail.caller_operator.name
-                                                : t('VoiceMail.Unknown')}
-                                            </span>
-                                            <span
-                                              className='cursor-pointer hover:underline font-poppins text-sm font-normal text-primary dark:text-primaryDark'
-                                              onClick={() => quickCall(voicemail)}
-                                            >
-                                              {voicemail?.caller_number}
-                                            </span>
-                                          </div>
-                                        </div>
-                                      </td>
-
-                                      {/* Date */}
-                                      <td
-                                        className={`${
-                                          voicemail?.id === 0
-                                            ? ''
-                                            : 'border-t border-gray-300 dark:border-gray-600'
-                                        }`}
-                                      >
-                                        <div className='px-6 py-4 gap-6'>
-                                          <span className='font-poppins text-xs font-normal text-gray-600 dark:text-gray-300 whitespace-nowrap'>
-                                            {formatTimestamp(voicemail?.origtime)}
-                                          </span>
-                                        </div>
-                                      </td>
-
-                                      {/* Duration */}
-                                      <td
-                                        className={`${
-                                          voicemail?.id === 0
-                                            ? ''
-                                            : 'border-t border-gray-300 dark:border-gray-600'
-                                        }`}
-                                      >
-                                        <div className='px-6 py-4 gap-6'>
-                                          <span className='font-poppins text-xs font-normal text-gray-600 dark:text-gray-300'>
-                                            {formatDuration(voicemail?.duration)}
-                                          </span>
-                                        </div>
-                                      </td>
-
-                                      {/* Buttons */}
-                                      <td
-                                        className={`w-0 whitespace-nowrap text-right ${
-                                          voicemail?.id === 0
-                                            ? ''
-                                            : 'border-t border-gray-300 dark:border-gray-600'
-                                        }`}
-                                      >
-                                        <div className='flex items-center justify-end px-6 py-4 space-x-1'>
-                                          <Button
-                                            variant='ghost'
-                                            onClick={() => playSelectedVoicemail(voicemail?.id)}
-                                          >
+                                    {/* Caller */}
+                                    <td>
+                                      <div className='flex px-6 py-2 items-center'>
+                                        <div className='h-2 w-2 flex'>
+                                          {voicemail.type === 'inbox' ? (
                                             <FontAwesomeIcon
-                                              icon={faPlay}
-                                              className='h-4 w-4 mr-2'
-                                              aria-hidden='true'
+                                              icon={faCircle}
+                                              className='h-2 w-2 text-rose-700'
                                             />
-                                            {t('History.Play')}
-                                          </Button>
-                                          <Dropdown
-                                            items={getVoiceMailOptionsTemplate(voicemail)}
-                                            position={getDropdownPosition(index)}
-                                          >
-                                            <Button variant='ghost'>
-                                              <FontAwesomeIcon
-                                                icon={faEllipsisVertical}
-                                                className='h-4 w-4'
-                                              />
-                                              <span className='sr-only'>
-                                                {t('History.Open recording action modal')}
-                                              </span>
-                                            </Button>
-                                          </Dropdown>
+                                          ) : (
+                                            <span className='h-2 w-2'></span>
+                                          )}
                                         </div>
-                                      </td>
-                                    </tr>
-                                  ))}
-                              </tbody>
-                            </table>
-                          </div>
+                                        <Avatar
+                                          src={voicemail?.caller_operator?.avatarBase64}
+                                          placeholderType='operator'
+                                          size='large'
+                                          bordered
+                                          onClick={() =>
+                                            voicemail?.caller_operator?.name !==
+                                              t('VoiceMail.Unknown') &&
+                                            openDrawerOperator(voicemail?.caller_operator)
+                                          }
+                                          className={`mx-auto mr-2 ml-0.5 ${
+                                            voicemail?.caller_operator?.name !==
+                                            t('VoiceMail.Unknown')
+                                              ? 'cursor-pointer'
+                                              : 'cursor-default'
+                                          }`}
+                                          status={voicemail?.caller_operator?.mainPresence}
+                                        />
+                                        <div className='flex flex-col gap-1.5 w-full'>
+                                          <span className='font-poppins text-sm leading-4 font-medium text-gray-700 dark:text-gray-50'>
+                                            {voicemail?.caller_operator?.name !== 'unknown'
+                                              ? voicemail.caller_operator.name
+                                              : t('VoiceMail.Unknown')}
+                                          </span>
+                                          <span
+                                            className='cursor-pointer hover:underline font-poppins text-sm font-normal text-primary dark:text-primaryDark'
+                                            onClick={() => quickCall(voicemail)}
+                                          >
+                                            {voicemail?.caller_number}
+                                          </span>
+                                        </div>
+                                      </div>
+                                    </td>
+
+                                    {/* Date */}
+                                    <td>
+                                      <div className='px-6 py-4 gap-6'>
+                                        <span className='font-poppins text-xs font-normal text-gray-600 dark:text-gray-300 whitespace-nowrap'>
+                                          {formatTimestamp(voicemail?.origtime)}
+                                        </span>
+                                      </div>
+                                    </td>
+
+                                    {/* Duration */}
+                                    <td>
+                                      <div className='px-6 py-4 gap-6'>
+                                        <span className='font-poppins text-xs font-normal text-gray-600 dark:text-gray-300'>
+                                          {formatDuration(voicemail?.duration)}
+                                        </span>
+                                      </div>
+                                    </td>
+
+                                    {/* Buttons */}
+                                    <td className='w-0 whitespace-nowrap text-right'>
+                                      <div className='flex items-center justify-end px-6 py-4 space-x-1'>
+                                        <Button
+                                          variant='ghost'
+                                          onClick={() => playSelectedVoicemail(voicemail?.id)}
+                                        >
+                                          <FontAwesomeIcon
+                                            icon={faPlay}
+                                            className='h-4 w-4 mr-2'
+                                            aria-hidden='true'
+                                          />
+                                          {t('History.Play')}
+                                        </Button>
+                                        <Dropdown
+                                          items={getVoiceMailOptionsTemplate(voicemail)}
+                                          position={getDropdownPosition(index)}
+                                        >
+                                          <Button variant='ghost'>
+                                            <FontAwesomeIcon
+                                              icon={faEllipsisVertical}
+                                              className='h-4 w-4'
+                                            />
+                                            <span className='sr-only'>
+                                              {t('History.Open recording action modal')}
+                                            </span>
+                                          </Button>
+                                        </Dropdown>
+                                      </div>
+                                    </td>
+                                  </tr>
+                                ))}
+                            </tbody>
+                          </table>
                         </div>
                       )}
                     </div>
@@ -662,7 +643,7 @@ export const VoicemailInbox: FC<VoicemailInboxProps> = ({ className }): JSX.Elem
           {/* pagination */}
           {totalPages > 1 && (
             <nav
-              className='flex items-center justify-between border-t px-0 py-4 border-gray-100 bg-body dark:bg-bodyDark dark:border-gray-800 '
+              className='flex items-center justify-between px-0 py-4 bg-body dark:bg-bodyDark'
               aria-label='Pagination'
             >
               <div className='hidden sm:block'>

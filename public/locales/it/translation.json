@@ -55,7 +55,8 @@
     "Copy to clipboard": "Copia negli appunti",
     "Close": "Chiudi",
     "Back": "Indietro",
-    "Delete all": "Elimina tutto"
+    "Delete all": "Elimina tutto",
+    "Deleting...": "Eliminazione in corso..."
   },
   "Login": {
     "User": "Utente",
@@ -174,7 +175,9 @@
     "voicemails": "messaggi vocali",
     "No matching voicemails": "Nessun messaggio vocale corrispondente",
     "No voicemails match your search criteria": "Nessun messaggio vocale corrispondente ai tuoi criteri di ricerca",
-    "Voicemail filters": "Filtri messaggi vocali"
+    "Voicemail filters": "Filtri messaggi vocali",
+    "No voicemails": "Nessun messaggio vocale",
+    "There are no voicemails in your history": "Non ci sono messaggi vocali nel tuo storico"
   },
   "Operators": {
     "Operators": "Operatori",
