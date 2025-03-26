@@ -36,6 +36,7 @@ import { getTimestamp } from '../../services/user'
 import { isEmpty } from 'lodash'
 import { faOfficePhone } from '@nethesis/nethesis-solid-svg-icons'
 import { IconProp } from '@fortawesome/fontawesome-svg-core'
+import { Tooltip } from 'react-tooltip'
 
 const STYLES = {
   tableCell:
@@ -156,13 +157,11 @@ const Devices: NextPage = () => {
       <div className='text-right'>
         {!isInDropwdown ? (
           <Button variant='ghost' onClick={() => handleDownload(selectedLink)}>
-            <FontAwesomeIcon icon={faCircleArrowDown} className='mr-0 lg:mr-2 h-4 w-4' />
+            <FontAwesomeIcon icon={faCircleArrowDown} className='xl:mr-2 mr-0 h-4 w-4' />
             <span className='hidden xl:inline'>{t('Devices.Download App')}</span>
           </Button>
         ) : (
-          <div onClick={() => openShowDownloadLinkContent(updatedDownloadLink, currentOS)}>
-            {t('Devices.All download options')}
-          </div>
+          <div>{t('Devices.All download options')}</div>
         )}
       </div>
     )
@@ -188,7 +187,12 @@ const Devices: NextPage = () => {
       )}
       {isPhoneLinkSection && (
         <>
-          <Dropdown.Item icon={faArrowRightLong}>{phoneLinkDownloadComponent(true)}</Dropdown.Item>
+          <Dropdown.Item
+            icon={faArrowRightLong}
+            onClick={() => openShowDownloadLinkContent(updatedDownloadLink, currentOS)}
+          >
+            {phoneLinkDownloadComponent(true)}
+          </Dropdown.Item>
         </>
       )}
     </>
@@ -295,9 +299,16 @@ const Devices: NextPage = () => {
               <tbody>
                 <tr className='border-t border-gray-300 dark:border-gray-700'>
                   <td className={`${STYLES.tableCell} max-w-0 overflow-hidden`}>
-                    <p className='truncate' title={t('Devices.Web phone') || ''}>
-                      {t('Devices.Web phone')}
-                    </p>
+                    <div className='flex items-center'>
+                      <Tooltip id={`tooltip-button-web-phone`} />
+                      <p
+                        className='truncate'
+                        data-tooltip-id={`tooltip-button-web-phone`}
+                        data-tooltip-content={t('Devices.Web phone')}
+                      >
+                        {t('Devices.Web phone')}
+                      </p>
+                    </div>
                   </td>
                   <td className={STYLES.tableCell}>
                     {operators?.extensions[webrtcData[0]?.id]?.status !== 'offline' ? (
@@ -334,8 +345,10 @@ const Devices: NextPage = () => {
                   <td className={`${STYLES.tableCell} whitespace-nowrap text-right`}>
                     <div className='flex items-center justify-end'>
                       <Button variant='ghost' onClick={() => openShowSwitchDeviceInputOutput('')}>
-                        <FontAwesomeIcon icon={faPenToSquare} className='mr-0 lg:mr-2 h-4 w-4' />
-                        <span className='hidden xl:inline'>{t('Devices.Audio and video settings')}</span>
+                        <FontAwesomeIcon icon={faPenToSquare} className='xl:mr-2 mr-0 h-4 w-4' />
+                        <span className='hidden xl:inline'>
+                          {t('Devices.Audio and video settings')}
+                        </span>
                       </Button>
                       {webrtcData[0]?.id !== profile?.default_device?.id &&
                       phoneLinkData[0]?.id !== profile?.default_device?.id ? (
@@ -346,7 +359,7 @@ const Devices: NextPage = () => {
                             webrtcData[0],
                             false,
                           )}
-                          position='top'
+                          position='leftSingleItem'
                         >
                           <Button variant='ghost'>
                             <FontAwesomeIcon
@@ -396,9 +409,16 @@ const Devices: NextPage = () => {
               <tbody>
                 <tr className='border-t border-gray-300 dark:border-gray-700'>
                   <td className={`${STYLES.tableCell} max-w-0 overflow-hidden`}>
-                    <p className='truncate' title={t('Devices.PhoneLink') || ''}>
-                      {t('Devices.PhoneLink')}
-                    </p>
+                    <div className='flex items-center'>
+                      <Tooltip id={`tooltip-button-desktop-phone`} />
+                      <p
+                        className='truncate'
+                        data-tooltip-id={`tooltip-button-desktop-phone`}
+                        data-tooltip-content={t('Devices.PhoneLink')}
+                      >
+                        {t('Devices.PhoneLink')}
+                      </p>
+                    </div>
                   </td>
                   <td className={STYLES.tableCell}>
                     {operators?.extensions[phoneLinkData[0]?.id]?.status !== 'offline' ? (
@@ -442,8 +462,13 @@ const Devices: NextPage = () => {
                           className='text-primary dark:text-primaryDark'
                         >
                           <Button variant='ghost'>
-                            <FontAwesomeIcon icon={faArrowUpFromBracket} className='mr-0 lg:mr-2 h-4 w-4' />
-                            <span className='hidden xl:inline'>{t('Devices.PhoneLink settings')}</span>
+                            <FontAwesomeIcon
+                              icon={faArrowUpFromBracket}
+                              className='xl:mr-2 mr-0 h-4 w-4'
+                            />
+                            <span className='hidden xl:inline'>
+                              {t('Devices.PhoneLink settings')}
+                            </span>
                           </Button>
                         </a>
                       ) : (
@@ -456,12 +481,7 @@ const Devices: NextPage = () => {
                           phoneLinkData[0],
                           true,
                         )}
-                        position={
-                          phoneLinkData[0]?.id !== profile?.default_device?.id &&
-                          !isEmpty(phoneLinkTimestamp)
-                            ? 'topMultipleItem'
-                            : 'top'
-                        }
+                        position='leftSingleItem'
                       >
                         <Button variant='ghost'>
                           <FontAwesomeIcon
@@ -509,9 +529,18 @@ const Devices: NextPage = () => {
                 {phoneData.map((phone: any) => (
                   <tr key={phone?.id} className='border-t border-gray-300 dark:border-gray-700'>
                     <td className={`${STYLES.tableCell} max-w-0 overflow-hidden`}>
-                      <p className='truncate' title={phone?.description !== '' ? phone?.description : t('Devices.IP phone')}>
-                        {phone?.description !== '' ? phone?.description : t('Devices.IP phone')}
-                      </p>
+                      <div className='flex items-center'>
+                        <Tooltip id={`tooltip-button-${phone?.description}`} place='top' />
+                        <p
+                          className='truncate'
+                          data-tooltip-id={`tooltip-button-${phone?.description}`}
+                          data-tooltip-content={
+                            phone?.description !== '' ? phone?.description : t('Devices.IP phone')
+                          }
+                        >
+                          {phone?.description !== '' ? phone?.description : t('Devices.IP phone')}
+                        </p>
+                      </div>
                     </td>
                     <td className={STYLES.tableCell}>
                       {operators?.extensions[phone?.id]?.status !== 'offline' ? (
@@ -553,14 +582,14 @@ const Devices: NextPage = () => {
                             variant='ghost'
                             onClick={() => openShowEditPhysicalPhone(phone, pinObject)}
                           >
-                            <FontAwesomeIcon icon={faPenToSquare} className='mr-0 lg:mr-2 h-4 w-4' />
+                            <FontAwesomeIcon icon={faPenToSquare} className='mr-2 lg:mr- h-4 w-4' />
                             <span className='hidden xl:inline'>{t('Devices.Device settings')}</span>
                           </Button>
                         )}
                         {phone?.id !== profile?.default_device?.id && (
                           <Dropdown
                             items={setMainDeviceMenu(phone?.id, 'physical', phone, false)}
-                            position='topMultipleItem'
+                            position='leftSingleItem'
                           >
                             <Button variant='ghost'>
                               <FontAwesomeIcon

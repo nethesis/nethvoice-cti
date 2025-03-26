@@ -707,7 +707,7 @@ export const Calls: FC<CallsProps> = ({ className }): JSX.Element => {
                                         index === 0
                                           ? ''
                                           : 'border-t border-gray-300 dark:border-gray-600'
-                                      } h-20`}
+                                      } h-[84px]`}
                                     >
                                       {/* Date */}
                                       <td className='whitespace-nowrap px-6 py-4 sm:pl-6'>
@@ -792,7 +792,7 @@ export const Calls: FC<CallsProps> = ({ className }): JSX.Element => {
                                             </Button>
                                             <Dropdown
                                               items={getRecordingActions(call?.uniqueid)}
-                                              position='left'
+                                              position='leftUpTwoItems'
                                             >
                                               <Button variant='ghost'>
                                                 <FontAwesomeIcon

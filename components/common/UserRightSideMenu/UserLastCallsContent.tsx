@@ -3,7 +3,7 @@
 
 import { useState, useEffect, useRef, useCallback } from 'react'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
-import { faPhone, faUsers, faSortAmountAsc, faCheck, faEllipsisVertical, faArrowRightLong } from '@fortawesome/free-solid-svg-icons'
+import { faPhone, faUsers, faSortAmountAsc, faCheck, faEllipsisVertical, faArrowRightLong, faClockRotateLeft } from '@fortawesome/free-solid-svg-icons'
 import { Button, Avatar, EmptyState, Dropdown, Badge } from '../../common'
 import { useSelector } from 'react-redux'
 import { RootState } from '../../../store'
@@ -202,7 +202,7 @@ export const UserLastCallsContent = () => {
                     href={{ pathname: '/history', query: { section: 'Calls' } }}
                     className='w-full'
                   >
-                    <Dropdown.Item icon={faArrowRightLong}>{t('LastCalls.Go to history')}</Dropdown.Item>
+                    <Dropdown.Item icon={faClockRotateLeft}>{t('LastCalls.Go to history')}</Dropdown.Item>
                   </Link>
                 </>
               } position='left'>

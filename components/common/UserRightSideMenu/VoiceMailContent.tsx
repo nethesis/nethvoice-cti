@@ -14,8 +14,9 @@ import {
   faTrash,
   faCircleArrowDown,
   faTriangleExclamation,
-  faArrowRightLong,
   faCircle,
+  faGear,
+  faClockRotateLeft,
 } from '@fortawesome/free-solid-svg-icons'
 import { Avatar, Button, Dropdown, EmptyState, InlineNotification, Modal } from '..'
 import {
@@ -185,10 +186,10 @@ export const VoiceMailContent = () => {
         href={{ pathname: '/history', query: { section: 'Voicemail inbox' } }}
         className='w-full'
       >
-        <Dropdown.Item icon={faArrowRightLong}>{t('VoiceMail.Go to history')}</Dropdown.Item>
+        <Dropdown.Item icon={faClockRotateLeft}>{t('VoiceMail.Go to history')}</Dropdown.Item>
       </Link>
       <Link href={{ pathname: '/settings', query: { section: 'Voicemail' } }} className='w-full'>
-        <Dropdown.Item icon={faArrowRightLong}>{t('VoiceMail.Go to settings')}</Dropdown.Item>
+        <Dropdown.Item icon={faGear}>{t('VoiceMail.Go to settings')}</Dropdown.Item>
       </Link>
     </>
   )
@@ -245,14 +246,8 @@ export const VoiceMailContent = () => {
   const getDropdownPosition = (index: number) => {
     // Get total count of items on current page
     const totalItemsOnPage = voicemails.length
-    
-    if (totalItemsOnPage === 1) {
-      return 'oneVoicemail';
-    } else if (totalItemsOnPage > 1 && totalItemsOnPage - index <= 1) {
-      return 'topVoicemail';
-    } else {
-      return 'leftVoicemail';
-    }
+
+    return totalItemsOnPage - index <= 1 ? 'topVoicemail' : 'bottomVoicemail';
   }
 
   return (
@@ -352,12 +347,14 @@ export const VoiceMailContent = () => {
                         size='large'
                         bordered
                         onClick={
-                          voicemail?.caller_operator
+                          voicemail?.caller_operator?.name !== t('VoiceMail.Unknown') && voicemail?.caller_operator
                             ? () => openDrawerOperator(voicemail?.caller_operator)
                             : undefined
                         }
                         className={`mx-auto ${
-                          voicemail?.caller_operator ? 'cursor-pointer' : 'cursor-default'
+                          voicemail?.caller_operator?.name !== t('VoiceMail.Unknown') && voicemail?.caller_operator
+                            ? 'cursor-pointer'
+                            : 'cursor-default'
                         } ml-0.5`}
                         status={voicemail?.caller_operator?.mainPresence}
                       />

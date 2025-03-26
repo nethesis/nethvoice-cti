@@ -326,7 +326,7 @@ export const Voicemail = () => {
                                   <FontAwesomeIcon icon={faPlay} className='h-4 w-4 mr-2' />
                                   {t('Settings.Play')}
                                 </Button>
-                                <Dropdown items={getVoiceMailOptionsTemplate(table.type)} position='top'>
+                                <Dropdown items={getVoiceMailOptionsTemplate(table.type)} position='topVoicemail'>
                                   <Button variant='ghost'>
                                     <FontAwesomeIcon icon={faEllipsisVertical} className='h-4 w-4' />
                                   </Button>
