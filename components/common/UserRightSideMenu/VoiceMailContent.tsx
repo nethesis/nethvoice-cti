@@ -429,13 +429,19 @@ export const VoiceMailContent = () => {
             !getVoiceMailError &&
             Array.from(Array(4)).map((e, index) => (
               <li key={index}>
-                <div className='flex items-center px-4 py-4 sm:px-6'>
-                  {/* avatar skeleton */}
-                  <div className='animate-pulse rounded-full h-12 w-12 bg-gray-300 dark:bg-gray-600'></div>
-                  <div className='min-w-0 flex-1 px-4'>
-                    <div className='flex flex-col justify-center'>
-                      {/* line skeleton */}
-                      <div className='animate-pulse h-3 rounded bg-gray-300 dark:bg-gray-600'></div>
+                <div className='gap-4 py-4 px-0'>
+                  <div className='flex justify-between gap-3'>
+                    <div className='flex shrink-0 h-min items-center min-w-[48px]'>
+                      <div className='h-2 w-2 flex'>
+                        <span className='h-2 w-2'></span>
+                      </div>
+                      <div className='animate-pulse rounded-full h-12 w-12 bg-gray-300 dark:bg-gray-600 ml-0.5'></div>
+                    </div>
+                    <div className='flex flex-col gap-1.5 min-w-0 flex-1'>
+                      <div className='animate-pulse h-4 w-3/4 rounded bg-gray-300 dark:bg-gray-600'></div>
+                      <div className='animate-pulse h-4 w-1/2 rounded bg-gray-300 dark:bg-gray-600'></div>
+                      <div className='animate-pulse h-4 w-1/4 rounded bg-gray-300 dark:bg-gray-600'></div>
+                      <div className='animate-pulse h-4 w-1/4 rounded bg-gray-300 dark:bg-gray-600'></div>
                     </div>
                   </div>
                 </div>

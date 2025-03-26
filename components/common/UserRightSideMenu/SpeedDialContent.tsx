@@ -297,13 +297,18 @@ export const SpeedDialContent = () => {
             !getSpeedDialError &&
             Array.from(Array(4)).map((e, index) => (
               <li key={index}>
-                <div className='flex items-center px-4 py-4 sm:px-6'>
-                  {/* avatar skeleton */}
-                  <div className='animate-pulse rounded-full h-12 w-12 bg-gray-300 dark:bg-gray-600'></div>
-                  <div className='min-w-0 flex-1 px-4'>
-                    <div className='flex flex-col justify-center'>
-                      {/* line skeleton */}
-                      <div className='animate-pulse h-3 rounded bg-gray-300 dark:bg-gray-600'></div>
+                <div className='group relative flex items-center py-2 px-6'>
+                  <div
+                    className='absolute inset-0'
+                    aria-hidden='true'
+                  />
+                  <div className='relative flex min-w-0 flex-1 items-center justify-between'>
+                    <div className='flex items-center'>
+                      <div className='animate-pulse rounded-full h-10 w-10 bg-gray-300 dark:bg-gray-600'></div>
+                      <div className='ml-4 flex flex-col gap-1'>
+                        <div className='animate-pulse h-3 w-32 rounded bg-gray-300 dark:bg-gray-600'></div>
+                        <div className='animate-pulse h-3 w-20 mt-1 rounded bg-gray-300 dark:bg-gray-600'></div>
+                      </div>
                     </div>
                   </div>
                 </div>
