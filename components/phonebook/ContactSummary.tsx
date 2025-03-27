@@ -571,21 +571,23 @@ export const ContactSummary = forwardRef<HTMLButtonElement, ContactSummaryProps>
                 )}
 
                 {/* User last calls informations */}
-                <div className='h-full'>
-                  <LastCallsDrawerTable
-                    callType={'switchboard'}
-                    dateFrom={startOfDay(subDays(new Date(), 7))}
-                    dateTo={new Date()}
-                    phoneNumbers={[
-                      contact?.extension ||
-                        contact?.workphone ||
-                        contact?.cellphone ||
-                        contact?.homephone,
-                    ]}
-                    limit={10}
-                    isCustomerCard={true}
-                  />
-                </div>
+                {profile?.macro_permissions?.cdr?.permissions?.ad_cdr?.value && (
+                  <div className='h-full'>
+                    <LastCallsDrawerTable
+                      callType={'switchboard'}
+                      dateFrom={startOfDay(subDays(new Date(), 7))}
+                      dateTo={new Date()}
+                      phoneNumbers={[
+                        contact?.extension ||
+                          contact?.workphone ||
+                          contact?.cellphone ||
+                          contact?.homephone,
+                      ]}
+                      limit={10}
+                      isCustomerCard={true}
+                    />
+                  </div>
+                )}
               </div>
             )}
           </dl>

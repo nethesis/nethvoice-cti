@@ -992,7 +992,9 @@ export const Layout: FC<LayoutProps> = ({ children }) => {
 
   useEventListener('phone-island-parking-update', () => {
     // On phone island event reload park lists
-    retrieveParksList()
+    if (profile?.macro_permissions?.settings?.permissions?.parkings?.value) {
+      retrieveParksList()
+    }
   })
 
   const [firstRenderPark, setFirstRenderPark] = useState(true)
@@ -1002,8 +1004,10 @@ export const Layout: FC<LayoutProps> = ({ children }) => {
       return
     }
 
-    retrieveParksList()
-  }, [firstRenderPark])
+    if (profile?.macro_permissions?.settings?.permissions?.parkings?.value) {
+      retrieveParksList()
+    }
+  }, [firstRenderPark, profile?.macro_permissions?.settings?.permissions?.parkings?.value])
 
   const controls = useAnimation()
 

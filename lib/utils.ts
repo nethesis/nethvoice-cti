@@ -160,8 +160,6 @@ export function callPhoneNumber(phoneNumber: string) {
     store.dispatch.globalSearch.setOpen(false)
     store.dispatch.globalSearch.setRightSideTitleClicked(true)
   }, 350)
-
-  console.log('callPhoneNumber', phoneNumber) ////
 }
 
 export function getProductName() {

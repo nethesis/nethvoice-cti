@@ -1,14 +1,7 @@
 // Copyright (C) 2024 Nethesis S.r.l.
 // SPDX-License-Identifier: AGPL-3.0-or-later
 
-import React, {
-  ComponentProps,
-  Fragment,
-  MutableRefObject,
-  useEffect,
-  useMemo,
-  useRef,
-} from 'react'
+import React, { ComponentProps, Fragment, useEffect, useMemo, useRef } from 'react'
 import { FC, useState } from 'react'
 import classNames from 'classnames'
 import { Combobox, ComboboxInput, ComboboxOptions, ComboboxOption } from '@headlessui/react'
@@ -24,7 +17,7 @@ import { RootState, store } from '../../store'
 import { useSelector } from 'react-redux'
 import { cloneDeep, debounce } from 'lodash'
 import { Avatar, EmptyState, InlineNotification } from '../common'
-import { openShowOperatorDrawer } from '../../lib/operators'
+import { getUserGroups, openShowOperatorDrawer } from '../../lib/operators'
 import { getPhonebook, mapPhonebookResponse, openShowContactDrawer } from '../../lib/phonebook'
 import {
   callPhoneNumber,
@@ -48,14 +41,28 @@ export const GlobalSearch: FC<GlobalSearchProps> = () => {
   const operatorsStore = useSelector((state: RootState) => state.operators)
   const [isLoaded, setLoaded]: any[] = useState(true)
   const [phonebookError, setPhonebookError] = useState('')
-  const globalSearchRef = useRef() as MutableRefObject<HTMLButtonElement>
   const authStore = useSelector((state: RootState) => state.authentication)
+  const { username } = store.getState().user
+  const allowedGroupsIds = store.select.user.allowedOperatorGroupsIds(store.getState())
+  const presencePanelPermissions = store.select.user.presencePanelPermissions(store.getState())
 
+  const userGroups = useMemo(() => {
+    return getUserGroups(
+      allowedGroupsIds,
+      operatorsStore.groups,
+      presencePanelPermissions?.['all_groups']?.value,
+      username,
+    )
+  }, [allowedGroupsIds, operatorsStore.groups, presencePanelPermissions, username])
   const { t } = useTranslation()
 
   const searchOperators = (cleanQuery: string, cleanRegex: RegExp) => {
     store.dispatch.globalSearch.setCustomerCardsRedirect(false)
-    let operatorsResults = Object.values(operatorsStore.operators).filter((op: any) => {
+    // show only operators that are in the same groups as the user (or users that the user has permissions to see)
+    const visibleOperators = Object.values(operatorsStore.operators).filter((op: any) => {
+      return userGroups.some((g) => op.groups?.includes(g))
+    })
+    let operatorsResults = Object.values(visibleOperators).filter((op: any) => {
       return (
         new RegExp(cleanQuery, 'i').test(op.name.replace(cleanRegex, '')) ||
         new RegExp(cleanQuery, 'i').test(op.endpoints?.mainextension[0]?.id)

@@ -46,7 +46,7 @@ const CopyToClipboard: React.FC<CopyToClipboardProps> = ({ number, id }) => {
             transition={{ duration: 0.5 }}
             className='ml-2 dark:bg-gray-100 bg-gray-800 dark:text-gray-900 text-gray-50 text-xs px-2 py-2 rounded shadow-lg w-40 text-center'
           >
-            {t('Common.Copied in clipboard')}
+            {t('Common.Copied to clipboard')}
           </motion.div>
         )}
       </AnimatePresence>

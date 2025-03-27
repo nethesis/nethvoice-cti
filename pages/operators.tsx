@@ -9,6 +9,7 @@ import {
   callOperator,
   getFilterValues,
   getInfiniteScrollOperatorsPageSize,
+  getUserGroups,
   openShowOperatorDrawer,
   searchStringInOperator,
   sortByOperatorStatus,
@@ -98,6 +99,20 @@ const Operators: NextPage = () => {
   }
 
   const [layout, setLayout] = useState('')
+  const { profile } = useSelector((state: RootState) => state?.user)
+
+  const allowedGroupsIds = store.select.user.allowedOperatorGroupsIds(store.getState())
+  const presencePanelPermissions = store.select.user.presencePanelPermissions(store.getState())
+  const { username } = store.getState().user
+
+  const userGroups = useMemo(() => {
+    return getUserGroups(
+      allowedGroupsIds,
+      operatorsStore.groups,
+      presencePanelPermissions?.['all_groups']?.value,
+      username,
+    )
+  }, [allowedGroupsIds, operatorsStore.groups, presencePanelPermissions, username])
 
   const applyFilters = (operators: any) => {
     if (!(groupFilter && statusFilter && sortByFilter)) {
@@ -114,7 +129,11 @@ const Operators: NextPage = () => {
       // group filter
       if (groupFilter === 'favorites') {
         filteredOperators = filteredOperators.filter((op: any) => {
-          return op.favorite
+          return op.favorite && userGroups.some((g) => op.groups?.includes(g))
+        })
+      } else if (groupFilter === 'all') {
+        filteredOperators = filteredOperators.filter((op: any) => {
+          return userGroups.some((g) => op.groups?.includes(g))
         })
       } else {
         filteredOperators = filteredOperators.filter((op: any) => {
@@ -157,7 +176,11 @@ const Operators: NextPage = () => {
       // group filter
       if (groupFilter === 'favorites') {
         filteredOperators = filteredOperators.filter((op: any) => {
-          return op.favorite
+          return op.favorite && userGroups.some((g) => op.groups?.includes(g))
+        })
+      } else if (groupFilter === 'all') {
+        filteredOperators = filteredOperators.filter((op: any) => {
+          return userGroups.some((g) => op.groups?.includes(g))
         })
       } else {
         filteredOperators = filteredOperators.filter((op: any) => {
@@ -337,6 +360,7 @@ const Operators: NextPage = () => {
     groupedSortByFilter,
     groupedGroupByFilter,
     layout,
+    profile?.macro_permissions?.presence_panel?.permissions,
   ])
 
   const showMoreInfiniteScrollOperators = () => {
@@ -346,8 +370,6 @@ const Operators: NextPage = () => {
     const hasMore = lastIndex < filteredOperators?.length
     setInfiniteScrollHasMore(hasMore)
   }
-
-  const { profile } = useSelector((state: RootState) => state?.user)
 
   const openDrawerOperator = (operator: any) => {
     if (operator) {
@@ -1050,7 +1072,7 @@ const Operators: NextPage = () => {
                           className='overflow-hidden ml-1 mb-5 mt-4'
                         >
                           <div className='truncate w-20 lg:w-16 xl:w-20'>
-                            {upperCaseFirstLetter(category?.category)}
+                            {upperCaseFirstLetter(category?.category || '')}
                           </div>
                         </Badge>
                       </div>

@@ -471,3 +471,30 @@ export async function pickup(obj: any) {
     throw error
   }
 }
+
+export function getUserGroups(
+  allowedGroupsIds: string[],
+  allGroups: { [key: string]: { users: string[] } },
+  canSeeAllGroups: boolean,
+  username: string,
+) {
+  if (canSeeAllGroups) {
+    // user has the permission to see all groups
+    return Object.keys(allGroups)
+  }
+
+  // the groups the user has access to:
+  const allowedGroups = Object.keys(allGroups).filter((group) => {
+    // using different formats, e.g. group = 'Test group', allowedGroupId: 'grp_testgroup'
+    const groupId = 'grp_' + group.replaceAll(' ', '').toLowerCase()
+    return allowedGroupsIds.includes(groupId)
+  })
+
+  // the groups the user is a member of:
+  const belongingGroups = Object.keys(allGroups).filter((groupName) => {
+    return allGroups[groupName]?.users.includes(username)
+  })
+
+  // concat groups and remove duplicates
+  return Array.from(new Set([...allowedGroups, ...belongingGroups]))
+}

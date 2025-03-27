@@ -1,7 +1,7 @@
 // Copyright (C) 2024 Nethesis S.r.l.
 // SPDX-License-Identifier: AGPL-3.0-or-later
 
-import { ComponentPropsWithRef, forwardRef, useRef } from 'react'
+import { ComponentPropsWithRef, forwardRef, useMemo, useRef } from 'react'
 import classNames from 'classnames'
 import { TextInput } from '../common'
 import { Fragment, useState, useEffect } from 'react'
@@ -28,14 +28,15 @@ import {
   DEFAULT_SORT_BY,
   DEFAULT_STATUS_FILTER,
   getFilterValues,
+  getUserGroups,
 } from '../../lib/operators'
 import { useSelector } from 'react-redux'
-import { RootState } from '../../store'
+import { RootState, store } from '../../store'
 import { savePreference } from '../../lib/storage'
 import { useTranslation } from 'react-i18next'
 
 export interface FilterProps extends ComponentPropsWithRef<'div'> {
-  groups: Object
+  groups: { [key: string]: { users: string[] } }
   updateTextFilter: Function
   updateGroupFilter: Function
   updateStatusFilter: Function
@@ -62,6 +63,18 @@ export const Filter = forwardRef<HTMLButtonElement, FilterProps>(
     ref,
   ) => {
     const { t } = useTranslation()
+    const allowedGroupsIds = store.select.user.allowedOperatorGroupsIds(store.getState())
+    const presencePanelPermissions = store.select.user.presencePanelPermissions(store.getState())
+    const { username } = store.getState().user
+
+    const userGroups = useMemo(() => {
+      return getUserGroups(
+        allowedGroupsIds,
+        groups,
+        presencePanelPermissions?.['all_groups']?.value,
+        username,
+      )
+    }, [allowedGroupsIds, groups, presencePanelPermissions, username])
 
     const sortFilter = {
       id: 'sort',
@@ -122,10 +135,13 @@ export const Filter = forwardRef<HTMLButtonElement, FilterProps>(
       groupFilter.options = [
         { value: 'all', label: t('Operators.All') },
         { value: 'favorites', label: t('Operators.Favorites') },
-        { value: 'divider1', label: '-' },
       ]
 
-      Object.keys(groups).forEach((group) => {
+      if (userGroups.length) {
+        groupFilter.options.push({ value: 'divider1', label: '-' })
+      }
+
+      userGroups.forEach((group) => {
         groupFilter.options.push({
           value: group,
           label: group,
@@ -133,7 +149,7 @@ export const Filter = forwardRef<HTMLButtonElement, FilterProps>(
       })
 
       setGroupFilter(groupFilter)
-    }, [groupFilter, groups])
+    }, [groupFilter, userGroups])
 
     const [open, setOpen] = useState(false)
 
