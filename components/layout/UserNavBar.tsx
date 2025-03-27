@@ -18,6 +18,7 @@ import { UserLastCalls } from './UserLastCalls'
 import { Tooltip } from 'react-tooltip'
 import { useTranslation } from 'react-i18next'
 import { UserVoiceMail } from './UserVoiceMail'
+import { isEmpty } from 'lodash'
 
 const activeStyles = {
   width: '.1875rem',
@@ -32,29 +33,34 @@ const activeStyles = {
 export const UserNavBar: FC = () => {
   const { t } = useTranslation()
   const username = useSelector((state: RootState) => state.user.username)
-  const [tabReady, setTabReady] = useState<boolean>(false)
-
+  const profile = useSelector((state: RootState) => state.user)
   const auth = useSelector((state: RootState) => state.authentication)
+
+  const [tabReady, setTabReady] = useState<boolean>(false)
 
   const [tabs, setTabs] = useState<TabTypes[]>([
     {
       icon: faBolt,
-      name: 'speed_dial',
+      name: 'speed_dial' as const,
       active: false,
       label: t('NavBars.Speed dials'),
     },
     {
       icon: faPhone,
-      name: 'last_calls',
+      name: 'last_calls' as const,
       active: false,
       label: t('NavBars.Last calls'),
     },
-    {
-      icon: faVoicemail,
-      name: 'voice_mails',
-      active: false,
-      label: t('NavBars.Voice mail'),
-    },
+    ...(!isEmpty(profile?.endpoints?.voicemail)
+      ? [
+          {
+            icon: faVoicemail,
+            name: 'voice_mails' as const,
+            active: false,
+            label: t('NavBars.Voice mail'),
+          },
+        ]
+      : []),
   ])
 
   const rightSideStatus = useSelector((state: RootState) => state.rightSideMenu)

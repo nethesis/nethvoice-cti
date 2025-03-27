@@ -243,13 +243,6 @@ export const VoiceMailContent = () => {
     }
   }
 
-  const getDropdownPosition = (index: number) => {
-    // Get total count of items on current page
-    const totalItemsOnPage = voicemails.length
-
-    return totalItemsOnPage - index <= 1 ? 'topVoicemail' : 'bottomVoicemail';
-  }
-
   return (
     <>
       {/* delete voicemail modal */}
@@ -410,7 +403,7 @@ export const VoiceMailContent = () => {
                         <FontAwesomeIcon icon={faPlay} className='h-4 w-4' />
                         <span className='sr-only'>{t('VoiceMail.Play voicemail')}</span>
                       </Button>
-                      <Dropdown items={getVoiceMailOptionsTemplate(voicemail)} position={getDropdownPosition(index)}>
+                      <Dropdown items={getVoiceMailOptionsTemplate(voicemail)} position={index === 0 ? 'bottomVoicemail' : 'topVoicemail'}>
                         <Button variant='ghost' className='py-2 px-2 h-9 w-9'>
                           <FontAwesomeIcon icon={faEllipsisVertical} className='h-4 w-4' />
                           <span className='sr-only'>{t('VoiceMail.Open voicemail menu')}</span>

@@ -32,6 +32,7 @@ import { savePreference } from '../lib/storage'
 import { getSelectedSettingsPage } from '../lib/settings'
 import { Voicemail } from '../components/settings/Voicemail'
 import { IconProp } from '@fortawesome/fontawesome-svg-core'
+import { isEmpty } from 'lodash'
 
 interface SettingsMenuTypes {
   name: string
@@ -61,7 +62,10 @@ const Settings: NextPage = () => {
       current: false,
     },
     { name: 'Cache', href: '#', icon: faDatabase, current: false },
-    { name: 'Voicemail', href: '#', icon: faVoicemail, current: false },
+    // Conditionally add Voicemail section
+    ...(!isEmpty(profile?.endpoints?.voicemail)
+      ? [{ name: 'Voicemail', href: '#', icon: faVoicemail, current: false }]
+      : []),
   ]
 
   const [items, setItems] = useState<SettingsMenuTypes[]>(settingsMenu)
@@ -233,7 +237,9 @@ const Settings: NextPage = () => {
                 {/* Devices section */}
                 {currentSection === 'Devices' && <Devices />}
                 {/* Voicemail section */}
-                {currentSection === 'Voicemail' && <Voicemail />}
+                {!isEmpty(profile?.endpoints?.voicemail) && (
+                  currentSection === 'Voicemail' && <Voicemail />
+                )}
               </div>
             </div>
           </div>

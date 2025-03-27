@@ -39,6 +39,7 @@ import {
 } from '../../../lib/utils'
 import { debounce } from 'lodash'
 import { formatDateLoc } from '../../../lib/dateTime'
+import Link from 'next/link'
 
 export interface CallsProps extends ComponentProps<'div'> {}
 
@@ -616,13 +617,20 @@ export const Calls: FC<CallsProps> = ({ className }): JSX.Element => {
                 updateDateBeginFilter={updateDateBeginFilter}
                 updateDateEndFilter={updateDateEndFilter}
               />
-              <div className='text-gray-900 dark:text-gray-100 flex items-start'>
-                <Button variant='white' className='gap-2'>
-                  <FontAwesomeIcon icon={faArrowUpRightFromSquare} className='w-4 h-4' />
-                  <a href={pbxReportUrl} target='_blank' rel='noreferrer'>
-                    {t('Applications.Open PBX Report')}
-                  </a>
-                </Button>
+              <div className='text-gray-900 dark:text-gray-100 flex items-start lg:whitespace-nowrap ml-4'>
+                <Link
+                  href={pbxReportUrl}
+                  target='_blank'
+                  rel='noreferrer'
+                  data-tooltip-id={`tooltip-button-pbx-report`}
+                  data-tooltip-content={t('Applications.Open PBX Report')}
+                >
+                  <Button variant='white' className='gap-2'>
+                    <Tooltip id={`tooltip-button-pbx-report`} place='top' className='block lg:hidden' />
+                    <FontAwesomeIcon icon={faArrowUpRightFromSquare} className='w-4 h-4' />
+                    <p className='hidden lg:block'>{t('Applications.Open PBX Report')}</p>
+                  </Button>
+                </Link>
               </div>
             </div>
             {historyError && (
@@ -841,7 +849,10 @@ export const Calls: FC<CallsProps> = ({ className }): JSX.Element => {
                 </thead>
                 <tbody>
                   {Array.from(Array(8)).map((_, rowIndex) => (
-                    <tr key={`tr-${rowIndex}`} className='border-t border-gray-300 dark:border-gray-700'>
+                    <tr
+                      key={`tr-${rowIndex}`}
+                      className='border-t border-gray-300 dark:border-gray-700'
+                    >
                       {Array.from(Array(6)).map((_, colIndex) => (
                         <td key={`td-${rowIndex}-${colIndex}`} className='px-6 py-4'>
                           <div className='animate-pulse space-y-2'>

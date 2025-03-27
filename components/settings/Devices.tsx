@@ -156,8 +156,15 @@ const Devices: NextPage = () => {
     return (
       <div className='text-right'>
         {!isInDropwdown ? (
-          <Button variant='ghost' onClick={() => handleDownload(selectedLink)}>
+          <Button
+            variant='ghost'
+            onClick={() => handleDownload(selectedLink)}
+            className='relative'
+            data-tooltip-id='tooltip-download-app'
+            data-tooltip-content={t('Devices.Download App')}
+          >
             <FontAwesomeIcon icon={faCircleArrowDown} className='xl:mr-2 mr-0 h-4 w-4' />
+            <Tooltip id='tooltip-download-app' place='top' className='inline xl:hidden' />
             <span className='hidden xl:inline'>{t('Devices.Download App')}</span>
           </Button>
         ) : (
@@ -300,7 +307,7 @@ const Devices: NextPage = () => {
                 <tr className='border-t border-gray-300 dark:border-gray-700'>
                   <td className={`${STYLES.tableCell} max-w-0 overflow-hidden`}>
                     <div className='flex items-center'>
-                      <Tooltip id={`tooltip-button-web-phone`} />
+                      <Tooltip id={`tooltip-button-web-phone`} place='top' />
                       <p
                         className='truncate'
                         data-tooltip-id={`tooltip-button-web-phone`}
@@ -333,7 +340,7 @@ const Devices: NextPage = () => {
                   </td>
                   <td className={STYLES.tableCell}>
                     {webrtcData[0]?.id === profile?.default_device?.id ? (
-                      <Badge size='small' variant='online' rounded='full'>
+                      <Badge size='small' variant='online' rounded='full' className='whitespace-nowrap'>
                         <span>{t('Devices.Main device')}</span>
                       </Badge>
                     ) : (
@@ -344,8 +351,19 @@ const Devices: NextPage = () => {
                   </td>
                   <td className={`${STYLES.tableCell} whitespace-nowrap text-right`}>
                     <div className='flex items-center justify-end'>
-                      <Button variant='ghost' onClick={() => openShowSwitchDeviceInputOutput('')}>
+                      <Button
+                        variant='ghost'
+                        onClick={() => openShowSwitchDeviceInputOutput('')}
+                        className='relative'
+                        data-tooltip-id='tooltip-audio-video-settings'
+                        data-tooltip-content={t('Devices.Audio and video settings')}
+                      >
                         <FontAwesomeIcon icon={faPenToSquare} className='xl:mr-2 mr-0 h-4 w-4' />
+                        <Tooltip
+                          id='tooltip-audio-video-settings'
+                          place='top'
+                          className='inline xl:hidden'
+                        />
                         <span className='hidden xl:inline'>
                           {t('Devices.Audio and video settings')}
                         </span>
@@ -410,7 +428,7 @@ const Devices: NextPage = () => {
                 <tr className='border-t border-gray-300 dark:border-gray-700'>
                   <td className={`${STYLES.tableCell} max-w-0 overflow-hidden`}>
                     <div className='flex items-center'>
-                      <Tooltip id={`tooltip-button-desktop-phone`} />
+                      <Tooltip id={`tooltip-button-desktop-phone`} place='top' />
                       <p
                         className='truncate'
                         data-tooltip-id={`tooltip-button-desktop-phone`}
@@ -443,7 +461,7 @@ const Devices: NextPage = () => {
                   </td>
                   <td className={STYLES.tableCell}>
                     {phoneLinkData[0]?.id === profile?.default_device?.id ? (
-                      <Badge size='small' variant='online' rounded='full'>
+                      <Badge size='small' variant='online' rounded='full' className='whitespace-nowrap'>
                         <span>{t('Devices.Main device')}</span>
                       </Badge>
                     ) : (
@@ -461,10 +479,20 @@ const Devices: NextPage = () => {
                           rel='noreferrer'
                           className='text-primary dark:text-primaryDark'
                         >
-                          <Button variant='ghost'>
+                          <Button
+                            variant='ghost'
+                            className='relative'
+                            data-tooltip-id='tooltip-phonetlink-settings'
+                            data-tooltip-content={t('Devices.PhoneLink settings')}
+                          >
                             <FontAwesomeIcon
                               icon={faArrowUpFromBracket}
                               className='xl:mr-2 mr-0 h-4 w-4'
+                            />
+                            <Tooltip
+                              id='tooltip-phonetlink-settings'
+                              place='top'
+                              className='inline xl:hidden'
                             />
                             <span className='hidden xl:inline'>
                               {t('Devices.PhoneLink settings')}
@@ -565,7 +593,7 @@ const Devices: NextPage = () => {
                     </td>
                     <td className={STYLES.tableCell}>
                       {phone?.id === profile?.default_device?.id ? (
-                        <Badge size='small' variant='online' rounded='full'>
+                        <Badge size='small' variant='online' rounded='full' className='whitespace-nowrap'>
                           <span>{t('Devices.Main device')}</span>
                         </Badge>
                       ) : (
@@ -581,8 +609,19 @@ const Devices: NextPage = () => {
                           <Button
                             variant='ghost'
                             onClick={() => openShowEditPhysicalPhone(phone, pinObject)}
+                            className='relative'
+                            data-tooltip-id='tooltip-device-settings'
+                            data-tooltip-content={t('Devices.Device settings')}
                           >
-                            <FontAwesomeIcon icon={faPenToSquare} className='mr-2 lg:mr- h-4 w-4' />
+                            <FontAwesomeIcon
+                              icon={faPenToSquare}
+                              className='xl:mr-2 mr-0 h-4 w-4'
+                            />
+                            <Tooltip
+                              id='tooltip-device-settings'
+                              place='top'
+                              className='inline xl:hidden'
+                            />
                             <span className='hidden xl:inline'>{t('Devices.Device settings')}</span>
                           </Button>
                         )}

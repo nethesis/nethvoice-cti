@@ -11,6 +11,7 @@ import classNames from 'classnames'
 import { useRouter } from 'next/router'
 import { VoicemailInbox } from '../components/history/voicemail inbox/VoicemailInbox'
 import { Calls } from '../components/history/calls/Calls'
+import { isEmpty } from 'lodash'
 
 interface tabsType {
   name: string
@@ -20,11 +21,13 @@ interface tabsType {
 
 const History: NextPage = () => {
   const { t } = useTranslation()
-  const router = useRouter()
+  const profile = useSelector((state: RootState) => state.user)
 
   const tabs: tabsType[] = [
     { name: 'Calls', href: '#', current: false },
-    { name: 'Voicemail inbox', href: '#', current: false },
+    ...(!isEmpty(profile?.endpoints?.voicemail)
+      ? [{ name: 'Voicemail inbox', href: '#', current: false },]
+      : []),
   ]
 
   const [items, setItems] = useState<tabsType[]>(tabs)

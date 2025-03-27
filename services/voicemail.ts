@@ -50,7 +50,6 @@ export const deleteVoicemail = async (id: any) => {
 
 export const uploadVoicemailGreetingMessage = async (type: string, audio: string) => {
     try {
-        console.log(audio);
         await axios.post(`${PATH}/custom_msg`, {
             'type': type,
             'audio': audio
