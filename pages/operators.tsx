@@ -102,11 +102,17 @@ const Operators: NextPage = () => {
   const { profile } = useSelector((state: RootState) => state?.user)
 
   const allowedGroupsIds = store.select.user.allowedOperatorGroupsIds(store.getState())
+  const presencePanelPermissions = store.select.user.presencePanelPermissions(store.getState())
   const { username } = store.getState().user
 
   const userGroups = useMemo(() => {
-    return getUserGroups(allowedGroupsIds, operatorsStore.groups, username)
-  }, [allowedGroupsIds, operatorsStore.groups, username])
+    return getUserGroups(
+      allowedGroupsIds,
+      operatorsStore.groups,
+      presencePanelPermissions?.['all_groups']?.value,
+      username,
+    )
+  }, [allowedGroupsIds, operatorsStore.groups, presencePanelPermissions, username])
 
   const applyFilters = (operators: any) => {
     if (!(groupFilter && statusFilter && sortByFilter)) {

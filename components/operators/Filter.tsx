@@ -64,11 +64,17 @@ export const Filter = forwardRef<HTMLButtonElement, FilterProps>(
   ) => {
     const { t } = useTranslation()
     const allowedGroupsIds = store.select.user.allowedOperatorGroupsIds(store.getState())
+    const presencePanelPermissions = store.select.user.presencePanelPermissions(store.getState())
     const { username } = store.getState().user
 
     const userGroups = useMemo(() => {
-      return getUserGroups(allowedGroupsIds, groups, username)
-    }, [allowedGroupsIds, groups, username])
+      return getUserGroups(
+        allowedGroupsIds,
+        groups,
+        presencePanelPermissions?.['all_groups']?.value,
+        username,
+      )
+    }, [allowedGroupsIds, groups, presencePanelPermissions, username])
 
     const sortFilter = {
       id: 'sort',

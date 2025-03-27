@@ -44,10 +44,16 @@ export const GlobalSearch: FC<GlobalSearchProps> = () => {
   const authStore = useSelector((state: RootState) => state.authentication)
   const { username } = store.getState().user
   const allowedGroupsIds = store.select.user.allowedOperatorGroupsIds(store.getState())
+  const presencePanelPermissions = store.select.user.presencePanelPermissions(store.getState())
 
   const userGroups = useMemo(() => {
-    return getUserGroups(allowedGroupsIds, operatorsStore.groups, username)
-  }, [allowedGroupsIds, operatorsStore.groups, username])
+    return getUserGroups(
+      allowedGroupsIds,
+      operatorsStore.groups,
+      presencePanelPermissions?.['all_groups']?.value,
+      username,
+    )
+  }, [allowedGroupsIds, operatorsStore.groups, presencePanelPermissions, username])
   const { t } = useTranslation()
 
   const searchOperators = (cleanQuery: string, cleanRegex: RegExp) => {
