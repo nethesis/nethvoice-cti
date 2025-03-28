@@ -38,30 +38,33 @@ export const UserNavBar: FC = () => {
 
   const [tabReady, setTabReady] = useState<boolean>(false)
 
-  const [tabs, setTabs] = useState<TabTypes[]>([
-    {
-      icon: faBolt,
-      name: 'speed_dial' as const,
-      active: false,
-      label: t('NavBars.Speed dials'),
-    },
-    {
-      icon: faPhone,
-      name: 'last_calls' as const,
-      active: false,
-      label: t('NavBars.Last calls'),
-    },
-    ...(!isEmpty(profile?.endpoints?.voicemail)
-      ? [
-          {
-            icon: faVoicemail,
-            name: 'voice_mails' as const,
-            active: false,
-            label: t('NavBars.Voice mail'),
-          },
-        ]
-      : []),
-  ])
+  const [tabs, setTabs] = useState<TabTypes[]>([]);
+  useEffect(() => {
+    setTabs([
+      {
+        icon: faBolt,
+        name: 'speed_dial' as const,
+        active: false,
+        label: t('NavBars.Speed dials'),
+      },
+      {
+        icon: faPhone,
+        name: 'last_calls' as const,
+        active: false,
+        label: t('NavBars.Last calls'),
+      },
+      ...(!isEmpty(profile?.endpoints?.voicemail)
+        ? [
+            {
+              icon: faVoicemail,
+              name: 'voice_mails' as const,
+              active: false,
+              label: t('NavBars.Voice mail'),
+            },
+          ]
+        : []),
+    ]);
+  }, [profile?.endpoints?.voicemail]);
 
   const rightSideStatus = useSelector((state: RootState) => state.rightSideMenu)
 
