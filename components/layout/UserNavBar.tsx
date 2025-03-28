@@ -40,17 +40,18 @@ export const UserNavBar: FC = () => {
 
   const [tabs, setTabs] = useState<TabTypes[]>([]);
   useEffect(() => {
+    const savedTab = loadPreference('userSideBarTab', username) || 'speed_dial'
     setTabs([
       {
         icon: faBolt,
         name: 'speed_dial' as const,
-        active: false,
+        active:  savedTab === 'speed_dial',
         label: t('NavBars.Speed dials'),
       },
       {
         icon: faPhone,
         name: 'last_calls' as const,
-        active: false,
+        active: savedTab === 'last_calls',
         label: t('NavBars.Last calls'),
       },
       ...(!isEmpty(profile?.endpoints?.voicemail)
@@ -58,7 +59,7 @@ export const UserNavBar: FC = () => {
             {
               icon: faVoicemail,
               name: 'voice_mails' as const,
-              active: false,
+              active: savedTab === 'voice_mails',
               label: t('NavBars.Voice mail'),
             },
           ]
@@ -92,14 +93,14 @@ export const UserNavBar: FC = () => {
     if (defaultTabSelected === tabName) {
       // If the selected section is already open, close the navbar
       store.dispatch.rightSideMenu.toggleSideMenu({
-        tabName: '',
+        tabName: tabName,
         username,
         force: false,
       })
       setDefaultTabSelected('')
       setTabs((state) =>
         state.map((tab) => {
-          tab.active = false
+          tab.active = tab.name == tabName
           return tab
         }),
       )
