@@ -54,7 +54,9 @@
     "Copied to clipboard": "Copiato negli appunti",
     "Copy to clipboard": "Copia negli appunti",
     "Close": "Chiudi",
-    "Back": "Indietro"
+    "Back": "Indietro",
+    "Delete all": "Elimina tutto",
+    "Deleting...": "Eliminazione in corso..."
   },
   "Login": {
     "User": "Utente",
@@ -158,7 +160,24 @@
     "End time": "Tempo di fine",
     "Choose a date range": "Scegli un intervallo",
     "Groups": "Gruppi",
-    "Open recording action modal": "Apri modale azioni registrazione"
+    "Open recording action modal": "Apri modale azioni registrazione",
+    "Calls": "Chiamate",
+    "Voicemail inbox": "Casella vocale",
+    "Filter messages": "Filtra messaggi",
+    "Go to Settings": "Vai alle impostazioni",
+    "Actions": "Azioni",
+    "Caller": "Chiamante",
+    "Summary": "Sommario",
+    "Delete all messages": "Elimina tutti i messaggi",
+    "voicemailDeletionAllMessage": "Tutti i messaggi verranno eliminati permanentemente.",
+    "Delete voicemail": "Elimina messaggio",
+    "voicemailDeletionMessage": "Il messaggio verrà eliminato permanentemente.",
+    "voicemails": "messaggi vocali",
+    "No matching voicemails": "Nessun messaggio vocale corrispondente",
+    "No voicemails match your search criteria": "Nessun messaggio vocale corrispondente ai tuoi criteri di ricerca",
+    "Voicemail filters": "Filtri messaggi vocali",
+    "No voicemails": "Nessun messaggio vocale",
+    "There are no voicemails in your history": "Non ci sono messaggi vocali nel tuo storico"
   },
   "Operators": {
     "Operators": "Operatori",
@@ -282,7 +301,42 @@
     "Customer cards": "Schede cliente",
     "PhoneLink configuration": "Configurazione Desktop phone",
     "Speakers": "Altoparlanti",
-    "Microphones": "Microfoni"
+    "Microphones": "Microfoni",
+    "Voicemail": "Casella vocale",
+    "My voicemail messages": "I miei messaggi vocali",
+    "Upload message": "Carica messaggio",
+    "Record message": "Registra messaggio",
+    "Greeting message": "Messaggio di saluto",
+    "Busy status": "Stato occupato",
+    "Unavailable status": "Stato non disponibile",
+    "Name": "Nome",
+    "Creation date": "Data creazione",
+    "Status": "Stato",
+    "Default": "Predefinito",
+    "Play": "Riproduci",
+    "Edit": "Modifica",
+    "New message": "Nuovo messaggio",
+    "Save recording": "Salva registrazione",
+    "Message name": "Nome messaggio",
+    "Insert message name": "Inserisci nome messaggio",
+    "Audio file": "File audio",
+    "Accepted formats": "Formati validi: .wav, .mp3",
+    "Message category": "Categoria messaggio",
+    "Greeating status": "Stato saluto",
+    "Enabled": "Abilitato",
+    "Disabled": "Disabilitato",
+    "Drag and drop or click to upload": "Trascina qui o clicca per caricare",
+    "Delete message": "Elimina messaggio",
+    "Are you sure to delete selected message?": "Sei sicuro di voler eliminare il messaggio selezionato?",
+    "File must be in WAV or MP3 format": "Il file deve essere in formato WAV o MP3",
+    "File must be an audio file": "Il file deve essere un file audio",
+    "Cannot upload message": "Impossibile caricare il messaggio",
+    "Cannot edit message": "Impossibile modificare il messaggio",
+    "Custom": "Personalizzato",
+    "The audio file cannot be played": "Il file audio non può essere riprodotto",
+    "Audio file validation timed out": "Validazione del file audio scaduta",
+    "Validating audio file...": "Validazione del file audio in corso...",
+    "Recorded audio file": "File audio registrato"
   },
   "TopBar": {
     "Signed in as": "Accesso effettuato come",
@@ -455,7 +509,34 @@
     "Sort by": "Ordina per",
     "Newest": "Più recenti",
     "Oldest": "Meno recenti",
-    "Call": "Chiama"
+    "Call": "Chiama",
+    "Go to history": "Vai allo storico",
+    "Open lastcalls menu": "Apri menu ultime chiamate",
+    "Unknown": "Sconosciuto"
+  },
+  "VoiceMail": {
+    "Voicemail inbox": "Casella vocale",
+    "Voicemail empty": "La casella vocale è vuota",
+    "Voicemail empty description": "Non hai ancora nessun messaggio vocale",
+    "Open voicemail menu": "Apri menu casella vocale",
+    "Go to history": "Vai allo storico",
+    "Go to settings": "Vai alle impostazioni",
+    "Sort by": "Ordina per",
+    "Newest": "Più recenti",
+    "Oldest": "Meno recenti",
+    "Call back": "Richiama",
+    "Open details": "Apri dettagli",
+    "Download": "Scarica",
+    "Delete message": "Elimina messaggio",
+    "Unknown": "Sconosciuto",
+    "Delete voicemail": "Elimina messaggio",
+    "voicemailDeletionMessage": "Il messaggio verrà eliminato permanentemente.",
+    "Play voicemail": "Riproduci messaggio"
+  },
+  "NavBars": {
+    "Speed dials": "Chiamate rapide",
+    "Last calls": "Ultime chiamate",
+    "Voice mail": "Casella vocale"
   },
   "Notifications": {
     "Mark all as read": "Contrassegna tutte come lette",
@@ -563,10 +644,6 @@
     "Operator": "Operatore",
     "Filter calls": "Filtra chiamate",
     "Filter queues": "Filtra code"
-  },
-  "NavBars": {
-    "Speed dials": "Chiamata rapida",
-    "Last calls": "Ultime chiamate"
   },
   "Tooltip": {
     "Hangup": "Chiudi",
@@ -857,7 +934,10 @@
     "Camera": "Video",
     "All download options": "Tutte le opzioni di download",
     "Download Desktop app": "Scarica l'app desktop",
-    "Operating system": "Sistema operativo"
+    "Operating system": "Sistema operativo",
+    "Devices": "Dispositivi",
+    "Name": "Nome",
+    "Default": "Predefinito"
   },
   "DropdownContent": {
     "Microphones": "MICROFONI",

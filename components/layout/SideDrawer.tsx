@@ -26,6 +26,7 @@ import { SelectProfilePictureDrawerContent } from '../common/ProfilePicture/Sele
 import { EditPhysicalPhoneDrawerContent } from '../devices/EditPhysicalPhoneDrawerContent'
 import { SwitchInputOutputDrawerContent } from '../devices/SwitchInputOutputDrawerContent'
 import { DownloadDesktopLinkContent } from '../devices/DownloadDesktopLinkContent'
+import { UploadVoicemail } from '../lines/UploadVoicemail'
 
 interface SideDrawerProps {
   isShown: boolean
@@ -89,6 +90,8 @@ export const SideDrawer: FC<SideDrawerProps> = ({ isShown, contentType, config, 
                         <SwitchInputOutputDrawerContent config={config} />
                       ) : contentType === 'showDownloadLinkContent' ? (
                         <DownloadDesktopLinkContent config={config} />
+                      ) : contentType === 'showUploadVoicemail' ? (
+                        <UploadVoicemail config={config} />
                       ) : null}
                     </div>
                   </nav>

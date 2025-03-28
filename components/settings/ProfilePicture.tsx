@@ -4,16 +4,17 @@
 import type { NextPage } from 'next'
 import { useState } from 'react'
 import { useTranslation } from 'react-i18next'
-import { Avatar, Button, Switch } from '../components/common'
+import { Avatar, Button, Switch } from '../common'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { useSelector } from 'react-redux'
-import { RootState } from '../store'
-import { openShowGravatarDrawer, openShowUploadProfilePictureDrawer } from '../lib/profilePicture'
+import { RootState } from '../../store'
+import { openShowGravatarDrawer, openShowUploadProfilePictureDrawer } from '../../lib/profilePicture'
 import { faUpload } from '@fortawesome/free-solid-svg-icons'
 import { faGravatar } from '@nethesis/nethesis-brands-svg-icons'
 import React from 'react'
 import { Tooltip } from 'react-tooltip'
-import { PresetProfilePictureContent } from '../components/common/ProfilePicture/PresetProfilePictureContent'
+import { PresetProfilePictureContent } from '../common/ProfilePicture/PresetProfilePictureContent'
+import { IconProp } from '@fortawesome/fontawesome-svg-core'
 
 const Profile: NextPage = () => {
   const { t } = useTranslation()
@@ -47,7 +48,7 @@ const Profile: NextPage = () => {
                 {t('Settings.Upload')}
               </Button>
               <Button variant='white' onClick={() => openShowGravatarDrawer('')}>
-                <FontAwesomeIcon icon={faGravatar} className='mr-2' />
+                <FontAwesomeIcon icon={faGravatar as IconProp} className='mr-2' />
                 {t('Settings.Gravatar')}
               </Button>
               <div className='flex'>

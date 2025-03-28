@@ -196,22 +196,11 @@ export const AnnouncementView: FC<AnnouncementViewProps> = ({ className }): JSX.
     }
   }
 
-  const [isListeningAnnouncements, setIsListeningAnnouncements] = useState(false)
-  const [idAnnouncementInPlay, setIdAnnouncementInPlay] = useState('')
-
   async function playSelectedAnnouncement(announcementId: any) {
     if (announcementId) {
       playFileAudio(announcementId, 'announcement')
-      setIdAnnouncementInPlay(announcementId)
-      // deactivate play button
-      setIsListeningAnnouncements(true)
     }
   }
-
-  //Reactivate play button
-  useEventListener('phone-island-audio-player-closed', () => {
-    setIsListeningAnnouncements(false)
-  })
 
   const [sortBy, setSortBy]: any = useState('name')
   const auth = useSelector((state: RootState) => state.authentication)

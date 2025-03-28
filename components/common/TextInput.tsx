@@ -3,16 +3,17 @@
 
 /**
  *
- * It renders an input fields.
+ * It renders an input field.
  *
  * @param label - The label to render.
  * @param placeholder - The placeholder to render.
  * @param icon - The icon to show.
- * @param iconRight - The position of the icon.
- * @param error - The position of the icon.
+ * @param trailingIcon - Whether the icon is trailing.
+ * @param error - Whether the input has an error.
  * @param helper - The text of the helper.
  * @param size - The size of the input.
- * @param squared - The radius of the border.
+ * @param rounded - The border radius of the input.
+ * @param squared - The squared corners of the input.
  * @param onIconClick - The callback on icon click.
  *
  */
@@ -96,8 +97,9 @@ export const TextInput = forwardRef<HTMLInputElement, TextInputProps>(
               squared ? theme.squared[squared] : '',
               size && size === 'large' ? theme.size.large : theme.size.base,
               !error ? theme.colors.gray : theme.colors.error,
-              Icon && !trailingIcon && 'pl-10',
+              (Icon && !trailingIcon) ? 'pl-10' : '',
               error ? theme.placeholder.error : theme.placeholder.base,
+              'text-gray-900',
             )}
             {...cleanProps}
             ref={ref}

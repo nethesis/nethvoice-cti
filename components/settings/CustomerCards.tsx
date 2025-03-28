@@ -94,6 +94,7 @@ export const CustomerCards = () => {
       }
     }
     changeCCardSettings()
+  // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [customerCardOrder, customerCardSelection])
 
   //Get order and selection from local storage
@@ -117,6 +118,7 @@ export const CustomerCards = () => {
       const initialOrder = Object.keys(customerCardsList)
       setCustomerCardOrder(initialOrder)
     }
+  // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [customerCardsList])
 
   // Manage drag and drop
@@ -148,15 +150,15 @@ export const CustomerCards = () => {
           <div className='py-6 px-4 sm:p-6 w-full'>
             {!isEmpty(customerCardsList) ? (
               <div>
-                <label className='text-base font-semibold text-gray-900 dark:text-gray-200'>
+                <h2 className='text-lg font-medium leading-6 text-gray-900 dark:text-gray-100 mb-6'>
                   {t('Settings.Customer cards')}
-                </label>
+                </h2>
                 <div className='flex justify-between'>
                   <div className=''>
-                    <p className='text-base font-regular text-gray-900 dark:text-gray-200 pt-4'>
+                    <h4 className='text-sm font-medium leading-6 text-gray-900 dark:text-gray-100'>
                       {t('Settings.Show customer card')}
-                    </p>
-                    <fieldset className='pt-7'>
+                    </h4>
+                    <fieldset className='pt-4'>
                       <legend className='sr-only'>{t('Settings.Customer card show type')}</legend>
                       <div className='space-y-4'>
                         {notificationMethods.map((notificationMethod) => (
@@ -183,11 +185,11 @@ export const CustomerCards = () => {
                   {/* Vertical divider */}
                   <div className='inline-block w-0.5 self-stretch bg-neutral-100 opacity-100 dark:opacity-50'></div>
                   <div className='w-1/2 pr-4'>
-                    <div className='mb-2'>
+                    <div>
                       {/* Right section title */}
-                      <p className='text-base font-regular text-gray-900 dark:text-gray-200 pt-4'>
+                      <h4 className='text-sm font-medium leading-6 text-gray-900 dark:text-gray-100'>
                         {t('CustomerCards.Customer Card Order (drag to set your order)')}
-                      </p>
+                      </h4>
 
                       {/* List header */}
                     </div>
@@ -205,7 +207,9 @@ export const CustomerCards = () => {
                                         ref={provided.innerRef}
                                         {...provided.draggableProps}
                                         {...provided.dragHandleProps}
-                                        className='flex items-center justify-between py-2'
+                                        className={`flex items-center justify-between ${
+                                          index === 0 ? 'pb-2' : 'py-2'
+                                        }`}
                                       >
                                         {/* Customercard name */}
                                         <div className='flex items-center'>

@@ -246,19 +246,19 @@ export function formatFileSize(sizeInBytes: any) {
   return `${sizeFormatted} ${unit}`
 }
 
-/**
- * Checks if the input string contains only valid characters for a phone number.
- */
-function validatePhoneNumber(phoneNumber: any) {
-  const regex = /^[0-9*#+]*$/
-  return regex.test(phoneNumber)
-}
-
 // The event to show the audio player view and play an audio file.
 export function playFileAudio(audioFileId: any, typeFile: string) {
   let objectPlayAudioFile = {
-    type: typeFile === 'announcement' ? 'announcement' : 'call_recording',
+    type: typeFile ? typeFile : 'call_recording',
     id: audioFileId.toString(),
+  }
+  eventDispatch('phone-island-audio-player-start', { ...objectPlayAudioFile })
+}
+
+// The event to show the audio player view and play an audio file.
+export function playFileAudioBase64(base64: string) {
+  let objectPlayAudioFile = {
+    base64_audio_file: base64
   }
   eventDispatch('phone-island-audio-player-start', { ...objectPlayAudioFile })
 }
@@ -460,3 +460,16 @@ export const voiceRequest = async (methodVoice: string, url: any, object?: any) 
     console.error(error)
   }
 }
+
+export const formatPhoneNumber = (rawNumber: string) => {
+  if (!rawNumber) return null;
+
+  if (rawNumber.startsWith('00')) {
+    // Convert "00" to "+" if necessary
+    rawNumber = rawNumber.startsWith('00')
+      ? `+${rawNumber.slice(2)}`
+      : rawNumber;
+  }
+
+  return rawNumber;
+};

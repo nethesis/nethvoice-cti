@@ -11,7 +11,19 @@ import classNames from 'classnames'
 export interface DropdownProps extends ComponentProps<'div'> {
   items: ReactNode
   divider?: boolean
-  position?: 'left' | 'right' | 'top' | 'bottom' | 'topCard' | 'topMultipleItem'
+  position?:
+    | 'left'
+    | 'right'
+    | 'top'
+    | 'bottom'
+    | 'leftSingleItem'
+    | 'topMultipleItem'
+    | 'leftUpTwoItems'
+    | 'leftUpVoicemail'
+    | 'leftDownVoicemail'
+    | 'topVoicemail'
+    | 'bottomVoicemail'
+    | 'oneVoicemail'
   size?: 'full'
 }
 

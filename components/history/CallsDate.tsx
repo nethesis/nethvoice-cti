@@ -81,7 +81,7 @@ export const CallsDate: FC<CallsDateProps> = ({ call, spaced, isInQueue, isInAnn
       const utcDate = new UTCDate(year, month, day, hour, minute, second)
 
       return (
-        <div className='text-sm font-medium text-gray-600 dark:text-gray-100 leading-5'>
+        <div className='font-poppins text-sm leading-4 font-normal text-gray-600 dark:text-gray-300 truncate'>
           {formatDistance(
             utcToZonedTime(utcDate, differenceBetweenTimezone),
             utcToZonedTime(new Date(), localTimeZone),
@@ -95,7 +95,7 @@ export const CallsDate: FC<CallsDateProps> = ({ call, spaced, isInQueue, isInAnn
       )
     } else {
       return (
-        <div className='text-sm font-medium text-gray-600 dark:text-gray-100 leading-5'>
+        <div className='font-poppins text-sm leading-4 font-normal text-gray-600 dark:text-gray-300 truncate'>
           {formatDistance(
             utcToZonedTime(call?.time * 1000, differenceBetweenTimezone),
             utcToZonedTime(new Date(), localTimeZone),
@@ -120,14 +120,14 @@ export const CallsDate: FC<CallsDateProps> = ({ call, spaced, isInQueue, isInAnn
 
     if (isInAnnouncement) {
       return (
-        <div className='text-sm text-gray-600 dark:text-gray-100 font-normal leading-5'>
+        <div className='font-poppins text-sm leading-4 font-normal text-gray-600 dark:text-gray-300 truncate'>
           ({formatDateLocIsAnnouncement(call)}{' '}
           {getCallTimeToDisplayIsAnnouncement(call, differenceBetweenTimezone)})
         </div>
       )
     } else {
       return (
-        <div className='text-sm text-gray-600 dark:text-gray-100 font-normal leading-5'>
+        <div className='font-poppins text-sm leading-4 font-normal text-gray-600 dark:text-gray-300 truncate'>
           (
           {format(utcToZonedTime(call?.time * 1000, differenceBetweenTimezone), 'd MMM yyyy HH:mm')}
           )

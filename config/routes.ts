@@ -9,6 +9,7 @@ import {
   faGear as faGearSolid,
   faClockRotateLeft as faClockRotateLeftSolid,
   faCubes as faCubesSolid,
+  IconDefinition as SolidIconDefinition,
 } from '@fortawesome/free-solid-svg-icons'
 
 import {
@@ -19,9 +20,10 @@ import {
   faCubes as faCubesLight,
   faUsers as faUsersLight,
   faChartLine as faChartLineLight,
+  IconDefinition as LightIconDefinition,
 } from '@nethesis/nethesis-light-svg-icons'
 
-import { IconDefinition } from '@fortawesome/fontawesome-common-types'
+type IconDefinition = SolidIconDefinition | LightIconDefinition
 
 export type NavItemsProps = {
   name: string

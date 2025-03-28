@@ -3,7 +3,7 @@
 
 import { useState, useEffect, useRef, useCallback } from 'react'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
-import { faPhone, faChevronDown, faUsers } from '@fortawesome/free-solid-svg-icons'
+import { faPhone, faUsers, faSortAmountAsc, faCheck, faEllipsisVertical, faArrowRightLong, faClockRotateLeft } from '@fortawesome/free-solid-svg-icons'
 import { Button, Avatar, EmptyState, Dropdown, Badge } from '../../common'
 import { useSelector } from 'react-redux'
 import { RootState } from '../../../store'
@@ -18,6 +18,7 @@ import { getJSONItem, setJSONItem } from '../../../lib/storage'
 import { Tooltip } from 'react-tooltip'
 import { openCreateLastCallContact, openShowContactDrawer } from '../../../lib/phonebook'
 import { CallDetails } from '../../history/CallDetails'
+import Link from 'next/link'
 
 interface LastCallTypes extends CallTypes {
   username: string
@@ -163,40 +164,51 @@ export const UserLastCallsContent = () => {
   return (
     <>
       <div className='flex h-full flex-col bg-sidebar dark:bg-sidebarDark'>
-        <div className='py-6 px-5'>
+        <div className='py-4 px-6'>
           <div className='flex items-center justify-between'>
             <h2 className='text-lg font-medium text-textLight dark:text-textDark leading-7'>
               {t('LastCalls.Last calls')}
             </h2>
-            <div className='flex gap-1'>
+            <div className='flex gap-2 items-center'>
               <Dropdown
                 items={
                   <>
+                    <Dropdown.Header>
+                      <span className='font-poppins font-light'>{t('LastCalls.Sort by')}</span>
+                    </Dropdown.Header>
                     <Dropdown.Item onClick={() => sortCalls('time_desc')}>
-                      <input
-                        type='radio'
-                        checked={sort === 'time_desc'}
-                        onChange={() => sortCalls('time_desc')}
-                        className='h-4 w-4 border-gray-300 text-primary focus:ring-primaryLight dark:border-gray-600 dark:text-primaryDark dark:focus:ring-primaryDark'
-                      />
-                      {t('LastCalls.Newest')}
+                      <span className='font-poppins font-light'>{t('LastCalls.Newest')}</span>
+                      {sort === 'time_desc' && (
+                        <FontAwesomeIcon icon={faCheck} className='ml-auto text-emerald-700' />
+                      )}
                     </Dropdown.Item>
                     <Dropdown.Item onClick={() => sortCalls('time_asc')}>
-                      <input
-                        type='radio'
-                        checked={sort === 'time_asc'}
-                        onChange={() => sortCalls('time_asc')}
-                        className='h-4 w-4 border-gray-300 text-primary focus:ring-primaryLight dark:border-gray-600 dark:text-primaryDark dark:focus:ring-primaryDark'
-                      />
-                      {t('LastCalls.Oldest')}
+                      <span className='font-poppins font-light'>{t('LastCalls.Oldest')}</span>
+                      {sort === 'time_asc' && (
+                        <FontAwesomeIcon icon={faCheck} className='ml-auto text-emerald-700' />
+                      )}
                     </Dropdown.Item>
                   </>
                 }
                 position='left'
               >
-                <Button className='flex gap-2' variant='white'>
-                  {t('LastCalls.Sort by')}
-                  <FontAwesomeIcon icon={faChevronDown} />
+                <Button className='flex gap-2 h-9 w-9' variant='white'>
+                  <FontAwesomeIcon icon={faSortAmountAsc} className='h-4 w-4' />
+                </Button>
+              </Dropdown>
+              <Dropdown items={
+                <>
+                  <Link
+                    href={{ pathname: '/history', query: { section: 'Calls' } }}
+                    className='w-full'
+                  >
+                    <Dropdown.Item icon={faClockRotateLeft}>{t('LastCalls.Go to history')}</Dropdown.Item>
+                  </Link>
+                </>
+              } position='left'>
+                <Button variant='ghost' className='py-2 px-2 h-9 w-9'>
+                  <FontAwesomeIcon icon={faEllipsisVertical} className='h-4 w-4' />
+                  <span className='sr-only'>{t('LastCalls.Open lastcalls menu')}</span>
                 </Button>
               </Dropdown>
             </div>
@@ -205,19 +217,25 @@ export const UserLastCallsContent = () => {
         <span className='border-b border-gray-200 dark:border-gray-700'></span>
         <ul
           role='list'
-          className='flex-1 divide-y overflow-y-auto scrollbar-thin scrollbar-thumb-gray-400 dark:scrollbar-thumb-gray-400 scrollbar-thumb-rounded-full scrollbar-thumb-opacity-50 scrollbar-track-gray-200 dark:scrollbar-track-gray-900 scrollbar-track-rounded-full scrollbar-track-opacity-25 divide-gray-200 dark:divide-gray-700'
+          className='px-6 flex-1 divide-y overflow-y-auto scrollbar-thin scrollbar-thumb-gray-400 dark:scrollbar-thumb-gray-400 scrollbar-thumb-rounded-full scrollbar-thumb-opacity-50 scrollbar-track-gray-200 dark:scrollbar-track-gray-900 scrollbar-track-rounded-full scrollbar-track-opacity-25 divide-gray-200 dark:divide-gray-700'
         >
           {/* skeleton */}
           {isLoading &&
             Array.from(Array(4)).map((e, index) => (
               <li key={index}>
-                <div className='flex items-center px-4 py-4 sm:px-6'>
-                  {/* avatar skeleton */}
-                  <div className='animate-pulse rounded-full h-12 w-12 bg-gray-300 dark:bg-gray-600'></div>
-                  <div className='min-w-0 flex-1 px-4'>
-                    <div className='flex flex-col justify-center'>
-                      {/* line skeleton */}
-                      <div className='animate-pulse h-3 rounded bg-gray-300 dark:bg-gray-600'></div>
+                <div className='gap-4 py-4 px-0'>
+                  <div className='flex justify-between gap-3'>
+                    <div className='flex shrink-0 h-min items-center min-w-[48px]'>
+                      <div className='h-2 w-2 flex'>
+                        <span className='h-2 w-2'></span>
+                      </div>
+                      <div className='animate-pulse rounded-full h-12 w-12 bg-gray-300 dark:bg-gray-600'></div>
+                    </div>
+                    <div className='flex flex-col gap-1.5 min-w-0 flex-1'>
+                      <div className='animate-pulse h-4 w-3/4 rounded bg-gray-300 dark:bg-gray-600'></div>
+                      <div className='animate-pulse h-4 w-1/2 rounded bg-gray-300 dark:bg-gray-600'></div>
+                      <div className='animate-pulse h-4 w-1/4 rounded bg-gray-300 dark:bg-gray-600'></div>
+                      <div className='animate-pulse h-4 w-1/4 rounded bg-gray-300 dark:bg-gray-600'></div>
                     </div>
                   </div>
                 </div>
@@ -225,102 +243,81 @@ export const UserLastCallsContent = () => {
             ))}
           {/* empty state */}
           {lastCalls?.length === 0 && (
-            <EmptyState
-              title={t('LastCalls.No calls')}
-              icon={
-                <FontAwesomeIcon icon={faPhone} className='mx-auto h-12 w-12' aria-hidden='true' />
-              }
-            ></EmptyState>
-          )}
+            <div className='py-4'>
+              <EmptyState
+                title={t('LastCalls.No calls')}
+                icon={
+                  <FontAwesomeIcon icon={faPhone} className='mx-auto h-12 w-12' aria-hidden='true' />
+                }
+              ></EmptyState>
+            </div>
+            )}
           {/* Iterate through speed dial list */}
           {lastCalls?.length! > 0 &&
             lastCalls?.map((call: any, key: any) => (
               <li key={key}>
-                <div className='group relative flex items-center py-6 px-5'>
-                  <div
-                    className='absolute inset-0 group-hover:bg-dropdownBgHover dark:group-hover:bg-dropdownBgHoverDark'
-                    aria-hidden='true'
-                  />
-                  <div className='relative flex min-w-0 flex-1 items-center justify-between'>
-                    <div className='flex items-start'>
+                <div className='gap-4 py-4 px-0'>
+                  <div className='flex justify-between gap-3'>
+                    <div className='flex shrink-0 h-min items-center min-w-[48px]'>
+                      <div className='h-2 w-2 flex'>
+                        <span className='h-2 w-2'></span>
+                      </div>
                       <Avatar
-                        size='base'
+                        size='large'
                         placeholderType='person'
                         src={operators[call.username]?.avatarBase64}
                         status={operators[call.username]?.mainPresence}
+                        bordered
                         onClick={() => openLastCardUserDrawer(call)}
+                        className='mx-auto cursor-pointer ml-0.5'
                       />
-                      <div className='ml-4 truncate flex flex-col gap-1.5'>
+                    </div>
+                    <div className='flex flex-col gap-1.5 min-w-0 flex-1'>
+                      <span
+                        className='font-poppins text-sm leading-4 font-medium text-gray-900 dark:text-gray-50 truncate'
+                      >
+                        {call?.cnam !== call?.cnum
+                          ? call?.cnam
+                          : t('LastCalls.Unknown')
+                        }
+                      </span>
+                      <div className='flex items-center truncate text-sm text-primary dark:text-primaryDark'>
                         <div className='flex items-center'>
-                          <div
-                            className={` text-sm font-medium text-gray-700 dark:text-gray-200 ${
-                              call.channel.includes('from-queue')
-                                ? 'w-24 lg:w-16 xl:w-24 truncate'
-                                : 'w-64'
-                            }`}
+                          <UserCallStatusIcon call={call} />
+                          <span 
+                            className='cursor-pointer hover:underline font-poppins text-sm leading-4 font-normal truncate'
+                            title={call.direction === 'in' ? call.src : call.dst}
                           >
-                            {call?.direction === 'in' ? (
+                            {call.direction === 'in' ? (
                               <CallDetails
                                 call={call}
                                 operators={operators}
-                                hideName={true}
-                                fromHistory={false}
-                                isQueueBadgeAvailable={
-                                  call.channel.includes('from-queue') ? true : false
-                                }
+                                hideNumber={true}
+                                highlightNumber={true}
+                                isExtensionNumberLastCalls={true}
                                 direction='in'
                               />
                             ) : (
                               <CallDetails
                                 call={call}
                                 operators={operators}
-                                hideName={true}
-                                fromHistory={false}
-                                isQueueBadgeAvailable={
-                                  call.channel.includes('from-queue') ? true : false
-                                }
+                                hideNumber={true}
+                                highlightNumber={true}
+                                isExtensionNumberLastCalls={true}
                                 direction='out'
                               />
                             )}
-                          </div>
+                          </span>
                         </div>
-                        <div className='truncate text-sm text-primary dark:text-primaryDark'>
-                          <div className='flex items-center'>
-                            <UserCallStatusIcon call={call} />
-                            <span className='cursor-pointer hover:underline'>
-                              {call.direction === 'in' ? (
-                                <CallDetails
-                                  call={call}
-                                  operators={operators}
-                                  hideNumber={true}
-                                  highlightNumber={true}
-                                  isExtensionNumberLastCalls={true}
-                                  direction='in'
-                                />
-                              ) : (
-                                <CallDetails
-                                  call={call}
-                                  operators={operators}
-                                  hideNumber={true}
-                                  highlightNumber={true}
-                                  isExtensionNumberLastCalls={true}
-                                  direction='out'
-                                />
-                              )}
-                            </span>
-                          </div>
-                        </div>
-                        <CallsDate call={call} spaced={true} />
                       </div>
-                    </div>
-                    <div className='absolute right-0 top-[1.0rem] transform -translate-y-1/2 flex gap-2'>
+                      <CallsDate call={call} spaced={true} />
                       {call.channel.includes('from-queue') && (
-                        <>
+                        <div className='flex'>
                           <Badge
                             size='small'
                             variant='offline'
                             rounded='full'
-                            className={`overflow-hidden ml-1 tooltip-queue-${call?.queue}`}
+                            className={`overflow-hidden tooltip-queue-${call?.queue}`}
                             data-tooltip-id={`tooltip-queue-${call?.queue}`}
                             data-tooltip-content={
                               queuesStore?.queues[call?.queue]?.name
@@ -343,7 +340,7 @@ export const UserLastCallsContent = () => {
                           </Badge>
 
                           <Tooltip id={`tooltip-queue-${call?.queue}`} className='pi-z-20' place='left'/>
-                        </>
+                        </div>
                       )}
                     </div>
                   </div>

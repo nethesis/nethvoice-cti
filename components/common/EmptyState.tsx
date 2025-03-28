@@ -19,13 +19,15 @@ export const EmptyState: FC<EmptyStateProps> = ({
 }): JSX.Element => {
   return (
     <>
-      <div className={classNames('text-center', 'p-8', className)}>
+      <div className="overflow-hidden rounded-lg bg-white shadow dark:bg-gray-800 px-8 py-7 text-center space-y-5">
         <div className='text-gray-400 dark:text-gray-400'>{icon}</div>
-        <h3 className='mt-2 text-sm font-medium text-gray-900 dark:text-gray-100'>{title}</h3>
-        {description && (
-          <p className='mt-1 text-sm text-gray-500 dark:text-gray-400'>{description}</p>
-        )}
-        {children && <div className='mt-6 flex flex-col items-center'>{children}</div>}
+        <div>
+          <h3 className='mt-2 text-sm font-medium text-gray-900 dark:text-gray-100'>{title}</h3>
+          {description && (
+            <p className='mt-1 text-sm text-gray-500 dark:text-gray-400'>{description}</p>
+          )}
+          {children && <div className='mt-6 flex flex-col items-center leading-5'>{children}</div>}
+        </div>
       </div>
     </>
   )

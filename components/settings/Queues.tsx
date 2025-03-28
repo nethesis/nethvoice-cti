@@ -34,6 +34,7 @@ export const Queues = () => {
     const loadPeriod =
       loadPreference('queuesCallsLoadPeriod', authStore.username) || DEFAULT_CALLS_LOAD_PERIOD
     setCallsLoadPeriod(loadPeriod)
+  // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [firstRender])
 
   const onChangeCallsRefreshInterval = (value: any) => {
@@ -66,14 +67,14 @@ export const Queues = () => {
         <div className='sm:overflow-hidden w-full dark:bg-gray-900'>
           <div className='bg-cardBackgroud dark:bg-cardBackgroudDark py-6 px-4 sm:p-6 w-full '>
             <div>
-              <label className='text-base font-semibold text-gray-900 dark:text-gray-200'>
+              <h2 className='text-lg font-medium leading-6 text-gray-900 dark:text-gray-100 mb-6'>
                 {t('Settings.Queues')}
-              </label>
+              </h2>
               <div className='flex justify-between'>
                 <div>
                   <h4
                     id='clear-cache-heading'
-                    className='text-sm font-medium leading-6 text-gray-900 dark:text-gray-100 mt-4'
+                    className='text-sm font-medium leading-6 text-gray-900 dark:text-gray-100'
                   >
                     {t('Settings.Time preferences')}
                   </h4>
@@ -123,7 +124,7 @@ export const Queues = () => {
                 <div className='w-1/2 pr-4'>
                   <div className='mb-2'>
                     {/* Right section title */}
-                    <p className='text-sm font-regular text-gray-900 dark:text-gray-200 pt-4'>
+                    <p className='text-sm font-regular text-gray-900 dark:text-gray-200'>
                       {t('Settings.Login/logout preferences')}
                     </p>
                   </div>

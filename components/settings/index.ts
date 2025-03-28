@@ -3,3 +3,10 @@
 
 export * from './Integrations'
 export * from './ClearCache'
+export * from './Queues'
+export * from './Theme'
+export * from './MobileApp'
+export * from './CustomerCards'
+export * from './ProfilePicture'
+export * from './Devices'
+export * from './Voicemail'
