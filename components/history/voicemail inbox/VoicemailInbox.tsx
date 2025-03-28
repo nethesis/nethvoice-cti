@@ -15,10 +15,8 @@ import {
   faCircleArrowDown,
   faTrash,
   faTriangleExclamation,
-  faArrowRight,
-  faCircle,
   faVoicemail,
-  faGear,
+  faArrowRightLong,
 } from '@fortawesome/free-solid-svg-icons'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { t } from 'i18next'
@@ -428,7 +426,7 @@ export const VoicemailInbox: FC<VoicemailInboxProps> = ({ className }): JSX.Elem
               </Button>
               <Link href={{ pathname: '/settings', query: { section: 'Voicemail' } }}>
                 <Button variant='white' className='gap-2'>
-                  <FontAwesomeIcon icon={faGear} className='h-4 w-4' />
+                  <FontAwesomeIcon icon={faArrowRightLong} className='h-4 w-4' />
                   {t('History.Go to Settings')}
                 </Button>
               </Link>

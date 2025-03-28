@@ -15,8 +15,7 @@ import {
   faCircleArrowDown,
   faTriangleExclamation,
   faCircle,
-  faGear,
-  faClockRotateLeft,
+  faArrowRightLong,
 } from '@fortawesome/free-solid-svg-icons'
 import { Avatar, Button, Dropdown, EmptyState, InlineNotification, Modal } from '..'
 import {
@@ -186,10 +185,10 @@ export const VoiceMailContent = () => {
         href={{ pathname: '/history', query: { section: 'Voicemail inbox' } }}
         className='w-full'
       >
-        <Dropdown.Item icon={faClockRotateLeft}>{t('VoiceMail.Go to history')}</Dropdown.Item>
+        <Dropdown.Item icon={faArrowRightLong}>{t('VoiceMail.Go to history')}</Dropdown.Item>
       </Link>
       <Link href={{ pathname: '/settings', query: { section: 'Voicemail' } }} className='w-full'>
-        <Dropdown.Item icon={faGear}>{t('VoiceMail.Go to settings')}</Dropdown.Item>
+        <Dropdown.Item icon={faArrowRightLong}>{t('VoiceMail.Go to settings')}</Dropdown.Item>
       </Link>
     </>
   )
