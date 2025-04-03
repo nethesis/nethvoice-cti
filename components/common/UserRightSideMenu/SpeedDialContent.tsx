@@ -265,7 +265,7 @@ export const SpeedDialContent = () => {
             </h2>
             <div className='flex gap-2 items-center'>
               {' '}
-              {isSpeedDialLoaded && !speedDials.length && (
+              {isSpeedDialLoaded && speedDials.length && (
                 <div className='h-7 flex items-center'>
                   <Button variant='white' className='h-9' onClick={() => openCreateSpeedDialDrawer()}>
                     <FontAwesomeIcon icon={faPlus} className='xl:mr-2 h-4 w-4' />
