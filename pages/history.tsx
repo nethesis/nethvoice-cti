@@ -49,7 +49,7 @@ const History: NextPage = () => {
 
     const preferenceAvailable = userPreference && newTabs.some((tab) => tab.name === userPreference)
 
-    let tabToSelect
+    let tabToSelect: any
 
     if (preferenceAvailable) {
       tabToSelect = userPreference

@@ -78,13 +78,19 @@ export const Calls: FC<CallsProps> = ({ className }): JSX.Element => {
 
   useEffect(() => {
     if (!dateBegin) {
-      setDateBegin(dateFrom.replace(/-/g, ''))
+      return setDateBegin(dateFrom.replace(/-/g, ''))
+    } else {
+      setDateBegin(dateBegin.replace(/-/g, ''))
     }
+  }, [dateBegin, dateFrom])
+
+  useEffect(() => {
     if (!dateEnd) {
-      setDateEnd(dateTo.replace(/-/g, ''))
+      return setDateEnd(dateTo.replace(/-/g, ''))
+    } else {
+      setDateEnd(dateEnd.replace(/-/g, ''))
     }
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [])
+  }, [dateTo, dateEnd])
 
   //Get the history of the user
   useEffect(() => {
@@ -626,7 +632,11 @@ export const Calls: FC<CallsProps> = ({ className }): JSX.Element => {
                   data-tooltip-content={t('Applications.Open PBX Report')}
                 >
                   <Button variant='white' className='gap-2'>
-                    <Tooltip id={`tooltip-button-pbx-report`} place='top' className='block lg:hidden' />
+                    <Tooltip
+                      id={`tooltip-button-pbx-report`}
+                      place='top'
+                      className='block lg:hidden'
+                    />
                     <FontAwesomeIcon icon={faArrowUpRightFromSquare} className='w-4 h-4' />
                     <p className='hidden lg:block'>{t('Applications.Open PBX Report')}</p>
                   </Button>
