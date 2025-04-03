@@ -22,48 +22,71 @@ interface tabsType {
 const History: NextPage = () => {
   const { t } = useTranslation()
   const profile = useSelector((state: RootState) => state.user)
-
-  const tabs: tabsType[] = [
-    { name: 'Calls', href: '#', current: false },
-    ...(!isEmpty(profile?.endpoints?.voicemail)
-      ? [{ name: 'Voicemail inbox', href: '#', current: false },]
-      : []),
-  ]
-
-  const [items, setItems] = useState<tabsType[]>(tabs)
-  const [currentSection, setCurrentSection] = useState<string>(tabs[0].name)
   const auth = useSelector((state: RootState) => state.authentication)
-  const [firstRender, setFirstRender]: any = useState(true)
+
+  const [items, setItems] = useState<tabsType[]>([])
+  const [currentSection, setCurrentSection] = useState<string>('')
+  const [userPreference, setUserPreference] = useState<string>('')
 
   useEffect(() => {
-    if (!firstRender) {
-      return
-    }
-    setFirstRender(false)
+    if (!auth.username) return
 
-    // Get saved tab preference
     const savedTab = loadPreference('historySelectedTab', auth.username)
-
     if (savedTab) {
-      changeSection(savedTab)
-    } else {
-      changeSection(tabs[0].name)
+      setUserPreference(savedTab)
     }
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [firstRender])
+  }, [auth.username])
+
+  useEffect(() => {
+    if (!profile || !auth.username) return
+
+    const newTabs: tabsType[] = [
+      { name: 'Calls', href: '#', current: false },
+      ...(!isEmpty(profile?.endpoints?.voicemail)
+        ? [{ name: 'Voicemail inbox', href: '#', current: false }]
+        : []),
+    ]
+
+    const preferenceAvailable = userPreference && newTabs.some((tab) => tab.name === userPreference)
+
+    let tabToSelect
+
+    if (preferenceAvailable) {
+      tabToSelect = userPreference
+    } else {
+      tabToSelect = newTabs[0].name
+    }
+
+    const updatedTabs = newTabs.map((tab) => ({
+      ...tab,
+      current: tab.name === tabToSelect,
+    }))
+
+    setItems(updatedTabs)
+    setCurrentSection(tabToSelect)
+  }, [profile, auth.username, userPreference])
 
   const changeSection = (sectionName: string) => {
-    const currentItems = items.map((route) => {
-      if (sectionName === route.name) {
-        route.current = true
-        setCurrentSection(sectionName)
-        savePreference('historySelectedTab', sectionName, auth.username)
+    if (!items.some((item) => item.name === sectionName)) {
+      if (items.length > 0) {
+        sectionName = items[0].name
       } else {
-        route.current = false
+        return
       }
-      return route
-    })
+    }
+
+    const currentItems = items.map((route) => ({
+      ...route,
+      current: sectionName === route.name,
+    }))
+
+    setUserPreference(sectionName)
     setItems(currentItems)
+    setCurrentSection(sectionName)
+
+    if (auth.username) {
+      savePreference('historySelectedTab', sectionName, auth.username)
+    }
   }
 
   return (
