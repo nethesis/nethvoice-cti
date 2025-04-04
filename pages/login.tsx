@@ -243,7 +243,7 @@ export default function Login() {
     setLoading(true)
 
     if (window !== undefined) {
-      const username = usernameRef?.current?.value
+      const username = usernameRef?.current?.value?.toLowerCase()
       const password = passwordRef?.current?.value
       setOnError(false)
 
