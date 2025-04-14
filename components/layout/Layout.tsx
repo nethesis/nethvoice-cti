@@ -1045,6 +1045,10 @@ export const Layout: FC<LayoutProps> = ({ children }) => {
   // global keyborad shortcut
   useHotkeys('ctrl+alt+c', () => closePhoneIslandCall(), [])
 
+  useEventListener('phone-island-voicemail-received', () => {
+    dispatch.voicemail.reload()
+  })
+
   return (
     <>
       <div>
