@@ -37,6 +37,7 @@ import { useEventListener } from '../../../lib/hooks/useEventListener'
 export const VoiceMailContent = () => {
   const operatorsStore = useSelector((state: RootState) => state.operators)
   const authStore = useSelector((state: RootState) => state.authentication)
+  const reloadValue = useSelector((state: RootState) => state.voicemail.reloadVoicemailValue)
 
   const [isVoiceMailLoaded, setVoiceMailLoaded] = useState(false)
   const [getVoiceMailError, setGetVoiceMailError] = useState('')
@@ -57,14 +58,19 @@ export const VoiceMailContent = () => {
       return
     }
 
+    if (!firstRender && !reloadValue) {
+      return
+    }
+
     if (firstRender) {
       setFirstRender(false)
-    } else {
-      return
     }
 
     const fetchVoicemails = async () => {
       try {
+        setVoiceMailLoaded(false)
+        setGetVoiceMailError('')
+
         const response: any[] | undefined = await getAllVoicemails()
 
         // Filter voicemails by type = inbox or old
@@ -111,7 +117,7 @@ export const VoiceMailContent = () => {
     }
 
     fetchVoicemails()
-  }, [operatorsStore, firstRender])
+  }, [operatorsStore, firstRender, reloadValue])
 
   useEffect(() => {
     // Apply sorting to voicemails
@@ -293,10 +299,7 @@ export const VoiceMailContent = () => {
             </h2>
             <div className='flex gap-2 items-center'>
               <Dropdown items={getVoiceMailSortTemplate()} position='left'>
-                <Button
-                  variant='white'
-                  className='py-2 px-2 gap-3 h-9 w-9'
-                >
+                <Button variant='white' className='py-2 px-2 gap-3 h-9 w-9'>
                   <FontAwesomeIcon icon={faSortAmountAsc} className='h-4 w-4' />
                   <span className='sr-only'>{t('VoiceMail.Open voicemail menu')}</span>
                 </Button>
@@ -339,12 +342,14 @@ export const VoiceMailContent = () => {
                         size='large'
                         bordered
                         onClick={
-                          voicemail?.caller_operator?.name !== t('VoiceMail.Unknown') && voicemail?.caller_operator
+                          voicemail?.caller_operator?.name !== t('VoiceMail.Unknown') &&
+                          voicemail?.caller_operator
                             ? () => openDrawerOperator(voicemail?.caller_operator)
                             : undefined
                         }
                         className={`mx-auto ${
-                          voicemail?.caller_operator?.name !== t('VoiceMail.Unknown') && voicemail?.caller_operator
+                          voicemail?.caller_operator?.name !== t('VoiceMail.Unknown') &&
+                          voicemail?.caller_operator
                             ? 'cursor-pointer'
                             : 'cursor-default'
                         } ml-0.5`}
@@ -402,7 +407,10 @@ export const VoiceMailContent = () => {
                         <FontAwesomeIcon icon={faPlay} className='h-4 w-4' />
                         <span className='sr-only'>{t('VoiceMail.Play voicemail')}</span>
                       </Button>
-                      <Dropdown items={getVoiceMailOptionsTemplate(voicemail)} position={index === 0 ? 'bottomVoicemail' : 'topVoicemail'}>
+                      <Dropdown
+                        items={getVoiceMailOptionsTemplate(voicemail)}
+                        position={index === 0 ? 'bottomVoicemail' : 'topVoicemail'}
+                      >
                         <Button variant='ghost' className='py-2 px-2 h-9 w-9'>
                           <FontAwesomeIcon icon={faEllipsisVertical} className='h-4 w-4' />
                           <span className='sr-only'>{t('VoiceMail.Open voicemail menu')}</span>

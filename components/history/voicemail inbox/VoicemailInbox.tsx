@@ -17,6 +17,7 @@ import {
   faTriangleExclamation,
   faVoicemail,
   faArrowRightLong,
+  faCircle,
 } from '@fortawesome/free-solid-svg-icons'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { t } from 'i18next'
@@ -313,14 +314,14 @@ export const VoicemailInbox: FC<VoicemailInboxProps> = ({ className }): JSX.Elem
 
   const getDropdownPosition = (index: number) => {
     // Get total count of items on current page
-    const totalItemsOnPage = currentPageVoicemails.length;
-    
+    const totalItemsOnPage = currentPageVoicemails?.length
+
     if (totalItemsOnPage === 1) {
-      return 'oneVoicemail';
+      return 'oneVoicemail'
     } else if (totalItemsOnPage > 1 && totalItemsOnPage - index <= 1) {
-      return 'leftUpVoicemail';
+      return 'leftUpVoicemail'
     } else {
-      return 'leftDownVoicemail';
+      return 'leftDownVoicemail'
     }
   }
 
@@ -445,7 +446,9 @@ export const VoicemailInbox: FC<VoicemailInboxProps> = ({ className }): JSX.Elem
                       {filteredVoicemails?.length === 0 && (
                         <EmptyState
                           title={
-                            searchTerm ? t('History.No matching voicemails') : t('History.No voicemails')
+                            searchTerm
+                              ? t('History.No matching voicemails')
+                              : t('History.No voicemails')
                           }
                           description={
                             searchTerm
@@ -498,26 +501,40 @@ export const VoicemailInbox: FC<VoicemailInboxProps> = ({ className }): JSX.Elem
                                 <tr
                                   key={voicemail?.id}
                                   className={`${
-                                    index === 0 ? '' : 'border-t border-gray-300 dark:border-gray-600'
+                                    index === 0
+                                      ? ''
+                                      : 'border-t border-gray-300 dark:border-gray-600'
                                   } h-[84px]`}
                                 >
                                   {/* Caller */}
                                   <td className='whitespace-nowrap px-6 py-4 sm:pl-6'>
                                     <div className='flex items-center'>
+                                      <div className='h-2 w-2 flex'>
+                                        {voicemail?.type === 'inbox' ? (
+                                          <FontAwesomeIcon
+                                            icon={faCircle}
+                                            className='h-2 w-2 text-rose-700'
+                                          />
+                                        ) : (
+                                          <span className='h-2 w-2' />
+                                        )}
+                                      </div>
                                       <Avatar
                                         src={voicemail?.caller_operator?.avatarBase64}
                                         placeholderType='operator'
                                         size='large'
                                         bordered
                                         onClick={() =>
-                                          voicemail?.caller_operator?.name !== t('VoiceMail.Unknown') &&
+                                          voicemail?.caller_operator?.name !==
+                                            t('VoiceMail.Unknown') &&
                                           openDrawerOperator(voicemail?.caller_operator)
                                         }
                                         className={`mr-2 ${
-                                          voicemail?.caller_operator?.name !== t('VoiceMail.Unknown')
+                                          voicemail?.caller_operator?.name !==
+                                          t('VoiceMail.Unknown')
                                             ? 'cursor-pointer'
                                             : 'cursor-default'
-                                        }`}
+                                        } ml-0.5`}
                                         status={voicemail?.caller_operator?.mainPresence}
                                       />
                                       <div>
