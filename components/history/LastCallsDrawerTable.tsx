@@ -115,6 +115,7 @@ export const LastCallsDrawerTable = forwardRef<HTMLButtonElement, LastCallsDrawe
 
       // reload last calls
       setLoaded(false)
+    // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [phoneNumbers])
 
     const filterLastCalls = (lastCalls: any) => {
@@ -273,7 +274,9 @@ export const LastCallsDrawerTable = forwardRef<HTMLButtonElement, LastCallsDrawe
             : ''}
         </h4>
         {/* Divider */}
-        <div className='mt-4 border-t border-gray-200 dark:border-gray-700'></div>
+        {lastCalls?.rows?.length > 0 && (
+          <div className='mt-4 border-t border-gray-200 dark:border-gray-700'></div>
+        )}
         {/* error */}
         {errorMessage && (
           <InlineNotification
@@ -295,12 +298,14 @@ export const LastCallsDrawerTable = forwardRef<HTMLButtonElement, LastCallsDrawe
         )}
         {/* empty state */}
         {isLoaded && !errorMessage && lastCalls?.rows && !lastCalls.rows.length && (
+        <div className='mt-4'>
           <EmptyState
             title={t('Phonebook.No recent calls') || ''}
             icon={
               <FontAwesomeIcon icon={faPhone} className='mx-auto h-12 w-12' aria-hidden='true' />
             }
           ></EmptyState>
+        </div>
         )}
         {/* Last calls list */}
         {isLoaded && !errorMessage && lastCalls?.rows && !!lastCalls.rows.length && (
