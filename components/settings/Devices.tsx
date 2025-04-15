@@ -106,7 +106,8 @@ const Devices: NextPage = () => {
             .filter(
               (asset: any) =>
                 (asset?.content_type === 'application/octet-stream' ||
-                  asset?.content_type === 'application/x-ms-dos-executable') &&
+                  asset?.content_type === 'application/x-msdownload' ||
+                  asset.content_type === 'application/x-ms-dos-executable') &&
                 !asset?.browser_download_url.endsWith('.blockmap'),
             )
             .map((asset: any) => {
@@ -340,7 +341,12 @@ const Devices: NextPage = () => {
                   </td>
                   <td className={STYLES.tableCell}>
                     {webrtcData[0]?.id === profile?.default_device?.id ? (
-                      <Badge size='small' variant='online' rounded='full' className='whitespace-nowrap'>
+                      <Badge
+                        size='small'
+                        variant='online'
+                        rounded='full'
+                        className='whitespace-nowrap'
+                      >
                         <span>{t('Devices.Main device')}</span>
                       </Badge>
                     ) : (
@@ -461,7 +467,12 @@ const Devices: NextPage = () => {
                   </td>
                   <td className={STYLES.tableCell}>
                     {phoneLinkData[0]?.id === profile?.default_device?.id ? (
-                      <Badge size='small' variant='online' rounded='full' className='whitespace-nowrap'>
+                      <Badge
+                        size='small'
+                        variant='online'
+                        rounded='full'
+                        className='whitespace-nowrap'
+                      >
                         <span>{t('Devices.Main device')}</span>
                       </Badge>
                     ) : (
@@ -593,7 +604,12 @@ const Devices: NextPage = () => {
                     </td>
                     <td className={STYLES.tableCell}>
                       {phone?.id === profile?.default_device?.id ? (
-                        <Badge size='small' variant='online' rounded='full' className='whitespace-nowrap'>
+                        <Badge
+                          size='small'
+                          variant='online'
+                          rounded='full'
+                          className='whitespace-nowrap'
+                        >
                           <span>{t('Devices.Main device')}</span>
                         </Badge>
                       ) : (
