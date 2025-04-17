@@ -28,10 +28,11 @@ export const openShowSwitchDeviceInputOutput = (status: any) => {
   })
 }
 
-export const openShowDownloadLinkContent = (status: any, defaultOS: string) => {
+export const openShowDownloadLinkContent = (status: any, defaultOS: string, macArchitecture?: string) => {
   let objConfig = {
     urlStatus: status,
     selectedOS: defaultOS,
+    macArchitecture: macArchitecture || 'x64',
   }
   store.dispatch.sideDrawer.update({
     isShown: true,

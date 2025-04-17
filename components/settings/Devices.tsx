@@ -38,6 +38,15 @@ import { faOfficePhone } from '@nethesis/nethesis-solid-svg-icons'
 import { IconProp } from '@fortawesome/fontawesome-svg-core'
 import { Tooltip } from 'react-tooltip'
 
+interface NavigatorWithUserAgentData extends Navigator {
+  userAgentData?: {
+    getHighEntropyValues(hints: string[]): Promise<{
+      architecture: string
+      [key: string]: any
+    }>
+  }
+}
+
 const STYLES = {
   tableCell:
     'px-6 py-3 gap-6 text-sm font-normal font-poppins text-gray-700 dark:text-gray-200 h-14',
@@ -79,9 +88,27 @@ const Devices: NextPage = () => {
 
   const [updatedDownloadLink, setUpdatedDownloadLink]: any = useState()
   const [currentOS, setCurrentOS] = useState('')
+  const [macArchitecture, setMacArchitecture] = useState('x64')
 
   const [firstRenderDownload, setFirstRenderDownload] = useState(true)
   const [getDownloadUrlError, setGetDownloadUrlError] = useState('')
+
+  const getMacArchitecture = async () => {
+    try {
+      const nav = navigator as NavigatorWithUserAgentData
+
+      if (nav.userAgentData && typeof nav.userAgentData.getHighEntropyValues === 'function') {
+        const data = await nav.userAgentData.getHighEntropyValues(['architecture'])
+        if (data && data.architecture) {
+          return data.architecture === 'arm' ? 'arm64' : 'x64'
+        }
+      }
+      return 'x64'
+    } catch (error) {
+      console.error('Error detecting Mac architecture:', error)
+      return 'x64'
+    }
+  }
 
   useEffect(() => {
     if (firstRenderDownload) {
@@ -93,6 +120,9 @@ const Devices: NextPage = () => {
       setCurrentOS('windows')
     } else if (userAgent.includes('mac')) {
       setCurrentOS('mac')
+      getMacArchitecture().then((arch) => {
+        setMacArchitecture(arch)
+      })
     } else if (userAgent.includes('linux')) {
       setCurrentOS('linux')
     }
@@ -110,19 +140,23 @@ const Devices: NextPage = () => {
                   asset.content_type === 'application/x-ms-dos-executable') &&
                 !asset?.browser_download_url.endsWith('.blockmap'),
             )
-            .map((asset: any) => {
+            .reduce((acc: any[], asset: any) => {
               const url = asset.browser_download_url
               if (url.includes('setup.exe')) {
-                return { windowsUrl: url }
+                acc.push({ windowsUrl: url })
               } else if (url.includes('.AppImage')) {
-                return { linuxUrl: url }
+                acc.push({ linuxUrl: url })
               } else if (url.includes('.dmg')) {
-                return { macUrl: url }
-              } else {
-                return null
+                if (url.includes('-arm64.dmg')) {
+                  acc.push({ macArmUrl: url })
+                } else if (url.includes('-x64.dmg')) {
+                  acc.push({ macX64Url: url })
+                } else {
+                  acc.push({ macUrl: url })
+                }
               }
-            })
-            .filter((download: any) => download !== null)
+              return acc
+            }, [])
 
           if (downloadUrls?.length > 0) {
             setUpdatedDownloadLink(downloadUrls)
@@ -135,23 +169,31 @@ const Devices: NextPage = () => {
     initUrlDownload()
   }, [firstRenderDownload, profile?.lkhash, phoneLinkData])
 
-  const handleDownload = (url: any) => {
-    window.open(url?.linuxUrl || url?.macUrl || url?.windowsUrl, '_blank')
-  }
+  const handleDownload = () => {
+    let downloadUrl = null
 
-  const [selectedLink, setSelectedLink] = useState('')
-  useEffect(() => {
-    if (
-      updatedDownloadLink &&
-      currentOS &&
-      profile?.lkhash !== undefined &&
-      phoneLinkData?.length !== 0
-    ) {
-      setSelectedLink(
-        updatedDownloadLink?.find((link: any) => link.hasOwnProperty(currentOS + 'Url')),
-      )
+    if (currentOS === 'mac') {
+      const macArmUrl = updatedDownloadLink?.find((link: any) => link.macArmUrl)?.macArmUrl
+      const macX64Url = updatedDownloadLink?.find((link: any) => link.macX64Url)?.macX64Url
+      const macDefaultUrl = updatedDownloadLink?.find((link: any) => link.macUrl)?.macUrl
+
+      if (macArchitecture === 'arm64' && macArmUrl) {
+        downloadUrl = macArmUrl
+      } else if (macX64Url) {
+        downloadUrl = macX64Url
+      } else {
+        downloadUrl = macDefaultUrl
+      }
+    } else if (currentOS === 'windows') {
+      downloadUrl = updatedDownloadLink?.find((link: any) => link.windowsUrl)?.windowsUrl
+    } else if (currentOS === 'linux') {
+      downloadUrl = updatedDownloadLink?.find((link: any) => link.linuxUrl)?.linuxUrl
     }
-  }, [updatedDownloadLink, currentOS, phoneLinkData, profile?.lkhash])
+
+    if (downloadUrl) {
+      window.open(downloadUrl, '_blank')
+    }
+  }
 
   let phoneLinkDownloadComponent = (isInDropwdown: boolean) => {
     return (
@@ -159,7 +201,7 @@ const Devices: NextPage = () => {
         {!isInDropwdown ? (
           <Button
             variant='ghost'
-            onClick={() => handleDownload(selectedLink)}
+            onClick={() => handleDownload()}
             className='relative'
             data-tooltip-id='tooltip-download-app'
             data-tooltip-content={t('Devices.Download App')}
@@ -197,7 +239,9 @@ const Devices: NextPage = () => {
         <>
           <Dropdown.Item
             icon={faArrowRightLong}
-            onClick={() => openShowDownloadLinkContent(updatedDownloadLink, currentOS)}
+            onClick={() =>
+              openShowDownloadLinkContent(updatedDownloadLink, currentOS, macArchitecture)
+            }
           >
             {phoneLinkDownloadComponent(true)}
           </Dropdown.Item>
