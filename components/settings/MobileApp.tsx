@@ -14,6 +14,9 @@ const QRCode = dynamic(() => import('./QRCode'), {
   ssr: false,
 })
 
+// @ts-ignore
+const APP_ID = window.CONFIG.BRAND_NAME.toUpperCase()
+
 export const MobileApp = () => {
   const [generated, setGenerated] = useState<boolean>(false)
   const [showMondal, setShowMondal] = useState(false)
@@ -35,7 +38,7 @@ export const MobileApp = () => {
       const hostname = profiling.publichost || profiling.hostname || window.location.hostname
       let qrString = `csc:${encodeURIComponent(authData.username)}@${encodeURIComponent(
         hostname,
-      )}@qrcode:${encodeURIComponent(authData.token)}@NETHVOICE`
+      )}@qrcode:${encodeURIComponent(authData.token)}@${APP_ID}`
       setQRString(qrString)
       setGenerated(true)
     }

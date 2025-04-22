@@ -7,6 +7,7 @@
 
 cat > /app/public/config/config.production.js<<EOF
 window.CONFIG = {
+  BRAND_NAME: '${BRAND_NAME:=NethVoice}',
   PRODUCT_NAME: '${PRODUCT_NAME:=NethVoice CTI}',
   COMPANY_NAME: '${COMPANY_NAME:=Nethesis}',
   COMPANY_SUBNAME: '${COMPANY_SUBNAME:=CTI}',
