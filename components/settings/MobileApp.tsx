@@ -35,7 +35,7 @@ export const MobileApp = () => {
       const hostname = profiling.publichost || profiling.hostname || window.location.hostname
       let qrString = `csc:${encodeURIComponent(authData.username)}@${encodeURIComponent(
         hostname,
-      )}:${encodeURIComponent(authData.token)}@qrcode`
+      )}@qrcode:${encodeURIComponent(authData.token)}@NETHVOICE`
       setQRString(qrString)
       setGenerated(true)
     }
