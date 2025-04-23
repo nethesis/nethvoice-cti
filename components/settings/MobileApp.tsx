@@ -9,13 +9,14 @@ import { generateQRcodeToken } from '../../services/authentication'
 import { useTranslation } from 'react-i18next'
 import { store } from '../../store'
 import dynamic from 'next/dynamic'
+import { getBrandName } from '../../lib/utils'
 
 const QRCode = dynamic(() => import('./QRCode'), {
   ssr: false,
 })
 
 // @ts-ignore
-const APP_ID = window.CONFIG.BRAND_NAME.toUpperCase()
+const APP_ID = getBrandName().toUpperCase()
 
 export const MobileApp = () => {
   const [generated, setGenerated] = useState<boolean>(false)

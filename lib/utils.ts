@@ -162,6 +162,14 @@ export function callPhoneNumber(phoneNumber: string) {
   }, 350)
 }
 
+export function getBrandName() {
+  if (typeof window === 'undefined') {
+    return ''
+  }
+  // @ts-ignore
+  return `${window.CONFIG.BRAND_NAME}`
+}
+
 export function getProductName() {
   if (typeof window === 'undefined') {
     return ''
