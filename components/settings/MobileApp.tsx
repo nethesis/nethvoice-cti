@@ -15,7 +15,6 @@ const QRCode = dynamic(() => import('./QRCode'), {
   ssr: false,
 })
 
-// @ts-ignore
 const APP_ID = getBrandName().toUpperCase()
 
 export const MobileApp = () => {
