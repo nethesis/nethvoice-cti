@@ -266,7 +266,7 @@ export function playFileAudio(audioFileId: any, typeFile: string) {
 // The event to show the audio player view and play an audio file.
 export function playFileAudioBase64(base64: string) {
   let objectPlayAudioFile = {
-    base64_audio_file: base64
+    base64_audio_file: base64,
   }
   eventDispatch('phone-island-audio-player-start', { ...objectPlayAudioFile })
 }
@@ -341,51 +341,50 @@ export const openToast = (toastType: any, messageToast: any, toastTytle: any) =>
 }
 
 export async function transferCall(operatorBadgeInformations: any) {
-  if (operatorBadgeInformations?.endpoints?.mainextension[0]?.id) {
-    let destinationNumber = operatorBadgeInformations?.endpoints?.mainextension[0]?.id
-    const { default_device, username } = store.getState().user
-    const userExtensions = store.getState().operators?.operators[username]?.endpoints?.extension
+  let extensionToTransfer = operatorBadgeInformations?.endpoints?.mainextension[0]?.id
+  const isNethLinkActive = isNethlinkOnline()
 
-    // Check if there is an extension with type 'nethlink' that matches the id of default_device
-    const hasNethlinkExtension = userExtensions.some(
-      (ext: any) => ext.type === 'nethlink' && ext.id === default_device?.id,
-    )
-
-    if (
-      (default_device?.type === 'webrtc' || default_device?.type === 'physical') &&
-      destinationNumber
-    ) {
-      eventDispatch('phone-island-call-transfer', { to: destinationNumber })
-    } else if (default_device?.type === 'nethlink' || hasNethlinkExtension) {
-      console.log('Attempting nethlink://transfer', destinationNumber)
-
-      // Use callto:// protocol to start a call
-      window.location.href = `nethlink://transfer?to=${destinationNumber}`
-    }
+  if (isNethLinkActive) {
+    console.log('Attempting nethlink://transfer', extensionToTransfer)
+    // Use nethlink protocol to transfer the call
+    window.location.href = `nethlink://transfer?to=${extensionToTransfer}`
+  } else {
+    eventDispatch('phone-island-call-transfer', { to: extensionToTransfer })
   }
 }
 
 // Function to transfer call from every page
 export async function transferCallToExtension(extensionToTransfer: any) {
-  const { default_device, username } = store.getState().user
-  const userExtensions = store.getState().operators?.operators[username]?.endpoints?.extension
+  const isNethLinkActive = isNethlinkOnline()
 
-  // Check if there is an extension with type 'nethlink' that matches the id of default_device
-  const hasNethlinkExtension = userExtensions.some(
-    (ext: any) => ext.type === 'nethlink' && ext.id === default_device?.id,
+  if (isNethLinkActive) {
+    console.log('Attempting nethlink://transfer', extensionToTransfer)
+    // Use nethlink protocol to transfer the call
+    window.location.href = `nethlink://transfer?to=${extensionToTransfer}`
+  } else {
+    eventDispatch('phone-island-call-transfer', { to: extensionToTransfer })
+  }
+}
+
+/**
+ * Checks if NethLink is available and online
+ * @returns boolean - true if NethLink is available and online, false otherwise
+ */
+export function isNethlinkOnline() {
+  const { username } = store.getState().user
+  const operators: any = store.getState().operators
+  const phoneLinkExtensions = operators?.operators[username]?.endpoints?.extension.filter(
+    (ext: any) => ext.type === 'nethlink',
   )
 
-  if (
-    (default_device?.type === 'webrtc' || default_device?.type === 'physical') &&
-    extensionToTransfer
-  ) {
-    eventDispatch('phone-island-call-transfer', { to: extensionToTransfer })
-  } else if (default_device?.type === 'nethlink' || hasNethlinkExtension) {
-    console.log('Attempting nethlink://transfer', extensionToTransfer)
-
-    // Use callto:// protocol to start a call
-    window.location.href = `nethlink://transfer?to=${extensionToTransfer}`
+  // If there's no NethLink extension, return false
+  if (!phoneLinkExtensions || phoneLinkExtensions?.length === 0) {
+    return false
   }
+
+  // Check if NethLink is online
+  const nethLinkId = phoneLinkExtensions[0].id
+  return operators?.extensions[nethLinkId]?.status !== 'offline'
 }
 
 export const clearLocalStorageAndCache = () => {
@@ -470,14 +469,12 @@ export const voiceRequest = async (methodVoice: string, url: any, object?: any) 
 }
 
 export const formatPhoneNumber = (rawNumber: string) => {
-  if (!rawNumber) return null;
+  if (!rawNumber) return null
 
   if (rawNumber.startsWith('00')) {
     // Convert "00" to "+" if necessary
-    rawNumber = rawNumber.startsWith('00')
-      ? `+${rawNumber.slice(2)}`
-      : rawNumber;
+    rawNumber = rawNumber.startsWith('00') ? `+${rawNumber.slice(2)}` : rawNumber
   }
 
-  return rawNumber;
-};
+  return rawNumber
+}
