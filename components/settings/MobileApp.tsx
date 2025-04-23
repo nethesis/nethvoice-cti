@@ -9,10 +9,13 @@ import { generateQRcodeToken } from '../../services/authentication'
 import { useTranslation } from 'react-i18next'
 import { store } from '../../store'
 import dynamic from 'next/dynamic'
+import { getBrandName } from '../../lib/utils'
 
 const QRCode = dynamic(() => import('./QRCode'), {
   ssr: false,
 })
+
+const APP_ID = getBrandName().toUpperCase()
 
 export const MobileApp = () => {
   const [generated, setGenerated] = useState<boolean>(false)
@@ -35,7 +38,7 @@ export const MobileApp = () => {
       const hostname = profiling.publichost || profiling.hostname || window.location.hostname
       let qrString = `csc:${encodeURIComponent(authData.username)}@${encodeURIComponent(
         hostname,
-      )}:${encodeURIComponent(authData.token)}@qrcode`
+      )}@qrcode:${encodeURIComponent(authData.token)}@${APP_ID}`
       setQRString(qrString)
       setGenerated(true)
     }
