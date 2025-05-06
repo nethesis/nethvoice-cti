@@ -1,9 +1,9 @@
 name: NethVoice CTI Release on tags
 
 on:
-    push:
-      tags:
-        - '**'
+  push:
+    tags:
+      - '**'
 
 jobs:
   release-module:
@@ -18,3 +18,16 @@ jobs:
         run: gh release create ${{ github.ref }} --generate-notes
         env:
           GH_TOKEN: ${{ github.token }}
+      - name: Generate SBOM (CycloneDX)
+        uses: aquasecurity/trivy-action@0.30.0
+        with:
+          scan-type: 'fs'
+          scan-ref: '.'
+          format: cyclonedx
+          output: sbom.cdx.json
+
+      - name: Attach SBOM to release
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: |
+          gh release upload "${{ github.ref }}" sbom.cdx.json --clobber
