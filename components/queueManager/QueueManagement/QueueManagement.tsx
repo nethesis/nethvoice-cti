@@ -165,7 +165,7 @@ export const QueueManagement: FC<QueueManagementProps> = ({ className }): JSX.El
         //get number of queues
         const queuesLength = queuesName.length
 
-        // Get statuses for each queue from webrest/astproxy/qmanager_qstats/name queue
+        // Get statuses for each queue from api/astproxy/qmanager_qstats/name queue
         for (let i = 0; i < queuesLength; i++) {
           const key = queuesName[i]
           const res = await getQueueStats(key)

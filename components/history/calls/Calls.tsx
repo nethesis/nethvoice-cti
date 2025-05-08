@@ -66,7 +66,7 @@ export const Calls: FC<CallsProps> = ({ className }): JSX.Element => {
   //report page link
   const pbxReportUrl = apiScheme + apiVoiceEnpoint + '/pbx-report/'
   // URL for the recording file
-  const recordingUrlPath = apiScheme + apiEndpoint + '/webrest/static/'
+  const recordingUrlPath = apiScheme + apiEndpoint + '/api/static/'
 
   const DateFromNotConverted = startOfDay(subDays(new Date(), 7))
   const dateFrom: any = formatDateLoc(DateFromNotConverted, 'yyyy-MM-dd')

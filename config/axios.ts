@@ -15,7 +15,7 @@ export const axiosInit = () => {
   const { username, token } = store.getState().authentication
 
   // @ts-ignore
-  axios.defaults.baseURL = window.CONFIG.API_SCHEME + window.CONFIG.API_ENDPOINT + '/webrest'
-  axios.defaults.headers.common['Authorization'] = `${username}:${token}`
+  axios.defaults.baseURL = window.CONFIG.API_SCHEME + window.CONFIG.API_ENDPOINT + '/api'
+  axios.defaults.headers.common['Authorization'] = `Bearer ${token}`
   axios.defaults.headers.post['Content-Type'] = 'application/json'
 }

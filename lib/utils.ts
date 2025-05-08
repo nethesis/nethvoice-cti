@@ -458,7 +458,7 @@ export const voiceRequest = async (methodVoice: string, url: any, object?: any) 
         method: methodVoice,
         headers: {
           'Content-Type': 'application/json',
-          Authorization: `${username}:${token}`,
+          Authorization: `Bearer ${token}`,
         },
       },
     )
