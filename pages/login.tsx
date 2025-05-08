@@ -4,7 +4,6 @@
 import { saveCredentials } from '../lib/login'
 import { useState, useRef, useEffect } from 'react'
 import { TextInput, InlineNotification, Button } from '../components/common'
-import hmacSHA1 from 'crypto-js/hmac-sha1'
 import { useRouter } from 'next/router'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { faCircleNotch, faEye, faEyeSlash, faPhone } from '@fortawesome/free-solid-svg-icons'
@@ -249,7 +248,7 @@ export default function Login() {
 
       const res = await fetch(
         // @ts-ignore
-        window.CONFIG.API_SCHEME + window.CONFIG.API_ENDPOINT + '/webrest/authentication/login',
+        window.CONFIG.API_SCHEME + window.CONFIG.API_ENDPOINT + '/api/login',
         {
           method: 'POST',
           headers: {
@@ -263,8 +262,8 @@ export default function Login() {
       )
 
       const callStatus = res.status
-      const nonce = res.headers.get('www-authenticate')?.split(' ')[1]
-      const token = nonce ? hmacSHA1(`${username}:${password}:${nonce}`, password).toString() : ''
+      const data = await res.json()
+      const token = data?.token || ''
 
       handleLogin(callStatus, token, username)
     }
