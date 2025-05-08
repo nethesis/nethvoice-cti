@@ -14,7 +14,7 @@ export const DEFAULT_CONFIGURATION_TYPE = 'all'
 
 const apiEnpoint = getApiEndpoint()
 const apiScheme = getApiScheme()
-const apiUrl = apiScheme + apiEnpoint + '/webrest'
+const apiUrl = apiScheme + apiEnpoint + '/api'
 let type = ''
 
 export const searchStringInLines = (lines: any, queryText: string, type: string) => {
