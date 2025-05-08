@@ -16,7 +16,7 @@ export function getPhonebookUrl() {
   }
 
   // @ts-ignore
-  return `${window.CONFIG.API_SCHEME + window.CONFIG.API_ENDPOINT}/webrest/phonebook/`
+  return `${window.CONFIG.API_SCHEME + window.CONFIG.API_ENDPOINT}/api/phonebook/`
 }
 
 export async function getPhonebook(
