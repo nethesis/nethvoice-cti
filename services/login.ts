@@ -19,12 +19,12 @@ export const logout = async () => {
     const { username, token } = store.getState().authentication
     const res = await fetch(
       // @ts-ignore
-      window.CONFIG.API_SCHEME + window.CONFIG.API_ENDPOINT + '/webrest/authentication/logout',
+      window.CONFIG.API_SCHEME + window.CONFIG.API_ENDPOINT + '/api/logout',
       {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
-          Authorization: `${username}:${token}`,
+          Authorization: `Bearer ${token}`,
         },
       },
     )
