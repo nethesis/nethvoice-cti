@@ -45,6 +45,7 @@ import { Tooltip } from 'react-tooltip'
 import { faGrid2, faGridDividers } from '@nethesis/nethesis-solid-svg-icons'
 import { savePreference } from '../lib/storage'
 import TextScroll from '../components/common/TextScroll'
+import { OperatorList } from '../components/operators/OperatorList'
 
 const Operators: NextPage = () => {
   const [filteredOperators, setFilteredOperators]: any = useState([])
@@ -555,227 +556,16 @@ const Operators: NextPage = () => {
                   }
                 />
               )}
-            {/* standard layout skeleton */}
-            {((layout === 'standard' && !operatorsStore.isOperatorsLoaded) ||
-              isApplyingFilters) && (
-              <div className='space-y-8 sm:space-y-12 py-8'>
-                <ul
-                  role='list'
-                  className='mx-auto grid grid-cols-2 gap-x-4 gap-y-8 sm:grid-cols-4 md:gap-x-6 lg:max-w-5xl lg:gap-x-8 lg:gap-y-12 xl:grid-cols-5 5xl:grid-cols-6 5xl:max-w-screen-2xl'
-                >
-                  {Array.from(Array(15)).map((e, index) => (
-                    <li key={index}>
-                      <div className='space-y-4'>
-                        {/* avatar skeleton */}
-                        <div className='animate-pulse rounded-full h-24 w-24 mx-auto bg-gray-300 dark:bg-gray-600'></div>
-                        <div className='space-y-2'>
-                          {/* name skeleton */}
-                          <div className='animate-pulse h-3 rounded bg-gray-300 dark:bg-gray-600'></div>
-                          {/* status skeleton */}
-                          <div>
-                            <div className='animate-pulse h-8 rounded-full bg-gray-300 dark:bg-gray-600'></div>
-                          </div>
-                        </div>
-                      </div>
-                    </li>
-                  ))}
-                </ul>
-              </div>
+              
+            {/* standard layout */}
+            {layout === 'standard' && (
+              <OperatorList 
+                operators={infiniteScrollOperators}
+                hasMore={infiniteScrollHasMore}
+                showMore={showMoreInfiniteScrollOperators}
+                isLoading={!operatorsStore.isOperatorsLoaded || isApplyingFilters}
+              />
             )}
-            {/* standard layout operators */}
-            {layout === 'standard' &&
-              operatorsStore.isOperatorsLoaded &&
-              !operatorsStore.errorMessage &&
-              !isEmpty(filteredOperators) && (
-                <div className='space-y-8 sm:space-y-12 py-8'>
-                  <InfiniteScroll
-                    dataLength={infiniteScrollOperators.length}
-                    next={showMoreInfiniteScrollOperators}
-                    hasMore={infiniteScrollHasMore}
-                    scrollableTarget='main-content'
-                    loader={
-                      <FontAwesomeIcon
-                        icon={faCircleNotch}
-                        className='inline-block text-center fa-spin h-8 m-10 text-gray-400 dark:text-gray-500'
-                      />
-                    }
-                  >
-                    <ul
-                      role='list'
-                      className='mx-auto grid grid-cols-2 gap-x-4 gap-y-8 sm:grid-cols-4 md:gap-x-6 lg:max-w-5xl lg:gap-x-8 lg:gap-y-12 xl:grid-cols-5 5xl:grid-cols-6 5xl:max-w-screen-2xl'
-                    >
-                      {infiniteScrollOperators.map((operator: any, index) => {
-                        return (
-                          <div key={index}>
-                            <li key={index}>
-                              <div className='space-y-4'>
-                                {/* Operator avatar  */}
-                                <Avatar
-                                  src={operator?.avatarBase64}
-                                  placeholderType='operator'
-                                  size='extra_large'
-                                  bordered
-                                  onClick={() => openDrawerOperator(operator)}
-                                  className='mx-auto cursor-pointer'
-                                  status={operator?.mainPresence}
-                                />
-                                <div className='space-y-2'>
-                                  <div className='text-xs font-medium lg:text-sm'>
-                                    {operator?.favorite ? (
-                                      <div className='flex items-center space-x-2 justify-center'>
-                                        <h3
-                                          className='cursor-pointer hover:underline block truncate text-sm font-medium text-gray-900 dark:text-gray-100 leading-5'
-                                          onClick={() => openDrawerOperator(operator)}
-                                        >
-                                          {operator?.name}
-                                        </h3>
-                                        <FontAwesomeIcon
-                                          icon={faStar}
-                                          className='inline-block text-center h-4 w-4 text-primary dark:text-primaryDark'
-                                        />
-                                      </div>
-                                    ) : (
-                                      <h3
-                                        className='cursor-pointer hover:underline text-sm not-italic font-medium leading-5 text-gray-900 dark:text-gray-100'
-                                        onClick={() => openDrawerOperator(operator)}
-                                      >
-                                        {operator?.name}
-                                      </h3>
-                                    )}
-
-                                    <div>
-                                      <span className='block truncate mt-1 text-sm font-medium text-gray-500 dark:text-gray-500'>
-                                        {/* If operator is in call */}
-
-                                        {operator?.conversations?.length &&
-                                        (operator?.conversations[0]?.connected ||
-                                          operator?.conversations[0]?.inConference ||
-                                          operator?.conversations[0]?.chDest?.inConference ==
-                                            true) ? (
-                                          <div className='py-2 px-3'>
-                                            <CallDuration
-                                              startTime={operator?.conversations[0]?.startTime}
-                                              className='relative top-px mr-1.5 text-cardTextBusy dark:text-cardTextBusy leading-5 text-sm font-medium font-mono'
-                                            />
-
-                                            {/* Operator recording call  */}
-                                            {operator?.conversations[0]?.recording === 'true' && (
-                                              <FontAwesomeIcon
-                                                icon={faRecordVinyl}
-                                                className='inline-block text-center h-4 w-4'
-                                              />
-                                            )}
-
-                                            {/* Operator is listening */}
-                                            {operator?.conversations[0]?.id ===
-                                              actionInformation?.listeningInfo?.listening_id && (
-                                              <FontAwesomeIcon
-                                                icon={faEarListen}
-                                                className='inline-block text-center h-4 w-4'
-                                              />
-                                            )}
-
-                                            {/* Operator is intrude */}
-                                            {operator?.conversations[0]?.id ===
-                                              actionInformation?.intrudeInfo?.intrude_id && (
-                                              <FontAwesomeIcon
-                                                icon={faHandPointUp}
-                                                className='inline-block text-center h-4 w-4'
-                                              />
-                                            )}
-                                          </div>
-                                        ) : // If main user is in call Transfer button is shown
-                                        operatorsStore?.operators[authStore.username]
-                                            ?.mainPresence === 'busy' &&
-                                          operator?.mainPresence === 'online' ? (
-                                          <Button
-                                            variant='dashboard'
-                                            onClick={() => transferCall(operator)}
-                                            className='text-primary dark:text-primaryDark dark:disabled:text-gray-700 dark:disabled:hover:text-gray-700 disabled:text-gray-400'
-                                          >
-                                            <FontAwesomeIcon
-                                              icon={faRightLeft}
-                                              className='inline-block text-center h-3.5 w-3.5 mr-1.5 rotate-90 '
-                                            />
-                                            <span className='text-sm not-italic font-medium leading-5'>
-                                              {t('Operators.Transfer')}
-                                            </span>
-                                          </Button>
-                                        ) : operator?.mainPresence === 'busy' ||
-                                          operator?.mainPresence === 'ringing' ? (
-                                          <div className='py-2 px-3 flex justify-center'>
-                                            {operator?.mainPresence === 'busy' ? (
-                                              <span className='text-sm not-italic font-medium leading-5 text-cardTextBusy dark:text-cardTextBusy'>
-                                                {t('Operators.Busy')}
-                                              </span>
-                                            ) : (
-                                              <div className='flex items-center text-cardTextBusy dark:text-cardTextBusy'>
-                                                {/* ringing icon */}
-                                                <span className='ringing-animation mr-2 h-4 w-4'></span>
-                                                <span className='text-sm not-italic font-medium leading-5'>
-                                                  {t('Operators.Ringing')}
-                                                </span>
-                                              </div>
-                                            )}
-                                          </div>
-                                        ) : (
-                                          <Button
-                                            variant='dashboard'
-                                            className={`${
-                                              operator?.mainPresence === 'online' ||
-                                              operator?.mainPresence === 'offline' ||
-                                              operator?.mainPresence === 'dnd'
-                                                ? 'text-primary dark:text-primaryDark dark:disabled:text-gray-600 dark:disabled:hover:text-gray-600 disabled:text-gray-400'
-                                                : 'text-cardTextBusy dark:text-cardTextBusy'
-                                            }`}
-                                            // Button is active only if operator is online
-                                            disabled={
-                                              operator?.mainPresence === 'offline' ||
-                                              operator?.mainPresence === 'dnd' ||
-                                              operator?.mainPresence === 'busy' ||
-                                              operator?.mainPresence === 'ringing' ||
-                                              operator?.username === authStore?.username
-                                            }
-                                            onClick={() => callOperator(operator)}
-                                          >
-                                            {operator?.mainPresence === 'busy' ? (
-                                              <span className='text-sm not-italic font-medium leading-5'>
-                                                {t('Operators.Busy')}
-                                              </span>
-                                            ) : operator?.mainPresence === 'ringing' ? (
-                                              <div className='flex items-center'>
-                                                {/* ringing icon */}
-                                                <span className='ringing-animation mr-2'></span>
-                                                <span className='text-sm not-italic font-medium leading-5'>
-                                                  {t('Operators.Ringing')}
-                                                </span>
-                                              </div>
-                                            ) : (
-                                              <>
-                                                <FontAwesomeIcon
-                                                  icon={faPhone}
-                                                  className='inline-block text-center h-4 w-4 mr-2'
-                                                />
-                                                <span className='text-sm not-italic font-medium leading-5'>
-                                                  {t('Operators.Call')}
-                                                </span>
-                                              </>
-                                            )}
-                                          </Button>
-                                        )}
-                                      </span>
-                                    </div>
-                                  </div>
-                                </div>
-                              </div>
-                            </li>
-                          </div>
-                        )
-                      })}
-                    </ul>
-                  </InfiniteScroll>
-                </div>
-              )}
 
             {/* compact layout skeleton */}
             {((layout === 'compact' && !operatorsStore.isOperatorsLoaded) || isApplyingFilters) && (

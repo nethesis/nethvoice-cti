@@ -56,7 +56,8 @@
     "Close": "Chiudi",
     "Back": "Indietro",
     "Delete all": "Elimina tutto",
-    "Deleting...": "Eliminazione in corso..."
+    "Deleting...": "Eliminazione in corso...",
+    "Reject": "Rifiuta"
   },
   "Login": {
     "User": "Utente",

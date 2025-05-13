@@ -70,7 +70,8 @@
     "Copy to clipboard": "Copy to clipboard",
     "Back": "Back",
     "Delete all": "Delete all",
-    "Deleting...": "Deleting..."
+    "Deleting...": "Deleting...",
+    "Reject": "Reject"
   },
   "Login": {
     "User": "Username",

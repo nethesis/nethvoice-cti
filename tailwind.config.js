@@ -113,6 +113,29 @@ module.exports = {
         //topbar dark
         topbarDark: '#030712', // gray-950
         topBarTextDark: '#E5E7EB', // gray-200
+
+        //Refactoring
+
+        //Text
+        //primary
+        primaryNeutral: '#111827', // gray-900
+        primaryNeutralDark: '#F9FAFB', // gray-50
+
+        //primary invert
+        primaryInvertNeutral: '#F9FAFB', // gray-50
+        primaryInvertNeutralDark: '#111827', // gray-900
+
+        //secondary
+        secondaryNeutral: '#374151', // gray-700
+        secondaryNeutralDark: '#E5E7EB', // gray-200
+
+        //tertiary
+        tertiaryNeutral: '#4b5563', // gray-600
+        tertiaryNeutralDark: '#D1D5DB', // gray-300
+
+        //danger
+        danger: '#b91c1c', // red-700
+        dangerDark: '#EF4444', // red-500
       },
       screens: {
         '3xl': '1792px',
