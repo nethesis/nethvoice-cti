@@ -17,12 +17,8 @@ import {
   faCheckCircle,
 } from '@fortawesome/free-solid-svg-icons'
 import { Button, Avatar, Modal, Dropdown, InlineNotification, EmptyState } from '../../common'
-import {
-  deleteSpeedDial,
-  deleteAllSpeedDials,
-  getSpeedDials,
-  importCsvSpeedDial,
-} from '../../../services/phonebook'
+import { Skeleton } from '../../common/Skeleton'
+import { deleteSpeedDial, getSpeedDials, importCsvSpeedDial } from '../../../services/phonebook'
 import {
   sortSpeedDials,
   openCreateSpeedDialDrawer,
@@ -34,7 +30,21 @@ import { callPhoneNumber, transferCallToExtension } from '../../../lib/utils'
 import { useSelector } from 'react-redux'
 import { RootState } from '../../../store'
 import { Tooltip } from 'react-tooltip'
-import { store } from '../../../store'
+
+const SpeedDialItemSkeleton = () => (
+  <div className='group relative flex items-center py-2 px-6'>
+    <div className='absolute inset-0' aria-hidden='true' />
+    <div className='relative flex min-w-0 flex-1 items-center justify-between'>
+      <div className='flex items-center'>
+        <Skeleton variant='circular' width='40px' height='40px' />
+        <div className='ml-4 flex flex-col gap-1'>
+          <Skeleton width='128px' height='12px' />
+          <Skeleton width='80px' height='12px' className='mt-1' />
+        </div>
+      </div>
+    </div>
+  </div>
+)
 
 export const SpeedDialContent = () => {
   // The state for the delete modal
@@ -130,7 +140,6 @@ export const SpeedDialContent = () => {
           }
         }
       }
-
     } catch (error) {
       setDeleteSpeedDialError(t('SpeedDial.Cannot delete speed dial') || '')
       return
@@ -265,9 +274,13 @@ export const SpeedDialContent = () => {
             </h2>
             <div className='flex gap-2 items-center'>
               {' '}
-              {isSpeedDialLoaded && speedDials.length && (
+              {isSpeedDialLoaded && speedDials?.length > 0 && (
                 <div className='h-7 flex items-center'>
-                  <Button variant='white' className='h-9' onClick={() => openCreateSpeedDialDrawer()}>
+                  <Button
+                    variant='white'
+                    className='h-9'
+                    onClick={() => openCreateSpeedDialDrawer()}
+                  >
                     <FontAwesomeIcon icon={faPlus} className='xl:mr-2 h-4 w-4' />
                     <span className='hidden xl:inline-block'>{t('SpeedDial.Create')}</span>
                     <span className='sr-only'>{t('SpeedDial.Create speed dial')}</span>
@@ -295,23 +308,9 @@ export const SpeedDialContent = () => {
           {/* skeleton */}
           {!isSpeedDialLoaded &&
             !getSpeedDialError &&
-            Array.from(Array(4)).map((e, index) => (
+            Array.from(Array(4)).map((_, index) => (
               <li key={index}>
-                <div className='group relative flex items-center py-2 px-6'>
-                  <div
-                    className='absolute inset-0'
-                    aria-hidden='true'
-                  />
-                  <div className='relative flex min-w-0 flex-1 items-center justify-between'>
-                    <div className='flex items-center'>
-                      <div className='animate-pulse rounded-full h-10 w-10 bg-gray-300 dark:bg-gray-600'></div>
-                      <div className='ml-4 flex flex-col gap-1'>
-                        <div className='animate-pulse h-3 w-32 rounded bg-gray-300 dark:bg-gray-600'></div>
-                        <div className='animate-pulse h-3 w-20 mt-1 rounded bg-gray-300 dark:bg-gray-600'></div>
-                      </div>
-                    </div>
-                  </div>
-                </div>
+                <SpeedDialItemSkeleton />
               </li>
             ))}
           {/* empty state */}

@@ -26,6 +26,7 @@ import { Tooltip } from 'react-tooltip'
 import { openCreateLastCallContact, openShowContactDrawer } from '../../../lib/phonebook'
 import { CallDetails } from '../../history/CallDetails'
 import Link from 'next/link'
+import { CallSkeleton } from '../../common/Skeleton'
 
 interface LastCallTypes extends CallTypes {
   username: string
@@ -128,43 +129,20 @@ export const UserLastCallsContent = () => {
   }, [lastCallsUpdate.isReload])
 
   const openLastCardUserDrawer = (userInformation: any) => {
-    let updatedUserInformation: any = {}
-    let createContactObject: any = {}
+    const isIncoming = userInformation?.direction === 'in'
+    const name = isIncoming ? userInformation?.cnam : userInformation?.dst_cnam
+    const company = isIncoming ? userInformation?.ccompany : userInformation?.dst_ccompany
+    const extension = isIncoming ? userInformation?.src : userInformation?.dst
 
-    if (userInformation?.direction === 'in') {
-      if (userInformation?.cnam || userInformation?.ccompany) {
-        updatedUserInformation.displayName =
-          userInformation?.cnam || userInformation?.ccompany || '-'
-        updatedUserInformation.kind = 'person'
-        if (userInformation?.src) {
-          updatedUserInformation.extension = userInformation?.src
-        }
-        if (updatedUserInformation) {
-          openShowContactDrawer(updatedUserInformation)
-        }
-      } else {
-        if (userInformation?.src) {
-          createContactObject.extension = userInformation?.src
-          openCreateLastCallContact(createContactObject)
-        }
+    if (name || company) {
+      const contact = {
+        displayName: name || company || '-',
+        kind: 'person',
+        extension: extension,
       }
-    } else {
-      if (userInformation?.dst_cnam || userInformation?.dst_ccompany) {
-        updatedUserInformation.displayName =
-          userInformation?.dst_cnam || userInformation?.dst_ccompany || '-'
-        updatedUserInformation.kind = 'person'
-        if (userInformation?.dst) {
-          updatedUserInformation.extension = userInformation?.dst
-        }
-        if (updatedUserInformation) {
-          openShowContactDrawer(updatedUserInformation)
-        }
-      } else {
-        if (userInformation?.dst) {
-          createContactObject.extension = userInformation?.dst
-          openCreateLastCallContact(createContactObject)
-        }
-      }
+      openShowContactDrawer(contact)
+    } else if (extension) {
+      openCreateLastCallContact({ extension })
     }
   }
 
@@ -233,23 +211,10 @@ export const UserLastCallsContent = () => {
         >
           {/* skeleton */}
           {isLoading &&
-            Array.from(Array(4)).map((e, index) => (
+            Array.from(Array(4)).map((_, index) => (
               <li key={index}>
                 <div className='gap-4 py-4 px-0'>
-                  <div className='flex justify-between gap-3'>
-                    <div className='flex shrink-0 h-min items-center min-w-[48px]'>
-                      <div className='h-2 w-2 flex'>
-                        <span className='h-2 w-2'></span>
-                      </div>
-                      <div className='animate-pulse rounded-full h-12 w-12 bg-gray-300 dark:bg-gray-600'></div>
-                    </div>
-                    <div className='flex flex-col gap-1.5 min-w-0 flex-1'>
-                      <div className='animate-pulse h-4 w-3/4 rounded bg-gray-300 dark:bg-gray-600'></div>
-                      <div className='animate-pulse h-4 w-1/2 rounded bg-gray-300 dark:bg-gray-600'></div>
-                      <div className='animate-pulse h-4 w-1/4 rounded bg-gray-300 dark:bg-gray-600'></div>
-                      <div className='animate-pulse h-4 w-1/4 rounded bg-gray-300 dark:bg-gray-600'></div>
-                    </div>
-                  </div>
+                  <CallSkeleton />
                 </div>
               </li>
             ))}
@@ -268,7 +233,7 @@ export const UserLastCallsContent = () => {
               ></EmptyState>
             </div>
           )}
-          {/* Iterate through speed dial list */}
+          {/* Iterate through last calls list */}
           {lastCalls?.length! > 0 &&
             lastCalls?.map((call: any, key: any) => (
               <li key={key}>
