@@ -5,6 +5,7 @@ import OperatorCard from './OperatorCard'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { faCircleNotch } from '@fortawesome/free-solid-svg-icons'
 import InfiniteScroll from 'react-infinite-scroll-component'
+import { useGridClasses } from '../../lib/operators/layoutUtils'
 
 interface OperatorListProps {
   operators: any[]
@@ -13,26 +14,22 @@ interface OperatorListProps {
   isLoading?: boolean
 }
 
-const OperatorList = ({ 
-  operators, 
-  hasMore, 
-  showMore, 
-  isLoading = false 
-}: OperatorListProps) => {
+const OperatorList = ({ operators, hasMore, showMore, isLoading = false }: OperatorListProps) => {
   const authUsername = useSelector((state: RootState) => state.authentication.username)
-  const authUserMainPresence = useSelector((state: RootState) => 
-    state.operators?.operators[state.authentication.username]?.mainPresence)
+  const authUserMainPresence = useSelector(
+    (state: RootState) => state.operators?.operators[state.authentication.username]?.mainPresence,
+  )
   const actionInformation = useSelector((state: RootState) => state.userActions)
-  
+  const isSidebarOpen = useSelector((state: RootState) => state.rightSideMenu.isShown)
+
   const mainUserIsBusy = useMemo(() => authUserMainPresence === 'busy', [authUserMainPresence])
+
+  const gridClasses = useGridClasses('standard', isSidebarOpen)
 
   if (isLoading) {
     return (
       <div className='space-y-8 sm:space-y-12 py-8'>
-        <ul
-          role='list'
-          className='mx-auto grid grid-cols-2 gap-x-4 gap-y-8 sm:grid-cols-4 md:gap-x-6 lg:max-w-5xl lg:gap-x-8 lg:gap-y-12 xl:grid-cols-5 5xl:grid-cols-6 5xl:max-w-screen-2xl'
-        >
+        <ul role='list' className={gridClasses}>
           {Array.from(Array(15)).map((e, index) => (
             <li key={index}>
               <div className='space-y-4'>
@@ -68,10 +65,7 @@ const OperatorList = ({
           />
         }
       >
-        <ul
-          role='list'
-          className='mx-auto grid grid-cols-2 gap-x-4 gap-y-8 sm:grid-cols-4 md:gap-x-6 lg:max-w-5xl lg:gap-x-8 lg:gap-y-12 xl:grid-cols-5 5xl:grid-cols-6 5xl:max-w-screen-2xl'
-        >
+        <ul role='list' className={gridClasses}>
           {operators.map((operator, index) => (
             <li key={operator?.username || index}>
               <OperatorCard

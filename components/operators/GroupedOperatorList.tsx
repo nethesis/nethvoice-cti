@@ -6,6 +6,7 @@ import { faChevronRight, faCircleNotch } from '@fortawesome/free-solid-svg-icons
 import InfiniteScroll from 'react-infinite-scroll-component'
 import { Badge } from '../common'
 import CompactOperatorCard from './CompactOperatorCard'
+import { useGridClasses } from '../../lib/operators/layoutUtils'
 
 interface GroupedOperatorListProps {
   operators: any[]
@@ -27,15 +28,15 @@ const GroupedOperatorList = ({
     (state: RootState) => state.operators?.operators[state.authentication.username]?.mainPresence,
   )
   const actionInformation = useSelector((state: RootState) => state.userActions)
+  const isSidebarOpen = useSelector((state: RootState) => state.rightSideMenu.isShown)
 
   const mainUserIsBusy = useMemo(() => authUserMainPresence === 'busy', [authUserMainPresence])
 
+  const gridClasses = useGridClasses('grouped', isSidebarOpen)
+
   if (isLoading) {
     return (
-      <ul
-        role='list'
-        className='grid grid-cols-1 gap-4 sm:grid-cols-2 2xl:grid-cols-3 5xl:grid-cols-4 5xl:max-w-screen-2xl'
-      >
+      <ul role='list' className={gridClasses}>
         {Array.from(Array(24)).map((e, index) => (
           <li key={index} className='px-1'>
             <button
@@ -92,10 +93,7 @@ const GroupedOperatorList = ({
             </Badge>
           </div>
 
-          <ul
-            role='list'
-            className='grid grid-cols-1 gap-4 sm:grid-cols-2 2xl:grid-cols-3 5xl:grid-cols-4 5xl:max-w-screen-2xl'
-          >
+          <ul role='list' className={gridClasses}>
             {category?.members?.map((operator: any, operatorIndex: number) => (
               <li key={operatorIndex} className='px-1'>
                 <CompactOperatorCard

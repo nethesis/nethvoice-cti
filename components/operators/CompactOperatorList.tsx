@@ -5,6 +5,7 @@ import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { faChevronRight, faCircleNotch } from '@fortawesome/free-solid-svg-icons'
 import InfiniteScroll from 'react-infinite-scroll-component'
 import CompactOperatorCard from './CompactOperatorCard'
+import { useGridClasses } from '../../lib/operators/layoutUtils'
 
 interface CompactOperatorListProps {
   operators: any[]
@@ -24,15 +25,15 @@ const CompactOperatorList = ({
     (state: RootState) => state.operators?.operators[state.authentication.username]?.mainPresence,
   )
   const actionInformation = useSelector((state: RootState) => state.userActions)
+  const isSidebarOpen = useSelector((state: RootState) => state.rightSideMenu.isShown)
 
   const mainUserIsBusy = useMemo(() => authUserMainPresence === 'busy', [authUserMainPresence])
 
+  const gridClasses = useGridClasses('compact', isSidebarOpen)
+
   if (isLoading) {
     return (
-      <ul
-        role='list'
-        className='grid grid-cols-1 gap-4 sm:grid-cols-2 2xl:grid-cols-3 5xl:grid-cols-4 5xl:max-w-screen-2xl'
-      >
+      <ul role='list' className={gridClasses}>
         {Array.from(Array(24)).map((e, index) => (
           <li key={index} className='px-1'>
             <button
@@ -74,10 +75,7 @@ const CompactOperatorList = ({
         />
       }
     >
-      <ul
-        role='list'
-        className='grid grid-cols-1 gap-4 sm:grid-cols-2 2xl:grid-cols-3 5xl:grid-cols-4 5xl:max-w-screen-2xl'
-      >
+      <ul role='list' className={gridClasses}>
         {operators.map((operator, index) => (
           <li key={operator?.username || index} className='px-1'>
             <CompactOperatorCard
