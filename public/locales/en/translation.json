@@ -358,7 +358,18 @@
     "The audio file cannot be played": "The audio file cannot be played",
     "Audio file validation timed out": "Audio file validation timed out",
     "Validating audio file...": "Validating audio file...",
-    "Recorded audio file": "Recorded audio file"
+    "Recorded audio file": "Recorded audio file",
+    "Incoming calls": "Incoming calls",
+    "URL opened on incoming call": "URL opened on incoming call",
+    "Enable pop-ups in your browser": "Enable pop-ups in your browser",
+    "To correctly open the Call-activated URL, you need to enable pop-ups in your browser.": "To correctly open the Call-activated URL, you need to enable pop-ups in your browser.",
+    "URL opening trigger": "URL opening trigger",
+    "When the call is ringing": "When the call is ringing",
+    "When the call is answered": "When the call is answered",
+    "When clicking the button on the Phone Island": "When clicking the button on the Phone Island",
+    "This URL opens automatically for external incoming calls": "This URL opens automatically for external incoming calls",
+    "This field can only be modified by the administrator": "This field can only be modified by the administrator",
+    "Loading...": "Loading..."
   },
   "TopBar": {
     "Signed in as": "Signed in as",

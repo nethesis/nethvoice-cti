@@ -337,7 +337,18 @@
     "The audio file cannot be played": "Il file audio non può essere riprodotto",
     "Audio file validation timed out": "Validazione del file audio scaduta",
     "Validating audio file...": "Validazione del file audio in corso...",
-    "Recorded audio file": "File audio registrato"
+    "Recorded audio file": "File audio registrato",
+    "Incoming calls": "Chiamate in arrivo",
+    "URL opened on incoming call": "URL aperto su chiamata in arrivo",
+    "Enable pop-ups in your browser": "Abilita i pop-up nel tuo browser",
+    "To correctly open the Call-activated URL, you need to enable pop-ups in your browser.": "Per aprire correttamente l'URL attivato dalle chiamate, devi abilitare i pop-up nel tuo browser.",
+    "URL opening trigger": "Trigger di apertura URL",
+    "When the call is ringing": "Quando la chiamata sta squillando",
+    "When the call is answered": "Quando la chiamata riceve risposta",
+    "When clicking the button on the Phone Island": "Quando si clicca sul pulsante nel Phone Island",
+    "This URL opens automatically for external incoming calls": "Questo URL si apre automaticamente per le chiamate in entrata esterne",
+    "This field can only be modified by the administrator": "Questo campo può essere modificato solo dall'amministratore",
+    "Loading...": "Caricamento in corso..."
   },
   "TopBar": {
     "Signed in as": "Accesso effettuato come",

@@ -12,6 +12,7 @@ import {
   faCircleUser,
   faPuzzlePiece,
   faVoicemail,
+  faPhone,
 } from '@fortawesome/free-solid-svg-icons'
 import classNames from 'classnames'
 import { useSelector } from 'react-redux'
@@ -26,6 +27,7 @@ import { MobileApp } from '../components/settings/MobileApp'
 import { CustomerCards } from '../components/settings/CustomerCards'
 import Profile from '../components/settings/ProfilePicture'
 import Devices from '../components/settings/Devices'
+import { IncomingCalls } from '../components/settings/IncomingCalls'
 import { faOfficePhone } from '@nethesis/nethesis-solid-svg-icons'
 import { savePreference } from '../lib/storage'
 import { getSelectedSettingsPage } from '../lib/settings'
@@ -72,6 +74,7 @@ const Settings: NextPage = () => {
         hidden: !hasMobileExtension,
       },
       { name: 'Customer cards', href: '#', icon: faIdCardClip, current: false },
+      { name: 'Incoming calls', href: '#', icon: faPhone, current: false },
       { name: 'Queues', href: '#', icon: faUsers, current: false },
       { name: 'Profile picture', href: '#', icon: faCircleUser, current: false },
       { name: 'Theme', href: '#', icon: faPalette, current: false },
@@ -141,6 +144,8 @@ const Settings: NextPage = () => {
         return <MobileApp />
       case 'Customer cards':
         return <CustomerCards />
+      case 'Incoming calls':
+        return <IncomingCalls />
       case 'Profile picture':
         return <Profile />
       case 'Devices':

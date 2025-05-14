@@ -15,10 +15,11 @@
  * @param rounded - The border radius of the input.
  * @param squared - The squared corners of the input.
  * @param onIconClick - The callback on icon click.
+ * @param trailingComponent - The component to render at the end of the input.
  *
  */
 
-import { ComponentProps, FC, forwardRef } from 'react'
+import { ComponentProps, FC, forwardRef, ReactNode } from 'react'
 import { cleanClassName } from '../../lib/utils'
 import { useTheme } from '../../theme/Context'
 import classNames from 'classnames'
@@ -36,6 +37,7 @@ export interface TextInputProps extends Omit<ComponentProps<'input'>, 'ref' | 'c
   rounded?: 'base' | 'full'
   squared?: 'left' | 'right' | 'top' | 'bottom'
   onIconClick?: () => void
+  trailingComponent?: ReactNode
 }
 
 export const TextInput = forwardRef<HTMLInputElement, TextInputProps>(
@@ -54,6 +56,7 @@ export const TextInput = forwardRef<HTMLInputElement, TextInputProps>(
       onIconClick,
       id,
       className,
+      trailingComponent,
       ...props
     },
     ref,
@@ -86,24 +89,30 @@ export const TextInput = forwardRef<HTMLInputElement, TextInputProps>(
               />
             </div>
           )}
-          <input
-            type={type}
-            id={id}
-            placeholder={placeholder}
-            className={classNames(
-              theme.base,
-              label && 'mt-1',
-              rounded === 'full' ? theme.rounded.full : theme.rounded.base,
-              squared ? theme.squared[squared] : '',
-              size && size === 'large' ? theme.size.large : theme.size.base,
-              !error ? theme.colors.gray : theme.colors.error,
-              (Icon && !trailingIcon) ? 'pl-10' : '',
-              error ? theme.placeholder.error : theme.placeholder.base,
-              'text-gray-900',
+          <div className='relative flex items-center'>
+            <input
+              type={type}
+              id={id}
+              placeholder={placeholder}
+              className={classNames(
+                theme.base,
+                label && 'mt-1',
+                rounded === 'full' ? theme.rounded.full : theme.rounded.base,
+                squared ? theme.squared[squared] : '',
+                size && size === 'large' ? theme.size.large : theme.size.base,
+                !error ? theme.colors.gray : theme.colors.error,
+                Icon && !trailingIcon ? 'pl-10' : '',
+                trailingComponent ? 'pr-10' : '',
+                error ? theme.placeholder.error : theme.placeholder.base,
+                'text-gray-900',
+              )}
+              {...cleanProps}
+              ref={ref}
+            />
+            {trailingComponent && (
+              <div className='absolute right-3 flex items-center h-full'>{trailingComponent}</div>
             )}
-            {...cleanProps}
-            ref={ref}
-          />
+          </div>
         </div>
         {helper && (
           <p
