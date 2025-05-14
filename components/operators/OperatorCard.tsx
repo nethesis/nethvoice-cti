@@ -1,3 +1,4 @@
+import React, { useMemo, useCallback } from 'react'
 import { Avatar } from '../common'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { faStar, faPhone, faRightLeft, IconDefinition } from '@fortawesome/free-solid-svg-icons'
@@ -5,7 +6,6 @@ import { CallDuration } from './CallDuration'
 import { Button } from '../common'
 import { t } from 'i18next'
 import { callOperator, openShowOperatorDrawer, hangup, pickup } from '../../lib/operators'
-import TextScroll from '../common/TextScroll'
 import { isEmpty } from 'lodash'
 import { useSelector } from 'react-redux'
 import { RootState } from '../../store'
@@ -19,49 +19,56 @@ interface OperatorCardProps {
   actionInformation?: any
 }
 
-export const OperatorCard = ({
+const OperatorCard = ({
   operator,
   authUsername,
   mainUserIsBusy,
   actionInformation,
 }: OperatorCardProps) => {
-  // Get profile information for pickup
   const profile = useSelector((state: RootState) => state.user)
-  const operatorsStore = useSelector((state: RootState) => state.operators)
+  const liveOperatorData = useSelector(
+    (state: RootState) => state.operators.operators[operator?.username] || operator,
+  )
 
-  // Permessi per pickup e hangup
-  const hasPickupPermission =
-    profile?.profile?.macro_permissions?.settings?.permissions?.pickup?.value
-  const hasHangupPermission =
-    profile?.profile?.macro_permissions?.presence_panel?.permissions?.hangup?.value
+  const pickupPermission = useSelector(
+    (state: RootState) =>
+      state.user?.profile?.macro_permissions?.settings?.permissions?.pickup?.value,
+  )
+  const hangupPermission = useSelector(
+    (state: RootState) =>
+      state.user?.profile?.macro_permissions?.presence_panel?.permissions?.hangup?.value,
+  )
 
-  // Get real-time operator state from the store
-  const liveOperatorData = operatorsStore.operators[operator?.username] || operator
+  const permissions = useMemo(
+    () => ({
+      pickup: pickupPermission,
+      hangup: hangupPermission,
+    }),
+    [pickupPermission, hangupPermission],
+  )
 
-  // Check if operator is in conversation using real-time data
-  const isInConversation =
-    liveOperatorData?.conversations?.length > 0 &&
-    (liveOperatorData?.conversations[0]?.connected ||
-      liveOperatorData?.conversations[0]?.inConference ||
-      liveOperatorData?.conversations[0]?.chDest?.inConference === true)
+  const operatorStates = useMemo(() => {
+    const isInConversation =
+      liveOperatorData?.conversations?.length > 0 &&
+      (liveOperatorData?.conversations[0]?.connected ||
+        liveOperatorData?.conversations[0]?.inConference ||
+        liveOperatorData?.conversations[0]?.chDest?.inConference === true)
 
-  // Check if operator is in ringing state
-  const isRinging = liveOperatorData?.mainPresence === 'ringing'
+    const isRinging = liveOperatorData?.mainPresence === 'ringing'
+    const isBusy = liveOperatorData?.mainPresence === 'busy'
+    const isOfflineOrDnd =
+      liveOperatorData?.mainPresence === 'offline' || liveOperatorData?.mainPresence === 'dnd'
 
-  // Check if operator is busy
-  const isBusy = liveOperatorData?.mainPresence === 'busy'
+    const hasAnyPermission = permissions.pickup || permissions.hangup
 
-  // Check if operator is offline or dnd
-  const isOfflineOrDnd =
-    liveOperatorData?.mainPresence === 'offline' || liveOperatorData?.mainPresence === 'dnd'
+    return { isInConversation, isRinging, isBusy, isOfflineOrDnd, hasAnyPermission }
+  }, [liveOperatorData, permissions])
 
-  // Handle operator card click
-  const handleOperatorClick = () => {
+  const handleOperatorClick = useCallback(() => {
     openShowOperatorDrawer(liveOperatorData)
-  }
+  }, [liveOperatorData])
 
-  // Handle pickup call
-  const handlePickupCall = async () => {
+  const handlePickupCall = useCallback(async () => {
     if (
       liveOperatorData?.conversations?.[0]?.id &&
       profile?.default_device?.id &&
@@ -85,9 +92,9 @@ export const OperatorCard = ({
         }
       }
     }
-  }
+  }, [liveOperatorData, profile])
 
-  const handleRejectCall = async () => {
+  const handleRejectCall = useCallback(async () => {
     if (liveOperatorData?.conversations?.[0]?.id && liveOperatorData?.conversations?.[0]?.owner) {
       const conversationId = liveOperatorData.conversations[0].id
       let numberToClose = liveOperatorData.conversations[0].owner
@@ -107,10 +114,17 @@ export const OperatorCard = ({
         }
       }
     }
-  }
+  }, [liveOperatorData])
 
-  // If at least one of the two permissions is granted, show the buttons
-  const hasAnyPermission = hasPickupPermission || hasHangupPermission
+  const handleTransferCall = useCallback(() => {
+    transferCall(liveOperatorData)
+  }, [liveOperatorData])
+
+  const handleCallOperator = useCallback(() => {
+    callOperator(liveOperatorData)
+  }, [liveOperatorData])
+
+  const { isInConversation, isRinging, isBusy, isOfflineOrDnd, hasAnyPermission } = operatorStates
 
   return (
     <div className='space-y-4'>
@@ -150,7 +164,7 @@ export const OperatorCard = ({
           )}
         </div>
 
-        {/* Main extension or Ringing ( if user has at least one permission) */}
+        {/* Main extension or Ringing (if user has at least one permission) */}
         {isRinging && hasAnyPermission ? (
           <div className='text-center text-red-600 dark:text-red-500 text-sm font-medium leading-5 pt-2 flex items-center justify-center'>
             <span className='ringing-animation h-2.5 w-2.5 mr-2'></span>
@@ -165,7 +179,7 @@ export const OperatorCard = ({
 
       <div>
         <span className='block mt-1 text-sm font-medium text-gray-500 dark:text-gray-500'>
-          {/* Operator is in conversation*/}
+          {/* Operator is in conversation */}
           {isInConversation && (
             <div className='py-2 px-3 text-center'>
               <div className='inline-flex items-center text-cardTextBusy dark:text-cardTextBusy max-w-full'>
@@ -186,7 +200,7 @@ export const OperatorCard = ({
             <>
               {hasAnyPermission ? (
                 <div className='flex justify-center space-x-2'>
-                  {hasPickupPermission && (
+                  {permissions.pickup && (
                     <Button
                       variant='white'
                       size='small'
@@ -202,7 +216,7 @@ export const OperatorCard = ({
                       </span>
                     </Button>
                   )}
-                  {hasHangupPermission && (
+                  {permissions?.hangup && (
                     <Button
                       variant='whiteDanger'
                       size='small'
@@ -240,7 +254,7 @@ export const OperatorCard = ({
             !isInConversation && (
               <Button
                 variant='dashboard'
-                onClick={() => transferCall(liveOperatorData)}
+                onClick={handleTransferCall}
                 className='text-primary dark:text-primaryDark dark:disabled:text-gray-700 dark:disabled:hover:text-gray-700 disabled:text-gray-400'
               >
                 <FontAwesomeIcon
@@ -262,7 +276,7 @@ export const OperatorCard = ({
             </div>
           )}
 
-          {/* Operator is not busy, not ringing, not in conversation - show call button (also when main user is busy) */}
+          {/* Operator is not busy, not ringing, not in conversation - show call button */}
           {!isInConversation &&
             !isRinging &&
             !isBusy &&
@@ -272,7 +286,7 @@ export const OperatorCard = ({
                   variant='dashboard'
                   disabled={true}
                   className='text-primary dark:text-primaryDark dark:disabled:text-gray-600 dark:disabled:hover:text-gray-600 disabled:text-gray-400'
-                  onClick={() => callOperator(liveOperatorData)}
+                  onClick={handleCallOperator}
                 >
                   <FontAwesomeIcon
                     icon={faPhone}
@@ -289,11 +303,11 @@ export const OperatorCard = ({
                 variant='dashboard'
                 className={`${
                   isOfflineOrDnd
-                    ? 'text-primary dark:text-primaryDark dark:disabled:text-gray-600 dark:disabled:hover:text-gray-600 disabled:text-gray-400'
-                    : 'text-primary dark:text-primaryDark'
+                    ? 'text-primaryActive dark:text-primaryActiveDark dark:disabled:text-gray-600 dark:disabled:hover:text-gray-600 disabled:text-gray-400'
+                    : 'text-primaryActive dark:text-primaryActiveDark'
                 }`}
                 disabled={isOfflineOrDnd || liveOperatorData?.username === authUsername}
-                onClick={() => callOperator(liveOperatorData)}
+                onClick={handleCallOperator}
               >
                 <FontAwesomeIcon icon={faPhone} className='inline-block text-center h-4 w-4 mr-2' />
                 <span className='text-sm not-italic font-medium leading-5'>
@@ -306,3 +320,7 @@ export const OperatorCard = ({
     </div>
   )
 }
+
+export default React.memo(OperatorCard)
+
+OperatorCard.displayName = 'OperatorCard'

@@ -117,7 +117,7 @@ module.exports = {
         //Refactoring
 
         //Text
-        //primary
+        //primaryNeutral
         primaryNeutral: '#111827', // gray-900
         primaryNeutralDark: '#F9FAFB', // gray-50
 
@@ -136,6 +136,31 @@ module.exports = {
         //danger
         danger: '#b91c1c', // red-700
         dangerDark: '#EF4444', // red-500
+
+        //primary active
+        primaryActive: '#047857', // emerald-700
+        primaryActiveDark: '#10b981', // emerald-500
+
+        //primary hover
+        primaryHover: '#065f46', // emerald-800
+        primaryHoverDark: '#6ee7b7', // emerald-300
+
+        //primary focus
+        primaryFocus: '#10b981', // emerald-500
+        primaryFocusDark: '#a7f3d0', // emerald-200
+
+        //textStatus
+        //textStatusOnline
+        textStatusOnline: '#15803D', // green-700
+        textStatusOnlineDark: '#22C55E', // green-500
+
+        //textStatusOffline
+        textStatusBusy: '#b91c1c', // red-700
+        textStatusBusyDark: '#EF4444', // red-500
+
+        //textStatusOffline
+        textStatusOffline: '#374151', // gray-700
+        textStatusOfflineDark: '#9CA3AF', // gray-400
       },
       screens: {
         '3xl': '1792px',

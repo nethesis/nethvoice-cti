@@ -1,6 +1,7 @@
+import React, { useMemo } from 'react'
 import { useSelector } from 'react-redux'
 import { RootState } from '../../store'
-import { OperatorCard } from './OperatorCard'
+import OperatorCard from './OperatorCard'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { faCircleNotch } from '@fortawesome/free-solid-svg-icons'
 import InfiniteScroll from 'react-infinite-scroll-component'
@@ -12,13 +13,18 @@ interface OperatorListProps {
   isLoading?: boolean
 }
 
-export const OperatorList = ({ operators, hasMore, showMore, isLoading = false }: OperatorListProps) => {
-  const authStore = useSelector((state: RootState) => state.authentication)
-  const operatorsStore = useSelector((state: RootState) => state.operators)
+const OperatorList = ({ 
+  operators, 
+  hasMore, 
+  showMore, 
+  isLoading = false 
+}: OperatorListProps) => {
+  const authUsername = useSelector((state: RootState) => state.authentication.username)
+  const authUserMainPresence = useSelector((state: RootState) => 
+    state.operators?.operators[state.authentication.username]?.mainPresence)
   const actionInformation = useSelector((state: RootState) => state.userActions)
   
-  // Check if main user is busy
-  const mainUserIsBusy = operatorsStore?.operators[authStore.username]?.mainPresence === 'busy'
+  const mainUserIsBusy = useMemo(() => authUserMainPresence === 'busy', [authUserMainPresence])
 
   if (isLoading) {
     return (
@@ -67,10 +73,10 @@ export const OperatorList = ({ operators, hasMore, showMore, isLoading = false }
           className='mx-auto grid grid-cols-2 gap-x-4 gap-y-8 sm:grid-cols-4 md:gap-x-6 lg:max-w-5xl lg:gap-x-8 lg:gap-y-12 xl:grid-cols-5 5xl:grid-cols-6 5xl:max-w-screen-2xl'
         >
           {operators.map((operator, index) => (
-            <li key={index}>
+            <li key={operator?.username || index}>
               <OperatorCard
                 operator={operator}
-                authUsername={authStore.username}
+                authUsername={authUsername}
                 mainUserIsBusy={mainUserIsBusy}
                 actionInformation={actionInformation}
               />
@@ -81,3 +87,7 @@ export const OperatorList = ({ operators, hasMore, showMore, isLoading = false }
     </div>
   )
 }
+
+export default React.memo(OperatorList)
+
+OperatorList.displayName = 'OperatorList'
