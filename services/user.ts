@@ -38,7 +38,7 @@ export const getUserInfo = async () => {
 
 export const getTimestamp = async () => {
   try {
-    const res = await axios.get(`${PATH}/nethlink`,)
+    const res = await axios.get(`${PATH}/nethlink`)
     return res
   } catch (error) {
     console.error(error)
@@ -62,5 +62,14 @@ export const loginBeforeDashboard = async (username: any, token: any) => {
     console.error(error)
 
     throw new Error('Error')
+  }
+}
+
+export const getParamUrl = async () => {
+  try {
+    const res = await axios.get(`${PATH}/paramurl`)
+    return res
+  } catch (error) {
+    console.error(error)
   }
 }

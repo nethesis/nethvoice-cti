@@ -36,7 +36,9 @@ function checkTitle(config: any) {
           <Avatar size='large' placeholderType='company' />
         </div>
         <div className='flex-shrink-0 mr-4'>
-          <h2 className='text-xl font-medium text-gray-700 dark:text-gray-200'>{config?.company}</h2>
+          <h2 className='text-xl font-medium text-gray-700 dark:text-gray-200'>
+            {config?.company}
+          </h2>
         </div>
       </div>
     )
@@ -90,7 +92,9 @@ export const ShowHistoryDrawerContent = forwardRef<
             </Button>
           </div>
           <div>
-            {!config?.name && !config?.company && (
+            {(!config?.name && !config?.company) ||
+            (config?.name === config?.number && !config?.company) ||
+            (config?.company === config?.number && !config?.name) ? (
               <Button
                 variant='white'
                 className='mr-2'
@@ -103,6 +107,8 @@ export const ShowHistoryDrawerContent = forwardRef<
                 <span className='hidden xl:inline-block'>{t('Common.Add to phonebook')}</span>
                 <span className='sr-only'>{t('Common.Add to phonebook')}</span>
               </Button>
+            ) : (
+              <></>
             )}
           </div>
         </div>
