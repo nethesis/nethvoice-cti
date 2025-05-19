@@ -221,7 +221,21 @@ module.exports = {
         surfaceBadgeEmerald: '#D1FAE5', // emerald-100
         surfaceBadgeEmeraldDark: '#047857', // emerald-700
 
-        
+        //surfacePresenceOnline
+        surfacePresenceOnline: '#22C55E', // green-500
+        surfacePresenceOnlineDark: '#22C55E', // green-500
+
+        //surfacePresenceBusy
+        surfacePresenceBusy: '#EF4444', // red-500
+        surfacePresenceBusyDark: '#EF4444', // red-500
+
+        //surfacePresenceOffline
+        surfacePresenceOffline: '#6B7280', // gray-500
+        surfacePresenceOfflineDark: '#6B7280', // gray-500
+
+        //surfacePresenceDND
+        surfacePresenceDND: '#030712', // gray-950
+        surfacePresenceDNDDark: '#030712', // gray-950
       },
       screens: {
         '3xl': '1792px',

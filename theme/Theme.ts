@@ -142,7 +142,7 @@ const theme = {
         base: 'bg-emerald-200 text-emerald-900 dark:bg-emerald-800 dark:text-emerald-100',
       },
       avatar: {
-        dot: 'bg-emerald-500 dark:bg-emerald-500',
+        dot: 'bg-surfacePresenceOnline dark:bg-surfacePresenceOnlineDark',
       },
       card: {
         border: 'border-green-500 dark:border-green-500',
@@ -153,7 +153,7 @@ const theme = {
         base: 'bg-emerald-200 text-emerald-900 dark:bg-emerald-800 dark:text-emerald-100',
       },
       avatar: {
-        dot: 'bg-green-500 dark:bg-green-500',
+        dot: 'bg-surfacePresenceOnline dark:bg-surfacePresenceOnlineDark',
       },
       card: {
         border: 'border-emerald-500 dark:border-emerald-500',
@@ -164,7 +164,7 @@ const theme = {
         base: 'bg-red-200 text-red-900 dark:bg-red-900 dark:text-red-100',
       },
       avatar: {
-        dot: 'bg-gray-950 dark:bg-gray-950',
+        dot: 'bg-surfacePresenceDND dark:bg-surfacePresenceDNDDark',
       },
       card: {
         border: 'border-gray-500 dark:border-green-500',
@@ -175,7 +175,7 @@ const theme = {
         base: 'bg-emerald-200 text-emerald-900 dark:bg-emerald-800 dark:text-emerald-100',
       },
       avatar: {
-        dot: 'bg-green-500 dark:bg-green-500',
+        dot: 'bg-surfacePresenceOnline dark:bg-surfacePresenceOnlineDark',
       },
       card: {
         border: 'border-orange-500 dark:border-orange-500',
@@ -186,7 +186,7 @@ const theme = {
         base: 'bg-emerald-200 text-emerald-900 dark:bg-emerald-800 dark:text-emerald-100',
       },
       avatar: {
-        dot: 'bg-green-500 dark:bg-green-500',
+        dot: 'bg-surfacePresenceOnline dark:bg-surfacePresenceOnlineDark',
       },
       card: {
         border: 'border-purple-500 dark:border-purple-500',
@@ -197,7 +197,7 @@ const theme = {
         base: 'bg-emerald-200 text-emerald-900 dark:bg-emerald-800 dark:text-emerald-100',
       },
       avatar: {
-        dot: 'bg-green-500 dark:bg-green-500',
+        dot: 'bg-surfacePresenceOnline dark:bg-surfacePresenceOnlineDark',
       },
       card: {
         border: 'border-yellow-500 dark:border-yellow-500',
@@ -208,7 +208,7 @@ const theme = {
         base: 'bg-red-200 text-red-900 dark:bg-red-900 dark:text-red-100',
       },
       avatar: {
-        dot: 'bg-red-500 dark:bg-red-500',
+        dot: 'bg-surfacePresenceBusy dark:bg-surfacePresenceBusyDark',
       },
       card: {
         border: 'border-red-500 dark:border-red-500',
@@ -219,7 +219,7 @@ const theme = {
         base: 'bg-red-200 text-red-900 dark:bg-red-900 dark:text-red-100',
       },
       avatar: {
-        dot: 'bg-red-500 dark:bg-red-500',
+        dot: 'bg-surfacePresenceBusy dark:bg-surfacePresenceBusyDark',
       },
       card: {
         border: 'border-sky-500 dark:border-sky-500',
@@ -230,7 +230,7 @@ const theme = {
         base: 'bg-red-200 text-red-900 dark:bg-red-900 dark:text-red-100',
       },
       avatar: {
-        dot: 'bg-red-500 dark:bg-red-500',
+        dot: 'bg-surfacePresenceBusy dark:bg-surfacePresenceBusyDark',
       },
       card: {
         border: 'border-sky-500 dark:border-sky-500',
@@ -241,7 +241,7 @@ const theme = {
         base: 'bg-gray-300 text-gray-700 dark:bg-gray-600 dark:text-gray-200',
       },
       avatar: {
-        dot: 'bg-gray-500 dark:bg-gray-500',
+        dot: 'bg-surfacePresenceOffline dark:bg-surfacePresenceOfflineDark',
       },
       card: {
         border: 'border-gray-500 dark:border-gray-500',

@@ -7,6 +7,7 @@ interface SkeletonProps {
   height?: string | number
   className?: string
   count?: number
+  gap?: number | string
 }
 
 export const Skeleton: React.FC<SkeletonProps> = ({
@@ -15,9 +16,10 @@ export const Skeleton: React.FC<SkeletonProps> = ({
   height,
   className,
   count = 1,
+  gap = 0,
 }) => {
   const baseClasses = 'animate-pulse bg-gray-300 dark:bg-gray-600'
-  
+
   const getSkeletonClasses = () => {
     switch (variant) {
       case 'circular':
@@ -31,20 +33,24 @@ export const Skeleton: React.FC<SkeletonProps> = ({
         return 'h-4 rounded'
     }
   }
-  
+
   const style: React.CSSProperties = {}
   if (width) style.width = width
   if (height && variant !== 'avatar') style.height = height
-  
+
   const skeletonClasses = classNames(baseClasses, getSkeletonClasses(), className)
-  
-  return (
-    <>
-      {Array.from({ length: count }).map((_, index) => (
-        <div key={index} className={skeletonClasses} style={style} />
-      ))}
-    </>
-  )
+
+  if (count > 1) {
+    return (
+      <div style={{ display: 'flex', flexDirection: 'column', gap }}>
+        {Array.from({ length: count }).map((_, index) => (
+          <div key={index} className={skeletonClasses} style={style} />
+        ))}
+      </div>
+    )
+  }
+
+  return <div className={skeletonClasses} style={style} />
 }
 
 export const CallSkeleton: React.FC = () => {
