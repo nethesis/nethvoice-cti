@@ -162,6 +162,10 @@ module.exports = {
         textStatusOffline: '#374151', // gray-700
         textStatusOfflineDark: '#9CA3AF', // gray-400
 
+        //textLink 
+        textLink: '#047857', // emerald-700
+        textLinkDark: '#10b981', // emerald-500
+
         //Icon call status
         //iconStatusOnline
         iconStatusOnline: '#15803D', // green-700
@@ -178,6 +182,18 @@ module.exports = {
         //iconStatusPause
         iconStatusPause: '#B45309', // amber-700
         iconStatusPauseDark: '#FBBF24', // amber-500
+
+        //iconSecondaryNeutral
+        iconSecondaryNeutral: '#374151', // gray-700
+        iconSecondaryNeutralDark: '#E5E7EB', // gray-200
+
+        //iconTertiaryNeutral
+        iconTertiaryNeutral: '#4b5563', // gray-600
+        iconTertiaryNeutralDark: '#D1D5DB', // gray-300
+
+        //iconPrimaryNeutral
+        iconPrimaryNeutral: '#111827', // gray-900
+        iconPrimaryNeutralDark: '#F9FAFB', // gray-50
       },
       screens: {
         '3xl': '1792px',

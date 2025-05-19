@@ -648,7 +648,13 @@
     "Speed dial creation message": "You've just created a new speed dial: {{extensionWaiting}}",
     "Speed dial created": "Speed dial created",
     "Speed dial edit message": "You've just edited a speed dial: {{extensionWaiting}}",
-    "Speed dial edited": "Speed dial edited"
+    "Speed dial edited": "Speed dial edited",
+    "Sort speed dials": "Sort speed dials",
+    "Sort by": "Sort by",
+    "Name (A-Z)": "Name (A-Z)",
+    "Name (Z-A)": "Name (Z-A)",
+    "Number (ascending)": "Number (ascending)",
+    "Number (descending)": "Number (descending)"
   },
   "LastCalls": {
     "Last calls": "Last calls",

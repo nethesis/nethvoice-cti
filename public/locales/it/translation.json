@@ -515,7 +515,13 @@
     "Speed dial delete message": "La chiamata rapida {{deletingName}} verrà eliminata",
     "Upload failed": "Caricamento fallito",
     "Cannot delete speed dial": "Impossibile cancellare le chiamate rapide",
-    "Cannot import speed dial": "Impossibile importare le chiamate rapide"
+    "Cannot import speed dial": "Impossibile importare le chiamate rapide",
+    "Sort speed dials": "Ordina chiamate rapide",
+    "Sort by": "Ordina per",
+    "Name (A-Z)": "Nome (A-Z)",
+    "Name (Z-A)": "Nome (Z-A)",
+    "Number (ascending)": "Numero (crescente)",
+    "Number (descending)": "Numero (decrescente)"
   },
   "LastCalls": {
     "Last calls": "Ultime chiamate",
