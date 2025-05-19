@@ -21,6 +21,11 @@ const OperatorList = ({ operators, hasMore, showMore, isLoading = false }: Opera
   const actionInformation = useSelector((state: RootState) => state.userActions)
   const isSidebarOpen = useSelector((state: RootState) => state.rightSideMenu.isShown)
 
+  // Filter out the current user from the operators list
+  const filteredOperators = useMemo(() => {
+    return operators.filter((operator) => operator?.username !== authUsername)
+  }, [operators, authUsername])
+
   const mainUserIsBusy = useMemo(() => authUserMainPresence === 'busy', [authUserMainPresence])
 
   if (isLoading) {
@@ -58,7 +63,7 @@ const OperatorList = ({ operators, hasMore, showMore, isLoading = false }: Opera
   return (
     <div className='space-y-8 sm:space-y-12 py-8'>
       <InfiniteScroll
-        dataLength={operators.length}
+        dataLength={filteredOperators?.length}
         next={showMore}
         hasMore={hasMore}
         scrollableTarget='main-content'
@@ -77,7 +82,7 @@ const OperatorList = ({ operators, hasMore, showMore, isLoading = false }: Opera
               : 'mx-auto grid grid-cols-2 gap-x-4 gap-y-8 sm:grid-cols-4 md:gap-x-6 lg:max-w-7xl lg:gap-x-8 lg:gap-y-12 xl:grid-cols-7 5xl:grid-cols-8 5xl:max-w-screen-2xl 6xl:grid-cols-9 7xl:grid-cols-10'
           }`}
         >
-          {operators.map((operator, index) => (
+          {filteredOperators.map((operator, index) => (
             <li key={operator?.username || index}>
               <OperatorCard
                 operator={operator}

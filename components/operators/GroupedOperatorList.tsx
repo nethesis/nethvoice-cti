@@ -29,6 +29,22 @@ const GroupedOperatorList = ({
   const actionInformation = useSelector((state: RootState) => state.userActions)
   const isSidebarOpen = useSelector((state: RootState) => state.rightSideMenu.isShown)
 
+  // Filter out the current user from all groups with proper type checking
+  const filteredOperators = useMemo(() => {
+    if (!Array.isArray(operators)) return []
+
+    return operators
+      .map((category) => ({
+        ...category,
+        members: Array.isArray(category.members)
+          ? category.members.filter((member:any) =>
+              member && typeof member === 'object' && member?.username !== authUsername,
+            )
+          : [],
+      }))
+      .filter((category) => category.members.length > 0)
+  }, [operators, authUsername])
+
   const mainUserIsBusy = useMemo(() => authUserMainPresence === 'busy', [authUserMainPresence])
 
   if (isLoading) {
@@ -71,7 +87,7 @@ const GroupedOperatorList = ({
 
   return (
     <InfiniteScroll
-      dataLength={operators.length}
+      dataLength={filteredOperators?.length}
       next={showMore}
       hasMore={hasMore}
       scrollableTarget='main-content'
@@ -82,7 +98,7 @@ const GroupedOperatorList = ({
         />
       }
     >
-      {operators.map((category: any, categoryIndex: number) => (
+      {filteredOperators.map((category: any, categoryIndex: number) => (
         <div key={categoryIndex} className='mb-4'>
           <div className='flex items-start'>
             <Badge
@@ -106,7 +122,7 @@ const GroupedOperatorList = ({
             }`}
           >
             {category?.members?.map((operator: any, operatorIndex: number) => (
-              <li key={operatorIndex} className='px-1'>
+              <li key={operator?.username || `${categoryIndex}-${operatorIndex}`} className='px-1'>
                 <CompactOperatorCard
                   operator={operator}
                   authUsername={authUsername}

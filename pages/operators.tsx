@@ -20,12 +20,7 @@ import { RootState } from '../store'
 import { Filter } from '../components/operators'
 import { sortByFavorite, sortByProperty } from '../lib/utils'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
-import {
-  faBars,
-  faFilter,
-  faHeadset,
-  IconDefinition,
-} from '@fortawesome/free-solid-svg-icons'
+import { faBars, faFilter, faHeadset, IconDefinition } from '@fortawesome/free-solid-svg-icons'
 import { store } from '../store'
 import { t } from 'i18next'
 import { MissingPermission } from '../components/common/MissingPermissionsPage'
@@ -36,11 +31,30 @@ import CompactOperatorList from '../components/operators/CompactOperatorList'
 import GroupedOperatorList from '../components/operators/GroupedOperatorList'
 
 const Operators: NextPage = () => {
-  const [filteredOperators, setFilteredOperators]: any = useState([])
+  interface Operator {
+    username?: string
+    name?: string
+    mainPresence?: string
+    avatarBase64?: string
+    favorite?: boolean
+    conversations?: any[]
+    endpoints?: any
+    groups?: string[]
+    [key: string]: any
+  }
+
+  interface OperatorCategory {
+    category: string
+    members: Operator[]
+  }
+
+  const [filteredOperators, setFilteredOperators] = useState<any>([])
   const operatorsStore = useSelector((state: RootState) => state.operators)
-  const [isApplyingFilters, setApplyingFilters]: any = useState(false)
+  const [isApplyingFilters, setApplyingFilters] = useState(false)
   const infiniteScrollOperatorsPageSize = getInfiniteScrollOperatorsPageSize()
-  const [infiniteScrollOperators, setInfiniteScrollOperators] = useState([])
+  const [infiniteScrollOperators, setInfiniteScrollOperators] = useState<
+    Operator[] | OperatorCategory[]
+  >([])
   const [infiniteScrollHasMore, setInfiniteScrollHasMore] = useState(false)
   const [infiniteScrollLastIndex, setInfiniteScrollLastIndex] = useState(
     infiniteScrollOperatorsPageSize,
@@ -103,15 +117,19 @@ const Operators: NextPage = () => {
   }, [allowedGroupsIds, operatorsStore.groups, presencePanelPermissions, username])
 
   const applyFilters = useCallback(
-    (operators: any) => {
+    (operators: Record<string, Operator>) => {
       if (!(groupFilter && statusFilter && sortByFilter)) {
         return
       }
       setApplyingFilters(true)
 
-      // text filter
-      let filteredOperators: any = Object.values(operators).filter((op) =>
-        searchStringInOperator(op, textFilter),
+      // text filter and exclude current user
+      let filteredOperators: Operator[] = Object.values(operators || {}).filter(
+        (op) =>
+          op &&
+          typeof op === 'object' &&
+          searchStringInOperator(op, textFilter) &&
+          op?.username !== username,
       )
 
       if (layout !== 'grouped') {
@@ -316,9 +334,9 @@ const Operators: NextPage = () => {
         })
       }
 
-      setFilteredOperators(filteredOperators)
+      setFilteredOperators(filteredOperators as any)
 
-      setInfiniteScrollOperators(filteredOperators?.slice(0, infiniteScrollLastIndex))
+      setInfiniteScrollOperators(filteredOperators?.slice(0, infiniteScrollLastIndex) as any)
       const hasMore = infiniteScrollLastIndex < filteredOperators?.length
       setInfiniteScrollHasMore(hasMore)
       setApplyingFilters(false)
@@ -333,6 +351,7 @@ const Operators: NextPage = () => {
       userGroups,
       groupedSortByFilter,
       groupedGroupByFilter,
+      username,
     ],
   )
 

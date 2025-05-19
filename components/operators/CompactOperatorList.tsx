@@ -6,25 +6,21 @@ import { faChevronRight, faCircleNotch } from '@fortawesome/free-solid-svg-icons
 import InfiniteScroll from 'react-infinite-scroll-component'
 import CompactOperatorCard from './CompactOperatorCard'
 
-interface CompactOperatorListProps {
-  operators: any[]
-  hasMore: boolean
-  showMore: () => void
-  isLoading?: boolean
-}
-
-const CompactOperatorList = ({
-  operators,
-  hasMore,
-  showMore,
-  isLoading = false,
-}: CompactOperatorListProps) => {
+const CompactOperatorList = ({ operators, hasMore, showMore, isLoading = false }: any) => {
   const authUsername = useSelector((state: RootState) => state.authentication.username)
   const authUserMainPresence = useSelector(
     (state: RootState) => state.operators?.operators[state.authentication.username]?.mainPresence,
   )
   const actionInformation = useSelector((state: RootState) => state.userActions)
   const isSidebarOpen = useSelector((state: RootState) => state.rightSideMenu.isShown)
+
+  // Filter out the current user from the operators list
+  const filteredOperators = useMemo(() => {
+    if (!Array.isArray(operators)) return []
+    return operators.filter(
+      (operator) => operator && typeof operator === 'object' && operator.username !== authUsername,
+    )
+  }, [operators, authUsername])
 
   const mainUserIsBusy = useMemo(() => authUserMainPresence === 'busy', [authUserMainPresence])
 
@@ -68,7 +64,7 @@ const CompactOperatorList = ({
 
   return (
     <InfiniteScroll
-      dataLength={operators.length}
+      dataLength={filteredOperators?.length}
       next={showMore}
       hasMore={hasMore}
       scrollableTarget='main-content'
@@ -87,8 +83,8 @@ const CompactOperatorList = ({
             : 'grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-3 2xl:grid-cols-4 5xl:grid-cols-5 6xl:grid-cols-6 7xl:grid-cols-7 5xl:max-w-screen-2xl'
         }`}
       >
-        {operators.map((operator, index) => (
-          <li key={operator?.username || index} className='px-1'>
+        {filteredOperators.map((operator, index) => (
+          <li key={operator?.username || `compact-op-${index}`} className='px-1'>
             <CompactOperatorCard
               operator={operator}
               authUsername={authUsername}
