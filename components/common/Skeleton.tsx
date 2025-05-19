@@ -71,3 +71,50 @@ export const CallSkeleton: React.FC = () => {
     </div>
   )
 }
+
+interface TableSkeletonProps {
+  columns?: number
+  rows?: number
+  headerHeight?: number | string
+  rowHeight?: number | string
+  className?: string
+}
+
+export const TableSkeleton: React.FC<TableSkeletonProps> = ({
+  columns = 7,
+  rows = 8,
+  headerHeight = '1.25rem',
+  rowHeight = '4rem',
+  className = '',
+}) => {
+  return (
+    <table className={`min-w-full divide-y divide-gray-300 dark:divide-gray-700 bg-white dark:bg-gray-950 overflow-hidden rounded-lg ${className}`}>
+      <thead>
+        <tr>
+          {Array.from({ length: columns }).map((_, index) => (
+            <th key={`th-${index}`} className='px-6 py-3.5'>
+              <Skeleton height={headerHeight} />
+            </th>
+          ))}
+        </tr>
+      </thead>
+      <tbody>
+        {Array.from({ length: rows }).map((_, rowIndex) => (
+          <tr
+            key={`tr-${rowIndex}`}
+            className='border-t border-gray-300 dark:border-gray-700'
+          >
+            {Array.from({ length: columns }).map((_, colIndex) => (
+              <td key={`td-${rowIndex}-${colIndex}`} className='px-6 py-4'>
+                <div className='space-y-2'>
+                  <Skeleton />
+                  <Skeleton width='75%' />
+                </div>
+              </td>
+            ))}
+          </tr>
+        ))}
+      </tbody>
+    </table>
+  )
+}
