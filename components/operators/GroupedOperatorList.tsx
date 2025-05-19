@@ -6,7 +6,6 @@ import { faChevronRight, faCircleNotch } from '@fortawesome/free-solid-svg-icons
 import InfiniteScroll from 'react-infinite-scroll-component'
 import { Badge } from '../common'
 import CompactOperatorCard from './CompactOperatorCard'
-import { useGridClasses } from '../../lib/operators/layoutUtils'
 
 interface GroupedOperatorListProps {
   operators: any[]
@@ -32,11 +31,16 @@ const GroupedOperatorList = ({
 
   const mainUserIsBusy = useMemo(() => authUserMainPresence === 'busy', [authUserMainPresence])
 
-  const gridClasses = useGridClasses('grouped', isSidebarOpen)
-
   if (isLoading) {
     return (
-      <ul role='list' className={gridClasses}>
+      <ul
+        role='list'
+        className={`${
+          isSidebarOpen
+            ? 'grid grid-cols-1 gap-4 sm:grid-cols-2 2xl:grid-cols-3 5xl:grid-cols-4 6xl:grid-cols-5 7xl:grid-cols-6 5xl:max-w-screen-2xl'
+            : 'grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-3 2xl:grid-cols-4 5xl:grid-cols-5 6xl:grid-cols-6 7xl:grid-cols-7 5xl:max-w-screen-2xl'
+        }`}
+      >
         {Array.from(Array(24)).map((e, index) => (
           <li key={index} className='px-1'>
             <button
@@ -93,7 +97,14 @@ const GroupedOperatorList = ({
             </Badge>
           </div>
 
-          <ul role='list' className={gridClasses}>
+          <ul
+            role='list'
+            className={`${
+              isSidebarOpen
+                ? 'grid grid-cols-1 gap-4 sm:grid-cols-2 2xl:grid-cols-3 5xl:grid-cols-4 6xl:grid-cols-5 7xl:grid-cols-6 5xl:max-w-screen-2xl'
+                : 'grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-3 2xl:grid-cols-4 5xl:grid-cols-5 6xl:grid-cols-6 7xl:grid-cols-7 5xl:max-w-screen-2xl'
+            }`}
+          >
             {category?.members?.map((operator: any, operatorIndex: number) => (
               <li key={operatorIndex} className='px-1'>
                 <CompactOperatorCard
