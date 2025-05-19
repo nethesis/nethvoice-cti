@@ -1,9 +1,10 @@
-// Copyright (C) 2024 Nethesis S.r.l.
+// Copyright (C) 2025 Nethesis S.r.l.
 // SPDX-License-Identifier: AGPL-3.0-or-later
 
 import type { NextPage } from 'next'
 import { Filter } from '../components/phonebook/Filter'
-import { Avatar, Button, InlineNotification, EmptyState } from '../components/common'
+import { Avatar, Button, InlineNotification } from '../components/common'
+import { Pagination } from '../components/common/Pagination'
 import { useState, useEffect, useMemo } from 'react'
 import {
   getPhonebook,
@@ -21,15 +22,14 @@ import {
   faSuitcase,
   faChevronRight,
   faPlus,
-  faUserPlus,
   faAddressBook,
   faMobileScreenButton,
   faFilter,
-  faChevronLeft,
 } from '@fortawesome/free-solid-svg-icons'
 import { callPhoneNumber, transferCallToExtension } from '../lib/utils'
 import { useTranslation } from 'react-i18next'
 import { MissingPermission } from '../components/common/MissingPermissionsPage'
+import { Table } from '../components/common/Table'
 
 const Phonebook: NextPage = () => {
   const [isPhonebookLoaded, setPhonebookLoaded] = useState(false)
@@ -109,17 +109,163 @@ const Phonebook: NextPage = () => {
     }
   }
 
-  function isPreviousPageButtonDisabled() {
-    return !isPhonebookLoaded || pageNum <= 1
-  }
-
-  function isNextPageButtonDisabled() {
-    return !isPhonebookLoaded || pageNum >= phonebook?.totalPages
-  }
-
   const [phonebookError, setPhonebookError] = useState('')
 
   const { profile } = useSelector((state: RootState) => state.user)
+
+  const columns = [
+    {
+      header: t('Phonebook.Name'),
+      cell: (contact: any) => (
+        <div className='flex items-center'>
+          <div className='h-10 w-10 flex-shrink-0'>
+            {contact?.kind === 'person' ? (
+              <Avatar className='cursor-pointer' placeholderType='person' />
+            ) : (
+              <Avatar className='cursor-pointer' placeholderType='company' />
+            )}
+          </div>
+          <div className='ml-4'>
+            <div className='font-medium text-gray-700 dark:text-gray-100'>
+              <span className='cursor-pointer hover:underline'>{contact?.displayName}</span>
+            </div>
+            {contact.extension && (
+              <div className='mt-1 flex items-center text-sm text-gray-500 dark:text-gray-400'>
+                <FontAwesomeIcon
+                  icon={faPhone}
+                  className='mr-2 h-4 w-4 flex-shrink-0 text-gray-400 dark:text-gray-500'
+                  aria-hidden='true'
+                />
+                <span
+                  className={`${
+                    contact?.extension !==
+                    operatorsStore?.operators[authStore?.username]?.endpoints?.mainextension[0]?.id
+                      ? 'cursor-pointer hover:underline text-primary dark:text-primaryDark'
+                      : 'text-gray-700 dark:text-gray-200'
+                  } truncate`}
+                  onClick={(e) => {
+                    e.stopPropagation()
+                    operatorsStore?.operators[authStore?.username]?.mainPresence === 'busy'
+                      ? transferCallToExtension(contact?.extension)
+                      : contact?.extension !==
+                        operatorsStore?.operators[authStore?.username]?.endpoints?.mainextension[0]
+                          ?.id
+                      ? callPhoneNumber(contact?.extension)
+                      : ''
+                  }}
+                >
+                  {contact?.extension}
+                </span>
+              </div>
+            )}
+            {contact.kind === 'person' && contact.company && !contact.extension && (
+              <div className='mt-1 flex items-center text-sm text-gray-500 dark:text-gray-400'>
+                <FontAwesomeIcon
+                  icon={faSuitcase}
+                  className='mr-2 h-4 w-4 flex-shrink-0 text-gray-400 dark:text-gray-500'
+                  aria-hidden='true'
+                />
+                <span className='truncate'>{contact?.company}</span>
+              </div>
+            )}
+          </div>
+        </div>
+      ),
+      className:
+        'py-3.5 pl-4 pr-3 text-left text-sm font-semibold text-gray-700 dark:text-gray-100 sm:pl-6',
+    },
+    {
+      header: t('Phonebook.Primary phone'),
+      cell: (contact: any) => (
+        <div>
+          {contact.workphone ? (
+            <div className='mt-1 flex items-center text-sm text-primary dark:text-primaryDark'>
+              <FontAwesomeIcon
+                icon={faPhone}
+                className='mr-2 h-4 w-4 flex-shrink-0 text-gray-400 dark:text-gray-500'
+                aria-hidden='true'
+              />
+              <span
+                className={`${
+                  contact?.workphone !==
+                  operatorsStore?.operators[authStore?.username]?.endpoints?.mainextension[0]?.id
+                    ? 'cursor-pointer hover:underline'
+                    : 'text-gray-700 dark:text-gray-200'
+                } truncate`}
+                onClick={(e) => {
+                  e.stopPropagation()
+                  operatorsStore?.operators[authStore?.username]?.mainPresence === 'busy'
+                    ? transferCallToExtension(contact?.workphone)
+                    : contact?.workphone !==
+                      operatorsStore?.operators[authStore?.username]?.endpoints?.mainextension[0]
+                        ?.id
+                    ? callPhoneNumber(contact?.workphone)
+                    : ''
+                }}
+              >
+                {contact?.workphone}
+              </span>
+            </div>
+          ) : (
+            '-'
+          )}
+        </div>
+      ),
+      className: 'px-3 py-3.5 text-left text-sm font-semibold text-gray-700 dark:text-gray-100',
+    },
+    {
+      header: t('Phonebook.Mobile phone'),
+      cell: (contact: any) => (
+        <div>
+          {contact?.cellphone ? (
+            <div className='mt-1 flex items-center text-sm text-primary dark:text-primaryDark'>
+              <FontAwesomeIcon
+                icon={faMobileScreenButton}
+                className='mr-2 h-4 w-4 flex-shrink-0 text-gray-400 dark:text-gray-500'
+                aria-hidden='true'
+              />
+              <span
+                className='truncate cursor-pointer hover:underline'
+                onClick={(e) => {
+                  e.stopPropagation()
+                  callPhoneNumber(contact.cellphone)
+                }}
+              >
+                {contact.cellphone}
+              </span>
+            </div>
+          ) : (
+            '-'
+          )}
+        </div>
+      ),
+      className: 'px-3 py-3.5 text-left text-sm font-semibold text-gray-700 dark:text-gray-100',
+    },
+    {
+      header: '',
+      cell: () => (
+        <div className='flex items-center justify-end'>
+          <FontAwesomeIcon
+            icon={faChevronRight}
+            className='h-3 w-3 text-gray-400 dark:text-gray-500 cursor-pointer'
+            aria-hidden='true'
+          />
+        </div>
+      ),
+      className:
+        'px-8 py-3.5 text-right text-sm font-semibold text-gray-700 dark:text-gray-100 sm:pr-6',
+    },
+  ]
+
+  const filteredContacts =
+    isPhonebookLoaded && phonebook?.rows
+      ? phonebook.rows.filter(
+          (contact: any) =>
+            contact?.displayName !== undefined &&
+            contact?.displayName !== null &&
+            contact?.displayName !== '',
+        )
+      : []
 
   return (
     <>
@@ -143,358 +289,68 @@ const Phonebook: NextPage = () => {
               <div className='flex flex-col'>
                 <div className='-my-2 -mx-4 overflow-x-auto sm:-mx-6 lg:-mx-8'>
                   <div className='inline-block min-w-full py-2 align-middle px-2 md:px-6 lg:px-8'>
-                    <div className='overflow-hidden shadow ring-1 md:rounded-lg ring-opacity-5 dark:ring-opacity-5 ring-gray-900 dark:ring-gray-100 border-[1px] border-solid rounded-xl dark:border-gray-600'>
-                      {/* empty state */}
-                      {isPhonebookLoaded &&
-                        phonebook?.rows &&
-                        !phonebook.rows.length &&
-                        !textFilter.length && (
-                          <EmptyState
-                            title={t('Phonebook.No contacts')}
-                            description={t('Phonebook.There is no contact in your phonebook') || ''}
-                            icon={
-                              <FontAwesomeIcon
-                                icon={faAddressBook}
-                                className='mx-auto h-12 w-12'
-                                aria-hidden='true'
-                              />
+                    <Table
+                      columns={columns}
+                      data={filteredContacts}
+                      isLoading={!isPhonebookLoaded}
+                      emptyState={
+                        !textFilter.length
+                          ? {
+                              title: t('Phonebook.No contacts'),
+                              description:
+                                t('Phonebook.There is no contact in your phonebook') || '',
+                              icon: (
+                                <FontAwesomeIcon
+                                  icon={faAddressBook}
+                                  className='mx-auto h-12 w-12'
+                                  aria-hidden='true'
+                                />
+                              ),
                             }
-                            className='md:rounded-md bg-white dark:bg-gray-950'
-                          >
-                            <Button variant='primary' onClick={() => openCreateContactDrawer()}>
-                              <FontAwesomeIcon icon={faPlus} className='mr-2 h-4 w-4' />
-                              <span>{t('Phonebook.Create contact')}</span>
-                            </Button>
-                          </EmptyState>
-                        )}
-                      {/* no search results */}
-                      {isPhonebookLoaded &&
-                        phonebook?.rows &&
-                        !phonebook.rows.length &&
-                        !!textFilter.length && (
-                          <EmptyState
-                            title={t('Phonebook.No contacts')}
-                            description={t('Phonebook.Try changing your search filters') || ''}
-                            icon={
-                              <FontAwesomeIcon
-                                icon={faFilter}
-                                className='mx-auto h-12 w-12'
-                                aria-hidden='true'
-                              />
+                          : {
+                              title: t('Phonebook.No contacts'),
+                              description: t('Phonebook.Try changing your search filters') || '',
+                              icon: (
+                                <FontAwesomeIcon
+                                  icon={faFilter}
+                                  className='mx-auto h-12 w-12'
+                                  aria-hidden='true'
+                                />
+                              ),
                             }
-                            className='md:rounded-md bg-white dark:bg-gray-950'
-                          />
-                        )}
-                      {isPhonebookLoaded && phonebook?.rows && !!phonebook.rows.length && (
-                        <div className='overflow-y-auto scrollbar-thin scrollbar-thumb-gray-400 dark:scrollbar-thumb-gray-400 scrollbar-thumb-rounded-full scrollbar-thumb-opacity-50 scrollbar-track-gray-200 dark:scrollbar-track-gray-900 scrollbar-track-rounded-full scrollbar-track-opacity-25'>
-                          <div className='max-h-[32rem]'>
-                            <table className='min-w-full divide-y divide-gray-300 dark:divide-gray-700'>
-                              <thead className='sticky top-0 bg-gray-100 dark:bg-gray-800 z-[1]'>
-                                <tr>
-                                  <th
-                                    scope='col'
-                                    className='py-3.5 pl-4 pr-3 text-left text-sm font-semibold text-gray-700 dark:text-gray-100 sm:pl-6'
-                                  >
-                                    {t('Phonebook.Name')}
-                                  </th>
-                                  <th
-                                    scope='col'
-                                    className='px-3 py-3.5 text-left text-sm font-semibold text-gray-700 dark:text-gray-100'
-                                  >
-                                    {t('Phonebook.Primary phone')}
-                                  </th>
-                                  <th
-                                    scope='col'
-                                    className='px-3 py-3.5 text-left text-sm font-semibold text-gray-700 dark:text-gray-100'
-                                  >
-                                    {t('Phonebook.Mobile phone')}
-                                  </th>
-                                  <th
-                                    scope='col'
-                                    className='px-8 py-3.5 text-right text-sm font-semibold text-gray-700 dark:text-gray-100 sm:pr-6'
-                                  ></th>
-                                </tr>
-                              </thead>
-                              <tbody className='bg-white dark:bg-gray-950 text-gray-700 text-sm'>
-                                {/* Not empty state  */}
-                                {phonebook?.rows
-                                  .filter(
-                                    (contact: any) =>
-                                      contact?.displayName !== undefined &&
-                                      contact?.displayName !== null &&
-                                      contact?.displayName !== '',
-                                  )
-                                  .map((contact: any, index: number) => (
-                                    <tr
-                                      key={index}
-                                      className='cursor-pointer'
-                                      onClick={() => openShowContactDrawer(contact)}
-                                    >
-                                      {/* Name */}
-                                      <td className='py-4 px-4 sm:pl-6 text-sm relative'>
-                                        <div className='flex items-center'>
-                                          <div className='h-10 w-10 flex-shrink-0'>
-                                            {' '}
-                                            {contact?.kind == 'person' ? (
-                                              <Avatar
-                                                className='cursor-pointer'
-                                                placeholderType='person'
-                                              />
-                                            ) : (
-                                              <Avatar
-                                                className='cursor-pointer'
-                                                placeholderType='company'
-                                              />
-                                            )}{' '}
-                                          </div>
-                                          <div className='ml-4'>
-                                            {/* User name */}
-                                            <div className='font-medium text-gray-700 dark:text-gray-100'>
-                                              <span className='cursor-pointer hover:underline'>
-                                                {contact?.displayName}
-                                              </span>
-                                            </div>
-                                            {/* extension */}
-                                            {contact.extension && (
-                                              <div className='mt-1 flex items-center text-sm text-gray-500 dark:text-gray-400'>
-                                                <FontAwesomeIcon
-                                                  icon={faPhone}
-                                                  className='mr-2 h-4 w-4 flex-shrink-0 text-gray-400 dark:text-gray-500'
-                                                  aria-hidden='true'
-                                                />
-                                                <span
-                                                  className={`${
-                                                    contact?.extension !==
-                                                    operatorsStore?.operators[authStore?.username]
-                                                      ?.endpoints?.mainextension[0]?.id
-                                                      ? 'cursor-pointer hover:underline text-primary dark:text-primaryDark'
-                                                      : 'text-gray-700 dark:text-gray-200'
-                                                  } truncate  `}
-                                                  onClick={() =>
-                                                    operatorsStore?.operators[authStore?.username]
-                                                      ?.mainPresence === 'busy'
-                                                      ? transferCallToExtension(contact?.extension)
-                                                      : contact?.extension !==
-                                                        operatorsStore?.operators[
-                                                          authStore?.username
-                                                        ]?.endpoints?.mainextension[0]?.id
-                                                      ? callPhoneNumber(contact?.extension)
-                                                      : ''
-                                                  }
-                                                >
-                                                  {contact?.extension}
-                                                </span>
-                                              </div>
-                                            )}
-                                            {/* company name */}
-                                            {contact.kind == 'person' &&
-                                              contact.company &&
-                                              !contact.extension && (
-                                                <div className='mt-1 flex items-center text-sm text-gray-500 dark:text-gray-400'>
-                                                  <FontAwesomeIcon
-                                                    icon={faSuitcase}
-                                                    className='mr-2 h-4 w-4 flex-shrink-0 text-gray-400 dark:text-gray-500'
-                                                    aria-hidden='true'
-                                                  />
-                                                  <span className='truncate'>
-                                                    {contact?.company}
-                                                  </span>
-                                                </div>
-                                              )}
-                                            <div className='text-gray-500'></div>
-                                          </div>
-                                        </div>
-                                        {/* row divider  */}
-                                        {index !== 0 ? (
-                                          <div className='absolute -top-0 left-6 right-0 h-px bg-gray-300 dark:bg-gray-600' />
-                                        ) : null}
-                                      </td>
+                      }
+                      onRowClick={(contact) => openShowContactDrawer(contact)}
+                      rowKey={(contact) => contact.id || contact.displayName}
+                      scrollable={true}
+                      maxHeight='32rem'
+                    />
 
-                                      {/* work phone */}
-                                      <td
-                                        className={`${
-                                          index === 0
-                                            ? ''
-                                            : 'border-t border-gray-300 dark:border-gray-600'
-                                        } py-4 px-4 relative`}
-                                      >
-                                        <div>
-                                          {contact.workphone ? (
-                                            <div className='mt-1 flex items-center text-sm text-primary dark:text-primaryDark'>
-                                              <FontAwesomeIcon
-                                                icon={faPhone}
-                                                className='mr-2 h-4 w-4 flex-shrink-0 text-gray-400 dark:text-gray-500'
-                                                aria-hidden='true'
-                                              />
-                                              <span
-                                                className={`${
-                                                  contact?.workphone !==
-                                                  operatorsStore?.operators[authStore?.username]
-                                                    ?.endpoints?.mainextension[0]?.id
-                                                    ? 'cursor-pointer hover:underline'
-                                                    : 'text-gray-700 dark:text-gray-200'
-                                                } truncate `}
-                                                onClick={() =>
-                                                  operatorsStore?.operators[authStore?.username]
-                                                    ?.mainPresence === 'busy'
-                                                    ? transferCallToExtension(contact?.workphone)
-                                                    : contact?.workphone !==
-                                                      operatorsStore?.operators[authStore?.username]
-                                                        ?.endpoints?.mainextension[0]?.id
-                                                    ? callPhoneNumber(contact?.workphone)
-                                                    : ''
-                                                }
-                                              >
-                                                {contact?.workphone}
-                                              </span>
-                                            </div>
-                                          ) : (
-                                            '-'
-                                          )}
-                                        </div>
-                                      </td>
-
-                                      {/* mobile phone */}
-                                      <td
-                                        className={`${
-                                          index === 0
-                                            ? ''
-                                            : 'border-t border-gray-300 dark:border-gray-600'
-                                        } py-4 px-4 relative`}
-                                      >
-                                        <div>
-                                          {contact?.cellphone ? (
-                                            <div className='mt-1 flex items-center text-sm text-primary dark:text-primaryDark'>
-                                              <FontAwesomeIcon
-                                                icon={faMobileScreenButton}
-                                                className='mr-2 h-4 w-4 flex-shrink-0 text-gray-400 dark:text-gray-500'
-                                                aria-hidden='true'
-                                              />
-                                              <span
-                                                className='truncate cursor-pointer hover:underline'
-                                                onClick={() => callPhoneNumber(contact.cellphone)}
-                                              >
-                                                {contact.cellphone}
-                                              </span>
-                                            </div>
-                                          ) : (
-                                            '-'
-                                          )}
-                                        </div>
-                                      </td>
-
-                                      <td className='py-4 px-4 sm:pr-8 text-sm relative'>
-                                        <div className='flex items-center justify-end'>
-                                          <FontAwesomeIcon
-                                            icon={faChevronRight}
-                                            className='h-3 w-3 text-gray-400 dark:text-gray-500 cursor-pointer'
-                                            aria-hidden='true'
-                                          />
-                                        </div>
-                                        {index !== 0 ? (
-                                          <div className='absolute -top-0 left-0 right-6 h-px bg-gray-300 dark:bg-gray-600' />
-                                        ) : null}
-                                      </td>
-                                    </tr>
-                                  ))}
-                              </tbody>
-                            </table>
-                          </div>
-                        </div>
-                      )}
-                    </div>
+                    {isPhonebookLoaded && filteredContacts.length === 0 && !textFilter.length && (
+                      <div className='mt-4 flex justify-center'>
+                        <Button variant='primary' onClick={() => openCreateContactDrawer()}>
+                          <FontAwesomeIcon icon={faPlus} className='mr-2 h-4 w-4' />
+                          <span>{t('Phonebook.Create contact')}</span>
+                        </Button>
+                      </div>
+                    )}
                   </div>
                 </div>
               </div>
             </div>
           )}
 
-          {/* skeleton  */}
-          {!isPhonebookLoaded && (
-            <table className='min-w-full divide-y divide-gray-300 dark:divide-gray-700 bg-white dark:bg-gray-950 rounded-md overflow-hidden'>
-              <thead>
-                <tr>
-                  {Array.from(Array(4)).map((_, index) => (
-                    <th key={`th-${index}`}>
-                      <div className='px-6 py-3.5'>
-                        <div className='animate-pulse h-5 rounded bg-gray-300 dark:bg-gray-600'></div>
-                      </div>
-                    </th>
-                  ))}
-                </tr>
-              </thead>
-              <tbody>
-                {Array.from(Array(8)).map((_, secondIndex) => (
-                  <tr key={`tr-${secondIndex}`}>
-                    <td className='py-4 px-6 sm:pl-6'>
-                      <div className='flex items-center'>
-                        <div
-                          className='animate-pulse rounded-full h-12 w-12 bg-gray-300 dark:bg-gray-600'
-                          key={`td-${secondIndex}-0`}
-                        ></div>
-                        <div className='min-w-0 flex-1 pl-3'>
-                          <div
-                            className='animate-pulse h-5 rounded bg-gray-300 dark:bg-gray-600'
-                            key={`td-${secondIndex}-1`}
-                          ></div>
-                        </div>
-                      </div>
-                    </td>
-                    {Array.from(Array(3)).map((_, thirdIndex) => (
-                      <td key={`td-${secondIndex}-${thirdIndex}`}>
-                        <div className='px-6 py-6'>
-                          <div className='animate-pulse h-5 rounded bg-gray-300 dark:bg-gray-600'></div>
-                        </div>
-                      </td>
-                    ))}
-                  </tr>
-                ))}
-              </tbody>
-            </table>
-          )}
-
           {/* pagination */}
-          {!phonebookError && !!phonebook?.rows?.length && (
-            <nav
-              className='flex items-center justify-between border-t px-0 py-4 mb-8 border-gray-100 dark:border-gray-800'
-              aria-label='Pagination'
-            >
-              <div className='hidden sm:block'>
-                <p className='text-sm text-gray-700 dark:text-gray-200'>
-                  {t('Common.Showing')}{' '}
-                  <span className='font-medium'>{PAGE_SIZE * (pageNum - 1) + 1}</span> -&nbsp;
-                  <span className='font-medium'>
-                    {PAGE_SIZE * (pageNum - 1) + PAGE_SIZE < phonebook?.count
-                      ? PAGE_SIZE * (pageNum - 1) + PAGE_SIZE
-                      : phonebook?.count}
-                  </span>{' '}
-                  {t('Common.of')} <span className='font-medium'>{phonebook?.count}</span>{' '}
-                  {t('Phonebook.contacts')}
-                </p>
-              </div>
-              <div className='flex flex-1 justify-between sm:justify-end'>
-                <Button
-                  type='button'
-                  variant='white'
-                  disabled={isPreviousPageButtonDisabled()}
-                  onClick={() => goToPreviousPage()}
-                  className='flex items-center'
-                >
-                  <FontAwesomeIcon icon={faChevronLeft} className='mr-2 h-4 w-4' />
-                  <span> {t('Common.Previous page')}</span>
-                </Button>
-                <Button
-                  type='button'
-                  variant='white'
-                  className='ml-3 flex items-center'
-                  disabled={isNextPageButtonDisabled()}
-                  onClick={() => goToNextPage()}
-                >
-                  <span>{t('Common.Next page')}</span>
-                  <FontAwesomeIcon icon={faChevronRight} className='ml-2 h-4 w-4' />
-                </Button>
-              </div>
-            </nav>
+          {!phonebookError && phonebook?.rows?.length > 0 && (
+            <Pagination
+              currentPage={pageNum}
+              totalPages={phonebook.totalPages}
+              totalItems={phonebook?.count || 0}
+              pageSize={PAGE_SIZE}
+              onPreviousPage={goToPreviousPage}
+              onNextPage={goToNextPage}
+              isLoading={!isPhonebookLoaded}
+              itemsName={t('Phonebook.contacts') || ''}
+            />
           )}
         </div>
       ) : (

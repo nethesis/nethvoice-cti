@@ -35,7 +35,7 @@ import { CallSource } from './CallSource'
 import { CallDestination } from './CallDestination'
 import { CallDuration } from './CallDuration'
 import { CallRecording } from './CallRecording'
-import { Pagination } from './Pagination'
+import { Pagination } from '../../common/Pagination'
 import { Table } from '../../common/Table'
 
 export interface CallsProps extends ComponentProps<'div'> {}
@@ -397,6 +397,7 @@ export const Calls: FC<CallsProps> = ({ className }): JSX.Element => {
                 onPreviousPage={goToPreviousPage}
                 onNextPage={goToNextPage}
                 isLoading={!isHistoryLoaded}
+                itemsName={t('History.calls') || ''}
               />
             )}
           </div>

@@ -72,35 +72,44 @@ export const Table: React.FC<TableProps> = ({
   if (isLoading) {
     return (
       <div className={wrapperClasses}>
-        <table className={tableClasses}>
-          <thead className={theadClassName}>
-            <tr>
-              {columns.map((column, index) => (
-                <th
-                  key={`th-${index}`}
-                  className={column.className || thClassName}
-                  style={column.width ? { width: column.width } : {}}
-                >
-                  <Skeleton height='1.25rem' />
-                </th>
-              ))}
-            </tr>
-          </thead>
-          <tbody>
-            {Array.from({ length: loadingRows }).map((_, rowIndex) => (
-              <tr key={`loading-row-${rowIndex}`} className={trClassName}>
-                {columns.map((column, colIndex) => (
-                  <td key={`td-${rowIndex}-${colIndex}`} className={tdClassName}>
-                    <div className='space-y-2'>
-                      <Skeleton />
-                      <Skeleton width='75%' />
-                    </div>
-                  </td>
+        <div
+          className={scrollable ? scrollableClasses : ''}
+          style={scrollable && maxHeight ? { maxHeight } : {}}
+        >
+          <table className={tableClasses}>
+            <thead className={theadClassName}>
+              <tr>
+                {columns.map((column, index) => (
+                  <th
+                    key={`th-${index}`}
+                    className={column.className || thClassName}
+                    style={column.width ? { width: column.width } : {}}
+                  >
+                    <Skeleton height='1.25rem' />
+                  </th>
                 ))}
               </tr>
-            ))}
-          </tbody>
-        </table>
+            </thead>
+            <tbody>
+              {Array.from({ length: loadingRows }).map((_, rowIndex) => (
+                <tr
+                  key={`loading-row-${rowIndex}`}
+                  className={`${trClassName} ${rowIndex === 0 ? '' : 'border-t border-gray-300 dark:border-gray-700'}`}
+                  style={trClassName.includes('h-[') ? {} : { height: '84px' }}
+                >
+                  {columns.map((column, colIndex) => (
+                    <td key={`td-${rowIndex}-${colIndex}`} className={tdClassName}>
+                      <div className='space-y-1'>
+                        <Skeleton height='18px' />
+                        {column.width !== '5%' && <Skeleton width='75%' height='14px' />}
+                      </div>
+                    </td>
+                  ))}
+                </tr>
+              ))}
+            </tbody>
+          </table>
+        </div>
       </div>
     )
   }

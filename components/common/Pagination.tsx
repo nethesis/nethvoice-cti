@@ -2,7 +2,7 @@ import { FC } from 'react'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { faChevronLeft, faChevronRight } from '@fortawesome/free-solid-svg-icons'
 import { t } from 'i18next'
-import { Button } from '../../common'
+import { Button } from './Button'
 
 interface PaginationProps {
   currentPage: number
@@ -11,7 +11,13 @@ interface PaginationProps {
   pageSize: number
   onPreviousPage: () => void
   onNextPage: () => void
-  isLoading: boolean
+  isLoading?: boolean
+  itemsName?: string
+  showingText?: string
+  ofText?: string
+  previousPageText?: string
+  nextPageText?: string
+  className?: string
 }
 
 export const Pagination: FC<PaginationProps> = ({
@@ -21,26 +27,32 @@ export const Pagination: FC<PaginationProps> = ({
   pageSize,
   onPreviousPage,
   onNextPage,
-  isLoading,
+  isLoading = false,
+  itemsName = 'items',
+  showingText = t('Common.Showing'),
+  ofText = t('Common.of'),
+  previousPageText = t('Common.Previous page'),
+  nextPageText = t('Common.Next page'),
+  className = '',
 }) => {
   const isPreviousPageButtonDisabled = isLoading || currentPage <= 1
   const isNextPageButtonDisabled = isLoading || currentPage >= totalPages
 
   return (
     <nav
-      className='flex items-center justify-between px-0 py-4 bg-body dark:bg-bodyDark'
+      className={`flex items-center justify-between border-t px-0 py-4 mb-8 border-gray-100 dark:border-gray-800 ${className}`}
       aria-label='Pagination'
     >
       <div className='hidden sm:block'>
         <p className='text-sm text-gray-700 dark:text-gray-200'>
-          {t('Common.Showing')}{' '}
+          {showingText}{' '}
           <span className='font-medium'>{pageSize * (currentPage - 1) + 1}</span> -&nbsp;
           <span className='font-medium'>
             {pageSize * (currentPage - 1) + pageSize < totalItems
               ? pageSize * (currentPage - 1) + pageSize
               : totalItems}
           </span>{' '}
-          {t('Common.of')} <span className='font-medium'>{totalItems}</span> {t('History.calls')}
+          {ofText} <span className='font-medium'>{totalItems}</span> {itemsName}
         </p>
       </div>
       <div className='flex flex-1 justify-between sm:justify-end'>
@@ -52,7 +64,7 @@ export const Pagination: FC<PaginationProps> = ({
           className='flex items-center'
         >
           <FontAwesomeIcon icon={faChevronLeft} className='mr-2 h-4 w-4' />
-          <span>{t('Common.Previous page')}</span>
+          <span>{previousPageText}</span>
         </Button>
         <Button
           type='button'
@@ -61,7 +73,7 @@ export const Pagination: FC<PaginationProps> = ({
           disabled={isNextPageButtonDisabled}
           onClick={onNextPage}
         >
-          <span>{t('Common.Next page')}</span>
+          <span>{nextPageText}</span>
           <FontAwesomeIcon icon={faChevronRight} className='ml-2 h-4 w-4' />
         </Button>
       </div>
