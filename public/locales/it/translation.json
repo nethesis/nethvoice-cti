@@ -57,7 +57,9 @@
     "Back": "Indietro",
     "Delete all": "Elimina tutto",
     "Deleting...": "Eliminazione in corso...",
-    "Reject": "Rifiuta"
+    "Reject": "Rifiuta",
+    "Actions": "Azioni",
+    "Call duration": "Durata chiamata"
   },
   "Login": {
     "User": "Utente",
@@ -372,8 +374,8 @@
     "Forward incoming calls to cellphone": "Inoltra le chiamate in entrata al cellulare"
   },
   "OperatorDrawer": {
-    "Book": "Prenota",
-    "Hangup": "Chiudi",
+    "Book": "Prenota chiamata",
+    "Hangup": "Chiudi chiamata corrente",
     "Listen": "Ascolta",
     "Intrude": "Intromettiti",
     "Record": "Registra",

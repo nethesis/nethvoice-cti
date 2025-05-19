@@ -154,13 +154,30 @@ module.exports = {
         textStatusOnline: '#15803D', // green-700
         textStatusOnlineDark: '#22C55E', // green-500
 
-        //textStatusOffline
+        //textStatusBusy
         textStatusBusy: '#b91c1c', // red-700
         textStatusBusyDark: '#EF4444', // red-500
 
         //textStatusOffline
         textStatusOffline: '#374151', // gray-700
         textStatusOfflineDark: '#9CA3AF', // gray-400
+
+        //Icon call status
+        //iconStatusOnline
+        iconStatusOnline: '#15803D', // green-700
+        iconStatusOnlineDark: '#22C55E', // green-500
+
+        //iconStatusBusy
+        iconStatusBusy: '#b91c1c', // red-700
+        iconStatusBusyDark: '#EF4444', // red-500
+
+        //iconStatusOffline
+        iconStatusOffline: '#374151', // gray-700
+        iconStatusOfflineDark: '#9CA3AF', // gray-400
+
+        //iconStatusPause
+        iconStatusPause: '#B45309', // amber-700
+        iconStatusPauseDark: '#FBBF24', // amber-500
       },
       screens: {
         '3xl': '1792px',

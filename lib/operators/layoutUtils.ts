@@ -11,8 +11,8 @@ export const useGridClasses = (layoutType: string, isSidebarOpen: boolean) => {
     switch (layoutType) {
       case 'standard':
         return isSidebarOpen
-          ? 'mx-auto grid grid-cols-2 gap-x-4 gap-y-8 sm:grid-cols-4 md:gap-x-6 lg:max-w-5xl lg:gap-x-8 lg:gap-y-12 xl:grid-cols-5 5xl:grid-cols-6 6xl:grid-cols-7 7xl:grid-cols-8 5xl:max-w-screen-2xl'
-          : 'mx-auto grid grid-cols-2 gap-x-4 gap-y-8 sm:grid-cols-4 md:gap-x-6 lg:max-w-6xl lg:gap-x-8 lg:gap-y-12 xl:grid-cols-6 5xl:grid-cols-7 6xl:grid-cols-8 7xl:grid-cols-9 5xl:max-w-screen-2xl'
+          ? 'mx-auto grid grid-cols-2 gap-x-4 gap-y-8 sm:grid-cols-4 md:gap-x-6 lg:max-w-5xl lg:gap-x-8 lg:gap-y-12 xl:grid-cols-5 5xl:grid-cols-6 5xl:max-w-screen-2xl'
+          : 'mx-auto grid grid-cols-2 gap-x-4 gap-y-8 sm:grid-cols-4 md:gap-x-6 lg:max-w-7xl lg:gap-x-8 lg:gap-y-12 xl:grid-cols-7 5xl:grid-cols-8 5xl:max-w-screen-2xl 6xl:grid-cols-9 7xl:grid-cols-10'
 
       case 'compact':
       case 'grouped':

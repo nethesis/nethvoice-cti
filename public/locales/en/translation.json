@@ -71,7 +71,9 @@
     "Back": "Back",
     "Delete all": "Delete all",
     "Deleting...": "Deleting...",
-    "Reject": "Reject"
+    "Reject": "Reject",
+    "Actions": "Actions",
+    "Call duration": "Call duration"
   },
   "Login": {
     "User": "Username",
@@ -393,8 +395,8 @@
     "Forward incoming calls to cellphone": "Forward incoming calls to cellphone"
   },
   "OperatorDrawer": {
-    "Book": "Book",
-    "Hangup": "Hangup",
+    "Book": "Book call",
+    "Hangup": "Hangup current call",
     "Listen": "Listen",
     "Intrude": "Intrude",
     "Record": "Record",
