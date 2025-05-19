@@ -162,9 +162,18 @@ module.exports = {
         textStatusOffline: '#374151', // gray-700
         textStatusOfflineDark: '#9CA3AF', // gray-400
 
-        //textLink 
+        //textLink
         textLink: '#047857', // emerald-700
         textLinkDark: '#10b981', // emerald-500
+
+        //textBadge
+        //textBadgeBlue
+        textBadgeBlue: '#1E40AF', // blue-800
+        textBadgeBlueDark: '#1E40AF', // blue-100
+
+        //textBadgeEmerald
+        textBadgeEmerald: '#065F46', // emerald-800
+        textBadgeEmeraldDark: '#ECFDF5', // emerald-50
 
         //Icon call status
         //iconStatusOnline
@@ -194,6 +203,25 @@ module.exports = {
         //iconPrimaryNeutral
         iconPrimaryNeutral: '#111827', // gray-900
         iconPrimaryNeutralDark: '#F9FAFB', // gray-50
+
+        //iconBadge
+        //iconBadgeBlue
+        iconBadgeBlue: '#1E40AF', // blue-800
+        iconBadgeBlueDark: '#DBEAFE', // blue-100
+
+        //iconBadgeEmerald
+        iconBadgeEmerald: '#065F46', // emerald-800
+        iconBadgeEmeraldDark: '#ECFDF5', // emerald-50
+
+        //surfaceBadgeBlue
+        surfaceBadgeBlue: '#DBEAFE', // blue-100
+        surfaceBadgeBlueDark: '#1D4ED8', // blue-700
+
+        //surfaceBadgeEmerald
+        surfaceBadgeEmerald: '#D1FAE5', // emerald-100
+        surfaceBadgeEmeraldDark: '#047857', // emerald-700
+
+        
       },
       screens: {
         '3xl': '1792px',

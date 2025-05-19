@@ -216,7 +216,10 @@
     "Operators filters": "Filtri operatori",
     "Operators groups": "Filtri gruppi",
     "Filters": "Filtri",
-    "Close menu": "Chiudi menu"
+    "Close menu": "Chiudi menu",
+    "Standard layout": "Layout standard",
+    "Compact layout": "Layout compatto",
+    "Grouped layout": "Layout raggruppato"
   },
   "Applications": {
     "Applications": "Applicazioni",

@@ -7,12 +7,14 @@ interface CustomThemedTooltipProps {
   id: string
   place?: 'top' | 'right' | 'bottom' | 'left'
   className?: string
+  float?: boolean
 }
 
 export const CustomThemedTooltip: FC<CustomThemedTooltipProps> = ({
   id,
   place = 'bottom',
   className = '',
+  float = false,
 }) => {
   const { theme } = useSelector((state: RootState) => state.darkTheme)
 
@@ -46,6 +48,7 @@ export const CustomThemedTooltip: FC<CustomThemedTooltipProps> = ({
       className={`pi-z-1000 ${className}`}
       opacity={1}
       style={tooltipStyle}
+      float={float}
     />
   )
 }

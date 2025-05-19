@@ -249,7 +249,7 @@ const theme = {
     },
     category: {
       badge: {
-        base: 'bg-blue-100 text-blue-800 dark:bg-blue-700 dark:text-blue-100',
+        base: 'bg-surfaceBadgeBlue text-textBadgeBlue dark:bg-surfaceBadgeBlueDark dark:text-textBadgeBlueDark',
       },
     },
   },

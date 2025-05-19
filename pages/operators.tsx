@@ -29,6 +29,7 @@ import { savePreference } from '../lib/storage'
 import OperatorList from '../components/operators/OperatorList'
 import CompactOperatorList from '../components/operators/CompactOperatorList'
 import GroupedOperatorList from '../components/operators/GroupedOperatorList'
+import { CustomThemedTooltip } from '../components/common/CustomThemedTooltip'
 
 const Operators: NextPage = () => {
   interface Operator {
@@ -475,31 +476,40 @@ const Operators: NextPage = () => {
                   icon={faGrid2 as IconDefinition}
                   className={`${
                     selectedLayout === 'standard'
-                      ? 'text-primary dark:text-primaryDark'
-                      : 'text-gray-600 dark:text-gray-500'
+                      ? 'text-primaryActive dark:text-primaryActive'
+                      : 'text-tertiaryNeutral dark:text-tertiaryNeutralDark'
                   } inline-block text-center h-5 w-5 cursor-pointer`}
+                  data-tooltip-id='standard-layout-tooltip'
+                  data-tooltip-content={t('Operators.Standard layout') || ''}
                 />
               </button>
+              <CustomThemedTooltip id='standard-layout-tooltip' place='bottom' float />
               <button className='bg-transparent' onClick={() => selectLayoutOperators('compact')}>
                 <FontAwesomeIcon
                   icon={faBars}
                   className={`${
                     selectedLayout === 'compact'
-                      ? 'text-primary dark:text-primaryDark'
-                      : 'text-gray-600 dark:text-gray-500'
+                      ? 'text-primaryActive dark:text-primaryActive'
+                      : 'text-tertiaryNeutral dark:text-tertiaryNeutralDark'
                   } inline-block text-center h-5 w-5 cursor-pointer`}
+                  data-tooltip-id='compact-layout-tooltip'
+                  data-tooltip-content={t('Operators.Compact layout') || ''}
                 />
               </button>
+              <CustomThemedTooltip id='compact-layout-tooltip' place='bottom' float />
               <button className='bg-transparent' onClick={() => selectLayoutOperators('grouped')}>
                 <FontAwesomeIcon
                   icon={faGridDividers as IconDefinition}
                   className={`${
                     selectedLayout === 'grouped'
-                      ? 'text-primary dark:text-primaryDark'
-                      : 'text-gray-600 dark:text-gray-500'
+                      ? 'text-primaryActive dark:text-primaryActive'
+                      : 'text-tertiaryNeutral dark:text-tertiaryNeutralDark'
                   } inline-block text-center h-5 w-5 cursor-pointer`}
+                  data-tooltip-id='grouped-layout-tooltip'
+                  data-tooltip-content={t('Operators.Grouped layout') || ''}
                 />
               </button>
+              <CustomThemedTooltip id='grouped-layout-tooltip' place='bottom' float />
             </div>
           </div>
           <div className='sm:hidden space-x-4'>

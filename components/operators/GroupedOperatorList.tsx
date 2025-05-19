@@ -2,7 +2,7 @@ import React, { useMemo } from 'react'
 import { useSelector } from 'react-redux'
 import { RootState } from '../../store'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
-import { faChevronRight, faCircleNotch } from '@fortawesome/free-solid-svg-icons'
+import { faChevronRight, faCircleNotch, faUserGroup } from '@fortawesome/free-solid-svg-icons'
 import InfiniteScroll from 'react-infinite-scroll-component'
 import { Badge } from '../common'
 import CompactOperatorCard from './CompactOperatorCard'
@@ -37,8 +37,9 @@ const GroupedOperatorList = ({
       .map((category) => ({
         ...category,
         members: Array.isArray(category.members)
-          ? category.members.filter((member:any) =>
-              member && typeof member === 'object' && member?.username !== authUsername,
+          ? category.members.filter(
+              (member: any) =>
+                member && typeof member === 'object' && member?.username !== authUsername,
             )
           : [],
       }))
@@ -106,8 +107,9 @@ const GroupedOperatorList = ({
               variant='category'
               rounded='full'
               className='overflow-hidden ml-1 mb-5 mt-4'
+              icon={<FontAwesomeIcon icon={faUserGroup} className='h-4 w-4' />}
             >
-              <div className='w-auto max-w-[150px] px-1 truncate'>
+              <div className='text-xs font-medium leading-4 w-auto max-w-[150px] px-1 truncate'>
                 {upperCaseFirstLetter(category?.category)}
               </div>
             </Badge>

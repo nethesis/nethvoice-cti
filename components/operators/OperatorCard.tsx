@@ -144,8 +144,9 @@ const OperatorCard = ({
           {liveOperatorData?.favorite ? (
             <div className='flex items-center space-x-2 justify-center'>
               <h3
-                className='cursor-pointer hover:underline block truncate text-sm font-medium text-primaryNeutral dark:text-primaryNeutralDark leading-5'
+                className='cursor-pointer hover:underline block truncate text-sm font-medium text-primaryNeutral dark:text-primaryNeutralDark leading-5 max-w-[120px]'
                 onClick={handleOperatorClick}
+                title={liveOperatorData?.name}
               >
                 {liveOperatorData?.name}
               </h3>
@@ -156,8 +157,9 @@ const OperatorCard = ({
             </div>
           ) : (
             <h3
-              className='cursor-pointer hover:underline text-center text-sm not-italic font-medium leading-5 text-gray-900 dark:text-gray-100'
+              className='cursor-pointer hover:underline text-center text-sm not-italic font-medium leading-5 text-gray-900 dark:text-gray-100 truncate max-w-[150px] mx-auto'
               onClick={handleOperatorClick}
+              title={liveOperatorData?.name}
             >
               {liveOperatorData?.name}
             </h3>

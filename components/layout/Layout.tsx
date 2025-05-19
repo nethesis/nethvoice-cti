@@ -524,7 +524,7 @@ export const Layout: FC<LayoutProps> = ({ children }) => {
     store.dispatch.operators.updateExten(data[opName]?.number, extensionInformation)
   })
 
-  useEventListener('phone-island-conversations', (data) => {
+  useEventListener('phone-island-conversations', (data: any) => {
     const opName = Object.keys(data)[0]
     const conversations = data[opName].conversations
     store.dispatch.operators.updateConversations(opName, conversations)
@@ -1100,7 +1100,7 @@ export const Layout: FC<LayoutProps> = ({ children }) => {
 
             {/* Secondary column (hidden on smaller screens) */}
             <UserNavBar />
-            <div className='absolute bottom-6 right-9 z-50'>
+            <div className='absolute top-6 right-9 z-50'>
               {toast?.isShown && (
                 <div>
                   <Toast

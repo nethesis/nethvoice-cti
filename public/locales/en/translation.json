@@ -236,7 +236,10 @@
     "Operators filters": "Operators filters",
     "Operators groups": "Operators groups",
     "Filters": "Filters",
-    "Close menu": "Close menu"
+    "Close menu": "Close menu",
+    "Standard layout": "Standard layout",
+    "Compact layout": "Compact layout",
+    "Grouped layout": "Grouped layout"
   },
   "Applications": {
     "Applications": "Applications",
