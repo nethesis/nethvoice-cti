@@ -18,6 +18,7 @@ import { Tooltip } from 'react-tooltip'
 import { useSelector } from 'react-redux'
 import { RootState } from '../../store'
 import { useTranslation } from 'react-i18next'
+import { customScrollbarClass } from '../../lib/utils'
 
 interface NavBarProps {
   items: NavItemsProps[]
@@ -55,7 +56,9 @@ export const NavBar: FC<NavBarProps> = ({ items }) => {
   const { t } = useTranslation()
 
   return (
-    <div className='hidden w-20 overflow-y-auto scrollbar-thin scrollbar-thumb-gray-400 dark:scrollbar-thumb-gray-400 scrollbar-thumb-rounded-full scrollbar-thumb-opacity-50 scrollbar-track-gray-200 dark:scrollbar-track-gray-900 scrollbar-track-rounded-full scrollbar-track-opacity-25 md:block border-r border-gray-200 dark:border-gray-700 bg-sidebar dark:bg-sidebarDark'>
+    <div
+      className={`hidden w-20 ${customScrollbarClass} md:block border-r border-gray-200 dark:border-gray-700 bg-sidebar dark:bg-sidebarDark`}
+    >
       <div className='flex w-full flex-col items-center py-2 h-full'>
         <div className='flex flex-shrink-0 items-center'>
           <Link href='/operators'>
@@ -100,7 +103,10 @@ export const NavBar: FC<NavBarProps> = ({ items }) => {
                     aria-hidden='true'
                   />
                   {item.current && (
-                    <div style={activeStyles} className='bg-currentBadgePrimary dark:bg-currentBadgePrimaryDark' />
+                    <div
+                      style={activeStyles}
+                      className='bg-currentBadgePrimary dark:bg-currentBadgePrimaryDark'
+                    />
                   )}
                 </div>
               </Link>

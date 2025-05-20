@@ -29,6 +29,7 @@ import {
 import { useSelector } from 'react-redux'
 import { RootState } from '../../store'
 import { motion } from 'framer-motion'
+import { customScrollbarClass } from '../../lib/utils'
 
 function classNames(...classes: string[]) {
   return classes.filter(Boolean).join(' ')
@@ -492,7 +493,7 @@ export default function DraggableRows({
           trailingIcon={true}
         />
       </div>
-      <div className='overflow-y-auto scrollbar-thin scrollbar-thumb-gray-400 dark:scrollbar-thumb-gray-400 scrollbar-thumb-rounded-full scrollbar-thumb-opacity-50 scrollbar-track-gray-200 dark:scrollbar-track-gray-900 scrollbar-track-rounded-full scrollbar-track-opacity-25'>
+      <div className={customScrollbarClass}>
         <div className='pt-2 max-h-[24rem]'>
           <ul>
             {/* skeleton */}

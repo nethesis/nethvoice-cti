@@ -4,6 +4,7 @@ import { EmptyState } from './EmptyState'
 import { Dropdown } from './Dropdown'
 import classNames from 'classnames'
 import { t } from 'i18next'
+import { customScrollbarClass } from '../../lib/utils'
 
 export interface TableColumn {
   header: ReactNode
@@ -64,9 +65,7 @@ export const Table: React.FC<TableProps> = ({
     containerClassName,
   )
 
-  const scrollableClasses = classNames(
-    'overflow-y-auto scrollbar-thin scrollbar-thumb-gray-400 dark:scrollbar-thumb-gray-400 scrollbar-thumb-rounded-full scrollbar-thumb-opacity-50 scrollbar-track-gray-200 dark:scrollbar-track-gray-900 scrollbar-track-rounded-full scrollbar-track-opacity-25',
-  )
+  const scrollableClasses = customScrollbarClass
 
   // Handle loading state
   if (isLoading) {

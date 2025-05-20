@@ -23,7 +23,7 @@ import {
 } from '@fortawesome/free-solid-svg-icons'
 import classNames from 'classnames'
 import { LinesFilter } from './LinesFilter'
-import { sortByProperty } from '../../lib/utils'
+import { sortByProperty, customScrollbarClass } from '../../lib/utils'
 import { store } from '../../store'
 
 // Interface for lines structure
@@ -392,7 +392,7 @@ export const LinesView: FC<LinesViewProps> = ({ className }): JSX.Element => {
                       <div className='-mx-4 overflow-x-auto sm:-mx-6 lg:-mx-8'>
                         <div className='inline-block min-w-full align-middle sm:px-6 lg:px-8'>
                           <div className='relative'>
-                            <div className='overflow-y-auto scrollbar-thin scrollbar-thumb-gray-400 dark:scrollbar-thumb-gray-400 scrollbar-thumb-rounded-full scrollbar-thumb-opacity-50 scrollbar-track-gray-200 dark:scrollbar-track-gray-900 scrollbar-track-rounded-full scrollbar-track-opacity-25'>
+                            <div className={`overflow-y-auto ${customScrollbarClass}`}>
                               <div className='  max-h-[32rem]'>
                                 <table className='min-w-full divide-y divide-gray-300 dark:divide-gray-700'>
                                   <thead className='sticky top-0 bg-white dark:bg-gray-950 z-[1]'>

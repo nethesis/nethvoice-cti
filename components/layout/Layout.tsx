@@ -10,7 +10,7 @@ import { useDispatch } from 'react-redux'
 import { Dispatch } from '../../store'
 import { RootState } from '../../store'
 import { useSelector } from 'react-redux'
-import { closeSideDrawer, getProductName, closeToast } from '../../lib/utils'
+import { closeSideDrawer, getProductName, closeToast, customScrollbarClass } from '../../lib/utils'
 import { store } from '../../store'
 import {
   buildOperators,
@@ -1071,7 +1071,7 @@ export const Layout: FC<LayoutProps> = ({ children }) => {
           {/* Main content */}
           <div className='flex flex-1 items-stretch overflow-hidden bg-body dark:bg-bodyDark'>
             <main
-              className={`flex-1 overflow-y-auto scrollbar-thin scrollbar-thumb-gray-400 dark:scrollbar-thumb-gray-400 scrollbar-thumb-rounded-full scrollbar-thumb-opacity-50 scrollbar-track-gray-200 dark:scrollbar-track-gray-900 scrollbar-track-rounded-full scrollbar-track-opacity-25 ${
+              className={`flex-1 ${customScrollbarClass} ${
                 parkingInfo?.isParkingFooterVisible &&
                 profile?.macro_permissions?.settings?.permissions?.parkings?.value
                   ? 'h-[55rem]'

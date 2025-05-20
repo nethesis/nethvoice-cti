@@ -27,6 +27,7 @@ import { DEFAULT_OUTCOME_FILTER, getFilterValues } from '../../../lib/queueManag
 import { useTranslation } from 'react-i18next'
 import { cloneDeep, isEmpty } from 'lodash'
 import { Tooltip } from 'react-tooltip'
+import { customScrollbarClass } from '../../../lib/utils'
 
 export interface NotManagedCallsFilterProps extends ComponentPropsWithRef<'div'> {
   updateTextFilter: Function
@@ -195,7 +196,7 @@ export const NotManagedCallsFilter = forwardRef<HTMLButtonElement, NotManagedCal
                   leaveFrom='translate-x-0'
                   leaveTo='translate-x-full'
                 >
-                  <DialogPanel className='relative ml-auto flex h-full w-full max-w-xs flex-col overflow-y-auto scrollbar-thin scrollbar-thumb-gray-400 dark:scrollbar-thumb-gray-400 scrollbar-thumb-rounded-full scrollbar-thumb-opacity-50 scrollbar-track-gray-200 dark:scrollbar-track-gray-900 scrollbar-track-rounded-full scrollbar-track-opacity-25 py-4 pb-6 shadow-xl bg-white dark:bg-gray-900'>
+                  <DialogPanel className={`relative ml-auto flex h-full w-full max-w-xs flex-col ${customScrollbarClass} py-4 pb-6 shadow-xl bg-white dark:bg-gray-900`}>
                     <div className='flex items-center justify-between px-4'>
                       <h2 className='text-lg font-medium text-gray-900 dark:text-gray-100'>
                         {t('Common.Filters')}

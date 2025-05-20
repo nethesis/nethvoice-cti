@@ -5,7 +5,19 @@ import { ComponentPropsWithRef, forwardRef, useRef } from 'react'
 import classNames from 'classnames'
 import { TextInput } from '../common'
 import { Fragment, useState, useEffect } from 'react'
-import { Dialog, Popover, Transition, Disclosure, TransitionChild, DialogPanel, DisclosureButton, DisclosurePanel, PopoverGroup, PopoverButton, PopoverPanel } from '@headlessui/react'
+import {
+  Dialog,
+  Popover,
+  Transition,
+  Disclosure,
+  TransitionChild,
+  DialogPanel,
+  DisclosureButton,
+  DisclosurePanel,
+  PopoverGroup,
+  PopoverButton,
+  PopoverPanel,
+} from '@headlessui/react'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { faCircleXmark, faXmark, faChevronDown } from '@fortawesome/free-solid-svg-icons'
 import { useSelector } from 'react-redux'
@@ -13,6 +25,7 @@ import { RootState } from '../../store'
 import { useTranslation } from 'react-i18next'
 import { DEFAULT_SORT_BY, getFilterValues, DEFAULT_CONFIGURATION_TYPE } from '../../lib/lines'
 import { savePreference } from '../../lib/storage'
+import { customScrollbarClass } from '../../lib/utils'
 
 export interface LinesFilterProps extends ComponentPropsWithRef<'div'> {
   updateTextFilter: Function
@@ -167,7 +180,9 @@ export const LinesFilter = forwardRef<HTMLButtonElement, LinesFilterProps>(
                   leaveFrom='translate-x-0'
                   leaveTo='translate-x-full'
                 >
-                  <DialogPanel className='relative ml-auto flex h-full w-full max-w-xs flex-col overflow-y-auto scrollbar-thin scrollbar-thumb-gray-400 dark:scrollbar-thumb-gray-400 scrollbar-thumb-rounded-full scrollbar-thumb-opacity-50 scrollbar-track-gray-200 dark:scrollbar-track-gray-900 scrollbar-track-rounded-full scrollbar-track-opacity-25 py-4 pb-6 shadow-xl bg-white dark:bg-gray-900'>
+                  <DialogPanel
+                    className={`relative ml-auto flex h-full w-full max-w-xs flex-col ${customScrollbarClass} py-4 pb-6 shadow-xl bg-white dark:bg-gray-900`}
+                  >
                     <div className='flex items-center justify-between px-4'>
                       <h2 className='text-lg font-medium text-gray-900 dark:text-gray-100'>
                         {t('Common.Filters')}

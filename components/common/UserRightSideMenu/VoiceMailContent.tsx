@@ -33,6 +33,7 @@ import { forEach, isEmpty, set } from 'lodash'
 import { openShowOperatorDrawer } from '../../../lib/operators'
 import Link from 'next/link'
 import { useEventListener } from '../../../lib/hooks/useEventListener'
+import { customScrollbarClass } from '../../../lib/utils'
 
 export const VoiceMailContent = () => {
   const operatorsStore = useSelector((state: RootState) => state.operators)
@@ -316,7 +317,7 @@ export const VoiceMailContent = () => {
         <span className='border-b border-gray-200 dark:border-gray-700'></span>
         <ul
           role='list'
-          className='px-6 flex-1 divide-y overflow-y-auto scrollbar-thin scrollbar-thumb-gray-400 dark:scrollbar-thumb-gray-400 scrollbar-thumb-rounded-full scrollbar-thumb-opacity-50 scrollbar-track-gray-200 dark:scrollbar-track-gray-900 scrollbar-track-rounded-full scrollbar-track-opacity-25 divide-gray-200 dark:divide-gray-700'
+          className={`px-6 flex-1 divide-y ${customScrollbarClass} divide-gray-200 dark:divide-gray-700`}
         >
           {/* get voicemails error */}
           {getVoiceMailError && (

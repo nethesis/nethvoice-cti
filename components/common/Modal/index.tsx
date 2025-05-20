@@ -16,7 +16,7 @@
 import { FC, ComponentProps, PropsWithChildren, RefObject } from 'react'
 import { Fragment, createRef } from 'react'
 import { useTheme } from '../../../theme/Context'
-import { cleanClassName } from '../../../lib/utils'
+import { cleanClassName, customScrollbarClass } from '../../../lib/utils'
 import { ModalContent } from './ModalContent'
 import { ModalActions } from './ModalActions'
 import { Transition, Dialog, TransitionChild, DialogPanel } from '@headlessui/react'
@@ -55,7 +55,7 @@ const ModalComponent: FC<ModalProps> = ({
         <TransitionChild as={Fragment} {...theme.panel.transition}>
           <div className={theme.background.base} />
         </TransitionChild>
-        <div className='fixed inset-0 z-50 overflow-y-auto scrollbar-thin scrollbar-thumb-gray-400 dark:scrollbar-thumb-gray-400 scrollbar-thumb-rounded-full scrollbar-thumb-opacity-50 scrollbar-track-gray-200 dark:scrollbar-track-gray-900 scrollbar-track-rounded-full scrollbar-track-opacity-25'>
+        <div className={`fixed inset-0 z-50 ${customScrollbarClass}`}>
           <div className='flex min-h-full items-end justify-center p-4 text-center sm:items-center sm:p-0'>
             <TransitionChild as={Fragment} {...theme.background.transition}>
               <DialogPanel className={theme.panel.base}>{children}</DialogPanel>

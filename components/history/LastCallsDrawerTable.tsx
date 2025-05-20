@@ -24,6 +24,7 @@ import { UserCallStatusIcon } from './UserCallStatusIcon'
 import { CallsDate } from './CallsDate'
 import { CallDetails } from './CallDetails'
 import { CustomThemedTooltip } from '../common/CustomThemedTooltip'
+import { customScrollbarClass } from '../../lib/utils'
 
 export interface LastCallsDrawerTableProps extends ComponentPropsWithRef<'div'> {
   callType: string
@@ -341,7 +342,7 @@ export const LastCallsDrawerTable = forwardRef<HTMLButtonElement, LastCallsDrawe
               <div className='-my-2 -mx-4 overflow-x-hidden'>
                 <div className='inline-block min-w-full py-2 align-middle px-2 md:px-6 lg:px-8'>
                   {isLoaded && lastCalls?.rows && (
-                    <div className='overflow-y-auto scrollbar-thin scrollbar-thumb-gray-400 dark:scrollbar-thumb-gray-400 scrollbar-thumb-rounded-full scrollbar-thumb-opacity-50 scrollbar-track-gray-200 dark:scrollbar-track-gray-900 scrollbar-track-rounded-full scrollbar-track-opacity-25'>
+                    <div className={customScrollbarClass}>
                       <div>
                         <table className='min-w-full divide-y divide-gray-300 dark:divide-gray-700'>
                           <tbody className='divide-y divide-gray-200 dark:divide-gray-700 bg-white dark:bg-gray-900 text-gray-700 text-sm'>

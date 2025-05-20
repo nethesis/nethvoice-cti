@@ -169,7 +169,7 @@ module.exports = {
         //textBadge
         //textBadgeBlue
         textBadgeBlue: '#1E40AF', // blue-800
-        textBadgeBlueDark: '#1E40AF', // blue-100
+        textBadgeBlueDark: '#DBEAFE', // blue-100
 
         //textBadgeEmerald
         textBadgeEmerald: '#065F46', // emerald-800

@@ -12,6 +12,7 @@ import { useRouter } from 'next/router'
 import { VoicemailInbox } from '../components/history/voicemail inbox/VoicemailInbox'
 import { Calls } from '../components/history/calls/Calls'
 import { isEmpty } from 'lodash'
+import { customScrollbarClass } from '../lib/utils'
 
 interface tabsType {
   name: string
@@ -113,7 +114,7 @@ const History: NextPage = () => {
           </select>
         </div>
         {/* desktop tabs */}
-        <div className='hidden sm:block overflow-y-hidden scrollbar-thin scrollbar-thumb-gray-400 dark:scrollbar-thumb-gray-400 scrollbar-thumb-rounded-full scrollbar-thumb-opacity-50 scrollbar-track-gray-200 dark:scrollbar-track-gray-900 scrollbar-track-rounded-full scrollbar-track-opacity-25'>
+        <div className={`hidden sm:block overflow-y-hidden ${customScrollbarClass}`}>
           <div className='border-b border-gray-300 dark:border-gray-600'>
             <nav className='-mb-px flex space-x-8' aria-label='Tabs'>
               {items.map((item: any) => (

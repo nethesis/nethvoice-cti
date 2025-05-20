@@ -13,7 +13,7 @@ import {
   faTurnDown,
 } from '@fortawesome/free-solid-svg-icons'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
-import { closeSideDrawer } from '../../lib/utils'
+import { closeSideDrawer, customScrollbarClass } from '../../lib/utils'
 import { TextInput, Button, IconSwitch } from '../common'
 import { parse, subDays, startOfDay } from 'date-fns'
 import { formatDateLoc } from '../../lib/dateTime'
@@ -378,7 +378,7 @@ export const ShowRuleDetailsContent = forwardRef<HTMLButtonElement, ShowRuleDeta
           <div className='mt-3 mb- border-t border-gray-200 dark:border-gray-700'></div>
 
           {/* Date input select  */}
-          <fieldset className='max-h-56 overflow-y-auto scrollbar-thin scrollbar-thumb-gray-400 dark:scrollbar-thumb-gray-400 scrollbar-thumb-rounded-full scrollbar-thumb-opacity-50 scrollbar-track-gray-200 dark:scrollbar-track-gray-900 scrollbar-track-rounded-full scrollbar-track-opacity-25'>
+          <fieldset className={`max-h-56 ${customScrollbarClass}`}>
             <legend className='sr-only'>Date range select</legend>
             <div className='space-y-4 mt-3 ml-1'>
               {linesList.map((listSelectionInput) => (
