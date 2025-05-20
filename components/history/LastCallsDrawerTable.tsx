@@ -345,7 +345,7 @@ export const LastCallsDrawerTable = forwardRef<HTMLButtonElement, LastCallsDrawe
                     <div className={customScrollbarClass}>
                       <div>
                         <table className='min-w-full divide-y divide-gray-300 dark:divide-gray-700'>
-                          <tbody className='divide-y divide-gray-200 dark:divide-gray-700 bg-white dark:bg-gray-900 text-gray-700 text-sm'>
+                          <tbody className='divide-y divide-gray-200 dark:divide-gray-700 text-gray-700 text-sm'>
                             {/* Not empty state  */}
                             {isLoaded &&
                               lastCalls?.rows &&

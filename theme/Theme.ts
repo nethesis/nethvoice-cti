@@ -9,7 +9,7 @@ const theme = {
     secondary:
       'border border-transparent focus:ring-primaryLight bg-primaryLighter text-primaryDark hover:bg-primaryLighter dark:focus:ring-primaryDark dark:bg-primaryDarker dark:text-primaryLight dark:hover:bg-primaryDarker focus:ring-2 focus:ring-offset-2',
     white:
-      'border shadow-sm border-gray-300 dark:border-gray-500 bg-transparent dark:bg-transparent text-primary dark:text-primaryDark hover:bg-gray-200 hover:bg-opacity-30 dark:hover:bg-gray-600 dark:hover:bg-opacity-30 focus:ring-primaryLight dark:focus:ring-primaryDark focus:ring-2 focus:ring-offset-2 leading-5 text-sm font-medium',
+      'border shadow-sm border-gray-300 dark:border-gray-500 bg-transparent dark:bg-transparent text-primary dark:text-primaryDark hover:primaryHover dark:hover:primaryHoverDark hover:bg-gray-200 hover:bg-opacity-30 dark:hover:bg-gray-600 dark:hover:bg-opacity-30 focus:ring-primaryLight dark:focus:ring-primaryDark focus:ring-2 focus:ring-offset-2 leading-5 text-sm font-medium',
     whiteDanger:
       'border shadow-sm border-gray-300 dark:border-gray-500 bg-transparent dark:bg-transparent text-red-700 dark:text-red-500 hover:bg-gray-200 hover:bg-opacity-30 dark:hover:bg-gray-600 dark:hover:bg-opacity-30 focus:ring-primaryLight dark:focus:ring-primaryDark focus:ring-2 focus:ring-offset-2 leading-5 text-sm font-medium',
     ghost:

@@ -107,7 +107,7 @@ export const OperatorSummary = forwardRef<HTMLButtonElement, OperatorSummaryProp
               <div className='ml-2'>
                 <h2
                   className={classNames(
-                    'text-xl inline-block font-medium text-gray-700 dark:text-gray-200 mr-2',
+                    'text-lg inline-block font-medium leading-7 text-primaryNeutral dark:text-primaryNeutralDark mr-2',
                     isShownSideDrawerLink && 'cursor-pointer hover:underline',
                   )}
                   onClick={() => maybeShowSideDrawer(operator)}
@@ -140,7 +140,7 @@ export const OperatorSummary = forwardRef<HTMLButtonElement, OperatorSummaryProp
                 )}
               </div>
 
-              <span className='text-md font-medium leading-5 text-gray-500 dark:text-gray-300 ml-2'>
+              <span className='text-base font-normal leading-5 text-secondaryNeutral dark:text-secondaryNeutralDark ml-2'>
                 {operator?.endpoints?.mainextension[0]?.id}
               </span>
             </div>
@@ -187,7 +187,7 @@ export const OperatorSummary = forwardRef<HTMLButtonElement, OperatorSummaryProp
             operatorsStore?.operators[operator?.username]?.conversations[0]?.chDest?.inConference ==
               true ||
             !isEmpty(operatorsStore?.operators[operator?.username]?.conversations[0])) && (
-            <ActionCall config={operator}></ActionCall>
+            <ActionCall config={operator}/>
           )}
       </>
     )

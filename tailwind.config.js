@@ -236,6 +236,53 @@ module.exports = {
         //surfacePresenceDND
         surfacePresenceDND: '#030712', // gray-950
         surfacePresenceDNDDark: '#030712', // gray-950
+
+        //elevation
+
+        //elevation0
+        elevation0: '#FFFFFF', // white
+        elevation0Dark: '#030712', // gray-950
+
+        //elevationL1
+        elevationL1: '#F9FAFB', // gray-50
+        elevationL1Dark: '#111827', // gray-900
+
+        //elevationL2
+        elevationL2: '#F3F4F6', // gray-100
+        elevationL2Dark: '#1F2937', // gray-800
+
+        //elevationL2Invert
+        elevationL2Invert: '#FFFFFF', // white
+        elevationL2InvertDark: '#030712', // gray-950
+
+        //elevationL3
+        elevationL3: '#E5E7EB', // gray-200
+        elevationL3Dark: '#374151', // gray-700
+
+        //elevationL4
+        elevationL4: '#D1D5DB', // gray-300
+        elevationL4Dark: '#4B5563', // gray-600
+
+        //border
+        //layoutDivider
+        layoutDivider: '#E5E7EB', // gray-200
+        layoutDividerDark: '#374151', // gray-700
+
+        //buttonText
+        primaryActive: '#047857', // emerald-700
+        primaryActiveDark: '#10b981', // emerald-500
+
+        //buttonTextHover
+        primaryHover: '#065f46', // emerald-800
+        primaryHoverDark: '#6ee7b7', // emerald-300
+
+        //buttonTextFocus
+        primaryFocus: '#10b981', // emerald-500
+        primaryFocusDark: '#a7f3d0', // emerald-200
+
+        //buttonTextFavicon
+        primaryFavicon: '#059669', // emerald-600
+        primaryFaviconDark: '#059669', // emerald-600
       },
       screens: {
         '3xl': '1792px',

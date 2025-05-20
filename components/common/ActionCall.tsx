@@ -270,9 +270,10 @@ export const ActionCall: React.FC<ActionCallProps> = ({ config }) => {
   )
 
   return (
-    <div className='bg-white dark:bg-gray-800 rounded-md shadow-sm'>
-      <div className='px-4 py-4 flex items-center justify-between border-b border-gray-200 dark:border-gray-700'>
-        <h4 className='text-base font-medium text-primaryNeutral dark:text-primaryNeutralDark'>
+    <div className='bg-elevationL2Invert dark:bg-elevationL2InvertDark rounded-md shadow-sm'>
+      {/* Header */}
+      <div className='p-4 flex items-center'>
+        <h4 className='text-sm font-medium leading-5 text-primaryNeutral dark:text-primaryNeutralDark flex-1'>
           {t('OperatorDrawer.Current call')}
         </h4>
         {canShowActions && (
@@ -285,52 +286,54 @@ export const ActionCall: React.FC<ActionCallProps> = ({ config }) => {
         )}
       </div>
 
-      <div className='px-4 py-4'>
-        <dl className='space-y-4'>
+      {/* Divider  */}
+      <div className='px-4 relative'>
+        <div className='border-b border-layoutDivider dark:border-layoutDividerDark'></div>
+      </div>
+
+      <div className='px-4 py-4 mt-2'>
+        <dl className='grid grid-cols-[120px_1fr] gap-y-6 mb-1'>
           {/* Call duration */}
-          <div className='flex justify-between'>
-            <dt className='text-sm font-medium leading-5 text-secondaryNeutral dark:text-secondaryNeutralDark'>
-              {t('Common.Call duration')}
-            </dt>
-            <dd className='text-base font-medium leading-6 text-textStatusBusy dark:text-textStatusBusyDark'>
-              <CallDuration startTime={currentConversation?.startTime} />
-            </dd>
-          </div>
+          <dt className='text-sm font-medium leading-5 text-secondaryNeutral dark:text-secondaryNeutralDark'>
+            {t('Common.Call duration')}
+          </dt>
+          <dd className='text-base font-medium leading-6 text-textStatusBusy dark:text-textStatusBusyDark overflow-hidden whitespace-nowrap text-ellipsis'>
+            <CallDuration startTime={currentConversation?.startTime} />
+          </dd>
 
           {/* Contact */}
-          <div className='flex justify-between'>
-            <dt className='text-sm font-medium leading-5 text-secondaryNeutral dark:text-secondaryNeutralDark'>
-              {t('OperatorDrawer.Contact')}
-            </dt>
-            <dd className='text-sm text-right text-gray-900 dark:text-gray-100'>
-              {currentConversation?.counterpartName !== currentConversation?.counterpartNum && (
-                <div className='mb-1'>{currentConversation?.counterpartName || '-'}</div>
-              )}
-              <div className='text-gray-600 dark:text-gray-400'>
-                {currentConversation?.counterpartNum || '-'}
+          <dt className='text-sm font-medium leading-5 text-secondaryNeutral dark:text-secondaryNeutralDark'>
+            {t('OperatorDrawer.Contact')}
+          </dt>
+          <dd className='text-sm leading-5 text-textStatusBusy dark:text-textStatusBusyDark max-w-full overflow-hidden'>
+            {currentConversation?.counterpartName !== currentConversation?.counterpartNum && (
+              <div className='overflow-hidden whitespace-nowrap text-ellipsis font-medium'>
+                {currentConversation?.counterpartName || '-'}
               </div>
-            </dd>
-          </div>
+            )}
+            <div className='font-normal text-textStatusBusy dark:text-textStatusBusyDark overflow-hidden whitespace-nowrap text-ellipsis'>
+              {currentConversation?.counterpartNum || '-'}
+            </div>
+          </dd>
 
-          <div className='flex justify-between'>
-            <dt className='text-sm font-medium leading-5 text-secondaryNeutral dark:text-secondaryNeutralDark'>
-              {t('OperatorDrawer.Direction')}
-            </dt>
-            <dd className='flex items-center text-sm text-gray-900 dark:text-gray-100'>
-              <FontAwesomeIcon
-                icon={currentConversation?.direction === 'out' ? faArrowLeft : faCheck}
-                className={`mr-2 h-4 w-3.5 text-iconStatusOnline dark:text-iconStatusOnlineDark ${
-                  currentConversation?.direction === 'out' ? 'rotate-[135deg]' : ''
-                }`}
-                aria-hidden='true'
-              />
-              <span>
-                {currentConversation?.direction === 'out'
-                  ? t('OperatorDrawer.Outgoing')
-                  : t('OperatorDrawer.Incoming')}
-              </span>
-            </dd>
-          </div>
+          {/* Direction */}
+          <dt className='text-sm font-medium leading-5 text-secondaryNeutral dark:text-secondaryNeutralDark'>
+            {t('OperatorDrawer.Direction')}
+          </dt>
+          <dd className='flex items-center text-sm text-tertiaryNeutral dark:text-tertiaryNeutralDark'>
+            <FontAwesomeIcon
+              icon={currentConversation?.direction === 'out' ? faArrowLeft : faCheck}
+              className={`flex-shrink-0 mr-2 h-4 w-4 text-iconStatusOnline dark:text-iconStatusOnlineDark ${
+                currentConversation?.direction === 'out' ? 'rotate-[135deg]' : ''
+              }`}
+              aria-hidden='true'
+            />
+            <span className='overflow-hidden whitespace-nowrap text-ellipsis'>
+              {currentConversation?.direction === 'out'
+                ? t('OperatorDrawer.Outgoing')
+                : t('OperatorDrawer.Incoming')}
+            </span>
+          </dd>
         </dl>
       </div>
     </div>
