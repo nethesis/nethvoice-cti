@@ -61,8 +61,30 @@ const OperatorCard = ({
 
     const hasAnyPermission = permissions.pickup || permissions.hangup
 
-    return { isInConversation, isRinging, isBusy, isOfflineOrDnd, hasAnyPermission }
-  }, [liveOperatorData, permissions])
+    const currentUserMainExtension =
+      profile?.mainextension || profile?.endpoints?.mainextension?.[0]?.id
+
+    const isCalledByCurrentUser =
+      isRinging &&
+      liveOperatorData?.conversations?.length > 0 &&
+      (liveOperatorData?.conversations[0]?.counterpartNum === authUsername ||
+        liveOperatorData?.conversations[0]?.caller === authUsername ||
+        liveOperatorData?.conversations[0]?.counterpartNum === currentUserMainExtension ||
+        liveOperatorData?.conversations[0]?.bridgedNum === currentUserMainExtension ||
+        liveOperatorData?.conversations[0]?.chSource?.callerNum === currentUserMainExtension ||
+        liveOperatorData?.conversations[0]?.chSource?.bridgedNum === currentUserMainExtension ||
+        (liveOperatorData?.conversations[0]?.direction === 'out' &&
+          liveOperatorData?.conversations[0]?.counterpartName?.includes(profile?.name)))
+
+    return {
+      isInConversation,
+      isRinging,
+      isBusy,
+      isOfflineOrDnd,
+      hasAnyPermission,
+      isCalledByCurrentUser,
+    }
+  }, [liveOperatorData, permissions, authUsername, profile])
 
   const handleOperatorClick = useCallback(() => {
     openShowOperatorDrawer(liveOperatorData)
@@ -124,7 +146,14 @@ const OperatorCard = ({
     callOperator(liveOperatorData)
   }, [liveOperatorData])
 
-  const { isInConversation, isRinging, isBusy, isOfflineOrDnd, hasAnyPermission } = operatorStates
+  const {
+    isInConversation,
+    isRinging,
+    isBusy,
+    isOfflineOrDnd,
+    hasAnyPermission,
+    isCalledByCurrentUser,
+  } = operatorStates
 
   return (
     <div className='space-y-4'>
@@ -167,7 +196,7 @@ const OperatorCard = ({
         </div>
 
         {/* Main extension or Ringing (if user has at least one permission) */}
-        {isRinging && hasAnyPermission ? (
+        {isRinging && hasAnyPermission && !isCalledByCurrentUser ? (
           <div className='text-center text-red-600 dark:text-red-500 text-sm font-medium leading-5 pt-2 flex items-center justify-center'>
             <span className='ringing-animation h-2.5 w-2.5 mr-2'></span>
             {t('Operators.Ringing')}
@@ -200,7 +229,7 @@ const OperatorCard = ({
           {/* Operator is ringing - show buttons based on permissions */}
           {isRinging && (
             <>
-              {hasAnyPermission ? (
+              {hasAnyPermission && !isCalledByCurrentUser ? (
                 <div className='flex justify-center space-x-2'>
                   {permissions.pickup && (
                     <Button
@@ -236,7 +265,7 @@ const OperatorCard = ({
                   )}
                 </div>
               ) : (
-                // If user has no permission, show ringing status
+                // Se l'utente non ha permessi o sta chiamando questo operatore, mostra solo lo stato di ringing
                 <div className='py-2 px-3 flex justify-center'>
                   <div className='flex items-center text-cardTextBusy dark:text-cardTextBusy'>
                     <span className='ringing-animation mr-2 h-4 w-4'></span>

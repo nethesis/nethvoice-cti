@@ -74,8 +74,31 @@ const CompactOperatorCard = ({
     const isOfflineOrDnd = operator?.mainPresence === 'offline' || operator?.mainPresence === 'dnd'
     const isOnline = operator?.mainPresence === 'online'
 
-    return { isInConversation, isRinging, isBusy, isOfflineOrDnd, isOnline, hasValidConversation }
-  }, [operator])
+    const currentUserMainExtension =
+      profile?.mainextension || profile?.endpoints?.mainextension?.[0]?.id
+
+    const isCalledByCurrentUser =
+      isRinging &&
+      operator?.conversations?.length > 0 &&
+      (operator?.conversations[0]?.counterpartNum === authUsername ||
+        operator?.conversations[0]?.caller === authUsername ||
+        operator?.conversations[0]?.counterpartNum === currentUserMainExtension ||
+        operator?.conversations[0]?.bridgedNum === currentUserMainExtension ||
+        operator?.conversations[0]?.chSource?.callerNum === currentUserMainExtension ||
+        operator?.conversations[0]?.chSource?.bridgedNum === currentUserMainExtension ||
+        (operator?.conversations[0]?.direction === 'out' &&
+          operator?.conversations[0]?.counterpartName?.includes(profile?.name)))
+
+    return {
+      isInConversation,
+      isRinging,
+      isBusy,
+      isOfflineOrDnd,
+      isOnline,
+      hasValidConversation,
+      isCalledByCurrentUser,
+    }
+  }, [operator, authUsername, profile])
 
   const openDrawerOperator = useCallback(() => {
     openShowOperatorDrawer(operator)
@@ -137,8 +160,15 @@ const CompactOperatorCard = ({
     }
   }, [operator])
 
-  const { isInConversation, isRinging, isBusy, isOfflineOrDnd, isOnline, hasValidConversation } =
-    operatorStates
+  const {
+    isInConversation,
+    isRinging,
+    isBusy,
+    isOfflineOrDnd,
+    isOnline,
+    hasValidConversation,
+    isCalledByCurrentUser,
+  } = operatorStates
 
   const mainExtension = useMemo(() => operator?.endpoints?.mainextension?.[0]?.id || '', [operator])
 
@@ -173,7 +203,7 @@ const CompactOperatorCard = ({
             />
           )}
         </div>
-        {isRinging && permissions.hasAny ? (
+        {isRinging && permissions.hasAny && !isCalledByCurrentUser ? (
           <div className='text-textStatusBusy dark:text-textStatusBusyDark text-sm leading-5 font-medium flex items-center'>
             <span className='ringing-animation h-2.5 w-2.5 mr-2'></span>
             {t('Operators.Ringing')}
@@ -228,7 +258,7 @@ const CompactOperatorCard = ({
         )}
 
         {/* If operator is ringing and user has permissions */}
-        {isRinging && permissions?.hasAny && (
+        {isRinging && permissions?.hasAny && !isCalledByCurrentUser && (
           <div className='flex items-center space-x-2'>
             {permissions?.pickup && (
               <Button variant='white' size='small' onClick={handlePickupCall} className='px-2'>
@@ -253,8 +283,8 @@ const CompactOperatorCard = ({
           </div>
         )}
 
-        {/* If operator is ringing and user has no permissions */}
-        {isRinging && !permissions?.hasAny && (
+        {/* If operator is ringing and user has no permissions or is calling this operator */}
+        {isRinging && (!permissions?.hasAny || isCalledByCurrentUser) && (
           <div className='flex items-center text-textStatusBusy dark:text-textStatusBusyDark'>
             <span className='ringing-animation mr-2 h-4 w-4' />
             <span className='text-sm font-medium'>{t('Operators.Ringing')}</span>
