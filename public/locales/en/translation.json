@@ -669,7 +669,11 @@
     "Call": "Call",
     "Go to history": "Go to History",
     "Open lastcalls menu": "Open lastcalls menu",
-    "Unknown": "Unknown"
+    "Unknown": "Unknown",
+    "All calls": "All calls",
+    "Incoming": "Incoming calls",
+    "Outgoing": "Outgoing calls",
+    "Filter by": "Filter by"
   },
   "VoiceMail": {
     "Voicemail inbox": "Voicemail inbox",

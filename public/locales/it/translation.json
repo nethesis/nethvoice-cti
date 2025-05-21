@@ -536,7 +536,11 @@
     "Call": "Chiama",
     "Go to history": "Vai allo storico",
     "Open lastcalls menu": "Apri menu ultime chiamate",
-    "Unknown": "Sconosciuto"
+    "Unknown": "Sconosciuto",
+    "All calls": "Tutte le chiamate",
+    "Incoming": "Chiamate in arrivo",
+    "Outgoing": "Chiamate in uscita",
+    "Filter by": "Filtra per"
   },
   "VoiceMail": {
     "Voicemail inbox": "Casella vocale",

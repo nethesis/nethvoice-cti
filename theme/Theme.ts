@@ -238,7 +238,7 @@ const theme = {
     },
     offline: {
       badge: {
-        base: 'bg-gray-300 text-gray-700 dark:bg-gray-600 dark:text-gray-200',
+        base: 'bg-surfaceBadgeGray dark:bg-surfaceBadgeGrayDark text-textBadgeGray dark:text-textBadgeGrayDark',
       },
       avatar: {
         dot: 'bg-surfacePresenceOffline dark:bg-surfacePresenceOfflineDark',

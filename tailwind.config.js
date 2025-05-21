@@ -175,6 +175,10 @@ module.exports = {
         textBadgeEmerald: '#065F46', // emerald-800
         textBadgeEmeraldDark: '#ECFDF5', // emerald-50
 
+        //textBadgeGray
+        textBadgeGray: '#1F2937', // gray-800
+        textBadgeGrayDark: '#F3F4F6', // gray-100
+
         //Icon call status
         //iconStatusOnline
         iconStatusOnline: '#15803D', // green-700
@@ -220,6 +224,10 @@ module.exports = {
         //surfaceBadgeEmerald
         surfaceBadgeEmerald: '#D1FAE5', // emerald-100
         surfaceBadgeEmeraldDark: '#047857', // emerald-700
+
+        //surfaceBadgeGray
+        surfaceBadgeGray: '#E5E7EB', // gray-200
+        surfaceBadgeGrayDark: '#4B5563', // gray-600
 
         //surfacePresenceOnline
         surfacePresenceOnline: '#22C55E', // green-500
