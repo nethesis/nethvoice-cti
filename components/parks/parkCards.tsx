@@ -101,14 +101,14 @@ export const ParkCards: FC<ParkCardsProps> = ({ className }): JSX.Element => {
                 <div className='flex'>
                   <span className='text-sm text-left text-gray-900 dark:text-gray-100 w-44 truncate tooltip-parked-user'>
                     <div className='scrolling-text-container' ref={nameText}>
-                      {nameText?.current?.clientWidth &&  nameText?.current?.clientWidth > 180 ? (
+                      {nameText?.current?.clientWidth && nameText?.current?.clientWidth > 180 ? (
                         <>
                           <div className='scrolling-text'>{parkingDetails?.parkedCaller?.name}</div>
                           <div className='scrolling-text'>{parkingDetails?.parkedCaller?.name}</div>
                         </>
                       ) : (
                         <>
-                          <div >{parkingDetails?.parkedCaller?.name}</div>
+                          <div>{parkingDetails?.parkedCaller?.name}</div>
                         </>
                       )}
                     </div>
@@ -125,39 +125,52 @@ export const ParkCards: FC<ParkCardsProps> = ({ className }): JSX.Element => {
                 onMouseUp={handleButtonUp}
                 onMouseLeave={handleButtonUp}
               >
-                <Button variant='white' className='tooltip-parking-button'>
-                  <FontAwesomeIcon
-                    icon={faPhone}
-                    className='h-4 w-4 text-gray-500 dark:text-gray-200 mr-2'
-                  />
-                  <span className='w-14'>
-                    {cardPressStates[index] ? `${t('Parks.Hold')}` : `${t('Parks.Pick up')}`}
-                  </span>
-                </Button>
-                <motion.div
-                  initial={{ width: 0 }}
-                  animate={
-                    cardPressStates[index]
-                      ? { width: '98%', transition: { duration: 2 } }
-                      : { width: 0 }
-                  }
-                  className='absolute top-0 left-0 w-full h-8 bg-emerald-500 rounded-md overflow-hidden'
+                <Button
+                  variant='white'
+                  className='tooltip-parking-button w-full relative overflow-hidden'
                 >
-                  <motion.button
-                    className='w-full h-full bg-transparent text-emerald-500 hover:text-emerald-600 rounded-md focus:outline-none'
-                    onMouseDown={handleButtonDown}
-                    onMouseUp={handleButtonUp}
-                    onMouseLeave={handleButtonUp}
+                  {/* Layer 1: Original text (visible in non-colored area) */}
+                  <div className='relative z-10 flex items-center justify-center w-full'>
+                    <FontAwesomeIcon
+                      icon={faPhone}
+                      className='h-4 w-4 mr-2 text-gray-500 dark:text-gray-200'
+                    />
+                    <span className='w-14'>
+                      {cardPressStates[index] ? `${t('Parks.Hold')}` : `${t('Parks.Pick up')}`}
+                    </span>
+                  </div>
+
+                  {/* Layer 2: White text (only visible over the green background) */}
+                  <div
+                    className='absolute top-0 left-0 h-full z-20 flex items-center justify-center overflow-hidden rounded-md'
+                    style={{
+                      width: cardPressStates[index] ? '100%' : '0%',
+                      transition: cardPressStates[index]
+                        ? 'width 2s linear'
+                        : 'width 0.3s ease-out',
+                    }}
                   >
-                    <div className='flex items-center pl-2'>
-                      <FontAwesomeIcon
-                        icon={faPhone}
-                        className='h-4 w-4 text-gray-100 dark:text-gray-200 ml-2 mr-2'
-                      />
-                      <span className='text-gray-100 text-base'>{t('Parks.Hold')}</span>
+                    <div className='flex items-center justify-center w-max whitespace-nowrap'>
+                      <FontAwesomeIcon icon={faPhone} className='h-4 w-4 mr-2 text-gray-100' />
+                      <span className='w-14  text-base text-gray-100'>
+                        {cardPressStates[index] ? `${t('Parks.Hold')}` : `${t('Parks.Pick up')}`}
+                      </span>
                     </div>
-                  </motion.button>
-                </motion.div>
+                  </div>
+
+                  {/* Background animation */}
+                  <motion.div
+                    className='absolute top-0 left-0 h-full bg-emerald-500 z-10 rounded-md'
+                    initial={{ width: 0 }}
+                    animate={{
+                      width: cardPressStates[index] ? '100%' : '0%',
+                    }}
+                    transition={{
+                      duration: cardPressStates[index] ? 2 : 0.3,
+                      ease: cardPressStates[index] ? 'linear' : 'easeOut',
+                    }}
+                  />
+                </Button>
               </div>
             </div>
           ),
@@ -171,7 +184,7 @@ export const ParkCards: FC<ParkCardsProps> = ({ className }): JSX.Element => {
       {/* Divider */}
       <div className='relative pt-0.5'>
         <div className='absolute inset-0 flex items-center' aria-hidden='true'>
-          <div className='w-full border-t border-gray-300 dark:border-gray-600' />
+          <div className='w-full border-t border-layoutDivider dark:border-layoutDividerDark' />
         </div>
       </div>
       <div className='relative container z-0 w-[200rem] pl-2 flex h-16 border-b shadow-sm border-gray-200 bg-gray-100 dark:border-gray-700 dark:bg-gray-800'>

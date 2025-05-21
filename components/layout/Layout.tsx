@@ -145,9 +145,12 @@ export const Layout: FC<LayoutProps> = ({ children }) => {
             // Empty response or invalid URL - treat as an error
             dispatch.incomingCall.setErrorMessage('Invalid URL configuration')
             dispatch.incomingCall.setUrlAvailable(false)
-            
+
             // Set preference to 'never' if URL is not available
-            if (userInfo.data.settings?.open_param_url && userInfo.data.settings.open_param_url !== 'never') {
+            if (
+              userInfo.data.settings?.open_param_url &&
+              userInfo.data.settings.open_param_url !== 'never'
+            ) {
               const settingsStatus = { open_param_url: 'never' }
               try {
                 await setIncomingCallsPreference(settingsStatus)
@@ -156,7 +159,7 @@ export const Layout: FC<LayoutProps> = ({ children }) => {
                 console.error('Failed to set preference to never:', error)
               }
             }
-            
+
             // Use a placeholder URL just to show something in the interface
             const defaultUrl = 'https://www.example.com/customers?phone={phone}'
             dispatch.incomingCall.setParamUrl(defaultUrl)
@@ -166,9 +169,12 @@ export const Layout: FC<LayoutProps> = ({ children }) => {
           console.error('Error loading parameter URL:', error)
           dispatch.incomingCall.setErrorMessage('Cannot retrieve URL configuration')
           dispatch.incomingCall.setUrlAvailable(false)
-          
+
           // Set preference to 'never' if URL is not available
-          if (userInfo.data.settings?.open_param_url && userInfo.data.settings.open_param_url !== 'never') {
+          if (
+            userInfo.data.settings?.open_param_url &&
+            userInfo.data.settings.open_param_url !== 'never'
+          ) {
             const settingsStatus = { open_param_url: 'never' }
             try {
               await setIncomingCallsPreference(settingsStatus)
@@ -177,7 +183,7 @@ export const Layout: FC<LayoutProps> = ({ children }) => {
               console.error('Failed to set preference to never:', error)
             }
           }
-          
+
           // Use a placeholder URL just to show something in the interface
           const defaultUrl = 'https://www.example.com/customers?phone={phone}'
           dispatch.incomingCall.setParamUrl(defaultUrl)
@@ -236,13 +242,11 @@ export const Layout: FC<LayoutProps> = ({ children }) => {
       console.error('URL not available')
       return
     }
-    
+
     // Get URL from cache or store
     const paramUrl =
-      incomingCallStore.paramUrl ||
-      loadPreference('incomingCallUrl', authStore.username) ||
-      ''
-    
+      incomingCallStore.paramUrl || loadPreference('incomingCallUrl', authStore.username) || ''
+
     // If there's no valid URL, don't open anything
     if (!paramUrl) {
       console.error('Invalid URL')
@@ -426,7 +430,10 @@ export const Layout: FC<LayoutProps> = ({ children }) => {
 
   // Event handling for URL opening
   useEventListener('phone-island-url-parameter-opened', () => {
-    if (userInformation?.settings?.open_param_url === 'button' && incomingCallStore?.isUrlAvailable) {
+    if (
+      userInformation?.settings?.open_param_url === 'button' &&
+      incomingCallStore?.isUrlAvailable
+    ) {
       openParameterizedUrl()
     }
   })
@@ -640,39 +647,41 @@ export const Layout: FC<LayoutProps> = ({ children }) => {
       }
     }
 
-    // update queue connected calls
+    // Update queue connected calls
+    // Process all conversations once and organize them by queue type
+    const queueConnectedCalls: any = {}
+    const queueManagerConnectedCalls: any = {}
 
-    let queueConnectedCalls: any = {}
-
-    let queueManagerConnectedCalls: any = {}
-
+    // Single loop through conversations to map them to appropriate queues
     Object.values(conversations).forEach((conversation: any) => {
       if (conversation?.throughQueue && conversation?.connected && conversation?.queueId) {
-        const queueFound = queuesStore.queues[conversation.queueId]
-        const queueManagerFound = queueManagerStore.queues[conversation.queueId]
+        const queueId = conversation.queueId
+        const callInfo = { conversation, operatorUsername: opName }
 
-        if (queueFound) {
-          let calls = queueConnectedCalls[queueFound.queue] || []
-          calls.push({ conversation, operatorUsername: opName })
-          queueConnectedCalls[queueFound.queue] = calls
+        // Check and update regular queues
+        if (queuesStore.queues[queueId]) {
+          const queueName = queuesStore.queues[queueId].queue
+          queueConnectedCalls[queueName] = queueConnectedCalls[queueName] || []
+          queueConnectedCalls[queueName].push(callInfo)
         }
 
-        if (queueManagerFound) {
-          let callsQueueManager = queueManagerConnectedCalls[queueManagerFound.queue] || []
-          callsQueueManager.push({ conversation, operatorUsername: opName })
-          queueManagerConnectedCalls[queueManagerFound.queue] = callsQueueManager
+        // Check and update queue manager queues
+        if (queueManagerStore.queues[queueId]) {
+          const queueName = queueManagerStore.queues[queueId].queue
+          queueManagerConnectedCalls[queueName] = queueManagerConnectedCalls[queueName] || []
+          queueManagerConnectedCalls[queueName].push(callInfo)
         }
       }
     })
 
-    Object.keys(queueConnectedCalls).forEach((queueId: string) => {
-      const connectedCalls = queueConnectedCalls[queueId]
-      store?.dispatch?.queues?.setConnectedCalls(queueId, connectedCalls)
+    // Update store with processed calls for regular queues
+    Object.entries(queueConnectedCalls).forEach(([queueId, calls]) => {
+      store?.dispatch?.queues?.setConnectedCalls(queueId, calls)
     })
 
-    Object.keys(queueConnectedCalls).forEach((queueId: string) => {
-      const connectedQueueManagerCalls = queueManagerConnectedCalls[queueId]
-      store?.dispatch?.queueManagerQueues?.setConnectedCalls(queueId, connectedQueueManagerCalls)
+    // Update store with processed calls for queue manager queues
+    Object.entries(queueManagerConnectedCalls).forEach(([queueId, calls]) => {
+      store?.dispatch?.queueManagerQueues?.setConnectedCalls(queueId, calls)
     })
 
     // To delete connected calls we need to check user inside store
