@@ -121,7 +121,8 @@
     "Cannot retrieve last calls of user": "Impossibile recuperare le ultime chiamate dell'utente",
     "Cannot retrieve last calls of switchboard": "Impossibile recuperare le ultime chiamate del centralino",
     "Delete contact": "Elimina contatto",
-    "contactDeletionMessage": "Il contatto {{name}} verrà eliminato permanentemente."
+    "contactDeletionMessage": "Il contatto {{name}} verrà eliminato permanentemente.",
+    "Full name/Company": "Nome completo/Azienda"
   },
   "History": {
     "History": "Storico",

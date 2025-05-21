@@ -1,6 +1,6 @@
 import { FC } from 'react'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
-import { faChevronLeft, faChevronRight } from '@fortawesome/free-solid-svg-icons'
+import { faChevronLeft, faAngleRight } from '@fortawesome/free-solid-svg-icons'
 import { t } from 'i18next'
 import { Button } from './Button'
 
@@ -74,7 +74,7 @@ export const Pagination: FC<PaginationProps> = ({
           onClick={onNextPage}
         >
           <span>{nextPageText}</span>
-          <FontAwesomeIcon icon={faChevronRight} className='ml-2 h-4 w-4' />
+          <FontAwesomeIcon icon={faAngleRight} className='ml-2 h-4 w-4' />
         </Button>
       </div>
     </nav>

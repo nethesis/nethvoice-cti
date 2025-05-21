@@ -15,7 +15,7 @@ import {
   PAGE_SIZE,
   retrieveAndFilterQueueCalls,
 } from '../../../lib/queueManager'
-import { faChevronRight, faPhone, faDownload } from '@fortawesome/free-solid-svg-icons'
+import { faPhone, faDownload, faAngleRight } from '@fortawesome/free-solid-svg-icons'
 import classNames from 'classnames'
 import { formatDateLoc } from '../../../lib/dateTime'
 import { NotManagedCallsFilter } from './NotManagedCallsFilter'
@@ -262,7 +262,7 @@ export const NotManagedCalls: FC<NotManagedCallsProps> = ({ className }): JSX.El
       cell: (call: any) => (
         <div className='text-right'>
           <FontAwesomeIcon
-            icon={faChevronRight}
+            icon={faAngleRight}
             className='h-3 w-3 cursor-pointer text-gray-500 dark:text-gray-500'
             aria-hidden='true'
             onClick={() => openShowQueueCallDrawer(call, queueManagerStore.queues)}
@@ -327,7 +327,7 @@ export const NotManagedCalls: FC<NotManagedCallsProps> = ({ className }): JSX.El
                   rowKey={(call: any) => call.id || call.uniqueid || call.cid + call.time}
                   trClassName=''
                   scrollable={true}
-                  maxHeight='32rem'
+                  maxHeight='calc(100vh - 480px)'
                   theadClassName='sticky top-0 bg-gray-100 dark:bg-gray-800 z-[1]'
                   tbodyClassName='text-sm bg-white dark:bg-gray-950 text-gray-700 dark:text-gray-200'
                 />

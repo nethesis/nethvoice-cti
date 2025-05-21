@@ -20,11 +20,11 @@ import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import {
   faPhone,
   faSuitcase,
-  faChevronRight,
   faPlus,
   faAddressBook,
   faMobileScreenButton,
   faFilter,
+  faAngleRight,
 } from '@fortawesome/free-solid-svg-icons'
 import { callPhoneNumber, transferCallToExtension } from '../lib/utils'
 import { useTranslation } from 'react-i18next'
@@ -115,7 +115,7 @@ const Phonebook: NextPage = () => {
 
   const columns = [
     {
-      header: t('Phonebook.Name'),
+      header: t('Phonebook.Full name/Company'),
       cell: (contact: any) => (
         <div className='flex items-center'>
           <div className='h-10 w-10 flex-shrink-0'>
@@ -126,7 +126,7 @@ const Phonebook: NextPage = () => {
             )}
           </div>
           <div className='ml-4'>
-            <div className='font-medium text-gray-700 dark:text-gray-100'>
+            <div className='font-medium text-secondaryNeutral dark:text-secondaryNeutralDark'>
               <span className='cursor-pointer hover:underline'>{contact?.displayName}</span>
             </div>
             {contact.extension && (
@@ -179,10 +179,10 @@ const Phonebook: NextPage = () => {
       cell: (contact: any) => (
         <div>
           {contact.workphone ? (
-            <div className='mt-1 flex items-center text-sm text-primary dark:text-primaryDark'>
+            <div className='mt-1 flex items-center text-sm font-normal text-iconPrimary dark:text-iconActiveDark'>
               <FontAwesomeIcon
                 icon={faPhone}
-                className='mr-2 h-4 w-4 flex-shrink-0 text-gray-400 dark:text-gray-500'
+                className='mr-2 h-4 w-4 flex-shrink-0 text-secondaryNeutral dark:text-secondaryNeutralDark'
                 aria-hidden='true'
               />
               <span
@@ -218,10 +218,10 @@ const Phonebook: NextPage = () => {
       cell: (contact: any) => (
         <div>
           {contact?.cellphone ? (
-            <div className='mt-1 flex items-center text-sm text-primary dark:text-primaryDark'>
+            <div className='mt-1 flex items-center text-sm font-normal text-iconPrimary dark:text-iconActiveDark'>
               <FontAwesomeIcon
                 icon={faMobileScreenButton}
-                className='mr-2 h-4 w-4 flex-shrink-0 text-gray-400 dark:text-gray-500'
+                className='mr-2 h-4 w-4 flex-shrink-0 text-secondaryNeutral dark:text-secondaryNeutralDark'
                 aria-hidden='true'
               />
               <span
@@ -246,8 +246,8 @@ const Phonebook: NextPage = () => {
       cell: () => (
         <div className='flex items-center justify-end'>
           <FontAwesomeIcon
-            icon={faChevronRight}
-            className='h-3 w-3 text-gray-400 dark:text-gray-500 cursor-pointer'
+            icon={faAngleRight}
+            className='h-4 w-4 text-secondaryNeutral dark:text-secondaryNeutralDark cursor-pointer'
             aria-hidden='true'
           />
         </div>
@@ -271,7 +271,7 @@ const Phonebook: NextPage = () => {
     <>
       {profile?.macro_permissions?.phonebook?.value ? (
         <div>
-          <h1 className='text-2xl font-semibold mb-6 text-title dark:text-titleDark'>
+          <h1 className='text-2xl font-medium mb-6 text-primaryNeutral dark:text-primaryNeutralDark'>
             {t('Phonebook.Phonebook')}
           </h1>
           <Filter

@@ -380,7 +380,7 @@ export const Calls: FC<CallsProps> = ({ className }): JSX.Element => {
                       rowKey='uniqueid'
                       trClassName='h-[84px]'
                       scrollable={true}
-                      maxHeight='32rem'
+                      maxHeight='calc(100vh - 480px)'
                     />
                   </div>
                 </div>

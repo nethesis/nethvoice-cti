@@ -2,7 +2,7 @@ import React, { useMemo, useCallback } from 'react'
 import { Avatar, Button } from '../common'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import {
-  faChevronRight,
+  faAngleRight,
   faEarListen,
   faHandPointUp,
   faPhone,
@@ -337,7 +337,7 @@ const CompactOperatorCard = ({
       {/* Details button */}
       <Button variant='ghost' onClick={openDrawerOperator} className='flex-shrink-0 ml-2'>
         <FontAwesomeIcon
-          icon={faChevronRight}
+          icon={faAngleRight}
           className='h-4 w-4 text-cardIcon dark:text-cardIconDark cursor-pointer'
           aria-hidden='true'
         />

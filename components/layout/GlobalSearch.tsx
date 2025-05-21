@@ -8,7 +8,7 @@ import { Combobox, ComboboxInput, ComboboxOptions, ComboboxOption } from '@headl
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import {
   faMagnifyingGlass,
-  faChevronRight,
+  faAngleRight,
   faPhone,
   faSearch,
   faUserPlus,
@@ -439,7 +439,7 @@ export const GlobalSearch: FC<GlobalSearchProps> = () => {
                                 {/* Icon when active */}
                                 {active && (
                                   <FontAwesomeIcon
-                                    icon={faChevronRight}
+                                    icon={faAngleRight}
                                     className='mr-2 h-3 w-3 flex-none text-gray-400 dark:text-gray-500'
                                     aria-hidden='true'
                                   />

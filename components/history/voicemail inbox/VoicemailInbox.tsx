@@ -529,7 +529,7 @@ export const VoicemailInbox: FC<VoicemailInboxProps> = ({ className }): JSX.Elem
           {voicemailError && (
             <InlineNotification type='error' title={voicemailError}></InlineNotification>
           )}
-          
+
           <div className='mx-auto'>
             <div className='flex flex-col'>
               <div className='-my-2 -mx-4 overflow-x-auto sm:-mx-6 lg:-mx-8'>
@@ -557,13 +557,13 @@ export const VoicemailInbox: FC<VoicemailInboxProps> = ({ className }): JSX.Elem
                     rowKey='id'
                     trClassName='h-[84px]'
                     scrollable={true}
-                    maxHeight='32rem'
+                    maxHeight='calc(100vh - 480px)'
                   />
                 </div>
               </div>
             </div>
           </div>
-          
+
           {/* pagination */}
           {totalPages > 1 && (
             <Pagination

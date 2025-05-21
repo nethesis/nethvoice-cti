@@ -27,7 +27,7 @@ import {
   faBars,
   faSun,
   faMoon,
-  faChevronRight,
+  faAngleRight,
   faUser,
   faHeadset,
   faMobile,
@@ -277,7 +277,7 @@ export const TopBar: FC<TopBarProps> = ({ openMobileCb }) => {
               <StatusDot status={mainPresence} className='flex mr-1' />
               <span className='text-sm font-normal'>{t('TopBar.Presence')}</span>
               <FontAwesomeIcon
-                icon={faChevronRight}
+                icon={faAngleRight}
                 className='ml-auto h-4 w-4 flex justify-center'
               />
             </div>
@@ -405,7 +405,7 @@ export const TopBar: FC<TopBarProps> = ({ openMobileCb }) => {
               />
               <span className='text-sm font-normal'>{t('TopBar.Main device')}</span>
               <FontAwesomeIcon
-                icon={faChevronRight}
+                icon={faAngleRight}
                 className='ml-auto h-4 w-4 flex justify-center'
               />
             </div>

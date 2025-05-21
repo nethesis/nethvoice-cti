@@ -15,7 +15,7 @@ import {
   faLock,
   faLockOpen,
   faChevronLeft,
-  faChevronRight,
+  faAngleRight,
   faFilter,
 } from '@fortawesome/free-solid-svg-icons'
 import classNames from 'classnames'
@@ -339,7 +339,7 @@ export const AnnouncementView: FC<AnnouncementViewProps> = ({ className }): JSX.
           {auth.username === announcement.username ? (
             <div className='flex items-center'>
               <FontAwesomeIcon
-                icon={faChevronRight}
+                icon={faAngleRight}
                 className='h-3 w-3 ml-4 cursor-pointer text-gray-500 dark:text-gray-500'
                 aria-hidden='true'
                 onClick={() => {
@@ -394,7 +394,7 @@ export const AnnouncementView: FC<AnnouncementViewProps> = ({ className }): JSX.
                   rowKey={(announcement: any) => announcement.id}
                   trClassName=''
                   scrollable={true}
-                  maxHeight='32rem'
+                  maxHeight='calc(100vh - 480px)'
                   theadClassName='sticky top-0 bg-gray-100 dark:bg-gray-800 z-[1]'
                   tbodyClassName='text-sm divide-y divide-gray-200 bg-white dark:bg-gray-950 text-gray-700 dark:divide-gray-700 dark:text-gray-200'
                 />

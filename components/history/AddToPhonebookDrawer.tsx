@@ -17,7 +17,7 @@ import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import {
   faUserPlus,
   faCircleXmark,
-  faChevronRight,
+  faAngleRight,
   faUser,
 } from '@fortawesome/free-solid-svg-icons'
 import {
@@ -239,7 +239,7 @@ export const AddToPhonebookDrawerContent = forwardRef<
                     </div>
                     <div>
                       <FontAwesomeIcon
-                        icon={faChevronRight}
+                        icon={faAngleRight}
                         className='h-3 w-3 text-gray-400 dark:text-gray-500 cursor-pointer'
                         aria-hidden='true'
                       />

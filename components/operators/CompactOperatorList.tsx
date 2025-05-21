@@ -2,7 +2,7 @@ import React, { useMemo } from 'react'
 import { useSelector } from 'react-redux'
 import { RootState } from '../../store'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
-import { faChevronRight, faCircleNotch } from '@fortawesome/free-solid-svg-icons'
+import { faAngleRight, faCircleNotch } from '@fortawesome/free-solid-svg-icons'
 import InfiniteScroll from 'react-infinite-scroll-component'
 import CompactOperatorCard from './CompactOperatorCard'
 
@@ -50,7 +50,7 @@ const CompactOperatorList = ({ operators, hasMore, showMore, isLoading = false }
               </div>
               <span className='inline-flex h-10 w-10 flex-shrink-0 items-center justify-center'>
                 <FontAwesomeIcon
-                  icon={faChevronRight}
+                  icon={faAngleRight}
                   className='h-3 w-3 text-cardIcon dark:text-cardIconDark'
                   aria-hidden='true'
                 />

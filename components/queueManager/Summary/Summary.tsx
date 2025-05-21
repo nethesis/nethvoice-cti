@@ -16,7 +16,7 @@ import {
   faChevronUp,
   faHeadset,
   faCircleNotch,
-  faChevronRight,
+  faAngleRight,
   faPause,
   faPhone,
   faUser,
@@ -733,7 +733,7 @@ export const Summary: FC<SummaryProps> = ({ className }): JSX.Element => {
                         </div>
                         <span className='inline-flex h-10 w-10 flex-shrink-0 items-center justify-center'>
                           <FontAwesomeIcon
-                            icon={faChevronRight}
+                            icon={faAngleRight}
                             className='h-3 w-3 text-gray-400 dark:text-gray-500'
                             aria-hidden='true'
                           />

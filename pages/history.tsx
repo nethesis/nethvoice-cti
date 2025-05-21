@@ -93,7 +93,7 @@ const History: NextPage = () => {
   return (
     <>
       <div className='mb-6 gap-8'>
-        <h1 className='text-2xl font-semibold text-title dark:text-titleDark'>
+        <h1 className='text-2xl font-semibold text-primaryNeutral dark:text-primaryNeutralDark'>
           {t('History.History')}
         </h1>
         {/* mobile tabs */}

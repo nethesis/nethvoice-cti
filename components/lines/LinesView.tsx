@@ -15,7 +15,7 @@ import {
   openEditMultipleLinesDrawer,
 } from '../../lib/lines'
 import {
-  faChevronRight,
+  faAngleRight,
   faChevronLeft,
   faFilter,
   faVoicemail,
@@ -25,6 +25,8 @@ import classNames from 'classnames'
 import { LinesFilter } from './LinesFilter'
 import { sortByProperty, customScrollbarClass } from '../../lib/utils'
 import { store } from '../../store'
+import { Table } from '../common/Table'
+import { Pagination } from '../common/Pagination'
 
 // Interface for lines structure
 interface Line {
@@ -136,14 +138,6 @@ export const LinesView: FC<LinesViewProps> = ({ className }): JSX.Element => {
       setLinesLoaded(false)
       setSelectedLines([])
     }
-  }
-
-  function isPreviousPageButtonDisabled() {
-    return !isLinesLoaded || pageNum <= 1
-  }
-
-  function isNextPageButtonDisabled() {
-    return !isLinesLoaded || pageNum >= dataPagination.totalPages
   }
 
   //set the default sort type
@@ -337,7 +331,7 @@ export const LinesView: FC<LinesViewProps> = ({ className }): JSX.Element => {
     const isIndeterminate = selectedLines?.length > 0 && selectedLines?.length < lines?.length
     setChecked(selectedLines.length === lines?.length)
     setIndeterminate(isIndeterminate)
-    if (lines.length > 0) {
+    if (lines.length > 0 && checkbox.current) {
       checkbox.current.indeterminate = isIndeterminate
     }
   }, [selectedLines, lines, linesStore?.isLoading])
@@ -356,6 +350,116 @@ export const LinesView: FC<LinesViewProps> = ({ className }): JSX.Element => {
     }
   }
 
+  const columns = [
+    {
+      header: (
+        <div className='relative w-full flex justify-center items-center py-3.5'>
+          <input
+            type='checkbox'
+            className='h-4 w-4 rounded border-gray-300 text-primary dark:text-primaryDark focus:ring-primary dark:focus:ring-primaryDark'
+            ref={checkbox}
+            checked={checked}
+            onChange={toggleAllLines}
+          />
+        </div>
+      ),
+      cell: (line: any) => (
+        <div className='relative w-full flex justify-center items-center py-3.5'>
+          <input
+            type='checkbox'
+            className='h-4 w-4 rounded border-gray-300 text-primary dark:text-primaryDark focus:ring-primary dark:focus:ring-primaryDark'
+            value={line.calledIdNum}
+            checked={selectedLines.includes(line)}
+            onChange={(e) =>
+              setSelectedLines(
+                e.target.checked
+                  ? [...selectedLines, line]
+                  : selectedLines.filter((selectedLine) => selectedLine !== line),
+              )
+            }
+          />
+        </div>
+      ),
+      className: 'w-12',
+    },
+    {
+      header:
+        selectedLines?.length > 0 ? (
+          <button
+            type='button'
+            className='inline-flex items-center rounded bg-white dark:bg-gray-600 px-2 py-1 text-sm font-semibold shadow-sm ring-1 ring-inset ring-gray-300 hover:bg-gray-50 disabled:cursor-not-allowed disabled:opacity-30 disabled:hover:bg-white dark:hover:bg-gray-500'
+            onClick={() => {
+              checkSelectedLines(selectedLines)
+            }}
+          >
+            {selectedLines?.length === 1 ? t('Lines.Show selected') : t('Lines.Show all')}
+          </button>
+        ) : (
+          t('Lines.Description')
+        ),
+      cell: (line: any) => (
+        <div className='cursor-pointer' onClick={() => checkObjectDrawer(line)}>
+          {line.description ? line.description : '-'}
+        </div>
+      ),
+      className:
+        'py-3.5 pl-4 pr-3 text-left text-sm font-semibold sm:pl-6 text-gray-700 dark:text-gray-200 min-w-[12rem]',
+    },
+    {
+      header: t('Lines.Line number'),
+      cell: (line: any) => (
+        <div className='cursor-pointer' onClick={() => checkObjectDrawer(line)}>
+          {line.calledIdNum ? line.calledIdNum : '-'}
+        </div>
+      ),
+      className: 'px-3 py-3.5 text-left text-sm font-semibold text-gray-700 dark:text-gray-200',
+    },
+    {
+      header: t('Lines.Caller number'),
+      cell: (line: any) => (
+        <div className='cursor-pointer' onClick={() => checkObjectDrawer(line)}>
+          {line.callerIdNum ? line.callerIdNum : '-'}
+        </div>
+      ),
+      className: 'px-3 py-3.5 text-left text-sm font-semibold text-gray-700 dark:text-gray-200',
+    },
+    {
+      header: t('Lines.Custom configuration'),
+      cell: (line: any) => (
+        <div className='cursor-pointer whitespace-nowrap' onClick={() => checkObjectDrawer(line)}>
+          {getConfiguration(line)}
+        </div>
+      ),
+      className: 'px-3 py-3.5 text-left text-sm font-semibold text-gray-700 dark:text-gray-200',
+    },
+    {
+      header: t('Lines.Configuration status'),
+      cell: (line: any) => (
+        <div className='cursor-pointer whitespace-nowrap' onClick={() => checkObjectDrawer(line)}>
+          <Badge variant={getConfigurationStatus(line)} rounded='full'>
+            {line.offhour && line.offhour.enabled !== 'never'
+              ? t('Lines.Active')
+              : t('Lines.Not active')}
+          </Badge>
+        </div>
+      ),
+      className: 'px-3 py-3.5 text-left text-sm font-semibold text-gray-700 dark:text-gray-200',
+    },
+    {
+      header: '',
+      cell: (line: any) => (
+        <div className='text-right cursor-pointer' onClick={() => checkObjectDrawer(line)}>
+          <FontAwesomeIcon
+            icon={faAngleRight}
+            className='h-3 w-3 p-2 cursor-pointer text-gray-500 dark:text-gray-500'
+            aria-hidden='true'
+          />
+        </div>
+      ),
+      className: 'relative py-3.5 pl-3 pr-4 sm:pr-3',
+    },
+  ]
+
   return (
     <div className={classNames(className)}>
       <div className='flex flex-col flex-wrap xl:flex-row justify-between gap-x-4 xl:items-end'>
@@ -368,277 +472,47 @@ export const LinesView: FC<LinesViewProps> = ({ className }): JSX.Element => {
       {linesError && <InlineNotification type='error' title={linesError}></InlineNotification>}
       {!linesError && (
         <div className='mx-auto'>
-          <div className='flex flex-col overflow-hidden'>
+          <div className='flex flex-col'>
             <div className='-my-2 -mx-4 overflow-x-auto sm:-mx-6 lg:-mx-8'>
               <div className='inline-block min-w-full py-2 align-middle px-2 md:px-6 lg:px-8'>
-                <div className='overflow-hidden shadow ring-1 md:rounded-lg ring-opacity-5 dark:ring-opacity-5 ring-gray-900 dark:ring-gray-100'>
-                  {/* empty state */}
-                  {isLinesLoaded && isEmpty(lines) && (
-                    <EmptyState
-                      title={t('Lines.No lines')}
-                      description={t('Lines.There are no lines with the current filter') || ''}
-                      icon={
-                        <FontAwesomeIcon
-                          icon={faFilter}
-                          className='mx-auto h-12 w-12'
-                          aria-hidden='true'
-                        />
-                      }
-                      className='bg-white dark:bg-gray-950'
-                    ></EmptyState>
-                  )}
-                  {(!isLinesLoaded || !isEmpty(lines)) && (
-                    <div className='flow-root'>
-                      <div className='-mx-4 overflow-x-auto sm:-mx-6 lg:-mx-8'>
-                        <div className='inline-block min-w-full align-middle sm:px-6 lg:px-8'>
-                          <div className='relative'>
-                            <div className={`overflow-y-auto ${customScrollbarClass}`}>
-                              <div className='  max-h-[32rem]'>
-                                <table className='min-w-full divide-y divide-gray-300 dark:divide-gray-700'>
-                                  <thead className='sticky top-0 bg-white dark:bg-gray-950 z-[1]'>
-                                    <tr className='py-2'>
-                                      <th
-                                        scope='col'
-                                        className='relative px-7 sm:w-12 sm:px-6 py-5'
-                                      >
-                                        <input
-                                          type='checkbox'
-                                          className='absolute left-4 top-1/2 -mt-2 h-4 w-4 rounded border-gray-300 text-primary dark:text-primaryDark focus:ring-primary dark:focus:ring-primaryDark'
-                                          ref={checkbox}
-                                          checked={checked}
-                                          onChange={toggleAllLines}
-                                        />
-                                      </th>
-                                      <th
-                                        scope='col'
-                                        className='min-w-[12rem] pr-3 py-3.5 text-left text-sm font-semibold text-gray-700 dark:text-gray-200'
-                                      >
-                                        {selectedLines?.length > 0 ? (
-                                          <button
-                                            type='button'
-                                            className='inline-flex items-center rounded bg-white dark:bg-gray-600 px-2 py-1 text-sm font-semibold shadow-sm ring-1 ring-inset ring-gray-300 hover:bg-gray-50 disabled:cursor-not-allowed disabled:opacity-30 disabled:hover:bg-white dark:hover:bg-gray-500'
-                                            onClick={() => {
-                                              checkSelectedLines(selectedLines)
-                                            }}
-                                          >
-                                            {selectedLines?.length === 1
-                                              ? t('Lines.Show selected')
-                                              : t('Lines.Show all')}
-                                          </button>
-                                        ) : (
-                                          t('Lines.Description')
-                                        )}
-                                      </th>
-                                      <th
-                                        scope='col'
-                                        className='px-3 py-3.5 text-left text-sm font-semibold text-gray-700 dark:text-gray-200'
-                                      >
-                                        {t('Lines.Line number')}
-                                      </th>
-                                      <th
-                                        scope='col'
-                                        className='px-3 py-3.5 text-left text-sm font-semibold text-gray-700 dark:text-gray-200'
-                                      >
-                                        {t('Lines.Caller number')}
-                                      </th>
-                                      <th
-                                        scope='col'
-                                        className='px-3 py-3.5 text-left text-sm font-semibold text-gray-700 dark:text-gray-200'
-                                      >
-                                        {t('Lines.Custom configuration')}
-                                      </th>
-
-                                      <th
-                                        scope='col'
-                                        className='px-3 py-3.5 text-left text-sm font-semibold text-gray-700 dark:text-gray-200'
-                                      >
-                                        {t('Lines.Configuration status')}
-                                      </th>
-
-                                      <th scope='col' className='relative py-3.5 pl-3 pr-4 sm:pr-3'>
-                                        <span className='sr-only'>{t('Lines.Details')}</span>
-                                      </th>
-                                    </tr>
-                                  </thead>
-                                  <tbody className='text-sm divide-y divide-gray-200 bg-white dark:bg-gray-950 text-gray-700 dark:divide-gray-700  dark:text-gray-200'>
-                                    {/* skeleton */}
-                                    {!isLinesLoaded &&
-                                      Array.from(Array(5)).map((e, i) => (
-                                        <tr key={i}>
-                                          {Array.from(Array(7)).map((e, j) => (
-                                            <td key={j}>
-                                              <div className='px-4 py-6'>
-                                                <div className='animate-pulse h-5 rounded bg-gray-300 dark:bg-gray-600'></div>
-                                              </div>
-                                            </td>
-                                          ))}
-                                        </tr>
-                                      ))}
-                                    {/* Lines */}
-                                    {isLinesLoaded &&
-                                      lines?.map((line: Line, index: any) => (
-                                        <tr
-                                          key={index}
-                                          className={
-                                            selectedLines.includes(line)
-                                              ? 'bg-gray-50 dark:bg-gray-800'
-                                              : undefined
-                                          }
-                                        >
-                                          {/* Checkbox */}
-                                          <td className='relative px-7 sm:w-12 sm:px-6'>
-                                            {selectedLines.includes(line) && (
-                                              <div className='absolute inset-y-0 left-0 w-0.5 bg-primary dark:bg-primaryDark' />
-                                            )}
-                                            <input
-                                              type='checkbox'
-                                              className='absolute left-4 top-1/2 -mt-2 h-4 w-4 rounded border-gray-300 text-primary dark:text-primaryDark focus:ring-primary dark:focus:ring-primaryDark'
-                                              value={line.calledIdNum}
-                                              checked={selectedLines.includes(line)}
-                                              onChange={(e) =>
-                                                setSelectedLines(
-                                                  e.target.checked
-                                                    ? [...selectedLines, line]
-                                                    : selectedLines.filter(
-                                                        (selectedLine) => selectedLine !== line,
-                                                      ),
-                                                )
-                                              }
-                                            />
-                                          </td>
-                                          {/* Description */}
-                                          <td
-                                            className='py-4 pr-3 cursor-pointer'
-                                            onClick={() => {
-                                              checkObjectDrawer(line)
-                                            }}
-                                          >
-                                            {line.description ? line.description : '-'}
-                                          </td>
-                                          {/* Phone line */}
-                                          <td
-                                            className='px-3 py-4 cursor-pointer'
-                                            onClick={() => {
-                                              checkObjectDrawer(line)
-                                            }}
-                                          >
-                                            <div className='flex flex-col'>
-                                              <div>
-                                                <div>
-                                                  {line.calledIdNum ? line.calledIdNum : '-'}
-                                                </div>
-                                              </div>
-                                            </div>
-                                          </td>
-                                          {/* Caller number */}
-                                          <td
-                                            className='px-3 py-4 cursor-pointer'
-                                            onClick={() => {
-                                              checkObjectDrawer(line)
-                                            }}
-                                          >
-                                            <div>{line.callerIdNum ? line.callerIdNum : '-'}</div>
-                                          </td>
-                                          {/* Costum configuration */}
-                                          <td
-                                            className='whitespace-nowrap px-3 py-4 cursor-pointer'
-                                            onClick={() => {
-                                              checkObjectDrawer(line)
-                                            }}
-                                          >
-                                            {getConfiguration(line)}
-                                          </td>
-                                          {/* Configuration status */}
-                                          <td
-                                            className='whitespace-nowrap px-3 py-4 cursor-pointer'
-                                            onClick={() => {
-                                              checkObjectDrawer(line)
-                                            }}
-                                          >
-                                            <Badge
-                                              variant={getConfigurationStatus(line)}
-                                              rounded='full'
-                                            >
-                                              {' '}
-                                              {line.offhour && line.offhour.enabled !== 'never'
-                                                ? t('Lines.Active')
-                                                : t('Lines.Not active')}
-                                            </Badge>
-                                          </td>
-
-                                          {/* Show details */}
-                                          <td
-                                            className='relative whitespace-nowrap py-4 pl-3 pr-4 text-right text-sm font-medium sm:pr-6 cursor-pointer'
-                                            onClick={() => {
-                                              checkObjectDrawer(line)
-                                            }}
-                                          >
-                                            <FontAwesomeIcon
-                                              icon={faChevronRight}
-                                              className='h-3 w-3 p-2 cursor-pointer text-gray-500 dark:text-gray-500'
-                                              aria-hidden='true'
-                                              onClick={() => {
-                                                checkObjectDrawer(line)
-                                              }}
-                                            />
-                                          </td>
-                                        </tr>
-                                      ))}
-                                  </tbody>
-                                </table>
-                              </div>
-                            </div>
-                          </div>
-                        </div>
-                      </div>
-                    </div>
-                  )}
-                </div>
+                <Table
+                  columns={columns}
+                  data={lines}
+                  isLoading={!isLinesLoaded}
+                  emptyState={{
+                    title: t('Lines.No lines'),
+                    description: t('Lines.There are no lines with the current filter') || '',
+                    icon: (
+                      <FontAwesomeIcon
+                        icon={faFilter}
+                        className='mx-auto h-12 w-12'
+                        aria-hidden='true'
+                      />
+                    ),
+                  }}
+                  rowKey={(line: any) =>
+                    `${line.calledIdNum}_${line.callerIdNum || ''}_${line.description || ''}`
+                  }
+                  scrollable={true}
+                  maxHeight='calc(100vh - 480px)'
+                  theadClassName='sticky top-0 bg-gray-100 dark:bg-gray-800 z-[1]'
+                  tbodyClassName='text-sm divide-y divide-gray-200 bg-white dark:bg-gray-950 text-gray-700 dark:divide-gray-700 dark:text-gray-200'
+                />
               </div>
             </div>
           </div>
-          {/* pagination */}
+
           {!linesError && !!lines?.length && (
-            <nav
-              className='flex items-center justify-between border-t px-0 py-4 mb-8 border-gray-100 dark:border-gray-800'
-              aria-label='Pagination'
-            >
-              <div className='hidden sm:block'>
-                <p className='text-sm text-gray-700 dark:text-gray-200'>
-                  {t('Common.Showing')}{' '}
-                  <span className='font-medium'>{PAGE_SIZE * (pageNum - 1) + 1}</span> -&nbsp;
-                  <span className='font-medium'>
-                    {PAGE_SIZE * (pageNum - 1) + PAGE_SIZE < dataPagination?.count
-                      ? PAGE_SIZE * (pageNum - 1) + PAGE_SIZE
-                      : dataPagination?.count}
-                  </span>{' '}
-                  {t('Common.of')} <span className='font-medium'>{dataPagination?.count}</span>{' '}
-                  {t('Lines.Lines')}
-                </p>
-              </div>
-              <div className='flex flex-1 justify-between sm:justify-end'>
-                <Button
-                  type='button'
-                  variant='white'
-                  disabled={isPreviousPageButtonDisabled()}
-                  onClick={() => goToPreviousPage()}
-                  className='flex items-center'
-                >
-                  <FontAwesomeIcon icon={faChevronLeft} className='mr-2 h-4 w-4' />
-                  <span> {t('Common.Previous page')}</span>
-                </Button>
-                <Button
-                  type='button'
-                  variant='white'
-                  className='ml-3 flex items-center'
-                  disabled={isNextPageButtonDisabled()}
-                  onClick={() => goToNextPage()}
-                >
-                  <span>{t('Common.Next page')}</span>
-                  <FontAwesomeIcon icon={faChevronRight} className='ml-2 h-4 w-4' />
-                </Button>
-              </div>
-            </nav>
+            <Pagination
+              currentPage={pageNum}
+              totalPages={dataPagination.totalPages}
+              totalItems={dataPagination?.count || 0}
+              pageSize={PAGE_SIZE}
+              onPreviousPage={goToPreviousPage}
+              onNextPage={goToNextPage}
+              isLoading={!isLinesLoaded}
+              itemsName={t('Lines.Lines') || ''}
+            />
           )}
         </div>
       )}
