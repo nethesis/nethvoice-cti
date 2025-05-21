@@ -24,6 +24,7 @@ export const IncomingCalls = () => {
   const { t } = useTranslation()
   const authStore = useSelector((state: RootState) => state.authentication)
   const userStore = useSelector((state: RootState) => state.user)
+  const incomingCallStore = useSelector((state: RootState) => state.incomingCall)
   const dispatch = useDispatch()
 
   const [callUrl, setCallUrl] = useState<string>('')
@@ -34,19 +35,33 @@ export const IncomingCalls = () => {
   // Default URL in case API fails
   const defaultExampleUrl = 'https://www.example.com/customers?phone={phone}'
 
-  // Load URL from API and saved preferences
+  // Load URL from store or API if necessary
   useEffect(() => {
     const fetchParamUrl = async () => {
       setIsLoading(true)
       try {
-        const response = await getParamUrl()
-        const apiUrl = response?.data?.url || defaultExampleUrl
+        // Check if data is already in the store
+        if (incomingCallStore.isLoaded && incomingCallStore.paramUrl) {
+          // Use data from the store
+          setCallUrl(incomingCallStore.paramUrl)
+          setParamUrlError('')
+        } else {
+          // Load data from API only if not already in the store
+          const response = await getParamUrl()
+          const apiUrl = response?.data?.url || defaultExampleUrl
 
-        // Once API URL is loaded, check for saved preferences
-        const savedUrl = loadPreference('incomingCallUrl', authStore.username) || apiUrl
-        setCallUrl(savedUrl)
+          // Save URL to store
+          dispatch.incomingCall.setParamUrl(apiUrl)
+          dispatch.incomingCall.setLoaded(true)
 
-        // Determine trigger value from store or localStorage with fallback
+          setCallUrl(apiUrl)
+
+          // Save URL to localStorage
+          savePreference('incomingCallUrl', apiUrl, authStore.username)
+          setParamUrlError('')
+        }
+
+        // Determine trigger value from user settings with fallback
         let triggerValue = TRIGGER_NEVER
 
         // Check if there's a value stored in user settings
@@ -62,9 +77,8 @@ export const IncomingCalls = () => {
 
         setUrlTrigger(triggerValue)
         savePreference('incomingCallTrigger', triggerValue, authStore.username)
-
-        setParamUrlError('')
       } catch (error) {
+        console.error('Error loading parameter URL:', error)
         setParamUrlError('Cannot retrieve URL configuration')
 
         // Use default example and saved preferences as fallback
@@ -90,7 +104,14 @@ export const IncomingCalls = () => {
     }
 
     fetchParamUrl()
-  }, [authStore.username, userStore.settings?.open_param_url])
+  }, [
+    authStore.username,
+    userStore.settings?.open_param_url,
+    incomingCallStore.isLoaded,
+    incomingCallStore.paramUrl,
+    dispatch.incomingCall,
+    incomingCallStore.isUrlAvailable,
+  ])
 
   // Save URL when changed
   const handleUrlChange = (event: React.ChangeEvent<HTMLInputElement>) => {
@@ -101,6 +122,11 @@ export const IncomingCalls = () => {
 
   // Save trigger option when changed
   const handleTriggerChange = async (event: React.ChangeEvent<HTMLInputElement>) => {
+    // If URL is not available, don't allow preference change
+    if (!incomingCallStore.isUrlAvailable && event.target.id !== TRIGGER_NEVER) {
+      return
+    }
+
     const newTrigger = event.target.id
     setUrlTrigger(newTrigger)
 
@@ -224,13 +250,18 @@ export const IncomingCalls = () => {
                   type='radio'
                   checked={urlTrigger === TRIGGER_RINGING}
                   onChange={handleTriggerChange}
-                  className='h-4 w-4 border-gray-300 text-primary focus:ring-primary dark:border-gray-600 dark:text-primaryDark dark:focus:ring-primaryDark'
+                  className={`h-4 w-4 border-gray-300 text-primary focus:ring-primary dark:border-gray-600 dark:text-primaryDark dark:focus:ring-primaryDark ${
+                    !incomingCallStore.isUrlAvailable ? 'opacity-50 cursor-not-allowed' : ''
+                  }`}
+                  disabled={!incomingCallStore.isUrlAvailable}
                 />
               </div>
               <div className='ml-3 text-sm'>
                 <label
                   htmlFor={TRIGGER_RINGING}
-                  className='font-normal text-secondaryNeutral dark:text-secondaryNeutralDark'
+                  className={`font-normal text-secondaryNeutral dark:text-secondaryNeutralDark ${
+                    !incomingCallStore.isUrlAvailable ? 'opacity-50 cursor-not-allowed' : ''
+                  }`}
                 >
                   {t('Settings.When the call is ringing')}
                 </label>
@@ -246,13 +277,18 @@ export const IncomingCalls = () => {
                   type='radio'
                   checked={urlTrigger === TRIGGER_ANSWERED}
                   onChange={handleTriggerChange}
-                  className='h-4 w-4 border-gray-300 text-primary focus:ring-primary dark:border-gray-600 dark:text-primaryDark dark:focus:ring-primaryDark'
+                  className={`h-4 w-4 border-gray-300 text-primary focus:ring-primary dark:border-gray-600 dark:text-primaryDark dark:focus:ring-primaryDark ${
+                    !incomingCallStore.isUrlAvailable ? 'opacity-50 cursor-not-allowed' : ''
+                  }`}
+                  disabled={!incomingCallStore.isUrlAvailable}
                 />
               </div>
               <div className='ml-3 text-sm'>
                 <label
                   htmlFor={TRIGGER_ANSWERED}
-                  className='font-normal text-secondaryNeutral dark:text-secondaryNeutralDark'
+                  className={`font-normal text-secondaryNeutral dark:text-secondaryNeutralDark ${
+                    !incomingCallStore.isUrlAvailable ? 'opacity-50 cursor-not-allowed' : ''
+                  }`}
                 >
                   {t('Settings.When the call is answered')}
                 </label>
@@ -268,20 +304,25 @@ export const IncomingCalls = () => {
                   type='radio'
                   checked={urlTrigger === TRIGGER_BUTTON}
                   onChange={handleTriggerChange}
-                  className='h-4 w-4 border-gray-300 text-primary focus:ring-primary dark:border-gray-600 dark:text-primaryDark dark:focus:ring-primaryDark'
+                  className={`h-4 w-4 border-gray-300 text-primary focus:ring-primary dark:border-gray-600 dark:text-primaryDark dark:focus:ring-primaryDark ${
+                    !incomingCallStore.isUrlAvailable ? 'opacity-50 cursor-not-allowed' : ''
+                  }`}
+                  disabled={!incomingCallStore.isUrlAvailable}
                 />
               </div>
               <div className='ml-3 text-sm'>
                 <label
                   htmlFor={TRIGGER_BUTTON}
-                  className='font-normal text-secondaryNeutral dark:text-secondaryNeutralDark'
+                  className={`font-normal text-secondaryNeutral dark:text-secondaryNeutralDark ${
+                    !incomingCallStore.isUrlAvailable ? 'opacity-50 cursor-not-allowed' : ''
+                  }`}
                 >
                   {t('Settings.When clicking the button on the Phone Island')}
                 </label>
               </div>
             </div>
 
-            {/* Never option */}
+            {/* Never option - also disabled when URL is not available */}
             <div className='flex items-start'>
               <div className='flex h-5 items-center'>
                 <input
@@ -290,13 +331,18 @@ export const IncomingCalls = () => {
                   type='radio'
                   checked={urlTrigger === TRIGGER_NEVER}
                   onChange={handleTriggerChange}
-                  className='h-4 w-4 border-gray-300 text-primary focus:ring-primary dark:border-gray-600 dark:text-primaryDark dark:focus:ring-primaryDark'
+                  className={`h-4 w-4 border-gray-300 text-primary focus:ring-primary dark:border-gray-600 dark:text-primaryDark dark:focus:ring-primaryDark ${
+                    !incomingCallStore.isUrlAvailable ? 'opacity-50 cursor-not-allowed' : ''
+                  }`}
+                  disabled={!incomingCallStore.isUrlAvailable}
                 />
               </div>
               <div className='ml-3 text-sm'>
                 <label
                   htmlFor={TRIGGER_NEVER}
-                  className='font-normal text-secondaryNeutral dark:text-secondaryNeutralDark'
+                  className={`font-normal text-secondaryNeutral dark:text-secondaryNeutralDark ${
+                    !incomingCallStore.isUrlAvailable ? 'opacity-50 cursor-not-allowed' : ''
+                  }`}
                 >
                   {t('Settings.Never')}
                 </label>

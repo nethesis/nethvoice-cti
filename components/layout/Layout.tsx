@@ -5,7 +5,7 @@ import { FC, ReactNode, useState, useEffect, useRef } from 'react'
 import { NavBar, TopBar, MobileNavBar, SideDrawer, UserSidebarDrawer } from '.'
 import { navItems, NavItemsProps } from '../../config/routes'
 import { useRouter } from 'next/router'
-import { getUserInfo } from '../../services/user'
+import { getUserInfo, getParamUrl } from '../../services/user'
 import { useDispatch } from 'react-redux'
 import { Dispatch } from '../../store'
 import { RootState } from '../../store'
@@ -41,10 +41,11 @@ import Toast from '../common/Toast'
 import { getCustomerCardsList, setUserSettings } from '../../lib/customerCard'
 import { retrieveParksList } from '../../lib/park'
 import { Tooltip } from 'react-tooltip'
-import { getJSONItem, setJSONItem } from '../../lib/storage'
+import { getJSONItem, loadPreference, savePreference, setJSONItem } from '../../lib/storage'
 import { eventDispatch } from '../../lib/hooks/eventDispatch'
 import { setMainDevice } from '../../lib/devices'
 import { useHotkeys } from 'react-hotkeys-hook'
+import { setIncomingCallsPreference } from '../../lib/incomingCall'
 
 export const Layout: FC<LayoutProps> = ({ children }) => {
   const [openMobileMenu, setOpenMobileMenu] = useState<boolean>(false)
@@ -106,6 +107,7 @@ export const Layout: FC<LayoutProps> = ({ children }) => {
   }, [router])
 
   const [resfreshUserInfo, setResfreshUserInfo] = useState(true)
+  const incomingCallStore = useSelector((state: RootState) => state.incomingCall)
 
   // get logged user data on page load
   useEffect(() => {
@@ -127,6 +129,60 @@ export const Layout: FC<LayoutProps> = ({ children }) => {
           lkhash: userInfo?.data?.lkhash,
         })
         setUserInfoLoaded(true)
+
+        // Get URL parameter
+        try {
+          const paramUrlResponse = await getParamUrl()
+          // Verify that the response contains a valid URL (not empty)
+          if (paramUrlResponse?.data?.url && paramUrlResponse.data.url.trim() !== '') {
+            // Save URL to store
+            dispatch.incomingCall.setParamUrl(paramUrlResponse.data.url)
+            // Save URL to localStorage
+            savePreference('incomingCallUrl', paramUrlResponse.data.url, userInfo.data.username)
+            dispatch.incomingCall.setLoaded(true)
+            dispatch.incomingCall.setUrlAvailable(true)
+          } else {
+            // Empty response or invalid URL - treat as an error
+            dispatch.incomingCall.setErrorMessage('Invalid URL configuration')
+            dispatch.incomingCall.setUrlAvailable(false)
+            
+            // Set preference to 'never' if URL is not available
+            if (userInfo.data.settings?.open_param_url && userInfo.data.settings.open_param_url !== 'never') {
+              const settingsStatus = { open_param_url: 'never' }
+              try {
+                await setIncomingCallsPreference(settingsStatus)
+                dispatch.user.updateOpenParamUrl('never')
+              } catch (error) {
+                console.error('Failed to set preference to never:', error)
+              }
+            }
+            
+            // Use a placeholder URL just to show something in the interface
+            const defaultUrl = 'https://www.example.com/customers?phone={phone}'
+            dispatch.incomingCall.setParamUrl(defaultUrl)
+            dispatch.incomingCall.setLoaded(true)
+          }
+        } catch (error) {
+          console.error('Error loading parameter URL:', error)
+          dispatch.incomingCall.setErrorMessage('Cannot retrieve URL configuration')
+          dispatch.incomingCall.setUrlAvailable(false)
+          
+          // Set preference to 'never' if URL is not available
+          if (userInfo.data.settings?.open_param_url && userInfo.data.settings.open_param_url !== 'never') {
+            const settingsStatus = { open_param_url: 'never' }
+            try {
+              await setIncomingCallsPreference(settingsStatus)
+              dispatch.user.updateOpenParamUrl('never')
+            } catch (error) {
+              console.error('Failed to set preference to never:', error)
+            }
+          }
+          
+          // Use a placeholder URL just to show something in the interface
+          const defaultUrl = 'https://www.example.com/customers?phone={phone}'
+          dispatch.incomingCall.setParamUrl(defaultUrl)
+          dispatch.incomingCall.setLoaded(true)
+        }
       } else {
         if (!ctiStatus.isUserInformationMissing) {
           // update global store
@@ -172,6 +228,30 @@ export const Layout: FC<LayoutProps> = ({ children }) => {
       document.removeEventListener('visibilitychange', visibilityChangeHandler)
     }
   }, [isUserInfoLoaded, resfreshUserInfo])
+
+  // Function to open the parameterized URL
+  const openParameterizedUrl = () => {
+    // Check first if the URL is available
+    if (!incomingCallStore.isUrlAvailable) {
+      console.error('URL not available')
+      return
+    }
+    
+    // Get URL from cache or store
+    const paramUrl =
+      incomingCallStore.paramUrl ||
+      loadPreference('incomingCallUrl', authStore.username) ||
+      ''
+    
+    // If there's no valid URL, don't open anything
+    if (!paramUrl) {
+      console.error('Invalid URL')
+      return
+    }
+
+    // Open URL in a new window
+    window.open(paramUrl, '_blank')
+  }
 
   // get profiling data on page load
   useEffect(() => {
@@ -343,6 +423,13 @@ export const Layout: FC<LayoutProps> = ({ children }) => {
   const [conversationObject, setConversationObject]: any = useState({})
 
   const [variableCheck, setVariableCheck] = useState(false)
+
+  // Event handling for URL opening
+  useEventListener('phone-island-url-parameter-opened', () => {
+    if (userInformation?.settings?.open_param_url === 'button' && incomingCallStore?.isUrlAvailable) {
+      openParameterizedUrl()
+    }
+  })
 
   useEffect(() => {
     function showNotification() {
@@ -534,6 +621,25 @@ export const Layout: FC<LayoutProps> = ({ children }) => {
     if (!firstRenderDetach) {
       setFirstRenderDetach(true)
     }
+
+    if (data[currentUsername] && operators[currentUsername]) {
+      if (
+        operators[currentUsername]?.mainPresence === 'ringing' &&
+        userInformation?.settings?.open_param_url === 'ringing' &&
+        data[currentUsername]?.conversations &&
+        incomingCallStore?.isUrlAvailable
+      ) {
+        openParameterizedUrl()
+      } else if (
+        operators[currentUsername]?.mainPresence === 'busy' &&
+        userInformation?.settings?.open_param_url === 'answered' &&
+        data[currentUsername]?.conversations &&
+        incomingCallStore?.isUrlAvailable
+      ) {
+        openParameterizedUrl()
+      }
+    }
+
     // update queue connected calls
 
     let queueConnectedCalls: any = {}
