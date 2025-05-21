@@ -166,6 +166,10 @@ export const user = createModel<RootModel>()({
       state.default_device = defaultDevice
       return state
     },
+    updateOpenParamUrl: (state, openParamUrl) => {
+      state.settings.open_param_url = openParamUrl
+      return state
+    },
     reset: () => {
       return defaultState
     },

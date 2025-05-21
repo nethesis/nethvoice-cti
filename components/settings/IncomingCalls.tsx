@@ -3,7 +3,7 @@
 
 import { useState, useEffect } from 'react'
 import { useTranslation } from 'react-i18next'
-import { useSelector } from 'react-redux'
+import { useSelector, useDispatch } from 'react-redux'
 import { RootState } from '../../store'
 import { loadPreference, savePreference } from '../../lib/storage'
 import CopyComponent from '../common/CopyComponent'
@@ -12,6 +12,7 @@ import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { faCircleInfo } from '@fortawesome/free-solid-svg-icons'
 import { CustomThemedTooltip } from '../common/CustomThemedTooltip'
 import { getParamUrl } from '../../services/user'
+import { setIncomingCallsPreference } from '../../lib/incomingCall'
 
 // URL opening trigger options
 const TRIGGER_RINGING = 'ringing'
@@ -22,9 +23,11 @@ const TRIGGER_NEVER = 'never'
 export const IncomingCalls = () => {
   const { t } = useTranslation()
   const authStore = useSelector((state: RootState) => state.authentication)
+  const userStore = useSelector((state: RootState) => state.user)
+  const dispatch = useDispatch()
 
   const [callUrl, setCallUrl] = useState<string>('')
-  const [urlTrigger, setUrlTrigger] = useState<string>(TRIGGER_RINGING)
+  const [urlTrigger, setUrlTrigger] = useState<string>(TRIGGER_NEVER)
   const [isLoading, setIsLoading] = useState<boolean>(true)
   const [paramUrlError, setParamUrlError] = useState<string>('')
 
@@ -43,29 +46,51 @@ export const IncomingCalls = () => {
         const savedUrl = loadPreference('incomingCallUrl', authStore.username) || apiUrl
         setCallUrl(savedUrl)
 
-        const savedTrigger =
-          loadPreference('incomingCallTrigger', authStore.username) || TRIGGER_RINGING
-        setUrlTrigger(savedTrigger)
+        // Determine trigger value from store or localStorage with fallback
+        let triggerValue = TRIGGER_NEVER
+
+        // Check if there's a value stored in user settings
+        if (userStore.settings?.open_param_url) {
+          triggerValue = userStore.settings.open_param_url
+        } else {
+          // Otherwise check localStorage
+          const savedTrigger = loadPreference('incomingCallTrigger', authStore.username)
+          if (savedTrigger) {
+            triggerValue = savedTrigger
+          }
+        }
+
+        setUrlTrigger(triggerValue)
+        savePreference('incomingCallTrigger', triggerValue, authStore.username)
 
         setParamUrlError('')
       } catch (error) {
-        console.error('Error loading parameter URL:', error)
         setParamUrlError('Cannot retrieve URL configuration')
 
         // Use default example and saved preferences as fallback
         const savedUrl = loadPreference('incomingCallUrl', authStore.username) || defaultExampleUrl
         setCallUrl(savedUrl)
 
-        const savedTrigger =
-          loadPreference('incomingCallTrigger', authStore.username) || TRIGGER_RINGING
-        setUrlTrigger(savedTrigger)
+        // Fallback for trigger value
+        let triggerValue = TRIGGER_NEVER
+        if (userStore.settings?.open_param_url) {
+          triggerValue = userStore.settings.open_param_url
+        } else {
+          const savedTrigger = loadPreference('incomingCallTrigger', authStore.username)
+          if (savedTrigger) {
+            triggerValue = savedTrigger
+          }
+        }
+
+        setUrlTrigger(triggerValue)
+        savePreference('incomingCallTrigger', triggerValue, authStore.username)
       } finally {
         setIsLoading(false)
       }
     }
 
     fetchParamUrl()
-  }, [authStore.username])
+  }, [authStore.username, userStore.settings?.open_param_url])
 
   // Save URL when changed
   const handleUrlChange = (event: React.ChangeEvent<HTMLInputElement>) => {
@@ -75,17 +100,29 @@ export const IncomingCalls = () => {
   }
 
   // Save trigger option when changed
-  const handleTriggerChange = (event: React.ChangeEvent<HTMLInputElement>) => {
+  const handleTriggerChange = async (event: React.ChangeEvent<HTMLInputElement>) => {
     const newTrigger = event.target.id
     setUrlTrigger(newTrigger)
+
+    // Save to localStorage
     savePreference('incomingCallTrigger', newTrigger, authStore.username)
+
+    try {
+      // Set new vaure to /me
+      await setIncomingCallsPreference({ open_param_url: newTrigger })
+
+      // store
+      dispatch.user.updateOpenParamUrl(newTrigger)
+    } catch (error) {
+      setParamUrlError(t('Settings.Error saving settings') || '')
+    }
   }
 
   return (
     <>
       <div className='p-4 sm:p-8 lg:pb-8'>
         <div>
-          <h2 className='text-lg font-medium leading-6 text-gray-900 dark:text-gray-100 mb-4'>
+          <h2 className='text-base font-medium leading-6 text-primaryNeutral dark:text-primaryNeutralDark mb-4'>
             {t('Settings.Incoming calls')}
           </h2>
         </div>
@@ -95,7 +132,7 @@ export const IncomingCalls = () => {
           <div className='flex items-center mb-2'>
             <label
               htmlFor='callUrl'
-              className='block text-sm font-medium text-gray-700 dark:text-gray-300'
+              className='block text-sm font-medium text-secondaryNeutral dark:text-secondaryNeutralDark'
             >
               {t('Settings.URL opened on incoming call')}
             </label>
@@ -103,7 +140,7 @@ export const IncomingCalls = () => {
             {/* Info icon with tooltip */}
             <FontAwesomeIcon
               icon={faCircleInfo}
-              className='ml-2 h-4 w-4 text-indigo-400 cursor-help'
+              className='ml-2 h-4 w-4 text-iconTooltip dark:text-iconTooltipDark cursor-help'
               data-tooltip-id='url-info-tooltip'
               data-tooltip-content={t(
                 'Settings.This URL opens automatically for external incoming calls',
@@ -136,7 +173,6 @@ export const IncomingCalls = () => {
               />
             </div>
 
-            {/* Overlay tooltip per campo disabilitato */}
             <div
               className='absolute inset-0 bg-transparent z-10 cursor-not-allowed'
               data-tooltip-id='disabled-field-tooltip'
@@ -174,7 +210,7 @@ export const IncomingCalls = () => {
 
         {/* URL opening trigger section */}
         <div className='mb-6 max-w-3xl'>
-          <h3 className='text-sm font-medium text-gray-700 dark:text-gray-300 mb-4'>
+          <h3 className='text-sm font-medium text-secondaryNeutral dark:text-secondaryNeutralDark mb-4'>
             {t('Settings.URL opening trigger')}
           </h3>
 
@@ -194,7 +230,7 @@ export const IncomingCalls = () => {
               <div className='ml-3 text-sm'>
                 <label
                   htmlFor={TRIGGER_RINGING}
-                  className='font-medium text-gray-700 dark:text-gray-300'
+                  className='font-normal text-secondaryNeutral dark:text-secondaryNeutralDark'
                 >
                   {t('Settings.When the call is ringing')}
                 </label>
@@ -216,7 +252,7 @@ export const IncomingCalls = () => {
               <div className='ml-3 text-sm'>
                 <label
                   htmlFor={TRIGGER_ANSWERED}
-                  className='font-medium text-gray-700 dark:text-gray-300'
+                  className='font-normal text-secondaryNeutral dark:text-secondaryNeutralDark'
                 >
                   {t('Settings.When the call is answered')}
                 </label>
@@ -238,7 +274,7 @@ export const IncomingCalls = () => {
               <div className='ml-3 text-sm'>
                 <label
                   htmlFor={TRIGGER_BUTTON}
-                  className='font-medium text-gray-700 dark:text-gray-300'
+                  className='font-normal text-secondaryNeutral dark:text-secondaryNeutralDark'
                 >
                   {t('Settings.When clicking the button on the Phone Island')}
                 </label>
@@ -260,7 +296,7 @@ export const IncomingCalls = () => {
               <div className='ml-3 text-sm'>
                 <label
                   htmlFor={TRIGGER_NEVER}
-                  className='font-medium text-gray-700 dark:text-gray-300'
+                  className='font-normal text-secondaryNeutral dark:text-secondaryNeutralDark'
                 >
                   {t('Settings.Never')}
                 </label>

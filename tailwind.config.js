@@ -1,5 +1,7 @@
 /** @type {import('tailwindcss').Config} */
 
+const { icon } = require('@fortawesome/fontawesome-svg-core')
+
 module.exports = {
   mode: 'jit',
   content: [
@@ -207,6 +209,14 @@ module.exports = {
         //iconPrimaryNeutral
         iconPrimaryNeutral: '#111827', // gray-900
         iconPrimaryNeutralDark: '#F9FAFB', // gray-50
+
+        //iconPrimary
+        iconPrimary: '#047857', // emerald-700
+        iconPrimaryDark: '#10b981', // emerald-500
+
+        //iconTooltip
+        iconTooltip: '#3730A3', // indigo-800
+        iconTooltipDark: '#A5B4FC', // indigo-300
 
         //iconBadge
         //iconBadgeBlue

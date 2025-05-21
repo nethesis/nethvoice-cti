@@ -161,39 +161,34 @@ const Settings: NextPage = () => {
     <>
       <div>
         <div className='mx-auto'>
-          <h1 className='text-2xl font-semibold mb-6 text-title dark:text-titleDark'>
+          <h1 className='text-2xl font-medium mb-6 text-primaryNeutral dark:text-primaryNeutralDark'>
             {t('Settings.Settings')}
           </h1>
-          <div className='overflow-hidden rounded-lg bg-white dark:bg-gray-950 shadow'>
-            <div className='divide-y divide-gray-200 dark:divide-gray-700 lg:grid lg:grid-cols-12 lg:divide-y-0 lg:divide-x'>
+          <div className='overflow-hidden rounded-lg bg-elevationL2Invert dark:bg-elevationL2InvertDark shadow'>
+            <div className='divide-y divide-layoutDivider dark:divide-layoutDividerDark lg:grid lg:grid-cols-12 lg:divide-y-0 lg:divide-x'>
               {/* settings menu */}
               <aside className='py-6 lg:col-span-3'>
                 <nav className='space-y-1'>
                   {items
-                    .filter((item) => !item.hidden)
+                    .filter((item) => !item?.hidden)
                     .map((item) => (
                       <a
-                        key={item.name}
-                        onClick={() => changeSection(item.name)}
+                        key={item?.name}
+                        onClick={() => changeSection(item?.name)}
                         className={classNames(
-                          item.current
-                            ? 'text-gray-900 bg-gray-100 dark:bg-gray-800 dark:text-gray-50 border-l-4 border-primary dark:border-primaryDark'
-                            : 'text-gray-600 dark:text-gray-100 hover:text-gray-900 hover:bg-gray-100 dark:hover:bg-gray-800 dark:hover:text-gray-50',
+                          item?.current
+                            ? 'text-primaryNeutral dark:text-primaryNeutralDark bg-elevationL2 dark:bg-elevationL2Dark border-l-4 border-iconPrimary dark:border-iconPrimaryDark'
+                            : 'text-secondaryNeutral dark:text-secondaryNeutralDark hover:text-gray-900 hover:bg-gray-100 dark:hover:bg-gray-800 dark:hover:text-gray-50',
                           'group rounded-md flex items-center text-sm font-medium justify-start space-x-2 w-74 mx-4 h-[3rem] cursor-pointer',
                         )}
-                        aria-current={item.current ? 'page' : undefined}
+                        aria-current={item?.current ? 'page' : undefined}
                       >
                         <FontAwesomeIcon
                           icon={item.icon}
-                          className={classNames(
-                            item.current ? 'ml-3' : 'ml-4',
-                            'h-4 w-4 text-gray-700 dark:text-gray-200',
-                          )}
+                          className={classNames(item?.current ? 'ml-3' : 'ml-4', 'h-4 w-4')}
                           aria-hidden='true'
                         />
-                        <span className='truncate leading-5 font-normal text-sm text-gray-700 dark:text-gray-200'>
-                          {t(`Settings.${item.name}`)}
-                        </span>
+                        <span className='truncate leading-5'>{t(`Settings.${item?.name}`)}</span>
                       </a>
                     ))}
                 </nav>
