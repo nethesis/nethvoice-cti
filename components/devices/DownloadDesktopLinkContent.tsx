@@ -2,7 +2,9 @@
 // SPDX-License-Identifier: AGPL-3.0-or-later
 
 import { ComponentPropsWithRef, forwardRef, useState } from 'react'
-import { Button, SideDrawerCloseIcon } from '../common'
+import { Button } from '../common'
+import { DrawerHeader } from '../common/DrawerHeader'
+import { Divider } from '../common/Divider'
 import { t } from 'i18next'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { faCircleCheck } from '@fortawesome/free-solid-svg-icons'
@@ -62,25 +64,10 @@ export const DownloadDesktopLinkContent = forwardRef<
 
   return (
     <>
-      {/* Drawer header */}
-      <div className='bg-white dark:bg-gray-900 pt-6 px-6'>
-        <div className='flex items-center justify-between'>
-          {/* Title */}
-          <div className='text-lg font-medium dark:text-gray-200 text-gray-700'>
-            {t('Devices.Download Desktop app')}
-          </div>
-          <div className='flex items-center h-7'>
-            <SideDrawerCloseIcon />
-          </div>
-        </div>
-      </div>
+      <DrawerHeader title={t('Devices.Download Desktop app')} />
       {/* Divider */}
       <div className='px-6'>
-        <div className='relative pb-8'>
-          <div className='absolute inset-0 flex items-center' aria-hidden='true'>
-            <div className='w-full border-t border-gray-300 dark:border-gray-600' />
-          </div>
-        </div>
+        <Divider />
         {/* Desktop app OS selection */}
         {/* title  */}
         <div>
@@ -139,11 +126,7 @@ export const DownloadDesktopLinkContent = forwardRef<
           </div>
         </div>
         {/* Divider */}
-        <div className='relative pb-8 pt-6'>
-          <div className='absolute inset-0 flex items-center' aria-hidden='true'>
-            <div className='w-full border-t border-gray-300 dark:border-gray-600' />
-          </div>
-        </div>
+        <Divider paddingY='pb-8 pt-6' />
         {/* Footer section */}
         <div className='flex justify-end'>
           <Button variant='ghost' type='submit' onClick={closeSideDrawer} className='mb-4'>

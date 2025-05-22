@@ -1,29 +1,23 @@
 // Copyright (C) 2024 Nethesis S.r.l.
 // SPDX-License-Identifier: AGPL-3.0-or-later
 
-import {
-  ComponentPropsWithRef,
-  forwardRef,
-  useState,
-  useEffect,
-} from 'react'
-import { InlineNotification, SideDrawerCloseIcon } from '../common'
+import { ComponentPropsWithRef, forwardRef, useState, useEffect } from 'react'
+import { InlineNotification } from '../common'
+import { DrawerHeader } from '../common/DrawerHeader'
+import { Divider } from '../common/Divider'
+import { DrawerFooter } from '../common/DrawerFooter'
 import { useTranslation } from 'react-i18next'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
-import {
-  faXmark,
-  faFileArrowUp,
-  faSpinner,
-} from '@fortawesome/free-solid-svg-icons'
+import { faXmark, faFileArrowUp, faSpinner } from '@fortawesome/free-solid-svg-icons'
 import { closeSideDrawer, formatFileSize } from '../../lib/utils'
 import { Button } from '../common'
-import {
-  reloadAnnouncement,
-  recordingAnnouncement,
-} from '../../lib/lines'
+import { reloadAnnouncement, recordingAnnouncement } from '../../lib/lines'
 import { RootState } from '../../store'
 import { useSelector } from 'react-redux'
-import { uploadVoicemailGreetingMessage, deleteVoicemailGreetingMessage } from '../../services/voicemail'
+import {
+  uploadVoicemailGreetingMessage,
+  deleteVoicemailGreetingMessage,
+} from '../../services/voicemail'
 
 export interface EditVoicemailContentProps extends ComponentPropsWithRef<'div'> {
   config: any
@@ -48,7 +42,7 @@ export const UploadVoicemail = forwardRef<HTMLButtonElement, EditVoicemailConten
       if (config.isRecorded && config.audioFileURL) {
         loadRecordedFile()
       }
-    // eslint-disable-next-line react-hooks/exhaustive-deps
+      // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [config.isRecorded, config.audioFileURL])
 
     // Function to load the recorded file from the phone island
@@ -57,16 +51,16 @@ export const UploadVoicemail = forwardRef<HTMLButtonElement, EditVoicemailConten
         // Fetch the file from the URL provided
         const response = await fetch(config.audioFileURL)
         const blob = await response.blob()
-        
+
         // Create a File object from the blob
-        const file = new File([blob], config.tempFileName || 'recorded-audio.wav', { 
-          type: 'audio/wav'
+        const file = new File([blob], config.tempFileName || 'recorded-audio.wav', {
+          type: 'audio/wav',
         })
-        
+
         // Process the file as if it was uploaded
         await processAudioFile(file)
       } catch (error) {
-        console.error("Error loading recorded file:", error)
+        console.error('Error loading recorded file:', error)
         setErrorUpload(true)
         setErrorFormatMessage(t('Settings.Could not load recorded file') || '')
       }
@@ -84,26 +78,27 @@ export const UploadVoicemail = forwardRef<HTMLButtonElement, EditVoicemailConten
         setIsValidatingAudio(true)
         const audio = new Audio()
         const fileURL = URL.createObjectURL(file)
-        
+
         audio.src = fileURL
-        
+
         // Set up event handlers
         audio.oncanplaythrough = () => {
           URL.revokeObjectURL(fileURL)
           setIsValidatingAudio(false)
           resolve(true)
         }
-        
+
         audio.onerror = () => {
           URL.revokeObjectURL(fileURL)
           setErrorFormatMessage(t('Settings.The audio file cannot be played') || '')
           setIsValidatingAudio(false)
           resolve(false)
         }
-        
+
         // Set a timeout in case the file takes too long to load
         setTimeout(() => {
-          if (audio.readyState < 3) { // 3 = HAVE_FUTURE_DATA
+          if (audio.readyState < 3) {
+            // 3 = HAVE_FUTURE_DATA
             URL.revokeObjectURL(fileURL)
             setErrorFormatMessage(t('Settings.Audio file validation timed out') || '')
             setIsValidatingAudio(false)
@@ -116,7 +111,11 @@ export const UploadVoicemail = forwardRef<HTMLButtonElement, EditVoicemailConten
     // Function to validate audio file format
     const validateAudioFormat = (file: File): Promise<boolean> => {
       return new Promise((resolve) => {
-        if (!file.type.includes('audio/wav') && !file.type.includes('audio/x-wav') && !file.type.includes('audio/mpeg')) {
+        if (
+          !file.type.includes('audio/wav') &&
+          !file.type.includes('audio/x-wav') &&
+          !file.type.includes('audio/mpeg')
+        ) {
           setErrorFormatMessage(t('Settings.File must be in WAV or MP3 format') || '')
           resolve(false)
           return
@@ -131,18 +130,18 @@ export const UploadVoicemail = forwardRef<HTMLButtonElement, EditVoicemailConten
     async function processAudioFile(file: File) {
       if (file && file.type.includes('audio/')) {
         const isValidFormat = await validateAudioFormat(file)
-        
+
         if (isValidFormat) {
           // Add playability validation
           const isPlayable = await validateAudioPlayability(file)
-          
+
           if (!isPlayable) {
             setErrorUpload(true)
             setSelectedFile(null)
             setSelectedFileBase64(null)
             return false
           }
-          
+
           setSelectedFile(file)
           const reader = new FileReader()
 
@@ -217,7 +216,7 @@ export const UploadVoicemail = forwardRef<HTMLButtonElement, EditVoicemailConten
             // If deletion fails (e.g., no existing message), we still proceed with the upload
             console.log('Deletion failed, but continuing with upload:', error)
           }
-          
+
           // Proceed with upload regardless of deletion outcome
           await uploadVoicemailGreetingMessage(selectedType, selectedFileBase64)
         } catch (error) {
@@ -254,35 +253,24 @@ export const UploadVoicemail = forwardRef<HTMLButtonElement, EditVoicemailConten
 
     return (
       <>
-        <div className='bg-white dark:bg-gray-900 pt-6 px-6'>
-          <div className='flex items-center justify-between'>
-            <div className='text-lg font-medium text-gray-700 dark:text-gray-200'>
-              {config.isEdit ? t('Settings.Announcement details') : t('Settings.Upload message')}
-            </div>
-            <div className='flex items-center h-7'>
-              <SideDrawerCloseIcon onClick={handleClose} />
-            </div>
-          </div>
-        </div>
+        <DrawerHeader
+          title={config.isEdit ? t('Settings.Announcement details') : t('Settings.Upload message')}
+          onClose={handleClose}
+        />
         <div className='px-5'>
-          {/* Divider */}
-          <div className='relative pb-8'>
-            <div className='absolute inset-0 flex items-center' aria-hidden='true'>
-              <div className='w-full border-t border-gray-300 dark:border-gray-600' />
-            </div>
-          </div>
+          <Divider />
+
+          {/* Announcement name */}
 
           {!config.isEdit && (
             <>
               {/* Message name section */}
               <div className='flex items-center justify-between mt-2'>
                 <h4 className='text-base font-medium text-gray-700 dark:text-gray-200'>
-                  {config.isRecorded 
-                    ? t('Settings.Recorded audio file') 
-                    : t('Settings.Audio file')}
+                  {config.isRecorded ? t('Settings.Recorded audio file') : t('Settings.Audio file')}
                 </h4>
               </div>
-              
+
               {/* Upload error */}
               {errorUpload && (
                 <InlineNotification
@@ -291,7 +279,7 @@ export const UploadVoicemail = forwardRef<HTMLButtonElement, EditVoicemailConten
                   className='mt-2'
                 ></InlineNotification>
               )}
-              
+
               {/* Display upload message error if exists */}
               {uploadAudioMessageError && (
                 <InlineNotification
@@ -300,7 +288,7 @@ export const UploadVoicemail = forwardRef<HTMLButtonElement, EditVoicemailConten
                   className='mt-2'
                 ></InlineNotification>
               )}
-              
+
               {/* If the file hasn't been uploaded yet */}
               {!selectedFile ? (
                 <>
@@ -308,7 +296,9 @@ export const UploadVoicemail = forwardRef<HTMLButtonElement, EditVoicemailConten
                     <div className='flex items-center justify-center w-full mt-2'>
                       <label
                         htmlFor='dropzone-file'
-                        className={`flex flex-col items-center justify-center w-full border-2 border-dashed border-gray-300 rounded-lg cursor-pointer bg-gray-100 dark:hover:bg-gray-700 dark:bg-gray-800 hover:bg-gray-200 hover:border-gray-400 dark:border-gray-600 dark:hover:border-gray-500 ${isValidatingAudio ? 'opacity-70 pointer-events-none' : ''}`}
+                        className={`flex flex-col items-center justify-center w-full border-2 border-dashed border-gray-300 rounded-lg cursor-pointer bg-gray-100 dark:hover:bg-gray-700 dark:bg-gray-800 hover:bg-gray-200 hover:border-gray-400 dark:border-gray-600 dark:hover:border-gray-500 ${
+                          isValidatingAudio ? 'opacity-70 pointer-events-none' : ''
+                        }`}
                         onDragOver={handleDragOver}
                         onDrop={handleDrop}
                       >
@@ -421,26 +411,15 @@ export const UploadVoicemail = forwardRef<HTMLButtonElement, EditVoicemailConten
           </fieldset>
 
           {/* Divider */}
-          <div className='relative pb-10 pt-6'>
-            <div className='absolute inset-0 flex items-center' aria-hidden='true'>
-              <div className='w-full border-t border-gray-300 dark:border-gray-600' />
-            </div>
-          </div>
-          {/* fixed bottom-0 */}
-          <div className='flex justify-end'>
-            <Button variant='ghost' type='submit' onClick={handleClose} className='mb-4'>
-              {t('Common.Cancel')}
-            </Button>
-            <Button
-              variant='primary'
-              type='submit'
-              onClick={saveCreatePhoneSettings}
-              className='ml-4 mb-4'
-              disabled={!selectedFile || isValidatingAudio}
-            >
-              {t('Common.Save')}
-            </Button>
-          </div>
+          <Divider paddingY='pb-10 pt-6' />
+
+          <DrawerFooter
+            cancelLabel={t('Common.Cancel') || ''}
+            confirmLabel={t('Common.Save')}
+            onCancel={handleClose}
+            onConfirm={saveCreatePhoneSettings}
+            confirmDisabled={!selectedFile || isValidatingAudio}
+          />
         </div>
       </>
     )

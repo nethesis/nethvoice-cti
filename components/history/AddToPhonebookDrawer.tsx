@@ -11,8 +11,9 @@ import {
   Avatar,
   EmptyState,
   InlineNotification,
-  SideDrawerCloseIcon,
 } from '../common'
+import { DrawerHeader } from '../common/DrawerHeader'
+import { Divider } from '../common/Divider'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import {
   faUserPlus,
@@ -120,18 +121,10 @@ export const AddToPhonebookDrawerContent = forwardRef<
 
   return (
     <>
-      <div className='bg-white dark:bg-gray-900 pt-6 px-6'>
-        <div className='flex items-center justify-between'>
-          <div className='text-lg font-medium dark:text-gray-200 text-gray-700'>
-            Add to phonebook: {config}
-          </div>
-          <div className='flex items-center h-7'>
-            <SideDrawerCloseIcon />
-          </div>
-        </div>
-      </div>
+      <DrawerHeader title={`Add to phonebook: ${config}`} />
       {/* drawer content */}
       <div className={classNames('p-5', className)} {...props}>
+        <Divider />
         <Button
           variant='white'
           className='mr-2 mt-4'

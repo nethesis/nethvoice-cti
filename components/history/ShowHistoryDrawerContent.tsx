@@ -3,7 +3,9 @@
 
 import { ComponentPropsWithRef, forwardRef } from 'react'
 import classNames from 'classnames'
-import { Avatar, Button, SideDrawerCloseIcon } from '../common'
+import { Avatar, Button } from '../common'
+import { DrawerHeader } from '../common/DrawerHeader'
+import { Divider } from '../common/Divider'
 import { openAddToPhonebookDrawer, callUser } from '../../lib/history'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { faPhone, faPlus } from '@fortawesome/free-solid-svg-icons'
@@ -64,24 +66,10 @@ export const ShowHistoryDrawerContent = forwardRef<
 
   return (
     <>
-      <div className='bg-white dark:bg-gray-900 pt-6 px-6'>
-        <div className='flex items-center justify-between'>
-          <div className='text-lg dark:text-gray-200 text-gray-700 font-medium'>
-            {t('Common.History details')}
-          </div>
-          <div className='flex items-center h-7'>
-            <SideDrawerCloseIcon className='p-0.5' />
-          </div>
-        </div>
-      </div>
+      <DrawerHeader title={t('Common.History details')} />
       {/* drawer content */}
       <div className={classNames('px-5', className)} {...props}>
-        {/* Divider */}
-        <div className='relative pb-8'>
-          <div className='absolute inset-0 flex items-center' aria-hidden='true'>
-            <div className='w-full border-t border-gray-300 dark:border-gray-600' />
-          </div>
-        </div>
+        <Divider />
         <div className='flex min-w-0 flex-1 items-center justify-between'>{checkTitle(config)}</div>
         <div className='mt-8 flex items-center gap-2'>
           <div>
