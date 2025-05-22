@@ -651,7 +651,7 @@ export const SpeedDialContent = () => {
           </Button>
         </Modal.Actions>
       </Modal>
-      <Tooltip id='tooltip-speed-dial-name' place='top' />
+      <CustomThemedTooltip id='tooltip-speed-dial-name' place='top' />
     </>
   )
 }

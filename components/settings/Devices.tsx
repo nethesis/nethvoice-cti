@@ -36,7 +36,7 @@ import { getTimestamp } from '../../services/user'
 import { isEmpty } from 'lodash'
 import { faOfficePhone } from '@nethesis/nethesis-solid-svg-icons'
 import { IconProp } from '@fortawesome/fontawesome-svg-core'
-import { Tooltip } from 'react-tooltip'
+import { CustomThemedTooltip } from '../common/CustomThemedTooltip'
 
 interface NavigatorWithUserAgentData extends Navigator {
   userAgentData?: {
@@ -207,7 +207,7 @@ const Devices: NextPage = () => {
             data-tooltip-content={t('Devices.Download App')}
           >
             <FontAwesomeIcon icon={faCircleArrowDown} className='xl:mr-2 mr-0 h-4 w-4' />
-            <Tooltip id='tooltip-download-app' place='top' className='inline xl:hidden' />
+            <CustomThemedTooltip id='tooltip-download-app' place='top' className='inline xl:hidden' />
             <span className='hidden xl:inline'>{t('Devices.Download App')}</span>
           </Button>
         ) : (
@@ -352,7 +352,7 @@ const Devices: NextPage = () => {
                 <tr className='border-t border-gray-300 dark:border-gray-700'>
                   <td className={`${STYLES.tableCell} max-w-0 overflow-hidden`}>
                     <div className='flex items-center'>
-                      <Tooltip id={`tooltip-button-web-phone`} place='top' />
+                      <CustomThemedTooltip id={`tooltip-button-web-phone`} place='top' />
                       <p
                         className='truncate'
                         data-tooltip-id={`tooltip-button-web-phone`}
@@ -409,7 +409,7 @@ const Devices: NextPage = () => {
                         data-tooltip-content={t('Devices.Audio and video settings')}
                       >
                         <FontAwesomeIcon icon={faPenToSquare} className='xl:mr-2 mr-0 h-4 w-4' />
-                        <Tooltip
+                        <CustomThemedTooltip
                           id='tooltip-audio-video-settings'
                           place='top'
                           className='inline xl:hidden'
@@ -478,7 +478,7 @@ const Devices: NextPage = () => {
                 <tr className='border-t border-gray-300 dark:border-gray-700'>
                   <td className={`${STYLES.tableCell} max-w-0 overflow-hidden`}>
                     <div className='flex items-center'>
-                      <Tooltip id={`tooltip-button-desktop-phone`} place='top' />
+                      <CustomThemedTooltip id={`tooltip-button-desktop-phone`} place='top' />
                       <p
                         className='truncate'
                         data-tooltip-id={`tooltip-button-desktop-phone`}
@@ -544,7 +544,7 @@ const Devices: NextPage = () => {
                               icon={faArrowUpFromBracket}
                               className='xl:mr-2 mr-0 h-4 w-4'
                             />
-                            <Tooltip
+                            <CustomThemedTooltip
                               id='tooltip-phonetlink-settings'
                               place='top'
                               className='inline xl:hidden'
@@ -613,7 +613,7 @@ const Devices: NextPage = () => {
                   <tr key={phone?.id} className='border-t border-gray-300 dark:border-gray-700'>
                     <td className={`${STYLES.tableCell} max-w-0 overflow-hidden`}>
                       <div className='flex items-center'>
-                        <Tooltip id={`tooltip-button-${phone?.description}`} place='top' />
+                        <CustomThemedTooltip id={`tooltip-button-${phone?.description}`} place='top' />
                         <p
                           className='truncate'
                           data-tooltip-id={`tooltip-button-${phone?.description}`}
@@ -677,7 +677,7 @@ const Devices: NextPage = () => {
                               icon={faPenToSquare}
                               className='xl:mr-2 mr-0 h-4 w-4'
                             />
-                            <Tooltip
+                            <CustomThemedTooltip
                               id='tooltip-device-settings'
                               place='top'
                               className='inline xl:hidden'

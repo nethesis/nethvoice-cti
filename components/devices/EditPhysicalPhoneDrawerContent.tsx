@@ -15,6 +15,7 @@ import { Tooltip } from 'react-tooltip'
 import { ConfigureKeysSection } from './ConfigureKeysSection'
 import { getDevicesPinStatusForDevice } from '../../lib/devices'
 import { openToast } from '../../lib/utils'
+import { CustomThemedTooltip } from '../common/CustomThemedTooltip'
 
 export interface EditPhysicalPhoneDrawerContentProps extends ComponentPropsWithRef<'div'> {
   config: any
@@ -150,7 +151,11 @@ export const EditPhysicalPhoneDrawerContent = forwardRef<
                   data-tooltip-content={t('Devices.Pin information tooltip') || ''}
                 />
 
-                <Tooltip id='tooltip-pin-information' place='right' className='pi-z-20' />
+                <CustomThemedTooltip
+                  id='tooltip-pin-information'
+                  place='right'
+                  className='pi-z-20'
+                />
               </div>
               <div className='flex'>
                 <span className='text-sm text-gray-700 dark:text-gray-200 leading-5'>
@@ -199,7 +204,7 @@ export const EditPhysicalPhoneDrawerContent = forwardRef<
               data-tooltip-content={t('Devices.Keys configuration information tooltip') || ''}
             />
 
-            <Tooltip id='tooltip-configure-keys-information' place='right' className='pi-z-20' />
+            <CustomThemedTooltip id='tooltip-configure-keys-information' place='right' />
           </div>
           <Dropdown items={configureKeysDropdownMenu()} position='left'>
             <FontAwesomeIcon

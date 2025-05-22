@@ -26,8 +26,8 @@ import { savePreference } from '../../lib/storage'
 import { DEFAULT_OUTCOME_FILTER, getFilterValues } from '../../lib/queuesLib'
 import { useTranslation } from 'react-i18next'
 import { cloneDeep, isEmpty } from 'lodash'
-import { Tooltip } from 'react-tooltip'
 import { customScrollbarClass } from '../../lib/utils'
+import { CustomThemedTooltip } from '../common/CustomThemedTooltip'
 
 export interface CallsViewFilterProps extends ComponentPropsWithRef<'div'> {
   updateTextFilter: Function
@@ -529,7 +529,7 @@ export const CallsViewFilter = forwardRef<HTMLButtonElement, CallsViewFilterProp
                       </span>
                     </div>
                   </div>
-                  <Tooltip id='tooltip-queues-filter' place='top' />
+                  <CustomThemedTooltip id='tooltip-queues-filter' place='top' />
 
                   {/* separator */}
                   <div

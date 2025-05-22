@@ -21,6 +21,7 @@ import { callPhoneNumber, openEmailClient, transferCallToExtension } from '../..
 import { Tooltip } from 'react-tooltip'
 import { useSelector } from 'react-redux'
 import { RootState } from '../../store'
+import { CustomThemedTooltip } from '../common/CustomThemedTooltip'
 
 export interface CustomerCardsCustomerDataViewProps extends ComponentProps<'div'> {
   companyInformation: any
@@ -535,7 +536,7 @@ export const CustomerCardsCustomerData: FC<CustomerCardsCustomerDataViewProps> =
                                         {companyCardInformation?.notes || '-'}
                                       </span>
 
-                                      <Tooltip id='tooltip-notes' className='pi-z-20' />
+                                      <CustomThemedTooltip id='tooltip-notes' className='pi-z-20' />
                                     </td>
                                   </tr>
                                   <tr>
@@ -558,7 +559,7 @@ export const CustomerCardsCustomerData: FC<CustomerCardsCustomerDataViewProps> =
                                         {companyCardInformation?.workstreet || '-'}
                                       </span>
 
-                                      <Tooltip id='tooltip-address' className='pi-z-20' />
+                                      <CustomThemedTooltip id='tooltip-address' className='pi-z-20' />
                                     </td>
                                   </tr>
                                 </tbody>

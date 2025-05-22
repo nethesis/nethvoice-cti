@@ -22,6 +22,7 @@ import { getInputOutputLocalStorageValue } from '../../lib/devices'
 import { eventDispatch } from '../../lib/hooks/eventDispatch'
 import { isEmpty } from 'lodash'
 import { setJSONItem } from '../../lib/storage'
+import { CustomThemedTooltip } from '../common/CustomThemedTooltip'
 
 export interface SwitchInputOutputDrawerContentProps extends ComponentPropsWithRef<'div'> {
   config: any
@@ -169,7 +170,7 @@ export const SwitchInputOutputDrawerContent = forwardRef<
                 data-tooltip-content={t('Devices.Audio input information tooltip') || ''}
               />
               {/* Audio input information tooltip */}
-              <Tooltip id='tooltip-input-information' place='right' />
+              <CustomThemedTooltip id='tooltip-input-information' place='right' />
             </div>
           </div>
 
@@ -260,7 +261,7 @@ export const SwitchInputOutputDrawerContent = forwardRef<
                 data-tooltip-content={t('Devices.Audio output information tooltip') || ''}
               />
               {/* Audio output information tooltip */}
-              <Tooltip id='tooltip-output-information' place='right' />
+              <CustomThemedTooltip id='tooltip-output-information' place='right' />
             </div>
           </div>
 
@@ -355,7 +356,7 @@ export const SwitchInputOutputDrawerContent = forwardRef<
                 data-tooltip-content={t('Devices.Video input information tooltip') || ''}
               />
               {/* Video input information tooltip */}
-              <Tooltip id='tooltip-video-input-information' place='right' />
+              <CustomThemedTooltip id='tooltip-video-input-information' place='right' />
             </div>
           </div>
 

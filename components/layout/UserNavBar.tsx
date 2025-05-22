@@ -19,6 +19,7 @@ import { Tooltip } from 'react-tooltip'
 import { useTranslation } from 'react-i18next'
 import { UserVoiceMail } from './UserVoiceMail'
 import { isEmpty } from 'lodash'
+import { CustomThemedTooltip } from '../common/CustomThemedTooltip'
 
 const activeStyles = {
   width: '.1875rem',
@@ -220,7 +221,7 @@ export const UserNavBar: FC = () => {
           </div>
         ))}
       </div>
-      <Tooltip id='tooltip-side-menu' place='left' />
+      <CustomThemedTooltip id='tooltip-side-menu' place='left'/>
     </>
   )
 }

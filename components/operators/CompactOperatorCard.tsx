@@ -15,12 +15,12 @@ import { CallDuration } from './CallDuration'
 import { t } from 'i18next'
 import { callOperator, openShowOperatorDrawer, hangup, pickup } from '../../lib/operators'
 import TextScroll from '../common/TextScroll'
-import { Tooltip } from 'react-tooltip'
 import { transferCall } from '../../lib/utils'
 import { faMissed } from '@nethesis/nethesis-solid-svg-icons'
 import { isEmpty } from 'lodash'
 import { useSelector } from 'react-redux'
 import { RootState } from '../../store'
+import { CustomThemedTooltip } from '../common/CustomThemedTooltip'
 
 interface CompactOperatorCardProps {
   operator: any
@@ -253,7 +253,7 @@ const CompactOperatorCard = ({
                 <FontAwesomeIcon icon={faHandPointUp} className='ml-1.5 h-4 w-4' />
               )}
             </div>
-            <Tooltip id={`tooltip-operator-information-${index}`} className='pi-z-20' />
+            <CustomThemedTooltip id={`tooltip-operator-information-${index}`} />
           </div>
         )}
 
