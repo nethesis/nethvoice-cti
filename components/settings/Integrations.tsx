@@ -3,10 +3,8 @@
 
 import { RefObject, createRef, useState, useEffect } from 'react'
 import {
-  faCheck,
   faTriangleExclamation,
   faCircleNotch,
-  faCopy,
 } from '@fortawesome/free-solid-svg-icons'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { Button, InlineNotification, Modal } from '../common'
@@ -23,7 +21,6 @@ import { getProductName } from '../../lib/utils'
 import CopyComponent from '../common/CopyComponent'
 
 export const Integrations = () => {
-  const [copied, setCopied] = useState<boolean>(false)
   const [config, setConfig] = useState<string>('')
   const currentUser = useSelector((state: RootState) => state.user)
   const webRTCExtension = currentUser.endpoints.extension.find((el) => el.type === 'webrtc')
@@ -52,7 +49,6 @@ export const Integrations = () => {
         sip_port: window.CONFIG.SIP_PORT,
       })
       setConfig(config)
-      setCopied(false)
       setTokenExists(true)
     }
     setLoading(false)
