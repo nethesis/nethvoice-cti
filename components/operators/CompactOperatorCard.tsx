@@ -10,13 +10,14 @@ import {
   faRecordVinyl,
   faRightLeft,
   faStar,
+  IconDefinition,
 } from '@fortawesome/free-solid-svg-icons'
 import { CallDuration } from './CallDuration'
 import { t } from 'i18next'
 import { callOperator, openShowOperatorDrawer, hangup, pickup } from '../../lib/operators'
 import TextScroll from '../common/TextScroll'
 import { transferCall } from '../../lib/utils'
-import { faMissed } from '@nethesis/nethesis-solid-svg-icons'
+import { faHangup, faPhoneArrowDownLeft } from '@nethesis/nethesis-solid-svg-icons'
 import { isEmpty } from 'lodash'
 import { useSelector } from 'react-redux'
 import { RootState } from '../../store'
@@ -263,7 +264,7 @@ const CompactOperatorCard = ({
             {permissions?.pickup && (
               <Button variant='white' size='small' onClick={handlePickupCall} className='px-2'>
                 <FontAwesomeIcon
-                  icon={faMissed as any}
+                  icon={faPhoneArrowDownLeft as any}
                   className='inline-block text-center h-3 w-3'
                 />
                 <span className='text-xs ml-1'>{t('OperatorDrawer.Pickup')}</span>
@@ -276,7 +277,10 @@ const CompactOperatorCard = ({
                 onClick={handleRejectCall}
                 className='px-2'
               >
-                <FontAwesomeIcon icon={faPhoneSlash} className='inline-block text-center h-3 w-3' />
+                <FontAwesomeIcon
+                  icon={faHangup as IconDefinition}
+                  className='inline-block text-center h-3 w-3'
+                />
                 <span className='text-xs ml-1'>{t('Common.Reject')}</span>
               </Button>
             )}

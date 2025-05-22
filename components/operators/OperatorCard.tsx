@@ -10,7 +10,7 @@ import { isEmpty } from 'lodash'
 import { useSelector } from 'react-redux'
 import { RootState } from '../../store'
 import { transferCall } from '../../lib/utils'
-import { faMissed } from '@nethesis/nethesis-solid-svg-icons'
+import { faHangup, faMissed, faPhoneArrowDownLeft } from '@nethesis/nethesis-solid-svg-icons'
 
 interface OperatorCardProps {
   operator: any
@@ -239,7 +239,7 @@ const OperatorCard = ({
                       onClick={handlePickupCall}
                     >
                       <FontAwesomeIcon
-                        icon={faMissed as IconDefinition}
+                        icon={faPhoneArrowDownLeft as IconDefinition}
                         className='inline-block text-center h-3 w-3 mr-2'
                       />
                       <span className='text-sm not-italic font-medium leading-5'>
@@ -256,7 +256,7 @@ const OperatorCard = ({
                     >
                       <FontAwesomeIcon
                         className='rotate-135 inline-block text-center h-3 w-3 mr-2'
-                        icon={faPhone}
+                        icon={faHangup as IconDefinition}
                       />
                       <span className='text-sm not-italic font-medium leading-5'>
                         {t('Common.Reject')}

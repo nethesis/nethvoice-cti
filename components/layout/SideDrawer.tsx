@@ -29,7 +29,7 @@ import { DownloadDesktopLinkContent } from '../devices/DownloadDesktopLinkConten
 import { UploadVoicemail } from '../lines/UploadVoicemail'
 import { customScrollbarClass } from '../../lib/utils'
 
-type ContentType =
+export type ContentType =
   | 'createOrEditContact'
   | 'showContact'
   | 'createOrEditSpeedDial'

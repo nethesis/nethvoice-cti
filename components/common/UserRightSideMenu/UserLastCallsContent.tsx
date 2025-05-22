@@ -433,7 +433,7 @@ export const UserLastCallsContent = () => {
           {/* Skeleton loader */}
           {isLoading &&
             Array.from(Array(4)).map((_, index) => (
-              <li key={index}>
+              <li key={`skeleton-${index}`}>
                 <div className='gap-4 py-4 px-0'>
                   <CallSkeleton />
                 </div>
@@ -461,8 +461,8 @@ export const UserLastCallsContent = () => {
           )}
 
           {filteredCalls?.length! > 0 &&
-            filteredCalls.map((call: any) => (
-              <li key={call.id}>
+            filteredCalls.map((call: any, index: number) => (
+              <li key={`${call.id}-${index}`}>
                 <LastCallItem
                   call={call}
                   operators={operators}
