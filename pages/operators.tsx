@@ -30,6 +30,7 @@ import OperatorList from '../components/operators/OperatorList'
 import CompactOperatorList from '../components/operators/CompactOperatorList'
 import GroupedOperatorList from '../components/operators/GroupedOperatorList'
 import { CustomThemedTooltip } from '../components/common/CustomThemedTooltip'
+import { Button } from '../components/common'
 
 const Operators: NextPage = () => {
   interface Operator {
@@ -470,46 +471,57 @@ const Operators: NextPage = () => {
                 </>
               )}
             </div>
-            <div className='hidden sm:flex sm:justify-end sm:space-x-4 sm:items-center mt-7'>
-              <button className='bg-transparent' onClick={() => selectLayoutOperators('standard')}>
+            <div className='hidden sm:flex sm:justify-end sm:items-center mt-7'>
+              <Button
+                variant='ghost'
+                onClick={() => selectLayoutOperators('standard')}
+                data-tooltip-id='standard-layout-tooltip'
+                data-tooltip-content={t('Operators.Standard layout') || ''}
+              >
                 <FontAwesomeIcon
                   icon={faGrid2 as IconDefinition}
                   className={`${
                     selectedLayout === 'standard'
                       ? 'text-primaryActive dark:text-primaryActive'
                       : 'text-tertiaryNeutral dark:text-tertiaryNeutralDark'
-                  } inline-block text-center h-5 w-5 cursor-pointer`}
+                  }  h-5 w-5 pointer-events-none select-none`}
                   data-tooltip-id='standard-layout-tooltip'
                   data-tooltip-content={t('Operators.Standard layout') || ''}
                 />
-              </button>
-              <CustomThemedTooltip id='standard-layout-tooltip' place='bottom' float />
-              <button className='bg-transparent' onClick={() => selectLayoutOperators('compact')}>
+              </Button>
+              <CustomThemedTooltip id='standard-layout-tooltip' place='top' />
+              <Button
+                variant='ghost'
+                onClick={() => selectLayoutOperators('compact')}
+                data-tooltip-id='compact-layout-tooltip'
+                data-tooltip-content={t('Operators.Compact layout') || ''}
+              >
                 <FontAwesomeIcon
                   icon={faBars}
                   className={`${
                     selectedLayout === 'compact'
                       ? 'text-primaryActive dark:text-primaryActive'
                       : 'text-tertiaryNeutral dark:text-tertiaryNeutralDark'
-                  } inline-block text-center h-5 w-5 cursor-pointer`}
-                  data-tooltip-id='compact-layout-tooltip'
-                  data-tooltip-content={t('Operators.Compact layout') || ''}
+                  } h-5 w-5 pointer-events-none select-none`}
                 />
-              </button>
-              <CustomThemedTooltip id='compact-layout-tooltip' place='bottom' float />
-              <button className='bg-transparent' onClick={() => selectLayoutOperators('grouped')}>
+              </Button>
+              <CustomThemedTooltip id='compact-layout-tooltip' place='top' />
+              <Button
+                variant='ghost'
+                onClick={() => selectLayoutOperators('grouped')}
+                data-tooltip-id='grouped-layout-tooltip'
+                data-tooltip-content={t('Operators.Grouped layout') || ''}
+              >
                 <FontAwesomeIcon
                   icon={faGridDividers as IconDefinition}
                   className={`${
                     selectedLayout === 'grouped'
                       ? 'text-primaryActive dark:text-primaryActive'
                       : 'text-tertiaryNeutral dark:text-tertiaryNeutralDark'
-                  } inline-block text-center h-5 w-5 cursor-pointer`}
-                  data-tooltip-id='grouped-layout-tooltip'
-                  data-tooltip-content={t('Operators.Grouped layout') || ''}
+                  } h-5 w-5 pointer-events-none select-none`}
                 />
-              </button>
-              <CustomThemedTooltip id='grouped-layout-tooltip' place='bottom' float />
+              </Button>
+              <CustomThemedTooltip id='grouped-layout-tooltip' place='top' />
             </div>
           </div>
           <div className='sm:hidden space-x-4'>
@@ -520,7 +532,7 @@ const Operators: NextPage = () => {
                   selectedLayout === 'standard'
                     ? 'text-primary dark:text-primaryDark'
                     : 'text-gray-600 dark:text-gray-300'
-                }, inline-block text-center h-5 w-5 cursor-pointer`}
+                }, inline-block text-center h-5 w-5 cursor-pointer pointer-events-none select-none`}
               />
             </button>
             <button className='bg-transparent' onClick={() => selectLayoutOperators('compact')}>
@@ -530,7 +542,7 @@ const Operators: NextPage = () => {
                   selectedLayout === 'compact'
                     ? 'text-primary dark:text-primaryDark'
                     : 'text-gray-600 dark:text-gray-300'
-                }, inline-block text-center h-5 w-5 cursor-pointer`}
+                }, inline-block text-center h-5 w-5 cursor-pointer pointer-events-none select-none`}
               />
             </button>
             <button className='bg-transparent' onClick={() => selectLayoutOperators('grouped')}>
@@ -540,7 +552,7 @@ const Operators: NextPage = () => {
                   selectedLayout === 'grouped'
                     ? 'text-primary dark:text-primaryDark'
                     : 'text-gray-600 dark:text-gray-300'
-                }, inline-block text-center h-5 w-5 cursor-pointer`}
+                }, inline-block text-center h-5 w-5 cursor-pointer pointer-events-none select-none`}
               />
             </button>
           </div>

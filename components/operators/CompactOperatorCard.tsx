@@ -278,8 +278,9 @@ const CompactOperatorCard = ({
                 className='px-2'
               >
                 <FontAwesomeIcon
-                  icon={faHangup as IconDefinition}
+                  style={{ transform: 'rotate(135deg)' }}
                   className='inline-block text-center h-3 w-3'
+                  icon={faPhone as IconDefinition}
                 />
                 <span className='text-xs ml-1'>{t('Common.Reject')}</span>
               </Button>

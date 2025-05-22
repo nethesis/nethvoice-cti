@@ -157,7 +157,7 @@ const LastCallItem = memo(
 
           {/* Create contact button */}
           {hasNoInfo && isHovered && (
-            <div className='absolute right-0 top-1/2 transform -translate-y-1/2'>
+            <div className='absolute right-0 top-0 transform'>
               <Button
                 variant='ghost'
                 className='flex gap-2 items-center py-1.5 px-2 border dark:border-borderDark border-borderLight dark:hover:bg-hoverDark hover:bg-hoverLight'

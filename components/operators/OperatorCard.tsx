@@ -10,7 +10,7 @@ import { isEmpty } from 'lodash'
 import { useSelector } from 'react-redux'
 import { RootState } from '../../store'
 import { transferCall } from '../../lib/utils'
-import { faHangup, faMissed, faPhoneArrowDownLeft } from '@nethesis/nethesis-solid-svg-icons'
+import { faPhoneArrowDownLeft } from '@nethesis/nethesis-solid-svg-icons'
 
 interface OperatorCardProps {
   operator: any
@@ -255,8 +255,9 @@ const OperatorCard = ({
                       onClick={handleRejectCall}
                     >
                       <FontAwesomeIcon
-                        className='rotate-135 inline-block text-center h-3 w-3 mr-2'
-                        icon={faHangup as IconDefinition}
+                        style={{ transform: 'rotate(135deg)' }}
+                        className='inline-block text-center h-3 w-3 mr-2'
+                        icon={faPhone as IconDefinition}
                       />
                       <span className='text-sm not-italic font-medium leading-5'>
                         {t('Common.Reject')}
@@ -265,7 +266,6 @@ const OperatorCard = ({
                   )}
                 </div>
               ) : (
-                // Se l'utente non ha permessi o sta chiamando questo operatore, mostra solo lo stato di ringing
                 <div className='py-2 px-3 flex justify-center'>
                   <div className='flex items-center text-cardTextBusy dark:text-cardTextBusy'>
                     <span className='ringing-animation mr-2 h-4 w-4'></span>
