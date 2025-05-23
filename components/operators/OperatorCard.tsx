@@ -11,6 +11,7 @@ import { useSelector } from 'react-redux'
 import { RootState } from '../../store'
 import { transferCall } from '../../lib/utils'
 import { faPhoneArrowDownLeft } from '@nethesis/nethesis-solid-svg-icons'
+import { CustomThemedTooltip } from '../common/CustomThemedTooltip'
 
 interface OperatorCardProps {
   operator: any
@@ -235,14 +236,15 @@ const OperatorCard = ({
                     <Button
                       variant='white'
                       size='small'
-                      className='px-3'
                       onClick={handlePickupCall}
+                      data-tooltip-id={`tooltip-pickup-operator-${liveOperatorData?.username || 'op'}`}
+                      data-tooltip-content={t('OperatorDrawer.Pickup')}
                     >
                       <FontAwesomeIcon
                         icon={faPhoneArrowDownLeft as IconDefinition}
-                        className='inline-block text-center h-3 w-3 mr-2'
+                        className='inline-block text-center h-4 w-4 lg:h-3 lg:w-3 lg:mr-2'
                       />
-                      <span className='text-sm not-italic font-medium leading-5'>
+                      <span className='text-sm not-italic font-medium leading-5 lg:inline hidden'>
                         {t('OperatorDrawer.Pickup')}
                       </span>
                     </Button>
@@ -251,19 +253,25 @@ const OperatorCard = ({
                     <Button
                       variant='whiteDanger'
                       size='small'
-                      className='px-3'
                       onClick={handleRejectCall}
+                      data-tooltip-id={`tooltip-reject-operator-${liveOperatorData?.username || 'op'}`}
+                      data-tooltip-content={t('Common.Reject')}
                     >
                       <FontAwesomeIcon
                         style={{ transform: 'rotate(135deg)' }}
-                        className='inline-block text-center h-3 w-3 mr-2'
+                        className='inline-block text-center h-4 w-4 lg:h-3 lg:w-3 lg:mr-2'
                         icon={faPhone as IconDefinition}
                       />
-                      <span className='text-sm not-italic font-medium leading-5'>
+                      <span className='text-sm not-italic font-medium leading-5 lg:inline hidden'>
                         {t('Common.Reject')}
                       </span>
                     </Button>
                   )}
+                  {/* Show tooltips only on small screens when text is hidden */}
+                  <div className='md:hidden'>
+                    <CustomThemedTooltip id={`tooltip-pickup-operator-${liveOperatorData?.username || 'op'}`} />
+                    <CustomThemedTooltip id={`tooltip-reject-operator-${liveOperatorData?.username || 'op'}`} />
+                  </div>
                 </div>
               ) : (
                 <div className='py-2 px-3 flex justify-center'>

@@ -101,7 +101,7 @@ export const GravatarIconDrawerContent = forwardRef<
 
   return (
     <>
-      <DrawerHeader title={t('Settings.Gravatar')} />
+      <DrawerHeader title={t('Settings.Gravatar')} onClose={closeSideDrawer} />
       <div className={classNames(className, 'px-5')} {...props}>
         <Divider />
         <div className='mb-6 flex flex-col'>

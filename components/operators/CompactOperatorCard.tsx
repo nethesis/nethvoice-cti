@@ -262,12 +262,18 @@ const CompactOperatorCard = ({
         {isRinging && permissions?.hasAny && !isCalledByCurrentUser && (
           <div className='flex items-center space-x-2'>
             {permissions?.pickup && (
-              <Button variant='white' size='small' onClick={handlePickupCall} className='px-2'>
+              <Button 
+                variant='white' 
+                size='small' 
+                onClick={handlePickupCall} 
+                data-tooltip-id={`tooltip-pickup-operator-${index}`}
+                data-tooltip-content={t('OperatorDrawer.Pickup')}
+              >
                 <FontAwesomeIcon
                   icon={faPhoneArrowDownLeft as any}
-                  className='inline-block text-center h-3 w-3'
+                  className='inline-block text-center h-4 w-4 lg:h-3 lg:w-3'
                 />
-                <span className='text-xs ml-1'>{t('OperatorDrawer.Pickup')}</span>
+                <span className='text-xs ml-1 lg:inline hidden'>{t('OperatorDrawer.Pickup')}</span>
               </Button>
             )}
             {permissions?.hangup && (
@@ -275,16 +281,22 @@ const CompactOperatorCard = ({
                 variant='whiteDanger'
                 size='small'
                 onClick={handleRejectCall}
-                className='px-2'
+                data-tooltip-id={`tooltip-reject-operator-${index}`}
+                data-tooltip-content={t('Common.Reject')}
               >
                 <FontAwesomeIcon
                   style={{ transform: 'rotate(135deg)' }}
-                  className='inline-block text-center h-3 w-3'
+                  className='inline-block text-center h-4 w-4 lg:h-3 lg:w-3'
                   icon={faPhone as IconDefinition}
                 />
-                <span className='text-xs ml-1'>{t('Common.Reject')}</span>
+                <span className='text-xs ml-1 lg:inline hidden'>{t('Common.Reject')}</span>
               </Button>
             )}
+            {/* Show tooltips only on small screens when text is hidden */}
+            <div className='md:hidden'>
+              <CustomThemedTooltip id={`tooltip-pickup-operator-${index}`} />
+              <CustomThemedTooltip id={`tooltip-reject-operator-${index}`} />
+            </div>
           </div>
         )}
 

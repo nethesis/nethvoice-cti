@@ -5,6 +5,7 @@ import { FC, ReactNode } from 'react'
 import classNames from 'classnames'
 import { Button } from './Button'
 import { closeSideDrawer } from '../../lib/utils'
+import { t } from 'i18next'
 
 export interface DrawerFooterProps {
   cancelLabel?: string
@@ -28,7 +29,7 @@ export interface DrawerFooterProps {
 }
 
 export const DrawerFooter: FC<DrawerFooterProps> = ({
-  cancelLabel = 'Common.Cancel',
+  cancelLabel = t('Common.Cancel'),
   confirmLabel,
   onCancel = closeSideDrawer,
   onConfirm,

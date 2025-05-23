@@ -64,7 +64,7 @@ export const DownloadDesktopLinkContent = forwardRef<
 
   return (
     <>
-      <DrawerHeader title={t('Devices.Download Desktop app')} />
+      <DrawerHeader title={t('Devices.Download Desktop app')}  onClose={closeSideDrawer}/>
       {/* Divider */}
       <div className='px-6'>
         <Divider />

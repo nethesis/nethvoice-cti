@@ -190,7 +190,7 @@ export const SelectProfilePictureDrawerContent = forwardRef<
 
   return (
     <>
-      <DrawerHeader title={t('Settings.Upload profile picture')} />
+      <DrawerHeader title={t('Settings.Upload profile picture')}  onClose={closeSideDrawer}/>
       <div className={classNames(className, 'px-5')} {...props}>
         
         <>
