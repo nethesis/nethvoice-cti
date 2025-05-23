@@ -319,6 +319,16 @@ export const Calls: FC<CallsProps> = ({ className }): JSX.Element => {
     },
   ]
 
+  // Generate a unique key for each call
+  const generateUniqueKey = (call: any) => {
+    return (
+      call.uniqueid +
+      (call.linkedid ? `-${call.linkedid}` : '') +
+      (call.direction ? `-${call.direction}` : '') +
+      (call.time ? `-${call.time}` : '')
+    )
+  }
+
   return (
     <>
       <div>
@@ -377,7 +387,7 @@ export const Calls: FC<CallsProps> = ({ className }): JSX.Element => {
                           />
                         ),
                       }}
-                      rowKey='uniqueid'
+                      rowKey={(record) => generateUniqueKey(record)}
                       trClassName='h-[84px]'
                       scrollable={true}
                       maxHeight='calc(100vh - 480px)'
