@@ -14,6 +14,7 @@ import {
   faCheck,
   faAngleDown,
   faCalendarCheck,
+  faPhone,
 } from '@fortawesome/free-solid-svg-icons'
 import { Button, Dropdown } from '../common'
 import { useTranslation } from 'react-i18next'
@@ -28,16 +29,18 @@ import {
   toggleRecord,
   intrude,
   pickup,
+  hangupMainExt,
 } from '../../lib/operators'
 import { eventDispatch } from '../../lib/hooks/eventDispatch'
 import { openToast } from '../../lib/utils'
-import { faRecord } from '@nethesis/nethesis-solid-svg-icons'
+import { faPhoneArrowDownLeft, faRecord } from '@nethesis/nethesis-solid-svg-icons'
 
 interface ActionCallProps {
   config: any
 }
 
 export const ActionCall: React.FC<ActionCallProps> = ({ config }) => {
+  console.log('this is config', config)
   const { t } = useTranslation()
   const operators = useSelector((state: RootState) => state.operators)
   const profile = useSelector((state: RootState) => state.user)
@@ -98,9 +101,8 @@ export const ActionCall: React.FC<ActionCallProps> = ({ config }) => {
       if (!currentConversation?.id || !currentConversation?.owner) return
 
       try {
-        await hangup({
-          convid: currentConversation.id.toString(),
-          endpointId: currentConversation.owner.toString(),
+        await hangupMainExt({
+          exten: config?.endpoints?.mainextension[0]?.id,
         })
       } catch (e) {
         console.error(e)
@@ -234,8 +236,14 @@ export const ActionCall: React.FC<ActionCallProps> = ({ config }) => {
         )}
 
       {profile?.profile?.macro_permissions?.presence_panel?.permissions?.hangup?.value && (
-        <Dropdown.Item icon={faPhoneSlash} onClick={actions.hangup}>
-          {t('OperatorDrawer.Hangup')}
+        <Dropdown.Item
+          icon={faPhone}
+          iconClassName="transform rotate-[135deg]"
+          onClick={actions.hangup}
+        >
+          {operators?.operators[config?.username]?.mainPresence !== 'ringing'
+            ? t('OperatorDrawer.Hangup')
+            : t('Common.Reject')}
         </Dropdown.Item>
       )}
 
@@ -255,7 +263,7 @@ export const ActionCall: React.FC<ActionCallProps> = ({ config }) => {
 
       {profile?.profile?.macro_permissions?.settings?.permissions?.pickup?.value &&
         operators?.operators[config?.username]?.mainPresence === 'ringing' && (
-          <Dropdown.Item icon={faRecord as any} onClick={actions.pickup}>
+          <Dropdown.Item icon={faPhoneArrowDownLeft as any} onClick={actions.pickup}>
             {t('OperatorDrawer.Pickup')}
           </Dropdown.Item>
         )}

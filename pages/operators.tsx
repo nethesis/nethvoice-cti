@@ -482,7 +482,7 @@ const Operators: NextPage = () => {
                   icon={faGrid2 as IconDefinition}
                   className={`${
                     selectedLayout === 'standard'
-                      ? 'text-primaryActive dark:text-primaryActive'
+                      ? 'text-primaryActive dark:text-primaryActiveDark'
                       : 'text-tertiaryNeutral dark:text-tertiaryNeutralDark'
                   }  h-5 w-5 pointer-events-none select-none`}
                   data-tooltip-id='standard-layout-tooltip'
@@ -500,7 +500,7 @@ const Operators: NextPage = () => {
                   icon={faBars}
                   className={`${
                     selectedLayout === 'compact'
-                      ? 'text-primaryActive dark:text-primaryActive'
+                      ? 'text-primaryActive dark:text-primaryActiveDark'
                       : 'text-tertiaryNeutral dark:text-tertiaryNeutralDark'
                   } h-5 w-5 pointer-events-none select-none`}
                 />
@@ -516,7 +516,7 @@ const Operators: NextPage = () => {
                   icon={faGridDividers as IconDefinition}
                   className={`${
                     selectedLayout === 'grouped'
-                      ? 'text-primaryActive dark:text-primaryActive'
+                      ? 'text-primaryActive dark:text-primaryActiveDark'
                       : 'text-tertiaryNeutral dark:text-tertiaryNeutralDark'
                   } h-5 w-5 pointer-events-none select-none`}
                 />

@@ -5,7 +5,12 @@ import { faStar, faPhone, faRightLeft, IconDefinition } from '@fortawesome/free-
 import { CallDuration } from './CallDuration'
 import { Button } from '../common'
 import { t } from 'i18next'
-import { callOperator, openShowOperatorDrawer, hangup, pickup } from '../../lib/operators'
+import {
+  callOperator,
+  openShowOperatorDrawer,
+  pickup,
+  hangupMainExt,
+} from '../../lib/operators'
 import { isEmpty } from 'lodash'
 import { useSelector } from 'react-redux'
 import { RootState } from '../../store'
@@ -117,27 +122,26 @@ const OperatorCard = ({
     }
   }, [liveOperatorData, profile])
 
-  const handleRejectCall = useCallback(async () => {
-    if (liveOperatorData?.conversations?.[0]?.id && liveOperatorData?.conversations?.[0]?.owner) {
-      const conversationId = liveOperatorData.conversations[0].id
-      let numberToClose = liveOperatorData.conversations[0].owner
+  const handleRejectCall = useCallback(
+    async (userMainExtension: any) => {
+      if (liveOperatorData?.conversations?.[0]?.id && liveOperatorData?.conversations?.[0]?.owner) {
+        if (userMainExtension) {
+          const hangupInformations = {
+            exten: userMainExtension?.toString(),
+          }
 
-      if (conversationId && numberToClose) {
-        const hangupInformations = {
-          convid: conversationId.toString(),
-          endpointId: numberToClose.toString(),
-        }
-
-        if (!isEmpty(hangupInformations)) {
-          try {
-            await hangup(hangupInformations)
-          } catch (e) {
-            console.error(e)
+          if (!isEmpty(hangupInformations)) {
+            try {
+              await hangupMainExt(hangupInformations)
+            } catch (e) {
+              console.error(e)
+            }
           }
         }
       }
-    }
-  }, [liveOperatorData])
+    },
+    [liveOperatorData],
+  )
 
   const handleTransferCall = useCallback(() => {
     transferCall(liveOperatorData)
@@ -237,7 +241,9 @@ const OperatorCard = ({
                       variant='white'
                       size='small'
                       onClick={handlePickupCall}
-                      data-tooltip-id={`tooltip-pickup-operator-${liveOperatorData?.username || 'op'}`}
+                      data-tooltip-id={`tooltip-pickup-operator-${
+                        liveOperatorData?.username || 'op'
+                      }`}
                       data-tooltip-content={t('OperatorDrawer.Pickup')}
                     >
                       <FontAwesomeIcon
@@ -253,8 +259,12 @@ const OperatorCard = ({
                     <Button
                       variant='whiteDanger'
                       size='small'
-                      onClick={handleRejectCall}
-                      data-tooltip-id={`tooltip-reject-operator-${liveOperatorData?.username || 'op'}`}
+                      onClick={() =>
+                        handleRejectCall(liveOperatorData?.endpoints?.mainextension[0]?.id)
+                      }
+                      data-tooltip-id={`tooltip-reject-operator-${
+                        liveOperatorData?.username || 'op'
+                      }`}
                       data-tooltip-content={t('Common.Reject')}
                     >
                       <FontAwesomeIcon
@@ -269,8 +279,12 @@ const OperatorCard = ({
                   )}
                   {/* Show tooltips only on small screens when text is hidden */}
                   <div className='md:hidden'>
-                    <CustomThemedTooltip id={`tooltip-pickup-operator-${liveOperatorData?.username || 'op'}`} />
-                    <CustomThemedTooltip id={`tooltip-reject-operator-${liveOperatorData?.username || 'op'}`} />
+                    <CustomThemedTooltip
+                      id={`tooltip-pickup-operator-${liveOperatorData?.username || 'op'}`}
+                    />
+                    <CustomThemedTooltip
+                      id={`tooltip-reject-operator-${liveOperatorData?.username || 'op'}`}
+                    />
                   </div>
                 </div>
               ) : (

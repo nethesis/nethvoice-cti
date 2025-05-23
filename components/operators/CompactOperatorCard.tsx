@@ -14,7 +14,12 @@ import {
 } from '@fortawesome/free-solid-svg-icons'
 import { CallDuration } from './CallDuration'
 import { t } from 'i18next'
-import { callOperator, openShowOperatorDrawer, hangup, pickup } from '../../lib/operators'
+import {
+  callOperator,
+  openShowOperatorDrawer,
+  pickup,
+  hangupMainExt,
+} from '../../lib/operators'
 import TextScroll from '../common/TextScroll'
 import { transferCall } from '../../lib/utils'
 import { faHangup, faPhoneArrowDownLeft } from '@nethesis/nethesis-solid-svg-icons'
@@ -139,27 +144,26 @@ const CompactOperatorCard = ({
     }
   }, [operator, profile])
 
-  const handleRejectCall = useCallback(async () => {
-    if (operator?.conversations?.[0]?.id && operator?.conversations?.[0]?.owner) {
-      const conversationId = operator.conversations[0].id
-      let numberToClose = operator.conversations[0].owner
+  const handleRejectCall = useCallback(
+    async (userMainExtension: any) => {
+      if (operator?.conversations?.[0]?.id && operator?.conversations?.[0]?.owner) {
+        if (userMainExtension) {
+          const hangupInformations = {
+            exten: userMainExtension?.toString(),
+          }
 
-      if (conversationId && numberToClose) {
-        const hangupInformations = {
-          convid: conversationId.toString(),
-          endpointId: numberToClose.toString(),
-        }
-
-        if (!isEmpty(hangupInformations)) {
-          try {
-            await hangup(hangupInformations)
-          } catch (e) {
-            console.error(e)
+          if (!isEmpty(hangupInformations)) {
+            try {
+              await hangupMainExt(hangupInformations)
+            } catch (e) {
+              console.error(e)
+            }
           }
         }
       }
-    }
-  }, [operator])
+    },
+    [operator],
+  )
 
   const {
     isInConversation,
@@ -262,10 +266,10 @@ const CompactOperatorCard = ({
         {isRinging && permissions?.hasAny && !isCalledByCurrentUser && (
           <div className='flex items-center space-x-2'>
             {permissions?.pickup && (
-              <Button 
-                variant='white' 
-                size='small' 
-                onClick={handlePickupCall} 
+              <Button
+                variant='white'
+                size='small'
+                onClick={handlePickupCall}
                 data-tooltip-id={`tooltip-pickup-operator-${index}`}
                 data-tooltip-content={t('OperatorDrawer.Pickup')}
               >
@@ -280,7 +284,7 @@ const CompactOperatorCard = ({
               <Button
                 variant='whiteDanger'
                 size='small'
-                onClick={handleRejectCall}
+                onClick={() => handleRejectCall(operator?.endpoints?.mainextension?.[0]?.id)}
                 data-tooltip-id={`tooltip-reject-operator-${index}`}
                 data-tooltip-content={t('Common.Reject')}
               >

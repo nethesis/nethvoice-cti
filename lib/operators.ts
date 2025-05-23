@@ -498,3 +498,13 @@ export function getUserGroups(
   // concat groups and remove duplicates
   return Array.from(new Set([...allowedGroups, ...belongingGroups]))
 }
+
+export async function hangupMainExt(obj: any) {
+  try {
+    const { data, status } = await axios.post('/astproxy/hangup_mainexten', obj)
+    return data
+  } catch (error) {
+    handleNetworkError(error)
+    throw error
+  }
+}
