@@ -60,6 +60,7 @@ interface DefaultState {
   settings: SettingsTypes
   recallOnBusy: any
   lkhash: string
+  urlOpened?: boolean
 }
 
 const defaultState: DefaultState = {
@@ -110,6 +111,7 @@ const defaultState: DefaultState = {
   },
   recallOnBusy: '',
   lkhash: '',
+  urlOpened: false,
 }
 
 export const user = createModel<RootModel>()({
@@ -168,6 +170,10 @@ export const user = createModel<RootModel>()({
     },
     updateOpenParamUrl: (state, openParamUrl) => {
       state.settings.open_param_url = openParamUrl
+      return state
+    },
+    setUrlOpened: (state, opened: boolean) => {
+      state.urlOpened = opened
       return state
     },
     reset: () => {

@@ -127,6 +127,7 @@ export const Layout: FC<LayoutProps> = ({ children }) => {
           settings: userInfo.data.settings,
           recallOnBusy: userInfo?.data?.recallOnBusy,
           lkhash: userInfo?.data?.lkhash,
+          urlOpened: false,
         })
         setUserInfoLoaded(true)
 
@@ -239,7 +240,6 @@ export const Layout: FC<LayoutProps> = ({ children }) => {
   const openParameterizedUrl = () => {
     // Check first if the URL is available
     if (!incomingCallStore.isUrlAvailable) {
-      console.error('URL not available')
       return
     }
 
@@ -252,9 +252,19 @@ export const Layout: FC<LayoutProps> = ({ children }) => {
       console.error('Invalid URL')
       return
     }
-
-    // Open URL in a new window
-    window.open(paramUrl, '_blank')
+    if (userInformation?.urlOpened && userInformation?.settings?.open_param_url !== 'button') {
+      return
+    } else {
+      // Open URL in a new window
+      // Add protocol if missing
+      const formattedUrl = paramUrl.startsWith('http') ? paramUrl : `https://${paramUrl}`
+      const newWindow = window.open('about:blank', '_blank')
+      if (newWindow) {
+        newWindow.location.href = formattedUrl
+        console.log('Opening URL in new window:', formattedUrl)
+        dispatch.user.setUrlOpened(true)
+      }
+    }
   }
 
   // get profiling data on page load
@@ -430,10 +440,7 @@ export const Layout: FC<LayoutProps> = ({ children }) => {
 
   // Event handling for URL opening
   useEventListener('phone-island-url-parameter-opened', () => {
-    if (
-      userInformation?.settings?.open_param_url === 'button' &&
-      incomingCallStore?.isUrlAvailable
-    ) {
+    if (userInformation?.settings?.open_param_url === 'button') {
       openParameterizedUrl()
     }
   })
@@ -633,15 +640,16 @@ export const Layout: FC<LayoutProps> = ({ children }) => {
       if (
         operators[currentUsername]?.mainPresence === 'ringing' &&
         userInformation?.settings?.open_param_url === 'ringing' &&
-        data[currentUsername]?.conversations &&
-        incomingCallStore?.isUrlAvailable
+        incomingCallStore?.isUrlAvailable &&
+        !userInformation?.urlOpened
       ) {
         openParameterizedUrl()
       } else if (
         operators[currentUsername]?.mainPresence === 'busy' &&
         userInformation?.settings?.open_param_url === 'answered' &&
         data[currentUsername]?.conversations &&
-        incomingCallStore?.isUrlAvailable
+        incomingCallStore?.isUrlAvailable &&
+        !userInformation?.urlOpened
       ) {
         openParameterizedUrl()
       }
@@ -952,6 +960,8 @@ export const Layout: FC<LayoutProps> = ({ children }) => {
       !closedCall
     ) {
       setClosedCall(true)
+      // restore open url value inside store to default
+      store.dispatch.user.setUrlOpened(false)
     } else {
       setClosedCall(false)
     }

@@ -438,7 +438,7 @@ const theme = {
     },
   },
   toast: {
-    base: 'pointer-events-auto max-w-xl overflow-hidden rounded-lg bg-white shadow-lg ring-1 ring-black ring-opacity-5 rounded-md py-4 pl-8 pr-16 w-full flex items-center',
+    base: 'pointer-events-auto max-w-xl overflow-hidden rounded-lg bg-elevationL2Invert dark:bg-elevationL2InvertDark shadow-lg ring-1 ring-black ring-opacity-5 rounded-lg p-6 pr-16 w-full flex items-center',
     type: {
       info: '',
       error: '',
@@ -454,10 +454,10 @@ const theme = {
       failed: 'border-green-400 bg-red-100 dark:border-green-500 dark:bg-green-800',
     },
     iconStyle: {
-      info: 'h-4 w-4 relative -top-0.5 text-blue-400 dark:text-blue-300',
-      error: 'h-4 w-4 relative -top-0.5 text-red-400 dark:text-red-300',
-      warning: 'h-4 w-4 relative -top-0.5 text-yellow-600 dark:text-yellow-300',
-      success: 'h-4 w-4 relative -top-0.5 text-green-600 dark:text-green-300',
+      info: 'h-5 w-5 relative',
+      error: 'h-5 w-5 relative',
+      warning: 'h-5 w-5 relative',
+      success: 'h-5 w-5 relative',
       failed: 'border-green-400 bg-red-100 dark:border-green-500 dark:bg-green-800',
     },
     childrenText: {

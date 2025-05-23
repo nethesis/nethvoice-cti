@@ -227,6 +227,23 @@ module.exports = {
         iconBadgeEmerald: '#065F46', // emerald-800
         iconBadgeEmeraldDark: '#ECFDF5', // emerald-50
 
+        //iconInfo
+        iconInfo: '#3730A3', // indigo-800
+        iconInfoDark: '#E0E7FF', // indigo-100
+
+        //iconSuccess
+        iconSuccess: '#166534', // green-800
+        iconSuccessDark: '#DCFCE7', // green-100
+
+        //iconWarning
+        iconWarning: '#92400e', // amber-800
+        iconWarningDark: '#FEF3C7', // amber-100
+
+        //iconError
+        iconError: '#9F1239', // rose-800
+        iconErrorDark: '#FFE4E6', // rose-100
+
+        //surface
         //surfaceBadgeBlue
         surfaceBadgeBlue: '#DBEAFE', // blue-100
         surfaceBadgeBlueDark: '#1D4ED8', // blue-700
@@ -255,6 +272,21 @@ module.exports = {
         surfacePresenceDND: '#030712', // gray-950
         surfacePresenceDNDDark: '#030712', // gray-950
 
+        //surfaceToast
+        surfaceToastInfo: '#E0E7FF', // indigo-100
+        surfaceToastInfoDark: '#312E81', // indigo-900
+
+        //surfaceToastSuccess
+        surfaceToastSuccess: '#DCFCE7', // green-100
+        surfaceToastSuccessDark: '#14532D', // green-900
+
+        //surfaceToastWarning
+        surfaceToastWarning: '#FEF3C7', // amber-100
+        surfaceToastWarningDark: '#7C2D12', // amber-900
+
+        //surfaceToastError
+        surfaceToastError: '#FFE4E6', // rose-100
+        surfaceToastErrorDark: '#7F1D1D', // rose-900
         //elevation
 
         //elevation0
