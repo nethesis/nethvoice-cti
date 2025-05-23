@@ -4,15 +4,13 @@ import { Transition } from '@headlessui/react'
 import classNames from 'classnames'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import {
-  faClose,
-  faCircle,
   faCircleInfo,
   faTriangleExclamation,
   faCircleCheck,
   faCircleXmark,
+  faXmark,
 } from '@fortawesome/free-solid-svg-icons'
-import { t } from 'i18next'
-import { ProgressionRing } from './ProgressionRing'
+import { Button } from './Button'
 
 export interface ToastProps extends ComponentProps<'div'> {
   type: 'info' | 'warning' | 'success' | 'error' | 'failed'
@@ -37,7 +35,9 @@ export const Toast: FC<ToastProps> = ({
 
   let checkIcon =
     type === 'info' ? (
-      <div className={`bg-blue-100 text-white rounded-full py-2 px-3`}>
+      <div
+        className={`bg-surfaceToastInfo dark:bg-surfaceToastInfoDark text-iconInfo dark:text-iconInfoDark rounded-full py-2 px-3 flex items-center justify-center`}
+      >
         <FontAwesomeIcon
           icon={faCircleInfo}
           className={theme?.iconStyle[type]}
@@ -45,7 +45,9 @@ export const Toast: FC<ToastProps> = ({
         />
       </div>
     ) : type === 'warning' ? (
-      <div className={`bg-yellow-100 text-white rounded-full py-2 px-3`}>
+      <div
+        className={`bg-surfaceToastWarning dark:bg-surfaceToastWarningDark text-iconWarning dark:text-iconWarningDark rounded-full py-2 px-3 flex items-center justify-center`}
+      >
         <FontAwesomeIcon
           icon={faTriangleExclamation}
           className={theme?.iconStyle[type]}
@@ -53,7 +55,9 @@ export const Toast: FC<ToastProps> = ({
         />
       </div>
     ) : type === 'success' ? (
-      <div className={`bg-emerald-100 text-white rounded-full py-2 px-3`}>
+      <div
+        className={`bg-surfaceToastSuccess dark:bg-surfaceToastSuccessDark text-iconSuccess dark:text-iconSuccessDark rounded-full py-4 px-4 flex items-center justify-center`}
+      >
         <FontAwesomeIcon
           icon={faCircleCheck}
           className={theme?.iconStyle[type]}
@@ -61,7 +65,7 @@ export const Toast: FC<ToastProps> = ({
         />
       </div>
     ) : (
-      <div className={`bg-blue-100 text-white rounded-full py-2 px-3`}>
+      <div className={`bg-blue-100 text-white rounded-full py-2 px-3 flex items-center justify-center`}>
         <FontAwesomeIcon
           icon={faCircleXmark}
           className={theme?.iconStyle[type]}
@@ -90,12 +94,18 @@ export const Toast: FC<ToastProps> = ({
       >
         <div>{checkIcon}</div>
         <div className='ml-6 mr-12 flex-1 pt-0.5'>
-          <p className='text-sm font-medium text-gray-900'>{title}</p>
-          <p className='mt-1 text-sm text-gray-500'>{children}</p>
+          <p className='text-lg font-medium leading-5 text-primaryNeutral dark:text-primaryNeutralDark'>
+            {title}
+          </p>
+          <p className='mt-1 text-sm font-normal text-secondaryNeutral dark:text-secondaryNeutralDark'>{children}</p>
         </div>
-        <div className='absolute top-0 right-0 mt-4 mr-1'>
-          <ProgressionRing seconds={timeout} size={20} />
-        </div>
+        <Button variant='ghost' className='absolute top-1/2 -translate-y-1/2 right-0 mr-2'>
+          <FontAwesomeIcon
+            icon={faXmark}
+            className='h-4 w-4 text-primaryNeutral dark:text-primaryNeutralDark cursor-pointer'
+            aria-hidden='true'
+          />
+        </Button>
       </div>
     </Transition>
   )

@@ -2,7 +2,9 @@
 // SPDX-License-Identifier: AGPL-3.0-or-later
 
 import { ComponentPropsWithRef, forwardRef, useEffect, useState, Fragment } from 'react'
-import { Button, SideDrawerCloseIcon } from '../common'
+import { Button } from '../common'
+import { DrawerHeader } from '../common/DrawerHeader'
+import { Divider } from '../common/Divider'
 import { t } from 'i18next'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { faCheck, faChevronDown, faCircleInfo } from '@fortawesome/free-solid-svg-icons'
@@ -22,6 +24,7 @@ import { getInputOutputLocalStorageValue } from '../../lib/devices'
 import { eventDispatch } from '../../lib/hooks/eventDispatch'
 import { isEmpty } from 'lodash'
 import { setJSONItem } from '../../lib/storage'
+import { CustomThemedTooltip } from '../common/CustomThemedTooltip'
 
 export interface SwitchInputOutputDrawerContentProps extends ComponentPropsWithRef<'div'> {
   config: any
@@ -134,26 +137,9 @@ export const SwitchInputOutputDrawerContent = forwardRef<
 
   return (
     <>
-      {/* Drawer header */}
-      <div className='bg-white dark:bg-gray-900 pt-6 px-6'>
-        <div className='flex items-center justify-between'>
-          {/* Title */}
-          <div className='text-lg font-medium dark:text-gray-200 text-gray-700'>
-            {t('Devices.Audio and video settings')}: {t('Devices.Web phone')}
-          </div>
-          <div className='flex items-center h-7'>
-            <SideDrawerCloseIcon />
-          </div>
-        </div>
-      </div>
-
+      <DrawerHeader title={`${t('Devices.Audio and video settings')}: ${t('Devices.Web phone')}`} />
       <div className='px-5'>
-        {/* Divider */}
-        <div className='relative pb-8'>
-          <div className='absolute inset-0 flex items-center' aria-hidden='true'>
-            <div className='w-full border-t border-gray-300 dark:border-gray-600' />
-          </div>
-        </div>
+        <Divider />
         <>
           {/* Audio input section */}
           <div className='flex items-center justify-between'>
@@ -169,7 +155,7 @@ export const SwitchInputOutputDrawerContent = forwardRef<
                 data-tooltip-content={t('Devices.Audio input information tooltip') || ''}
               />
               {/* Audio input information tooltip */}
-              <Tooltip id='tooltip-input-information' place='right' />
+              <CustomThemedTooltip id='tooltip-input-information' place='right' />
             </div>
           </div>
 
@@ -260,7 +246,7 @@ export const SwitchInputOutputDrawerContent = forwardRef<
                 data-tooltip-content={t('Devices.Audio output information tooltip') || ''}
               />
               {/* Audio output information tooltip */}
-              <Tooltip id='tooltip-output-information' place='right' />
+              <CustomThemedTooltip id='tooltip-output-information' place='right' />
             </div>
           </div>
 
@@ -355,7 +341,7 @@ export const SwitchInputOutputDrawerContent = forwardRef<
                 data-tooltip-content={t('Devices.Video input information tooltip') || ''}
               />
               {/* Video input information tooltip */}
-              <Tooltip id='tooltip-video-input-information' place='right' />
+              <CustomThemedTooltip id='tooltip-video-input-information' place='right' />
             </div>
           </div>
 
@@ -433,11 +419,7 @@ export const SwitchInputOutputDrawerContent = forwardRef<
           </Listbox>
         </>
         {/* Divider */}
-        <div className='relative pb-10 pt-6'>
-          <div className='absolute inset-0 flex items-center' aria-hidden='true'>
-            <div className='w-full border-t border-gray-300 dark:border-gray-600' />
-          </div>
-        </div>
+        <Divider paddingY='pb-10 pt-6' />
         {/* Footer section */}
         <div className='flex justify-end'>
           <Button variant='ghost' type='submit' onClick={closeSideDrawer} className='mb-4'>

@@ -9,7 +9,7 @@
 
 import { SpeedDialContent } from '../common/UserRightSideMenu/SpeedDialContent'
 import { useSelector } from 'react-redux'
-import { RootState, store } from '../../store'
+import { RootState } from '../../store'
 
 export const SpeedDial = () => {
   const rightSideStatus: any = useSelector((state: RootState) => state.rightSideMenu)

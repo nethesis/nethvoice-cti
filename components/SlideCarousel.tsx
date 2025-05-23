@@ -4,7 +4,7 @@ import 'slick-carousel/slick/slick.css'
 import 'slick-carousel/slick/slick-theme.css'
 import { Button } from './common'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
-import { faChevronLeft, faChevronRight } from '@fortawesome/free-solid-svg-icons'
+import { faChevronLeft, faAngleRight } from '@fortawesome/free-solid-svg-icons'
 
 interface SliderCarouselProps {
   cards: any
@@ -44,7 +44,7 @@ const SliderCarousel: React.FC<SliderCarouselProps> = ({ cards, numberOfParkingN
           isLastSlide ? 'invisible' : ''
         }`}
       >
-        <FontAwesomeIcon className='' icon={faChevronRight} />
+        <FontAwesomeIcon className='' icon={faAngleRight} />
       </Button>
     )
   }

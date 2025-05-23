@@ -15,7 +15,7 @@ import {
   faCircleInfo,
   faArrowRight,
   faChevronLeft,
-  faChevronRight,
+  faAngleRight,
 } from '@fortawesome/free-solid-svg-icons'
 import { useSelector } from 'react-redux'
 import { RootState } from '../../store'
@@ -388,7 +388,7 @@ export const ConfigureKeysSection = forwardRef<HTMLButtonElement, ConfigureKeysS
                 onClick={() => paginate(currentPage + 1)}
                 disabled={!isRightButtonVisible || !visibleFilter}
               >
-                <FontAwesomeIcon icon={faChevronRight} className='h-4 w-4' />
+                <FontAwesomeIcon icon={faAngleRight} className='h-4 w-4' />
               </Button>
             </div>
           </div>
@@ -407,7 +407,7 @@ export const ConfigureKeysSection = forwardRef<HTMLButtonElement, ConfigureKeysS
                 onClick={() => paginate(currentPage + 1)}
                 disabled={!isRightButtonVisible || !visibleFilter}
               >
-                <FontAwesomeIcon icon={faChevronRight} className='h-4 w-4' />
+                <FontAwesomeIcon icon={faAngleRight} className='h-4 w-4' />
               </Button>
             </div>
           </>

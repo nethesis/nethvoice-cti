@@ -3,7 +3,10 @@
 
 import { ComponentPropsWithRef, forwardRef, useEffect, useState, useRef } from 'react'
 import classNames from 'classnames'
-import { SideDrawerCloseIcon, Switch, InlineNotification } from '../common'
+import { Switch, InlineNotification } from '../common'
+import { DrawerHeader } from '../common/DrawerHeader'
+import { Divider } from '../common/Divider'
+import { DrawerFooter } from '../common/DrawerFooter'
 
 import { useTranslation } from 'react-i18next'
 import {
@@ -955,26 +958,11 @@ export const ShowMultiplePhoneLinesDrawerContent = forwardRef<
 
   return (
     <>
-      {/* Drawer title */}
-      <div className='bg-white dark:bg-gray-900 pt-6 px-6'>
-        <div className='flex items-center justify-between'>
-          <div className='text-lg font-medium text-gray-700 dark:text-gray-200'>
-            {t('Lines.Configure all lines selected')}
-          </div>
-          <div className='flex items-center h-7'>
-            <SideDrawerCloseIcon />
-          </div>
-        </div>
-      </div>
+      <DrawerHeader title={t('Lines.Configure all lines selected')} />
       <div className={classNames(className)} {...props}>
         {/* Activate configuration */}
         <div className='px-5'>
-          {/* Divider */}
-          <div className='relative pb-8'>
-            <div className='absolute inset-0 flex items-center' aria-hidden='true'>
-              <div className='w-full border-t border-gray-300 dark:border-gray-600' />
-            </div>
-          </div>
+          <Divider />
           <div className='flex items-center justify-between mt-1'>
             <h4 className=' text-base font-medium text-gray-700 dark:text-gray-200'>
               {t('Lines.Activate configuration')}
@@ -1017,25 +1005,14 @@ export const ShowMultiplePhoneLinesDrawerContent = forwardRef<
           </>
         )}
         {/* Divider */}
-        <div className='relative pb-10 pt-6'>
-          <div className='absolute inset-0 flex items-center' aria-hidden='true'>
-            <div className='w-full border-t border-gray-300 dark:border-gray-600' />
-          </div>
-        </div>
-        {/* Footer section */}
-        {/* Bottom button to Save or Cancel*/}
-        <div className='flex items-center justify-end mt-6 px-5 pt-2'>
-          <Button variant='ghost' type='submit' onClick={closeSideDrawer} className='mb-4'>
-            {t('Common.Cancel')}
-          </Button>
-          <Button
-            variant='primary'
-            type='submit'
-            onClick={saveEditPhoneLines}
-            className='ml-4 mb-4'
-          >
-            {t('Common.Save')}
-          </Button>
+        <Divider paddingY='pb-10 pt-6' />
+
+        <div className='px-5'>
+          <DrawerFooter
+            cancelLabel={t('Common.Cancel') || ''}
+            confirmLabel={t('Common.Save')}
+            onConfirm={saveEditPhoneLines}
+          />
         </div>
       </div>
     </>

@@ -5,12 +5,12 @@ import { FC, ReactNode, useState, useEffect, useRef } from 'react'
 import { NavBar, TopBar, MobileNavBar, SideDrawer, UserSidebarDrawer } from '.'
 import { navItems, NavItemsProps } from '../../config/routes'
 import { useRouter } from 'next/router'
-import { getUserInfo } from '../../services/user'
+import { getUserInfo, getParamUrl } from '../../services/user'
 import { useDispatch } from 'react-redux'
 import { Dispatch } from '../../store'
 import { RootState } from '../../store'
 import { useSelector } from 'react-redux'
-import { closeSideDrawer, getProductName, closeToast } from '../../lib/utils'
+import { closeSideDrawer, getProductName, closeToast, customScrollbarClass } from '../../lib/utils'
 import { store } from '../../store'
 import {
   buildOperators,
@@ -41,10 +41,11 @@ import Toast from '../common/Toast'
 import { getCustomerCardsList, setUserSettings } from '../../lib/customerCard'
 import { retrieveParksList } from '../../lib/park'
 import { Tooltip } from 'react-tooltip'
-import { getJSONItem, setJSONItem } from '../../lib/storage'
+import { getJSONItem, loadPreference, savePreference, setJSONItem } from '../../lib/storage'
 import { eventDispatch } from '../../lib/hooks/eventDispatch'
 import { setMainDevice } from '../../lib/devices'
 import { useHotkeys } from 'react-hotkeys-hook'
+import { setIncomingCallsPreference } from '../../lib/incomingCall'
 
 export const Layout: FC<LayoutProps> = ({ children }) => {
   const [openMobileMenu, setOpenMobileMenu] = useState<boolean>(false)
@@ -106,6 +107,7 @@ export const Layout: FC<LayoutProps> = ({ children }) => {
   }, [router])
 
   const [resfreshUserInfo, setResfreshUserInfo] = useState(true)
+  const incomingCallStore = useSelector((state: RootState) => state.incomingCall)
 
   // get logged user data on page load
   useEffect(() => {
@@ -125,8 +127,69 @@ export const Layout: FC<LayoutProps> = ({ children }) => {
           settings: userInfo.data.settings,
           recallOnBusy: userInfo?.data?.recallOnBusy,
           lkhash: userInfo?.data?.lkhash,
+          urlOpened: false,
         })
         setUserInfoLoaded(true)
+
+        // Get URL parameter
+        try {
+          const paramUrlResponse = await getParamUrl()
+          // Verify that the response contains a valid URL (not empty)
+          if (paramUrlResponse?.data?.url && paramUrlResponse.data.url.trim() !== '') {
+            // Save URL to store
+            dispatch.incomingCall.setParamUrl(paramUrlResponse.data.url)
+            // Save URL to localStorage
+            savePreference('incomingCallUrl', paramUrlResponse.data.url, userInfo.data.username)
+            dispatch.incomingCall.setLoaded(true)
+            dispatch.incomingCall.setUrlAvailable(true)
+          } else {
+            // Empty response or invalid URL - treat as an error
+            dispatch.incomingCall.setErrorMessage('Invalid URL configuration')
+            dispatch.incomingCall.setUrlAvailable(false)
+
+            // Set preference to 'never' if URL is not available
+            if (
+              userInfo.data.settings?.open_param_url &&
+              userInfo.data.settings.open_param_url !== 'never'
+            ) {
+              const settingsStatus = { open_param_url: 'never' }
+              try {
+                await setIncomingCallsPreference(settingsStatus)
+                dispatch.user.updateOpenParamUrl('never')
+              } catch (error) {
+                console.error('Failed to set preference to never:', error)
+              }
+            }
+
+            // Use a placeholder URL just to show something in the interface
+            const defaultUrl = 'https://www.example.com/customers?phone={phone}'
+            dispatch.incomingCall.setParamUrl(defaultUrl)
+            dispatch.incomingCall.setLoaded(true)
+          }
+        } catch (error) {
+          console.error('Error loading parameter URL:', error)
+          dispatch.incomingCall.setErrorMessage('Cannot retrieve URL configuration')
+          dispatch.incomingCall.setUrlAvailable(false)
+
+          // Set preference to 'never' if URL is not available
+          if (
+            userInfo.data.settings?.open_param_url &&
+            userInfo.data.settings.open_param_url !== 'never'
+          ) {
+            const settingsStatus = { open_param_url: 'never' }
+            try {
+              await setIncomingCallsPreference(settingsStatus)
+              dispatch.user.updateOpenParamUrl('never')
+            } catch (error) {
+              console.error('Failed to set preference to never:', error)
+            }
+          }
+
+          // Use a placeholder URL just to show something in the interface
+          const defaultUrl = 'https://www.example.com/customers?phone={phone}'
+          dispatch.incomingCall.setParamUrl(defaultUrl)
+          dispatch.incomingCall.setLoaded(true)
+        }
       } else {
         if (!ctiStatus.isUserInformationMissing) {
           // update global store
@@ -172,6 +235,37 @@ export const Layout: FC<LayoutProps> = ({ children }) => {
       document.removeEventListener('visibilitychange', visibilityChangeHandler)
     }
   }, [isUserInfoLoaded, resfreshUserInfo])
+
+  // Function to open the parameterized URL
+  const openParameterizedUrl = () => {
+    // Check first if the URL is available
+    if (!incomingCallStore.isUrlAvailable) {
+      return
+    }
+
+    // Get URL from cache or store
+    const paramUrl =
+      incomingCallStore.paramUrl || loadPreference('incomingCallUrl', authStore.username) || ''
+
+    // If there's no valid URL, don't open anything
+    if (!paramUrl) {
+      console.error('Invalid URL')
+      return
+    }
+    if (userInformation?.urlOpened && userInformation?.settings?.open_param_url !== 'button') {
+      return
+    } else {
+      // Open URL in a new window
+      // Add protocol if missing
+      const formattedUrl = paramUrl.startsWith('http') ? paramUrl : `https://${paramUrl}`
+      const newWindow = window.open('about:blank', '_blank')
+      if (newWindow) {
+        newWindow.location.href = formattedUrl
+        console.log('Opening URL in new window:', formattedUrl)
+        dispatch.user.setUrlOpened(true)
+      }
+    }
+  }
 
   // get profiling data on page load
   useEffect(() => {
@@ -343,6 +437,13 @@ export const Layout: FC<LayoutProps> = ({ children }) => {
   const [conversationObject, setConversationObject]: any = useState({})
 
   const [variableCheck, setVariableCheck] = useState(false)
+
+  // Event handling for URL opening
+  useEventListener('phone-island-url-parameter-opened', () => {
+    if (userInformation?.settings?.open_param_url === 'button') {
+      openParameterizedUrl()
+    }
+  })
 
   useEffect(() => {
     function showNotification() {
@@ -524,7 +625,7 @@ export const Layout: FC<LayoutProps> = ({ children }) => {
     store.dispatch.operators.updateExten(data[opName]?.number, extensionInformation)
   })
 
-  useEventListener('phone-island-conversations', (data) => {
+  useEventListener('phone-island-conversations', (data: any) => {
     const opName = Object.keys(data)[0]
     const conversations = data[opName].conversations
     store.dispatch.operators.updateConversations(opName, conversations)
@@ -534,39 +635,61 @@ export const Layout: FC<LayoutProps> = ({ children }) => {
     if (!firstRenderDetach) {
       setFirstRenderDetach(true)
     }
-    // update queue connected calls
 
-    let queueConnectedCalls: any = {}
+    if (data[currentUsername] && operators[currentUsername]) {
+      if (
+        operators[currentUsername]?.mainPresence === 'ringing' &&
+        userInformation?.settings?.open_param_url === 'ringing' &&
+        incomingCallStore?.isUrlAvailable &&
+        !userInformation?.urlOpened
+      ) {
+        openParameterizedUrl()
+      } else if (
+        operators[currentUsername]?.mainPresence === 'busy' &&
+        userInformation?.settings?.open_param_url === 'answered' &&
+        data[currentUsername]?.conversations &&
+        incomingCallStore?.isUrlAvailable &&
+        !userInformation?.urlOpened
+      ) {
+        openParameterizedUrl()
+      }
+    }
 
-    let queueManagerConnectedCalls: any = {}
+    // Update queue connected calls
+    // Process all conversations once and organize them by queue type
+    const queueConnectedCalls: any = {}
+    const queueManagerConnectedCalls: any = {}
 
+    // Single loop through conversations to map them to appropriate queues
     Object.values(conversations).forEach((conversation: any) => {
       if (conversation?.throughQueue && conversation?.connected && conversation?.queueId) {
-        const queueFound = queuesStore.queues[conversation.queueId]
-        const queueManagerFound = queueManagerStore.queues[conversation.queueId]
+        const queueId = conversation.queueId
+        const callInfo = { conversation, operatorUsername: opName }
 
-        if (queueFound) {
-          let calls = queueConnectedCalls[queueFound.queue] || []
-          calls.push({ conversation, operatorUsername: opName })
-          queueConnectedCalls[queueFound.queue] = calls
+        // Check and update regular queues
+        if (queuesStore.queues[queueId]) {
+          const queueName = queuesStore.queues[queueId].queue
+          queueConnectedCalls[queueName] = queueConnectedCalls[queueName] || []
+          queueConnectedCalls[queueName].push(callInfo)
         }
 
-        if (queueManagerFound) {
-          let callsQueueManager = queueManagerConnectedCalls[queueManagerFound.queue] || []
-          callsQueueManager.push({ conversation, operatorUsername: opName })
-          queueManagerConnectedCalls[queueManagerFound.queue] = callsQueueManager
+        // Check and update queue manager queues
+        if (queueManagerStore.queues[queueId]) {
+          const queueName = queueManagerStore.queues[queueId].queue
+          queueManagerConnectedCalls[queueName] = queueManagerConnectedCalls[queueName] || []
+          queueManagerConnectedCalls[queueName].push(callInfo)
         }
       }
     })
 
-    Object.keys(queueConnectedCalls).forEach((queueId: string) => {
-      const connectedCalls = queueConnectedCalls[queueId]
-      store?.dispatch?.queues?.setConnectedCalls(queueId, connectedCalls)
+    // Update store with processed calls for regular queues
+    Object.entries(queueConnectedCalls).forEach(([queueId, calls]) => {
+      store?.dispatch?.queues?.setConnectedCalls(queueId, calls)
     })
 
-    Object.keys(queueConnectedCalls).forEach((queueId: string) => {
-      const connectedQueueManagerCalls = queueManagerConnectedCalls[queueId]
-      store?.dispatch?.queueManagerQueues?.setConnectedCalls(queueId, connectedQueueManagerCalls)
+    // Update store with processed calls for queue manager queues
+    Object.entries(queueManagerConnectedCalls).forEach(([queueId, calls]) => {
+      store?.dispatch?.queueManagerQueues?.setConnectedCalls(queueId, calls)
     })
 
     // To delete connected calls we need to check user inside store
@@ -837,6 +960,8 @@ export const Layout: FC<LayoutProps> = ({ children }) => {
       !closedCall
     ) {
       setClosedCall(true)
+      // restore open url value inside store to default
+      store.dispatch.user.setUrlOpened(false)
     } else {
       setClosedCall(false)
     }
@@ -1071,7 +1196,7 @@ export const Layout: FC<LayoutProps> = ({ children }) => {
           {/* Main content */}
           <div className='flex flex-1 items-stretch overflow-hidden bg-body dark:bg-bodyDark'>
             <main
-              className={`flex-1 overflow-y-auto scrollbar-thin scrollbar-thumb-gray-400 dark:scrollbar-thumb-gray-400 scrollbar-thumb-rounded-full scrollbar-thumb-opacity-50 scrollbar-track-gray-200 dark:scrollbar-track-gray-900 scrollbar-track-rounded-full scrollbar-track-opacity-25 ${
+              className={`flex-1 ${customScrollbarClass} ${
                 parkingInfo?.isParkingFooterVisible &&
                 profile?.macro_permissions?.settings?.permissions?.parkings?.value
                   ? 'h-[55rem]'
@@ -1100,7 +1225,7 @@ export const Layout: FC<LayoutProps> = ({ children }) => {
 
             {/* Secondary column (hidden on smaller screens) */}
             <UserNavBar />
-            <div className='absolute bottom-6 right-9 z-50'>
+            <div className='absolute top-6 right-9 z-50'>
               {toast?.isShown && (
                 <div>
                   <Toast

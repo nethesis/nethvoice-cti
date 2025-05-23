@@ -8,7 +8,7 @@ import { isEmpty, debounce } from 'lodash'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { openShowPhoneLinesDrawer } from '../../lib/lines'
 import { openShowRuleDetailsDrawer } from '../../lib/lines'
-import { faPhone, faChevronRight } from '@fortawesome/free-solid-svg-icons'
+import { faPhone, faAngleRight } from '@fortawesome/free-solid-svg-icons'
 import classNames from 'classnames'
 import { RulesFilter } from './RulesFilter'
 import { useSelector } from 'react-redux'
@@ -203,7 +203,7 @@ export const RulesView: FC<RulesViewProps> = ({ className }): JSX.Element => {
                         {/* show details */}
                         <td className='relative whitespace-nowrap py-4 pl-3 pr-4 text-right text-sm font-medium sm:pr-6'>
                           <FontAwesomeIcon
-                            icon={faChevronRight}
+                            icon={faAngleRight}
                             className='h-3 w-3 p-2 cursor-pointer text-gray-500 dark:text-gray-500'
                             aria-hidden='true'
                             onClick={() => openShowRuleDetailsDrawer(announcement.name)}
@@ -257,7 +257,7 @@ export const RulesView: FC<RulesViewProps> = ({ className }): JSX.Element => {
                   onClick={() => goToNextPage()}
                 >
                   <span>{t('Common.Next page')}</span>
-                  <FontAwesomeIcon icon={faChevronRight} className='ml-2 h-4 w-4' />
+                  <FontAwesomeIcon icon={faAngleRight} className='ml-2 h-4 w-4' />
                 </Button>
               </div>
             </nav>

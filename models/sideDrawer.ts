@@ -3,17 +3,18 @@
 
 import { createModel } from '@rematch/core'
 import type { RootModel } from '.'
+import { ContentType } from '../components/layout/SideDrawer'
 
 interface DefaultState {
   isShown: boolean
-  contentType: string
+  contentType: ContentType
   config: any
   avoidClose?: boolean
 }
 
 const defaultState: DefaultState = {
   isShown: false,
-  contentType: '',
+  contentType: 'showContact' as ContentType,
   config: null,
   avoidClose: false,
 }

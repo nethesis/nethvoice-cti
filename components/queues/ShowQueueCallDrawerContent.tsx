@@ -3,7 +3,8 @@
 
 import { ComponentPropsWithRef, forwardRef, useEffect, useState } from 'react'
 import classNames from 'classnames'
-import { Avatar, InlineNotification, SideDrawerCloseIcon } from '../common'
+import { Avatar, InlineNotification } from '../common'
+import { DrawerHeader } from '../common/DrawerHeader'
 import { useTranslation } from 'react-i18next'
 import {
   faChevronDown,
@@ -122,16 +123,7 @@ export const ShowQueueCallDrawerContent = forwardRef<
 
   return (
     <>
-      <div className='bg-white dark:bg-gray-900 pt-6 px-6'>
-        <div className='flex items-center justify-between'>
-          <div className='text-lg font-medium text-gray-700 dark:text-gray-200'>
-            {t('Queues.Call details')}
-          </div>
-          <div className='flex items-center h-7'>
-            <SideDrawerCloseIcon />
-          </div>
-        </div>
-      </div>
+      <DrawerHeader title={t('Queues.Call details')} />
       <div className={classNames(className, 'p-5')} {...props}>
         <dl>
           {/* name */}

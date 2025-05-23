@@ -12,6 +12,7 @@ import { IconDefinition } from '@fortawesome/fontawesome-common-types'
 export interface DropdownItemProps extends Omit<ComponentProps<'div'>, 'className'> {
   onClick?: () => void
   icon?: IconDefinition
+  iconClassName?: string
   centered?: boolean
   variantTop?: boolean
   isRed?: boolean
@@ -21,6 +22,7 @@ export const DropdownItem: FC<DropdownItemProps> = ({
   children,
   onClick,
   icon: Icon,
+  iconClassName = '',
   centered,
   variantTop,
   isRed,
@@ -46,7 +48,10 @@ export const DropdownItem: FC<DropdownItemProps> = ({
           {Icon && (
             <FontAwesomeIcon
               icon={Icon}
-              className={isRed && !active ? theme?.item?.iconRed : !isRed ? theme?.item?.icon : ''}
+              className={classNames(
+                isRed && !active ? theme?.item?.iconRed : !isRed ? theme?.item?.icon : '',
+                iconClassName,
+              )}
             />
           )}
           {children}

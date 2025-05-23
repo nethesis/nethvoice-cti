@@ -8,7 +8,7 @@ import { useState } from 'react'
 import { closeSideDrawer, formatFileSize } from '../../../lib/utils'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { faSave, faXmark } from '@fortawesome/free-solid-svg-icons'
-import { SideDrawerCloseIcon } from '../SideDrawerCloseIcon'
+import { DrawerHeader } from '../DrawerHeader'
 import { t } from 'i18next'
 import { Avatar } from '../Avatar'
 import { uploadProfilePicture } from '../../../lib/profilePicture'
@@ -190,23 +190,9 @@ export const SelectProfilePictureDrawerContent = forwardRef<
 
   return (
     <>
-      <div className='bg-white dark:bg-gray-900 pt-6 px-6'>
-        <div className='flex items-center justify-between'>
-          <div className='text-lg font-medium dark:text-gray-200 text-gray-700'>
-            {t('Settings.Upload profile picture')}
-          </div>
-          <div className='flex items-center h-7'>
-            <SideDrawerCloseIcon />
-          </div>
-        </div>
-      </div>
+      <DrawerHeader title={t('Settings.Upload profile picture')}  onClose={closeSideDrawer}/>
       <div className={classNames(className, 'px-5')} {...props}>
-        {/* Divider */}
-        <div className='relative pb-8'>
-          <div className='absolute inset-0 flex items-center' aria-hidden='true'>
-            <div className='w-full border-t border-gray-300 dark:border-gray-600' />
-          </div>
-        </div>
+        
         <>
           {/* Profile picture drawer section */}
           <div className='flex items-center justify-between mt-2'>

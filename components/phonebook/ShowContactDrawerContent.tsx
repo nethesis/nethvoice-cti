@@ -6,7 +6,8 @@ import classNames from 'classnames'
 import { useSelector } from 'react-redux'
 import { RootState } from '../../store'
 import { ContactSummary } from './ContactSummary'
-import { SideDrawerCloseIcon } from '../common'
+import { DrawerHeader } from '../common/DrawerHeader'
+import { Divider } from '../common/Divider'
 import { useTranslation } from 'react-i18next'
 
 export interface ShowContactDrawerContentProps extends ComponentPropsWithRef<'div'> {
@@ -23,24 +24,10 @@ export const ShowContactDrawerContent = forwardRef<
 
   return (
     <>
-      <div className='bg-white dark:bg-gray-900 pt-6 px-6'>
-        <div className='flex items-center justify-between'>
-          <div className='text-lg font-medium dark:text-gray-200 text-gray-700'>
-            {t('Phonebook.Contact details')}
-          </div>
-          <div className='flex items-center h-7'>
-            <SideDrawerCloseIcon />
-          </div>
-        </div>
-      </div>
+      <DrawerHeader title={t('Phonebook.Contact details')} />
 
       <div className={classNames(className, 'px-5')} {...props}>
-        {/* divider */}
-        <div className='relative pb-8'>
-          <div className='absolute inset-0 flex items-center' aria-hidden='true'>
-            <div className='w-full border-t border-gray-300 dark:border-gray-600' />
-          </div>
-        </div>
+        <Divider />
         <ContactSummary contact={config} isShownContactMenu={true} isShownSideDrawerLink={false} />
       </div>
     </>

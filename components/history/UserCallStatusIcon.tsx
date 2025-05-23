@@ -5,6 +5,7 @@ import { faXmark, faArrowLeft, IconDefinition } from '@fortawesome/free-solid-sv
 import { Tooltip } from 'react-tooltip'
 import { useTranslation } from 'react-i18next'
 import { CallTypes } from '../../lib/history'
+import { CustomThemedTooltip } from '../common/CustomThemedTooltip'
 
 interface UserCallStatusIconProps {
   call: CallTypes
@@ -29,7 +30,7 @@ export const UserCallStatusIcon: FC<UserCallStatusIconProps> = ({ call }) => {
                   data-tooltip-content={t('History.Incoming answered') || ''}
                 />
 
-                <Tooltip id='tooltip-incoming-answered' place='left' className='pi-z-20' />
+                <CustomThemedTooltip id='tooltip-incoming-answered' place='left' />
               </>
             ) : (
               <>
@@ -41,7 +42,7 @@ export const UserCallStatusIcon: FC<UserCallStatusIconProps> = ({ call }) => {
                   data-tooltip-content={t('History.Incoming missed') || ''}
                 />
 
-                <Tooltip id='tooltip-incoming-missed' place='left' className='pi-z-20' />
+                <CustomThemedTooltip id='tooltip-incoming-missed' place='left' />
               </>
             )}
           </div>
@@ -58,7 +59,7 @@ export const UserCallStatusIcon: FC<UserCallStatusIconProps> = ({ call }) => {
                   data-tooltip-content={t('History.Outgoing answered') || ''}
                 />
 
-                <Tooltip id='tooltip-outgoing-answered' place='left' className='pi-z-20' />
+                <CustomThemedTooltip id='tooltip-outgoing-answered' place='left'/>
               </>
             ) : (
               <>
@@ -70,7 +71,7 @@ export const UserCallStatusIcon: FC<UserCallStatusIconProps> = ({ call }) => {
                   data-tooltip-content={t('History.Outgoing missed') || ''}
                 />
 
-                <Tooltip id='tooltip-outgoing-missed' place='left' className='pi-z-20' />
+                <CustomThemedTooltip id='tooltip-outgoing-missed' place='left'/>
               </>
             )}
           </div>

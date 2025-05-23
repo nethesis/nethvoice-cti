@@ -3,7 +3,10 @@
 
 import { ComponentPropsWithRef, forwardRef } from 'react'
 import classNames from 'classnames'
-import { TextInput, Button, InlineNotification, SideDrawerCloseIcon } from '../common'
+import { TextInput, InlineNotification } from '../common'
+import { DrawerHeader } from '../common/DrawerHeader'
+import { Divider } from '../common/Divider'
+import { DrawerFooter } from '../common/DrawerFooter'
 import { useState, useRef, useEffect } from 'react'
 import { createContact, editContact, reloadPhonebook, fetchContact } from '../../lib/phonebook'
 import { closeSideDrawer } from '../../lib/utils'
@@ -312,27 +315,17 @@ export const CreateOrEditContactDrawerContent = forwardRef<
 
   return (
     <>
-      <div className='bg-white dark:bg-gray-900 pt-6 px-6'>
-        <div className='flex items-center justify-between'>
-          <div className='text-lg font-medium dark:text-gray-200 text-gray-700'>
-            {config?.isEdit
-              ? config?.contact?.phone
-                ? t('Phonebook.Add phone number') + ': ' + config?.contact?.phone
-                : t('Phonebook.Edit contact')
-              : t('Phonebook.Create contact')}
-          </div>
-          <div className='flex items-center h-7'>
-            <SideDrawerCloseIcon />
-          </div>
-        </div>
-      </div>
+      <DrawerHeader
+        title={
+          config?.isEdit
+            ? config?.contact?.phone
+              ? t('Phonebook.Add phone number') + ': ' + config?.contact?.phone
+              : t('Phonebook.Edit contact')
+            : t('Phonebook.Create contact')
+        }
+      />
       <div className={classNames(className, 'px-5')} {...props}>
-        {/* Divider */}
-        <div className='relative pb-8'>
-          <div className='absolute inset-0 flex items-center' aria-hidden='true'>
-            <div className='w-full border-t border-gray-300 dark:border-gray-600' />
-          </div>
-        </div>
+        <Divider />
         {/* contact visibility */}
         <div className='mb-6'>
           <label className='text-sm font-medium text-gray-700 dark:text-gray-200'>
@@ -449,35 +442,21 @@ export const CreateOrEditContactDrawerContent = forwardRef<
           <InlineNotification type='error' title={editContactError} className='mb-4' />
         )}
         {/* Divider */}
-        <div className='relative pb-10 pt-6'>
-          <div className='absolute inset-0 flex items-center' aria-hidden='true'>
-            <div className='w-full border-t border-gray-300 dark:border-gray-600' />
-          </div>
-        </div>
-        <div className='flex items-center justify-end'>
-          <Button variant='ghost' type='submit' onClick={closeSideDrawer} className='mb-4'>
-            {t('Common.Cancel')}
-          </Button>
-          {config?.isEdit ? (
-            <Button
-              variant='primary'
-              type='submit'
-              onClick={prepareEditContact}
-              className='ml-4 mb-4'
-            >
-              {t('Phonebook.Save contact')}
-            </Button>
-          ) : (
-            <Button
-              variant='primary'
-              type='submit'
-              onClick={prepareCreateContact}
-              className='ml-4 mb-4'
-            >
-              {t('Phonebook.Create contact')}
-            </Button>
-          )}
-        </div>
+        <Divider paddingY='pb-10 pt-6' />
+
+        {config?.isEdit ? (
+          <DrawerFooter
+            cancelLabel={t('Common.Cancel') || ''}
+            confirmLabel={t('Phonebook.Save contact')}
+            onConfirm={prepareEditContact}
+          />
+        ) : (
+          <DrawerFooter
+            cancelLabel={t('Common.Cancel') || ''}
+            confirmLabel={t('Phonebook.Create contact')}
+            onConfirm={prepareCreateContact}
+          />
+        )}
       </div>
     </>
   )

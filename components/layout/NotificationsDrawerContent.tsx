@@ -7,7 +7,8 @@ import { useSelector } from 'react-redux'
 import { RootState, store } from '../../store'
 import { callPhoneNumber, transferCallToExtension } from '../../lib/utils'
 import { formatInTimeZoneLoc } from '../../lib/dateTime'
-import { Badge, EmptyState, IconSwitch, SideDrawerCloseIcon } from '../common'
+import { Badge, EmptyState, IconSwitch } from '../common'
+import { DrawerHeader } from '../common/DrawerHeader'
 import {
   faBell,
   faCommentDots,
@@ -31,7 +32,6 @@ export const NotificationsDrawerContent = forwardRef<
   const { t } = useTranslation()
   const authStore = useSelector((state: RootState) => state.authentication)
   const notificationsStore = useSelector((state: RootState) => state.notifications)
-
   const operatorsStore = useSelector((state: RootState) => state.operators)
 
   const toggleNotificationRead = (notification: any) => {
@@ -175,6 +175,17 @@ export const NotificationsDrawerContent = forwardRef<
 
   return (
     <>
+      <DrawerHeader 
+        title={t('Notifications.Notifications')} 
+        rightContent={
+          <div
+            className='text-sm cursor-pointer hover:underline mr-5 text-gray-700 dark:text-gray-200'
+            onClick={markAllAsRead}
+          >
+            {t('Notifications.Mark all as read')}
+          </div>
+        }
+      />
       {/* drawer content */}
       <div className={classNames(className)} {...props}>
         <div className='bg-white dark:bg-gray-900 pt-6 px-6'>
@@ -191,9 +202,6 @@ export const NotificationsDrawerContent = forwardRef<
               </div>
             </div>
 
-            <div className='flex items-center h-7'>
-              <SideDrawerCloseIcon className='p-0.5' />
-            </div>
           </div>
         </div>
         {/* skeleton */}
