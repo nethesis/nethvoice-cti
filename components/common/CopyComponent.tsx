@@ -108,7 +108,7 @@ const CopyToClipboard: React.FC<CopyToClipboardProps> = ({
           onClick={handleCopy}
         >
           <FontAwesomeIcon 
-            className={`w-4 h-4 ${isWhite ? 'text-white' : 'text-green-600'}`} 
+            className={`w-4 h-4 ${isWhite ? 'text-iconPrimaryNeutral dark:text-iconPrimaryNeutralDark' : 'text-green-600'}`} 
             icon={faClone} 
             aria-hidden='true' 
           />

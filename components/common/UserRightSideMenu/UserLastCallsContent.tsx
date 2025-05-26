@@ -94,7 +94,7 @@ const LastCallItem = memo(
           className='absolute inset-0 group-hover:bg-dropdownBgHover dark:group-hover:bg-dropdownBgHoverDark'
           aria-hidden='true'
         />
-        <div className='relative flex min-w-0 flex-1 items-center'>
+        <div className='relative flex min-w-0 flex-1 items-center px-6'>
           <div className='flex items-start'>
             <Avatar
               size='base'
@@ -426,10 +426,7 @@ export const UserLastCallsContent = () => {
           </div>
         </div>
         <span className='border-b border-layoutDivider dark:border-layoutDividerDark'></span>
-        <ul
-          role='list'
-          className={`px-6 flex-1 divide-y ${customScrollbarClass} divide-layoutDivider dark:divide-layoutDividerDark`}
-        >
+        <ul role='list' className={`flex-1 ${customScrollbarClass}`}>
           {/* Skeleton loader */}
           {isLoading &&
             Array.from(Array(4)).map((_, index) => (
@@ -471,6 +468,12 @@ export const UserLastCallsContent = () => {
                   openLastCardUserDrawer={openLastCardUserDrawer}
                   handleCreateContact={handleCreateContact}
                 />
+                {/* Avoid to show if latest */}
+                {index !== filteredCalls?.length - 1 && (
+                  <div className='px-6 relative'>
+                    <div className='border-b border-layoutDivider dark:border-layoutDividerDark'></div>
+                  </div>
+                )}
               </li>
             ))}
         </ul>

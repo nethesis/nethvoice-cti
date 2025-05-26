@@ -243,6 +243,10 @@ module.exports = {
         iconError: '#9F1239', // rose-800
         iconErrorDark: '#FFE4E6', // rose-100
 
+        //iconDanger
+        iconDanger: '#BE123C', // rose-700
+        iconDangerDark: '#F87171', // rose-500
+
         //surface
         //surfaceBadgeBlue
         surfaceBadgeBlue: '#DBEAFE', // blue-100
