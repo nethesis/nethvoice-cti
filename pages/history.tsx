@@ -24,6 +24,7 @@ const History: NextPage = () => {
   const { t } = useTranslation()
   const profile = useSelector((state: RootState) => state.user)
   const auth = useSelector((state: RootState) => state.authentication)
+  const router = useRouter()
 
   const [items, setItems] = useState<tabsType[]>([])
   const [currentSection, setCurrentSection] = useState<string>('')
@@ -48,11 +49,14 @@ const History: NextPage = () => {
         : []),
     ]
 
+    const sectionFromQuery = router.query.section as string
     const preferenceAvailable = userPreference && newTabs.some((tab) => tab.name === userPreference)
 
     let tabToSelect: any
 
-    if (preferenceAvailable) {
+    if (sectionFromQuery && newTabs.some((tab) => tab.name === sectionFromQuery)) {
+      tabToSelect = sectionFromQuery
+    } else if (preferenceAvailable) {
       tabToSelect = userPreference
     } else {
       tabToSelect = newTabs[0].name
@@ -65,7 +69,7 @@ const History: NextPage = () => {
 
     setItems(updatedTabs)
     setCurrentSection(tabToSelect)
-  }, [profile, auth.username, userPreference])
+  }, [profile, auth.username, userPreference, router.query.section])
 
   const changeSection = (sectionName: string) => {
     if (!items.some((item) => item.name === sectionName)) {
