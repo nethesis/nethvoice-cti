@@ -321,8 +321,9 @@ const Phonebook: NextPage = () => {
                       }
                       onRowClick={(contact) => openShowContactDrawer(contact)}
                       rowKey={(contact) => contact.id || contact.displayName}
+                      trClassName='h-[84px]'
                       scrollable={true}
-                      maxHeight='32rem'
+                      maxHeight='calc(100vh - 480px)'
                     />
 
                     {isPhonebookLoaded && filteredContacts.length === 0 && !textFilter.length && (

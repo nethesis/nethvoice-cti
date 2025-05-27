@@ -392,7 +392,7 @@ export const AnnouncementView: FC<AnnouncementViewProps> = ({ className }): JSX.
                     ),
                   }}
                   rowKey={(announcement: any) => announcement.id}
-                  trClassName=''
+                  trClassName='h-[84px]'
                   scrollable={true}
                   maxHeight='calc(100vh - 480px)'
                   theadClassName='sticky top-0 bg-gray-100 dark:bg-gray-800 z-[1]'
