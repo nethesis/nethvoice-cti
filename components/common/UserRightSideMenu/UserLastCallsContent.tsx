@@ -434,6 +434,12 @@ export const UserLastCallsContent = () => {
                 <div className='gap-4 py-4 px-0'>
                   <CallSkeleton />
                 </div>
+                {/* Divider */}
+                {index !== 3 && (
+                  <div className='px-6 relative'>
+                    <div className='border-b border-layoutDivider dark:border-layoutDividerDark'></div>
+                  </div>
+                )}
               </li>
             ))}
 
