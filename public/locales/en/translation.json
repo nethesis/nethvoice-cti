@@ -988,7 +988,8 @@
     "Operating system": "Operating system",
     "Devices": "Devices",
     "Name": "Name",
-    "Default": "Default"
+    "Default": "Default",
+    "Inline warning message devices": "Changes to audio and video settings can only be applied if the main device is set to Web Phone, and your status is online."
   },
   "DropdownContent": {
     "Microphones": "MICROPHONES",

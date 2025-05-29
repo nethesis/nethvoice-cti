@@ -2,7 +2,7 @@
 // SPDX-License-Identifier: AGPL-3.0-or-later
 
 import { ComponentPropsWithRef, forwardRef, useEffect, useState, Fragment } from 'react'
-import { Button } from '../common'
+import { Button, InlineNotification } from '../common'
 import { DrawerHeader } from '../common/DrawerHeader'
 import { Divider } from '../common/Divider'
 import { t } from 'i18next'
@@ -46,6 +46,7 @@ export const SwitchInputOutputDrawerContent = forwardRef<
   const [audioOutputs, setAudioOutputs] = useState<any[]>([])
   const [videoInputs, setVideoInputs] = useState<any[]>([])
   const auth = useSelector((state: RootState) => state.authentication)
+  const profile = useSelector((state: RootState) => state.user)
 
   useEffect(() => {
     const checkInputOutputDevices = () => {
@@ -134,6 +135,9 @@ export const SwitchInputOutputDrawerContent = forwardRef<
       setSelectedVideoInput(selectedInput)
     }
   }, [videoInputValueStore, videoInputs])
+
+  const isDeviceUnavailable =
+    profile?.default_device?.type !== 'webrtc' || profile?.mainPresence !== 'online'
 
   return (
     <>
@@ -418,8 +422,17 @@ export const SwitchInputOutputDrawerContent = forwardRef<
             )}
           </Listbox>
         </>
+
+        {/* Inline notification */}
+        {isDeviceUnavailable && (
+          <InlineNotification title={t('Common.Warning')} type='warning' className='mt-6'>
+            <p>{t('Devices.Inline warning message devices')}</p>
+          </InlineNotification>
+        )}
+
         {/* Divider */}
         <Divider paddingY='pb-10 pt-6' />
+
         {/* Footer section */}
         <div className='flex justify-end'>
           <Button variant='ghost' type='submit' onClick={closeSideDrawer} className='mb-4'>
@@ -429,7 +442,8 @@ export const SwitchInputOutputDrawerContent = forwardRef<
             variant='primary'
             type='submit'
             className='mb-4 ml-4'
-            onClick={() => handleUpdateDevices()}
+            disabled={isDeviceUnavailable}
+            onClick={handleUpdateDevices}
           >
             {t('Common.Save')}
           </Button>

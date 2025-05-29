@@ -966,7 +966,8 @@
     "Operating system": "Sistema operativo",
     "Devices": "Dispositivi",
     "Name": "Nome",
-    "Default": "Predefinito"
+    "Default": "Predefinito",
+    "Inline warning message devices": "Le modifiche relative alle impostazioni audio e video possono essere applicate solo se il dispositivo principale è impostato su Web Phone, e il proprio stato è online."
   },
   "DropdownContent": {
     "Microphones": "MICROFONI",
