@@ -133,15 +133,15 @@ const Phonebook: NextPage = () => {
               <div className='mt-1 flex items-center text-sm text-gray-500 dark:text-gray-400'>
                 <FontAwesomeIcon
                   icon={faPhone}
-                  className='mr-2 h-4 w-4 flex-shrink-0 text-gray-400 dark:text-gray-500'
+                  className='mr-2 h-4 w-4 flex-shrink-0 text-secondaryNeutral dark:text-secondaryNeutralDark'
                   aria-hidden='true'
                 />
                 <span
                   className={`${
                     contact?.extension !==
                     operatorsStore?.operators[authStore?.username]?.endpoints?.mainextension[0]?.id
-                      ? 'cursor-pointer hover:underline text-primary dark:text-primaryDark'
-                      : 'text-gray-700 dark:text-gray-200'
+                      ? 'cursor-pointer hover:underline text-iconPrimary dark:text-iconPrimaryDark'
+                      : 'text-secondaryNeutral dark:text-secondaryNeutralDark'
                   } truncate`}
                   onClick={(e) => {
                     e.stopPropagation()
@@ -179,7 +179,7 @@ const Phonebook: NextPage = () => {
       cell: (contact: any) => (
         <div>
           {contact.workphone ? (
-            <div className='mt-1 flex items-center text-sm font-normal text-iconPrimary dark:text-iconActiveDark'>
+            <div className='mt-1 flex items-center text-sm font-normal text-iconPrimary dark:text-iconPrimaryDark'>
               <FontAwesomeIcon
                 icon={faPhone}
                 className='mr-2 h-4 w-4 flex-shrink-0 text-secondaryNeutral dark:text-secondaryNeutralDark'
@@ -218,7 +218,7 @@ const Phonebook: NextPage = () => {
       cell: (contact: any) => (
         <div>
           {contact?.cellphone ? (
-            <div className='mt-1 flex items-center text-sm font-normal text-iconPrimary dark:text-iconActiveDark'>
+            <div className='mt-1 flex items-center text-sm font-normal text-iconPrimary dark:text-iconPrimaryDark'>
               <FontAwesomeIcon
                 icon={faMobileScreenButton}
                 className='mr-2 h-4 w-4 flex-shrink-0 text-secondaryNeutral dark:text-secondaryNeutralDark'

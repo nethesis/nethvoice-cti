@@ -251,6 +251,11 @@ export const UserLastCallsContent = () => {
       result = result.filter((call) => call.direction === direction)
     }
 
+    result = result.filter((call) => {
+      const numberToCheck = call.direction === 'in' ? call.src : call.dst
+      return !numberToCheck?.includes('*43')
+    })
+
     setFilteredCalls(result)
   }, [])
 
