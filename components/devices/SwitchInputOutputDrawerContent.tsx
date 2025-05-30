@@ -137,7 +137,7 @@ export const SwitchInputOutputDrawerContent = forwardRef<
   }, [videoInputValueStore, videoInputs])
 
   const isDeviceUnavailable =
-    profile?.default_device?.type !== 'webrtc' || profile?.mainPresence !== 'online'
+    profile?.default_device?.type == 'nethlink' || profile?.mainPresence !== 'online'
 
   return (
     <>
