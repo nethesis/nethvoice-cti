@@ -6,6 +6,8 @@ WORKDIR /app
 
 # Install dependencies based on the preferred package manager
 COPY package.json yarn.lock* package-lock.json* pnpm-lock.yaml* ./
+# Copy the tgz file needed for the phone-island dependency
+COPY nethesis-phone-island-0.13.8.tgz ./
 
 RUN \
   if [ -f yarn.lock ]; then yarn --frozen-lockfile; \
