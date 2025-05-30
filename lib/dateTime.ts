@@ -134,11 +134,10 @@ export const exactDistanceToNowLoc = (date: any, options: any = {}) => {
   }
 
   const duration = intervalToDuration({
-    start: date,
+    start: utcToZonedTime(date, "UTC"),
     end: new Date(),
   })
 
-  // custom option hideSeconds (not supported by date-fns)
   if (options.hideSeconds) {
     delete duration.seconds
   }
