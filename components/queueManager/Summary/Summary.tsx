@@ -10,6 +10,7 @@ import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { Popover, PopoverButton, PopoverGroup, PopoverPanel } from '@headlessui/react'
 import { cloneDeep } from 'lodash'
 import { exactDistanceToNowLoc, formatDurationLoc } from '../../../lib/dateTime'
+import { getCallTimeToDisplay } from '../../../lib/dateTime'
 
 import {
   faChevronDown,
@@ -406,12 +407,12 @@ export const Summary: FC<SummaryProps> = ({ className }): JSX.Element => {
           // Update the agent's data with the calculated values
           //Last login
           if (lastLogin) {
-            agent.queues.lastLogin = new Date(lastLogin * 1000).toLocaleTimeString()
+            agent.queues.lastLogin = getCallTimeToDisplay(lastLogin * 1000)
           }
 
           //Last logout
           if (lastLogout) {
-            agent.queues.lastLogout = new Date(lastLogout * 1000).toLocaleTimeString()
+            agent.queues.lastLogout = getCallTimeToDisplay(lastLogin * 1000)
           }
 
           //Last calls
