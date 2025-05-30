@@ -940,7 +940,7 @@
     "Keys configuration information tooltip": "Configura i tasti linea del tuo telefono",
     "Key position information tooltip": "Scegli una posizione per il pulsante",
     "Click on confirm": "Clicca su Conferma",
-    "Audio and video settings": "Impostazioni audio e video",
+    "Audio and video settings": "Impostazioni Audio e Video",
     "Audio input": "Audio input",
     "Audio output": "Audio in ingresso",
     "Audio input information tooltip": "Scegli il dispositivo di ingresso audio",
@@ -967,7 +967,7 @@
     "Devices": "Dispositivi",
     "Name": "Nome",
     "Default": "Predefinito",
-    "Inline warning message devices": "Le modifiche relative alle impostazioni audio e video possono essere applicate solo se il dispositivo principale è impostato su Web Phone, e il proprio stato è online."
+    "Inline warning message devices": "Le modifiche relative alle impostazioni audio e video possono essere applicate solo se il dispositivo principale è impostato su Web phone e il proprio stato è Online."
   },
   "DropdownContent": {
     "Microphones": "MICROFONI",

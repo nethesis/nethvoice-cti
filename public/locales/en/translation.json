@@ -962,7 +962,7 @@
     "Keys configuration information tooltip": "Configure line keys of your physical device",
     "Key position information tooltip": "Choose a position for your key",
     "Click on confirm": "Click on Confirm",
-    "Audio and video settings": "Audio and video settings",
+    "Audio and video settings": "Audio and Video settings",
     "Audio input": "Audio input",
     "Audio output": "Audio output",
     "Audio input information tooltip": "Choose the audio input device",
@@ -989,7 +989,7 @@
     "Devices": "Devices",
     "Name": "Name",
     "Default": "Default",
-    "Inline warning message devices": "Changes to audio and video settings can only be applied if the main device is set to Web Phone, and your status is online."
+    "Inline warning message devices": "Changes to audio and video settings can only be applied if the main device is set to Web phone and your status is Online."
   },
   "DropdownContent": {
     "Microphones": "MICROPHONES",

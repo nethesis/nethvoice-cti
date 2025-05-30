@@ -141,7 +141,7 @@ export const SwitchInputOutputDrawerContent = forwardRef<
 
   return (
     <>
-      <DrawerHeader title={`${t('Devices.Audio and video settings')}: ${t('Devices.Web phone')}`} />
+      <DrawerHeader title={`${t('Devices.Audio and video settings')}`} />
       <div className='px-5'>
         <Divider />
         <>
