@@ -324,10 +324,10 @@ export const GlobalSearch: FC<GlobalSearchProps> = () => {
                       {/* phonebook error */}
                       {phonebookError && (
                         <InlineNotification
-                          type='error'
-                          title={phonebookError}
+                          type='warning'
+                          title={t('Common.Warning') || ''}
                           className='mb-4'
-                        ></InlineNotification>
+                        >{phonebookError}</InlineNotification>
                       )}
                       {/* skeleton */}
                       {!isLoaded &&
