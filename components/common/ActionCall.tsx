@@ -5,16 +5,16 @@ import React from 'react'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import {
   faEarListen,
-  faTicket,
   faPhoneSlash,
-  faPhone,
-  faEllipsisVertical,
   faHandPointUp,
   faArrowLeft,
   faCirclePause,
   faMicrophoneSlash,
   faRecordVinyl,
-  faHand,
+  faCheck,
+  faAngleDown,
+  faCalendarCheck,
+  faPhone,
 } from '@fortawesome/free-solid-svg-icons'
 import { Button, Dropdown } from '../common'
 import { useTranslation } from 'react-i18next'
@@ -29,407 +29,319 @@ import {
   toggleRecord,
   intrude,
   pickup,
+  hangupMainExt,
 } from '../../lib/operators'
 import { eventDispatch } from '../../lib/hooks/eventDispatch'
 import { openToast } from '../../lib/utils'
+import { faPhoneArrowDownLeft, faRecord } from '@nethesis/nethesis-solid-svg-icons'
 
 interface ActionCallProps {
   config: any
 }
 
 export const ActionCall: React.FC<ActionCallProps> = ({ config }) => {
+  console.log('this is config', config)
   const { t } = useTranslation()
   const operators = useSelector((state: RootState) => state.operators)
   const profile = useSelector((state: RootState) => state.user)
 
-  async function recallOnBusyPost() {
-    let recallOnBusyInformations: any = {}
-    if (profile?.mainextension && operators?.operators[config?.username]?.conversations[0]?.id) {
-      //create object with information for recall on busy post api
-      //caller is user main extension
-      //called is main extension of user that is busy
-      recallOnBusyInformations = {
-        caller: profile?.mainextension,
+  const currentConversation = operators?.operators[config?.username]?.conversations[0]
+  const canShowActions =
+    currentConversation?.chDest?.callerName !== profile?.name &&
+    currentConversation?.chSource?.callerName !== profile?.name
+
+  const getRecordingIcon = () => {
+    if (!currentConversation?.recording) return faRecordVinyl
+    switch (currentConversation.recording) {
+      case 'true':
+        return faCirclePause
+      case 'false':
+        return faRecordVinyl
+      case 'mute':
+        return faMicrophoneSlash
+      default:
+        return faRecordVinyl
+    }
+  }
+
+  const getRecordingText = () => {
+    if (!currentConversation?.recording) return t('OperatorDrawer.Start recording')
+    switch (currentConversation.recording) {
+      case 'true':
+        return t('OperatorDrawer.Stop recording')
+      case 'false':
+        return t('OperatorDrawer.Start recording')
+      default:
+        return t('OperatorDrawer.Restart recording')
+    }
+  }
+
+  const actions = {
+    recallOnBusy: async () => {
+      if (!profile?.mainextension || !currentConversation?.id) return
+
+      const recallInfo = {
+        caller: profile.mainextension,
         called: operators?.operators[config?.username]?.endpoints?.mainextension[0]?.id,
       }
-      if (!isEmpty(recallOnBusyInformations)) {
-        try {
-          const res = await postRecallOnBusy(recallOnBusyInformations)
 
-          let waitingNumber = res.waitingExtensions
-          showToast(waitingNumber)
-        } catch (e) {
-          console.error(e)
-          return []
-        }
+      try {
+        const res = await postRecallOnBusy(recallInfo)
+        openToast(
+          'success',
+          `${t('Operators.Recall on busy message', { extensionWaiting: res.waitingExtensions })}`,
+          `${t('Operators.Recall on busy', { extensionWaiting: res.waitingExtensions })}`,
+        )
+      } catch (e) {
+        console.error(e)
       }
-    }
-  }
+    },
 
-  async function hangupConversation() {
-    if (
-      operators?.operators[config?.username]?.conversations[0]?.id &&
-      operators?.operators[config?.username]?.conversations[0]?.owner
-    ) {
-      const conversationId = operators?.operators[config?.username]?.conversations[0]?.id
-      let numberToClose = operators?.operators[config?.username]?.conversations[0]?.owner
-      if (conversationId && numberToClose) {
-        const hangupInformations = {
+    hangup: async () => {
+      if (!currentConversation?.id || !currentConversation?.owner) return
+
+      try {
+        await hangupMainExt({
+          exten: config?.endpoints?.mainextension[0]?.id,
+        })
+      } catch (e) {
+        console.error(e)
+      }
+    },
+
+    listen: async () => {
+      if (!isConversationActive() || !currentConversation?.id) return
+
+      const conversationId = currentConversation.id
+      const numberToListen = conversationId?.match(/\/(\d+)-/)
+      if (!numberToListen) return
+
+      const endpointId = numberToListen[1]
+      const destId = profile?.default_device?.id?.toString() || ''
+
+      store.dispatch.userActions.updateListeningInformation({
+        isListening: true,
+        listening_id: conversationId.toString(),
+      })
+
+      try {
+        await startListen({
           convid: conversationId.toString(),
-          endpointId: numberToClose.toString(),
-        }
-
-        if (!isEmpty(hangupInformations)) {
-          try {
-            await hangup(hangupInformations)
-          } catch (e) {
-            console.error(e)
-            return []
-          }
-        }
+          destId,
+          endpointId: endpointId.toString(),
+        })
+        eventDispatch('phone-island-call-listen', { to: endpointId })
+      } catch (e) {
+        console.error(e)
       }
-    }
+    },
+
+    intrude: async () => {
+      if (!isConversationActive() || !currentConversation?.id) return
+
+      const conversationId = currentConversation.id
+      const numberToIntrude = conversationId?.match(/\/(\d+)-/)
+      if (!numberToIntrude) return
+
+      const endpointId = numberToIntrude[1]
+      const destId = profile?.default_device?.id?.toString() || ''
+
+      store.dispatch.userActions.updateIntrudeInformation({
+        isIntrude: true,
+        intrude_id: conversationId.toString(),
+      })
+
+      try {
+        await intrude({
+          convid: conversationId.toString(),
+          destId,
+          endpointId: endpointId.toString(),
+        })
+        eventDispatch('phone-island-call-intrude', { to: endpointId })
+      } catch (e) {
+        console.error(e)
+      }
+    },
+
+    pickup: async () => {
+      const operatorInfo = config
+      if (
+        !operators?.operators[operatorInfo?.username]?.conversations[0]?.id ||
+        !profile?.default_device?.id ||
+        !operatorInfo?.endpoints?.mainextension[0]?.id
+      )
+        return
+
+      try {
+        await pickup({
+          convid: operators.operators[operatorInfo.username].conversations[0].id,
+          endpointId: operatorInfo.endpoints.mainextension[0].id,
+          destId: profile.default_device.id,
+        })
+      } catch (e) {
+        console.error(e)
+      }
+    },
+
+    toggleRecord: async () => {
+      if (!isConversationActive() || !currentConversation?.id) return
+
+      const conversationId = currentConversation.id
+      const match = conversationId?.match(/\/(\d+)-/)
+      if (!match) return
+
+      const endpointId = match[1]
+
+      let recordingValues = ''
+      switch (currentConversation?.recording) {
+        case 'false':
+          recordingValues = 'not_started'
+          break
+        case 'true':
+          recordingValues = 'started'
+          break
+        case 'mute':
+          recordingValues = 'muted'
+          break
+      }
+
+      try {
+        await toggleRecord(recordingValues, {
+          convid: conversationId.toString(),
+          endpointId: endpointId.toString(),
+        })
+      } catch (e) {
+        console.error(e)
+      }
+    },
   }
 
-  async function listenConversation() {
-    // if main user is not in conversation enable listen conversation
-
-    if (
+  function isConversationActive() {
+    return (
       !!operators?.operators[config?.username]?.conversations?.length &&
-      (operators?.operators[config?.username]?.conversations[0]?.connected ||
-        operators?.operators[config?.username]?.conversations[0]?.inConference ||
-        operators?.operators[config?.username]?.conversations[0]?.chDest?.inConference == true ||
-        !isEmpty(operators?.operators[config?.username]?.conversations[0]))
-    ) {
-      const conversationId = operators?.operators[config?.username]?.conversations[0].id
-      let numberToSendCall = ''
-      if (!isEmpty(profile?.default_device)) {
-        numberToSendCall = profile?.default_device?.id?.toString()
-      }
-      if (conversationId) {
-        const numberToListen = conversationId?.match(/\/(\d+)-/)
-        if (numberToListen) {
-          const endpointId = numberToListen[1]
-
-          const listenInformations = {
-            convid: conversationId.toString(),
-            destId: numberToSendCall,
-            endpointId: endpointId.toString(),
-          }
-
-          let listeningInformations: any = {}
-          listeningInformations = {
-            isListening: true,
-            listening_id: conversationId.toString(),
-          }
-          store.dispatch.userActions.updateListeningInformation(listeningInformations)
-
-          if (!isEmpty(listenInformations)) {
-            try {
-              await startListen(listenInformations)
-              eventDispatch('phone-island-call-listen', { to: listenInformations?.endpointId })
-            } catch (e) {
-              console.error(e)
-              return []
-            }
-          }
-        }
-      }
-    }
-  }
-
-  async function intrudeConversation() {
-    // if main user is not in conversation enable intrude in to conversation
-
-    if (
-      !!operators?.operators[config?.username]?.conversations?.length &&
-      (operators?.operators[config?.username]?.conversations[0]?.connected ||
-        operators?.operators[config?.username]?.conversations[0]?.inConference ||
-        operators?.operators[config?.username]?.conversations[0]?.chDest?.inConference == true ||
-        !isEmpty(operators?.operators[config?.username]?.conversations[0]))
-    ) {
-      const conversationId = operators?.operators[config?.username]?.conversations[0]?.id
-      let numberToSendCall = ''
-      if (!isEmpty(profile?.default_device)) {
-        numberToSendCall = profile?.default_device?.id?.toString()
-      }
-      if (conversationId) {
-        const numberToIntrude = conversationId?.match(/\/(\d+)-/)
-        if (numberToIntrude) {
-          const endpointId = numberToIntrude[1]
-
-          const intrudeInformations = {
-            convid: conversationId.toString(),
-            destId: numberToSendCall,
-            endpointId: endpointId.toString(),
-          }
-
-          let iconIntrudeInformations: any = {}
-          iconIntrudeInformations = {
-            isIntrude: true,
-            intrude_id: conversationId.toString(),
-          }
-          store.dispatch.userActions.updateIntrudeInformation(iconIntrudeInformations)
-
-          if (!isEmpty(intrudeInformations)) {
-            try {
-              await intrude(intrudeInformations)
-              eventDispatch('phone-island-call-intrude', { to: intrudeInformations?.endpointId })
-            } catch (e) {
-              console.error(e)
-              return []
-            }
-          }
-        }
-      }
-    }
-  }
-
-  async function pickupConversation(operatorInformation: any) {
-    if (
-      operators?.operators[operatorInformation?.username]?.conversations[0]?.id &&
-      profile?.default_device?.id &&
-      operatorInformation?.endpoints?.mainextension[0]?.id
-    ) {
-      let conversationId = operators?.operators[operatorInformation?.username]?.conversations[0]?.id
-      let endpoint = operatorInformation?.endpoints?.mainextension[0]?.id
-      let destination = profile?.default_device?.id
-      const pickupInformations = {
-        convid: conversationId,
-        endpointId: endpoint,
-        destId: destination,
-      }
-
-      if (!isEmpty(pickupInformations)) {
-        try {
-          await pickup(pickupInformations)
-        } catch (e) {
-          console.error(e)
-          return []
-        }
-      }
-    }
-  }
-
-  async function recordConversation() {
-    // if main user is not in conversation enable listen conversation
-
-    if (
-      !!operators?.operators[config?.username]?.conversations?.length &&
-      (operators?.operators[config?.username]?.conversations[0]?.connected ||
-        operators?.operators[config?.username]?.conversations[0]?.inConference ||
-        operators?.operators[config?.username]?.conversations[0]?.chDest?.inConference == true ||
-        !isEmpty(operators?.operators[config?.username]?.conversations[0]))
-    ) {
-      const conversationId = operators?.operators[config?.username]?.conversations[0]?.id
-      if (conversationId) {
-        const numberToSendCall = conversationId?.match(/\/(\d+)-/)
-        if (numberToSendCall) {
-          const endpointId = numberToSendCall[1]
-          const listenInformations = {
-            convid: conversationId.toString(),
-            endpointId: endpointId.toString(),
-          }
-          let recordingValues = ''
-          switch (operators?.operators[config?.username]?.conversations[0]?.recording) {
-            case 'false':
-              recordingValues = 'not_started'
-              break
-            case 'true':
-              recordingValues = 'started'
-              break
-            case 'mute':
-              recordingValues = 'muted'
-              break
-            default:
-              recordingValues = ''
-              break
-          }
-
-          if (!isEmpty(listenInformations)) {
-            try {
-              await toggleRecord(recordingValues, listenInformations)
-            } catch (e) {
-              console.error(e)
-              return []
-            }
-          }
-        }
-      }
-    }
-  }
-
-  const showToast = (extensionWaiting: any) => {
-    openToast(
-      'success',
-      `${t('Operators.Recall on busy message', { extensionWaiting })}`,
-      `${t('Operators.Recall on busy', { extensionWaiting })}`,
+      (currentConversation?.connected ||
+        currentConversation?.inConference ||
+        currentConversation?.chDest?.inConference === true ||
+        !isEmpty(currentConversation))
     )
   }
 
-  const getCallActionsMenu = (configAction: any) => {
-    return (
-      <>
-        {profile?.recallOnBusy &&
-          operators?.operators[configAction?.username]?.mainPresence !== 'ringing' && (
-            <>
-              <Dropdown.Item icon={faTicket} onClick={() => recallOnBusyPost()}>
-                {t('OperatorDrawer.Book')}
-              </Dropdown.Item>
-            </>
-          )}
-        {profile?.profile?.macro_permissions?.presence_panel?.permissions?.hangup?.value && (
-          <Dropdown.Item icon={faPhoneSlash} onClick={() => hangupConversation()}>
-            {t('OperatorDrawer.Hangup')}
+  const getCallActionsMenu = () => (
+    <>
+      {profile?.recallOnBusy &&
+        operators?.operators[config?.username]?.mainPresence !== 'ringing' && (
+          <Dropdown.Item icon={faCalendarCheck} onClick={actions.recallOnBusy}>
+            {t('OperatorDrawer.Book')}
           </Dropdown.Item>
         )}
-        {profile?.profile?.macro_permissions?.settings?.permissions?.spy?.value &&
-          operators?.operators[configAction?.username]?.mainPresence !== 'ringing' && (
-            <Dropdown.Item icon={faEarListen} onClick={() => listenConversation()}>
-              {t('OperatorDrawer.Listen')}
-            </Dropdown.Item>
-          )}
-        {profile?.profile?.macro_permissions?.settings?.permissions?.intrude?.value &&
-          operators?.operators[configAction?.username]?.mainPresence !== 'ringing' && (
-            <Dropdown.Item icon={faHandPointUp} onClick={() => intrudeConversation()}>
-              {' '}
-              {t('OperatorDrawer.Intrude')}
-            </Dropdown.Item>
-          )}
-        {profile?.profile?.macro_permissions?.settings?.permissions?.pickup?.value &&
-          operators?.operators[configAction?.username]?.mainPresence === 'ringing' && (
-            <Dropdown.Item icon={faHand} onClick={() => pickupConversation(configAction)}>
-              {' '}
-              {t('OperatorDrawer.Pickup')}
-            </Dropdown.Item>
-          )}
 
-        {profile?.profile?.macro_permissions?.presence_panel?.permissions?.ad_recording?.value &&
-          operators?.operators[configAction?.username]?.mainPresence !== 'ringing' && (
-            <Dropdown.Item
-              icon={
-                operators?.operators[config.username]?.conversations &&
-                operators?.operators[config.username]?.conversations[0]?.recording &&
-                operators?.operators[config.username]?.conversations[0]?.recording === 'true'
-                  ? faCirclePause
-                  : operators?.operators[config.username]?.conversations &&
-                    operators?.operators[config.username]?.conversations[0]?.recording === 'false'
-                  ? faRecordVinyl
-                  : faMicrophoneSlash
-              }
-              onClick={() => recordConversation()}
-            >
-              {operators?.operators[config.username]?.conversations &&
-              operators?.operators[config.username]?.conversations[0]?.recording &&
-              operators?.operators[config.username]?.conversations[0]?.recording === 'true'
-                ? t('OperatorDrawer.Stop recording')
-                : operators?.operators[config.username]?.conversations &&
-                  operators?.operators[config.username]?.conversations[0]?.recording === 'false'
-                ? t('OperatorDrawer.Start recording')
-                : t('OperatorDrawer.Restart recording')}
-            </Dropdown.Item>
-          )}
-      </>
-    )
-  }
+      {profile?.profile?.macro_permissions?.presence_panel?.permissions?.hangup?.value && (
+        <Dropdown.Item
+          icon={faPhone}
+          iconClassName="transform rotate-[135deg]"
+          onClick={actions.hangup}
+        >
+          {operators?.operators[config?.username]?.mainPresence !== 'ringing'
+            ? t('OperatorDrawer.Hangup')
+            : t('Common.Reject')}
+        </Dropdown.Item>
+      )}
+
+      {profile?.profile?.macro_permissions?.settings?.permissions?.spy?.value &&
+        operators?.operators[config?.username]?.mainPresence !== 'ringing' && (
+          <Dropdown.Item icon={faEarListen} onClick={actions.listen}>
+            {t('OperatorDrawer.Listen')}
+          </Dropdown.Item>
+        )}
+
+      {profile?.profile?.macro_permissions?.settings?.permissions?.intrude?.value &&
+        operators?.operators[config?.username]?.mainPresence !== 'ringing' && (
+          <Dropdown.Item icon={faHandPointUp} onClick={actions.intrude}>
+            {t('OperatorDrawer.Intrude')}
+          </Dropdown.Item>
+        )}
+
+      {profile?.profile?.macro_permissions?.settings?.permissions?.pickup?.value &&
+        operators?.operators[config?.username]?.mainPresence === 'ringing' && (
+          <Dropdown.Item icon={faPhoneArrowDownLeft as any} onClick={actions.pickup}>
+            {t('OperatorDrawer.Pickup')}
+          </Dropdown.Item>
+        )}
+
+      {profile?.profile?.macro_permissions?.presence_panel?.permissions?.ad_recording?.value &&
+        operators?.operators[config?.username]?.mainPresence !== 'ringing' && (
+          <Dropdown.Item icon={getRecordingIcon()} onClick={actions.toggleRecord}>
+            {getRecordingText()}
+          </Dropdown.Item>
+        )}
+    </>
+  )
 
   return (
-    <div>
-      <div className='mt-6 flex items-end justify-between'>
-        <h4 className='text-base font-medium text-gray-700 dark:text-gray-200'>
+    <div className='bg-elevationL2Invert dark:bg-elevationL2InvertDark rounded-md shadow-sm'>
+      {/* Header */}
+      <div className='p-4 flex items-center'>
+        <h4 className='text-sm font-medium leading-5 text-primaryNeutral dark:text-primaryNeutralDark flex-1'>
           {t('OperatorDrawer.Current call')}
         </h4>
-        <div>
-          {operators?.operators[config?.username]?.conversations[0]?.chDest?.callerName !=
-            profile?.name &&
-            operators?.operators[config?.username]?.conversations[0]?.chSource?.callerName !=
-              profile?.name && (
-              <>
-                {/* ongoing call menu */}
-                <Dropdown items={getCallActionsMenu(config)} position='left'>
-                  <Button variant='ghost'>
-                    <FontAwesomeIcon icon={faEllipsisVertical} className='h-4 w-4' />
-                    <span className='sr-only'>{t('OperatorDrawer.Open call actions menu')}</span>
-                  </Button>
-                </Dropdown>
-              </>
-            )}
-        </div>
+        {canShowActions && (
+          <Dropdown items={getCallActionsMenu()} position='left'>
+            <Button variant='white'>
+              <span className='mr-2'>{t('Common.Actions')}</span>
+              <FontAwesomeIcon icon={faAngleDown} className='h-4 w-4' />
+            </Button>
+          </Dropdown>
+        )}
       </div>
-      <div className='mt-4 border-t border-gray-200 dark:border-gray-700'>
-        <dl>
-          {/*  contact */}
-          <div className='py-4 sm:grid sm:grid-cols-3 sm:gap-4 sm:py-5'>
-            <dt className='text-sm font-medium text-gray-500 dark:text-gray-400'>
-              {t('OperatorDrawer.Contact')}
-            </dt>
-            <dd className='mt-1 text-sm text-gray-900 dark:text-gray-100 sm:col-span-2 sm:mt-0'>
-              {operators?.operators[config?.username]?.conversations[0]?.counterpartName !==
-                operators?.operators[config?.username]?.conversations[0]?.counterpartNum && (
-                <div className='mb-1.5 flex items-center text-sm'>
-                  <span className='truncate'>
-                    {operators?.operators[config?.username]?.conversations[0]?.counterpartName ||
-                      '-'}
-                  </span>
-                </div>
-              )}
-              {/*  number */}
-              <div className='flex items-center text-sm'>
-                <FontAwesomeIcon
-                  icon={faPhone}
-                  className='mr-2 h-4 w-4 flex-shrink-0 text-gray-400 dark:text-gray-500'
-                  aria-hidden='true'
-                />
-                <span className='truncate'>
-                  {operators?.operators[config?.username]?.conversations[0]?.counterpartNum || '-'}
-                </span>
+
+      {/* Divider  */}
+      <div className='px-4 relative'>
+        <div className='border-b border-layoutDivider dark:border-layoutDividerDark'></div>
+      </div>
+
+      <div className='px-4 py-4 mt-2'>
+        <dl className='grid grid-cols-[120px_1fr] gap-y-6 mb-1'>
+          {/* Call duration */}
+          <dt className='text-sm font-medium leading-5 text-secondaryNeutral dark:text-secondaryNeutralDark'>
+            {t('Common.Call duration')}
+          </dt>
+          <dd className='text-base font-medium leading-6 text-textStatusBusy dark:text-textStatusBusyDark overflow-hidden whitespace-nowrap text-ellipsis'>
+            <CallDuration startTime={currentConversation?.startTime} />
+          </dd>
+
+          {/* Contact */}
+          <dt className='text-sm font-medium leading-5 text-secondaryNeutral dark:text-secondaryNeutralDark'>
+            {t('OperatorDrawer.Contact')}
+          </dt>
+          <dd className='text-sm leading-5 text-textStatusBusy dark:text-textStatusBusyDark max-w-full overflow-hidden'>
+            {currentConversation?.counterpartName !== currentConversation?.counterpartNum && (
+              <div className='overflow-hidden whitespace-nowrap text-ellipsis font-medium'>
+                {currentConversation?.counterpartName || '-'}
               </div>
-            </dd>
-          </div>
-          {/*  direction */}
-          <div className='py-4 sm:grid sm:grid-cols-3 sm:gap-4 sm:py-5'>
-            <dt className='text-sm font-medium text-gray-500 dark:text-gray-400'>
-              {t('OperatorDrawer.Direction')}
-            </dt>
-            <dd className='mt-1 text-sm text-gray-900 dark:text-gray-100 sm:col-span-2 sm:mt-0'>
-              {operators?.operators[config?.username]?.conversations[0]?.direction == 'out' && (
-                <div className='flex items-center text-sm'>
-                  <FontAwesomeIcon
-                    icon={faArrowLeft}
-                    className='mr-2 h-5 w-3.5 rotate-[135deg] text-green-600 dark:text-green-500'
-                    aria-hidden='true'
-                  />
-                  <span className='truncate'> {t('OperatorDrawer.Outgoing')}</span>
-                </div>
-              )}
-              {operators?.operators[config?.username]?.conversations[0]?.direction == 'in' && (
-                <div className='flex items-center text-sm'>
-                  <FontAwesomeIcon
-                    icon={faArrowLeft}
-                    className='mr-2 h-5 w-3.5 -rotate-45 text-green-600 dark:text-green-500'
-                    aria-hidden='true'
-                  />
-                  <span className='truncate'>{t('OperatorDrawer.Incoming')}</span>
-                </div>
-              )}
-            </dd>
-          </div>
-          {/*  duration */}
-          <div className='py-4 sm:grid sm:grid-cols-3 sm:gap-4 sm:py-5'>
-            <dt className='text-sm font-medium text-gray-500 dark:text-gray-400'>
-              {t('OperatorDrawer.Duration')}
-            </dt>
-            <dd className='mt-1 text-sm sm:col-span-2 sm:mt-0'>
-              <div
-                className='flex items-center text-sm text-cardTextBusy dark:text-cardTextBusy'
-                key={`callDuration-${operators?.operators[config?.username]?.username}`}
-              >
-                <CallDuration
-                  startTime={operators?.operators[config?.username]?.conversations[0]?.startTime}
-                />
-              </div>
-            </dd>
-          </div>
+            )}
+            <div className='font-normal text-textStatusBusy dark:text-textStatusBusyDark overflow-hidden whitespace-nowrap text-ellipsis'>
+              {currentConversation?.counterpartNum || '-'}
+            </div>
+          </dd>
+
+          {/* Direction */}
+          <dt className='text-sm font-medium leading-5 text-secondaryNeutral dark:text-secondaryNeutralDark'>
+            {t('OperatorDrawer.Direction')}
+          </dt>
+          <dd className='flex items-center text-sm text-tertiaryNeutral dark:text-tertiaryNeutralDark'>
+            <FontAwesomeIcon
+              icon={currentConversation?.direction === 'out' ? faArrowLeft : faCheck}
+              className={`flex-shrink-0 mr-2 h-4 w-4 text-iconStatusOnline dark:text-iconStatusOnlineDark ${
+                currentConversation?.direction === 'out' ? 'rotate-[135deg]' : ''
+              }`}
+              aria-hidden='true'
+            />
+            <span className='overflow-hidden whitespace-nowrap text-ellipsis'>
+              {currentConversation?.direction === 'out'
+                ? t('OperatorDrawer.Outgoing')
+                : t('OperatorDrawer.Incoming')}
+            </span>
+          </dd>
         </dl>
       </div>
     </div>

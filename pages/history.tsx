@@ -12,6 +12,7 @@ import { useRouter } from 'next/router'
 import { VoicemailInbox } from '../components/history/voicemail inbox/VoicemailInbox'
 import { Calls } from '../components/history/calls/Calls'
 import { isEmpty } from 'lodash'
+import { customScrollbarClass } from '../lib/utils'
 
 interface tabsType {
   name: string
@@ -23,6 +24,7 @@ const History: NextPage = () => {
   const { t } = useTranslation()
   const profile = useSelector((state: RootState) => state.user)
   const auth = useSelector((state: RootState) => state.authentication)
+  const router = useRouter()
 
   const [items, setItems] = useState<tabsType[]>([])
   const [currentSection, setCurrentSection] = useState<string>('')
@@ -47,11 +49,14 @@ const History: NextPage = () => {
         : []),
     ]
 
+    const sectionFromQuery = router.query.section as string
     const preferenceAvailable = userPreference && newTabs.some((tab) => tab.name === userPreference)
 
     let tabToSelect: any
 
-    if (preferenceAvailable) {
+    if (sectionFromQuery && newTabs.some((tab) => tab.name === sectionFromQuery)) {
+      tabToSelect = sectionFromQuery
+    } else if (preferenceAvailable) {
       tabToSelect = userPreference
     } else {
       tabToSelect = newTabs[0].name
@@ -64,7 +69,7 @@ const History: NextPage = () => {
 
     setItems(updatedTabs)
     setCurrentSection(tabToSelect)
-  }, [profile, auth.username, userPreference])
+  }, [profile, auth.username, userPreference, router.query.section])
 
   const changeSection = (sectionName: string) => {
     if (!items.some((item) => item.name === sectionName)) {
@@ -92,7 +97,7 @@ const History: NextPage = () => {
   return (
     <>
       <div className='mb-6 gap-8'>
-        <h1 className='text-2xl font-semibold text-title dark:text-titleDark'>
+        <h1 className='text-2xl font-semibold text-primaryNeutral dark:text-primaryNeutralDark'>
           {t('History.History')}
         </h1>
         {/* mobile tabs */}
@@ -113,7 +118,7 @@ const History: NextPage = () => {
           </select>
         </div>
         {/* desktop tabs */}
-        <div className='hidden sm:block overflow-y-hidden scrollbar-thin scrollbar-thumb-gray-400 dark:scrollbar-thumb-gray-400 scrollbar-thumb-rounded-full scrollbar-thumb-opacity-50 scrollbar-track-gray-200 dark:scrollbar-track-gray-900 scrollbar-track-rounded-full scrollbar-track-opacity-25'>
+        <div className={`hidden sm:block overflow-y-hidden ${customScrollbarClass}`}>
           <div className='border-b border-gray-300 dark:border-gray-600'>
             <nav className='-mb-px flex space-x-8' aria-label='Tabs'>
               {items.map((item: any) => (

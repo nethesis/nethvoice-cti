@@ -20,7 +20,7 @@ import {
   faCircleNotch,
   faUser,
   faPhone,
-  faChevronRight,
+  faAngleRight,
   faPause,
 } from '@fortawesome/free-solid-svg-icons'
 import { RealTimeOperatorsFilter } from './RealTimeOperatorsFilter'
@@ -201,7 +201,7 @@ export const RealTimeOperators: FC<RealTimeOperatorsProps> = ({
                           </div>
                           <span className='inline-flex h-10 w-10 flex-shrink-0 items-center justify-center'>
                             <FontAwesomeIcon
-                              icon={faChevronRight}
+                              icon={faAngleRight}
                               className='h-3 w-3 text-gray-400 dark:text-gray-500'
                               aria-hidden='true'
                             />

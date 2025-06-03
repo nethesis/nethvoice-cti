@@ -12,13 +12,13 @@ import {
   faCircleUser,
   faPuzzlePiece,
   faVoicemail,
+  faPhone,
 } from '@fortawesome/free-solid-svg-icons'
 import classNames from 'classnames'
 import { useSelector } from 'react-redux'
-import { RootState, store } from '../store'
+import { RootState } from '../store'
 import { Integrations, ClearCache } from '../components/settings'
-import { useEffect, useState } from 'react'
-import { v4 as uuidv4 } from 'uuid'
+import { useEffect, useState, useMemo } from 'react'
 import { useTranslation } from 'react-i18next'
 import { Queues } from '../components/settings/Queues'
 import { useRouter } from 'next/router'
@@ -27,6 +27,7 @@ import { MobileApp } from '../components/settings/MobileApp'
 import { CustomerCards } from '../components/settings/CustomerCards'
 import Profile from '../components/settings/ProfilePicture'
 import Devices from '../components/settings/Devices'
+import { IncomingCalls } from '../components/settings/IncomingCalls'
 import { faOfficePhone } from '@nethesis/nethesis-solid-svg-icons'
 import { savePreference } from '../lib/storage'
 import { getSelectedSettingsPage } from '../lib/settings'
@@ -39,208 +40,161 @@ interface SettingsMenuTypes {
   icon: IconProp
   href: string
   current: boolean
+  hidden?: boolean
+}
+
+interface EndpointExtension {
+  type: string
+  [key: string]: any
 }
 
 const Settings: NextPage = () => {
   const { t } = useTranslation()
   const authStore = useSelector((state: RootState) => state.authentication)
   const profile = useSelector((state: RootState) => state.user)
-
   const router = useRouter()
 
-  const settingsMenu: SettingsMenuTypes[] = [
-    { name: 'Devices', href: '#', icon: faOfficePhone as IconProp, current: false },
-    { name: 'Mobile App', href: '#', icon: faMobile, current: false },
-    { name: 'Customer cards', href: '#', icon: faIdCardClip, current: false },
-    { name: 'Queues', href: '#', icon: faUsers, current: false },
-    { name: 'Profile picture', href: '#', icon: faCircleUser, current: false },
-    { name: 'Theme', href: '#', icon: faPalette, current: false },
-    {
-      name: 'Integrations',
-      href: '#',
-      icon: faPuzzlePiece,
-      current: false,
-    },
-    { name: 'Cache', href: '#', icon: faDatabase, current: false },
+  const [currentSection, setCurrentSection] = useState<string>('Devices')
+
+  // Determine if mobile extensions exist
+  const hasMobileExtension = useMemo(() => {
+    if (!profile?.endpoints?.extension) return false
+    return profile.endpoints.extension.some((phone: EndpointExtension) => phone.type === 'mobile')
+  }, [profile?.endpoints?.extension])
+
+  // Create settings menu with dynamic visibility
+  const settingsMenu = useMemo(() => {
+    const menu: SettingsMenuTypes[] = [
+      { name: 'Devices', href: '#', icon: faOfficePhone as IconProp, current: false },
+      {
+        name: 'Mobile App',
+        href: '#',
+        icon: faMobile,
+        current: false,
+        hidden: !hasMobileExtension,
+      },
+      { name: 'Customer cards', href: '#', icon: faIdCardClip, current: false },
+      { name: 'Incoming calls', href: '#', icon: faPhone, current: false },
+      { name: 'Queues', href: '#', icon: faUsers, current: false },
+      { name: 'Profile picture', href: '#', icon: faCircleUser, current: false },
+      { name: 'Theme', href: '#', icon: faPalette, current: false },
+      {
+        name: 'Integrations',
+        href: '#',
+        icon: faPuzzlePiece,
+        current: false,
+        hidden: !profile?.lkhash,
+      },
+      { name: 'Cache', href: '#', icon: faDatabase, current: false },
+    ]
+
     // Conditionally add Voicemail section
-    ...(!isEmpty(profile?.endpoints?.voicemail)
-      ? [{ name: 'Voicemail', href: '#', icon: faVoicemail, current: false }]
-      : []),
-  ]
+    if (!isEmpty(profile?.endpoints?.voicemail)) {
+      menu.push({ name: 'Voicemail', href: '#', icon: faVoicemail, current: false })
+    }
+
+    return menu
+  }, [profile?.endpoints?.voicemail, profile?.lkhash, hasMobileExtension])
 
   const [items, setItems] = useState<SettingsMenuTypes[]>(settingsMenu)
-  const [currentSection, setCurrentSection] = useState<string>(settingsMenu[0].name)
-  const [firstRender, setFirstRender]: any = useState(true)
 
+  // Update items when menu definition changes
   useEffect(() => {
-    if (firstRender) {
-      setFirstRender(false)
-      return
-    }
-    let section = router.query.section as string
-    if (!section && currentSection) {
-      section = currentSection
-    }
-    changeSection(section)
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [firstRender])
+    setItems(
+      settingsMenu.map((item) => ({
+        ...item,
+        current: item.name === currentSection,
+      })),
+    )
+  }, [settingsMenu, currentSection])
 
   const changeSection = (sectionName: string) => {
-    const currentItems = items.map((route) => {
-      if (sectionName === route.name) {
-        route.current = true
-        setCurrentSection(sectionName)
-        savePreference('settingsSelectedPage', sectionName, authStore.username)
-      } else {
-        route.current = false
-      }
-      return route
-    })
-    setItems(currentItems)
+    setCurrentSection(sectionName)
+    savePreference('settingsSelectedPage', sectionName, authStore.username)
   }
 
-  //Load selected tab values from local storage
+  // Load selected tab values from local storage
   useEffect(() => {
-    const currentSection = getSelectedSettingsPage(authStore.username)
-    setCurrentSection(currentSection.selectedSettingsPage)
-    if (currentSection.selectedSettingsPage) {
-      changeSection(currentSection.selectedSettingsPage)
-    } else {
-      changeSection('Devices')
+    const storedSection = getSelectedSettingsPage(authStore.username)
+    if (storedSection.selectedSettingsPage) {
+      setCurrentSection(storedSection.selectedSettingsPage)
     }
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [])
+  }, [authStore.username])
 
-  //// remove mock
-  const createCallNotif = () => {
-    const notif = {
-      id: uuidv4(),
-      type: 'missedCall',
-      timestamp: new Date().getTime(),
-      isRead: false,
-      name: 'Test user',
-      number: '222',
-    }
-    store.dispatch.notifications.addNotification({
-      notification: notif,
-      currentUsername: authStore.username,
-    })
-  }
-
-  //// remove mock
-  const createQueueCallNotif = () => {
-    const notif = {
-      id: uuidv4(),
-      type: 'missedCall',
-      timestamp: new Date().getTime(),
-      isRead: false,
-      name: 'Test user',
-      number: '222',
-      queue: 'Commerciali',
-    }
-    store.dispatch.notifications.addNotification({
-      notification: notif,
-      currentUsername: authStore.username,
-    })
-  }
-
-  //// remove mock
-  const createChatNotif = () => {
-    const notif = {
-      id: uuidv4(),
-      type: 'chat',
-      timestamp: new Date().getTime(),
-      isRead: false,
-      name: 'John Doe',
-      message:
-        'Hey there, lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore',
-    }
-    store.dispatch.notifications.addNotification({
-      notification: notif,
-      currentUsername: authStore?.username,
-    })
-  }
-
-  const [mobileExtension, setMobileExtension] = useState<any>([])
+  // Process URL parameter on first render
   useEffect(() => {
-    // filter phone and insert only mobile phone
-    if (profile?.endpoints) {
-      let endpointsInformation = profile?.endpoints
-      if (endpointsInformation?.extension) {
-        setMobileExtension(
-          endpointsInformation?.extension.filter((phone) => phone?.type === 'mobile'),
-        )
-      }
+    const section = router.query.section as string
+    if (section) {
+      changeSection(section)
     }
-  }, [profile?.endpoints])
+  }, [router.query.section])
+
+  // Render the component for the selected section
+  const renderCurrentSection = () => {
+    switch (currentSection) {
+      case 'Theme':
+        return <Theme />
+      case 'Queues':
+        return <Queues />
+      case 'Integrations':
+        return <Integrations />
+      case 'Cache':
+        return <ClearCache />
+      case 'Mobile App':
+        return <MobileApp />
+      case 'Customer cards':
+        return <CustomerCards />
+      case 'Incoming calls':
+        return <IncomingCalls />
+      case 'Profile picture':
+        return <Profile />
+      case 'Devices':
+        return <Devices />
+      case 'Voicemail':
+        return !isEmpty(profile?.endpoints?.voicemail) ? <Voicemail /> : null
+      default:
+        return <Devices />
+    }
+  }
 
   return (
     <>
       <div>
         <div className='mx-auto'>
-          <h1 className='text-2xl font-semibold mb-6 text-title dark:text-titleDark'>
+          <h1 className='text-2xl font-medium mb-6 text-primaryNeutral dark:text-primaryNeutralDark'>
             {t('Settings.Settings')}
           </h1>
-          <div className='overflow-hidden rounded-lg bg-white dark:bg-gray-950 shadow'>
-            <div className='divide-y divide-gray-200 dark:divide-gray-700 lg:grid lg:grid-cols-12 lg:divide-y-0 lg:divide-x'>
+          <div className='overflow-hidden rounded-lg bg-elevationL2Invert dark:bg-elevationL2InvertDark shadow'>
+            <div className='divide-y divide-layoutDivider dark:divide-layoutDividerDark lg:grid lg:grid-cols-12 lg:divide-y-0 lg:divide-x'>
               {/* settings menu */}
               <aside className='py-6 lg:col-span-3'>
                 <nav className='space-y-1'>
-                  {items?.map((item: any) => (
-                    <a
-                      key={item?.name}
-                      onClick={() => changeSection(item?.name)}
-                      className={classNames(
-                        item?.current
-                          ? 'text-gray-900 bg-gray-100 dark:bg-gray-800 dark:text-gray-50 border-l-4 border-primary dark:border-primaryDark'
-                          : 'text-gray-600 dark:text-gray-100 hover:text-gray-900 hover:bg-gray-100 dark:hover:bg-gray-800 dark:hover:text-gray-50',
-                        (item?.name === 'Mobile App' && mobileExtension?.length === 0) ||
-                          (item?.name === 'Integrations' &&
-                            (profile?.lkhash === undefined || profile?.lkhash === ''))
-                          ? 'hidden'
-                          : '',
-                        'group rounded-md flex items-center text-sm font-medium justify-start space-x-2 w-74 mx-4 h-[3rem] cursor-pointer',
-                      )}
-                      aria-current={item?.current ? 'page' : undefined}
-                    >
-                      <FontAwesomeIcon
-                        icon={item?.icon}
+                  {items
+                    .filter((item) => !item?.hidden)
+                    .map((item) => (
+                      <a
+                        key={item?.name}
+                        onClick={() => changeSection(item?.name)}
                         className={classNames(
-                          item?.current ? 'ml-3' : 'ml-4',
-                          'h-4 w-4 text-gray-700 dark:text-gray-200',
+                          item?.current
+                            ? 'text-primaryNeutral dark:text-primaryNeutralDark bg-elevationL2 dark:bg-elevationL2Dark border-l-4 border-iconPrimary dark:border-iconPrimaryDark'
+                            : 'text-secondaryNeutral dark:text-secondaryNeutralDark hover:text-gray-900 hover:bg-gray-100 dark:hover:bg-gray-800 dark:hover:text-gray-50',
+                          'group rounded-md flex items-center text-sm font-medium justify-start space-x-2 w-74 mx-4 h-[3rem] cursor-pointer',
                         )}
-                        aria-hidden='true'
-                      />
-                      <span className='truncate leading-5 font-normal text-sm text-gray-700 dark:text-gray-200'>
-                        {t(`Settings.${item?.name}`)}
-                      </span>
-                    </a>
-                  ))}
+                        aria-current={item?.current ? 'page' : undefined}
+                      >
+                        <FontAwesomeIcon
+                          icon={item.icon}
+                          className={classNames(item?.current ? 'ml-3' : 'ml-4', 'h-4 w-4')}
+                          aria-hidden='true'
+                        />
+                        <span className='truncate leading-5'>{t(`Settings.${item?.name}`)}</span>
+                      </a>
+                    ))}
                 </nav>
               </aside>
               {/* main content */}
-              <div className='lg:col-span-9'>
-                {/* Theme section */}
-                {currentSection === 'Theme' && <Theme />}
-                {/* Queues */}
-                {currentSection === 'Queues' && <Queues />}
-                {/* Integrations section */}
-                {currentSection === 'Integrations' && <Integrations />}
-                {/* Clean cache */}
-                {currentSection === 'Cache' && <ClearCache />}
-                {/* Mobile app */}
-                {currentSection === 'Mobile App' && <MobileApp />}
-                {/* Customer cards */}
-                {currentSection === 'Customer cards' && <CustomerCards />}
-                {/* Profile section */}
-                {currentSection === 'Profile picture' && <Profile />}
-                {/* Devices section */}
-                {currentSection === 'Devices' && <Devices />}
-                {/* Voicemail section */}
-                {!isEmpty(profile?.endpoints?.voicemail) && (
-                  currentSection === 'Voicemail' && <Voicemail />
-                )}
-              </div>
+              <div className='lg:col-span-9'>{renderCurrentSection()}</div>
             </div>
           </div>
         </div>

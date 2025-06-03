@@ -11,7 +11,10 @@ import {
   RefObject,
 } from 'react'
 import classNames from 'classnames'
-import { InlineNotification, SideDrawerCloseIcon, Dropdown } from '../common'
+import { InlineNotification, Dropdown } from '../common'
+import { DrawerHeader } from '../common/DrawerHeader'
+import { Divider } from '../common/Divider'
+import { DrawerFooter } from '../common/DrawerFooter'
 import { useTranslation } from 'react-i18next'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import {
@@ -226,23 +229,11 @@ export const EditAnnouncementDrawerContent = forwardRef<
 
   return (
     <>
-      <div className='bg-white dark:bg-gray-900 pt-6 px-6'>
-        <div className='flex items-center justify-between'>
-          <div className='text-lg font-medium text-gray-700 dark:text-gray-200'>
-            {config.isEdit ? t('Lines.Announcement details') : t('Lines.Add announcement')}
-          </div>
-          <div className='flex items-center h-7'>
-            <SideDrawerCloseIcon />
-          </div>
-        </div>
-      </div>
+      <DrawerHeader
+        title={config.isEdit ? t('Lines.Announcement details') : t('Lines.Add announcement')}
+      />
       <div className={classNames(className, 'px-5')} {...props}>
-        {/* Divider */}
-        <div className='relative pb-8'>
-          <div className='absolute inset-0 flex items-center' aria-hidden='true'>
-            <div className='w-full border-t border-gray-300 dark:border-gray-600' />
-          </div>
-        </div>
+        <Divider />
         {config.isEdit && (
           <div className='flex justify-end'>
             {/* delete announcement Dropdown menu */}
@@ -387,44 +378,22 @@ export const EditAnnouncementDrawerContent = forwardRef<
         )}
 
         {/* Divider */}
-        <div className='relative pb-10 pt-6'>
-          <div className='absolute inset-0 flex items-center' aria-hidden='true'>
-            <div className='w-full border-t border-gray-300 dark:border-gray-600' />
-          </div>
-        </div>
-        {/* fixed bottom-0 */}
-        <div className='flex justify-end'>
-          {config.isEdit ? (
-            <>
-              <Button variant='ghost' type='submit' onClick={closeSideDrawer} className='mb-4'>
-                {t('Common.Cancel')}
-              </Button>
-              <Button
-                variant='primary'
-                type='submit'
-                onClick={saveEditPhoneLines}
-                className='ml-4 mb-4'
-              >
-                {t('Common.Save')}
-              </Button>
-            </>
-          ) : (
-            <>
-              <Button variant='ghost' type='submit' onClick={closeSideDrawer} className='mb-4'>
-                {t('Common.Cancel')}
-              </Button>
-              <Button
-                variant='primary'
-                type='submit'
-                onClick={saveCreatePhoneLines}
-                className='ml-4 mb-4'
-                disabled={!selectedFile || !textFilter ? true : false}
-              >
-                {t('Common.Save')}
-              </Button>
-            </>
-          )}
-        </div>
+        <Divider paddingY='pb-10 pt-6' />
+
+        {config.isEdit ? (
+          <DrawerFooter
+            cancelLabel={t('Common.Cancel') || ''}
+            confirmLabel={t('Common.Save')}
+            onConfirm={saveEditPhoneLines}
+          />
+        ) : (
+          <DrawerFooter
+            cancelLabel={t('Common.Cancel') || ''}
+            confirmLabel={t('Common.Save')}
+            onConfirm={saveCreatePhoneLines}
+            confirmDisabled={!selectedFile || !textFilter ? true : false}
+          />
+        )}
       </div>
 
       {/* Delete announcement modal */}

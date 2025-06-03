@@ -8,45 +8,30 @@
  */
 
 import React from 'react'
-
 import { FC, useEffect, useState, createRef, RefObject } from 'react'
-
 import { Avatar, Dropdown, Modal, TextInput, Button, Badge } from '../common'
 import { doLogout } from '../../services/login'
 import { store } from '../../store'
 import { useSelector, useDispatch } from 'react-redux'
 import { RootState, Dispatch } from '../../store'
-import classNames from 'classnames'
 import { changeStatusPresence, forwardStatus } from '../../lib/topBar'
-import { Fragment } from 'react'
-import { Popover, PopoverPanel, Transition } from '@headlessui/react'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
-import { StatusDot } from '../common'
 import {
   faArrowRightFromBracket,
   faBars,
-  faSun,
-  faMoon,
-  faChevronRight,
-  faUser,
-  faHeadset,
-  faMobile,
-  faCheck,
-  faVoicemail,
   faArrowRight,
-  faDesktop,
+  faMobile,
+  faVoicemail,
 } from '@fortawesome/free-solid-svg-icons'
 import { getUserInfo } from '../../services/user'
 import { setTheme } from '../../lib/darkTheme'
 import { loadNotificationsFromStorage } from '../../lib/notifications'
 import { GlobalSearch } from './GlobalSearch'
 import { useTranslation } from 'react-i18next'
-import Link from 'next/link'
-import { faOfficePhone } from '@nethesis/nethesis-solid-svg-icons'
 import { isEmpty } from 'lodash'
 import { setMainDevice } from '../../lib/devices'
 import { eventDispatch } from '../../lib/hooks/eventDispatch'
-import { IconProp } from '@fortawesome/fontawesome-svg-core'
+import { UserMenu } from './UserMenu'
 
 interface TopBarProps {
   openMobileCb: () => void
@@ -64,14 +49,17 @@ export const TopBar: FC<TopBarProps> = ({ openMobileCb }) => {
   const notificationsStore = useSelector((state: RootState) => state.notifications)
   const operators = useSelector((state: RootState) => state.operators.operators)
   const profile = useSelector((state: RootState) => state.user)
+  const operatorsStore: any = useSelector((state: RootState) => state.operators)
 
   const [mainDeviceType, setMainDeviceType] = useState('')
   const [noMobileListDevice, setNoMobileListDevice]: any = useState([])
+  const [phoneLinkData, setPhoneLinkDataData]: any = useState([])
 
-  const operatorsStore: any = useSelector((state: RootState) => state.operators)
+  const { t } = useTranslation()
+  const dispatch = useDispatch<Dispatch>()
 
-  // Check wich type of device is the main device
-  // also filter all the device except the mobile one
+  // Check which type of device is the main device
+  // also filter all the devices except the mobile ones
   useEffect(() => {
     if (profile?.endpoints) {
       let extensionObj: any = profile?.endpoints
@@ -93,9 +81,19 @@ export const TopBar: FC<TopBarProps> = ({ openMobileCb }) => {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [profile?.default_device])
 
-  const { t } = useTranslation()
+  // Get phoneLink data on load
+  useEffect(() => {
+    if (profile?.endpoints) {
+      let endpointsInformation = profile?.endpoints
+      if (endpointsInformation?.extension) {
+        setPhoneLinkDataData(
+          endpointsInformation?.extension.filter((phone) => phone?.type === 'nethlink'),
+        )
+      }
+    }
+  }, [profile?.endpoints])
 
-  // get notifications on page load
+  // Get notifications on page load
   useEffect(() => {
     if (firstNotificationsRender) {
       setFirstNotificationsRender(false)
@@ -108,11 +106,10 @@ export const TopBar: FC<TopBarProps> = ({ openMobileCb }) => {
       store.dispatch.notifications.setNotifications(notifications)
       store.dispatch.notifications.setLoaded(true)
     }
-  // eslint-disable-next-line react-hooks/exhaustive-deps
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [firstNotificationsRender, notificationsStore.isLoaded])
 
-  const dispatch = useDispatch<Dispatch>()
-
+  // Toggle dark/light theme
   const toggleDarkTheme = () => {
     if (
       theme === 'dark' ||
@@ -132,6 +129,7 @@ export const TopBar: FC<TopBarProps> = ({ openMobileCb }) => {
     })
   }
 
+  // Handle presence modal
   const [showPresenceModal, setShowPresenceModal] = React.useState(false)
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault()
@@ -143,6 +141,7 @@ export const TopBar: FC<TopBarProps> = ({ openMobileCb }) => {
     setShowPresenceModal(true)
   }
 
+  // Set user presence
   const setPresence = async (presence: any) => {
     if (presence === 'callforward') {
       showModalPresence()
@@ -172,6 +171,7 @@ export const TopBar: FC<TopBarProps> = ({ openMobileCb }) => {
     }
   }
 
+  // Set call forward presence
   const setForwardPresence = async (number: any) => {
     let presence: any = 'callforward'
     try {
@@ -199,16 +199,19 @@ export const TopBar: FC<TopBarProps> = ({ openMobileCb }) => {
     }
   }
 
+  // Handle presence modal actions
   const closedModalSaved = () => {
     setShowPresenceModal(false)
     setForwardPresence(numberInputRef.current?.value)
   }
 
+  // Handle logout
   const disconnectionFunction = () => {
     let emptyObjectLogout: any = {}
     doLogout(emptyObjectLogout)
   }
 
+  // Set main device
   const setMainDeviceId = async (device: any) => {
     let deviceExtension: any = {}
     if (device) {
@@ -227,319 +230,24 @@ export const TopBar: FC<TopBarProps> = ({ openMobileCb }) => {
     }
   }
 
-  const [presenceMenuOpen, setPresenceMenuOpen] = useState(false)
-  const [deviceMenuOpen, setDeviceMenuOpen] = useState(false)
-
-  const [phoneLinkData, setPhoneLinkDataData]: any = useState([])
-
-  // on page load get phoneLink data to check if there is a phoneLink device
-  useEffect(() => {
-    if (profile?.endpoints) {
-      let endpointsInformation = profile?.endpoints
-      if (endpointsInformation?.extension) {
-        setPhoneLinkDataData(
-          endpointsInformation?.extension.filter((phone) => phone?.type === 'nethlink'),
-        )
-      }
-    }
-  }, [profile?.endpoints])
-
-  const dropdownItems = (
-    <>
-      <div className='cursor-default'>
-        <Dropdown.Header>
-          <span className='block text-sm mb-1 text-dropdownText dark:text-dropdownTextDark'>
-            {t('TopBar.Signed in as')}
-          </span>
-          <span className='text-sm font-medium flex justify-between text-dropdownText dark:text-dropdownTextDark'>
-            <span className='truncate pr-2'>{name}</span>
-            <span className='text-sm font-normal'>{mainextension}</span>
-          </span>
-        </Dropdown.Header>
-      </div>
-      {/* Divider */}
-      <div className='relative pt-2'>
-        <div className='absolute inset-0 flex items-center' aria-hidden='true'>
-          <div className='w-full border-t  border-gray-300 dark:border-gray-700' />
-        </div>
-      </div>
-      {/* Choose presence */}
-      <Popover className='md:relative hover:bg-gray-200 dark:hover:bg-gray-700'>
-        {() => (
-          <>
-            <div
-              className={classNames(
-                'relative text-left cursor-pointer px-5 py-2 text-sm flex items-center gap-3 w-full text-dropdownText dark:text-dropdownTextDark',
-              )}
-              onMouseEnter={() => setPresenceMenuOpen(true)}
-              onMouseLeave={() => setPresenceMenuOpen(false)}
-            >
-              <StatusDot status={mainPresence} className='flex mr-1' />
-              <span className='text-sm font-normal'>{t('TopBar.Presence')}</span>
-              <FontAwesomeIcon
-                icon={faChevronRight}
-                className='ml-auto h-4 w-4 flex justify-center'
-              />
-            </div>
-            <Transition
-              as={Fragment}
-              show={presenceMenuOpen}
-              enter='transition ease-out duration-200'
-              enterFrom='opacity-0 translate-y-1'
-              enterTo='opacity-100 translate-y-0'
-              leave='transition ease-in duration-150'
-              leaveFrom='opacity-100 translate-y-0'
-              leaveTo='opacity-0 translate-y-1'
-            >
-              <PopoverPanel
-                className='absolute sm:mr-[4.788rem] sm:-mt-10 right-0 z-10 w-screen max-w-xs sm:-translate-x-1/2 transform px-0.5 sm:px-1 xs:mr-[6rem]'
-                onMouseEnter={() => setPresenceMenuOpen(true)}
-                onMouseLeave={() => setPresenceMenuOpen(false)}
-              >
-                <div className='overflow-hidden shadow-lg ring-1 ring-gray-200 dark:ring-gray-700 ring-opacity-1 rounded-md'>
-                  <div className='relative bg-dropdownBg dark:bg-dropdownBgDark dark:border-gray-700 py-2'>
-                    <Dropdown.Item onClick={() => setPresence('online')}>
-                      <div className='text-dropdownText dark:text-dropdownTextDark'>
-                        <div className='flex items-center'>
-                          <StatusDot status='online' className='flex mr-2' />
-                          <p className='flex text-sm font-medium'>{t('TopBar.Online')}</p>
-                        </div>
-                        <p className='text-sm mt-2'>{t('TopBar.Make and receive phone calls')}</p>
-                      </div>
-                    </Dropdown.Item>
-                    {/* check callforward permission */}
-                    {profile.profile?.macro_permissions?.settings?.permissions?.call_forward
-                      ?.value && (
-                      <Dropdown.Item onClick={() => setPresence('callforward')}>
-                        <div className='text-dropdownText dark:text-dropdownTextDark'>
-                          <div className='flex items-center'>
-                            <StatusDot status='callforward' className='flex mr-2' />
-                            <p className='flex text-sm font-medium'>{t('TopBar.Call forward')}</p>
-                            <FontAwesomeIcon icon={faArrowRight} className='h-4 w-4 ml-2' />
-                          </div>
-                          <p className='text-sm mt-2'>
-                            {t('TopBar.Forward incoming calls to another phone number')}
-                          </p>
-                        </div>
-                      </Dropdown.Item>
-                    )}
-                    {/* check cellphone permission */}
-                    {!isEmpty(profile?.endpoints?.cellphone) && (
-                      <Dropdown.Item
-                        onClick={() => setForwardPresence(profile?.endpoints?.cellphone[0]?.id)}
-                      >
-                        {/* setPresence('cellphone') */}
-                        <div className='text-dropdownText dark:text-dropdownTextDark'>
-                          <div className='flex items-center'>
-                            <StatusDot status='callforward' className='flex mr-2' />
-                            <p className='flex text-sm font-medium'>{t('TopBar.Cellphone')}</p>
-                            <FontAwesomeIcon icon={faMobile} className='h-4 w-4 ml-2' />
-                          </div>
-                          <p className='text-sm mt-2'>
-                            {t('TopBar.Forward incoming calls to cellphone')}
-                          </p>
-                        </div>
-                      </Dropdown.Item>
-                    )}
-                    {/* check voicemail permission */}
-                    {!isEmpty(profile?.endpoints?.voicemail) && (
-                      <Dropdown.Item onClick={() => setPresence('voicemail')}>
-                        <div className='text-dropdownText dark:text-dropdownTextDark'>
-                          <div className='flex items-center'>
-                            <StatusDot status='voicemail' className='flex mr-2' />
-                            <p className='flex text-sm font-medium'>{t('TopBar.Voicemail')}</p>
-                            <FontAwesomeIcon icon={faVoicemail} className='h-4 w-4 ml-2' />
-                          </div>
-                          <p className='text-sm mt-2'>{t('TopBar.Activate voicemail')}</p>
-                        </div>
-                      </Dropdown.Item>
-                    )}
-                    {/* divider  */}
-                    <div className='relative py-2'>
-                      <div className='absolute inset-0 flex items-center' aria-hidden='true'>
-                        <div className='w-full border-t border-gray-300 dark:border-gray-700' />
-                      </div>
-                    </div>
-                    {/* check dnd permission */}
-                    {profile.profile?.macro_permissions?.settings?.permissions?.dnd?.value && (
-                      <Dropdown.Item onClick={() => setPresence('dnd')}>
-                        <div className='text-dropdownText dark:text-dropdownTextDark'>
-                          <div className='flex items-center'>
-                            <StatusDot status='dnd' className='flex mr-2' />
-                            <p className='flex text-sm font-medium'>{t('TopBar.Do not disturb')}</p>
-                          </div>
-                          <p className='text-sm mt-2'>{t('TopBar.Do not receive any calls')}</p>
-                        </div>
-                      </Dropdown.Item>
-                    )}
-                  </div>
-                </div>
-              </PopoverPanel>
-            </Transition>
-          </>
-        )}
-      </Popover>
-
-      {/* Choose main device */}
-      <Popover className='md:relative hover:bg-gray-200 dark:hover:bg-gray-700'>
-        {() => (
-          <>
-            <div
-              className={classNames(
-                'relative text-left cursor-pointer px-5 py-2 text-sm flex items-center gap-3 w-full text-dropdownText dark:text-dropdownTextDark',
-              )}
-              onMouseEnter={() => setDeviceMenuOpen(true)}
-              onMouseLeave={() => setDeviceMenuOpen(false)}
-            >
-              <FontAwesomeIcon
-                icon={
-                  mainDeviceType === 'webrtc'
-                    ? faHeadset
-                    : mainDeviceType === 'physical'
-                    ? (faOfficePhone as IconProp)
-                    : mainDeviceType === 'nethlink'
-                    ? faDesktop
-                    : faHeadset
-                }
-                className='ml-[-0.2rem] h-4 w-4 flex justify-center '
-              />
-              <span className='text-sm font-normal'>{t('TopBar.Main device')}</span>
-              <FontAwesomeIcon
-                icon={faChevronRight}
-                className='ml-auto h-4 w-4 flex justify-center'
-              />
-            </div>
-            <Transition
-              as={Fragment}
-              show={deviceMenuOpen}
-              enter='transition ease-out duration-200'
-              enterFrom='opacity-0 translate-y-1'
-              enterTo='opacity-100 translate-y-0'
-              leave='transition ease-in duration-150'
-              leaveFrom='opacity-100 translate-y-0'
-              leaveTo='opacity-0 translate-y-1'
-            >
-              {/* List of device to choose */}
-              <PopoverPanel
-                className='absolute sm:mr-[4.788rem] sm:-mt-10 right-0 z-10 w-screen max-w-xs sm:-translate-x-1/2 transform px-0.5 sm:px-1 xs:mr-[6rem]'
-                onMouseEnter={() => setDeviceMenuOpen(true)}
-                onMouseLeave={() => setDeviceMenuOpen(false)}
-              >
-                <div className='overflow-hidden shadow-lg ring-1 ring-gray-200 dark:ring-gray-700 ring-opacity-1 rounded-md'>
-                  <div className='relative bg-white dark:border-gray-700 dark:bg-gray-900 py-2'>
-                    {noMobileListDevice
-                      .sort((a: any, b: any) => {
-                        const order = ['webrtc', 'nethlink', 'physical']
-                        return order.indexOf(a.type) - order.indexOf(b.type)
-                      })
-                      .filter((device: any) => {
-                        const defaultType = profile?.default_device?.type
-                        if (
-                          // Hide webrtc choose only if there is a nethlink device or nethlink device is the default one
-                          (defaultType === 'webrtc' && device?.type === 'nethlink') ||
-                          (defaultType === 'physical' &&
-                            device?.type === 'webrtc' &&
-                            phoneLinkData?.length >= 1 &&
-                            phoneLinkData[0]?.id !== '' &&
-                            !isEmpty(operatorsStore) &&
-                            operatorsStore?.extensions[phoneLinkData[0]?.id]?.status ===
-                              'online') ||
-                          // Hide nethlink choose only if there isn't a nethLink device or webrtc device is the default one
-                          (defaultType === 'nethlink' && device?.type === 'webrtc') ||
-                          (defaultType === 'physical' &&
-                            device?.type === 'nethlink' &&
-                            phoneLinkData?.length >= 1 &&
-                            device?.id !== '' &&
-                            !isEmpty(operatorsStore) &&
-                            operatorsStore?.extensions[device?.id]?.status === 'offline')
-                        ) {
-                          return false
-                        }
-                        return true
-                      })
-                      .map((device: any) => (
-                        <Dropdown.Item key={device?.id} onClick={() => setMainDeviceId(device)}>
-                          <div className='truncate'>
-                            <div className='flex items-center space-x-2'>
-                              {device?.id === profile?.default_device?.id ? (
-                                <FontAwesomeIcon
-                                  icon={faCheck}
-                                  className='ml-auto mr-2 h-4 w-4 flex justify-center text-primary dark:text-dropdownTextDark'
-                                />
-                              ) : (
-                                <FontAwesomeIcon
-                                  icon={faCheck}
-                                  className='ml-auto mr-2 h-4 w-4 flex justify-center text-primary dark:text-dropdownTextDark invisible select-none'
-                                />
-                              )}
-
-                              <FontAwesomeIcon
-                                icon={
-                                  device?.type === 'webrtc'
-                                    ? faHeadset
-                                    : device?.type === 'physical'
-                                    ? (faOfficePhone as IconProp)
-                                    : faDesktop
-                                }
-                                className='ml-auto h-4 w-4 flex justify-center text-dropdownText dark:text-dropdownTextDark'
-                              />
-                              {device?.type === 'webrtc' && (
-                                <p className='text-sm'>{t('Devices.Web phone')}</p>
-                              )}
-                              {device?.type === 'nethlink' && (
-                                <p className='flex text-sm font-medium line-clamp-2'>
-                                  {t('Devices.PhoneLink')}
-                                </p>
-                              )}
-                              {device?.type === 'physical' && (
-                                <p className='truncate flex text-sm font-medium max-w-[6rem] line-clamp-2'>
-                                  {device?.description || t('Devices.IP phone')}
-                                </p>
-                              )}
-                            </div>
-                          </div>
-                        </Dropdown.Item>
-                      ))}
-                  </div>
-                </div>
-              </PopoverPanel>
-            </Transition>
-          </>
-        )}
-      </Popover>
-
-      {/* profile picture redirect */}
-      <Link href={{ pathname: '/settings', query: { section: 'Profile picture' } }}>
-        <Dropdown.Item icon={faUser}>
-          <span>{t('Settings.Profile picture')}</span>
-        </Dropdown.Item>
-      </Link>
-      {/* Divider */}
-      <div className='relative pt-2'>
-        <div className='absolute inset-0 flex items-center' aria-hidden='true'>
-          <div className='w-full border-t  border-gray-300 dark:border-gray-700' />
-        </div>
-      </div>
-
-      {/* toggle light/dark theme  */}
-      <Dropdown.Item
-        icon={
-          theme === 'dark' ||
-          (theme === 'system' && window.matchMedia('(prefers-color-scheme: dark)').matches)
-            ? faSun
-            : faMoon
-        }
-        onClick={toggleDarkTheme}
-      >
-        {theme === 'dark' ||
-        (theme === 'system' && window.matchMedia('(prefers-color-scheme: dark)').matches)
-          ? `${t('TopBar.Switch to light theme')}`
-          : `${t('TopBar.Switch to dark theme')}`}
-      </Dropdown.Item>
-      <Dropdown.Item icon={faArrowRightFromBracket} onClick={() => disconnectionFunction()}>
-        {t('TopBar.Logout')}
-      </Dropdown.Item>
-    </>
+  // Prepare user menu items
+  const userMenuItems = (
+    <UserMenu
+      name={name}
+      mainextension={mainextension}
+      mainPresence={mainPresence}
+      profile={profile}
+      phoneLinkData={phoneLinkData}
+      operatorsStore={operatorsStore}
+      theme={theme}
+      mainDeviceType={mainDeviceType}
+      noMobileListDevice={noMobileListDevice}
+      toggleDarkTheme={toggleDarkTheme}
+      setPresence={setPresence}
+      setForwardPresence={setForwardPresence}
+      setMainDeviceId={setMainDeviceId}
+      disconnectionFunction={disconnectionFunction}
+    />
   )
 
   return (
@@ -556,7 +264,7 @@ export const TopBar: FC<TopBarProps> = ({ openMobileCb }) => {
         <div className='flex flex-1 justify-end px-4 sm:px-6'>
           <GlobalSearch />
           <div className='ml-2 flex items-center space-x-2'>
-            {/* status badge ( voicemail or callforward) */}
+            {/* Status badge (voicemail or callforward) */}
             {(mainPresence === 'callforward' ||
               mainPresence === 'voicemail' ||
               mainPresence === 'cellphone') && (
@@ -597,39 +305,8 @@ export const TopBar: FC<TopBarProps> = ({ openMobileCb }) => {
               </Badge>
             )}
 
-            {/* Notifications drawer */}
-
-            {/* HIDDEN AT THE MOMENT WAITING FOR SERVER SIDE IMPLEMENTATION */}
-            {/* <Button variant='ghost' onClick={() => openNotificationsDrawer()}>
-              <span className='relative inline-block'>
-                <FontAwesomeIcon
-                  icon={faBell}
-                  className={
-                    'h-5 w-5 py-1 px-0.5 flex-shrink-0 ' +
-                    (sideDrawer?.isShown && sideDrawer?.contentType === 'notifications'
-                      ? ' text-primary dark:text-primaryDark'
-                      : ' text-topBarText dark:text-topBarTextDark')
-                  }
-                  aria-hidden='true'
-                />
-                // badge with notifications number
-                {notificationsStore.unreadCount > 0 && (
-                  <span
-                    className={
-                      'absolute flex justify-center items-center top-1.5 right-0.5 h-4 -translate-y-1/2 translate-x-1/2 transform rounded-full text-xs ring-2 ring-white dark:ring-gray-700 text-white bg-red-500 ' +
-                      (notificationsStore.unreadCount < 10 ? 'w-4' : 'w-6')
-                    }
-                  >
-                    <span>
-                      {notificationsStore.unreadCount < 10 ? notificationsStore.unreadCount : '9+'}
-                    </span>
-                  </span>
-                )}
-              </span>
-            </Button> */}
-
             {/* Profile dropdown */}
-            <Dropdown items={dropdownItems} position='left' className='pl-3'>
+            <Dropdown items={userMenuItems} position='left' className='pl-3'>
               <span className='sr-only'>{t('TopBar.Open user menu')}</span>
               <Avatar
                 size='small'
@@ -640,6 +317,8 @@ export const TopBar: FC<TopBarProps> = ({ openMobileCb }) => {
               />
             </Dropdown>
           </div>
+
+          {/* Call forward modal */}
           <Modal
             show={showPresenceModal}
             focus={numberInputRef}

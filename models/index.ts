@@ -27,6 +27,7 @@ import { rightSideMenu } from './rightSideMenu'
 import { profilePicture } from './profilePicture'
 import { devices } from './devices'
 import { voicemail } from './voicemail'
+import { incomingCall } from './incomingCall'
 
 export interface RootModel extends Models<RootModel> {
   authentication: typeof authentication
@@ -54,6 +55,7 @@ export interface RootModel extends Models<RootModel> {
   profilePicture: typeof profilePicture
   devices: typeof devices
   voicemail: typeof voicemail
+  incomingCall: typeof incomingCall
 }
 
 export const models: RootModel = {
@@ -82,4 +84,5 @@ export const models: RootModel = {
   profilePicture,
   devices,
   voicemail,
+  incomingCall,
 }

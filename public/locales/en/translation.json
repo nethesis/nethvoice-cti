@@ -70,7 +70,11 @@
     "Copy to clipboard": "Copy to clipboard",
     "Back": "Back",
     "Delete all": "Delete all",
-    "Deleting...": "Deleting..."
+    "Deleting...": "Deleting...",
+    "Reject": "Reject",
+    "Actions": "Actions",
+    "Call duration": "Call duration",
+    "No data to show": "No data to show"
   },
   "Login": {
     "User": "Username",
@@ -135,7 +139,8 @@
     "Please enter a valid phone number": "Please enter a valid phone number",
     "Cannot retrieve last calls of user": "Cannot retrieve last calls of user",
     "Cannot retrieve last calls of switchboard": "Cannot retrieve last calls of switchboard",
-    "contactDeletionMessage": "Contact {{name}} will be permanently deleted."
+    "contactDeletionMessage": "Contact {{name}} will be permanently deleted.",
+    "Full name/Company": "Full name/Company"
   },
   "History": {
     "History": "History",
@@ -233,7 +238,10 @@
     "Operators filters": "Operators filters",
     "Operators groups": "Operators groups",
     "Filters": "Filters",
-    "Close menu": "Close menu"
+    "Close menu": "Close menu",
+    "Standard layout": "Standard layout",
+    "Compact layout": "Compact layout",
+    "Grouped layout": "Grouped layout"
   },
   "Applications": {
     "Applications": "Applications",
@@ -357,7 +365,18 @@
     "The audio file cannot be played": "The audio file cannot be played",
     "Audio file validation timed out": "Audio file validation timed out",
     "Validating audio file...": "Validating audio file...",
-    "Recorded audio file": "Recorded audio file"
+    "Recorded audio file": "Recorded audio file",
+    "Incoming calls": "Incoming calls",
+    "URL opened on incoming call": "URL opened on incoming call",
+    "Enable pop-ups in your browser": "Enable pop-ups in your browser",
+    "To correctly open the Call-activated URL, you need to enable pop-ups in your browser.": "To correctly open the Call-activated URL, you need to enable pop-ups in your browser.",
+    "URL opening trigger": "URL opening trigger",
+    "When the call is ringing": "When the call is ringing",
+    "When the call is answered": "When the call is answered",
+    "When clicking the button on the Phone Island": "When clicking the button on the Phone Island",
+    "This URL opens automatically for external incoming calls": "This URL opens automatically for external incoming calls",
+    "This field can only be modified by the administrator": "This field can only be modified by the administrator",
+    "Loading...": "Loading..."
   },
   "TopBar": {
     "Signed in as": "Signed in as",
@@ -381,8 +400,8 @@
     "Forward incoming calls to cellphone": "Forward incoming calls to cellphone"
   },
   "OperatorDrawer": {
-    "Book": "Book",
-    "Hangup": "Hangup",
+    "Book": "Book call",
+    "Hangup": "Hangup current call",
     "Listen": "Listen",
     "Intrude": "Intrude",
     "Record": "Record",
@@ -634,7 +653,13 @@
     "Speed dial creation message": "You've just created a new speed dial: {{extensionWaiting}}",
     "Speed dial created": "Speed dial created",
     "Speed dial edit message": "You've just edited a speed dial: {{extensionWaiting}}",
-    "Speed dial edited": "Speed dial edited"
+    "Speed dial edited": "Speed dial edited",
+    "Sort speed dials": "Sort speed dials",
+    "Sort by": "Sort by",
+    "Name (A-Z)": "Name (A-Z)",
+    "Name (Z-A)": "Name (Z-A)",
+    "Number (ascending)": "Number (ascending)",
+    "Number (descending)": "Number (descending)"
   },
   "LastCalls": {
     "Last calls": "Last calls",
@@ -645,7 +670,11 @@
     "Call": "Call",
     "Go to history": "Go to History",
     "Open lastcalls menu": "Open lastcalls menu",
-    "Unknown": "Unknown"
+    "Unknown": "Unknown",
+    "All calls": "All calls",
+    "Incoming": "Incoming calls",
+    "Outgoing": "Outgoing calls",
+    "Filter by": "Filter by"
   },
   "VoiceMail": {
     "Voicemail inbox": "Voicemail inbox",
@@ -933,7 +962,7 @@
     "Keys configuration information tooltip": "Configure line keys of your physical device",
     "Key position information tooltip": "Choose a position for your key",
     "Click on confirm": "Click on Confirm",
-    "Audio and video settings": "Audio and video settings",
+    "Audio and video settings": "Audio and Video settings",
     "Audio input": "Audio input",
     "Audio output": "Audio output",
     "Audio input information tooltip": "Choose the audio input device",
@@ -959,7 +988,8 @@
     "Operating system": "Operating system",
     "Devices": "Devices",
     "Name": "Name",
-    "Default": "Default"
+    "Default": "Default",
+    "Inline warning message devices": "Changes to audio and video settings can only be applied if the main device is set to Web phone and your status is Online."
   },
   "DropdownContent": {
     "Microphones": "MICROPHONES",

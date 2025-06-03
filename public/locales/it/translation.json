@@ -56,7 +56,11 @@
     "Close": "Chiudi",
     "Back": "Indietro",
     "Delete all": "Elimina tutto",
-    "Deleting...": "Eliminazione in corso..."
+    "Deleting...": "Eliminazione in corso...",
+    "Reject": "Rifiuta",
+    "Actions": "Azioni",
+    "Call duration": "Durata chiamata",
+    "No data to show": "Nessun dato da mostrare"
   },
   "Login": {
     "User": "Utente",
@@ -117,7 +121,8 @@
     "Cannot retrieve last calls of user": "Impossibile recuperare le ultime chiamate dell'utente",
     "Cannot retrieve last calls of switchboard": "Impossibile recuperare le ultime chiamate del centralino",
     "Delete contact": "Elimina contatto",
-    "contactDeletionMessage": "Il contatto {{name}} verrà eliminato permanentemente."
+    "contactDeletionMessage": "Il contatto {{name}} verrà eliminato permanentemente.",
+    "Full name/Company": "Nome completo/Azienda"
   },
   "History": {
     "History": "Storico",
@@ -213,7 +218,10 @@
     "Operators filters": "Filtri operatori",
     "Operators groups": "Filtri gruppi",
     "Filters": "Filtri",
-    "Close menu": "Chiudi menu"
+    "Close menu": "Chiudi menu",
+    "Standard layout": "Layout standard",
+    "Compact layout": "Layout compatto",
+    "Grouped layout": "Layout raggruppato"
   },
   "Applications": {
     "Applications": "Applicazioni",
@@ -336,7 +344,18 @@
     "The audio file cannot be played": "Il file audio non può essere riprodotto",
     "Audio file validation timed out": "Validazione del file audio scaduta",
     "Validating audio file...": "Validazione del file audio in corso...",
-    "Recorded audio file": "File audio registrato"
+    "Recorded audio file": "File audio registrato",
+    "Incoming calls": "Chiamate in arrivo",
+    "URL opened on incoming call": "URL aperto su chiamata in arrivo",
+    "Enable pop-ups in your browser": "Abilita i pop-up nel tuo browser",
+    "To correctly open the Call-activated URL, you need to enable pop-ups in your browser.": "Per aprire correttamente l'URL attivato dalle chiamate, devi abilitare i pop-up nel tuo browser.",
+    "URL opening trigger": "Trigger di apertura URL",
+    "When the call is ringing": "Quando la chiamata sta squillando",
+    "When the call is answered": "Quando la chiamata riceve risposta",
+    "When clicking the button on the Phone Island": "Quando si clicca sul pulsante nel Phone Island",
+    "This URL opens automatically for external incoming calls": "Questo URL si apre automaticamente per le chiamate in entrata esterne",
+    "This field can only be modified by the administrator": "Questo campo può essere modificato solo dall'amministratore",
+    "Loading...": "Caricamento in corso..."
   },
   "TopBar": {
     "Signed in as": "Accesso effettuato come",
@@ -360,8 +379,8 @@
     "Forward incoming calls to cellphone": "Inoltra le chiamate in entrata al cellulare"
   },
   "OperatorDrawer": {
-    "Book": "Prenota",
-    "Hangup": "Chiudi",
+    "Book": "Prenota chiamata",
+    "Hangup": "Chiudi chiamata corrente",
     "Listen": "Ascolta",
     "Intrude": "Intromettiti",
     "Record": "Registra",
@@ -501,7 +520,13 @@
     "Speed dial delete message": "La chiamata rapida {{deletingName}} verrà eliminata",
     "Upload failed": "Caricamento fallito",
     "Cannot delete speed dial": "Impossibile cancellare le chiamate rapide",
-    "Cannot import speed dial": "Impossibile importare le chiamate rapide"
+    "Cannot import speed dial": "Impossibile importare le chiamate rapide",
+    "Sort speed dials": "Ordina chiamate rapide",
+    "Sort by": "Ordina per",
+    "Name (A-Z)": "Nome (A-Z)",
+    "Name (Z-A)": "Nome (Z-A)",
+    "Number (ascending)": "Numero (crescente)",
+    "Number (descending)": "Numero (decrescente)"
   },
   "LastCalls": {
     "Last calls": "Ultime chiamate",
@@ -512,7 +537,11 @@
     "Call": "Chiama",
     "Go to history": "Vai allo storico",
     "Open lastcalls menu": "Apri menu ultime chiamate",
-    "Unknown": "Sconosciuto"
+    "Unknown": "Sconosciuto",
+    "All calls": "Tutte le chiamate",
+    "Incoming": "Chiamate in arrivo",
+    "Outgoing": "Chiamate in uscita",
+    "Filter by": "Filtra per"
   },
   "VoiceMail": {
     "Voicemail inbox": "Casella vocale",
@@ -911,7 +940,7 @@
     "Keys configuration information tooltip": "Configura i tasti linea del tuo telefono",
     "Key position information tooltip": "Scegli una posizione per il pulsante",
     "Click on confirm": "Clicca su Conferma",
-    "Audio and video settings": "Impostazioni audio e video",
+    "Audio and video settings": "Impostazioni Audio e Video",
     "Audio input": "Audio input",
     "Audio output": "Audio in ingresso",
     "Audio input information tooltip": "Scegli il dispositivo di ingresso audio",
@@ -937,7 +966,8 @@
     "Operating system": "Sistema operativo",
     "Devices": "Dispositivi",
     "Name": "Nome",
-    "Default": "Predefinito"
+    "Default": "Predefinito",
+    "Inline warning message devices": "Le modifiche relative alle impostazioni audio e video possono essere applicate solo se il dispositivo principale è impostato su Web phone e il proprio stato è Online."
   },
   "DropdownContent": {
     "Microphones": "MICROFONI",

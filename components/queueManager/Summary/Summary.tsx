@@ -10,13 +10,14 @@ import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { Popover, PopoverButton, PopoverGroup, PopoverPanel } from '@headlessui/react'
 import { cloneDeep } from 'lodash'
 import { exactDistanceToNowLoc, formatDurationLoc } from '../../../lib/dateTime'
+import { getCallTimeToDisplay } from '../../../lib/dateTime'
 
 import {
   faChevronDown,
   faChevronUp,
   faHeadset,
   faCircleNotch,
-  faChevronRight,
+  faAngleRight,
   faPause,
   faPhone,
   faUser,
@@ -406,12 +407,12 @@ export const Summary: FC<SummaryProps> = ({ className }): JSX.Element => {
           // Update the agent's data with the calculated values
           //Last login
           if (lastLogin) {
-            agent.queues.lastLogin = new Date(lastLogin * 1000).toLocaleTimeString()
+            agent.queues.lastLogin = getCallTimeToDisplay(lastLogin * 1000)
           }
 
           //Last logout
           if (lastLogout) {
-            agent.queues.lastLogout = new Date(lastLogout * 1000).toLocaleTimeString()
+            agent.queues.lastLogout = getCallTimeToDisplay(lastLogin * 1000)
           }
 
           //Last calls
@@ -733,7 +734,7 @@ export const Summary: FC<SummaryProps> = ({ className }): JSX.Element => {
                         </div>
                         <span className='inline-flex h-10 w-10 flex-shrink-0 items-center justify-center'>
                           <FontAwesomeIcon
-                            icon={faChevronRight}
+                            icon={faAngleRight}
                             className='h-3 w-3 text-gray-400 dark:text-gray-500'
                             aria-hidden='true'
                           />

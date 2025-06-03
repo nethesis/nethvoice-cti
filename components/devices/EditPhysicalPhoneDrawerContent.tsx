@@ -1,7 +1,10 @@
 // Copyright (C) 2024 Nethesis S.r.l.
 // SPDX-License-Identifier: AGPL-3.0-or-later
+
 import { ComponentPropsWithRef, forwardRef, useEffect, useRef, useState } from 'react'
-import { Button, Dropdown, SideDrawerCloseIcon, TextInput } from '../common'
+import { Button, Dropdown, TextInput } from '../common'
+import { DrawerHeader } from '../common/DrawerHeader'
+import { Divider } from '../common/Divider'
 import { t } from 'i18next'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import {
@@ -10,11 +13,11 @@ import {
   faEye,
   faEyeSlash,
 } from '@fortawesome/free-solid-svg-icons'
-
 import { Tooltip } from 'react-tooltip'
 import { ConfigureKeysSection } from './ConfigureKeysSection'
 import { getDevicesPinStatusForDevice } from '../../lib/devices'
 import { openToast } from '../../lib/utils'
+import { CustomThemedTooltip } from '../common/CustomThemedTooltip'
 
 export interface EditPhysicalPhoneDrawerContentProps extends ComponentPropsWithRef<'div'> {
   config: any
@@ -117,24 +120,9 @@ export const EditPhysicalPhoneDrawerContent = forwardRef<
 
   return (
     <>
-      {/* Drawer header */}
-      <div className='bg-white dark:bg-gray-900 pt-6 px-6'>
-        <div className='flex items-center justify-between'>
-          {/* Title */}
-          <div className='text-lg font-medium dark:text-gray-200 text-gray-700'>
-            {t('Devices.Edit')}: {config?.description}
-          </div>
-          <div className='flex items-center h-7'>
-            <SideDrawerCloseIcon />
-          </div>
-        </div>
-      </div>
+      <DrawerHeader title={`${t('Devices.Edit')}: ${config?.description}`} />
       <div className='px-5'>
-        <div className='relative pb-8'>
-          <div className='absolute inset-0 flex items-center' aria-hidden='true'>
-            <div className='w-full border-t border-gray-300 dark:border-gray-600' />
-          </div>
-        </div>
+        <Divider />
         {/* Pin section */}
         {/* Check if user has pin enabled */}
         {config?.pinStatus && (
@@ -150,7 +138,11 @@ export const EditPhysicalPhoneDrawerContent = forwardRef<
                   data-tooltip-content={t('Devices.Pin information tooltip') || ''}
                 />
 
-                <Tooltip id='tooltip-pin-information' place='right' className='pi-z-20' />
+                <CustomThemedTooltip
+                  id='tooltip-pin-information'
+                  place='right'
+                  className='pi-z-20'
+                />
               </div>
               <div className='flex'>
                 <span className='text-sm text-gray-700 dark:text-gray-200 leading-5'>
@@ -199,7 +191,7 @@ export const EditPhysicalPhoneDrawerContent = forwardRef<
               data-tooltip-content={t('Devices.Keys configuration information tooltip') || ''}
             />
 
-            <Tooltip id='tooltip-configure-keys-information' place='right' className='pi-z-20' />
+            <CustomThemedTooltip id='tooltip-configure-keys-information' place='right' />
           </div>
           <Dropdown items={configureKeysDropdownMenu()} position='left'>
             <FontAwesomeIcon

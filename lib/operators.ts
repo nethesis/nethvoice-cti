@@ -271,53 +271,63 @@ export const retrieveAvatars = async (authStore: any) => {
 
 export const retrieveFavoriteOperators = async (authStore: any, operatorObject: any) => {
   store.dispatch.operators.setFavoritesLoaded(false)
-  const speedDials = await getSpeedDials()
 
-  // Avoid to add a favorite operator if you add it in the speed dials form
-  const speedDialMap: any = speedDials.reduce((acc: any, speedDial: any) => {
-    if (speedDial?.notes === 'speeddial-favorite') {
-      acc[speedDial?.name] = { id: speedDial?.id }
-    }
-    return acc
-  }, {})
+  // Check if the user has the phonebook permission
+  const hasPhonebookPermission = store.getState().user?.profile?.macro_permissions?.phonebook?.value
 
-  // Retrieve the favorite operators from the speed dials Object
-  store.dispatch.operators.setFavoritesObjectComplete(speedDialMap)
+  if (hasPhonebookPermission) {
+    const speedDials = await getSpeedDials()
 
-  const favoriteOperatorsLocalStorage =
-    loadPreference('favoriteOperators', authStore.username) || []
+    // Avoid to add a favorite operator if you add it in the speed dials form
+    const speedDialMap: any = speedDials.reduce((acc: any, speedDial: any) => {
+      if (speedDial?.notes === 'speeddial-favorite') {
+        acc[speedDial?.name] = { id: speedDial?.id }
+      }
+      return acc
+    }, {})
 
-  //check if the favoriteOperatorsLocalStorage is not empty
-  if (favoriteOperatorsLocalStorage.length > 0) {
-    // Cycle through all the favorite operators in local storage
-    for (const operatorName of favoriteOperatorsLocalStorage) {
-      // Check if the operator already exists in the speed dials
-      const operatorAlreadyExists = speedDials.some(
-        (speedDial: any) => speedDial?.name === operatorName,
-      )
+    // Retrieve the favorite operators from the speed dials Object
+    store.dispatch.operators.setFavoritesObjectComplete(speedDialMap)
 
-      // If the operator does not exist in the speed dials, add it
-      if (!operatorAlreadyExists) {
-        const operatorSpeedDial = operatorObject[operatorName]
-        if (operatorSpeedDial) {
-          const mainExtension = operatorSpeedDial?.endpoints?.mainextension[0]?.id
-          const operatorRealName = operatorSpeedDial?.name
+    const favoriteOperatorsLocalStorage =
+      loadPreference('favoriteOperators', authStore.username) || []
 
-          if (mainExtension && operatorRealName) {
-            await addOperatorToFavorites(operatorName, mainExtension, operatorRealName)
+    //check if the favoriteOperatorsLocalStorage is not empty
+    if (favoriteOperatorsLocalStorage.length > 0) {
+      // Cycle through all the favorite operators in local storage
+      for (const operatorName of favoriteOperatorsLocalStorage) {
+        // Check if the operator already exists in the speed dials
+        const operatorAlreadyExists = speedDials.some(
+          (speedDial: any) => speedDial?.name === operatorName,
+        )
+
+        // If the operator does not exist in the speed dials, add it
+        if (!operatorAlreadyExists) {
+          const operatorSpeedDial = operatorObject[operatorName]
+          if (operatorSpeedDial) {
+            const mainExtension = operatorSpeedDial?.endpoints?.mainextension[0]?.id
+            const operatorRealName = operatorSpeedDial?.name
+
+            if (mainExtension && operatorRealName) {
+              await addOperatorToFavorites(operatorName, mainExtension, operatorRealName)
+            }
           }
         }
       }
+
+      clearPreference('favoriteOperators', authStore?.username)
     }
 
-    clearPreference('favoriteOperators', authStore?.username)
+    const speedDialOwners = speedDials
+      .filter((speedDial: any) => speedDial?.notes === 'speeddial-favorite')
+      .map((speedDial: any) => speedDial?.name)
+
+    store.dispatch.operators.setFavorites(speedDialOwners)
+  } else {
+    store.dispatch.operators.setFavoritesObjectComplete({})
+    store.dispatch.operators.setFavorites([])
   }
 
-  const speedDialOwners = speedDials
-    .filter((speedDial: any) => speedDial?.notes === 'speeddial-favorite')
-    .map((speedDial: any) => speedDial?.name)
-
-  store.dispatch.operators.setFavorites(speedDialOwners)
   store.dispatch.operators.setFavoritesLoaded(true)
 }
 
@@ -497,4 +507,14 @@ export function getUserGroups(
 
   // concat groups and remove duplicates
   return Array.from(new Set([...allowedGroups, ...belongingGroups]))
+}
+
+export async function hangupMainExt(obj: any) {
+  try {
+    const { data, status } = await axios.post('/astproxy/hangup_mainexten', obj)
+    return data
+  } catch (error) {
+    handleNetworkError(error)
+    throw error
+  }
 }

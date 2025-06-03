@@ -16,7 +16,6 @@ import {
 import { t } from 'i18next'
 import { DeviceSectionOperatorSearch } from './DeviceSectionOperatorSearch'
 import { KeyTypeSelect } from './KeyTypeSelect'
-import { Tooltip } from 'react-tooltip'
 import { isEmpty, isEqual } from 'lodash'
 import { Button, EmptyState, TextInput } from '../common'
 import {
@@ -29,6 +28,8 @@ import {
 import { useSelector } from 'react-redux'
 import { RootState } from '../../store'
 import { motion } from 'framer-motion'
+import { customScrollbarClass } from '../../lib/utils'
+import { CustomThemedTooltip } from '../common/CustomThemedTooltip'
 
 function classNames(...classes: string[]) {
   return classes.filter(Boolean).join(' ')
@@ -492,7 +493,7 @@ export default function DraggableRows({
           trailingIcon={true}
         />
       </div>
-      <div className='overflow-y-auto scrollbar-thin scrollbar-thumb-gray-400 dark:scrollbar-thumb-gray-400 scrollbar-thumb-rounded-full scrollbar-thumb-opacity-50 scrollbar-track-gray-200 dark:scrollbar-track-gray-900 scrollbar-track-rounded-full scrollbar-track-opacity-25'>
+      <div className={customScrollbarClass}>
         <div className='pt-2 max-h-[24rem]'>
           <ul>
             {/* skeleton */}
@@ -592,10 +593,9 @@ export default function DraggableRows({
                         data-tooltip-content={t('Devices.Key position information tooltip') || ''}
                       />
 
-                      <Tooltip
+                      <CustomThemedTooltip
                         id='tooltip-configure-key-position-information'
                         place='right'
-                        className='pi-z-20'
                       />
                     </div>
 

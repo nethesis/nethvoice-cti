@@ -8,13 +8,16 @@ import { Avatar, Button, Switch } from '../common'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { useSelector } from 'react-redux'
 import { RootState } from '../../store'
-import { openShowGravatarDrawer, openShowUploadProfilePictureDrawer } from '../../lib/profilePicture'
+import {
+  openShowGravatarDrawer,
+  openShowUploadProfilePictureDrawer,
+} from '../../lib/profilePicture'
 import { faUpload } from '@fortawesome/free-solid-svg-icons'
 import { faGravatar } from '@nethesis/nethesis-brands-svg-icons'
 import React from 'react'
-import { Tooltip } from 'react-tooltip'
 import { PresetProfilePictureContent } from '../common/ProfilePicture/PresetProfilePictureContent'
 import { IconProp } from '@fortawesome/fontawesome-svg-core'
+import { CustomThemedTooltip } from '../common/CustomThemedTooltip'
 
 const Profile: NextPage = () => {
   const { t } = useTranslation()
@@ -42,7 +45,7 @@ const Profile: NextPage = () => {
                 src={operators[profile?.username]?.avatarBase64}
                 deleteAvatar={true}
               />
-              <Tooltip className='pi-z-20' id={'tooltip-remove-profile-picture'} place='left'/>
+              <CustomThemedTooltip id={'tooltip-remove-profile-picture'} place='left' />
               <Button variant='white' onClick={() => openShowUploadProfilePictureDrawer('')}>
                 <FontAwesomeIcon icon={faUpload} className='mr-2' />
                 {t('Settings.Upload')}

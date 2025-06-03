@@ -3,7 +3,6 @@
 
 import { FC } from 'react'
 import { CallTypes } from '../../lib/history'
-import { Tooltip } from 'react-tooltip'
 import { getOperatorByPhoneNumber } from '../../lib/operators'
 import classNames from 'classnames'
 import { callPhoneNumber, cleanString, formatPhoneNumber, transferCallToExtension } from '../../lib/utils'
@@ -11,6 +10,7 @@ import { t } from 'i18next'
 import { openCreateLastCallContact, openShowContactDrawer } from '../../lib/phonebook'
 import { useSelector } from 'react-redux'
 import { RootState } from '../../store'
+import { CustomThemedTooltip } from '../common/CustomThemedTooltip'
 
 interface CallDetailsProps {
   call: CallTypes
@@ -95,7 +95,7 @@ export const CallDetails: FC<CallDetailsProps> = ({
                 `tooltip-${direction === 'in' ? 'dest' : 'source'}-${cleanString(
                   getCallName(call, direction) || '-',
                 )}`,
-                'truncate text-gray-900 dark:text-gray-200 leading-4 font-medium text-sm whitespace-nowrap cursor-pointer hover:underline',
+                'truncate text-primaryNeutral dark:text-primaryNeutralDark leading-4 font-medium text-sm whitespace-nowrap cursor-pointer hover:underline',
               )}
               onClick={() => openLastCardUserDrawer(call)}
               data-tooltip-id={`tooltip-${cleanString(getCallName(call, direction) || '-')}`}
@@ -109,7 +109,7 @@ export const CallDetails: FC<CallDetailsProps> = ({
             </div>
           )}
 
-          <Tooltip
+          <CustomThemedTooltip
             id={`tooltip-${cleanString(getCallName(call, direction) || '-')}`}
             className='pi-z-20'
           />
@@ -120,7 +120,7 @@ export const CallDetails: FC<CallDetailsProps> = ({
               <div
                 className={`${
                   highlightNumber
-                    ? 'text-primary dark:text-primaryDark'
+                    ? 'text-textLink dark:text-textLinkDark'
                     : 'text-gray-500 dark:text-gray-200'
                 } ${fromHistory || (!fromHistory && isQueueBadgeAvailable) ? 'truncate' : ''}`}
               >
