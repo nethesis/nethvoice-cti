@@ -15,7 +15,6 @@ import { getJSONItem, loadPreference } from '../../lib/storage'
 import { RootState, store } from '../../store'
 import { useSelector } from 'react-redux'
 import { UserLastCalls } from './UserLastCalls'
-import { Tooltip } from 'react-tooltip'
 import { useTranslation } from 'react-i18next'
 import { UserVoiceMail } from './UserVoiceMail'
 import { isEmpty } from 'lodash'
@@ -39,16 +38,21 @@ export const UserNavBar: FC = () => {
 
   const [tabReady, setTabReady] = useState<boolean>(false)
 
-  const [tabs, setTabs] = useState<TabTypes[]>([]);
+  const [tabs, setTabs] = useState<TabTypes[]>([])
   useEffect(() => {
     const savedTab = loadPreference('userSideBarTab', username) || 'speed_dial'
     setTabs([
-      {
-        icon: faBolt,
-        name: 'speed_dial' as const,
-        active:  savedTab === 'speed_dial',
-        label: t('NavBars.Speed dials'),
-      },
+      ...(profile?.profile?.macro_permissions?.phonebook?.value
+        ? [
+            {
+              icon: faBolt,
+              name: 'speed_dial' as const,
+              active: savedTab === 'speed_dial',
+              label: t('NavBars.Speed dials'),
+            },
+          ]
+        : []),
+
       {
         icon: faPhone,
         name: 'last_calls' as const,
@@ -65,8 +69,8 @@ export const UserNavBar: FC = () => {
             },
           ]
         : []),
-    ]);
-  }, [profile?.endpoints?.voicemail]);
+    ])
+  }, [profile?.endpoints?.voicemail, profile?.profile?.macro_permissions?.phonebook?.value])
 
   const rightSideStatus = useSelector((state: RootState) => state.rightSideMenu)
 
