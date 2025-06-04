@@ -214,6 +214,10 @@ module.exports = {
         iconPrimary: '#047857', // emerald-700
         iconPrimaryDark: '#10b981', // emerald-500
 
+        //iconPrimaryInvert
+        iconPrimaryInvert: '#FFFFFF', // white
+        iconPrimaryInvertDark: '#030712', // gray-950
+
         //iconTooltip
         iconTooltip: '#3730A3', // indigo-800
         iconTooltipDark: '#A5B4FC', // indigo-300
@@ -291,6 +295,11 @@ module.exports = {
         //surfaceToastError
         surfaceToastError: '#FFE4E6', // rose-100
         surfaceToastErrorDark: '#7F1D1D', // rose-900
+
+        //surfaceCardEmerald
+        surfaceCardEmerald: '#ECFDF5', // emerald-50
+        surfaceCardEmeraldDark: '#D1FAE5', // emerald-100
+
         //elevation
 
         //elevation0

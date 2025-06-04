@@ -19,7 +19,7 @@ import { useSelector } from 'react-redux'
 import { RootState } from '../store'
 import { IconDefinition } from '@fortawesome/fontawesome-svg-core'
 
-type ApplicationType = 'coming-soon' | 'pbx' | 'lines'
+type ApplicationType = 'coming-soon' | 'pbx' | 'lines' | 'streaming'
 
 type ApplicationCardProps = {
   icon: IconDefinition
@@ -44,26 +44,26 @@ const ApplicationCard = ({
   const { t } = useTranslation()
 
   return (
-    <div className='mt-5 bg-white border-gray-100 rounded-2xl dark:bg-gray-900 dark:border-gray-700 shadow'>
+    <div className='mt-5 border-gray-100 dark:border-gray-700 rounded-2xl shadow'>
       {/* Header */}
-      <div className='bg-emerald-50 dark:bg-emerald-100 flex flex-col rounded-t-2xl justify-center items-center'>
+      <div className='bg-surfaceCardEmerald dark:bg-surfaceCardEmeraldDark flex flex-col rounded-t-2xl justify-center items-center'>
         <span className='h-10 w-10 overflow-hiddenflex relative'>
           <FontAwesomeIcon
             icon={icon}
-            className='h-6 w-6 mt-4 text-gray-700 dark:text-gray-950'
+            className='h-6 w-6 mt-4 text-iconPrimaryInvert dark:text-iconPrimaryInvertDark'
             aria-hidden='true'
           />
         </span>
         <div className='pb-2 pt-2'>
-          <h5 className='flex mb-2 font-medium text-gray-700 text-lg dark:text-gray-900 leading-7'>
+          <h5 className='flex mb-2 font-medium text-lg leading-7 text-primaryInvertNeutral dark:text-primaryInvertNeutralDark'>
             {t(`Applications.${title}`)}
           </h5>
         </div>
       </div>
 
       {/* Body */}
-      <div className='bg-cardBackgroud dark:bg-cardBackgroudDark rounded-b-2xl p-5 px-12 flex flex-col justify-center'>
-        <p className='mb-4 font-normal justify-center items-center text-center text-sm text-gray-600 dark:text-gray-300 cursor-default leading-5'>
+      <div className='bg-elevationL2Invert dark:bg-elevationL2InvertDark rounded-b-2xl p-5 px-12 flex flex-col justify-center'>
+        <p className='mb-4 font-normal justify-center items-center text-center text-sm leading-5 text-secondaryNeutral dark:text-secondaryNeutralDark cursor-default'>
           {t(`Applications.${description}`)}
         </p>
 
@@ -87,8 +87,19 @@ const ApplicationCard = ({
         {type === 'lines' && (
           <div className='flex items-center justify-center mb-8'>
             <Link href={'/lines'}>
-              <div className='flex justify-center items-center text-primary dark:text-primaryDark text-sm	 leading-5 font-medium'>
+              <div className='flex justify-center items-center text-primaryActive dark:text-primaryActiveDark text-sm	 leading-5 font-medium'>
                 <span>{t('Applications.Go to Phone lines and announcements')}</span>
+                <FontAwesomeIcon icon={faArrowRight} className='h-4 w-4 m-3 rounded-lg' />
+              </div>
+            </Link>
+          </div>
+        )}
+
+        {type === 'streaming' && (
+          <div className='flex items-center justify-center mb-8'>
+            <Link href={'/lines'}>
+              <div className='flex justify-center items-center text-primaryActive dark:text-primaryActiveDark text-sm	 leading-5 font-medium'>
+                <span>{t('Applications.Go to Video sources')}</span>
                 <FontAwesomeIcon icon={faArrowRight} className='h-4 w-4 m-3 rounded-lg' />
               </div>
             </Link>
@@ -104,7 +115,7 @@ const ApplicationSection = ({ title, applications }: ApplicationSectionProps) =>
 
   return (
     <div className='pt-8 first:pt-0'>
-      <span className='text-base font-medium mb-4 text-gray-700 dark:text-gray-200 leading-6'>
+      <span className='text-sm font-normal mb-4 text-primaryNeutral dark:text-primaryNeutralDark leading-6'>
         {t(`Applications.${title}`)}
       </span>
       <div className='grid grid-cols-1 gap-6 md:grid-cols-2 2xl:grid-cols-3'>
@@ -139,7 +150,7 @@ const Applications: NextPage = () => {
       icon: faCameraSecurity as any,
       title: 'Video sources',
       description: 'Manage your phone lines, activate announcements, voicemail or forward calls',
-      type: 'coming-soon',
+      type: 'streaming',
     })
   }
 
@@ -167,12 +178,13 @@ const Applications: NextPage = () => {
   return (
     <>
       <div>
-        <h1 className='text-2xl font-semibold mb-6 text-title dark:text-titleDark'>
+        {/* Page title */}
+        <h1 className='text-2xl font-medium mb-6 text-primaryNeutral dark:text-primaryNeutralDark'>
           {t('Applications.Applications')}
         </h1>
 
         {/* Show internal application only if available */}
-        {internalApplications.length > 0 && (
+        {internalApplications?.length > 0 && (
           <ApplicationSection title='Internal' applications={internalApplications} />
         )}
 
