@@ -14,6 +14,7 @@ import { Button } from '../common'
 import { CustomThemedTooltip } from '../common/CustomThemedTooltip'
 import { useTranslation } from 'react-i18next'
 import { VideoSource } from '../../hooks/useVideoSources'
+import { capitalizeFirstLetter } from '../../utils/stringUtils'
 
 interface ExpandedVideoViewProps {
   source: VideoSource
@@ -64,13 +65,13 @@ export const ExpandedVideoView: React.FC<ExpandedVideoViewProps> = ({
         style={{ maxHeight: '80vh', display: 'flex', flexDirection: 'column' }}
       >
         {/* Header */}
-        <div className='py-3 px-6 flex justify-between items-center font-medium text-lg text-secondaryNeutral dark:text-secondaryNeutralDark'>
-          <span>{source.description}</span>
+        <div className='py-2 px-6 flex justify-between items-center font-medium text-base text-secondaryNeutral dark:text-secondaryNeutralDark'>
+          <span>{capitalizeFirstLetter(source?.description)}</span>
           <div className='flex items-center gap-2'>
             <span className='ml-2'>{t('Tooltip.Collapse')}</span>
             <FontAwesomeIcon
               icon={faDownLeftAndUpRightToCenter}
-              className='w-4 h-4 cursor-pointer'
+              className='w-4 h-4 cursor-pointer focus:outline-none select-none'
               onClick={onClose}
               data-tooltip-id='collapse-tooltip'
               data-tooltip-content={t('Tooltip.Collapse')}
@@ -80,9 +81,9 @@ export const ExpandedVideoView: React.FC<ExpandedVideoViewProps> = ({
         </div>
 
         {/* Image or Fallback */}
-        <div className='flex-1 flex items-center justify-center bg-black rounded-3xl overflow-hidden relative group'>
+        <div className='flex-1 flex items-center justify-center bg-elevationL2Invert dark:bg-elevationL2InvertDark rounded-3xl overflow-hidden relative group min-h-[600px]'>
           {hasFailedImage ? (
-            <div className='w-full h-full flex flex-col items-center justify-center text-white'>
+            <div className='w-full h-full flex flex-col items-center justify-center text-secondaryNeutral dark:text-secondaryNeutralDark'>
               <FontAwesomeIcon icon={faVideo} className='w-16 h-16 mb-4' />
               <p className='text-lg'>{t('Streaming.video feed not available')}</p>
             </div>

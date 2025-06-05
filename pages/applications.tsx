@@ -44,37 +44,31 @@ const ApplicationCard = ({
   const { t } = useTranslation()
 
   return (
-    <div className='mt-5 border-gray-100 dark:border-gray-700 rounded-2xl shadow'>
+    <div className='mt-5 border-gray-100 dark:border-gray-700 rounded-2xl shadow dark:shadow-md'>
       {/* Header */}
-      <div className='bg-surfaceCardEmerald dark:bg-surfaceCardEmeraldDark flex flex-col rounded-t-2xl justify-center items-center'>
+      <div className='bg-surfaceTableTag dark:bg-surfaceTableTagDark flex flex-col rounded-t-2xl justify-center items-center text-primaryNeutral dark:text-primaryNeutralDark'>
         <span className='h-10 w-10 overflow-hiddenflex relative'>
-          <FontAwesomeIcon
-            icon={icon}
-            className='h-6 w-6 mt-4 text-iconPrimaryInvert dark:text-iconPrimaryInvertDark'
-            aria-hidden='true'
-          />
+          <FontAwesomeIcon icon={icon} className='h-6 w-6 mt-4 ' aria-hidden='true' />
         </span>
         <div className='pb-2 pt-2'>
-          <h5 className='flex mb-2 font-medium text-lg leading-7 text-primaryInvertNeutral dark:text-primaryInvertNeutralDark'>
-            {t(`Applications.${title}`)}
-          </h5>
+          <h5 className='flex mb-2 font-medium text-lg leading-7'>{t(`Applications.${title}`)}</h5>
         </div>
       </div>
 
       {/* Body */}
-      <div className='bg-elevationL2Invert dark:bg-elevationL2InvertDark rounded-b-2xl p-5 px-12 flex flex-col justify-center'>
+      <div className='bg-elevationL2Invert dark:bg-elevationL2InvertDark rounded-b-2xl pt-5 pb-8 px-12 flex flex-col justify-center'>
         <p className='mb-4 font-normal justify-center items-center text-center text-sm leading-5 text-secondaryNeutral dark:text-secondaryNeutralDark cursor-default'>
           {t(`Applications.${description}`)}
         </p>
 
         {type === 'coming-soon' && (
-          <div className='flex items-center justify-center mb-8 text-center text-sm text-gray-600 dark:text-gray-300 cursor-default leading-5'>
+          <div className='flex items-center justify-center text-center text-sm text-gray-600 dark:text-gray-300 cursor-default leading-5'>
             {t('Common.Coming soon')}...
           </div>
         )}
 
         {type === 'pbx' && pbxReportUrl && (
-          <div className='flex items-center justify-center mb-8'>
+          <div className='flex items-center justify-center'>
             <Button size='small' variant='white'>
               <FontAwesomeIcon icon={faArrowUpRightFromSquare} className='mr-2 h-5 w-4' />{' '}
               <a href={pbxReportUrl} target='_blank' rel='noreferrer'>
@@ -85,7 +79,7 @@ const ApplicationCard = ({
         )}
 
         {type === 'lines' && (
-          <div className='flex items-center justify-center mb-8'>
+          <div className='flex items-center justify-center'>
             <Link href={'/lines'}>
               <div className='flex justify-center items-center text-sm leading-5 font-medium text-primaryActive dark:text-primaryActiveDark'>
                 <span>{t('Applications.Go to Phone lines and announcements')}</span>
@@ -96,10 +90,10 @@ const ApplicationCard = ({
         )}
 
         {type === 'streaming' && (
-          <div className='flex items-center justify-center mb-8'>
+          <div className='flex items-center justify-center'>
             <Link href={'/streaming'}>
               <div className='flex justify-center items-center text-sm leading-5 font-medium text-primaryActive dark:text-primaryActiveDark'>
-                <span>{t('Applications.Go to Video sources')}</span>
+                <span>{t('Applications.Go to video sources')}</span>
                 <FontAwesomeIcon icon={faArrowRight} className='h-4 w-4 m-3 rounded-lg' />
               </div>
             </Link>

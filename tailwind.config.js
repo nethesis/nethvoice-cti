@@ -300,6 +300,10 @@ module.exports = {
         surfaceCardEmerald: '#ECFDF5', // emerald-50
         surfaceCardEmeraldDark: '#D1FAE5', // emerald-100
 
+        //surfaceTableTag
+        surfaceTableTag: '#A5B4FC', // indigo-300
+        surfaceTableTagDark: '#3730A3', // indigo-800
+
         //elevation
 
         //elevation0

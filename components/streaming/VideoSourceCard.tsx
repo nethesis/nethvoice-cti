@@ -8,6 +8,7 @@ import { Button } from '../common'
 import { CustomThemedTooltip } from '../common/CustomThemedTooltip'
 import { useTranslation } from 'react-i18next'
 import { VideoSource } from '../../hooks/useVideoSources'
+import { capitalizeFirstLetter } from '../../utils/stringUtils'
 
 interface VideoSourceCardProps {
   source: VideoSource
@@ -32,7 +33,7 @@ export const VideoSourceCard: React.FC<VideoSourceCardProps> = ({
     <div className='overflow-hidden bg-elevationL3 dark:bg-elevationL3Dark rounded-3xl shadow group relative transition-all duration-200'>
       {/* Header */}
       <div className='py-2 px-4 flex justify-between items-center font-medium text-base text-primaryNeutral dark:text-primaryNeutralDark'>
-        <span>{source?.description}</span>
+        <span>{capitalizeFirstLetter(source?.description)}</span>
         <div className='flex items-center gap-1'>
           <FontAwesomeIcon icon={faPhone} className='w-4 h-4 mr-2' />
           <span>{source?.extension || source?.id}</span>
