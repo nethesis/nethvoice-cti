@@ -15,6 +15,7 @@ import { CustomThemedTooltip } from '../common/CustomThemedTooltip'
 import { useTranslation } from 'react-i18next'
 import { VideoSource } from '../../hooks/useVideoSources'
 import { capitalizeFirstLetter } from '../../utils/stringUtils'
+import { downloadScreenshot } from '../../utils/streamingUtils'
 
 interface ExpandedVideoViewProps {
   source: VideoSource
@@ -54,6 +55,11 @@ export const ExpandedVideoView: React.FC<ExpandedVideoViewProps> = ({
       window.removeEventListener('keydown', handleEscKey)
     }
   }, [onClose])
+
+  const handleScreenshot = () => {
+    if (hasFailedImage || !source.url) return
+    downloadScreenshot(source?.url, source?.description)
+  }
 
   return (
     <div
@@ -116,6 +122,7 @@ export const ExpandedVideoView: React.FC<ExpandedVideoViewProps> = ({
               size='full'
               data-tooltip-id='screenshot-tooltip-expanded'
               data-tooltip-content={t('Common.Take a screenshot')}
+              onClick={handleScreenshot}
             >
               <FontAwesomeIcon icon={faCamera} className='w-6 h-6' />
             </Button>

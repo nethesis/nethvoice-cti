@@ -8,6 +8,7 @@ import { Button } from '../common'
 import { CustomThemedTooltip } from '../common/CustomThemedTooltip'
 import { useTranslation } from 'react-i18next'
 import { VideoSource } from '../../hooks/useVideoSources'
+import { downloadScreenshot } from '../../utils/streamingUtils'
 import { capitalizeFirstLetter } from '../../utils/stringUtils'
 
 interface VideoSourceCardProps {
@@ -28,6 +29,11 @@ export const VideoSourceCard: React.FC<VideoSourceCardProps> = ({
   onExpand,
 }) => {
   const { t } = useTranslation()
+
+  const handleScreenshot = () => {
+    if (hasFailedImage || !source.url) return
+    downloadScreenshot(source?.url, source?.description)
+  }
 
   return (
     <div className='overflow-hidden bg-elevationL3 dark:bg-elevationL3Dark rounded-3xl shadow group relative transition-all duration-200'>
@@ -79,6 +85,7 @@ export const VideoSourceCard: React.FC<VideoSourceCardProps> = ({
           size='full'
           data-tooltip-id={`screenshot-tooltip-${source.id}`}
           data-tooltip-content={t('Common.Take a screenshot')}
+          onClick={handleScreenshot}
         >
           <FontAwesomeIcon icon={faCamera} className='w-6 h-6' />
         </Button>
