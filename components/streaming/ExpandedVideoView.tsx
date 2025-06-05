@@ -90,7 +90,7 @@ export const ExpandedVideoView: React.FC<ExpandedVideoViewProps> = ({
             <img
               src={source.url}
               alt={source.description}
-              className='max-h-[60vh] max-w-full object-contain'
+              className='w-full h-full object-contain'
               onError={() => onImageError(source.id)}
             />
           )}

@@ -58,7 +58,7 @@ export const Button = forwardRef<HTMLButtonElement, ButtonProps>(
             ? theme.base
             : theme.phoneIslandBase,
           theme[variant],
-          size && theme?.sizes[size],
+          size && (theme.sizes as any)[size],
           size === 'full'
             ? theme.rounded.full
             : size === 'small'
