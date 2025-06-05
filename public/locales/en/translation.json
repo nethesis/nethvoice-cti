@@ -74,7 +74,11 @@
     "Reject": "Reject",
     "Actions": "Actions",
     "Call duration": "Call duration",
-    "No data to show": "No data to show"
+    "No data to show": "No data to show",
+    "Take a screenshot": "Take a screenshot",
+    "Open door": "Open door",
+    "Streaming": "Streaming",
+    "Error": "Error"
   },
   "Login": {
     "User": "Username",
@@ -904,7 +908,8 @@
     "Other actions": "Other actions",
     "Conference": "Add participant for conference call",
     "Go to settings": "Go to settings",
-    "Enable camera": "Enable camera"
+    "Enable camera": "Enable camera",
+    "Call": "Call"
   },
   "Devices": {
     "Web phone": "Web phone",
@@ -1025,5 +1030,12 @@
     "Unknown audio or camera permissions.": "Microphone or Webcam is unavailable",
     "No microphone or camera permissions.": "You must accept borwser permissions.",
     "Call transferred successfully.": "The call is transferred successfully."
+  },
+  "Streaming": {
+    "video feed not available": "Video feed not available",
+    "Filter sources": "Filter sources",
+    "No video sources available": "No video sources available",
+    "No video sources have been configured": "No video sources have been configured",
+    "Contact your administrator to configure video sources": "Contact your administrator to configure video sources"
   }
 }

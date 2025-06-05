@@ -346,6 +346,23 @@ module.exports = {
         //buttonTextFavicon
         primaryFavicon: '#059669', // emerald-600
         primaryFaviconDark: '#059669', // emerald-600
+
+        //shadow
+        //shadowCard
+
+        //phoneIsland
+        // Active state
+        phoneIslandActive: '#374151', // Gray/700
+        phoneIslandActiveDark: '#D1D5DB', // Gray/300
+
+        phoneIslandPrimaryInvert: '#F9FAFB', // gray-50
+        phoneIslandPrimaryInvertDark: '#111827', // gray-900
+
+        phoneIslandCall: '#15803D', // Green/700
+        phoneIslandCallDark: '#22C55E', // Green/500
+
+        phoneIslandCallHover: '#166534', // Green/800
+        phoneIslandCallHoverDark: '#86EFAC', // Green/300
       },
       screens: {
         '3xl': '1792px',

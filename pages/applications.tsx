@@ -87,7 +87,7 @@ const ApplicationCard = ({
         {type === 'lines' && (
           <div className='flex items-center justify-center mb-8'>
             <Link href={'/lines'}>
-              <div className='flex justify-center items-center text-primaryActive dark:text-primaryActiveDark text-sm	 leading-5 font-medium'>
+              <div className='flex justify-center items-center text-sm leading-5 font-medium text-primaryActive dark:text-primaryActiveDark'>
                 <span>{t('Applications.Go to Phone lines and announcements')}</span>
                 <FontAwesomeIcon icon={faArrowRight} className='h-4 w-4 m-3 rounded-lg' />
               </div>
@@ -97,8 +97,8 @@ const ApplicationCard = ({
 
         {type === 'streaming' && (
           <div className='flex items-center justify-center mb-8'>
-            <Link href={'/lines'}>
-              <div className='flex justify-center items-center text-primaryActive dark:text-primaryActiveDark text-sm	 leading-5 font-medium'>
+            <Link href={'/streaming'}>
+              <div className='flex justify-center items-center text-sm leading-5 font-medium text-primaryActive dark:text-primaryActiveDark'>
                 <span>{t('Applications.Go to Video sources')}</span>
                 <FontAwesomeIcon icon={faArrowRight} className='h-4 w-4 m-3 rounded-lg' />
               </div>
