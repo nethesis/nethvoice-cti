@@ -16,6 +16,7 @@ import { CustomThemedTooltip } from '../common/CustomThemedTooltip'
 import { useTranslation } from 'react-i18next'
 import { VideoSource } from '../../hooks/useVideoSources'
 import { capitalizeFirstLetter } from '../../utils/stringUtils'
+import { getISODateForFilename } from '../../lib/utils'
 
 interface ExpandedVideoViewProps {
   source: VideoSource
@@ -110,8 +111,8 @@ export const ExpandedVideoView: React.FC<ExpandedVideoViewProps> = ({
                   ? `${capitalizeFirstLetter(source.description).replace(
                       /\s+/g,
                       '_',
-                    )}_screenshot.jpg`
-                  : 'screenshot.jpg'
+                    )}_${getISODateForFilename()}_screenshot.jpg`
+                  : `screenshot_${getISODateForFilename()}.jpg`
               }
               className={`inline-flex pi-flex pi-content-center pi-items-center pi-justify-center pi-tracking-wide pi-duration-200 pi-transform pi-outline-none focus:pi-ring-2 focus:pi-z-20 focus:pi-ring-offset-2 disabled:pi-opacity-40 disabled:pi-cursor-not-allowed pi-border pi-border-transparent focus:pi-ring-offset-white dark:focus:pi-ring-offset-black pi-text-sm pi-leading-4 pi-col-start-auto pi-transition-color pi-shrink-0 content-center items-center justify-center font-medium tracking-wide transition-colors duration-200 transform focus:outline-none focus:z-20 bg-phoneIslandActive dark:bg-phoneIslandActiveDark hover:bg-gray-500 dark:hover:bg-gray-50 focus:ring-emerald-500 dark:focus:ring-emerald-300 text-phoneIslandPrimaryInvert dark:text-phoneIslandPrimaryInvertDark h-12 w-12 rounded-full`}
               data-tooltip-id='screenshot-tooltip-expanded'
