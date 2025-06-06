@@ -16,7 +16,6 @@ import { CustomThemedTooltip } from '../common/CustomThemedTooltip'
 import { useTranslation } from 'react-i18next'
 import { VideoSource } from '../../hooks/useVideoSources'
 import { capitalizeFirstLetter } from '../../utils/stringUtils'
-import { downloadScreenshot } from '../../utils/streamingUtils'
 
 interface ExpandedVideoViewProps {
   source: VideoSource
@@ -56,11 +55,6 @@ export const ExpandedVideoView: React.FC<ExpandedVideoViewProps> = ({
       window.removeEventListener('keydown', handleEscKey)
     }
   }, [onClose])
-
-  const handleScreenshot = () => {
-    if (hasFailedImage || !source.url) return
-    downloadScreenshot(source?.url, source?.description)
-  }
 
   return (
     <div
@@ -109,17 +103,23 @@ export const ExpandedVideoView: React.FC<ExpandedVideoViewProps> = ({
               <FontAwesomeIcon icon={faPhone} className='w-6 h-6' />
             </Button>
             <CustomThemedTooltip id='call-tooltip-expanded' />
-
-            <Button
-              variant='primaryPhoneIsland'
-              aria-label='Take screenshot'
-              size='full'
+            <a
+              href={source.url}
+              download={
+                source.description
+                  ? `${capitalizeFirstLetter(source.description).replace(
+                      /\s+/g,
+                      '_',
+                    )}_screenshot.jpg`
+                  : 'screenshot.jpg'
+              }
+              className={`inline-flex pi-flex pi-content-center pi-items-center pi-justify-center pi-tracking-wide pi-duration-200 pi-transform pi-outline-none focus:pi-ring-2 focus:pi-z-20 focus:pi-ring-offset-2 disabled:pi-opacity-40 disabled:pi-cursor-not-allowed pi-border pi-border-transparent focus:pi-ring-offset-white dark:focus:pi-ring-offset-black pi-text-sm pi-leading-4 pi-col-start-auto pi-transition-color pi-shrink-0 content-center items-center justify-center font-medium tracking-wide transition-colors duration-200 transform focus:outline-none focus:z-20 bg-phoneIslandActive dark:bg-phoneIslandActiveDark hover:bg-gray-500 dark:hover:bg-gray-50 focus:ring-emerald-500 dark:focus:ring-emerald-300 text-phoneIslandPrimaryInvert dark:text-phoneIslandPrimaryInvertDark h-12 w-12 rounded-full`}
               data-tooltip-id='screenshot-tooltip-expanded'
               data-tooltip-content={t('Common.Take a screenshot')}
-              onClick={handleScreenshot}
+              aria-label='Take screenshot'
             >
               <FontAwesomeIcon icon={faCamera} className='w-6 h-6' />
-            </Button>
+            </a>
             <CustomThemedTooltip id='screenshot-tooltip-expanded' />
 
             <Button
