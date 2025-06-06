@@ -3,7 +3,15 @@
 
 import React from 'react'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
-import { faPhone, faVideo, faCamera, faLock, faExpand } from '@fortawesome/free-solid-svg-icons'
+import {
+  faPhone,
+  faVideo,
+  faCamera,
+  faLock,
+  faExpand,
+  faUpRightAndDownLeftFromCenter,
+  faBullhorn,
+} from '@fortawesome/free-solid-svg-icons'
 import { Button } from '../common'
 import { CustomThemedTooltip } from '../common/CustomThemedTooltip'
 import { useTranslation } from 'react-i18next'
@@ -114,7 +122,7 @@ export const VideoSourceCard: React.FC<VideoSourceCardProps> = ({
             onExpand(source.id)
           }}
         >
-          <FontAwesomeIcon icon={faExpand} className='w-6 h-6' />
+          <FontAwesomeIcon icon={faUpRightAndDownLeftFromCenter} className='w-6 h-6' />
         </Button>
         <CustomThemedTooltip id={`expand-tooltip-${source.id}`} />
       </div>

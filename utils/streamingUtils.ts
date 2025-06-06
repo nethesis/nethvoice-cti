@@ -8,23 +8,30 @@ import { capitalizeFirstLetter } from './stringUtils'
  * @param url - The URL of the image to download
  * @param description - Optional description to use in the filename
  */
-export const downloadScreenshot = (url: string, description?: string): void => {
+export const downloadScreenshot = async (url: string, description?: string): Promise<void> => {
   if (!url) return
 
   try {
-    const link = document.createElement('a')
+    const response = await fetch(url)
+    const blob = await response.blob()
 
-    link.href = url
+    const blobUrl = URL.createObjectURL(blob)
+
+    const link = document.createElement('a')
+    link.href = blobUrl
 
     const fileName = description
       ? `${capitalizeFirstLetter(description).replace(/\s+/g, '_')}_screenshot.jpg`
       : 'video_screenshot.jpg'
-
     link.download = fileName
 
     document.body.appendChild(link)
     link.click()
     document.body.removeChild(link)
+
+    setTimeout(() => {
+      URL.revokeObjectURL(blobUrl)
+    }, 100)
   } catch (error) {
     console.error('Error downloading screenshot:', error)
   }

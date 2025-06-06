@@ -9,6 +9,7 @@ import {
   faCamera,
   faLock,
   faDownLeftAndUpRightToCenter,
+  faBullhorn,
 } from '@fortawesome/free-solid-svg-icons'
 import { Button } from '../common'
 import { CustomThemedTooltip } from '../common/CustomThemedTooltip'
@@ -73,17 +74,10 @@ export const ExpandedVideoView: React.FC<ExpandedVideoViewProps> = ({
         {/* Header */}
         <div className='py-2 px-6 flex justify-between items-center font-medium text-base text-secondaryNeutral dark:text-secondaryNeutralDark'>
           <span>{capitalizeFirstLetter(source?.description)}</span>
-          <div className='flex items-center gap-2'>
-            <span className='ml-2'>{t('Tooltip.Collapse')}</span>
-            <FontAwesomeIcon
-              icon={faDownLeftAndUpRightToCenter}
-              className='w-4 h-4 cursor-pointer focus:outline-none select-none'
-              onClick={onClose}
-              data-tooltip-id='collapse-tooltip'
-              data-tooltip-content={t('Tooltip.Collapse')}
-            />
+          <div className='flex items-center gap-1'>
+            <FontAwesomeIcon icon={faPhone} className='w-4 h-4 mr-2' />
+            <span>{source?.extension || source?.id}</span>
           </div>
-          <CustomThemedTooltip id='collapse-tooltip' />
         </div>
 
         {/* Image or Fallback */}
@@ -139,6 +133,18 @@ export const ExpandedVideoView: React.FC<ExpandedVideoViewProps> = ({
               <FontAwesomeIcon icon={faLock} className='w-6 h-6' />
             </Button>
             <CustomThemedTooltip id='secure-tooltip-expanded' />
+
+            <Button
+              variant='primaryPhoneIsland'
+              aria-label='Collapse'
+              size='full'
+              data-tooltip-id='collapse-tooltip-expanded'
+              data-tooltip-content={t('Tooltip.Collapse')}
+              onClick={onClose}
+            >
+              <FontAwesomeIcon icon={faDownLeftAndUpRightToCenter} className='w-6 h-6' />
+            </Button>
+            <CustomThemedTooltip id='collapse-tooltip-expanded' />
           </div>
         </div>
       </div>
