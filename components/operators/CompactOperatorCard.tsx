@@ -96,20 +96,38 @@ const CompactOperatorCard = ({
             {operator?.conversations?.[0]?.counterpartName && (
               <>
                 <span className='mx-1'>-</span>
-                <span className='truncate max-w-[80px]'>
-                  {operator.conversations[0].counterpartName}
-                </span>
+                <div
+                  data-tooltip-id={`tooltip-ringing-counterpart-${index}`}
+                  data-tooltip-content={operator.conversations[0].counterpartName || ''}
+                >
+                  <TextScroll text={operator.conversations[0].counterpartName} />
+                </div>
               </>
             )}
           </div>
         ) : (
           <div className='text-sm font-normal text-secondaryNeutral dark:text-secondaryNeutralDark'>
-            {isRinging && !isCalledByCurrentUser && (operator?.conversations?.[0]?.counterpartName || operator?.conversations?.[0]?.counterpartNum) ? (
+            {isRinging &&
+            !isCalledByCurrentUser &&
+            (operator?.conversations?.[0]?.counterpartName ||
+              operator?.conversations?.[0]?.counterpartNum) ? (
               <div className='text-textStatusBusy dark:text-textStatusBusyDark text-sm leading-5 font-medium flex items-center'>
                 <span className='ringing-animation h-2.5 w-2.5 mr-2'></span>
-                <span className='truncate max-w-[80px]'>
-                  {operator.conversations[0].counterpartName || operator.conversations[0].counterpartNum}
-                </span>
+                <div
+                  data-tooltip-id={`tooltip-extension-ringing-name-${index}`}
+                  data-tooltip-content={
+                    operator.conversations[0].counterpartName ||
+                    operator.conversations[0].counterpartNum ||
+                    ''
+                  }
+                >
+                  <TextScroll
+                    text={
+                      operator.conversations[0].counterpartName ||
+                      operator.conversations[0].counterpartNum
+                    }
+                  />
+                </div>
               </div>
             ) : (
               mainExtension
@@ -136,9 +154,14 @@ const CompactOperatorCard = ({
                   <span className='mx-1'>-</span>
                 </>
               )}
-              <span className='truncate max-w-[80px] inline-block'>
-                {operator?.conversations[0]?.counterpartName || ''}
-              </span>
+              <div className='max-w-[80px]'>
+                <div
+                  data-tooltip-id={`tooltip-textscroll-${index}`}
+                  data-tooltip-content={operator?.conversations[0]?.counterpartName || ''}
+                >
+                  <TextScroll text={operator?.conversations[0]?.counterpartName || ''} />
+                </div>
+              </div>
 
               {/* Recording indicator */}
               {operator?.conversations[0]?.recording === 'true' && (
@@ -157,6 +180,7 @@ const CompactOperatorCard = ({
               )}
             </div>
             <CustomThemedTooltip id={`tooltip-operator-information-${index}`} />
+            <CustomThemedTooltip id={`tooltip-textscroll-${index}`} />
           </div>
         )}
 
@@ -210,9 +234,12 @@ const CompactOperatorCard = ({
             {operator?.conversations?.[0]?.counterpartName && (
               <>
                 <span className='mx-1'>-</span>
-                <span className='truncate max-w-[80px]'>
-                  {operator.conversations[0].counterpartName}
-                </span>
+                <div
+                  data-tooltip-id={`tooltip-no-permission-ringing-${index}`}
+                  data-tooltip-content={operator.conversations[0].counterpartName || ''}
+                >
+                  <TextScroll text={operator.conversations[0].counterpartName} />
+                </div>
               </>
             )}
           </div>

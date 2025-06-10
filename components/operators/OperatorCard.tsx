@@ -10,6 +10,7 @@ import { RootState } from '../../store'
 import { faPhoneArrowDownLeft } from '@nethesis/nethesis-solid-svg-icons'
 import { CustomThemedTooltip } from '../common/CustomThemedTooltip'
 import { useOperatorStates } from '../../hooks/useOperatorStates'
+import TextScroll from '../common/TextScroll'
 
 interface OperatorCardProps {
   operator: any
@@ -92,14 +93,18 @@ const OperatorCard = ({
         {/* Main extension or Ringing (if user has at least one permission) */}
         {isRinging && hasAnyPermission && !isCalledByCurrentUser ? (
           <div className='text-center text-red-600 dark:text-red-500 text-sm font-medium leading-5 pt-2 flex items-center justify-center'>
-            <span className='ringing-animation h-2.5 w-2.5 mr-2'></span>
+            <span className='ringing-animation h-2.5 w-2.5 mr-3'></span>
             {t('Operators.Ringing')}
             {liveOperatorData?.conversations?.[0]?.counterpartName && (
               <>
                 <span className='mx-1'>-</span>
-                <span className='truncate max-w-[100px]'>
-                  {liveOperatorData.conversations[0].counterpartName}
-                </span>
+                <div
+                  data-tooltip-id={`tooltip-ringing-header-${liveOperatorData?.username || 'op'}`}
+                  data-tooltip-content={liveOperatorData.conversations[0].counterpartName || ''}
+                  className='max-w-[100px]'
+                >
+                  <TextScroll text={liveOperatorData.conversations[0].counterpartName} />
+                </div>
               </>
             )}
           </div>
@@ -111,12 +116,19 @@ const OperatorCard = ({
               liveOperatorData?.conversations?.[0]?.counterpartNum) ? (
               <div className='text-center text-red-600 dark:text-red-500 text-sm font-medium leading-5'>
                 <div className='flex items-center justify-center'>
-                  <span className='ringing-animation h-2.5 w-2.5 mr-2'></span>
-                  <span className='truncate max-w-[120px]'>
-                    {liveOperatorData.conversations[0].counterpartName ||
-                      liveOperatorData.conversations[0].counterpartNum}
-                  </span>
+                  <span className='ringing-animation h-2.5 w-2.5 mr-4'></span>
+                  <div className='truncate max-w-[120px]'>
+                    <TextScroll
+                      text={
+                        liveOperatorData.conversations[0].counterpartName ||
+                        liveOperatorData.conversations[0].counterpartNum
+                      }
+                    />
+                  </div>
                 </div>
+                <CustomThemedTooltip
+                  id={`tooltip-extension-ringing-${liveOperatorData?.username || 'op'}`}
+                />
               </div>
             ) : (
               liveOperatorData?.endpoints?.mainextension[0]?.id
@@ -130,16 +142,24 @@ const OperatorCard = ({
           {/* Operator is in conversation */}
           {isInConversation && (
             <div className='py-2 px-3 text-center'>
-              <div className='inline-flex items-center text-cardTextBusy dark:text-cardTextBusy max-w-full'>
+              <div className='inline-flex items-center text-cardTextBusy dark:text-cardTextBusy max-w-full mr-2'>
                 <CallDuration
                   startTime={liveOperatorData?.conversations[0]?.startTime}
                   className='font-mono mr-1 whitespace-nowrap'
                 />
                 <span className='mx-1'>-</span>
-                <span className='truncate max-w-[100px] inline-block'>
-                  {liveOperatorData?.conversations[0]?.counterpartName || ''}
-                </span>
+                <div
+                  data-tooltip-id={`tooltip-conversation-name-${
+                    liveOperatorData?.username || 'op'
+                  }`}
+                  data-tooltip-content={liveOperatorData?.conversations[0]?.counterpartName || ''}
+                >
+                  <TextScroll text={liveOperatorData?.conversations[0]?.counterpartName || ''} />
+                </div>
               </div>
+              <CustomThemedTooltip
+                id={`tooltip-conversation-name-${liveOperatorData?.username || 'op'}`}
+              />
             </div>
           )}
 
@@ -209,12 +229,22 @@ const OperatorCard = ({
                     {liveOperatorData?.conversations?.[0]?.counterpartName && (
                       <>
                         <span className='mx-1'>-</span>
-                        <span className='truncate max-w-[100px]'>
-                          {liveOperatorData?.conversations[0]?.counterpartName}
-                        </span>
+                        <div
+                          data-tooltip-id={`tooltip-ringing-name-${
+                            liveOperatorData?.username || 'op'
+                          }`}
+                          data-tooltip-content={
+                            liveOperatorData?.conversations[0]?.counterpartName || ''
+                          }
+                        >
+                          <TextScroll text={liveOperatorData.conversations[0].counterpartName} />
+                        </div>
                       </>
                     )}
                   </div>
+                  <CustomThemedTooltip
+                    id={`tooltip-ringing-name-${liveOperatorData?.username || 'op'}`}
+                  />
                 </div>
               )}
             </>
