@@ -1,4 +1,4 @@
-import React, { useMemo, useCallback } from 'react'
+import React, { useMemo } from 'react'
 import { Avatar, Button } from '../common'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import {
@@ -14,19 +14,10 @@ import {
 } from '@fortawesome/free-solid-svg-icons'
 import { CallDuration } from './CallDuration'
 import { t } from 'i18next'
-import {
-  callOperator,
-  openShowOperatorDrawer,
-  pickup,
-  hangupMainExt,
-} from '../../lib/operators'
 import TextScroll from '../common/TextScroll'
-import { transferCall } from '../../lib/utils'
 import { faHangup, faPhoneArrowDownLeft } from '@nethesis/nethesis-solid-svg-icons'
-import { isEmpty } from 'lodash'
-import { useSelector } from 'react-redux'
-import { RootState } from '../../store'
 import { CustomThemedTooltip } from '../common/CustomThemedTooltip'
+import { useOperatorStates } from '../../hooks/useOperatorStates'
 
 interface CompactOperatorCardProps {
   operator: any
@@ -43,127 +34,17 @@ const CompactOperatorCard = ({
   actionInformation,
   index,
 }: CompactOperatorCardProps) => {
-  const pickupPermission = useSelector(
-    (state: RootState) =>
-      state.user?.profile?.macro_permissions?.settings?.permissions?.pickup?.value,
-  )
-  const hangupPermission = useSelector(
-    (state: RootState) =>
-      state.user?.profile?.macro_permissions?.presence_panel?.permissions?.hangup?.value,
-  )
-
-  const profile = useSelector((state: RootState) => state.user)
-
-  const permissions = useMemo(
-    () => ({
-      pickup: pickupPermission,
-      hangup: hangupPermission,
-      hasAny: pickupPermission || hangupPermission,
-    }),
-    [pickupPermission, hangupPermission],
-  )
-
-  const operatorStates = useMemo(() => {
-    const hasValidConversation =
-      operator?.conversations?.length > 0 &&
-      operator?.conversations[0]?.startTime &&
-      operator?.conversations[0]?.id
-
-    const isInConversation =
-      hasValidConversation &&
-      (operator?.conversations[0]?.connected ||
-        operator?.conversations[0]?.inConference ||
-        operator?.conversations[0]?.chDest?.inConference === true)
-
-    const isRinging = operator?.mainPresence === 'ringing'
-    const isBusy = operator?.mainPresence === 'busy'
-    const isOfflineOrDnd = operator?.mainPresence === 'offline' || operator?.mainPresence === 'dnd'
-    const isOnline = operator?.mainPresence === 'online'
-
-    const currentUserMainExtension =
-      profile?.mainextension || profile?.endpoints?.mainextension?.[0]?.id
-
-    const isCalledByCurrentUser =
-      isRinging &&
-      operator?.conversations?.length > 0 &&
-      (operator?.conversations[0]?.counterpartNum === authUsername ||
-        operator?.conversations[0]?.caller === authUsername ||
-        operator?.conversations[0]?.counterpartNum === currentUserMainExtension ||
-        operator?.conversations[0]?.bridgedNum === currentUserMainExtension ||
-        operator?.conversations[0]?.chSource?.callerNum === currentUserMainExtension ||
-        operator?.conversations[0]?.chSource?.bridgedNum === currentUserMainExtension ||
-        (operator?.conversations[0]?.direction === 'out' &&
-          operator?.conversations[0]?.counterpartName?.includes(profile?.name)))
-
-    return {
-      isInConversation,
-      isRinging,
-      isBusy,
-      isOfflineOrDnd,
-      isOnline,
-      hasValidConversation,
-      isCalledByCurrentUser,
-    }
-  }, [operator, authUsername, profile])
-
-  const openDrawerOperator = useCallback(() => {
-    openShowOperatorDrawer(operator)
-  }, [operator])
-
-  const handleTransferCall = useCallback(() => {
-    transferCall(operator)
-  }, [operator])
-
-  const handleCallOperator = useCallback(() => {
-    callOperator(operator)
-  }, [operator])
-
-  const handlePickupCall = useCallback(async () => {
-    if (
-      operator?.conversations?.[0]?.id &&
-      profile?.default_device?.id &&
-      operator?.endpoints?.mainextension?.[0]?.id
-    ) {
-      let conversationId = operator.conversations[0].id
-      let endpoint = operator.endpoints.mainextension[0].id
-      let destination = profile.default_device.id
-
-      const pickupInformations = {
-        convid: conversationId,
-        endpointId: endpoint,
-        destId: destination,
-      }
-
-      if (!isEmpty(pickupInformations)) {
-        try {
-          await pickup(pickupInformations)
-        } catch (e) {
-          console.error(e)
-        }
-      }
-    }
-  }, [operator, profile])
-
-  const handleRejectCall = useCallback(
-    async (userMainExtension: any) => {
-      if (operator?.conversations?.[0]?.id && operator?.conversations?.[0]?.owner) {
-        if (userMainExtension) {
-          const hangupInformations = {
-            exten: userMainExtension?.toString(),
-          }
-
-          if (!isEmpty(hangupInformations)) {
-            try {
-              await hangupMainExt(hangupInformations)
-            } catch (e) {
-              console.error(e)
-            }
-          }
-        }
-      }
+  const {
+    permissions,
+    operatorStates,
+    handlers: {
+      handleOpenDrawer,
+      handleTransferCall,
+      handleCallOperator,
+      handlePickupCall,
+      handleRejectCall,
     },
-    [operator],
-  )
+  } = useOperatorStates(operator, authUsername)
 
   const {
     isInConversation,
@@ -186,7 +67,7 @@ const CompactOperatorCard = ({
           placeholderType='operator'
           size='large'
           bordered
-          onClick={openDrawerOperator}
+          onClick={handleOpenDrawer}
           className='mx-auto cursor-pointer'
           status={operator?.mainPresence}
         />
@@ -197,7 +78,7 @@ const CompactOperatorCard = ({
         <div className='flex items-center space-x-2'>
           <span
             className='block truncate text-sm leading-5 font-medium text-primaryNeutral dark:text-primaryNeutralDark cursor-pointer hover:underline'
-            onClick={openDrawerOperator}
+            onClick={handleOpenDrawer}
           >
             {operator?.name}
           </span>
@@ -212,10 +93,27 @@ const CompactOperatorCard = ({
           <div className='text-textStatusBusy dark:text-textStatusBusyDark text-sm leading-5 font-medium flex items-center'>
             <span className='ringing-animation h-2.5 w-2.5 mr-2'></span>
             {t('Operators.Ringing')}
+            {operator?.conversations?.[0]?.counterpartName && (
+              <>
+                <span className='mx-1'>-</span>
+                <span className='truncate max-w-[80px]'>
+                  {operator.conversations[0].counterpartName}
+                </span>
+              </>
+            )}
           </div>
         ) : (
           <div className='text-sm font-normal text-secondaryNeutral dark:text-secondaryNeutralDark'>
-            {mainExtension}
+            {isRinging && !isCalledByCurrentUser && (operator?.conversations?.[0]?.counterpartName || operator?.conversations?.[0]?.counterpartNum) ? (
+              <div className='text-textStatusBusy dark:text-textStatusBusyDark text-sm leading-5 font-medium flex items-center'>
+                <span className='ringing-animation h-2.5 w-2.5 mr-2'></span>
+                <span className='truncate max-w-[80px]'>
+                  {operator.conversations[0].counterpartName || operator.conversations[0].counterpartNum}
+                </span>
+              </div>
+            ) : (
+              mainExtension
+            )}
           </div>
         )}
       </div>
@@ -309,6 +207,14 @@ const CompactOperatorCard = ({
           <div className='flex items-center text-textStatusBusy dark:text-textStatusBusyDark'>
             <span className='ringing-animation mr-2 h-4 w-4' />
             <span className='text-sm font-medium'>{t('Operators.Ringing')}</span>
+            {operator?.conversations?.[0]?.counterpartName && (
+              <>
+                <span className='mx-1'>-</span>
+                <span className='truncate max-w-[80px]'>
+                  {operator.conversations[0].counterpartName}
+                </span>
+              </>
+            )}
           </div>
         )}
 
@@ -356,7 +262,7 @@ const CompactOperatorCard = ({
       </div>
 
       {/* Details button */}
-      <Button variant='ghost' onClick={openDrawerOperator} className='flex-shrink-0 ml-2'>
+      <Button variant='ghost' onClick={handleOpenDrawer} className='flex-shrink-0 ml-2'>
         <FontAwesomeIcon
           icon={faAngleRight}
           className='h-4 w-4 text-cardIcon dark:text-cardIconDark cursor-pointer'
