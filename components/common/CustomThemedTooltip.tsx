@@ -31,7 +31,7 @@ export const CustomThemedTooltip: FC<CustomThemedTooltipProps> = ({
           fontWeight: 400,
           lineHeight: '1.25rem',
           padding: '0.375rem 0.625rem',
-          maxWidth: '185px',
+          maxWidth: '320px',
           borderRadius: '4px',
         }
       : {
@@ -41,7 +41,7 @@ export const CustomThemedTooltip: FC<CustomThemedTooltipProps> = ({
           fontWeight: 400,
           lineHeight: '1.25rem',
           padding: '0.375rem 0.625rem',
-          maxWidth: '185px',
+          maxWidth: '320px',
           borderRadius: '4px',
         }
 

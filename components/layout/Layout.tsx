@@ -245,7 +245,6 @@ export const Layout: FC<LayoutProps> = ({ children }) => {
 
   // Function to open the parameterized URL
   const openParameterizedUrl = (callerNum: any, callerName: any, called: any, uniqueId: any) => {
-    console.log('Opening parameterized URL with:', callerNum, callerName, called, uniqueId)
     // Check first if the URL is available
     if (!incomingCallStore.isUrlAvailable) {
       return
@@ -291,7 +290,6 @@ export const Layout: FC<LayoutProps> = ({ children }) => {
     const newWindow = window.open('about:blank', '_blank')
     if (newWindow) {
       newWindow.location.href = formattedUrl
-      console.log('Opening URL in new window:', formattedUrl)
       dispatch.user.setUrlOpened(true)
     }
   }

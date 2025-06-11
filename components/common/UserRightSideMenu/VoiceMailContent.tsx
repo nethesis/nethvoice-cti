@@ -475,7 +475,7 @@ export const VoiceMailContent = () => {
             ))}
           {/* empty state */}
           {isVoiceMailLoaded && !getVoiceMailError && voicemails?.length == 0 && (
-            <div className='py-4'>
+            <div className='py-4 px-6'>
               <EmptyState
                 title={t('VoiceMail.Voicemail empty')}
                 description={t('VoiceMail.Voicemail empty description') || ''}
