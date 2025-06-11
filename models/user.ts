@@ -197,5 +197,26 @@ export const user = createModel<RootModel>()({
             [key: string]: any
           }) || {},
       ),
+    allUserExtensions: () =>
+      slice((state) => {
+        const extensions: string[] = []
+        if (state.mainextension) {
+          extensions.push(state.mainextension)
+        }
+        if (state.endpoints?.extension) {
+          state.endpoints.extension.forEach((ext: any) => {
+            if (ext.id && !extensions.includes(ext.id)) {
+              extensions.push(ext.id)
+            }
+          })
+        }
+        if (state.endpoints?.mainextension?.[0]?.id) {
+          const mainExt = state.endpoints.mainextension[0].id
+          if (!extensions.includes(mainExt)) {
+            extensions.push(mainExt)
+          }
+        }
+        return extensions
+      }),
   }),
 })

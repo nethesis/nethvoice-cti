@@ -10,6 +10,7 @@ interface DefaultState {
   isLoading: boolean
   errorMessage: string
   isUrlAvailable: boolean
+  onlyQueues: boolean
 }
 
 const defaultState: DefaultState = {
@@ -18,6 +19,7 @@ const defaultState: DefaultState = {
   isLoading: false,
   errorMessage: '',
   isUrlAvailable: true,
+  onlyQueues: false,
 }
 
 export const incomingCall = createModel<RootModel>()({
@@ -41,6 +43,10 @@ export const incomingCall = createModel<RootModel>()({
     },
     setUrlAvailable: (state, isUrlAvailable: boolean) => {
       state.isUrlAvailable = isUrlAvailable
+      return state
+    },
+    setOnlyQueues: (state, onlyQueues: boolean) => {
+      state.onlyQueues = onlyQueues
       return state
     },
     reset: () => {

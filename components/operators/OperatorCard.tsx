@@ -1,22 +1,16 @@
-import React, { useMemo, useCallback } from 'react'
+import React, { useMemo } from 'react'
 import { Avatar } from '../common'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { faStar, faPhone, faRightLeft, IconDefinition } from '@fortawesome/free-solid-svg-icons'
 import { CallDuration } from './CallDuration'
 import { Button } from '../common'
 import { t } from 'i18next'
-import {
-  callOperator,
-  openShowOperatorDrawer,
-  pickup,
-  hangupMainExt,
-} from '../../lib/operators'
-import { isEmpty } from 'lodash'
 import { useSelector } from 'react-redux'
 import { RootState } from '../../store'
-import { transferCall } from '../../lib/utils'
 import { faPhoneArrowDownLeft } from '@nethesis/nethesis-solid-svg-icons'
 import { CustomThemedTooltip } from '../common/CustomThemedTooltip'
+import { useOperatorStates } from '../../hooks/useOperatorStates'
+import TextScroll from '../common/TextScroll'
 
 interface OperatorCardProps {
   operator: any
@@ -31,132 +25,28 @@ const OperatorCard = ({
   mainUserIsBusy,
   actionInformation,
 }: OperatorCardProps) => {
-  const profile = useSelector((state: RootState) => state.user)
   const liveOperatorData = useSelector(
     (state: RootState) => state.operators.operators[operator?.username] || operator,
   )
 
-  const pickupPermission = useSelector(
-    (state: RootState) =>
-      state.user?.profile?.macro_permissions?.settings?.permissions?.pickup?.value,
-  )
-  const hangupPermission = useSelector(
-    (state: RootState) =>
-      state.user?.profile?.macro_permissions?.presence_panel?.permissions?.hangup?.value,
-  )
-
-  const permissions = useMemo(
-    () => ({
-      pickup: pickupPermission,
-      hangup: hangupPermission,
-    }),
-    [pickupPermission, hangupPermission],
-  )
-
-  const operatorStates = useMemo(() => {
-    const isInConversation =
-      liveOperatorData?.conversations?.length > 0 &&
-      (liveOperatorData?.conversations[0]?.connected ||
-        liveOperatorData?.conversations[0]?.inConference ||
-        liveOperatorData?.conversations[0]?.chDest?.inConference === true)
-
-    const isRinging = liveOperatorData?.mainPresence === 'ringing'
-    const isBusy = liveOperatorData?.mainPresence === 'busy'
-    const isOfflineOrDnd =
-      liveOperatorData?.mainPresence === 'offline' || liveOperatorData?.mainPresence === 'dnd'
-
-    const hasAnyPermission = permissions.pickup || permissions.hangup
-
-    const currentUserMainExtension =
-      profile?.mainextension || profile?.endpoints?.mainextension?.[0]?.id
-
-    const isCalledByCurrentUser =
-      isRinging &&
-      liveOperatorData?.conversations?.length > 0 &&
-      (liveOperatorData?.conversations[0]?.counterpartNum === authUsername ||
-        liveOperatorData?.conversations[0]?.caller === authUsername ||
-        liveOperatorData?.conversations[0]?.counterpartNum === currentUserMainExtension ||
-        liveOperatorData?.conversations[0]?.bridgedNum === currentUserMainExtension ||
-        liveOperatorData?.conversations[0]?.chSource?.callerNum === currentUserMainExtension ||
-        liveOperatorData?.conversations[0]?.chSource?.bridgedNum === currentUserMainExtension ||
-        (liveOperatorData?.conversations[0]?.direction === 'out' &&
-          liveOperatorData?.conversations[0]?.counterpartName?.includes(profile?.name)))
-
-    return {
-      isInConversation,
-      isRinging,
-      isBusy,
-      isOfflineOrDnd,
-      hasAnyPermission,
-      isCalledByCurrentUser,
-    }
-  }, [liveOperatorData, permissions, authUsername, profile])
-
-  const handleOperatorClick = useCallback(() => {
-    openShowOperatorDrawer(liveOperatorData)
-  }, [liveOperatorData])
-
-  const handlePickupCall = useCallback(async () => {
-    if (
-      liveOperatorData?.conversations?.[0]?.id &&
-      profile?.default_device?.id &&
-      liveOperatorData?.endpoints?.mainextension?.[0]?.id
-    ) {
-      let conversationId = liveOperatorData.conversations[0].id
-      let endpoint = liveOperatorData.endpoints.mainextension[0].id
-      let destination = profile.default_device.id
-
-      const pickupInformations = {
-        convid: conversationId,
-        endpointId: endpoint,
-        destId: destination,
-      }
-
-      if (!isEmpty(pickupInformations)) {
-        try {
-          await pickup(pickupInformations)
-        } catch (e) {
-          console.error(e)
-        }
-      }
-    }
-  }, [liveOperatorData, profile])
-
-  const handleRejectCall = useCallback(
-    async (userMainExtension: any) => {
-      if (liveOperatorData?.conversations?.[0]?.id && liveOperatorData?.conversations?.[0]?.owner) {
-        if (userMainExtension) {
-          const hangupInformations = {
-            exten: userMainExtension?.toString(),
-          }
-
-          if (!isEmpty(hangupInformations)) {
-            try {
-              await hangupMainExt(hangupInformations)
-            } catch (e) {
-              console.error(e)
-            }
-          }
-        }
-      }
+  const {
+    permissions,
+    operatorStates,
+    handlers: {
+      handleOpenDrawer,
+      handleTransferCall,
+      handleCallOperator,
+      handlePickupCall,
+      handleRejectCall,
     },
-    [liveOperatorData],
-  )
-
-  const handleTransferCall = useCallback(() => {
-    transferCall(liveOperatorData)
-  }, [liveOperatorData])
-
-  const handleCallOperator = useCallback(() => {
-    callOperator(liveOperatorData)
-  }, [liveOperatorData])
+  } = useOperatorStates(liveOperatorData, authUsername)
 
   const {
     isInConversation,
     isRinging,
     isBusy,
     isOfflineOrDnd,
-    hasAnyPermission,
+    hasAnyPermission: hasAnyPermission,
     isCalledByCurrentUser,
   } = operatorStates
 
@@ -168,7 +58,7 @@ const OperatorCard = ({
         placeholderType='operator'
         size='extra_large'
         bordered
-        onClick={handleOperatorClick}
+        onClick={handleOpenDrawer}
         className='mx-auto cursor-pointer'
         status={liveOperatorData?.mainPresence}
       />
@@ -179,7 +69,7 @@ const OperatorCard = ({
             <div className='flex items-center space-x-2 justify-center'>
               <h3
                 className='cursor-pointer hover:underline block truncate text-sm font-medium text-primaryNeutral dark:text-primaryNeutralDark leading-5 max-w-[120px]'
-                onClick={handleOperatorClick}
+                onClick={handleOpenDrawer}
                 title={liveOperatorData?.name}
               >
                 {liveOperatorData?.name}
@@ -192,7 +82,7 @@ const OperatorCard = ({
           ) : (
             <h3
               className='cursor-pointer hover:underline text-center text-sm not-italic font-medium leading-5 text-gray-900 dark:text-gray-100 truncate max-w-[150px] mx-auto'
-              onClick={handleOperatorClick}
+              onClick={handleOpenDrawer}
               title={liveOperatorData?.name}
             >
               {liveOperatorData?.name}
@@ -203,12 +93,46 @@ const OperatorCard = ({
         {/* Main extension or Ringing (if user has at least one permission) */}
         {isRinging && hasAnyPermission && !isCalledByCurrentUser ? (
           <div className='text-center text-red-600 dark:text-red-500 text-sm font-medium leading-5 pt-2 flex items-center justify-center'>
-            <span className='ringing-animation h-2.5 w-2.5 mr-2'></span>
-            {t('Operators.Ringing')}
+            <span className='ringing-animation h-2.5 w-2.5 mr-3'></span>
+            <span className='ml-2'>{t('Operators.Ringing')}</span>
+            {liveOperatorData?.conversations?.[0]?.counterpartName && (
+              <>
+                <span className='mx-1'>-</span>
+                <div
+                  data-tooltip-id={`tooltip-ringing-header-${liveOperatorData?.username || 'op'}`}
+                  data-tooltip-content={liveOperatorData.conversations[0].counterpartName || ''}
+                  className='max-w-[100px]'
+                >
+                  <TextScroll text={liveOperatorData.conversations[0].counterpartName} />
+                </div>
+              </>
+            )}
           </div>
         ) : (
           <div className='text-center text-secondaryNeutral dark:text-secondaryNeutralDark text-sm font-normal leading-5 pt-2'>
-            {liveOperatorData?.endpoints?.mainextension[0]?.id}
+            {isRinging &&
+            !isCalledByCurrentUser &&
+            (liveOperatorData?.conversations?.[0]?.counterpartName ||
+              liveOperatorData?.conversations?.[0]?.counterpartNum) ? (
+              <div className='text-center text-red-600 dark:text-red-500 text-sm font-medium leading-5'>
+                <div className='flex items-center justify-center'>
+                  <span className='ringing-animation h-2.5 w-2.5 mr-4'></span>
+                  <div className='truncate max-w-[120px]'>
+                    <TextScroll
+                      text={
+                        liveOperatorData.conversations[0].counterpartName ||
+                        liveOperatorData.conversations[0].counterpartNum
+                      }
+                    />
+                  </div>
+                </div>
+                <CustomThemedTooltip
+                  id={`tooltip-extension-ringing-${liveOperatorData?.username || 'op'}`}
+                />
+              </div>
+            ) : (
+              liveOperatorData?.endpoints?.mainextension[0]?.id
+            )}
           </div>
         )}
       </div>
@@ -218,16 +142,24 @@ const OperatorCard = ({
           {/* Operator is in conversation */}
           {isInConversation && (
             <div className='py-2 px-3 text-center'>
-              <div className='inline-flex items-center text-cardTextBusy dark:text-cardTextBusy max-w-full'>
+              <div className='inline-flex items-center text-cardTextBusy dark:text-cardTextBusy max-w-full mr-2'>
                 <CallDuration
                   startTime={liveOperatorData?.conversations[0]?.startTime}
                   className='font-mono mr-1 whitespace-nowrap'
                 />
                 <span className='mx-1'>-</span>
-                <span className='truncate max-w-[100px] inline-block'>
-                  {liveOperatorData?.conversations[0]?.counterpartName || ''}
-                </span>
+                <div
+                  data-tooltip-id={`tooltip-conversation-name-${
+                    liveOperatorData?.username || 'op'
+                  }`}
+                  data-tooltip-content={liveOperatorData?.conversations[0]?.counterpartName || ''}
+                >
+                  <TextScroll text={liveOperatorData?.conversations[0]?.counterpartName || ''} />
+                </div>
               </div>
+              <CustomThemedTooltip
+                id={`tooltip-conversation-name-${liveOperatorData?.username || 'op'}`}
+              />
             </div>
           )}
 
@@ -294,7 +226,25 @@ const OperatorCard = ({
                     <span className='text-sm not-italic font-medium leading-5'>
                       {t('Operators.Ringing')}
                     </span>
+                    {liveOperatorData?.conversations?.[0]?.counterpartName && (
+                      <>
+                        <span className='mx-1'>-</span>
+                        <div
+                          data-tooltip-id={`tooltip-ringing-name-${
+                            liveOperatorData?.username || 'op'
+                          }`}
+                          data-tooltip-content={
+                            liveOperatorData?.conversations[0]?.counterpartName || ''
+                          }
+                        >
+                          <TextScroll text={liveOperatorData.conversations[0].counterpartName} />
+                        </div>
+                      </>
+                    )}
                   </div>
+                  <CustomThemedTooltip
+                    id={`tooltip-ringing-name-${liveOperatorData?.username || 'op'}`}
+                  />
                 </div>
               )}
             </>
