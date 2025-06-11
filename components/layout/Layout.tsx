@@ -237,7 +237,7 @@ export const Layout: FC<LayoutProps> = ({ children }) => {
   }, [isUserInfoLoaded, resfreshUserInfo])
 
   // Function to open the parameterized URL
-  const openParameterizedUrl = () => {
+  const openParameterizedUrl = (callerNum = '', callerName = '', called = '', uniqueId = '') => {
     // Check first if the URL is available
     if (!incomingCallStore.isUrlAvailable) {
       return
@@ -255,9 +255,18 @@ export const Layout: FC<LayoutProps> = ({ children }) => {
     if (userInformation?.urlOpened && userInformation?.settings?.open_param_url !== 'button') {
       return
     } else {
-      // Open URL in a new window
+      // Replace placeholders with actual call data
+      let processedUrl = paramUrl
+        .replace(/\$CALLER_NUMBER/g, encodeURIComponent(callerNum))
+        .replace(/\$CALLER_NAME/g, encodeURIComponent(callerName))
+        .replace(/\$UNIQUEID/g, encodeURIComponent(uniqueId))
+        .replace(/\$CALLED/g, encodeURIComponent(called))
+        .replace(/\{phone\}/g, encodeURIComponent(callerNum))
+
       // Add protocol if missing
-      const formattedUrl = paramUrl.startsWith('http') ? paramUrl : `https://${paramUrl}`
+      const formattedUrl = processedUrl.startsWith('http')
+        ? processedUrl
+        : `https://${processedUrl}`
       const newWindow = window.open('about:blank', '_blank')
       if (newWindow) {
         newWindow.location.href = formattedUrl
