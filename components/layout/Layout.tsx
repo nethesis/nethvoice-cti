@@ -924,45 +924,33 @@ export const Layout: FC<LayoutProps> = ({ children }) => {
       !router.pathname.includes('customercards') &&
       userInformation?.settings?.open_ccard === 'incoming'
     ) {
-      if (data[currentUsername]?.conversations) {
-        // Get key from first element of conversation
-        const firstConversationKey = Object.keys(data[currentUsername].conversations)[0]
-        //set customer type default type to person
-        const customerType = 'person'
+      const conversations = data[currentUsername]?.conversations
+      if (conversations && Object.keys(conversations).length > 0) {
+        const firstConversationKey = Object.keys(conversations)[0]
+        const firstConversation = conversations[firstConversationKey]
 
-        // Check if key exist and number of caller is not internal
-        if (
-          firstConversationKey &&
-          !operatorsStore?.extensions[
-            data[currentUsername]?.conversations[firstConversationKey]?.counterpartNum
-          ] &&
-          operatorsStore?.extensions[
-            data[currentUsername]?.conversations[firstConversationKey]?.counterpartNum
-          ] !== '<unknown>'
-        ) {
-          // Get counterpartName from first element of conversation
-          const customerCardNumber =
-            data[currentUsername]?.conversations[firstConversationKey]?.counterpartNum
+        if (firstConversation?.counterpartNum) {
+          const counterpartNum = firstConversation.counterpartNum
 
-          if (customerType && customerCardNumber && customerCardNumber !== 'unknown') {
-            let ccardObject: any = '#' + customerCardNumber + '-' + customerType
+          // For queue calls, always consider the number as external
+          // For other calls, check if the number is in extensions
+          const isExternalNumber = firstConversation.throughQueue
+            ? true // Queue calls are always considered external for customer cards
+            : !operatorsStore?.extensions?.[counterpartNum] // For other calls, check if it's in extensions
+
+          const isUnknown =
+            counterpartNum === 'unknown' || counterpartNum === '<unknown>' || !counterpartNum
+
+          if (isExternalNumber && !isUnknown) {
+            const customerType = 'person'
+            const ccardObject = `#${counterpartNum}-${customerType}`
+
             dispatch.customerCards.updateCallerCustomerCardInformation(ccardObject)
-            // If all conditions are satisfied go to customercards and set in to the store number and type
-            router
-              .replace(
-                {
-                  pathname: `/customercards`,
-                },
-                undefined,
-                {
-                  shallow: true,
-                },
-              )
-              .catch((e) => {
-                if (!e.cancelled) {
-                  throw e
-                }
-              })
+
+            // Navigate to customer cards page
+            router.push('/customercards').catch((error: any) => {
+              console.error('Navigation error (Ringing):', error)
+            })
           }
         }
       }
@@ -978,45 +966,33 @@ export const Layout: FC<LayoutProps> = ({ children }) => {
       !router.pathname.includes('customercards') &&
       userInformation?.settings?.open_ccard === 'connected'
     ) {
-      if (data[currentUsername]?.conversations) {
-        // Get key from first element of conversation
-        const firstConversationKey = Object.keys(data[currentUsername].conversations)[0]
-        //set customer type default type to person
-        const customerType = 'person'
+      const conversations = data[currentUsername]?.conversations
+      if (conversations && Object.keys(conversations).length > 0) {
+        const firstConversationKey = Object.keys(conversations)[0]
+        const firstConversation = conversations[firstConversationKey]
 
-        // Check if key exist and number of caller is not internal
-        if (
-          firstConversationKey &&
-          !operatorsStore?.extensions[
-            data[currentUsername]?.conversations[firstConversationKey]?.counterpartNum
-          ] &&
-          operatorsStore?.extensions[
-            data[currentUsername]?.conversations[firstConversationKey]?.counterpartNum
-          ] !== '<unknown>'
-        ) {
-          // Get counterpartName from first element of conversation
-          const customerCardNumber =
-            data[currentUsername]?.conversations[firstConversationKey]?.counterpartNum
-          if (customerType && customerCardNumber && customerCardNumber !== 'unknown') {
-            let ccardObject: any = '#' + customerCardNumber + '-' + customerType
+        if (firstConversation?.counterpartNum) {
+          const counterpartNum = firstConversation.counterpartNum
+
+          // For queue calls, always consider the number as external
+          // For other calls, check if the number is in extensions
+          const isExternalNumber = firstConversation.throughQueue
+            ? true // Queue calls are always considered external for customer cards
+            : !operatorsStore?.extensions?.[counterpartNum] // For other calls, check if it's in extensions
+
+          const isUnknown =
+            counterpartNum === 'unknown' || counterpartNum === '<unknown>' || !counterpartNum
+
+          if (isExternalNumber && !isUnknown && firstConversation.connected) {
+            const customerType = 'person'
+            const ccardObject = `#${counterpartNum}-${customerType}`
+
             dispatch.customerCards.updateCallerCustomerCardInformation(ccardObject)
 
-            // If all conditions are satisfied go to customercards and set in to the store number and type
-            router
-              .replace(
-                {
-                  pathname: `/customercards`,
-                },
-                undefined,
-                {
-                  shallow: true,
-                },
-              )
-              .catch((e) => {
-                if (!e.cancelled) {
-                  throw e
-                }
-              })
+            // Navigate to customer cards page
+            router.push('/customercards').catch((error: any) => {
+              console.error('Navigation error:', error)
+            })
           }
         }
       }
