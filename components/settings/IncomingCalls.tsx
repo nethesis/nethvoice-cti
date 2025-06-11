@@ -49,15 +49,18 @@ export const IncomingCalls = () => {
           // Load data from API only if not already in the store
           const response = await getParamUrl()
           const apiUrl = response?.data?.url || defaultExampleUrl
+          const onlyQueues = response?.data?.only_queues || false
 
-          // Save URL to store
+          // Save URL and onlyQueues to store
           dispatch.incomingCall.setParamUrl(apiUrl)
+          dispatch.incomingCall.setOnlyQueues(onlyQueues)
           dispatch.incomingCall.setLoaded(true)
 
           setCallUrl(apiUrl)
 
-          // Save URL to localStorage
+          // Save URL and onlyQueues to localStorage
           savePreference('incomingCallUrl', apiUrl, authStore.username)
+          savePreference('paramUrlOnlyQueues', onlyQueues, authStore.username)
           setParamUrlError('')
         }
 

@@ -91,8 +91,8 @@ const CompactOperatorCard = ({
         </div>
         {isRinging && permissions.hasAny && !isCalledByCurrentUser ? (
           <div className='text-textStatusBusy dark:text-textStatusBusyDark text-sm leading-5 font-medium flex items-center'>
-            <span className='ringing-animation h-2.5 w-2.5 mr-2'></span>
-            {t('Operators.Ringing')}
+            <span className='ringing-animation h-2.5 w-2.5 mr-4'></span>
+            <span>{t('Operators.Ringing')}</span>
             {operator?.conversations?.[0]?.counterpartName && (
               <>
                 <span className='mx-1'>-</span>
@@ -199,7 +199,6 @@ const CompactOperatorCard = ({
                   icon={faPhoneArrowDownLeft as any}
                   className='inline-block text-center h-4 w-4 lg:h-3 lg:w-3'
                 />
-                <span className='text-xs ml-1 lg:inline hidden'>{t('OperatorDrawer.Pickup')}</span>
               </Button>
             )}
             {permissions?.hangup && (
@@ -215,14 +214,11 @@ const CompactOperatorCard = ({
                   className='inline-block text-center h-4 w-4 lg:h-3 lg:w-3'
                   icon={faPhone as IconDefinition}
                 />
-                <span className='text-xs ml-1 lg:inline hidden'>{t('Common.Reject')}</span>
               </Button>
             )}
-            {/* Show tooltips only on small screens when text is hidden */}
-            <div className='md:hidden'>
-              <CustomThemedTooltip id={`tooltip-pickup-operator-${index}`} />
-              <CustomThemedTooltip id={`tooltip-reject-operator-${index}`} />
-            </div>
+            {/* Show tooltips on all screen sizes */}
+            <CustomThemedTooltip id={`tooltip-pickup-operator-${index}`} />
+            <CustomThemedTooltip id={`tooltip-reject-operator-${index}`} />
           </div>
         )}
 

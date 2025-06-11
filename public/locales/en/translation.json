@@ -373,7 +373,7 @@
     "Validating audio file...": "Validating audio file...",
     "Recorded audio file": "Recorded audio file",
     "Incoming calls": "Incoming calls",
-    "URL opened on incoming call": "URL opened on incoming call",
+    "URL opened on incoming call": "URL opened on external incoming call",
     "Enable pop-ups in your browser": "Enable pop-ups in your browser",
     "To correctly open the Call-activated URL, you need to enable pop-ups in your browser.": "To correctly open the Call-activated URL, you need to enable pop-ups in your browser.",
     "URL opening trigger": "URL opening trigger",

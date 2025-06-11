@@ -352,7 +352,7 @@
     "Validating audio file...": "Validazione del file audio in corso...",
     "Recorded audio file": "File audio registrato",
     "Incoming calls": "Chiamate in arrivo",
-    "URL opened on incoming call": "URL aperto su chiamata in arrivo",
+    "URL opened on incoming call": "URL aperto su chiamata in arrivo esterna",
     "Enable pop-ups in your browser": "Abilita i pop-up nel tuo browser",
     "To correctly open the Call-activated URL, you need to enable pop-ups in your browser.": "Per aprire correttamente l'URL attivato dalle chiamate, devi abilitare i pop-up nel tuo browser.",
     "URL opening trigger": "Trigger di apertura URL",

@@ -138,8 +138,15 @@ export const Layout: FC<LayoutProps> = ({ children }) => {
           if (paramUrlResponse?.data?.url && paramUrlResponse.data.url.trim() !== '') {
             // Save URL to store
             dispatch.incomingCall.setParamUrl(paramUrlResponse.data.url)
+            // Save onlyQueues setting to store
+            dispatch.incomingCall.setOnlyQueues(paramUrlResponse.data.only_queues || false)
             // Save URL to localStorage
             savePreference('incomingCallUrl', paramUrlResponse.data.url, userInfo.data.username)
+            savePreference(
+              'paramUrlOnlyQueues',
+              paramUrlResponse.data.only_queues || false,
+              userInfo.data.username,
+            )
             dispatch.incomingCall.setLoaded(true)
             dispatch.incomingCall.setUrlAvailable(true)
           } else {
@@ -236,8 +243,7 @@ export const Layout: FC<LayoutProps> = ({ children }) => {
     }
   }, [isUserInfoLoaded, resfreshUserInfo])
 
-  // Function to open the parameterized URL
-  const openParameterizedUrl = (callerNum = '', callerName = '', called = '', uniqueId = '') => {
+  const openParameterizedUrl = (callerNum: any, callerName: any, called: any, uniqueId: any) => {
     // Check first if the URL is available
     if (!incomingCallStore.isUrlAvailable) {
       return
@@ -252,27 +258,38 @@ export const Layout: FC<LayoutProps> = ({ children }) => {
       console.error('Invalid URL')
       return
     }
+
     if (userInformation?.urlOpened && userInformation?.settings?.open_param_url !== 'button') {
       return
-    } else {
-      // Replace placeholders with actual call data
-      let processedUrl = paramUrl
-        .replace(/\$CALLER_NUMBER/g, encodeURIComponent(callerNum))
-        .replace(/\$CALLER_NAME/g, encodeURIComponent(callerName))
-        .replace(/\$UNIQUEID/g, encodeURIComponent(uniqueId))
-        .replace(/\$CALLED/g, encodeURIComponent(called))
-        .replace(/\{phone\}/g, encodeURIComponent(callerNum))
+    }
 
-      // Add protocol if missing
-      const formattedUrl = processedUrl.startsWith('http')
-        ? processedUrl
-        : `https://${processedUrl}`
-      const newWindow = window.open('about:blank', '_blank')
-      if (newWindow) {
-        newWindow.location.href = formattedUrl
-        console.log('Opening URL in new window:', formattedUrl)
-        dispatch.user.setUrlOpened(true)
-      }
+    // Replace placeholders with actual call data only if they exist in the URL and we have values
+    let processedUrl = paramUrl
+
+    // Only replace placeholders that exist in the URL and have valid values
+    if (processedUrl.includes('$CALLER_NUMBER') && callerNum) {
+      processedUrl = processedUrl.replace(/\$CALLER_NUMBER/g, encodeURIComponent(callerNum))
+    }
+    if (processedUrl.includes('$CALLER_NAME') && callerName) {
+      processedUrl = processedUrl.replace(/\$CALLER_NAME/g, encodeURIComponent(callerName))
+    }
+    if (processedUrl.includes('$UNIQUEID') && uniqueId) {
+      processedUrl = processedUrl.replace(/\$UNIQUEID/g, encodeURIComponent(uniqueId))
+    }
+    if (processedUrl.includes('$CALLED') && called) {
+      processedUrl = processedUrl.replace(/\$CALLED/g, encodeURIComponent(called))
+    }
+    if (processedUrl.includes('{phone}') && callerNum) {
+      processedUrl = processedUrl.replace(/\{phone\}/g, encodeURIComponent(callerNum))
+    }
+
+    // Add protocol if missing
+    const formattedUrl = processedUrl.startsWith('http') ? processedUrl : `https://${processedUrl}`
+
+    const newWindow = window.open('about:blank', '_blank')
+    if (newWindow) {
+      newWindow.location.href = formattedUrl
+      dispatch.user.setUrlOpened(true)
     }
   }
 
@@ -448,9 +465,44 @@ export const Layout: FC<LayoutProps> = ({ children }) => {
   const [variableCheck, setVariableCheck] = useState(false)
 
   // Event handling for URL opening
-  useEventListener('phone-island-url-parameter-opened', () => {
+  useEventListener('phone-island-url-parameter-opened', (data: any) => {
     if (userInformation?.settings?.open_param_url === 'button') {
-      openParameterizedUrl()
+      // Check if URL is available
+      if (!incomingCallStore?.isUrlAvailable) {
+        return
+      }
+
+      // Check if URL was already opened
+      if (userInformation?.urlOpened) {
+        return
+      }
+
+      // Get onlyQueues setting
+      const onlyQueues = incomingCallStore?.onlyQueues || false
+
+      // Additional checks for button trigger: must be connected and incoming (same as answered)
+      if (data?.connected && data?.direction === 'in') {
+        if (onlyQueues === true && data?.throughQueue === true) {
+          // Open URL only for queue calls when onlyQueues is true
+          openParameterizedUrl(
+            data?.counterpartNum,
+            data?.counterpartName,
+            data?.owner,
+            data?.uniqueId,
+          )
+        } else if (
+          onlyQueues === false &&
+          (data?.throughTrunk === true || data?.throughQueue === true)
+        ) {
+          // Open URL for both trunk and queue calls when onlyQueues is false
+          openParameterizedUrl(
+            data?.counterpartNum,
+            data?.counterpartName,
+            data?.owner,
+            data?.uniqueId,
+          )
+        }
+      }
     }
   })
 
@@ -652,7 +704,36 @@ export const Layout: FC<LayoutProps> = ({ children }) => {
         incomingCallStore?.isUrlAvailable &&
         !userInformation?.urlOpened
       ) {
-        openParameterizedUrl()
+        // Get the first conversation from the conversations object
+        const conversationsObj = data[currentUsername]?.conversations
+        if (conversationsObj && Object.keys(conversationsObj).length > 0) {
+          const firstConversationKey = Object.keys(conversationsObj)[0]
+          const firstConversation = conversationsObj[firstConversationKey]
+
+          // Check onlyQueues setting and conversation type
+          const onlyQueues = incomingCallStore?.onlyQueues || false
+
+          if (onlyQueues === true && firstConversation?.throughQueue === true) {
+            // Open URL only for queue calls when onlyQueues is true
+            openParameterizedUrl(
+              firstConversation?.counterpartNum,
+              firstConversation?.counterpartName,
+              firstConversation?.owner,
+              firstConversation?.uniqueId,
+            )
+          } else if (
+            onlyQueues === false &&
+            (firstConversation?.throughTrunk === true || firstConversation?.throughQueue === true)
+          ) {
+            // Open URL for both trunk and queue calls when onlyQueues is false
+            openParameterizedUrl(
+              firstConversation?.counterpartNum,
+              firstConversation?.counterpartName,
+              firstConversation?.owner,
+              firstConversation?.uniqueId,
+            )
+          }
+        }
       } else if (
         operators[currentUsername]?.mainPresence === 'busy' &&
         userInformation?.settings?.open_param_url === 'answered' &&
@@ -660,7 +741,39 @@ export const Layout: FC<LayoutProps> = ({ children }) => {
         incomingCallStore?.isUrlAvailable &&
         !userInformation?.urlOpened
       ) {
-        openParameterizedUrl()
+        // Get the first conversation from the conversations object
+        const conversationsObj = data[currentUsername]?.conversations
+        if (conversationsObj && Object.keys(conversationsObj).length > 0) {
+          const firstConversationKey = Object.keys(conversationsObj)[0]
+          const firstConversation = conversationsObj[firstConversationKey]
+
+          // Check onlyQueues setting and conversation type
+          const onlyQueues = incomingCallStore?.onlyQueues || false
+
+          // Additional checks for "answered" trigger: must be connected and incoming
+          if (firstConversation?.connected && firstConversation?.direction === 'in') {
+            if (onlyQueues === true && firstConversation?.throughQueue === true) {
+              // Open URL only for queue calls when onlyQueues is true
+              openParameterizedUrl(
+                firstConversation?.counterpartNum,
+                firstConversation?.counterpartName,
+                firstConversation?.owner,
+                firstConversation?.uniqueId,
+              )
+            } else if (
+              onlyQueues === false &&
+              (firstConversation?.throughTrunk === true || firstConversation?.throughQueue === true)
+            ) {
+              // Open URL for both trunk and queue calls when onlyQueues is false
+              openParameterizedUrl(
+                firstConversation?.counterpartNum,
+                firstConversation?.counterpartName,
+                firstConversation?.owner,
+                firstConversation?.uniqueId,
+              )
+            }
+          }
+        }
       }
     }
 
@@ -808,45 +921,33 @@ export const Layout: FC<LayoutProps> = ({ children }) => {
       !router.pathname.includes('customercards') &&
       userInformation?.settings?.open_ccard === 'incoming'
     ) {
-      if (data[currentUsername]?.conversations) {
-        // Get key from first element of conversation
-        const firstConversationKey = Object.keys(data[currentUsername].conversations)[0]
-        //set customer type default type to person
-        const customerType = 'person'
+      const conversations = data[currentUsername]?.conversations
+      if (conversations && Object.keys(conversations).length > 0) {
+        const firstConversationKey = Object.keys(conversations)[0]
+        const firstConversation = conversations[firstConversationKey]
 
-        // Check if key exist and number of caller is not internal
-        if (
-          firstConversationKey &&
-          !operatorsStore?.extensions[
-            data[currentUsername]?.conversations[firstConversationKey]?.counterpartNum
-          ] &&
-          operatorsStore?.extensions[
-            data[currentUsername]?.conversations[firstConversationKey]?.counterpartNum
-          ] !== '<unknown>'
-        ) {
-          // Get counterpartName from first element of conversation
-          const customerCardNumber =
-            data[currentUsername]?.conversations[firstConversationKey]?.counterpartNum
+        if (firstConversation?.counterpartNum) {
+          const counterpartNum = firstConversation.counterpartNum
 
-          if (customerType && customerCardNumber && customerCardNumber !== 'unknown') {
-            let ccardObject: any = '#' + customerCardNumber + '-' + customerType
+          // For queue calls, always consider the number as external
+          // For other calls, check if the number is in extensions
+          const isExternalNumber = firstConversation.throughQueue
+            ? true // Queue calls are always considered external for customer cards
+            : !operatorsStore?.extensions?.[counterpartNum] // For other calls, check if it's in extensions
+
+          const isUnknown =
+            counterpartNum === 'unknown' || counterpartNum === '<unknown>' || !counterpartNum
+
+          if (isExternalNumber && !isUnknown) {
+            const customerType = 'person'
+            const ccardObject = `#${counterpartNum}-${customerType}`
+
             dispatch.customerCards.updateCallerCustomerCardInformation(ccardObject)
-            // If all conditions are satisfied go to customercards and set in to the store number and type
-            router
-              .replace(
-                {
-                  pathname: `/customercards`,
-                },
-                undefined,
-                {
-                  shallow: true,
-                },
-              )
-              .catch((e) => {
-                if (!e.cancelled) {
-                  throw e
-                }
-              })
+
+            // Navigate to customer cards page
+            router.push('/customercards').catch((error: any) => {
+              console.error('Navigation error (Ringing):', error)
+            })
           }
         }
       }
@@ -862,45 +963,33 @@ export const Layout: FC<LayoutProps> = ({ children }) => {
       !router.pathname.includes('customercards') &&
       userInformation?.settings?.open_ccard === 'connected'
     ) {
-      if (data[currentUsername]?.conversations) {
-        // Get key from first element of conversation
-        const firstConversationKey = Object.keys(data[currentUsername].conversations)[0]
-        //set customer type default type to person
-        const customerType = 'person'
+      const conversations = data[currentUsername]?.conversations
+      if (conversations && Object.keys(conversations).length > 0) {
+        const firstConversationKey = Object.keys(conversations)[0]
+        const firstConversation = conversations[firstConversationKey]
 
-        // Check if key exist and number of caller is not internal
-        if (
-          firstConversationKey &&
-          !operatorsStore?.extensions[
-            data[currentUsername]?.conversations[firstConversationKey]?.counterpartNum
-          ] &&
-          operatorsStore?.extensions[
-            data[currentUsername]?.conversations[firstConversationKey]?.counterpartNum
-          ] !== '<unknown>'
-        ) {
-          // Get counterpartName from first element of conversation
-          const customerCardNumber =
-            data[currentUsername]?.conversations[firstConversationKey]?.counterpartNum
-          if (customerType && customerCardNumber && customerCardNumber !== 'unknown') {
-            let ccardObject: any = '#' + customerCardNumber + '-' + customerType
+        if (firstConversation?.counterpartNum) {
+          const counterpartNum = firstConversation.counterpartNum
+
+          // For queue calls, always consider the number as external
+          // For other calls, check if the number is in extensions
+          const isExternalNumber = firstConversation.throughQueue
+            ? true // Queue calls are always considered external for customer cards
+            : !operatorsStore?.extensions?.[counterpartNum] // For other calls, check if it's in extensions
+
+          const isUnknown =
+            counterpartNum === 'unknown' || counterpartNum === '<unknown>' || !counterpartNum
+
+          if (isExternalNumber && !isUnknown && firstConversation.connected) {
+            const customerType = 'person'
+            const ccardObject = `#${counterpartNum}-${customerType}`
+
             dispatch.customerCards.updateCallerCustomerCardInformation(ccardObject)
 
-            // If all conditions are satisfied go to customercards and set in to the store number and type
-            router
-              .replace(
-                {
-                  pathname: `/customercards`,
-                },
-                undefined,
-                {
-                  shallow: true,
-                },
-              )
-              .catch((e) => {
-                if (!e.cancelled) {
-                  throw e
-                }
-              })
+            // Navigate to customer cards page
+            router.push('/customercards').catch((error: any) => {
+              console.error('Navigation error:', error)
+            })
           }
         }
       }
@@ -1152,7 +1241,9 @@ export const Layout: FC<LayoutProps> = ({ children }) => {
   }, [parkingInfo?.isParkingFooterVisible, controls])
 
   const rightSideStatus: any = useSelector((state: RootState) => state.rightSideMenu)
-
+  useEventListener('phone-island-voicemail-received', () => {
+    dispatch.voicemail.reload()
+  })
   const { theme } = useSelector((state: RootState) => state?.darkTheme)
   const phoneIslandThemePreference = getJSONItem(`phone-island-theme-selected`) || ''
 
@@ -1171,17 +1262,13 @@ export const Layout: FC<LayoutProps> = ({ children }) => {
         setJSONItem('phone-island-theme-selected', { themeSelected: 'dark' })
       }
     }
-  }, [phoneIslandThemePreference, theme])
+  }, [theme])
 
   const closePhoneIslandCall = () => {
     eventDispatch('phone-island-call-end', {})
   }
   // global keyborad shortcut
   useHotkeys('ctrl+alt+c', () => closePhoneIslandCall(), [])
-
-  useEventListener('phone-island-voicemail-received', () => {
-    dispatch.voicemail.reload()
-  })
 
   return (
     <>

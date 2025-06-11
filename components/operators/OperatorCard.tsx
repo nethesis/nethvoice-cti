@@ -94,7 +94,7 @@ const OperatorCard = ({
         {isRinging && hasAnyPermission && !isCalledByCurrentUser ? (
           <div className='text-center text-red-600 dark:text-red-500 text-sm font-medium leading-5 pt-2 flex items-center justify-center'>
             <span className='ringing-animation h-2.5 w-2.5 mr-3'></span>
-            {t('Operators.Ringing')}
+            <span className='ml-2'>{t('Operators.Ringing')}</span>
             {liveOperatorData?.conversations?.[0]?.counterpartName && (
               <>
                 <span className='mx-1'>-</span>
