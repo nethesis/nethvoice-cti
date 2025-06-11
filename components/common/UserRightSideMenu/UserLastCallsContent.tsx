@@ -450,7 +450,7 @@ export const UserLastCallsContent = () => {
 
           {/* Empty state */}
           {filteredCalls?.length === 0 && (
-            <div className='py-4'>
+            <div className='py-4 px-6'>
               <EmptyState
                 title={
                   directionFilter !== 'all'
