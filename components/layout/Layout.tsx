@@ -468,9 +468,44 @@ export const Layout: FC<LayoutProps> = ({ children }) => {
   const [variableCheck, setVariableCheck] = useState(false)
 
   // Event handling for URL opening
-  useEventListener('phone-island-url-parameter-opened', () => {
+  useEventListener('phone-island-url-parameter-opened', (data: any) => {
     if (userInformation?.settings?.open_param_url === 'button') {
-      // openParameterizedUrl()
+      // Check if URL is available
+      if (!incomingCallStore?.isUrlAvailable) {
+        return
+      }
+
+      // Check if URL was already opened
+      if (userInformation?.urlOpened) {
+        return
+      }
+
+      // Get onlyQueues setting
+      const onlyQueues = incomingCallStore?.onlyQueues || false
+
+      // Additional checks for button trigger: must be connected and incoming (same as answered)
+      if (data?.connected && data?.direction === 'in') {
+        if (onlyQueues === true && data?.throughQueue === true) {
+          // Open URL only for queue calls when onlyQueues is true
+          openParameterizedUrl(
+            data?.counterpartNum,
+            data?.counterpartName,
+            data?.owner,
+            data?.uniqueId,
+          )
+        } else if (
+          onlyQueues === false &&
+          (data?.throughTrunk === true || data?.throughQueue === true)
+        ) {
+          // Open URL for both trunk and queue calls when onlyQueues is false
+          openParameterizedUrl(
+            data?.counterpartNum,
+            data?.counterpartName,
+            data?.owner,
+            data?.uniqueId,
+          )
+        }
+      }
     }
   })
 
