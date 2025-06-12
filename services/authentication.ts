@@ -32,7 +32,7 @@ export const getPhoneIslandToken = async () => {
  */
 export const phoneIslandTokenCheck = async () => {
   try {
-    const res: AxiosResponse = await axios.get(`${PATH}/phone_island_token_check`)
+    const res: AxiosResponse = await axios.get(`${PATH}/phone_island_token_check/web`)
     const data: PhoneIslandCheckType = res.data
     return data || []
   } catch (error) {
