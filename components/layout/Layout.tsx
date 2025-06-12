@@ -243,7 +243,6 @@ export const Layout: FC<LayoutProps> = ({ children }) => {
     }
   }, [isUserInfoLoaded, resfreshUserInfo])
 
-  // Function to open the parameterized URL
   const openParameterizedUrl = (callerNum: any, callerName: any, called: any, uniqueId: any) => {
     // Check first if the URL is available
     if (!incomingCallStore.isUrlAvailable) {

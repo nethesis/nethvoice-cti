@@ -11,6 +11,7 @@ import { useSelector } from 'react-redux'
 import { useRouter } from 'next/router'
 import { savePreference } from '../lib/storage'
 import { getSelectedLinesManager } from '../lib/lines'
+import { Breadcrumb } from '../components/common/Breadcrumb'
 
 interface tabsType {
   name: string
@@ -77,6 +78,14 @@ const Lines: NextPage = () => {
   return (
     <>
       <div>
+        <Breadcrumb
+          previousLink={{
+            path: '/applications',
+            label: t('Applications.Applications'),
+          }}
+          currentPage={t('Applications.Phone lines and announcements')}
+        />
+
         <h1 className='text-2xl font-semibold mb-6 text-title dark:text-titleDark'>
           {t('Applications.Phone lines and announcements')}
         </h1>
