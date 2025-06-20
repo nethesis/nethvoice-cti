@@ -19,8 +19,17 @@ import { useTheme } from '../../theme/Context'
 
 export interface ButtonProps extends Omit<ComponentPropsWithRef<'button'>, 'color' | 'style'> {
   children: ReactNode
-  size?: 'small' | 'base' | 'large'
-  variant?: 'primary' | 'secondary' | 'white' | 'ghost' | 'danger' | 'dashboard' | 'whiteDanger'
+  size?: 'small' | 'base' | 'large' | 'full'
+  variant?:
+    | 'primary'
+    | 'secondary'
+    | 'white'
+    | 'ghost'
+    | 'danger'
+    | 'dashboard'
+    | 'whiteDanger'
+    | 'call'
+    | 'primaryPhoneIsland'
   fullWidth?: boolean
   fullHeight?: boolean
   disabled?: boolean
@@ -45,10 +54,16 @@ export const Button = forwardRef<HTMLButtonElement, ButtonProps>(
       <button
         disabled={disabled}
         className={classNames(
-          theme.base,
+          variant !== 'call' && variant !== 'primaryPhoneIsland'
+            ? theme.base
+            : theme.phoneIslandBase,
           theme[variant],
-          size && theme.sizes[size],
-          size === 'small' ? theme.rounded.small : theme.rounded.base,
+          size && (theme.sizes as any)[size],
+          size === 'full'
+            ? theme.rounded.full
+            : size === 'small'
+            ? theme.rounded.small
+            : theme.rounded.base,
           fullWidth && theme.sizes.full_w,
           fullHeight && theme.sizes.full_h,
           className,
