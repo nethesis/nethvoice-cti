@@ -32,6 +32,7 @@ import { ProfilingTypes } from '../../models/profiling'
 import { Portal } from '@headlessui/react'
 import { ParkCards } from '../parks/parkCards'
 import { motion, useAnimation } from 'framer-motion'
+import { pauseQueue } from '../../lib/queuesLib'
 
 interface LayoutProps {
   children: ReactNode
@@ -459,7 +460,7 @@ export const Layout: FC<LayoutProps> = ({ children }) => {
   //Get user information from store
   const userInformation = useSelector((state: RootState) => state.user)
 
-  useEventListener('phone-island-webrtc-unregistered', (data: any) => {})
+  useEventListener('phone-island-webrtc-unregistered', (data: any) => { })
 
   const [conversationObject, setConversationObject]: any = useState({})
 
@@ -887,7 +888,7 @@ export const Layout: FC<LayoutProps> = ({ children }) => {
       if (firstElementConversation && !isEmpty(data[currentUsername]?.conversations)) {
         let callerInfo =
           operatorsStore?.extensions[
-            data[currentUsername]?.conversations[firstElementConversation]?.counterpartNum
+          data[currentUsername]?.conversations[firstElementConversation]?.counterpartNum
           ]
 
         let callerUsername = callerInfo?.username
@@ -1042,10 +1043,65 @@ export const Layout: FC<LayoutProps> = ({ children }) => {
     }
   })
 
+  const currentOperator = operators[currentUsername]
+
+  // Handle automatic queue pause based on user presence status
+  useEffect(() => {
+    const userSettings = userInformation?.settings
+
+    if (
+      currentOperator &&
+      userSettings?.queue_auto_pause_onpresence &&
+      userSettings?.queue_autopause_presencelist &&
+      Array.isArray(userSettings.queue_autopause_presencelist) &&
+      userSettings.queue_autopause_presencelist.length > 0 &&
+      queuesStore.isLoaded &&
+      mainextension
+    ) {
+      const shouldPauseQueues = userSettings.queue_autopause_presencelist.some((pauseState: string) => {
+        // Map preference states to operator's mainPresence
+        switch (pauseState) {
+          case 'dnd':
+            return currentOperator.mainPresence === 'dnd'
+          case 'callforward':
+            return currentOperator.mainPresence === 'callforward'
+          default:
+            return false
+        }
+      })
+
+      if (shouldPauseQueues) {
+        // Find all queues where user is logged in and not already paused
+        const queuesToPause = Object.values(queuesStore.queues).filter((queue: any) => {
+          const userMember = queue.members?.[mainextension]
+          return userMember?.loggedIn && !userMember?.paused
+        })
+
+        // Pause all appropriate queues
+        queuesToPause.forEach((queue: any) => {
+          const reason = currentOperator.mainPresence === 'dnd'
+            ? 'DND'
+            : currentOperator.mainPresence === 'callforward'
+              ? 'Call Forward'
+              : 'Auto Pause'
+
+          pauseQueue(mainextension, queue.queue, reason)
+        })
+      }
+    }
+  }, [
+    currentOperator?.mainPresence,
+    userInformation?.settings?.queue_auto_pause_onpresence,
+    userInformation?.settings?.queue_autopause_presencelist,
+    queuesStore.isLoaded,
+    mainextension,
+    currentUsername
+  ])
+
   // Save prev user main presence state
   const [prevOperatorState, setPrevOperatorState] = useState<string | null>(null)
 
-  const currentOperator = operators[currentUsername]
+
 
   //check if user has closed current calls
   const [closedCall, setClosedCall] = useState(false)
@@ -1152,7 +1208,7 @@ export const Layout: FC<LayoutProps> = ({ children }) => {
   })
 
   //check if socket reconnect
-  useEventListener('phone-island-socket-disconnected', () => {})
+  useEventListener('phone-island-socket-disconnected', () => { })
 
   let timeoutSeconds = 3000
 
@@ -1293,12 +1349,11 @@ export const Layout: FC<LayoutProps> = ({ children }) => {
           {/* Main content */}
           <div className='flex flex-1 items-stretch overflow-hidden bg-body dark:bg-bodyDark'>
             <main
-              className={`flex-1 ${customScrollbarClass} ${
-                parkingInfo?.isParkingFooterVisible &&
+              className={`flex-1 ${customScrollbarClass} ${parkingInfo?.isParkingFooterVisible &&
                 profile?.macro_permissions?.settings?.permissions?.parkings?.value
-                  ? 'h-[55rem]'
-                  : ''
-              }`}
+                ? 'h-[55rem]'
+                : ''
+                }`}
               id='main-content'
             >
               {/* Primary column */}
@@ -1339,9 +1394,9 @@ export const Layout: FC<LayoutProps> = ({ children }) => {
             </div>
 
             {parkingInfo?.isParkingFooterVisible &&
-            profile?.macro_permissions?.settings?.permissions?.parkings?.value &&
-            userInformation?.default_device &&
-            userInformation?.default_device?.type !== 'nethlink' ? (
+              profile?.macro_permissions?.settings?.permissions?.parkings?.value &&
+              userInformation?.default_device &&
+              userInformation?.default_device?.type !== 'nethlink' ? (
               <motion.div
                 className='absolute bottom-0 left:0 sm:bottom-0 sm:left-0 md:bottom-0 md:left-20'
                 initial={{ y: 100 }}
