@@ -60,7 +60,12 @@
     "Reject": "Rifiuta",
     "Actions": "Azioni",
     "Call duration": "Durata chiamata",
-    "No data to show": "Nessun dato da mostrare"
+    "No data to show": "Nessun dato da mostrare",
+    "Take a screenshot": "Cattura schermata",
+    "Open door": "Apri porta",
+    "Streaming": "Streaming",
+    "Error": "Errore",
+    "Sort by": "Ordina per"
   },
   "Login": {
     "User": "Utente",
@@ -237,7 +242,8 @@
     "Access the complete tool for consulting reports": "Accedi al tool completo per la consultazione dei report.",
     "Open PBX Report": "Apri PBX Report",
     "PBX Report": "PBX Report",
-    "Go to Phone lines and announcements": "Vai a Linee telefoniche e annunci"
+    "Go to Phone lines and announcements": "Vai a Linee telefoniche e annunci",
+    "Go to video sources": "Vai a Sorgenti video"
   },
   "Settings": {
     "Theme": "Tema",
@@ -703,7 +709,8 @@
     "Other actions": "Altre azioni",
     "Conference": "Aggiungi partecipante per chiamata in conferenza",
     "Go to settings": "Vai alle impostazioni",
-    "Enable camera": "Abilita video"
+    "Enable camera": "Abilita video",
+    "Call": "Chiama"
   },
   "QueueManager": {
     "Dashboard": "Dashboard",
@@ -758,7 +765,7 @@
     "Number of unanswered calls": "Numero di chiamate non risposte",
     "Pause on login": "Pausa su login",
     "Time on login": "Tempo in login",
-    "Pause time": "Tempo in pausa",
+    "Pause time": "Tempo di pausa",
     "In call percentage": "Percentuale in chiamata",
     "Order": "Ordine",
     "Missed call reasons": "Ragione per chiamate perse",
@@ -1002,5 +1009,12 @@
     "Unknown audio or camera permissions.": "Microfono o fotocamera non disponibili.",
     "No microphone or camera permissions.": "Devi accettare i permessi del browser.",
     "Call transferred successfully.": "La chiamata è stata trasferita con successo."
+  },
+  "Streaming": {
+    "video feed not available": "Flusso video non disponibile",
+    "Filter sources": "Filtra fonti",
+    "No video sources available": "Nessuna sorgente video disponibile",
+    "No video sources have been configured": "Nessuna sorgente video è stata configurata",
+    "Contact your administrator to configure video sources": "Contatta l'amministratore per configurare le sorgenti video"
   }
 }

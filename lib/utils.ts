@@ -482,3 +482,10 @@ export const formatPhoneNumber = (rawNumber: string) => {
 // Custom scrollbar class for Tailwind CSS
 export const customScrollbarClass =
   'overflow-y-auto scrollbar-thin scrollbar-thumb-gray-400 dark:scrollbar-thumb-gray-400 scrollbar-thumb-rounded-full scrollbar-thumb-opacity-50 scrollbar-track-gray-200 dark:scrollbar-track-gray-900 scrollbar-track-rounded-full scrollbar-track-opacity-25'
+
+export const getISODateForFilename = () => {
+  return new Date()
+    .toISOString()
+    .replace(/\.\d{3}Z$/, 'Z')
+    .replace(/:/g, '-')
+}

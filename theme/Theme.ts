@@ -4,6 +4,8 @@
 const theme = {
   button: {
     base: 'inline-flex content-center items-center justify-center font-medium tracking-wide transition-colors duration-200 transform focus:outline-none focus:z-20 disabled:cursor-not-allowed',
+    phoneIslandBase:
+      'pi-flex pi-content-center pi-items-center pi-justify-center pi-tracking-wide pi-duration-200 pi-transform pi-outline-none focus:pi-ring-2 focus:pi-z-20 focus:pi-ring-offset-2 disabled:pi-opacity-40 disabled:pi-cursor-not-allowed pi-border pi-border-transparent focus:pi-ring-offset-white dark:focus:pi-ring-offset-black pi-text-sm pi-leading-4 pi-col-start-auto pi-transition-color pi-shrink-0',
     primary:
       'border border-transparent bg-primary dark:bg-primaryDark text-white dark:text-primaryButtonTextDark hover:bg-primaryHover dark:hover:bg-primaryDarkHover focus:ring-2 focus:ring-primaryRing dark:focus:ring-primaryRingDark ring-offset-2 ring-offset-gray-50 dark:ring-offset-gray-900 font-medium leading-5 text-sm',
     secondary:
@@ -18,9 +20,13 @@ const theme = {
       'border-gray-300 text-primary dark:text-primaryDark hover:bg-gray-200 dark:border-gray-600  dark:hover:bg-gray-700 dark:hover:disabled:bg-transparent hover:disabled:bg-transparent dark:focus:ring-primaryDark',
     danger:
       'border border-transparent focus:ring-rose-500 bg-rose-600 hover:bg-rose-700 text-white dark:focus:ring-rose-600 dark:bg-rose-700 dark:hover:bg-rose-800 dark:text-white focus:ring-2 focus:ring-offset-2',
+    call: 'bg-phoneIslandCall dark:bg-phoneIslandCallDark hover:bg-phoneIslandCallHover dark:hover:bg-phoneIslandCallHoverDark focus:ring-green-500 focus:dark:ring-200 text-iconPrimaryInvert dark:text-iconPrimaryInvertDark h-12 pi-w-12 rounded-full',
+    primaryPhoneIsland:
+      'bg-phoneIslandActive dark:bg-phoneIslandActiveDark hover:bg-gray-500 dark:hover:bg-gray-50 focus:ring-emerald-500 dark:focus:ring-emerald-300 text-phoneIslandPrimaryInvert dark:text-phoneIslandPrimaryInvertDark h-12 w-12 rounded-full',
     rounded: {
       small: 'rounded',
       base: 'rounded-md',
+      full: 'rounded-full',
     },
     sizes: {
       small: 'px-2.5 py-1.5 text-xs',
