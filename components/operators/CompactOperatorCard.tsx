@@ -180,6 +180,7 @@ const CompactOperatorCard = ({
               )}
             </div>
             <CustomThemedTooltip id={`tooltip-operator-information-${index}`} />
+            <CustomThemedTooltip id={`tooltip-textscroll-${index}`} />
           </div>
         )}
 
