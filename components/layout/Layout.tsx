@@ -920,7 +920,7 @@ export const Layout: FC<LayoutProps> = ({ children }) => {
       profile?.macro_permissions?.customer_card?.value &&
       data[currentUsername]?.conversations &&
       !router.pathname.includes('customercards') &&
-      userInformation?.settings?.open_ccard === 'incoming'
+      loadPreference('customerCardPreference', authStore.username) === 'incoming'
     ) {
       const conversations = data[currentUsername]?.conversations
       if (conversations && Object.keys(conversations).length > 0) {
@@ -962,7 +962,7 @@ export const Layout: FC<LayoutProps> = ({ children }) => {
       profile?.macro_permissions?.customer_card?.value &&
       data[currentUsername]?.conversations &&
       !router.pathname.includes('customercards') &&
-      userInformation?.settings?.open_ccard === 'connected'
+      loadPreference('customerCardPreference', authStore.username) === 'connected'
     ) {
       const conversations = data[currentUsername]?.conversations
       if (conversations && Object.keys(conversations).length > 0) {
@@ -1248,7 +1248,7 @@ export const Layout: FC<LayoutProps> = ({ children }) => {
     profile?.macro_permissions?.customer_card?.value,
   ])
 
-  const ccardStatus = userInformation?.settings?.open_ccard
+  const ccardStatus = loadPreference('customerCardPreference', authStore.username)
   useEffect(() => {
     if (isEmpty(customerCardsList) && ccardStatus !== 'disabled') {
       const ccardObject = {} as Record<string, any>
