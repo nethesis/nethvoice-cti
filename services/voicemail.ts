@@ -27,7 +27,7 @@ export const downloadVoicemail = async (id: any) => {
             console.error("Error: the server did not return the file name.");
             return;
         }
-        const fileUrl = `${getApiScheme()}${getApiEndpoint()}/webrest/static/${filename}`;
+        const fileUrl = `${getApiScheme()}${getApiEndpoint()}/api/static/${filename}`;
 
         const link = document.createElement("a");
         link.href = fileUrl

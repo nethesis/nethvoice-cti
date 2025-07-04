@@ -52,7 +52,7 @@ export const AnnouncementView: FC<AnnouncementViewProps> = ({ className }): JSX.
 
   const apiEnpoint = getApiEndpoint()
   const apiScheme = getApiScheme()
-  const downloadUrl = apiScheme + apiEnpoint + '/webrest/static/'
+  const downloadUrl = apiScheme + apiEnpoint + '/api/static/'
 
   //Get operators information from store
   const operators: any = useSelector((state: RootState) => state.operators)
