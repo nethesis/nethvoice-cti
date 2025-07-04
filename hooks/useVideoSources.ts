@@ -99,6 +99,13 @@ export const useVideoSources = () => {
             : source,
         ),
       )
+
+      // Reset failed image state for this source when URL is updated
+      setFailedImages((prev) => {
+        const updated = { ...prev }
+        delete updated[data.res.streaming.source]
+        return updated
+      })
     }
   })
 
