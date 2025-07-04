@@ -316,7 +316,7 @@ export const VoiceMailContent = () => {
           </div>
         </div>
         <span className='border-b border-layoutDivider dark:border-layoutDividerDark'></span>
-        <ul role='list' className={`${customScrollbarClass}`}>
+        <ul role='list' className={`flex-1 divide-y ${customScrollbarClass} divide-gray-200 dark:divide-gray-700`}>
           {/* get voicemails error */}
           {getVoiceMailError && (
             <InlineNotification type='error' title={getVoiceMailError} className='my-6' />

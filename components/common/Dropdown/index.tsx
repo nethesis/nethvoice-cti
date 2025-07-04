@@ -42,18 +42,16 @@ const DropdownComponent: FC<DropdownProps> = ({
       <MenuButton as='div' className={classNames(size && theme.size[size])}>
         {children}
       </MenuButton>
-      <Transition as={Fragment} {...theme.items.transition}>
-        <MenuItems
-          className={classNames(
-            theme.items.base,
-            divider && theme.items.divider,
-            position ? theme.items.position[position] : theme.items.position.right,
-            position === 'top' ? 'py-1' : '',
-          )}
-        >
-          {items}
-        </MenuItems>
-      </Transition>
+      <MenuItems
+        className={classNames(
+          theme.items.base,
+          divider && theme.items.divider,
+          position ? theme.items.position[position] : theme.items.position.right,
+          position === 'top' ? 'py-1' : '',
+        )}
+      >
+        {items}
+      </MenuItems>
     </Menu>
   )
 }
