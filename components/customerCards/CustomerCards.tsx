@@ -115,7 +115,7 @@ export const CustomerCardsCustomerData: FC<CustomerCardsCustomerDataViewProps> =
   return (
     <>
       <div className='py-2 relative mt-8'>
-        <div className='grid grid-cols-1 xl:grid-cols-3 gap-y-8'>
+        <div className='grid grid-cols-1 xl:grid-cols-3 gap-y-8 xl:gap-x-8'>
           {' '}
           {/* Middle left  */}
           <div>

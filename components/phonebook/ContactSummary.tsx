@@ -140,7 +140,7 @@ export const ContactSummary = forwardRef<HTMLButtonElement, ContactSummaryProps>
 
         store.dispatch.customerCards.updateCallerCustomerCardInformation(ccardObject)
 
-        router.push(`/customercards?${ccardObject}`)
+        router.push(`/customercards${ccardObject}`)
 
         // Close side drawer after click open customer cards
         if (sideDrawer?.isShown) {

@@ -15,7 +15,6 @@ import { callPhoneNumber } from '../lib/utils'
 import { MissingPermission } from '../components/common/MissingPermissionsPage'
 
 const CustomerCards: NextPage = () => {
-  console.log('CustomerCards: Component rendering started')
   const { t } = useTranslation()
   const [currentTab, setCurrentTab] = useState('generalInfo')
   const [dynamicTabs, setDynamicTabs] = useState<any[]>([])
@@ -56,14 +55,8 @@ const CustomerCards: NextPage = () => {
     const urlQuery = window.location.search
     const storeQuery = customerCardsInformation?.settings?.caller_info
 
-    console.log('CustomerCards: getCurrentUrlParts', { urlQuery, storeQuery })
-
     const queryToUse = urlQuery || storeQuery || ''
-    const parts = queryToUse.replace('?', '').split('-')
-
-    console.log('CustomerCards: URL parts', parts)
-
-    return parts
+    return queryToUse.replace('?', '').split('-')
   }
 
   const urlParts = getCurrentUrlParts()
@@ -74,7 +67,6 @@ const CustomerCards: NextPage = () => {
   const contactType = urlParts[1]
 
   const [isCustomerCardsListLoaded, setIsCustomerCardsListLoaded] = useState(false)
-  const [customerCardError, setCustomerCardError] = useState('')
 
   const [companyInformation, setCompanyInformations]: any = useState()
 
@@ -123,7 +115,6 @@ const CustomerCards: NextPage = () => {
         profile?.macro_permissions?.customer_card?.value
       ) {
         try {
-          setCustomerCardError('')
           const res = await getCustomerCards(companyExtension)
           setCustomerCardsList(res)
           if (userInformation?.settings?.ccard_order?.length > 0) {
@@ -134,7 +125,6 @@ const CustomerCards: NextPage = () => {
           }
         } catch (e) {
           console.error(e)
-          setCustomerCardError('Cannot retrieve customer cards list')
         }
         setIsCustomerCardsListLoaded(true)
       }
