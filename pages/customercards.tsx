@@ -35,7 +35,7 @@ const CustomerCards: NextPage = () => {
   const [customerCardsList, setCustomerCardsList]: any = useState({})
 
   useEffect(() => {
-    if (!window.location.hash.includes('#')) {
+    if (!window.location.hash.includes('?')) {
       const newUrl = `${window.location.pathname}${customerCardsInformation?.settings?.caller_info}`
       window.history.pushState({ path: newUrl }, '', newUrl)
     }
@@ -44,8 +44,8 @@ const CustomerCards: NextPage = () => {
   //Get extension and contact type value from URL path or if it's empty get from store
   //(Is empty on redirect after phone-island events)
   const urlParts =
-    location?.href?.split('#')[1]?.split('-') ||
-    customerCardsInformation?.settings?.caller_info?.split('#')[1]?.split('-') ||
+    location?.href?.split('?')[1]?.split('-') ||
+    customerCardsInformation?.settings?.caller_info?.split('?')[1]?.split('-') ||
     ''
   //Is user or company main extension
   const companyExtension = urlParts[0]

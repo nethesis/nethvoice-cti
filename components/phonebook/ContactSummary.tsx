@@ -135,7 +135,12 @@ export const ContactSummary = forwardRef<HTMLButtonElement, ContactSummaryProps>
 
       // If phoneNumber and contactType is defined, add to customercards path
       if (phoneNumber && contactType) {
-        router.push(`/customercards#${phoneNumber}-${contactType}`)
+        const customerType = 'person'
+        const ccardObject = `?${phoneNumber}-${customerType}`
+
+        store.dispatch.customerCards.updateCallerCustomerCardInformation(ccardObject)
+
+        router.push(`/customercards?${ccardObject}`)
 
         // Close side drawer after click open customer cards
         if (sideDrawer?.isShown) {
