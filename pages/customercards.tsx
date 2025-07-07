@@ -33,20 +33,33 @@ const CustomerCards: NextPage = () => {
 
   const [ccardList, setCCardList]: any = useState([])
   const [customerCardsList, setCustomerCardsList]: any = useState({})
+  const [urlSynced, setUrlSynced] = useState(false)
 
   useEffect(() => {
-    if (!window.location.hash.includes('?')) {
-      const newUrl = `${window.location.pathname}${customerCardsInformation?.settings?.caller_info}`
-      window.history.pushState({ path: newUrl }, '', newUrl)
+    if (!urlSynced && customerCardsInformation?.settings?.caller_info) {
+      const currentQuery = window.location.search
+      const storeQuery = customerCardsInformation.settings.caller_info
+
+      // Only update URL if it's different from store or missing
+      if (currentQuery !== storeQuery) {
+        const newUrl = `${window.location.pathname}${storeQuery}`
+        window.history.replaceState({ path: newUrl }, '', newUrl)
+      }
+      setUrlSynced(true)
     }
-  }, [customerCardsInformation])
+  }, [customerCardsInformation, urlSynced])
 
   //Get extension and contact type value from URL path or if it's empty get from store
   //(Is empty on redirect after phone-island events)
-  const urlParts =
-    location?.href?.split('?')[1]?.split('-') ||
-    customerCardsInformation?.settings?.caller_info?.split('?')[1]?.split('-') ||
-    ''
+  const getCurrentUrlParts = () => {
+    const urlQuery = window.location.search
+    const storeQuery = customerCardsInformation?.settings?.caller_info
+
+    const queryToUse = urlQuery || storeQuery || ''
+    return queryToUse.replace('?', '').split('-')
+  }
+
+  const urlParts = getCurrentUrlParts()
   //Is user or company main extension
   const companyExtension = urlParts[0]
 
@@ -83,7 +96,7 @@ const CustomerCards: NextPage = () => {
               return item
             }
           })
-          
+
           setCompanyInformations({ rows: result })
         } catch (e) {
           console.error(e)
@@ -92,7 +105,7 @@ const CustomerCards: NextPage = () => {
       }
     }
     searchCompanyExtensionInformation()
-  }, [companyExtension, firstRender])
+  }, [companyExtension, firstRender, contactType])
 
   // retrieve customer cards
   useEffect(() => {
