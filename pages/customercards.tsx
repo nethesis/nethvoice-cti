@@ -72,7 +72,19 @@ const CustomerCards: NextPage = () => {
           //remove space and slash characters
           let noSlashCharactersCompanyExtension = companyExtension?.replace(/\//g, '')
           const res = await getPhonebook(1, noSlashCharactersCompanyExtension, contactType, 'name')
-          setCompanyInformations(res)
+
+          const result = res?.rows?.filter((item: any) => {
+            if (
+              item.workphone == noSlashCharactersCompanyExtension ||
+              item.homephone == noSlashCharactersCompanyExtension ||
+              item.cellphone == noSlashCharactersCompanyExtension ||
+              item.extension == noSlashCharactersCompanyExtension
+            ) {
+              return item
+            }
+          })
+          
+          setCompanyInformations({ rows: result })
         } catch (e) {
           console.error(e)
           return []
@@ -237,7 +249,7 @@ const CustomerCards: NextPage = () => {
                   contactType={contactType}
                 />
               ) : customerCardsList[currentTab] ? (
-                <CustomerCardsDynamicTab htmlContent={customerCardsList[currentTab].data} />
+                <CustomerCardsDynamicTab htmlContent={customerCardsList[currentTab]?.data} />
               ) : null}
             </div>
           </>
