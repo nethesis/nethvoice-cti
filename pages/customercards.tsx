@@ -15,6 +15,7 @@ import { callPhoneNumber } from '../lib/utils'
 import { MissingPermission } from '../components/common/MissingPermissionsPage'
 
 const CustomerCards: NextPage = () => {
+  console.log('CustomerCards: Component rendering started')
   const { t } = useTranslation()
   const [currentTab, setCurrentTab] = useState('generalInfo')
   const [dynamicTabs, setDynamicTabs] = useState<any[]>([])
@@ -55,8 +56,14 @@ const CustomerCards: NextPage = () => {
     const urlQuery = window.location.search
     const storeQuery = customerCardsInformation?.settings?.caller_info
 
+    console.log('CustomerCards: getCurrentUrlParts', { urlQuery, storeQuery })
+
     const queryToUse = urlQuery || storeQuery || ''
-    return queryToUse.replace('?', '').split('-')
+    const parts = queryToUse.replace('?', '').split('-')
+
+    console.log('CustomerCards: URL parts', parts)
+
+    return parts
   }
 
   const urlParts = getCurrentUrlParts()
