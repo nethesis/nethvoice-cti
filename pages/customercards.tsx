@@ -86,11 +86,12 @@ const CustomerCards: NextPage = () => {
           const res = await getPhonebook(1, noSlashCharactersCompanyExtension, contactType, 'name')
 
           const result = res?.rows?.filter((item: any) => {
+            const normalize = (str: string) => (str || '').replace(/\s+/g, '')
             if (
-              item.workphone == noSlashCharactersCompanyExtension ||
-              item.homephone == noSlashCharactersCompanyExtension ||
-              item.cellphone == noSlashCharactersCompanyExtension ||
-              item.extension == noSlashCharactersCompanyExtension
+              normalize(item.workphone) === noSlashCharactersCompanyExtension ||
+              normalize(item.homephone) === noSlashCharactersCompanyExtension ||
+              normalize(item.cellphone) === noSlashCharactersCompanyExtension ||
+              normalize(item.extension) === noSlashCharactersCompanyExtension
             ) {
               return item
             }

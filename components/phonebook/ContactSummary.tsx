@@ -120,7 +120,7 @@ export const ContactSummary = forwardRef<HTMLButtonElement, ContactSummaryProps>
     const router = useRouter()
 
     function goToCCardCompany(companyExtension: any) {
-      let phoneNumber
+      let phoneNumber : string = ''
       // companyExtension.kind doesn't exist set person to default
       let contactType = companyExtension?.kind || 'person'
 
@@ -132,6 +132,8 @@ export const ContactSummary = forwardRef<HTMLButtonElement, ContactSummaryProps>
       } else if (companyExtension.homephone) {
         phoneNumber = companyExtension.homephone
       }
+
+      phoneNumber = phoneNumber.trim()
 
       // If phoneNumber and contactType is defined, add to customercards path
       if (phoneNumber && contactType) {
