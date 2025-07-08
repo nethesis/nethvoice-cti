@@ -159,6 +159,7 @@ export async function searchDrawerHistorySwitchboard(
   pageSize: number = PAGE_SIZE,
 ) {
   let apiUrl = getHistoryUrl()
+  number = number.trim()
   let historycallUrlApiSwitchboard =
     apiUrl +
     '/webrest/histcallswitch/interval/' +

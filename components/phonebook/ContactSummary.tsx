@@ -120,7 +120,7 @@ export const ContactSummary = forwardRef<HTMLButtonElement, ContactSummaryProps>
     const router = useRouter()
 
     function goToCCardCompany(companyExtension: any) {
-      let phoneNumber
+      let phoneNumber : string = ''
       // companyExtension.kind doesn't exist set person to default
       let contactType = companyExtension?.kind || 'person'
 
@@ -133,9 +133,16 @@ export const ContactSummary = forwardRef<HTMLButtonElement, ContactSummaryProps>
         phoneNumber = companyExtension.homephone
       }
 
+      phoneNumber = phoneNumber.trim()
+
       // If phoneNumber and contactType is defined, add to customercards path
       if (phoneNumber && contactType) {
-        router.push(`/customercards#${phoneNumber}-${contactType}`)
+        const customerType = 'person'
+        const ccardObject = `?${phoneNumber}-${customerType}`
+
+        store.dispatch.customerCards.updateCallerCustomerCardInformation(ccardObject)
+
+        router.push(`/customercards${ccardObject}`)
 
         // Close side drawer after click open customer cards
         if (sideDrawer?.isShown) {

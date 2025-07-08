@@ -5,7 +5,7 @@
  * Checks the token validity
  */
 
-import { useState, useEffect, ReactNode, FC } from 'react'
+import { useState, useEffect, ReactNode, FC, useCallback } from 'react'
 import { useRouter } from 'next/router'
 import { useSelector } from 'react-redux'
 import { RootState } from '../../store'
@@ -19,35 +19,45 @@ export const RouteGuard: FC<RouterGuardProps> = ({ children }) => {
   const [authorized, setAuthorized] = useState(false)
   const auth = useSelector((state: RootState) => state.authentication)
 
-  useEffect(() => {
-    // On initial load - run auth check
-    authCheck()
+  const authCheck = useCallback(() => {
+    const isAuthenticated = Boolean(auth.username && auth.token)
 
-    // On route change start - hide page content by setting authorized to false
-    const hideContent = () => setAuthorized(false)
-    router.events.on('routeChangeStart', hideContent)
-
-    // On route change complete - run auth check
-    router.events.on('routeChangeComplete', authCheck)
-
-    // Unsubscribe from events in useEffect return function
-    return () => {
-      router.events.off('routeChangeStart', hideContent)
-      router.events.off('routeChangeComplete', authCheck)
-    }
-
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [])
-
-  const authCheck = () => {
-    // Redirect to login page if accessing a private page and not logged in
-    if (auth.username && auth.token) {
+    if (isAuthenticated) {
       setAuthorized(true)
     } else {
       setAuthorized(false)
       router.push('/login')
     }
-  }
+  }, [auth.username, auth.token, router])
+
+  const handleRouteChangeStart = useCallback(() => {
+    setAuthorized(false)
+  }, [])
+
+  const handleRouteChangeComplete = useCallback(() => {
+    authCheck()
+  }, [authCheck])
+
+  const handleRouteChangeError = useCallback(() => {
+    setAuthorized(true)
+  }, [])
+
+  useEffect(() => {
+    // Perform initial auth check
+    authCheck()
+
+    // Subscribe to router events
+    router.events.on('routeChangeStart', handleRouteChangeStart)
+    router.events.on('routeChangeComplete', handleRouteChangeComplete)
+    router.events.on('routeChangeError', handleRouteChangeError)
+
+    // Cleanup event listeners
+    return () => {
+      router.events.off('routeChangeStart', handleRouteChangeStart)
+      router.events.off('routeChangeComplete', handleRouteChangeComplete)
+      router.events.off('routeChangeError', handleRouteChangeError)
+    }
+  }, [router.events, authCheck, handleRouteChangeStart, handleRouteChangeComplete, handleRouteChangeError])
 
   return <>{authorized && children}</>
 }

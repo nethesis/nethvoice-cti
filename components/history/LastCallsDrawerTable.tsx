@@ -147,7 +147,7 @@ export const LastCallsDrawerTable = forwardRef<HTMLButtonElement, LastCallsDrawe
       }
 
       retrieveLastCalls()
-    }, [firstRender, retrieveLastCalls])
+    }, [firstRender])
 
     useEffect(() => {
       if (isEqual(phoneNumbers, previousPhoneNumbers)) {
@@ -162,7 +162,7 @@ export const LastCallsDrawerTable = forwardRef<HTMLButtonElement, LastCallsDrawe
       if (!isLoaded && !firstRender) {
         retrieveLastCalls()
       }
-    }, [isLoaded, firstRender, retrieveLastCalls])
+    }, [isLoaded, firstRender])
 
     const checkIconSwitchboard = useCallback(
       (call: Call) => {

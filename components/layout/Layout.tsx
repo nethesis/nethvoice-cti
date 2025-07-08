@@ -919,7 +919,6 @@ export const Layout: FC<LayoutProps> = ({ children }) => {
       operators[currentUsername]?.mainPresence === 'ringing' &&
       profile?.macro_permissions?.customer_card?.value &&
       data[currentUsername]?.conversations &&
-      !router.pathname.includes('customercards') &&
       loadPreference('customerCardPreference', authStore.username) === 'incoming'
     ) {
       const conversations = data[currentUsername]?.conversations
@@ -941,12 +940,12 @@ export const Layout: FC<LayoutProps> = ({ children }) => {
 
           if (isExternalNumber && !isUnknown) {
             const customerType = 'person'
-            const ccardObject = `#${counterpartNum}-${customerType}`
+            const ccardObject = `?${counterpartNum}-${customerType}`
 
             dispatch.customerCards.updateCallerCustomerCardInformation(ccardObject)
 
             // Navigate to customer cards page
-            router.push('/customercards').catch((error: any) => {
+            router.push(`/customercards${ccardObject}`).catch((error: any) => {
               console.error('Navigation error (Ringing):', error)
             })
           }
@@ -961,7 +960,6 @@ export const Layout: FC<LayoutProps> = ({ children }) => {
       operators[currentUsername]?.mainPresence === 'busy' &&
       profile?.macro_permissions?.customer_card?.value &&
       data[currentUsername]?.conversations &&
-      !router.pathname.includes('customercards') &&
       loadPreference('customerCardPreference', authStore.username) === 'connected'
     ) {
       const conversations = data[currentUsername]?.conversations
@@ -983,12 +981,12 @@ export const Layout: FC<LayoutProps> = ({ children }) => {
 
           if (isExternalNumber && !isUnknown && firstConversation.connected) {
             const customerType = 'person'
-            const ccardObject = `#${counterpartNum}-${customerType}`
+            const ccardObject = `?${counterpartNum}-${customerType}`
 
             dispatch.customerCards.updateCallerCustomerCardInformation(ccardObject)
 
             // Navigate to customer cards page
-            router.push('/customercards').catch((error: any) => {
+            router.push(`/customercards${ccardObject}`).catch((error: any) => {
               console.error('Navigation error:', error)
             })
           }
