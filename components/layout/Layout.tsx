@@ -944,10 +944,12 @@ export const Layout: FC<LayoutProps> = ({ children }) => {
 
             dispatch.customerCards.updateCallerCustomerCardInformation(ccardObject)
 
-            // Navigate to customer cards page
-            router.push(`/customercards${ccardObject}`).catch((error: any) => {
-              console.error('Navigation error (Ringing):', error)
-            })
+            if(window.location.search != ccardObject) {
+              // Navigate to customer cards page
+              router.push(`/customercards${ccardObject}`).catch((error: any) => {
+                console.error('Navigation error (Ringing):', error)
+              })
+            }
           }
         }
       }
@@ -985,10 +987,12 @@ export const Layout: FC<LayoutProps> = ({ children }) => {
 
             dispatch.customerCards.updateCallerCustomerCardInformation(ccardObject)
 
-            // Navigate to customer cards page
-            router.push(`/customercards${ccardObject}`).catch((error: any) => {
-              console.error('Navigation error:', error)
-            })
+            if(window.location.search != ccardObject) {
+              // Navigate to customer cards page
+              router.push(`/customercards${ccardObject}`).catch((error: any) => {
+                console.error('Navigation error (Ringing):', error)
+              })
+            }
           }
         }
       }
