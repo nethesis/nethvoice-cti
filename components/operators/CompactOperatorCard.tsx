@@ -59,7 +59,7 @@ const CompactOperatorCard = ({
   const mainExtension = useMemo(() => operator?.endpoints?.mainextension?.[0]?.id || '', [operator])
 
   return (
-    <div className='group flex w-full items-center justify-between space-x-3 rounded-lg py-2 pr-2 pl-6 text-left focus:outline-none focus:ring-2 focus:ring-offset-2 bg-cardBackgroud dark:bg-cardBackgroudDark focus:ring-primary dark:focus:ring-primary'>
+    <div className='group flex w-full items-center justify-between space-x-3 rounded-lg py-2 pr-2 pl-6 h-20 text-left focus:outline-none focus:ring-2 focus:ring-offset-2 bg-cardBackgroud dark:bg-cardBackgroudDark focus:ring-primary dark:focus:ring-primary'>
       {/* Left section: Avatar */}
       <span className='flex-shrink-0'>
         <Avatar
@@ -75,7 +75,7 @@ const CompactOperatorCard = ({
 
       {/* Middle section: Name and extension */}
       <div className='flex-1 min-w-0 ml-3'>
-        <div className='flex items-center space-x-2'>
+        <div className={`flex items-center space-x-2${isRinging ? ' mt-1' : ''}`}>
           <span
             className='block truncate text-sm leading-5 font-medium text-primaryNeutral dark:text-primaryNeutralDark cursor-pointer hover:underline'
             onClick={handleOpenDrawer}
@@ -90,7 +90,7 @@ const CompactOperatorCard = ({
           )}
         </div>
         {isRinging && permissions.hasAny && !isCalledByCurrentUser ? (
-          <div className='text-textStatusBusy dark:text-textStatusBusyDark text-sm leading-5 font-medium flex items-center'>
+          <div className='text-textStatusBusy dark:text-textStatusBusyDark text-sm leading-5 font-medium flex items-center pt-1'>
             <span className='ringing-animation h-2.5 w-2.5 mr-4'></span>
             <span>{t('Operators.Ringing')}</span>
             {operator?.conversations?.[0]?.counterpartName && (
@@ -186,7 +186,7 @@ const CompactOperatorCard = ({
 
         {/* If operator is ringing and user has permissions */}
         {isRinging && permissions?.hasAny && !isCalledByCurrentUser && (
-          <div className='flex items-center space-x-2'>
+          <div className='flex items-center space-x-2 pb-6'>
             {permissions?.pickup && (
               <Button
                 variant='white'
