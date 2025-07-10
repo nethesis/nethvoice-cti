@@ -564,7 +564,7 @@ const Operators: NextPage = () => {
               title={operatorsStore.errorMessage}
             ></InlineNotification>
           )}
-          <div className='mx-auto text-center 5xl:max-w-screen-2xl'>
+          <div className='mx-auto text-center justify-items-center'>
             {/* empty state */}
             {operatorsStore.isOperatorsLoaded &&
               !operatorsStore.errorMessage &&

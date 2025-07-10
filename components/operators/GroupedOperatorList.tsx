@@ -54,8 +54,8 @@ const GroupedOperatorList = ({
         role='list'
         className={`${
           isSidebarOpen
-            ? 'grid grid-cols-1 gap-4 sm:grid-cols-2 2xl:grid-cols-3 5xl:grid-cols-4 6xl:grid-cols-5 7xl:grid-cols-6 5xl:max-w-screen-2xl'
-            : 'grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-3 2xl:grid-cols-4 5xl:grid-cols-5 6xl:grid-cols-6 7xl:grid-cols-7 5xl:max-w-screen-2xl'
+            ? 'grid grid-cols-1 gap-4 xl:grid-cols-2 3xl:grid-cols-3 4xl:grid-cols-4 5xl:grid-cols-5 6xl:grid-cols-6'
+            : 'grid grid-cols-1 gap-4 lg:grid-cols-2 xl:grid-cols-3 3xl:grid-cols-4 5xl:grid-cols-5 6xl:grid-cols-6 7xl:grid-cols-7'
         }`}
       >
         {Array.from(Array(24)).map((e, index) => (
@@ -119,12 +119,12 @@ const GroupedOperatorList = ({
             role='list'
             className={`${
               isSidebarOpen
-                ? 'grid grid-cols-1 gap-4 sm:grid-cols-2 2xl:grid-cols-3 5xl:grid-cols-4 6xl:grid-cols-5 7xl:grid-cols-6 5xl:max-w-screen-2xl'
-                : 'grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-3 2xl:grid-cols-4 5xl:grid-cols-5 6xl:grid-cols-6 7xl:grid-cols-7 5xl:max-w-screen-2xl'
+                ? 'grid grid-cols-1 gap-4 xl:grid-cols-2 3xl:grid-cols-3 4xl:grid-cols-4 5xl:grid-cols-5 6xl:grid-cols-6'
+                : 'grid grid-cols-1 gap-4 lg:grid-cols-2 xl:grid-cols-3 3xl:grid-cols-4 5xl:grid-cols-5 6xl:grid-cols-6 7xl:grid-cols-7'
             }`}
           >
             {category?.members?.map((operator: any, operatorIndex: number) => (
-              <li key={operator?.username || `${categoryIndex}-${operatorIndex}`} className='px-1'>
+              <li key={operator?.username || `${categoryIndex}-${operatorIndex}`} className='px-1 max-w-lg'>
                 <CompactOperatorCard
                   operator={operator}
                   authUsername={authUsername}

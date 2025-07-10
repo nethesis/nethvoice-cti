@@ -21,7 +21,7 @@ import { useTranslation } from 'react-i18next'
 import { useSelector } from 'react-redux'
 import { RootState, store } from '../../store'
 import { CallDuration } from '../operators/CallDuration'
-import { isEmpty } from 'lodash'
+import { get, isEmpty } from 'lodash'
 import {
   postRecallOnBusy,
   hangup,
@@ -40,7 +40,6 @@ interface ActionCallProps {
 }
 
 export const ActionCall: React.FC<ActionCallProps> = ({ config }) => {
-  console.log('this is config', config)
   const { t } = useTranslation()
   const operators = useSelector((state: RootState) => state.operators)
   const profile = useSelector((state: RootState) => state.user)
@@ -277,6 +276,16 @@ export const ActionCall: React.FC<ActionCallProps> = ({ config }) => {
     </>
   )
 
+  const menuHasChildrens = () => {
+    const menu = getCallActionsMenu()
+    const children = menu?.props?.children
+    const hasVisibleActions = Array.isArray(children)
+      ? children.some(child => !!child)
+      : !!children
+
+    return hasVisibleActions
+  }
+
   return (
     <div className='bg-elevationL2Invert dark:bg-elevationL2InvertDark rounded-md shadow-sm'>
       {/* Header */}
@@ -284,7 +293,7 @@ export const ActionCall: React.FC<ActionCallProps> = ({ config }) => {
         <h4 className='text-sm font-medium leading-5 text-primaryNeutral dark:text-primaryNeutralDark flex-1'>
           {t('OperatorDrawer.Current call')}
         </h4>
-        {canShowActions && (
+        {canShowActions && menuHasChildrens() && (
           <Dropdown items={getCallActionsMenu()} position='left'>
             <Button variant='white'>
               <span className='mr-2'>{t('Common.Actions')}</span>
