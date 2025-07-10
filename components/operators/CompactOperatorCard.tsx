@@ -18,6 +18,8 @@ import TextScroll from '../common/TextScroll'
 import { faHangup, faPhoneArrowDownLeft } from '@nethesis/nethesis-solid-svg-icons'
 import { CustomThemedTooltip } from '../common/CustomThemedTooltip'
 import { useOperatorStates } from '../../hooks/useOperatorStates'
+import { useSelector } from 'react-redux'
+import { RootState } from '../../store'
 
 interface CompactOperatorCardProps {
   operator: any
@@ -57,6 +59,9 @@ const CompactOperatorCard = ({
   } = operatorStates
 
   const mainExtension = useMemo(() => operator?.endpoints?.mainextension?.[0]?.id || '', [operator])
+
+  const operatorsStore = useSelector((state: RootState) => state.operators)
+  let currentUserIsInConversation = operatorsStore?.operators[authUsername].mainPresence != 'online'
 
   return (
     <div className='group flex w-full items-center justify-between space-x-3 rounded-lg py-2 pr-2 pl-6 h-20 text-left focus:outline-none focus:ring-2 focus:ring-offset-2 bg-cardBackgroud dark:bg-cardBackgroudDark focus:ring-primary dark:focus:ring-primary'>
@@ -185,7 +190,7 @@ const CompactOperatorCard = ({
         )}
 
         {/* If operator is ringing and user has permissions */}
-        {isRinging && permissions?.hasAny && !isCalledByCurrentUser && (
+        {isRinging && permissions?.hasAny && !isCalledByCurrentUser && !currentUserIsInConversation && (
           <div className='flex items-center space-x-2 pb-6'>
             {permissions?.pickup && (
               <Button
@@ -223,7 +228,7 @@ const CompactOperatorCard = ({
         )}
 
         {/* If operator is ringing and user has no permissions or is calling this operator */}
-        {isRinging && (!permissions?.hasAny || isCalledByCurrentUser) && (
+        {isRinging && (!permissions?.hasAny || isCalledByCurrentUser) && !currentUserIsInConversation && (
           <div className='flex items-center text-textStatusBusy dark:text-textStatusBusyDark'>
             <span className='ringing-animation mr-2 h-4 w-4' />
             <span className='text-sm font-medium'>{t('Operators.Ringing')}</span>

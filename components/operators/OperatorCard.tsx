@@ -1,4 +1,4 @@
-import React, { useMemo } from 'react'
+import React from 'react'
 import { Avatar } from '../common'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { faStar, faPhone, faRightLeft, IconDefinition } from '@fortawesome/free-solid-svg-icons'
@@ -50,6 +50,9 @@ const OperatorCard = ({
     isCalledByCurrentUser,
   } = operatorStates
 
+  const operatorsStore = useSelector((state: RootState) => state.operators)
+  let currentUserIsInConversation = operatorsStore?.operators[authUsername].mainPresence != 'online'
+
   return (
     <div className='space-y-4'>
       {/* Operator avatar */}
@@ -91,7 +94,7 @@ const OperatorCard = ({
         </div>
 
         {/* Main extension or Ringing (if user has at least one permission) */}
-        {isRinging && hasAnyPermission && !isCalledByCurrentUser ? (
+        {isRinging && hasAnyPermission && !isCalledByCurrentUser && !currentUserIsInConversation ? (
           <div className='text-center text-red-600 dark:text-red-500 text-sm font-medium leading-5 pt-2 flex items-center justify-center'>
             <span className='ringing-animation h-2.5 w-2.5 mr-3'></span>
             <span className='ml-2'>{t('Operators.Ringing')}</span>
@@ -110,29 +113,7 @@ const OperatorCard = ({
           </div>
         ) : (
           <div className='text-center text-secondaryNeutral dark:text-secondaryNeutralDark text-sm font-normal leading-5 pt-2'>
-            {isRinging &&
-            !isCalledByCurrentUser &&
-            (liveOperatorData?.conversations?.[0]?.counterpartName ||
-              liveOperatorData?.conversations?.[0]?.counterpartNum) ? (
-              <div className='text-center text-red-600 dark:text-red-500 text-sm font-medium leading-5'>
-                <div className='flex items-center justify-center'>
-                  <span className='ringing-animation h-2.5 w-2.5 mr-4'></span>
-                  <div className='truncate max-w-[120px]'>
-                    <TextScroll
-                      text={
-                        liveOperatorData.conversations[0].counterpartName ||
-                        liveOperatorData.conversations[0].counterpartNum
-                      }
-                    />
-                  </div>
-                </div>
-                <CustomThemedTooltip
-                  id={`tooltip-extension-ringing-${liveOperatorData?.username || 'op'}`}
-                />
-              </div>
-            ) : (
-              liveOperatorData?.endpoints?.mainextension[0]?.id
-            )}
+            {liveOperatorData?.endpoints?.mainextension[0]?.id}
           </div>
         )}
       </div>
@@ -166,7 +147,7 @@ const OperatorCard = ({
           {/* Operator is ringing - show buttons based on permissions */}
           {isRinging && (
             <>
-              {hasAnyPermission && !isCalledByCurrentUser ? (
+              {hasAnyPermission && !isCalledByCurrentUser && !currentUserIsInConversation ? (
                 <div className='flex justify-center space-x-2'>
                   {permissions.pickup && (
                     <Button

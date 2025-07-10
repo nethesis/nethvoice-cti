@@ -1348,7 +1348,7 @@ export const Layout: FC<LayoutProps> = ({ children }) => {
             <main
               className={`flex-1 ${customScrollbarClass} ${parkingInfo?.isParkingFooterVisible &&
                 profile?.macro_permissions?.settings?.permissions?.parkings?.value
-                ? 'h-[55rem]'
+                ? 'pb-16'
                 : ''
                 }`}
               id='main-content'
