@@ -449,7 +449,7 @@ export const UserLastCallsContent = () => {
             ))}
 
           {/* Empty state */}
-          {filteredCalls?.length === 0 && (
+          {!isLoading && filteredCalls?.length === 0 && (
             <div className='py-4 px-6'>
               <EmptyState
                 title={
@@ -468,7 +468,7 @@ export const UserLastCallsContent = () => {
             </div>
           )}
 
-          {filteredCalls?.length! > 0 &&
+          {!isLoading && filteredCalls?.length! > 0 &&
             filteredCalls.map((call: any, index: number) => (
               <li key={`${call.id}-${index}`}>
                 <LastCallItem
