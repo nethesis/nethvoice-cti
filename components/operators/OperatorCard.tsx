@@ -1,7 +1,7 @@
 import React from 'react'
 import { Avatar } from '../common'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
-import { faStar, faPhone, faRightLeft, IconDefinition } from '@fortawesome/free-solid-svg-icons'
+import { faStar, faPhone, faRightLeft, IconDefinition, faRecordVinyl, faHandPointUp, faEarListen } from '@fortawesome/free-solid-svg-icons'
 import { CallDuration } from './CallDuration'
 import { Button } from '../common'
 import { t } from 'i18next'
@@ -17,6 +17,7 @@ interface OperatorCardProps {
   authUsername: string
   mainUserIsBusy: boolean
   actionInformation?: any
+  index: number | string
 }
 
 const OperatorCard = ({
@@ -24,6 +25,7 @@ const OperatorCard = ({
   authUsername,
   mainUserIsBusy,
   actionInformation,
+  index,
 }: OperatorCardProps) => {
   const liveOperatorData = useSelector(
     (state: RootState) => state.operators.operators[operator?.username] || operator,
@@ -46,7 +48,7 @@ const OperatorCard = ({
     isRinging,
     isBusy,
     isOfflineOrDnd,
-    hasAnyPermission: hasAnyPermission,
+    hasAnyPermission,
     isCalledByCurrentUser,
   } = operatorStates
 
@@ -122,26 +124,48 @@ const OperatorCard = ({
         <span className='block mt-1 text-sm font-medium text-gray-500 dark:text-gray-500'>
           {/* Operator is in conversation */}
           {isInConversation && (
-            <div className='py-2 px-3 text-center'>
-              <div className='inline-flex items-center text-cardTextBusy dark:text-cardTextBusy max-w-full mr-2'>
-                <CallDuration
-                  startTime={liveOperatorData?.conversations[0]?.startTime}
-                  className='font-mono mr-1 whitespace-nowrap'
-                />
-                <span className='mx-1'>-</span>
+            <div
+            className={`tooltip-operator-information-${index}`}
+            data-tooltip-id={`tooltip-operator-information-${index}`}
+            data-tooltip-content={operator?.conversations[0]?.counterpartName || '-'}
+          >
+            <div className='flex items-center text-textStatusBusy dark:text-textStatusBusyDark'>
+              {operator?.conversations[0]?.startTime && (
+                <>
+                  <CallDuration
+                    startTime={operator?.conversations[0]?.startTime}
+                    className='font-mono mr-1 whitespace-nowrap'
+                  />
+                  <span className='mx-1'>-</span>
+                </>
+              )}
+              <div className='max-w-[80px]'>
                 <div
-                  data-tooltip-id={`tooltip-conversation-name-${
-                    liveOperatorData?.username || 'op'
-                  }`}
-                  data-tooltip-content={liveOperatorData?.conversations[0]?.counterpartName || ''}
+                  data-tooltip-id={`tooltip-textscroll-${index}`}
+                  data-tooltip-content={operator?.conversations[0]?.counterpartName || ''}
                 >
-                  <TextScroll text={liveOperatorData?.conversations[0]?.counterpartName || ''} />
+                  <TextScroll text={operator?.conversations[0]?.counterpartName || ''} />
                 </div>
               </div>
-              <CustomThemedTooltip
-                id={`tooltip-conversation-name-${liveOperatorData?.username || 'op'}`}
-              />
+
+              {/* Recording indicator */}
+              {operator?.conversations[0]?.recording === 'true' && (
+                <FontAwesomeIcon icon={faRecordVinyl} className='ml-1.5 h-4 w-4' />
+              )}
+
+              {/* Listening indicator */}
+              {operator?.conversations[0]?.id ===
+                actionInformation?.listeningInfo?.listening_id && (
+                <FontAwesomeIcon icon={faEarListen} className='ml-1.5 h-4 w-4' />
+              )}
+
+              {/* Intrude indicator */}
+              {operator?.conversations[0]?.id === actionInformation?.intrudeInfo?.intrude_id && (
+                <FontAwesomeIcon icon={faHandPointUp} className='ml-1.5 h-4 w-4' />
+              )}
             </div>
+            <CustomThemedTooltip id={`tooltip-textscroll-${index}`} />
+          </div>
           )}
 
           {/* Operator is ringing - show buttons based on permissions */}
@@ -204,7 +228,7 @@ const OperatorCard = ({
                 <div className='py-2 px-3 flex justify-center'>
                   <div className='flex items-center text-cardTextBusy dark:text-cardTextBusy'>
                     <span className='ringing-animation mr-2 h-4 w-4'></span>
-                    <span className='text-sm not-italic font-medium leading-5'>
+                    <span className='text-sm not-italic font-medium leading-5 whitespace-nowrap'>
                       {t('Operators.Ringing')}
                     </span>
                     {liveOperatorData?.conversations?.[0]?.counterpartName && (

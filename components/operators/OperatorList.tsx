@@ -89,6 +89,7 @@ const OperatorList = ({ operators, hasMore, showMore, isLoading = false }: Opera
                 authUsername={authUsername}
                 mainUserIsBusy={mainUserIsBusy}
                 actionInformation={actionInformation}
+                index={index}
               />
             </li>
           ))}

@@ -113,6 +113,7 @@ const CompactOperatorCard = ({
         ) : (
           <div className='text-sm font-normal text-secondaryNeutral dark:text-secondaryNeutralDark'>
             {isRinging &&
+            permissions?.hasAny &&
             !isCalledByCurrentUser &&
             (operator?.conversations?.[0]?.counterpartName ||
               operator?.conversations?.[0]?.counterpartNum) ? (
