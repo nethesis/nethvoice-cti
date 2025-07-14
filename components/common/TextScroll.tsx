@@ -21,7 +21,7 @@ const TextScroll: React.FC<TextScrollProps> = ({ text }) => {
   return (
     <>
       {scrollText ? (
-        <div className='text-container mr-4 max-w-[100px] overflow-hidden relative mb-[3px]'>
+        <div className='text-container max-w-[80px] overflow-hidden relative mb-[3px]'>
           <div className='text-wrapper text-sm not-italic font-medium leading-5 text-cardTextBusy dark:text-cardTextBusy animate-scroll'>
             <span className='whitespace-nowrap'>{text}</span>
             <span className='ml-8 whitespace-nowrap'>{text}</span>
@@ -45,7 +45,7 @@ const TextScroll: React.FC<TextScrollProps> = ({ text }) => {
           `}</style>
         </div>
       ) : (
-        <div className='text-sm not-italic font-medium leading-5 text-cardTextBusy dark:text-cardTextBusy mr-4 max-w-[100px] truncate mb-[2px]'>
+        <div className='text-sm not-italic font-medium leading-5 text-cardTextBusy dark:text-cardTextBusy max-w-[100px] truncate mb-[2px]'>
           <span>{text}</span>
         </div>
       )}
