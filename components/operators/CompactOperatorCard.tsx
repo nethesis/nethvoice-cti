@@ -95,24 +95,28 @@ const CompactOperatorCard = ({
           )}
         </div>
         {isRinging && permissions.hasAny && !isCalledByCurrentUser ? (
-          <div className='text-textStatusBusy dark:text-textStatusBusyDark text-sm leading-5 font-medium flex items-center pt-1'>
-            <span className='ringing-animation h-2.5 w-2.5 mr-4'></span>
-            <span>{t('Operators.Ringing')}</span>
+          <div className='flex items-center text-textStatusBusy dark:text-textStatusBusyDark'>
+            <span className='ringing-animation mr-2 h-4 w-4' />
+            <span className='text-sm font-medium'>{t('Operators.Ringing')}</span>
             {operator?.conversations?.[0]?.counterpartName && (
               <>
-                <span className='mx-1'>-</span>
-                <div
-                  data-tooltip-id={`tooltip-ringing-counterpart-${index}`}
-                  data-tooltip-content={operator.conversations[0].counterpartName || ''}
-                >
-                  <TextScroll text={operator.conversations[0].counterpartName} />
+                <span className='mx-1 text-sm font-medium leading-5'>-</span>
+                <div className='max-w-[80px]'>
+                  <div
+                    data-tooltip-id={`tooltip-textscroll-${index}`}
+                    data-tooltip-content={operator?.conversations[0]?.counterpartName || ''}
+                  >
+                    <TextScroll text={operator?.conversations[0]?.counterpartName || ''} />
+                  </div>
                 </div>
               </>
             )}
+            <CustomThemedTooltip id={`tooltip-textscroll-${index}`} />
           </div>
         ) : (
           <div className='text-sm font-normal text-secondaryNeutral dark:text-secondaryNeutralDark'>
             {isRinging &&
+            permissions?.hasAny &&
             !isCalledByCurrentUser &&
             (operator?.conversations?.[0]?.counterpartName ||
               operator?.conversations?.[0]?.counterpartNum) ? (
@@ -145,18 +149,18 @@ const CompactOperatorCard = ({
       <div className='flex items-center space-x-2'>
         {isInConversation && hasValidConversation && (
           <div
-            className={`tooltip-operator-information-${index}`}
+            className={`tooltip-operator-information-${index} py-2 px-2 flex justify-center`}
             data-tooltip-id={`tooltip-operator-information-${index}`}
             data-tooltip-content={operator?.conversations[0]?.counterpartName || '-'}
           >
-            <div className='flex items-center text-textStatusBusy dark:text-textStatusBusyDark'>
+            <div className='flex items-center text-red-600 dark:text-red-500 overflow-hidden'>
               {operator?.conversations[0]?.startTime && (
                 <>
                   <CallDuration
                     startTime={operator?.conversations[0]?.startTime}
-                    className='font-mono mr-1 whitespace-nowrap'
+                    className='text-sm font-medium leading-5 mr-1 whitespace-nowrap'
                   />
-                  <span className='mx-1'>-</span>
+                  <span className='mx-1 text-sm font-medium leading-5'>-</span>
                 </>
               )}
               <div className='max-w-[80px]'>
@@ -184,65 +188,70 @@ const CompactOperatorCard = ({
                 <FontAwesomeIcon icon={faHandPointUp} className='ml-1.5 h-4 w-4' />
               )}
             </div>
-            <CustomThemedTooltip id={`tooltip-operator-information-${index}`} />
             <CustomThemedTooltip id={`tooltip-textscroll-${index}`} />
           </div>
         )}
 
         {/* If operator is ringing and user has permissions */}
-        {isRinging && permissions?.hasAny && !isCalledByCurrentUser && !currentUserIsInConversation && (
-          <div className='flex items-center space-x-2 pb-6'>
-            {permissions?.pickup && (
-              <Button
-                variant='white'
-                size='small'
-                onClick={handlePickupCall}
-                data-tooltip-id={`tooltip-pickup-operator-${index}`}
-                data-tooltip-content={t('OperatorDrawer.Pickup')}
-              >
-                <FontAwesomeIcon
-                  icon={faPhoneArrowDownLeft as any}
-                  className='inline-block text-center h-4 w-4 lg:h-3 lg:w-3'
-                />
-              </Button>
-            )}
-            {permissions?.hangup && (
-              <Button
-                variant='whiteDanger'
-                size='small'
-                onClick={() => handleRejectCall(operator?.endpoints?.mainextension?.[0]?.id)}
-                data-tooltip-id={`tooltip-reject-operator-${index}`}
-                data-tooltip-content={t('Common.Reject')}
-              >
-                <FontAwesomeIcon
-                  style={{ transform: 'rotate(135deg)' }}
-                  className='inline-block text-center h-4 w-4 lg:h-3 lg:w-3'
-                  icon={faPhone as IconDefinition}
-                />
-              </Button>
-            )}
-            {/* Show tooltips on all screen sizes */}
-            <CustomThemedTooltip id={`tooltip-pickup-operator-${index}`} />
-            <CustomThemedTooltip id={`tooltip-reject-operator-${index}`} />
-          </div>
-        )}
+        {isRinging &&
+          permissions?.hasAny &&
+          !isCalledByCurrentUser &&
+          !currentUserIsInConversation && (
+            <div className='flex items-center space-x-2'>
+              {permissions?.pickup && (
+                <Button
+                  variant='white'
+                  size='small'
+                  onClick={handlePickupCall}
+                  data-tooltip-id={`tooltip-pickup-operator-${index}`}
+                  data-tooltip-content={t('OperatorDrawer.Pickup')}
+                >
+                  <FontAwesomeIcon
+                    icon={faPhoneArrowDownLeft as any}
+                    className='inline-block text-center h-4 w-4 lg:h-3 lg:w-3'
+                  />
+                </Button>
+              )}
+              {permissions?.hangup && (
+                <Button
+                  variant='whiteDanger'
+                  size='small'
+                  onClick={() => handleRejectCall(operator?.endpoints?.mainextension?.[0]?.id)}
+                  data-tooltip-id={`tooltip-reject-operator-${index}`}
+                  data-tooltip-content={t('Common.Reject')}
+                >
+                  <FontAwesomeIcon
+                    style={{ transform: 'rotate(135deg)' }}
+                    className='inline-block text-center h-4 w-4 lg:h-3 lg:w-3'
+                    icon={faPhone as IconDefinition}
+                  />
+                </Button>
+              )}
+              {/* Show tooltips on all screen sizes */}
+              <CustomThemedTooltip id={`tooltip-pickup-operator-${index}`} />
+              <CustomThemedTooltip id={`tooltip-reject-operator-${index}`} />
+            </div>
+          )}
 
         {/* If operator is ringing and user has no permissions or is calling this operator */}
-        {isRinging && (!permissions?.hasAny || isCalledByCurrentUser) && !currentUserIsInConversation && (
+        {isRinging && !(permissions?.hasAny && !isCalledByCurrentUser) && (
           <div className='flex items-center text-textStatusBusy dark:text-textStatusBusyDark'>
             <span className='ringing-animation mr-2 h-4 w-4' />
             <span className='text-sm font-medium'>{t('Operators.Ringing')}</span>
             {operator?.conversations?.[0]?.counterpartName && (
               <>
-                <span className='mx-1'>-</span>
-                <div
-                  data-tooltip-id={`tooltip-no-permission-ringing-${index}`}
-                  data-tooltip-content={operator.conversations[0].counterpartName || ''}
-                >
-                  <TextScroll text={operator.conversations[0].counterpartName} />
+                <span className='mx-1 text-sm font-medium leading-5'>-</span>
+                <div className='max-w-[80px]'>
+                  <div
+                    data-tooltip-id={`tooltip-textscroll-${index}`}
+                    data-tooltip-content={operator?.conversations[0]?.counterpartName || ''}
+                  >
+                    <TextScroll text={operator?.conversations[0]?.counterpartName || ''} />
+                  </div>
                 </div>
               </>
             )}
+            <CustomThemedTooltip id={`tooltip-textscroll-${index}`} />
           </div>
         )}
 

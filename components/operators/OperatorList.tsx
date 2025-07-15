@@ -35,8 +35,8 @@ const OperatorList = ({ operators, hasMore, showMore, isLoading = false }: Opera
           role='list'
           className={`${
             isSidebarOpen
-              ? 'mx-auto grid grid-cols-2 gap-x-4 gap-y-8 sm:grid-cols-4 md:gap-x-6 lg:max-w-5xl lg:gap-x-8 lg:gap-y-12 xl:grid-cols-5 5xl:grid-cols-6 5xl:max-w-screen-2xl'
-              : 'mx-auto grid grid-cols-2 gap-x-4 gap-y-8 sm:grid-cols-4 md:gap-x-6 lg:max-w-7xl lg:gap-x-8 lg:gap-y-12 xl:grid-cols-7 5xl:grid-cols-8 5xl:max-w-screen-2xl 6xl:grid-cols-9 7xl:grid-cols-10'
+              ? 'mx-auto grid grid-cols-2 gap-x-8 gap-y-8 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 2xl:grid-cols-5 3xl:grid-cols-6 4xl:grid-cols-8 5xl:grid-cols-9'
+              : 'mx-auto grid grid-cols-2 gap-x-8 gap-y-8 lg:grid-cols-3 xl:grid-cols-4 2xl:grid-cols-5 3xl:grid-cols-7 4xl:grid-cols-8 5xl:grid-cols-9 6xl:grid-cols-10'
           }`}
         >
           {Array.from(Array(15)).map((e, index) => (
@@ -78,8 +78,8 @@ const OperatorList = ({ operators, hasMore, showMore, isLoading = false }: Opera
           role='list'
           className={`${
             isSidebarOpen
-              ? 'mx-auto grid grid-cols-2 gap-x-4 gap-y-8 sm:grid-cols-4 md:gap-x-6 lg:max-w-5xl lg:gap-x-8 lg:gap-y-12 xl:grid-cols-5 5xl:grid-cols-6 5xl:max-w-screen-2xl'
-              : 'mx-auto grid grid-cols-2 gap-x-4 gap-y-8 sm:grid-cols-4 md:gap-x-6 lg:max-w-7xl lg:gap-x-8 lg:gap-y-12 xl:grid-cols-7 5xl:grid-cols-8 5xl:max-w-screen-2xl 6xl:grid-cols-9 7xl:grid-cols-10'
+              ? 'mx-auto grid grid-cols-2 gap-x-8 gap-y-8 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 2xl:grid-cols-5 3xl:grid-cols-6 4xl:grid-cols-8 5xl:grid-cols-9'
+              : 'mx-auto grid grid-cols-2 gap-x-8 gap-y-8 lg:grid-cols-3 xl:grid-cols-4 2xl:grid-cols-5 3xl:grid-cols-7 4xl:grid-cols-8 5xl:grid-cols-9 6xl:grid-cols-10'
           }`}
         >
           {filteredOperators.map((operator, index) => (
@@ -89,6 +89,7 @@ const OperatorList = ({ operators, hasMore, showMore, isLoading = false }: Opera
                 authUsername={authUsername}
                 mainUserIsBusy={mainUserIsBusy}
                 actionInformation={actionInformation}
+                index={index}
               />
             </li>
           ))}
