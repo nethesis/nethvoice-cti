@@ -1,7 +1,15 @@
 import React from 'react'
 import { Avatar } from '../common'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
-import { faStar, faPhone, faRightLeft, IconDefinition, faRecordVinyl, faHandPointUp, faEarListen } from '@fortawesome/free-solid-svg-icons'
+import {
+  faStar,
+  faPhone,
+  faRightLeft,
+  IconDefinition,
+  faRecordVinyl,
+  faHandPointUp,
+  faEarListen,
+} from '@fortawesome/free-solid-svg-icons'
 import { CallDuration } from './CallDuration'
 import { Button } from '../common'
 import { t } from 'i18next'
@@ -56,7 +64,7 @@ const OperatorCard = ({
   let currentUserIsInConversation = operatorsStore?.operators[authUsername].mainPresence != 'online'
 
   return (
-    <div className='space-y-4'>
+    <div className='space-y-4 w-[200px]'>
       {/* Operator avatar */}
       <Avatar
         src={liveOperatorData?.avatarBase64}
@@ -97,21 +105,26 @@ const OperatorCard = ({
 
         {/* Main extension or Ringing (if user has at least one permission) */}
         {isRinging && hasAnyPermission && !isCalledByCurrentUser && !currentUserIsInConversation ? (
-          <div className='text-center text-red-600 dark:text-red-500 text-sm font-medium leading-5 pt-2 flex items-center justify-center'>
-            <span className='ringing-animation h-2.5 w-2.5 mr-3'></span>
-            <span className='ml-2'>{t('Operators.Ringing')}</span>
-            {liveOperatorData?.conversations?.[0]?.counterpartName && (
-              <>
-                <span className='mx-1'>-</span>
-                <div
-                  data-tooltip-id={`tooltip-ringing-header-${liveOperatorData?.username || 'op'}`}
-                  data-tooltip-content={liveOperatorData.conversations[0].counterpartName || ''}
-                  className='max-w-[100px]'
-                >
-                  <TextScroll text={liveOperatorData.conversations[0].counterpartName} />
-                </div>
-              </>
-            )}
+          <div className='text-center text-red-600 dark:text-red-500 text-sm font-medium leading-5 pt-2'>
+            <div className='flex items-center justify-center mx-auto overflow-hidden'>
+              <span className='ringing-animation h-2.5 w-2.5 mr-2 flex-shrink-0'></span>
+              <span className='whitespace-nowrap flex-shrink-0'>{t('Operators.Ringing')}</span>
+              {liveOperatorData?.conversations?.[0]?.counterpartName && (
+                <>
+                  <span className='mx-1 flex-shrink-0'>-</span>
+                  <div
+                    data-tooltip-id={`tooltip-ringing-header-${liveOperatorData?.username || 'op'}`}
+                    data-tooltip-content={liveOperatorData.conversations[0].counterpartName || ''}
+                    className='min-w-0 flex-1'
+                  >
+                    <TextScroll text={liveOperatorData.conversations[0].counterpartName} />
+                  </div>
+                </>
+              )}
+            </div>
+            <CustomThemedTooltip
+              id={`tooltip-ringing-header-${liveOperatorData?.username || 'op'}`}
+            />
           </div>
         ) : (
           <div className='text-center text-secondaryNeutral dark:text-secondaryNeutralDark text-sm font-normal leading-5 pt-2'>
@@ -125,47 +138,47 @@ const OperatorCard = ({
           {/* Operator is in conversation */}
           {isInConversation && (
             <div
-            className={`tooltip-operator-information-${index}`}
-            data-tooltip-id={`tooltip-operator-information-${index}`}
-            data-tooltip-content={operator?.conversations[0]?.counterpartName || '-'}
-          >
-            <div className='flex items-center text-textStatusBusy dark:text-textStatusBusyDark'>
-              {operator?.conversations[0]?.startTime && (
-                <>
-                  <CallDuration
-                    startTime={operator?.conversations[0]?.startTime}
-                    className='font-mono mr-1 whitespace-nowrap'
-                  />
-                  <span className='mx-1'>-</span>
-                </>
-              )}
-              <div className='max-w-[80px]'>
-                <div
-                  data-tooltip-id={`tooltip-textscroll-${index}`}
-                  data-tooltip-content={operator?.conversations[0]?.counterpartName || ''}
-                >
-                  <TextScroll text={operator?.conversations[0]?.counterpartName || ''} />
+              className={`tooltip-operator-information-${index} py-2 px-2 flex justify-center`}
+              data-tooltip-id={`tooltip-operator-information-${index}`}
+              data-tooltip-content={operator?.conversations[0]?.counterpartName || '-'}
+            >
+              <div className='flex items-center text-red-600 dark:text-red-500 overflow-hidden'>
+                {operator?.conversations[0]?.startTime && (
+                  <>
+                    <CallDuration
+                      startTime={operator?.conversations[0]?.startTime}
+                      className='text-sm font-medium leading-5 mr-1 whitespace-nowrap'
+                    />
+                    <span className='mx-1 text-sm font-medium leading-5'>-</span>
+                  </>
+                )}
+                <div className='min-w-0 flex-1'>
+                  <div
+                    data-tooltip-id={`tooltip-textscroll-${index}`}
+                    data-tooltip-content={operator?.conversations[0]?.counterpartName || ''}
+                  >
+                    <TextScroll text={operator?.conversations[0]?.counterpartName || ''} />
+                  </div>
                 </div>
+
+                {/* Recording indicator */}
+                {operator?.conversations[0]?.recording === 'true' && (
+                  <FontAwesomeIcon icon={faRecordVinyl} className='ml-1.5 h-4 w-4' />
+                )}
+
+                {/* Listening indicator */}
+                {operator?.conversations[0]?.id ===
+                  actionInformation?.listeningInfo?.listening_id && (
+                  <FontAwesomeIcon icon={faEarListen} className='ml-1.5 h-4 w-4' />
+                )}
+
+                {/* Intrude indicator */}
+                {operator?.conversations[0]?.id === actionInformation?.intrudeInfo?.intrude_id && (
+                  <FontAwesomeIcon icon={faHandPointUp} className='ml-1.5 h-4 w-4' />
+                )}
               </div>
-
-              {/* Recording indicator */}
-              {operator?.conversations[0]?.recording === 'true' && (
-                <FontAwesomeIcon icon={faRecordVinyl} className='ml-1.5 h-4 w-4' />
-              )}
-
-              {/* Listening indicator */}
-              {operator?.conversations[0]?.id ===
-                actionInformation?.listeningInfo?.listening_id && (
-                <FontAwesomeIcon icon={faEarListen} className='ml-1.5 h-4 w-4' />
-              )}
-
-              {/* Intrude indicator */}
-              {operator?.conversations[0]?.id === actionInformation?.intrudeInfo?.intrude_id && (
-                <FontAwesomeIcon icon={faHandPointUp} className='ml-1.5 h-4 w-4' />
-              )}
+              <CustomThemedTooltip id={`tooltip-textscroll-${index}`} />
             </div>
-            <CustomThemedTooltip id={`tooltip-textscroll-${index}`} />
-          </div>
           )}
 
           {/* Operator is ringing - show buttons based on permissions */}
@@ -225,15 +238,15 @@ const OperatorCard = ({
                   </div>
                 </div>
               ) : (
-                <div className='py-2 px-3 flex justify-center'>
-                  <div className='flex items-center text-cardTextBusy dark:text-cardTextBusy'>
-                    <span className='ringing-animation mr-2 h-4 w-4'></span>
-                    <span className='text-sm not-italic font-medium leading-5 whitespace-nowrap'>
+                <div className='py-2 px-2 flex justify-center'>
+                  <div className='flex items-center text-cardTextBusy dark:text-cardTextBusy overflow-hidden'>
+                    <span className='ringing-animation mr-2 h-4 w-4 flex-shrink-0'></span>
+                    <span className='text-sm not-italic font-medium leading-5 whitespace-nowrap flex-shrink-0'>
                       {t('Operators.Ringing')}
                     </span>
                     {liveOperatorData?.conversations?.[0]?.counterpartName && (
                       <>
-                        <span className='mx-1'>-</span>
+                        <span className='mx-1 flex-shrink-0'>-</span>
                         <div
                           data-tooltip-id={`tooltip-ringing-name-${
                             liveOperatorData?.username || 'op'
@@ -241,6 +254,7 @@ const OperatorCard = ({
                           data-tooltip-content={
                             liveOperatorData?.conversations[0]?.counterpartName || ''
                           }
+                          className='min-w-0 flex-1'
                         >
                           <TextScroll text={liveOperatorData.conversations[0].counterpartName} />
                         </div>

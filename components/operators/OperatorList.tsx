@@ -36,7 +36,7 @@ const OperatorList = ({ operators, hasMore, showMore, isLoading = false }: Opera
           className={`${
             isSidebarOpen
               ? 'mx-auto grid grid-cols-2 gap-x-8 gap-y-8 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 2xl:grid-cols-5 3xl:grid-cols-6 4xl:grid-cols-8 5xl:grid-cols-9'
-              : 'mx-auto grid grid-cols-2 gap-x-8 gap-y-8 sm:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 2xl:grid-cols-7 3xl:grid-cols-8 4xl:grid-cols-9 5xl:grid-cols-10'
+              : 'mx-auto grid grid-cols-2 gap-x-8 gap-y-8 lg:grid-cols-3 xl:grid-cols-4 2xl:grid-cols-5 3xl:grid-cols-7 4xl:grid-cols-8 5xl:grid-cols-9 6xl:grid-cols-10'
           }`}
         >
           {Array.from(Array(15)).map((e, index) => (
@@ -79,7 +79,7 @@ const OperatorList = ({ operators, hasMore, showMore, isLoading = false }: Opera
           className={`${
             isSidebarOpen
               ? 'mx-auto grid grid-cols-2 gap-x-8 gap-y-8 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 2xl:grid-cols-5 3xl:grid-cols-6 4xl:grid-cols-8 5xl:grid-cols-9'
-              : 'mx-auto grid grid-cols-2 gap-x-8 gap-y-8 sm:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 2xl:grid-cols-7 3xl:grid-cols-8 4xl:grid-cols-9 5xl:grid-cols-10'
+              : 'mx-auto grid grid-cols-2 gap-x-8 gap-y-8 lg:grid-cols-3 xl:grid-cols-4 2xl:grid-cols-5 3xl:grid-cols-7 4xl:grid-cols-8 5xl:grid-cols-9 6xl:grid-cols-10'
           }`}
         >
           {filteredOperators.map((operator, index) => (
