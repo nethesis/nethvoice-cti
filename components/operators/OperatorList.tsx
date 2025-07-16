@@ -1,4 +1,4 @@
-import React, { useMemo } from 'react'
+import React, { useMemo, useEffect, useState, useRef } from 'react'
 import { useSelector } from 'react-redux'
 import { RootState } from '../../store'
 import OperatorCard from './OperatorCard'
@@ -28,29 +28,66 @@ const OperatorList = ({ operators, hasMore, showMore, isLoading = false }: Opera
 
   const mainUserIsBusy = useMemo(() => authUserMainPresence === 'busy', [authUserMainPresence])
 
+  const classNameSidebarOpen =
+    'mx-auto grid grid-cols-2 gap-x-8 gap-y-8 xl:grid-cols-3 2xl:grid-cols-4 3xl:grid-cols-5 4xl:grid-cols-6 5xl:grid-cols-8 6xl:grid-cols-9'
+  const classNameSidebarClosed =
+    'mx-auto grid grid-cols-2 gap-x-8 gap-y-8 lg:grid-cols-3 xl:grid-cols-4 2xl:grid-cols-5 3xl:grid-cols-7 4xl:grid-cols-8 5xl:grid-cols-9 6xl:grid-cols-10'
+
+  const [currentCols, setCurrentCols] = useState(2)
+  const gridRef = useRef<HTMLUListElement>(null)
+
+  // Detect current breakpoint by checking computed grid-template-columns
+  useEffect(() => {
+    const detectGridCols = () => {
+      if (gridRef.current) {
+        const computedStyle = window.getComputedStyle(gridRef.current)
+        const gridCols = computedStyle.gridTemplateColumns
+        const colCount = gridCols.split(' ').length
+        setCurrentCols(colCount)
+      }
+    }
+
+    detectGridCols()
+    window.addEventListener('resize', detectGridCols)
+    
+    return () => window.removeEventListener('resize', detectGridCols)
+  }, [isSidebarOpen])
+
+  // Calculate skeleton items to show exactly 4 rows based on current breakpoint
+  const skeletonItemsCount = useMemo(() => {
+    const count = currentCols * 4
+    return count
+  }, [currentCols])
+
   if (isLoading) {
     return (
       <div className='space-y-8 sm:space-y-12 py-8'>
         <ul
+          ref={gridRef}
           role='list'
-          className={`${
-            isSidebarOpen
-              ? 'mx-auto grid grid-cols-2 gap-x-8 gap-y-8 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 2xl:grid-cols-5 3xl:grid-cols-6 4xl:grid-cols-8 5xl:grid-cols-9'
-              : 'mx-auto grid grid-cols-2 gap-x-8 gap-y-8 lg:grid-cols-3 xl:grid-cols-4 2xl:grid-cols-5 3xl:grid-cols-7 4xl:grid-cols-8 5xl:grid-cols-9 6xl:grid-cols-10'
-          }`}
+          className={`${isSidebarOpen ? classNameSidebarOpen : classNameSidebarClosed}`}
         >
-          {Array.from(Array(15)).map((e, index) => (
+          {Array.from(Array(skeletonItemsCount)).map((e, index) => (
             <li key={index}>
-              <div className='space-y-4'>
+              <div className='space-y-4 w-[200px]'>
                 {/* avatar skeleton */}
-                <div className='animate-pulse rounded-full h-24 w-24 mx-auto bg-gray-300 dark:bg-gray-600'></div>
-                <div className='space-y-2'>
+                <div className='animate-pulse rounded-full h-24 w-24 mx-auto bg-gray-300 dark:bg-gray-600 border-2 border-gray-200 dark:border-gray-500'></div>
+
+                <div className='space-y-1'>
                   {/* name skeleton */}
-                  <div className='animate-pulse h-3 rounded bg-gray-300 dark:bg-gray-600'></div>
-                  {/* status skeleton */}
-                  <div>
-                    <div className='animate-pulse h-8 rounded-full bg-gray-300 dark:bg-gray-600'></div>
+                  <div className='text-center'>
+                    <div className='animate-pulse h-5 rounded bg-gray-300 dark:bg-gray-600 max-w-[150px] mx-auto'></div>
                   </div>
+
+                  {/* extension skeleton */}
+                  <div className='text-center pt-2'>
+                    <div className='animate-pulse h-5 rounded bg-gray-300 dark:bg-gray-600 max-w-[80px] mx-auto'></div>
+                  </div>
+                </div>
+
+                {/* button/status skeleton */}
+                <div className='flex justify-center'>
+                  <div className='animate-pulse h-9 w-24 rounded bg-gray-300 dark:bg-gray-600'></div>
                 </div>
               </div>
             </li>
@@ -75,12 +112,9 @@ const OperatorList = ({ operators, hasMore, showMore, isLoading = false }: Opera
         }
       >
         <ul
+          ref={gridRef}
           role='list'
-          className={`${
-            isSidebarOpen
-              ? 'mx-auto grid grid-cols-2 gap-x-8 gap-y-8 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 2xl:grid-cols-5 3xl:grid-cols-6 4xl:grid-cols-8 5xl:grid-cols-9'
-              : 'mx-auto grid grid-cols-2 gap-x-8 gap-y-8 lg:grid-cols-3 xl:grid-cols-4 2xl:grid-cols-5 3xl:grid-cols-7 4xl:grid-cols-8 5xl:grid-cols-9 6xl:grid-cols-10'
-          }`}
+          className={`${isSidebarOpen ? classNameSidebarOpen : classNameSidebarClosed}`}
         >
           {filteredOperators.map((operator, index) => (
             <li key={operator?.username || index}>
