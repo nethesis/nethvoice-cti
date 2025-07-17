@@ -41,7 +41,7 @@ export const getTwoFactorStatus = async (): Promise<TwoFactorStatusResponse> => 
 export const getQRcode = async (): Promise<TwoFactorSetupResponse> => {
   try {
     const res: AxiosResponse = await axios.get(`${PATH}/qr-code`)
-    return res.data
+    return res.data.data
   } catch (error) {
     handleNetworkError(error)
     throw error
@@ -54,10 +54,11 @@ export const getQRcode = async (): Promise<TwoFactorSetupResponse> => {
  * @param totpCode - The TOTP code from authenticator app
  * @returns Success response
  */
-export const enableTwoFactor = async (totpCode: string) => {
+export const enableTwoFactor = async (username: string, otp: string) => {
   try {
-    const res: AxiosResponse = await axios.post(`${PATH}/enable`, {
-      totp_code: totpCode,
+    const res: AxiosResponse = await axios.post(`${PATH}/otp-verify`, {
+      username: username,
+      otp: otp
     })
     return res.data
   } catch (error) {
@@ -72,11 +73,9 @@ export const enableTwoFactor = async (totpCode: string) => {
  * @param totpCode - The TOTP code from authenticator app
  * @returns Success response
  */
-export const disableTwoFactor = async (totpCode: string) => {
+export const disableTwoFactor = async () => {
   try {
-    const res: AxiosResponse = await axios.post(`${PATH}/disable`, {
-      totp_code: totpCode,
-    })
+    const res: AxiosResponse = await axios.delete(`${PATH}`)
     return res.data
   } catch (error) {
     handleNetworkError(error)

@@ -65,7 +65,12 @@
     "Open door": "Apri porta",
     "Streaming": "Streaming",
     "Error": "Errore",
-    "Sort by": "Ordina per"
+    "Sort by": "Ordina per",
+    "Next": "Avanti",
+    "Previous": "Indietro",
+    "Complete": "Completa",
+    "Verify": "Verifica",
+    "Disable": "Disabilita"
   },
   "Login": {
     "User": "Utente",
@@ -361,7 +366,13 @@
     "When clicking the button on the Phone Island": "Quando si clicca sul pulsante nel Phone Island",
     "This URL opens automatically for external incoming calls": "Questo URL si apre automaticamente per le chiamate in entrata esterne",
     "This field can only be modified by the administrator": "Questo campo può essere modificato solo dall'amministratore",
-    "Loading...": "Caricamento in corso..."
+    "Loading...": "Caricamento in corso...",
+    "Authentication": "Autenticazione (OTP)",
+    "Two-Factor Authentication": "Autenticazione a due fattori",
+    "Enable 2FA": "Abilita 2FA",
+    "Disable 2FA": "Disabilita 2FA",
+    "Setup Two-Factor Authentication": "Configurazione autenticazione a due fattori",
+    "Setup 2FA": "Configura 2FA"
   },
   "TopBar": {
     "Signed in as": "Accesso effettuato come",

@@ -11,7 +11,7 @@ export interface TwoFactorSetupResponse {
 }
 
 export interface TwoFactorStatusResponse {
-  enabled: boolean
+  status: boolean
 }
 
 export interface TwoFactorBackupCodesResponse {
