@@ -147,9 +147,9 @@ const OperatorCard = ({
                   <>
                     <CallDuration
                       startTime={operator?.conversations[0]?.startTime}
-                      className='text-sm font-medium leading-5 mr-1 whitespace-nowrap'
+                      className='text-sm font-medium leading-5 mr-1 whitespace-nowrap mt-0.5'
                     />
-                    <span className='mx-1 text-sm font-medium leading-5'>-</span>
+                    <span className='mx-1 text-sm font-medium leading-5 mt-0.5'>-</span>
                   </>
                 )}
                 <div className='min-w-0 flex-1'>
@@ -241,12 +241,12 @@ const OperatorCard = ({
                 <div className='py-2 px-2 flex justify-center'>
                   <div className='flex items-center text-cardTextBusy dark:text-cardTextBusy overflow-hidden'>
                     <span className='ringing-animation mr-2 h-4 w-4 flex-shrink-0'></span>
-                    <span className='text-sm not-italic font-medium leading-5 whitespace-nowrap flex-shrink-0'>
+                    <span className='text-sm not-italic font-medium leading-5 whitespace-nowrap flex-shrink-0 mt-[1px]'>
                       {t('Operators.Ringing')}
                     </span>
                     {liveOperatorData?.conversations?.[0]?.counterpartName && (
                       <>
-                        <span className='mx-1 flex-shrink-0'>-</span>
+                        <span className='mx-1 flex-shrink-0 mt-[1px]'>-</span>
                         <div
                           data-tooltip-id={`tooltip-ringing-name-${
                             liveOperatorData?.username || 'op'

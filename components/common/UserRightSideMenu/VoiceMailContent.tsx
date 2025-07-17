@@ -316,7 +316,10 @@ export const VoiceMailContent = () => {
           </div>
         </div>
         <span className='border-b border-layoutDivider dark:border-layoutDividerDark'></span>
-        <ul role='list' className={`flex-1 divide-y ${customScrollbarClass} divide-gray-200 dark:divide-gray-700`}>
+        <ul
+          role='list'
+          className={`flex-1 ${customScrollbarClass}`}
+        >
           {/* get voicemails error */}
           {getVoiceMailError && (
             <InlineNotification type='error' title={getVoiceMailError} className='my-6' />
@@ -404,7 +407,7 @@ export const VoiceMailContent = () => {
                             )}
                           </div>
                         </div>
-                        <div className='flex gap-2 items-start shrink-0 w-[82px] pl-2.5'>
+                        <div className='flex gap-2 items-start shrink-0 pl-2.5'>
                           <Button
                             variant='white'
                             className='border border-gray-300 dark:border-gray-500 py-2 h-9 w-9 gap-3'
@@ -443,7 +446,7 @@ export const VoiceMailContent = () => {
                 <div className='flex justify-between gap-3'>
                   <div className='flex shrink-0 h-min items-center min-w-[48px]'>
                     <div className='h-2 w-2 flex justify-center'></div>
-                    <Skeleton variant='avatar' />
+                    <Skeleton variant='avatar' className='ml-0.5'/>
                   </div>
                   <div className='flex flex-col gap-1.5 min-w-0 flex-1'>
                     <Skeleton width='75%' />
@@ -451,7 +454,7 @@ export const VoiceMailContent = () => {
                     <Skeleton width='25%' />
                     <Skeleton width='25%' />
                   </div>
-                  <div className='flex gap-2 items-start shrink-0 w-[82px]'>
+                  <div className='flex gap-2 items-start shrink-0'>
                     <Skeleton
                       width='36px'
                       height='36px'
