@@ -27,7 +27,7 @@ import { getJSONItem, setJSONItem } from '../../../lib/storage'
 import { openCreateLastCallContact, openShowContactDrawer } from '../../../lib/phonebook'
 import { CallDetails } from '../../history/CallDetails'
 import Link from 'next/link'
-import { CallSkeleton } from '../../common/Skeleton'
+import { Skeleton } from '../../common/Skeleton'
 import { customScrollbarClass } from '../../../lib/utils'
 import { CustomThemedTooltip } from '../CustomThemedTooltip'
 
@@ -90,11 +90,7 @@ const LastCallItem = memo(
         onMouseEnter={() => hasNoInfo && setIsHovered(true)}
         onMouseLeave={() => setIsHovered(false)}
       >
-        <div
-          className='absolute inset-0 group-hover:bg-dropdownBgHover dark:group-hover:bg-dropdownBgHoverDark'
-          aria-hidden='true'
-        />
-        <div className='relative flex min-w-0 flex-1 items-center px-6'>
+        <div className='relative min-w-0 flex-1 items-center px-6'>
           <div className='flex items-start'>
             <Avatar
               size='base'
@@ -122,8 +118,8 @@ const LastCallItem = memo(
                 </div>
               </div>
               <CallsDate call={call} spaced={true} />
-              <div>
-                {call.channel.includes('from-queue') && (
+              {call.channel.includes('from-queue') && (
+                <div>
                   <>
                     <Badge
                       size='small'
@@ -150,8 +146,8 @@ const LastCallItem = memo(
                     </Badge>
                     <CustomThemedTooltip id={`tooltip-queue-${call?.queue}`} place='left' />
                   </>
-                )}
-              </div>
+                </div>
+              )}
             </div>
           </div>
 
@@ -436,8 +432,48 @@ export const UserLastCallsContent = () => {
           {isLoading &&
             Array.from(Array(4)).map((_, index) => (
               <li key={`skeleton-${index}`}>
-                <div className='gap-4 py-4 px-0'>
-                  <CallSkeleton />
+                <div className='group relative flex items-center py-6 px-3'>
+                  <div className='relative min-w-0 flex-1 items-center px-6'>
+                    <div className='flex items-start'>
+                      {/* Avatar skeleton - matching Avatar size='base' */}
+                      <Skeleton variant='circular' className='h-10 w-10 flex-shrink-0' />
+
+                      <div className='ml-4 truncate flex flex-col gap-1.5'>
+                        {/* Name/company skeleton */}
+                        <div className='flex items-center'>
+                          <div className='text-sm font-medium w-64'>
+                            <Skeleton width='85%' height='16px' />
+                          </div>
+                        </div>
+
+                        {/* Phone number with status icon skeleton */}
+                        <div className='truncate text-sm'>
+                          <div className='flex items-center'>
+                            {/* UserCallStatusIcon skeleton */}
+                            <div className='mt-1 text-sm md:mt-0 flex'>
+                              <div>
+                                <Skeleton
+                                  variant='circular'
+                                  className='mr-2 h-5 w-8 flex-shrink-0'
+                                />
+                              </div>
+                            </div>
+                            <span className='cursor-pointer hover:underline'>
+                              <Skeleton width='45%' height='23.25px' />
+                            </span>
+                          </div>
+                        </div>
+
+                        {/* CallsDate skeleton */}
+                        <Skeleton width='35%' height='16px' />
+
+                        {/* Queue badge skeleton (conditional) */}
+                        <div>
+                          <Skeleton width='45%' height='16px' className='rounded-full' />
+                        </div>
+                      </div>
+                    </div>
+                  </div>
                 </div>
                 {/* Divider */}
                 {index !== 3 && (
@@ -468,7 +504,8 @@ export const UserLastCallsContent = () => {
             </div>
           )}
 
-          {!isLoading && filteredCalls?.length! > 0 &&
+          {!isLoading &&
+            filteredCalls?.length! > 0 &&
             filteredCalls.map((call: any, index: number) => (
               <li key={`${call.id}-${index}`}>
                 <LastCallItem
