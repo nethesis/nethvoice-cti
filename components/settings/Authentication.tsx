@@ -21,13 +21,15 @@ import type { OTPInputRef } from '../common/OTPInput'
 import { RootState } from '../../store'
 import {
   getTwoFactorStatus,
-  enableTwoFactor,
+  otpVerify,
   getQRcode,
   disableTwoFactor,
 } from '../../services/twoFactor'
 import dynamic from 'next/dynamic'
 import { TwoFactorSetupResponse } from '../../services/types/twoFactor'
 import { updateAuthStore } from '../../lib/login'
+import axios from 'axios'
+import { updateAxiosToken } from '../../config/axios'
 
 const QRCode = dynamic(() => import('./QRCode'), {
   ssr: false,
@@ -115,9 +117,9 @@ export const Authentication = () => {
     try {
       setIsProcessing(true)
       setError('')
-      const response = await enableTwoFactor(authenticationStore.username, totpCode)
+      const response = await otpVerify(authenticationStore.username, totpCode)
       if (response?.code === 200) {
-        // updateAxiosToken(response.data.token)
+        updateAxiosToken(response.data.token)
         updateAuthStore(authenticationStore.username, response.data.token)
       }
 
@@ -153,7 +155,7 @@ export const Authentication = () => {
 
       const response = await disableTwoFactor(totpCode)
       if (response?.code === 200) {
-        // updateAxiosToken(response.data.token.JWTToken)
+        updateAxiosToken(response.data.token)
         updateAuthStore(authenticationStore.username, response.data.token)
         setIsEnabled(false)
         setShowDisableModal(false)

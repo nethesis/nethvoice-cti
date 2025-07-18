@@ -19,3 +19,7 @@ export const axiosInit = () => {
   axios.defaults.headers.common['Authorization'] = `Bearer ${token}`
   axios.defaults.headers.post['Content-Type'] = 'application/json'
 }
+
+export const updateAxiosToken = (token: string) => {
+  axios.defaults.headers.common['Authorization'] = `Bearer ${token}`
+}

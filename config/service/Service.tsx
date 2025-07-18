@@ -15,8 +15,6 @@ export const Service: FC<ServiceProps> = ({ children }) => {
   const [ready, isReady] = useState<boolean>(false)
 
   useEffect(() => {
-    // Init axios default config
-    axiosInit()
     isReady(true)
   }, [token])
 

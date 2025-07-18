@@ -54,7 +54,7 @@ export const getQRcode = async (): Promise<TwoFactorSetupResponse> => {
  * @param totpCode - The TOTP code from authenticator app
  * @returns Success response
  */
-export const enableTwoFactor = async (username: string, otp: string) => {
+export const otpVerify = async (username: string, otp: string) => {
   try {
     const res: AxiosResponse = await axios.post(`${PATH}/otp-verify`, {
       username: username,
