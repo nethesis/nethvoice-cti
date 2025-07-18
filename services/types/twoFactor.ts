@@ -6,8 +6,8 @@
  */
 
 export interface TwoFactorSetupResponse {
+  key: string
   url: string
-  secret: string
 }
 
 export interface TwoFactorStatusResponse {

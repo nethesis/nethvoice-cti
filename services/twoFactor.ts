@@ -73,9 +73,13 @@ export const enableTwoFactor = async (username: string, otp: string) => {
  * @param totpCode - The TOTP code from authenticator app
  * @returns Success response
  */
-export const disableTwoFactor = async () => {
+export const disableTwoFactor = async (otp: string) => {
   try {
-    const res: AxiosResponse = await axios.delete(`${PATH}`)
+    const res: AxiosResponse = await axios.delete(`${PATH}`, {
+      data: {
+        otp: otp
+      }
+    })
     return res.data
   } catch (error) {
     handleNetworkError(error)

@@ -11,9 +11,13 @@ import {
   faTriangleExclamation,
   faCircleNotch,
   faCircleCheck,
+  faEye,
+  faEyeSlash,
+  faCopy,
 } from '@fortawesome/free-solid-svg-icons'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
-import { Button, Modal, InlineNotification, TextInput } from '../common'
+import { Button, Modal, InlineNotification, OTPInput } from '../common'
+import type { OTPInputRef } from '../common/OTPInput'
 import { RootState } from '../../store'
 import {
   getTwoFactorStatus,
@@ -48,7 +52,8 @@ export const Authentication = () => {
   const [showBackupCodes, setShowBackupCodes] = useState(false)
 
   const cancelButtonRef: RefObject<HTMLButtonElement> = useRef(null)
-  const totpInputRef: RefObject<HTMLInputElement> = useRef(null)
+  const otpInputRef: RefObject<OTPInputRef> = useRef(null)
+  const disableCancelButtonRef: RefObject<HTMLButtonElement> = useRef(null)
 
   const authenticationStore = useSelector((state: RootState) => state.authentication)
 
@@ -145,14 +150,15 @@ export const Authentication = () => {
     try {
       setIsProcessing(true)
       setError('')
-      const response = await disableTwoFactor()
+
+      const response = await disableTwoFactor(totpCode)
       if (response?.code === 200) {
         // updateAxiosToken(response.data.token.JWTToken)
-        updateAuthStore(authenticationStore.username, response.data.token.JWTToken)
+        updateAuthStore(authenticationStore.username, response.data.token)
+        setIsEnabled(false)
+        setShowDisableModal(false)
+        resetModalState()
       }
-      setIsEnabled(false)
-      setShowDisableModal(false)
-      resetModalState()
     } catch (error) {
       setError(
         t('Settings.Invalid verification code. Please try again.') ||
@@ -168,7 +174,7 @@ export const Authentication = () => {
       setCurrentStep(currentStep + 1)
       if (currentStep === 3) {
         // Focus TOTP input when moving to verification step
-        setTimeout(() => totpInputRef.current?.focus(), 100)
+        setTimeout(() => otpInputRef.current?.focus(), 100)
       }
     }
   }
@@ -204,13 +210,24 @@ export const Authentication = () => {
 
   const closeSetupModal = () => {
     setShowSetupModal(false)
-    resetModalState()
+    setTimeout(() => {
+      resetModalState()
+    }, 1000)
   }
 
   const closeDisableModal = () => {
     setShowDisableModal(false)
-    resetModalState()
+    setTimeout(() => {
+      resetModalState()
+    }, 1000)
   }
+
+  // Auto focus OTP input when disable modal opens
+  useEffect(() => {
+    if (showDisableModal) {
+      setTimeout(() => otpInputRef.current?.focus(), 100)
+    }
+  }, [showDisableModal])
 
   const copyToClipboard = (text: string) => {
     navigator.clipboard.writeText(text)
@@ -417,8 +434,42 @@ export const Authentication = () => {
                 <p className='text-sm text-gray-600 dark:text-gray-400 mb-6'>
                   {t('Settings.Scan this QR code with your authenticator app')}
                 </p>
-                <div className='flex justify-center mb-4'>
+                <div className='flex justify-center mb-6'>
                   <QRCode data={setupData.url} />
+                </div>
+
+                {/* Code */}
+                <div className='bg-gray-50 dark:bg-gray-800 rounded-lg p-4'>
+                  <h5 className='text-sm font-medium text-gray-900 dark:text-gray-100 mb-2'>
+                    {t('Settings.Manual Entry')}
+                  </h5>
+                  <p className='text-xs text-gray-600 dark:text-gray-400 mb-3'>
+                    {t('Settings.If you cannot scan the QR code, enter this code manually:')}
+                  </p>
+                  <div className='flex items-center justify-center space-x-2'>
+                    <code className='bg-white dark:bg-gray-900 border border-gray-300 dark:border-gray-600 rounded px-3 py-2 text-sm font-mono text-gray-900 dark:text-gray-100 break-all'>
+                      {secretVisible ? setupData.key : '••••••••••••••••••••••••••••••••'}
+                    </code>
+                    <Button
+                      variant='white'
+                      size='small'
+                      onClick={() => setSecretVisible(!secretVisible)}
+                      className='!p-2'
+                    >
+                      <FontAwesomeIcon
+                        icon={secretVisible ? faEyeSlash : faEye}
+                        className='h-4 w-4'
+                      />
+                    </Button>
+                    <Button
+                      variant='white'
+                      size='small'
+                      onClick={() => copyToClipboard(setupData.key)}
+                      className='!p-2'
+                    >
+                      <FontAwesomeIcon icon={faCopy} className='h-4 w-4' />
+                    </Button>
+                  </div>
                 </div>
               </div>
             )}
@@ -435,12 +486,12 @@ export const Authentication = () => {
                   )}
                 </p>
                 <div className='mb-4'>
-                  <TextInput
-                    ref={totpInputRef}
+                  <OTPInput
+                    ref={otpInputRef}
                     value={totpCode}
-                    onChange={(e) => setTotpCode(e.target.value.replace(/\D/g, '').slice(0, 6))}
-                    className='text-center text-lg tracking-widest'
-                    maxLength={6}
+                    onChange={setTotpCode}
+                    length={6}
+                    className='justify-center'
                   />
                 </div>
                 {error && <InlineNotification type='error' title={error} className='mb-4' />}
@@ -515,36 +566,38 @@ export const Authentication = () => {
       </Modal>
 
       {/* Disable 2FA Modal */}
-      <Modal show={showDisableModal} focus={totpInputRef} onClose={closeDisableModal}>
+      <Modal show={showDisableModal} focus={disableCancelButtonRef} onClose={closeDisableModal}>
         <Modal.Content>
-          <div className='mx-auto flex h-12 w-12 flex-shrink-0 items-center justify-center rounded-full bg-red-100 dark:bg-red-900 sm:mx-0'>
-            <FontAwesomeIcon
-              icon={faTriangleExclamation}
-              className='h-6 w-6 text-red-600 dark:text-red-200'
-              aria-hidden='true'
-            />
-          </div>
-          <div className='mt-3 text-center sm:mt-0 sm:ml-4 sm:text-left'>
-            <h3 className='text-lg font-medium leading-6 text-gray-900 dark:text-gray-100'>
-              {t('Settings.Disable Two-Factor Authentication')}
-            </h3>
-            <div className='mt-2 mb-4'>
+          <div className='text-center w-full'>
+            <div className='flex items-center justify-center mb-4'>
+              <div className='mx-auto flex h-12 w-12 items-center justify-center rounded-full bg-red-100 dark:bg-red-900 sm:mx-0'>
+                <FontAwesomeIcon
+                  icon={faTriangleExclamation}
+                  className='h-6 w-6 text-red-600 dark:text-red-200'
+                  aria-hidden='true'
+                />
+              </div>
+              <h3 className='text-lg font-medium leading-6 text-gray-900 dark:text-gray-100 ml-4'>
+                {t('Settings.Disable Two-Factor Authentication')}
+              </h3>
+            </div>
+            <div className='flex mb-4 text-center'>
               <p className='text-sm text-gray-500 dark:text-gray-400'>
                 {t(
-                  'Settings.This will make your account less secure. Enter your authenticator code to confirm:',
+                  'Settings.This will make your account less secure. Enter your authenticator code to confirm',
                 )}
               </p>
             </div>
-            <div className='mb-4'>
-              <TextInput
-                ref={totpInputRef}
+            <div className='flex mb-4 justify-center'>
+              <OTPInput
+                ref={otpInputRef}
                 value={totpCode}
-                onChange={(e) => setTotpCode(e.target.value.replace(/\D/g, '').slice(0, 6))}
-                className='text-center text-lg tracking-widest'
-                maxLength={6}
+                onChange={setTotpCode}
+                length={6}
+                className='justify-center'
               />
             </div>
-            {error && <InlineNotification type='error' title={error} className='mb-4' />}
+            {error && <InlineNotification type='error' title={error} />}
           </div>
         </Modal.Content>
         <Modal.Actions>
@@ -556,7 +609,7 @@ export const Authentication = () => {
             {isProcessing && <FontAwesomeIcon icon={faCircleNotch} className='fa-spin mr-2' />}
             {t('Common.Disable')}
           </Button>
-          <Button variant='ghost' onClick={closeDisableModal} ref={cancelButtonRef}>
+          <Button variant='ghost' onClick={closeDisableModal} ref={disableCancelButtonRef}>
             {t('Common.Cancel')}
           </Button>
         </Modal.Actions>
