@@ -48,12 +48,12 @@ export const getTimestamp = async () => {
 export const loginBeforeDashboard = async (username: any, token: any) => {
   try {
     let apiUrl = getLoginUrl()
-    let userUrlApi = apiUrl + '/webrest' + PATH
+    let userUrlApi = apiUrl + '/api' + PATH
 
     const res = await axios.get(`${userUrlApi}/me`, {
       headers: {
         'Content-Type': 'application/json',
-        Authorization: `${username}:${token}`,
+        Authorization: `Bearer ${token}`,
       },
     })
 
