@@ -11,8 +11,8 @@ import { store } from '../store'
 /**
  * Set the default parameters for axios
  */
-export const axiosInit = () => {
-  const { username, token } = store.getState().authentication
+export const axiosSetup = () => {
+  const { token } = store.getState().authentication
 
   // @ts-ignore
   axios.defaults.baseURL = window.CONFIG.API_SCHEME + window.CONFIG.API_ENDPOINT + '/api'
