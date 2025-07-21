@@ -68,14 +68,14 @@ export const getPhysicalDeviceButtonConfiguration = async (macAddress: any) => {
       window.CONFIG.API_SCHEME +
         // @ts-ignore
         window.CONFIG.VOICE_ENDPOINT +
-        '/webrest/tancredi/api/v1/phones/' +
+        '/api/tancredi/api/v1/phones/' +
         macAddress +
         '?inherit=1',
       {
         method: 'GET',
         headers: {
           'Content-Type': 'application/json',
-          Authorization: `${username}:${token}`,
+          Authorization: `Bearer ${token}`,
         },
       },
     )
@@ -94,13 +94,13 @@ export const getPhoneModelData = async (model: any) => {
       window.CONFIG.API_SCHEME +
         // @ts-ignore
         window.CONFIG.VOICE_ENDPOINT +
-        '/webrest/tancredi/api/v1/models/' +
+        '/api/tancredi/api/v1/models/' +
         model,
       {
         method: 'GET',
         headers: {
           'Content-Type': 'application/json',
-          Authorization: `${username}:${token}`,
+          Authorization: `Bearer ${token}`,
         },
       },
     )
@@ -119,13 +119,13 @@ export const saveBtnsConfig = async (macAddress: any, keyUpdatedObject: any) => 
       window.CONFIG.API_SCHEME +
         // @ts-ignore
         window.CONFIG.VOICE_ENDPOINT +
-        '/webrest/tancredi/api/v1/phones/' +
+        '/api/tancredi/api/v1/phones/' +
         macAddress,
       {
         method: 'PATCH',
         headers: {
           'Content-Type': 'application/json',
-          Authorization: `${username}:${token}`,
+          Authorization: `Bearer ${token}`,
         },
         body: JSON.stringify(keyUpdatedObject),
       },
