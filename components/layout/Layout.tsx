@@ -244,56 +244,6 @@ export const Layout: FC<LayoutProps> = ({ children }) => {
     }
   }, [isUserInfoLoaded, resfreshUserInfo])
 
-  const openParameterizedUrl = (callerNum: any, callerName: any, called: any, uniqueId: any) => {
-    // Check first if the URL is available
-    if (!incomingCallStore.isUrlAvailable) {
-      return
-    }
-
-    // Get URL from cache or store
-    const paramUrl =
-      incomingCallStore.paramUrl || loadPreference('incomingCallUrl', authStore.username) || ''
-
-    // If there's no valid URL, don't open anything
-    if (!paramUrl) {
-      console.error('Invalid URL')
-      return
-    }
-
-    if (userInformation?.urlOpened && userInformation?.settings?.open_param_url !== 'button') {
-      return
-    }
-
-    // Replace placeholders with actual call data only if they exist in the URL and we have values
-    let processedUrl = paramUrl
-
-    // Only replace placeholders that exist in the URL and have valid values
-    if (processedUrl.includes('$CALLER_NUMBER') && callerNum) {
-      processedUrl = processedUrl.replace(/\$CALLER_NUMBER/g, encodeURIComponent(callerNum))
-    }
-    if (processedUrl.includes('$CALLER_NAME') && callerName) {
-      processedUrl = processedUrl.replace(/\$CALLER_NAME/g, encodeURIComponent(callerName))
-    }
-    if (processedUrl.includes('$UNIQUEID') && uniqueId) {
-      processedUrl = processedUrl.replace(/\$UNIQUEID/g, encodeURIComponent(uniqueId))
-    }
-    if (processedUrl.includes('$CALLED') && called) {
-      processedUrl = processedUrl.replace(/\$CALLED/g, encodeURIComponent(called))
-    }
-    if (processedUrl.includes('{phone}') && callerNum) {
-      processedUrl = processedUrl.replace(/\{phone\}/g, encodeURIComponent(callerNum))
-    }
-
-    // Add protocol if missing
-    const formattedUrl = processedUrl.startsWith('http') ? processedUrl : `https://${processedUrl}`
-
-    const newWindow = window.open('about:blank', '_blank')
-    if (newWindow) {
-      newWindow.location.href = formattedUrl
-      dispatch.user.setUrlOpened(true)
-    }
-  }
-
   // get profiling data on page load
   useEffect(() => {
     const fetchProfilingInfo = async () => {
@@ -464,48 +414,6 @@ export const Layout: FC<LayoutProps> = ({ children }) => {
   const [conversationObject, setConversationObject]: any = useState({})
 
   const [variableCheck, setVariableCheck] = useState(false)
-
-  // Event handling for URL opening
-  useEventListener('phone-island-url-parameter-opened', (data: any) => {
-    if (userInformation?.settings?.open_param_url === 'button') {
-      // Check if URL is available
-      if (!incomingCallStore?.isUrlAvailable) {
-        return
-      }
-
-      // Check if URL was already opened
-      if (userInformation?.urlOpened) {
-        return
-      }
-
-      // Get onlyQueues setting
-      const onlyQueues = incomingCallStore?.onlyQueues || false
-
-      // Additional checks for button trigger: must be connected and incoming (same as answered)
-      if (data?.connected && data?.direction === 'in') {
-        if (onlyQueues === true && data?.throughQueue === true) {
-          // Open URL only for queue calls when onlyQueues is true
-          openParameterizedUrl(
-            data?.counterpartNum,
-            data?.counterpartName,
-            data?.owner,
-            data?.uniqueId,
-          )
-        } else if (
-          onlyQueues === false &&
-          (data?.throughTrunk === true || data?.throughQueue === true)
-        ) {
-          // Open URL for both trunk and queue calls when onlyQueues is false
-          openParameterizedUrl(
-            data?.counterpartNum,
-            data?.counterpartName,
-            data?.owner,
-            data?.uniqueId,
-          )
-        }
-      }
-    }
-  })
 
   useEffect(() => {
     function showNotification() {
@@ -714,26 +622,6 @@ export const Layout: FC<LayoutProps> = ({ children }) => {
           // Check onlyQueues setting and conversation type
           const onlyQueues = incomingCallStore?.onlyQueues || false
 
-          if (onlyQueues === true && firstConversation?.throughQueue === true) {
-            // Open URL only for queue calls when onlyQueues is true
-            openParameterizedUrl(
-              firstConversation?.counterpartNum,
-              firstConversation?.counterpartName,
-              firstConversation?.owner,
-              firstConversation?.uniqueId,
-            )
-          } else if (
-            onlyQueues === false &&
-            (firstConversation?.throughTrunk === true || firstConversation?.throughQueue === true)
-          ) {
-            // Open URL for both trunk and queue calls when onlyQueues is false
-            openParameterizedUrl(
-              firstConversation?.counterpartNum,
-              firstConversation?.counterpartName,
-              firstConversation?.owner,
-              firstConversation?.uniqueId,
-            )
-          }
         }
       } else if (
         operators[currentUsername]?.mainPresence === 'busy' &&
@@ -751,29 +639,6 @@ export const Layout: FC<LayoutProps> = ({ children }) => {
           // Check onlyQueues setting and conversation type
           const onlyQueues = incomingCallStore?.onlyQueues || false
 
-          // Additional checks for "answered" trigger: must be connected and incoming
-          if (firstConversation?.connected && firstConversation?.direction === 'in') {
-            if (onlyQueues === true && firstConversation?.throughQueue === true) {
-              // Open URL only for queue calls when onlyQueues is true
-              openParameterizedUrl(
-                firstConversation?.counterpartNum,
-                firstConversation?.counterpartName,
-                firstConversation?.owner,
-                firstConversation?.uniqueId,
-              )
-            } else if (
-              onlyQueues === false &&
-              (firstConversation?.throughTrunk === true || firstConversation?.throughQueue === true)
-            ) {
-              // Open URL for both trunk and queue calls when onlyQueues is false
-              openParameterizedUrl(
-                firstConversation?.counterpartNum,
-                firstConversation?.counterpartName,
-                firstConversation?.owner,
-                firstConversation?.uniqueId,
-              )
-            }
-          }
         }
       }
     }
@@ -944,7 +809,7 @@ export const Layout: FC<LayoutProps> = ({ children }) => {
 
             dispatch.customerCards.updateCallerCustomerCardInformation(ccardObject)
 
-            if(window.location.search != ccardObject) {
+            if (window.location.search != ccardObject) {
               // Navigate to customer cards page
               router.push(`/customercards${ccardObject}`).catch((error: any) => {
                 console.error('Navigation error (Ringing):', error)
@@ -987,7 +852,7 @@ export const Layout: FC<LayoutProps> = ({ children }) => {
 
             dispatch.customerCards.updateCallerCustomerCardInformation(ccardObject)
 
-            if(window.location.search != ccardObject) {
+            if (window.location.search != ccardObject) {
               // Navigate to customer cards page
               router.push(`/customercards${ccardObject}`).catch((error: any) => {
                 console.error('Navigation error (Ringing):', error)

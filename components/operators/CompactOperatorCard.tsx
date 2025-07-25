@@ -101,7 +101,7 @@ const CompactOperatorCard = ({
             {operator?.conversations?.[0]?.counterpartName && (
               <>
                 <span className='mx-1 text-sm font-medium leading-5'>-</span>
-                <div className='max-w-[80px]'>
+                <div className='max-w-[100px]'>
                   <div
                     data-tooltip-id={`tooltip-textscroll-${index}`}
                     data-tooltip-content={operator?.conversations[0]?.counterpartName || ''}
@@ -163,7 +163,7 @@ const CompactOperatorCard = ({
                   <span className='mx-1 text-sm font-medium leading-5'>-</span>
                 </>
               )}
-              <div className='max-w-[80px]'>
+              <div className='max-w-[100px]'>
                 <div
                   data-tooltip-id={`tooltip-textscroll-${index}`}
                   data-tooltip-content={operator?.conversations[0]?.counterpartName || ''}
@@ -241,7 +241,7 @@ const CompactOperatorCard = ({
             {operator?.conversations?.[0]?.counterpartName && (
               <>
                 <span className='mx-1 text-sm font-medium leading-5'>-</span>
-                <div className='max-w-[80px]'>
+                <div className='max-w-[100px]'>
                   <div
                     data-tooltip-id={`tooltip-textscroll-${index}`}
                     data-tooltip-content={operator?.conversations[0]?.counterpartName || ''}
