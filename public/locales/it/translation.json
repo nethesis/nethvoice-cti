@@ -65,7 +65,10 @@
     "Open door": "Apri porta",
     "Streaming": "Streaming",
     "Error": "Errore",
-    "Sort by": "Ordina per"
+    "Sort by": "Ordina per",
+    "Configure": "Configura",
+    "Copy": "Copia",
+    "Copied": "Copiato"
   },
   "Login": {
     "User": "Utente",
@@ -76,7 +79,12 @@
     "Contact administrator for access": "Contatta l' amministratore per l' accesso",
     "Wrong username or password": "Nome utente o password errati",
     "Network connection is lost": "Connessione di rete persa",
-    "Login failed": "Accesso fallito"
+    "Login failed": "Accesso fallito",
+    "Two-Factor Authentication": "Autenticazione a Due Fattori",
+    "Enter the 6-digit code (OTP code) from your authenticator app. If you cannot access the app, you can use one recovery OTP code.": "Inserisci il codice a 6 cifre (codice OTP) dalla tua app di autenticazione. Se non puoi accedere all'app, puoi utilizzare un codice OTP di recupero.",
+    "OTP code": "Codice OTP",
+    "OTP verification failed": "Verifica OTP fallita",
+    "The code you entered is invalid or has expired. Please check your authenticator app and try again.": "Il codice inserito non è valido o è scaduto. Controlla la tua app di autenticazione e riprova."
   },
   "Phonebook": {
     "Phonebook": "Rubrica",
@@ -361,7 +369,34 @@
     "When clicking the button on the Phone Island": "Quando si clicca sul pulsante nel Phone Island",
     "This URL opens automatically for external incoming calls": "Questo URL si apre automaticamente per le chiamate in entrata esterne",
     "This field can only be modified by the administrator": "Questo campo può essere modificato solo dall'amministratore",
-    "Loading...": "Caricamento in corso..."
+    "Loading...": "Caricamento in corso...",
+    "Two-Factor Authentication": "Autenticazione a Due Fattori",
+    "Two-Factor Authentication Description": "Configura e abilita l'autenticazione a due fattori (2FA) per proteggere il tuo account con un codice di sicurezza aggiuntivo dal tuo telefono (OTP), oltre alla tua password.",
+    "Configure 2FA": "Configura 2FA",
+    "Show recovery OTP codes": "Mostra codici OTP di recupero",
+    "Revoke 2FA": "Revoca 2FA",
+    "Password confirmation required": "Conferma della password richiesta",
+    "Please confirm your password to proceed": "Si prega di confermare la propria password per procedere",
+    "Enter your password to confirm": "Inserisci la tua password per confermare",
+    "Keep codes in a safe place": "Conserva i codici in un luogo sicuro",
+    "Each recovery code can be used only once": "Ogni codice di recupero può essere utilizzato solo una volta",
+    "Copy all codes": "Copia tutti i codici",
+    "Recovery OTP Codes": "Codici OTP di Recupero",
+    "You can use recovery OTP codes if you have to login and cannot access your authenticator app.": "Puoi utilizzare i codici OTP di recupero se devi accedere e non puoi accedere alla tua app di autenticazione.",
+    "Revoke two-factor authentication reduce the security level of your account. The OTP code won’t be requested anymore when you login.": "Revocare l'autenticazione a due fattori riduce il livello di sicurezza del tuo account. Il codice OTP non verrà più richiesto quando accedi.",
+    "Verifying...": "Verifica...",
+    "Two-factor authentication configured": "Autenticazione a due fattori configurata",
+    "Download a 2FA application": "Scarica un'applicazione 2FA",
+    "Configure a two-factor authentication require an authenticator app. Scan the QR code with the app or enter the secret key, then enter the 6-digit code provided.": "La configurazione di un'autenticazione a due fattori richiede un'app di autenticazione. Scansiona il codice QR con l'app o inserisci la chiave segreta, quindi inserisci il codice a 6 cifre fornito.",
+    "Setup method": "Metodo di configurazione",
+    "QR code": "Codice QR",
+    "OTP code": "Codice OTP",
+    "Scan with app": "Scansiona con l'app",
+    "Secret key": "Chiave segreta",
+    "Enter manually": "Inserisci manualmente",
+    "Scan QR code": "Scansiona codice QR",
+    "Enter the 6-digit code from authenticator app": "Inserisci il codice a 6 cifre dall'app di autenticazione",
+    "No recovery codes available": "Nessun codice di recupero disponibile"
   },
   "TopBar": {
     "Signed in as": "Accesso effettuato come",

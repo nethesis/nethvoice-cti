@@ -3,15 +3,16 @@
 
 import { saveCredentials } from '../lib/login'
 import { useState, useRef, useEffect } from 'react'
-import { TextInput, InlineNotification, Button } from '../components/common'
+import { TextInput, InlineNotification, Button, OTPInput } from '../components/common'
 import { useRouter } from 'next/router'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
-import { faCircleNotch, faEye, faEyeSlash, faPhone } from '@fortawesome/free-solid-svg-icons'
+import { faCircleNotch, faEye, faEyeSlash, faArrowLeft } from '@fortawesome/free-solid-svg-icons'
 import { checkDarkTheme } from '../lib/darkTheme'
 import { useTranslation } from 'react-i18next'
 import { store } from '../store'
 import { useSelector } from 'react-redux'
 import { RootState } from '../store'
+import { axiosSetup } from '../config/axios'
 import {
   getHtmlFaviconElement,
   getPeopleImageVisibilityValue,
@@ -23,12 +24,23 @@ import {
 import Head from 'next/head'
 import { capitalize } from 'lodash'
 import { loginBeforeDashboard } from '../services/user'
+import { otpVerify } from '../services/twoFactor'
+import { OTPInputRef } from '../components/common/OTPInput'
+import { decodeJWT } from '../lib/jwt'
 
 export default function Login() {
   const [pwdVisible, setPwdVisible] = useState(false)
   const [messageError, setMessaggeError] = useState('')
   const [onError, setOnError] = useState(false)
+  const [onOTPError, setOnOTPError] = useState(false)
   const [loading, setLoading] = useState(false)
+  const [showOTPVerification, setShowOTPVerification] = useState(false)
+  const [otpCode, setOtpCode] = useState('')
+  const [tempLoginData, setTempLoginData] = useState<{
+    username: string
+    password: string
+    token?: string
+  } | null>(null)
   const ctiStatus = useSelector((state: RootState) => state.ctiStatus)
 
   const { t } = useTranslation()
@@ -233,9 +245,23 @@ export default function Login() {
     <></>
   )
 
+  let errorOTPAlert = onOTPError ? (
+    <div className='relative w-full mt-2'>
+      <InlineNotification
+        type='error'
+        title={t('Login.OTP verification failed')}
+      >
+        <p>{t('Login.The code you entered is invalid or has expired. Please check your authenticator app and try again.') || ''}</p>
+      </InlineNotification>
+    </div>
+  ) : (
+    <></>
+  )
+
   const router = useRouter()
   const usernameRef = useRef() as React.MutableRefObject<HTMLInputElement>
   const passwordRef = useRef() as React.MutableRefObject<HTMLInputElement>
+  const otpInputRef = useRef() as React.MutableRefObject<OTPInputRef>
 
   const doLogin = async (e: React.FormEvent) => {
     e.preventDefault()
@@ -262,54 +288,100 @@ export default function Login() {
       )
 
       const callStatus = res.status
-      const data = await res.json()
-      const token = data?.token || ''
 
-      handleLogin(callStatus, token, username)
+      if (callStatus === 200) {
+        const data = await res.json()
+        const token = data?.token
+
+        setTempLoginData({
+          username: username,
+          password: password,
+          token: token,
+        })
+
+        // Initialize axios configuration
+        saveCredentials(username, token)
+        axiosSetup()
+
+        const jwtClaims = decodeJWT(token)
+
+        if (jwtClaims && jwtClaims['2fa']) {
+          setShowOTPVerification(true)
+          setLoading(false)
+          // Focus OTP input after showing it
+          setTimeout(() => otpInputRef.current?.focus(), 100)
+          return
+        } else {          
+          // No 2FA required, proceed with login
+          handleLogin(token, username)
+        }
+      } else {
+        if (callStatus === 401) {
+          setOnError(true)
+          setMessaggeError(`${t('Login.Wrong username or password')}`)
+        } else if (callStatus === 404) {
+          setOnError(true)
+          setMessaggeError(`${t('Login.Network connection is lost')}`)
+        }
+        setLoading(false)
+      }
     }
   }
 
-  const handleLogin = async (callStatus: any, token: any, username: any) => {
-    if (token) {
-      saveCredentials(username, token)
-      let userPreferenceOnLogin: any = {}
-      try {
-        userPreferenceOnLogin = await loginBeforeDashboard(username, token)
-        if (
-          // TO DO - remove this check when the backend will be ready
-          userPreferenceOnLogin?.profile?.macro_permissions?.nethvoice_cti?.value === undefined ||
-          // not this
-          userPreferenceOnLogin?.profile?.macro_permissions?.nethvoice_cti?.value
-        ) {
-          setUserNotAuthorized(false)
-          router.push('/')
-        } else {
-          setUserNotAuthorized(true)
-          setOnError(true)
-          setMessaggeError(`${t('Login.Contact administrator for access')}`)
-        }
-      } catch (error) {
-        console.log(error)
+  const handleLogin = async (token: any, username: any) => {
+    let userPreferenceOnLogin: any = {}
+    try {
+      userPreferenceOnLogin = await loginBeforeDashboard(username, token)
+      if (
+        // TO DO - remove this check when the backend will be ready
+        userPreferenceOnLogin?.profile?.macro_permissions?.nethvoice_cti?.value === undefined ||
+        // not this
+        userPreferenceOnLogin?.profile?.macro_permissions?.nethvoice_cti?.value
+      ) {
+        setUserNotAuthorized(false)
+        router.push('/')
+      } else {
+        setUserNotAuthorized(true)
+        setOnError(true)
+        setMessaggeError(`${t('Login.Contact administrator for access')}`)
       }
+    } catch (error) {
+      console.log(error)
+    }
 
-      // clean errors from storage
-      sessionStorage.clear()
-      if (ctiStatus.webRtcError || window.location.href.includes('webrtcError')) {
-        store?.dispatch?.ctiStatus?.setWebRtcError(false)
+    // clean errors from storage
+    sessionStorage.clear()
+    if (ctiStatus.webRtcError || window.location.href.includes('webrtcError')) {
+      store?.dispatch?.ctiStatus?.setWebRtcError(false)
+    }
+    if (ctiStatus.isUserInformationMissing || window.location.href.includes('sessionExpired')) {
+      store?.dispatch?.ctiStatus?.setUserInformationMissing(false)
+    }
+    setLoading(false)
+    checkDarkTheme()
+  }
+
+  const verifyOTP = async (e: React.FormEvent) => {
+    e.preventDefault()
+    if (!tempLoginData || !otpCode || otpCode.length !== 6) {
+      setOnOTPError(true)
+      return
+    }
+
+    setLoading(true)
+    setOnOTPError(false)
+
+    try {
+      const response = await otpVerify(tempLoginData.username, otpCode)
+      if (response?.data?.token) {
+        // Use the new token from OTP verification
+        saveCredentials(tempLoginData.username, response.data.token)
+        axiosSetup()
+
+        handleLogin(response.data.token, tempLoginData.username)
       }
-      if (ctiStatus.isUserInformationMissing || window.location.href.includes('sessionExpired')) {
-        store?.dispatch?.ctiStatus?.setUserInformationMissing(false)
-      }
-      setLoading(false)
-      checkDarkTheme()
-    } else {
-      if (callStatus === 401) {
-        setOnError(true)
-        setMessaggeError(`${t('Login.Wrong username or password')}`)
-      } else if (callStatus === 404) {
-        setOnError(true)
-        setMessaggeError(`${t('Login.Network connection is lost')}`)
-      }
+    } catch (error) {
+      setOnOTPError(true)
       setLoading(false)
     }
   }
@@ -335,6 +407,57 @@ export default function Login() {
   }, [isFirsThemeControl])
 
   const showPeopleImage = getPeopleImageVisibilityValue()
+
+  const otpVerificationTemplate = () => {
+    return (
+      <div className='max-w-sm sm:w-96'>
+        <div>
+          <h3 className='text-lg font-medium text-gray-900 dark:text-gray-100 mb-2'>
+            {t('Login.Two-Factor Authentication')}
+          </h3>
+          <p className='text-sm text-gray-600 dark:text-gray-400'>
+            {t(
+              'Login.Enter the 6-digit code (OTP code) from your authenticator app. If you cannot access the app, you can use one recovery OTP code.',
+            )}
+          </p>
+        </div>
+
+        <div className='pt-6'>{errorOTPAlert}</div>
+
+        {/* OTP input section */}
+        <div className='pt-6'>
+          <form onSubmit={verifyOTP} className='space-y-6'>
+            <div className='flex flex-col space-y-2 text-center'>
+              <p className='text-sm text-gray-600 dark:text-gray-200 mb-2'>{t('Login.OTP code')}</p>
+              <OTPInput
+                ref={otpInputRef}
+                value={otpCode}
+                onChange={setOtpCode}
+                length={6}
+                disabled={loading}
+                className='justify-center'
+                error={onOTPError}
+              />
+            </div>
+
+            <div className='space-y-4'>
+              <Button
+                size='large'
+                fullHeight={true}
+                fullWidth={true}
+                variant='primary'
+                type='submit'
+                disabled={loading || otpCode.length !== 6}
+              >
+                <span className='font-medium leading-5 text-sm'>{t('Login.Sign in')}</span>
+                {loading && <FontAwesomeIcon icon={faCircleNotch} className='fa-spin ml-2' />}
+              </Button>
+            </div>
+          </form>
+        </div>
+      </div>
+    )
+  }
 
   const loginTemplate = () => {
     return (
@@ -422,6 +545,8 @@ export default function Login() {
       </Head>
 
       {/* Background image */}
+      {/* Nextjs <Image> is not suitable for rebranding: it always uses the aspect ratio of the original logo  */}
+      {/* eslint-disable-next-line @next/next/no-img-element */}
       <img
         className='absolute inset-0 w-full h-full object-cover z-[-1]'
         src='/login_background.svg'
@@ -430,11 +555,15 @@ export default function Login() {
       <div className='text-gray-700 dark:text-gray-100'>
         <div className='absolute inset-0 z-[1000rem] hidden lg:block'>
           {showPeopleImage === 'show' && (
-            <img
-              className='w-full h-full object-contain transform -translate-x-[-20rem] xl:-translate-x-[-16rem] lg:scale-[40%] xl:scale-[60%] 2xl:scale-75'
-              src='/action_voice-cti.svg'
-              alt='image'
-            />
+            <>
+              {/* Nextjs <Image> is not suitable for rebranding: it always uses the aspect ratio of the original logo  */}
+              {/* eslint-disable-next-line @next/next/no-img-element */}
+              <img
+                className='w-full h-full object-contain transform -translate-x-[-20rem] xl:-translate-x-[-16rem] lg:scale-[40%] xl:scale-[60%] 2xl:scale-75'
+                src='/action_voice-cti.svg'
+                alt='image'
+              />
+            </>
           )}
         </div>
 
@@ -442,7 +571,7 @@ export default function Login() {
         <div className='w-1/2'>
           <div className='absolute top-1/2 left-1/2 lg:left-40 transform -translate-y-1/2 -translate-x-1/2 lg:-translate-x-0'>
             <div className='border-b border-gray-200 dark:border-gray-700 rounded-lg bg-gray-50 dark:bg-gray-900 p-10'>
-              {loginTemplate()}
+              {showOTPVerification ? otpVerificationTemplate() : loginTemplate()}
             </div>
           </div>
         </div>

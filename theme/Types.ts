@@ -13,3 +13,5 @@ export type StatusTypes =
   | 'ringing'
   | 'offline'
   | 'category'
+  | 'enabled'
+  | 'disabled'
