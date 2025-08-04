@@ -27,6 +27,7 @@ import { EditPhysicalPhoneDrawerContent } from '../devices/EditPhysicalPhoneDraw
 import { SwitchInputOutputDrawerContent } from '../devices/SwitchInputOutputDrawerContent'
 import { DownloadDesktopLinkContent } from '../devices/DownloadDesktopLinkContent'
 import { UploadVoicemail } from '../lines/UploadVoicemail'
+import { Setup2FADrawerContent } from '../settings/2fa/Setup2FADrawerContent'
 import { customScrollbarClass } from '../../lib/utils'
 
 export type ContentType =
@@ -49,6 +50,7 @@ export type ContentType =
   | 'showSwitchDeviceInputOutput'
   | 'showDownloadLinkContent'
   | 'showUploadVoicemail'
+  | 'setup2FA'
 
 interface SideDrawerProps {
   isShown: boolean
@@ -79,6 +81,7 @@ export const SideDrawer: FC<SideDrawerProps> = ({ isShown, contentType, config, 
       showSwitchDeviceInputOutput: SwitchInputOutputDrawerContent,
       showDownloadLinkContent: DownloadDesktopLinkContent,
       showUploadVoicemail: UploadVoicemail,
+      setup2FA: Setup2FADrawerContent,
     }),
     [],
   )

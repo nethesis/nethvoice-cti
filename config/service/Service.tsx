@@ -4,7 +4,7 @@
 import { useEffect, FC, ReactNode, useState } from 'react'
 import { useSelector } from 'react-redux'
 import { RootState } from '../../store'
-import { axiosInit } from '../../config/axios'
+import { axiosSetup } from '../../config/axios'
 
 interface ServiceProps {
   children: ReactNode
@@ -16,7 +16,7 @@ export const Service: FC<ServiceProps> = ({ children }) => {
 
   useEffect(() => {
     // Init axios default config
-    axiosInit()
+    axiosSetup()
     isReady(true)
   }, [token])
 

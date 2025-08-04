@@ -258,6 +258,28 @@ const theme = {
         base: 'bg-surfaceBadgeBlue text-textBadgeBlue dark:bg-surfaceBadgeBlueDark dark:text-textBadgeBlueDark',
       },
     },
+    enabled: {
+      badge: {
+        base: 'bg-emerald-200 text-emerald-900 dark:bg-emerald-800 dark:text-emerald-100',
+      },
+      avatar: {
+        dot: 'bg-surfacePresenceOnline dark:bg-surfacePresenceOnlineDark',
+      },
+      card: {
+        border: 'border-emerald-500 dark:border-emerald-500',
+      },
+    },
+    disabled: {
+      badge: {
+        base: 'bg-surfaceBadgeGray dark:bg-surfaceBadgeGrayDark text-textBadgeGray dark:text-textBadgeGrayDark',
+      },
+      avatar: {
+        dot: 'bg-surfacePresenceOffline dark:bg-surfacePresenceOfflineDark',
+      },
+      card: {
+        border: 'border-gray-500 dark:border-gray-500',
+      },
+    },
   },
   statusDot: {
     base: 'block ring-2 ring-white rounded-full',

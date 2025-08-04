@@ -13,6 +13,7 @@ import {
   faPuzzlePiece,
   faVoicemail,
   faPhone,
+  faUserShield,
 } from '@fortawesome/free-solid-svg-icons'
 import classNames from 'classnames'
 import { useSelector } from 'react-redux'
@@ -34,6 +35,7 @@ import { getSelectedSettingsPage } from '../lib/settings'
 import { Voicemail } from '../components/settings/Voicemail'
 import { IconProp } from '@fortawesome/fontawesome-svg-core'
 import { isEmpty } from 'lodash'
+import { Setup2FA } from '../components/settings/2fa/Setup2FA'
 
 interface SettingsMenuTypes {
   name: string
@@ -86,6 +88,7 @@ const Settings: NextPage = () => {
         hidden: !profile?.lkhash,
       },
       { name: 'Cache', href: '#', icon: faDatabase, current: false },
+      { name: 'Two-Factor Authentication', href: '#', icon: faUserShield, current: false },
     ]
 
     // Conditionally add Voicemail section
@@ -152,6 +155,8 @@ const Settings: NextPage = () => {
         return <Devices />
       case 'Voicemail':
         return !isEmpty(profile?.endpoints?.voicemail) ? <Voicemail /> : null
+      case 'Two-Factor Authentication':
+        return <Setup2FA />
       default:
         return <Devices />
     }
