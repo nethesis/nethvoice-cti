@@ -44,7 +44,6 @@ export const closeSideDrawer = () => {
 
 export const closeRightSideDrawer = () => {
   store.dispatch.rightSideMenu.setShown(false)
-  store.dispatch.rightSideMenu.setRightSideMenuOpened(false)
 }
 
 /**
