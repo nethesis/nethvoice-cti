@@ -17,15 +17,13 @@ interface UserSidebarDrawerProps {
 export const UserSidebarDrawer: FC<UserSidebarDrawerProps> = ({ isShown }) => {
   const rightSideStatus: any = useSelector((state: RootState) => state.rightSideMenu)
 
-  let [isOpen, setIsOpen] = useState(true)
-
   return (
     <>
       <Transition show={isShown} as={Fragment}>
         <Dialog
           as='div'
           className={`${rightSideStatus.isShown ? 'relative z-20 lg:hidden' : 'hidden'}`}
-          onClose={() => setIsOpen(false)}
+          onClose={() => {}}
         >
           <div className='fixed top-16 right-[3.2rem] bottom-0 z-40 flex'>
             <TransitionChild
