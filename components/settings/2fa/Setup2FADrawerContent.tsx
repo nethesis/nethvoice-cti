@@ -33,7 +33,7 @@ const QRCode = dynamic(() => import('../QRCode'), {
 
 export interface Setup2FADrawerContentProps extends ComponentPropsWithRef<'div'> {
   config: {
-    onComplete: (codes: string[]) => void
+    onComplete: () => void
   }
 }
 
@@ -85,13 +85,9 @@ export const Setup2FADrawerContent = forwardRef<HTMLButtonElement, Setup2FADrawe
           saveCredentials(authenticationStore.username, response.data.token)
           axiosSetup()
 
-          // Get backup codes after successful verification
-          const backupCodesResponse = await getBackupCodes()
-          const codes = backupCodesResponse.codes || []
-
           // Close side drawer and notify parent
           closeSideDrawer()
-          config.onComplete(codes)
+          config.onComplete()
         }
       } catch (error) {
         setError('Invalid verification code. Please try again.')

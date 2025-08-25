@@ -58,7 +58,7 @@ export const otpVerify = async (username: string, otp: string) => {
   try {
     const res: AxiosResponse = await axios.post(`${PATH}/verify-otp`, {
       username: username,
-      otp: otp
+      otp: otp,
     })
     return res.data
   } catch (error) {
@@ -70,15 +70,13 @@ export const otpVerify = async (username: string, otp: string) => {
 /**
  * Disable 2FA with TOTP code verification
  *
- * @param totpCode - The TOTP code from authenticator app
+ * @param password - The user's password for authentication
  * @returns Success response
  */
 export const disableTwoFactor = async (password: string) => {
   try {
-    const res: AxiosResponse = await axios.delete(`${PATH}/disable`, {
-      data: {
-        password: password
-      }
+    const res: AxiosResponse = await axios.post(`${PATH}/disable`, {
+      password: password
     })
     return res.data
   } catch (error) {
@@ -90,11 +88,14 @@ export const disableTwoFactor = async (password: string) => {
 /**
  * Get the backup codes for the user
  *
+ * @param password - The user's password for authentication
  * @returns An object with an array of backup codes
  */
-export const getBackupCodes = async (): Promise<TwoFactorBackupCodesResponse> => {
+export const getBackupCodes = async (password: string): Promise<TwoFactorBackupCodesResponse> => {
   try {
-    const res: AxiosResponse = await axios.get(`${PATH}/recovery-codes`)
+    const res: AxiosResponse = await axios.post(`${PATH}/recovery-codes`, {
+      password: password
+    })
     return res.data
   } catch (error) {
     handleNetworkError(error)
