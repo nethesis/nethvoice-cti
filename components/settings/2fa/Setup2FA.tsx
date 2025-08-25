@@ -25,8 +25,7 @@ import {
 } from '../../../services/twoFactor'
 import { saveCredentials } from '../../../lib/login'
 import { axiosSetup } from '../../../config/axios'
-import axios, { AxiosResponse } from 'axios'
-import { handleNetworkError, openToast } from '../../../lib/utils'
+import { openToast } from '../../../lib/utils'
 import { Textarea } from '@headlessui/react'
 
 export const Setup2FA = () => {
@@ -91,8 +90,7 @@ export const Setup2FA = () => {
   }
 
   // Handle completion of 2FA setup
-  const handleSetupComplete = (codes: string[]) => {
-    setBackupCodes(codes)
+  const handleSetupComplete = () => {
     setIsEnabled(true)
 
     // Show success toast with button to view backup codes
@@ -100,7 +98,7 @@ export const Setup2FA = () => {
       'success',
       <Button
         variant='primary'
-        onClick={() => handleViewBackupCodesAfterSetup(codes)}
+        onClick={handleViewBackupCodes}
         className='mt-2'
       >
         {t('Settings.Show recovery OTP codes') || ''}
@@ -115,12 +113,6 @@ export const Setup2FA = () => {
     setError('')
     setPasswordAction('viewCodes')
     setShowPasswordModal(true)
-  }
-
-  // Handle viewing backup codes after setup (no password required)
-  const handleViewBackupCodesAfterSetup = (codes: string[]) => {
-    setBackupCodes(codes)
-    setShowRecoveryCodesModal(true)
   }
 
   // Handle disable 2FA start (show confirmation modal first)
@@ -148,20 +140,9 @@ export const Setup2FA = () => {
       setIsProcessing(true)
       setError('')
 
-      // Verify password using login API
-      const isPasswordValid = await verifyPassword(auth.username, password)
-
-      if (!isPasswordValid) {
-        setError(
-          t('Settings.Invalid password. Please try again.') ||
-            'Invalid password. Please try again.',
-        )
-        return
-      }
-
       if (passwordAction === 'viewCodes') {
-        // Get and show backup codes
-        const backupCodesResponse = await getBackupCodes()
+        // Get and show backup codes with password
+        const backupCodesResponse = await getBackupCodes(password)
         setBackupCodes(backupCodesResponse.codes || [])
         setShowPasswordModal(false)
         setShowRecoveryCodesModal(true)
@@ -237,24 +218,6 @@ export const Setup2FA = () => {
     navigator.clipboard.writeText(text)
     setIsCopied(true)
     setTimeout(() => setIsCopied(false), 2000)
-  }
-
-  const verifyPassword = async (username: string, password: string): Promise<boolean> => {
-    try {
-      if (!username || !password) {
-        return false
-      }
-
-      const response: AxiosResponse = await axios.post(`/verify-password`, {
-        username: username.toLowerCase(),
-        password: password,
-      })
-
-      return response.status === 200
-    } catch (error) {
-      handleNetworkError(error)
-      throw error
-    }
   }
 
   return (
