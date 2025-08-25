@@ -79,7 +79,10 @@
     "Open door": "Open door",
     "Streaming": "Streaming",
     "Error": "Error",
-    "Sort by": "Sort by"
+    "Sort by": "Sort by",
+    "Configure": "Configure",
+    "Copy": "Copy",
+    "Copied": "Copied"
   },
   "Login": {
     "User": "Username",
@@ -91,7 +94,12 @@
     "Contact administrator for access": "Contact administrator for access",
     "Wrong username or password": "Wrong username or password",
     "Network connection is lost": "Network connection is lost",
-    "Login failed": "Login failed"
+    "Login failed": "Login failed",
+    "Two-Factor Authentication": "Two-Factor Authentication",
+    "Enter the 6-digit code (OTP code) from your authenticator app. If you cannot access the app, you can use one recovery OTP code.": "Enter the 6-digit code (OTP code) from your authenticator app. If you cannot access the app, you can use one recovery OTP code.",
+    "OTP code": "OTP code",
+    "OTP verification failed": "OTP verification failed",
+    "The code you entered is invalid or has expired. Please check your authenticator app and try again.": "The code you entered is invalid or has expired. Please check your authenticator app and try again."
   },
   "Phonebook": {
     "Phonebook": "Phonebook",
@@ -382,7 +390,34 @@
     "When clicking the button on the Phone Island": "When clicking the button on the Phone Island",
     "This URL opens automatically for external incoming calls": "This URL opens automatically for external incoming calls",
     "This field can only be modified by the administrator": "This field can only be modified by the administrator",
-    "Loading...": "Loading..."
+    "Loading...": "Loading...",
+    "Two-Factor Authentication": "Two-Factor Authentication",
+    "Two-Factor Authentication Description": "Configure and enable two-factor authentication (2FA) to protect your account with an extra security code from your phone (OTP), in addition to your password.",
+    "Configure 2FA": "Configure 2FA",
+    "Show recovery OTP codes": "Show recovery OTP codes",
+    "Revoke 2FA": "Revoke 2FA",
+    "Password confirmation required": "Password confirmation required",
+    "Please confirm your password to proceed": "Please confirm your password to proceed",
+    "Enter your password to confirm": "Enter your password to confirm",
+    "Keep codes in a safe place": "Keep codes in a safe place",
+    "Each recovery code can be used only once": "Each recovery code can be used only once",
+    "Copy all codes": "Copy all codes",
+    "Recovery OTP Codes": "Recovery OTP Codes",
+    "You can use recovery OTP codes if you have to login and cannot access your authenticator app.": "You can use recovery OTP codes if you have to login and cannot access your authenticator app.",
+    "Revoke two-factor authentication reduce the security level of your account. The OTP code won’t be requested anymore when you login.": "Revoke two-factor authentication reduce the security level of your account. The OTP code won’t be requested anymore when you login.",
+    "Verifying...": "Verifying...",
+    "Two-factor authentication configured": "Two-factor authentication configured",
+    "Download a 2FA application": "Download a 2FA application",
+    "Configure a two-factor authentication require an authenticator app. Scan the QR code with the app or enter the secret key, then enter the 6-digit code provided.": "Configure a two-factor authentication require an authenticator app. Scan the QR code with the app or enter the secret key, then enter the 6-digit code provided.",
+    "Setup method": "Setup method",
+    "QR code": "QR code",
+    "OTP code": "OTP code",
+    "Scan with app": "Scan with app",
+    "Secret key": "Secret key",
+    "Enter manually": "Enter manually",
+    "Scan QR code": "Scan QR code",
+    "Enter the 6-digit code from authenticator app": "Enter the 6-digit code from authenticator app",
+    "No recovery codes available": "No recovery codes available"
   },
   "TopBar": {
     "Signed in as": "Signed in as",

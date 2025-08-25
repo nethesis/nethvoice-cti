@@ -7,12 +7,10 @@ import { getJSONItem, setJSONItem } from '../lib/storage'
 interface DefaultState {
   isShown: boolean
   actualTab: string
-  isSideMenuOpened: boolean
 }
 const defaultState: DefaultState = {
   isShown: false,
   actualTab: '',
-  isSideMenuOpened: true,
 }
 export const rightSideMenu = createModel<RootModel>()({
   state: defaultState,
@@ -25,37 +23,27 @@ export const rightSideMenu = createModel<RootModel>()({
       state.actualTab = actualTab
       return state
     },
-    setRightSideMenuOpened: (state, isSideMenuOpened: boolean) => {
-      state.isSideMenuOpened = isSideMenuOpened
-      return state
-    },
     toggleSideMenu: (state, payload: { tabName: string; username: string; force?: boolean }) => {
       const { tabName, username, force } = payload
 
       // Update the tab name
       state.actualTab = tabName
 
-      // Calculate the new state for the menu
-      let newIsOpen
+      // Calculate and update the state for the menu
       if (force !== undefined) {
         // If force parameter is provided, use it directly
-        newIsOpen = force
-      } else if (state.actualTab === tabName && state.isSideMenuOpened) {
+        state.isShown = force
+      } else if (state.actualTab === tabName && state.isShown) {
         // If clicking on the same tab and menu is open, close it
-        newIsOpen = false
+        state.isShown = false
       } else {
         // Otherwise open it
-        newIsOpen = true
+        state.isShown = true
       }
-
-      // Update both states
-      state.isShown = newIsOpen
-      state.isSideMenuOpened = newIsOpen
 
       // Save to localStorage
       const preferences = getJSONItem(`preferences-${username}`) || {}
       preferences['userSideBarTab'] = tabName
-      preferences['rightTabStatus'] = newIsOpen
       setJSONItem(`preferences-${username}`, preferences)
 
       return state
