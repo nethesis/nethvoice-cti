@@ -125,15 +125,15 @@ const CompactOperatorCard = ({
                 <div
                   data-tooltip-id={`tooltip-extension-ringing-name-${index}`}
                   data-tooltip-content={
-                    operator.conversations[0].counterpartName ||
-                    operator.conversations[0].counterpartNum ||
+                    operator?.conversations[0]?.counterpartName ||
+                    operator?.conversations[0]?.counterpartNum ||
                     ''
                   }
                 >
                   <TextScroll
                     text={
-                      operator.conversations[0].counterpartName ||
-                      operator.conversations[0].counterpartNum
+                      operator?.conversations[0]?.counterpartName ||
+                      operator?.conversations[0]?.counterpartNum
                     }
                   />
                 </div>

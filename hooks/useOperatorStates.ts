@@ -94,9 +94,9 @@ export const useOperatorStates = (operator: any, authUsername: string) => {
       profile?.default_device?.id &&
       operator?.endpoints?.mainextension?.[0]?.id
     ) {
-      const conversationId = operator.conversations[0].id
-      const endpoint = operator.endpoints.mainextension[0].id
-      const destination = profile.default_device.id
+      const conversationId = operator?.conversations[0]?.id
+      const endpoint = operator?.endpoints?.mainextension[0]?.id
+      const destination = profile?.default_device?.id
 
       const pickupInformations = {
         convid: conversationId,

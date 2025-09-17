@@ -114,10 +114,10 @@ const OperatorCard = ({
                   <span className='mx-1 flex-shrink-0'>-</span>
                   <div
                     data-tooltip-id={`tooltip-ringing-header-${liveOperatorData?.username || 'op'}`}
-                    data-tooltip-content={liveOperatorData.conversations[0].counterpartName || ''}
+                    data-tooltip-content={liveOperatorData?.conversations[0]?.counterpartName || ''}
                     className='min-w-0 flex-1'
                   >
-                    <TextScroll text={liveOperatorData.conversations[0].counterpartName} />
+                    <TextScroll text={liveOperatorData?.conversations[0]?.counterpartName} />
                   </div>
                 </>
               )}
