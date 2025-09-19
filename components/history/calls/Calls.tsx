@@ -49,6 +49,7 @@ export const Calls: FC<CallsProps> = ({ className }): JSX.Element => {
 
   const [historyError, setHistoryError] = useState('')
   const [isHistoryLoaded, setHistoryLoaded] = useState(false)
+  const [isLoadingPagination, setIsLoadingPagination] = useState(false)
   const [history, setHistory]: any = useState({})
   const [pageNum, setPageNum]: any = useState(1)
   const [filterText, setFilterText]: any = useState('')
@@ -93,7 +94,6 @@ export const Calls: FC<CallsProps> = ({ className }): JSX.Element => {
   useEffect(() => {
     async function fetchHistory() {
       if (
-        !isHistoryLoaded &&
         dateBegin &&
         !checkDateType.test(dateBegin) &&
         dateEnd &&
@@ -102,6 +102,7 @@ export const Calls: FC<CallsProps> = ({ className }): JSX.Element => {
       ) {
         try {
           setHistoryError('')
+          setIsLoadingPagination(true)
           const res = await search(
             callType,
             username,
@@ -113,25 +114,23 @@ export const Calls: FC<CallsProps> = ({ className }): JSX.Element => {
             pageNum,
           )
           setHistory(res)
+          setHistoryLoaded(true)
         } catch (e) {
           setHistoryError('Cannot retrieve history')
+          setHistoryLoaded(true)
+        } finally {
+          setIsLoadingPagination(false)
         }
-        setHistoryLoaded(true)
       }
     }
-    fetchHistory()
+
+    // Reset loading state when dependencies change
+    if (!isLoadingPagination) {
+      setHistoryLoaded(false)
+      fetchHistory()
+    }
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [
-    isHistoryLoaded,
-    callType,
-    username,
-    dateBegin,
-    dateEnd,
-    filterText,
-    pageNum,
-    sortBy,
-    callDirection,
-  ])
+  }, [callType, username, dateBegin, dateEnd, filterText, pageNum, sortBy, callDirection])
 
   //Calculate the total pages of the history
   useEffect(() => {
@@ -168,7 +167,7 @@ export const Calls: FC<CallsProps> = ({ className }): JSX.Element => {
     if (callIdInformation !== '') {
       try {
         await deleteRec(callIdInformation)
-        // reload the history
+        // reload the history by resetting the loading state
         setHistoryLoaded(false)
       } catch (err) {
         console.log(err)
@@ -195,46 +194,38 @@ export const Calls: FC<CallsProps> = ({ className }): JSX.Element => {
   const updateFilterText = (newFilterText: string) => {
     setPageNum(1)
     setFilterText(newFilterText)
-    setHistoryLoaded(false)
   }
 
   const updateCallTypeFilter = (newCallType: string) => {
     setPageNum(1)
     setCallType(newCallType)
-    setHistoryLoaded(false)
   }
 
   const updateCallDirectionFilter = (newCallDirection: string) => {
     setPageNum(1)
     setCallDirection(newCallDirection)
-    setHistoryLoaded(false)
   }
 
   const updateDateBeginFilter = (newDateBegin: string) => {
     setDateBegin(newDateBegin)
-    setHistoryLoaded(false)
   }
 
   const updateDateEndFilter = (newDateEnd: string) => {
     setDateEnd(newDateEnd)
-    setHistoryLoaded(false)
   }
 
   const updateSortFilter = (newSortBy: string) => {
     setSortBy(newSortBy)
-    setHistoryLoaded(false)
   }
 
   function goToPreviousPage() {
-    if (pageNum > 1) {
-      setHistoryLoaded(false)
+    if (pageNum > 1 && !isLoadingPagination) {
       setPageNum(pageNum - 1)
     }
   }
 
   function goToNextPage() {
-    if (pageNum < totalPages) {
-      setHistoryLoaded(false)
+    if (pageNum < totalPages && !isLoadingPagination) {
       setPageNum(pageNum + 1)
     }
   }
@@ -319,14 +310,9 @@ export const Calls: FC<CallsProps> = ({ className }): JSX.Element => {
     },
   ]
 
-  // Generate a unique key for each call
-  const generateUniqueKey = (call: any) => {
-    return (
-      call.uniqueid +
-      (call.linkedid ? `-${call.linkedid}` : '') +
-      (call.direction ? `-${call.direction}` : '') +
-      (call.time ? `-${call.time}` : '')
-    )
+  // Generate a unique key for each call with more stability
+  const generateUniqueKey = (call: any, index: number) => {
+    return `call-${call.uniqueid}-${call.time}-${index}`
   }
 
   return (
@@ -375,7 +361,7 @@ export const Calls: FC<CallsProps> = ({ className }): JSX.Element => {
                     <Table
                       columns={columns}
                       data={!historyError && isHistoryLoaded ? history?.rows || [] : []}
-                      isLoading={!isHistoryLoaded}
+                      isLoading={!isHistoryLoaded || isLoadingPagination}
                       emptyState={{
                         title: t('History.No calls'),
                         description: t('History.There are no calls in your history') || '',
@@ -387,7 +373,7 @@ export const Calls: FC<CallsProps> = ({ className }): JSX.Element => {
                           />
                         ),
                       }}
-                      rowKey={(record) => generateUniqueKey(record)}
+                      rowKey={(record, index) => generateUniqueKey(record, index)}
                       trClassName='h-[84px]'
                       scrollable={true}
                       maxHeight='calc(100vh - 480px)'
@@ -406,7 +392,7 @@ export const Calls: FC<CallsProps> = ({ className }): JSX.Element => {
                 pageSize={PAGE_SIZE}
                 onPreviousPage={goToPreviousPage}
                 onNextPage={goToNextPage}
-                isLoading={!isHistoryLoaded}
+                isLoading={!isHistoryLoaded || isLoadingPagination}
                 itemsName={t('History.calls') || ''}
               />
             )}
