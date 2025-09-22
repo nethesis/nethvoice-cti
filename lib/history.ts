@@ -44,7 +44,7 @@ export async function search(
   const offset = (pageNum - 1) * pageSize
 
   let apiUrl = getHistoryUrl()
-  let userUrlApi = apiUrl + '/webrest/'
+  let userUrlApi = apiUrl + '/api/'
   if (callType === 'switchboard') {
     userUrlApi += 'histcallswitch/interval'
   } else if (callType === 'group') {
@@ -128,7 +128,7 @@ export async function searchDrawerHistoryUser(
   let apiUrl = getHistoryUrl()
   let historycallUrlApiUser =
     apiUrl +
-    '/webrest/historycall/interval/user/' +
+    '/api/historycall/interval/user/' +
     username +
     '/' +
     dataBeginSearch +
@@ -162,7 +162,7 @@ export async function searchDrawerHistorySwitchboard(
   number = number.trim()
   let historycallUrlApiSwitchboard =
     apiUrl +
-    '/webrest/histcallswitch/interval/' +
+    '/api/histcallswitch/interval/' +
     dataBeginSearch +
     '/' +
     dateEndSearch +
@@ -225,7 +225,7 @@ export const getLastCalls = async (
       sort = 'time%20asc'
     }
 
-    const requestUrl = `${getHistoryUrl()}/webrest/historycall/interval/user/${username}/${dateFrom}/${dateTo}?offset=0&limit=15&sort=${sort}&removeLostCalls=undefined`
+    const requestUrl = `${getHistoryUrl()}/api/historycall/interval/user/${username}/${dateFrom}/${dateTo}?offset=0&limit=15&sort=${sort}&removeLostCalls=undefined`
     const { data, status } = await axios.get(requestUrl)
 
     if (status === 200) {
@@ -241,7 +241,7 @@ export const getLastCalls = async (
 
 export const downloadCallRec = async (idRecording: string) => {
   try {
-    const requestUrl = `${getHistoryUrl()}/webrest/historycall/down_callrec/${idRecording}`
+    const requestUrl = `${getHistoryUrl()}/api/historycall/down_callrec/${idRecording}`
     const { data, status } = await axios.get(requestUrl)
 
     if (status === 200) {
@@ -257,7 +257,7 @@ export const downloadCallRec = async (idRecording: string) => {
 
 export const deleteRec = async (idRecording: string) => {
   try {
-    const requestUrl = `${getHistoryUrl()}/webrest/historycall/delete_callrec`
+    const requestUrl = `${getHistoryUrl()}/api/historycall/delete_callrec`
     const { data, status } = await axios.post(requestUrl, { id: idRecording })
 
     if (status === 200) {

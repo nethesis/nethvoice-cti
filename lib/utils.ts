@@ -44,7 +44,6 @@ export const closeSideDrawer = () => {
 
 export const closeRightSideDrawer = () => {
   store.dispatch.rightSideMenu.setShown(false)
-  store.dispatch.rightSideMenu.setRightSideMenuOpened(false)
 }
 
 /**
@@ -458,7 +457,7 @@ export const voiceRequest = async (methodVoice: string, url: any, object?: any) 
         method: methodVoice,
         headers: {
           'Content-Type': 'application/json',
-          Authorization: `${username}:${token}`,
+          Authorization: `Bearer ${token}`,
         },
       },
     )

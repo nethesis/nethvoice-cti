@@ -2,7 +2,7 @@
 // SPDX-License-Identifier: AGPL-3.0-or-later
 
 /* eslint-disable react-hooks/exhaustive-deps */
-import { FC, useCallback, useEffect, useState } from 'react'
+import { FC, useEffect, useState } from 'react'
 import { SpeedDial } from './SpeedDial'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import {
@@ -11,7 +11,7 @@ import {
   faVoicemail,
   type IconDefinition,
 } from '@fortawesome/free-solid-svg-icons'
-import { getJSONItem, loadPreference } from '../../lib/storage'
+import { getJSONItem } from '../../lib/storage'
 import { RootState, store } from '../../store'
 import { useSelector } from 'react-redux'
 import { UserLastCalls } from './UserLastCalls'
@@ -32,22 +32,22 @@ const activeStyles = {
 
 export const UserNavBar: FC = () => {
   const { t } = useTranslation()
+
   const username = useSelector((state: RootState) => state.user.username)
   const profile = useSelector((state: RootState) => state.user)
-  const auth = useSelector((state: RootState) => state.authentication)
 
   const [tabReady, setTabReady] = useState<boolean>(false)
-
   const [tabs, setTabs] = useState<TabTypes[]>([])
+
+  // Initialize tabs - initially all inactive
   useEffect(() => {
-    const savedTab = loadPreference('userSideBarTab', username) || 'speed_dial'
     setTabs([
       ...(profile?.profile?.macro_permissions?.phonebook?.value
         ? [
             {
               icon: faBolt,
               name: 'speed_dial' as const,
-              active: savedTab === 'speed_dial',
+              active: false,
               label: t('NavBars.Speed dials'),
             },
           ]
@@ -56,7 +56,7 @@ export const UserNavBar: FC = () => {
       {
         icon: faPhone,
         name: 'last_calls' as const,
-        active: savedTab === 'last_calls',
+        active: false,
         label: t('NavBars.Last calls'),
       },
       ...(!isEmpty(profile?.endpoints?.voicemail)
@@ -64,7 +64,7 @@ export const UserNavBar: FC = () => {
             {
               icon: faVoicemail,
               name: 'voice_mails' as const,
-              active: savedTab === 'voice_mails',
+              active: false,
               label: t('NavBars.Voice mail'),
             },
           ]
@@ -74,50 +74,57 @@ export const UserNavBar: FC = () => {
 
   const rightSideStatus = useSelector((state: RootState) => state.rightSideMenu)
 
-  const [defaultTabSelected, setDefaultTabSelected] = useState('')
-
-  //On first render of page get value of tab from local storage
+  // Check store for userSideBarTab value and initialize/open tab if needed
   useEffect(() => {
-    if (!rightSideStatus?.actualTab && defaultTabSelected !== '') {
-      store.dispatch.rightSideMenu.toggleSideMenu({
-        tabName: defaultTabSelected,
-        username,
-        force: rightSideStatus.isSideMenuOpened,
-      })
-    }
-  }, [rightSideStatus?.actualTab, defaultTabSelected])
+    if (username && tabReady) {
+      const userPreferences = getJSONItem(`preferences-${username}`) || {}
 
-  const [firstClickOnTab, setFirstClickOnTab] = useState(false)
+      // If userSideBarTab has a value, open that tab
+      if (userPreferences.userSideBarTab && userPreferences.userSideBarTab !== '') {
+        const tabToOpen = userPreferences.userSideBarTab
+        setTabs((state) =>
+          state.map((tab) => {
+            tab.active = tab.name === tabToOpen
+            return tab
+          }),
+        )
+
+        store.dispatch.rightSideMenu.toggleSideMenu({
+          tabName: tabToOpen,
+          username,
+          force: true,
+        })
+      }
+    }
+  }, [username, tabReady])
 
   const clickedTab = (tabName: any) => {
-    // avoid conflict with useEffect
-    if (!firstClickOnTab) {
-      setFirstClickOnTab(true)
-    }
+    // Check if we're clicking on the already active tab
+    const isCurrentTabActive = tabs.find((tab) => tab.name === tabName)?.active
 
-    if (defaultTabSelected === tabName) {
-      // If the selected section is already open, close the navbar
-      store.dispatch.rightSideMenu.toggleSideMenu({
-        tabName: '',
-        username,
-        force: false,
-      })
-      setDefaultTabSelected('')
+    if (isCurrentTabActive) {
+      // Close the sidebar and reset userSideBarTab to empty string
       setTabs((state) =>
         state.map((tab) => {
           tab.active = false
           return tab
         }),
       )
+
+      store.dispatch.rightSideMenu.toggleSideMenu({
+        tabName: '',
+        username,
+        force: false,
+      })
     } else {
-      // Otherwise, change the section without closing the navbar
-      setDefaultTabSelected(tabName)
+      // Open the selected tab and set userSideBarTab with the tab value
       setTabs((state) =>
         state.map((tab) => {
           tab.active = tab.name === tabName
           return tab
         }),
       )
+
       store.dispatch.rightSideMenu.toggleSideMenu({
         tabName: tabName,
         username,
@@ -126,64 +133,12 @@ export const UserNavBar: FC = () => {
     }
   }
 
-  const [firstRender, setFirstRender] = useState(true)
-
-  const userPreferences = getJSONItem(`preferences-${username}`) || {}
-
-  const getTabValuesFromLocalStorage = (currentUsername: string) => {
-    const rightSideMenuTabSelectedLocalStorage = loadPreference('userSideBarTab', currentUsername)
-    return { rightSideMenuTabSelectedLocalStorage }
-  }
-
-  //Get selected user side menu selected value from the local storage
+  // Set tabReady to true once everything is initialized
   useEffect(() => {
-    const localStorageTabValues = getTabValuesFromLocalStorage(auth.username)
-    if (
-      localStorageTabValues?.rightSideMenuTabSelectedLocalStorage &&
-      localStorageTabValues?.rightSideMenuTabSelectedLocalStorage !== ''
-    ) {
-      setDefaultTabSelected(localStorageTabValues?.rightSideMenuTabSelectedLocalStorage)
-      if (!firstClickOnTab) {
-        setTabs((state) =>
-          state.map((tab) => {
-            tab.active = tab.name === localStorageTabValues?.rightSideMenuTabSelectedLocalStorage
-            return tab
-          }),
-        )
-      }
-    } else {
-      setDefaultTabSelected('speed_dial')
-      if (!firstClickOnTab) {
-        setTabs((state) =>
-          state.map((tab) => {
-            tab.active = tab.name === 'speed_dial'
-            return tab
-          }),
-        )
-      }
+    if (username) {
+      setTabReady(true)
     }
-
-    setTabReady(true)
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [])
-
-  //Get the selected filter from the local storage
-  useEffect(() => {
-    if (firstRender && username && userPreferences) {
-      setFirstRender(false)
-      return
-    }
-    if (username && userPreferences) {
-      if (userPreferences?.rightTabStatus !== undefined) {
-        // Use the combined action to set both states
-        store.dispatch.rightSideMenu.toggleSideMenu({
-          tabName: userPreferences?.userSideBarTab || defaultTabSelected || 'speed_dial',
-          username,
-          force: userPreferences?.rightTabStatus,
-        })
-      }
-    }
-  }, [firstRender, username, userPreferences?.rightTabStatus])
+  }, [username])
 
   return (
     <>
@@ -225,7 +180,7 @@ export const UserNavBar: FC = () => {
           </div>
         ))}
       </div>
-      <CustomThemedTooltip id='tooltip-side-menu' place='left'/>
+      <CustomThemedTooltip id='tooltip-side-menu' place='left' />
     </>
   )
 }
