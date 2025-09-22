@@ -1,7 +1,7 @@
 # Install dependencies only when needed
 FROM docker.io/library/node:24.2-alpine AS deps
 # Check https://github.com/nodejs/docker-node/tree/b4117f9333da4138b03a546ec926ef50a31506c3#nodealpine to understand why libc6-compat might be needed.
-RUN apk add --no-cache libc6-compat git openssh python3 make g++
+RUN apk add --no-cache libc6-compat git openssh
 WORKDIR /app
 
 # Install dependencies based on the preferred package manager
@@ -13,16 +13,6 @@ RUN \
   elif [ -f pnpm-lock.yaml ]; then yarn global add pnpm && pnpm i --frozen-lockfile; \
   else echo "Lockfile not found." && exit 1; \
   fi
-
-# Build phone-island from source
-RUN git clone -b middleware-1 https://github.com/nethesis/phone-island.git temp-phone-island && \
-    cd temp-phone-island && \
-    npm install && \
-    npm run build && \
-    mkdir -p ../node_modules/@nethesis/phone-island/dist && \
-    cp -r dist/* ../node_modules/@nethesis/phone-island/dist/ && \
-    cd .. && \
-    rm -rf temp-phone-island
 
 # Rebuild the source code only when needed
 FROM docker.io/library/node:24.2-alpine AS builder
