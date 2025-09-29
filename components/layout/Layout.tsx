@@ -117,15 +117,15 @@ export const Layout: FC<LayoutProps> = ({ children }) => {
 
       if (userInfo && userInfo.data) {
         dispatch.user.update({
-          default_device: userInfo.data.default_device,
-          name: userInfo.data.name,
-          username: userInfo.data.username,
-          mainextension: userInfo.data.endpoints.mainextension[0].id,
-          mainPresence: userInfo.data.mainPresence,
-          endpoints: userInfo.data.endpoints,
-          profile: userInfo.data.profile,
-          avatar: userInfo.data.settings.avatar,
-          settings: userInfo.data.settings,
+          default_device: userInfo?.data?.default_device,
+          name: userInfo?.data?.name,
+          username: userInfo?.data?.username,
+          mainextension: userInfo?.data?.endpoints?.mainextension[0]?.id,
+          mainPresence: userInfo?.data?.mainPresence,
+          endpoints: userInfo?.data?.endpoints,
+          profile: userInfo?.data?.profile,
+          avatar: userInfo?.data?.settings?.avatar,
+          settings: userInfo?.data?.settings,
           recallOnBusy: userInfo?.data?.recallOnBusy,
           lkhash: userInfo?.data?.lkhash,
           urlOpened: false,
@@ -399,9 +399,9 @@ export const Layout: FC<LayoutProps> = ({ children }) => {
 
   useEventListener('phone-island-main-presence', (data: any) => {
     const opName = Object.keys(data)[0]
-    const mainPresence = data[opName].mainPresence
+    const mainPresence = data[opName]?.mainPresence
     store.dispatch.operators.updateMainPresence(opName, mainPresence)
-    if (data[user] && data[user].mainPresence !== topBarPresence) {
+    if (data[user] && data[user]?.mainPresence !== topBarPresence) {
       dispatch.user.updateMainPresence(mainPresence)
     }
   })
@@ -928,9 +928,9 @@ export const Layout: FC<LayoutProps> = ({ children }) => {
         // Map preference states to operator's mainPresence
         switch (pauseState) {
           case 'dnd':
-            return currentOperator.mainPresence === 'dnd'
+            return currentOperator?.mainPresence === 'dnd'
           case 'callforward':
-            return currentOperator.mainPresence === 'callforward'
+            return currentOperator?.mainPresence === 'callforward'
           default:
             return false
         }
@@ -945,9 +945,9 @@ export const Layout: FC<LayoutProps> = ({ children }) => {
 
         // Pause all appropriate queues
         queuesToPause.forEach((queue: any) => {
-          const reason = currentOperator.mainPresence === 'dnd'
+          const reason = currentOperator?.mainPresence === 'dnd'
             ? 'DND'
-            : currentOperator.mainPresence === 'callforward'
+            : currentOperator?.mainPresence === 'callforward'
               ? 'Call Forward'
               : 'Auto Pause'
 
@@ -976,7 +976,7 @@ export const Layout: FC<LayoutProps> = ({ children }) => {
   useEffect(() => {
     if (
       currentOperator &&
-      currentOperator.mainPresence === 'online' &&
+      currentOperator?.mainPresence === 'online' &&
       (prevOperatorState === 'busy' || prevOperatorState === 'ringing') &&
       !closedCall
     ) {
@@ -987,7 +987,7 @@ export const Layout: FC<LayoutProps> = ({ children }) => {
       setClosedCall(false)
     }
 
-    setPrevOperatorState(currentOperator ? currentOperator.mainPresence : null)
+    setPrevOperatorState(currentOperator ? currentOperator?.mainPresence : null)
   }, [currentOperator, prevOperatorState, closedCall])
 
   // If user has closed phone island call let reload last calls
