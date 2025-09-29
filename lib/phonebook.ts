@@ -122,17 +122,27 @@ export async function fetchContact(contactId: number, source: string) {
 
 export function mapContact(contact: any) {
   // kind & display name
-  if (contact.name) {
-    contact.kind = 'person'
-    contact.displayName = contact.name
+  if (contact?.kind) {
+    // Use existing kind if it's already set
+    if (contact?.kind === 'person') {
+      contact.displayName = contact?.name
+    } else {
+      contact.displayName = contact?.company
+    }
   } else {
-    contact.kind = 'company'
-    contact.displayName = contact.company
+    // Determine kind based on content: if name exists and is not just "-", it's a person
+    if (contact?.name && contact?.name !== '-') {
+      contact.kind = 'person'
+      contact.displayName = contact?.name
+    } else {
+      contact.kind = 'company'
+      contact.displayName = contact?.company
+    }
   }
 
   // company contacts
-  if (contact.contacts) {
-    contact.contacts = JSON.parse(contact.contacts)
+  if (contact?.contacts) {
+    contact.contacts = JSON.parse(contact?.contacts)
   }
   return contact
 }

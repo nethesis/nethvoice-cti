@@ -61,7 +61,7 @@ const OperatorCard = ({
   } = operatorStates
 
   const operatorsStore = useSelector((state: RootState) => state.operators)
-  let currentUserIsInConversation = operatorsStore?.operators[authUsername].mainPresence != 'online'
+  let currentUserIsInConversation = operatorsStore?.operators[authUsername]?.mainPresence != 'online'
 
   return (
     <div className='space-y-4 w-[200px]'>

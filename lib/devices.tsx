@@ -28,7 +28,11 @@ export const openShowSwitchDeviceInputOutput = (status: any) => {
   })
 }
 
-export const openShowDownloadLinkContent = (status: any, defaultOS: string, macArchitecture?: string) => {
+export const openShowDownloadLinkContent = (
+  status: any,
+  defaultOS: string,
+  macArchitecture?: string,
+) => {
   let objConfig = {
     urlStatus: status,
     selectedOS: defaultOS,
@@ -181,11 +185,16 @@ export async function getDevicesPinStatusForDevice() {
 
 export async function getDownloadLink() {
   try {
-    const { data, status } = await axios.get(
-      'https://api.github.com/repos/nethesis/nethlink/releases/latest',
-    )
+    const response = await fetch('https://api.github.com/repos/nethesis/nethlink/releases/latest')
+
+    if (!response.ok) {
+      throw new Error(`HTTP error! status: ${response.status}`)
+    }
+
+    const data = await response.json()
     return data
   } catch (error) {
+    console.error('Cannot retrieve download url', error)
     handleNetworkError(error)
     throw error
   }

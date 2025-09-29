@@ -175,10 +175,10 @@ const Operators: NextPage = () => {
         filteredOperators = filteredOperators.filter((op: any) => {
           return (
             statusFilter === 'all' ||
-            (statusFilter === 'available' && AVAILABLE_STATUSES.includes(op.mainPresence)) ||
-            (statusFilter === 'unavailable' && UNAVAILABLE_STATUSES.includes(op.mainPresence)) ||
-            (statusFilter === 'offline' && op.mainPresence === 'offline') ||
-            (statusFilter === 'allExceptOffline' && op.mainPresence !== 'offline')
+            (statusFilter === 'available' && AVAILABLE_STATUSES.includes(op?.mainPresence)) ||
+            (statusFilter === 'unavailable' && UNAVAILABLE_STATUSES.includes(op?.mainPresence)) ||
+            (statusFilter === 'offline' && op?.mainPresence === 'offline') ||
+            (statusFilter === 'allExceptOffline' && op?.mainPresence !== 'offline')
           )
         })
       } else {

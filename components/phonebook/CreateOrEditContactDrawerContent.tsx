@@ -193,6 +193,7 @@ export const CreateOrEditContactDrawerContent = forwardRef<
       favorite: false,
       selectedPrefNum: 'extension',
       type: contactVisibility,
+      kind: contactType,
     }
 
     if (contactType === 'person' && nameRef?.current?.value) {
@@ -256,6 +257,7 @@ export const CreateOrEditContactDrawerContent = forwardRef<
       favorite: false,
       selectedPrefNum: config?.contact?.selectedPrefNum,
       type: contactVisibility,
+      kind: contactType,
       company: companyRef?.current?.value || null,
       extension: extensionRef?.current?.value || null,
       workphone: workPhoneRef?.current?.value || '',
@@ -369,7 +371,7 @@ export const CreateOrEditContactDrawerContent = forwardRef<
                     id={option?.id}
                     name='contact-type'
                     type='radio'
-                    checked={option.id === contactType}
+                    checked={option?.id === contactType}
                     onChange={onContactTypeChanged}
                     className='h-4 w-4 border-gray-300 text-primary focus:ring-primaryLight dark:border-gray-600 dark:text-primaryDark dark:focus:ring-primaryDark'
                   />
