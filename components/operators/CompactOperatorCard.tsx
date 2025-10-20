@@ -79,8 +79,8 @@ const CompactOperatorCard = ({
       </span>
 
       {/* Middle section: Name and extension */}
-      <div className='flex-1 min-w-0 ml-3'>
-        <div className={`flex items-center space-x-2${isRinging ? ' mt-1' : ''}`}>
+      <div className='flex-1 min-w-0 ml-3 overflow-hidden'>
+        <div className={`flex items-center space-x-2 min-w-0${isRinging ? ' mt-1' : ''}`}>
           <span
             className='block truncate text-sm leading-5 font-medium text-primaryNeutral dark:text-primaryNeutralDark cursor-pointer hover:underline'
             onClick={handleOpenDrawer}
@@ -90,18 +90,25 @@ const CompactOperatorCard = ({
           {operator?.favorite && (
             <FontAwesomeIcon
               icon={faStar}
-              className='inline-block text-center h-4 w-4 text-primaryActive dark:text-primaryActiveDark'
+              className='inline-block flex-shrink-0 text-center h-4 w-4 text-primaryActive dark:text-primaryActiveDark'
             />
           )}
         </div>
         {isRinging && permissions.hasAny && !isCalledByCurrentUser ? (
-          <div className='flex items-center text-textStatusBusy dark:text-textStatusBusyDark'>
-            <span className='ringing-animation mr-2 h-4 w-4' />
-            <span className='text-sm font-medium'>{t('Operators.Ringing')}</span>
+          <div className='flex items-center text-textStatusBusy dark:text-textStatusBusyDark min-w-0 overflow-hidden'>
+            <span className='ringing-animation mr-2 h-4 w-4 flex-shrink-0' />
+            <span
+              className='text-sm font-medium truncate max-w-[50px]'
+              data-tooltip-id={`tooltip-ringing-status-${index}`}
+              data-tooltip-content={t('Operators.Ringing')}
+            >
+              {t('Operators.Ringing')}
+            </span>
+            <CustomThemedTooltip id={`tooltip-ringing-status-${index}`} />
             {operator?.conversations?.[0]?.counterpartName && (
               <>
-                <span className='mx-1 text-sm font-medium leading-5'>-</span>
-                <div className='max-w-[100px]'>
+                <span className='mx-1 text-sm font-medium leading-5 flex-shrink-0'>-</span>
+                <div className='min-w-0 flex-1 overflow-hidden'>
                   <div
                     data-tooltip-id={`tooltip-textscroll-${index}`}
                     data-tooltip-content={operator?.conversations[0]?.counterpartName || ''}
@@ -114,28 +121,30 @@ const CompactOperatorCard = ({
             <CustomThemedTooltip id={`tooltip-textscroll-${index}`} />
           </div>
         ) : (
-          <div className='text-sm font-normal text-secondaryNeutral dark:text-secondaryNeutralDark'>
+          <div className='text-sm font-normal text-secondaryNeutral dark:text-secondaryNeutralDark min-w-0 overflow-hidden'>
             {isRinging &&
             permissions?.hasAny &&
             !isCalledByCurrentUser &&
             (operator?.conversations?.[0]?.counterpartName ||
               operator?.conversations?.[0]?.counterpartNum) ? (
-              <div className='text-textStatusBusy dark:text-textStatusBusyDark text-sm leading-5 font-medium flex items-center'>
-                <span className='ringing-animation h-2.5 w-2.5 mr-2'></span>
-                <div
-                  data-tooltip-id={`tooltip-extension-ringing-name-${index}`}
-                  data-tooltip-content={
-                    operator?.conversations[0]?.counterpartName ||
-                    operator?.conversations[0]?.counterpartNum ||
-                    ''
-                  }
-                >
-                  <TextScroll
-                    text={
+              <div className='text-textStatusBusy dark:text-textStatusBusyDark text-sm leading-5 font-medium flex items-center min-w-0 overflow-hidden'>
+                <span className='ringing-animation h-2.5 w-2.5 mr-2 flex-shrink-0'></span>
+                <div className='min-w-0 flex-1 overflow-hidden'>
+                  <div
+                    data-tooltip-id={`tooltip-extension-ringing-name-${index}`}
+                    data-tooltip-content={
                       operator?.conversations[0]?.counterpartName ||
-                      operator?.conversations[0]?.counterpartNum
+                      operator?.conversations[0]?.counterpartNum ||
+                      ''
                     }
-                  />
+                  >
+                    <TextScroll
+                      text={
+                        operator?.conversations[0]?.counterpartName ||
+                        operator?.conversations[0]?.counterpartNum
+                      }
+                    />
+                  </div>
                 </div>
               </div>
             ) : (
@@ -235,13 +244,20 @@ const CompactOperatorCard = ({
 
         {/* If operator is ringing and user has no permissions or is calling this operator */}
         {isRinging && !(permissions?.hasAny && !isCalledByCurrentUser) && (
-          <div className='flex items-center text-textStatusBusy dark:text-textStatusBusyDark'>
-            <span className='ringing-animation mr-2 h-4 w-4' />
-            <span className='text-sm font-medium'>{t('Operators.Ringing')}</span>
+          <div className='flex items-center text-textStatusBusy dark:text-textStatusBusyDark min-w-0 overflow-hidden'>
+            <span className='ringing-animation mr-2 h-4 w-4 flex-shrink-0' />
+            <span
+              className='text-sm font-medium truncate max-w-[50px]'
+              data-tooltip-id={`tooltip-ringing-status-right-${index}`}
+              data-tooltip-content={t('Operators.Ringing')}
+            >
+              {t('Operators.Ringing')}
+            </span>
+            <CustomThemedTooltip id={`tooltip-ringing-status-right-${index}`} />
             {operator?.conversations?.[0]?.counterpartName && (
               <>
-                <span className='mx-1 text-sm font-medium leading-5'>-</span>
-                <div className='max-w-[100px]'>
+                <span className='mx-1 text-sm font-medium leading-5 flex-shrink-0'>-</span>
+                <div className='min-w-0 flex-1 overflow-hidden'>
                   <div
                     data-tooltip-id={`tooltip-textscroll-${index}`}
                     data-tooltip-content={operator?.conversations[0]?.counterpartName || ''}
