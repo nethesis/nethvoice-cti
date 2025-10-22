@@ -43,6 +43,9 @@ export const processQueues = (
   let queues: any = {}
 
   // keep only user queues
+  if (!queuesData) {
+    return
+  }
 
   Object.values(queuesData).forEach((queue: any) => {
     if (queue.members[mainextension]) {
@@ -84,7 +87,9 @@ export const retrieveQueues = async (username: string, mainextension: string, op
   const expandedQueues = loadPreference('expandedQueues', username) || []
   store.dispatch.queues.setExpandedQueues(expandedQueues)
 
-  processQueues(queuesData, username, mainextension, operators)
+  if (queuesData) {
+    processQueues(queuesData, username, mainextension, operators)
+  }
 }
 
 export const retrieveAndFilterQueueCalls = async (

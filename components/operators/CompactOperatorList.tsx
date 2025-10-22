@@ -62,8 +62,8 @@ const CompactOperatorList = ({ operators, hasMore, showMore, isLoading = false }
         role='list'
         className={`${isSidebarOpen ? classNameSidebarOpen : classNameSidebarClosed}`}
       >
-        {Array.from(Array(skeletonItemsCount)).map((index) => (
-          <li key={index} className='px-1 w-[400px]'>
+        {Array.from(Array(skeletonItemsCount)).map((_, index) => (
+          <li key={`skeleton-${index}`} className='px-1 w-[400px]'>
             <div className='group flex w-full items-center justify-between space-x-3 rounded-lg py-2 pr-2 pl-6 h-20 text-left focus:outline-none focus:ring-2 focus:ring-offset-2 bg-cardBackgroud dark:bg-cardBackgroudDark'>
               {/* Avatar skeleton */}
               <span className='flex-shrink-0'>
