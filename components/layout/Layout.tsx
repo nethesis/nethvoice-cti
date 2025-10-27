@@ -32,7 +32,7 @@ import { ProfilingTypes } from '../../models/profiling'
 import { Portal } from '@headlessui/react'
 import { ParkCards } from '../parks/parkCards'
 import { motion, useAnimation } from 'framer-motion'
-import { pauseQueue } from '../../lib/queuesLib'
+import { pauseQueue, unpauseQueue } from '../../lib/queuesLib'
 
 interface LayoutProps {
   children: ReactNode
@@ -938,8 +938,8 @@ export const Layout: FC<LayoutProps> = ({ children }) => {
 
       if (shouldPauseQueues) {
         // Find all queues where user is logged in and not already paused
-        const queuesToPause = Object.values(queuesStore.queues).filter((queue: any) => {
-          const userMember = queue.members?.[mainextension]
+        const queuesToPause = Object.values(queuesStore?.queues).filter((queue: any) => {
+          const userMember = queue?.members?.[mainextension]
           return userMember?.loggedIn && !userMember?.paused
         })
 
@@ -951,7 +951,7 @@ export const Layout: FC<LayoutProps> = ({ children }) => {
               ? 'Call Forward'
               : 'Auto Pause'
 
-          pauseQueue(mainextension, queue.queue, reason)
+          pauseQueue(mainextension, queue?.queue, reason)
         })
       }
     }
@@ -967,7 +967,53 @@ export const Layout: FC<LayoutProps> = ({ children }) => {
   // Save prev user main presence state
   const [prevOperatorState, setPrevOperatorState] = useState<string | null>(null)
 
+  // Handle automatic queue unpause when exiting from callforward or dnd states
+  useEffect(() => {
+    const userSettings = userInformation?.settings
 
+    if (
+      prevOperatorState &&
+      currentOperator &&
+      userSettings?.queue_auto_pause_onpresence &&
+      userSettings?.queue_autopause_presencelist &&
+      Array.isArray(userSettings.queue_autopause_presencelist) &&
+      userSettings.queue_autopause_presencelist.length > 0 &&
+      queuesStore.isLoaded &&
+      mainextension
+    ) {
+      // Check if we're exiting from a state that was configured for auto-pause
+      const exitingFromPauseState = userSettings.queue_autopause_presencelist.some((pauseState: string) => {
+        switch (pauseState) {
+          case 'dnd':
+            return prevOperatorState === 'dnd' && currentOperator?.mainPresence !== 'dnd'
+          case 'callforward':
+            return prevOperatorState === 'callforward' && currentOperator?.mainPresence !== 'callforward'
+          default:
+            return false
+        }
+      })
+
+      if (exitingFromPauseState) {
+        // Find all queues where user is logged in and currently paused
+        const queuesToUnpause = Object.values(queuesStore?.queues).filter((queue: any) => {
+          const userMember = queue?.members?.[mainextension]
+          return userMember?.loggedIn && userMember?.paused
+        })
+
+        // Unpause all queues
+        queuesToUnpause.forEach((queue: any) => {
+          unpauseQueue(mainextension, queue?.queue)
+        })
+      }
+    }
+  }, [
+    currentOperator?.mainPresence,
+    prevOperatorState,
+    userInformation?.settings?.queue_auto_pause_onpresence,
+    userInformation?.settings?.queue_autopause_presencelist,
+    queuesStore.isLoaded,
+    mainextension
+  ])
 
   //check if user has closed current calls
   const [closedCall, setClosedCall] = useState(false)
