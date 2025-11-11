@@ -239,6 +239,16 @@ export const Calls: FC<CallsProps> = ({ className }): JSX.Element => {
     }
   }, [debouncedUpdateFilterText])
 
+  // Filter out calls to/from *43 (similar to UserLastCallsContent)
+  const filteredHistory = useMemo(() => {
+    if (!history?.rows) return []
+
+    return history.rows.filter((call: any) => {
+      const numberToCheck = call.direction === 'in' ? call.src : call.dst
+      return !numberToCheck?.includes('*43')
+    })
+  }, [history?.rows])
+
   // Definition of the columns of the table
   const columns = [
     {
@@ -360,7 +370,7 @@ export const Calls: FC<CallsProps> = ({ className }): JSX.Element => {
                   <div className='inline-block min-w-full py-2 align-middle px-2 md:px-6 lg:px-8'>
                     <Table
                       columns={columns}
-                      data={!historyError && isHistoryLoaded ? history?.rows || [] : []}
+                      data={!historyError && isHistoryLoaded ? filteredHistory : []}
                       isLoading={!isHistoryLoaded || isLoadingPagination}
                       emptyState={{
                         title: t('History.No calls'),
