@@ -171,7 +171,7 @@ export const removeOperatorFromFavorites = async (
 ) => {
   store.dispatch.operators.setFavoritesLoaded(false)
   await deleteSpeedDial({
-    id: favoriteOperatoreSpeedDialId.id.toString(),
+    id: favoriteOperatoreSpeedDialId?.id?.toString(),
   })
   favoriteOperators = favoriteOperators.filter((op: any) => op !== operatorToRemove)
   store.dispatch.operators.setFavorites(favoriteOperators)

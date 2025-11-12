@@ -47,6 +47,9 @@ export const GlobalSearch: FC<GlobalSearchProps> = () => {
   const allowedGroupsIds = store.select.user.allowedOperatorGroupsIds(store.getState())
   const presencePanelPermissions = store.select.user.presencePanelPermissions(store.getState())
 
+  // Ref to track the current input value immediately without debounce
+  const currentInputValue = useRef('')
+
   const userGroups = useMemo(() => {
     return getUserGroups(
       allowedGroupsIds,
@@ -123,10 +126,17 @@ export const GlobalSearch: FC<GlobalSearchProps> = () => {
     }
   }
 
-  const debouncedChangeQuery = useMemo(
+  const handleInputChange = (event: any) => {
+    const value = event.target.value
+    // Update ref immediately for Enter key handler
+    currentInputValue.current = value
+    // Call debounced search function
+    debouncedSearch(value)
+  }
+
+  const debouncedSearch = useMemo(
     () =>
-      debounce(async (event: any) => {
-        const query = event.target.value
+      debounce(async (query: string) => {
         if (globalSearchStore?.isRightSideTitleClicked) {
           store.dispatch.globalSearch.setRightSideTitleClicked(false)
         }
@@ -170,9 +180,9 @@ export const GlobalSearch: FC<GlobalSearchProps> = () => {
   // Stop invocation of debounced function after unmounting
   useEffect(() => {
     return () => {
-      debouncedChangeQuery.cancel()
+      debouncedSearch.cancel()
     }
-  }, [debouncedChangeQuery])
+  }, [debouncedSearch])
 
   const resultSelected = (result: any) => {
     if (!result) {
@@ -285,10 +295,11 @@ export const GlobalSearch: FC<GlobalSearchProps> = () => {
                 <ComboboxInput
                   className='h-[63px] w-full border-0 bg-transparent pl-12 pr-4 focus:ring-0 sm:text-sm text-gray-800 dark:text-gray-100 placeholder-topBarText  dark:placeholder-topBarTextDark'
                   placeholder={t('Devices.Search or compose') + '...' || ''}
-                  onChange={debouncedChangeQuery}
+                  onChange={handleInputChange}
                   onKeyDown={(e: any) => {
                     if (!globalSearchStore?.isOpen && e.key === 'Enter') {
-                      let numberToCall = e.target.value.trim().replace(/\s/g, '')
+                      // Use the ref value instead of e.target.value to avoid race condition
+                      let numberToCall = currentInputValue.current.trim().replace(/\s/g, '')
                       if (/^[\d*]+$/.test(numberToCall)) {
                         callPhoneNumber(numberToCall)
                       } else {

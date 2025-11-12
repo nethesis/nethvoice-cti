@@ -126,8 +126,8 @@ export const OperatorSummary = forwardRef<HTMLButtonElement, OperatorSummaryProp
                       data-tooltip-id={'tooltip-toggle-favorite'}
                       data-tooltip-content={
                         isFavorite
-                          ? t('OperatorDrawer.Set favorite operator') || ''
-                          : t('OperatorDrawer.Remove favorite operator') || ''
+                          ? t('OperatorDrawer.Remove favorite operator') || ''
+                          : t('OperatorDrawer.Set favorite operator') || ''
                       }
                     >
                       <span className='sr-only'>
@@ -187,7 +187,7 @@ export const OperatorSummary = forwardRef<HTMLButtonElement, OperatorSummaryProp
             operatorsStore?.operators[operator?.username]?.conversations[0]?.chDest?.inConference ==
               true ||
             !isEmpty(operatorsStore?.operators[operator?.username]?.conversations[0])) && (
-            <ActionCall config={operator}/>
+            <ActionCall config={operator} />
           )}
       </>
     )
