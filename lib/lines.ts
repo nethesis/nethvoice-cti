@@ -327,7 +327,7 @@ export function reloadAnnouncement() {
 
 // The event to show the recording view.
 export function recordingAnnouncement(type: string) {
-  if (type === 'physical') {
+  if (type === 'physical' || type === 'nethlink') {
     eventDispatch('phone-island-physical-recording-view', {})
   } else {
     eventDispatch('phone-island-recording-open', {})

@@ -57,7 +57,7 @@ export const SaveRecordedAnnouncementDrawerContent = forwardRef<
       setAnnouncementSaveSuccess(true)
       setTimeout(() => {
         config.announcementSavedCallback()
-      }, 500)
+      }, 700)
     } catch (error) {
       setAnnouncementSaveError(true)
       return
