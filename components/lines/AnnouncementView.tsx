@@ -32,7 +32,7 @@ import {
   sortByDateDesc,
 } from '../../lib/utils'
 import { openShowOperatorDrawer } from '../../lib/operators'
-import { openEditAnnouncementDrawer } from '../../lib/lines'
+import { openEditAnnouncementDrawer, reloadAnnouncement } from '../../lib/lines'
 import { useEventListener } from '../../lib/hooks/useEventListener'
 import { CallsDate } from '../history/CallsDate'
 import { Table } from '../common/Table'
@@ -77,14 +77,8 @@ export const AnnouncementView: FC<AnnouncementViewProps> = ({ className }): JSX.
 
   async function announcementSavedCallback() {
     dispatch.sideDrawer.setShown(false)
-    try {
-      const res = await getAnnouncementsFiltered(textFilter.trim(), pageNum)
-      setLines(res.rows)
-      setDataPagination(res)
-    } catch (e) {
-      console.error(e)
-      setLinesError(t('Lines.Cannot retrieve lines') || '')
-    }
+    // Reload announcements without affecting the current filter/sort state
+    reloadAnnouncement()
   }
 
   // Show modal announcement

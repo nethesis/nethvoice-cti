@@ -7,10 +7,10 @@ import { DrawerHeader } from '../common/DrawerHeader'
 import { Divider } from '../common/Divider'
 import { DrawerFooter } from '../common/DrawerFooter'
 import { useTranslation } from 'react-i18next'
-import { faCircleXmark, faFloppyDisk } from '@fortawesome/free-solid-svg-icons'
+import { faCircleXmark, faFloppyDisk, faCircleNotch } from '@fortawesome/free-solid-svg-icons'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { closeSideDrawer } from '../../lib/utils'
-import { TextInput, Button, Modal } from '../common'
+import { TextInput, Modal } from '../common'
 import { enableMsg } from '../../lib/lines'
 import { InlineNotification } from '../common'
 import { store } from '../../store'
@@ -28,6 +28,7 @@ export const SaveRecordedAnnouncementDrawerContent = forwardRef<
   const textFilterRef = useRef() as React.MutableRefObject<HTMLInputElement>
   const [announcementSaveSuccess, setAnnouncementSaveSuccess] = useState<boolean>(false)
   const [announcementSaveError, setAnnouncementSaveError] = useState<boolean>(false)
+  const [isSaving, setIsSaving] = useState<boolean>(false)
 
   const dateRuleInformations = [
     { id: 'public', value: t('Lines.Public') },
@@ -53,12 +54,14 @@ export const SaveRecordedAnnouncementDrawerContent = forwardRef<
       tempFilename: config.recordedFilename,
     }
     try {
+      setIsSaving(true)
       await enableMsg(objectEnableAnnouncement)
       setAnnouncementSaveSuccess(true)
       setTimeout(() => {
         config.announcementSavedCallback()
-      }, 500)
+      }, 1000)
     } catch (error) {
+      setIsSaving(false)
       setAnnouncementSaveError(true)
       return
     }
@@ -143,8 +146,14 @@ export const SaveRecordedAnnouncementDrawerContent = forwardRef<
           confirmLabel={t('Common.Save')}
           onCancel={closeSideDrawerAnnouncement}
           onConfirm={enableAnnouncement}
-          confirmDisabled={!textFilter}
-          confirmIcon={<FontAwesomeIcon icon={faFloppyDisk} className='mr-2 h-4 w-4' />}
+          confirmDisabled={!textFilter || isSaving}
+          confirmIcon={
+            isSaving ? (
+              <FontAwesomeIcon icon={faCircleNotch} className='mr-2 h-4 w-4 fa-spin' />
+            ) : (
+              <FontAwesomeIcon icon={faFloppyDisk} className='mr-2 h-4 w-4' />
+            )
+          }
         />
 
         {announcementSaveSuccess && (
