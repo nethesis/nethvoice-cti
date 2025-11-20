@@ -200,6 +200,15 @@ export async function getDownloadLink() {
   }
 }
 
+export const getFeatureCodes = async () => {
+  try {
+    const res = await axios.get(`/astproxy/feature_codes`)
+    return res.data
+  } catch (error) {
+    console.error(error)
+  }
+}
+
 export const tableHeader = () => {
   return (
     <thead className='bg-gray-100 dark:bg-gray-800'>

@@ -43,7 +43,7 @@ export interface CallsProps extends ComponentProps<'div'> {}
 export const Calls: FC<CallsProps> = ({ className }): JSX.Element => {
   const { operators } = useSelector((state: RootState) => state.operators)
   const { profile } = useSelector((state: RootState) => state.user)
-  const { name, mainextension } = useSelector((state: RootState) => state.user)
+  const { name, mainextension, feature_codes } = useSelector((state: RootState) => state.user)
   const authenticationStore = useSelector((state: RootState) => state.authentication)
   const { username } = authenticationStore
 
@@ -239,15 +239,17 @@ export const Calls: FC<CallsProps> = ({ className }): JSX.Element => {
     }
   }, [debouncedUpdateFilterText])
 
-  // Filter out calls to/from *43 (similar to UserLastCallsContent)
+  // Filter out calls to/from audio_test feature code (similar to UserLastCallsContent)
   const filteredHistory = useMemo(() => {
     if (!history?.rows) return []
 
+    const audioTestCode = feature_codes?.audio_test || '*41'
+
     return history.rows.filter((call: any) => {
       const numberToCheck = call.direction === 'in' ? call.src : call.dst
-      return !numberToCheck?.includes('*43')
+      return !numberToCheck?.includes(audioTestCode)
     })
-  }, [history?.rows])
+  }, [history?.rows, feature_codes?.audio_test])
 
   // Definition of the columns of the table
   const columns = [

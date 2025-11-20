@@ -39,6 +39,15 @@ interface SettingsTypes {
   queue_autopause_presencelist: any
 }
 
+interface FeatureCodes {
+  pickup: string
+  dnd_toggle: string
+  audio_test: string
+  confbridge_conf: string
+  incall_audio: string
+  que_toggle: string
+}
+
 interface Default_device {
   action: any[]
   description: any
@@ -61,6 +70,7 @@ interface DefaultState {
   recallOnBusy: any
   lkhash: string
   urlOpened?: boolean
+  feature_codes: FeatureCodes | null
 }
 
 const defaultState: DefaultState = {
@@ -112,6 +122,7 @@ const defaultState: DefaultState = {
   recallOnBusy: '',
   lkhash: '',
   urlOpened: false,
+  feature_codes: null,
 }
 
 export const user = createModel<RootModel>()({
@@ -174,6 +185,10 @@ export const user = createModel<RootModel>()({
     },
     setUrlOpened: (state, opened: boolean) => {
       state.urlOpened = opened
+      return state
+    },
+    updateFeatureCodes: (state, featureCodes: FeatureCodes) => {
+      state.feature_codes = featureCodes
       return state
     },
     reset: () => {
