@@ -163,6 +163,8 @@ export const TopBar: FC<TopBarProps> = ({ openMobileCb }) => {
             settings: userInfo?.data?.settings,
             recallOnBusy: userInfo?.data?.recallOnBusy,
             lkhash: userInfo?.data?.lkhash,
+            urlOpened: false,
+            feature_codes: null,
           })
         }
       } catch (err) {
@@ -192,6 +194,8 @@ export const TopBar: FC<TopBarProps> = ({ openMobileCb }) => {
           settings: userInfo?.data?.settings,
           recallOnBusy: userInfo?.data?.recallOnBusy,
           lkhash: userInfo?.data?.lkhash,
+          urlOpened: false,
+          feature_codes: null,
         })
       }
     } catch (err) {

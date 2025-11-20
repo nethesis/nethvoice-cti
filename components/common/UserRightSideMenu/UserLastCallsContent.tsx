@@ -181,6 +181,7 @@ export const UserLastCallsContent = () => {
   const { t } = useTranslation()
   const operators = useSelector((state: RootState) => state.operators.operators)
   const username = useSelector((state: RootState) => state.user.username)
+  const feature_codes = useSelector((state: RootState) => state.user.feature_codes)
   const queuesStore = useSelector((state: RootState) => state.queues)
   const [lastCalls, setLastCalls]: any = useState<LastCallsTypes>()
   const [filteredCalls, setFilteredCalls]: any = useState<LastCallsTypes>()
@@ -238,22 +239,28 @@ export const UserLastCallsContent = () => {
     [operators],
   )
 
-  const applyFilters = useCallback((calls: LastCallsTypes, direction: string) => {
-    if (!calls) return
+  const applyFilters = useCallback(
+    (calls: LastCallsTypes, direction: string) => {
+      if (!calls) return
 
-    let result = [...calls]
+      let result = [...calls]
 
-    if (direction !== 'all') {
-      result = result.filter((call) => call.direction === direction)
-    }
+      if (direction !== 'all') {
+        result = result.filter((call) => call.direction === direction)
+      }
 
-    result = result.filter((call) => {
-      const numberToCheck = call.direction === 'in' ? call.src : call.dst
-      return !numberToCheck?.includes('*43')
-    })
+      // Get audio test code from feature_codes, fallback to '*41' if not available
+      const audioTestCode = feature_codes?.audio_test || '*41'
 
-    setFilteredCalls(result)
-  }, [])
+      result = result.filter((call) => {
+        const numberToCheck = call.direction === 'in' ? call.src : call.dst
+        return !numberToCheck?.includes(audioTestCode)
+      })
+
+      setFilteredCalls(result)
+    },
+    [feature_codes?.audio_test],
+  )
 
   const handleDirectionFilter = useCallback(
     (direction: string) => {

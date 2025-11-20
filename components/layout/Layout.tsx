@@ -44,7 +44,7 @@ import { retrieveParksList } from '../../lib/park'
 import { Tooltip } from 'react-tooltip'
 import { getJSONItem, loadPreference, savePreference, setJSONItem } from '../../lib/storage'
 import { eventDispatch } from '../../lib/hooks/eventDispatch'
-import { setMainDevice } from '../../lib/devices'
+import { setMainDevice, getFeatureCodes } from '../../lib/devices'
 import { useHotkeys } from 'react-hotkeys-hook'
 import { setIncomingCallsPreference } from '../../lib/incomingCall'
 
@@ -60,6 +60,7 @@ export const Layout: FC<LayoutProps> = ({ children }) => {
   const [firstRenderGlobalSearchListener, setFirstRenderGlobalSearchListener] = useState(true)
   const [firstRenderAttach, setFirstRenderAttach] = useState(true)
   const [firstRenderDetach, setFirstRenderDetach] = useState(true)
+  const [firstRenderFeatureCodes, setFirstRenderFeatureCodes] = useState(true)
 
   const [isUserInfoLoaded, setUserInfoLoaded] = useState(false)
   const authStore = useSelector((state: RootState) => state.authentication)
@@ -129,6 +130,7 @@ export const Layout: FC<LayoutProps> = ({ children }) => {
           recallOnBusy: userInfo?.data?.recallOnBusy,
           lkhash: userInfo?.data?.lkhash,
           urlOpened: false,
+          feature_codes: null,
         })
         setUserInfoLoaded(true)
 
@@ -257,6 +259,26 @@ export const Layout: FC<LayoutProps> = ({ children }) => {
     fetchProfilingInfo()
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [])
+
+  // get feature codes on page load
+  useEffect(() => {
+    async function initFeatureCodes() {
+      try {
+        const codes = await getFeatureCodes()
+        if (codes) {
+          dispatch.user.updateFeatureCodes(codes)
+        }
+      } catch (error) {
+        console.warn('Failed to fetch feature codes:', error)
+      }
+    }
+
+    if (firstRenderFeatureCodes) {
+      initFeatureCodes()
+      setFirstRenderFeatureCodes(false)
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [firstRenderFeatureCodes])
 
   // check here
   useEffect(() => {
