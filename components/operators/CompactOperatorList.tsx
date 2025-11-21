@@ -7,18 +7,18 @@ import InfiniteScroll from 'react-infinite-scroll-component'
 import CompactOperatorCard from './CompactOperatorCard'
 
 const CompactOperatorList = ({ operators, hasMore, showMore, isLoading = false }: any) => {
-  const authUsername = useSelector((state: RootState) => state.authentication.username)
+  const authUsername = useSelector((state: RootState) => state?.authentication?.username)
   const authUserMainPresence = useSelector(
-    (state: RootState) => state.operators?.operators[state.authentication.username]?.mainPresence,
+    (state: RootState) => state?.operators?.operators[state?.authentication?.username]?.mainPresence,
   )
-  const actionInformation = useSelector((state: RootState) => state.userActions)
-  const isSidebarOpen = useSelector((state: RootState) => state.rightSideMenu.isShown)
+  const actionInformation = useSelector((state: RootState) => state?.userActions)
+  const isSidebarOpen = useSelector((state: RootState) => state?.rightSideMenu?.isShown)
 
   // Filter out the current user from the operators list
   const filteredOperators = useMemo(() => {
-    if (!Array.isArray(operators)) return []
-    return operators.filter(
-      (operator) => operator && typeof operator === 'object' && operator.username !== authUsername,
+    if (!Array?.isArray(operators)) return []
+    return operators?.filter(
+      (operator) => operator && typeof operator === 'object' && operator?.username !== authUsername,
     )
   }, [operators, authUsername])
 
@@ -35,10 +35,10 @@ const CompactOperatorList = ({ operators, hasMore, showMore, isLoading = false }
   // Detect current breakpoint by checking computed grid-template-columns
   useEffect(() => {
     const detectGridCols = () => {
-      if (gridRef.current) {
+      if (gridRef?.current) {
         const computedStyle = window.getComputedStyle(gridRef.current)
-        const gridCols = computedStyle.gridTemplateColumns
-        const colCount = gridCols.split(' ').length
+        const gridCols = computedStyle?.gridTemplateColumns
+        const colCount = gridCols?.split(' ')?.length
         setCurrentCols(colCount)
       }
     }
@@ -118,7 +118,7 @@ const CompactOperatorList = ({ operators, hasMore, showMore, isLoading = false }
         role='list'
         className={`${isSidebarOpen ? classNameSidebarOpen : classNameSidebarClosed}`}
       >
-        {filteredOperators.map((operator, index) => (
+        {filteredOperators?.map((operator, index) => (
           <li
             key={operator?.username || `compact-op-${index}`}
             className='px-1 w-[400px]'

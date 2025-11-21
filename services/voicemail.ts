@@ -81,7 +81,7 @@ export const deleteVoicemailGreetingMessage = async (type: string) => {
 
 // The event to show the recording view.
 export function recordingMessage(type: string) {
-  if (type === 'physical') {
+  if (type === 'physical' || type === 'nethlink') {
     eventDispatch('phone-island-physical-recording-view', {})
   } else {
     eventDispatch('phone-island-recording-open', {})

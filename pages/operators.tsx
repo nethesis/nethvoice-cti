@@ -51,7 +51,7 @@ const Operators: NextPage = () => {
   }
 
   const [filteredOperators, setFilteredOperators] = useState<any>([])
-  const operatorsStore = useSelector((state: RootState) => state.operators)
+  const operatorsStore = useSelector((state: RootState) => state?.operators)
   const [isApplyingFilters, setApplyingFilters] = useState(false)
   const infiniteScrollOperatorsPageSize = getInfiniteScrollOperatorsPageSize()
   const [infiniteScrollOperators, setInfiniteScrollOperators] = useState<
@@ -61,7 +61,7 @@ const Operators: NextPage = () => {
   const [infiniteScrollLastIndex, setInfiniteScrollLastIndex] = useState(
     infiniteScrollOperatorsPageSize,
   )
-  const auth = useSelector((state: RootState) => state.authentication)
+  const auth = useSelector((state: RootState) => state?.authentication)
 
   const [textFilter, setTextFilter]: any = useState('')
   const updateTextFilter = (newTextFilter: string) => {
@@ -73,7 +73,7 @@ const Operators: NextPage = () => {
   // stop invocation of debounced function after unmounting
   useEffect(() => {
     return () => {
-      debouncedUpdateTextFilter.cancel()
+      debouncedUpdateTextFilter?.cancel()
     }
   }, [debouncedUpdateTextFilter])
 
@@ -105,18 +105,18 @@ const Operators: NextPage = () => {
   const [layout, setLayout] = useState('')
   const { profile } = useSelector((state: RootState) => state?.user)
 
-  const allowedGroupsIds = store.select.user.allowedOperatorGroupsIds(store.getState())
-  const presencePanelPermissions = store.select.user.presencePanelPermissions(store.getState())
-  const { username } = store.getState().user
+  const allowedGroupsIds = store?.select?.user?.allowedOperatorGroupsIds(store?.getState())
+  const presencePanelPermissions = store?.select?.user?.presencePanelPermissions(store?.getState())
+  const { username } = store?.getState()?.user
 
   const userGroups = useMemo(() => {
     return getUserGroups(
       allowedGroupsIds,
-      operatorsStore.groups,
+      operatorsStore?.groups,
       presencePanelPermissions?.['all_groups']?.value,
       username,
     )
-  }, [allowedGroupsIds, operatorsStore.groups, presencePanelPermissions, username])
+  }, [allowedGroupsIds, operatorsStore?.groups, presencePanelPermissions, username])
 
   const applyFilters = useCallback(
     (operators: Record<string, Operator>) => {
@@ -126,7 +126,7 @@ const Operators: NextPage = () => {
       setApplyingFilters(true)
 
       // text filter and exclude current user
-      let filteredOperators: Operator[] = Object.values(operators || {}).filter(
+      let filteredOperators: Operator[] = Object?.values(operators || {}).filter(
         (op) =>
           op &&
           typeof op === 'object' &&
@@ -137,46 +137,46 @@ const Operators: NextPage = () => {
       if (layout !== 'grouped') {
         // group filter
         if (groupFilter === 'favorites') {
-          filteredOperators = filteredOperators.filter((op: any) => {
-            return op.favorite && userGroups.some((g) => op.groups?.includes(g))
+          filteredOperators = filteredOperators?.filter((op: any) => {
+            return op?.favorite && userGroups?.some((g) => op?.groups?.includes(g))
           })
         } else if (groupFilter === 'all') {
-          filteredOperators = filteredOperators.filter((op: any) => {
-            return userGroups.some((g) => op.groups?.includes(g))
+          filteredOperators = filteredOperators?.filter((op: any) => {
+            return userGroups?.some((g) => op?.groups?.includes(g))
           })
         } else {
-          filteredOperators = filteredOperators.filter((op: any) => {
-            return groupFilter === 'all' || op.groups?.includes(groupFilter)
+          filteredOperators = filteredOperators?.filter((op: any) => {
+            return groupFilter === 'all' || op?.groups?.includes(groupFilter)
           })
         }
 
         // sort operators
         switch (sortByFilter) {
           case 'favorites':
-            filteredOperators.sort(sortByProperty('name'))
+            filteredOperators?.sort(sortByProperty('name'))
             // filteredOperators.sort(sortByOperatorStatus)
-            filteredOperators.sort(sortByFavorite)
+            filteredOperators?.sort(sortByFavorite)
             break
           case 'extension':
-            filteredOperators.sort((a: any, b: any) =>
+            filteredOperators?.sort((a: any, b: any) =>
               a?.endpoints?.extension[0]?.id > b?.endpoints?.extension[0]?.id ? 1 : -1,
             )
             break
           case 'az':
             // Sort operators alphabetically
-            filteredOperators.sort((a: any, b: any) => (a?.name > b?.name ? 1 : -1))
+            filteredOperators?.sort((a: any, b: any) => (a?.name > b?.name ? 1 : -1))
             break
           case 'za':
             // Sort operators reverse alphabetically
-            filteredOperators.sort((a: any, b: any) => (a?.name < b?.name ? 1 : -1))
+            filteredOperators?.sort((a: any, b: any) => (a?.name < b?.name ? 1 : -1))
             break
         }
 
-        filteredOperators = filteredOperators.filter((op: any) => {
+        filteredOperators = filteredOperators?.filter((op: any) => {
           return (
             statusFilter === 'all' ||
-            (statusFilter === 'available' && AVAILABLE_STATUSES.includes(op?.mainPresence)) ||
-            (statusFilter === 'unavailable' && UNAVAILABLE_STATUSES.includes(op?.mainPresence)) ||
+            (statusFilter === 'available' && AVAILABLE_STATUSES?.includes(op?.mainPresence)) ||
+            (statusFilter === 'unavailable' && UNAVAILABLE_STATUSES?.includes(op?.mainPresence)) ||
             (statusFilter === 'offline' && op?.mainPresence === 'offline') ||
             (statusFilter === 'allExceptOffline' && op?.mainPresence !== 'offline')
           )
@@ -184,38 +184,38 @@ const Operators: NextPage = () => {
       } else {
         // group filter
         if (groupFilter === 'favorites') {
-          filteredOperators = filteredOperators.filter((op: any) => {
-            return op.favorite && userGroups.some((g) => op.groups?.includes(g))
+          filteredOperators = filteredOperators?.filter((op: any) => {
+            return op?.favorite && userGroups?.some((g) => op?.groups?.includes(g))
           })
         } else if (groupFilter === 'all') {
-          filteredOperators = filteredOperators.filter((op: any) => {
-            return userGroups.some((g) => op.groups?.includes(g))
+          filteredOperators = filteredOperators?.filter((op: any) => {
+            return userGroups.some((g) => op?.groups?.includes(g))
           })
         } else {
-          filteredOperators = filteredOperators.filter((op: any) => {
-            return groupFilter === 'all' || op.groups?.includes(groupFilter)
+          filteredOperators = filteredOperators?.filter((op: any) => {
+            return groupFilter === 'all' || op?.groups?.includes(groupFilter)
           })
         }
 
         // sort operators
         switch (groupedSortByFilter) {
           case 'extension':
-            filteredOperators.sort((a: any, b: any) =>
+            filteredOperators?.sort((a: any, b: any) =>
               a?.endpoints?.extension[0]?.id > b?.endpoints?.extension[0]?.id ? 1 : -1,
             )
             break
           case 'az':
             // Sort operators alphabetically
-            filteredOperators.sort((a: any, b: any) => (a?.name > b?.name ? 1 : -1))
+            filteredOperators?.sort((a: any, b: any) => (a?.name > b?.name ? 1 : -1))
             break
           case 'za':
             // Sort operators reverse alphabetically
-            filteredOperators.sort((a: any, b: any) => (a?.name < b?.name ? 1 : -1))
+            filteredOperators?.sort((a: any, b: any) => (a?.name < b?.name ? 1 : -1))
             break
           case 'favorites':
-            filteredOperators.sort(sortByProperty('name'))
-            filteredOperators.sort(sortByOperatorStatus)
-            filteredOperators.sort(sortByFavorite)
+            filteredOperators?.sort(sortByProperty('name'))
+            filteredOperators?.sort(sortByOperatorStatus)
+            filteredOperators?.sort(sortByFavorite)
             break
         }
 
@@ -224,54 +224,54 @@ const Operators: NextPage = () => {
           case 'az':
             // Group by first letter of name and sort alphabetically within each category
             const letterGroupsAZ: { [key: string]: any[] } = {}
-            filteredOperators.forEach((op: any) => {
+            filteredOperators?.forEach((op: any) => {
               const firstLetter = op?.name?.charAt(0)?.toUpperCase()
               if (!letterGroupsAZ[firstLetter]) {
                 letterGroupsAZ[firstLetter] = []
               }
-              letterGroupsAZ[firstLetter].push(op)
+              letterGroupsAZ[firstLetter]?.push(op)
             })
             filteredOperators = []
-            Object.keys(letterGroupsAZ)
-              .sort()
-              .forEach((letter: string) => {
-                filteredOperators.push({ category: letter, members: letterGroupsAZ[letter] })
+            Object?.keys(letterGroupsAZ)
+              ?.sort()
+              ?.forEach((letter: string) => {
+                filteredOperators?.push({ category: letter, members: letterGroupsAZ[letter] })
               })
             break
           case 'za':
             // Group by first letter of name and sort reverse alphabetically within each category
             const letterGroupsZA: { [key: string]: any[] } = {}
-            filteredOperators.forEach((op: any) => {
+            filteredOperators?.forEach((op: any) => {
               const firstLetter = op?.name?.charAt(0)?.toUpperCase()
               if (!letterGroupsZA[firstLetter]) {
                 letterGroupsZA[firstLetter] = []
               }
-              letterGroupsZA[firstLetter].push(op)
+              letterGroupsZA[firstLetter]?.push(op)
             })
             filteredOperators = []
-            Object.keys(letterGroupsZA)
-              .sort()
-              .reverse()
-              .forEach((letter: string) => {
-                filteredOperators.push({ category: letter, members: letterGroupsZA[letter] })
+            Object?.keys(letterGroupsZA)
+              ?.sort()
+              ?.reverse()
+              ?.forEach((letter: string) => {
+                filteredOperators?.push({ category: letter, members: letterGroupsZA[letter] })
               })
             break
           case 'team':
             // Group by team and sort alphabetically within each team
             const teams: { [key: string]: any[] } = {}
-            filteredOperators.forEach((op: any) => {
-              op.groups?.forEach((group: string) => {
+            filteredOperators?.forEach((op: any) => {
+              op?.groups?.forEach((group: string) => {
                 if (!teams[group]) {
                   teams[group] = []
                 }
-                teams[group].push(op)
+                teams[group]?.push(op)
               })
             })
             filteredOperators = []
-            Object.keys(teams)
-              .sort()
-              .forEach((team: string) => {
-                filteredOperators.push({
+            Object?.keys(teams)
+              ?.sort()
+              ?.forEach((team: string) => {
+                filteredOperators?.push({
                   category: team,
                   members: teams[team],
                 })
@@ -280,15 +280,15 @@ const Operators: NextPage = () => {
           case 'status':
             // Group by status and sort according to custom order within each status
             const statusGroups: { [key: string]: any[] } = {}
-            filteredOperators.forEach((op: any) => {
-              let status = op.mainPresence
+            filteredOperators?.forEach((op: any) => {
+              let status = op?.mainPresence
               if (status === 'incoming' || status === 'ringing') {
                 status = 'busy'
               }
               if (!statusGroups[status]) {
                 statusGroups[status] = []
               }
-              statusGroups[status].push(op)
+              statusGroups[status]?.push(op)
             })
             filteredOperators = []
             // Define custom order for statuses
@@ -302,11 +302,11 @@ const Operators: NextPage = () => {
               'offline',
             ]
             // Iterate through custom status order
-            customStatusOrder.forEach((status: string) => {
+            customStatusOrder?.forEach((status: string) => {
               // Check if status exists in statusGroups
-              if (statusGroups.hasOwnProperty(status)) {
+              if (statusGroups?.hasOwnProperty(status)) {
                 // Push category with sorted members according to custom order
-                filteredOperators.push({
+                filteredOperators?.push({
                   category: status,
                   members: statusGroups[status],
                 })
@@ -419,7 +419,7 @@ const Operators: NextPage = () => {
 
   // retrieve layout values from local storage
   useEffect(() => {
-    const filterValues = getFilterValues(auth.username)
+    const filterValues = getFilterValues(auth?.username)
     setLayout(filterValues?.layout)
     setSelectedLayout(filterValues?.layout)
     if (filterValues?.layout === 'grouped') {
@@ -446,7 +446,7 @@ const Operators: NextPage = () => {
               {layout === 'grouped' ? (
                 <>
                   <Filter
-                    groups={operatorsStore.groups}
+                    groups={operatorsStore?.groups}
                     updateTextFilter={debouncedUpdateTextFilter}
                     updateGroupFilter={updateGroupFilter}
                     updateStatusFilter={updateStatusFilter}
@@ -459,7 +459,7 @@ const Operators: NextPage = () => {
               ) : (
                 <>
                   <Filter
-                    groups={operatorsStore.groups}
+                    groups={operatorsStore?.groups}
                     updateTextFilter={debouncedUpdateTextFilter}
                     updateGroupFilter={updateGroupFilter}
                     updateStatusFilter={updateStatusFilter}
@@ -558,17 +558,17 @@ const Operators: NextPage = () => {
           </div>
 
           {/* operators error */}
-          {operatorsStore.errorMessage && (
+          {operatorsStore?.errorMessage && (
             <InlineNotification
               type='error'
-              title={operatorsStore.errorMessage}
+              title={operatorsStore?.errorMessage}
             ></InlineNotification>
           )}
           <div className='mx-auto text-center flex justify-center'>
             {/* empty state */}
-            {operatorsStore.isOperatorsLoaded &&
-              !operatorsStore.errorMessage &&
-              isEmpty(operatorsStore.operators) && (
+            {operatorsStore?.isOperatorsLoaded &&
+              !operatorsStore?.errorMessage &&
+              isEmpty(operatorsStore?.operators) && (
                 <EmptyState
                   title='No operators'
                   description='There is no operator configured'
@@ -582,9 +582,9 @@ const Operators: NextPage = () => {
                 ></EmptyState>
               )}
             {/* no search results */}
-            {operatorsStore.isOperatorsLoaded &&
-              !operatorsStore.errorMessage &&
-              !isEmpty(operatorsStore.operators) &&
+            {operatorsStore?.isOperatorsLoaded &&
+              !operatorsStore?.errorMessage &&
+              !isEmpty(operatorsStore?.operators) &&
               isEmpty(filteredOperators) && (
                 <EmptyState
                   title='No operators'
@@ -605,7 +605,7 @@ const Operators: NextPage = () => {
                 operators={infiniteScrollOperators}
                 hasMore={infiniteScrollHasMore}
                 showMore={showMoreInfiniteScrollOperators}
-                isLoading={!operatorsStore.isOperatorsLoaded || isApplyingFilters}
+                isLoading={!operatorsStore?.isOperatorsLoaded || isApplyingFilters}
               />
             )}
 
@@ -615,7 +615,7 @@ const Operators: NextPage = () => {
                 operators={infiniteScrollOperators}
                 hasMore={infiniteScrollHasMore}
                 showMore={showMoreInfiniteScrollOperators}
-                isLoading={!operatorsStore.isOperatorsLoaded || isApplyingFilters}
+                isLoading={!operatorsStore?.isOperatorsLoaded || isApplyingFilters}
               />
             )}
 
@@ -625,13 +625,13 @@ const Operators: NextPage = () => {
                 operators={infiniteScrollOperators}
                 hasMore={infiniteScrollHasMore}
                 showMore={showMoreInfiniteScrollOperators}
-                isLoading={!operatorsStore.isOperatorsLoaded || isApplyingFilters}
+                isLoading={!operatorsStore?.isOperatorsLoaded || isApplyingFilters}
                 upperCaseFirstLetter={upperCaseFirstLetter}
               />
             )}
           </div>
         </div>
-      ) : operatorsStore.isOperatorsLoaded ? (
+      ) : operatorsStore?.isOperatorsLoaded ? (
         <MissingPermission />
       ) : (
         <> </>

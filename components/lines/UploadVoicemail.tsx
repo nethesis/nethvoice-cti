@@ -244,11 +244,7 @@ export const UploadVoicemail = forwardRef<HTMLButtonElement, EditVoicemailConten
 
     //Start recording announcement function
     const startRecordingAnnouncement = () => {
-      if (user.default_device.type === 'physical') {
-        recordingAnnouncement('physical')
-      } else {
-        recordingAnnouncement('webrtc')
-      }
+      recordingAnnouncement(user?.default_device?.type)
     }
 
     return (
