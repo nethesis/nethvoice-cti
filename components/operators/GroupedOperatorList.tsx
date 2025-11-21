@@ -22,28 +22,28 @@ const GroupedOperatorList = ({
   isLoading = false,
   upperCaseFirstLetter,
 }: GroupedOperatorListProps) => {
-  const authUsername = useSelector((state: RootState) => state.authentication.username)
+  const authUsername = useSelector((state: RootState) => state?.authentication?.username)
   const authUserMainPresence = useSelector(
-    (state: RootState) => state.operators?.operators[state.authentication.username]?.mainPresence,
+    (state: RootState) => state.operators?.operators[state?.authentication?.username]?.mainPresence,
   )
-  const actionInformation = useSelector((state: RootState) => state.userActions)
-  const isSidebarOpen = useSelector((state: RootState) => state.rightSideMenu.isShown)
+  const actionInformation = useSelector((state: RootState) => state?.userActions)
+  const isSidebarOpen = useSelector((state: RootState) => state?.rightSideMenu?.isShown)
 
   // Filter out the current user from all groups with proper type checking
   const filteredOperators = useMemo(() => {
-    if (!Array.isArray(operators)) return []
+    if (!Array?.isArray(operators)) return []
 
     return operators
       .map((category) => ({
         ...category,
-        members: Array.isArray(category.members)
-          ? category.members.filter(
+        members: Array?.isArray(category?.members)
+          ? category?.members.filter(
               (member: any) =>
                 member && typeof member === 'object' && member?.username !== authUsername,
             )
           : [],
       }))
-      .filter((category) => category.members.length > 0)
+      .filter((category) => category?.members?.length > 0)
   }, [operators, authUsername])
 
   const mainUserIsBusy = useMemo(() => authUserMainPresence === 'busy', [authUserMainPresence])
@@ -61,8 +61,8 @@ const GroupedOperatorList = ({
     const detectGridCols = () => {
       if (gridRef.current) {
         const computedStyle = window.getComputedStyle(gridRef.current)
-        const gridCols = computedStyle.gridTemplateColumns
-        const colCount = gridCols.split(' ').length
+        const gridCols = computedStyle?.gridTemplateColumns
+        const colCount = gridCols?.split(' ')?.length
         setCurrentCols(colCount)
       }
     }
