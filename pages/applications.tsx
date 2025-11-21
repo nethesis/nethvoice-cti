@@ -143,7 +143,7 @@ const Applications: NextPage = () => {
     internalApplications.push({
       icon: faCameraSecurity as any,
       title: 'Video sources',
-      description: 'Manage your phone lines, activate announcements, voicemail or forward calls',
+      description: 'Display video streams from various sources such as IP cameras or video intercoms',
       type: 'streaming',
     })
   }
