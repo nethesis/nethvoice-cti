@@ -158,7 +158,7 @@ const Phonebook: NextPage = () => {
                 </span>
               </div>
             )}
-            {contact.kind === 'person' && contact.company && !contact.extension && (
+            {contact?.kind === 'person' && contact?.company && !contact?.extension && (
               <div className='mt-1 flex items-center text-sm text-gray-500 dark:text-gray-400'>
                 <FontAwesomeIcon
                   icon={faSuitcase}
@@ -178,7 +178,7 @@ const Phonebook: NextPage = () => {
       header: t('Phonebook.Primary phone'),
       cell: (contact: any) => (
         <div>
-          {contact.workphone ? (
+          {contact?.workphone ? (
             <div className='mt-1 flex items-center text-sm font-normal text-iconPrimary dark:text-iconPrimaryDark'>
               <FontAwesomeIcon
                 icon={faPhone}
@@ -228,10 +228,10 @@ const Phonebook: NextPage = () => {
                 className='truncate cursor-pointer hover:underline'
                 onClick={(e) => {
                   e.stopPropagation()
-                  callPhoneNumber(contact.cellphone)
+                  callPhoneNumber(contact?.cellphone)
                 }}
               >
-                {contact.cellphone}
+                {contact?.cellphone}
               </span>
             </div>
           ) : (
@@ -294,7 +294,7 @@ const Phonebook: NextPage = () => {
                       data={filteredContacts}
                       isLoading={!isPhonebookLoaded}
                       emptyState={
-                        !textFilter.length
+                        !textFilter?.length
                           ? {
                               title: t('Phonebook.No contacts'),
                               description:
@@ -320,13 +320,13 @@ const Phonebook: NextPage = () => {
                             }
                       }
                       onRowClick={(contact) => openShowContactDrawer(contact)}
-                      rowKey={(contact) => contact.id || contact.displayName}
+                      rowKey={(contact) => contact?.id || contact?.displayName}
                       trClassName='h-[84px]'
                       scrollable={true}
                       maxHeight='calc(100vh - 480px)'
                     />
 
-                    {isPhonebookLoaded && filteredContacts.length === 0 && !textFilter.length && (
+                    {isPhonebookLoaded && filteredContacts?.length === 0 && !textFilter?.length && (
                       <div className='mt-4 flex justify-center'>
                         <Button variant='primary' onClick={() => openCreateContactDrawer()}>
                           <FontAwesomeIcon icon={faPlus} className='mr-2 h-4 w-4' />
@@ -344,7 +344,7 @@ const Phonebook: NextPage = () => {
           {!phonebookError && phonebook?.rows?.length > 0 && (
             <Pagination
               currentPage={pageNum}
-              totalPages={phonebook.totalPages}
+              totalPages={phonebook?.totalPages}
               totalItems={phonebook?.count || 0}
               pageSize={PAGE_SIZE}
               onPreviousPage={goToPreviousPage}

@@ -744,12 +744,12 @@ export const QueueManagerDashboard: FC<QueueManagerDashboardProps> = ({
                                           ) : (
                                             <Avatar
                                               rounded='full'
-                                              src={operators[agent.shortname]?.avatarBase64}
+                                              src={operators[agent?.shortname]?.avatarBase64}
                                               placeholderType='operator'
                                               size='small'
-                                              status={operators[agent.shortname]?.mainPresence}
+                                              status={operators[agent?.shortname]?.mainPresence}
                                               onClick={() =>
-                                                openShowOperatorDrawer(operators[agent.shortname])
+                                                openShowOperatorDrawer(operators[agent?.shortname])
                                               }
                                               className='cursor-pointer'
                                             />
@@ -758,15 +758,15 @@ export const QueueManagerDashboard: FC<QueueManagerDashboardProps> = ({
                                         <div
                                           className='text-gray-900 dark:text-gray-100 cursor-pointer'
                                           onClick={() =>
-                                            openShowOperatorDrawer(operators[agent.shortname])
+                                            openShowOperatorDrawer(operators[agent?.shortname])
                                           }
                                         >
-                                          {isRowEmpty ? '-' : agent.name}
+                                          {isRowEmpty ? '-' : agent?.name}
                                         </div>
                                       </div>
                                     </td>
                                     <td className='relative whitespace-nowrap py-2 pl-3 pr-4 text-right text-sm font-medium sm:pr-0'>
-                                      {isRowEmpty ? '-' : agent.values}
+                                      {isRowEmpty ? '-' : agent?.values}
                                     </td>
                                   </tr>
                                 )
@@ -866,12 +866,12 @@ export const QueueManagerDashboard: FC<QueueManagerDashboardProps> = ({
                                           ) : (
                                             <Avatar
                                               rounded='full'
-                                              src={operators[agent.shortname]?.avatarBase64}
+                                              src={operators[agent?.shortname]?.avatarBase64}
                                               placeholderType='operator'
                                               size='small'
-                                              status={operators[agent.shortname]?.mainPresence}
+                                              status={operators[agent?.shortname]?.mainPresence}
                                               onClick={() =>
-                                                openShowOperatorDrawer(operators[agent.shortname])
+                                                openShowOperatorDrawer(operators[agent?.shortname])
                                               }
                                               className='cursor-pointer'
                                             />
@@ -883,12 +883,12 @@ export const QueueManagerDashboard: FC<QueueManagerDashboardProps> = ({
                                             setOperatorInformationDrawer(agent, operatorsStore)
                                           }
                                         >
-                                          {isRowEmpty ? '-' : agent.name}
+                                          {isRowEmpty ? '-' : agent?.name}
                                         </div>
                                       </div>
                                     </td>
                                     <td className='relative whitespace-nowrap py-2 pl-3 pr-4 text-right text-sm font-medium sm:pr-0'>
-                                      {isRowEmpty ? '-' : agent.values}
+                                      {isRowEmpty ? '-' : agent?.values}
                                     </td>
                                   </tr>
                                 )
@@ -1351,12 +1351,12 @@ export const QueueManagerDashboard: FC<QueueManagerDashboardProps> = ({
                                           ) : (
                                             <Avatar
                                               rounded='full'
-                                              src={operators[agent.shortname]?.avatarBase64}
+                                              src={operators[agent?.shortname]?.avatarBase64}
                                               placeholderType='operator'
                                               size='small'
-                                              status={operators[agent.shortname]?.mainPresence}
+                                              status={operators[agent?.shortname]?.mainPresence}
                                               onClick={() =>
-                                                openShowOperatorDrawer(operators[agent.shortname])
+                                                openShowOperatorDrawer(operators[agent?.shortname])
                                               }
                                               className='cursor-pointer'
                                             />
@@ -1368,12 +1368,12 @@ export const QueueManagerDashboard: FC<QueueManagerDashboardProps> = ({
                                             setOperatorInformationDrawer(agent, operatorsStore)
                                           }
                                         >
-                                          {isRowEmpty ? '-' : agent.name}
+                                          {isRowEmpty ? '-' : agent?.name}
                                         </div>
                                       </div>
                                     </td>
                                     <td className='relative whitespace-nowrap py-2 pl-3 pr-4 text-right text-sm font-medium sm:pr-0'>
-                                      {isRowEmpty ? '-' : `${agent.values}%`}
+                                      {isRowEmpty ? '-' : `${agent?.values}%`}
                                     </td>
                                   </tr>
                                 )
@@ -1749,15 +1749,15 @@ export const QueueManagerDashboard: FC<QueueManagerDashboardProps> = ({
                                   <td className='whitespace-nowrap py-3 pl-4 pr-3 text-sm sm:pl-0'>
                                     <div className='flex items-center py-3'>
                                       <div className='text-gray-900 dark:text-gray-100'>
-                                        {queue.name} ({queue.queue})
+                                        {queue?.name} ({queue?.queue})
                                       </div>
                                     </div>
                                   </td>
                                   <td className='relative whitespace-nowrap py-2 pl-3 pr-4 text-right text-sm font-medium sm:pr-0'>
-                                    {t(`QueueManager.${queue.note}`)}
+                                    {t(`QueueManager.${queue?.note}`)}
                                   </td>
                                   <td className='relative whitespace-nowrap py-2 pl-3 pr-4 text-right text-sm font-medium sm:pr-0'>
-                                    {queue.values}
+                                    {queue?.values}
                                   </td>
                                 </tr>
                               ))}
@@ -1856,12 +1856,12 @@ export const QueueManagerDashboard: FC<QueueManagerDashboardProps> = ({
                                           ) : (
                                             <Avatar
                                               rounded='full'
-                                              src={operators[agent.shortname]?.avatarBase64}
+                                              src={operators[agent?.shortname]?.avatarBase64}
                                               placeholderType='operator'
                                               size='small'
-                                              status={operators[agent.shortname]?.mainPresence}
+                                              status={operators[agent?.shortname]?.mainPresence}
                                               onClick={() =>
-                                                openShowOperatorDrawer(operators[agent.shortname])
+                                                openShowOperatorDrawer(operators[agent?.shortname])
                                               }
                                               className='cursor-pointer'
                                             />
@@ -1873,14 +1873,14 @@ export const QueueManagerDashboard: FC<QueueManagerDashboardProps> = ({
                                             setOperatorInformationDrawer(agent, operatorsStore)
                                           }
                                         >
-                                          {isRowEmpty ? '-' : agent.name}
+                                          {isRowEmpty ? '-' : agent?.name}
                                         </div>
                                       </div>
                                     </td>
                                     <td className='relative whitespace-nowrap py-2 pl-3 pr-4 text-right text-sm font-medium sm:pr-0'>
                                       {isRowEmpty
                                         ? '00:00:00'
-                                        : convertToHumanReadable(agent.values)}
+                                        : convertToHumanReadable(agent?.values)}
                                     </td>
                                   </tr>
                                 )
@@ -1970,17 +1970,17 @@ export const QueueManagerDashboard: FC<QueueManagerDashboardProps> = ({
                                     <td className='whitespace-nowrap py-3 pl-4 pr-3 text-sm sm:pl-0'>
                                       <div className='flex items-center'>
                                         <span className='flex-shrink-0 mr-2'>
-                                          {isRowEmpty ? '' : getQueueName(agent.name, queuesList)}
+                                          {isRowEmpty ? '' : getQueueName(agent?.name, queuesList)}
                                         </span>
                                         <div className='text-gray-900 dark:text-gray-100'>
-                                          {isRowEmpty ? '-' : agent.name}
+                                          {isRowEmpty ? '-' : agent?.name}
                                         </div>
                                       </div>
                                     </td>
                                     <td className='relative whitespace-nowrap py-2 pl-3 pr-4 text-right text-sm font-medium sm:pr-0'>
                                       {isRowEmpty
                                         ? '00:00:00'
-                                        : convertToHumanReadable(agent.values)}
+                                        : convertToHumanReadable(agent?.values)}
                                     </td>
                                   </tr>
                                 )

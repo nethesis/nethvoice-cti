@@ -14,16 +14,16 @@ interface OperatorListProps {
 }
 
 const OperatorList = ({ operators, hasMore, showMore, isLoading = false }: OperatorListProps) => {
-  const authUsername = useSelector((state: RootState) => state.authentication.username)
+  const authUsername = useSelector((state: RootState) => state?.authentication?.username)
   const authUserMainPresence = useSelector(
-    (state: RootState) => state.operators?.operators[state.authentication.username]?.mainPresence,
+    (state: RootState) => state?.operators?.operators[state?.authentication?.username]?.mainPresence,
   )
-  const actionInformation = useSelector((state: RootState) => state.userActions)
-  const isSidebarOpen = useSelector((state: RootState) => state.rightSideMenu.isShown)
+  const actionInformation = useSelector((state: RootState) => state?.userActions)
+  const isSidebarOpen = useSelector((state: RootState) => state?.rightSideMenu?.isShown)
 
   // Filter out the current user from the operators list
   const filteredOperators = useMemo(() => {
-    return operators.filter((operator) => operator?.username !== authUsername)
+    return operators?.filter((operator) => operator?.username !== authUsername)
   }, [operators, authUsername])
 
   const mainUserIsBusy = useMemo(() => authUserMainPresence === 'busy', [authUserMainPresence])
@@ -39,10 +39,10 @@ const OperatorList = ({ operators, hasMore, showMore, isLoading = false }: Opera
   // Detect current breakpoint by checking computed grid-template-columns
   useEffect(() => {
     const detectGridCols = () => {
-      if (gridRef.current) {
-        const computedStyle = window.getComputedStyle(gridRef.current)
-        const gridCols = computedStyle.gridTemplateColumns
-        const colCount = gridCols.split(' ').length
+      if (gridRef?.current) {
+        const computedStyle = window?.getComputedStyle(gridRef?.current)
+        const gridCols = computedStyle?.gridTemplateColumns
+        const colCount = gridCols?.split(' ')?.length
         setCurrentCols(colCount)
       }
     }

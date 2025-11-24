@@ -135,11 +135,7 @@ export const Voicemail = () => {
 
   // Start recording message function
   const startRecordingMessage = () => {
-    if (user.default_device.type === 'physical') {
-      recordingMessage('physical')
-    } else {
-      recordingMessage('webrtc')
-    }
+    recordingMessage(user?.default_device?.type)
   }
 
   // Show modal announcement

@@ -43,14 +43,14 @@ export const useOperatorStates = (operator: any, authUsername: string) => {
     const isOfflineOrDnd = operator?.mainPresence === 'offline' || operator?.mainPresence === 'dnd'
     const isOnline = operator?.mainPresence === 'online'
 
-    const hasAnyPermission = permissions.pickup || permissions.hangup
+    const hasAnyPermission = permissions?.pickup || permissions?.hangup
 
     const allUserExtensions = [
       profile?.mainextension,
       profile?.username,
       authUsername,
-      ...(profile?.endpoints?.extension?.map((ext: any) => ext.id) || []),
-      ...(profile?.endpoints?.mainextension?.map((ext: any) => ext.id) || []),
+      ...(profile?.endpoints?.extension?.map((ext: any) => ext?.id) || []),
+      ...(profile?.endpoints?.mainextension?.map((ext: any) => ext?.id) || []),
     ].filter(Boolean)
 
     const isCalledByCurrentUser =

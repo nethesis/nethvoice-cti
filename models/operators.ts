@@ -104,7 +104,7 @@ export const operators = createModel<RootModel>()({
       return state
     },
     updateMainPresence: (state, operatorName: string, newMainPresence: string) => {
-      const op = state.operators[operatorName]
+      const op = state?.operators[operatorName]
 
       if (!op) {
         return
@@ -113,7 +113,7 @@ export const operators = createModel<RootModel>()({
       return state
     },
     updateConversations: (state, operatorName: string, newConversations: any) => {
-      const op = state.operators[operatorName]
+      const op = state?.operators[operatorName]
 
       if (!op) {
         return

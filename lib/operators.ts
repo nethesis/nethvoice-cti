@@ -76,7 +76,7 @@ export function searchStringInOperator(operator: any, queryText: string) {
 
   // search in extensions
   found = endpoints.extension.some((extension: any) => {
-    return new RegExp(queryText, 'i').test(extension.id.replace(regex, ''))
+    return new RegExp(queryText, 'i').test(extension?.id?.replace(regex, ''))
   })
 
   if (found) {
@@ -85,7 +85,7 @@ export function searchStringInOperator(operator: any, queryText: string) {
 
   // search in cellphones
   found = endpoints.cellphone.some((cellphone: any) => {
-    return new RegExp(queryText, 'i').test(cellphone.id.replace(regex, ''))
+    return new RegExp(queryText, 'i').test(cellphone?.id?.replace(regex, ''))
   })
 }
 
@@ -109,8 +109,8 @@ export const sortByOperatorStatus = (operator1: any, operator2: any) => {
     'dnd',
     'offline',
   ]
-  const rank1 = statusRanking.indexOf(operator1.mainPresence)
-  const rank2 = statusRanking.indexOf(operator2.mainPresence)
+  const rank1 = statusRanking.indexOf(operator1?.mainPresence)
+  const rank2 = statusRanking.indexOf(operator2?.mainPresence)
 
   if (rank1 < rank2) {
     return -1
@@ -136,14 +136,14 @@ export const callOperator = (operator: any, event: any = undefined) => {
 
 export const isOperatorCallable = (operator: any, currentUsername: string) => {
   return (
-    operator.endpoints.extension.length > 0 &&
-    (operator.mainPresence === 'online' ||
-      operator.mainPresence === 'cellphone' ||
-      operator.mainPresence === 'callforward' ||
-      operator.mainPresence === 'voicemail') &&
-    operator.status !== 'busy' &&
-    operator.status !== 'onhold' &&
-    operator.username !== currentUsername
+    operator?.endpoints?.extension?.length > 0 &&
+    (operator?.mainPresence === 'online' ||
+      operator?.mainPresence === 'cellphone' ||
+      operator?.mainPresence === 'callforward' ||
+      operator?.mainPresence === 'voicemail') &&
+    operator?.status !== 'busy' &&
+    operator?.status !== 'onhold' &&
+    operator?.username !== currentUsername
   )
 }
 
