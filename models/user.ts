@@ -129,17 +129,17 @@ export const user = createModel<RootModel>()({
   state: defaultState,
   reducers: {
     update: (state, payload: DefaultState) => {
-      state.default_device = payload.default_device
-      state.name = payload.name
-      state.username = payload.username
-      state.mainextension = payload.mainextension
-      state.mainPresence = payload.mainPresence
-      state.endpoints = payload.endpoints
-      state.profile = payload.profile
-      state.avatar = payload.avatar
-      state.settings = payload.settings
-      state.recallOnBusy = payload.recallOnBusy
-      state.lkhash = payload.lkhash
+      state.default_device = payload?.default_device
+      state.name = payload?.name
+      state.username = payload?.username
+      state.mainextension = payload?.mainextension
+      state.mainPresence = payload?.mainPresence
+      state.endpoints = payload?.endpoints
+      state.profile = payload?.profile
+      state.avatar = payload?.avatar
+      state.settings = payload?.settings
+      state.recallOnBusy = payload?.recallOnBusy
+      state.lkhash = payload?.lkhash
       return state
     },
     updateMainPresence: (state, mainPresence) => {

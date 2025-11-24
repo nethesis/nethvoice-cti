@@ -95,8 +95,8 @@ const LastCallItem = memo(
             <Avatar
               size='base'
               placeholderType='person'
-              src={operators[call.username]?.avatarBase64}
-              status={operators[call.username]?.mainPresence}
+              src={operators[call?.username]?.avatarBase64}
+              status={operators[call?.username]?.mainPresence}
               onClick={() => openLastCardUserDrawer(call)}
             />
             <div className='ml-4 truncate flex flex-col gap-1.5'>
@@ -118,7 +118,7 @@ const LastCallItem = memo(
                 </div>
               </div>
               <CallsDate call={call} spaced={true} />
-              {call.channel.includes('from-queue') && (
+              {call?.channel?.includes('from-queue') && (
                 <div>
                   <>
                     <Badge
@@ -129,7 +129,7 @@ const LastCallItem = memo(
                       data-tooltip-id={`tooltip-queue-${call?.queue}`}
                       data-tooltip-content={
                         queuesStore?.queues[call?.queue]?.name
-                          ? `${queuesStore.queues[call.queue].name} ${call.queue}`
+                          ? `${queuesStore?.queues[call?.queue]?.name} ${call?.queue}`
                           : t('QueueManager.Queue')
                       }
                     >
@@ -140,7 +140,7 @@ const LastCallItem = memo(
                       />
                       <div className={`truncate ${call?.queue ? 'w-20 lg:w-16 xl:w-20' : ''}`}>
                         {queuesStore?.queues[call?.queue]?.name
-                          ? `${queuesStore.queues[call.queue].name} ${call.queue}`
+                          ? `${queuesStore?.queues[call?.queue]?.name} ${call?.queue}`
                           : t('QueueManager.Queue')}
                       </div>
                     </Badge>

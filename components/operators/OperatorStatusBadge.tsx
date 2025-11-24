@@ -44,18 +44,18 @@ export const OperatorStatusBadge: FC<OperatorStatusBadgeProps> = ({
       <div className={classNames(className)}>
         <Badge
           rounded='full'
-          variant={operator.mainPresence}
+          variant={operator?.mainPresence}
           size={size}
           onClick={badgeClicked}
           className={classNames(
             isCallable && 'hover:bg-emerald-300 dark:hover:bg-emerald-900 cursor-pointer',
           )}
         >
-          {['incoming', 'ringing'].includes(operator.mainPresence) ? (
+          {['incoming', 'ringing'].includes(operator?.mainPresence) ? (
             <div className='flex items-center'>
               {/* ringing icon */}
               <span className='ringing-animation mr-2'></span>
-              <span>{capitalize(operator.mainPresence)}</span>
+              <span>{capitalize(operator?.mainPresence)}</span>
             </div>
           ) : isCallable ? (
             <div className='flex items-center'>
@@ -65,10 +65,10 @@ export const OperatorStatusBadge: FC<OperatorStatusBadgeProps> = ({
                 className='mr-1.5 h-3 w-3 flex-shrink-0'
                 aria-hidden='true'
               />
-              <span>{capitalize(operator.mainPresence)}</span>
+              <span>{capitalize(operator?.mainPresence)}</span>
             </div>
           ) : (
-            <span>{capitalize(operator.mainPresence)}</span>
+            <span>{capitalize(operator?.mainPresence)}</span>
           )}
         </Badge>
       </div>
