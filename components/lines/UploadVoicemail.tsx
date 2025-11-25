@@ -44,9 +44,6 @@ export const UploadVoicemail = forwardRef<HTMLButtonElement, EditVoicemailConten
       if (config.isRecorded && config.tempFileName) {
         // For recorded files, we just store the tempFileName without processing
         setTempFileName(config.tempFileName)
-        // Create a dummy file object just for UI display
-        const dummyFile = new File([], config.tempFileName, { type: 'audio/wav' })
-        setSelectedFile(dummyFile)
       } else if (config.isRecorded && config.audioFileURL) {
         // Fallback to old behavior if tempFileName is not available
         loadRecordedFile()
@@ -280,12 +277,12 @@ export const UploadVoicemail = forwardRef<HTMLButtonElement, EditVoicemailConten
 
           {/* Announcement name */}
 
-          {!config.isEdit && (
+          {!config.isEdit && !config.isRecorded && (
             <>
               {/* Message name section */}
               <div className='flex items-center justify-between mt-2'>
                 <h4 className='text-base font-medium text-gray-700 dark:text-gray-200'>
-                  {config.isRecorded ? t('Settings.Recorded audio file') : t('Settings.Audio file')}
+                  {t('Settings.Audio file')}
                 </h4>
               </div>
 
@@ -390,7 +387,7 @@ export const UploadVoicemail = forwardRef<HTMLButtonElement, EditVoicemailConten
           )}
 
           {/* Privacy name section */}
-          <div className='flex items-center justify-between mt-8'>
+          <div className='flex items-center justify-between mt-2'>
             <h4 className='text-base font-medium text-gray-700 dark:text-gray-200'>
               {t('Settings.Message category')}
             </h4>
