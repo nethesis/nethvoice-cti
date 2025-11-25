@@ -51,9 +51,9 @@ export const IncomingCalls = () => {
 
   // Ringtone settings state
   const [ringtones, setRingtones] = useState<Ringtone[]>([])
-  const [selectedRingtone, setSelectedRingtone] = useState<Ringtone | null>(null)
+  const [selectedRingtone, setSelectedRingtone] = useState<Ringtone | undefined>(undefined)
   const [audioOutputDevices, setAudioOutputDevices] = useState<MediaDeviceInfo[]>([])
-  const [selectedOutputDevice, setSelectedOutputDevice] = useState<MediaDeviceInfo | null>(null)
+  const [selectedOutputDevice, setSelectedOutputDevice] = useState<MediaDeviceInfo | undefined>(undefined)
   const [isLoadingRingtones, setIsLoadingRingtones] = useState<boolean>(true)
 
   // Default URL in case API fails
