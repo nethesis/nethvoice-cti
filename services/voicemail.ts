@@ -60,6 +60,18 @@ export const uploadVoicemailGreetingMessage = async (type: string, audio: string
     }
 }
 
+export const uploadVoicemailGreetingMessageFromFile = async (type: string, tempFilename: string) => {
+    try {
+        await axios.post(`${PATH}/custom_msg_from_file`, {
+            'type': type,
+            'tempFilename': tempFilename
+        });
+    } catch (error) {
+        handleNetworkError(error);
+        throw error;
+    }
+}
+
 export const getVoicemailGreetingMessage = async (type: string) => {
     try {
         const response = await axios.get(`${PATH}/listen_custom_msg/${type}`);
