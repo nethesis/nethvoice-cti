@@ -80,9 +80,9 @@ export const Integrations = () => {
   const phoneIslandSection = () => {
     return (
       <div>
-        <h2 className='text-lg font-medium leading-6 text-gray-900 dark:text-gray-100 mb-6'>
+        <h4 className='text-sm font-medium leading-6 text-gray-900 dark:text-gray-100'>
           {t('Settings.Phone Island configuration')}
-        </h2>
+        </h4>
         <p className='mt-1 text-sm text-gray-500 dark:text-gray-400'>
           {t('Settings.phone_island_integration_description', { productName })}
         </p>

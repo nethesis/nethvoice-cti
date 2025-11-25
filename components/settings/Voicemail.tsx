@@ -219,11 +219,11 @@ export const Voicemail = () => {
             {t('Settings.Voicemail')}
           </h2>
         </div>
-        <div className='gap-8 flex flex-col'>
-          <div className='flex items-center justify-between'>
-            <h2 className='text-base font-medium font-poppins text-gray-700 dark:text-gray-200'>
+        <div className='flex flex-col'>
+          <div className='flex items-center justify-between mb-4'>
+            <h4 className='text-sm font-medium leading-6 text-gray-900 dark:text-gray-100'>
               {t('Settings.My voicemail messages')}
-            </h2>
+            </h4>
             <div className='gap-4 flex flex-row'>
               <Dropdown
                 position='left'

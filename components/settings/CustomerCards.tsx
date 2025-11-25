@@ -148,11 +148,13 @@ export const CustomerCards = () => {
       <section aria-labelledby='phone-configuration-heading'>
         <div className='sm:overflow-hidden w-full'>
           <div className='py-6 px-4 sm:p-6 w-full'>
+            <div>
+              <h2 className='text-lg font-medium leading-6 text-gray-900 dark:text-gray-100 mb-6'>
+                {t('Settings.Customer cards')}
+              </h2>
+            </div>
             {!isEmpty(customerCardsList) ? (
               <div>
-                <h2 className='text-lg font-medium leading-6 text-gray-900 dark:text-gray-100 mb-6'>
-                  {t('Settings.Customer cards')}
-                </h2>
                 <div className='flex justify-between'>
                   <div className=''>
                     <h4 className='text-sm font-medium leading-6 text-gray-900 dark:text-gray-100'>
