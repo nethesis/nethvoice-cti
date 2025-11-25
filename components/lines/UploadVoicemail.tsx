@@ -16,6 +16,7 @@ import { RootState } from '../../store'
 import { useSelector } from 'react-redux'
 import {
   uploadVoicemailGreetingMessage,
+  uploadVoicemailGreetingMessageFromFile,
   deleteVoicemailGreetingMessage,
 } from '../../services/voicemail'
 
@@ -34,16 +35,21 @@ export const UploadVoicemail = forwardRef<HTMLButtonElement, EditVoicemailConten
     const [selectedFileBase64, setSelectedFileBase64] = useState<any>(null)
     const [uploadAudioMessageError, setUploadAudioMessageError] = useState('')
     const [isValidatingAudio, setIsValidatingAudio] = useState(false)
+    const [tempFileName, setTempFileName] = useState<string | null>(null)
 
     const user = useSelector((state: RootState) => state.user)
 
     // Load recorded file if available when component mounts
     useEffect(() => {
-      if (config.isRecorded && config.audioFileURL) {
+      if (config.isRecorded && config.tempFileName) {
+        // For recorded files, we just store the tempFileName without processing
+        setTempFileName(config.tempFileName)
+      } else if (config.isRecorded && config.audioFileURL) {
+        // Fallback to old behavior if tempFileName is not available
         loadRecordedFile()
       }
       // eslint-disable-next-line react-hooks/exhaustive-deps
-    }, [config.isRecorded, config.audioFileURL])
+    }, [config.isRecorded, config.audioFileURL, config.tempFileName])
 
     // Function to load the recorded file from the phone island
     const loadRecordedFile = async () => {
@@ -201,29 +207,38 @@ export const UploadVoicemail = forwardRef<HTMLButtonElement, EditVoicemailConten
     function deleteUploadedAnnouncement() {
       setSelectedFile(null)
       setSelectedFileBase64(null)
+      setTempFileName(null)
       setErrorUpload(false)
       setErrorFormatMessage('')
     }
 
     async function saveCreatePhoneSettings() {
-      if (selectedFileBase64) {
+      try {
+        // First try to delete any existing greeting message
         try {
-          // First try to delete any existing greeting message
-          try {
-            await deleteVoicemailGreetingMessage(selectedType)
-            // If deletion succeeds, we can proceed with the upload
-          } catch (error) {
-            // If deletion fails (e.g., no existing message), we still proceed with the upload
-            console.log('Deletion failed, but continuing with upload:', error)
-          }
-
-          // Proceed with upload regardless of deletion outcome
-          await uploadVoicemailGreetingMessage(selectedType, selectedFileBase64)
+          await deleteVoicemailGreetingMessage(selectedType)
+          // If deletion succeeds, we can proceed with the upload
         } catch (error) {
-          setUploadAudioMessageError(t('Settings.Cannot upload message') || '')
+          // If deletion fails (e.g., no existing message), we still proceed with the upload
+          console.log('Deletion failed, but continuing with upload:', error)
+        }
+
+        // Use the new endpoint if we have a tempFileName (recorded file)
+        if (tempFileName) {
+          await uploadVoicemailGreetingMessageFromFile(selectedType, tempFileName)
+        } else if (selectedFileBase64) {
+          // Fallback to base64 upload for manually uploaded files
+          await uploadVoicemailGreetingMessage(selectedType, selectedFileBase64)
+        } else {
+          // No file selected
+          setUploadAudioMessageError(t('Settings.No file selected') || '')
           return
         }
+      } catch (error) {
+        setUploadAudioMessageError(t('Settings.Cannot upload message') || '')
+        return
       }
+
       reloadAnnouncement()
       // Call the onClose callback in addition to closing the drawer
       if (config.onClose && typeof config.onClose === 'function') {
@@ -258,12 +273,12 @@ export const UploadVoicemail = forwardRef<HTMLButtonElement, EditVoicemailConten
 
           {/* Announcement name */}
 
-          {!config.isEdit && (
+          {!config.isEdit && !config.isRecorded && (
             <>
               {/* Message name section */}
               <div className='flex items-center justify-between mt-2'>
                 <h4 className='text-base font-medium text-gray-700 dark:text-gray-200'>
-                  {config.isRecorded ? t('Settings.Recorded audio file') : t('Settings.Audio file')}
+                  {t('Settings.Audio file')}
                 </h4>
               </div>
 
@@ -368,7 +383,7 @@ export const UploadVoicemail = forwardRef<HTMLButtonElement, EditVoicemailConten
           )}
 
           {/* Privacy name section */}
-          <div className='flex items-center justify-between mt-8'>
+          <div className='flex items-center justify-between mt-2'>
             <h4 className='text-base font-medium text-gray-700 dark:text-gray-200'>
               {t('Settings.Message category')}
             </h4>
@@ -414,7 +429,7 @@ export const UploadVoicemail = forwardRef<HTMLButtonElement, EditVoicemailConten
             confirmLabel={t('Common.Save')}
             onCancel={handleClose}
             onConfirm={saveCreatePhoneSettings}
-            confirmDisabled={!selectedFile || isValidatingAudio}
+            confirmDisabled={(!selectedFile && !tempFileName) || isValidatingAudio}
           />
         </div>
       </>
