@@ -7,13 +7,21 @@ import { useSelector, useDispatch } from 'react-redux'
 import { RootState } from '../../store'
 import { loadPreference, savePreference } from '../../lib/storage'
 import CopyComponent from '../common/CopyComponent'
-import { InlineNotification, TextInput } from '../common'
+import { InlineNotification, TextInput, Button } from '../common'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
-import { faCircleInfo, faCheck, faChevronDown } from '@fortawesome/free-solid-svg-icons'
+import {
+  faCircleInfo,
+  faCheck,
+  faChevronDown,
+  faPlay,
+  faStop,
+} from '@fortawesome/free-solid-svg-icons'
 import { CustomThemedTooltip } from '../common/CustomThemedTooltip'
 import { getParamUrl } from '../../services/user'
 import { setIncomingCallsPreference } from '../../lib/incomingCall'
 import { eventDispatch } from '../../lib/hooks/eventDispatch'
+import { useEventListener } from '../../lib/hooks/useEventListener'
+import type { Ringtone } from '../../models/ringtones'
 import {
   Listbox,
   ListboxButton,
@@ -28,13 +36,20 @@ const TRIGGER_ANSWERED = 'answered'
 const TRIGGER_BUTTON = 'button'
 const TRIGGER_NEVER = 'never'
 
-interface Ringtone {
-  name: string
-  base64: string
-}
-
 function classNames(...classes: any) {
   return classes.filter(Boolean).join(' ')
+}
+
+// Filter usable audio output devices
+const filterUsableAudioOutputs = (devices: MediaDeviceInfo[]) => {
+  return devices.filter((device) => {
+    const label = device.label.toLowerCase()
+    const isVirtualOutput =
+      label.includes('hdmi') ||
+      label.includes('displayport') ||
+      (label.includes('display') && !label.includes('speaker'))
+    return !isVirtualOutput
+  })
 }
 
 export const IncomingCalls = () => {
@@ -42,6 +57,7 @@ export const IncomingCalls = () => {
   const authStore = useSelector((state: RootState) => state.authentication)
   const userStore = useSelector((state: RootState) => state.user)
   const incomingCallStore = useSelector((state: RootState) => state.incomingCall)
+  const ringtonesStore = useSelector((state: RootState) => state.ringtones)
   const dispatch = useDispatch()
 
   const [callUrl, setCallUrl] = useState<string>('')
@@ -50,79 +66,50 @@ export const IncomingCalls = () => {
   const [paramUrlError, setParamUrlError] = useState<string>('')
 
   // Ringtone settings state
-  const [ringtones, setRingtones] = useState<Ringtone[]>([])
   const [selectedRingtone, setSelectedRingtone] = useState<Ringtone | undefined>(undefined)
   const [audioOutputDevices, setAudioOutputDevices] = useState<MediaDeviceInfo[]>([])
-  const [selectedOutputDevice, setSelectedOutputDevice] = useState<MediaDeviceInfo | undefined>(undefined)
-  const [isLoadingRingtones, setIsLoadingRingtones] = useState<boolean>(true)
+  const [selectedOutputDevice, setSelectedOutputDevice] = useState<MediaDeviceInfo | undefined>(
+    undefined,
+  )
+  const [playingRingtone, setPlayingRingtone] = useState<string | null>(null)
 
   // Default URL in case API fails
   const defaultExampleUrl = 'https://www.example.com/customers?phone={phone}'
 
-  // Load ringtones from phone-island
+  // Request ringtones when component mounts
   useEffect(() => {
-    const initRingtones = () => {
-      setIsLoadingRingtones(true)
+    eventDispatch('phone-island-ringing-tone-list', {})
 
-      // Request ringtone list from phone-island
-      eventDispatch('phone-island-ringing-tone-list', {})
-
-      // Listen for the response
-      const handleRingtoneList = (event: CustomEvent) => {
-        const ringtoneList = event.detail?.ringtones || []
-
-        // If no ringtones received, use mock data
-        if (ringtoneList.length === 0) {
-          console.info('No ringtones received from phone-island, using mock data')
-          const mockRingtones: Ringtone[] = [
-            { name: 'Default', base64: '' },
-            { name: 'Classic', base64: '' },
-            { name: 'Modern', base64: '' },
-            { name: 'Gentle', base64: '' },
-          ]
-          setRingtones(mockRingtones)
-        } else {
-          console.info('Available ringtones:', ringtoneList)
-          setRingtones(ringtoneList)
-        }
-        setIsLoadingRingtones(false)
+    // Retry after 1 second if not loaded
+    const retryTimeout = setTimeout(() => {
+      if (!ringtonesStore.isLoaded) {
+        eventDispatch('phone-island-ringing-tone-list', {})
       }
+    }, 1000)
 
-      // Listen for the response event
-      window.addEventListener('phone-island-ringing-tone-list-response', handleRingtoneList as EventListener)
-
-      // Fallback: if no response after 500ms, use mock data
-      const timeoutId = setTimeout(() => {
-        if (ringtones.length === 0) {
-          console.info('Timeout waiting for ringtones, using mock data')
-          const mockRingtones: Ringtone[] = [
-            { name: 'Default', base64: '' },
-            { name: 'Classic', base64: '' },
-            { name: 'Modern', base64: '' },
-            { name: 'Gentle', base64: '' },
-          ]
-          setRingtones(mockRingtones)
-          setIsLoadingRingtones(false)
-        }
-      }, 500)
-
-      // Cleanup
-      return () => {
-        window.removeEventListener('phone-island-ringing-tone-list-response', handleRingtoneList as EventListener)
-        clearTimeout(timeoutId)
-      }
-    }
-
-    initRingtones()
+    return () => clearTimeout(retryTimeout)
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [])
+
+  // Listen for ringtones response
+  useEventListener('phone-island-ringing-tone-list-response', (data: any) => {
+    if (data?.ringtones) {
+      dispatch.ringtones.setRingtones(data.ringtones)
+    }
+  })
+
+  // Debug: log ringtonesStore changes
+  useEffect(() => {
+    console.log('ringtonesStore:', ringtonesStore)
+  }, [ringtonesStore])
 
   // Load audio output devices
   useEffect(() => {
     const initAudioOutputDevices = async () => {
       try {
         const devices = await navigator.mediaDevices.enumerateDevices()
-        const audioOutput = devices.filter((device) => device.kind === 'audiooutput')
-        console.info('Available audio output devices:', audioOutput)
+        const allAudioOutputs = devices.filter((device) => device.kind === 'audiooutput')
+        const audioOutput = filterUsableAudioOutputs(allAudioOutputs)
         setAudioOutputDevices(audioOutput)
       } catch (err) {
         console.error('Error reading audio output devices:', err)
@@ -135,13 +122,13 @@ export const IncomingCalls = () => {
   // Load saved ringtone preferences
   useEffect(() => {
     const savedRingtone = loadPreference('incomingCallRingtone', authStore.username)
-    if (savedRingtone && ringtones.length > 0) {
-      const ringtone = ringtones.find((r) => r.name === savedRingtone)
+    if (savedRingtone && ringtonesStore.ringtones.length > 0) {
+      const ringtone = ringtonesStore.ringtones.find((r) => r.name === savedRingtone)
       if (ringtone) {
         setSelectedRingtone(ringtone)
       }
     }
-  }, [authStore.username, ringtones])
+  }, [authStore.username, ringtonesStore.ringtones])
 
   // Load saved output device preferences
   useEffect(() => {
@@ -153,6 +140,11 @@ export const IncomingCalls = () => {
       }
     }
   }, [authStore.username, audioOutputDevices])
+
+  // Listen for audio player close event
+  useEventListener('phone-island-audio-player-close', () => {
+    setPlayingRingtone(null)
+  })
 
   // Load URL from store or API if necessary
   useEffect(() => {
@@ -296,6 +288,22 @@ export const IncomingCalls = () => {
     console.info('Output device changed:', device.deviceId)
   }
 
+  // Play ringtone preview
+  const playRingtonePreview = (ringtone: Ringtone) => {
+    setPlayingRingtone(ringtone.name)
+    eventDispatch('phone-island-audio-player-start', {
+      base64_audio_file: ringtone.base64Audio,
+      description: ringtone.displayName,
+      type: 'ringtone_preview',
+    })
+  }
+
+  // Stop ringtone preview
+  const stopRingtonePreview = () => {
+    setPlayingRingtone(null)
+    eventDispatch('phone-island-audio-player-stop', {})
+  }
+
   return (
     <>
       <div className='py-6 px-4 sm:p-6'>
@@ -319,84 +327,121 @@ export const IncomingCalls = () => {
             >
               {t('Settings.Select ringtone')}
             </label>
-            <Listbox value={selectedRingtone} onChange={handleRingtoneChange} disabled={isLoadingRingtones}>
-              {({ open }) => (
-                <>
-                  <div className='relative'>
-                    <ListboxButton className='relative w-full cursor-default rounded-md bg-white dark:bg-gray-950 py-1.5 pr-10 text-left focus:outline-none sm:text-sm sm:leading-6 border dark:border-gray-700'>
-                      <span
-                        className={`${
-                          selectedRingtone?.name
-                            ? 'text-gray-700 dark:text-gray-300'
-                            : 'text-gray-500 dark:text-gray-300'
-                        } block truncate mr-1 ml-4 font-medium`}
-                      >
-                        {selectedRingtone?.name
-                          ? selectedRingtone.name
-                          : isLoadingRingtones
-                            ? t('Common.Loading')
-                            : t('Settings.Select an option')}
-                      </span>
-                      <span className='pointer-events-none absolute inset-y-0 right-0 flex items-center pr-2'>
-                        <FontAwesomeIcon
-                          icon={faChevronDown}
-                          className='h-3.5 w-3.5 pl-2 py-2 cursor-pointer flex items-center'
-                          aria-hidden='true'
-                        />
-                      </span>
-                    </ListboxButton>
-
-                    <Transition
-                      show={open}
-                      as={Fragment}
-                      leave='transition ease-in duration-100'
-                      leaveFrom='opacity-100'
-                      leaveTo='opacity-0'
-                    >
-                      <ListboxOptions className='absolute z-10 mt-1 w-full overflow-auto scrollbar-thin scrollbar-thumb-gray-400 dark:scrollbar-thumb-gray-400 scrollbar-thumb-rounded-full scrollbar-thumb-opacity-50 scrollbar-track-gray-200 dark:scrollbar-track-gray-900 scrollbar-track-rounded-full scrollbar-track-opacity-25 rounded-md bg-white py-1 text-base shadow-lg ring-1 dark:bg-gray-950 ring-black dark:ring-gray-600 ring-opacity-5 focus:outline-none sm:text-sm max-h-60'>
-                        {ringtones.map((ringtone) => (
-                          <ListboxOption
-                            key={ringtone.name}
-                            className={({ active }) =>
-                              classNames(
-                                active ? 'bg-primaryIndigo text-white' : '',
-                                !active ? 'text-gray-700 dark:text-gray-100' : '',
-                                'relative cursor-default select-none py-2 pl-3 pr-9',
-                              )
-                            }
-                            value={ringtone}
+            <div className='flex gap-2'>
+              <div className='flex-1'>
+                <Listbox
+                  value={selectedRingtone}
+                  onChange={handleRingtoneChange}
+                  disabled={!ringtonesStore.isLoaded}
+                >
+                  {({ open }) => (
+                    <>
+                      <div className='relative'>
+                        <ListboxButton className='relative w-full cursor-default rounded-md bg-white dark:bg-gray-950 py-1.5 pr-10 text-left focus:outline-none sm:text-sm sm:leading-6 border dark:border-gray-700'>
+                          <span
+                            className={`${
+                              selectedRingtone?.name
+                                ? 'text-gray-700 dark:text-gray-300'
+                                : 'text-gray-500 dark:text-gray-300'
+                            } block truncate mr-1 ml-4 font-medium`}
                           >
-                            {({ selected, active }) => (
-                              <>
-                                <span
-                                  className={classNames(
-                                    selected ? 'font-semibold' : 'font-normal',
-                                    'block truncate',
-                                  )}
-                                >
-                                  {ringtone.name}
-                                </span>
+                            {selectedRingtone?.displayName
+                              ? selectedRingtone.displayName
+                              : !ringtonesStore.isLoaded
+                              ? t('Common.Loading')
+                              : t('Settings.Select an option')}
+                          </span>
+                          <span className='pointer-events-none absolute inset-y-0 right-0 flex items-center pr-2'>
+                            <FontAwesomeIcon
+                              icon={faChevronDown}
+                              className='h-3.5 w-3.5 pl-2 py-2 cursor-pointer flex items-center'
+                              aria-hidden='true'
+                            />
+                          </span>
+                        </ListboxButton>
 
-                                {selected ? (
-                                  <span
-                                    className={classNames(
-                                      active ? 'text-white' : 'text-primaryIndigo',
-                                      'absolute inset-y-0 right-0 flex items-center pr-4',
-                                    )}
-                                  >
-                                    <FontAwesomeIcon icon={faCheck} className='h-3.5 w-3.5' aria-hidden='true' />
-                                  </span>
-                                ) : null}
-                              </>
+                        <Transition
+                          show={open}
+                          as={Fragment}
+                          leave='transition ease-in duration-100'
+                          leaveFrom='opacity-100'
+                          leaveTo='opacity-0'
+                        >
+                          <ListboxOptions className='absolute z-10 mt-1 w-full overflow-auto scrollbar-thin scrollbar-thumb-gray-400 dark:scrollbar-thumb-gray-400 scrollbar-thumb-rounded-full scrollbar-thumb-opacity-50 scrollbar-track-gray-200 dark:scrollbar-track-gray-900 scrollbar-track-rounded-full scrollbar-track-opacity-25 rounded-md bg-white py-1 text-base shadow-lg ring-1 dark:bg-gray-950 ring-black dark:ring-gray-600 ring-opacity-5 focus:outline-none sm:text-sm max-h-60'>
+                            {ringtonesStore.ringtones.length === 0 ? (
+                              <div className='px-3 py-2 text-sm text-gray-500 dark:text-gray-400'>
+                                {ringtonesStore.isLoaded
+                                  ? t('Settings.No ringtones available')
+                                  : t('Common.Loading')}
+                              </div>
+                            ) : (
+                              ringtonesStore.ringtones.map((ringtone) => (
+                                <ListboxOption
+                                  key={ringtone.name}
+                                  className={({ active }) =>
+                                    classNames(
+                                      active ? 'bg-primaryIndigo text-white' : '',
+                                      !active ? 'text-gray-700 dark:text-gray-100' : '',
+                                      'relative cursor-default select-none py-2 pl-3 pr-9',
+                                    )
+                                  }
+                                  value={ringtone}
+                                >
+                                  {({ selected, active }) => (
+                                    <>
+                                      <span
+                                        className={classNames(
+                                          selected ? 'font-semibold' : 'font-normal',
+                                          'block truncate',
+                                        )}
+                                      >
+                                        {ringtone.displayName}
+                                      </span>
+
+                                      {selected ? (
+                                        <span
+                                          className={classNames(
+                                            active ? 'text-white' : 'text-primaryIndigo',
+                                            'absolute inset-y-0 right-0 flex items-center pr-4',
+                                          )}
+                                        >
+                                          <FontAwesomeIcon
+                                            icon={faCheck}
+                                            className='h-3.5 w-3.5'
+                                            aria-hidden='true'
+                                          />
+                                        </span>
+                                      ) : null}
+                                    </>
+                                  )}
+                                </ListboxOption>
+                              ))
                             )}
-                          </ListboxOption>
-                        ))}
-                      </ListboxOptions>
-                    </Transition>
-                  </div>
-                </>
-              )}
-            </Listbox>
+                          </ListboxOptions>
+                        </Transition>
+                      </div>
+                    </>
+                  )}
+                </Listbox>
+              </div>
+
+              {/* Preview button */}
+              <Button
+                variant='primary'
+                onClick={() =>
+                  playingRingtone === selectedRingtone?.name
+                    ? stopRingtonePreview()
+                    : selectedRingtone && playRingtonePreview(selectedRingtone)
+                }
+                disabled={!selectedRingtone}
+                className='h-[38px]'
+              >
+                <FontAwesomeIcon
+                  icon={playingRingtone === selectedRingtone?.name ? faStop : faPlay}
+                  className='h-4 w-4'
+                />
+              </Button>
+            </div>
           </div>
 
           {/* Output device selection */}
@@ -460,7 +505,8 @@ export const IncomingCalls = () => {
                                     'block truncate',
                                   )}
                                 >
-                                  {device.label || `${t('Settings.Device')} ${device.deviceId.substring(0, 8)}`}
+                                  {device.label ||
+                                    `${t('Settings.Device')} ${device.deviceId.substring(0, 8)}`}
                                 </span>
 
                                 {selected ? (
@@ -470,7 +516,11 @@ export const IncomingCalls = () => {
                                       'absolute inset-y-0 right-0 flex items-center pr-4',
                                     )}
                                   >
-                                    <FontAwesomeIcon icon={faCheck} className='h-3.5 w-3.5' aria-hidden='true' />
+                                    <FontAwesomeIcon
+                                      icon={faCheck}
+                                      className='h-3.5 w-3.5'
+                                      aria-hidden='true'
+                                    />
                                   </span>
                                 ) : null}
                               </>

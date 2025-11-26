@@ -28,6 +28,7 @@ import { profilePicture } from './profilePicture'
 import { devices } from './devices'
 import { voicemail } from './voicemail'
 import { incomingCall } from './incomingCall'
+import { ringtones } from './ringtones'
 
 export interface RootModel extends Models<RootModel> {
   authentication: typeof authentication
@@ -56,6 +57,7 @@ export interface RootModel extends Models<RootModel> {
   devices: typeof devices
   voicemail: typeof voicemail
   incomingCall: typeof incomingCall
+  ringtones: typeof ringtones
 }
 
 export const models: RootModel = {
@@ -85,4 +87,5 @@ export const models: RootModel = {
   devices,
   voicemail,
   incomingCall,
+  ringtones,
 }
