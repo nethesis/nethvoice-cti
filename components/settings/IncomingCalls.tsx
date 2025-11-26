@@ -302,6 +302,7 @@ export const IncomingCalls = () => {
   const stopRingtonePreview = () => {
     setPlayingRingtone(null)
     eventDispatch('phone-island-audio-player-pause', {})
+    eventDispatch('phone-island-audio-player-close', {})
   }
 
   return (
