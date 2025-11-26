@@ -301,7 +301,7 @@ export const IncomingCalls = () => {
   // Stop ringtone preview
   const stopRingtonePreview = () => {
     setPlayingRingtone(null)
-    eventDispatch('phone-island-audio-player-stop', {})
+    eventDispatch('phone-island-audio-player-pause', {})
   }
 
   return (
