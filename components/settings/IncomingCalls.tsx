@@ -133,6 +133,11 @@ export const IncomingCalls = () => {
     setPlayingRingtone(null)
   })
 
+  // Listen for audio player closed event (when closing phone-island with X)
+  useEventListener('phone-island-audio-player-closed', () => {
+    setPlayingRingtone(null)
+  })
+
   // Load URL from store or API if necessary
   useEffect(() => {
     const fetchParamUrl = async () => {
