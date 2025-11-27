@@ -40,18 +40,6 @@ function classNames(...classes: any) {
   return classes.filter(Boolean).join(' ')
 }
 
-// Filter usable audio output devices
-const filterUsableAudioOutputs = (devices: MediaDeviceInfo[]) => {
-  return devices.filter((device) => {
-    const label = device.label.toLowerCase()
-    const isVirtualOutput =
-      label.includes('hdmi') ||
-      label.includes('displayport') ||
-      (label.includes('display') && !label.includes('speaker'))
-    return !isVirtualOutput
-  })
-}
-
 export const IncomingCalls = () => {
   const { t } = useTranslation()
   const authStore = useSelector((state: RootState) => state.authentication)
@@ -108,8 +96,7 @@ export const IncomingCalls = () => {
     const initAudioOutputDevices = async () => {
       try {
         const devices = await navigator.mediaDevices.enumerateDevices()
-        const allAudioOutputs = devices.filter((device) => device.kind === 'audiooutput')
-        const audioOutput = filterUsableAudioOutputs(allAudioOutputs)
+        const audioOutput = devices.filter((device) => device.kind === 'audiooutput')
         setAudioOutputDevices(audioOutput)
       } catch (err) {
         console.error('Error reading audio output devices:', err)
@@ -485,7 +472,7 @@ export const IncomingCalls = () => {
                       leaveFrom='opacity-100'
                       leaveTo='opacity-0'
                     >
-                      <ListboxOptions className='absolute z-10 mt-1 w-full overflow-auto scrollbar-thin scrollbar-thumb-gray-400 dark:scrollbar-thumb-gray-400 scrollbar-thumb-rounded-full scrollbar-thumb-opacity-50 scrollbar-track-gray-200 dark:scrollbar-track-gray-900 scrollbar-track-rounded-full scrollbar-track-opacity-25 rounded-md bg-white py-1 text-base shadow-lg ring-1 dark:bg-gray-950 ring-black dark:ring-gray-600 ring-opacity-5 focus:outline-none sm:text-sm max-h-60'>
+                      <ListboxOptions className='absolute z-30 mt-1 w-full overflow-auto scrollbar-thin scrollbar-thumb-gray-400 dark:scrollbar-thumb-gray-400 scrollbar-thumb-rounded-full scrollbar-thumb-opacity-50 scrollbar-track-gray-200 dark:scrollbar-track-gray-900 scrollbar-track-rounded-full scrollbar-track-opacity-25 rounded-md bg-white py-1 text-base shadow-lg ring-1 dark:bg-gray-950 ring-black dark:ring-gray-600 ring-opacity-5 focus:outline-none sm:text-sm max-h-60'>
                         {audioOutputDevices.map((device) => (
                           <ListboxOption
                             key={device.deviceId}
