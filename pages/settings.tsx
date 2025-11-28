@@ -12,7 +12,7 @@ import {
   faCircleUser,
   faPuzzlePiece,
   faVoicemail,
-  faPhone,
+  faPhoneVolume,
   faUserShield,
 } from '@fortawesome/free-solid-svg-icons'
 import classNames from 'classnames'
@@ -76,7 +76,7 @@ const Settings: NextPage = () => {
         hidden: !hasMobileExtension,
       },
       { name: 'Customer cards', href: '#', icon: faIdCardClip, current: false },
-      { name: 'Incoming calls', href: '#', icon: faPhone, current: false },
+      { name: 'Incoming calls', href: '#', icon: faPhoneVolume, current: false },
       { name: 'Queues', href: '#', icon: faUsers, current: false },
       { name: 'Profile picture', href: '#', icon: faCircleUser, current: false },
       { name: 'Theme', href: '#', icon: faPalette, current: false },

@@ -61,6 +61,7 @@ export const Layout: FC<LayoutProps> = ({ children }) => {
   const [firstRenderAttach, setFirstRenderAttach] = useState(true)
   const [firstRenderDetach, setFirstRenderDetach] = useState(true)
   const [firstRenderFeatureCodes, setFirstRenderFeatureCodes] = useState(true)
+  const [firstRenderRingtones, setFirstRenderRingtones] = useState(true)
 
   const [isUserInfoLoaded, setUserInfoLoaded] = useState(false)
   const authStore = useSelector((state: RootState) => state.authentication)
@@ -279,6 +280,40 @@ export const Layout: FC<LayoutProps> = ({ children }) => {
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [firstRenderFeatureCodes])
+
+  // Load ringtones from phone-island on page load
+  useEffect(() => {
+    if (firstRenderRingtones) {
+      // Small delay to ensure phone-island is ready
+      const initTimeout = setTimeout(() => {
+        eventDispatch('phone-island-ringing-tone-list', {})
+      }, 500)
+      
+      // Retry after 2 seconds if not loaded
+      const retryTimeout = setTimeout(() => {
+        if (!store.getState().ringtones.isLoaded) {
+          console.log('Retrying ringtones request...')
+          eventDispatch('phone-island-ringing-tone-list', {})
+        }
+      }, 5000)
+      
+      setFirstRenderRingtones(false)
+      
+      return () => {
+        clearTimeout(initTimeout)
+        clearTimeout(retryTimeout)
+      }
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [firstRenderRingtones])
+
+  // Listen for ringtones list response
+  useEventListener('phone-island-ringing-tone-list-response', (data: any) => {
+    console.log('Ringtones received in Layout:', data)
+    if (data?.ringtones) {
+      dispatch.ringtones.setRingtones(data.ringtones)
+    }
+  })
 
   // check here
   useEffect(() => {

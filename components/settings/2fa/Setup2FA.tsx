@@ -223,18 +223,20 @@ export const Setup2FA = () => {
   return (
     <>
       <section aria-labelledby='authentication-heading'>
-        <div className='flex flex-col p-6 gap-8'>
-          <div className='flex flex-col gap-2 w-2/3'>
-            <div>
-              <h2 className='text-base font-medium text-gray-900 dark:text-gray-200'>
-                {t('Settings.Two-Factor Authentication')}
-              </h2>
-            </div>
-            <div>
-              <p className='text-sm font-normal text-gray-900 dark:text-gray-100'>
-                {t('Settings.Two-Factor Authentication Description')}
-              </p>
-            </div>
+        <div className='py-6 px-4 sm:p-6'>
+          <div>
+            <h2 className='text-lg font-medium leading-6 text-gray-900 dark:text-gray-100 mb-6'>
+              {t('Settings.Two-Factor Authentication')}
+            </h2>
+          </div>
+
+          <div className='mb-6'>
+            <h4 className='text-sm font-medium leading-6 text-gray-900 dark:text-gray-100 mb-2'>
+              {t('Settings.Configuration')}
+            </h4>
+            <p className='text-sm font-normal text-gray-500 dark:text-gray-400'>
+              {t('Settings.Two-Factor Authentication Description')}
+            </p>
           </div>
 
           <div className='flex flex-col gap-8'>
