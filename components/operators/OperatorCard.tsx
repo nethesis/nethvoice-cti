@@ -140,13 +140,13 @@ const OperatorCard = ({
             <div
               className={`tooltip-operator-information-${index} py-2 px-2 flex justify-center`}
               data-tooltip-id={`tooltip-operator-information-${index}`}
-              data-tooltip-content={operator?.conversations[0]?.counterpartName || '-'}
+              data-tooltip-content={operator?.conversations?.[0]?.counterpartName || '-'}
             >
               <div className='flex items-center text-red-600 dark:text-red-500 overflow-hidden'>
-                {operator?.conversations[0]?.startTime && (
+                {operator?.conversations?.[0]?.startTime && (
                   <>
                     <CallDuration
-                      startTime={operator?.conversations[0]?.startTime}
+                      startTime={operator?.conversations?.[0]?.startTime}
                       className='text-sm font-medium leading-5 mr-1 whitespace-nowrap mt-0.5'
                     />
                     <span className='mx-1 text-sm font-medium leading-5 mt-0.5'>-</span>
@@ -155,25 +155,25 @@ const OperatorCard = ({
                 <div className='min-w-0 flex-1'>
                   <div
                     data-tooltip-id={`tooltip-textscroll-${index}`}
-                    data-tooltip-content={operator?.conversations[0]?.counterpartName || ''}
+                    data-tooltip-content={operator?.conversations?.[0]?.counterpartName || ''}
                   >
-                    <TextScroll text={operator?.conversations[0]?.counterpartName || ''} />
+                    <TextScroll text={operator?.conversations?.[0]?.counterpartName || ''} />
                   </div>
                 </div>
 
                 {/* Recording indicator */}
-                {operator?.conversations[0]?.recording === 'true' && (
+                {operator?.conversations?.[0]?.recording === 'true' && (
                   <FontAwesomeIcon icon={faRecordVinyl} className='ml-1.5 h-4 w-4' />
                 )}
 
                 {/* Listening indicator */}
-                {operator?.conversations[0]?.id ===
+                {operator?.conversations?.[0]?.id ===
                   actionInformation?.listeningInfo?.listening_id && (
                   <FontAwesomeIcon icon={faEarListen} className='ml-1.5 h-4 w-4' />
                 )}
 
                 {/* Intrude indicator */}
-                {operator?.conversations[0]?.id === actionInformation?.intrudeInfo?.intrude_id && (
+                {operator?.conversations?.[0]?.id === actionInformation?.intrudeInfo?.intrude_id && (
                   <FontAwesomeIcon icon={faHandPointUp} className='ml-1.5 h-4 w-4' />
                 )}
               </div>
@@ -252,11 +252,11 @@ const OperatorCard = ({
                             liveOperatorData?.username || 'op'
                           }`}
                           data-tooltip-content={
-                            liveOperatorData?.conversations[0]?.counterpartName || ''
+                            liveOperatorData?.conversations?.[0]?.counterpartName || ''
                           }
                           className='min-w-0 flex-1'
                         >
-                          <TextScroll text={liveOperatorData.conversations[0].counterpartName} />
+                          <TextScroll text={liveOperatorData?.conversations?.[0]?.counterpartName || ''} />
                         </div>
                       </>
                     )}
