@@ -22,7 +22,7 @@ export function Island() {
     // Create the configuration for the PhoneIsland
     if (auth.token && currentUser.endpoints.extension) {
       const webRTCExtension = currentUser.endpoints.extension.find(
-        (el: any) => el.type === 'webrtc' || el.type === 'nethlink',
+        (el: any) => el.type === 'webrtc',
       )
       if (auth.token && currentUser.username) {
         setConfig(

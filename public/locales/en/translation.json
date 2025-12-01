@@ -426,7 +426,9 @@
     "Enter manually": "Enter manually",
     "Scan QR code": "Scan QR code",
     "Enter the 6-digit code from authenticator app": "Enter the 6-digit code from authenticator app",
-    "No recovery codes available": "No recovery codes available"
+    "No recovery codes available": "No recovery codes available",
+    "No WebRTC extension found": "No WebRTC extension found",
+    "To enable Phone Island integration, ask your administrator to configure a WebRTC extension": "To enable Phone Island integration, ask your administrator to configure a Web phone"
   },
   "TopBar": {
     "Signed in as": "Signed in as",
