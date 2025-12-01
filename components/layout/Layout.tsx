@@ -1179,6 +1179,14 @@ export const Layout: FC<LayoutProps> = ({ children }) => {
   //check if socket reconnect
   useEventListener('phone-island-socket-disconnected', () => { })
 
+  // Reload operators data when socket reconnects to sync state
+  // This handles cases where events were lost during network interruption
+  useEventListener('phone-island-socket-reconnected', () => {
+    console.log('[SOCKET-RECONNECT] Socket reconnected, refreshing state')
+    retrieveUserEndpoints()
+    retrieveExtensions()
+  })
+
   let timeoutSeconds = 3000
 
   useEffect(() => {
