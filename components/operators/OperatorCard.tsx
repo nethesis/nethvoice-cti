@@ -61,7 +61,8 @@ const OperatorCard = ({
   } = operatorStates
 
   const operatorsStore = useSelector((state: RootState) => state.operators)
-  let currentUserIsInConversation = operatorsStore?.operators[authUsername]?.mainPresence != 'online'
+  let currentUserIsInConversation =
+    operatorsStore?.operators[authUsername]?.mainPresence != 'online'
 
   return (
     <div className='space-y-4 w-[200px]'>
@@ -74,33 +75,19 @@ const OperatorCard = ({
         onClick={handleOpenDrawer}
         className='mx-auto cursor-pointer'
         status={liveOperatorData?.mainPresence}
+        star={liveOperatorData?.favorite}
+        card='standard'
       />
 
       <div className='space-y-1'>
         <div className='text-xs font-medium lg:text-sm'>
-          {liveOperatorData?.favorite ? (
-            <div className='flex items-center space-x-2 justify-center'>
-              <h3
-                className='cursor-pointer hover:underline block truncate text-sm font-medium text-primaryNeutral dark:text-primaryNeutralDark leading-5 max-w-[120px]'
-                onClick={handleOpenDrawer}
-                title={liveOperatorData?.name}
-              >
-                {liveOperatorData?.name}
-              </h3>
-              <FontAwesomeIcon
-                icon={faStar}
-                className='inline-block text-center h-4 w-4 text-primary dark:text-primaryDark'
-              />
-            </div>
-          ) : (
-            <h3
-              className='cursor-pointer hover:underline text-center text-sm not-italic font-medium leading-5 text-gray-900 dark:text-gray-100 truncate max-w-[150px] mx-auto'
-              onClick={handleOpenDrawer}
-              title={liveOperatorData?.name}
-            >
-              {liveOperatorData?.name}
-            </h3>
-          )}
+          <h3
+            className='cursor-pointer hover:underline text-center text-sm not-italic font-medium leading-5 text-gray-900 dark:text-gray-100 truncate mx-[6px]'
+            onClick={handleOpenDrawer}
+            title={liveOperatorData?.name}
+          >
+            {liveOperatorData?.name}
+          </h3>
         </div>
 
         {/* Main extension or Ringing (if user has at least one permission) */}

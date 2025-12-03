@@ -304,7 +304,7 @@ const theme = {
     },
   },
   avatar: {
-    base: 'relative block shrink-0',
+    base: 'relative block shrink-0 mt-0.5',
     sizes: {
       extra_small: 'h-6 w-6 text-xs',
       small: 'h-8 w-8 text-sm',
@@ -355,7 +355,8 @@ const theme = {
       },
     },
     star: {
-      base: 'absolute -top-1 -right-1 block text-gray-500 dark:text-gray-400',
+      base: 'absolute -top-1 -right-1 block text-indigo-500 dark:text-indigo-700',
+      compact: 'absolute -top-1.5 -right-1.5 block text-indigo-500 dark:text-indigo-700',
       sizes: {
         extra_small: 'h-2 w-2',
         small: 'h-2 w-2',
