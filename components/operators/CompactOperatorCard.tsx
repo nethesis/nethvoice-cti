@@ -75,6 +75,8 @@ const CompactOperatorCard = ({
           onClick={handleOpenDrawer}
           className='mx-auto cursor-pointer'
           status={operator?.mainPresence}
+          star={operator?.favorite}
+          card='compact'
         />
       </span>
 
@@ -87,12 +89,6 @@ const CompactOperatorCard = ({
           >
             {operator?.name}
           </span>
-          {operator?.favorite && (
-            <FontAwesomeIcon
-              icon={faStar}
-              className='inline-block flex-shrink-0 text-center h-4 w-4 text-primaryActive dark:text-primaryActiveDark'
-            />
-          )}
         </div>
         {isRinging && permissions.hasAny && !isCalledByCurrentUser ? (
           <div className='flex items-center text-textStatusBusy dark:text-textStatusBusyDark min-w-0 overflow-hidden'>
