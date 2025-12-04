@@ -2,10 +2,7 @@
 // SPDX-License-Identifier: AGPL-3.0-or-later
 
 import { RefObject, createRef, useState, useEffect } from 'react'
-import {
-  faTriangleExclamation,
-  faCircleNotch,
-} from '@fortawesome/free-solid-svg-icons'
+import { faTriangleExclamation, faCircleNotch } from '@fortawesome/free-solid-svg-icons'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { Button, InlineNotification, Modal } from '../common'
 import { useSelector } from 'react-redux'
@@ -28,9 +25,25 @@ export const Integrations = () => {
   const cancelButtonRef: RefObject<HTMLButtonElement> = createRef()
   const [tokenExists, setTokenExists] = useState<boolean>(false)
   const [loading, setLoading] = useState<boolean>(false)
+  const [webrtcData, setWebrtcData]: any = useState([])
+  const profile = useSelector((state: RootState) => state.user)
+
   const { t } = useTranslation()
 
   const productName = getProductName()
+
+  useEffect(() => {
+    // filter phone and insert only physical phones
+    if (profile?.endpoints) {
+      let endpointsInformation = profile?.endpoints
+      console.log('endpointsInformation', endpointsInformation)
+      if (endpointsInformation?.extension) {
+        setWebrtcData(endpointsInformation?.extension.filter((phone) => phone?.type === 'webrtc'))
+      }
+    }
+  }, [profile?.endpoints])
+
+  console.log('webrtcData', webrtcData)
 
   const newConfig = async () => {
     setLoading(true)
@@ -135,7 +148,12 @@ export const Integrations = () => {
                 {t('Settings.Integrations')}
               </h2>
             </div>
-            {phoneIslandSection()}
+            {webrtcData?.length !== 0 && phoneIslandSection()}
+            {webrtcData?.length === 0 && (
+              <InlineNotification type='info' title={t('Settings.No WebRTC extension found')}>
+                <p>{t('Settings.To enable Phone Island integration, ask your administrator to configure a WebRTC extension')}</p>
+              </InlineNotification>
+            )}
           </div>
         </div>
       </section>
