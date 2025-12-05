@@ -29,7 +29,7 @@ const theme = {
       full: 'rounded-full',
     },
     sizes: {
-      small: 'px-2.5 py-1.5 text-xs',
+      small: 'px-2.5 py-2.5 text-xs',
       base: 'px-3 py-2 text-sm leading-4',
       large: 'px-4 py-2 text-sm',
       full_h: 'h-full',
@@ -290,6 +290,7 @@ const theme = {
       large: 'h-3 w-3',
       extra_large: 'h-3.5 w-3.5',
     },
+    animation: 'animate-pulse',
   },
   badge: {
     base: 'inline-flex font-medium items-center',
@@ -304,7 +305,7 @@ const theme = {
     },
   },
   avatar: {
-    base: 'relative block shrink-0 mt-0.5',
+    base: 'relative block shrink-0',
     sizes: {
       extra_small: 'h-6 w-6 text-xs',
       small: 'h-8 w-8 text-sm',
@@ -355,8 +356,8 @@ const theme = {
       },
     },
     star: {
-      base: 'absolute -top-1 -right-1 block text-indigo-500 dark:text-indigo-700',
-      compact: 'absolute -top-1.5 -right-1.5 block text-indigo-500 dark:text-indigo-700',
+      base: 'absolute -top-[3px] -right-[3px] block text-indigo-500 dark:text-indigo-700',
+      compact: 'absolute -top-[6px] -right-[6px] block text-indigo-500 dark:text-indigo-700',
       sizes: {
         extra_small: 'h-2 w-2',
         small: 'h-2 w-2',
