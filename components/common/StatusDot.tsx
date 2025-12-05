@@ -17,11 +17,12 @@ import { useTheme } from '../../theme/Context'
 
 export interface statusDotProps extends Omit<ComponentPropsWithRef<'button'>, 'color' | 'style'> {
   size?: 'extra_small' | 'small' | 'base' | 'large' | 'extra_large'
+  animate?: boolean
   status: StatusTypes
 }
 
 export const StatusDot = forwardRef<HTMLButtonElement, statusDotProps>(
-  ({ size = 'small', status, className }, ref): JSX.Element => {
+  ({ size = 'small', status, animate, className }, ref): JSX.Element => {
     const { statusDot: theme } = useTheme().theme
     const themeStatus: any = useTheme().theme.status
     return (
@@ -30,9 +31,14 @@ export const StatusDot = forwardRef<HTMLButtonElement, statusDotProps>(
           theme.base,
           size && theme.sizes[size],
           themeStatus[status]?.avatar.dot,
+          animate && theme.animation,
           className,
         )}
-      ></div>
+      >
+        {animate && (
+          <div className='w-5 h-5 absolute left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2 bg-red-500/60 rounded-full'></div>
+        )}
+      </div>
     )
   },
 )

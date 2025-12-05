@@ -44,6 +44,7 @@ export interface AvatarProps extends Omit<ComponentProps<'div'>, 'placeholder'> 
   card?: 'standard' | 'compact'
   deleteAvatar?: boolean
   isUploadAvatar?: boolean
+  isRinging?: boolean
 }
 
 const AvatarComponent: FC<AvatarProps> = ({
@@ -61,6 +62,7 @@ const AvatarComponent: FC<AvatarProps> = ({
   card,
   deleteAvatar,
   isUploadAvatar,
+  isRinging,
   className,
   ...props
 }) => {
@@ -120,6 +122,7 @@ const AvatarComponent: FC<AvatarProps> = ({
         <div>
           <StatusDot
             status={status}
+            animate={isRinging}
             className={`absolute bottom-0 right-0 ${
               size === 'extra_large' ? 'h-5 w-5' : size === 'large' ? 'h-3 w-3' : 'h-2 w-2'
             }`}
