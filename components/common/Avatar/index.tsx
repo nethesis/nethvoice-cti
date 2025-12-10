@@ -121,6 +121,7 @@ const AvatarComponent: FC<AvatarProps> = ({
       {status && (
         <div>
           <StatusDot
+            size={size}
             status={status}
             animate={isRinging}
             className={`absolute bottom-0 right-0 ${
