@@ -35,7 +35,7 @@ export const UserSidebarDrawer: FC<UserSidebarDrawerProps> = ({ isShown }) => {
               leaveFrom='translate-x-0'
               leaveTo='translate-x-full'
             >
-              <DialogPanel className='relative flex w-72 lg:w-72 xl:w-80 2xl:w-96 flex-1 flex-col shadow-[0px_20px_40px_0_rgba(0,0,0,0.2)] bg-sidebar dark:bg-sidebarDark dark:shadow-[0px_20px_40px_0_rgba(0,0,0,0.6)]'>
+              <DialogPanel className='relative flex w-72 lg:w-72 xl:w-80 2xl:w-96 flex-1 flex-col shadow-[-10px_10px_20px_0_rgba(0,0,0,0.2)] bg-sidebar dark:bg-sidebarDark dark:shadow-[-10px_10px_20px_0_rgba(0,0,0,0.6)]'>
                 <div className={`h-0 flex-1 ${customScrollbarClass}`}>
                   <nav className='flex h-full flex-col'>
                     <div className='overflow-x-hidden relative'>
