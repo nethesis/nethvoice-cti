@@ -63,8 +63,8 @@ const CompactOperatorList = ({ operators, hasMore, showMore, isLoading = false }
         className={`${isSidebarOpen ? classNameSidebarOpen : classNameSidebarClosed}`}
       >
         {Array.from(Array(skeletonItemsCount)).map((_, index) => (
-          <li key={`skeleton-${index}`} className='px-1 w-[400px]'>
-            <div className='group flex w-full items-center justify-between space-x-3 rounded-lg py-2 pr-2 pl-6 h-20 text-left focus:outline-none focus:ring-2 focus:ring-offset-2 bg-cardBackgroud dark:bg-cardBackgroudDark'>
+          <li key={`skeleton-${index}`} className='px-1 min-w-[384px] w-full'>
+            <div className='group flex w-full items-center justify-between space-x-3 rounded-lg py-2 pr-2 pl-6 h-16 text-left focus:outline-none focus:ring-2 focus:ring-offset-2 bg-cardBackgroud dark:bg-cardBackgroudDark'>
               {/* Avatar skeleton */}
               <span className='flex-shrink-0'>
                 <div className='animate-pulse rounded-full h-14 w-14 bg-gray-300 dark:bg-gray-600 border-2 border-gray-200 dark:border-gray-500'></div>
@@ -121,7 +121,7 @@ const CompactOperatorList = ({ operators, hasMore, showMore, isLoading = false }
         {filteredOperators?.map((operator, index) => (
           <li
             key={operator?.username || `compact-op-${index}`}
-            className='px-1 w-[400px]'
+            className='min-w-[384px] w-full'
           >
             <CompactOperatorCard
               operator={operator}

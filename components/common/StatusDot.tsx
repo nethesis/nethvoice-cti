@@ -35,8 +35,11 @@ export const StatusDot = forwardRef<HTMLButtonElement, statusDotProps>(
           className,
         )}
       >
-        {animate && (
+        {animate && size === 'large' && (
           <div className='w-5 h-5 absolute left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2 bg-red-500/60 rounded-full'></div>
+        )}
+        {animate && size === 'extra_large' && (
+          <div className='w-8 h-8 absolute left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2 bg-red-500/60 rounded-full'></div>
         )}
       </div>
     )

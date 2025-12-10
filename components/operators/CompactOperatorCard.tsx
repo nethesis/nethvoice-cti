@@ -82,7 +82,7 @@ const CompactOperatorCard = ({
 
       {/* Middle section: Name and extension */}
       <div className='flex-1 min-w-0 overflow-hidden'>
-        <div className={`flex items-center space-x-2 min-w-0${isRinging ? ' mt-1' : ''}`}>
+        <div className={`flex items-center space-x-2 min-w-0`}>
           <span
             className='block truncate text-sm leading-5 font-medium text-primaryNeutral dark:text-primaryNeutralDark cursor-pointer hover:underline'
             onClick={handleOpenDrawer}
@@ -97,7 +97,7 @@ const CompactOperatorCard = ({
         {/* Operator status indicators */}
         {isInConversation && hasValidConversation && (
           <div
-            className={`tooltip-operator-information-${index}`}
+            className={`tooltip-operator-information-${index} mt-1`}
             data-tooltip-id={`tooltip-operator-information-${index}`}
             data-tooltip-content={operator?.conversations[0]?.counterpartName || '-'}
           >
@@ -113,7 +113,7 @@ const CompactOperatorCard = ({
                 <>
                   <CallDuration
                     startTime={operator?.conversations[0]?.startTime}
-                    className='text-sm font-medium leading-5 mr-1 whitespace-nowrap'
+                    className='text-sm font-medium leading-5 whitespace-nowrap'
                   />
                 </>
               )}
@@ -140,19 +140,9 @@ const CompactOperatorCard = ({
 
         {/* If operator is ringing and user has no permissions or is calling this operator */}
         {isRinging && (
-          <div className='flex items-center text-textStatusBusy dark:text-textStatusBusyDark min-w-0 overflow-hidden'>
-            <span className='ringing-animation mr-2 h-4 w-4 flex-shrink-0' />
-            <span
-              className='text-sm font-medium truncate max-w-[50px]'
-              data-tooltip-id={`tooltip-ringing-status-right-${index}`}
-              data-tooltip-content={t('Operators.Ringing')}
-            >
-              {t('Operators.Ringing')}
-            </span>
-            <CustomThemedTooltip id={`tooltip-ringing-status-right-${index}`} />
+          <div className='flex items-center text-textStatusBusy dark:text-textStatusBusyDark min-w-0 overflow-hidden mt-1'>
             {operator?.conversations?.[0]?.counterpartName && (
               <>
-                <span className='mx-1 text-sm font-medium leading-5 flex-shrink-0'>-</span>
                 <div className='min-w-0 flex-1 overflow-hidden'>
                   <div
                     data-tooltip-id={`tooltip-textscroll-${index}`}
@@ -169,7 +159,7 @@ const CompactOperatorCard = ({
 
         {/* If operator is busy but not in conversation */}
         {isBusy && !isInConversation && !isRinging && (
-          <span className='text-sm font-medium text-textStatusBusy dark:text-textStatusBusyDark'>
+          <span className='text-sm font-medium text-textStatusBusy dark:text-textStatusBusyDark mt-1 block'>
             {t('Operators.Busy')}
           </span>
         )}
