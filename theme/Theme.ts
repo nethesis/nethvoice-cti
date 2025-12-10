@@ -29,7 +29,7 @@ const theme = {
       full: 'rounded-full',
     },
     sizes: {
-      small: 'px-2.5 py-1.5 text-xs',
+      small: 'px-2.5 py-2.5 text-xs',
       base: 'px-3 py-2 text-sm leading-4',
       large: 'px-4 py-2 text-sm',
       full_h: 'h-full',
@@ -290,6 +290,7 @@ const theme = {
       large: 'h-3 w-3',
       extra_large: 'h-3.5 w-3.5',
     },
+    animation: 'animate-pulse',
   },
   badge: {
     base: 'inline-flex font-medium items-center',
@@ -355,13 +356,13 @@ const theme = {
       },
     },
     star: {
-      base: 'absolute -top-1 -right-1 block text-gray-500 dark:text-gray-400',
+      base: 'absolute top-0 right-0 block text-indigo-500 dark:text-indigo-500',
       sizes: {
         extra_small: 'h-2 w-2',
         small: 'h-2 w-2',
-        base: 'h-2.5 w-2.5',
-        large: 'h-3 w-3',
-        extra_large: 'h-4 w-4',
+        base: 'h-3 w-3',
+        large: 'h-4 w-4',
+        extra_large: 'h-5 w-5',
       },
     },
     deleteAvatar: {

@@ -25,9 +25,9 @@ const CompactOperatorList = ({ operators, hasMore, showMore, isLoading = false }
   const mainUserIsBusy = useMemo(() => authUserMainPresence === 'busy', [authUserMainPresence])
 
   const classNameSidebarOpen =
-    'grid grid-cols-1 gap-4 2xl:grid-cols-2 3xl:grid-cols-3 5xl:grid-cols-4 6xl:grid-cols-5 7xl:grid-cols-6'
+    'grid grid-cols-1 gap-5 2xl:grid-cols-2 3xl:grid-cols-3 5xl:grid-cols-4 6xl:grid-cols-5 7xl:grid-cols-6'
   const classNameSidebarClosed =
-    'grid grid-cols-1 gap-4 lg:grid-cols-2 2xl:grid-cols-3 4xl:grid-cols-4 5xl:grid-cols-5 6xl:grid-cols-6'
+    'grid grid-cols-1 gap-5 lg:grid-cols-2 xl:grid-cols-2 2xl:grid-cols-3 3xl:grid-cols-4 5xl:grid-cols-5 6xl:grid-cols-6'
 
   const [currentCols, setCurrentCols] = useState(1)
   const gridRef = useRef<HTMLUListElement>(null)
@@ -63,8 +63,8 @@ const CompactOperatorList = ({ operators, hasMore, showMore, isLoading = false }
         className={`${isSidebarOpen ? classNameSidebarOpen : classNameSidebarClosed}`}
       >
         {Array.from(Array(skeletonItemsCount)).map((_, index) => (
-          <li key={`skeleton-${index}`} className='px-1 w-[400px]'>
-            <div className='group flex w-full items-center justify-between space-x-3 rounded-lg py-2 pr-2 pl-6 h-20 text-left focus:outline-none focus:ring-2 focus:ring-offset-2 bg-cardBackgroud dark:bg-cardBackgroudDark'>
+          <li key={`skeleton-${index}`} className='px-1 min-w-[384px] w-full'>
+            <div className='group flex w-full items-center justify-between space-x-3 rounded-lg py-2 pr-2 pl-6 h-16 text-left focus:outline-none focus:ring-2 focus:ring-offset-2 bg-cardBackgroud dark:bg-cardBackgroudDark'>
               {/* Avatar skeleton */}
               <span className='flex-shrink-0'>
                 <div className='animate-pulse rounded-full h-14 w-14 bg-gray-300 dark:bg-gray-600 border-2 border-gray-200 dark:border-gray-500'></div>
@@ -121,7 +121,7 @@ const CompactOperatorList = ({ operators, hasMore, showMore, isLoading = false }
         {filteredOperators?.map((operator, index) => (
           <li
             key={operator?.username || `compact-op-${index}`}
-            className='px-1 w-[400px]'
+            className='min-w-[384px] w-full'
           >
             <CompactOperatorCard
               operator={operator}

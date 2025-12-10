@@ -471,7 +471,7 @@ const Operators: NextPage = () => {
                 </>
               )}
             </div>
-            <div className='hidden sm:flex sm:justify-end sm:items-center mt-7'>
+            <div className='hidden sm:flex sm:justify-end sm:items-center mt-4'>
               <Button
                 variant='ghost'
                 onClick={() => selectLayoutOperators('standard')}
@@ -524,7 +524,7 @@ const Operators: NextPage = () => {
               <CustomThemedTooltip id='grouped-layout-tooltip' place='top' />
             </div>
           </div>
-          <div className='sm:hidden space-x-4'>
+          <div className='sm:hidden space-x-4 pb-8'>
             <button className='bg-transparent' onClick={() => selectLayoutOperators('standard')}>
               <FontAwesomeIcon
                 icon={faGrid2 as IconDefinition}
