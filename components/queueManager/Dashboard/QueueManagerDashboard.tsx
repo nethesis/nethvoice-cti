@@ -748,6 +748,7 @@ export const QueueManagerDashboard: FC<QueueManagerDashboardProps> = ({
                                               placeholderType='operator'
                                               size='small'
                                               status={operators[agent?.shortname]?.mainPresence}
+                                              star={operators?.[agent?.shortname]?.favorite}
                                               onClick={() =>
                                                 openShowOperatorDrawer(operators[agent?.shortname])
                                               }
@@ -870,6 +871,7 @@ export const QueueManagerDashboard: FC<QueueManagerDashboardProps> = ({
                                               placeholderType='operator'
                                               size='small'
                                               status={operators[agent?.shortname]?.mainPresence}
+                                              star={operators[agent?.shortname]?.favorite}
                                               onClick={() =>
                                                 openShowOperatorDrawer(operators[agent?.shortname])
                                               }
@@ -989,6 +991,7 @@ export const QueueManagerDashboard: FC<QueueManagerDashboardProps> = ({
                                               placeholderType='operator'
                                               size='small'
                                               status={operators[agent.shortname]?.mainPresence}
+                                              star={operators[agent.shortname]?.favorite}
                                               onClick={() =>
                                                 openShowOperatorDrawer(operators[agent.shortname])
                                               }
@@ -1111,6 +1114,7 @@ export const QueueManagerDashboard: FC<QueueManagerDashboardProps> = ({
                                               placeholderType='operator'
                                               size='small'
                                               status={operators[agent.shortname]?.mainPresence}
+                                              star={operators[agent.shortname]?.favorite}
                                               onClick={() =>
                                                 openShowOperatorDrawer(operators[agent.shortname])
                                               }
@@ -1233,6 +1237,7 @@ export const QueueManagerDashboard: FC<QueueManagerDashboardProps> = ({
                                               placeholderType='operator'
                                               size='small'
                                               status={operators[agent.shortname]?.mainPresence}
+                                              star={operators[agent.shortname]?.favorite}
                                               onClick={() =>
                                                 openShowOperatorDrawer(operators[agent.shortname])
                                               }
@@ -1355,6 +1360,7 @@ export const QueueManagerDashboard: FC<QueueManagerDashboardProps> = ({
                                               placeholderType='operator'
                                               size='small'
                                               status={operators[agent?.shortname]?.mainPresence}
+                                              star={operators[agent?.shortname]?.favorite}
                                               onClick={() =>
                                                 openShowOperatorDrawer(operators[agent?.shortname])
                                               }
@@ -1860,6 +1866,7 @@ export const QueueManagerDashboard: FC<QueueManagerDashboardProps> = ({
                                               placeholderType='operator'
                                               size='small'
                                               status={operators[agent?.shortname]?.mainPresence}
+                                              star={operators[agent?.shortname]?.favorite}
                                               onClick={() =>
                                                 openShowOperatorDrawer(operators[agent?.shortname])
                                               }

@@ -101,6 +101,7 @@ export const OperatorSummary = forwardRef<HTMLButtonElement, OperatorSummaryProp
                 onClick={() => maybeShowSideDrawer(operator)}
                 className={classNames(isShownSideDrawerLink && 'cursor-pointer')}
                 status={currentOperatorInformations?.mainPresence}
+                star={operator?.favorite}
               />
             </div>
             <div>

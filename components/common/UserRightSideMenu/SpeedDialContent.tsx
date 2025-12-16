@@ -495,6 +495,11 @@ export const SpeedDialContent = () => {
                           ]?.mainPresence
                         }
                         placeholderType='operator'
+                        star={
+                          operators?.operators?.[
+                            operators?.extensions?.[speedDial?.speeddial_num]?.username
+                          ]?.favorite
+                        }
                       />
                       <div className='ml-4 truncate max-w-40'>
                         <p

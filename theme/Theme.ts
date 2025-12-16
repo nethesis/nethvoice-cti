@@ -363,7 +363,7 @@ const theme = {
         small: 'h-2.5 w-2.5 top-[-1px] right-[-1px]',
         base: 'h-3 w-3 top-[-1px] right-[-1px]',
         large: 'h-3.5 w-3.5 top-[-1.5px] right-[-1.15px]',
-        extra_large: 'h-6 w-6 top-[-3px] right-[-3px]',
+        extra_large: 'h-6 w-6 top-[-3px] right-[-1px]',
       },
     },
     deleteAvatar: {
