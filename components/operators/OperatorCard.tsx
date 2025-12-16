@@ -77,7 +77,6 @@ const OperatorCard = ({
         className='mx-auto cursor-pointer'
         status={liveOperatorData?.mainPresence}
         star={liveOperatorData?.favorite}
-        card='standard'
         isRinging={isRinging}
       />
 

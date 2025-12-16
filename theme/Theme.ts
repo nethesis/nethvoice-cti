@@ -356,14 +356,13 @@ const theme = {
       },
     },
     star: {
-      base: 'absolute -top-[3px] -right-[3px] block text-indigo-500 dark:text-indigo-700',
-      compact: 'absolute -top-[6px] -right-[6px] block text-indigo-500 dark:text-indigo-700',
+      base: 'absolute block text-favoriteStar dark:text-favoriteStarDark stroke-body dark:stroke-bodyDark stroke-[50]',
       sizes: {
-        extra_small: 'h-2 w-2',
-        small: 'h-2 w-2',
-        base: 'h-2.5 w-2.5',
-        large: 'h-3 w-3',
-        extra_large: 'h-4 w-4',
+        extra_small: 'h-2 w-2 top-[-1px] right-[-1px]',
+        small: 'h-2.5 w-2.5 top-[-1px] right-[-1px]',
+        base: 'h-3 w-3 top-[-1px] right-[-1px]',
+        large: 'h-3.5 w-3.5 top-[-1.5px] right-[-1.5px]',
+        extra_large: 'h-6 w-6 top-[-3px] right-[-3px]',
       },
     },
     deleteAvatar: {

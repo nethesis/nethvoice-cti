@@ -190,6 +190,8 @@ module.exports = {
         phoneIslandCallDark: 'var(--color-phone-island-call-dark)',
         phoneIslandCallHover: 'var(--color-phone-island-call-hover)',
         phoneIslandCallHoverDark: 'var(--color-phone-island-call-hover-dark)',
+        favoriteStar: 'var(--color-favorite-star)',
+        favoriteStarDark: 'var(--color-favorite-star-dark)',
       },
       screens: {
         '3xl': '1792px',

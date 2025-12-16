@@ -41,7 +41,6 @@ export interface AvatarProps extends Omit<ComponentProps<'div'>, 'placeholder'> 
   size?: 'extra_small' | 'small' | 'base' | 'large' | 'extra_large'
   unoptimized?: boolean
   star?: boolean
-  card?: 'standard' | 'compact'
   deleteAvatar?: boolean
   isUploadAvatar?: boolean
   isRinging?: boolean
@@ -59,7 +58,6 @@ const AvatarComponent: FC<AvatarProps> = ({
   size = 'base',
   unoptimized = true,
   star,
-  card,
   deleteAvatar,
   isUploadAvatar,
   isRinging,
@@ -134,7 +132,7 @@ const AvatarComponent: FC<AvatarProps> = ({
         <FontAwesomeIcon
           icon={faStar}
           aria-hidden='true'
-          className={classNames(card === 'standard' ? theme.star.base : theme.star.compact, theme.star.sizes[size])}
+          className={classNames(theme.star.base, theme.star.sizes[size])}
         />
       )}
       {deleteAvatar && (

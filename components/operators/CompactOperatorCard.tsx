@@ -75,7 +75,6 @@ const CompactOperatorCard = ({
           className='mx-auto cursor-pointer'
           status={operator?.mainPresence}
           star={operator?.favorite}
-          card='compact'
           isRinging={isRinging}
         />
       </span>
