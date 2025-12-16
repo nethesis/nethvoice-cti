@@ -49,9 +49,9 @@ const GroupedOperatorList = ({
   const mainUserIsBusy = useMemo(() => authUserMainPresence === 'busy', [authUserMainPresence])
 
   const classNameSidebarOpen =
-    'grid grid-cols-1 gap-4 2xl:grid-cols-2 3xl:grid-cols-3 5xl:grid-cols-4 6xl:grid-cols-5 7xl:grid-cols-6'
+    'grid grid-cols-1 gap-x-5 gap-y-4 2xl:grid-cols-2 3xl:grid-cols-3 5xl:grid-cols-4 6xl:grid-cols-5 7xl:grid-cols-6'
   const classNameSidebarClosed =
-    'grid grid-cols-1 gap-4 lg:grid-cols-2 2xl:grid-cols-3 4xl:grid-cols-4 5xl:grid-cols-5 6xl:grid-cols-6'
+    'grid grid-cols-1 gap-x-5 gap-y-4 lg:grid-cols-2 xl:grid-cols-2 2xl:grid-cols-3 3xl:grid-cols-4 5xl:grid-cols-5 6xl:grid-cols-6'
 
   const [currentCols, setCurrentCols] = useState(1)
   const gridRef = useRef<HTMLUListElement>(null)
@@ -69,11 +69,11 @@ const GroupedOperatorList = ({
 
     detectGridCols()
     window.addEventListener('resize', detectGridCols)
-    
+
     return () => window.removeEventListener('resize', detectGridCols)
   }, [isSidebarOpen])
 
-  // Calculate skeleton items to show exactly 4 rows based on current breakpoint  
+  // Calculate skeleton items to show exactly 4 rows based on current breakpoint
   const skeletonItemsCount = useMemo(() => {
     const count = currentCols * 1
     return count
@@ -102,7 +102,7 @@ const GroupedOperatorList = ({
               className={`${isSidebarOpen ? classNameSidebarOpen : classNameSidebarClosed}`}
             >
               {Array.from(Array(skeletonItemsCount)).map((e, operatorIndex) => (
-                <li key={operatorIndex} className='px-1 w-[400px]'>
+                <li key={operatorIndex} className='min-w-[384px]'>
                   <div className='group flex w-full items-center justify-between space-x-3 rounded-lg py-2 pr-2 pl-6 h-20 text-left focus:outline-none focus:ring-2 focus:ring-offset-2 bg-cardBackgroud dark:bg-cardBackgroudDark'>
                     {/* Avatar skeleton */}
                     <span className='flex-shrink-0'>
@@ -179,7 +179,7 @@ const GroupedOperatorList = ({
             {category?.members?.map((operator: any, operatorIndex: number) => (
               <li
                 key={operator?.username || `${categoryIndex}-${operatorIndex}`}
-                className='px-1 w-[400px]'
+                className='min-w-[384px]'
               >
                 <CompactOperatorCard
                   operator={operator}

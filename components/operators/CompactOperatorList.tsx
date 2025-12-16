@@ -9,7 +9,8 @@ import CompactOperatorCard from './CompactOperatorCard'
 const CompactOperatorList = ({ operators, hasMore, showMore, isLoading = false }: any) => {
   const authUsername = useSelector((state: RootState) => state?.authentication?.username)
   const authUserMainPresence = useSelector(
-    (state: RootState) => state?.operators?.operators[state?.authentication?.username]?.mainPresence,
+    (state: RootState) =>
+      state?.operators?.operators[state?.authentication?.username]?.mainPresence,
   )
   const actionInformation = useSelector((state: RootState) => state?.userActions)
   const isSidebarOpen = useSelector((state: RootState) => state?.rightSideMenu?.isShown)
@@ -25,9 +26,9 @@ const CompactOperatorList = ({ operators, hasMore, showMore, isLoading = false }
   const mainUserIsBusy = useMemo(() => authUserMainPresence === 'busy', [authUserMainPresence])
 
   const classNameSidebarOpen =
-    'grid grid-cols-1 gap-4 2xl:grid-cols-2 3xl:grid-cols-3 5xl:grid-cols-4 6xl:grid-cols-5 7xl:grid-cols-6'
+    'grid grid-cols-1 gap-x-5 gap-y-4 2xl:grid-cols-2 3xl:grid-cols-3 5xl:grid-cols-4 6xl:grid-cols-5 7xl:grid-cols-6'
   const classNameSidebarClosed =
-    'grid grid-cols-1 gap-4 lg:grid-cols-2 2xl:grid-cols-3 4xl:grid-cols-4 5xl:grid-cols-5 6xl:grid-cols-6'
+    'grid grid-cols-1 gap-x-5 gap-y-4 lg:grid-cols-2 xl:grid-cols-2 2xl:grid-cols-3 3xl:grid-cols-4 5xl:grid-cols-5 6xl:grid-cols-6'
 
   const [currentCols, setCurrentCols] = useState(1)
   const gridRef = useRef<HTMLUListElement>(null)
@@ -45,7 +46,7 @@ const CompactOperatorList = ({ operators, hasMore, showMore, isLoading = false }
 
     detectGridCols()
     window.addEventListener('resize', detectGridCols)
-    
+
     return () => window.removeEventListener('resize', detectGridCols)
   }, [isSidebarOpen])
 
@@ -63,7 +64,7 @@ const CompactOperatorList = ({ operators, hasMore, showMore, isLoading = false }
         className={`${isSidebarOpen ? classNameSidebarOpen : classNameSidebarClosed}`}
       >
         {Array.from(Array(skeletonItemsCount)).map((_, index) => (
-          <li key={`skeleton-${index}`} className='px-1 min-w-[384px] w-full'>
+          <li key={`skeleton-${index}`} className='min-w-[384px] w-full'>
             <div className='group flex w-full items-center justify-between space-x-3 rounded-lg py-2 pr-2 pl-6 h-16 text-left focus:outline-none focus:ring-2 focus:ring-offset-2 bg-cardBackgroud dark:bg-cardBackgroudDark'>
               {/* Avatar skeleton */}
               <span className='flex-shrink-0'>
@@ -119,10 +120,7 @@ const CompactOperatorList = ({ operators, hasMore, showMore, isLoading = false }
         className={`${isSidebarOpen ? classNameSidebarOpen : classNameSidebarClosed}`}
       >
         {filteredOperators?.map((operator, index) => (
-          <li
-            key={operator?.username || `compact-op-${index}`}
-            className='min-w-[384px] w-full'
-          >
+          <li key={operator?.username || `compact-op-${index}`} className='min-w-[384px]'>
             <CompactOperatorCard
               operator={operator}
               authUsername={authUsername}

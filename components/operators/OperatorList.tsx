@@ -16,7 +16,8 @@ interface OperatorListProps {
 const OperatorList = ({ operators, hasMore, showMore, isLoading = false }: OperatorListProps) => {
   const authUsername = useSelector((state: RootState) => state?.authentication?.username)
   const authUserMainPresence = useSelector(
-    (state: RootState) => state?.operators?.operators[state?.authentication?.username]?.mainPresence,
+    (state: RootState) =>
+      state?.operators?.operators[state?.authentication?.username]?.mainPresence,
   )
   const actionInformation = useSelector((state: RootState) => state?.userActions)
   const isSidebarOpen = useSelector((state: RootState) => state?.rightSideMenu?.isShown)
@@ -29,9 +30,9 @@ const OperatorList = ({ operators, hasMore, showMore, isLoading = false }: Opera
   const mainUserIsBusy = useMemo(() => authUserMainPresence === 'busy', [authUserMainPresence])
 
   const classNameSidebarOpen =
-    'mx-auto grid grid-cols-2 gap-x-8 gap-y-8 xl:grid-cols-3 2xl:grid-cols-4 3xl:grid-cols-5 4xl:grid-cols-6 5xl:grid-cols-8 6xl:grid-cols-9'
+    'mx-auto gap-x-8 gap-y-8 grid grid-cols-1 sm:grid-cols-2 xl:grid-cols-3 2xl:grid-cols-4 3xl:grid-cols-5 4xl:grid-cols-6 5xl:grid-cols-8 6xl:grid-cols-9'
   const classNameSidebarClosed =
-    'mx-auto grid grid-cols-2 gap-x-8 gap-y-8 lg:grid-cols-3 xl:grid-cols-4 2xl:grid-cols-5 3xl:grid-cols-7 4xl:grid-cols-8 5xl:grid-cols-9 6xl:grid-cols-10'
+    'mx-auto gap-x-8 gap-y-8 grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 2xl:grid-cols-5 3xl:grid-cols-7 4xl:grid-cols-8 5xl:grid-cols-9 6xl:grid-cols-10'
 
   const [currentCols, setCurrentCols] = useState(2)
   const gridRef = useRef<HTMLUListElement>(null)
@@ -49,7 +50,7 @@ const OperatorList = ({ operators, hasMore, showMore, isLoading = false }: Opera
 
     detectGridCols()
     window.addEventListener('resize', detectGridCols)
-    
+
     return () => window.removeEventListener('resize', detectGridCols)
   }, [isSidebarOpen])
 
