@@ -21,7 +21,7 @@ const TextScroll: React.FC<TextScrollProps> = ({ text }) => {
   return (
     <>
       {scrollText ? (
-        <div className='text-container overflow-hidden relative max-w-[80px]'>
+        <div className='text-container overflow-hidden relative max-w-full'>
           <div className='text-wrapper text-sm font-medium leading-5 animate-scroll'>
             <span className='whitespace-nowrap'>{text}</span>
             <span className='ml-8 whitespace-nowrap'>{text}</span>
