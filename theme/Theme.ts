@@ -64,6 +64,7 @@ const theme = {
     },
     iconEnabled: 'text-primary dark:text-primaryDark',
     iconEnabledLighterOnDark: 'text-primary dark:text-primaryLight',
+    iconEnabledFavorite: 'text-favoriteStar dark:text-favoriteStarDark',
     iconDisabled: 'text-gray-500 dark:text-gray-400',
   },
   input: {
@@ -356,12 +357,12 @@ const theme = {
       },
     },
     star: {
-      base: 'absolute block text-favoriteStar dark:text-favoriteStarDark stroke-body dark:stroke-bodyDark stroke-[50]',
+      base: 'absolute block text-favoriteStar dark:text-favoriteStarDark',
       sizes: {
         extra_small: 'h-2 w-2 top-[-1px] right-[-1px]',
         small: 'h-2.5 w-2.5 top-[-1px] right-[-1px]',
         base: 'h-3 w-3 top-[-1px] right-[-1px]',
-        large: 'h-3.5 w-3.5 top-[-1.5px] right-[-1.5px]',
+        large: 'h-3.5 w-3.5 top-[-1.5px] right-[-1.15px]',
         extra_large: 'h-6 w-6 top-[-3px] right-[-3px]',
       },
     },

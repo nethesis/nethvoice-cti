@@ -129,11 +129,25 @@ const AvatarComponent: FC<AvatarProps> = ({
         </div>
       )}
       {star && (
-        <FontAwesomeIcon
-          icon={faStar}
-          aria-hidden='true'
-          className={classNames(theme.star.base, theme.star.sizes[size])}
-        />
+        <>
+          {/* White star behind the primary */}
+          <FontAwesomeIcon
+            icon={faStar}
+            aria-hidden='true'
+            className={classNames(theme.star.base, theme.star.sizes[size])}
+            style={{
+              color: '#FFFFFF',
+              filter: 'drop-shadow(0 0 1px #FFFFFF)',
+              transform: 'scale(1.3)',
+            }}
+          />
+          {/* Primary star */}
+          <FontAwesomeIcon
+            icon={faStar}
+            aria-hidden='true'
+            className={classNames(theme.star.base, theme.star.sizes[size])}
+          />
+        </>
       )}
       {deleteAvatar && (
         <button

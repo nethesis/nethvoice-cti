@@ -183,7 +183,7 @@ const CompactOperatorCard = ({
           </Button>
         )}
 
-        {/* Transfer button: mostrato solo quando l'operatore è già in conversazione */}
+        {/* Transfer button: only when operator is already in conversation */}
         {isInConversation && hasValidConversation && mainUserIsBusy && isOnline && (
           <Button
             variant='ghost'

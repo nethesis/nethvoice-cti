@@ -349,7 +349,7 @@
 
   /* Favorite star */
   --color-favorite-star: #4338CA;
-  --color-favorite-star-dark: #818CF8;
+  --color-favorite-star-dark: #6366F1;
 }
 
 @media (prefers-color-scheme: dark) {

@@ -14,6 +14,7 @@ export interface IconSwitchProps extends ComponentProps<'div'> {
   changed?: (enabled: boolean) => void
   disabled?: boolean
   lighterOnDark?: boolean
+  isFavorite?: boolean
 }
 
 export const IconSwitch: FC<IconSwitchProps> = ({
@@ -24,6 +25,7 @@ export const IconSwitch: FC<IconSwitchProps> = ({
   size = 'base',
   disabled,
   lighterOnDark = false,
+  isFavorite = false,
   className,
   ...props
 }): JSX.Element => {
@@ -51,7 +53,9 @@ export const IconSwitch: FC<IconSwitchProps> = ({
         <span
           className={classNames(
             enabled
-              ? lighterOnDark
+              ? isFavorite
+                ? theme.iconEnabledFavorite
+                : lighterOnDark
                 ? theme.iconEnabledLighterOnDark
                 : theme.iconEnabled
               : theme.iconDisabled,
