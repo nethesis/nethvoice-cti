@@ -34,6 +34,10 @@ const CompactOperatorCard = ({
   actionInformation,
   index,
 }: CompactOperatorCardProps) => {
+  const liveOperatorData = useSelector(
+    (state: RootState) => state.operators.operators[operator?.username] || operator,
+  )
+
   const {
     permissions,
     operatorStates,
@@ -44,7 +48,7 @@ const CompactOperatorCard = ({
       handlePickupCall,
       handleRejectCall,
     },
-  } = useOperatorStates(operator, authUsername)
+  } = useOperatorStates(liveOperatorData, authUsername)
 
   const {
     isInConversation,
@@ -56,25 +60,28 @@ const CompactOperatorCard = ({
     isCalledByCurrentUser,
   } = operatorStates
 
-  const mainExtension = useMemo(() => operator?.endpoints?.mainextension?.[0]?.id || '', [operator])
+  const mainExtension = useMemo(
+    () => liveOperatorData?.endpoints?.mainextension?.[0]?.id || '',
+    [liveOperatorData],
+  )
 
   const operatorsStore = useSelector((state: RootState) => state.operators)
-  let currentUserIsInConversation = operatorsStore?.operators[authUsername].mainPresence != 'online'
+  const currentUserIsInConversation =
+    operatorsStore?.operators?.[authUsername]?.mainPresence !== 'online'
 
   return (
     <div className='group flex w-full items-center justify-between rounded-lg py-2 px-3 h-16 gap-3 text-left focus:outline-none focus:ring-2 focus:ring-offset-2 bg-cardBackgroud dark:bg-cardBackgroudDark focus:ring-primary dark:focus:ring-primary'>
-      
       {/* Left section: Avatar */}
       <span className='flex-shrink-0'>
         <Avatar
-          src={operator?.avatarBase64}
+          src={liveOperatorData?.avatarBase64}
           placeholderType='operator'
           size='large'
           bordered
           onClick={handleOpenDrawer}
           className='mx-auto cursor-pointer'
-          status={operator?.mainPresence}
-          star={operator?.favorite}
+          status={liveOperatorData?.mainPresence}
+          star={liveOperatorData?.favorite}
           isRinging={isRinging}
         />
       </span>
@@ -86,7 +93,7 @@ const CompactOperatorCard = ({
             className='block truncate text-sm leading-5 font-medium text-primaryNeutral dark:text-primaryNeutralDark cursor-pointer hover:underline'
             onClick={handleOpenDrawer}
           >
-            {operator?.name}
+            {liveOperatorData?.name}
           </span>
           <span className='text-sm leading-4 font-normal text-secondaryNeutral dark:text-secondaryNeutralDark'>
             {mainExtension}
@@ -98,38 +105,39 @@ const CompactOperatorCard = ({
           <div
             className={`tooltip-operator-information-${index} mt-1`}
             data-tooltip-id={`tooltip-operator-information-${index}`}
-            data-tooltip-content={operator?.conversations[0]?.counterpartName || '-'}
+            data-tooltip-content={liveOperatorData?.conversations[0]?.counterpartName || '-'}
           >
             <div className='flex items-center text-red-600 dark:text-red-500 overflow-hidden'>
               <div
                 data-tooltip-id={`tooltip-textscroll-${index}`}
-                data-tooltip-content={operator?.conversations[0]?.counterpartName || ''}
+                data-tooltip-content={liveOperatorData?.conversations[0]?.counterpartName || ''}
               >
-                <TextScroll text={operator?.conversations[0]?.counterpartName || ''} />
+                <TextScroll text={liveOperatorData?.conversations[0]?.counterpartName || ''} />
               </div>
               <span className='mx-1 text-sm font-medium leading-5'>-</span>
-              {operator?.conversations[0]?.startTime && (
+              {liveOperatorData?.conversations[0]?.startTime && (
                 <>
                   <CallDuration
-                    startTime={operator?.conversations[0]?.startTime}
+                    startTime={liveOperatorData?.conversations[0]?.startTime}
                     className='text-sm font-medium leading-5 whitespace-nowrap'
                   />
                 </>
               )}
 
               {/* Recording indicator */}
-              {operator?.conversations[0]?.recording === 'true' && (
+              {liveOperatorData?.conversations[0]?.recording === 'true' && (
                 <FontAwesomeIcon icon={faRecordVinyl} className='ml-1.5 h-4 w-4' />
               )}
 
               {/* Listening indicator */}
-              {operator?.conversations[0]?.id ===
+              {liveOperatorData?.conversations[0]?.id ===
                 actionInformation?.listeningInfo?.listening_id && (
                 <FontAwesomeIcon icon={faEarListen} className='ml-1.5 h-4 w-4' />
               )}
 
               {/* Intrude indicator */}
-              {operator?.conversations[0]?.id === actionInformation?.intrudeInfo?.intrude_id && (
+              {liveOperatorData?.conversations[0]?.id ===
+                actionInformation?.intrudeInfo?.intrude_id && (
                 <FontAwesomeIcon icon={faHandPointUp} className='ml-1.5 h-4 w-4' />
               )}
             </div>
@@ -140,14 +148,14 @@ const CompactOperatorCard = ({
         {/* If operator is ringing and user has no permissions or is calling this operator */}
         {isRinging && (
           <div className='flex items-center text-textStatusBusy dark:text-textStatusBusyDark min-w-0 overflow-hidden mt-1'>
-            {operator?.conversations?.[0]?.counterpartName && (
+            {liveOperatorData?.conversations?.[0]?.counterpartName && (
               <>
                 <div className='min-w-0 flex-1 overflow-hidden'>
                   <div
                     data-tooltip-id={`tooltip-textscroll-${index}`}
-                    data-tooltip-content={operator?.conversations[0]?.counterpartName || ''}
+                    data-tooltip-content={liveOperatorData?.conversations[0]?.counterpartName || ''}
                   >
-                    <TextScroll text={operator?.conversations[0]?.counterpartName || ''} />
+                    <TextScroll text={liveOperatorData?.conversations[0]?.counterpartName || ''} />
                   </div>
                 </div>
               </>
@@ -166,13 +174,20 @@ const CompactOperatorCard = ({
 
       {/* Right section: Action buttons */}
       <div className='flex items-center space-x-2'>
-        {/* Call button: mostrato solo quando la riga è "neutra" */}
-        {!isInConversation && !isRinging && !isBusy && (
+        {/* Call button */}
+        {!isInConversation && !isRinging && !isBusy && (!mainUserIsBusy || !isOnline) && (
           <Button
-            variant='ghost'
-            size='base'
-            className='text-primaryActive dark:text-primaryActiveDark disabled:opacity-50'
-            disabled={isOfflineOrDnd || mainUserIsBusy || operator?.username === authUsername}
+            variant='dashboard'
+            className={
+              mainUserIsBusy
+                ? 'text-primary dark:text-primaryDark dark:disabled:text-gray-600 dark:disabled:hover:text-gray-600 disabled:text-gray-400'
+                : isOfflineOrDnd
+                ? 'text-primaryActive dark:text-primaryActiveDark dark:disabled:text-gray-600 dark:disabled:hover:text-gray-600 disabled:text-gray-400'
+                : 'text-primaryActive dark:text-primaryActiveDark'
+            }
+            disabled={
+              mainUserIsBusy || isOfflineOrDnd || liveOperatorData?.username === authUsername
+            }
             onClick={handleCallOperator}
           >
             <FontAwesomeIcon
@@ -183,8 +198,8 @@ const CompactOperatorCard = ({
           </Button>
         )}
 
-        {/* Transfer button: only when operator is already in conversation */}
-        {isInConversation && hasValidConversation && mainUserIsBusy && isOnline && (
+        {/* Transfer button: shown when current user is in call and target operator is available */}
+        {mainUserIsBusy && isOnline && !isRinging && !isInConversation && (
           <Button
             variant='ghost'
             onClick={handleTransferCall}
@@ -224,7 +239,9 @@ const CompactOperatorCard = ({
                 <Button
                   variant='whiteDanger'
                   size='small'
-                  onClick={() => handleRejectCall(operator?.endpoints?.mainextension?.[0]?.id)}
+                  onClick={() =>
+                    handleRejectCall(liveOperatorData?.endpoints?.mainextension?.[0]?.id)
+                  }
                   data-tooltip-id={`tooltip-reject-operator-${index}`}
                   data-tooltip-content={t('Common.Reject')}
                 >

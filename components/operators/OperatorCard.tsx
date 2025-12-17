@@ -228,33 +228,19 @@ const OperatorCard = ({
           {!isInConversation &&
             !isRinging &&
             !isBusy &&
-            (mainUserIsBusy ? (
-              liveOperatorData?.mainPresence !== 'online' && (
-                <Button
-                  variant='dashboard'
-                  disabled={true}
-                  className='text-primary dark:text-primaryDark dark:disabled:text-gray-600 dark:disabled:hover:text-gray-600 disabled:text-gray-400'
-                  onClick={handleCallOperator}
-                >
-                  <FontAwesomeIcon
-                    icon={faPhone}
-                    className='inline-block text-center h-4 w-4 mr-2'
-                  />
-                  <span className='text-sm not-italic font-medium leading-5'>
-                    {t('Operators.Call')}
-                  </span>
-                </Button>
-              )
-            ) : (
-              // Normal Call
+            (!mainUserIsBusy || liveOperatorData?.mainPresence !== 'online') && (
               <Button
                 variant='dashboard'
-                className={`${
-                  isOfflineOrDnd
-                    ? 'text-primaryActive dark:text-primaryActiveDark dark:disabled:text-gray-600 dark:disabled:hover:text-gray-600 disabled:text-gray-400'
-                    : 'text-primaryActive dark:text-primaryActiveDark'
-                }`}
-                disabled={isOfflineOrDnd || liveOperatorData?.username === authUsername}
+                className={
+                  mainUserIsBusy
+                    ? 'text-primary dark:text-primaryDark dark:disabled:text-gray-600 dark:disabled:hover:text-gray-600 disabled:text-gray-400'
+                    : isOfflineOrDnd
+                      ? 'text-primaryActive dark:text-primaryActiveDark dark:disabled:text-gray-600 dark:disabled:hover:text-gray-600 disabled:text-gray-400'
+                      : 'text-primaryActive dark:text-primaryActiveDark'
+                }
+                disabled={
+                  mainUserIsBusy || isOfflineOrDnd || liveOperatorData?.username === authUsername
+                }
                 onClick={handleCallOperator}
               >
                 <FontAwesomeIcon icon={faPhone} className='inline-block text-center h-4 w-4 mr-2' />
@@ -262,7 +248,7 @@ const OperatorCard = ({
                   {t('Operators.Call')}
                 </span>
               </Button>
-            ))}
+            )}
         </span>
       </div>
 
