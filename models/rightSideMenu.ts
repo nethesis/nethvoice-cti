@@ -1,5 +1,6 @@
 // Copyright (C) 2024 Nethesis S.r.l.
 // SPDX-License-Identifier: AGPL-3.0-or-later
+
 import { createModel } from '@rematch/core'
 import type { RootModel } from '.'
 import { getJSONItem, setJSONItem } from '../lib/storage'
@@ -41,10 +42,12 @@ export const rightSideMenu = createModel<RootModel>()({
         state.isShown = true
       }
 
-      // Save to localStorage
-      const preferences = getJSONItem(`preferences-${username}`) || {}
-      preferences['userSideBarTab'] = tabName
-      setJSONItem(`preferences-${username}`, preferences)
+      // Save to localStorage (only if we have a valid username)
+      if (username) {
+        const preferences = getJSONItem(`preferences-${username}`) || {}
+        preferences['userSideBarTab'] = tabName
+        setJSONItem(`preferences-${username}`, preferences)
+      }
 
       return state
     },
