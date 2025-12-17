@@ -41,6 +41,7 @@ module.exports = {
         cardBackgroud: 'var(--color-card-background)',
         cardText: 'var(--color-card-text)',
         cardTextBusy: 'var(--color-card-text-busy)',
+        cardTextBusyDark: 'var(--color-card-text-busy-dark)',
         cardIcon: 'var(--color-card-icon)',
         cardBackgroudDark: 'var(--color-card-background-dark)',
         cardTextDark: 'var(--color-card-text-dark)',
@@ -189,6 +190,8 @@ module.exports = {
         phoneIslandCallDark: 'var(--color-phone-island-call-dark)',
         phoneIslandCallHover: 'var(--color-phone-island-call-hover)',
         phoneIslandCallHoverDark: 'var(--color-phone-island-call-hover-dark)',
+        favoriteStar: 'var(--color-favorite-star)',
+        favoriteStarDark: 'var(--color-favorite-star-dark)',
       },
       screens: {
         '3xl': '1792px',

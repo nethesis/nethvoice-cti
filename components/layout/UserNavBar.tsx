@@ -39,7 +39,9 @@ export const UserNavBar: FC = () => {
 
   const [tabs, setTabs] = useState<TabTypes[]>([])
   useEffect(() => {
-    const savedTab = loadPreference('userSideBarTab', username) || 'speed_dial'
+    const savedTabPref = loadPreference('userSideBarTab', username)
+    const savedTab =
+      savedTabPref === undefined || savedTabPref === null ? 'speed_dial' : savedTabPref
     setTabs([
       ...(profile?.profile?.macro_permissions?.phonebook?.value
         ? [
@@ -74,7 +76,7 @@ export const UserNavBar: FC = () => {
 
   const [defaultTabSelected, setDefaultTabSelected] = useState('')
 
-  //On first render of page get value of tab from local storage
+  // On first render of page get value of tab from local storage
   useEffect(() => {
     if (!rightSideStatus?.actualTab && defaultTabSelected !== '') {
       store.dispatch.rightSideMenu.toggleSideMenu({
@@ -133,18 +135,27 @@ export const UserNavBar: FC = () => {
     return { rightSideMenuTabSelectedLocalStorage }
   }
 
-  //Get selected user side menu selected value from the local storage
+  // Get selected user side menu selected value from the local storage
   useEffect(() => {
     const localStorageTabValues = getTabValuesFromLocalStorage(auth.username)
-    if (
-      localStorageTabValues?.rightSideMenuTabSelectedLocalStorage &&
-      localStorageTabValues?.rightSideMenuTabSelectedLocalStorage !== ''
-    ) {
-      setDefaultTabSelected(localStorageTabValues?.rightSideMenuTabSelectedLocalStorage)
+    const selected = localStorageTabValues?.rightSideMenuTabSelectedLocalStorage
+
+    if (selected === '') {
+      setDefaultTabSelected('')
       if (!firstClickOnTab) {
         setTabs((state) =>
           state.map((tab) => {
-            tab.active = tab.name === localStorageTabValues?.rightSideMenuTabSelectedLocalStorage
+            tab.active = false
+            return tab
+          }),
+        )
+      }
+    } else if (selected !== undefined && selected !== null && selected !== '') {
+      setDefaultTabSelected(selected)
+      if (!firstClickOnTab) {
+        setTabs((state) =>
+          state.map((tab) => {
+            tab.active = tab.name === selected
             return tab
           }),
         )
@@ -173,11 +184,14 @@ export const UserNavBar: FC = () => {
     }
     if (username && userPreferences) {
       if (userPreferences?.rightTabStatus !== undefined) {
+        const tabNameFromPrefs =
+          userPreferences?.userSideBarTab ?? defaultTabSelected ?? 'speed_dial'
+        const forceOpen = tabNameFromPrefs === '' ? false : userPreferences?.rightTabStatus
         // Use the combined action to set both states
         store.dispatch.rightSideMenu.toggleSideMenu({
-          tabName: userPreferences?.userSideBarTab || defaultTabSelected || 'speed_dial',
+          tabName: tabNameFromPrefs,
           username,
-          force: userPreferences?.rightTabStatus,
+          force: forceOpen,
         })
       }
     }

@@ -429,6 +429,7 @@ export const GlobalSearch: FC<GlobalSearchProps> = () => {
                                       placeholderType='operator'
                                       size='base'
                                       status={result?.mainPresence}
+                                      star={result?.favorite}
                                     />
                                     <span className='ml-2 flex-auto truncate'>{result?.name}</span>
                                   </>

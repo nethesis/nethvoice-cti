@@ -11,7 +11,7 @@ const TextScroll: React.FC<TextScrollProps> = ({ text }) => {
   const [scrollText, setScrollText] = useState(false)
 
   useEffect(() => {
-    if (text.length > 15) {
+    if (text.length > 25) {
       setScrollText(true)
     } else {
       setScrollText(false)
@@ -21,7 +21,7 @@ const TextScroll: React.FC<TextScrollProps> = ({ text }) => {
   return (
     <>
       {scrollText ? (
-        <div className='text-container overflow-hidden relative max-w-[80px]'>
+        <div className='text-container overflow-hidden relative max-w-full'>
           <div className='text-wrapper text-sm font-medium leading-5 animate-scroll'>
             <span className='whitespace-nowrap'>{text}</span>
             <span className='ml-8 whitespace-nowrap'>{text}</span>
@@ -45,7 +45,7 @@ const TextScroll: React.FC<TextScrollProps> = ({ text }) => {
           `}</style>
         </div>
       ) : (
-        <div className='text-sm font-medium leading-5 truncate mt-[0.15rem]'>
+        <div className='text-sm font-medium leading-5 truncate'>
           <span className='whitespace-nowrap'>{text}</span>
         </div>
       )}

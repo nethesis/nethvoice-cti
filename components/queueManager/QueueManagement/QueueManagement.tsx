@@ -600,6 +600,7 @@ export const QueueManagement: FC<QueueManagementProps> = ({ className }): JSX.El
                                             openShowOperatorDrawer(operators[call.operatorUsername])
                                           }
                                           className='cursor-pointer'
+                                          star={operators?.[call?.operatorUsername]?.favorite}
                                         />
                                         <div className='flex flex-col overflow-hidden'>
                                           <div>{operators[call.operatorUsername].name}</div>

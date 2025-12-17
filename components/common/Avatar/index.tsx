@@ -43,6 +43,7 @@ export interface AvatarProps extends Omit<ComponentProps<'div'>, 'placeholder'> 
   star?: boolean
   deleteAvatar?: boolean
   isUploadAvatar?: boolean
+  isRinging?: boolean
 }
 
 const AvatarComponent: FC<AvatarProps> = ({
@@ -59,6 +60,7 @@ const AvatarComponent: FC<AvatarProps> = ({
   star,
   deleteAvatar,
   isUploadAvatar,
+  isRinging,
   className,
   ...props
 }) => {
@@ -117,7 +119,9 @@ const AvatarComponent: FC<AvatarProps> = ({
       {status && (
         <div>
           <StatusDot
+            size={size}
             status={status}
+            animate={isRinging}
             className={`absolute bottom-0 right-0 ${
               size === 'extra_large' ? 'h-5 w-5' : size === 'large' ? 'h-3 w-3' : 'h-2 w-2'
             }`}
@@ -125,11 +129,25 @@ const AvatarComponent: FC<AvatarProps> = ({
         </div>
       )}
       {star && (
-        <FontAwesomeIcon
-          icon={faStar}
-          aria-hidden='true'
-          className={classNames(theme.star.base, theme.star.sizes[size])}
-        />
+        <>
+          {/* White star behind the primary */}
+          <FontAwesomeIcon
+            icon={faStar}
+            aria-hidden='true'
+            className={classNames(theme.star.base, theme.star.sizes[size])}
+            style={{
+              color: '#FFFFFF',
+              filter: 'drop-shadow(0 0 1px #FFFFFF)',
+              transform: 'scale(1.3)',
+            }}
+          />
+          {/* Primary star */}
+          <FontAwesomeIcon
+            icon={faStar}
+            aria-hidden='true'
+            className={classNames(theme.star.base, theme.star.sizes[size])}
+          />
+        </>
       )}
       {deleteAvatar && (
         <button

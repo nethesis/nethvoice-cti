@@ -313,11 +313,12 @@ export const QueuesManagementView: FC<QueuesManagementViewProps> = ({ className 
         <div className='flex items-center gap-3 overflow-hidden'>
           <Avatar
             rounded='full'
-            src={operator.avatarBase64}
+            src={operator?.avatarBase64}
             placeholderType='operator'
             size='small'
-            status={operator.mainPresence}
+            status={operator?.mainPresence}
             onClick={() => openShowOperatorDrawer(operator)}
+            star={operator?.favorite}
             className='cursor-pointer'
           />
           <div className='flex flex-col overflow-hidden'>
@@ -325,15 +326,15 @@ export const QueuesManagementView: FC<QueuesManagementViewProps> = ({ className 
               className='truncate cursor-pointer hover:underline'
               onClick={() => openShowOperatorDrawer(operator)}
             >
-              {operator.name}
+              {operator?.name}
             </div>
             <div className='text-gray-500 dark:text-gray-500'>
-              {operator.endpoints.mainextension[0].id}
+              {operator?.endpoints?.mainextension?.[0]?.id}
             </div>
           </div>
         </div>
         <div className='shrink-0'>
-          <LoggedStatus loggedIn={queueOperator.loggedIn} paused={queueOperator.paused} />
+          <LoggedStatus loggedIn={queueOperator?.loggedIn} paused={queueOperator?.paused} />
         </div>
       </div>
     )
