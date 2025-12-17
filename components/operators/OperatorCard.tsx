@@ -110,7 +110,7 @@ const OperatorCard = ({
                 {operator?.conversations?.[0]?.startTime && (
                   <>
                     <CallDuration
-                      startTime={operator?.conversations.?[0]?.startTime}
+                      startTime={operator?.conversations?.[0]?.startTime}
                       className='text-sm font-medium leading-5 whitespace-nowrap'
                     />
                   </>
