@@ -82,7 +82,7 @@ export const DeviceSectionOperatorSearch: FC<DeviceSectionOperatorSearchProps> =
     let operatorsResults = Object.values(operators?.operators).filter((op: any) => {
       return (
         new RegExp(cleanQuery, 'i').test(op.name.replace(cleanRegex, '')) ||
-        new RegExp(cleanQuery, 'i').test(op.endpoints?.mainextension[0]?.id)
+        new RegExp(cleanQuery, 'i').test(op.endpoints?.mainextension?.[0]?.id)
       )
     })
 
@@ -201,7 +201,7 @@ export const DeviceSectionOperatorSearch: FC<DeviceSectionOperatorSearchProps> =
 
     if (result) {
       const operatorId =
-        result?.resultType === 'operator' ? result?.endpoints?.mainextension[0]?.id : ''
+        result?.resultType === 'operator' ? result?.endpoints?.mainextension?.[0]?.id : ''
 
       const numberTypeFromId = result?.id?.split('-')?.[1]
 

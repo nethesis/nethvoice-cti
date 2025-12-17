@@ -214,7 +214,7 @@ export const VoicemailInbox: FC<VoicemailInboxProps> = ({ className }): JSX.Elem
     ) {
       transferCallToExtension(voicemail?.caller_number)
     } else if (
-      operatorsStore?.operators[authStore?.username]?.endpoints?.mainextension[0]?.id !==
+      operatorsStore?.operators[authStore?.username]?.endpoints?.mainextension?.[0]?.id !==
       voicemail?.caller_number
     ) {
       callPhoneNumber(voicemail?.caller_number)

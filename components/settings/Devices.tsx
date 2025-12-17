@@ -422,13 +422,13 @@ const Devices: NextPage = () => {
                           {t('Devices.Audio and video settings')}
                         </span>
                       </Button>
-                      {webrtcData[0]?.id !== profile?.default_device?.id &&
-                      phoneLinkData[0]?.id !== profile?.default_device?.id ? (
+                      {webrtcData?.[0]?.id !== profile?.default_device?.id &&
+                      phoneLinkData?.[0]?.id !== profile?.default_device?.id ? (
                         <Dropdown
                           items={setMainDeviceMenu(
-                            webrtcData[0]?.id,
+                            webrtcData?.[0]?.id,
                             'webrtc',
-                            webrtcData[0],
+                            webrtcData?.[0],
                             false,
                           )}
                           position='leftSingleItem'

@@ -340,7 +340,7 @@ export const openToast = (toastType: any, messageToast: any, toastTytle: any) =>
 }
 
 export async function transferCall(operatorBadgeInformations: any) {
-  let extensionToTransfer = operatorBadgeInformations?.endpoints?.mainextension[0]?.id
+  let extensionToTransfer = operatorBadgeInformations?.endpoints?.mainextension?.[0]?.id
   const isNethLinkActive = isNethlinkOnline()
 
   if (isNethLinkActive) {

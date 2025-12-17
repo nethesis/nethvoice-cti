@@ -51,7 +51,7 @@ export const OperatorSummary = forwardRef<HTMLButtonElement, OperatorSummaryProp
       } else {
         addOperatorToFavorites(
           operator?.username,
-          operator?.endpoints?.mainextension[0]?.id,
+          operator?.endpoints?.mainextension?.[0]?.id,
           operator?.name,
         )
       }
@@ -76,7 +76,7 @@ export const OperatorSummary = forwardRef<HTMLButtonElement, OperatorSummaryProp
 
     useEffect(() => {
       if (operator && operator?.endpoints) {
-        const mainExtension = operator?.endpoints?.mainextension[0]?.id || null
+        const mainExtension = operator?.endpoints?.mainextension?.[0]?.id || null
         const cellphone = operator?.endpoints?.cellphone[0]?.id || null
 
         setOperatorDevices({
@@ -142,7 +142,7 @@ export const OperatorSummary = forwardRef<HTMLButtonElement, OperatorSummaryProp
               </div>
 
               <span className='text-base font-normal leading-5 text-secondaryNeutral dark:text-secondaryNeutralDark ml-2'>
-                {operator?.endpoints?.mainextension[0]?.id}
+                {operator?.endpoints?.mainextension?.[0]?.id}
               </span>
             </div>
           </div>
@@ -183,11 +183,11 @@ export const OperatorSummary = forwardRef<HTMLButtonElement, OperatorSummaryProp
         </div>
         {/* ongoing call info */}
         {!!operatorsStore?.operators[operator?.username]?.conversations?.length &&
-          (operatorsStore?.operators[operator?.username]?.conversations[0]?.connected ||
-            operatorsStore?.operators[operator?.username]?.conversations[0]?.inConference ||
-            operatorsStore?.operators[operator?.username]?.conversations[0]?.chDest?.inConference ==
+          (operatorsStore?.operators[operator?.username]?.conversations?.[0]?.connected ||
+            operatorsStore?.operators[operator?.username]?.conversations?.[0]?.inConference ||
+            operatorsStore?.operators[operator?.username]?.conversations?.[0]?.chDest?.inConference ==
               true ||
-            !isEmpty(operatorsStore?.operators[operator?.username]?.conversations[0])) && (
+            !isEmpty(operatorsStore?.operators[operator?.username]?.conversations?.[0])) && (
             <ActionCall config={operator} />
           )}
       </>

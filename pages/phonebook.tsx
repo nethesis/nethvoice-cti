@@ -139,7 +139,7 @@ const Phonebook: NextPage = () => {
                 <span
                   className={`${
                     contact?.extension !==
-                    operatorsStore?.operators[authStore?.username]?.endpoints?.mainextension[0]?.id
+                    operatorsStore?.operators[authStore?.username]?.endpoints?.mainextension?.[0]?.id
                       ? 'cursor-pointer hover:underline text-iconPrimary dark:text-iconPrimaryDark'
                       : 'text-secondaryNeutral dark:text-secondaryNeutralDark'
                   } truncate`}
@@ -148,7 +148,7 @@ const Phonebook: NextPage = () => {
                     operatorsStore?.operators[authStore?.username]?.mainPresence === 'busy'
                       ? transferCallToExtension(contact?.extension)
                       : contact?.extension !==
-                        operatorsStore?.operators[authStore?.username]?.endpoints?.mainextension[0]
+                        operatorsStore?.operators[authStore?.username]?.endpoints?.mainextension?.[0]
                           ?.id
                       ? callPhoneNumber(contact?.extension)
                       : ''
@@ -188,7 +188,7 @@ const Phonebook: NextPage = () => {
               <span
                 className={`${
                   contact?.workphone !==
-                  operatorsStore?.operators[authStore?.username]?.endpoints?.mainextension[0]?.id
+                  operatorsStore?.operators[authStore?.username]?.endpoints?.mainextension?.[0]?.id
                     ? 'cursor-pointer hover:underline'
                     : 'text-gray-700 dark:text-gray-200'
                 } truncate`}
@@ -197,7 +197,7 @@ const Phonebook: NextPage = () => {
                   operatorsStore?.operators[authStore?.username]?.mainPresence === 'busy'
                     ? transferCallToExtension(contact?.workphone)
                     : contact?.workphone !==
-                      operatorsStore?.operators[authStore?.username]?.endpoints?.mainextension[0]
+                      operatorsStore?.operators[authStore?.username]?.endpoints?.mainextension?.[0]
                         ?.id
                     ? callPhoneNumber(contact?.workphone)
                     : ''

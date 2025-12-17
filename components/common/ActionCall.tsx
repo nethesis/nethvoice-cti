@@ -44,7 +44,7 @@ export const ActionCall: React.FC<ActionCallProps> = ({ config }) => {
   const operators = useSelector((state: RootState) => state.operators)
   const profile = useSelector((state: RootState) => state.user)
 
-  const currentConversation = operators?.operators[config?.username]?.conversations[0]
+  const currentConversation = operators?.operators[config?.username]?.conversations?.[0]
   const canShowActions =
     currentConversation?.chDest?.callerName !== profile?.name &&
     currentConversation?.chSource?.callerName !== profile?.name
@@ -81,7 +81,7 @@ export const ActionCall: React.FC<ActionCallProps> = ({ config }) => {
 
       const recallInfo = {
         caller: profile.mainextension,
-        called: operators?.operators[config?.username]?.endpoints?.mainextension[0]?.id,
+        called: operators?.operators[config?.username]?.endpoints?.mainextension?.[0]?.id,
       }
 
       try {
@@ -101,7 +101,7 @@ export const ActionCall: React.FC<ActionCallProps> = ({ config }) => {
 
       try {
         await hangupMainExt({
-          exten: config?.endpoints?.mainextension[0]?.id,
+          exten: config?.endpoints?.mainextension?.[0]?.id,
         })
       } catch (e) {
         console.error(e)
@@ -165,16 +165,16 @@ export const ActionCall: React.FC<ActionCallProps> = ({ config }) => {
     pickup: async () => {
       const operatorInfo = config
       if (
-        !operators?.operators[operatorInfo?.username]?.conversations[0]?.id ||
+        !operators?.operators[operatorInfo?.username]?.conversations?.[0]?.id ||
         !profile?.default_device?.id ||
-        !operatorInfo?.endpoints?.mainextension[0]?.id
+        !operatorInfo?.endpoints?.mainextension?.[0]?.id
       )
         return
 
       try {
         await pickup({
-          convid: operators.operators[operatorInfo.username].conversations[0].id,
-          endpointId: operatorInfo.endpoints.mainextension[0].id,
+          convid: operators.operators[operatorInfo.username].conversations?.[0].id,
+          endpointId: operatorInfo.endpoints.mainextension?.[0].id,
           destId: profile.default_device.id,
         })
       } catch (e) {

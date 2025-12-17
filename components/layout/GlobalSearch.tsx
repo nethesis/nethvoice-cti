@@ -69,7 +69,7 @@ export const GlobalSearch: FC<GlobalSearchProps> = () => {
     let operatorsResults = Object.values(visibleOperators).filter((op: any) => {
       return (
         new RegExp(cleanQuery, 'i').test(op.name.replace(cleanRegex, '')) ||
-        new RegExp(cleanQuery, 'i').test(op.endpoints?.mainextension[0]?.id)
+        new RegExp(cleanQuery, 'i').test(op.endpoints?.mainextension?.[0]?.id)
       )
     })
 
@@ -197,7 +197,7 @@ export const GlobalSearch: FC<GlobalSearchProps> = () => {
         ) {
           transferCallToExtension(result?.phoneNumber)
         } else if (
-          operatorsStore?.operators[authStore?.username]?.endpoints?.mainextension[0]?.id !==
+          operatorsStore?.operators[authStore?.username]?.endpoints?.mainextension?.[0]?.id !==
           result?.phoneNumber
         ) {
           callPhoneNumber(result?.phoneNumber)

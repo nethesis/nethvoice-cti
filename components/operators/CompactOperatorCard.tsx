@@ -105,38 +105,38 @@ const CompactOperatorCard = ({
           <div
             className={`tooltip-operator-information-${index} mt-1`}
             data-tooltip-id={`tooltip-operator-information-${index}`}
-            data-tooltip-content={liveOperatorData?.conversations[0]?.counterpartName || '-'}
+            data-tooltip-content={liveOperatorData?.conversations?.[0]?.counterpartName || '-'}
           >
             <div className='flex items-center text-red-600 dark:text-red-500 overflow-hidden'>
               <div
                 data-tooltip-id={`tooltip-textscroll-${index}`}
-                data-tooltip-content={liveOperatorData?.conversations[0]?.counterpartName || ''}
+                data-tooltip-content={liveOperatorData?.conversations?.[0]?.counterpartName || ''}
               >
-                <TextScroll text={liveOperatorData?.conversations[0]?.counterpartName || ''} />
+                <TextScroll text={liveOperatorData?.conversations?.[0]?.counterpartName || ''} />
               </div>
               <span className='mx-1 text-sm font-medium leading-5'>-</span>
-              {liveOperatorData?.conversations[0]?.startTime && (
+              {liveOperatorData?.conversations?.[0]?.startTime && (
                 <>
                   <CallDuration
-                    startTime={liveOperatorData?.conversations[0]?.startTime}
+                    startTime={liveOperatorData?.conversations?.[0]?.startTime}
                     className='text-sm font-medium leading-5 whitespace-nowrap'
                   />
                 </>
               )}
 
               {/* Recording indicator */}
-              {liveOperatorData?.conversations[0]?.recording === 'true' && (
+              {liveOperatorData?.conversations?.[0]?.recording === 'true' && (
                 <FontAwesomeIcon icon={faRecordVinyl} className='ml-1.5 h-4 w-4' />
               )}
 
               {/* Listening indicator */}
-              {liveOperatorData?.conversations[0]?.id ===
+              {liveOperatorData?.conversations?.[0]?.id ===
                 actionInformation?.listeningInfo?.listening_id && (
                 <FontAwesomeIcon icon={faEarListen} className='ml-1.5 h-4 w-4' />
               )}
 
               {/* Intrude indicator */}
-              {liveOperatorData?.conversations[0]?.id ===
+              {liveOperatorData?.conversations?.[0]?.id ===
                 actionInformation?.intrudeInfo?.intrude_id && (
                 <FontAwesomeIcon icon={faHandPointUp} className='ml-1.5 h-4 w-4' />
               )}
@@ -153,9 +153,9 @@ const CompactOperatorCard = ({
                 <div className='min-w-0 flex-1 overflow-hidden'>
                   <div
                     data-tooltip-id={`tooltip-textscroll-${index}`}
-                    data-tooltip-content={liveOperatorData?.conversations[0]?.counterpartName || ''}
+                    data-tooltip-content={liveOperatorData?.conversations?.[0]?.counterpartName || ''}
                   >
-                    <TextScroll text={liveOperatorData?.conversations[0]?.counterpartName || ''} />
+                    <TextScroll text={liveOperatorData?.conversations?.[0]?.counterpartName || ''} />
                   </div>
                 </div>
               </>
