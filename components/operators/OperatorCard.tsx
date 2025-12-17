@@ -97,7 +97,7 @@ const OperatorCard = ({
         </div>
       </div>
 
-      <div>
+      <div className='min-h-9'>
         <span className='block mt-1 text-sm font-medium text-gray-500 dark:text-gray-500'>
           {/* Operator is in conversation */}
           {isInConversation && (
@@ -266,33 +266,18 @@ const OperatorCard = ({
         </span>
       </div>
 
-      {isRinging && hasAnyPermission && !isCalledByCurrentUser && !currentUserIsInConversation && (
-        <div className='text-center text-red-600 dark:text-red-500 text-sm font-medium leading-5'>
-          <div className='flex items-center justify-center mx-auto overflow-hidden'>
-            {liveOperatorData?.conversations?.[0]?.counterpartName && (
-              <>
-                <div
-                  data-tooltip-id={`tooltip-ringing-header-${liveOperatorData?.username || 'op'}`}
-                  data-tooltip-content={liveOperatorData?.conversations[0]?.counterpartName || ''}
-                  className='min-w-0 flex-1'
-                >
-                  <TextScroll text={liveOperatorData?.conversations[0]?.counterpartName} />
-                </div>
-              </>
-            )}
-          </div>
-          <CustomThemedTooltip
-            id={`tooltip-ringing-header-${liveOperatorData?.username || 'op'}`}
-          />
-        </div>
-      )}
-
       <div
         className={`tooltip-operator-information-${index} flex justify-center min-h-[24px]`}
         data-tooltip-id={`tooltip-operator-information-${index}`}
-        data-tooltip-content={isInConversation ? operator?.conversations[0]?.counterpartName || '-' : ''}
+        data-tooltip-content={
+          isInConversation
+            ? operator?.conversations[0]?.counterpartName || '-'
+            : isRinging && hasAnyPermission && !isCalledByCurrentUser && !currentUserIsInConversation
+              ? liveOperatorData?.conversations?.[0]?.counterpartName || ''
+              : ''
+        }
       >
-        {isInConversation && (
+        {isInConversation ? (
           <div className='flex items-center text-cardTextBusy dark:text-cardTextBusyDark overflow-hidden'>
             <div className='min-w-0 flex-1'>
               <div
@@ -318,6 +303,24 @@ const OperatorCard = ({
               <FontAwesomeIcon icon={faHandPointUp} className='ml-1.5 h-4 w-4' />
             )}
           </div>
+        ) : (
+          isRinging &&
+          hasAnyPermission &&
+          !isCalledByCurrentUser &&
+          !currentUserIsInConversation && (
+            <div className='flex items-center text-red-600 dark:text-red-500 overflow-hidden'>
+              {liveOperatorData?.conversations?.[0]?.counterpartName && (
+                <div className='min-w-0 flex-1'>
+                  <div
+                    data-tooltip-id={`tooltip-textscroll-${index}`}
+                    data-tooltip-content={liveOperatorData?.conversations?.[0]?.counterpartName || ''}
+                  >
+                    <TextScroll text={liveOperatorData?.conversations?.[0]?.counterpartName || ''} />
+                  </div>
+                </div>
+              )}
+            </div>
+          )
         )}
         <CustomThemedTooltip id={`tooltip-textscroll-${index}`} />
       </div>
