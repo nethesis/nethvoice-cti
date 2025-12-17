@@ -352,6 +352,7 @@ export const VoicemailInbox: FC<VoicemailInboxProps> = ({ className }): JSX.Elem
                 : 'cursor-default'
             } ml-0.5`}
             status={voicemail?.caller_operator?.mainPresence}
+            star={voicemail?.caller_operator?.favorite}
           />
           <div>
             <div className='font-medium text-gray-900 dark:text-gray-100'>

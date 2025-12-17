@@ -49,9 +49,9 @@ const GroupedOperatorList = ({
   const mainUserIsBusy = useMemo(() => authUserMainPresence === 'busy', [authUserMainPresence])
 
   const classNameSidebarOpen =
-    'grid grid-cols-1 gap-4 2xl:grid-cols-2 3xl:grid-cols-3 5xl:grid-cols-4 6xl:grid-cols-5 7xl:grid-cols-6'
+    'grid grid-cols-1 gap-x-5 gap-y-4 2xl:grid-cols-2 3xl:grid-cols-3 5xl:grid-cols-4 6xl:grid-cols-5 7xl:grid-cols-6'
   const classNameSidebarClosed =
-    'grid grid-cols-1 gap-4 lg:grid-cols-2 2xl:grid-cols-3 4xl:grid-cols-4 5xl:grid-cols-5 6xl:grid-cols-6'
+    'grid grid-cols-1 gap-x-5 gap-y-4 lg:grid-cols-2 xl:grid-cols-2 2xl:grid-cols-3 3xl:grid-cols-4 5xl:grid-cols-5 6xl:grid-cols-6'
 
   const [currentCols, setCurrentCols] = useState(1)
   const gridRef = useRef<HTMLUListElement>(null)
@@ -69,11 +69,11 @@ const GroupedOperatorList = ({
 
     detectGridCols()
     window.addEventListener('resize', detectGridCols)
-    
+
     return () => window.removeEventListener('resize', detectGridCols)
   }, [isSidebarOpen])
 
-  // Calculate skeleton items to show exactly 4 rows based on current breakpoint  
+  // Calculate skeleton items to show exactly 4 rows based on current breakpoint
   const skeletonItemsCount = useMemo(() => {
     const count = currentCols * 1
     return count
@@ -102,30 +102,27 @@ const GroupedOperatorList = ({
               className={`${isSidebarOpen ? classNameSidebarOpen : classNameSidebarClosed}`}
             >
               {Array.from(Array(skeletonItemsCount)).map((e, operatorIndex) => (
-                <li key={operatorIndex} className='px-1 w-[400px]'>
-                  <div className='group flex w-full items-center justify-between space-x-3 rounded-lg py-2 pr-2 pl-6 h-20 text-left focus:outline-none focus:ring-2 focus:ring-offset-2 bg-cardBackgroud dark:bg-cardBackgroudDark'>
+                <li key={operatorIndex} className='min-w-[384px]'>
+                  <div className='group flex w-full items-center justify-between rounded-lg py-2 px-3 h-16 gap-3 text-left focus:outline-none focus:ring-2 focus:ring-offset-2 bg-cardBackgroud dark:bg-cardBackgroudDark focus:ring-primary dark:focus:ring-primary'>
                     {/* Avatar skeleton */}
                     <span className='flex-shrink-0'>
                       <div className='animate-pulse rounded-full h-14 w-14 bg-gray-300 dark:bg-gray-600 border-2 border-gray-200 dark:border-gray-500'></div>
                     </span>
 
                     {/* Name and extension skeleton */}
-                    <div className='flex-1 min-w-0 ml-3'>
-                      <div className='flex items-center space-x-2'>
+                    <div className='flex-1 min-w-0 overflow-hidden'>
+                      <div className='flex items-center space-x-2 min-w-0'>
                         <div className='animate-pulse h-5 w-32 rounded bg-gray-300 dark:bg-gray-600'></div>
+                        <div className='animate-pulse h-4 w-12 rounded bg-gray-300 dark:bg-gray-600'></div>
                       </div>
                       <div className='mt-1'>
-                        <div className='animate-pulse h-4 w-20 rounded bg-gray-300 dark:bg-gray-600'></div>
+                        <div className='animate-pulse h-4 w-40 rounded bg-gray-300 dark:bg-gray-600'></div>
                       </div>
                     </div>
 
-                    {/* Button/status skeleton */}
+                    {/* Action buttons skeleton */}
                     <div className='flex items-center space-x-2'>
-                      <div className='animate-pulse h-8 w-16 rounded bg-gray-300 dark:bg-gray-600'></div>
-                    </div>
-
-                    {/* Details button skeleton */}
-                    <div className='flex-shrink-0 ml-2'>
+                      <div className='animate-pulse h-8 w-20 rounded bg-gray-300 dark:bg-gray-600'></div>
                       <FontAwesomeIcon
                         icon={faAngleRight}
                         className='h-4 w-4 text-cardIcon dark:text-cardIconDark'
@@ -179,7 +176,7 @@ const GroupedOperatorList = ({
             {category?.members?.map((operator: any, operatorIndex: number) => (
               <li
                 key={operator?.username || `${categoryIndex}-${operatorIndex}`}
-                className='px-1 w-[400px]'
+                className='min-w-[384px]'
               >
                 <CompactOperatorCard
                   operator={operator}

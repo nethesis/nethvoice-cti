@@ -346,6 +346,10 @@
 
   --color-phone-island-call-hover: #166534;
   --color-phone-island-call-hover-dark: #86EFAC;
+
+  /* Favorite star */
+  --color-favorite-star: #4338CA;
+  --color-favorite-star-dark: #6366F1;
 }
 
 @media (prefers-color-scheme: dark) {

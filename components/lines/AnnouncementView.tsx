@@ -275,6 +275,7 @@ export const AnnouncementView: FC<AnnouncementViewProps> = ({ className }): JSX.
             className='mr-3 cursor-pointer'
             onClick={() => openShowOperatorDrawer(operators?.operators[announcement?.username])}
             status={operators?.operators[announcement?.username]?.mainPresence}
+            star={operators?.operators?.[announcement?.username]?.favorite}
           />
           <div>{operators?.operators[announcement?.username]?.name}</div>
         </div>

@@ -270,6 +270,7 @@ export const QueueManagementOperators: FC<QueueManagementOperatorsProps> = ({
                                     onClick={() =>
                                       openShowOperatorDrawer(operators[operator?.shortname])
                                     }
+                                    star={operators?.[operator?.shortname]?.favorite}
                                   />
                                 </span>
                                 <span className='block min-w-0 flex-1'>

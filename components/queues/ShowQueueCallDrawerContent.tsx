@@ -109,6 +109,7 @@ export const ShowQueueCallDrawerContent = forwardRef<
             status={operatorFound?.mainPresence}
             onClick={() => openShowOperatorDrawer(operatorFound)}
             className='cursor-pointer'
+            star={operatorFound?.favorite}
           />
           <div
             className='cursor-pointer hover:underline'

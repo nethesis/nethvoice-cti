@@ -363,6 +363,7 @@ export const VoiceMailContent = () => {
                                 : 'cursor-default'
                             } ml-0.5`}
                             status={voicemail?.caller_operator?.mainPresence}
+                            star={voicemail?.caller_operator?.favorite}
                           />
                         </div>
                         <div className='flex flex-col gap-1.5 min-w-0 flex-1'>

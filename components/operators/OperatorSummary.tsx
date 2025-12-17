@@ -122,6 +122,7 @@ export const OperatorSummary = forwardRef<HTMLButtonElement, OperatorSummaryProp
                       onIcon={<FontAwesomeIcon icon={faStarSolid} />}
                       offIcon={<FontAwesomeIcon icon={faStarLight as IconProp} />}
                       changed={() => toggleFavorite()}
+                      isFavorite={true}
                       className={'mr-5'}
                       data-tooltip-id={'tooltip-toggle-favorite'}
                       data-tooltip-content={
