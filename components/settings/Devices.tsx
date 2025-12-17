@@ -207,7 +207,11 @@ const Devices: NextPage = () => {
             data-tooltip-content={t('Devices.Download App')}
           >
             <FontAwesomeIcon icon={faCircleArrowDown} className='xl:mr-2 mr-0 h-4 w-4' />
-            <CustomThemedTooltip id='tooltip-download-app' place='top' className='inline xl:hidden' />
+            <CustomThemedTooltip
+              id='tooltip-download-app'
+              place='top'
+              className='inline xl:hidden'
+            />
             <span className='hidden xl:inline'>{t('Devices.Download App')}</span>
           </Button>
         ) : (
@@ -418,13 +422,13 @@ const Devices: NextPage = () => {
                           {t('Devices.Audio and video settings')}
                         </span>
                       </Button>
-                      {webrtcData[0]?.id !== profile?.default_device?.id &&
-                      phoneLinkData[0]?.id !== profile?.default_device?.id ? (
+                      {webrtcData?.[0]?.id !== profile?.default_device?.id &&
+                      phoneLinkData?.[0]?.id !== profile?.default_device?.id ? (
                         <Dropdown
                           items={setMainDeviceMenu(
-                            webrtcData[0]?.id,
+                            webrtcData?.[0]?.id,
                             'webrtc',
-                            webrtcData[0],
+                            webrtcData?.[0],
                             false,
                           )}
                           position='leftSingleItem'
@@ -613,7 +617,10 @@ const Devices: NextPage = () => {
                   <tr key={phone?.id} className='border-t border-gray-300 dark:border-gray-700'>
                     <td className={`${STYLES.tableCell} max-w-0 overflow-hidden`}>
                       <div className='flex items-center'>
-                        <CustomThemedTooltip id={`tooltip-button-${phone?.description}`} place='top' />
+                        <CustomThemedTooltip
+                          id={`tooltip-button-${phone?.description}`}
+                          place='top'
+                        />
                         <p
                           className='truncate'
                           data-tooltip-id={`tooltip-button-${phone?.description}`}
@@ -720,7 +727,7 @@ const Devices: NextPage = () => {
         </div>
         <div className='gap-8 flex flex-col'>
           {/* Web phone table */}
-          {webphoneTable()}
+          {webrtcData?.length !== 0 && webphoneTable()}
 
           {/* PhoneLink section */}
           {profile?.lkhash !== undefined && phoneLinkData?.length !== 0 && phoneLinkTable()}

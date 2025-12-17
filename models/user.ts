@@ -226,7 +226,7 @@ export const user = createModel<RootModel>()({
           })
         }
         if (state.endpoints?.mainextension?.[0]?.id) {
-          const mainExt = state.endpoints.mainextension[0].id
+          const mainExt = state.endpoints.mainextension?.[0].id
           if (!extensions.includes(mainExt)) {
             extensions.push(mainExt)
           }

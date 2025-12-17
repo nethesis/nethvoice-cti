@@ -607,7 +607,7 @@ export const QueueManagement: FC<QueueManagementProps> = ({ className }): JSX.El
                                           <div className='text-gray-500 dark:text-gray-400'>
                                             {
                                               operators[call.operatorUsername].endpoints
-                                                .mainextension[0].id
+                                                .mainextension?.[0].id
                                             }
                                           </div>
                                         </div>

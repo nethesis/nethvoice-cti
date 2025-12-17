@@ -122,7 +122,7 @@ export const Layout: FC<LayoutProps> = ({ children }) => {
           default_device: userInfo?.data?.default_device,
           name: userInfo?.data?.name,
           username: userInfo?.data?.username,
-          mainextension: userInfo?.data?.endpoints?.mainextension[0]?.id,
+          mainextension: userInfo?.data?.endpoints?.mainextension?.[0]?.id,
           mainPresence: userInfo?.data?.mainPresence,
           endpoints: userInfo?.data?.endpoints,
           profile: userInfo?.data?.profile,
@@ -1178,6 +1178,14 @@ export const Layout: FC<LayoutProps> = ({ children }) => {
 
   //check if socket reconnect
   useEventListener('phone-island-socket-disconnected', () => { })
+
+  // Reload operators data when socket reconnects to sync state
+  // This handles cases where events were lost during network interruption
+  useEventListener('phone-island-socket-reconnected', () => {
+    console.log('[SOCKET-RECONNECT] Socket reconnected, refreshing state')
+    retrieveUserEndpoints()
+    retrieveExtensions()
+  })
 
   let timeoutSeconds = 3000
 

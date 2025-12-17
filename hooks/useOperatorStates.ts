@@ -29,14 +29,14 @@ export const useOperatorStates = (operator: any, authUsername: string) => {
   const operatorStates = useMemo(() => {
     const hasValidConversation =
       operator?.conversations?.length > 0 &&
-      operator?.conversations[0]?.startTime &&
-      operator?.conversations[0]?.id
+      operator?.conversations?.[0]?.startTime &&
+      operator?.conversations?.[0]?.id
 
     const isInConversation =
       hasValidConversation &&
-      (operator?.conversations[0]?.connected ||
-        operator?.conversations[0]?.inConference ||
-        operator?.conversations[0]?.chDest?.inConference === true)
+      (operator?.conversations?.[0]?.connected ||
+        operator?.conversations?.[0]?.inConference ||
+        operator?.conversations?.[0]?.chDest?.inConference === true)
 
     const isRinging = operator?.mainPresence === 'ringing'
     const isBusy = operator?.mainPresence === 'busy'
@@ -56,13 +56,13 @@ export const useOperatorStates = (operator: any, authUsername: string) => {
     const isCalledByCurrentUser =
       isRinging &&
       operator?.conversations?.length > 0 &&
-      (allUserExtensions.includes(operator?.conversations[0]?.counterpartNum) ||
-        allUserExtensions.includes(operator?.conversations[0]?.caller) ||
-        allUserExtensions.includes(operator?.conversations[0]?.bridgedNum) ||
-        allUserExtensions.includes(operator?.conversations[0]?.chSource?.callerNum) ||
-        allUserExtensions.includes(operator?.conversations[0]?.chSource?.bridgedNum) ||
-        (operator?.conversations[0]?.direction === 'out' &&
-          operator?.conversations[0]?.counterpartName?.includes(profile?.name)))
+      (allUserExtensions.includes(operator?.conversations?.[0]?.counterpartNum) ||
+        allUserExtensions.includes(operator?.conversations?.[0]?.caller) ||
+        allUserExtensions.includes(operator?.conversations?.[0]?.bridgedNum) ||
+        allUserExtensions.includes(operator?.conversations?.[0]?.chSource?.callerNum) ||
+        allUserExtensions.includes(operator?.conversations?.[0]?.chSource?.bridgedNum) ||
+        (operator?.conversations?.[0]?.direction === 'out' &&
+          operator?.conversations?.[0]?.counterpartName?.includes(profile?.name)))
 
     return {
       isInConversation,
@@ -94,8 +94,8 @@ export const useOperatorStates = (operator: any, authUsername: string) => {
       profile?.default_device?.id &&
       operator?.endpoints?.mainextension?.[0]?.id
     ) {
-      const conversationId = operator?.conversations[0]?.id
-      const endpoint = operator?.endpoints?.mainextension[0]?.id
+      const conversationId = operator?.conversations?.[0]?.id
+      const endpoint = operator?.endpoints?.mainextension?.[0]?.id
       const destination = profile?.default_device?.id
 
       const pickupInformations = {

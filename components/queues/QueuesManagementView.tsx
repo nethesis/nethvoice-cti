@@ -291,10 +291,10 @@ export const QueuesManagementView: FC<QueuesManagementViewProps> = ({ className 
   }
 
   const getMaxWait = (queue: any) => {
-    if (isEmpty(queue.waitingCallersList)) {
+    if (isEmpty(queue?.waitingCallersList)) {
       return 0
     }
-    return queue.waitingCallersList[0].waitingTime
+    return queue?.waitingCallersList?.[0]?.waitingTime
   }
 
   const getQueueOperatorTemplate = (queue: any, queueOperator: any, index: number) => {
@@ -892,7 +892,7 @@ export const QueuesManagementView: FC<QueuesManagementViewProps> = ({ className 
                                                           <div className='text-gray-500 dark:text-gray-400'>
                                                             {
                                                               operators[call.operatorUsername]
-                                                                .endpoints.mainextension[0].id
+                                                                .endpoints.mainextension?.[0].id
                                                             }
                                                           </div>
                                                         </div>

@@ -270,7 +270,7 @@ export const SpeedDialContent = () => {
     (speedDial: any) => {
       const mainPresence = operators?.operators[authStore?.username]?.mainPresence
       const mainExtension =
-        operators?.operators[authStore?.username]?.endpoints?.mainextension[0]?.id
+        operators?.operators[authStore?.username]?.endpoints?.mainextension?.[0]?.id
 
       if (mainPresence && mainPresence === 'busy') {
         transferCallToExtension(speedDial?.speeddial_num)
