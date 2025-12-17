@@ -65,29 +65,26 @@ const CompactOperatorList = ({ operators, hasMore, showMore, isLoading = false }
       >
         {Array.from(Array(skeletonItemsCount)).map((_, index) => (
           <li key={`skeleton-${index}`} className='min-w-[384px] w-full'>
-            <div className='group flex w-full items-center justify-between space-x-3 rounded-lg py-2 pr-2 pl-6 h-16 text-left focus:outline-none focus:ring-2 focus:ring-offset-2 bg-cardBackgroud dark:bg-cardBackgroudDark'>
+            <div className='group flex w-full items-center justify-between rounded-lg py-2 px-3 h-16 gap-3 text-left focus:outline-none focus:ring-2 focus:ring-offset-2 bg-cardBackgroud dark:bg-cardBackgroudDark focus:ring-primary dark:focus:ring-primary'>
               {/* Avatar skeleton */}
               <span className='flex-shrink-0'>
                 <div className='animate-pulse rounded-full h-14 w-14 bg-gray-300 dark:bg-gray-600 border-2 border-gray-200 dark:border-gray-500'></div>
               </span>
 
               {/* Name and extension skeleton */}
-              <div className='flex-1 min-w-0 ml-3'>
-                <div className='flex items-center space-x-2'>
+              <div className='flex-1 min-w-0 overflow-hidden'>
+                <div className='flex items-center space-x-2 min-w-0'>
                   <div className='animate-pulse h-5 w-32 rounded bg-gray-300 dark:bg-gray-600'></div>
+                  <div className='animate-pulse h-4 w-12 rounded bg-gray-300 dark:bg-gray-600'></div>
                 </div>
                 <div className='mt-1'>
-                  <div className='animate-pulse h-4 w-20 rounded bg-gray-300 dark:bg-gray-600'></div>
+                  <div className='animate-pulse h-4 w-40 rounded bg-gray-300 dark:bg-gray-600'></div>
                 </div>
               </div>
 
-              {/* Button/status skeleton */}
+              {/* Action buttons skeleton */}
               <div className='flex items-center space-x-2'>
-                <div className='animate-pulse h-8 w-16 rounded bg-gray-300 dark:bg-gray-600'></div>
-              </div>
-
-              {/* Details button skeleton */}
-              <div className='flex-shrink-0 ml-2'>
+                <div className='animate-pulse h-8 w-20 rounded bg-gray-300 dark:bg-gray-600'></div>
                 <FontAwesomeIcon
                   icon={faAngleRight}
                   className='h-4 w-4 text-cardIcon dark:text-cardIconDark'

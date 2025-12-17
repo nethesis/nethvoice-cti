@@ -70,7 +70,7 @@ const OperatorList = ({ operators, hasMore, showMore, isLoading = false }: Opera
         >
           {Array.from(Array(skeletonItemsCount)).map((e, index) => (
             <li key={index}>
-              <div className='space-y-4 w-[200px]'>
+              <div className='space-y-2 w-[200px]'>
                 {/* avatar skeleton */}
                 <div className='animate-pulse rounded-full h-24 w-24 mx-auto bg-gray-300 dark:bg-gray-600 border-2 border-gray-200 dark:border-gray-500'></div>
 
@@ -81,14 +81,19 @@ const OperatorList = ({ operators, hasMore, showMore, isLoading = false }: Opera
                   </div>
 
                   {/* extension skeleton */}
-                  <div className='text-center pt-2'>
+                  <div className='text-center'>
                     <div className='animate-pulse h-5 rounded bg-gray-300 dark:bg-gray-600 max-w-[80px] mx-auto'></div>
                   </div>
                 </div>
 
-                {/* button/status skeleton */}
-                <div className='flex justify-center'>
-                  <div className='animate-pulse h-9 w-24 rounded bg-gray-300 dark:bg-gray-600'></div>
+                {/* min-h-9 area (buttons/status) */}
+                <div className='min-h-9 flex justify-center items-center'>
+                  <div className='animate-pulse h-9 w-28 rounded bg-gray-300 dark:bg-gray-600'></div>
+                </div>
+
+                {/* min-h-[24px] area (counterpart/status text) */}
+                <div className='min-h-[24px] flex justify-center items-center'>
+                  <div className='animate-pulse h-4 w-36 rounded bg-gray-300 dark:bg-gray-600'></div>
                 </div>
               </div>
             </li>
