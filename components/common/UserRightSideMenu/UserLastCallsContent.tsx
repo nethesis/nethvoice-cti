@@ -19,10 +19,9 @@ import { RootState } from '../../../store'
 import { useTranslation } from 'react-i18next'
 import { CallTypes, getLastCalls } from '../../../lib/history'
 import { getNMonthsAgoDate } from '../../../lib/utils'
-import { formatDateLoc } from '../../../lib/dateTime'
+import { formatDateLoc, getTimeDifference } from '../../../lib/dateTime'
 import type { SortTypes } from '../../../lib/history'
 import { UserCallStatusIcon } from '../../history/UserCallStatusIcon'
-import { CallsDate } from '../../history/CallsDate'
 import { getJSONItem, setJSONItem } from '../../../lib/storage'
 import { openCreateLastCallContact, openShowContactDrawer } from '../../../lib/phonebook'
 import { CallDetails } from '../../history/CallDetails'
@@ -30,6 +29,7 @@ import Link from 'next/link'
 import { Skeleton } from '../../common/Skeleton'
 import { customScrollbarClass } from '../../../lib/utils'
 import { CustomThemedTooltip } from '../CustomThemedTooltip'
+import { format, utcToZonedTime } from 'date-fns-tz'
 
 interface LastCallTypes extends CallTypes {
   username: string
@@ -56,6 +56,53 @@ const LastCallItem = memo(
     handleCreateContact,
   }: LastCallItemProps) => {
     const [isHovered, setIsHovered] = useState(false)
+
+    // Keep the same timezone behavior used by the generic CallsDate component
+    const diffValueConversation = (diffValueOriginal: number) => {
+      const sign = diffValueOriginal >= 0 ? '+' : '-'
+      const hours = Math.abs(diffValueOriginal).toString().padStart(2, '0')
+      return `${sign}${hours}00`
+    }
+
+    const getLocalTimezoneOffset = () => {
+      const localTimezone = Intl.DateTimeFormat().resolvedOptions().timeZone
+      return format(new Date(), 'xx', { timeZone: localTimezone })
+    }
+
+    const getDifferenceBetweenTimezone = () => {
+      const differenceValueBetweenTimezone = getTimeDifference(false)
+      return diffValueConversation(differenceValueBetweenTimezone)
+    }
+
+    const getCompactTimeAgo = (call: any) => {
+      const localTimeZone = getLocalTimezoneOffset()
+      const differenceBetweenTimezone = getDifferenceBetweenTimezone()
+
+      const callDate = utcToZonedTime(call?.time * 1000, differenceBetweenTimezone)
+      const nowDate = utcToZonedTime(new Date(), localTimeZone)
+
+      const diffSeconds = Math.max(0, Math.floor((nowDate.getTime() - callDate.getTime()) / 1000))
+
+      if (diffSeconds < 60) return `${diffSeconds}s`
+      const diffMinutes = Math.floor(diffSeconds / 60)
+      if (diffMinutes < 60) return `${diffMinutes}m`
+      const diffHours = Math.floor(diffMinutes / 60)
+      if (diffHours < 24) {
+        const remainingMinutes = diffMinutes % 60
+        return remainingMinutes > 0 ? `${diffHours}h ${remainingMinutes}m` : `${diffHours}h`
+      }
+      const diffDays = Math.floor(diffHours / 24)
+      if (diffDays < 30) return `${diffDays}d`
+      const diffMonths = Math.floor(diffDays / 30)
+      if (diffMonths < 12) return `${diffMonths}mo`
+      const diffYears = Math.floor(diffMonths / 12)
+      return `${diffYears}y`
+    }
+
+    const getCallDateString = (call: any) => {
+      const differenceBetweenTimezone = getDifferenceBetweenTimezone()
+      return format(utcToZonedTime(call?.time * 1000, differenceBetweenTimezone), 'd MMM yyyy HH:mm')
+    }
 
     const isIncoming = call.direction === 'in'
     const hasNoInfo = isIncoming
@@ -102,22 +149,12 @@ const LastCallItem = memo(
             <div className='ml-4 truncate flex flex-col gap-1.5'>
               <div className='flex items-center'>
                 <div
-                  className={`text-sm font-medium text-gray-700 dark:text-gray-200 ${
-                    call.channel.includes('from-queue') ? 'w-24 lg:w-16 xl:w-24 truncate' : 'w-64'
-                  }`}
+                  className={`text-sm font-medium text-gray-700 dark:text-gray-200 w-32 xl:w-40 2xl:w-48`}
                 >
                   {renderCallDetails(call.direction === 'in' ? 'in' : 'out')}
                 </div>
               </div>
-              <div className='truncate text-sm text-primary dark:text-primaryDark'>
-                <div className='flex items-center'>
-                  <UserCallStatusIcon call={call} />
-                  <span className='cursor-pointer hover:underline'>
-                    {renderCallNumber(call.direction === 'in' ? 'in' : 'out')}
-                  </span>
-                </div>
-              </div>
-              <CallsDate call={call} spaced={true} />
+
               {call?.channel?.includes('from-queue') && (
                 <div>
                   <>
@@ -148,24 +185,40 @@ const LastCallItem = memo(
                   </>
                 </div>
               )}
+
+              <div className='truncate text-sm text-primary dark:text-primaryDark'>
+                <div className='flex items-center'>
+                  <UserCallStatusIcon call={call} />
+                  <span className='cursor-pointer hover:underline'>
+                    {renderCallNumber(call.direction === 'in' ? 'in' : 'out')}
+                  </span>
+                </div>
+              </div>
+
+              <div
+                className='font-poppins text-sm leading-4 font-normal text-gray-600 dark:text-gray-300 truncate pb-1'
+                data-tooltip-id={`tooltip-lastcall-date-${call.uniqueid}`}
+                data-tooltip-content={getCallDateString(call)}
+              >
+                {getCompactTimeAgo(call)} ago ({getCallDateString(call)})
+              </div>
+              <CustomThemedTooltip id={`tooltip-lastcall-date-${call.uniqueid}`} place='left' />
             </div>
           </div>
 
           {/* Create contact button */}
           {hasNoInfo && isHovered && (
-            <div className='absolute right-0 top-0 transform'>
+            <div className='absolute right-3 top-0 transform'>
               <Button
                 variant='ghost'
-                className='flex gap-2 items-center py-1.5 px-2 border dark:border-borderDark border-borderLight dark:hover:bg-hoverDark hover:bg-hoverLight'
+                className='flex items-center border dark:border-borderDark border-borderLight dark:hover:bg-hoverDark hover:bg-hoverLight'
                 onClick={() => handleCreateContact(call)}
+                size='small'
               >
                 <FontAwesomeIcon
                   className='text-base dark:text-textBlueDark text-textBlueLight'
                   icon={faUserPlus}
                 />
-                <span className='dark:text-textBlueDark text-textBlueLight font-medium'>
-                  {t('SpeedDial.Create')}
-                </span>
               </Button>
             </div>
           )}
@@ -208,6 +261,7 @@ export const UserLastCallsContent = () => {
         }
       }
     },
+    // eslint-disable-next-line react-hooks/exhaustive-deps
     [username, profile?.macro_permissions?.cdr?.value, directionFilter],
   )
 
