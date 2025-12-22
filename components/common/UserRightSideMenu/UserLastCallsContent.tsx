@@ -175,7 +175,7 @@ const LastCallItem = memo(
                         className='h-4 w-4 mr-2 ml-1'
                         aria-hidden='true'
                       />
-                      <div className={`truncate ${call?.queue ? 'w-20 lg:w-16 xl:w-20' : ''}`}>
+                      <div className={`truncate max-w-20 xl:max-w-28 2xl:max-w-40 mr-1`}>
                         {queuesStore?.queues[call?.queue]?.name
                           ? `${queuesStore?.queues[call?.queue]?.name} ${call?.queue}`
                           : t('QueueManager.Queue')}
