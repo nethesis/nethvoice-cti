@@ -12,6 +12,7 @@ import { useSelector } from 'react-redux'
 import { RootState, store } from '../../store'
 import { isEmpty } from 'lodash'
 import { CountdownTimer } from '../Countdown'
+import classNames from 'classnames'
 
 export interface ParkCardsProps extends ComponentProps<'div'> {}
 export const ParkCards: FC<ParkCardsProps> = ({ className }): JSX.Element => {
@@ -129,38 +130,20 @@ export const ParkCards: FC<ParkCardsProps> = ({ className }): JSX.Element => {
                   variant='white'
                   className='tooltip-parking-button w-full relative overflow-hidden'
                 >
-                  {/* Layer 1: Original text (visible in non-colored area) */}
+                  {/* Content stays static; the green progress runs underneath */}
                   <div className='relative z-10 flex items-center justify-center w-full'>
                     <FontAwesomeIcon
                       icon={faPhone}
                       className='h-4 w-4 mr-2 text-gray-500 dark:text-gray-200'
                     />
-                    <span className='w-14'>
-                      {cardPressStates[index] ? `${t('Parks.Hold')}` : `${t('Parks.Pick up')}`}
+                    <span className={classNames('w-14', cardPressStates[index] ? 'text-gray-500 dark:text-gray-200' : '')}>
+                      {t('Parks.Pick up')}
                     </span>
                   </div>
 
-                  {/* Layer 2: White text (only visible over the green background) */}
-                  <div
-                    className='absolute top-0 left-0 h-full z-20 flex items-center justify-center overflow-hidden rounded-md'
-                    style={{
-                      width: cardPressStates[index] ? '100%' : '0%',
-                      transition: cardPressStates[index]
-                        ? 'width 2s linear'
-                        : 'width 0.3s ease-out',
-                    }}
-                  >
-                    <div className='flex items-center justify-center w-max whitespace-nowrap'>
-                      <FontAwesomeIcon icon={faPhone} className='h-4 w-4 mr-2 text-gray-100' />
-                      <span className='w-14  text-base text-gray-100'>
-                        {cardPressStates[index] ? `${t('Parks.Hold')}` : `${t('Parks.Pick up')}`}
-                      </span>
-                    </div>
-                  </div>
-
-                  {/* Background animation */}
+                  {/* Background animation (behind the content) */}
                   <motion.div
-                    className='absolute top-0 left-0 h-full bg-emerald-500 z-10 rounded-md'
+                    className='absolute top-0 left-0 h-full bg-emerald-500 z-0 rounded-md'
                     initial={{ width: 0 }}
                     animate={{
                       width: cardPressStates[index] ? '100%' : '0%',

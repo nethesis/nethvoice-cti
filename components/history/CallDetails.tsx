@@ -5,7 +5,12 @@ import { FC } from 'react'
 import { CallTypes } from '../../lib/history'
 import { getOperatorByPhoneNumber } from '../../lib/operators'
 import classNames from 'classnames'
-import { callPhoneNumber, cleanString, formatPhoneNumber, transferCallToExtension } from '../../lib/utils'
+import {
+  callPhoneNumber,
+  cleanString,
+  formatPhoneNumber,
+  transferCallToExtension,
+} from '../../lib/utils'
 import { t } from 'i18next'
 import { openCreateLastCallContact, openShowContactDrawer } from '../../lib/phonebook'
 import { useSelector } from 'react-redux'
@@ -81,11 +86,7 @@ export const CallDetails: FC<CallDetailsProps> = ({
   }
 
   return (
-    <div
-      className={`flex flex-col justify-center overflow-hidden truncate${
-        fromHistory || (!fromHistory && isQueueBadgeAvailable) ? ' truncate w-24' : ' w-64'
-      }`}
-    >
+    <div className={`flex flex-col justify-center overflow-hidden`}>
       {!isExtensionNumberLastCalls ? (
         <>
           {/* name */}
