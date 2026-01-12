@@ -32,7 +32,7 @@ import {
   hangupMainExt,
 } from '../../lib/operators'
 import { eventDispatch } from '../../lib/hooks/eventDispatch'
-import { openToast } from '../../lib/utils'
+import { isNethlinkOnline, openToast } from '../../lib/utils'
 import { faPhoneArrowDownLeft, faRecord } from '@nethesis/nethesis-solid-svg-icons'
 
 interface ActionCallProps {
@@ -123,13 +123,20 @@ export const ActionCall: React.FC<ActionCallProps> = ({ config }) => {
         listening_id: conversationId.toString(),
       })
 
+      const isNethLinkActive = isNethlinkOnline()
+
       try {
         await startListen({
           convid: conversationId.toString(),
           destId,
           endpointId: endpointId.toString(),
         })
-        eventDispatch('phone-island-call-listen', { to: endpointId })
+        if (isNethLinkActive) {
+          // Use nethlink protocol to update listen information inside phone-island
+          window.location.href = `nethlink://listen?to=${endpointId}`
+        } else {
+          eventDispatch('phone-island-call-listen', { to: endpointId })
+        }
       } catch (e) {
         console.error(e)
       }
@@ -150,13 +157,20 @@ export const ActionCall: React.FC<ActionCallProps> = ({ config }) => {
         intrude_id: conversationId.toString(),
       })
 
+      const isNethLinkActive = isNethlinkOnline()
+
       try {
         await intrude({
           convid: conversationId.toString(),
           destId,
           endpointId: endpointId.toString(),
         })
-        eventDispatch('phone-island-call-intrude', { to: endpointId })
+        if (isNethLinkActive) {
+          // Use nethlink protocol to update intrude information inside phone-island
+          window.location.href = `nethlink://intrude?to=${endpointId}`
+        } else {
+          eventDispatch('phone-island-call-intrude', { to: endpointId })
+        }
       } catch (e) {
         console.error(e)
       }
@@ -237,7 +251,7 @@ export const ActionCall: React.FC<ActionCallProps> = ({ config }) => {
       {profile?.profile?.macro_permissions?.presence_panel?.permissions?.hangup?.value && (
         <Dropdown.Item
           icon={faPhone}
-          iconClassName="transform rotate-[135deg]"
+          iconClassName='transform rotate-[135deg]'
           onClick={actions.hangup}
         >
           {operators?.operators[config?.username]?.mainPresence !== 'ringing'
@@ -280,7 +294,7 @@ export const ActionCall: React.FC<ActionCallProps> = ({ config }) => {
     const menu = getCallActionsMenu()
     const children = menu?.props?.children
     const hasVisibleActions = Array.isArray(children)
-      ? children.some(child => !!child)
+      ? children.some((child) => !!child)
       : !!children
 
     return hasVisibleActions
