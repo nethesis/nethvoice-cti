@@ -26,11 +26,14 @@ import {
 import { saveCredentials } from '../../../lib/login'
 import { axiosSetup } from '../../../config/axios'
 import { openToast } from '../../../lib/utils'
+import { getJSONItem, removeItem } from '../../../lib/storage'
 import { Textarea } from '@headlessui/react'
 
 export const Setup2FA = () => {
   const { t } = useTranslation()
   const auth = useSelector((state: RootState) => state.authentication)
+
+  const openSetupDrawerStorageKey = 'open-2fa-setup-drawer'
 
   // State management
   const [isEnabled, setIsEnabled] = useState(false)
@@ -88,6 +91,18 @@ export const Setup2FA = () => {
       setIsProcessing(false)
     }
   }
+
+  useEffect(() => {
+    const autoOpen = getJSONItem(openSetupDrawerStorageKey)
+
+    if (!isLoading && autoOpen?.open) {
+      if (!isEnabled) {
+        handleSetupStart()
+      }
+      removeItem(openSetupDrawerStorageKey)
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [isLoading, isEnabled])
 
   // Handle completion of 2FA setup
   const handleSetupComplete = () => {

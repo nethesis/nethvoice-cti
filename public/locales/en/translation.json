@@ -82,7 +82,8 @@
     "Sort by": "Sort by",
     "Configure": "Configure",
     "Copy": "Copy",
-    "Copied": "Copied"
+    "Copied": "Copied",
+    "Don't ask again": "Don't ask again"
   },
   "Login": {
     "User": "Username",
@@ -99,7 +100,9 @@
     "Enter the 6-digit code (OTP code) from your authenticator app. If you cannot access the app, you can use one recovery OTP code.": "Enter the 6-digit code (OTP code) from your authenticator app. If you cannot access the app, you can use one recovery OTP code.",
     "OTP code": "OTP code",
     "OTP verification failed": "OTP verification failed",
-    "The code you entered is invalid or has expired. Please check your authenticator app and try again.": "The code you entered is invalid or has expired. Please check your authenticator app and try again."
+    "The code you entered is invalid or has expired. Please check your authenticator app and try again.": "The code you entered is invalid or has expired. Please check your authenticator app and try again.",
+    "Enable 2FA to improve account security": "Enable 2FA to improve account security",
+    "Two-factor authentication is disabled": "Two-factor authentication is disabled"
   },
   "Phonebook": {
     "Phonebook": "Phonebook",

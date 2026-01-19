@@ -1187,14 +1187,15 @@ export const Layout: FC<LayoutProps> = ({ children }) => {
     retrieveExtensions()
   })
 
-  let timeoutSeconds = 3000
+  const defaultToastTimeoutMs = 3000
 
   useEffect(() => {
     if (toast?.isShown) {
+      const toastTimeoutMs = toast?.timeout ?? defaultToastTimeoutMs
       //  Timeout for toast
       setTimeout(() => {
         closeToast()
-      }, timeoutSeconds)
+      }, toastTimeoutMs)
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [toast])
@@ -1362,7 +1363,7 @@ export const Layout: FC<LayoutProps> = ({ children }) => {
                     title={toast?.tytle || ''}
                     onClose={() => closeToast()}
                     show={toast?.isShown}
-                    timeout={timeoutSeconds / 1000}
+                    timeout={(toast?.timeout ?? defaultToastTimeoutMs) / 1000}
                   >
                     {toast?.message}
                   </Toast>

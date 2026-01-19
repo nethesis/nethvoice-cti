@@ -330,12 +330,18 @@ export const closeToast = () => {
   store.dispatch.toast.setShownToast(false)
 }
 
-export const openToast = (toastType: any, messageToast: any, toastTytle: any) => {
+export const openToast = (
+  toastType: any,
+  messageToast: any,
+  toastTytle: any,
+  timeout?: number,
+) => {
   store.dispatch.toast.updateToast({
     isShown: true,
     contentType: toastType.toString(),
     message: messageToast,
     tytle: toastTytle,
+    timeout,
   })
 }
 
