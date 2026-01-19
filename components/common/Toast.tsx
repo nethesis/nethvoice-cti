@@ -32,11 +32,12 @@ export const Toast: FC<ToastProps> = ({
   timeout,
 }): JSX.Element => {
   const { toast: theme } = useTheme().theme
+  const isTextOnly = typeof children === 'string' || typeof children === 'number'
 
   let checkIcon =
     type === 'info' ? (
       <div
-        className={`bg-surfaceToastInfo dark:bg-surfaceToastInfoDark text-iconInfo dark:text-iconInfoDark rounded-full py-2 px-3 flex items-center justify-center`}
+        className={`bg-surfaceToastInfo dark:bg-surfaceToastInfoDark text-iconInfo dark:text-iconInfoDark rounded-full py-4 px-4 flex items-center justify-center`}
       >
         <FontAwesomeIcon
           icon={faCircleInfo}
@@ -46,7 +47,7 @@ export const Toast: FC<ToastProps> = ({
       </div>
     ) : type === 'warning' ? (
       <div
-        className={`bg-surfaceToastWarning dark:bg-surfaceToastWarningDark text-iconWarning dark:text-iconWarningDark rounded-full py-2 px-3 flex items-center justify-center`}
+        className={`bg-surfaceToastWarning dark:bg-surfaceToastWarningDark text-iconWarning dark:text-iconWarningDark rounded-full py-4 px-4 flex items-center justify-center`}
       >
         <FontAwesomeIcon
           icon={faTriangleExclamation}
@@ -97,7 +98,15 @@ export const Toast: FC<ToastProps> = ({
           <p className='text-lg font-medium leading-5 text-primaryNeutral dark:text-primaryNeutralDark'>
             {title}
           </p>
-          <p className='mt-1 text-sm font-normal text-secondaryNeutral dark:text-secondaryNeutralDark'>{children}</p>
+          {isTextOnly ? (
+            <p className='mt-1 text-sm font-normal text-secondaryNeutral dark:text-secondaryNeutralDark'>
+              {children}
+            </p>
+          ) : (
+            <div className='mt-1 text-sm font-normal text-secondaryNeutral dark:text-secondaryNeutralDark'>
+              {children}
+            </div>
+          )}
         </div>
         <Button variant='ghost' className='absolute top-1/2 -translate-y-1/2 right-0 mr-2' onClick={onClose}>
           <FontAwesomeIcon

@@ -68,7 +68,8 @@
     "Sort by": "Ordina per",
     "Configure": "Configura",
     "Copy": "Copia",
-    "Copied": "Copiato"
+    "Copied": "Copiato",
+    "Don't ask again": "Non chiedere più"
   },
   "Login": {
     "User": "Utente",
@@ -84,7 +85,9 @@
     "Enter the 6-digit code (OTP code) from your authenticator app. If you cannot access the app, you can use one recovery OTP code.": "Inserisci il codice a 6 cifre (codice OTP) dalla tua app di autenticazione. Se non puoi accedere all'app, puoi utilizzare un codice OTP di recupero.",
     "OTP code": "Codice OTP",
     "OTP verification failed": "Verifica OTP fallita",
-    "The code you entered is invalid or has expired. Please check your authenticator app and try again.": "Il codice inserito non è valido o è scaduto. Controlla la tua app di autenticazione e riprova."
+    "The code you entered is invalid or has expired. Please check your authenticator app and try again.": "Il codice inserito non è valido o è scaduto. Controlla la tua app di autenticazione e riprova.",
+    "Enable 2FA to improve account security": "Abilita 2FA per migliorare la sicurezza dell'account",
+    "Two-factor authentication is disabled": "L'autenticazione a due fattori è disabilitata"
   },
   "Phonebook": {
     "Phonebook": "Rubrica",

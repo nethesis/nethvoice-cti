@@ -9,6 +9,7 @@ interface DefaultState {
   contentType: any
   message: any
   tytle: any
+  timeout?: number
 }
 
 const defaultState: DefaultState = {
@@ -16,6 +17,7 @@ const defaultState: DefaultState = {
   contentType: '',
   message: '',
   tytle: '',
+  timeout: undefined,
 }
 
 export const toast = createModel<RootModel>()({
@@ -27,6 +29,7 @@ export const toast = createModel<RootModel>()({
 
       state.message = payload.message
       state.tytle = payload.tytle
+      state.timeout = payload.timeout
       return state
     },
     setShownToast: (state, isShown: boolean) => {

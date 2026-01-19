@@ -19,8 +19,12 @@ import {
   getProductName,
   getProductSubname,
   getSavedQueryParams,
+  closeToast,
+  openToast,
   reloadPage,
 } from '../lib/utils'
+import { getTwoFactorStatus } from '../services/twoFactor'
+import { loadPreference, savePreference, setJSONItem } from '../lib/storage'
 import Head from 'next/head'
 import { capitalize } from 'lodash'
 import { loginBeforeDashboard } from '../services/user'
@@ -263,6 +267,57 @@ export default function Login() {
   const passwordRef = useRef() as React.MutableRefObject<HTMLInputElement>
   const otpInputRef = useRef() as React.MutableRefObject<OTPInputRef>
 
+  const suppress2faToastPreferenceKey = 'suppress-2fa-toast'
+  const openSetupDrawerStorageKey = 'open-2fa-setup-drawer'
+
+  const showTwoFactorToastIfNeeded = async (username: string) => {
+    const suppressToast = loadPreference(suppress2faToastPreferenceKey, username)
+    if (suppressToast) {
+      return
+    }
+
+    try {
+      const statusResponse = await getTwoFactorStatus()
+      if (statusResponse?.status) {
+        return
+      }
+
+      const handleOpenSettings = () => {
+        setJSONItem(openSetupDrawerStorageKey, { open: true })
+        closeToast()
+        router.push('settings?section=Two-Factor+Authentication')
+      }
+
+      const handleDontAskAgain = () => {
+        savePreference(suppress2faToastPreferenceKey, true, username)
+        closeToast()
+      }
+
+      openToast(
+        'info',
+        <div className='flex flex-col gap-3'>
+          <span>
+            {t('Login.Enable 2FA to improve account security') ||
+              'Enable 2FA to improve account security'}
+          </span>
+          <div className='flex flex-wrap gap-2'>
+            <Button variant='primary' onClick={handleOpenSettings}>
+              {t('Settings.Configure 2FA') || 'Enable 2FA'}
+            </Button>
+            <Button variant='white' onClick={handleDontAskAgain}>
+              {t("Common.Don't ask again") || "Don't ask again"}
+            </Button>
+          </div>
+        </div>,
+        t('Login.Two-factor authentication is disabled') ||
+          'Two-factor authentication is disabled',
+          10000
+      )
+    } catch (error) {
+      console.error('Error loading 2FA status:', error)
+    }
+  }
+
   const doLogin = async (e: React.FormEvent) => {
     e.preventDefault()
     setLoading(true)
@@ -339,6 +394,7 @@ export default function Login() {
         userPreferenceOnLogin?.profile?.macro_permissions?.nethvoice_cti?.value
       ) {
         setUserNotAuthorized(false)
+        await showTwoFactorToastIfNeeded(username)
         router.push('/')
       } else {
         setUserNotAuthorized(true)
