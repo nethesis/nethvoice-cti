@@ -29,6 +29,7 @@ import { DownloadDesktopLinkContent } from '../devices/DownloadDesktopLinkConten
 import { UploadVoicemail } from '../lines/UploadVoicemail'
 import { Setup2FADrawerContent } from '../settings/2fa/Setup2FADrawerContent'
 import { customScrollbarClass } from '../../lib/utils'
+import { CallSummaryDrawerContent } from '../summary/CallSummaryDrawerContent'
 
 export type ContentType =
   | 'createOrEditContact'
@@ -51,6 +52,7 @@ export type ContentType =
   | 'showDownloadLinkContent'
   | 'showUploadVoicemail'
   | 'setup2FA'
+  | 'callSummary'
 
 interface SideDrawerProps {
   isShown: boolean
@@ -82,6 +84,7 @@ export const SideDrawer: FC<SideDrawerProps> = ({ isShown, contentType, config, 
       showDownloadLinkContent: DownloadDesktopLinkContent,
       showUploadVoicemail: UploadVoicemail,
       setup2FA: Setup2FADrawerContent,
+      callSummary: CallSummaryDrawerContent,
     }),
     [],
   )

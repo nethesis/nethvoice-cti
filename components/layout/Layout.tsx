@@ -10,7 +10,13 @@ import { useDispatch } from 'react-redux'
 import { Dispatch } from '../../store'
 import { RootState } from '../../store'
 import { useSelector } from 'react-redux'
-import { closeSideDrawer, getProductName, closeToast, customScrollbarClass } from '../../lib/utils'
+import {
+  closeSideDrawer,
+  getProductName,
+  closeToast,
+  customScrollbarClass,
+  openToast,
+} from '../../lib/utils'
 import { store } from '../../store'
 import {
   buildOperators,
@@ -33,6 +39,7 @@ import { Portal } from '@headlessui/react'
 import { ParkCards } from '../parks/parkCards'
 import { motion, useAnimation } from 'framer-motion'
 import { pauseQueue, unpauseQueue } from '../../lib/queuesLib'
+import { Button, Modal, InlineNotification, Badge, TextInput } from '../common'
 
 interface LayoutProps {
   children: ReactNode
@@ -288,7 +295,7 @@ export const Layout: FC<LayoutProps> = ({ children }) => {
       const initTimeout = setTimeout(() => {
         eventDispatch('phone-island-ringing-tone-list', {})
       }, 500)
-      
+
       // Retry after 2 seconds if not loaded
       const retryTimeout = setTimeout(() => {
         if (!store.getState().ringtones.isLoaded) {
@@ -296,9 +303,9 @@ export const Layout: FC<LayoutProps> = ({ children }) => {
           eventDispatch('phone-island-ringing-tone-list', {})
         }
       }, 5000)
-      
+
       setFirstRenderRingtones(false)
-      
+
       return () => {
         clearTimeout(initTimeout)
         clearTimeout(retryTimeout)
@@ -466,7 +473,7 @@ export const Layout: FC<LayoutProps> = ({ children }) => {
   //Get user information from store
   const userInformation = useSelector((state: RootState) => state.user)
 
-  useEventListener('phone-island-webrtc-unregistered', (data: any) => { })
+  useEventListener('phone-island-webrtc-unregistered', (data: any) => {})
 
   const [conversationObject, setConversationObject]: any = useState({})
 
@@ -678,7 +685,6 @@ export const Layout: FC<LayoutProps> = ({ children }) => {
 
           // Check onlyQueues setting and conversation type
           const onlyQueues = incomingCallStore?.onlyQueues || false
-
         }
       } else if (
         operators[currentUsername]?.mainPresence === 'busy' &&
@@ -695,7 +701,6 @@ export const Layout: FC<LayoutProps> = ({ children }) => {
 
           // Check onlyQueues setting and conversation type
           const onlyQueues = incomingCallStore?.onlyQueues || false
-
         }
       }
     }
@@ -809,7 +814,7 @@ export const Layout: FC<LayoutProps> = ({ children }) => {
       if (firstElementConversation && !isEmpty(data[currentUsername]?.conversations)) {
         let callerInfo =
           operatorsStore?.extensions[
-          data[currentUsername]?.conversations[firstElementConversation]?.counterpartNum
+            data[currentUsername]?.conversations[firstElementConversation]?.counterpartNum
           ]
 
         let callerUsername = callerInfo?.username
@@ -981,17 +986,19 @@ export const Layout: FC<LayoutProps> = ({ children }) => {
       queuesStore.isLoaded &&
       mainextension
     ) {
-      const shouldPauseQueues = userSettings.queue_autopause_presencelist.some((pauseState: string) => {
-        // Map preference states to operator's mainPresence
-        switch (pauseState) {
-          case 'dnd':
-            return currentOperator?.mainPresence === 'dnd'
-          case 'callforward':
-            return currentOperator?.mainPresence === 'callforward'
-          default:
-            return false
-        }
-      })
+      const shouldPauseQueues = userSettings.queue_autopause_presencelist.some(
+        (pauseState: string) => {
+          // Map preference states to operator's mainPresence
+          switch (pauseState) {
+            case 'dnd':
+              return currentOperator?.mainPresence === 'dnd'
+            case 'callforward':
+              return currentOperator?.mainPresence === 'callforward'
+            default:
+              return false
+          }
+        },
+      )
 
       if (shouldPauseQueues) {
         // Find all queues where user is logged in and not already paused
@@ -1002,9 +1009,10 @@ export const Layout: FC<LayoutProps> = ({ children }) => {
 
         // Pause all appropriate queues
         queuesToPause.forEach((queue: any) => {
-          const reason = currentOperator?.mainPresence === 'dnd'
-            ? 'DND'
-            : currentOperator?.mainPresence === 'callforward'
+          const reason =
+            currentOperator?.mainPresence === 'dnd'
+              ? 'DND'
+              : currentOperator?.mainPresence === 'callforward'
               ? 'Call Forward'
               : 'Auto Pause'
 
@@ -1018,7 +1026,7 @@ export const Layout: FC<LayoutProps> = ({ children }) => {
     userInformation?.settings?.queue_autopause_presencelist,
     queuesStore.isLoaded,
     mainextension,
-    currentUsername
+    currentUsername,
   ])
 
   // Save prev user main presence state
@@ -1039,16 +1047,21 @@ export const Layout: FC<LayoutProps> = ({ children }) => {
       mainextension
     ) {
       // Check if we're exiting from a state that was configured for auto-pause
-      const exitingFromPauseState = userSettings.queue_autopause_presencelist.some((pauseState: string) => {
-        switch (pauseState) {
-          case 'dnd':
-            return prevOperatorState === 'dnd' && currentOperator?.mainPresence !== 'dnd'
-          case 'callforward':
-            return prevOperatorState === 'callforward' && currentOperator?.mainPresence !== 'callforward'
-          default:
-            return false
-        }
-      })
+      const exitingFromPauseState = userSettings.queue_autopause_presencelist.some(
+        (pauseState: string) => {
+          switch (pauseState) {
+            case 'dnd':
+              return prevOperatorState === 'dnd' && currentOperator?.mainPresence !== 'dnd'
+            case 'callforward':
+              return (
+                prevOperatorState === 'callforward' &&
+                currentOperator?.mainPresence !== 'callforward'
+              )
+            default:
+              return false
+          }
+        },
+      )
 
       if (exitingFromPauseState) {
         // Find all queues where user is logged in and currently paused
@@ -1069,7 +1082,7 @@ export const Layout: FC<LayoutProps> = ({ children }) => {
     userInformation?.settings?.queue_auto_pause_onpresence,
     userInformation?.settings?.queue_autopause_presencelist,
     queuesStore.isLoaded,
-    mainextension
+    mainextension,
   ])
 
   //check if user has closed current calls
@@ -1177,7 +1190,7 @@ export const Layout: FC<LayoutProps> = ({ children }) => {
   })
 
   //check if socket reconnect
-  useEventListener('phone-island-socket-disconnected', () => { })
+  useEventListener('phone-island-socket-disconnected', () => {})
 
   // Reload operators data when socket reconnects to sync state
   // This handles cases where events were lost during network interruption
@@ -1305,6 +1318,21 @@ export const Layout: FC<LayoutProps> = ({ children }) => {
   // global keyborad shortcut
   useHotkeys('ctrl+alt+c', () => closePhoneIslandCall(), [])
 
+  useEventListener('phone-island-call-ended', () => {
+    openToast(
+      'success',
+      <>
+        {t('Common.The transcription will be available in your history shortly') ||
+          'The transcription will be available in your history shortly'}
+        <br className='mb-2' />
+        <Button variant='primary' onClick={() => router.push('/history')} className='mt-2'>
+          {t('Common.Go to history') || 'Go to history'}
+        </Button>
+      </>,
+      t('Common.Call transcription in progress') || 'Call transcription in progress',
+    )
+  })
+
   return (
     <>
       <div>
@@ -1327,11 +1355,12 @@ export const Layout: FC<LayoutProps> = ({ children }) => {
           {/* Main content */}
           <div className='flex flex-1 items-stretch overflow-hidden bg-body dark:bg-bodyDark'>
             <main
-              className={`flex-1 ${customScrollbarClass} ${parkingInfo?.isParkingFooterVisible &&
+              className={`flex-1 ${customScrollbarClass} ${
+                parkingInfo?.isParkingFooterVisible &&
                 profile?.macro_permissions?.settings?.permissions?.parkings?.value
-                ? 'pb-16'
-                : ''
-                }`}
+                  ? 'pb-16'
+                  : ''
+              }`}
               id='main-content'
             >
               {/* Primary column */}
@@ -1372,9 +1401,9 @@ export const Layout: FC<LayoutProps> = ({ children }) => {
             </div>
 
             {parkingInfo?.isParkingFooterVisible &&
-              profile?.macro_permissions?.settings?.permissions?.parkings?.value &&
-              userInformation?.default_device &&
-              userInformation?.default_device?.type !== 'nethlink' ? (
+            profile?.macro_permissions?.settings?.permissions?.parkings?.value &&
+            userInformation?.default_device &&
+            userInformation?.default_device?.type !== 'nethlink' ? (
               <motion.div
                 className='absolute bottom-0 left:0 sm:bottom-0 sm:left-0 md:bottom-0 md:left-20'
                 initial={{ y: 100 }}
