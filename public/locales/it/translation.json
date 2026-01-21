@@ -69,7 +69,10 @@
     "Configure": "Configura",
     "Copy": "Copia",
     "Copied": "Copiato",
-    "Don't ask again": "Non chiedere più"
+    "Don't ask again": "Non chiedere più",
+    "Go to history": "Vai allo storico",
+    "Call transcription in progress": "Trascrizione della chiamata in corso",
+    "The transcription will be available in your history shortly": "La trascrizione sarà disponibile nel tuo storico tra qualche momento"
   },
   "Login": {
     "User": "Utente",
