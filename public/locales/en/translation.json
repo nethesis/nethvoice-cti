@@ -83,7 +83,10 @@
     "Configure": "Configure",
     "Copy": "Copy",
     "Copied": "Copied",
-    "Don't ask again": "Don't ask again"
+    "Don't ask again": "Don't ask again",
+    "Go to history": "Go to history",
+    "Call transcription in progress": "Call transcription in progress",
+    "The transcription will be available in your history shortly": "The transcription will be available in your history shortly"
   },
   "Login": {
     "User": "Username",
