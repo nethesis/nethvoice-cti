@@ -79,35 +79,54 @@ export const CallSummaryDrawerContent = forwardRef<
 
   return (
     <>
-      <DrawerHeader title={t('Settings.Gravatar')} onClose={closeSideDrawer} />
+      <DrawerHeader title={t('Summary.Review call summary')} onClose={closeSideDrawer} />
       <div className={classNames(className, 'px-5')} {...props}>
         <Divider />
         <div className='mb-6 flex flex-col'>
-          {/* Email */}
+          {/* Caller */}
           <label className='text-sm mb-2 font-medium text-gray-700 dark:text-gray-200'>
-            {t('Settings.Email address')}
+            {t('History.Caller')}
           </label>
+          <TextInput
+            placeholder={t('Settings.Type to insert email address') || ''}
+            className='max-w-lg'
+            value={textFilter}
+            onChange={changeTextFilter}
+            ref={textFilterRef}
+            icon={textFilter.length ? faCircleXmark : undefined}
+            onIconClick={() => clearTextFilter()}
+            trailingIcon={true}
+          />
 
-          <div className='flex justify-between space-x-2'>
-            <TextInput
-              placeholder={t('Settings.Type to insert email address') || ''}
-              className='max-w-lg'
-              value={textFilter}
-              onChange={changeTextFilter}
-              ref={textFilterRef}
-              icon={textFilter.length ? faCircleXmark : undefined}
-              onIconClick={() => clearTextFilter()}
-              trailingIcon={true}
-            />
-            <Button variant='white' onClick={() => convertGravatarToBase64()}>
-              <FontAwesomeIcon icon={faSearch} className='h-4 w-4' />
-            </Button>
-          </div>
-        </div>
-        <div className='mt-4 mb-8 text-left'>
-          <h4 className='mb-2 text-sm font-medium text-gray-700 dark:text-gray-300'>
-            {t('Settings.Preview')}
-          </h4>
+          {/* Date */}
+          <label className='text-sm mb-2 font-medium text-gray-700 dark:text-gray-200 mt-8'>
+            {t('History.Date')}
+          </label>
+          <TextInput
+            placeholder={t('Settings.Type to insert email address') || ''}
+            className='max-w-lg'
+            value={textFilter}
+            onChange={changeTextFilter}
+            ref={textFilterRef}
+            icon={textFilter.length ? faCircleXmark : undefined}
+            onIconClick={() => clearTextFilter()}
+            trailingIcon={true}
+          />
+
+          {/* Summary */}
+          <label className='text-sm mb-2 font-medium text-gray-700 dark:text-gray-200 mt-8'>
+            {t('Summary.Summary')}
+          </label>
+          <TextInput
+            placeholder={t('Settings.Type to insert email address') || ''}
+            className='max-w-lg'
+            value={textFilter}
+            onChange={changeTextFilter}
+            ref={textFilterRef}
+            icon={textFilter.length ? faCircleXmark : undefined}
+            onIconClick={() => clearTextFilter()}
+            trailingIcon={true}
+          />
         </div>
         {/* Divider */}
         <Divider paddingY='pb-10 pt-6' />
