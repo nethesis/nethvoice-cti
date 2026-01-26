@@ -267,7 +267,7 @@
     "Internal": "Internal",
     "Phone lines and announcements": "Phone lines and announcements",
     "Manage your phone lines, activate announcements, voicemail or forward calls": "Manage your phone lines, activate announcements, voicemail or forward calls.",
-    "Display video streams from various sources such as IP cameras or video intercoms":"Display video streams from various sources such as IP cameras or video intercoms.",
+    "Display video streams from various sources such as IP cameras or video intercoms": "Display video streams from various sources such as IP cameras or video intercoms.",
     "Activate announcements, voicemail or forward calls": "Activate announcements, voicemail or forward calls",
     "Video sources": "Video sources",
     "View streams from different sources such as IP video cameras or video intercoms": "View streams from different sources such as IP video cameras or video intercoms.",
@@ -1090,5 +1090,9 @@
     "No video sources available": "No video sources available",
     "No video sources have been configured": "No video sources have been configured",
     "Contact your administrator to configure video sources": "Contact your administrator to configure video sources"
+  },
+  "Summary": {
+    "Review call summary": "Review call summary",
+    "Summary": "Summary"
   }
 }

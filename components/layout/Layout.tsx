@@ -1342,6 +1342,7 @@ export const Layout: FC<LayoutProps> = ({ children }) => {
         setJSONItem('phone-island-theme-selected', { themeSelected: 'dark' })
       }
     }
+  // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [theme])
 
   const closePhoneIslandCall = () => {
@@ -1350,7 +1351,7 @@ export const Layout: FC<LayoutProps> = ({ children }) => {
   // global keyborad shortcut
   useHotkeys('ctrl+alt+c', () => closePhoneIslandCall(), [])
 
-  useEventListener('phone-island-call-ended', () => {
+  useEventListener('phone-island-summary-call-checked', () => {
     openToast(
       'success',
       <>
