@@ -229,3 +229,11 @@ export async function retrieveContact(contactId: any) {
     throw error
   }
 }
+
+export const openSummaryDrawer = () => {
+  store.dispatch.sideDrawer.update({
+    isShown: true,
+    contentType: 'callSummary',
+    config: { isEdit: false },
+  })
+}

@@ -1071,6 +1071,8 @@
   },
   "Summary": {
     "Review call summary": "Rivedi il riepilogo della chiamata",
-    "Summary": "Riepilogo"
+    "Summary": "Riepilogo",
+    "Summary tooltip": "Questo riepilogo è stato generato da AI e può essere modificato.",
+    "View full transcription": "Visualizza la trascrizione completa"
   }
 }

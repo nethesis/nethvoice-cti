@@ -112,6 +112,27 @@ const theme = {
       bottom: 'rounded-bl-none rounded-br-none',
     },
   },
+  textarea: {
+    base: 'block w-full rounded-md border px-3 py-2 text-sm shadow-sm resize-y focus:z-[8] disabled:cursor-not-allowed bg-bgInput dark:bg-bgInputDark text-gray-900 dark:text-gray-100 disabled:border-gray-200 disabled:bg-gray-50 disabled:text-gray-500 dark:disabled:border-gray-700 dark:disabled:bg-gray-900 dark:disabled:text-gray-400',
+    label: 'text-sm font-medium text-inputText dark:text-inputTextDark',
+    optional: 'text-xs text-gray-500 dark:text-gray-400',
+    placeholder: {
+      base: 'placeholder:text-placeHolderInputText dark:placeholder:text-placeHolderInputTextDark',
+      error: '',
+    },
+    helper: {
+      base: 'mt-2 text-sm',
+      color: {
+        base: 'text-gray-500 dark:text-gray-400',
+        error: 'text-rose-600 dark:text-rose-400',
+      },
+    },
+    colors: {
+      gray: 'border-gray-300 focus:border-primaryLight focus:ring-primaryLight placeholder:text-gray-400 dark:border-gray-600 dark:focus:border-primaryDark dark:focus:ring-primaryDark dark:placeholder:text-gray-500',
+      error:
+        'border-rose-500 focus:border-rose-500 focus:ring-rose-500 dark:border-rose-400 dark:focus:border-rose-400 dark:focus:ring-rose-400',
+    },
+  },
   modal: {
     panel: {
       base: 'relative transform overflow-hidden rounded-lg text-left shadow-xl transition-all sm:my-8 sm:w-full sm:max-w-lg bg-white dark:bg-gray-900',
