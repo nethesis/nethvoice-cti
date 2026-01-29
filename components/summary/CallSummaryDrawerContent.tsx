@@ -3,11 +3,11 @@
 
 import { ComponentPropsWithRef, forwardRef } from 'react'
 import classNames from 'classnames'
-import { Button, TextInput } from '../common'
+import { TextInput, TextArea, Button } from '../common'
 import { useState, useRef } from 'react'
 import { closeSideDrawer } from '../../lib/utils'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
-import { faCircleXmark, faSearch } from '@fortawesome/free-solid-svg-icons'
+import { faCircleXmark, faCircleInfo, faAngleDown } from '@fortawesome/free-solid-svg-icons'
 import { t } from 'i18next'
 import { useSelector } from 'react-redux'
 import { isEmpty } from 'lodash'
@@ -16,6 +16,7 @@ import { RootState } from '../../store'
 import { DrawerHeader } from '../common/DrawerHeader'
 import { Divider } from '../common/Divider'
 import { DrawerFooter } from '../common/DrawerFooter'
+import { CustomThemedTooltip } from '../common/CustomThemedTooltip'
 
 export interface CallSummaryDrawerContentProps extends ComponentPropsWithRef<'div'> {
   config: any
@@ -114,18 +115,47 @@ export const CallSummaryDrawerContent = forwardRef<
           />
 
           {/* Summary */}
-          <label className='text-sm mb-2 font-medium text-gray-700 dark:text-gray-200 mt-8'>
+          <label className='text-sm mb-2 font-medium text-gray-700 dark:text-gray-200 mt-8 flex items-center gap-2'>
             {t('Summary.Summary')}
+            <FontAwesomeIcon
+              icon={faCircleInfo}
+              className='h-5 w-5 text-blue-700 dark:text-blue-200 cursor-auto'
+              aria-hidden='true'
+              data-tooltip-id='tooltip-summary-info'
+              data-tooltip-content={t('Summary.Summary tooltip') || ''}
+            />
+            <CustomThemedTooltip id='tooltip-summary-info' place='top' />
           </label>
-          <TextInput
+          <TextArea
             placeholder={t('Settings.Type to insert email address') || ''}
             className='max-w-lg'
             value={textFilter}
             onChange={changeTextFilter}
-            ref={textFilterRef}
-            icon={textFilter.length ? faCircleXmark : undefined}
-            onIconClick={() => clearTextFilter()}
-            trailingIcon={true}
+            rows={5}
+          />
+
+          <Button variant='ghost' className='mt-8 inline-flex items-center gap-2'>
+            <FontAwesomeIcon icon={faAngleDown} className='h-4 w-4' />
+            <span>{t('Summary.View full transcription')}</span>
+          </Button>
+          {/* Summary */}
+          <label className='text-sm mb-2 font-medium text-gray-700 dark:text-gray-200 mt-8 flex items-center gap-2'>
+            {t('Summary.Call')}
+            <FontAwesomeIcon
+              icon={faCircleInfo}
+              className='h-5 w-5 text-blue-700 dark:text-blue-200 cursor-auto'
+              aria-hidden='true'
+              data-tooltip-id='tooltip-summary-info'
+              data-tooltip-content={t('Summary.Summary tooltip') || ''}
+            />
+            <CustomThemedTooltip id='tooltip-summary-info' place='top' />
+          </label>
+          <TextArea
+            placeholder={t('Settings.Type to insert email address') || ''}
+            className='max-w-lg'
+            value={textFilter}
+            onChange={changeTextFilter}
+            rows={5}
           />
         </div>
         {/* Divider */}
