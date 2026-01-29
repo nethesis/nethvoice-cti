@@ -69,7 +69,12 @@
     "Configure": "Configura",
     "Copy": "Copia",
     "Copied": "Copiato",
-    "Don't ask again": "Non chiedere più"
+    "Don't ask again": "Non chiedere più",
+    "Go to history": "Vai allo storico",
+    "Call transcription in progress": "Trascrizione della chiamata in corso",
+    "The transcription will be available in your history shortly": "La trascrizione sarà disponibile nel tuo storico tra qualche momento",
+    "Call transcription available": "Trascrizione chiamata disponibile",
+    "View call transcription": "Visualizza trascrizione chiamata"
   },
   "Login": {
     "User": "Utente",
@@ -244,7 +249,7 @@
     "Internal": "Interne",
     "Phone lines and announcements": "Linee telefoniche e annunci",
     "Manage your phone lines, activate announcements, voicemail or forward calls": "Gestisci le tue linee telefoniche, attiva annunci, casella vocale o inoltra chiamate.",
-    "Display video streams from various sources such as IP cameras or video intercoms":"Visualizza flussi video provenienti da diverse sorgenti come videocamere IP o videocitofoni.",
+    "Display video streams from various sources such as IP cameras or video intercoms": "Visualizza flussi video provenienti da diverse sorgenti come videocamere IP o videocitofoni.",
     "Activate announcements, voicemail or forward calls": "Attiva annunci, casella vocale o inoltra chiamate",
     "Video sources": "Sorgenti video",
     "View streams from different sources such as IP video cameras or video intercoms": "Visualizza flussi provenienti da diverse sorgenti come vidocamere IP o videocitofoni.",
@@ -1065,5 +1070,12 @@
     "No video sources available": "Nessuna sorgente video disponibile",
     "No video sources have been configured": "Nessuna sorgente video è stata configurata",
     "Contact your administrator to configure video sources": "Contatta l'amministratore per configurare le sorgenti video"
+  },
+  "Summary": {
+    "Review call summary": "Rivedi il riepilogo della chiamata",
+    "Summary": "Riepilogo",
+    "Summary tooltip": "Questo riepilogo è stato generato da AI e può essere modificato.",
+    "View full transcription": "Visualizza la trascrizione completa",
+    "Call": "Chiamata"
   }
 }
