@@ -158,10 +158,22 @@
   /* textStatusOffline */
   --color-text-status-offline: #374151;
   --color-text-status-offline-dark: #9CA3AF;
-
+  
   /* textLink */
   --color-text-link: #047857;
   --color-text-link-dark: #10b981;
+
+  /* textLinkInvert */
+  --color-text-link-invert: #10B981;
+  --color-text-link-invert-dark: #047857;
+
+  /* textLinkInvertHover */
+
+  /* emerald 400 */
+  --color-text-link-invert-hover: #34D399;
+  
+  /* emarld 800 */
+  --color-text-link-invert-hover-dark: #065F46;
 
   /* textBadge */
   /* textBadgeBlue */
