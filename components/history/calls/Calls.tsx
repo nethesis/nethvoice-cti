@@ -18,9 +18,12 @@ import { InlineNotification, Dropdown, Button } from '../../common'
 import { MissingPermission } from '../../common/MissingPermissionsPage'
 import { CallsDate } from '../CallsDate'
 import { Filter } from './Filter'
-import { useSelector } from 'react-redux'
-import { RootState } from '../../../store'
+import { useSelector, useDispatch } from 'react-redux'
+import { RootState, Dispatch } from '../../../store'
 import { Tooltip } from 'react-tooltip'
+import { faAiSpark } from '@nethesis/nethesis-solid-svg-icons'
+import { CustomThemedTooltip } from '../../common/CustomThemedTooltip'
+import { AiSparkIcon } from '../../common/AiSparkIcon'
 import {
   getApiVoiceEndpoint,
   getApiScheme,
@@ -41,6 +44,7 @@ import { Table } from '../../common/Table'
 export interface CallsProps extends ComponentProps<'div'> {}
 
 export const Calls: FC<CallsProps> = ({ className }): JSX.Element => {
+  const dispatch = useDispatch<Dispatch>()
   const { operators } = useSelector((state: RootState) => state.operators)
   const { profile } = useSelector((state: RootState) => state.user)
   const { name, mainextension, feature_codes } = useSelector((state: RootState) => state.user)
@@ -59,6 +63,9 @@ export const Calls: FC<CallsProps> = ({ className }): JSX.Element => {
   const [dateBegin, setDateBegin]: any = useState('')
   const [callDirection, setCallDirection]: any = useState('all')
   const [totalPages, setTotalPages] = useState(0)
+  // TODO: Replace with real transcription data
+  const [hasTranscription, setHasTranscription] = useState(true)
+  const [currentHoveredCall, setCurrentHoveredCall] = useState<any>(null)
 
   const apiVoiceEnpoint = getApiVoiceEndpoint()
   const apiScheme = getApiScheme()
@@ -73,6 +80,7 @@ export const Calls: FC<CallsProps> = ({ className }): JSX.Element => {
   const dateFrom: any = formatDateLoc(DateFromNotConverted, 'yyyy-MM-dd')
   const dateTo: any = formatDateLoc(new Date(), 'yyyy-MM-dd')
   const checkDateType = new RegExp(/-/, 'g')
+
 
   useEffect(() => {
     if (!dateBegin) {
@@ -143,6 +151,14 @@ export const Calls: FC<CallsProps> = ({ className }): JSX.Element => {
     if (callId) {
       playFileAudio(callId, 'call_recording')
     }
+  }
+
+  function openTranscriptionDrawer(call: any) {
+    dispatch.sideDrawer.update({
+      isShown: true,
+      contentType: 'callSummary',
+      config: call,
+    })
   }
 
   const downloadRecordingFileAudio = async (callIdInformation: any) => {
@@ -310,7 +326,26 @@ export const Calls: FC<CallsProps> = ({ className }): JSX.Element => {
       width: '15%',
     },
     {
-      header: t('History.Recording'),
+      header: '',
+      cell: (call: any) =>
+        hasTranscription ? (
+          <div className='flex justify-center'>
+            <div
+              data-tooltip-id='ai-transcription-tooltip'
+              data-tooltip-content={t('Common.Call transcription available')}
+              onMouseEnter={() => setCurrentHoveredCall(call)}
+            >
+              <AiSparkIcon/>
+            </div>
+          </div>
+        ) : (
+          <div className='flex' />
+        ),
+      width: '5%',
+      className: 'px-6 py-3.5 text-center w-0',
+    },
+    {
+      header: '',
       cell: (call: any) => (
         <CallRecording
           call={call}
@@ -319,6 +354,7 @@ export const Calls: FC<CallsProps> = ({ className }): JSX.Element => {
         />
       ),
       width: '20%',
+      className: 'px-6 py-3.5 w-0',
     },
   ]
 
@@ -413,6 +449,12 @@ export const Calls: FC<CallsProps> = ({ className }): JSX.Element => {
           <MissingPermission />
         )}
       </div>
+      <CustomThemedTooltip
+        id='ai-transcription-tooltip'
+        place='top'
+        clickableText={t('Common.View call transcription') || ''}
+        onClickableClick={() => currentHoveredCall && openTranscriptionDrawer(currentHoveredCall)}
+      />
     </>
   )
 }
