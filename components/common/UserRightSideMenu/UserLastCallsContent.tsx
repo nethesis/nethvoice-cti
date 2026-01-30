@@ -30,7 +30,7 @@ import { Skeleton } from '../../common/Skeleton'
 import { customScrollbarClass } from '../../../lib/utils'
 import { CustomThemedTooltip } from '../CustomThemedTooltip'
 import { format, utcToZonedTime } from 'date-fns-tz'
-import { formatDistance } from 'date-fns'
+import { formatDistanceToNowStrict } from 'date-fns'
 import { enGB, it } from 'date-fns/locale'
 import i18next from 'i18next'
 
@@ -82,22 +82,67 @@ const LastCallItem = memo(
       const differenceBetweenTimezone = getDifferenceBetweenTimezone()
       const selectedLanguage = i18next?.languages[0] || 'en'
 
-      return formatDistance(
-        utcToZonedTime(call?.time * 1000, differenceBetweenTimezone),
-        utcToZonedTime(new Date(), localTimeZone),
-        {
-          addSuffix: true,
-          includeSeconds: true,
-          locale: selectedLanguage === 'it' ? it : enGB,
+      const shortIt = {
+        ...it,
+        formatDistance: (token: string, count: number, options?: any) => {
+          const map: Record<string, string> = {
+            xSeconds: 's',
+            xMinutes: 'm',
+            xHours: 'h',
+            xDays: 'g',
+            xMonths: 'mes',
+            xYears: 'a',
+          }
+
+          const unit = map[token] || ''
+          const suffix = options?.addSuffix
+            ? options.comparison && options.comparison > 0
+              ? ' tra'
+              : ' fa'
+            : ''
+
+          return `${count}${unit}${suffix}`
         },
-      )
+      }
+
+      const shortEn = {
+        ...enGB,
+        formatDistance: (token: string, count: number, options?: any) => {
+          const map: Record<string, string> = {
+            xSeconds: 's',
+            xMinutes: 'm',
+            xHours: 'h',
+            xDays: 'd',
+            xMonths: 'mo',
+            xYears: 'y',
+          }
+
+          const unit = map[token] || ''
+          const suffix = options?.addSuffix
+            ? options.comparison && options.comparison > 0
+              ? ' in'
+              : ' ago'
+            : ''
+
+          return `${count}${unit}${suffix}`
+        },
+      }
+
+      const callDate = utcToZonedTime(call?.time * 1000, differenceBetweenTimezone)
+      
+      return formatDistanceToNowStrict(callDate, {
+        addSuffix: true,
+        locale: selectedLanguage === 'it' ? shortIt : shortEn,
+      })
     }
 
     const getCallDateString = (call: any) => {
+      const selectedLanguage = i18next?.languages[0] || 'en'
       const differenceBetweenTimezone = getDifferenceBetweenTimezone()
       return format(
         utcToZonedTime(call?.time * 1000, differenceBetweenTimezone),
         'd MMM yyyy HH:mm',
+        { locale: selectedLanguage === 'it' ? it : enGB },
       )
     }
 
