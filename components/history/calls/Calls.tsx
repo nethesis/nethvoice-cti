@@ -65,6 +65,7 @@ export const Calls: FC<CallsProps> = ({ className }): JSX.Element => {
   const [totalPages, setTotalPages] = useState(0)
   // TODO: Replace with real transcription data
   const [hasTranscription, setHasTranscription] = useState(true)
+  const [isGenerating, setIsGenerating] = useState(false)
   const [currentHoveredCall, setCurrentHoveredCall] = useState<any>(null)
 
   const apiVoiceEnpoint = getApiVoiceEndpoint()
@@ -332,10 +333,14 @@ export const Calls: FC<CallsProps> = ({ className }): JSX.Element => {
           <div className='flex justify-center'>
             <div
               data-tooltip-id='ai-transcription-tooltip'
-              data-tooltip-content={t('Common.Call transcription available')}
+              data-tooltip-content={
+                isGenerating
+                  ? t('Common.Generating call summary')
+                  : t('Common.Call transcription available')
+              }
               onMouseEnter={() => setCurrentHoveredCall(call)}
             >
-              <AiSparkIcon/>
+              <AiSparkIcon animate={isGenerating} />
             </div>
           </div>
         ) : (
