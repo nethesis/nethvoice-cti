@@ -74,7 +74,8 @@
     "Call transcription in progress": "Trascrizione della chiamata in corso",
     "The transcription will be available in your history shortly": "La trascrizione sarà disponibile nel tuo storico tra qualche momento",
     "Call transcription available": "Trascrizione chiamata disponibile",
-    "View call transcription": "Visualizza trascrizione chiamata"
+    "View call transcription": "Visualizza trascrizione chiamata",
+    "Generating call summary": "Generazione riepilogo chiamata"
   },
   "Login": {
     "User": "Utente",
