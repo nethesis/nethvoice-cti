@@ -468,7 +468,7 @@ const theme = {
     },
   },
   toast: {
-    base: 'pointer-events-auto max-w-xl overflow-hidden rounded-lg bg-elevationL2Invert dark:bg-elevationL2InvertDark shadow-lg ring-1 ring-black ring-opacity-5 rounded-lg p-6 pr-16 w-full flex items-center',
+    base: 'pointer-events-auto relative max-w-xl overflow-hidden rounded-lg bg-elevationL2Invert dark:bg-elevationL2InvertDark shadow-lg ring-1 ring-black ring-opacity-5 border border-gray-200/60 dark:border-gray-700/60 rounded-lg p-6 pr-16 w-full flex items-center',
     type: {
       info: '',
       error: '',
