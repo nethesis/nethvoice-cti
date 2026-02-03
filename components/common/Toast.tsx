@@ -108,7 +108,7 @@ export const Toast: FC<ToastProps> = ({
             </div>
           )}
         </div>
-        <Button variant='ghost' className='absolute top-1/2 -translate-y-1/2 right-0 mr-2' onClick={onClose}>
+        <Button variant='ghost' className='absolute top-2 right-2' onClick={onClose}>
           <FontAwesomeIcon
             icon={faXmark}
             className='h-4 w-4 text-primaryNeutral dark:text-primaryNeutralDark cursor-pointer'
