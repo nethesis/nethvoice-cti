@@ -213,7 +213,10 @@
     "No voicemails match your search criteria": "Nessun messaggio vocale corrispondente ai tuoi criteri di ricerca",
     "Voicemail filters": "Filtri messaggi vocali",
     "No voicemails": "Nessun messaggio vocale",
-    "There are no voicemails in your history": "Non ci sono messaggi vocali nel tuo storico"
+    "There are no voicemails in your history": "Non ci sono messaggi vocali nel tuo storico",
+    "Delete recording": "Elimina registrazione",
+    "Delete call summary": "Elimina riepilogo chiamata",
+    "Delete call transcription": "Elimina trascrizione chiamata"
   },
   "Operators": {
     "Operators": "Operatori",
@@ -1050,7 +1053,9 @@
   "Call": {
     "In progress...": "In corso...",
     "Outgoing call": "Chiamata in uscita",
-    "Incoming call": "Chiamata in arrivo"
+    "Incoming call": "Chiamata in arrivo",
+    "Delete call summary": "Elimina riepilogo chiamata",
+    "Delete call transcription": "Elimina trascrizione chiamata"
   },
   "Transfer": {
     "No users found": "Nessun utente trovato"
