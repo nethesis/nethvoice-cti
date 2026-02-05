@@ -139,7 +139,7 @@ export const SummaryView: FC<SummaryViewProps> = ({ uniqueid }) => {
       ) : (
         <div className='mb-6 flex flex-col'>
           {/* Date */}
-          <label className='text-sm mb-2 font-medium text-gray-700 dark:text-gray-200 mt-8'>
+          <label className='text-sm mb-2 font-medium leading-5 text-secondaryNeutral dark:text-secondaryNeutralDark mt-8'>
             {t('History.Date')}
           </label>
           {isLoading ? (
@@ -156,7 +156,7 @@ export const SummaryView: FC<SummaryViewProps> = ({ uniqueid }) => {
           )}
 
           {/* Summary */}
-          <label className='text-sm mb-2 font-medium text-gray-700 dark:text-gray-200 mt-8 flex items-center gap-2'>
+          <label className='text-sm mb-2 font-medium leading-5 text-secondaryNeutral dark:text-secondaryNeutralDark mt-8 flex items-center gap-2'>
             {t('Summary.Summary')}
             <FontAwesomeIcon
               icon={faCircleInfo}
@@ -175,7 +175,7 @@ export const SummaryView: FC<SummaryViewProps> = ({ uniqueid }) => {
               className='max-w-lg'
               value={summary}
               onChange={(e) => setSummary(e.target.value)}
-              rows={5}
+              rows={11}
             />
           )}
 
@@ -204,7 +204,7 @@ export const SummaryView: FC<SummaryViewProps> = ({ uniqueid }) => {
                   className='max-w-lg'
                   value={transcription}
                   onChange={(e) => setTranscription(e.target.value)}
-                  rows={5}
+                  rows={11}
                   readOnly
                 />
               )}

@@ -63,7 +63,7 @@ export const TranscriptionView: FC<TranscriptionViewProps> = ({ uniqueid }) => {
       ) : (
         <div className='mb-6 flex flex-col'>
           {/* Date */}
-          <label className='text-sm mb-2 font-medium text-gray-700 dark:text-gray-200 mt-8'>
+          <label className='text-sm mb-2 font-medium leading-5 text-secondaryNeutral dark:text-secondaryNeutralDark mt-8'>
             {t('History.Date')}
           </label>
           {isLoading ? (
@@ -80,7 +80,7 @@ export const TranscriptionView: FC<TranscriptionViewProps> = ({ uniqueid }) => {
           )}
 
           {/* Transcription */}
-          <label className='text-sm mb-2 font-medium text-gray-700 dark:text-gray-200 mt-8'>
+          <label className='text-sm mb-2 font-medium leading-5 text-secondaryNeutral dark:text-secondaryNeutralDark mt-8'>
             {t('Summary.Call transcription')}
           </label>
           {isLoading ? (
@@ -91,7 +91,7 @@ export const TranscriptionView: FC<TranscriptionViewProps> = ({ uniqueid }) => {
               className='max-w-lg'
               value={transcription}
               onChange={(e) => setTranscription(e.target.value)}
-              rows={15}
+              rows={11}
               readOnly
             />
           )}
