@@ -10,10 +10,11 @@ import {
 } from '@fortawesome/free-solid-svg-icons'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { t } from 'i18next'
-import { FC, ComponentProps, useState, useMemo, useEffect } from 'react'
+import { FC, ComponentProps, useState, useMemo, useEffect, useCallback } from 'react'
 import { deleteRec, downloadCallRec, openDrawerHistory, search } from '../../../lib/history'
 import { PAGE_SIZE } from '../../../lib/queuesLib'
 import { subDays, startOfDay } from 'date-fns'
+import { useEventListener } from '../../../lib/hooks/useEventListener'
 import { InlineNotification, Dropdown, Button } from '../../common'
 import { MissingPermission } from '../../common/MissingPermissionsPage'
 import { CallsDate } from '../CallsDate'
@@ -39,7 +40,7 @@ import { CallDuration } from './CallDuration'
 import { CallRecording } from './CallRecording'
 import { Pagination } from '../../common/Pagination'
 import { Table } from '../../common/Table'
-import { checkSummaryList } from '../../../services/user'
+import { checkSummaryList, deleteSummary } from '../../../services/user'
 
 export interface CallsProps extends ComponentProps<'div'> {}
 
@@ -83,7 +84,6 @@ export const Calls: FC<CallsProps> = ({ className }): JSX.Element => {
   const dateFrom: any = formatDateLoc(DateFromNotConverted, 'yyyy-MM-dd')
   const dateTo: any = formatDateLoc(new Date(), 'yyyy-MM-dd')
   const checkDateType = new RegExp(/-/, 'g')
-
 
   useEffect(() => {
     if (!dateBegin) {
@@ -143,43 +143,49 @@ export const Calls: FC<CallsProps> = ({ className }): JSX.Element => {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [callType, username, dateBegin, dateEnd, filterText, pageNum, sortBy, callDirection])
 
-  // Load summary status for current page calls
-  useEffect(() => {
-    async function loadSummaryStatus() {
-      if (!history?.rows || history.rows.length === 0) {
+  // Function to load summary status for current page calls
+  const loadSummaryStatus = useCallback(async () => {
+    if (!history?.rows || history.rows.length === 0) {
+      return
+    }
+
+    try {
+      setIsLoadingSummaryStatus(true)
+      const linkedIds = history.rows.map((call: any) => call.linkedid).filter(Boolean)
+
+      if (linkedIds.length === 0) {
         return
       }
 
-      try {
-        setIsLoadingSummaryStatus(true)
-        const linkedIds = history.rows.map((call: any) => call.linkedid).filter(Boolean)
-        
-        if (linkedIds.length === 0) {
-          return
-        }
+      const response = await checkSummaryList(linkedIds)
 
-        const response = await checkSummaryList(linkedIds)
-        
-        if (response?.data && Array.isArray(response.data)) {
-          const statusMap: Record<string, any> = {}
-          response.data.forEach((item: any) => {
-            if (item.uniqueid && !item.error) {
-              statusMap[item.uniqueid] = item
-            }
-          })
-          setSummaryStatusMap(statusMap)
-        }
-      } catch (error) {
-        console.error('Error loading summary status:', error)
-      } finally {
-        setIsLoadingSummaryStatus(false)
+      if (response?.data && Array.isArray(response.data)) {
+        const statusMap: Record<string, any> = {}
+        response.data.forEach((item: any) => {
+          if (item.uniqueid && !item.error) {
+            statusMap[item.uniqueid] = item
+          }
+        })
+        setSummaryStatusMap(statusMap)
       }
+    } catch (error) {
+      console.error('Error loading summary status:', error)
+    } finally {
+      setIsLoadingSummaryStatus(false)
     }
+  }, [history?.rows])
 
+  // Load summary status when history is loaded or page changes
+  useEffect(() => {
     if (isHistoryLoaded) {
       loadSummaryStatus()
     }
-  }, [history?.rows, isHistoryLoaded, pageNum])
+  }, [isHistoryLoaded, pageNum, loadSummaryStatus])
+
+  // Reload summary status when phone-island-summary-ready event is received
+  useEventListener('phone-island-summary-ready', (data: { uniqueId?: string }) => {
+    loadSummaryStatus()
+  })
 
   //Calculate the total pages of the history
   useEffect(() => {
@@ -197,7 +203,7 @@ export const Calls: FC<CallsProps> = ({ className }): JSX.Element => {
   function openTranscriptionDrawer(call: any) {
     const linkedId = call.linkedid
     const summaryStatus = summaryStatusMap[linkedId]
-    
+
     dispatch.sideDrawer.update({
       isShown: true,
       contentType: 'callSummary',
@@ -238,6 +244,18 @@ export const Calls: FC<CallsProps> = ({ className }): JSX.Element => {
     }
   }
 
+  const deleteSummaryTranscription = async (linkedId: string) => {
+    if (linkedId !== '') {
+      try {
+        await deleteSummary(linkedId)
+        // reload summary status to update the UI
+        loadSummaryStatus()
+      } catch (err) {
+        console.error('Error deleting summary/transcription:', err)
+      }
+    }
+  }
+
   // Dropdown actions for the recording file
   const getRecordingActions = (callId: string) => (
     <>
@@ -253,6 +271,71 @@ export const Calls: FC<CallsProps> = ({ className }): JSX.Element => {
       </Dropdown.Item>
     </>
   )
+
+  // Combined actions for recording and summary/transcription
+  const getCallActions = (call: any) => {
+    const linkedId = call.linkedid
+    const summaryStatus = summaryStatusMap[linkedId]
+    const hasRecording = call?.recordingfile
+    const hasSummary = summaryStatus?.has_summary
+    const hasTranscription = summaryStatus?.has_transcription
+    const showSummaryActions = summaryStatus?.state === 'done' && (hasSummary || hasTranscription)
+
+    return (
+      <>
+        {/* View/Download actions - in black */}
+        {showSummaryActions && (
+          <Dropdown.Item
+            icon={faArrowUpRightFromSquare}
+            onClick={() => openTranscriptionDrawer(call)}
+          >
+            <span className='text-dropdownText dark:text-dropdownTextDark'>
+              {hasSummary
+                ? t('Common.View summary') || 'View summary'
+                : t('Common.View transcription') || 'View transcription'}
+            </span>
+          </Dropdown.Item>
+        )}
+
+        {hasRecording && (
+          <Dropdown.Item
+            icon={faDownload}
+            onClick={() => downloadRecordingFileAudio(call.uniqueid)}
+          >
+            <span className='text-dropdownText dark:text-dropdownTextDark'>
+              {t('Common.Download')}
+            </span>
+          </Dropdown.Item>
+        )}
+
+        {/* Divider before delete actions */}
+        {(hasRecording || showSummaryActions) && (
+          <div className='border-b border-gray-200 dark:border-gray-700' />
+        )}
+
+        {/* Delete actions - in red */}
+        {hasRecording && (
+          <Dropdown.Item
+            icon={faTrash}
+            isRed
+            onClick={() => deleteRecordingAudioFile(call.uniqueid)}
+          >
+            <span>{t('History.Delete recording')}</span>
+          </Dropdown.Item>
+        )}
+
+        {showSummaryActions && (
+          <Dropdown.Item icon={faTrash} isRed onClick={() => deleteSummaryTranscription(linkedId)}>
+            <span>
+              {hasSummary
+                ? t('History.Delete call summary') || 'Delete call summary'
+                : t('History.Delete call transcription') || 'Delete call transcription'}
+            </span>
+          </Dropdown.Item>
+        )}
+      </>
+    )
+  }
 
   const updateFilterText = (newFilterText: string) => {
     setPageNum(1)
@@ -377,7 +460,7 @@ export const Calls: FC<CallsProps> = ({ className }): JSX.Element => {
       cell: (call: any) => {
         const linkedId = call.linkedid
         const summaryStatus = summaryStatusMap[linkedId]
-        
+
         // If no status data, don't show anything
         if (!summaryStatus) {
           return <div className='flex' />
@@ -404,14 +487,14 @@ export const Calls: FC<CallsProps> = ({ className }): JSX.Element => {
 
         // Show clickable icon if state is 'done' and (has_summary or has_transcription)
         if (state === 'done' && (has_summary || has_transcription)) {
-          const tooltipTitle = has_summary 
+          const tooltipTitle = has_summary
             ? t('Common.Call summary available') || 'Call summary available'
             : t('Common.Call transcription available') || 'Call transcription available'
-          
-          const tooltipLinkText = has_summary 
+
+          const tooltipLinkText = has_summary
             ? t('Common.View summary') || 'View summary'
             : t('Common.View transcription') || 'View transcription'
-          
+
           return (
             <div className='flex justify-center'>
               <div
@@ -420,8 +503,8 @@ export const Calls: FC<CallsProps> = ({ className }): JSX.Element => {
                 onMouseEnter={() => setCurrentHoveredCall(call)}
               >
                 <AiSparkIcon animate={false} />
-                <CustomThemedTooltip 
-                  id={`tooltip-ai-${linkedId}`} 
+                <CustomThemedTooltip
+                  id={`tooltip-ai-${linkedId}`}
                   place='top'
                   clickableText={tooltipLinkText}
                   onClickableClick={() => openTranscriptionDrawer(call)}
@@ -444,6 +527,8 @@ export const Calls: FC<CallsProps> = ({ className }): JSX.Element => {
           call={call}
           playSelectedAudioFile={playSelectedAudioFile}
           getRecordingActions={getRecordingActions}
+          getCallActions={getCallActions}
+          summaryStatus={summaryStatusMap[call.linkedid]}
         />
       ),
       width: '20%',
