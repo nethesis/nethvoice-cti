@@ -383,6 +383,7 @@ export const buildOperators = (operatorsStore: any) => {
     }
   }
   store.dispatch.operators.setOperators(operators)
+  store.dispatch.operators.setErrorMessage('')
   store.dispatch.operators.setOperatorsLoaded(true)
   store.dispatch.operators.setLoading(false)
 }

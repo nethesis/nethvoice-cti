@@ -1299,7 +1299,7 @@ export const Layout: FC<LayoutProps> = ({ children }) => {
         setJSONItem('phone-island-theme-selected', { themeSelected: 'dark' })
       }
     }
-  // eslint-disable-next-line react-hooks/exhaustive-deps
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [theme])
 
   const closePhoneIslandCall = () => {
@@ -1309,13 +1309,28 @@ export const Layout: FC<LayoutProps> = ({ children }) => {
   useHotkeys('ctrl+alt+c', () => closePhoneIslandCall(), [])
 
   const [summaryUniqueId, setSummaryUniqueId] = useState<string | null>(null)
+  const [isPageFocused, setIsPageFocused] = useState(true)
+
+  // Track if page has focus
+  useEffect(() => {
+    const handleFocus = () => setIsPageFocused(true)
+    const handleBlur = () => setIsPageFocused(false)
+
+    window.addEventListener('focus', handleFocus)
+    window.addEventListener('blur', handleBlur)
+
+    return () => {
+      window.removeEventListener('focus', handleFocus)
+      window.removeEventListener('blur', handleBlur)
+    }
+  }, [])
 
   useEventListener('phone-island-summary-call-checked', (data: { uniqueId?: string }) => {
     if (!data?.uniqueId) {
       console.warn('[Summary Check] No uniqueId provided')
       return
     }
-    
+
     setSummaryUniqueId(data.uniqueId)
 
     openToast(
@@ -1350,6 +1365,56 @@ export const Layout: FC<LayoutProps> = ({ children }) => {
     if (!data?.uniqueId) {
       console.warn('[Summary Notified] No uniqueId provided')
       return
+    }
+
+    // Browser notification only if page doesn't have focus
+    if (!isPageFocused && 'Notification' in window) {
+      if (Notification.permission === 'granted') {
+        const notification = new Notification(
+          t('Common.Call summary ready') || 'Call summary ready',
+          {
+            body:
+              t('Common.The summary is ready for review and editing') ||
+              'The summary is ready for review and editing',
+            tag: `summary-${data.uniqueId}`,
+          },
+        )
+
+        notification.onclick = () => {
+          dispatch.sideDrawer.update({
+            isShown: true,
+            contentType: 'callSummary',
+            config: { uniqueid: data?.uniqueId, isSummary: true },
+          })
+          router.push('/history')
+          notification.close()
+        }
+      } else if (Notification.permission !== 'denied') {
+        // Request permission if not yet denied
+        Notification.requestPermission().then((permission) => {
+          if (permission === 'granted') {
+            const notification = new Notification(
+              t('Common.Call summary ready') || 'Call summary ready',
+              {
+                body:
+                  t('Common.The summary is ready for review and editing') ||
+                  'The summary is ready for review and editing',
+                tag: `summary-${data.uniqueId}`,
+              },
+            )
+
+            notification.onclick = () => {
+              dispatch.sideDrawer.update({
+                isShown: true,
+                contentType: 'callSummary',
+                config: { uniqueid: data?.uniqueId, isSummary: true },
+              })
+              router.push('/history')
+              notification.close()
+            }
+          }
+        })
+      }
     }
 
     openToast(

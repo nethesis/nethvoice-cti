@@ -41,6 +41,7 @@ import { CallRecording } from './CallRecording'
 import { Pagination } from '../../common/Pagination'
 import { Table } from '../../common/Table'
 import { checkSummaryList, deleteSummary } from '../../../services/user'
+import { faAiSpark } from '@nethesis/nethesis-solid-svg-icons'
 
 export interface CallsProps extends ComponentProps<'div'> {}
 
@@ -285,10 +286,7 @@ export const Calls: FC<CallsProps> = ({ className }): JSX.Element => {
       <>
         {/* View/Download actions - in black */}
         {showSummaryActions && (
-          <Dropdown.Item
-            icon={faArrowUpRightFromSquare}
-            onClick={() => openTranscriptionDrawer(call)}
-          >
+          <Dropdown.Item icon={faAiSpark as any} onClick={() => openTranscriptionDrawer(call)}>
             <span className='text-dropdownText dark:text-dropdownTextDark'>
               {hasSummary
                 ? t('Common.View summary') || 'View summary'
