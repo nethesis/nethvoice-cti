@@ -1202,17 +1202,6 @@ export const Layout: FC<LayoutProps> = ({ children }) => {
 
   const defaultToastTimeoutMs = 3000
 
-  useEffect(() => {
-    if (toast?.isShown) {
-      const toastTimeoutMs = toast?.timeout ?? defaultToastTimeoutMs
-      //  Timeout for toast
-      setTimeout(() => {
-        closeToast()
-      }, toastTimeoutMs)
-    }
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [toast])
-
   //Avoid to see customer card if customer list is empty and preferences is not setted to never show
   const [customerCardsList, setCustomerCardsList]: any = useState({})
   const [isCustomerCardsListLoaded, setIsCustomerCardsListLoaded] = useState(false)
@@ -1319,18 +1308,75 @@ export const Layout: FC<LayoutProps> = ({ children }) => {
   // global keyborad shortcut
   useHotkeys('ctrl+alt+c', () => closePhoneIslandCall(), [])
 
-  useEventListener('phone-island-summary-call-checked', () => {
+  const [summaryUniqueId, setSummaryUniqueId] = useState<string | null>(null)
+
+  useEventListener('phone-island-summary-call-checked', (data: { uniqueId?: string }) => {
+    if (!data?.uniqueId) {
+      console.warn('[Summary Check] No uniqueId provided')
+      return
+    }
+    
+    setSummaryUniqueId(data.uniqueId)
+
     openToast(
       'success',
       <>
-        {t('Common.The transcription will be available in your history shortly') ||
-          'The transcription will be available in your history shortly'}
-        <br className='mb-2' />
-        <Button variant='primary' onClick={() => router.push('/history')} className='mt-2'>
-          {t('Common.Go to history') || 'Go to history'}
-        </Button>
+        {t('Common.You can get notified when the summary is ready') ||
+          'You can get notified when the summary is ready'}
+        <div className='mt-3 flex gap-2'>
+          <Button
+            variant='primary'
+            onClick={() => {
+              if (data.uniqueId) {
+                eventDispatch('phone-island-call-summary-notify', { uniqueId: data.uniqueId })
+              }
+              closeToast()
+            }}
+            className='flex-1'
+          >
+            {t('Common.Notify me') || 'Notify me'}
+          </Button>
+          <Button variant='ghost' onClick={() => closeToast()} className='flex-1'>
+            {t('Common.Dismiss') || 'Dismiss'}
+          </Button>
+        </div>
       </>,
-      t('Common.Call transcription in progress') || 'Call transcription in progress',
+      t('Common.Call summary is being generated') || 'Call summary is being generated',
+      3000,
+    )
+  })
+
+  useEventListener('phone-island-summary-call-notified', (data: { uniqueId?: string }) => {
+    if (!data?.uniqueId) {
+      console.warn('[Summary Notified] No uniqueId provided')
+      return
+    }
+
+    openToast(
+      'success',
+      <>
+        {t('Common.The summary is ready for review and editing') ||
+          'The summary is ready for review and editing'}
+        <div className='mt-3'>
+          <Button
+            variant='primary'
+            onClick={() => {
+              dispatch.sideDrawer.update({
+                isShown: true,
+                contentType: 'callSummary',
+                config: { uniqueid: data?.uniqueId },
+              })
+              router.push('/history')
+              closeToast()
+            }}
+            className='w-full'
+          >
+            {t('Common.View summary') || 'View summary'}
+          </Button>
+        </div>
+      </>,
+      t('Common.Call summary ready') || 'Call summary ready',
+      10000,
     )
   })
 
@@ -1394,6 +1440,7 @@ export const Layout: FC<LayoutProps> = ({ children }) => {
                     onClose={() => closeToast()}
                     show={toast?.isShown}
                     timeout={(toast?.timeout ?? defaultToastTimeoutMs) / 1000}
+                    pauseTimerOnHover={true}
                   >
                     {toast?.message}
                   </Toast>

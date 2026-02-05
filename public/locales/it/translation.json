@@ -75,7 +75,14 @@
     "The transcription will be available in your history shortly": "La trascrizione sarà disponibile nel tuo storico tra qualche momento",
     "Call transcription available": "Trascrizione chiamata disponibile",
     "View call transcription": "Visualizza trascrizione chiamata",
-    "Generating call summary": "Generazione riepilogo chiamata"
+    "Generating call summary": "Generazione riepilogo chiamata",
+    "Notify me": "Notificami",
+    "Dismiss": "Scarta",
+    "Call summary is being generated": "Riepilogo della chiamata in corso di generazione",
+    "You can get notified when the summary is ready": "Puoi ricevere una notifica quando il riepilogo è pronto",
+    "Call summary ready": "Riepilogo chiamata pronto",
+    "The summary is ready for review and editing": "Il riepilogo è pronto per la revisione e la modifica",
+    "View summary": "Visualizza riepilogo"
   },
   "Login": {
     "User": "Utente",
