@@ -39,6 +39,7 @@ import { CallDuration } from './CallDuration'
 import { CallRecording } from './CallRecording'
 import { Pagination } from '../../common/Pagination'
 import { Table } from '../../common/Table'
+import { checkSummaryList } from '../../../services/user'
 
 export interface CallsProps extends ComponentProps<'div'> {}
 
@@ -66,6 +67,8 @@ export const Calls: FC<CallsProps> = ({ className }): JSX.Element => {
   const [hasTranscription, setHasTranscription] = useState(true)
   const [isGenerating, setIsGenerating] = useState(false)
   const [currentHoveredCall, setCurrentHoveredCall] = useState<any>(null)
+  const [summaryStatusMap, setSummaryStatusMap] = useState<Record<string, any>>({})
+  const [isLoadingSummaryStatus, setIsLoadingSummaryStatus] = useState(false)
 
   const apiVoiceEnpoint = getApiVoiceEndpoint()
   const apiScheme = getApiScheme()
@@ -140,6 +143,44 @@ export const Calls: FC<CallsProps> = ({ className }): JSX.Element => {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [callType, username, dateBegin, dateEnd, filterText, pageNum, sortBy, callDirection])
 
+  // Load summary status for current page calls
+  useEffect(() => {
+    async function loadSummaryStatus() {
+      if (!history?.rows || history.rows.length === 0) {
+        return
+      }
+
+      try {
+        setIsLoadingSummaryStatus(true)
+        const linkedIds = history.rows.map((call: any) => call.linkedid).filter(Boolean)
+        
+        if (linkedIds.length === 0) {
+          return
+        }
+
+        const response = await checkSummaryList(linkedIds)
+        
+        if (response?.data && Array.isArray(response.data)) {
+          const statusMap: Record<string, any> = {}
+          response.data.forEach((item: any) => {
+            if (item.uniqueid && !item.error) {
+              statusMap[item.uniqueid] = item
+            }
+          })
+          setSummaryStatusMap(statusMap)
+        }
+      } catch (error) {
+        console.error('Error loading summary status:', error)
+      } finally {
+        setIsLoadingSummaryStatus(false)
+      }
+    }
+
+    if (isHistoryLoaded) {
+      loadSummaryStatus()
+    }
+  }, [history?.rows, isHistoryLoaded, pageNum])
+
   //Calculate the total pages of the history
   useEffect(() => {
     if (history?.count) {
@@ -154,10 +195,16 @@ export const Calls: FC<CallsProps> = ({ className }): JSX.Element => {
   }
 
   function openTranscriptionDrawer(call: any) {
+    const linkedId = call.linkedid
+    const summaryStatus = summaryStatusMap[linkedId]
+    
     dispatch.sideDrawer.update({
       isShown: true,
       contentType: 'callSummary',
-      config: call,
+      config: {
+        uniqueid: linkedId,
+        isSummary: summaryStatus?.has_summary || false,
+      },
     })
   }
 
@@ -327,24 +374,66 @@ export const Calls: FC<CallsProps> = ({ className }): JSX.Element => {
     },
     {
       header: '',
-      cell: (call: any) =>
-        hasTranscription ? (
-          <div className='flex justify-center'>
-            <div
-              data-tooltip-id='ai-transcription-tooltip'
-              data-tooltip-content={
-                isGenerating
-                  ? t('Common.Generating call summary')
-                  : t('Common.Call transcription available')
-              }
-              onMouseEnter={() => setCurrentHoveredCall(call)}
-            >
-              <AiSparkIcon animate={isGenerating} />
+      cell: (call: any) => {
+        const linkedId = call.linkedid
+        const summaryStatus = summaryStatusMap[linkedId]
+        
+        // If no status data, don't show anything
+        if (!summaryStatus) {
+          return <div className='flex' />
+        }
+
+        const { state, has_summary, has_transcription } = summaryStatus
+
+        // Show animated icon if state is 'summarizing' or 'progress'
+        if (state === 'summarizing' || state === 'progress') {
+          return (
+            <div className='flex justify-center'>
+              <div
+                className='h-8 w-8 flex items-center justify-center'
+                data-tooltip-id={`tooltip-ai-generating-${linkedId}`}
+                data-tooltip-content={t('Common.Call summary is being generated') || ''}
+                onMouseEnter={() => setCurrentHoveredCall(call)}
+              >
+                <AiSparkIcon animate={true} />
+                <CustomThemedTooltip id={`tooltip-ai-generating-${linkedId}`} place='top' />
+              </div>
             </div>
-          </div>
-        ) : (
-          <div className='flex' />
-        ),
+          )
+        }
+
+        // Show clickable icon if state is 'done' and (has_summary or has_transcription)
+        if (state === 'done' && (has_summary || has_transcription)) {
+          const tooltipTitle = has_summary 
+            ? t('Common.Call summary available') || 'Call summary available'
+            : t('Common.Call transcription available') || 'Call transcription available'
+          
+          const tooltipLinkText = has_summary 
+            ? t('Common.View summary') || 'View summary'
+            : t('Common.View transcription') || 'View transcription'
+          
+          return (
+            <div className='flex justify-center'>
+              <div
+                data-tooltip-id={`tooltip-ai-${linkedId}`}
+                data-tooltip-content={tooltipTitle}
+                onMouseEnter={() => setCurrentHoveredCall(call)}
+              >
+                <AiSparkIcon animate={false} />
+                <CustomThemedTooltip 
+                  id={`tooltip-ai-${linkedId}`} 
+                  place='top'
+                  clickableText={tooltipLinkText}
+                  onClickableClick={() => openTranscriptionDrawer(call)}
+                />
+              </div>
+            </div>
+          )
+        }
+
+        // State is 'failed' or other states - don't show anything
+        return <div className='flex' />
+      },
       width: '5%',
       className: 'px-6 py-3.5 text-center w-0',
     },
