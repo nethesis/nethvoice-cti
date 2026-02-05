@@ -21,7 +21,6 @@ import { Filter } from './Filter'
 import { useSelector, useDispatch } from 'react-redux'
 import { RootState, Dispatch } from '../../../store'
 import { Tooltip } from 'react-tooltip'
-import { faAiSpark } from '@nethesis/nethesis-solid-svg-icons'
 import { CustomThemedTooltip } from '../../common/CustomThemedTooltip'
 import { AiSparkIcon } from '../../common/AiSparkIcon'
 import {

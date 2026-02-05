@@ -1,4 +1,4 @@
-import React, { FC, ComponentProps } from 'react'
+import React, { FC, ComponentProps, useRef, useEffect, useState } from 'react'
 import { useTheme } from '../../theme/Context'
 import { Transition } from '@headlessui/react'
 import classNames from 'classnames'
@@ -20,6 +20,8 @@ export interface ToastProps extends ComponentProps<'div'> {
   onClose: () => void
   show: boolean
   timeout: number
+  pauseTimerOnHover?: boolean
+  onTimerEnd?: () => void
 }
 
 export const Toast: FC<ToastProps> = ({
@@ -30,9 +32,54 @@ export const Toast: FC<ToastProps> = ({
   onClose,
   show,
   timeout,
+  pauseTimerOnHover = false,
+  onTimerEnd,
 }): JSX.Element => {
   const { toast: theme } = useTheme().theme
   const isTextOnly = typeof children === 'string' || typeof children === 'number'
+  const [isHovered, setIsHovered] = useState(false)
+  const timeoutRef = useRef<NodeJS.Timeout | null>(null)
+  const [remainingTime, setRemainingTime] = useState(timeout * 1000)
+
+  useEffect(() => {
+    if (!show) return
+
+    const handleTimeout = () => {
+      onTimerEnd?.()
+      onClose()
+    }
+
+    if (pauseTimerOnHover && isHovered) {
+      // Pause timer when hovering
+      if (timeoutRef.current) {
+        clearTimeout(timeoutRef.current)
+      }
+    } else {
+      // Resume timer
+      if (timeoutRef.current) {
+        clearTimeout(timeoutRef.current)
+      }
+      timeoutRef.current = setTimeout(handleTimeout, remainingTime)
+    }
+
+    return () => {
+      if (timeoutRef.current) {
+        clearTimeout(timeoutRef.current)
+      }
+    }
+  }, [show, isHovered, pauseTimerOnHover, remainingTime, onClose, onTimerEnd])
+
+  const handleMouseEnter = () => {
+    if (pauseTimerOnHover) {
+      setIsHovered(true)
+    }
+  }
+
+  const handleMouseLeave = () => {
+    if (pauseTimerOnHover) {
+      setIsHovered(false)
+    }
+  }
 
   let checkIcon =
     type === 'info' ? (
@@ -92,6 +139,8 @@ export const Toast: FC<ToastProps> = ({
           type ? theme?.type[type] : theme.type.success,
           className,
         )}
+        onMouseEnter={handleMouseEnter}
+        onMouseLeave={handleMouseLeave}
       >
         <div>{checkIcon}</div>
         <div className='ml-6 mr-12 flex-1 pt-0.5'>

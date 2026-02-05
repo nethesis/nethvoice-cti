@@ -89,7 +89,7 @@ export const CallSummaryDrawerContent = forwardRef<
             {t('Summary.Summary')}
             <FontAwesomeIcon
               icon={faCircleInfo}
-              className='h-5 w-5 text-blue-700 dark:text-blue-200 cursor-auto'
+              className='h-4 w-4 text-iconInfo dark:text-iconInfoDark cursor-auto'
               aria-hidden='true'
               data-tooltip-id='tooltip-summary-info'
               data-tooltip-content={t('Summary.Summary tooltip') || ''}
