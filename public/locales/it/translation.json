@@ -1080,7 +1080,8 @@
     "Contact your administrator to configure video sources": "Contatta l'amministratore per configurare le sorgenti video"
   },
   "Summary": {
-    "Review call summary": "Rivedi il riepilogo della chiamata",
+    "Call transcription": "Trascrizione chiamata",
+    "Call summary": "Riepilogo chiamata",
     "Summary": "Riepilogo",
     "Summary tooltip": "Questo riepilogo è stato generato da AI e può essere modificato.",
     "View full transcription": "Visualizza la trascrizione completa",

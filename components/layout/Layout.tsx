@@ -1346,7 +1346,7 @@ export const Layout: FC<LayoutProps> = ({ children }) => {
     )
   })
 
-  useEventListener('phone-island-summary-call-notified', (data: { uniqueId?: string }) => {
+  useEventListener('phone-island-summary-ready', (data: { uniqueId?: string }) => {
     if (!data?.uniqueId) {
       console.warn('[Summary Notified] No uniqueId provided')
       return
@@ -1364,7 +1364,7 @@ export const Layout: FC<LayoutProps> = ({ children }) => {
               dispatch.sideDrawer.update({
                 isShown: true,
                 contentType: 'callSummary',
-                config: { uniqueid: data?.uniqueId },
+                config: { uniqueid: data?.uniqueId, isSummary: true },
               })
               router.push('/history')
               closeToast()
