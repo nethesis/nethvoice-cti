@@ -87,3 +87,13 @@ export const getSummaryCall = async (uniqueId: string) => {
     throw error
   }
 }
+
+export const checkSummaryList = async (uniqueids: string[]) => {
+  try {
+    const res = await axios.post(`/summary/check/list`, { uniqueids })
+    return res.data
+  } catch (error: any) {
+    console.error('Error checking summary list:', error)
+    throw error
+  }
+}
