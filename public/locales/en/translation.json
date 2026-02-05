@@ -233,7 +233,10 @@
     "No voicemails match your search criteria": "No voicemails match your search criteria",
     "Voicemail filters": "Voicemail filters",
     "No voicemails": "No voicemails",
-    "There are no voicemails in your history": "There are no voicemails in your history"
+    "There are no voicemails in your history": "There are no voicemails in your history",
+    "Delete recording": "Delete recording",
+    "Delete call summary": "Delete call summary",
+    "Delete call transcription": "Delete call transcription"
   },
   "Operators": {
     "Operators": "Operators",
@@ -1072,7 +1075,9 @@
   "Call": {
     "In progress...": "In progress...",
     "Outgoing call": "Outgoing call",
-    "Incoming call": "Incoming call"
+    "Incoming call": "Incoming call",
+    "Delete call summary": "Delete call summary",
+    "Delete call transcription": "Delete call transcription"
   },
   "Transfer": {
     "No users found": "No users found"
