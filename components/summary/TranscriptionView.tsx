@@ -91,7 +91,7 @@ export const TranscriptionView: FC<TranscriptionViewProps> = ({ uniqueid }) => {
               className='max-w-lg'
               value={transcription}
               onChange={(e) => setTranscription(e.target.value)}
-              rows={11}
+              rows={8}
               readOnly
             />
           )}

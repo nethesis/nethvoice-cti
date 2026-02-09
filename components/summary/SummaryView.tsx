@@ -175,7 +175,7 @@ export const SummaryView: FC<SummaryViewProps> = ({ uniqueid }) => {
               className='max-w-lg'
               value={summary}
               onChange={(e) => setSummary(e.target.value)}
-              rows={11}
+              rows={8}
             />
           )}
 
@@ -204,7 +204,7 @@ export const SummaryView: FC<SummaryViewProps> = ({ uniqueid }) => {
                   className='max-w-lg'
                   value={transcription}
                   onChange={(e) => setTranscription(e.target.value)}
-                  rows={11}
+                  rows={8}
                   readOnly
                 />
               )}
