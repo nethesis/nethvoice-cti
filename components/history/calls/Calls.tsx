@@ -29,7 +29,6 @@ import {
   getApiScheme,
   getApiEndpoint,
   playFileAudio,
-  isOpenAiKeyPresent,
 } from '../../../lib/utils'
 import { debounce } from 'lodash'
 import { formatDateLoc } from '../../../lib/dateTime'
@@ -73,7 +72,6 @@ export const Calls: FC<CallsProps> = ({ className }): JSX.Element => {
   const apiVoiceEnpoint = getApiVoiceEndpoint()
   const apiScheme = getApiScheme()
   const apiEndpoint = getApiEndpoint()
-  const isSummaryEnabled = isOpenAiKeyPresent()
 
   //report page link
   const pbxReportUrl = apiScheme + apiVoiceEnpoint + '/pbx-report/'
@@ -145,16 +143,13 @@ export const Calls: FC<CallsProps> = ({ className }): JSX.Element => {
 
   // Function to load summary status for current page calls
   const loadSummaryStatus = useCallback(async () => {
-    if (!isSummaryEnabled) {
-      return
-    }
-    if (!history?.rows || history.rows.length === 0) {
+    if (!history?.rows || history?.rows?.length === 0) {
       return
     }
 
     try {
       setIsLoadingSummaryStatus(true)
-      const linkedIds = history.rows.map((call: any) => call.linkedid).filter(Boolean)
+      const linkedIds = history.rows.map((call: any) => call?.linkedid).filter(Boolean)
 
       if (linkedIds.length === 0) {
         return
@@ -162,11 +157,11 @@ export const Calls: FC<CallsProps> = ({ className }): JSX.Element => {
 
       const response = await checkSummaryList(linkedIds)
 
-      if (response?.data && Array.isArray(response.data)) {
+      if (response?.data && Array.isArray(response?.data)) {
         const statusMap: Record<string, any> = {}
         response.data.forEach((item: any) => {
-          if (item.uniqueid && !item.error) {
-            statusMap[item.uniqueid] = item
+          if (item?.uniqueid && !item?.error) {
+            statusMap[item?.uniqueid] = item
           }
         })
         setSummaryStatusMap(statusMap)
@@ -176,20 +171,17 @@ export const Calls: FC<CallsProps> = ({ className }): JSX.Element => {
     } finally {
       setIsLoadingSummaryStatus(false)
     }
-  }, [history?.rows, isSummaryEnabled])
+  }, [history?.rows])
 
   // Load summary status when history is loaded or page changes
   useEffect(() => {
-    if (isHistoryLoaded && isSummaryEnabled) {
+    if (isHistoryLoaded) {
       loadSummaryStatus()
     }
-  }, [isHistoryLoaded, pageNum, loadSummaryStatus, isSummaryEnabled])
+  }, [isHistoryLoaded, pageNum, loadSummaryStatus])
 
   // Reload summary status when phone-island-summary-ready event is received
   useEventListener('phone-island-summary-ready', (data: { uniqueId?: string }) => {
-    if (!isSummaryEnabled) {
-      return
-    }
     loadSummaryStatus()
   })
 
@@ -218,7 +210,7 @@ export const Calls: FC<CallsProps> = ({ className }): JSX.Element => {
   //Calculate the total pages of the history
   useEffect(() => {
     if (history?.count) {
-      setTotalPages(Math.ceil(history.count / PAGE_SIZE))
+      setTotalPages(Math?.ceil(history?.count / PAGE_SIZE))
     }
   }, [history?.count])
 
@@ -229,9 +221,6 @@ export const Calls: FC<CallsProps> = ({ className }): JSX.Element => {
   }
 
   function openTranscriptionDrawer(call: any) {
-    if (!isSummaryEnabled) {
-      return
-    }
     const linkedId = call.linkedid
     const summaryStatus = summaryStatusMap[linkedId]
 
@@ -290,7 +279,7 @@ export const Calls: FC<CallsProps> = ({ className }): JSX.Element => {
   // Dropdown actions for the recording file
   const getRecordingActions = (callId: string) => (
     <>
-      <div className='border-b border-gray-200 dark:border-gray-700'>
+      <div className='border-b border-divider dark:border-dividerDark'>
         <Dropdown.Item icon={faDownload} onClick={() => downloadRecordingFileAudio(callId)}>
           <span className='text-dropdownText dark:text-dropdownTextDark'>
             {t('Common.Download')}
@@ -305,13 +294,12 @@ export const Calls: FC<CallsProps> = ({ className }): JSX.Element => {
 
   // Combined actions for recording and summary/transcription
   const getCallActions = (call: any) => {
-    const linkedId = call.linkedid
-    const summaryStatus = summaryStatusMap[linkedId]
+    const linkedId = call?.linkedid
+    const summaryStatus = summaryStatusMap?.[linkedId]
     const hasRecording = call?.recordingfile
     const hasSummary = summaryStatus?.has_summary
     const hasTranscription = summaryStatus?.has_transcription
-    const showSummaryActions =
-      isSummaryEnabled && summaryStatus?.state === 'done' && (hasSummary || hasTranscription)
+    const showSummaryActions = summaryStatus?.state === 'done' && (hasSummary || hasTranscription)
 
     return (
       <>
@@ -329,7 +317,7 @@ export const Calls: FC<CallsProps> = ({ className }): JSX.Element => {
         {hasRecording && (
           <Dropdown.Item
             icon={faDownload}
-            onClick={() => downloadRecordingFileAudio(call.uniqueid)}
+            onClick={() => downloadRecordingFileAudio(call?.uniqueid)}
           >
             <span className='text-dropdownText dark:text-dropdownTextDark'>
               {t('Common.Download')}
@@ -339,7 +327,7 @@ export const Calls: FC<CallsProps> = ({ className }): JSX.Element => {
 
         {/* Divider before delete actions */}
         {(hasRecording || showSummaryActions) && (
-          <div className='border-b border-gray-200 dark:border-gray-700' />
+          <div className='border-b border-divider dark:border-dividerDark' />
         )}
 
         {/* Delete actions - in red */}
@@ -421,7 +409,7 @@ export const Calls: FC<CallsProps> = ({ className }): JSX.Element => {
     const audioTestCode = feature_codes?.audio_test || '*41'
 
     return history.rows.filter((call: any) => {
-      const numberToCheck = call.direction === 'in' ? call.src : call.dst
+      const numberToCheck = call?.direction === 'in' ? call?.src : call?.dst
       return !numberToCheck?.includes(audioTestCode)
     })
   }, [history?.rows, feature_codes?.audio_test])
@@ -476,7 +464,7 @@ export const Calls: FC<CallsProps> = ({ className }): JSX.Element => {
     },
     {
       header: t('History.Duration'),
-      cell: (call: any) => <CallDuration duration={call.duration} />,
+      cell: (call: any) => <CallDuration duration={call?.duration} />,
       width: '15%',
     },
     {
@@ -487,11 +475,8 @@ export const Calls: FC<CallsProps> = ({ className }): JSX.Element => {
     {
       header: '',
       cell: (call: any) => {
-        if (!isSummaryEnabled) {
-          return <div className='flex' />
-        }
-        const linkedId = call.linkedid
-        const summaryStatus = summaryStatusMap[linkedId]
+        const linkedId = call?.linkedid
+        const summaryStatus = summaryStatusMap?.[linkedId]
 
         // If no status data, don't show anything
         if (!summaryStatus) {
@@ -560,7 +545,7 @@ export const Calls: FC<CallsProps> = ({ className }): JSX.Element => {
           playSelectedAudioFile={playSelectedAudioFile}
           getRecordingActions={getRecordingActions}
           getCallActions={getCallActions}
-          summaryStatus={summaryStatusMap[call.linkedid]}
+          summaryStatus={summaryStatusMap?.[call?.linkedid]}
         />
       ),
       width: '20%',
@@ -570,7 +555,7 @@ export const Calls: FC<CallsProps> = ({ className }): JSX.Element => {
 
   // Generate a unique key for each call with more stability
   const generateUniqueKey = (call: any, index: number) => {
-    return `call-${call.uniqueid}-${call.time}-${index}`
+    return `call-${call?.uniqueid}-${call?.time}-${index}`
   }
 
   return (

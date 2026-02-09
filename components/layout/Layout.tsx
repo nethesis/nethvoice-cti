@@ -16,6 +16,7 @@ import {
   closeToast,
   customScrollbarClass,
   openToast,
+  isOpenAiKeyPresent,
 } from '../../lib/utils'
 import { store } from '../../store'
 import {
@@ -39,7 +40,7 @@ import { Portal } from '@headlessui/react'
 import { ParkCards } from '../parks/parkCards'
 import { motion, useAnimation } from 'framer-motion'
 import { pauseQueue, unpauseQueue } from '../../lib/queuesLib'
-import { Button, Modal, InlineNotification, Badge, TextInput } from '../common'
+import { Button } from '../common'
 
 interface LayoutProps {
   children: ReactNode
@@ -85,6 +86,7 @@ export const Layout: FC<LayoutProps> = ({ children }) => {
   const { operators } = useSelector((state: RootState) => state.operators)
   const { profile } = useSelector((state: RootState) => state.user)
   const { avoidClose } = useSelector((state: RootState) => state.sideDrawer)
+  const isSummaryEnabled = isOpenAiKeyPresent()
 
   const productName = getProductName()
   // Get current page name, clean the path from / and capitalize page name
@@ -1326,8 +1328,7 @@ export const Layout: FC<LayoutProps> = ({ children }) => {
   }, [])
 
   useEventListener('phone-island-summary-call-checked', (data: { uniqueId?: string }) => {
-    if (!data?.uniqueId) {
-      console.warn('[Summary Check] No uniqueId provided')
+    if (!data?.uniqueId || isSummaryEnabled) {
       return
     }
 
