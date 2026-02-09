@@ -29,6 +29,7 @@ import {
   getApiScheme,
   getApiEndpoint,
   playFileAudio,
+  isOpenAiKeyPresent,
 } from '../../../lib/utils'
 import { debounce } from 'lodash'
 import { formatDateLoc } from '../../../lib/dateTime'
@@ -72,6 +73,7 @@ export const Calls: FC<CallsProps> = ({ className }): JSX.Element => {
   const apiVoiceEnpoint = getApiVoiceEndpoint()
   const apiScheme = getApiScheme()
   const apiEndpoint = getApiEndpoint()
+  const isSummaryEnabled = isOpenAiKeyPresent()
 
   //report page link
   const pbxReportUrl = apiScheme + apiVoiceEnpoint + '/pbx-report/'
@@ -143,6 +145,9 @@ export const Calls: FC<CallsProps> = ({ className }): JSX.Element => {
 
   // Function to load summary status for current page calls
   const loadSummaryStatus = useCallback(async () => {
+    if (!isSummaryEnabled) {
+      return
+    }
     if (!history?.rows || history.rows.length === 0) {
       return
     }
@@ -171,17 +176,20 @@ export const Calls: FC<CallsProps> = ({ className }): JSX.Element => {
     } finally {
       setIsLoadingSummaryStatus(false)
     }
-  }, [history?.rows])
+  }, [history?.rows, isSummaryEnabled])
 
   // Load summary status when history is loaded or page changes
   useEffect(() => {
-    if (isHistoryLoaded) {
+    if (isHistoryLoaded && isSummaryEnabled) {
       loadSummaryStatus()
     }
-  }, [isHistoryLoaded, pageNum, loadSummaryStatus])
+  }, [isHistoryLoaded, pageNum, loadSummaryStatus, isSummaryEnabled])
 
   // Reload summary status when phone-island-summary-ready event is received
   useEventListener('phone-island-summary-ready', (data: { uniqueId?: string }) => {
+    if (!isSummaryEnabled) {
+      return
+    }
     loadSummaryStatus()
   })
 
@@ -221,6 +229,9 @@ export const Calls: FC<CallsProps> = ({ className }): JSX.Element => {
   }
 
   function openTranscriptionDrawer(call: any) {
+    if (!isSummaryEnabled) {
+      return
+    }
     const linkedId = call.linkedid
     const summaryStatus = summaryStatusMap[linkedId]
 
@@ -299,7 +310,8 @@ export const Calls: FC<CallsProps> = ({ className }): JSX.Element => {
     const hasRecording = call?.recordingfile
     const hasSummary = summaryStatus?.has_summary
     const hasTranscription = summaryStatus?.has_transcription
-    const showSummaryActions = summaryStatus?.state === 'done' && (hasSummary || hasTranscription)
+    const showSummaryActions =
+      isSummaryEnabled && summaryStatus?.state === 'done' && (hasSummary || hasTranscription)
 
     return (
       <>
@@ -475,6 +487,9 @@ export const Calls: FC<CallsProps> = ({ className }): JSX.Element => {
     {
       header: '',
       cell: (call: any) => {
+        if (!isSummaryEnabled) {
+          return <div className='flex' />
+        }
         const linkedId = call.linkedid
         const summaryStatus = summaryStatusMap[linkedId]
 
