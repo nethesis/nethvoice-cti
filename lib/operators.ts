@@ -496,7 +496,7 @@ export function getUserGroups(
   // the groups the user has access to:
   const allowedGroups = Object.keys(allGroups).filter((group) => {
     // using different formats, e.g. group = 'Test group', allowedGroupId: 'grp_testgroup'
-    const groupId = 'grp_' + group.replaceAll(' ', '').toLowerCase()
+    const groupId = 'grp_' + group.replace(/[^a-z0-9]/gi, '').toLowerCase()
     return allowedGroupsIds.includes(groupId)
   })
 
