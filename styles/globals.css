@@ -362,6 +362,10 @@
   /* Favorite star */
   --color-favorite-star: #4338CA;
   --color-favorite-star-dark: #6366F1;
+
+  /* divider color */
+  --color-divider: #E5E7EB;
+  --color-divider-dark: #374151;
 }
 
 @media (prefers-color-scheme: dark) {
