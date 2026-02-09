@@ -65,9 +65,6 @@ export const Calls: FC<CallsProps> = ({ className }): JSX.Element => {
   const [dateBegin, setDateBegin]: any = useState('')
   const [callDirection, setCallDirection]: any = useState('all')
   const [totalPages, setTotalPages] = useState(0)
-  // TODO: Replace with real transcription data
-  const [hasTranscription, setHasTranscription] = useState(true)
-  const [isGenerating, setIsGenerating] = useState(false)
   const [currentHoveredCall, setCurrentHoveredCall] = useState<any>(null)
   const [summaryStatusMap, setSummaryStatusMap] = useState<Record<string, any>>({})
   const [isLoadingSummaryStatus, setIsLoadingSummaryStatus] = useState(false)
@@ -187,6 +184,28 @@ export const Calls: FC<CallsProps> = ({ className }): JSX.Element => {
   useEventListener('phone-island-summary-ready', (data: { uniqueId?: string }) => {
     loadSummaryStatus()
   })
+
+  // Poll for summary status updates if any call is summarizing/in progress
+  useEffect(() => {
+    // Check if any call has state 'summarizing' or 'progress'
+    const hasCallInProgress = Object.values(summaryStatusMap).some(
+      (status: any) => status?.state === 'summarizing' || status?.state === 'progress',
+    )
+
+    if (!hasCallInProgress) {
+      return
+    }
+
+    // Set up polling interval
+    const pollInterval = setInterval(() => {
+      loadSummaryStatus()
+    }, 10000)
+
+    // Cleanup interval on unmount or when hasCallInProgress changes
+    return () => {
+      clearInterval(pollInterval)
+    }
+  }, [summaryStatusMap, loadSummaryStatus])
 
   //Calculate the total pages of the history
   useEffect(() => {
