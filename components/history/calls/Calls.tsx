@@ -515,9 +515,11 @@ export const Calls: FC<CallsProps> = ({ className }): JSX.Element => {
           return (
             <div className='flex justify-center'>
               <div
+                className='cursor-pointer'
                 data-tooltip-id={`tooltip-ai-${linkedId}`}
                 data-tooltip-content={tooltipTitle}
                 onMouseEnter={() => setCurrentHoveredCall(call)}
+                onClick={() => openTranscriptionDrawer(call)}
               >
                 <AiSparkIcon animate={false} />
                 <CustomThemedTooltip
