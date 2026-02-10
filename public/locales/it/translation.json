@@ -1092,6 +1092,10 @@
     "Summary": "Riepilogo",
     "Summary tooltip": "Questo riepilogo è stato generato dalla AI e può essere modificato.",
     "View full transcription": "Visualizza la trascrizione completa",
-    "Call": "Chiamata"
+    "Call": "Chiamata",
+    "AI content disclaimer": "Questo contenuto è stato generato automaticamente da un'intelligenza artificiale e potrebbe contenere imprecisioni.",
+    "AI content disclaimer title": "Contenuto generato da AI",
+    "Transcription disclaimer": "Questa trascrizione è stata generata automaticamente e potrebbe contenere imprecisioni.",
+    "Transcription disclaimer title": "Trascrizione generata da AI"
   }
 }
