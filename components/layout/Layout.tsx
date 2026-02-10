@@ -1328,18 +1328,18 @@ export const Layout: FC<LayoutProps> = ({ children }) => {
   }, [])
 
   useEventListener('phone-island-summary-call-checked', (data: { uniqueId?: string }) => {
-    if (!data?.uniqueId || isSummaryEnabled) {
+    if (!data?.uniqueId || !isSummaryEnabled) {
       return
     }
 
-    setSummaryUniqueId(data.uniqueId)
+    setSummaryUniqueId(data?.uniqueId)
 
     openToast(
       'success',
       <>
         {t('Common.You can get notified when the summary is ready') ||
           'You can get notified when the summary is ready'}
-        <div className='mt-3 flex gap-2'>
+        <div className='mt-4 flex gap-3'>
           <Button
             variant='primary'
             onClick={() => {
@@ -1423,7 +1423,7 @@ export const Layout: FC<LayoutProps> = ({ children }) => {
       <>
         {t('Common.The summary is ready for review and editing') ||
           'The summary is ready for review and editing'}
-        <div className='mt-3'>
+        <div className='mt-4'>
           <Button
             variant='primary'
             onClick={() => {

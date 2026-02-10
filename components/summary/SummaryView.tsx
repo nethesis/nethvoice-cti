@@ -137,9 +137,9 @@ export const SummaryView: FC<SummaryViewProps> = ({ uniqueid }) => {
           <p className='text-sm text-red-500'>{error}</p>
         </div>
       ) : (
-        <div className='mb-6 flex flex-col'>
+        <div className='flex flex-col'>
           {/* Date */}
-          <label className='text-sm mb-2 font-medium leading-5 text-secondaryNeutral dark:text-secondaryNeutralDark mt-8'>
+          <label className='text-sm mb-2 font-medium leading-5 text-secondaryNeutral dark:text-secondaryNeutralDark mt-4'>
             {t('History.Date')}
           </label>
           {isLoading ? (
@@ -194,13 +194,13 @@ export const SummaryView: FC<SummaryViewProps> = ({ uniqueid }) => {
           {showTranscription && (
             <>
               <label className='text-sm mb-2 font-medium text-gray-700 dark:text-gray-200 mt-8 flex items-center gap-2'>
-                {t('Summary.Call')}
+                {t('Summary.Call transcription')}
               </label>
               {isLoadingTranscription ? (
                 <Skeleton height='120px' className='max-w-lg' />
               ) : (
                 <TextArea
-                  placeholder={t('Summary.Call') || ''}
+                  placeholder={t('Summary.Call transcription') || ''}
                   className='max-w-lg'
                   value={transcription}
                   onChange={(e) => setTranscription(e.target.value)}
