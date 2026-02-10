@@ -80,7 +80,7 @@ export const TranscriptionView: FC<TranscriptionViewProps> = ({ uniqueid }) => {
           )}
 
           {/* Transcription */}
-          <label className='text-sm mb-2 font-medium leading-5 text-secondaryNeutral dark:text-secondaryNeutralDark mt-8'>
+          <label className='text-sm mb-2 font-medium leading-5 text-secondaryNeutral dark:text-secondaryNeutralDark mt-4'>
             {t('Summary.Call transcription')}
           </label>
           {isLoading ? (

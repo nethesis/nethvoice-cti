@@ -90,7 +90,7 @@ export const getSummaryCall = async (uniqueId: string) => {
 
 export const checkSummaryList = async (uniqueids: string[]) => {
   try {
-    const res = await axios.post(`/summary/check/list`, { uniqueids })
+    const res = await axios.post(`/summary/statuses`, { uniqueids })
     return res.data
   } catch (error: any) {
     const status = error?.response?.status
