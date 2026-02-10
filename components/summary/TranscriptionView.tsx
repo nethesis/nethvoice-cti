@@ -2,13 +2,11 @@
 // SPDX-License-Identifier: AGPL-3.0-or-later
 
 import { FC, useState, useCallback, useEffect } from 'react'
-import { TextInput, TextArea, Button } from '../common'
+import { TextArea, Button, Label, InlineNotification } from '../common'
 import { Skeleton } from '../common/Skeleton'
-import { faCalendar } from '@fortawesome/free-solid-svg-icons'
 import { t } from 'i18next'
 import { Divider } from '../common/Divider'
 import { getTranscription } from '../../services/user'
-import { format, parseISO } from 'date-fns'
 import { closeSideDrawer } from '../../lib/utils'
 
 interface TranscriptionViewProps {
@@ -16,7 +14,6 @@ interface TranscriptionViewProps {
 }
 
 export const TranscriptionView: FC<TranscriptionViewProps> = ({ uniqueid }) => {
-  const [date, setDate] = useState('')
   const [transcription, setTranscription] = useState('')
   const [isLoading, setIsLoading] = useState(false)
   const [error, setError] = useState('')
@@ -29,13 +26,6 @@ export const TranscriptionView: FC<TranscriptionViewProps> = ({ uniqueid }) => {
       console.log('Transcription data:', response)
       if (response && response.data) {
         setTranscription(response.data.transcription || '')
-
-        // Get date from response
-        if (response.data.created_at) {
-          const parsedDate = parseISO(response.data.created_at)
-          const formattedDate = format(parsedDate, 'dd MMM yyyy HH:mm')
-          setDate(formattedDate)
-        }
       } else {
         setError('Transcription not found')
       }
@@ -62,27 +52,16 @@ export const TranscriptionView: FC<TranscriptionViewProps> = ({ uniqueid }) => {
         </div>
       ) : (
         <div className='mb-6 flex flex-col'>
-          {/* Date */}
-          <label className='text-sm mb-2 font-medium leading-5 text-secondaryNeutral dark:text-secondaryNeutralDark mt-8'>
-            {t('History.Date')}
-          </label>
-          {isLoading ? (
-            <Skeleton height='40px' className='max-w-lg' />
-          ) : (
-            <TextInput
-              placeholder={t('History.Date') || ''}
-              className='max-w-lg'
-              value={date}
-              onChange={(e) => setDate(e.target.value)}
-              icon={faCalendar}
-              readOnly
-            />
-          )}
-
+          {/* Transcription Disclaimer */}
+          <InlineNotification
+            className='mt-6 border-none'
+            type='info'
+            title={t('Summary.Transcription disclaimer title')}
+          >
+            <p className=''>{t('Summary.Transcription disclaimer')}</p>
+          </InlineNotification>
           {/* Transcription */}
-          <label className='text-sm mb-2 font-medium leading-5 text-secondaryNeutral dark:text-secondaryNeutralDark mt-4'>
-            {t('Summary.Call transcription')}
-          </label>
+          <Label className='mt-8'>{t('Summary.Call transcription')}</Label>
           {isLoading ? (
             <Skeleton height='400px' className='max-w-lg' />
           ) : (

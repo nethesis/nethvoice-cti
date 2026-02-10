@@ -2,17 +2,15 @@
 // SPDX-License-Identifier: AGPL-3.0-or-later
 
 import { FC, useState, useCallback, useEffect } from 'react'
-import { TextInput, TextArea, Button } from '../common'
+import { TextArea, Button, Label, InlineNotification } from '../common'
 import { Skeleton } from '../common/Skeleton'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
-import { faCircleInfo, faAngleDown, faAngleUp, faCalendar } from '@fortawesome/free-solid-svg-icons'
+import { faAngleDown, faAngleUp } from '@fortawesome/free-solid-svg-icons'
 import { t } from 'i18next'
 import { isEmpty } from 'lodash'
 import { Divider } from '../common/Divider'
 import { DrawerFooter } from '../common/DrawerFooter'
-import { CustomThemedTooltip } from '../common/CustomThemedTooltip'
 import { getSummaryCall, getTranscription, updateSummary } from '../../services/user'
-import { format, parseISO } from 'date-fns'
 import { closeSideDrawer } from '../../lib/utils'
 
 interface SummaryViewProps {
@@ -20,7 +18,6 @@ interface SummaryViewProps {
 }
 
 export const SummaryView: FC<SummaryViewProps> = ({ uniqueid }) => {
-  const [date, setDate] = useState('')
   const [summary, setSummary] = useState('')
   const [originalSummary, setOriginalSummary] = useState('')
   const [transcription, setTranscription] = useState('')
@@ -52,14 +49,6 @@ export const SummaryView: FC<SummaryViewProps> = ({ uniqueid }) => {
       const summaryText = data.Summary || ''
       setSummary(summaryText)
       setOriginalSummary(summaryText)
-
-      if (data.CreatedAt) {
-        const parsedDate = parseISO(data.CreatedAt)
-        const formattedDate = format(parsedDate, 'dd MMM yyyy HH:mm')
-        setDate(formattedDate)
-      } else {
-        setDate('')
-      }
     } catch (err: any) {
       console.error('Error loading summary:', err)
       setError('Failed to load summary')
@@ -138,35 +127,16 @@ export const SummaryView: FC<SummaryViewProps> = ({ uniqueid }) => {
         </div>
       ) : (
         <div className='flex flex-col'>
-          {/* Date */}
-          <label className='text-sm mb-2 font-medium leading-5 text-secondaryNeutral dark:text-secondaryNeutralDark mt-4'>
-            {t('History.Date')}
-          </label>
-          {isLoading ? (
-            <Skeleton height='40px' className='max-w-lg' />
-          ) : (
-            <TextInput
-              placeholder={t('History.Date') || ''}
-              className='max-w-lg'
-              value={date}
-              onChange={(e) => setDate(e.target.value)}
-              icon={faCalendar}
-              readOnly
-            />
-          )}
-
+          {/* AI Content Disclaimer */}
+          <InlineNotification
+            className='mt-6 border-none'
+            type='info'
+            title={t('Summary.AI content disclaimer title')}
+          >
+            <p className=''>{t('Summary.AI content disclaimer')}</p>
+          </InlineNotification>
           {/* Summary */}
-          <label className='text-sm mb-2 font-medium leading-5 text-secondaryNeutral dark:text-secondaryNeutralDark mt-8 flex items-center gap-2'>
-            {t('Summary.Summary')}
-            <FontAwesomeIcon
-              icon={faCircleInfo}
-              className='h-4 w-4 text-iconInfo dark:text-iconInfoDark cursor-auto'
-              aria-hidden='true'
-              data-tooltip-id='tooltip-summary-info'
-              data-tooltip-content={t('Summary.Summary tooltip') || ''}
-            />
-            <CustomThemedTooltip id='tooltip-summary-info' place='top' />
-          </label>
+          <Label className='mt-8'>{t('Summary.Summary')}</Label>
           {isLoading ? (
             <Skeleton height='120px' className='max-w-lg' />
           ) : (
@@ -175,7 +145,7 @@ export const SummaryView: FC<SummaryViewProps> = ({ uniqueid }) => {
               className='max-w-lg'
               value={summary}
               onChange={(e) => setSummary(e.target.value)}
-              rows={8}
+              rows={10}
             />
           )}
 
@@ -193,9 +163,7 @@ export const SummaryView: FC<SummaryViewProps> = ({ uniqueid }) => {
           </Button>
           {showTranscription && (
             <>
-              <label className='text-sm mb-2 font-medium text-gray-700 dark:text-gray-200 mt-8 flex items-center gap-2'>
-                {t('Summary.Call transcription')}
-              </label>
+              <Label className='mt-8'>{t('Summary.Call transcription')}</Label>
               {isLoadingTranscription ? (
                 <Skeleton height='120px' className='max-w-lg' />
               ) : (
@@ -204,7 +172,7 @@ export const SummaryView: FC<SummaryViewProps> = ({ uniqueid }) => {
                   className='max-w-lg'
                   value={transcription}
                   onChange={(e) => setTranscription(e.target.value)}
-                  rows={8}
+                  rows={10}
                   readOnly
                 />
               )}
