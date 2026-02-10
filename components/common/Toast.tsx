@@ -84,39 +84,39 @@ export const Toast: FC<ToastProps> = ({
   let checkIcon =
     type === 'info' ? (
       <div
-        className={`bg-surfaceToastInfo dark:bg-surfaceToastInfoDark text-iconInfo dark:text-iconInfoDark rounded-full py-4 px-4 flex items-center justify-center`}
+        className={`bg-surfaceToastInfo dark:bg-surfaceToastInfoDark text-iconInfo dark:text-iconInfoDark rounded-3xl w-10 h-10 flex items-center justify-center shrink-0`}
       >
         <FontAwesomeIcon
           icon={faCircleInfo}
-          className={theme?.iconStyle[type]}
+          className="h-4 w-4"
           aria-hidden='true'
         />
       </div>
     ) : type === 'warning' ? (
       <div
-        className={`bg-surfaceToastWarning dark:bg-surfaceToastWarningDark text-iconWarning dark:text-iconWarningDark rounded-full py-4 px-4 flex items-center justify-center`}
+        className={`bg-surfaceToastWarning dark:bg-surfaceToastWarningDark text-iconWarning dark:text-iconWarningDark rounded-3xl w-10 h-10 flex items-center justify-center shrink-0`}
       >
         <FontAwesomeIcon
           icon={faTriangleExclamation}
-          className={theme?.iconStyle[type]}
+          className="h-4 w-4"
           aria-hidden='true'
         />
       </div>
     ) : type === 'success' ? (
       <div
-        className={`bg-surfaceToastSuccess dark:bg-surfaceToastSuccessDark text-iconSuccess dark:text-iconSuccessDark rounded-full py-4 px-4 flex items-center justify-center`}
+        className={`bg-surfaceToastSuccess dark:bg-surfaceToastSuccessDark text-iconSuccess dark:text-iconSuccessDark rounded-3xl w-10 h-10 flex items-center justify-center shrink-0`}
       >
         <FontAwesomeIcon
           icon={faCircleCheck}
-          className={theme?.iconStyle[type]}
+          className="h-4 w-4"
           aria-hidden='true'
         />
       </div>
     ) : (
-      <div className={`bg-blue-100 text-white rounded-full py-2 px-3 flex items-center justify-center`}>
+      <div className={`bg-surfaceToastError dark:bg-surfaceToastErrorDark text-iconError dark:text-iconErrorDark rounded-3xl w-10 h-10 flex items-center justify-center shrink-0`}>
         <FontAwesomeIcon
           icon={faCircleXmark}
-          className={theme?.iconStyle[type]}
+          className="h-4 w-4"
           aria-hidden='true'
         />
       </div>
@@ -135,29 +135,30 @@ export const Toast: FC<ToastProps> = ({
     >
       <div
         className={classNames(
-          theme?.base,
-          type ? theme?.type[type] : theme.type.success,
+          'pointer-events-auto relative max-w-xl overflow-hidden rounded-lg bg-elevationL2Invert dark:bg-elevationL2InvertDark shadow-lg ring-1 ring-black ring-opacity-5 border border-gray-200/5 dark:border-gray-700/60 p-6 w-full flex items-start gap-4',
           className,
         )}
         onMouseEnter={handleMouseEnter}
         onMouseLeave={handleMouseLeave}
       >
-        <div>{checkIcon}</div>
-        <div className='ml-6 mr-12 flex-1 pt-0.5'>
-          <p className='text-lg font-medium leading-5 text-primaryNeutral dark:text-primaryNeutralDark'>
-            {title}
-          </p>
-          {isTextOnly ? (
-            <p className='mt-1 text-sm font-normal text-secondaryNeutral dark:text-secondaryNeutralDark'>
-              {children}
+        {checkIcon}
+        <div className='flex-1 flex flex-col gap-4'>
+          <div className='flex flex-col gap-2'>
+            <p className='text-lg font-medium leading-7 text-primaryNeutral dark:text-primaryNeutralDark'>
+              {title}
             </p>
-          ) : (
-            <div className='mt-1 text-sm font-normal text-secondaryNeutral dark:text-secondaryNeutralDark'>
-              {children}
-            </div>
-          )}
+            {isTextOnly ? (
+              <p className='text-sm font-normal leading-5 text-secondaryNeutral dark:text-secondaryNeutralDark'>
+                {children}
+              </p>
+            ) : (
+              <div className='text-sm font-normal leading-5 text-secondaryNeutral dark:text-secondaryNeutralDark'>
+                {children}
+              </div>
+            )}
+          </div>
         </div>
-        <Button variant='ghost' className='absolute top-2 right-2' onClick={onClose}>
+        <Button variant='ghost' className='shrink-0 -mt-1 -mr-2' onClick={onClose}>
           <FontAwesomeIcon
             icon={faXmark}
             className='h-4 w-4 text-primaryNeutral dark:text-primaryNeutralDark cursor-pointer'

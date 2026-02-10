@@ -80,7 +80,7 @@
     "Generating call summary": "Generazione riepilogo chiamata",
     "Notify me": "Notificami",
     "Dismiss": "Scarta",
-    "Call summary is being generated": "Riepilogo della chiamata in corso di generazione",
+    "Call summary is being generated": "Riepilogo della chiamata in corso",
     "You can get notified when the summary is ready": "Puoi ricevere una notifica quando il riepilogo è pronto",
     "Call summary ready": "Riepilogo chiamata pronto",
     "The summary is ready for review and editing": "Il riepilogo è pronto per la revisione e la modifica",
@@ -1090,7 +1090,7 @@
     "Call transcription": "Trascrizione chiamata",
     "Call summary": "Riepilogo chiamata",
     "Summary": "Riepilogo",
-    "Summary tooltip": "Questo riepilogo è stato generato da AI e può essere modificato.",
+    "Summary tooltip": "Questo riepilogo è stato generato dalla AI e può essere modificato.",
     "View full transcription": "Visualizza la trascrizione completa",
     "Call": "Chiamata"
   }
