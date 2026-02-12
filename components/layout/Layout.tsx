@@ -1442,7 +1442,7 @@ export const Layout: FC<LayoutProps> = ({ children }) => {
         </div>
       </>,
       t('Common.Call summary ready') || 'Call summary ready',
-      10000,
+      5000,
     )
   })
 
