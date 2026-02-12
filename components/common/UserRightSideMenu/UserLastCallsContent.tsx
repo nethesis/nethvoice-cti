@@ -30,6 +30,9 @@ import { Skeleton } from '../../common/Skeleton'
 import { customScrollbarClass } from '../../../lib/utils'
 import { CustomThemedTooltip } from '../CustomThemedTooltip'
 import { format, utcToZonedTime } from 'date-fns-tz'
+import { formatDistanceToNowStrict } from 'date-fns'
+import { enGB, it } from 'date-fns/locale'
+import i18next from 'i18next'
 
 interface LastCallTypes extends CallTypes {
   username: string
@@ -77,31 +80,70 @@ const LastCallItem = memo(
     const getCompactTimeAgo = (call: any) => {
       const localTimeZone = getLocalTimezoneOffset()
       const differenceBetweenTimezone = getDifferenceBetweenTimezone()
+      const selectedLanguage = i18next?.languages[0] || 'en'
+
+      const shortIt = {
+        ...it,
+        formatDistance: (token: string, count: number, options?: any) => {
+          const map: Record<string, string> = {
+            xSeconds: 's',
+            xMinutes: 'm',
+            xHours: 'h',
+            xDays: 'g',
+            xMonths: 'mes',
+            xYears: 'a',
+          }
+
+          const unit = map[token] || ''
+          const suffix = options?.addSuffix
+            ? options.comparison && options.comparison > 0
+              ? ' tra'
+              : ' fa'
+            : ''
+
+          return `${count}${unit}${suffix}`
+        },
+      }
+
+      const shortEn = {
+        ...enGB,
+        formatDistance: (token: string, count: number, options?: any) => {
+          const map: Record<string, string> = {
+            xSeconds: 's',
+            xMinutes: 'm',
+            xHours: 'h',
+            xDays: 'd',
+            xMonths: 'mo',
+            xYears: 'y',
+          }
+
+          const unit = map[token] || ''
+          const suffix = options?.addSuffix
+            ? options.comparison && options.comparison > 0
+              ? ' in'
+              : ' ago'
+            : ''
+
+          return `${count}${unit}${suffix}`
+        },
+      }
 
       const callDate = utcToZonedTime(call?.time * 1000, differenceBetweenTimezone)
-      const nowDate = utcToZonedTime(new Date(), localTimeZone)
-
-      const diffSeconds = Math.max(0, Math.floor((nowDate.getTime() - callDate.getTime()) / 1000))
-
-      if (diffSeconds < 60) return `${diffSeconds}s`
-      const diffMinutes = Math.floor(diffSeconds / 60)
-      if (diffMinutes < 60) return `${diffMinutes}m`
-      const diffHours = Math.floor(diffMinutes / 60)
-      if (diffHours < 24) {
-        const remainingMinutes = diffMinutes % 60
-        return remainingMinutes > 0 ? `${diffHours}h ${remainingMinutes}m` : `${diffHours}h`
-      }
-      const diffDays = Math.floor(diffHours / 24)
-      if (diffDays < 30) return `${diffDays}d`
-      const diffMonths = Math.floor(diffDays / 30)
-      if (diffMonths < 12) return `${diffMonths}mo`
-      const diffYears = Math.floor(diffMonths / 12)
-      return `${diffYears}y`
+      
+      return formatDistanceToNowStrict(callDate, {
+        addSuffix: true,
+        locale: selectedLanguage === 'it' ? shortIt : shortEn,
+      })
     }
 
     const getCallDateString = (call: any) => {
+      const selectedLanguage = i18next?.languages[0] || 'en'
       const differenceBetweenTimezone = getDifferenceBetweenTimezone()
-      return format(utcToZonedTime(call?.time * 1000, differenceBetweenTimezone), 'd MMM yyyy HH:mm')
+      return format(
+        utcToZonedTime(call?.time * 1000, differenceBetweenTimezone),
+        'd MMM yyyy HH:mm',
+        { locale: selectedLanguage === 'it' ? it : enGB },
+      )
     }
 
     const isIncoming = call.direction === 'in'
@@ -200,7 +242,7 @@ const LastCallItem = memo(
                 data-tooltip-id={`tooltip-lastcall-date-${call.uniqueid}`}
                 data-tooltip-content={getCallDateString(call)}
               >
-                {getCompactTimeAgo(call)} ago ({getCallDateString(call)})
+                {getCompactTimeAgo(call)} ({getCallDateString(call)})
               </div>
               <CustomThemedTooltip id={`tooltip-lastcall-date-${call.uniqueid}`} place='left' />
             </div>
