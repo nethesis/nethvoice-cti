@@ -441,7 +441,7 @@ export const Calls: FC<CallsProps> = ({ className }): JSX.Element => {
       cell: () => (
         <FontAwesomeIcon
           icon={faArrowRight}
-          className='ml-0 h-4 w-4 flex-shrink-0 text-gray-500 dark:text-gray-600'
+          className='ml-0 h-4 w-4 flex-shrink-0 text-textPlaceholder dark:text-textPlaceholderDark'
           aria-hidden='true'
         />
       ),
@@ -574,7 +574,7 @@ export const Calls: FC<CallsProps> = ({ className }): JSX.Element => {
                 updateDateBeginFilter={updateDateBeginFilter}
                 updateDateEndFilter={updateDateEndFilter}
               />
-              <div className='text-gray-900 dark:text-gray-100 flex items-start lg:whitespace-nowrap ml-4'>
+              <div className='text-primaryNeutral dark:text-primaryNeutralDark flex items-start lg:whitespace-nowrap ml-4'>
                 <Link
                   href={pbxReportUrl}
                   target='_blank'
