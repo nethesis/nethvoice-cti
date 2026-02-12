@@ -94,7 +94,7 @@
   --color-input-icon-dark: #F9FAFB;
 
   /* main page light */
-  --color-body: #f8fafc;
+  --color-body: #F9FAFB;
   /* main page dark */
   --color-body-dark: #111827;
 
@@ -112,6 +112,10 @@
   --color-current-sidebar-icon-text-dark: #F9FAFB;
   --color-sidebar-icon-background-dark: #1F2937;
   --color-current-badge-primary-dark: #10b981;
+
+  /* skeleton style  */
+  --color-skeleton-bg: #D1D5DB;
+  --color-skeleton-bg-dark: #4B5563;
 
   /* topbar light */
   --color-topbar: #fff;
@@ -168,6 +172,10 @@
   --color-text-link-invert-dark: #047857;
 
   /* textLinkInvertHover */
+
+  /* textPlaceholder */
+  --color-text-placeholder: #9CA3AF;
+  --color-text-placeholder-dark: #6B7280;
 
   /* emerald 400 */
   --color-text-link-invert-hover: #34D399;

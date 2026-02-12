@@ -110,6 +110,8 @@ module.exports = {
         textBadgeEmeraldDark: 'var(--color-text-badge-emerald-dark)',
         textBadgeGray: 'var(--color-text-badge-gray)',
         textBadgeGrayDark: 'var(--color-text-badge-gray-dark)',
+        textPlaceholder: 'var(--color-text-placeholder)',
+        textPlaceholderDark: 'var(--color-text-placeholder-dark)',
         iconStatusOnline: 'var(--color-icon-status-online)',
         iconStatusOnlineDark: 'var(--color-icon-status-online-dark)',
         iconStatusBusy: 'var(--color-icon-status-busy)',
@@ -198,6 +200,8 @@ module.exports = {
         favoriteStarDark: 'var(--color-favorite-star-dark)',
         divider: 'var(--color-divider)',
         dividerDark: 'var(--color-divider-dark)',
+        skeletonBg: 'var(--color-skeleton-bg)',
+        skeletonBgDark: 'var(--color-skeleton-bg-dark)',
       },
       screens: {
         '3xl': '1792px',
