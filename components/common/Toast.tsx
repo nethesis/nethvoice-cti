@@ -135,7 +135,7 @@ export const Toast: FC<ToastProps> = ({
     >
       <div
         className={classNames(
-          'pointer-events-auto relative max-w-xl overflow-hidden rounded-lg bg-elevationL2Invert dark:bg-elevationL2InvertDark shadow-lg ring-1 ring-black ring-opacity-5 border border-gray-200/5 dark:border-gray-700/60 p-6 w-full flex items-start gap-4',
+          'pointer-events-auto relative max-w-sm overflow-hidden rounded-lg bg-elevationL2Invert dark:bg-elevationL2InvertDark shadow-lg ring-1 ring-black ring-opacity-5 border border-gray-200/5 dark:border-gray-700/60 p-6 w-full flex items-start gap-4',
           className,
         )}
         onMouseEnter={handleMouseEnter}
