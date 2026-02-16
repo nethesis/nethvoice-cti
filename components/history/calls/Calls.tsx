@@ -464,7 +464,7 @@ export const Calls: FC<CallsProps> = ({ className }): JSX.Element => {
     },
     {
       header: t('History.Duration'),
-      cell: (call: any) => <CallDuration duration={call?.duration} />,
+      cell: (call: any) => <CallDuration duration={call?.duration} monoTimer />,
       width: '15%',
     },
     {
