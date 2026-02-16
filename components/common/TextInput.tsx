@@ -7,7 +7,9 @@
  *
  * @param label - The label to render.
  * @param placeholder - The placeholder to render.
- * @param icon - The icon to show.
+ * @param leadingIcon - The leading icon (before the input).
+ * @param leadingIconClick - The callback on leading icon click.
+ * @param icon - The icon to show (trailing or leading based on trailingIcon).
  * @param trailingIcon - Whether the icon is trailing.
  * @param error - Whether the input has an error.
  * @param helper - The text of the helper.
@@ -29,6 +31,8 @@ import { IconDefinition } from '@fortawesome/fontawesome-common-types'
 export interface TextInputProps extends Omit<ComponentProps<'input'>, 'ref' | 'color' | 'size'> {
   label?: string
   placeholder?: string
+  leadingIcon?: IconDefinition
+  leadingIconClick?: () => void
   icon?: IconDefinition
   trailingIcon?: boolean
   error?: boolean
@@ -45,6 +49,8 @@ export const TextInput = forwardRef<HTMLInputElement, TextInputProps>(
     {
       label,
       placeholder,
+      leadingIcon,
+      leadingIconClick,
       icon: Icon,
       trailingIcon,
       type = 'text',
@@ -71,6 +77,19 @@ export const TextInput = forwardRef<HTMLInputElement, TextInputProps>(
           </label>
         )}
         <div className='relative'>
+          {leadingIcon && (
+            <div className={classNames(theme.icon.base, theme.icon.left)}>
+              <FontAwesomeIcon
+                icon={leadingIcon}
+                className={classNames(
+                  size === 'large' ? theme.icon.size.large : theme.icon.size.base,
+                  error ? theme.icon.red : theme.icon.gray,
+                  leadingIconClick && 'cursor-pointer',
+                )}
+                onClick={() => leadingIconClick && leadingIconClick()}
+              />
+            </div>
+          )}
           {Icon && (
             <div
               className={classNames(
@@ -101,7 +120,7 @@ export const TextInput = forwardRef<HTMLInputElement, TextInputProps>(
                 squared ? theme.squared[squared] : '',
                 size && size === 'large' ? theme.size.large : theme.size.base,
                 !error ? theme.colors.gray : theme.colors.error,
-                Icon && !trailingIcon ? 'pl-10' : '',
+                leadingIcon || (Icon && !trailingIcon) ? 'pl-10' : '',
                 trailingComponent ? 'pr-10' : '',
                 error ? theme.placeholder.error : theme.placeholder.base,
                 'text-gray-900',
