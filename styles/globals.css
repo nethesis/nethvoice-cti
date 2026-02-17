@@ -319,6 +319,14 @@
   --color-surface-table-tag: #A5B4FC;
   --color-surface-table-tag-dark: #3730A3;
 
+  /* surfaceBackgroundIpunt */
+  --color-surface-background-input: #FFFFFF;
+  --color-surface-background-input-dark: #030712;
+
+  /* surfaceBackgroundIpunt */
+  --color-surface-background-read-only: #F9FAFB;
+  --color-surface-background-read-only-dark: #111827;
+
   /* elevation */
   /* elevation0 */
   --color-elevation0: #FFFFFF;

@@ -86,39 +86,25 @@ export const Toast: FC<ToastProps> = ({
       <div
         className={`bg-surfaceToastInfo dark:bg-surfaceToastInfoDark text-iconInfo dark:text-iconInfoDark rounded-3xl w-10 h-10 flex items-center justify-center shrink-0`}
       >
-        <FontAwesomeIcon
-          icon={faCircleInfo}
-          className="h-4 w-4"
-          aria-hidden='true'
-        />
+        <FontAwesomeIcon icon={faCircleInfo} className='h-4 w-4' aria-hidden='true' />
       </div>
     ) : type === 'warning' ? (
       <div
         className={`bg-surfaceToastWarning dark:bg-surfaceToastWarningDark text-iconWarning dark:text-iconWarningDark rounded-3xl w-10 h-10 flex items-center justify-center shrink-0`}
       >
-        <FontAwesomeIcon
-          icon={faTriangleExclamation}
-          className="h-4 w-4"
-          aria-hidden='true'
-        />
+        <FontAwesomeIcon icon={faTriangleExclamation} className='h-4 w-4' aria-hidden='true' />
       </div>
     ) : type === 'success' ? (
       <div
         className={`bg-surfaceToastSuccess dark:bg-surfaceToastSuccessDark text-iconSuccess dark:text-iconSuccessDark rounded-3xl w-10 h-10 flex items-center justify-center shrink-0`}
       >
-        <FontAwesomeIcon
-          icon={faCircleCheck}
-          className="h-4 w-4"
-          aria-hidden='true'
-        />
+        <FontAwesomeIcon icon={faCircleCheck} className='h-4 w-4' aria-hidden='true' />
       </div>
     ) : (
-      <div className={`bg-surfaceToastError dark:bg-surfaceToastErrorDark text-iconError dark:text-iconErrorDark rounded-3xl w-10 h-10 flex items-center justify-center shrink-0`}>
-        <FontAwesomeIcon
-          icon={faCircleXmark}
-          className="h-4 w-4"
-          aria-hidden='true'
-        />
+      <div
+        className={`bg-surfaceToastError dark:bg-surfaceToastErrorDark text-iconError dark:text-iconErrorDark rounded-3xl w-10 h-10 flex items-center justify-center shrink-0`}
+      >
+        <FontAwesomeIcon icon={faCircleXmark} className='h-4 w-4' aria-hidden='true' />
       </div>
     )
 
@@ -142,7 +128,7 @@ export const Toast: FC<ToastProps> = ({
         onMouseLeave={handleMouseLeave}
       >
         {checkIcon}
-        <div className='flex-1 flex flex-col gap-4'>
+        <div className='flex-1 flex flex-col gap-4 relative'>
           <div className='flex flex-col gap-2'>
             <p className='text-lg font-medium leading-7 text-primaryNeutral dark:text-primaryNeutralDark'>
               {title}
@@ -157,14 +143,18 @@ export const Toast: FC<ToastProps> = ({
               </div>
             )}
           </div>
+          <button
+            className='absolute right-0 top-1 p-0 bg-transparent border-0 cursor-pointer'
+            onClick={onClose}
+            aria-label='Close'
+          >
+            <FontAwesomeIcon
+              icon={faXmark}
+              className='h-4 w-4 text-primaryNeutral dark:text-primaryNeutralDark'
+              aria-hidden='true'
+            />
+          </button>
         </div>
-        <Button variant='ghost' className='shrink-0 -mt-1 -mr-2' onClick={onClose}>
-          <FontAwesomeIcon
-            icon={faXmark}
-            className='h-4 w-4 text-primaryNeutral dark:text-primaryNeutralDark cursor-pointer'
-            aria-hidden='true'
-          />
-        </Button>
       </div>
     </Transition>
   )
