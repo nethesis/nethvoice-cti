@@ -33,6 +33,11 @@ export const MobileApp = () => {
       username: string
     } = await generateQRcodeToken()
 
+    if (!authData.username || !authData.token) {
+      setLoading(false)
+      return
+    }
+
     const profiling = store.getState().profiling
     if (Object.keys(profiling).length > 0) {
       const hostname = profiling.publichost || profiling.hostname || window.location.hostname

@@ -68,7 +68,7 @@ export const removePhoneIslandToken = async () => {
 
 export const generateQRcodeToken = async () => {
   try {
-    const res = await axios.post(`${PATH}/persistent_token_login`)
+    const res = await axios.post(`${PATH}/mobile_qr_token_login`)
     return res.data
   } catch (error) {
     handleNetworkError(error)
