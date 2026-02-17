@@ -63,11 +63,10 @@ export const TranscriptionView: FC<TranscriptionViewProps> = ({ uniqueid }) => {
           {/* Transcription */}
           <Label className='mt-8'>{t('Summary.Call transcription')}</Label>
           {isLoading ? (
-            <Skeleton height='400px' className='max-w-lg' />
+            <Skeleton height='400px' />
           ) : (
             <TextArea
               placeholder={t('Summary.Call transcription') || ''}
-              className='max-w-lg'
               value={transcription}
               onChange={(e) => setTranscription(e.target.value)}
               rows={8}

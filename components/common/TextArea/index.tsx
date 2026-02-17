@@ -70,6 +70,7 @@ export const TextArea = forwardRef<HTMLTextAreaElement, TextAreaProps>(
           disabled={disabled}
           className={classNames(
             theme.base,
+            readOnly && 'bg-surfaceBackgroundReadonly dark:bg-surfaceBackgroundReadonlyDark',
             label && 'mt-1',
             !error ? theme.colors.gray : theme.colors.error,
             'text-gray-900',

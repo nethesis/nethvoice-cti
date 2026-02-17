@@ -113,7 +113,7 @@ const theme = {
     },
   },
   textarea: {
-    base: 'block w-full rounded-md border px-3 py-2 text-sm shadow-sm resize-y focus:z-[8] disabled:cursor-not-allowed bg-bgInput dark:bg-bgInputDark text-gray-900 dark:text-gray-100 disabled:border-gray-200 disabled:bg-gray-50 disabled:text-gray-500 dark:disabled:border-gray-700 dark:disabled:bg-gray-900 dark:disabled:text-gray-400',
+    base: 'block w-full rounded-md border px-3 py-2 text-sm shadow-sm resize-y focus:z-[8] disabled:cursor-not-allowed bg-surfaceBackgroundInput dark:bg-surfaceBackgroundInputDark text-gray-900 dark:text-gray-100 disabled:border-gray-200 disabled:bg-gray-50 disabled:text-gray-500 dark:disabled:border-gray-700 dark:disabled:bg-gray-900 dark:disabled:text-gray-400',
     label: 'text-sm font-medium text-inputText dark:text-inputTextDark',
     optional: 'text-xs text-gray-500 dark:text-gray-400',
     placeholder: {
