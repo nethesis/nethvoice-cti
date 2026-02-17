@@ -138,11 +138,10 @@ export const SummaryView: FC<SummaryViewProps> = ({ uniqueid }) => {
           {/* Summary */}
           <Label className='mt-8'>{t('Summary.Summary')}</Label>
           {isLoading ? (
-            <Skeleton height='120px' className='max-w-lg' />
+            <Skeleton height='120px' />
           ) : (
             <TextArea
               placeholder={t('Summary.Summary') || ''}
-              className='max-w-lg'
               value={summary}
               onChange={(e) => setSummary(e.target.value)}
               rows={10}
@@ -165,11 +164,10 @@ export const SummaryView: FC<SummaryViewProps> = ({ uniqueid }) => {
             <>
               <Label className='mt-8'>{t('Summary.Call transcription')}</Label>
               {isLoadingTranscription ? (
-                <Skeleton height='120px' className='max-w-lg' />
+                <Skeleton height='120px' />
               ) : (
                 <TextArea
                   placeholder={t('Summary.Call transcription') || ''}
-                  className='max-w-lg'
                   value={transcription}
                   onChange={(e) => setTranscription(e.target.value)}
                   rows={10}

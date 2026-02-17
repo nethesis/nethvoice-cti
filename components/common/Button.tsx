@@ -66,6 +66,7 @@ export const Button = forwardRef<HTMLButtonElement, ButtonProps>(
             : theme.rounded.base,
           fullWidth && theme.sizes.full_w,
           fullHeight && theme.sizes.full_h,
+          disabled && 'opacity-50 cursor-not-allowed',
           className,
         )}
         ref={ref}

@@ -215,8 +215,8 @@
     "No voicemails": "Nessun messaggio vocale",
     "There are no voicemails in your history": "Non ci sono messaggi vocali nel tuo storico",
     "Delete recording": "Elimina registrazione",
-    "Delete call summary": "Elimina riepilogo chiamata",
-    "Delete call transcription": "Elimina trascrizione chiamata"
+    "Delete call summary": "Elimina riepilogo",
+    "Delete call transcription": "Elimina trascrizione"
   },
   "Operators": {
     "Operators": "Operatori",
@@ -1054,8 +1054,8 @@
     "In progress...": "In corso...",
     "Outgoing call": "Chiamata in uscita",
     "Incoming call": "Chiamata in arrivo",
-    "Delete call summary": "Elimina riepilogo chiamata",
-    "Delete call transcription": "Elimina trascrizione chiamata"
+    "Delete call summary": "Elimina riepilogo",
+    "Delete call transcription": "Elimina trascrizione"
   },
   "Transfer": {
     "No users found": "Nessun utente trovato"

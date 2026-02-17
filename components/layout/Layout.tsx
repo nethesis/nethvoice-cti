@@ -1348,11 +1348,10 @@ export const Layout: FC<LayoutProps> = ({ children }) => {
               }
               closeToast()
             }}
-            className='flex-1'
           >
             {t('Common.Notify me') || 'Notify me'}
           </Button>
-          <Button variant='ghost' onClick={() => closeToast()} className='flex-1'>
+          <Button variant='ghost' onClick={() => closeToast()}>
             {t('Common.Dismiss') || 'Dismiss'}
           </Button>
         </div>
@@ -1435,7 +1434,6 @@ export const Layout: FC<LayoutProps> = ({ children }) => {
               router.push('/history')
               closeToast()
             }}
-            className='w-full'
           >
             {t('Common.View summary') || 'View summary'}
           </Button>
