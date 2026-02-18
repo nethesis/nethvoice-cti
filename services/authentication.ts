@@ -10,13 +10,13 @@ import { handleNetworkError } from '../lib/utils'
 import { APITokenType, PhoneIslandCheckType } from './types'
 
 /**
- * The path to the user endpoints
+ * The path to token endpoints
  */
-const PATH = '/authentication'
+const PATH = '/tokens'
 
 export const getPhoneIslandToken = async () => {
   try {
-    const res: AxiosResponse = await axios.post(`${PATH}/phone_island_token_login`, { subtype: 'web' })
+    const res: AxiosResponse = await axios.post(`${PATH}/phone-island`)
     const data: APITokenType = res.data
     return data || []
   } catch (error) {
@@ -32,7 +32,7 @@ export const getPhoneIslandToken = async () => {
  */
 export const phoneIslandTokenCheck = async () => {
   try {
-    const res: AxiosResponse = await axios.get(`${PATH}/phone_island_token_check/web`)
+    const res: AxiosResponse = await axios.get(`${PATH}/phone-island`)
     const data: PhoneIslandCheckType = res.data
     return data || []
   } catch (error) {
@@ -42,16 +42,11 @@ export const phoneIslandTokenCheck = async () => {
 }
 
 /**
- * Checks if the island token exists for the user
- *
- * @returns An object with the exists boolean property
+ * Revokes the phone island token for the current user
  */
 export const removePhoneIslandToken = async () => {
   try {
-    const res: AxiosResponse = await axios.post(`${PATH}/persistent_token_remove`, {
-      type: 'phone-island',
-      subtype: 'web',
-    })
+    const res: AxiosResponse = await axios.delete(`${PATH}/phone-island`)
     const data: {} = res.data
     return data ? true : false
   } catch (error) {
@@ -61,14 +56,13 @@ export const removePhoneIslandToken = async () => {
 }
 
 /**
- * Generate a persistent authentication token
+ * Generate a JWT token for QR code authentication
  *
  * @returns The username and the token
  */
-
 export const generateQRcodeToken = async () => {
   try {
-    const res = await axios.post(`${PATH}/mobile_qr_token_login`)
+    const res = await axios.post(`${PATH}/qrcode`)
     return res.data
   } catch (error) {
     handleNetworkError(error)

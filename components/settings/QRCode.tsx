@@ -33,7 +33,7 @@ export default function QRCode({ data, showDownloadButton = true, customOptions 
     type: 'svg' as DrawType,
     data: data,
     image: '/navbar_logo.svg',
-    margin: 0,
+    margin: 2,
     qrOptions: {
       typeNumber: 0 as TypeNumber,
       mode: 'Byte' as Mode,
@@ -108,6 +108,22 @@ export default function QRCode({ data, showDownloadButton = true, customOptions 
   useEffect(() => {
     if (!qrCode) return
     qrCode.update(options)
+
+    const moduleCount = (qrCode as any)?._qr?.getModuleCount?.()
+    if (!moduleCount) return
+
+    const quietZone = options.margin || 0
+    const requestedSize = Math.min(options.width || 300, options.height || 300) - quietZone * 2
+    const dotSize = Math.max(1, Math.ceil(requestedSize / moduleCount))
+    const fittedSize = moduleCount * dotSize + quietZone * 2
+
+    if (options.width !== fittedSize || options.height !== fittedSize) {
+      setOptions((prevOptions) => ({
+        ...prevOptions,
+        width: fittedSize,
+        height: fittedSize,
+      }))
+    }
   }, [qrCode, options])
 
   useEffect(() => {
@@ -120,7 +136,7 @@ export default function QRCode({ data, showDownloadButton = true, customOptions 
   return (
     <div className='flex flex-col gap-4'>
       <div className='flex'>
-        <div ref={ref} className='rounded-lg overflow-hidden' />
+        <div ref={ref} className='rounded-md overflow-hidden' />
       </div>
       {showDownloadButton && (
         <div>
