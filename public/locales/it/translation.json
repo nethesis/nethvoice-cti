@@ -69,7 +69,22 @@
     "Configure": "Configura",
     "Copy": "Copia",
     "Copied": "Copiato",
-    "Don't ask again": "Non chiedere più"
+    "Don't ask again": "Non chiedere più",
+    "Go to history": "Vai allo storico",
+    "Call transcription in progress": "Trascrizione della chiamata in corso",
+    "The transcription will be available in your history shortly": "La trascrizione sarà disponibile nel tuo storico tra qualche momento",
+    "Call transcription available": "Trascrizione chiamata disponibile",
+    "View call transcription": "Visualizza trascrizione chiamata",
+    "View transcription": "Visualizza trascrizione",
+    "Call summary available": "Riepilogo chiamata disponibile",
+    "Generating call summary": "Generazione riepilogo chiamata",
+    "Notify me": "Ricevi notifica",
+    "Dismiss": "Scarta",
+    "Call summary is being generated": "Riepilogo della chiamata in corso",
+    "You can get notified when the summary is ready": "Puoi ricevere una notifica quando il riepilogo è pronto",
+    "Call summary ready": "Riepilogo chiamata pronto",
+    "The summary is ready for review and editing": "Il riepilogo è pronto per la revisione e la modifica",
+    "View summary": "Visualizza riepilogo"
   },
   "Login": {
     "User": "Utente",
@@ -198,7 +213,10 @@
     "No voicemails match your search criteria": "Nessun messaggio vocale corrispondente ai tuoi criteri di ricerca",
     "Voicemail filters": "Filtri messaggi vocali",
     "No voicemails": "Nessun messaggio vocale",
-    "There are no voicemails in your history": "Non ci sono messaggi vocali nel tuo storico"
+    "There are no voicemails in your history": "Non ci sono messaggi vocali nel tuo storico",
+    "Delete recording": "Elimina registrazione",
+    "Delete call summary": "Elimina riepilogo",
+    "Delete call transcription": "Elimina trascrizione"
   },
   "Operators": {
     "Operators": "Operatori",
@@ -244,7 +262,7 @@
     "Internal": "Interne",
     "Phone lines and announcements": "Linee telefoniche e annunci",
     "Manage your phone lines, activate announcements, voicemail or forward calls": "Gestisci le tue linee telefoniche, attiva annunci, casella vocale o inoltra chiamate.",
-    "Display video streams from various sources such as IP cameras or video intercoms":"Visualizza flussi video provenienti da diverse sorgenti come videocamere IP o videocitofoni.",
+    "Display video streams from various sources such as IP cameras or video intercoms": "Visualizza flussi video provenienti da diverse sorgenti come videocamere IP o videocitofoni.",
     "Activate announcements, voicemail or forward calls": "Attiva annunci, casella vocale o inoltra chiamate",
     "Video sources": "Sorgenti video",
     "View streams from different sources such as IP video cameras or video intercoms": "Visualizza flussi provenienti da diverse sorgenti come vidocamere IP o videocitofoni.",
@@ -1035,7 +1053,9 @@
   "Call": {
     "In progress...": "In corso...",
     "Outgoing call": "Chiamata in uscita",
-    "Incoming call": "Chiamata in arrivo"
+    "Incoming call": "Chiamata in arrivo",
+    "Delete call summary": "Elimina riepilogo",
+    "Delete call transcription": "Elimina trascrizione"
   },
   "Transfer": {
     "No users found": "Nessun utente trovato"
@@ -1065,5 +1085,17 @@
     "No video sources available": "Nessuna sorgente video disponibile",
     "No video sources have been configured": "Nessuna sorgente video è stata configurata",
     "Contact your administrator to configure video sources": "Contatta l'amministratore per configurare le sorgenti video"
+  },
+  "Summary": {
+    "Call transcription": "Trascrizione (in sola lettura)",
+    "Call summary": "Riepilogo chiamata",
+    "Summary": "Riepilogo",
+    "Summary tooltip": "Questo riepilogo è stato generato dalla AI e può essere modificato.",
+    "View full transcription": "Visualizza la trascrizione",
+    "Call": "Chiamata",
+    "AI content disclaimer": "Questo contenuto è stato generato automaticamente da un'intelligenza artificiale e potrebbe contenere imprecisioni.",
+    "AI content disclaimer title": "Contenuto generato da AI",
+    "Transcription disclaimer": "Questa trascrizione è stata generata automaticamente e potrebbe contenere imprecisioni.",
+    "Transcription disclaimer title": "Trascrizione generata da AI"
   }
 }
