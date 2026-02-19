@@ -28,12 +28,10 @@ export const MobileApp = () => {
   const newQRcode = async () => {
     setLoading(true)
     setShowMondal(false)
-    const authData: {
-      token: string
-      username: string
-    } = await generateQRcodeToken()
+    const authData = await generateQRcodeToken()
+    const username = store.getState().user?.username
 
-    if (!authData.username || !authData.token) {
+    if (!username || !authData.token) {
       setLoading(false)
       return
     }
@@ -41,7 +39,7 @@ export const MobileApp = () => {
     const profiling = store.getState().profiling
     if (Object.keys(profiling).length > 0) {
       const hostname = profiling.publichost || profiling.hostname || window.location.hostname
-      let qrString = `csc:${encodeURIComponent(authData.username)}@${encodeURIComponent(
+      let qrString = `csc:${encodeURIComponent(username)}@${encodeURIComponent(
         hostname,
       )}@qrcode:${encodeURIComponent(authData.token)}@${APP_ID}`
       setQRString(qrString)

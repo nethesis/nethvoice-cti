@@ -13,16 +13,39 @@ import { APITokenType, PhoneIslandCheckType } from './types'
  * The path to token endpoints
  */
 const PATH = '/tokens'
+const PERSISTENT_PATH = `${PATH}/persistent`
 
-export const getPhoneIslandToken = async () => {
+const createPersistentToken = async (audience: string): Promise<APITokenType> => {
   try {
-    const res: AxiosResponse = await axios.post(`${PATH}/phone-island`)
-    const data: APITokenType = res.data
-    return data || []
-  } catch (error) {
+    const res: AxiosResponse = await axios.post(`${PERSISTENT_PATH}/${audience}`)
+    return res.data
+  } catch (error: any) {
     handleNetworkError(error)
     throw error
   }
+}
+
+const checkPersistentToken = async (audience: string): Promise<PhoneIslandCheckType> => {
+  try {
+    const res: AxiosResponse = await axios.get(`${PERSISTENT_PATH}/${audience}`)
+    return res.data
+  } catch (error: any) {
+    handleNetworkError(error)
+    throw error
+  }
+}
+
+const removePersistentToken = async (audience: string): Promise<void> => {
+  try {
+    await axios.delete(`${PERSISTENT_PATH}/${audience}`)
+  } catch (error: any) {
+    handleNetworkError(error)
+    throw error
+  }
+}
+
+export const getPhoneIslandToken = async () => {
+  return await createPersistentToken('phone-island')
 }
 
 /**
@@ -31,28 +54,14 @@ export const getPhoneIslandToken = async () => {
  * @returns An object with the exists boolean property
  */
 export const phoneIslandTokenCheck = async () => {
-  try {
-    const res: AxiosResponse = await axios.get(`${PATH}/phone-island`)
-    const data: PhoneIslandCheckType = res.data
-    return data || []
-  } catch (error) {
-    handleNetworkError(error)
-    throw error
-  }
+  return await checkPersistentToken('phone-island')
 }
 
 /**
  * Revokes the phone island token for the current user
  */
 export const removePhoneIslandToken = async () => {
-  try {
-    const res: AxiosResponse = await axios.delete(`${PATH}/phone-island`)
-    const data: {} = res.data
-    return data ? true : false
-  } catch (error) {
-    handleNetworkError(error)
-    throw error
-  }
+  await removePersistentToken('phone-island')
 }
 
 /**
@@ -61,11 +70,5 @@ export const removePhoneIslandToken = async () => {
  * @returns The username and the token
  */
 export const generateQRcodeToken = async () => {
-  try {
-    const res = await axios.post(`${PATH}/qrcode`)
-    return res.data
-  } catch (error) {
-    handleNetworkError(error)
-    throw error
-  }
+  return await createPersistentToken('mobile-app')
 }

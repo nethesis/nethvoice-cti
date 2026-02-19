@@ -48,11 +48,12 @@ export const Integrations = () => {
   const newConfig = async () => {
     setLoading(true)
     const data = await getPhoneIslandToken()
-    if (data.token) {
+    const username = currentUser?.username
+    if (data.token && username) {
       const config = newIslandConfig({
         // @ts-ignore
         hostname: window.CONFIG.API_ENDPOINT,
-        username: data.username,
+        username,
         auth_token: data.token,
         sip_exten: webRTCExtension?.id || '',
         sip_secret: webRTCExtension?.secret || '',
@@ -70,11 +71,9 @@ export const Integrations = () => {
   const removeConfig = async () => {
     setLoading(true)
     setShowMondal(false)
-    const removed = await removePhoneIslandToken()
-    if (removed) {
-      setConfig('')
-      setTokenExists(false)
-    }
+    await removePhoneIslandToken()
+    setConfig('')
+    setTokenExists(false)
     setLoading(false)
   }
 
