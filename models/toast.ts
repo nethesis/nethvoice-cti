@@ -10,6 +10,7 @@ interface DefaultState {
   message: any
   tytle: any
   timeout?: number
+  smaller?: boolean
 }
 
 const defaultState: DefaultState = {
@@ -18,6 +19,7 @@ const defaultState: DefaultState = {
   message: '',
   tytle: '',
   timeout: undefined,
+  smaller: false,
 }
 
 export const toast = createModel<RootModel>()({
@@ -30,6 +32,7 @@ export const toast = createModel<RootModel>()({
       state.message = payload.message
       state.tytle = payload.tytle
       state.timeout = payload.timeout
+      state.smaller = payload.smaller
       return state
     },
     setShownToast: (state, isShown: boolean) => {

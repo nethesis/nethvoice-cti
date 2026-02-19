@@ -22,6 +22,7 @@ export interface ToastProps extends ComponentProps<'div'> {
   timeout: number
   pauseTimerOnHover?: boolean
   onTimerEnd?: () => void
+  smaller?: boolean
 }
 
 export const Toast: FC<ToastProps> = ({
@@ -34,6 +35,7 @@ export const Toast: FC<ToastProps> = ({
   timeout,
   pauseTimerOnHover = false,
   onTimerEnd,
+  smaller = false,
 }): JSX.Element => {
   const { toast: theme } = useTheme().theme
   const isTextOnly = typeof children === 'string' || typeof children === 'number'
@@ -121,7 +123,8 @@ export const Toast: FC<ToastProps> = ({
     >
       <div
         className={classNames(
-          'pointer-events-auto relative max-w-sm overflow-hidden rounded-lg bg-elevationL2Invert dark:bg-elevationL2InvertDark shadow-lg ring-1 ring-black ring-opacity-5 border border-gray-200/5 dark:border-gray-700/60 p-6 w-full flex items-start gap-4',
+          'pointer-events-auto relative overflow-hidden rounded-lg bg-elevationL2Invert dark:bg-elevationL2InvertDark shadow-lg ring-1 ring-black ring-opacity-5 border border-gray-200/5 dark:border-gray-700/60 p-6 w-full flex items-start gap-4',
+          smaller ? 'max-w-sm' : 'max-w-xl',
           className,
         )}
         onMouseEnter={handleMouseEnter}
@@ -129,7 +132,7 @@ export const Toast: FC<ToastProps> = ({
       >
         {checkIcon}
         <div className='flex-1 flex flex-col gap-4 relative'>
-          <div className='flex flex-col gap-2'>
+          <div className='flex flex-col gap-2 pr-6'>
             <p className='text-lg font-medium leading-7 text-primaryNeutral dark:text-primaryNeutralDark'>
               {title}
             </p>

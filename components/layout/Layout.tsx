@@ -1390,6 +1390,7 @@ export const Layout: FC<LayoutProps> = ({ children }) => {
       </>,
       t('Common.Call summary is being generated') || 'Call summary is being generated',
       3000,
+      true,
     )
   })
 
@@ -1416,9 +1417,23 @@ export const Layout: FC<LayoutProps> = ({ children }) => {
           dispatch.sideDrawer.update({
             isShown: true,
             contentType: 'callSummary',
-            config: { uniqueid: data?.uniqueId, isSummary: true },
+            config: {
+              uniqueid: data?.uniqueId,
+              isSummary: true,
+              // TODO: Replace with actual data from GET API when implemented
+              source: {
+                name: 'Unknown Caller',
+                company: '',
+                number: '',
+              },
+              destination: {
+                name: 'Unknown Destination',
+                company: '',
+                number: '',
+              },
+              date: '',
+            },
           })
-          router.push('/history')
           notification.close()
         }
       } else if (Notification.permission !== 'denied') {
@@ -1439,9 +1454,23 @@ export const Layout: FC<LayoutProps> = ({ children }) => {
               dispatch.sideDrawer.update({
                 isShown: true,
                 contentType: 'callSummary',
-                config: { uniqueid: data?.uniqueId, isSummary: true },
+                config: {
+                  uniqueid: data?.uniqueId,
+                  isSummary: true,
+                  // TODO: Replace with actual data from GET API when implemented
+                  source: {
+                    name: 'Unknown Caller',
+                    company: '',
+                    number: '',
+                  },
+                  destination: {
+                    name: 'Unknown Destination',
+                    company: '',
+                    number: '',
+                  },
+                  date: '',
+                },
               })
-              router.push('/history')
               notification.close()
             }
           }
@@ -1461,9 +1490,23 @@ export const Layout: FC<LayoutProps> = ({ children }) => {
               dispatch.sideDrawer.update({
                 isShown: true,
                 contentType: 'callSummary',
-                config: { uniqueid: data?.uniqueId, isSummary: true },
+                config: {
+                  uniqueid: data?.uniqueId,
+                  isSummary: true,
+                  // TODO: Replace with actual data from GET API when implemented
+                  source: {
+                    name: 'Unknown Caller',
+                    company: '',
+                    number: '',
+                  },
+                  destination: {
+                    name: 'Unknown Destination',
+                    company: '',
+                    number: '',
+                  },
+                  date: '',
+                },
               })
-              router.push('/history')
               closeToast()
             }}
           >
@@ -1473,6 +1516,7 @@ export const Layout: FC<LayoutProps> = ({ children }) => {
       </>,
       t('Common.Call summary ready') || 'Call summary ready',
       5000,
+      true,
     )
   })
 
@@ -1537,6 +1581,7 @@ export const Layout: FC<LayoutProps> = ({ children }) => {
                     show={toast?.isShown}
                     timeout={(toast?.timeout ?? defaultToastTimeoutMs) / 1000}
                     pauseTimerOnHover={true}
+                    smaller={toast?.smaller}
                   >
                     {toast?.message}
                   </Toast>
