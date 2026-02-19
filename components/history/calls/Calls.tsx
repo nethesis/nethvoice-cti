@@ -221,8 +221,21 @@ export const Calls: FC<CallsProps> = ({ className }): JSX.Element => {
   }
 
   function openTranscriptionDrawer(call: any) {
-    const linkedId = call.linkedid
-    const summaryStatus = summaryStatusMap[linkedId]
+    const linkedId = call?.linkedid
+    const summaryStatus = summaryStatusMap?.[linkedId]
+
+    // Extract source information
+    const sourceName = call?.cnam || ''
+    const sourceCompany = call?.ccompany || ''
+    const sourceNumber = call?.cnum || call?.src || ''
+
+    // Extract destination information
+    const destinationName = call?.dst_cnam || ''
+    const destinationCompany = call?.dst_ccompany || ''
+    const destinationNumber = call?.dst || ''
+
+    // Extract date information
+    const callDate = call?.time || ''
 
     dispatch.sideDrawer.update({
       isShown: true,
@@ -230,6 +243,17 @@ export const Calls: FC<CallsProps> = ({ className }): JSX.Element => {
       config: {
         uniqueid: linkedId,
         isSummary: summaryStatus?.has_summary || false,
+        source: {
+          name: sourceName,
+          company: sourceCompany,
+          number: sourceNumber,
+        },
+        destination: {
+          name: destinationName,
+          company: destinationCompany,
+          number: destinationNumber,
+        },
+        date: callDate,
       },
     })
   }

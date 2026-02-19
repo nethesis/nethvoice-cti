@@ -19,6 +19,9 @@ export const CallSummaryDrawerContent = forwardRef<
 >(({ config, className, ...props }, ref) => {
   const isSummary = config?.isSummary || false
   const uniqueid = config?.uniqueid
+  const source = config?.source
+  const destination = config?.destination
+  const date = config?.date
 
   const drawerTitle = isSummary
     ? t('Summary.Call summary') || 'Call summary'
@@ -29,9 +32,19 @@ export const CallSummaryDrawerContent = forwardRef<
       <DrawerHeader title={drawerTitle} onClose={closeSideDrawer} />
       <div className={classNames(className, 'px-5')} {...props}>
         {isSummary ? (
-          <SummaryView uniqueid={uniqueid} />
+          <SummaryView
+            uniqueid={uniqueid}
+            source={source}
+            destination={destination}
+            date={date}
+          />
         ) : (
-          <TranscriptionView uniqueid={uniqueid} />
+          <TranscriptionView
+            uniqueid={uniqueid}
+            source={source}
+            destination={destination}
+            date={date}
+          />
         )}
       </div>
     </>

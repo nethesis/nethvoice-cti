@@ -78,7 +78,7 @@
     "View transcription": "Visualizza trascrizione",
     "Call summary available": "Riepilogo chiamata disponibile",
     "Generating call summary": "Generazione riepilogo chiamata",
-    "Notify me": "Notificami",
+    "Notify me": "Ricevi notifica",
     "Dismiss": "Scarta",
     "Call summary is being generated": "Riepilogo della chiamata in corso",
     "You can get notified when the summary is ready": "Puoi ricevere una notifica quando il riepilogo è pronto",
@@ -1087,11 +1087,11 @@
     "Contact your administrator to configure video sources": "Contatta l'amministratore per configurare le sorgenti video"
   },
   "Summary": {
-    "Call transcription": "Trascrizione chiamata",
+    "Call transcription": "Trascrizione (in sola lettura)",
     "Call summary": "Riepilogo chiamata",
     "Summary": "Riepilogo",
     "Summary tooltip": "Questo riepilogo è stato generato dalla AI e può essere modificato.",
-    "View full transcription": "Visualizza la trascrizione completa",
+    "View full transcription": "Visualizza la trascrizione",
     "Call": "Chiamata",
     "AI content disclaimer": "Questo contenuto è stato generato automaticamente da un'intelligenza artificiale e potrebbe contenere imprecisioni.",
     "AI content disclaimer title": "Contenuto generato da AI",

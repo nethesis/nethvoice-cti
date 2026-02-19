@@ -9,11 +9,25 @@ import { Divider } from '../common/Divider'
 import { getTranscription } from '../../services/user'
 import { closeSideDrawer } from '../../lib/utils'
 
-interface TranscriptionViewProps {
-  uniqueid: string
+interface CallParty {
+  name?: string
+  company?: string
+  number?: string
 }
 
-export const TranscriptionView: FC<TranscriptionViewProps> = ({ uniqueid }) => {
+interface TranscriptionViewProps {
+  uniqueid: string
+  source?: CallParty
+  destination?: CallParty
+  date?: string
+}
+
+export const TranscriptionView: FC<TranscriptionViewProps> = ({
+  uniqueid,
+  source,
+  destination,
+  date,
+}) => {
   const [transcription, setTranscription] = useState('')
   const [isLoading, setIsLoading] = useState(false)
   const [error, setError] = useState('')

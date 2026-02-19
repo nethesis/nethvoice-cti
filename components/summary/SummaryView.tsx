@@ -5,21 +5,35 @@ import { FC, useState, useCallback, useEffect } from 'react'
 import { TextArea, Button, Label, InlineNotification } from '../common'
 import { Skeleton } from '../common/Skeleton'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
-import { faAngleDown, faAngleUp } from '@fortawesome/free-solid-svg-icons'
+import { faAngleDown, faAngleUp, faPhone, faCalendar } from '@fortawesome/free-solid-svg-icons'
 import { t } from 'i18next'
-import { isEmpty } from 'lodash'
 import { Divider } from '../common/Divider'
 import { DrawerFooter } from '../common/DrawerFooter'
 import { getSummaryCall, getTranscription, updateSummary } from '../../services/user'
 import { closeSideDrawer } from '../../lib/utils'
+import { formatDateLoc } from '../../lib/dateTime'
+import { parse } from 'date-fns'
+
+interface CallParty {
+  name?: string
+  company?: string
+  number?: string
+}
 
 interface SummaryViewProps {
   uniqueid: string
+  source?: CallParty
+  destination?: CallParty
+  date?: string
 }
 
-export const SummaryView: FC<SummaryViewProps> = ({ uniqueid }) => {
+export const SummaryView: FC<SummaryViewProps> = ({
+  uniqueid,
+  source,
+  destination,
+  date,
+}) => {
   const [summary, setSummary] = useState('')
-  const [originalSummary, setOriginalSummary] = useState('')
   const [transcription, setTranscription] = useState('')
   const [showTranscription, setShowTranscription] = useState(false)
   const [isLoading, setIsLoading] = useState(false)
@@ -48,7 +62,6 @@ export const SummaryView: FC<SummaryViewProps> = ({ uniqueid }) => {
       const data = response.data
       const summaryText = data.Summary || ''
       setSummary(summaryText)
-      setOriginalSummary(summaryText)
     } catch (err: any) {
       console.error('Error loading summary:', err)
       setError('Failed to load summary')
@@ -97,26 +110,41 @@ export const SummaryView: FC<SummaryViewProps> = ({ uniqueid }) => {
   }
 
   const handleSave = async () => {
-    if (isEmpty(summary) || summary === originalSummary || isSaving) {
-      return
-    }
-
     setIsSaving(true)
     setError('')
     try {
       await updateSummary(uniqueid, summary)
-      console.log('Summary updated successfully')
-      setOriginalSummary(summary)
       closeSideDrawer()
     } catch (err: any) {
-      console.error('Error updating summary:', err)
       setError('Failed to update summary')
     } finally {
       setIsSaving(false)
     }
   }
 
-  const isSummaryModified = summary !== originalSummary && !isEmpty(summary)
+  // Format the date if available
+  const formatCallDate = (dateString?: string) => {
+    if (!dateString) return ''
+    try {
+      // Parse the date string (format: yyyyMMdd-HHmmss)
+      const parsedDate = parse(dateString, 'yyyyMMdd-HHmmss', new Date())
+      return formatDateLoc(parsedDate, 'dd MMM yyyy HH:mm')
+    } catch (e) {
+      return dateString
+    }
+  }
+
+  // Get display text for source
+  const getSourceDisplayName = () => {
+    if (!source) return ''
+    return source.name || source.company || source.number || ''
+  }
+
+  // Get display text for destination
+  const getDestinationDisplayName = () => {
+    if (!destination) return ''
+    return destination.name || destination.company || destination.number || ''
+  }
 
   return (
     <>
@@ -127,9 +155,78 @@ export const SummaryView: FC<SummaryViewProps> = ({ uniqueid }) => {
         </div>
       ) : (
         <div className='flex flex-col'>
+          {/* Call Information Section */}
+          {(source || destination || date) && (
+            <div className='mt-6 flex flex-col gap-4'>
+              {/* Source */}
+              {source && (
+                <div className='flex items-start gap-8 w-full'>
+                  <div className='text-sm font-medium text-secondaryNeutral dark:text-secondaryNeutralDark w-[90px] shrink-0'>
+                    {t('History.Source')}
+                  </div>
+                  <div className='flex items-start gap-2 shrink-0'>
+                    <FontAwesomeIcon
+                      icon={faPhone}
+                      className='h-4 w-4 text-tertiaryNeutral dark:text-tertiaryNeutralDark'
+                    />
+                    <div className='text-sm text-tertiaryNeutral dark:text-tertiaryNeutralDark'>
+                      <div>{getSourceDisplayName()}</div>
+                      {source.number && (source.name || source.company) && (
+                        <div className='text-emerald-700 dark:text-emerald-500'>
+                          {source.number}
+                        </div>
+                      )}
+                    </div>
+                  </div>
+                </div>
+              )}
+
+              {/* Destination */}
+              {destination && (
+                <div className='flex items-start gap-8 w-full'>
+                  <div className='text-sm font-medium text-secondaryNeutral dark:text-secondaryNeutralDark w-[90px] shrink-0'>
+                    {t('History.Destination')}
+                  </div>
+                  <div className='flex items-start gap-2 shrink-0'>
+                    <FontAwesomeIcon
+                      icon={faPhone}
+                      className='h-4 w-4 text-tertiaryNeutral dark:text-tertiaryNeutralDark'
+                    />
+                    <div className='text-sm text-tertiaryNeutral dark:text-tertiaryNeutralDark'>
+                      <div>{getDestinationDisplayName()}</div>
+                      {destination.number && (destination.name || destination.company) && (
+                        <div className='text-emerald-700 dark:text-emerald-500'>
+                          {destination.number}
+                        </div>
+                      )}
+                    </div>
+                  </div>
+                </div>
+              )}
+
+              {/* Date */}
+              {date && (
+                <div className='flex items-start gap-8 w-full'>
+                  <div className='text-sm font-medium text-secondaryNeutral dark:text-secondaryNeutralDark w-[90px] shrink-0'>
+                    {t('History.Date')}
+                  </div>
+                  <div className='flex items-start gap-2 shrink-0'>
+                    <FontAwesomeIcon
+                      icon={faCalendar}
+                      className='h-4 w-4 text-tertiaryNeutral dark:text-tertiaryNeutralDark'
+                    />
+                    <div className='text-sm text-tertiaryNeutral dark:text-tertiaryNeutralDark'>
+                      {formatCallDate(date)}
+                    </div>
+                  </div>
+                </div>
+              )}
+            </div>
+          )}
+
           {/* AI Content Disclaimer */}
           <InlineNotification
-            className='mt-6 border-none'
+            className='mt-8 border-none'
             type='info'
             title={t('Summary.AI content disclaimer title')}
           >
@@ -183,7 +280,6 @@ export const SummaryView: FC<SummaryViewProps> = ({ uniqueid }) => {
         cancelLabel={t('Common.Cancel') || ''}
         confirmLabel={isSaving ? t('Common.Loading') : t('Common.Save') || 'Save'}
         onConfirm={handleSave}
-        confirmDisabled={!isSummaryModified || isSaving || isLoading}
       />
     </>
   )
