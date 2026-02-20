@@ -7,7 +7,6 @@
 
 export type APITokenType = {
   token: string
-  username: string
 }
 
 export type PhoneIslandCheckType = {
