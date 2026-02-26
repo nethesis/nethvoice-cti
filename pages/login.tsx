@@ -304,7 +304,7 @@ export default function Login() {
             <Button variant='primary' onClick={handleOpenSettings}>
               {t('Settings.Configure 2FA') || 'Enable 2FA'}
             </Button>
-            <Button variant='white' onClick={handleDontAskAgain}>
+            <Button variant='ghost' onClick={handleDontAskAgain}>
               {t("Common.Don't ask again") || "Don't ask again"}
             </Button>
           </div>

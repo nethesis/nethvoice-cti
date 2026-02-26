@@ -3,7 +3,7 @@
 
 import React, { useEffect, useMemo, useState, useCallback } from 'react'
 import type { NextPage } from 'next'
-import { EmptyState, InlineNotification } from '../components/common'
+import { EmptyState } from '../components/common'
 import {
   AVAILABLE_STATUSES,
   getFilterValues,
@@ -531,7 +531,7 @@ const Operators: NextPage = () => {
                 className={`${
                   selectedLayout === 'standard'
                     ? 'text-primary dark:text-primaryDark'
-                    : 'text-gray-600 dark:text-gray-300'
+                    : 'text-iconTertiaryNeutral dark:text-iconTertiaryNeutralDark'
                 }, inline-block text-center h-5 w-5 cursor-pointer pointer-events-none select-none`}
               />
             </button>
@@ -541,7 +541,7 @@ const Operators: NextPage = () => {
                 className={`${
                   selectedLayout === 'compact'
                     ? 'text-primary dark:text-primaryDark'
-                    : 'text-gray-600 dark:text-gray-300'
+                    : 'text-iconTertiaryNeutral dark:text-iconTertiaryNeutralDark'
                 }, inline-block text-center h-5 w-5 cursor-pointer pointer-events-none select-none`}
               />
             </button>
@@ -551,19 +551,12 @@ const Operators: NextPage = () => {
                 className={`${
                   selectedLayout === 'grouped'
                     ? 'text-primary dark:text-primaryDark'
-                    : 'text-gray-600 dark:text-gray-300'
+                    : 'text-iconTertiaryNeutral dark:text-iconTertiaryNeutralDark'
                 }, inline-block text-center h-5 w-5 cursor-pointer pointer-events-none select-none`}
               />
             </button>
           </div>
 
-          {/* operators error */}
-          {operatorsStore?.errorMessage && (
-            <InlineNotification
-              type='error'
-              title={operatorsStore?.errorMessage}
-            ></InlineNotification>
-          )}
           <div className='mx-auto text-center flex justify-center'>
             {/* empty state */}
             {operatorsStore?.isOperatorsLoaded &&

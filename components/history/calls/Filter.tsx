@@ -6,9 +6,26 @@ import React from 'react'
 import classNames from 'classnames'
 import { TextInput } from '../../common'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
-import { faChevronDown, faCircleXmark, faXmark } from '@fortawesome/free-solid-svg-icons'
+import {
+  faChevronDown,
+  faCircleXmark,
+  faXmark,
+  faMagnifyingGlass,
+} from '@fortawesome/free-solid-svg-icons'
 import { Fragment, useState, useEffect, useRef } from 'react'
-import { Dialog, DialogPanel, Disclosure, DisclosureButton, DisclosurePanel, Popover, PopoverButton, PopoverGroup, PopoverPanel, Transition, TransitionChild } from '@headlessui/react'
+import {
+  Dialog,
+  DialogPanel,
+  Disclosure,
+  DisclosureButton,
+  DisclosurePanel,
+  Popover,
+  PopoverButton,
+  PopoverGroup,
+  PopoverPanel,
+  Transition,
+  TransitionChild,
+} from '@headlessui/react'
 import { useSelector } from 'react-redux'
 import { RootState } from '../../../store'
 import { savePreference } from '../../../lib/storage'
@@ -684,6 +701,7 @@ export const Filter = forwardRef<HTMLButtonElement, FilterProps>(
                     value={filterText}
                     onChange={changeFilterText}
                     ref={textFilterRef}
+                    leadingIcon={faMagnifyingGlass}
                     icon={filterText.length ? faCircleXmark : undefined}
                     onIconClick={() => clearTextFilter()}
                     trailingIcon={true}
@@ -964,10 +982,7 @@ export const Filter = forwardRef<HTMLButtonElement, FilterProps>(
                     {t('Common.Active filters')}
                   </h3>
                   {/* separator */}
-                  <div
-                    aria-hidden='true'
-                    className='h-5 w-px block bg-gray-300 dark:bg-gray-600'
-                  />
+                  <div aria-hidden='true' className='h-5 w-px block bg-gray-300 dark:bg-gray-600' />
                   {/* show selected call type only if user has cdr permissions */}
                   {profile.macro_permissions?.cdr?.permissions?.ad_cdr?.value && (
                     <div className='mt-0'>

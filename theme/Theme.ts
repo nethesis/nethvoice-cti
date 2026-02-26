@@ -15,7 +15,7 @@ const theme = {
     whiteDanger:
       'border shadow-sm border-gray-300 dark:border-gray-500 bg-transparent dark:bg-transparent text-red-700 dark:text-red-500 hover:bg-gray-200 hover:bg-opacity-30 dark:hover:bg-gray-600 dark:hover:bg-opacity-30 focus:ring-primaryLight dark:focus:ring-primaryDark focus:ring-2 focus:ring-offset-2 leading-5 text-sm font-medium',
     ghost:
-      'border-gray-300 text-primary dark:text-primaryDark  hover:bg-gray-200 hover:bg-opacity-30 dark:hover:bg-gray-600 dark:hover:bg-opacity-30 focus:ring-primaryLight dark:border-gray-600 dark:focus:ring-primaryDark leading-5 text-sm font-medium',
+      'border border-transparent text-primary dark:text-primaryDark hover:bg-gray-200 hover:bg-opacity-30 dark:hover:bg-gray-600 dark:hover:bg-opacity-30 focus:ring-2 focus:ring-primaryLight dark:focus:ring-primaryDark focus:ring-offset-2 leading-5 text-sm font-medium',
     dashboard:
       'border-gray-300 text-primary dark:text-primaryDark hover:bg-gray-200 dark:border-gray-600  dark:hover:bg-gray-700 dark:hover:disabled:bg-transparent hover:disabled:bg-transparent dark:focus:ring-primaryDark',
     danger:
@@ -110,6 +110,27 @@ const theme = {
       top: 'rounded-tr-none rounded-tl-none',
       left: 'rounded-tl-none rounded-bl-none',
       bottom: 'rounded-bl-none rounded-br-none',
+    },
+  },
+  textarea: {
+    base: 'block w-full rounded-md border px-3 py-2 text-sm shadow-sm resize-y focus:z-[8] disabled:cursor-not-allowed bg-surfaceBackgroundInput dark:bg-surfaceBackgroundInputDark text-gray-900 dark:text-gray-100 disabled:border-gray-200 disabled:bg-gray-50 disabled:text-gray-500 dark:disabled:border-gray-700 dark:disabled:bg-gray-900 dark:disabled:text-gray-400',
+    label: 'text-sm font-medium text-inputText dark:text-inputTextDark',
+    optional: 'text-xs text-gray-500 dark:text-gray-400',
+    placeholder: {
+      base: 'placeholder:text-placeHolderInputText dark:placeholder:text-placeHolderInputTextDark',
+      error: '',
+    },
+    helper: {
+      base: 'mt-2 text-sm',
+      color: {
+        base: 'text-gray-500 dark:text-gray-400',
+        error: 'text-rose-600 dark:text-rose-400',
+      },
+    },
+    colors: {
+      gray: 'border-gray-300 focus:border-primaryLight focus:ring-primaryLight placeholder:text-gray-400 dark:border-gray-600 dark:focus:border-primaryDark dark:focus:ring-primaryDark dark:placeholder:text-gray-500',
+      error:
+        'border-rose-500 focus:border-rose-500 focus:ring-rose-500 dark:border-rose-400 dark:focus:border-rose-400 dark:focus:ring-rose-400',
     },
   },
   modal: {
@@ -468,7 +489,7 @@ const theme = {
     },
   },
   toast: {
-    base: 'pointer-events-auto max-w-xl overflow-hidden rounded-lg bg-elevationL2Invert dark:bg-elevationL2InvertDark shadow-lg ring-1 ring-black ring-opacity-5 rounded-lg p-6 pr-16 w-full flex items-center',
+    base: 'pointer-events-auto relative max-w-xl overflow-hidden rounded-lg bg-elevationL2Invert dark:bg-elevationL2InvertDark shadow-lg ring-1 ring-black ring-opacity-5 border border-gray-200/60 dark:border-gray-700/60 rounded-lg p-6 pr-16 w-full flex items-center',
     type: {
       info: '',
       error: '',

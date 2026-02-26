@@ -80,6 +80,11 @@ cat >> /app/public/config/config.production.js<<EOF
   LOGIN_PEOPLE: '${LOGIN_PEOPLE:-show}',
 EOF
 
+# openai key presence flag (do not expose the key)
+cat >> /app/public/config/config.production.js<<EOF
+  OPENAI_KEY_PRESENT: '${OPENAI_KEY_PRESENT}',
+EOF
+
 cat >> /app/public/config/config.production.js<<EOF
 }
 
