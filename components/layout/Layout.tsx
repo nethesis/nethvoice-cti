@@ -1278,7 +1278,7 @@ export const Layout: FC<LayoutProps> = ({ children }) => {
 
   useEffect(() => {
     return () => {
-      if (parkingsRefreshTimerRef.current) {
+      if (parkingsRefreshTimerRef?.current) {
         clearTimeout(parkingsRefreshTimerRef.current)
       }
     }
