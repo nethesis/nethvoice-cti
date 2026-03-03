@@ -1247,12 +1247,46 @@ export const Layout: FC<LayoutProps> = ({ children }) => {
   }
 
   const parkingInfo = useSelector((state: RootState) => state.park)
+  const parkingsRefreshTimerRef = useRef<ReturnType<typeof setTimeout> | null>(null)
+  const parkingsRefreshInFlightRef = useRef(false)
+
+  const scheduleParksRefresh = () => {
+    if (!profile?.macro_permissions?.settings?.permissions?.parkings?.value) {
+      return
+    }
+
+    // Debounce bursty update events (e.g. multiple parking events in short time).
+    if (parkingsRefreshTimerRef.current) {
+      clearTimeout(parkingsRefreshTimerRef.current)
+    }
+
+    parkingsRefreshTimerRef.current = setTimeout(async () => {
+      if (parkingsRefreshInFlightRef.current) {
+        return
+      }
+
+      parkingsRefreshInFlightRef.current = true
+      try {
+        await retrieveParksList()
+      } catch (e) {
+        console.error(e)
+      } finally {
+        parkingsRefreshInFlightRef.current = false
+      }
+    }, 250)
+  }
+
+  useEffect(() => {
+    return () => {
+      if (parkingsRefreshTimerRef?.current) {
+        clearTimeout(parkingsRefreshTimerRef.current)
+      }
+    }
+  }, [])
 
   useEventListener('phone-island-parking-update', () => {
     // On phone island event reload park lists
-    if (profile?.macro_permissions?.settings?.permissions?.parkings?.value) {
-      retrieveParksList()
-    }
+    scheduleParksRefresh()
   })
 
   const [firstRenderPark, setFirstRenderPark] = useState(true)
@@ -1262,9 +1296,7 @@ export const Layout: FC<LayoutProps> = ({ children }) => {
       return
     }
 
-    if (profile?.macro_permissions?.settings?.permissions?.parkings?.value) {
-      retrieveParksList()
-    }
+    scheduleParksRefresh()
   }, [firstRenderPark, profile?.macro_permissions?.settings?.permissions?.parkings?.value])
 
   const controls = useAnimation()
