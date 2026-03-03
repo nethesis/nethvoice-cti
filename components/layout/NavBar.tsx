@@ -14,7 +14,7 @@ import classNames from 'classnames'
 import type { NavItemsProps } from '../../config/routes'
 import Link from 'next/link'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
-import { Tooltip } from 'react-tooltip'
+import { CustomThemedTooltip } from '../common/CustomThemedTooltip'
 import { useSelector } from 'react-redux'
 import { RootState } from '../../store'
 import { useTranslation } from 'react-i18next'
@@ -88,9 +88,10 @@ export const NavBar: FC<NavBarProps> = ({ items }) => {
                       ? 'text-currentSidebarIconText dark:text-currentSidebarIconTextDark bg-sidebarIconBackground dark:bg-sidebarIconBackgroundDark'
                       : 'text-sidebarIconText dark:text-sidebarIconTextDark dark:hover:text-currentSidebarIconTextDark hover:text-currentSidebarIconText hover:bg-sidebarIconBackground dark:hover:bg-sidebarIconBackgroundDark ',
                     'group rounded-md flex flex-col items-center text-xs font-medium justify-center',
-                    `tooltip-${item.name}`,
                     'relative',
                   )}
+                  data-tooltip-id={`tooltip-${item.name}`}
+                  data-tooltip-content={t('Common.' + item.name)}
                   style={{
                     height: '3.125rem',
                     width: '3.125rem',
@@ -110,9 +111,7 @@ export const NavBar: FC<NavBarProps> = ({ items }) => {
                   )}
                 </div>
               </Link>
-              <Tooltip anchorSelect={`.tooltip-${item.name}`} place='right' offset={20}>
-                {t('Common.' + item.name)}
-              </Tooltip>
+              <CustomThemedTooltip id={`tooltip-${item.name}`} place='right' offset={20} />
             </div>
           ))}
         </div>
