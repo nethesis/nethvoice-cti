@@ -29,6 +29,11 @@ jobs:
           IMAGETAG=${IMAGETAG:-latest}
           if [[ "${IMAGETAG}" == "main" || "${IMAGETAG}" == "master" ]]; then
              IMAGETAG="latest"
+          else
+            IMAGETAG=$(echo "${IMAGETAG}" | tr '[:upper:]' '[:lower:]' | sed -E 's|[^a-z0-9_.-]|-|g; s|^[.-]+||; s|[.-]+$||; s|-+|-|g')
+            if [[ -z "${IMAGETAG}" ]]; then
+              IMAGETAG="latest"
+            fi
           fi
           echo "REPOBASE=$REPOBASE" >> $GITHUB_ENV
           echo "IMAGETAG=$IMAGETAG" >> $GITHUB_ENV
