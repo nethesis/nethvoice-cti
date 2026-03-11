@@ -1090,12 +1090,17 @@
     "Call transcription": "Trascrizione (in sola lettura)",
     "Call summary": "Riepilogo chiamata",
     "Summary": "Riepilogo",
+    "Summary unavailable": "Il riepilogo della chiamata non e' disponibile o non puo' essere caricato.",
+    "Summary load failed": "Impossibile caricare il riepilogo della chiamata.",
+    "Summary update failed": "Impossibile salvare il riepilogo della chiamata.",
     "Summary tooltip": "Questo riepilogo è stato generato dalla AI e può essere modificato.",
     "View full transcription": "Visualizza la trascrizione",
     "Call": "Chiamata",
     "AI content disclaimer": "Questo contenuto è stato generato automaticamente da un'intelligenza artificiale e potrebbe contenere imprecisioni.",
     "AI content disclaimer title": "Contenuto generato da AI",
     "Transcription disclaimer": "Questa trascrizione è stata generata automaticamente e potrebbe contenere imprecisioni.",
-    "Transcription disclaimer title": "Trascrizione generata da AI"
+    "Transcription disclaimer title": "Trascrizione generata da AI",
+    "Transcription unavailable": "La trascrizione della chiamata non e' disponibile o non puo' essere caricata.",
+    "Transcription load failed": "Impossibile caricare la trascrizione della chiamata."
   }
 }

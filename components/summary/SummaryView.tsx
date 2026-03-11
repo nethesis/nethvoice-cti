@@ -39,32 +39,44 @@ export const SummaryView: FC<SummaryViewProps> = ({
   const [isLoading, setIsLoading] = useState(false)
   const [isLoadingTranscription, setIsLoadingTranscription] = useState(false)
   const [isSaving, setIsSaving] = useState(false)
-  const [error, setError] = useState('')
+  const [loadError, setLoadError] = useState('')
+  const [saveError, setSaveError] = useState('')
+  const [transcriptionError, setTranscriptionError] = useState('')
   const [transcriptionLoaded, setTranscriptionLoaded] = useState(false)
 
   // Reset transcription state when uniqueid changes
   useEffect(() => {
     setTranscriptionLoaded(false)
     setTranscription('')
+    setLoadError('')
+    setSaveError('')
+    setTranscriptionError('')
     setShowTranscription(false)
   }, [uniqueid])
 
   const loadSummary = useCallback(async () => {
     setIsLoading(true)
-    setError('')
+    setLoadError('')
     try {
       const response = await getSummaryCall(uniqueid)
-      console.log('Summary data:', response)
       if (!response || !response.data) {
-        setError('Summary not found')
+        setSummary('')
+        setLoadError(t('Summary.Summary unavailable') || '')
         return
       }
-      const data = response.data
-      const summaryText = data.Summary || ''
+      const data = response.data?.data || response.data
+      const summaryText = data?.Summary || ''
+
+      if (!summaryText) {
+        setSummary('')
+        setLoadError(t('Summary.Summary unavailable') || '')
+        return
+      }
+
       setSummary(summaryText)
     } catch (err: any) {
-      console.error('Error loading summary:', err)
-      setError('Failed to load summary')
+      setSummary('')
+      setLoadError(t('Summary.Summary load failed') || '')
     } finally {
       setIsLoading(false)
     }
@@ -82,17 +94,30 @@ export const SummaryView: FC<SummaryViewProps> = ({
     }
 
     setIsLoadingTranscription(true)
+    setTranscriptionError('')
     try {
       const response = await getTranscription(uniqueid)
       if (response && response.data) {
-        setTranscription(response.data.transcription || '')
+        const data = response.data?.data || response.data
+        const transcriptionText = data?.transcription || data?.Transcription || ''
+
+        if (!transcriptionText) {
+          setTranscription('')
+          setTranscriptionError(t('Summary.Transcription unavailable') || '')
+          setTranscriptionLoaded(true)
+          return
+        }
+
+        setTranscription(transcriptionText)
         setTranscriptionLoaded(true)
       } else {
-        setTranscription('Transcription not available')
+        setTranscription('')
+        setTranscriptionError(t('Summary.Transcription unavailable') || '')
         setTranscriptionLoaded(true)
       }
     } catch (err: any) {
-      setTranscription('Failed to load transcription')
+      setTranscription('')
+      setTranscriptionError(t('Summary.Transcription load failed') || '')
       setTranscriptionLoaded(true)
     } finally {
       setIsLoadingTranscription(false)
@@ -111,12 +136,12 @@ export const SummaryView: FC<SummaryViewProps> = ({
 
   const handleSave = async () => {
     setIsSaving(true)
-    setError('')
+    setSaveError('')
     try {
       await updateSummary(uniqueid, summary)
       closeSideDrawer()
     } catch (err: any) {
-      setError('Failed to update summary')
+      setSaveError(t('Summary.Summary update failed') || '')
     } finally {
       setIsSaving(false)
     }
@@ -126,6 +151,13 @@ export const SummaryView: FC<SummaryViewProps> = ({
   const formatCallDate = (dateString?: string) => {
     if (!dateString) return ''
     try {
+      const numericDate = Number(dateString)
+
+      if (!Number.isNaN(numericDate)) {
+        const timestamp = `${dateString}`?.length <= 10 ? numericDate * 1000 : numericDate
+        return formatDateLoc(new Date(timestamp), 'dd MMM yyyy HH:mm')
+      }
+
       // Parse the date string (format: yyyyMMdd-HHmmss)
       const parsedDate = parse(dateString, 'yyyyMMdd-HHmmss', new Date())
       return formatDateLoc(parsedDate, 'dd MMM yyyy HH:mm')
@@ -137,24 +169,25 @@ export const SummaryView: FC<SummaryViewProps> = ({
   // Get display text for source
   const getSourceDisplayName = () => {
     if (!source) return ''
-    return source.name || source.company || source.number || ''
+    return source?.name || source?.company || source?.number || ''
   }
 
   // Get display text for destination
   const getDestinationDisplayName = () => {
     if (!destination) return ''
-    return destination.name || destination.company || destination.number || ''
+    return destination?.name || destination?.company || destination?.number || ''
   }
 
   return (
     <>
       <Divider />
-      {error ? (
-        <div className='mb-6 flex flex-col mt-8'>
-          <p className='text-sm text-red-500'>{error}</p>
-        </div>
-      ) : (
-        <div className='flex flex-col'>
+      <div className='flex flex-col'>
+        {saveError && (
+          <InlineNotification className='mt-6 border-none' type='error' title={t('Common.Error')}>
+            <p>{saveError}</p>
+          </InlineNotification>
+        )}
+
           {/* Call Information Section */}
           {(source || destination || date) && (
             <div className='mt-6 flex flex-col gap-4'>
@@ -167,13 +200,13 @@ export const SummaryView: FC<SummaryViewProps> = ({
                   <div className='flex items-start gap-2 shrink-0'>
                     <FontAwesomeIcon
                       icon={faPhone}
-                      className='h-4 w-4 text-tertiaryNeutral dark:text-tertiaryNeutralDark'
+                      className='mt-0.5 h-4 w-4 shrink-0 text-tertiaryNeutral dark:text-tertiaryNeutralDark'
                     />
                     <div className='text-sm text-tertiaryNeutral dark:text-tertiaryNeutralDark'>
                       <div>{getSourceDisplayName()}</div>
-                      {source.number && (source.name || source.company) && (
-                        <div className='text-emerald-700 dark:text-emerald-500'>
-                          {source.number}
+                      {source?.number && (source?.name || source?.company) && (
+                        <div className='text-primaryActive dark:text-primaryActiveDark'>
+                          {source?.number}
                         </div>
                       )}
                     </div>
@@ -190,13 +223,13 @@ export const SummaryView: FC<SummaryViewProps> = ({
                   <div className='flex items-start gap-2 shrink-0'>
                     <FontAwesomeIcon
                       icon={faPhone}
-                      className='h-4 w-4 text-tertiaryNeutral dark:text-tertiaryNeutralDark'
+                      className='mt-0.5 h-4 w-4 shrink-0 text-tertiaryNeutral dark:text-tertiaryNeutralDark'
                     />
                     <div className='text-sm text-tertiaryNeutral dark:text-tertiaryNeutralDark'>
                       <div>{getDestinationDisplayName()}</div>
-                      {destination.number && (destination.name || destination.company) && (
-                        <div className='text-emerald-700 dark:text-emerald-500'>
-                          {destination.number}
+                      {destination?.number && (destination?.name || destination?.company) && (
+                        <div className='text-primaryActive dark:text-primaryActiveDark'>
+                          {destination?.number}
                         </div>
                       )}
                     </div>
@@ -213,7 +246,7 @@ export const SummaryView: FC<SummaryViewProps> = ({
                   <div className='flex items-start gap-2 shrink-0'>
                     <FontAwesomeIcon
                       icon={faCalendar}
-                      className='h-4 w-4 text-tertiaryNeutral dark:text-tertiaryNeutralDark'
+                      className='mt-0.5 h-4 w-4 shrink-0 text-tertiaryNeutral dark:text-tertiaryNeutralDark'
                     />
                     <div className='text-sm text-tertiaryNeutral dark:text-tertiaryNeutralDark'>
                       {formatCallDate(date)}
@@ -232,10 +265,19 @@ export const SummaryView: FC<SummaryViewProps> = ({
           >
             <p className=''>{t('Summary.AI content disclaimer')}</p>
           </InlineNotification>
+
           {/* Summary */}
           <Label className='mt-8'>{t('Summary.Summary')}</Label>
           {isLoading ? (
             <Skeleton height='120px' />
+          ) : loadError ? (
+            <TextArea
+              placeholder={t('Summary.Summary unavailable') || ''}
+              value=''
+              onChange={() => undefined}
+              rows={4}
+              readOnly
+            />
           ) : (
             <TextArea
               placeholder={t('Summary.Summary') || ''}
@@ -262,6 +304,16 @@ export const SummaryView: FC<SummaryViewProps> = ({
               <Label className='mt-8'>{t('Summary.Call transcription')}</Label>
               {isLoadingTranscription ? (
                 <Skeleton height='120px' />
+              ) : transcriptionError ? (
+                <>
+                  <TextArea
+                    placeholder={t('Summary.Transcription unavailable') || ''}
+                    value=''
+                    onChange={() => undefined}
+                    rows={10}
+                    readOnly
+                  />
+                </>
               ) : (
                 <TextArea
                   placeholder={t('Summary.Call transcription') || ''}
@@ -273,13 +325,13 @@ export const SummaryView: FC<SummaryViewProps> = ({
               )}
             </>
           )}
-        </div>
-      )}
+      </div>
       <Divider paddingY='pb-10 pt-6' />
       <DrawerFooter
         cancelLabel={t('Common.Cancel') || ''}
         confirmLabel={isSaving ? t('Common.Loading') : t('Common.Save') || 'Save'}
         onConfirm={handleSave}
+        confirmDisabled={Boolean(loadError) || isLoading || isSaving}
       />
     </>
   )
