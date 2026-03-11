@@ -77,10 +77,9 @@ export const getParamUrl = async () => {
 export const getSummaryCall = async (uniqueId: string) => {
   try {
     const res = await axios.get(`/summary/${uniqueId}`)
-    return res.data
+    return res
   } catch (error: any) {
-    if (error?.response?.status === 404) {
-      console.log(`Summary not found for ${uniqueId}`)
+    if (error?.response?.status === 404 || error?.response?.status === 403) {
       return null
     }
     console.error('Error fetching summary:', error)
@@ -107,7 +106,7 @@ export const checkSummaryList = async (uniqueids: string[]) => {
 export const getTranscription = async (uniqueId: string) => {
   try {
     const res = await axios.get(`/transcripts/${uniqueId}`)
-    return res.data
+    return res
   } catch (error: any) {
     if (error?.response?.status === 404) {
       return null
