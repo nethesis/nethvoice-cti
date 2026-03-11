@@ -6,26 +6,8 @@ import React from 'react'
 import classNames from 'classnames'
 import { TextInput } from '../../common'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
-import {
-  faChevronDown,
-  faCircleXmark,
-  faXmark,
-  faMagnifyingGlass,
-} from '@fortawesome/free-solid-svg-icons'
-import { Fragment, useState, useEffect, useRef } from 'react'
-import {
-  Dialog,
-  DialogPanel,
-  Disclosure,
-  DisclosureButton,
-  DisclosurePanel,
-  Popover,
-  PopoverButton,
-  PopoverGroup,
-  PopoverPanel,
-  Transition,
-  TransitionChild,
-} from '@headlessui/react'
+import { faCircleXmark, faMagnifyingGlass } from '@fortawesome/free-solid-svg-icons'
+import { useState, useEffect, useRef } from 'react'
 import { useSelector } from 'react-redux'
 import { RootState } from '../../../store'
 import { savePreference } from '../../../lib/storage'
@@ -38,10 +20,10 @@ import {
 import { formatDateLoc } from '../../../lib/dateTime'
 import { subDays, startOfDay } from 'date-fns'
 import { useTranslation } from 'react-i18next'
-import Datepicker from 'react-tailwindcss-datepicker'
 import { useTheme } from '../../../theme/Context'
-import LanguageDetector from 'i18next-browser-languagedetector'
 import i18next from 'i18next'
+import { FilterDesktop } from './FilterDesktop'
+import { FilterMobile } from './FilterMobile'
 
 //Filter for the sort
 const sortFilter = {
@@ -381,319 +363,32 @@ export const Filter = forwardRef<HTMLButtonElement, FilterProps>(
       <div className={classNames('bg-body dark:bg-bodyDark', className)} {...props}>
         <div className=''>
           {/* Drawer filter mobile */}
-          <Transition show={open} as={Fragment}>
-            <Dialog as='div' className='relative z-40 sm:hidden' onClose={setOpen}>
-              <TransitionChild
-                as={Fragment}
-                enter='transition-opacity ease-linear duration-300'
-                enterFrom='opacity-0'
-                enterTo='opacity-100'
-                leave='transition-opacity ease-linear duration-300'
-                leaveFrom='opacity-100'
-                leaveTo='opacity-0'
-              >
-                <div className='fixed inset-0 bg-black bg-opacity-25 dark:bg-black dark:bg-opacity-25' />
-              </TransitionChild>
-
-              <div className='fixed inset-0 z-40 flex'>
-                <TransitionChild
-                  as={Fragment}
-                  enter='transition ease-in-out duration-300 transform'
-                  enterFrom='translate-x-full'
-                  enterTo='translate-x-0'
-                  leave='transition ease-in-out duration-300 transform'
-                  leaveFrom='translate-x-0'
-                  leaveTo='translate-x-full'
-                >
-                  <DialogPanel className='relative ml-auto flex h-full w-full max-w-xs flex-col overflow-y-auto py-4 pb-6 shadow-xl bg-white dark:bg-gray-900 scrollbar-thin scrollbar-thumb-gray-400 dark:scrollbar-thumb-gray-400 scrollbar-thumb-rounded-full scrollbar-thumb-opacity-50 scrollbar-track-gray-200 dark:scrollbar-track-gray-900 scrollbar-track-rounded-full scrollbar-track-opacity-25'>
-                    <div className='flex items-center justify-between px-4'>
-                      <h2 className='text-lg font-medium text-gray-900 dark:text-gray-100'>
-                        {t('History.Filters')}
-                      </h2>
-                      <button
-                        type='button'
-                        className='-mr-2 flex h-10 w-10 items-center justify-center rounded-md focus:outline-none focus:ring-2 p-2 bg-white text-gray-400 hover:bg-gray-50 focus:ring-primaryLight dark:bg-gray-900 dark:text-gray-400 dark:hover:bg-gray-800 dark:focus:ring-primaryDark'
-                        onClick={() => setOpen(false)}
-                      >
-                        <span className='sr-only'>{t('Common.Close menu')}</span>
-                        <FontAwesomeIcon icon={faXmark} className='h-5 w-5' aria-hidden='true' />
-                      </button>
-                    </div>
-
-                    {/* Filters (mobile) */}
-                    <form className='mt-4'>
-                      {/* call type filter (mobile) */}
-                      <Disclosure
-                        as='div'
-                        key={callTypeFilter?.name}
-                        className='border-t border-gray-200 px-4 py-6 dark:border-gray-700'
-                      >
-                        {({ open }) => (
-                          <>
-                            <h3 className='-mx-2 -my-3 flow-root'>
-                              <DisclosureButton className='flex w-full items-center justify-between px-2 py-3 text-sm bg-white text-gray-400 dark:bg-gray-900 dark:text-gray-500'>
-                                <span className='font-medium text-gray-900 dark:text-gray-100'>
-                                  {t(`History.${callTypeFilter?.name}`)}
-                                </span>
-                                <span className='ml-6 flex items-center'>
-                                  <FontAwesomeIcon
-                                    icon={faChevronDown}
-                                    className={classNames(
-                                      open ? '-rotate-180' : 'rotate-0',
-                                      'h-3 w-3 transform',
-                                    )}
-                                    aria-hidden='true'
-                                  />
-                                </span>
-                              </DisclosureButton>
-                            </h3>
-                            <DisclosurePanel className='pt-6 flex flex-col space-y-2'>
-                              <fieldset>
-                                <legend className='sr-only'>{callTypeFilter?.name}</legend>
-                              </fieldset>
-                              {/* show call type filter only if user has cdr permissions */}
-                              {profile?.macro_permissions?.cdr?.permissions?.ad_cdr?.value && (
-                                <>
-                                  <div className='space-y-4'>
-                                    {callTypeFilter?.options?.map((option) => (
-                                      <div key={option?.value} className='flex items-center'>
-                                        <input
-                                          id={option?.value}
-                                          name={`filter-${callTypeFilter?.id}`}
-                                          type='radio'
-                                          defaultChecked={option?.value === callType}
-                                          onChange={changeCallType}
-                                          className='h-4 w-4 border-gray-300 text-primary focus:ring-primary dark:border-gray-600 dark:text-primaryDark dark:focus:ring-primaryDark'
-                                        />
-                                        <label
-                                          htmlFor={option?.value}
-                                          className='ml-3 block text-sm font-medium text-gray-700 dark:text-gray-200'
-                                        >
-                                          {t(`History.${option?.label}`)}
-                                        </label>
-                                      </div>
-                                    ))}
-                                  </div>
-
-                                  {/* Divider  */}
-                                  <div className='relative'>
-                                    <div
-                                      className='absolute inset-0 flex items-center'
-                                      aria-hidden='true'
-                                    >
-                                      <div className='w-full border-t  border-gray-300 dark:border-gray-600' />
-                                    </div>
-                                  </div>
-                                </>
-                              )}
-
-                              <fieldset>
-                                <legend className='sr-only'>{callDirectionFilter?.name}</legend>
-                              </fieldset>
-
-                              {/* Call direction filter (mobile) */}
-                              {internalUsed && (
-                                <div className='space-y-4'>
-                                  {callDirectionFilter.options.map((option) => (
-                                    <div key={option?.value} className='flex items-center'>
-                                      <input
-                                        id={option.value}
-                                        name={`filter-${callDirectionFilter.id}`}
-                                        type='radio'
-                                        defaultChecked={
-                                          callType === 'user' && callDirection === 'internal'
-                                            ? option.value === 'all'
-                                            : option.value === callDirection
-                                        }
-                                        onChange={changeCallDirection}
-                                        className='h-4 w-4 border-gray-300 text-primary focus:ring-primary dark:border-gray-600 dark:text-primaryDark dark:focus:ring-primaryDark'
-                                      />
-                                      <label
-                                        htmlFor={option.value}
-                                        className='ml-3 block text-sm font-medium text-gray-700 dark:text-gray-200'
-                                      >
-                                        {t(`History.${option.label}`)}
-                                      </label>
-                                    </div>
-                                  ))}
-                                </div>
-                              )}
-                              {!internalUsed && (
-                                <div className='space-y-4'>
-                                  {callDirectionFilterNoInternal.options.map((option) => (
-                                    <div key={option.value} className='flex items-center'>
-                                      <input
-                                        id={option.value}
-                                        name={`filter-${callDirectionFilter.id}`}
-                                        type='radio'
-                                        defaultChecked={
-                                          callType === 'user' && callDirection === 'internal'
-                                            ? option.value === 'all'
-                                            : option.value === callDirection
-                                        }
-                                        onChange={changeCallDirection}
-                                        className='h-4 w-4 border-gray-300 text-primary focus:ring-primary dark:border-gray-600 dark:text-primaryDark dark:focus:ring-primaryDark'
-                                      />
-                                      <label
-                                        htmlFor={option.value}
-                                        className='ml-3 block text-sm font-medium text-gray-700 dark:text-gray-200'
-                                      >
-                                        {t(`History.${option.label}`)}
-                                      </label>
-                                    </div>
-                                  ))}
-                                </div>
-                              )}
-                            </DisclosurePanel>
-                          </>
-                        )}
-                      </Disclosure>
-                    </form>
-
-                    {/* Date input mobile */}
-                    <form className='mt-4'>
-                      <Disclosure
-                        as='div'
-                        key={date.name}
-                        className='border-t border-gray-200 px-4 py-6 dark:border-gray-700'
-                      >
-                        {({ open }) => (
-                          <>
-                            <h3 className='-mx-2 -my-3 flow-root'>
-                              <DisclosureButton className='flex w-full items-center justify-between bg-white px-2 py-3 text-sm text-gray-400 dark:bg-gray-900 dark:text-gray-500'>
-                                <span className='font-medium text-gray-900 dark:text-gray-100'>
-                                  {t(`History.${date.name}`)}
-                                </span>
-                                <span className='ml-6 flex items-center'>
-                                  <FontAwesomeIcon
-                                    icon={faChevronDown}
-                                    className={classNames(
-                                      open ? '-rotate-180' : 'rotate-0',
-                                      'h-3 w-3 transform',
-                                    )}
-                                    aria-hidden='true'
-                                  />
-                                </span>
-                              </DisclosureButton>
-                            </h3>
-                            <DisclosurePanel className='pt-6 flex flex-col'>
-                              <fieldset>
-                                <legend className='sr-only'>{date.name}</legend>
-                              </fieldset>
-                              <div className='flex pb-4'>
-                                <div className='relative flex-1'>
-                                  <label
-                                    htmlFor='startTime'
-                                    className='text-gray-700 dark:text-gray-300 mt-2'
-                                  >
-                                    {t('History.Start time')}:
-                                  </label>
-                                  <input
-                                    id='startTime'
-                                    type='time'
-                                    ref={hourBeginRef}
-                                    onChange={changeHourBegin}
-                                    defaultValue={hourBeginValue}
-                                    className={classNames(timePickerTheme.base)}
-                                  />
-                                </div>
-                                <div className='mx-4'></div>
-                                <div className='relative flex-1'>
-                                  <label
-                                    htmlFor='endTime'
-                                    className='text-gray-700 dark:text-gray-300 mb-2'
-                                  >
-                                    {t('History.End time')}:
-                                  </label>
-                                  <input
-                                    id='endTime'
-                                    type='time'
-                                    ref={hourEndRef}
-                                    onChange={changeHourEnd}
-                                    defaultValue={hourEndValue}
-                                    className={classNames(timePickerTheme.base)}
-                                  />
-                                </div>
-                              </div>
-
-                              <Datepicker
-                                i18n={selectedLanguage?.toString()}
-                                value={dateValue}
-                                onChange={changeDateBegin}
-                                primaryColor={'emerald'}
-                                showShortcuts={false}
-                                separator={t('History.to') || ''}
-                                placeholder={t('History.Choose a date range') || ''}
-                                inputClassName={classNames(datePickerTheme.base)}
-                              />
-                            </DisclosurePanel>
-                          </>
-                        )}
-                      </Disclosure>
-                    </form>
-
-                    {/* Sort input mobile */}
-                    <form className='mt-4'>
-                      <Disclosure
-                        as='div'
-                        key={sortFilter.name}
-                        className='border-t border-gray-200 px-4 py-6 dark:border-gray-700'
-                      >
-                        {({ open }) => (
-                          <>
-                            <h3 className='-mx-2 -my-3 flow-root'>
-                              <DisclosureButton className='flex w-full items-center justify-between bg-white px-2 py-3 text-sm text-gray-400 dark:bg-gray-900 dark:text-gray-500'>
-                                <span className='font-medium text-gray-900 dark:text-gray-100'>
-                                  {t(`History.${sortFilter.name}`)}
-                                </span>
-                                <span className='ml-6 flex items-center'>
-                                  <FontAwesomeIcon
-                                    icon={faChevronDown}
-                                    className={classNames(
-                                      open ? '-rotate-180' : 'rotate-0',
-                                      'h-3 w-3 transform',
-                                    )}
-                                    aria-hidden='true'
-                                  />
-                                </span>
-                              </DisclosureButton>
-                            </h3>
-                            <DisclosurePanel className='pt-6 flex flex-col'>
-                              <fieldset>
-                                <legend className='sr-only'>
-                                  {t(`History.${sortFilter.name}`)}
-                                </legend>
-                              </fieldset>
-                              <div className='space-y-4'>
-                                {sortFilter.options.map((option) => (
-                                  <div key={option.value} className='flex items-center'>
-                                    <input
-                                      id={option.value}
-                                      name={`filter-${sortFilter.id}`}
-                                      type='radio'
-                                      defaultChecked={option.value === sortBy}
-                                      onChange={changeSortBy}
-                                      className='h-4 w-4 border-gray-300 text-primary focus:ring-primary dark:border-gray-600 dark:text-primaryDark dark:focus:ring-primaryDark'
-                                    />
-                                    <label
-                                      htmlFor={option.value}
-                                      className='ml-3 block text-sm font-medium text-gray-700 dark:text-gray-200 space-y-4'
-                                    >
-                                      {t(`History.${option.label}`)}
-                                    </label>
-                                  </div>
-                                ))}
-                              </div>
-                            </DisclosurePanel>
-                          </>
-                        )}
-                      </Disclosure>
-                    </form>
-                  </DialogPanel>
-                </TransitionChild>
-              </div>
-            </Dialog>
-          </Transition>
+          <FilterMobile
+            open={open}
+            setOpen={setOpen}
+            callTypeFilter={callTypeFilter}
+            callType={callType}
+            changeCallType={changeCallType}
+            profile={profile}
+            internalUsed={internalUsed}
+            callDirectionFilter={callDirectionFilter}
+            callDirectionFilterNoInternal={callDirectionFilterNoInternal}
+            callDirection={callDirection}
+            changeCallDirection={changeCallDirection}
+            date={date}
+            hourBeginRef={hourBeginRef}
+            hourEndRef={hourEndRef}
+            hourBeginValue={hourBeginValue}
+            hourEndValue={hourEndValue}
+            changeHourBegin={changeHourBegin}
+            changeHourEnd={changeHourEnd}
+            selectedLanguage={selectedLanguage}
+            dateValue={dateValue}
+            changeDateBegin={changeDateBegin}
+            sortFilter={sortFilter}
+            sortBy={sortBy}
+            changeSortBy={changeSortBy}
+          />
 
           {/* Filter pc */}
           <div className='mx-auto text-center'>
@@ -717,263 +412,30 @@ export const Filter = forwardRef<HTMLButtonElement, FilterProps>(
                   />
                 </div>
                 <div className='flex'>
-                  <PopoverGroup className='hidden sm:flex sm:items-baseline sm:space-x-4'>
-                    {/* call type filter */}
-                    <Popover
-                      as='div'
-                      key={callTypeFilter?.name}
-                      id={`desktop-menu-${callTypeFilter?.id}`}
-                      className='relative inline-block text-left'
-                    >
-                      <div>
-                        <PopoverButton className='px-3 py-2 text-sm leading-4 rounded border shadow-sm border-gray-300 bg-white text-gray-700 hover:bg-gray-100 focus:ring-primaryLight dark:border-gray-600 dark:bg-gray-900 dark:text-gray-100 dark:hover:bg-gray-800 dark:focus:ring-primaryDark group inline-flex items-center justify-center font-medium  hover:text-gray-900 dark:hover:text-gray-100'>
-                          <span> {t(`History.${callTypeFilter?.name}`)}</span>
-                          <FontAwesomeIcon
-                            icon={faChevronDown}
-                            className='ml-2 h-3 w-3 flex-shrink-0 text-gray-400 group-hover:text-gray-500 dark:text-gray-500 dark:group-hover:text-gray-400'
-                            aria-hidden='true'
-                          />
-                        </PopoverButton>
-                      </div>
-                      <Transition
-                        as={Fragment}
-                        enter='transition ease-out duration-100'
-                        enterFrom='transform opacity-0 scale-95'
-                        enterTo='transform opacity-100 scale-100'
-                        leave='transition ease-in duration-75'
-                        leaveFrom='transform opacity-100 scale-100'
-                        leaveTo='transform opacity-0 scale-95'
-                      >
-                        <PopoverPanel className='absolute right-0 z-10 mt-2 origin-top-right rounded-md flex flex-col space-y-4 bg-white p-4 shadow-2xl ring-1 ring-black ring-opacity-5 focus:outline-none dark:bg-gray-900 dark:ring-gray-700 '>
-                          {/* Call type */}
-                          <>
-                            <form className='space-y-4'>
-                              {callTypeFilter?.options
-                                ?.filter((option) => {
-                                  // check user permissions for switchboard and groups type
-                                  if (option.value === 'switchboard') {
-                                    return profile?.macro_permissions?.cdr?.permissions?.ad_cdr
-                                      ?.value
-                                  } else if (option.value === 'group') {
-                                    return profile?.macro_permissions?.cdr?.permissions?.group_cdr
-                                      ?.value
-                                  } else {
-                                    return true
-                                  }
-                                })
-                                .map((option) => (
-                                  <div key={option?.value} className='flex items-center'>
-                                    <input
-                                      id={option?.value}
-                                      name={`filter-${callTypeFilter?.id}`}
-                                      type='radio'
-                                      defaultChecked={option?.value === callType}
-                                      onChange={changeCallType}
-                                      className='h-4 w-4 border-gray-300 text-primary focus:ring-primary dark:border-gray-600 dark:text-primaryDark dark:focus:ring-primaryDark'
-                                    />
-                                    <label
-                                      htmlFor={option?.value}
-                                      className='ml-3 block text-sm font-medium text-gray-700 dark:text-gray-200'
-                                    >
-                                      {t(`History.${option?.label}`)}
-                                    </label>
-                                  </div>
-                                ))}
-                            </form>
-
-                            {/* Divider */}
-                            <div className='relative '>
-                              <div
-                                className='absolute inset-0 flex items-center'
-                                aria-hidden='true'
-                              >
-                                <div className='w-full border-t border-gray-300 dark:border-gray-600' />
-                              </div>
-                            </div>
-                          </>
-
-                          {/* Call direction */}
-                          {internalUsed && (
-                            <form className='space-y-4'>
-                              {callDirectionFilter.options.map((option) => (
-                                <div key={option.value} className='flex items-center'>
-                                  <input
-                                    id={option.value}
-                                    name={`filter-${callDirectionFilter.id}`}
-                                    type='radio'
-                                    defaultChecked={
-                                      callType === 'user' && callDirection === 'internal'
-                                        ? option.value === 'all'
-                                        : option.value === callDirection
-                                    }
-                                    onChange={changeCallDirection}
-                                    className='h-4 w-4 border-gray-300 text-primary focus:ring-primary dark:border-gray-600 dark:text-primaryDark dark:focus:ring-primaryDark'
-                                  />
-                                  <label
-                                    htmlFor={option.value}
-                                    className='ml-3 block text-sm font-medium text-gray-700 dark:text-gray-200'
-                                  >
-                                    {t(`History.${option.label}`)}
-                                  </label>
-                                </div>
-                              ))}
-                            </form>
-                          )}
-                          {!internalUsed && (
-                            <form className='space-y-4'>
-                              {callDirectionFilterNoInternal.options.map((option) => (
-                                <div key={option.value} className='flex items-center'>
-                                  <input
-                                    id={option.value}
-                                    name={`filter-${callDirectionFilter.id}`}
-                                    type='radio'
-                                    defaultChecked={
-                                      callType === 'user' && callDirection === 'internal'
-                                        ? option.value === 'all'
-                                        : option.value === callDirection
-                                    }
-                                    onChange={changeCallDirection}
-                                    className='h-4 w-4 border-gray-300 text-primary focus:ring-primary dark:border-gray-600 dark:text-primaryDark dark:focus:ring-primaryDark'
-                                  />
-                                  <label
-                                    htmlFor={option.value}
-                                    className='ml-3 block text-sm font-medium text-gray-700 dark:text-gray-200'
-                                  >
-                                    {t(`History.${option.label}`)}
-                                  </label>
-                                </div>
-                              ))}
-                            </form>
-                          )}
-                        </PopoverPanel>
-                      </Transition>
-                    </Popover>
-
-                    {/* Date filter */}
-                    <Popover className='relative inline-block text-left'>
-                      <div>
-                        <PopoverButton className='px-3 py-2 text-sm leading-4 rounded border p-2  shadow-sm border-gray-300 bg-white text-gray-700 hover:bg-gray-100 focus:ring-primaryLight dark:border-gray-600 dark:bg-gray-900 dark:text-gray-100 dark:hover:bg-gray-800 dark:focus:ring-primaryDark group inline-flex items-center justify-center font-medium  hover:text-gray-900 dark:hover:text-gray-100'>
-                          <span> {t(`History.${date.name}`)}</span>
-                          <FontAwesomeIcon
-                            icon={faChevronDown}
-                            className='ml-2 h-3 w-3 flex-shrink-0 text-gray-400 group-hover:text-gray-500 dark:text-gray-500 dark:group-hover:text-gray-400'
-                            aria-hidden='true'
-                          />
-                        </PopoverButton>
-                      </div>
-                      <Transition
-                        as={Fragment}
-                        enter='transition ease-out duration-100'
-                        enterFrom='transform opacity-0 scale-95'
-                        enterTo='transform opacity-100 scale-100'
-                        leave='transition ease-in duration-75'
-                        leaveFrom='transform opacity-100 scale-100'
-                        leaveTo='transform opacity-0 scale-95'
-                      >
-                        <PopoverPanel className='absolute right-0 z-10 mt-2 origin-top-right rounded-md bg-white ring-black dark:bg-gray-900 dark:ring-gray-600  p-4 shadow-2xl ring-1 ring-opacity-5'>
-                          <div className='flex pb-4'>
-                            <div className='relative flex-1'>
-                              <label
-                                htmlFor='startTime'
-                                className='text-gray-700 dark:text-gray-300 mt-2'
-                              >
-                                {t('History.Start time')}:
-                              </label>
-                              <input
-                                id='startTime'
-                                type='time'
-                                ref={hourBeginRef}
-                                onChange={changeHourBegin}
-                                defaultValue={hourBeginValue}
-                                className={classNames(timePickerTheme.base)}
-                              />
-                            </div>
-                            <div className='mx-4'></div>
-                            <div className='relative flex-1'>
-                              <label
-                                htmlFor='endTime'
-                                className='text-gray-700 dark:text-gray-300 mb-2'
-                              >
-                                {t('History.End time')}:
-                              </label>
-                              <input
-                                id='endTime'
-                                type='time'
-                                ref={hourEndRef}
-                                onChange={changeHourEnd}
-                                defaultValue={hourEndValue}
-                                className={classNames(timePickerTheme.base)}
-                              />
-                            </div>
-                          </div>
-
-                          <Datepicker
-                            i18n={selectedLanguage?.toString()}
-                            value={dateValue}
-                            onChange={changeDateBegin}
-                            primaryColor={'emerald'}
-                            showShortcuts={false}
-                            separator={t('History.to') || ''}
-                            placeholder={t('History.Choose a date range') || ''}
-                            displayFormat={'DD/MM/YYYY'}
-                            inputClassName={classNames(datePickerTheme.base)}
-                          />
-                        </PopoverPanel>
-                      </Transition>
-                    </Popover>
-
-                    {/* Sort filter */}
-                    <Popover
-                      as='div'
-                      key={sortFilter.name}
-                      id={`desktop-menu-${sortFilter.id}`}
-                      className='relative inline-block text-left'
-                    >
-                      <div>
-                        <PopoverButton className='px-3 py-2 text-sm leading-4 p-2 rounded border shadow-sm border-gray-300 bg-white text-gray-700 hover:bg-gray-100 focus:ring-primaryLight dark:border-gray-600 dark:bg-gray-900 dark:text-gray-100 dark:hover:bg-gray-800 dark:focus:ring-primaryDark group inline-flex items-center justify-center font-medium  hover:text-gray-900 dark:hover:text-gray-100'>
-                          <span>{t(`History.${sortFilter.name}`)}</span>
-                          <FontAwesomeIcon
-                            icon={faChevronDown}
-                            className='ml-2 h-3 w-3 flex-shrink-0 text-gray-400 group-hover:text-gray-500 dark:text-gray-500 dark:group-hover:text-gray-400'
-                            aria-hidden='true'
-                          />
-                        </PopoverButton>
-                      </div>
-
-                      <Transition
-                        as={Fragment}
-                        enter='transition ease-out duration-100'
-                        enterFrom='transform opacity-0 scale-95'
-                        enterTo='transform opacity-100 scale-100'
-                        leave='transition ease-in duration-75'
-                        leaveFrom='transform opacity-100 scale-100'
-                        leaveTo='transform opacity-0 scale-95'
-                      >
-                        <PopoverPanel className='absolute right-0 z-10 mt-2 origin-top-right rounded-md p-4 shadow-2xl ring-1 ring-opacity-5 focus:outline-none bg-white ring-black dark:bg-gray-900 dark:ring-gray-600'>
-                          <form className='space-y-4'>
-                            {sortFilter.options.map((option) => (
-                              <div key={option.value} className='flex items-center'>
-                                <input
-                                  id={option.value}
-                                  name={`filter-${sortFilter.id}`}
-                                  type='radio'
-                                  defaultChecked={option.value === sortBy}
-                                  onChange={changeSortBy}
-                                  className='h-4 w-4 border-gray-300 text-primary focus:ring-primary dark:border-gray-600 dark:text-primaryDark dark:focus:ring-primaryDark'
-                                />
-                                <label
-                                  htmlFor={option.value}
-                                  className='ml-3 block text-sm font-medium text-gray-700 dark:text-gray-200'
-                                >
-                                  {t(`History.${option.label}`)}
-                                </label>
-                              </div>
-                            ))}
-                          </form>
-                        </PopoverPanel>
-                      </Transition>
-                    </Popover>
-                  </PopoverGroup>
+                  <FilterDesktop
+                    callTypeFilter={callTypeFilter}
+                    callType={callType}
+                    changeCallType={changeCallType}
+                    profile={profile}
+                    internalUsed={internalUsed}
+                    callDirectionFilter={callDirectionFilter}
+                    callDirectionFilterNoInternal={callDirectionFilterNoInternal}
+                    callDirection={callDirection}
+                    changeCallDirection={changeCallDirection}
+                    date={date}
+                    hourBeginRef={hourBeginRef}
+                    hourEndRef={hourEndRef}
+                    hourBeginValue={hourBeginValue}
+                    hourEndValue={hourEndValue}
+                    changeHourBegin={changeHourBegin}
+                    changeHourEnd={changeHourEnd}
+                    selectedLanguage={selectedLanguage}
+                    dateValue={dateValue}
+                    changeDateBegin={changeDateBegin}
+                    sortFilter={sortFilter}
+                    sortBy={sortBy}
+                    changeSortBy={changeSortBy}
+                  />
                   <button
                     type='button'
                     className='inline-block text-sm font-medium text-gray-700 dark:text-gray-300 hover:text-gray-900  dark:hover:text-gray-100 sm:hidden ml-4'
@@ -987,17 +449,17 @@ export const Filter = forwardRef<HTMLButtonElement, FilterProps>(
               {/* Active filters */}
               <div>
                 <div className='mx-auto pt-3 flex flex-wrap items-center gap-y-2 gap-x-4'>
-                  <h3 className='text-sm font-medium text-gray-500 dark:text-gray-400 text-left sm:text-center'>
+                  <h3 className='text-sm font-normal text-primaryNeutral dark:text-primaryNeutralDark text-left sm:text-center'>
                     {t('Common.Active filters')}
                   </h3>
                   {/* separator */}
-                  <div aria-hidden='true' className='h-5 w-px block bg-gray-300 dark:bg-gray-600' />
+                  <div aria-hidden='true' className='h-5 w-px block bg-layoutDivider dark:bg-layoutDividerDark' />
                   {/* show selected call type only if user has cdr permissions */}
                   {profile.macro_permissions?.cdr?.permissions?.ad_cdr?.value && (
                     <div className='mt-0'>
                       <div className='-m-1 flex flex-wrap items-center'>
-                        <span className='m-1 inline-flex items-center rounded-full border py-1.5 px-3 text-sm font-medium border-gray-300 text-gray-700 dark:border-gray-600 dark:text-gray-100'>
-                          <span className='text-gray-600 dark:text-gray-300'>
+                        <span className='m-1 inline-flex items-center rounded-full border py-1.5 px-3 text-sm border-borderRingInput dark:border-borderRingInputDark'>
+                          <span className='text-secondaryNeutral dark:text-secondaryNeutralDark font-normal leading-5'>
                             {t('History.Call type')}:&nbsp;
                           </span>
                           {callTypeLabel && t(`History.${callTypeLabel}`)}
@@ -1008,8 +470,8 @@ export const Filter = forwardRef<HTMLButtonElement, FilterProps>(
                   {/* Call direction */}
                   <div className='mt-0'>
                     <div className='-m-1 flex flex-wrap items-center'>
-                      <span className='m-1 inline-flex items-center rounded-full border py-1.5 px-3 text-sm font-medium border-gray-300 text-gray-700 dark:border-gray-600 dark:text-gray-100'>
-                        <span className='text-gray-600 dark:text-gray-300'>
+                      <span className='m-1 inline-flex items-center rounded-full border py-1.5 px-3 text-sm border-borderRingInput dark:border-borderRingInputDark'>
+                        <span className='text-secondaryNeutral dark:text-secondaryNeutralDark font-normal leading-5'>
                           {t('History.Call direction')}:&nbsp;
                         </span>
                         {callDirectionLabel && t(`History.${callDirectionLabel}`)}
@@ -1019,8 +481,8 @@ export const Filter = forwardRef<HTMLButtonElement, FilterProps>(
                   {/* filter date from */}
                   <div className='mt-0'>
                     <div className='-m-1 flex flex-wrap items-center'>
-                      <span className='m-1 inline-flex items-center rounded-full border py-1.5 px-3 text-sm font-medium border-gray-300 text-gray-700 dark:border-gray-600 dark:text-gray-100'>
-                        <span className='text-gray-600 dark:text-gray-300'>
+                      <span className='m-1 inline-flex items-center rounded-full border py-1.5 px-3 text-sm border-borderRingInput dark:border-borderRingInputDark'>
+                        <span className='text-secondaryNeutral dark:text-secondaryNeutralDark font-normal leading-5'>
                           {t('History.From')}:&nbsp;
                         </span>
                         {!dateValue.startDate || clearSelected ? labelForDateFrom : dateBeginShowed}
@@ -1030,8 +492,8 @@ export const Filter = forwardRef<HTMLButtonElement, FilterProps>(
                   {/* Filter date to  */}
                   <div className='mt-0'>
                     <div className='-m-1 flex flex-wrap items-center'>
-                      <span className='m-1 inline-flex items-center rounded-full border py-1.5 px-3 text-sm font-medium border-gray-300 text-gray-700 dark:border-gray-600 dark:text-gray-100'>
-                        <span className='text-gray-600 dark:text-gray-300'>
+                      <span className='m-1 inline-flex items-center rounded-full border py-1.5 px-3 text-sm border-borderRingInput dark:border-borderRingInputDark'>
+                        <span className='text-secondaryNeutral dark:text-secondaryNeutralDark font-normal leading-5'>
                           {t('History.To')}:&nbsp;
                         </span>
                         {!dateValue.endDate || clearSelected ? labelForDateTo : dateEndShowed}
@@ -1041,14 +503,14 @@ export const Filter = forwardRef<HTMLButtonElement, FilterProps>(
                   {/* separator */}
                   <div
                     aria-hidden='true'
-                    className='h-5 w-px sm:block bg-gray-300 dark:bg-gray-600'
+                    className='h-5 w-px sm:block bg-layoutDivider dark:bg-layoutDividerDark'
                   />
                   <div>
                     {/* reset filters */}
                     <div className='mt-0 text-center'>
                       <button
                         type='button'
-                        className='text-sm hover:underline text-primary dark:text-primaryDark'
+                        className='text-sm font-medium hover:underline text-primaryActive dark:text-primaryActiveDark'
                         onClick={clearFilters}
                       >
                         {t('Common.Reset filters')}

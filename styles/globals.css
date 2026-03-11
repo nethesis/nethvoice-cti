@@ -353,6 +353,12 @@
   --color-elevation-l4-dark: #4B5563;
 
   /* border */
+  --color-ring-input: #D1D5DB;
+  --color-ring-input-dark: #6B7280;
+
+  --color-ring-button: #D1D5DB;
+  --color-ring-button-dark: #6B7280;
+  
   /* layoutDivider */
   --color-layout-divider: #E5E7EB;
   --color-layout-divider-dark: #374151;
