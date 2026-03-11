@@ -206,6 +206,10 @@ module.exports = {
         dividerDark: 'var(--color-divider-dark)',
         skeletonBg: 'var(--color-skeleton-bg)',
         skeletonBgDark: 'var(--color-skeleton-bg-dark)',
+        borderRingInput: 'var(--color-ring-input)',
+        borderRingInputDark: 'var(--color-ring-input-dark)',
+        borderRingButton: 'var(--color-ring-button)',
+        borderRingButtonDark: 'var(--color-ring-button-dark)',
       },
       screens: {
         '3xl': '1792px',
