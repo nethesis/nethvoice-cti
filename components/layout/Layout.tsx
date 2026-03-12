@@ -1359,7 +1359,7 @@ export const Layout: FC<LayoutProps> = ({ children }) => {
     }
   }, [])
 
-  useEventListener('phone-island-summary-call-checked', (data: { uniqueId?: string }) => {
+  useEventListener('phone-island-summary-not-ready', (data: { uniqueId?: string }) => {
     if (!data?.uniqueId || !isSummaryEnabled) {
       return
     }
