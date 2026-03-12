@@ -1420,18 +1420,6 @@ export const Layout: FC<LayoutProps> = ({ children }) => {
             config: {
               uniqueid: data?.uniqueId,
               isSummary: true,
-              // TODO: Replace with actual data from GET API when implemented
-              source: {
-                name: 'Unknown Caller',
-                company: '',
-                number: '',
-              },
-              destination: {
-                name: 'Unknown Destination',
-                company: '',
-                number: '',
-              },
-              date: '',
             },
           })
           notification.close()
@@ -1457,18 +1445,6 @@ export const Layout: FC<LayoutProps> = ({ children }) => {
                 config: {
                   uniqueid: data?.uniqueId,
                   isSummary: true,
-                  // TODO: Replace with actual data from GET API when implemented
-                  source: {
-                    name: 'Unknown Caller',
-                    company: '',
-                    number: '',
-                  },
-                  destination: {
-                    name: 'Unknown Destination',
-                    company: '',
-                    number: '',
-                  },
-                  date: '',
                 },
               })
               notification.close()

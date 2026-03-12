@@ -12,27 +12,12 @@ import { DrawerFooter } from '../common/DrawerFooter'
 import { getSummaryCall, getTranscription, updateSummary } from '../../services/user'
 import { closeSideDrawer } from '../../lib/utils'
 import { formatDateLoc } from '../../lib/dateTime'
-import { parse } from 'date-fns'
-
-interface CallParty {
-  name?: string
-  company?: string
-  number?: string
-}
 
 interface SummaryViewProps {
   uniqueid: string
-  source?: CallParty
-  destination?: CallParty
-  date?: string
 }
 
-export const SummaryView: FC<SummaryViewProps> = ({
-  uniqueid,
-  source,
-  destination,
-  date,
-}) => {
+export const SummaryView: FC<SummaryViewProps> = ({ uniqueid }) => {
   const [summary, setSummary] = useState('')
   const [transcription, setTranscription] = useState('')
   const [showTranscription, setShowTranscription] = useState(false)
@@ -43,6 +28,13 @@ export const SummaryView: FC<SummaryViewProps> = ({
   const [saveError, setSaveError] = useState('')
   const [transcriptionError, setTranscriptionError] = useState('')
   const [transcriptionLoaded, setTranscriptionLoaded] = useState(false)
+  const [callInfo, setCallInfo] = useState<{
+    src?: string
+    dst?: string
+    cnam?: string
+    dst_cnam?: string
+    call_timestamp?: string
+  }>({})
 
   // Reset transcription state when uniqueid changes
   useEffect(() => {
@@ -65,7 +57,15 @@ export const SummaryView: FC<SummaryViewProps> = ({
         return
       }
       const data = response.data?.data || response.data
-      const summaryText = data?.Summary || ''
+      const summaryText = data?.Summary || data?.summary || ''
+
+      setCallInfo({
+        src: data?.src,
+        dst: data?.dst,
+        cnam: data?.cnam,
+        dst_cnam: data?.dst_cnam,
+        call_timestamp: data?.call_timestamp,
+      })
 
       if (!summaryText) {
         setSummary('')
@@ -97,7 +97,7 @@ export const SummaryView: FC<SummaryViewProps> = ({
     setTranscriptionError('')
     try {
       const response = await getTranscription(uniqueid)
-      if (response && response.data) {
+      if (response && response?.data) {
         const data = response.data?.data || response.data
         const transcriptionText = data?.transcription || data?.Transcription || ''
 
@@ -147,37 +147,6 @@ export const SummaryView: FC<SummaryViewProps> = ({
     }
   }
 
-  // Format the date if available
-  const formatCallDate = (dateString?: string) => {
-    if (!dateString) return ''
-    try {
-      const numericDate = Number(dateString)
-
-      if (!Number.isNaN(numericDate)) {
-        const timestamp = `${dateString}`?.length <= 10 ? numericDate * 1000 : numericDate
-        return formatDateLoc(new Date(timestamp), 'dd MMM yyyy HH:mm')
-      }
-
-      // Parse the date string (format: yyyyMMdd-HHmmss)
-      const parsedDate = parse(dateString, 'yyyyMMdd-HHmmss', new Date())
-      return formatDateLoc(parsedDate, 'dd MMM yyyy HH:mm')
-    } catch (e) {
-      return dateString
-    }
-  }
-
-  // Get display text for source
-  const getSourceDisplayName = () => {
-    if (!source) return ''
-    return source?.name || source?.company || source?.number || ''
-  }
-
-  // Get display text for destination
-  const getDestinationDisplayName = () => {
-    if (!destination) return ''
-    return destination?.name || destination?.company || destination?.number || ''
-  }
-
   return (
     <>
       <Divider />
@@ -188,143 +157,174 @@ export const SummaryView: FC<SummaryViewProps> = ({
           </InlineNotification>
         )}
 
-          {/* Call Information Section */}
-          {(source || destination || date) && (
-            <div className='mt-6 flex flex-col gap-4'>
-              {/* Source */}
-              {source && (
-                <div className='flex items-start gap-8 w-full'>
-                  <div className='text-sm font-medium text-secondaryNeutral dark:text-secondaryNeutralDark w-[90px] shrink-0'>
-                    {t('History.Source')}
-                  </div>
-                  <div className='flex items-start gap-2 shrink-0'>
-                    <FontAwesomeIcon
-                      icon={faPhone}
-                      className='mt-0.5 h-4 w-4 shrink-0 text-tertiaryNeutral dark:text-tertiaryNeutralDark'
-                    />
-                    <div className='text-sm text-tertiaryNeutral dark:text-tertiaryNeutralDark'>
-                      <div>{getSourceDisplayName()}</div>
-                      {source?.number && (source?.name || source?.company) && (
-                        <div className='text-primaryActive dark:text-primaryActiveDark'>
-                          {source?.number}
-                        </div>
-                      )}
-                    </div>
-                  </div>
-                </div>
-              )}
-
-              {/* Destination */}
-              {destination && (
-                <div className='flex items-start gap-8 w-full'>
-                  <div className='text-sm font-medium text-secondaryNeutral dark:text-secondaryNeutralDark w-[90px] shrink-0'>
-                    {t('History.Destination')}
-                  </div>
-                  <div className='flex items-start gap-2 shrink-0'>
-                    <FontAwesomeIcon
-                      icon={faPhone}
-                      className='mt-0.5 h-4 w-4 shrink-0 text-tertiaryNeutral dark:text-tertiaryNeutralDark'
-                    />
-                    <div className='text-sm text-tertiaryNeutral dark:text-tertiaryNeutralDark'>
-                      <div>{getDestinationDisplayName()}</div>
-                      {destination?.number && (destination?.name || destination?.company) && (
-                        <div className='text-primaryActive dark:text-primaryActiveDark'>
-                          {destination?.number}
-                        </div>
-                      )}
-                    </div>
-                  </div>
-                </div>
-              )}
-
-              {/* Date */}
-              {date && (
-                <div className='flex items-start gap-8 w-full'>
-                  <div className='text-sm font-medium text-secondaryNeutral dark:text-secondaryNeutralDark w-[90px] shrink-0'>
-                    {t('History.Date')}
-                  </div>
-                  <div className='flex items-start gap-2 shrink-0'>
-                    <FontAwesomeIcon
-                      icon={faCalendar}
-                      className='mt-0.5 h-4 w-4 shrink-0 text-tertiaryNeutral dark:text-tertiaryNeutralDark'
-                    />
-                    <div className='text-sm text-tertiaryNeutral dark:text-tertiaryNeutralDark'>
-                      {formatCallDate(date)}
-                    </div>
-                  </div>
-                </div>
-              )}
+        {/* Call Information Section */}
+        <div className='mt-6 flex flex-col gap-4'>
+          {/* Source */}
+          <div className='flex items-start gap-8 w-full'>
+            <div className='text-sm font-medium text-secondaryNeutral dark:text-secondaryNeutralDark w-[90px] shrink-0'>
+              {t('History.Source')}
             </div>
-          )}
+            {isLoading ? (
+              <div className='flex items-start gap-2 flex-1'>
+                <Skeleton
+                  variant='rectangular'
+                  width={16}
+                  height={16}
+                  className='mt-0.5 shrink-0'
+                />
+                <div className='flex flex-col gap-1 flex-1'>
+                  <Skeleton width={128} />
+                  <Skeleton width={80} />
+                </div>
+              </div>
+            ) : callInfo.src ? (
+              <div className='flex items-start gap-2 shrink-0'>
+                <FontAwesomeIcon
+                  icon={faPhone}
+                  className='mt-0.5 h-4 w-4 shrink-0 text-tertiaryNeutral dark:text-tertiaryNeutralDark'
+                />
+                <div className='text-sm text-tertiaryNeutral dark:text-tertiaryNeutralDark'>
+                  <div>{callInfo.cnam || callInfo.src}</div>
+                  {callInfo.cnam && (
+                    <div className='text-primaryActive dark:text-primaryActiveDark'>
+                      {callInfo.src}
+                    </div>
+                  )}
+                </div>
+              </div>
+            ) : null}
+          </div>
 
-          {/* AI Content Disclaimer */}
-          <InlineNotification
-            className='mt-8 border-none'
-            type='info'
-            title={t('Summary.AI content disclaimer title')}
-          >
-            <p className=''>{t('Summary.AI content disclaimer')}</p>
-          </InlineNotification>
+          {/* Destination */}
+          <div className='flex items-start gap-8 w-full'>
+            <div className='text-sm font-medium text-secondaryNeutral dark:text-secondaryNeutralDark w-[90px] shrink-0'>
+              {t('History.Destination')}
+            </div>
+            {isLoading ? (
+              <div className='flex items-start gap-2 flex-1'>
+                <Skeleton
+                  variant='rectangular'
+                  width={16}
+                  height={16}
+                  className='mt-0.5 shrink-0'
+                />
+                <div className='flex flex-col gap-1 flex-1'>
+                  <Skeleton width={128} />
+                  <Skeleton width={80} />
+                </div>
+              </div>
+            ) : callInfo.dst ? (
+              <div className='flex items-start gap-2 shrink-0'>
+                <FontAwesomeIcon
+                  icon={faPhone}
+                  className='mt-0.5 h-4 w-4 shrink-0 text-tertiaryNeutral dark:text-tertiaryNeutralDark'
+                />
+                <div className='text-sm text-tertiaryNeutral dark:text-tertiaryNeutralDark'>
+                  <div>{callInfo.dst_cnam || callInfo.dst}</div>
+                  {callInfo.dst_cnam && (
+                    <div className='text-primaryActive dark:text-primaryActiveDark'>
+                      {callInfo.dst}
+                    </div>
+                  )}
+                </div>
+              </div>
+            ) : null}
+          </div>
 
-          {/* Summary */}
-          <Label className='mt-8'>{t('Summary.Summary')}</Label>
-          {isLoading ? (
-            <Skeleton height='120px' />
-          ) : loadError ? (
-            <TextArea
-              placeholder={t('Summary.Summary unavailable') || ''}
-              value=''
-              onChange={() => undefined}
-              rows={4}
-              readOnly
-            />
-          ) : (
-            <TextArea
-              placeholder={t('Summary.Summary') || ''}
-              value={summary}
-              onChange={(e) => setSummary(e.target.value)}
-              rows={10}
-            />
-          )}
+          {/* Date */}
+          <div className='flex items-start gap-8 w-full'>
+            <div className='text-sm font-medium text-secondaryNeutral dark:text-secondaryNeutralDark w-[90px] shrink-0'>
+              {t('History.Date')}
+            </div>
+            {isLoading ? (
+              <div className='flex items-start gap-2 flex-1'>
+                <Skeleton
+                  variant='rectangular'
+                  width={16}
+                  height={16}
+                  className='mt-0.5 shrink-0'
+                />
+                <Skeleton width={160} />
+              </div>
+            ) : callInfo.call_timestamp ? (
+              <div className='flex items-start gap-2 shrink-0'>
+                <FontAwesomeIcon
+                  icon={faCalendar}
+                  className='mt-0.5 h-4 w-4 shrink-0 text-tertiaryNeutral dark:text-tertiaryNeutralDark'
+                />
+                <div className='text-sm text-tertiaryNeutral dark:text-tertiaryNeutralDark'>
+                    {formatDateLoc(new Date(callInfo.call_timestamp!), 'dd MMM yyyy HH:mm')}
+                </div>
+              </div>
+            ) : null}
+          </div>
+        </div>
 
-          <Button
-            variant='ghost'
-            className='mt-8 flex items-center gap-2 w-fit'
-            onClick={handleToggleTranscription}
-            disabled={isLoading}
-          >
-            <FontAwesomeIcon
-              icon={showTranscription ? faAngleUp : faAngleDown}
-              className='h-4 w-4'
-            />
-            <span>{t('Summary.View full transcription')}</span>
-          </Button>
-          {showTranscription && (
-            <>
-              <Label className='mt-8'>{t('Summary.Call transcription')}</Label>
-              {isLoadingTranscription ? (
-                <Skeleton height='120px' />
-              ) : transcriptionError ? (
-                <>
-                  <TextArea
-                    placeholder={t('Summary.Transcription unavailable') || ''}
-                    value=''
-                    onChange={() => undefined}
-                    rows={10}
-                    readOnly
-                  />
-                </>
-              ) : (
+        {/* AI Content Disclaimer */}
+        <InlineNotification
+          className='mt-8 border-none'
+          type='info'
+          title={t('Summary.AI content disclaimer title')}
+        >
+          <p className=''>{t('Summary.AI content disclaimer')}</p>
+        </InlineNotification>
+
+        {/* Summary */}
+        <Label className='mt-8'>{t('Summary.Summary')}</Label>
+        {isLoading ? (
+          <Skeleton height='120px' />
+        ) : loadError ? (
+          <TextArea
+            placeholder={t('Summary.Summary unavailable') || ''}
+            value=''
+            onChange={() => undefined}
+            rows={4}
+            readOnly
+          />
+        ) : (
+          <TextArea
+            placeholder={t('Summary.Summary') || ''}
+            value={summary}
+            onChange={(e) => setSummary(e.target.value)}
+            rows={10}
+          />
+        )}
+
+        <Button
+          variant='ghost'
+          className='mt-8 flex items-center gap-2 w-fit'
+          onClick={handleToggleTranscription}
+          disabled={isLoading}
+        >
+          <FontAwesomeIcon icon={showTranscription ? faAngleUp : faAngleDown} className='h-4 w-4' />
+          <span>{t('Summary.View full transcription')}</span>
+        </Button>
+        {showTranscription && (
+          <>
+            <Label className='mt-8'>{t('Summary.Call transcription')}</Label>
+            {isLoadingTranscription ? (
+              <Skeleton height='120px' />
+            ) : transcriptionError ? (
+              <>
                 <TextArea
-                  placeholder={t('Summary.Call transcription') || ''}
-                  value={transcription}
-                  onChange={(e) => setTranscription(e.target.value)}
+                  placeholder={t('Summary.Transcription unavailable') || ''}
+                  value=''
+                  onChange={() => undefined}
                   rows={10}
                   readOnly
                 />
-              )}
-            </>
-          )}
+              </>
+            ) : (
+              <TextArea
+                placeholder={t('Summary.Call transcription') || ''}
+                value={transcription}
+                onChange={(e) => setTranscription(e.target.value)}
+                rows={10}
+                readOnly
+              />
+            )}
+          </>
+        )}
       </div>
       <Divider paddingY='pb-10 pt-6' />
       <DrawerFooter
