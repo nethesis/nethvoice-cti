@@ -1359,12 +1359,12 @@ export const Layout: FC<LayoutProps> = ({ children }) => {
     }
   }, [])
 
-  useEventListener('phone-island-summary-not-ready', (data: { uniqueId?: string }) => {
-    if (!data?.uniqueId || !isSummaryEnabled) {
+  useEventListener('phone-island-summary-not-ready', (data: { linkedid?: string }) => {
+    if (!data?.linkedid || !isSummaryEnabled) {
       return
     }
 
-    setSummaryUniqueId(data?.uniqueId)
+    setSummaryUniqueId(data?.linkedid)
 
     openToast(
       'success',
@@ -1375,8 +1375,8 @@ export const Layout: FC<LayoutProps> = ({ children }) => {
           <Button
             variant='primary'
             onClick={() => {
-              if (data.uniqueId) {
-                eventDispatch('phone-island-call-summary-notify', { uniqueId: data.uniqueId })
+              if (data.linkedid) {
+                eventDispatch('phone-island-call-summary-notify', { linkedid: data.linkedid })
               }
               closeToast()
             }}
@@ -1394,9 +1394,9 @@ export const Layout: FC<LayoutProps> = ({ children }) => {
     )
   })
 
-  useEventListener('phone-island-summary-ready', (data: { uniqueId?: string }) => {
-    if (!data?.uniqueId) {
-      console.warn('[Summary Notified] No uniqueId provided')
+  useEventListener('phone-island-summary-ready', (data: { linkedid?: string }) => {
+    if (!data?.linkedid) {
+      console.warn('[Summary Notified] No linkedid provided')
       return
     }
 
@@ -1409,7 +1409,7 @@ export const Layout: FC<LayoutProps> = ({ children }) => {
             body:
               t('Common.The summary is ready for review and editing') ||
               'The summary is ready for review and editing',
-            tag: `summary-${data.uniqueId}`,
+            tag: `summary-${data.linkedid}`,
           },
         )
 
@@ -1419,7 +1419,7 @@ export const Layout: FC<LayoutProps> = ({ children }) => {
             isShown: true,
             contentType: 'callSummary',
             config: {
-              uniqueid: data?.uniqueId,
+              uniqueid: data?.linkedid,
               isSummary: true,
             },
           })
@@ -1435,16 +1435,17 @@ export const Layout: FC<LayoutProps> = ({ children }) => {
                 body:
                   t('Common.The summary is ready for review and editing') ||
                   'The summary is ready for review and editing',
-                tag: `summary-${data.uniqueId}`,
+                tag: `summary-${data.linkedid}`,
               },
             )
 
             notification.onclick = () => {
+              window.focus()
               dispatch.sideDrawer.update({
                 isShown: true,
                 contentType: 'callSummary',
                 config: {
-                  uniqueid: data?.uniqueId,
+                  uniqueid: data?.linkedid,
                   isSummary: true,
                 },
               })
@@ -1468,20 +1469,8 @@ export const Layout: FC<LayoutProps> = ({ children }) => {
                 isShown: true,
                 contentType: 'callSummary',
                 config: {
-                  uniqueid: data?.uniqueId,
+                  uniqueid: data?.linkedid,
                   isSummary: true,
-                  // TODO: Replace with actual data from GET API when implemented
-                  source: {
-                    name: 'Unknown Caller',
-                    company: '',
-                    number: '',
-                  },
-                  destination: {
-                    name: 'Unknown Destination',
-                    company: '',
-                    number: '',
-                  },
-                  date: '',
                 },
               })
               closeToast()
