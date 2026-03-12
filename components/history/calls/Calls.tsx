@@ -224,36 +224,12 @@ export const Calls: FC<CallsProps> = ({ className }): JSX.Element => {
     const linkedId = call?.linkedid
     const summaryStatus = summaryStatusMap?.[linkedId]
 
-    // Extract source information
-    const sourceName = call?.cnam || ''
-    const sourceCompany = call?.ccompany || ''
-    const sourceNumber = call?.cnum || call?.src || ''
-
-    // Extract destination information
-    const destinationName = call?.dst_cnam || ''
-    const destinationCompany = call?.dst_ccompany || ''
-    const destinationNumber = call?.dst || ''
-
-    // Extract date information
-    const callDate = call?.time || ''
-
     dispatch.sideDrawer.update({
       isShown: true,
       contentType: 'callSummary',
       config: {
         uniqueid: linkedId,
         isSummary: summaryStatus?.has_summary || false,
-        source: {
-          name: sourceName,
-          company: sourceCompany,
-          number: sourceNumber,
-        },
-        destination: {
-          name: destinationName,
-          company: destinationCompany,
-          number: destinationNumber,
-        },
-        date: callDate,
       },
     })
   }
@@ -458,7 +434,7 @@ export const Calls: FC<CallsProps> = ({ className }): JSX.Element => {
         />
       ),
       width: '15%',
-      className: 'px-6 py-3.5 text-left text-sm font-semibold text-gray-700 dark:text-gray-100 w-0',
+      className: 'px-6 py-3.5 text-left text-sm font-semibold text-primaryNeutral dark:text-primaryNeutralDark w-0',
     },
     {
       header: '',
@@ -470,7 +446,7 @@ export const Calls: FC<CallsProps> = ({ className }): JSX.Element => {
         />
       ),
       width: '5%',
-      className: 'px-6 py-3.5 text-left text-sm font-semibold text-gray-700 dark:text-gray-100 w-0',
+      className: 'px-6 py-3.5 text-left text-sm font-semibold text-primaryNeutral dark:text-primaryNeutralDark w-0',
     },
     {
       header: t('History.Destination'),

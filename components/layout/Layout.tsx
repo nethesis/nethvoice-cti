@@ -1414,6 +1414,7 @@ export const Layout: FC<LayoutProps> = ({ children }) => {
         )
 
         notification.onclick = () => {
+          window.focus()
           dispatch.sideDrawer.update({
             isShown: true,
             contentType: 'callSummary',
