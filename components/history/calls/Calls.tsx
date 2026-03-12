@@ -181,7 +181,7 @@ export const Calls: FC<CallsProps> = ({ className }): JSX.Element => {
   }, [isHistoryLoaded, pageNum, loadSummaryStatus])
 
   // Reload summary status when phone-island-summary-ready event is received
-  useEventListener('phone-island-summary-ready', (data: { uniqueId?: string }) => {
+  useEventListener('phone-island-summary-ready', (data: { linkedid?: string }) => {
     loadSummaryStatus()
   })
 
