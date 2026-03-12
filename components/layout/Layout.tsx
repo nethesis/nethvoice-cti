@@ -1344,6 +1344,7 @@ export const Layout: FC<LayoutProps> = ({ children }) => {
 
   const [summaryUniqueId, setSummaryUniqueId] = useState<string | null>(null)
   const [isPageFocused, setIsPageFocused] = useState(true)
+  const notifiedSummaryIdsRef = useRef<Set<string>>(new Set())
 
   // Track if page has focus
   useEffect(() => {
@@ -1400,6 +1401,12 @@ export const Layout: FC<LayoutProps> = ({ children }) => {
       return
     }
 
+    // Skip if this summary was already notified
+    if (notifiedSummaryIdsRef?.current?.has(data?.linkedid)) {
+      return
+    }
+    notifiedSummaryIdsRef?.current?.add(data?.linkedid)
+
     // Browser notification only if page doesn't have focus
     if (!isPageFocused && 'Notification' in window) {
       if (Notification.permission === 'granted') {
@@ -1423,6 +1430,7 @@ export const Layout: FC<LayoutProps> = ({ children }) => {
               isSummary: true,
             },
           })
+          closeToast()
           notification.close()
         }
       } else if (Notification.permission !== 'denied') {
@@ -1449,6 +1457,7 @@ export const Layout: FC<LayoutProps> = ({ children }) => {
                   isSummary: true,
                 },
               })
+              closeToast()
               notification.close()
             }
           }
