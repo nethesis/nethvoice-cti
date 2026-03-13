@@ -16,7 +16,7 @@ import {
   closeToast,
   customScrollbarClass,
   openToast,
-  isOpenAiKeyPresent,
+  isCallSummaryEnabled,
 } from '../../lib/utils'
 import { store } from '../../store'
 import {
@@ -86,7 +86,7 @@ export const Layout: FC<LayoutProps> = ({ children }) => {
   const { operators } = useSelector((state: RootState) => state.operators)
   const { profile } = useSelector((state: RootState) => state.user)
   const { avoidClose } = useSelector((state: RootState) => state.sideDrawer)
-  const isSummaryEnabled = isOpenAiKeyPresent()
+  const isSummaryEnabled = isCallSummaryEnabled()
 
   const productName = getProductName()
   // Get current page name, clean the path from / and capitalize page name
@@ -1396,8 +1396,7 @@ export const Layout: FC<LayoutProps> = ({ children }) => {
   })
 
   useEventListener('phone-island-summary-ready', (data: { linkedid?: string }) => {
-    if (!data?.linkedid) {
-      console.warn('[Summary Notified] No linkedid provided')
+    if (!data?.linkedid || !isSummaryEnabled) {
       return
     }
 
