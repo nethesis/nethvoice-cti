@@ -109,7 +109,9 @@ export const TranscriptionView: FC<TranscriptionViewProps> = ({ uniqueid }) => {
                   )}
                 </div>
               </div>
-            ) : null}
+            ) : (
+              <div className='text-sm text-tertiaryNeutral dark:text-tertiaryNeutralDark'>-</div>
+            )}
           </div>
 
           {/* Destination */}
@@ -145,7 +147,9 @@ export const TranscriptionView: FC<TranscriptionViewProps> = ({ uniqueid }) => {
                   )}
                 </div>
               </div>
-            ) : null}
+            ) : (
+              <div className='text-sm text-tertiaryNeutral dark:text-tertiaryNeutralDark'>-</div>
+            )}
           </div>
 
           {/* Date */}
@@ -173,7 +177,9 @@ export const TranscriptionView: FC<TranscriptionViewProps> = ({ uniqueid }) => {
                   {formatDateLoc(new Date(callInfo.call_timestamp!), 'dd MMM yyyy HH:mm')}
                 </div>
               </div>
-            ) : null}
+            ) : (
+              <div className='text-sm text-tertiaryNeutral dark:text-tertiaryNeutralDark'>-</div>
+            )}
           </div>
         </div>
 
