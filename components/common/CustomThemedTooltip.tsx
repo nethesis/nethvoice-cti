@@ -26,9 +26,12 @@ export const CustomThemedTooltip: FC<CustomThemedTooltipProps> = ({
 }) => {
   const { theme } = useSelector((state: RootState) => state.darkTheme)
 
-  const tooltipStyle =
-    theme === 'dark'
-      ? {
+  const isDark =
+    theme === 'dark' ||
+    (theme === 'system' && window.matchMedia('(prefers-color-scheme: dark)').matches)
+
+  const tooltipStyle = isDark
+    ? {
           backgroundColor: 'rgb(243, 244, 246)',
           color: 'rgb(17, 24, 39)',
           fontSize: '0.875rem',
