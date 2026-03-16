@@ -11,10 +11,31 @@ import { Divider } from '../common/Divider'
 import { getTranscription } from '../../services/user'
 import { closeSideDrawer } from '../../lib/utils'
 import { formatDateLoc } from '../../lib/dateTime'
+import { FormattedConversationTextArea } from './FormattedConversationTextArea'
 
 interface TranscriptionViewProps {
   uniqueid: string
 }
+
+const addSpacingBetweenSpeakers = (value: string) =>
+  value
+    .split('\n')
+    .reduce<string[]>((lines, line, index, array) => {
+      const trimmedLine = line.trim()
+      if (!trimmedLine) {
+        return lines
+      }
+
+      lines.push(trimmedLine)
+
+      const nextLine = array[index + 1]?.trim()
+      if (nextLine && /^([^:\n]{1,120}:)/.test(nextLine)) {
+        lines.push('')
+      }
+
+      return lines
+    }, [])
+    .join('\n')
 
 export const TranscriptionView: FC<TranscriptionViewProps> = ({ uniqueid }) => {
   const [transcription, setTranscription] = useState('')
@@ -51,7 +72,7 @@ export const TranscriptionView: FC<TranscriptionViewProps> = ({ uniqueid }) => {
           return
         }
 
-        setTranscription(transcriptionText)
+        setTranscription(addSpacingBetweenSpeakers(transcriptionText))
       } else {
         setTranscription('')
         setError(t('Summary.Transcription unavailable') || '')
@@ -193,7 +214,9 @@ export const TranscriptionView: FC<TranscriptionViewProps> = ({ uniqueid }) => {
         </InlineNotification>
 
         {/* Transcription */}
-        <Label className='mt-8'>{t('Summary.Call transcription')}</Label>
+        <Label className='mt-8'>
+          {t('Summary.Call transcription')}
+        </Label>
         {isLoading ? (
           <Skeleton height='400px' />
         ) : error ? (
@@ -205,13 +228,7 @@ export const TranscriptionView: FC<TranscriptionViewProps> = ({ uniqueid }) => {
             readOnly
           />
         ) : (
-          <TextArea
-            placeholder={t('Summary.Call transcription') || ''}
-            value={transcription}
-            onChange={(e) => setTranscription(e.target.value)}
-            rows={8}
-            readOnly
-          />
+          <FormattedConversationTextArea content={transcription} rows={8} />
         )}
       </div>
       <Divider paddingY='pb-10 pt-6' />

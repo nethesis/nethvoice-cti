@@ -30,6 +30,7 @@ export interface TextAreaProps extends Omit<ComponentProps<'textarea'>, 'ref'> {
   optional?: boolean
   rows?: number
   readonly?: boolean
+  textareaClassName?: string
 }
 
 export const TextArea = forwardRef<HTMLTextAreaElement, TextAreaProps>(
@@ -45,6 +46,7 @@ export const TextArea = forwardRef<HTMLTextAreaElement, TextAreaProps>(
       id,
       readOnly = false,
       className,
+      textareaClassName,
       ...props
     },
     ref,
@@ -75,6 +77,7 @@ export const TextArea = forwardRef<HTMLTextAreaElement, TextAreaProps>(
             !error ? theme.colors.gray : theme.colors.error,
             'text-gray-900',
             customScrollbarClass,
+            textareaClassName,
           )}
           {...cleanProps}
           ref={ref}

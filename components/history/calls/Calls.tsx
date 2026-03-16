@@ -42,6 +42,7 @@ import { Pagination } from '../../common/Pagination'
 import { Table } from '../../common/Table'
 import { checkSummaryList, deleteSummary } from '../../../services/user'
 import { faAiSpark } from '@nethesis/nethesis-solid-svg-icons'
+import { Skeleton, TableSkeleton } from '../../common/Skeleton'
 
 export interface CallsProps extends ComponentProps<'div'> {}
 
@@ -394,6 +395,7 @@ export const Calls: FC<CallsProps> = ({ className }): JSX.Element => {
   }
 
   const debouncedUpdateFilterText = useMemo(() => debounce(updateFilterText, 400), [])
+  const isProfileLoading = typeof profile?.macro_permissions?.cdr?.value === 'undefined'
 
   // Stop invocation of debounced function after unmounting
   useEffect(() => {
@@ -563,7 +565,26 @@ export const Calls: FC<CallsProps> = ({ className }): JSX.Element => {
   return (
     <>
       <div>
-        {profile?.macro_permissions?.cdr?.value ? (
+        {isProfileLoading ? (
+          <div>
+            <div className='flex justify-between gap-4'>
+              <div className='flex-1'>
+                <Skeleton height={44} className='rounded-lg' />
+              </div>
+              <Skeleton width={180} height={44} className='rounded-lg shrink-0' />
+            </div>
+
+            <div className='mx-auto mt-6'>
+              <div className='flex flex-col'>
+                <div className='-my-2 -mx-4 overflow-x-auto sm:-mx-6 lg:-mx-8'>
+                  <div className='inline-block min-w-full py-2 align-middle px-2 md:px-6 lg:px-8'>
+                    <TableSkeleton columns={8} rows={8} />
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        ) : profile?.macro_permissions?.cdr?.value ? (
           <div>
             <div className='flex justify-between'>
               <Filter
