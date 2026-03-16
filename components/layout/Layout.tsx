@@ -1390,7 +1390,7 @@ export const Layout: FC<LayoutProps> = ({ children }) => {
         </div>
       </>,
       t('Common.Call summary is being generated') || 'Call summary is being generated',
-      3000,
+      8000,
       true,
     )
   })

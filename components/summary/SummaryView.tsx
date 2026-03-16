@@ -45,10 +45,10 @@ const addSpacingBetweenSpeakers = (value: string) =>
     .join('\n')
 
 const summaryTextareaClassName =
-  'rounded-lg border-gray-200 px-4 py-3 text-[15px] leading-7 text-gray-900 shadow-none placeholder:text-gray-400 focus:ring-1 dark:border-gray-600 dark:!bg-surfaceBackgroundInputDark dark:text-gray-100 dark:placeholder:text-gray-500'
+  'rounded-lg border-gray-200 px-4 py-3 text-[15px] leading-7 text-gray-900 shadow-none placeholder:text-gray-400 focus:ring-1 dark:border-gray-600 dark:placeholder:text-gray-500'
 
 const compactTextareaClassName =
-  'rounded-lg border-gray-200 px-4 py-3 text-[15px] leading-7 text-gray-900 shadow-none placeholder:text-gray-400 focus:ring-1 dark:border-gray-600 dark:!bg-surfaceBackgroundInputDark dark:text-gray-100 dark:placeholder:text-gray-500'
+  'rounded-lg border-gray-200 px-4 py-3 text-[15px] leading-7 text-gray-900 shadow-none placeholder:text-gray-400 focus:ring-1 dark:border-gray-600 dark:placeholder:text-gray-500'
 
 export const SummaryView: FC<SummaryViewProps> = ({ uniqueid }) => {
   const [summary, setSummary] = useState('')
