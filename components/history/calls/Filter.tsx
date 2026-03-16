@@ -304,6 +304,10 @@ export const Filter = forwardRef<HTMLButtonElement, FilterProps>(
 
     //Get the selected filter from the local storage
     useEffect(() => {
+      if (!auth.username) {
+        return
+      }
+
       const filterValues = getFilterValues(auth.username)
       setCallType(filterValues.callType)
       setCallDirection(filterValues.callDirection)
@@ -315,7 +319,7 @@ export const Filter = forwardRef<HTMLButtonElement, FilterProps>(
       updateCallDirectionFilter(filterValues.callDirection)
       updateSortFilter(filterValues.sortBy)
       // eslint-disable-next-line react-hooks/exhaustive-deps
-    }, [])
+    }, [auth.username])
 
     const [clearSelected, setClearSelected] = useState(false)
 
@@ -449,7 +453,10 @@ export const Filter = forwardRef<HTMLButtonElement, FilterProps>(
                     {t('Common.Active filters')}
                   </h3>
                   {/* separator */}
-                  <div aria-hidden='true' className='h-5 w-px block bg-layoutDivider dark:bg-layoutDividerDark' />
+                  <div
+                    aria-hidden='true'
+                    className='h-5 w-px block bg-layoutDivider dark:bg-layoutDividerDark'
+                  />
                   {/* show selected call type only if user has cdr permissions */}
                   {profile.macro_permissions?.cdr?.permissions?.ad_cdr?.value && (
                     <div className='mt-0'>

@@ -11,7 +11,16 @@ import {
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { t } from 'i18next'
 import { FC, ComponentProps, useState, useMemo, useEffect, useCallback } from 'react'
-import { deleteRec, downloadCallRec, openDrawerHistory, search } from '../../../lib/history'
+import {
+  DEFAULT_CALL_DIRECTION_FILTER,
+  DEFAULT_CALL_TYPE_FILTER,
+  DEFAULT_SORT_BY,
+  deleteRec,
+  downloadCallRec,
+  getFilterValues,
+  openDrawerHistory,
+  search,
+} from '../../../lib/history'
 import { PAGE_SIZE } from '../../../lib/queuesLib'
 import { subDays, startOfDay } from 'date-fns'
 import { useEventListener } from '../../../lib/hooks/useEventListener'
@@ -65,6 +74,7 @@ export const Calls: FC<CallsProps> = ({ className }): JSX.Element => {
   const [dateEnd, setDateEnd]: any = useState('')
   const [dateBegin, setDateBegin]: any = useState('')
   const [callDirection, setCallDirection]: any = useState('all')
+  const [areFiltersInitialized, setAreFiltersInitialized] = useState(false)
   const [totalPages, setTotalPages] = useState(0)
   const [currentHoveredCall, setCurrentHoveredCall] = useState<any>(null)
   const [summaryStatusMap, setSummaryStatusMap] = useState<Record<string, any>>({})
@@ -83,6 +93,18 @@ export const Calls: FC<CallsProps> = ({ className }): JSX.Element => {
   const dateFrom: any = formatDateLoc(DateFromNotConverted, 'yyyy-MM-dd')
   const dateTo: any = formatDateLoc(new Date(), 'yyyy-MM-dd')
   const checkDateType = new RegExp(/-/, 'g')
+
+  useEffect(() => {
+    if (!username) {
+      return
+    }
+
+    const filterValues = getFilterValues(username)
+    setCallType(filterValues.callType || DEFAULT_CALL_TYPE_FILTER)
+    setCallDirection(filterValues.callDirection || DEFAULT_CALL_DIRECTION_FILTER)
+    setSortBy(filterValues.sortBy || DEFAULT_SORT_BY)
+    setAreFiltersInitialized(true)
+  }, [username])
 
   useEffect(() => {
     if (!dateBegin) {
@@ -104,6 +126,7 @@ export const Calls: FC<CallsProps> = ({ className }): JSX.Element => {
   useEffect(() => {
     async function fetchHistory() {
       if (
+        areFiltersInitialized &&
         dateBegin &&
         !checkDateType.test(dateBegin) &&
         dateEnd &&
@@ -135,12 +158,22 @@ export const Calls: FC<CallsProps> = ({ className }): JSX.Element => {
     }
 
     // Reset loading state when dependencies change
-    if (!isLoadingPagination) {
+    if (areFiltersInitialized && !isLoadingPagination) {
       setHistoryLoaded(false)
       fetchHistory()
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [callType, username, dateBegin, dateEnd, filterText, pageNum, sortBy, callDirection])
+  }, [
+    areFiltersInitialized,
+    callType,
+    username,
+    dateBegin,
+    dateEnd,
+    filterText,
+    pageNum,
+    sortBy,
+    callDirection,
+  ])
 
   // Function to load summary status for current page calls
   const loadSummaryStatus = useCallback(async () => {
@@ -436,7 +469,8 @@ export const Calls: FC<CallsProps> = ({ className }): JSX.Element => {
         />
       ),
       width: '15%',
-      className: 'px-6 py-3.5 text-left text-sm font-semibold text-primaryNeutral dark:text-primaryNeutralDark w-0',
+      className:
+        'px-6 py-3.5 text-left text-sm font-semibold text-primaryNeutral dark:text-primaryNeutralDark w-0',
     },
     {
       header: '',
@@ -448,7 +482,8 @@ export const Calls: FC<CallsProps> = ({ className }): JSX.Element => {
         />
       ),
       width: '5%',
-      className: 'px-6 py-3.5 text-left text-sm font-semibold text-primaryNeutral dark:text-primaryNeutralDark w-0',
+      className:
+        'px-6 py-3.5 text-left text-sm font-semibold text-primaryNeutral dark:text-primaryNeutralDark w-0',
     },
     {
       header: t('History.Destination'),
