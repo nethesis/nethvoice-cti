@@ -28,6 +28,7 @@ export const AiSparkIcon: FC<AiSparkIconProps> = ({ className = 'w-4 h-4', anima
         maskRepeat: 'no-repeat',
         WebkitMaskPosition: 'center',
         maskPosition: 'center',
+        transform: 'scaleX(-1)',
       }}
     />
   )

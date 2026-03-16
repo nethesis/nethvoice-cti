@@ -95,7 +95,7 @@ export const FormattedConversationTextArea: FC<FormattedConversationTextAreaProp
             >
               {block.isEmpty ? '\u00A0' : null}
               {block.speaker && (
-                <span className='font-normal text-primaryNeutral dark:text-primaryNeutralDark'>
+                <span className='font-medium text-primaryNeutral dark:text-primaryNeutralDark'>
                   {block?.speaker}
                 </span>
               )}
