@@ -12,10 +12,43 @@ import { DrawerFooter } from '../common/DrawerFooter'
 import { getSummaryCall, getTranscription, updateSummary } from '../../services/user'
 import { closeSideDrawer } from '../../lib/utils'
 import { formatDateLoc } from '../../lib/dateTime'
+import { FormattedConversationTextArea } from './FormattedConversationTextArea'
 
 interface SummaryViewProps {
   uniqueid: string
 }
+
+const normalizeSummaryText = (value: string) =>
+  value
+    .split('\n')
+    .map((line) => line.replace(/^\s*-\s+/, ''))
+    .join('\n')
+
+const addSpacingBetweenSpeakers = (value: string) =>
+  value
+    .split('\n')
+    .reduce<string[]>((lines, line, index, array) => {
+      const trimmedLine = line.trim()
+      if (!trimmedLine) {
+        return lines
+      }
+
+      lines.push(trimmedLine)
+
+      const nextLine = array[index + 1]?.trim()
+      if (nextLine && /^([^:\n]{1,120}:)/.test(nextLine)) {
+        lines.push('')
+      }
+
+      return lines
+    }, [])
+    .join('\n')
+
+const summaryTextareaClassName =
+  'rounded-lg border-gray-200 px-4 py-3 text-[15px] leading-7 text-gray-900 shadow-none placeholder:text-gray-400 focus:ring-1 dark:border-gray-600 dark:!bg-surfaceBackgroundInputDark dark:text-gray-100 dark:placeholder:text-gray-500'
+
+const compactTextareaClassName =
+  'rounded-lg border-gray-200 px-4 py-3 text-[15px] leading-7 text-gray-900 shadow-none placeholder:text-gray-400 focus:ring-1 dark:border-gray-600 dark:!bg-surfaceBackgroundInputDark dark:text-gray-100 dark:placeholder:text-gray-500'
 
 export const SummaryView: FC<SummaryViewProps> = ({ uniqueid }) => {
   const [summary, setSummary] = useState('')
@@ -73,7 +106,7 @@ export const SummaryView: FC<SummaryViewProps> = ({ uniqueid }) => {
         return
       }
 
-      setSummary(summaryText)
+      setSummary(addSpacingBetweenSpeakers(normalizeSummaryText(summaryText)))
     } catch (err: any) {
       setSummary('')
       setLoadError(t('Summary.Summary load failed') || '')
@@ -108,7 +141,7 @@ export const SummaryView: FC<SummaryViewProps> = ({ uniqueid }) => {
           return
         }
 
-        setTranscription(transcriptionText)
+        setTranscription(addSpacingBetweenSpeakers(transcriptionText))
         setTranscriptionLoaded(true)
       } else {
         setTranscription('')
@@ -286,13 +319,17 @@ export const SummaryView: FC<SummaryViewProps> = ({ uniqueid }) => {
             onChange={() => undefined}
             rows={4}
             readOnly
+            textareaClassName={compactTextareaClassName}
           />
         ) : (
-          <TextArea
+          <FormattedConversationTextArea
             placeholder={t('Summary.Summary') || ''}
-            value={summary}
+            content={summary}
             onChange={(e) => setSummary(e.target.value)}
-            rows={10}
+            rows={8}
+            contentType='summary'
+            readOnly={false}
+            textareaClassName={summaryTextareaClassName}
           />
         )}
 
@@ -316,18 +353,13 @@ export const SummaryView: FC<SummaryViewProps> = ({ uniqueid }) => {
                   placeholder={t('Summary.Transcription unavailable') || ''}
                   value=''
                   onChange={() => undefined}
-                  rows={10}
+                  rows={8}
                   readOnly
+                  textareaClassName={summaryTextareaClassName}
                 />
               </>
             ) : (
-              <TextArea
-                placeholder={t('Summary.Call transcription') || ''}
-                value={transcription}
-                onChange={(e) => setTranscription(e.target.value)}
-                rows={10}
-                readOnly
-              />
+              <FormattedConversationTextArea content={transcription} rows={10} />
             )}
           </>
         )}
