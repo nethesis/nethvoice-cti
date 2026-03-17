@@ -81,6 +81,7 @@ export const Layout: FC<LayoutProps> = ({ children }) => {
   const ctiStatus = useSelector((state: RootState) => state.ctiStatus)
 
   const profilePicture = useSelector((state: RootState) => state.profilePicture)
+  const userStore = useSelector((state: RootState) => state.user)
 
   const currentUsername = authStore.username
   const { operators } = useSelector((state: RootState) => state.operators)
@@ -1342,9 +1343,10 @@ export const Layout: FC<LayoutProps> = ({ children }) => {
   // global keyborad shortcut
   useHotkeys('ctrl+alt+c', () => closePhoneIslandCall(), [])
 
-  const [summaryUniqueId, setSummaryUniqueId] = useState<string | null>(null)
   const [isPageFocused, setIsPageFocused] = useState(true)
   const notifiedSummaryIdsRef = useRef<Set<string>>(new Set())
+  const watchedSummaryIdsRef = useRef<Set<string>>(new Set())
+  const isSummaryNotificationEnabled = userStore?.settings?.call_summary_notifications !== false
 
   // Track if page has focus
   useEffect(() => {
@@ -1365,34 +1367,12 @@ export const Layout: FC<LayoutProps> = ({ children }) => {
       return
     }
 
-    setSummaryUniqueId(data?.linkedid)
+    if (!isSummaryNotificationEnabled || watchedSummaryIdsRef.current.has(data.linkedid)) {
+      return
+    }
 
-    openToast(
-      'success',
-      <>
-        {t('Common.You can get notified when the summary is ready') ||
-          'You can get notified when the summary is ready'}
-        <div className='mt-4 flex gap-3'>
-          <Button
-            variant='primary'
-            onClick={() => {
-              if (data.linkedid) {
-                eventDispatch('phone-island-call-summary-notify', { linkedid: data.linkedid })
-              }
-              closeToast()
-            }}
-          >
-            {t('Common.Notify me') || 'Notify me'}
-          </Button>
-          <Button variant='ghost' onClick={() => closeToast()}>
-            {t('Common.Dismiss') || 'Dismiss'}
-          </Button>
-        </div>
-      </>,
-      t('Common.Call summary is being generated') || 'Call summary is being generated',
-      8000,
-      true,
-    )
+    watchedSummaryIdsRef.current.add(data.linkedid)
+    eventDispatch('phone-island-call-summary-notify', { linkedid: data.linkedid })
   })
 
   useEventListener('phone-island-summary-ready', (data: { linkedid?: string }) => {
@@ -1406,8 +1386,8 @@ export const Layout: FC<LayoutProps> = ({ children }) => {
     }
     notifiedSummaryIdsRef?.current?.add(data?.linkedid)
 
-    // Browser notification only if page doesn't have focus
-    if (!isPageFocused && 'Notification' in window) {
+    // Browser notification only if page doesn't have focus and user enabled it
+    if (isSummaryNotificationEnabled && !isPageFocused && 'Notification' in window) {
       if (Notification.permission === 'granted') {
         const notification = new Notification(
           t('Common.Call summary ready') || 'Call summary ready',
