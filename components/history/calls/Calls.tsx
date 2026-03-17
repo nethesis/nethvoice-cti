@@ -52,11 +52,13 @@ import { Table } from '../../common/Table'
 import { checkSummaryList, deleteSummary } from '../../../services/user'
 import { faAiSpark } from '@nethesis/nethesis-solid-svg-icons'
 import { Skeleton, TableSkeleton } from '../../common/Skeleton'
+import { useRouter } from 'next/router'
 
 export interface CallsProps extends ComponentProps<'div'> {}
 
 export const Calls: FC<CallsProps> = ({ className }): JSX.Element => {
   const dispatch = useDispatch<Dispatch>()
+  const router = useRouter()
   const { operators } = useSelector((state: RootState) => state.operators)
   const { profile } = useSelector((state: RootState) => state.user)
   const { name, mainextension, feature_codes } = useSelector((state: RootState) => state.user)
@@ -79,6 +81,7 @@ export const Calls: FC<CallsProps> = ({ className }): JSX.Element => {
   const [currentHoveredCall, setCurrentHoveredCall] = useState<any>(null)
   const [summaryStatusMap, setSummaryStatusMap] = useState<Record<string, any>>({})
   const [isLoadingSummaryStatus, setIsLoadingSummaryStatus] = useState(false)
+  const [handledSummaryLinkedId, setHandledSummaryLinkedId] = useState<string | null>(null)
 
   const apiVoiceEnpoint = getApiVoiceEndpoint()
   const apiScheme = getApiScheme()
@@ -105,6 +108,70 @@ export const Calls: FC<CallsProps> = ({ className }): JSX.Element => {
     setSortBy(filterValues.sortBy || DEFAULT_SORT_BY)
     setAreFiltersInitialized(true)
   }, [username])
+
+  const clearSummaryLinkedIdQuery = useCallback(() => {
+    if (!router.isReady || !router.query.summaryLinkedid) {
+      return
+    }
+
+    const nextQuery = { ...router.query }
+    delete nextQuery.summaryLinkedid
+    router.replace(
+      {
+        pathname: router.pathname,
+        query: nextQuery,
+      },
+      undefined,
+      { shallow: true },
+    )
+  }, [router])
+
+  const openSummaryDrawerByLinkedId = useCallback(
+    (linkedId: string, summaryStatus?: any) => {
+      dispatch.sideDrawer.update({
+        isShown: true,
+        contentType: 'callSummary',
+        config: {
+          uniqueid: linkedId,
+          isSummary: summaryStatus?.has_summary || false,
+        },
+      })
+    },
+    [dispatch],
+  )
+
+  useEffect(() => {
+    const summaryLinkedId = router.query.summaryLinkedid as string | undefined
+
+    if (!router.isReady || !summaryLinkedId || handledSummaryLinkedId === summaryLinkedId) {
+      return
+    }
+
+    let isMounted = true
+
+    const openSummaryFromQuery = async () => {
+      try {
+        const response = await checkSummaryList([summaryLinkedId])
+        const summaryStatus = response?.data?.find((item: any) => item?.uniqueid === summaryLinkedId)
+
+        if (!isMounted || !summaryStatus || summaryStatus?.error || summaryStatus?.state !== 'done') {
+          return
+        }
+
+        openSummaryDrawerByLinkedId(summaryLinkedId, summaryStatus)
+        setHandledSummaryLinkedId(summaryLinkedId)
+        clearSummaryLinkedIdQuery()
+      } catch (error) {
+        console.error('Error opening summary from query:', error)
+      }
+    }
+
+    openSummaryFromQuery()
+
+    return () => {
+      isMounted = false
+    }
+  }, [router, handledSummaryLinkedId, openSummaryDrawerByLinkedId, clearSummaryLinkedIdQuery])
 
   useEffect(() => {
     if (!dateBegin) {
@@ -257,15 +324,7 @@ export const Calls: FC<CallsProps> = ({ className }): JSX.Element => {
   function openTranscriptionDrawer(call: any) {
     const linkedId = call?.linkedid
     const summaryStatus = summaryStatusMap?.[linkedId]
-
-    dispatch.sideDrawer.update({
-      isShown: true,
-      contentType: 'callSummary',
-      config: {
-        uniqueid: linkedId,
-        isSummary: summaryStatus?.has_summary || false,
-      },
-    })
+    openSummaryDrawerByLinkedId(linkedId, summaryStatus)
   }
 
   const downloadRecordingFileAudio = async (callIdInformation: any) => {

@@ -14,6 +14,7 @@ import {
   faVoicemail,
   faPhoneVolume,
   faUserShield,
+  faBell,
 } from '@fortawesome/free-solid-svg-icons'
 import classNames from 'classnames'
 import { useSelector } from 'react-redux'
@@ -36,6 +37,10 @@ import { Voicemail } from '../components/settings/Voicemail'
 import { IconProp } from '@fortawesome/fontawesome-svg-core'
 import { isEmpty } from 'lodash'
 import { Setup2FA } from '../components/settings/2fa/Setup2FA'
+import {
+  Notifications,
+  getAvailableNotificationSettings,
+} from '../components/settings/Notifications'
 
 interface SettingsMenuTypes {
   name: string
@@ -57,6 +62,7 @@ const Settings: NextPage = () => {
   const router = useRouter()
 
   const [currentSection, setCurrentSection] = useState<string>('Devices')
+  const hasNotificationSettings = useMemo(() => getAvailableNotificationSettings().length > 0, [])
 
   // Determine if mobile extensions exist
   const hasMobileExtension = useMemo(() => {
@@ -77,6 +83,7 @@ const Settings: NextPage = () => {
       },
       { name: 'Customer cards', href: '#', icon: faIdCardClip, current: false },
       { name: 'Incoming calls', href: '#', icon: faPhoneVolume, current: false },
+      { name: 'Notifications', href: '#', icon: faBell, current: false, hidden: !hasNotificationSettings },
       { name: 'Queues', href: '#', icon: faUsers, current: false },
       { name: 'Profile picture', href: '#', icon: faCircleUser, current: false },
       { name: 'Theme', href: '#', icon: faPalette, current: false },
@@ -97,16 +104,26 @@ const Settings: NextPage = () => {
     }
 
     return menu
-  }, [profile?.endpoints?.voicemail, profile?.lkhash, hasMobileExtension])
+  }, [profile?.endpoints?.voicemail, profile?.lkhash, hasMobileExtension, hasNotificationSettings])
 
   const [items, setItems] = useState<SettingsMenuTypes[]>(settingsMenu)
 
   // Update items when menu definition changes
   useEffect(() => {
+    const visibleItems = settingsMenu.filter((item) => !item.hidden)
+    const nextSection = visibleItems.some((item) => item.name === currentSection)
+      ? currentSection
+      : visibleItems[0]?.name || 'Devices'
+
+    if (nextSection !== currentSection) {
+      setCurrentSection(nextSection)
+      savePreference('settingsSelectedPage', nextSection, authStore.username)
+    }
+
     setItems(
       settingsMenu.map((item) => ({
         ...item,
-        current: item.name === currentSection,
+        current: item.name === nextSection,
       })),
     )
   }, [settingsMenu, currentSection])
@@ -149,6 +166,8 @@ const Settings: NextPage = () => {
         return <CustomerCards />
       case 'Incoming calls':
         return <IncomingCalls />
+      case 'Notifications':
+        return <Notifications />
       case 'Profile picture':
         return <Profile />
       case 'Devices':

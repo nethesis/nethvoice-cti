@@ -1,7 +1,9 @@
 // Copyright (C) 2024 Nethesis S.r.l.
 // SPDX-License-Identifier: AGPL-3.0-or-later
 
+import axios from 'axios'
 import { getJSONItem, setJSONItem } from './storage'
+import { handleNetworkError } from './utils'
 
 /**
  * Used to load user notifications from the local storage entry "notifications-username"
@@ -20,4 +22,14 @@ export const loadNotificationsFromStorage = (currentUsername: string) => {
  */
 export const saveNotificationsToStorage = (notifications: any[], currentUsername: string) => {
   setJSONItem(`notifications-${currentUsername}`, notifications)
+}
+
+export async function setNotificationSettings(settings: Record<string, any>) {
+  try {
+    const { data } = await axios.post('/user/settings', settings)
+    return data
+  } catch (error) {
+    handleNetworkError(error)
+    throw error
+  }
 }
