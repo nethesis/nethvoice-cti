@@ -138,6 +138,10 @@ module.exports = {
         iconBadgeEmeraldDark: 'var(--color-icon-badge-emerald-dark)',
         iconInfo: 'var(--color-icon-info)',
         iconInfoDark: 'var(--color-icon-info-dark)',
+        iconInlineNotificationInformation:
+          'var(--color-icon-inline-notification-information)',
+        iconInlineNotificationInformationDark:
+          'var(--color-icon-inline-notification-information-dark)',
         iconSuccess: 'var(--color-icon-success)',
         iconSuccessDark: 'var(--color-icon-success-dark)',
         iconWarning: 'var(--color-icon-warning)',
@@ -162,6 +166,8 @@ module.exports = {
         surfacePresenceDNDDark: 'var(--color-surface-presence-dnd-dark)',
         surfaceToastInfo: 'var(--color-surface-toast-info)',
         surfaceToastInfoDark: 'var(--color-surface-toast-info-dark)',
+        surfaceInlineNotificationInfo: 'var(--color-surface-inline-notification-info)',
+        surfaceInlineNotificationInfoDark: 'var(--color-surface-inline-notification-info-dark)',
         surfaceToastSuccess: 'var(--color-surface-toast-success)',
         surfaceToastSuccessDark: 'var(--color-surface-toast-success-dark)',
         surfaceToastWarning: 'var(--color-surface-toast-warning)',
@@ -210,6 +216,16 @@ module.exports = {
         borderRingInputDark: 'var(--color-ring-input-dark)',
         borderRingButton: 'var(--color-ring-button)',
         borderRingButtonDark: 'var(--color-ring-button-dark)',
+        borderAccentIndigo: 'var(--color-border-accent-indigo)',
+        borderAccentIndigoDark: 'var(--color-border-accent-indigo-dark)',
+        textInlineNotificationInformationTitle:
+          'var(--color-text-inline-notification-information-title)',
+        textInlineNotificationInformationTitleDark:
+          'var(--color-text-inline-notification-information-title-dark)',
+        textInlineNotificationInformationDescription:
+          'var(--color-text-inline-notification-information-description)',
+        textInlineNotificationInformationDescriptionDark:
+          'var(--color-text-inline-notification-information-description-dark)',
         iconIndigo: 'var(--color-icon-indigo)',
         iconIndigoDark: 'var(--color-icon-indigo-dark)',
       },
