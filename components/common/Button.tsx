@@ -32,6 +32,7 @@ export interface ButtonProps extends Omit<ComponentPropsWithRef<'button'>, 'colo
     | 'primaryPhoneIsland'
   fullWidth?: boolean
   fullHeight?: boolean
+  iconOnly?: boolean
   disabled?: boolean
 }
 
@@ -43,6 +44,7 @@ export const Button = forwardRef<HTMLButtonElement, ButtonProps>(
       variant = 'primary',
       fullWidth,
       fullHeight,
+      iconOnly,
       disabled,
       className,
       ...props
@@ -58,7 +60,8 @@ export const Button = forwardRef<HTMLButtonElement, ButtonProps>(
             ? theme.base
             : theme.phoneIslandBase,
           theme[variant],
-          size && (theme.sizes as any)[size],
+          !iconOnly && size && (theme.sizes as any)[size],
+          iconOnly && size !== 'full' && (theme.iconOnly as any)[size],
           size === 'full'
             ? theme.rounded.full
             : size === 'small'

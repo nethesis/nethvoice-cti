@@ -214,7 +214,8 @@
     "There are no voicemails in your history": "Non ci sono messaggi vocali nel tuo storico",
     "Delete recording": "Elimina registrazione",
     "Delete call summary": "Elimina riepilogo",
-    "Delete call transcription": "Elimina trascrizione"
+    "Delete call transcription": "Elimina trascrizione",
+    "Voicemail available": "Voicemail disponibile"
   },
   "Operators": {
     "Operators": "Operatori",
@@ -621,7 +622,8 @@
     "All calls": "Tutte le chiamate",
     "Incoming": "Chiamate in arrivo",
     "Outgoing": "Chiamate in uscita",
-    "Filter by": "Filtra per"
+    "Filter by": "Filtra per",
+    "Play recording": "Riproduci registrazione"
   },
   "VoiceMail": {
     "Voicemail inbox": "Casella vocale",

@@ -8,6 +8,7 @@ import {
   faDownload,
   faTrash,
   faFileLines,
+  faVoicemail,
 } from '@fortawesome/free-solid-svg-icons'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { t } from 'i18next'
@@ -579,10 +580,28 @@ export const Calls: FC<CallsProps> = ({ className }): JSX.Element => {
       cell: (call: any) => {
         const linkedId = call?.linkedid
         const summaryStatus = summaryStatusMap?.[linkedId]
+        const isVoicemail = call?.lastapp === 'VoiceMail'
 
-        // If no status data, don't show anything
-        if (!summaryStatus) {
+        if (!summaryStatus && !isVoicemail) {
           return <div className='flex' />
+        }
+
+        if (isVoicemail) {
+          return (
+            <div className='flex justify-center'>
+              <div
+                className='h-8 w-8 flex items-center justify-center'
+                data-tooltip-id={`tooltip-voicemail-${linkedId}`}
+                data-tooltip-content={t('History.Voicemail available') || ''}
+              >
+                <FontAwesomeIcon
+                  icon={faVoicemail}
+                  className='h-4 w-4 text-iconIndigo dark:text-iconIndigoDark'
+                />
+                <CustomThemedTooltip id={`tooltip-voicemail-${linkedId}`} place='top' />
+              </div>
+            </div>
+          )
         }
 
         const { state, has_summary, has_transcription } = summaryStatus
