@@ -346,7 +346,7 @@ export const SummaryView: FC<SummaryViewProps> = ({ uniqueid }) => {
 
         {/* AI Content Disclaimer */}
         <InlineNotification
-          className='mt-8 border-none'
+          className='mt-8'
           type='info'
           title={t('Summary.AI content disclaimer title')}
         >

@@ -221,7 +221,7 @@ export const TranscriptionView: FC<TranscriptionViewProps> = ({ uniqueid }) => {
 
         {/* Transcription Disclaimer */}
         <InlineNotification
-          className='mt-6 border-none'
+          className='mt-6'
           type='info'
           title={t('Summary.Transcription disclaimer title')}
         >
