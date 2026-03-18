@@ -7,6 +7,7 @@ import {
   faArrowRight,
   faDownload,
   faTrash,
+  faFileLines,
 } from '@fortawesome/free-solid-svg-icons'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { t } from 'i18next'
@@ -32,7 +33,6 @@ import { useSelector, useDispatch } from 'react-redux'
 import { RootState, Dispatch } from '../../../store'
 import { Tooltip } from 'react-tooltip'
 import { CustomThemedTooltip } from '../../common/CustomThemedTooltip'
-import { AiSparkIcon } from '../../common/AiSparkIcon'
 import {
   getApiVoiceEndpoint,
   getApiScheme,
@@ -50,7 +50,6 @@ import { CallRecording } from './CallRecording'
 import { Pagination } from '../../common/Pagination'
 import { Table } from '../../common/Table'
 import { checkSummaryList, deleteSummary } from '../../../services/user'
-import { faAiSpark } from '@nethesis/nethesis-solid-svg-icons'
 import { Skeleton, TableSkeleton } from '../../common/Skeleton'
 import { useRouter } from 'next/router'
 
@@ -78,7 +77,6 @@ export const Calls: FC<CallsProps> = ({ className }): JSX.Element => {
   const [callDirection, setCallDirection]: any = useState('all')
   const [areFiltersInitialized, setAreFiltersInitialized] = useState(false)
   const [totalPages, setTotalPages] = useState(0)
-  const [currentHoveredCall, setCurrentHoveredCall] = useState<any>(null)
   const [summaryStatusMap, setSummaryStatusMap] = useState<Record<string, any>>({})
   const [isLoadingSummaryStatus, setIsLoadingSummaryStatus] = useState(false)
   const [handledSummaryLinkedId, setHandledSummaryLinkedId] = useState<string | null>(null)
@@ -406,7 +404,7 @@ export const Calls: FC<CallsProps> = ({ className }): JSX.Element => {
       <>
         {/* View/Download actions - in black */}
         {showSummaryActions && (
-          <Dropdown.Item icon={faAiSpark as any} onClick={() => openTranscriptionDrawer(call)}>
+          <Dropdown.Item icon={faFileLines} onClick={() => openTranscriptionDrawer(call)}>
             <span className='text-dropdownText dark:text-dropdownTextDark'>
               {hasSummary
                 ? t('Common.View summary') || 'View summary'
@@ -597,9 +595,11 @@ export const Calls: FC<CallsProps> = ({ className }): JSX.Element => {
                 className='h-8 w-8 flex items-center justify-center'
                 data-tooltip-id={`tooltip-ai-generating-${linkedId}`}
                 data-tooltip-content={t('Common.Call summary is being generated') || ''}
-                onMouseEnter={() => setCurrentHoveredCall(call)}
               >
-                <AiSparkIcon animate={true} />
+                <FontAwesomeIcon
+                  icon={faFileLines}
+                  className='h-4 w-4 animate-pulse text-iconIndigo dark:text-iconIndigoDark'
+                />
                 <CustomThemedTooltip id={`tooltip-ai-generating-${linkedId}`} place='top' />
               </div>
             </div>
@@ -612,26 +612,18 @@ export const Calls: FC<CallsProps> = ({ className }): JSX.Element => {
             ? t('Common.Call summary available') || 'Call summary available'
             : t('Common.Call transcription available') || 'Call transcription available'
 
-          const tooltipLinkText = has_summary
-            ? t('Common.View summary') || 'View summary'
-            : t('Common.View transcription') || 'View transcription'
-
           return (
             <div className='flex justify-center'>
               <div
-                className='cursor-pointer'
+                className='h-8 w-8 flex items-center justify-center'
                 data-tooltip-id={`tooltip-ai-${linkedId}`}
                 data-tooltip-content={tooltipTitle}
-                onMouseEnter={() => setCurrentHoveredCall(call)}
-                onClick={() => openTranscriptionDrawer(call)}
               >
-                <AiSparkIcon animate={false} />
-                <CustomThemedTooltip
-                  id={`tooltip-ai-${linkedId}`}
-                  place='top'
-                  clickableText={tooltipLinkText}
-                  onClickableClick={() => openTranscriptionDrawer(call)}
+                <FontAwesomeIcon
+                  icon={faFileLines}
+                  className='h-4 w-4 text-iconIndigo dark:text-iconIndigoDark'
                 />
+                <CustomThemedTooltip id={`tooltip-ai-${linkedId}`} place='top' />
               </div>
             </div>
           )
@@ -769,12 +761,6 @@ export const Calls: FC<CallsProps> = ({ className }): JSX.Element => {
           <MissingPermission />
         )}
       </div>
-      <CustomThemedTooltip
-        id='ai-transcription-tooltip'
-        place='top'
-        clickableText={t('Common.View call transcription') || ''}
-        onClickableClick={() => currentHoveredCall && openTranscriptionDrawer(currentHoveredCall)}
-      />
     </>
   )
 }

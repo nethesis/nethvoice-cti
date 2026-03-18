@@ -210,6 +210,8 @@ module.exports = {
         borderRingInputDark: 'var(--color-ring-input-dark)',
         borderRingButton: 'var(--color-ring-button)',
         borderRingButtonDark: 'var(--color-ring-button-dark)',
+        iconIndigo: 'var(--color-icon-indigo)',
+        iconIndigoDark: 'var(--color-icon-indigo-dark)',
       },
       screens: {
         '3xl': '1792px',
