@@ -70,6 +70,7 @@ interface DefaultState {
   settings: SettingsTypes
   recallOnBusy: any
   lkhash: string
+  call_summary_enabled?: boolean
   urlOpened?: boolean
   feature_codes: FeatureCodes | null
 }
@@ -123,6 +124,7 @@ const defaultState: DefaultState = {
   },
   recallOnBusy: '',
   lkhash: '',
+  call_summary_enabled: false,
   urlOpened: false,
   feature_codes: null,
 }
@@ -142,6 +144,7 @@ export const user = createModel<RootModel>()({
       state.settings = payload?.settings
       state.recallOnBusy = payload?.recallOnBusy
       state.lkhash = payload?.lkhash
+      state.call_summary_enabled = payload?.call_summary_enabled ?? false
       return state
     },
     updateMainPresence: (state, mainPresence) => {

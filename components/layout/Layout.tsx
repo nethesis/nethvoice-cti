@@ -16,7 +16,6 @@ import {
   closeToast,
   customScrollbarClass,
   openToast,
-  isCallSummaryEnabled,
 } from '../../lib/utils'
 import { store } from '../../store'
 import {
@@ -87,7 +86,7 @@ export const Layout: FC<LayoutProps> = ({ children }) => {
   const { operators } = useSelector((state: RootState) => state.operators)
   const { profile } = useSelector((state: RootState) => state.user)
   const { avoidClose } = useSelector((state: RootState) => state.sideDrawer)
-  const isSummaryEnabled = isCallSummaryEnabled()
+  const isSummaryEnabled = userStore?.call_summary_enabled === true
 
   const productName = getProductName()
   // Get current page name, clean the path from / and capitalize page name
@@ -140,6 +139,7 @@ export const Layout: FC<LayoutProps> = ({ children }) => {
           settings: userInfo?.data?.settings,
           recallOnBusy: userInfo?.data?.recallOnBusy,
           lkhash: userInfo?.data?.lkhash,
+          call_summary_enabled: userInfo?.data?.call_summary_enabled === true,
           urlOpened: false,
           feature_codes: null,
         })

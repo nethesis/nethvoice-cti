@@ -452,13 +452,6 @@ export function getPeopleImageVisibilityValue() {
   return `${window.CONFIG.LOGIN_PEOPLE}`
 }
 
-export function isCallSummaryEnabled() {
-  if (typeof window === 'undefined') {
-    return false
-  }
-  // @ts-ignore
-  return `${window.CONFIG.SATELLITE_CALL_SUMMARY_ENABLED}` === 'True'
-}
 
 export const voiceRequest = async (methodVoice: string, url: any, object?: any) => {
   try {

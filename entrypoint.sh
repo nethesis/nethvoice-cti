@@ -80,10 +80,6 @@ cat >> /app/public/config/config.production.js<<EOF
   LOGIN_PEOPLE: '${LOGIN_PEOPLE:-show}',
 EOF
 
-# call summary toggle flag from module settings
-cat >> /app/public/config/config.production.js<<EOF
-  SATELLITE_CALL_SUMMARY_ENABLED: '${SATELLITE_CALL_SUMMARY_ENABLED}',
-EOF
 
 cat >> /app/public/config/config.production.js<<EOF
 }

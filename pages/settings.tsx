@@ -62,7 +62,10 @@ const Settings: NextPage = () => {
   const router = useRouter()
 
   const [currentSection, setCurrentSection] = useState<string>('Devices')
-  const hasNotificationSettings = useMemo(() => getAvailableNotificationSettings().length > 0, [])
+  const hasNotificationSettings = useMemo(
+    () => getAvailableNotificationSettings(profile?.call_summary_enabled === true).length > 0,
+    [profile?.call_summary_enabled],
+  )
 
   // Determine if mobile extensions exist
   const hasMobileExtension = useMemo(() => {
