@@ -13,29 +13,37 @@ import { closeSideDrawer } from '../../lib/utils'
 import { formatDateLoc } from '../../lib/dateTime'
 import { FormattedConversationTextArea } from './FormattedConversationTextArea'
 
-interface TranscriptionViewProps {
-  uniqueid: string
-}
-
-const addSpacingBetweenSpeakers = (value: string) =>
+const formatTranscriptText = (value: string) =>
   value
     .split('\n')
-    .reduce<string[]>((lines, line, index, array) => {
+    .reduce<string[]>((lines, line) => {
       const trimmedLine = line.trim()
+
       if (!trimmedLine) {
         return lines
       }
 
-      lines.push(trimmedLine)
+      const match = trimmedLine.match(/^([^:\n]{1,120}:)\s*(.*)$/)
 
-      const nextLine = array[index + 1]?.trim()
-      if (nextLine && /^([^:\n]{1,120}:)/.test(nextLine)) {
-        lines.push('')
+      if (!match) {
+        lines.push(trimmedLine)
+        return lines
       }
+
+      lines.push(match[1])
+      if (match[2]) {
+        lines.push(match[2])
+      }
+      lines.push('')
 
       return lines
     }, [])
     .join('\n')
+    .replace(/\n+$/, '')
+
+interface TranscriptionViewProps {
+  uniqueid: string
+}
 
 export const TranscriptionView: FC<TranscriptionViewProps> = ({ uniqueid }) => {
   const [transcription, setTranscription] = useState('')
@@ -49,6 +57,27 @@ export const TranscriptionView: FC<TranscriptionViewProps> = ({ uniqueid }) => {
     call_timestamp?: string
   }>({})
 
+  const applyTranscriptionData = useCallback((data: any) => {
+    const transcriptionText = data?.transcription || data?.Transcription || ''
+
+    setCallInfo({
+      src: data?.src,
+      dst: data?.dst,
+      cnam: data?.cnam,
+      dst_cnam: data?.dst_cnam,
+      call_timestamp: data?.call_timestamp,
+    })
+
+    if (!transcriptionText) {
+      setTranscription('')
+      setError(t('Summary.Transcription unavailable') || '')
+      return false
+    }
+
+    setTranscription(formatTranscriptText(transcriptionText))
+    return true
+  }, [])
+
   const loadTranscription = useCallback(async () => {
     setIsLoading(true)
     setError('')
@@ -56,23 +85,9 @@ export const TranscriptionView: FC<TranscriptionViewProps> = ({ uniqueid }) => {
       const response = await getTranscription(uniqueid)
       if (response && response.data) {
         const data = response.data?.data || response.data
-        const transcriptionText = data?.transcription || data?.Transcription || ''
-
-        setCallInfo({
-          src: data?.src,
-          dst: data?.dst,
-          cnam: data?.cnam,
-          dst_cnam: data?.dst_cnam,
-          call_timestamp: data?.call_timestamp,
-        })
-
-        if (!transcriptionText) {
-          setTranscription('')
-          setError(t('Summary.Transcription unavailable') || '')
+        if (!applyTranscriptionData(data)) {
           return
         }
-
-        setTranscription(addSpacingBetweenSpeakers(transcriptionText))
       } else {
         setTranscription('')
         setError(t('Summary.Transcription unavailable') || '')
@@ -83,7 +98,7 @@ export const TranscriptionView: FC<TranscriptionViewProps> = ({ uniqueid }) => {
     } finally {
       setIsLoading(false)
     }
-  }, [uniqueid])
+  }, [applyTranscriptionData, uniqueid])
 
   useEffect(() => {
     if (uniqueid) {

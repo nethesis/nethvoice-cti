@@ -14,10 +14,6 @@ import { closeSideDrawer } from '../../lib/utils'
 import { formatDateLoc } from '../../lib/dateTime'
 import { FormattedConversationTextArea } from './FormattedConversationTextArea'
 
-interface SummaryViewProps {
-  uniqueid: string
-}
-
 const normalizeSummaryText = (value: string) =>
   value
     .split('\n')
@@ -43,6 +39,38 @@ const addSpacingBetweenSpeakers = (value: string) =>
       return lines
     }, [])
     .join('\n')
+
+const formatTranscriptText = (value: string) =>
+  value
+    .split('\n')
+    .reduce<string[]>((lines, line) => {
+      const trimmedLine = line.trim()
+
+      if (!trimmedLine) {
+        return lines
+      }
+
+      const match = trimmedLine.match(/^([^:\n]{1,120}:)\s*(.*)$/)
+
+      if (!match) {
+        lines.push(trimmedLine)
+        return lines
+      }
+
+      lines.push(match[1])
+      if (match[2]) {
+        lines.push(match[2])
+      }
+      lines.push('')
+
+      return lines
+    }, [])
+    .join('\n')
+    .replace(/\n+$/, '')
+
+interface SummaryViewProps {
+  uniqueid: string
+}
 
 const summaryTextareaClassName =
   'rounded-lg border-gray-200 px-4 py-3 text-[15px] leading-7 text-gray-900 shadow-none placeholder:text-gray-400 focus:ring-1 dark:border-gray-600 dark:placeholder:text-gray-500'
@@ -79,6 +107,42 @@ export const SummaryView: FC<SummaryViewProps> = ({ uniqueid }) => {
     setShowTranscription(false)
   }, [uniqueid])
 
+  const applySummaryData = useCallback((data: any) => {
+    const summaryText = data?.Summary || data?.summary || ''
+
+    setCallInfo({
+      src: data?.src,
+      dst: data?.dst,
+      cnam: data?.cnam,
+      dst_cnam: data?.dst_cnam,
+      call_timestamp: data?.call_timestamp,
+    })
+
+    if (!summaryText) {
+      setSummary('')
+      setLoadError(t('Summary.Summary unavailable') || '')
+      return false
+    }
+
+    setSummary(addSpacingBetweenSpeakers(normalizeSummaryText(summaryText)))
+    return true
+  }, [])
+
+  const applyTranscriptionData = useCallback((data: any) => {
+    const transcriptionText = data?.transcription || data?.Transcription || ''
+
+    if (!transcriptionText) {
+      setTranscription('')
+      setTranscriptionError(t('Summary.Transcription unavailable') || '')
+      setTranscriptionLoaded(true)
+      return false
+    }
+
+    setTranscription(formatTranscriptText(transcriptionText))
+    setTranscriptionLoaded(true)
+    return true
+  }, [])
+
   const loadSummary = useCallback(async () => {
     setIsLoading(true)
     setLoadError('')
@@ -89,31 +153,19 @@ export const SummaryView: FC<SummaryViewProps> = ({ uniqueid }) => {
         setLoadError(t('Summary.Summary unavailable') || '')
         return
       }
+
       const data = response.data?.data || response.data
-      const summaryText = data?.Summary || data?.summary || ''
 
-      setCallInfo({
-        src: data?.src,
-        dst: data?.dst,
-        cnam: data?.cnam,
-        dst_cnam: data?.dst_cnam,
-        call_timestamp: data?.call_timestamp,
-      })
-
-      if (!summaryText) {
-        setSummary('')
-        setLoadError(t('Summary.Summary unavailable') || '')
+      if (!applySummaryData(data)) {
         return
       }
-
-      setSummary(addSpacingBetweenSpeakers(normalizeSummaryText(summaryText)))
     } catch (err: any) {
       setSummary('')
       setLoadError(t('Summary.Summary load failed') || '')
     } finally {
       setIsLoading(false)
     }
-  }, [uniqueid])
+  }, [applySummaryData, uniqueid])
 
   useEffect(() => {
     if (uniqueid) {
@@ -132,17 +184,10 @@ export const SummaryView: FC<SummaryViewProps> = ({ uniqueid }) => {
       const response = await getTranscription(uniqueid)
       if (response && response?.data) {
         const data = response.data?.data || response.data
-        const transcriptionText = data?.transcription || data?.Transcription || ''
 
-        if (!transcriptionText) {
-          setTranscription('')
-          setTranscriptionError(t('Summary.Transcription unavailable') || '')
-          setTranscriptionLoaded(true)
+        if (!applyTranscriptionData(data)) {
           return
         }
-
-        setTranscription(addSpacingBetweenSpeakers(transcriptionText))
-        setTranscriptionLoaded(true)
       } else {
         setTranscription('')
         setTranscriptionError(t('Summary.Transcription unavailable') || '')
@@ -335,7 +380,7 @@ export const SummaryView: FC<SummaryViewProps> = ({ uniqueid }) => {
 
         <Button
           variant='ghost'
-          className='mt-8 flex items-center gap-2 w-fit'
+          className='mt-8 flex items-center gap-3 w-fit'
           onClick={handleToggleTranscription}
           disabled={isLoading}
         >
