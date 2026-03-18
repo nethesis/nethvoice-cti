@@ -7,12 +7,6 @@ import { customScrollbarClass } from '../../lib/utils'
 
 type FormattedContentType = 'transcript' | 'summary'
 
-interface FormattedBlock {
-  speaker?: string
-  text: string
-  isEmpty?: boolean
-}
-
 interface FormattedConversationTextAreaProps
   extends Omit<ComponentProps<'textarea'>, 'value' | 'onChange' | 'className'> {
   content: string
@@ -23,35 +17,27 @@ interface FormattedConversationTextAreaProps
   onChange?: (event: ChangeEvent<HTMLTextAreaElement>) => void
 }
 
-const splitContent = (content: string, contentType: FormattedContentType): string[] => {
-  if (contentType === 'summary') {
-    return content
-      .split(/\n+/)
-      .map((block) => block.trim())
-      .filter(Boolean)
-  }
-
-  return content
-    .split(/\n\s*\n+/)
-    .map((block) => block.replace(/\s*\n\s*/g, ' ').trim())
-    .filter(Boolean)
+interface TranscriptLine {
+  speaker?: string
+  text: string
+  isEmpty?: boolean
 }
 
-const parseContent = (content: string, contentType: FormattedContentType): FormattedBlock[] => {
-  return content.split('\n').map((block) => {
-    if (block === '') {
+const parseTranscriptLines = (content: string): TranscriptLine[] => {
+  return content.split('\n').map((line) => {
+    if (!line) {
       return { text: '', isEmpty: true }
     }
 
-    const match = block.match(/^([^:\n]{1,120}:)(\s*[\s\S]*)$/)
-
-    if (!match) {
-      return { text: block }
+    if (/^[^\n]+:$/.test(line)) {
+      return {
+        speaker: line,
+        text: '',
+      }
     }
 
     return {
-      speaker: match[1],
-      text: match[2],
+      text: line,
     }
   })
 }
@@ -67,7 +53,8 @@ export const FormattedConversationTextArea: FC<FormattedConversationTextAreaProp
   ...props
 }) => {
   const overlayContentRef = useRef<HTMLDivElement>(null)
-  const blocks = parseContent(content, contentType)
+  const shouldHighlightTranscript = readOnly && contentType === 'transcript'
+  const transcriptLines = shouldHighlightTranscript ? parseTranscriptLines(content) : []
 
   const handleScroll = (event: UIEvent<HTMLTextAreaElement>) => {
     if (!overlayContentRef.current) {
@@ -79,31 +66,32 @@ export const FormattedConversationTextArea: FC<FormattedConversationTextAreaProp
 
   return (
     <div className={classNames('relative w-full', className)}>
-      <div
-        aria-hidden='true'
-        className='pointer-events-none absolute inset-0 overflow-hidden rounded-lg border border-gray-200 bg-surfaceBackgroundInput dark:border-gray-600 dark:bg-surfaceBackgroundInputDark'
-      >
+      {shouldHighlightTranscript && (
         <div
-          ref={overlayContentRef}
-          className='px-4 py-3 text-[15px] leading-7'
-          style={{ willChange: 'transform' }}
+          aria-hidden='true'
+          className='pointer-events-none absolute inset-0 overflow-hidden rounded-md border border-gray-200 bg-elevationL1 dark:border-gray-600 dark:bg-elevationL1Dark'
         >
-          {blocks.map((block, index) => (
-            <div
-              key={`${block.speaker || 'block'}-${index}`}
-              className='break-words whitespace-pre-wrap min-h-[1.75rem]'
-            >
-              {block.isEmpty ? '\u00A0' : null}
-              {block.speaker && (
-                <span className='font-medium text-primaryNeutral dark:text-primaryNeutralDark'>
-                  {block?.speaker}
-                </span>
-              )}
-              <span className='font-normal text-transparent'>{block?.text}</span>
-            </div>
-          ))}
+          <div
+            ref={overlayContentRef}
+            className='px-3 py-2 text-sm leading-5'
+            style={{ willChange: 'transform' }}
+          >
+            {transcriptLines.map((line, index) => (
+              <div key={`${line.speaker || 'line'}-${index}`} className='whitespace-pre-wrap break-words'>
+                {line.isEmpty ? '\u00A0' : null}
+                {line.speaker && (
+                  <span className='font-medium text-primaryNeutral dark:text-primaryNeutralDark'>
+                    {line.speaker}
+                  </span>
+                )}
+                {!line.speaker && (
+                  <span className='text-tertiaryNeutral dark:text-tertiaryNeutralDark'>{line.text}</span>
+                )}
+              </div>
+            ))}
+          </div>
         </div>
-      </div>
+      )}
       <textarea
         readOnly={readOnly}
         value={content}
@@ -112,11 +100,18 @@ export const FormattedConversationTextArea: FC<FormattedConversationTextAreaProp
         onScroll={handleScroll}
         {...props}
         className={classNames(
-          'relative z-10 block w-full resize-y rounded-lg border border-gray-200 bg-transparent px-4 py-3',
-          'text-[15px] leading-7 text-secondaryNeutral dark:text-secondaryNeutralDark shadow-none focus:z-[8]',
+          'relative block w-full resize-y rounded-md border px-3 py-2',
+          shouldHighlightTranscript
+            ? 'z-10 border-transparent bg-transparent'
+            : readOnly
+              ? 'border-gray-200 bg-elevationL1 dark:border-gray-600 dark:bg-elevationL1Dark'
+              : 'border-gray-300 bg-surfaceBackgroundInput dark:border-gray-600 dark:bg-surfaceBackgroundInputDark',
+          shouldHighlightTranscript
+            ? 'text-sm leading-5 text-transparent shadow-none'
+            : 'text-sm leading-5 text-secondaryNeutral dark:text-secondaryNeutralDark shadow-none',
           readOnly ? 'caret-transparent' : 'caret-primary dark:caret-primaryDark',
           'placeholder:text-gray-400 dark:placeholder:text-gray-500',
-          'focus:border-primaryLight focus:ring-primaryLight dark:border-gray-600 dark:focus:border-primaryDark dark:focus:ring-primaryDark',
+          'focus:border-primaryLight focus:ring-primaryLight dark:focus:border-primaryDark dark:focus:ring-primaryDark',
           customScrollbarClass,
           textareaClassName,
         )}

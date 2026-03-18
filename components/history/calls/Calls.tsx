@@ -152,9 +152,15 @@ export const Calls: FC<CallsProps> = ({ className }): JSX.Element => {
     const openSummaryFromQuery = async () => {
       try {
         const response = await checkSummaryList([summaryLinkedId])
-        const summaryStatus = response?.data?.find((item: any) => item?.uniqueid === summaryLinkedId)
+        const summaryStatus = response?.data?.find(
+          (item: any) => item?.uniqueid === summaryLinkedId,
+        )
 
-        if (!isMounted || !summaryStatus || summaryStatus?.error || summaryStatus?.state !== 'done') {
+        if (!isMounted) {
+          return
+        }
+
+        if (!summaryStatus || summaryStatus?.error || summaryStatus?.state !== 'done') {
           return
         }
 
@@ -248,13 +254,14 @@ export const Calls: FC<CallsProps> = ({ className }): JSX.Element => {
       return
     }
 
+    const linkedIds = history.rows.map((call: any) => call?.linkedid).filter(Boolean)
+
+    if (linkedIds.length === 0) {
+      return
+    }
+
     try {
       setIsLoadingSummaryStatus(true)
-      const linkedIds = history.rows.map((call: any) => call?.linkedid).filter(Boolean)
-
-      if (linkedIds.length === 0) {
-        return
-      }
 
       const response = await checkSummaryList(linkedIds)
 
@@ -265,6 +272,7 @@ export const Calls: FC<CallsProps> = ({ className }): JSX.Element => {
             statusMap[item?.uniqueid] = item
           }
         })
+
         setSummaryStatusMap(statusMap)
       }
     } catch (error) {
