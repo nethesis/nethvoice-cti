@@ -10,7 +10,6 @@ import { InlineNotification, Switch } from '../common'
 import { RootState, Dispatch } from '../../store'
 import { setNotificationSettings } from '../../lib/notifications'
 import { getUserInfo } from '../../services/user'
-import { isCallSummaryEnabled } from '../../lib/utils'
 
 type NotificationSettingsItem = {
   id: 'call-summary'
@@ -18,10 +17,10 @@ type NotificationSettingsItem = {
   descriptionKey: string
 }
 
-export function getAvailableNotificationSettings(): NotificationSettingsItem[] {
+export function getAvailableNotificationSettings(callSummaryEnabled: boolean): NotificationSettingsItem[] {
   const items: NotificationSettingsItem[] = []
 
-  if (isCallSummaryEnabled()) {
+  if (callSummaryEnabled) {
     items.push({
       id: 'call-summary',
       titleKey: 'Settings.Call summary notifications',
@@ -36,7 +35,8 @@ export const Notifications = () => {
   const { t } = useTranslation()
   const dispatch = useDispatch<Dispatch>()
   const userStore = useSelector((state: RootState) => state.user)
-  const availableNotificationSettings = getAvailableNotificationSettings()
+  const isCallSummaryEnabled = userStore?.call_summary_enabled === true
+  const availableNotificationSettings = getAvailableNotificationSettings(isCallSummaryEnabled)
   const [callSummaryNotifications, setCallSummaryNotifications] = useState<boolean | null>(null)
   const [saveError, setSaveError] = useState('')
   const [isLoading, setIsLoading] = useState(true)
@@ -62,7 +62,7 @@ export const Notifications = () => {
           default_device: userInfo?.data?.default_device,
           name: userInfo?.data?.name,
           username: userInfo?.data?.username,
-          mainextension: userInfo?.data?.endpoints?.mainextension?.[0]?.id,
+          mainextension: userInfo?.data?.endpoints?.mainextension?.[0]?.id || '',
           mainPresence: userInfo?.data?.mainPresence,
           endpoints: userInfo?.data?.endpoints,
           profile: userInfo?.data?.profile,
@@ -70,6 +70,7 @@ export const Notifications = () => {
           settings: userInfo?.data?.settings,
           recallOnBusy: userInfo?.data?.recallOnBusy,
           lkhash: userInfo?.data?.lkhash,
+          call_summary_enabled: userInfo?.data?.call_summary_enabled === true,
           urlOpened: false,
           feature_codes: userStore.feature_codes,
         })
@@ -91,8 +92,7 @@ export const Notifications = () => {
     return () => {
       isMounted = false
     }
-  // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [])
+  }, [availableNotificationSettings.length, dispatch, userStore.feature_codes])
 
   const onToggleSummaryNotifications = async (enabled: boolean) => {
     setCallSummaryNotifications(enabled)
@@ -109,7 +109,7 @@ export const Notifications = () => {
           default_device: userInfo?.data?.default_device,
           name: userInfo?.data?.name,
           username: userInfo?.data?.username,
-          mainextension: userInfo?.data?.endpoints?.mainextension?.[0]?.id,
+          mainextension: userInfo?.data?.endpoints?.mainextension?.[0]?.id || '',
           mainPresence: userInfo?.data?.mainPresence,
           endpoints: userInfo?.data?.endpoints,
           profile: userInfo?.data?.profile,
@@ -117,6 +117,7 @@ export const Notifications = () => {
           settings: userInfo?.data?.settings,
           recallOnBusy: userInfo?.data?.recallOnBusy,
           lkhash: userInfo?.data?.lkhash,
+          call_summary_enabled: userInfo?.data?.call_summary_enabled === true,
           urlOpened: false,
           feature_codes: userStore.feature_codes,
         })
