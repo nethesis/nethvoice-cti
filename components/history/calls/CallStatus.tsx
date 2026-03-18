@@ -1,10 +1,9 @@
 import { FC } from 'react'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
-import { faArrowLeft, faVoicemail, faXmark, faBuilding } from '@fortawesome/free-solid-svg-icons'
+import { faArrowLeft, faXmark, faBuilding } from '@fortawesome/free-solid-svg-icons'
 import { faMissed } from '@nethesis/nethesis-solid-svg-icons'
 import { IconDefinition } from '@fortawesome/fontawesome-svg-core'
 import { t } from 'i18next'
-import { Tooltip } from 'react-tooltip'
 
 interface CallStatusProps {
   call: any
@@ -28,18 +27,6 @@ export const CallStatus: FC<CallStatusProps> = ({ call, callType }) => {
                   <span className='text-secondaryNeutral dark:text-secondaryNeutralDark'>
                     {t('History.Incoming answered')}
                   </span>
-                  {call?.lastapp === 'VoiceMail' && (
-                    <>
-                      <FontAwesomeIcon
-                        icon={faVoicemail}
-                        className='ml-2 h-4 w-4 text-textStatusOnline dark:text-textStatusOnlineDark tooltip-user-internal-answered-voicemail'
-                        aria-hidden='true'
-                      />
-                      <Tooltip anchorSelect='.tooltip-user-internal-answered-voicemail' place='top'>
-                        {t('History.Call in Voicemail') || ''}
-                      </Tooltip>
-                    </>
-                  )}
                 </div>
               ) : (
                 <div className='flex flex-nowrap items-center'>
@@ -101,21 +88,6 @@ export const CallStatus: FC<CallStatusProps> = ({ call, callType }) => {
                   <span className='text-secondaryNeutral dark:text-secondaryNeutralDark'>
                     {t('History.Internal answered')}
                   </span>
-                  {call.lastapp === 'VoiceMail' && (
-                    <>
-                      <FontAwesomeIcon
-                        icon={faVoicemail}
-                        className='ml-2 h-4 w-4 text-textStatusOnline dark:text-textStatusOnlineDark tooltip-switchboard-internal-answered-voicemail'
-                        aria-hidden='true'
-                      />
-                      <Tooltip
-                        anchorSelect='.tooltip-switchboard-internal-answered-voicemail'
-                        place='top'
-                      >
-                        {t('History.Call in Voicemail') || ''}
-                      </Tooltip>
-                    </>
-                  )}
                 </div>
               ) : (
                 <div className='flex flex-nowrap items-center'>
@@ -144,21 +116,6 @@ export const CallStatus: FC<CallStatusProps> = ({ call, callType }) => {
                       <span className='text-secondaryNeutral dark:text-secondaryNeutralDark'>
                         {t('History.Incoming answered')}
                       </span>
-                      {call.lastapp === 'VoiceMail' && (
-                        <>
-                          <FontAwesomeIcon
-                            icon={faVoicemail}
-                            className='ml-2 h-4 w-4 text-textStatusOnline dark:text-textStatusOnlineDark tooltip-switchboard-not-internal-answered-voicemail'
-                            aria-hidden='true'
-                          />
-                          <Tooltip
-                            anchorSelect='.tooltip-switchboard-not-internal-answered-voicemail'
-                            place='top'
-                          >
-                            {t('History.Call in Voicemail') || ''}
-                          </Tooltip>
-                        </>
-                      )}
                     </div>
                   ) : (
                     <div className='flex flex-nowrap items-center'>

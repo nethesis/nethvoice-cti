@@ -35,6 +35,11 @@ const theme = {
       full_h: 'h-full',
       full_w: 'w-full',
     },
+    iconOnly: {
+      small: 'h-8 w-8 p-0',
+      base: 'h-9 w-9 p-0',
+      large: 'h-10 w-10 p-0',
+    },
   },
   switch: {
     background:

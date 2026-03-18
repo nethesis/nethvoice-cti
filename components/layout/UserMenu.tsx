@@ -1,10 +1,11 @@
 import React from 'react'
 import { Dropdown } from '../common'
-import { faArrowRightFromBracket, faUser, faSun, faMoon } from '@fortawesome/free-solid-svg-icons'
+import { faArrowRightFromBracket, faUser, faSun, faMoon, faGear } from '@fortawesome/free-solid-svg-icons'
 import { useTranslation } from 'react-i18next'
-import Link from 'next/link'
+import { useRouter } from 'next/router'
 import { PresenceMenu } from './PresenceMenu'
 import { DeviceMenu } from './DeviceMenu'
+import { faOfficePhone } from '@nethesis/nethesis-solid-svg-icons'
 
 interface UserMenuProps {
   name: string
@@ -40,6 +41,7 @@ export const UserMenu: React.FC<UserMenuProps> = ({
   disconnectionFunction,
 }) => {
   const { t } = useTranslation()
+  const router = useRouter()
 
   return (
     <>
@@ -81,11 +83,12 @@ export const UserMenu: React.FC<UserMenuProps> = ({
       />
 
       {/* Profile picture redirect */}
-      <Link href={{ pathname: '/settings', query: { section: 'Profile picture' } }}>
-        <Dropdown.Item icon={faUser}>
-          <span>{t('Settings.Profile picture')}</span>
-        </Dropdown.Item>
-      </Link>
+      <Dropdown.Item
+        icon={faGear as any}
+        onClick={() => router.push({ pathname: '/settings', query: { section: 'Devices' } })}
+      >
+        <span>{t('Settings.Settings')}</span>
+      </Dropdown.Item>
 
       {/* Divider */}
       <div className='relative pt-2'>
@@ -93,22 +96,6 @@ export const UserMenu: React.FC<UserMenuProps> = ({
           <div className='w-full border-t border-gray-300 dark:border-gray-700' />
         </div>
       </div>
-
-      {/* Toggle light/dark theme */}
-      <Dropdown.Item
-        icon={
-          theme === 'dark' ||
-          (theme === 'system' && window.matchMedia('(prefers-color-scheme: dark)').matches)
-            ? faSun
-            : faMoon
-        }
-        onClick={toggleDarkTheme}
-      >
-        {theme === 'dark' ||
-        (theme === 'system' && window.matchMedia('(prefers-color-scheme: dark)').matches)
-          ? `${t('TopBar.Switch to light theme')}`
-          : `${t('TopBar.Switch to dark theme')}`}
-      </Dropdown.Item>
 
       {/* Logout */}
       <Dropdown.Item icon={faArrowRightFromBracket} onClick={disconnectionFunction}>
