@@ -1,11 +1,11 @@
 import React from 'react'
 import { Dropdown } from '../common'
-import { faArrowRightFromBracket, faUser, faSun, faMoon, faGear } from '@fortawesome/free-solid-svg-icons'
+import { faArrowRightFromBracket, faGear } from '@fortawesome/free-solid-svg-icons'
 import { useTranslation } from 'react-i18next'
 import { useRouter } from 'next/router'
+import { Divider } from '../common/Divider'
 import { PresenceMenu } from './PresenceMenu'
 import { DeviceMenu } from './DeviceMenu'
-import { faOfficePhone } from '@nethesis/nethesis-solid-svg-icons'
 
 interface UserMenuProps {
   name: string
@@ -17,7 +17,6 @@ interface UserMenuProps {
   theme: string
   mainDeviceType: string
   noMobileListDevice: any[]
-  toggleDarkTheme: () => void
   setPresence: (presence: string) => void
   setForwardPresence: (number: string) => void
   setMainDeviceId: (device: any) => void
@@ -31,10 +30,8 @@ export const UserMenu: React.FC<UserMenuProps> = ({
   profile,
   phoneLinkData,
   operatorsStore,
-  theme,
   mainDeviceType,
   noMobileListDevice,
-  toggleDarkTheme,
   setPresence,
   setForwardPresence,
   setMainDeviceId,
@@ -58,11 +55,7 @@ export const UserMenu: React.FC<UserMenuProps> = ({
       </div>
 
       {/* Divider */}
-      <div className='relative pt-2'>
-        <div className='absolute inset-0 flex items-center' aria-hidden='true'>
-          <div className='w-full border-t border-gray-300 dark:border-gray-700' />
-        </div>
-      </div>
+      <Divider paddingY='pt-2' className='pointer-events-none' />
 
       {/* Presence Menu */}
       <PresenceMenu
@@ -82,7 +75,7 @@ export const UserMenu: React.FC<UserMenuProps> = ({
         setMainDeviceId={setMainDeviceId}
       />
 
-      {/* Profile picture redirect */}
+      {/* Settings redirect */}
       <Dropdown.Item
         icon={faGear as any}
         onClick={() => router.push({ pathname: '/settings', query: { section: 'Devices' } })}
@@ -91,11 +84,7 @@ export const UserMenu: React.FC<UserMenuProps> = ({
       </Dropdown.Item>
 
       {/* Divider */}
-      <div className='relative pt-2'>
-        <div className='absolute inset-0 flex items-center' aria-hidden='true'>
-          <div className='w-full border-t border-gray-300 dark:border-gray-700' />
-        </div>
-      </div>
+      <Divider paddingY='pt-2' className='pointer-events-none' />
 
       {/* Logout */}
       <Dropdown.Item icon={faArrowRightFromBracket} onClick={disconnectionFunction}>
