@@ -24,7 +24,6 @@ import {
   faVoicemail,
 } from '@fortawesome/free-solid-svg-icons'
 import { getUserInfo } from '../../services/user'
-import { setTheme } from '../../lib/darkTheme'
 import { loadNotificationsFromStorage } from '../../lib/notifications'
 import { GlobalSearch } from './GlobalSearch'
 import { useTranslation } from 'react-i18next'
@@ -108,18 +107,6 @@ export const TopBar: FC<TopBarProps> = ({ openMobileCb }) => {
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [firstNotificationsRender, notificationsStore.isLoaded])
-
-  // Toggle dark/light theme
-  const toggleDarkTheme = () => {
-    if (
-      theme === 'dark' ||
-      (theme === 'system' && window.matchMedia('(prefers-color-scheme: dark)').matches)
-    ) {
-      setTheme('light', auth.username)
-    } else {
-      setTheme('dark', auth.username)
-    }
-  }
 
   const openNotificationsDrawer = () => {
     store.dispatch.sideDrawer.update({
@@ -248,7 +235,6 @@ export const TopBar: FC<TopBarProps> = ({ openMobileCb }) => {
       theme={theme}
       mainDeviceType={mainDeviceType}
       noMobileListDevice={noMobileListDevice}
-      toggleDarkTheme={toggleDarkTheme}
       setPresence={setPresence}
       setForwardPresence={setForwardPresence}
       setMainDeviceId={setMainDeviceId}

@@ -5,13 +5,13 @@ import { FC, useState, useCallback, useEffect } from 'react'
 import { TextArea, Button, Label, InlineNotification } from '../common'
 import { Skeleton } from '../common/Skeleton'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
-import { faAngleDown, faAngleUp, faPhone, faCalendar } from '@fortawesome/free-solid-svg-icons'
+import { faAngleDown, faAngleUp } from '@fortawesome/free-solid-svg-icons'
 import { t } from 'i18next'
 import { Divider } from '../common/Divider'
 import { DrawerFooter } from '../common/DrawerFooter'
 import { getSummaryCall, getTranscription, updateSummary } from '../../services/user'
 import { closeSideDrawer } from '../../lib/utils'
-import { formatDateLoc } from '../../lib/dateTime'
+import { CallInformationSection, SummaryCallInfo } from './CallInformationSection'
 import { FormattedConversationTextArea } from './FormattedConversationTextArea'
 
 const normalizeSummaryText = (value: string) =>
@@ -89,13 +89,7 @@ export const SummaryView: FC<SummaryViewProps> = ({ uniqueid }) => {
   const [saveError, setSaveError] = useState('')
   const [transcriptionError, setTranscriptionError] = useState('')
   const [transcriptionLoaded, setTranscriptionLoaded] = useState(false)
-  const [callInfo, setCallInfo] = useState<{
-    src?: string
-    dst?: string
-    cnam?: string
-    dst_cnam?: string
-    call_timestamp?: string
-  }>({})
+  const [callInfo, setCallInfo] = useState<SummaryCallInfo>({})
 
   // Reset transcription state when uniqueid changes
   useEffect(() => {
@@ -235,114 +229,7 @@ export const SummaryView: FC<SummaryViewProps> = ({ uniqueid }) => {
           </InlineNotification>
         )}
 
-        {/* Call Information Section */}
-        <div className='mt-6 flex flex-col gap-4'>
-          {/* Source */}
-          <div className='flex items-start gap-8 w-full'>
-            <div className='text-sm font-medium text-secondaryNeutral dark:text-secondaryNeutralDark w-[90px] shrink-0'>
-              {t('History.Source')}
-            </div>
-            {isLoading ? (
-              <div className='flex items-start gap-2 flex-1'>
-                <Skeleton
-                  variant='rectangular'
-                  width={16}
-                  height={16}
-                  className='mt-0.5 shrink-0'
-                />
-                <div className='flex flex-col gap-1 flex-1'>
-                  <Skeleton width={128} />
-                  <Skeleton width={80} />
-                </div>
-              </div>
-            ) : callInfo.src ? (
-              <div className='flex items-start gap-2 shrink-0'>
-                <FontAwesomeIcon
-                  icon={faPhone}
-                  className='mt-0.5 h-4 w-4 shrink-0 text-tertiaryNeutral dark:text-tertiaryNeutralDark'
-                />
-                <div className='text-sm text-tertiaryNeutral dark:text-tertiaryNeutralDark'>
-                  <div>{callInfo.cnam || callInfo.src}</div>
-                  {callInfo.cnam && (
-                    <div className='text-primaryActive dark:text-primaryActiveDark'>
-                      {callInfo.src}
-                    </div>
-                  )}
-                </div>
-              </div>
-            ) : (
-              <div className='text-sm text-tertiaryNeutral dark:text-tertiaryNeutralDark'>-</div>
-            )}
-          </div>
-
-          {/* Destination */}
-          <div className='flex items-start gap-8 w-full'>
-            <div className='text-sm font-medium text-secondaryNeutral dark:text-secondaryNeutralDark w-[90px] shrink-0'>
-              {t('History.Destination')}
-            </div>
-            {isLoading ? (
-              <div className='flex items-start gap-2 flex-1'>
-                <Skeleton
-                  variant='rectangular'
-                  width={16}
-                  height={16}
-                  className='mt-0.5 shrink-0'
-                />
-                <div className='flex flex-col gap-1 flex-1'>
-                  <Skeleton width={128} />
-                  <Skeleton width={80} />
-                </div>
-              </div>
-            ) : callInfo.dst ? (
-              <div className='flex items-start gap-2 shrink-0'>
-                <FontAwesomeIcon
-                  icon={faPhone}
-                  className='mt-0.5 h-4 w-4 shrink-0 text-tertiaryNeutral dark:text-tertiaryNeutralDark'
-                />
-                <div className='text-sm text-tertiaryNeutral dark:text-tertiaryNeutralDark'>
-                  <div>{callInfo.dst_cnam || callInfo.dst}</div>
-                  {callInfo.dst_cnam && (
-                    <div className='text-primaryActive dark:text-primaryActiveDark'>
-                      {callInfo.dst}
-                    </div>
-                  )}
-                </div>
-              </div>
-            ) : (
-              <div className='text-sm text-tertiaryNeutral dark:text-tertiaryNeutralDark'>-</div>
-            )}
-          </div>
-
-          {/* Date */}
-          <div className='flex items-start gap-8 w-full'>
-            <div className='text-sm font-medium text-secondaryNeutral dark:text-secondaryNeutralDark w-[90px] shrink-0'>
-              {t('History.Date')}
-            </div>
-            {isLoading ? (
-              <div className='flex items-start gap-2 flex-1'>
-                <Skeleton
-                  variant='rectangular'
-                  width={16}
-                  height={16}
-                  className='mt-0.5 shrink-0'
-                />
-                <Skeleton width={160} />
-              </div>
-            ) : callInfo.call_timestamp ? (
-              <div className='flex items-start gap-2 shrink-0'>
-                <FontAwesomeIcon
-                  icon={faCalendar}
-                  className='mt-0.5 h-4 w-4 shrink-0 text-tertiaryNeutral dark:text-tertiaryNeutralDark'
-                />
-                <div className='text-sm text-tertiaryNeutral dark:text-tertiaryNeutralDark'>
-                    {formatDateLoc(new Date(callInfo.call_timestamp!), 'dd MMM yyyy HH:mm')}
-                </div>
-              </div>
-            ) : (
-              <div className='text-sm text-tertiaryNeutral dark:text-tertiaryNeutralDark'>-</div>
-            )}
-          </div>
-        </div>
+        <CallInformationSection callInfo={callInfo} isLoading={isLoading} />
 
         {/* AI Content Disclaimer */}
         <InlineNotification
