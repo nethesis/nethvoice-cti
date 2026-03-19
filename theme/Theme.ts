@@ -469,10 +469,10 @@ const theme = {
   inlineNotification: {
     base: 'flex w-full items-start gap-3 rounded-md border-l-4 p-4',
     type: {
-      info: 'border-l-borderAccentIndigo bg-surfaceInlineNotificationInfo dark:border-l-borderAccentIndigoDark dark:bg-surfaceInlineNotificationInfoDark',
-      error: 'border-l-rose-500 bg-rose-100 dark:border-l-rose-300 dark:bg-rose-950/60',
-      warning: 'border-l-amber-500 bg-amber-100 dark:border-l-amber-400 dark:bg-amber-950/60',
-      success: 'border-l-emerald-500 bg-emerald-100 dark:border-l-emerald-400 dark:bg-emerald-950/60',
+      info: 'border-indigo-400 bg-indigo-100 dark:border-indigo-500 dark:bg-indigo-900',
+      error: 'border-rose-500 bg-rose-100 dark:border-rose-300 dark:bg-rose-900',
+      warning: 'border-amber-400 bg-amber-100 dark:border-amber-500 dark:bg-amber-700',
+      success: 'border-green-400 bg-green-100 dark:border-green-500 dark:bg-green-900',
     },
     titleStyle: {
       info: 'text-sm font-medium text-textInlineNotificationInformationTitle dark:text-textInlineNotificationInformationTitleDark',
