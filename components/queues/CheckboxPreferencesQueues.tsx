@@ -11,11 +11,29 @@ interface CheckboxPreferencesQueuesProps {
   className?: string
 }
 
+const normalizeSelectedStatus = (value: any): string[] => {
+  if (Array.isArray(value)) {
+    return value
+  }
+
+  if (typeof value === 'string' && value.trim() !== '') {
+    try {
+      const parsedValue = JSON.parse(value)
+      return Array.isArray(parsedValue) ? parsedValue : []
+    } catch {
+      return []
+    }
+  }
+
+  return []
+}
+
 export const CheckboxPreferencesQueues: FC<CheckboxPreferencesQueuesProps> = ({
   className,
 }): JSX.Element => {
   const { t } = useTranslation()
   const userSettingsInformation = useSelector((state: RootState) => state.user.settings)
+  const auth = useSelector((state: RootState) => state.authentication)
   const dispatch = useDispatch()
 
   async function changeQueueUserPreferences(value: any, type: any) {
@@ -66,8 +84,6 @@ export const CheckboxPreferencesQueues: FC<CheckboxPreferencesQueuesProps> = ({
       { value: 'dnd', label: t('Settings.Do not disturb') },
     ],
   }
-  const auth = useSelector((state: RootState) => state.authentication)
-
   function changePauseStatus(event: any) {
     const isChecked = event.target.checked
     const newSelectedPauseStatus = cloneDeep(selectedStatus)
@@ -89,19 +105,24 @@ export const CheckboxPreferencesQueues: FC<CheckboxPreferencesQueuesProps> = ({
     dispatch.user.updateQueueAutopausePresencelist(newSelectedPauseStatus)
   }
 
-  const getStatusPauseValue = (currentUsername: string) => {
-    const selectedStatusPause = loadPreference('pauseSelectedPreference', currentUsername) || []
-    return { selectedStatusPause }
-  }
-
   useEffect(() => {
-    const filterValues = getStatusPauseValue(auth.username)
+    const queueAutopausePresenceList = normalizeSelectedStatus(
+      userSettingsInformation?.queue_autopause_presencelist,
+    )
 
-    if (isEmpty(filterValues.selectedStatusPause)) {
-    } else {
-      setSelectedStatus(filterValues.selectedStatusPause)
+    if (!isEmpty(queueAutopausePresenceList)) {
+      setSelectedStatus(queueAutopausePresenceList)
+      return
     }
-  }, [])
+
+    const selectedStatusPause = normalizeSelectedStatus(
+      loadPreference('pauseSelectedPreference', auth.username) || [],
+    )
+
+    if (!isEmpty(selectedStatusPause)) {
+      setSelectedStatus(selectedStatusPause)
+    }
+  }, [auth?.username, userSettingsInformation?.queue_autopause_presencelist])
 
   return (
     <fieldset>
@@ -115,8 +136,7 @@ export const CheckboxPreferencesQueues: FC<CheckboxPreferencesQueuesProps> = ({
               aria-describedby='comments-description'
               name='comments'
               type='checkbox'
-              defaultChecked={userSettingsInformation?.queue_auto_logout}
-              value={userSettingsInformation?.queue_auto_logout}
+              checked={Boolean(userSettingsInformation?.queue_auto_logout)}
               onChange={updateLogoutStatus}
               className='h-4 w-4 rounded border-gray-300 text-emerald-600 focus:ring-emerald-600'
             />
@@ -142,8 +162,7 @@ export const CheckboxPreferencesQueues: FC<CheckboxPreferencesQueuesProps> = ({
               aria-describedby='candidates-description'
               name='candidates'
               type='checkbox'
-              defaultChecked={userSettingsInformation?.queue_auto_login}
-              value={userSettingsInformation?.queue_auto_login}
+              checked={Boolean(userSettingsInformation?.queue_auto_login)}
               onChange={updateLoginStatus}
               className='h-4 w-4 rounded border-gray-300 text-emerald-600 focus:ring-emerald-600'
             />
@@ -166,8 +185,7 @@ export const CheckboxPreferencesQueues: FC<CheckboxPreferencesQueuesProps> = ({
               aria-describedby='offers-description'
               name='offers'
               type='checkbox'
-              defaultChecked={userSettingsInformation?.queue_auto_pause_onpresence}
-              value={userSettingsInformation?.queue_auto_pause_onpresence}
+              checked={Boolean(userSettingsInformation?.queue_auto_pause_onpresence)}
               onChange={updatePauseStatus}
               className='h-4 w-4 rounded border-gray-300 text-emerald-600 focus:ring-emerald-600 '
             />
@@ -190,9 +208,7 @@ export const CheckboxPreferencesQueues: FC<CheckboxPreferencesQueuesProps> = ({
                     id={`settings-${option?.value}`}
                     name={`pauseStatus-${qPauseAvailPresence?.id}`}
                     type='checkbox'
-                    defaultChecked={userSettingsInformation?.queue_autopause_presencelist?.includes(
-                      option?.value,
-                    )}
+                    checked={selectedStatus?.includes(option?.value)}
                     value={option?.value}
                     onChange={changePauseStatus}
                     className='h-4 w-4 rounded border-gray-300 text-primary focus:ring-primaryLight dark:border-gray-600 dark:text-primaryDark dark:focus:ring-primaryDark'
