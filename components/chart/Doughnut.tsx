@@ -24,7 +24,7 @@ const DoughnutChart: FC<DoughnutChartProps> = ({ datasets, titleText, total }) =
 
   const options = {
     responsive: true,
-    cutoutPercentage: 50, // Regola la dimensione del cerchio interno (50% crea una forma di anello)
+    cutout: '50%',
     plugins: {
       legend: {
         display: false, // Nascondi la legenda

@@ -7,20 +7,33 @@ import {
   faArrowRight,
   faDownload,
   faTrash,
+  faFileLines,
+  faVoicemail,
 } from '@fortawesome/free-solid-svg-icons'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { t } from 'i18next'
-import { FC, ComponentProps, useState, useMemo, useEffect } from 'react'
-import { deleteRec, downloadCallRec, openDrawerHistory, search } from '../../../lib/history'
+import { FC, ComponentProps, useState, useMemo, useEffect, useCallback } from 'react'
+import {
+  DEFAULT_CALL_DIRECTION_FILTER,
+  DEFAULT_CALL_TYPE_FILTER,
+  DEFAULT_SORT_BY,
+  deleteRec,
+  downloadCallRec,
+  getFilterValues,
+  openDrawerHistory,
+  search,
+} from '../../../lib/history'
 import { PAGE_SIZE } from '../../../lib/queuesLib'
 import { subDays, startOfDay } from 'date-fns'
+import { useEventListener } from '../../../lib/hooks/useEventListener'
 import { InlineNotification, Dropdown, Button } from '../../common'
 import { MissingPermission } from '../../common/MissingPermissionsPage'
 import { CallsDate } from '../CallsDate'
 import { Filter } from './Filter'
-import { useSelector } from 'react-redux'
-import { RootState } from '../../../store'
+import { useSelector, useDispatch } from 'react-redux'
+import { RootState, Dispatch } from '../../../store'
 import { Tooltip } from 'react-tooltip'
+import { CustomThemedTooltip } from '../../common/CustomThemedTooltip'
 import {
   getApiVoiceEndpoint,
   getApiScheme,
@@ -37,10 +50,15 @@ import { CallDuration } from './CallDuration'
 import { CallRecording } from './CallRecording'
 import { Pagination } from '../../common/Pagination'
 import { Table } from '../../common/Table'
+import { checkSummaryList, deleteSummary } from '../../../services/user'
+import { Skeleton, TableSkeleton } from '../../common/Skeleton'
+import { useRouter } from 'next/router'
 
 export interface CallsProps extends ComponentProps<'div'> {}
 
 export const Calls: FC<CallsProps> = ({ className }): JSX.Element => {
+  const dispatch = useDispatch<Dispatch>()
+  const router = useRouter()
   const { operators } = useSelector((state: RootState) => state.operators)
   const { profile } = useSelector((state: RootState) => state.user)
   const { name, mainextension, feature_codes } = useSelector((state: RootState) => state.user)
@@ -58,7 +76,11 @@ export const Calls: FC<CallsProps> = ({ className }): JSX.Element => {
   const [dateEnd, setDateEnd]: any = useState('')
   const [dateBegin, setDateBegin]: any = useState('')
   const [callDirection, setCallDirection]: any = useState('all')
+  const [areFiltersInitialized, setAreFiltersInitialized] = useState(false)
   const [totalPages, setTotalPages] = useState(0)
+  const [summaryStatusMap, setSummaryStatusMap] = useState<Record<string, any>>({})
+  const [isLoadingSummaryStatus, setIsLoadingSummaryStatus] = useState(false)
+  const [handledSummaryLinkedId, setHandledSummaryLinkedId] = useState<string | null>(null)
 
   const apiVoiceEnpoint = getApiVoiceEndpoint()
   const apiScheme = getApiScheme()
@@ -73,6 +95,88 @@ export const Calls: FC<CallsProps> = ({ className }): JSX.Element => {
   const dateFrom: any = formatDateLoc(DateFromNotConverted, 'yyyy-MM-dd')
   const dateTo: any = formatDateLoc(new Date(), 'yyyy-MM-dd')
   const checkDateType = new RegExp(/-/, 'g')
+
+  useEffect(() => {
+    if (!username) {
+      return
+    }
+
+    const filterValues = getFilterValues(username)
+    setCallType(filterValues.callType || DEFAULT_CALL_TYPE_FILTER)
+    setCallDirection(filterValues.callDirection || DEFAULT_CALL_DIRECTION_FILTER)
+    setSortBy(filterValues.sortBy || DEFAULT_SORT_BY)
+    setAreFiltersInitialized(true)
+  }, [username])
+
+  const clearSummaryLinkedIdQuery = useCallback(() => {
+    if (!router.isReady || !router.query.summaryLinkedid) {
+      return
+    }
+
+    const nextQuery = { ...router.query }
+    delete nextQuery.summaryLinkedid
+    router.replace(
+      {
+        pathname: router.pathname,
+        query: nextQuery,
+      },
+      undefined,
+      { shallow: true },
+    )
+  }, [router])
+
+  const openSummaryDrawerByLinkedId = useCallback(
+    (linkedId: string, summaryStatus?: any) => {
+      dispatch.sideDrawer.update({
+        isShown: true,
+        contentType: 'callSummary',
+        config: {
+          uniqueid: linkedId,
+          isSummary: summaryStatus?.has_summary || false,
+        },
+      })
+    },
+    [dispatch],
+  )
+
+  useEffect(() => {
+    const summaryLinkedId = router.query.summaryLinkedid as string | undefined
+
+    if (!router.isReady || !summaryLinkedId || handledSummaryLinkedId === summaryLinkedId) {
+      return
+    }
+
+    let isMounted = true
+
+    const openSummaryFromQuery = async () => {
+      try {
+        const response = await checkSummaryList([summaryLinkedId])
+        const summaryStatus = response?.data?.find(
+          (item: any) => item?.uniqueid === summaryLinkedId,
+        )
+
+        if (!isMounted) {
+          return
+        }
+
+        if (!summaryStatus || summaryStatus?.error || summaryStatus?.state !== 'done') {
+          return
+        }
+
+        openSummaryDrawerByLinkedId(summaryLinkedId, summaryStatus)
+        setHandledSummaryLinkedId(summaryLinkedId)
+        clearSummaryLinkedIdQuery()
+      } catch (error) {
+        console.error('Error opening summary from query:', error)
+      }
+    }
+
+    openSummaryFromQuery()
+
+    return () => {
+      isMounted = false
+    }
+  }, [router, handledSummaryLinkedId, openSummaryDrawerByLinkedId, clearSummaryLinkedIdQuery])
 
   useEffect(() => {
     if (!dateBegin) {
@@ -94,6 +198,7 @@ export const Calls: FC<CallsProps> = ({ className }): JSX.Element => {
   useEffect(() => {
     async function fetchHistory() {
       if (
+        areFiltersInitialized &&
         dateBegin &&
         !checkDateType.test(dateBegin) &&
         dateEnd &&
@@ -125,17 +230,95 @@ export const Calls: FC<CallsProps> = ({ className }): JSX.Element => {
     }
 
     // Reset loading state when dependencies change
-    if (!isLoadingPagination) {
+    if (areFiltersInitialized && !isLoadingPagination) {
       setHistoryLoaded(false)
       fetchHistory()
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [callType, username, dateBegin, dateEnd, filterText, pageNum, sortBy, callDirection])
+  }, [
+    areFiltersInitialized,
+    callType,
+    username,
+    dateBegin,
+    dateEnd,
+    filterText,
+    pageNum,
+    sortBy,
+    callDirection,
+  ])
+
+  // Function to load summary status for current page calls
+  const loadSummaryStatus = useCallback(async () => {
+    if (!history?.rows || history?.rows?.length === 0) {
+      return
+    }
+
+    const linkedIds = history.rows.map((call: any) => call?.linkedid).filter(Boolean)
+
+    if (linkedIds.length === 0) {
+      return
+    }
+
+    try {
+      setIsLoadingSummaryStatus(true)
+
+      const response = await checkSummaryList(linkedIds)
+
+      if (response?.data && Array.isArray(response?.data)) {
+        const statusMap: Record<string, any> = {}
+        response.data.forEach((item: any) => {
+          if (item?.uniqueid && !item?.error) {
+            statusMap[item?.uniqueid] = item
+          }
+        })
+
+        setSummaryStatusMap(statusMap)
+      }
+    } catch (error) {
+      console.error('Error loading summary status:', error)
+    } finally {
+      setIsLoadingSummaryStatus(false)
+    }
+  }, [history?.rows])
+
+  // Load summary status when history is loaded or page changes
+  useEffect(() => {
+    if (isHistoryLoaded) {
+      loadSummaryStatus()
+    }
+  }, [isHistoryLoaded, pageNum, loadSummaryStatus])
+
+  // Reload summary status when phone-island-summary-ready event is received
+  useEventListener('phone-island-summary-ready', (data: { linkedid?: string }) => {
+    loadSummaryStatus()
+  })
+
+  // Poll for summary status updates if any call is summarizing/in progress
+  useEffect(() => {
+    // Check if any call has state 'summarizing' or 'progress'
+    const hasCallInProgress = Object.values(summaryStatusMap).some(
+      (status: any) => status?.state === 'summarizing' || status?.state === 'progress',
+    )
+
+    if (!hasCallInProgress) {
+      return
+    }
+
+    // Set up polling interval
+    const pollInterval = setInterval(() => {
+      loadSummaryStatus()
+    }, 10000)
+
+    // Cleanup interval on unmount or when hasCallInProgress changes
+    return () => {
+      clearInterval(pollInterval)
+    }
+  }, [summaryStatusMap, loadSummaryStatus])
 
   //Calculate the total pages of the history
   useEffect(() => {
     if (history?.count) {
-      setTotalPages(Math.ceil(history.count / PAGE_SIZE))
+      setTotalPages(Math?.ceil(history?.count / PAGE_SIZE))
     }
   }, [history?.count])
 
@@ -143,6 +326,12 @@ export const Calls: FC<CallsProps> = ({ className }): JSX.Element => {
     if (callId) {
       playFileAudio(callId, 'call_recording')
     }
+  }
+
+  function openTranscriptionDrawer(call: any) {
+    const linkedId = call?.linkedid
+    const summaryStatus = summaryStatusMap?.[linkedId]
+    openSummaryDrawerByLinkedId(linkedId, summaryStatus)
   }
 
   const downloadRecordingFileAudio = async (callIdInformation: any) => {
@@ -175,10 +364,22 @@ export const Calls: FC<CallsProps> = ({ className }): JSX.Element => {
     }
   }
 
+  const deleteSummaryTranscription = async (linkedId: string) => {
+    if (linkedId !== '') {
+      try {
+        await deleteSummary(linkedId)
+        // reload summary status to update the UI
+        loadSummaryStatus()
+      } catch (err) {
+        console.error('Error deleting summary/transcription:', err)
+      }
+    }
+  }
+
   // Dropdown actions for the recording file
   const getRecordingActions = (callId: string) => (
     <>
-      <div className='border-b border-gray-200 dark:border-gray-700'>
+      <div className='border-b border-divider dark:border-dividerDark'>
         <Dropdown.Item icon={faDownload} onClick={() => downloadRecordingFileAudio(callId)}>
           <span className='text-dropdownText dark:text-dropdownTextDark'>
             {t('Common.Download')}
@@ -190,6 +391,68 @@ export const Calls: FC<CallsProps> = ({ className }): JSX.Element => {
       </Dropdown.Item>
     </>
   )
+
+  // Combined actions for recording and summary/transcription
+  const getCallActions = (call: any) => {
+    const linkedId = call?.linkedid
+    const summaryStatus = summaryStatusMap?.[linkedId]
+    const hasRecording = call?.recordingfile
+    const hasSummary = summaryStatus?.has_summary
+    const hasTranscription = summaryStatus?.has_transcription
+    const showSummaryActions = summaryStatus?.state === 'done' && (hasSummary || hasTranscription)
+
+    return (
+      <>
+        {/* View/Download actions - in black */}
+        {showSummaryActions && (
+          <Dropdown.Item icon={faFileLines} onClick={() => openTranscriptionDrawer(call)}>
+            <span className='text-dropdownText dark:text-dropdownTextDark'>
+              {hasSummary
+                ? t('Common.View summary') || 'View summary'
+                : t('Common.View transcription') || 'View transcription'}
+            </span>
+          </Dropdown.Item>
+        )}
+
+        {hasRecording && (
+          <Dropdown.Item
+            icon={faDownload}
+            onClick={() => downloadRecordingFileAudio(call?.uniqueid)}
+          >
+            <span className='text-dropdownText dark:text-dropdownTextDark'>
+              {t('Common.Download')}
+            </span>
+          </Dropdown.Item>
+        )}
+
+        {/* Divider before delete actions */}
+        {(hasRecording || showSummaryActions) && (
+          <div className='border-b border-divider dark:border-dividerDark' />
+        )}
+
+        {/* Delete actions - in red */}
+        {hasRecording && (
+          <Dropdown.Item
+            icon={faTrash}
+            isRed
+            onClick={() => deleteRecordingAudioFile(call.uniqueid)}
+          >
+            <span>{t('History.Delete recording')}</span>
+          </Dropdown.Item>
+        )}
+
+        {showSummaryActions && (
+          <Dropdown.Item icon={faTrash} isRed onClick={() => deleteSummaryTranscription(linkedId)}>
+            <span>
+              {hasSummary
+                ? t('History.Delete call summary') || 'Delete call summary'
+                : t('History.Delete call transcription') || 'Delete call transcription'}
+            </span>
+          </Dropdown.Item>
+        )}
+      </>
+    )
+  }
 
   const updateFilterText = (newFilterText: string) => {
     setPageNum(1)
@@ -231,6 +494,7 @@ export const Calls: FC<CallsProps> = ({ className }): JSX.Element => {
   }
 
   const debouncedUpdateFilterText = useMemo(() => debounce(updateFilterText, 400), [])
+  const isProfileLoading = typeof profile?.macro_permissions?.cdr?.value === 'undefined'
 
   // Stop invocation of debounced function after unmounting
   useEffect(() => {
@@ -246,7 +510,7 @@ export const Calls: FC<CallsProps> = ({ className }): JSX.Element => {
     const audioTestCode = feature_codes?.audio_test || '*41'
 
     return history.rows.filter((call: any) => {
-      const numberToCheck = call.direction === 'in' ? call.src : call.dst
+      const numberToCheck = call?.direction === 'in' ? call?.src : call?.dst
       return !numberToCheck?.includes(audioTestCode)
     })
   }, [history?.rows, feature_codes?.audio_test])
@@ -271,19 +535,21 @@ export const Calls: FC<CallsProps> = ({ className }): JSX.Element => {
         />
       ),
       width: '15%',
-      className: 'px-6 py-3.5 text-left text-sm font-semibold text-gray-700 dark:text-gray-100 w-0',
+      className:
+        'px-6 py-3.5 text-left text-sm font-semibold text-primaryNeutral dark:text-primaryNeutralDark w-0',
     },
     {
       header: '',
       cell: () => (
         <FontAwesomeIcon
           icon={faArrowRight}
-          className='ml-0 h-4 w-4 flex-shrink-0 text-gray-500 dark:text-gray-600'
+          className='ml-0 h-4 w-4 flex-shrink-0 text-textPlaceholder dark:text-textPlaceholderDark'
           aria-hidden='true'
         />
       ),
       width: '5%',
-      className: 'px-6 py-3.5 text-left text-sm font-semibold text-gray-700 dark:text-gray-100 w-0',
+      className:
+        'px-6 py-3.5 text-left text-sm font-semibold text-primaryNeutral dark:text-primaryNeutralDark w-0',
     },
     {
       header: t('History.Destination'),
@@ -301,7 +567,7 @@ export const Calls: FC<CallsProps> = ({ className }): JSX.Element => {
     },
     {
       header: t('History.Duration'),
-      cell: (call: any) => <CallDuration duration={call.duration} />,
+      cell: (call: any) => <CallDuration duration={call?.duration} monoTimer />,
       width: '15%',
     },
     {
@@ -310,27 +576,128 @@ export const Calls: FC<CallsProps> = ({ className }): JSX.Element => {
       width: '15%',
     },
     {
-      header: t('History.Recording'),
+      header: '',
+      cell: (call: any) => {
+        const linkedId = call?.linkedid
+        const summaryStatus = summaryStatusMap?.[linkedId]
+        const isVoicemail = call?.lastapp === 'VoiceMail'
+
+        if (!summaryStatus && !isVoicemail) {
+          return <div className='flex' />
+        }
+
+        if (isVoicemail) {
+          return (
+            <div className='flex justify-center'>
+              <div
+                className='h-8 w-8 flex items-center justify-center'
+                data-tooltip-id={`tooltip-voicemail-${linkedId}`}
+                data-tooltip-content={t('History.Voicemail available') || ''}
+              >
+                <FontAwesomeIcon
+                  icon={faVoicemail}
+                  className='h-4 w-4 text-iconIndigo dark:text-iconIndigoDark'
+                />
+                <CustomThemedTooltip id={`tooltip-voicemail-${linkedId}`} place='top' />
+              </div>
+            </div>
+          )
+        }
+
+        const { state, has_summary, has_transcription } = summaryStatus
+
+        // Show animated icon if state is 'summarizing' or 'progress'
+        if (state === 'summarizing' || state === 'progress') {
+          return (
+            <div className='flex justify-center'>
+              <div
+                className='h-8 w-8 flex items-center justify-center'
+                data-tooltip-id={`tooltip-ai-generating-${linkedId}`}
+                data-tooltip-content={t('Common.Call summary is being generated') || ''}
+              >
+                <FontAwesomeIcon
+                  icon={faFileLines}
+                  className='h-4 w-4 animate-pulse text-iconIndigo dark:text-iconIndigoDark'
+                />
+                <CustomThemedTooltip id={`tooltip-ai-generating-${linkedId}`} place='top' />
+              </div>
+            </div>
+          )
+        }
+
+        // Show clickable icon if state is 'done' and (has_summary or has_transcription)
+        if (state === 'done' && (has_summary || has_transcription)) {
+          const tooltipTitle = has_summary
+            ? t('Common.Call summary available') || 'Call summary available'
+            : t('Common.Call transcription available') || 'Call transcription available'
+
+          return (
+            <div className='flex justify-center'>
+              <div
+                className='h-8 w-8 flex items-center justify-center'
+                data-tooltip-id={`tooltip-ai-${linkedId}`}
+                data-tooltip-content={tooltipTitle}
+              >
+                <FontAwesomeIcon
+                  icon={faFileLines}
+                  className='h-4 w-4 text-iconIndigo dark:text-iconIndigoDark'
+                />
+                <CustomThemedTooltip id={`tooltip-ai-${linkedId}`} place='top' />
+              </div>
+            </div>
+          )
+        }
+
+        // State is 'failed' or other states - don't show anything
+        return <div className='flex' />
+      },
+      width: '5%',
+      className: 'px-6 py-3.5 text-center w-0',
+    },
+    {
+      header: '',
       cell: (call: any) => (
         <CallRecording
           call={call}
           playSelectedAudioFile={playSelectedAudioFile}
           getRecordingActions={getRecordingActions}
+          getCallActions={getCallActions}
+          summaryStatus={summaryStatusMap?.[call?.linkedid]}
         />
       ),
       width: '20%',
+      className: 'px-6 py-3.5 w-0',
     },
   ]
 
   // Generate a unique key for each call with more stability
   const generateUniqueKey = (call: any, index: number) => {
-    return `call-${call.uniqueid}-${call.time}-${index}`
+    return `call-${call?.uniqueid}-${call?.time}-${index}`
   }
 
   return (
     <>
       <div>
-        {profile?.macro_permissions?.cdr?.value ? (
+        {isProfileLoading ? (
+          <div>
+            <div className='flex justify-between gap-4'>
+              <div className='flex-1'>
+                <Skeleton height={44} className='rounded-lg' />
+              </div>
+              <Skeleton width={180} height={44} className='rounded-lg shrink-0' />
+            </div>
+
+            <div className='mx-auto mt-6'>
+              <div className='flex flex-col'>
+                <div className='-my-2 -mx-4 overflow-x-auto sm:-mx-6 lg:-mx-8'>
+                  <div className='inline-block min-w-full py-2 align-middle px-2 md:px-6 lg:px-8'>
+                    <TableSkeleton columns={8} rows={8} />
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        ) : profile?.macro_permissions?.cdr?.value ? (
           <div>
             <div className='flex justify-between'>
               <Filter
@@ -341,7 +708,7 @@ export const Calls: FC<CallsProps> = ({ className }): JSX.Element => {
                 updateDateBeginFilter={updateDateBeginFilter}
                 updateDateEndFilter={updateDateEndFilter}
               />
-              <div className='text-gray-900 dark:text-gray-100 flex items-start lg:whitespace-nowrap ml-4'>
+              <div className='text-primaryNeutral dark:text-primaryNeutralDark flex items-start lg:whitespace-nowrap ml-4'>
                 <Link
                   href={pbxReportUrl}
                   target='_blank'

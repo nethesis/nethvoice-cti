@@ -30,8 +30,10 @@ import {
 } from '@fortawesome/free-solid-svg-icons'
 import {
   deleteContact,
+  getContact,
   fetchContact,
   getPhonebook,
+  mapContact,
   openEditContactDrawer,
   openShowContactDrawer,
   reloadPhonebook,
@@ -64,6 +66,7 @@ export const ContactSummary = forwardRef<HTMLButtonElement, ContactSummaryProps>
     const auth = useSelector((state: RootState) => state.authentication)
     const [showDeleteModal, setShowDeleteModal] = useState<boolean>(false)
     const [contactToDelete, setContactToDelete] = useState<any>(null)
+    const [resolvedCompanyContacts, setResolvedCompanyContacts] = useState<any[]>([])
     const cancelDeleteButtonRef = useRef() as MutableRefObject<HTMLButtonElement>
     const { profile } = useSelector((state: RootState) => state.user)
 
@@ -159,6 +162,18 @@ export const ContactSummary = forwardRef<HTMLButtonElement, ContactSummaryProps>
 
     const [companyInformation, setCompanyInformation] = useState<any>([])
 
+    const getCompanyContactLabel = (companyContact: any) => {
+      const label =
+        companyContact?.displayName || companyContact?.name || companyContact?.company || ''
+
+      if (typeof label !== 'string') {
+        return '-'
+      }
+
+      const normalizedLabel = label.trim()
+      return normalizedLabel && normalizedLabel !== '-' ? normalizedLabel : '-'
+    }
+
     // Get all company information
     useEffect(() => {
       async function searchCompanyInformation() {
@@ -183,6 +198,54 @@ export const ContactSummary = forwardRef<HTMLButtonElement, ContactSummaryProps>
       searchCompanyInformation()
       // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [contact])
+
+    useEffect(() => {
+      let isMounted = true
+
+      async function resolveCompanyContacts() {
+        const companyContacts = Array.isArray(contact?.contacts) ? contact.contacts : []
+
+        if (!companyContacts.length) {
+          if (isMounted) {
+            setResolvedCompanyContacts([])
+          }
+          return
+        }
+
+        const updatedContacts = await Promise.all(
+          companyContacts.map(async (companyContact: any) => {
+            if (
+              getCompanyContactLabel(companyContact) !== '-' ||
+              !companyContact?.id ||
+              !companyContact?.source
+            ) {
+              return companyContact
+            }
+
+            try {
+              const fullContact = await getContact(companyContact.id, companyContact.source)
+              return {
+                ...companyContact,
+                ...mapContact(fullContact),
+              }
+            } catch (error) {
+              console.error(error)
+              return companyContact
+            }
+          }),
+        )
+
+        if (isMounted) {
+          setResolvedCompanyContacts(updatedContacts)
+        }
+      }
+
+      resolveCompanyContacts()
+
+      return () => {
+        isMounted = false
+      }
+    }, [contact?.contacts])
 
     const companyInformationData = () => {
       return (
@@ -215,6 +278,11 @@ export const ContactSummary = forwardRef<HTMLButtonElement, ContactSummaryProps>
         </div>
       )
     }
+
+    const companyContacts =
+      resolvedCompanyContacts?.length > 0 || !contact?.contacts?.length
+        ? resolvedCompanyContacts
+        : contact?.contacts
 
     return (
       <>
@@ -266,7 +334,7 @@ export const ContactSummary = forwardRef<HTMLButtonElement, ContactSummaryProps>
           <div className='flex items-center'>
             <div className='flex-shrink-0 mr-4'>
               <Avatar
-                placeholderType={contact.kind}
+                placeholderType={contact?.kind}
                 onClick={() => maybeShowSideDrawer(contact)}
                 className={classNames(isShownSideDrawerLink && 'cursor-pointer')}
               />
@@ -313,16 +381,16 @@ export const ContactSummary = forwardRef<HTMLButtonElement, ContactSummaryProps>
         <div className='mt-5 pb-5'>
           <dl>
             {/* company */}
-            {contact.kind == 'person' && contact.company && (
+            {contact.kind == 'person' && contact?.company && (
               <div className='pb-4 sm:grid sm:grid-cols-3 sm:gap-4'>
-                <dt className='text-sm font-medium text-gray-700 dark:text-gray-200 leading-5'>
+                <dt className='text-sm font-medium text-secondaryNeutral dark:text-secondaryNeutralDark leading-5'>
                   {t('Phonebook.Company')}
                 </dt>
                 <dd className='mt-1 text-sm text-gray-900 dark:text-gray-100 sm:col-span-2 sm:mt-0'>
                   <div className='flex items-center text-sm'>
                     <FontAwesomeIcon
                       icon={faSuitcase}
-                      className='mr-2 h-4 w-4 flex-shrink-0 text-gray-600 dark:text-gray-300'
+                      className='mr-2 h-4 w-4 flex-shrink-0 text-iconTertiaryNeutral dark:text-iconTertiaryNeutralDark'
                       aria-hidden='true'
                     />
                     <span>{contact?.company}</span>
@@ -331,22 +399,22 @@ export const ContactSummary = forwardRef<HTMLButtonElement, ContactSummaryProps>
               </div>
             )}
             {/* extension */}
-            {contact.extension && (
+            {contact?.extension && (
               <div className='py-4 sm:grid sm:grid-cols-3 sm:gap-4 sm:py-5'>
-                <dt className='flex items-center text-sm font-medium text-gray-700 dark:text-gray-200 leading-5'>
+                <dt className='flex items-center text-sm font-medium text-secondaryNeutral dark:text-secondaryNeutralDark leading-5'>
                   {t('Phonebook.Extension')}
                 </dt>
                 <dd className='mt-1 text-sm text-gray-900 dark:text-gray-100 sm:col-span-2 sm:mt-0'>
-                  <div className='flex items-center text-sm font-normal text-primary dark:text-primaryDark'>
+                  <div className='flex items-center text-sm font-normal text-primaryActive dark:text-primaryActiveDark'>
                     <FontAwesomeIcon
                       icon={faPhone}
-                      className='mr-2 h-4 w-4 flex-shrink-0 text-gray-600 dark:text-gray-300'
+                      className='mr-2 h-4 w-4 flex-shrink-0 text-iconTertiaryNeutral dark:text-iconTertiaryNeutralDark'
                       aria-hidden='true'
                     />
                     <span
                       className='truncate cursor-pointer hover:underline'
                       onClick={() =>
-                        operatorsStore?.operators[auth.username]?.mainPresence === 'busy'
+                        operatorsStore?.operators?.[auth?.username]?.mainPresence === 'busy'
                           ? transferCallToExtension(contact?.extension)
                           : callPhoneNumber(contact?.extension)
                       }
@@ -362,14 +430,14 @@ export const ContactSummary = forwardRef<HTMLButtonElement, ContactSummaryProps>
             {/* work phone */}
             {contact.workphone && (
               <div className='py-4 sm:grid sm:grid-cols-3 sm:gap-4 sm:py-5'>
-                <dt className='flex items-center text-sm font-medium text-gray-700 dark:text-gray-200 leading-5'>
+                <dt className='flex items-center text-sm font-medium text-secondaryNeutral dark:text-secondaryNeutralDark leading-5'>
                   {t('Phonebook.Work phone')}
                 </dt>
                 <dd className='mt-1 text-sm text-gray-900 dark:text-gray-100 sm:col-span-2 sm:mt-0'>
                   <div className='flex items-center text-sm text-primary dark:text-primaryDark'>
                     <FontAwesomeIcon
                       icon={faPhone}
-                      className='mr-2 h-4 w-4 flex-shrink-0 text-gray-600 dark:text-gray-300'
+                      className='mr-2 h-4 w-4 flex-shrink-0 text-iconTertiaryNeutral dark:text-iconTertiaryNeutralDark'
                       aria-hidden='true'
                     />
                     <span
@@ -391,14 +459,14 @@ export const ContactSummary = forwardRef<HTMLButtonElement, ContactSummaryProps>
             {/* mobile phone */}
             {contact.cellphone && (
               <div className='py-4 sm:grid sm:grid-cols-3 sm:gap-4 sm:py-5'>
-                <dt className='flex items-center text-sm font-medium text-gray-700 dark:text-gray-200 leading-5'>
+                <dt className='flex items-center text-sm font-medium text-secondaryNeutral dark:text-secondaryNeutralDark leading-5'>
                   {t('Phonebook.Mobile phone')}
                 </dt>
                 <dd className='mt-1 text-sm text-gray-900 dark:text-gray-100 sm:col-span-2 sm:mt-0'>
                   <div className='flex items-center text-sm text-primary dark:text-primaryDark'>
                     <FontAwesomeIcon
                       icon={faPhone}
-                      className='mr-2 h-4 w-4 flex-shrink-0 text-gray-600 dark:text-gray-300'
+                      className='mr-2 h-4 w-4 flex-shrink-0 text-iconTertiaryNeutral dark:text-iconTertiaryNeutralDark'
                       aria-hidden='true'
                     />
                     <span
@@ -420,14 +488,14 @@ export const ContactSummary = forwardRef<HTMLButtonElement, ContactSummaryProps>
             {/* home phone */}
             {contact.homephone && (
               <div className='py-4 sm:grid sm:grid-cols-3 sm:gap-4 sm:py-5'>
-                <dt className='flex items-center text-sm font-medium text-gray-700 dark:text-gray-200 leading-5'>
+                <dt className='flex items-center text-sm font-medium text-secondaryNeutral dark:text-secondaryNeutralDark leading-5'>
                   {t('Phonebook.Home phone')}
                 </dt>
                 <dd className='mt-1 text-sm text-gray-900 dark:text-gray-100 sm:col-span-2 sm:mt-0'>
                   <div className='flex items-center text-sm text-primary dark:text-primaryDark'>
                     <FontAwesomeIcon
                       icon={faPhone}
-                      className='mr-2 h-4 w-4 flex-shrink-0 text-gray-600 dark:text-gray-300'
+                      className='mr-2 h-4 w-4 flex-shrink-0 ttext-iconTertiaryNeutral dark:text-iconTertiaryNeutralDark'
                       aria-hidden='true'
                     />
                     <span
@@ -449,14 +517,14 @@ export const ContactSummary = forwardRef<HTMLButtonElement, ContactSummaryProps>
             {/* work email */}
             {contact.workemail && (
               <div className='py-4 sm:grid sm:grid-cols-3 sm:gap-4 sm:py-5'>
-                <dt className='text-sm font-medium text-gray-700 dark:text-gray-200 leading-5'>
+                <dt className='text-sm font-medium text-secondaryNeutral dark:text-secondaryNeutralDark leading-5'>
                   {t('Phonebook.Email')}
                 </dt>
                 <dd className='mt-1 text-sm text-gray-900 dark:text-gray-100 sm:col-span-2 sm:mt-0'>
                   <div className='flex items-center text-sm'>
                     <FontAwesomeIcon
                       icon={faEnvelope}
-                      className='mr-2 h-4 w-4 flex-shrink-0 text-gray-600 dark:text-gray-300'
+                      className='mr-2 h-4 w-4 flex-shrink-0 text-iconTertiaryNeutral dark:text-iconTertiaryNeutralDark'
                       aria-hidden='true'
                     />
                     <a
@@ -476,14 +544,14 @@ export const ContactSummary = forwardRef<HTMLButtonElement, ContactSummaryProps>
             {/* notes */}
             {contact?.notes && (
               <div className='py-4 sm:grid sm:grid-cols-3 sm:gap-4 sm:py-5'>
-                <dt className='text-sm font-medium text-gray-700 dark:text-gray-200 leading-5'>
+                <dt className='text-sm font-medium text-secondaryNeutral dark:text-secondaryNeutralDark leading-5'>
                   {t('Phonebook.Notes')}
                 </dt>
                 <dd className='mt-1 text-sm text-gray-900 dark:text-gray-100 sm:col-span-2 sm:mt-0'>
                   <div className='flex items-center text-sm'>
                     <FontAwesomeIcon
                       icon={faFileLines}
-                      className='mr-2 h-4 w-4 flex-shrink-0 text-gray-600 dark:text-gray-300'
+                      className='mr-2 h-4 w-4 flex-shrink-0 text-iconTertiaryNeutral dark:text-iconTertiaryNeutralDark'
                       aria-hidden='true'
                     />
                     <div>{contact?.notes}</div>
@@ -494,12 +562,12 @@ export const ContactSummary = forwardRef<HTMLButtonElement, ContactSummaryProps>
             {/* company contacts */}
             {contact?.contacts && contact?.contacts?.length ? (
               <div className='py-4 sm:grid sm:grid-cols-3 sm:gap-4 sm:py-5'>
-                <dt className='text-sm font-medium text-gray-700 dark:text-gray-200 leading-5'>
+                <dt className='text-sm font-medium text-secondaryNeutral dark:text-secondaryNeutralDark leading-5'>
                   {t('Phonebook.Company contacts')}
                 </dt>
                 <dd className='mt-1 text-sm text-gray-900 dark:text-gray-100 sm:col-span-2 sm:mt-0'>
                   <ul role='list'>
-                    {contact.contacts.map((contact: any, index: number) => (
+                    {companyContacts.map((contact: any, index: number) => (
                       <li
                         key={index}
                         className='flex items-center justify-between pb-3 pr-4 text-sm'
@@ -507,14 +575,14 @@ export const ContactSummary = forwardRef<HTMLButtonElement, ContactSummaryProps>
                         <div className='flex w-0 flex-1 items-center'>
                           <FontAwesomeIcon
                             icon={faUser}
-                            className='mr-2 h-4 w-4 flex-shrink-0 text-gray-600 dark:text-gray-300'
+                            className='mr-2 h-4 w-4 flex-shrink-0 text-iconTertiaryNeutral dark:text-iconTertiaryNeutralDark'
                             aria-hidden='true'
                           />
                           <span
-                            className='ml-2 w-0 flex-1 truncate text-primary dark:text-primaryDark cursor-pointer'
+                            className='w-0 flex-1 truncate text-primary dark:text-primaryDark cursor-pointer'
                             onClick={() => fetchContact(contact?.id, contact?.source)}
                           >
-                            {contact?.name}
+                            {getCompanyContactLabel(contact)}
                           </span>
                         </div>
                       </li>
@@ -525,7 +593,7 @@ export const ContactSummary = forwardRef<HTMLButtonElement, ContactSummaryProps>
             ) : null}
             {/* visibility */}
             <div className='pt-4 pb-8 sm:grid sm:grid-cols-3 sm:gap-4 sm:pt-5'>
-              <dt className='text-sm font-medium text-gray-700 dark:text-gray-200 leading-5'>
+              <dt className='text-sm font-medium text-secondaryNeutral dark:text-secondaryNeutralDark leading-5'>
                 {' '}
                 {t('Phonebook.Visibility')}
               </dt>
@@ -533,7 +601,7 @@ export const ContactSummary = forwardRef<HTMLButtonElement, ContactSummaryProps>
                 <div className='flex items-center text-sm'>
                   <FontAwesomeIcon
                     icon={faEye}
-                    className='mr-2 h-4 w-4 flex-shrink-0 text-gray-600 dark:text-gray-300'
+                    className='mr-2 h-4 w-4 flex-shrink-0 text-iconTertiaryNeutral dark:text-iconTertiaryNeutralDark'
                     aria-hidden='true'
                   />
                   <span className='truncate'>

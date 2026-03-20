@@ -48,16 +48,14 @@ export const InlineNotification: FC<InlineNotificationProps> = ({
     )
 
   return (
-    <>
-      <div
-        className={classNames(theme.base, type ? theme.type[type] : theme.type.success, className)}
-      >
-        <div className='flex-shrink-0'>{checkIcon}</div>
-        <div className='ml-3'>
+    <div
+      className={classNames(theme.base, type ? theme.type[type] : theme.type.success, className)}
+    >
+      <div className='flex-shrink-0'>{checkIcon}</div>
+      <div className='min-w-0 flex-1'>
           <h3 className={theme.titleStyle[type]}>{title}</h3>
           <div className={theme.childrenText[type]}>{children}</div>
-        </div>
       </div>
-    </>
+    </div>
   )
 }
