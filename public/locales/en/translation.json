@@ -96,6 +96,7 @@
     "Call summary is being generated": "Call summary is being generated",
     "Call summary ready": "Call summary ready",
     "The summary is ready for review and editing": "The summary is ready for review and editing",
+    "The summary of your call with {{contact}} is ready": "The summary of your call with {{contact}} is ready",
     "View summary": "View summary"
   },
   "Login": {

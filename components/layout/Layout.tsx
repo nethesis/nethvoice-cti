@@ -1348,6 +1348,36 @@ export const Layout: FC<LayoutProps> = ({ children }) => {
   const watchedSummaryIdsRef = useRef<Set<string>>(new Set())
   const isSummaryNotificationEnabled = userStore?.settings?.call_summary_notifications !== false
 
+  const getSummaryNotificationContact = (data?: {
+    display_name?: string
+    display_number?: string
+  }) => {
+    const displayName = data?.display_name?.trim() || ''
+    const displayNumber = data?.display_number?.trim() || ''
+
+    return displayName || displayNumber
+  }
+
+  const getSummaryNotificationMessage = (data?: {
+    display_name?: string
+    display_number?: string
+  }) => {
+    const contact = getSummaryNotificationContact(data)
+
+    if (!contact) {
+      return (
+        t('Common.The summary is ready for review and editing') ||
+        'The summary is ready for review and editing'
+      )
+    }
+
+    return (
+      t('Common.The summary of your call with {{contact}} is ready', {
+        contact,
+      }) || `The summary of your call with ${contact} is ready`
+    )
+  }
+
   // Track if page has focus
   useEffect(() => {
     const handleFocus = () => setIsPageFocused(true)
@@ -1375,7 +1405,9 @@ export const Layout: FC<LayoutProps> = ({ children }) => {
     eventDispatch('phone-island-call-summary-notify', { linkedid: data.linkedid })
   })
 
-  useEventListener('phone-island-summary-ready', (data: { linkedid?: string }) => {
+  useEventListener(
+    'phone-island-summary-ready',
+    (data: { linkedid?: string; display_name?: string; display_number?: string }) => {
     if (!data?.linkedid || !isSummaryEnabled) {
       return
     }
@@ -1386,15 +1418,15 @@ export const Layout: FC<LayoutProps> = ({ children }) => {
     }
     notifiedSummaryIdsRef?.current?.add(data?.linkedid)
 
+    const summaryMessage = getSummaryNotificationMessage(data)
+
     // Browser notification only if page doesn't have focus and user enabled it
     if (isSummaryNotificationEnabled && !isPageFocused && 'Notification' in window) {
       if (Notification.permission === 'granted') {
         const notification = new Notification(
           t('Common.Call summary ready') || 'Call summary ready',
           {
-            body:
-              t('Common.The summary is ready for review and editing') ||
-              'The summary is ready for review and editing',
+            body: summaryMessage,
             tag: `summary-${data.linkedid}`,
           },
         )
@@ -1419,9 +1451,7 @@ export const Layout: FC<LayoutProps> = ({ children }) => {
             const notification = new Notification(
               t('Common.Call summary ready') || 'Call summary ready',
               {
-                body:
-                  t('Common.The summary is ready for review and editing') ||
-                  'The summary is ready for review and editing',
+                body: summaryMessage,
                 tag: `summary-${data.linkedid}`,
               },
             )
@@ -1447,8 +1477,7 @@ export const Layout: FC<LayoutProps> = ({ children }) => {
     openToast(
       'success',
       <>
-        {t('Common.The summary is ready for review and editing') ||
-          'The summary is ready for review and editing'}
+        {summaryMessage}
         <div className='mt-4'>
           <Button
             variant='primary'
@@ -1472,7 +1501,8 @@ export const Layout: FC<LayoutProps> = ({ children }) => {
       5000,
       true,
     )
-  })
+    },
+  )
 
   return (
     <>
