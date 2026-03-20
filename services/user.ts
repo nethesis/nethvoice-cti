@@ -74,6 +74,21 @@ export const getParamUrl = async () => {
   }
 }
 
+export const getExtensionByMainExtensionAndType = async (
+  mainExtension: string,
+  extensionType: string,
+) => {
+  try {
+    const res = await axios.get(
+      `/extensions/${encodeURIComponent(mainExtension)}/${encodeURIComponent(extensionType)}`,
+    )
+    return res.data
+  } catch (error) {
+    console.error(error)
+    throw error
+  }
+}
+
 export const getSummaryCall = async (uniqueId: string) => {
   try {
     const res = await axios.get(`/summary/${uniqueId}`)
