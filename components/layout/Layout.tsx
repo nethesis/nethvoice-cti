@@ -1346,7 +1346,10 @@ export const Layout: FC<LayoutProps> = ({ children }) => {
   const [isPageFocused, setIsPageFocused] = useState(true)
   const notifiedSummaryIdsRef = useRef<Set<string>>(new Set())
   const watchedSummaryIdsRef = useRef<Set<string>>(new Set())
+  const pendingSummaryIdsRef = useRef<Set<string>>(new Set())
+  const summaryStatusTimeoutsRef = useRef<Map<string, number>>(new Map())
   const isSummaryNotificationEnabled = userStore?.settings?.call_summary_notifications !== false
+  const summaryStatusPollIntervalMs = 5000
 
   const getSummaryNotificationContact = (data?: {
     display_name?: string
@@ -1392,17 +1395,82 @@ export const Layout: FC<LayoutProps> = ({ children }) => {
     }
   }, [])
 
+  useEffect(() => {
+    return () => {
+      summaryStatusTimeoutsRef.current.forEach(timeoutId => window.clearTimeout(timeoutId))
+      summaryStatusTimeoutsRef.current.clear()
+      pendingSummaryIdsRef.current.clear()
+    }
+  }, [])
+
   useEventListener('phone-island-summary-not-ready', (data: { linkedid?: string }) => {
     if (!data?.linkedid || !isSummaryEnabled) {
       return
     }
 
-    if (!isSummaryNotificationEnabled || watchedSummaryIdsRef.current.has(data.linkedid)) {
+    if (
+      !isSummaryNotificationEnabled ||
+      watchedSummaryIdsRef.current.has(data.linkedid) ||
+      pendingSummaryIdsRef.current.has(data.linkedid)
+    ) {
       return
     }
 
-    watchedSummaryIdsRef.current.add(data.linkedid)
-    eventDispatch('phone-island-call-summary-notify', { linkedid: data.linkedid })
+    pendingSummaryIdsRef.current.add(data.linkedid)
+
+    const clearPendingSummaryStatusCheck = (linkedid: string) => {
+      const timeoutId = summaryStatusTimeoutsRef.current.get(linkedid)
+      if (timeoutId) {
+        window.clearTimeout(timeoutId)
+        summaryStatusTimeoutsRef.current.delete(linkedid)
+      }
+      pendingSummaryIdsRef.current.delete(linkedid)
+    }
+
+    const scheduleSummaryStatusCheck = (linkedid: string) => {
+      const timeoutId = window.setTimeout(() => {
+        void pollSummaryStatus(linkedid)
+      }, summaryStatusPollIntervalMs)
+      summaryStatusTimeoutsRef.current.set(linkedid, timeoutId)
+    }
+
+    const pollSummaryStatus = async (linkedid: string) => {
+      try {
+        const { checkSummaryList } = await import('../../services/user')
+        const response = await checkSummaryList([linkedid])
+        const item = Array.isArray(response?.data) ? response.data[0] : null
+
+        if (!item || item?.error === 'not_found') {
+          clearPendingSummaryStatusCheck(linkedid)
+          return
+        }
+
+        if (item?.has_summary === true) {
+          clearPendingSummaryStatusCheck(linkedid)
+          eventDispatch('phone-island-summary-ready', { linkedid })
+          return
+        }
+
+        if (item?.state === 'summarizing' && item?.has_transcription === true) {
+          clearPendingSummaryStatusCheck(linkedid)
+          watchedSummaryIdsRef.current.add(linkedid)
+          eventDispatch('phone-island-call-summary-notify', { linkedid })
+          return
+        }
+
+        if (item?.state === 'progress') {
+          scheduleSummaryStatusCheck(linkedid)
+          return
+        }
+
+        clearPendingSummaryStatusCheck(linkedid)
+      } catch (error) {
+        console.error('Error polling summary status:', error)
+        clearPendingSummaryStatusCheck(linkedid)
+      }
+    }
+
+    void pollSummaryStatus(data.linkedid)
   })
 
   useEventListener(
@@ -1411,6 +1479,13 @@ export const Layout: FC<LayoutProps> = ({ children }) => {
     if (!data?.linkedid || !isSummaryEnabled) {
       return
     }
+
+    const timeoutId = summaryStatusTimeoutsRef.current.get(data.linkedid)
+    if (timeoutId) {
+      window.clearTimeout(timeoutId)
+      summaryStatusTimeoutsRef.current.delete(data.linkedid)
+    }
+    pendingSummaryIdsRef.current.delete(data.linkedid)
 
     // Skip if this summary was already notified
     if (notifiedSummaryIdsRef?.current?.has(data?.linkedid)) {
