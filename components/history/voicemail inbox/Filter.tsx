@@ -36,6 +36,7 @@ const sortFilter = {
 export interface FilterProps extends ComponentPropsWithRef<'div'> {
   updateFilterText: Function
   updateSortFilter: Function
+  filterTextValue?: string
 }
 
 export const Filter = forwardRef<HTMLButtonElement, FilterProps>(
@@ -43,6 +44,7 @@ export const Filter = forwardRef<HTMLButtonElement, FilterProps>(
     {
       updateFilterText,
       updateSortFilter,
+      filterTextValue = '',
       className,
       ...props
     }
@@ -82,6 +84,10 @@ export const Filter = forwardRef<HTMLButtonElement, FilterProps>(
       updateSortFilter(filterValues.sortBy)
       // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [])
+
+    useEffect(() => {
+      setFilterText(filterTextValue || '')
+    }, [filterTextValue])
 
     //Clear the filter
     function clearFilters() {

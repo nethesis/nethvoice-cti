@@ -79,8 +79,8 @@ export const DeviceMenu: React.FC<DeviceMenuProps> = ({
                 <div className='relative bg-white dark:border-gray-700 dark:bg-gray-900 py-2'>
                   {filteredDevices.map((device: any) => (
                     <Dropdown.Item key={device?.id} onClick={() => setMainDeviceId(device)}>
-                      <div className='truncate'>
-                        <div className='flex items-center space-x-2'>
+                      <div className='min-w-0'>
+                        <div className='flex items-center space-x-2 min-w-0'>
                           {device?.id === profile?.default_device?.id ? (
                             <FontAwesomeIcon
                               icon={faCheck}
@@ -99,15 +99,15 @@ export const DeviceMenu: React.FC<DeviceMenuProps> = ({
                           />
 
                           {device?.type === 'webrtc' && (
-                            <p className='text-sm'>{t('Devices.Web phone')}</p>
+                            <p className='flex-1 min-w-0 text-sm truncate'>{t('Devices.Web phone')}</p>
                           )}
                           {device?.type === 'nethlink' && (
-                            <p className='flex text-sm font-medium line-clamp-2'>
+                            <p className='flex-1 min-w-0 text-sm font-medium truncate'>
                               {t('Devices.PhoneLink')}
                             </p>
                           )}
                           {device?.type === 'physical' && (
-                            <p className='truncate flex text-sm font-medium max-w-[6rem] line-clamp-2'>
+                            <p className='flex-1 min-w-0 text-sm font-medium truncate'>
                               {device?.description || t('Devices.IP phone')}
                             </p>
                           )}

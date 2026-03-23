@@ -4,6 +4,7 @@ import { faArrowLeft, faXmark, faBuilding } from '@fortawesome/free-solid-svg-ic
 import { faMissed } from '@nethesis/nethesis-solid-svg-icons'
 import { IconDefinition } from '@fortawesome/fontawesome-svg-core'
 import { t } from 'i18next'
+import { isCallAnswered } from '../../../lib/history'
 
 interface CallStatusProps {
   call: any
@@ -11,13 +12,15 @@ interface CallStatusProps {
 }
 
 export const CallStatus: FC<CallStatusProps> = ({ call, callType }) => {
+  const isAnswered = isCallAnswered(call)
+
   if (callType === 'user') {
     return (
       <div className='mt-1 text-sm'>
         <div>
           {call.direction === 'in' ? (
             <div>
-              {call.disposition === 'ANSWERED' ? (
+              {isAnswered ? (
                 <div className='flex flex-nowrap items-center'>
                   <FontAwesomeIcon
                     icon={faArrowLeft}
@@ -43,7 +46,7 @@ export const CallStatus: FC<CallStatusProps> = ({ call, callType }) => {
             </div>
           ) : (
             <div>
-              {call.disposition === 'ANSWERED' ? (
+              {isAnswered ? (
                 <div className='flex flex-nowrap items-center'>
                   <FontAwesomeIcon
                     icon={faArrowLeft}
@@ -78,7 +81,7 @@ export const CallStatus: FC<CallStatusProps> = ({ call, callType }) => {
         <div>
           {call.type === 'internal' ? (
             <div>
-              {call.disposition === 'ANSWERED' ? (
+              {isAnswered ? (
                 <div className='flex flex-nowrap items-center'>
                   <FontAwesomeIcon
                     icon={faBuilding}
@@ -106,7 +109,7 @@ export const CallStatus: FC<CallStatusProps> = ({ call, callType }) => {
             <div>
               {call.type === 'in' ? (
                 <div>
-                  {call.disposition === 'ANSWERED' ? (
+                  {isAnswered ? (
                     <div className='flex flex-nowrap items-center'>
                       <FontAwesomeIcon
                         icon={faArrowLeft}
@@ -132,7 +135,7 @@ export const CallStatus: FC<CallStatusProps> = ({ call, callType }) => {
                 </div>
               ) : (
                 <div>
-                  {call.disposition === 'ANSWERED' ? (
+                  {isAnswered ? (
                     <div className='flex flex-nowrap items-center'>
                       <FontAwesomeIcon
                         icon={faArrowLeft}
