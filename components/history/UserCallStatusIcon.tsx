@@ -3,7 +3,7 @@ import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { faMissed } from '@nethesis/nethesis-solid-svg-icons'
 import { faXmark, faArrowLeft, IconDefinition } from '@fortawesome/free-solid-svg-icons'
 import { useTranslation } from 'react-i18next'
-import { CallTypes } from '../../lib/history'
+import { CallTypes, isCallAnswered } from '../../lib/history'
 import { CustomThemedTooltip } from '../common/CustomThemedTooltip'
 
 interface UserCallStatusIconProps {
@@ -13,13 +13,14 @@ interface UserCallStatusIconProps {
 //Check the icon for the status column
 export const UserCallStatusIcon: FC<UserCallStatusIconProps> = ({ call }) => {
   const { t } = useTranslation()
+  const isAnswered = isCallAnswered(call)
 
   return (
     <div className='mt-1 text-sm md:mt-0 flex'>
       <div>
         {call.direction === 'in' && (
           <div>
-            {call.disposition === 'ANSWERED' ? (
+            {isAnswered ? (
               <>
                 <FontAwesomeIcon
                   icon={faArrowLeft}
@@ -48,7 +49,7 @@ export const UserCallStatusIcon: FC<UserCallStatusIconProps> = ({ call }) => {
         )}
         {call.direction === 'out' && (
           <div>
-            {call.disposition === 'ANSWERED' ? (
+            {isAnswered ? (
               <>
                 <FontAwesomeIcon
                   icon={faArrowLeft}

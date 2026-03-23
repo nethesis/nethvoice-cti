@@ -20,6 +20,7 @@ import {
   deleteRec,
   downloadCallRec,
   getFilterValues,
+  hasVoicemailMessage,
   openDrawerHistory,
   search,
 } from '../../../lib/history'
@@ -135,6 +136,17 @@ export const Calls: FC<CallsProps> = ({ className }): JSX.Element => {
           isSummary: summaryStatus?.has_summary || false,
         },
       })
+    },
+    [dispatch],
+  )
+
+  const openVoicemailInboxByMessageId = useCallback(
+    (voicemailMessageId: string) => {
+      if (!voicemailMessageId) {
+        return
+      }
+
+      dispatch.voicemail.setSelectedVoicemailId(voicemailMessageId)
     },
     [dispatch],
   )
@@ -580,7 +592,7 @@ export const Calls: FC<CallsProps> = ({ className }): JSX.Element => {
       cell: (call: any) => {
         const linkedId = call?.linkedid
         const summaryStatus = summaryStatusMap?.[linkedId]
-        const isVoicemail = call?.lastapp === 'VoiceMail'
+        const isVoicemail = hasVoicemailMessage(call)
 
         if (!summaryStatus && !isVoicemail) {
           return <div className='flex' />
@@ -589,8 +601,13 @@ export const Calls: FC<CallsProps> = ({ className }): JSX.Element => {
         if (isVoicemail) {
           return (
             <div className='flex justify-center'>
-              <div
+              <button
+                type='button'
                 className='h-8 w-8 flex items-center justify-center'
+                onClick={(event) => {
+                  event.stopPropagation()
+                  openVoicemailInboxByMessageId(call?.voicemail_message_id)
+                }}
                 data-tooltip-id={`tooltip-voicemail-${linkedId}`}
                 data-tooltip-content={t('History.Voicemail available') || ''}
               >
@@ -599,7 +616,7 @@ export const Calls: FC<CallsProps> = ({ className }): JSX.Element => {
                   className='h-4 w-4 text-iconIndigo dark:text-iconIndigoDark'
                 />
                 <CustomThemedTooltip id={`tooltip-voicemail-${linkedId}`} place='top' />
-              </div>
+              </button>
             </div>
           )
         }

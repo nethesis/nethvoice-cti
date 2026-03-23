@@ -281,7 +281,10 @@ export interface CallTypes {
   duration: number
   billsec: number
   disposition: string
+  normalized_disposition?: string
   dcontext: string
+  lastapp?: string
+  lastdata?: string
   recordingfile: string
   cnum: string
   cnam: string
@@ -293,6 +296,9 @@ export interface CallTypes {
   clid: string
   direction: 'in' | 'out'
   queue: string
+  reached_voicemail?: boolean
+  has_voicemail_message?: boolean
+  voicemail_message_id?: string
 }
 
 export interface LastCallsResponse {
@@ -301,3 +307,21 @@ export interface LastCallsResponse {
 }
 
 export type SortTypes = 'time_desc' | 'time_asc' | string
+
+type CallDispositionLike = {
+  disposition?: string
+  normalized_disposition?: string
+}
+
+type CallVoicemailLike = {
+  has_voicemail_message?: boolean
+}
+
+export const getNormalizedDisposition = (call?: CallDispositionLike) =>
+  call?.normalized_disposition || call?.disposition || ''
+
+export const isCallAnswered = (call?: CallDispositionLike) =>
+  getNormalizedDisposition(call) === 'ANSWERED'
+
+export const hasVoicemailMessage = (call?: CallVoicemailLike) =>
+  call?.has_voicemail_message === true
