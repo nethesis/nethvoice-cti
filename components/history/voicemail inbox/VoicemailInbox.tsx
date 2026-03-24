@@ -271,16 +271,28 @@ export const VoicemailInbox: FC<VoicemailInboxProps> = ({ className }): JSX.Elem
 
   const getVoiceMailOptionsTemplate = (voicemail: VoiceMailType) => (
     <>
-      <div className='border-b border-gray-200 dark:border-gray-700'>
-        <Dropdown.Item icon={faPhone} onClick={() => quickCall(voicemail)}>
-          <span>{t('VoiceMail.Call back')}</span>
+      <div className='border-b border-layoutDivider dark:border-layoutDividerDark'>
+        <Dropdown.Item
+          icon={faPhone}
+          iconClassName='text-dropdownText dark:text-dropdownTextDark'
+          onClick={() => quickCall(voicemail)}
+        >
+          <span className='text-dropdownText dark:text-dropdownTextDark'>
+            {t('VoiceMail.Call back')}
+          </span>
         </Dropdown.Item>
-        <Dropdown.Item icon={faCircleArrowDown} onClick={() => downloadVoicemail(voicemail?.id)}>
-          <span>{t('VoiceMail.Download')}</span>
+        <Dropdown.Item
+          icon={faCircleArrowDown}
+          iconClassName='text-dropdownText dark:text-dropdownTextDark'
+          onClick={() => downloadVoicemail(voicemail?.id)}
+        >
+          <span className='text-dropdownText dark:text-dropdownTextDark'>
+            {t('VoiceMail.Download')}
+          </span>
         </Dropdown.Item>
       </div>
       <Dropdown.Item icon={faTrash} isRed onClick={() => showDeleteVoicemailModal(voicemail)}>
-        <span>{t('VoiceMail.Delete message')}</span>
+        <span className='text-inherit'>{t('VoiceMail.Delete message')}</span>
       </Dropdown.Item>
     </>
   )
@@ -412,24 +424,21 @@ export const VoicemailInbox: FC<VoicemailInboxProps> = ({ className }): JSX.Elem
       header: '',
       cell: (voicemail: any, index: number) => (
         <div className='flex justify-end space-x-2'>
-          <Button variant='white' onClick={() => playSelectedVoicemail(voicemail?.id)}>
-            <FontAwesomeIcon
-              icon={faPlay}
-              className='h-4 w-4 mr-2 text-primary dark:text-gray-100'
-              aria-hidden='true'
-            />
-            {t('History.Play')}
+          <Button
+            variant='white'
+            className='border border-gray-300 dark:border-gray-500 py-2 h-9 w-9 gap-3'
+            onClick={() => playSelectedVoicemail(voicemail?.id)}
+          >
+            <FontAwesomeIcon icon={faPlay} className='h-4 w-4' aria-hidden='true' />
+            <span className='sr-only'>{t('VoiceMail.Play voicemail')}</span>
           </Button>
           <Dropdown
             items={getVoiceMailOptionsTemplate(voicemail)}
             position={getDropdownPosition(index)}
           >
-            <Button variant='ghost'>
-              <FontAwesomeIcon
-                icon={faEllipsisVertical}
-                className='h-4 w-4 text-primary dark:text-gray-100'
-              />
-              <span className='sr-only'>{t('History.Open recording action modal')}</span>
+            <Button variant='ghost' className='py-2 px-2 h-9 w-9'>
+              <FontAwesomeIcon icon={faEllipsisVertical} className='h-4 w-4' />
+              <span className='sr-only'>{t('VoiceMail.Open voicemail menu')}</span>
             </Button>
           </Dropdown>
         </div>
