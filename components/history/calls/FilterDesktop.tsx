@@ -32,6 +32,9 @@ interface FilterDesktopProps {
   sortFilter: any
   sortBy: string
   changeSortBy: (event: any) => void
+  contentFilter: any
+  selectedContentFilter: string
+  changeContentFilter: (event: any) => void
 }
 
 export const FilterDesktop: React.FC<FilterDesktopProps> = ({
@@ -57,6 +60,9 @@ export const FilterDesktop: React.FC<FilterDesktopProps> = ({
   sortFilter,
   sortBy,
   changeSortBy,
+  contentFilter,
+  selectedContentFilter,
+  changeContentFilter,
 }) => {
   const { t } = useTranslation()
   const { timePicker: timePickerTheme, datePicker: datePickerTheme } = useTheme().theme
@@ -221,6 +227,16 @@ export const FilterDesktop: React.FC<FilterDesktopProps> = ({
         }))}
         selectedValue={sortBy}
         onChange={changeSortBy}
+      />
+      <FilterPopover
+        name={t(`History.${contentFilter.name}`)}
+        filterId={contentFilter.id}
+        options={contentFilter.options.map((o: any) => ({
+          ...o,
+          label: t(`History.${o.label}`),
+        }))}
+        selectedValue={selectedContentFilter}
+        onChange={changeContentFilter}
       />
     </PopoverGroup>
   )

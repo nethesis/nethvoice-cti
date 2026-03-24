@@ -33,6 +33,9 @@ interface FilterMobileProps {
   sortFilter: any
   sortBy: string
   changeSortBy: (event: any) => void
+  contentFilter: any
+  selectedContentFilter: string
+  changeContentFilter: (event: any) => void
 }
 
 export const FilterMobile: React.FC<FilterMobileProps> = ({
@@ -60,6 +63,9 @@ export const FilterMobile: React.FC<FilterMobileProps> = ({
   sortFilter,
   sortBy,
   changeSortBy,
+  contentFilter,
+  selectedContentFilter,
+  changeContentFilter,
 }) => {
   const { t } = useTranslation()
   const { timePicker: timePickerTheme, datePicker: datePickerTheme } = useTheme().theme
@@ -231,6 +237,18 @@ export const FilterMobile: React.FC<FilterMobileProps> = ({
           }))}
           selectedValue={sortBy}
           onChange={changeSortBy}
+        />
+      </form>
+      <form className='mt-4'>
+        <FilterDisclosure
+          name={t(`History.${contentFilter.name}`)}
+          filterId={contentFilter.id}
+          options={contentFilter.options.map((o: any) => ({
+            ...o,
+            label: t(`History.${o.label}`),
+          }))}
+          selectedValue={selectedContentFilter}
+          onChange={changeContentFilter}
         />
       </form>
     </MobileFilterDrawer>

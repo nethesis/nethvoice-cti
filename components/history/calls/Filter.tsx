@@ -11,6 +11,7 @@ import { useSelector } from 'react-redux'
 import { RootState } from '../../../store'
 import { savePreference } from '../../../lib/storage'
 import {
+  DEFAULT_CONTENT_FILTER,
   DEFAULT_CALL_TYPE_FILTER,
   DEFAULT_CALL_DIRECTION_FILTER,
   DEFAULT_SORT_BY,
@@ -75,6 +76,17 @@ const callDirectionFilterNoInternal = {
   ],
 }
 
+const contentFilter = {
+  id: 'content',
+  name: 'Call content',
+  options: [
+    { value: 'all', label: 'All' },
+    { value: 'summary', label: 'Summary' },
+    { value: 'transcription', label: 'Transcription' },
+    { value: 'voicemail', label: 'Voicemail' },
+  ],
+}
+
 export interface FilterProps extends ComponentPropsWithRef<'div'> {
   updateFilterText: Function
   updateCallTypeFilter: Function
@@ -82,6 +94,7 @@ export interface FilterProps extends ComponentPropsWithRef<'div'> {
   updateDateBeginFilter: Function
   updateDateEndFilter: Function
   updateSortFilter: Function
+  updateContentFilter: Function
 }
 
 export const Filter = forwardRef<HTMLButtonElement, FilterProps>(
@@ -93,6 +106,7 @@ export const Filter = forwardRef<HTMLButtonElement, FilterProps>(
       updateDateBeginFilter,
       updateDateEndFilter,
       updateSortFilter,
+      updateContentFilter,
       className,
       ...props
     },
@@ -110,10 +124,12 @@ export const Filter = forwardRef<HTMLButtonElement, FilterProps>(
     const [callDirectionLabel, setCallDirectionLabel] = useState('')
 
     const [callTypeLabel, setCallTypeLabel] = useState('')
+    const [contentFilterLabel, setContentFilterLabel] = useState('All')
 
     const [callDirection, setCallDirection] = useState('all')
 
     const [callType, setCallType] = useState('user')
+    const [selectedContentFilter, setSelectedContentFilter] = useState(DEFAULT_CONTENT_FILTER)
 
     const [dateBeginShowed, setDateBeginShowed] = useState('')
     const [dateEndShowed, setDateEndShowed] = useState('')
@@ -266,6 +282,13 @@ export const Filter = forwardRef<HTMLButtonElement, FilterProps>(
       savePreference('historyCallTypeDirection', newCallDirection, auth.username)
     }
 
+    function changeContentFilter(event: any) {
+      const newContentFilter = event.target.id
+      setSelectedContentFilter(newContentFilter)
+      updateContentFilter(newContentFilter)
+      savePreference('historyContentFilter', newContentFilter, auth.username)
+    }
+
     //Set the label for the selected call type
     useEffect(() => {
       const callTypeFound = callTypeFilter?.options?.find((option) => option?.value === callType)
@@ -293,6 +316,15 @@ export const Filter = forwardRef<HTMLButtonElement, FilterProps>(
       }
     }, [callDirection])
 
+    useEffect(() => {
+      const contentFilterFound = contentFilter.options.find(
+        (option) => option.value === selectedContentFilter,
+      )
+      if (contentFilterFound) {
+        setContentFilterLabel(contentFilterFound.label)
+      }
+    }, [selectedContentFilter])
+
     const [selectedLanguage, setSelectedLanguage] = useState('')
 
     useEffect(() => {
@@ -312,12 +344,14 @@ export const Filter = forwardRef<HTMLButtonElement, FilterProps>(
       setCallType(filterValues.callType)
       setCallDirection(filterValues.callDirection)
       setSortBy(filterValues.sortBy)
+      setSelectedContentFilter(filterValues.contentFilter || DEFAULT_CONTENT_FILTER)
       checkSelected(filterValues.callType)
 
       // notify parent component
       updateCallTypeFilter(filterValues.callType)
       updateCallDirectionFilter(filterValues.callDirection)
       updateSortFilter(filterValues.sortBy)
+      updateContentFilter(filterValues.contentFilter || DEFAULT_CONTENT_FILTER)
       // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [auth.username])
 
@@ -334,6 +368,7 @@ export const Filter = forwardRef<HTMLButtonElement, FilterProps>(
       setFilterText('')
       setCallType(DEFAULT_CALL_TYPE_FILTER)
       setCallDirection(DEFAULT_CALL_DIRECTION_FILTER)
+      setSelectedContentFilter(DEFAULT_CONTENT_FILTER)
       // Update the dateValue state
       setdateValue((prevState: any) => {
         return {
@@ -346,6 +381,7 @@ export const Filter = forwardRef<HTMLButtonElement, FilterProps>(
       savePreference('historyCallTypeFilter', DEFAULT_CALL_TYPE_FILTER, auth.username)
       savePreference('historyCallTypeDirection', DEFAULT_CALL_DIRECTION_FILTER, auth.username)
       savePreference('historySortTypePreference', DEFAULT_SORT_BY, auth.username)
+      savePreference('historyContentFilter', DEFAULT_CONTENT_FILTER, auth.username)
 
       // notify parent component
       updateFilterText('')
@@ -354,6 +390,7 @@ export const Filter = forwardRef<HTMLButtonElement, FilterProps>(
       updateDateBeginFilter(dateFromForReset)
       updateDateEndFilter(actualDateForReset)
       updateSortFilter(DEFAULT_SORT_BY)
+      updateContentFilter(DEFAULT_CONTENT_FILTER)
       checkSelected(DEFAULT_CALL_TYPE_FILTER)
     }
 
@@ -388,6 +425,9 @@ export const Filter = forwardRef<HTMLButtonElement, FilterProps>(
             sortFilter={sortFilter}
             sortBy={sortBy}
             changeSortBy={changeSortBy}
+            contentFilter={contentFilter}
+            selectedContentFilter={selectedContentFilter}
+            changeContentFilter={changeContentFilter}
           />
 
           {/* Filter pc */}
@@ -435,6 +475,9 @@ export const Filter = forwardRef<HTMLButtonElement, FilterProps>(
                     sortFilter={sortFilter}
                     sortBy={sortBy}
                     changeSortBy={changeSortBy}
+                    contentFilter={contentFilter}
+                    selectedContentFilter={selectedContentFilter}
+                    changeContentFilter={changeContentFilter}
                   />
                   <button
                     type='button'
@@ -478,6 +521,16 @@ export const Filter = forwardRef<HTMLButtonElement, FilterProps>(
                           {t('History.Call direction')}:&nbsp;
                         </span>
                         {callDirectionLabel && t(`History.${callDirectionLabel}`)}
+                      </span>
+                    </div>
+                  </div>
+                  <div className='mt-0'>
+                    <div className='-m-1 flex flex-wrap items-center'>
+                      <span className='m-1 inline-flex items-center rounded-full border py-1.5 px-3 text-sm border-borderRingInput dark:border-borderRingInputDark'>
+                        <span className='text-secondaryNeutral dark:text-secondaryNeutralDark font-normal leading-5'>
+                          {t('History.Call content')}:&nbsp;
+                        </span>
+                        {contentFilterLabel && t(`History.${contentFilterLabel}`)}
                       </span>
                     </div>
                   </div>

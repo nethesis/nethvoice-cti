@@ -14,6 +14,7 @@ import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { t } from 'i18next'
 import { FC, ComponentProps, useState, useMemo, useEffect, useCallback } from 'react'
 import {
+  DEFAULT_CONTENT_FILTER,
   DEFAULT_CALL_DIRECTION_FILTER,
   DEFAULT_CALL_TYPE_FILTER,
   DEFAULT_SORT_BY,
@@ -74,6 +75,7 @@ export const Calls: FC<CallsProps> = ({ className }): JSX.Element => {
   const [filterText, setFilterText]: any = useState('')
   const [callType, setCallType]: any = useState('user')
   const [sortBy, setSortBy]: any = useState('time%20desc')
+  const [contentFilter, setContentFilter]: any = useState(DEFAULT_CONTENT_FILTER)
   const [dateEnd, setDateEnd]: any = useState('')
   const [dateBegin, setDateBegin]: any = useState('')
   const [callDirection, setCallDirection]: any = useState('all')
@@ -106,6 +108,7 @@ export const Calls: FC<CallsProps> = ({ className }): JSX.Element => {
     setCallType(filterValues.callType || DEFAULT_CALL_TYPE_FILTER)
     setCallDirection(filterValues.callDirection || DEFAULT_CALL_DIRECTION_FILTER)
     setSortBy(filterValues.sortBy || DEFAULT_SORT_BY)
+    setContentFilter(filterValues.contentFilter || DEFAULT_CONTENT_FILTER)
     setAreFiltersInitialized(true)
   }, [username])
 
@@ -229,6 +232,8 @@ export const Calls: FC<CallsProps> = ({ className }): JSX.Element => {
             sortBy,
             callDirection,
             pageNum,
+            PAGE_SIZE,
+            contentFilter,
           )
           setHistory(res)
           setHistoryLoaded(true)
@@ -257,6 +262,7 @@ export const Calls: FC<CallsProps> = ({ className }): JSX.Element => {
     pageNum,
     sortBy,
     callDirection,
+    contentFilter,
   ])
 
   // Function to load summary status for current page calls
@@ -645,13 +651,18 @@ export const Calls: FC<CallsProps> = ({ className }): JSX.Element => {
         // Show clickable icon if state is 'done' and (has_summary or has_transcription)
         if (state === 'done' && (has_summary || has_transcription)) {
           const tooltipTitle = has_summary
-            ? t('Common.Call summary available') || 'Call summary available'
-            : t('Common.Call transcription available') || 'Call transcription available'
+            ? t('Common.View summary') || 'View summary'
+            : t('Common.View transcription') || 'View transcription'
 
           return (
             <div className='flex justify-center'>
-              <div
+              <button
+                type='button'
                 className='h-8 w-8 flex items-center justify-center'
+                onClick={(event) => {
+                  event.stopPropagation()
+                  openTranscriptionDrawer(call)
+                }}
                 data-tooltip-id={`tooltip-ai-${linkedId}`}
                 data-tooltip-content={tooltipTitle}
               >
@@ -660,7 +671,7 @@ export const Calls: FC<CallsProps> = ({ className }): JSX.Element => {
                   className='h-4 w-4 text-iconIndigo dark:text-iconIndigoDark'
                 />
                 <CustomThemedTooltip id={`tooltip-ai-${linkedId}`} place='top' />
-              </div>
+              </button>
             </div>
           )
         }
@@ -724,6 +735,7 @@ export const Calls: FC<CallsProps> = ({ className }): JSX.Element => {
                 updateCallDirectionFilter={updateCallDirectionFilter}
                 updateDateBeginFilter={updateDateBeginFilter}
                 updateDateEndFilter={updateDateEndFilter}
+                updateContentFilter={(value: string) => setContentFilter(value)}
               />
               <div className='text-primaryNeutral dark:text-primaryNeutralDark flex items-start lg:whitespace-nowrap ml-4'>
                 <Link
