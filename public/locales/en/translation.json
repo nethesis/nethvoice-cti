@@ -83,7 +83,21 @@
     "Configure": "Configure",
     "Copy": "Copy",
     "Copied": "Copied",
-    "Don't ask again": "Don't ask again"
+    "Don't ask again": "Don't ask again",
+    "Go to history": "Go to history",
+    "Call transcription in progress": "Call transcription in progress",
+    "The transcription will be available in your history shortly": "The transcription will be available in your history shortly",
+    "Call transcription available": "Call transcription available",
+    "View call transcription": "View call transcription",
+    "View transcription": "View transcription",
+    "Call summary available": "Call summary available",
+    "Generating call summary": "Generating call summary",
+    "Dismiss": "Dismiss",
+    "Call summary is being generated": "Call summary is being generated",
+    "Call summary ready": "Call summary ready",
+    "The summary is ready for review and editing": "The summary is ready for review and editing",
+    "The summary of your call with {{contact}} is ready": "The summary of your call with {{contact}} is ready",
+    "View summary": "View summary"
   },
   "Login": {
     "User": "Username",
@@ -174,6 +188,9 @@
     "All": "All",
     "Incoming": "Incoming",
     "Outgoing": "Outgoing",
+    "Call content": "Call content",
+    "Transcription": "Transcription",
+    "Voicemail": "Voicemail",
     "Missed": "Missed",
     "Internal": "Internal",
     "Filter by name or number": "Filter by name or number",
@@ -198,7 +215,7 @@
     "Start time": "Start time",
     "End time": "End time",
     "Choose a date range": "Choose a date range",
-    "Call in Voicemail": "Call in Voicemail",
+    "Voicemail available": "Open voicemail message",
     "Type to search contact": "Type to search contact",
     "Groups": "Groups",
     "Open recording action modal": "Open recording action modal",
@@ -218,7 +235,10 @@
     "No voicemails match your search criteria": "No voicemails match your search criteria",
     "Voicemail filters": "Voicemail filters",
     "No voicemails": "No voicemails",
-    "There are no voicemails in your history": "There are no voicemails in your history"
+    "There are no voicemails in your history": "There are no voicemails in your history",
+    "Delete recording": "Delete recording",
+    "Delete call summary": "Delete call summary",
+    "Delete call transcription": "Delete call transcription"
   },
   "Operators": {
     "Operators": "Operators",
@@ -264,7 +284,7 @@
     "Internal": "Internal",
     "Phone lines and announcements": "Phone lines and announcements",
     "Manage your phone lines, activate announcements, voicemail or forward calls": "Manage your phone lines, activate announcements, voicemail or forward calls.",
-    "Display video streams from various sources such as IP cameras or video intercoms":"Display video streams from various sources such as IP cameras or video intercoms.",
+    "Display video streams from various sources such as IP cameras or video intercoms": "Display video streams from various sources such as IP cameras or video intercoms.",
     "Activate announcements, voicemail or forward calls": "Activate announcements, voicemail or forward calls",
     "Video sources": "Video sources",
     "View streams from different sources such as IP video cameras or video intercoms": "View streams from different sources such as IP video cameras or video intercoms.",
@@ -335,6 +355,15 @@
     "Wrong file type": "Wrong file type",
     "Delete profile picture": "Delete profile picture",
     "Devices": "Devices",
+    "Notifications": "Notifications",
+    "Notifications description": "Manage notifications for call features and AI-generated content.",
+    "Notifications description 2": "Settings apply to web phone and desktop app.",
+    "Ai features": "Ai features",
+    "Call transcription ready": "Call transcription ready",
+    "Call transcription ready tooltip": "Receive a browser notification when call transcription is ready.",
+    "Call summary notifications": "Call summary notifications",
+    "Call summary notifications description": "Receive a browser notification when a call summary is ready.",
+    "Notifications save failed": "Unable to save notification preferences.",
     "Time preferences": "Time preferences",
     "Login/logout preferences": "Login/logout preferences",
     "Logout from queue automatically": "Logout from queue automatically",
@@ -729,7 +758,8 @@
     "All calls": "All calls",
     "Incoming": "Incoming calls",
     "Outgoing": "Outgoing calls",
-    "Filter by": "Filter by"
+    "Filter by": "Filter by",
+    "Play recording": "Play recording"
   },
   "VoiceMail": {
     "Voicemail inbox": "Voicemail inbox",
@@ -1057,7 +1087,9 @@
   "Call": {
     "In progress...": "In progress...",
     "Outgoing call": "Outgoing call",
-    "Incoming call": "Incoming call"
+    "Incoming call": "Incoming call",
+    "Delete call summary": "Delete call summary",
+    "Delete call transcription": "Delete call transcription"
   },
   "Transfer": {
     "No users found": "No users found"
@@ -1087,5 +1119,22 @@
     "No video sources available": "No video sources available",
     "No video sources have been configured": "No video sources have been configured",
     "Contact your administrator to configure video sources": "Contact your administrator to configure video sources"
+  },
+  "Summary": {
+    "Call transcription": "Transcription (read only)",
+    "Call summary": "Call summary",
+    "Summary": "Summary",
+    "Summary unavailable": "The call summary is unavailable or cannot be loaded.",
+    "Summary load failed": "Unable to load the call summary.",
+    "Summary update failed": "Unable to save the call summary.",
+    "Summary tooltip": "This summary was generated by AI and can be edited.",
+    "View full transcription": "View transcription",
+    "Call": "Call",
+    "AI content disclaimer": "This content is generated by AI and may not be entirely accurate.",
+    "AI content disclaimer title": "AI-generated content",
+    "Transcription disclaimer": "This transcription is generated by AI and may not be entirely accurate.",
+    "Transcription disclaimer title": "AI-generated transcription",
+    "Transcription unavailable": "The call transcription is unavailable or cannot be loaded.",
+    "Transcription load failed": "Unable to load the call transcription."
   }
 }

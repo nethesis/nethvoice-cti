@@ -7,7 +7,13 @@ interface CallSourceProps {
   operators: any
   mainextension: string
   name: string
-  openDrawerHistory: (name: string, company: string, number: string, callType: string, operators: any) => void
+  openDrawerHistory: (
+    name: string,
+    company: string,
+    number: string,
+    callType: string,
+    operators: any,
+  ) => void
 }
 
 export const CallSource: FC<CallSourceProps> = ({
@@ -28,7 +34,7 @@ export const CallSource: FC<CallSourceProps> = ({
       >
         <div
           className={
-            'truncate text-gray-900 dark:text-gray-100 text-sm ' +
+            'truncate text-sm text-secondaryNeutral dark:text-secondaryNeutralDark' +
             (call.cnum !== '' ? ' text-sm cursor-pointer hover:underline' : '')
           }
         >
@@ -43,7 +49,7 @@ export const CallSource: FC<CallSourceProps> = ({
         {call.cnum !== '' &&
           call.cnum !== mainextension &&
           (call.cnam !== '' || call.ccompany !== '') && (
-            <div className='truncate text-sm cursor-pointer hover:underline text-gray-500 dark:text-gray-500'>
+            <div className='truncate text-sm cursor-pointer hover:underline text-textPlaceholder dark:text-textPlaceholderDark'>
               {call.src}
             </div>
           )}
@@ -70,11 +76,11 @@ export const CallSource: FC<CallSourceProps> = ({
           openDrawerHistory(call.cnam, call.ccompany, call.cnum || call.src, callType, operators)
         }}
       >
-        <div className='truncate text-sm cursor-pointer hover:underline text-gray-900 dark:text-gray-100'>
+        <div className='truncate text-sm cursor-pointer hover:underline text-secondaryNeutral dark:text-secondaryNeutralDark'>
           {call.cnam !== '' ? call.cnam : call.ccompany !== '' ? call.ccompany : call.cnum || '-'}
         </div>
         {call.cnum !== '' && (
-          <div className='truncate text-sm cursor-pointer hover:underline text-gray-500 dark:text-gray-500'>
+          <div className='truncate text-sm cursor-pointer hover:underline text-textPlaceholder dark:text-textPlaceholderDark'>
             {call.src}
           </div>
         )}

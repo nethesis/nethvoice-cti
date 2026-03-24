@@ -12,6 +12,7 @@ export const PAGE_SIZE = 10
 export const DEFAULT_CALL_TYPE_FILTER = 'user'
 export const DEFAULT_CALL_DIRECTION_FILTER = 'all'
 export const DEFAULT_SORT_BY = 'time%20desc'
+export const DEFAULT_CONTENT_FILTER = 'all'
 
 export function getHistoryUrl() {
   if (window == undefined) {
@@ -31,10 +32,34 @@ export async function search(
   type: string,
   pageNum: number,
   pageSize: number = PAGE_SIZE,
+  contentFilter: string = DEFAULT_CONTENT_FILTER,
 ) {
   if (window == undefined) {
     return
   }
+  if (contentFilter !== DEFAULT_CONTENT_FILTER) {
+    try {
+      const { data } = await axios.get('/history/calls', {
+        params: {
+          callType,
+          username,
+          from,
+          to,
+          textSearch,
+          sort,
+          direction: type,
+          pageNum,
+          pageSize,
+          artifact: contentFilter,
+        },
+      })
+      return data
+    } catch (error) {
+      handleNetworkError(error)
+      throw error
+    }
+  }
+
   let removeLostCalls: boolean = false
   if (type === 'in') {
     removeLostCalls = true
@@ -190,8 +215,10 @@ export const getFilterValues = (currentUsername: string) => {
     loadPreference('historyCallTypeDirection', currentUsername) || DEFAULT_CALL_DIRECTION_FILTER
 
   const sortBy = loadPreference('historySortTypePreference', currentUsername) || DEFAULT_SORT_BY
+  const contentFilter =
+    loadPreference('historyContentFilter', currentUsername) || DEFAULT_CONTENT_FILTER
 
-  return { callType, callDirection, sortBy }
+  return { callType, callDirection, sortBy, contentFilter }
 }
 
 export const openAddToPhonebookDrawer = (operator: any) => {
@@ -281,7 +308,10 @@ export interface CallTypes {
   duration: number
   billsec: number
   disposition: string
+  normalized_disposition?: string
   dcontext: string
+  lastapp?: string
+  lastdata?: string
   recordingfile: string
   cnum: string
   cnam: string
@@ -293,6 +323,9 @@ export interface CallTypes {
   clid: string
   direction: 'in' | 'out'
   queue: string
+  reached_voicemail?: boolean
+  has_voicemail_message?: boolean
+  voicemail_message_id?: string
 }
 
 export interface LastCallsResponse {
@@ -301,3 +334,21 @@ export interface LastCallsResponse {
 }
 
 export type SortTypes = 'time_desc' | 'time_asc' | string
+
+type CallDispositionLike = {
+  disposition?: string
+  normalized_disposition?: string
+}
+
+type CallVoicemailLike = {
+  has_voicemail_message?: boolean
+}
+
+export const getNormalizedDisposition = (call?: CallDispositionLike) =>
+  call?.normalized_disposition || call?.disposition || ''
+
+export const isCallAnswered = (call?: CallDispositionLike) =>
+  getNormalizedDisposition(call) === 'ANSWERED'
+
+export const hasVoicemailMessage = (call?: CallVoicemailLike) =>
+  call?.has_voicemail_message === true

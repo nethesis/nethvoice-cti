@@ -17,7 +17,6 @@ import { Badge, EmptyState } from '../common'
 import { isEmpty } from 'lodash'
 import { useSelector } from 'react-redux'
 import { RootState } from '../../store'
-import { DragDropContext, Draggable, Droppable } from 'react-beautiful-dnd'
 import { getJSONItem, setJSONItem } from '../../lib/storage'
 
 export const CustomerCards = () => {
@@ -77,6 +76,8 @@ export const CustomerCards = () => {
 
   //Customer cards list order
   const [customerCardOrder, setCustomerCardOrder]: any = useState([])
+  const [draggedCardIndex, setDraggedCardIndex] = useState<number | null>(null)
+  const [dragOverCardIndex, setDragOverCardIndex] = useState<number | null>(null)
 
   //On radio button or drag and drop update send update settings object
   useEffect(() => {
@@ -94,7 +95,7 @@ export const CustomerCards = () => {
       }
     }
     changeCCardSettings()
-  // eslint-disable-next-line react-hooks/exhaustive-deps
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [customerCardOrder, customerCardSelection])
 
   //Get order and selection from local storage
@@ -118,29 +119,60 @@ export const CustomerCards = () => {
       const initialOrder = Object.keys(customerCardsList)
       setCustomerCardOrder(initialOrder)
     }
-  // eslint-disable-next-line react-hooks/exhaustive-deps
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [customerCardsList])
 
   // Manage drag and drop
-  function handleDragEnd(result: any) {
-    if (!result.destination) {
+  function saveCustomerCardOrder(updatedOrder: string[]) {
+    setCustomerCardOrder(updatedOrder)
+
+    const preferences = getJSONItem(`preferences-${username}`) || {}
+    preferences['customerCardOrder'] = updatedOrder
+    setJSONItem(`preferences-${username}`, preferences)
+  }
+
+  function reorderCustomerCards(sourceIndex: number, destinationIndex: number) {
+    if (sourceIndex === destinationIndex) {
       return
     }
 
-    // Get current customer cards list in the current order
     const currentOrder = [...customerCardOrder]
+    const [removed] = currentOrder.splice(sourceIndex, 1)
+    currentOrder.splice(destinationIndex, 0, removed)
 
-    // Reorder the order depending on drag and drop
-    const [removed] = currentOrder.splice(result.source.index, 1)
-    currentOrder.splice(result.destination.index, 0, removed)
+    saveCustomerCardOrder(currentOrder)
+  }
 
-    // Save new order
-    setCustomerCardOrder(currentOrder)
+  function resetDragState() {
+    setDraggedCardIndex(null)
+    setDragOverCardIndex(null)
+  }
 
-    // Save order inside local storage
-    const preferences = getJSONItem(`preferences-${username}`) || {}
-    preferences['customerCardOrder'] = currentOrder
-    setJSONItem(`preferences-${username}`, preferences)
+  function handleDragStart(index: number) {
+    setDraggedCardIndex(index)
+  }
+
+  function handleDragOver(event: React.DragEvent<HTMLLIElement>, index: number) {
+    event.preventDefault()
+
+    if (draggedCardIndex === null || draggedCardIndex === index) {
+      return
+    }
+
+    setDragOverCardIndex(index)
+  }
+
+  function handleDrop(index: number) {
+    if (draggedCardIndex === null) {
+      return
+    }
+
+    reorderCustomerCards(draggedCardIndex, index)
+    resetDragState()
+  }
+
+  function handleDragEnd() {
+    resetDragState()
   }
 
   return (
@@ -197,61 +229,61 @@ export const CustomerCards = () => {
                     </div>
 
                     <div className='pt-4'>
-                      <DragDropContext onDragEnd={handleDragEnd}>
-                        <Droppable droppableId='customer-cards'>
-                          {(provided) => (
-                            <ul {...provided.droppableProps} ref={provided.innerRef}>
-                              {customerCardOrder.map((cardId: any, index: any) => (
-                                <Draggable key={cardId} draggableId={cardId} index={index}>
-                                  {(provided) => (
-                                    <>
-                                      <li
-                                        ref={provided.innerRef}
-                                        {...provided.draggableProps}
-                                        {...provided.dragHandleProps}
-                                        className={`flex items-center justify-between ${
-                                          index === 0 ? 'pb-2' : 'py-2'
-                                        }`}
-                                      >
-                                        {/* Customercard name */}
-                                        <div className='flex items-center'>
-                                          <span className='mr-4'>
-                                            <FontAwesomeIcon
-                                              icon={faIdCardClip}
-                                              className='h-4 w-4 flex-shrink-0 text-gray-400 dark:text-gray-500'
-                                            />
-                                          </span>
-                                          {customerCardsList[cardId]?.descr}
-                                        </div>
+                      <ul>
+                        {customerCardOrder.map((cardId: any, index: any) => (
+                          <li
+                            key={cardId}
+                            draggable
+                            onDragStart={() => handleDragStart(index)}
+                            onDragOver={(event) => handleDragOver(event, index)}
+                            onDrop={() => handleDrop(index)}
+                            onDragEnd={handleDragEnd}
+                            className={`cursor-move list-none transition-colors ${
+                              draggedCardIndex === index
+                                ? 'opacity-50'
+                                : dragOverCardIndex === index
+                                ? 'rounded-md bg-gray-100 dark:bg-gray-800'
+                                : ''
+                            }`}
+                          >
+                            <div
+                              className={`flex items-center justify-between ${
+                                index === 0 ? 'pb-2' : 'py-2'
+                              }`}
+                            >
+                              {/* Customercard name */}
+                              <div className='flex items-center'>
+                                <span className='mr-4'>
+                                  <FontAwesomeIcon
+                                    icon={faIdCardClip}
+                                    className='h-4 w-4 flex-shrink-0 text-gray-400 dark:text-gray-500'
+                                  />
+                                </span>
+                                {customerCardsList[cardId]?.descr}
+                              </div>
 
-                                        {/* Order position */}
-                                        <Badge
-                                          size='small'
-                                          variant='offline'
-                                          rounded='full'
-                                          className='ml-2 overflow-hidden'
-                                        >
-                                          <span>{index + 1}</span>
-                                        </Badge>
-                                      </li>
-                                      {/* Divider */}
-                                      <div className='relative'>
-                                        <div
-                                          className='absolute inset-0 flex items-center'
-                                          aria-hidden='true'
-                                        >
-                                          <div className='w-full border-t  border-gray-300 dark:border-gray-600' />
-                                        </div>
-                                      </div>
-                                    </>
-                                  )}
-                                </Draggable>
-                              ))}
-                              {provided.placeholder}
-                            </ul>
-                          )}
-                        </Droppable>
-                      </DragDropContext>
+                              {/* Order position */}
+                              <Badge
+                                size='small'
+                                variant='offline'
+                                rounded='full'
+                                className='ml-2 overflow-hidden'
+                              >
+                                <span>{index + 1}</span>
+                              </Badge>
+                            </div>
+                            {/* Divider */}
+                            <div className='relative'>
+                              <div
+                                className='absolute inset-0 flex items-center'
+                                aria-hidden='true'
+                              >
+                                <div className='w-full border-t  border-gray-300 dark:border-gray-600' />
+                              </div>
+                            </div>
+                          </li>
+                        ))}
+                      </ul>
                     </div>
                   </div>
                 </div>

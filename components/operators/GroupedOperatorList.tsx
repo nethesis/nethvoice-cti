@@ -82,7 +82,7 @@ const GroupedOperatorList = ({
   if (isLoading) {
     return (
       <div>
-        {Array.from(Array(6)).map((categoryIndex) => (
+        {Array.from(Array(6)).map((_, categoryIndex) => (
           <div key={categoryIndex} className='mb-4'>
             <div className='flex items-start'>
               <Badge
@@ -92,7 +92,7 @@ const GroupedOperatorList = ({
                 className='overflow-hidden ml-1 mb-5 mt-4'
                 icon={<FontAwesomeIcon icon={faUserGroup} className='h-4 w-4' />}
               >
-                <div className='animate-pulse h-4 w-20 bg-gray-300 dark:bg-gray-600 rounded'></div>
+                <div className='animate-pulse h-4 w-20 bg-skeletonBg dark:bg-skeletonBgDark rounded'></div>
               </Badge>
             </div>
 
@@ -106,23 +106,23 @@ const GroupedOperatorList = ({
                   <div className='group flex w-full items-center justify-between rounded-lg py-2 px-3 h-16 gap-3 text-left focus:outline-none focus:ring-2 focus:ring-offset-2 bg-cardBackgroud dark:bg-cardBackgroudDark focus:ring-primary dark:focus:ring-primary'>
                     {/* Avatar skeleton */}
                     <span className='flex-shrink-0'>
-                      <div className='animate-pulse rounded-full h-14 w-14 bg-gray-300 dark:bg-gray-600 border-2 border-gray-200 dark:border-gray-500'></div>
+                      <div className='animate-pulse rounded-full h-14 w-14 bg-skeletonBg dark:bg-skeletonBgDark border-2 border-gray-200 dark:border-gray-500'></div>
                     </span>
 
                     {/* Name and extension skeleton */}
                     <div className='flex-1 min-w-0 overflow-hidden'>
                       <div className='flex items-center space-x-2 min-w-0'>
-                        <div className='animate-pulse h-5 w-32 rounded bg-gray-300 dark:bg-gray-600'></div>
-                        <div className='animate-pulse h-4 w-12 rounded bg-gray-300 dark:bg-gray-600'></div>
+                        <div className='animate-pulse h-5 w-32 rounded bg-skeletonBg dark:bg-skeletonBgDark'></div>
+                        <div className='animate-pulse h-4 w-12 rounded bg-skeletonBg dark:bg-skeletonBgDark'></div>
                       </div>
                       <div className='mt-1'>
-                        <div className='animate-pulse h-4 w-40 rounded bg-gray-300 dark:bg-gray-600'></div>
+                        <div className='animate-pulse h-4 w-40 rounded bg-skeletonBg dark:bg-skeletonBgDark'></div>
                       </div>
                     </div>
 
                     {/* Action buttons skeleton */}
                     <div className='flex items-center space-x-2'>
-                      <div className='animate-pulse h-8 w-20 rounded bg-gray-300 dark:bg-gray-600'></div>
+                      <div className='animate-pulse h-8 w-20 rounded bg-skeletonBg dark:bg-skeletonBgDark'></div>
                       <FontAwesomeIcon
                         icon={faAngleRight}
                         className='h-4 w-4 text-cardIcon dark:text-cardIconDark'

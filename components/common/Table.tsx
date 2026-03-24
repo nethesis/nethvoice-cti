@@ -35,6 +35,7 @@ interface TableProps {
   containerClassName?: string
   maxHeight?: string | number
   scrollable?: boolean
+  getRowClassName?: (row: any, index: number) => string
 }
 
 export const Table: React.FC<TableProps> = ({
@@ -54,6 +55,7 @@ export const Table: React.FC<TableProps> = ({
   containerClassName = '',
   maxHeight = '32rem',
   scrollable = false,
+  getRowClassName,
 }) => {
   const tableClasses = classNames(
     'min-w-full divide-y divide-gray-300 dark:divide-gray-700',
@@ -170,9 +172,12 @@ export const Table: React.FC<TableProps> = ({
             {data.map((row, rowIndex) => (
               <tr
                 key={getRowKey(row, rowIndex)}
+                data-row-key={getRowKey(row, rowIndex)}
                 className={`${trClassName} ${
                   rowIndex === 0 ? '' : 'border-t border-gray-300 dark:border-gray-600'
-                } ${onRowClick ? 'cursor-pointer hover:bg-gray-50 dark:hover:bg-gray-900' : ''}`}
+                } ${onRowClick ? 'cursor-pointer hover:bg-gray-50 dark:hover:bg-gray-900' : ''} ${
+                  getRowClassName ? getRowClassName(row, rowIndex) : ''
+                }`}
                 onClick={onRowClick ? () => onRowClick(row) : undefined}
               >
                 {columns.map((column, colIndex) => (

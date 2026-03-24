@@ -335,6 +335,7 @@ export const openToast = (
   messageToast: any,
   toastTytle: any,
   timeout?: number,
+  smaller?: boolean,
 ) => {
   store.dispatch.toast.updateToast({
     isShown: true,
@@ -342,6 +343,7 @@ export const openToast = (
     message: messageToast,
     tytle: toastTytle,
     timeout,
+    smaller,
   })
 }
 
@@ -449,6 +451,7 @@ export function getPeopleImageVisibilityValue() {
   // @ts-ignore
   return `${window.CONFIG.LOGIN_PEOPLE}`
 }
+
 
 export const voiceRequest = async (methodVoice: string, url: any, object?: any) => {
   try {

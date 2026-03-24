@@ -37,7 +37,7 @@ export const ShowOperatorDrawerContent = forwardRef<
             callType={config?.lastCallsType || 'switchboard'}
             dateFrom={startOfDay(subDays(new Date(), 7))}
             dateTo={new Date()}
-            phoneNumbers={config?.endpoints?.extension?.map((ext: any) => ext.id)}
+            phoneNumbers={config?.endpoints?.extension?.map((ext: any) => ext?.id)}
             limit={10}
           />
         )}

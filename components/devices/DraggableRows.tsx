@@ -1,7 +1,7 @@
 // Copyright (C) 2024 Nethesis S.r.l.
 // SPDX-License-Identifier: AGPL-3.0-or-later
 
-import { useState, useEffect, useRef } from 'react'
+import { useState, useEffect, useRef, type DragEvent } from 'react'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import {
   faCheck,
@@ -434,20 +434,20 @@ export default function DraggableRows({
     onSelectFilteredButtons(filteredButtons)
   }, [filteredButtons, onSelectFilteredButtons])
 
-  const [draggedIndex, setDraggedIndex] = useState(null)
-  const [dragOverIndex, setDragOverIndex] = useState(null)
+  const [draggedIndex, setDraggedIndex] = useState<number | null>(null)
+  const [dragOverIndex, setDragOverIndex] = useState<number | null>(null)
 
-  const handleDragStart = (e: any, index: any) => {
-    e.dataTransfer.setData('text/plain', index)
+  const handleDragStart = (e: DragEvent<HTMLLIElement>, index: number) => {
+    e.dataTransfer.setData('text/plain', String(index))
     setDraggedIndex(index)
   }
 
-  const handleDragOver = (e: any, index: any) => {
+  const handleDragOver = (e: DragEvent<HTMLLIElement>, index: number) => {
     e.preventDefault()
     setDragOverIndex(index)
   }
 
-  const handleDragEnter = (index: any) => {
+  const handleDragEnter = (index: number) => {
     setDragOverIndex(index)
   }
 
@@ -455,7 +455,7 @@ export default function DraggableRows({
     setDragOverIndex(null)
   }
 
-  const handleDrop = (e: any, targetIndex: any) => {
+  const handleDrop = (e: DragEvent<HTMLLIElement>, targetIndex: number) => {
     e.preventDefault()
     const droppedIndex = Number(e.dataTransfer.getData('text/plain'))
     const newItems = [...buttonsStatusObject]
@@ -524,22 +524,22 @@ export default function DraggableRows({
               </div>
             )}
             {currentFilteredItems.map((buttonRow: any, index: number) => (
-              <motion.li
+              <li
                 key={buttonRow?.id}
                 draggable
-                onDragStart={(e) => handleDragStart(e, index)}
-                onDragOver={(e) => handleDragOver(e, index)}
+                onDragStart={(e: DragEvent<HTMLLIElement>) => handleDragStart(e, index)}
+                onDragOver={(e: DragEvent<HTMLLIElement>) => handleDragOver(e, index)}
                 onDragEnter={() => handleDragEnter(index)}
                 onDragLeave={handleDragLeave}
-                onDrop={(e) => handleDrop(e, index)}
-                initial={{ opacity: 2, y: 0 }}
-                animate={{
-                  opacity: draggedIndex === index ? 0.5 : 1,
-                  y: draggedIndex === index ? -0.1 : 0,
-                }}
-                transition={{ duration: 0.2 }}
+                onDrop={(e: DragEvent<HTMLLIElement>) => handleDrop(e, index)}
               >
-                <div
+                <motion.div
+                  initial={{ opacity: 2, y: 0 }}
+                  animate={{
+                    opacity: draggedIndex === index ? 0.5 : 1,
+                    y: draggedIndex === index ? -0.1 : 0,
+                  }}
+                  transition={{ duration: 0.2 }}
                   className={`${selectedRowIndex === index && !isEditing ? 'bg-gray-100' : ''}
                   ${draggedIndex === index ? 'dark:text-gray-600' : ''}
                    grid items-center py-4 px-2 grid-cols-[4rem,auto,1rem]`}
@@ -579,7 +579,7 @@ export default function DraggableRows({
                       />
                     </Button>
                   </div>
-                </div>
+                </motion.div>
 
                 {selectedRowIndex === index + (currentPage - 1) * itemsPerPage && !isEditing && (
                   <div className='px-2'>
@@ -750,7 +750,7 @@ export default function DraggableRows({
                     <div className='w-full border-t border-gray-300 dark:border-gray-600 mr-3' />
                   </div>
                 </div>
-              </motion.li>
+              </li>
             ))}
           </ul>
         </div>

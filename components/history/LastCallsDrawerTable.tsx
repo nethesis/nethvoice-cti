@@ -2,7 +2,11 @@
 // SPDX-License-Identifier: AGPL-3.0-or-later
 
 import { ComponentPropsWithRef, forwardRef, useEffect, useState, useMemo, useCallback } from 'react'
-import { searchDrawerHistoryUser, searchDrawerHistorySwitchboard } from '../../lib/history'
+import {
+  isCallAnswered,
+  searchDrawerHistoryUser,
+  searchDrawerHistorySwitchboard,
+} from '../../lib/history'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { faMissed } from '@nethesis/nethesis-solid-svg-icons'
 import {
@@ -166,13 +170,15 @@ export const LastCallsDrawerTable = forwardRef<HTMLButtonElement, LastCallsDrawe
 
     const checkIconSwitchboard = useCallback(
       (call: Call) => {
+        const isAnswered = isCallAnswered(call)
+
         return (
           <>
             <div className='text-sm md:mt-0 flex'>
               <div>
                 {call.type === 'internal' && (
                   <div>
-                    {call.disposition === 'ANSWERED' ? (
+                    {isAnswered ? (
                       <>
                         <FontAwesomeIcon
                           icon={faBuilding}
@@ -209,7 +215,7 @@ export const LastCallsDrawerTable = forwardRef<HTMLButtonElement, LastCallsDrawe
                   <div>
                     {call.type === 'in' && (
                       <div>
-                        {call.disposition === 'ANSWERED' ? (
+                        {isAnswered ? (
                           <>
                             <FontAwesomeIcon
                               icon={faArrowLeft}
@@ -244,7 +250,7 @@ export const LastCallsDrawerTable = forwardRef<HTMLButtonElement, LastCallsDrawe
                     )}
                     {call.type === 'out' && (
                       <div>
-                        {call.disposition === 'ANSWERED' ? (
+                        {isAnswered ? (
                           <>
                             <FontAwesomeIcon
                               icon={faArrowLeft}
@@ -339,7 +345,7 @@ export const LastCallsDrawerTable = forwardRef<HTMLButtonElement, LastCallsDrawe
         {isLoaded && !errorMessage && hasRows && (
           <div className='mx-auto'>
             <div className='flex flex-col'>
-              <div className='-my-2 -mx-4 overflow-x-hidden'>
+              <div className='-my-2 -mx-4 overflow-x-auto sm:-mx-6 lg:-mx-8'>
                 <div className='inline-block min-w-full py-2 align-middle px-2 md:px-6 lg:px-8'>
                   {isLoaded && lastCalls?.rows && (
                     <div className={customScrollbarClass}>

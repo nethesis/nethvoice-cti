@@ -15,7 +15,7 @@ const theme = {
     whiteDanger:
       'border shadow-sm border-gray-300 dark:border-gray-500 bg-transparent dark:bg-transparent text-red-700 dark:text-red-500 hover:bg-gray-200 hover:bg-opacity-30 dark:hover:bg-gray-600 dark:hover:bg-opacity-30 focus:ring-primaryLight dark:focus:ring-primaryDark focus:ring-2 focus:ring-offset-2 leading-5 text-sm font-medium',
     ghost:
-      'border-gray-300 text-primary dark:text-primaryDark  hover:bg-gray-200 hover:bg-opacity-30 dark:hover:bg-gray-600 dark:hover:bg-opacity-30 focus:ring-primaryLight dark:border-gray-600 dark:focus:ring-primaryDark leading-5 text-sm font-medium',
+      'border border-transparent text-primary dark:text-primaryDark hover:bg-gray-200 hover:bg-opacity-30 dark:hover:bg-gray-600 dark:hover:bg-opacity-30 focus:ring-2 focus:ring-primaryLight dark:focus:ring-primaryDark focus:ring-offset-2 leading-5 text-sm font-medium',
     dashboard:
       'border-gray-300 text-primary dark:text-primaryDark hover:bg-gray-200 dark:border-gray-600  dark:hover:bg-gray-700 dark:hover:disabled:bg-transparent hover:disabled:bg-transparent dark:focus:ring-primaryDark',
     danger:
@@ -34,6 +34,11 @@ const theme = {
       large: 'px-4 py-2 text-sm',
       full_h: 'h-full',
       full_w: 'w-full',
+    },
+    iconOnly: {
+      small: 'h-8 w-8 p-0',
+      base: 'h-9 w-9 p-0',
+      large: 'h-10 w-10 p-0',
     },
   },
   switch: {
@@ -110,6 +115,27 @@ const theme = {
       top: 'rounded-tr-none rounded-tl-none',
       left: 'rounded-tl-none rounded-bl-none',
       bottom: 'rounded-bl-none rounded-br-none',
+    },
+  },
+  textarea: {
+    base: 'block w-full rounded-md border px-3 py-2 text-sm shadow-sm resize-y focus:z-[8] disabled:cursor-not-allowed bg-surfaceBackgroundInput dark:bg-surfaceBackgroundInputDark text-gray-900 dark:text-gray-100 disabled:border-gray-200 disabled:bg-gray-50 disabled:text-gray-500 dark:disabled:border-gray-700 dark:disabled:bg-gray-900 dark:disabled:text-gray-400',
+    label: 'text-sm font-medium text-inputText dark:text-inputTextDark',
+    optional: 'text-xs text-gray-500 dark:text-gray-400',
+    placeholder: {
+      base: 'placeholder:text-placeHolderInputText dark:placeholder:text-placeHolderInputTextDark',
+      error: '',
+    },
+    helper: {
+      base: 'mt-2 text-sm',
+      color: {
+        base: 'text-gray-500 dark:text-gray-400',
+        error: 'text-rose-600 dark:text-rose-400',
+      },
+    },
+    colors: {
+      gray: 'border-gray-300 focus:border-primaryLight focus:ring-primaryLight placeholder:text-gray-400 dark:border-gray-600 dark:focus:border-primaryDark dark:focus:ring-primaryDark dark:placeholder:text-gray-500',
+      error:
+        'border-rose-500 focus:border-rose-500 focus:ring-rose-500 dark:border-rose-400 dark:focus:border-rose-400 dark:focus:ring-rose-400',
     },
   },
   modal: {
@@ -441,7 +467,7 @@ const theme = {
     },
   },
   inlineNotification: {
-    base: 'border-l-4 rounded-md p-4 w-full flex',
+    base: 'flex w-full items-start gap-3 rounded-md border-l-4 p-4',
     type: {
       info: 'border-indigo-400 bg-indigo-100 dark:border-indigo-500 dark:bg-indigo-900',
       error: 'border-rose-500 bg-rose-100 dark:border-rose-300 dark:bg-rose-900',
@@ -449,26 +475,26 @@ const theme = {
       success: 'border-green-400 bg-green-100 dark:border-green-500 dark:bg-green-900',
     },
     titleStyle: {
-      info: 'text-sm font-medium text-indigo-800 dark:text-indigo-100',
+      info: 'text-sm font-medium text-textInlineNotificationInformationTitle dark:text-textInlineNotificationInformationTitleDark',
       error: 'text-sm font-medium text-rose-800 dark:text-rose-100',
       warning: 'text-sm font-medium text-amber-800 dark:text-amber-100',
       success: 'text-sm font-medium text-green-800 dark:text-green-100',
     },
     iconStyle: {
-      info: 'h-4 w-4 relative -top-0.5 text-indigo-700 dark:text-indigo-200',
+      info: 'h-4 w-4 relative -top-0.5 text-iconInlineNotificationInformation dark:text-iconInlineNotificationInformationDark',
       error: 'h-4 w-4 relative -top-0.5 text-rose-700 dark:text-rose-200',
       warning: 'h-4 w-4 relative -top-0.5 text-amber-700 dark:text-amber-200',
       success: 'h-4 w-4 relative -top-0.5 text-green-700 dark:text-green-200',
     },
     childrenText: {
-      info: 'mt-2 text-sm text-indigo-700 dark:text-indigo-200',
+      info: 'mt-2 text-sm text-textInlineNotificationInformationDescription dark:text-textInlineNotificationInformationDescriptionDark',
       error: 'mt-2 text-sm text-rose-700 dark:text-rose-200',
       warning: 'mt-2 text-sm text-amber-700 dark:text-amber-200',
       success: 'mt-2 text-sm text-green-700 dark:text-green-200',
     },
   },
   toast: {
-    base: 'pointer-events-auto max-w-xl overflow-hidden rounded-lg bg-elevationL2Invert dark:bg-elevationL2InvertDark shadow-lg ring-1 ring-black ring-opacity-5 rounded-lg p-6 pr-16 w-full flex items-center',
+    base: 'pointer-events-auto relative max-w-xl overflow-hidden rounded-lg bg-elevationL2Invert dark:bg-elevationL2InvertDark shadow-lg ring-1 ring-black ring-opacity-5 border border-gray-200/60 dark:border-gray-700/60 rounded-lg p-6 pr-16 w-full flex items-center',
     type: {
       info: '',
       error: '',
