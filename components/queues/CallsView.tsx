@@ -8,8 +8,8 @@ import { Pagination } from '../common/Pagination'
 import { isEmpty, debounce } from 'lodash'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import {
-  DEFAULT_CALLS_LOAD_PERIOD,
   DEFAULT_CALLS_REFRESH_INTERVAL,
+  getQueuesCallsLoadPeriod,
   getCallIcon,
   openShowQueueCallDrawer,
   PAGE_SIZE,
@@ -123,8 +123,7 @@ export const CallsView: FC<CallsViewProps> = ({ className }): JSX.Element => {
     let newIntervalId: any = 0
 
     async function fetchCallsInterval() {
-      const numHours =
-        loadPreference('queuesCallsLoadPeriod', authStore?.username) || DEFAULT_CALLS_LOAD_PERIOD
+      const numHours = getQueuesCallsLoadPeriod(authStore?.username || '')
 
       // fetch stats immediately and set interval
       fetchCalls(numHours)
