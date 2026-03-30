@@ -88,8 +88,8 @@ export const Queues = () => {
               <h2 className='text-lg font-medium leading-6 text-gray-900 dark:text-gray-100 mb-6'>
                 {t('Settings.Queues')}
               </h2>
-              <div className='flex justify-between'>
-                <div>
+              <div className='space-y-10'>
+                <div className='max-w-md'>
                   <h4
                     id='clear-cache-heading'
                     className='text-sm font-medium leading-6 text-gray-900 dark:text-gray-100'
@@ -97,7 +97,7 @@ export const Queues = () => {
                     {t('Settings.Time preferences')}
                   </h4>
                   {/* calls refresh interval */}
-                  <p className='mt-5 text-sm text-gray-500 dark:text-gray-400'>
+                  <p className='mt-3 text-sm text-gray-500 dark:text-gray-400'>
                     {t('Settings.Refresh calls every')}:{' '}
                     <span className='font-semibold'>{formatDurationLoc(callsRefreshInterval)}</span>
                   </p>
@@ -194,16 +194,13 @@ export const Queues = () => {
                     {t('Common.Reset to defaults')}
                   </Button>
                 </div>
-                {/* Vertical divider */}
-                <div className='inline-block w-0.5 self-stretch bg-neutral-100 opacity-100 dark:opacity-50'></div>
-                <div className='w-1/2 pr-4'>
-                  <div className='mb-2'>
-                    {/* Right section title */}
+                <div className='max-w-xl pt-2'>
+                  <div>
                     <p className='text-sm font-regular text-gray-900 dark:text-gray-200'>
                       {t('Settings.Login/logout preferences')}
                     </p>
                   </div>
-                  <div className='pt-4'>
+                  <div className='mt-3'>
                     <CheckboxPreferencesQueues />
                   </div>
                 </div>
