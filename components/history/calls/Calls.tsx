@@ -52,7 +52,7 @@ import { CallDuration } from './CallDuration'
 import { CallRecording } from './CallRecording'
 import { Pagination } from '../../common/Pagination'
 import { Table } from '../../common/Table'
-import { checkSummaryList, deleteSummary } from '../../../services/user'
+import { checkSummaryList } from '../../../services/user'
 import { Skeleton, TableSkeleton } from '../../common/Skeleton'
 import { useRouter } from 'next/router'
 
@@ -382,17 +382,17 @@ export const Calls: FC<CallsProps> = ({ className }): JSX.Element => {
     }
   }
 
-  const deleteSummaryTranscription = async (linkedId: string) => {
-    if (linkedId !== '') {
-      try {
-        await deleteSummary(linkedId)
-        // reload summary status to update the UI
-        loadSummaryStatus()
-      } catch (err) {
-        console.error('Error deleting summary/transcription:', err)
-      }
-    }
-  }
+  // TODO: Re-enable summary/transcription deletion when the server-side implementation is available.
+  // const deleteSummaryTranscription = async (linkedId: string) => {
+  //   if (linkedId !== '') {
+  //     try {
+  //       await deleteSummary(linkedId)
+  //       loadSummaryStatus()
+  //     } catch (err) {
+  //       console.error('Error deleting summary/transcription:', err)
+  //     }
+  //   }
+  // }
 
   // Dropdown actions for the recording file
   const getRecordingActions = (callId: string) => (
@@ -459,7 +459,8 @@ export const Calls: FC<CallsProps> = ({ className }): JSX.Element => {
           </Dropdown.Item>
         )}
 
-        {showSummaryActions && (
+        {/* TODO: Re-enable summary/transcription deletion when the server-side implementation is available. */}
+        {/* {showSummaryActions && (
           <Dropdown.Item icon={faTrash} isRed onClick={() => deleteSummaryTranscription(linkedId)}>
             <span>
               {hasSummary
@@ -467,7 +468,7 @@ export const Calls: FC<CallsProps> = ({ className }): JSX.Element => {
                 : t('History.Delete call transcription') || 'Delete call transcription'}
             </span>
           </Dropdown.Item>
-        )}
+        )} */}
       </>
     )
   }
