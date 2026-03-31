@@ -19,7 +19,7 @@ import {
   getFilterValues,
 } from '../../../lib/history'
 import { formatDateLoc } from '../../../lib/dateTime'
-import { parse, subDays, startOfDay } from 'date-fns'
+import { subDays, startOfDay } from 'date-fns'
 import { useTranslation } from 'react-i18next'
 import Datepicker from 'react-tailwindcss-datepicker'
 import { useTheme } from '../../../theme/Context'
@@ -193,31 +193,40 @@ export const Filter = forwardRef<HTMLButtonElement, FilterProps>(
     const [hourBeginValue, setHourBeginValue]: any = useState('')
     const [hourEndValue, setHourEndValue]: any = useState('')
 
+    const applyTimeToDate = (value: Date, time: string, fallbackHour: number, fallbackMinute: number) => {
+      const nextDate = new Date(value)
+
+      if (Number.isNaN(nextDate.getTime())) {
+        return null
+      }
+
+      if (time) {
+        const [hours, minutes] = time.split(':').map(Number)
+
+        if (Number.isInteger(hours) && Number.isInteger(minutes)) {
+          nextDate.setHours(hours, minutes, 0, 0)
+          return nextDate
+        }
+      }
+
+      nextDate.setHours(fallbackHour, fallbackMinute, 0, 0)
+      return nextDate
+    }
+
     //Set the date when the date filter is changed
     const changeDateBegin = (date: any) => {
       if (date != null && date.startDate !== null && date.endDate !== null) {
-        // Start date
-        let startDateWithHour
-        if (hourBeginValue != null && hourBeginValue !== '') {
-          startDateWithHour = date.startDate + 'T' + hourBeginValue
-        } else {
-          startDateWithHour = date.startDate + 'T00:00'
+        const convertDateBegin = applyTimeToDate(date.startDate, hourBeginValue, 0, 0)
+        const convertDateEnd = applyTimeToDate(date.endDate, hourEndValue, 23, 59)
+
+        if (!convertDateBegin || !convertDateEnd) {
+          return
         }
 
-        // Convert the date to the format for the visualizations
-        let convertDateBegin = parse(startDateWithHour, "yyyy-MM-dd'T'HH:mm", new Date())
         let dateBeginWithHour: any = formatDateLoc(convertDateBegin, 'PPp')
         let noHour: any = formatDateLoc(convertDateBegin, 'yyyy-MM-dd')
         updateDateBeginFilter(noHour)
 
-        // End date
-        let endDateWithHour
-        if (hourEndValue != null && hourEndValue !== '') {
-          endDateWithHour = date.endDate + 'T' + hourEndValue
-        } else {
-          endDateWithHour = date.endDate + 'T23:59'
-        }
-        let convertDateEnd = parse(endDateWithHour, "yyyy-MM-dd'T'HH:mm", new Date())
         let dateEndWithHour: any = formatDateLoc(convertDateEnd, 'PPp')
         let noEndHour: any = formatDateLoc(convertDateEnd, 'yyyy-MM-dd')
         updateDateEndFilter(noEndHour)
