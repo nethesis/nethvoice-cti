@@ -524,7 +524,7 @@ export default function DraggableRows({
               </div>
             )}
             {currentFilteredItems.map((buttonRow: any, index: number) => (
-              <motion.li
+              <li
                 key={buttonRow?.id}
                 draggable
                 onDragStartCapture={(e: DragEvent<HTMLLIElement>) => handleDragStart(e, index)}
@@ -532,14 +532,14 @@ export default function DraggableRows({
                 onDragEnterCapture={() => handleDragEnter(index)}
                 onDragLeaveCapture={handleDragLeave}
                 onDropCapture={(e: DragEvent<HTMLLIElement>) => handleDrop(e, index)}
-                initial={{ opacity: 2, y: 0 }}
-                animate={{
-                  opacity: draggedIndex === index ? 0.5 : 1,
-                  y: draggedIndex === index ? -0.1 : 0,
-                }}
-                transition={{ duration: 0.2 }}
               >
-                <div
+                <motion.div
+                  initial={{ opacity: 2, y: 0 }}
+                  animate={{
+                    opacity: draggedIndex === index ? 0.5 : 1,
+                    y: draggedIndex === index ? -0.1 : 0,
+                  }}
+                  transition={{ duration: 0.2 }}
                   className={`${selectedRowIndex === index && !isEditing ? 'bg-gray-100' : ''}
                   ${draggedIndex === index ? 'dark:text-gray-600' : ''}
                    grid items-center py-4 px-2 grid-cols-[4rem,auto,1rem]`}
@@ -579,7 +579,7 @@ export default function DraggableRows({
                       />
                     </Button>
                   </div>
-                </div>
+                </motion.div>
 
                 {selectedRowIndex === index + (currentPage - 1) * itemsPerPage && !isEditing && (
                   <div className='px-2'>
@@ -750,7 +750,7 @@ export default function DraggableRows({
                     <div className='w-full border-t border-gray-300 dark:border-gray-600 mr-3' />
                   </div>
                 </div>
-              </motion.li>
+              </li>
             ))}
           </ul>
         </div>
