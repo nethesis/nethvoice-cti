@@ -1,7 +1,7 @@
 // Copyright (C) 2024 Nethesis S.r.l.
 // SPDX-License-Identifier: AGPL-3.0-or-later
 
-import { useState, useEffect, useRef } from 'react'
+import { useState, useEffect, useRef, type DragEvent } from 'react'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import {
   faCheck,
@@ -434,20 +434,20 @@ export default function DraggableRows({
     onSelectFilteredButtons(filteredButtons)
   }, [filteredButtons, onSelectFilteredButtons])
 
-  const [draggedIndex, setDraggedIndex] = useState(null)
-  const [dragOverIndex, setDragOverIndex] = useState(null)
+  const [draggedIndex, setDraggedIndex] = useState<number | null>(null)
+  const [dragOverIndex, setDragOverIndex] = useState<number | null>(null)
 
-  const handleDragStart = (e: any, index: any) => {
-    e.dataTransfer.setData('text/plain', index)
+  const handleDragStart = (e: DragEvent<HTMLLIElement>, index: number) => {
+    e.dataTransfer.setData('text/plain', String(index))
     setDraggedIndex(index)
   }
 
-  const handleDragOver = (e: any, index: any) => {
+  const handleDragOver = (e: DragEvent<HTMLLIElement>, index: number) => {
     e.preventDefault()
     setDragOverIndex(index)
   }
 
-  const handleDragEnter = (index: any) => {
+  const handleDragEnter = (index: number) => {
     setDragOverIndex(index)
   }
 
@@ -455,7 +455,7 @@ export default function DraggableRows({
     setDragOverIndex(null)
   }
 
-  const handleDrop = (e: any, targetIndex: any) => {
+  const handleDrop = (e: DragEvent<HTMLLIElement>, targetIndex: number) => {
     e.preventDefault()
     const droppedIndex = Number(e.dataTransfer.getData('text/plain'))
     const newItems = [...buttonsStatusObject]
@@ -527,11 +527,11 @@ export default function DraggableRows({
               <motion.li
                 key={buttonRow?.id}
                 draggable
-                onDragStart={(e) => handleDragStart(e, index)}
-                onDragOver={(e) => handleDragOver(e, index)}
-                onDragEnter={() => handleDragEnter(index)}
-                onDragLeave={handleDragLeave}
-                onDrop={(e) => handleDrop(e, index)}
+                onDragStartCapture={(e: DragEvent<HTMLLIElement>) => handleDragStart(e, index)}
+                onDragOverCapture={(e: DragEvent<HTMLLIElement>) => handleDragOver(e, index)}
+                onDragEnterCapture={() => handleDragEnter(index)}
+                onDragLeaveCapture={handleDragLeave}
+                onDropCapture={(e: DragEvent<HTMLLIElement>) => handleDrop(e, index)}
                 initial={{ opacity: 2, y: 0 }}
                 animate={{
                   opacity: draggedIndex === index ? 0.5 : 1,
