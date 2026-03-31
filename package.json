@@ -15,7 +15,7 @@
     "postversion": "git push origin main --tags"
   },
   "dependencies": {
-    "@babel/runtime": "^7.24.0",
+    "@babel/runtime": "^7.29.2",
     "@date-fns/utc": "^1.1.1",
     "@fortawesome/fontawesome-svg-core": "^6.7.0",
     "@fortawesome/free-brands-svg-icons": "^6.7.0",
