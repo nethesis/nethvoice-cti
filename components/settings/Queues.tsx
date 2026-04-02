@@ -120,23 +120,6 @@ export const Queues = () => {
                     <div className='mt-3 space-y-3'>
                       <div className='flex items-center'>
                         <input
-                          id='queues-load-all-day'
-                          name='queues-load-mode'
-                          type='radio'
-                          value='all-day'
-                          checked={callsLoadAllDay}
-                          onChange={onChangeCallsLoadMode}
-                          className='h-4 w-4 border-gray-300 text-primary focus:ring-primaryLight dark:border-gray-600 dark:text-primaryDark dark:focus:ring-primaryDark'
-                        />
-                        <label
-                          htmlFor='queues-load-all-day'
-                          className='ml-3 block text-sm font-medium text-gray-700 dark:text-gray-200'
-                        >
-                          {t('Settings.All day')}
-                        </label>
-                      </div>
-                      <div className='flex items-center'>
-                        <input
                           id='queues-load-custom-range'
                           name='queues-load-mode'
                           type='radio'
@@ -150,6 +133,23 @@ export const Queues = () => {
                           className='ml-3 block text-sm font-medium text-gray-700 dark:text-gray-200'
                         >
                           {t('Settings.Custom range')}
+                        </label>
+                      </div>
+                      <div className='flex items-center'>
+                        <input
+                          id='queues-load-all-day'
+                          name='queues-load-mode'
+                          type='radio'
+                          value='all-day'
+                          checked={callsLoadAllDay}
+                          onChange={onChangeCallsLoadMode}
+                          className='h-4 w-4 border-gray-300 text-primary focus:ring-primaryLight dark:border-gray-600 dark:text-primaryDark dark:focus:ring-primaryDark'
+                        />
+                        <label
+                          htmlFor='queues-load-all-day'
+                          className='ml-3 block text-sm font-medium text-gray-700 dark:text-gray-200'
+                        >
+                          {t('Settings.All day')}
                         </label>
                       </div>
                     </div>
