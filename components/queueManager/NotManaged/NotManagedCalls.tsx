@@ -8,7 +8,6 @@ import { Pagination } from '../../common/Pagination'
 import { isEmpty, debounce } from 'lodash'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import {
-  DEFAULT_CALLS_LOAD_PERIOD,
   DEFAULT_CALLS_REFRESH_INTERVAL,
   getCallIcon,
   openShowQueueCallDrawer,
@@ -18,6 +17,7 @@ import {
 import { faPhone, faDownload, faAngleRight } from '@fortawesome/free-solid-svg-icons'
 import classNames from 'classnames'
 import { formatDateLoc } from '../../../lib/dateTime'
+import { getQueuesCallsLoadPeriod } from '../../../lib/queuesLib'
 import { NotManagedCallsFilter } from './NotManagedCallsFilter'
 import { useSelector } from 'react-redux'
 import { RootState } from '../../../store'
@@ -121,8 +121,7 @@ export const NotManagedCalls: FC<NotManagedCallsProps> = ({ className }): JSX.El
     }
 
     const setupCallsInterval = () => {
-      const numHours =
-        loadPreference('queuesCallsLoadPeriod', authStore.username) || DEFAULT_CALLS_LOAD_PERIOD
+      const numHours = getQueuesCallsLoadPeriod(authStore.username || '')
 
       // fetch stats immediately
       fetchCalls(numHours)
