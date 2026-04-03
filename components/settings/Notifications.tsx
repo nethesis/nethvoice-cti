@@ -26,8 +26,8 @@ export function getAvailableNotificationSettings(callSummaryEnabled: boolean): N
   if (callSummaryEnabled) {
     items.push({
       id: 'call-summary',
-      titleKey: 'Settings.Call transcription ready',
-      tooltipKey: 'Settings.Call transcription ready tooltip',
+      titleKey: 'Settings.Call summary ready',
+      tooltipKey: 'Settings.Call summary ready tooltip',
       switchLabelKey: 'Settings.Enabled',
     })
   }
