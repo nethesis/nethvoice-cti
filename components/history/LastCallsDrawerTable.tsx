@@ -25,6 +25,11 @@ import { CallSkeleton } from '../common/Skeleton'
 import { useTranslation } from 'react-i18next'
 import { isEqual } from 'lodash'
 import { UserCallStatusIcon } from './UserCallStatusIcon'
+import {
+  getAnsweredIconColorClass,
+  getAnsweredTranslationKey,
+  isAnsweredDisposition,
+} from '../../lib/history'
 import { CallsDate } from './CallsDate'
 import { CallDetails } from './CallDetails'
 import { CustomThemedTooltip } from '../common/CustomThemedTooltip'
@@ -182,10 +187,10 @@ export const LastCallsDrawerTable = forwardRef<HTMLButtonElement, LastCallsDrawe
                       <>
                         <FontAwesomeIcon
                           icon={faBuilding}
-                          className='tooltip-switchboard-internal-answered h-4 w-4 text-iconStatusOnline dark:text-iconStatusOnlineDark'
+                          className={`tooltip-switchboard-internal-answered h-4 w-4 ${getAnsweredIconColorClass(call.disposition)}`}
                           aria-hidden='true'
                           data-tooltip-id='tooltip-switchboard-internal-answered'
-                          data-tooltip-content={t('History.Internal answered') || ''}
+                          data-tooltip-content={t(getAnsweredTranslationKey('Internal', call.disposition)) || ''}
                         />
 
                         <CustomThemedTooltip
@@ -219,10 +224,10 @@ export const LastCallsDrawerTable = forwardRef<HTMLButtonElement, LastCallsDrawe
                           <>
                             <FontAwesomeIcon
                               icon={faArrowLeft}
-                              className='tooltip-switchboard-incoming-answered -rotate-45 h-5 w-3.5 text-iconStatusOnline dark:text-iconStatusOnlineDark'
+                              className={`tooltip-switchboard-incoming-answered -rotate-45 h-5 w-3.5 ${getAnsweredIconColorClass(call.disposition)}`}
                               aria-hidden='true'
                               data-tooltip-id='tooltip-switchboard-incoming-answered'
-                              data-tooltip-content={t('History.Incoming answered') || ''}
+                              data-tooltip-content={t(getAnsweredTranslationKey('Incoming', call.disposition)) || ''}
                             />
 
                             <CustomThemedTooltip
@@ -254,10 +259,10 @@ export const LastCallsDrawerTable = forwardRef<HTMLButtonElement, LastCallsDrawe
                           <>
                             <FontAwesomeIcon
                               icon={faArrowLeft}
-                              className='tooltip-switchboard-outgoing-answered h-5 w-3.5 rotate-[135deg] text-iconStatusOnline dark:text-iconStatusOnlineDark'
+                              className={`tooltip-switchboard-outgoing-answered h-5 w-3.5 rotate-[135deg] ${getAnsweredIconColorClass(call.disposition)}`}
                               aria-hidden='true'
                               data-tooltip-id='tooltip-switchboard-outgoing-answered'
-                              data-tooltip-content={t('History.Outgoing answered') || ''}
+                              data-tooltip-content={t(getAnsweredTranslationKey('Outgoing', call.disposition)) || ''}
                             />
 
                             <CustomThemedTooltip

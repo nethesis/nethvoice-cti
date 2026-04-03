@@ -14,6 +14,29 @@ export const DEFAULT_CALL_DIRECTION_FILTER = 'all'
 export const DEFAULT_SORT_BY = 'time%20desc'
 export const DEFAULT_CONTENT_FILTER = 'all'
 
+export function isAnsweredDisposition(disposition?: string) {
+  return disposition === 'ANSWERED' || disposition === 'ANSWERED_ELSEWHERE'
+}
+
+export function isAnsweredElsewhereDisposition(disposition?: string) {
+  return disposition === 'ANSWERED_ELSEWHERE'
+}
+
+export function getAnsweredTranslationKey(
+  direction: 'Incoming' | 'Outgoing' | 'Internal',
+  disposition?: string,
+) {
+  return isAnsweredElsewhereDisposition(disposition)
+    ? `History.${direction} answered elsewhere`
+    : `History.${direction} answered`
+}
+
+export function getAnsweredIconColorClass(disposition?: string) {
+  return isAnsweredElsewhereDisposition(disposition)
+    ? 'text-amber-500 dark:text-amber-400'
+    : 'text-green-600 dark:text-green-500'
+}
+
 export function getHistoryUrl() {
   if (window == undefined) {
     return ''
@@ -348,7 +371,7 @@ export const getNormalizedDisposition = (call?: CallDispositionLike) =>
   call?.normalized_disposition || call?.disposition || ''
 
 export const isCallAnswered = (call?: CallDispositionLike) =>
-  getNormalizedDisposition(call) === 'ANSWERED'
+  isAnsweredDisposition(getNormalizedDisposition(call))
 
 export const hasVoicemailMessage = (call?: CallVoicemailLike) =>
   call?.has_voicemail_message === true

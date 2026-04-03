@@ -4,7 +4,11 @@ import { faArrowLeft, faXmark, faBuilding } from '@fortawesome/free-solid-svg-ic
 import { faMissed } from '@nethesis/nethesis-solid-svg-icons'
 import { IconDefinition } from '@fortawesome/fontawesome-svg-core'
 import { t } from 'i18next'
-import { isCallAnswered } from '../../../lib/history'
+import {
+  getAnsweredIconColorClass,
+  getAnsweredTranslationKey,
+  isCallAnswered,
+} from '../../../lib/history'
 
 interface CallStatusProps {
   call: any
@@ -24,11 +28,11 @@ export const CallStatus: FC<CallStatusProps> = ({ call, callType }) => {
                 <div className='flex flex-nowrap items-center'>
                   <FontAwesomeIcon
                     icon={faArrowLeft}
-                    className='mr-2 h-4 w-4 -rotate-45 text-textStatusOnline dark:text-textStatusOnlineDark z-0'
+                    className={`mr-2 h-4 w-4 -rotate-45 z-0 ${getAnsweredIconColorClass(call.disposition)}`}
                     aria-hidden='true'
                   />
                   <span className='text-secondaryNeutral dark:text-secondaryNeutralDark'>
-                    {t('History.Incoming answered')}
+                    {t(getAnsweredTranslationKey('Incoming', call.disposition))}
                   </span>
                 </div>
               ) : (
@@ -50,11 +54,11 @@ export const CallStatus: FC<CallStatusProps> = ({ call, callType }) => {
                 <div className='flex flex-nowrap items-center'>
                   <FontAwesomeIcon
                     icon={faArrowLeft}
-                    className='mr-2 h-4 w-4 rotate-[135deg] text-textStatusOnline dark:text-textStatusOnlineDark z-0'
+                    className={`mr-2 h-4 w-4 rotate-[135deg] z-0 ${getAnsweredIconColorClass(call.disposition)}`}
                     aria-hidden='true'
                   />
                   <span className='text-secondaryNeutral dark:text-secondaryNeutralDark'>
-                    {t('History.Outgoing answered')}
+                    {t(getAnsweredTranslationKey('Outgoing', call.disposition))}
                   </span>
                 </div>
               ) : (
@@ -85,11 +89,11 @@ export const CallStatus: FC<CallStatusProps> = ({ call, callType }) => {
                 <div className='flex flex-nowrap items-center'>
                   <FontAwesomeIcon
                     icon={faBuilding}
-                    className='mr-2 h-4 w-4 flex-shrink-0 text-textStatusOnline dark:text-textStatusOnlineDark'
+                    className={`mr-2 h-4 w-4 flex-shrink-0 ${getAnsweredIconColorClass(call.disposition)}`}
                     aria-hidden='true'
                   />
                   <span className='text-secondaryNeutral dark:text-secondaryNeutralDark'>
-                    {t('History.Internal answered')}
+                    {t(getAnsweredTranslationKey('Internal', call.disposition))}
                   </span>
                 </div>
               ) : (
@@ -113,11 +117,11 @@ export const CallStatus: FC<CallStatusProps> = ({ call, callType }) => {
                     <div className='flex flex-nowrap items-center'>
                       <FontAwesomeIcon
                         icon={faArrowLeft}
-                        className='mr-2 h-4 w-4 -rotate-45 text-textStatusOnline dark:text-textStatusOnlineDark z-0'
+                        className={`mr-2 h-4 w-4 -rotate-45 z-0 ${getAnsweredIconColorClass(call.disposition)}`}
                         aria-hidden='true'
                       />
                       <span className='text-secondaryNeutral dark:text-secondaryNeutralDark'>
-                        {t('History.Incoming answered')}
+                        {t(getAnsweredTranslationKey('Incoming', call.disposition))}
                       </span>
                     </div>
                   ) : (
@@ -139,11 +143,11 @@ export const CallStatus: FC<CallStatusProps> = ({ call, callType }) => {
                     <div className='flex flex-nowrap items-center'>
                       <FontAwesomeIcon
                         icon={faArrowLeft}
-                        className='mr-2 h-4 w-4 rotate-[135deg] text-textStatusOnline dark:text-textStatusOnlineDark z-0'
+                        className={`mr-2 h-4 w-4 rotate-[135deg] z-0 ${getAnsweredIconColorClass(call.disposition)}`}
                         aria-hidden='true'
                       />
                       <span className='text-secondaryNeutral dark:text-secondaryNeutralDark'>
-                        {t('History.Outgoing answered')}
+                        {t(getAnsweredTranslationKey('Outgoing', call.disposition))}
                       </span>
                     </div>
                   ) : (
