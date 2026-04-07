@@ -6,10 +6,12 @@ import type { RootModel } from '.'
 
 interface DefaultState {
   reloadVoicemailValue: boolean
+  selectedVoicemailId: string
 }
 
 const defaultState: DefaultState = {
   reloadVoicemailValue: false,
+  selectedVoicemailId: '',
 }
 
 export const voicemail = createModel<RootModel>()({
@@ -17,6 +19,14 @@ export const voicemail = createModel<RootModel>()({
   reducers: {
     reload: (state) => {
       state.reloadVoicemailValue = !state.reloadVoicemailValue
+      return state
+    },
+    setSelectedVoicemailId: (state, voicemailId: string) => {
+      state.selectedVoicemailId = voicemailId || ''
+      return state
+    },
+    clearSelectedVoicemailId: (state) => {
+      state.selectedVoicemailId = ''
       return state
     },
   },

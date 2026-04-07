@@ -7,7 +7,13 @@ interface CallDestinationProps {
   operators: any
   mainextension: string
   name: string
-  openDrawerHistory: (name: string, company: string, number: string, callType: string, operators: any) => void
+  openDrawerHistory: (
+    name: string,
+    company: string,
+    number: string,
+    callType: string,
+    operators: any,
+  ) => void
 }
 
 export const CallDestination: FC<CallDestinationProps> = ({
@@ -22,11 +28,13 @@ export const CallDestination: FC<CallDestinationProps> = ({
   if (callType === 'user') {
     return (
       <div
-        onClick={() => openDrawerHistory(call.dst_cnam, call.dst_ccompany, call.dst, callType, operators)}
+        onClick={() =>
+          openDrawerHistory(call.dst_cnam, call.dst_ccompany, call.dst, callType, operators)
+        }
       >
         <div
           className={
-            'truncate text-gray-900 dark:text-gray-100 text-sm ' +
+            'truncate text-secondaryNeutral dark:text-secondaryNeutralDark text-sm' +
             (call.dst !== '' ? 'hover:underline cursor-pointer' : '')
           }
         >
@@ -41,7 +49,7 @@ export const CallDestination: FC<CallDestinationProps> = ({
         {call.dst !== '' &&
           call.dst !== mainextension &&
           (call.dst_cnam !== '' || call.dst_ccompany !== '') && (
-            <div className='truncate text-sm cursor-pointer hover:underline text-gray-500 dark:text-gray-500'>
+            <div className='truncate text-sm cursor-pointer hover:underline text-textPlaceholder dark:text-textPlaceholderDark'>
               {call.dst}
             </div>
           )}
@@ -62,9 +70,11 @@ export const CallDestination: FC<CallDestinationProps> = ({
     // Switchboard call type
     return (
       <div
-        onClick={() => openDrawerHistory(call.dst_cnam, call.dst_ccompany, call.dst, callType, operators)}
+        onClick={() =>
+          openDrawerHistory(call.dst_cnam, call.dst_ccompany, call.dst, callType, operators)
+        }
       >
-        <div className='truncate text-sm cursor-pointer hover:underline text-gray-900 dark:text-gray-100'>
+        <div className='truncate text-sm cursor-pointer hover:underline text-secondaryNeutral dark:text-secondaryNeutralDark'>
           {call.dst_cnam !== ''
             ? call.dst_cnam
             : call.dst_ccompany !== ''
@@ -72,7 +82,7 @@ export const CallDestination: FC<CallDestinationProps> = ({
             : call.dst || '-'}{' '}
         </div>
         {(call.dst_cnam !== '' || call.dst_ccompany !== '') && (
-          <div className='truncate text-sm cursor-pointer hover:underline text-gray-500 dark:text-gray-500'>
+          <div className='truncate text-sm cursor-pointer hover:underline text-textPlaceholder dark:text-textPlaceholderDark'>
             {call.dst}
           </div>
         )}

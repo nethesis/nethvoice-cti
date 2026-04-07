@@ -85,7 +85,7 @@
   --color-input-text: #374151;
   --color-input-label-title: #374151;
   --color-placeholder-input-text: #6b7280;
-  --color-input-icon: #9ca3af;
+  --color-input-icon: #111827;
   /* input dark */
   --color-bg-input-dark: #030712;
   --color-input-text-dark: #F9FAFB;
@@ -94,7 +94,7 @@
   --color-input-icon-dark: #F9FAFB;
 
   /* main page light */
-  --color-body: #f8fafc;
+  --color-body: #F9FAFB;
   /* main page dark */
   --color-body-dark: #111827;
 
@@ -112,6 +112,10 @@
   --color-current-sidebar-icon-text-dark: #F9FAFB;
   --color-sidebar-icon-background-dark: #1F2937;
   --color-current-badge-primary-dark: #10b981;
+
+  /* skeleton style  */
+  --color-skeleton-bg: #D1D5DB;
+  --color-skeleton-bg-dark: #4B5563;
 
   /* topbar light */
   --color-topbar: #fff;
@@ -158,10 +162,26 @@
   /* textStatusOffline */
   --color-text-status-offline: #374151;
   --color-text-status-offline-dark: #9CA3AF;
-
+  
   /* textLink */
   --color-text-link: #047857;
   --color-text-link-dark: #10b981;
+
+  /* textLinkInvert */
+  --color-text-link-invert: #10B981;
+  --color-text-link-invert-dark: #047857;
+
+  /* textLinkInvertHover */
+
+  /* textPlaceholder */
+  --color-text-placeholder: #9CA3AF;
+  --color-text-placeholder-dark: #6B7280;
+
+  /* emerald 400 */
+  --color-text-link-invert-hover: #34D399;
+  
+  /* emarld 800 */
+  --color-text-link-invert-hover-dark: #065F46;
 
   /* textBadge */
   /* textBadgeBlue */
@@ -228,7 +248,11 @@
 
   /* iconInfo */
   --color-icon-info: #3730A3;
-  --color-icon-info-dark: #E0E7FF;
+  --color-icon-info-dark: #A5B4FC;
+
+  /* iconInlineNotificationInformation */
+  --color-icon-inline-notification-information: #3730A3;
+  --color-icon-inline-notification-information-dark: #A5B4FC;
 
   /* iconSuccess */
   --color-icon-success: #166534;
@@ -279,6 +303,10 @@
   --color-surface-toast-info: #E0E7FF;
   --color-surface-toast-info-dark: #312E81;
 
+  /* surfaceInlineNotification */
+  --color-surface-inline-notification-info: #E0E7FF;
+  --color-surface-inline-notification-info-dark: #312E81;
+
   /* surfaceToastSuccess */
   --color-surface-toast-success: #DCFCE7;
   --color-surface-toast-success-dark: #14532D;
@@ -298,6 +326,14 @@
   /* surfaceTableTag */
   --color-surface-table-tag: #A5B4FC;
   --color-surface-table-tag-dark: #3730A3;
+
+  /* surfaceBackgroundIpunt */
+  --color-surface-background-input: #FFFFFF;
+  --color-surface-background-input-dark: #030712;
+
+  /* surfaceBackgroundIpunt */
+  --color-surface-background-read-only: #F9FAFB;
+  --color-surface-background-read-only-dark: #111827;
 
   /* elevation */
   /* elevation0 */
@@ -325,6 +361,12 @@
   --color-elevation-l4-dark: #4B5563;
 
   /* border */
+  --color-ring-input: #D1D5DB;
+  --color-ring-input-dark: #6B7280;
+
+  --color-ring-button: #D1D5DB;
+  --color-ring-button-dark: #6B7280;
+  
   /* layoutDivider */
   --color-layout-divider: #E5E7EB;
   --color-layout-divider-dark: #374151;
@@ -350,6 +392,24 @@
   /* Favorite star */
   --color-favorite-star: #4338CA;
   --color-favorite-star-dark: #6366F1;
+
+  /* Icon indigo */
+  --color-icon-indigo: #4338CA;
+  --color-icon-indigo-dark: #6366F1;
+
+  /* divider color */
+  --color-divider: #E5E7EB;
+  --color-divider-dark: #374151;
+
+  /* borderAccent */
+  --color-border-accent-indigo: #6366F1;
+  --color-border-accent-indigo-dark: #A5B4FC;
+
+  /* textInlineNotification */
+  --color-text-inline-notification-information-title: #3730A3;
+  --color-text-inline-notification-information-title-dark: #E0E7FF;
+  --color-text-inline-notification-information-description: #4338CA;
+  --color-text-inline-notification-information-description-dark: #C7D2FE;
 }
 
 @media (prefers-color-scheme: dark) {

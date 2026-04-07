@@ -2,8 +2,8 @@
 // SPDX-License-Identifier: AGPL-3.0-or-later
 
 import { FC, ComponentProps, useState, useEffect, MutableRefObject, useRef } from 'react'
-import { useSelector } from 'react-redux'
-import { RootState } from '../../../store'
+import { useDispatch, useSelector } from 'react-redux'
+import { Dispatch, RootState } from '../../../store'
 import { MissingPermission } from '../../common/MissingPermissionsPage'
 import { Filter } from './Filter'
 import {
@@ -30,7 +30,7 @@ import {
   transferCallToExtension,
 } from '../../../lib/utils'
 import { VoiceMailType } from '../../../services/types'
-import { deleteVoicemail, downloadVoicemail, getAllVoicemails } from '../../../services/voicemail'
+import { deleteVoicemail, downloadVoicemail, getAllVoicemails, getVoicemailById } from '../../../services/voicemail'
 import { PAGE_SIZE as DEFAULT_PAGE_SIZE } from '../../../lib/history'
 import { openShowOperatorDrawer } from '../../../lib/operators'
 import Link from 'next/link'
@@ -40,13 +40,14 @@ import { Table } from '../../common/Table'
 export interface VoicemailInboxProps extends ComponentProps<'div'> {}
 
 export const VoicemailInbox: FC<VoicemailInboxProps> = ({ className }): JSX.Element => {
+  const dispatch = useDispatch<Dispatch>()
   const operatorsStore = useSelector((state: RootState) => state.operators)
   const authStore = useSelector((state: RootState) => state.authentication)
+  const selectedVoicemailId = useSelector((state: RootState) => state.voicemail.selectedVoicemailId)
   const cancelDeleteButtonRef = useRef() as MutableRefObject<HTMLButtonElement>
 
   const { profile } = useSelector((state: RootState) => state.user)
 
-  const [firstRender, setFirstRender]: any = useState(true)
   const [voicemailError, setVoicemailError] = useState('')
   const [isVoicemailLoaded, setVoicemailLoaded] = useState(false)
   const [voicemails, setVoicemails] = useState<any[]>([])
@@ -57,36 +58,39 @@ export const VoicemailInbox: FC<VoicemailInboxProps> = ({ className }): JSX.Elem
   const [showDeleteAllModal, setShowDeleteAllModal] = useState<boolean>(false)
   const [isDeletingAll, setIsDeletingAll] = useState<boolean>(false)
   const [pageSize, setPageSize] = useState(DEFAULT_PAGE_SIZE)
-
-  // Add search filter state
   const [searchTerm, setSearchTerm] = useState<string>('')
   const [filteredVoicemails, setFilteredVoicemails] = useState<any[]>([])
-
-  // Add this computed value to get current page items from filtered voicemails instead
-  const currentPageVoicemails = filteredVoicemails.slice(
-    (pageNum - 1) * pageSize,
-    pageNum * pageSize,
-  )
+  const [activeHistoryVoicemailId, setActiveHistoryVoicemailId] = useState('')
+  const [reloadNonce, setReloadNonce] = useState(0)
+  const currentPageVoicemails = filteredVoicemails.slice((pageNum - 1) * pageSize, pageNum * pageSize)
 
   // Listen for audio player closed event
   useEventListener('phone-island-audio-player-closed', () => {
-    setFirstRender(true)
+    setReloadNonce((currentValue) => currentValue + 1)
   })
+
+  useEffect(() => {
+    if (!selectedVoicemailId) {
+      return
+    }
+
+    setActiveHistoryVoicemailId(selectedVoicemailId)
+    setSearchTerm(selectedVoicemailId)
+    setPageNum(1)
+    dispatch.voicemail.clearSelectedVoicemailId()
+  }, [dispatch, selectedVoicemailId])
 
   useEffect(() => {
     if (!isEmpty(operatorsStore) && !operatorsStore.isOperatorsLoaded) {
       return
     }
 
-    if (firstRender) {
-      setFirstRender(false)
-    } else {
-      return
-    }
-
     const fetchVoicemails = async () => {
       try {
-        const response: any[] | undefined = await getAllVoicemails()
+        setVoicemailLoaded(false)
+        const response: any[] | undefined = activeHistoryVoicemailId
+          ? await getVoicemailById(activeHistoryVoicemailId)
+          : await getAllVoicemails()
 
         // Filter voicemails by type = inbox or old
         const inboxVoicemails = response?.filter(
@@ -123,6 +127,7 @@ export const VoicemailInbox: FC<VoicemailInboxProps> = ({ className }): JSX.Elem
 
           setVoicemails(sortedVoicemails)
         }
+
         setVoicemailLoaded(true)
       } catch (error) {
         console.error(error)
@@ -131,7 +136,7 @@ export const VoicemailInbox: FC<VoicemailInboxProps> = ({ className }): JSX.Elem
     }
 
     fetchVoicemails()
-  }, [firstRender, operatorsStore])
+  }, [activeHistoryVoicemailId, operatorsStore, reloadNonce])
 
   // Filter voicemails based on search term
   useEffect(() => {
@@ -145,9 +150,18 @@ export const VoicemailInbox: FC<VoicemailInboxProps> = ({ className }): JSX.Elem
       return
     }
 
-    const searchTermLower = searchTerm.toLowerCase()
+    const normalizedSearchTerm = searchTerm.trim()
+    const searchTermLower = normalizedSearchTerm.toLowerCase()
 
     const filtered = voicemails.filter((voicemail) => {
+      const voicemailId = String(voicemail?.id || '')
+
+      if (activeHistoryVoicemailId) {
+        return voicemailId === normalizedSearchTerm
+      }
+
+      const idMatch = voicemailId.toLowerCase().includes(searchTermLower)
+
       // Search in caller number
       const numberMatch =
         voicemail.caller_number && voicemail.caller_number.toLowerCase().includes(searchTermLower)
@@ -158,13 +172,13 @@ export const VoicemailInbox: FC<VoicemailInboxProps> = ({ className }): JSX.Elem
         voicemail.caller_operator.name &&
         voicemail.caller_operator.name.toLowerCase().includes(searchTermLower)
 
-      return numberMatch || nameMatch
+      return idMatch || numberMatch || nameMatch
     })
 
     setFilteredVoicemails(filtered)
     // Reset to first page when filtering
     setPageNum(1)
-  }, [searchTerm, voicemails])
+  }, [activeHistoryVoicemailId, searchTerm, voicemails])
 
   // Calculate the total pages of the history based on filtered voicemails
   useEffect(() => {
@@ -185,6 +199,11 @@ export const VoicemailInbox: FC<VoicemailInboxProps> = ({ className }): JSX.Elem
   // Update the search filter handler
   const debouncedUpdateFilterText = (text: string) => {
     setSearchTerm(text)
+
+    if (activeHistoryVoicemailId && text.trim() === '') {
+      setActiveHistoryVoicemailId('')
+      setReloadNonce((currentValue) => currentValue + 1)
+    }
   }
 
   function goToPreviousPage() {
@@ -252,16 +271,28 @@ export const VoicemailInbox: FC<VoicemailInboxProps> = ({ className }): JSX.Elem
 
   const getVoiceMailOptionsTemplate = (voicemail: VoiceMailType) => (
     <>
-      <div className='border-b border-gray-200 dark:border-gray-700'>
-        <Dropdown.Item icon={faPhone} onClick={() => quickCall(voicemail)}>
-          <span>{t('VoiceMail.Call back')}</span>
+      <div className='border-b border-layoutDivider dark:border-layoutDividerDark'>
+        <Dropdown.Item
+          icon={faPhone}
+          iconClassName='text-dropdownText dark:text-dropdownTextDark'
+          onClick={() => quickCall(voicemail)}
+        >
+          <span className='text-dropdownText dark:text-dropdownTextDark'>
+            {t('VoiceMail.Call back')}
+          </span>
         </Dropdown.Item>
-        <Dropdown.Item icon={faCircleArrowDown} onClick={() => downloadVoicemail(voicemail?.id)}>
-          <span>{t('VoiceMail.Download')}</span>
+        <Dropdown.Item
+          icon={faCircleArrowDown}
+          iconClassName='text-dropdownText dark:text-dropdownTextDark'
+          onClick={() => downloadVoicemail(voicemail?.id)}
+        >
+          <span className='text-dropdownText dark:text-dropdownTextDark'>
+            {t('VoiceMail.Download')}
+          </span>
         </Dropdown.Item>
       </div>
       <Dropdown.Item icon={faTrash} isRed onClick={() => showDeleteVoicemailModal(voicemail)}>
-        <span>{t('VoiceMail.Delete message')}</span>
+        <span className='text-inherit'>{t('VoiceMail.Delete message')}</span>
       </Dropdown.Item>
     </>
   )
@@ -278,7 +309,7 @@ export const VoicemailInbox: FC<VoicemailInboxProps> = ({ className }): JSX.Elem
       setVoicemailToDelete(null)
       closeSideDrawer()
       // Reload voicemails after deletion
-      setFirstRender(true)
+      setReloadNonce((currentValue) => currentValue + 1)
     }
   }
 
@@ -291,7 +322,7 @@ export const VoicemailInbox: FC<VoicemailInboxProps> = ({ className }): JSX.Elem
       }
       setShowDeleteAllModal(false)
       // Reload voicemails after deletion
-      setFirstRender(true)
+      setReloadNonce((currentValue) => currentValue + 1)
     } catch (error) {
       console.error('Error deleting all voicemails:', error)
     } finally {
@@ -393,24 +424,21 @@ export const VoicemailInbox: FC<VoicemailInboxProps> = ({ className }): JSX.Elem
       header: '',
       cell: (voicemail: any, index: number) => (
         <div className='flex justify-end space-x-2'>
-          <Button variant='white' onClick={() => playSelectedVoicemail(voicemail?.id)}>
-            <FontAwesomeIcon
-              icon={faPlay}
-              className='h-4 w-4 mr-2 text-primary dark:text-gray-100'
-              aria-hidden='true'
-            />
-            {t('History.Play')}
+          <Button
+            variant='white'
+            className='border border-gray-300 dark:border-gray-500 py-2 h-9 w-9 gap-3'
+            onClick={() => playSelectedVoicemail(voicemail?.id)}
+          >
+            <FontAwesomeIcon icon={faPlay} className='h-4 w-4' aria-hidden='true' />
+            <span className='sr-only'>{t('VoiceMail.Play voicemail')}</span>
           </Button>
           <Dropdown
             items={getVoiceMailOptionsTemplate(voicemail)}
             position={getDropdownPosition(index)}
           >
-            <Button variant='ghost'>
-              <FontAwesomeIcon
-                icon={faEllipsisVertical}
-                className='h-4 w-4 text-primary dark:text-gray-100'
-              />
-              <span className='sr-only'>{t('History.Open recording action modal')}</span>
+            <Button variant='ghost' className='py-2 px-2 h-9 w-9'>
+              <FontAwesomeIcon icon={faEllipsisVertical} className='h-4 w-4' />
+              <span className='sr-only'>{t('VoiceMail.Open voicemail menu')}</span>
             </Button>
           </Dropdown>
         </div>
@@ -506,6 +534,7 @@ export const VoicemailInbox: FC<VoicemailInboxProps> = ({ className }): JSX.Elem
         <div>
           <div className='flex justify-between'>
             <Filter
+              filterTextValue={searchTerm}
               updateFilterText={debouncedUpdateFilterText}
               updateSortFilter={updateSortFilter}
             />

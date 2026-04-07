@@ -29,6 +29,7 @@ interface SettingsTypes {
   chat_notifications: any
   default_extension: string
   desktop_notifications: any
+  call_summary_notifications?: any
   open_ccard: any
   open_param_url: any
   queue_auto_login: any
@@ -69,6 +70,7 @@ interface DefaultState {
   settings: SettingsTypes
   recallOnBusy: any
   lkhash: string
+  call_summary_enabled?: boolean
   urlOpened?: boolean
   feature_codes: FeatureCodes | null
 }
@@ -110,6 +112,7 @@ const defaultState: DefaultState = {
     chat_notifications: '',
     default_extension: '',
     desktop_notifications: '',
+    call_summary_notifications: '',
     open_ccard: '',
     open_param_url: '',
     queue_auto_login: '',
@@ -121,6 +124,7 @@ const defaultState: DefaultState = {
   },
   recallOnBusy: '',
   lkhash: '',
+  call_summary_enabled: false,
   urlOpened: false,
   feature_codes: null,
 }
@@ -140,6 +144,7 @@ export const user = createModel<RootModel>()({
       state.settings = payload?.settings
       state.recallOnBusy = payload?.recallOnBusy
       state.lkhash = payload?.lkhash
+      state.call_summary_enabled = payload?.call_summary_enabled ?? false
       return state
     },
     updateMainPresence: (state, mainPresence) => {
@@ -147,8 +152,10 @@ export const user = createModel<RootModel>()({
       return state
     },
     updateSettings: (state, ccardSettingsUpdate) => {
-      state.settings.open_ccard = ccardSettingsUpdate.open_ccard
-      state.settings.ccard_order = ccardSettingsUpdate.ccard_order
+      state.settings = {
+        ...state.settings,
+        ...ccardSettingsUpdate,
+      }
       return state
     },
     updateCompanyExtension: (state, companyExtension) => {

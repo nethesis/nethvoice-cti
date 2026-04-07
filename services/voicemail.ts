@@ -18,6 +18,16 @@ export const getAllVoicemails = async () => {
     }
 };
 
+export const getVoicemailById = async (id: string) => {
+    try {
+        const response = await axios.get(`${PATH}/list/${id}`);
+        return response.data.rows;
+    } catch (error) {
+        handleNetworkError(error)
+        throw error
+    }
+};
+
 export const downloadVoicemail = async (id: any) => {
     try {
         const response = await axios.get(`${PATH}/download/${id}`);

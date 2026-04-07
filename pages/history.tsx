@@ -20,10 +20,29 @@ interface tabsType {
   current: boolean
 }
 
+const normalizeHistorySection = (section?: string) => {
+  if (!section) {
+    return ''
+  }
+
+  const normalizedSection = section.trim().toLowerCase()
+
+  if (normalizedSection === 'calls') {
+    return 'Calls'
+  }
+
+  if (normalizedSection === 'voicemail inbox') {
+    return 'Voicemail inbox'
+  }
+
+  return ''
+}
+
 const History: NextPage = () => {
   const { t } = useTranslation()
   const profile = useSelector((state: RootState) => state.user)
   const auth = useSelector((state: RootState) => state.authentication)
+  const selectedVoicemailId = useSelector((state: RootState) => state.voicemail.selectedVoicemailId)
   const router = useRouter()
 
   const [items, setItems] = useState<tabsType[]>([])
@@ -33,7 +52,7 @@ const History: NextPage = () => {
   useEffect(() => {
     if (!auth.username) return
 
-    const savedTab = loadPreference('historySelectedTab', auth.username)
+    const savedTab = normalizeHistorySection(loadPreference('historySelectedTab', auth.username))
     if (savedTab) {
       setUserPreference(savedTab)
     }
@@ -49,13 +68,22 @@ const History: NextPage = () => {
         : []),
     ]
 
-    const sectionFromQuery = router.query.section as string
+    const sectionFromQuery = normalizeHistorySection(router.query.section as string)
     const preferenceAvailable = userPreference && newTabs.some((tab) => tab.name === userPreference)
+    const currentSectionAvailable =
+      currentSection && newTabs.some((tab) => tab.name === currentSection)
 
     let tabToSelect: any
 
-    if (sectionFromQuery && newTabs.some((tab) => tab.name === sectionFromQuery)) {
+    if (
+      selectedVoicemailId &&
+      newTabs.some((tab) => tab.name === 'Voicemail inbox')
+    ) {
+      tabToSelect = 'Voicemail inbox'
+    } else if (sectionFromQuery && newTabs.some((tab) => tab.name === sectionFromQuery)) {
       tabToSelect = sectionFromQuery
+    } else if (currentSectionAvailable) {
+      tabToSelect = currentSection
     } else if (preferenceAvailable) {
       tabToSelect = userPreference
     } else {
@@ -69,7 +97,7 @@ const History: NextPage = () => {
 
     setItems(updatedTabs)
     setCurrentSection(tabToSelect)
-  }, [profile, auth.username, userPreference, router.query.section])
+  }, [profile, auth.username, currentSection, userPreference, router.query.section, selectedVoicemailId])
 
   const changeSection = (sectionName: string) => {
     if (!items.some((item) => item.name === sectionName)) {
@@ -91,6 +119,19 @@ const History: NextPage = () => {
 
     if (auth.username) {
       savePreference('historySelectedTab', sectionName, auth.username)
+    }
+
+    if (router.isReady && router.query.section) {
+      const nextQuery = { ...router.query }
+      delete nextQuery.section
+      router.replace(
+        {
+          pathname: router.pathname,
+          query: nextQuery,
+        },
+        undefined,
+        { shallow: true },
+      )
     }
   }
 

@@ -36,14 +36,11 @@ export const Integrations = () => {
     // filter phone and insert only physical phones
     if (profile?.endpoints) {
       let endpointsInformation = profile?.endpoints
-      console.log('endpointsInformation', endpointsInformation)
       if (endpointsInformation?.extension) {
         setWebrtcData(endpointsInformation?.extension.filter((phone) => phone?.type === 'webrtc'))
       }
     }
   }, [profile?.endpoints])
-
-  console.log('webrtcData', webrtcData)
 
   const newConfig = async () => {
     setLoading(true)
