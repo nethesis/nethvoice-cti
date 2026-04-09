@@ -1,5 +1,6 @@
 import { FC } from 'react'
 import { t } from 'i18next'
+import { Badge } from '../../common'
 
 interface CallSourceProps {
   call: any
@@ -24,6 +25,24 @@ export const CallSource: FC<CallSourceProps> = ({
   name,
   openDrawerHistory,
 }) => {
+  const isQueueCall =
+    !!call?.queue || !!call?.queue_name || (typeof call?.channel === 'string' && call.channel.includes('from-queue'))
+  const queueId = call?.queue || ''
+  const queueName = call?.queue_name || ''
+  const queueLabel = queueName ? (queueId ? `${queueName} ${queueId}` : queueName) : queueId || t('QueueManager.Queue')
+
+  const renderQueueBadge = () => {
+    if (!isQueueCall) {
+      return null
+    }
+
+    return (
+      <Badge size='small' variant='offline' rounded='full' className='mb-1 max-w-fit'>
+        {queueLabel}
+      </Badge>
+    )
+  }
+
   // User call type
   if (callType === 'user') {
     return (
@@ -32,6 +51,7 @@ export const CallSource: FC<CallSourceProps> = ({
           openDrawerHistory(call.cnam, call.ccompany, call.cnum || call.src, callType, operators)
         }}
       >
+        {renderQueueBadge()}
         <div
           className={
             'truncate text-sm text-secondaryNeutral dark:text-secondaryNeutralDark' +
@@ -76,6 +96,7 @@ export const CallSource: FC<CallSourceProps> = ({
           openDrawerHistory(call.cnam, call.ccompany, call.cnum || call.src, callType, operators)
         }}
       >
+        {renderQueueBadge()}
         <div className='truncate text-sm cursor-pointer hover:underline text-secondaryNeutral dark:text-secondaryNeutralDark'>
           {call.cnam !== '' ? call.cnam : call.ccompany !== '' ? call.ccompany : call.cnum || '-'}
         </div>

@@ -203,6 +203,8 @@
     "Internal missed": "Internal missed",
     "Internal answered": "Internal answered",
     "Internal answered elsewhere": "Internal answered elsewhere",
+    "Answered by": "Answered by",
+    "Answered by another operator": "Answered by another operator",
     "calls": "calls",
     "Filters": "Filters",
     "Call direction": "Call direction",

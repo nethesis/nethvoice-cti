@@ -501,7 +501,8 @@ export const Filter = forwardRef<HTMLButtonElement, FilterProps>(
                     className='h-5 w-px block bg-layoutDivider dark:bg-layoutDividerDark'
                   />
                   {/* show selected call type only if user has cdr permissions */}
-                  {profile.macro_permissions?.cdr?.permissions?.ad_cdr?.value && (
+                  {(profile.macro_permissions?.cdr?.permissions?.ad_cdr?.value ||
+                    profile.macro_permissions?.cdr?.permissions?.group_cdr?.value) && (
                     <div className='mt-0'>
                       <div className='-m-1 flex flex-wrap items-center'>
                         <span className='m-1 inline-flex items-center rounded-full border py-1.5 px-3 text-sm border-borderRingInput dark:border-borderRingInputDark'>

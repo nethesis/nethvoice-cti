@@ -33,7 +33,7 @@ export function getAnsweredTranslationKey(
 
 export function getAnsweredIconColorClass(disposition?: string) {
   return isAnsweredElsewhereDisposition(disposition)
-    ? 'text-amber-500 dark:text-amber-400'
+    ? 'text-gray-700 dark:text-gray-400'
     : 'text-green-600 dark:text-green-500'
 }
 
@@ -113,7 +113,7 @@ export async function search(
       userUrlApi += '&removeLostCalls=' + removeLostCalls
     }
   }
-  if (callType === 'switchboard' || callType === 'groups') {
+  if (callType === 'switchboard' || callType === 'group') {
     if (type != 'all') {
       userUrlApi += '&type=' + type + '&removeLostCalls=' + removeLostCalls
     } else {
@@ -346,6 +346,8 @@ export interface CallTypes {
   clid: string
   direction: 'in' | 'out'
   queue: string
+  queue_name?: string
+  answered_by_num?: string
   reached_voicemail?: boolean
   has_voicemail_message?: boolean
   voicemail_message_id?: string

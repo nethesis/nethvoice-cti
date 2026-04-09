@@ -85,10 +85,21 @@ export const FilterMobile: React.FC<FilterMobileProps> = ({
             <fieldset>
               <legend className='sr-only'>{callTypeFilter?.name}</legend>
             </fieldset>
-            {profile?.macro_permissions?.cdr?.permissions?.ad_cdr?.value && (
+            {(profile?.macro_permissions?.cdr?.permissions?.ad_cdr?.value ||
+              profile?.macro_permissions?.cdr?.permissions?.group_cdr?.value) && (
               <>
                 <div className='space-y-4'>
-                  {callTypeFilter?.options?.map((option: any) => (
+                  {callTypeFilter?.options
+                    ?.filter((option: any) => {
+                      if (option.value === 'switchboard') {
+                        return profile?.macro_permissions?.cdr?.permissions?.ad_cdr?.value
+                      } else if (option.value === 'group') {
+                        return profile?.macro_permissions?.cdr?.permissions?.group_cdr?.value
+                      } else {
+                        return true
+                      }
+                    })
+                    .map((option: any) => (
                     <div key={option?.value} className='flex items-center'>
                       <input
                         id={option?.value}
