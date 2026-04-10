@@ -59,6 +59,8 @@ const LastCallItem = memo(
     handleCreateContact,
   }: LastCallItemProps) => {
     const [isHovered, setIsHovered] = useState(false)
+    const [showQueueTooltip, setShowQueueTooltip] = useState(false)
+    const queueLabelRef = useRef<HTMLDivElement | null>(null)
 
     // Keep the same timezone behavior used by the generic CallsDate component
     const diffValueConversation = (diffValueOriginal: number) => {
@@ -129,7 +131,7 @@ const LastCallItem = memo(
       }
 
       const callDate = utcToZonedTime(call?.time * 1000, differenceBetweenTimezone)
-      
+
       return formatDistanceToNowStrict(callDate, {
         addSuffix: true,
         locale: selectedLanguage === 'it' ? shortIt : shortEn,
@@ -150,6 +152,37 @@ const LastCallItem = memo(
     const hasNoInfo = isIncoming
       ? !(call.cnam || call.ccompany)
       : !(call.dst_cnam || call.dst_ccompany)
+    const isQueueCall =
+      !!call?.queue ||
+      !!call?.queue_name ||
+      (typeof call?.channel === 'string' && call.channel.includes('from-queue'))
+    const queueId = call?.queue || ''
+    const queueName = call?.queue_name || queuesStore?.queues?.[call?.queue]?.name || ''
+    const queueLabelBase = queueName
+      ? queueId
+        ? `${queueName} ${queueId}`
+        : queueName
+      : queueId || t('QueueManager.Queue')
+    const queueLabel = queueLabelBase
+
+    useEffect(() => {
+      if (!isQueueCall) {
+        setShowQueueTooltip(false)
+        return
+      }
+
+      const updateTooltipVisibility = () => {
+        const element = queueLabelRef.current
+        setShowQueueTooltip(!!element && element.scrollWidth > element.clientWidth)
+      }
+
+      updateTooltipVisibility()
+      window.addEventListener('resize', updateTooltipVisibility)
+
+      return () => {
+        window.removeEventListener('resize', updateTooltipVisibility)
+      }
+    }, [isQueueCall, queueLabel])
 
     const renderCallDetails = (direction: 'in' | 'out') => (
       <CallDetails
@@ -159,6 +192,7 @@ const LastCallItem = memo(
         fromHistory={false}
         isQueueBadgeAvailable={call.channel.includes('from-queue')}
         direction={direction}
+        lastCallsType='user'
       />
     )
 
@@ -197,33 +231,34 @@ const LastCallItem = memo(
                 </div>
               </div>
 
-              {call?.channel?.includes('from-queue') && (
+              {isQueueCall && (
                 <div>
                   <>
                     <Badge
                       size='small'
                       variant='offline'
                       rounded='full'
-                      className={`overflow-hidden tooltip-queue-${call?.queue}`}
-                      data-tooltip-id={`tooltip-queue-${call?.queue}`}
-                      data-tooltip-content={
-                        queuesStore?.queues[call?.queue]?.name
-                          ? `${queuesStore?.queues[call?.queue]?.name} ${call?.queue}`
-                          : t('QueueManager.Queue')
+                      className='overflow-hidden'
+                      data-tooltip-id={
+                        showQueueTooltip ? `tooltip-queue-${call?.uniqueid}` : undefined
                       }
+                      data-tooltip-content={showQueueTooltip ? queueLabel : undefined}
                     >
                       <FontAwesomeIcon
                         icon={faUsers}
                         className='h-4 w-4 mr-2 ml-1'
                         aria-hidden='true'
                       />
-                      <div className={`truncate max-w-20 xl:max-w-28 2xl:max-w-40 mr-1`}>
-                        {queuesStore?.queues[call?.queue]?.name
-                          ? `${queuesStore?.queues[call?.queue]?.name} ${call?.queue}`
-                          : t('QueueManager.Queue')}
+                      <div
+                        ref={queueLabelRef}
+                        className={`truncate max-w-20 xl:max-w-28 2xl:max-w-40 mr-1`}
+                      >
+                        {queueLabel}
                       </div>
                     </Badge>
-                    <CustomThemedTooltip id={`tooltip-queue-${call?.queue}`} place='left' />
+                    {showQueueTooltip && (
+                      <CustomThemedTooltip id={`tooltip-queue-${call?.uniqueid}`} place='top' />
+                    )}
                   </>
                 </div>
               )}

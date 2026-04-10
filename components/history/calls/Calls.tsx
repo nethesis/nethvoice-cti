@@ -364,8 +364,7 @@ export const Calls: FC<CallsProps> = ({ className }): JSX.Element => {
         link.href = fileUrl
         link.download = fileName
         link.click()
-      } catch (err) {
-        console.log(err)
+      } catch {
       }
     }
   }
@@ -376,8 +375,7 @@ export const Calls: FC<CallsProps> = ({ className }): JSX.Element => {
         await deleteRec(callIdInformation)
         // reload the history by resetting the loading state
         setHistoryLoaded(false)
-      } catch (err) {
-        console.log(err)
+      } catch {
       }
     }
   }

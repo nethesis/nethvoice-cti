@@ -1,7 +1,7 @@
 // Copyright (C) 2024 Nethesis S.r.l.
 // SPDX-License-Identifier: AGPL-3.0-or-later
 
-import { FC, ComponentProps, useState, useEffect } from 'react'
+import { FC, ComponentProps, useState, useEffect, useMemo } from 'react'
 import { useTranslation } from 'react-i18next'
 import { retrieveQueueStats } from '../../lib/queuesLib'
 import classNames from 'classnames'
@@ -25,6 +25,11 @@ export const StatisticsView: FC<StatisticsViewProps> = ({ className }): JSX.Elem
   const { mainextension } = useSelector((state: RootState) => state.user)
   const [lastUpdated, setLastUpdated]: any = useState(null)
   const queuesStore = useSelector((state: RootState) => state.queues)
+  const visibleQueues = useMemo(() => {
+    return Object.values(queuesStore.queues).filter((queue: any) => {
+      return !!queue?.members?.[mainextension]
+    })
+  }, [queuesStore.queues, mainextension])
 
   const fetchStats = async () => {
     try {
@@ -311,8 +316,8 @@ export const StatisticsView: FC<StatisticsViewProps> = ({ className }): JSX.Elem
                 ))}
               {queuesStore.isLoaded &&
                 isStatsLoaded &&
-                Object.keys(queuesStore.queues).map((key, index) => {
-                  const queue = queuesStore.queues[key]
+                visibleQueues.map((queue: any, index) => {
+                  const currentQueueMember = queue?.members?.[mainextension]
                   return (
                     <div key={index}>
                       <li className='col-span-1 rounded-lg divide-y shadow divide-gray-200 bg-cardBackgroud dark:bg-cardBackgroudDark text-gray-700 dark:divide-gray-700 dark:text-gray-200'>
@@ -325,8 +330,8 @@ export const StatisticsView: FC<StatisticsViewProps> = ({ className }): JSX.Elem
                             <span>{queue.queue}</span>
                           </div>
                           <LoggedStatus
-                            loggedIn={queue.members[mainextension].loggedIn}
-                            paused={queue.members[mainextension].paused}
+                            loggedIn={currentQueueMember?.loggedIn}
+                            paused={currentQueueMember?.paused}
                           />
                         </div>
                         {/* card body */}

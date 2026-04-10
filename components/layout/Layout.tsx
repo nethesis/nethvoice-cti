@@ -1158,6 +1158,10 @@ export const Layout: FC<LayoutProps> = ({ children }) => {
     const queueMemberData = data[opMainExtension]
     store?.dispatch?.queues?.setQueueMember(queueMemberData)
     store?.dispatch?.queueManagerQueues?.setQueueMember(queueMemberData)
+
+    if (opMainExtension === mainextension && authStore.username && operatorsStore.operators) {
+      retrieveQueues(authStore.username, mainextension, operatorsStore.operators)
+    }
   })
 
   //check if the user makes a double login

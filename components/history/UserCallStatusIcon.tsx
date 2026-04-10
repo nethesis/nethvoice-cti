@@ -3,7 +3,12 @@ import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { faMissed } from '@nethesis/nethesis-solid-svg-icons'
 import { faXmark, faArrowLeft, IconDefinition } from '@fortawesome/free-solid-svg-icons'
 import { useTranslation } from 'react-i18next'
-import { CallTypes, isCallAnswered } from '../../lib/history'
+import {
+  CallTypes,
+  getAnsweredIconColorClass,
+  getAnsweredTranslationKey,
+  isCallAnswered,
+} from '../../lib/history'
 import { CustomThemedTooltip } from '../common/CustomThemedTooltip'
 
 interface UserCallStatusIconProps {
@@ -24,10 +29,10 @@ export const UserCallStatusIcon: FC<UserCallStatusIconProps> = ({ call }) => {
               <>
                 <FontAwesomeIcon
                   icon={faArrowLeft}
-                  className='tooltip-incoming-answered mr-2 -rotate-45 h-5 w-3.5 text-green-600 dark:text-green-500'
+                  className={`tooltip-incoming-answered mr-2 -rotate-45 h-5 w-3.5 ${getAnsweredIconColorClass(call.disposition)}`}
                   aria-hidden='true'
                   data-tooltip-id='tooltip-incoming-answered'
-                  data-tooltip-content={t('History.Incoming answered') || ''}
+                  data-tooltip-content={t(getAnsweredTranslationKey('Incoming', call.disposition)) || ''}
                 />
 
                 <CustomThemedTooltip id='tooltip-incoming-answered' place='left' />
@@ -53,10 +58,10 @@ export const UserCallStatusIcon: FC<UserCallStatusIconProps> = ({ call }) => {
               <>
                 <FontAwesomeIcon
                   icon={faArrowLeft}
-                  className='tooltip-outgoing-answered mr-2 h-5 w-3.5 rotate-[135deg] text-green-600 dark:text-green-500'
+                  className={`tooltip-outgoing-answered mr-2 h-5 w-3.5 rotate-[135deg] ${getAnsweredIconColorClass(call.disposition)}`}
                   aria-hidden='true'
                   data-tooltip-id='tooltip-outgoing-answered'
-                  data-tooltip-content={t('History.Outgoing answered') || ''}
+                  data-tooltip-content={t(getAnsweredTranslationKey('Outgoing', call.disposition)) || ''}
                 />
 
                 <CustomThemedTooltip id='tooltip-outgoing-answered' place='left'/>
