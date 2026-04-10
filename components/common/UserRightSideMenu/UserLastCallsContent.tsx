@@ -192,6 +192,7 @@ const LastCallItem = memo(
         fromHistory={false}
         isQueueBadgeAvailable={call.channel.includes('from-queue')}
         direction={direction}
+        lastCallsType='user'
       />
     )
 

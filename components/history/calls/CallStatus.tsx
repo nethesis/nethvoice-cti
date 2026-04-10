@@ -59,6 +59,37 @@ export const CallStatus: FC<CallStatusProps> = ({ call, callType }) => {
       ? `${t('History.Answered by')} ${answeredByLabel}`
       : t('History.Answered by another operator')
 
+  const renderAnsweredElsewhereText = (translationKey: string) => {
+    const translatedLabel = t(translationKey)
+    const match = translatedLabel.match(/^(.*?)(\belsewhere\b)(.*)$/i)
+
+    if (!match) {
+      return (
+        <span
+          className='cursor-help underline underline-offset-2'
+          data-tooltip-id={answeredElsewhereTooltipId}
+          data-tooltip-content={answeredElsewhereTooltipContent}
+        >
+          {translatedLabel}
+        </span>
+      )
+    }
+
+    return (
+      <>
+        {match[1]}
+        <span
+          className='cursor-help underline underline-offset-2'
+          data-tooltip-id={answeredElsewhereTooltipId}
+          data-tooltip-content={answeredElsewhereTooltipContent}
+        >
+          {match[2]}
+        </span>
+        {match[3]}
+      </>
+    )
+  }
+
   const renderAnsweredLabel = (direction: 'Incoming' | 'Outgoing' | 'Internal') => {
     const translationKey = getAnsweredTranslationKey(direction, call.disposition)
 
@@ -72,12 +103,8 @@ export const CallStatus: FC<CallStatusProps> = ({ call, callType }) => {
 
     return (
       <>
-        <span
-          className='text-secondaryNeutral dark:text-secondaryNeutralDark underline decoration-dotted underline-offset-2 cursor-help'
-          data-tooltip-id={answeredElsewhereTooltipId}
-          data-tooltip-content={answeredElsewhereTooltipContent}
-        >
-          {t(translationKey)}
+        <span className='text-secondaryNeutral dark:text-secondaryNeutralDark'>
+          {renderAnsweredElsewhereText(translationKey)}
         </span>
         <CustomThemedTooltip id={answeredElsewhereTooltipId} place='top' />
       </>
