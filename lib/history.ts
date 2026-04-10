@@ -275,7 +275,7 @@ export const getLastCalls = async (
       sort = 'time%20asc'
     }
 
-    const requestUrl = `${getHistoryUrl()}/api/historycall/interval/user/${username}/${dateFrom}/${dateTo}?offset=0&limit=15&sort=${sort}&removeLostCalls=undefined`
+    const requestUrl = `${getHistoryUrl()}/api/historycall/interval/user/${username}/${dateFrom}/${dateTo}?offset=0&limit=15&sort=${sort}&removeLostCalls=false`
     const { data, status } = await axios.get(requestUrl)
 
     if (status === 200) {
