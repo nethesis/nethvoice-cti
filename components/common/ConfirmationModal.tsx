@@ -37,6 +37,7 @@ export const ConfirmationModal: FC<ConfirmationModalProps> = ({
   children,
 }) => {
   const { t } = useTranslation()
+  const closeAriaLabel = String(t('Common.Close') || 'Close')
 
   return (
     <Modal show={show} focus={focus} onClose={onClose} afterLeave={afterLeave}>
@@ -48,7 +49,7 @@ export const ConfirmationModal: FC<ConfirmationModalProps> = ({
             size='small'
             iconOnly
             onClick={onClose}
-            aria-label={t('Common.Close')}
+            aria-label={closeAriaLabel}
             className='absolute right-0 top-0 !text-gray-500 hover:!text-gray-700 dark:!text-gray-400 dark:hover:!text-gray-200'
           >
             <FontAwesomeIcon icon={faXmark} className='h-5 w-5' aria-hidden='true' />

@@ -2,6 +2,7 @@
 // SPDX-License-Identifier: AGPL-3.0-or-later
 
 import React from 'react'
+import Image from 'next/image'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import {
   faPhone,
@@ -83,10 +84,12 @@ export const ExpandedVideoView: React.FC<ExpandedVideoViewProps> = ({
               <p className='text-lg'>{t('Streaming.video feed not available')}</p>
             </div>
           ) : (
-            <img
+            <Image
               src={source.url}
-              alt={source.description}
-              className='w-full h-full object-contain'
+              alt={source.description || 'Expanded video source preview'}
+              fill
+              unoptimized
+              className='object-contain'
               onError={() => onImageError(source.id)}
             />
           )}
