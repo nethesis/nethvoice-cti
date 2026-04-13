@@ -18,7 +18,6 @@ import { DrawerFooter } from '../common/DrawerFooter'
 import { useTranslation } from 'react-i18next'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import {
-  faTriangleExclamation,
   faEllipsisVertical,
   faTrash,
   faXmark,
@@ -26,7 +25,7 @@ import {
   faFileArrowUp,
 } from '@fortawesome/free-solid-svg-icons'
 import { closeSideDrawer, formatFileSize } from '../../lib/utils'
-import { TextInput, Button, Modal } from '../common'
+import { TextInput, Button, ConfirmationModal } from '../common'
 import {
   uploadAudioMsg,
   reloadAnnouncement,
@@ -393,39 +392,15 @@ export const EditAnnouncementDrawerContent = forwardRef<
       </div>
 
       {/* Delete announcement modal */}
-      <Modal
+      <ConfirmationModal
         show={showDeleteModal}
         focus={cancelButtonRef}
         onClose={() => setShowDeleteModal(false)}
-      >
-        <Modal.Content>
-          <div className='mx-auto flex h-12 w-12 flex-shrink-0 items-center justify-center rounded-full bg-red-100 sm:mx-0'>
-            <FontAwesomeIcon
-              icon={faTriangleExclamation}
-              className='h-5 w-5 text-red-600'
-              aria-hidden='true'
-            />
-          </div>
-          <div className='mt-3 text-center sm:mt-0 sm:ml-4 sm:text-left'>
-            <h3 className='text-lg font-medium leading-6 text-gray-900 dark:text-gray-200'>
-              {t('Lines.Delete announcement')}
-            </h3>
-            <div className='mt-2'>
-              <p className='text-sm text-gray-500'>
-                {t('Lines.Are you sure to delete selected announcement?')}
-              </p>
-            </div>
-          </div>
-        </Modal.Content>
-        <Modal.Actions>
-          <Button variant='danger' onClick={() => closedModalDeleteAnnouncement()}>
-            {t('Common.Delete')}
-          </Button>
-          <Button variant='ghost' onClick={() => setShowDeleteModal(false)} ref={cancelButtonRef}>
-            {t('Common.Cancel')}
-          </Button>
-        </Modal.Actions>
-      </Modal>
+        title={t('Lines.Delete announcement')}
+        description={t('Lines.Are you sure to delete selected announcement?')}
+        confirmLabel={t('Common.Delete')}
+        onConfirm={() => closedModalDeleteAnnouncement()}
+      />
     </>
   )
 })

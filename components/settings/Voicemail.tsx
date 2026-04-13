@@ -9,11 +9,10 @@ import {
   faPlus,
   faCircleCheck,
   faTrash,
-  faTriangleExclamation,
 } from '@fortawesome/free-solid-svg-icons'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { t } from 'i18next'
-import { Button, Dropdown, Modal } from '../common'
+import { Button, ConfirmationModal, Dropdown } from '../common'
 import { faRecord } from '@nethesis/nethesis-solid-svg-icons'
 import { Icon } from '@fortawesome/fontawesome-svg-core'
 import { deleteVoicemailGreetingMessage, getVoicemailGreetingMessage, recordingMessage } from '../../services/voicemail'
@@ -342,41 +341,14 @@ export const Voicemail = () => {
       </div>
 
       {/* Delete confirmation modal */}
-      <Modal
+      <ConfirmationModal
         show={deleteModal.isOpen}
         onClose={closeDeleteModal}
-      >
-        <Modal.Content>
-          <div className='mx-auto flex h-12 w-12 flex-shrink-0 items-center justify-center rounded-full sm:mx-0 bg-red-100 dark:bg-red-900'>
-            <FontAwesomeIcon
-              icon={faTriangleExclamation}
-              className='h-6 w-6 text-red-600 dark:text-red-200'
-              aria-hidden='true'
-            />
-          </div>
-          <div className='mt-3 text-center sm:mt-0 sm:ml-4 sm:text-left'>
-            <h3 className='text-lg font-medium leading-6 text-gray-900 dark:text-gray-100'>
-              {t('Settings.Delete message')}
-            </h3>
-            <div className='mt-3'>
-              <p className='text-sm text-gray-500 dark:text-gray-400'>
-                {t('Settings.Are you sure to delete selected message?')}
-              </p>
-            </div>
-          </div>
-        </Modal.Content>
-        <Modal.Actions>
-          <Button variant='danger' onClick={() => handleDeleteMessage(deleteModal.typeToDelete)}>
-            {t('Common.Delete')}
-          </Button>
-          <Button
-            variant='ghost'
-            onClick={closeDeleteModal}
-          >
-            {t('Common.Cancel')}
-          </Button>
-        </Modal.Actions>
-      </Modal>
+        title={t('Settings.Delete message')}
+        description={t('Settings.Are you sure to delete selected message?')}
+        confirmLabel={t('Common.Delete')}
+        onConfirm={() => handleDeleteMessage(deleteModal.typeToDelete)}
+      />
     </>
   )
 }
