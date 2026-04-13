@@ -27,6 +27,7 @@ interface CallDetailsProps {
   fromHistory?: boolean
   isQueueBadgeAvailable?: boolean
   direction: 'in' | 'out'
+  tooltipPlace?: 'top' | 'right' | 'bottom' | 'left'
 }
 
 export function getCallName(call: CallTypes, direction: 'in' | 'out'): string {
@@ -45,6 +46,7 @@ export const CallDetails: FC<CallDetailsProps> = ({
   fromHistory,
   isQueueBadgeAvailable,
   direction,
+  tooltipPlace = 'bottom',
 }) => {
   const authStore = useSelector((state: RootState) => state.authentication)
   const operatorsStore = useSelector((state: RootState) => state.operators)
@@ -113,6 +115,7 @@ export const CallDetails: FC<CallDetailsProps> = ({
           <CustomThemedTooltip
             id={`tooltip-${cleanString(getCallName(call, direction) || '-')}`}
             className='pi-z-20'
+            place={tooltipPlace}
           />
 
           {/* phone number */}
