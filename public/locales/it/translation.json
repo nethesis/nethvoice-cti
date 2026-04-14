@@ -465,7 +465,8 @@
     "Voicemail": "Voicemail",
     "Activate voicemail": "Attiva voicemail",
     "Cellphone": "Cellulare",
-    "Forward incoming calls to cellphone": "Inoltra le chiamate in entrata al cellulare"
+    "Forward incoming calls to cellphone": "Inoltra le chiamate in entrata al cellulare",
+    "Sign out": "Esci"
   },
   "OperatorDrawer": {
     "Book": "Prenota chiamata",

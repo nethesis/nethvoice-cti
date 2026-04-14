@@ -88,7 +88,7 @@ export const UserMenu: React.FC<UserMenuProps> = ({
 
       {/* Logout */}
       <Dropdown.Item icon={faArrowRightFromBracket} onClick={disconnectionFunction}>
-        {t('TopBar.Logout')}
+        {t('TopBar.Sign out')}
       </Dropdown.Item>
     </>
   )

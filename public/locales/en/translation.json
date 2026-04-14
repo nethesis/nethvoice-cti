@@ -485,7 +485,8 @@
     "Voicemail": "Voicemail",
     "Activate voicemail": "Activate voicemail",
     "Cellphone": "Cellphone",
-    "Forward incoming calls to cellphone": "Forward incoming calls to cellphone"
+    "Forward incoming calls to cellphone": "Forward incoming calls to cellphone",
+    "Sign out": "Sign out"
   },
   "OperatorDrawer": {
     "Book": "Book call",

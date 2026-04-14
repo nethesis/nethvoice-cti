@@ -159,6 +159,7 @@ const LastCallItem = memo(
         fromHistory={false}
         isQueueBadgeAvailable={call.channel.includes('from-queue')}
         direction={direction}
+        tooltipPlace='top'
       />
     )
 
@@ -230,7 +231,7 @@ const LastCallItem = memo(
 
               <div className='truncate text-sm text-primary dark:text-primaryDark'>
                 <div className='flex items-center'>
-                  <UserCallStatusIcon call={call} />
+                  <UserCallStatusIcon call={call} tooltipPlace='bottom' />
                   <span className='cursor-pointer hover:underline'>
                     {renderCallNumber(call.direction === 'in' ? 'in' : 'out')}
                   </span>
@@ -244,7 +245,7 @@ const LastCallItem = memo(
               >
                 {getCompactTimeAgo(call)} ({getCallDateString(call)})
               </div>
-              <CustomThemedTooltip id={`tooltip-lastcall-date-${call.uniqueid}`} place='left' />
+              <CustomThemedTooltip id={`tooltip-lastcall-date-${call.uniqueid}`} place='bottom' />
             </div>
           </div>
 

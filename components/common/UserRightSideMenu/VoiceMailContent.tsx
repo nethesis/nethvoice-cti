@@ -13,11 +13,10 @@ import {
   faPlay,
   faTrash,
   faCircleArrowDown,
-  faTriangleExclamation,
   faCircle,
   faArrowRightLong,
 } from '@fortawesome/free-solid-svg-icons'
-import { Avatar, Button, Dropdown, EmptyState, InlineNotification, Modal } from '..'
+import { Avatar, Button, ConfirmationModal, Dropdown, EmptyState, InlineNotification } from '..'
 import {
   callPhoneNumber,
   closeSideDrawer,
@@ -252,47 +251,18 @@ export const VoiceMailContent = () => {
 
   return (
     <>
-      {/* delete voicemail modal */}
-      <Modal
+      <ConfirmationModal
         show={showDeleteModal}
         focus={cancelDeleteButtonRef}
         onClose={() => setShowDeleteModal(false)}
         afterLeave={() => setVoicemailToDelete(null)}
-      >
-        <Modal.Content>
-          <div className='mx-auto flex h-12 w-12 flex-shrink-0 items-center justify-center rounded-full sm:mx-0 bg-red-100 dark:bg-red-900'>
-            <FontAwesomeIcon
-              icon={faTriangleExclamation}
-              className='h-6 w-6 text-red-600 dark:text-red-200'
-              aria-hidden='true'
-            />
-          </div>
-          <div className='mt-3 text-center sm:mt-0 sm:ml-4 sm:text-left'>
-            <h3 className='text-lg font-medium leading-6 text-gray-900 dark:text-gray-100'>
-              {t('VoiceMail.Delete voicemail')}
-            </h3>
-            <div className='mt-3'>
-              <p className='text-sm text-gray-500 dark:text-gray-400'>
-                {t('VoiceMail.voicemailDeletionMessage', {
-                  name: voicemailToDelete?.displayName || '-',
-                })}
-              </p>
-            </div>
-          </div>
-        </Modal.Content>
-        <Modal.Actions>
-          <Button variant='danger' onClick={() => prepareDeleteContact()}>
-            {t('Common.Delete')}
-          </Button>
-          <Button
-            variant='ghost'
-            onClick={() => setShowDeleteModal(false)}
-            ref={cancelDeleteButtonRef}
-          >
-            {t('Common.Cancel')}
-          </Button>
-        </Modal.Actions>
-      </Modal>
+        title={t('VoiceMail.Delete voicemail')}
+        description={t('VoiceMail.voicemailDeletionMessage', {
+          name: voicemailToDelete?.displayName || '-',
+        })}
+        confirmLabel={t('Common.Delete')}
+        onConfirm={() => prepareDeleteContact()}
+      />
       <div className='flex h-full flex-col bg-elevation0 dark:bg-elevation0Dark'>
         <div className='py-4 px-6'>
           <div className='flex items-center justify-between'>
