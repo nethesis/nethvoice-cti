@@ -7,7 +7,6 @@ import { newIslandConfig } from '../../lib/settings'
 import { useSelector } from 'react-redux'
 import { RootState } from '../../store'
 import dynamic from 'next/dynamic'
-import { getExtensionByMainExtensionAndType } from '../../services/user'
 
 // Import the module asynchronously avoiding server-side-rendering
 const PhoneIsland = dynamic(() => import('@nethesis/phone-island').then((mod) => mod.PhoneIsland), {
@@ -25,24 +24,13 @@ export function Island() {
     const loadConfig = async () => {
       // Create the configuration for the PhoneIsland
       if (auth.token && currentUser.endpoints.extension) {
-        const mainExtension =
-          currentUser.mainextension || currentUser.endpoints?.mainextension?.[0]?.id || ''
-        let resolvedWebRTCExtensionId = ''
-
-        if (mainExtension) {
-          try {
-            const resolvedExtension = await getExtensionByMainExtensionAndType(
-              mainExtension,
-              'webrtc',
-            )
-            resolvedWebRTCExtensionId = resolvedExtension?.extension || ''
-          } catch (error) {
-            console.error('Error resolving webrtc extension from mainextension:', error)
-          }
-        }
-
         const webRTCExtension =
-          currentUser.endpoints.extension.find((el: any) => el.id === resolvedWebRTCExtensionId) ||
+          currentUser.endpoints.extension.find(
+            (el: any) =>
+              el.type === 'webrtc' &&
+              currentUser.default_device?.type === 'webrtc' &&
+              el.id === currentUser.default_device?.id,
+          ) ||
           currentUser.endpoints.extension.find((el: any) => el.type === 'webrtc')
 
         if (auth.token && currentUser.username) {
