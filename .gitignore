@@ -41,3 +41,6 @@ public/config/config.development.js
 
 # vscode settings
 .vscode
+
+# AGENTS
+COPILOT.md
