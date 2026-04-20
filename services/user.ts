@@ -74,9 +74,11 @@ export const getParamUrl = async () => {
   }
 }
 
-export const getSummaryCall = async (uniqueId: string) => {
+export const getSummaryCall = async (uniqueid: string, linkedid?: string) => {
   try {
-    const res = await axios.get(`/summary/${uniqueId}`)
+    const res = await axios.get(`/summary/${uniqueid}`, {
+      params: linkedid ? { linkedid } : undefined,
+    })
     return res
   } catch (error: any) {
     if (error?.response?.status === 404 || error?.response?.status === 403) {
@@ -87,9 +89,15 @@ export const getSummaryCall = async (uniqueId: string) => {
   }
 }
 
-export const checkSummaryList = async (uniqueids: string[]) => {
+export const checkSummaryList = async (
+  lookups: Array<{ uniqueid?: string; linkedid?: string }> | string[],
+) => {
   try {
-    const res = await axios.post(`/summary/statuses`, { uniqueids })
+    const body =
+      typeof lookups[0] === 'string'
+        ? { uniqueids: lookups as string[] }
+        : { lookups: lookups as Array<{ uniqueid?: string; linkedid?: string }> }
+    const res = await axios.post(`/summary/statuses`, body)
     return res.data
   } catch (error: any) {
     const status = error?.response?.status
@@ -103,9 +111,11 @@ export const checkSummaryList = async (uniqueids: string[]) => {
   }
 }
 
-export const getTranscription = async (uniqueId: string) => {
+export const getTranscription = async (uniqueid: string, linkedid?: string) => {
   try {
-    const res = await axios.get(`/transcripts/${uniqueId}`)
+    const res = await axios.get(`/transcripts/${uniqueid}`, {
+      params: linkedid ? { linkedid } : undefined,
+    })
     return res
   } catch (error: any) {
     if (error?.response?.status === 404) {
@@ -118,18 +128,26 @@ export const getTranscription = async (uniqueId: string) => {
   }
 }
 
-export const updateSummary = async (uniqueId: string, summary: string) => {
+export const updateSummary = async (uniqueid: string, summary: string, linkedid?: string) => {
   try {
-    const res = await axios.put(`/summary/${uniqueId}`, { summary })
+    const res = await axios.put(
+      `/summary/${uniqueid}`,
+      { summary },
+      {
+        params: linkedid ? { linkedid } : undefined,
+      },
+    )
     return res.data
   } catch (error: any) {
     console.error('Error updating summary:', error)
     throw error
   }
 }
-export const deleteSummary = async (uniqueId: string) => {
+export const deleteSummary = async (uniqueid: string, linkedid?: string) => {
   try {
-    const res = await axios.delete(`/summary/${uniqueId}`)
+    const res = await axios.delete(`/summary/${uniqueid}`, {
+      params: linkedid ? { linkedid } : undefined,
+    })
     return res.data
   } catch (error: any) {
     console.error('Error deleting summary:', error)

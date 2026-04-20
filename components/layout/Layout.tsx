@@ -1397,13 +1397,13 @@ export const Layout: FC<LayoutProps> = ({ children }) => {
 
   useEffect(() => {
     return () => {
-      summaryStatusTimeoutsRef.current.forEach(timeoutId => window.clearTimeout(timeoutId))
+      summaryStatusTimeoutsRef.current.forEach((timeoutId) => window.clearTimeout(timeoutId))
       summaryStatusTimeoutsRef.current.clear()
       pendingSummaryIdsRef.current.clear()
     }
   }, [])
 
-  useEventListener('phone-island-summary-not-ready', (data: { linkedid?: string }) => {
+  useEventListener('phone-island-summary-not-ready', (data: { linkedid?: string; uniqueid?: string }) => {
     if (!data?.linkedid || !isSummaryEnabled) {
       return
     }
@@ -1437,7 +1437,7 @@ export const Layout: FC<LayoutProps> = ({ children }) => {
     const pollSummaryStatus = async (linkedid: string) => {
       try {
         const { checkSummaryList } = await import('../../services/user')
-        const response = await checkSummaryList([linkedid])
+        const response = await checkSummaryList([{ linkedid }])
         const item = Array.isArray(response?.data) ? response.data[0] : null
 
         if (!item || item?.error === 'not_found') {
@@ -1447,14 +1447,21 @@ export const Layout: FC<LayoutProps> = ({ children }) => {
 
         if (item?.has_summary === true) {
           clearPendingSummaryStatusCheck(linkedid)
-          eventDispatch('phone-island-summary-ready', { linkedid })
+          eventDispatch('phone-island-summary-ready', {
+            linkedid: linkedid,
+            uniqueid: item?.uniqueid,
+            source: 'cti-polling',
+          })
           return
         }
 
         if (item?.state === 'summarizing' && item?.has_transcription === true) {
           clearPendingSummaryStatusCheck(linkedid)
           watchedSummaryIdsRef.current.add(linkedid)
-          eventDispatch('phone-island-call-summary-notify', { linkedid })
+          eventDispatch('phone-island-call-summary-notify', {
+            linkedid: linkedid,
+            uniqueid: item?.uniqueid,
+          })
           return
         }
 
@@ -1475,107 +1482,113 @@ export const Layout: FC<LayoutProps> = ({ children }) => {
 
   useEventListener(
     'phone-island-summary-ready',
-    (data: { linkedid?: string; display_name?: string; display_number?: string }) => {
-    if (!data?.linkedid || !isSummaryEnabled) {
-      return
-    }
-
-    const timeoutId = summaryStatusTimeoutsRef.current.get(data.linkedid)
-    if (timeoutId) {
-      window.clearTimeout(timeoutId)
-      summaryStatusTimeoutsRef.current.delete(data.linkedid)
-    }
-    pendingSummaryIdsRef.current.delete(data.linkedid)
-
-    // Skip if this summary was already notified
-    if (notifiedSummaryIdsRef?.current?.has(data?.linkedid)) {
-      return
-    }
-    notifiedSummaryIdsRef?.current?.add(data?.linkedid)
-
-    const summaryMessage = getSummaryNotificationMessage(data)
-
-    // Browser notification only if page doesn't have focus and user enabled it
-    if (isSummaryNotificationEnabled && !isPageFocused && 'Notification' in window) {
-      if (Notification.permission === 'granted') {
-        const notification = new Notification(
-          t('Common.Call summary ready') || 'Call summary ready',
-          {
-            body: summaryMessage,
-            tag: `summary-${data.linkedid}`,
-          },
-        )
-
-        notification.onclick = () => {
-          window.focus()
-          dispatch.sideDrawer.update({
-            isShown: true,
-            contentType: 'callSummary',
-            config: {
-              uniqueid: data?.linkedid,
-              isSummary: true,
-            },
-          })
-          closeToast()
-          notification.close()
-        }
-      } else if (Notification.permission !== 'denied') {
-        // Request permission if not yet denied
-        Notification.requestPermission().then((permission) => {
-          if (permission === 'granted') {
-            const notification = new Notification(
-              t('Common.Call summary ready') || 'Call summary ready',
-              {
-                body: summaryMessage,
-                tag: `summary-${data.linkedid}`,
-              },
-            )
-
-            notification.onclick = () => {
-              window.focus()
-              dispatch.sideDrawer.update({
-                isShown: true,
-                contentType: 'callSummary',
-                config: {
-                  uniqueid: data?.linkedid,
-                  isSummary: true,
-                },
-              })
-              closeToast()
-              notification.close()
-            }
-          }
-        })
+    (data: {
+      linkedid?: string
+      uniqueid?: string
+      display_name?: string
+      display_number?: string
+      source?: 'check' | 'socket' | 'cti-polling'
+    }) => {
+      if (!data?.uniqueid || !data?.linkedid || !isSummaryEnabled) {
+        return
       }
-    }
 
-    openToast(
-      'success',
-      <>
-        {summaryMessage}
-        <div className='mt-4'>
-          <Button
-            variant='primary'
-            onClick={() => {
-              dispatch.sideDrawer.update({
-                isShown: true,
-                contentType: 'callSummary',
-                config: {
-                  uniqueid: data?.linkedid,
-                  isSummary: true,
+      const timeoutId = summaryStatusTimeoutsRef.current.get(data.linkedid)
+      if (timeoutId) {
+        window.clearTimeout(timeoutId)
+        summaryStatusTimeoutsRef.current.delete(data.linkedid)
+      }
+      pendingSummaryIdsRef.current.delete(data.linkedid)
+
+      if (notifiedSummaryIdsRef?.current?.has(data.uniqueid)) {
+        return
+      }
+      notifiedSummaryIdsRef?.current?.add(data.uniqueid)
+
+      const summaryMessage = getSummaryNotificationMessage(data)
+
+      if (isSummaryNotificationEnabled && !isPageFocused && 'Notification' in window) {
+        if (Notification.permission === 'granted') {
+          const notification = new Notification(
+            t('Common.Call summary ready') || 'Call summary ready',
+            {
+              body: summaryMessage,
+              tag: `summary-${data.uniqueid}`,
+            },
+          )
+
+          notification.onclick = () => {
+            window.focus()
+            dispatch.sideDrawer.update({
+              isShown: true,
+              contentType: 'callSummary',
+              config: {
+                uniqueid: data.uniqueid,
+                linkedid: data.linkedid,
+                isSummary: true,
+              },
+            })
+            closeToast()
+            notification.close()
+          }
+        } else if (Notification.permission !== 'denied') {
+          Notification.requestPermission().then((permission) => {
+            if (permission === 'granted') {
+              const notification = new Notification(
+                t('Common.Call summary ready') || 'Call summary ready',
+                {
+                  body: summaryMessage,
+                  tag: `summary-${data.uniqueid}`,
                 },
-              })
-              closeToast()
-            }}
-          >
-            {t('Common.View summary') || 'View summary'}
-          </Button>
-        </div>
-      </>,
-      t('Common.Call summary ready') || 'Call summary ready',
-      5000,
-      true,
-    )
+              )
+
+              notification.onclick = () => {
+                window.focus()
+                dispatch.sideDrawer.update({
+                  isShown: true,
+                  contentType: 'callSummary',
+                  config: {
+                    uniqueid: data.uniqueid,
+                    linkedid: data.linkedid,
+                    isSummary: true,
+                  },
+                })
+                closeToast()
+                notification.close()
+              }
+            }
+          })
+        }
+      }
+
+      openToast(
+        'success',
+        <>
+          {summaryMessage}
+          <div className='mt-4'>
+            <Button
+              variant='primary'
+              onClick={() => {
+                dispatch.sideDrawer.update({
+                  isShown: true,
+                  contentType: 'callSummary',
+                  config: {
+                    uniqueid: data.uniqueid,
+                    linkedid: data.linkedid,
+                    isSummary: true,
+                  },
+                })
+                closeToast()
+              }}
+            >
+              {t('Common.View summary') || 'View summary'}
+            </Button>
+          </div>
+        </>,
+        t('Common.Call summary ready') || 'Call summary ready',
+        5000,
+        true,
+      )
     },
   )
 

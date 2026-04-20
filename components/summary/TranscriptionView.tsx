@@ -41,9 +41,10 @@ const formatTranscriptText = (value: string) =>
 
 interface TranscriptionViewProps {
   uniqueid: string
+  linkedid?: string
 }
 
-export const TranscriptionView: FC<TranscriptionViewProps> = ({ uniqueid }) => {
+export const TranscriptionView: FC<TranscriptionViewProps> = ({ uniqueid, linkedid }) => {
   const [transcription, setTranscription] = useState('')
   const [isLoading, setIsLoading] = useState(false)
   const [error, setError] = useState('')
@@ -74,7 +75,7 @@ export const TranscriptionView: FC<TranscriptionViewProps> = ({ uniqueid }) => {
     setIsLoading(true)
     setError('')
     try {
-      const response = await getTranscription(uniqueid)
+      const response = await getTranscription(uniqueid, linkedid)
       if (response && response.data) {
         const data = response.data?.data || response.data
         if (!applyTranscriptionData(data)) {
@@ -90,13 +91,13 @@ export const TranscriptionView: FC<TranscriptionViewProps> = ({ uniqueid }) => {
     } finally {
       setIsLoading(false)
     }
-  }, [applyTranscriptionData, uniqueid])
+  }, [applyTranscriptionData, linkedid, uniqueid])
 
   useEffect(() => {
     if (uniqueid) {
       loadTranscription()
     }
-  }, [uniqueid, loadTranscription])
+  }, [uniqueid, linkedid, loadTranscription])
 
   return (
     <>
