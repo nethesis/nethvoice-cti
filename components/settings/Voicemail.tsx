@@ -138,15 +138,15 @@ export const Voicemail = () => {
   }
 
   // Show modal announcement
-  useEventListener('phone-island-recording-saved', (object) => {
-    if (object?.tempFileName) {
+  useEventListener('phone-island-recording-saved', (data) => {
+    if (data?.tempFileName) {
       dispatch.sideDrawer.update({
         isShown: true,
         contentType: 'showUploadVoicemail',
         config: {
           isRecorded: true,
-          tempFileName: object.tempFileName,
-          audioFileURL: object.audioFileURL,
+          tempFileName: data.tempFileName,
+          audioFileURL: data.audioFileURL,
           onClose: () => {
             setFirstRender(true)
           }
@@ -155,14 +155,14 @@ export const Voicemail = () => {
     }
   })
 
-  useEventListener('phone-island-physical-recording-saved', (object) => {
-    if (object?.tempFileName) {
+  useEventListener('phone-island-physical-recording-saved', (data) => {
+    if (data?.tempFileName) {
       dispatch.sideDrawer.update({
         isShown: true,
         contentType: 'showUploadVoicemail',
         config: {
           isRecorded: true,
-          recordedFilename: object.tempFileName,
+          recordedFilename: data.tempFileName,
         },
       })
       dispatch.sideDrawer.setAvoidClose(true)
