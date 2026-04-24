@@ -24,33 +24,35 @@ export const CallSource: FC<CallSourceProps> = ({
   name,
   openDrawerHistory,
 }) => {
+  const sourceNumber = call.cnum || call.src || ''
+
   // User call type
   if (callType === 'user') {
     return (
       <div
         onClick={() => {
-          openDrawerHistory(call.cnam, call.ccompany, call.cnum || call.src, callType, operators)
+          openDrawerHistory(call.cnam, call.ccompany, sourceNumber, callType, operators)
         }}
       >
         <div
           className={
             'truncate text-sm text-secondaryNeutral dark:text-secondaryNeutralDark' +
-            (call.cnum !== '' ? ' text-sm cursor-pointer hover:underline' : '')
+            (sourceNumber !== '' ? ' text-sm cursor-pointer hover:underline' : '')
           }
         >
-          {call.cnam !== '' && call.cnum !== mainextension && call.cnam !== name
+          {call.cnam !== '' && sourceNumber !== mainextension && call.cnam !== name
             ? call.cnam
             : call.ccompany !== ''
             ? call.ccompany
-            : call.cnum !== mainextension
-            ? call.cnum
+            : sourceNumber !== mainextension
+            ? sourceNumber
             : t('History.You')}
         </div>
-        {call.cnum !== '' &&
-          call.cnum !== mainextension &&
+        {sourceNumber !== '' &&
+          sourceNumber !== mainextension &&
           (call.cnam !== '' || call.ccompany !== '') && (
             <div className='truncate text-sm cursor-pointer hover:underline text-textPlaceholder dark:text-textPlaceholderDark'>
-              {call.src}
+              {sourceNumber}
             </div>
           )}
       </div>
@@ -73,15 +75,15 @@ export const CallSource: FC<CallSourceProps> = ({
     return (
       <div
         onClick={() => {
-          openDrawerHistory(call.cnam, call.ccompany, call.cnum || call.src, callType, operators)
+          openDrawerHistory(call.cnam, call.ccompany, sourceNumber, callType, operators)
         }}
       >
         <div className='truncate text-sm cursor-pointer hover:underline text-secondaryNeutral dark:text-secondaryNeutralDark'>
-          {call.cnam !== '' ? call.cnam : call.ccompany !== '' ? call.ccompany : call.cnum || '-'}
+          {call.cnam !== '' ? call.cnam : call.ccompany !== '' ? call.ccompany : sourceNumber || '-'}
         </div>
-        {call.cnum !== '' && (
+        {sourceNumber !== '' && (
           <div className='truncate text-sm cursor-pointer hover:underline text-textPlaceholder dark:text-textPlaceholderDark'>
-            {call.src}
+            {sourceNumber}
           </div>
         )}
       </div>

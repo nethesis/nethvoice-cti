@@ -92,6 +92,10 @@ export const getSummaryCall = async (uniqueid: string, linkedid?: string) => {
 export const checkSummaryList = async (
   lookups: Array<{ uniqueid?: string; linkedid?: string }> | string[],
 ) => {
+  if (!Array.isArray(lookups) || lookups.length === 0) {
+    return { code: 200, data: [], message: 'success' }
+  }
+
   try {
     const body =
       typeof lookups[0] === 'string'

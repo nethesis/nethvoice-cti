@@ -50,9 +50,10 @@ export const CallDetails: FC<CallDetailsProps> = ({
 }) => {
   const authStore = useSelector((state: RootState) => state.authentication)
   const operatorsStore = useSelector((state: RootState) => state.operators)
+  const incomingNumber = call.cnum || call.src
 
   if ((direction === 'in' && call.cnam === '') || (direction === 'out' && call.dst_cnam === '')) {
-    const phoneNumber = direction === 'in' ? call.cnum : call.dst
+    const phoneNumber = direction === 'in' ? incomingNumber : call.dst
     const operatorFound: any = getOperatorByPhoneNumber(phoneNumber, operators)
     if (operatorFound) {
       direction === 'in' ? (call.cnam = operatorFound.name) : (call.dst_cnam = operatorFound.name)
@@ -120,7 +121,7 @@ export const CallDetails: FC<CallDetailsProps> = ({
 
           {/* phone number */}
           {!hideName &&
-            ((direction === 'in' && call.cnum) || (direction === 'out' && call.dst)) && (
+            ((direction === 'in' && incomingNumber) || (direction === 'out' && call.dst)) && (
               <div
                 className={`${
                   highlightNumber
@@ -128,7 +129,7 @@ export const CallDetails: FC<CallDetailsProps> = ({
                     : 'text-gray-500 dark:text-gray-200'
                 } ${fromHistory || (!fromHistory && isQueueBadgeAvailable) ? 'truncate' : ''}`}
               >
-                {direction === 'in' ? call.src : call.dst}
+                {direction === 'in' ? incomingNumber : call.dst}
               </div>
             )}
         </>
