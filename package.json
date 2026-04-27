@@ -59,7 +59,7 @@
     "react-tailwindcss-datepicker": "^1.6.6",
     "react-tooltip": "^5.28.0",
     "slick-carousel": "^1.8.1",
-    "uuid": "^9.0.0"
+    "uuid": "^14.0.0"
   },
   "devDependencies": {
     "@babel/core": "^7.19.3",
