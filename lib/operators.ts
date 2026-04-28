@@ -434,32 +434,21 @@ export async function startListen(obj: any) {
 }
 
 export async function toggleRecord(recordingType: any, obj: any) {
-  if (recordingType === 'not_started') {
-    try {
-      const { data, status } = await axios.post('/astproxy/start_record', obj)
-      return data
-    } catch (error) {
-      handleNetworkError(error)
-      throw error
-    }
-  } else {
-    if (recordingType === 'started') {
-      try {
-        const { data, status } = await axios.post('/astproxy/mute_record', obj)
-        return data
-      } catch (error) {
-        handleNetworkError(error)
-        throw error
-      }
-    } else {
-      try {
-        const { data, status } = await axios.post('/astproxy/unmute_record', obj)
-        return data
-      } catch (error) {
-        handleNetworkError(error)
-        throw error
-      }
-    }
+  const endpoint =
+    recordingType === 'not_started'
+      ? 'start_record'
+      : recordingType === 'started'
+        ? 'stop_record'
+        : ''
+
+  if (!endpoint) return
+
+  try {
+    const { data } = await axios.post(`/astproxy/${endpoint}`, obj)
+    return data
+  } catch (error) {
+    handleNetworkError(error)
+    throw error
   }
 }
 

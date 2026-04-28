@@ -9,7 +9,6 @@ import {
   faHandPointUp,
   faArrowLeft,
   faCirclePause,
-  faMicrophoneSlash,
   faRecordVinyl,
   faCheck,
   faAngleDown,
@@ -48,6 +47,10 @@ export const ActionCall: React.FC<ActionCallProps> = ({ config }) => {
   const canShowActions =
     currentConversation?.chDest?.callerName !== profile?.name &&
     currentConversation?.chSource?.callerName !== profile?.name
+  const canControlRecording =
+    !!currentConversation &&
+    (currentConversation.recording === 'true' ||
+      currentConversation.recordingControlAvailable !== false)
 
   const getRecordingIcon = () => {
     if (!currentConversation?.recording) return faRecordVinyl
@@ -56,8 +59,6 @@ export const ActionCall: React.FC<ActionCallProps> = ({ config }) => {
         return faCirclePause
       case 'false':
         return faRecordVinyl
-      case 'mute':
-        return faMicrophoneSlash
       default:
         return faRecordVinyl
     }
@@ -197,7 +198,7 @@ export const ActionCall: React.FC<ActionCallProps> = ({ config }) => {
     },
 
     toggleRecord: async () => {
-      if (!isConversationActive() || !currentConversation?.id) return
+      if (!isConversationActive() || !currentConversation?.id || !canControlRecording) return
 
       const conversationId = currentConversation.id
       const match = conversationId?.match(/\/(\d+)-/)
@@ -213,10 +214,9 @@ export const ActionCall: React.FC<ActionCallProps> = ({ config }) => {
         case 'true':
           recordingValues = 'started'
           break
-        case 'mute':
-          recordingValues = 'muted'
-          break
       }
+
+      if (!recordingValues) return
 
       try {
         await toggleRecord(recordingValues, {
@@ -282,6 +282,7 @@ export const ActionCall: React.FC<ActionCallProps> = ({ config }) => {
         )}
 
       {profile?.profile?.macro_permissions?.presence_panel?.permissions?.ad_recording?.value &&
+        canControlRecording &&
         operators?.operators[config?.username]?.mainPresence !== 'ringing' && (
           <Dropdown.Item icon={getRecordingIcon()} onClick={actions.toggleRecord}>
             {getRecordingText()}
