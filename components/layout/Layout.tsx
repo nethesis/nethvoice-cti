@@ -1348,8 +1348,11 @@ export const Layout: FC<LayoutProps> = ({ children }) => {
   const watchedSummaryIdsRef = useRef<Set<string>>(new Set())
   const pendingSummaryIdsRef = useRef<Set<string>>(new Set())
   const summaryStatusTimeoutsRef = useRef<Map<string, number>>(new Map())
+  const summaryPollCountRef = useRef<Map<string, number>>(new Map())
   const isSummaryNotificationEnabled = userStore?.settings?.call_summary_notifications !== false
   const summaryStatusPollIntervalMs = 5000
+  // Max polls before giving up (~5 minutes at 5s interval, matching backend watch timeout)
+  const summaryMaxPollCount = 60
 
   const getSummaryNotificationContact = (data?: {
     display_name?: string
@@ -1396,10 +1399,15 @@ export const Layout: FC<LayoutProps> = ({ children }) => {
   }, [])
 
   useEffect(() => {
+    const summaryStatusTimeouts = summaryStatusTimeoutsRef.current
+    const pendingSummaryIds = pendingSummaryIdsRef.current
+    const summaryPollCount = summaryPollCountRef.current
+
     return () => {
-      summaryStatusTimeoutsRef.current.forEach((timeoutId) => window.clearTimeout(timeoutId))
-      summaryStatusTimeoutsRef.current.clear()
-      pendingSummaryIdsRef.current.clear()
+      summaryStatusTimeouts.forEach((timeoutId) => window.clearTimeout(timeoutId))
+      summaryStatusTimeouts.clear()
+      pendingSummaryIds.clear()
+      summaryPollCount.clear()
     }
   }, [])
 
@@ -1425,6 +1433,7 @@ export const Layout: FC<LayoutProps> = ({ children }) => {
         summaryStatusTimeoutsRef.current.delete(linkedid)
       }
       pendingSummaryIdsRef.current.delete(linkedid)
+      summaryPollCountRef.current.delete(linkedid)
     }
 
     const scheduleSummaryStatusCheck = (linkedid: string) => {
@@ -1435,13 +1444,22 @@ export const Layout: FC<LayoutProps> = ({ children }) => {
     }
 
     const pollSummaryStatus = async (linkedid: string) => {
+      // Enforce max poll budget to avoid polling indefinitely
+      const pollCount = (summaryPollCountRef.current.get(linkedid) || 0) + 1
+      summaryPollCountRef.current.set(linkedid, pollCount)
+      if (pollCount > summaryMaxPollCount) {
+        clearPendingSummaryStatusCheck(linkedid)
+        return
+      }
+
       try {
         const { checkSummaryList } = await import('../../services/user')
         const response = await checkSummaryList([{ linkedid }])
         const item = Array.isArray(response?.data) ? response.data[0] : null
 
+        // Transcript row may not exist yet right after the call; keep polling
         if (!item || item?.error === 'not_found') {
-          clearPendingSummaryStatusCheck(linkedid)
+          scheduleSummaryStatusCheck(linkedid)
           return
         }
 
@@ -1465,15 +1483,16 @@ export const Layout: FC<LayoutProps> = ({ children }) => {
           return
         }
 
-        if (item?.state === 'progress') {
+        // Keep polling while processing is ongoing or transcription is pending
+        if (item?.state === 'progress' || item?.state === 'summarizing') {
           scheduleSummaryStatusCheck(linkedid)
           return
         }
 
         clearPendingSummaryStatusCheck(linkedid)
-      } catch (error) {
-        console.error('Error polling summary status:', error)
-        clearPendingSummaryStatusCheck(linkedid)
+      } catch {
+        // Retry on transient errors instead of giving up immediately
+        scheduleSummaryStatusCheck(linkedid)
       }
     }
 

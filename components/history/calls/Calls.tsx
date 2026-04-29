@@ -12,7 +12,7 @@ import {
 } from '@fortawesome/free-solid-svg-icons'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { t } from 'i18next'
-import { FC, ComponentProps, useState, useMemo, useEffect, useCallback } from 'react'
+import { FC, ComponentProps, useState, useMemo, useEffect, useCallback, useRef } from 'react'
 import {
   DEFAULT_CONTENT_FILTER,
   DEFAULT_CALL_DIRECTION_FILTER,
@@ -65,6 +65,7 @@ export const Calls: FC<CallsProps> = ({ className }): JSX.Element => {
   const { profile } = useSelector((state: RootState) => state.user)
   const { name, mainextension, feature_codes } = useSelector((state: RootState) => state.user)
   const authenticationStore = useSelector((state: RootState) => state.authentication)
+  const lastCallsUpdate = useSelector((state: RootState) => state.lastCalls)
   const { username } = authenticationStore
 
   const [historyError, setHistoryError] = useState('')
@@ -84,6 +85,8 @@ export const Calls: FC<CallsProps> = ({ className }): JSX.Element => {
   const [summaryStatusMap, setSummaryStatusMap] = useState<Record<string, any>>({})
   const [isLoadingSummaryStatus, setIsLoadingSummaryStatus] = useState(false)
   const [handledSummaryLinkedId, setHandledSummaryLinkedId] = useState<string | null>(null)
+  const [historyRefreshToken, setHistoryRefreshToken] = useState(0)
+  const historyRefreshTimeoutsRef = useRef<number[]>([])
 
   const apiVoiceEnpoint = getApiVoiceEndpoint()
   const apiScheme = getApiScheme()
@@ -203,6 +206,34 @@ export const Calls: FC<CallsProps> = ({ className }): JSX.Element => {
   }, [router, handledSummaryLinkedId, openSummaryDrawerByCall, clearSummaryLinkedIdQuery])
 
   useEffect(() => {
+    return () => {
+      historyRefreshTimeoutsRef.current.forEach((timeoutId) => window.clearTimeout(timeoutId))
+      historyRefreshTimeoutsRef.current = []
+    }
+  }, [])
+
+  const scheduleHistoryRefresh = useCallback((delayMs: number) => {
+    const timeoutId = window.setTimeout(() => {
+      setHistoryRefreshToken((current) => current + 1)
+      historyRefreshTimeoutsRef.current = historyRefreshTimeoutsRef.current.filter(
+        (storedTimeoutId) => storedTimeoutId !== timeoutId,
+      )
+    }, delayMs)
+
+    historyRefreshTimeoutsRef.current.push(timeoutId)
+  }, [])
+
+  useEffect(() => {
+    if (!lastCallsUpdate.isReload) {
+      return
+    }
+
+    setHistoryLoaded(false)
+    scheduleHistoryRefresh(1500)
+    scheduleHistoryRefresh(5000)
+  }, [lastCallsUpdate.isReload, scheduleHistoryRefresh])
+
+  useEffect(() => {
     if (!dateBegin) {
       return setDateBegin(dateFrom.replace(/-/g, ''))
     } else {
@@ -272,6 +303,7 @@ export const Calls: FC<CallsProps> = ({ className }): JSX.Element => {
     sortBy,
     callDirection,
     contentFilter,
+    historyRefreshToken,
   ])
 
   // Function to load summary status for current page calls

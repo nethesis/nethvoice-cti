@@ -1,5 +1,6 @@
 import { FC } from 'react'
 import { t } from 'i18next'
+import { getEffectiveCnam } from '../../../lib/history'
 
 interface CallDestinationProps {
   call: any
@@ -26,10 +27,21 @@ export const CallDestination: FC<CallDestinationProps> = ({
 }) => {
   // User call type
   if (callType === 'user') {
+    const effectiveDstCnam = getEffectiveCnam(call.dst_cnam, call.dst)
+
+    const primaryLabel =
+      effectiveDstCnam !== '' && call.dst !== mainextension && effectiveDstCnam !== name
+        ? effectiveDstCnam
+        : call.dst_ccompany !== ''
+        ? call.dst_ccompany
+        : call.dst !== mainextension
+        ? t('Common.Unknown')
+        : t('History.You')
+
     return (
       <div
         onClick={() =>
-          openDrawerHistory(call.dst_cnam, call.dst_ccompany, call.dst, callType, operators)
+          openDrawerHistory(effectiveDstCnam, call.dst_ccompany, call.dst, callType, operators)
         }
       >
         <div
@@ -38,26 +50,19 @@ export const CallDestination: FC<CallDestinationProps> = ({
             (call.dst !== '' ? 'hover:underline cursor-pointer' : '')
           }
         >
-          {call.dst_cnam !== '' && call.dst !== mainextension && call.dst_cnam !== name
-            ? call.dst_cnam
-            : call.dst_ccompany !== ''
-            ? call.dst_ccompany
-            : call.dst !== mainextension
-            ? call.dst
-            : t('History.You')}
+          {primaryLabel}
         </div>
-        {call.dst !== '' &&
-          call.dst !== mainextension &&
-          (call.dst_cnam !== '' || call.dst_ccompany !== '') && (
-            <div className='truncate text-sm cursor-pointer hover:underline text-textPlaceholder dark:text-textPlaceholderDark'>
-              {call.dst}
-            </div>
-          )}
+        {call.dst !== '' && call.dst !== mainextension && (
+          <div className='truncate text-sm cursor-pointer hover:underline text-textPlaceholder dark:text-textPlaceholderDark'>
+            {call.dst}
+          </div>
+        )}
       </div>
     )
   } else {
     // Check if a user does not have a name and add the name of the operator
-    if (call.dst_cnam === '') {
+    const effectiveDstCnam = getEffectiveCnam(call.dst_cnam, call.dst)
+    if (effectiveDstCnam === '') {
       let foundOperator: any = Object.values(operators).find((operator: any) =>
         operator.endpoints.extension.find((device: any) => device.id === call.dst),
       )
