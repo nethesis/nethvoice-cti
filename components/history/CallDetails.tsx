@@ -2,7 +2,7 @@
 // SPDX-License-Identifier: AGPL-3.0-or-later
 
 import { FC } from 'react'
-import { CallTypes } from '../../lib/history'
+import { CallTypes, getEffectiveCnam } from '../../lib/history'
 import { getOperatorByPhoneNumber } from '../../lib/operators'
 import classNames from 'classnames'
 import {
@@ -31,9 +31,10 @@ interface CallDetailsProps {
 }
 
 export function getCallName(call: CallTypes, direction: 'in' | 'out'): string {
+  const incomingNumber = call.cnum || call.src
   return direction === 'in'
-    ? call.cnam || call.ccompany || t('Common.Unknown')
-    : call.dst_cnam || call.dst_ccompany || t('Common.Unknown')
+    ? getEffectiveCnam(call.cnam, incomingNumber) || call.ccompany || t('Common.Unknown')
+    : getEffectiveCnam(call.dst_cnam, call.dst) || call.dst_ccompany || t('Common.Unknown')
 }
 
 export const CallDetails: FC<CallDetailsProps> = ({
@@ -52,7 +53,7 @@ export const CallDetails: FC<CallDetailsProps> = ({
   const operatorsStore = useSelector((state: RootState) => state.operators)
   const incomingNumber = call.cnum || call.src
 
-  if ((direction === 'in' && call.cnam === '') || (direction === 'out' && call.dst_cnam === '')) {
+  if ((direction === 'in' && !getEffectiveCnam(call.cnam, incomingNumber)) || (direction === 'out' && !getEffectiveCnam(call.dst_cnam, call.dst))) {
     const phoneNumber = direction === 'in' ? incomingNumber : call.dst
     const operatorFound: any = getOperatorByPhoneNumber(phoneNumber, operators)
     if (operatorFound) {
@@ -65,8 +66,10 @@ export const CallDetails: FC<CallDetailsProps> = ({
     let createContactObject: any = {}
 
     if (direction === 'in') {
-      if (userInformation?.cnam || userInformation?.ccompany) {
-        updatedUserInformation.displayName = userInformation.cnam || userInformation.ccompany || '-'
+      const incomingNum = userInformation.cnum || userInformation.src
+      const effectiveCnam = getEffectiveCnam(userInformation.cnam, incomingNum)
+      if (effectiveCnam || userInformation?.ccompany) {
+        updatedUserInformation.displayName = effectiveCnam || userInformation.ccompany || '-'
         updatedUserInformation.kind = 'person'
         if (userInformation.src) updatedUserInformation.extension = userInformation.src
         openShowContactDrawer(updatedUserInformation)
@@ -75,9 +78,10 @@ export const CallDetails: FC<CallDetailsProps> = ({
         openCreateLastCallContact(createContactObject)
       }
     } else {
-      if (userInformation?.dst_cnam || userInformation?.dst_ccompany) {
+      const effectiveDstCnam = getEffectiveCnam(userInformation.dst_cnam, userInformation.dst)
+      if (effectiveDstCnam || userInformation?.dst_ccompany) {
         updatedUserInformation.displayName =
-          userInformation.dst_cnam || userInformation.dst_ccompany || '-'
+          effectiveDstCnam || userInformation.dst_ccompany || '-'
         updatedUserInformation.kind = 'person'
         if (userInformation.dst) updatedUserInformation.extension = userInformation.dst
         openShowContactDrawer(updatedUserInformation)

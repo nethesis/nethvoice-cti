@@ -352,3 +352,17 @@ export const isCallAnswered = (call?: CallDispositionLike) =>
 
 export const hasVoicemailMessage = (call?: CallVoicemailLike) =>
   call?.has_voicemail_message === true
+
+/**
+ * Returns the effective display name for a call party.
+ * Returns empty string when the name field is identical to the phone number,
+ * which happens for external calls where the system stores the caller number as CNAM.
+ */
+export function getEffectiveCnam(
+  cnam: string | undefined,
+  phoneNumber: string | undefined,
+): string {
+  const name = cnam?.trim() ?? ''
+  const number = phoneNumber?.trim() ?? ''
+  return name !== '' && name !== number ? name : ''
+}
