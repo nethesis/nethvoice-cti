@@ -12,7 +12,7 @@ import {
 } from '@fortawesome/free-solid-svg-icons'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { t } from 'i18next'
-import { FC, ComponentProps, useState, useMemo, useEffect, useCallback } from 'react'
+import { FC, ComponentProps, useState, useMemo, useEffect, useCallback, useRef } from 'react'
 import {
   DEFAULT_CONTENT_FILTER,
   DEFAULT_CALL_DIRECTION_FILTER,
@@ -65,6 +65,7 @@ export const Calls: FC<CallsProps> = ({ className }): JSX.Element => {
   const { profile } = useSelector((state: RootState) => state.user)
   const { name, mainextension, feature_codes } = useSelector((state: RootState) => state.user)
   const authenticationStore = useSelector((state: RootState) => state.authentication)
+  const lastCallsUpdate = useSelector((state: RootState) => state.lastCalls)
   const { username } = authenticationStore
 
   const [historyError, setHistoryError] = useState('')
@@ -84,6 +85,8 @@ export const Calls: FC<CallsProps> = ({ className }): JSX.Element => {
   const [summaryStatusMap, setSummaryStatusMap] = useState<Record<string, any>>({})
   const [isLoadingSummaryStatus, setIsLoadingSummaryStatus] = useState(false)
   const [handledSummaryLinkedId, setHandledSummaryLinkedId] = useState<string | null>(null)
+  const [historyRefreshToken, setHistoryRefreshToken] = useState(0)
+  const historyRefreshTimeoutsRef = useRef<number[]>([])
 
   const apiVoiceEnpoint = getApiVoiceEndpoint()
   const apiScheme = getApiScheme()
@@ -129,13 +132,21 @@ export const Calls: FC<CallsProps> = ({ className }): JSX.Element => {
     )
   }, [router])
 
-  const openSummaryDrawerByLinkedId = useCallback(
-    (linkedId: string, summaryStatus?: any) => {
+  const openSummaryDrawerByCall = useCallback(
+    (call: any, summaryStatus?: any) => {
+      const uniqueid = summaryStatus?.uniqueid ?? call?.uniqueid
+      const linkedid = call?.linkedid
+
+      if (!uniqueid || !linkedid) {
+        return
+      }
+
       dispatch.sideDrawer.update({
         isShown: true,
         contentType: 'callSummary',
         config: {
-          uniqueid: linkedId,
+          uniqueid,
+          linkedid,
           isSummary: summaryStatus?.has_summary || false,
         },
       })
@@ -165,10 +176,8 @@ export const Calls: FC<CallsProps> = ({ className }): JSX.Element => {
 
     const openSummaryFromQuery = async () => {
       try {
-        const response = await checkSummaryList([summaryLinkedId])
-        const summaryStatus = response?.data?.find(
-          (item: any) => item?.uniqueid === summaryLinkedId,
-        )
+        const response = await checkSummaryList([{ linkedid: summaryLinkedId }])
+        const summaryStatus = response?.data?.find((item: any) => item?.linkedid === summaryLinkedId)
 
         if (!isMounted) {
           return
@@ -178,7 +187,10 @@ export const Calls: FC<CallsProps> = ({ className }): JSX.Element => {
           return
         }
 
-        openSummaryDrawerByLinkedId(summaryLinkedId, summaryStatus)
+        openSummaryDrawerByCall(
+          { linkedid: summaryLinkedId, uniqueid: summaryStatus?.uniqueid },
+          summaryStatus,
+        )
         setHandledSummaryLinkedId(summaryLinkedId)
         clearSummaryLinkedIdQuery()
       } catch (error) {
@@ -191,7 +203,35 @@ export const Calls: FC<CallsProps> = ({ className }): JSX.Element => {
     return () => {
       isMounted = false
     }
-  }, [router, handledSummaryLinkedId, openSummaryDrawerByLinkedId, clearSummaryLinkedIdQuery])
+  }, [router, handledSummaryLinkedId, openSummaryDrawerByCall, clearSummaryLinkedIdQuery])
+
+  useEffect(() => {
+    return () => {
+      historyRefreshTimeoutsRef.current.forEach((timeoutId) => window.clearTimeout(timeoutId))
+      historyRefreshTimeoutsRef.current = []
+    }
+  }, [])
+
+  const scheduleHistoryRefresh = useCallback((delayMs: number) => {
+    const timeoutId = window.setTimeout(() => {
+      setHistoryRefreshToken((current) => current + 1)
+      historyRefreshTimeoutsRef.current = historyRefreshTimeoutsRef.current.filter(
+        (storedTimeoutId) => storedTimeoutId !== timeoutId,
+      )
+    }, delayMs)
+
+    historyRefreshTimeoutsRef.current.push(timeoutId)
+  }, [])
+
+  useEffect(() => {
+    if (!lastCallsUpdate.isReload) {
+      return
+    }
+
+    setHistoryLoaded(false)
+    scheduleHistoryRefresh(1500)
+    scheduleHistoryRefresh(5000)
+  }, [lastCallsUpdate.isReload, scheduleHistoryRefresh])
 
   useEffect(() => {
     if (!dateBegin) {
@@ -263,6 +303,7 @@ export const Calls: FC<CallsProps> = ({ className }): JSX.Element => {
     sortBy,
     callDirection,
     contentFilter,
+    historyRefreshToken,
   ])
 
   // Function to load summary status for current page calls
@@ -271,22 +312,27 @@ export const Calls: FC<CallsProps> = ({ className }): JSX.Element => {
       return
     }
 
-    const linkedIds = history.rows.map((call: any) => call?.linkedid).filter(Boolean)
+    const lookups = history.rows
+      .map((call: any) => ({
+        uniqueid: call?.uniqueid,
+        linkedid: call?.linkedid,
+      }))
+      .filter((lookup: any) => lookup?.uniqueid || lookup?.linkedid)
 
-    if (linkedIds.length === 0) {
+    if (lookups.length === 0) {
       return
     }
 
     try {
       setIsLoadingSummaryStatus(true)
 
-      const response = await checkSummaryList(linkedIds)
+      const response = await checkSummaryList(lookups)
 
       if (response?.data && Array.isArray(response?.data)) {
         const statusMap: Record<string, any> = {}
         response.data.forEach((item: any) => {
-          if (item?.uniqueid && !item?.error) {
-            statusMap[item?.uniqueid] = item
+          if (item?.linkedid && !item?.error) {
+            statusMap[item.linkedid] = item
           }
         })
 
@@ -307,7 +353,7 @@ export const Calls: FC<CallsProps> = ({ className }): JSX.Element => {
   }, [isHistoryLoaded, pageNum, loadSummaryStatus])
 
   // Reload summary status when phone-island-summary-ready event is received
-  useEventListener('phone-island-summary-ready', (data: { linkedid?: string }) => {
+  useEventListener('phone-island-summary-ready', () => {
     loadSummaryStatus()
   })
 
@@ -349,7 +395,7 @@ export const Calls: FC<CallsProps> = ({ className }): JSX.Element => {
   function openTranscriptionDrawer(call: any) {
     const linkedId = call?.linkedid
     const summaryStatus = summaryStatusMap?.[linkedId]
-    openSummaryDrawerByLinkedId(linkedId, summaryStatus)
+    openSummaryDrawerByCall(call, summaryStatus)
   }
 
   const downloadRecordingFileAudio = async (callIdInformation: any) => {
