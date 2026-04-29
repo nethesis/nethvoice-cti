@@ -17,7 +17,7 @@ import { Button, Avatar, EmptyState, Dropdown, Badge } from '../../common'
 import { useSelector } from 'react-redux'
 import { RootState } from '../../../store'
 import { useTranslation } from 'react-i18next'
-import { CallTypes, getLastCalls } from '../../../lib/history'
+import { CallTypes, getLastCalls, getEffectiveCnam } from '../../../lib/history'
 import { getNMonthsAgoDate } from '../../../lib/utils'
 import { formatDateLoc, getTimeDifference } from '../../../lib/dateTime'
 import type { SortTypes } from '../../../lib/history'
@@ -148,8 +148,8 @@ const LastCallItem = memo(
 
     const isIncoming = call.direction === 'in'
     const hasNoInfo = isIncoming
-      ? !(call.cnam || call.ccompany)
-      : !(call.dst_cnam || call.dst_ccompany)
+      ? !(getEffectiveCnam(call.cnam, call.cnum || call.src) || call.ccompany)
+      : !(getEffectiveCnam(call.dst_cnam, call.dst) || call.dst_ccompany)
 
     const renderCallDetails = (direction: 'in' | 'out') => (
       <CallDetails
@@ -315,9 +315,9 @@ export const UserLastCallsContent = () => {
       return callsData.map((call: CallTypes) => {
         let callName =
           call.direction === 'out'
-            ? call.dst_cnam || call.dst_ccompany
+            ? getEffectiveCnam(call.dst_cnam, call.dst) || call.dst_ccompany
             : call.direction === 'in'
-            ? call.cnam || call.ccompany
+            ? getEffectiveCnam(call.cnam, call.cnum || call.src) || call.ccompany
             : ''
 
         let operator: any = null
@@ -409,13 +409,15 @@ export const UserLastCallsContent = () => {
 
   const openLastCardUserDrawer = useCallback((userInformation: any) => {
     const isIncoming = userInformation?.direction === 'in'
-    const name = isIncoming ? userInformation?.cnam : userInformation?.dst_cnam
-    const company = isIncoming ? userInformation?.ccompany : userInformation?.dst_ccompany
+    const rawName = isIncoming ? userInformation?.cnam : userInformation?.dst_cnam
     const extension = isIncoming ? userInformation?.src : userInformation?.dst
+    const phoneNumber = isIncoming ? (userInformation?.cnum || userInformation?.src) : userInformation?.dst
+    const effectiveName = getEffectiveCnam(rawName, phoneNumber)
+    const company = isIncoming ? userInformation?.ccompany : userInformation?.dst_ccompany
 
-    if (name || company) {
+    if (effectiveName || company) {
       const contact = {
-        displayName: name || company || '-',
+        displayName: effectiveName || company || '-',
         kind: 'person',
         extension: extension,
       }
