@@ -331,8 +331,8 @@ export const Calls: FC<CallsProps> = ({ className }): JSX.Element => {
       if (response?.data && Array.isArray(response?.data)) {
         const statusMap: Record<string, any> = {}
         response.data.forEach((item: any) => {
-          if (item?.linkedid && !item?.error) {
-            statusMap[item.linkedid] = item
+          if (item?.uniqueid && !item?.error) {
+            statusMap[item.uniqueid] = item
           }
         })
 
@@ -393,8 +393,7 @@ export const Calls: FC<CallsProps> = ({ className }): JSX.Element => {
   }
 
   function openTranscriptionDrawer(call: any) {
-    const linkedId = call?.linkedid
-    const summaryStatus = summaryStatusMap?.[linkedId]
+    const summaryStatus = summaryStatusMap?.[call?.uniqueid]
     openSummaryDrawerByCall(call, summaryStatus)
   }
 
@@ -643,8 +642,7 @@ export const Calls: FC<CallsProps> = ({ className }): JSX.Element => {
     {
       header: '',
       cell: (call: any) => {
-        const linkedId = call?.linkedid
-        const summaryStatus = summaryStatusMap?.[linkedId]
+        const summaryStatus = summaryStatusMap?.[call?.uniqueid]
         const isVoicemail = hasVoicemailMessage(call)
 
         if (!summaryStatus && !isVoicemail) {
@@ -661,14 +659,14 @@ export const Calls: FC<CallsProps> = ({ className }): JSX.Element => {
                   event.stopPropagation()
                   openVoicemailInboxByMessageId(call?.voicemail_message_id)
                 }}
-                data-tooltip-id={`tooltip-voicemail-${linkedId}`}
+                data-tooltip-id={`tooltip-voicemail-${call?.uniqueid}`}
                 data-tooltip-content={t('History.Voicemail available') || ''}
               >
                 <FontAwesomeIcon
                   icon={faVoicemail}
                   className='h-4 w-4 text-iconIndigo dark:text-iconIndigoDark'
                 />
-                <CustomThemedTooltip id={`tooltip-voicemail-${linkedId}`} place='top' />
+                <CustomThemedTooltip id={`tooltip-voicemail-${call?.uniqueid}`} place='top' />
               </button>
             </div>
           )
@@ -682,14 +680,14 @@ export const Calls: FC<CallsProps> = ({ className }): JSX.Element => {
             <div className='flex justify-center'>
               <div
                 className='h-8 w-8 flex items-center justify-center'
-                data-tooltip-id={`tooltip-ai-generating-${linkedId}`}
+                data-tooltip-id={`tooltip-ai-generating-${call?.uniqueid}`}
                 data-tooltip-content={t('Common.Call summary is being generated') || ''}
               >
                 <FontAwesomeIcon
                   icon={faFileLines}
                   className='h-4 w-4 animate-pulse text-iconIndigo dark:text-iconIndigoDark'
                 />
-                <CustomThemedTooltip id={`tooltip-ai-generating-${linkedId}`} place='top' />
+                <CustomThemedTooltip id={`tooltip-ai-generating-${call?.uniqueid}`} place='top' />
               </div>
             </div>
           )
@@ -710,14 +708,14 @@ export const Calls: FC<CallsProps> = ({ className }): JSX.Element => {
                   event.stopPropagation()
                   openTranscriptionDrawer(call)
                 }}
-                data-tooltip-id={`tooltip-ai-${linkedId}`}
+                data-tooltip-id={`tooltip-ai-${call?.uniqueid}`}
                 data-tooltip-content={tooltipTitle}
               >
                 <FontAwesomeIcon
                   icon={faFileLines}
                   className='h-4 w-4 text-iconIndigo dark:text-iconIndigoDark'
                 />
-                <CustomThemedTooltip id={`tooltip-ai-${linkedId}`} place='top' />
+                <CustomThemedTooltip id={`tooltip-ai-${call?.uniqueid}`} place='top' />
               </button>
             </div>
           )
@@ -737,7 +735,7 @@ export const Calls: FC<CallsProps> = ({ className }): JSX.Element => {
           playSelectedAudioFile={playSelectedAudioFile}
           getRecordingActions={getRecordingActions}
           getCallActions={getCallActions}
-          summaryStatus={summaryStatusMap?.[call?.linkedid]}
+          summaryStatus={summaryStatusMap?.[call?.uniqueid]}
         />
       ),
       width: '20%',
