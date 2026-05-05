@@ -25,8 +25,17 @@ export const CallSource: FC<CallSourceProps> = ({
   name,
   openDrawerHistory,
 }) => {
-  const sourceNumber = call.cnum || call.src || ''
-  const effectiveCnam = getEffectiveCnam(call.cnam, sourceNumber)
+  const isIncoming = call.direction === 'in'
+  // For outgoing calls cnum is the user's own extension ("You").
+  // For incoming calls src is the actual calling party; cnum may be the transfer
+  // initiator (Asterisk preserves it across attended transfers), not the real caller.
+  const sourceNumber = isIncoming ? (call.src || call.cnum || '') : (call.cnum || call.src || '')
+  // When incoming with a transfer in play (src ≠ cnum), cnam was set from cnum
+  // (the transfer initiator) and would show the wrong person's name.
+  const effectiveCnam =
+    isIncoming && call.src && call.cnum && call.src !== call.cnum
+      ? ''
+      : getEffectiveCnam(call.cnam, sourceNumber)
 
   // User call type
   if (callType === 'user') {

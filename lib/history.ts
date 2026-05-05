@@ -37,69 +37,24 @@ export async function search(
   if (window == undefined) {
     return
   }
-  if (contentFilter !== DEFAULT_CONTENT_FILTER) {
-    try {
-      const { data } = await axios.get('/history/calls', {
-        params: {
-          callType,
-          username,
-          from,
-          to,
-          textSearch,
-          sort,
-          direction: type,
-          pageNum,
-          pageSize,
-          artifact: contentFilter,
-        },
-      })
-      return data
-    } catch (error) {
-      handleNetworkError(error)
-      throw error
-    }
-  }
-
-  let removeLostCalls: boolean = false
-  if (type === 'in') {
-    removeLostCalls = true
-  } else {
-    removeLostCalls = false
-  }
-  const offset = (pageNum - 1) * pageSize
-
-  let apiUrl = getHistoryUrl()
-  let userUrlApi = apiUrl + '/api/'
-  if (callType === 'switchboard') {
-    userUrlApi += 'histcallswitch/interval'
-  } else if (callType === 'group') {
-    userUrlApi += 'histcallsgroups/interval'
-  } else {
-    userUrlApi += 'historycall/interval/' + callType + '/' + username
-  }
-  userUrlApi += '/' + from + '/' + to
-  if (textSearch) {
-    userUrlApi += '/' + textSearch + '?offset=' + offset + '&limit=' + pageSize + '&sort=' + sort
-  } else {
-    userUrlApi += '?offset=' + offset + '&limit=' + pageSize + '&sort=' + sort
-  }
-  if (callType === 'user') {
-    if (type != 'all') {
-      userUrlApi += '&direction=' + type + '&removeLostCalls=' + removeLostCalls
-    } else {
-      userUrlApi += '&removeLostCalls=' + removeLostCalls
-    }
-  }
-  if (callType === 'switchboard' || callType === 'groups') {
-    if (type != 'all') {
-      userUrlApi += '&type=' + type + '&removeLostCalls=' + removeLostCalls
-    } else {
-      userUrlApi += '&removeLostCalls=' + removeLostCalls
-    }
-  }
-
+  // Always route through the middleware endpoint so that server-side enrichment
+  // (e.g. Local-channel routing-artifact row correction) is applied uniformly,
+  // regardless of the active content filter.
   try {
-    const { data, status } = await axios.get(userUrlApi)
+    const { data } = await axios.get('/history/calls', {
+      params: {
+        callType,
+        username,
+        from,
+        to,
+        textSearch,
+        sort,
+        direction: type,
+        pageNum,
+        pageSize,
+        artifact: contentFilter,
+      },
+    })
     return data
   } catch (error) {
     handleNetworkError(error)
