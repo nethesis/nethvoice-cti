@@ -80,6 +80,10 @@ cat >> /app/public/config/config.production.js<<EOF
   LOGIN_PEOPLE: '${LOGIN_PEOPLE:-show}',
 EOF
 
+cat >> /app/public/config/config.production.js<<EOF
+  FAVICON_URL: '${FAVICON_URL:-}',
+EOF
+
 
 cat >> /app/public/config/config.production.js<<EOF
 }

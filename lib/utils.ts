@@ -280,6 +280,15 @@ export function getHtmlFaviconElement() {
   return faviconHtmlElement
 }
 
+export function getConfiguredFaviconUrl() {
+  if (typeof window === 'undefined') {
+    return '/favicon.ico'
+  }
+
+  // @ts-ignore
+  return window.CONFIG.FAVICON_URL || '/favicon.ico'
+}
+
 export function convertToCSV(objArray: any) {
   const array = typeof objArray !== 'object' ? JSON.parse(objArray) : objArray
   let str = ''

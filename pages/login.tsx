@@ -14,6 +14,7 @@ import { useSelector } from 'react-redux'
 import { RootState } from '../store'
 import { axiosSetup } from '../config/axios'
 import {
+  getConfiguredFaviconUrl,
   getHtmlFaviconElement,
   getPeopleImageVisibilityValue,
   getProductName,
@@ -125,7 +126,7 @@ export default function Login() {
           }
         } else {
           if (linkHtmlFaviconElement) {
-            linkHtmlFaviconElement.href = 'favicon.ico'
+            linkHtmlFaviconElement.href = getConfiguredFaviconUrl()
           }
           window.document.title = productName
         }
@@ -159,7 +160,7 @@ export default function Login() {
     }
 
     if (linkHtmlFaviconElement) {
-      linkHtmlFaviconElement.href = 'favicon.ico'
+      linkHtmlFaviconElement.href = getConfiguredFaviconUrl()
     }
     window.document.title = cleanTitlePageName
   }
