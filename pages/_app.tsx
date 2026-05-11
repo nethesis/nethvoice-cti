@@ -13,7 +13,7 @@ import { useRouter } from 'next/router'
 import { RouteGuard } from '../config/router'
 import { Service } from '../config/service'
 import { checkDarkTheme } from '../lib/darkTheme'
-import { getConfiguredFaviconUrl, getProductName } from '../lib/utils'
+import { getBrandedTabTitle, getConfiguredFaviconUrl, getProductSubname } from '../lib/utils'
 import Head from 'next/head'
 import { loadI18n } from '../lib/i18n'
 import { Island } from '../components/island'
@@ -82,13 +82,13 @@ function MyApp({ Component, pageProps }: AppProps) {
     }
   }, [])
 
-  const productName = getProductName()
+  const productTabTitle = getBrandedTabTitle(getProductSubname())
 
   return (
     <>
       <div>
         <Head>
-          <title>{productName}</title>
+          <title>{productTabTitle}</title>
           <link rel='icon' href={getConfiguredFaviconUrl()} />
         </Head>
       </div>

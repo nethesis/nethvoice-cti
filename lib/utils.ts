@@ -166,7 +166,13 @@ export function getBrandName() {
     return ''
   }
   // @ts-ignore
-  return `${window.CONFIG.BRAND_NAME}`
+  const brandName = window.CONFIG.BRAND_NAME
+
+  if (brandName === undefined || brandName === null) {
+    return ''
+  }
+
+  return `${brandName}`
 }
 
 export function getProductName() {
@@ -175,6 +181,16 @@ export function getProductName() {
   }
   // @ts-ignore
   return `${window.CONFIG.PRODUCT_NAME}`
+}
+
+export function getBrandedTabTitle(productLabel: string) {
+  const brandName = getBrandName().trim()
+
+  if (!brandName || brandName === 'NethVoice') {
+    return productLabel
+  }
+
+  return `${brandName} | ${productLabel}`
 }
 
 export function getTimezone() {
