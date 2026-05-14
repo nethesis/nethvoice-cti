@@ -13,6 +13,7 @@ import { useSelector } from 'react-redux'
 import {
   closeSideDrawer,
   getBrandedTabTitle,
+  getProductName,
   getProductSubname,
   closeToast,
   customScrollbarClass,
@@ -89,7 +90,8 @@ export const Layout: FC<LayoutProps> = ({ children }) => {
   const { avoidClose } = useSelector((state: RootState) => state.sideDrawer)
   const isSummaryEnabled = userStore?.call_summary_enabled === true
 
-  const productTabTitle = getBrandedTabTitle(getProductSubname())
+  const productName = getProductName()
+  const productTabTitle = getBrandedTabTitle(getProductSubname() || 'CTI')
   // Get current page name, clean the path from / and capitalize page name
   function cleanProductNamePageTitle() {
     if (router.pathname) {

@@ -14,10 +14,11 @@ import { useSelector } from 'react-redux'
 import { RootState } from '../store'
 import { axiosSetup } from '../config/axios'
 import {
+  getBrandedTabTitle,
   getConfiguredFaviconUrl,
   getHtmlFaviconElement,
   getPeopleImageVisibilityValue,
-  getBrandedTabTitle,
+  getProductName,
   getProductSubname,
   getSavedQueryParams,
   closeToast,
@@ -443,10 +444,11 @@ export default function Login() {
     }
   }
 
-  const productSubname = getProductSubname()
-
   // Get product name to show in the tab
-  const productTabTitle = getBrandedTabTitle(productSubname)
+  const productName = getProductName()
+
+  const productSubname = getProductSubname()
+  const productTabTitle = getBrandedTabTitle(productSubname || 'CTI')
 
   const [isFirsThemeControl, setIsFirsThemeControl] = useState(true)
   const [isDarkTheme, setIsDarkTheme] = useState(false)

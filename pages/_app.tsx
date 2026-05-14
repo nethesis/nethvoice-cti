@@ -82,7 +82,7 @@ function MyApp({ Component, pageProps }: AppProps) {
     }
   }, [])
 
-  const productTabTitle = getBrandedTabTitle(getProductSubname())
+  const productTabTitle = getBrandedTabTitle(getProductSubname() || 'CTI')
 
   return (
     <>

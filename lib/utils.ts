@@ -166,13 +166,7 @@ export function getBrandName() {
     return ''
   }
   // @ts-ignore
-  const brandName = window.CONFIG.BRAND_NAME
-
-  if (brandName === undefined || brandName === null) {
-    return ''
-  }
-
-  return `${brandName}`
+  return window.CONFIG.BRAND_NAME || ''
 }
 
 export function getProductName() {
@@ -181,16 +175,6 @@ export function getProductName() {
   }
   // @ts-ignore
   return `${window.CONFIG.PRODUCT_NAME}`
-}
-
-export function getBrandedTabTitle(productLabel: string) {
-  const brandName = getBrandName().trim()
-
-  if (!brandName || brandName === 'NethVoice') {
-    return productLabel
-  }
-
-  return `${brandName} | ${productLabel}`
 }
 
 export function getTimezone() {
@@ -459,6 +443,18 @@ export function getProductSubname() {
   }
   // @ts-ignore
   return `${window.CONFIG.COMPANY_SUBNAME}`
+}
+
+export function getBrandedTabTitle(productLabel: string) {
+  const brandName = getBrandName().trim()
+  const productName = getProductName().trim()
+  const hasProductName = !!productName && productName !== 'undefined' && productName !== 'null'
+
+  if (!brandName || brandName === 'NethVoice') {
+    return hasProductName ? productName : `NethVoice ${productLabel}`
+  }
+
+  return `${brandName} | ${productLabel}`
 }
 
 export function getNethvoiceUrl() {
