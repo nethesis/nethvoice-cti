@@ -20,9 +20,15 @@ import {
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { closeSideDrawer, getTimezone, playFileAudio } from '../../lib/utils'
 import { TextInput, Button } from '../common'
-import { formatDateLoc, formatInTimeZoneLoc } from '../../lib/dateTime'
+import { formatDateLoc } from '../../lib/dateTime'
+import {
+  buildForwardingDateTime,
+  convertForwardingDateRangeToIso,
+  convertForwardingFullDayToIso,
+  normalizeForwardingPickerDate,
+} from '../../lib/lineForwardingDates'
 import { setOffHour, getAnnouncements, reloadPhoneLines } from '../../lib/lines'
-import { endOfDay, format, parse, startOfDay } from 'date-fns'
+import { format } from 'date-fns'
 import Datepicker from 'react-tailwindcss-datepicker'
 import { useTheme } from '../../theme/Context'
 import { useSelector } from 'react-redux'
@@ -181,67 +187,30 @@ export const ShowMultiplePhoneLinesDrawerContent = forwardRef<
   let timezone = getTimezone()
 
   function convertDateSpecifyFormat() {
-    const dateBeginConversion = parse(dateBeginToShow, "yyyy-MM-dd'T'HH:mm", new Date())
-
-    let dateBeginConversionUTC = formatInTimeZoneLoc(
-      new Date(dateBeginConversion),
-      "yyyy-MM-dd'T'HH:mm",
-      timezone,
-    )
-
-    const dateBeginConversionIso = new Date(dateBeginConversionUTC).toISOString()
-
-    const dateEndConversion = parse(dateEndToShow, "yyyy-MM-dd'T'HH:mm", new Date())
-
-    let dateEndConversionUTC = formatInTimeZoneLoc(
-      new Date(dateEndConversion),
-      "yyyy-MM-dd'T'HH:mm",
-      timezone,
-    )
-
-    const dateEndConversionIso = new Date(dateEndConversionUTC).toISOString()
-
-    return {
-      dateBeginToSendApi: dateBeginConversionIso,
-      dateEndToSendApi: dateEndConversionIso,
-    }
+    return convertForwardingDateRangeToIso(dateBeginToShow, dateEndToShow, timezone)
   }
 
   function convertDateOnlyDayFormat() {
-    const dateEndTest = endOfDay(new Date(dateBeginToShowNoHour))
-    const dateBeginTest = startOfDay(new Date(dateBeginToShowNoHour))
-
-    let dateBeginConversionUTC = formatInTimeZoneLoc(
-      new Date(dateBeginTest),
-      "yyyy-MM-dd'T'HH:mm",
-      timezone,
-    )
-
-    const dateBeginConversionIso = new Date(dateBeginConversionUTC).toISOString()
-
-    let dateEndConversionUTC = formatInTimeZoneLoc(
-      new Date(dateEndTest),
-      "yyyy-MM-dd'T'HH:mm",
-      timezone,
-    )
-
-    const dateEndConversionIso = new Date(dateEndConversionUTC).toISOString()
-    return {
-      dateBegin: dateBeginConversionIso,
-      dateEnd: dateEndConversionIso,
-    }
+    return convertForwardingFullDayToIso(dateBeginToShowNoHour, timezone)
   }
 
   const changeStartTimeNoHours = (startTimeNoHoursObject: any) => {
     if (startTimeNoHoursObject) {
-      const startTimeNoHours = new Date(startTimeNoHoursObject.startDate)
+      const formattedBeginDateNoHour = normalizeForwardingPickerDate(
+        startTimeNoHoursObject.startDate,
+      )
 
-      //convert the date from object to string
-      const formattedBeginDateNoHour = format(startTimeNoHours, 'yyyy-MM-dd')
+      if (!formattedBeginDateNoHour) {
+        return
+      }
 
       setDateBeginToShowNoHour(formattedBeginDateNoHour)
       //update date picker form
-      setdateBeginNoHourValue(startTimeNoHoursObject)
+      setdateBeginNoHourValue({
+        ...startTimeNoHoursObject,
+        startDate: formattedBeginDateNoHour,
+        endDate: formattedBeginDateNoHour,
+      })
     }
   }
 
@@ -260,36 +229,54 @@ export const ShowMultiplePhoneLinesDrawerContent = forwardRef<
   const changeDateBegin = (dateStartObject: any) => {
     // Check if dateStartObject is not null and has valid startDate properties
     if (dateStartObject?.startDate !== null) {
-      let startDateWithHour
-      // Check if startTimeValue is not null and not an empty string
-      if (startTimeValue != null && startTimeValue !== '') {
-        // If startTimeValue is specified, append it to the startDate
-        startDateWithHour = dateStartObject.startDate + 'T' + startTimeValue
-      } else {
-        // If startTimeValue is not specified, use '08:00' as the default hour
-        startDateWithHour = dateStartObject.startDate + 'T08:00'
+      const normalizedStartDate = normalizeForwardingPickerDate(dateStartObject.startDate)
+
+      if (!normalizedStartDate) {
+        return
       }
+
+      const startDateWithHour = buildForwardingDateTime(
+        normalizedStartDate,
+        startTimeValue,
+        '08:00',
+      )
+
+      if (!startDateWithHour) {
+        return
+      }
+
       // Update the state with the startDate including the hour
       setDateBeginToShow(startDateWithHour)
-      setDateBeginValue(dateStartObject)
+      setDateBeginValue({
+        ...dateStartObject,
+        startDate: normalizedStartDate,
+        endDate: normalizeForwardingPickerDate(dateStartObject.endDate) || normalizedStartDate,
+      })
     }
   }
 
   const changeDateEnd = (dateEndObject: any) => {
     // Check if dateEndObject is not null and has valid endDate properties
     if (dateEndObject?.endDate !== null) {
-      let endDateWithHour
-      // Check if endTimeValue is not null and not an empty string
-      if (endTimeValue != null && endTimeValue !== '') {
-        // If endTimeValue is specified, append it to the endDate
-        endDateWithHour = dateEndObject.endDate + 'T' + endTimeValue
-      } else {
-        // If endTimeValue is not specified, use '21:00' as the default hour
-        endDateWithHour = dateEndObject.endDate + 'T21:00'
+      const normalizedEndDate = normalizeForwardingPickerDate(dateEndObject.endDate)
+
+      if (!normalizedEndDate) {
+        return
       }
+
+      const endDateWithHour = buildForwardingDateTime(normalizedEndDate, endTimeValue, '21:00')
+
+      if (!endDateWithHour) {
+        return
+      }
+
       // Update the state with the endDate including the hour
       setDateEndToShow(endDateWithHour)
-      setdateEndValue(dateEndObject)
+      setdateEndValue({
+        ...dateEndObject,
+        startDate: normalizeForwardingPickerDate(dateEndObject.startDate) || normalizedEndDate,
+        endDate: normalizedEndDate,
+      })
     }
   }
 
@@ -501,30 +488,36 @@ export const ShowMultiplePhoneLinesDrawerContent = forwardRef<
     if (config) {
       // set lines store in loading
       store.dispatch.lines.setLoading(true)
-      // Begin cycle
-      for (const key in config) {
-        OffhourObject = {
-          ...OffhourObject,
-          calledIdNum: config[key]?.calledIdNum?.toString() || '',
-          callerIdNum: config[key]?.callerIdNum?.toString() || '',
-        }
-        if (OffhourObject) {
-          try {
+      try {
+        // Begin cycle
+        for (const key in config) {
+          OffhourObject = {
+            ...OffhourObject,
+            calledIdNum: config[key]?.calledIdNum?.toString() || '',
+            callerIdNum: config[key]?.callerIdNum?.toString() || '',
+          }
+          if (OffhourObject) {
             await setOffHour(OffhourObject)
-          } catch (error) {
-            setuploadOffHourError('Cannot upload announcement')
-            return
           }
         }
+        return true
+      } catch (error) {
+        setuploadOffHourError('Cannot upload announcement')
+        return false
+      } finally {
+        // At the end of the cycle, set lines store not in loading
+        store.dispatch.lines.setLoading(false)
       }
-      // At the end of the cycle, set lines store not in loading
-      store.dispatch.lines.setLoading(false)
     }
+
+    return false
   }
 
   const [missingAudiomessageAnnouncement, setMissingAudiomessageAnnouncement] = useState(false)
 
-  function saveEditPhoneLines() {
+  async function saveEditPhoneLines() {
+    let saveSucceeded = false
+
     if (isConfigurationActive) {
       let objectToSendApi = {
         action: selectedConfigurationTypology,
@@ -560,7 +553,7 @@ export const ShowMultiplePhoneLinesDrawerContent = forwardRef<
             objectToSendApi.enabled = 'always'
           }
           if (announcementSelected) {
-            setOffHourObject(objectToSendApi)
+            saveSucceeded = await setOffHourObject(objectToSendApi)
           }
           break
 
@@ -594,7 +587,7 @@ export const ShowMultiplePhoneLinesDrawerContent = forwardRef<
             objectToSendApi.enabled = 'always'
           }
           if (objectToSendApi && objectToSendApi.voicemail_id && announcementSelected !== null) {
-            setOffHourObject(objectToSendApi)
+            saveSucceeded = await setOffHourObject(objectToSendApi)
           }
 
           break
@@ -622,7 +615,7 @@ export const ShowMultiplePhoneLinesDrawerContent = forwardRef<
             objectToSendApi.enabled = 'always'
           }
           if (objectToSendApi && objectToSendApi.redirect_to) {
-            setOffHourObject(objectToSendApi)
+            saveSucceeded = await setOffHourObject(objectToSendApi)
           }
 
           break
@@ -635,9 +628,14 @@ export const ShowMultiplePhoneLinesDrawerContent = forwardRef<
         enabled: 'never',
       }
       if (turnOffPhoneLinesObj) {
-        setOffHourObject(turnOffPhoneLinesObj)
+        saveSucceeded = await setOffHourObject(turnOffPhoneLinesObj)
       }
     }
+
+    if (!saveSucceeded) {
+      return
+    }
+
     reloadPhoneLines()
     closeSideDrawer()
   }
