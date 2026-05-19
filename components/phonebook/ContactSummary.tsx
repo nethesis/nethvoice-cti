@@ -10,7 +10,7 @@ import {
   useState,
 } from 'react'
 import classNames from 'classnames'
-import { Avatar, Badge, Button, Dropdown, Modal } from '../common'
+import { Avatar, Button, Dropdown, Modal } from '../common'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { useSelector } from 'react-redux'
 import { RootState, store } from '../../store'
@@ -27,14 +27,16 @@ import {
   faFileLines,
   faTrash,
   faUser,
-  faUsers,
-  faGlobe,
+  faUserGroup,
+  faUserLock,
 } from '@fortawesome/free-solid-svg-icons'
 import {
   deleteContact,
   getContact,
   fetchContact,
   getPhonebook,
+  getContactSharingKind,
+  getContactVisibility,
   mapContact,
   openEditContactDrawer,
   openShowContactDrawer,
@@ -73,66 +75,21 @@ export const ContactSummary = forwardRef<HTMLButtonElement, ContactSummaryProps>
     const { profile } = useSelector((state: RootState) => state.user)
 
     const operatorsStore = useSelector((state: RootState) => state.operators)
+    const contactVisibility = getContactVisibility(contact)
 
-    const getSharingOptionBadges = () => {
-      if (contact?.type === 'group' && contact?.source === 'cti') {
-        if (contact?.shared_groups?.length > 0) {
-          return contact.shared_groups.map((groupName: string) => (
-            <Badge
-              key={groupName}
-              variant='enabled'
-              rounded='full'
-              size='small'
-              icon={<FontAwesomeIcon icon={faUsers} className='h-3 w-3' aria-hidden='true' />}
-              className='bg-violet-600 text-white dark:bg-violet-500 dark:text-white'
-            >
-              {groupName}
-            </Badge>
-          ))
-        }
+    const sharingIcon = (() => {
+      const sharingKind = getContactSharingKind(contact)
 
-        return [
-          <Badge
-            key='group'
-            variant='enabled'
-            rounded='full'
-            size='small'
-            icon={<FontAwesomeIcon icon={faUsers} className='h-3 w-3' aria-hidden='true' />}
-            className='bg-violet-600 text-white dark:bg-violet-500 dark:text-white'
-          >
-            {t('Phonebook.Group')}
-          </Badge>,
-        ]
+      if (sharingKind === 'private') {
+        return faUserLock
       }
 
-      if (contact?.type === 'private' && contact?.source === 'cti') {
-        return [
-          <Badge
-            key='private'
-            variant='enabled'
-            rounded='full'
-            size='small'
-            icon={<FontAwesomeIcon icon={faUser} className='h-3 w-3' aria-hidden='true' />}
-            className='bg-pink-600 text-white dark:bg-pink-500 dark:text-white'
-          >
-            {t('Phonebook.Private')}
-          </Badge>,
-        ]
+      if (sharingKind === 'group') {
+        return faUserGroup
       }
 
-      return [
-        <Badge
-          key='public'
-          variant='enabled'
-          rounded='full'
-          size='small'
-          icon={<FontAwesomeIcon icon={faGlobe} className='h-3 w-3' aria-hidden='true' />}
-          className='bg-teal-500 text-white dark:bg-teal-500 dark:text-white'
-        >
-          {t('Phonebook.Public badge')}
-        </Badge>,
-      ]
-    }
+      return null
+    })()
 
     //Get sideDrawer status from store
     const sideDrawer = useSelector((state: RootState) => state.sideDrawer)
@@ -401,21 +358,30 @@ export const ContactSummary = forwardRef<HTMLButtonElement, ContactSummaryProps>
                 className={classNames(isShownSideDrawerLink && 'cursor-pointer')}
               />
             </div>
-            <h2
-              className={classNames(
-                'text-xl font-medium text-gray-900 dark:text-gray-100',
-                isShownSideDrawerLink && 'cursor-pointer hover:underline',
+            <div className='flex items-center gap-2'>
+              <h2
+                className={classNames(
+                  'text-xl font-medium text-gray-900 dark:text-gray-100',
+                  isShownSideDrawerLink && 'cursor-pointer hover:underline',
+                )}
+                onClick={() => maybeShowSideDrawer(contact)}
+              >
+                {contact?.displayName !== '' && contact?.displayName !== ' '
+                  ? contact?.displayName
+                  : contact?.name !== '' && contact?.name !== ' '
+                  ? contact?.name
+                  : contact?.company && contact?.company !== '' && contact?.company !== ' '
+                  ? contact?.company
+                  : '-'}
+              </h2>
+              {sharingIcon && (
+                <FontAwesomeIcon
+                  icon={sharingIcon}
+                  className='h-4 w-4 text-fuchsia-500 dark:text-fuchsia-400'
+                  aria-hidden='true'
+                />
               )}
-              onClick={() => maybeShowSideDrawer(contact)}
-            >
-              {contact?.displayName !== '' && contact?.displayName !== ' '
-                ? contact?.displayName
-                : contact?.name !== '' && contact?.name !== ' '
-                ? contact?.name
-                : contact?.company && contact?.company !== '' && contact?.company !== ' '
-                ? contact?.company
-                : '-'}
-            </h2>
+            </div>
           </div>
 
           {/* contact menu */}
@@ -424,7 +390,7 @@ export const ContactSummary = forwardRef<HTMLButtonElement, ContactSummaryProps>
               (!(contact?.owner_id === auth?.username) &&
                 contact?.source === 'cti' &&
                 profile?.macro_permissions?.phonebook?.permissions?.ad_phonebook?.value &&
-                contact?.type === 'public')) && (
+                contactVisibility === 'public')) && (
               <div>
                 <Dropdown
                   items={contactMenuItems}
@@ -653,18 +619,6 @@ export const ContactSummary = forwardRef<HTMLButtonElement, ContactSummaryProps>
                 </dd>
               </div>
             ) : null}
-            {/* sharing option */}
-            <div className='pt-4 pb-8 sm:grid sm:grid-cols-3 sm:gap-4 sm:pt-5'>
-              <dt className='text-sm font-medium text-secondaryNeutral dark:text-secondaryNeutralDark leading-5'>
-                {t('Phonebook.Sharing option')}
-              </dt>
-              <dd className='mt-1 text-sm font-normal text-gray-900 dark:text-gray-100 sm:col-span-2 sm:mt-0'>
-                <div className='flex flex-wrap gap-2 text-sm'>
-                  {getSharingOptionBadges()}
-                </div>
-              </dd>
-            </div>
-
             {contact?.kind === 'person' && (
               <div>
                 {/* Avoid show company information if contact has no informations */}

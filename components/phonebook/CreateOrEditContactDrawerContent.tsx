@@ -8,7 +8,15 @@ import { DrawerHeader } from '../common/DrawerHeader'
 import { Divider } from '../common/Divider'
 import { DrawerFooter } from '../common/DrawerFooter'
 import { useState, useRef, useEffect } from 'react'
-import { createContact, editContact, reloadPhonebook, fetchContact } from '../../lib/phonebook'
+import {
+  createContact,
+  editContact,
+  reloadPhonebook,
+  fetchContact,
+  getContactSharedGroups,
+  getContactVisibility,
+  serializeSharedGroups,
+} from '../../lib/phonebook'
 import { closeSideDrawer } from '../../lib/utils'
 import { t } from 'i18next'
 import { openToast } from '../../lib/utils'
@@ -43,12 +51,12 @@ export const CreateOrEditContactDrawerContent = forwardRef<
       title: t('Phonebook.Public'),
     },
     {
-      id: 'group',
-      title: t('Phonebook.Group'),
-    },
-    {
       id: 'private',
       title: t('Phonebook.Only me'),
+    },
+    {
+      id: 'group',
+      title: t('Phonebook.Group'),
     },
   ]
 
@@ -137,8 +145,8 @@ export const CreateOrEditContactDrawerContent = forwardRef<
           setContactType('company')
         }
       }
-      setContactVisibility(config.contact.type)
-      setSelectedGroups(config.contact.shared_groups || [])
+      setContactVisibility(getContactVisibility(config.contact))
+      setSelectedGroups(getContactSharedGroups(config.contact))
       nameRef.current.value = config.contact.name || ''
       companyRef.current.value = config.contact.company || ''
 
@@ -261,8 +269,8 @@ export const CreateOrEditContactDrawerContent = forwardRef<
       privacy: contactVisibility,
       favorite: false,
       selectedPrefNum: 'extension',
-      type: contactVisibility,
-      shared_groups: contactVisibility === 'group' ? selectedGroups : [],
+      type:
+        contactVisibility === 'group' ? serializeSharedGroups(selectedGroups) : contactVisibility,
       kind: contactType,
     }
 
@@ -326,8 +334,8 @@ export const CreateOrEditContactDrawerContent = forwardRef<
       privacy: contactVisibility,
       favorite: false,
       selectedPrefNum: config?.contact?.selectedPrefNum,
-      type: contactVisibility,
-      shared_groups: contactVisibility === 'group' ? selectedGroups : [],
+      type:
+        contactVisibility === 'group' ? serializeSharedGroups(selectedGroups) : contactVisibility,
       kind: contactType,
       company: companyRef?.current?.value || null,
       extension: extensionRef?.current?.value || null,
@@ -406,7 +414,7 @@ export const CreateOrEditContactDrawerContent = forwardRef<
           </label>
           <fieldset className='mt-2'>
             <legend className='sr-only'>{t('Phonebook.Visibility')}</legend>
-            <div className='space-y-4 sm:flex sm:items-center sm:space-y-0 sm:space-x-10'>
+            <div className='space-y-3'>
               {contactVisibilityOptions.map((option) => (
                 <div key={option?.id} className='flex items-center'>
                   <input

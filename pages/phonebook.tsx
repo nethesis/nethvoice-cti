@@ -12,6 +12,7 @@ import {
   PAGE_SIZE,
   openCreateContactDrawer,
   mapPhonebookResponse,
+  getContactSharingKind,
 } from '../lib/phonebook'
 import { RootState } from '../store'
 import { useSelector } from 'react-redux'
@@ -25,9 +26,8 @@ import {
   faMobileScreenButton,
   faFilter,
   faAngleRight,
-  faUsers,
-  faUser,
-  faGlobe,
+  faUserGroup,
+  faUserLock,
 } from '@fortawesome/free-solid-svg-icons'
 import { callPhoneNumber, transferCallToExtension } from '../lib/utils'
 import { useTranslation } from 'react-i18next'
@@ -116,64 +116,18 @@ const Phonebook: NextPage = () => {
 
   const { profile } = useSelector((state: RootState) => state.user)
 
-  const getSharingOptionBadges = (contact: any) => {
-    if (contact?.type === 'group' && contact?.source === 'cti') {
-      if (contact?.shared_groups?.length > 0) {
-        return contact.shared_groups.map((groupName: string) => (
-          <Badge
-            key={groupName}
-            variant='enabled'
-            rounded='full'
-            size='small'
-            icon={<FontAwesomeIcon icon={faUsers} className='h-3 w-3' aria-hidden='true' />}
-            className='bg-violet-600 text-white dark:bg-violet-500 dark:text-white'
-          >
-            {groupName}
-          </Badge>
-        ))
-      }
+  const getSharingIcon = (contact: any) => {
+    const sharingKind = getContactSharingKind(contact)
 
-      return [
-        <Badge
-          key='group'
-          variant='enabled'
-          rounded='full'
-          size='small'
-          icon={<FontAwesomeIcon icon={faUsers} className='h-3 w-3' aria-hidden='true' />}
-          className='bg-violet-600 text-white dark:bg-violet-500 dark:text-white'
-        >
-          {t('Phonebook.Group')}
-        </Badge>,
-      ]
+    if (sharingKind === 'private') {
+      return faUserLock
     }
 
-    if (contact?.type === 'private' && contact?.source === 'cti') {
-      return [
-        <Badge
-          key='private'
-          variant='enabled'
-          rounded='full'
-          size='small'
-          icon={<FontAwesomeIcon icon={faUser} className='h-3 w-3' aria-hidden='true' />}
-          className='bg-pink-600 text-white dark:bg-pink-500 dark:text-white'
-        >
-          {t('Phonebook.Private')}
-        </Badge>,
-      ]
+    if (sharingKind === 'group') {
+      return faUserGroup
     }
 
-    return [
-      <Badge
-        key='public'
-        variant='enabled'
-        rounded='full'
-        size='small'
-        icon={<FontAwesomeIcon icon={faGlobe} className='h-3 w-3' aria-hidden='true' />}
-        className='bg-teal-500 text-white dark:bg-teal-500 dark:text-white'
-      >
-        {t('Phonebook.Public badge')}
-      </Badge>,
-    ]
+    return null
   }
 
   const columns = [
@@ -189,8 +143,15 @@ const Phonebook: NextPage = () => {
             )}
           </div>
           <div className='ml-4'>
-            <div className='font-medium text-secondaryNeutral dark:text-secondaryNeutralDark'>
+            <div className='flex items-center gap-2 font-medium text-secondaryNeutral dark:text-secondaryNeutralDark'>
               <span className='cursor-pointer hover:underline'>{contact?.displayName}</span>
+              {getSharingIcon(contact) && (
+                <FontAwesomeIcon
+                  icon={getSharingIcon(contact)!}
+                  className='h-3.5 w-3.5 text-fuchsia-500 dark:text-fuchsia-400'
+                  aria-hidden='true'
+                />
+              )}
             </div>
             {contact.extension && (
               <div className='mt-1 flex items-center text-sm text-gray-500 dark:text-gray-400'>
@@ -236,13 +197,6 @@ const Phonebook: NextPage = () => {
       ),
       className:
         'py-3.5 pl-4 pr-3 text-left text-sm font-semibold text-gray-700 dark:text-gray-100 sm:pl-6',
-    },
-    {
-      header: t('Phonebook.Sharing option'),
-      cell: (contact: any) => (
-        <div className='flex flex-wrap gap-2'>{getSharingOptionBadges(contact)}</div>
-      ),
-      className: 'px-3 py-3.5 text-left text-sm font-semibold text-gray-700 dark:text-gray-100',
     },
     {
       header: t('Phonebook.Primary phone'),

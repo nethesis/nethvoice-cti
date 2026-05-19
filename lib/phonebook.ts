@@ -9,6 +9,74 @@ import { loadPreference } from './storage'
 export const PAGE_SIZE = 10
 export const DEFAULT_CONTACT_TYPE_FILTER = 'all'
 export const DEFAULT_SORT_BY = 'name'
+const RESERVED_CONTACT_TYPES = ['private', 'public', 'speeddial']
+
+export function normalizeSharedGroups(sharedGroups: any) {
+  if (!Array.isArray(sharedGroups)) {
+    return []
+  }
+
+  return sharedGroups
+    .filter((groupName: any) => typeof groupName === 'string')
+    .map((groupName: string) => groupName.trim())
+    .filter((groupName: string, index: number, groups: string[]) => {
+      return groupName !== '' && groups.indexOf(groupName) === index
+    })
+}
+
+export function isReservedContactType(type: any) {
+  return typeof type === 'string' && RESERVED_CONTACT_TYPES.includes(type)
+}
+
+export function hasSerializedGroupType(type: any) {
+  return typeof type === 'string' && type.trim() !== '' && !isReservedContactType(type)
+}
+
+export function getContactSharedGroups(contact: any) {
+  if (hasSerializedGroupType(contact?.type)) {
+    return normalizeSharedGroups(contact.type.split(','))
+  }
+
+  if (Array.isArray(contact?.shared_groups)) {
+    return normalizeSharedGroups(contact.shared_groups)
+  }
+
+  if (typeof contact?.shared_groups === 'string' && contact.shared_groups !== '') {
+    try {
+      return normalizeSharedGroups(JSON.parse(contact.shared_groups))
+    } catch (error) {
+      return normalizeSharedGroups(contact.shared_groups.split(','))
+    }
+  }
+
+  return []
+}
+
+export function getContactVisibility(contact: any) {
+  if (contact?.type === 'group' || hasSerializedGroupType(contact?.type)) {
+    return 'group'
+  }
+
+  if (isReservedContactType(contact?.type)) {
+    return contact.type
+  }
+
+  return 'public'
+}
+
+export function getContactSharingKind(contact: any) {
+  const visibility = getContactVisibility(contact)
+
+  if (visibility === 'private' || visibility === 'group') {
+    return visibility
+  }
+
+  return null
+}
+
+export function serializeSharedGroups(sharedGroups: string[]) {
+  return normalizeSharedGroups(sharedGroups).join(',')
+}
 
 export function getPhonebookUrl() {
   if (window == undefined) {
@@ -121,22 +189,7 @@ export async function fetchContact(contactId: number, source: string) {
 }
 
 export function mapContact(contact: any) {
-  if (Array.isArray(contact?.shared_groups)) {
-    contact.shared_groups = contact.shared_groups.filter(
-      (groupName: string) => typeof groupName === 'string' && groupName !== '',
-    )
-  } else if (typeof contact?.shared_groups === 'string' && contact.shared_groups !== '') {
-    try {
-      const parsedGroups = JSON.parse(contact.shared_groups)
-      contact.shared_groups = Array.isArray(parsedGroups)
-        ? parsedGroups.filter((groupName: string) => typeof groupName === 'string' && groupName !== '')
-        : []
-    } catch (error) {
-      contact.shared_groups = []
-    }
-  } else {
-    contact.shared_groups = []
-  }
+  contact.shared_groups = getContactSharedGroups(contact)
 
   // kind & display name
   if (contact?.kind) {
