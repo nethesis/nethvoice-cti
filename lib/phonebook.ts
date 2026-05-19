@@ -121,6 +121,23 @@ export async function fetchContact(contactId: number, source: string) {
 }
 
 export function mapContact(contact: any) {
+  if (Array.isArray(contact?.shared_groups)) {
+    contact.shared_groups = contact.shared_groups.filter(
+      (groupName: string) => typeof groupName === 'string' && groupName !== '',
+    )
+  } else if (typeof contact?.shared_groups === 'string' && contact.shared_groups !== '') {
+    try {
+      const parsedGroups = JSON.parse(contact.shared_groups)
+      contact.shared_groups = Array.isArray(parsedGroups)
+        ? parsedGroups.filter((groupName: string) => typeof groupName === 'string' && groupName !== '')
+        : []
+    } catch (error) {
+      contact.shared_groups = []
+    }
+  } else {
+    contact.shared_groups = []
+  }
+
   // kind & display name
   if (contact?.kind) {
     // Use existing kind if it's already set

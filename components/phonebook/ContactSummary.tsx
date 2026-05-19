@@ -10,7 +10,7 @@ import {
   useState,
 } from 'react'
 import classNames from 'classnames'
-import { Avatar, Button, Dropdown, Modal } from '../common'
+import { Avatar, Badge, Button, Dropdown, Modal } from '../common'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { useSelector } from 'react-redux'
 import { RootState, store } from '../../store'
@@ -27,6 +27,8 @@ import {
   faFileLines,
   faTrash,
   faUser,
+  faUsers,
+  faGlobe,
 } from '@fortawesome/free-solid-svg-icons'
 import {
   deleteContact,
@@ -71,6 +73,66 @@ export const ContactSummary = forwardRef<HTMLButtonElement, ContactSummaryProps>
     const { profile } = useSelector((state: RootState) => state.user)
 
     const operatorsStore = useSelector((state: RootState) => state.operators)
+
+    const getSharingOptionBadges = () => {
+      if (contact?.type === 'group' && contact?.source === 'cti') {
+        if (contact?.shared_groups?.length > 0) {
+          return contact.shared_groups.map((groupName: string) => (
+            <Badge
+              key={groupName}
+              variant='enabled'
+              rounded='full'
+              size='small'
+              icon={<FontAwesomeIcon icon={faUsers} className='h-3 w-3' aria-hidden='true' />}
+              className='bg-violet-600 text-white dark:bg-violet-500 dark:text-white'
+            >
+              {groupName}
+            </Badge>
+          ))
+        }
+
+        return [
+          <Badge
+            key='group'
+            variant='enabled'
+            rounded='full'
+            size='small'
+            icon={<FontAwesomeIcon icon={faUsers} className='h-3 w-3' aria-hidden='true' />}
+            className='bg-violet-600 text-white dark:bg-violet-500 dark:text-white'
+          >
+            {t('Phonebook.Group')}
+          </Badge>,
+        ]
+      }
+
+      if (contact?.type === 'private' && contact?.source === 'cti') {
+        return [
+          <Badge
+            key='private'
+            variant='enabled'
+            rounded='full'
+            size='small'
+            icon={<FontAwesomeIcon icon={faUser} className='h-3 w-3' aria-hidden='true' />}
+            className='bg-pink-600 text-white dark:bg-pink-500 dark:text-white'
+          >
+            {t('Phonebook.Private')}
+          </Badge>,
+        ]
+      }
+
+      return [
+        <Badge
+          key='public'
+          variant='enabled'
+          rounded='full'
+          size='small'
+          icon={<FontAwesomeIcon icon={faGlobe} className='h-3 w-3' aria-hidden='true' />}
+          className='bg-teal-500 text-white dark:bg-teal-500 dark:text-white'
+        >
+          {t('Phonebook.Public badge')}
+        </Badge>,
+      ]
+    }
 
     //Get sideDrawer status from store
     const sideDrawer = useSelector((state: RootState) => state.sideDrawer)
@@ -591,24 +653,14 @@ export const ContactSummary = forwardRef<HTMLButtonElement, ContactSummaryProps>
                 </dd>
               </div>
             ) : null}
-            {/* visibility */}
+            {/* sharing option */}
             <div className='pt-4 pb-8 sm:grid sm:grid-cols-3 sm:gap-4 sm:pt-5'>
               <dt className='text-sm font-medium text-secondaryNeutral dark:text-secondaryNeutralDark leading-5'>
-                {' '}
-                {t('Phonebook.Visibility')}
+                {t('Phonebook.Sharing option')}
               </dt>
               <dd className='mt-1 text-sm font-normal text-gray-900 dark:text-gray-100 sm:col-span-2 sm:mt-0'>
-                <div className='flex items-center text-sm'>
-                  <FontAwesomeIcon
-                    icon={faEye}
-                    className='mr-2 h-4 w-4 flex-shrink-0 text-iconTertiaryNeutral dark:text-iconTertiaryNeutralDark'
-                    aria-hidden='true'
-                  />
-                  <span className='truncate'>
-                    {contact?.type === 'private' && contact?.source === 'cti'
-                      ? `${t('Phonebook.Only me')}`
-                      : `${t('Phonebook.Public')}`}
-                  </span>
+                <div className='flex flex-wrap gap-2 text-sm'>
+                  {getSharingOptionBadges()}
                 </div>
               </dd>
             </div>

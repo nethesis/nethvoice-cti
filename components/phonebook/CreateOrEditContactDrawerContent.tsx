@@ -3,7 +3,7 @@
 
 import { ComponentPropsWithRef, forwardRef } from 'react'
 import classNames from 'classnames'
-import { TextInput, InlineNotification } from '../common'
+import { TextInput, InlineNotification, Badge } from '../common'
 import { DrawerHeader } from '../common/DrawerHeader'
 import { Divider } from '../common/Divider'
 import { DrawerFooter } from '../common/DrawerFooter'
@@ -12,6 +12,11 @@ import { createContact, editContact, reloadPhonebook, fetchContact } from '../..
 import { closeSideDrawer } from '../../lib/utils'
 import { t } from 'i18next'
 import { openToast } from '../../lib/utils'
+import { useSelector } from 'react-redux'
+import { RootState, store } from '../../store'
+import { getUserGroups, retrieveGroups } from '../../lib/operators'
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
+import { faCheck, faChevronDown, faUsers } from '@fortawesome/free-solid-svg-icons'
 
 export interface CreateOrEditContactDrawerContentProps extends ComponentPropsWithRef<'div'> {
   config: any
@@ -38,6 +43,10 @@ export const CreateOrEditContactDrawerContent = forwardRef<
       title: t('Phonebook.Public'),
     },
     {
+      id: 'group',
+      title: t('Phonebook.Group'),
+    },
+    {
       id: 'private',
       title: t('Phonebook.Only me'),
     },
@@ -53,6 +62,29 @@ export const CreateOrEditContactDrawerContent = forwardRef<
     setContactVisibility(e.target.id)
   }
 
+  const operatorsStore = useSelector((state: RootState) => state.operators)
+  const { username } = useSelector((state: RootState) => state.user)
+  const allowedGroupsIds = store.select.user.allowedOperatorGroupsIds(store.getState())
+  const presencePanelPermissions = store.select.user.presencePanelPermissions(store.getState())
+  const availableGroups = getUserGroups(
+    allowedGroupsIds,
+    operatorsStore?.groups || {},
+    presencePanelPermissions?.['all_groups']?.value,
+    username,
+  )
+  const [selectedGroups, setSelectedGroups] = useState<string[]>([])
+  const [sharedGroupsError, setSharedGroupsError] = useState('')
+  const [isSharedGroupsDropdownOpen, setIsSharedGroupsDropdownOpen] = useState(false)
+  const sharedGroupsDropdownRef = useRef() as React.MutableRefObject<HTMLDivElement>
+
+  const toggleSharedGroup = (groupName: string) => {
+    setSelectedGroups((currentGroups) =>
+      currentGroups.includes(groupName)
+        ? currentGroups.filter((currentGroup) => currentGroup !== groupName)
+        : [...currentGroups, groupName],
+    )
+  }
+
   const nameRef = useRef() as React.MutableRefObject<HTMLInputElement>
   const companyRef = useRef() as React.MutableRefObject<HTMLInputElement>
   const extensionRef = useRef() as React.MutableRefObject<HTMLInputElement>
@@ -61,6 +93,33 @@ export const CreateOrEditContactDrawerContent = forwardRef<
   const emailRef = useRef() as React.MutableRefObject<HTMLInputElement>
   const notesRef = useRef() as React.MutableRefObject<HTMLInputElement>
   const [firstRender, setFirstRender] = useState(true)
+
+  useEffect(() => {
+    if (!operatorsStore?.isGroupsLoaded) {
+      retrieveGroups()
+    }
+  }, [operatorsStore?.isGroupsLoaded])
+
+  useEffect(() => {
+    if (!isSharedGroupsDropdownOpen) {
+      return
+    }
+
+    const handleClickOutside = (event: MouseEvent) => {
+      if (
+        sharedGroupsDropdownRef.current &&
+        !sharedGroupsDropdownRef.current.contains(event.target as Node)
+      ) {
+        setIsSharedGroupsDropdownOpen(false)
+      }
+    }
+
+    document.addEventListener('mousedown', handleClickOutside)
+
+    return () => {
+      document.removeEventListener('mousedown', handleClickOutside)
+    }
+  }, [isSharedGroupsDropdownOpen])
 
   useEffect(() => {
     if (firstRender) {
@@ -79,6 +138,7 @@ export const CreateOrEditContactDrawerContent = forwardRef<
         }
       }
       setContactVisibility(config.contact.type)
+      setSelectedGroups(config.contact.shared_groups || [])
       nameRef.current.value = config.contact.name || ''
       companyRef.current.value = config.contact.company || ''
 
@@ -115,6 +175,7 @@ export const CreateOrEditContactDrawerContent = forwardRef<
     } else if (config?.isCreateContactUserLastCalls) {
       setContactType('person')
       setContactVisibility('public')
+      setSelectedGroups([])
 
       nameRef.current.value = ''
       companyRef.current.value = ''
@@ -127,6 +188,7 @@ export const CreateOrEditContactDrawerContent = forwardRef<
       // creating contact
       setContactType('person')
       setContactVisibility('public')
+      setSelectedGroups([])
       nameRef.current.value = ''
       companyRef.current.value = ''
       extensionRef.current.value = ''
@@ -152,6 +214,7 @@ export const CreateOrEditContactDrawerContent = forwardRef<
     setCompanyError('')
     setCreateContactError('')
     setEditContactError('')
+    setSharedGroupsError('')
 
     let isValidationOk = true
 
@@ -178,6 +241,12 @@ export const CreateOrEditContactDrawerContent = forwardRef<
         isValidationOk = false
       }
     }
+
+    if (contactVisibility === 'group' && selectedGroups.length === 0) {
+      setSharedGroupsError('Required')
+      isValidationOk = false
+    }
+
     return isValidationOk
   }
 
@@ -193,6 +262,7 @@ export const CreateOrEditContactDrawerContent = forwardRef<
       favorite: false,
       selectedPrefNum: 'extension',
       type: contactVisibility,
+      shared_groups: contactVisibility === 'group' ? selectedGroups : [],
       kind: contactType,
     }
 
@@ -257,6 +327,7 @@ export const CreateOrEditContactDrawerContent = forwardRef<
       favorite: false,
       selectedPrefNum: config?.contact?.selectedPrefNum,
       type: contactVisibility,
+      shared_groups: contactVisibility === 'group' ? selectedGroups : [],
       kind: contactType,
       company: companyRef?.current?.value || null,
       extension: extensionRef?.current?.value || null,
@@ -357,6 +428,92 @@ export const CreateOrEditContactDrawerContent = forwardRef<
             </div>
           </fieldset>
         </div>
+        {/* shared groups */}
+        {contactVisibility === 'group' && (
+          <div className='mb-6'>
+            <label className='text-sm font-medium text-gray-700 dark:text-gray-200'>
+              {t('Phonebook.Shared with groups')}
+            </label>
+            <div className='mt-2' ref={sharedGroupsDropdownRef}>
+              <button
+                type='button'
+                className='flex w-full items-center justify-between rounded-md border border-gray-300 bg-bgInput px-3 py-2 text-left text-sm text-gray-500 shadow-sm transition hover:border-primaryLight focus:border-primaryLight focus:outline-none focus:ring-1 focus:ring-primaryLight dark:border-gray-600 dark:bg-bgInputDark dark:text-gray-300 dark:hover:border-primaryDark dark:focus:border-primaryDark dark:focus:ring-primaryDark'
+                onClick={() => setIsSharedGroupsDropdownOpen((open) => !open)}
+              >
+                <span>{t('Phonebook.Choose one or more groups')}</span>
+                <FontAwesomeIcon
+                  icon={faChevronDown}
+                  className={classNames(
+                    'h-4 w-4 transition-transform',
+                    isSharedGroupsDropdownOpen && 'rotate-180',
+                  )}
+                  aria-hidden='true'
+                />
+              </button>
+              {isSharedGroupsDropdownOpen && (
+                <div className='absolute z-20 mt-2 max-h-64 w-[calc(100%-2.5rem)] overflow-auto rounded-md border border-gray-200 bg-white py-2 shadow-lg dark:border-gray-700 dark:bg-gray-900'>
+                  {availableGroups.length > 0 ? (
+                    availableGroups.map((groupName) => {
+                      const isSelected = selectedGroups.includes(groupName)
+
+                      return (
+                        <button
+                          key={groupName}
+                          type='button'
+                          className='flex w-full items-center gap-3 px-4 py-2 text-left text-sm text-gray-700 transition hover:bg-gray-100 dark:text-gray-200 dark:hover:bg-gray-800'
+                          onClick={() => toggleSharedGroup(groupName)}
+                        >
+                          <span className='inline-flex h-4 w-4 items-center justify-center text-emerald-500'>
+                            {isSelected && (
+                              <FontAwesomeIcon icon={faCheck} className='h-3.5 w-3.5' aria-hidden='true' />
+                            )}
+                          </span>
+                          <FontAwesomeIcon
+                            icon={faUsers}
+                            className='h-3.5 w-3.5 text-gray-400 dark:text-gray-500'
+                            aria-hidden='true'
+                          />
+                          <span className='truncate'>{groupName}</span>
+                        </button>
+                      )
+                    })
+                  ) : (
+                    <p className='px-4 py-2 text-sm text-gray-500 dark:text-gray-400'>
+                      {t('Phonebook.No groups available')}
+                    </p>
+                  )}
+                </div>
+              )}
+            </div>
+            {selectedGroups.length > 0 && (
+              <div className='mt-3'>
+                <p className='mb-2 text-xs font-medium uppercase tracking-wide text-gray-500 dark:text-gray-400'>
+                  {t('Phonebook.Selected')}
+                </p>
+                <div className='flex flex-wrap gap-2'>
+                  {selectedGroups.map((groupName) => (
+                    <Badge
+                      key={groupName}
+                      variant='enabled'
+                      rounded='full'
+                      size='small'
+                      className='bg-emerald-500 text-white dark:bg-emerald-500 dark:text-white'
+                      onRemove={() => toggleSharedGroup(groupName)}
+                      removeLabel={`${t('Common.Delete')} ${groupName}`}
+                    >
+                      {groupName}
+                    </Badge>
+                  ))}
+                </div>
+              </div>
+            )}
+            {sharedGroupsError && (
+              <p className='mt-2 text-sm text-rose-600 dark:text-rose-400'>
+                {t('Phonebook.Select at least one group')}
+              </p>
+            )}
+          </div>
+        )}
         {/* contact type */}
         <div className='mb-6'>
           <label className='text-sm font-medium text-gray-700 dark:text-gray-200'>
