@@ -377,7 +377,7 @@ export const ContactSummary = forwardRef<HTMLButtonElement, ContactSummaryProps>
               {sharingIcon && (
                 <FontAwesomeIcon
                   icon={sharingIcon}
-                  className='h-4 w-4 text-fuchsia-500 dark:text-fuchsia-400'
+                  className='h-4 w-4 text-iconIndigo dark:text-iconIndigoDark'
                   aria-hidden='true'
                 />
               )}

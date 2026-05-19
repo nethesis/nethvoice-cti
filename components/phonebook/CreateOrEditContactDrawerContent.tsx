@@ -24,7 +24,8 @@ import { useSelector } from 'react-redux'
 import { RootState, store } from '../../store'
 import { getUserGroups, retrieveGroups } from '../../lib/operators'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
-import { faCheck, faChevronDown, faUsers } from '@fortawesome/free-solid-svg-icons'
+import { faCheck, faChevronDown, faUsers, faCircleInfo } from '@fortawesome/free-solid-svg-icons'
+import { CustomThemedTooltip } from '../common/CustomThemedTooltip'
 
 export interface CreateOrEditContactDrawerContentProps extends ComponentPropsWithRef<'div'> {
   config: any
@@ -387,9 +388,15 @@ export const CreateOrEditContactDrawerContent = forwardRef<
   }
 
   const showToastCreationContact = () => {
+    const contactName = contactType === 'person' && nameRef?.current?.value 
+      ? nameRef.current.value 
+      : companyRef?.current?.value || t('Phonebook.Contact')
+    
+    const message = t('Phonebook.Contact added to phonebook', { name: contactName })
+    
     openToast(
       'success',
-      `${t('Phonebook.Contact creation message')}`,
+      message,
       `${t('Phonebook.Contact created')}`,
     )
   }
@@ -409,9 +416,18 @@ export const CreateOrEditContactDrawerContent = forwardRef<
         <Divider />
         {/* contact visibility */}
         <div className='mb-6'>
-          <label className='text-sm font-medium text-gray-700 dark:text-gray-200'>
-            {t('Phonebook.Visibility')}
-          </label>
+          <div className='flex items-center'>
+            <label className='text-sm font-medium leading-5 text-secondaryNeutral dark:text-secondaryNeutralDark'>
+              {t('Phonebook.Visibility')}
+            </label>
+            <FontAwesomeIcon
+              icon={faCircleInfo}
+              className='ml-2 h-4 w-4 text-iconTooltip dark:text-iconTooltipDark cursor-help'
+              data-tooltip-id='visibility-info-tooltip'
+              data-tooltip-content={t('Phonebook.Visibility info')}
+            />
+            <CustomThemedTooltip id='visibility-info-tooltip' place='right' />
+          </div>
           <fieldset className='mt-2'>
             <legend className='sr-only'>{t('Phonebook.Visibility')}</legend>
             <div className='space-y-3'>
@@ -440,7 +456,7 @@ export const CreateOrEditContactDrawerContent = forwardRef<
         {contactVisibility === 'group' && (
           <div className='mb-6'>
             <label className='text-sm font-medium text-gray-700 dark:text-gray-200'>
-              {t('Phonebook.Shared with groups')}
+              {t('Phonebook.Groups')}
             </label>
             <div className='mt-2' ref={sharedGroupsDropdownRef}>
               <button
@@ -468,17 +484,17 @@ export const CreateOrEditContactDrawerContent = forwardRef<
                         <button
                           key={groupName}
                           type='button'
-                          className='flex w-full items-center gap-3 px-4 py-2 text-left text-sm text-gray-700 transition hover:bg-gray-100 dark:text-gray-200 dark:hover:bg-gray-800'
+                          className='flex w-full items-center gap-3 px-4 py-2 text-left text-sm text-secondaryNeutral transition hover:bg-gray-100 dark:text-secondaryNeutralDark dark:hover:bg-gray-800'
                           onClick={() => toggleSharedGroup(groupName)}
                         >
-                          <span className='inline-flex h-4 w-4 items-center justify-center text-emerald-500'>
+                          <span className='inline-flex h-4 w-4 items-center justify-center text-iconPrimary dark:text-primaryDark'>
                             {isSelected && (
                               <FontAwesomeIcon icon={faCheck} className='h-3.5 w-3.5' aria-hidden='true' />
                             )}
                           </span>
                           <FontAwesomeIcon
                             icon={faUsers}
-                            className='h-3.5 w-3.5 text-gray-400 dark:text-gray-500'
+                            className='h-3.5 w-3.5 text-iconSecondaryNeutral dark:text-iconSecondaryNeutralDark'
                             aria-hidden='true'
                           />
                           <span className='truncate'>{groupName}</span>
@@ -495,17 +511,16 @@ export const CreateOrEditContactDrawerContent = forwardRef<
             </div>
             {selectedGroups.length > 0 && (
               <div className='mt-3'>
-                <p className='mb-2 text-xs font-medium uppercase tracking-wide text-gray-500 dark:text-gray-400'>
-                  {t('Phonebook.Selected')}
-                </p>
-                <div className='flex flex-wrap gap-2'>
+                <div className='flex flex-wrap items-center gap-2'>
+                  <p className='text-sm font-medium leading-5 text-secondaryNeutral dark:text-secondaryNeutralDark'>
+                    {t('Phonebook.Selected')}
+                  </p>
                   {selectedGroups.map((groupName) => (
                     <Badge
                       key={groupName}
                       variant='enabled'
                       rounded='full'
                       size='small'
-                      className='bg-emerald-500 text-white dark:bg-emerald-500 dark:text-white'
                       onRemove={() => toggleSharedGroup(groupName)}
                       removeLabel={`${t('Common.Delete')} ${groupName}`}
                     >
@@ -524,9 +539,18 @@ export const CreateOrEditContactDrawerContent = forwardRef<
         )}
         {/* contact type */}
         <div className='mb-6'>
-          <label className='text-sm font-medium text-gray-700 dark:text-gray-200'>
-            {t('Phonebook.Type')}
-          </label>
+          <div className='flex items-center'>
+            <label className='text-sm font-medium text-secondaryNeutral dark:text-secondaryNeutralDark'>
+              {t('Phonebook.Type')}
+            </label>
+            <FontAwesomeIcon
+              icon={faCircleInfo}
+              className='ml-2 h-4 w-4 text-iconTooltip dark:text-iconTooltipDark cursor-help'
+              data-tooltip-id='type-info-tooltip'
+              data-tooltip-content={t('Phonebook.Type info')}
+            />
+            <CustomThemedTooltip id='type-info-tooltip' place='right' />
+          </div>
           <fieldset className='mt-2'>
             <legend className='sr-only'>{t('Phonebook.Type')}</legend>
             <div className='space-y-4 sm:flex sm:items-center sm:space-y-0 sm:space-x-10'>
@@ -542,7 +566,7 @@ export const CreateOrEditContactDrawerContent = forwardRef<
                   />
                   <label
                     htmlFor={option?.id}
-                    className='ml-3 block text-sm font-medium text-gray-700 dark:text-gray-200'
+                    className='ml-3 block text-sm font-medium text-secondaryNeutral dark:text-secondaryNeutralDark'
                   >
                     {option?.title}
                   </label>

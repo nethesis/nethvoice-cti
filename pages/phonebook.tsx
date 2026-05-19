@@ -148,7 +148,7 @@ const Phonebook: NextPage = () => {
               {getSharingIcon(contact) && (
                 <FontAwesomeIcon
                   icon={getSharingIcon(contact)!}
-                  className='h-3.5 w-3.5 text-fuchsia-500 dark:text-fuchsia-400'
+                  className='h-3.5 w-3.5 text-iconIndigo dark:text-iconIndigoDark'
                   aria-hidden='true'
                 />
               )}

@@ -287,7 +287,7 @@ const theme = {
     },
     enabled: {
       badge: {
-        base: 'bg-emerald-200 text-emerald-900 dark:bg-emerald-800 dark:text-emerald-100',
+        base: 'bg-emerald-100 text-emerald-800 dark:bg-emerald-700 dark:text-emerald-50',
       },
       avatar: {
         dot: 'bg-surfacePresenceOnline dark:bg-surfacePresenceOnlineDark',
