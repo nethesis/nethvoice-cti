@@ -290,6 +290,11 @@ const theme = {
         base: 'bg-surfaceBadgeBlueNethLink text-textBadgeBlueNethLink dark:bg-surfaceBadgeBlueNethLinkDark dark:text-textBadgeBlueNethLinkDark',
       },
     },
+    indigoNethLink: {
+      badge: {
+        base: 'bg-surfaceBadgeIndigoNethLink text-textBadgeIndigoNethLink dark:bg-surfaceBadgeIndigoNethLinkDark dark:text-textBadgeIndigoNethLinkDark',
+      },
+    },
     enabled: {
       badge: {
         base: 'bg-emerald-100 text-emerald-800 dark:bg-emerald-700 dark:text-emerald-50',

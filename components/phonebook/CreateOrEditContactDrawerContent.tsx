@@ -388,17 +388,14 @@ export const CreateOrEditContactDrawerContent = forwardRef<
   }
 
   const showToastCreationContact = () => {
-    const contactName = contactType === 'person' && nameRef?.current?.value 
-      ? nameRef.current.value 
-      : companyRef?.current?.value || t('Phonebook.Contact')
-    
+    const contactName =
+      contactType === 'person' && nameRef?.current?.value
+        ? nameRef.current.value
+        : companyRef?.current?.value || t('Phonebook.Contact')
+
     const message = t('Phonebook.Contact added to phonebook', { name: contactName })
-    
-    openToast(
-      'success',
-      message,
-      `${t('Phonebook.Contact created')}`,
-    )
+
+    openToast('success', message, `${t('Phonebook.Contact created')}`)
   }
 
   return (
@@ -489,7 +486,11 @@ export const CreateOrEditContactDrawerContent = forwardRef<
                         >
                           <span className='inline-flex h-4 w-4 items-center justify-center text-iconPrimary dark:text-primaryDark'>
                             {isSelected && (
-                              <FontAwesomeIcon icon={faCheck} className='h-3.5 w-3.5' aria-hidden='true' />
+                              <FontAwesomeIcon
+                                icon={faCheck}
+                                className='h-3.5 w-3.5'
+                                aria-hidden='true'
+                              />
                             )}
                           </span>
                           <FontAwesomeIcon
@@ -539,18 +540,9 @@ export const CreateOrEditContactDrawerContent = forwardRef<
         )}
         {/* contact type */}
         <div className='mb-6'>
-          <div className='flex items-center'>
-            <label className='text-sm font-medium text-secondaryNeutral dark:text-secondaryNeutralDark'>
-              {t('Phonebook.Type')}
-            </label>
-            <FontAwesomeIcon
-              icon={faCircleInfo}
-              className='ml-2 h-4 w-4 text-iconTooltip dark:text-iconTooltipDark cursor-help'
-              data-tooltip-id='type-info-tooltip'
-              data-tooltip-content={t('Phonebook.Type info')}
-            />
-            <CustomThemedTooltip id='type-info-tooltip' place='right' />
-          </div>
+          <label className='text-sm font-medium text-secondaryNeutral dark:text-secondaryNeutralDark'>
+            {t('Phonebook.Type')}
+          </label>
           <fieldset className='mt-2'>
             <legend className='sr-only'>{t('Phonebook.Type')}</legend>
             <div className='space-y-4 sm:flex sm:items-center sm:space-y-0 sm:space-x-10'>

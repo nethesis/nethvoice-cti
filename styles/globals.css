@@ -192,6 +192,10 @@
   --color-text-badge-blue-nethlink: #1E40AF;
   --color-text-badge-blue-nethlink-dark: #DBEAFE;
 
+  /* textBadgeIndigoNethLink */
+  --color-text-badge-indigo-nethlink: #3730A3;
+  --color-text-badge-indigo-nethlink-dark: #E0E7FF;
+
   /* textBadgeEmerald */
   --color-text-badge-emerald: #065F46;
   --color-text-badge-emerald-dark: #ECFDF5;
@@ -282,6 +286,10 @@
   /* surfaceBadgeBlueNethLink */
   --color-surface-badge-blue-nethlink: #DBEAFE;
   --color-surface-badge-blue-nethlink-dark: #1D4ED8;
+
+  /* surfaceBadgeIndigoNethLink */
+  --color-surface-badge-indigo-nethlink: #E0E7FF;
+  --color-surface-badge-indigo-nethlink-dark: #4338CA;
 
   /* surfaceBadgeEmerald */
   --color-surface-badge-emerald: #D1FAE5;

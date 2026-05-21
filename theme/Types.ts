@@ -14,5 +14,6 @@ export type StatusTypes =
   | 'offline'
   | 'category'
   | 'blueNethLink'
+  | 'indigoNethLink'
   | 'enabled'
   | 'disabled'

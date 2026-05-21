@@ -17,15 +17,11 @@ import { RootState, store } from '../../store'
 import { callPhoneNumber, closeSideDrawer, transferCallToExtension } from '../../lib/utils'
 import { startOfDay, subDays } from 'date-fns'
 import {
+  faArrowRight,
   faEllipsisVertical,
   faPen,
-  faPhone,
-  faSuitcase,
   faTriangleExclamation,
-  faEnvelope,
-  faFileLines,
   faTrash,
-  faUser,
   faUserGroup,
   faUserLock,
 } from '@fortawesome/free-solid-svg-icons'
@@ -403,14 +399,14 @@ export const ContactSummary = forwardRef<HTMLButtonElement, ContactSummaryProps>
                 </dt>
                 <dd className='mt-2 sm:col-span-2 sm:mt-0'>
                   {contactVisibility === 'private' ? (
-                    <div className='flex items-center gap-2 text-sm text-gray-900 dark:text-gray-100'>
-                      <FontAwesomeIcon
+                    <Badge variant='indigoNethLink' rounded='full' size='small'>
+                        <FontAwesomeIcon
                         icon={faUserLock}
-                        className='h-4 w-4 text-iconIndigo dark:text-iconIndigoDark'
+                        className='h-4 w-4 mr-2'
                         aria-hidden='true'
                       />
-                      <span>{t('Phonebook.Private')}</span>
-                    </div>
+                      {t('Phonebook.Private')}
+                    </Badge>
                   ) : (
                     <div className='flex flex-wrap items-center gap-2'>
                       {sharedGroups.map((groupName: string) => (
@@ -436,12 +432,7 @@ export const ContactSummary = forwardRef<HTMLButtonElement, ContactSummaryProps>
                   {t('Phonebook.Company')}
                 </dt>
                 <dd className='mt-1 text-sm text-gray-900 dark:text-gray-100 sm:col-span-2 sm:mt-0'>
-                  <div className='flex items-center text-sm'>
-                    <FontAwesomeIcon
-                      icon={faSuitcase}
-                      className='mr-2 h-4 w-4 flex-shrink-0 text-iconTertiaryNeutral dark:text-iconTertiaryNeutralDark'
-                      aria-hidden='true'
-                    />
+                  <div className='text-sm'>
                     <span>{contact?.company}</span>
                   </div>
                 </dd>
@@ -454,12 +445,7 @@ export const ContactSummary = forwardRef<HTMLButtonElement, ContactSummaryProps>
                   {t('Phonebook.Extension')}
                 </dt>
                 <dd className='mt-1 text-sm text-gray-900 dark:text-gray-100 sm:col-span-2 sm:mt-0'>
-                  <div className='flex items-center text-sm font-normal text-primaryActive dark:text-primaryActiveDark'>
-                    <FontAwesomeIcon
-                      icon={faPhone}
-                      className='mr-2 h-4 w-4 flex-shrink-0 text-iconTertiaryNeutral dark:text-iconTertiaryNeutralDark'
-                      aria-hidden='true'
-                    />
+                  <div className='flex items-center gap-2 text-sm font-normal text-primaryActive dark:text-primaryActiveDark'>
                     <span
                       className='truncate cursor-pointer hover:underline'
                       onClick={() =>
@@ -483,12 +469,7 @@ export const ContactSummary = forwardRef<HTMLButtonElement, ContactSummaryProps>
                   {t('Phonebook.Work phone')}
                 </dt>
                 <dd className='mt-1 text-sm text-gray-900 dark:text-gray-100 sm:col-span-2 sm:mt-0'>
-                  <div className='flex items-center text-sm text-primary dark:text-primaryDark'>
-                    <FontAwesomeIcon
-                      icon={faPhone}
-                      className='mr-2 h-4 w-4 flex-shrink-0 text-iconTertiaryNeutral dark:text-iconTertiaryNeutralDark'
-                      aria-hidden='true'
-                    />
+                  <div className='flex items-center gap-2 text-sm text-primary dark:text-primaryDark'>
                     <span
                       className='truncate cursor-pointer hover:underline'
                       onClick={() =>
@@ -512,12 +493,7 @@ export const ContactSummary = forwardRef<HTMLButtonElement, ContactSummaryProps>
                   {t('Phonebook.Mobile phone')}
                 </dt>
                 <dd className='mt-1 text-sm text-gray-900 dark:text-gray-100 sm:col-span-2 sm:mt-0'>
-                  <div className='flex items-center text-sm text-primary dark:text-primaryDark'>
-                    <FontAwesomeIcon
-                      icon={faPhone}
-                      className='mr-2 h-4 w-4 flex-shrink-0 text-iconTertiaryNeutral dark:text-iconTertiaryNeutralDark'
-                      aria-hidden='true'
-                    />
+                  <div className='flex items-center gap-2 text-sm text-primary dark:text-primaryDark'>
                     <span
                       className='truncate cursor-pointer hover:underline'
                       onClick={() =>
@@ -541,12 +517,7 @@ export const ContactSummary = forwardRef<HTMLButtonElement, ContactSummaryProps>
                   {t('Phonebook.Home phone')}
                 </dt>
                 <dd className='mt-1 text-sm text-gray-900 dark:text-gray-100 sm:col-span-2 sm:mt-0'>
-                  <div className='flex items-center text-sm text-primary dark:text-primaryDark'>
-                    <FontAwesomeIcon
-                      icon={faPhone}
-                      className='mr-2 h-4 w-4 flex-shrink-0 ttext-iconTertiaryNeutral dark:text-iconTertiaryNeutralDark'
-                      aria-hidden='true'
-                    />
+                  <div className='flex items-center gap-2 text-sm text-primary dark:text-primaryDark'>
                     <span
                       className='truncate cursor-pointer hover:underline'
                       onClick={() =>
@@ -570,12 +541,7 @@ export const ContactSummary = forwardRef<HTMLButtonElement, ContactSummaryProps>
                   {t('Phonebook.Email')}
                 </dt>
                 <dd className='mt-1 text-sm text-gray-900 dark:text-gray-100 sm:col-span-2 sm:mt-0'>
-                  <div className='flex items-center text-sm'>
-                    <FontAwesomeIcon
-                      icon={faEnvelope}
-                      className='mr-2 h-4 w-4 flex-shrink-0 text-iconTertiaryNeutral dark:text-iconTertiaryNeutralDark'
-                      aria-hidden='true'
-                    />
+                  <div className='flex items-center gap-2 text-sm'>
                     <a
                       target='_blank'
                       rel='noreferrer'
@@ -597,12 +563,7 @@ export const ContactSummary = forwardRef<HTMLButtonElement, ContactSummaryProps>
                   {t('Phonebook.Notes')}
                 </dt>
                 <dd className='mt-1 text-sm text-gray-900 dark:text-gray-100 sm:col-span-2 sm:mt-0'>
-                  <div className='flex items-center text-sm'>
-                    <FontAwesomeIcon
-                      icon={faFileLines}
-                      className='mr-2 h-4 w-4 flex-shrink-0 text-iconTertiaryNeutral dark:text-iconTertiaryNeutralDark'
-                      aria-hidden='true'
-                    />
+                  <div className='text-sm'>
                     <div>{contact?.notes}</div>
                   </div>
                 </dd>
@@ -622,11 +583,6 @@ export const ContactSummary = forwardRef<HTMLButtonElement, ContactSummaryProps>
                         className='flex items-center justify-between pb-3 pr-4 text-sm'
                       >
                         <div className='flex w-0 flex-1 items-center'>
-                          <FontAwesomeIcon
-                            icon={faUser}
-                            className='mr-2 h-4 w-4 flex-shrink-0 text-iconTertiaryNeutral dark:text-iconTertiaryNeutralDark'
-                            aria-hidden='true'
-                          />
                           <span
                             className='w-0 flex-1 truncate text-primary dark:text-primaryDark cursor-pointer'
                             onClick={() => fetchContact(contact?.id, contact?.source)}
@@ -648,8 +604,9 @@ export const ContactSummary = forwardRef<HTMLButtonElement, ContactSummaryProps>
               {showCustomerCardButton && (
                 <div className={showCompanyInformation ? 'mt-6 flex' : 'flex'}>
                   <Button size='small' variant='white' onClick={() => goToCCardCompany(contact)}>
-                    <span className='text-sm font-medium leading-5'>
-                      {t('CustomerCards.Open customer card')}
+                    <span className='inline-flex items-center gap-3 text-sm font-medium leading-5'>
+                      <span>{t('CustomerCards.Go to customer card')}</span>
+                      <FontAwesomeIcon icon={faArrowRight} className='h-4 w-4' aria-hidden='true' />
                     </span>
                   </Button>
                 </div>
