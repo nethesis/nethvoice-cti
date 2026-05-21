@@ -53,7 +53,7 @@ export const CreateOrEditContactDrawerContent = forwardRef<
     },
     {
       id: 'private',
-      title: t('Phonebook.Only me'),
+      title: t('Phonebook.Private'),
     },
     {
       id: 'group',

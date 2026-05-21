@@ -10,7 +10,7 @@ import {
   useState,
 } from 'react'
 import classNames from 'classnames'
-import { Avatar, Button, Dropdown, Modal } from '../common'
+import { Avatar, Button, Dropdown, Modal, Badge } from '../common'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { useSelector } from 'react-redux'
 import { RootState, store } from '../../store'
@@ -22,7 +22,6 @@ import {
   faPhone,
   faSuitcase,
   faTriangleExclamation,
-  faEye,
   faEnvelope,
   faFileLines,
   faTrash,
@@ -37,6 +36,7 @@ import {
   getPhonebook,
   getContactSharingKind,
   getContactVisibility,
+  getContactSharedGroups,
   mapContact,
   openEditContactDrawer,
   openShowContactDrawer,
@@ -76,6 +76,11 @@ export const ContactSummary = forwardRef<HTMLButtonElement, ContactSummaryProps>
 
     const operatorsStore = useSelector((state: RootState) => state.operators)
     const contactVisibility = getContactVisibility(contact)
+    const sharedGroups = getContactSharedGroups(contact)
+    const showCustomerCardButton =
+      !!profile?.macro_permissions?.customer_card?.value &&
+      !!(contact?.workphone || contact?.homephone || contact?.cellphone)
+    const showLastCalls = !!profile?.macro_permissions?.cdr?.permissions?.ad_cdr?.value
 
     const sharingIcon = (() => {
       const sharingKind = getContactSharingKind(contact)
@@ -142,7 +147,7 @@ export const ContactSummary = forwardRef<HTMLButtonElement, ContactSummaryProps>
     const router = useRouter()
 
     function goToCCardCompany(companyExtension: any) {
-      let phoneNumber : string = ''
+      let phoneNumber: string = ''
       // companyExtension.kind doesn't exist set person to default
       let contactType = companyExtension?.kind || 'person'
 
@@ -180,6 +185,8 @@ export const ContactSummary = forwardRef<HTMLButtonElement, ContactSummaryProps>
     }
 
     const [companyInformation, setCompanyInformation] = useState<any>([])
+    const showCompanyInformation =
+      !!companyInformation?.company || !!companyInformation?.workcity || !!companyInformation?.notes
 
     const getCompanyContactLabel = (companyContact: any) => {
       const label =
@@ -268,8 +275,7 @@ export const ContactSummary = forwardRef<HTMLButtonElement, ContactSummaryProps>
 
     const companyInformationData = () => {
       return (
-        <div className='pb-8'>
-          <div className='border-gray-600 dark:border-gray-100 bg-gray-100 dark:bg-gray-800 rounded-md py-4 sm:px-5 flex-col'>
+        <div className='rounded-md border-gray-600 bg-gray-100 px-5 py-4 dark:border-gray-100 dark:bg-gray-800'>
             {/* Company name  */}
             <h3 className='flex text-sm font-medium leading-5 text-gray-900 dark:text-gray-50'>
               {t('CustomerCards.Business name')}
@@ -294,7 +300,6 @@ export const ContactSummary = forwardRef<HTMLButtonElement, ContactSummaryProps>
               {companyInformation?.notes || '-'}
             </span>
           </div>
-        </div>
       )
     }
 
@@ -350,37 +355,39 @@ export const ContactSummary = forwardRef<HTMLButtonElement, ContactSummaryProps>
           className={classNames('flex min-w-0 items-center justify-between', className)}
           {...props}
         >
-          <div className='flex items-center'>
-            <div className='flex-shrink-0 mr-4'>
+          <div className='flex min-w-0 items-center'>
+            <div className='mr-4 flex-shrink-0'>
               <Avatar
                 placeholderType={contact?.kind}
                 onClick={() => maybeShowSideDrawer(contact)}
                 className={classNames(isShownSideDrawerLink && 'cursor-pointer')}
               />
             </div>
-            <div className='flex items-center gap-2'>
-              <h2
-                className={classNames(
-                  'text-xl font-medium text-gray-900 dark:text-gray-100',
-                  isShownSideDrawerLink && 'cursor-pointer hover:underline',
+            <div className='min-w-0'>
+              <div className='flex items-center gap-2'>
+                <h2
+                  className={classNames(
+                    'truncate text-xl font-medium text-gray-900 dark:text-gray-100',
+                    isShownSideDrawerLink && 'cursor-pointer hover:underline',
+                  )}
+                  onClick={() => maybeShowSideDrawer(contact)}
+                >
+                  {contact?.displayName !== '' && contact?.displayName !== ' '
+                    ? contact?.displayName
+                    : contact?.name !== '' && contact?.name !== ' '
+                    ? contact?.name
+                    : contact?.company && contact?.company !== '' && contact?.company !== ' '
+                    ? contact?.company
+                    : '-'}
+                </h2>
+                {sharingIcon && (
+                  <FontAwesomeIcon
+                    icon={sharingIcon}
+                    className='h-3.5 w-3.5 shrink-0 text-iconIndigo dark:text-iconIndigoDark'
+                    aria-hidden='true'
+                  />
                 )}
-                onClick={() => maybeShowSideDrawer(contact)}
-              >
-                {contact?.displayName !== '' && contact?.displayName !== ' '
-                  ? contact?.displayName
-                  : contact?.name !== '' && contact?.name !== ' '
-                  ? contact?.name
-                  : contact?.company && contact?.company !== '' && contact?.company !== ' '
-                  ? contact?.company
-                  : '-'}
-              </h2>
-              {sharingIcon && (
-                <FontAwesomeIcon
-                  icon={sharingIcon}
-                  className='h-4 w-4 text-iconIndigo dark:text-iconIndigoDark'
-                  aria-hidden='true'
-                />
-              )}
+              </div>
             </div>
           </div>
 
@@ -406,11 +413,46 @@ export const ContactSummary = forwardRef<HTMLButtonElement, ContactSummaryProps>
               </div>
             )}
         </div>
-        <div className='mt-5 pb-5'>
-          <dl>
+        <div className='mt-6 pb-5'>
+          <dl className='space-y-6'>
+            {/* visibility */}
+            {(contactVisibility === 'private' ||
+              (contactVisibility === 'group' && sharedGroups.length > 0)) && (
+              <div className='sm:grid sm:grid-cols-3 sm:gap-4'>
+                <dt className='text-sm font-medium leading-5 text-secondaryNeutral dark:text-secondaryNeutralDark'>
+                  {t('Phonebook.Visibility')}
+                </dt>
+                <dd className='mt-2 sm:col-span-2 sm:mt-0'>
+                  {contactVisibility === 'private' ? (
+                    <div className='flex items-center gap-2 text-sm text-gray-900 dark:text-gray-100'>
+                      <FontAwesomeIcon
+                        icon={faUserLock}
+                        className='h-4 w-4 text-iconIndigo dark:text-iconIndigoDark'
+                        aria-hidden='true'
+                      />
+                      <span>{t('Phonebook.Private')}</span>
+                    </div>
+                  ) : (
+                    <div className='flex flex-wrap items-center gap-2'>
+                      {sharedGroups.map((groupName: string) => (
+                        <Badge
+                          key={groupName}
+                          variant='blueNethLink'
+                          rounded='full'
+                          size='small'
+                          icon={<FontAwesomeIcon icon={faUserGroup} className='h-3.5 w-3.5' />}
+                        >
+                          {groupName}
+                        </Badge>
+                      ))}
+                    </div>
+                  )}
+                </dd>
+              </div>
+            )}
             {/* company */}
             {contact.kind == 'person' && contact?.company && (
-              <div className='pb-4 sm:grid sm:grid-cols-3 sm:gap-4'>
+              <div className='sm:grid sm:grid-cols-3 sm:gap-4'>
                 <dt className='text-sm font-medium text-secondaryNeutral dark:text-secondaryNeutralDark leading-5'>
                   {t('Phonebook.Company')}
                 </dt>
@@ -428,7 +470,7 @@ export const ContactSummary = forwardRef<HTMLButtonElement, ContactSummaryProps>
             )}
             {/* extension */}
             {contact?.extension && (
-              <div className='py-4 sm:grid sm:grid-cols-3 sm:gap-4 sm:py-5'>
+              <div className='sm:grid sm:grid-cols-3 sm:gap-4'>
                 <dt className='flex items-center text-sm font-medium text-secondaryNeutral dark:text-secondaryNeutralDark leading-5'>
                   {t('Phonebook.Extension')}
                 </dt>
@@ -457,7 +499,7 @@ export const ContactSummary = forwardRef<HTMLButtonElement, ContactSummaryProps>
             )}
             {/* work phone */}
             {contact.workphone && (
-              <div className='py-4 sm:grid sm:grid-cols-3 sm:gap-4 sm:py-5'>
+              <div className='sm:grid sm:grid-cols-3 sm:gap-4'>
                 <dt className='flex items-center text-sm font-medium text-secondaryNeutral dark:text-secondaryNeutralDark leading-5'>
                   {t('Phonebook.Work phone')}
                 </dt>
@@ -486,7 +528,7 @@ export const ContactSummary = forwardRef<HTMLButtonElement, ContactSummaryProps>
             )}
             {/* mobile phone */}
             {contact.cellphone && (
-              <div className='py-4 sm:grid sm:grid-cols-3 sm:gap-4 sm:py-5'>
+              <div className='sm:grid sm:grid-cols-3 sm:gap-4'>
                 <dt className='flex items-center text-sm font-medium text-secondaryNeutral dark:text-secondaryNeutralDark leading-5'>
                   {t('Phonebook.Mobile phone')}
                 </dt>
@@ -515,7 +557,7 @@ export const ContactSummary = forwardRef<HTMLButtonElement, ContactSummaryProps>
             )}
             {/* home phone */}
             {contact.homephone && (
-              <div className='py-4 sm:grid sm:grid-cols-3 sm:gap-4 sm:py-5'>
+              <div className='sm:grid sm:grid-cols-3 sm:gap-4'>
                 <dt className='flex items-center text-sm font-medium text-secondaryNeutral dark:text-secondaryNeutralDark leading-5'>
                   {t('Phonebook.Home phone')}
                 </dt>
@@ -544,7 +586,7 @@ export const ContactSummary = forwardRef<HTMLButtonElement, ContactSummaryProps>
             )}
             {/* work email */}
             {contact.workemail && (
-              <div className='py-4 sm:grid sm:grid-cols-3 sm:gap-4 sm:py-5'>
+              <div className='sm:grid sm:grid-cols-3 sm:gap-4'>
                 <dt className='text-sm font-medium text-secondaryNeutral dark:text-secondaryNeutralDark leading-5'>
                   {t('Phonebook.Email')}
                 </dt>
@@ -571,7 +613,7 @@ export const ContactSummary = forwardRef<HTMLButtonElement, ContactSummaryProps>
             )}
             {/* notes */}
             {contact?.notes && (
-              <div className='py-4 sm:grid sm:grid-cols-3 sm:gap-4 sm:py-5'>
+              <div className='sm:grid sm:grid-cols-3 sm:gap-4'>
                 <dt className='text-sm font-medium text-secondaryNeutral dark:text-secondaryNeutralDark leading-5'>
                   {t('Phonebook.Notes')}
                 </dt>
@@ -589,7 +631,7 @@ export const ContactSummary = forwardRef<HTMLButtonElement, ContactSummaryProps>
             )}
             {/* company contacts */}
             {contact?.contacts && contact?.contacts?.length ? (
-              <div className='py-4 sm:grid sm:grid-cols-3 sm:gap-4 sm:py-5'>
+              <div className='sm:grid sm:grid-cols-3 sm:gap-4'>
                 <dt className='text-sm font-medium text-secondaryNeutral dark:text-secondaryNeutralDark leading-5'>
                   {t('Phonebook.Company contacts')}
                 </dt>
@@ -619,55 +661,40 @@ export const ContactSummary = forwardRef<HTMLButtonElement, ContactSummaryProps>
                 </dd>
               </div>
             ) : null}
-            {contact?.kind === 'person' && (
-              <div>
-                {/* Avoid show company information if contact has no informations */}
-                {(companyInformation?.company ||
-                  companyInformation?.workcity ||
-                  companyInformation?.notes) &&
-                  companyInformationData()}
-
-                {/* check if user has customer cards permission */}
-                {profile?.macro_permissions?.customer_card?.value && (
-                  <div className='flex'>
-                    <Button
-                      size='small'
-                      variant='white'
-                      className={`${
-                        contact?.workphone || contact?.homephone || contact?.cellphone
-                          ? ''
-                          : 'hidden'
-                      }`}
-                      onClick={() => goToCCardCompany(contact)}
-                    >
-                      <span className='text-sm font-medium leading-5'>
-                        {t('CustomerCards.Open customer card')}
-                      </span>
-                    </Button>
-                  </div>
-                )}
-
-                {/* User last calls informations */}
-                {profile?.macro_permissions?.cdr?.permissions?.ad_cdr?.value && (
-                  <div className='h-full'>
-                    <LastCallsDrawerTable
-                      callType={'switchboard'}
-                      dateFrom={startOfDay(subDays(new Date(), 7))}
-                      dateTo={new Date()}
-                      phoneNumbers={[
-                        contact?.extension ||
-                          contact?.workphone ||
-                          contact?.cellphone ||
-                          contact?.homephone,
-                      ]}
-                      limit={10}
-                      isCustomerCard={true}
-                    />
-                  </div>
-                )}
-              </div>
-            )}
           </dl>
+          {contact?.kind === 'person' && (showCompanyInformation || showCustomerCardButton || showLastCalls) && (
+            <div className='mt-6'>
+              {showCompanyInformation && <div>{companyInformationData()}</div>}
+
+              {showCustomerCardButton && (
+                <div className={showCompanyInformation ? 'mt-6 flex' : 'flex'}>
+                  <Button size='small' variant='white' onClick={() => goToCCardCompany(contact)}>
+                    <span className='text-sm font-medium leading-5'>
+                      {t('CustomerCards.Open customer card')}
+                    </span>
+                  </Button>
+                </div>
+              )}
+
+              {showLastCalls && (
+                <div className={showCompanyInformation || showCustomerCardButton ? 'mt-6 h-full' : 'h-full'}>
+                  <LastCallsDrawerTable
+                    callType={'switchboard'}
+                    dateFrom={startOfDay(subDays(new Date(), 7))}
+                    dateTo={new Date()}
+                    phoneNumbers={[
+                      contact?.extension ||
+                        contact?.workphone ||
+                        contact?.cellphone ||
+                        contact?.homephone,
+                    ]}
+                    limit={10}
+                    isCustomerCard={true}
+                  />
+                </div>
+              )}
+            </div>
+          )}
         </div>
       </>
     )

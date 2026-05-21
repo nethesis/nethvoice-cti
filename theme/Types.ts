@@ -13,5 +13,6 @@ export type StatusTypes =
   | 'ringing'
   | 'offline'
   | 'category'
+  | 'blueNethLink'
   | 'enabled'
   | 'disabled'
