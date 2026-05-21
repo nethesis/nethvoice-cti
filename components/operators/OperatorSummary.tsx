@@ -43,7 +43,11 @@ export const OperatorSummary = forwardRef<HTMLButtonElement, OperatorSummaryProp
     const authStore = useSelector((state: RootState) => state.authentication)
     const [isFavorite, setFavorite] = useState(false)
     const operatorGroups = Array.from(
-      new Set((currentOperatorInformations?.groups || operator?.groups || []).filter(Boolean)),
+      new Set<string>(
+        ((currentOperatorInformations?.groups || operator?.groups || []) as string[]).filter(
+          (groupName): groupName is string => Boolean(groupName),
+        ),
+      ),
     )
     const maxVisibleGroupBadges = 3
     const visibleOperatorGroups =
@@ -166,7 +170,7 @@ export const OperatorSummary = forwardRef<HTMLButtonElement, OperatorSummaryProp
               </span>
               {operatorGroups.length > 0 && (
                 <div className='ml-2 mt-3 flex flex-wrap items-center gap-2'>
-                  {visibleOperatorGroups.map((groupName: string) => (
+                  {visibleOperatorGroups.map((groupName) => (
                     <Badge
                       key={groupName}
                       variant='blueNethLink'

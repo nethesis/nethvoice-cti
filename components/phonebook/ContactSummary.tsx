@@ -82,20 +82,6 @@ export const ContactSummary = forwardRef<HTMLButtonElement, ContactSummaryProps>
       !!(contact?.workphone || contact?.homephone || contact?.cellphone)
     const showLastCalls = !!profile?.macro_permissions?.cdr?.permissions?.ad_cdr?.value
 
-    const sharingIcon = (() => {
-      const sharingKind = getContactSharingKind(contact)
-
-      if (sharingKind === 'private') {
-        return faUserLock
-      }
-
-      if (sharingKind === 'group') {
-        return faUserGroup
-      }
-
-      return null
-    })()
-
     //Get sideDrawer status from store
     const sideDrawer = useSelector((state: RootState) => state.sideDrawer)
 
@@ -380,13 +366,6 @@ export const ContactSummary = forwardRef<HTMLButtonElement, ContactSummaryProps>
                     ? contact?.company
                     : '-'}
                 </h2>
-                {sharingIcon && (
-                  <FontAwesomeIcon
-                    icon={sharingIcon}
-                    className='h-3.5 w-3.5 shrink-0 text-iconIndigo dark:text-iconIndigoDark'
-                    aria-hidden='true'
-                  />
-                )}
               </div>
             </div>
           </div>

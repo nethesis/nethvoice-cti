@@ -9,6 +9,7 @@ import { loadPreference } from './storage'
 export const PAGE_SIZE = 10
 export const DEFAULT_CONTACT_TYPE_FILTER = 'all'
 export const DEFAULT_SORT_BY = 'name'
+const GROUP_TYPE_PREFIX = 'group:'
 const RESERVED_CONTACT_TYPES = ['private', 'public', 'speeddial']
 
 export function normalizeSharedGroups(sharedGroups: any) {
@@ -29,12 +30,12 @@ export function isReservedContactType(type: any) {
 }
 
 export function hasSerializedGroupType(type: any) {
-  return typeof type === 'string' && type.trim() !== '' && !isReservedContactType(type)
+  return typeof type === 'string' && type.startsWith(GROUP_TYPE_PREFIX)
 }
 
 export function getContactSharedGroups(contact: any) {
   if (hasSerializedGroupType(contact?.type)) {
-    return normalizeSharedGroups(contact.type.split(','))
+    return normalizeSharedGroups(contact.type.slice(GROUP_TYPE_PREFIX.length).split(','))
   }
 
   if (Array.isArray(contact?.shared_groups)) {
@@ -53,7 +54,7 @@ export function getContactSharedGroups(contact: any) {
 }
 
 export function getContactVisibility(contact: any) {
-  if (contact?.type === 'group' || hasSerializedGroupType(contact?.type)) {
+  if (hasSerializedGroupType(contact?.type)) {
     return 'group'
   }
 
@@ -75,7 +76,7 @@ export function getContactSharingKind(contact: any) {
 }
 
 export function serializeSharedGroups(sharedGroups: string[]) {
-  return normalizeSharedGroups(sharedGroups).join(',')
+  return `${GROUP_TYPE_PREFIX}${normalizeSharedGroups(sharedGroups).join(',')}`
 }
 
 export function getPhonebookUrl() {
