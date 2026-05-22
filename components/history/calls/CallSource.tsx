@@ -39,19 +39,32 @@ export const CallSource: FC<CallSourceProps> = ({
 
   // User call type
   if (callType === 'user') {
+    // Try operator lookup if no name resolved (same as switchboard)
+    let resolvedName = effectiveCnam
+    if (resolvedName === '') {
+      const foundOperator: any = Object.values(operators).find((operator: any) =>
+        operator.endpoints.extension.find((device: any) => device.id === sourceNumber),
+      )
+      if (foundOperator) resolvedName = foundOperator.name
+    }
+
     const primaryLabel =
-      effectiveCnam !== '' && sourceNumber !== mainextension && effectiveCnam !== name
-        ? effectiveCnam
+      resolvedName !== '' && sourceNumber !== mainextension && resolvedName !== name
+        ? resolvedName
         : call.ccompany !== ''
         ? call.ccompany
         : sourceNumber !== mainextension
-        ? t('Common.Unknown')
+        ? sourceNumber
         : t('History.You')
+
+    const hasNameLabel =
+      (resolvedName !== '' && sourceNumber !== mainextension && resolvedName !== name) ||
+      call.ccompany !== ''
 
     return (
       <div
         onClick={() => {
-          openDrawerHistory(effectiveCnam, call.ccompany, sourceNumber, callType, operators)
+          openDrawerHistory(resolvedName, call.ccompany, sourceNumber, callType, operators)
         }}
       >
         <div
@@ -62,7 +75,7 @@ export const CallSource: FC<CallSourceProps> = ({
         >
           {primaryLabel}
         </div>
-        {sourceNumber !== '' && sourceNumber !== mainextension && (
+        {sourceNumber !== '' && sourceNumber !== mainextension && hasNameLabel && (
           <div className='truncate text-sm cursor-pointer hover:underline text-textPlaceholder dark:text-textPlaceholderDark'>
             {sourceNumber}
           </div>
