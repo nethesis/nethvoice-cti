@@ -27,6 +27,7 @@ export const CallDestination: FC<CallDestinationProps> = ({
 }) => {
   // User call type
   if (callType === 'user') {
+    const isIncoming = call.direction === 'in'
     const effectiveDstCnam = getEffectiveCnam(call.dst_cnam, call.dst)
 
     // Try operator lookup if no name resolved (same as switchboard)
@@ -43,9 +44,11 @@ export const CallDestination: FC<CallDestinationProps> = ({
         ? resolvedName
         : call.dst_ccompany !== ''
         ? call.dst_ccompany
-        : call.dst !== mainextension
-        ? call.dst
-        : t('History.You')
+        // Show "You" if the destination is the user's main extension OR if it's an incoming call
+        // where dst_cnam matches the user's name (handles mobile/secondary extensions like 9XXXX)
+        : call.dst === mainextension || (isIncoming && resolvedName === name)
+        ? t('History.You')
+        : call.dst
 
     const hasNameLabel =
       (resolvedName !== '' && call.dst !== mainextension && resolvedName !== name) ||

@@ -53,9 +53,11 @@ export const CallSource: FC<CallSourceProps> = ({
         ? resolvedName
         : call.ccompany !== ''
         ? call.ccompany
-        : sourceNumber !== mainextension
-        ? sourceNumber
-        : t('History.You')
+        // Show "You" if the source is the user's main extension OR if it's an outgoing call
+        // where cnam matches the user's name (handles mobile/secondary extensions like 9XXXX)
+        : sourceNumber === mainextension || (!isIncoming && resolvedName === name)
+        ? t('History.You')
+        : sourceNumber
 
     const hasNameLabel =
       (resolvedName !== '' && sourceNumber !== mainextension && resolvedName !== name) ||
