@@ -11,6 +11,23 @@ export const DEFAULT_CONTACT_TYPE_FILTER = 'all'
 export const DEFAULT_SORT_BY = 'name'
 const GROUP_TYPE_PREFIX = 'group:'
 const RESERVED_CONTACT_TYPES = ['private', 'public', 'speeddial']
+const DEFAULT_LEGACY_PHONEBOOK_LEVEL = 2
+const PHONEBOOK_LEVEL_PERMISSIONS: Record<number, string> = {
+  0: 'phonebook_level_0',
+  1: 'phonebook_level_1',
+  2: 'phonebook_level_2',
+  3: 'ad_phonebook',
+}
+
+function getPhonebookPermission(profile: any, permissionName: string) {
+  const permissions = profile?.macro_permissions?.phonebook?.permissions
+
+  if (Array.isArray(permissions)) {
+    return permissions.find((permission: any) => permission?.name === permissionName)
+  }
+
+  return permissions?.[permissionName]
+}
 
 export function normalizeSharedGroups(sharedGroups: any) {
   if (!Array.isArray(sharedGroups)) {
@@ -73,6 +90,56 @@ export function getContactSharingKind(contact: any) {
   }
 
   return null
+}
+
+export function getPhonebookPermissionLevel(profile: any) {
+  if (!profile?.macro_permissions?.phonebook?.value) {
+    return -1
+  }
+
+  for (const parsedLevel of [3, 2, 1, 0]) {
+    const levelPermission = getPhonebookPermission(
+      profile,
+      PHONEBOOK_LEVEL_PERMISSIONS[parsedLevel],
+    )
+
+    if (levelPermission?.value === true) {
+      return parsedLevel
+    }
+  }
+
+  const adPhonebook = getPhonebookPermission(profile, 'ad_phonebook')
+
+  return adPhonebook?.value === true ? 3 : DEFAULT_LEGACY_PHONEBOOK_LEVEL
+}
+
+export function canWritePhonebookVisibility(profile: any, visibility: string) {
+  const level = getPhonebookPermissionLevel(profile)
+
+  return level >= 3 || (level >= 2 && visibility === 'private')
+}
+
+export function canCreatePhonebookContacts(profile: any) {
+  return ['public', 'private', 'group'].some((visibility) =>
+    canWritePhonebookVisibility(profile, visibility),
+  )
+}
+
+export function canWritePhonebookContact(profile: any, contact: any, username: string) {
+  if (contact?.source !== 'cti') {
+    return false
+  }
+
+  const level = getPhonebookPermissionLevel(profile)
+  if (level >= 3) {
+    return true
+  }
+
+  return (
+    level >= 2 &&
+    contact?.owner_id === username &&
+    canWritePhonebookVisibility(profile, getContactVisibility(contact))
+  )
 }
 
 export function serializeSharedGroups(sharedGroups: string[]) {

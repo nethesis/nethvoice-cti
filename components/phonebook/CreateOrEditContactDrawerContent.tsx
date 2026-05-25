@@ -15,6 +15,7 @@ import {
   fetchContact,
   getContactSharedGroups,
   getContactVisibility,
+  canWritePhonebookVisibility,
   serializeSharedGroups,
 } from '../../lib/phonebook'
 import { closeSideDrawer } from '../../lib/utils'
@@ -68,11 +69,17 @@ export const CreateOrEditContactDrawerContent = forwardRef<
 
   const [contactVisibility, setContactVisibility]: any = useState('public')
   const onContactVisibilityChanged = (e: any) => {
-    setContactVisibility(e.target.id)
+    if (canWritePhonebookVisibility(profile, e.target.id)) {
+      setContactVisibility(e.target.id)
+    }
   }
 
   const operatorsStore = useSelector((state: RootState) => state.operators)
-  const { username } = useSelector((state: RootState) => state.user)
+  const { username, profile } = useSelector((state: RootState) => state.user)
+  const writableContactVisibilityOptions = contactVisibilityOptions.filter((option) =>
+    canWritePhonebookVisibility(profile, option.id),
+  )
+  const defaultContactVisibility = writableContactVisibilityOptions[0]?.id || 'private'
   const allowedGroupsIds = store.select.user.allowedOperatorGroupsIds(store.getState())
   const presencePanelPermissions = store.select.user.presencePanelPermissions(store.getState())
   const availableGroups = getUserGroups(
@@ -146,7 +153,12 @@ export const CreateOrEditContactDrawerContent = forwardRef<
           setContactType('company')
         }
       }
-      setContactVisibility(getContactVisibility(config.contact))
+      const currentVisibility = getContactVisibility(config.contact)
+      setContactVisibility(
+        canWritePhonebookVisibility(profile, currentVisibility)
+          ? currentVisibility
+          : defaultContactVisibility,
+      )
       setSelectedGroups(getContactSharedGroups(config.contact))
       nameRef.current.value = config.contact.name || ''
       companyRef.current.value = config.contact.company || ''
@@ -183,7 +195,7 @@ export const CreateOrEditContactDrawerContent = forwardRef<
       notesRef.current.value = config.contact.notes || ''
     } else if (config?.isCreateContactUserLastCalls) {
       setContactType('person')
-      setContactVisibility('public')
+      setContactVisibility(defaultContactVisibility)
       setSelectedGroups([])
 
       nameRef.current.value = ''
@@ -196,7 +208,7 @@ export const CreateOrEditContactDrawerContent = forwardRef<
     } else {
       // creating contact
       setContactType('person')
-      setContactVisibility('public')
+      setContactVisibility(defaultContactVisibility)
       setSelectedGroups([])
       nameRef.current.value = ''
       companyRef.current.value = ''
@@ -210,7 +222,7 @@ export const CreateOrEditContactDrawerContent = forwardRef<
       emailRef.current.value = ''
       notesRef.current.value = ''
     }
-  }, [firstRender, config])
+  }, [firstRender, config, profile, defaultContactVisibility])
 
   const [nameError, setNameError] = useState('')
   const [companyError, setCompanyError] = useState('')
@@ -253,6 +265,15 @@ export const CreateOrEditContactDrawerContent = forwardRef<
 
     if (contactVisibility === 'group' && selectedGroups.length === 0) {
       setSharedGroupsError('Required')
+      isValidationOk = false
+    }
+
+    if (!canWritePhonebookVisibility(profile, contactVisibility)) {
+      if (config?.isEdit) {
+        setEditContactError('Cannot edit contact')
+      } else {
+        setCreateContactError('Cannot create contact')
+      }
       isValidationOk = false
     }
 
@@ -428,7 +449,7 @@ export const CreateOrEditContactDrawerContent = forwardRef<
           <fieldset className='mt-2'>
             <legend className='sr-only'>{t('Phonebook.Visibility')}</legend>
             <div className='space-y-3'>
-              {contactVisibilityOptions.map((option) => (
+              {writableContactVisibilityOptions.map((option) => (
                 <div key={option?.id} className='flex items-center'>
                   <input
                     id={option?.id}

@@ -17,6 +17,7 @@ import {
 import {
   DEFAULT_CONTACT_TYPE_FILTER,
   DEFAULT_SORT_BY,
+  canCreatePhonebookContacts,
   getFilterValues,
   openCreateContactDrawer,
 } from '../../lib/phonebook'
@@ -55,6 +56,8 @@ export const Filter = forwardRef<HTMLButtonElement, FilterProps>(
   ({ updateTextFilter, updateContactTypeFilter, updateSort, className, ...props }, ref) => {
     const { t } = useTranslation()
     const auth = useSelector((state: RootState) => state.authentication)
+    const { profile } = useSelector((state: RootState) => state.user)
+    const canCreateContact = canCreatePhonebookContacts(profile)
     const [open, setOpen] = useState(false)
 
     const handleCreateContantButtonMobileView = () => {
@@ -214,12 +217,14 @@ export const Filter = forwardRef<HTMLButtonElement, FilterProps>(
                   </div>
                 </div>
                 {/* Container for add announcement button  */}
-                <div className='text-left pb-6 sm:pb-0'>
-                  <Button variant='primary' onClick={() => openCreateContactDrawer()}>
-                    <FontAwesomeIcon icon={faUserPlus} className='mr-2 h-4 w-4' />
-                    <span>{t('Phonebook.Create contact')}</span>
-                  </Button>
-                </div>
+                {canCreateContact && (
+                  <div className='text-left pb-6 sm:pb-0'>
+                    <Button variant='primary' onClick={() => openCreateContactDrawer()}>
+                      <FontAwesomeIcon icon={faUserPlus} className='mr-2 h-4 w-4' />
+                      <span>{t('Phonebook.Create contact')}</span>
+                    </Button>
+                  </div>
+                )}
               </div>
 
               {/* Active filters */}

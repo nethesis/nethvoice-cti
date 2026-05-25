@@ -13,6 +13,7 @@ import {
   openCreateContactDrawer,
   mapPhonebookResponse,
   getContactSharingKind,
+  canCreatePhonebookContacts,
 } from '../lib/phonebook'
 import { RootState } from '../store'
 import { useSelector } from 'react-redux'
@@ -115,6 +116,7 @@ const Phonebook: NextPage = () => {
   const [phonebookError, setPhonebookError] = useState('')
 
   const { profile } = useSelector((state: RootState) => state.user)
+  const canCreateContact = canCreatePhonebookContacts(profile)
 
   const getSharingIcon = (contact: any) => {
     const sharingKind = getContactSharingKind(contact)
@@ -350,7 +352,10 @@ const Phonebook: NextPage = () => {
                       maxHeight='calc(100vh - 480px)'
                     />
 
-                    {isPhonebookLoaded && filteredContacts?.length === 0 && !textFilter?.length && (
+                    {isPhonebookLoaded &&
+                      filteredContacts?.length === 0 &&
+                      !textFilter?.length &&
+                      canCreateContact && (
                       <div className='mt-4 flex justify-center'>
                         <Button variant='primary' onClick={() => openCreateContactDrawer()}>
                           <FontAwesomeIcon icon={faPlus} className='mr-2 h-4 w-4' />
