@@ -18,7 +18,7 @@
     "@babel/runtime": "^7.29.2",
     "@date-fns/utc": "^2.0.0",
     "@fortawesome/fontawesome-svg-core": "^7.0.0",
-    "@fortawesome/free-brands-svg-icons": "^6.7.0",
+    "@fortawesome/free-brands-svg-icons": "^7.0.0",
     "@fortawesome/free-solid-svg-icons": "^6.7.0",
     "@fortawesome/react-fontawesome": "^0.2.0",
     "@headlessui/react": "^2.1.9",
