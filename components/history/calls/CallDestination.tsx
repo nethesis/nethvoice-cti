@@ -30,29 +30,43 @@ export const CallDestination: FC<CallDestinationProps> = ({
     const isIncoming = call.direction === 'in'
     const effectiveDstCnam = getEffectiveCnam(call.dst_cnam, call.dst)
 
-    // Try operator lookup if no name resolved (same as switchboard)
+    // Try operator lookup to resolve internal extension names
     let resolvedName = effectiveDstCnam
-    if (resolvedName === '') {
-      const foundOperator: any = Object.values(operators).find((operator: any) =>
-        operator.endpoints.extension.find((device: any) => device.id === call.dst),
-      )
-      if (foundOperator) resolvedName = foundOperator.name
+    let isKnownInternal = false
+    const foundOperator: any = Object.values(operators).find((operator: any) =>
+      operator.endpoints.extension.find((device: any) => device.id === call.dst),
+    )
+    if (foundOperator) {
+      resolvedName = foundOperator.name
+      isKnownInternal = true
     }
 
+    // Queues are not in the operators list but should not be shown as "Unknown"
+    const isQueue = call.lastapp === 'Queue' || (call.dcontext && call.dcontext.includes('queue'))
+
+    // Determine if destination is the user themselves (main ext or mobile/secondary ext on incoming)
+    const isUserSelf = call.dst === mainextension || (isIncoming && resolvedName === name)
+
     const primaryLabel =
-      resolvedName !== '' && call.dst !== mainextension && resolvedName !== name
+      call.dst === ''
+        ? '-'
+        : isUserSelf
+        ? t('History.You')
+        : resolvedName !== '' && resolvedName !== name
         ? resolvedName
         : call.dst_ccompany !== ''
         ? call.dst_ccompany
-        // Show "You" if the destination is the user's main extension OR if it's an incoming call
-        // where dst_cnam matches the user's name (handles mobile/secondary extensions like 9XXXX)
-        : call.dst === mainextension || (isIncoming && resolvedName === name)
-        ? t('History.You')
-        : call.dst
+        : isKnownInternal || isQueue
+        ? call.dst // internal/queue with no resolved name → show number alone
+        : t('Common.Unknown') // external destination with no name → Unknown
 
+    // Show secondary number for: named parties + external unknown (always show number for externals)
     const hasNameLabel =
-      (resolvedName !== '' && call.dst !== mainextension && resolvedName !== name) ||
-      call.dst_ccompany !== ''
+      call.dst !== '' &&
+      !isUserSelf &&
+      ((resolvedName !== '' && resolvedName !== name) ||
+        call.dst_ccompany !== '' ||
+        (!isKnownInternal && !isQueue))
 
     return (
       <div
@@ -76,33 +90,47 @@ export const CallDestination: FC<CallDestinationProps> = ({
       </div>
     )
   } else {
-    // Check if a user does not have a name and add the name of the operator
+    // Switchboard call type — same internal/external detection as user callType
     const effectiveDstCnam = getEffectiveCnam(call.dst_cnam, call.dst)
-    if (effectiveDstCnam === '') {
-      let foundOperator: any = Object.values(operators).find((operator: any) =>
-        operator.endpoints.extension.find((device: any) => device.id === call.dst),
-      )
-
-      if (foundOperator) {
-        call.dst_cnam = foundOperator.name
-      }
+    let displayDstCnam = effectiveDstCnam
+    let isKnownInternal = false
+    const foundOperator: any = Object.values(operators).find((operator: any) =>
+      operator.endpoints.extension.find((device: any) => device.id === call.dst),
+    )
+    if (foundOperator) {
+      displayDstCnam = foundOperator.name
+      isKnownInternal = true
     }
 
-    // Switchboard call type
+    const isQueue = call.lastapp === 'Queue' || (call.dcontext && call.dcontext.includes('queue'))
+
+    const primaryLabel =
+      call.dst === ''
+        ? '-'
+        : displayDstCnam !== ''
+        ? displayDstCnam
+        : call.dst_ccompany !== ''
+        ? call.dst_ccompany
+        : isKnownInternal || isQueue
+        ? call.dst // internal/queue with no name → show number alone
+        : t('Common.Unknown') // external with no name → Unknown
+
+    const hasSecondary =
+      call.dst !== '' &&
+      ((displayDstCnam !== '' && displayDstCnam !== call.dst) ||
+        call.dst_ccompany !== '' ||
+        (!isKnownInternal && !isQueue))
+
     return (
       <div
         onClick={() =>
-          openDrawerHistory(call.dst_cnam, call.dst_ccompany, call.dst, callType, operators)
+          openDrawerHistory(displayDstCnam, call.dst_ccompany, call.dst, callType, operators)
         }
       >
         <div className='truncate text-sm cursor-pointer hover:underline text-secondaryNeutral dark:text-secondaryNeutralDark'>
-          {call.dst_cnam !== ''
-            ? call.dst_cnam
-            : call.dst_ccompany !== ''
-            ? call.dst_ccompany
-            : call.dst || '-'}{' '}
+          {primaryLabel}
         </div>
-        {(call.dst_cnam !== '' || call.dst_ccompany !== '') && (
+        {hasSecondary && (
           <div className='truncate text-sm cursor-pointer hover:underline text-textPlaceholder dark:text-textPlaceholderDark'>
             {call.dst}
           </div>

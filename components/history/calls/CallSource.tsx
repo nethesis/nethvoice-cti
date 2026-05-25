@@ -39,29 +39,36 @@ export const CallSource: FC<CallSourceProps> = ({
 
   // User call type
   if (callType === 'user') {
-    // Try operator lookup if no name resolved (same as switchboard)
+    // Try operator lookup to resolve internal extension names
     let resolvedName = effectiveCnam
-    if (resolvedName === '') {
-      const foundOperator: any = Object.values(operators).find((operator: any) =>
-        operator.endpoints.extension.find((device: any) => device.id === sourceNumber),
-      )
-      if (foundOperator) resolvedName = foundOperator.name
+    let isKnownInternal = false
+    const foundOperator: any = Object.values(operators).find((operator: any) =>
+      operator.endpoints.extension.find((device: any) => device.id === sourceNumber),
+    )
+    if (foundOperator) {
+      resolvedName = foundOperator.name
+      isKnownInternal = true
     }
 
-    const primaryLabel =
-      resolvedName !== '' && sourceNumber !== mainextension && resolvedName !== name
-        ? resolvedName
-        : call.ccompany !== ''
-        ? call.ccompany
-        // Show "You" if the source is the user's main extension OR if it's an outgoing call
-        // where cnam matches the user's name (handles mobile/secondary extensions like 9XXXX)
-        : sourceNumber === mainextension || (!isIncoming && resolvedName === name)
-        ? t('History.You')
-        : sourceNumber
+    // Determine if this is the user themselves (main ext or mobile/secondary ext on outgoing)
+    const isUserSelf = sourceNumber === mainextension || (!isIncoming && resolvedName === name)
 
+    const primaryLabel = isUserSelf
+      ? t('History.You')
+      : resolvedName !== '' && resolvedName !== name
+      ? resolvedName
+      : call.ccompany !== ''
+      ? call.ccompany
+      : isKnownInternal
+      ? sourceNumber // internal extension with no resolved name → show extension alone
+      : t('Common.Unknown') // external caller with no name → Unknown
+
+    // Show secondary number for: named callers + external unknown (always show number for externals)
     const hasNameLabel =
-      (resolvedName !== '' && sourceNumber !== mainextension && resolvedName !== name) ||
-      call.ccompany !== ''
+      !isUserSelf &&
+      ((resolvedName !== '' && resolvedName !== name) ||
+        call.ccompany !== '' ||
+        !isKnownInternal)
 
     return (
       <div
@@ -85,30 +92,44 @@ export const CallSource: FC<CallSourceProps> = ({
       </div>
     )
   } else {
-    // Check if a user does not have a name and add the name of the operator
-    if (effectiveCnam === '') {
-      let foundOperator: any = Object.values(operators).find((operator: any) =>
-        operator.endpoints.extension.find(
-          (device: any) => device.id === call.cnum || device.id === call.src,
-        ),
-      )
-
-      if (foundOperator) {
-        call.cnam = foundOperator.name
-      }
+    // Switchboard call type — same internal/external detection as user callType
+    let displayCnam = effectiveCnam
+    let isKnownInternal = false
+    const foundOperator: any = Object.values(operators).find((operator: any) =>
+      operator.endpoints.extension.find(
+        (device: any) => device.id === call.cnum || device.id === call.src,
+      ),
+    )
+    if (foundOperator) {
+      displayCnam = foundOperator.name
+      isKnownInternal = true
     }
 
-    // Switchboard call type
+    const primaryLabel =
+      displayCnam !== ''
+        ? displayCnam
+        : call.ccompany !== ''
+        ? call.ccompany
+        : isKnownInternal
+        ? sourceNumber // internal with no name → show number alone
+        : t('Common.Unknown') // external with no name → Unknown
+
+    const hasSecondary =
+      sourceNumber !== '' &&
+      ((displayCnam !== '' && displayCnam !== sourceNumber) ||
+        call.ccompany !== '' ||
+        !isKnownInternal)
+
     return (
       <div
         onClick={() => {
-          openDrawerHistory(call.cnam, call.ccompany, sourceNumber, callType, operators)
+          openDrawerHistory(displayCnam, call.ccompany, sourceNumber, callType, operators)
         }}
       >
         <div className='truncate text-sm cursor-pointer hover:underline text-secondaryNeutral dark:text-secondaryNeutralDark'>
-          {call.cnam !== '' ? call.cnam : call.ccompany !== '' ? call.ccompany : sourceNumber || '-'}
+          {primaryLabel}
         </div>
-        {sourceNumber !== '' && (call.cnam !== '' || call.ccompany !== '') && (
+        {hasSecondary && (
           <div className='truncate text-sm cursor-pointer hover:underline text-textPlaceholder dark:text-textPlaceholderDark'>
             {sourceNumber}
           </div>
