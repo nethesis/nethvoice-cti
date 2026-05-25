@@ -29,32 +29,19 @@ export const CallDestination: FC<CallDestinationProps> = ({
   if (callType === 'user') {
     const effectiveDstCnam = getEffectiveCnam(call.dst_cnam, call.dst)
 
-    // Try operator lookup if no name resolved (same as switchboard)
-    let resolvedName = effectiveDstCnam
-    if (resolvedName === '') {
-      const foundOperator: any = Object.values(operators).find((operator: any) =>
-        operator.endpoints.extension.find((device: any) => device.id === call.dst),
-      )
-      if (foundOperator) resolvedName = foundOperator.name
-    }
-
     const primaryLabel =
-      resolvedName !== '' && call.dst !== mainextension && resolvedName !== name
-        ? resolvedName
+      effectiveDstCnam !== '' && call.dst !== mainextension && effectiveDstCnam !== name
+        ? effectiveDstCnam
         : call.dst_ccompany !== ''
         ? call.dst_ccompany
         : call.dst !== mainextension
-        ? call.dst
+        ? t('Common.Unknown')
         : t('History.You')
-
-    const hasNameLabel =
-      (resolvedName !== '' && call.dst !== mainextension && resolvedName !== name) ||
-      call.dst_ccompany !== ''
 
     return (
       <div
         onClick={() =>
-          openDrawerHistory(resolvedName, call.dst_ccompany, call.dst, callType, operators)
+          openDrawerHistory(effectiveDstCnam, call.dst_ccompany, call.dst, callType, operators)
         }
       >
         <div
@@ -65,7 +52,7 @@ export const CallDestination: FC<CallDestinationProps> = ({
         >
           {primaryLabel}
         </div>
-        {call.dst !== '' && call.dst !== mainextension && hasNameLabel && (
+        {call.dst !== '' && call.dst !== mainextension && (
           <div className='truncate text-sm cursor-pointer hover:underline text-textPlaceholder dark:text-textPlaceholderDark'>
             {call.dst}
           </div>
