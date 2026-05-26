@@ -8,16 +8,11 @@ import { loadPreference } from './storage'
 
 export const PAGE_SIZE = 10
 export const DEFAULT_CONTACT_TYPE_FILTER = 'all'
+export const DEFAULT_VISIBILITY_FILTER = 'all'
 export const DEFAULT_SORT_BY = 'name'
 const GROUP_TYPE_PREFIX = 'group:'
 const RESERVED_CONTACT_TYPES = ['private', 'public', 'speeddial']
-const DEFAULT_LEGACY_PHONEBOOK_LEVEL = 2
-const PHONEBOOK_LEVEL_PERMISSIONS: Record<number, string> = {
-  0: 'phonebook_level_0',
-  1: 'phonebook_level_1',
-  2: 'phonebook_level_2',
-  3: 'ad_phonebook',
-}
+const DEFAULT_LEGACY_PHONEBOOK_LEVEL = 0
 
 function getPhonebookPermission(profile: any, permissionName: string) {
   const permissions = profile?.macro_permissions?.phonebook?.permissions
@@ -82,7 +77,7 @@ export function getContactVisibility(contact: any) {
   return 'public'
 }
 
-export function getContactSharingKind(contact: any) {
+export function getContactVisibilityKind(contact: any) {
   const visibility = getContactVisibility(contact)
 
   if (visibility === 'private' || visibility === 'group') {
@@ -97,26 +92,29 @@ export function getPhonebookPermissionLevel(profile: any) {
     return -1
   }
 
-  for (const parsedLevel of [3, 2, 1, 0]) {
-    const levelPermission = getPhonebookPermission(
-      profile,
-      PHONEBOOK_LEVEL_PERMISSIONS[parsedLevel],
-    )
-
-    if (levelPermission?.value === true) {
-      return parsedLevel
-    }
+  if (getPhonebookPermission(profile, 'ad_phonebook')?.value === true) {
+    return 2
   }
 
-  const adPhonebook = getPhonebookPermission(profile, 'ad_phonebook')
+  if (getPhonebookPermission(profile, 'phonebook_level_2')?.value === true) {
+    return 2
+  }
 
-  return adPhonebook?.value === true ? 3 : DEFAULT_LEGACY_PHONEBOOK_LEVEL
+  if (getPhonebookPermission(profile, 'phonebook_level_1')?.value === true) {
+    return 1
+  }
+
+  if (getPhonebookPermission(profile, 'phonebook_level_0')?.value === true) {
+    return 0
+  }
+
+  return DEFAULT_LEGACY_PHONEBOOK_LEVEL
 }
 
 export function canWritePhonebookVisibility(profile: any, visibility: string) {
   const level = getPhonebookPermissionLevel(profile)
 
-  return level >= 3 || (level >= 2 && visibility === 'private')
+  return level >= 2 || (level >= 1 && visibility === 'private')
 }
 
 export function canCreatePhonebookContacts(profile: any) {
@@ -131,12 +129,12 @@ export function canWritePhonebookContact(profile: any, contact: any, username: s
   }
 
   const level = getPhonebookPermissionLevel(profile)
-  if (level >= 3) {
+  if (level >= 2) {
     return true
   }
 
   return (
-    level >= 2 &&
+    level >= 1 &&
     contact?.owner_id === username &&
     canWritePhonebookVisibility(profile, getContactVisibility(contact))
   )
@@ -161,6 +159,7 @@ export async function getPhonebook(
   contactType: string,
   sortBy: string,
   pageSize: number = PAGE_SIZE,
+  visibility: string = DEFAULT_VISIBILITY_FILTER,
 ) {
   if (window == undefined) {
     return
@@ -170,10 +169,10 @@ export async function getPhonebook(
   if (textFilter.trim()) {
     apiUrl += `search/${textFilter.trim()}`
   } else {
-    apiUrl += `search/`
+    apiUrl += 'search/'
   }
   const offset = (pageNum - 1) * pageSize
-  apiUrl += `?offset=${offset}&limit=${pageSize}&view=${contactType}`
+  apiUrl += `?offset=${offset}&limit=${pageSize}&view=${contactType}&visibility=${visibility}`
 
   try {
     const { data, status } = await axios.get(apiUrl)
@@ -338,9 +337,14 @@ export const getFilterValues = (currentUsername: string) => {
   const contactType =
     loadPreference('phonebookContactTypeFilter', currentUsername) || DEFAULT_CONTACT_TYPE_FILTER
 
+  const visibility =
+    loadPreference('phonebookVisibilityFilter', currentUsername) ||
+    loadPreference('phonebookSharingOptionFilter', currentUsername) ||
+    DEFAULT_VISIBILITY_FILTER
+
   const sortBy = loadPreference('phonebookSortBy', currentUsername) || DEFAULT_SORT_BY
 
-  return { contactType, sortBy }
+  return { contactType, visibility, sortBy }
 }
 
 export const mapPhonebookResponse = (phonebookResponse: any) => {

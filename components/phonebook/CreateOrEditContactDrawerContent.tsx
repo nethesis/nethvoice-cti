@@ -15,6 +15,7 @@ import {
   fetchContact,
   getContactSharedGroups,
   getContactVisibility,
+  canWritePhonebookContact,
   canWritePhonebookVisibility,
   serializeSharedGroups,
 } from '../../lib/phonebook'
@@ -76,6 +77,7 @@ export const CreateOrEditContactDrawerContent = forwardRef<
 
   const operatorsStore = useSelector((state: RootState) => state.operators)
   const { username, profile } = useSelector((state: RootState) => state.user)
+  const canEditCurrentContact = !config?.isEdit || canWritePhonebookContact(profile, config?.contact, username)
   const writableContactVisibilityOptions = contactVisibilityOptions.filter((option) =>
     canWritePhonebookVisibility(profile, option.id),
   )
@@ -154,11 +156,7 @@ export const CreateOrEditContactDrawerContent = forwardRef<
         }
       }
       const currentVisibility = getContactVisibility(config.contact)
-      setContactVisibility(
-        canWritePhonebookVisibility(profile, currentVisibility)
-          ? currentVisibility
-          : defaultContactVisibility,
-      )
+      setContactVisibility(currentVisibility)
       setSelectedGroups(getContactSharedGroups(config.contact))
       nameRef.current.value = config.contact.name || ''
       companyRef.current.value = config.contact.company || ''
@@ -238,6 +236,11 @@ export const CreateOrEditContactDrawerContent = forwardRef<
     setSharedGroupsError('')
 
     let isValidationOk = true
+
+    if (config?.isEdit && !canEditCurrentContact) {
+      setEditContactError('Cannot edit contact')
+      isValidationOk = false
+    }
 
     // name
     if (
@@ -653,6 +656,7 @@ export const CreateOrEditContactDrawerContent = forwardRef<
             cancelLabel={t('Common.Cancel') || ''}
             confirmLabel={t('Phonebook.Save contact')}
             onConfirm={prepareEditContact}
+            confirmDisabled={!canEditCurrentContact}
           />
         ) : (
           <DrawerFooter

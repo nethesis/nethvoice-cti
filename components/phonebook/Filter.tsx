@@ -16,6 +16,7 @@ import {
 } from '../common/FilterComponents'
 import {
   DEFAULT_CONTACT_TYPE_FILTER,
+  DEFAULT_VISIBILITY_FILTER,
   DEFAULT_SORT_BY,
   canCreatePhonebookContacts,
   getFilterValues,
@@ -46,14 +47,29 @@ const contactTypeFilter = {
   ],
 }
 
+const visibilityFilter = {
+  id: 'visibility',
+  name: 'Visibility',
+  options: [
+    { value: 'all', label: 'All' },
+    { value: 'public', label: 'Public' },
+    { value: 'private', label: 'Private' },
+    { value: 'group', label: 'Group' },
+  ],
+}
+
 export interface FilterProps extends ComponentPropsWithRef<'div'> {
   updateTextFilter: Function
   updateContactTypeFilter: Function
+  updateVisibilityFilter: Function
   updateSort: Function
 }
 
 export const Filter = forwardRef<HTMLButtonElement, FilterProps>(
-  ({ updateTextFilter, updateContactTypeFilter, updateSort, className, ...props }, ref) => {
+  (
+    { updateTextFilter, updateContactTypeFilter, updateVisibilityFilter, updateSort, className, ...props },
+    ref,
+  ) => {
     const { t } = useTranslation()
     const auth = useSelector((state: RootState) => state.authentication)
     const { profile } = useSelector((state: RootState) => state.user)
@@ -93,6 +109,15 @@ export const Filter = forwardRef<HTMLButtonElement, FilterProps>(
       updateContactTypeFilter(newContactType)
     }
 
+    const [visibility, setVisibility] = useState(DEFAULT_VISIBILITY_FILTER)
+    function changeVisibility(event: any) {
+      const newVisibility = event.target.id
+      setVisibility(newVisibility)
+      savePreference('phonebookVisibilityFilter', newVisibility, auth.username)
+
+      updateVisibilityFilter(newVisibility)
+    }
+
     const [sortBy, setSortBy]: any = useState('name')
     function changeSortBy(event: any) {
       const newSortBy = event.target.id
@@ -113,6 +138,15 @@ export const Filter = forwardRef<HTMLButtonElement, FilterProps>(
         setContactTypeLabel(found.label)
       }
     }, [contactType])
+
+    const [visibilityLabel, setVisibilityLabel] = useState('')
+    useEffect(() => {
+      const found = visibilityFilter.options.find((option) => option.value === visibility)
+
+      if (found) {
+        setVisibilityLabel(found.label)
+      }
+    }, [visibility])
     // sort by label
 
     const [sortByLabel, setSortByLabel] = useState('')
@@ -129,26 +163,37 @@ export const Filter = forwardRef<HTMLButtonElement, FilterProps>(
     useEffect(() => {
       const filterValues = getFilterValues(auth.username)
       setContactType(filterValues.contactType)
+      setVisibility(filterValues.visibility)
       setSortBy(filterValues.sortBy)
 
       updateContactTypeFilter(filterValues.contactType)
+      updateVisibilityFilter(filterValues.visibility)
       updateSort(filterValues.sortBy)
+      // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [])
 
     const resetFilters = () => {
       setTextFilter('')
       setContactType(DEFAULT_CONTACT_TYPE_FILTER)
+      setVisibility(DEFAULT_VISIBILITY_FILTER)
       setSortBy(DEFAULT_SORT_BY)
       savePreference('phonebookContactTypeFilter', DEFAULT_CONTACT_TYPE_FILTER, auth.username)
+      savePreference('phonebookVisibilityFilter', DEFAULT_VISIBILITY_FILTER, auth.username)
       savePreference('phonebookSortBy', DEFAULT_SORT_BY, auth.username)
 
       // notify parent component
       updateTextFilter('')
       updateContactTypeFilter(DEFAULT_CONTACT_TYPE_FILTER)
+      updateVisibilityFilter(DEFAULT_VISIBILITY_FILTER)
       updateSort(DEFAULT_SORT_BY)
     }
 
     const translatedContactTypeOptions = contactTypeFilter.options.map((o) => ({
+      ...o,
+      label: t(`Phonebook.${o.label}`),
+    }))
+
+    const translatedVisibilityOptions = visibilityFilter.options.map((o) => ({
       ...o,
       label: t(`Phonebook.${o.label}`),
     }))
@@ -165,6 +210,13 @@ export const Filter = forwardRef<HTMLButtonElement, FilterProps>(
                 options={translatedContactTypeOptions}
                 selectedValue={contactType}
                 onChange={changeContactType}
+              />
+              <FilterDisclosure
+                name={t(`Phonebook.${visibilityFilter.name}`)}
+                filterId={visibilityFilter.id}
+                options={translatedVisibilityOptions}
+                selectedValue={visibility}
+                onChange={changeVisibility}
               />
               {/* sort by filter (mobile) */}
               {/* //// sort by company is currently not implemented on CTI server */}
@@ -203,6 +255,13 @@ export const Filter = forwardRef<HTMLButtonElement, FilterProps>(
                         selectedValue={contactType}
                         onChange={changeContactType}
                       />
+                      <FilterPopover
+                        name={t(`Phonebook.${visibilityFilter.name}`)}
+                        filterId={visibilityFilter.id}
+                        options={translatedVisibilityOptions}
+                        selectedValue={visibility}
+                        onChange={changeVisibility}
+                      />
                       {/* sort by filter */}
                       {/* //// sort by company is currently not implemented on CTI server */}
                     </PopoverGroup>
@@ -233,6 +292,10 @@ export const Filter = forwardRef<HTMLButtonElement, FilterProps>(
                   {
                     label: t('Phonebook.Contact type'),
                     value: contactTypeLabel ? t(`Phonebook.${contactTypeLabel}`) : '',
+                  },
+                  {
+                    label: t('Phonebook.Visibility'),
+                    value: visibilityLabel ? t(`Phonebook.${visibilityLabel}`) : '',
                   },
                 ]}
                 onReset={resetFilters}

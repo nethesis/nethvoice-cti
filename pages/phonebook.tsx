@@ -12,7 +12,7 @@ import {
   PAGE_SIZE,
   openCreateContactDrawer,
   mapPhonebookResponse,
-  getContactSharingKind,
+  getContactVisibilityKind,
   canCreatePhonebookContacts,
 } from '../lib/phonebook'
 import { RootState } from '../store'
@@ -68,6 +68,13 @@ const Phonebook: NextPage = () => {
     setPhonebookLoaded(false)
   }
 
+  const [visibility, setVisibility]: any = useState('')
+  const updateVisibilityFilter = (newVisibility: string) => {
+    setPageNum(1)
+    setVisibility(newVisibility)
+    setPhonebookLoaded(false)
+  }
+
   const [sortBy, setSortBy]: any = useState('')
   const updateSort = (newSortBy: string) => {
     setSortBy(newSortBy)
@@ -77,10 +84,17 @@ const Phonebook: NextPage = () => {
   // retrieve phonebook
   useEffect(() => {
     async function fetchPhonebook() {
-      if (!isPhonebookLoaded && contactType && sortBy) {
+      if (!isPhonebookLoaded && contactType && visibility && sortBy) {
         try {
           setPhonebookError('')
-          const res = await getPhonebook(pageNum, textFilter, contactType, sortBy)
+          const res = await getPhonebook(
+            pageNum,
+            textFilter,
+            contactType,
+            sortBy,
+            PAGE_SIZE,
+            visibility,
+          )
           setPhonebook(mapPhonebookResponse(res))
         } catch (e) {
           console.error(e)
@@ -90,7 +104,7 @@ const Phonebook: NextPage = () => {
       }
     }
     fetchPhonebook()
-  }, [isPhonebookLoaded, phonebook, pageNum, textFilter, contactType, sortBy])
+  }, [isPhonebookLoaded, phonebook, pageNum, textFilter, contactType, visibility, sortBy])
 
   const phonebookStore = useSelector((state: RootState) => state.phonebook)
 
@@ -118,14 +132,14 @@ const Phonebook: NextPage = () => {
   const { profile } = useSelector((state: RootState) => state.user)
   const canCreateContact = canCreatePhonebookContacts(profile)
 
-  const getSharingIcon = (contact: any) => {
-    const sharingKind = getContactSharingKind(contact)
+  const getVisibilityIcon = (contact: any) => {
+    const visibilityKind = getContactVisibilityKind(contact)
 
-    if (sharingKind === 'private') {
+    if (visibilityKind === 'private') {
       return faUserLock
     }
 
-    if (sharingKind === 'group') {
+    if (visibilityKind === 'group') {
       return faUserGroup
     }
 
@@ -147,9 +161,9 @@ const Phonebook: NextPage = () => {
           <div className='ml-4'>
             <div className='flex items-center gap-2 font-medium text-secondaryNeutral dark:text-secondaryNeutralDark'>
               <span className='cursor-pointer hover:underline'>{contact?.displayName}</span>
-              {getSharingIcon(contact) && (
+              {getVisibilityIcon(contact) && (
                 <FontAwesomeIcon
-                  icon={getSharingIcon(contact)!}
+                  icon={getVisibilityIcon(contact)!}
                   className='h-3.5 w-3.5 text-iconIndigo dark:text-iconIndigoDark'
                   aria-hidden='true'
                 />
@@ -303,6 +317,7 @@ const Phonebook: NextPage = () => {
           <Filter
             updateTextFilter={debouncedUpdateTextFilter}
             updateContactTypeFilter={updateContactTypeFilter}
+            updateVisibilityFilter={updateVisibilityFilter}
             updateSort={updateSort}
           />
           {/* phonebook error */}
