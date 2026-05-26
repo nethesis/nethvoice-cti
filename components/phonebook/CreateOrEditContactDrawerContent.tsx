@@ -19,9 +19,8 @@ import {
   canWritePhonebookVisibility,
   serializeSharedGroups,
 } from '../../lib/phonebook'
-import { closeSideDrawer } from '../../lib/utils'
+import { closeSideDrawer, customScrollbarClass, openToast } from '../../lib/utils'
 import { t } from 'i18next'
-import { openToast } from '../../lib/utils'
 import { useSelector } from 'react-redux'
 import { RootState, store } from '../../store'
 import { getUserGroups, retrieveGroups } from '../../lib/operators'
@@ -238,7 +237,7 @@ export const CreateOrEditContactDrawerContent = forwardRef<
     let isValidationOk = true
 
     if (config?.isEdit && !canEditCurrentContact) {
-      setEditContactError('Cannot edit contact')
+      setEditContactError(t('Phonebook.Cannot edit contact'))
       isValidationOk = false
     }
 
@@ -248,7 +247,7 @@ export const CreateOrEditContactDrawerContent = forwardRef<
       !nameRef?.current?.value?.trim() &&
       !companyRef?.current?.value?.trim()
     ) {
-      setNameError('Required')
+      setNameError(t('Common.Required'))
 
       if (isValidationOk) {
         nameRef?.current?.focus()
@@ -258,7 +257,7 @@ export const CreateOrEditContactDrawerContent = forwardRef<
 
     // company
     if (contactType === 'company' && !companyRef?.current?.value?.trim()) {
-      setCompanyError('Required')
+      setCompanyError(t('Common.Required'))
 
       if (isValidationOk) {
         companyRef.current.focus()
@@ -267,15 +266,15 @@ export const CreateOrEditContactDrawerContent = forwardRef<
     }
 
     if (contactVisibility === 'group' && selectedGroups.length === 0) {
-      setSharedGroupsError('Required')
+      setSharedGroupsError(t('Common.Required'))
       isValidationOk = false
     }
 
     if (!canWritePhonebookVisibility(profile, contactVisibility)) {
       if (config?.isEdit) {
-        setEditContactError('Cannot edit contact')
+        setEditContactError(t('Phonebook.Cannot edit contact'))
       } else {
-        setCreateContactError('Cannot create contact')
+        setCreateContactError(t('Phonebook.Cannot create contact'))
       }
       isValidationOk = false
     }
@@ -336,7 +335,7 @@ export const CreateOrEditContactDrawerContent = forwardRef<
     try {
       await createContact(contactData)
     } catch (error) {
-      setCreateContactError('Cannot create contact')
+      setCreateContactError(t('Phonebook.Cannot create contact'))
       return
     }
     // show toast message
@@ -394,7 +393,7 @@ export const CreateOrEditContactDrawerContent = forwardRef<
     try {
       await editContact(contactData)
     } catch (error) {
-      setEditContactError('Cannot edit contact')
+      setEditContactError(t('Phonebook.Cannot edit contact'))
       return
     }
     // show toast message
@@ -496,7 +495,12 @@ export const CreateOrEditContactDrawerContent = forwardRef<
                 />
               </button>
               {isSharedGroupsDropdownOpen && (
-                <div className='absolute z-20 mt-2 max-h-64 w-[calc(100%-2.5rem)] overflow-auto rounded-md border border-gray-200 bg-white py-2 shadow-lg dark:border-gray-700 dark:bg-gray-900'>
+                <div
+                  className={classNames(
+                    'absolute z-20 mt-2 max-h-64 w-[calc(100%-2.5rem)] rounded-md border border-gray-200 bg-white py-2 shadow-lg dark:border-gray-700 dark:bg-gray-900',
+                    customScrollbarClass,
+                  )}
+                >
                   {availableGroups.length > 0 ? (
                     availableGroups.map((groupName) => {
                       const isSelected = selectedGroups.includes(groupName)
@@ -594,7 +598,7 @@ export const CreateOrEditContactDrawerContent = forwardRef<
         {/* contact fields */}
         {contactType !== 'company' && (
           <TextInput
-            label='Name'
+            label={t('Phonebook.Name') || ''}
             name='name'
             ref={nameRef}
             className='mb-4'
