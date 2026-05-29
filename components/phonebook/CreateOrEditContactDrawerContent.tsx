@@ -237,7 +237,7 @@ export const CreateOrEditContactDrawerContent = forwardRef<
     let isValidationOk = true
 
     if (config?.isEdit && !canEditCurrentContact) {
-      setEditContactError(t('Phonebook.Cannot edit contact'))
+      setEditContactError(String(t('Phonebook.Cannot edit contact') || ''))
       isValidationOk = false
     }
 
@@ -247,7 +247,7 @@ export const CreateOrEditContactDrawerContent = forwardRef<
       !nameRef?.current?.value?.trim() &&
       !companyRef?.current?.value?.trim()
     ) {
-      setNameError(t('Common.Required'))
+      setNameError(String(t('Common.Required') || ''))
 
       if (isValidationOk) {
         nameRef?.current?.focus()
@@ -257,7 +257,7 @@ export const CreateOrEditContactDrawerContent = forwardRef<
 
     // company
     if (contactType === 'company' && !companyRef?.current?.value?.trim()) {
-      setCompanyError(t('Common.Required'))
+      setCompanyError(String(t('Common.Required') || ''))
 
       if (isValidationOk) {
         companyRef.current.focus()
@@ -266,15 +266,15 @@ export const CreateOrEditContactDrawerContent = forwardRef<
     }
 
     if (contactVisibility === 'group' && selectedGroups.length === 0) {
-      setSharedGroupsError(t('Common.Required'))
+      setSharedGroupsError(String(t('Common.Required') || ''))
       isValidationOk = false
     }
 
     if (!canWritePhonebookVisibility(profile, contactVisibility)) {
       if (config?.isEdit) {
-        setEditContactError(t('Phonebook.Cannot edit contact'))
+        setEditContactError(String(t('Phonebook.Cannot edit contact') || ''))
       } else {
-        setCreateContactError(t('Phonebook.Cannot create contact'))
+        setCreateContactError(String(t('Phonebook.Cannot create contact') || ''))
       }
       isValidationOk = false
     }
@@ -335,7 +335,7 @@ export const CreateOrEditContactDrawerContent = forwardRef<
     try {
       await createContact(contactData)
     } catch (error) {
-      setCreateContactError(t('Phonebook.Cannot create contact'))
+      setCreateContactError(String(t('Phonebook.Cannot create contact') || ''))
       return
     }
     // show toast message
@@ -393,7 +393,7 @@ export const CreateOrEditContactDrawerContent = forwardRef<
     try {
       await editContact(contactData)
     } catch (error) {
-      setEditContactError(t('Phonebook.Cannot edit contact'))
+      setEditContactError(String(t('Phonebook.Cannot edit contact') || ''))
       return
     }
     // show toast message
