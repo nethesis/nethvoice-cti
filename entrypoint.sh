@@ -82,6 +82,8 @@ EOF
 
 cat >> /app/public/config/config.production.js<<EOF
   FAVICON_URL: '${FAVICON_URL:-}',
+  NAVBAR_LOGO_URL: '${NAVBAR_LOGO_URL:-}',
+  NAVBAR_LOGO_DARK_URL: '${NAVBAR_LOGO_DARK_URL:-}',
 EOF
 
 

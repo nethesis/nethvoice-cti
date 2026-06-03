@@ -289,6 +289,19 @@ export function getConfiguredFaviconUrl() {
   return window.CONFIG.FAVICON_URL || '/favicon.ico'
 }
 
+export function getConfiguredNavbarLogoUrl(preferDarkTheme: boolean = false) {
+  if (typeof window === 'undefined') {
+    return preferDarkTheme ? '/navbar_logo_dark.svg' : '/navbar_logo.svg'
+  }
+
+  // @ts-ignore
+  const lightLogoUrl = window.CONFIG.NAVBAR_LOGO_URL || '/navbar_logo.svg'
+  // @ts-ignore
+  const darkLogoUrl = window.CONFIG.NAVBAR_LOGO_DARK_URL || lightLogoUrl || '/navbar_logo_dark.svg'
+
+  return preferDarkTheme ? darkLogoUrl : lightLogoUrl
+}
+
 export function convertToCSV(objArray: any) {
   const array = typeof objArray !== 'object' ? JSON.parse(objArray) : objArray
   let str = ''
