@@ -134,7 +134,7 @@ COMPANY_SUBNAME (default: "CTI")
 COMPANY_URL (default: "https://www.nethesis.it/")
 LOGIN_PEOPLE (rebranding of the login people image: it can be shown or hidden based on the value (show or hide string value))
 NAVBAR_LOGO_URL (rebranding of navbar logo: specify a URL to a SVG image)
-NAVBAR_LOGO__DARK_URL (rebranding of navbar logo: specify a URL to a SVG image)
+NAVBAR_LOGO_DARK_URL (rebranding of navbar logo: specify a URL to a SVG image)
 LOGIN_LOGO_URL (rebranding of login logo: specify a URL to a SVG image)
 LOGIN_LOGO_DARK_URL (rebranding of login logo in dark mode: specify a URL to a SVG image)
 FAVICON_URL (used for rebranding: specify a URL to an ICO image)
@@ -151,7 +151,7 @@ To change the logos and background of application you have to set these envirome
 
 - LOGIN_PEOPLE
 - NAVBAR_LOGO_URL
-- NAVBAR_LOGO__DARK_URL
+- NAVBAR_LOGO_DARK_URL
 - LOGIN_LOGO_URL
 - LOGIN_LOGO_DARK_URL
 - FAVICON_URL

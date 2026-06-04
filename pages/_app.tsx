@@ -13,7 +13,7 @@ import { useRouter } from 'next/router'
 import { RouteGuard } from '../config/router'
 import { Service } from '../config/service'
 import { checkDarkTheme } from '../lib/darkTheme'
-import { getProductName } from '../lib/utils'
+import { getBrandedTabTitle, getConfiguredFaviconUrl, getProductSubname } from '../lib/utils'
 import Head from 'next/head'
 import { loadI18n } from '../lib/i18n'
 import { Island } from '../components/island'
@@ -74,13 +74,22 @@ function MyApp({ Component, pageProps }: AppProps) {
     checkDarkTheme()
   }, [])
 
-  const productName = getProductName()
+  useEffect(() => {
+    const faviconElement = document.querySelector("link[rel*='icon']") as HTMLLinkElement | null
+
+    if (faviconElement) {
+      faviconElement.href = getConfiguredFaviconUrl()
+    }
+  }, [])
+
+  const productTabTitle = getBrandedTabTitle(getProductSubname() || 'CTI')
 
   return (
     <>
       <div>
         <Head>
-          <title>{productName}</title>
+          <title>{productTabTitle}</title>
+          <link rel='icon' href={getConfiguredFaviconUrl()} />
         </Head>
       </div>
       {!isLoading && (
