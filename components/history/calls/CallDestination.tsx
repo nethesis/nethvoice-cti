@@ -47,7 +47,7 @@ export const CallDestination: FC<CallDestinationProps> = ({
         <div
           className={
             'truncate text-secondaryNeutral dark:text-secondaryNeutralDark text-sm' +
-            (call.dst !== '' ? 'hover:underline cursor-pointer' : '')
+            (call.dst !== '' ? ' hover:underline cursor-pointer' : '')
           }
         >
           {primaryLabel}
@@ -63,8 +63,8 @@ export const CallDestination: FC<CallDestinationProps> = ({
     // Check if a user does not have a name and add the name of the operator
     const effectiveDstCnam = getEffectiveCnam(call.dst_cnam, call.dst)
     if (effectiveDstCnam === '') {
-      let foundOperator: any = Object.values(operators).find((operator: any) =>
-        operator.endpoints.extension.find((device: any) => device.id === call.dst),
+      let foundOperator: any = Object.values(operators || {}).find((operator: any) =>
+        operator?.endpoints?.extension?.find((device: any) => device.id === call.dst),
       )
 
       if (foundOperator) {

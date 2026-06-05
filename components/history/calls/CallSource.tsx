@@ -72,8 +72,8 @@ export const CallSource: FC<CallSourceProps> = ({
   } else {
     // Check if a user does not have a name and add the name of the operator
     if (effectiveCnam === '') {
-      let foundOperator: any = Object.values(operators).find((operator: any) =>
-        operator.endpoints.extension.find(
+      let foundOperator: any = Object.values(operators || {}).find((operator: any) =>
+        operator?.endpoints?.extension?.find(
           (device: any) => device.id === call.cnum || device.id === call.src,
         ),
       )
