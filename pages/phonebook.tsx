@@ -14,6 +14,7 @@ import {
   mapPhonebookResponse,
   getContactVisibilityKind,
   canCreatePhonebookContacts,
+  DEFAULT_VISIBILITY_FILTER,
 } from '../lib/phonebook'
 import { RootState } from '../store'
 import { useSelector } from 'react-redux'
@@ -68,7 +69,7 @@ const Phonebook: NextPage = () => {
     setPhonebookLoaded(false)
   }
 
-  const [visibility, setVisibility]: any = useState('')
+  const [visibility, setVisibility]: any = useState(DEFAULT_VISIBILITY_FILTER)
   const updateVisibilityFilter = (newVisibility: string) => {
     setPageNum(1)
     setVisibility(newVisibility)
@@ -146,6 +147,20 @@ const Phonebook: NextPage = () => {
     return null
   }
 
+  const getVisibilityLabel = (contact: any) => {
+    const visibilityKind = getContactVisibilityKind(contact)
+
+    if (visibilityKind === 'private') {
+      return t('Phonebook.Private')
+    }
+
+    if (visibilityKind === 'group') {
+      return t('Phonebook.Group')
+    }
+
+    return ''
+  }
+
   const columns = [
     {
       header: t('Phonebook.Full name/Company'),
@@ -165,7 +180,9 @@ const Phonebook: NextPage = () => {
                 <FontAwesomeIcon
                   icon={getVisibilityIcon(contact)!}
                   className='h-3.5 w-3.5 text-iconIndigo dark:text-iconIndigoDark'
-                  aria-hidden='true'
+                  title={getVisibilityLabel(contact)}
+                  aria-label={getVisibilityLabel(contact)}
+                  role='img'
                 />
               )}
             </div>
@@ -179,7 +196,8 @@ const Phonebook: NextPage = () => {
                 <span
                   className={`${
                     contact?.extension !==
-                    operatorsStore?.operators[authStore?.username]?.endpoints?.mainextension?.[0]?.id
+                    operatorsStore?.operators[authStore?.username]?.endpoints?.mainextension?.[0]
+                      ?.id
                       ? 'cursor-pointer hover:underline text-iconPrimary dark:text-iconPrimaryDark'
                       : 'text-secondaryNeutral dark:text-secondaryNeutralDark'
                   } truncate`}
@@ -188,8 +206,8 @@ const Phonebook: NextPage = () => {
                     operatorsStore?.operators[authStore?.username]?.mainPresence === 'busy'
                       ? transferCallToExtension(contact?.extension)
                       : contact?.extension !==
-                        operatorsStore?.operators[authStore?.username]?.endpoints?.mainextension?.[0]
-                          ?.id
+                        operatorsStore?.operators[authStore?.username]?.endpoints
+                          ?.mainextension?.[0]?.id
                       ? callPhoneNumber(contact?.extension)
                       : ''
                   }}
@@ -371,13 +389,13 @@ const Phonebook: NextPage = () => {
                       filteredContacts?.length === 0 &&
                       !textFilter?.length &&
                       canCreateContact && (
-                      <div className='mt-4 flex justify-center'>
-                        <Button variant='primary' onClick={() => openCreateContactDrawer()}>
-                          <FontAwesomeIcon icon={faPlus} className='mr-2 h-4 w-4' />
-                          <span>{t('Phonebook.Create contact')}</span>
-                        </Button>
-                      </div>
-                    )}
+                        <div className='mt-4 flex justify-center'>
+                          <Button variant='primary' onClick={() => openCreateContactDrawer()}>
+                            <FontAwesomeIcon icon={faPlus} className='mr-2 h-4 w-4' />
+                            <span>{t('Phonebook.Create contact')}</span>
+                          </Button>
+                        </div>
+                      )}
                   </div>
                 </div>
               </div>

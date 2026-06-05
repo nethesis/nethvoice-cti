@@ -76,13 +76,18 @@ export const CreateOrEditContactDrawerContent = forwardRef<
 
   const operatorsStore = useSelector((state: RootState) => state.operators)
   const { username, profile } = useSelector((state: RootState) => state.user)
-  const canEditCurrentContact = !config?.isEdit || canWritePhonebookContact(profile, config?.contact, username)
+  const canEditCurrentContact =
+    !config?.isEdit || canWritePhonebookContact(profile, config?.contact, username)
   const writableContactVisibilityOptions = contactVisibilityOptions.filter((option) =>
     canWritePhonebookVisibility(profile, option.id),
   )
   const defaultContactVisibility = writableContactVisibilityOptions[0]?.id || 'private'
-  const allowedGroupsIds = store.select.user.allowedOperatorGroupsIds(store.getState())
-  const presencePanelPermissions = store.select.user.presencePanelPermissions(store.getState())
+  const allowedGroupsIds = useSelector((state: RootState) =>
+    store.select.user.allowedOperatorGroupsIds(state),
+  )
+  const presencePanelPermissions = useSelector((state: RootState) =>
+    store.select.user.presencePanelPermissions(state),
+  )
   const availableGroups = getUserGroups(
     allowedGroupsIds,
     operatorsStore?.groups || {},
@@ -109,7 +114,18 @@ export const CreateOrEditContactDrawerContent = forwardRef<
   const mobilePhoneRef = useRef() as React.MutableRefObject<HTMLInputElement>
   const emailRef = useRef() as React.MutableRefObject<HTMLInputElement>
   const notesRef = useRef() as React.MutableRefObject<HTMLInputElement>
-  const [firstRender, setFirstRender] = useState(true)
+  const formInitializationKeyRef = useRef('')
+  const formInitializationKey = config?.isEdit
+    ? `edit:${config?.contact?.source || ''}:${config?.contact?.id || ''}:${
+        config?.contact?.phone || ''
+      }`
+    : config?.isCreateContactUserLastCalls
+    ? `last-calls:${config?.contact?.extension || ''}:${config?.contact?.phone || ''}`
+    : `create:${
+        typeof config?.contact === 'string'
+          ? config.contact
+          : config?.contact?.phone || config?.contact?.extension || ''
+      }`
 
   useEffect(() => {
     if (!operatorsStore?.isGroupsLoaded) {
@@ -139,10 +155,16 @@ export const CreateOrEditContactDrawerContent = forwardRef<
   }, [isSharedGroupsDropdownOpen])
 
   useEffect(() => {
-    if (firstRender) {
-      setFirstRender(false)
+    if (formInitializationKeyRef.current === formInitializationKey) {
       return
     }
+
+    if (!config?.isEdit && writableContactVisibilityOptions.length === 0) {
+      return
+    }
+
+    formInitializationKeyRef.current = formInitializationKey
+
     if (config?.isEdit) {
       // editing contact
       if (config.contact.kind) {
@@ -219,7 +241,12 @@ export const CreateOrEditContactDrawerContent = forwardRef<
       emailRef.current.value = ''
       notesRef.current.value = ''
     }
-  }, [firstRender, config, profile, defaultContactVisibility])
+  }, [
+    config,
+    defaultContactVisibility,
+    formInitializationKey,
+    writableContactVisibilityOptions.length,
+  ])
 
   const [nameError, setNameError] = useState('')
   const [companyError, setCompanyError] = useState('')
@@ -290,12 +317,8 @@ export const CreateOrEditContactDrawerContent = forwardRef<
     let contactData: any = {
       name: '',
       workphone: '',
-      privacy: contactVisibility,
-      favorite: false,
-      selectedPrefNum: 'extension',
       type:
         contactVisibility === 'group' ? serializeSharedGroups(selectedGroups) : contactVisibility,
-      kind: contactType,
     }
 
     if (contactType === 'person' && nameRef?.current?.value) {
@@ -355,12 +378,8 @@ export const CreateOrEditContactDrawerContent = forwardRef<
       source: config?.contact?.source,
       speeddial_num: config?.contact?.speeddial_num,
       name: null,
-      privacy: contactVisibility,
-      favorite: false,
-      selectedPrefNum: config?.contact?.selectedPrefNum,
       type:
         contactVisibility === 'group' ? serializeSharedGroups(selectedGroups) : contactVisibility,
-      kind: contactType,
       company: companyRef?.current?.value || null,
       extension: extensionRef?.current?.value || null,
       workphone: workPhoneRef?.current?.value || '',
