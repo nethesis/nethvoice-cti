@@ -60,8 +60,8 @@ export const Badge: FC<BadgeProps> = ({
         {onRemove && (
           <button
             type='button'
-            aria-label={removeLabel}
-            className='ml-1.5 inline-flex h-4 w-4 items-center justify-center rounded-full text-current/80 transition hover:bg-black/10 hover:text-current focus:outline-none focus:ring-1 focus:ring-current/40 dark:hover:bg-white/10'
+            aria-label={removeLabel || 'Remove'}
+            className='ml-1.5 inline-flex h-4 w-4 items-center justify-center rounded-full opacity-70 transition hover:bg-black/10 hover:opacity-100 focus:outline-none focus:ring-1 focus:ring-current dark:hover:bg-white/10'
             onClick={(event) => {
               event.stopPropagation()
               onRemove()

@@ -66,6 +66,14 @@ export function getContactSharedGroups(contact: any) {
 }
 
 export function getContactVisibility(contact: any) {
+  // Only CTI contacts carry the public/private/group sharing taxonomy. Centralized
+  // contacts use operational types (extension, rapidcode, custom sources, ...) and
+  // must never be classified or tagged by sharing level. Use the same strict
+  // source check as canWritePhonebookContact so tagging and write-gating agree.
+  if (contact?.source !== 'cti') {
+    return 'public'
+  }
+
   if (hasSerializedGroupType(contact?.type)) {
     return 'group'
   }

@@ -367,13 +367,10 @@ export const ContactSummary = forwardRef<HTMLButtonElement, ContactSummaryProps>
             </div>
           </div>
 
-          {/* contact menu */}
+          {/* contact menu: only when the user can actually write this contact,
+              so Edit/Delete are not offered for actions the server would 403 */}
           {isShownContactMenu &&
-            (contact?.owner_id === auth?.username ||
-              (!(contact?.owner_id === auth?.username) &&
-                contact?.source === 'cti' &&
-                profile?.macro_permissions?.phonebook?.permissions?.ad_phonebook?.value &&
-                contactVisibility === 'public')) && (
+            canWritePhonebookContact(profile, contact, auth?.username) && (
               <div>
                 <Dropdown
                   items={contactMenuItems}
