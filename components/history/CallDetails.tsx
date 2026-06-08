@@ -31,7 +31,7 @@ interface CallDetailsProps {
 }
 
 export function getCallName(call: CallTypes, direction: 'in' | 'out'): string {
-  const incomingNumber = call.cnum || call.src
+  const incomingNumber = call.src || call.cnum
   return direction === 'in'
     ? getEffectiveCnam(call.cnam, incomingNumber) || call.ccompany || t('Common.Unknown')
     : getEffectiveCnam(call.dst_cnam, call.dst) || call.dst_ccompany || t('Common.Unknown')
@@ -51,7 +51,7 @@ export const CallDetails: FC<CallDetailsProps> = ({
 }) => {
   const authStore = useSelector((state: RootState) => state.authentication)
   const operatorsStore = useSelector((state: RootState) => state.operators)
-  const incomingNumber = call.cnum || call.src
+  const incomingNumber = call.src || call.cnum
 
   if ((direction === 'in' && !getEffectiveCnam(call.cnam, incomingNumber)) || (direction === 'out' && !getEffectiveCnam(call.dst_cnam, call.dst))) {
     const phoneNumber = direction === 'in' ? incomingNumber : call.dst
@@ -66,7 +66,7 @@ export const CallDetails: FC<CallDetailsProps> = ({
     let createContactObject: any = {}
 
     if (direction === 'in') {
-      const incomingNum = userInformation.cnum || userInformation.src
+      const incomingNum = userInformation.src || userInformation.cnum
       const effectiveCnam = getEffectiveCnam(userInformation.cnam, incomingNum)
       if (effectiveCnam || userInformation?.ccompany) {
         updatedUserInformation.displayName = effectiveCnam || userInformation.ccompany || '-'

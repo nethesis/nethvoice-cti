@@ -148,7 +148,7 @@ const LastCallItem = memo(
 
     const isIncoming = call.direction === 'in'
     const hasNoInfo = isIncoming
-      ? !(getEffectiveCnam(call.cnam, call.cnum || call.src) || call.ccompany)
+      ? !(getEffectiveCnam(call.cnam, call.src || call.cnum) || call.ccompany)
       : !(getEffectiveCnam(call.dst_cnam, call.dst) || call.dst_ccompany)
 
     const renderCallDetails = (direction: 'in' | 'out') => (
@@ -317,7 +317,7 @@ export const UserLastCallsContent = () => {
           call.direction === 'out'
             ? getEffectiveCnam(call.dst_cnam, call.dst) || call.dst_ccompany
             : call.direction === 'in'
-            ? getEffectiveCnam(call.cnam, call.cnum || call.src) || call.ccompany
+            ? getEffectiveCnam(call.cnam, call.src || call.cnum) || call.ccompany
             : ''
 
         let operator: any = null
@@ -411,7 +411,7 @@ export const UserLastCallsContent = () => {
     const isIncoming = userInformation?.direction === 'in'
     const rawName = isIncoming ? userInformation?.cnam : userInformation?.dst_cnam
     const extension = isIncoming ? userInformation?.src : userInformation?.dst
-    const phoneNumber = isIncoming ? (userInformation?.cnum || userInformation?.src) : userInformation?.dst
+    const phoneNumber = isIncoming ? (userInformation?.src || userInformation?.cnum) : userInformation?.dst
     const effectiveName = getEffectiveCnam(rawName, phoneNumber)
     const company = isIncoming ? userInformation?.ccompany : userInformation?.dst_ccompany
 
