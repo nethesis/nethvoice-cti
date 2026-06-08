@@ -121,9 +121,9 @@ export function callPhoneNumber(phoneNumber: string) {
   const userExtensions = store.getState().operators?.operators[username]?.endpoints?.extension
 
   // Check if there is an extension with type 'nethlink' that matches the id of default_device
-  const hasNethlinkExtension = userExtensions.some(
-    (ext: any) => ext.type === 'nethlink' && ext.id === default_device?.id,
-  )
+  const hasNethlinkExtension = Array.isArray(userExtensions)
+    ? userExtensions.some((ext: any) => ext.type === 'nethlink' && ext.id === default_device?.id)
+    : false
 
   if (default_device?.type === 'webrtc') {
     eventDispatch('phone-island-call-start', { number: phoneNumber })
