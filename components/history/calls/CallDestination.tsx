@@ -28,10 +28,19 @@ export const CallDestination: FC<CallDestinationProps> = ({
   // User call type
   if (callType === 'user') {
     const effectiveDstCnam = getEffectiveCnam(call.dst_cnam, call.dst)
+    // Resolve internal extensions via the operators directory when the CDR row
+    // carried no name (e.g. synthetic transfer-consultation rows have none).
+    let resolvedDstCnam = effectiveDstCnam
+    if (resolvedDstCnam === '' && call.dst !== '' && call.dst !== mainextension) {
+      const op: any = Object.values(operators || {}).find((o: any) =>
+        o?.endpoints?.extension?.find((d: any) => d.id === call.dst),
+      )
+      if (op?.name) resolvedDstCnam = op.name
+    }
 
     const primaryLabel =
-      effectiveDstCnam !== '' && call.dst !== mainextension && effectiveDstCnam !== name
-        ? effectiveDstCnam
+      resolvedDstCnam !== '' && call.dst !== mainextension && resolvedDstCnam !== name
+        ? resolvedDstCnam
         : call.dst_ccompany !== ''
         ? call.dst_ccompany
         : call.dst !== mainextension
@@ -41,7 +50,7 @@ export const CallDestination: FC<CallDestinationProps> = ({
     return (
       <div
         onClick={() =>
-          openDrawerHistory(effectiveDstCnam, call.dst_ccompany, call.dst, callType, operators)
+          openDrawerHistory(resolvedDstCnam, call.dst_ccompany, call.dst, callType, operators)
         }
       >
         <div
@@ -72,7 +81,23 @@ export const CallDestination: FC<CallDestinationProps> = ({
       }
     }
 
-    // Switchboard call type
+    // Switchboard call type. Show the resolved name/company; for an unresolved
+    // EXTERNAL number show "Unknown" (with the number underneath), as the personal
+    // view does. Internal/service numbers with no name show the number itself
+    // instead of "Unknown".
+    const dstNumber = call.dst != null ? call.dst : ''
+    const isExternalNum = (n: string) => (n || '').replace(/\D/g, '').length > 5
+    const switchboardLabel =
+      call.dst_cnam !== ''
+        ? call.dst_cnam
+        : call.dst_ccompany !== ''
+        ? call.dst_ccompany
+        : dstNumber !== ''
+        ? isExternalNum(dstNumber)
+          ? t('Common.Unknown')
+          : dstNumber
+        : '-'
+
     return (
       <div
         onClick={() =>
@@ -80,15 +105,11 @@ export const CallDestination: FC<CallDestinationProps> = ({
         }
       >
         <div className='truncate text-sm cursor-pointer hover:underline text-secondaryNeutral dark:text-secondaryNeutralDark'>
-          {call.dst_cnam !== ''
-            ? call.dst_cnam
-            : call.dst_ccompany !== ''
-            ? call.dst_ccompany
-            : call.dst || '-'}{' '}
+          {switchboardLabel}
         </div>
-        {(call.dst_cnam !== '' || call.dst_ccompany !== '') && (
+        {dstNumber !== '' && switchboardLabel !== dstNumber && (
           <div className='truncate text-sm cursor-pointer hover:underline text-textPlaceholder dark:text-textPlaceholderDark'>
-            {call.dst}
+            {dstNumber}
           </div>
         )}
       </div>

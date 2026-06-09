@@ -74,10 +74,19 @@ export const getParamUrl = async () => {
   }
 }
 
-export const getSummaryCall = async (uniqueid: string, linkedid?: string) => {
+export const getSummaryCall = async (
+  uniqueid: string,
+  linkedid?: string,
+  id?: number,
+  switchboard?: boolean,
+) => {
   try {
+    const params: Record<string, any> = {}
+    if (linkedid) params.linkedid = linkedid
+    if (id) params.id = id
+    if (switchboard) params.switchboard = true
     const res = await axios.get(`/summary/${uniqueid}`, {
-      params: linkedid ? { linkedid } : undefined,
+      params: Object.keys(params).length ? params : undefined,
     })
     return res
   } catch (error: any) {
@@ -91,16 +100,18 @@ export const getSummaryCall = async (uniqueid: string, linkedid?: string) => {
 
 export const checkSummaryList = async (
   lookups: Array<{ uniqueid?: string; linkedid?: string }> | string[],
+  switchboard?: boolean,
 ) => {
   if (!Array.isArray(lookups) || lookups.length === 0) {
     return { code: 200, data: [], message: 'success' }
   }
 
   try {
-    const body =
+    const body: Record<string, any> =
       typeof lookups[0] === 'string'
         ? { uniqueids: lookups as string[] }
         : { lookups: lookups as Array<{ uniqueid?: string; linkedid?: string }> }
+    if (switchboard) body.switchboard = true
     const res = await axios.post(`/summary/statuses`, body)
     return res.data
   } catch (error: any) {
@@ -115,10 +126,19 @@ export const checkSummaryList = async (
   }
 }
 
-export const getTranscription = async (uniqueid: string, linkedid?: string) => {
+export const getTranscription = async (
+  uniqueid: string,
+  linkedid?: string,
+  id?: number,
+  switchboard?: boolean,
+) => {
   try {
+    const params: Record<string, any> = {}
+    if (linkedid) params.linkedid = linkedid
+    if (id) params.id = id
+    if (switchboard) params.switchboard = true
     const res = await axios.get(`/transcripts/${uniqueid}`, {
-      params: linkedid ? { linkedid } : undefined,
+      params: Object.keys(params).length ? params : undefined,
     })
     return res
   } catch (error: any) {
@@ -132,13 +152,23 @@ export const getTranscription = async (uniqueid: string, linkedid?: string) => {
   }
 }
 
-export const updateSummary = async (uniqueid: string, summary: string, linkedid?: string) => {
+export const updateSummary = async (
+  uniqueid: string,
+  summary: string,
+  linkedid?: string,
+  id?: number,
+  switchboard?: boolean,
+) => {
   try {
+    const params: Record<string, any> = {}
+    if (linkedid) params.linkedid = linkedid
+    if (id) params.id = id
+    if (switchboard) params.switchboard = true
     const res = await axios.put(
       `/summary/${uniqueid}`,
       { summary },
       {
-        params: linkedid ? { linkedid } : undefined,
+        params: Object.keys(params).length ? params : undefined,
       },
     )
     return res.data

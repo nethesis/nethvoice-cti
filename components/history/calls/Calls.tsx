@@ -83,6 +83,11 @@ export const Calls: FC<CallsProps> = ({ className }): JSX.Element => {
   const [areFiltersInitialized, setAreFiltersInitialized] = useState(false)
   const [totalPages, setTotalPages] = useState(0)
   const [summaryStatusMap, setSummaryStatusMap] = useState<Record<string, any>>({})
+  // Extra conversations the user took part in (e.g. the consultation leg of a
+  // transfer) that are not a directly-requested history row. Rendered as their
+  // own conversation rows. Keyed by transcript id, not uniqueid (which they may
+  // share with the main leg).
+  const [extraConversations, setExtraConversations] = useState<any[]>([])
   const [isLoadingSummaryStatus, setIsLoadingSummaryStatus] = useState(false)
   const [handledSummaryLinkedId, setHandledSummaryLinkedId] = useState<string | null>(null)
   const [historyRefreshToken, setHistoryRefreshToken] = useState(0)
@@ -147,11 +152,17 @@ export const Calls: FC<CallsProps> = ({ className }): JSX.Element => {
         config: {
           uniqueid,
           linkedid,
+          // Exact transcript row id, so the drawer loads this specific
+          // conversation when several share a uniqueid (transfer legs).
+          id: summaryStatus?.id ?? call?.transcriptId,
           isSummary: summaryStatus?.has_summary || false,
+          // Switchboard supervisors are not call participants: tell the API to
+          // authorize the drawer fetch by capability instead of membership.
+          switchboard: callType === 'switchboard',
         },
       })
     },
-    [dispatch],
+    [dispatch, callType],
   )
 
   const openVoicemailInboxByMessageId = useCallback(
@@ -326,24 +337,33 @@ export const Calls: FC<CallsProps> = ({ className }): JSX.Element => {
     try {
       setIsLoadingSummaryStatus(true)
 
-      const response = await checkSummaryList(lookups)
+      const response = await checkSummaryList(lookups, callType === 'switchboard')
 
       if (response?.data && Array.isArray(response?.data)) {
         const statusMap: Record<string, any> = {}
+        const extras: any[] = []
         response.data.forEach((item: any) => {
-          if (item?.uniqueid && !item?.error) {
+          if (item?.error) {
+            return
+          }
+          if (item?.extra) {
+            // A conversation the user joined that is not the requested row
+            // (transfer consultation leg): rendered as its own row.
+            extras.push(item)
+          } else if (item?.uniqueid) {
             statusMap[item.uniqueid] = item
           }
         })
 
         setSummaryStatusMap(statusMap)
+        setExtraConversations(extras)
       }
     } catch (error) {
       console.error('Error loading summary status:', error)
     } finally {
       setIsLoadingSummaryStatus(false)
     }
-  }, [history?.rows])
+  }, [history?.rows, callType])
 
   // Load summary status when history is loaded or page changes
   useEffect(() => {
@@ -393,7 +413,7 @@ export const Calls: FC<CallsProps> = ({ className }): JSX.Element => {
   }
 
   function openTranscriptionDrawer(call: any) {
-    const summaryStatus = summaryStatusMap?.[call?.uniqueid]
+    const summaryStatus = call?.summaryStatus ?? summaryStatusMap?.[call?.uniqueid]
     openSummaryDrawerByCall(call, summaryStatus)
   }
 
@@ -579,6 +599,213 @@ export const Calls: FC<CallsProps> = ({ className }): JSX.Element => {
     })
   }, [history?.rows, feature_codes?.audio_test])
 
+  // Merge in the extra conversations the user took part in (e.g. the transfer
+  // consultation leg) as their own rows, placed next to the related call.
+  const displayRows = useMemo(() => {
+    // Switchboard (supervisor) view: render one clean row per real conversation
+    // of each call (taken from the transcript), replacing the raw CDR legs —
+    // which for transfers include technical/duplicated rows with wrong parties.
+    // Calls with no transcript keep their original CDR row so nothing vanishes.
+    if (callType === 'switchboard') {
+      const convs = (extraConversations || []).filter((c: any) => c?.linkedid)
+      if (convs.length === 0) {
+        return filteredHistory
+      }
+
+      const norm = (v: any) => (v ?? '').toString().trim()
+      // Without a single "me" extension, infer direction from the parties:
+      // an external (long) number as src means inbound, as dst means outbound.
+      const isExternal = (n: any) => norm(n).replace(/\D/g, '').length > 5
+      const convDirection = (conv: any) => {
+        if (isExternal(conv?.src_number)) return 'in'
+        if (isExternal(conv?.dst_number)) return 'out'
+        return 'internal'
+      }
+      // The switchboard CDR feed (histcallswitch) returns direction=null and
+      // carries the outbound trunk number in cnum on transferred legs, so we must
+      // NOT display the leg's own src/dst/cnum. Instead use the transcript's clean
+      // parties (src_number/dst_number) and only borrow timing/recording from the
+      // one CDR leg that actually connects BOTH parties of this conversation.
+      const partyName = (legs: any[], num: string) => {
+        const n = norm(num)
+        if (!n) return { cnam: '', company: '' }
+        for (const leg of legs) {
+          if (norm(leg?.cnum) === n && norm(leg?.cnam))
+            return { cnam: norm(leg.cnam), company: norm(leg?.ccompany) }
+          if (norm(leg?.src) === n && norm(leg?.cnam))
+            return { cnam: norm(leg.cnam), company: norm(leg?.ccompany) }
+          if (norm(leg?.dst) === n && norm(leg?.dst_cnam))
+            return { cnam: norm(leg.dst_cnam), company: norm(leg?.dst_ccompany) }
+        }
+        return { cnam: '', company: '' }
+      }
+
+      const convsByLinked = new Map<string, any[]>()
+      convs.forEach((conv: any) => {
+        const arr = convsByLinked.get(conv.linkedid) || []
+        arr.push(conv)
+        convsByLinked.set(conv.linkedid, arr)
+      })
+
+      // Walk the page in backend order. At the first CDR leg of a transcribed
+      // call, emit one row per real conversation (built from the transcript's
+      // clean parties) and drop that call's raw/technical legs.
+      const emitted = new Set<string>()
+      const result: any[] = []
+      filteredHistory.forEach((row: any) => {
+        const lid = row?.linkedid
+        if (lid && convsByLinked.has(lid)) {
+          if (!emitted.has(lid)) {
+            emitted.add(lid)
+            const legs = filteredHistory.filter((r: any) => r?.linkedid === lid)
+            ;(convsByLinked.get(lid) || []).forEach((conv: any) => {
+              const a = norm(conv?.src_number)
+              const b = norm(conv?.dst_number)
+              // The CDR leg whose parties include BOTH conversation parties is the
+              // authoritative source for duration/disposition/recording. Prefer
+              // ANSWERED + longest. If none (e.g. a consultation leg the switchboard
+              // feed dropped), leave duration empty rather than borrow a wrong one.
+              const timed = legs
+                .filter((leg: any) => {
+                  const p = [norm(leg?.src), norm(leg?.dst), norm(leg?.cnum)]
+                  return a && b && p.includes(a) && p.includes(b)
+                })
+                .sort(
+                  (x: any, y: any) =>
+                    (y?.disposition === 'ANSWERED' ? 1 : 0) -
+                      (x?.disposition === 'ANSWERED' ? 1 : 0) ||
+                    (Number(y?.duration) || 0) - (Number(x?.duration) || 0),
+                )[0]
+              const srcName = partyName(legs, conv?.src_number)
+              const dstName = partyName(legs, conv?.dst_number)
+
+              result.push({
+                uniqueid: conv?.uniqueid,
+                linkedid: conv?.linkedid,
+                id: conv?.id,
+                // Clean parties from the transcript (no trunk number).
+                src: conv?.src_number || '',
+                dst: conv?.dst_number || '',
+                cnum: conv?.src_number || '',
+                cnam: srcName.cnam,
+                ccompany: srcName.company,
+                dst_cnam: dstName.cnam,
+                dst_ccompany: dstName.company,
+                clid: '',
+                direction: convDirection(conv),
+                disposition: timed?.disposition || 'ANSWERED',
+                time: timed?.time ?? row?.time,
+                duration: Number(timed?.duration) || 0,
+                billsec: Number(timed?.billsec) || 0,
+                channel: timed?.channel || '',
+                dstchannel: timed?.dstchannel || '',
+                recordingfile: timed?.recordingfile || '',
+                has_voicemail_message: false,
+                voicemail_message_id: '',
+                isConversationRow: true,
+                summaryStatus: conv,
+                transcriptId: conv?.id,
+              })
+            })
+          }
+          return
+        }
+        result.push(row)
+      })
+
+      return result
+    }
+    if (!extraConversations || extraConversations.length === 0) {
+      return filteredHistory
+    }
+
+    const result: any[] = [...filteredHistory]
+
+    extraConversations.forEach((conv: any) => {
+      const related = filteredHistory.find((c: any) => c?.linkedid === conv?.linkedid)
+      // Only place an extra conversation next to its call on the current page.
+      // No related row (e.g. stale extras during a page change) → skip, never
+      // emit an orphan row with no timestamp (would crash the date cell).
+      if (!related) {
+        return
+      }
+      const isOut = !!mainextension && conv?.src_number === mainextension
+      const isIn = !!mainextension && conv?.dst_number === mainextension
+      const direction = isOut ? 'out' : isIn ? 'in' : related?.direction || 'in'
+
+      const syntheticRow = {
+        uniqueid: conv?.uniqueid,
+        linkedid: conv?.linkedid,
+        id: conv?.id,
+        src: conv?.src_number || '',
+        dst: conv?.dst_number || '',
+        cnum: conv?.src_number || '',
+        cnam: '',
+        ccompany: '',
+        dst_cnam: '',
+        dst_ccompany: '',
+        clid: '',
+        direction,
+        disposition: 'ANSWERED',
+        time: related?.time,
+        duration: 0,
+        billsec: 0,
+        channel: '',
+        dstchannel: '',
+        recordingfile: '',
+        has_voicemail_message: false,
+        voicemail_message_id: '',
+        // markers used by the cells to render this transcript-only conversation
+        isConversationRow: true,
+        summaryStatus: conv,
+        transcriptId: conv?.id,
+      }
+
+      const insertAt = result.findIndex(
+        (c: any) => c?.uniqueid === related?.uniqueid && c?.linkedid === related?.linkedid,
+      )
+      if (insertAt >= 0) {
+        result.splice(insertAt + 1, 0, syntheticRow)
+      } else {
+        result.push(syntheticRow)
+      }
+    })
+
+    // Collapse rows that resolve to the SAME transcript conversation. A transfer
+    // produces several CDR legs for one conversation (e.g. 201's two legs both
+    // map to the cell<->201 transcript): show that conversation once. Among
+    // duplicates keep the row whose parties match the transcript. Rows without a
+    // transcript (plain/untranscribed calls) are never collapsed.
+    const txIndex = new Map<number, number>()
+    const deduped: any[] = []
+    result.forEach((row: any) => {
+      const status = row?.summaryStatus ?? summaryStatusMap?.[row?.uniqueid]
+      const txId = row?.transcriptId ?? status?.id
+      if (!txId) {
+        deduped.push(row)
+        return
+      }
+      if (!txIndex.has(txId)) {
+        txIndex.set(txId, deduped.length)
+        deduped.push(row)
+        return
+      }
+      const existingIdx = txIndex.get(txId) as number
+      const existing = deduped[existingIdx]
+      const existingStatus = existing?.summaryStatus ?? summaryStatusMap?.[existing?.uniqueid]
+      const rowMatches = status && row?.src === status?.src_number && row?.dst === status?.dst_number
+      const existingMatches =
+        existingStatus &&
+        existing?.src === existingStatus?.src_number &&
+        existing?.dst === existingStatus?.dst_number
+      if (rowMatches && !existingMatches) {
+        deduped[existingIdx] = row
+      }
+    })
+
+    return deduped
+  }, [filteredHistory, extraConversations, mainextension, summaryStatusMap, callType])
+
   // Definition of the columns of the table
   const columns = [
     {
@@ -642,7 +869,7 @@ export const Calls: FC<CallsProps> = ({ className }): JSX.Element => {
     {
       header: '',
       cell: (call: any) => {
-        const summaryStatus = summaryStatusMap?.[call?.uniqueid]
+        const summaryStatus = call?.summaryStatus ?? summaryStatusMap?.[call?.uniqueid]
         const isVoicemail = hasVoicemailMessage(call)
 
         if (!summaryStatus && !isVoicemail) {
@@ -735,7 +962,7 @@ export const Calls: FC<CallsProps> = ({ className }): JSX.Element => {
           playSelectedAudioFile={playSelectedAudioFile}
           getRecordingActions={getRecordingActions}
           getCallActions={getCallActions}
-          summaryStatus={summaryStatusMap?.[call?.uniqueid]}
+          summaryStatus={call?.summaryStatus ?? summaryStatusMap?.[call?.uniqueid]}
         />
       ),
       width: '20%',
@@ -813,7 +1040,7 @@ export const Calls: FC<CallsProps> = ({ className }): JSX.Element => {
                   <div className='inline-block min-w-full py-2 align-middle px-2 md:px-6 lg:px-8'>
                     <Table
                       columns={columns}
-                      data={!historyError && isHistoryLoaded ? filteredHistory : []}
+                      data={!historyError && isHistoryLoaded ? displayRows : []}
                       isLoading={!isHistoryLoaded || isLoadingPagination}
                       emptyState={{
                         title: t('History.No calls'),

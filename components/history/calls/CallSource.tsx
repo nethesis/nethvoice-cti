@@ -39,9 +39,19 @@ export const CallSource: FC<CallSourceProps> = ({
 
   // User call type
   if (callType === 'user') {
+    // Resolve internal extensions via the operators directory when the CDR row
+    // carried no name (e.g. synthetic transfer-consultation rows have none).
+    let resolvedCnam = effectiveCnam
+    if (resolvedCnam === '' && sourceNumber !== '' && sourceNumber !== mainextension) {
+      const op: any = Object.values(operators || {}).find((o: any) =>
+        o?.endpoints?.extension?.find((d: any) => d.id === sourceNumber),
+      )
+      if (op?.name) resolvedCnam = op.name
+    }
+
     const primaryLabel =
-      effectiveCnam !== '' && sourceNumber !== mainextension && effectiveCnam !== name
-        ? effectiveCnam
+      resolvedCnam !== '' && sourceNumber !== mainextension && resolvedCnam !== name
+        ? resolvedCnam
         : call.ccompany !== ''
         ? call.ccompany
         : sourceNumber !== mainextension
@@ -51,7 +61,7 @@ export const CallSource: FC<CallSourceProps> = ({
     return (
       <div
         onClick={() => {
-          openDrawerHistory(effectiveCnam, call.ccompany, sourceNumber, callType, operators)
+          openDrawerHistory(resolvedCnam, call.ccompany, sourceNumber, callType, operators)
         }}
       >
         <div
@@ -83,7 +93,22 @@ export const CallSource: FC<CallSourceProps> = ({
       }
     }
 
-    // Switchboard call type
+    // Switchboard call type. Show the resolved name/company; for an unresolved
+    // EXTERNAL number show "Unknown" (with the number underneath), as the personal
+    // view does. Internal/service numbers with no name show the number itself
+    // instead of "Unknown".
+    const isExternalNum = (n: string) => (n || '').replace(/\D/g, '').length > 5
+    const switchboardLabel =
+      call.cnam !== ''
+        ? call.cnam
+        : call.ccompany !== ''
+        ? call.ccompany
+        : sourceNumber !== ''
+        ? isExternalNum(sourceNumber)
+          ? t('Common.Unknown')
+          : sourceNumber
+        : '-'
+
     return (
       <div
         onClick={() => {
@@ -91,9 +116,9 @@ export const CallSource: FC<CallSourceProps> = ({
         }}
       >
         <div className='truncate text-sm cursor-pointer hover:underline text-secondaryNeutral dark:text-secondaryNeutralDark'>
-          {call.cnam !== '' ? call.cnam : call.ccompany !== '' ? call.ccompany : sourceNumber || '-'}
+          {switchboardLabel}
         </div>
-        {sourceNumber !== '' && (call.cnam !== '' || call.ccompany !== '') && (
+        {sourceNumber !== '' && switchboardLabel !== sourceNumber && (
           <div className='truncate text-sm cursor-pointer hover:underline text-textPlaceholder dark:text-textPlaceholderDark'>
             {sourceNumber}
           </div>
