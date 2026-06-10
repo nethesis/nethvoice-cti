@@ -82,28 +82,28 @@ export const AnnouncementView: FC<AnnouncementViewProps> = ({ className }): JSX.
   }
 
   // Show modal announcement
-  useEventListener('phone-island-recording-saved', (modalAnnouncementObjInformation) => {
-    if (modalAnnouncementObjInformation?.tempFileName) {
+  useEventListener('phone-island-recording-saved', (data) => {
+    if (data?.tempFileName) {
       dispatch.sideDrawer.update({
         isShown: true,
         contentType: 'showSaveRecordedAnnouncement',
         config: {
           isEdit: false,
-          recordedFilename: modalAnnouncementObjInformation.tempFileName,
+          recordedFilename: data.tempFileName,
           announcementSavedCallback: announcementSavedCallback,
         },
       })
     }
   })
 
-  useEventListener('phone-island-physical-recording-saved', (modalAnnouncementObjInformation) => {
-    if (modalAnnouncementObjInformation?.tempFileName) {
+  useEventListener('phone-island-physical-recording-saved', (data) => {
+    if (data?.tempFileName) {
       dispatch.sideDrawer.update({
         isShown: true,
         contentType: 'showSaveRecordedAnnouncement',
         config: {
           isEdit: false,
-          recordedFilename: modalAnnouncementObjInformation.tempFileName,
+          recordedFilename: data.tempFileName,
           announcementSavedCallback: announcementSavedCallback,
         },
       })

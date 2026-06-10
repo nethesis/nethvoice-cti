@@ -41,9 +41,18 @@ const formatTranscriptText = (value: string) =>
 
 interface TranscriptionViewProps {
   uniqueid: string
+  linkedid?: string
+  transcriptId?: number
+  // Switchboard (supervisor) scope: authorize by capability, not participation.
+  switchboard?: boolean
 }
 
-export const TranscriptionView: FC<TranscriptionViewProps> = ({ uniqueid }) => {
+export const TranscriptionView: FC<TranscriptionViewProps> = ({
+  uniqueid,
+  linkedid,
+  transcriptId,
+  switchboard,
+}) => {
   const [transcription, setTranscription] = useState('')
   const [isLoading, setIsLoading] = useState(false)
   const [error, setError] = useState('')
@@ -74,7 +83,7 @@ export const TranscriptionView: FC<TranscriptionViewProps> = ({ uniqueid }) => {
     setIsLoading(true)
     setError('')
     try {
-      const response = await getTranscription(uniqueid)
+      const response = await getTranscription(uniqueid, linkedid, transcriptId, switchboard)
       if (response && response.data) {
         const data = response.data?.data || response.data
         if (!applyTranscriptionData(data)) {
@@ -90,13 +99,13 @@ export const TranscriptionView: FC<TranscriptionViewProps> = ({ uniqueid }) => {
     } finally {
       setIsLoading(false)
     }
-  }, [applyTranscriptionData, uniqueid])
+  }, [applyTranscriptionData, linkedid, uniqueid, transcriptId, switchboard])
 
   useEffect(() => {
     if (uniqueid) {
       loadTranscription()
     }
-  }, [uniqueid, loadTranscription])
+  }, [uniqueid, linkedid, loadTranscription])
 
   return (
     <>
