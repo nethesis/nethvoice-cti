@@ -27,6 +27,7 @@ import {
   openEditSpeedDialDrawer,
   exportSpeedDial,
 } from '../../../lib/speedDial'
+import { canCreatePhonebookContacts, canWritePhonebookVisibility } from '../../../lib/phonebook'
 import { t } from 'i18next'
 import { callPhoneNumber, transferCallToExtension, customScrollbarClass } from '../../../lib/utils'
 import { useSelector } from 'react-redux'
@@ -84,6 +85,8 @@ export const SpeedDialContent = () => {
   const operators: any = useSelector((state: RootState) => state.operators)
   const authStore: any = useSelector((state: RootState) => state.authentication)
   const speedDialStore = useSelector((state: RootState) => state.speedDial)
+  const canCreateSpeedDials = canCreatePhonebookContacts(profile)
+  const canWriteSpeedDials = canWritePhonebookVisibility(profile, 'private')
 
   // Reset specific error
   const resetError = useCallback((errorType: keyof typeof errors) => {
@@ -321,36 +324,42 @@ export const SpeedDialContent = () => {
   const speedDialMenuTemplate = useMemo(
     () => (
       <>
-        <Dropdown.Item
-          icon={faFileImport}
-          onClick={() => {
-            const input = document.createElement('input')
-            input.type = 'file'
-            input.accept = '.csv'
-            input.onchange = importSpeedDial
-            input.click()
-          }}
-        >
-          {t('SpeedDial.Import CSV')}
-        </Dropdown.Item>
+        {canCreateSpeedDials && (
+          <Dropdown.Item
+            icon={faFileImport}
+            onClick={() => {
+              const input = document.createElement('input')
+              input.type = 'file'
+              input.accept = '.csv'
+              input.onchange = importSpeedDial
+              input.click()
+            }}
+          >
+            {t('SpeedDial.Import CSV')}
+          </Dropdown.Item>
+        )}
         {speedDials.length > 0 && (
           <>
             <Dropdown.Item icon={faFileArrowDown} onClick={() => exportSpeedDial(speedDials)}>
               {t('SpeedDial.Export CSV')}
             </Dropdown.Item>
-            <div className='relative pb-2'>
-              <div className='absolute inset-0 flex items-center' aria-hidden='true'>
-                <div className='w-full border-t border-gray-300 dark:border-gray-600' />
-              </div>
-            </div>
-            <Dropdown.Item icon={faTrash} isRed onClick={() => openModal('deleteAll')}>
-              {t('SpeedDial.Delete all')}
-            </Dropdown.Item>
+            {canWriteSpeedDials && (
+              <>
+                <div className='relative pb-2'>
+                  <div className='absolute inset-0 flex items-center' aria-hidden='true'>
+                    <div className='w-full border-t border-gray-300 dark:border-gray-600' />
+                  </div>
+                </div>
+                <Dropdown.Item icon={faTrash} isRed onClick={() => openModal('deleteAll')}>
+                  {t('SpeedDial.Delete all')}
+                </Dropdown.Item>
+              </>
+            )}
           </>
         )}
       </>
     ),
-    [speedDials, importSpeedDial, openModal],
+    [speedDials, canCreateSpeedDials, canWriteSpeedDials, importSpeedDial, openModal],
   )
 
   // Main content
@@ -365,21 +374,23 @@ export const SpeedDialContent = () => {
             <div className='flex gap-2 items-center'>
               {isSpeedDialLoaded && speedDials?.length > 0 && (
                 <>
-                  <div className='h-7 flex items-center'>
-                    <Button
-                      variant='white'
-                      className='h-9'
-                      onClick={() => openCreateSpeedDialDrawer()}
-                      data-tooltip-id='add-speed-dial-tooltip'
-                      data-tooltip-content={t('SpeedDial.Create speed dial') || ''}
-                    >
-                      <FontAwesomeIcon
-                        icon={faCirclePlus}
-                        className='h-4 w-4 text-primaryActive dark:text-primaryActiveDark'
-                      />
-                      <CustomThemedTooltip id='add-speed-dial-tooltip' place='bottom' />
-                    </Button>
-                  </div>
+                  {canCreateSpeedDials && (
+                    <div className='h-7 flex items-center'>
+                      <Button
+                        variant='white'
+                        className='h-9'
+                        onClick={() => openCreateSpeedDialDrawer()}
+                        data-tooltip-id='add-speed-dial-tooltip'
+                        data-tooltip-content={t('SpeedDial.Create speed dial') || ''}
+                      >
+                        <FontAwesomeIcon
+                          icon={faCirclePlus}
+                          className='h-4 w-4 text-primaryActive dark:text-primaryActiveDark'
+                        />
+                        <CustomThemedTooltip id='add-speed-dial-tooltip' place='bottom' />
+                      </Button>
+                    </div>
+                  )}
 
                   {/* Sort dropdown */}
                   <Dropdown
@@ -463,10 +474,12 @@ export const SpeedDialContent = () => {
                   <FontAwesomeIcon icon={faBolt} className='mx-auto h-12 w-12' aria-hidden='true' />
                 }
               >
-                <Button variant='white' onClick={() => openCreateSpeedDialDrawer()}>
-                  <FontAwesomeIcon icon={faPlus} className='mr-2 h-4 w-4' />
-                  <span>{t('SpeedDial.Create')}</span>
-                </Button>
+                {canCreateSpeedDials && (
+                  <Button variant='white' onClick={() => openCreateSpeedDialDrawer()}>
+                    <FontAwesomeIcon icon={faPlus} className='mr-2 h-4 w-4' />
+                    <span>{t('SpeedDial.Create')}</span>
+                  </Button>
+                )}
               </EmptyState>
             </div>
           )}
@@ -525,15 +538,17 @@ export const SpeedDialContent = () => {
                         </div>
                       </div>
                     </div>
-                    <div className='flex gap-2'>
-                      {/* Actions */}
-                      <Dropdown items={getItemsMenu(speedDial)} position='left'>
-                        <Button variant='ghost' className='dark:hover:bg-gray-700 h-9 w-9'>
-                          <FontAwesomeIcon icon={faEllipsisVertical} className='h-4 w-4' />
-                          <span className='sr-only'>{t('SpeedDial.Open speed dial menu')}</span>
-                        </Button>
-                      </Dropdown>
-                    </div>
+                    {canWriteSpeedDials && (
+                      <div className='flex gap-2'>
+                        {/* Actions */}
+                        <Dropdown items={getItemsMenu(speedDial)} position='left'>
+                          <Button variant='ghost' className='dark:hover:bg-gray-700 h-9 w-9'>
+                            <FontAwesomeIcon icon={faEllipsisVertical} className='h-4 w-4' />
+                            <span className='sr-only'>{t('SpeedDial.Open speed dial menu')}</span>
+                          </Button>
+                        </Dropdown>
+                      </div>
+                    )}
                   </div>
                 </div>
               </li>

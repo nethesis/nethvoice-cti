@@ -18,8 +18,9 @@ import type { NavItemsProps } from '../../config/routes'
 import Link from 'next/link'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { faXmark } from '@fortawesome/free-solid-svg-icons'
+import Logo from '../../public/navbar_logo.svg'
 import { customScrollbarClass, getConfiguredNavbarLogoUrl } from '../../lib/utils'
-
+import { useTranslation } from 'react-i18next'
 interface MobileNavBarProps {
   show: boolean
   items: NavItemsProps[]
@@ -27,6 +28,8 @@ interface MobileNavBarProps {
 }
 
 export const MobileNavBar: FC<MobileNavBarProps> = ({ closeMobileMenu, show, items }) => {
+  const { t } = useTranslation()
+
   return (
     <>
       {/* Mobile menu */}
@@ -75,7 +78,7 @@ export const MobileNavBar: FC<MobileNavBarProps> = ({ closeMobileMenu, show, ite
                         className='h-6 w-6 text-white'
                         aria-hidden='true'
                       />
-                      <span className='sr-only'>Close sidebar</span>
+                      <span className='sr-only'>{t('Common.Close menu')}</span>
                     </button>
                   </div>
                 </TransitionChild>
@@ -111,7 +114,7 @@ export const MobileNavBar: FC<MobileNavBarProps> = ({ closeMobileMenu, show, ite
                               )}
                               aria-hidden='true'
                             />
-                            <span>{item.name}</span>
+                            <span>{t(`Common.${item.name}`)}</span>
                           </div>
                         </Link>
                       ))}
