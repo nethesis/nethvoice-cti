@@ -112,7 +112,7 @@ export const checkSummaryList = async (
         ? { uniqueids: lookups as string[] }
         : { lookups: lookups as Array<{ uniqueid?: string; linkedid?: string }> }
     if (switchboard) body.switchboard = true
-    const res = await axios.post(`/summary/statuses`, body)
+    const res = await axios.post(`/history/statuses`, body)
     return res.data
   } catch (error: any) {
     const status = error?.response?.status
