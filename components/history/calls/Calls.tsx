@@ -695,8 +695,14 @@ export const Calls: FC<CallsProps> = ({ className }): JSX.Element => {
                 direction: convDirection(conv),
                 disposition: timed?.disposition || 'ANSWERED',
                 time: timed?.time ?? row?.time,
-                duration: Number(timed?.duration) || 0,
-                billsec: Number(timed?.billsec) || 0,
+                duration:
+                  Number(conv?.duration_seconds) > 0
+                    ? Number(conv?.duration_seconds)
+                    : Number(timed?.duration) || 0,
+                billsec:
+                  Number(conv?.duration_seconds) > 0
+                    ? Number(conv?.duration_seconds)
+                    : Number(timed?.billsec) || 0,
                 channel: timed?.channel || '',
                 dstchannel: timed?.dstchannel || '',
                 recordingfile: timed?.recordingfile || '',
@@ -733,6 +739,27 @@ export const Calls: FC<CallsProps> = ({ className }): JSX.Element => {
       const isIn = !!mainextension && conv?.dst_number === mainextension
       const direction = isOut ? 'out' : isIn ? 'in' : related?.direction || 'in'
 
+      // Borrow the duration/disposition from the CDR leg whose parties include BOTH
+      // conversation parties (e.g. a transfer consultation leg recorded over a Local
+      // channel has no own CDR row for this user, so without this it would render as
+      // 00:00:00). Prefer ANSWERED + longest. Mirrors the switchboard path above.
+      const normNum = (v: any) => (v ?? '').toString().trim()
+      const convSrc = normNum(conv?.src_number)
+      const convDst = normNum(conv?.dst_number)
+      const timedLeg = filteredHistory
+        .filter((leg: any) => {
+          if (leg?.linkedid !== conv?.linkedid) {
+            return false
+          }
+          const parties = [normNum(leg?.src), normNum(leg?.dst), normNum(leg?.cnum)]
+          return convSrc && convDst && parties.includes(convSrc) && parties.includes(convDst)
+        })
+        .sort(
+          (x: any, y: any) =>
+            (y?.disposition === 'ANSWERED' ? 1 : 0) - (x?.disposition === 'ANSWERED' ? 1 : 0) ||
+            (Number(y?.duration) || 0) - (Number(x?.duration) || 0),
+        )[0]
+
       const syntheticRow = {
         uniqueid: conv?.uniqueid,
         linkedid: conv?.linkedid,
@@ -746,13 +773,22 @@ export const Calls: FC<CallsProps> = ({ className }): JSX.Element => {
         dst_ccompany: '',
         clid: '',
         direction,
-        disposition: 'ANSWERED',
-        time: related?.time,
-        duration: 0,
-        billsec: 0,
-        channel: '',
-        dstchannel: '',
-        recordingfile: '',
+        disposition: timedLeg?.disposition || 'ANSWERED',
+        time: timedLeg?.time ?? related?.time,
+        // Prefer the satellite per-segment duration (authoritative for transfer
+        // sub-legs that own no CDR row for this user); fall back to a CDR leg that
+        // includes both parties, then 0.
+        duration:
+          Number(conv?.duration_seconds) > 0
+            ? Number(conv?.duration_seconds)
+            : Number(timedLeg?.duration) || 0,
+        billsec:
+          Number(conv?.duration_seconds) > 0
+            ? Number(conv?.duration_seconds)
+            : Number(timedLeg?.billsec) || 0,
+        channel: timedLeg?.channel || '',
+        dstchannel: timedLeg?.dstchannel || '',
+        recordingfile: timedLeg?.recordingfile || '',
         has_voicemail_message: false,
         voicemail_message_id: '',
         // markers used by the cells to render this transcript-only conversation
