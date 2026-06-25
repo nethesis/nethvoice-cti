@@ -285,9 +285,19 @@ const theme = {
         base: 'bg-surfaceBadgeBlue text-textBadgeBlue dark:bg-surfaceBadgeBlueDark dark:text-textBadgeBlueDark',
       },
     },
+    blueNethLink: {
+      badge: {
+        base: 'bg-surfaceBadgeBlueNethLink text-textBadgeBlueNethLink dark:bg-surfaceBadgeBlueNethLinkDark dark:text-textBadgeBlueNethLinkDark',
+      },
+    },
+    indigoNethLink: {
+      badge: {
+        base: 'bg-surfaceBadgeIndigoNethLink text-textBadgeIndigoNethLink dark:bg-surfaceBadgeIndigoNethLinkDark dark:text-textBadgeIndigoNethLinkDark',
+      },
+    },
     enabled: {
       badge: {
-        base: 'bg-emerald-200 text-emerald-900 dark:bg-emerald-800 dark:text-emerald-100',
+        base: 'bg-emerald-100 text-emerald-800 dark:bg-emerald-700 dark:text-emerald-50',
       },
       avatar: {
         dot: 'bg-surfacePresenceOnline dark:bg-surfacePresenceOnlineDark',

@@ -1,7 +1,7 @@
 // Copyright (C) 2024 Nethesis S.r.l.
 // SPDX-License-Identifier: AGPL-3.0-or-later
 
-import { FC, ComponentProps, useState, useEffect } from 'react'
+import { FC, ComponentProps, useState, useEffect, useCallback } from 'react'
 import { useTranslation } from 'react-i18next'
 import { retrieveQueueStats } from '../../lib/queuesLib'
 import classNames from 'classnames'
@@ -26,7 +26,7 @@ export const StatisticsView: FC<StatisticsViewProps> = ({ className }): JSX.Elem
   const [lastUpdated, setLastUpdated]: any = useState(null)
   const queuesStore = useSelector((state: RootState) => state.queues)
 
-  const fetchStats = async () => {
+  const fetchStats = useCallback(async () => {
     try {
       setStatsError('')
       setStatsLoaded(false)
@@ -38,7 +38,7 @@ export const StatisticsView: FC<StatisticsViewProps> = ({ className }): JSX.Elem
       setStatsError(t('Queues.Cannot retrieve stats') || '')
     }
     setStatsLoaded(true)
-  }
+  }, [t])
 
   // retrieve stats
   useEffect(() => {
@@ -64,7 +64,7 @@ export const StatisticsView: FC<StatisticsViewProps> = ({ className }): JSX.Elem
         clearInterval(intervalId)
       }
     }
-  }, [firstRender])
+  }, [firstRender, fetchStats])
 
   return (
     <div className={classNames(className)}>

@@ -3,15 +3,30 @@
 
 import { ComponentPropsWithRef, forwardRef } from 'react'
 import classNames from 'classnames'
-import { TextInput, InlineNotification } from '../common'
+import { TextInput, InlineNotification, Badge } from '../common'
 import { DrawerHeader } from '../common/DrawerHeader'
 import { Divider } from '../common/Divider'
 import { DrawerFooter } from '../common/DrawerFooter'
 import { useState, useRef, useEffect } from 'react'
-import { createContact, editContact, reloadPhonebook, fetchContact } from '../../lib/phonebook'
-import { closeSideDrawer } from '../../lib/utils'
+import {
+  createContact,
+  editContact,
+  reloadPhonebook,
+  fetchContact,
+  getContactSharedGroups,
+  getContactVisibility,
+  canWritePhonebookContact,
+  canWritePhonebookVisibility,
+  serializeSharedGroups,
+} from '../../lib/phonebook'
+import { closeSideDrawer, customScrollbarClass, openToast } from '../../lib/utils'
 import { t } from 'i18next'
-import { openToast } from '../../lib/utils'
+import { useSelector } from 'react-redux'
+import { RootState, store } from '../../store'
+import { getUserGroups, retrieveGroups } from '../../lib/operators'
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
+import { faCheck, faChevronDown, faUsers, faCircleInfo } from '@fortawesome/free-solid-svg-icons'
+import { CustomThemedTooltip } from '../common/CustomThemedTooltip'
 
 export interface CreateOrEditContactDrawerContentProps extends ComponentPropsWithRef<'div'> {
   config: any
@@ -39,7 +54,11 @@ export const CreateOrEditContactDrawerContent = forwardRef<
     },
     {
       id: 'private',
-      title: t('Phonebook.Only me'),
+      title: t('Phonebook.Private'),
+    },
+    {
+      id: 'group',
+      title: t('Phonebook.Group'),
     },
   ]
 
@@ -50,7 +69,42 @@ export const CreateOrEditContactDrawerContent = forwardRef<
 
   const [contactVisibility, setContactVisibility]: any = useState('public')
   const onContactVisibilityChanged = (e: any) => {
-    setContactVisibility(e.target.id)
+    if (canWritePhonebookVisibility(profile, e.target.id)) {
+      setContactVisibility(e.target.id)
+    }
+  }
+
+  const operatorsStore = useSelector((state: RootState) => state.operators)
+  const { username, profile } = useSelector((state: RootState) => state.user)
+  const canEditCurrentContact =
+    !config?.isEdit || canWritePhonebookContact(profile, config?.contact, username)
+  const writableContactVisibilityOptions = contactVisibilityOptions.filter((option) =>
+    canWritePhonebookVisibility(profile, option.id),
+  )
+  const defaultContactVisibility = writableContactVisibilityOptions[0]?.id || 'private'
+  const allowedGroupsIds = useSelector((state: RootState) =>
+    store.select.user.allowedOperatorGroupsIds(state),
+  )
+  const presencePanelPermissions = useSelector((state: RootState) =>
+    store.select.user.presencePanelPermissions(state),
+  )
+  const availableGroups = getUserGroups(
+    allowedGroupsIds,
+    operatorsStore?.groups || {},
+    presencePanelPermissions?.['all_groups']?.value,
+    username,
+  )
+  const [selectedGroups, setSelectedGroups] = useState<string[]>([])
+  const [sharedGroupsError, setSharedGroupsError] = useState('')
+  const [isSharedGroupsDropdownOpen, setIsSharedGroupsDropdownOpen] = useState(false)
+  const sharedGroupsDropdownRef = useRef() as React.MutableRefObject<HTMLDivElement>
+
+  const toggleSharedGroup = (groupName: string) => {
+    setSelectedGroups((currentGroups) =>
+      currentGroups.includes(groupName)
+        ? currentGroups.filter((currentGroup) => currentGroup !== groupName)
+        : [...currentGroups, groupName],
+    )
   }
 
   const nameRef = useRef() as React.MutableRefObject<HTMLInputElement>
@@ -60,13 +114,57 @@ export const CreateOrEditContactDrawerContent = forwardRef<
   const mobilePhoneRef = useRef() as React.MutableRefObject<HTMLInputElement>
   const emailRef = useRef() as React.MutableRefObject<HTMLInputElement>
   const notesRef = useRef() as React.MutableRefObject<HTMLInputElement>
-  const [firstRender, setFirstRender] = useState(true)
+  const formInitializationKeyRef = useRef('')
+  const formInitializationKey = config?.isEdit
+    ? `edit:${config?.contact?.source || ''}:${config?.contact?.id || ''}:${
+        config?.contact?.phone || ''
+      }`
+    : config?.isCreateContactUserLastCalls
+    ? `last-calls:${config?.contact?.extension || ''}:${config?.contact?.phone || ''}`
+    : `create:${
+        typeof config?.contact === 'string'
+          ? config.contact
+          : config?.contact?.phone || config?.contact?.extension || ''
+      }`
 
   useEffect(() => {
-    if (firstRender) {
-      setFirstRender(false)
+    if (!operatorsStore?.isGroupsLoaded) {
+      retrieveGroups()
+    }
+  }, [operatorsStore?.isGroupsLoaded])
+
+  useEffect(() => {
+    if (!isSharedGroupsDropdownOpen) {
       return
     }
+
+    const handleClickOutside = (event: MouseEvent) => {
+      if (
+        sharedGroupsDropdownRef.current &&
+        !sharedGroupsDropdownRef.current.contains(event.target as Node)
+      ) {
+        setIsSharedGroupsDropdownOpen(false)
+      }
+    }
+
+    document.addEventListener('mousedown', handleClickOutside)
+
+    return () => {
+      document.removeEventListener('mousedown', handleClickOutside)
+    }
+  }, [isSharedGroupsDropdownOpen])
+
+  useEffect(() => {
+    if (formInitializationKeyRef.current === formInitializationKey) {
+      return
+    }
+
+    if (!config?.isEdit && writableContactVisibilityOptions.length === 0) {
+      return
+    }
+
+    formInitializationKeyRef.current = formInitializationKey
+
     if (config?.isEdit) {
       // editing contact
       if (config.contact.kind) {
@@ -78,7 +176,9 @@ export const CreateOrEditContactDrawerContent = forwardRef<
           setContactType('company')
         }
       }
-      setContactVisibility(config.contact.type)
+      const currentVisibility = getContactVisibility(config.contact)
+      setContactVisibility(currentVisibility)
+      setSelectedGroups(getContactSharedGroups(config.contact))
       nameRef.current.value = config.contact.name || ''
       companyRef.current.value = config.contact.company || ''
 
@@ -114,7 +214,8 @@ export const CreateOrEditContactDrawerContent = forwardRef<
       notesRef.current.value = config.contact.notes || ''
     } else if (config?.isCreateContactUserLastCalls) {
       setContactType('person')
-      setContactVisibility('public')
+      setContactVisibility(defaultContactVisibility)
+      setSelectedGroups([])
 
       nameRef.current.value = ''
       companyRef.current.value = ''
@@ -126,7 +227,8 @@ export const CreateOrEditContactDrawerContent = forwardRef<
     } else {
       // creating contact
       setContactType('person')
-      setContactVisibility('public')
+      setContactVisibility(defaultContactVisibility)
+      setSelectedGroups([])
       nameRef.current.value = ''
       companyRef.current.value = ''
       extensionRef.current.value = ''
@@ -139,7 +241,12 @@ export const CreateOrEditContactDrawerContent = forwardRef<
       emailRef.current.value = ''
       notesRef.current.value = ''
     }
-  }, [firstRender, config])
+  }, [
+    config,
+    defaultContactVisibility,
+    formInitializationKey,
+    writableContactVisibilityOptions.length,
+  ])
 
   const [nameError, setNameError] = useState('')
   const [companyError, setCompanyError] = useState('')
@@ -152,8 +259,14 @@ export const CreateOrEditContactDrawerContent = forwardRef<
     setCompanyError('')
     setCreateContactError('')
     setEditContactError('')
+    setSharedGroupsError('')
 
     let isValidationOk = true
+
+    if (config?.isEdit && !canEditCurrentContact) {
+      setEditContactError(String(t('Phonebook.Cannot edit contact') || ''))
+      isValidationOk = false
+    }
 
     // name
     if (
@@ -161,7 +274,7 @@ export const CreateOrEditContactDrawerContent = forwardRef<
       !nameRef?.current?.value?.trim() &&
       !companyRef?.current?.value?.trim()
     ) {
-      setNameError('Required')
+      setNameError(String(t('Common.Required') || ''))
 
       if (isValidationOk) {
         nameRef?.current?.focus()
@@ -171,13 +284,28 @@ export const CreateOrEditContactDrawerContent = forwardRef<
 
     // company
     if (contactType === 'company' && !companyRef?.current?.value?.trim()) {
-      setCompanyError('Required')
+      setCompanyError(String(t('Common.Required') || ''))
 
       if (isValidationOk) {
         companyRef.current.focus()
         isValidationOk = false
       }
     }
+
+    if (contactVisibility === 'group' && selectedGroups.length === 0) {
+      setSharedGroupsError(String(t('Common.Required') || ''))
+      isValidationOk = false
+    }
+
+    if (!canWritePhonebookVisibility(profile, contactVisibility)) {
+      if (config?.isEdit) {
+        setEditContactError(String(t('Phonebook.Cannot edit contact') || ''))
+      } else {
+        setCreateContactError(String(t('Phonebook.Cannot create contact') || ''))
+      }
+      isValidationOk = false
+    }
+
     return isValidationOk
   }
 
@@ -189,11 +317,8 @@ export const CreateOrEditContactDrawerContent = forwardRef<
     let contactData: any = {
       name: '',
       workphone: '',
-      privacy: contactVisibility,
-      favorite: false,
-      selectedPrefNum: 'extension',
-      type: contactVisibility,
-      kind: contactType,
+      type:
+        contactVisibility === 'group' ? serializeSharedGroups(selectedGroups) : contactVisibility,
     }
 
     if (contactType === 'person' && nameRef?.current?.value) {
@@ -233,7 +358,7 @@ export const CreateOrEditContactDrawerContent = forwardRef<
     try {
       await createContact(contactData)
     } catch (error) {
-      setCreateContactError('Cannot create contact')
+      setCreateContactError(String(t('Phonebook.Cannot create contact') || ''))
       return
     }
     // show toast message
@@ -253,11 +378,8 @@ export const CreateOrEditContactDrawerContent = forwardRef<
       source: config?.contact?.source,
       speeddial_num: config?.contact?.speeddial_num,
       name: null,
-      privacy: contactVisibility,
-      favorite: false,
-      selectedPrefNum: config?.contact?.selectedPrefNum,
-      type: contactVisibility,
-      kind: contactType,
+      type:
+        contactVisibility === 'group' ? serializeSharedGroups(selectedGroups) : contactVisibility,
       company: companyRef?.current?.value || null,
       extension: extensionRef?.current?.value || null,
       workphone: workPhoneRef?.current?.value || '',
@@ -290,7 +412,7 @@ export const CreateOrEditContactDrawerContent = forwardRef<
     try {
       await editContact(contactData)
     } catch (error) {
-      setEditContactError('Cannot edit contact')
+      setEditContactError(String(t('Phonebook.Cannot edit contact') || ''))
       return
     }
     // show toast message
@@ -308,11 +430,14 @@ export const CreateOrEditContactDrawerContent = forwardRef<
   }
 
   const showToastCreationContact = () => {
-    openToast(
-      'success',
-      `${t('Phonebook.Contact creation message')}`,
-      `${t('Phonebook.Contact created')}`,
-    )
+    const contactName =
+      contactType === 'person' && nameRef?.current?.value
+        ? nameRef.current.value
+        : companyRef?.current?.value || t('Phonebook.Contact')
+
+    const message = t('Phonebook.Contact added to phonebook', { name: contactName })
+
+    openToast('success', message, `${t('Phonebook.Contact created')}`)
   }
 
   return (
@@ -330,13 +455,22 @@ export const CreateOrEditContactDrawerContent = forwardRef<
         <Divider />
         {/* contact visibility */}
         <div className='mb-6'>
-          <label className='text-sm font-medium text-gray-700 dark:text-gray-200'>
-            {t('Phonebook.Visibility')}
-          </label>
+          <div className='flex items-center'>
+            <label className='text-sm font-medium leading-5 text-secondaryNeutral dark:text-secondaryNeutralDark'>
+              {t('Phonebook.Visibility')}
+            </label>
+            <FontAwesomeIcon
+              icon={faCircleInfo}
+              className='ml-2 h-4 w-4 text-iconTooltip dark:text-iconTooltipDark cursor-help'
+              data-tooltip-id='visibility-info-tooltip'
+              data-tooltip-content={t('Phonebook.Visibility info')}
+            />
+            <CustomThemedTooltip id='visibility-info-tooltip' place='right' />
+          </div>
           <fieldset className='mt-2'>
             <legend className='sr-only'>{t('Phonebook.Visibility')}</legend>
-            <div className='space-y-4 sm:flex sm:items-center sm:space-y-0 sm:space-x-10'>
-              {contactVisibilityOptions.map((option) => (
+            <div className='space-y-3'>
+              {writableContactVisibilityOptions.map((option) => (
                 <div key={option?.id} className='flex items-center'>
                   <input
                     id={option?.id}
@@ -357,9 +491,103 @@ export const CreateOrEditContactDrawerContent = forwardRef<
             </div>
           </fieldset>
         </div>
+        {/* shared groups */}
+        {contactVisibility === 'group' && (
+          <div className='mb-6'>
+            <label className='text-sm font-medium text-gray-700 dark:text-gray-200'>
+              {t('Phonebook.Groups')}
+            </label>
+            <div className='mt-2' ref={sharedGroupsDropdownRef}>
+              <button
+                type='button'
+                className='flex w-full items-center justify-between rounded-md border border-gray-300 bg-bgInput px-3 py-2 text-left text-sm text-gray-500 shadow-sm transition hover:border-primaryLight focus:border-primaryLight focus:outline-none focus:ring-1 focus:ring-primaryLight dark:border-gray-600 dark:bg-bgInputDark dark:text-gray-300 dark:hover:border-primaryDark dark:focus:border-primaryDark dark:focus:ring-primaryDark'
+                onClick={() => setIsSharedGroupsDropdownOpen((open) => !open)}
+              >
+                <span>{t('Phonebook.Choose one or more groups')}</span>
+                <FontAwesomeIcon
+                  icon={faChevronDown}
+                  className={classNames(
+                    'h-4 w-4 transition-transform',
+                    isSharedGroupsDropdownOpen && 'rotate-180',
+                  )}
+                  aria-hidden='true'
+                />
+              </button>
+              {isSharedGroupsDropdownOpen && (
+                <div
+                  className={classNames(
+                    'absolute z-20 mt-2 max-h-64 w-[calc(100%-2.5rem)] rounded-md border border-gray-200 bg-white py-2 shadow-lg dark:border-gray-700 dark:bg-gray-900',
+                    customScrollbarClass,
+                  )}
+                >
+                  {availableGroups.length > 0 ? (
+                    availableGroups.map((groupName) => {
+                      const isSelected = selectedGroups.includes(groupName)
+
+                      return (
+                        <button
+                          key={groupName}
+                          type='button'
+                          className='flex w-full items-center gap-3 px-4 py-2 text-left text-sm text-secondaryNeutral transition hover:bg-gray-100 dark:text-secondaryNeutralDark dark:hover:bg-gray-800'
+                          onClick={() => toggleSharedGroup(groupName)}
+                        >
+                          <span className='inline-flex h-4 w-4 items-center justify-center text-iconPrimary dark:text-primaryDark'>
+                            {isSelected && (
+                              <FontAwesomeIcon
+                                icon={faCheck}
+                                className='h-3.5 w-3.5'
+                                aria-hidden='true'
+                              />
+                            )}
+                          </span>
+                          <FontAwesomeIcon
+                            icon={faUsers}
+                            className='h-3.5 w-3.5 text-iconSecondaryNeutral dark:text-iconSecondaryNeutralDark'
+                            aria-hidden='true'
+                          />
+                          <span className='truncate'>{groupName}</span>
+                        </button>
+                      )
+                    })
+                  ) : (
+                    <p className='px-4 py-2 text-sm text-gray-500 dark:text-gray-400'>
+                      {t('Phonebook.No groups available')}
+                    </p>
+                  )}
+                </div>
+              )}
+            </div>
+            {selectedGroups.length > 0 && (
+              <div className='mt-3'>
+                <div className='flex flex-wrap items-center gap-2'>
+                  <p className='text-sm font-medium leading-5 text-secondaryNeutral dark:text-secondaryNeutralDark'>
+                    {t('Phonebook.Selected')}
+                  </p>
+                  {selectedGroups.map((groupName) => (
+                    <Badge
+                      key={groupName}
+                      variant='enabled'
+                      rounded='full'
+                      size='small'
+                      onRemove={() => toggleSharedGroup(groupName)}
+                      removeLabel={`${t('Common.Delete')} ${groupName}`}
+                    >
+                      {groupName}
+                    </Badge>
+                  ))}
+                </div>
+              </div>
+            )}
+            {sharedGroupsError && (
+              <p className='mt-2 text-sm text-rose-600 dark:text-rose-400'>
+                {t('Phonebook.Select at least one group')}
+              </p>
+            )}
+          </div>
+        )}
         {/* contact type */}
         <div className='mb-6'>
-          <label className='text-sm font-medium text-gray-700 dark:text-gray-200'>
+          <label className='text-sm font-medium text-secondaryNeutral dark:text-secondaryNeutralDark'>
             {t('Phonebook.Type')}
           </label>
           <fieldset className='mt-2'>
@@ -377,7 +605,7 @@ export const CreateOrEditContactDrawerContent = forwardRef<
                   />
                   <label
                     htmlFor={option?.id}
-                    className='ml-3 block text-sm font-medium text-gray-700 dark:text-gray-200'
+                    className='ml-3 block text-sm font-medium text-secondaryNeutral dark:text-secondaryNeutralDark'
                   >
                     {option?.title}
                   </label>
@@ -389,7 +617,7 @@ export const CreateOrEditContactDrawerContent = forwardRef<
         {/* contact fields */}
         {contactType !== 'company' && (
           <TextInput
-            label='Name'
+            label={t('Phonebook.Name') || ''}
             name='name'
             ref={nameRef}
             className='mb-4'
@@ -451,6 +679,7 @@ export const CreateOrEditContactDrawerContent = forwardRef<
             cancelLabel={t('Common.Cancel') || ''}
             confirmLabel={t('Phonebook.Save contact')}
             onConfirm={prepareEditContact}
+            confirmDisabled={!canEditCurrentContact}
           />
         ) : (
           <DrawerFooter
