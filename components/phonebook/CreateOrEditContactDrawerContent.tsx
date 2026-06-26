@@ -18,12 +18,13 @@ import {
   canWritePhonebookContact,
   canWritePhonebookVisibility,
   serializeSharedGroups,
+  getPhonebookPermissionLevel,
 } from '../../lib/phonebook'
 import { closeSideDrawer, customScrollbarClass, openToast } from '../../lib/utils'
 import { t } from 'i18next'
 import { useSelector } from 'react-redux'
-import { RootState, store } from '../../store'
-import { getUserGroups, retrieveGroups } from '../../lib/operators'
+import { RootState } from '../../store'
+import { getShareableGroups, retrieveGroups } from '../../lib/operators'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { faCheck, faChevronDown, faUsers, faCircleInfo } from '@fortawesome/free-solid-svg-icons'
 import { CustomThemedTooltip } from '../common/CustomThemedTooltip'
@@ -82,16 +83,9 @@ export const CreateOrEditContactDrawerContent = forwardRef<
     canWritePhonebookVisibility(profile, option.id),
   )
   const defaultContactVisibility = writableContactVisibilityOptions[0]?.id || 'private'
-  const allowedGroupsIds = useSelector((state: RootState) =>
-    store.select.user.allowedOperatorGroupsIds(state),
-  )
-  const presencePanelPermissions = useSelector((state: RootState) =>
-    store.select.user.presencePanelPermissions(state),
-  )
-  const availableGroups = getUserGroups(
-    allowedGroupsIds,
+  const availableGroups = getShareableGroups(
     operatorsStore?.groups || {},
-    presencePanelPermissions?.['all_groups']?.value,
+    getPhonebookPermissionLevel(profile) >= 2,
     username,
   )
   const [selectedGroups, setSelectedGroups] = useState<string[]>([])

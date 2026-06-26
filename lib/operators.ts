@@ -483,6 +483,31 @@ export async function pickup(obj: any) {
   }
 }
 
+/**
+ * Operator groups a user may share a phonebook contact with: the groups the
+ * user is directly a member of, plus every group when they hold full phonebook
+ * management permission (level 2 / ad_phonebook).
+ *
+ * This intentionally does NOT consider presence-panel permissions
+ * (all_groups / grp_*): contact sharing must depend only on the groups assigned
+ * to the user, mirroring the nethcti-middleware write validation. Keep it
+ * separate from getUserGroups, which governs the presence panel / operators
+ * filtering and must keep its presence-panel semantics.
+ */
+export function getShareableGroups(
+  allGroups: { [key: string]: { users: string[] } },
+  canShareAllGroups: boolean,
+  username: string,
+) {
+  if (canShareAllGroups) {
+    return Object.keys(allGroups)
+  }
+
+  return Object.keys(allGroups).filter((groupName) =>
+    allGroups[groupName]?.users.includes(username),
+  )
+}
+
 export function getUserGroups(
   allowedGroupsIds: string[],
   allGroups: { [key: string]: { users: string[] } },
