@@ -18,7 +18,6 @@ import {
   canWritePhonebookContact,
   canWritePhonebookVisibility,
   serializeSharedGroups,
-  getPhonebookPermissionLevel,
 } from '../../lib/phonebook'
 import { closeSideDrawer, customScrollbarClass, openToast } from '../../lib/utils'
 import { t } from 'i18next'
@@ -83,11 +82,7 @@ export const CreateOrEditContactDrawerContent = forwardRef<
     canWritePhonebookVisibility(profile, option.id),
   )
   const defaultContactVisibility = writableContactVisibilityOptions[0]?.id || 'private'
-  const availableGroups = getShareableGroups(
-    operatorsStore?.groups || {},
-    getPhonebookPermissionLevel(profile) >= 2,
-    username,
-  )
+  const availableGroups = getShareableGroups(operatorsStore?.groups || {}, username)
   const [selectedGroups, setSelectedGroups] = useState<string[]>([])
   const [sharedGroupsError, setSharedGroupsError] = useState('')
   const [isSharedGroupsDropdownOpen, setIsSharedGroupsDropdownOpen] = useState(false)
