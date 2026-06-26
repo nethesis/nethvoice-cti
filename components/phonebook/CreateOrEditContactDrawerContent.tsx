@@ -96,13 +96,43 @@ export const CreateOrEditContactDrawerContent = forwardRef<
     )
   }
 
-  const nameRef = useRef() as React.MutableRefObject<HTMLInputElement>
+  const firstNameRef = useRef() as React.MutableRefObject<HTMLInputElement>
+  const lastNameRef = useRef() as React.MutableRefObject<HTMLInputElement>
+  const jobRef = useRef() as React.MutableRefObject<HTMLInputElement>
   const companyRef = useRef() as React.MutableRefObject<HTMLInputElement>
   const extensionRef = useRef() as React.MutableRefObject<HTMLInputElement>
   const workPhoneRef = useRef() as React.MutableRefObject<HTMLInputElement>
+  const workPhone2Ref = useRef() as React.MutableRefObject<HTMLInputElement>
   const mobilePhoneRef = useRef() as React.MutableRefObject<HTMLInputElement>
+  const mobilePhone2Ref = useRef() as React.MutableRefObject<HTMLInputElement>
   const emailRef = useRef() as React.MutableRefObject<HTMLInputElement>
+  const facebookRef = useRef() as React.MutableRefObject<HTMLInputElement>
+  const instagramRef = useRef() as React.MutableRefObject<HTMLInputElement>
+  const linkedinRef = useRef() as React.MutableRefObject<HTMLInputElement>
   const notesRef = useRef() as React.MutableRefObject<HTMLInputElement>
+
+  // The backend keeps `name` as the authoritative display field (used by the
+  // centralized phonebook, physical-phone export, search and sorting). The
+  // redesigned form edits firstname/lastname separately and recomposes `name`
+  // on save so those consumers keep working unchanged (issue #7124).
+  const composeName = () => {
+    const first = firstNameRef?.current?.value?.trim() || ''
+    const last = lastNameRef?.current?.value?.trim() || ''
+    return `${first} ${last}`.trim()
+  }
+
+  // Best-effort split of a legacy single `name` into first/last for pre-filling
+  // the form only. The stored value is never rewritten until the user saves.
+  const splitLegacyName = (fullName: string) => {
+    const tokens = (fullName || '').trim().split(/\s+/).filter(Boolean)
+    if (tokens.length === 0) {
+      return { firstname: '', lastname: '' }
+    }
+    if (tokens.length === 1) {
+      return { firstname: tokens[0], lastname: '' }
+    }
+    return { firstname: tokens.slice(0, -1).join(' '), lastname: tokens[tokens.length - 1] }
+  }
   const formInitializationKeyRef = useRef('')
   const formInitializationKey = config?.isEdit
     ? `edit:${config?.contact?.source || ''}:${config?.contact?.id || ''}:${
@@ -168,14 +198,29 @@ export const CreateOrEditContactDrawerContent = forwardRef<
       const currentVisibility = getContactVisibility(config.contact)
       setContactVisibility(currentVisibility)
       setSelectedGroups(getContactSharedGroups(config.contact))
-      nameRef.current.value = config.contact.name || ''
+      // Prefer explicit firstname/lastname; fall back to splitting the legacy
+      // single `name` so older contacts edit cleanly without data loss.
+      if (config.contact.firstname || config.contact.lastname) {
+        firstNameRef.current.value = config.contact.firstname || ''
+        lastNameRef.current.value = config.contact.lastname || ''
+      } else {
+        const split = splitLegacyName(config.contact.name || '')
+        firstNameRef.current.value = split.firstname
+        lastNameRef.current.value = split.lastname
+      }
+      jobRef.current.value = config.contact.job || ''
       companyRef.current.value = config.contact.company || ''
+      facebookRef.current.value = config.contact.facebook || ''
+      instagramRef.current.value = config.contact.instagram || ''
+      linkedinRef.current.value = config.contact.linkedin || ''
 
       if (!config.contact.phone) {
         // User is editing a contact
         extensionRef.current.value = config.contact.extension || ''
         workPhoneRef.current.value = config.contact.workphone || ''
+        workPhone2Ref.current.value = config.contact.workphone2 || ''
         mobilePhoneRef.current.value = config.contact.cellphone || ''
+        mobilePhone2Ref.current.value = config.contact.cellphone2 || ''
       } else {
         // User is adding a number to a contact
         if (!config.contact.workphone) {
@@ -198,6 +243,8 @@ export const CreateOrEditContactDrawerContent = forwardRef<
           mobilePhoneRef.current.value = config.contact.cellphone || ''
           extensionRef.current.value = config.contact.extension || ''
         }
+        workPhone2Ref.current.value = config.contact.workphone2 || ''
+        mobilePhone2Ref.current.value = config.contact.cellphone2 || ''
       }
       emailRef.current.value = config.contact.workemail || ''
       notesRef.current.value = config.contact.notes || ''
@@ -206,19 +253,28 @@ export const CreateOrEditContactDrawerContent = forwardRef<
       setContactVisibility(defaultContactVisibility)
       setSelectedGroups([])
 
-      nameRef.current.value = ''
+      firstNameRef.current.value = ''
+      lastNameRef.current.value = ''
+      jobRef.current.value = ''
       companyRef.current.value = ''
       extensionRef.current.value = config?.contact?.extension || ''
       workPhoneRef.current.value = ''
+      workPhone2Ref.current.value = ''
       mobilePhoneRef.current.value = ''
+      mobilePhone2Ref.current.value = ''
       emailRef.current.value = ''
+      facebookRef.current.value = ''
+      instagramRef.current.value = ''
+      linkedinRef.current.value = ''
       notesRef.current.value = ''
     } else {
       // creating contact
       setContactType('person')
       setContactVisibility(defaultContactVisibility)
       setSelectedGroups([])
-      nameRef.current.value = ''
+      firstNameRef.current.value = ''
+      lastNameRef.current.value = ''
+      jobRef.current.value = ''
       companyRef.current.value = ''
       extensionRef.current.value = ''
       if (config.contact) {
@@ -226,8 +282,13 @@ export const CreateOrEditContactDrawerContent = forwardRef<
       } else {
         workPhoneRef.current.value = ''
       }
+      workPhone2Ref.current.value = ''
       mobilePhoneRef.current.value = ''
+      mobilePhone2Ref.current.value = ''
       emailRef.current.value = ''
+      facebookRef.current.value = ''
+      instagramRef.current.value = ''
+      linkedinRef.current.value = ''
       notesRef.current.value = ''
     }
   }, [
@@ -257,16 +318,17 @@ export const CreateOrEditContactDrawerContent = forwardRef<
       isValidationOk = false
     }
 
-    // name
+    // name (a person needs at least a first/last name or a company)
     if (
       contactType === 'person' &&
-      !nameRef?.current?.value?.trim() &&
+      !firstNameRef?.current?.value?.trim() &&
+      !lastNameRef?.current?.value?.trim() &&
       !companyRef?.current?.value?.trim()
     ) {
       setNameError(String(t('Common.Required') || ''))
 
       if (isValidationOk) {
-        nameRef?.current?.focus()
+        firstNameRef?.current?.focus()
         isValidationOk = false
       }
     }
@@ -310,14 +372,24 @@ export const CreateOrEditContactDrawerContent = forwardRef<
         contactVisibility === 'group' ? serializeSharedGroups(selectedGroups) : contactVisibility,
     }
 
-    if (contactType === 'person' && nameRef?.current?.value) {
-      contactData.name = nameRef?.current?.value
-    } else if (
-      contactType === 'company' &&
-      !nameRef?.current?.value &&
-      companyRef?.current?.value
-    ) {
+    const composedName = composeName()
+
+    if (contactType === 'person' && composedName) {
+      contactData.name = composedName
+    } else if (contactType === 'company' && !composedName && companyRef?.current?.value) {
       contactData.name = '-'
+    }
+
+    if (firstNameRef.current.value) {
+      contactData.firstname = firstNameRef?.current?.value
+    }
+
+    if (lastNameRef.current.value) {
+      contactData.lastname = lastNameRef?.current?.value
+    }
+
+    if (jobRef.current.value) {
+      contactData.job = jobRef?.current?.value
     }
 
     if (companyRef.current.value) {
@@ -332,12 +404,32 @@ export const CreateOrEditContactDrawerContent = forwardRef<
       contactData.workphone = workPhoneRef?.current?.value
     }
 
+    if (workPhone2Ref.current.value) {
+      contactData.workphone2 = workPhone2Ref?.current?.value
+    }
+
     if (mobilePhoneRef.current.value) {
       contactData.cellphone = mobilePhoneRef?.current?.value
     }
 
+    if (mobilePhone2Ref.current.value) {
+      contactData.cellphone2 = mobilePhone2Ref?.current?.value
+    }
+
     if (emailRef.current.value) {
       contactData.workemail = emailRef?.current?.value
+    }
+
+    if (facebookRef.current.value) {
+      contactData.facebook = facebookRef?.current?.value
+    }
+
+    if (instagramRef.current.value) {
+      contactData.instagram = instagramRef?.current?.value
+    }
+
+    if (linkedinRef.current.value) {
+      contactData.linkedin = linkedinRef?.current?.value
     }
 
     if (notesRef.current.value) {
@@ -369,11 +461,19 @@ export const CreateOrEditContactDrawerContent = forwardRef<
       name: null,
       type:
         contactVisibility === 'group' ? serializeSharedGroups(selectedGroups) : contactVisibility,
+      firstname: firstNameRef?.current?.value || null,
+      lastname: lastNameRef?.current?.value || null,
+      job: jobRef?.current?.value || null,
       company: companyRef?.current?.value || null,
       extension: extensionRef?.current?.value || null,
       workphone: workPhoneRef?.current?.value || '',
+      workphone2: workPhone2Ref?.current?.value || null,
       cellphone: mobilePhoneRef?.current?.value || null,
+      cellphone2: mobilePhone2Ref?.current?.value || null,
       workemail: emailRef?.current?.value || null,
+      facebook: facebookRef?.current?.value || null,
+      instagram: instagramRef?.current?.value || null,
+      linkedin: linkedinRef?.current?.value || null,
       notes: notesRef?.current?.value || null,
       homeemail: config?.contact?.homeemail,
       homephone: config?.contact?.homephone,
@@ -394,8 +494,8 @@ export const CreateOrEditContactDrawerContent = forwardRef<
       url: config?.contact?.url,
     }
 
-    if (contactType === 'person' && nameRef.current.value) {
-      contactData.name = nameRef?.current?.value
+    if (contactType === 'person') {
+      contactData.name = composeName()
     }
 
     try {
@@ -419,9 +519,10 @@ export const CreateOrEditContactDrawerContent = forwardRef<
   }
 
   const showToastCreationContact = () => {
+    const composedName = composeName()
     const contactName =
-      contactType === 'person' && nameRef?.current?.value
-        ? nameRef.current.value
+      contactType === 'person' && composedName
+        ? composedName
         : companyRef?.current?.value || t('Phonebook.Contact')
 
     const message = t('Phonebook.Contact added to phonebook', { name: contactName })
@@ -605,14 +706,28 @@ export const CreateOrEditContactDrawerContent = forwardRef<
         </div>
         {/* contact fields */}
         {contactType !== 'company' && (
-          <TextInput
-            label={t('Phonebook.Name') || ''}
-            name='name'
-            ref={nameRef}
-            className='mb-4'
-            error={!!nameError}
-            helper={nameError}
-          />
+          <>
+            <TextInput
+              label={t('Phonebook.First name') || ''}
+              name='firstname'
+              ref={firstNameRef}
+              className='mb-4'
+              error={!!nameError}
+              helper={nameError}
+            />
+            <TextInput
+              label={t('Phonebook.Last name') || ''}
+              name='lastname'
+              ref={lastNameRef}
+              className='mb-4'
+            />
+            <TextInput
+              label={t('Phonebook.Job') || ''}
+              name='job'
+              ref={jobRef}
+              className='mb-4'
+            />
+          </>
         )}
         <TextInput
           label={t('Phonebook.Company') || ''}
@@ -635,15 +750,45 @@ export const CreateOrEditContactDrawerContent = forwardRef<
           className='mb-4'
         />
         <TextInput
+          label={t('Phonebook.Work phone 2') || ''}
+          name='workPhone2'
+          ref={workPhone2Ref}
+          className='mb-4'
+        />
+        <TextInput
           label={t('Phonebook.Mobile phone') || ''}
           name='mobilePhone'
           ref={mobilePhoneRef}
           className='mb-4'
         />
         <TextInput
+          label={t('Phonebook.Mobile phone 2') || ''}
+          name='mobilePhone2'
+          ref={mobilePhone2Ref}
+          className='mb-4'
+        />
+        <TextInput
           label={t('Phonebook.Email') || ''}
           name='email'
           ref={emailRef}
+          className='mb-4'
+        />
+        <TextInput
+          label={t('Phonebook.Facebook') || ''}
+          name='facebook'
+          ref={facebookRef}
+          className='mb-4'
+        />
+        <TextInput
+          label={t('Phonebook.Instagram') || ''}
+          name='instagram'
+          ref={instagramRef}
+          className='mb-4'
+        />
+        <TextInput
+          label={t('Phonebook.LinkedIn') || ''}
+          name='linkedin'
+          ref={linkedinRef}
           className='mb-4'
         />
         <TextInput
