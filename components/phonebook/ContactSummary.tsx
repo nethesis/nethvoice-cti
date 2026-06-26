@@ -51,6 +51,17 @@ export interface ContactSummaryProps extends ComponentPropsWithRef<'div'> {
   isGlobalSearch?: boolean
 }
 
+// Social fields may hold either a full URL or a bare handle. Link the value as
+// given when it is already a URL, otherwise treat it as opaque text (mailto-like
+// schemes are left untouched) so the anchor never points at an invalid target.
+const getSocialUrl = (value: string) => {
+  const trimmed = (value || '').trim()
+  if (/^https?:\/\//i.test(trimmed)) {
+    return trimmed
+  }
+  return `https://${trimmed}`
+}
+
 export const ContactSummary = forwardRef<HTMLButtonElement, ContactSummaryProps>(
   (
     {
@@ -436,6 +447,19 @@ export const ContactSummary = forwardRef<HTMLButtonElement, ContactSummaryProps>
                 </dd>
               </div>
             )}
+            {/* job */}
+            {contact.kind == 'person' && contact?.job && (
+              <div className='sm:grid sm:grid-cols-3 sm:gap-4'>
+                <dt className='text-sm font-medium text-secondaryNeutral dark:text-secondaryNeutralDark leading-5'>
+                  {t('Phonebook.Job')}
+                </dt>
+                <dd className='mt-1 text-sm text-gray-900 dark:text-gray-100 sm:col-span-2 sm:mt-0'>
+                  <div className='text-sm'>
+                    <span>{contact?.job}</span>
+                  </div>
+                </dd>
+              </div>
+            )}
             {/* extension */}
             {contact?.extension && (
               <div className='sm:grid sm:grid-cols-3 sm:gap-4'>
@@ -484,6 +508,30 @@ export const ContactSummary = forwardRef<HTMLButtonElement, ContactSummaryProps>
                 </dd>
               </div>
             )}
+            {/* work phone 2 */}
+            {contact.workphone2 && (
+              <div className='sm:grid sm:grid-cols-3 sm:gap-4'>
+                <dt className='flex items-center text-sm font-medium text-secondaryNeutral dark:text-secondaryNeutralDark leading-5'>
+                  {t('Phonebook.Work phone 2')}
+                </dt>
+                <dd className='mt-1 text-sm text-gray-900 dark:text-gray-100 sm:col-span-2 sm:mt-0'>
+                  <div className='flex items-center gap-2 text-sm text-primary dark:text-primaryDark'>
+                    <span
+                      className='truncate cursor-pointer hover:underline'
+                      onClick={() =>
+                        operatorsStore?.operators[auth.username]?.mainPresence === 'busy'
+                          ? transferCallToExtension(contact?.workphone2)
+                          : callPhoneNumber(contact?.workphone2)
+                      }
+                    >
+                      {contact?.workphone2}
+                    </span>
+                    {/* copy component */}
+                    <CopyComponent number={contact?.workphone2} id='workphone2' />
+                  </div>
+                </dd>
+              </div>
+            )}
             {/* mobile phone */}
             {contact.cellphone && (
               <div className='sm:grid sm:grid-cols-3 sm:gap-4'>
@@ -504,6 +552,30 @@ export const ContactSummary = forwardRef<HTMLButtonElement, ContactSummaryProps>
                     </span>
                     {/* copy component */}
                     <CopyComponent number={contact?.cellphone} id='mobile-phone' />
+                  </div>
+                </dd>
+              </div>
+            )}
+            {/* mobile phone 2 */}
+            {contact.cellphone2 && (
+              <div className='sm:grid sm:grid-cols-3 sm:gap-4'>
+                <dt className='flex items-center text-sm font-medium text-secondaryNeutral dark:text-secondaryNeutralDark leading-5'>
+                  {t('Phonebook.Mobile phone 2')}
+                </dt>
+                <dd className='mt-1 text-sm text-gray-900 dark:text-gray-100 sm:col-span-2 sm:mt-0'>
+                  <div className='flex items-center gap-2 text-sm text-primary dark:text-primaryDark'>
+                    <span
+                      className='truncate cursor-pointer hover:underline'
+                      onClick={() =>
+                        operatorsStore?.operators[auth.username]?.mainPresence === 'busy'
+                          ? transferCallToExtension(contact?.cellphone2)
+                          : callPhoneNumber(contact?.cellphone2)
+                      }
+                    >
+                      {contact?.cellphone2}
+                    </span>
+                    {/* copy component */}
+                    <CopyComponent number={contact?.cellphone2} id='mobile-phone-2' />
                   </div>
                 </dd>
               </div>
@@ -550,6 +622,69 @@ export const ContactSummary = forwardRef<HTMLButtonElement, ContactSummaryProps>
                     </a>
                     {/* copy component */}
                     <CopyComponent number={contact?.workemail} id='work-email' />
+                  </div>
+                </dd>
+              </div>
+            )}
+            {/* facebook */}
+            {contact?.facebook && (
+              <div className='sm:grid sm:grid-cols-3 sm:gap-4'>
+                <dt className='text-sm font-medium text-secondaryNeutral dark:text-secondaryNeutralDark leading-5'>
+                  {t('Phonebook.Facebook')}
+                </dt>
+                <dd className='mt-1 text-sm text-gray-900 dark:text-gray-100 sm:col-span-2 sm:mt-0'>
+                  <div className='flex items-center gap-2 text-sm'>
+                    <a
+                      target='_blank'
+                      rel='noreferrer'
+                      href={getSocialUrl(contact?.facebook)}
+                      className='truncate hover:underline text-gray-900 dark:text-gray-100'
+                    >
+                      {contact?.facebook}
+                    </a>
+                    <CopyComponent number={contact?.facebook} id='facebook' />
+                  </div>
+                </dd>
+              </div>
+            )}
+            {/* instagram */}
+            {contact?.instagram && (
+              <div className='sm:grid sm:grid-cols-3 sm:gap-4'>
+                <dt className='text-sm font-medium text-secondaryNeutral dark:text-secondaryNeutralDark leading-5'>
+                  {t('Phonebook.Instagram')}
+                </dt>
+                <dd className='mt-1 text-sm text-gray-900 dark:text-gray-100 sm:col-span-2 sm:mt-0'>
+                  <div className='flex items-center gap-2 text-sm'>
+                    <a
+                      target='_blank'
+                      rel='noreferrer'
+                      href={getSocialUrl(contact?.instagram)}
+                      className='truncate hover:underline text-gray-900 dark:text-gray-100'
+                    >
+                      {contact?.instagram}
+                    </a>
+                    <CopyComponent number={contact?.instagram} id='instagram' />
+                  </div>
+                </dd>
+              </div>
+            )}
+            {/* linkedin */}
+            {contact?.linkedin && (
+              <div className='sm:grid sm:grid-cols-3 sm:gap-4'>
+                <dt className='text-sm font-medium text-secondaryNeutral dark:text-secondaryNeutralDark leading-5'>
+                  {t('Phonebook.LinkedIn')}
+                </dt>
+                <dd className='mt-1 text-sm text-gray-900 dark:text-gray-100 sm:col-span-2 sm:mt-0'>
+                  <div className='flex items-center gap-2 text-sm'>
+                    <a
+                      target='_blank'
+                      rel='noreferrer'
+                      href={getSocialUrl(contact?.linkedin)}
+                      className='truncate hover:underline text-gray-900 dark:text-gray-100'
+                    >
+                      {contact?.linkedin}
+                    </a>
+                    <CopyComponent number={contact?.linkedin} id='linkedin' />
                   </div>
                 </dd>
               </div>

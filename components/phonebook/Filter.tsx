@@ -33,6 +33,7 @@ const sortFilter = {
   name: 'Sort by',
   options: [
     { value: 'name', label: 'Name' },
+    { value: 'surname', label: 'Surname' },
     { value: 'company', label: 'Company' },
   ],
 }

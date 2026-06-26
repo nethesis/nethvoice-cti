@@ -180,7 +180,7 @@ export async function getPhonebook(
     apiUrl += 'search/'
   }
   const offset = (pageNum - 1) * pageSize
-  apiUrl += `?offset=${offset}&limit=${pageSize}&view=${contactType}&visibility=${visibility}`
+  apiUrl += `?offset=${offset}&limit=${pageSize}&view=${contactType}&visibility=${visibility}&sort=${sortBy}`
 
   try {
     const { data, status } = await axios.get(apiUrl)

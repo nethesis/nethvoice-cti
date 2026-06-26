@@ -30,6 +30,14 @@ export interface SpeedDialType {
   url?: string
   extension?: string
   speeddial_num?: string
+  firstname?: string
+  lastname?: string
+  job?: string
+  facebook?: string
+  instagram?: string
+  linkedin?: string
+  workphone2?: string
+  cellphone2?: string
 }
 
 export interface NewSpeedDialType {
