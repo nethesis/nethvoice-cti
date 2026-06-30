@@ -604,6 +604,43 @@ export const ContactSummary = forwardRef<HTMLButtonElement, ContactSummaryProps>
                 </dd>
               </div>
             )}
+            {/* other phone */}
+            {contact?.otherphone && (
+              <div className='sm:grid sm:grid-cols-3 sm:gap-4'>
+                <dt className='flex items-center text-sm font-medium text-secondaryNeutral dark:text-secondaryNeutralDark leading-5'>
+                  {t('Phonebook.Other phone')}
+                </dt>
+                <dd className='mt-1 text-sm text-gray-900 dark:text-gray-100 sm:col-span-2 sm:mt-0'>
+                  <div className='flex items-center gap-2 text-sm text-primary dark:text-primaryDark'>
+                    <span
+                      className='truncate cursor-pointer hover:underline'
+                      onClick={() =>
+                        operatorsStore?.operators[auth.username]?.mainPresence === 'busy'
+                          ? transferCallToExtension(contact?.otherphone)
+                          : callPhoneNumber(contact?.otherphone)
+                      }
+                    >
+                      {contact?.otherphone}
+                    </span>
+                    <CopyComponent number={contact?.otherphone} id='other-phone' />
+                  </div>
+                </dd>
+              </div>
+            )}
+            {/* fax */}
+            {contact?.fax && (
+              <div className='sm:grid sm:grid-cols-3 sm:gap-4'>
+                <dt className='text-sm font-medium text-secondaryNeutral dark:text-secondaryNeutralDark leading-5'>
+                  {t('Phonebook.Fax')}
+                </dt>
+                <dd className='mt-1 text-sm text-gray-900 dark:text-gray-100 sm:col-span-2 sm:mt-0'>
+                  <div className='flex items-center gap-2 text-sm'>
+                    <span className='truncate'>{contact?.fax}</span>
+                    <CopyComponent number={contact?.fax} id='fax' />
+                  </div>
+                </dd>
+              </div>
+            )}
             {/* work email */}
             {contact.workemail && (
               <div className='sm:grid sm:grid-cols-3 sm:gap-4'>
@@ -622,6 +659,48 @@ export const ContactSummary = forwardRef<HTMLButtonElement, ContactSummaryProps>
                     </a>
                     {/* copy component */}
                     <CopyComponent number={contact?.workemail} id='work-email' />
+                  </div>
+                </dd>
+              </div>
+            )}
+            {/* home email */}
+            {contact?.homeemail && (
+              <div className='sm:grid sm:grid-cols-3 sm:gap-4'>
+                <dt className='text-sm font-medium text-secondaryNeutral dark:text-secondaryNeutralDark leading-5'>
+                  {t('Phonebook.Home email')}
+                </dt>
+                <dd className='mt-1 text-sm text-gray-900 dark:text-gray-100 sm:col-span-2 sm:mt-0'>
+                  <div className='flex items-center gap-2 text-sm'>
+                    <a
+                      target='_blank'
+                      rel='noreferrer'
+                      href={`mailto:${contact?.homeemail?.trim()}`}
+                      className='truncate hover:underline text-gray-900 dark:text-gray-100'
+                    >
+                      {contact?.homeemail}
+                    </a>
+                    <CopyComponent number={contact?.homeemail} id='home-email' />
+                  </div>
+                </dd>
+              </div>
+            )}
+            {/* other email */}
+            {contact?.otheremail && (
+              <div className='sm:grid sm:grid-cols-3 sm:gap-4'>
+                <dt className='text-sm font-medium text-secondaryNeutral dark:text-secondaryNeutralDark leading-5'>
+                  {t('Phonebook.Other email')}
+                </dt>
+                <dd className='mt-1 text-sm text-gray-900 dark:text-gray-100 sm:col-span-2 sm:mt-0'>
+                  <div className='flex items-center gap-2 text-sm'>
+                    <a
+                      target='_blank'
+                      rel='noreferrer'
+                      href={`mailto:${contact?.otheremail?.trim()}`}
+                      className='truncate hover:underline text-gray-900 dark:text-gray-100'
+                    >
+                      {contact?.otheremail}
+                    </a>
+                    <CopyComponent number={contact?.otheremail} id='other-email' />
                   </div>
                 </dd>
               </div>
@@ -685,6 +764,54 @@ export const ContactSummary = forwardRef<HTMLButtonElement, ContactSummaryProps>
                       {contact?.linkedin}
                     </a>
                     <CopyComponent number={contact?.linkedin} id='linkedin' />
+                  </div>
+                </dd>
+              </div>
+            )}
+            {/* website */}
+            {contact?.url && (
+              <div className='sm:grid sm:grid-cols-3 sm:gap-4'>
+                <dt className='text-sm font-medium text-secondaryNeutral dark:text-secondaryNeutralDark leading-5'>
+                  {t('Phonebook.Website')}
+                </dt>
+                <dd className='mt-1 text-sm text-gray-900 dark:text-gray-100 sm:col-span-2 sm:mt-0'>
+                  <div className='flex items-center gap-2 text-sm'>
+                    <a
+                      target='_blank'
+                      rel='noreferrer'
+                      href={getSocialUrl(contact?.url)}
+                      className='truncate hover:underline text-gray-900 dark:text-gray-100'
+                    >
+                      {contact?.url}
+                    </a>
+                    <CopyComponent number={contact?.url} id='website' />
+                  </div>
+                </dd>
+              </div>
+            )}
+            {/* company address */}
+            {(contact?.workstreet ||
+              contact?.workcity ||
+              contact?.workprovince ||
+              contact?.workpostalcode ||
+              contact?.workcountry) && (
+              <div className='sm:grid sm:grid-cols-3 sm:gap-4'>
+                <dt className='text-sm font-medium text-secondaryNeutral dark:text-secondaryNeutralDark leading-5'>
+                  {t('Phonebook.Company address')}
+                </dt>
+                <dd className='mt-1 text-sm text-gray-900 dark:text-gray-100 sm:col-span-2 sm:mt-0'>
+                  <div className='text-sm'>
+                    {contact?.workstreet && <div>{contact?.workstreet}</div>}
+                    <div>
+                      {[
+                        contact?.workpostalcode,
+                        contact?.workcity,
+                        contact?.workprovince ? `(${contact?.workprovince})` : '',
+                      ]
+                        .filter(Boolean)
+                        .join(' ')}
+                    </div>
+                    {contact?.workcountry && <div>{contact?.workcountry}</div>}
                   </div>
                 </dd>
               </div>
