@@ -3,7 +3,7 @@
 
 import { ComponentPropsWithRef, forwardRef } from 'react'
 import classNames from 'classnames'
-import { TextInput, InlineNotification, Badge } from '../common'
+import { TextInput, InlineNotification, Badge, Dropdown, Button } from '../common'
 import { DrawerHeader } from '../common/DrawerHeader'
 import { Divider } from '../common/Divider'
 import { DrawerFooter } from '../common/DrawerFooter'
@@ -25,8 +25,39 @@ import { useSelector } from 'react-redux'
 import { RootState } from '../../store'
 import { getShareableGroups, retrieveGroups } from '../../lib/operators'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
-import { faCheck, faChevronDown, faUsers, faCircleInfo } from '@fortawesome/free-solid-svg-icons'
+import {
+  faCheck,
+  faChevronDown,
+  faUsers,
+  faCircleInfo,
+  faCirclePlus,
+} from '@fortawesome/free-solid-svg-icons'
 import { CustomThemedTooltip } from '../common/CustomThemedTooltip'
+
+const NAME_DETAIL_OPTIONS = [
+  { key: 'jobtitle', labelKey: 'Phonebook.Job title' },
+  { key: 'displayname', labelKey: 'Phonebook.Display name' },
+]
+
+const PHONE_FIELD_OPTIONS = [
+  { key: 'workphone2', labelKey: 'Phonebook.Work phone 2' },
+  { key: 'cellphone2', labelKey: 'Phonebook.Mobile phone 2' },
+  { key: 'fax', labelKey: 'Phonebook.Fax' },
+  { key: 'homephone', labelKey: 'Phonebook.Home phone' },
+  { key: 'otherphone', labelKey: 'Phonebook.Other phone' },
+]
+
+const EMAIL_FIELD_OPTIONS = [
+  { key: 'homeemail', labelKey: 'Phonebook.Home email' },
+  { key: 'otheremail', labelKey: 'Phonebook.Other email' },
+]
+
+// "Add field" menu: Address, Social (submenu), Website.
+const SOCIAL_FIELD_OPTIONS = [
+  { key: 'linkedin', labelKey: 'Phonebook.LinkedIn' },
+  { key: 'instagram', labelKey: 'Phonebook.Instagram' },
+  { key: 'facebook', labelKey: 'Phonebook.Facebook' },
+]
 
 export interface CreateOrEditContactDrawerContentProps extends ComponentPropsWithRef<'div'> {
   config: any
@@ -110,6 +141,45 @@ export const CreateOrEditContactDrawerContent = forwardRef<
   const instagramRef = useRef() as React.MutableRefObject<HTMLInputElement>
   const linkedinRef = useRef() as React.MutableRefObject<HTMLInputElement>
   const notesRef = useRef() as React.MutableRefObject<HTMLInputElement>
+  const homePhoneRef = useRef() as React.MutableRefObject<HTMLInputElement>
+  const faxRef = useRef() as React.MutableRefObject<HTMLInputElement>
+  const otherPhoneRef = useRef() as React.MutableRefObject<HTMLInputElement>
+  const websiteRef = useRef() as React.MutableRefObject<HTMLInputElement>
+  const workStreetRef = useRef() as React.MutableRefObject<HTMLInputElement>
+  const workCityRef = useRef() as React.MutableRefObject<HTMLInputElement>
+  const workProvinceRef = useRef() as React.MutableRefObject<HTMLInputElement>
+  const workPostalCodeRef = useRef() as React.MutableRefObject<HTMLInputElement>
+  const workCountryRef = useRef() as React.MutableRefObject<HTMLInputElement>
+  const displayNameRef = useRef() as React.MutableRefObject<HTMLInputElement>
+  const homeEmailRef = useRef() as React.MutableRefObject<HTMLInputElement>
+  const otherEmailRef = useRef() as React.MutableRefObject<HTMLInputElement>
+
+  // "Add field" is a hand-rolled dropdown (opens upward, left-aligned) following
+  // the shared-groups pattern.
+  const [isAddFieldOpen, setIsAddFieldOpen] = useState(false)
+  const addFieldDropdownRef = useRef() as React.MutableRefObject<HTMLDivElement>
+
+  // Optional fields are always mounted (so the uncontrolled refs stay valid for
+  // init/submit) but hidden until the user reveals them from the "Add phone" /
+  // "Add field" menus, matching the redesigned phonebook form.
+  const [visibleFields, setVisibleFields] = useState<Set<string>>(new Set())
+  const isFieldVisible = (key: string) => visibleFields.has(key)
+  const showField = (key: string) => {
+    setVisibleFields((prev) => {
+      const next = new Set(prev)
+      next.add(key)
+      return next
+    })
+  }
+
+  // Reveal all three social inputs at once (no per-network choice).
+  const showSocialFields = () => {
+    setVisibleFields((prev) => {
+      const next = new Set(prev)
+      SOCIAL_FIELD_OPTIONS.forEach((o) => next.add(o.key))
+      return next
+    })
+  }
 
   // The backend keeps `name` as the authoritative display field (used by the
   // centralized phonebook, physical-phone export, search and sorting). The
@@ -172,6 +242,27 @@ export const CreateOrEditContactDrawerContent = forwardRef<
       document.removeEventListener('mousedown', handleClickOutside)
     }
   }, [isSharedGroupsDropdownOpen])
+
+  useEffect(() => {
+    if (!isAddFieldOpen) {
+      return
+    }
+
+    const handleClickOutside = (event: MouseEvent) => {
+      if (
+        addFieldDropdownRef.current &&
+        !addFieldDropdownRef.current.contains(event.target as Node)
+      ) {
+        setIsAddFieldOpen(false)
+      }
+    }
+
+    document.addEventListener('mousedown', handleClickOutside)
+
+    return () => {
+      document.removeEventListener('mousedown', handleClickOutside)
+    }
+  }, [isAddFieldOpen])
 
   useEffect(() => {
     if (formInitializationKeyRef.current === formInitializationKey) {
@@ -248,6 +339,47 @@ export const CreateOrEditContactDrawerContent = forwardRef<
       }
       emailRef.current.value = config.contact.workemail || ''
       notesRef.current.value = config.contact.notes || ''
+      homePhoneRef.current.value = config.contact.homephone || ''
+      faxRef.current.value = config.contact.fax || ''
+      otherPhoneRef.current.value = config.contact.otherphone || ''
+      websiteRef.current.value = config.contact.url || ''
+      workStreetRef.current.value = config.contact.workstreet || ''
+      workCityRef.current.value = config.contact.workcity || ''
+      workProvinceRef.current.value = config.contact.workprovince || ''
+      workPostalCodeRef.current.value = config.contact.workpostalcode || ''
+      workCountryRef.current.value = config.contact.workcountry || ''
+      homeEmailRef.current.value = config.contact.homeemail || ''
+      otherEmailRef.current.value = config.contact.otheremail || ''
+      // Display name override is an explicit field; leave empty unless the user
+      // opens it (name keeps being recomposed from first/last otherwise).
+      displayNameRef.current.value = ''
+
+      // Reveal the optional fields that already carry a value so editing an
+      // existing contact never hides its data. Work/Mobile phone and Email are
+      // always visible, so they are not tracked here.
+      const vis = new Set<string>()
+      if (jobRef.current.value) vis.add('jobtitle')
+      if (mobilePhone2Ref.current.value) vis.add('cellphone2')
+      if (workPhone2Ref.current.value) vis.add('workphone2')
+      if (homePhoneRef.current.value) vis.add('homephone')
+      if (faxRef.current.value) vis.add('fax')
+      if (otherPhoneRef.current.value) vis.add('otherphone')
+      if (homeEmailRef.current.value) vis.add('homeemail')
+      if (otherEmailRef.current.value) vis.add('otheremail')
+      if (websiteRef.current.value) vis.add('url')
+      if (linkedinRef.current.value) vis.add('linkedin')
+      if (instagramRef.current.value) vis.add('instagram')
+      if (facebookRef.current.value) vis.add('facebook')
+      if (
+        workStreetRef.current.value ||
+        workCityRef.current.value ||
+        workProvinceRef.current.value ||
+        workPostalCodeRef.current.value ||
+        workCountryRef.current.value
+      ) {
+        vis.add('address')
+      }
+      setVisibleFields(vis)
     } else if (config?.isCreateContactUserLastCalls) {
       setContactType('person')
       setContactVisibility(defaultContactVisibility)
@@ -267,6 +399,19 @@ export const CreateOrEditContactDrawerContent = forwardRef<
       instagramRef.current.value = ''
       linkedinRef.current.value = ''
       notesRef.current.value = ''
+      homePhoneRef.current.value = ''
+      faxRef.current.value = ''
+      otherPhoneRef.current.value = ''
+      websiteRef.current.value = ''
+      workStreetRef.current.value = ''
+      workCityRef.current.value = ''
+      workProvinceRef.current.value = ''
+      workPostalCodeRef.current.value = ''
+      workCountryRef.current.value = ''
+      homeEmailRef.current.value = ''
+      otherEmailRef.current.value = ''
+      displayNameRef.current.value = ''
+      setVisibleFields(new Set())
     } else {
       // creating contact
       setContactType('person')
@@ -290,6 +435,19 @@ export const CreateOrEditContactDrawerContent = forwardRef<
       instagramRef.current.value = ''
       linkedinRef.current.value = ''
       notesRef.current.value = ''
+      homePhoneRef.current.value = ''
+      faxRef.current.value = ''
+      otherPhoneRef.current.value = ''
+      websiteRef.current.value = ''
+      workStreetRef.current.value = ''
+      workCityRef.current.value = ''
+      workProvinceRef.current.value = ''
+      workPostalCodeRef.current.value = ''
+      workCountryRef.current.value = ''
+      homeEmailRef.current.value = ''
+      otherEmailRef.current.value = ''
+      displayNameRef.current.value = ''
+      setVisibleFields(new Set())
     }
   }, [
     config,
@@ -372,7 +530,9 @@ export const CreateOrEditContactDrawerContent = forwardRef<
         contactVisibility === 'group' ? serializeSharedGroups(selectedGroups) : contactVisibility,
     }
 
-    const composedName = composeName()
+    // Display name (if filled) overrides the auto-composed first/last name.
+    const displayName = displayNameRef?.current?.value?.trim() || ''
+    const composedName = displayName || composeName()
 
     if (contactType === 'person' && composedName) {
       contactData.name = composedName
@@ -420,6 +580,14 @@ export const CreateOrEditContactDrawerContent = forwardRef<
       contactData.workemail = emailRef?.current?.value
     }
 
+    if (homeEmailRef.current.value) {
+      contactData.homeemail = homeEmailRef?.current?.value
+    }
+
+    if (otherEmailRef.current.value) {
+      contactData.otheremail = otherEmailRef?.current?.value
+    }
+
     if (facebookRef.current.value) {
       contactData.facebook = facebookRef?.current?.value
     }
@@ -434,6 +602,42 @@ export const CreateOrEditContactDrawerContent = forwardRef<
 
     if (notesRef.current.value) {
       contactData.notes = notesRef?.current?.value
+    }
+
+    if (homePhoneRef.current.value) {
+      contactData.homephone = homePhoneRef?.current?.value
+    }
+
+    if (faxRef.current.value) {
+      contactData.fax = faxRef?.current?.value
+    }
+
+    if (otherPhoneRef.current.value) {
+      contactData.otherphone = otherPhoneRef?.current?.value
+    }
+
+    if (websiteRef.current.value) {
+      contactData.url = websiteRef?.current?.value
+    }
+
+    if (workStreetRef.current.value) {
+      contactData.workstreet = workStreetRef?.current?.value
+    }
+
+    if (workCityRef.current.value) {
+      contactData.workcity = workCityRef?.current?.value
+    }
+
+    if (workProvinceRef.current.value) {
+      contactData.workprovince = workProvinceRef?.current?.value
+    }
+
+    if (workPostalCodeRef.current.value) {
+      contactData.workpostalcode = workPostalCodeRef?.current?.value
+    }
+
+    if (workCountryRef.current.value) {
+      contactData.workcountry = workCountryRef?.current?.value
     }
 
     try {
@@ -475,9 +679,17 @@ export const CreateOrEditContactDrawerContent = forwardRef<
       instagram: instagramRef?.current?.value || null,
       linkedin: linkedinRef?.current?.value || null,
       notes: notesRef?.current?.value || null,
-      homeemail: config?.contact?.homeemail,
-      homephone: config?.contact?.homephone,
-      fax: config?.contact?.fax,
+      homephone: homePhoneRef?.current?.value || null,
+      fax: faxRef?.current?.value || null,
+      otherphone: otherPhoneRef?.current?.value || null,
+      url: websiteRef?.current?.value || null,
+      workstreet: workStreetRef?.current?.value || null,
+      workcity: workCityRef?.current?.value || null,
+      workprovince: workProvinceRef?.current?.value || null,
+      workpostalcode: workPostalCodeRef?.current?.value || null,
+      workcountry: workCountryRef?.current?.value || null,
+      homeemail: homeEmailRef?.current?.value || null,
+      otheremail: otherEmailRef?.current?.value || null,
       title: config?.contact?.title,
       homestreet: config?.contact?.homestreet,
       homepob: config?.contact?.homepob,
@@ -485,16 +697,14 @@ export const CreateOrEditContactDrawerContent = forwardRef<
       homeprovince: config?.contact?.homeprovince,
       homepostalcode: config?.contact?.homepostalcode,
       homecountry: config?.contact?.homecountry,
-      workstreet: config?.contact?.workstreet,
       workpob: config?.contact?.workpob,
-      workcity: config?.contact?.workcity,
-      workprovince: config?.contact?.workprovince,
-      workpostalcode: config?.contact?.workpostalcode,
-      workcountry: config?.contact?.workcountry,
-      url: config?.contact?.url,
     }
 
-    if (contactType === 'person') {
+    // Display name (if filled) overrides the auto-composed first/last name.
+    const displayName = displayNameRef?.current?.value?.trim() || ''
+    if (displayName) {
+      contactData.name = displayName
+    } else if (contactType === 'person') {
       contactData.name = composeName()
     }
 
@@ -682,7 +892,7 @@ export const CreateOrEditContactDrawerContent = forwardRef<
           </label>
           <fieldset className='mt-2'>
             <legend className='sr-only'>{t('Phonebook.Type')}</legend>
-            <div className='space-y-4 sm:flex sm:items-center sm:space-y-0 sm:space-x-10'>
+            <div className='space-y-3'>
               {contactTypeOptions.map((option) => (
                 <div key={option?.id} className='flex items-center'>
                   <input
@@ -704,99 +914,351 @@ export const CreateOrEditContactDrawerContent = forwardRef<
             </div>
           </fieldset>
         </div>
-        {/* contact fields */}
-        {contactType !== 'company' && (
-          <>
+        {/* contact fields — flat list, 32px rhythm (Figma space/8) */}
+        <div className='flex flex-col gap-8'>
+          {contactType !== 'company' && (
+            <>
+              <TextInput
+                label={t('Phonebook.First name') || ''}
+                name='firstname'
+                ref={firstNameRef}
+                placeholder={t('Phonebook.First name placeholder') || ''}
+                error={!!nameError}
+                helper={nameError}
+              />
+              <TextInput
+                label={t('Phonebook.Last name') || ''}
+                name='lastname'
+                ref={lastNameRef}
+                placeholder={t('Phonebook.Last name placeholder') || ''}
+              />
+              <div className={isFieldVisible('jobtitle') ? '' : 'hidden'}>
+                <TextInput label={t('Phonebook.Job title') || ''} name='job' ref={jobRef} />
+              </div>
+              <div className={isFieldVisible('displayname') ? '' : 'hidden'}>
+                <TextInput
+                  label={t('Phonebook.Display name') || ''}
+                  name='displayname'
+                  ref={displayNameRef}
+                />
+              </div>
+              {NAME_DETAIL_OPTIONS.some((o) => !isFieldVisible(o.key)) ? (
+                <Dropdown
+                  position='topLeft'
+                  className='self-start -mt-4'
+                  items={
+                    <>
+                      {NAME_DETAIL_OPTIONS.filter((o) => !isFieldVisible(o.key)).map((o) => (
+                        <Dropdown.Item key={o.key} onClick={() => showField(o.key)}>
+                          {t(o.labelKey)}
+                        </Dropdown.Item>
+                      ))}
+                    </>
+                  }
+                >
+                  <Button variant='ghost' size='base' type='button' className='gap-2'>
+                    <FontAwesomeIcon icon={faCirclePlus} className='h-4 w-4' />
+                    {t('Phonebook.Add name details')}
+                  </Button>
+                </Dropdown>
+              ) : (
+                <Button
+                  variant='ghost'
+                  size='base'
+                  type='button'
+                  disabled
+                  className='gap-2 self-start -mt-4'
+                >
+                  <FontAwesomeIcon icon={faCirclePlus} className='h-4 w-4' />
+                  {t('Phonebook.Add name details')}
+                </Button>
+              )}
+            </>
+          )}
+
+          <TextInput
+            label={t('Phonebook.Extension') || ''}
+            name='extension'
+            ref={extensionRef}
+            placeholder={t('Phonebook.Extension placeholder') || ''}
+            helper={t('Phonebook.Extension helper') || ''}
+          />
+
+          <TextInput
+            label={t('Phonebook.Work phone') || ''}
+            name='workPhone'
+            ref={workPhoneRef}
+            placeholder={t('Phonebook.Work phone placeholder') || ''}
+          />
+
+          <TextInput
+            label={t('Phonebook.Mobile phone') || ''}
+            name='mobilePhone'
+            ref={mobilePhoneRef}
+            placeholder={t('Phonebook.Mobile phone placeholder') || ''}
+          />
+          <div className={isFieldVisible('workphone2') ? '' : 'hidden'}>
             <TextInput
-              label={t('Phonebook.First name') || ''}
-              name='firstname'
-              ref={firstNameRef}
-              className='mb-4'
-              error={!!nameError}
-              helper={nameError}
+              label={t('Phonebook.Work phone 2') || ''}
+              name='workPhone2'
+              ref={workPhone2Ref}
+              placeholder={t('Phonebook.Work phone placeholder') || ''}
+            />
+          </div>
+          <div className={isFieldVisible('cellphone2') ? '' : 'hidden'}>
+            <TextInput
+              label={t('Phonebook.Mobile phone 2') || ''}
+              name='mobilePhone2'
+              ref={mobilePhone2Ref}
+              placeholder={t('Phonebook.Mobile phone placeholder') || ''}
+            />
+          </div>
+          <div className={isFieldVisible('fax') ? '' : 'hidden'}>
+            <TextInput
+              label={t('Phonebook.Fax') || ''}
+              name='fax'
+              ref={faxRef}
+              placeholder={t('Phonebook.Work phone placeholder') || ''}
+            />
+          </div>
+          <div className={isFieldVisible('homephone') ? '' : 'hidden'}>
+            <TextInput
+              label={t('Phonebook.Home phone') || ''}
+              name='homePhone'
+              ref={homePhoneRef}
+              placeholder={t('Phonebook.Work phone placeholder') || ''}
+            />
+          </div>
+          <div className={isFieldVisible('otherphone') ? '' : 'hidden'}>
+            <TextInput
+              label={t('Phonebook.Other phone') || ''}
+              name='otherPhone'
+              ref={otherPhoneRef}
+              placeholder={t('Phonebook.Work phone placeholder') || ''}
+            />
+          </div>
+          {PHONE_FIELD_OPTIONS.some((o) => !isFieldVisible(o.key)) ? (
+            <Dropdown
+              position='topLeft'
+              className='self-start -mt-4'
+              items={
+                <>
+                  {PHONE_FIELD_OPTIONS.filter((o) => !isFieldVisible(o.key)).map((o) => (
+                    <Dropdown.Item key={o.key} onClick={() => showField(o.key)}>
+                      {t(o.labelKey)}
+                    </Dropdown.Item>
+                  ))}
+                </>
+              }
+            >
+              <Button variant='ghost' size='base' type='button' className='gap-2'>
+                <FontAwesomeIcon icon={faCirclePlus} className='h-4 w-4' />
+                {t('Phonebook.Add phone')}
+              </Button>
+            </Dropdown>
+          ) : (
+            <Button
+              variant='ghost'
+              size='base'
+              type='button'
+              disabled
+              className='gap-2 self-start -mt-4'
+            >
+              <FontAwesomeIcon icon={faCirclePlus} className='h-4 w-4' />
+              {t('Phonebook.Add phone')}
+            </Button>
+          )}
+
+          <TextInput
+            label={t('Phonebook.Email') || ''}
+            name='email'
+            ref={emailRef}
+            placeholder={t('Phonebook.Email placeholder') || ''}
+          />
+          <div className={isFieldVisible('homeemail') ? '' : 'hidden'}>
+            <TextInput
+              label={t('Phonebook.Home email') || ''}
+              name='homeemail'
+              ref={homeEmailRef}
+              placeholder={t('Phonebook.Email placeholder') || ''}
+            />
+          </div>
+          <div className={isFieldVisible('otheremail') ? '' : 'hidden'}>
+            <TextInput
+              label={t('Phonebook.Other email') || ''}
+              name='otheremail'
+              ref={otherEmailRef}
+              placeholder={t('Phonebook.Other email placeholder') || ''}
+            />
+          </div>
+          {EMAIL_FIELD_OPTIONS.some((o) => !isFieldVisible(o.key)) ? (
+            <Dropdown
+              position='topLeft'
+              className='self-start -mt-4'
+              items={
+                <>
+                  {EMAIL_FIELD_OPTIONS.filter((o) => !isFieldVisible(o.key)).map((o) => (
+                    <Dropdown.Item key={o.key} onClick={() => showField(o.key)}>
+                      {t(o.labelKey)}
+                    </Dropdown.Item>
+                  ))}
+                </>
+              }
+            >
+              <Button variant='ghost' size='base' type='button' className='gap-2'>
+                <FontAwesomeIcon icon={faCirclePlus} className='h-4 w-4' />
+                {t('Phonebook.Add email')}
+              </Button>
+            </Dropdown>
+          ) : (
+            <Button
+              variant='ghost'
+              size='base'
+              type='button'
+              disabled
+              className='gap-2 self-start -mt-4'
+            >
+              <FontAwesomeIcon icon={faCirclePlus} className='h-4 w-4' />
+              {t('Phonebook.Add email')}
+            </Button>
+          )}
+
+          <TextInput
+            label={t('Phonebook.Company') || ''}
+            name='company'
+            ref={companyRef}
+            error={!!companyError}
+            helper={companyError}
+          />
+
+          <TextInput label={t('Phonebook.Notes') || ''} name='notes' ref={notesRef} />
+
+          {/* Company address sub-form (16px internal) */}
+          <div className={isFieldVisible('address') ? 'flex flex-col gap-4' : 'hidden'}>
+            <TextInput
+              label={t('Phonebook.Address') || ''}
+              name='workstreet'
+              ref={workStreetRef}
+              placeholder={t('Phonebook.Address placeholder') || ''}
             />
             <TextInput
-              label={t('Phonebook.Last name') || ''}
-              name='lastname'
-              ref={lastNameRef}
-              className='mb-4'
+              label={t('Phonebook.City') || ''}
+              name='workcity'
+              ref={workCityRef}
+              placeholder={t('Phonebook.City placeholder') || ''}
             />
+            <div className='grid grid-cols-2 gap-4'>
+              <TextInput
+                label={t('Phonebook.Province') || ''}
+                name='workprovince'
+                ref={workProvinceRef}
+                placeholder={t('Phonebook.Province placeholder') || ''}
+              />
+              <TextInput
+                label={t('Phonebook.Postal code') || ''}
+                name='workpostalcode'
+                ref={workPostalCodeRef}
+                placeholder={t('Phonebook.Postal code placeholder') || ''}
+              />
+            </div>
             <TextInput
-              label={t('Phonebook.Job') || ''}
-              name='job'
-              ref={jobRef}
-              className='mb-4'
+              label={t('Phonebook.Country') || ''}
+              name='workcountry'
+              ref={workCountryRef}
+              placeholder={t('Phonebook.Country placeholder') || ''}
             />
-          </>
-        )}
-        <TextInput
-          label={t('Phonebook.Company') || ''}
-          name='company'
-          ref={companyRef}
-          className='mb-4'
-          error={!!companyError}
-          helper={companyError}
-        />
-        <TextInput
-          label={t('Phonebook.Extension') || ''}
-          name='extension'
-          ref={extensionRef}
-          className='mb-4'
-        />
-        <TextInput
-          label={t('Phonebook.Work phone') || ''}
-          name='workPhone'
-          ref={workPhoneRef}
-          className='mb-4'
-        />
-        <TextInput
-          label={t('Phonebook.Work phone 2') || ''}
-          name='workPhone2'
-          ref={workPhone2Ref}
-          className='mb-4'
-        />
-        <TextInput
-          label={t('Phonebook.Mobile phone') || ''}
-          name='mobilePhone'
-          ref={mobilePhoneRef}
-          className='mb-4'
-        />
-        <TextInput
-          label={t('Phonebook.Mobile phone 2') || ''}
-          name='mobilePhone2'
-          ref={mobilePhone2Ref}
-          className='mb-4'
-        />
-        <TextInput
-          label={t('Phonebook.Email') || ''}
-          name='email'
-          ref={emailRef}
-          className='mb-4'
-        />
-        <TextInput
-          label={t('Phonebook.Facebook') || ''}
-          name='facebook'
-          ref={facebookRef}
-          className='mb-4'
-        />
-        <TextInput
-          label={t('Phonebook.Instagram') || ''}
-          name='instagram'
-          ref={instagramRef}
-          className='mb-4'
-        />
-        <TextInput
-          label={t('Phonebook.LinkedIn') || ''}
-          name='linkedin'
-          ref={linkedinRef}
-          className='mb-4'
-        />
-        <TextInput
-          label={t('Phonebook.Notes') || ''}
-          name='notes'
-          ref={notesRef}
-          className='mb-6'
-        />
+          </div>
+          <div className={isFieldVisible('linkedin') ? '' : 'hidden'}>
+            <TextInput
+              label={t('Phonebook.LinkedIn') || ''}
+              name='linkedin'
+              ref={linkedinRef}
+              placeholder={t('Phonebook.LinkedIn placeholder') || ''}
+            />
+          </div>
+          <div className={isFieldVisible('instagram') ? '' : 'hidden'}>
+            <TextInput
+              label={t('Phonebook.Instagram') || ''}
+              name='instagram'
+              ref={instagramRef}
+              placeholder={t('Phonebook.Instagram placeholder') || ''}
+            />
+          </div>
+          <div className={isFieldVisible('facebook') ? '' : 'hidden'}>
+            <TextInput
+              label={t('Phonebook.Facebook') || ''}
+              name='facebook'
+              ref={facebookRef}
+              placeholder={t('Phonebook.Facebook placeholder') || ''}
+            />
+          </div>
+          <div className={isFieldVisible('url') ? '' : 'hidden'}>
+            <TextInput
+              label={t('Phonebook.Website') || ''}
+              name='website'
+              ref={websiteRef}
+              placeholder={t('Phonebook.Website placeholder') || ''}
+            />
+          </div>
+          {/* Add field menu (Address, Social reveal-all, Website) — opens upward, left-aligned */}
+          <div className='relative self-start -mt-4' ref={addFieldDropdownRef}>
+            <Button
+              variant='ghost'
+              size='base'
+              type='button'
+              className='gap-2'
+              disabled={
+                isFieldVisible('address') &&
+                isFieldVisible('url') &&
+                SOCIAL_FIELD_OPTIONS.every((o) => isFieldVisible(o.key))
+              }
+              onClick={() => setIsAddFieldOpen((open) => !open)}
+            >
+              <FontAwesomeIcon icon={faCirclePlus} className='h-4 w-4' />
+              {t('Phonebook.Add field')}
+            </Button>
+            {isAddFieldOpen && (
+              <div className='absolute bottom-full left-0 z-20 mb-2 w-56 rounded-md border border-gray-200 bg-white py-2 shadow-lg dark:border-gray-700 dark:bg-gray-900'>
+                {!isFieldVisible('address') && (
+                  <button
+                    type='button'
+                    className='block w-full px-4 py-2 text-left text-sm text-secondaryNeutral transition hover:bg-gray-100 dark:text-secondaryNeutralDark dark:hover:bg-gray-800'
+                    onClick={() => {
+                      showField('address')
+                      setIsAddFieldOpen(false)
+                    }}
+                  >
+                    {t('Phonebook.Address')}
+                  </button>
+                )}
+                {SOCIAL_FIELD_OPTIONS.some((o) => !isFieldVisible(o.key)) && (
+                  <button
+                    type='button'
+                    className='block w-full px-4 py-2 text-left text-sm text-secondaryNeutral transition hover:bg-gray-100 dark:text-secondaryNeutralDark dark:hover:bg-gray-800'
+                    onClick={() => {
+                      showSocialFields()
+                      setIsAddFieldOpen(false)
+                    }}
+                  >
+                    {t('Phonebook.Social')}
+                  </button>
+                )}
+                {!isFieldVisible('url') && (
+                  <button
+                    type='button'
+                    className='block w-full px-4 py-2 text-left text-sm text-secondaryNeutral transition hover:bg-gray-100 dark:text-secondaryNeutralDark dark:hover:bg-gray-800'
+                    onClick={() => {
+                      showField('url')
+                      setIsAddFieldOpen(false)
+                    }}
+                  >
+                    {t('Phonebook.Website')}
+                  </button>
+                )}
+              </div>
+            )}
+          </div>
+        </div>
         {/* create contact error */}
         {createContactError && (
           <InlineNotification type='error' title={createContactError} className='mb-4' />

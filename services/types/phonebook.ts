@@ -38,6 +38,8 @@ export interface SpeedDialType {
   linkedin?: string
   workphone2?: string
   cellphone2?: string
+  otherphone?: string
+  otheremail?: string
 }
 
 export interface NewSpeedDialType {
