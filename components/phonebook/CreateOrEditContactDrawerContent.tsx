@@ -3,7 +3,7 @@
 
 import { ComponentPropsWithRef, forwardRef } from 'react'
 import classNames from 'classnames'
-import { TextInput, InlineNotification, Badge, Dropdown, Button } from '../common'
+import { TextInput, InlineNotification, Dropdown, Button, MultiSelectCombobox } from '../common'
 import { DrawerHeader } from '../common/DrawerHeader'
 import { Divider } from '../common/Divider'
 import { DrawerFooter } from '../common/DrawerFooter'
@@ -19,19 +19,13 @@ import {
   canWritePhonebookVisibility,
   serializeSharedGroups,
 } from '../../lib/phonebook'
-import { closeSideDrawer, customScrollbarClass, openToast } from '../../lib/utils'
+import { closeSideDrawer, openToast } from '../../lib/utils'
 import { t } from 'i18next'
 import { useSelector } from 'react-redux'
 import { RootState } from '../../store'
 import { getShareableGroups, retrieveGroups } from '../../lib/operators'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
-import {
-  faCheck,
-  faChevronDown,
-  faUsers,
-  faCircleInfo,
-  faCirclePlus,
-} from '@fortawesome/free-solid-svg-icons'
+import { faUsers, faCircleInfo, faCirclePlus } from '@fortawesome/free-solid-svg-icons'
 import { CustomThemedTooltip } from '../common/CustomThemedTooltip'
 
 const NAME_DETAIL_OPTIONS = [
@@ -116,16 +110,6 @@ export const CreateOrEditContactDrawerContent = forwardRef<
   const availableGroups = getShareableGroups(operatorsStore?.groups || {}, username)
   const [selectedGroups, setSelectedGroups] = useState<string[]>([])
   const [sharedGroupsError, setSharedGroupsError] = useState('')
-  const [isSharedGroupsDropdownOpen, setIsSharedGroupsDropdownOpen] = useState(false)
-  const sharedGroupsDropdownRef = useRef() as React.MutableRefObject<HTMLDivElement>
-
-  const toggleSharedGroup = (groupName: string) => {
-    setSelectedGroups((currentGroups) =>
-      currentGroups.includes(groupName)
-        ? currentGroups.filter((currentGroup) => currentGroup !== groupName)
-        : [...currentGroups, groupName],
-    )
-  }
 
   const firstNameRef = useRef() as React.MutableRefObject<HTMLInputElement>
   const lastNameRef = useRef() as React.MutableRefObject<HTMLInputElement>
@@ -256,27 +240,6 @@ export const CreateOrEditContactDrawerContent = forwardRef<
       retrieveGroups()
     }
   }, [operatorsStore?.isGroupsLoaded])
-
-  useEffect(() => {
-    if (!isSharedGroupsDropdownOpen) {
-      return
-    }
-
-    const handleClickOutside = (event: MouseEvent) => {
-      if (
-        sharedGroupsDropdownRef.current &&
-        !sharedGroupsDropdownRef.current.contains(event.target as Node)
-      ) {
-        setIsSharedGroupsDropdownOpen(false)
-      }
-    }
-
-    document.addEventListener('mousedown', handleClickOutside)
-
-    return () => {
-      document.removeEventListener('mousedown', handleClickOutside)
-    }
-  }, [isSharedGroupsDropdownOpen])
 
   useEffect(() => {
     if (!isAddFieldOpen) {
@@ -832,87 +795,17 @@ export const CreateOrEditContactDrawerContent = forwardRef<
             <label className='text-sm font-medium text-gray-700 dark:text-gray-200'>
               {t('Phonebook.Groups')}
             </label>
-            <div className='mt-2' ref={sharedGroupsDropdownRef}>
-              <button
-                type='button'
-                className='flex w-full items-center justify-between rounded-md border border-gray-300 bg-bgInput px-3 py-2 text-left text-sm text-gray-500 shadow-sm transition hover:border-primaryLight focus:border-primaryLight focus:outline-none focus:ring-1 focus:ring-primaryLight dark:border-gray-600 dark:bg-bgInputDark dark:text-gray-300 dark:hover:border-primaryDark dark:focus:border-primaryDark dark:focus:ring-primaryDark'
-                onClick={() => setIsSharedGroupsDropdownOpen((open) => !open)}
-              >
-                <span>{t('Phonebook.Choose one or more groups')}</span>
-                <FontAwesomeIcon
-                  icon={faChevronDown}
-                  className={classNames(
-                    'h-4 w-4 transition-transform',
-                    isSharedGroupsDropdownOpen && 'rotate-180',
-                  )}
-                  aria-hidden='true'
-                />
-              </button>
-              {isSharedGroupsDropdownOpen && (
-                <div
-                  className={classNames(
-                    'absolute z-20 mt-2 max-h-64 w-[calc(100%-2.5rem)] rounded-md border border-gray-200 bg-white py-2 shadow-lg dark:border-gray-700 dark:bg-gray-900',
-                    customScrollbarClass,
-                  )}
-                >
-                  {availableGroups.length > 0 ? (
-                    availableGroups.map((groupName) => {
-                      const isSelected = selectedGroups.includes(groupName)
-
-                      return (
-                        <button
-                          key={groupName}
-                          type='button'
-                          className='flex w-full items-center gap-3 px-4 py-2 text-left text-sm text-secondaryNeutral transition hover:bg-gray-100 dark:text-secondaryNeutralDark dark:hover:bg-gray-800'
-                          onClick={() => toggleSharedGroup(groupName)}
-                        >
-                          <span className='inline-flex h-4 w-4 items-center justify-center text-iconPrimary dark:text-primaryDark'>
-                            {isSelected && (
-                              <FontAwesomeIcon
-                                icon={faCheck}
-                                className='h-3.5 w-3.5'
-                                aria-hidden='true'
-                              />
-                            )}
-                          </span>
-                          <FontAwesomeIcon
-                            icon={faUsers}
-                            className='h-3.5 w-3.5 text-iconSecondaryNeutral dark:text-iconSecondaryNeutralDark'
-                            aria-hidden='true'
-                          />
-                          <span className='truncate'>{groupName}</span>
-                        </button>
-                      )
-                    })
-                  ) : (
-                    <p className='px-4 py-2 text-sm text-gray-500 dark:text-gray-400'>
-                      {t('Phonebook.No groups available')}
-                    </p>
-                  )}
-                </div>
-              )}
-            </div>
-            {selectedGroups.length > 0 && (
-              <div className='mt-3'>
-                <div className='flex flex-wrap items-center gap-2'>
-                  <p className='text-sm font-medium leading-5 text-secondaryNeutral dark:text-secondaryNeutralDark'>
-                    {t('Phonebook.Selected')}
-                  </p>
-                  {selectedGroups.map((groupName) => (
-                    <Badge
-                      key={groupName}
-                      variant='enabled'
-                      rounded='full'
-                      size='small'
-                      onRemove={() => toggleSharedGroup(groupName)}
-                      removeLabel={`${t('Common.Delete')} ${groupName}`}
-                    >
-                      {groupName}
-                    </Badge>
-                  ))}
-                </div>
-              </div>
-            )}
+            <MultiSelectCombobox
+              className='mt-2'
+              options={availableGroups}
+              selected={selectedGroups}
+              onChange={setSelectedGroups}
+              optionIcon={faUsers}
+              placeholder={String(t('Phonebook.Choose one or more groups') || '')}
+              noOptionsText={String(t('Phonebook.No groups available') || '')}
+              error={!!sharedGroupsError}
+              removeLabel={(groupName) => `${t('Common.Delete')} ${groupName}`}
+            />
             {sharedGroupsError && (
               <p className='mt-2 text-sm text-rose-600 dark:text-rose-400'>
                 {t('Phonebook.Select at least one group')}
