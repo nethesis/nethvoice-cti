@@ -83,7 +83,8 @@
     "Call summary ready": "Riepilogo chiamata pronto",
     "The summary is ready for review and editing": "Il riepilogo è pronto per la revisione e la modifica",
     "The summary of your call with {{contact}} is ready": "Il riepilogo della tua chiamata con {{contact}} è pronto",
-    "View summary": "Visualizza riepilogo"
+    "View summary": "Visualizza riepilogo",
+    "Show": "Visualizza"
   },
   "Login": {
     "User": "Utente",

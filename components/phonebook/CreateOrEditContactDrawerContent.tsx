@@ -179,7 +179,42 @@ export const CreateOrEditContactDrawerContent = forwardRef<
       SOCIAL_FIELD_OPTIONS.forEach((o) => next.add(o.key))
       return next
     })
+    setPendingFocusKey('linkedin')
   }
+
+  // When a field is revealed from an "Add …" menu the focus should move to the
+  // freshly shown input. setVisibleFields is async, so we record the key and let
+  // an effect focus the matching ref after the re-render mounts/shows it.
+  const [pendingFocusKey, setPendingFocusKey] = useState<string | null>(null)
+  const fieldRefByKey: Record<string, React.MutableRefObject<HTMLInputElement>> = {
+    jobtitle: jobRef,
+    displayname: displayNameRef,
+    workphone2: workPhone2Ref,
+    cellphone2: mobilePhone2Ref,
+    fax: faxRef,
+    homephone: homePhoneRef,
+    otherphone: otherPhoneRef,
+    homeemail: homeEmailRef,
+    otheremail: otherEmailRef,
+    linkedin: linkedinRef,
+    instagram: instagramRef,
+    facebook: facebookRef,
+    address: workStreetRef,
+    url: websiteRef,
+  }
+  // Reveal a field (from the Add menus) and queue focus on its input.
+  const revealField = (key: string) => {
+    showField(key)
+    setPendingFocusKey(key)
+  }
+  useEffect(() => {
+    if (!pendingFocusKey) {
+      return
+    }
+    fieldRefByKey[pendingFocusKey]?.current?.focus()
+    setPendingFocusKey(null)
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [visibleFields, pendingFocusKey])
 
   // The backend keeps `name` as the authoritative display field (used by the
   // centralized phonebook, physical-phone export, search and sorting). The
@@ -949,7 +984,7 @@ export const CreateOrEditContactDrawerContent = forwardRef<
                   items={
                     <>
                       {NAME_DETAIL_OPTIONS.filter((o) => !isFieldVisible(o.key)).map((o) => (
-                        <Dropdown.Item key={o.key} onClick={() => showField(o.key)}>
+                        <Dropdown.Item key={o.key} onClick={() => revealField(o.key)}>
                           {t(o.labelKey)}
                         </Dropdown.Item>
                       ))}
@@ -1044,7 +1079,7 @@ export const CreateOrEditContactDrawerContent = forwardRef<
               items={
                 <>
                   {PHONE_FIELD_OPTIONS.filter((o) => !isFieldVisible(o.key)).map((o) => (
-                    <Dropdown.Item key={o.key} onClick={() => showField(o.key)}>
+                    <Dropdown.Item key={o.key} onClick={() => revealField(o.key)}>
                       {t(o.labelKey)}
                     </Dropdown.Item>
                   ))}
@@ -1098,7 +1133,7 @@ export const CreateOrEditContactDrawerContent = forwardRef<
               items={
                 <>
                   {EMAIL_FIELD_OPTIONS.filter((o) => !isFieldVisible(o.key)).map((o) => (
-                    <Dropdown.Item key={o.key} onClick={() => showField(o.key)}>
+                    <Dropdown.Item key={o.key} onClick={() => revealField(o.key)}>
                       {t(o.labelKey)}
                     </Dropdown.Item>
                   ))}
@@ -1224,7 +1259,7 @@ export const CreateOrEditContactDrawerContent = forwardRef<
                     type='button'
                     className='block w-full px-4 py-2 text-left text-sm text-secondaryNeutral transition hover:bg-gray-100 dark:text-secondaryNeutralDark dark:hover:bg-gray-800'
                     onClick={() => {
-                      showField('address')
+                      revealField('address')
                       setIsAddFieldOpen(false)
                     }}
                   >
@@ -1248,7 +1283,7 @@ export const CreateOrEditContactDrawerContent = forwardRef<
                     type='button'
                     className='block w-full px-4 py-2 text-left text-sm text-secondaryNeutral transition hover:bg-gray-100 dark:text-secondaryNeutralDark dark:hover:bg-gray-800'
                     onClick={() => {
-                      showField('url')
+                      revealField('url')
                       setIsAddFieldOpen(false)
                     }}
                   >

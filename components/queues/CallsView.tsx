@@ -34,6 +34,7 @@ export const CallsView: FC<CallsViewProps> = ({ className }): JSX.Element => {
   const [isCallsLoaded, setCallsLoaded]: any = useState(false)
   const [callsError, setCallsError] = useState('')
   const [pageNum, setPageNum]: any = useState(1)
+  const [pageSize, setPageSize]: any = useState(PAGE_SIZE)
   const [firstRender, setFirstRender]: any = useState(true)
   const [lastUpdated, setLastUpdated]: any = useState(null)
   const [intervalId, setIntervalId]: any = useState(0)
@@ -89,6 +90,7 @@ export const CallsView: FC<CallsViewProps> = ({ className }): JSX.Element => {
           outcomeFilter,
           selectedQueues,
           numHours,
+          pageSize,
         )
 
         res.rows = res.rows.map((call: any) => {
@@ -153,7 +155,7 @@ export const CallsView: FC<CallsViewProps> = ({ className }): JSX.Element => {
         clearInterval(newIntervalId)
       }
     }
-  }, [firstRender, pageNum, textFilter, outcomeFilter, queuesFilter])
+  }, [firstRender, pageNum, pageSize, textFilter, outcomeFilter, queuesFilter])
 
   function goToPreviousPage() {
     if (pageNum > 1) {
@@ -301,9 +303,14 @@ export const CallsView: FC<CallsViewProps> = ({ className }): JSX.Element => {
               currentPage={pageNum}
               totalPages={calls.totalPages}
               totalItems={calls?.count || 0}
-              pageSize={PAGE_SIZE}
+              pageSize={pageSize}
               onPreviousPage={goToPreviousPage}
               onNextPage={goToNextPage}
+              onSelectPage={(page) => setPageNum(page)}
+              onSelectPageSize={(size) => {
+                setPageSize(size)
+                setPageNum(1)
+              }}
               isLoading={!isCallsLoaded}
               itemsName={t('Queues.calls') || ''}
             />
