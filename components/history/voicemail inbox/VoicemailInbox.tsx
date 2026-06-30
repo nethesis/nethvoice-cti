@@ -531,7 +531,6 @@ export const VoicemailInbox: FC<VoicemailInboxProps> = ({ className }): JSX.Elem
                     rowKey='id'
                     trClassName='h-[84px]'
                     scrollable={true}
-                    maxHeight='calc(100vh - 480px)'
                   />
                 </div>
               </div>

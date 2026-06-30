@@ -53,7 +53,7 @@ export const Table: React.FC<TableProps> = ({
   onRowClick,
   rowKey,
   containerClassName = '',
-  maxHeight = '32rem',
+  maxHeight = undefined,
   scrollable = false,
   getRowClassName,
 }) => {

@@ -1092,7 +1092,6 @@ export const Calls: FC<CallsProps> = ({ className }): JSX.Element => {
                       rowKey={(record, index) => generateUniqueKey(record, index)}
                       trClassName='h-[84px]'
                       scrollable={true}
-                      maxHeight='calc(100vh - 480px)'
                     />
                   </div>
                 </div>
