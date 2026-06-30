@@ -9,7 +9,7 @@ import { loadPreference } from './storage'
 export const PAGE_SIZE = 10
 export const DEFAULT_CONTACT_TYPE_FILTER = 'all'
 export const DEFAULT_VISIBILITY_FILTER = 'all'
-export const DEFAULT_SORT_BY = 'name'
+export const DEFAULT_SORT_BY = 'displayname'
 const GROUP_TYPE_PREFIX = 'group:'
 const RESERVED_CONTACT_TYPES = ['private', 'public', 'speeddial']
 const DEFAULT_LEGACY_PHONEBOOK_LEVEL = 0

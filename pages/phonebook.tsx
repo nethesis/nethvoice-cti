@@ -382,7 +382,6 @@ const Phonebook: NextPage = () => {
                       rowKey={(contact) => contact?.id || contact?.displayName}
                       trClassName='h-[84px]'
                       scrollable={true}
-                      maxHeight='calc(100vh - 480px)'
                     />
 
                     {isPhonebookLoaded &&

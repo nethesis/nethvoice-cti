@@ -31,9 +31,9 @@ const sortFilter = {
   id: 'sort',
   name: 'Sort by',
   options: [
-    { value: 'name', label: 'Name' },
-    { value: 'surname', label: 'Surname' },
-    { value: 'company', label: 'Company' },
+    { value: 'firstname', label: 'First name' },
+    { value: 'lastname', label: 'Last name' },
+    { value: 'displayname', label: 'Display name' },
   ],
 }
 
@@ -118,7 +118,7 @@ export const Filter = forwardRef<HTMLButtonElement, FilterProps>(
       updateVisibilityFilter(newVisibility)
     }
 
-    const [sortBy, setSortBy]: any = useState('name')
+    const [sortBy, setSortBy]: any = useState('displayname')
     function changeSortBy(event: any) {
       const newSortBy = event.target.id
       setSortBy(newSortBy)
@@ -198,6 +198,11 @@ export const Filter = forwardRef<HTMLButtonElement, FilterProps>(
       label: t(`Phonebook.${o.label}`),
     }))
 
+    const translatedSortOptions = sortFilter.options.map((o) => ({
+      ...o,
+      label: t(`Phonebook.${o.label}`),
+    }))
+
     return (
       <div className={classNames(className)} {...props}>
         <div>
@@ -219,7 +224,13 @@ export const Filter = forwardRef<HTMLButtonElement, FilterProps>(
                 onChange={changeVisibility}
               />
               {/* sort by filter (mobile) */}
-              {/* //// sort by company is currently not implemented on CTI server */}
+              <FilterDisclosure
+                name={t(`Phonebook.${sortFilter.name}`)}
+                filterId={sortFilter.id}
+                options={translatedSortOptions}
+                selectedValue={sortBy}
+                onChange={changeSortBy}
+              />
             </form>
           </MobileFilterDrawer>
 
@@ -263,7 +274,13 @@ export const Filter = forwardRef<HTMLButtonElement, FilterProps>(
                         onChange={changeVisibility}
                       />
                       {/* sort by filter */}
-                      {/* //// sort by company is currently not implemented on CTI server */}
+                      <FilterPopover
+                        name={t(`Phonebook.${sortFilter.name}`)}
+                        filterId={sortFilter.id}
+                        options={translatedSortOptions}
+                        selectedValue={sortBy}
+                        onChange={changeSortBy}
+                      />
                     </PopoverGroup>
 
                     <button
@@ -296,6 +313,10 @@ export const Filter = forwardRef<HTMLButtonElement, FilterProps>(
                   {
                     label: t('Phonebook.Visibility'),
                     value: visibilityLabel ? t(`Phonebook.${visibilityLabel}`) : '',
+                  },
+                  {
+                    label: t('Phonebook.Sort by'),
+                    value: sortByLabel ? t(`Phonebook.${sortByLabel}`) : '',
                   },
                 ]}
                 onReset={resetFilters}

@@ -326,7 +326,6 @@ export const NotManagedCalls: FC<NotManagedCallsProps> = ({ className }): JSX.El
                   rowKey={(call: any) => call.id || call.uniqueid || call.cid + call.time}
                   trClassName=''
                   scrollable={true}
-                  maxHeight='calc(100vh - 480px)'
                   theadClassName='sticky top-0 bg-gray-100 dark:bg-gray-800 z-[1]'
                   tbodyClassName='text-sm bg-white dark:bg-gray-950 text-gray-700 dark:text-gray-200'
                 />
