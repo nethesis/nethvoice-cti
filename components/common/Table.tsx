@@ -48,7 +48,7 @@ export const Table: React.FC<TableProps> = ({
   theadClassName = 'sticky top-0 bg-gray-100 dark:bg-gray-800 z-[1]',
   tbodyClassName = 'bg-white dark:bg-gray-950 text-gray-700 text-sm',
   trClassName = 'border-t border-gray-300 dark:border-gray-600',
-  thClassName = 'px-6 py-3.5 text-left text-sm font-semibold text-gray-700 dark:text-gray-100',
+  thClassName = 'px-6 py-3 text-left text-sm font-medium text-gray-900 dark:text-gray-50',
   tdClassName = 'px-6 py-4',
   onRowClick,
   rowKey,
@@ -175,7 +175,7 @@ export const Table: React.FC<TableProps> = ({
                 data-row-key={getRowKey(row, rowIndex)}
                 className={`${trClassName} ${
                   rowIndex === 0 ? '' : 'border-t border-gray-300 dark:border-gray-600'
-                } ${onRowClick ? 'cursor-pointer hover:bg-gray-50 dark:hover:bg-gray-900' : ''} ${
+                } ${onRowClick ? 'cursor-pointer transition-colors duration-200 hover:bg-gray-100 dark:hover:bg-gray-800' : ''} ${
                   getRowClassName ? getRowClassName(row, rowIndex) : ''
                 }`}
                 onClick={onRowClick ? () => onRowClick(row) : undefined}

@@ -66,6 +66,7 @@ export const LinesView: FC<LinesViewProps> = ({ className }): JSX.Element => {
   const [isLinesLoaded, setLinesLoaded]: any = useState(false)
   const [linesError, setLinesError] = useState('')
   const [pageNum, setPageNum]: any = useState(1)
+  const [pageSize, setPageSize] = useState(PAGE_SIZE)
   const [firstRender, setFirstRender]: any = useState(true)
   const linesStore = useSelector((state: RootState) => state.lines)
 
@@ -96,7 +97,7 @@ export const LinesView: FC<LinesViewProps> = ({ className }): JSX.Element => {
       if (!isLinesLoaded && !linesStore?.isLoading) {
         try {
           setLinesError('')
-          const res = await retrieveLines(textFilter.trim(), pageNum, configurationType)
+          const res = await retrieveLines(textFilter.trim(), pageNum, configurationType, pageSize)
 
           setLines(res.rows)
           setDataPagination(res)
@@ -112,7 +113,7 @@ export const LinesView: FC<LinesViewProps> = ({ className }): JSX.Element => {
     fetchLines()
 
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [isLinesLoaded, pageNum, firstRender, linesStore?.isLoading])
+  }, [isLinesLoaded, pageNum, pageSize, firstRender, linesStore?.isLoading])
 
   const phoneLines = useSelector((state: RootState) => state.phoneLines)
 
@@ -507,9 +508,22 @@ export const LinesView: FC<LinesViewProps> = ({ className }): JSX.Element => {
               currentPage={pageNum}
               totalPages={dataPagination.totalPages}
               totalItems={dataPagination?.count || 0}
-              pageSize={PAGE_SIZE}
+              pageSize={pageSize}
               onPreviousPage={goToPreviousPage}
               onNextPage={goToNextPage}
+              onSelectPage={(page) => {
+                setPageNum(page)
+                store.dispatch.lines.setLoaded(false)
+                setLinesLoaded(false)
+                setSelectedLines([])
+              }}
+              onSelectPageSize={(size) => {
+                setPageSize(size)
+                setPageNum(1)
+                store.dispatch.lines.setLoaded(false)
+                setLinesLoaded(false)
+                setSelectedLines([])
+              }}
               isLoading={!isLinesLoaded}
               itemsName={t('Lines.Lines') || ''}
             />

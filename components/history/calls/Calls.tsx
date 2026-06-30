@@ -73,6 +73,7 @@ export const Calls: FC<CallsProps> = ({ className }): JSX.Element => {
   const [isLoadingPagination, setIsLoadingPagination] = useState(false)
   const [history, setHistory]: any = useState({})
   const [pageNum, setPageNum]: any = useState(1)
+  const [pageSize, setPageSize] = useState(PAGE_SIZE)
   const [filterText, setFilterText]: any = useState('')
   const [callType, setCallType]: any = useState('user')
   const [sortBy, setSortBy]: any = useState('time%20desc')
@@ -283,7 +284,7 @@ export const Calls: FC<CallsProps> = ({ className }): JSX.Element => {
             sortBy,
             callDirection,
             pageNum,
-            PAGE_SIZE,
+            pageSize,
             contentFilter,
           )
           setHistory(res)
@@ -311,6 +312,7 @@ export const Calls: FC<CallsProps> = ({ className }): JSX.Element => {
     dateEnd,
     filterText,
     pageNum,
+    pageSize,
     sortBy,
     callDirection,
     contentFilter,
@@ -402,9 +404,9 @@ export const Calls: FC<CallsProps> = ({ className }): JSX.Element => {
   //Calculate the total pages of the history
   useEffect(() => {
     if (history?.count) {
-      setTotalPages(Math?.ceil(history?.count / PAGE_SIZE))
+      setTotalPages(Math?.ceil(history?.count / pageSize))
     }
-  }, [history?.count])
+  }, [history?.count, pageSize])
 
   async function playSelectedAudioFile(callId: any) {
     if (callId) {
@@ -1104,9 +1106,14 @@ export const Calls: FC<CallsProps> = ({ className }): JSX.Element => {
                 currentPage={pageNum}
                 totalPages={totalPages}
                 totalItems={history?.count || 0}
-                pageSize={PAGE_SIZE}
+                pageSize={pageSize}
                 onPreviousPage={goToPreviousPage}
                 onNextPage={goToNextPage}
+                onSelectPage={(page) => setPageNum(page)}
+                onSelectPageSize={(size) => {
+                  setPageSize(size)
+                  setPageNum(1)
+                }}
                 isLoading={!isHistoryLoaded || isLoadingPagination}
                 itemsName={t('History.calls') || ''}
               />

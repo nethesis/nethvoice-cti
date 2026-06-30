@@ -546,6 +546,11 @@ export const VoicemailInbox: FC<VoicemailInboxProps> = ({ className }): JSX.Elem
               pageSize={pageSize}
               onPreviousPage={goToPreviousPage}
               onNextPage={goToNextPage}
+              onSelectPage={(page) => setPageNum(page)}
+              onSelectPageSize={(size) => {
+                setPageSize(size)
+                setPageNum(1)
+              }}
               isLoading={!isVoicemailLoaded}
               itemsName={t('History.voicemails') || ''}
             />

@@ -45,6 +45,7 @@ export const AnnouncementView: FC<AnnouncementViewProps> = ({ className }): JSX.
   const [isLinesLoaded, setLinesLoaded]: any = useState(false)
   const [linesError, setLinesError] = useState('')
   const [pageNum, setPageNum]: any = useState(1)
+  const [pageSize, setPageSize] = useState(PAGE_SIZE)
   const [firstRender, setFirstRender]: any = useState(true)
   const [textFilter, setTextFilter]: any = useState('')
   const [donwloadAudioMessageError, setDownloadAudioMessageError] = useState('')
@@ -127,7 +128,7 @@ export const AnnouncementView: FC<AnnouncementViewProps> = ({ className }): JSX.
       if (!isLinesLoaded) {
         try {
           setLinesError('')
-          const res = await getAnnouncementsFiltered(textFilter.trim(), pageNum)
+          const res = await getAnnouncementsFiltered(textFilter.trim(), pageNum, pageSize)
           setLines(res?.rows)
           //use another state to keep the original lines (not paginated for sorting)
           setCleanLines(res?.rows)
@@ -144,7 +145,7 @@ export const AnnouncementView: FC<AnnouncementViewProps> = ({ className }): JSX.
     }
     fetchLines()
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [isLinesLoaded, firstRender, reloadValue])
+  }, [isLinesLoaded, pageSize, firstRender, reloadValue])
 
   const announcement = useSelector((state: RootState) => state.announcement)
 
@@ -402,9 +403,18 @@ export const AnnouncementView: FC<AnnouncementViewProps> = ({ className }): JSX.
               currentPage={pageNum}
               totalPages={dataPagination.totalPages}
               totalItems={dataPagination?.count || 0}
-              pageSize={PAGE_SIZE}
+              pageSize={pageSize}
               onPreviousPage={goToPreviousPage}
               onNextPage={goToNextPage}
+              onSelectPage={(page) => {
+                setPageNum(page)
+                setLinesLoaded(false)
+              }}
+              onSelectPageSize={(size) => {
+                setPageSize(size)
+                setPageNum(1)
+                setLinesLoaded(false)
+              }}
               isLoading={!isLinesLoaded}
               itemsName={t('Lines.Lines') || ''}
             />

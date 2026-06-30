@@ -355,7 +355,7 @@ export const getFilterValues = (currentUsername: string) => {
   return { contactType, visibility, sortBy }
 }
 
-export const mapPhonebookResponse = (phonebookResponse: any) => {
+export const mapPhonebookResponse = (phonebookResponse: any, pageSize: number = PAGE_SIZE) => {
   if (!phonebookResponse) {
     return null
   }
@@ -365,7 +365,7 @@ export const mapPhonebookResponse = (phonebookResponse: any) => {
   })
 
   // total pages
-  phonebookResponse.totalPages = Math.ceil(phonebookResponse.count / PAGE_SIZE)
+  phonebookResponse.totalPages = Math.ceil(phonebookResponse.count / pageSize)
   return phonebookResponse
 }
 
