@@ -86,7 +86,7 @@ export const FilterPopover: React.FC<FilterPopoverProps> = ({
                   />
                   <label
                     htmlFor={`${idPrefix}${option.value}`}
-                    className='ml-3 block text-sm font-medium text-gray-700 dark:text-gray-200'
+                    className='ml-3 block whitespace-nowrap text-sm font-medium text-gray-700 dark:text-gray-200'
                   >
                     {option.label}
                   </label>

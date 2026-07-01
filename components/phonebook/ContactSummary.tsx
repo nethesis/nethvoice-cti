@@ -403,7 +403,7 @@ export const ContactSummary = forwardRef<HTMLButtonElement, ContactSummaryProps>
             {(contactVisibility === 'private' ||
               (contactVisibility === 'group' && sharedGroups.length > 0)) && (
               <div className='sm:grid sm:grid-cols-3 sm:gap-4'>
-                <dt className='text-sm font-medium leading-5 text-secondaryNeutral dark:text-secondaryNeutralDark'>
+                <dt className='flex items-center text-sm font-medium leading-5 text-secondaryNeutral dark:text-secondaryNeutralDark'>
                   {t('Phonebook.Visibility')}
                 </dt>
                 <dd className='mt-2 sm:col-span-2 sm:mt-0'>
@@ -437,7 +437,7 @@ export const ContactSummary = forwardRef<HTMLButtonElement, ContactSummaryProps>
             {/* company */}
             {contact.kind == 'person' && contact?.company && (
               <div className='sm:grid sm:grid-cols-3 sm:gap-4'>
-                <dt className='text-sm font-medium text-secondaryNeutral dark:text-secondaryNeutralDark leading-5'>
+                <dt className='flex items-center text-sm font-medium text-secondaryNeutral dark:text-secondaryNeutralDark leading-5'>
                   {t('Phonebook.Company')}
                 </dt>
                 <dd className='mt-1 text-sm text-gray-900 dark:text-gray-100 sm:col-span-2 sm:mt-0'>
@@ -450,7 +450,7 @@ export const ContactSummary = forwardRef<HTMLButtonElement, ContactSummaryProps>
             {/* job */}
             {contact.kind == 'person' && contact?.job && (
               <div className='sm:grid sm:grid-cols-3 sm:gap-4'>
-                <dt className='text-sm font-medium text-secondaryNeutral dark:text-secondaryNeutralDark leading-5'>
+                <dt className='flex items-center text-sm font-medium text-secondaryNeutral dark:text-secondaryNeutralDark leading-5'>
                   {t('Phonebook.Job')}
                 </dt>
                 <dd className='mt-1 text-sm text-gray-900 dark:text-gray-100 sm:col-span-2 sm:mt-0'>
@@ -630,7 +630,7 @@ export const ContactSummary = forwardRef<HTMLButtonElement, ContactSummaryProps>
             {/* fax */}
             {contact?.fax && (
               <div className='sm:grid sm:grid-cols-3 sm:gap-4'>
-                <dt className='text-sm font-medium text-secondaryNeutral dark:text-secondaryNeutralDark leading-5'>
+                <dt className='flex items-center text-sm font-medium text-secondaryNeutral dark:text-secondaryNeutralDark leading-5'>
                   {t('Phonebook.Fax')}
                 </dt>
                 <dd className='mt-1 text-sm text-gray-900 dark:text-gray-100 sm:col-span-2 sm:mt-0'>
@@ -644,7 +644,7 @@ export const ContactSummary = forwardRef<HTMLButtonElement, ContactSummaryProps>
             {/* work email */}
             {contact.workemail && (
               <div className='sm:grid sm:grid-cols-3 sm:gap-4'>
-                <dt className='text-sm font-medium text-secondaryNeutral dark:text-secondaryNeutralDark leading-5'>
+                <dt className='flex items-center text-sm font-medium text-secondaryNeutral dark:text-secondaryNeutralDark leading-5'>
                   {t('Phonebook.Email')}
                 </dt>
                 <dd className='mt-1 text-sm text-gray-900 dark:text-gray-100 sm:col-span-2 sm:mt-0'>
@@ -666,7 +666,7 @@ export const ContactSummary = forwardRef<HTMLButtonElement, ContactSummaryProps>
             {/* home email */}
             {contact?.homeemail && (
               <div className='sm:grid sm:grid-cols-3 sm:gap-4'>
-                <dt className='text-sm font-medium text-secondaryNeutral dark:text-secondaryNeutralDark leading-5'>
+                <dt className='flex items-center text-sm font-medium text-secondaryNeutral dark:text-secondaryNeutralDark leading-5'>
                   {t('Phonebook.Home email')}
                 </dt>
                 <dd className='mt-1 text-sm text-gray-900 dark:text-gray-100 sm:col-span-2 sm:mt-0'>
@@ -687,7 +687,7 @@ export const ContactSummary = forwardRef<HTMLButtonElement, ContactSummaryProps>
             {/* other email */}
             {contact?.otheremail && (
               <div className='sm:grid sm:grid-cols-3 sm:gap-4'>
-                <dt className='text-sm font-medium text-secondaryNeutral dark:text-secondaryNeutralDark leading-5'>
+                <dt className='flex items-center text-sm font-medium text-secondaryNeutral dark:text-secondaryNeutralDark leading-5'>
                   {t('Phonebook.Other email')}
                 </dt>
                 <dd className='mt-1 text-sm text-gray-900 dark:text-gray-100 sm:col-span-2 sm:mt-0'>
@@ -708,7 +708,7 @@ export const ContactSummary = forwardRef<HTMLButtonElement, ContactSummaryProps>
             {/* facebook */}
             {contact?.facebook && (
               <div className='sm:grid sm:grid-cols-3 sm:gap-4'>
-                <dt className='text-sm font-medium text-secondaryNeutral dark:text-secondaryNeutralDark leading-5'>
+                <dt className='flex items-center text-sm font-medium text-secondaryNeutral dark:text-secondaryNeutralDark leading-5'>
                   {t('Phonebook.Facebook')}
                 </dt>
                 <dd className='mt-1 text-sm text-gray-900 dark:text-gray-100 sm:col-span-2 sm:mt-0'>
@@ -729,7 +729,7 @@ export const ContactSummary = forwardRef<HTMLButtonElement, ContactSummaryProps>
             {/* instagram */}
             {contact?.instagram && (
               <div className='sm:grid sm:grid-cols-3 sm:gap-4'>
-                <dt className='text-sm font-medium text-secondaryNeutral dark:text-secondaryNeutralDark leading-5'>
+                <dt className='flex items-center text-sm font-medium text-secondaryNeutral dark:text-secondaryNeutralDark leading-5'>
                   {t('Phonebook.Instagram')}
                 </dt>
                 <dd className='mt-1 text-sm text-gray-900 dark:text-gray-100 sm:col-span-2 sm:mt-0'>
@@ -750,7 +750,7 @@ export const ContactSummary = forwardRef<HTMLButtonElement, ContactSummaryProps>
             {/* linkedin */}
             {contact?.linkedin && (
               <div className='sm:grid sm:grid-cols-3 sm:gap-4'>
-                <dt className='text-sm font-medium text-secondaryNeutral dark:text-secondaryNeutralDark leading-5'>
+                <dt className='flex items-center text-sm font-medium text-secondaryNeutral dark:text-secondaryNeutralDark leading-5'>
                   {t('Phonebook.LinkedIn')}
                 </dt>
                 <dd className='mt-1 text-sm text-gray-900 dark:text-gray-100 sm:col-span-2 sm:mt-0'>
@@ -771,7 +771,7 @@ export const ContactSummary = forwardRef<HTMLButtonElement, ContactSummaryProps>
             {/* website */}
             {contact?.url && (
               <div className='sm:grid sm:grid-cols-3 sm:gap-4'>
-                <dt className='text-sm font-medium text-secondaryNeutral dark:text-secondaryNeutralDark leading-5'>
+                <dt className='flex items-center text-sm font-medium text-secondaryNeutral dark:text-secondaryNeutralDark leading-5'>
                   {t('Phonebook.Website')}
                 </dt>
                 <dd className='mt-1 text-sm text-gray-900 dark:text-gray-100 sm:col-span-2 sm:mt-0'>

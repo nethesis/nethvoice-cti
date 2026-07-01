@@ -1094,30 +1094,31 @@ export const Calls: FC<CallsProps> = ({ className }): JSX.Element => {
                       rowKey={(record, index) => generateUniqueKey(record, index)}
                       trClassName='h-[84px]'
                       scrollable={true}
+                      footer={
+                        totalPages > 1 ? (
+                          <Pagination
+                            currentPage={pageNum}
+                            totalPages={totalPages}
+                            totalItems={history?.count || 0}
+                            pageSize={pageSize}
+                            onPreviousPage={goToPreviousPage}
+                            onNextPage={goToNextPage}
+                            onSelectPage={(page) => setPageNum(page)}
+                            onSelectPageSize={(size) => {
+                              setPageSize(size)
+                              setPageNum(1)
+                            }}
+                            isLoading={!isHistoryLoaded || isLoadingPagination}
+                            itemsName={t('History.calls') || ''}
+                            className='!mb-0 !px-6'
+                          />
+                        ) : undefined
+                      }
                     />
                   </div>
                 </div>
               </div>
             </div>
-
-            {/* pagination */}
-            {totalPages > 1 && (
-              <Pagination
-                currentPage={pageNum}
-                totalPages={totalPages}
-                totalItems={history?.count || 0}
-                pageSize={pageSize}
-                onPreviousPage={goToPreviousPage}
-                onNextPage={goToNextPage}
-                onSelectPage={(page) => setPageNum(page)}
-                onSelectPageSize={(size) => {
-                  setPageSize(size)
-                  setPageNum(1)
-                }}
-                isLoading={!isHistoryLoaded || isLoadingPagination}
-                itemsName={t('History.calls') || ''}
-              />
-            )}
           </div>
         ) : (
           <MissingPermission />

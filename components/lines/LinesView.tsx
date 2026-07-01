@@ -498,36 +498,38 @@ export const LinesView: FC<LinesViewProps> = ({ className }): JSX.Element => {
                   trClassName='h-[84px]'
                   theadClassName='sticky top-0 bg-gray-100 dark:bg-gray-800 z-[1]'
                   tbodyClassName='text-sm divide-y divide-gray-200 bg-white dark:bg-gray-950 text-gray-700 dark:divide-gray-700 dark:text-gray-200'
+                  footer={
+                    !linesError && !!lines?.length ? (
+                      <Pagination
+                        currentPage={pageNum}
+                        totalPages={dataPagination.totalPages}
+                        totalItems={dataPagination?.count || 0}
+                        pageSize={pageSize}
+                        onPreviousPage={goToPreviousPage}
+                        onNextPage={goToNextPage}
+                        onSelectPage={(page) => {
+                          setPageNum(page)
+                          store.dispatch.lines.setLoaded(false)
+                          setLinesLoaded(false)
+                          setSelectedLines([])
+                        }}
+                        onSelectPageSize={(size) => {
+                          setPageSize(size)
+                          setPageNum(1)
+                          store.dispatch.lines.setLoaded(false)
+                          setLinesLoaded(false)
+                          setSelectedLines([])
+                        }}
+                        isLoading={!isLinesLoaded}
+                        itemsName={t('Lines.Lines') || ''}
+                        className='!mb-0 !px-6'
+                      />
+                    ) : undefined
+                  }
                 />
               </div>
             </div>
           </div>
-
-          {!linesError && !!lines?.length && (
-            <Pagination
-              currentPage={pageNum}
-              totalPages={dataPagination.totalPages}
-              totalItems={dataPagination?.count || 0}
-              pageSize={pageSize}
-              onPreviousPage={goToPreviousPage}
-              onNextPage={goToNextPage}
-              onSelectPage={(page) => {
-                setPageNum(page)
-                store.dispatch.lines.setLoaded(false)
-                setLinesLoaded(false)
-                setSelectedLines([])
-              }}
-              onSelectPageSize={(size) => {
-                setPageSize(size)
-                setPageNum(1)
-                store.dispatch.lines.setLoaded(false)
-                setLinesLoaded(false)
-                setSelectedLines([])
-              }}
-              isLoading={!isLinesLoaded}
-              itemsName={t('Lines.Lines') || ''}
-            />
-          )}
         </div>
       )}
     </div>

@@ -36,6 +36,8 @@ interface TableProps {
   maxHeight?: string | number
   scrollable?: boolean
   getRowClassName?: (row: any, index: number) => string
+  /** Optional footer rendered inside the table card (e.g. pagination) */
+  footer?: ReactNode
 }
 
 export const Table: React.FC<TableProps> = ({
@@ -56,6 +58,7 @@ export const Table: React.FC<TableProps> = ({
   maxHeight = undefined,
   scrollable = false,
   getRowClassName,
+  footer,
 }) => {
   const tableClasses = classNames(
     'min-w-full divide-y divide-gray-300 dark:divide-gray-700',
@@ -111,6 +114,7 @@ export const Table: React.FC<TableProps> = ({
             </tbody>
           </table>
         </div>
+        {footer}
       </div>
     )
   }
@@ -200,6 +204,7 @@ export const Table: React.FC<TableProps> = ({
           </tbody>
         </table>
       </div>
+      {footer}
     </div>
   )
 }

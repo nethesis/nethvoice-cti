@@ -25,7 +25,7 @@ import { useSelector } from 'react-redux'
 import { RootState } from '../../store'
 import { getShareableGroups, retrieveGroups } from '../../lib/operators'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
-import { faUsers, faCircleInfo, faCirclePlus } from '@fortawesome/free-solid-svg-icons'
+import { faUsers, faCircleInfo, faCirclePlus, faAngleRight } from '@fortawesome/free-solid-svg-icons'
 import { CustomThemedTooltip } from '../common/CustomThemedTooltip'
 
 const NAME_DETAIL_OPTIONS = [
@@ -141,7 +141,35 @@ export const CreateOrEditContactDrawerContent = forwardRef<
   // "Add field" is a hand-rolled dropdown (opens upward, left-aligned) following
   // the shared-groups pattern.
   const [isAddFieldOpen, setIsAddFieldOpen] = useState(false)
+  const [isSocialSubmenuOpen, setIsSocialSubmenuOpen] = useState(false)
   const addFieldDropdownRef = useRef() as React.MutableRefObject<HTMLDivElement>
+  // Delayed-close for the Social flyout: moving the pointer across the small gap
+  // between the "Social" item and the flyout would otherwise fire mouseLeave and
+  // dismiss it before the pointer reaches the panel.
+  const socialSubmenuCloseTimer = useRef<ReturnType<typeof setTimeout> | null>(null)
+  const openSocialSubmenu = () => {
+    if (socialSubmenuCloseTimer.current) {
+      clearTimeout(socialSubmenuCloseTimer.current)
+      socialSubmenuCloseTimer.current = null
+    }
+    setIsSocialSubmenuOpen(true)
+  }
+  const scheduleCloseSocialSubmenu = () => {
+    if (socialSubmenuCloseTimer.current) {
+      clearTimeout(socialSubmenuCloseTimer.current)
+    }
+    socialSubmenuCloseTimer.current = setTimeout(() => {
+      setIsSocialSubmenuOpen(false)
+      socialSubmenuCloseTimer.current = null
+    }, 200)
+  }
+  useEffect(() => {
+    return () => {
+      if (socialSubmenuCloseTimer.current) {
+        clearTimeout(socialSubmenuCloseTimer.current)
+      }
+    }
+  }, [])
 
   // Optional fields are always mounted (so the uncontrolled refs stay valid for
   // init/submit) but hidden until the user reveals them from the "Add phone" /
@@ -154,16 +182,6 @@ export const CreateOrEditContactDrawerContent = forwardRef<
       next.add(key)
       return next
     })
-  }
-
-  // Reveal all three social inputs at once (no per-network choice).
-  const showSocialFields = () => {
-    setVisibleFields((prev) => {
-      const next = new Set(prev)
-      SOCIAL_FIELD_OPTIONS.forEach((o) => next.add(o.key))
-      return next
-    })
-    setPendingFocusKey('linkedin')
   }
 
   // When a field is revealed from an "Add …" menu the focus should move to the
@@ -252,6 +270,7 @@ export const CreateOrEditContactDrawerContent = forwardRef<
         !addFieldDropdownRef.current.contains(event.target as Node)
       ) {
         setIsAddFieldOpen(false)
+        setIsSocialSubmenuOpen(false)
       }
     }
 
@@ -1128,7 +1147,7 @@ export const CreateOrEditContactDrawerContent = forwardRef<
               placeholder={t('Phonebook.Website placeholder') || ''}
             />
           </div>
-          {/* Add field menu (Address, Social reveal-all, Website) — opens upward, left-aligned */}
+          {/* Add field menu (Address, Social flyout, Website) — opens upward, left-aligned */}
           <div className='relative self-start -mt-4' ref={addFieldDropdownRef}>
             <Button
               variant='ghost'
@@ -1140,7 +1159,14 @@ export const CreateOrEditContactDrawerContent = forwardRef<
                 isFieldVisible('url') &&
                 SOCIAL_FIELD_OPTIONS.every((o) => isFieldVisible(o.key))
               }
-              onClick={() => setIsAddFieldOpen((open) => !open)}
+              onClick={() =>
+                setIsAddFieldOpen((open) => {
+                  if (open) {
+                    setIsSocialSubmenuOpen(false)
+                  }
+                  return !open
+                })
+              }
             >
               <FontAwesomeIcon icon={faCirclePlus} className='h-4 w-4' />
               {t('Phonebook.Add field')}
@@ -1154,22 +1180,47 @@ export const CreateOrEditContactDrawerContent = forwardRef<
                     onClick={() => {
                       revealField('address')
                       setIsAddFieldOpen(false)
+                      setIsSocialSubmenuOpen(false)
                     }}
                   >
                     {t('Phonebook.Address')}
                   </button>
                 )}
                 {SOCIAL_FIELD_OPTIONS.some((o) => !isFieldVisible(o.key)) && (
-                  <button
-                    type='button'
-                    className='block w-full px-4 py-2 text-left text-sm text-secondaryNeutral transition hover:bg-gray-100 dark:text-secondaryNeutralDark dark:hover:bg-gray-800'
-                    onClick={() => {
-                      showSocialFields()
-                      setIsAddFieldOpen(false)
-                    }}
+                  <div
+                    className='relative'
+                    onMouseEnter={openSocialSubmenu}
+                    onMouseLeave={scheduleCloseSocialSubmenu}
                   >
-                    {t('Phonebook.Social')}
-                  </button>
+                    <button
+                      type='button'
+                      className='flex w-full items-center justify-between px-4 py-2 text-left text-sm text-secondaryNeutral transition hover:bg-gray-100 dark:text-secondaryNeutralDark dark:hover:bg-gray-800'
+                      aria-haspopup='menu'
+                      aria-expanded={isSocialSubmenuOpen}
+                      onClick={() => (isSocialSubmenuOpen ? setIsSocialSubmenuOpen(false) : openSocialSubmenu())}
+                    >
+                      <span>{t('Phonebook.Social')}</span>
+                      <FontAwesomeIcon icon={faAngleRight} className='h-3 w-3' />
+                    </button>
+                    {isSocialSubmenuOpen && (
+                      <div className='absolute left-full top-0 z-30 w-56 rounded-md border border-gray-200 bg-white py-2 shadow-lg dark:border-gray-700 dark:bg-gray-900'>
+                        {SOCIAL_FIELD_OPTIONS.filter((o) => !isFieldVisible(o.key)).map((o) => (
+                          <button
+                            key={o.key}
+                            type='button'
+                            className='block w-full px-4 py-2 text-left text-sm text-secondaryNeutral transition hover:bg-gray-100 dark:text-secondaryNeutralDark dark:hover:bg-gray-800'
+                            onClick={() => {
+                              revealField(o.key)
+                              setIsSocialSubmenuOpen(false)
+                              setIsAddFieldOpen(false)
+                            }}
+                          >
+                            {t(o.labelKey)}
+                          </button>
+                        ))}
+                      </div>
+                    )}
+                  </div>
                 )}
                 {!isFieldVisible('url') && (
                   <button
@@ -1178,6 +1229,7 @@ export const CreateOrEditContactDrawerContent = forwardRef<
                     onClick={() => {
                       revealField('url')
                       setIsAddFieldOpen(false)
+                      setIsSocialSubmenuOpen(false)
                     }}
                   >
                     {t('Phonebook.Website')}
