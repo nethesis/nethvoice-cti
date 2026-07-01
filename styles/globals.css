@@ -84,13 +84,13 @@
   --color-bg-input: #fff;
   --color-input-text: #374151;
   --color-input-label-title: #374151;
-  --color-placeholder-input-text: #6b7280;
+  --color-placeholder-input-text: #9ca3af;
   --color-input-icon: #111827;
   /* input dark */
   --color-bg-input-dark: #030712;
   --color-input-text-dark: #F9FAFB;
   --color-input-label-title-dark: #E5E7EB;
-  --color-placeholder-input-text-dark: #d1d5db;
+  --color-placeholder-input-text-dark: #6B7280;
   --color-input-icon-dark: #F9FAFB;
 
   /* main page light */

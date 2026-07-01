@@ -531,26 +531,31 @@ export const VoicemailInbox: FC<VoicemailInboxProps> = ({ className }): JSX.Elem
                     rowKey='id'
                     trClassName='h-[84px]'
                     scrollable={true}
-                    maxHeight='calc(100vh - 480px)'
+                    footer={
+                      totalPages > 1 ? (
+                        <Pagination
+                          currentPage={pageNum}
+                          totalPages={totalPages}
+                          totalItems={filteredVoicemails?.length || 0}
+                          pageSize={pageSize}
+                          onPreviousPage={goToPreviousPage}
+                          onNextPage={goToNextPage}
+                          onSelectPage={(page) => setPageNum(page)}
+                          onSelectPageSize={(size) => {
+                            setPageSize(size)
+                            setPageNum(1)
+                          }}
+                          isLoading={!isVoicemailLoaded}
+                          itemsName={t('History.voicemails') || ''}
+                          className='!mb-0 !px-6'
+                        />
+                      ) : undefined
+                    }
                   />
                 </div>
               </div>
             </div>
           </div>
-
-          {/* pagination */}
-          {totalPages > 1 && (
-            <Pagination
-              currentPage={pageNum}
-              totalPages={totalPages}
-              totalItems={filteredVoicemails?.length || 0}
-              pageSize={pageSize}
-              onPreviousPage={goToPreviousPage}
-              onNextPage={goToNextPage}
-              isLoading={!isVoicemailLoaded}
-              itemsName={t('History.voicemails') || ''}
-            />
-          )}
         </div>
       ) : (
         <MissingPermission />

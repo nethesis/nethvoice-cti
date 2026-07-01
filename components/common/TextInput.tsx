@@ -42,6 +42,8 @@ export interface TextInputProps extends Omit<ComponentProps<'input'>, 'ref' | 'c
   squared?: 'left' | 'right' | 'top' | 'bottom'
   onIconClick?: () => void
   trailingComponent?: ReactNode
+  /** Override classes for the placeholder (e.g. 'placeholder:text-textPlaceholder'). */
+  placeholderClassName?: string
 }
 
 export const TextInput = forwardRef<HTMLInputElement, TextInputProps>(
@@ -63,6 +65,7 @@ export const TextInput = forwardRef<HTMLInputElement, TextInputProps>(
       id,
       className,
       trailingComponent,
+      placeholderClassName,
       ...props
     },
     ref,
@@ -123,6 +126,7 @@ export const TextInput = forwardRef<HTMLInputElement, TextInputProps>(
                 leadingIcon || (Icon && !trailingIcon) ? 'pl-10' : '',
                 trailingComponent ? 'pr-10' : '',
                 error ? theme.placeholder.error : theme.placeholder.base,
+                placeholderClassName,
                 'text-gray-900',
               )}
               {...cleanProps}
