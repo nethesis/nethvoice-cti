@@ -15,6 +15,7 @@ import {
   faCircleArrowDown,
   faCircle,
   faArrowRightLong,
+  faCircleNotch,
 } from '@fortawesome/free-solid-svg-icons'
 import { Avatar, Button, ConfirmationModal, Dropdown, EmptyState, InlineNotification } from '..'
 import {
@@ -34,6 +35,9 @@ import Link from 'next/link'
 import { useEventListener } from '../../../lib/hooks/useEventListener'
 import { customScrollbarClass } from '../../../lib/utils'
 import { Skeleton } from '../Skeleton'
+import InfiniteScroll from 'react-infinite-scroll-component'
+
+const VOICEMAIL_PAGE_SIZE = 30
 
 export const VoiceMailContent = () => {
   const operatorsStore = useSelector((state: RootState) => state.operators)
@@ -43,6 +47,7 @@ export const VoiceMailContent = () => {
   const [isVoiceMailLoaded, setVoiceMailLoaded] = useState(false)
   const [getVoiceMailError, setGetVoiceMailError] = useState('')
   const [voicemails, setVoicemails] = useState<any[]>([])
+  const [visibleCount, setVisibleCount] = useState(VOICEMAIL_PAGE_SIZE)
   const [sortType, setSortType] = useState<SortTypes>('newest')
   const [firstRender, setFirstRender]: any = useState(true)
   const [showDeleteModal, setShowDeleteModal] = useState<boolean>(false)
@@ -108,6 +113,7 @@ export const VoiceMailContent = () => {
           })
 
           setVoicemails(sortedVoicemails)
+          setVisibleCount(VOICEMAIL_PAGE_SIZE)
         }
 
         setVoiceMailLoaded(true)
@@ -128,6 +134,7 @@ export const VoiceMailContent = () => {
         return sortType === 'oldest' ? a.origtime - b.origtime : b.origtime - a.origtime
       })
       setVoicemails(sortedVoicemails)
+      setVisibleCount(VOICEMAIL_PAGE_SIZE)
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [sortType])
@@ -144,6 +151,7 @@ export const VoiceMailContent = () => {
       setVoicemailToDelete(null)
       closeSideDrawer()
       // Reload voicemails after deletion
+      setVisibleCount(VOICEMAIL_PAGE_SIZE)
       setFirstRender(true)
     }
   }
@@ -249,6 +257,10 @@ export const VoiceMailContent = () => {
     }
   }
 
+  const visibleVoicemails = voicemails?.slice(0, visibleCount) ?? []
+  const hasMoreVoicemails = visibleCount < (voicemails?.length ?? 0)
+  const showMoreVoicemails = () => setVisibleCount((prev) => prev + VOICEMAIL_PAGE_SIZE)
+
   return (
     <>
       <ConfirmationModal
@@ -286,17 +298,27 @@ export const VoiceMailContent = () => {
           </div>
         </div>
         <span className='border-b border-layoutDivider dark:border-layoutDividerDark'></span>
-        <ul
-          role='list'
-          className={`flex-1 ${customScrollbarClass}`}
-        >
+        <div id='voicemail-scroll' className={`flex-1 ${customScrollbarClass}`}>
           {/* get voicemails error */}
           {getVoiceMailError && (
             <InlineNotification type='error' title={getVoiceMailError} className='my-6' />
           )}
           {/* render voicemails */}
-          {isVoiceMailLoaded &&
-            voicemails?.map((voicemail, index) => (
+          {isVoiceMailLoaded && !getVoiceMailError && voicemails?.length > 0 && (
+            <InfiniteScroll
+              dataLength={visibleVoicemails.length}
+              next={showMoreVoicemails}
+              hasMore={hasMoreVoicemails}
+              scrollableTarget='voicemail-scroll'
+              loader={
+                <FontAwesomeIcon
+                  icon={faCircleNotch}
+                  className='fa-spin block mx-auto my-6 h-6 w-6 text-gray-400 dark:text-gray-500'
+                />
+              }
+            >
+              <ul role='list'>
+                {visibleVoicemails.map((voicemail, index) => (
               <li key={voicemail?.id} className=''>
                 <div className='group relative flex items-center'>
                   <div
@@ -402,17 +424,20 @@ export const VoiceMailContent = () => {
                   </div>
                 </div>
                 {/* Divider */}
-                {index !== voicemails?.length - 1 && (
+                {index !== visibleVoicemails.length - 1 && (
                   <div className='px-6 relative'>
                     <div className='border-b border-layoutDivider dark:border-layoutDividerDark'></div>
                   </div>
                 )}
               </li>
-            ))}
+                ))}
+              </ul>
+            </InfiniteScroll>
+          )}
           {/* skeleton */}
-          {!isVoiceMailLoaded &&
-            !getVoiceMailError &&
-            Array.from(Array(4)).map((_, index) => (
+          {!isVoiceMailLoaded && !getVoiceMailError && (
+            <ul role='list'>
+              {Array.from(Array(4)).map((_, index) => (
               <li key={index} className='px-6 py-4'>
                 <div className='flex justify-between gap-3'>
                   <div className='flex shrink-0 h-min items-center min-w-[48px]'>
@@ -446,7 +471,9 @@ export const VoiceMailContent = () => {
                   </div>
                 )}
               </li>
-            ))}
+              ))}
+            </ul>
+          )}
           {/* empty state */}
           {isVoiceMailLoaded && !getVoiceMailError && voicemails?.length == 0 && (
             <div className='py-4 px-6'>
@@ -463,7 +490,7 @@ export const VoiceMailContent = () => {
               />
             </div>
           )}
-        </ul>
+        </div>
       </div>
     </>
   )
