@@ -1,22 +1,24 @@
 // Copyright (C) 2024 Nethesis S.r.l.
 // SPDX-License-Identifier: AGPL-3.0-or-later
 
-import { FC, ComponentProps, useState, useEffect, useMemo } from 'react'
+import { FC, ComponentProps, useState, useEffect, useMemo, useRef } from 'react'
 import { useTranslation } from 'react-i18next'
-import { Button, InlineNotification, Avatar } from '../common'
+import { Button, InlineNotification, Avatar, Dropdown, ConfirmationModal } from '../common'
 import { Pagination } from '../common/Pagination'
 import { debounce } from 'lodash'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
-import { getAnnouncementsFiltered, downloadMsg, PAGE_SIZE } from '../../lib/lines'
+import { getAnnouncementsFiltered, downloadMsg, deleteMsg, PAGE_SIZE } from '../../lib/lines'
 import {
   faPlay,
   faDownload,
   faTrash,
+  faPen,
   faLock,
   faLockOpen,
   faChevronLeft,
-  faAngleRight,
+  faEllipsisVertical,
   faFilter,
+  faPenToSquare,
 } from '@fortawesome/free-solid-svg-icons'
 import classNames from 'classnames'
 import { AnnouncementFilter } from './AnnouncementFilter'
@@ -191,6 +193,54 @@ export const AnnouncementView: FC<AnnouncementViewProps> = ({ className }): JSX.
     }
   }
 
+  const [showDeleteModal, setShowDeleteModal] = useState(false)
+  const [deleteAnnouncementId, setDeleteAnnouncementId] = useState<any>(null)
+  const [deleteAudioMessageError, setDeleteAudioMessageError] = useState('')
+  const cancelDeleteButtonRef = useRef() as React.MutableRefObject<HTMLButtonElement>
+
+  const deleteAnnouncement = (announcementId: any) => {
+    setShowDeleteModal(true)
+    setDeleteAnnouncementId(announcementId)
+  }
+
+  async function closedModalDeleteAnnouncement() {
+    if (deleteAnnouncementId) {
+      try {
+        await deleteMsg(deleteAnnouncementId)
+        reloadAnnouncement()
+      } catch (error) {
+        setDeleteAudioMessageError('Cannot delete announcement')
+        return
+      }
+    }
+    setShowDeleteModal(false)
+  }
+
+  const isCallBusy = profile?.mainPresence === 'busy' || profile?.mainPresence === 'incoming'
+
+  const announcementMenuItems = (announcement: any) => (
+    <>
+      <Dropdown.Item
+        icon={faPlay}
+        iconClassName={isCallBusy ? 'opacity-50' : ''}
+        onClick={() => {
+          if (isCallBusy) return
+          playSelectedAnnouncement(announcement.id)
+        }}
+      >
+        <span className={isCallBusy ? 'opacity-50' : ''}>{t('Lines.Play')}</span>
+      </Dropdown.Item>
+      <Dropdown.Item icon={faDownload} onClick={() => donwloadSelectedAnnouncement(announcement.id)}>
+        {t('Lines.Download')}
+      </Dropdown.Item>
+      {auth.username === announcement.username && (
+        <Dropdown.Item icon={faTrash} isRed onClick={() => deleteAnnouncement(announcement.id)}>
+          {t('Common.Delete')}
+        </Dropdown.Item>
+      )}
+    </>
+  )
+
   const [sortBy, setSortBy]: any = useState('name')
   const auth = useSelector((state: RootState) => state.authentication)
 
@@ -312,44 +362,29 @@ export const AnnouncementView: FC<AnnouncementViewProps> = ({ className }): JSX.
       header: '',
       cell: (announcement: any) => (
         <div className='flex gap-2 justify-end items-center'>
-          <div>
+          {auth.username === announcement.username ? (
             <Button
-              variant='white'
-              onClick={() => playSelectedAnnouncement(announcement.id)}
-              disabled={
-                profile?.mainPresence === 'busy' || profile?.mainPresence === 'incoming'
-                  ? true
-                  : false
+              variant='ghost'
+              onClick={() =>
+                openEditAnnouncementDrawer(
+                  announcement.description,
+                  announcement.id,
+                  announcement.privacy,
+                )
               }
             >
-              <FontAwesomeIcon icon={faPlay} className='h-4 w-4 mr-2' aria-hidden='true' />{' '}
-              {t('Lines.Play')}
+              <FontAwesomeIcon icon={faPenToSquare} className='h-4 w-4 mr-2' aria-hidden='true' />
+              {t('Common.Edit')}
             </Button>
-          </div>
-          <div>
-            <Button variant='white' onClick={() => donwloadSelectedAnnouncement(announcement.id)}>
-              <FontAwesomeIcon icon={faDownload} className='h-4 w-4 mr-2' aria-hidden='true' />{' '}
-              {t('Lines.Download')}
-            </Button>
-          </div>
-          {auth.username === announcement.username ? (
-            <div className='flex items-center'>
-              <FontAwesomeIcon
-                icon={faAngleRight}
-                className='h-3 w-3 ml-4 cursor-pointer text-gray-500 dark:text-gray-500'
-                aria-hidden='true'
-                onClick={() => {
-                  openEditAnnouncementDrawer(
-                    announcement.description,
-                    announcement.id,
-                    announcement.privacy,
-                  )
-                }}
-              />
-            </div>
           ) : (
-            <div className='w-[30px]'></div>
+            <div className='w-[88px]'></div>
           )}
+          <Dropdown items={announcementMenuItems(announcement)} position='left' divider={true}>
+            <Button variant='ghost' className='py-2 px-2 h-9 w-9'>
+              <FontAwesomeIcon icon={faEllipsisVertical} className='h-4 w-4' />
+              <span className='sr-only'>{t('Lines.Open announcement menu')}</span>
+            </Button>
+          </Dropdown>
         </div>
       ),
       className: 'relative py-3.5 pl-3 pr-4 sm:pr-6',
@@ -422,6 +457,16 @@ export const AnnouncementView: FC<AnnouncementViewProps> = ({ className }): JSX.
           </div>
         </div>
       )}
+      {/* Delete announcement modal */}
+      <ConfirmationModal
+        show={showDeleteModal}
+        focus={cancelDeleteButtonRef}
+        onClose={() => setShowDeleteModal(false)}
+        title={t('Lines.Delete announcement')}
+        description={t('Lines.Are you sure to delete selected announcement?')}
+        confirmLabel={t('Common.Delete')}
+        onConfirm={() => closedModalDeleteAnnouncement()}
+      />
     </div>
   )
 }

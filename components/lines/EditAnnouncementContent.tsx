@@ -1,39 +1,19 @@
 // Copyright (C) 2024 Nethesis S.r.l.
 // SPDX-License-Identifier: AGPL-3.0-or-later
 
-import {
-  ComponentPropsWithRef,
-  forwardRef,
-  useEffect,
-  useState,
-  useRef,
-  createRef,
-  RefObject,
-} from 'react'
+import { ComponentPropsWithRef, forwardRef, useEffect, useState, useRef } from 'react'
 import classNames from 'classnames'
-import { InlineNotification, Dropdown } from '../common'
+import { InlineNotification } from '../common'
 import { DrawerHeader } from '../common/DrawerHeader'
 import { Divider } from '../common/Divider'
 import { DrawerFooter } from '../common/DrawerFooter'
 import { useTranslation } from 'react-i18next'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
-import {
-  faEllipsisVertical,
-  faTrash,
-  faXmark,
-  faCircleXmark,
-  faFileArrowUp,
-} from '@fortawesome/free-solid-svg-icons'
+import { faXmark, faCircleXmark, faFileArrowUp } from '@fortawesome/free-solid-svg-icons'
 import { closeSideDrawer, formatFileSize } from '../../lib/utils'
-import { TextInput, Button, ConfirmationModal } from '../common'
-import {
-  uploadAudioMsg,
-  reloadAnnouncement,
-  recordingAnnouncement,
-  modifyMsg,
-  deleteMsg,
-} from '../../lib/lines'
-import { store, RootState } from '../../store'
+import { TextInput, Button } from '../common'
+import { uploadAudioMsg, reloadAnnouncement, recordingAnnouncement, modifyMsg } from '../../lib/lines'
+import { RootState } from '../../store'
 import { useSelector } from 'react-redux'
 
 export interface EditAnnouncementContentProps extends ComponentPropsWithRef<'div'> {
@@ -52,43 +32,11 @@ export const EditAnnouncementDrawerContent = forwardRef<
   const textFilterRef = useRef() as React.MutableRefObject<HTMLInputElement>
   const [selectedFile, setSelectedFile] = useState<any>(null)
   const [selectedFileBase64, setSelectedFileBase64] = useState<any>(null)
-  const [showDeleteModal, setShowDeleteModal] = useState(false)
-  const [deleteAnnouncementId, setDeleteAnnouncementId] = useState(null)
 
   const [uploadAudioMessageError, setUploadAudioMessageError] = useState('')
 
   const [firstRender, setFirstRender] = useState(true)
-  const cancelButtonRef: RefObject<HTMLButtonElement> = createRef()
   const user = useSelector((state: RootState) => state.user)
-
-  const contactMenuItems = (
-    <>
-      <Dropdown.Item icon={faTrash} onClick={() => deleteAnnouncement(config?.announcement_id)}>
-        {t('Common.Delete')}
-      </Dropdown.Item>
-    </>
-  )
-
-  const deleteAnnouncement = (announcementId: any) => {
-    setShowDeleteModal(true)
-    setDeleteAnnouncementId(announcementId)
-  }
-
-  const [deleteAudioMessageError, setDeleteAudioMessageError] = useState('')
-
-  async function closedModalDeleteAnnouncement() {
-    if (deleteAnnouncementId) {
-      try {
-        await deleteMsg(deleteAnnouncementId)
-        store.dispatch.announcement.reload()
-        closeSideDrawer()
-      } catch (error) {
-        setDeleteAudioMessageError('Cannot play announcement')
-        return
-      }
-    }
-    setShowDeleteModal(false)
-  }
 
   useEffect(() => {
     if (firstRender) {
@@ -229,17 +177,6 @@ export const EditAnnouncementDrawerContent = forwardRef<
       />
       <div className={classNames(className, 'px-5')} {...props}>
         <Divider />
-        {config.isEdit && (
-          <div className='flex justify-end'>
-            {/* delete announcement Dropdown menu */}
-            <Dropdown items={contactMenuItems} position='left' divider={true} className='mr-1'>
-              <Button variant='ghost'>
-                <FontAwesomeIcon icon={faEllipsisVertical} className='h-4 w-4' />
-                <span className='sr-only'>Open contact menu</span>
-              </Button>
-            </Dropdown>
-          </div>
-        )}
 
         {/* announcement name */}
         <div className='flex flex-col'>
@@ -390,17 +327,6 @@ export const EditAnnouncementDrawerContent = forwardRef<
           />
         )}
       </div>
-
-      {/* Delete announcement modal */}
-      <ConfirmationModal
-        show={showDeleteModal}
-        focus={cancelButtonRef}
-        onClose={() => setShowDeleteModal(false)}
-        title={t('Lines.Delete announcement')}
-        description={t('Lines.Are you sure to delete selected announcement?')}
-        confirmLabel={t('Common.Delete')}
-        onConfirm={() => closedModalDeleteAnnouncement()}
-      />
     </>
   )
 })
