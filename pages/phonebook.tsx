@@ -383,6 +383,30 @@ const Phonebook: NextPage = () => {
                       rowKey={(contact) => contact?.id || contact?.displayName}
                       trClassName='h-[84px]'
                       scrollable={true}
+                      footer={
+                        phonebook?.rows?.length > 0 ? (
+                          <Pagination
+                            currentPage={pageNum}
+                            totalPages={phonebook?.totalPages}
+                            totalItems={phonebook?.count || 0}
+                            pageSize={pageSize}
+                            onPreviousPage={goToPreviousPage}
+                            onNextPage={goToNextPage}
+                            onSelectPage={(page) => {
+                              setPageNum(page)
+                              setPhonebookLoaded(false)
+                            }}
+                            onSelectPageSize={(size) => {
+                              setPageSize(size)
+                              setPageNum(1)
+                              setPhonebookLoaded(false)
+                            }}
+                            isLoading={!isPhonebookLoaded}
+                            itemsName={t('Phonebook.contacts') || ''}
+                            className='!mb-0 !px-6'
+                          />
+                        ) : undefined
+                      }
                     />
 
                     {isPhonebookLoaded &&
@@ -400,29 +424,6 @@ const Phonebook: NextPage = () => {
                 </div>
               </div>
             </div>
-          )}
-
-          {/* pagination */}
-          {!phonebookError && phonebook?.rows?.length > 0 && (
-            <Pagination
-              currentPage={pageNum}
-              totalPages={phonebook?.totalPages}
-              totalItems={phonebook?.count || 0}
-              pageSize={pageSize}
-              onPreviousPage={goToPreviousPage}
-              onNextPage={goToNextPage}
-              onSelectPage={(page) => {
-                setPageNum(page)
-                setPhonebookLoaded(false)
-              }}
-              onSelectPageSize={(size) => {
-                setPageSize(size)
-                setPageNum(1)
-                setPhonebookLoaded(false)
-              }}
-              isLoading={!isPhonebookLoaded}
-              itemsName={t('Phonebook.contacts') || ''}
-            />
           )}
         </div>
       ) : (

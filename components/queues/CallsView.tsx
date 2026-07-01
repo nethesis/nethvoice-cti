@@ -292,29 +292,30 @@ export const CallsView: FC<CallsViewProps> = ({ className }): JSX.Element => {
                   scrollable={true}
                   theadClassName='sticky top-0 bg-gray-100 dark:bg-gray-800 z-[1]'
                   tbodyClassName='text-sm bg-white dark:bg-gray-950 text-gray-700 dark:text-gray-200'
+                  footer={
+                    !callsError && !!calls?.rows?.length ? (
+                      <Pagination
+                        currentPage={pageNum}
+                        totalPages={calls.totalPages}
+                        totalItems={calls?.count || 0}
+                        pageSize={pageSize}
+                        onPreviousPage={goToPreviousPage}
+                        onNextPage={goToNextPage}
+                        onSelectPage={(page) => setPageNum(page)}
+                        onSelectPageSize={(size) => {
+                          setPageSize(size)
+                          setPageNum(1)
+                        }}
+                        isLoading={!isCallsLoaded}
+                        itemsName={t('Queues.calls') || ''}
+                        className='!mb-0 !px-6'
+                      />
+                    ) : undefined
+                  }
                 />
               </div>
             </div>
           </div>
-
-          {/* pagination */}
-          {!callsError && !!calls?.rows?.length && (
-            <Pagination
-              currentPage={pageNum}
-              totalPages={calls.totalPages}
-              totalItems={calls?.count || 0}
-              pageSize={pageSize}
-              onPreviousPage={goToPreviousPage}
-              onNextPage={goToNextPage}
-              onSelectPage={(page) => setPageNum(page)}
-              onSelectPageSize={(size) => {
-                setPageSize(size)
-                setPageNum(1)
-              }}
-              isLoading={!isCallsLoaded}
-              itemsName={t('Queues.calls') || ''}
-            />
-          )}
         </div>
       )}
     </div>
