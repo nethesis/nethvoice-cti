@@ -218,28 +218,36 @@ export const AnnouncementView: FC<AnnouncementViewProps> = ({ className }): JSX.
 
   const isCallBusy = profile?.mainPresence === 'busy' || profile?.mainPresence === 'incoming'
 
-  const announcementMenuItems = (announcement: any) => (
-    <>
-      <Dropdown.Item
-        icon={faPlay}
-        iconClassName={isCallBusy ? 'opacity-50' : ''}
-        onClick={() => {
-          if (isCallBusy) return
-          playSelectedAnnouncement(announcement.id)
-        }}
-      >
-        <span className={isCallBusy ? 'opacity-50' : ''}>{t('Lines.Play')}</span>
-      </Dropdown.Item>
-      <Dropdown.Item icon={faDownload} onClick={() => donwloadSelectedAnnouncement(announcement.id)}>
-        {t('Lines.Download')}
-      </Dropdown.Item>
-      {auth.username === announcement.username && (
-        <Dropdown.Item icon={faTrash} isRed onClick={() => deleteAnnouncement(announcement.id)}>
-          {t('Common.Delete')}
-        </Dropdown.Item>
-      )}
-    </>
-  )
+  const announcementMenuItems = (announcement: any) => {
+    const isOwner = auth.username === announcement.username
+    return (
+      <>
+        <div className={isOwner ? 'border-b border-gray-200 dark:border-gray-700' : ''}>
+          <Dropdown.Item
+            icon={faPlay}
+            iconClassName={isCallBusy ? 'opacity-50' : ''}
+            onClick={() => {
+              if (isCallBusy) return
+              playSelectedAnnouncement(announcement.id)
+            }}
+          >
+            <span className={isCallBusy ? 'opacity-50' : ''}>{t('Lines.Play')}</span>
+          </Dropdown.Item>
+          <Dropdown.Item
+            icon={faDownload}
+            onClick={() => donwloadSelectedAnnouncement(announcement.id)}
+          >
+            {t('Lines.Download')}
+          </Dropdown.Item>
+        </div>
+        {isOwner && (
+          <Dropdown.Item icon={faTrash} isRed onClick={() => deleteAnnouncement(announcement.id)}>
+            {t('Common.Delete')}
+          </Dropdown.Item>
+        )}
+      </>
+    )
+  }
 
   const [sortBy, setSortBy]: any = useState('name')
   const auth = useSelector((state: RootState) => state.authentication)
@@ -379,7 +387,7 @@ export const AnnouncementView: FC<AnnouncementViewProps> = ({ className }): JSX.
           ) : (
             <div className='w-[88px]'></div>
           )}
-          <Dropdown items={announcementMenuItems(announcement)} position='left' divider={true}>
+          <Dropdown items={announcementMenuItems(announcement)} position='left'>
             <Button variant='ghost' className='py-2 px-2 h-9 w-9'>
               <FontAwesomeIcon icon={faEllipsisVertical} className='h-4 w-4' />
               <span className='sr-only'>{t('Lines.Open announcement menu')}</span>
