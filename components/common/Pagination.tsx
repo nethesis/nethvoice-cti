@@ -149,7 +149,7 @@ export const Pagination: FC<PaginationProps> = ({
   return (
     <nav
       className={classNames(
-        'flex flex-col justify-between gap-4 border-t border-gray-200 px-0 py-4 mb-8 text-sm text-gray-700 sm:flex-row sm:items-center dark:border-gray-800 dark:text-gray-100',
+        'flex flex-col justify-between gap-4 border-t border-gray-200 px-0 py-4 mb-8 text-sm text-secondaryNeutral sm:flex-row sm:items-center bg-elevation0 dark:border-gray-800 dark:bg-elevation0Dark dark:text-secondaryNeutralDark',
         className,
       )}
       aria-label='Pagination'
