@@ -28,10 +28,7 @@ import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { faUsers, faCircleInfo, faCirclePlus, faAngleRight } from '@fortawesome/free-solid-svg-icons'
 import { CustomThemedTooltip } from '../common/CustomThemedTooltip'
 
-const NAME_DETAIL_OPTIONS = [
-  { key: 'jobtitle', labelKey: 'Phonebook.Job title' },
-  { key: 'displayname', labelKey: 'Phonebook.Display name' },
-]
+const NAME_DETAIL_OPTIONS = [{ key: 'jobtitle', labelKey: 'Phonebook.Job title' }]
 
 const PHONE_FIELD_OPTIONS = [
   { key: 'workphone2', labelKey: 'Phonebook.Work phone 2' },
@@ -190,7 +187,6 @@ export const CreateOrEditContactDrawerContent = forwardRef<
   const [pendingFocusKey, setPendingFocusKey] = useState<string | null>(null)
   const fieldRefByKey: Record<string, React.MutableRefObject<HTMLInputElement>> = {
     jobtitle: jobRef,
-    displayname: displayNameRef,
     workphone2: workPhone2Ref,
     cellphone2: mobilePhone2Ref,
     fax: faxRef,
@@ -226,6 +222,15 @@ export const CreateOrEditContactDrawerContent = forwardRef<
     const first = firstNameRef?.current?.value?.trim() || ''
     const last = lastNameRef?.current?.value?.trim() || ''
     return `${first} ${last}`.trim()
+  }
+
+  // Display name is read-only and always mirrors first + last name. Keep it in
+  // sync while the user types so the value shown matches what is stored in
+  // `name` (the field Asterisk uses to resolve the caller identity).
+  const syncDisplayName = () => {
+    if (displayNameRef.current) {
+      displayNameRef.current.value = composeName()
+    }
   }
 
   // Best-effort split of a legacy single `name` into first/last for pre-filling
@@ -367,9 +372,8 @@ export const CreateOrEditContactDrawerContent = forwardRef<
       workCountryRef.current.value = config.contact.workcountry || ''
       homeEmailRef.current.value = config.contact.homeemail || ''
       otherEmailRef.current.value = config.contact.otheremail || ''
-      // Display name override is an explicit field; leave empty unless the user
-      // opens it (name keeps being recomposed from first/last otherwise).
-      displayNameRef.current.value = ''
+      // Display name is read-only and derived from first/last name.
+      syncDisplayName()
 
       // Reveal the optional fields that already carry a value so editing an
       // existing contact never hides its data. Work/Mobile phone and Email are
@@ -427,7 +431,7 @@ export const CreateOrEditContactDrawerContent = forwardRef<
       workCountryRef.current.value = ''
       homeEmailRef.current.value = ''
       otherEmailRef.current.value = ''
-      displayNameRef.current.value = ''
+      syncDisplayName()
       setVisibleFields(new Set())
     } else {
       // creating contact
@@ -463,7 +467,7 @@ export const CreateOrEditContactDrawerContent = forwardRef<
       workCountryRef.current.value = ''
       homeEmailRef.current.value = ''
       otherEmailRef.current.value = ''
-      displayNameRef.current.value = ''
+      syncDisplayName()
       setVisibleFields(new Set())
     }
   }, [
@@ -547,13 +551,13 @@ export const CreateOrEditContactDrawerContent = forwardRef<
         contactVisibility === 'group' ? serializeSharedGroups(selectedGroups) : contactVisibility,
     }
 
-    // Display name (if filled) overrides the auto-composed first/last name.
-    const displayName = displayNameRef?.current?.value?.trim() || ''
-    const composedName = displayName || composeName()
+    // `name` is always derived from first/last name (persons) or a sentinel for
+    // companies. It stays authoritative for Asterisk caller resolution.
+    const composedName = composeName()
 
     if (contactType === 'person' && composedName) {
       contactData.name = composedName
-    } else if (contactType === 'company' && !composedName && companyRef?.current?.value) {
+    } else if (contactType === 'company') {
       contactData.name = '-'
     }
 
@@ -717,12 +721,13 @@ export const CreateOrEditContactDrawerContent = forwardRef<
       workpob: config?.contact?.workpob,
     }
 
-    // Display name (if filled) overrides the auto-composed first/last name.
-    const displayName = displayNameRef?.current?.value?.trim() || ''
-    if (displayName) {
-      contactData.name = displayName
-    } else if (contactType === 'person') {
+    // `name` is always derived from first/last name (persons) or kept as the
+    // sentinel for companies, so it never diverges from the visible fields and
+    // stays authoritative for Asterisk caller resolution.
+    if (contactType === 'person') {
       contactData.name = composeName()
+    } else {
+      contactData.name = '-'
     }
 
     try {
@@ -872,23 +877,26 @@ export const CreateOrEditContactDrawerContent = forwardRef<
                 placeholder={t('Phonebook.First name placeholder') || ''}
                 error={!!nameError}
                 helper={nameError}
+                onChange={syncDisplayName}
               />
               <TextInput
                 label={t('Phonebook.Last name') || ''}
                 name='lastname'
                 ref={lastNameRef}
                 placeholder={t('Phonebook.Last name placeholder') || ''}
+                onChange={syncDisplayName}
               />
               <div className={isFieldVisible('jobtitle') ? '' : 'hidden'}>
                 <TextInput label={t('Phonebook.Job title') || ''} name='job' ref={jobRef} />
               </div>
-              <div className={isFieldVisible('displayname') ? '' : 'hidden'}>
-                <TextInput
-                  label={t('Phonebook.Display name') || ''}
-                  name='displayname'
-                  ref={displayNameRef}
-                />
-              </div>
+              {/* Display name is auto-composed from first/last and read-only. */}
+              <TextInput
+                label={t('Phonebook.Display name') || ''}
+                name='displayname'
+                ref={displayNameRef}
+                readOnly
+                helper={t('Phonebook.Display name auto helper') || ''}
+              />
               {NAME_DETAIL_OPTIONS.some((o) => !isFieldVisible(o.key)) ? (
                 <Dropdown
                   position='topLeft'
