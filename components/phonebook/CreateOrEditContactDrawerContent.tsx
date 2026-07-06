@@ -131,7 +131,6 @@ export const CreateOrEditContactDrawerContent = forwardRef<
   const workProvinceRef = useRef() as React.MutableRefObject<HTMLInputElement>
   const workPostalCodeRef = useRef() as React.MutableRefObject<HTMLInputElement>
   const workCountryRef = useRef() as React.MutableRefObject<HTMLInputElement>
-  const displayNameRef = useRef() as React.MutableRefObject<HTMLInputElement>
   const homeEmailRef = useRef() as React.MutableRefObject<HTMLInputElement>
   const otherEmailRef = useRef() as React.MutableRefObject<HTMLInputElement>
 
@@ -222,15 +221,6 @@ export const CreateOrEditContactDrawerContent = forwardRef<
     const first = firstNameRef?.current?.value?.trim() || ''
     const last = lastNameRef?.current?.value?.trim() || ''
     return `${first} ${last}`.trim()
-  }
-
-  // Display name is read-only and always mirrors first + last name. Keep it in
-  // sync while the user types so the value shown matches what is stored in
-  // `name` (the field Asterisk uses to resolve the caller identity).
-  const syncDisplayName = () => {
-    if (displayNameRef.current) {
-      displayNameRef.current.value = composeName()
-    }
   }
 
   // Best-effort split of a legacy single `name` into first/last for pre-filling
@@ -372,8 +362,6 @@ export const CreateOrEditContactDrawerContent = forwardRef<
       workCountryRef.current.value = config.contact.workcountry || ''
       homeEmailRef.current.value = config.contact.homeemail || ''
       otherEmailRef.current.value = config.contact.otheremail || ''
-      // Display name is read-only and derived from first/last name.
-      syncDisplayName()
 
       // Reveal the optional fields that already carry a value so editing an
       // existing contact never hides its data. Work/Mobile phone and Email are
@@ -431,7 +419,6 @@ export const CreateOrEditContactDrawerContent = forwardRef<
       workCountryRef.current.value = ''
       homeEmailRef.current.value = ''
       otherEmailRef.current.value = ''
-      syncDisplayName()
       setVisibleFields(new Set())
     } else {
       // creating contact
@@ -467,7 +454,6 @@ export const CreateOrEditContactDrawerContent = forwardRef<
       workCountryRef.current.value = ''
       homeEmailRef.current.value = ''
       otherEmailRef.current.value = ''
-      syncDisplayName()
       setVisibleFields(new Set())
     }
   }, [
@@ -877,26 +863,16 @@ export const CreateOrEditContactDrawerContent = forwardRef<
                 placeholder={t('Phonebook.First name placeholder') || ''}
                 error={!!nameError}
                 helper={nameError}
-                onChange={syncDisplayName}
               />
               <TextInput
                 label={t('Phonebook.Last name') || ''}
                 name='lastname'
                 ref={lastNameRef}
                 placeholder={t('Phonebook.Last name placeholder') || ''}
-                onChange={syncDisplayName}
               />
               <div className={isFieldVisible('jobtitle') ? '' : 'hidden'}>
                 <TextInput label={t('Phonebook.Job title') || ''} name='job' ref={jobRef} />
               </div>
-              {/* Display name is auto-composed from first/last and read-only. */}
-              <TextInput
-                label={t('Phonebook.Display name') || ''}
-                name='displayname'
-                ref={displayNameRef}
-                readOnly
-                helper={t('Phonebook.Display name auto helper') || ''}
-              />
               {NAME_DETAIL_OPTIONS.some((o) => !isFieldVisible(o.key)) ? (
                 <Dropdown
                   position='topLeft'
