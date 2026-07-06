@@ -25,6 +25,8 @@ import {
   getPhonebook,
   openCreateContactDrawerWithPhone,
   openAddToContactDrawer,
+  canCreatePhonebookContacts,
+  canWritePhonebookContact,
 } from '../../lib/phonebook'
 import { debounce } from 'lodash'
 import { useTranslation } from 'react-i18next'
@@ -82,7 +84,9 @@ export const AddToPhonebookDrawerContent = forwardRef<
   }
 
   const auth = useSelector((state: RootState) => state.authentication)
+  const { profile } = useSelector((state: RootState) => state.user)
   const username = auth.username
+  const canCreateContacts = canCreatePhonebookContacts(profile)
 
   // retrieve phonebook
   useEffect(() => {
@@ -114,7 +118,7 @@ export const AddToPhonebookDrawerContent = forwardRef<
   const filterHistoryDrawer = (contacts: any) => {
     let limit = 10
     const filteredHistoryDrawerContacts = contacts.rows.filter((phonebookContacts: any) => {
-      return phonebookContacts.owner_id === username
+      return canWritePhonebookContact(profile, phonebookContacts, username)
     })
     return filteredHistoryDrawerContacts.slice(0, limit)
   }
@@ -125,17 +129,19 @@ export const AddToPhonebookDrawerContent = forwardRef<
       {/* drawer content */}
       <div className={classNames('p-5', className)} {...props}>
         <Divider />
-        <Button
-          variant='white'
-          className='mr-2 mt-4'
-          onClick={() => openCreateContactDrawerWithPhone(config)}
-        >
-          <FontAwesomeIcon
-            icon={faUserPlus}
-            className='h-4 w-4 mr-2 text-gray-500 dark:text-gray-400'
-          />
-          <span>Create new contact</span>
-        </Button>
+        {canCreateContacts && (
+          <Button
+            variant='white'
+            className='mr-2 mt-4'
+            onClick={() => openCreateContactDrawerWithPhone(config)}
+          >
+            <FontAwesomeIcon
+              icon={faUserPlus}
+              className='h-4 w-4 mr-2 text-gray-500 dark:text-gray-400'
+            />
+            <span>Create new contact</span>
+          </Button>
+        )}
         <span className='flex text-sm font-medium mt-7'>Add to existing contact</span>
         <div className='mt-4'>
           <TextInput

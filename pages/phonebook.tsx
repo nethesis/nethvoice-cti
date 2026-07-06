@@ -3,7 +3,7 @@
 
 import type { NextPage } from 'next'
 import { Filter } from '../components/phonebook/Filter'
-import { Avatar, Button, InlineNotification } from '../components/common'
+import { Avatar, Badge, Button, InlineNotification } from '../components/common'
 import { Pagination } from '../components/common/Pagination'
 import { useState, useEffect, useMemo } from 'react'
 import {
@@ -12,6 +12,9 @@ import {
   PAGE_SIZE,
   openCreateContactDrawer,
   mapPhonebookResponse,
+  getContactVisibilityKind,
+  canCreatePhonebookContacts,
+  DEFAULT_VISIBILITY_FILTER,
 } from '../lib/phonebook'
 import { RootState } from '../store'
 import { useSelector } from 'react-redux'
@@ -25,6 +28,8 @@ import {
   faMobileScreenButton,
   faFilter,
   faAngleRight,
+  faUserGroup,
+  faUserLock,
 } from '@fortawesome/free-solid-svg-icons'
 import { callPhoneNumber, transferCallToExtension } from '../lib/utils'
 import { useTranslation } from 'react-i18next'
@@ -64,6 +69,13 @@ const Phonebook: NextPage = () => {
     setPhonebookLoaded(false)
   }
 
+  const [visibility, setVisibility]: any = useState(DEFAULT_VISIBILITY_FILTER)
+  const updateVisibilityFilter = (newVisibility: string) => {
+    setPageNum(1)
+    setVisibility(newVisibility)
+    setPhonebookLoaded(false)
+  }
+
   const [sortBy, setSortBy]: any = useState('')
   const updateSort = (newSortBy: string) => {
     setSortBy(newSortBy)
@@ -73,10 +85,17 @@ const Phonebook: NextPage = () => {
   // retrieve phonebook
   useEffect(() => {
     async function fetchPhonebook() {
-      if (!isPhonebookLoaded && contactType && sortBy) {
+      if (!isPhonebookLoaded && contactType && visibility && sortBy) {
         try {
           setPhonebookError('')
-          const res = await getPhonebook(pageNum, textFilter, contactType, sortBy)
+          const res = await getPhonebook(
+            pageNum,
+            textFilter,
+            contactType,
+            sortBy,
+            PAGE_SIZE,
+            visibility,
+          )
           setPhonebook(mapPhonebookResponse(res))
         } catch (e) {
           console.error(e)
@@ -86,7 +105,7 @@ const Phonebook: NextPage = () => {
       }
     }
     fetchPhonebook()
-  }, [isPhonebookLoaded, phonebook, pageNum, textFilter, contactType, sortBy])
+  }, [isPhonebookLoaded, phonebook, pageNum, textFilter, contactType, visibility, sortBy])
 
   const phonebookStore = useSelector((state: RootState) => state.phonebook)
 
@@ -112,6 +131,35 @@ const Phonebook: NextPage = () => {
   const [phonebookError, setPhonebookError] = useState('')
 
   const { profile } = useSelector((state: RootState) => state.user)
+  const canCreateContact = canCreatePhonebookContacts(profile)
+
+  const getVisibilityIcon = (contact: any) => {
+    const visibilityKind = getContactVisibilityKind(contact)
+
+    if (visibilityKind === 'private') {
+      return faUserLock
+    }
+
+    if (visibilityKind === 'group') {
+      return faUserGroup
+    }
+
+    return null
+  }
+
+  const getVisibilityLabel = (contact: any) => {
+    const visibilityKind = getContactVisibilityKind(contact)
+
+    if (visibilityKind === 'private') {
+      return t('Phonebook.Private')
+    }
+
+    if (visibilityKind === 'group') {
+      return t('Phonebook.Group')
+    }
+
+    return ''
+  }
 
   const columns = [
     {
@@ -126,8 +174,17 @@ const Phonebook: NextPage = () => {
             )}
           </div>
           <div className='ml-4'>
-            <div className='font-medium text-secondaryNeutral dark:text-secondaryNeutralDark'>
+            <div className='flex items-center gap-2 font-medium text-secondaryNeutral dark:text-secondaryNeutralDark'>
               <span className='cursor-pointer hover:underline'>{contact?.displayName}</span>
+              {getVisibilityIcon(contact) && (
+                <FontAwesomeIcon
+                  icon={getVisibilityIcon(contact)!}
+                  className='h-3.5 w-3.5 text-iconIndigo dark:text-iconIndigoDark'
+                  title={getVisibilityLabel(contact)}
+                  aria-label={getVisibilityLabel(contact)}
+                  role='img'
+                />
+              )}
             </div>
             {contact.extension && (
               <div className='mt-1 flex items-center text-sm text-gray-500 dark:text-gray-400'>
@@ -139,7 +196,8 @@ const Phonebook: NextPage = () => {
                 <span
                   className={`${
                     contact?.extension !==
-                    operatorsStore?.operators[authStore?.username]?.endpoints?.mainextension?.[0]?.id
+                    operatorsStore?.operators[authStore?.username]?.endpoints?.mainextension?.[0]
+                      ?.id
                       ? 'cursor-pointer hover:underline text-iconPrimary dark:text-iconPrimaryDark'
                       : 'text-secondaryNeutral dark:text-secondaryNeutralDark'
                   } truncate`}
@@ -148,8 +206,8 @@ const Phonebook: NextPage = () => {
                     operatorsStore?.operators[authStore?.username]?.mainPresence === 'busy'
                       ? transferCallToExtension(contact?.extension)
                       : contact?.extension !==
-                        operatorsStore?.operators[authStore?.username]?.endpoints?.mainextension?.[0]
-                          ?.id
+                        operatorsStore?.operators[authStore?.username]?.endpoints
+                          ?.mainextension?.[0]?.id
                       ? callPhoneNumber(contact?.extension)
                       : ''
                   }}
@@ -277,6 +335,7 @@ const Phonebook: NextPage = () => {
           <Filter
             updateTextFilter={debouncedUpdateTextFilter}
             updateContactTypeFilter={updateContactTypeFilter}
+            updateVisibilityFilter={updateVisibilityFilter}
             updateSort={updateSort}
           />
           {/* phonebook error */}
@@ -326,14 +385,17 @@ const Phonebook: NextPage = () => {
                       maxHeight='calc(100vh - 480px)'
                     />
 
-                    {isPhonebookLoaded && filteredContacts?.length === 0 && !textFilter?.length && (
-                      <div className='mt-4 flex justify-center'>
-                        <Button variant='primary' onClick={() => openCreateContactDrawer()}>
-                          <FontAwesomeIcon icon={faPlus} className='mr-2 h-4 w-4' />
-                          <span>{t('Phonebook.Create contact')}</span>
-                        </Button>
-                      </div>
-                    )}
+                    {isPhonebookLoaded &&
+                      filteredContacts?.length === 0 &&
+                      !textFilter?.length &&
+                      canCreateContact && (
+                        <div className='mt-4 flex justify-center'>
+                          <Button variant='primary' onClick={() => openCreateContactDrawer()}>
+                            <FontAwesomeIcon icon={faPlus} className='mr-2 h-4 w-4' />
+                            <span>{t('Phonebook.Create contact')}</span>
+                          </Button>
+                        </div>
+                      )}
                   </div>
                 </div>
               </div>

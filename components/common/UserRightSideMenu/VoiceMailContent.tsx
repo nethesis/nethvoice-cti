@@ -13,11 +13,11 @@ import {
   faPlay,
   faTrash,
   faCircleArrowDown,
-  faTriangleExclamation,
   faCircle,
   faArrowRightLong,
+  faCircleNotch,
 } from '@fortawesome/free-solid-svg-icons'
-import { Avatar, Button, Dropdown, EmptyState, InlineNotification, Modal } from '..'
+import { Avatar, Button, ConfirmationModal, Dropdown, EmptyState, InlineNotification } from '..'
 import {
   callPhoneNumber,
   closeSideDrawer,
@@ -35,6 +35,9 @@ import Link from 'next/link'
 import { useEventListener } from '../../../lib/hooks/useEventListener'
 import { customScrollbarClass } from '../../../lib/utils'
 import { Skeleton } from '../Skeleton'
+import InfiniteScroll from 'react-infinite-scroll-component'
+
+const VOICEMAIL_PAGE_SIZE = 30
 
 export const VoiceMailContent = () => {
   const operatorsStore = useSelector((state: RootState) => state.operators)
@@ -44,6 +47,7 @@ export const VoiceMailContent = () => {
   const [isVoiceMailLoaded, setVoiceMailLoaded] = useState(false)
   const [getVoiceMailError, setGetVoiceMailError] = useState('')
   const [voicemails, setVoicemails] = useState<any[]>([])
+  const [visibleCount, setVisibleCount] = useState(VOICEMAIL_PAGE_SIZE)
   const [sortType, setSortType] = useState<SortTypes>('newest')
   const [firstRender, setFirstRender]: any = useState(true)
   const [showDeleteModal, setShowDeleteModal] = useState<boolean>(false)
@@ -109,6 +113,7 @@ export const VoiceMailContent = () => {
           })
 
           setVoicemails(sortedVoicemails)
+          setVisibleCount(VOICEMAIL_PAGE_SIZE)
         }
 
         setVoiceMailLoaded(true)
@@ -129,6 +134,7 @@ export const VoiceMailContent = () => {
         return sortType === 'oldest' ? a.origtime - b.origtime : b.origtime - a.origtime
       })
       setVoicemails(sortedVoicemails)
+      setVisibleCount(VOICEMAIL_PAGE_SIZE)
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [sortType])
@@ -145,6 +151,7 @@ export const VoiceMailContent = () => {
       setVoicemailToDelete(null)
       closeSideDrawer()
       // Reload voicemails after deletion
+      setVisibleCount(VOICEMAIL_PAGE_SIZE)
       setFirstRender(true)
     }
   }
@@ -250,49 +257,24 @@ export const VoiceMailContent = () => {
     }
   }
 
+  const visibleVoicemails = voicemails?.slice(0, visibleCount) ?? []
+  const hasMoreVoicemails = visibleCount < (voicemails?.length ?? 0)
+  const showMoreVoicemails = () => setVisibleCount((prev) => prev + VOICEMAIL_PAGE_SIZE)
+
   return (
     <>
-      {/* delete voicemail modal */}
-      <Modal
+      <ConfirmationModal
         show={showDeleteModal}
         focus={cancelDeleteButtonRef}
         onClose={() => setShowDeleteModal(false)}
         afterLeave={() => setVoicemailToDelete(null)}
-      >
-        <Modal.Content>
-          <div className='mx-auto flex h-12 w-12 flex-shrink-0 items-center justify-center rounded-full sm:mx-0 bg-red-100 dark:bg-red-900'>
-            <FontAwesomeIcon
-              icon={faTriangleExclamation}
-              className='h-6 w-6 text-red-600 dark:text-red-200'
-              aria-hidden='true'
-            />
-          </div>
-          <div className='mt-3 text-center sm:mt-0 sm:ml-4 sm:text-left'>
-            <h3 className='text-lg font-medium leading-6 text-gray-900 dark:text-gray-100'>
-              {t('VoiceMail.Delete voicemail')}
-            </h3>
-            <div className='mt-3'>
-              <p className='text-sm text-gray-500 dark:text-gray-400'>
-                {t('VoiceMail.voicemailDeletionMessage', {
-                  name: voicemailToDelete?.displayName || '-',
-                })}
-              </p>
-            </div>
-          </div>
-        </Modal.Content>
-        <Modal.Actions>
-          <Button variant='danger' onClick={() => prepareDeleteContact()}>
-            {t('Common.Delete')}
-          </Button>
-          <Button
-            variant='ghost'
-            onClick={() => setShowDeleteModal(false)}
-            ref={cancelDeleteButtonRef}
-          >
-            {t('Common.Cancel')}
-          </Button>
-        </Modal.Actions>
-      </Modal>
+        title={t('VoiceMail.Delete voicemail')}
+        description={t('VoiceMail.voicemailDeletionMessage', {
+          name: voicemailToDelete?.displayName || '-',
+        })}
+        confirmLabel={t('Common.Delete')}
+        onConfirm={() => prepareDeleteContact()}
+      />
       <div className='flex h-full flex-col bg-elevation0 dark:bg-elevation0Dark'>
         <div className='py-4 px-6'>
           <div className='flex items-center justify-between'>
@@ -316,17 +298,27 @@ export const VoiceMailContent = () => {
           </div>
         </div>
         <span className='border-b border-layoutDivider dark:border-layoutDividerDark'></span>
-        <ul
-          role='list'
-          className={`flex-1 ${customScrollbarClass}`}
-        >
+        <div id='voicemail-scroll' className={`flex-1 ${customScrollbarClass}`}>
           {/* get voicemails error */}
           {getVoiceMailError && (
             <InlineNotification type='error' title={getVoiceMailError} className='my-6' />
           )}
           {/* render voicemails */}
-          {isVoiceMailLoaded &&
-            voicemails?.map((voicemail, index) => (
+          {isVoiceMailLoaded && !getVoiceMailError && voicemails?.length > 0 && (
+            <InfiniteScroll
+              dataLength={visibleVoicemails.length}
+              next={showMoreVoicemails}
+              hasMore={hasMoreVoicemails}
+              scrollableTarget='voicemail-scroll'
+              loader={
+                <FontAwesomeIcon
+                  icon={faCircleNotch}
+                  className='fa-spin block mx-auto my-6 h-6 w-6 text-gray-400 dark:text-gray-500'
+                />
+              }
+            >
+              <ul role='list'>
+                {visibleVoicemails.map((voicemail, index) => (
               <li key={voicemail?.id} className=''>
                 <div className='group relative flex items-center'>
                   <div
@@ -432,17 +424,20 @@ export const VoiceMailContent = () => {
                   </div>
                 </div>
                 {/* Divider */}
-                {index !== voicemails?.length - 1 && (
+                {index !== visibleVoicemails.length - 1 && (
                   <div className='px-6 relative'>
                     <div className='border-b border-layoutDivider dark:border-layoutDividerDark'></div>
                   </div>
                 )}
               </li>
-            ))}
+                ))}
+              </ul>
+            </InfiniteScroll>
+          )}
           {/* skeleton */}
-          {!isVoiceMailLoaded &&
-            !getVoiceMailError &&
-            Array.from(Array(4)).map((_, index) => (
+          {!isVoiceMailLoaded && !getVoiceMailError && (
+            <ul role='list'>
+              {Array.from(Array(4)).map((_, index) => (
               <li key={index} className='px-6 py-4'>
                 <div className='flex justify-between gap-3'>
                   <div className='flex shrink-0 h-min items-center min-w-[48px]'>
@@ -476,7 +471,9 @@ export const VoiceMailContent = () => {
                   </div>
                 )}
               </li>
-            ))}
+              ))}
+            </ul>
+          )}
           {/* empty state */}
           {isVoiceMailLoaded && !getVoiceMailError && voicemails?.length == 0 && (
             <div className='py-4 px-6'>
@@ -493,7 +490,7 @@ export const VoiceMailContent = () => {
               />
             </div>
           )}
-        </ul>
+        </div>
       </div>
     </>
   )

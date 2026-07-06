@@ -1,9 +1,9 @@
 // Copyright (C) 2024 Nethesis S.r.l.
 // SPDX-License-Identifier: AGPL-3.0-or-later
 
-import { ComponentPropsWithRef, forwardRef, useRef, useState } from 'react'
+import { ComponentPropsWithRef, forwardRef, useState } from 'react'
 import classNames from 'classnames'
-import { ActionCall, Avatar, Button, ButtonDropdown, IconSwitch } from '../common'
+import { ActionCall, Avatar, Badge, Button, ButtonDropdown, IconSwitch } from '../common'
 import { useEffect } from 'react'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import {
@@ -14,12 +14,19 @@ import {
 } from '../../lib/operators'
 import { useSelector } from 'react-redux'
 import { RootState, store } from '../../store'
-import { faStar as faStarSolid, faVideo, faComment } from '@fortawesome/free-solid-svg-icons'
+import {
+  faPlus,
+  faStar as faStarSolid,
+  faUserGroup,
+  faVideo,
+  faComment,
+} from '@fortawesome/free-solid-svg-icons'
 import { faStar as faStarLight } from '@nethesis/nethesis-light-svg-icons'
 import { t } from 'i18next'
 import { isEmpty } from 'lodash'
 import { Tooltip } from 'react-tooltip'
 import { IconProp } from '@fortawesome/fontawesome-svg-core'
+import { CustomThemedTooltip } from '../common/CustomThemedTooltip'
 
 export interface OperatorSummaryProps extends ComponentPropsWithRef<'div'> {
   operator: any
@@ -35,6 +42,23 @@ export const OperatorSummary = forwardRef<HTMLButtonElement, OperatorSummaryProp
     const currentOperatorInformations = operatorsStore?.operators[operator?.username]
     const authStore = useSelector((state: RootState) => state.authentication)
     const [isFavorite, setFavorite] = useState(false)
+    const operatorGroups = Array.from(
+      new Set<string>(
+        ((currentOperatorInformations?.groups || operator?.groups || []) as string[]).filter(
+          (groupName): groupName is string => Boolean(groupName),
+        ),
+      ),
+    )
+    const maxVisibleGroupBadges = 3
+    const visibleOperatorGroups =
+      operatorGroups.length > maxVisibleGroupBadges
+        ? operatorGroups.slice(0, maxVisibleGroupBadges - 1)
+        : operatorGroups
+    const hiddenOperatorGroups =
+      operatorGroups.length > maxVisibleGroupBadges
+        ? operatorGroups.slice(maxVisibleGroupBadges - 1)
+        : []
+    const hiddenGroupsTooltipId = `operator-groups-${operator?.username || operator?.name || 'unknown'}`
 
     useEffect(() => {
       setFavorite(operator?.favorite)
@@ -144,6 +168,36 @@ export const OperatorSummary = forwardRef<HTMLButtonElement, OperatorSummaryProp
               <span className='text-base font-normal leading-5 text-secondaryNeutral dark:text-secondaryNeutralDark ml-2'>
                 {operator?.endpoints?.mainextension?.[0]?.id}
               </span>
+              {operatorGroups.length > 0 && (
+                <div className='ml-2 mt-3 flex flex-wrap items-center gap-2'>
+                  {visibleOperatorGroups.map((groupName) => (
+                    <Badge
+                      key={groupName}
+                      variant='blueNethLink'
+                      rounded='full'
+                      size='small'
+                      icon={<FontAwesomeIcon icon={faUserGroup} className='h-3.5 w-3.5' />}
+                    >
+                      {groupName}
+                    </Badge>
+                  ))}
+                  {hiddenOperatorGroups.length > 0 && (
+                    <>
+                      <Badge
+                        variant='blueNethLink'
+                        rounded='full'
+                        size='small'
+                        icon={<FontAwesomeIcon icon={faPlus} className='h-3 w-3' />}
+                        data-tooltip-id={hiddenGroupsTooltipId}
+                        data-tooltip-content={hiddenOperatorGroups.join(', ')}
+                      >
+                        {hiddenOperatorGroups.length}
+                      </Badge>
+                      <CustomThemedTooltip id={hiddenGroupsTooltipId} place='top' />
+                    </>
+                  )}
+                </div>
+              )}
             </div>
           </div>
         </div>

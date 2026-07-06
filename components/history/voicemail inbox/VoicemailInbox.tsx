@@ -12,14 +12,13 @@ import {
   faPlay,
   faCircleArrowDown,
   faTrash,
-  faTriangleExclamation,
   faVoicemail,
   faArrowRightLong,
   faCircle,
 } from '@fortawesome/free-solid-svg-icons'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { t } from 'i18next'
-import { InlineNotification, EmptyState, Button, Avatar, Dropdown, Modal } from '../../common'
+import { InlineNotification, EmptyState, Button, Avatar, ConfirmationModal, Dropdown } from '../../common'
 import { Pagination } from '../../common/Pagination'
 import { forEach, isEmpty } from 'lodash'
 import {
@@ -450,86 +449,31 @@ export const VoicemailInbox: FC<VoicemailInboxProps> = ({ className }): JSX.Elem
   return (
     <>
       {/* Delete all voicemails modal */}
-      <Modal
+      <ConfirmationModal
         show={showDeleteAllModal}
         focus={cancelDeleteButtonRef}
         onClose={() => setShowDeleteAllModal(false)}
-      >
-        <Modal.Content>
-          <div className='mx-auto flex h-12 w-12 flex-shrink-0 items-center justify-center rounded-full sm:mx-0 bg-red-100 dark:bg-red-900'>
-            <FontAwesomeIcon
-              icon={faTriangleExclamation}
-              className='h-6 w-6 text-red-600 dark:text-red-200'
-              aria-hidden='true'
-            />
-          </div>
-          <div className='mt-3 text-center sm:mt-0 sm:ml-4 sm:text-left'>
-            <h3 className='text-lg font-medium leading-6 text-gray-900 dark:text-gray-100'>
-              {t('History.Delete all messages')}
-            </h3>
-            <div className='mt-3'>
-              <p className='text-sm text-gray-500 dark:text-gray-400'>
-                {t('History.voicemailDeletionAllMessage')}
-              </p>
-            </div>
-          </div>
-        </Modal.Content>
-        <Modal.Actions>
-          <Button variant='danger' onClick={deleteAllVoicemails} disabled={isDeletingAll}>
-            {isDeletingAll ? t('Common.Deleting...') : t('Common.Delete all')}
-          </Button>
-          <Button
-            variant='ghost'
-            onClick={() => setShowDeleteAllModal(false)}
-            ref={cancelDeleteButtonRef}
-            disabled={isDeletingAll}
-          >
-            {t('Common.Cancel')}
-          </Button>
-        </Modal.Actions>
-      </Modal>
+        title={t('History.Delete all messages')}
+        description={t('History.voicemailDeletionAllMessage')}
+        confirmLabel={isDeletingAll ? t('Common.Deleting...') : t('Common.Delete all')}
+        confirmDisabled={isDeletingAll}
+        cancelDisabled={isDeletingAll}
+        onConfirm={deleteAllVoicemails}
+      />
 
       {/* delete voicemail modal */}
-      <Modal
+      <ConfirmationModal
         show={showDeleteModal}
         focus={cancelDeleteButtonRef}
         onClose={() => setShowDeleteModal(false)}
         afterLeave={() => setVoicemailToDelete(null)}
-      >
-        <Modal.Content>
-          <div className='mx-auto flex h-12 w-12 flex-shrink-0 items-center justify-center rounded-full sm:mx-0 bg-red-100 dark:bg-red-900'>
-            <FontAwesomeIcon
-              icon={faTriangleExclamation}
-              className='h-6 w-6 text-red-600 dark:text-red-200'
-              aria-hidden='true'
-            />
-          </div>
-          <div className='mt-3 text-center sm:mt-0 sm:ml-4 sm:text-left'>
-            <h3 className='text-lg font-medium leading-6 text-gray-900 dark:text-gray-100'>
-              {t('History.Delete voicemail')}
-            </h3>
-            <div className='mt-3'>
-              <p className='text-sm text-gray-500 dark:text-gray-400'>
-                {t('History.voicemailDeletionMessage', {
-                  name: voicemailToDelete?.displayName || '-',
-                })}
-              </p>
-            </div>
-          </div>
-        </Modal.Content>
-        <Modal.Actions>
-          <Button variant='danger' onClick={() => prepareDeleteContact()}>
-            {t('Common.Delete')}
-          </Button>
-          <Button
-            variant='ghost'
-            onClick={() => setShowDeleteModal(false)}
-            ref={cancelDeleteButtonRef}
-          >
-            {t('Common.Cancel')}
-          </Button>
-        </Modal.Actions>
-      </Modal>
+        title={t('History.Delete voicemail')}
+        description={t('History.voicemailDeletionMessage', {
+          name: voicemailToDelete?.displayName || '-',
+        })}
+        confirmLabel={t('Common.Delete')}
+        onConfirm={() => prepareDeleteContact()}
+      />
       {profile?.macro_permissions?.cdr?.value ? (
         <div>
           <div className='flex justify-between'>

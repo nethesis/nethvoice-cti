@@ -14,6 +14,8 @@ import { useSelector } from 'react-redux'
 import { RootState } from '../store'
 import { axiosSetup } from '../config/axios'
 import {
+  getBrandedTabTitle,
+  getConfiguredFaviconUrl,
   getHtmlFaviconElement,
   getPeopleImageVisibilityValue,
   getProductName,
@@ -125,9 +127,9 @@ export default function Login() {
           }
         } else {
           if (linkHtmlFaviconElement) {
-            linkHtmlFaviconElement.href = 'favicon.ico'
+            linkHtmlFaviconElement.href = getConfiguredFaviconUrl()
           }
-          window.document.title = productName
+          window.document.title = productTabTitle
         }
         flashFavicon = !flashFavicon
       }, 800)
@@ -144,7 +146,7 @@ export default function Login() {
       // Delete slash at the beginning of the path
       const cleanRouterPath: string = router.pathname.replace(/^\/|\/$/g, '')
       // Return path with the uppercase first character
-      return t(`Common.${capitalize(cleanRouterPath)}`) + ' - ' + productName
+      return t(`Common.${capitalize(cleanRouterPath)}`) + ' - ' + productTabTitle
     }
   }
 
@@ -159,7 +161,7 @@ export default function Login() {
     }
 
     if (linkHtmlFaviconElement) {
-      linkHtmlFaviconElement.href = 'favicon.ico'
+      linkHtmlFaviconElement.href = getConfiguredFaviconUrl()
     }
     window.document.title = cleanTitlePageName
   }
@@ -446,6 +448,7 @@ export default function Login() {
   const productName = getProductName()
 
   const productSubname = getProductSubname()
+  const productTabTitle = getBrandedTabTitle(productSubname || 'CTI')
 
   const [isFirsThemeControl, setIsFirsThemeControl] = useState(true)
   const [isDarkTheme, setIsDarkTheme] = useState(false)
@@ -522,7 +525,7 @@ export default function Login() {
           {/* Nextjs <Image> is not suitable for rebranding: it always uses the aspect ratio of the original logo  */}
           {/* eslint-disable-next-line @next/next/no-img-element */}
           <img
-            className='mx-auto w-auto items-center object-contain object-bottom fill-current text-primary dark:text-primaryDark'
+            className='mx-auto w-auto max-h-[70px] items-center object-contain object-bottom fill-current text-primary dark:text-primaryDark'
             src={!isDarkTheme ? '/login_logo.svg' : '/login_logo_dark.svg'}
             alt='logo'
           />
@@ -597,7 +600,7 @@ export default function Login() {
   return (
     <div className='relative min-h-screen'>
       <Head>
-        <title>{productName}</title>
+        <title>{productTabTitle}</title>
       </Head>
 
       {/* Background image */}

@@ -2,7 +2,7 @@
 // SPDX-License-Identifier: AGPL-3.0-or-later
 
 import { FC } from 'react'
-import { CallTypes } from '../../lib/history'
+import { CallTypes, getEffectiveCnam } from '../../lib/history'
 import { getOperatorByPhoneNumber, openShowOperatorDrawer } from '../../lib/operators'
 import classNames from 'classnames'
 import {
@@ -28,12 +28,14 @@ interface CallDetailsProps {
   isQueueBadgeAvailable?: boolean
   direction: 'in' | 'out'
   lastCallsType?: string
+  tooltipPlace?: 'top' | 'right' | 'bottom' | 'left'
 }
 
 export function getCallName(call: CallTypes, direction: 'in' | 'out'): string {
+  const incomingNumber = call.src || call.cnum
   return direction === 'in'
-    ? call.cnam || call.ccompany || t('Common.Unknown')
-    : call.dst_cnam || call.dst_ccompany || t('Common.Unknown')
+    ? getEffectiveCnam(call.cnam, incomingNumber) || call.ccompany || t('Common.Unknown')
+    : getEffectiveCnam(call.dst_cnam, call.dst) || call.dst_ccompany || t('Common.Unknown')
 }
 
 export const CallDetails: FC<CallDetailsProps> = ({
@@ -47,12 +49,14 @@ export const CallDetails: FC<CallDetailsProps> = ({
   isQueueBadgeAvailable,
   direction,
   lastCallsType,
+  tooltipPlace = 'bottom',
 }) => {
   const authStore = useSelector((state: RootState) => state.authentication)
   const operatorsStore = useSelector((state: RootState) => state.operators)
+  const incomingNumber = call.src || call.cnum
 
-  if ((direction === 'in' && call.cnam === '') || (direction === 'out' && call.dst_cnam === '')) {
-    const phoneNumber = direction === 'in' ? call.cnum : call.dst
+  if ((direction === 'in' && !getEffectiveCnam(call.cnam, incomingNumber)) || (direction === 'out' && !getEffectiveCnam(call.dst_cnam, call.dst))) {
+    const phoneNumber = direction === 'in' ? incomingNumber : call.dst
     const operatorFound: any = getOperatorByPhoneNumber(phoneNumber, operators)
     if (operatorFound) {
       direction === 'in' ? (call.cnam = operatorFound.name) : (call.dst_cnam = operatorFound.name)
@@ -77,8 +81,10 @@ export const CallDetails: FC<CallDetailsProps> = ({
     }
 
     if (direction === 'in') {
-      if (userInformation?.cnam || userInformation?.ccompany) {
-        updatedUserInformation.displayName = userInformation.cnam || userInformation.ccompany || '-'
+      const incomingNum = userInformation.src || userInformation.cnum
+      const effectiveCnam = getEffectiveCnam(userInformation.cnam, incomingNum)
+      if (effectiveCnam || userInformation?.ccompany) {
+        updatedUserInformation.displayName = effectiveCnam || userInformation.ccompany || '-'
         updatedUserInformation.kind = 'person'
         if (userInformation.src) updatedUserInformation.extension = userInformation.src
         openShowContactDrawer(updatedUserInformation)
@@ -87,9 +93,10 @@ export const CallDetails: FC<CallDetailsProps> = ({
         openCreateLastCallContact(createContactObject)
       }
     } else {
-      if (userInformation?.dst_cnam || userInformation?.dst_ccompany) {
+      const effectiveDstCnam = getEffectiveCnam(userInformation.dst_cnam, userInformation.dst)
+      if (effectiveDstCnam || userInformation?.dst_ccompany) {
         updatedUserInformation.displayName =
-          userInformation.dst_cnam || userInformation.dst_ccompany || '-'
+          effectiveDstCnam || userInformation.dst_ccompany || '-'
         updatedUserInformation.kind = 'person'
         if (userInformation.dst) updatedUserInformation.extension = userInformation.dst
         openShowContactDrawer(updatedUserInformation)
@@ -128,11 +135,12 @@ export const CallDetails: FC<CallDetailsProps> = ({
           <CustomThemedTooltip
             id={`tooltip-${cleanString(getCallName(call, direction) || '-')}`}
             className='pi-z-20'
+            place={tooltipPlace}
           />
 
           {/* phone number */}
           {!hideName &&
-            ((direction === 'in' && call.cnum) || (direction === 'out' && call.dst)) && (
+            ((direction === 'in' && incomingNumber) || (direction === 'out' && call.dst)) && (
               <div
                 className={`${
                   highlightNumber
@@ -140,7 +148,7 @@ export const CallDetails: FC<CallDetailsProps> = ({
                     : 'text-gray-500 dark:text-gray-200'
                 } ${fromHistory || (!fromHistory && isQueueBadgeAvailable) ? 'truncate' : ''}`}
               >
-                {direction === 'in' ? call.src : call.dst}
+                {direction === 'in' ? incomingNumber : call.dst}
               </div>
             )}
         </>

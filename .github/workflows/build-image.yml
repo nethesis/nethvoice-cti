@@ -15,7 +15,7 @@ jobs:
       REPOBASE: ghcr.io/${{ github.repository_owner }}
       IMAGETAG: ${{ github.ref_name }}
     steps:
-      - uses: actions/checkout@v2
+      - uses: actions/checkout@v6
       - id: install-podman
         run: |
           # Install podman

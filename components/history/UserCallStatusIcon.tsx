@@ -13,10 +13,11 @@ import { CustomThemedTooltip } from '../common/CustomThemedTooltip'
 
 interface UserCallStatusIconProps {
   call: CallTypes
+  tooltipPlace?: 'top' | 'right' | 'bottom' | 'left'
 }
 
 //Check the icon for the status column
-export const UserCallStatusIcon: FC<UserCallStatusIconProps> = ({ call }) => {
+export const UserCallStatusIcon: FC<UserCallStatusIconProps> = ({ call, tooltipPlace = 'left' }) => {
   const { t } = useTranslation()
   const isAnswered = isCallAnswered(call)
 
@@ -35,7 +36,10 @@ export const UserCallStatusIcon: FC<UserCallStatusIconProps> = ({ call }) => {
                   data-tooltip-content={t(getAnsweredTranslationKey('Incoming', call.disposition)) || ''}
                 />
 
-                <CustomThemedTooltip id='tooltip-incoming-answered' place='left' />
+                <CustomThemedTooltip
+                  id='tooltip-incoming-answered'
+                  place={tooltipPlace}
+                />
               </>
             ) : (
               <>
@@ -47,7 +51,10 @@ export const UserCallStatusIcon: FC<UserCallStatusIconProps> = ({ call }) => {
                   data-tooltip-content={t('History.Incoming missed') || ''}
                 />
 
-                <CustomThemedTooltip id='tooltip-incoming-missed' place='left' />
+                <CustomThemedTooltip
+                  id='tooltip-incoming-missed'
+                  place={tooltipPlace}
+                />
               </>
             )}
           </div>
@@ -64,7 +71,10 @@ export const UserCallStatusIcon: FC<UserCallStatusIconProps> = ({ call }) => {
                   data-tooltip-content={t(getAnsweredTranslationKey('Outgoing', call.disposition)) || ''}
                 />
 
-                <CustomThemedTooltip id='tooltip-outgoing-answered' place='left'/>
+                <CustomThemedTooltip
+                  id='tooltip-outgoing-answered'
+                  place={tooltipPlace}
+                />
               </>
             ) : (
               <>
@@ -76,7 +86,10 @@ export const UserCallStatusIcon: FC<UserCallStatusIconProps> = ({ call }) => {
                   data-tooltip-content={t('History.Outgoing missed') || ''}
                 />
 
-                <CustomThemedTooltip id='tooltip-outgoing-missed' place='left'/>
+                <CustomThemedTooltip
+                  id='tooltip-outgoing-missed'
+                  place={tooltipPlace}
+                />
               </>
             )}
           </div>

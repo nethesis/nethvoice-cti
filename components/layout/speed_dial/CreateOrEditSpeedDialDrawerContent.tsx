@@ -12,6 +12,9 @@ import { closeSideDrawer } from '../../../lib/utils'
 import { openToast } from '../../../lib/utils'
 import { DrawerHeader } from '../../common/DrawerHeader'
 import { Divider } from '../../common/Divider'
+import { useSelector } from 'react-redux'
+import { RootState } from '../../../store'
+import { canCreatePhonebookContacts, canWritePhonebookVisibility } from '../../../lib/phonebook'
 
 export interface CreateOrEditSpeedDialDrawerContentProps extends ComponentPropsWithRef<'div'> {
   config: any
@@ -24,6 +27,10 @@ export const CreateOrEditSpeedDialDrawerContent = forwardRef<
   const { t } = useTranslation()
   const nameRef = useRef() as React.MutableRefObject<HTMLInputElement>
   const phoneNumberRef = useRef() as React.MutableRefObject<HTMLInputElement>
+  const { profile } = useSelector((state: RootState) => state.user)
+  const canCreateSpeedDials = canCreatePhonebookContacts(profile)
+  const canWriteSpeedDials = canWritePhonebookVisibility(profile, 'private')
+  const canSaveSpeedDial = config?.isEdit ? canWriteSpeedDials : canCreateSpeedDials
 
   useEffect(() => {
     if (config?.isEdit) {
@@ -51,6 +58,15 @@ export const CreateOrEditSpeedDialDrawerContent = forwardRef<
     setEditSpeedDialError('')
 
     let isValidationOk = true
+
+    if (!canSaveSpeedDial) {
+      if (config?.isEdit) {
+        setEditSpeedDialError('Cannot edit speed dial')
+      } else {
+        setCreateSpeedDialError('Cannot create speed dial')
+      }
+      isValidationOk = false
+    }
 
     // name
     if (!nameRef.current.value.trim()) {
@@ -206,6 +222,7 @@ export const CreateOrEditSpeedDialDrawerContent = forwardRef<
               type='submit'
               onClick={prepareEditSpeedDial}
               className='ml-4 mb-4'
+              disabled={!canSaveSpeedDial}
             >
               {t('SpeedDial.Save speed dial')}
             </Button>
@@ -215,6 +232,7 @@ export const CreateOrEditSpeedDialDrawerContent = forwardRef<
               type='submit'
               onClick={prepareCreateSpeedDial}
               className='ml-4 mb-4'
+              disabled={!canSaveSpeedDial}
             >
               {t('SpeedDial.Create speed dial')}
             </Button>

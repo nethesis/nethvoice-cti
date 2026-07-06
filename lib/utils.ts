@@ -121,9 +121,9 @@ export function callPhoneNumber(phoneNumber: string) {
   const userExtensions = store.getState().operators?.operators[username]?.endpoints?.extension
 
   // Check if there is an extension with type 'nethlink' that matches the id of default_device
-  const hasNethlinkExtension = userExtensions.some(
-    (ext: any) => ext.type === 'nethlink' && ext.id === default_device?.id,
-  )
+  const hasNethlinkExtension = Array.isArray(userExtensions)
+    ? userExtensions.some((ext: any) => ext.type === 'nethlink' && ext.id === default_device?.id)
+    : false
 
   if (default_device?.type === 'webrtc') {
     eventDispatch('phone-island-call-start', { number: phoneNumber })
@@ -166,7 +166,7 @@ export function getBrandName() {
     return ''
   }
   // @ts-ignore
-  return `${window.CONFIG.BRAND_NAME}`
+  return window.CONFIG.BRAND_NAME || ''
 }
 
 export function getProductName() {
@@ -278,6 +278,28 @@ export function getHtmlFaviconElement() {
 
   let faviconHtmlElement = document.querySelector("link[rel*='icon']") as HTMLLinkElement
   return faviconHtmlElement
+}
+
+export function getConfiguredFaviconUrl() {
+  if (typeof window === 'undefined') {
+    return '/favicon.ico'
+  }
+
+  // @ts-ignore
+  return window.CONFIG.FAVICON_URL || '/favicon.ico'
+}
+
+export function getConfiguredNavbarLogoUrl(preferDarkTheme: boolean = false) {
+  if (typeof window === 'undefined') {
+    return preferDarkTheme ? '/navbar_logo_dark.svg' : '/navbar_logo.svg'
+  }
+
+  // @ts-ignore
+  const lightLogoUrl = window.CONFIG.NAVBAR_LOGO_URL || '/navbar_logo.svg'
+  // @ts-ignore
+  const darkLogoUrl = window.CONFIG.NAVBAR_LOGO_DARK_URL || lightLogoUrl || '/navbar_logo_dark.svg'
+
+  return preferDarkTheme ? darkLogoUrl : lightLogoUrl
 }
 
 export function convertToCSV(objArray: any) {
@@ -434,6 +456,18 @@ export function getProductSubname() {
   }
   // @ts-ignore
   return `${window.CONFIG.COMPANY_SUBNAME}`
+}
+
+export function getBrandedTabTitle(productLabel: string) {
+  const brandName = getBrandName().trim()
+  const productName = getProductName().trim()
+  const hasProductName = !!productName && productName !== 'undefined' && productName !== 'null'
+
+  if (!brandName || brandName === 'NethVoice') {
+    return hasProductName ? productName : `NethVoice ${productLabel}`
+  }
+
+  return `${brandName} | ${productLabel}`
 }
 
 export function getNethvoiceUrl() {

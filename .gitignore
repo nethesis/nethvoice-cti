@@ -41,3 +41,10 @@ public/config/config.development.js
 
 # vscode settings
 .vscode
+
+# Copilot Framework - Personal
+COPILOT.md
+.instructions.md
+.agent.md
+.prompt.md
+/memories/

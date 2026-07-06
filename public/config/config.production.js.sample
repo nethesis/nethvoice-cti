@@ -8,6 +8,8 @@ window.CONFIG = {
     (window.location.port ? ':' + window.location.port : '') +
     window.location.pathname,
   API_SCHEME: window.location.protocol + '//',
+  NAVBAR_LOGO_URL: '',
+  NAVBAR_LOGO_DARK_URL: '',
   WS_ENDPOINT:
     'wss://' +
     window.location.hostname +

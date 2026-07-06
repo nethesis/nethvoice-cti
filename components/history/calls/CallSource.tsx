@@ -4,6 +4,7 @@ import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { faUsers } from '@fortawesome/free-solid-svg-icons'
 import { Badge } from '../../common'
 import { CustomThemedTooltip } from '../../common/CustomThemedTooltip'
+import { getEffectiveCnam } from '../../../lib/history'
 
 interface CallSourceProps {
   call: any
@@ -89,43 +90,66 @@ export const CallSource: FC<CallSourceProps> = ({
     )
   }
 
+  const isIncoming = call.direction === 'in'
+  // For outgoing calls cnum is the user's own extension ("You").
+  // For incoming calls src is the actual calling party; cnum may be the transfer
+  // initiator (Asterisk preserves it across attended transfers), not the real caller.
+  const sourceNumber = isIncoming ? (call.src || call.cnum || '') : (call.cnum || call.src || '')
+  // When incoming with a transfer in play (src ≠ cnum), cnam was set from cnum
+  // (the transfer initiator) and would show the wrong person's name.
+  const effectiveCnam =
+    isIncoming && call.src && call.cnum && call.src !== call.cnum
+      ? ''
+      : getEffectiveCnam(call.cnam, sourceNumber)
+
   // User call type
   if (callType === 'user') {
+    // Resolve internal extensions via the operators directory when the CDR row
+    // carried no name (e.g. synthetic transfer-consultation rows have none).
+    let resolvedCnam = effectiveCnam
+    if (resolvedCnam === '' && sourceNumber !== '' && sourceNumber !== mainextension) {
+      const op: any = Object.values(operators || {}).find((o: any) =>
+        o?.endpoints?.extension?.find((d: any) => d.id === sourceNumber),
+      )
+      if (op?.name) resolvedCnam = op.name
+    }
+
+    const primaryLabel =
+      resolvedCnam !== '' && sourceNumber !== mainextension && resolvedCnam !== name
+        ? resolvedCnam
+        : call.ccompany !== ''
+        ? call.ccompany
+        : sourceNumber !== mainextension
+        ? t('Common.Unknown')
+        : t('History.You')
+
     return (
       <div
         onClick={() => {
-          openDrawerHistory(call.cnam, call.ccompany, call.cnum || call.src, callType, operators)
+          openDrawerHistory(resolvedCnam, call.ccompany, sourceNumber, callType, operators)
         }}
       >
         {renderQueueBadge()}
         <div
           className={
             'truncate text-sm text-secondaryNeutral dark:text-secondaryNeutralDark' +
-            (call.cnum !== '' ? ' text-sm cursor-pointer hover:underline' : '')
+            (sourceNumber !== '' ? ' text-sm cursor-pointer hover:underline' : '')
           }
         >
-          {call.cnam !== '' && call.cnum !== mainextension && call.cnam !== name
-            ? call.cnam
-            : call.ccompany !== ''
-            ? call.ccompany
-            : call.cnum !== mainextension
-            ? call.cnum
-            : t('History.You')}
+          {primaryLabel}
         </div>
-        {call.cnum !== '' &&
-          call.cnum !== mainextension &&
-          (call.cnam !== '' || call.ccompany !== '') && (
-            <div className='truncate text-sm cursor-pointer hover:underline text-textPlaceholder dark:text-textPlaceholderDark'>
-              {call.src}
-            </div>
-          )}
+        {sourceNumber !== '' && sourceNumber !== mainextension && (
+          <div className='truncate text-sm cursor-pointer hover:underline text-textPlaceholder dark:text-textPlaceholderDark'>
+            {sourceNumber}
+          </div>
+        )}
       </div>
     )
   } else {
     // Check if a user does not have a name and add the name of the operator
-    if (call.cnam === '') {
-      let foundOperator: any = Object.values(operators).find((operator: any) =>
-        operator.endpoints.extension.find(
+    if (effectiveCnam === '') {
+      let foundOperator: any = Object.values(operators || {}).find((operator: any) =>
+        operator?.endpoints?.extension?.find(
           (device: any) => device.id === call.cnum || device.id === call.src,
         ),
       )
@@ -135,20 +159,35 @@ export const CallSource: FC<CallSourceProps> = ({
       }
     }
 
-    // Switchboard call type
+    // Switchboard call type. Show the resolved name/company; for an unresolved
+    // EXTERNAL number show "Unknown" (with the number underneath), as the personal
+    // view does. Internal/service numbers with no name show the number itself
+    // instead of "Unknown".
+    const isExternalNum = (n: string) => (n || '').replace(/\D/g, '').length > 5
+    const switchboardLabel =
+      call.cnam !== ''
+        ? call.cnam
+        : call.ccompany !== ''
+        ? call.ccompany
+        : sourceNumber !== ''
+        ? isExternalNum(sourceNumber)
+          ? t('Common.Unknown')
+          : sourceNumber
+        : '-'
+
     return (
       <div
         onClick={() => {
-          openDrawerHistory(call.cnam, call.ccompany, call.cnum || call.src, callType, operators)
+          openDrawerHistory(call.cnam, call.ccompany, sourceNumber, callType, operators)
         }}
       >
         {renderQueueBadge()}
         <div className='truncate text-sm cursor-pointer hover:underline text-secondaryNeutral dark:text-secondaryNeutralDark'>
-          {call.cnam !== '' ? call.cnam : call.ccompany !== '' ? call.ccompany : call.cnum || '-'}
+          {switchboardLabel}
         </div>
-        {call.cnum !== '' && (
+        {sourceNumber !== '' && switchboardLabel !== sourceNumber && (
           <div className='truncate text-sm cursor-pointer hover:underline text-textPlaceholder dark:text-textPlaceholderDark'>
-            {call.src}
+            {sourceNumber}
           </div>
         )}
       </div>

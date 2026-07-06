@@ -483,6 +483,26 @@ export async function pickup(obj: any) {
   }
 }
 
+/**
+ * Operator groups a user may share a phonebook contact with: ONLY the groups the
+ * user is directly a member of (CTI Configurations > Users > Group).
+ *
+ * There is no admin / phonebook-level-2 bypass: contact sharing depends solely on
+ * group membership for everyone, mirroring the nethcti-middleware write validation.
+ *
+ * This intentionally does NOT consider presence-panel permissions
+ * (all_groups / grp_*): those govern only the operators view. Keep it separate
+ * from getUserGroups, which must keep its presence-panel semantics.
+ */
+export function getShareableGroups(
+  allGroups: { [key: string]: { users: string[] } },
+  username: string,
+) {
+  return Object.keys(allGroups).filter((groupName) =>
+    allGroups[groupName]?.users.includes(username),
+  )
+}
+
 export function getUserGroups(
   allowedGroupsIds: string[],
   allGroups: { [key: string]: { users: string[] } },

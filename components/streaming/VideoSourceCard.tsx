@@ -2,6 +2,7 @@
 // SPDX-License-Identifier: AGPL-3.0-or-later
 
 import React from 'react'
+import Image from 'next/image'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import {
   faPhone,
@@ -58,10 +59,12 @@ export const VideoSourceCard: React.FC<VideoSourceCardProps> = ({
               <p>{t('Streaming.video feed not available')}</p>
             </div>
           ) : (
-            <img
+            <Image
               src={source.url}
-              alt={source.description}
-              className='w-full h-full object-cover'
+              alt={source.description || 'Video source preview'}
+              fill
+              unoptimized
+              className='object-cover'
               onError={() => onImageError(source.id)}
             />
           )}

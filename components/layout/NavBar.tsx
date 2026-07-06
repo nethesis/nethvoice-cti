@@ -18,7 +18,7 @@ import { CustomThemedTooltip } from '../common/CustomThemedTooltip'
 import { useSelector } from 'react-redux'
 import { RootState } from '../../store'
 import { useTranslation } from 'react-i18next'
-import { customScrollbarClass } from '../../lib/utils'
+import { customScrollbarClass, getConfiguredNavbarLogoUrl } from '../../lib/utils'
 
 interface NavBarProps {
   items: NavItemsProps[]
@@ -66,13 +66,12 @@ export const NavBar: FC<NavBarProps> = ({ items }) => {
               {/* Nextjs <Image> is not suitable for rebranding: it always uses the aspect ratio of the original logo  */}
               {/* eslint-disable-next-line @next/next/no-img-element */}
               <img
-                className='px-2.5 w-auto cursor-pointer object-contain object-top'
-                src={`${
+                className='h-[3.1875rem] max-w-[3.1875rem] w-auto cursor-pointer object-contain object-center'
+                src={getConfiguredNavbarLogoUrl(
                   theme === 'dark' ||
-                  (theme === 'system' && window.matchMedia('(prefers-color-scheme: dark)').matches)
-                    ? '/navbar_logo_dark.svg'
-                    : '/navbar_logo.svg'
-                }`}
+                    (theme === 'system' &&
+                      window.matchMedia('(prefers-color-scheme: dark)').matches),
+                )}
                 alt='logo'
               />
             </div>

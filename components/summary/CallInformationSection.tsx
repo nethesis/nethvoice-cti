@@ -9,6 +9,7 @@ import { useSelector } from 'react-redux'
 import { Skeleton } from '../common/Skeleton'
 import { formatDateLoc } from '../../lib/dateTime'
 import { callPhoneNumber, transferCallToExtension } from '../../lib/utils'
+import { getEffectiveCnam } from '../../lib/history'
 import { RootState } from '../../store'
 
 export interface SummaryCallInfo {
@@ -125,8 +126,8 @@ export const CallInformationSection: FC<CallInformationSectionProps> = ({ callIn
         ) : (
           <CallInfoPhoneValue
             phoneNumber={callInfo?.src}
-            primaryValue={callInfo?.cnam || callInfo?.src}
-            secondaryValue={callInfo?.cnam ? callInfo?.src : undefined}
+            primaryValue={getEffectiveCnam(callInfo?.cnam, callInfo?.src) || callInfo?.src}
+            secondaryValue={getEffectiveCnam(callInfo?.cnam, callInfo?.src) ? callInfo?.src : undefined}
           />
         )}
       </div>
@@ -146,8 +147,8 @@ export const CallInformationSection: FC<CallInformationSectionProps> = ({ callIn
         ) : (
           <CallInfoPhoneValue
             phoneNumber={callInfo?.dst}
-            primaryValue={callInfo?.dst_cnam || callInfo?.dst}
-            secondaryValue={callInfo?.dst_cnam ? callInfo?.dst : undefined}
+            primaryValue={getEffectiveCnam(callInfo?.dst_cnam, callInfo?.dst) || callInfo?.dst}
+            secondaryValue={getEffectiveCnam(callInfo?.dst_cnam, callInfo?.dst) ? callInfo?.dst : undefined}
           />
         )}
       </div>

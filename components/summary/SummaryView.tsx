@@ -70,6 +70,12 @@ const formatTranscriptText = (value: string) =>
 
 interface SummaryViewProps {
   uniqueid: string
+  linkedid?: string
+  // Optional transcript row id to disambiguate conversations that share a
+  // uniqueid (e.g. the consultation vs post-transfer legs of a transfer).
+  transcriptId?: number
+  // Switchboard (supervisor) scope: authorize by capability, not participation.
+  switchboard?: boolean
 }
 
 const summaryTextareaClassName =
@@ -78,7 +84,12 @@ const summaryTextareaClassName =
 const compactTextareaClassName =
   'rounded-lg border-gray-200 px-4 py-3 text-[15px] leading-7 text-gray-900 shadow-none placeholder:text-gray-400 focus:ring-1 dark:border-gray-600 dark:placeholder:text-gray-500'
 
-export const SummaryView: FC<SummaryViewProps> = ({ uniqueid }) => {
+export const SummaryView: FC<SummaryViewProps> = ({
+  uniqueid,
+  linkedid,
+  transcriptId,
+  switchboard,
+}) => {
   const [summary, setSummary] = useState('')
   const [transcription, setTranscription] = useState('')
   const [showTranscription, setShowTranscription] = useState(false)
@@ -99,7 +110,7 @@ export const SummaryView: FC<SummaryViewProps> = ({ uniqueid }) => {
     setSaveError('')
     setTranscriptionError('')
     setShowTranscription(false)
-  }, [uniqueid])
+  }, [uniqueid, transcriptId])
 
   const applySummaryData = useCallback((data: any) => {
     const summaryText = data?.Summary || data?.summary || ''
@@ -141,7 +152,7 @@ export const SummaryView: FC<SummaryViewProps> = ({ uniqueid }) => {
     setIsLoading(true)
     setLoadError('')
     try {
-      const response = await getSummaryCall(uniqueid)
+      const response = await getSummaryCall(uniqueid, linkedid, transcriptId, switchboard)
       if (!response || !response.data) {
         setSummary('')
         setLoadError(t('Summary.Summary unavailable') || '')
@@ -159,13 +170,13 @@ export const SummaryView: FC<SummaryViewProps> = ({ uniqueid }) => {
     } finally {
       setIsLoading(false)
     }
-  }, [applySummaryData, uniqueid])
+  }, [applySummaryData, linkedid, uniqueid, transcriptId, switchboard])
 
   useEffect(() => {
     if (uniqueid) {
       loadSummary()
     }
-  }, [uniqueid, loadSummary])
+  }, [uniqueid, linkedid, loadSummary])
 
   const loadTranscription = async () => {
     if (transcriptionLoaded || isLoadingTranscription) {
@@ -175,7 +186,7 @@ export const SummaryView: FC<SummaryViewProps> = ({ uniqueid }) => {
     setIsLoadingTranscription(true)
     setTranscriptionError('')
     try {
-      const response = await getTranscription(uniqueid)
+      const response = await getTranscription(uniqueid, linkedid, transcriptId, switchboard)
       if (response && response?.data) {
         const data = response.data?.data || response.data
 
@@ -210,7 +221,7 @@ export const SummaryView: FC<SummaryViewProps> = ({ uniqueid }) => {
     setIsSaving(true)
     setSaveError('')
     try {
-      await updateSummary(uniqueid, summary)
+      await updateSummary(uniqueid, summary, linkedid, transcriptId, switchboard)
       closeSideDrawer()
     } catch (err: any) {
       setSaveError(t('Summary.Summary update failed') || '')
