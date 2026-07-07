@@ -870,42 +870,55 @@ export const CreateOrEditContactDrawerContent = forwardRef<
                 ref={lastNameRef}
                 placeholder={t('Phonebook.Last name placeholder') || ''}
               />
-              <div className={isFieldVisible('jobtitle') ? '' : 'hidden'}>
-                <TextInput label={t('Phonebook.Job title') || ''} name='job' ref={jobRef} />
-              </div>
-              {NAME_DETAIL_OPTIONS.some((o) => !isFieldVisible(o.key)) ? (
-                <Dropdown
-                  position='topLeft'
-                  className='self-start -mt-4'
-                  items={
-                    <>
-                      {NAME_DETAIL_OPTIONS.filter((o) => !isFieldVisible(o.key)).map((o) => (
-                        <Dropdown.Item key={o.key} onClick={() => revealField(o.key)}>
-                          {t(o.labelKey)}
-                        </Dropdown.Item>
-                      ))}
-                    </>
-                  }
-                >
-                  <Button variant='ghost' size='base' type='button' className='gap-2'>
-                    <FontAwesomeIcon icon={faCirclePlus} className='h-4 w-4' />
-                    {t('Phonebook.Add name details')}
-                  </Button>
-                </Dropdown>
-              ) : (
-                <Button
-                  variant='ghost'
-                  size='base'
-                  type='button'
-                  disabled
-                  className='gap-2 self-start -mt-4'
-                >
+            </>
+          )}
+
+          <TextInput
+            label={t('Phonebook.Company') || ''}
+            name='company'
+            ref={companyRef}
+            error={!!companyError}
+            helper={companyError}
+          />
+
+          {contactType !== 'company' && (
+            <div className={isFieldVisible('jobtitle') ? '' : 'hidden'}>
+              <TextInput label={t('Phonebook.Job title') || ''} name='job' ref={jobRef} />
+            </div>
+          )}
+
+          {contactType !== 'company' &&
+            (NAME_DETAIL_OPTIONS.some((o) => !isFieldVisible(o.key)) ? (
+              <Dropdown
+                position='topLeft'
+                className='self-start -mt-4'
+                items={
+                  <>
+                    {NAME_DETAIL_OPTIONS.filter((o) => !isFieldVisible(o.key)).map((o) => (
+                      <Dropdown.Item key={o.key} onClick={() => revealField(o.key)}>
+                        {t(o.labelKey)}
+                      </Dropdown.Item>
+                    ))}
+                  </>
+                }
+              >
+                <Button variant='ghost' size='base' type='button' className='gap-2'>
                   <FontAwesomeIcon icon={faCirclePlus} className='h-4 w-4' />
                   {t('Phonebook.Add name details')}
                 </Button>
-              )}
-            </>
-          )}
+              </Dropdown>
+            ) : (
+              <Button
+                variant='ghost'
+                size='base'
+                type='button'
+                disabled
+                className='gap-2 self-start -mt-4'
+              >
+                <FontAwesomeIcon icon={faCirclePlus} className='h-4 w-4' />
+                {t('Phonebook.Add name details')}
+              </Button>
+            ))}
 
           <TextInput
             label={t('Phonebook.Extension') || ''}
@@ -1053,14 +1066,6 @@ export const CreateOrEditContactDrawerContent = forwardRef<
               {t('Phonebook.Add email')}
             </Button>
           )}
-
-          <TextInput
-            label={t('Phonebook.Company') || ''}
-            name='company'
-            ref={companyRef}
-            error={!!companyError}
-            helper={companyError}
-          />
 
           <TextInput label={t('Phonebook.Notes') || ''} name='notes' ref={notesRef} />
 

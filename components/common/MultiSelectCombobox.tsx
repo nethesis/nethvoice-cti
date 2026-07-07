@@ -23,9 +23,8 @@
 import { FC, useEffect, useRef, useState } from 'react'
 import classNames from 'classnames'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
-import { faCheck, faChevronDown } from '@fortawesome/free-solid-svg-icons'
+import { faCheck, faChevronDown, faXmark } from '@fortawesome/free-solid-svg-icons'
 import { IconDefinition } from '@fortawesome/fontawesome-common-types'
-import { Badge } from './Badge'
 import { customScrollbarClass } from '../../lib/utils'
 
 export interface MultiSelectComboboxProps {
@@ -114,16 +113,25 @@ export const MultiSelectCombobox: FC<MultiSelectComboboxProps> = ({
         onClick={openDropdown}
       >
         {selected.map((option) => (
-          <Badge
+          <span
             key={option}
-            variant='enabled'
-            rounded='full'
-            size='small'
-            onRemove={disabled ? undefined : () => toggleOption(option)}
-            removeLabel={removeLabel ? removeLabel(option) : `Remove ${option}`}
+            className='inline-flex w-fit items-center gap-x-1 rounded bg-gray-200 px-2.5 py-0.5 text-sm font-medium text-gray-800 dark:bg-gray-600 dark:text-gray-100'
           >
             {option}
-          </Badge>
+            {!disabled && (
+              <button
+                type='button'
+                aria-label={removeLabel ? removeLabel(option) : `Remove ${option}`}
+                className='ml-0.5 inline-flex h-4 w-4 items-center justify-center rounded hover:bg-black/10 dark:hover:bg-white/10'
+                onClick={(event) => {
+                  event.stopPropagation()
+                  toggleOption(option)
+                }}
+              >
+                <FontAwesomeIcon icon={faXmark} className='h-3 w-3' aria-hidden='true' />
+              </button>
+            )}
+          </span>
         ))}
         {searchable ? (
           <input
