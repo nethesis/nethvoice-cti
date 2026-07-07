@@ -430,7 +430,7 @@ export const Filter = forwardRef<HTMLButtonElement, FilterProps>(
                         selectedValue={status}
                         onChange={changeStatus}
                         idPrefix='status-'
-                        panelClassName='absolute right-0 z-10 mt-2 origin-top-right rounded-md min-w-max p-4 shadow-2xl ring-1 ring-opacity-5 focus:outline-none bg-white ring-black dark:bg-gray-900 dark:ring-gray-700'
+                        panelClassName='absolute left-0 z-10 mt-2 origin-top-left rounded-md min-w-max p-4 shadow-2xl ring-1 ring-opacity-5 focus:outline-none bg-white ring-black dark:bg-gray-900 dark:ring-gray-700'
                       />
                     </PopoverGroup>
 
@@ -565,7 +565,7 @@ export const Filter = forwardRef<HTMLButtonElement, FilterProps>(
                         selectedValue={status}
                         onChange={changeStatus}
                         idPrefix='status-'
-                        panelClassName='absolute right-0 z-10 mt-2 origin-top-right rounded-md min-w-max p-4 shadow-2xl ring-1 ring-opacity-5 focus:outline-none bg-white ring-black dark:bg-gray-900 dark:ring-gray-700'
+                        panelClassName='absolute left-0 z-10 mt-2 origin-top-left rounded-md min-w-max p-4 shadow-2xl ring-1 ring-opacity-5 focus:outline-none bg-white ring-black dark:bg-gray-900 dark:ring-gray-700'
                       />
                     </PopoverGroup>
 

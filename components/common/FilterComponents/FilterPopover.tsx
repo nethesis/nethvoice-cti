@@ -109,7 +109,7 @@ export const FilterPopover: React.FC<FilterPopoverProps> = ({
         <PopoverPanel
           className={
             panelClassName ||
-            'absolute right-0 z-10 mt-2 origin-top-right rounded-md p-4 shadow-2xl ring-1 ring-opacity-5 focus:outline-none bg-white ring-black dark:bg-gray-900 dark:ring-gray-700'
+            'absolute left-0 z-10 mt-2 origin-top-left rounded-md p-4 shadow-2xl ring-1 ring-opacity-5 focus:outline-none bg-white ring-black dark:bg-gray-900 dark:ring-gray-700'
           }
         >
           {children ||

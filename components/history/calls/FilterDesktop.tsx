@@ -76,7 +76,7 @@ export const FilterDesktop: React.FC<FilterDesktopProps> = ({
         options={[]}
         selectedValue=''
         onChange={() => {}}
-        panelClassName='absolute right-0 z-10 mt-2 origin-top-right rounded-md flex flex-col space-y-4 bg-white p-4 shadow-2xl ring-1 ring-black ring-opacity-5 focus:outline-none dark:bg-gray-900 dark:ring-gray-700'
+        panelClassName='absolute left-0 z-10 mt-2 origin-top-left rounded-md flex flex-col space-y-4 bg-white p-4 shadow-2xl ring-1 ring-black ring-opacity-5 focus:outline-none dark:bg-gray-900 dark:ring-gray-700'
       >
         <form className='space-y-4'>
           {callTypeFilter?.options
@@ -173,7 +173,7 @@ export const FilterDesktop: React.FC<FilterDesktopProps> = ({
         options={[]}
         selectedValue=''
         onChange={() => {}}
-        panelClassName='absolute right-0 z-10 mt-2 origin-top-right rounded-md bg-white ring-black dark:bg-gray-900 dark:ring-gray-600 p-4 shadow-2xl ring-1 ring-opacity-5'
+        panelClassName='absolute left-0 z-10 mt-2 origin-top-left rounded-md bg-white ring-black dark:bg-gray-900 dark:ring-gray-600 p-4 shadow-2xl ring-1 ring-opacity-5'
       >
         <div className='flex pb-4'>
           <div className='relative flex-1'>
