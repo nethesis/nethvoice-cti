@@ -139,6 +139,11 @@ export const MultiSelectCombobox: FC<MultiSelectComboboxProps> = ({
               setIsOpen(true)
             }}
             onFocus={() => setIsOpen(true)}
+            onKeyDown={(e) => {
+              if (e.key === 'Backspace' && search === '' && selected.length > 0) {
+                toggleOption(selected[selected.length - 1])
+              }
+            }}
           />
         ) : (
           selected.length === 0 && (
@@ -170,7 +175,7 @@ export const MultiSelectCombobox: FC<MultiSelectComboboxProps> = ({
                 <button
                   key={option}
                   type='button'
-                  className='flex w-full items-center gap-3 py-2 pl-3 pr-9 text-left text-sm text-secondaryNeutral transition hover:bg-gray-100 dark:text-secondaryNeutralDark dark:hover:bg-gray-800'
+                  className='flex w-full items-center gap-3 py-2 pl-3 pr-3 text-left text-sm text-secondaryNeutral transition hover:bg-gray-100 dark:text-secondaryNeutralDark dark:hover:bg-gray-800'
                   onClick={() => {
                     toggleOption(option)
                     setSearch('')
