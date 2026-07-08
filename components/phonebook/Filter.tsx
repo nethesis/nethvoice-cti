@@ -1,7 +1,7 @@
 // Copyright (C) 2024 Nethesis S.r.l.
 // SPDX-License-Identifier: AGPL-3.0-or-later
 
-import { ComponentPropsWithRef, forwardRef, useRef } from 'react'
+import { ComponentPropsWithRef, forwardRef, useRef, useMemo } from 'react'
 import classNames from 'classnames'
 import { Button, TextInput } from '../common'
 import { useState, useEffect } from 'react'
@@ -198,10 +198,10 @@ export const Filter = forwardRef<HTMLButtonElement, FilterProps>(
       label: t(`Phonebook.${o.label}`),
     }))
 
-    const translatedSortOptions = sortFilter.options.map((o) => ({
-      ...o,
-      label: t(`Phonebook.${o.label}`),
-    }))
+    const translatedSortOptions = useMemo(
+      () => sortFilter.options.map((o) => ({ ...o, label: t(`Phonebook.${o.label}`) })),
+      [t],
+    )
 
     return (
       <div className={classNames(className)} {...props}>

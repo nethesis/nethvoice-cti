@@ -205,7 +205,7 @@ export const ContactSummary = forwardRef<HTMLButtonElement, ContactSummaryProps>
               1,
               noSlashCharactersCompanyInformation,
               'company',
-              'name',
+              'displayname',
             )
             let companyAllInformation = res?.rows[0]
             setCompanyInformation(companyAllInformation)

@@ -547,16 +547,16 @@ export const CreateOrEditContactDrawerContent = forwardRef<
       contactData.name = '-'
     }
 
-    if (firstNameRef.current.value) {
-      contactData.firstname = firstNameRef?.current?.value
+    if (contactType === 'person' && firstNameRef.current?.value) {
+      contactData.firstname = firstNameRef.current.value
     }
 
-    if (lastNameRef.current.value) {
-      contactData.lastname = lastNameRef?.current?.value
+    if (contactType === 'person' && lastNameRef.current?.value) {
+      contactData.lastname = lastNameRef.current.value
     }
 
-    if (jobRef.current.value) {
-      contactData.job = jobRef?.current?.value
+    if (contactType === 'person' && jobRef.current?.value) {
+      contactData.job = jobRef.current.value
     }
 
     if (companyRef.current.value) {
@@ -672,9 +672,9 @@ export const CreateOrEditContactDrawerContent = forwardRef<
       name: null,
       type:
         contactVisibility === 'group' ? serializeSharedGroups(selectedGroups) : contactVisibility,
-      firstname: firstNameRef?.current?.value || null,
-      lastname: lastNameRef?.current?.value || null,
-      job: jobRef?.current?.value || null,
+      firstname: contactType === 'person' ? firstNameRef?.current?.value || null : null,
+      lastname: contactType === 'person' ? lastNameRef?.current?.value || null : null,
+      job: contactType === 'person' ? jobRef?.current?.value || null : null,
       company: companyRef?.current?.value || null,
       extension: extensionRef?.current?.value || null,
       workphone: workPhoneRef?.current?.value || '',
@@ -854,24 +854,24 @@ export const CreateOrEditContactDrawerContent = forwardRef<
         </div>
         {/* contact fields — flat list, 32px rhythm (Figma space/8) */}
         <div className='flex flex-col gap-8'>
-          {contactType !== 'company' && (
-            <>
-              <TextInput
-                label={t('Phonebook.First name') || ''}
-                name='firstname'
-                ref={firstNameRef}
-                placeholder={t('Phonebook.First name placeholder') || ''}
-                error={!!nameError}
-                helper={nameError}
-              />
-              <TextInput
-                label={t('Phonebook.Last name') || ''}
-                name='lastname'
-                ref={lastNameRef}
-                placeholder={t('Phonebook.Last name placeholder') || ''}
-              />
-            </>
-          )}
+          <div className={contactType === 'company' ? 'hidden' : ''}>
+            <TextInput
+              label={t('Phonebook.First name') || ''}
+              name='firstname'
+              ref={firstNameRef}
+              placeholder={t('Phonebook.First name placeholder') || ''}
+              error={!!nameError}
+              helper={nameError}
+            />
+          </div>
+          <div className={contactType === 'company' ? 'hidden' : ''}>
+            <TextInput
+              label={t('Phonebook.Last name') || ''}
+              name='lastname'
+              ref={lastNameRef}
+              placeholder={t('Phonebook.Last name placeholder') || ''}
+            />
+          </div>
 
           <TextInput
             label={t('Phonebook.Company') || ''}
@@ -881,11 +881,9 @@ export const CreateOrEditContactDrawerContent = forwardRef<
             helper={companyError}
           />
 
-          {contactType !== 'company' && (
-            <div className={isFieldVisible('jobtitle') ? '' : 'hidden'}>
-              <TextInput label={t('Phonebook.Job title') || ''} name='job' ref={jobRef} />
-            </div>
-          )}
+          <div className={contactType !== 'company' && isFieldVisible('jobtitle') ? '' : 'hidden'}>
+            <TextInput label={t('Phonebook.Job title') || ''} name='job' ref={jobRef} />
+          </div>
 
           {contactType !== 'company' &&
             (NAME_DETAIL_OPTIONS.some((o) => !isFieldVisible(o.key)) ? (
