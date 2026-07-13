@@ -15,6 +15,7 @@ import {
   DEFAULT_CALL_TYPE_FILTER,
   DEFAULT_CALL_DIRECTION_FILTER,
   DEFAULT_SORT_BY,
+  DEFAULT_QUEUE_FILTER,
   getFilterValues,
 } from '../../../lib/history'
 import { formatDateLoc } from '../../../lib/dateTime'
@@ -95,6 +96,8 @@ export interface FilterProps extends ComponentPropsWithRef<'div'> {
   updateDateEndFilter: Function
   updateSortFilter: Function
   updateContentFilter: Function
+  updateQueueFilter: Function
+  availableQueues: { queue: string; name?: string }[]
 }
 
 export const Filter = forwardRef<HTMLButtonElement, FilterProps>(
@@ -107,6 +110,8 @@ export const Filter = forwardRef<HTMLButtonElement, FilterProps>(
       updateDateEndFilter,
       updateSortFilter,
       updateContentFilter,
+      updateQueueFilter,
+      availableQueues,
       className,
       ...props
     },
@@ -114,6 +119,7 @@ export const Filter = forwardRef<HTMLButtonElement, FilterProps>(
   ) => {
     const auth = useSelector((state: RootState) => state.authentication)
     const { profile } = useSelector((state: RootState) => state.user)
+    const { t } = useTranslation()
     const [internalUsed, setInternalUsed] = useState(false)
 
     const [open, setOpen] = useState(false)
@@ -125,11 +131,13 @@ export const Filter = forwardRef<HTMLButtonElement, FilterProps>(
 
     const [callTypeLabel, setCallTypeLabel] = useState('')
     const [contentFilterLabel, setContentFilterLabel] = useState('All')
+    const [queueLabel, setQueueLabel] = useState('')
 
     const [callDirection, setCallDirection] = useState('all')
 
     const [callType, setCallType] = useState('user')
     const [selectedContentFilter, setSelectedContentFilter] = useState(DEFAULT_CONTENT_FILTER)
+    const [selectedQueue, setSelectedQueue] = useState(DEFAULT_QUEUE_FILTER)
 
     const [dateBeginShowed, setDateBeginShowed] = useState('')
     const [dateEndShowed, setDateEndShowed] = useState('')
@@ -203,6 +211,17 @@ export const Filter = forwardRef<HTMLButtonElement, FilterProps>(
     })
     const [hourBeginValue, setHourBeginValue]: any = useState('')
     const [hourEndValue, setHourEndValue]: any = useState('')
+
+    const queueFilter = {
+      id: 'queue',
+      options: [
+        { value: DEFAULT_QUEUE_FILTER, label: t('History.All') },
+        ...availableQueues.map((queue) => ({
+          value: queue.queue,
+          label: queue.name ? `${queue.name} (${queue.queue})` : queue.queue,
+        })),
+      ],
+    }
 
     const applyTimeToDate = (value: Date, time: string, fallbackHour: number, fallbackMinute: number) => {
       const nextDate = new Date(value)
@@ -289,6 +308,13 @@ export const Filter = forwardRef<HTMLButtonElement, FilterProps>(
       savePreference('historyContentFilter', newContentFilter, auth.username)
     }
 
+    function changeQueueFilter(event: any) {
+      const newQueue = event.target.id
+      setSelectedQueue(newQueue)
+      updateQueueFilter(newQueue)
+      savePreference('historyQueueFilter', newQueue, auth.username)
+    }
+
     //Set the label for the selected call type
     useEffect(() => {
       const callTypeFound = callTypeFilter?.options?.find((option) => option?.value === callType)
@@ -325,6 +351,11 @@ export const Filter = forwardRef<HTMLButtonElement, FilterProps>(
       }
     }, [selectedContentFilter])
 
+    useEffect(() => {
+      const queueFound = queueFilter.options.find((option) => option.value === selectedQueue)
+      setQueueLabel(queueFound?.label || '')
+    }, [queueFilter.options, selectedQueue])
+
     const [selectedLanguage, setSelectedLanguage] = useState('')
 
     useEffect(() => {
@@ -345,6 +376,7 @@ export const Filter = forwardRef<HTMLButtonElement, FilterProps>(
       setCallDirection(filterValues.callDirection)
       setSortBy(filterValues.sortBy)
       setSelectedContentFilter(filterValues.contentFilter || DEFAULT_CONTENT_FILTER)
+      setSelectedQueue(filterValues.queue || DEFAULT_QUEUE_FILTER)
       checkSelected(filterValues.callType)
 
       // notify parent component
@@ -352,6 +384,7 @@ export const Filter = forwardRef<HTMLButtonElement, FilterProps>(
       updateCallDirectionFilter(filterValues.callDirection)
       updateSortFilter(filterValues.sortBy)
       updateContentFilter(filterValues.contentFilter || DEFAULT_CONTENT_FILTER)
+      updateQueueFilter(filterValues.queue || DEFAULT_QUEUE_FILTER)
       // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [auth.username])
 
@@ -369,6 +402,7 @@ export const Filter = forwardRef<HTMLButtonElement, FilterProps>(
       setCallType(DEFAULT_CALL_TYPE_FILTER)
       setCallDirection(DEFAULT_CALL_DIRECTION_FILTER)
       setSelectedContentFilter(DEFAULT_CONTENT_FILTER)
+      setSelectedQueue(DEFAULT_QUEUE_FILTER)
       // Update the dateValue state
       setdateValue((prevState: any) => {
         return {
@@ -382,6 +416,7 @@ export const Filter = forwardRef<HTMLButtonElement, FilterProps>(
       savePreference('historyCallTypeDirection', DEFAULT_CALL_DIRECTION_FILTER, auth.username)
       savePreference('historySortTypePreference', DEFAULT_SORT_BY, auth.username)
       savePreference('historyContentFilter', DEFAULT_CONTENT_FILTER, auth.username)
+      savePreference('historyQueueFilter', DEFAULT_QUEUE_FILTER, auth.username)
 
       // notify parent component
       updateFilterText('')
@@ -391,10 +426,9 @@ export const Filter = forwardRef<HTMLButtonElement, FilterProps>(
       updateDateEndFilter(actualDateForReset)
       updateSortFilter(DEFAULT_SORT_BY)
       updateContentFilter(DEFAULT_CONTENT_FILTER)
+      updateQueueFilter(DEFAULT_QUEUE_FILTER)
       checkSelected(DEFAULT_CALL_TYPE_FILTER)
     }
-
-    const { t } = useTranslation()
 
     return (
       <div className={classNames('bg-body dark:bg-bodyDark', className)} {...props}>
@@ -428,6 +462,9 @@ export const Filter = forwardRef<HTMLButtonElement, FilterProps>(
             contentFilter={contentFilter}
             selectedContentFilter={selectedContentFilter}
             changeContentFilter={changeContentFilter}
+            queueFilter={queueFilter}
+            selectedQueue={selectedQueue}
+            changeQueueFilter={changeQueueFilter}
           />
 
           {/* Filter pc */}
@@ -478,10 +515,13 @@ export const Filter = forwardRef<HTMLButtonElement, FilterProps>(
                     contentFilter={contentFilter}
                     selectedContentFilter={selectedContentFilter}
                     changeContentFilter={changeContentFilter}
+                    queueFilter={queueFilter}
+                    selectedQueue={selectedQueue}
+                    changeQueueFilter={changeQueueFilter}
                   />
                   <button
                     type='button'
-                    className='inline-block text-sm font-medium text-gray-700 dark:text-gray-300 hover:text-gray-900  dark:hover:text-gray-100 sm:hidden ml-4'
+                    className='inline-block text-sm font-medium text-gray-700 dark:text-gray-300 hover:text-gray-900 dark:hover:text-gray-100 xl:hidden ml-4'
                     onClick={() => setOpen(true)}
                   >
                     {t('History.Filters')}
@@ -535,6 +575,18 @@ export const Filter = forwardRef<HTMLButtonElement, FilterProps>(
                       </span>
                     </div>
                   </div>
+                  {queueLabel && (
+                    <div className='mt-0'>
+                      <div className='-m-1 flex flex-wrap items-center'>
+                        <span className='m-1 inline-flex items-center rounded-full border py-1.5 px-3 text-sm border-borderRingInput dark:border-borderRingInputDark'>
+                          <span className='text-secondaryNeutral dark:text-secondaryNeutralDark font-normal leading-5'>
+                            {t('History.Queue')}:&nbsp;
+                          </span>
+                          {queueLabel}
+                        </span>
+                      </div>
+                    </div>
+                  )}
                   {/* filter date from */}
                   <div className='mt-0'>
                     <div className='-m-1 flex flex-wrap items-center'>

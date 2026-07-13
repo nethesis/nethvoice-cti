@@ -36,6 +36,9 @@ interface FilterMobileProps {
   contentFilter: any
   selectedContentFilter: string
   changeContentFilter: (event: any) => void
+  queueFilter: any
+  selectedQueue: string
+  changeQueueFilter: (event: any) => void
 }
 
 export const FilterMobile: React.FC<FilterMobileProps> = ({
@@ -66,6 +69,9 @@ export const FilterMobile: React.FC<FilterMobileProps> = ({
   contentFilter,
   selectedContentFilter,
   changeContentFilter,
+  queueFilter,
+  selectedQueue,
+  changeQueueFilter,
 }) => {
   const { t } = useTranslation()
   const { timePicker: timePickerTheme, datePicker: datePickerTheme } = useTheme().theme
@@ -262,6 +268,17 @@ export const FilterMobile: React.FC<FilterMobileProps> = ({
           onChange={changeContentFilter}
         />
       </form>
+      {queueFilter?.options?.length > 0 && (
+        <form className='mt-4'>
+          <FilterDisclosure
+            name={t('History.Queue')}
+            filterId={queueFilter.id}
+            options={queueFilter.options}
+            selectedValue={selectedQueue}
+            onChange={changeQueueFilter}
+          />
+        </form>
+      )}
     </MobileFilterDrawer>
   )
 }

@@ -13,6 +13,7 @@ export const DEFAULT_CALL_TYPE_FILTER = 'user'
 export const DEFAULT_CALL_DIRECTION_FILTER = 'all'
 export const DEFAULT_SORT_BY = 'time%20desc'
 export const DEFAULT_CONTENT_FILTER = 'all'
+export const DEFAULT_QUEUE_FILTER = ''
 
 export function isAnsweredDisposition(disposition?: string) {
   return disposition === 'ANSWERED' || disposition === 'ANSWERED_ELSEWHERE'
@@ -56,6 +57,7 @@ export async function search(
   pageNum: number,
   pageSize: number = PAGE_SIZE,
   contentFilter: string = DEFAULT_CONTENT_FILTER,
+  queue: string = DEFAULT_QUEUE_FILTER,
 ) {
   if (window == undefined) {
     return
@@ -76,6 +78,7 @@ export async function search(
         pageNum,
         pageSize,
         artifact: contentFilter,
+        queue,
       },
     })
     return data
@@ -195,8 +198,25 @@ export const getFilterValues = (currentUsername: string) => {
   const sortBy = loadPreference('historySortTypePreference', currentUsername) || DEFAULT_SORT_BY
   const contentFilter =
     loadPreference('historyContentFilter', currentUsername) || DEFAULT_CONTENT_FILTER
+  const queue = loadPreference('historyQueueFilter', currentUsername) || DEFAULT_QUEUE_FILTER
 
-  return { callType, callDirection, sortBy, contentFilter }
+  return { callType, callDirection, sortBy, contentFilter, queue }
+}
+
+export const getHistoryQueues = async (username: string) => {
+  try {
+    const requestUrl = `${getHistoryUrl()}/api/historycall/queues/user/${username}`
+    const { data, status } = await axios.get(requestUrl)
+
+    if (status === 200 && Array.isArray(data)) {
+      return data
+    }
+
+    return []
+  } catch (error) {
+    handleNetworkError(error)
+    throw error
+  }
 }
 
 export const openAddToPhonebookDrawer = (operator: any) => {
