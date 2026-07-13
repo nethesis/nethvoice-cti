@@ -13,6 +13,30 @@ export const DEFAULT_CALL_TYPE_FILTER = 'user'
 export const DEFAULT_CALL_DIRECTION_FILTER = 'all'
 export const DEFAULT_SORT_BY = 'time%20desc'
 export const DEFAULT_CONTENT_FILTER = 'all'
+export const DEFAULT_QUEUE_FILTER = ''
+
+export function isAnsweredDisposition(disposition?: string) {
+  return disposition === 'ANSWERED' || disposition === 'ANSWERED_ELSEWHERE'
+}
+
+export function isAnsweredElsewhereDisposition(disposition?: string) {
+  return disposition === 'ANSWERED_ELSEWHERE'
+}
+
+export function getAnsweredTranslationKey(
+  direction: 'Incoming' | 'Outgoing' | 'Internal',
+  disposition?: string,
+) {
+  return isAnsweredElsewhereDisposition(disposition)
+    ? `History.${direction} answered elsewhere`
+    : `History.${direction} answered`
+}
+
+export function getAnsweredIconColorClass(disposition?: string) {
+  return isAnsweredElsewhereDisposition(disposition)
+    ? 'text-gray-700 dark:text-gray-400'
+    : 'text-green-600 dark:text-green-500'
+}
 
 export function getHistoryUrl() {
   if (window == undefined) {
@@ -33,6 +57,7 @@ export async function search(
   pageNum: number,
   pageSize: number = PAGE_SIZE,
   contentFilter: string = DEFAULT_CONTENT_FILTER,
+  queue: string = DEFAULT_QUEUE_FILTER,
 ) {
   if (window == undefined) {
     return
@@ -53,6 +78,7 @@ export async function search(
         pageNum,
         pageSize,
         artifact: contentFilter,
+        queue,
       },
     })
     return data
@@ -172,8 +198,25 @@ export const getFilterValues = (currentUsername: string) => {
   const sortBy = loadPreference('historySortTypePreference', currentUsername) || DEFAULT_SORT_BY
   const contentFilter =
     loadPreference('historyContentFilter', currentUsername) || DEFAULT_CONTENT_FILTER
+  const queue = loadPreference('historyQueueFilter', currentUsername) || DEFAULT_QUEUE_FILTER
 
-  return { callType, callDirection, sortBy, contentFilter }
+  return { callType, callDirection, sortBy, contentFilter, queue }
+}
+
+export const getHistoryQueues = async (username: string) => {
+  try {
+    const requestUrl = `${getHistoryUrl()}/api/historycall/queues/user/${username}`
+    const { data, status } = await axios.get(requestUrl)
+
+    if (status === 200 && Array.isArray(data)) {
+      return data
+    }
+
+    return []
+  } catch (error) {
+    handleNetworkError(error)
+    throw error
+  }
 }
 
 export const openAddToPhonebookDrawer = (operator: any) => {
@@ -207,7 +250,7 @@ export const getLastCalls = async (
       sort = 'time%20asc'
     }
 
-    const requestUrl = `${getHistoryUrl()}/api/historycall/interval/user/${username}/${dateFrom}/${dateTo}?offset=0&limit=15&sort=${sort}&removeLostCalls=undefined`
+    const requestUrl = `${getHistoryUrl()}/api/historycall/interval/user/${username}/${dateFrom}/${dateTo}?offset=0&limit=15&sort=${sort}&removeLostCalls=false`
     const { data, status } = await axios.get(requestUrl)
 
     if (status === 200) {
@@ -278,6 +321,8 @@ export interface CallTypes {
   clid: string
   direction: 'in' | 'out'
   queue: string
+  queue_name?: string
+  answered_by_num?: string
   reached_voicemail?: boolean
   has_voicemail_message?: boolean
   voicemail_message_id?: string
@@ -303,7 +348,7 @@ export const getNormalizedDisposition = (call?: CallDispositionLike) =>
   call?.normalized_disposition || call?.disposition || ''
 
 export const isCallAnswered = (call?: CallDispositionLike) =>
-  getNormalizedDisposition(call) === 'ANSWERED'
+  isAnsweredDisposition(getNormalizedDisposition(call))
 
 export const hasVoicemailMessage = (call?: CallVoicemailLike) =>
   call?.has_voicemail_message === true

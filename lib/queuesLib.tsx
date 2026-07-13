@@ -60,8 +60,12 @@ export const processQueues = (
     return
   }
 
+  // Replace the queue collection on every refresh so deleted/removed queues
+  // do not remain stale in the client store.
+  store.dispatch.queues.setQueues({})
+
   Object.values(queuesData).forEach((queue: any) => {
-    if (queue.members[mainextension]) {
+    if (queue?.members?.[mainextension]) {
       queues[queue.queue] = queue
     }
   })

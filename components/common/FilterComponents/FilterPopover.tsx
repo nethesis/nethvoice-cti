@@ -28,6 +28,8 @@ interface FilterPopoverProps {
   panelClassName?: string
   /** Custom children to render instead of default radio buttons */
   children?: ReactNode
+  /** Extra class for option labels */
+  optionLabelClassName?: string
 }
 
 export const FilterPopover: React.FC<FilterPopoverProps> = ({
@@ -39,6 +41,7 @@ export const FilterPopover: React.FC<FilterPopoverProps> = ({
   idPrefix = '',
   panelClassName,
   children,
+  optionLabelClassName,
 }) => {
   return (
     <Popover
@@ -86,7 +89,7 @@ export const FilterPopover: React.FC<FilterPopoverProps> = ({
                   />
                   <label
                     htmlFor={`${idPrefix}${option.value}`}
-                    className='ml-3 block text-sm font-medium text-gray-700 dark:text-gray-200'
+                    className={`ml-3 block text-sm font-medium text-gray-700 dark:text-gray-200 ${optionLabelClassName || ''}`}
                   >
                     {option.label}
                   </label>

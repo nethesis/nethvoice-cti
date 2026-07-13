@@ -3,7 +3,7 @@
 
 import { FC } from 'react'
 import { CallTypes, getEffectiveCnam } from '../../lib/history'
-import { getOperatorByPhoneNumber } from '../../lib/operators'
+import { getOperatorByPhoneNumber, openShowOperatorDrawer } from '../../lib/operators'
 import classNames from 'classnames'
 import {
   callPhoneNumber,
@@ -27,6 +27,7 @@ interface CallDetailsProps {
   fromHistory?: boolean
   isQueueBadgeAvailable?: boolean
   direction: 'in' | 'out'
+  lastCallsType?: string
   tooltipPlace?: 'top' | 'right' | 'bottom' | 'left'
 }
 
@@ -47,6 +48,7 @@ export const CallDetails: FC<CallDetailsProps> = ({
   fromHistory,
   isQueueBadgeAvailable,
   direction,
+  lastCallsType,
   tooltipPlace = 'bottom',
 }) => {
   const authStore = useSelector((state: RootState) => state.authentication)
@@ -64,6 +66,19 @@ export const CallDetails: FC<CallDetailsProps> = ({
   const openLastCardUserDrawer = (userInformation: any) => {
     let updatedUserInformation: any = {}
     let createContactObject: any = {}
+    const phoneNumber =
+      direction === 'in'
+        ? userInformation?.cnum || userInformation?.src
+        : userInformation?.dst
+    const operatorFound: any = getOperatorByPhoneNumber(phoneNumber, operators)
+
+    if (operatorFound) {
+      openShowOperatorDrawer({
+        ...operatorFound,
+        lastCallsType: lastCallsType || 'user',
+      })
+      return
+    }
 
     if (direction === 'in') {
       const incomingNum = userInformation.src || userInformation.cnum
