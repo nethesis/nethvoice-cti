@@ -281,6 +281,8 @@ export interface CallTypes {
   reached_voicemail?: boolean
   has_voicemail_message?: boolean
   voicemail_message_id?: string
+  interactions?: CallTypes[]
+  interactionsCount?: number
 }
 
 export interface LastCallsResponse {
