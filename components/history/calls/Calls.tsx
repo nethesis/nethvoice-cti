@@ -928,9 +928,9 @@ export const Calls: FC<CallsProps> = ({ className }): JSX.Element => {
               e.stopPropagation()
               toggleExpanded(call?.linkedid)
             }}
-            className='flex h-6 w-6 items-center justify-center rounded-full bg-green-600 text-white hover:bg-green-700 dark:bg-green-500 dark:hover:bg-green-400'
+            className='flex h-5 w-5 items-center justify-center rounded-full bg-primary text-white hover:bg-primaryDark'
           >
-            <FontAwesomeIcon icon={isOpen ? faChevronUp : faChevronDown} className='h-3 w-3' />
+            <FontAwesomeIcon icon={isOpen ? faChevronUp : faChevronDown} className='h-2.5 w-2.5' />
           </button>
         )
       },
@@ -975,7 +975,7 @@ export const Calls: FC<CallsProps> = ({ className }): JSX.Element => {
     {
       header: t('History.Destination'),
       cell: (call: any) => (
-        <div className='flex items-center gap-2'>
+        <div className='flex items-start gap-2'>
           <CallDestination
             call={call}
             callType={callType}
@@ -990,7 +990,7 @@ export const Calls: FC<CallsProps> = ({ className }): JSX.Element => {
                 icon={faLayerGroup}
                 data-tooltip-id={`tooltip-interactions-${call?.linkedid}`}
                 data-tooltip-content={t('History.This call has multiple interactions') || ''}
-                className='h-4 w-4 text-iconIndigo dark:text-iconIndigoDark'
+                className='h-4 w-4 mt-0.5 shrink-0 text-iconIndigo dark:text-iconIndigoDark'
                 aria-hidden='true'
               />
               <CustomThemedTooltip id={`tooltip-interactions-${call?.linkedid}`} place='top' />
