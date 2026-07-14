@@ -922,16 +922,17 @@ export const Calls: FC<CallsProps> = ({ className }): JSX.Element => {
     },
     {
       header: t('History.Source'),
-      cell: (call: any) => (
-        <CallSource
-          call={call}
-          callType={callType}
-          operators={operators}
-          mainextension={mainextension}
-          name={name}
-          openDrawerHistory={openDrawerHistory}
-        />
-      ),
+      cell: (call: any) =>
+        call?.isInteractionRow ? null : (
+          <CallSource
+            call={call}
+            callType={callType}
+            operators={operators}
+            mainextension={mainextension}
+            name={name}
+            openDrawerHistory={openDrawerHistory}
+          />
+        ),
       width: '15%',
       className:
         'px-6 py-3.5 text-left text-sm font-semibold text-primaryNeutral dark:text-primaryNeutralDark w-0',
@@ -1197,6 +1198,9 @@ export const Calls: FC<CallsProps> = ({ className }): JSX.Element => {
                             className='!mb-0 !px-6'
                           />
                         ) : undefined
+                      }
+                      getRowClassName={(row: any) =>
+                        row?.isInteractionRow ? 'bg-gray-50 dark:bg-gray-900/40' : ''
                       }
                     />
                   </div>
