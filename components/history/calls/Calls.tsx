@@ -929,7 +929,7 @@ export const Calls: FC<CallsProps> = ({ className }): JSX.Element => {
               e.stopPropagation()
               toggleExpanded(call?.linkedid)
             }}
-            className='flex h-5 w-5 items-center justify-center rounded-full bg-primary text-white hover:bg-primaryDark'
+            className='flex h-5 w-5 items-center justify-center rounded-full bg-primary dark:bg-primaryDark text-white hover:bg-emerald-800 dark:hover:bg-emerald-300'
           >
             <FontAwesomeIcon icon={isOpen ? faChevronUp : faChevronDown} className='h-2.5 w-2.5' />
           </button>
