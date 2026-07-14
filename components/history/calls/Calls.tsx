@@ -960,13 +960,14 @@ export const Calls: FC<CallsProps> = ({ className }): JSX.Element => {
     },
     {
       header: '',
-      cell: () => (
-        <FontAwesomeIcon
-          icon={faArrowRight}
-          className='ml-0 h-4 w-4 flex-shrink-0 text-textPlaceholder dark:text-textPlaceholderDark'
-          aria-hidden='true'
-        />
-      ),
+      cell: (call: any) =>
+        call?.isInteractionRow ? null : (
+          <FontAwesomeIcon
+            icon={faArrowRight}
+            className='ml-0 h-4 w-4 flex-shrink-0 text-textPlaceholder dark:text-textPlaceholderDark'
+            aria-hidden='true'
+          />
+        ),
       width: '5%',
       className:
         'px-6 py-3.5 text-left text-sm font-semibold text-primaryNeutral dark:text-primaryNeutralDark w-0',
@@ -1012,6 +1013,9 @@ export const Calls: FC<CallsProps> = ({ className }): JSX.Element => {
     {
       header: '',
       cell: (call: any) => {
+        if (call?.isInteractionRow) {
+          return null
+        }
         const summaryStatus = call?.summaryStatus ?? summaryStatusMap?.[call?.uniqueid]
         const isVoicemail = hasVoicemailMessage(call)
 
@@ -1099,15 +1103,16 @@ export const Calls: FC<CallsProps> = ({ className }): JSX.Element => {
     },
     {
       header: '',
-      cell: (call: any) => (
-        <CallRecording
-          call={call}
-          playSelectedAudioFile={playSelectedAudioFile}
-          getRecordingActions={getRecordingActions}
-          getCallActions={getCallActions}
-          summaryStatus={call?.summaryStatus ?? summaryStatusMap?.[call?.uniqueid]}
-        />
-      ),
+      cell: (call: any) =>
+        call?.isInteractionRow ? null : (
+          <CallRecording
+            call={call}
+            playSelectedAudioFile={playSelectedAudioFile}
+            getRecordingActions={getRecordingActions}
+            getCallActions={getCallActions}
+            summaryStatus={call?.summaryStatus ?? summaryStatusMap?.[call?.uniqueid]}
+          />
+        ),
       width: '20%',
       className: 'px-6 py-3.5 w-0',
     },
@@ -1221,7 +1226,7 @@ export const Calls: FC<CallsProps> = ({ className }): JSX.Element => {
                         ) : undefined
                       }
                       getRowClassName={(row: any) =>
-                        row?.isInteractionRow ? 'bg-gray-50 dark:bg-gray-900/40' : ''
+                        row?.isInteractionRow ? '!h-auto !border-t-0 [&>td]:!py-2' : ''
                       }
                     />
                   </div>
