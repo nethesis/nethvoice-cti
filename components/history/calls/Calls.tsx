@@ -680,7 +680,19 @@ export const Calls: FC<CallsProps> = ({ className }): JSX.Element => {
         if (lid && convsByLinked.has(lid)) {
           if (!emitted.has(lid)) {
             emitted.add(lid)
-            const legs = filteredHistory.filter((r: any) => r?.linkedid === lid)
+            // The middleware now collapses call-history rows by linkedid into a
+            // single parent row per group (carrying the other legs on
+            // `interactions`), so `filteredHistory` only has ONE row for this
+            // linkedid. Rebuild the full raw-leg set from that parent row (+ its
+            // interactions) so the party/timing matching below still sees every
+            // leg, not just the parent's.
+            const groupParent = filteredHistory.find((r: any) => r?.linkedid === lid)
+            const legs = groupParent
+              ? [
+                  groupParent,
+                  ...(Array.isArray(groupParent?.interactions) ? groupParent.interactions : []),
+                ]
+              : filteredHistory.filter((r: any) => r?.linkedid === lid)
             ;(convsByLinked.get(lid) || []).forEach((conv: any) => {
               const a = norm(conv?.src_number)
               const b = norm(conv?.dst_number)
@@ -734,6 +746,11 @@ export const Calls: FC<CallsProps> = ({ className }): JSX.Element => {
                 isConversationRow: true,
                 summaryStatus: conv,
                 transcriptId: conv?.id,
+                // Carry the group's interactions over from the collapsed parent
+                // row so a transcribed group call still shows the caret/icon and
+                // can expand into its other legs.
+                interactions: groupParent?.interactions,
+                interactionsCount: groupParent?.interactionsCount,
               })
             })
           }
