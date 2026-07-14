@@ -11,6 +11,7 @@ import {
   faVoicemail,
   faChevronDown,
   faChevronUp,
+  faLayerGroup,
 } from '@fortawesome/free-solid-svg-icons'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { t } from 'i18next'
@@ -951,14 +952,28 @@ export const Calls: FC<CallsProps> = ({ className }): JSX.Element => {
     {
       header: t('History.Destination'),
       cell: (call: any) => (
-        <CallDestination
-          call={call}
-          callType={callType}
-          operators={operators}
-          mainextension={mainextension}
-          name={name}
-          openDrawerHistory={openDrawerHistory}
-        />
+        <div className='flex items-center gap-2'>
+          <CallDestination
+            call={call}
+            callType={callType}
+            operators={operators}
+            mainextension={mainextension}
+            name={name}
+            openDrawerHistory={openDrawerHistory}
+          />
+          {!call?.isInteractionRow && call?.interactionsCount > 1 && (
+            <>
+              <FontAwesomeIcon
+                icon={faLayerGroup}
+                data-tooltip-id={`tooltip-interactions-${call?.linkedid}`}
+                data-tooltip-content={t('History.This call has multiple interactions') || ''}
+                className='h-4 w-4 text-iconIndigo dark:text-iconIndigoDark'
+                aria-hidden='true'
+              />
+              <CustomThemedTooltip id={`tooltip-interactions-${call?.linkedid}`} place='top' />
+            </>
+          )}
+        </div>
       ),
       width: '15%',
     },
