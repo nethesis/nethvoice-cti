@@ -9,6 +9,8 @@ import {
   faTrash,
   faFileLines,
   faVoicemail,
+  faChevronDown,
+  faChevronUp,
 } from '@fortawesome/free-solid-svg-icons'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { t } from 'i18next'
@@ -889,6 +891,29 @@ export const Calls: FC<CallsProps> = ({ className }): JSX.Element => {
 
   // Definition of the columns of the table
   const columns = [
+    {
+      header: '',
+      cell: (call: any) => {
+        if (call?.isInteractionRow || !(call?.interactionsCount > 1)) {
+          return null
+        }
+        const isOpen = expandedRows.has(call?.linkedid)
+        return (
+          <button
+            type='button'
+            aria-label={isOpen ? 'Collapse interactions' : 'Expand interactions'}
+            onClick={(e) => {
+              e.stopPropagation()
+              toggleExpanded(call?.linkedid)
+            }}
+            className='flex h-6 w-6 items-center justify-center rounded-full bg-green-600 text-white hover:bg-green-700 dark:bg-green-500 dark:hover:bg-green-400'
+          >
+            <FontAwesomeIcon icon={isOpen ? faChevronUp : faChevronDown} className='h-3 w-3' />
+          </button>
+        )
+      },
+      className: 'px-4 py-3.5 w-0',
+    },
     {
       header: t('History.Date'),
       cell: (call: any) => <CallsDate call={call} />,
