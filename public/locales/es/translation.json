@@ -1,5 +1,7 @@
 {
   "History": {
-    "This call has multiple interactions": "Esta llamada tiene múltiples interacciones"
+    "This call has multiple interactions": "Esta llamada tiene múltiples interacciones",
+    "Expand interactions": "Expandir interacciones",
+    "Collapse interactions": "Contraer interacciones"
   }
 }

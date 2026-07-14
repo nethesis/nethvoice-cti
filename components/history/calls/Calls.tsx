@@ -919,7 +919,11 @@ export const Calls: FC<CallsProps> = ({ className }): JSX.Element => {
         return (
           <button
             type='button'
-            aria-label={isOpen ? 'Collapse interactions' : 'Expand interactions'}
+            aria-label={
+              (isOpen
+                ? t('History.Collapse interactions')
+                : t('History.Expand interactions')) || ''
+            }
             onClick={(e) => {
               e.stopPropagation()
               toggleExpanded(call?.linkedid)
