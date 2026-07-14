@@ -93,6 +93,24 @@ export const Calls: FC<CallsProps> = ({ className }): JSX.Element => {
   const [handledSummaryLinkedId, setHandledSummaryLinkedId] = useState<string | null>(null)
   const [historyRefreshToken, setHistoryRefreshToken] = useState(0)
   const historyRefreshTimeoutsRef = useRef<number[]>([])
+  const [expandedRows, setExpandedRows] = useState<Set<string>>(new Set())
+
+  const toggleExpanded = (linkedid: string) => {
+    setExpandedRows((prev) => {
+      const next = new Set(prev)
+      if (next.has(linkedid)) {
+        next.delete(linkedid)
+      } else {
+        next.add(linkedid)
+      }
+      return next
+    })
+  }
+
+  useEffect(() => {
+    setExpandedRows(new Set())
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [pageNum, callType, callDirection, sortBy, contentFilter, dateBegin, dateEnd, filterText])
 
   const apiVoiceEnpoint = getApiVoiceEndpoint()
   const apiScheme = getApiScheme()
@@ -844,6 +862,31 @@ export const Calls: FC<CallsProps> = ({ className }): JSX.Element => {
     return deduped
   }, [filteredHistory, extraConversations, mainextension, summaryStatusMap, callType])
 
+  const rowsWithInteractions = useMemo(() => {
+    if (!expandedRows.size) {
+      return displayRows
+    }
+    const out: any[] = []
+    displayRows.forEach((row: any) => {
+      out.push(row)
+      if (
+        row?.interactionsCount > 1 &&
+        expandedRows.has(row?.linkedid) &&
+        Array.isArray(row?.interactions)
+      ) {
+        row.interactions.forEach((leg: any, i: number) => {
+          out.push({
+            ...leg,
+            isInteractionRow: true,
+            parentLinkedid: row.linkedid,
+            _interactionIndex: i,
+          })
+        })
+      }
+    })
+    return out
+  }, [displayRows, expandedRows])
+
   // Definition of the columns of the table
   const columns = [
     {
@@ -1010,7 +1053,8 @@ export const Calls: FC<CallsProps> = ({ className }): JSX.Element => {
 
   // Generate a unique key for each call with more stability
   const generateUniqueKey = (call: any, index: number) => {
-    return `call-${call?.uniqueid}-${call?.time}-${index}`
+    const suffix = call?.isInteractionRow ? `-int-${call?._interactionIndex}` : ''
+    return `call-${call?.uniqueid}-${call?.time}-${index}${suffix}`
   }
 
   return (
@@ -1078,7 +1122,7 @@ export const Calls: FC<CallsProps> = ({ className }): JSX.Element => {
                   <div className='inline-block min-w-full py-2 align-middle px-2 md:px-6 lg:px-8'>
                     <Table
                       columns={columns}
-                      data={!historyError && isHistoryLoaded ? displayRows : []}
+                      data={!historyError && isHistoryLoaded ? rowsWithInteractions : []}
                       isLoading={!isHistoryLoaded || isLoadingPagination}
                       emptyState={{
                         title: t('History.No calls'),
