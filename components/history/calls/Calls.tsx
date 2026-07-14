@@ -898,6 +898,7 @@ export const Calls: FC<CallsProps> = ({ className }): JSX.Element => {
           out.push({
             ...leg,
             isInteractionRow: true,
+            isLastInteraction: i === row.interactions.length - 1,
             parentLinkedid: row.linkedid,
             _interactionIndex: i,
           })
@@ -1226,7 +1227,11 @@ export const Calls: FC<CallsProps> = ({ className }): JSX.Element => {
                         ) : undefined
                       }
                       getRowClassName={(row: any) =>
-                        row?.isInteractionRow ? '!h-auto !border-t-0 [&>td]:!py-2' : ''
+                        row?.isInteractionRow
+                          ? `!h-auto !border-t-0 [&>td]:!py-2${
+                              row?.isLastInteraction ? ' [&>td]:!pb-4' : ''
+                            }`
+                          : ''
                       }
                     />
                   </div>
