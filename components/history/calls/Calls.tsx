@@ -113,7 +113,17 @@ export const Calls: FC<CallsProps> = ({ className }): JSX.Element => {
   useEffect(() => {
     setExpandedRows(new Set())
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [pageNum, callType, callDirection, sortBy, contentFilter, dateBegin, dateEnd, filterText])
+  }, [
+    pageNum,
+    callType,
+    callDirection,
+    sortBy,
+    contentFilter,
+    dateBegin,
+    dateEnd,
+    filterText,
+    historyRefreshToken,
+  ])
 
   const apiVoiceEnpoint = getApiVoiceEndpoint()
   const apiScheme = getApiScheme()
@@ -995,7 +1005,8 @@ export const Calls: FC<CallsProps> = ({ className }): JSX.Element => {
                 data-tooltip-id={`tooltip-interactions-${call?.linkedid}`}
                 data-tooltip-content={t('History.This call has multiple interactions') || ''}
                 className='h-4 w-4 mt-0.5 shrink-0 text-iconIndigo dark:text-iconIndigoDark'
-                aria-hidden='true'
+                role='img'
+                aria-label={t('History.This call has multiple interactions') || ''}
               />
               <CustomThemedTooltip id={`tooltip-interactions-${call?.linkedid}`} place='top' />
             </>
