@@ -693,7 +693,7 @@ export const Calls: FC<CallsProps> = ({ className }): JSX.Element => {
                   ...(Array.isArray(groupParent?.interactions) ? groupParent.interactions : []),
                 ]
               : filteredHistory.filter((r: any) => r?.linkedid === lid)
-            ;(convsByLinked.get(lid) || []).forEach((conv: any) => {
+            ;(convsByLinked.get(lid) || []).forEach((conv: any, convIdx: number) => {
               const a = norm(conv?.src_number)
               const b = norm(conv?.dst_number)
               // The CDR leg whose parties include BOTH conversation parties is the
@@ -748,9 +748,12 @@ export const Calls: FC<CallsProps> = ({ className }): JSX.Element => {
                 transcriptId: conv?.id,
                 // Carry the group's interactions over from the collapsed parent
                 // row so a transcribed group call still shows the caret/icon and
-                // can expand into its other legs.
-                interactions: groupParent?.interactions,
-                interactionsCount: groupParent?.interactionsCount,
+                // can expand into its other legs. Attach them to only the FIRST
+                // conversation row of this linkedid: a transfer emits several
+                // conversation rows sharing the linkedid, and expansion is keyed
+                // by linkedid, so tagging every row would duplicate the children.
+                interactions: convIdx === 0 ? groupParent?.interactions : undefined,
+                interactionsCount: convIdx === 0 ? groupParent?.interactionsCount : undefined,
               })
             })
           }
