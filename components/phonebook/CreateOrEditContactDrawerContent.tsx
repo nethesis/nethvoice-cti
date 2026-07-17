@@ -91,6 +91,12 @@ export const CreateOrEditContactDrawerContent = forwardRef<
 
   const [contactVisibility, setContactVisibility]: any = useState('public')
   const onContactVisibilityChanged = (e: any) => {
+    // Only the owner may change the visibility of an existing contact:
+    // a non-owner (e.g. admin) can still edit other fields but must not
+    // be able to steal a public/group contact by making it private.
+    if (!canEditContactVisibility) {
+      return
+    }
     if (canWritePhonebookVisibility(profile, e.target.id)) {
       setContactVisibility(e.target.id)
     }
@@ -100,6 +106,9 @@ export const CreateOrEditContactDrawerContent = forwardRef<
   const { username, profile } = useSelector((state: RootState) => state.user)
   const canEditCurrentContact =
     !config?.isEdit || canWritePhonebookContact(profile, config?.contact, username)
+  // Visibility can be set freely on create, but on edit only the contact owner
+  // may change it (public/group contacts must not be re-assigned by others).
+  const canEditContactVisibility = !config?.isEdit || config?.contact?.owner_id === username
   const writableContactVisibilityOptions = contactVisibilityOptions.filter((option) =>
     canWritePhonebookVisibility(profile, option.id),
   )
@@ -786,11 +795,18 @@ export const CreateOrEditContactDrawerContent = forwardRef<
                     type='radio'
                     checked={option.id === contactVisibility}
                     onChange={onContactVisibilityChanged}
-                    className='h-4 w-4 border-gray-300 text-primary focus:ring-primaryLight dark:border-gray-600 dark:text-primaryDark dark:focus:ring-primaryDark'
+                    disabled={!canEditContactVisibility}
+                    className={classNames(
+                      'h-4 w-4 border-gray-300 text-primary focus:ring-primaryLight dark:border-gray-600 dark:text-primaryDark dark:focus:ring-primaryDark',
+                      !canEditContactVisibility && 'opacity-50 cursor-not-allowed',
+                    )}
                   />
                   <label
                     htmlFor={option?.id}
-                    className='ml-3 block text-sm font-medium text-gray-700 dark:text-gray-200'
+                    className={classNames(
+                      'ml-3 block text-sm font-medium text-gray-700 dark:text-gray-200',
+                      !canEditContactVisibility && 'opacity-50 cursor-not-allowed',
+                    )}
                   >
                     {option?.title}
                   </label>
