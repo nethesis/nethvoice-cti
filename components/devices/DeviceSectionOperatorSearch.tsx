@@ -47,7 +47,7 @@ export const DeviceSectionOperatorSearch: FC<DeviceSectionOperatorSearchProps> =
     try {
       //remove space and slash characters
       let noSlashCharactersQuery = query.replace(/\//g, '')
-      const res = await getPhonebook(1, noSlashCharactersQuery, 'all', 'name')
+      const res = await getPhonebook(1, noSlashCharactersQuery, 'all', 'displayname')
 
       let phonebookResults = mapPhonebookResponse(res).rows
       let isNumberInPhonebook = false

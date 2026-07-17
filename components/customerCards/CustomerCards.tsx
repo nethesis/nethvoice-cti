@@ -83,7 +83,12 @@ export const CustomerCardsCustomerData: FC<CustomerCardsCustomerDataViewProps> =
         try {
           //Remove space and slash characters
           let noSlashCharactersCompanyInformation = companyInformation?.company?.replace(/\//g, '')
-          const res = await getPhonebook(1, noSlashCharactersCompanyInformation, 'company', 'name')
+          const res = await getPhonebook(
+            1,
+            noSlashCharactersCompanyInformation,
+            'company',
+            'displayname',
+          )
           let companyAllInformation = res?.rows[0]
           setcompanyCardInformation(companyAllInformation)
         } catch (e) {

@@ -67,7 +67,12 @@ export const setFilteredListByConfigurations = (lines: any, configurations: any)
 }
 
 // Get phone lines list
-export const retrieveLines = async (textFilter: string, pageNum: any, configuration: any) => {
+export const retrieveLines = async (
+  textFilter: string,
+  pageNum: any,
+  configuration: any,
+  pageSize: number = PAGE_SIZE,
+) => {
   let userUrlApi = apiUrl + '/offhour/list'
   type = 'phoneLines'
 
@@ -78,9 +83,9 @@ export const retrieveLines = async (textFilter: string, pageNum: any, configurat
         return searchStringInLines(calls, textFilter, type)
       })
       data.count = allFilteredCalls.length
-      data.totalPages = Math.ceil(allFilteredCalls.length / PAGE_SIZE)
-      const start = (pageNum - 1) * PAGE_SIZE
-      const end = start + PAGE_SIZE
+      data.totalPages = Math.ceil(allFilteredCalls.length / pageSize)
+      const start = (pageNum - 1) * pageSize
+      const end = start + pageSize
       data.rows = allFilteredCalls.slice(start, end)
       return data
     } else {
@@ -91,9 +96,9 @@ export const retrieveLines = async (textFilter: string, pageNum: any, configurat
         return searchStringInLines(calls, textFilter, type)
       })
       data.count = allFilteredCalls.length
-      data.totalPages = Math.ceil(allFilteredCalls.length / PAGE_SIZE)
-      const start = (pageNum - 1) * PAGE_SIZE
-      const end = start + PAGE_SIZE
+      data.totalPages = Math.ceil(allFilteredCalls.length / pageSize)
+      const start = (pageNum - 1) * pageSize
+      const end = start + pageSize
       data.rows = allFilteredCalls.slice(start, end)
       return data
     }
@@ -104,7 +109,11 @@ export const retrieveLines = async (textFilter: string, pageNum: any, configurat
 }
 
 // Get announcements list
-export async function getAnnouncementsFiltered(textFilter: string, pageNum: any) {
+export async function getAnnouncementsFiltered(
+  textFilter: string,
+  pageNum: any,
+  pageSize: number = PAGE_SIZE,
+) {
   let userUrlApi = apiUrl + '/offhour/list_announcement'
   type = 'announcement'
 
@@ -114,10 +123,10 @@ export async function getAnnouncementsFiltered(textFilter: string, pageNum: any)
       return searchStringInLines(calls, textFilter, type)
     })
     data.count = allFilteredCalls?.length
-    data.totalPages = Math.ceil(allFilteredCalls?.length / PAGE_SIZE)
+    data.totalPages = Math.ceil(allFilteredCalls?.length / pageSize)
 
-    data.start = (pageNum - 1) * PAGE_SIZE
-    data.end = data.start + PAGE_SIZE
+    data.start = (pageNum - 1) * pageSize
+    data.end = data.start + pageSize
     data.rows = allFilteredCalls
 
     return data

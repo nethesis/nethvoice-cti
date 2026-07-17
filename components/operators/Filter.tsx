@@ -152,37 +152,26 @@ export const Filter = forwardRef<HTMLButtonElement, FilterProps>(
       updateTextFilter(newTextFilter)
     }
 
-    const [group, setGroup] = useState('')
-    function changeGroup(event: any) {
-      const newGroup = event.target.id.split('group-')[1]
-      setGroup(newGroup)
-      savePreference('operatorsGroupFilter', newGroup, auth.username)
+    const [group, setGroup] = useState<string[]>([DEFAULT_GROUP_FILTER])
+    function changeGroup(value: string) {
+      let next: string[]
+      if (value === 'all') {
+        next = ['all']
+      } else {
+        const current = group.filter((g) => g !== 'all')
+        next = current.includes(value)
+          ? current.filter((g) => g !== value)
+          : [...current, value]
+        if (!next.length) {
+          next = ['all']
+        }
+      }
+      setGroup(next)
+      savePreference('operatorsGroupFilter', JSON.stringify(next), auth.username)
 
       // update operators (notify parent component)
-      updateGroupFilter(newGroup)
+      updateGroupFilter(next)
     }
-
-    // text filter for groups
-
-    const [groupTextFilter, setGroupTextFilter] = useState('')
-    const groupTextFilterRef = useRef() as React.MutableRefObject<HTMLInputElement>
-    function changeGroupTextFilter(event: any) {
-      const newGroupTextFilter = event.target.value
-      setGroupTextFilter(newGroupTextFilter)
-    }
-
-    const [filteredGroups, setFilteredGroups] = useState([] as RadioButtonType[])
-
-    useEffect(() => {
-      const regex = /[^a-zA-Z0-9]/g
-      const queryText = groupTextFilter.replace(regex, '')
-
-      // filter group filter options that match
-      const filtered = groupFilter.options.filter((g) =>
-        new RegExp(queryText, 'i').test(g.label.replace(regex, '')),
-      )
-      setFilteredGroups(filtered)
-    }, [groupTextFilter, groupFilter?.options])
 
     const [status, setStatus] = useState('')
     function changeStatus(event: any) {
@@ -245,11 +234,12 @@ export const Filter = forwardRef<HTMLButtonElement, FilterProps>(
 
     const [groupLabel, setGroupLabel] = useState('')
     useEffect(() => {
-      const found = groupFilter.options.find((option) => option.value === group)
-
-      if (found) {
-        setGroupLabel(found.label)
-      }
+      const labels = group
+        .filter((value) => !value.startsWith('divider'))
+        .map(
+          (value) => groupFilter.options.find((option) => option.value === value)?.label || value,
+        )
+      setGroupLabel(labels.join(', '))
     }, [group, groupFilter.options])
 
     // grouped layout group by label
@@ -302,7 +292,7 @@ export const Filter = forwardRef<HTMLButtonElement, FilterProps>(
 
     const resetFilters = () => {
       setTextFilter('')
-      setGroup(DEFAULT_GROUP_FILTER)
+      setGroup([DEFAULT_GROUP_FILTER])
       setStatus(DEFAULT_STATUS_FILTER)
       setSortBy(DEFAULT_SORT_BY)
 
@@ -310,7 +300,7 @@ export const Filter = forwardRef<HTMLButtonElement, FilterProps>(
       setGroupedSortBy(DEFAULT_GROUP_LAYOUT_SORT_BY)
       setGroupedGroupBy(DEFAULT_GROUP_LAYOUT_GROUP_BY)
 
-      savePreference('operatorsGroupFilter', DEFAULT_GROUP_FILTER, auth.username)
+      savePreference('operatorsGroupFilter', JSON.stringify([DEFAULT_GROUP_FILTER]), auth.username)
       savePreference('operatorsStatusFilter', DEFAULT_STATUS_FILTER, auth.username)
       savePreference('operatorsSortBy', DEFAULT_SORT_BY, auth.username)
 
@@ -320,7 +310,7 @@ export const Filter = forwardRef<HTMLButtonElement, FilterProps>(
 
       // notify parent component
       updateTextFilter('')
-      updateGroupFilter(DEFAULT_GROUP_FILTER)
+      updateGroupFilter([DEFAULT_GROUP_FILTER])
       updateStatusFilter(DEFAULT_STATUS_FILTER)
       updateSort(DEFAULT_SORT_BY)
 
@@ -333,11 +323,6 @@ export const Filter = forwardRef<HTMLButtonElement, FilterProps>(
       setTextFilter('')
       updateTextFilter('')
       textFilterRef.current.focus()
-    }
-
-    const clearGroupTextFilter = () => {
-      setGroupTextFilter('')
-      groupTextFilterRef.current.focus()
     }
 
     return (
@@ -356,64 +341,17 @@ export const Filter = forwardRef<HTMLButtonElement, FilterProps>(
                 <FilterDisclosure
                   name={groupFilter.name}
                   filterId={groupFilter.id}
-                  options={[]}
+                  options={groupFilter.options}
                   selectedValue=''
                   onChange={() => {}}
-                >
-                  <fieldset>
-                    <legend className='sr-only'>{groupFilter.name}</legend>
-                    <div className='space-y-4'>
-                      <TextInput
-                        placeholder={t('Operators.Filter groups') || ''}
-                        value={groupTextFilter}
-                        onChange={changeGroupTextFilter}
-                        autoFocus
-                        ref={groupTextFilterRef}
-                        icon={groupTextFilter.length ? faCircleXmark : undefined}
-                        onIconClick={() => clearGroupTextFilter()}
-                        trailingIcon={true}
-                        className='min-w-[8rem]'
-                      />
-                      {!filteredGroups.length && (
-                        <div className='text-sm text-gray-500 dark:text-gray-400'>
-                          <span>No groups</span>
-                        </div>
-                      )}
-                      {filteredGroups.map((option) => (
-                        <div key={option.value}>
-                          {option.value.startsWith('divider') ? (
-                            <div className='relative'>
-                              <div
-                                className='absolute inset-0 flex items-center'
-                                aria-hidden='true'
-                              >
-                                <div className='w-full border-t border-gray-300 dark:border-gray-600' />
-                              </div>
-                              <div className='relative flex justify-center'></div>
-                            </div>
-                          ) : (
-                            <div className='flex items-center'>
-                              <input
-                                id={`group-${option.value}`}
-                                name={`filter-${groupFilter.id}`}
-                                type='radio'
-                                defaultChecked={option.value === group}
-                                onChange={changeGroup}
-                                className='h-4 w-4 border-gray-300 text-primary focus:ring-primaryLight dark:border-gray-600 dark:text-primaryDark dark:focus:ring-primaryDark'
-                              />
-                              <label
-                                htmlFor={`group-${option.value}`}
-                                className='ml-3 block text-sm font-medium text-gray-700 dark:text-gray-200'
-                              >
-                                {option.label}
-                              </label>
-                            </div>
-                          )}
-                        </div>
-                      ))}
-                    </div>
-                  </fieldset>
-                </FilterDisclosure>
+                  multiple
+                  searchable
+                  selectedValues={group}
+                  onToggle={changeGroup}
+                  idPrefix='group-'
+                  searchPlaceholder={t('Operators.Filter groups') || ''}
+                  noOptionsText={t('Operators.No groups') || 'No groups'}
+                />
                 {/* status filter (mobile) */}
                 <FilterDisclosure
                   name={statusFilter.name}
@@ -472,61 +410,17 @@ export const Filter = forwardRef<HTMLButtonElement, FilterProps>(
                       <FilterPopover
                         name={groupFilter.name}
                         filterId={groupFilter.id}
-                        options={[]}
+                        options={groupFilter.options}
                         selectedValue=''
                         onChange={() => {}}
-                      >
-                        <form className='space-y-4'>
-                          <TextInput
-                            placeholder={t('Operators.Filter groups') || ''}
-                            value={groupTextFilter}
-                            onChange={changeGroupTextFilter}
-                            autoFocus
-                            ref={groupTextFilterRef}
-                            icon={groupTextFilter.length ? faCircleXmark : undefined}
-                            onIconClick={() => clearGroupTextFilter()}
-                            trailingIcon={true}
-                            className='min-w-[10rem]'
-                          />
-                          {!filteredGroups.length && (
-                            <div className='text-sm text-gray-500 dark:text-gray-400'>
-                              <span>No groups</span>
-                            </div>
-                          )}
-                          {filteredGroups.map((option) => (
-                            <div key={option.value}>
-                              {option.value.startsWith('divider') ? (
-                                <div className='relative'>
-                                  <div
-                                    className='absolute inset-0 flex items-center'
-                                    aria-hidden='true'
-                                  >
-                                    <div className='w-full border-t border-gray-300 dark:border-gray-600' />
-                                  </div>
-                                  <div className='relative flex justify-center'></div>
-                                </div>
-                              ) : (
-                                <div className='flex items-center'>
-                                  <input
-                                    id={`group-${option.value}`}
-                                    name={`filter-${groupFilter.id}`}
-                                    type='radio'
-                                    defaultChecked={option.value === group}
-                                    onChange={changeGroup}
-                                    className='h-4 w-4 border-gray-300 text-primary focus:ring-primaryLight dark:border-gray-600 dark:text-primaryDark dark:focus:ring-primaryDark'
-                                  />
-                                  <label
-                                    htmlFor={`group-${option.value}`}
-                                    className='ml-3 block text-sm font-medium text-gray-700 dark:text-gray-200'
-                                  >
-                                    {option.label}
-                                  </label>
-                                </div>
-                              )}
-                            </div>
-                          ))}
-                        </form>
-                      </FilterPopover>
+                        multiple
+                        searchable
+                        selectedValues={group}
+                        onToggle={changeGroup}
+                        idPrefix='group-'
+                        searchPlaceholder={t('Operators.Filter groups') || ''}
+                        noOptionsText={t('Operators.No groups') || 'No groups'}
+                      />
 
                       {/* status filter */}
                       <FilterPopover
@@ -536,7 +430,7 @@ export const Filter = forwardRef<HTMLButtonElement, FilterProps>(
                         selectedValue={status}
                         onChange={changeStatus}
                         idPrefix='status-'
-                        panelClassName='absolute right-0 z-10 mt-2 origin-top-right rounded-md min-w-max p-4 shadow-2xl ring-1 ring-opacity-5 focus:outline-none bg-white ring-black dark:bg-gray-900 dark:ring-gray-700'
+                        panelClassName='absolute left-0 z-10 mt-2 origin-top-left rounded-md min-w-max p-4 shadow-2xl ring-1 ring-opacity-5 focus:outline-none bg-white ring-black dark:bg-gray-900 dark:ring-gray-700'
                       />
                     </PopoverGroup>
 
@@ -641,61 +535,17 @@ export const Filter = forwardRef<HTMLButtonElement, FilterProps>(
                       <FilterPopover
                         name={groupFilter.name}
                         filterId={groupFilter.id}
-                        options={[]}
+                        options={groupFilter.options}
                         selectedValue=''
                         onChange={() => {}}
-                      >
-                        <form className='space-y-4'>
-                          <TextInput
-                            placeholder={t('Operators.Filter groups') || ''}
-                            value={groupTextFilter}
-                            onChange={changeGroupTextFilter}
-                            autoFocus
-                            ref={groupTextFilterRef}
-                            icon={groupTextFilter.length ? faCircleXmark : undefined}
-                            onIconClick={() => clearGroupTextFilter()}
-                            trailingIcon={true}
-                            className='min-w-[10rem]'
-                          />
-                          {!filteredGroups.length && (
-                            <div className='text-sm text-gray-500 dark:text-gray-400'>
-                              <span>No groups</span>
-                            </div>
-                          )}
-                          {filteredGroups.map((option) => (
-                            <div key={option.value}>
-                              {option.value.startsWith('divider') ? (
-                                <div className='relative'>
-                                  <div
-                                    className='absolute inset-0 flex items-center'
-                                    aria-hidden='true'
-                                  >
-                                    <div className='w-full border-t border-gray-300 dark:border-gray-600' />
-                                  </div>
-                                  <div className='relative flex justify-center'></div>
-                                </div>
-                              ) : (
-                                <div className='flex items-center'>
-                                  <input
-                                    id={`group-${option.value}`}
-                                    name={`filter-${groupFilter.id}`}
-                                    type='radio'
-                                    defaultChecked={option.value === group}
-                                    onChange={changeGroup}
-                                    className='h-4 w-4 border-gray-300 text-primary focus:ring-primaryLight dark:border-gray-600 dark:text-primaryDark dark:focus:ring-primaryDark'
-                                  />
-                                  <label
-                                    htmlFor={`group-${option.value}`}
-                                    className='ml-3 block text-sm font-medium text-gray-700 dark:text-gray-200'
-                                  >
-                                    {option.label}
-                                  </label>
-                                </div>
-                              )}
-                            </div>
-                          ))}
-                        </form>
-                      </FilterPopover>
+                        multiple
+                        searchable
+                        selectedValues={group}
+                        onToggle={changeGroup}
+                        idPrefix='group-'
+                        searchPlaceholder={t('Operators.Filter groups') || ''}
+                        noOptionsText={t('Operators.No groups') || 'No groups'}
+                      />
 
                       {/* group layout group by filter */}
                       <FilterPopover
@@ -715,7 +565,7 @@ export const Filter = forwardRef<HTMLButtonElement, FilterProps>(
                         selectedValue={status}
                         onChange={changeStatus}
                         idPrefix='status-'
-                        panelClassName='absolute right-0 z-10 mt-2 origin-top-right rounded-md min-w-max p-4 shadow-2xl ring-1 ring-opacity-5 focus:outline-none bg-white ring-black dark:bg-gray-900 dark:ring-gray-700'
+                        panelClassName='absolute left-0 z-10 mt-2 origin-top-left rounded-md min-w-max p-4 shadow-2xl ring-1 ring-opacity-5 focus:outline-none bg-white ring-black dark:bg-gray-900 dark:ring-gray-700'
                       />
                     </PopoverGroup>
 

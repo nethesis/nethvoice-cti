@@ -11,6 +11,36 @@ import { createSpeedDialFavorite, deleteSpeedDial, getSpeedDials } from '../serv
 export const AVAILABLE_STATUSES = ['online', 'cellphone', 'callforward', 'voicemail']
 export const UNAVAILABLE_STATUSES = ['dnd', 'busy', 'incoming', 'ringing']
 export const DEFAULT_GROUP_FILTER = 'all'
+
+/**
+ * Normalize the persisted operators group filter to a string array.
+ * Handles the new format (JSON array) and the legacy single-value string.
+ */
+export const normalizeGroupFilter = (value: any): string[] => {
+  if (Array.isArray(value)) {
+    return value.length ? value : [DEFAULT_GROUP_FILTER]
+  }
+  if (typeof value === 'string') {
+    const trimmed = value.trim()
+    if (!trimmed) {
+      return [DEFAULT_GROUP_FILTER]
+    }
+    if (trimmed.startsWith('[')) {
+      try {
+        const parsed = JSON.parse(trimmed)
+        if (Array.isArray(parsed) && parsed.length) {
+          return parsed
+        }
+      } catch {
+        // fall through to default
+      }
+      return [DEFAULT_GROUP_FILTER]
+    }
+    // legacy single-value string
+    return [trimmed]
+  }
+  return [DEFAULT_GROUP_FILTER]
+}
 export const DEFAULT_STATUS_FILTER = 'all'
 export const DEFAULT_SORT_BY = 'favorites'
 export const DEFAULT_LAYOUT = 'standard'
@@ -183,7 +213,7 @@ export function reloadOperators() {
 }
 
 export const getFilterValues = (currentUsername: string) => {
-  const group = loadPreference('operatorsGroupFilter', currentUsername) || DEFAULT_GROUP_FILTER
+  const group = normalizeGroupFilter(loadPreference('operatorsGroupFilter', currentUsername))
 
   const status = loadPreference('operatorsStatusFilter', currentUsername) || DEFAULT_STATUS_FILTER
 

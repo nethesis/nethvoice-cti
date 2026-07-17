@@ -77,8 +77,8 @@ const Operators: NextPage = () => {
     }
   }, [debouncedUpdateTextFilter])
 
-  const [groupFilter, setGroupFilter]: any = useState('')
-  const updateGroupFilter = (newGroupFilter: string) => {
+  const [groupFilter, setGroupFilter] = useState<string[]>([])
+  const updateGroupFilter = (newGroupFilter: string[]) => {
     setGroupFilter(newGroupFilter)
   }
 
@@ -120,7 +120,7 @@ const Operators: NextPage = () => {
 
   const applyFilters = useCallback(
     (operators: Record<string, Operator>) => {
-      if (!(groupFilter && statusFilter && sortByFilter)) {
+      if (!(groupFilter?.length && statusFilter && sortByFilter)) {
         return
       }
       setApplyingFilters(true)
@@ -134,21 +134,22 @@ const Operators: NextPage = () => {
           op?.username !== username,
       )
 
+      // group filter predicate (multi-select, OR across selected groups)
+      const matchesGroup = (op: any) => {
+        if (!groupFilter.length || groupFilter.includes('all')) {
+          return userGroups?.some((g) => op?.groups?.includes(g))
+        }
+        return groupFilter.some((selected: string) => {
+          if (selected === 'favorites') {
+            return op?.favorite && userGroups?.some((g) => op?.groups?.includes(g))
+          }
+          return op?.groups?.includes(selected)
+        })
+      }
+
       if (layout !== 'grouped') {
         // group filter
-        if (groupFilter === 'favorites') {
-          filteredOperators = filteredOperators?.filter((op: any) => {
-            return op?.favorite && userGroups?.some((g) => op?.groups?.includes(g))
-          })
-        } else if (groupFilter === 'all') {
-          filteredOperators = filteredOperators?.filter((op: any) => {
-            return userGroups?.some((g) => op?.groups?.includes(g))
-          })
-        } else {
-          filteredOperators = filteredOperators?.filter((op: any) => {
-            return groupFilter === 'all' || op?.groups?.includes(groupFilter)
-          })
-        }
+        filteredOperators = filteredOperators?.filter(matchesGroup)
 
         // sort operators
         switch (sortByFilter) {
@@ -183,19 +184,7 @@ const Operators: NextPage = () => {
         })
       } else {
         // group filter
-        if (groupFilter === 'favorites') {
-          filteredOperators = filteredOperators?.filter((op: any) => {
-            return op?.favorite && userGroups?.some((g) => op?.groups?.includes(g))
-          })
-        } else if (groupFilter === 'all') {
-          filteredOperators = filteredOperators?.filter((op: any) => {
-            return userGroups.some((g) => op?.groups?.includes(g))
-          })
-        } else {
-          filteredOperators = filteredOperators?.filter((op: any) => {
-            return groupFilter === 'all' || op?.groups?.includes(groupFilter)
-          })
-        }
+        filteredOperators = filteredOperators?.filter(matchesGroup)
 
         // sort operators
         switch (groupedSortByFilter) {

@@ -83,7 +83,12 @@ const CustomerCards: NextPage = () => {
         try {
           //remove space and slash characters
           let noSlashCharactersCompanyExtension = companyExtension?.replace(/\//g, '')
-          const res = await getPhonebook(1, noSlashCharactersCompanyExtension, contactType, 'name')
+          const res = await getPhonebook(
+            1,
+            noSlashCharactersCompanyExtension,
+            contactType,
+            'displayname',
+          )
 
           const result = res?.rows?.filter((item: any) => {
             const normalize = (str: string) => (str || '').replace(/\s+/g, '')
