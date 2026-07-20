@@ -115,6 +115,7 @@ export const Calls: FC<CallsProps> = ({ className }): JSX.Element => {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [
     pageNum,
+    pageSize,
     callType,
     callDirection,
     sortBy,
