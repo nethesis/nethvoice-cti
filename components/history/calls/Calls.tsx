@@ -400,12 +400,16 @@ export const Calls: FC<CallsProps> = ({ className }): JSX.Element => {
     }
   }, [history?.rows, callType])
 
-  // Load summary status when history is loaded or page changes
+  // Load summary status once per fetched page. Trigger only on the fetched data
+  // (history.rows), not on pageNum + the loadSummaryStatus identity: pageNum
+  // changed first (stale history) and then history.rows updated, firing this
+  // twice — one /statuses call with the previous page's ids and one with the new.
   useEffect(() => {
-    if (isHistoryLoaded) {
+    if (history?.rows?.length) {
       loadSummaryStatus()
     }
-  }, [isHistoryLoaded, pageNum, loadSummaryStatus])
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [history?.rows])
 
   // Reload summary status when phone-island-summary-ready event is received
   useEventListener('phone-island-summary-ready', () => {
