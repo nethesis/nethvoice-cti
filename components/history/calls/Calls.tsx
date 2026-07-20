@@ -318,6 +318,7 @@ export const Calls: FC<CallsProps> = ({ className }): JSX.Element => {
             pageNum,
             pageSize,
             contentFilter,
+            feature_codes?.audio_test || '*41',
           )
           setHistory(res)
           setHistoryLoaded(true)
@@ -621,17 +622,11 @@ export const Calls: FC<CallsProps> = ({ className }): JSX.Element => {
     }
   }, [debouncedUpdateFilterText])
 
-  // Filter out calls to/from audio_test feature code (similar to UserLastCallsContent)
+  // Audio-test (echo, *41) calls are now filtered server-side by the middleware
+  // before pagination, so pages are not left short. Nothing to filter here.
   const filteredHistory = useMemo(() => {
-    if (!history?.rows) return []
-
-    const audioTestCode = feature_codes?.audio_test || '*41'
-
-    return history.rows.filter((call: any) => {
-      const numberToCheck = call?.direction === 'in' ? call?.src : call?.dst
-      return !numberToCheck?.includes(audioTestCode)
-    })
-  }, [history?.rows, feature_codes?.audio_test])
+    return history?.rows ?? []
+  }, [history?.rows])
 
   // Merge in the extra conversations the user took part in (e.g. the transfer
   // consultation leg) as their own rows, placed next to the related call.
