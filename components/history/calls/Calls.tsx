@@ -387,6 +387,12 @@ export const Calls: FC<CallsProps> = ({ className }): JSX.Element => {
             extras.push(item)
           } else if (item?.uniqueid) {
             statusMap[item.uniqueid] = item
+            // Also key by linkedid: after grouping, a parent row's uniqueid is the
+            // answered leg, not the call/transcript uniqueid — but its linkedid
+            // matches, so the summary can still be resolved.
+            if (item?.linkedid) {
+              statusMap[item.linkedid] = item
+            }
           }
         })
 
@@ -452,7 +458,7 @@ export const Calls: FC<CallsProps> = ({ className }): JSX.Element => {
   }
 
   function openTranscriptionDrawer(call: any) {
-    const summaryStatus = call?.summaryStatus ?? summaryStatusMap?.[call?.uniqueid]
+    const summaryStatus = call?.summaryStatus ?? summaryStatusMap?.[call?.uniqueid] ?? summaryStatusMap?.[call?.linkedid]
     openSummaryDrawerByCall(call, summaryStatus)
   }
 
@@ -640,11 +646,45 @@ export const Calls: FC<CallsProps> = ({ className }): JSX.Element => {
     // which for transfers include technical/duplicated rows with wrong parties.
     // Calls with no transcript keep their original CDR row so nothing vanishes.
     if (callType === 'switchboard') {
-      // Switchboard shows one row per call (linkedid); a transferred/queue call's
-      // legs and conversations are the expandable interactions provided by the
-      // middleware, exactly like the personal/group views. This keeps one row per
-      // call so a page holds pageSize calls.
-      return filteredHistory
+      // Switchboard shows one row per call (linkedid) — the middleware's collapsed
+      // parent — with the legs as expandable interactions. Enrich each parent with
+      // its primary transcript conversation so the parties are clean (who actually
+      // talked, not a technical "s"/routing leg) and the summary/transcript icon
+      // resolves. A page still holds pageSize calls.
+      const txByLinked = new Map<string, any[]>()
+      const addTx = (item: any) => {
+        if (!item?.linkedid) {
+          return
+        }
+        const arr = txByLinked.get(item.linkedid) || []
+        arr.push(item)
+        txByLinked.set(item.linkedid, arr)
+      }
+      Object.values(summaryStatusMap || {}).forEach(addTx)
+      ;(extraConversations || []).forEach(addTx)
+
+      return filteredHistory.map((row: any) => {
+        const txs = txByLinked.get(row?.linkedid)
+        if (!txs || txs.length === 0) {
+          return row
+        }
+        // The primary conversation is the longest one (the actual answered talk).
+        const primary = [...txs].sort(
+          (a: any, b: any) => (Number(b?.duration_seconds) || 0) - (Number(a?.duration_seconds) || 0),
+        )[0]
+        return {
+          ...row,
+          // Clean parties from the transcript; clear cnam so CallSource/CallDestination
+          // re-resolve names from the clean numbers / operators directory.
+          src: primary?.src_number || row?.src,
+          cnum: primary?.src_number || row?.cnum,
+          dst: primary?.dst_number || row?.dst,
+          cnam: '',
+          dst_cnam: '',
+          summaryStatus: primary,
+          transcriptId: primary?.id,
+        }
+      })
     }
     if (!extraConversations || extraConversations.length === 0) {
       return filteredHistory
@@ -903,7 +943,7 @@ export const Calls: FC<CallsProps> = ({ className }): JSX.Element => {
         if (call?.isInteractionRow) {
           return null
         }
-        const summaryStatus = call?.summaryStatus ?? summaryStatusMap?.[call?.uniqueid]
+        const summaryStatus = call?.summaryStatus ?? summaryStatusMap?.[call?.uniqueid] ?? summaryStatusMap?.[call?.linkedid]
         const isVoicemail = hasVoicemailMessage(call)
 
         if (!summaryStatus && !isVoicemail) {
@@ -997,7 +1037,7 @@ export const Calls: FC<CallsProps> = ({ className }): JSX.Element => {
             playSelectedAudioFile={playSelectedAudioFile}
             getRecordingActions={getRecordingActions}
             getCallActions={getCallActions}
-            summaryStatus={call?.summaryStatus ?? summaryStatusMap?.[call?.uniqueid]}
+            summaryStatus={call?.summaryStatus ?? summaryStatusMap?.[call?.uniqueid] ?? summaryStatusMap?.[call?.linkedid]}
           />
         ),
       width: '20%',
