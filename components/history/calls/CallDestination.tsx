@@ -1,5 +1,7 @@
 import { FC } from 'react'
 import { t } from 'i18next'
+import { useSelector } from 'react-redux'
+import { RootState } from '../../../store'
 import { getEffectiveCnam } from '../../../lib/history'
 
 interface CallDestinationProps {
@@ -25,6 +27,24 @@ export const CallDestination: FC<CallDestinationProps> = ({
   name,
   openDrawerHistory,
 }) => {
+  // If the destination is a queue (its number matches a configured queue), show
+  // the queue NAME (with the number underneath) — for queues/groups we want the
+  // name, not just the raw number.
+  const queuesStore: any = useSelector((state: RootState) => (state as any).queues)
+  const queueName = call?.dst ? queuesStore?.queues?.[call.dst]?.name : ''
+  if (queueName) {
+    return (
+      <div>
+        <div className='truncate text-sm text-secondaryNeutral dark:text-secondaryNeutralDark'>
+          {queueName}
+        </div>
+        <div className='truncate text-sm text-textPlaceholder dark:text-textPlaceholderDark'>
+          {call.dst}
+        </div>
+      </div>
+    )
+  }
+
   // User call type
   if (callType === 'user') {
     const effectiveDstCnam = getEffectiveCnam(call.dst_cnam, call.dst)
