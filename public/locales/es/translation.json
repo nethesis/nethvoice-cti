@@ -2,10 +2,6 @@
   "History": {
     "This call has multiple interactions": "Esta llamada tiene múltiples interacciones",
     "Expand interactions": "Expandir interacciones",
-    "Collapse interactions": "Contraer interacciones",
-    "Auto attendant": "Operador automático",
-    "Not answered": "Sin respuesta",
-    "Voicemail": "Buzón de voz",
-    "Queue": "Cola"
+    "Collapse interactions": "Contraer interacciones"
   }
 }

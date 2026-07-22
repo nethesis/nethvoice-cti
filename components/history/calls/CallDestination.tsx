@@ -25,34 +25,6 @@ export const CallDestination: FC<CallDestinationProps> = ({
   name,
   openDrawerHistory,
 }) => {
-  // Technical Asterisk context extensions (s = context entry, h = hangup,
-  // i = invalid, t = timeout) are not a real callee: the call was handled by a
-  // context destination, not a person. Never show the raw "s" — show what handled
-  // it (from lastapp) or, if unknown, that it was not answered by anyone.
-  const rawDst = (call?.dst ?? '').toString().trim()
-  if (rawDst === '' || rawDst === 's' || rawDst === 'h' || rawDst === 'i' || rawDst === 't') {
-    const app = (call?.lastapp ?? '').toString().toLowerCase()
-    let routingLabel: string
-    if (app === 'voicemail') {
-      routingLabel = t('History.Voicemail') || 'Voicemail'
-    } else if (app === 'queue') {
-      routingLabel = t('History.Queue') || 'Queue'
-    } else if (
-      ['background', 'backgrounddetect', 'playback', 'read', 'directory', 'authenticate', 'ivr'].includes(
-        app,
-      )
-    ) {
-      routingLabel = t('History.Auto attendant') || 'Auto attendant'
-    } else {
-      routingLabel = t('History.Not answered') || 'Not answered'
-    }
-    return (
-      <div className='truncate text-sm text-secondaryNeutral dark:text-secondaryNeutralDark'>
-        {routingLabel}
-      </div>
-    )
-  }
-
   // User call type
   if (callType === 'user') {
     const effectiveDstCnam = getEffectiveCnam(call.dst_cnam, call.dst)

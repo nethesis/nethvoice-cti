@@ -282,10 +282,7 @@
     "This call has multiple interactions": "Questa chiamata ha più interazioni",
     "Expand interactions": "Espandi interazioni",
     "Collapse interactions": "Comprimi interazioni",
-    "Voicemail available": "Apri il messaggio vocale",
-    "Auto attendant": "Risponditore automatico",
-    "Not answered": "Nessuna risposta",
-    "Queue": "Coda"
+    "Voicemail available": "Apri il messaggio vocale"
   },
   "Operators": {
     "Operators": "Operatori",

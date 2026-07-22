@@ -299,10 +299,7 @@
     "Delete call transcription": "Delete call transcription",
     "This call has multiple interactions": "This call has multiple interactions",
     "Expand interactions": "Expand interactions",
-    "Collapse interactions": "Collapse interactions",
-    "Auto attendant": "Auto attendant",
-    "Not answered": "Not answered",
-    "Queue": "Queue"
+    "Collapse interactions": "Collapse interactions"
   },
   "Operators": {
     "Operators": "Operators",
