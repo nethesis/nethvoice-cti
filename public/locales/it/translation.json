@@ -1184,6 +1184,11 @@
     "Transcription disclaimer": "Questa trascrizione è stata generata automaticamente e potrebbe contenere imprecisioni.",
     "Transcription disclaimer title": "Trascrizione generata da AI",
     "Transcription unavailable": "La trascrizione della chiamata non e' disponibile o non puo' essere caricata.",
-    "Transcription load failed": "Impossibile caricare la trascrizione della chiamata."
+    "Transcription load failed": "Impossibile caricare la trascrizione della chiamata.",
+    "Sentiment": "Sentiment",
+    "Positive": "Positivo",
+    "Neutral": "Neutro",
+    "Negative": "Negativo",
+    "Sentiment score tooltip": "Punteggio sentiment: {{score}}/10"
   }
 }
