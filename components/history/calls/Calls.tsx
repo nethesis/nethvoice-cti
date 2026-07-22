@@ -523,7 +523,11 @@ export const Calls: FC<CallsProps> = ({ className }): JSX.Element => {
   // Combined actions for recording and summary/transcription
   const getCallActions = (call: any) => {
     const linkedId = call?.linkedid
-    const summaryStatus = summaryStatusMap?.[linkedId]
+    // Resolve the summary the same way the row icon does: the row's own status
+    // (set by the switchboard overlay) first, then by uniqueid, then linkedid.
+    // Otherwise the kebab menu can be empty even when the summary icon is shown.
+    const summaryStatus =
+      call?.summaryStatus ?? summaryStatusMap?.[call?.uniqueid] ?? summaryStatusMap?.[linkedId]
     const hasRecording = call?.recordingfile
     const hasSummary = summaryStatus?.has_summary
     const hasTranscription = summaryStatus?.has_transcription
