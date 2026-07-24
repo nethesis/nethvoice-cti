@@ -151,6 +151,25 @@ export const sortByOperatorStatus = (operator1: any, operator2: any) => {
   return 0
 }
 
+// Sort keys with graceful fallback to the display name when the
+// dedicated first/last name field is missing or empty (legacy users.json).
+const firstNameSortKey = (operator: any) =>
+  (operator?.firstname && operator.firstname.trim()) || operator?.name || ''
+const lastNameSortKey = (operator: any) =>
+  (operator?.lastname && operator.lastname.trim()) || operator?.name || ''
+
+export const sortByFirstName = (operator1: any, operator2: any) =>
+  firstNameSortKey(operator1).localeCompare(firstNameSortKey(operator2), undefined, {
+    sensitivity: 'base',
+    numeric: true,
+  })
+
+export const sortByLastName = (operator1: any, operator2: any) =>
+  lastNameSortKey(operator1).localeCompare(lastNameSortKey(operator2), undefined, {
+    sensitivity: 'base',
+    numeric: true,
+  })
+
 export const callOperator = (operator: any, event: any = undefined) => {
   const phoneNumber = operator?.endpoints?.mainextension?.[0]?.id
   callPhoneNumber(phoneNumber)
