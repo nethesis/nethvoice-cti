@@ -1042,6 +1042,10 @@
     "Click and hold to take current parking in call": "Clicca e tieni premuto per riprendere la chiamata parcheggiata"
   },
   "Devices": {
+    "Download app": "Scarica app",
+    "Open app": "Apri app",
+    "Settings": "Impostazioni",
+    "Used as": "Usato come",
     "Web phone": "Web phone",
     "Landline phone": "Telefono fisso",
     "Device name": "Nome dispositivo",
@@ -1119,12 +1123,14 @@
     "Microphone": "Microfono",
     "Camera": "Video",
     "All download options": "Tutte le opzioni di download",
-    "Download Desktop app": "Scarica l'app desktop",
+    "Download Desktop app": "Scarica l'app Desktop phone",
     "Operating system": "Sistema operativo",
     "Devices": "Dispositivi",
     "Name": "Nome",
     "Default": "Predefinito",
-    "Inline warning message devices": "Le modifiche relative alle impostazioni audio e video possono essere applicate solo se il dispositivo principale è impostato su Web phone e il proprio stato è Online."
+    "Inline warning message devices": "Le modifiche relative alle impostazioni audio e video possono essere applicate solo se il dispositivo principale è impostato su Web phone e il proprio stato è Online.",
+    "Web phone settings": "Impostazioni Web phone",
+    "Web phone settings unavailable tooltip": "Disponibile solo quando il Web phone è il dispositivo principale e il tuo stato è Online."
   },
   "DropdownContent": {
     "Microphones": "MICROFONI",

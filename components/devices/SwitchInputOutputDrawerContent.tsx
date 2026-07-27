@@ -34,6 +34,18 @@ function classNames(...classes: any) {
   return classes.filter(Boolean).join(' ')
 }
 
+function pickCurrentOrDefaultDevice(devices: any[], storedDevice: any) {
+  const storedDeviceInfo = devices.find((device: any) => device.deviceId === storedDevice?.deviceId)
+  if (storedDeviceInfo) {
+    return storedDeviceInfo
+  }
+  return (
+    devices.find((device: any) => device.deviceId === 'default') ||
+    devices.find((device: any) => device.deviceId === 'communications') ||
+    devices[0]
+  )
+}
+
 export const SwitchInputOutputDrawerContent = forwardRef<
   HTMLButtonElement,
   SwitchInputOutputDrawerContentProps
@@ -110,29 +122,20 @@ export const SwitchInputOutputDrawerContent = forwardRef<
   }, [])
 
   useEffect(() => {
-    if (!isEmpty(audioInputValueStore) && !isEmpty(audioInputs)) {
-      const selectedInput = audioInputs.find(
-        (input: any) => input.deviceId === audioInputValueStore?.deviceId,
-      )
-      setSelectedAudioInput(selectedInput)
+    if (!isEmpty(audioInputs)) {
+      setSelectedAudioInput(pickCurrentOrDefaultDevice(audioInputs, audioInputValueStore))
     }
   }, [audioInputValueStore, audioInputs])
 
   useEffect(() => {
-    if (!isEmpty(audioOutputValueStore) && !isEmpty(audioOutputs)) {
-      const selectedOutput = audioOutputs.find(
-        (output: any) => output.deviceId === audioOutputValueStore?.deviceId,
-      )
-      setSelectedAudioOutput(selectedOutput)
+    if (!isEmpty(audioOutputs)) {
+      setSelectedAudioOutput(pickCurrentOrDefaultDevice(audioOutputs, audioOutputValueStore))
     }
   }, [audioOutputValueStore, audioOutputs])
 
   useEffect(() => {
-    if (!isEmpty(videoInputValueStore) && !isEmpty(videoInputs)) {
-      const selectedInput = videoInputs.find(
-        (input: any) => input.deviceId === videoInputValueStore?.deviceId,
-      )
-      setSelectedVideoInput(selectedInput)
+    if (!isEmpty(videoInputs)) {
+      setSelectedVideoInput(pickCurrentOrDefaultDevice(videoInputs, videoInputValueStore))
     }
   }, [videoInputValueStore, videoInputs])
 
@@ -141,9 +144,10 @@ export const SwitchInputOutputDrawerContent = forwardRef<
 
   return (
     <>
-      <DrawerHeader title={`${t('Devices.Audio and video settings')}`} />
-      <div className='px-5'>
-        <Divider />
+      <DrawerHeader title={`${t('Devices.Web phone settings')}`} onClose={closeSideDrawer} />
+      <div className='px-6 pb-6'>
+        {/* mockup: 24px between the title and the divider, then 24px before the content */}
+        <Divider paddingY='pb-12' />
         <>
           {/* Audio input section */}
           <div className='flex items-center justify-between'>
@@ -237,7 +241,7 @@ export const SwitchInputOutputDrawerContent = forwardRef<
           </Listbox>
 
           {/* Audio output section */}
-          <div className='flex items-center justify-between pt-6'>
+          <div className='flex items-center justify-between pt-8'>
             <div className='flex items-center'>
               <span className='dark:text-gray-200 leading-5 text-sm font-medium'>
                 {t('Devices.Speaker')}
@@ -332,7 +336,7 @@ export const SwitchInputOutputDrawerContent = forwardRef<
           </Listbox>
 
           {/* Video input section */}
-          <div className='flex items-center justify-between pt-6'>
+          <div className='flex items-center justify-between pt-8'>
             <div className='flex items-center'>
               <span className='dark:text-gray-200 leading-5 text-sm font-medium'>
                 {t('Devices.Camera')}
@@ -431,17 +435,16 @@ export const SwitchInputOutputDrawerContent = forwardRef<
         )}
 
         {/* Divider */}
-        <Divider paddingY='pb-10 pt-6' />
+        <Divider paddingY='pt-8 pb-6' />
 
         {/* Footer section */}
-        <div className='flex justify-end'>
-          <Button variant='ghost' type='submit' onClick={closeSideDrawer} className='mb-4'>
+        <div className='flex justify-end gap-6'>
+          <Button variant='ghost' type='submit' onClick={closeSideDrawer}>
             {t('Common.Cancel')}
           </Button>
           <Button
             variant='primary'
             type='submit'
-            className='mb-4 ml-4'
             disabled={isDeviceUnavailable}
             onClick={handleUpdateDevices}
           >

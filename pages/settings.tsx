@@ -191,11 +191,11 @@ const Settings: NextPage = () => {
           <h1 className='text-2xl font-medium mb-6 text-primaryNeutral dark:text-primaryNeutralDark'>
             {t('Settings.Settings')}
           </h1>
-          <div className='overflow-hidden rounded-lg bg-elevationL2Invert dark:bg-elevationL2InvertDark shadow'>
-            <div className='divide-y divide-layoutDivider dark:divide-layoutDividerDark lg:grid lg:grid-cols-12 lg:divide-y-0 lg:divide-x'>
+          <div>
+            <div className='lg:flex lg:items-stretch'>
               {/* settings menu */}
-              <aside className='py-6 lg:col-span-3'>
-                <nav className='space-y-1'>
+              <aside className='lg:w-[21rem] lg:shrink-0 lg:border-r lg:border-layoutDivider dark:lg:border-layoutDividerDark'>
+                <nav className='space-y-1 lg:pr-4'>
                   {items
                     .filter((item) => !item?.hidden)
                     .map((item) => (
@@ -206,7 +206,7 @@ const Settings: NextPage = () => {
                           item?.current
                             ? 'text-primaryNeutral dark:text-primaryNeutralDark bg-elevationL2 dark:bg-elevationL2Dark border-l-4 border-iconPrimary dark:border-iconPrimaryDark'
                             : 'text-secondaryNeutral dark:text-secondaryNeutralDark hover:text-gray-900 hover:bg-gray-100 dark:hover:bg-gray-800 dark:hover:text-gray-50',
-                          'group rounded-md flex items-center text-sm font-medium justify-start space-x-2 w-74 mx-4 h-[3rem] cursor-pointer',
+                          'group rounded-md flex items-center text-sm font-medium justify-start space-x-2 w-full h-[3rem] cursor-pointer',
                         )}
                         aria-current={item?.current ? 'page' : undefined}
                       >
@@ -221,7 +221,7 @@ const Settings: NextPage = () => {
                 </nav>
               </aside>
               {/* main content */}
-              <div className='lg:col-span-9'>{renderCurrentSection()}</div>
+              <div className='lg:flex-1 lg:min-w-0 lg:pl-6'>{renderCurrentSection()}</div>
             </div>
           </div>
         </div>

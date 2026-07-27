@@ -1060,6 +1060,10 @@
     "Call": "Call"
   },
   "Devices": {
+    "Download app": "Download app",
+    "Open app": "Open app",
+    "Settings": "Settings",
+    "Used as": "Used as",
     "Web phone": "Web phone",
     "Landline phone": "Landline phone",
     "Device name": "Device name",
@@ -1143,7 +1147,9 @@
     "Devices": "Devices",
     "Name": "Name",
     "Default": "Default",
-    "Inline warning message devices": "Changes to audio and video settings can only be applied if the main device is set to Web phone and your status is Online."
+    "Inline warning message devices": "Changes to audio and video settings can only be applied if the main device is set to Web phone and your status is Online.",
+    "Web phone settings": "Web phone settings",
+    "Web phone settings unavailable tooltip": "Available only when Web phone is your main device and your status is Online."
   },
   "DropdownContent": {
     "Microphones": "MICROPHONES",
