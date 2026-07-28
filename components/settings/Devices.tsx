@@ -21,7 +21,6 @@ import {
 import React from 'react'
 import {
   getDevicesPin,
-  openShowEditPhysicalPhone,
   setMainDevice,
   openShowSwitchDeviceInputOutput,
   getDownloadLink,
@@ -36,6 +35,7 @@ import { isEmpty } from 'lodash'
 import { faOfficePhone } from '@nethesis/nethesis-solid-svg-icons'
 import { IconProp } from '@fortawesome/fontawesome-svg-core'
 import { CustomThemedTooltip } from '../common/CustomThemedTooltip'
+import { PhysicalPhoneSettings } from '../devices/PhysicalPhoneSettings'
 
 interface NavigatorWithUserAgentData extends Navigator {
   userAgentData?: {
@@ -64,6 +64,9 @@ const Devices: NextPage = () => {
   const { t } = useTranslation()
   const operators: any = useSelector((state: RootState) => state.operators)
   const profile = useSelector((state: RootState) => state.user)
+
+  // when set, the physical phone settings page replaces the devices list
+  const [selectedPhysicalPhone, setSelectedPhysicalPhone] = useState<any>(null)
 
   const [phoneData, setPhoneData]: any = useState([])
   const [webrtcData, setWebrtcData]: any = useState([])
@@ -626,7 +629,7 @@ const Devices: NextPage = () => {
                           ?.phone_buttons?.value ? (
                           <Button
                             variant='ghost'
-                            onClick={() => openShowEditPhysicalPhone(phone, pinObject)}
+                            onClick={() => setSelectedPhysicalPhone(phone)}
                             className='relative'
                             data-tooltip-id='tooltip-device-settings'
                             data-tooltip-content={t('Devices.Device settings')}
@@ -666,6 +669,19 @@ const Devices: NextPage = () => {
           </div>
         </div>
       </>
+    )
+  }
+
+  // the physical phone settings replace the devices list, as in the mockup
+  if (selectedPhysicalPhone) {
+    return (
+      <div className='pb-6 flex flex-col flex-1 min-h-0'>
+        <PhysicalPhoneSettings
+          phone={selectedPhysicalPhone}
+          pinStatus={!!pinObject}
+          onBack={() => setSelectedPhysicalPhone(null)}
+        />
+      </div>
     )
   }
 

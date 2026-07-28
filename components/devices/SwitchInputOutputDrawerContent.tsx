@@ -9,7 +9,6 @@ import { t } from 'i18next'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { faCheck, faChevronDown, faCircleInfo } from '@fortawesome/free-solid-svg-icons'
 
-import { Tooltip } from 'react-tooltip'
 import { closeSideDrawer } from '../../lib/utils'
 import {
   Listbox,
@@ -152,7 +151,7 @@ export const SwitchInputOutputDrawerContent = forwardRef<
           {/* Audio input section */}
           <div className='flex items-center justify-between'>
             <div className='flex items-center'>
-              <span className='dark:text-gray-200 leading-5 text-sm font-medium'>
+              <span className='text-secondaryNeutral dark:text-secondaryNeutralDark leading-5 text-sm font-medium'>
                 {t('Devices.Microphone')}
               </span>
               <FontAwesomeIcon
@@ -173,22 +172,22 @@ export const SwitchInputOutputDrawerContent = forwardRef<
               <>
                 <div className='flex items-center mt-2'>
                   <div className='relative w-full'>
-                    <ListboxButton className='relative w-full cursor-default rounded-md bg-white dark:bg-gray-950 py-1.5 pr-10 text-left focus:outline-none sm:text-sm sm:leading-6 border dark:border-gray-700'>
+                    <ListboxButton className='relative w-full cursor-default rounded-md bg-white dark:bg-gray-950 px-3 py-1.5 pr-10 text-left text-sm leading-5 focus:outline-none border border-gray-300 dark:border-gray-700 shadow-sm'>
                       <span
                         className={`${
                           selectedAudioInput?.label
                             ? 'text-gray-700 dark:text-gray-300'
                             : 'text-gray-500 dark:text-gray-300'
-                        } block truncate mr-1 ml-4 font-medium`}
+                        } block truncate font-normal`}
                       >
                         {selectedAudioInput?.label
                           ? selectedAudioInput?.label
                           : t('Devices.Select audio input')}
                       </span>
-                      <span className='pointer-events-none absolute inset-y-0 right-0 flex items-center pr-2'>
+                      <span className='pointer-events-none absolute inset-y-0 right-0 flex items-center pr-3'>
                         <FontAwesomeIcon
                           icon={faChevronDown}
-                          className='h-3.5 w-3.5 pl-2 py-2 cursor-pointer flex items-center'
+                          className='h-4 w-4'
                           aria-hidden='true'
                         />
                       </span>
@@ -243,7 +242,7 @@ export const SwitchInputOutputDrawerContent = forwardRef<
           {/* Audio output section */}
           <div className='flex items-center justify-between pt-8'>
             <div className='flex items-center'>
-              <span className='dark:text-gray-200 leading-5 text-sm font-medium'>
+              <span className='text-secondaryNeutral dark:text-secondaryNeutralDark leading-5 text-sm font-medium'>
                 {t('Devices.Speaker')}
               </span>
               <FontAwesomeIcon
@@ -264,23 +263,23 @@ export const SwitchInputOutputDrawerContent = forwardRef<
               <>
                 <div className='flex items-center mt-2'>
                   <div className='relative w-full'>
-                    <ListboxButton className='relative w-full cursor-default rounded-md bg-white dark:bg-gray-950 py-1.5 pr-10 text-left text-gray-700 dark:text-gray-300 focus:outline-none sm:text-sm sm:leading-6 border dark:border-gray-700'>
+                    <ListboxButton className='relative w-full cursor-default rounded-md bg-white dark:bg-gray-950 px-3 py-1.5 pr-10 text-left text-sm leading-5 focus:outline-none border border-gray-300 dark:border-gray-700 shadow-sm'>
                       <span
                         className={`${
                           selectedAudioOutput?.label
                             ? 'text-gray-700 dark:text-gray-300'
                             : 'text-gray-500 dark:text-gray-300'
-                        } block truncate mr-1 ml-4 font-medium`}
+                        } block truncate font-normal`}
                       >
                         {selectedAudioOutput?.label
                           ? selectedAudioOutput?.label
                           : t('Devices.Select audio output')}
                       </span>
 
-                      <span className='pointer-events-none absolute inset-y-0 right-0 flex items-center pr-2'>
+                      <span className='pointer-events-none absolute inset-y-0 right-0 flex items-center pr-3'>
                         <FontAwesomeIcon
                           icon={faChevronDown}
-                          className='h-3.5 w-3.5 pl-2 py-2 cursor-pointer flex items-center'
+                          className='h-4 w-4'
                           aria-hidden='true'
                         />
                       </span>
@@ -338,7 +337,7 @@ export const SwitchInputOutputDrawerContent = forwardRef<
           {/* Video input section */}
           <div className='flex items-center justify-between pt-8'>
             <div className='flex items-center'>
-              <span className='dark:text-gray-200 leading-5 text-sm font-medium'>
+              <span className='text-secondaryNeutral dark:text-secondaryNeutralDark leading-5 text-sm font-medium'>
                 {t('Devices.Camera')}
               </span>
               <FontAwesomeIcon
@@ -359,22 +358,22 @@ export const SwitchInputOutputDrawerContent = forwardRef<
               <>
                 <div className='flex items-center mt-2'>
                   <div className='relative w-full'>
-                    <ListboxButton className='relative w-full cursor-default rounded-md bg-white dark:bg-gray-950 py-1.5 pr-10 text-left focus:outline-none sm:text-sm sm:leading-6 border dark:border-gray-700'>
+                    <ListboxButton className='relative w-full cursor-default rounded-md bg-white dark:bg-gray-950 px-3 py-1.5 pr-10 text-left text-sm leading-5 focus:outline-none border border-gray-300 dark:border-gray-700 shadow-sm'>
                       <span
                         className={`${
                           selectedVideoInput?.label
                             ? 'text-gray-700 dark:text-gray-300'
                             : 'text-gray-500 dark:text-gray-300'
-                        } block truncate mr-1 ml-4 font-medium`}
+                        } block truncate font-normal`}
                       >
                         {selectedVideoInput?.label
                           ? selectedVideoInput?.label
                           : t('Devices.Select video input')}
                       </span>
-                      <span className='pointer-events-none absolute inset-y-0 right-0 flex items-center pr-2'>
+                      <span className='pointer-events-none absolute inset-y-0 right-0 flex items-center pr-3'>
                         <FontAwesomeIcon
                           icon={faChevronDown}
-                          className='h-3.5 w-3.5 pl-2 py-2 cursor-pointer flex items-center'
+                          className='h-4 w-4'
                           aria-hidden='true'
                         />
                       </span>

@@ -84,7 +84,8 @@
     "The summary is ready for review and editing": "Il riepilogo è pronto per la revisione e la modifica",
     "The summary of your call with {{contact}} is ready": "Il riepilogo della tua chiamata con {{contact}} è pronto",
     "View summary": "Visualizza riepilogo",
-    "Show": "Visualizza"
+    "Show": "Visualizza",
+    "Add": "Aggiungi"
   },
   "Login": {
     "User": "Utente",
@@ -1130,7 +1131,29 @@
     "Default": "Predefinito",
     "Inline warning message devices": "Le modifiche relative alle impostazioni audio e video possono essere applicate solo se il dispositivo principale è impostato su Web phone e il proprio stato è Online.",
     "Web phone settings": "Impostazioni Web phone",
-    "Web phone settings unavailable tooltip": "Disponibile solo quando il Web phone è il dispositivo principale e il tuo stato è Online."
+    "Web phone settings unavailable tooltip": "Disponibile solo quando il Web phone è il dispositivo principale e il tuo stato è Online.",
+    "Line keys": "Tasti linea",
+    "General settings": "Impostazioni generali",
+    "Phone settings": "Impostazioni {{name}}",
+    "Assign BLF to all operators": "Assegna BLF a tutti gli operatori",
+    "Unsaved changes": "Modifiche non salvate",
+    "Unsaved changes description": "Salva le modifiche per applicare la nuova configurazione dei tasti.",
+    "Delete key": "Elimina tasto",
+    "Discard changes": "Annulla modifiche",
+    "Page of": "Pagina {{current}} di {{total}}",
+    "Previous page": "Pagina precedente",
+    "Next page": "Pagina successiva",
+    "Cannot retrieve configuration information": "Impossibile recuperare la configurazione del telefono.",
+    "Pin saved with keys": "Il PIN viene applicato quando salvi la configurazione dei tasti linea.",
+    "No general settings available": "Nessuna impostazione generale disponibile per questo telefono.",
+    "LINE": "LINEA",
+    "BLF": "BLF",
+    "QUEUE": "CODA",
+    "DND": "DND",
+    "SPEED DIAL": "CHIAMATA RAPIDA",
+    "Key type": "Tipo di tasto",
+    "Choose the action assigned to this key": "Scegli l'azione assegnata a questo tasto",
+    "Extension": "Interno"
   },
   "DropdownContent": {
     "Microphones": "MICROFONI",

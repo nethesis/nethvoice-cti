@@ -98,7 +98,8 @@
     "The summary is ready for review and editing": "The summary is ready for review and editing",
     "The summary of your call with {{contact}} is ready": "The summary of your call with {{contact}} is ready",
     "View summary": "View summary",
-    "Show": "Show"
+    "Show": "Show",
+    "Add": "Add"
   },
   "Login": {
     "User": "Username",
@@ -1149,7 +1150,29 @@
     "Default": "Default",
     "Inline warning message devices": "Changes to audio and video settings can only be applied if the main device is set to Web phone and your status is Online.",
     "Web phone settings": "Web phone settings",
-    "Web phone settings unavailable tooltip": "Available only when Web phone is your main device and your status is Online."
+    "Web phone settings unavailable tooltip": "Available only when Web phone is your main device and your status is Online.",
+    "Line keys": "Line keys",
+    "General settings": "General settings",
+    "Phone settings": "{{name}} settings",
+    "Assign BLF to all operators": "Assign BLF to all operators",
+    "Unsaved changes": "Unsaved changes",
+    "Unsaved changes description": "Save changes to apply the updated key configuration.",
+    "Delete key": "Delete key",
+    "Discard changes": "Discard changes",
+    "Page of": "Page {{current}} of {{total}}",
+    "Previous page": "Previous page",
+    "Next page": "Next page",
+    "Cannot retrieve configuration information": "Cannot retrieve the phone configuration.",
+    "Pin saved with keys": "The PIN is applied when you save the line keys configuration.",
+    "No general settings available": "No general settings available for this phone.",
+    "LINE": "LINE",
+    "BLF": "BLF",
+    "QUEUE": "QUEUE",
+    "DND": "DND",
+    "SPEED DIAL": "SPEED DIAL",
+    "Key type": "Key type",
+    "Choose the action assigned to this key": "Choose the action assigned to this key",
+    "Extension": "Extension"
   },
   "DropdownContent": {
     "Microphones": "MICROPHONES",

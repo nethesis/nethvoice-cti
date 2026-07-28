@@ -45,6 +45,18 @@ export const openShowDownloadLinkContent = (
   })
 }
 
+export const openAddPhoneKeyDrawer = (config: {
+  defaultPosition: number
+  maxPosition: number
+  onAdd: (key: { position: number; type: string; value: string; label: string }) => void
+}) => {
+  store.dispatch.sideDrawer.update({
+    isShown: true,
+    contentType: 'showAddPhoneKey',
+    config,
+  })
+}
+
 export const getInputOutputLocalStorageValue = (currentUsername: string) => {
   const audioInputType = getJSONItem('phone-island-audio-input-device') || ''
   const audioOutputType = getJSONItem('phone-island-audio-output-device') || ''
