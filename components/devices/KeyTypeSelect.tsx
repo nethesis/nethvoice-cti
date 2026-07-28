@@ -9,12 +9,14 @@ interface keyTypeSelectProps {
   defaultSelectedType?: string
   updateSelectedTypeKey: Function
   inputMissing?: boolean
+  helperText?: string
 }
 
 export const KeyTypeSelect: FC<keyTypeSelectProps> = ({
   defaultSelectedType,
   updateSelectedTypeKey,
   inputMissing,
+  helperText,
 }) => {
   const [keysTypeSelected, setKeysTypeSelected]: any = useState<string | null>(
     defaultSelectedType || null,
@@ -56,22 +58,27 @@ export const KeyTypeSelect: FC<keyTypeSelectProps> = ({
   }, [defaultSelectedType])
 
   return (
-    <>
-      <div className='mb-2 mt-4'>
-        <span> {t('Devices.Type')}</span>
-      </div>
+    <div className='flex flex-col gap-2'>
+      <span className='text-sm font-medium leading-5 text-secondaryNeutral dark:text-secondaryNeutralDark'>
+        {t('Devices.Key type')}
+      </span>
 
       <select
         id='types'
         name='types'
         className={classNames(
-          inputMissing ? 'border-2 rounded-lg border-rose-500' : '',
-          'mb-6 block w-full rounded-md py-2 pl-3 pr-10 text-base focus:outline-none sm:text-sm border-gray-300 focus:border-primary focus:ring-primary dark:border-gray-600 dark:focus:border-primary dark:focus:ring-primary dark:bg-gray-900',
+          inputMissing
+            ? 'border-rose-500 focus:border-rose-500 focus:ring-rose-500 dark:border-rose-400'
+            : 'border-gray-300 focus:border-primaryLight focus:ring-primaryLight dark:border-gray-600 dark:focus:border-primaryDark dark:focus:ring-primaryDark',
+          'block w-full rounded-md border bg-bgInput dark:bg-bgInputDark px-3 py-2 text-sm',
+          announcementSelected
+            ? 'text-secondaryNeutral dark:text-secondaryNeutralDark'
+            : 'text-gray-400 dark:text-gray-500',
         )}
         value={announcementSelected || ''}
         onChange={changeAnnouncementSelect}
       >
-        {!announcementSelected && <option value=''>{t('Devices.Key type select')}</option>}
+        {!announcementSelected && <option value=''>{t('Devices.Choose type')}</option>}
         {Object.keys(typesList).map((key: any) => (
           <option key={key} value={typesList[key].id}>
             {typesList[key].label}
@@ -79,10 +86,15 @@ export const KeyTypeSelect: FC<keyTypeSelectProps> = ({
         ))}
       </select>
       {inputMissing && (
-        <div className='text-rose-500 text-sm mt-1 ml-2'>
+        <div className='text-sm text-rose-600 dark:text-rose-400'>
           {t('Devices.Type selection is required')}.
         </div>
       )}
-    </>
+      {helperText && (
+        <p className='text-xs leading-4 text-tertiaryNeutral dark:text-tertiaryNeutralDark'>
+          {helperText}
+        </p>
+      )}
+    </div>
   )
 }

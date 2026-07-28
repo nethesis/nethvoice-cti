@@ -1163,7 +1163,6 @@
     "Previous page": "Previous page",
     "Next page": "Next page",
     "Cannot retrieve configuration information": "Cannot retrieve the phone configuration.",
-    "Pin saved with keys": "The PIN is applied when you save the line keys configuration.",
     "No general settings available": "No general settings available for this phone.",
     "LINE": "LINE",
     "BLF": "BLF",
@@ -1172,7 +1171,15 @@
     "SPEED DIAL": "SPEED DIAL",
     "Key type": "Key type",
     "Choose the action assigned to this key": "Choose the action assigned to this key",
-    "Extension": "Extension"
+    "Extension": "Extension",
+    "Move key up": "Move the key up",
+    "Move key down": "Move the key down",
+    "Configuration saved": "Configuration saved",
+    "Phone configuration saved description": "The configuration for {{name}} has been saved.",
+    "Add key unavailable tooltip": "Maximum number of keys reached.\nRemove a key to add a new one.",
+    "Add expansion module": "Add expansion module",
+    "Back to Devices": "Back to Devices",
+    "Cannot save the pin": "Cannot save the PIN."
   },
   "DropdownContent": {
     "Microphones": "MICROPHONES",

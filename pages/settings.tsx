@@ -33,6 +33,7 @@ import { IncomingCalls } from '../components/settings/IncomingCalls'
 import { faOfficePhone } from '@nethesis/nethesis-solid-svg-icons'
 import { savePreference } from '../lib/storage'
 import { getSelectedSettingsPage } from '../lib/settings'
+import { customScrollbarClass } from '../lib/utils'
 import { Voicemail } from '../components/settings/Voicemail'
 import { IconProp } from '@fortawesome/fontawesome-svg-core'
 import { isEmpty } from 'lodash'
@@ -86,7 +87,13 @@ const Settings: NextPage = () => {
       },
       { name: 'Customer cards', href: '#', icon: faIdCardClip, current: false },
       { name: 'Incoming calls', href: '#', icon: faPhoneVolume, current: false },
-      { name: 'Notifications', href: '#', icon: faBell, current: false, hidden: !hasNotificationSettings },
+      {
+        name: 'Notifications',
+        href: '#',
+        icon: faBell,
+        current: false,
+        hidden: !hasNotificationSettings,
+      },
       { name: 'Queues', href: '#', icon: faUsers, current: false },
       { name: 'Profile picture', href: '#', icon: faCircleUser, current: false },
       { name: 'Theme', href: '#', icon: faPalette, current: false },
@@ -186,15 +193,14 @@ const Settings: NextPage = () => {
 
   return (
     <>
-      <div>
-        <div className='mx-auto'>
+      <div className='flex flex-col lg:h-[calc(100dvh-8rem)]'>
+        <div className='mx-auto flex w-full flex-1 flex-col min-h-0'>
           <h1 className='text-2xl font-medium mb-6 text-primaryNeutral dark:text-primaryNeutralDark'>
             {t('Settings.Settings')}
           </h1>
-          <div>
-            <div className='lg:flex lg:items-stretch'>
-              {/* settings menu */}
-              <aside className='lg:w-[21rem] lg:shrink-0 lg:border-r lg:border-layoutDivider dark:lg:border-layoutDividerDark'>
+          <div className='flex flex-1 flex-col min-h-0'>
+            <div className='lg:flex lg:items-stretch lg:flex-1 lg:min-h-0'>
+              <aside className='lg:h-full lg:w-[21rem] lg:shrink-0 lg:border-r lg:border-layoutDivider dark:lg:border-layoutDividerDark'>
                 <nav className='space-y-1 lg:pr-4'>
                   {items
                     .filter((item) => !item?.hidden)
@@ -221,7 +227,11 @@ const Settings: NextPage = () => {
                 </nav>
               </aside>
               {/* main content */}
-              <div className='lg:flex-1 lg:min-w-0 lg:pl-6'>{renderCurrentSection()}</div>
+              <div
+                className={`lg:flex-1 lg:min-w-0 lg:pl-6 flex flex-col min-h-0 lg:overflow-y-auto ${customScrollbarClass}`}
+              >
+                {renderCurrentSection()}
+              </div>
             </div>
           </div>
         </div>

@@ -672,10 +672,9 @@ const Devices: NextPage = () => {
     )
   }
 
-  // the physical phone settings replace the devices list, as in the mockup
   if (selectedPhysicalPhone) {
     return (
-      <div className='pb-6 flex flex-col flex-1 min-h-0'>
+      <div className='flex flex-col flex-1 min-h-0'>
         <PhysicalPhoneSettings
           phone={selectedPhysicalPhone}
           pinStatus={!!pinObject}

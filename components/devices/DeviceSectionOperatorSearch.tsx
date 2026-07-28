@@ -13,6 +13,7 @@ import classNames from 'classnames'
 import { sortByProperty } from '../../lib/utils'
 import { getPhonebook, mapPhonebookResponse } from '../../lib/phonebook'
 import { Avatar } from '../common'
+import { useTheme } from '../../theme/Context'
 
 interface DeviceSectionOperatorSearchProps {
   typeSelected: string
@@ -31,6 +32,7 @@ export const DeviceSectionOperatorSearch: FC<DeviceSectionOperatorSearchProps> =
   defaultValue,
   updatePhonebookContactInformation,
 }) => {
+  const { input: inputTheme } = useTheme().theme
   const [query, setQuery] = useState('')
   const [results, setResults]: any[] = useState([])
   const [isLoaded, setLoaded]: any[] = useState(true)
@@ -250,9 +252,16 @@ export const DeviceSectionOperatorSearch: FC<DeviceSectionOperatorSearchProps> =
       value={selectedInformationUser}
       onChange={(result) => setSelectedInformationUser(resultSelected(result))}
     >
-      <div className='relative mt-2 mb-4'>
+      <div className='relative'>
         <ComboboxInput
-          className='w-full rounded-md border-0 bg-white dark:bg-gray-600 py-1.5 pl-3 pr-12 text-gray-900 dark:text-gray-200 shadow-sm ring-1 ring-inset ring-gray-300 dark:ring-gray-400 focus:ring-2 focus:ring-inset focus:ring-emerald-600 sm:text-sm sm:leading-6 placeholder:dark:text-gray-200'
+          className={classNames(
+            inputTheme.base,
+            inputTheme.rounded.base,
+            inputTheme.size.base,
+            inputTheme.colors.gray,
+            inputTheme.placeholder.base,
+            'pr-12',
+          )}
           onChange={(e) => {
             const value = e.target.value
             setQuery(value)

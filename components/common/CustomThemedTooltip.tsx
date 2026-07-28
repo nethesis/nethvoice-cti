@@ -54,14 +54,28 @@ export const CustomThemedTooltip: FC<CustomThemedTooltipProps> = ({
         borderRadius: '4px',
       }
 
+  const renderText = (content: string) => {
+    const lines = content.split('\n')
+    if (lines.length === 1) {
+      return content
+    }
+    return (
+      <>
+        {lines.map((line, index) => (
+          <p key={index}>{line}</p>
+        ))}
+      </>
+    )
+  }
+
   const renderContent = (content: string) => {
     if (!clickableText || !onClickableClick) {
-      return content
+      return renderText(content)
     }
 
     return (
       <div>
-        <div>{content}</div>
+        <div>{renderText(content)}</div>
         <button
           onClick={(e) => {
             e.preventDefault()

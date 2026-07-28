@@ -26,7 +26,8 @@ import { Avatar, Button, EmptyState, InlineNotification, Modal, TextInput } from
 import { CustomThemedTooltip } from '../common/CustomThemedTooltip'
 import { KeyTypeSelect } from './KeyTypeSelect'
 import { DeviceSectionOperatorSearch } from './DeviceSectionOperatorSearch'
-import { PhysicalPhoneKeyBadge } from './PhysicalPhoneKeyBadge'
+import { getKeyTypeSearchText, PhysicalPhoneKeyBadge } from './PhysicalPhoneKeyBadge'
+import { KeyPositionInput } from './KeyPositionInput'
 import {
   getPhysicalDeviceButtonConfiguration,
   getPhoneModelData,
@@ -39,6 +40,7 @@ import { customScrollbarClass, openToast } from '../../lib/utils'
 
 export interface LineKeysSectionProps {
   deviceId: string
+  phoneName: string
   pinValue: string
   pinEnabled: boolean
 }
@@ -58,7 +60,12 @@ const generateRandomPin = () =>
 
 const TYPES_WITHOUT_VALUE = ['line', 'dnd', 'toggleQueue']
 
-export const LineKeysSection: FC<LineKeysSectionProps> = ({ deviceId, pinValue, pinEnabled }) => {
+export const LineKeysSection: FC<LineKeysSectionProps> = ({
+  deviceId,
+  phoneName,
+  pinValue,
+  pinEnabled,
+}) => {
   const operators: any = useSelector((state: RootState) => state.operators)
 
   const [macAddress, setMacAddress] = useState('')
@@ -114,6 +121,9 @@ export const LineKeysSection: FC<LineKeysSectionProps> = ({ deviceId, pinValue, 
     loadConfiguration()
   }, [macAddress])
 
+  // all the line key positions of the phone model are taken
+  const areAllPositionsInUse = usableKeys > 0 && keys.length >= usableKeys
+
   const hasChanges = useMemo(
     () =>
       !isEqual(
@@ -144,8 +154,11 @@ export const LineKeysSection: FC<LineKeysSectionProps> = ({ deviceId, pinValue, 
     if (!filterText) {
       return keysWithPosition
     }
+    // name, number and key type are all searchable
     return keysWithPosition.filter((key) =>
-      `${key.position} - ${key.label} (${key.value})`.toLowerCase().includes(filterText),
+      `${key.position} - ${key.label} (${key.value}) ${getKeyTypeSearchText(key.type)}`
+        .toLowerCase()
+        .includes(filterText),
     )
   }, [keysWithPosition, textFilter])
 
@@ -350,8 +363,8 @@ export const LineKeysSection: FC<LineKeysSectionProps> = ({ deviceId, pinValue, 
       setExpandedUid(null)
       openToast(
         'success',
-        `${t('Devices.New phone configuration saved')}`,
-        `${t('Devices.Edit completed')}`,
+        `${t('Devices.Phone configuration saved description', { name: phoneName })}`,
+        `${t('Devices.Configuration saved')}`,
       )
     } catch (error) {
       setSaveError('Cannot save configuration')
@@ -376,14 +389,27 @@ export const LineKeysSection: FC<LineKeysSectionProps> = ({ deviceId, pinValue, 
           />
         </div>
         <div className='flex items-center gap-6'>
-          <Button
-            variant='ghost'
-            onClick={addKey}
-            disabled={!keysLoaded || keys.length >= usableKeys}
+          {/* the tooltip is on the wrapper because disabled buttons do not fire mouse events */}
+          <span
+            data-tooltip-id='tooltip-add-key-unavailable'
+            data-tooltip-content={
+              areAllPositionsInUse ? t('Devices.Add key unavailable tooltip') : ''
+            }
           >
-            <FontAwesomeIcon icon={faCirclePlus} className='mr-3 h-4 w-4' />
-            <span>{t('Devices.Add key')}</span>
-          </Button>
+            <Button variant='ghost' onClick={addKey} disabled={!keysLoaded || areAllPositionsInUse}>
+              <FontAwesomeIcon icon={faCirclePlus} className='mr-3 h-4 w-4' />
+              <span>{t('Devices.Add key')}</span>
+            </Button>
+          </span>
+          {/* the tooltip disappears as soon as a position becomes available */}
+          {areAllPositionsInUse && (
+            <CustomThemedTooltip
+              id='tooltip-add-key-unavailable'
+              place='top'
+              className='whitespace-normal text-left'
+              positionStrategy='fixed'
+            />
+          )}
           <Button
             variant='white'
             onClick={() => setShowAssignBlfModal(true)}
@@ -509,13 +535,11 @@ export const LineKeysSection: FC<LineKeysSectionProps> = ({ deviceId, pinValue, 
                         className='whitespace-normal text-left'
                       />
                     </div>
-                    <input
-                      type='number'
-                      min={1}
-                      max={keys.length}
+                    <KeyPositionInput
                       value={key.position}
-                      onChange={(event) => changeKeyPosition(key.uid, Number(event.target.value))}
-                      className='mt-2 w-56 rounded-md border border-gray-300 dark:border-gray-700 bg-white dark:bg-gray-950 px-3 py-1.5 text-sm leading-5 shadow-sm focus:outline-none'
+                      max={keys.length}
+                      onChange={(newPosition) => changeKeyPosition(key.uid, newPosition)}
+                      className='mt-2 w-56'
                     />
                   </div>
 

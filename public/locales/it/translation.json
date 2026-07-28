@@ -1144,7 +1144,6 @@
     "Previous page": "Pagina precedente",
     "Next page": "Pagina successiva",
     "Cannot retrieve configuration information": "Impossibile recuperare la configurazione del telefono.",
-    "Pin saved with keys": "Il PIN viene applicato quando salvi la configurazione dei tasti linea.",
     "No general settings available": "Nessuna impostazione generale disponibile per questo telefono.",
     "LINE": "LINEA",
     "BLF": "BLF",
@@ -1153,7 +1152,15 @@
     "SPEED DIAL": "CHIAMATA RAPIDA",
     "Key type": "Tipo di tasto",
     "Choose the action assigned to this key": "Scegli l'azione assegnata a questo tasto",
-    "Extension": "Interno"
+    "Extension": "Interno",
+    "Move key up": "Sposta il tasto in alto",
+    "Move key down": "Sposta il tasto in basso",
+    "Configuration saved": "Configurazione salvata",
+    "Phone configuration saved description": "La configurazione di {{name}} è stata salvata.",
+    "Add key unavailable tooltip": "Numero massimo di tasti raggiunto.\nRimuovi un tasto per aggiungerne uno nuovo.",
+    "Add expansion module": "Aggiungi modulo di espansione",
+    "Back to Devices": "Torna a Dispositivi",
+    "Cannot save the pin": "Impossibile salvare il PIN."
   },
   "DropdownContent": {
     "Microphones": "MICROFONI",

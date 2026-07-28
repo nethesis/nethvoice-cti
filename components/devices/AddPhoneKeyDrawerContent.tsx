@@ -10,6 +10,8 @@ import { Divider } from '../common/Divider'
 import { closeSideDrawer } from '../../lib/utils'
 import { RootState } from '../../store'
 import { DeviceSectionOperatorSearch } from './DeviceSectionOperatorSearch'
+import { KeyPositionInput } from './KeyPositionInput'
+import { KeyTypeSelect } from './KeyTypeSelect'
 
 export interface AddPhoneKeyDrawerContentProps extends ComponentPropsWithRef<'div'> {
   config: {
@@ -20,15 +22,10 @@ export interface AddPhoneKeyDrawerContentProps extends ComponentPropsWithRef<'di
   }
 }
 
-const KEY_TYPES = [
-  { value: 'blf', label: 'Devices.Busy lamp field (BLF)' },
-  { value: 'line', label: 'Devices.Line' },
-  { value: 'dnd', label: 'Devices.Do not disturb (DND)' },
-  { value: 'speed_dial', label: 'Devices.Speed call' },
-  { value: 'toggleQueue', label: 'Devices.Toggle login/logout queue' },
-]
-
 const TYPES_WITHOUT_VALUE = ['line', 'dnd', 'toggleQueue']
+
+const LABEL_CLASSES =
+  'text-sm font-medium leading-5 text-secondaryNeutral dark:text-secondaryNeutralDark'
 
 export const AddPhoneKeyDrawerContent = forwardRef<
   HTMLButtonElement,
@@ -74,64 +71,43 @@ export const AddPhoneKeyDrawerContent = forwardRef<
       <div className='px-6 pb-6'>
         <Divider paddingY='pb-12' />
 
-        {/* key position */}
-        <div>
-          <span className='text-sm font-medium leading-5 text-secondaryNeutral dark:text-secondaryNeutralDark'>
-            {t('Devices.Key position')}
-          </span>
-          <input
-            type='number'
-            min={1}
-            max={config?.maxPosition}
-            value={position}
-            onChange={(event) => setPosition(Number(event.target.value))}
-            className='mt-2 w-full rounded-md border border-gray-300 dark:border-gray-700 bg-white dark:bg-gray-950 px-3 py-1.5 text-sm leading-5 shadow-sm focus:outline-none focus:ring-2 focus:ring-primary dark:focus:ring-primaryDark'
-          />
-        </div>
+        <div className='flex flex-col gap-8'>
+          {/* key position */}
+          <div className='flex flex-col gap-2'>
+            <span className={LABEL_CLASSES}>{t('Devices.Key position')}</span>
+            <KeyPositionInput
+              value={position}
+              max={config?.maxPosition || 1}
+              onChange={setPosition}
+            />
+          </div>
 
-        {/* key type */}
-        <div className='pt-8'>
-          <span className='text-sm font-medium leading-5 text-secondaryNeutral dark:text-secondaryNeutralDark'>
-            {t('Devices.Key type')}
-          </span>
-          <select
-            value={type}
-            onChange={(event) => {
-              setType(event.target.value)
+          {/* key type */}
+          <KeyTypeSelect
+            updateSelectedTypeKey={(newType: string) => {
+              setType(newType)
               setValue('')
               setContactName('')
             }}
-            className='mt-2 w-full rounded-md border border-gray-300 dark:border-gray-700 bg-white dark:bg-gray-950 px-3 py-1.5 text-sm leading-5 shadow-sm focus:outline-none focus:ring-2 focus:ring-primary dark:focus:ring-primaryDark'
-          >
-            <option value=''>{t('Devices.Choose type')}</option>
-            {KEY_TYPES.map((keyType) => (
-              <option key={keyType.value} value={keyType.value}>
-                {t(keyType.label)}
-              </option>
-            ))}
-          </select>
-          <p className='mt-2 text-xs leading-4 text-tertiaryNeutral dark:text-tertiaryNeutralDark'>
-            {t('Devices.Choose the action assigned to this key')}
-          </p>
-        </div>
+            helperText={t('Devices.Choose the action assigned to this key') || ''}
+          />
 
-        {/* target of the key, only for the types that need one */}
-        {needsValue && (
-          <div className='pt-8'>
-            <div className='mb-2'>
-              <span className='text-sm font-medium leading-5 text-secondaryNeutral dark:text-secondaryNeutralDark'>
+          {/* target of the key, only for the types that need one */}
+          {needsValue && (
+            <div className='flex flex-col gap-2'>
+              <span className={LABEL_CLASSES}>
                 {type === 'blf' ? t('Devices.Extension') : t('Devices.Name or number')}
               </span>
+              <DeviceSectionOperatorSearch
+                typeSelected={type}
+                updateSelectedUserNumber={(newValue: string) => setValue(newValue)}
+                defaultValue={''}
+                updatePhonebookContactInformation={() => {}}
+                updateSelectedUserName={(name: string) => setContactName(name)}
+              />
             </div>
-            <DeviceSectionOperatorSearch
-              typeSelected={type}
-              updateSelectedUserNumber={(newValue: string) => setValue(newValue)}
-              defaultValue={''}
-              updatePhonebookContactInformation={() => {}}
-              updateSelectedUserName={(name: string) => setContactName(name)}
-            />
-          </div>
-        )}
+          )}
+        </div>
 
         <Divider paddingY='pt-8 pb-6' />
 

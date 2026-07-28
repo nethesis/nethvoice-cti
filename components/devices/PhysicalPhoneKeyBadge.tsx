@@ -8,13 +8,14 @@ interface PhysicalPhoneKeyBadgeProps {
   type: string
 }
 
-// colors as in the mockup: line/emerald, blf/blue, queue/orange, dnd/rose, speed dial/cyan
 const BADGE_STYLES: { [key: string]: string } = {
-  line: 'bg-emerald-200 text-emerald-900 dark:bg-emerald-700 dark:text-emerald-50',
-  blf: 'bg-blue-200 text-blue-900 dark:bg-blue-700 dark:text-blue-50',
-  toggleQueue: 'bg-amber-200 text-amber-900 dark:bg-amber-600 dark:text-amber-50',
-  dnd: 'bg-rose-200 text-rose-900 dark:bg-rose-700 dark:text-rose-50',
-  speed_dial: 'bg-cyan-200 text-cyan-900 dark:bg-cyan-700 dark:text-cyan-50',
+  line: 'bg-surfaceBadgeGreen dark:bg-surfaceBadgeGreenDark text-textBadgeGreen dark:text-textBadgeGreenDark',
+  blf: 'bg-surfaceBadgeBlueNethLink dark:bg-surfaceBadgeBlueNethLinkDark text-textBadgeBlueNethLink dark:text-textBadgeBlueNethLinkDark',
+  toggleQueue:
+    'bg-surfaceBadgeAmber dark:bg-surfaceBadgeAmberDark text-textBadgeAmber dark:text-textBadgeAmberDark',
+  dnd: 'bg-surfaceBadgeRose dark:bg-surfaceBadgeRoseDark text-textBadgeRose dark:text-textBadgeRoseDark',
+  speed_dial:
+    'bg-surfaceBadgeCyan dark:bg-surfaceBadgeCyanDark text-textBadgeCyan dark:text-textBadgeCyanDark',
 }
 
 const BADGE_LABELS: { [key: string]: string } = {
@@ -25,6 +26,24 @@ const BADGE_LABELS: { [key: string]: string } = {
   speed_dial: 'Devices.SPEED DIAL',
 }
 
+const TYPE_LABELS: { [key: string]: string } = {
+  line: 'Devices.Line',
+  blf: 'Devices.Busy lamp field (BLF)',
+  toggleQueue: 'Devices.Toggle login/logout queue',
+  dnd: 'Devices.Do not disturb (DND)',
+  speed_dial: 'Devices.Speed call',
+}
+
+export const getKeyTypeSearchText = (type: string) => {
+  if (!type) {
+    return ''
+  }
+  return [BADGE_LABELS[type], TYPE_LABELS[type]]
+    .filter(Boolean)
+    .map((key) => t(key as string))
+    .join(' ')
+}
+
 export const PhysicalPhoneKeyBadge: FC<PhysicalPhoneKeyBadgeProps> = ({ type }) => {
   if (!type || !BADGE_STYLES[type]) {
     return null
@@ -32,7 +51,7 @@ export const PhysicalPhoneKeyBadge: FC<PhysicalPhoneKeyBadgeProps> = ({ type }) 
 
   return (
     <span
-      className={`${BADGE_STYLES[type]} inline-flex items-center rounded-full px-2.5 py-0.5 text-xs font-medium leading-4 whitespace-nowrap`}
+      className={`${BADGE_STYLES[type]} inline-flex items-center justify-center rounded-full px-3 py-0.5 text-sm font-medium leading-5 text-center whitespace-nowrap`}
     >
       {t(BADGE_LABELS[type])}
     </span>

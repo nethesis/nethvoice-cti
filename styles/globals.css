@@ -204,6 +204,22 @@
   --color-text-badge-gray: #1F2937;
   --color-text-badge-gray-dark: #F3F4F6;
 
+  /* textBadgeGreen */
+  --color-text-badge-green: #166534;
+  --color-text-badge-green-dark: #DCFCE7;
+
+  /* textBadgeAmber */
+  --color-text-badge-amber: #92400E;
+  --color-text-badge-amber-dark: #FEF3C7;
+
+  /* textBadgeRose */
+  --color-text-badge-rose: #9F1239;
+  --color-text-badge-rose-dark: #FFE4E6;
+
+  /* textBadgeCyan */
+  --color-text-badge-cyan: #155E75;
+  --color-text-badge-cyan-dark: #CFFAFE;
+
   /* Icon call status */
   /* iconStatusOnline */
   --color-icon-status-online: #15803D;
@@ -298,6 +314,22 @@
   /* surfaceBadgeGray */
   --color-surface-badge-gray: #E5E7EB;
   --color-surface-badge-gray-dark: #4B5563;
+
+  /* surfaceBadgeGreen */
+  --color-surface-badge-green: #DCFCE7;
+  --color-surface-badge-green-dark: #15803D;
+
+  /* surfaceBadgeAmber */
+  --color-surface-badge-amber: #FEF3C7;
+  --color-surface-badge-amber-dark: #B45309;
+
+  /* surfaceBadgeRose */
+  --color-surface-badge-rose: #FFE4E6;
+  --color-surface-badge-rose-dark: #BE123C;
+
+  /* surfaceBadgeCyan */
+  --color-surface-badge-cyan: #CFFAFE;
+  --color-surface-badge-cyan-dark: #0E7490;
 
   /* surfacePresenceOnline */
   --color-surface-presence-online: #22C55E;
