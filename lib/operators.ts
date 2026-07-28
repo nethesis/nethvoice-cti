@@ -151,12 +151,31 @@ export const sortByOperatorStatus = (operator1: any, operator2: any) => {
   return 0
 }
 
-// Sort keys with graceful fallback to the display name when the
-// dedicated first/last name field is missing or empty (legacy users.json).
-const firstNameSortKey = (operator: any) =>
-  (operator?.firstname && operator.firstname.trim()) || operator?.name || ''
-const lastNameSortKey = (operator: any) =>
-  (operator?.lastname && operator.lastname.trim()) || operator?.name || ''
+const splitDisplayName = (name: string): { first: string; last: string } => {
+  const tokens = (name || '').trim().split(/\s+/).filter(Boolean)
+  if (tokens.length === 0) {
+    return { first: '', last: '' }
+  }
+  if (tokens.length === 1) {
+    return { first: tokens[0], last: tokens[0] }
+  }
+  return { first: tokens[0], last: tokens.slice(1).join(' ') }
+}
+
+const firstNameSortKey = (operator: any) => {
+  const firstname = operator?.firstname && operator.firstname.trim()
+  if (firstname) {
+    return firstname
+  }
+  return splitDisplayName(operator?.name).first || operator?.name || ''
+}
+const lastNameSortKey = (operator: any) => {
+  const lastname = operator?.lastname && operator.lastname.trim()
+  if (lastname) {
+    return lastname
+  }
+  return splitDisplayName(operator?.name).last || operator?.name || ''
+}
 
 export const sortByFirstName = (operator1: any, operator2: any) =>
   firstNameSortKey(operator1).localeCompare(firstNameSortKey(operator2), undefined, {
