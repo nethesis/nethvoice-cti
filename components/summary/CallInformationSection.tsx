@@ -38,7 +38,7 @@ const getSentimentLevel = (score?: number): SentimentLevel | undefined => {
   if (typeof score !== 'number' || Number.isNaN(score)) {
     return undefined
   }
-  if (score >= 1 && score <= 3) {
+  if (score >= 0 && score <= 3) {
     return 'negative'
   }
   if (score >= 4 && score <= 6) {
