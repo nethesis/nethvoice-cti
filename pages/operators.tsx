@@ -12,6 +12,8 @@ import {
   openShowOperatorDrawer,
   searchStringInOperator,
   sortByOperatorStatus,
+  sortByFirstName,
+  sortByLastName,
   UNAVAILABLE_STATUSES,
 } from '../lib/operators'
 import { isEmpty, debounce } from 'lodash'
@@ -36,6 +38,8 @@ const Operators: NextPage = () => {
   interface Operator {
     username?: string
     name?: string
+    firstname?: string
+    lastname?: string
     mainPresence?: string
     avatarBase64?: string
     favorite?: boolean
@@ -171,6 +175,20 @@ const Operators: NextPage = () => {
             // Sort operators reverse alphabetically
             filteredOperators?.sort((a: any, b: any) => (a?.name < b?.name ? 1 : -1))
             break
+          case 'firstname_az':
+            // Sort by first name (fallback to display name when missing)
+            filteredOperators?.sort((a: any, b: any) => sortByFirstName(a, b))
+            break
+          case 'firstname_za':
+            filteredOperators?.sort((a: any, b: any) => sortByFirstName(b, a))
+            break
+          case 'lastname_az':
+            // Sort by last name (fallback to display name when missing)
+            filteredOperators?.sort((a: any, b: any) => sortByLastName(a, b))
+            break
+          case 'lastname_za':
+            filteredOperators?.sort((a: any, b: any) => sortByLastName(b, a))
+            break
         }
 
         filteredOperators = filteredOperators?.filter((op: any) => {
@@ -200,6 +218,20 @@ const Operators: NextPage = () => {
           case 'za':
             // Sort operators reverse alphabetically
             filteredOperators?.sort((a: any, b: any) => (a?.name < b?.name ? 1 : -1))
+            break
+          case 'firstname_az':
+            // Sort by first name (fallback to display name when missing)
+            filteredOperators?.sort((a: any, b: any) => sortByFirstName(a, b))
+            break
+          case 'firstname_za':
+            filteredOperators?.sort((a: any, b: any) => sortByFirstName(b, a))
+            break
+          case 'lastname_az':
+            // Sort by last name (fallback to display name when missing)
+            filteredOperators?.sort((a: any, b: any) => sortByLastName(a, b))
+            break
+          case 'lastname_za':
+            filteredOperators?.sort((a: any, b: any) => sortByLastName(b, a))
             break
           case 'favorites':
             filteredOperators?.sort(sortByProperty('name'))

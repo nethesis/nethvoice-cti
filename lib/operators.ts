@@ -151,6 +151,44 @@ export const sortByOperatorStatus = (operator1: any, operator2: any) => {
   return 0
 }
 
+const splitDisplayName = (name: string): { first: string; last: string } => {
+  const tokens = (name || '').trim().split(/\s+/).filter(Boolean)
+  if (tokens.length === 0) {
+    return { first: '', last: '' }
+  }
+  if (tokens.length === 1) {
+    return { first: tokens[0], last: tokens[0] }
+  }
+  return { first: tokens[0], last: tokens.slice(1).join(' ') }
+}
+
+const firstNameSortKey = (operator: any) => {
+  const firstname = operator?.firstname && operator.firstname.trim()
+  if (firstname) {
+    return firstname
+  }
+  return splitDisplayName(operator?.name).first || operator?.name || ''
+}
+const lastNameSortKey = (operator: any) => {
+  const lastname = operator?.lastname && operator.lastname.trim()
+  if (lastname) {
+    return lastname
+  }
+  return splitDisplayName(operator?.name).last || operator?.name || ''
+}
+
+export const sortByFirstName = (operator1: any, operator2: any) =>
+  firstNameSortKey(operator1).localeCompare(firstNameSortKey(operator2), undefined, {
+    sensitivity: 'base',
+    numeric: true,
+  })
+
+export const sortByLastName = (operator1: any, operator2: any) =>
+  lastNameSortKey(operator1).localeCompare(lastNameSortKey(operator2), undefined, {
+    sensitivity: 'base',
+    numeric: true,
+  })
+
 export const callOperator = (operator: any, event: any = undefined) => {
   const phoneNumber = operator?.endpoints?.mainextension?.[0]?.id
   callPhoneNumber(phoneNumber)

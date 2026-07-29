@@ -73,6 +73,10 @@ export const Filter = forwardRef<HTMLButtonElement, FilterProps>(
         { value: 'extension', label: `${t('Operators.Extension') || ''}` },
         { value: 'az', label: `${t('Operators.Alphabetic A-Z') || ''}` },
         { value: 'za', label: `${t('Operators.Alphabetic Z-A') || ''}` },
+        { value: 'firstname_az', label: `${t('Operators.First name A-Z') || ''}` },
+        { value: 'firstname_za', label: `${t('Operators.First name Z-A') || ''}` },
+        { value: 'lastname_az', label: `${t('Operators.Last name A-Z') || ''}` },
+        { value: 'lastname_za', label: `${t('Operators.Last name Z-A') || ''}` },
       ],
     }
 
@@ -107,6 +111,10 @@ export const Filter = forwardRef<HTMLButtonElement, FilterProps>(
         { value: 'extension', label: `${t('Operators.Extension') || ''}` },
         { value: 'az', label: `${t('Operators.Alphabetic A-Z') || ''}` },
         { value: 'za', label: `${t('Operators.Alphabetic Z-A') || ''}` },
+        { value: 'firstname_az', label: `${t('Operators.First name A-Z') || ''}` },
+        { value: 'firstname_za', label: `${t('Operators.First name Z-A') || ''}` },
+        { value: 'lastname_az', label: `${t('Operators.Last name A-Z') || ''}` },
+        { value: 'lastname_za', label: `${t('Operators.Last name Z-A') || ''}` },
       ],
     }
 
