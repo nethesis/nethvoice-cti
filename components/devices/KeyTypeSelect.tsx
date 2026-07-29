@@ -4,12 +4,15 @@
 import { FC, useEffect, useState } from 'react'
 import { t } from 'i18next'
 import classNames from 'classnames'
+import { useTheme } from '../../theme/Context'
+import { PHONE_KEY_LABEL_CLASSES, PHONE_KEY_TYPES } from './phoneKeys'
 
 interface keyTypeSelectProps {
   defaultSelectedType?: string
   updateSelectedTypeKey: Function
   inputMissing?: boolean
   helperText?: string
+  label?: string
 }
 
 export const KeyTypeSelect: FC<keyTypeSelectProps> = ({
@@ -17,71 +20,47 @@ export const KeyTypeSelect: FC<keyTypeSelectProps> = ({
   updateSelectedTypeKey,
   inputMissing,
   helperText,
+  label,
 }) => {
-  const [keysTypeSelected, setKeysTypeSelected]: any = useState<string | null>(
-    defaultSelectedType || null,
-  )
-
-  const typesList = [
-    { id: 1, description: 'blf', label: `${t('Devices.Busy lamp field (BLF)')}` },
-    { id: 2, description: 'line', label: `${t('Devices.Line')}` },
-    { id: 3, description: 'dnd', label: `${t('Devices.Do not disturb (DND)')}` },
-    { id: 4, description: 'speed_dial', label: `${t('Devices.Speed call')}` },
-    { id: 5, description: 'toggleQueue', label: `${t('Devices.Toggle login/logout queue')}` },
-  ]
-
-  const [announcementSelected, setAnnouncementSelected] = useState<any>(null)
-
-  function changeAnnouncementSelect(event: any) {
-    const listAnnouncementValue = event.target.value
-
-    const selectedAnnouncement = typesList.find(
-      (announcementItem: any) => announcementItem.id === parseInt(listAnnouncementValue),
-    )
-
-    if (selectedAnnouncement) {
-      setKeysTypeSelected(selectedAnnouncement)
-      updateSelectedTypeKey(selectedAnnouncement?.description)
-      setAnnouncementSelected(listAnnouncementValue)
-    }
-  }
+  const { input: inputTheme } = useTheme().theme
+  const [selectedType, setSelectedType] = useState<string>(defaultSelectedType || '')
 
   useEffect(() => {
-    if (defaultSelectedType && announcementSelected === null) {
-      const selectedAnnouncement = typesList.find(
-        (announcementItem: any) => announcementItem.description === defaultSelectedType,
-      )
-      setKeysTypeSelected(selectedAnnouncement)
-      setAnnouncementSelected(selectedAnnouncement?.id)
-    }
-    // eslint-disable-next-line react-hooks/exhaustive-deps
+    setSelectedType(defaultSelectedType || '')
   }, [defaultSelectedType])
+
+  const changeType = (event: any) => {
+    const newType = event.target.value
+    setSelectedType(newType)
+    updateSelectedTypeKey(newType)
+  }
 
   return (
     <div className='flex flex-col gap-2'>
-      <span className='text-sm font-medium leading-5 text-secondaryNeutral dark:text-secondaryNeutralDark'>
-        {t('Devices.Key type')}
-      </span>
+      <span className={PHONE_KEY_LABEL_CLASSES}>{label || t('Devices.Key type')}</span>
 
       <select
         id='types'
         name='types'
         className={classNames(
-          inputMissing
-            ? 'border-rose-500 focus:border-rose-500 focus:ring-rose-500 dark:border-rose-400'
-            : 'border-gray-300 focus:border-primaryLight focus:ring-primaryLight dark:border-gray-600 dark:focus:border-primaryDark dark:focus:ring-primaryDark',
-          'block w-full rounded-md border bg-bgInput dark:bg-bgInputDark px-3 py-2 text-sm',
-          announcementSelected
-            ? 'text-secondaryNeutral dark:text-secondaryNeutralDark'
-            : 'text-gray-400 dark:text-gray-500',
+          inputTheme.base,
+          inputTheme.rounded.base,
+          inputTheme.size.base,
+          inputMissing ? inputTheme.colors.error : inputTheme.colors.gray,
+          'border',
+          !selectedType && 'text-placeHolderInputText dark:text-placeHolderInputTextDark',
         )}
-        value={announcementSelected || ''}
-        onChange={changeAnnouncementSelect}
+        value={selectedType}
+        onChange={changeType}
       >
-        {!announcementSelected && <option value=''>{t('Devices.Choose type')}</option>}
-        {Object.keys(typesList).map((key: any) => (
-          <option key={key} value={typesList[key].id}>
-            {typesList[key].label}
+        {!selectedType && (
+          <option value='' disabled hidden>
+            {t('Devices.Choose type')}
+          </option>
+        )}
+        {PHONE_KEY_TYPES.map((keyType) => (
+          <option key={keyType.value} value={keyType.value}>
+            {t(keyType.label)}
           </option>
         ))}
       </select>

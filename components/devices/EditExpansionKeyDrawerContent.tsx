@@ -10,7 +10,6 @@ import { Divider } from '../common/Divider'
 import { closeSideDrawer } from '../../lib/utils'
 import { RootState } from '../../store'
 import { DeviceSectionOperatorSearch } from './DeviceSectionOperatorSearch'
-import { KeyPositionInput } from './KeyPositionInput'
 import { KeyTypeSelect } from './KeyTypeSelect'
 import {
   getDefaultPhoneKeyLabel,
@@ -18,66 +17,58 @@ import {
   PHONE_KEY_LABEL_CLASSES,
 } from './phoneKeys'
 
-export interface AddPhoneKeyDrawerContentProps extends ComponentPropsWithRef<'div'> {
+export interface EditExpansionKeyDrawerContentProps extends ComponentPropsWithRef<'div'> {
   config: {
-    // first free position of the phone, used as default value
-    defaultPosition: number
-    maxPosition: number
-    onAdd: (key: { position: number; type: string; value: string; label: string }) => void
+    keyNumber: number
+    type: string
+    value: string
+    label: string
+    onSave: (key: { type: string; value: string; label: string }) => void
   }
 }
 
-export const AddPhoneKeyDrawerContent = forwardRef<
+export const EditExpansionKeyDrawerContent = forwardRef<
   HTMLButtonElement,
-  AddPhoneKeyDrawerContentProps
+  EditExpansionKeyDrawerContentProps
 >(({ config, className, ...props }, ref) => {
   const operators: any = useSelector((state: RootState) => state.operators)
 
-  const [position, setPosition] = useState<number>(config?.defaultPosition || 1)
-  const [type, setType] = useState<string>('')
-  const [value, setValue] = useState<string>('')
-  const [keyLabel, setKeyLabel] = useState<string>('')
+  const [type, setType] = useState<string>(config?.type || '')
+  const [value, setValue] = useState<string>(config?.value || '')
+  const [keyLabel, setKeyLabel] = useState<string>(config?.label || '')
 
   const needsValue = isPhoneKeyTypeWithValue(type)
-  const isAddDisabled = type === '' || (needsValue && value === '')
+  const isSaveDisabled = type === '' || (needsValue && value === '')
 
-  const addKey = () => {
-    if (isAddDisabled) {
+  const saveKey = () => {
+    if (isSaveDisabled) {
       return
     }
     if (!needsValue) {
-      config?.onAdd({ position, type, value: '', label: getDefaultPhoneKeyLabel(type) })
-      closeSideDrawer()
-      return
+      config?.onSave({ type, value: '', label: getDefaultPhoneKeyLabel(type) })
+    } else {
+      config?.onSave({
+        type,
+        value,
+        label: keyLabel || operators?.extensions[value]?.name || value,
+      })
     }
-    config?.onAdd({
-      position,
-      type,
-      value,
-      label: keyLabel || operators?.extensions[value]?.name || value,
-    })
     closeSideDrawer()
   }
 
   return (
     <>
-      <DrawerHeader title={t('Devices.Add key')} onClose={closeSideDrawer} />
+      <DrawerHeader
+        title={`${t('Devices.Edit expansion key', { number: config?.keyNumber })}`}
+        onClose={closeSideDrawer}
+      />
       <div className='px-6 pb-6'>
         <Divider paddingY='pb-12' />
 
         <div className='flex flex-col gap-8'>
-          {/* key position */}
-          <div className='flex flex-col gap-2'>
-            <span className={PHONE_KEY_LABEL_CLASSES}>{t('Devices.Key position')}</span>
-            <KeyPositionInput
-              value={position}
-              max={config?.maxPosition || 1}
-              onChange={setPosition}
-            />
-          </div>
-
-          {/* key type */}
           <KeyTypeSelect
+            defaultSelectedType={config?.type}
+            label={t('Devices.Line key type') || ''}
             updateSelectedTypeKey={(newType: string) => {
               setType(newType)
               setValue('')
@@ -86,7 +77,6 @@ export const AddPhoneKeyDrawerContent = forwardRef<
             helperText={t('Devices.Choose the action assigned to this key') || ''}
           />
 
-          {/* target of the key, only for the types that need one */}
           {needsValue && (
             <div className='flex flex-col gap-2'>
               <span className={PHONE_KEY_LABEL_CLASSES}>
@@ -111,8 +101,8 @@ export const AddPhoneKeyDrawerContent = forwardRef<
           <Button variant='ghost' onClick={closeSideDrawer}>
             {t('Common.Cancel')}
           </Button>
-          <Button variant='primary' onClick={addKey} disabled={isAddDisabled}>
-            {t('Common.Add')}
+          <Button variant='primary' onClick={saveKey} disabled={isSaveDisabled}>
+            {t('Common.Edit')}
           </Button>
         </div>
       </div>
@@ -120,4 +110,4 @@ export const AddPhoneKeyDrawerContent = forwardRef<
   )
 })
 
-AddPhoneKeyDrawerContent.displayName = 'AddPhoneKeyDrawerContent'
+EditExpansionKeyDrawerContent.displayName = 'EditExpansionKeyDrawerContent'

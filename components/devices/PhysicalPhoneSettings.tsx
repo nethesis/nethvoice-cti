@@ -1,23 +1,32 @@
 // Copyright (C) 2025 Nethesis S.r.l.
 // SPDX-License-Identifier: AGPL-3.0-or-later
 
-import { FC, useEffect, useRef, useState } from 'react'
+import { FC, MutableRefObject, useEffect, useRef, useState } from 'react'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import {
-  faAngleLeft,
   faCircleInfo,
   faCirclePlus,
   faEye,
   faEyeSlash,
   faFloppyDisk,
 } from '@fortawesome/free-solid-svg-icons'
+import { useSelector } from 'react-redux'
+import { RootState } from '../../store'
 import { t } from 'i18next'
 import classNames from 'classnames'
-import { Button, InlineNotification, TextInput } from '../common'
+import { Button, ConfirmationModal, InlineNotification, TextInput } from '../common'
 import { CustomThemedTooltip } from '../common/CustomThemedTooltip'
 import { LineKeysSection } from './LineKeysSection'
-import { getDevicesPinStatusForDevice, reloadPhysicalPhone, setPin } from '../../lib/devices'
+import { ExpansionModuleSection } from './ExpansionModuleSection'
+import {
+  getDevicesPinStatusForDevice,
+  getPhoneKeysConfiguration,
+  reloadPhysicalPhone,
+  setPin,
+} from '../../lib/devices'
+import { getJSONItem, setJSONItem } from '../../lib/storage'
 import { openToast } from '../../lib/utils'
+import { generateRandomPin, notifyPhoneConfigurationSaved } from './phoneKeys'
 
 export interface PhysicalPhoneSettingsProps {
   // physical phone endpoint, as returned by the user profile
@@ -27,10 +36,9 @@ export interface PhysicalPhoneSettingsProps {
   onBack: () => void
 }
 
-type PhoneSettingsTab = 'lineKeys' | 'generalSettings'
+type PhoneSettingsTab = 'lineKeys' | 'generalSettings' | number
 
-const generateRandomPin = () =>
-  Array.from({ length: 4 }, () => Math.floor(Math.random() * 10)).join('')
+const EXPANSION_MODULES_STORAGE_KEY = 'phone-expansion-modules'
 
 export const PhysicalPhoneSettings: FC<PhysicalPhoneSettingsProps> = ({
   phone,
@@ -39,6 +47,92 @@ export const PhysicalPhoneSettings: FC<PhysicalPhoneSettingsProps> = ({
 }) => {
   const [currentTab, setCurrentTab] = useState<PhoneSettingsTab>('lineKeys')
   const phoneName = phone?.description || t('Devices.IP phone')
+  const operators: any = useSelector((state: RootState) => state.operators)
+
+  const [expansionModules, setExpansionModules] = useState(0)
+  const [maxExpansionModules, setMaxExpansionModules] = useState(0)
+  const [expansionKeysPerModule, setExpansionKeysPerModule] = useState(0)
+  const [showAddModuleModal, setShowAddModuleModal] = useState(false)
+  const cancelAddModuleRef = useRef() as MutableRefObject<HTMLButtonElement>
+
+  useEffect(() => {
+    const macAddress = operators?.extensions?.[phone?.id]?.mac?.toUpperCase()
+    if (!macAddress) {
+      return
+    }
+    const loadExpansionModules = async () => {
+      try {
+        const phoneKeys = await getPhoneKeysConfiguration(macAddress)
+        if (!phoneKeys) {
+          return
+        }
+        const { configuration, expansionKeysPerModule, expansionModulesCount } = phoneKeys
+        setMaxExpansionModules(expansionModulesCount)
+        setExpansionKeysPerModule(expansionKeysPerModule)
+        if (!expansionKeysPerModule || !expansionModulesCount) {
+          console.warn(
+            'This phone model does not support expansion modules',
+            configuration?.model,
+            { expansionKeysPerModule, expansionModulesCount },
+          )
+          return
+        }
+        let lastConfiguredKey = 0
+        for (let i = 1; i <= expansionKeysPerModule * expansionModulesCount; i++) {
+          if (configuration?.variables?.[`expkey_type_${i}`]) {
+            lastConfiguredKey = i
+          }
+        }
+        const modulesFromKeys = Math.ceil(lastConfiguredKey / expansionKeysPerModule)
+        const storedModules = getJSONItem(EXPANSION_MODULES_STORAGE_KEY)?.[macAddress] || 0
+        setExpansionModules(
+          Math.min(Math.max(modulesFromKeys, storedModules), expansionModulesCount),
+        )
+      } catch (error) {
+        console.error('Cannot retrieve expansion modules information', error)
+      }
+    }
+    loadExpansionModules()
+  }, [operators?.extensions, phone?.id])
+
+  useEffect(() => {
+    if (typeof currentTab === 'number' && currentTab >= expansionModules) {
+      setCurrentTab('generalSettings')
+    }
+  }, [currentTab, expansionModules])
+
+  const rememberExpansionModules = (modules: number) => {
+    const macAddress = operators?.extensions?.[phone?.id]?.mac?.toUpperCase()
+    if (!macAddress) {
+      return
+    }
+    const storedModules = getJSONItem(EXPANSION_MODULES_STORAGE_KEY) || {}
+    setJSONItem(EXPANSION_MODULES_STORAGE_KEY, { ...storedModules, [macAddress]: modules })
+  }
+
+  const addExpansionModule = () => {
+    const newModules = expansionModules + 1
+    setExpansionModules(newModules)
+    rememberExpansionModules(newModules)
+    setShowAddModuleModal(false)
+    setCurrentTab(newModules - 1)
+    openToast(
+      'success',
+      `${t('Devices.Expansion module added description')}`,
+      `${t('Devices.Expansion module added')}`,
+    )
+  }
+
+  const removeExpansionModule = (moduleIndex: number) => {
+    const newModules = Math.max(expansionModules - 1, 0)
+    setExpansionModules(newModules)
+    rememberExpansionModules(newModules)
+    if (newModules === 0) {
+      setCurrentTab('generalSettings')
+    } else {
+      setCurrentTab(Math.max(moduleIndex - 1, 0))
+    }
+  }
 
   // the pin is read here because the line keys are saved with the same phone configuration
   const [pinValue, setPinValue] = useState('')
@@ -89,11 +183,7 @@ export const PhysicalPhoneSettings: FC<PhysicalPhoneSettingsProps> = ({
         await reloadPhysicalPhone(phone?.id)
       }
       setSavedPinValue(pinValue)
-      openToast(
-        'success',
-        `${t('Devices.Phone configuration saved description', { name: phoneName })}`,
-        `${t('Devices.Configuration saved')}`,
-      )
+      notifyPhoneConfigurationSaved(phoneName)
     } catch (error) {
       setSavePinError('Cannot save the pin')
     } finally {
@@ -104,23 +194,39 @@ export const PhysicalPhoneSettings: FC<PhysicalPhoneSettingsProps> = ({
   const tabs: { id: PhoneSettingsTab; label: string }[] = [
     { id: 'lineKeys', label: t('Devices.Line keys') },
     { id: 'generalSettings', label: t('Devices.General settings') },
+    ...Array.from({ length: expansionModules }, (_, index) => ({
+      id: index as PhoneSettingsTab,
+      label: t('Devices.Expansion module', { number: index + 1 }),
+    })),
   ]
 
   return (
-    <div className='flex flex-col gap-8 flex-1 min-h-0'>
-      {/* back link, title and expansion modules */}
-      <div className='flex flex-col gap-4'>
-        <div>
-          <Button variant='ghost' onClick={onBack}>
-            <FontAwesomeIcon icon={faAngleLeft} className='mr-3 h-4 w-4' />
-            <span>{t('Devices.Back to Devices')}</span>
-          </Button>
-        </div>
+    <div className='flex flex-col gap-8 flex-1 min-h-0 min-w-0 pr-1'>
+      {/* breadcrumbs, title and expansion modules */}
+      <div className='flex flex-col gap-2'>
+        <p className='text-xs font-medium leading-4 text-tertiaryNeutral dark:text-tertiaryNeutralDark'>
+          <button
+            onClick={onBack}
+            className='text-textLink dark:text-textLinkDark hover:underline cursor-pointer'
+          >
+            {t('Devices.Devices')}
+          </button>
+          <span className='mx-1'>{'>'}</span>
+          <span>{t('Devices.Phone settings', { name: phoneName })}</span>
+        </p>
         <div className='flex items-center justify-between gap-4'>
-          <h2 className='text-lg font-medium leading-7 text-secondaryNeutral dark:text-secondaryNeutralDark'>
+          <h2 className='text-xl font-medium leading-7 text-primaryNeutral dark:text-primaryNeutralDark'>
             {t('Devices.Phone settings', { name: phoneName })}
           </h2>
-          <Button variant='ghost' disabled>
+          <Button
+            variant='ghost'
+            onClick={() => setShowAddModuleModal(true)}
+            disabled={
+              maxExpansionModules === 0 ||
+              expansionKeysPerModule === 0 ||
+              expansionModules >= maxExpansionModules
+            }
+          >
             <FontAwesomeIcon icon={faCirclePlus} className='mr-3 h-4 w-4' />
             <span>{t('Devices.Add expansion module')}</span>
           </Button>
@@ -131,11 +237,11 @@ export const PhysicalPhoneSettings: FC<PhysicalPhoneSettingsProps> = ({
       <div className='flex gap-8 border-b border-layoutDivider dark:border-layoutDividerDark'>
         {tabs.map((tab) => (
           <button
-            key={tab.id}
+            key={String(tab?.id)}
             onClick={() => setCurrentTab(tab.id)}
             className={classNames(
               'flex flex-col items-center justify-center px-1 pb-4 text-sm font-medium leading-5 cursor-pointer',
-              currentTab === tab.id
+              currentTab === tab?.id
                 ? 'border-b-2 border-primary dark:border-primaryDark text-primary dark:text-primaryDark'
                 : 'text-tertiaryNeutral dark:text-tertiaryNeutralDark',
             )}
@@ -145,13 +251,16 @@ export const PhysicalPhoneSettings: FC<PhysicalPhoneSettingsProps> = ({
         ))}
       </div>
 
-      {currentTab === 'lineKeys' ? (
-        <LineKeysSection
+      {typeof currentTab === 'number' ? (
+        <ExpansionModuleSection
+          key={currentTab}
           deviceId={phone?.id}
           phoneName={phoneName}
-          pinValue={pinValue}
-          pinEnabled={pinStatus}
+          moduleIndex={currentTab}
+          onRemoved={() => removeExpansionModule(currentTab)}
         />
+      ) : currentTab === 'lineKeys' ? (
+        <LineKeysSection deviceId={phone?.id} phoneName={phoneName} />
       ) : (
         <div className='flex flex-col gap-6 items-start'>
           {pinStatus ? (
@@ -223,6 +332,18 @@ export const PhysicalPhoneSettings: FC<PhysicalPhoneSettingsProps> = ({
           )}
         </div>
       )}
+
+      <ConfirmationModal
+        show={showAddModuleModal}
+        focus={cancelAddModuleRef}
+        title={t('Devices.Add expansion module')}
+        description={t('Devices.Add expansion module modal message')}
+        confirmLabel={t('Common.Add')}
+        confirmVariant='primary'
+        type='info'
+        onConfirm={addExpansionModule}
+        onClose={() => setShowAddModuleModal(false)}
+      />
     </div>
   )
 }

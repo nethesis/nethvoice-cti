@@ -85,7 +85,8 @@
     "The summary of your call with {{contact}} is ready": "Il riepilogo della tua chiamata con {{contact}} è pronto",
     "View summary": "Visualizza riepilogo",
     "Show": "Visualizza",
-    "Add": "Aggiungi"
+    "Add": "Aggiungi",
+    "Remove": "Rimuovi"
   },
   "Login": {
     "User": "Utente",
@@ -1159,8 +1160,27 @@
     "Phone configuration saved description": "La configurazione di {{name}} è stata salvata.",
     "Add key unavailable tooltip": "Numero massimo di tasti raggiunto.\nRimuovi un tasto per aggiungerne uno nuovo.",
     "Add expansion module": "Aggiungi modulo di espansione",
-    "Back to Devices": "Torna a Dispositivi",
-    "Cannot save the pin": "Impossibile salvare il PIN."
+    "Cannot save the pin": "Impossibile salvare il PIN.",
+    "Expansion module": "Modulo di espansione {{number}}",
+    "Expansion module description": "Configura i tasti linea aggiuntivi disponibili sul modulo di espansione collegato.",
+    "Expansion module added": "Modulo di espansione aggiunto",
+    "Expansion module added description": "Configura i tasti del nuovo modulo di espansione.",
+    "Expansion module removed": "Modulo di espansione rimosso",
+    "Expansion module removed description": "Il modulo di espansione e i suoi tasti sono stati rimossi.",
+    "Add expansion module modal message": "Aggiungi un nuovo modulo di espansione per configurare tasti aggiuntivi su questo dispositivo. Verrà aggiunta automaticamente una nuova scheda.",
+    "Remove expansion module": "Rimuovi modulo di espansione",
+    "Remove expansion module modal message": "La rimozione di {{module}} eliminerà la configurazione dei suoi tasti. L'azione non può essere annullata.",
+    "Edit expansion key": "Modifica tasto di espansione {{number}}",
+    "Line key type": "Tipo di tasto linea",
+    "KEY": "TASTO {{number}}",
+    "Remove module": "Rimuovi modulo",
+    "Use number": "Usa \"{{number}}\"",
+    "No matching contact": "Nessun contatto trovato con questo numero",
+    "No matching extension": "Nessun operatore trovato con questo nome o interno",
+    "Cannot save configuration": "Impossibile salvare la configurazione del telefono.",
+    "Incomplete keys": "Tasti incompleti",
+    "Incomplete keys description": "Alcuni tasti richiedono un interno o un numero prima di poter salvare la configurazione.",
+    "Type a number to use it directly": "Digita un numero per usarlo come destinazione del tasto"
   },
   "DropdownContent": {
     "Microphones": "MICROFONI",

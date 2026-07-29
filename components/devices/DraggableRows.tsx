@@ -701,10 +701,12 @@ export default function DraggableRows({
                         {/* Search user input */}
                         <DeviceSectionOperatorSearch
                           typeSelected={keysTypeSelected}
-                          updateSelectedUserNumber={updateSelectedUserNumber}
-                          defaultValue={buttonRow?.label}
-                          updatePhonebookContactInformation={updatePhonebookContactInformation}
-                          updateSelectedUserName={updateSelectedUserName}
+                          value={buttonRow?.value}
+                          label={buttonRow?.label}
+                          onChange={({ value, label }) => {
+                            updateSelectedUserNumber(value)
+                            updateSelectedUserName(label)
+                          }}
                         ></DeviceSectionOperatorSearch>
                       </>
                     )}

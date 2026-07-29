@@ -228,7 +228,7 @@ const Settings: NextPage = () => {
               </aside>
               {/* main content */}
               <div
-                className={`lg:flex-1 lg:min-w-0 lg:pl-6 flex flex-col min-h-0 lg:overflow-y-auto ${customScrollbarClass}`}
+                className={`lg:flex-1 lg:min-w-0 lg:pl-6 lg:pr-4 flex flex-col min-h-0 lg:overflow-y-auto ${customScrollbarClass}`}
               >
                 {renderCurrentSection()}
               </div>

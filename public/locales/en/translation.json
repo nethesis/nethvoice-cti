@@ -99,7 +99,8 @@
     "The summary of your call with {{contact}} is ready": "The summary of your call with {{contact}} is ready",
     "View summary": "View summary",
     "Show": "Show",
-    "Add": "Add"
+    "Add": "Add",
+    "Remove": "Remove"
   },
   "Login": {
     "User": "Username",
@@ -1178,8 +1179,27 @@
     "Phone configuration saved description": "The configuration for {{name}} has been saved.",
     "Add key unavailable tooltip": "Maximum number of keys reached.\nRemove a key to add a new one.",
     "Add expansion module": "Add expansion module",
-    "Back to Devices": "Back to Devices",
-    "Cannot save the pin": "Cannot save the PIN."
+    "Cannot save the pin": "Cannot save the PIN.",
+    "Expansion module": "Expansion module {{number}}",
+    "Expansion module description": "Configure the additional line keys available on the connected expansion module.",
+    "Expansion module added": "Expansion module added",
+    "Expansion module added description": "Configure the keys of the new expansion module.",
+    "Expansion module removed": "Expansion module removed",
+    "Expansion module removed description": "The expansion module and its keys have been removed.",
+    "Add expansion module modal message": "Add a new expansion module to configure additional keys for this device. A new tab will be added automatically.",
+    "Remove expansion module": "Remove expansion module",
+    "Remove expansion module modal message": "Removing {{module}} will delete its key configuration. This action cannot be undone.",
+    "Edit expansion key": "Edit expansion key {{number}}",
+    "Line key type": "Line key type",
+    "KEY": "KEY {{number}}",
+    "Remove module": "Remove module",
+    "Use number": "Use \"{{number}}\"",
+    "No matching contact": "No contact found with this number",
+    "No matching extension": "No operator found with this name or extension",
+    "Cannot save configuration": "Cannot save the phone configuration.",
+    "Incomplete keys": "Incomplete keys",
+    "Incomplete keys description": "Some keys need an extension or a number before the configuration can be saved.",
+    "Type a number to use it directly": "Type a number to use it as the target of the key"
   },
   "DropdownContent": {
     "Microphones": "MICROPHONES",

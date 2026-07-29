@@ -57,6 +57,38 @@ export const openAddPhoneKeyDrawer = (config: {
   })
 }
 
+export const openEditExpansionKeyDrawer = (config: {
+  keyNumber: number
+  type: string
+  value: string
+  label: string
+  onSave: (key: { type: string; value: string; label: string }) => void
+}) => {
+  store.dispatch.sideDrawer.update({
+    isShown: true,
+    contentType: 'showEditExpansionKey',
+    config,
+  })
+}
+
+export const getPhoneKeysConfiguration = async (macAddress: string) => {
+  const configuration = await getPhysicalDeviceButtonConfiguration(macAddress)
+  if (!configuration) {
+    return null
+  }
+  const model = await getPhoneModelData(configuration?.model)
+  const toNumber = (value: any) => {
+    const parsedValue = parseInt(value)
+    return isNaN(parsedValue) ? 0 : parsedValue
+  }
+  return {
+    configuration,
+    lineKeysCount: toNumber(model?.variables?.cap_linekey_count),
+    expansionKeysPerModule: toNumber(model?.variables?.cap_expkey_count),
+    expansionModulesCount: toNumber(model?.variables?.cap_expmodule_count),
+  }
+}
+
 export const getInputOutputLocalStorageValue = (currentUsername: string) => {
   const audioInputType = getJSONItem('phone-island-audio-input-device') || ''
   const audioOutputType = getJSONItem('phone-island-audio-output-device') || ''

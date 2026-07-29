@@ -5,7 +5,7 @@ import { FC, useEffect, useMemo, useState } from 'react'
 import { t } from 'i18next'
 import { Combobox, ComboboxInput, ComboboxOption, ComboboxOptions } from '@headlessui/react'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
-import { faBuilding, faCircleUser } from '@fortawesome/free-solid-svg-icons'
+import { faBuilding, faCircleUser, faPhone } from '@fortawesome/free-solid-svg-icons'
 import { cloneDeep, debounce } from 'lodash'
 import { useSelector } from 'react-redux'
 import { RootState } from '../../store'
@@ -17,20 +17,18 @@ import { useTheme } from '../../theme/Context'
 
 interface DeviceSectionOperatorSearchProps {
   typeSelected: string
-  updateSelectedUserNumber: Function
-  updateSelectedUserName: Function
-  // Check if row is not empty
-  defaultValue?: any
-  //check if a user is a operator or a contact
-  updatePhonebookContactInformation: Function
+  value?: string
+  label?: string
+  onChange: (key: { value: string; label: string }) => void
 }
+
+const isPhoneNumberText = (text: string) => /^\+?[0-9\s]+$/.test(text.trim())
 
 export const DeviceSectionOperatorSearch: FC<DeviceSectionOperatorSearchProps> = ({
   typeSelected,
-  updateSelectedUserNumber,
-  updateSelectedUserName,
-  defaultValue,
-  updatePhonebookContactInformation,
+  value,
+  label,
+  onChange,
 }) => {
   const { input: inputTheme } = useTheme().theme
   const [query, setQuery] = useState('')
@@ -39,7 +37,12 @@ export const DeviceSectionOperatorSearch: FC<DeviceSectionOperatorSearchProps> =
 
   const operators: any = useSelector((state: RootState) => state.operators)
 
-  const [selectedInformationUser, setSelectedInformationUser] = useState<any>([])
+  const [inputText, setInputText] = useState<string>(() => {
+    if (label && value) {
+      return `${label} (${value})`
+    }
+    return label || value || ''
+  })
 
   const [phonebookError, setPhonebookError] = useState('')
 
@@ -187,71 +190,61 @@ export const DeviceSectionOperatorSearch: FC<DeviceSectionOperatorSearchProps> =
       debouncedChangeQuery.cancel()
     }
   }, [debouncedChangeQuery])
-
-  const [showUserList, setShowUserList] = useState(false)
-  const [userFullInformation, setUserFullInformation] = useState<any>(null)
-
   const resultSelected = (result: any) => {
+    if (!result) {
+      return
+    }
     const phoneProps = ['extension', 'cellphone', 'homephone', 'workphone']
-    let selectedName = ''
-    let selectNumber = ''
-    let selectedContactsPhonebook = ''
 
-    if (result?.name) {
-      selectedName = result?.name
+    if (result.resultType === 'manual') {
+      applyFreeText(query)
+      return
     }
 
-    if (result) {
-      const operatorId =
-        result?.resultType === 'operator' ? result?.endpoints?.mainextension?.[0]?.id : ''
+    const operatorId =
+      result.resultType === 'operator' ? result?.endpoints?.mainextension?.[0]?.id : ''
+    const numberTypeFromId = result?.id?.split('-')?.[1]
+    const selectedNumber =
+      numberTypeFromId && phoneProps.includes(numberTypeFromId)
+        ? result[numberTypeFromId] || ''
+        : operatorId || phoneProps.map((prop) => result[prop]).find((prop) => prop) || ''
+    const selectedName =
+      result?.name?.trim() || result?.displayName?.trim() || result?.company?.trim() || ''
 
-      const numberTypeFromId = result?.id?.split('-')?.[1]
-
-      if (numberTypeFromId && phoneProps.includes(numberTypeFromId)) {
-        selectNumber = result[numberTypeFromId] || ''
-      } else {
-        selectNumber =
-          operatorId || phoneProps.map((prop) => result[prop]).find((value) => value) || ''
-      }
-
-      if (result?.resultType === 'contact') {
-        selectedContactsPhonebook =
-          result?.name?.trim() || result?.displayName?.trim() || result?.company?.trim() || '-'
-      }
-    }
-    if (selectNumber !== '') {
-      updateSelectedUserNumber(selectNumber)
-    }
-    let fullInformation = ''
-
-    // check if selected user is an operator or a contact
-    if (selectNumber && selectedName && result?.resultType === 'operator') {
-      fullInformation = `${selectedName} (${selectNumber.toString()})`
-      updatePhonebookContactInformation(false)
-    } else if (selectNumber && selectedContactsPhonebook && result?.resultType === 'contact') {
-      fullInformation = `${selectedContactsPhonebook}`
-      updatePhonebookContactInformation(true)
-      setUserFullInformation(selectedContactsPhonebook)
-      updateSelectedUserName(fullInformation)
-    } else if (defaultValue !== '') {
-      fullInformation = defaultValue
-    }
-
-    // in case of missing name match
-    if (query && result?.resultType === 'manual') {
-      updateSelectedUserNumber(query)
-      fullInformation = `${query.toString()}`
-      updateSelectedUserName(fullInformation)
-    }
-    return fullInformation
+    setInputText(
+      selectedNumber ? `${selectedName || selectedNumber} (${selectedNumber})` : selectedName,
+    )
+    setQuery('')
+    onChange({ value: selectedNumber, label: selectedName || selectedNumber })
   }
 
+  const applyFreeText = (text: string) => {
+    const trimmedText = text.trim()
+    if (trimmedText === '') {
+      onChange({ value: '', label: '' })
+      return
+    }
+    if (isPhoneNumberText(trimmedText)) {
+      onChange({ value: trimmedText.replace(/\s/g, ''), label: trimmedText })
+      return
+    }
+
+    const nameAndNumber = trimmedText.match(/^(.*)\((\+?[0-9\s]+)\)$/)
+    if (nameAndNumber) {
+      onChange({
+        value: nameAndNumber[2].replace(/\s/g, ''),
+        label: nameAndNumber[1].trim() || nameAndNumber[2].trim(),
+      })
+      return
+    }
+    onChange({ value: '', label: trimmedText })
+  }
+
+  const canUseManualNumber = query.trim().length > 0 && isPhoneNumberText(query)
+  const hasNoResults = isLoaded && query.length > 0 && results.length === 0
+
   return (
-    <Combobox
-      as='div'
-      value={selectedInformationUser}
-      onChange={(result) => setSelectedInformationUser(resultSelected(result))}
-    >
+    <Combobox as='div' value={null} onChange={resultSelected}>
       <div className='relative'>
         <ComboboxInput
           className={classNames(
@@ -262,22 +255,14 @@ export const DeviceSectionOperatorSearch: FC<DeviceSectionOperatorSearchProps> =
             inputTheme.placeholder.base,
             'pr-12',
           )}
+          value={inputText}
           onChange={(e) => {
-            const value = e.target.value
-            setQuery(value)
+            const text = e.target.value
+            setInputText(text)
+            setQuery(text)
+            setLoaded(text.trim().length === 0)
+            applyFreeText(text)
             debouncedChangeQuery(e)
-          }}
-          onKeyDown={(e) => {
-            if (e.key === 'Enter' && query) {
-              const manualSelection = {
-                name: query,
-                resultType: 'manual',
-              }
-              setSelectedInformationUser(resultSelected(manualSelection))
-            }
-          }}
-          displayValue={(informationUser: any) => {
-            return selectedInformationUser || query || ''
           }}
           placeholder={t('Devices.Type to search') || ''}
         />
@@ -302,6 +287,35 @@ export const DeviceSectionOperatorSearch: FC<DeviceSectionOperatorSearchProps> =
                     <div className='ml-2 animate-pulse h-3 rounded w-[40%] bg-gray-300 dark:bg-gray-600'></div>
                   </ComboboxOption>
                 ))}
+              {hasNoResults && canUseManualNumber && (
+                <ComboboxOption
+                  value={{ name: query, resultType: 'manual' }}
+                  className='flex select-none items-center rounded-md p-2 h-14 cursor-pointer data-[focus]:bg-gray-100 data-[focus]:text-gray-900 data-[focus]:dark:bg-gray-800 data-[focus]:dark:text-gray-100'
+                >
+                  <div className='flex items-center px-2'>
+                    <FontAwesomeIcon
+                      icon={faPhone}
+                      className='h-6 w-6 text-gray-500 dark:text-gray-400'
+                    />
+                    <div className='ml-4 flex flex-col items-start justify-center'>
+                      <span className='truncate'>{t('Devices.Use number', { number: query })}</span>
+                      <span className='text-gray-500 text-sm truncate'>
+                        {t('Devices.No matching contact')}
+                      </span>
+                    </div>
+                  </div>
+                </ComboboxOption>
+              )}
+              {hasNoResults && !canUseManualNumber && (
+                <div className='flex select-none flex-col items-start justify-center p-4 text-sm'>
+                  <span className='text-primaryNeutral dark:text-primaryNeutralDark'>
+                    {t('Devices.No results')}
+                  </span>
+                  <span className='text-tertiaryNeutral dark:text-tertiaryNeutralDark'>
+                    {t('Devices.Type a number to use it directly')}
+                  </span>
+                </div>
+              )}
               {results.map((result: any, index: number) => (
                 <ComboboxOption
                   key={result.id || `${index}`}

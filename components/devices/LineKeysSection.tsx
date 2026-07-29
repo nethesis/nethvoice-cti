@@ -22,27 +22,39 @@ import { t } from 'i18next'
 import { useSelector } from 'react-redux'
 import { isEmpty, isEqual } from 'lodash'
 import { RootState } from '../../store'
-import { Avatar, Button, EmptyState, InlineNotification, Modal, TextInput } from '../common'
+import {
+  Avatar,
+  Button,
+  ConfirmationModal,
+  EmptyState,
+  InlineNotification,
+  TextInput,
+} from '../common'
 import { CustomThemedTooltip } from '../common/CustomThemedTooltip'
 import { KeyTypeSelect } from './KeyTypeSelect'
 import { DeviceSectionOperatorSearch } from './DeviceSectionOperatorSearch'
 import { getKeyTypeSearchText, PhysicalPhoneKeyBadge } from './PhysicalPhoneKeyBadge'
 import { KeyPositionInput } from './KeyPositionInput'
 import {
+  getDefaultPhoneKeyLabel,
+  isPhoneKeyTypeWithValue,
+  notifyPhoneConfigurationSaved,
+  PHONE_KEY_CARD_CLASSES,
+  PHONE_KEY_LABEL_CLASSES,
+  PHONE_KEY_SKELETON_CLASSES,
+} from './phoneKeys'
+import {
   getPhysicalDeviceButtonConfiguration,
   getPhoneModelData,
   openAddPhoneKeyDrawer,
   reloadPhysicalPhone,
   saveBtnsConfig,
-  setPin,
 } from '../../lib/devices'
-import { customScrollbarClass, openToast } from '../../lib/utils'
+import { customScrollbarClass } from '../../lib/utils'
 
 export interface LineKeysSectionProps {
   deviceId: string
   phoneName: string
-  pinValue: string
-  pinEnabled: boolean
 }
 
 // uid keeps the identity of a key stable while positions change through moves and deletions
@@ -55,17 +67,7 @@ export interface PhoneKey {
 
 const KEYS_PER_PAGE = 10
 
-const generateRandomPin = () =>
-  Array.from({ length: 4 }, () => Math.floor(Math.random() * 10)).join('')
-
-const TYPES_WITHOUT_VALUE = ['line', 'dnd', 'toggleQueue']
-
-export const LineKeysSection: FC<LineKeysSectionProps> = ({
-  deviceId,
-  phoneName,
-  pinValue,
-  pinEnabled,
-}) => {
+export const LineKeysSection: FC<LineKeysSectionProps> = ({ deviceId, phoneName }) => {
   const operators: any = useSelector((state: RootState) => state.operators)
 
   const [macAddress, setMacAddress] = useState('')
@@ -123,6 +125,11 @@ export const LineKeysSection: FC<LineKeysSectionProps> = ({
 
   // all the line key positions of the phone model are taken
   const areAllPositionsInUse = usableKeys > 0 && keys.length >= usableKeys
+
+  const hasIncompleteKeys = useMemo(
+    () => keys.some((key) => isPhoneKeyTypeWithValue(key.type) && key.value === ''),
+    [keys],
+  )
 
   const hasChanges = useMemo(
     () =>
@@ -182,19 +189,6 @@ export const LineKeysSection: FC<LineKeysSectionProps> = ({
     setExpandedUid(expandedUid === uid ? null : uid)
   }
 
-  const defaultLabelForType = (type: string) => {
-    switch (type) {
-      case 'line':
-        return t('Devices.Line')
-      case 'dnd':
-        return t('Devices.Do not disturb (DND)')
-      case 'toggleQueue':
-        return t('Devices.Toggle login/logout queue')
-      default:
-        return ''
-    }
-  }
-
   const updateKey = (uid: number, changes: Partial<PhoneKey>) => {
     setKeys((previousKeys) =>
       previousKeys.map((key) => (key.uid === uid ? { ...key, ...changes } : key)),
@@ -203,10 +197,10 @@ export const LineKeysSection: FC<LineKeysSectionProps> = ({
 
   const changeKeyType = (uid: number, type: string) => {
     // types without a target reset value and label, the others keep the current selection
-    if (TYPES_WITHOUT_VALUE.includes(type)) {
-      updateKey(uid, { type, value: '', label: defaultLabelForType(type) })
-    } else {
+    if (isPhoneKeyTypeWithValue(type)) {
       updateKey(uid, { type })
+    } else {
+      updateKey(uid, { type, value: '', label: getDefaultPhoneKeyLabel(type) })
     }
   }
 
@@ -320,7 +314,7 @@ export const LineKeysSection: FC<LineKeysSectionProps> = ({
             <div className='flex items-center ml-2'>
               <FontAwesomeIcon
                 icon={faGripVertical}
-                className='h-4 w-4 text-gray-700 dark:text-gray-400 mr-2'
+                className='mr-2 h-4 w-4 text-secondaryNeutral dark:text-secondaryNeutralDark'
               />
               <span className='ml-2 mr-2'>{index + 1} -</span>
               <div>
@@ -347,25 +341,13 @@ export const LineKeysSection: FC<LineKeysSectionProps> = ({
     try {
       setIsSaving(true)
       setSaveError('')
-      // the pin is patched together with the keys, as tancredi rewrites the whole configuration
-      if (pinEnabled) {
-        await setPin({
-          extension: deviceId,
-          enabled: pinValue !== '',
-          pin: pinValue !== '' ? pinValue : generateRandomPin(),
-        })
-      }
       await saveBtnsConfig(macAddress, configuration)
       if (deviceId) {
         await reloadPhysicalPhone(deviceId)
       }
       setOriginalKeys(keys)
       setExpandedUid(null)
-      openToast(
-        'success',
-        `${t('Devices.Phone configuration saved description', { name: phoneName })}`,
-        `${t('Devices.Configuration saved')}`,
-      )
+      notifyPhoneConfigurationSaved(phoneName)
     } catch (error) {
       setSaveError('Cannot save configuration')
     } finally {
@@ -374,7 +356,7 @@ export const LineKeysSection: FC<LineKeysSectionProps> = ({
   }
 
   return (
-    <div className='flex flex-col gap-8 flex-1 min-h-0'>
+    <div className='flex flex-col gap-8 flex-1 min-h-0 min-w-0'>
       {/* search and actions */}
       <div className='flex items-start justify-between gap-4'>
         <div className='w-80'>
@@ -420,15 +402,25 @@ export const LineKeysSection: FC<LineKeysSectionProps> = ({
         </div>
       </div>
 
-      {hasChanges && (
+      {hasChanges && !hasIncompleteKeys && (
         <InlineNotification type='info' title={t('Devices.Unsaved changes')}>
           <p>{t('Devices.Unsaved changes description')}</p>
         </InlineNotification>
       )}
 
+      {hasIncompleteKeys && (
+        <InlineNotification type='warning' title={t('Devices.Incomplete keys')}>
+          <p>{t('Devices.Incomplete keys description')}</p>
+        </InlineNotification>
+      )}
+
       {(loadError || saveError) && (
         <InlineNotification type='error' title={t('Common.Error')}>
-          <p>{t('Devices.Cannot retrieve configuration information')}</p>
+          <p>
+            {saveError
+              ? t('Devices.Cannot save configuration')
+              : t('Devices.Cannot retrieve configuration information')}
+          </p>
         </InlineNotification>
       )}
 
@@ -439,11 +431,8 @@ export const LineKeysSection: FC<LineKeysSectionProps> = ({
           {!keysLoaded &&
             !loadError &&
             Array.from(Array(6)).map((_, index) => (
-              <li
-                key={index}
-                className='rounded-lg border-b border-layoutDivider dark:border-layoutDividerDark bg-elevationL2Invert dark:bg-elevationL2InvertDark p-4 shadow-sm'
-              >
-                <div className='animate-pulse h-6 w-1/3 rounded bg-gray-300 dark:bg-gray-700'></div>
+              <li key={index} className={`${PHONE_KEY_CARD_CLASSES} p-4`}>
+                <div className={`${PHONE_KEY_SKELETON_CLASSES} h-6 w-1/3`}></div>
               </li>
             ))}
 
@@ -476,8 +465,12 @@ export const LineKeysSection: FC<LineKeysSectionProps> = ({
                 setDragOverUid(key.uid)
               }}
               onDragLeave={() => setDragOverUid(null)}
+              onDragEnd={() => {
+                setDraggedUid(null)
+                setDragOverUid(null)
+              }}
               onDrop={(event: DragEvent<HTMLLIElement>) => handleDrop(event, key.position)}
-              className={`rounded-lg border-b border-layoutDivider dark:border-layoutDividerDark bg-elevationL2Invert dark:bg-elevationL2InvertDark shadow-sm ${
+              className={`${PHONE_KEY_CARD_CLASSES} ${
                 dragOverUid === key.uid ? 'ring-2 ring-primary dark:ring-primaryDark' : ''
               } ${draggedUid === key.uid ? 'opacity-50' : ''}`}
             >
@@ -494,7 +487,7 @@ export const LineKeysSection: FC<LineKeysSectionProps> = ({
                   {key.type ? (
                     <div className='flex items-center gap-3 min-w-0'>
                       <PhysicalPhoneKeyBadge type={key.type} />
-                      {!TYPES_WITHOUT_VALUE.includes(key.type) && (
+                      {isPhoneKeyTypeWithValue(key.type) && (
                         <span className='truncate text-base font-medium text-secondaryNeutral dark:text-secondaryNeutralDark'>
                           {key.value ? `${key.value} - ${key.label}` : key.label}
                         </span>
@@ -519,9 +512,7 @@ export const LineKeysSection: FC<LineKeysSectionProps> = ({
                 <div className='flex flex-col gap-4 px-4 pb-4'>
                   <div>
                     <div className='flex items-center'>
-                      <span className='text-sm font-medium leading-5 text-secondaryNeutral dark:text-secondaryNeutralDark'>
-                        {t('Devices.Key position')}
-                      </span>
+                      <span className={PHONE_KEY_LABEL_CLASSES}>{t('Devices.Key position')}</span>
                       <FontAwesomeIcon
                         icon={faCircleInfo}
                         className='h-4 w-4 pl-2 text-primaryIndigo dark:text-primaryIndigoDark'
@@ -551,7 +542,7 @@ export const LineKeysSection: FC<LineKeysSectionProps> = ({
                   {(key.type === 'blf' || key.type === 'speed_dial') && (
                     <div>
                       <div className='mb-2'>
-                        <span className='text-sm font-medium leading-5 text-secondaryNeutral dark:text-secondaryNeutralDark'>
+                        <span className={PHONE_KEY_LABEL_CLASSES}>
                           {key.type === 'blf'
                             ? t('Devices.Name or extension')
                             : t('Devices.Name or number')}
@@ -559,17 +550,9 @@ export const LineKeysSection: FC<LineKeysSectionProps> = ({
                       </div>
                       <DeviceSectionOperatorSearch
                         typeSelected={key.type}
-                        updateSelectedUserNumber={(value: string) =>
-                          updateKey(key.uid, {
-                            value,
-                            label: operators?.extensions[value]?.name || key.label,
-                          })
-                        }
-                        defaultValue={key.label}
-                        updatePhonebookContactInformation={() => {}}
-                        updateSelectedUserName={(name: string) =>
-                          name ? updateKey(key.uid, { label: name }) : undefined
-                        }
+                        value={key.value}
+                        label={key.label}
+                        onChange={({ value, label }) => updateKey(key.uid, { value, label })}
                       />
                     </div>
                   )}
@@ -588,13 +571,17 @@ export const LineKeysSection: FC<LineKeysSectionProps> = ({
       </div>
 
       {/* save, discard and pagination */}
-      <div className='flex items-center justify-between gap-4 border-t border-layoutDivider dark:border-layoutDividerDark px-4 py-6'>
+      <div className='-mt-4 flex items-center justify-between gap-4 border-t border-layoutDivider dark:border-layoutDividerDark pt-4 pr-1'>
         <div className='flex items-center gap-6'>
           <Button variant='ghost' onClick={discardChanges} disabled={!hasChanges || isSaving}>
             <FontAwesomeIcon icon={faArrowRotateLeft} className='mr-3 h-4 w-4' />
             <span>{t('Devices.Discard changes')}</span>
           </Button>
-          <Button variant='primary' onClick={saveKeys} disabled={!hasChanges || isSaving}>
+          <Button
+            variant='primary'
+            onClick={saveKeys}
+            disabled={!hasChanges || isSaving || hasIncompleteKeys}
+          >
             <FontAwesomeIcon icon={faFloppyDisk} className='mr-3 h-4 w-4' />
             <span>{t('Common.Save')}</span>
           </Button>
@@ -623,47 +610,22 @@ export const LineKeysSection: FC<LineKeysSectionProps> = ({
       </div>
 
       {/* assign BLF to all operators modal */}
-      <Modal
+      <ConfirmationModal
         show={showAssignBlfModal}
         focus={cancelAssignBlfRef}
+        type='info'
+        title={t('Devices.Assign keys for all operators')}
+        description={`${t('Devices.Assign key for all operators modal message')}.`}
+        confirmLabel={t('Devices.Assign keys')}
+        confirmVariant='primary'
+        onConfirm={assignBlfToAllOperators}
         onClose={() => setShowAssignBlfModal(false)}
       >
-        <Modal.Content>
-          <div className='mx-auto flex h-12 w-12 shrink-0 items-center justify-center rounded-full sm:mx-0 bg-blue-100 dark:bg-blue-900'>
-            <FontAwesomeIcon
-              icon={faCircleInfo}
-              className='h-5 w-5 text-blue-700 dark:text-blue-200'
-              aria-hidden='true'
-            />
-          </div>
-          <div className='mt-3 text-center sm:mt-0 sm:ml-4 sm:text-left'>
-            <h3 className='text-lg font-medium leading-6 text-gray-900 dark:text-gray-100'>
-              {t('Devices.Assign keys for all operators')}
-            </h3>
-            <div className='mt-3 mb-4'>
-              <p className='text-sm text-gray-500 dark:text-gray-400'>
-                {t('Devices.Assign key for all operators modal message')}.
-              </p>
-            </div>
-            <span className='font-normal text-sm leading-5 text-gray-700 dark:text-gray-200'>
-              {t('Common.Example')}
-            </span>
-            <div className='mt-2'>{assignBlfExampleRows()}</div>
-          </div>
-        </Modal.Content>
-        <Modal.Actions>
-          <Button variant='primary' onClick={assignBlfToAllOperators}>
-            {t('Devices.Assign keys')}
-          </Button>
-          <Button
-            variant='ghost'
-            onClick={() => setShowAssignBlfModal(false)}
-            ref={cancelAssignBlfRef}
-          >
-            <span>{t('Common.Cancel')}</span>
-          </Button>
-        </Modal.Actions>
-      </Modal>
+        <div className='flex flex-col gap-2'>
+          <span className={PHONE_KEY_LABEL_CLASSES}>{t('Common.Example')}</span>
+          <div>{assignBlfExampleRows()}</div>
+        </div>
+      </ConfirmationModal>
     </div>
   )
 }

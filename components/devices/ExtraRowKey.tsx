@@ -178,9 +178,10 @@ export const ExtraRowKey: FC<ExtraRowKeyProps> = ({
               </div>
               <DeviceSectionOperatorSearch
                 typeSelected={keysTypeSelected}
-                updateSelectedUserNumber={updateSelectedUserNumber}
-                updatePhonebookContactInformation={updatePhonebookContactInformation}
-                updateSelectedUserName={updateSelectedUserName}
+                onChange={({ value, label }) => {
+                  updateSelectedUserNumber(value)
+                  updateSelectedUserName(label)
+                }}
               ></DeviceSectionOperatorSearch>
             </>
           )}

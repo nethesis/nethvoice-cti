@@ -31,6 +31,7 @@ import { Setup2FADrawerContent } from '../settings/2fa/Setup2FADrawerContent'
 import { customScrollbarClass } from '../../lib/utils'
 import { CallSummaryDrawerContent } from '../summary/CallSummaryDrawerContent'
 import { AddPhoneKeyDrawerContent } from '../devices/AddPhoneKeyDrawerContent'
+import { EditExpansionKeyDrawerContent } from '../devices/EditExpansionKeyDrawerContent'
 
 export type ContentType =
   | 'createOrEditContact'
@@ -52,6 +53,7 @@ export type ContentType =
   | 'showSwitchDeviceInputOutput'
   | 'showDownloadLinkContent'
   | 'showAddPhoneKey'
+  | 'showEditExpansionKey'
   | 'showUploadVoicemail'
   | 'setup2FA'
   | 'callSummary'
@@ -85,6 +87,7 @@ export const SideDrawer: FC<SideDrawerProps> = ({ isShown, contentType, config, 
       showSwitchDeviceInputOutput: SwitchInputOutputDrawerContent,
       showDownloadLinkContent: DownloadDesktopLinkContent,
       showAddPhoneKey: AddPhoneKeyDrawerContent,
+      showEditExpansionKey: EditExpansionKeyDrawerContent,
       showUploadVoicemail: UploadVoicemail,
       setup2FA: Setup2FADrawerContent,
       callSummary: CallSummaryDrawerContent,
