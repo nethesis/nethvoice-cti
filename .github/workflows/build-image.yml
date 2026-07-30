@@ -18,9 +18,11 @@ jobs:
       - uses: actions/checkout@v6
       - id: install-podman
         run: |
-          # Install podman
+          # Install podman and buildah, they are no longer preinstalled on every runner image
           sudo apt update
-          sudo apt-get -y install --install-recommends podman
+          sudo apt-get -y install --install-recommends podman buildah
+          # The crun shipped by the runner image is not compatible with the podman coming from apt
+          command -v runc >/dev/null || sudo apt-get -y install runc
       - id: build
         run: |
           # Build the module image
@@ -38,7 +40,7 @@ jobs:
           echo "REPOBASE=$REPOBASE" >> $GITHUB_ENV
           echo "IMAGETAG=$IMAGETAG" >> $GITHUB_ENV
           echo "IMAGENAME=$IMAGENAME" >> $GITHUB_ENV
-          podman build -t ${IMAGENAME}:${IMAGETAG} .
+          podman --runtime runc build -t ${IMAGENAME}:${IMAGETAG} .
       - id: publish
         run: |
           # Publish the branch
