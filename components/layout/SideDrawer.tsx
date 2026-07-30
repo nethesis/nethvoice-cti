@@ -23,7 +23,6 @@ import { SaveRecordedAnnouncementDrawerContent } from '../lines'
 import { ShowMultiplePhoneLinesDrawerContent } from '../lines'
 import { GravatarIconDrawerContent } from '../common/ProfilePicture/GravatarIconDrawerContent'
 import { SelectProfilePictureDrawerContent } from '../common/ProfilePicture/SelectProfilePictureDrawerContent'
-import { EditPhysicalPhoneDrawerContent } from '../devices/EditPhysicalPhoneDrawerContent'
 import { SwitchInputOutputDrawerContent } from '../devices/SwitchInputOutputDrawerContent'
 import { DownloadDesktopLinkContent } from '../devices/DownloadDesktopLinkContent'
 import { UploadVoicemail } from '../lines/UploadVoicemail'
@@ -49,7 +48,6 @@ export type ContentType =
   | 'showRuleDetails'
   | 'showGravatar'
   | 'showUploadProfilePicture'
-  | 'showEditPhysicalPhone'
   | 'showSwitchDeviceInputOutput'
   | 'showDownloadLinkContent'
   | 'showAddPhoneKey'
@@ -83,7 +81,6 @@ export const SideDrawer: FC<SideDrawerProps> = ({ isShown, contentType, config, 
       showRuleDetails: ShowRuleDetailsContent,
       showGravatar: GravatarIconDrawerContent,
       showUploadProfilePicture: SelectProfilePictureDrawerContent,
-      showEditPhysicalPhone: EditPhysicalPhoneDrawerContent,
       showSwitchDeviceInputOutput: SwitchInputOutputDrawerContent,
       showDownloadLinkContent: DownloadDesktopLinkContent,
       showAddPhoneKey: AddPhoneKeyDrawerContent,

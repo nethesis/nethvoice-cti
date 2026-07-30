@@ -45,8 +45,7 @@ import {
   PHONE_KEY_LABEL_CLASSES,
 } from './phoneKeys'
 import {
-  getPhysicalDeviceButtonConfiguration,
-  getPhoneModelData,
+  getPhoneKeysConfiguration,
   openAddPhoneKeyDrawer,
   reloadPhysicalPhone,
   saveBtnsConfig,
@@ -94,13 +93,12 @@ export const LineKeysSection: FC<LineKeysSectionProps> = ({ deviceId, phoneName 
       try {
         setLoadError('')
         setKeysLoaded(false)
-        const configuration = await getPhysicalDeviceButtonConfiguration(macAddress)
-        if (isEmpty(configuration)) {
+        const phoneKeys = await getPhoneKeysConfiguration(macAddress)
+        if (!phoneKeys || isEmpty(phoneKeys.configuration)) {
           setLoadError('Cannot retrieve configuration information')
           return
         }
-        const modelData = await getPhoneModelData(configuration?.model)
-        const keyCount = modelData?.variables?.cap_linekey_count ?? 0
+        const { configuration, lineKeysCount: keyCount } = phoneKeys
         setUsableKeys(keyCount)
 
         const loadedKeys: PhoneKey[] = []

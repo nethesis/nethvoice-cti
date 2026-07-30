@@ -7,19 +7,6 @@ import { store } from '../store'
 import { getJSONItem } from './storage'
 import { t } from 'i18next'
 
-export const openShowEditPhysicalPhone = (phoneInformation: any, pinstatus: any) => {
-  let phoneModel: any = {}
-  phoneModel = {
-    ...phoneInformation,
-    pinStatus: pinstatus,
-  }
-  store.dispatch.sideDrawer.update({
-    isShown: true,
-    contentType: 'showEditPhysicalPhone',
-    config: phoneModel,
-  })
-}
-
 export const openShowSwitchDeviceInputOutput = (status: any) => {
   store.dispatch.sideDrawer.update({
     isShown: true,
@@ -71,7 +58,29 @@ export const openEditExpansionKeyDrawer = (config: {
   })
 }
 
-export const getPhoneKeysConfiguration = async (macAddress: string) => {
+export interface PhoneKeysConfiguration {
+  configuration: any
+  lineKeysCount: number
+  expansionKeysPerModule: number
+  expansionModulesCount: number
+}
+
+interface CachedPhoneKeysConfiguration {
+  request: Promise<PhoneKeysConfiguration | null>
+  requestedAt: number
+}
+
+const phoneKeysConfigurationCache = new Map<string, CachedPhoneKeysConfiguration>()
+
+const PHONE_KEYS_CONFIGURATION_CACHE_MS = 30000
+
+export const invalidatePhoneKeysConfiguration = (macAddress: string) => {
+  phoneKeysConfigurationCache.delete(macAddress)
+}
+
+const fetchPhoneKeysConfiguration = async (
+  macAddress: string,
+): Promise<PhoneKeysConfiguration | null> => {
   const configuration = await getPhysicalDeviceButtonConfiguration(macAddress)
   if (!configuration) {
     return null
@@ -87,6 +96,19 @@ export const getPhoneKeysConfiguration = async (macAddress: string) => {
     expansionKeysPerModule: toNumber(model?.variables?.cap_expkey_count),
     expansionModulesCount: toNumber(model?.variables?.cap_expmodule_count),
   }
+}
+
+export const getPhoneKeysConfiguration = (macAddress: string) => {
+  const cached = phoneKeysConfigurationCache.get(macAddress)
+  if (cached && Date.now() - cached.requestedAt < PHONE_KEYS_CONFIGURATION_CACHE_MS) {
+    return cached.request
+  }
+  const request = fetchPhoneKeysConfiguration(macAddress).catch((error) => {
+    phoneKeysConfigurationCache.delete(macAddress)
+    throw error
+  })
+  phoneKeysConfigurationCache.set(macAddress, { request, requestedAt: Date.now() })
+  return request
 }
 
 export const getInputOutputLocalStorageValue = (currentUsername: string) => {
@@ -160,6 +182,7 @@ export const getPhoneModelData = async (model: any) => {
 }
 
 export const saveBtnsConfig = async (macAddress: any, keyUpdatedObject: any) => {
+  invalidatePhoneKeysConfiguration(macAddress)
   try {
     const { username, token } = store.getState().authentication
     const res = await fetch(

@@ -24,7 +24,7 @@ import {
   reloadPhysicalPhone,
   setPin,
 } from '../../lib/devices'
-import { getJSONItem, setJSONItem } from '../../lib/storage'
+import { loadPreference, savePreference } from '../../lib/storage'
 import { openToast } from '../../lib/utils'
 import { generateRandomPin, notifyPhoneConfigurationSaved } from './phoneKeys'
 
@@ -36,7 +36,7 @@ export interface PhysicalPhoneSettingsProps {
 
 type PhoneSettingsTab = 'lineKeys' | 'generalSettings' | number
 
-const EXPANSION_MODULES_STORAGE_KEY = 'phone-expansion-modules'
+const EXPANSION_MODULES_PREFERENCE = 'phoneExpansionModules'
 
 export const PhysicalPhoneSettings: FC<PhysicalPhoneSettingsProps> = ({
   phone,
@@ -46,7 +46,9 @@ export const PhysicalPhoneSettings: FC<PhysicalPhoneSettingsProps> = ({
   const [currentTab, setCurrentTab] = useState<PhoneSettingsTab>('lineKeys')
   const phoneName = phone?.description || t('Devices.IP phone')
   const operators: any = useSelector((state: RootState) => state.operators)
+  const authUsername = useSelector((state: RootState) => state.authentication.username)
 
+  const [macAddress, setMacAddress] = useState('')
   const [expansionModules, setExpansionModules] = useState(0)
   const [maxExpansionModules, setMaxExpansionModules] = useState(0)
   const [expansionKeysPerModule, setExpansionKeysPerModule] = useState(0)
@@ -54,7 +56,13 @@ export const PhysicalPhoneSettings: FC<PhysicalPhoneSettingsProps> = ({
   const cancelAddModuleRef = useRef() as MutableRefObject<HTMLButtonElement>
 
   useEffect(() => {
-    const macAddress = operators?.extensions?.[phone?.id]?.mac?.toUpperCase()
+    const phoneMacAddress = operators?.extensions?.[phone?.id]?.mac?.toUpperCase() || ''
+    setMacAddress((previousMacAddress) =>
+      previousMacAddress === phoneMacAddress ? previousMacAddress : phoneMacAddress,
+    )
+  }, [operators?.extensions, phone?.id])
+
+  useEffect(() => {
     if (!macAddress) {
       return
     }
@@ -68,11 +76,6 @@ export const PhysicalPhoneSettings: FC<PhysicalPhoneSettingsProps> = ({
         setMaxExpansionModules(expansionModulesCount)
         setExpansionKeysPerModule(expansionKeysPerModule)
         if (!expansionKeysPerModule || !expansionModulesCount) {
-          console.warn(
-            'This phone model does not support expansion modules',
-            configuration?.model,
-            { expansionKeysPerModule, expansionModulesCount },
-          )
           return
         }
         let lastConfiguredKey = 0
@@ -82,16 +85,18 @@ export const PhysicalPhoneSettings: FC<PhysicalPhoneSettingsProps> = ({
           }
         }
         const modulesFromKeys = Math.ceil(lastConfiguredKey / expansionKeysPerModule)
-        const storedModules = getJSONItem(EXPANSION_MODULES_STORAGE_KEY)?.[macAddress] || 0
+        const storedModules = loadPreference(EXPANSION_MODULES_PREFERENCE, authUsername)?.[
+          macAddress
+        ] || 0
         setExpansionModules(
           Math.min(Math.max(modulesFromKeys, storedModules), expansionModulesCount),
         )
       } catch (error) {
-        console.error('Cannot retrieve expansion modules information', error)
+        setExpansionModules(0)
       }
     }
     loadExpansionModules()
-  }, [operators?.extensions, phone?.id])
+  }, [macAddress, authUsername])
 
   useEffect(() => {
     if (typeof currentTab === 'number' && currentTab >= expansionModules) {
@@ -100,12 +105,15 @@ export const PhysicalPhoneSettings: FC<PhysicalPhoneSettingsProps> = ({
   }, [currentTab, expansionModules])
 
   const rememberExpansionModules = (modules: number) => {
-    const macAddress = operators?.extensions?.[phone?.id]?.mac?.toUpperCase()
     if (!macAddress) {
       return
     }
-    const storedModules = getJSONItem(EXPANSION_MODULES_STORAGE_KEY) || {}
-    setJSONItem(EXPANSION_MODULES_STORAGE_KEY, { ...storedModules, [macAddress]: modules })
+    const storedModules = loadPreference(EXPANSION_MODULES_PREFERENCE, authUsername) || {}
+    savePreference(
+      EXPANSION_MODULES_PREFERENCE,
+      { ...storedModules, [macAddress]: modules },
+      authUsername,
+    )
   }
 
   const addExpansionModule = () => {
@@ -153,7 +161,8 @@ export const PhysicalPhoneSettings: FC<PhysicalPhoneSettingsProps> = ({
         setPinValue(currentPin)
         setSavedPinValue(currentPin)
       } catch (error) {
-        console.error('Cannot retrieve pin information', error)
+        setPinValue('')
+        setSavedPinValue('')
       }
     }
     retrievePinStatus()
@@ -248,6 +257,7 @@ export const PhysicalPhoneSettings: FC<PhysicalPhoneSettingsProps> = ({
           deviceId={phone?.id}
           phoneName={phoneName}
           moduleIndex={currentTab}
+          isLastModule={currentTab === expansionModules - 1}
           onRemoved={() => removeExpansionModule(currentTab)}
         />
       ) : currentTab === 'lineKeys' ? (

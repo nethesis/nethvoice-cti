@@ -29,8 +29,11 @@ export interface ExpansionModuleSectionProps {
   deviceId: string
   phoneName: string
   moduleIndex: number
+  isLastModule: boolean
   onRemoved: () => void
 }
+
+const RELOAD_DEBOUNCE_MS = 3000
 
 interface ExpansionKey {
   number: number
@@ -44,6 +47,7 @@ export const ExpansionModuleSection: FC<ExpansionModuleSectionProps> = ({
   deviceId,
   phoneName,
   moduleIndex,
+  isLastModule,
   onRemoved,
 }) => {
   const operators: any = useSelector((state: RootState) => state.operators)
@@ -100,11 +104,44 @@ export const ExpansionModuleSection: FC<ExpansionModuleSectionProps> = ({
     loadKeys()
   }, [loadKeys])
 
-  const saveExpansionKeys = async (variables: any) => {
-    await saveBtnsConfig(macAddress, { variables })
-    if (deviceId) {
-      await reloadPhysicalPhone(deviceId)
+  const pendingReloadRef = useRef<ReturnType<typeof setTimeout> | null>(null)
+
+  const scheduleReload = () => {
+    if (!deviceId) {
+      return
     }
+    if (pendingReloadRef.current) {
+      clearTimeout(pendingReloadRef.current)
+    }
+    pendingReloadRef.current = setTimeout(() => {
+      pendingReloadRef.current = null
+      reloadPhysicalPhone(deviceId).catch(() => setSaveError(true))
+    }, RELOAD_DEBOUNCE_MS)
+  }
+
+  useEffect(() => {
+    return () => {
+      if (pendingReloadRef.current) {
+        clearTimeout(pendingReloadRef.current)
+        reloadPhysicalPhone(deviceId).catch(() => undefined)
+      }
+    }
+  }, [deviceId])
+
+  const saveExpansionKeys = async (variables: any, reloadNow = false) => {
+    await saveBtnsConfig(macAddress, { variables })
+    if (!deviceId) {
+      return
+    }
+    if (reloadNow) {
+      if (pendingReloadRef.current) {
+        clearTimeout(pendingReloadRef.current)
+        pendingReloadRef.current = null
+      }
+      await reloadPhysicalPhone(deviceId)
+      return
+    }
+    scheduleReload()
   }
 
   const editKey = (key: ExpansionKey) => {
@@ -182,7 +219,7 @@ export const ExpansionModuleSection: FC<ExpansionModuleSectionProps> = ({
         variables[`expkey_value_${key.globalIndex}`] = ''
         variables[`expkey_label_${key.globalIndex}`] = ''
       })
-      await saveExpansionKeys(variables)
+      await saveExpansionKeys(variables, true)
       setShowRemoveModal(false)
       openToast(
         'success',
@@ -203,10 +240,29 @@ export const ExpansionModuleSection: FC<ExpansionModuleSectionProps> = ({
         <p className='text-sm leading-5 text-tertiaryNeutral dark:text-tertiaryNeutralDark'>
           {t('Devices.Expansion module description')}
         </p>
-        <Button variant='ghost' onClick={() => setShowRemoveModal(true)} disabled={!keysLoaded}>
-          <FontAwesomeIcon icon={faCircleMinus} className='mr-3 h-4 w-4' />
-          <span>{t('Devices.Remove module')}</span>
-        </Button>
+        <span
+          data-tooltip-id={`tooltip-remove-module-${moduleIndex}`}
+          data-tooltip-content={
+            isLastModule ? '' : `${t('Devices.Remove module unavailable tooltip')}`
+          }
+        >
+          <Button
+            variant='ghost'
+            onClick={() => setShowRemoveModal(true)}
+            disabled={!keysLoaded || !isLastModule}
+          >
+            <FontAwesomeIcon icon={faCircleMinus} className='mr-3 h-4 w-4' />
+            <span>{t('Devices.Remove module')}</span>
+          </Button>
+        </span>
+        {!isLastModule && (
+          <CustomThemedTooltip
+            id={`tooltip-remove-module-${moduleIndex}`}
+            place='left'
+            className='whitespace-normal text-left'
+            positionStrategy='fixed'
+          />
+        )}
       </div>
 
       {(loadError || saveError) && (
