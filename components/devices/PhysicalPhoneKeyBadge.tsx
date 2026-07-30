@@ -19,6 +19,11 @@ const BADGE_STYLES: { [key: string]: string } = {
     'bg-surfaceBadgeCyan dark:bg-surfaceBadgeCyanDark text-textBadgeCyan dark:text-textBadgeCyanDark',
 }
 
+export const getKeyTypeBadgeText = (type: string) => {
+  const keyType = PHONE_KEY_TYPES.find((item) => item.value === type)
+  return keyType ? t(keyType.badge) : ''
+}
+
 export const getKeyTypeSearchText = (type: string) => {
   const keyType = PHONE_KEY_TYPES.find((item) => item.value === type)
   return keyType ? `${t(keyType.badge)} ${t(keyType.label)}` : ''

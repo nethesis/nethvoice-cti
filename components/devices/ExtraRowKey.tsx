@@ -180,7 +180,7 @@ export const ExtraRowKey: FC<ExtraRowKeyProps> = ({
                 typeSelected={keysTypeSelected}
                 onChange={({ value, label }) => {
                   updateSelectedUserNumber(value)
-                  updateSelectedUserName(label)
+                  updateSelectedUserName(label || '')
                 }}
               ></DeviceSectionOperatorSearch>
             </>

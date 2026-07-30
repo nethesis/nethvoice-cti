@@ -65,7 +65,6 @@ const Devices: NextPage = () => {
   const operators: any = useSelector((state: RootState) => state.operators)
   const profile = useSelector((state: RootState) => state.user)
 
-  // when set, the physical phone settings page replaces the devices list
   const [selectedPhysicalPhone, setSelectedPhysicalPhone] = useState<any>(null)
 
   const [phoneData, setPhoneData]: any = useState([])
@@ -205,10 +204,10 @@ const Devices: NextPage = () => {
               onClick={() => {
                 window.location.href = 'nethlink://open'
               }}
-            >
+          >
               {t('Devices.Open app')}
             </Dropdown.Item>
-          )}
+        )}
         </>
       )}
     </>
@@ -296,17 +295,17 @@ const Devices: NextPage = () => {
     <span className='invisible' aria-hidden='true'>
       <Button variant='ghost' tabIndex={-1}>
         <FontAwesomeIcon icon={faGear} className='xl:mr-3 mr-0 h-4 w-4' />
-        <span className='hidden xl:inline'>{t('Devices.Settings')}</span>
-      </Button>
-    </span>
+        <span className='hidden xl:inline'>{t('Common.Settings')}</span>
+          </Button>
+          </span>
   )
 
   const kebabButtonPlaceholder = (
     <span className='invisible' aria-hidden='true'>
       <Button variant='ghost' size='small' tabIndex={-1}>
         <FontAwesomeIcon icon={faEllipsisVertical} className='h-4 w-4' />
-      </Button>
-    </span>
+          </Button>
+          </span>
   )
 
   const webphoneTable = () => {
@@ -384,24 +383,23 @@ const Devices: NextPage = () => {
                   </td>
                   <td className={`${STYLES.tableCell} whitespace-nowrap text-right`}>
                     <div className='flex items-center justify-end gap-1'>
-                      {/* the tooltip is on the wrapper because disabled buttons do not fire mouse events */}
                       <span
                         data-tooltip-id='tooltip-webphone-settings'
                         data-tooltip-content={
                           isWebphoneSettingsDisabled
                             ? t('Devices.Web phone settings unavailable tooltip')
-                            : t('Devices.Settings')
-                        }
+                            : t('Common.Settings')
+  }
                       >
-                        <Button
-                          variant='ghost'
+                      <Button
+                        variant='ghost'
                           disabled={isWebphoneSettingsDisabled}
-                          onClick={() => openShowSwitchDeviceInputOutput('')}
+                        onClick={() => openShowSwitchDeviceInputOutput('')}
                           className='relative disabled:opacity-50'
-                        >
+                      >
                           <FontAwesomeIcon icon={faGear} className='xl:mr-3 mr-0 h-4 w-4' />
-                          <span className='hidden xl:inline'>{t('Devices.Settings')}</span>
-                        </Button>
+                          <span className='hidden xl:inline'>{t('Common.Settings')}</span>
+                      </Button>
                       </span>
                       {webrtcData?.[0]?.id !== profile?.default_device?.id &&
                       phoneLinkData?.[0]?.id !== profile?.default_device?.id ? (
@@ -425,12 +423,12 @@ const Devices: NextPage = () => {
                         kebabButtonPlaceholder
                       )}
                     </div>
-                    <CustomThemedTooltip
+            <CustomThemedTooltip
                       id='tooltip-webphone-settings'
-                      place='top'
+              place='top'
                       className='whitespace-normal text-left'
                       positionStrategy='fixed'
-                    />
+            />
                   </td>
                 </tr>
               </tbody>
@@ -640,9 +638,9 @@ const Devices: NextPage = () => {
                               place='top'
                               className='inline xl:hidden whitespace-normal text-left'
                             />
-                            <span className='hidden xl:inline'>{t('Devices.Settings')}</span>
+                            <span className='hidden xl:inline'>{t('Common.Settings')}</span>
                           </Button>
-                        ) : (
+        ) : (
                           settingsButtonPlaceholder
                         )}
                         {phone?.id !== profile?.default_device?.id ? (
@@ -657,7 +655,7 @@ const Devices: NextPage = () => {
                               />
                             </Button>
                           </Dropdown>
-                        ) : (
+        ) : (
                           kebabButtonPlaceholder
                         )}
                       </div>
@@ -679,7 +677,7 @@ const Devices: NextPage = () => {
           phone={selectedPhysicalPhone}
           pinStatus={!!pinObject}
           onBack={() => setSelectedPhysicalPhone(null)}
-        />
+            />
       </div>
     )
   }

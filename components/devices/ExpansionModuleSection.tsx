@@ -3,13 +3,15 @@
 
 import { FC, MutableRefObject, useCallback, useEffect, useRef, useState } from 'react'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
-import { faCircleMinus, faPenToSquare } from '@fortawesome/free-solid-svg-icons'
+import { faCircleMinus, faEllipsisVertical, faPenToSquare } from '@fortawesome/free-solid-svg-icons'
 import { t } from 'i18next'
 import { useSelector } from 'react-redux'
 import { isEmpty } from 'lodash'
 import { RootState } from '../../store'
-import { Button, ConfirmationModal, InlineNotification } from '../common'
-import { PhysicalPhoneKeyBadge } from './PhysicalPhoneKeyBadge'
+import { Button, ConfirmationModal, Dropdown, InlineNotification, Skeleton } from '../common'
+import { CustomThemedTooltip } from '../common/CustomThemedTooltip'
+import { getKeyTypeBadgeText, PhysicalPhoneKeyBadge } from './PhysicalPhoneKeyBadge'
+import { PhoneKeyLabel } from './PhoneKeyLabel'
 import {
   getPhoneKeysConfiguration,
   openEditExpansionKeyDrawer,
@@ -18,10 +20,9 @@ import {
 } from '../../lib/devices'
 import { customScrollbarClass, openToast } from '../../lib/utils'
 import {
+  EXPANSION_KEY_CARD_CLASSES,
   isPhoneKeyTypeWithValue,
   notifyPhoneConfigurationSaved,
-  PHONE_KEY_CARD_CLASSES,
-  PHONE_KEY_SKELETON_CLASSES,
 } from './phoneKeys'
 
 export interface ExpansionModuleSectionProps {
@@ -54,7 +55,9 @@ export const ExpansionModuleSection: FC<ExpansionModuleSectionProps> = ({
   const [saveError, setSaveError] = useState(false)
   const [isRemoving, setIsRemoving] = useState(false)
   const [showRemoveModal, setShowRemoveModal] = useState(false)
+  const [keyToRemove, setKeyToRemove] = useState<ExpansionKey | null>(null)
   const cancelRemoveRef = useRef() as MutableRefObject<HTMLButtonElement>
+  const cancelRemoveKeyRef = useRef() as MutableRefObject<HTMLButtonElement>
 
   useEffect(() => {
     if (!isEmpty(operators?.extensions) && deviceId) {
@@ -131,6 +134,44 @@ export const ExpansionModuleSection: FC<ExpansionModuleSectionProps> = ({
     })
   }
 
+  const removeKeyConfiguration = async () => {
+    if (!keyToRemove) {
+      return
+    }
+    try {
+      setSaveError(false)
+      await saveExpansionKeys({
+        [`expkey_type_${keyToRemove.globalIndex}`]: '',
+        [`expkey_value_${keyToRemove.globalIndex}`]: '',
+        [`expkey_label_${keyToRemove.globalIndex}`]: '',
+      })
+      setKeys((previousKeys) =>
+        previousKeys.map((item) =>
+          item.globalIndex === keyToRemove.globalIndex
+            ? { ...item, type: '', value: '', label: '' }
+            : item,
+        ),
+      )
+      openToast(
+        'success',
+        `${t('Devices.Configuration removed description', {
+          key: t('Devices.KEY', { number: keyToRemove.number }),
+        })}`,
+        `${t('Devices.Configuration removed')}`,
+      )
+    } catch (error) {
+      setSaveError(true)
+    } finally {
+      setKeyToRemove(null)
+    }
+  }
+
+  const getKeyDescription = (key: ExpansionKey) => {
+    const badge = getKeyTypeBadgeText(key.type)
+    const target = [key.value, key.label].filter(Boolean).join(', ')
+    return target ? `${badge} - ${target}` : badge
+  }
+
   const removeModule = async () => {
     try {
       setIsRemoving(true)
@@ -183,8 +224,8 @@ export const ExpansionModuleSection: FC<ExpansionModuleSectionProps> = ({
           {!keysLoaded &&
             !loadError &&
             Array.from(Array(8)).map((_, index) => (
-              <div key={index} className={`${PHONE_KEY_CARD_CLASSES} p-4`}>
-                <div className={`${PHONE_KEY_SKELETON_CLASSES} h-8 w-1/2`}></div>
+              <div key={index} className={`${EXPANSION_KEY_CARD_CLASSES} p-4`}>
+                <Skeleton variant='rectangular' height={32} width='50%' />
               </div>
             ))}
 
@@ -192,35 +233,86 @@ export const ExpansionModuleSection: FC<ExpansionModuleSectionProps> = ({
             keys.map((key) => (
               <div
                 key={key.globalIndex}
-                className={`${PHONE_KEY_CARD_CLASSES} flex items-center justify-between gap-4 p-4`}
+                className={`${EXPANSION_KEY_CARD_CLASSES} flex items-start gap-4 p-4`}
               >
-                <div className='flex flex-col gap-1 min-w-0'>
-                  <span className='text-xs font-medium leading-4 text-tertiaryNeutral dark:text-tertiaryNeutralDark'>
+                <div className='flex min-w-0 flex-1 flex-col gap-1'>
+                  <span className='text-sm font-medium leading-5 text-tertiaryNeutral dark:text-tertiaryNeutralDark'>
                     {t('Devices.KEY', { number: key.number })}
                   </span>
                   {key.type ? (
-                    <div className='flex items-center gap-3 min-w-0'>
+                    <div className='flex min-w-0 items-center gap-4'>
                       <PhysicalPhoneKeyBadge type={key.type} />
                       {isPhoneKeyTypeWithValue(key.type) && (
-                        <span className='truncate text-sm leading-5 text-secondaryNeutral dark:text-secondaryNeutralDark'>
-                          {key.value ? `${key.value} - ${key.label}` : key.label}
-                        </span>
+                        <PhoneKeyLabel
+                          tooltipId={`tooltip-expansion-key-${key.globalIndex}`}
+                          text={key.value ? `${key.value} - ${key.label}` : key.label}
+                          className='text-base font-medium leading-6 text-secondaryNeutral dark:text-secondaryNeutralDark'
+                        />
                       )}
                     </div>
                   ) : (
-                    <span className='text-sm leading-5 text-tertiaryNeutral dark:text-tertiaryNeutralDark'>
+                    <span className='text-base font-medium leading-6 text-tertiaryNeutral dark:text-tertiaryNeutralDark'>
                       {t('Devices.Not configured')}
                     </span>
                   )}
                 </div>
-                <Button variant='ghost' onClick={() => editKey(key)}>
-                  <FontAwesomeIcon icon={faPenToSquare} className='mr-3 h-4 w-4' />
-                  <span>{t('Common.Edit')}</span>
-                </Button>
+                <div className='flex shrink-0 items-center gap-1'>
+                  <Button
+                    variant='ghost'
+                    size='small'
+                    onClick={() => editKey(key)}
+                    data-tooltip-id={`tooltip-edit-expansion-key-${key.globalIndex}`}
+                    data-tooltip-content={`${t('Common.Edit')}`}
+                  >
+                    <FontAwesomeIcon icon={faPenToSquare} className='h-4 w-4' />
+                  </Button>
+                  <CustomThemedTooltip
+                    id={`tooltip-edit-expansion-key-${key.globalIndex}`}
+                    place='top'
+                    positionStrategy='fixed'
+                  />
+                  <Dropdown
+                    position='left'
+                    items={
+                      <Dropdown.Item
+                        icon={faCircleMinus}
+                        onClick={() => setKeyToRemove(key)}
+                        disabled={!key.type}
+                      >
+                        {t('Devices.Remove configuration')}
+                      </Dropdown.Item>
+                    }
+                  >
+                    <Button variant='ghost' size='small'>
+                      <FontAwesomeIcon
+                        icon={faEllipsisVertical}
+                        className='h-4 w-4 text-primary dark:text-primaryDark'
+                      />
+                    </Button>
+                  </Dropdown>
+                </div>
               </div>
             ))}
         </div>
       </div>
+
+      <ConfirmationModal
+        show={keyToRemove !== null}
+        focus={cancelRemoveKeyRef}
+        title={t('Devices.Remove configuration')}
+        description={
+          keyToRemove
+            ? t('Devices.Remove configuration modal message', {
+                key: t('Devices.KEY', { number: keyToRemove.number }),
+                description: getKeyDescription(keyToRemove),
+              })
+            : ''
+        }
+        confirmLabel={t('Common.Remove')}
+        confirmVariant='primary'
+        onConfirm={removeKeyConfiguration}
+        onClose={() => setKeyToRemove(null)}
+      />
 
       <ConfirmationModal
         show={showRemoveModal}

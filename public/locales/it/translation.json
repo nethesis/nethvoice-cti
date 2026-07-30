@@ -86,7 +86,9 @@
     "View summary": "Visualizza riepilogo",
     "Show": "Visualizza",
     "Add": "Aggiungi",
-    "Remove": "Rimuovi"
+    "Remove": "Rimuovi",
+    "Page of": "Pagina {{current}} di {{total}}",
+    "Optional": "Opzionale"
   },
   "Login": {
     "User": "Utente",
@@ -1046,7 +1048,6 @@
   "Devices": {
     "Download app": "Scarica app",
     "Open app": "Apri app",
-    "Settings": "Impostazioni",
     "Used as": "Usato come",
     "Web phone": "Web phone",
     "Landline phone": "Telefono fisso",
@@ -1073,7 +1074,7 @@
     "Choose type": "Scegli tipo",
     "Busy lamp field (BLF)": "Busy lamp field (BLF)",
     "Line": "Linea",
-    "Speed call": "Chiamata rapida",
+    "Speed call": "Speed dial",
     "Do not disturb (DND)": "Do not disturb (DND)",
     "Toggle login/logout queue": "Alterna login/logout coda",
     "Name or number": "Nome o numero",
@@ -1141,9 +1142,6 @@
     "Unsaved changes description": "Salva le modifiche per applicare la nuova configurazione dei tasti.",
     "Delete key": "Elimina tasto",
     "Discard changes": "Annulla modifiche",
-    "Page of": "Pagina {{current}} di {{total}}",
-    "Previous page": "Pagina precedente",
-    "Next page": "Pagina successiva",
     "Cannot retrieve configuration information": "Impossibile recuperare la configurazione del telefono.",
     "No general settings available": "Nessuna impostazione generale disponibile per questo telefono.",
     "LINE": "LINEA",
@@ -1168,7 +1166,6 @@
     "Expansion module removed": "Modulo di espansione rimosso",
     "Expansion module removed description": "Il modulo di espansione e i suoi tasti sono stati rimossi.",
     "Add expansion module modal message": "Aggiungi un nuovo modulo di espansione per configurare tasti aggiuntivi su questo dispositivo. Verrà aggiunta automaticamente una nuova scheda.",
-    "Remove expansion module": "Rimuovi modulo di espansione",
     "Remove expansion module modal message": "La rimozione di {{module}} eliminerà la configurazione dei suoi tasti. L'azione non può essere annullata.",
     "Edit expansion key": "Modifica tasto di espansione {{number}}",
     "Line key type": "Tipo di tasto linea",
@@ -1178,9 +1175,15 @@
     "No matching contact": "Nessun contatto trovato con questo numero",
     "No matching extension": "Nessun operatore trovato con questo nome o interno",
     "Cannot save configuration": "Impossibile salvare la configurazione del telefono.",
-    "Incomplete keys": "Tasti incompleti",
-    "Incomplete keys description": "Alcuni tasti richiedono un interno o un numero prima di poter salvare la configurazione.",
-    "Type a number to use it directly": "Digita un numero per usarlo come destinazione del tasto"
+    "Type a number to use it directly": "Digita un numero per usarlo come destinazione del tasto",
+    "Type or choose extension": "Digita o scegli un interno",
+    "Type or choose name or number": "Digita o scegli un nome o un numero",
+    "Label": "Etichetta",
+    "Label placeholder": "Nome mostrato sul display del telefono",
+    "Remove configuration": "Rimuovi configurazione",
+    "Remove configuration modal message": "{{key}} ({{description}}) tornerà non configurato.",
+    "Configuration removed": "Configurazione rimossa",
+    "Configuration removed description": "{{key}} è tornato non configurato."
   },
   "DropdownContent": {
     "Microphones": "MICROFONI",

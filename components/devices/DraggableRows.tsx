@@ -705,7 +705,7 @@ export default function DraggableRows({
                           label={buttonRow?.label}
                           onChange={({ value, label }) => {
                             updateSelectedUserNumber(value)
-                            updateSelectedUserName(label)
+                            updateSelectedUserName(label || '')
                           }}
                         ></DeviceSectionOperatorSearch>
                       </>

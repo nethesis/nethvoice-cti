@@ -27,7 +27,6 @@ export const PHONE_KEY_TYPES_WITHOUT_VALUE = ['line', 'dnd', 'toggleQueue']
 export const isPhoneKeyTypeWithValue = (type: string) =>
   type !== '' && !PHONE_KEY_TYPES_WITHOUT_VALUE.includes(type)
 
-
 export const getDefaultPhoneKeyLabel = (type: string) => {
   if (!PHONE_KEY_TYPES_WITHOUT_VALUE.includes(type)) {
     return ''
@@ -48,9 +47,10 @@ export const notifyPhoneConfigurationSaved = (phoneName: string) => {
 }
 
 export const PHONE_KEY_CARD_CLASSES =
-  'rounded-lg border-b border-layoutDivider dark:border-layoutDividerDark bg-elevationL2Invert dark:bg-elevationL2InvertDark shadow-sm'
+  'rounded-lg border-b border-layoutDivider dark:border-layoutDividerDark bg-elevationL2Invert dark:bg-elevationL2InvertDark shadow'
 
-export const PHONE_KEY_SKELETON_CLASSES = 'animate-pulse rounded bg-gray-300 dark:bg-gray-700'
+export const EXPANSION_KEY_CARD_CLASSES =
+  'rounded-lg bg-elevationL2Invert dark:bg-elevationL2InvertDark shadow-md'
 
 export const PHONE_KEY_LABEL_CLASSES =
   'text-sm font-medium leading-5 text-secondaryNeutral dark:text-secondaryNeutralDark'

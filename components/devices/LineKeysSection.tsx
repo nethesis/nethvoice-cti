@@ -7,8 +7,6 @@ import {
   faArrowRight,
   faArrowRotateLeft,
   faAngleDown,
-  faAngleLeft,
-  faAngleRight,
   faAngleUp,
   faCircleInfo,
   faCirclePlus,
@@ -19,6 +17,7 @@ import {
   faTrash,
 } from '@fortawesome/free-solid-svg-icons'
 import { t } from 'i18next'
+import classNames from 'classnames'
 import { useSelector } from 'react-redux'
 import { isEmpty, isEqual } from 'lodash'
 import { RootState } from '../../store'
@@ -28,6 +27,8 @@ import {
   ConfirmationModal,
   EmptyState,
   InlineNotification,
+  Pagination,
+  Skeleton,
   TextInput,
 } from '../common'
 import { CustomThemedTooltip } from '../common/CustomThemedTooltip'
@@ -35,13 +36,13 @@ import { KeyTypeSelect } from './KeyTypeSelect'
 import { DeviceSectionOperatorSearch } from './DeviceSectionOperatorSearch'
 import { getKeyTypeSearchText, PhysicalPhoneKeyBadge } from './PhysicalPhoneKeyBadge'
 import { KeyPositionInput } from './KeyPositionInput'
+import { PhoneKeyLabel } from './PhoneKeyLabel'
 import {
   getDefaultPhoneKeyLabel,
   isPhoneKeyTypeWithValue,
   notifyPhoneConfigurationSaved,
   PHONE_KEY_CARD_CLASSES,
   PHONE_KEY_LABEL_CLASSES,
-  PHONE_KEY_SKELETON_CLASSES,
 } from './phoneKeys'
 import {
   getPhysicalDeviceButtonConfiguration,
@@ -57,12 +58,12 @@ export interface LineKeysSectionProps {
   phoneName: string
 }
 
-// uid keeps the identity of a key stable while positions change through moves and deletions
 export interface PhoneKey {
   uid: number
   type: string
   value: string
   label: string
+  isCustomTarget?: boolean
 }
 
 const KEYS_PER_PAGE = 10
@@ -79,7 +80,6 @@ export const LineKeysSection: FC<LineKeysSectionProps> = ({ deviceId, phoneName 
   const [saveError, setSaveError] = useState('')
   const nextUid = useRef(0)
 
-  // the mac address is the key used by tancredi to read and write the phone configuration
   useEffect(() => {
     if (!isEmpty(operators?.extensions) && deviceId) {
       setMacAddress(operators?.extensions[deviceId]?.mac?.toUpperCase() || '')
@@ -123,13 +123,7 @@ export const LineKeysSection: FC<LineKeysSectionProps> = ({ deviceId, phoneName 
     loadConfiguration()
   }, [macAddress])
 
-  // all the line key positions of the phone model are taken
   const areAllPositionsInUse = usableKeys > 0 && keys.length >= usableKeys
-
-  const hasIncompleteKeys = useMemo(
-    () => keys.some((key) => isPhoneKeyTypeWithValue(key.type) && key.value === ''),
-    [keys],
-  )
 
   const hasChanges = useMemo(
     () =>
@@ -140,7 +134,6 @@ export const LineKeysSection: FC<LineKeysSectionProps> = ({ deviceId, phoneName 
     [keys, originalKeys],
   )
 
-  // search and pagination
   const [textFilter, setTextFilter] = useState('')
   const [currentPage, setCurrentPage] = useState(1)
   const textFilterRef = useRef() as MutableRefObject<HTMLInputElement>
@@ -150,7 +143,6 @@ export const LineKeysSection: FC<LineKeysSectionProps> = ({ deviceId, phoneName 
     textFilterRef.current?.focus()
   }
 
-  // positions are shown to the user, so they are computed on the full list before filtering
   const keysWithPosition = useMemo(
     () => keys.map((key, index) => ({ ...key, position: index + 1 })),
     [keys],
@@ -161,7 +153,6 @@ export const LineKeysSection: FC<LineKeysSectionProps> = ({ deviceId, phoneName 
     if (!filterText) {
       return keysWithPosition
     }
-    // name, number and key type are all searchable
     return keysWithPosition.filter((key) =>
       `${key.position} - ${key.label} (${key.value}) ${getKeyTypeSearchText(key.type)}`
         .toLowerCase()
@@ -182,7 +173,6 @@ export const LineKeysSection: FC<LineKeysSectionProps> = ({ deviceId, phoneName 
     return filteredKeys.slice(lastIndex - KEYS_PER_PAGE, lastIndex)
   }, [filteredKeys, currentPage])
 
-  // inline editing: every change is applied to the list right away and persisted with Save
   const [expandedUid, setExpandedUid] = useState<number | null>(null)
 
   const toggleKeyRow = (uid: number) => {
@@ -196,12 +186,11 @@ export const LineKeysSection: FC<LineKeysSectionProps> = ({ deviceId, phoneName 
   }
 
   const changeKeyType = (uid: number, type: string) => {
-    // types without a target reset value and label, the others keep the current selection
-    if (isPhoneKeyTypeWithValue(type)) {
-      updateKey(uid, { type })
-    } else {
-      updateKey(uid, { type, value: '', label: getDefaultPhoneKeyLabel(type) })
+    const currentKey = keys.find((key) => key.uid === uid)
+    if (!currentKey || currentKey.type === type) {
+      return
     }
+    updateKey(uid, { type, value: '', label: getDefaultPhoneKeyLabel(type) })
   }
 
   const changeKeyPosition = (uid: number, newPosition: number) => {
@@ -224,7 +213,6 @@ export const LineKeysSection: FC<LineKeysSectionProps> = ({ deviceId, phoneName 
     setExpandedUid(null)
   }
 
-  // the new key is configured in a side drawer and inserted at the chosen position
   const addKey = () => {
     if (keys.length >= usableKeys) {
       return
@@ -252,19 +240,38 @@ export const LineKeysSection: FC<LineKeysSectionProps> = ({ deviceId, phoneName 
     setTextFilter('')
   }
 
-  // drag and drop reordering
   const [draggedUid, setDraggedUid] = useState<number | null>(null)
   const [dragOverUid, setDragOverUid] = useState<number | null>(null)
+
+  const isCustomTarget = (key: PhoneKey) =>
+    key.isCustomTarget ?? (!!key.value && !operators?.extensions?.[key.value])
+
+  const isDropTarget = (uid: number) => dragOverUid === uid && draggedUid !== uid
+
+  const resetDrag = () => {
+    setDraggedUid(null)
+    setDragOverUid(null)
+  }
+
+  const enterDropTarget = (uid: number) => {
+    setDragOverUid((previousUid) => (previousUid === uid ? previousUid : uid))
+  }
+
+  const leaveDropTarget = (event: DragEvent<HTMLLIElement>, uid: number) => {
+    const nextTarget = event.relatedTarget as Node | null
+    if (nextTarget && event.currentTarget.contains(nextTarget)) {
+      return
+    }
+    setDragOverUid((previousUid) => (previousUid === uid ? null : previousUid))
+  }
 
   const handleDrop = (event: DragEvent<HTMLLIElement>, targetPosition: number) => {
     event.preventDefault()
     const droppedUid = Number(event.dataTransfer.getData('text/plain'))
-    setDraggedUid(null)
-    setDragOverUid(null)
+    resetDrag()
     changeKeyPosition(droppedUid, targetPosition)
   }
 
-  // assign a BLF key to every operator
   const [showAssignBlfModal, setShowAssignBlfModal] = useState(false)
   const cancelAssignBlfRef = useRef() as MutableRefObject<HTMLButtonElement>
 
@@ -292,35 +299,37 @@ export const LineKeysSection: FC<LineKeysSectionProps> = ({ deviceId, phoneName 
       .slice(0, 2)
       .map((key, index) => {
         const exampleOperator = operators?.extensions[key]
+        const operatorName = exampleOperator?.name || '-'
+        const operatorExtension = exampleOperator?.exten || '-'
+
         return (
           <div
             key={key}
-            className='grid grid-cols-[8rem,2rem,3rem] whitespace-nowrap w-full items-center py-2'
+            className='grid grid-cols-[minmax(0,1fr)_auto_minmax(0,1.4fr)] items-center gap-3 py-2'
           >
-            <div className='flex space-x-2 items-center truncate'>
+            <div className='flex min-w-0 items-center gap-2'>
               <Avatar
-                size='base'
+                size='small'
                 placeholderType='person'
                 src={operators?.avatars[exampleOperator?.username]}
                 status={operators?.operators[exampleOperator?.username]?.mainPresence}
               />
-              <div className='max-w-sm truncate'>
-                <span>{`${exampleOperator?.name}`}</span>
-              </div>
+              <span className='truncate'>{operatorName}</span>
             </div>
-            <div className='mx-2'>
-              <FontAwesomeIcon icon={faArrowRight} className='h-4 w-4' />
-            </div>
-            <div className='flex items-center ml-2'>
+
+            <FontAwesomeIcon
+              icon={faArrowRight}
+              className='h-4 w-4 shrink-0 text-tertiaryNeutral dark:text-tertiaryNeutralDark'
+            />
+
+            <div className='flex min-w-0 items-center gap-2'>
               <FontAwesomeIcon
                 icon={faGripVertical}
-                className='mr-2 h-4 w-4 text-secondaryNeutral dark:text-secondaryNeutralDark'
+                className='h-4 w-4 shrink-0 text-secondaryNeutral dark:text-secondaryNeutralDark'
               />
-              <span className='ml-2 mr-2'>{index + 1} -</span>
-              <div>
-                <span>{`${exampleOperator?.name}`}</span>
-              </div>
-              <span className='ml-1'>({`${exampleOperator?.exten || '-'}`})</span>
+              <span className='shrink-0'>{index + 1} -</span>
+              <span className='truncate'>{operatorName}</span>
+              <span className='shrink-0'>({operatorExtension})</span>
             </div>
           </div>
         )
@@ -330,7 +339,6 @@ export const LineKeysSection: FC<LineKeysSectionProps> = ({ deviceId, phoneName 
 
   const saveKeys = async () => {
     const configuration: any = { variables: {} }
-    // every position of the phone is written, so removed keys are cleared on the device too
     for (let i = 1; i <= usableKeys; i++) {
       const key = keys[i - 1]
       configuration.variables[`linekey_type_${i}`] = key?.type || ''
@@ -357,7 +365,6 @@ export const LineKeysSection: FC<LineKeysSectionProps> = ({ deviceId, phoneName 
 
   return (
     <div className='flex flex-col gap-8 flex-1 min-h-0 min-w-0'>
-      {/* search and actions */}
       <div className='flex items-start justify-between gap-4'>
         <div className='w-80'>
           <TextInput
@@ -371,7 +378,6 @@ export const LineKeysSection: FC<LineKeysSectionProps> = ({ deviceId, phoneName 
           />
         </div>
         <div className='flex items-center gap-6'>
-          {/* the tooltip is on the wrapper because disabled buttons do not fire mouse events */}
           <span
             data-tooltip-id='tooltip-add-key-unavailable'
             data-tooltip-content={
@@ -383,7 +389,6 @@ export const LineKeysSection: FC<LineKeysSectionProps> = ({ deviceId, phoneName 
               <span>{t('Devices.Add key')}</span>
             </Button>
           </span>
-          {/* the tooltip disappears as soon as a position becomes available */}
           {areAllPositionsInUse && (
             <CustomThemedTooltip
               id='tooltip-add-key-unavailable'
@@ -402,15 +407,9 @@ export const LineKeysSection: FC<LineKeysSectionProps> = ({ deviceId, phoneName 
         </div>
       </div>
 
-      {hasChanges && !hasIncompleteKeys && (
+      {hasChanges && (
         <InlineNotification type='info' title={t('Devices.Unsaved changes')}>
           <p>{t('Devices.Unsaved changes description')}</p>
-        </InlineNotification>
-      )}
-
-      {hasIncompleteKeys && (
-        <InlineNotification type='warning' title={t('Devices.Incomplete keys')}>
-          <p>{t('Devices.Incomplete keys description')}</p>
         </InlineNotification>
       )}
 
@@ -424,15 +423,13 @@ export const LineKeysSection: FC<LineKeysSectionProps> = ({ deviceId, phoneName 
         </InlineNotification>
       )}
 
-      {/* keys list */}
       <div className={`flex-1 min-h-0 pr-4 ${customScrollbarClass}`}>
         <ul className='flex flex-col gap-3'>
-          {/* skeleton */}
           {!keysLoaded &&
             !loadError &&
             Array.from(Array(6)).map((_, index) => (
               <li key={index} className={`${PHONE_KEY_CARD_CLASSES} p-4`}>
-                <div className={`${PHONE_KEY_SKELETON_CLASSES} h-6 w-1/3`}></div>
+                <Skeleton variant='rectangular' height={24} width='33%' />
               </li>
             ))}
 
@@ -460,21 +457,24 @@ export const LineKeysSection: FC<LineKeysSectionProps> = ({ deviceId, phoneName 
                 event.dataTransfer.setData('text/plain', String(key.uid))
                 setDraggedUid(key.uid)
               }}
+              onDragEnter={() => enterDropTarget(key.uid)}
               onDragOver={(event: DragEvent<HTMLLIElement>) => {
                 event.preventDefault()
-                setDragOverUid(key.uid)
+                enterDropTarget(key.uid)
               }}
-              onDragLeave={() => setDragOverUid(null)}
-              onDragEnd={() => {
-                setDraggedUid(null)
-                setDragOverUid(null)
-              }}
+              onDragLeave={(event: DragEvent<HTMLLIElement>) => leaveDropTarget(event, key.uid)}
+              onDragEnd={resetDrag}
               onDrop={(event: DragEvent<HTMLLIElement>) => handleDrop(event, key.position)}
-              className={`${PHONE_KEY_CARD_CLASSES} ${
-                dragOverUid === key.uid ? 'ring-2 ring-primary dark:ring-primaryDark' : ''
-              } ${draggedUid === key.uid ? 'opacity-50' : ''}`}
+              className={classNames(
+                'rounded-lg',
+                isDropTarget(key.uid)
+                  ? 'bg-surfaceBadgeEmerald dark:bg-surfaceBadgeEmeraldDark'
+                  : PHONE_KEY_CARD_CLASSES,
+                draggedUid === key.uid && 'bg-gray-100/70 dark:bg-gray-800/70',
+                isDropTarget(key.uid) && '[&>*]:invisible',
+                draggedUid !== null && '[&_*]:pointer-events-none',
+              )}
             >
-              {/* row header */}
               <div className='flex items-center justify-between p-4'>
                 <div className='flex items-center gap-6 min-w-0'>
                   <FontAwesomeIcon
@@ -488,9 +488,11 @@ export const LineKeysSection: FC<LineKeysSectionProps> = ({ deviceId, phoneName 
                     <div className='flex items-center gap-3 min-w-0'>
                       <PhysicalPhoneKeyBadge type={key.type} />
                       {isPhoneKeyTypeWithValue(key.type) && (
-                        <span className='truncate text-base font-medium text-secondaryNeutral dark:text-secondaryNeutralDark'>
-                          {key.value ? `${key.value} - ${key.label}` : key.label}
-                        </span>
+                        <PhoneKeyLabel
+                          tooltipId={`tooltip-line-key-${key.uid}`}
+                          text={key.value ? `${key.value} - ${key.label}` : key.label}
+                          className='text-base font-medium text-secondaryNeutral dark:text-secondaryNeutralDark'
+                        />
                       )}
                     </div>
                   ) : (
@@ -499,15 +501,19 @@ export const LineKeysSection: FC<LineKeysSectionProps> = ({ deviceId, phoneName 
                     </span>
                   )}
                 </div>
-                <Button variant='ghost' size='small' onClick={() => toggleKeyRow(key.uid)}>
+                <Button
+                  variant='ghost'
+                  size='small'
+                  className='-my-2.5 -mr-2.5'
+                  onClick={() => toggleKeyRow(key.uid)}
+                >
                   <FontAwesomeIcon
                     icon={expandedUid === key.uid ? faAngleUp : faAngleDown}
-                    className='h-4 w-4'
+                    className='h-4 w-4 text-primaryNeutral dark:text-primaryNeutralDark'
                   />
                 </Button>
               </div>
 
-              {/* expanded row: inline key configuration */}
               {expandedUid === key.uid && (
                 <div className='flex flex-col gap-4 px-4 pb-4'>
                   <div>
@@ -552,9 +558,30 @@ export const LineKeysSection: FC<LineKeysSectionProps> = ({ deviceId, phoneName 
                         typeSelected={key.type}
                         value={key.value}
                         label={key.label}
-                        onChange={({ value, label }) => updateKey(key.uid, { value, label })}
+                        onChange={({ value, label, isCustom }) =>
+                          updateKey(key.uid, {
+                            value,
+                            ...(label !== null ? { label } : {}),
+                            isCustomTarget: isCustom,
+                          })
+                        }
+                        placeholder={`${
+                          key.type === 'blf'
+                            ? t('Devices.Type or choose extension')
+                            : t('Devices.Type or choose name or number')
+                        }`}
                       />
                     </div>
+                  )}
+
+                  {isPhoneKeyTypeWithValue(key.type) && isCustomTarget(key) && (
+                    <TextInput
+                      label={`${t('Devices.Label')}`}
+                      optional
+                      placeholder={`${t('Devices.Label placeholder')}`}
+                      value={key.label}
+                      onChange={(event) => updateKey(key.uid, { label: event.target.value })}
+                    />
                   )}
 
                   <div>
@@ -570,46 +597,29 @@ export const LineKeysSection: FC<LineKeysSectionProps> = ({ deviceId, phoneName 
         </ul>
       </div>
 
-      {/* save, discard and pagination */}
-      <div className='-mt-4 flex items-center justify-between gap-4 border-t border-layoutDivider dark:border-layoutDividerDark pt-4 pr-1'>
+      <div className='-mt-4 flex items-center justify-between gap-4 border-t border-layoutDivider dark:border-layoutDividerDark pt-4 px-1 pb-1'>
         <div className='flex items-center gap-6'>
           <Button variant='ghost' onClick={discardChanges} disabled={!hasChanges || isSaving}>
             <FontAwesomeIcon icon={faArrowRotateLeft} className='mr-3 h-4 w-4' />
             <span>{t('Devices.Discard changes')}</span>
           </Button>
-          <Button
-            variant='primary'
-            onClick={saveKeys}
-            disabled={!hasChanges || isSaving || hasIncompleteKeys}
-          >
+          <Button variant='primary' onClick={saveKeys} disabled={!hasChanges || isSaving}>
             <FontAwesomeIcon icon={faFloppyDisk} className='mr-3 h-4 w-4' />
             <span>{t('Common.Save')}</span>
           </Button>
         </div>
-        <div className='flex items-center gap-4'>
-          <span className='text-sm leading-5 text-tertiaryNeutral dark:text-tertiaryNeutralDark'>
-            {t('Devices.Page of', { current: currentPage, total: totalPages })}
-          </span>
-          <Button
-            variant='white'
-            onClick={() => setCurrentPage(currentPage - 1)}
-            disabled={currentPage <= 1}
-          >
-            <FontAwesomeIcon icon={faAngleLeft} className='mr-3 h-4 w-4' />
-            <span>{t('Devices.Previous page')}</span>
-          </Button>
-          <Button
-            variant='white'
-            onClick={() => setCurrentPage(currentPage + 1)}
-            disabled={currentPage >= totalPages}
-          >
-            <span>{t('Devices.Next page')}</span>
-            <FontAwesomeIcon icon={faAngleRight} className='ml-3 h-4 w-4' />
-          </Button>
-        </div>
+        <Pagination
+          bare
+          labelVariant='page'
+          currentPage={currentPage}
+          totalPages={totalPages}
+          totalItems={filteredKeys.length}
+          pageSize={KEYS_PER_PAGE}
+          onPreviousPage={() => setCurrentPage(currentPage - 1)}
+          onNextPage={() => setCurrentPage(currentPage + 1)}
+        />
       </div>
 
-      {/* assign BLF to all operators modal */}
       <ConfirmationModal
         show={showAssignBlfModal}
         focus={cancelAssignBlfRef}

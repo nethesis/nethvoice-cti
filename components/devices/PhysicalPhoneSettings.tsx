@@ -14,7 +14,7 @@ import { useSelector } from 'react-redux'
 import { RootState } from '../../store'
 import { t } from 'i18next'
 import classNames from 'classnames'
-import { Button, ConfirmationModal, InlineNotification, TextInput } from '../common'
+import { Breadcrumb, Button, ConfirmationModal, InlineNotification, TextInput } from '../common'
 import { CustomThemedTooltip } from '../common/CustomThemedTooltip'
 import { LineKeysSection } from './LineKeysSection'
 import { ExpansionModuleSection } from './ExpansionModuleSection'
@@ -29,9 +29,7 @@ import { openToast } from '../../lib/utils'
 import { generateRandomPin, notifyPhoneConfigurationSaved } from './phoneKeys'
 
 export interface PhysicalPhoneSettingsProps {
-  // physical phone endpoint, as returned by the user profile
   phone: any
-  // true when the user profile enables the pin feature
   pinStatus: boolean
   onBack: () => void
 }
@@ -134,7 +132,6 @@ export const PhysicalPhoneSettings: FC<PhysicalPhoneSettingsProps> = ({
     }
   }
 
-  // the pin is read here because the line keys are saved with the same phone configuration
   const [pinValue, setPinValue] = useState('')
   const [savedPinValue, setSavedPinValue] = useState('')
   const [pinVisible, setPinVisible] = useState(false)
@@ -202,18 +199,13 @@ export const PhysicalPhoneSettings: FC<PhysicalPhoneSettingsProps> = ({
 
   return (
     <div className='flex flex-col gap-8 flex-1 min-h-0 min-w-0 pr-1'>
-      {/* breadcrumbs, title and expansion modules */}
       <div className='flex flex-col gap-2'>
-        <p className='text-xs font-medium leading-4 text-tertiaryNeutral dark:text-tertiaryNeutralDark'>
-          <button
-            onClick={onBack}
-            className='text-textLink dark:text-textLinkDark hover:underline cursor-pointer'
-          >
-            {t('Devices.Devices')}
-          </button>
-          <span className='mx-1'>{'>'}</span>
-          <span>{t('Devices.Phone settings', { name: phoneName })}</span>
-        </p>
+        <Breadcrumb
+          size='xs'
+          className='mb-0'
+          previousLink={{ label: t('Devices.Devices'), onClick: onBack }}
+          currentPage={t('Devices.Phone settings', { name: phoneName })}
+        />
         <div className='flex items-center justify-between gap-4'>
           <h2 className='text-xl font-medium leading-7 text-primaryNeutral dark:text-primaryNeutralDark'>
             {t('Devices.Phone settings', { name: phoneName })}
@@ -233,7 +225,6 @@ export const PhysicalPhoneSettings: FC<PhysicalPhoneSettingsProps> = ({
         </div>
       </div>
 
-      {/* tabs */}
       <div className='flex gap-8 border-b border-layoutDivider dark:border-layoutDividerDark'>
         {tabs.map((tab) => (
           <button

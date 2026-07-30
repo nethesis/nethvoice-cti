@@ -100,7 +100,9 @@
     "View summary": "View summary",
     "Show": "Show",
     "Add": "Add",
-    "Remove": "Remove"
+    "Remove": "Remove",
+    "Page of": "Page {{current}} of {{total}}",
+    "Optional": "Optional"
   },
   "Login": {
     "User": "Username",
@@ -1064,7 +1066,6 @@
   "Devices": {
     "Download app": "Download app",
     "Open app": "Open app",
-    "Settings": "Settings",
     "Used as": "Used as",
     "Web phone": "Web phone",
     "Landline phone": "Landline phone",
@@ -1092,7 +1093,7 @@
     "Choose type": "Choose type",
     "Busy lamp field (BLF)": "Busy lamp field (BLF)",
     "Line": "Line",
-    "Speed call": "Speed call",
+    "Speed call": "Speed dial",
     "Do not disturb (DND)": "Do not disturb (DND)",
     "Toggle login/logout queue": "Toggle login/logout queue",
     "Name or number": "Name or number",
@@ -1160,9 +1161,6 @@
     "Unsaved changes description": "Save changes to apply the updated key configuration.",
     "Delete key": "Delete key",
     "Discard changes": "Discard changes",
-    "Page of": "Page {{current}} of {{total}}",
-    "Previous page": "Previous page",
-    "Next page": "Next page",
     "Cannot retrieve configuration information": "Cannot retrieve the phone configuration.",
     "No general settings available": "No general settings available for this phone.",
     "LINE": "LINE",
@@ -1187,7 +1185,6 @@
     "Expansion module removed": "Expansion module removed",
     "Expansion module removed description": "The expansion module and its keys have been removed.",
     "Add expansion module modal message": "Add a new expansion module to configure additional keys for this device. A new tab will be added automatically.",
-    "Remove expansion module": "Remove expansion module",
     "Remove expansion module modal message": "Removing {{module}} will delete its key configuration. This action cannot be undone.",
     "Edit expansion key": "Edit expansion key {{number}}",
     "Line key type": "Line key type",
@@ -1197,9 +1194,15 @@
     "No matching contact": "No contact found with this number",
     "No matching extension": "No operator found with this name or extension",
     "Cannot save configuration": "Cannot save the phone configuration.",
-    "Incomplete keys": "Incomplete keys",
-    "Incomplete keys description": "Some keys need an extension or a number before the configuration can be saved.",
-    "Type a number to use it directly": "Type a number to use it as the target of the key"
+    "Type a number to use it directly": "Type a number to use it as the target of the key",
+    "Type or choose extension": "Type or choose extension",
+    "Type or choose name or number": "Type or choose a name or a number",
+    "Label": "Label",
+    "Label placeholder": "Name shown on the phone display",
+    "Remove configuration": "Remove configuration",
+    "Remove configuration modal message": "{{key}} ({{description}}) will return to unconfigured.",
+    "Configuration removed": "Configuration removed",
+    "Configuration removed description": "{{key}} returned to unconfigured."
   },
   "DropdownContent": {
     "Microphones": "MICROPHONES",

@@ -4,7 +4,8 @@
 import { ComponentPropsWithRef, forwardRef, useState } from 'react'
 import { t } from 'i18next'
 import { useSelector } from 'react-redux'
-import { Button } from '../common'
+import { TextInput } from '../common'
+import { DrawerFooter } from '../common/DrawerFooter'
 import { DrawerHeader } from '../common/DrawerHeader'
 import { Divider } from '../common/Divider'
 import { closeSideDrawer } from '../../lib/utils'
@@ -20,7 +21,6 @@ import {
 
 export interface AddPhoneKeyDrawerContentProps extends ComponentPropsWithRef<'div'> {
   config: {
-    // first free position of the phone, used as default value
     defaultPosition: number
     maxPosition: number
     onAdd: (key: { position: number; type: string; value: string; label: string }) => void
@@ -37,6 +37,7 @@ export const AddPhoneKeyDrawerContent = forwardRef<
   const [type, setType] = useState<string>('')
   const [value, setValue] = useState<string>('')
   const [keyLabel, setKeyLabel] = useState<string>('')
+  const [isCustomTarget, setIsCustomTarget] = useState(false)
 
   const needsValue = isPhoneKeyTypeWithValue(type)
   const isAddDisabled = type === '' || (needsValue && value === '')
@@ -63,10 +64,9 @@ export const AddPhoneKeyDrawerContent = forwardRef<
     <>
       <DrawerHeader title={t('Devices.Add key')} onClose={closeSideDrawer} />
       <div className='px-6 pb-6'>
-        <Divider paddingY='pb-12' />
+        <Divider spaceAbove='pt-6' spaceBelow='pb-6' />
 
         <div className='flex flex-col gap-8'>
-          {/* key position */}
           <div className='flex flex-col gap-2'>
             <span className={PHONE_KEY_LABEL_CLASSES}>{t('Devices.Key position')}</span>
             <KeyPositionInput
@@ -76,17 +76,16 @@ export const AddPhoneKeyDrawerContent = forwardRef<
             />
           </div>
 
-          {/* key type */}
           <KeyTypeSelect
             updateSelectedTypeKey={(newType: string) => {
               setType(newType)
               setValue('')
               setKeyLabel('')
+              setIsCustomTarget(false)
             }}
             helperText={t('Devices.Choose the action assigned to this key') || ''}
           />
 
-          {/* target of the key, only for the types that need one */}
           {needsValue && (
             <div className='flex flex-col gap-2'>
               <span className={PHONE_KEY_LABEL_CLASSES}>
@@ -98,23 +97,38 @@ export const AddPhoneKeyDrawerContent = forwardRef<
                 label={keyLabel}
                 onChange={(key) => {
                   setValue(key.value)
-                  setKeyLabel(key.label)
+                  setIsCustomTarget(key.isCustom)
+                  if (key.label !== null) {
+                    setKeyLabel(key.label)
+                  }
                 }}
+                placeholder={`${
+                  type === 'blf'
+                    ? t('Devices.Type or choose extension')
+                    : t('Devices.Type or choose name or number')
+                }`}
               />
             </div>
           )}
+
+          {needsValue && isCustomTarget && (
+            <TextInput
+              label={`${t('Devices.Label')}`}
+              optional
+              placeholder={`${t('Devices.Label placeholder')}`}
+              value={keyLabel}
+              onChange={(event) => setKeyLabel(event.target.value)}
+            />
+          )}
         </div>
 
-        <Divider paddingY='pt-8 pb-6' />
+        <Divider spaceAbove='pt-8' spaceBelow='pb-6' />
 
-        <div className='flex justify-end gap-6'>
-          <Button variant='ghost' onClick={closeSideDrawer}>
-            {t('Common.Cancel')}
-          </Button>
-          <Button variant='primary' onClick={addKey} disabled={isAddDisabled}>
-            {t('Common.Add')}
-          </Button>
-        </div>
+        <DrawerFooter
+          confirmLabel={`${t('Common.Add')}`}
+          onConfirm={addKey}
+          confirmDisabled={isAddDisabled}
+        />
       </div>
     </>
   )

@@ -61,11 +61,11 @@ export const ConfirmationModal: FC<ConfirmationModalProps> = ({
     <Modal show={show} focus={focus} onClose={onClose} afterLeave={afterLeave}>
       <div className='flex items-start gap-4 bg-white p-6 dark:bg-gray-900'>
         <div className={classNames(theme.roundedIcon.base, theme.roundedIcon.surface[type])}>
-          <FontAwesomeIcon
+              <FontAwesomeIcon
             icon={TYPE_ICONS[type]}
             className={theme.roundedIcon.iconStyle[type]}
-            aria-hidden='true'
-          />
+                aria-hidden='true'
+              />
         </div>
 
         <div className='flex min-w-0 flex-1 flex-col gap-4 text-left'>
@@ -74,37 +74,37 @@ export const ConfirmationModal: FC<ConfirmationModalProps> = ({
               <h3 className='min-w-0 flex-1 text-lg font-medium leading-7 text-primaryNeutral dark:text-primaryNeutralDark'>
                 {title}
               </h3>
-              <Button
-                type='button'
-                variant='ghost'
-                size='small'
-                iconOnly
-                onClick={onClose}
-                aria-label={closeAriaLabel}
+          <Button
+            type='button'
+            variant='ghost'
+            size='small'
+            iconOnly
+            onClick={onClose}
+            aria-label={closeAriaLabel}
                 className='-mr-2 -mt-1 shrink-0 !text-gray-500 hover:!text-gray-700 dark:!text-gray-400 dark:hover:!text-gray-200'
-              >
-                <FontAwesomeIcon icon={faXmark} className='h-5 w-5' aria-hidden='true' />
-              </Button>
+          >
+            <FontAwesomeIcon icon={faXmark} className='h-5 w-5' aria-hidden='true' />
+          </Button>
             </div>
 
-            {description && (
+              {description && (
               <div className='text-sm leading-5 text-secondaryNeutral dark:text-secondaryNeutralDark'>
-                {description}
-              </div>
-            )}
-          </div>
+                  {description}
+                </div>
+              )}
+        </div>
 
           {children}
 
           <div className='flex flex-col-reverse gap-3 sm:flex-row sm:items-center sm:justify-end sm:gap-6'>
-            <Button variant='ghost' onClick={onClose} ref={focus} disabled={cancelDisabled}>
-              {cancelLabel || t('Common.Cancel')}
-            </Button>
-            <Button variant={confirmVariant} onClick={onConfirm} disabled={confirmDisabled}>
-              {confirmLabel}
-            </Button>
-          </div>
+          <Button variant='ghost' onClick={onClose} ref={focus} disabled={cancelDisabled}>
+            {cancelLabel || t('Common.Cancel')}
+          </Button>
+          <Button variant={confirmVariant} onClick={onConfirm} disabled={confirmDisabled}>
+            {confirmLabel}
+          </Button>
         </div>
+      </div>
       </div>
     </Modal>
   )

@@ -3,7 +3,7 @@
 
 import { FC, useEffect, useState } from 'react'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
-import { faAngleDown, faAngleUp } from '@fortawesome/free-solid-svg-icons'
+import { faCaretDown, faCaretUp } from '@fortawesome/free-solid-svg-icons'
 import { t } from 'i18next'
 import { TextInput } from '../common'
 
@@ -47,24 +47,24 @@ export const KeyPositionInput: FC<KeyPositionInputProps> = ({
   }
 
   const stepper = (
-    <div className='flex flex-col -my-1'>
+    <div className='flex flex-col items-center justify-center'>
       <button
         type='button'
         aria-label={t('Devices.Move key up') || ''}
         onClick={() => commit(value - 1)}
         disabled={value <= min}
-        className='flex h-3 w-4 items-center justify-center text-inputIcon dark:text-inputIconDark disabled:opacity-50 disabled:cursor-not-allowed'
+        className='flex h-[11px] w-5 items-end justify-center text-inputIcon dark:text-inputIconDark disabled:opacity-50 disabled:cursor-not-allowed'
       >
-        <FontAwesomeIcon icon={faAngleUp} className='h-3 w-3' />
+        <FontAwesomeIcon icon={faCaretUp} className='h-3.5 w-3.5' />
       </button>
       <button
         type='button'
         aria-label={t('Devices.Move key down') || ''}
         onClick={() => commit(value + 1)}
         disabled={value >= max}
-        className='flex h-3 w-4 items-center justify-center text-inputIcon dark:text-inputIconDark disabled:opacity-50 disabled:cursor-not-allowed'
+        className='flex h-[11px] w-5 items-start justify-center text-inputIcon dark:text-inputIconDark disabled:opacity-50 disabled:cursor-not-allowed'
       >
-        <FontAwesomeIcon icon={faAngleDown} className='h-3 w-3' />
+        <FontAwesomeIcon icon={faCaretDown} className='h-3.5 w-3.5' />
       </button>
     </div>
   )

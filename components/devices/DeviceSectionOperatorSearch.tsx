@@ -12,14 +12,15 @@ import { RootState } from '../../store'
 import classNames from 'classnames'
 import { sortByProperty } from '../../lib/utils'
 import { getPhonebook, mapPhonebookResponse } from '../../lib/phonebook'
-import { Avatar } from '../common'
+import { Avatar, Skeleton } from '../common'
 import { useTheme } from '../../theme/Context'
 
 interface DeviceSectionOperatorSearchProps {
   typeSelected: string
   value?: string
   label?: string
-  onChange: (key: { value: string; label: string }) => void
+  onChange: (key: { value: string; label: string | null; isCustom: boolean }) => void
+  placeholder?: string
 }
 
 const isPhoneNumberText = (text: string) => /^\+?[0-9\s]+$/.test(text.trim())
@@ -29,6 +30,7 @@ export const DeviceSectionOperatorSearch: FC<DeviceSectionOperatorSearchProps> =
   value,
   label,
   onChange,
+  placeholder,
 }) => {
   const { input: inputTheme } = useTheme().theme
   const [query, setQuery] = useState('')
@@ -190,6 +192,8 @@ export const DeviceSectionOperatorSearch: FC<DeviceSectionOperatorSearchProps> =
       debouncedChangeQuery.cancel()
     }
   }, [debouncedChangeQuery])
+  const allowsCustomNumber = typeSelected !== 'blf'
+
   const resultSelected = (result: any) => {
     if (!result) {
       return
@@ -201,9 +205,9 @@ export const DeviceSectionOperatorSearch: FC<DeviceSectionOperatorSearchProps> =
       return
     }
 
-    const operatorId =
+      const operatorId =
       result.resultType === 'operator' ? result?.endpoints?.mainextension?.[0]?.id : ''
-    const numberTypeFromId = result?.id?.split('-')?.[1]
+      const numberTypeFromId = result?.id?.split('-')?.[1]
     const selectedNumber =
       numberTypeFromId && phoneProps.includes(numberTypeFromId)
         ? result[numberTypeFromId] || ''
@@ -215,17 +219,17 @@ export const DeviceSectionOperatorSearch: FC<DeviceSectionOperatorSearchProps> =
       selectedNumber ? `${selectedName || selectedNumber} (${selectedNumber})` : selectedName,
     )
     setQuery('')
-    onChange({ value: selectedNumber, label: selectedName || selectedNumber })
-  }
+    onChange({
+      value: selectedNumber,
+      label: selectedName || selectedNumber,
+      isCustom: false,
+    })
+      }
 
   const applyFreeText = (text: string) => {
     const trimmedText = text.trim()
     if (trimmedText === '') {
-      onChange({ value: '', label: '' })
-      return
-    }
-    if (isPhoneNumberText(trimmedText)) {
-      onChange({ value: trimmedText.replace(/\s/g, ''), label: trimmedText })
+      onChange({ value: '', label: '', isCustom: false })
       return
     }
 
@@ -233,14 +237,22 @@ export const DeviceSectionOperatorSearch: FC<DeviceSectionOperatorSearchProps> =
     if (nameAndNumber) {
       onChange({
         value: nameAndNumber[2].replace(/\s/g, ''),
-        label: nameAndNumber[1].trim() || nameAndNumber[2].trim(),
+        label: nameAndNumber[1].trim() || null,
+        isCustom: false,
       })
       return
     }
-    onChange({ value: '', label: trimmedText })
+
+    if (allowsCustomNumber && isPhoneNumberText(trimmedText)) {
+      onChange({ value: trimmedText.replace(/\s/g, ''), label: null, isCustom: true })
+      return
+    }
+
+    onChange({ value: '', label: null, isCustom: false })
   }
 
-  const canUseManualNumber = query.trim().length > 0 && isPhoneNumberText(query)
+  const canUseManualNumber =
+    allowsCustomNumber && query.trim().length > 0 && isPhoneNumberText(query)
   const hasNoResults = isLoaded && query.length > 0 && results.length === 0
 
   return (
@@ -264,11 +276,11 @@ export const DeviceSectionOperatorSearch: FC<DeviceSectionOperatorSearchProps> =
             applyFreeText(text)
             debouncedChangeQuery(e)
           }}
-          placeholder={t('Devices.Type to search') || ''}
+          placeholder={placeholder || t('Devices.Type to search') || ''}
         />
 
         {query?.length > 0 && (
-          <ComboboxOptions className='mt-1 w-full rounded-md bg-white dark:bg-gray-700 py-1 text-base shadow-lg ring-1 ring-black ring-opacity-5 focus:outline-none sm:text-sm relative z-1000'>
+          <ComboboxOptions className='absolute left-0 right-0 top-full z-50 mt-1 rounded-md bg-white dark:bg-gray-950 py-1 text-base shadow-lg ring-1 ring-black ring-opacity-5 dark:ring-gray-600 focus:outline-none sm:text-sm'>
             <div
               className={classNames(
                 'max-h-60 min-w-0 flex-auto scroll-py-4 overflow-y-auto overflow-x-hidden scrollbar-thin scrollbar-thumb-gray-400 dark:scrollbar-thumb-gray-400 scrollbar-thumb-rounded-full scrollbar-thumb-opacity-50 scrollbar-track-gray-200 dark:scrollbar-track-gray-900 scrollbar-track-rounded-full scrollbar-track-opacity-25',
@@ -283,8 +295,8 @@ export const DeviceSectionOperatorSearch: FC<DeviceSectionOperatorSearchProps> =
                     value={index}
                     className='flex select-none items-center rounded-md p-2 h-14 cursor-pointer'
                   >
-                    <div className='animate-pulse rounded-full h-8 w-8 bg-gray-300 dark:bg-gray-600'></div>
-                    <div className='ml-2 animate-pulse h-3 rounded w-[40%] bg-gray-300 dark:bg-gray-600'></div>
+                    <Skeleton variant='circular' width={32} height={32} />
+                    <Skeleton variant='rectangular' height={12} width='40%' className='ml-2' />
                   </ComboboxOption>
                 ))}
               {hasNoResults && canUseManualNumber && (

@@ -28,6 +28,8 @@ interface PaginationProps {
   previousPageText?: string
   nextPageText?: string
   className?: string
+  labelVariant?: 'items' | 'page'
+  bare?: boolean
 }
 
 // Build the list of page items to render, collapsing with '...' when there are
@@ -77,6 +79,8 @@ export const Pagination: FC<PaginationProps> = ({
   previousPageText = t('Common.Previous page'),
   nextPageText = t('Common.Next page'),
   className = '',
+  labelVariant = 'items',
+  bare = false,
 }) => {
   const firstRow = pageSize * (currentPage - 1) + 1
   const lastRow = Math.min(pageSize * (currentPage - 1) + pageSize, totalItems)
@@ -96,22 +100,28 @@ export const Pagination: FC<PaginationProps> = ({
   // Legacy fallback: consumers that don't provide onSelectPage keep the old
   // Previous/Next-only layout, so nothing regresses while they migrate.
   if (!onSelectPage) {
-    return (
-      <nav
-        className={classNames(
-          'flex items-center justify-between border-t px-0 py-4 mb-8 border-gray-100 dark:border-gray-800',
-          className,
-        )}
-        aria-label='Pagination'
-      >
-        <div className='hidden sm:block'>
+    const label =
+      labelVariant === 'page' ? (
+        <p className='text-sm leading-5 text-tertiaryNeutral dark:text-tertiaryNeutralDark'>
+          {t('Common.Page of', { current: currentPage, total: totalPages })}
+        </p>
+      ) : (
           <p className='text-sm text-gray-700 dark:text-gray-200'>
             {showingText} <span className='font-medium'>{firstRow}</span> -&nbsp;
             <span className='font-medium'>{lastRow}</span> {ofText}{' '}
             <span className='font-medium'>{totalItems}</span> {itemsName}
           </p>
-        </div>
-        <div className='flex flex-1 justify-between sm:justify-end'>
+      )
+
+    const controls = (
+      <>
+        {bare ? label : <div className='hidden sm:block'>{label}</div>}
+        <div
+        className={classNames(
+            'flex',
+            bare ? 'items-center gap-4' : 'flex-1 justify-between sm:justify-end',
+        )}
+      >
           <Button
             type='button'
             variant='white'
@@ -125,7 +135,7 @@ export const Pagination: FC<PaginationProps> = ({
           <Button
             type='button'
             variant='white'
-            className='ml-3 flex items-center'
+            className={classNames('flex items-center', !bare && 'ml-3')}
             disabled={isNextDisabled}
             onClick={onNextPage}
           >
@@ -133,6 +143,26 @@ export const Pagination: FC<PaginationProps> = ({
             <FontAwesomeIcon icon={faChevronRight} className='ml-2 h-4 w-4' />
           </Button>
         </div>
+      </>
+    )
+
+    if (bare) {
+    return (
+        <div className={classNames('flex items-center gap-4', className)} aria-label='Pagination'>
+          {controls}
+        </div>
+      )
+    }
+
+    return (
+      <nav
+        className={classNames(
+          'flex items-center justify-between border-t px-0 py-4 mb-8 border-gray-100 dark:border-gray-800',
+          className,
+        )}
+        aria-label='Pagination'
+      >
+        {controls}
       </nav>
     )
   }
@@ -226,7 +256,11 @@ export const Pagination: FC<PaginationProps> = ({
             onClick={() => goToPage(currentPage + 1)}
             className='flex h-10 items-center justify-center rounded-e-lg border border-gray-300 bg-white px-4 leading-tight text-gray-500 hover:bg-gray-50 hover:text-gray-700 disabled:cursor-not-allowed disabled:opacity-50 dark:border-gray-700 dark:bg-gray-950 dark:text-gray-400 dark:hover:bg-gray-900 dark:hover:text-white'
           >
-            <FontAwesomeIcon icon={faChevronRight} className='h-3 w-3 shrink-0' aria-hidden='true' />
+            <FontAwesomeIcon
+              icon={faChevronRight}
+              className='h-3 w-3 shrink-0'
+              aria-hidden='true'
+            />
           </button>
         </li>
       </ul>
