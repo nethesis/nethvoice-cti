@@ -85,9 +85,8 @@ export const PhysicalPhoneSettings: FC<PhysicalPhoneSettingsProps> = ({
           }
         }
         const modulesFromKeys = Math.ceil(lastConfiguredKey / expansionKeysPerModule)
-        const storedModules = loadPreference(EXPANSION_MODULES_PREFERENCE, authUsername)?.[
-          macAddress
-        ] || 0
+        const storedModules =
+          loadPreference(EXPANSION_MODULES_PREFERENCE, authUsername)?.[macAddress] || 0
         setExpansionModules(
           Math.min(Math.max(modulesFromKeys, storedModules), expansionModulesCount),
         )
@@ -145,7 +144,6 @@ export const PhysicalPhoneSettings: FC<PhysicalPhoneSettingsProps> = ({
   const [pinVisible, setPinVisible] = useState(false)
   const [isSavingPin, setIsSavingPin] = useState(false)
   const [savePinError, setSavePinError] = useState('')
-  const pinRef = useRef() as React.MutableRefObject<HTMLInputElement>
 
   useEffect(() => {
     if (!pinStatus) {
@@ -169,11 +167,7 @@ export const PhysicalPhoneSettings: FC<PhysicalPhoneSettingsProps> = ({
   }, [phone?.id, pinStatus])
 
   const setRandomPin = () => {
-    const randomPin = generateRandomPin()
-    if (pinRef.current) {
-      pinRef.current.value = randomPin
-    }
-    setPinValue(randomPin)
+    setPinValue(generateRandomPin())
   }
 
   const savePin = async () => {
@@ -298,7 +292,6 @@ export const PhysicalPhoneSettings: FC<PhysicalPhoneSettingsProps> = ({
                     icon={pinVisible ? faEye : faEyeSlash}
                     onIconClick={() => setPinVisible(!pinVisible)}
                     trailingIcon={true}
-                    ref={pinRef}
                     pattern='[0-9]*'
                     maxLength={10}
                     value={pinValue}

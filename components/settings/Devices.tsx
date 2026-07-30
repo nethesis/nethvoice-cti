@@ -124,8 +124,6 @@ const Devices: NextPage = () => {
       getMacArchitecture().then((arch) => {
         setMacArchitecture(arch)
       })
-    } else if (userAgent.includes('linux')) {
-      setCurrentOS('linux')
     }
 
     const initUrlDownload = async () => {
@@ -145,8 +143,6 @@ const Devices: NextPage = () => {
               const url = asset.browser_download_url
               if (url.includes('setup.exe')) {
                 acc.push({ windowsUrl: url })
-              } else if (url.includes('.AppImage')) {
-                acc.push({ linuxUrl: url })
               } else if (url.includes('.dmg')) {
                 if (url.includes('-arm64.dmg')) {
                   acc.push({ macArmUrl: url })
@@ -202,12 +198,12 @@ const Devices: NextPage = () => {
             <Dropdown.Item
               icon={faArrowUpRightFromSquare}
               onClick={() => {
-                window.location.href = 'nethlink://open'
+                window.open('nethlink://open')
               }}
-          >
+            >
               {t('Devices.Open app')}
             </Dropdown.Item>
-        )}
+          )}
         </>
       )}
     </>
@@ -296,16 +292,16 @@ const Devices: NextPage = () => {
       <Button variant='ghost' tabIndex={-1}>
         <FontAwesomeIcon icon={faGear} className='xl:mr-3 mr-0 h-4 w-4' />
         <span className='hidden xl:inline'>{t('Common.Settings')}</span>
-          </Button>
-          </span>
+      </Button>
+    </span>
   )
 
   const kebabButtonPlaceholder = (
     <span className='invisible' aria-hidden='true'>
       <Button variant='ghost' size='small' tabIndex={-1}>
         <FontAwesomeIcon icon={faEllipsisVertical} className='h-4 w-4' />
-          </Button>
-          </span>
+      </Button>
+    </span>
   )
 
   const webphoneTable = () => {
@@ -389,17 +385,17 @@ const Devices: NextPage = () => {
                           isWebphoneSettingsDisabled
                             ? t('Devices.Web phone settings unavailable tooltip')
                             : t('Common.Settings')
-  }
+                        }
                       >
-                      <Button
-                        variant='ghost'
+                        <Button
+                          variant='ghost'
                           disabled={isWebphoneSettingsDisabled}
-                        onClick={() => openShowSwitchDeviceInputOutput('')}
+                          onClick={() => openShowSwitchDeviceInputOutput('')}
                           className='relative disabled:opacity-50'
-                      >
+                        >
                           <FontAwesomeIcon icon={faGear} className='xl:mr-3 mr-0 h-4 w-4' />
                           <span className='hidden xl:inline'>{t('Common.Settings')}</span>
-                      </Button>
+                        </Button>
                       </span>
                       {webrtcData?.[0]?.id !== profile?.default_device?.id &&
                       phoneLinkData?.[0]?.id !== profile?.default_device?.id ? (
@@ -423,12 +419,12 @@ const Devices: NextPage = () => {
                         kebabButtonPlaceholder
                       )}
                     </div>
-            <CustomThemedTooltip
+                    <CustomThemedTooltip
                       id='tooltip-webphone-settings'
-              place='top'
+                      place='top'
                       className='whitespace-normal text-left'
                       positionStrategy='fixed'
-            />
+                    />
                   </td>
                 </tr>
               </tbody>
@@ -640,7 +636,7 @@ const Devices: NextPage = () => {
                             />
                             <span className='hidden xl:inline'>{t('Common.Settings')}</span>
                           </Button>
-        ) : (
+                        ) : (
                           settingsButtonPlaceholder
                         )}
                         {phone?.id !== profile?.default_device?.id ? (
@@ -655,7 +651,7 @@ const Devices: NextPage = () => {
                               />
                             </Button>
                           </Dropdown>
-        ) : (
+                        ) : (
                           kebabButtonPlaceholder
                         )}
                       </div>
@@ -677,7 +673,7 @@ const Devices: NextPage = () => {
           phone={selectedPhysicalPhone}
           pinStatus={!!pinObject}
           onBack={() => setSelectedPhysicalPhone(null)}
-            />
+        />
       </div>
     )
   }

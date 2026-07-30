@@ -69,7 +69,7 @@ export const DownloadDesktopLinkContent = forwardRef<
 
   return (
     <>
-      <DrawerHeader title={t('Devices.Download Desktop app')}  onClose={closeSideDrawer}/>
+      <DrawerHeader title={t('Devices.Download Desktop app')} onClose={closeSideDrawer} />
       {/* Divider */}
       <div className='px-6 pb-6'>
         <Divider spaceAbove='pt-6' spaceBelow='pb-6' />
@@ -82,26 +82,26 @@ export const DownloadDesktopLinkContent = forwardRef<
         </div>
         <div className='mt-2 grid grid-cols-2 gap-4'>
           {osCards.map((osCard) => (
-          <div
+            <div
               key={osCard.id}
-            className={`${
+              className={`${
                 selectedOS === osCard.id
                   ? 'border-primary dark:border-primaryDark'
                   : 'border-gray-300 dark:border-gray-700'
               } rounded-md border bg-bgInput dark:bg-bgInputDark px-3 py-2 min-h-[55px] relative flex items-center justify-between gap-2 cursor-pointer`}
               onClick={() => handleSelectedOS(osCard.id)}
-          >
+            >
               <div className='flex items-center gap-2'>
                 <FontAwesomeIcon icon={osCard.icon} className='h-6 w-6' aria-hidden='true' />
                 <span className='text-sm font-medium leading-5 text-primaryNeutral dark:text-primaryNeutralDark'>
                   {osCard.label}
-              </span>
-            </div>
+                </span>
+              </div>
               {selectedOS === osCard.id && (
-                  <FontAwesomeIcon
-                    icon={faCircleCheck}
+                <FontAwesomeIcon
+                  icon={faCircleCheck}
                   className='h-3 w-3 self-start text-primary dark:text-primaryDark'
-                  />
+                />
               )}
             </div>
           ))}
@@ -112,7 +112,8 @@ export const DownloadDesktopLinkContent = forwardRef<
         <DrawerFooter
           confirmLabel={`${t('Common.Download')}`}
           onConfirm={() => handleDownloadStart()}
-                />
+          confirmDisabled={selectedOS === ''}
+        />
       </div>
     </>
   )

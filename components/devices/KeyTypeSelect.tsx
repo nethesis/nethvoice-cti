@@ -34,7 +34,7 @@ export const KeyTypeSelect: FC<keyTypeSelectProps> = ({
 
   return (
     <Select
-        id='types'
+      id='types'
       value={selectedType}
       onChange={changeType}
       label={label || t('Devices.Key type')}

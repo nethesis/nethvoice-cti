@@ -35,6 +35,16 @@ export const getDefaultPhoneKeyLabel = (type: string) => {
   return keyType ? t(keyType.label) : ''
 }
 
+export const getPhoneKeyTargetText = (value: string, label: string) => {
+  if (!value) {
+    return label
+  }
+  if (!label || label === value) {
+    return value
+  }
+  return `${value} - ${label}`
+}
+
 export const generateRandomPin = () =>
   Array.from({ length: 4 }, () => Math.floor(Math.random() * 10)).join('')
 

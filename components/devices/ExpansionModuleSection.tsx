@@ -21,6 +21,7 @@ import {
 import { customScrollbarClass, openToast } from '../../lib/utils'
 import {
   EXPANSION_KEY_CARD_CLASSES,
+  getPhoneKeyTargetText,
   isPhoneKeyTypeWithValue,
   notifyPhoneConfigurationSaved,
 } from './phoneKeys'
@@ -192,7 +193,7 @@ export const ExpansionModuleSection: FC<ExpansionModuleSectionProps> = ({
       openToast(
         'success',
         `${t('Devices.Configuration removed description', {
-          key: t('Devices.KEY', { number: keyToRemove.number }),
+          key: t('Devices.Key number', { number: keyToRemove.number }),
         })}`,
         `${t('Devices.Configuration removed')}`,
       )
@@ -205,7 +206,7 @@ export const ExpansionModuleSection: FC<ExpansionModuleSectionProps> = ({
 
   const getKeyDescription = (key: ExpansionKey) => {
     const badge = getKeyTypeBadgeText(key.type)
-    const target = [key.value, key.label].filter(Boolean).join(', ')
+    const target = [key.value, key.label === key.value ? '' : key.label].filter(Boolean).join(', ')
     return target ? `${badge} - ${target}` : badge
   }
 
@@ -220,7 +221,6 @@ export const ExpansionModuleSection: FC<ExpansionModuleSectionProps> = ({
         variables[`expkey_label_${key.globalIndex}`] = ''
       })
       await saveExpansionKeys(variables, true)
-      setShowRemoveModal(false)
       openToast(
         'success',
         `${t('Devices.Expansion module removed description')}`,
@@ -231,6 +231,7 @@ export const ExpansionModuleSection: FC<ExpansionModuleSectionProps> = ({
       setSaveError(true)
     } finally {
       setIsRemoving(false)
+      setShowRemoveModal(false)
     }
   }
 
@@ -301,7 +302,7 @@ export const ExpansionModuleSection: FC<ExpansionModuleSectionProps> = ({
                       {isPhoneKeyTypeWithValue(key.type) && (
                         <PhoneKeyLabel
                           tooltipId={`tooltip-expansion-key-${key.globalIndex}`}
-                          text={key.value ? `${key.value} - ${key.label}` : key.label}
+                          text={getPhoneKeyTargetText(key.value, key.label)}
                           className='text-base font-medium leading-6 text-secondaryNeutral dark:text-secondaryNeutralDark'
                         />
                       )}
@@ -359,7 +360,7 @@ export const ExpansionModuleSection: FC<ExpansionModuleSectionProps> = ({
         description={
           keyToRemove
             ? t('Devices.Remove configuration modal message', {
-                key: t('Devices.KEY', { number: keyToRemove.number }),
+                key: t('Devices.Key number', { number: keyToRemove.number }),
                 description: getKeyDescription(keyToRemove),
               })
             : ''

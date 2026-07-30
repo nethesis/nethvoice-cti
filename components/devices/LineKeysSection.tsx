@@ -39,6 +39,7 @@ import { KeyPositionInput } from './KeyPositionInput'
 import { PhoneKeyLabel } from './PhoneKeyLabel'
 import {
   getDefaultPhoneKeyLabel,
+  getPhoneKeyTargetText,
   isPhoneKeyTypeWithValue,
   notifyPhoneConfigurationSaved,
   PHONE_KEY_CARD_CLASSES,
@@ -273,9 +274,17 @@ export const LineKeysSection: FC<LineKeysSectionProps> = ({ deviceId, phoneName 
   const [showAssignBlfModal, setShowAssignBlfModal] = useState(false)
   const cancelAssignBlfRef = useRef() as MutableRefObject<HTMLButtonElement>
 
+  const sortedExtensions = useMemo(
+    () =>
+      Object.keys(operators?.extensions || {}).sort((extension1, extension2) =>
+        extension1.localeCompare(extension2, undefined, { numeric: true }),
+      ),
+    [operators?.extensions],
+  )
+
   const assignBlfToAllOperators = () => {
     const blfKeys: PhoneKey[] = []
-    Object.keys(operators?.extensions || {}).forEach((exten, index) => {
+    sortedExtensions.forEach((exten, index) => {
       if (index < usableKeys) {
         blfKeys.push({
           uid: nextUid.current++,
@@ -293,45 +302,43 @@ export const LineKeysSection: FC<LineKeysSectionProps> = ({ deviceId, phoneName 
   }
 
   const assignBlfExampleRows = () =>
-    Object.keys(operators?.extensions || {})
-      .slice(0, 2)
-      .map((key, index) => {
-        const exampleOperator = operators?.extensions[key]
-        const operatorName = exampleOperator?.name || '-'
-        const operatorExtension = exampleOperator?.exten || '-'
+    sortedExtensions.slice(0, 2).map((key, index) => {
+      const exampleOperator = operators?.extensions[key]
+      const operatorName = exampleOperator?.name || '-'
+      const operatorExtension = exampleOperator?.exten || '-'
 
-        return (
-          <div
-            key={key}
-            className='grid grid-cols-[minmax(0,1fr)_auto_minmax(0,1.4fr)] items-center gap-3 py-2'
-          >
-            <div className='flex min-w-0 items-center gap-2'>
-              <Avatar
-                size='small'
-                placeholderType='person'
-                src={operators?.avatars[exampleOperator?.username]}
-                status={operators?.operators[exampleOperator?.username]?.mainPresence}
-              />
-              <span className='truncate'>{operatorName}</span>
-            </div>
-
-            <FontAwesomeIcon
-              icon={faArrowRight}
-              className='h-4 w-4 shrink-0 text-tertiaryNeutral dark:text-tertiaryNeutralDark'
+      return (
+        <div
+          key={key}
+          className='grid grid-cols-[minmax(0,1fr)_auto_minmax(0,1.4fr)] items-center gap-3 py-2'
+        >
+          <div className='flex min-w-0 items-center gap-2'>
+            <Avatar
+              size='small'
+              placeholderType='person'
+              src={operators?.avatars[exampleOperator?.username]}
+              status={operators?.operators[exampleOperator?.username]?.mainPresence}
             />
-
-            <div className='flex min-w-0 items-center gap-2'>
-              <FontAwesomeIcon
-                icon={faGripVertical}
-                className='h-4 w-4 shrink-0 text-secondaryNeutral dark:text-secondaryNeutralDark'
-              />
-              <span className='shrink-0'>{index + 1} -</span>
-              <span className='truncate'>{operatorName}</span>
-              <span className='shrink-0'>({operatorExtension})</span>
-            </div>
+            <span className='truncate'>{operatorName}</span>
           </div>
-        )
-      })
+
+          <FontAwesomeIcon
+            icon={faArrowRight}
+            className='h-4 w-4 shrink-0 text-tertiaryNeutral dark:text-tertiaryNeutralDark'
+          />
+
+          <div className='flex min-w-0 items-center gap-2'>
+            <FontAwesomeIcon
+              icon={faGripVertical}
+              className='h-4 w-4 shrink-0 text-secondaryNeutral dark:text-secondaryNeutralDark'
+            />
+            <span className='shrink-0'>{index + 1} -</span>
+            <span className='truncate'>{operatorName}</span>
+            <span className='shrink-0'>({operatorExtension})</span>
+          </div>
+        </div>
+      )
+    })
 
   const [isSaving, setIsSaving] = useState(false)
 
@@ -488,7 +495,7 @@ export const LineKeysSection: FC<LineKeysSectionProps> = ({ deviceId, phoneName 
                       {isPhoneKeyTypeWithValue(key.type) && (
                         <PhoneKeyLabel
                           tooltipId={`tooltip-line-key-${key.uid}`}
-                          text={key.value ? `${key.value} - ${key.label}` : key.label}
+                          text={getPhoneKeyTargetText(key.value, key.label)}
                           className='text-base font-medium text-secondaryNeutral dark:text-secondaryNeutralDark'
                         />
                       )}
@@ -623,7 +630,9 @@ export const LineKeysSection: FC<LineKeysSectionProps> = ({ deviceId, phoneName 
         focus={cancelAssignBlfRef}
         type='info'
         title={t('Devices.Assign keys for all operators')}
-        description={`${t('Devices.Assign key for all operators modal message')}.`}
+        description={`${t('Devices.Assign key for all operators modal message')}. ${t(
+          'Devices.Assign key for all operators modal warning',
+        )}`}
         confirmLabel={t('Devices.Assign keys')}
         confirmVariant='primary'
         onConfirm={assignBlfToAllOperators}

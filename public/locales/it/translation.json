@@ -1172,7 +1172,9 @@
     "Remove configuration modal message": "{{key}} ({{description}}) tornerà non configurato.",
     "Configuration removed": "Configurazione rimossa",
     "Configuration removed description": "{{key}} è tornato non configurato.",
-    "Remove module unavailable tooltip": "Si può rimuovere solo l'ultimo modulo di espansione."
+    "Remove module unavailable tooltip": "Si può rimuovere solo l'ultimo modulo di espansione.",
+    "Assign key for all operators modal warning": "I tasti già configurati in quelle posizioni verranno sostituiti.",
+    "Key number": "Tasto {{number}}"
   },
   "DropdownContent": {
     "Microphones": "MICROFONI",

@@ -48,7 +48,7 @@ export const DeviceSectionOperatorSearch: FC<DeviceSectionOperatorSearchProps> =
 
   const [phonebookError, setPhonebookError] = useState('')
 
-  const searchPhonebook = async (query: string, isQueryPhoneNumber: boolean) => {
+  const searchPhonebook = async (query: string) => {
     setPhonebookError('')
 
     try {
@@ -57,25 +57,10 @@ export const DeviceSectionOperatorSearch: FC<DeviceSectionOperatorSearchProps> =
       const res = await getPhonebook(1, noSlashCharactersQuery, 'all', 'displayname')
 
       let phonebookResults = mapPhonebookResponse(res).rows
-      let isNumberInPhonebook = false
 
-      if (phonebookResults.length) {
-        phonebookResults.forEach((contact: any) => {
-          // set result type
-          contact.resultType = 'contact'
-          if (isQueryPhoneNumber) {
-            // check if contact has the queried number
-            const extensionNoSpaces = contact?.extension?.replace(/\s/g, '')
-            const workphoneNoSpaces = contact?.workphone?.replace(/\s/g, '')
-            const cellphoneNoSpaces = contact?.cellphone?.replace(/\s/g, '')
-            const queryNoSpaces = query.replace(/\s/g, '')
-
-            if ([extensionNoSpaces, workphoneNoSpaces, cellphoneNoSpaces].includes(queryNoSpaces)) {
-              isNumberInPhonebook = true
-            }
-          }
-        })
-      }
+      phonebookResults.forEach((contact: any) => {
+        contact.resultType = 'contact'
+      })
 
       return phonebookResults
     } catch (e) {
@@ -86,7 +71,7 @@ export const DeviceSectionOperatorSearch: FC<DeviceSectionOperatorSearchProps> =
   }
 
   const searchOperators = (cleanQuery: string, cleanRegex: RegExp) => {
-    let operatorsResults = Object.values(operators?.operators).filter((op: any) => {
+    let operatorsResults = Object.values(operators?.operators || {}).filter((op: any) => {
       return (
         new RegExp(cleanQuery, 'i').test(op.name.replace(cleanRegex, '')) ||
         new RegExp(cleanQuery, 'i').test(op.endpoints?.mainextension?.[0]?.id)
@@ -119,17 +104,10 @@ export const DeviceSectionOperatorSearch: FC<DeviceSectionOperatorSearchProps> =
 
         let results: any[] = []
         setLoaded(false)
-        let isPhoneNumber = false
 
         if (typeSelected === 'speed_dial') {
-          // is it a phone number?
-          if (/^\+?[0-9|\s]+$/.test(cleanQuery)) {
-            // show "Call phone number" result
-            isPhoneNumber = true
-          }
-
           const operatorsResults = searchOperators(cleanQuery, cleanRegex)
-          const phonebookResults = await searchPhonebook(query.trim(), isPhoneNumber)
+          const phonebookResults = await searchPhonebook(query.trim())
 
           results = results?.concat(operatorsResults, explodePhonebookResults(phonebookResults))
         } else {
@@ -205,9 +183,9 @@ export const DeviceSectionOperatorSearch: FC<DeviceSectionOperatorSearchProps> =
       return
     }
 
-      const operatorId =
+    const operatorId =
       result.resultType === 'operator' ? result?.endpoints?.mainextension?.[0]?.id : ''
-      const numberTypeFromId = result?.id?.split('-')?.[1]
+    const numberTypeFromId = result?.id?.split('-')?.[1]
     const selectedNumber =
       numberTypeFromId && phoneProps.includes(numberTypeFromId)
         ? result[numberTypeFromId] || ''
@@ -224,7 +202,7 @@ export const DeviceSectionOperatorSearch: FC<DeviceSectionOperatorSearchProps> =
       label: selectedName || selectedNumber,
       isCustom: false,
     })
-      }
+  }
 
   const applyFreeText = (text: string) => {
     const trimmedText = text.trim()
@@ -286,7 +264,6 @@ export const DeviceSectionOperatorSearch: FC<DeviceSectionOperatorSearchProps> =
                 'max-h-60 min-w-0 flex-auto scroll-py-4 overflow-y-auto overflow-x-hidden scrollbar-thin scrollbar-thumb-gray-400 dark:scrollbar-thumb-gray-400 scrollbar-thumb-rounded-full scrollbar-thumb-opacity-50 scrollbar-track-gray-200 dark:scrollbar-track-gray-900 scrollbar-track-rounded-full scrollbar-track-opacity-25',
               )}
             >
-              {/* {/* skeleton */}
               {!isLoaded &&
                 Array.from(Array(4)).map((_, index) => (
                   <ComboboxOption

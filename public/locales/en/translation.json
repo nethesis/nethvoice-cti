@@ -1191,7 +1191,9 @@
     "Remove configuration modal message": "{{key}} ({{description}}) will return to unconfigured.",
     "Configuration removed": "Configuration removed",
     "Configuration removed description": "{{key}} returned to unconfigured.",
-    "Remove module unavailable tooltip": "Only the last expansion module can be removed."
+    "Remove module unavailable tooltip": "Only the last expansion module can be removed.",
+    "Assign key for all operators modal warning": "The keys already configured in those positions will be replaced.",
+    "Key number": "Key {{number}}"
   },
   "DropdownContent": {
     "Microphones": "MICROPHONES",

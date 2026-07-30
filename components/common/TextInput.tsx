@@ -81,7 +81,10 @@ export const TextInput = forwardRef<HTMLInputElement, TextInputProps>(
       <div className={classNames('text-left', 'w-full', className)}>
         {label && (
           <label
-            className={classNames(theme.label, 'mb-2 flex items-end justify-between gap-2')}
+            className={classNames(
+              theme.label,
+              optional && 'mb-2 flex items-end justify-between gap-2',
+            )}
             htmlFor={id}
           >
             <span>{label}</span>
