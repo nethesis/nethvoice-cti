@@ -1088,11 +1088,6 @@
     "Key position": "Key position",
     "Type": "Type",
     "Choose type": "Choose type",
-    "Busy lamp field (BLF)": "Busy lamp field (BLF)",
-    "Line": "Line",
-    "Speed call": "Speed dial",
-    "Do not disturb (DND)": "Do not disturb (DND)",
-    "Toggle login/logout queue": "Toggle login/logout queue",
     "Name or number": "Name or number",
     "Add key": "Add key",
     "Search physical phone index placeholder message": "Type or search index from 1 to {{maxNumber}}",
@@ -1193,7 +1188,12 @@
     "Configuration removed description": "{{key}} returned to unconfigured.",
     "Remove module unavailable tooltip": "Only the last expansion module can be removed.",
     "Assign key for all operators modal warning": "The keys already configured in those positions will be replaced.",
-    "Key number": "Key {{number}}"
+    "Key number": "Key {{number}}",
+    "Key type blf": "BLF",
+    "Key type line": "Line",
+    "Key type dnd": "DND",
+    "Key type speed dial": "Speed dial",
+    "Key type queue": "Queue"
   },
   "DropdownContent": {
     "Microphones": "MICROPHONES",

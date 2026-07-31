@@ -11,15 +11,11 @@ export interface PhoneKeyType {
 }
 
 export const PHONE_KEY_TYPES: PhoneKeyType[] = [
-  { value: 'blf', label: 'Devices.Busy lamp field (BLF)', badge: 'Devices.BLF' },
-  { value: 'line', label: 'Devices.Line', badge: 'Devices.LINE' },
-  { value: 'dnd', label: 'Devices.Do not disturb (DND)', badge: 'Devices.DND' },
-  { value: 'speed_dial', label: 'Devices.Speed call', badge: 'Devices.SPEED DIAL' },
-  {
-    value: 'toggleQueue',
-    label: 'Devices.Toggle login/logout queue',
-    badge: 'Devices.QUEUE',
-  },
+  { value: 'blf', label: 'Devices.Key type blf', badge: 'Devices.BLF' },
+  { value: 'line', label: 'Devices.Key type line', badge: 'Devices.LINE' },
+  { value: 'dnd', label: 'Devices.Key type dnd', badge: 'Devices.DND' },
+  { value: 'speed_dial', label: 'Devices.Key type speed dial', badge: 'Devices.SPEED DIAL' },
+  { value: 'toggleQueue', label: 'Devices.Key type queue', badge: 'Devices.QUEUE' },
 ]
 
 export const PHONE_KEY_TYPES_WITHOUT_VALUE = ['line', 'dnd', 'toggleQueue']
