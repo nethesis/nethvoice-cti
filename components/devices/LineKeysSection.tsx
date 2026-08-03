@@ -41,6 +41,7 @@ import {
   getDefaultPhoneKeyLabel,
   getPhoneKeyTargetText,
   isPhoneKeyTypeWithValue,
+  normalizePhoneKeyType,
   notifyPhoneConfigurationSaved,
   PHONE_KEY_CARD_CLASSES,
   PHONE_KEY_LABEL_CLASSES,
@@ -106,7 +107,7 @@ export const LineKeysSection: FC<LineKeysSectionProps> = ({ deviceId, phoneName 
         for (let i = 1; i <= keyCount; i++) {
           loadedKeys.push({
             uid: i,
-            type: configuration?.variables?.[`linekey_type_${i}`] ?? '',
+            type: normalizePhoneKeyType(configuration?.variables?.[`linekey_type_${i}`] ?? ''),
             value: configuration?.variables?.[`linekey_value_${i}`] ?? '',
             label: configuration?.variables?.[`linekey_label_${i}`] ?? '',
           })

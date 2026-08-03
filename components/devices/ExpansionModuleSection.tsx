@@ -23,6 +23,7 @@ import {
   EXPANSION_KEY_CARD_CLASSES,
   getPhoneKeyTargetText,
   isPhoneKeyTypeWithValue,
+  normalizePhoneKeyType,
   notifyPhoneConfigurationSaved,
 } from './phoneKeys'
 
@@ -89,7 +90,9 @@ export const ExpansionModuleSection: FC<ExpansionModuleSectionProps> = ({
         moduleKeys.push({
           number: i,
           globalIndex,
-          type: configuration?.variables?.[`expkey_type_${globalIndex}`] ?? '',
+          type: normalizePhoneKeyType(
+            configuration?.variables?.[`expkey_type_${globalIndex}`] ?? '',
+          ),
           value: configuration?.variables?.[`expkey_value_${globalIndex}`] ?? '',
           label: configuration?.variables?.[`expkey_label_${globalIndex}`] ?? '',
         })

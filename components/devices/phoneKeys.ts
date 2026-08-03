@@ -15,10 +15,14 @@ export const PHONE_KEY_TYPES: PhoneKeyType[] = [
   { value: 'line', label: 'Devices.Key type line', badge: 'Devices.LINE' },
   { value: 'dnd', label: 'Devices.Key type dnd', badge: 'Devices.DND' },
   { value: 'speed_dial', label: 'Devices.Key type speed dial', badge: 'Devices.SPEED DIAL' },
-  { value: 'toggleQueue', label: 'Devices.Key type queue', badge: 'Devices.QUEUE' },
+  { value: 'queuetoggle', label: 'Devices.Key type queue', badge: 'Devices.QUEUE' },
 ]
 
-export const PHONE_KEY_TYPES_WITHOUT_VALUE = ['line', 'dnd', 'toggleQueue']
+export const PHONE_KEY_TYPES_WITHOUT_VALUE = ['line', 'dnd', 'queuetoggle']
+
+const LEGACY_PHONE_KEY_TYPES: { [key: string]: string } = { toggleQueue: 'queuetoggle' }
+
+export const normalizePhoneKeyType = (type: string) => LEGACY_PHONE_KEY_TYPES[type] || type
 
 export const isPhoneKeyTypeWithValue = (type: string) =>
   type !== '' && !PHONE_KEY_TYPES_WITHOUT_VALUE.includes(type)

@@ -12,7 +12,7 @@ interface PhysicalPhoneKeyBadgeProps {
 const BADGE_STYLES: { [key: string]: string } = {
   line: 'bg-surfaceBadgeGreen dark:bg-surfaceBadgeGreenDark text-textBadgeGreen dark:text-textBadgeGreenDark',
   blf: 'bg-surfaceBadgeBlueNethLink dark:bg-surfaceBadgeBlueNethLinkDark text-textBadgeBlueNethLink dark:text-textBadgeBlueNethLinkDark',
-  toggleQueue:
+  queuetoggle:
     'bg-surfaceBadgeAmber dark:bg-surfaceBadgeAmberDark text-textBadgeAmber dark:text-textBadgeAmberDark',
   dnd: 'bg-surfaceBadgeRose dark:bg-surfaceBadgeRoseDark text-textBadgeRose dark:text-textBadgeRoseDark',
   speed_dial:
