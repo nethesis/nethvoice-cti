@@ -65,6 +65,8 @@ const Devices: NextPage = () => {
   const operators: any = useSelector((state: RootState) => state.operators)
   const profile = useSelector((state: RootState) => state.user)
 
+  const isRightSideMenuOpen = useSelector((state: RootState) => state.rightSideMenu.isShown)
+
   const [selectedPhysicalPhone, setSelectedPhysicalPhone] = useState<any>(null)
 
   const [phoneData, setPhoneData]: any = useState([])
@@ -287,11 +289,14 @@ const Devices: NextPage = () => {
     webrtcData?.[0]?.id !== profile?.default_device?.id ||
     operators?.extensions[webrtcData?.[0]?.id]?.status === 'offline'
 
+  const settingsIconClasses = isRightSideMenuOpen ? 'mr-0 h-4 w-4' : 'xl:mr-3 mr-0 h-4 w-4'
+  const settingsLabelClasses = isRightSideMenuOpen ? 'hidden' : 'hidden xl:inline'
+
   const settingsButtonPlaceholder = (
     <span className='invisible' aria-hidden='true'>
       <Button variant='ghost' tabIndex={-1}>
-        <FontAwesomeIcon icon={faGear} className='xl:mr-3 mr-0 h-4 w-4' />
-        <span className='hidden xl:inline'>{t('Common.Settings')}</span>
+        <FontAwesomeIcon icon={faGear} className={settingsIconClasses} />
+        <span className={settingsLabelClasses}>{t('Common.Settings')}</span>
       </Button>
     </span>
   )
@@ -393,8 +398,8 @@ const Devices: NextPage = () => {
                           onClick={() => openShowSwitchDeviceInputOutput('')}
                           className='relative disabled:opacity-50'
                         >
-                          <FontAwesomeIcon icon={faGear} className='xl:mr-3 mr-0 h-4 w-4' />
-                          <span className='hidden xl:inline'>{t('Common.Settings')}</span>
+                          <FontAwesomeIcon icon={faGear} className={settingsIconClasses} />
+                          <span className={settingsLabelClasses}>{t('Common.Settings')}</span>
                         </Button>
                       </span>
                       {webrtcData?.[0]?.id !== profile?.default_device?.id &&
@@ -626,15 +631,10 @@ const Devices: NextPage = () => {
                             onClick={() => setSelectedPhysicalPhone(phone)}
                             className='relative'
                             data-tooltip-id='tooltip-device-settings'
-                            data-tooltip-content={t('Devices.Device settings')}
+                            data-tooltip-content={t('Common.Settings')}
                           >
-                            <FontAwesomeIcon icon={faGear} className='xl:mr-3 mr-0 h-4 w-4' />
-                            <CustomThemedTooltip
-                              id='tooltip-device-settings'
-                              place='top'
-                              className='inline xl:hidden whitespace-normal text-left'
-                            />
-                            <span className='hidden xl:inline'>{t('Common.Settings')}</span>
+                            <FontAwesomeIcon icon={faGear} className={settingsIconClasses} />
+                            <span className={settingsLabelClasses}>{t('Common.Settings')}</span>
                           </Button>
                         ) : (
                           settingsButtonPlaceholder
@@ -661,6 +661,15 @@ const Devices: NextPage = () => {
               </tbody>
             </table>
           </div>
+          <CustomThemedTooltip
+            id='tooltip-device-settings'
+            place='top'
+            className={
+              isRightSideMenuOpen
+                ? 'inline whitespace-normal text-left'
+                : 'inline xl:hidden whitespace-normal text-left'
+            }
+          />
         </div>
       </>
     )

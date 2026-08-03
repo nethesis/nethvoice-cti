@@ -1054,7 +1054,7 @@
     "Device name": "Nome dispositivo",
     "Status": "Stato",
     "Edit": "Modifica",
-    "Set as main device": "Imposta come dispositivo principale",
+    "Set as main device": "Imposta come principale",
     "Main device": "Dispositivo principale",
     "Online": "Online",
     "Offline": "Offline",
@@ -1129,7 +1129,7 @@
     "No general settings available": "Nessuna impostazione generale disponibile per questo telefono.",
     "LINE": "LINEA",
     "BLF": "STATO DELL'INTERNO",
-    "QUEUE": "CODA",
+    "QUEUE": "LOGIN/LOGOUT CODA",
     "DND": "NON DISTURBARE",
     "SPEED DIAL": "CHIAMATA RAPIDA",
     "Key type": "Tipo di tasto",
@@ -1174,7 +1174,7 @@
     "Key type line": "Linea",
     "Key type dnd": "Non disturbare",
     "Key type speed dial": "Chiamata rapida",
-    "Key type queue": "Coda"
+    "Key type queue": "Login/logout coda"
   },
   "DropdownContent": {
     "Microphones": "MICROFONI",

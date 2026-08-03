@@ -1148,7 +1148,7 @@
     "No general settings available": "No general settings available for this phone.",
     "LINE": "LINE",
     "BLF": "BLF",
-    "QUEUE": "QUEUE",
+    "QUEUE": "QUEUE LOGIN/LOGOUT",
     "DND": "DND",
     "SPEED DIAL": "SPEED DIAL",
     "Key type": "Key type",
@@ -1193,7 +1193,7 @@
     "Key type line": "Line",
     "Key type dnd": "DND",
     "Key type speed dial": "Speed dial",
-    "Key type queue": "Queue"
+    "Key type queue": "Queue login/logout"
   },
   "DropdownContent": {
     "Microphones": "MICROPHONES",
