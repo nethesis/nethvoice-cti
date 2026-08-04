@@ -69,7 +69,6 @@ export const Filter = forwardRef<HTMLButtonElement, FilterProps>(
       id: 'sort',
       name: t('Operators.Sort by'),
       options: [
-        { value: 'favorites', label: `${t('Operators.Favorites') || ''}` },
         { value: 'extension', label: `${t('Operators.Extension') || ''}` },
         { value: 'az', label: `${t('Operators.Alphabetic A-Z') || ''}` },
         { value: 'za', label: `${t('Operators.Alphabetic Z-A') || ''}` },
@@ -107,7 +106,6 @@ export const Filter = forwardRef<HTMLButtonElement, FilterProps>(
       id: 'groupedSortBy',
       name: t('Operators.Sort by'),
       options: [
-        { value: 'favorites', label: `${t('Operators.Favorites') || ''}` },
         { value: 'extension', label: `${t('Operators.Extension') || ''}` },
         { value: 'az', label: `${t('Operators.Alphabetic A-Z') || ''}` },
         { value: 'za', label: `${t('Operators.Alphabetic Z-A') || ''}` },
