@@ -287,6 +287,8 @@ export interface CallTypes {
   voicemail_message_id?: string
   interactions?: CallTypes[]
   interactionsCount?: number
+  ringGroupName?: string
+  ringGroupNum?: string
 }
 
 export interface LastCallsResponse {

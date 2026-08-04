@@ -927,6 +927,28 @@ export const Calls: FC<CallsProps> = ({ className }): JSX.Element => {
               <CustomThemedTooltip id={`tooltip-interactions-${call?.linkedid}`} place='top' />
             </>
           )}
+          {/* Ring-group calls are a single CDR leg (no interactions to expand), so
+              flag them as a group call so an answered ring-group row is still
+              recognisable as having gone through the group. */}
+          {!call?.isInteractionRow &&
+            !(call?.interactionsCount > 1) &&
+            call?.ringGroupName && (
+              <>
+                <FontAwesomeIcon
+                  icon={faLayerGroup}
+                  data-tooltip-id={`tooltip-ringgroup-${call?.uniqueid}`}
+                  data-tooltip-content={
+                    `${t('History.Group call')}: ${call?.ringGroupName}` || ''
+                  }
+                  className='h-4 w-4 mt-0.5 shrink-0 text-iconIndigo dark:text-iconIndigoDark'
+                  role='img'
+                  aria-label={
+                    `${t('History.Group call')}: ${call?.ringGroupName}` || ''
+                  }
+                />
+                <CustomThemedTooltip id={`tooltip-ringgroup-${call?.uniqueid}`} place='top' />
+              </>
+            )}
         </div>
       ),
       width: '15%',
