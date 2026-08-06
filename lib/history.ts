@@ -289,6 +289,7 @@ export interface CallTypes {
   interactionsCount?: number
   ringGroupName?: string
   ringGroupNum?: string
+  queueName?: string
 }
 
 export interface LastCallsResponse {

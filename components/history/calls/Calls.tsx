@@ -295,6 +295,13 @@ export const Calls: FC<CallsProps> = ({ className }): JSX.Element => {
 
   //Get the history of the user
   useEffect(() => {
+    // Guard against out-of-order responses: when a filter (callType, direction, …)
+    // changes while a request is still in flight, the stale response must NOT win.
+    // Without this, switching from personal to switchboard while the personal
+    // request is slow lets the personal result land and populate the grid even
+    // though switchboard is now selected. `ignore` is flipped by the cleanup so
+    // only the latest effect run applies its result.
+    let ignore = false
     async function fetchHistory() {
       if (
         areFiltersInitialized &&
@@ -320,21 +327,29 @@ export const Calls: FC<CallsProps> = ({ className }): JSX.Element => {
             contentFilter,
             feature_codes?.audio_test || '*41',
           )
+          if (ignore) return
           setHistory(res)
           setHistoryLoaded(true)
         } catch (e) {
+          if (ignore) return
           setHistoryError('Cannot retrieve history')
           setHistoryLoaded(true)
         } finally {
-          setIsLoadingPagination(false)
+          if (!ignore) setIsLoadingPagination(false)
         }
       }
     }
 
-    // Reset loading state when dependencies change
-    if (areFiltersInitialized && !isLoadingPagination) {
+    // Always start a fresh fetch when a dependency changes. We no longer gate on
+    // !isLoadingPagination (which used to DROP a fetch while another was running,
+    // e.g. a switchboard switch requested during a slow personal load never fired);
+    // the `ignore` guard makes concurrent fetches safe by keeping only the latest.
+    if (areFiltersInitialized) {
       setHistoryLoaded(false)
       fetchHistory()
+    }
+    return () => {
+      ignore = true
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [
