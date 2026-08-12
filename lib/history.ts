@@ -33,6 +33,7 @@ export async function search(
   pageNum: number,
   pageSize: number = PAGE_SIZE,
   contentFilter: string = DEFAULT_CONTENT_FILTER,
+  audioTest: string = '',
 ) {
   if (window == undefined) {
     return
@@ -53,6 +54,9 @@ export async function search(
         pageNum,
         pageSize,
         artifact: contentFilter,
+        // Let the middleware drop audio-test (echo) calls before pagination so
+        // pages are not left short by client-side filtering.
+        audioTest,
       },
     })
     return data
@@ -281,6 +285,11 @@ export interface CallTypes {
   reached_voicemail?: boolean
   has_voicemail_message?: boolean
   voicemail_message_id?: string
+  interactions?: CallTypes[]
+  interactionsCount?: number
+  ringGroupName?: string
+  ringGroupNum?: string
+  queueName?: string
 }
 
 export interface LastCallsResponse {
