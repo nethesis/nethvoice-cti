@@ -11,7 +11,8 @@ import {
   faVoicemail,
   faChevronDown,
   faChevronUp,
-  faLayerGroup,
+  faUsers,
+  faUserGroup,
 } from '@fortawesome/free-solid-svg-icons'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { t } from 'i18next'
@@ -845,6 +846,11 @@ export const Calls: FC<CallsProps> = ({ className }): JSX.Element => {
             isLastInteraction: i === row.interactions.length - 1,
             parentLinkedid: row.linkedid,
             _interactionIndex: i,
+            // The marker belongs to the whole call: a member leg carries no queue or
+            // group name of its own, so it inherits the parent's.
+            queueName: leg?.queueName ?? row?.queueName,
+            queueNum: leg?.queueNum ?? row?.queueNum,
+            ringGroupName: leg?.ringGroupName ?? row?.ringGroupName,
           })
         })
       }
@@ -873,9 +879,9 @@ export const Calls: FC<CallsProps> = ({ className }): JSX.Element => {
               e.stopPropagation()
               toggleExpanded(call?.linkedid)
             }}
-            className='flex h-5 w-5 items-center justify-center rounded-full bg-primary dark:bg-primaryDark text-white hover:bg-emerald-800 dark:hover:bg-emerald-300'
+            className='flex h-5 w-5 items-center justify-center text-iconTertiaryNeutral dark:text-iconTertiaryNeutralDark hover:text-primaryNeutral dark:hover:text-primaryNeutralDark'
           >
-            <FontAwesomeIcon icon={isOpen ? faChevronUp : faChevronDown} className='h-2.5 w-2.5' />
+            <FontAwesomeIcon icon={isOpen ? faChevronUp : faChevronDown} className='h-3.5 w-3.5' />
           </button>
         )
       },
@@ -919,8 +925,53 @@ export const Calls: FC<CallsProps> = ({ className }): JSX.Element => {
     },
     {
       header: t('History.Destination'),
-      cell: (call: any) => (
-        <div className='flex items-start gap-2'>
+      cell: (call: any) => {
+        // Mark ONLY calls that actually went through a queue or a ring group — not
+        // every grouped call. A ring group is flagged by the middleware; a queue is
+        // recognised from its queue name or from the queue-entry leg (lastapp=
+        // "Queue"), which after collapsing lives either on the parent (nobody
+        // answered) or among its interactions (an agent answered).
+        const isRingGroupCall = !!call?.ringGroupName
+        const isQueueCall =
+          !isRingGroupCall &&
+          (!!call?.queueName ||
+            call?.lastapp === 'Queue' ||
+            (call?.interactions || []).some((leg: any) => leg?.lastapp === 'Queue'))
+        const showGroupMarker = isRingGroupCall || isQueueCall
+
+        let markerLabel = ''
+        if (isRingGroupCall) {
+          markerLabel = call?.ringGroupName
+            ? `${t('History.Group')}: ${call.ringGroupName}`
+            : t('History.Group')
+        } else if (isQueueCall) {
+          markerLabel = call?.queueName
+            ? `${t('History.Queue')}: ${call.queueName}`
+            : t('History.Queue')
+        }
+
+        const marker = showGroupMarker ? (
+          <>
+            <FontAwesomeIcon
+              icon={isRingGroupCall ? faUserGroup : faUsers}
+              data-tooltip-id={`tooltip-group-marker-${call?.uniqueid}${
+                call?.isInteractionRow ? `-int-${call?._interactionIndex}` : ''
+              }`}
+              data-tooltip-content={markerLabel}
+              className='h-3.5 w-3.5 shrink-0 text-iconTertiaryNeutral dark:text-iconTertiaryNeutralDark'
+              role='img'
+              aria-label={markerLabel}
+            />
+            <CustomThemedTooltip
+              id={`tooltip-group-marker-${call?.uniqueid}${
+                call?.isInteractionRow ? `-int-${call?._interactionIndex}` : ''
+              }`}
+              place='top'
+            />
+          </>
+        ) : null
+
+        return (
           <CallDestination
             call={call}
             callType={callType}
@@ -928,44 +979,10 @@ export const Calls: FC<CallsProps> = ({ className }): JSX.Element => {
             mainextension={mainextension}
             name={name}
             openDrawerHistory={openDrawerHistory}
+            marker={marker}
           />
-          {!call?.isInteractionRow && call?.interactionsCount > 1 && (
-            <>
-              <FontAwesomeIcon
-                icon={faLayerGroup}
-                data-tooltip-id={`tooltip-interactions-${call?.linkedid}`}
-                data-tooltip-content={t('History.This call has multiple interactions') || ''}
-                className='h-4 w-4 mt-0.5 shrink-0 text-iconIndigo dark:text-iconIndigoDark'
-                role='img'
-                aria-label={t('History.This call has multiple interactions') || ''}
-              />
-              <CustomThemedTooltip id={`tooltip-interactions-${call?.linkedid}`} place='top' />
-            </>
-          )}
-          {/* Ring-group calls are a single CDR leg (no interactions to expand), so
-              flag them as a group call so an answered ring-group row is still
-              recognisable as having gone through the group. */}
-          {!call?.isInteractionRow &&
-            !(call?.interactionsCount > 1) &&
-            call?.ringGroupName && (
-              <>
-                <FontAwesomeIcon
-                  icon={faLayerGroup}
-                  data-tooltip-id={`tooltip-ringgroup-${call?.uniqueid}`}
-                  data-tooltip-content={
-                    `${t('History.Group call')}: ${call?.ringGroupName}` || ''
-                  }
-                  className='h-4 w-4 mt-0.5 shrink-0 text-iconIndigo dark:text-iconIndigoDark'
-                  role='img'
-                  aria-label={
-                    `${t('History.Group call')}: ${call?.ringGroupName}` || ''
-                  }
-                />
-                <CustomThemedTooltip id={`tooltip-ringgroup-${call?.uniqueid}`} place='top' />
-              </>
-            )}
-        </div>
-      ),
+        )
+      },
       width: '15%',
     },
     {

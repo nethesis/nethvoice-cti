@@ -1,4 +1,4 @@
-import { FC } from 'react'
+import { FC, ReactNode } from 'react'
 import { t } from 'i18next'
 import { useSelector } from 'react-redux'
 import { RootState } from '../../../store'
@@ -6,6 +6,9 @@ import { getEffectiveCnam } from '../../../lib/history'
 
 interface CallDestinationProps {
   call: any
+  // Rendered next to the destination NUMBER (e.g. the queue/ring-group marker),
+  // so the badge sits with the number instead of pushing the name around.
+  marker?: ReactNode
   callType: string
   operators: any
   mainextension: string
@@ -21,6 +24,7 @@ interface CallDestinationProps {
 
 export const CallDestination: FC<CallDestinationProps> = ({
   call,
+  marker,
   callType,
   operators,
   mainextension,
@@ -38,8 +42,9 @@ export const CallDestination: FC<CallDestinationProps> = ({
         <div className='truncate text-sm text-secondaryNeutral dark:text-secondaryNeutralDark'>
           {queueName}
         </div>
-        <div className='truncate text-sm text-textPlaceholder dark:text-textPlaceholderDark'>
-          {call.dst}
+        <div className='flex items-center gap-1.5 text-sm text-textPlaceholder dark:text-textPlaceholderDark'>
+          <span className='truncate'>{call.dst}</span>
+          {marker}
         </div>
       </div>
     )
@@ -82,8 +87,9 @@ export const CallDestination: FC<CallDestinationProps> = ({
           {primaryLabel}
         </div>
         {call.dst !== '' && call.dst !== mainextension && (
-          <div className='truncate text-sm cursor-pointer hover:underline text-textPlaceholder dark:text-textPlaceholderDark'>
-            {call.dst}
+          <div className='flex items-center gap-1.5 text-sm text-textPlaceholder dark:text-textPlaceholderDark'>
+            <span className='truncate cursor-pointer hover:underline'>{call.dst}</span>
+            {marker}
           </div>
         )}
       </div>
@@ -133,8 +139,9 @@ export const CallDestination: FC<CallDestinationProps> = ({
           {switchboardLabel}
         </div>
         {dstNumber !== '' && switchboardLabel !== dstNumber && (
-          <div className='truncate text-sm cursor-pointer hover:underline text-textPlaceholder dark:text-textPlaceholderDark'>
-            {dstNumber}
+          <div className='flex items-center gap-1.5 text-sm text-textPlaceholder dark:text-textPlaceholderDark'>
+            <span className='truncate cursor-pointer hover:underline'>{dstNumber}</span>
+            {marker}
           </div>
         )}
       </div>
