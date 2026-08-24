@@ -130,7 +130,7 @@ export const CallDetails: FC<CallDetailsProps> = ({
                 className={`${
                   highlightNumber
                     ? 'text-textLink dark:text-textLinkDark'
-                    : 'text-gray-500 dark:text-gray-200'
+                    : 'text-textPlaceholder dark:text-textPlaceholderDark'
                 } ${fromHistory || (!fromHistory && isQueueBadgeAvailable) ? 'truncate' : ''}`}
               >
                 {direction === 'in' ? incomingNumber : call.dst}
