@@ -139,16 +139,21 @@ export const CallDetails: FC<CallDetailsProps> = ({
         </>
       ) : (
         <>
-          {(direction === 'in' ? call.cnum : call.dst) && (
+          {/* Use incomingNumber (src || cnum), the same party the name is resolved
+              against: on a transferred incoming call cnum is the transfer initiator,
+              so using it here showed a number belonging to someone else. */}
+          {(direction === 'in' ? incomingNumber : call.dst) && (
             <div
               className='truncate text-primary dark:text-primaryDark'
               onClick={() =>
                 operatorsStore?.operators[authStore?.username]?.mainPresence === 'busy'
-                  ? transferCallToExtension(direction === 'in' ? call.cnum : call.dst)
-                  : callPhoneNumber(direction === 'in' ? call.cnum : call.dst)
+                  ? transferCallToExtension(direction === 'in' ? incomingNumber : call.dst)
+                  : callPhoneNumber(direction === 'in' ? incomingNumber : call.dst)
               }
             >
-              {direction === 'in' ? formatPhoneNumber(call.cnum) : formatPhoneNumber(call.dst)}
+              {direction === 'in'
+                ? formatPhoneNumber(incomingNumber)
+                : formatPhoneNumber(call.dst)}
             </div>
           )}
         </>
