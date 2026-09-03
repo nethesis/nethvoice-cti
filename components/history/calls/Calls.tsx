@@ -688,19 +688,18 @@ export const Calls: FC<CallsProps> = ({ className }): JSX.Element => {
         if (!txs || txs.length === 0) {
           return row
         }
-        // The primary conversation is the longest one (the actual answered talk).
+        // The primary conversation is the longest one (the actual answered talk):
+        // it carries the transcript/summary this row must open.
         const primary = [...txs].sort(
           (a: any, b: any) => (Number(b?.duration_seconds) || 0) - (Number(a?.duration_seconds) || 0),
         )[0]
+        // Only the transcript is taken from here. The parties are NOT: the
+        // middleware already resolves who actually talked from the call's legs
+        // (final recipient, original caller, transfers), and overwriting them with
+        // the transcript's numbers silently replaced that with whichever segment
+        // happened to be the longest.
         return {
           ...row,
-          // Clean parties from the transcript; clear cnam so CallSource/CallDestination
-          // re-resolve names from the clean numbers / operators directory.
-          src: primary?.src_number || row?.src,
-          cnum: primary?.src_number || row?.cnum,
-          dst: primary?.dst_number || row?.dst,
-          cnam: '',
-          dst_cnam: '',
           summaryStatus: primary,
           transcriptId: primary?.id,
         }
@@ -894,31 +893,32 @@ export const Calls: FC<CallsProps> = ({ className }): JSX.Element => {
     },
     {
       header: t('History.Source'),
-      cell: (call: any) =>
-        call?.isInteractionRow ? null : (
-          <CallSource
-            call={call}
-            callType={callType}
-            operators={operators}
-            mainextension={mainextension}
-            name={name}
-            openDrawerHistory={openDrawerHistory}
-          />
-        ),
+      // Interaction rows show their source too: a leg carries both parties, and
+      // without the caller a transferred call reads as a bare list of names with
+      // no way to follow who called whom.
+      cell: (call: any) => (
+        <CallSource
+          call={call}
+          callType={callType}
+          operators={operators}
+          mainextension={mainextension}
+          name={name}
+          openDrawerHistory={openDrawerHistory}
+        />
+      ),
       width: '15%',
       className:
         'px-6 py-3.5 text-left text-sm font-semibold text-primaryNeutral dark:text-primaryNeutralDark w-0',
     },
     {
       header: '',
-      cell: (call: any) =>
-        call?.isInteractionRow ? null : (
-          <FontAwesomeIcon
-            icon={faArrowRight}
-            className='ml-0 h-4 w-4 flex-shrink-0 text-textPlaceholder dark:text-textPlaceholderDark'
-            aria-hidden='true'
-          />
-        ),
+      cell: () => (
+        <FontAwesomeIcon
+          icon={faArrowRight}
+          className='ml-0 h-4 w-4 flex-shrink-0 text-textPlaceholder dark:text-textPlaceholderDark'
+          aria-hidden='true'
+        />
+      ),
       width: '5%',
       className:
         'px-6 py-3.5 text-left text-sm font-semibold text-primaryNeutral dark:text-primaryNeutralDark w-0',
