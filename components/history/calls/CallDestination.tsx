@@ -1,9 +1,14 @@
-import { FC } from 'react'
+import { FC, ReactNode } from 'react'
 import { t } from 'i18next'
+import { useSelector } from 'react-redux'
+import { RootState } from '../../../store'
 import { getEffectiveCnam } from '../../../lib/history'
 
 interface CallDestinationProps {
   call: any
+  // Rendered next to the destination NUMBER (e.g. the queue/ring-group marker),
+  // so the badge sits with the number instead of pushing the name around.
+  marker?: ReactNode
   callType: string
   operators: any
   mainextension: string
@@ -19,12 +24,32 @@ interface CallDestinationProps {
 
 export const CallDestination: FC<CallDestinationProps> = ({
   call,
+  marker,
   callType,
   operators,
   mainextension,
   name,
   openDrawerHistory,
 }) => {
+  // If the destination is a queue (its number matches a configured queue), show
+  // the queue NAME (with the number underneath) — for queues/groups we want the
+  // name, not just the raw number.
+  const queuesStore: any = useSelector((state: RootState) => (state as any).queues)
+  const queueName = call?.dst ? queuesStore?.queues?.[call.dst]?.name : ''
+  if (queueName) {
+    return (
+      <div>
+        <div className='truncate text-sm text-secondaryNeutral dark:text-secondaryNeutralDark'>
+          {queueName}
+        </div>
+        <div className='flex items-center gap-1.5 text-sm text-textPlaceholder dark:text-textPlaceholderDark'>
+          <span className='truncate'>{call.dst}</span>
+          {marker}
+        </div>
+      </div>
+    )
+  }
+
   // User call type
   if (callType === 'user') {
     const effectiveDstCnam = getEffectiveCnam(call.dst_cnam, call.dst)
@@ -62,8 +87,9 @@ export const CallDestination: FC<CallDestinationProps> = ({
           {primaryLabel}
         </div>
         {call.dst !== '' && call.dst !== mainextension && (
-          <div className='truncate text-sm cursor-pointer hover:underline text-textPlaceholder dark:text-textPlaceholderDark'>
-            {call.dst}
+          <div className='flex items-center gap-1.5 text-sm text-textPlaceholder dark:text-textPlaceholderDark'>
+            <span className='truncate cursor-pointer hover:underline'>{call.dst}</span>
+            {marker}
           </div>
         )}
       </div>
@@ -86,10 +112,15 @@ export const CallDestination: FC<CallDestinationProps> = ({
     // view does. Internal/service numbers with no name show the number itself
     // instead of "Unknown".
     const dstNumber = call.dst != null ? call.dst : ''
+    // Resolve the name through getEffectiveCnam like the personal branch does: for
+    // external parties Asterisk sets the cnam to the number itself, so reading
+    // dst_cnam raw labelled the row with the bare number (hiding the number line)
+    // while the personal view showed "Unknown" + number for the same call.
+    const resolvedSwitchboardCnam = getEffectiveCnam(call.dst_cnam, dstNumber)
     const isExternalNum = (n: string) => (n || '').replace(/\D/g, '').length > 5
     const switchboardLabel =
-      call.dst_cnam !== ''
-        ? call.dst_cnam
+      resolvedSwitchboardCnam !== ''
+        ? resolvedSwitchboardCnam
         : call.dst_ccompany !== ''
         ? call.dst_ccompany
         : dstNumber !== ''
@@ -101,15 +132,16 @@ export const CallDestination: FC<CallDestinationProps> = ({
     return (
       <div
         onClick={() =>
-          openDrawerHistory(call.dst_cnam, call.dst_ccompany, call.dst, callType, operators)
+          openDrawerHistory(resolvedSwitchboardCnam, call.dst_ccompany, call.dst, callType, operators)
         }
       >
         <div className='truncate text-sm cursor-pointer hover:underline text-secondaryNeutral dark:text-secondaryNeutralDark'>
           {switchboardLabel}
         </div>
         {dstNumber !== '' && switchboardLabel !== dstNumber && (
-          <div className='truncate text-sm cursor-pointer hover:underline text-textPlaceholder dark:text-textPlaceholderDark'>
-            {dstNumber}
+          <div className='flex items-center gap-1.5 text-sm text-textPlaceholder dark:text-textPlaceholderDark'>
+            <span className='truncate cursor-pointer hover:underline'>{dstNumber}</span>
+            {marker}
           </div>
         )}
       </div>

@@ -97,10 +97,15 @@ export const CallSource: FC<CallSourceProps> = ({
     // EXTERNAL number show "Unknown" (with the number underneath), as the personal
     // view does. Internal/service numbers with no name show the number itself
     // instead of "Unknown".
+    // Resolve the name through getEffectiveCnam like the personal branch does: for
+    // external callers Asterisk sets cnam to the caller's own NUMBER, so reading
+    // call.cnam raw made the switchboard label the bare number (and hide the number
+    // line) while the personal view showed "Unknown" + number for the same call.
+    const resolvedCnam = getEffectiveCnam(call.cnam, sourceNumber)
     const isExternalNum = (n: string) => (n || '').replace(/\D/g, '').length > 5
     const switchboardLabel =
-      call.cnam !== ''
-        ? call.cnam
+      resolvedCnam !== ''
+        ? resolvedCnam
         : call.ccompany !== ''
         ? call.ccompany
         : sourceNumber !== ''
@@ -112,7 +117,7 @@ export const CallSource: FC<CallSourceProps> = ({
     return (
       <div
         onClick={() => {
-          openDrawerHistory(call.cnam, call.ccompany, sourceNumber, callType, operators)
+          openDrawerHistory(resolvedCnam, call.ccompany, sourceNumber, callType, operators)
         }}
       >
         <div className='truncate text-sm cursor-pointer hover:underline text-secondaryNeutral dark:text-secondaryNeutralDark'>

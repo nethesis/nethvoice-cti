@@ -9,6 +9,10 @@ import {
   faTrash,
   faFileLines,
   faVoicemail,
+  faChevronDown,
+  faChevronUp,
+  faUsers,
+  faUserGroup,
 } from '@fortawesome/free-solid-svg-icons'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { t } from 'i18next'
@@ -93,6 +97,35 @@ export const Calls: FC<CallsProps> = ({ className }): JSX.Element => {
   const [handledSummaryLinkedId, setHandledSummaryLinkedId] = useState<string | null>(null)
   const [historyRefreshToken, setHistoryRefreshToken] = useState(0)
   const historyRefreshTimeoutsRef = useRef<number[]>([])
+  const [expandedRows, setExpandedRows] = useState<Set<string>>(new Set())
+
+  const toggleExpanded = (linkedid: string) => {
+    setExpandedRows((prev) => {
+      const next = new Set(prev)
+      if (next.has(linkedid)) {
+        next.delete(linkedid)
+      } else {
+        next.add(linkedid)
+      }
+      return next
+    })
+  }
+
+  useEffect(() => {
+    setExpandedRows(new Set())
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [
+    pageNum,
+    pageSize,
+    callType,
+    callDirection,
+    sortBy,
+    contentFilter,
+    dateBegin,
+    dateEnd,
+    filterText,
+    historyRefreshToken,
+  ])
 
   const apiVoiceEnpoint = getApiVoiceEndpoint()
   const apiScheme = getApiScheme()
@@ -263,6 +296,13 @@ export const Calls: FC<CallsProps> = ({ className }): JSX.Element => {
 
   //Get the history of the user
   useEffect(() => {
+    // Guard against out-of-order responses: when a filter (callType, direction, …)
+    // changes while a request is still in flight, the stale response must NOT win.
+    // Without this, switching from personal to switchboard while the personal
+    // request is slow lets the personal result land and populate the grid even
+    // though switchboard is now selected. `ignore` is flipped by the cleanup so
+    // only the latest effect run applies its result.
+    let ignore = false
     async function fetchHistory() {
       if (
         areFiltersInitialized &&
@@ -286,22 +326,31 @@ export const Calls: FC<CallsProps> = ({ className }): JSX.Element => {
             pageNum,
             pageSize,
             contentFilter,
+            feature_codes?.audio_test || '*41',
           )
+          if (ignore) return
           setHistory(res)
           setHistoryLoaded(true)
         } catch (e) {
+          if (ignore) return
           setHistoryError('Cannot retrieve history')
           setHistoryLoaded(true)
         } finally {
-          setIsLoadingPagination(false)
+          if (!ignore) setIsLoadingPagination(false)
         }
       }
     }
 
-    // Reset loading state when dependencies change
-    if (areFiltersInitialized && !isLoadingPagination) {
+    // Always start a fresh fetch when a dependency changes. We no longer gate on
+    // !isLoadingPagination (which used to DROP a fetch while another was running,
+    // e.g. a switchboard switch requested during a slow personal load never fired);
+    // the `ignore` guard makes concurrent fetches safe by keeping only the latest.
+    if (areFiltersInitialized) {
       setHistoryLoaded(false)
       fetchHistory()
+    }
+    return () => {
+      ignore = true
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [
@@ -354,6 +403,12 @@ export const Calls: FC<CallsProps> = ({ className }): JSX.Element => {
             extras.push(item)
           } else if (item?.uniqueid) {
             statusMap[item.uniqueid] = item
+            // Also key by linkedid: after grouping, a parent row's uniqueid is the
+            // answered leg, not the call/transcript uniqueid — but its linkedid
+            // matches, so the summary can still be resolved.
+            if (item?.linkedid) {
+              statusMap[item.linkedid] = item
+            }
           }
         })
 
@@ -367,12 +422,16 @@ export const Calls: FC<CallsProps> = ({ className }): JSX.Element => {
     }
   }, [history?.rows, callType])
 
-  // Load summary status when history is loaded or page changes
+  // Load summary status once per fetched page. Trigger only on the fetched data
+  // (history.rows), not on pageNum + the loadSummaryStatus identity: pageNum
+  // changed first (stale history) and then history.rows updated, firing this
+  // twice — one /statuses call with the previous page's ids and one with the new.
   useEffect(() => {
-    if (isHistoryLoaded) {
+    if (history?.rows?.length) {
       loadSummaryStatus()
     }
-  }, [isHistoryLoaded, pageNum, loadSummaryStatus])
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [history?.rows])
 
   // Reload summary status when phone-island-summary-ready event is received
   useEventListener('phone-island-summary-ready', () => {
@@ -415,7 +474,7 @@ export const Calls: FC<CallsProps> = ({ className }): JSX.Element => {
   }
 
   function openTranscriptionDrawer(call: any) {
-    const summaryStatus = call?.summaryStatus ?? summaryStatusMap?.[call?.uniqueid]
+    const summaryStatus = call?.summaryStatus ?? summaryStatusMap?.[call?.uniqueid] ?? summaryStatusMap?.[call?.linkedid]
     openSummaryDrawerByCall(call, summaryStatus)
   }
 
@@ -480,7 +539,11 @@ export const Calls: FC<CallsProps> = ({ className }): JSX.Element => {
   // Combined actions for recording and summary/transcription
   const getCallActions = (call: any) => {
     const linkedId = call?.linkedid
-    const summaryStatus = summaryStatusMap?.[linkedId]
+    // Resolve the summary the same way the row icon does: the row's own status
+    // (set by the switchboard overlay) first, then by uniqueid, then linkedid.
+    // Otherwise the kebab menu can be empty even when the summary icon is shown.
+    const summaryStatus =
+      call?.summaryStatus ?? summaryStatusMap?.[call?.uniqueid] ?? summaryStatusMap?.[linkedId]
     const hasRecording = call?.recordingfile
     const hasSummary = summaryStatus?.has_summary
     const hasTranscription = summaryStatus?.has_transcription
@@ -589,17 +652,11 @@ export const Calls: FC<CallsProps> = ({ className }): JSX.Element => {
     }
   }, [debouncedUpdateFilterText])
 
-  // Filter out calls to/from audio_test feature code (similar to UserLastCallsContent)
+  // Audio-test (echo, *41) calls are now filtered server-side by the middleware
+  // before pagination, so pages are not left short. Nothing to filter here.
   const filteredHistory = useMemo(() => {
-    if (!history?.rows) return []
-
-    const audioTestCode = feature_codes?.audio_test || '*41'
-
-    return history.rows.filter((call: any) => {
-      const numberToCheck = call?.direction === 'in' ? call?.src : call?.dst
-      return !numberToCheck?.includes(audioTestCode)
-    })
-  }, [history?.rows, feature_codes?.audio_test])
+    return history?.rows ?? []
+  }, [history?.rows])
 
   // Merge in the extra conversations the user took part in (e.g. the transfer
   // consultation leg) as their own rows, placed next to the related call.
@@ -609,119 +666,44 @@ export const Calls: FC<CallsProps> = ({ className }): JSX.Element => {
     // which for transfers include technical/duplicated rows with wrong parties.
     // Calls with no transcript keep their original CDR row so nothing vanishes.
     if (callType === 'switchboard') {
-      const convs = (extraConversations || []).filter((c: any) => c?.linkedid)
-      if (convs.length === 0) {
-        return filteredHistory
-      }
-
-      const norm = (v: any) => (v ?? '').toString().trim()
-      // Without a single "me" extension, infer direction from the parties:
-      // an external (long) number as src means inbound, as dst means outbound.
-      const isExternal = (n: any) => norm(n).replace(/\D/g, '').length > 5
-      const convDirection = (conv: any) => {
-        if (isExternal(conv?.src_number)) return 'in'
-        if (isExternal(conv?.dst_number)) return 'out'
-        return 'internal'
-      }
-      // The switchboard CDR feed (histcallswitch) returns direction=null and
-      // carries the outbound trunk number in cnum on transferred legs, so we must
-      // NOT display the leg's own src/dst/cnum. Instead use the transcript's clean
-      // parties (src_number/dst_number) and only borrow timing/recording from the
-      // one CDR leg that actually connects BOTH parties of this conversation.
-      const partyName = (legs: any[], num: string) => {
-        const n = norm(num)
-        if (!n) return { cnam: '', company: '' }
-        for (const leg of legs) {
-          if (norm(leg?.cnum) === n && norm(leg?.cnam))
-            return { cnam: norm(leg.cnam), company: norm(leg?.ccompany) }
-          if (norm(leg?.src) === n && norm(leg?.cnam))
-            return { cnam: norm(leg.cnam), company: norm(leg?.ccompany) }
-          if (norm(leg?.dst) === n && norm(leg?.dst_cnam))
-            return { cnam: norm(leg.dst_cnam), company: norm(leg?.dst_ccompany) }
-        }
-        return { cnam: '', company: '' }
-      }
-
-      const convsByLinked = new Map<string, any[]>()
-      convs.forEach((conv: any) => {
-        const arr = convsByLinked.get(conv.linkedid) || []
-        arr.push(conv)
-        convsByLinked.set(conv.linkedid, arr)
-      })
-
-      // Walk the page in backend order. At the first CDR leg of a transcribed
-      // call, emit one row per real conversation (built from the transcript's
-      // clean parties) and drop that call's raw/technical legs.
-      const emitted = new Set<string>()
-      const result: any[] = []
-      filteredHistory.forEach((row: any) => {
-        const lid = row?.linkedid
-        if (lid && convsByLinked.has(lid)) {
-          if (!emitted.has(lid)) {
-            emitted.add(lid)
-            const legs = filteredHistory.filter((r: any) => r?.linkedid === lid)
-            ;(convsByLinked.get(lid) || []).forEach((conv: any) => {
-              const a = norm(conv?.src_number)
-              const b = norm(conv?.dst_number)
-              // The CDR leg whose parties include BOTH conversation parties is the
-              // authoritative source for duration/disposition/recording. Prefer
-              // ANSWERED + longest. If none (e.g. a consultation leg the switchboard
-              // feed dropped), leave duration empty rather than borrow a wrong one.
-              const timed = legs
-                .filter((leg: any) => {
-                  const p = [norm(leg?.src), norm(leg?.dst), norm(leg?.cnum)]
-                  return a && b && p.includes(a) && p.includes(b)
-                })
-                .sort(
-                  (x: any, y: any) =>
-                    (y?.disposition === 'ANSWERED' ? 1 : 0) -
-                      (x?.disposition === 'ANSWERED' ? 1 : 0) ||
-                    (Number(y?.duration) || 0) - (Number(x?.duration) || 0),
-                )[0]
-              const srcName = partyName(legs, conv?.src_number)
-              const dstName = partyName(legs, conv?.dst_number)
-
-              result.push({
-                uniqueid: conv?.uniqueid,
-                linkedid: conv?.linkedid,
-                id: conv?.id,
-                // Clean parties from the transcript (no trunk number).
-                src: conv?.src_number || '',
-                dst: conv?.dst_number || '',
-                cnum: conv?.src_number || '',
-                cnam: srcName.cnam,
-                ccompany: srcName.company,
-                dst_cnam: dstName.cnam,
-                dst_ccompany: dstName.company,
-                clid: '',
-                direction: convDirection(conv),
-                disposition: timed?.disposition || 'ANSWERED',
-                time: timed?.time ?? row?.time,
-                duration:
-                  Number(conv?.duration_seconds) > 0
-                    ? Number(conv?.duration_seconds)
-                    : Number(timed?.duration) || 0,
-                billsec:
-                  Number(conv?.duration_seconds) > 0
-                    ? Number(conv?.duration_seconds)
-                    : Number(timed?.billsec) || 0,
-                channel: timed?.channel || '',
-                dstchannel: timed?.dstchannel || '',
-                recordingfile: timed?.recordingfile || '',
-                has_voicemail_message: false,
-                voicemail_message_id: '',
-                isConversationRow: true,
-                summaryStatus: conv,
-                transcriptId: conv?.id,
-              })
-            })
-          }
+      // Switchboard shows one row per call (linkedid) — the middleware's collapsed
+      // parent — with the legs as expandable interactions. Enrich each parent with
+      // its primary transcript conversation so the parties are clean (who actually
+      // talked, not a technical "s"/routing leg) and the summary/transcript icon
+      // resolves. A page still holds pageSize calls.
+      const txByLinked = new Map<string, any[]>()
+      const addTx = (item: any) => {
+        if (!item?.linkedid) {
           return
         }
-        result.push(row)
-      })
+        const arr = txByLinked.get(item.linkedid) || []
+        arr.push(item)
+        txByLinked.set(item.linkedid, arr)
+      }
+      Object.values(summaryStatusMap || {}).forEach(addTx)
+      ;(extraConversations || []).forEach(addTx)
 
-      return result
+      return filteredHistory.map((row: any) => {
+        const txs = txByLinked.get(row?.linkedid)
+        if (!txs || txs.length === 0) {
+          return row
+        }
+        // The primary conversation is the longest one (the actual answered talk):
+        // it carries the transcript/summary this row must open.
+        const primary = [...txs].sort(
+          (a: any, b: any) => (Number(b?.duration_seconds) || 0) - (Number(a?.duration_seconds) || 0),
+        )[0]
+        // Only the transcript is taken from here. The parties are NOT: the
+        // middleware already resolves who actually talked from the call's legs
+        // (final recipient, original caller, transfers), and overwriting them with
+        // the transcript's numbers silently replaced that with whichever segment
+        // happened to be the longest.
+        return {
+          ...row,
+          summaryStatus: primary,
+          transcriptId: primary?.id,
+        }
+      })
     }
     if (!extraConversations || extraConversations.length === 0) {
       return filteredHistory
@@ -844,8 +826,66 @@ export const Calls: FC<CallsProps> = ({ className }): JSX.Element => {
     return deduped
   }, [filteredHistory, extraConversations, mainextension, summaryStatusMap, callType])
 
+  const rowsWithInteractions = useMemo(() => {
+    if (!expandedRows.size) {
+      return displayRows
+    }
+    const out: any[] = []
+    displayRows.forEach((row: any) => {
+      out.push(row)
+      if (
+        row?.interactionsCount > 1 &&
+        expandedRows.has(row?.linkedid) &&
+        Array.isArray(row?.interactions)
+      ) {
+        row.interactions.forEach((leg: any, i: number) => {
+          out.push({
+            ...leg,
+            isInteractionRow: true,
+            isLastInteraction: i === row.interactions.length - 1,
+            parentLinkedid: row.linkedid,
+            _interactionIndex: i,
+            // The marker belongs to the whole call: a member leg carries no queue or
+            // group name of its own, so it inherits the parent's.
+            queueName: leg?.queueName ?? row?.queueName,
+            queueNum: leg?.queueNum ?? row?.queueNum,
+            ringGroupName: leg?.ringGroupName ?? row?.ringGroupName,
+          })
+        })
+      }
+    })
+    return out
+  }, [displayRows, expandedRows])
+
   // Definition of the columns of the table
   const columns = [
+    {
+      header: '',
+      cell: (call: any) => {
+        if (call?.isInteractionRow || !(call?.interactionsCount > 1)) {
+          return null
+        }
+        const isOpen = expandedRows.has(call?.linkedid)
+        return (
+          <button
+            type='button'
+            aria-label={
+              (isOpen
+                ? t('History.Collapse interactions')
+                : t('History.Expand interactions')) || ''
+            }
+            onClick={(e) => {
+              e.stopPropagation()
+              toggleExpanded(call?.linkedid)
+            }}
+            className='flex h-5 w-5 items-center justify-center text-iconTertiaryNeutral dark:text-iconTertiaryNeutralDark hover:text-primaryNeutral dark:hover:text-primaryNeutralDark'
+          >
+            <FontAwesomeIcon icon={isOpen ? faChevronUp : faChevronDown} className='h-3.5 w-3.5' />
+          </button>
+        )
+      },
+      className: 'px-4 py-3.5 w-0',
+    },
     {
       header: t('History.Date'),
       cell: (call: any) => <CallsDate call={call} />,
@@ -853,6 +893,9 @@ export const Calls: FC<CallsProps> = ({ className }): JSX.Element => {
     },
     {
       header: t('History.Source'),
+      // Interaction rows show their source too: a leg carries both parties, and
+      // without the caller a transferred call reads as a bare list of names with
+      // no way to follow who called whom.
       cell: (call: any) => (
         <CallSource
           call={call}
@@ -882,16 +925,64 @@ export const Calls: FC<CallsProps> = ({ className }): JSX.Element => {
     },
     {
       header: t('History.Destination'),
-      cell: (call: any) => (
-        <CallDestination
-          call={call}
-          callType={callType}
-          operators={operators}
-          mainextension={mainextension}
-          name={name}
-          openDrawerHistory={openDrawerHistory}
-        />
-      ),
+      cell: (call: any) => {
+        // Mark ONLY calls that actually went through a queue or a ring group — not
+        // every grouped call. A ring group is flagged by the middleware; a queue is
+        // recognised from its queue name or from the queue-entry leg (lastapp=
+        // "Queue"), which after collapsing lives either on the parent (nobody
+        // answered) or among its interactions (an agent answered).
+        const isRingGroupCall = !!call?.ringGroupName
+        const isQueueCall =
+          !isRingGroupCall &&
+          (!!call?.queueName ||
+            call?.lastapp === 'Queue' ||
+            (call?.interactions || []).some((leg: any) => leg?.lastapp === 'Queue'))
+        const showGroupMarker = isRingGroupCall || isQueueCall
+
+        let markerLabel = ''
+        if (isRingGroupCall) {
+          markerLabel = call?.ringGroupName
+            ? `${t('History.Group')}: ${call.ringGroupName}`
+            : t('History.Group')
+        } else if (isQueueCall) {
+          markerLabel = call?.queueName
+            ? `${t('History.Queue')}: ${call.queueName}`
+            : t('History.Queue')
+        }
+
+        const marker = showGroupMarker ? (
+          <>
+            <FontAwesomeIcon
+              icon={isRingGroupCall ? faUserGroup : faUsers}
+              data-tooltip-id={`tooltip-group-marker-${call?.uniqueid}${
+                call?.isInteractionRow ? `-int-${call?._interactionIndex}` : ''
+              }`}
+              data-tooltip-content={markerLabel}
+              className='h-3.5 w-3.5 shrink-0 text-iconTertiaryNeutral dark:text-iconTertiaryNeutralDark'
+              role='img'
+              aria-label={markerLabel}
+            />
+            <CustomThemedTooltip
+              id={`tooltip-group-marker-${call?.uniqueid}${
+                call?.isInteractionRow ? `-int-${call?._interactionIndex}` : ''
+              }`}
+              place='top'
+            />
+          </>
+        ) : null
+
+        return (
+          <CallDestination
+            call={call}
+            callType={callType}
+            operators={operators}
+            mainextension={mainextension}
+            name={name}
+            openDrawerHistory={openDrawerHistory}
+            marker={marker}
+          />
+        )
+      },
       width: '15%',
     },
     {
@@ -907,7 +998,10 @@ export const Calls: FC<CallsProps> = ({ className }): JSX.Element => {
     {
       header: '',
       cell: (call: any) => {
-        const summaryStatus = call?.summaryStatus ?? summaryStatusMap?.[call?.uniqueid]
+        if (call?.isInteractionRow) {
+          return null
+        }
+        const summaryStatus = call?.summaryStatus ?? summaryStatusMap?.[call?.uniqueid] ?? summaryStatusMap?.[call?.linkedid]
         const isVoicemail = hasVoicemailMessage(call)
 
         if (!summaryStatus && !isVoicemail) {
@@ -994,15 +1088,16 @@ export const Calls: FC<CallsProps> = ({ className }): JSX.Element => {
     },
     {
       header: '',
-      cell: (call: any) => (
-        <CallRecording
-          call={call}
-          playSelectedAudioFile={playSelectedAudioFile}
-          getRecordingActions={getRecordingActions}
-          getCallActions={getCallActions}
-          summaryStatus={call?.summaryStatus ?? summaryStatusMap?.[call?.uniqueid]}
-        />
-      ),
+      cell: (call: any) =>
+        call?.isInteractionRow ? null : (
+          <CallRecording
+            call={call}
+            playSelectedAudioFile={playSelectedAudioFile}
+            getRecordingActions={getRecordingActions}
+            getCallActions={getCallActions}
+            summaryStatus={call?.summaryStatus ?? summaryStatusMap?.[call?.uniqueid] ?? summaryStatusMap?.[call?.linkedid]}
+          />
+        ),
       width: '20%',
       className: 'px-6 py-3.5 w-0',
     },
@@ -1010,7 +1105,8 @@ export const Calls: FC<CallsProps> = ({ className }): JSX.Element => {
 
   // Generate a unique key for each call with more stability
   const generateUniqueKey = (call: any, index: number) => {
-    return `call-${call?.uniqueid}-${call?.time}-${index}`
+    const suffix = call?.isInteractionRow ? `-int-${call?._interactionIndex}` : ''
+    return `call-${call?.uniqueid}-${call?.time}-${index}${suffix}`
   }
 
   return (
@@ -1078,7 +1174,7 @@ export const Calls: FC<CallsProps> = ({ className }): JSX.Element => {
                   <div className='inline-block min-w-full py-2 align-middle px-2 md:px-6 lg:px-8'>
                     <Table
                       columns={columns}
-                      data={!historyError && isHistoryLoaded ? displayRows : []}
+                      data={!historyError && isHistoryLoaded ? rowsWithInteractions : []}
                       isLoading={!isHistoryLoaded || isLoadingPagination}
                       emptyState={{
                         title: t('History.No calls'),
@@ -1113,6 +1209,13 @@ export const Calls: FC<CallsProps> = ({ className }): JSX.Element => {
                             className='!mb-0 !px-6'
                           />
                         ) : undefined
+                      }
+                      getRowClassName={(row: any) =>
+                        row?.isInteractionRow
+                          ? `!h-auto !border-t-0 [&>td]:!py-2${
+                              row?.isLastInteraction ? ' [&>td]:!pb-4' : ''
+                            }`
+                          : ''
                       }
                     />
                   </div>

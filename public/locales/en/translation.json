@@ -300,7 +300,16 @@
     "There are no voicemails in your history": "There are no voicemails in your history",
     "Delete recording": "Delete recording",
     "Delete call summary": "Delete call summary",
-    "Delete call transcription": "Delete call transcription"
+    "Delete call transcription": "Delete call transcription",
+    "This call has multiple interactions": "This call has multiple interactions",
+    "Group call": "Group call",
+    "Queue call": "Queue call",
+    "Queue": "Queue",
+    "Group": "Group",
+    "Outcome answered": "Answered",
+    "Outcome missed": "Missed",
+    "Expand interactions": "Expand interactions",
+    "Collapse interactions": "Collapse interactions"
   },
   "Operators": {
     "Operators": "Operators",
@@ -934,7 +943,6 @@
     "Minimum": "Minimum",
     "Maximum": "Maximum",
     "Average": "Average",
-    "Answered": "Answered",
     "Not managed customers": "Not managed customers",
     "Customers management": "Customers management",
     "Before 60s": "Before 60s",

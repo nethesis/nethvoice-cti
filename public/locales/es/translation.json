@@ -1,1 +1,21 @@
-{}
+{
+  "History": {
+    "This call has multiple interactions": "Esta llamada tiene múltiples interacciones",
+    "Group call": "Llamada de grupo",
+    "Queue call": "Llamada de cola",
+    "Incoming answered": "Entrante contestada",
+    "Incoming missed": "Entrante perdida",
+    "Outgoing answered": "Saliente contestada",
+    "Outgoing missed": "Saliente perdida",
+    "Internal answered": "Interna contestada",
+    "Internal missed": "Interna perdida",
+    "Incoming": "Entrante",
+    "Outgoing": "Saliente",
+    "Queue": "Cola",
+    "Group": "Grupo",
+    "Outcome answered": "Contestada",
+    "Outcome missed": "Perdida",
+    "Expand interactions": "Expandir interacciones",
+    "Collapse interactions": "Contraer interacciones"
+  }
+}
