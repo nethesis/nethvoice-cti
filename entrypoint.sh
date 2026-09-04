@@ -80,6 +80,16 @@ cat >> /app/public/config/config.production.js<<EOF
   LOGIN_PEOPLE: '${LOGIN_PEOPLE:-show}',
 EOF
 
+# Authentication method + SSO entry (provider-agnostic): with an external SSO
+# method the login page shows a button navigating to SSO_LOGIN_URL.
+cat >> /app/public/config/config.production.js<<EOF
+  AUTHENTICATION_METHOD: '${AUTHENTICATION_METHOD:-password}',
+  SSO_LOGIN_URL: '${SSO_LOGIN_URL:-/sso}',
+  SSO_BUTTON_LABEL: '${SSO_BUTTON_LABEL:-}',
+  SSO_IDP_NAME: '${SSO_IDP_NAME:-}',
+  SSO_IDP_LOGO: '${SSO_IDP_LOGO:-}',
+EOF
+
 cat >> /app/public/config/config.production.js<<EOF
   FAVICON_URL: '${FAVICON_URL:-}',
   NAVBAR_LOGO_URL: '${NAVBAR_LOGO_URL:-}',

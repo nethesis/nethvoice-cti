@@ -519,6 +519,16 @@ export default function Login() {
   }
 
   const loginTemplate = () => {
+    // SSO mode: with an external authentication method the login page offers
+    // an SSO button instead of the password form.
+    const ssoConfig: any = (typeof window !== 'undefined' && (window as any).CONFIG) || {}
+    const isSsoMethod = ['saml2', 'oidc'].includes(ssoConfig.AUTHENTICATION_METHOD)
+    const ssoLoginUrl = isSsoMethod ? ssoConfig.SSO_LOGIN_URL || '/sso' : ''
+    const ssoButtonLabel =
+      ssoConfig.SSO_BUTTON_LABEL || t('Login.Sign in with SSO')
+    const ssoIdpName = ssoConfig.SSO_IDP_NAME || ''
+    const ssoIdpLogo = ssoConfig.SSO_IDP_LOGO || ''
+
     return (
       <div className='max-w-sm sm:w-96'>
         <div className='flex flex-col items-center justify-center'>
@@ -534,6 +544,33 @@ export default function Login() {
           </div>
         </div>
         {errorAlert}
+        {ssoLoginUrl ? (
+          <div className='pt-6'>
+            <Button
+              size='large'
+              fullHeight={true}
+              fullWidth={true}
+              variant='primary'
+              onClick={() => {
+                window.location.href = ssoLoginUrl
+              }}
+            >
+              <span className='font-medium leading-5 text-sm'>{ssoButtonLabel}</span>
+            </Button>
+            {(ssoIdpName || ssoIdpLogo) && (
+              <div className='flex items-center justify-center gap-2 pt-4'>
+                {ssoIdpLogo && (
+                  <img src={ssoIdpLogo} alt='' className='h-5 w-auto' />
+                )}
+                {ssoIdpName && (
+                  <span className='text-sm text-gray-700 dark:text-gray-200'>
+                    {ssoIdpName}
+                  </span>
+                )}
+              </div>
+            )}
+          </div>
+        ) : (
         <div className='pt-6'>
           <form action='#' method='POST' onSubmit={doLogin} className='space-y-8'>
             <div>
@@ -593,6 +630,7 @@ export default function Login() {
             </div>
           </form>
         </div>
+        )}
       </div>
     )
   }

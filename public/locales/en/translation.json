@@ -108,6 +108,7 @@
     "User": "Username",
     "Password": "Password",
     "Sign in": "Sign in",
+    "Sign in with SSO": "Sign in with SSO",
     "The application is open in another window": "The application is open in another window",
     "Session expired, log in again": "Session expired, log in again",
     "User not autorized": "User not autorized",
