@@ -40,7 +40,7 @@ function MyApp({ Component, pageProps }: AppProps) {
         typeof window !== 'undefined'
           ? new URLSearchParams(window.location.search)
           : new URLSearchParams()
-      // SAML return leg (?ssologin): mint the JWT via the forwardAuth-guarded
+      // SSO return leg (?ssologin): mint the JWT via the forwardAuth-guarded
       // /api/sso-login and store it like a normal login.
       if (params.has('ssologin')) {
         fetch(cfg.API_SCHEME + cfg.API_ENDPOINT + '/api/sso-login', {
@@ -62,7 +62,7 @@ function MyApp({ Component, pageProps }: AppProps) {
       }
       const autoSso =
         params.get('login') === 'sso' || params.has('autologin') || params.has('sso')
-      if (autoSso && cfg.AUTHENTICATION_METHOD === 'saml2') {
+      if (autoSso && ['saml2', 'oidc'].includes(cfg.AUTHENTICATION_METHOD)) {
         window.location.href = cfg.SSO_LOGIN_URL || '/sso'
         return
       }

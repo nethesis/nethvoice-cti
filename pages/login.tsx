@@ -522,8 +522,8 @@ export default function Login() {
     // SSO mode: with an external authentication method the login page offers
     // an SSO button instead of the password form.
     const ssoConfig: any = (typeof window !== 'undefined' && (window as any).CONFIG) || {}
-    const ssoLoginUrl =
-      ssoConfig.AUTHENTICATION_METHOD === 'saml2' ? ssoConfig.SSO_LOGIN_URL || '/sso' : ''
+    const isSsoMethod = ['saml2', 'oidc'].includes(ssoConfig.AUTHENTICATION_METHOD)
+    const ssoLoginUrl = isSsoMethod ? ssoConfig.SSO_LOGIN_URL || '/sso' : ''
     const ssoButtonLabel =
       ssoConfig.SSO_BUTTON_LABEL || t('Login.Sign in with SSO')
     const ssoIdpName = ssoConfig.SSO_IDP_NAME || ''
