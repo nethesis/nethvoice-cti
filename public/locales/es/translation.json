@@ -16,6 +16,8 @@
     "Outcome answered": "Contestada",
     "Outcome missed": "Perdida",
     "Expand interactions": "Expandir interacciones",
-    "Collapse interactions": "Contraer interacciones"
+    "Collapse interactions": "Contraer interacciones",
+    "Named group call": "Grupo: {{name}}",
+    "Named queue call": "Cola: {{name}}"
   }
 }

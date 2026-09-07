@@ -305,7 +305,9 @@
     "Outcome answered": "Answered",
     "Outcome missed": "Missed",
     "Expand interactions": "Expand interactions",
-    "Collapse interactions": "Collapse interactions"
+    "Collapse interactions": "Collapse interactions",
+    "Named group call": "Group: {{name}}",
+    "Named queue call": "Queue: {{name}}"
   },
   "Operators": {
     "Operators": "Operators",

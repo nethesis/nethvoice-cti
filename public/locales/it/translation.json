@@ -288,7 +288,9 @@
     "Outcome missed": "Non risposta",
     "Expand interactions": "Espandi interazioni",
     "Collapse interactions": "Comprimi interazioni",
-    "Voicemail available": "Apri il messaggio vocale"
+    "Voicemail available": "Apri il messaggio vocale",
+    "Named group call": "Gruppo: {{name}}",
+    "Named queue call": "Coda: {{name}}"
   },
   "Operators": {
     "Operators": "Operatori",

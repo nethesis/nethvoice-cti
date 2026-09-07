@@ -373,6 +373,12 @@ export const Calls: FC<CallsProps> = ({ className }): JSX.Element => {
   ])
 
   // Function to load summary status for current page calls
+  // Read inside loadSummaryStatus instead of captured, so the callback's identity
+  // depends on the fetched page alone and the effect below needs no dependency
+  // exception — while still never running against a stale view.
+  const callTypeRef = useRef(callType)
+  callTypeRef.current = callType
+
   const loadSummaryStatus = useCallback(async () => {
     if (!history?.rows || history?.rows?.length === 0) {
       return
@@ -392,7 +398,7 @@ export const Calls: FC<CallsProps> = ({ className }): JSX.Element => {
     try {
       setIsLoadingSummaryStatus(true)
 
-      const response = await checkSummaryList(lookups, callType === 'switchboard')
+      const response = await checkSummaryList(lookups, callTypeRef.current === 'switchboard')
 
       if (response?.data && Array.isArray(response?.data)) {
         const statusMap: Record<string, any> = {}
@@ -409,8 +415,11 @@ export const Calls: FC<CallsProps> = ({ className }): JSX.Element => {
             statusMap[item.uniqueid] = item
             // Also key by linkedid: after grouping, a parent row's uniqueid is the
             // answered leg, not the call/transcript uniqueid — but its linkedid
-            // matches, so the summary can still be resolved.
-            if (item?.linkedid) {
+            // matches, so the summary can still be resolved. A call's linkedid IS
+            // the uniqueid of its first leg, so this must never overwrite an entry
+            // already keyed by a leg's own uniqueid: that leg's row would then
+            // resolve whichever conversation happened to come last in the response.
+            if (item?.linkedid && !statusMap[item.linkedid]) {
               statusMap[item.linkedid] = item
             }
           }
@@ -424,7 +433,7 @@ export const Calls: FC<CallsProps> = ({ className }): JSX.Element => {
     } finally {
       setIsLoadingSummaryStatus(false)
     }
-  }, [history?.rows, callType])
+  }, [history?.rows])
 
   // Load summary status once per fetched page. Trigger only on the fetched data
   // (history.rows), not on pageNum + the loadSummaryStatus identity: pageNum
@@ -434,8 +443,7 @@ export const Calls: FC<CallsProps> = ({ className }): JSX.Element => {
     if (history?.rows?.length) {
       loadSummaryStatus()
     }
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [history?.rows])
+  }, [loadSummaryStatus, history?.rows])
 
   // Reload summary status when phone-island-summary-ready event is received
   useEventListener('phone-island-summary-ready', () => {
@@ -657,10 +665,25 @@ export const Calls: FC<CallsProps> = ({ className }): JSX.Element => {
   }, [debouncedUpdateFilterText])
 
   // Audio-test (echo, *41) calls are now filtered server-side by the middleware
-  // The rows arrive ready to display: cti-server filters (including the audio-test
-  // calls that were once dropped here) and the middleware groups a call's legs
-  // into one expandable row, so there is nothing left to filter client-side.
-  const filteredHistory = history?.rows ?? NO_ROWS
+  // The rows arrive ready to display: the middleware filters the audio-test
+  // (echo) calls server-side, so pages come back full, and groups a call's legs
+  // into one expandable row.
+  //
+  // The echo filter is repeated here as a safety net: an older middleware ignores
+  // the audioTest parameter and returns those calls with no error of any kind,
+  // and dropping the few rows it missed is cheaper than showing them. Against a
+  // middleware that honours the parameter this removes nothing.
+  const audioTestCode = feature_codes?.audio_test || '*41'
+  const filteredHistory = useMemo(() => {
+    const rows = history?.rows
+    if (!rows?.length) {
+      return NO_ROWS
+    }
+    return rows.filter((call: any) => {
+      const numberToCheck = call?.direction === 'in' ? call?.src : call?.dst
+      return !numberToCheck?.includes(audioTestCode)
+    })
+  }, [history?.rows, audioTestCode])
 
   // Merge in the extra conversations the user took part in (e.g. the transfer
   // consultation leg) as their own rows, placed next to the related call.
@@ -676,10 +699,18 @@ export const Calls: FC<CallsProps> = ({ className }): JSX.Element => {
       // talked, not a technical "s"/routing leg) and the summary/transcript icon
       // resolves. A page still holds pageSize calls.
       const txByLinked = new Map<string, any[]>()
+      // summaryStatusMap holds each item under both its uniqueid and its linkedid,
+      // so the same conversation arrives twice: keep one entry per id.
+      const seenTx = new Set<string>()
       const addTx = (item: any) => {
         if (!item?.linkedid) {
           return
         }
+        const key = String(item?.id ?? `${item.linkedid}-${item?.uniqueid}`)
+        if (seenTx.has(key)) {
+          return
+        }
+        seenTx.add(key)
         const arr = txByLinked.get(item.linkedid) || []
         arr.push(item)
         txByLinked.set(item.linkedid, arr)
@@ -873,11 +904,14 @@ export const Calls: FC<CallsProps> = ({ className }): JSX.Element => {
         return (
           <button
             type='button'
+            // The `?? ''` is for typing, not truthiness: t() is declared as possibly
+            // undefined here, and aria-label takes a string.
             aria-label={
               (isOpen
                 ? t('History.Collapse interactions')
-                : t('History.Expand interactions')) || ''
+                : t('History.Expand interactions')) ?? ''
             }
+            aria-expanded={isOpen}
             onClick={(e) => {
               e.stopPropagation()
               toggleExpanded(call?.linkedid)
@@ -943,14 +977,16 @@ export const Calls: FC<CallsProps> = ({ className }): JSX.Element => {
             (call?.interactions || []).some((leg: any) => leg?.lastapp === 'Queue'))
         const showGroupMarker = isRingGroupCall || isQueueCall
 
+        // Built from an interpolated key, not concatenated, so a translation can
+        // put the name where its language needs it.
         let markerLabel = ''
         if (isRingGroupCall) {
           markerLabel = call?.ringGroupName
-            ? `${t('History.Group')}: ${call.ringGroupName}`
+            ? t('History.Named group call', { name: call.ringGroupName })
             : t('History.Group')
         } else if (isQueueCall) {
           markerLabel = call?.queueName
-            ? `${t('History.Queue')}: ${call.queueName}`
+            ? t('History.Named queue call', { name: call.queueName })
             : t('History.Queue')
         }
 
