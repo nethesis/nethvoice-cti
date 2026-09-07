@@ -234,7 +234,19 @@ export default function Login() {
       </InlineNotification>
     </div>
   ) : ctiStatus.webRtcError || window.location.href.includes('?error') ? (
-    ctiStatus.isUserInformationMissing || window.location.href.includes('sessionExpired') ? (
+    window.location.href.includes('ssoUserNotEnabled') ? (
+      <div className='relative w-full mt-6'>
+        <InlineNotification type='error' title={t('Common.Warning')}>
+          <p>{t('Login.SSO user not enabled')}</p>
+        </InlineNotification>
+      </div>
+    ) : window.location.href.includes('error=sso') ? (
+      <div className='relative w-full mt-6'>
+        <InlineNotification type='error' title={t('Common.Warning')}>
+          <p>{t('Login.SSO login failed')}</p>
+        </InlineNotification>
+      </div>
+    ) : ctiStatus.isUserInformationMissing || window.location.href.includes('sessionExpired') ? (
       <div className='relative w-full mt-6'>
         <InlineNotification type='error' title={t('Common.Warning')}>
           <p>{t('Login.Session expired, log in again')}</p>

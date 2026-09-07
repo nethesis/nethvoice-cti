@@ -109,6 +109,8 @@
     "Password": "Password",
     "Sign in": "Sign in",
     "Sign in with SSO": "Sign in with SSO",
+    "SSO login failed": "Single Sign-On failed. Please try again.",
+    "SSO user not enabled": "You signed in on the identity provider, but this user is not enabled to use the CTI. Contact your administrator.",
     "The application is open in another window": "The application is open in another window",
     "Session expired, log in again": "Session expired, log in again",
     "User not autorized": "User not autorized",

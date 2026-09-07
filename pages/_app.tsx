@@ -55,8 +55,13 @@ function MyApp({ Component, pageProps }: AppProps) {
             saveCredentials(uid, token)
             window.location.replace('/')
           })
-          .catch(() => {
-            window.location.replace('/login?error=sso')
+          .catch((status) => {
+            // reaching here means the IdP authenticated the user but the mint
+            // was rejected: a 401/403 is a user not enabled on this CTI, any
+            // other failure is a generic SSO error
+            const reason =
+              status === 401 || status === 403 ? 'ssoUserNotEnabled' : 'sso'
+            window.location.replace('/login?error=' + reason)
           })
         return
       }
