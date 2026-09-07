@@ -164,6 +164,21 @@ const theme = {
       },
     },
     actions: 'px-4 py-3 flex flex-col sm:flex-row-reverse  sm:px-6 gap-3 bg-white dark:bg-gray-900',
+    roundedIcon: {
+      base: 'flex h-10 w-10 shrink-0 items-center justify-center rounded-full',
+      surface: {
+        info: 'bg-surfaceInlineNotificationInfo dark:bg-surfaceInlineNotificationInfoDark',
+        warning: 'bg-surfaceToastWarning dark:bg-surfaceToastWarningDark',
+        error: 'bg-rose-100 dark:bg-rose-900',
+        success: 'bg-green-100 dark:bg-green-900',
+      },
+      iconStyle: {
+        info: 'h-5 w-5 text-iconInlineNotificationInformation dark:text-iconInlineNotificationInformationDark',
+        warning: 'h-5 w-5 text-iconWarning dark:text-iconWarningDark',
+        error: 'h-5 w-5 text-rose-700 dark:text-rose-200',
+        success: 'h-5 w-5 text-green-700 dark:text-green-200',
+      },
+    },
     sizes: {
       base: '',
       large: '',

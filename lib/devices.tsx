@@ -7,19 +7,6 @@ import { store } from '../store'
 import { getJSONItem } from './storage'
 import { t } from 'i18next'
 
-export const openShowEditPhysicalPhone = (phoneInformation: any, pinstatus: any) => {
-  let phoneModel: any = {}
-  phoneModel = {
-    ...phoneInformation,
-    pinStatus: pinstatus,
-  }
-  store.dispatch.sideDrawer.update({
-    isShown: true,
-    contentType: 'showEditPhysicalPhone',
-    config: phoneModel,
-  })
-}
-
 export const openShowSwitchDeviceInputOutput = (status: any) => {
   store.dispatch.sideDrawer.update({
     isShown: true,
@@ -45,6 +32,92 @@ export const openShowDownloadLinkContent = (
   })
 }
 
+export const openAddPhoneKeyDrawer = (config: {
+  defaultPosition: number
+  maxPosition: number
+  onAdd: (key: { position: number; type: string; value: string; label: string }) => void
+}) => {
+  store.dispatch.sideDrawer.update({
+    isShown: true,
+    contentType: 'showAddPhoneKey',
+    config,
+  })
+}
+
+export const openEditExpansionKeyDrawer = (config: {
+  keyNumber: number
+  type: string
+  value: string
+  label: string
+  onSave: (key: { type: string; value: string; label: string }) => void
+}) => {
+  store.dispatch.sideDrawer.update({
+    isShown: true,
+    contentType: 'showEditExpansionKey',
+    config,
+  })
+}
+
+export interface PhoneKeysConfiguration {
+  configuration: any
+  lineKeysCount: number
+  expansionKeysPerModule: number
+  expansionModulesCount: number
+}
+
+interface CachedPhoneKeysConfiguration {
+  request: Promise<PhoneKeysConfiguration | null>
+  requestedAt: number
+}
+
+const phoneKeysConfigurationCache = new Map<string, CachedPhoneKeysConfiguration>()
+
+const PHONE_KEYS_CONFIGURATION_CACHE_MS = 30000
+
+export const invalidatePhoneKeysConfiguration = (macAddress: string) => {
+  phoneKeysConfigurationCache.delete(macAddress)
+}
+
+export const clearPhoneKeysConfigurationCache = () => {
+  phoneKeysConfigurationCache.clear()
+}
+
+const fetchPhoneKeysConfiguration = async (
+  macAddress: string,
+): Promise<PhoneKeysConfiguration | null> => {
+  const configuration = await getPhysicalDeviceButtonConfiguration(macAddress)
+  if (!configuration?.variables) {
+    throw new Error('Cannot retrieve the phone configuration')
+  }
+  const model = await getPhoneModelData(configuration?.model)
+  if (!model?.variables) {
+    throw new Error('Cannot retrieve the phone model')
+  }
+  const toNumber = (value: any) => {
+    const parsedValue = parseInt(value)
+    return isNaN(parsedValue) ? 0 : parsedValue
+  }
+  return {
+    configuration,
+    lineKeysCount: toNumber(model?.variables?.cap_linekey_count),
+    expansionKeysPerModule: toNumber(model?.variables?.cap_expkey_count),
+    expansionModulesCount: toNumber(model?.variables?.cap_expmodule_count),
+  }
+}
+
+export const getPhoneKeysConfiguration = (macAddress: string) => {
+  const cached = phoneKeysConfigurationCache.get(macAddress)
+  if (cached && Date.now() - cached.requestedAt < PHONE_KEYS_CONFIGURATION_CACHE_MS) {
+    return cached.request
+  }
+  const request = fetchPhoneKeysConfiguration(macAddress).catch((error) => {
+    phoneKeysConfigurationCache.delete(macAddress)
+    throw error
+  })
+  phoneKeysConfigurationCache.set(macAddress, { request, requestedAt: Date.now() })
+  return request
+}
+
 export const getInputOutputLocalStorageValue = (currentUsername: string) => {
   const audioInputType = getJSONItem('phone-island-audio-input-device') || ''
   const audioOutputType = getJSONItem('phone-island-audio-output-device') || ''
@@ -66,7 +139,7 @@ export async function setMainDevice(deviceIdInformation: any) {
 
 export const getPhysicalDeviceButtonConfiguration = async (macAddress: any) => {
   try {
-    const { username, token } = store.getState().authentication
+    const { token } = store.getState().authentication
     const res = await fetch(
       // @ts-ignore
       window.CONFIG.API_SCHEME +
@@ -83,6 +156,9 @@ export const getPhysicalDeviceButtonConfiguration = async (macAddress: any) => {
         },
       },
     )
+    if (!res.ok) {
+      throw new Error(`Request failed with status ${res.status}`)
+    }
     const data = await res.json()
     return data
   } catch (error) {
@@ -92,7 +168,7 @@ export const getPhysicalDeviceButtonConfiguration = async (macAddress: any) => {
 
 export const getPhoneModelData = async (model: any) => {
   try {
-    const { username, token } = store.getState().authentication
+    const { token } = store.getState().authentication
     const res = await fetch(
       // @ts-ignore
       window.CONFIG.API_SCHEME +
@@ -108,6 +184,9 @@ export const getPhoneModelData = async (model: any) => {
         },
       },
     )
+    if (!res.ok) {
+      throw new Error(`Request failed with status ${res.status}`)
+    }
     const data = await res.json()
     return data
   } catch (error) {
@@ -116,8 +195,9 @@ export const getPhoneModelData = async (model: any) => {
 }
 
 export const saveBtnsConfig = async (macAddress: any, keyUpdatedObject: any) => {
+  invalidatePhoneKeysConfiguration(macAddress)
   try {
-    const { username, token } = store.getState().authentication
+    const { token } = store.getState().authentication
     const res = await fetch(
       // @ts-ignore
       window.CONFIG.API_SCHEME +
@@ -134,9 +214,12 @@ export const saveBtnsConfig = async (macAddress: any, keyUpdatedObject: any) => 
         body: JSON.stringify(keyUpdatedObject),
       },
     )
+    if (!res.ok) {
+      throw new Error(`Request failed with status ${res.status}`)
+    }
     return res
-  } catch (error) {
-    console.error(error)
+  } finally {
+    invalidatePhoneKeysConfiguration(macAddress)
   }
 }
 

@@ -121,6 +121,7 @@ export const SummaryView: FC<SummaryViewProps> = ({
       cnam: data?.cnam,
       dst_cnam: data?.dst_cnam,
       call_timestamp: data?.call_timestamp,
+      sentiment: data?.sentiment,
     })
 
     if (!summaryText) {

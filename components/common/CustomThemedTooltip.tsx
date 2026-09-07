@@ -1,7 +1,7 @@
 import React, { FC } from 'react'
 import { useSelector } from 'react-redux'
 import { RootState } from '../../store'
-import { Tooltip } from 'react-tooltip'
+import { PositionStrategy, Tooltip } from 'react-tooltip'
 
 interface CustomThemedTooltipProps {
   id: string
@@ -12,6 +12,7 @@ interface CustomThemedTooltipProps {
   offset?: number
   clickableText?: string
   onClickableClick?: () => void
+  positionStrategy?: PositionStrategy
 }
 
 export const CustomThemedTooltip: FC<CustomThemedTooltipProps> = ({
@@ -23,6 +24,7 @@ export const CustomThemedTooltip: FC<CustomThemedTooltipProps> = ({
   offset,
   clickableText,
   onClickableClick,
+  positionStrategy,
 }) => {
   const { theme } = useSelector((state: RootState) => state.darkTheme)
 
@@ -52,14 +54,28 @@ export const CustomThemedTooltip: FC<CustomThemedTooltipProps> = ({
         borderRadius: '4px',
       }
 
+  const renderText = (content: string) => {
+    const lines = content.split('\n')
+    if (lines.length === 1) {
+      return content
+    }
+    return (
+      <>
+        {lines.map((line, index) => (
+          <p key={index}>{line}</p>
+        ))}
+      </>
+    )
+  }
+
   const renderContent = (content: string) => {
     if (!clickableText || !onClickableClick) {
-      return content
+      return renderText(content)
     }
 
     return (
       <div>
-        <div>{content}</div>
+        <div>{renderText(content)}</div>
         <button
           onClick={(e) => {
             e.preventDefault()
@@ -90,6 +106,7 @@ export const CustomThemedTooltip: FC<CustomThemedTooltipProps> = ({
       float={float}
       noArrow={noArrow}
       offset={offset}
+      positionStrategy={positionStrategy}
       clickable
       render={({ content }) => renderContent(content || '')}
     />

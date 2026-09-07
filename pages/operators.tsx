@@ -6,19 +6,20 @@ import type { NextPage } from 'next'
 import { EmptyState } from '../components/common'
 import {
   AVAILABLE_STATUSES,
+  DEFAULT_GROUP_LAYOUT_SORT_BY,
+  DEFAULT_SORT_BY,
   getFilterValues,
   getInfiniteScrollOperatorsPageSize,
   getUserGroups,
   openShowOperatorDrawer,
   searchStringInOperator,
-  sortByOperatorStatus,
+  sortOperators,
   UNAVAILABLE_STATUSES,
 } from '../lib/operators'
 import { isEmpty, debounce } from 'lodash'
 import { useSelector } from 'react-redux'
 import { RootState } from '../store'
 import { Filter } from '../components/operators'
-import { sortByFavorite, sortByProperty } from '../lib/utils'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { faBars, faFilter, faHeadset, IconDefinition } from '@fortawesome/free-solid-svg-icons'
 import { store } from '../store'
@@ -36,6 +37,8 @@ const Operators: NextPage = () => {
   interface Operator {
     username?: string
     name?: string
+    firstname?: string
+    lastname?: string
     mainPresence?: string
     avatarBase64?: string
     favorite?: boolean
@@ -151,27 +154,7 @@ const Operators: NextPage = () => {
         // group filter
         filteredOperators = filteredOperators?.filter(matchesGroup)
 
-        // sort operators
-        switch (sortByFilter) {
-          case 'favorites':
-            filteredOperators?.sort(sortByProperty('name'))
-            // filteredOperators.sort(sortByOperatorStatus)
-            filteredOperators?.sort(sortByFavorite)
-            break
-          case 'extension':
-            filteredOperators?.sort((a: any, b: any) =>
-              a?.endpoints?.extension[0]?.id > b?.endpoints?.extension[0]?.id ? 1 : -1,
-            )
-            break
-          case 'az':
-            // Sort operators alphabetically
-            filteredOperators?.sort((a: any, b: any) => (a?.name > b?.name ? 1 : -1))
-            break
-          case 'za':
-            // Sort operators reverse alphabetically
-            filteredOperators?.sort((a: any, b: any) => (a?.name < b?.name ? 1 : -1))
-            break
-        }
+        sortOperators(filteredOperators, sortByFilter, DEFAULT_SORT_BY)
 
         filteredOperators = filteredOperators?.filter((op: any) => {
           return (
@@ -186,27 +169,7 @@ const Operators: NextPage = () => {
         // group filter
         filteredOperators = filteredOperators?.filter(matchesGroup)
 
-        // sort operators
-        switch (groupedSortByFilter) {
-          case 'extension':
-            filteredOperators?.sort((a: any, b: any) =>
-              a?.endpoints?.extension[0]?.id > b?.endpoints?.extension[0]?.id ? 1 : -1,
-            )
-            break
-          case 'az':
-            // Sort operators alphabetically
-            filteredOperators?.sort((a: any, b: any) => (a?.name > b?.name ? 1 : -1))
-            break
-          case 'za':
-            // Sort operators reverse alphabetically
-            filteredOperators?.sort((a: any, b: any) => (a?.name < b?.name ? 1 : -1))
-            break
-          case 'favorites':
-            filteredOperators?.sort(sortByProperty('name'))
-            filteredOperators?.sort(sortByOperatorStatus)
-            filteredOperators?.sort(sortByFavorite)
-            break
-        }
+        sortOperators(filteredOperators, groupedSortByFilter, DEFAULT_GROUP_LAYOUT_SORT_BY)
 
         // group filter
         switch (groupedGroupByFilter) {

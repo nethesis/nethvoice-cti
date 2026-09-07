@@ -238,9 +238,9 @@ export const Setup2FA = () => {
   return (
     <>
       <section aria-labelledby='authentication-heading'>
-        <div className='py-6 px-4 sm:p-6'>
+        <div className='pb-6'>
           <div>
-            <h2 className='text-lg font-medium leading-6 text-gray-900 dark:text-gray-100 mb-6'>
+            <h2 className='text-base font-medium leading-6 text-secondaryNeutral dark:text-secondaryNeutralDark mb-8'>
               {t('Settings.Two-Factor Authentication')}
             </h2>
           </div>

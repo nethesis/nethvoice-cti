@@ -124,10 +124,10 @@ export const Notifications = () => {
   }
 
   return (
-    <div className='px-6 py-6 sm:p-6 lg:pb-8'>
+    <div className='pb-8'>
       <div className='flex flex-col gap-8'>
         <div className='flex max-w-[672px] flex-col gap-2'>
-          <h2 className='text-lg font-medium leading-7 text-secondaryNeutral dark:text-secondaryNeutralDark'>
+          <h2 className='text-base font-medium leading-6 text-secondaryNeutral dark:text-secondaryNeutralDark'>
             {t('Settings.Notifications')}
           </h2>
           <div className='text-sm leading-5 text-tertiaryNeutral dark:text-tertiaryNeutralDark'>

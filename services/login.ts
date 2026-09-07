@@ -10,6 +10,7 @@ import { removeItem } from '../lib/storage'
 import { store } from '../store'
 import { isEmpty } from 'lodash'
 import { clearLocalStorageAndCache, reloadPage, saveQueryParams } from '../lib/utils'
+import { clearPhoneKeysConfigurationCache } from '../lib/devices'
 
 /**
  * This method performs the logout action
@@ -43,6 +44,7 @@ export const doLogout = async (isLogoutError?: any) => {
   removeItem('credentials')
   // Reset the authentication store
   store.dispatch.authentication.reset()
+  clearPhoneKeysConfigurationCache()
 
   let queryParams = ''
 

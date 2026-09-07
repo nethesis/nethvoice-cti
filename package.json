@@ -1,6 +1,6 @@
 {
   "name": "nethvoice-cti",
-  "version": "0.15.26",
+  "version": "0.15.28",
   "private": true,
   "scripts": {
     "dev": "next dev --turbopack",
@@ -15,12 +15,12 @@
     "postversion": "git push origin main --tags"
   },
   "dependencies": {
-    "@babel/runtime": "^7.29.2",
+    "@babel/runtime": "^8.0.0",
     "@date-fns/utc": "^2.0.0",
     "@fortawesome/fontawesome-svg-core": "^7.0.0",
     "@fortawesome/free-brands-svg-icons": "^7.0.0",
     "@fortawesome/free-solid-svg-icons": "^7.0.0",
-    "@fortawesome/react-fontawesome": "^0.2.0",
+    "@fortawesome/react-fontawesome": "^3.0.0",
     "@headlessui/react": "^2.1.9",
     "@nethesis/nethesis-brands-svg-icons": "github:nethesis/Font-Awesome#ns-brands",
     "@nethesis/nethesis-light-svg-icons": "github:nethesis/Font-Awesome#ns-light",
@@ -61,7 +61,7 @@
     "slick-carousel": "^1.8.1"
   },
   "devDependencies": {
-    "@babel/core": "^7.19.3",
+    "@babel/core": "^8.0.0",
     "@tailwindcss/forms": "^0.5.7",
     "@types/gravatar": "^1.8.6",
     "@types/lodash": "^4.14.188",

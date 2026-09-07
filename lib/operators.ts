@@ -2,7 +2,7 @@
 // SPDX-License-Identifier: AGPL-3.0-or-later
 
 import axios from 'axios'
-import { callPhoneNumber, handleNetworkError } from '../lib/utils'
+import { callPhoneNumber, handleNetworkError, sortByFavorite } from '../lib/utils'
 import { store } from '../store'
 import { loadCache, loadPreference, saveCache, savePreference, clearPreference } from './storage'
 import { isEmpty, cloneDeep } from 'lodash'
@@ -42,7 +42,7 @@ export const normalizeGroupFilter = (value: any): string[] => {
   return [DEFAULT_GROUP_FILTER]
 }
 export const DEFAULT_STATUS_FILTER = 'all'
-export const DEFAULT_SORT_BY = 'favorites'
+export const DEFAULT_SORT_BY = 'az'
 export const DEFAULT_LAYOUT = 'standard'
 export const DEFAULT_GROUP_LAYOUT_GROUP_BY = 'team'
 export const DEFAULT_GROUP_LAYOUT_SORT_BY = 'extension'
@@ -127,28 +127,65 @@ export const openShowOperatorDrawer = (operator: any) => {
   })
 }
 
-export const sortByOperatorStatus = (operator1: any, operator2: any) => {
-  const statusRanking = [
-    'online',
-    'cellphone',
-    'callforward',
-    'voicemail',
-    'incoming',
-    'ringing',
-    'busy',
-    'dnd',
-    'offline',
-  ]
-  const rank1 = statusRanking.indexOf(operator1?.mainPresence)
-  const rank2 = statusRanking.indexOf(operator2?.mainPresence)
+const splitDisplayName = (name: string): { first: string; last: string } => {
+  const tokens = (name || '').trim().split(/\s+/).filter(Boolean)
+  if (tokens.length === 0) {
+    return { first: '', last: '' }
+  }
+  if (tokens.length === 1) {
+    return { first: tokens[0], last: tokens[0] }
+  }
+  return { first: tokens[0], last: tokens.slice(1).join(' ') }
+}
 
-  if (rank1 < rank2) {
-    return -1
+const firstNameSortKey = (operator: any) => {
+  const firstname = operator?.firstname && operator.firstname.trim()
+  if (firstname) {
+    return firstname
   }
-  if (rank1 > rank2) {
-    return 1
+  return splitDisplayName(operator?.name).first || operator?.name || ''
+}
+const lastNameSortKey = (operator: any) => {
+  const lastname = operator?.lastname && operator.lastname.trim()
+  if (lastname) {
+    return lastname
   }
-  return 0
+  return splitDisplayName(operator?.name).last || operator?.name || ''
+}
+
+export const sortByFirstName = (operator1: any, operator2: any) =>
+  firstNameSortKey(operator1).localeCompare(firstNameSortKey(operator2), undefined, {
+    sensitivity: 'base',
+    numeric: true,
+  })
+
+export const sortByLastName = (operator1: any, operator2: any) =>
+  lastNameSortKey(operator1).localeCompare(lastNameSortKey(operator2), undefined, {
+    sensitivity: 'base',
+    numeric: true,
+  })
+
+const OPERATORS_SORT_COMPARATORS: Record<string, (operator1: any, operator2: any) => number> = {
+  extension: (operator1: any, operator2: any) =>
+    operator1?.endpoints?.extension[0]?.id > operator2?.endpoints?.extension[0]?.id ? 1 : -1,
+  az: (operator1: any, operator2: any) => (operator1?.name > operator2?.name ? 1 : -1),
+  za: (operator1: any, operator2: any) => (operator1?.name < operator2?.name ? 1 : -1),
+  firstname_az: (operator1: any, operator2: any) => sortByFirstName(operator1, operator2),
+  firstname_za: (operator1: any, operator2: any) => sortByFirstName(operator2, operator1),
+  lastname_az: (operator1: any, operator2: any) => sortByLastName(operator1, operator2),
+  lastname_za: (operator1: any, operator2: any) => sortByLastName(operator2, operator1),
+}
+
+const normalizeSortBy = (value: any, fallback: string) =>
+  typeof value === 'string' && value in OPERATORS_SORT_COMPARATORS ? value : fallback
+
+export const sortOperators = (operators: any[], sortBy: string, fallbackSortBy: string) => {
+  const comparator =
+    OPERATORS_SORT_COMPARATORS[sortBy] || OPERATORS_SORT_COMPARATORS[fallbackSortBy]
+  return operators?.sort(
+    (operator1: any, operator2: any) =>
+      sortByFavorite(operator1, operator2) || comparator(operator1, operator2),
+  )
 }
 
 export const callOperator = (operator: any, event: any = undefined) => {
@@ -217,15 +254,20 @@ export const getFilterValues = (currentUsername: string) => {
 
   const status = loadPreference('operatorsStatusFilter', currentUsername) || DEFAULT_STATUS_FILTER
 
-  const sortBy = loadPreference('operatorsSortBy', currentUsername) || DEFAULT_SORT_BY
+  const sortBy = normalizeSortBy(
+    loadPreference('operatorsSortBy', currentUsername),
+    DEFAULT_SORT_BY,
+  )
 
   const layout = loadPreference('operatorsLayout', currentUsername) || DEFAULT_LAYOUT
 
   const groupLayoutGroupBy =
     loadPreference('operatorsGroupLayoutGroupBy', currentUsername) || DEFAULT_GROUP_LAYOUT_GROUP_BY
 
-  const groupLayoutSortBy =
-    loadPreference('operatorsGroupLayoutSortBy', currentUsername) || DEFAULT_GROUP_LAYOUT_SORT_BY
+  const groupLayoutSortBy = normalizeSortBy(
+    loadPreference('operatorsGroupLayoutSortBy', currentUsername),
+    DEFAULT_GROUP_LAYOUT_SORT_BY,
+  )
 
   return { group, status, sortBy, layout, groupLayoutGroupBy, groupLayoutSortBy }
 }
