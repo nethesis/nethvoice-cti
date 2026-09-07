@@ -62,6 +62,10 @@ import { useRouter } from 'next/router'
 
 export interface CallsProps extends ComponentProps<'div'> {}
 
+// Stable empty list, so a page with no rows yet does not hand the memo below a
+// new array reference on every render.
+const NO_ROWS: any[] = []
+
 export const Calls: FC<CallsProps> = ({ className }): JSX.Element => {
   const dispatch = useDispatch<Dispatch>()
   const router = useRouter()
@@ -653,10 +657,10 @@ export const Calls: FC<CallsProps> = ({ className }): JSX.Element => {
   }, [debouncedUpdateFilterText])
 
   // Audio-test (echo, *41) calls are now filtered server-side by the middleware
-  // before pagination, so pages are not left short. Nothing to filter here.
-  const filteredHistory = useMemo(() => {
-    return history?.rows ?? []
-  }, [history?.rows])
+  // The rows arrive ready to display: cti-server filters (including the audio-test
+  // calls that were once dropped here) and the middleware groups a call's legs
+  // into one expandable row, so there is nothing left to filter client-side.
+  const filteredHistory = history?.rows ?? NO_ROWS
 
   // Merge in the extra conversations the user took part in (e.g. the transfer
   // consultation leg) as their own rows, placed next to the related call.

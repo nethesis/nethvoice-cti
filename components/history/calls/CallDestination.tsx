@@ -1,7 +1,5 @@
 import { FC, ReactNode } from 'react'
 import { t } from 'i18next'
-import { useSelector } from 'react-redux'
-import { RootState } from '../../../store'
 import { getEffectiveCnam } from '../../../lib/history'
 
 interface CallDestinationProps {
@@ -31,24 +29,11 @@ export const CallDestination: FC<CallDestinationProps> = ({
   name,
   openDrawerHistory,
 }) => {
-  // If the destination is a queue (its number matches a configured queue), show
-  // the queue NAME (with the number underneath) — for queues/groups we want the
-  // name, not just the raw number.
-  const queuesStore: any = useSelector((state: RootState) => (state as any).queues)
-  const queueName = call?.dst ? queuesStore?.queues?.[call.dst]?.name : ''
-  if (queueName) {
-    return (
-      <div>
-        <div className='truncate text-sm text-secondaryNeutral dark:text-secondaryNeutralDark'>
-          {queueName}
-        </div>
-        <div className='flex items-center gap-1.5 text-sm text-textPlaceholder dark:text-textPlaceholderDark'>
-          <span className='truncate'>{call.dst}</span>
-          {marker}
-        </div>
-      </div>
-    )
-  }
+  // A queue destination needs no special case here: the backend resolves the
+  // queue's name into dst_cnam, so the branches below render it over the number
+  // like any other named destination — and, unlike this early return did, they
+  // also open the call drawer when clicked. The frontend queue store cannot serve
+  // that anyway: it only ever holds the queues the current user manages.
 
   // User call type
   if (callType === 'user') {
