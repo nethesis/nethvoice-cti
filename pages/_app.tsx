@@ -8,7 +8,7 @@ import { useState, useEffect } from 'react'
 import { Provider } from 'react-redux'
 import { store } from '../store'
 import { Layout } from '../components/layout'
-import { getCredentials, updateAuthStore } from '../lib/login'
+import { getCredentials, updateAuthStore, saveCredentials } from '../lib/login'
 import { useRouter } from 'next/router'
 import { RouteGuard } from '../config/router'
 import { Service } from '../config/service'
@@ -33,6 +33,44 @@ function MyApp({ Component, pageProps }: AppProps) {
       updateAuthStore(username, token)
       loaded()
     } else {
+      // Optional auto-start of the SSO flow: ?login=sso (or ?autologin) goes
+      // straight to the IdP, like the legacy ?login=shibboleth entry point.
+      const cfg: any = (typeof window !== 'undefined' && (window as any).CONFIG) || {}
+      const params =
+        typeof window !== 'undefined'
+          ? new URLSearchParams(window.location.search)
+          : new URLSearchParams()
+      // SSO return leg (?ssologin): mint the JWT via the forwardAuth-guarded
+      // /api/sso-login and store it like a normal login.
+      if (params.has('ssologin')) {
+        fetch(cfg.API_SCHEME + cfg.API_ENDPOINT + '/api/sso-login', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: '{}',
+        })
+          .then((r) => (r.ok ? r.json() : Promise.reject(r.status)))
+          .then((d) => {
+            const token = d.token
+            const uid = JSON.parse(atob(token.split('.')[1])).id
+            saveCredentials(uid, token)
+            window.location.replace('/')
+          })
+          .catch((status) => {
+            // reaching here means the IdP authenticated the user but the mint
+            // was rejected: a 401/403 is a user not enabled on this CTI, any
+            // other failure is a generic SSO error
+            const reason =
+              status === 401 || status === 403 ? 'ssoUserNotEnabled' : 'sso'
+            window.location.replace('/login?error=' + reason)
+          })
+        return
+      }
+      const autoSso =
+        params.get('login') === 'sso' || params.has('autologin') || params.has('sso')
+      if (autoSso && ['saml2', 'oidc'].includes(cfg.AUTHENTICATION_METHOD)) {
+        window.location.href = cfg.SSO_LOGIN_URL || '/sso'
+        return
+      }
       router.push('/login')
       router.events.on('routeChangeComplete', loaded)
     }
