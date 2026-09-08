@@ -17,7 +17,12 @@ import { Button, Avatar, EmptyState, Dropdown, Badge } from '../../common'
 import { useSelector } from 'react-redux'
 import { RootState } from '../../../store'
 import { useTranslation } from 'react-i18next'
-import { CallTypes, getLastCalls, getEffectiveCnam } from '../../../lib/history'
+import {
+  CallTypes,
+  collapseCallsByLinkedid,
+  getLastCalls,
+  getEffectiveCnam,
+} from '../../../lib/history'
 import { getNMonthsAgoDate } from '../../../lib/utils'
 import { formatDateLoc, getTimeDifference } from '../../../lib/dateTime'
 import type { SortTypes } from '../../../lib/history'
@@ -297,7 +302,11 @@ export const UserLastCallsContent = () => {
         const dateEndString = formatDateLoc(dateEnd, 'yyyyMMdd')
         const callsData = await getLastCalls(username, dateStartString, dateEndString, newSort)
         if (callsData) {
-          const callsFinalInformations = getLastCallsUsername(callsData.rows)
+          // One entry per call: the history API returns every leg, so the members a
+          // queue or ring group rang would otherwise repeat the same call.
+          const callsFinalInformations = getLastCallsUsername(
+            collapseCallsByLinkedid(callsData.rows as any) as any,
+          )
           setLastCalls(callsFinalInformations)
           applyFilters(callsFinalInformations, directionFilter)
           setIsLoading(false)
