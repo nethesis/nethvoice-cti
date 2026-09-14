@@ -33,6 +33,7 @@ export async function search(
   pageNum: number,
   pageSize: number = PAGE_SIZE,
   contentFilter: string = DEFAULT_CONTENT_FILTER,
+  audioTest: string = '',
 ) {
   if (window == undefined) {
     return
@@ -53,6 +54,9 @@ export async function search(
         pageNum,
         pageSize,
         artifact: contentFilter,
+        // Let the middleware drop audio-test (echo) calls before pagination so
+        // pages are not left short by client-side filtering.
+        audioTest,
       },
     })
     return data
@@ -281,6 +285,11 @@ export interface CallTypes {
   reached_voicemail?: boolean
   has_voicemail_message?: boolean
   voicemail_message_id?: string
+  interactions?: CallTypes[]
+  interactionsCount?: number
+  ringGroupName?: string
+  ringGroupNum?: string
+  queueName?: string
 }
 
 export interface LastCallsResponse {
@@ -301,6 +310,53 @@ type CallVoicemailLike = {
 
 export const getNormalizedDisposition = (call?: CallDispositionLike) =>
   call?.normalized_disposition || call?.disposition || ''
+
+/**
+ * Collapses the legs of a call into a single entry, keeping one row per linkedid.
+ *
+ * The last-calls lists read the legacy history API directly (they do not go through
+ * the middleware, which groups calls for the history page), and that API now returns
+ * every leg of a call — including the members a queue or ring group rang before
+ * someone answered. Without this they would show up as extra rows for the same call.
+ *
+ * The kept leg mirrors the middleware's choice: the last one that answered, so the
+ * entry reflects who the call ended up with; otherwise the earliest leg.
+ */
+export function collapseCallsByLinkedid<
+  T extends CallDispositionLike & { linkedid?: string; time?: number | string },
+>(
+  calls: T[],
+): T[] {
+  const order: string[] = []
+  const chosen = new Map<string, T>()
+  const standalone: T[] = []
+
+  calls.forEach((call) => {
+    const key = call?.linkedid
+    if (!key) {
+      // No linkedid: nothing to group it with, keep it as its own entry.
+      standalone.push(call)
+      order.push(`standalone:${standalone.length - 1}`)
+      return
+    }
+    const current = chosen.get(key)
+    if (!current) {
+      chosen.set(key, call)
+      order.push(key)
+      return
+    }
+    const currentAnswered = isCallAnswered(current)
+    const callAnswered = isCallAnswered(call)
+    const isLater = Number(call?.time ?? 0) > Number(current?.time ?? 0)
+    if ((callAnswered && !currentAnswered) || (callAnswered === currentAnswered && callAnswered && isLater)) {
+      chosen.set(key, call)
+    }
+  })
+
+  return order.map((key) =>
+    key.startsWith('standalone:') ? standalone[Number(key.split(':')[1])] : (chosen.get(key) as T),
+  )
+}
 
 export const isCallAnswered = (call?: CallDispositionLike) =>
   getNormalizedDisposition(call) === 'ANSWERED'
