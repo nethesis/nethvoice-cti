@@ -370,6 +370,12 @@ export const Calls: FC<CallsProps> = ({ className }): JSX.Element => {
     callDirection,
     contentFilter,
     historyRefreshToken,
+    // The audio-test code arrives from its own request, so it is null on the first
+    // fetch and the server is asked to filter the default *41. Without this the
+    // fetch never repeats once the real code lands, and a PBX that changed it
+    // would fall back to filtering the echo calls client-side — which shortens
+    // pages, the very thing the server-side filter was added to fix.
+    feature_codes?.audio_test,
   ])
 
   // Function to load summary status for current page calls

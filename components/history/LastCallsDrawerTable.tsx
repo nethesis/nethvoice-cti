@@ -75,24 +75,26 @@ export const LastCallsDrawerTable = forwardRef<HTMLButtonElement, LastCallsDrawe
 
     const filterLastCalls = useCallback(
       (calls: CallsResponse): Call[] => {
-        // One entry per call: the history API returns every leg, so the members a
-        // queue or ring group rang would otherwise repeat the same call.
-        const rows = collapseCallsByLinkedid<Call>(calls.rows)
-
         // if privacy is enabled, not filtering calls
         if (user?.profile?.macro_permissions?.nethvoice_cti?.permissions?.privacy?.value) {
-          return rows.slice(0, limit)
+          return collapseCallsByLinkedid<Call>(calls.rows).slice(0, limit)
         }
 
-        const relevantCalls = rows.filter(
+        // Keep only the legs this contact took part in BEFORE collapsing: the leg
+        // kept by the collapse is the call's last answered one, which on a
+        // transferred or queue call is a leg between two colleagues. Collapsing
+        // first would drop the call from this card, or show it as a call between
+        // people other than the contact it belongs to.
+        const relevantCalls = calls.rows.filter(
           (call: Call) =>
             phoneNumbers.includes(call.src) ||
             phoneNumbers.includes(call.cnum) ||
             phoneNumbers.includes(call.dst),
         )
 
-        // limits the number of calls to the specified limit
-        return relevantCalls.slice(0, limit)
+        // One entry per call: the history API returns every leg, so the members a
+        // queue or ring group rang would otherwise repeat the same call.
+        return collapseCallsByLinkedid<Call>(relevantCalls).slice(0, limit)
       },
       [
         limit,

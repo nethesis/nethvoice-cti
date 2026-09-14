@@ -302,11 +302,9 @@ export const UserLastCallsContent = () => {
         const dateEndString = formatDateLoc(dateEnd, 'yyyyMMdd')
         const callsData = await getLastCalls(username, dateStartString, dateEndString, newSort)
         if (callsData) {
-          // One entry per call: the history API returns every leg, so the members a
-          // queue or ring group rang would otherwise repeat the same call.
-          const callsFinalInformations = getLastCallsUsername(
-            collapseCallsByLinkedid(callsData.rows as any) as any,
-          )
+          // Legs are kept as they come; applyFilters collapses them once the
+          // direction filter has run (see there).
+          const callsFinalInformations = getLastCallsUsername(callsData.rows as any)
           setLastCalls(callsFinalInformations)
           applyFilters(callsFinalInformations, directionFilter)
           setIsLoading(false)
@@ -362,6 +360,13 @@ export const UserLastCallsContent = () => {
         const numberToCheck = call.direction === 'in' ? call.src : call.dst
         return !numberToCheck?.includes(audioTestCode)
       })
+
+      // One entry per call: the history API returns every leg, so the members a
+      // queue or ring group rang would otherwise repeat the same call. It runs
+      // AFTER the direction filter: the leg kept by the collapse is the call's
+      // last answered one, so a call received and then transferred out would be
+      // kept as its outgoing leg and drop out of the "incoming" filter.
+      result = collapseCallsByLinkedid(result as any) as any
 
       setFilteredCalls(result)
     },

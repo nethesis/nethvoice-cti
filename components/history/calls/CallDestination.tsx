@@ -57,21 +57,29 @@ export const CallDestination: FC<CallDestinationProps> = ({
         ? t('Common.Unknown')
         : t('History.You')
 
+    const showNumberLine = call.dst !== '' && call.dst !== mainextension
+
     return (
       <div
         onClick={() =>
           openDrawerHistory(resolvedDstCnam, call.dst_ccompany, call.dst, callType, operators)
         }
       >
-        <div
-          className={
-            'truncate text-secondaryNeutral dark:text-secondaryNeutralDark text-sm' +
-            (call.dst !== '' ? ' hover:underline cursor-pointer' : '')
-          }
-        >
-          {primaryLabel}
+        <div className='flex items-center gap-1.5 min-w-0'>
+          <div
+            className={
+              'truncate text-secondaryNeutral dark:text-secondaryNeutralDark text-sm' +
+              (call.dst !== '' ? ' hover:underline cursor-pointer' : '')
+            }
+          >
+            {primaryLabel}
+          </div>
+          {/* The marker follows the number, but the number line is hidden when the
+              destination is the user's own extension — the usual case for a queue
+              call they answered, which is exactly when the queue badge matters. */}
+          {!showNumberLine && marker}
         </div>
-        {call.dst !== '' && call.dst !== mainextension && (
+        {showNumberLine && (
           <div className='flex items-center gap-1.5 text-sm text-textPlaceholder dark:text-textPlaceholderDark'>
             <span className='truncate cursor-pointer hover:underline'>{call.dst}</span>
             {marker}
@@ -114,16 +122,21 @@ export const CallDestination: FC<CallDestinationProps> = ({
           : dstNumber
         : '-'
 
+    const showSwitchboardNumberLine = dstNumber !== '' && switchboardLabel !== dstNumber
+
     return (
       <div
         onClick={() =>
           openDrawerHistory(resolvedSwitchboardCnam, call.dst_ccompany, call.dst, callType, operators)
         }
       >
-        <div className='truncate text-sm cursor-pointer hover:underline text-secondaryNeutral dark:text-secondaryNeutralDark'>
-          {switchboardLabel}
+        <div className='flex items-center gap-1.5 min-w-0'>
+          <div className='truncate text-sm cursor-pointer hover:underline text-secondaryNeutral dark:text-secondaryNeutralDark'>
+            {switchboardLabel}
+          </div>
+          {!showSwitchboardNumberLine && marker}
         </div>
-        {dstNumber !== '' && switchboardLabel !== dstNumber && (
+        {showSwitchboardNumberLine && (
           <div className='flex items-center gap-1.5 text-sm text-textPlaceholder dark:text-textPlaceholderDark'>
             <span className='truncate cursor-pointer hover:underline'>{dstNumber}</span>
             {marker}
