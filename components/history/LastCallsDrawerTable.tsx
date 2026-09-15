@@ -3,6 +3,7 @@
 
 import { ComponentPropsWithRef, forwardRef, useEffect, useState, useMemo, useCallback } from 'react'
 import {
+  collapseCallsByLinkedid,
   isCallAnswered,
   searchDrawerHistoryUser,
   searchDrawerHistorySwitchboard,
@@ -10,10 +11,8 @@ import {
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { faMissed } from '@nethesis/nethesis-solid-svg-icons'
 import {
-  faBuilding,
   faArrowRight,
   faPhone,
-  faXmark,
   faArrowLeft,
   IconDefinition,
 } from '@fortawesome/free-solid-svg-icons'
@@ -83,9 +82,14 @@ export const LastCallsDrawerTable = forwardRef<HTMLButtonElement, LastCallsDrawe
       (calls: CallsResponse): Call[] => {
         // if privacy is enabled, not filtering calls
         if (user?.profile?.macro_permissions?.nethvoice_cti?.permissions?.privacy?.value) {
-          return calls.rows.slice(0, limit)
+          return collapseCallsByLinkedid<Call>(calls.rows).slice(0, limit)
         }
 
+        // Keep only the legs this contact took part in BEFORE collapsing: the leg
+        // kept by the collapse is the call's last answered one, which on a
+        // transferred or queue call is a leg between two colleagues. Collapsing
+        // first would drop the call from this card, or show it as a call between
+        // people other than the contact it belongs to.
         const relevantCalls = calls.rows.filter(
           (call: Call) =>
             phoneNumbers.includes(call.src) ||
@@ -93,8 +97,9 @@ export const LastCallsDrawerTable = forwardRef<HTMLButtonElement, LastCallsDrawe
             phoneNumbers.includes(call.dst),
         )
 
-        // limits the number of calls to the specified limit
-        return relevantCalls.slice(0, limit)
+        // One entry per call: the history API returns every leg, so the members a
+        // queue or ring group rang would otherwise repeat the same call.
+        return collapseCallsByLinkedid<Call>(relevantCalls).slice(0, limit)
       },
       [
         limit,
@@ -173,126 +178,45 @@ export const LastCallsDrawerTable = forwardRef<HTMLButtonElement, LastCallsDrawe
       }
     }, [isLoaded, firstRender])
 
+    // Same outcome language as the call history (see calls/CallStatus): the icon
+    // points DOWN for an incoming or internal call and UP for an outgoing one,
+    // green when answered and red when missed, with the full wording in its
+    // tooltip. Only the icon is shown here, as the drawer has no room for a label.
     const checkIconSwitchboard = useCallback(
       (call: Call) => {
         const isAnswered = isCallAnswered(call)
+        const isInternal = call?.type === 'internal'
+        const isOutgoing = !isInternal && call?.type === 'out'
+        const directionKey = isInternal ? 'Internal' : isOutgoing ? 'Outgoing' : 'Incoming'
+        // A call answered elsewhere keeps its own wording and colour here too.
+        const label = t(getAnsweredTranslationKey(directionKey, call.disposition)) || ''
+
+        // Missed incoming keeps the dedicated "missed call" icon, which already
+        // points down-left; missed outgoing has no such icon, so it reuses the
+        // arrow in red.
+        const icon: IconDefinition =
+          isAnswered || isOutgoing ? faArrowLeft : (faMissed as IconDefinition)
+        const rotation = isOutgoing ? 'rotate-[135deg]' : isAnswered ? '-rotate-45' : ''
+        // Unique per call: a static id would be shared by every row of the list.
+        const tooltipId = `tooltip-switchboard-call-status-${call?.uniqueid ?? call?.linkedid}`
 
         return (
-          <>
-            <div className='text-sm md:mt-0 flex'>
-              <div>
-                {call.type === 'internal' && (
-                  <div>
-                    {isAnswered ? (
-                      <>
-                        <FontAwesomeIcon
-                          icon={faBuilding}
-                          className={`tooltip-switchboard-internal-answered h-4 w-4 ${getAnsweredIconColorClass(call.disposition)}`}
-                          aria-hidden='true'
-                          data-tooltip-id='tooltip-switchboard-internal-answered'
-                          data-tooltip-content={t(getAnsweredTranslationKey('Internal', call.disposition)) || ''}
-                        />
-
-                        <CustomThemedTooltip
-                          id='tooltip-switchboard-internal-answered'
-                          place='left'
-                        />
-                      </>
-                    ) : (
-                      <>
-                        <FontAwesomeIcon
-                          icon={faBuilding}
-                          className='tooltip-switchboard-internal-missed h-4 w-4 text-iconStatusBusy dark:text-iconStatusBusyDark'
-                          aria-hidden='true'
-                          data-tooltip-id='tooltip-switchboard-internal-missed'
-                          data-tooltip-content={t('History.Internal missed') || ''}
-                        />
-
-                        <CustomThemedTooltip
-                          id='tooltip-switchboard-internal-missed'
-                          place='left'
-                        />
-                      </>
-                    )}
-                  </div>
-                )}
-                {call.type !== 'internal' && (
-                  <div>
-                    {call.type === 'in' && (
-                      <div>
-                        {isAnswered ? (
-                          <>
-                            <FontAwesomeIcon
-                              icon={faArrowLeft}
-                              className={`tooltip-switchboard-incoming-answered -rotate-45 h-5 w-3.5 ${getAnsweredIconColorClass(call.disposition)}`}
-                              aria-hidden='true'
-                              data-tooltip-id='tooltip-switchboard-incoming-answered'
-                              data-tooltip-content={t(getAnsweredTranslationKey('Incoming', call.disposition)) || ''}
-                            />
-
-                            <CustomThemedTooltip
-                              id='tooltip-switchboard-incoming-answered'
-                              place='left'
-                            />
-                          </>
-                        ) : (
-                          <>
-                            <FontAwesomeIcon
-                              icon={faMissed as IconDefinition}
-                              className='tooltip-switchboard-incoming-missed h-5 w-4 text-iconStatusBusy dark:text-iconStatusBusyDark'
-                              aria-hidden='true'
-                              data-tooltip-id='tooltip-switchboard-incoming-missed'
-                              data-tooltip-content={t('History.Incoming missed') || ''}
-                            />
-
-                            <CustomThemedTooltip
-                              id='tooltip-switchboard-incoming-missed'
-                              place='left'
-                            />
-                          </>
-                        )}
-                      </div>
-                    )}
-                    {call.type === 'out' && (
-                      <div>
-                        {isAnswered ? (
-                          <>
-                            <FontAwesomeIcon
-                              icon={faArrowLeft}
-                              className={`tooltip-switchboard-outgoing-answered h-5 w-3.5 rotate-[135deg] ${getAnsweredIconColorClass(call.disposition)}`}
-                              aria-hidden='true'
-                              data-tooltip-id='tooltip-switchboard-outgoing-answered'
-                              data-tooltip-content={t(getAnsweredTranslationKey('Outgoing', call.disposition)) || ''}
-                            />
-
-                            <CustomThemedTooltip
-                              id='tooltip-switchboard-outgoing-answered'
-                              place='left'
-                            />
-                          </>
-                        ) : (
-                          <>
-                            <FontAwesomeIcon
-                              icon={faXmark}
-                              className='tooltip-switchboard-outgoing-missed h-5 w-3.5 text-iconStatusBusy dark:text-iconStatusBusyDark'
-                              aria-hidden='true'
-                              data-tooltip-id='tooltip-switchboard-outgoing-missed'
-                              data-tooltip-content={t('History.Outgoing missed') || ''}
-                            />
-
-                            <CustomThemedTooltip
-                              id='tooltip-switchboard-outgoing-missed'
-                              place='left'
-                            />
-                          </>
-                        )}
-                      </div>
-                    )}
-                  </div>
-                )}
-              </div>
-            </div>
-          </>
+          <div className='text-sm md:mt-0 flex'>
+            <FontAwesomeIcon
+              icon={icon}
+              className={
+                `h-5 w-3.5 flex-shrink-0 ${rotation} ` +
+                (isAnswered
+                  ? getAnsweredIconColorClass(call.disposition)
+                  : 'text-iconStatusBusy dark:text-iconStatusBusyDark')
+              }
+              data-tooltip-id={tooltipId}
+              data-tooltip-content={label}
+              role='img'
+              aria-label={label}
+            />
+            <CustomThemedTooltip id={tooltipId} place='left' />
+          </div>
         )
       },
       [t],
@@ -351,8 +275,8 @@ export const LastCallsDrawerTable = forwardRef<HTMLButtonElement, LastCallsDrawe
         {isLoaded && !errorMessage && hasRows && (
           <div className='mx-auto'>
             <div className='flex flex-col'>
-              <div className='py-2'>
-                <div className='w-full px-2 md:px-4'>
+              <div>
+                <div className='min-w-full py-2 align-middle'>
                   {isLoaded && lastCalls?.rows && (
                     <div className={customScrollbarClass}>
                       <div>

@@ -40,6 +40,7 @@ const Phonebook: NextPage = () => {
   const [isPhonebookLoaded, setPhonebookLoaded] = useState(false)
   const [phonebook, setPhonebook]: any = useState({})
   const [pageNum, setPageNum]: any = useState(1)
+  const [pageSize, setPageSize] = useState(PAGE_SIZE)
   const operatorsStore = useSelector((state: RootState) => state.operators)
   const authStore = useSelector((state: RootState) => state.authentication)
 
@@ -93,10 +94,10 @@ const Phonebook: NextPage = () => {
             textFilter,
             contactType,
             sortBy,
-            PAGE_SIZE,
+            pageSize,
             visibility,
           )
-          setPhonebook(mapPhonebookResponse(res))
+          setPhonebook(mapPhonebookResponse(res, pageSize))
         } catch (e) {
           console.error(e)
           setPhonebookError('Cannot retrieve phonebook')
@@ -105,7 +106,7 @@ const Phonebook: NextPage = () => {
       }
     }
     fetchPhonebook()
-  }, [isPhonebookLoaded, phonebook, pageNum, textFilter, contactType, visibility, sortBy])
+  }, [isPhonebookLoaded, phonebook, pageNum, pageSize, textFilter, contactType, visibility, sortBy])
 
   const phonebookStore = useSelector((state: RootState) => state.phonebook)
 
@@ -382,7 +383,30 @@ const Phonebook: NextPage = () => {
                       rowKey={(contact) => contact?.id || contact?.displayName}
                       trClassName='h-[84px]'
                       scrollable={true}
-                      maxHeight='calc(100vh - 480px)'
+                      footer={
+                        phonebook?.rows?.length > 0 ? (
+                          <Pagination
+                            currentPage={pageNum}
+                            totalPages={phonebook?.totalPages}
+                            totalItems={phonebook?.count || 0}
+                            pageSize={pageSize}
+                            onPreviousPage={goToPreviousPage}
+                            onNextPage={goToNextPage}
+                            onSelectPage={(page) => {
+                              setPageNum(page)
+                              setPhonebookLoaded(false)
+                            }}
+                            onSelectPageSize={(size) => {
+                              setPageSize(size)
+                              setPageNum(1)
+                              setPhonebookLoaded(false)
+                            }}
+                            isLoading={!isPhonebookLoaded}
+                            itemsName={t('Phonebook.contacts') || ''}
+                            className='!mb-0 !px-6'
+                          />
+                        ) : undefined
+                      }
                     />
 
                     {isPhonebookLoaded &&
@@ -400,20 +424,6 @@ const Phonebook: NextPage = () => {
                 </div>
               </div>
             </div>
-          )}
-
-          {/* pagination */}
-          {!phonebookError && phonebook?.rows?.length > 0 && (
-            <Pagination
-              currentPage={pageNum}
-              totalPages={phonebook?.totalPages}
-              totalItems={phonebook?.count || 0}
-              pageSize={PAGE_SIZE}
-              onPreviousPage={goToPreviousPage}
-              onNextPage={goToNextPage}
-              isLoading={!isPhonebookLoaded}
-              itemsName={t('Phonebook.contacts') || ''}
-            />
           )}
         </div>
       ) : (

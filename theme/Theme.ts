@@ -91,7 +91,7 @@ const theme = {
       large: 'px-4 py-3 text-base',
     },
     colors: {
-      gray: 'border-gray-300 focus:border-primaryLight focus:ring-primaryLight placeholder:text-gray-400 dark:border-gray-600 dark:focus:border-primaryDark dark:focus:ring-primaryDark dark:placeholder:text-gray-500',
+      gray: 'border-gray-300 focus:border-primaryLight focus:ring-primaryLight dark:border-gray-600 dark:focus:border-primaryDark dark:focus:ring-primaryDark',
       error:
         'border-rose-500 focus:border-rose-500 focus:ring-rose-500 dark:border-rose-400 dark:focus:border-rose-400 dark:focus:ring-rose-400',
     },
@@ -133,7 +133,7 @@ const theme = {
       },
     },
     colors: {
-      gray: 'border-gray-300 focus:border-primaryLight focus:ring-primaryLight placeholder:text-gray-400 dark:border-gray-600 dark:focus:border-primaryDark dark:focus:ring-primaryDark dark:placeholder:text-gray-500',
+      gray: 'border-gray-300 focus:border-primaryLight focus:ring-primaryLight dark:border-gray-600 dark:focus:border-primaryDark dark:focus:ring-primaryDark',
       error:
         'border-rose-500 focus:border-rose-500 focus:ring-rose-500 dark:border-rose-400 dark:focus:border-rose-400 dark:focus:ring-rose-400',
     },
@@ -164,6 +164,21 @@ const theme = {
       },
     },
     actions: 'px-4 py-3 flex flex-col sm:flex-row-reverse  sm:px-6 gap-3 bg-white dark:bg-gray-900',
+    roundedIcon: {
+      base: 'flex h-10 w-10 shrink-0 items-center justify-center rounded-full',
+      surface: {
+        info: 'bg-surfaceInlineNotificationInfo dark:bg-surfaceInlineNotificationInfoDark',
+        warning: 'bg-surfaceToastWarning dark:bg-surfaceToastWarningDark',
+        error: 'bg-rose-100 dark:bg-rose-900',
+        success: 'bg-green-100 dark:bg-green-900',
+      },
+      iconStyle: {
+        info: 'h-5 w-5 text-iconInlineNotificationInformation dark:text-iconInlineNotificationInformationDark',
+        warning: 'h-5 w-5 text-iconWarning dark:text-iconWarningDark',
+        error: 'h-5 w-5 text-rose-700 dark:text-rose-200',
+        success: 'h-5 w-5 text-green-700 dark:text-green-200',
+      },
+    },
     sizes: {
       base: '',
       large: '',
@@ -437,6 +452,7 @@ const theme = {
       position: {
         right: 'left-0 w-60 mt-2',
         left: 'right-0 w-60 mt-2',
+        topLeft: 'left-0 w-60 bottom-full mb-2 origin-bottom-left',
         top: 'right-[3rem] top-0',
         bottom: 'bottom-0',
         leftSingleItem: 'w-60 right-[2.8rem] top-[0rem]',

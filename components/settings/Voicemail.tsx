@@ -212,9 +212,9 @@ export const Voicemail = () => {
 
   return (
     <>
-      <div className='p-6 flex flex-col'>
+      <div className='pb-6 flex flex-col'>
         <div>
-          <h2 className='text-lg font-medium leading-6 text-gray-900 dark:text-gray-100 mb-6'>
+          <h2 className='text-base font-medium leading-6 text-secondaryNeutral dark:text-secondaryNeutralDark mb-8'>
             {t('Settings.Voicemail')}
           </h2>
         </div>

@@ -23,13 +23,14 @@ import { SaveRecordedAnnouncementDrawerContent } from '../lines'
 import { ShowMultiplePhoneLinesDrawerContent } from '../lines'
 import { GravatarIconDrawerContent } from '../common/ProfilePicture/GravatarIconDrawerContent'
 import { SelectProfilePictureDrawerContent } from '../common/ProfilePicture/SelectProfilePictureDrawerContent'
-import { EditPhysicalPhoneDrawerContent } from '../devices/EditPhysicalPhoneDrawerContent'
 import { SwitchInputOutputDrawerContent } from '../devices/SwitchInputOutputDrawerContent'
 import { DownloadDesktopLinkContent } from '../devices/DownloadDesktopLinkContent'
 import { UploadVoicemail } from '../lines/UploadVoicemail'
 import { Setup2FADrawerContent } from '../settings/2fa/Setup2FADrawerContent'
 import { customScrollbarClass } from '../../lib/utils'
 import { CallSummaryDrawerContent } from '../summary/CallSummaryDrawerContent'
+import { AddPhoneKeyDrawerContent } from '../devices/AddPhoneKeyDrawerContent'
+import { EditExpansionKeyDrawerContent } from '../devices/EditExpansionKeyDrawerContent'
 
 export type ContentType =
   | 'createOrEditContact'
@@ -47,9 +48,10 @@ export type ContentType =
   | 'showRuleDetails'
   | 'showGravatar'
   | 'showUploadProfilePicture'
-  | 'showEditPhysicalPhone'
   | 'showSwitchDeviceInputOutput'
   | 'showDownloadLinkContent'
+  | 'showAddPhoneKey'
+  | 'showEditExpansionKey'
   | 'showUploadVoicemail'
   | 'setup2FA'
   | 'callSummary'
@@ -79,9 +81,10 @@ export const SideDrawer: FC<SideDrawerProps> = ({ isShown, contentType, config, 
       showRuleDetails: ShowRuleDetailsContent,
       showGravatar: GravatarIconDrawerContent,
       showUploadProfilePicture: SelectProfilePictureDrawerContent,
-      showEditPhysicalPhone: EditPhysicalPhoneDrawerContent,
       showSwitchDeviceInputOutput: SwitchInputOutputDrawerContent,
       showDownloadLinkContent: DownloadDesktopLinkContent,
+      showAddPhoneKey: AddPhoneKeyDrawerContent,
+      showEditExpansionKey: EditExpansionKeyDrawerContent,
       showUploadVoicemail: UploadVoicemail,
       setup2FA: Setup2FADrawerContent,
       callSummary: CallSummaryDrawerContent,

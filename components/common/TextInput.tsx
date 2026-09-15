@@ -26,10 +26,13 @@ import { cleanClassName } from '../../lib/utils'
 import { useTheme } from '../../theme/Context'
 import classNames from 'classnames'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
+import { t } from 'i18next'
 import { IconDefinition } from '@fortawesome/fontawesome-common-types'
 
 export interface TextInputProps extends Omit<ComponentProps<'input'>, 'ref' | 'color' | 'size'> {
   label?: string
+  optional?: boolean
+  optionalLabel?: string
   placeholder?: string
   leadingIcon?: IconDefinition
   leadingIconClick?: () => void
@@ -42,12 +45,16 @@ export interface TextInputProps extends Omit<ComponentProps<'input'>, 'ref' | 'c
   squared?: 'left' | 'right' | 'top' | 'bottom'
   onIconClick?: () => void
   trailingComponent?: ReactNode
+  /** Override classes for the placeholder (e.g. 'placeholder:text-textPlaceholder'). */
+  placeholderClassName?: string
 }
 
 export const TextInput = forwardRef<HTMLInputElement, TextInputProps>(
   (
     {
       label,
+      optional,
+      optionalLabel,
       placeholder,
       leadingIcon,
       leadingIconClick,
@@ -63,6 +70,7 @@ export const TextInput = forwardRef<HTMLInputElement, TextInputProps>(
       id,
       className,
       trailingComponent,
+      placeholderClassName,
       ...props
     },
     ref,
@@ -72,8 +80,17 @@ export const TextInput = forwardRef<HTMLInputElement, TextInputProps>(
     return (
       <div className={classNames('text-left', 'w-full', className)}>
         {label && (
-          <label className={theme.label} htmlFor={id}>
-            {label}
+          <label
+            className={classNames(
+              theme.label,
+              optional && 'mb-2 flex items-end justify-between gap-2',
+            )}
+            htmlFor={id}
+          >
+            <span>{label}</span>
+            {optional && (
+              <span className='font-normal'>{optionalLabel || t('Common.Optional')}</span>
+            )}
           </label>
         )}
         <div className='relative'>
@@ -123,6 +140,7 @@ export const TextInput = forwardRef<HTMLInputElement, TextInputProps>(
                 leadingIcon || (Icon && !trailingIcon) ? 'pl-10' : '',
                 trailingComponent ? 'pr-10' : '',
                 error ? theme.placeholder.error : theme.placeholder.base,
+                placeholderClassName,
                 'text-gray-900',
               )}
               {...cleanProps}

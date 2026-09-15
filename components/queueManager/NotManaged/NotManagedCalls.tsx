@@ -34,6 +34,7 @@ export const NotManagedCalls: FC<NotManagedCallsProps> = ({ className }): JSX.El
   const [isCallsLoaded, setCallsLoaded]: any = useState(false)
   const [callsError, setCallsError] = useState('')
   const [pageNum, setPageNum]: any = useState(1)
+  const [pageSize, setPageSize]: any = useState(PAGE_SIZE)
   const [firstRender, setFirstRender]: any = useState(true)
   const [lastUpdated, setLastUpdated]: any = useState(null)
   const intervalIdRef = useRef<ReturnType<typeof setInterval> | null>(null)
@@ -89,6 +90,7 @@ export const NotManagedCalls: FC<NotManagedCallsProps> = ({ className }): JSX.El
           outcomeFilter,
           selectedQueues,
           numHours,
+          pageSize,
         )
 
         res.rows = res.rows.map((call: any) => {
@@ -150,7 +152,15 @@ export const NotManagedCalls: FC<NotManagedCallsProps> = ({ className }): JSX.El
         intervalIdRef.current = null
       }
     }
-  }, [firstRender, pageNum, textFilter, outcomeFilter, queueManagerFilter, authStore?.username])
+  }, [
+    firstRender,
+    pageNum,
+    pageSize,
+    textFilter,
+    outcomeFilter,
+    queueManagerFilter,
+    authStore?.username,
+  ])
 
   function goToPreviousPage() {
     if (pageNum > 1) {
@@ -326,27 +336,32 @@ export const NotManagedCalls: FC<NotManagedCallsProps> = ({ className }): JSX.El
                   rowKey={(call: any) => call.id || call.uniqueid || call.cid + call.time}
                   trClassName=''
                   scrollable={true}
-                  maxHeight='calc(100vh - 480px)'
                   theadClassName='sticky top-0 bg-gray-100 dark:bg-gray-800 z-[1]'
                   tbodyClassName='text-sm bg-white dark:bg-gray-950 text-gray-700 dark:text-gray-200'
+                  footer={
+                    !callsError && !!calls?.rows?.length ? (
+                      <Pagination
+                        currentPage={pageNum}
+                        totalPages={calls.totalPages}
+                        totalItems={calls?.count || 0}
+                        pageSize={pageSize}
+                        onPreviousPage={goToPreviousPage}
+                        onNextPage={goToNextPage}
+                        onSelectPage={(page) => setPageNum(page)}
+                        onSelectPageSize={(size) => {
+                          setPageSize(size)
+                          setPageNum(1)
+                        }}
+                        isLoading={!isCallsLoaded}
+                        itemsName={t('Queues.calls') || ''}
+                        className='!mb-0 !px-6'
+                      />
+                    ) : undefined
+                  }
                 />
               </div>
             </div>
           </div>
-
-          {/* pagination */}
-          {!callsError && !!calls?.rows?.length && (
-            <Pagination
-              currentPage={pageNum}
-              totalPages={calls.totalPages}
-              totalItems={calls?.count || 0}
-              pageSize={PAGE_SIZE}
-              onPreviousPage={goToPreviousPage}
-              onNextPage={goToNextPage}
-              isLoading={!isCallsLoaded}
-              itemsName={t('Queues.calls') || ''}
-            />
-          )}
         </div>
       )}
     </div>

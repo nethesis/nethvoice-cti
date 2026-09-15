@@ -66,6 +66,7 @@ export const LinesView: FC<LinesViewProps> = ({ className }): JSX.Element => {
   const [isLinesLoaded, setLinesLoaded]: any = useState(false)
   const [linesError, setLinesError] = useState('')
   const [pageNum, setPageNum]: any = useState(1)
+  const [pageSize, setPageSize] = useState(PAGE_SIZE)
   const [firstRender, setFirstRender]: any = useState(true)
   const linesStore = useSelector((state: RootState) => state.lines)
 
@@ -96,7 +97,7 @@ export const LinesView: FC<LinesViewProps> = ({ className }): JSX.Element => {
       if (!isLinesLoaded && !linesStore?.isLoading) {
         try {
           setLinesError('')
-          const res = await retrieveLines(textFilter.trim(), pageNum, configurationType)
+          const res = await retrieveLines(textFilter.trim(), pageNum, configurationType, pageSize)
 
           setLines(res.rows)
           setDataPagination(res)
@@ -112,7 +113,7 @@ export const LinesView: FC<LinesViewProps> = ({ className }): JSX.Element => {
     fetchLines()
 
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [isLinesLoaded, pageNum, firstRender, linesStore?.isLoading])
+  }, [isLinesLoaded, pageNum, pageSize, firstRender, linesStore?.isLoading])
 
   const phoneLines = useSelector((state: RootState) => state.phoneLines)
 
@@ -495,26 +496,40 @@ export const LinesView: FC<LinesViewProps> = ({ className }): JSX.Element => {
                   }
                   scrollable={true}
                   trClassName='h-[84px]'
-                  maxHeight='calc(100vh - 480px)'
                   theadClassName='sticky top-0 bg-gray-100 dark:bg-gray-800 z-[1]'
                   tbodyClassName='text-sm divide-y divide-gray-200 bg-white dark:bg-gray-950 text-gray-700 dark:divide-gray-700 dark:text-gray-200'
+                  footer={
+                    !linesError && !!lines?.length ? (
+                      <Pagination
+                        currentPage={pageNum}
+                        totalPages={dataPagination.totalPages}
+                        totalItems={dataPagination?.count || 0}
+                        pageSize={pageSize}
+                        onPreviousPage={goToPreviousPage}
+                        onNextPage={goToNextPage}
+                        onSelectPage={(page) => {
+                          setPageNum(page)
+                          store.dispatch.lines.setLoaded(false)
+                          setLinesLoaded(false)
+                          setSelectedLines([])
+                        }}
+                        onSelectPageSize={(size) => {
+                          setPageSize(size)
+                          setPageNum(1)
+                          store.dispatch.lines.setLoaded(false)
+                          setLinesLoaded(false)
+                          setSelectedLines([])
+                        }}
+                        isLoading={!isLinesLoaded}
+                        itemsName={t('Lines.Lines') || ''}
+                        className='!mb-0 !px-6'
+                      />
+                    ) : undefined
+                  }
                 />
               </div>
             </div>
           </div>
-
-          {!linesError && !!lines?.length && (
-            <Pagination
-              currentPage={pageNum}
-              totalPages={dataPagination.totalPages}
-              totalItems={dataPagination?.count || 0}
-              pageSize={PAGE_SIZE}
-              onPreviousPage={goToPreviousPage}
-              onNextPage={goToNextPage}
-              isLoading={!isLinesLoaded}
-              itemsName={t('Lines.Lines') || ''}
-            />
-          )}
         </div>
       )}
     </div>

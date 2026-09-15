@@ -1,13 +1,12 @@
 import { FC } from 'react'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
-import { faArrowLeft, faXmark, faBuilding } from '@fortawesome/free-solid-svg-icons'
+import { faArrowLeft } from '@fortawesome/free-solid-svg-icons'
 import { faMissed } from '@nethesis/nethesis-solid-svg-icons'
 import { IconDefinition } from '@fortawesome/fontawesome-svg-core'
 import { t } from 'i18next'
 import { useSelector } from 'react-redux'
 import {
   getAnsweredIconColorClass,
-  getAnsweredTranslationKey,
   isCallAnswered,
   isAnsweredElsewhereDisposition,
   getNormalizedDisposition,
@@ -20,10 +19,18 @@ interface CallStatusProps {
   callType: string
 }
 
+// The outcome column shows ONE word — answered or missed — with an icon that also
+// carries the direction: pointing DOWN for an incoming (or internal) call, UP for an
+// outgoing one, green when answered and red when missed. The full wording this
+// column used to spell out ("Incoming answered", "Internal missed", …) moves into
+// the icon's tooltip, so no information is lost.
 export const CallStatus: FC<CallStatusProps> = ({ call, callType }) => {
   const { operators } = useSelector((state: RootState) => state.operators)
   const { profile } = useSelector((state: RootState) => state.user)
   const isAnswered = isCallAnswered(call)
+  // A call answered by someone else is still an answered call: it keeps the single
+  // word and the direction arrow, and says who took it in the tooltip (and through
+  // the icon colour), instead of spelling a second outcome into the column.
   const isAnsweredElsewhere = isAnsweredElsewhereDisposition(getNormalizedDisposition(call))
 
   const getAnsweredByLabel = () => {
@@ -37,230 +44,69 @@ export const CallStatus: FC<CallStatusProps> = ({ call, callType }) => {
       candidate?.endpoints?.extension?.some((extension: any) => extension?.id === answeredByNum),
     ) as any
 
-    if (operator?.name) {
-      return `${operator.name} (${answeredByNum})`
-    }
-
-    return answeredByNum
+    return operator?.name ? `${operator.name} (${answeredByNum})` : answeredByNum
   }
 
-  const answeredByLabel = getAnsweredByLabel()
-  const answeredElsewhereTooltipId = `tooltip-answered-elsewhere-${call?.uniqueid || call?.linkedid || 'call'}`
-
+  // Naming who answered is the switchboard's detail, so it follows the same
+  // permissions the rest of that view does.
   const canShowAnsweredBy =
     callType === 'switchboard'
       ? !!profile?.macro_permissions?.cdr?.permissions?.ad_cdr?.value
       : callType === 'group' || callType === 'groups'
-        ? !!profile?.macro_permissions?.cdr?.permissions?.group_cdr?.value
-        : !!profile?.macro_permissions?.cdr?.value
+      ? !!profile?.macro_permissions?.cdr?.permissions?.group_cdr?.value
+      : !!profile?.macro_permissions?.cdr?.value
 
-  const answeredElsewhereTooltipContent =
-    canShowAnsweredBy && answeredByLabel
-      ? `${t('History.Answered by')} ${answeredByLabel}`
-      : t('History.Answered by another operator')
+  const answeredByLabel = getAnsweredByLabel()
 
-  const renderAnsweredElsewhereText = (translationKey: string) => {
-    const translatedLabel = t(translationKey)
-    const match = translatedLabel.match(/^(.*?)(\belsewhere\b)(.*)$/i)
+  // Direction as the backend reports it: the switchboard view classifies a call by
+  // trunk presence ("in" | "out" | "internal"), the personal view by the user's own
+  // extension ("in" | "out").
+  const isInternal = callType !== 'user' && call?.type === 'internal'
+  const isOutgoing = !isInternal && (callType === 'user' ? call?.direction : call?.type) === 'out'
+  // The column shows one word; the tooltip keeps the full wording it replaced.
+  const directionKey = isInternal ? 'Internal' : isOutgoing ? 'Outgoing' : 'Incoming'
+  const directionLabel = t(`History.${directionKey} ${isAnswered ? 'answered' : 'missed'}`)
+  const tooltipLabel = !isAnsweredElsewhere
+    ? directionLabel
+    : canShowAnsweredBy && answeredByLabel
+    ? `${directionLabel} — ${t('History.Answered by')} ${answeredByLabel}`
+    : `${directionLabel} — ${t('History.Answered by another operator')}`
 
-    if (!match) {
-      return (
+  // Missed incoming keeps the dedicated "missed call" icon, which already points
+  // down-left; missed outgoing has no such icon, so it reuses the arrow in red.
+  const icon: IconDefinition = isAnswered || isOutgoing ? faArrowLeft : (faMissed as IconDefinition)
+  const rotation = isOutgoing ? 'rotate-[135deg]' : isAnswered ? '-rotate-45' : ''
+  const colorClass = isAnswered
+    ? getAnsweredIconColorClass(call.disposition)
+    : 'text-textStatusBusy dark:text-textStatusBusyDark'
+
+  const tooltipId = `tooltip-outcome-${call?.uniqueid}${
+    call?.isInteractionRow ? `-int-${call?._interactionIndex}` : ''
+  }`
+
+  return (
+    <div className='mt-1 text-sm'>
+      <div className='flex flex-nowrap items-center'>
+        <FontAwesomeIcon
+          icon={icon}
+          className={`mr-2 h-4 w-4 flex-shrink-0 ${rotation} ${colorClass}`}
+          data-tooltip-id={tooltipId}
+          data-tooltip-content={tooltipLabel}
+          role='img'
+          aria-label={tooltipLabel}
+        />
         <span
-          className='cursor-help underline underline-offset-2'
-          data-tooltip-id={answeredElsewhereTooltipId}
-          data-tooltip-content={answeredElsewhereTooltipContent}
+          className={
+            'text-secondaryNeutral dark:text-secondaryNeutralDark' +
+            (isAnsweredElsewhere ? ' cursor-help underline underline-offset-2' : '')
+          }
+          data-tooltip-id={isAnsweredElsewhere ? tooltipId : undefined}
+          data-tooltip-content={isAnsweredElsewhere ? tooltipLabel : undefined}
         >
-          {translatedLabel}
+          {isAnswered ? t('History.Outcome answered') : t('History.Outcome missed')}
         </span>
-      )
-    }
-
-    return (
-      <>
-        {match[1]}
-        <span
-          className='cursor-help underline underline-offset-2'
-          data-tooltip-id={answeredElsewhereTooltipId}
-          data-tooltip-content={answeredElsewhereTooltipContent}
-        >
-          {match[2]}
-        </span>
-        {match[3]}
-      </>
-    )
-  }
-
-  const renderAnsweredLabel = (direction: 'Incoming' | 'Outgoing' | 'Internal') => {
-    const translationKey = getAnsweredTranslationKey(direction, call.disposition)
-
-    if (!isAnsweredElsewhere) {
-      return (
-        <span className='text-secondaryNeutral dark:text-secondaryNeutralDark'>
-          {t(translationKey)}
-        </span>
-      )
-    }
-
-    return (
-      <>
-        <span className='text-secondaryNeutral dark:text-secondaryNeutralDark'>
-          {renderAnsweredElsewhereText(translationKey)}
-        </span>
-        <CustomThemedTooltip id={answeredElsewhereTooltipId} place='top' />
-      </>
-    )
-  }
-
-  if (callType === 'user') {
-    return (
-      <div className='mt-1 text-sm'>
-        <div>
-          {call.direction === 'in' ? (
-            <div>
-              {isAnswered ? (
-                <>
-                  <div className='flex flex-nowrap items-center'>
-                    <FontAwesomeIcon
-                      icon={faArrowLeft}
-                      className={`mr-2 h-4 w-4 -rotate-45 z-0 ${getAnsweredIconColorClass(call.disposition)}`}
-                      aria-hidden='true'
-                    />
-                    {renderAnsweredLabel('Incoming')}
-                  </div>
-                </>
-              ) : (
-                <div className='flex flex-nowrap items-center'>
-                  <FontAwesomeIcon
-                    icon={faMissed as IconDefinition}
-                    className='mr-2 h-4 w-4 text-textStatusBusy dark:text-textStatusBusyDark'
-                    aria-hidden='true'
-                  />
-                  <span className='text-secondaryNeutral dark:text-secondaryNeutralDark'>
-                    {t('History.Incoming missed')}
-                  </span>
-                </div>
-              )}
-            </div>
-          ) : (
-            <div>
-              {isAnswered ? (
-                <>
-                  <div className='flex flex-nowrap items-center'>
-                    <FontAwesomeIcon
-                      icon={faArrowLeft}
-                      className={`mr-2 h-4 w-4 rotate-[135deg] z-0 ${getAnsweredIconColorClass(call.disposition)}`}
-                      aria-hidden='true'
-                    />
-                    {renderAnsweredLabel('Outgoing')}
-                  </div>
-                </>
-              ) : (
-                <div className='flex flex-nowrap items-center'>
-                  <FontAwesomeIcon
-                    icon={faXmark}
-                    className='mr-2 h-4 w-4 text-textStatusBusy dark:text-textStatusBusyDark'
-                    aria-hidden='true'
-                  />
-                  <span className='text-secondaryNeutral dark:text-secondaryNeutralDark'>
-                    {t('History.Outgoing missed')}
-                  </span>
-                </div>
-              )}
-            </div>
-          )}
-        </div>
+        <CustomThemedTooltip id={tooltipId} place='top' />
       </div>
-    )
-  } else {
-    // Switchboard call type
-    return (
-      <div className='mt-1 text-sm'>
-        <div>
-          {call.type === 'internal' ? (
-            <div>
-              {isAnswered ? (
-                <>
-                  <div className='flex flex-nowrap items-center'>
-                    <FontAwesomeIcon
-                      icon={faBuilding}
-                      className={`mr-2 h-4 w-4 flex-shrink-0 ${getAnsweredIconColorClass(call.disposition)}`}
-                      aria-hidden='true'
-                    />
-                    {renderAnsweredLabel('Internal')}
-                  </div>
-                </>
-              ) : (
-                <div className='flex flex-nowrap items-center'>
-                  <FontAwesomeIcon
-                    icon={faBuilding}
-                    className='mr-2 h-4 w-4 flex-shrink-0 text-textStatusBusy dark:text-textStatusBusyDark'
-                    aria-hidden='true'
-                  />
-                  <span className='text-secondaryNeutral dark:text-secondaryNeutralDark'>
-                    {t('History.Internal missed')}
-                  </span>
-                </div>
-              )}
-            </div>
-          ) : (
-            <div>
-              {call.type === 'in' ? (
-                <div>
-                  {isAnswered ? (
-                    <>
-                      <div className='flex flex-nowrap items-center'>
-                        <FontAwesomeIcon
-                          icon={faArrowLeft}
-                          className={`mr-2 h-4 w-4 -rotate-45 z-0 ${getAnsweredIconColorClass(call.disposition)}`}
-                          aria-hidden='true'
-                        />
-                        {renderAnsweredLabel('Incoming')}
-                      </div>
-                    </>
-                  ) : (
-                    <div className='flex flex-nowrap items-center'>
-                      <FontAwesomeIcon
-                        icon={faMissed as IconDefinition}
-                        className='mr-2 h-4 w-4 text-textStatusBusy dark:text-textStatusBusyDark'
-                        aria-hidden='true'
-                      />
-                      <span className='text-secondaryNeutral dark:text-secondaryNeutralDark'>
-                        {t('History.Incoming missed')}
-                      </span>
-                    </div>
-                  )}
-                </div>
-              ) : (
-                <div>
-                  {isAnswered ? (
-                    <>
-                      <div className='flex flex-nowrap items-center'>
-                        <FontAwesomeIcon
-                          icon={faArrowLeft}
-                          className={`mr-2 h-4 w-4 rotate-[135deg] z-0 ${getAnsweredIconColorClass(call.disposition)}`}
-                          aria-hidden='true'
-                        />
-                        {renderAnsweredLabel('Outgoing')}
-                      </div>
-                    </>
-                  ) : (
-                    <div className='flex flex-nowrap items-center'>
-                      <FontAwesomeIcon
-                        icon={faXmark}
-                        className='mr-2 h-4 w-4 text-textStatusBusy dark:text-textStatusBusyDark'
-                        aria-hidden='true'
-                      />
-                      <span className='text-secondaryNeutral dark:text-secondaryNeutralDark'>
-                        {t('History.Outgoing missed')}
-                      </span>
-                    </div>
-                  )}
-                </div>
-              )}
-            </div>
-          )}
-        </div>
-      </div>
-    )
-  }
+    </div>
+  )
 }

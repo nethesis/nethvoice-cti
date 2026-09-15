@@ -9,7 +9,7 @@ import { loadPreference } from './storage'
 export const PAGE_SIZE = 10
 export const DEFAULT_CONTACT_TYPE_FILTER = 'all'
 export const DEFAULT_VISIBILITY_FILTER = 'all'
-export const DEFAULT_SORT_BY = 'name'
+export const DEFAULT_SORT_BY = 'displayname'
 const GROUP_TYPE_PREFIX = 'group:'
 const RESERVED_CONTACT_TYPES = ['private', 'public', 'speeddial']
 const DEFAULT_LEGACY_PHONEBOOK_LEVEL = 0
@@ -180,7 +180,7 @@ export async function getPhonebook(
     apiUrl += 'search/'
   }
   const offset = (pageNum - 1) * pageSize
-  apiUrl += `?offset=${offset}&limit=${pageSize}&view=${contactType}&visibility=${visibility}`
+  apiUrl += `?offset=${offset}&limit=${pageSize}&view=${contactType}&visibility=${visibility}&sort=${sortBy}`
 
   try {
     const { data, status } = await axios.get(apiUrl)
@@ -355,7 +355,7 @@ export const getFilterValues = (currentUsername: string) => {
   return { contactType, visibility, sortBy }
 }
 
-export const mapPhonebookResponse = (phonebookResponse: any) => {
+export const mapPhonebookResponse = (phonebookResponse: any, pageSize: number = PAGE_SIZE) => {
   if (!phonebookResponse) {
     return null
   }
@@ -365,7 +365,7 @@ export const mapPhonebookResponse = (phonebookResponse: any) => {
   })
 
   // total pages
-  phonebookResponse.totalPages = Math.ceil(phonebookResponse.count / PAGE_SIZE)
+  phonebookResponse.totalPages = Math.ceil(phonebookResponse.count / pageSize)
   return phonebookResponse
 }
 

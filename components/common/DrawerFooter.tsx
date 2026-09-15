@@ -42,9 +42,15 @@ export const DrawerFooter: FC<DrawerFooterProps> = ({
   withPadding = false,
 }) => {
   return (
-    <div className={classNames('flex items-center justify-end', withPadding && 'px-5', className)}>
+    <div
+      className={classNames(
+        'flex items-center justify-end gap-6',
+        withPadding && 'px-5',
+        className,
+      )}
+    >
       {showCancel && (
-        <Button variant='ghost' type='button' onClick={onCancel} className='mb-4'>
+        <Button variant='ghost' type='button' onClick={onCancel}>
           {cancelLabel}
         </Button>
       )}
@@ -52,7 +58,7 @@ export const DrawerFooter: FC<DrawerFooterProps> = ({
         variant={confirmVariant}
         type='button'
         onClick={onConfirm}
-        className={classNames('ml-4 mb-4', confirmClassName)}
+        className={confirmClassName}
         disabled={confirmDisabled}
       >
         {confirmIcon && <span className='mr-2'>{confirmIcon}</span>}
