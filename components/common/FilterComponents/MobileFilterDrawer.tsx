@@ -26,7 +26,7 @@ export const MobileFilterDrawer: React.FC<MobileFilterDrawerProps> = ({
 
   return (
     <Transition show={open} as={Fragment}>
-      <Dialog as='div' className='relative z-40 sm:hidden' onClose={setOpen}>
+      <Dialog as='div' className='relative z-40 xl:hidden' onClose={setOpen}>
         <TransitionChild
           as={Fragment}
           enter='transition-opacity ease-linear duration-300'
