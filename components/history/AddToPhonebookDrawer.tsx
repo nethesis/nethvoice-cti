@@ -146,7 +146,6 @@ export const AddToPhonebookDrawerContent = forwardRef<
         <div className='mt-4'>
           <TextInput
             placeholder={t('Type to search contact') || ""}
-            className='max-w-lg'
             value={textFilter}
             onChange={changeTextFilter}
             ref={textFilterRef}

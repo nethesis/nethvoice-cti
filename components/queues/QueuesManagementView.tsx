@@ -741,10 +741,7 @@ export const QueuesManagementView: FC<QueuesManagementViewProps> = ({ className 
                               <div className='text-sm'>
                                 <div className='border rounded-md border-gray-200 dark:border-gray-700 text-gray-700 dark:text-gray-200'>
                                   {isEmpty(queue.waitingCallersList) ? (
-                                    <EmptyState
-                                      variant='inline'
-                                      title={t('Queues.No calls')}
-                                    />
+                                    <div className='p-4'>{t('Queues.No calls')}</div>
                                   ) : (
                                     <div className='-my-2 -mx-4 overflow-x-auto sm:-mx-6 lg:-mx-8'>
                                       <div className='inline-block min-w-full py-2 align-middle sm:px-6 lg:px-8'>
@@ -828,10 +825,7 @@ export const QueuesManagementView: FC<QueuesManagementViewProps> = ({ className 
                               <div className='text-sm'>
                                 <div className='border rounded-md border-gray-200 dark:border-gray-700 text-gray-700 dark:text-gray-200'>
                                   {isEmpty(queue.connectedCalls) ? (
-                                    <EmptyState
-                                      variant='inline'
-                                      title={t('Queues.No calls')}
-                                    />
+                                    <div className='p-4'>{t('Queues.No calls')}</div>
                                   ) : (
                                     <div className='-my-2 -mx-4 overflow-x-auto sm:-mx-6 lg:-mx-8'>
                                       <div className='inline-block min-w-full py-2 align-middle sm:px-6 lg:px-8'>
@@ -950,10 +944,9 @@ export const QueuesManagementView: FC<QueuesManagementViewProps> = ({ className 
                                 {queue.operatorsExpanded && (
                                   <div className='text-sm'>
                                     {isEmpty(queue.members) ? (
-                                      <EmptyState
-                                        variant='inline'
-                                        title={t('Queues.No operators')}
-                                      />
+                                      <div className='p-4 rounded-md text-gray-700 bg-gray-100 dark:text-gray-200 dark:bg-gray-800'>
+                                        {t('Queues.No operators')}
+                                      </div>
                                     ) : (
                                       <div
                                         id={`queue-operators-${queue.queue}`}
