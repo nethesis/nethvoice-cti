@@ -515,8 +515,8 @@ const Operators: NextPage = () => {
               !operatorsStore?.errorMessage &&
               isEmpty(operatorsStore?.operators) && (
                 <EmptyState
-                  title='No operators'
-                  description='There is no operator configured'
+                  title={t('Operators.No operators') || ''}
+                  description={t('Operators.There is no operator configured') || ''}
                   icon={
                     <FontAwesomeIcon
                       icon={faHeadset}
@@ -532,8 +532,8 @@ const Operators: NextPage = () => {
               !isEmpty(operatorsStore?.operators) &&
               isEmpty(filteredOperators) && (
                 <EmptyState
-                  title='No operators'
-                  description='Try changing your search filters'
+                  title={t('Operators.No operators') || ''}
+                  description={t('Operators.Try changing your search filters') || ''}
                   icon={
                     <FontAwesomeIcon
                       icon={faFilter}

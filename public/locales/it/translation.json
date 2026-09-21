@@ -286,6 +286,9 @@
     "Voicemail available": "Apri il messaggio vocale"
   },
   "Operators": {
+    "No operators": "Nessun operatore",
+    "There is no operator configured": "Non è configurato nessun operatore",
+    "Try changing your search filters": "Prova a modificare i filtri di ricerca",
     "Operators": "Operatori",
     "No groups": "Nessun gruppo",
     "Favorites": "Preferiti",
@@ -866,6 +869,7 @@
     "Call": "Chiama"
   },
   "QueueManager": {
+    "There is no operator configured": "Non è configurato nessun operatore",
     "Dashboard": "Dashboard",
     "Queues management": "Gestione code",
     "Gestione code": "Gestione code",

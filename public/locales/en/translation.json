@@ -303,6 +303,9 @@
     "Delete call transcription": "Delete call transcription"
   },
   "Operators": {
+    "No operators": "No operators",
+    "There is no operator configured": "There is no operator configured",
+    "Try changing your search filters": "Try changing your search filters",
     "Operators": "Operators",
     "No groups": "No groups",
     "Favorites": "Favorites",
@@ -857,6 +860,7 @@
     "Voice mail": "Voicemail inbox"
   },
   "QueueManager": {
+    "There is no operator configured": "There is no operator configured",
     "Dashboard": "Dashboard",
     "Queues management": "Queues management",
     "Not managed calls": "Not managed calls",
