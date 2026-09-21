@@ -21,13 +21,13 @@ export const EmptyState: FC<EmptyStateProps> = ({
     <>
       <div
         className={classNames(
-          'w-full max-w-md mx-auto overflow-hidden rounded-lg bg-white shadow dark:bg-gray-800 px-8 py-7 text-center space-y-5',
+          'w-full overflow-hidden rounded-lg bg-white shadow dark:bg-gray-800 px-8 py-7 text-center space-y-5',
           className,
         )}
       >
         <div className='text-gray-400 dark:text-gray-400'>{icon}</div>
         <div>
-          <h3 className='mt-2 text-base font-semibold text-primaryNeutral dark:text-primaryNeutralDark'>
+          <h3 className='mt-2 text-sm font-medium text-primaryNeutral dark:text-primaryNeutralDark'>
             {title}
           </h3>
           {description && (

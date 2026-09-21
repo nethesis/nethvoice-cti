@@ -509,7 +509,7 @@ const Operators: NextPage = () => {
             </button>
           </div>
 
-          <div className='mx-auto text-center flex justify-center'>
+          <div className='w-full text-center'>
             {/* empty state */}
             {operatorsStore?.isOperatorsLoaded &&
               !operatorsStore?.errorMessage &&
