@@ -121,8 +121,9 @@ export const Table: React.FC<TableProps> = ({
 
   // Handle empty state
   if (!data || data.length === 0) {
+    // no border around the empty state: the EmptyState card already provides its own surface
     return (
-      <div className={wrapperClasses}>
+      <div className={classNames('overflow-hidden', containerClassName)}>
         {emptyState ? (
           <EmptyState
             title={emptyState.title}
