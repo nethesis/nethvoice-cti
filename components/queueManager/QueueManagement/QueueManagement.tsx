@@ -15,7 +15,6 @@ import {
   faChevronUp,
   faCheck,
   faPause,
-  faPhone,
   faDownLeftAndUpRightToCenter,
 } from '@fortawesome/free-solid-svg-icons'
 import { EmptyState } from '../../common'
@@ -467,13 +466,6 @@ export const QueueManagement: FC<QueueManagementProps> = ({ className }): JSX.El
                       <EmptyState
                         variant='inline'
                         title={t('Queues.No calls')}
-                        icon={
-                          <FontAwesomeIcon
-                            icon={faPhone}
-                            className='mx-auto h-8 w-8'
-                            aria-hidden='true'
-                          />
-                        }
                       />
                     ) : (
                       <div className='-my-2 -mx-4 overflow-x-auto sm:-mx-6 lg:-mx-8'>
@@ -567,13 +559,6 @@ export const QueueManagement: FC<QueueManagementProps> = ({ className }): JSX.El
                     <EmptyState
                       variant='inline'
                       title={t('Queues.No calls')}
-                      icon={
-                        <FontAwesomeIcon
-                          icon={faPhone}
-                          className='mx-auto h-8 w-8'
-                          aria-hidden='true'
-                        />
-                      }
                     />
                   ) : (
                     <div className='-my-2 -mx-4 overflow-x-auto sm:-mx-6 lg:-mx-8'>

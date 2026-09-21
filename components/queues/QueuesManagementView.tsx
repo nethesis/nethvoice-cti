@@ -744,13 +744,6 @@ export const QueuesManagementView: FC<QueuesManagementViewProps> = ({ className 
                                     <EmptyState
                                       variant='inline'
                                       title={t('Queues.No calls')}
-                                      icon={
-                                        <FontAwesomeIcon
-                                          icon={faPhone}
-                                          className='mx-auto h-8 w-8'
-                                          aria-hidden='true'
-                                        />
-                                      }
                                     />
                                   ) : (
                                     <div className='-my-2 -mx-4 overflow-x-auto sm:-mx-6 lg:-mx-8'>
@@ -838,13 +831,6 @@ export const QueuesManagementView: FC<QueuesManagementViewProps> = ({ className 
                                     <EmptyState
                                       variant='inline'
                                       title={t('Queues.No calls')}
-                                      icon={
-                                        <FontAwesomeIcon
-                                          icon={faPhone}
-                                          className='mx-auto h-8 w-8'
-                                          aria-hidden='true'
-                                        />
-                                      }
                                     />
                                   ) : (
                                     <div className='-my-2 -mx-4 overflow-x-auto sm:-mx-6 lg:-mx-8'>
@@ -967,13 +953,6 @@ export const QueuesManagementView: FC<QueuesManagementViewProps> = ({ className 
                                       <EmptyState
                                         variant='inline'
                                         title={t('Queues.No operators')}
-                                        icon={
-                                          <FontAwesomeIcon
-                                            icon={faHeadset}
-                                            className='mx-auto h-8 w-8'
-                                            aria-hidden='true'
-                                          />
-                                        }
                                       />
                                     ) : (
                                       <div
