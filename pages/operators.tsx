@@ -21,7 +21,7 @@ import { useSelector } from 'react-redux'
 import { RootState } from '../store'
 import { Filter } from '../components/operators'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
-import { faBars, faFilter, faHeadset, IconDefinition } from '@fortawesome/free-solid-svg-icons'
+import { faBars, faHeadset, IconDefinition } from '@fortawesome/free-solid-svg-icons'
 import { store } from '../store'
 import { t } from 'i18next'
 import { MissingPermission } from '../components/common/MissingPermissionsPage'
@@ -533,10 +533,10 @@ const Operators: NextPage = () => {
               isEmpty(filteredOperators) && (
                 <EmptyState
                   title={t('Operators.No operators') || ''}
-                  description={t('Operators.Try changing your search filters') || ''}
+                  description={t('Operators.There are no operators with the current filters') || ''}
                   icon={
                     <FontAwesomeIcon
-                      icon={faFilter}
+                      icon={faHeadset}
                       className='mx-auto h-12 w-12'
                       aria-hidden='true'
                     />

@@ -15,8 +15,10 @@ import {
   faChevronUp,
   faCheck,
   faPause,
+  faPhone,
   faDownLeftAndUpRightToCenter,
 } from '@fortawesome/free-solid-svg-icons'
+import { EmptyState } from '../../common'
 
 import { openShowOperatorDrawer } from '../../../lib/operators'
 
@@ -462,7 +464,17 @@ export const QueueManagement: FC<QueueManagementProps> = ({ className }): JSX.El
                     queueManagerStore?.queues[selectedValue?.queue] &&
                     isEmpty(queueManagerStore?.queues[selectedValue.queue]?.waitingCallersList) &&
                     selectedValue ? (
-                      <div className='p-4'>{t('Queues.No calls')}</div>
+                      <EmptyState
+                        variant='inline'
+                        title={t('Queues.No calls')}
+                        icon={
+                          <FontAwesomeIcon
+                            icon={faPhone}
+                            className='mx-auto h-8 w-8'
+                            aria-hidden='true'
+                          />
+                        }
+                      />
                     ) : (
                       <div className='-my-2 -mx-4 overflow-x-auto sm:-mx-6 lg:-mx-8'>
                         <div className='inline-block min-w-full py-2 align-middle sm:px-6 lg:px-8'>
@@ -552,7 +564,17 @@ export const QueueManagement: FC<QueueManagementProps> = ({ className }): JSX.El
                   queueManagerStore?.queues[selectedValue?.queue] &&
                   isEmpty(queueManagerStore?.queues[selectedValue.queue]?.connectedCalls) &&
                   selectedValue ? (
-                    <div className='p-4'>{t('Queues.No calls')}</div>
+                    <EmptyState
+                      variant='inline'
+                      title={t('Queues.No calls')}
+                      icon={
+                        <FontAwesomeIcon
+                          icon={faPhone}
+                          className='mx-auto h-8 w-8'
+                          aria-hidden='true'
+                        />
+                      }
+                    />
                   ) : (
                     <div className='-my-2 -mx-4 overflow-x-auto sm:-mx-6 lg:-mx-8'>
                       <div className='inline-block min-w-full py-2 align-middle sm:px-6 lg:px-8'>

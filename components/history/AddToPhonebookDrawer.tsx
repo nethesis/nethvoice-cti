@@ -185,7 +185,7 @@ export const AddToPhonebookDrawerContent = forwardRef<
               !!textFilter.length && (
                 <EmptyState
                   title={t('Phonebook.No contacts') || ""}
-                  description='Try changing your search query'
+                  description={t('Phonebook.There are no contacts with the current search') || ''}
                   icon={
                     <FontAwesomeIcon
                       icon={faUser}

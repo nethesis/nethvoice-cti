@@ -443,11 +443,11 @@ export const LineKeysSection: FC<LineKeysSectionProps> = ({ deviceId, phoneName 
             <li className='flex justify-center p-2'>
               <EmptyState
                 title={t('Devices.No results') || ''}
-                description={t('Devices.Try changing your search query') || ''}
+                description={t('Devices.There are no keys with the current search') || ''}
                 icon={
                   <FontAwesomeIcon
                     icon={faMagnifyingGlass}
-                    className='mx-auto h-14 w-14'
+                    className='mx-auto h-12 w-12'
                     aria-hidden='true'
                   />
                 }

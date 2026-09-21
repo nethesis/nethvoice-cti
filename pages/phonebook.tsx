@@ -369,7 +369,8 @@ const Phonebook: NextPage = () => {
                             }
                           : {
                               title: t('Phonebook.No contacts'),
-                              description: t('Phonebook.Try changing your search filters') || '',
+                              description:
+                                t('Phonebook.There are no contacts with the current filters') || '',
                               icon: (
                                 <FontAwesomeIcon
                                   icon={faFilter}

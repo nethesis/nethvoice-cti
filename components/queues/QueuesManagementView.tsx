@@ -463,7 +463,7 @@ export const QueuesManagementView: FC<QueuesManagementViewProps> = ({ className 
         {queuesStore.isLoaded && isEmpty(filteredQueues) && (
           <EmptyState
             title={t('Queues.No queues')}
-            description={t('Common.Try changing your search filters') || ''}
+            description={t('Queues.There are no queues with the current filters') || ''}
             icon={
               <FontAwesomeIcon icon={faUsers} className='mx-auto h-12 w-12' aria-hidden='true' />
             }
@@ -741,7 +741,17 @@ export const QueuesManagementView: FC<QueuesManagementViewProps> = ({ className 
                               <div className='text-sm'>
                                 <div className='border rounded-md border-gray-200 dark:border-gray-700 text-gray-700 dark:text-gray-200'>
                                   {isEmpty(queue.waitingCallersList) ? (
-                                    <div className='p-4'>{t('Queues.No calls')}</div>
+                                    <EmptyState
+                                      variant='inline'
+                                      title={t('Queues.No calls')}
+                                      icon={
+                                        <FontAwesomeIcon
+                                          icon={faPhone}
+                                          className='mx-auto h-8 w-8'
+                                          aria-hidden='true'
+                                        />
+                                      }
+                                    />
                                   ) : (
                                     <div className='-my-2 -mx-4 overflow-x-auto sm:-mx-6 lg:-mx-8'>
                                       <div className='inline-block min-w-full py-2 align-middle sm:px-6 lg:px-8'>
@@ -825,7 +835,17 @@ export const QueuesManagementView: FC<QueuesManagementViewProps> = ({ className 
                               <div className='text-sm'>
                                 <div className='border rounded-md border-gray-200 dark:border-gray-700 text-gray-700 dark:text-gray-200'>
                                   {isEmpty(queue.connectedCalls) ? (
-                                    <div className='p-4'>{t('Queues.No calls')}</div>
+                                    <EmptyState
+                                      variant='inline'
+                                      title={t('Queues.No calls')}
+                                      icon={
+                                        <FontAwesomeIcon
+                                          icon={faPhone}
+                                          className='mx-auto h-8 w-8'
+                                          aria-hidden='true'
+                                        />
+                                      }
+                                    />
                                   ) : (
                                     <div className='-my-2 -mx-4 overflow-x-auto sm:-mx-6 lg:-mx-8'>
                                       <div className='inline-block min-w-full py-2 align-middle sm:px-6 lg:px-8'>
@@ -944,9 +964,17 @@ export const QueuesManagementView: FC<QueuesManagementViewProps> = ({ className 
                                 {queue.operatorsExpanded && (
                                   <div className='text-sm'>
                                     {isEmpty(queue.members) ? (
-                                      <div className='p-4 rounded-md text-gray-700 bg-gray-100 dark:text-gray-200 dark:bg-gray-800'>
-                                        {t('Queues.No operators')}
-                                      </div>
+                                      <EmptyState
+                                        variant='inline'
+                                        title={t('Queues.No operators')}
+                                        icon={
+                                          <FontAwesomeIcon
+                                            icon={faHeadset}
+                                            className='mx-auto h-8 w-8'
+                                            aria-hidden='true'
+                                          />
+                                        }
+                                      />
                                     ) : (
                                       <div
                                         id={`queue-operators-${queue.queue}`}

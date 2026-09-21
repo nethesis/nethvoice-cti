@@ -26,7 +26,7 @@ import {
   faChevronDown,
   faChevronUp,
   faCircleXmark,
-  faFilter,
+  faUsers,
   faStar as faStarSolid,
 } from '@fortawesome/free-solid-svg-icons'
 import { IconProp } from '@fortawesome/fontawesome-svg-core'
@@ -193,10 +193,10 @@ export const RealTimeQueues: FC<RealTimeQueuesProps> = ({
             {queueManagerStore.isLoaded && isEmpty(filteredQueues) && (
               <EmptyState
                 title={t('Queues.No queues')}
-                description={t('Common.Try changing your search filters') || ''}
+                description={t('Queues.There are no queues with the current filters') || ''}
                 icon={
                   <FontAwesomeIcon
-                    icon={faFilter}
+                    icon={faUsers}
                     className='mx-auto h-12 w-12'
                     aria-hidden='true'
                   />

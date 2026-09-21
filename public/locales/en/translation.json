@@ -1,5 +1,6 @@
 {
   "Common": {
+    "There are no results for your search": "There are no results for your search",
     "Showing": "Showing",
     "of": "of",
     "Active filters": "Active filters",
@@ -11,7 +12,6 @@
     "Coming soon": "Coming soon",
     "Cancel": "Cancel",
     "Save": "Save",
-    "Try changing your search filters": "Try changing your search filters",
     "Phone number": "Phone number",
     "Company name": "Company name",
     "Call": "Call",
@@ -124,6 +124,8 @@
     "Two-factor authentication is disabled": "Two-factor authentication is disabled"
   },
   "Phonebook": {
+    "There are no contacts with the current filters": "There are no contacts with the current filters",
+    "There are no contacts with the current search": "There are no contacts with the current search",
     "Phonebook": "Phonebook",
     "Create contact": "Create contact",
     "Save contact": "Save contact",
@@ -167,7 +169,6 @@
     "Type info": "Choose whether the contact is a Person or a Company",
     "Work": "Work",
     "Mobile": "Mobile",
-    "Try changing your search filters": "Try changing your search filters",
     "Delete contact": "Delete contact",
     "Visibility": "Visibility",
     "Visibility info": "Determine who can view this contact - Public (everyone), Private (only you), or shared with specific groups",
@@ -303,9 +304,9 @@
     "Delete call transcription": "Delete call transcription"
   },
   "Operators": {
+    "There are no operators with the current filters": "There are no operators with the current filters",
     "No operators": "No operators",
     "There is no operator configured": "There is no operator configured",
-    "Try changing your search filters": "Try changing your search filters",
     "Operators": "Operators",
     "No groups": "No groups",
     "Favorites": "Favorites",
@@ -589,6 +590,7 @@
     "Notifications": "Notifications"
   },
   "Queues": {
+    "There are no queues with the current filters": "There are no queues with the current filters",
     "Queues": "Queues",
     "Filter queues": "Filter queues",
     "Login to all queues": "Login all queues",
@@ -860,6 +862,8 @@
     "Voice mail": "Voicemail inbox"
   },
   "QueueManager": {
+    "There are no agents to show": "There are no agents to show",
+    "Please select a queue": "Please select a queue",
     "There is no operator configured": "There is no operator configured",
     "Dashboard": "Dashboard",
     "Queues management": "Queues management",
@@ -1068,6 +1072,7 @@
     "Call": "Call"
   },
   "Devices": {
+    "There are no keys with the current search": "There are no keys with the current search",
     "Download app": "Download app",
     "Open app": "Open app",
     "Used as": "Used as",
@@ -1109,7 +1114,6 @@
     "Edit inline information message multiple rows": "{{isInformationLineShow}} changes rows",
     "Create a pin": "Create a pin",
     "No results": "No results",
-    "Try changing your search query": "Try changing your search query",
     "Key position information tooltip": "Choose a position for your key",
     "Audio and video settings": "Audio and Video settings",
     "Audio input": "Audio input",

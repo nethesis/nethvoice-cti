@@ -8,6 +8,8 @@ export interface EmptyStateProps extends ComponentProps<'div'> {
   title: string
   description?: string
   icon?: any
+  // 'inline' drops the card surface, for empty states nested inside a card or a dropdown
+  variant?: 'card' | 'inline'
 }
 
 export const EmptyState: FC<EmptyStateProps> = ({
@@ -16,12 +18,16 @@ export const EmptyState: FC<EmptyStateProps> = ({
   icon,
   children,
   className,
+  variant = 'card',
 }): JSX.Element => {
   return (
     <>
       <div
         className={classNames(
-          'w-full overflow-hidden rounded-lg bg-white shadow dark:bg-gray-800 px-8 py-7 text-center space-y-5',
+          'w-full overflow-hidden text-center',
+          variant === 'card'
+            ? 'rounded-lg bg-white shadow dark:bg-gray-800 px-8 py-7 space-y-5'
+            : 'px-4 py-6 space-y-3',
           className,
         )}
       >
