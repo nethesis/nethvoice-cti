@@ -149,6 +149,11 @@ export const MonitorTables: FC<MonitorTablesProps> = ({
                               leaveTo='opacity-0'
                             >
                               <ListboxOptions className='absolute z-10 mt-1 w-full overflow-auto  scrollbar-thin scrollbar-thumb-gray-400 dark:scrollbar-thumb-gray-400 scrollbar-thumb-rounded-full scrollbar-thumb-opacity-50 scrollbar-track-gray-200 dark:scrollbar-track-gray-900 scrollbar-track-rounded-full scrollbar-track-opacity-25 rounded-md bg-white py-1 text-base shadow-lg ring-1 dark:bg-gray-900 ring-black ring-opacity-5 focus:outline-none sm:text-sm h-auto'>
+                                {Object.keys(queueManagerStore.queues).length === 0 && (
+                                  <div className='relative select-none py-2 pl-8 pr-4 text-gray-500 dark:text-gray-400'>
+                                    {t('Queues.No queues')}
+                                  </div>
+                                )}
                                 {Object.entries<any>(queueManagerStore.queues).map(
                                   ([queueId, queueInfo]) => (
                                     <ListboxOption
@@ -400,6 +405,11 @@ export const MonitorTables: FC<MonitorTablesProps> = ({
                                 leaveTo='opacity-0'
                               >
                                 <ListboxOptions className='absolute z-10 mt-1 w-full overflow-auto  scrollbar-thin scrollbar-thumb-gray-400 dark:scrollbar-thumb-gray-400 scrollbar-thumb-rounded-full scrollbar-thumb-opacity-50 scrollbar-track-gray-200 dark:scrollbar-track-gray-900 scrollbar-track-rounded-full scrollbar-track-opacity-25 rounded-md bg-white py-1 text-base shadow-lg ring-1 dark:bg-gray-900 ring-black ring-opacity-5 focus:outline-none sm:text-sm h-auto'>
+                                  {Object.keys(queueManagerStore.queues).length === 0 && (
+                                    <div className='relative select-none py-2 pl-8 pr-4 text-gray-500 dark:text-gray-400'>
+                                      {t('Queues.No queues')}
+                                    </div>
+                                  )}
                                   {Object.entries<any>(queueManagerStore.queues).map(
                                     ([queueId, queueInfo]) => (
                                       <ListboxOption

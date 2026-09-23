@@ -197,6 +197,11 @@ export const RealTimeOperatorsFilter = forwardRef<HTMLButtonElement, RealTimeOpe
                               <fieldset>
                                 <legend className='sr-only'>{queuesFilter.name}</legend>
                                 <div className='space-y-4'>
+                                  {queuesFilter.options.length === 0 && (
+                                    <span className='block text-sm leading-5 text-gray-500 dark:text-gray-400'>
+                                      {t('Queues.No queues')}
+                                    </span>
+                                  )}
                                   {queuesFilter.options.map((option) => (
                                     <div key={option.value} className='flex items-center'>
                                       <input
@@ -280,6 +285,11 @@ export const RealTimeOperatorsFilter = forwardRef<HTMLButtonElement, RealTimeOpe
                       >
                         <PopoverPanel className='absolute right-0 z-10 mt-2 origin-top-right rounded-md min-w-max p-4 shadow-2xl ring-1 focus:outline-none ring-opacity-5 bg-white ring-black dark:ring-opacity-5 dark:bg-gray-900 dark:ring-gray-700'>
                           <form className='space-y-4'>
+                            {queuesFilter.options.length === 0 && (
+                              <span className='block text-sm leading-5 text-gray-500 dark:text-gray-400'>
+                                {t('Queues.No queues')}
+                              </span>
+                            )}
                             {queuesFilter.options.map((option) => (
                               <div key={option.value} className='flex items-center'>
                                 <input

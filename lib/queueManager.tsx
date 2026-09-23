@@ -625,8 +625,8 @@ export const DEFAULT_STATUS_FILTER_REALTIME = 'all'
 export const DEFAULT_SORT_BY_SUMMARY = 'name'
 export const DEFAULT_STATUS_FILTER_SUMMARY = 'all'
 
-export const DEFAULT_EXPANDED_QUEUES_SUMMARY = false
-export const DEFAULT_EXPANDED_OPERATORS_SUMMARY = false
+export const DEFAULT_EXPANDED_QUEUES_SUMMARY = true
+export const DEFAULT_EXPANDED_OPERATORS_SUMMARY = true
 export const DEFAULT_SUMMARY_SELECTED_QUEUE = {}
 
 export const DEFAULT_EXPANDED_QUEUES_MANAGEMENT_DASHBOARD = false
@@ -648,11 +648,11 @@ export const DEFAULT_REALTIME_IS_SECOND_CARD_VISIBLE = false
 
 export const getExpandedSummaryValue = (currentUsername: string) => {
   const expandedOperators =
-    loadPreference('operatorsSummaryExpandedPreference', currentUsername) ||
-    DEFAULT_EXPANDED_QUEUES_SUMMARY
+    loadPreference('operatorsSummaryExpandedPreference', currentUsername) ??
+    DEFAULT_EXPANDED_OPERATORS_SUMMARY
 
   const expandedQueues =
-    loadPreference('queuesSummaryExpandedPreference', currentUsername) ||
+    loadPreference('queuesSummaryExpandedPreference', currentUsername) ??
     DEFAULT_EXPANDED_QUEUES_SUMMARY
 
   return { expandedOperators, expandedQueues }
