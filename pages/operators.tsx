@@ -577,7 +577,13 @@ const Operators: NextPage = () => {
           </div>
         </div>
       ) : operatorsStore?.isOperatorsLoaded ? (
-        <MissingPermission />
+        // the profile is empty on the first render: the missing permission page
+        // must not flash before it arrives
+        typeof profile?.macro_permissions?.presence_panel?.value === 'undefined' ? (
+          <></>
+        ) : (
+          <MissingPermission />
+        )
       ) : (
         <> </>
       )}
