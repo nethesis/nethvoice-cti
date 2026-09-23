@@ -639,6 +639,11 @@ export const Summary: FC<SummaryProps> = ({ className }): JSX.Element => {
                 >
                   <PopoverPanel className='absolute right-0 z-10 mt-2 origin-top-right rounded-md min-w-max p-4 shadow-2xl ring-1 focus:outline-none ring-opacity-5 bg-white ring-black dark:ring-opacity-5 dark:bg-gray-900 dark:ring-gray-700'>
                     <form className='space-y-4'>
+                      {queuesFilterQueues.options.length === 0 && (
+                        <span className='block text-sm leading-5 text-gray-500 dark:text-gray-400'>
+                          {t('Queues.No queues')}
+                        </span>
+                      )}
                       {queuesFilterQueues.options.map((option) => (
                         <div key={option.value} className='flex items-center'>
                           <input
@@ -815,7 +820,7 @@ export const Summary: FC<SummaryProps> = ({ className }): JSX.Element => {
                                 <div className='flex-grow border-b border-gray-200 dark:border-gray-700 mt-1'></div>
 
                                 {/* User statistics  */}
-                                <div className='h-96 overflow-auto  scrollbar-thin scrollbar-thumb-gray-400 dark:scrollbar-thumb-gray-400 scrollbar-thumb-rounded-full scrollbar-thumb-opacity-50 scrollbar-track-gray-200 dark:scrollbar-track-gray-900 scrollbar-track-rounded-full scrollbar-track-opacity-25 pt-2'>
+                                <div className='max-h-96 overflow-auto  scrollbar-thin scrollbar-thumb-gray-400 dark:scrollbar-thumb-gray-400 scrollbar-thumb-rounded-full scrollbar-thumb-opacity-50 scrollbar-track-gray-200 dark:scrollbar-track-gray-900 scrollbar-track-rounded-full scrollbar-track-opacity-25 pt-2'>
                                   <div className='px-3 py-4 '>
                                     <h3 className='truncate text-base leading-6 font-medium flex items-center'>
                                       <FontAwesomeIcon
@@ -991,7 +996,7 @@ export const Summary: FC<SummaryProps> = ({ className }): JSX.Element => {
                                 </div>
 
                                 {/* Queues body */}
-                                <div className='pt-6 overflow-auto scrollbar-thin scrollbar-thumb-gray-400 dark:scrollbar-thumb-gray-400 scrollbar-thumb-rounded-full scrollbar-thumb-opacity-50 scrollbar-track-gray-200 dark:scrollbar-track-gray-900 scrollbar-track-rounded-full scrollbar-track-opacity-25 h-56'>
+                                <div className='pt-6 overflow-auto scrollbar-thin scrollbar-thumb-gray-400 dark:scrollbar-thumb-gray-400 scrollbar-thumb-rounded-full scrollbar-thumb-opacity-50 scrollbar-track-gray-200 dark:scrollbar-track-gray-900 scrollbar-track-rounded-full scrollbar-track-opacity-25 max-h-56'>
                                   {Object.entries(operator.queues).map(
                                     ([queueNum, queue]: [string, any], queueIndex: number) => {
                                       if (isNaN(Number(queueNum))) {

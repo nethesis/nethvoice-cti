@@ -133,8 +133,12 @@ const MultipleInformationChart: FC<MultipleInformationChartProps> = ({
     })),
   }
 
+  // the chart height follows the number of rows, so the card scrolls only when they
+  // do not fit instead of always showing a scrollbar on a fixed 600px height
+  const chartHeight = Math.max(160, data.labels.length * 56 + 24)
+
   return (
-    <div style={{ height: '600px' }}>
+    <div style={{ height: `${chartHeight}px` }}>
       <Bar data={data} plugins={[ChartDataLabels]} options={options} />
     </div>
   )
