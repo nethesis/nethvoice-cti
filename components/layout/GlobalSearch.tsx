@@ -366,11 +366,11 @@ export const GlobalSearch: FC<GlobalSearchProps> = () => {
                         >
                           <EmptyState
                             title={t('Phonebook.No results') || ''}
-                            description={t('Devices.Try changing your search query') || ''}
+                            description={t('Common.There are no results for your search') || ''}
                             icon={
                               <FontAwesomeIcon
                                 icon={faSearch}
-                                className='mx-auto h-14 w-14'
+                                className='mx-auto h-12 w-12'
                                 aria-hidden='true'
                               />
                             }

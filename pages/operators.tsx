@@ -21,7 +21,7 @@ import { useSelector } from 'react-redux'
 import { RootState } from '../store'
 import { Filter } from '../components/operators'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
-import { faBars, faFilter, faHeadset, IconDefinition } from '@fortawesome/free-solid-svg-icons'
+import { faBars, faHeadset, IconDefinition } from '@fortawesome/free-solid-svg-icons'
 import { store } from '../store'
 import { t } from 'i18next'
 import { MissingPermission } from '../components/common/MissingPermissionsPage'
@@ -509,14 +509,14 @@ const Operators: NextPage = () => {
             </button>
           </div>
 
-          <div className='mx-auto text-center flex justify-center'>
+          <div className='w-full text-center'>
             {/* empty state */}
             {operatorsStore?.isOperatorsLoaded &&
               !operatorsStore?.errorMessage &&
               isEmpty(operatorsStore?.operators) && (
                 <EmptyState
-                  title='No operators'
-                  description='There is no operator configured'
+                  title={t('Operators.No operators') || ''}
+                  description={t('Operators.There is no operator configured') || ''}
                   icon={
                     <FontAwesomeIcon
                       icon={faHeadset}
@@ -532,11 +532,11 @@ const Operators: NextPage = () => {
               !isEmpty(operatorsStore?.operators) &&
               isEmpty(filteredOperators) && (
                 <EmptyState
-                  title='No operators'
-                  description='Try changing your search filters'
+                  title={t('Operators.No operators') || ''}
+                  description={t('Operators.There are no operators with the current filters') || ''}
                   icon={
                     <FontAwesomeIcon
-                      icon={faFilter}
+                      icon={faHeadset}
                       className='mx-auto h-12 w-12'
                       aria-hidden='true'
                     />

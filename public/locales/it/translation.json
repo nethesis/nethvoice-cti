@@ -1,5 +1,6 @@
 {
   "Common": {
+    "There are no results for your search": "Non ci sono risultati per la ricerca",
     "Showing": "Visualizza",
     "of": "di",
     "Active filters": "Filtri attivi",
@@ -33,7 +34,6 @@
     "Add to favorites": "Aggiungi ai preferiti",
     "Remove from favorites": "Rimuovi dai preferiti",
     "time_distance_ago": "{{ timeDistance }} fa",
-    "Try changing your search filters": "Prova a modificare i filtri di ricerca",
     "Reset to defaults": "Ripristina valori predefiniti",
     "Download": "Scarica",
     "Intrude": "Intromesso",
@@ -109,6 +109,8 @@
     "Two-factor authentication is disabled": "L'autenticazione a due fattori è disabilitata"
   },
   "Phonebook": {
+    "There are no contacts with the current filters": "Non ci sono contatti con i filtri attuali",
+    "There are no contacts with the current search": "Non ci sono contatti con la ricerca attuale",
     "Phonebook": "Rubrica",
     "Create contact": "Crea contatto",
     "Save contact": "Salva contatto",
@@ -138,7 +140,6 @@
     "Type info": "Seleziona se il contatto è una Persona o un'Azienda",
     "Work": "Lavoro",
     "Mobile": "Cellulare",
-    "Try changing your search filters": "Prova a cambiare i tuoi filtri di ricerca",
     "Show contact": "Visualizza contatto",
     "Add phone number": "Aggiungi numero telefonico",
     "Edit contact": "Modifica contatto",
@@ -286,6 +287,9 @@
     "Voicemail available": "Apri il messaggio vocale"
   },
   "Operators": {
+    "There are no operators with the current filters": "Non ci sono operatori con i filtri attuali",
+    "No operators": "Nessun operatore",
+    "There is no operator configured": "Non è configurato nessun operatore",
     "Operators": "Operatori",
     "No groups": "Nessun gruppo",
     "Favorites": "Preferiti",
@@ -736,6 +740,7 @@
     "Notifications": "Notifiche"
   },
   "Queues": {
+    "There are no queues with the current filters": "Non ci sono code con i filtri attuali",
     "Logout": "Logout",
     "Queues": "Code",
     "No queues": "Nessuna coda",
@@ -866,6 +871,9 @@
     "Call": "Chiama"
   },
   "QueueManager": {
+    "There are no agents to show": "Non ci sono agenti da mostrare",
+    "Please select a queue": "Seleziona una coda",
+    "There is no operator configured": "Non è configurato nessun operatore",
     "Dashboard": "Dashboard",
     "Queues management": "Gestione code",
     "Gestione code": "Gestione code",
@@ -1046,6 +1054,8 @@
     "Click and hold to take current parking in call": "Clicca e tieni premuto per riprendere la chiamata parcheggiata"
   },
   "Devices": {
+    "No devices available": "Nessun dispositivo disponibile",
+    "There are no keys with the current search": "Non ci sono tasti con la ricerca attuale",
     "Download app": "Scarica app",
     "Open app": "Apri app",
     "Used as": "Usato come",
@@ -1086,7 +1096,6 @@
     "Edit inline information message multiple rows": "{{isInformationLineShow}} righe modificate",
     "Create a pin": "Crea un pin",
     "No results": "Nessun risultato",
-    "Try changing your search query": "Prova a cambiare la tua ricerca",
     "Key position information tooltip": "Scegli una posizione per il pulsante",
     "Audio and video settings": "Impostazioni Audio e Video",
     "Audio input": "Audio input",

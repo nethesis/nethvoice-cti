@@ -29,7 +29,7 @@ import {
   faPhone,
   faPause,
   faHeadset,
-  faFilter,
+  faUsers,
   faChevronDown,
   faDownLeftAndUpRightToCenter,
   faCircleExclamation,
@@ -463,9 +463,9 @@ export const QueuesManagementView: FC<QueuesManagementViewProps> = ({ className 
         {queuesStore.isLoaded && isEmpty(filteredQueues) && (
           <EmptyState
             title={t('Queues.No queues')}
-            description={t('Common.Try changing your search filters') || ''}
+            description={t('Queues.There are no queues with the current filters') || ''}
             icon={
-              <FontAwesomeIcon icon={faFilter} className='mx-auto h-12 w-12' aria-hidden='true' />
+              <FontAwesomeIcon icon={faUsers} className='mx-auto h-12 w-12' aria-hidden='true' />
             }
           />
         )}

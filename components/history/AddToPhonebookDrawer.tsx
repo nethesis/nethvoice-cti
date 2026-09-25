@@ -146,7 +146,6 @@ export const AddToPhonebookDrawerContent = forwardRef<
         <div className='mt-4'>
           <TextInput
             placeholder={t('Type to search contact') || ""}
-            className='max-w-lg'
             value={textFilter}
             onChange={changeTextFilter}
             ref={textFilterRef}
@@ -185,7 +184,7 @@ export const AddToPhonebookDrawerContent = forwardRef<
               !!textFilter.length && (
                 <EmptyState
                   title={t('Phonebook.No contacts') || ""}
-                  description='Try changing your search query'
+                  description={t('Phonebook.There are no contacts with the current search') || ''}
                   icon={
                     <FontAwesomeIcon
                       icon={faUser}

@@ -5,14 +5,19 @@ import { FC, useEffect, useMemo, useState } from 'react'
 import { t } from 'i18next'
 import { Combobox, ComboboxInput, ComboboxOption, ComboboxOptions } from '@headlessui/react'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
-import { faBuilding, faCircleUser, faPhone } from '@fortawesome/free-solid-svg-icons'
+import {
+  faBuilding,
+  faCircleUser,
+  faMagnifyingGlass,
+  faPhone,
+} from '@fortawesome/free-solid-svg-icons'
 import { cloneDeep, debounce } from 'lodash'
 import { useSelector } from 'react-redux'
 import { RootState } from '../../store'
 import classNames from 'classnames'
 import { sortByProperty } from '../../lib/utils'
 import { getPhonebook, mapPhonebookResponse } from '../../lib/phonebook'
-import { Avatar, Skeleton } from '../common'
+import { Avatar, EmptyState, Skeleton } from '../common'
 import { useTheme } from '../../theme/Context'
 
 interface DeviceSectionOperatorSearchProps {
@@ -296,13 +301,19 @@ export const DeviceSectionOperatorSearch: FC<DeviceSectionOperatorSearchProps> =
                 </ComboboxOption>
               )}
               {hasNoResults && !canUseManualNumber && (
-                <div className='flex select-none flex-col items-start justify-center p-4 text-sm'>
-                  <span className='text-primaryNeutral dark:text-primaryNeutralDark'>
-                    {t('Devices.No results')}
-                  </span>
-                  <span className='text-tertiaryNeutral dark:text-tertiaryNeutralDark'>
-                    {t('Devices.Type a number to use it directly')}
-                  </span>
+                <div className='select-none'>
+                  <EmptyState
+                    variant='inline'
+                    title={t('Devices.No results') || ''}
+                    description={t('Devices.Type a number to use it directly') || ''}
+                    icon={
+                      <FontAwesomeIcon
+                        icon={faMagnifyingGlass}
+                        className='mx-auto h-8 w-8'
+                        aria-hidden='true'
+                      />
+                    }
+                  />
                 </div>
               )}
               {results.map((result: any, index: number) => (

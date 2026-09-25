@@ -702,7 +702,7 @@ export const Summary: FC<SummaryProps> = ({ className }): JSX.Element => {
               {filteredAgentMembers.length === 0 && (
                 <EmptyState
                   title={t('QueueManager.No agents') || ''}
-                  description='There is no agent'
+                  description={t('QueueManager.There are no agents to show') || ''}
                   icon={
                     <FontAwesomeIcon
                       icon={faHeadset}

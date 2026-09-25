@@ -5,6 +5,8 @@ import { Dropdown } from './Dropdown'
 import classNames from 'classnames'
 import { t } from 'i18next'
 import { customScrollbarClass } from '../../lib/utils'
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
+import { faCircleInfo } from '@fortawesome/free-solid-svg-icons'
 
 export interface TableColumn {
   header: ReactNode
@@ -121,8 +123,9 @@ export const Table: React.FC<TableProps> = ({
 
   // Handle empty state
   if (!data || data.length === 0) {
+    // no border around the empty state: the EmptyState card already provides its own surface
     return (
-      <div className={wrapperClasses}>
+      <div className={classNames('overflow-hidden', containerClassName)}>
         {emptyState ? (
           <EmptyState
             title={emptyState.title}
@@ -130,9 +133,12 @@ export const Table: React.FC<TableProps> = ({
             icon={emptyState.icon}
           />
         ) : (
-          <div className='py-8 text-center text-gray-500 dark:text-gray-400'>
-            {t('Common.No data to show')}
-          </div>
+          <EmptyState
+            title={t('Common.No data to show')}
+            icon={
+              <FontAwesomeIcon icon={faCircleInfo} className='mx-auto h-12 w-12' aria-hidden='true' />
+            }
+          />
         )}
       </div>
     )

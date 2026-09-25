@@ -3,6 +3,7 @@
 
 import {
   faArrowUpRightFromSquare,
+  faClockRotateLeft,
   faPhone,
   faArrowRight,
   faDownload,
@@ -1085,7 +1086,7 @@ export const Calls: FC<CallsProps> = ({ className }): JSX.Element => {
                         description: t('History.There are no calls in your history') || '',
                         icon: (
                           <FontAwesomeIcon
-                            icon={faPhone}
+                            icon={faClockRotateLeft}
                             className='mx-auto h-12 w-12'
                             aria-hidden='true'
                           />

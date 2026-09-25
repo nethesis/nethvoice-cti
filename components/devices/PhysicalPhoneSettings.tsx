@@ -9,12 +9,20 @@ import {
   faEye,
   faEyeSlash,
   faFloppyDisk,
+  faGear,
 } from '@fortawesome/free-solid-svg-icons'
 import { useSelector } from 'react-redux'
 import { RootState } from '../../store'
 import { t } from 'i18next'
 import classNames from 'classnames'
-import { Breadcrumb, Button, ConfirmationModal, InlineNotification, TextInput } from '../common'
+import {
+  Breadcrumb,
+  Button,
+  ConfirmationModal,
+  EmptyState,
+  InlineNotification,
+  TextInput,
+} from '../common'
 import { CustomThemedTooltip } from '../common/CustomThemedTooltip'
 import { LineKeysSection } from './LineKeysSection'
 import { ExpansionModuleSection } from './ExpansionModuleSection'
@@ -320,9 +328,13 @@ export const PhysicalPhoneSettings: FC<PhysicalPhoneSettingsProps> = ({
               </Button>
             </>
           ) : (
-            <p className='text-sm leading-5 text-tertiaryNeutral dark:text-tertiaryNeutralDark'>
-              {t('Devices.No general settings available')}
-            </p>
+            <EmptyState
+              variant='inline'
+              title={t('Devices.No general settings available') || ''}
+              icon={
+                <FontAwesomeIcon icon={faGear} className='mx-auto h-8 w-8' aria-hidden='true' />
+              }
+            />
           )}
         </div>
       )}
