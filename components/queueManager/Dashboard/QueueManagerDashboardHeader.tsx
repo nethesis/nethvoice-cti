@@ -112,8 +112,8 @@ export const QueueManagerDashboardHeader: FC<QueueManagerDashboardHeaderProps> =
       <div
         className={`cursor-default py-2 w-96 px-2 ${
           isEmpty(alarmsList.list)
-            ? 'bg-gray-100 dark:bg-gray-800 border-b rounded-lg shadow-md'
-            : 'bg-red-50 dark:bg-red-950 border-b rounded-lg shadow-md'
+            ? 'bg-gray-100 border-b rounded-lg shadow-md'
+            : 'bg-red-50 border-b rounded-lg shadow-md'
         }`}
       >
         <Dropdown.Header>
@@ -140,10 +140,10 @@ export const QueueManagerDashboardHeader: FC<QueueManagerDashboardHeaderProps> =
                     aria-hidden='true'
                   />
                   <div className='flex justify-center items-center'>
-                    <p className='text-base font-semibold tracking-tight text-left text-gray-900 dark:text-gray-100 mr-1'>
+                    <p className='text-base font-semibold tracking-tight text-left text-gray-900 dark:text-gray-900 mr-1'>
                       {t('QueueManager.Begin hour')}
                     </p>
-                    <p className='text-base font-bold leading-6 text-center text-gray-900 dark:text-gray-100'>
+                    <p className='text-base font-bold leading-6 text-center text-gray-900 dark:text-gray-900'>
                       {getFormattedTimeFromAlarmsList(alarmsList)}
                     </p>
                   </div>
