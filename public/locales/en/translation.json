@@ -108,7 +108,8 @@
     "Add": "Add",
     "Remove": "Remove",
     "Page of": "Page {{current}} of {{total}}",
-    "Optional": "Optional"
+    "Optional": "Optional",
+    "Chat": "Chat"
   },
   "Login": {
     "User": "Username",
@@ -1289,5 +1290,26 @@
     "Neutral": "Neutral",
     "Negative": "Negative",
     "Sentiment score tooltip": "Sentiment score: {{score}}/10"
+  },
+  "Chat": {
+    "Conversations": "Conversations",
+    "Offline": "Chat offline",
+    "Search": "Search a conversation",
+    "No conversations": "No conversations yet",
+    "No conversations description": "Open the Operators page and press Chat on a colleague to start.",
+    "You": "You",
+    "Attachment": "Attachment",
+    "New chat": "New chat",
+    "members": "members",
+    "No messages yet": "No messages yet",
+    "Conversation": "Conversation",
+    "Last message": "Last message",
+    "Time": "Time",
+    "Delete": "Delete",
+    "Delete confirm": "Delete the conversation with \"{{name}}\"? Your copy of the messages is removed.",
+    "Open menu": "Open menu",
+    "Leave": "Leave",
+    "Delete group confirm": "Delete the group \"{{name}}\" for everyone? Its messages are removed for all members.",
+    "Leave confirm": "Leave the group \"{{name}}\"? You stop receiving its messages and your copy is removed."
   }
 }

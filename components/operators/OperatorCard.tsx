@@ -4,6 +4,7 @@ import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import {
   faStar,
   faPhone,
+  faComment,
   faRightLeft,
   IconDefinition,
   faRecordVinyl,
@@ -19,6 +20,7 @@ import { faPhoneArrowDownLeft } from '@nethesis/nethesis-solid-svg-icons'
 import { CustomThemedTooltip } from '../common/CustomThemedTooltip'
 import { useOperatorStates } from '../../hooks/useOperatorStates'
 import TextScroll from '../common/TextScroll'
+import { openChatWith, useChatAllowed } from '../chat'
 
 interface OperatorCardProps {
   operator: any
@@ -35,6 +37,7 @@ const OperatorCard = ({
   actionInformation,
   index,
 }: OperatorCardProps) => {
+  const chatAllowed = useChatAllowed()
   const liveOperatorData = useSelector(
     (state: RootState) => state.operators.operators[operator?.username] || operator,
   )
@@ -249,6 +252,18 @@ const OperatorCard = ({
                 </span>
               </Button>
             )}
+
+                    {chatAllowed && liveOperatorData?.username !== authUsername && (
+            <Button
+              variant='dashboard'
+              className='text-primaryActive dark:text-primaryActiveDark'
+              onClick={() => openChatWith(liveOperatorData?.username)}
+              title={t('Common.Chat') || ''}
+            >
+              <FontAwesomeIcon icon={faComment} className='inline-block text-center h-4 w-4' />
+              <span className='sr-only'>{t('Common.Chat')}</span>
+            </Button>
+          )}
         </span>
       </div>
 

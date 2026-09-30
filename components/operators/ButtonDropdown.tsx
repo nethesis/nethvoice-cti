@@ -6,6 +6,7 @@ import { Menu, MenuButton, MenuItem, MenuItems, Transition } from '@headlessui/r
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import {
   faChevronDown,
+  faComment,
   faMobileScreenButton,
   faPhone,
   faRightLeft,
@@ -15,6 +16,7 @@ import { callPhoneNumber, transferCall } from '../../lib/utils'
 import { callOperator } from '../../lib/operators'
 import { useSelector } from 'react-redux'
 import { RootState } from '../../store'
+import { openChatWith, useChatAllowed } from '../chat'
 
 interface ButtonDropdownProps {
   operatorDevices?: any
@@ -53,6 +55,9 @@ export const ButtonDropdown: React.FC<ButtonDropdownProps> = ({
         '',
     )
 
+  const chatAllowed = useChatAllowed()
+  const canChat = chatAllowed && !!operator?.username && operator?.username !== auth?.username
+
   return (
     <div className='inline-flex pb-5'>
       <button
@@ -74,7 +79,7 @@ export const ButtonDropdown: React.FC<ButtonDropdownProps> = ({
         <Menu as='div' className='relative -ml-px block'>
           <MenuButton
             className='relative inline-flex items-center rounded-r-md px-2 py-2 bg-primary dark:bg-primaryDark hover:bg-emerald-800 dark:hover:bg-emerald-300 text-sm focus:ring-2 focus:ring-primaryRing dark:focus:ring-primaryRingDark dark:ring-offset-slate-900 disabled:opacity-50 disabled:cursor-not-allowed focus:z-10 text-primaryButtonText dark:text-gray-950'
-            disabled={isDisabled}
+            disabled={isDisabled && !canChat}
           >
             <span className='sr-only'>{t('Operators.Open user devices')}</span>
             <FontAwesomeIcon icon={faChevronDown} className='h-5 w-5' aria-hidden='true' />
@@ -91,7 +96,7 @@ export const ButtonDropdown: React.FC<ButtonDropdownProps> = ({
           >
             <MenuItems className='absolute right-[-7.5rem] z-10 -mr-1 mt-2 w-56 origin-top-right bg-white shadow-lg rounded-md ring-1 ring-black ring-opacity-5 focus:outline-none'>
               <div className='py-1 flex-col overflow-hidden shadow-lg ring-1 ring-gray-200 dark:ring-gray-700 ring-opacity-1 rounded-md dark:border-gray-700 dark:bg-gray-900'>
-                {Object.entries(operatorDevices)
+                {!isDisabled && Object.entries(operatorDevices)
                   .filter(([key, value]) => value !== undefined && value !== null)
                   .map(([key, value]: [any, any]) => (
                     <MenuItem key={key}>
@@ -135,6 +140,24 @@ export const ButtonDropdown: React.FC<ButtonDropdownProps> = ({
                       )}
                     </MenuItem>
                   ))}
+                {canChat && (
+                  <MenuItem>
+                    {() => (
+                      <div className='py-1 px-3.5 data-[focus]:bg-gray-100 data-[focus]:text-gray-900 data-[focus]:dark:bg-gray-700 text-gray-700 dark:text-gray-200'>
+                        <div className='py-2 cursor-pointer' onClick={() => openChatWith(operator.username)}>
+                          <div className='flex items-center text-sm text-gray-900 dark:text-gray-200'>
+                            <FontAwesomeIcon
+                              icon={faComment}
+                              className='mr-2 h-4 w-4 flex-shrink-0 text-gray-500 dark:text-gray-300'
+                              aria-hidden='true'
+                            />
+                            <span className='truncate'>{t('Common.Chat')}</span>
+                          </div>
+                        </div>
+                      </div>
+                    )}
+                  </MenuItem>
+                )}
               </div>
             </MenuItems>
           </Transition>
