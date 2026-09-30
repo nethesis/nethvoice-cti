@@ -67,9 +67,13 @@ export const NotManagedCalls: FC<NotManagedCallsProps> = ({ className }): JSX.El
   }
 
   const [queueManagerFilter, setQueueManagerFilter]: any = useState([])
+  // the filter reads the saved queues after the first render: fetching before that
+  // shows a first result that is replaced right away
+  const [queuesFilterReady, setQueuesFilterReady] = useState(false)
   const [emptyQueueFilter, setEmptyQueueFilter]: any = useState(false)
 
   const updateQueueManagerFilter = (newQueuesFilter: string[]) => {
+    setQueuesFilterReady(true)
     setQueueManagerFilter(newQueuesFilter)
     setPageNum(1)
     setCallsLoaded(false)
@@ -110,6 +114,8 @@ export const NotManagedCalls: FC<NotManagedCallsProps> = ({ className }): JSX.El
       }
       setCallsLoaded(true)
     } else {
+      // no queue selected: drop the rows of the previous selection
+      setCalls({ count: 0, rows: [] })
       setCallsLoaded(true)
       setEmptyQueueFilter(true)
     }
@@ -119,6 +125,9 @@ export const NotManagedCalls: FC<NotManagedCallsProps> = ({ className }): JSX.El
   useEffect(() => {
     if (firstRender) {
       setFirstRender(false)
+      return
+    }
+    if (!queuesFilterReady) {
       return
     }
 
@@ -154,6 +163,7 @@ export const NotManagedCalls: FC<NotManagedCallsProps> = ({ className }): JSX.El
     }
   }, [
     firstRender,
+    queuesFilterReady,
     pageNum,
     pageSize,
     textFilter,
@@ -323,8 +333,12 @@ export const NotManagedCalls: FC<NotManagedCallsProps> = ({ className }): JSX.El
                   data={isCallsLoaded ? calls?.rows || [] : []}
                   isLoading={!isCallsLoaded}
                   emptyState={{
-                    title: t('Queues.No queue calls'),
-                    description: t('Queues.There are no recent calls with current filters') || '',
+                    title: emptyQueueFilter
+                      ? t('QueueManager.No queue selected')
+                      : t('Queues.No queue calls'),
+                    description: emptyQueueFilter
+                      ? t('QueueManager.Select queue') || ''
+                      : t('Queues.There are no recent calls with current filters') || '',
                     icon: (
                       <FontAwesomeIcon
                         icon={faPhone}

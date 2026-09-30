@@ -608,8 +608,8 @@ export const groupDataFailedCallsHourLineChart = (data: any) => {
 //----------------------------------------------------------------
 //Local storage section
 
-export const DEFAULT_EXPANDED_OPERATORS = false
-export const DEFAULT_EXPANDED_QUEUES = false
+export const DEFAULT_EXPANDED_OPERATORS = true
+export const DEFAULT_EXPANDED_QUEUES = true
 
 export const DEFAULT_OUTCOME_FILTER = 'lost'
 export const DEFAULT_CALLS_REFRESH_INTERVAL = 20
@@ -629,14 +629,14 @@ export const DEFAULT_EXPANDED_QUEUES_SUMMARY = true
 export const DEFAULT_EXPANDED_OPERATORS_SUMMARY = true
 export const DEFAULT_SUMMARY_SELECTED_QUEUE = {}
 
-export const DEFAULT_EXPANDED_QUEUES_MANAGEMENT_DASHBOARD = false
-export const DEFAULT_EXPANDED_QUEUES_MANAGEMENT_OPERATORS = false
-export const DEFAULT_EXPANDED_QUEUES_MANAGEMENT_CONNECTED = false
-export const DEFAULT_EXPANDED_QUEUES_MANAGEMENT_WAITING = false
+export const DEFAULT_EXPANDED_QUEUES_MANAGEMENT_DASHBOARD = true
+export const DEFAULT_EXPANDED_QUEUES_MANAGEMENT_OPERATORS = true
+export const DEFAULT_EXPANDED_QUEUES_MANAGEMENT_CONNECTED = true
+export const DEFAULT_EXPANDED_QUEUES_MANAGEMENT_WAITING = true
 export const DEFAULT_QUEUES_MANAGEMENT_SELECTED_QUEUE = {}
 
-export const DEFAULT_EXPANDED_REALTIME_QUEUES_STATISTICS = false
-export const DEFAULT_EXPANDED_REALTIME_OPERATOR_STATISTICS = false
+export const DEFAULT_EXPANDED_REALTIME_QUEUES_STATISTICS = true
+export const DEFAULT_EXPANDED_REALTIME_OPERATOR_STATISTICS = true
 
 export const DEFAULT_REALTIME_ROW_NUMBERS = 5
 export const DEFAULT_REALTIME_FIRST_QUEUE_SELECTED = {}
@@ -694,11 +694,11 @@ export const getFilterValuesSummary = (currentUsername: string) => {
 
 export const getExpandedQueueManagerDashboardValue = (currentUsername: string) => {
   const expandedOperators =
-    loadPreference('queueManagerDashboardOperatorsStatisticExpandedPreference', currentUsername) ||
+    loadPreference('queueManagerDashboardOperatorsStatisticExpandedPreference', currentUsername) ??
     DEFAULT_EXPANDED_OPERATORS
 
   const expandedQueues =
-    loadPreference('queueManagerQueuesStatisticExpandedPreference', currentUsername) ||
+    loadPreference('queueManagerQueuesStatisticExpandedPreference', currentUsername) ??
     DEFAULT_EXPANDED_QUEUES
 
   return { expandedOperators, expandedQueues }
@@ -706,19 +706,19 @@ export const getExpandedQueueManagerDashboardValue = (currentUsername: string) =
 
 export const getExpandedQueueManagamentValue = (currentUsername: string) => {
   const expandedQueueDashboard =
-    loadPreference('queueManagementDashboardExpandedPreference', currentUsername) ||
+    loadPreference('queueManagementDashboardExpandedPreference', currentUsername) ??
     DEFAULT_EXPANDED_QUEUES_MANAGEMENT_DASHBOARD
 
   const expandedQueueOperators =
-    loadPreference('queueManagementQueueOperatorsExpandedPreference', currentUsername) ||
+    loadPreference('queueManagementQueueOperatorsExpandedPreference', currentUsername) ??
     DEFAULT_EXPANDED_QUEUES_MANAGEMENT_OPERATORS
 
   const expandedWaitingCalls =
-    loadPreference('queueManagementQueueWaitingCallsExpandedPreference', currentUsername) ||
+    loadPreference('queueManagementQueueWaitingCallsExpandedPreference', currentUsername) ??
     DEFAULT_EXPANDED_QUEUES_MANAGEMENT_WAITING
 
   const expandedConnectedCalls =
-    loadPreference('queueManagementQueueConnectedCallsExpandedPreference', currentUsername) ||
+    loadPreference('queueManagementQueueConnectedCallsExpandedPreference', currentUsername) ??
     DEFAULT_EXPANDED_QUEUES_MANAGEMENT_CONNECTED
 
   const selectedQueue =
@@ -741,11 +741,11 @@ export const getSelectedTabQueueManager = (currentUsername: string) => {
 
 export const getExpandedRealtimeValue = (currentUsername: string) => {
   const expandedQueuesStatistics =
-    loadPreference('queueManagerRealtimeQueuesPreference', currentUsername) ||
+    loadPreference('queueManagerRealtimeQueuesPreference', currentUsername) ??
     DEFAULT_EXPANDED_REALTIME_QUEUES_STATISTICS
 
   const expandedOperatorsStatistics =
-    loadPreference('queueManagerRealtimeOperatorPreference', currentUsername) ||
+    loadPreference('queueManagerRealtimeOperatorPreference', currentUsername) ??
     DEFAULT_EXPANDED_REALTIME_OPERATOR_STATISTICS
 
   return { expandedQueuesStatistics, expandedOperatorsStatistics }
@@ -1029,24 +1029,28 @@ export function setOperatorInformationDrawer(operatorData: any, operatorsStore: 
 }
 
 // Get formatted hours from first element of alarm list
-export function getFormattedTimeFromAlarmsList(alarmsList: any) {
-  const firstAlarm = alarmsList.list[Object.keys(alarmsList.list)[0]]
-  const alarmType = Object.keys(firstAlarm)[0]
-  const alarmData = firstAlarm[alarmType]
-
-  const timestamp = alarmData.date
-  const formattedTime = format(new Date(timestamp), 'HH:mm')
-
-  return formattedTime
+// Flatten the alarms of every queue into a single list
+export function getAlarmsFlatList(alarmsList: any) {
+  if (!alarmsList?.list) {
+    return []
+  }
+  return Object.entries<any>(alarmsList.list).flatMap(([queue, queueAlarms]) =>
+    Object.entries<any>(queueAlarms || {}).map(([type, alarm]: any) => ({
+      queue,
+      type,
+      status: alarm?.status,
+      date: alarm?.date,
+    })),
+  )
 }
 
-// Get alarm description
-export function getAlarmDescription(alarmsList: any, alarmsTypeObject: any) {
-  const firstAlarm = alarmsList.list[Object.keys(alarmsList.list)[0]]
-  const alarmType = Object.keys(firstAlarm)[0]
-  const alarmDescription = alarmsTypeObject[alarmType]?.description || ''
-
-  return alarmDescription
+// Get the hour of an alarm
+export function getAlarmTime(date: any) {
+  if (!date) {
+    return ''
+  }
+  const alarmDate = new Date(date)
+  return isNaN(alarmDate.getTime()) ? '' : format(alarmDate, 'HH:mm')
 }
 
 export const cardContent = (icon: any, number: number, description: string) => {

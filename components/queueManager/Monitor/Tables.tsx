@@ -9,7 +9,11 @@ import { RootState } from '../../../store'
 import { faChevronDown, faCheck, faMinus, faPlus, faUsers } from '@fortawesome/free-solid-svg-icons'
 import { savePreference } from '../../../lib/storage'
 import { CallDuration } from '../../operators/CallDuration'
-import { getMonitorValue } from '../../../lib/queueManager'
+import {
+  DEFAULT_REALTIME_FIRST_QUEUE_SELECTED,
+  DEFAULT_REALTIME_SECOND_QUEUE_SELECTED,
+  getMonitorValue,
+} from '../../../lib/queueManager'
 import {
   Listbox,
   ListboxButton,
@@ -52,6 +56,10 @@ export const MonitorTables: FC<MonitorTablesProps> = ({
 
   // on change of selected row numbers
   const handleSelectedFirstQueues = (newFirstQueueSelected: any) => {
+    // clicking the selected queue again clears the selection, like in queues management
+    if (newFirstQueueSelected?.queue && newFirstQueueSelected.queue === selectedQueueFirstTable?.queue) {
+      newFirstQueueSelected = DEFAULT_REALTIME_FIRST_QUEUE_SELECTED
+    }
     setSelectedQueueFirstTable(newFirstQueueSelected)
     let currentSelectedFirstQueue = newFirstQueueSelected
     savePreference('monitorFirstQueueSelected', currentSelectedFirstQueue, authStore.username)
@@ -59,6 +67,13 @@ export const MonitorTables: FC<MonitorTablesProps> = ({
 
   // on change of selected row numbers
   const handleSelectedSecondQueues = (newSecondQueueSelected: any) => {
+    // clicking the selected queue again clears the selection, like in queues management
+    if (
+      newSecondQueueSelected?.queue &&
+      newSecondQueueSelected.queue === selectedQueueSecondTable?.queue
+    ) {
+      newSecondQueueSelected = DEFAULT_REALTIME_SECOND_QUEUE_SELECTED
+    }
     setSelectedQueueSecondTable(newSecondQueueSelected)
     let currentSelectedSecondQueue = newSecondQueueSelected
     savePreference('monitorSecondQueueSelected', currentSelectedSecondQueue, authStore.username)
@@ -148,9 +163,9 @@ export const MonitorTables: FC<MonitorTablesProps> = ({
                               leaveFrom='opacity-100'
                               leaveTo='opacity-0'
                             >
-                              <ListboxOptions className='absolute z-10 mt-1 w-full overflow-auto  scrollbar-thin scrollbar-thumb-gray-400 dark:scrollbar-thumb-gray-400 scrollbar-thumb-rounded-full scrollbar-thumb-opacity-50 scrollbar-track-gray-200 dark:scrollbar-track-gray-900 scrollbar-track-rounded-full scrollbar-track-opacity-25 rounded-md bg-white py-1 text-base shadow-lg ring-1 dark:bg-gray-900 ring-black ring-opacity-5 focus:outline-none sm:text-sm h-auto'>
+                              <ListboxOptions className='absolute z-10 mt-1 w-full overflow-auto  scrollbar-thin scrollbar-thumb-gray-400 dark:scrollbar-thumb-gray-400 scrollbar-thumb-rounded-full scrollbar-thumb-opacity-50 scrollbar-track-gray-200 dark:scrollbar-track-gray-900 scrollbar-track-rounded-full scrollbar-track-opacity-25 rounded-md bg-white py-1 text-base shadow-lg ring-1 dark:bg-gray-900 ring-black ring-opacity-5 dark:ring-gray-700 dark:ring-opacity-100 focus:outline-none sm:text-sm h-auto'>
                                 {Object.keys(queueManagerStore.queues).length === 0 && (
-                                  <div className='relative select-none py-2 pl-8 pr-4 text-gray-500 dark:text-gray-400'>
+                                  <div className='relative select-none px-4 py-2 text-sm text-gray-500 dark:text-gray-400'>
                                     {t('Queues.No queues')}
                                   </div>
                                 )}
@@ -237,8 +252,8 @@ export const MonitorTables: FC<MonitorTablesProps> = ({
             </div>
 
             {/* Body section */}
-            {selectedQueueFirstTable === '' && (
-              <>
+            {!selectedQueueFirstTable?.queue && (
+              <div className='pt-6'>
                 {/* empty state */}
 
                 <EmptyState
@@ -252,10 +267,10 @@ export const MonitorTables: FC<MonitorTablesProps> = ({
                     />
                   }
                 ></EmptyState>
-              </>
+              </div>
             )}
 
-            {selectedQueueFirstTable !== '' && (
+            {!!selectedQueueFirstTable?.queue && (
               <div className=''>
                 <div className='mt- flow-root'>
                   <div className='-mx-4 -my-2 overflow-x-auto sm:-mx-6 lg:-mx-8'>
@@ -404,9 +419,9 @@ export const MonitorTables: FC<MonitorTablesProps> = ({
                                 leaveFrom='opacity-100'
                                 leaveTo='opacity-0'
                               >
-                                <ListboxOptions className='absolute z-10 mt-1 w-full overflow-auto  scrollbar-thin scrollbar-thumb-gray-400 dark:scrollbar-thumb-gray-400 scrollbar-thumb-rounded-full scrollbar-thumb-opacity-50 scrollbar-track-gray-200 dark:scrollbar-track-gray-900 scrollbar-track-rounded-full scrollbar-track-opacity-25 rounded-md bg-white py-1 text-base shadow-lg ring-1 dark:bg-gray-900 ring-black ring-opacity-5 focus:outline-none sm:text-sm h-auto'>
+                                <ListboxOptions className='absolute z-10 mt-1 w-full overflow-auto  scrollbar-thin scrollbar-thumb-gray-400 dark:scrollbar-thumb-gray-400 scrollbar-thumb-rounded-full scrollbar-thumb-opacity-50 scrollbar-track-gray-200 dark:scrollbar-track-gray-900 scrollbar-track-rounded-full scrollbar-track-opacity-25 rounded-md bg-white py-1 text-base shadow-lg ring-1 dark:bg-gray-900 ring-black ring-opacity-5 dark:ring-gray-700 dark:ring-opacity-100 focus:outline-none sm:text-sm h-auto'>
                                   {Object.keys(queueManagerStore.queues).length === 0 && (
-                                    <div className='relative select-none py-2 pl-8 pr-4 text-gray-500 dark:text-gray-400'>
+                                    <div className='relative select-none px-4 py-2 text-sm text-gray-500 dark:text-gray-400'>
                                       {t('Queues.No queues')}
                                     </div>
                                   )}
@@ -491,8 +506,8 @@ export const MonitorTables: FC<MonitorTablesProps> = ({
               </div>
 
               {/* Body section */}
-              {selectedQueueSecondTable === '' && (
-                <>
+              {!selectedQueueSecondTable?.queue && (
+                <div className='pt-6'>
                   {/* empty state */}
                   <EmptyState
                     title={t('QueueManager.No queue selected') || ''}
@@ -505,9 +520,9 @@ export const MonitorTables: FC<MonitorTablesProps> = ({
                       />
                     }
                   ></EmptyState>
-                </>
+                </div>
               )}
-              {selectedQueueSecondTable !== '' && (
+              {!!selectedQueueSecondTable?.queue && (
                 <div className=''>
                   <div className='mt- flow-root'>
                     <div className='-mx-4 -my-2 overflow-x-auto sm:-mx-6 lg:-mx-8'>

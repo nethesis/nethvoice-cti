@@ -16,12 +16,12 @@ import {
   faCheck,
   faPause,
   faDownLeftAndUpRightToCenter,
+  faUsers,
 } from '@fortawesome/free-solid-svg-icons'
 
 import { openShowOperatorDrawer } from '../../../lib/operators'
 
 import {
-  Label,
   Listbox,
   ListboxButton,
   ListboxOption,
@@ -29,13 +29,14 @@ import {
   Transition,
 } from '@headlessui/react'
 import {
+  DEFAULT_QUEUES_MANAGEMENT_SELECTED_QUEUE,
   getExpandedQueueManagamentValue,
   retrieveSelectedNotManaged,
 } from '../../../lib/queueManager'
 
 import { getQueues, getQueueStats } from '../../../lib/queueManager'
 import { isEmpty } from 'lodash'
-import { Avatar } from '../../common'
+import { Avatar, EmptyState } from '../../common'
 import { CallDuration } from '../../operators/CallDuration'
 import { QueueManagementChart } from '../Chart/QueueManagementChart'
 
@@ -293,6 +294,10 @@ export const QueueManagement: FC<QueueManagementProps> = ({ className }): JSX.El
 
   // on change of selected queue
   const handleSelectedValue = (newValueQueue: any) => {
+    // clicking the selected queue again clears the selection
+    if (newValueQueue?.queue && newValueQueue.queue === selectedValue?.queue) {
+      newValueQueue = DEFAULT_QUEUES_MANAGEMENT_SELECTED_QUEUE
+    }
     setSelectedValue(newValueQueue)
     let currentSelectedQueue = newValueQueue
     savePreference('queueManagementSelectedQueue', currentSelectedQueue, auth.username)
@@ -312,15 +317,18 @@ export const QueueManagement: FC<QueueManagementProps> = ({ className }): JSX.El
     }
   }, [selectedValue, agentCounters])
 
+  const selectedQueueData = queueManagerStore?.queues?.[selectedValue?.queue]
+  const isWaitingCallsEmpty =
+    queueManagerStore?.isLoaded && !!selectedQueueData && isEmpty(selectedQueueData.waitingCallersList)
+  const isConnectedCallsEmpty =
+    queueManagerStore?.isLoaded && !!selectedQueueData && isEmpty(selectedQueueData.connectedCalls)
+
   return (
     <>
       <Listbox value={selectedValue} onChange={handleSelectedValue}>
         {({ open }) => (
           <>
             <div className='flex items-center'>
-              <Label className='block text-sm font-medium leading-6 dark:text-gray-200 text-gray- mr-8'>
-                {t('QueueManager.Select queue')}
-              </Label>
               <div className='relative'>
                 <ListboxButton className='relative cursor-default rounded-md bg-white dark:bg-gray-950 py-1.5 pl-3 pr-10 text-left w-60 text-gray-900 dark:text-gray-300 shadow-sm ring-1 ring-inset ring-gray-300 focus:outline-none focus:ring-2 focus:ring-primary sm:text-sm sm:leading-6 inline-block'>
                   <span className='block truncate'>
@@ -342,7 +350,12 @@ export const QueueManagement: FC<QueueManagementProps> = ({ className }): JSX.El
                   leaveFrom='opacity-100'
                   leaveTo='opacity-0'
                 >
-                  <ListboxOptions className='absolute z-10 mt-1 w-full overflow-auto scrollbar-thin scrollbar-thumb-gray-400 dark:scrollbar-thumb-gray-400 scrollbar-thumb-rounded-full scrollbar-thumb-opacity-50 scrollbar-track-gray-200 dark:scrollbar-track-gray-900 scrollbar-track-rounded-full scrollbar-track-opacity-25 rounded-md bg-white py-1 text-base shadow-lg ring-1 dark:bg-gray-900 ring-black ring-opacity-5 focus:outline-none sm:text-sm h-auto'>
+                  <ListboxOptions className='absolute z-10 mt-1 w-full overflow-auto scrollbar-thin scrollbar-thumb-gray-400 dark:scrollbar-thumb-gray-400 scrollbar-thumb-rounded-full scrollbar-thumb-opacity-50 scrollbar-track-gray-200 dark:scrollbar-track-gray-900 scrollbar-track-rounded-full scrollbar-track-opacity-25 rounded-md bg-white py-1 text-base shadow-lg ring-1 dark:bg-gray-900 ring-black ring-opacity-5 dark:ring-gray-700 dark:ring-opacity-100 focus:outline-none sm:text-sm h-auto'>
+                    {Object.keys(queueManagerStore.queues).length === 0 && (
+                      <div className='relative select-none px-4 py-2 text-sm text-gray-500 dark:text-gray-400'>
+                        {t('Queues.No queues')}
+                      </div>
+                    )}
                     {Object.entries<any>(queueManagerStore.queues).map(([queueId, queueInfo]) => (
                       <ListboxOption
                         key={queueId}
@@ -380,6 +393,19 @@ export const QueueManagement: FC<QueueManagementProps> = ({ className }): JSX.El
           </>
         )}
       </Listbox>
+
+      {!selectedValue?.queue ? (
+        <div className='pt-8'>
+          <EmptyState
+            title={t('QueueManager.No queue selected') || ''}
+            description={t('QueueManager.Select queue') || ''}
+            icon={
+              <FontAwesomeIcon icon={faUsers} className='mx-auto h-12 w-12' aria-hidden='true' />
+            }
+          />
+        </div>
+      ) : (
+        <>
 
       {/* Queue Dashboard*/}
       <div className='py-2 relative mt-4'>
@@ -452,17 +478,19 @@ export const QueueManagement: FC<QueueManagementProps> = ({ className }): JSX.El
             </div>
 
             {/* divider */}
-            <div className='flex-grow border-b border-gray-200 dark:border-gray-700 mt-1'></div>
+            <div className='flex-grow border-b border-gray-200 dark:border-gray-700 mt-1 mb-6'></div>
             {expandedWaitingCall && (
               <>
                 <div className='text-sm'>
-                  <div className='border rounded-md border-gray-200 dark:border-gray-700 text-gray-700 dark:text-gray-200'>
-                    {queueManagerStore &&
-                    queueManagerStore?.isLoaded &&
-                    queueManagerStore?.queues[selectedValue?.queue] &&
-                    isEmpty(queueManagerStore?.queues[selectedValue.queue]?.waitingCallersList) &&
-                    selectedValue ? (
-                      <div className='p-4'>{t('Queues.No calls')}</div>
+                  <div
+                    className={classNames(
+                      !isWaitingCallsEmpty &&
+                        'border rounded-md border-gray-200 dark:border-gray-700',
+                      'text-gray-700 dark:text-gray-200',
+                    )}
+                  >
+                    {isWaitingCallsEmpty ? (
+                      <EmptyState title={t('Queues.No calls')} />
                     ) : (
                       <div className='-my-2 -mx-4 overflow-x-auto sm:-mx-6 lg:-mx-8'>
                         <div className='inline-block min-w-full py-2 align-middle sm:px-6 lg:px-8'>
@@ -542,17 +570,19 @@ export const QueueManagement: FC<QueueManagementProps> = ({ className }): JSX.El
             </div>
 
             {/* divider */}
-            <div className='flex-grow border-b border-gray-200 dark:border-gray-700 mt-1'></div>
+            <div className='flex-grow border-b border-gray-200 dark:border-gray-700 mt-1 mb-6'></div>
 
             {expandedConnectedCall && (
               <div className='text-sm'>
-                <div className='border rounded-md border-gray-200 dark:border-gray-700 text-gray-700 dark:text-gray-200'>
-                  {queueManagerStore &&
-                  queueManagerStore?.isLoaded &&
-                  queueManagerStore?.queues[selectedValue?.queue] &&
-                  isEmpty(queueManagerStore?.queues[selectedValue.queue]?.connectedCalls) &&
-                  selectedValue ? (
-                    <div className='p-4'>{t('Queues.No calls')}</div>
+                <div
+                  className={classNames(
+                    !isConnectedCallsEmpty &&
+                      'border rounded-md border-gray-200 dark:border-gray-700',
+                    'text-gray-700 dark:text-gray-200',
+                  )}
+                >
+                  {isConnectedCallsEmpty ? (
+                    <EmptyState title={t('Queues.No calls')} />
                   ) : (
                     <div className='-my-2 -mx-4 overflow-x-auto sm:-mx-6 lg:-mx-8'>
                       <div className='inline-block min-w-full py-2 align-middle sm:px-6 lg:px-8'>
@@ -640,6 +670,8 @@ export const QueueManagement: FC<QueueManagementProps> = ({ className }): JSX.El
           ></QueueManagementOperators>
         </div>
       </div>
+        </>
+      )}
     </>
   )
 }

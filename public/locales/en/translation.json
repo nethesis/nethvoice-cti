@@ -1,5 +1,8 @@
 {
   "Common": {
+    "None": "None",
+    "Select all": "Select all",
+    "Deselect all": "Deselect all",
     "Showing": "Showing",
     "of": "of",
     "Active filters": "Active filters",
@@ -586,6 +589,10 @@
     "Notifications": "Notifications"
   },
   "Queues": {
+    "outcome_JOINEMPTY": "No agents outqueue",
+    "outcome_JOINUNAVAIL": "No agents outqueue",
+    "outcome_EXITEMPTY": "No agents inqueue",
+    "outcome_FULL": "Queue full",
     "Queues": "Queues",
     "Filter queues": "Filter queues",
     "Login to all queues": "Login all queues",
@@ -857,6 +864,8 @@
     "Voice mail": "Voicemail inbox"
   },
   "QueueManager": {
+    "Descending order": "Descending",
+    "Ascending order": "Ascending",
     "Dashboard": "Dashboard",
     "Queues management": "Queues management",
     "Not managed calls": "Not managed calls",
@@ -952,7 +961,7 @@
     "No not managed customers": "No not managed customers",
     "Date": "Date",
     "Caller": "Caller",
-    "Go to not managed customers": "Go to customers management",
+    "Go to not managed customers": "Go to Customers management",
     "No customers to manage": "No customers to manage",
     "There are no customers to manage": "There are no customers to manage",
     "Queues": "Queues",

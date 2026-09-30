@@ -189,7 +189,7 @@ export const RealTimeOperators: FC<RealTimeOperatorsProps> = ({
                       <li key={index} className='px-1'>
                         <button
                           type='button'
-                          className='group flex w-full items-center justify-between space-x-3 rounded-lg p-2 text-left focus:outline-none focus:ring-2 focus:ring-offset-2 bg-cardBackgroud dark:bg-cardBackgroudDark cursor-default'
+                          className='group flex w-full items-center justify-between space-x-3 rounded-lg py-2 px-3 text-left focus:outline-none focus:ring-2 focus:ring-offset-2 bg-cardBackgroud dark:bg-cardBackgroudDark cursor-default'
                         >
                           <div className='flex min-w-0 flex-1 items-center space-x-3'>
                             <div className='block flex-shrink-0'>
@@ -217,6 +217,8 @@ export const RealTimeOperators: FC<RealTimeOperatorsProps> = ({
                     next={showMoreInfiniteScrollOperators}
                     hasMore={infiniteScrollHasMore}
                     scrollableTarget='main-content'
+                    // the wrapper of the library sets overflow:auto, which would clip the row menus
+                    style={{ overflow: 'visible' }}
                     loader={
                       <FontAwesomeIcon
                         icon={faCircleNotch}

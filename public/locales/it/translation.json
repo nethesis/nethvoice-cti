@@ -1,5 +1,8 @@
 {
   "Common": {
+    "None": "Nessuna",
+    "Select all": "Seleziona tutte",
+    "Deselect all": "Deseleziona tutte",
     "Showing": "Visualizza",
     "of": "di",
     "Active filters": "Filtri attivi",
@@ -736,6 +739,10 @@
     "Notifications": "Notifiche"
   },
   "Queues": {
+    "outcome_JOINEMPTY": "Nessun agente fuori coda",
+    "outcome_JOINUNAVAIL": "Nessun agente fuori coda",
+    "outcome_EXITEMPTY": "Nessun agente in coda",
+    "outcome_FULL": "Coda piena",
     "Logout": "Logout",
     "Queues": "Code",
     "No queues": "Nessuna coda",
@@ -866,6 +873,8 @@
     "Call": "Chiama"
   },
   "QueueManager": {
+    "Descending order": "Decrescente",
+    "Ascending order": "Crescente",
     "Dashboard": "Dashboard",
     "Queues management": "Gestione code",
     "Gestione code": "Gestione code",

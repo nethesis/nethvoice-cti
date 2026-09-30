@@ -15,6 +15,10 @@ import { useSelector } from 'react-redux'
 import { RootState } from '../../store'
 ChartJS.register(CategoryScale, LinearScale, BarElement, Title, Tooltip, Legend)
 
+// the default positioner averages every active bar: with overlapping bars the tooltip
+// lands between the segments instead of on the hovered one
+;(Tooltip.positioners as any).cursor = (_elements: any, eventPosition: any) => eventPosition
+
 interface BarChartHorizontalProps {
   labels: string[]
   datasets: any[]
@@ -37,6 +41,13 @@ const BarChartHorizontal: FC<BarChartHorizontalProps> = ({
         borderWidth: 1,
       },
     },
+    // fixed thickness: as a percentage of the plot area, a legend wrapping on two lines
+    // made the bar thinner than the others
+    datasets: {
+      bar: {
+        barThickness: 14,
+      },
+    },
     scales: {
       y: {
         display: false,
@@ -44,9 +55,21 @@ const BarChartHorizontal: FC<BarChartHorizontalProps> = ({
       },
       x: {
         display: false,
+        // the bars overlap from zero: pin the max to the longest one, otherwise every chart
+        // rounds its scale up differently and the bars end at different lengths
+        min: 0,
+        max:
+          Math.max(0, ...datasets.map((dataset: any) => Number(dataset?.data?.[0]) || 0)) || 1,
       },
     },
     responsive: true,
+    maintainAspectRatio: false,
+    // the bars overlap from zero: take every bar under the pointer, the tooltip then keeps
+    // the visible one
+    interaction: {
+      mode: 'point' as const,
+      intersect: true,
+    },
     layout: {
       padding: {
         top: 0,
@@ -79,6 +102,10 @@ const BarChartHorizontal: FC<BarChartHorizontalProps> = ({
             : GRAY_700,
       },
       tooltip: {
+        position: 'cursor' as any,
+        // the visible segment is the shortest bar that still reaches the pointer
+        filter: (item: any, _index: number, items: any[]) =>
+          (Number(item.raw) || 0) === Math.min(...items.map((i: any) => Number(i.raw) || 0)),
         callbacks: {
           label: (context: any) => {
             const originalValue = context.dataset.data[context.dataIndex]
@@ -94,10 +121,22 @@ const BarChartHorizontal: FC<BarChartHorizontalProps> = ({
 
   const data = {
     labels,
-    datasets,
+    // a rounded bar of length zero is still drawn as a thin line: skip empty values
+    datasets: datasets.map((dataset: any) => ({
+      ...dataset,
+      data: (dataset?.data || []).map((value: any) => (Number(value) ? value : null)),
+    })),
   }
 
-  return <Bar data={data} options={options} />
+  // without an explicit height the chart keeps the default aspect ratio and the card
+  // becomes as tall as half its width
+  const chartHeight = Math.max(110, labels.length * 42 + 60)
+
+  return (
+    <div style={{ height: `${chartHeight}px` }}>
+      <Bar data={data} options={options} />
+    </div>
+  )
 }
 
 export default BarChartHorizontal
