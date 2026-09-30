@@ -6,17 +6,25 @@ import dynamic from 'next/dynamic'
 import { useEffect, useMemo, useState } from 'react'
 import { useSelector } from 'react-redux'
 import { RootState, store } from '../../store'
-import { callPhoneNumber, openToast } from '../../lib/utils'
+import { callPhoneNumber, isNethlinkOnline, openToast } from '../../lib/utils'
 
 const ChatIsland = dynamic(() => import('@nethesis/chat-island').then((mod) => mod.ChatIsland), {
   ssr: false,
 })
 
-/** Open the chat with a colleague or a group address. */
-export const openChatWith = (username: string) =>
-  window.dispatchEvent(new CustomEvent('chat-island-open', { detail: { username } }))
+/** Open the chat with a colleague or a group address; in NethLink when it runs. */
+export const openChatWith = (username: string) => {
+  if (isNethlinkOnline()) window.location.href = `nethlink://chat?to=${encodeURIComponent(username)}`
+  else window.dispatchEvent(new CustomEvent('chat-island-open', { detail: { username } }))
+}
 
-export const newChat = () => window.dispatchEvent(new CustomEvent('chat-island-new'))
+export const newChat = () => {
+  if (isNethlinkOnline()) window.location.href = 'nethlink://chat'
+  else window.dispatchEvent(new CustomEvent('chat-island-new'))
+}
+
+/** One island at a time: with NethLink running the chat lives there. */
+export const useChatInNethlink = () => useSelector(() => isNethlinkOnline())
 
 /** Chat switched on for this NethVoice (window.CONFIG). */
 export const chatEnabled = () => typeof window !== 'undefined' && String((window as any).CONFIG?.CHAT_ENABLED) === 'true'
@@ -27,6 +35,7 @@ export const useChatAllowed = () =>
 
 export function ChatIslandMount() {
   const allowed = useChatAllowed()
+  const inNethlink = useChatInNethlink()
   const auth = useSelector((state: RootState) => state.authentication)
   const currentUser = useSelector((state: RootState) => state.user)
   const operatorsStore = useSelector((state: RootState) => state.operators)
@@ -76,6 +85,12 @@ export function ChatIslandMount() {
     // resent once the island is up
   }, [operatorsStore.operators, operatorsStore.avatars, currentUser.username, ready])
 
-  if (!config || !allowed) return null
+  useEffect(() => {
+    if (!inNethlink) return
+    store.dispatch.chat.setConversations([])
+    store.dispatch.chat.setUnread(0)
+  }, [inNethlink])
+
+  if (!config || !allowed || inNethlink) return null
   return <ChatIsland dataConfig={config} serviceWorker='/chat-island-sw.js' newChatButton={false} maxHeads={5} notifications='auto' />
 }
