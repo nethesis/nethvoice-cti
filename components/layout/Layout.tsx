@@ -114,7 +114,8 @@ export const Layout: FC<LayoutProps> = ({ children }) => {
       return route
     })
     if (router?.pathname?.includes('/lines')) {
-      items[5].current = true
+      const applications = currentItems.find((route) => route.href === '/applications')
+      if (applications) applications.current = true
     }
 
     setItems(currentItems)

@@ -19,6 +19,7 @@ import { useSelector } from 'react-redux'
 import { RootState } from '../../store'
 import { useTranslation } from 'react-i18next'
 import { customScrollbarClass, getConfiguredNavbarLogoUrl } from '../../lib/utils'
+import { chatEnabled } from '../chat'
 
 interface NavBarProps {
   items: NavItemsProps[]
@@ -35,6 +36,7 @@ const activeStyles = {
 
 export const NavBar: FC<NavBarProps> = ({ items }) => {
   const { profile } = useSelector((state: RootState) => state.user)
+  const chatUnread = useSelector((state: RootState) => state.chat.unread)
 
   const permissionsUser: any = {
     Operators: profile?.macro_permissions?.presence_panel?.value ? true : false,
@@ -44,6 +46,7 @@ export const NavBar: FC<NavBarProps> = ({ items }) => {
     Queuemanager: profile?.macro_permissions?.qmanager?.value ? true : false,
     Applications: true,
     Settings: true,
+    Chat: chatEnabled() && profile?.macro_permissions?.nethvoice_cti?.permissions?.chat?.value ? true : false,
   }
 
   // New user object to manage page permissions
@@ -107,6 +110,11 @@ export const NavBar: FC<NavBarProps> = ({ items }) => {
                       style={activeStyles}
                       className='bg-currentBadgePrimary dark:bg-currentBadgePrimaryDark'
                     />
+                  )}
+                  {item.name === 'Chat' && chatUnread > 0 && (
+                    <span className='absolute top-1 right-1 min-w-[1.125rem] h-[1.125rem] px-1 rounded-full bg-red-600 text-white text-[0.65rem] font-semibold flex items-center justify-center'>
+                      {chatUnread > 99 ? '99+' : chatUnread}
+                    </span>
                   )}
                 </div>
               </Link>
