@@ -1261,6 +1261,8 @@
     "Open menu": "Apri menù",
     "Leave": "Abbandona",
     "Delete group confirm": "Eliminare il gruppo \"{{name}}\" per tutti? I suoi messaggi vengono rimossi per tutti i membri.",
-    "Leave confirm": "Abbandonare il gruppo \"{{name}}\"? Non riceverai più i suoi messaggi e la tua copia viene rimossa."
+    "Leave confirm": "Abbandonare il gruppo \"{{name}}\"? Non riceverai più i suoi messaggi e la tua copia viene rimossa.",
+    "In NethLink": "La chat è aperta in NethLink.",
+    "Open in NethLink": "Apri in NethLink"
   }
 }

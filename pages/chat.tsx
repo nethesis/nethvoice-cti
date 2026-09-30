@@ -19,7 +19,7 @@ import {
 import { RootState } from '../store'
 import { Avatar, Button, ConfirmationModal, Dropdown, TextInput } from '../components/common'
 import { Table, type TableColumn } from '../components/common/Table'
-import { newChat, openChatWith, useChatAllowed } from '../components/chat'
+import { newChat, openChatWith, useChatAllowed, useChatInNethlink } from '../components/chat'
 import { MissingPermission } from '../components/common/MissingPermissionsPage'
 import type { ChatConversation } from '../models/chat'
 
@@ -38,6 +38,7 @@ const Chat: NextPage = () => {
   const operators = useSelector((state: RootState) => state.operators.operators) as any
   const [query, setQuery] = useState('')
   const allowed = useChatAllowed()
+  const inNethlink = useChatInNethlink()
   const [toDelete, setToDelete] = useState<ChatConversation | null>(null)
 
   const list = useMemo(() => {
@@ -50,6 +51,16 @@ const Chat: NextPage = () => {
   const displayName = (username?: string) => (username && operators?.[username]?.name) || username || ''
 
   if (!allowed) return <MissingPermission />
+  if (inNethlink)
+    return (
+      <div className='flex flex-col items-center gap-4 py-16 text-center'>
+        <FontAwesomeIcon icon={faMessage} className='h-12 w-12 text-gray-400' aria-hidden='true' />
+        <p className='text-gray-600 dark:text-gray-300'>{t('Chat.In NethLink')}</p>
+        <Button variant='primary' onClick={newChat}>
+          {t('Chat.Open in NethLink')}
+        </Button>
+      </div>
+    )
 
   const columns: TableColumn[] = [
     {
