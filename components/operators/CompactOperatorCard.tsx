@@ -3,6 +3,7 @@ import { Avatar, Button } from '../common'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import {
   faAngleRight,
+  faComment,
   faEarListen,
   faHandPointUp,
   faPhone,
@@ -18,6 +19,7 @@ import { CustomThemedTooltip } from '../common/CustomThemedTooltip'
 import { useOperatorStates } from '../../hooks/useOperatorStates'
 import { useSelector } from 'react-redux'
 import { RootState } from '../../store'
+import { openChatWith, useChatAllowed } from '../chat'
 
 interface CompactOperatorCardProps {
   operator: any
@@ -34,6 +36,7 @@ const CompactOperatorCard = ({
   actionInformation,
   index,
 }: CompactOperatorCardProps) => {
+  const chatAllowed = useChatAllowed()
   const liveOperatorData = useSelector(
     (state: RootState) => state.operators.operators[operator?.username] || operator,
   )
@@ -195,6 +198,19 @@ const CompactOperatorCard = ({
               className='inline-block text-center font-medium h-4 w-4 mr-3 leading-5'
             />
             <span className='text-xs'>{t('Operators.Call')}</span>
+          </Button>
+        )}
+
+                {chatAllowed && liveOperatorData?.username !== authUsername && (
+          <Button
+            variant='ghost'
+            size='small'
+            className='text-primaryActive dark:text-primaryActiveDark'
+            onClick={() => openChatWith(liveOperatorData?.username)}
+            title={t('Common.Chat') || ''}
+          >
+            <FontAwesomeIcon icon={faComment} className='inline-block text-center h-4 w-4' />
+            <span className='sr-only'>{t('Common.Chat')}</span>
           </Button>
         )}
 
