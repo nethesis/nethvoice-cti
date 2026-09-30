@@ -3,10 +3,11 @@
 
 import '@nethesis/chat-island/dist/index.css'
 import dynamic from 'next/dynamic'
-import { useEffect, useMemo, useState } from 'react'
+import { useCallback, useEffect, useMemo, useState } from 'react'
 import { useSelector } from 'react-redux'
 import { RootState, store } from '../../store'
-import { callPhoneNumber, isNethlinkOnline, openToast } from '../../lib/utils'
+import { callPhoneNumber, isNethlinkOnline } from '../../lib/utils'
+import { ChatToast, type ChatNotice } from './ChatToast'
 
 const ChatIsland = dynamic(() => import('@nethesis/chat-island').then((mod) => mod.ChatIsland), {
   ssr: false,
@@ -47,6 +48,8 @@ export function ChatIslandMount() {
   }, [auth.token, currentUser.username])
 
   const [ready, setReady] = useState(false)
+  const [notice, setNotice] = useState<ChatNotice | null>(null)
+  const closeNotice = useCallback(() => setNotice(null), [])
   useEffect(() => {
     const on = (name: string, fn: (detail: any) => void) => {
       const handler = (e: Event) => fn((e as CustomEvent).detail)
@@ -61,7 +64,8 @@ export function ChatIslandMount() {
       on('chat-island-unread', (d) => store.dispatch.chat.setUnread(d.total)),
       on('chat-island-conversations', (d) => store.dispatch.chat.setConversations(d.conversations)),
       on('chat-island-call', (d) => d?.number && callPhoneNumber(d.number)),
-      on('chat-island-notify', (d) => d?.body && openToast('info', d.body, d.name, 5000, true)),
+      // Messages from the same conversation add up in one toast.
+      on('chat-island-notify', (d) => d?.body && setNotice((n) => ({ ...d, count: n && n.peer === d.peer ? n.count + 1 : 1 }))),
     ]
     return () => offs.forEach((off) => off())
   }, [])
@@ -92,5 +96,12 @@ export function ChatIslandMount() {
   }, [inNethlink])
 
   if (!config || !allowed || inNethlink) return null
-  return <ChatIsland dataConfig={config} serviceWorker='/chat-island-sw.js' newChatButton={false} maxHeads={5} notifications='auto' />
+  return (
+    <>
+      <ChatIsland dataConfig={config} serviceWorker='/chat-island-sw.js' newChatButton={false} maxHeads={5} notifications='auto' />
+      <div className='fixed top-6 right-9 z-50'>
+        <ChatToast notice={notice} onOpen={openChatWith} onClose={closeNotice} />
+      </div>
+    </>
+  )
 }
