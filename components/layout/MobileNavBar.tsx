@@ -21,6 +21,7 @@ import { faXmark } from '@fortawesome/free-solid-svg-icons'
 import Logo from '../../public/navbar_logo.svg'
 import { customScrollbarClass, getConfiguredNavbarLogoUrl } from '../../lib/utils'
 import { useTranslation } from 'react-i18next'
+import { useChatAllowed } from '../chat'
 interface MobileNavBarProps {
   show: boolean
   items: NavItemsProps[]
@@ -28,6 +29,7 @@ interface MobileNavBarProps {
 }
 
 export const MobileNavBar: FC<MobileNavBarProps> = ({ closeMobileMenu, show, items }) => {
+  const chatAllowed = useChatAllowed()
   const { t } = useTranslation()
 
   return (
@@ -93,7 +95,7 @@ export const MobileNavBar: FC<MobileNavBarProps> = ({ closeMobileMenu, show, ite
                 <div className={`mt-4 h-0 flex-1 ${customScrollbarClass} px-4`}>
                   <nav className='flex h-full flex-col'>
                     <div className='space-y-1'>
-                      {items.map((item) => (
+                      {items.filter((item) => item.name !== 'Chat' || chatAllowed).map((item) => (
                         <Link key={item.name} href={item.href}>
                           <div
                             className={classNames(
