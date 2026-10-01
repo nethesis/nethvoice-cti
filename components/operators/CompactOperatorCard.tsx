@@ -3,7 +3,7 @@ import { Avatar, Button } from '../common'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import {
   faAngleRight,
-  faComment,
+  faCommentDots,
   faEarListen,
   faHandPointUp,
   faPhone,
@@ -209,7 +209,7 @@ const CompactOperatorCard = ({
             onClick={() => openChatWith(liveOperatorData?.username)}
             title={t('Common.Chat') || ''}
           >
-            <FontAwesomeIcon icon={faComment} className='inline-block text-center h-4 w-4' />
+            <FontAwesomeIcon icon={faCommentDots} className='inline-block text-center h-4 w-4' />
             <span className='sr-only'>{t('Common.Chat')}</span>
           </Button>
         )}

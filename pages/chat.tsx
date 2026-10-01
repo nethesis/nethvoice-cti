@@ -9,9 +9,9 @@ import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import {
   faEllipsisVertical,
   faMagnifyingGlass,
-  faMessage,
+  faCommentDots,
   faPaperclip,
-  faPenToSquare,
+  faCommentMedical,
   faRightFromBracket,
   faTrash,
   faUsers,
@@ -22,14 +22,7 @@ import { Table, type TableColumn } from '../components/common/Table'
 import { newChat, openChatWith, useChatAllowed, useChatInNethlink } from '../components/chat'
 import { MissingPermission } from '../components/common/MissingPermissionsPage'
 import type { ChatConversation } from '../models/chat'
-
-const when = (ts: number) => {
-  const d = new Date(ts)
-  const today = new Date().toDateString() === d.toDateString()
-  return today
-    ? d.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })
-    : d.toLocaleDateString([], { day: 'numeric', month: 'short' })
-}
+import { ChatTime } from '../components/chat/ChatTime'
 
 /** Conversations table; a row opens the chat in the island. */
 const Chat: NextPage = () => {
@@ -54,7 +47,7 @@ const Chat: NextPage = () => {
   if (inNethlink)
     return (
       <div className='flex flex-col items-center gap-4 py-16 text-center'>
-        <FontAwesomeIcon icon={faMessage} className='h-12 w-12 text-gray-400' aria-hidden='true' />
+        <FontAwesomeIcon icon={faCommentDots} className='h-12 w-12 text-gray-400' aria-hidden='true' />
         <p className='text-gray-600 dark:text-gray-300'>{t('Chat.In NethLink')}</p>
         <Button variant='primary' onClick={newChat}>
           {t('Chat.Open in NethLink')}
@@ -123,8 +116,8 @@ const Chat: NextPage = () => {
     },
     {
       header: t('Chat.Time'),
-      width: '8rem',
-      cell: (c: ChatConversation) => <span className='text-sm text-gray-500 dark:text-gray-400 whitespace-nowrap'>{c.last ? when(c.last.ts) : ''}</span>,
+      width: '13rem',
+      cell: (c: ChatConversation) => (c.last ? <ChatTime ts={c.last.ts} /> : null),
     },
     {
       header: '',
@@ -171,7 +164,7 @@ const Chat: NextPage = () => {
         <div className='flex items-center gap-3'>
           {status !== 'online' && <span className='text-sm text-gray-500 dark:text-gray-400'>{t('Chat.Offline')}</span>}
           <Button variant='primary' onClick={newChat} disabled={status !== 'online'}>
-            <FontAwesomeIcon icon={faPenToSquare} className='h-4 w-4 mr-2' />
+            <FontAwesomeIcon icon={faCommentMedical} className='h-4 w-4 mr-2' />
             {t('Chat.New chat')}
           </Button>
         </div>
@@ -182,7 +175,7 @@ const Chat: NextPage = () => {
         emptyState={{
           title: t('Chat.No conversations'),
           description: t('Chat.No conversations description') || '',
-          icon: <FontAwesomeIcon icon={faMessage} className='mx-auto h-12 w-12' aria-hidden='true' />,
+          icon: <FontAwesomeIcon icon={faCommentDots} className='mx-auto h-12 w-12' aria-hidden='true' />,
         }}
         onRowClick={(c: ChatConversation) => openChatWith(c.peer)}
         rowKey={(c: ChatConversation) => c.peer}

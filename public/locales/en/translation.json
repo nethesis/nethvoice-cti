@@ -7,6 +7,7 @@
     "Restricted page description": "It seems that you don't have the necessary permissions to view this page.",
     "Try changing your search filters": "Try changing your search filters",
     "Go to Operators": "Go to Operators",
+    "Messages": "Messages",
     "Showing": "Showing",
     "of": "of",
     "Active filters": "Active filters",
@@ -1292,7 +1293,7 @@
     "Sentiment score tooltip": "Sentiment score: {{score}}/10"
   },
   "Chat": {
-    "Conversations": "Conversations",
+    "Conversations": "Messages",
     "Offline": "Chat offline",
     "Search": "Search a conversation",
     "No conversations": "No conversations yet",

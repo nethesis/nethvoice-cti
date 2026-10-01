@@ -7,6 +7,7 @@
     "Restricted page description": "Sembra che tu non abbia i permessi necessari per visualizzare questa pagina.",
     "Try changing your search filters": "Prova a modificare i filtri di ricerca",
     "Go to Operators": "Vai a Operatori",
+    "Messages": "Messaggi",
     "Showing": "Visualizza",
     "of": "di",
     "Active filters": "Filtri attivi",
@@ -1273,7 +1274,7 @@
     "Sentiment score tooltip": "Punteggio sentiment: {{score}}/10"
   },
   "Chat": {
-    "Conversations": "Conversazioni",
+    "Conversations": "Messaggi",
     "Offline": "Chat non connessa",
     "Search": "Cerca una conversazione",
     "No conversations": "Nessuna conversazione",
