@@ -1,5 +1,6 @@
 {
   "Common": {
+    "Messages": "Messaggi",
     "Showing": "Visualizza",
     "of": "di",
     "Active filters": "Filtri attivi",
@@ -1243,7 +1244,7 @@
     "Sentiment score tooltip": "Punteggio sentiment: {{score}}/10"
   },
   "Chat": {
-    "Conversations": "Conversazioni",
+    "Conversations": "Messaggi",
     "Offline": "Chat non connessa",
     "Search": "Cerca una conversazione",
     "No conversations": "Nessuna conversazione",

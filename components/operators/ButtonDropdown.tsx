@@ -6,7 +6,7 @@ import { Menu, MenuButton, MenuItem, MenuItems, Transition } from '@headlessui/r
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import {
   faChevronDown,
-  faComment,
+  faCommentDots,
   faMobileScreenButton,
   faPhone,
   faRightLeft,
@@ -147,7 +147,7 @@ export const ButtonDropdown: React.FC<ButtonDropdownProps> = ({
                         <div className='py-2 cursor-pointer' onClick={() => openChatWith(operator.username)}>
                           <div className='flex items-center text-sm text-gray-900 dark:text-gray-200'>
                             <FontAwesomeIcon
-                              icon={faComment}
+                              icon={faCommentDots}
                               className='mr-2 h-4 w-4 flex-shrink-0 text-gray-500 dark:text-gray-300'
                               aria-hidden='true'
                             />

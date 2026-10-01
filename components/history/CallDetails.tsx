@@ -5,7 +5,7 @@ import { FC } from 'react'
 import { CallTypes, getEffectiveCnam } from '../../lib/history'
 import { getOperatorByPhoneNumber } from '../../lib/operators'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
-import { faComment } from '@fortawesome/free-solid-svg-icons'
+import { faCommentDots } from '@fortawesome/free-solid-svg-icons'
 import { openChatWith, useChatAllowed } from '../chat'
 import classNames from 'classnames'
 import {
@@ -146,7 +146,7 @@ export const CallDetails: FC<CallDetailsProps> = ({
                     title={t('Common.Chat') || ''}
                     onClick={() => openChatWith(chatWith)}
                   >
-                    <FontAwesomeIcon icon={faComment} className='h-3.5 w-3.5' />
+                    <FontAwesomeIcon icon={faCommentDots} className='h-3.5 w-3.5' />
                   </button>
                 )}
               </div>

@@ -46,7 +46,7 @@ export const NavBar: FC<NavBarProps> = ({ items }) => {
     Queuemanager: profile?.macro_permissions?.qmanager?.value ? true : false,
     Applications: true,
     Settings: true,
-    Chat: chatEnabled() && profile?.macro_permissions?.nethvoice_cti?.permissions?.chat?.value ? true : false,
+    Messages: chatEnabled() && profile?.macro_permissions?.nethvoice_cti?.permissions?.chat?.value ? true : false,
   }
 
   // New user object to manage page permissions
@@ -111,7 +111,7 @@ export const NavBar: FC<NavBarProps> = ({ items }) => {
                       className='bg-currentBadgePrimary dark:bg-currentBadgePrimaryDark'
                     />
                   )}
-                  {item.name === 'Chat' && chatUnread > 0 && (
+                  {item.name === 'Messages' && chatUnread > 0 && (
                     <span className='absolute top-1 right-1 min-w-[1.125rem] h-[1.125rem] px-1 rounded-full bg-red-600 text-white text-[0.65rem] font-semibold flex items-center justify-center'>
                       {chatUnread > 99 ? '99+' : chatUnread}
                     </span>
