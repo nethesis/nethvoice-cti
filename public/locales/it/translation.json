@@ -1274,6 +1274,7 @@
     "Sentiment score tooltip": "Punteggio sentiment: {{score}}/10"
   },
   "Chat": {
+    "No longer active": "Non più attivo",
     "Conversations": "Messaggi",
     "Offline": "Chat non connessa",
     "Search": "Cerca una conversazione",

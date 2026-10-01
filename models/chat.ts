@@ -12,6 +12,7 @@ export interface ChatConversation {
   avatar?: string
   online: boolean
   mobile?: boolean
+  inactive?: boolean
   owner?: boolean
   unread: number
   members?: string[]
