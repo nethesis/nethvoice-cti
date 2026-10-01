@@ -366,7 +366,7 @@ export const GlobalSearch: FC<GlobalSearchProps> = () => {
                         >
                           <EmptyState
                             title={t('Phonebook.No results') || ''}
-                            description={t('Common.There are no results for your search') || ''}
+                            description={t('Common.Try changing your search filters') || ''}
                             icon={
                               <FontAwesomeIcon
                                 icon={faSearch}

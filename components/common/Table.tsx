@@ -25,6 +25,8 @@ interface TableProps {
     title: string
     description?: string
     icon?: ReactNode
+    // button below the text, e.g. "Reset filters"
+    action?: ReactNode
   }
   className?: string
   theadClassName?: string
@@ -131,7 +133,9 @@ export const Table: React.FC<TableProps> = ({
             title={emptyState.title}
             description={emptyState.description || ''}
             icon={emptyState.icon}
-          />
+          >
+            {emptyState.action}
+          </EmptyState>
         ) : (
           <EmptyState
             title={t('Common.No data to show')}

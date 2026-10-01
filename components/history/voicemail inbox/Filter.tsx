@@ -34,6 +34,8 @@ const sortFilter = {
 }
 
 export interface FilterProps extends ComponentPropsWithRef<'div'> {
+  // incremented by the page to reset the filters, e.g. from an empty state
+  resetTrigger?: number
   updateFilterText: Function
   updateSortFilter: Function
   filterTextValue?: string
@@ -46,7 +48,7 @@ export const Filter = forwardRef<HTMLButtonElement, FilterProps>(
       updateSortFilter,
       filterTextValue = '',
       className,
-      ...props
+      resetTrigger, ...props
     }
   ) => {
     const auth = useSelector((state: RootState) => state.authentication)
@@ -99,6 +101,13 @@ export const Filter = forwardRef<HTMLButtonElement, FilterProps>(
       updateFilterText('')
       updateSortFilter(DEFAULT_SORT_BY)
     }
+
+    useEffect(() => {
+      if (resetTrigger) {
+        clearFilters()
+      }
+      // eslint-disable-next-line react-hooks/exhaustive-deps
+    }, [resetTrigger])
 
     const { t } = useTranslation()
 

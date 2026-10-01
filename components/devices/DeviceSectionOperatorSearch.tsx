@@ -301,10 +301,9 @@ export const DeviceSectionOperatorSearch: FC<DeviceSectionOperatorSearchProps> =
                 </ComboboxOption>
               )}
               {hasNoResults && !canUseManualNumber && (
-                <div className='select-none'>
+                <div className='select-none p-2'>
                   <EmptyState
-                    variant='inline'
-                    title={t('Devices.No results') || ''}
+                    title={t('Phonebook.No contacts found') || ''}
                     description={t('Devices.Type a number to use it directly') || ''}
                     icon={
                       <FontAwesomeIcon

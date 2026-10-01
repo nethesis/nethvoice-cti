@@ -1,6 +1,9 @@
 {
   "Common": {
-    "There are no results for your search": "There are no results for your search",
+    "Restricted page": "Restricted page",
+    "Restricted page description": "It seems that you don't have the necessary permissions to view this page.",
+    "Try changing your search filters": "Try changing your search filters",
+    "Go to main page": "Go to main page",
     "Showing": "Showing",
     "of": "of",
     "Active filters": "Active filters",
@@ -124,8 +127,7 @@
     "Two-factor authentication is disabled": "Two-factor authentication is disabled"
   },
   "Phonebook": {
-    "There are no contacts with the current filters": "There are no contacts with the current filters",
-    "There are no contacts with the current search": "There are no contacts with the current search",
+    "No contacts found": "No contacts found",
     "Phonebook": "Phonebook",
     "Create contact": "Create contact",
     "Save contact": "Save contact",
@@ -236,6 +238,8 @@
     "Website placeholder": "e.g. https://example.com"
   },
   "History": {
+    "No calls found": "No calls found",
+    "No voicemails found": "No voicemails found",
     "History": "History",
     "Personal": "Personal",
     "Switchboard": "Switchboard",
@@ -304,7 +308,7 @@
     "Delete call transcription": "Delete call transcription"
   },
   "Operators": {
-    "There are no operators with the current filters": "There are no operators with the current filters",
+    "No operators found": "No operators found",
     "No operators": "No operators",
     "There is no operator configured": "There is no operator configured",
     "Operators": "Operators",
@@ -590,7 +594,8 @@
     "Notifications": "Notifications"
   },
   "Queues": {
-    "There are no queues with the current filters": "There are no queues with the current filters",
+    "No queues found": "No queues found",
+    "No queue calls found": "No queue calls found",
     "Queues": "Queues",
     "Filter queues": "Filter queues",
     "Login to all queues": "Login all queues",
@@ -689,6 +694,8 @@
     "Filter calls": "Filter calls"
   },
   "Lines": {
+    "No lines found": "No lines found",
+    "No announcements found": "No announcements found",
     "Lines management": "Lines management",
     "Ads": "Announcement",
     "Rules": "Rules",
@@ -822,6 +829,8 @@
     "Number (descending)": "Number (descending)"
   },
   "LastCalls": {
+    "No incoming calls": "No incoming calls",
+    "No outgoing calls": "No outgoing calls",
     "Last calls": "Last calls",
     "No calls": "No calls",
     "Sort by": "Sort by",
@@ -862,7 +871,7 @@
     "Voice mail": "Voicemail inbox"
   },
   "QueueManager": {
-    "There are no agents to show": "There are no agents to show",
+    "No agents found": "No agents found",
     "Please select a queue": "Please select a queue",
     "There is no operator configured": "There is no operator configured",
     "Dashboard": "Dashboard",
@@ -1072,8 +1081,8 @@
     "Call": "Call"
   },
   "Devices": {
+    "No keys found": "No keys found",
     "No devices available": "No devices available",
-    "There are no keys with the current search": "There are no keys with the current search",
     "Download app": "Download app",
     "Open app": "Open app",
     "Used as": "Used as",

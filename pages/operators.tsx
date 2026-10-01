@@ -21,7 +21,12 @@ import { useSelector } from 'react-redux'
 import { RootState } from '../store'
 import { Filter } from '../components/operators'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
-import { faBars, faHeadset, IconDefinition } from '@fortawesome/free-solid-svg-icons'
+import {
+  faBars,
+  faHeadset,
+  faMagnifyingGlass,
+  IconDefinition,
+} from '@fortawesome/free-solid-svg-icons'
 import { store } from '../store'
 import { t } from 'i18next'
 import { MissingPermission } from '../components/common/MissingPermissionsPage'
@@ -54,6 +59,8 @@ const Operators: NextPage = () => {
   }
 
   const [filteredOperators, setFilteredOperators] = useState<any>([])
+  // incremented by the "Reset filters" button of the empty state
+  const [resetFiltersTrigger, setResetFiltersTrigger] = useState(0)
   const operatorsStore = useSelector((state: RootState) => state?.operators)
   const [isApplyingFilters, setApplyingFilters] = useState(false)
   const infiniteScrollOperatorsPageSize = getInfiniteScrollOperatorsPageSize()
@@ -398,6 +405,7 @@ const Operators: NextPage = () => {
               {layout === 'grouped' ? (
                 <>
                   <Filter
+                    resetTrigger={resetFiltersTrigger}
                     groups={operatorsStore?.groups}
                     updateTextFilter={debouncedUpdateTextFilter}
                     updateGroupFilter={updateGroupFilter}
@@ -411,6 +419,7 @@ const Operators: NextPage = () => {
               ) : (
                 <>
                   <Filter
+                    resetTrigger={resetFiltersTrigger}
                     groups={operatorsStore?.groups}
                     updateTextFilter={debouncedUpdateTextFilter}
                     updateGroupFilter={updateGroupFilter}
@@ -532,16 +541,14 @@ const Operators: NextPage = () => {
               !isEmpty(operatorsStore?.operators) &&
               isEmpty(filteredOperators) && (
                 <EmptyState
-                  title={t('Operators.No operators') || ''}
-                  description={t('Operators.There are no operators with the current filters') || ''}
-                  icon={
-                    <FontAwesomeIcon
-                      icon={faHeadset}
-                      className='mx-auto h-12 w-12'
-                      aria-hidden='true'
-                    />
-                  }
-                />
+                  title={t('Operators.No operators found') || ''}
+                  description={t('Common.Try changing your search filters') || ''}
+                  icon={<FontAwesomeIcon icon={faMagnifyingGlass} aria-hidden='true' />}
+                >
+                  <Button variant='ghost' size='large' onClick={() => setResetFiltersTrigger((n) => n + 1)}>
+                    {t('Common.Reset filters')}
+                  </Button>
+                </EmptyState>
               )}
 
             {/* standard layout */}

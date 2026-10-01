@@ -1,6 +1,9 @@
 {
   "Common": {
-    "There are no results for your search": "Non ci sono risultati per la ricerca",
+    "Restricted page": "Pagina riservata",
+    "Restricted page description": "Sembra che tu non abbia i permessi necessari per visualizzare questa pagina.",
+    "Try changing your search filters": "Prova a modificare i filtri di ricerca",
+    "Go to main page": "Vai alla pagina principale",
     "Showing": "Visualizza",
     "of": "di",
     "Active filters": "Filtri attivi",
@@ -109,8 +112,7 @@
     "Two-factor authentication is disabled": "L'autenticazione a due fattori è disabilitata"
   },
   "Phonebook": {
-    "There are no contacts with the current filters": "Non ci sono contatti con i filtri attuali",
-    "There are no contacts with the current search": "Non ci sono contatti con la ricerca attuale",
+    "No contacts found": "Nessun contatto trovato",
     "Phonebook": "Rubrica",
     "Create contact": "Crea contatto",
     "Save contact": "Salva contatto",
@@ -220,6 +222,8 @@
     "Website placeholder": "es. https://example.com"
   },
   "History": {
+    "No calls found": "Nessuna chiamata trovata",
+    "No voicemails found": "Nessun messaggio vocale trovato",
     "History": "Storico",
     "Personal": "Personale",
     "Switchboard": "Centralino",
@@ -287,7 +291,7 @@
     "Voicemail available": "Apri il messaggio vocale"
   },
   "Operators": {
-    "There are no operators with the current filters": "Non ci sono operatori con i filtri attuali",
+    "No operators found": "Nessun operatore trovato",
     "No operators": "Nessun operatore",
     "There is no operator configured": "Non è configurato nessun operatore",
     "Operators": "Operatori",
@@ -560,6 +564,8 @@
     "Pickup": "Intercetta"
   },
   "Lines": {
+    "No lines found": "Nessuna linea trovata",
+    "No announcements found": "Nessun annuncio trovato",
     "Lines management": "Gestione linee",
     "Ads": "Annunci",
     "Rules": "Regole",
@@ -691,6 +697,8 @@
     "Number (descending)": "Numero (decrescente)"
   },
   "LastCalls": {
+    "No incoming calls": "Nessuna chiamata in entrata",
+    "No outgoing calls": "Nessuna chiamata in uscita",
     "Last calls": "Ultime chiamate",
     "No calls": "Nessuna chiamata",
     "Sort by": "Ordina per",
@@ -740,7 +748,8 @@
     "Notifications": "Notifiche"
   },
   "Queues": {
-    "There are no queues with the current filters": "Non ci sono code con i filtri attuali",
+    "No queues found": "Nessuna coda trovata",
+    "No queue calls found": "Nessuna chiamata di coda trovata",
     "Logout": "Logout",
     "Queues": "Code",
     "No queues": "Nessuna coda",
@@ -871,7 +880,7 @@
     "Call": "Chiama"
   },
   "QueueManager": {
-    "There are no agents to show": "Non ci sono agenti da mostrare",
+    "No agents found": "Nessun agente trovato",
     "Please select a queue": "Seleziona una coda",
     "There is no operator configured": "Non è configurato nessun operatore",
     "Dashboard": "Dashboard",
@@ -1054,8 +1063,8 @@
     "Click and hold to take current parking in call": "Clicca e tieni premuto per riprendere la chiamata parcheggiata"
   },
   "Devices": {
+    "No keys found": "Nessun tasto trovato",
     "No devices available": "Nessun dispositivo disponibile",
-    "There are no keys with the current search": "Non ci sono tasti con la ricerca attuale",
     "Download app": "Scarica app",
     "Open app": "Apri app",
     "Used as": "Usato come",

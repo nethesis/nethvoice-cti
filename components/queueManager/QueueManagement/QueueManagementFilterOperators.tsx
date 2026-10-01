@@ -20,6 +20,8 @@ import { useTranslation } from 'react-i18next'
 import { customScrollbarClass } from '../../../lib/utils'
 
 export interface QueueManagementFilterOperatorsProps extends ComponentPropsWithRef<'div'> {
+  // incremented by the page to reset the filters, e.g. from an empty state
+  resetTrigger?: number
   updateTextFilter: Function
   updateStatusFilter: Function
   updateSort: Function
@@ -28,7 +30,7 @@ export interface QueueManagementFilterOperatorsProps extends ComponentPropsWithR
 export const QueueManagementFilterOperators = forwardRef<
   HTMLButtonElement,
   QueueManagementFilterOperatorsProps
->(({ className, updateTextFilter, updateStatusFilter, updateSort, ...props }, ref) => {
+>(({ className, updateTextFilter, updateStatusFilter, updateSort, resetTrigger, ...props }, ref) => {
   const { t } = useTranslation()
 
   const sortFilter = {
@@ -133,6 +135,13 @@ export const QueueManagementFilterOperators = forwardRef<
     updateStatusFilter(DEFAULT_STATUS_FILTER_QUEUE_MANAGEMENT)
     updateSort(DEFAULT_SORT_BY_QUEUE_MANAGEMENT)
   }
+
+  useEffect(() => {
+    if (resetTrigger) {
+      resetFilters()
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [resetTrigger])
 
   const clearTextFilter = () => {
     setTextFilter('')

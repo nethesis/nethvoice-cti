@@ -21,12 +21,14 @@ import { cloneDeep, isEmpty } from 'lodash'
 import { customScrollbarClass } from '../../../lib/utils'
 
 export interface RealTimeOperatorsFilterProps extends ComponentPropsWithRef<'div'> {
+  // incremented by the page to reset the filters, e.g. from an empty state
+  resetTrigger?: number
   updateTextFilter: Function
   updateQueuesFilter: Function
 }
 
 export const RealTimeOperatorsFilter = forwardRef<HTMLButtonElement, RealTimeOperatorsFilterProps>(
-  ({ className, updateTextFilter, updateQueuesFilter, ...props }, ref) => {
+  ({ className, updateTextFilter, updateQueuesFilter, resetTrigger, ...props }, ref) => {
     const auth = useSelector((state: RootState) => state.authentication)
     const [selectedQueues, setSelectedQueues]: any = useState([])
     const { t } = useTranslation()
@@ -116,6 +118,13 @@ export const RealTimeOperatorsFilter = forwardRef<HTMLButtonElement, RealTimeOpe
       updateQueuesFilter(allQueueCodes)
       savePreference('realtimeSelectedQueues', allQueueCodes, auth.username)
     }
+
+    useEffect(() => {
+      if (resetTrigger) {
+        resetFilters()
+      }
+      // eslint-disable-next-line react-hooks/exhaustive-deps
+    }, [resetTrigger])
 
     const clearTextFilter = () => {
       setTextFilter('')

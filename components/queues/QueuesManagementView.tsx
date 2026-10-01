@@ -29,7 +29,7 @@ import {
   faPhone,
   faPause,
   faHeadset,
-  faUsers,
+  faMagnifyingGlass,
   faChevronDown,
   faDownLeftAndUpRightToCenter,
   faCircleExclamation,
@@ -462,12 +462,15 @@ export const QueuesManagementView: FC<QueuesManagementViewProps> = ({ className 
         {/* no search results */}
         {queuesStore.isLoaded && isEmpty(filteredQueues) && (
           <EmptyState
-            title={t('Queues.No queues')}
-            description={t('Queues.There are no queues with the current filters') || ''}
-            icon={
-              <FontAwesomeIcon icon={faUsers} className='mx-auto h-12 w-12' aria-hidden='true' />
-            }
-          />
+            title={t('Queues.No queues found')}
+            description={t('Common.Try changing your search filters') || ''}
+            icon={<FontAwesomeIcon icon={faMagnifyingGlass} aria-hidden='true' />}
+          >
+            {/* the only filter of this view is the text one */}
+            <Button variant='ghost' size='large' onClick={clearTextFilter}>
+              {t('Common.Reset filters')}
+            </Button>
+          </EmptyState>
         )}
         <ul role='list' className='grid grid-cols-1 gap-6 xl:grid-cols-2 3xl:grid-cols-3'>
           {/* skeleton */}

@@ -329,7 +329,6 @@ export const PhysicalPhoneSettings: FC<PhysicalPhoneSettingsProps> = ({
             </>
           ) : (
             <EmptyState
-              variant='inline'
               title={t('Devices.No general settings available') || ''}
               icon={
                 <FontAwesomeIcon icon={faGear} className='mx-auto h-8 w-8' aria-hidden='true' />

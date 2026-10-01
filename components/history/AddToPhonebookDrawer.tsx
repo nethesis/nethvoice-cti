@@ -19,7 +19,7 @@ import {
   faUserPlus,
   faCircleXmark,
   faAngleRight,
-  faUser,
+  faMagnifyingGlass,
 } from '@fortawesome/free-solid-svg-icons'
 import {
   getPhonebook,
@@ -183,15 +183,9 @@ export const AddToPhonebookDrawerContent = forwardRef<
               !phonebook.rows.length &&
               !!textFilter.length && (
                 <EmptyState
-                  title={t('Phonebook.No contacts') || ""}
-                  description={t('Phonebook.There are no contacts with the current search') || ''}
-                  icon={
-                    <FontAwesomeIcon
-                      icon={faUser}
-                      className='mx-auto h-12 w-12'
-                      aria-hidden='true'
-                    />
-                  }
+                  title={t('Phonebook.No contacts found') || ''}
+                  description={t('Common.Try changing your search filters') || ''}
+                  icon={<FontAwesomeIcon icon={faMagnifyingGlass} aria-hidden='true' />}
                 />
               )}
             {isPhonebookLoaded &&

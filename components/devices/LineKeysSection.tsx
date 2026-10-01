@@ -440,18 +440,16 @@ export const LineKeysSection: FC<LineKeysSectionProps> = ({ deviceId, phoneName 
             ))}
 
           {keysLoaded && pageKeys.length === 0 && (
-            <li className='flex justify-center p-2'>
+            <li>
               <EmptyState
-                title={t('Devices.No results') || ''}
-                description={t('Devices.There are no keys with the current search') || ''}
-                icon={
-                  <FontAwesomeIcon
-                    icon={faMagnifyingGlass}
-                    className='mx-auto h-12 w-12'
-                    aria-hidden='true'
-                  />
-                }
-              />
+                title={t('Devices.No keys found') || ''}
+                description={t('Common.Try changing your search filters') || ''}
+                icon={<FontAwesomeIcon icon={faMagnifyingGlass} aria-hidden='true' />}
+              >
+                <Button variant='ghost' size='large' onClick={() => clearTextFilter()}>
+                  {t('Common.Reset filters')}
+                </Button>
+              </EmptyState>
             </li>
           )}
 

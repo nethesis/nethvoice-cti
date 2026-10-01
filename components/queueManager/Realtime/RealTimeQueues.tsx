@@ -11,7 +11,7 @@ import { savePreference } from '../../../lib/storage'
 import BarChartHorizontalWithTitle from '../../chart/HorizontalWithTitle'
 import { debounce, isEmpty } from 'lodash'
 import { Tooltip } from 'react-tooltip'
-import { EmptyState, IconSwitch, TextInput } from '../../common'
+import { EmptyState, IconSwitch, TextInput, Button } from '../../common'
 import {
   addQueueToFavorites,
   removeQueueFromFavorites,
@@ -28,6 +28,7 @@ import {
   faCircleXmark,
   faUsers,
   faStar as faStarSolid,
+  faMagnifyingGlass,
 } from '@fortawesome/free-solid-svg-icons'
 import { IconProp } from '@fortawesome/fontawesome-svg-core'
 
@@ -192,16 +193,14 @@ export const RealTimeQueues: FC<RealTimeQueuesProps> = ({
             {/* no search results */}
             {queueManagerStore.isLoaded && isEmpty(filteredQueues) && (
               <EmptyState
-                title={t('Queues.No queues')}
-                description={t('Queues.There are no queues with the current filters') || ''}
-                icon={
-                  <FontAwesomeIcon
-                    icon={faUsers}
-                    className='mx-auto h-12 w-12'
-                    aria-hidden='true'
-                  />
-                }
-              />
+                title={t('Queues.No queues found') || ''}
+                description={t('Common.Try changing your search filters') || ''}
+                icon={<FontAwesomeIcon icon={faMagnifyingGlass} aria-hidden='true' />}
+              >
+                <Button variant='ghost' size='large' onClick={() => clearTextFilter()}>
+                  {t('Common.Reset filters')}
+                </Button>
+              </EmptyState>
             )}
 
             <ul role='list' className='grid grid-cols-1 gap-6 xl:grid-cols-2 3xl:grid-cols-3'>

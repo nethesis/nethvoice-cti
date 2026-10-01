@@ -37,12 +37,14 @@ import { recordingAnnouncement } from '../../lib/lines'
 import { customScrollbarClass } from '../../lib/utils'
 
 export interface AnnouncementFilterProps extends ComponentPropsWithRef<'div'> {
+  // incremented by the page to reset the filters, e.g. from an empty state
+  resetTrigger?: number
   updateTextFilter: Function
   updateSortFilter: Function
 }
 
 export const AnnouncementFilter = forwardRef<HTMLButtonElement, AnnouncementFilterProps>(
-  ({ updateTextFilter, updateSortFilter, className, ...props }, ref) => {
+  ({ updateTextFilter, updateSortFilter, className, resetTrigger, ...props }, ref) => {
     const { t } = useTranslation()
     const auth = useSelector((state: RootState) => state.authentication)
     const user = useSelector((state: RootState) => state.user)
@@ -100,6 +102,13 @@ export const AnnouncementFilter = forwardRef<HTMLButtonElement, AnnouncementFilt
       updateTextFilter('')
       updateSortFilter(DEFAULT_SORT_BY_ANNOUNCEMENT)
     }
+
+    useEffect(() => {
+      if (resetTrigger) {
+        resetFilters()
+      }
+      // eslint-disable-next-line react-hooks/exhaustive-deps
+    }, [resetTrigger])
 
     const clearTextFilter = () => {
       setTextFilter('')
