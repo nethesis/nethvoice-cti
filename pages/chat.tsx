@@ -76,6 +76,7 @@ const Chat: NextPage = () => {
           </div>
           <div className='ml-4 min-w-0'>
             <div className={`truncate ${c.unread ? 'font-semibold text-gray-900 dark:text-gray-100' : 'font-medium text-secondaryNeutral dark:text-secondaryNeutralDark'}`}>{c.name}</div>
+            {c.inactive && <div className='mt-1 text-sm text-gray-500 dark:text-gray-400'>{t('Chat.No longer active')}</div>}
             {c.kind === 'group' && c.members && (
               <div className='mt-1 text-sm text-gray-500 dark:text-gray-400 truncate' title={c.members.map(displayName).join(', ')}>
                 {c.members.length} {t('Chat.members')}
