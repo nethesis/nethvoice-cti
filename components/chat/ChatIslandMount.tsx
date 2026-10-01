@@ -13,7 +13,7 @@ const ChatIsland = dynamic(() => import('@nethesis/chat-island').then((mod) => m
   ssr: false,
 })
 
-/** Open the chat with a colleague or a group address; in NethLink when it runs. */
+/** Open the chat with an operator or a group address; in NethLink when it runs. */
 export const openChatWith = (username: string) => {
   if (isNethlinkOnline()) window.location.href = `nethlink://chat?to=${encodeURIComponent(username)}`
   else window.dispatchEvent(new CustomEvent('chat-island-open', { detail: { username } }))
@@ -70,7 +70,7 @@ export function ChatIslandMount() {
     return () => offs.forEach((off) => off())
   }, [])
 
-  // Colleagues for the island: names, avatars, presence, number (loaded here, client side only).
+  // Operators for the island: names, avatars, presence, number (loaded here, client side only).
   useEffect(() => {
     import('@nethesis/chat-island').then(({ contactsFromOperators }) => {
       const contacts = contactsFromOperators(operatorsStore.operators as any, operatorsStore.avatars as any, currentUser.username)
