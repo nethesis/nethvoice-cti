@@ -84,10 +84,19 @@ export const Summary: FC<SummaryProps> = ({ className }): JSX.Element => {
   //set beginning value of selected queues
   useEffect(() => {
     const expandedValues = getExpandedSummaryValue(auth.username)
-    const filterValues = getFilterValuesSummary(auth.username)
-
     setExpanded(expandedValues.expandedOperators)
     setExpandedQueuesSummary(expandedValues.expandedQueues)
+  }, [])
+
+  // the default selection is "every queue", read from the store: wait until it is loaded,
+  // otherwise opening the summary during the queues request leaves no queue selected
+  const [isQueuesSelectionInitialized, setQueuesSelectionInitialized] = useState(false)
+  useEffect(() => {
+    if (isQueuesSelectionInitialized || !queueManagerStore.isLoaded) {
+      return
+    }
+    setQueuesSelectionInitialized(true)
+    const filterValues = getFilterValuesSummary(auth.username)
 
     if (isEmpty(filterValues.selectedQueues)) {
       // select all queues
@@ -100,7 +109,7 @@ export const Summary: FC<SummaryProps> = ({ className }): JSX.Element => {
       setSelectedQueues(filterValues.selectedQueues)
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [])
+  }, [queueManagerStore.isLoaded])
 
   // load operators information from the store
   const operatorsStore = useSelector((state: RootState) => state.operators) as Record<string, any>

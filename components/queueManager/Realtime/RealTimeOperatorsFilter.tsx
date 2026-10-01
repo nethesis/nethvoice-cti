@@ -109,8 +109,14 @@ export const RealTimeOperatorsFilter = forwardRef<HTMLButtonElement, RealTimeOpe
       updateTextFilter(newTextFilter)
     }
 
-    // retrieve filter values from local storage
+    // retrieve filter values from local storage, once the queues are loaded: the default
+    // selection is "every queue", read from the store
+    const [isQueuesFilterInitialized, setQueuesFilterInitialized] = useState(false)
     useEffect(() => {
+      if (isQueuesFilterInitialized || !queueManagerStore.isLoaded) {
+        return
+      }
+      setQueuesFilterInitialized(true)
       const filterValues = getFilterValuesRealtime(auth.username)
 
       if (isEmpty(filterValues.selectedQueues)) {
@@ -125,7 +131,8 @@ export const RealTimeOperatorsFilter = forwardRef<HTMLButtonElement, RealTimeOpe
         setSelectedQueues(filterValues.selectedQueues)
         updateQueuesFilter(filterValues.selectedQueues)
       }
-    }, [])
+      // eslint-disable-next-line react-hooks/exhaustive-deps
+    }, [queueManagerStore.isLoaded])
 
     const resetFilters = () => {
       setTextFilter('')
