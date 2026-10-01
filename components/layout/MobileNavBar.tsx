@@ -95,7 +95,7 @@ export const MobileNavBar: FC<MobileNavBarProps> = ({ closeMobileMenu, show, ite
                 <div className={`mt-4 h-0 flex-1 ${customScrollbarClass} px-4`}>
                   <nav className='flex h-full flex-col'>
                     <div className='space-y-1'>
-                      {items.filter((item) => item.name !== 'Chat' || chatAllowed).map((item) => (
+                      {items.filter((item) => item.name !== 'Messages' || chatAllowed).map((item) => (
                         <Link key={item.name} href={item.href}>
                           <div
                             className={classNames(

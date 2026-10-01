@@ -6,7 +6,7 @@ import { Transition } from '@headlessui/react'
 import { useTranslation } from 'react-i18next'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import {
-  faMessage,
+  faCommentDots,
   faPaperclip,
   faReply,
   faUsers,
@@ -83,7 +83,7 @@ export function ChatToast({
               )}
               {/* Chat badge: tells it apart from the other toasts. */}
               <span className='absolute -bottom-1 -right-1 flex h-5 w-5 items-center justify-center rounded-full bg-primary dark:bg-primaryDark text-white dark:text-gray-900 ring-2 ring-elevationL2Invert dark:ring-elevationL2InvertDark'>
-                <FontAwesomeIcon icon={faMessage} className='h-2.5 w-2.5' aria-hidden='true' />
+                <FontAwesomeIcon icon={faCommentDots} className='h-2.5 w-2.5' aria-hidden='true' />
               </span>
             </div>
             <div className='min-w-0 flex-1'>
