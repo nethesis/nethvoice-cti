@@ -232,6 +232,9 @@ export const CreateOrEditContactDrawerContent = forwardRef<
     return `${first} ${last}`.trim()
   }
 
+  const phoneValue = (ref: React.MutableRefObject<HTMLInputElement>) =>
+    ref?.current?.value?.replace(/\s+/g, '') || ''
+
   // Best-effort split of a legacy single `name` into first/last for pre-filling
   // the form only. The stored value is never rewritten until the user saves.
   const splitLegacyName = (fullName: string) => {
@@ -572,24 +575,24 @@ export const CreateOrEditContactDrawerContent = forwardRef<
       contactData.company = companyRef?.current?.value
     }
 
-    if (extensionRef.current.value) {
-      contactData.extension = extensionRef?.current?.value
+    if (phoneValue(extensionRef)) {
+      contactData.extension = phoneValue(extensionRef)
     }
 
-    if (workPhoneRef.current.value) {
-      contactData.workphone = workPhoneRef?.current?.value
+    if (phoneValue(workPhoneRef)) {
+      contactData.workphone = phoneValue(workPhoneRef)
     }
 
-    if (workPhone2Ref.current.value) {
-      contactData.workphone2 = workPhone2Ref?.current?.value
+    if (phoneValue(workPhone2Ref)) {
+      contactData.workphone2 = phoneValue(workPhone2Ref)
     }
 
-    if (mobilePhoneRef.current.value) {
-      contactData.cellphone = mobilePhoneRef?.current?.value
+    if (phoneValue(mobilePhoneRef)) {
+      contactData.cellphone = phoneValue(mobilePhoneRef)
     }
 
-    if (mobilePhone2Ref.current.value) {
-      contactData.cellphone2 = mobilePhone2Ref?.current?.value
+    if (phoneValue(mobilePhone2Ref)) {
+      contactData.cellphone2 = phoneValue(mobilePhone2Ref)
     }
 
     if (emailRef.current.value) {
@@ -620,16 +623,16 @@ export const CreateOrEditContactDrawerContent = forwardRef<
       contactData.notes = notesRef?.current?.value
     }
 
-    if (homePhoneRef.current.value) {
-      contactData.homephone = homePhoneRef?.current?.value
+    if (phoneValue(homePhoneRef)) {
+      contactData.homephone = phoneValue(homePhoneRef)
     }
 
-    if (faxRef.current.value) {
-      contactData.fax = faxRef?.current?.value
+    if (phoneValue(faxRef)) {
+      contactData.fax = phoneValue(faxRef)
     }
 
-    if (otherPhoneRef.current.value) {
-      contactData.otherphone = otherPhoneRef?.current?.value
+    if (phoneValue(otherPhoneRef)) {
+      contactData.otherphone = phoneValue(otherPhoneRef)
     }
 
     if (websiteRef.current.value) {
@@ -685,19 +688,19 @@ export const CreateOrEditContactDrawerContent = forwardRef<
       lastname: contactType === 'person' ? lastNameRef?.current?.value || null : null,
       job: contactType === 'person' ? jobRef?.current?.value || null : null,
       company: companyRef?.current?.value || null,
-      extension: extensionRef?.current?.value || null,
-      workphone: workPhoneRef?.current?.value || '',
-      workphone2: workPhone2Ref?.current?.value || null,
-      cellphone: mobilePhoneRef?.current?.value || null,
-      cellphone2: mobilePhone2Ref?.current?.value || null,
+      extension: phoneValue(extensionRef) || null,
+      workphone: phoneValue(workPhoneRef),
+      workphone2: phoneValue(workPhone2Ref) || null,
+      cellphone: phoneValue(mobilePhoneRef) || null,
+      cellphone2: phoneValue(mobilePhone2Ref) || null,
       workemail: emailRef?.current?.value || null,
       facebook: facebookRef?.current?.value || null,
       instagram: instagramRef?.current?.value || null,
       linkedin: linkedinRef?.current?.value || null,
       notes: notesRef?.current?.value || null,
-      homephone: homePhoneRef?.current?.value || null,
-      fax: faxRef?.current?.value || null,
-      otherphone: otherPhoneRef?.current?.value || null,
+      homephone: phoneValue(homePhoneRef) || null,
+      fax: phoneValue(faxRef) || null,
+      otherphone: phoneValue(otherPhoneRef) || null,
       url: websiteRef?.current?.value || null,
       workstreet: workStreetRef?.current?.value || null,
       workcity: workCityRef?.current?.value || null,
