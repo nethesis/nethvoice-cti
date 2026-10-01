@@ -19,7 +19,7 @@ import {
   faStar as faStarSolid,
   faUserGroup,
   faVideo,
-  faComment,
+  faCommentDots,
 } from '@fortawesome/free-solid-svg-icons'
 import { faStar as faStarLight } from '@nethesis/nethesis-light-svg-icons'
 import { t } from 'i18next'
@@ -228,7 +228,7 @@ export const OperatorSummary = forwardRef<HTMLButtonElement, OperatorSummaryProp
           </Button>
           <Button variant='white' className='mr-2'>
             <FontAwesomeIcon
-              icon={faComment}
+              icon={faCommentDots}
               className='h-4 w-4 xl:mr-2 text-gray-500 dark:text-gray-400'
             />
             <span className='hidden xl:inline-block'>Chat</span>
