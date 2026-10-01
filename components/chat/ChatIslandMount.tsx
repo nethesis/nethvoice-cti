@@ -70,22 +70,14 @@ export function ChatIslandMount() {
     return () => offs.forEach((off) => off())
   }, [])
 
-  // Colleagues for the island: names, avatars, presence, number.
+  // Colleagues for the island: names, avatars, presence, number (loaded here, client side only).
   useEffect(() => {
-    const operators: any = operatorsStore.operators || {}
-    const avatars: any = operatorsStore.avatars || {}
-    const contacts = Object.values(operators)
-      .filter((op: any) => op?.username && op.username !== currentUser.username)
-      .map((op: any) => ({
-        username: op.username,
-        name: op.name || op.username,
-        avatar: avatars[op.username],
-        presence: op.mainPresence,
-        number: op.endpoints?.mainextension?.[0]?.id,
-      }))
-    if (contacts.length) {
-      window.dispatchEvent(new CustomEvent('chat-island-contacts', { detail: { contacts } }))
-    }
+    import('@nethesis/chat-island').then(({ contactsFromOperators }) => {
+      const contacts = contactsFromOperators(operatorsStore.operators as any, operatorsStore.avatars as any, currentUser.username)
+      if (contacts.length) {
+        window.dispatchEvent(new CustomEvent('chat-island-contacts', { detail: { contacts } }))
+      }
+    })
     // resent once the island is up
   }, [operatorsStore.operators, operatorsStore.avatars, currentUser.username, ready])
 
