@@ -589,9 +589,9 @@
     "Notifications": "Notifications"
   },
   "Queues": {
-    "outcome_JOINEMPTY": "No agents outqueue",
-    "outcome_JOINUNAVAIL": "No agents outqueue",
-    "outcome_EXITEMPTY": "No agents inqueue",
+    "outcome_JOINEMPTY": "No agents outside the queue",
+    "outcome_JOINUNAVAIL": "No agents outside the queue",
+    "outcome_EXITEMPTY": "No agents in queue",
     "outcome_FULL": "Queue full",
     "Queues": "Queues",
     "Filter queues": "Filter queues",
@@ -956,8 +956,8 @@
     "Null": "Null",
     "Expired": "Expired",
     "Abandoned": "Abandoned",
-    "No agents outqueue": "No agents outqueue",
-    "No agents inqueue": "No agents inqueue",
+    "No agents outqueue": "No agents outside the queue",
+    "No agents inqueue": "No agents in queue",
     "No not managed customers": "No not managed customers",
     "Date": "Date",
     "Caller": "Caller",

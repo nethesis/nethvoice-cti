@@ -739,8 +739,8 @@
     "Notifications": "Notifiche"
   },
   "Queues": {
-    "outcome_JOINEMPTY": "Nessun agente fuori coda",
-    "outcome_JOINUNAVAIL": "Nessun agente fuori coda",
+    "outcome_JOINEMPTY": "Nessun agente fuori dalla coda",
+    "outcome_JOINUNAVAIL": "Nessun agente fuori dalla coda",
     "outcome_EXITEMPTY": "Nessun agente in coda",
     "outcome_FULL": "Coda piena",
     "Logout": "Logout",
@@ -970,7 +970,7 @@
     "Null": "Nulla",
     "Expired": "Scaduta",
     "Abandoned": "Abbandonata",
-    "No agents outqueue": "Nessun agente fuori coda",
+    "No agents outqueue": "Nessun agente fuori dalla coda",
     "No agents inqueue": "Nessun agente in coda",
     "No not managed customers": "Nessun cliente non gestito",
     "Date": "Data",
