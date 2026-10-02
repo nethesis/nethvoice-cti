@@ -24,6 +24,11 @@ import { CallSkeleton } from '../common/Skeleton'
 import { useTranslation } from 'react-i18next'
 import { isEqual } from 'lodash'
 import { UserCallStatusIcon } from './UserCallStatusIcon'
+import {
+  getAnsweredIconColorClass,
+  getAnsweredTranslationKey,
+  isAnsweredDisposition,
+} from '../../lib/history'
 import { CallsDate } from './CallsDate'
 import { CallDetails } from './CallDetails'
 import { CustomThemedTooltip } from '../common/CustomThemedTooltip'
@@ -183,7 +188,8 @@ export const LastCallsDrawerTable = forwardRef<HTMLButtonElement, LastCallsDrawe
         const isInternal = call?.type === 'internal'
         const isOutgoing = !isInternal && call?.type === 'out'
         const directionKey = isInternal ? 'Internal' : isOutgoing ? 'Outgoing' : 'Incoming'
-        const label = t(`History.${directionKey} ${isAnswered ? 'answered' : 'missed'}`) || ''
+        // A call answered elsewhere keeps its own wording and colour here too.
+        const label = t(getAnsweredTranslationKey(directionKey, call.disposition)) || ''
 
         // Missed incoming keeps the dedicated "missed call" icon, which already
         // points down-left; missed outgoing has no such icon, so it reuses the
@@ -201,7 +207,7 @@ export const LastCallsDrawerTable = forwardRef<HTMLButtonElement, LastCallsDrawe
               className={
                 `h-5 w-3.5 flex-shrink-0 ${rotation} ` +
                 (isAnswered
-                  ? 'text-iconStatusOnline dark:text-iconStatusOnlineDark'
+                  ? getAnsweredIconColorClass(call.disposition)
                   : 'text-iconStatusBusy dark:text-iconStatusBusyDark')
               }
               data-tooltip-id={tooltipId}
@@ -221,7 +227,8 @@ export const LastCallsDrawerTable = forwardRef<HTMLButtonElement, LastCallsDrawe
     const callsTitle = useMemo(() => {
       if (isCustomerCard) return t('Phonebook.Last calls')
       if (callType === 'switchboard') return t('Phonebook.Last switchboard calls')
-      if (callType === 'personal') return t('Phonebook.Last personal calls')
+      if (callType === 'personal' || callType === 'user')
+        return t('Phonebook.Last personal calls')
       return ''
     }, [callType, isCustomerCard, t])
 
@@ -273,7 +280,7 @@ export const LastCallsDrawerTable = forwardRef<HTMLButtonElement, LastCallsDrawe
                   {isLoaded && lastCalls?.rows && (
                     <div className={customScrollbarClass}>
                       <div>
-                        <table className='min-w-full divide-y divide-gray-300 dark:divide-gray-700'>
+                        <table className='w-full table-fixed divide-y divide-gray-300 dark:divide-gray-700'>
                           <tbody className='divide-y divide-gray-200 dark:divide-gray-700 text-gray-700 text-sm'>
                             {/* Not empty state  */}
                             {isLoaded &&
@@ -281,23 +288,24 @@ export const LastCallsDrawerTable = forwardRef<HTMLButtonElement, LastCallsDrawe
                               lastCalls.rows.map((call: any, index: number) => (
                                 <tr key={index}>
                                   {/* Date */}
-                                  <td className='whitespace-nowrap py-4 pr-3'>
+                                  <td className='w-[7.5rem] py-4 pr-3 align-top'>
                                     {/* Date column */}
                                     <CallsDate call={call} />
                                   </td>
 
                                   {/* Source */}
-                                  <td className='px-3 py-4 whitespace-nowrap'>
+                                  <td className='px-3 py-4 align-top'>
                                     <CallDetails
                                       call={call}
                                       operators={operators}
                                       fromHistory
                                       direction='in'
+                                      lastCallsType={callType}
                                     />
                                   </td>
 
                                   {/* Icon column */}
-                                  <td className='pl-2 pr-6 py-4'>
+                                  <td className='w-8 pl-2 pr-4 py-4 align-top'>
                                     <FontAwesomeIcon
                                       icon={faArrowRight}
                                       className='ml-0 h-4 w-4 flex-shrink-0 text-gray-500 dark:text-gray-600'
@@ -306,18 +314,19 @@ export const LastCallsDrawerTable = forwardRef<HTMLButtonElement, LastCallsDrawe
                                   </td>
 
                                   {/* Destination */}
-                                  <td className='px-3 py-4 whitespace-nowrap'>
+                                  <td className='px-3 py-4 align-top'>
                                     {/* Destination column */}
                                     <CallDetails
                                       call={call}
                                       operators={operators}
                                       fromHistory
                                       direction='out'
+                                      lastCallsType={callType}
                                     />
                                   </td>
 
                                   {/* Outcome */}
-                                  <td className='px-3 py-4'>
+                                  <td className='w-10 px-3 py-4 align-top'>
                                     {callType === 'user' && <UserCallStatusIcon call={call} />}
                                     {callType === 'switchboard' && checkIconSwitchboard(call)}{' '}
                                   </td>

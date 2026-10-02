@@ -1,4 +1,4 @@
-import React, { FC } from 'react'
+import React, { CSSProperties, FC } from 'react'
 import { useSelector } from 'react-redux'
 import { RootState } from '../../store'
 import { PositionStrategy, Tooltip } from 'react-tooltip'
@@ -32,7 +32,7 @@ export const CustomThemedTooltip: FC<CustomThemedTooltipProps> = ({
     theme === 'dark' ||
     (theme === 'system' && window.matchMedia('(prefers-color-scheme: dark)').matches)
 
-  const tooltipStyle = isDark
+  const tooltipStyle: CSSProperties = isDark
     ? {
         backgroundColor: 'rgb(243, 244, 246)',
         color: 'rgb(17, 24, 39)',
@@ -41,6 +41,9 @@ export const CustomThemedTooltip: FC<CustomThemedTooltipProps> = ({
         lineHeight: '1.25rem',
         padding: '0.375rem 0.625rem',
         maxWidth: '320px',
+        whiteSpace: 'normal',
+        overflowWrap: 'anywhere',
+        wordBreak: 'break-word',
         borderRadius: '4px',
       }
     : {
@@ -51,6 +54,9 @@ export const CustomThemedTooltip: FC<CustomThemedTooltipProps> = ({
         lineHeight: '1.25rem',
         padding: '0.375rem 0.625rem',
         maxWidth: '320px',
+        whiteSpace: 'normal',
+        overflowWrap: 'anywhere',
+        wordBreak: 'break-word',
         borderRadius: '4px',
       }
 

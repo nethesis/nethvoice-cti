@@ -3,7 +3,12 @@ import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { faMissed } from '@nethesis/nethesis-solid-svg-icons'
 import { faArrowLeft, IconDefinition } from '@fortawesome/free-solid-svg-icons'
 import { useTranslation } from 'react-i18next'
-import { CallTypes, isCallAnswered } from '../../lib/history'
+import {
+  CallTypes,
+  getAnsweredIconColorClass,
+  getAnsweredTranslationKey,
+  isCallAnswered,
+} from '../../lib/history'
 import { CustomThemedTooltip } from '../common/CustomThemedTooltip'
 
 interface UserCallStatusIconProps {
@@ -24,8 +29,9 @@ export const UserCallStatusIcon: FC<UserCallStatusIconProps> = ({ call, tooltipP
   // down-left; missed outgoing has no such icon, so it reuses the arrow in red.
   const icon: IconDefinition = isAnswered || isOutgoing ? faArrowLeft : (faMissed as IconDefinition)
   const rotation = isOutgoing ? 'rotate-[135deg]' : isAnswered ? '-rotate-45' : ''
-  const label =
-    t(`History.${isOutgoing ? 'Outgoing' : 'Incoming'} ${isAnswered ? 'answered' : 'missed'}`) || ''
+  // A call answered elsewhere keeps its own wording and colour, so the icon alone
+  // still says the call was taken — just not by this user.
+  const label = t(getAnsweredTranslationKey(isOutgoing ? 'Outgoing' : 'Incoming', call.disposition)) || ''
   // Unique per call: a static id would be shared by every row of the list.
   const tooltipId = `tooltip-user-call-status-${call?.uniqueid ?? call?.linkedid}`
 
@@ -36,7 +42,7 @@ export const UserCallStatusIcon: FC<UserCallStatusIconProps> = ({ call, tooltipP
         className={
           `mr-2 h-5 w-3.5 flex-shrink-0 ${rotation} ` +
           (isAnswered
-            ? 'text-iconStatusOnline dark:text-iconStatusOnlineDark'
+            ? getAnsweredIconColorClass(call.disposition)
             : 'text-iconStatusBusy dark:text-iconStatusBusyDark')
         }
         data-tooltip-id={tooltipId}

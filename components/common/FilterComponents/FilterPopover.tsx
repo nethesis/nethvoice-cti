@@ -29,6 +29,8 @@ interface FilterPopoverProps {
   panelClassName?: string
   /** Custom children to render instead of default radio buttons */
   children?: ReactNode
+  /** Extra class for option labels */
+  optionLabelClassName?: string
   /** Render options as multi-select checkboxes instead of single-select radios */
   multiple?: boolean
   /** Currently selected values (multi-select mode) */
@@ -52,6 +54,7 @@ export const FilterPopover: React.FC<FilterPopoverProps> = ({
   idPrefix = '',
   panelClassName,
   children,
+  optionLabelClassName,
   multiple = false,
   selectedValues = [],
   onToggle,

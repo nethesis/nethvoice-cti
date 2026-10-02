@@ -21,10 +21,12 @@ import {
   DEFAULT_CONTENT_FILTER,
   DEFAULT_CALL_DIRECTION_FILTER,
   DEFAULT_CALL_TYPE_FILTER,
+  DEFAULT_QUEUE_FILTER,
   DEFAULT_SORT_BY,
   deleteRec,
   downloadCallRec,
   getFilterValues,
+  getHistoryQueues,
   hasVoicemailMessage,
   openDrawerHistory,
   search,
@@ -86,6 +88,8 @@ export const Calls: FC<CallsProps> = ({ className }): JSX.Element => {
   const [callType, setCallType]: any = useState('user')
   const [sortBy, setSortBy]: any = useState('time%20desc')
   const [contentFilter, setContentFilter]: any = useState(DEFAULT_CONTENT_FILTER)
+  const [queueFilter, setQueueFilter]: any = useState(DEFAULT_QUEUE_FILTER)
+  const [availableQueues, setAvailableQueues] = useState<{ queue: string; name?: string }[]>([])
   const [dateEnd, setDateEnd]: any = useState('')
   const [dateBegin, setDateBegin]: any = useState('')
   const [callDirection, setCallDirection]: any = useState('all')
@@ -155,7 +159,35 @@ export const Calls: FC<CallsProps> = ({ className }): JSX.Element => {
     setCallDirection(filterValues.callDirection || DEFAULT_CALL_DIRECTION_FILTER)
     setSortBy(filterValues.sortBy || DEFAULT_SORT_BY)
     setContentFilter(filterValues.contentFilter || DEFAULT_CONTENT_FILTER)
+    setQueueFilter(filterValues.queue || DEFAULT_QUEUE_FILTER)
     setAreFiltersInitialized(true)
+  }, [username])
+
+  useEffect(() => {
+    let isMounted = true
+
+    async function fetchHistoryQueues() {
+      if (!username) {
+        return
+      }
+
+      try {
+        const queues = await getHistoryQueues(username)
+        if (isMounted) {
+          setAvailableQueues(Array.isArray(queues) ? queues : [])
+        }
+      } catch {
+        if (isMounted) {
+          setAvailableQueues([])
+        }
+      }
+    }
+
+    fetchHistoryQueues()
+
+    return () => {
+      isMounted = false
+    }
   }, [username])
 
   const clearSummaryLinkedIdQuery = useCallback(() => {
@@ -330,6 +362,7 @@ export const Calls: FC<CallsProps> = ({ className }): JSX.Element => {
             pageNum,
             pageSize,
             contentFilter,
+            queueFilter,
             feature_codes?.audio_test || '*41',
           )
           if (ignore) return
@@ -370,6 +403,7 @@ export const Calls: FC<CallsProps> = ({ className }): JSX.Element => {
     callDirection,
     contentFilter,
     historyRefreshToken,
+    queueFilter,
     // The audio-test code arrives from its own request, so it is null on the first
     // fetch and the server is asked to filter the default *41. Without this the
     // fetch never repeats once the real code lands, and a PBX that changed it
@@ -508,8 +542,7 @@ export const Calls: FC<CallsProps> = ({ className }): JSX.Element => {
         link.href = fileUrl
         link.download = fileName
         link.click()
-      } catch (err) {
-        console.log(err)
+      } catch {
       }
     }
   }
@@ -520,8 +553,7 @@ export const Calls: FC<CallsProps> = ({ className }): JSX.Element => {
         await deleteRec(callIdInformation)
         // reload the history by resetting the loading state
         setHistoryLoaded(false)
-      } catch (err) {
-        console.log(err)
+      } catch {
       }
     }
   }
@@ -646,6 +678,11 @@ export const Calls: FC<CallsProps> = ({ className }): JSX.Element => {
 
   const updateSortFilter = (newSortBy: string) => {
     setSortBy(newSortBy)
+  }
+
+  const updateQueueFilter = (newQueue: string) => {
+    setPageNum(1)
+    setQueueFilter(newQueue)
   }
 
   function goToPreviousPage() {
@@ -975,12 +1012,20 @@ export const Calls: FC<CallsProps> = ({ className }): JSX.Element => {
         // recognised from its queue name or from the queue-entry leg (lastapp=
         // "Queue"), which after collapsing lives either on the parent (nobody
         // answered) or among its interactions (an agent answered).
+        // In the personal view the queue-entry leg is not among the user's own
+        // legs: there the queue shows on the member's leg itself, as its queue
+        // fields or its "from-queue" channel (already there while the call is on).
         const isRingGroupCall = !!call?.ringGroupName
+        const queueName = call?.queueName || call?.queue_name
+        const isQueueLeg = (leg: any) =>
+          leg?.lastapp === 'Queue' ||
+          (typeof leg?.channel === 'string' && leg.channel.includes('@from-queue-'))
         const isQueueCall =
           !isRingGroupCall &&
-          (!!call?.queueName ||
-            call?.lastapp === 'Queue' ||
-            (call?.interactions || []).some((leg: any) => leg?.lastapp === 'Queue'))
+          (!!queueName ||
+            !!call?.queue ||
+            isQueueLeg(call) ||
+            (call?.interactions || []).some(isQueueLeg))
         const showGroupMarker = isRingGroupCall || isQueueCall
 
         // Built from an interpolated key, not concatenated, so a translation can
@@ -991,8 +1036,8 @@ export const Calls: FC<CallsProps> = ({ className }): JSX.Element => {
             ? t('History.Named group call', { name: call.ringGroupName })
             : t('History.Group')
         } else if (isQueueCall) {
-          markerLabel = call?.queueName
-            ? t('History.Named queue call', { name: call.queueName })
+          markerLabel = queueName
+            ? t('History.Named queue call', { name: queueName })
             : t('History.Queue')
         }
 
@@ -1188,6 +1233,8 @@ export const Calls: FC<CallsProps> = ({ className }): JSX.Element => {
                 updateDateBeginFilter={updateDateBeginFilter}
                 updateDateEndFilter={updateDateEndFilter}
                 updateContentFilter={(value: string) => setContentFilter(value)}
+                updateQueueFilter={updateQueueFilter}
+                availableQueues={availableQueues}
               />
               <div className='text-primaryNeutral dark:text-primaryNeutralDark flex items-start lg:whitespace-nowrap ml-4'>
                 <Link
