@@ -22,7 +22,7 @@ export const MissingPermission = ({}): JSX.Element => {
         <Link href={'/operators'}>
           <Button variant='primary' size='large'>
             <FontAwesomeIcon icon={faArrowRight} className='mr-2 h-4 w-4' aria-hidden='true' />
-            <span>{t('Common.Go to main page')}</span>
+            <span>{t('Common.Go to Operators')}</span>
           </Button>
         </Link>
       </EmptyState>
