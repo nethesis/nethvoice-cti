@@ -25,6 +25,8 @@ import { useTranslation } from 'react-i18next'
 import { customScrollbarClass } from '../../lib/utils'
 
 export interface FilterProps extends ComponentPropsWithRef<'div'> {
+  // incremented by the page to reset the filters, e.g. from an empty state
+  resetTrigger?: number
   groups: { [key: string]: { users: string[] } }
   updateTextFilter: Function
   updateGroupFilter: Function
@@ -47,7 +49,7 @@ export const Filter = forwardRef<HTMLButtonElement, FilterProps>(
       updateGroupedSort,
       updateGroupedGroupBy,
       isGroupedLayot,
-      ...props
+      resetTrigger, ...props
     },
     ref,
   ) => {
@@ -324,6 +326,13 @@ export const Filter = forwardRef<HTMLButtonElement, FilterProps>(
       updateGroupedSort(DEFAULT_GROUP_LAYOUT_SORT_BY)
       updateGroupedGroupBy(DEFAULT_GROUP_LAYOUT_GROUP_BY)
     }
+
+    useEffect(() => {
+      if (resetTrigger) {
+        resetFilters()
+      }
+      // eslint-disable-next-line react-hooks/exhaustive-deps
+    }, [resetTrigger])
 
     const clearTextFilter = () => {
       setTextFilter('')

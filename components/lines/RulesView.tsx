@@ -8,7 +8,11 @@ import { isEmpty, debounce } from 'lodash'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { openShowPhoneLinesDrawer } from '../../lib/lines'
 import { openShowRuleDetailsDrawer } from '../../lib/lines'
-import { faPhone, faAngleRight } from '@fortawesome/free-solid-svg-icons'
+import {
+  faAngleRight,
+  faMagnifyingGlass,
+  faPhoneVolume,
+} from '@fortawesome/free-solid-svg-icons'
 import classNames from 'classnames'
 import { RulesFilter } from './RulesFilter'
 import { useSelector } from 'react-redux'
@@ -58,6 +62,8 @@ export const RulesView: FC<RulesViewProps> = ({ className }): JSX.Element => {
   const queuesStore = useSelector((state: RootState) => state.queues)
 
   const [textFilter, setTextFilter]: any = useState('')
+  // incremented by the "Reset filters" button of the empty state
+  const [resetFiltersTrigger, setResetFiltersTrigger] = useState(0)
   const updateTextFilter = (newTextFilter: string) => {
     setTextFilter(newTextFilter)
     setPageNum(1)
@@ -89,7 +95,7 @@ export const RulesView: FC<RulesViewProps> = ({ className }): JSX.Element => {
     <div className={classNames(className)}>
       {/* TO DO CHECK ON MOBILE DEVICE  */}
       <div className='flex-col flex-wrap xl:flex-row justify-between gap-x-4 xl:items-end'>
-        <RulesFilter updateTextFilter={debouncedUpdateTextFilter} />
+        <RulesFilter resetTrigger={resetFiltersTrigger} updateTextFilter={debouncedUpdateTextFilter} />
       </div>
       {linesError && <InlineNotification type='error' title={linesError}></InlineNotification>}
       {/* {!linesError && ( */}
@@ -97,125 +103,127 @@ export const RulesView: FC<RulesViewProps> = ({ className }): JSX.Element => {
         <div className='flex flex-col overflow-hidden'>
           <div className='-my-2 -mx-4 overflow-x-auto sm:-mx-6 lg:-mx-8'>
             <div className='inline-block min-w-full py-2 align-middle px-2 md:px-6 lg:px-8'>
-              <div className='overflow-hidden shadow ring-1 md:rounded-lg ring-opacity-5 dark:ring-opacity-5 ring-gray-900 dark:ring-gray-100'>
-                {/* empty state */}
-                {isLinesLoaded && isEmpty(lines.rows) && (
+              {/* empty state, outside the table frame like the other tables */}
+              {isLinesLoaded && isEmpty(lines.rows) ? (
+                textFilter ? (
+                  <EmptyState
+                    title={t('Lines.No lines found')}
+                    description={t('Common.Try changing your search filters') || ''}
+                    icon={<FontAwesomeIcon icon={faMagnifyingGlass} aria-hidden='true' />}
+                  >
+                    <Button variant='ghost' size='large' onClick={() => setResetFiltersTrigger((n) => n + 1)}>
+                      {t('Common.Reset filters')}
+                    </Button>
+                  </EmptyState>
+                ) : (
                   <EmptyState
                     title={t('Lines.No lines')}
-                    description={t('Lines.There are no lines with current filters') || ''}
-                    icon={
-                      <FontAwesomeIcon
-                        icon={faPhone}
-                        className='mx-auto h-12 w-12'
-                        aria-hidden='true'
-                      />
-                    }
-                    className='bg-white dark:bg-gray-900'
-                  ></EmptyState>
-                )}
-                {/* {(!isLinesLoaded || !isEmpty(lines.rows)) && ( */}
-                <table className='min-w-full divide-y divide-gray-300 dark:divide-gray-600'>
-                  <thead className='bg-white dark:bg-gray-900'>
-                    <tr>
-                      <th
-                        scope='col'
-                        className='py-3.5 pl-4 pr-3 text-left text-sm font-semibold sm:pl-6 text-gray-700 dark:text-gray-200'
-                      >
-                        {t('Lines.Name')}
-                      </th>
-                      <th
-                        scope='col'
-                        className='px-3 py-3.5 text-left text-sm font-semibold text-gray-700 dark:text-gray-200'
-                      >
-                        {t('Lines.Typology')}
-                      </th>
-                      <th
-                        scope='col'
-                        className='px-3 py-3.5 text-left text-sm font-semibold text-gray-700 dark:text-gray-200'
-                      >
-                        {t('Lines.Begin')}
-                      </th>
-                      <th
-                        scope='col'
-                        className='px-3 py-3.5 text-left text-sm font-semibold text-gray-700 dark:text-gray-200'
-                      >
-                        {t('Lines.End')}
-                      </th>
-                      <th
-                        scope='col'
-                        className='px-3 py-3.5 text-left text-sm font-semibold text-gray-700 dark:text-gray-200'
-                      >
-                        {t('Lines.Activation')}
-                      </th>
-                      <th scope='col' className='relative py-3.5 pl-3 pr-4 sm:pr-6'>
-                        <span className='sr-only'>{t('Lines.Delete')}</span>
-                      </th>
-                    </tr>
-                  </thead>
-                  <tbody className=' text-sm divide-y divide-gray-200 bg-white text-gray-700 dark:divide-gray-700 dark:bg-gray-900 dark:text-gray-200'>
-                    {/* skeleton */}
-                    {/* {!isLinesLoaded &&
-                          Array.from(Array(5)).map((e, i) => (
-                            <tr key={i}>
-                              {Array.from(Array(5)).map((e, j) => (
-                                <td key={j}>
-                                  <div className='px-4 py-6'>
-                                    <div className='animate-pulse h-5 rounded bg-gray-300 dark:bg-gray-600'></div>
-                                  </div>
-                                </td>
-                              ))}
-                            </tr>
-                          ))} */}
-                    {/* lines */}
-                    {/* {isLinesLoaded &&
-                          lines?.rows?.map((call: any, index: number) => ( */}
-
-                    {filteredTable.map((announcement: any, index: number) => (
-                      <tr key={index}>
-                        {/* Name */}
-                        <td className='py-4 pl-4 pr-3 sm:pl-6'>
-                          <div className='flex flex-col'>
-                            <div>{announcement.name} </div>
-                          </div>
-                        </td>
-                        {/* Typology */}
-                        <td className='px-3 py-4'>
-                          <div>{announcement.typology}</div>
-                        </td>
-                        {/* Begin */}
-                        <td className='px-3 py-4'>
-                          <div className='flex items-center'>
-                            <span>{announcement.begin}</span>
-                          </div>
-                        </td>
-                        {/* End */}
-                        <td className='px-3 py-4'>
-                          <div className='flex items-center'>
-                            <span>{announcement.end}</span>
-                          </div>
-                        </td>
-                        {/* Activation */}
-                        <td className='px-3 py-4'>
-                          <div className='flex items-center'>
-                            <span>{announcement.activation}</span>
-                          </div>
-                        </td>
-                        {/* show details */}
-                        <td className='relative whitespace-nowrap py-4 pl-3 pr-4 text-right text-sm font-medium sm:pr-6'>
-                          <FontAwesomeIcon
-                            icon={faAngleRight}
-                            className='h-3 w-3 p-2 cursor-pointer text-gray-500 dark:text-gray-500'
-                            aria-hidden='true'
-                            onClick={() => openShowRuleDetailsDrawer(announcement.name)}
-                          />
-                        </td>
+                    icon={<FontAwesomeIcon icon={faPhoneVolume} aria-hidden='true' />}
+                  />
+                )
+              ) : (
+                <div className='overflow-hidden shadow ring-1 md:rounded-lg ring-opacity-5 dark:ring-opacity-5 ring-gray-900 dark:ring-gray-100'>
+                  <table className='min-w-full divide-y divide-gray-300 dark:divide-gray-600'>
+                    <thead className='bg-white dark:bg-gray-900'>
+                      <tr>
+                        <th
+                          scope='col'
+                          className='py-3.5 pl-4 pr-3 text-left text-sm font-semibold sm:pl-6 text-gray-700 dark:text-gray-200'
+                        >
+                          {t('Lines.Name')}
+                        </th>
+                        <th
+                          scope='col'
+                          className='px-3 py-3.5 text-left text-sm font-semibold text-gray-700 dark:text-gray-200'
+                        >
+                          {t('Lines.Typology')}
+                        </th>
+                        <th
+                          scope='col'
+                          className='px-3 py-3.5 text-left text-sm font-semibold text-gray-700 dark:text-gray-200'
+                        >
+                          {t('Lines.Begin')}
+                        </th>
+                        <th
+                          scope='col'
+                          className='px-3 py-3.5 text-left text-sm font-semibold text-gray-700 dark:text-gray-200'
+                        >
+                          {t('Lines.End')}
+                        </th>
+                        <th
+                          scope='col'
+                          className='px-3 py-3.5 text-left text-sm font-semibold text-gray-700 dark:text-gray-200'
+                        >
+                          {t('Lines.Activation')}
+                        </th>
+                        <th scope='col' className='relative py-3.5 pl-3 pr-4 sm:pr-6'>
+                          <span className='sr-only'>{t('Lines.Delete')}</span>
+                        </th>
                       </tr>
-                    ))}
-                  </tbody>
-                </table>
+                    </thead>
+                    <tbody className=' text-sm divide-y divide-gray-200 bg-white text-gray-700 dark:divide-gray-700 dark:bg-gray-900 dark:text-gray-200'>
+                      {/* skeleton */}
+                      {/* {!isLinesLoaded &&
+                            Array.from(Array(5)).map((e, i) => (
+                              <tr key={i}>
+                                {Array.from(Array(5)).map((e, j) => (
+                                  <td key={j}>
+                                    <div className='px-4 py-6'>
+                                      <div className='animate-pulse h-5 rounded bg-gray-300 dark:bg-gray-600'></div>
+                                    </div>
+                                  </td>
+                                ))}
+                              </tr>
+                            ))} */}
+                      {/* lines */}
+                      {/* {isLinesLoaded &&
+                            lines?.rows?.map((call: any, index: number) => ( */}
 
-                {/* )} */}
-              </div>
+                      {filteredTable.map((announcement: any, index: number) => (
+                        <tr key={index}>
+                          {/* Name */}
+                          <td className='py-4 pl-4 pr-3 sm:pl-6'>
+                            <div className='flex flex-col'>
+                              <div>{announcement.name} </div>
+                            </div>
+                          </td>
+                          {/* Typology */}
+                          <td className='px-3 py-4'>
+                            <div>{announcement.typology}</div>
+                          </td>
+                          {/* Begin */}
+                          <td className='px-3 py-4'>
+                            <div className='flex items-center'>
+                              <span>{announcement.begin}</span>
+                            </div>
+                          </td>
+                          {/* End */}
+                          <td className='px-3 py-4'>
+                            <div className='flex items-center'>
+                              <span>{announcement.end}</span>
+                            </div>
+                          </td>
+                          {/* Activation */}
+                          <td className='px-3 py-4'>
+                            <div className='flex items-center'>
+                              <span>{announcement.activation}</span>
+                            </div>
+                          </td>
+                          {/* show details */}
+                          <td className='relative whitespace-nowrap py-4 pl-3 pr-4 text-right text-sm font-medium sm:pr-6'>
+                            <FontAwesomeIcon
+                              icon={faAngleRight}
+                              className='h-3 w-3 p-2 cursor-pointer text-gray-500 dark:text-gray-500'
+                              aria-hidden='true'
+                              onClick={() => openShowRuleDetailsDrawer(announcement.name)}
+                            />
+                          </td>
+                        </tr>
+                      ))}
+                    </tbody>
+                  </table>
+                </div>
+              )}
             </div>
           </div>
         </div>

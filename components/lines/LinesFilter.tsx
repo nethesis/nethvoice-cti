@@ -28,6 +28,8 @@ import { savePreference } from '../../lib/storage'
 import { customScrollbarClass } from '../../lib/utils'
 
 export interface LinesFilterProps extends ComponentPropsWithRef<'div'> {
+  // incremented by the page to reset the filters, e.g. from an empty state
+  resetTrigger?: number
   updateTextFilter: Function
   updateSortFilter: Function
   updateConfigurationTypeFilter: Function
@@ -35,7 +37,7 @@ export interface LinesFilterProps extends ComponentPropsWithRef<'div'> {
 
 export const LinesFilter = forwardRef<HTMLButtonElement, LinesFilterProps>(
   (
-    { updateTextFilter, updateSortFilter, updateConfigurationTypeFilter, className, ...props },
+    { updateTextFilter, updateSortFilter, updateConfigurationTypeFilter, className, resetTrigger, ...props },
     ref,
   ) => {
     const { t } = useTranslation()
@@ -133,6 +135,13 @@ export const LinesFilter = forwardRef<HTMLButtonElement, LinesFilterProps>(
       updateSortFilter(DEFAULT_SORT_BY)
       updateConfigurationTypeFilter(DEFAULT_CONFIGURATION_TYPE)
     }
+
+    useEffect(() => {
+      if (resetTrigger) {
+        resetFilters()
+      }
+      // eslint-disable-next-line react-hooks/exhaustive-deps
+    }, [resetTrigger])
 
     const clearTextFilter = () => {
       setTextFilter('')

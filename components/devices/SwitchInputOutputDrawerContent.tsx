@@ -66,7 +66,7 @@ export const SwitchInputOutputDrawerContent = forwardRef<
     inputTheme.base,
     inputTheme.rounded.base,
     inputTheme.colors.gray,
-    'relative w-full cursor-default border px-3 py-1.5 pr-10 text-left text-sm leading-5 shadow-sm focus:outline-none',
+    'relative w-full cursor-default border px-3 py-1.5 pr-10 text-left text-sm leading-5 shadow-sm focus:outline-none data-[disabled]:opacity-50 data-[disabled]:cursor-not-allowed',
   )
 
   useEffect(() => {
@@ -74,9 +74,17 @@ export const SwitchInputOutputDrawerContent = forwardRef<
       navigator.mediaDevices
         .enumerateDevices()
         .then((deviceInfos) => {
-          const audioInputs = deviceInfos.filter((device) => device.kind === 'audioinput')
-          const audioOutputs = deviceInfos.filter((device) => device.kind === 'audiooutput')
-          const videoInputs = deviceInfos.filter((device) => device.kind === 'videoinput')
+          // a device without a label cannot be shown nor selected: the browser hides
+          // the labels until the user grants the permission for that kind of device
+          const audioInputs = deviceInfos.filter(
+            (device) => device.kind === 'audioinput' && device.label,
+          )
+          const audioOutputs = deviceInfos.filter(
+            (device) => device.kind === 'audiooutput' && device.label,
+          )
+          const videoInputs = deviceInfos.filter(
+            (device) => device.kind === 'videoinput' && device.label,
+          )
           setAudioInputs(audioInputs)
           setAudioOutputs(audioOutputs)
           setVideoInputs(videoInputs)
@@ -176,7 +184,11 @@ export const SwitchInputOutputDrawerContent = forwardRef<
           </div>
 
           {/* Audio input select */}
-          <Listbox value={selectedAudioInput} onChange={handleSelectedAudioInput}>
+          <Listbox
+            value={selectedAudioInput}
+            onChange={handleSelectedAudioInput}
+            disabled={!audioInputs?.length}
+          >
             {({ open }) => (
               <>
                 <div className='flex items-center mt-2'>
@@ -191,7 +203,9 @@ export const SwitchInputOutputDrawerContent = forwardRef<
                       >
                         {selectedAudioInput?.label
                           ? selectedAudioInput?.label
-                          : t('Devices.Select audio input')}
+                          : audioInputs?.length
+                          ? t('Devices.Select audio input')
+                          : t('Devices.No devices available')}
                       </span>
                       <span className='pointer-events-none absolute inset-y-0 right-0 flex items-center pr-3'>
                         <FontAwesomeIcon
@@ -267,7 +281,11 @@ export const SwitchInputOutputDrawerContent = forwardRef<
           </div>
 
           {/* Audio output select */}
-          <Listbox value={selectedAudioOutput} onChange={handleSelectedAudioOutput}>
+          <Listbox
+            value={selectedAudioOutput}
+            onChange={handleSelectedAudioOutput}
+            disabled={!audioOutputs?.length}
+          >
             {({ open }) => (
               <>
                 <div className='flex items-center mt-2'>
@@ -282,7 +300,9 @@ export const SwitchInputOutputDrawerContent = forwardRef<
                       >
                         {selectedAudioOutput?.label
                           ? selectedAudioOutput?.label
-                          : t('Devices.Select audio output')}
+                          : audioOutputs?.length
+                          ? t('Devices.Select audio output')
+                          : t('Devices.No devices available')}
                       </span>
 
                       <span className='pointer-events-none absolute inset-y-0 right-0 flex items-center pr-3'>
@@ -362,7 +382,11 @@ export const SwitchInputOutputDrawerContent = forwardRef<
           </div>
 
           {/* Video input select */}
-          <Listbox value={selectedVideoInput} onChange={handleSelectedVideoInput}>
+          <Listbox
+            value={selectedVideoInput}
+            onChange={handleSelectedVideoInput}
+            disabled={!videoInputs?.length}
+          >
             {({ open }) => (
               <>
                 <div className='flex items-center mt-2'>
@@ -377,7 +401,9 @@ export const SwitchInputOutputDrawerContent = forwardRef<
                       >
                         {selectedVideoInput?.label
                           ? selectedVideoInput?.label
-                          : t('Devices.Select video input')}
+                          : videoInputs?.length
+                          ? t('Devices.Select video input')
+                          : t('Devices.No devices available')}
                       </span>
                       <span className='pointer-events-none absolute inset-y-0 right-0 flex items-center pr-3'>
                         <FontAwesomeIcon

@@ -154,7 +154,7 @@ export const QueueManagerDashboardHeader: FC<QueueManagerDashboardHeaderProps> =
               </div>
             </>
           ) : (
-            <span className='text-sm text-gray-900 dark:text-gray-900 font-medium flex justify-center text-center '>
+            <span className='text-sm text-gray-900 dark:text-gray-100 font-medium flex justify-center text-center '>
               {' '}
               {t('QueueManager.No alarm detected')}
             </span>

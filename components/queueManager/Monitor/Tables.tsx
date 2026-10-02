@@ -238,7 +238,7 @@ export const MonitorTables: FC<MonitorTablesProps> = ({
 
                 <EmptyState
                   title={t('QueueManager.No queue selected') || ''}
-                  description='Please select a queue'
+                  description={t('QueueManager.Please select a queue') || ''}
                   icon={
                     <FontAwesomeIcon
                       icon={faUsers}
@@ -486,7 +486,7 @@ export const MonitorTables: FC<MonitorTablesProps> = ({
                   {/* empty state */}
                   <EmptyState
                     title={t('QueueManager.No queue selected') || ''}
-                    description='Please select a queue'
+                    description={t('QueueManager.Please select a queue') || ''}
                     icon={
                       <FontAwesomeIcon
                         icon={faUsers}

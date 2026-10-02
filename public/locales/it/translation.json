@@ -1,5 +1,9 @@
 {
   "Common": {
+    "Restricted page": "Pagina riservata",
+    "Restricted page description": "Sembra che tu non abbia i permessi necessari per visualizzare questa pagina.",
+    "Try changing your search filters": "Prova a modificare i filtri di ricerca",
+    "Go to Operators": "Vai a Operatori",
     "Showing": "Visualizza",
     "of": "di",
     "Active filters": "Filtri attivi",
@@ -33,7 +37,6 @@
     "Add to favorites": "Aggiungi ai preferiti",
     "Remove from favorites": "Rimuovi dai preferiti",
     "time_distance_ago": "{{ timeDistance }} fa",
-    "Try changing your search filters": "Prova a modificare i filtri di ricerca",
     "Reset to defaults": "Ripristina valori predefiniti",
     "Download": "Scarica",
     "Intrude": "Intromesso",
@@ -109,6 +112,7 @@
     "Two-factor authentication is disabled": "L'autenticazione a due fattori è disabilitata"
   },
   "Phonebook": {
+    "No contacts found": "Nessun contatto trovato",
     "Phonebook": "Rubrica",
     "Create contact": "Crea contatto",
     "Save contact": "Salva contatto",
@@ -138,7 +142,6 @@
     "Type info": "Seleziona se il contatto è una Persona o un'Azienda",
     "Work": "Lavoro",
     "Mobile": "Cellulare",
-    "Try changing your search filters": "Prova a cambiare i tuoi filtri di ricerca",
     "Show contact": "Visualizza contatto",
     "Add phone number": "Aggiungi numero telefonico",
     "Edit contact": "Modifica contatto",
@@ -219,6 +222,8 @@
     "Website placeholder": "es. https://example.com"
   },
   "History": {
+    "No calls found": "Nessuna chiamata trovata",
+    "No voicemails found": "Nessun messaggio vocale trovato",
     "History": "Storico",
     "Personal": "Personale",
     "Switchboard": "Centralino",
@@ -286,6 +291,9 @@
     "Voicemail available": "Apri il messaggio vocale"
   },
   "Operators": {
+    "No operators found": "Nessun operatore trovato",
+    "No operators": "Nessun operatore",
+    "There is no operator configured": "Non è configurato nessun operatore",
     "Operators": "Operatori",
     "No groups": "Nessun gruppo",
     "Favorites": "Preferiti",
@@ -556,6 +564,8 @@
     "Pickup": "Intercetta"
   },
   "Lines": {
+    "No lines found": "Nessuna linea trovata",
+    "No announcements found": "Nessun annuncio trovato",
     "Lines management": "Gestione linee",
     "Ads": "Annunci",
     "Rules": "Regole",
@@ -687,6 +697,8 @@
     "Number (descending)": "Numero (decrescente)"
   },
   "LastCalls": {
+    "No incoming calls": "Nessuna chiamata in entrata",
+    "No outgoing calls": "Nessuna chiamata in uscita",
     "Last calls": "Ultime chiamate",
     "No calls": "Nessuna chiamata",
     "Sort by": "Ordina per",
@@ -736,6 +748,8 @@
     "Notifications": "Notifiche"
   },
   "Queues": {
+    "No queues found": "Nessuna coda trovata",
+    "No queue calls found": "Nessuna chiamata di coda trovata",
     "Logout": "Logout",
     "Queues": "Code",
     "No queues": "Nessuna coda",
@@ -866,6 +880,9 @@
     "Call": "Chiama"
   },
   "QueueManager": {
+    "No agents found": "Nessun agente trovato",
+    "Please select a queue": "Seleziona una coda",
+    "There is no operator configured": "Non è configurato nessun operatore",
     "Dashboard": "Dashboard",
     "Queues management": "Gestione code",
     "Gestione code": "Gestione code",
@@ -1046,6 +1063,8 @@
     "Click and hold to take current parking in call": "Clicca e tieni premuto per riprendere la chiamata parcheggiata"
   },
   "Devices": {
+    "No keys found": "Nessun tasto trovato",
+    "No devices available": "Nessun dispositivo disponibile",
     "Download app": "Scarica app",
     "Open app": "Apri app",
     "Used as": "Usato come",
@@ -1086,7 +1105,6 @@
     "Edit inline information message multiple rows": "{{isInformationLineShow}} righe modificate",
     "Create a pin": "Crea un pin",
     "No results": "Nessun risultato",
-    "Try changing your search query": "Prova a cambiare la tua ricerca",
     "Key position information tooltip": "Scegli una posizione per il pulsante",
     "Audio and video settings": "Impostazioni Audio e Video",
     "Audio input": "Audio input",

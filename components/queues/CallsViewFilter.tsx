@@ -30,13 +30,15 @@ import { customScrollbarClass } from '../../lib/utils'
 import { CustomThemedTooltip } from '../common/CustomThemedTooltip'
 
 export interface CallsViewFilterProps extends ComponentPropsWithRef<'div'> {
+  // incremented by the page to reset the filters, e.g. from an empty state
+  resetTrigger?: number
   updateTextFilter: Function
   updateOutcomeFilter: Function
   updateQueuesFilter: Function
 }
 
 export const CallsViewFilter = forwardRef<HTMLButtonElement, CallsViewFilterProps>(
-  ({ updateTextFilter, updateOutcomeFilter, updateQueuesFilter, className, ...props }, ref) => {
+  ({ updateTextFilter, updateOutcomeFilter, updateQueuesFilter, className, resetTrigger, ...props }, ref) => {
     const { t } = useTranslation()
     const auth = useSelector((state: RootState) => state.authentication)
     const [textFilter, setTextFilter] = useState('')
@@ -156,6 +158,13 @@ export const CallsViewFilter = forwardRef<HTMLButtonElement, CallsViewFilterProp
       updateQueuesFilter(allQueueCodes)
       savePreference('queuesSelectedQueues', allQueueCodes, auth.username)
     }
+
+    useEffect(() => {
+      if (resetTrigger) {
+        resetFilters()
+      }
+      // eslint-disable-next-line react-hooks/exhaustive-deps
+    }, [resetTrigger])
 
     const clearTextFilter = () => {
       setTextFilter('')

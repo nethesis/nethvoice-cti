@@ -3,7 +3,7 @@
 
 import { FC, ComponentProps, useState, useEffect, Fragment, useMemo } from 'react'
 import { useTranslation } from 'react-i18next'
-import { EmptyState, Avatar } from '../../common'
+import { EmptyState, Avatar, Button } from '../../common'
 import { useSelector } from 'react-redux'
 import { RootState } from '../../../store'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
@@ -21,6 +21,7 @@ import {
   faPause,
   faPhone,
   faUser,
+  faMagnifyingGlass,
 } from '@fortawesome/free-solid-svg-icons'
 import { LoggedStatus } from '../../queues'
 import { openShowOperatorDrawer } from '../../../lib/operators'
@@ -54,6 +55,8 @@ export const Summary: FC<SummaryProps> = ({ className }): JSX.Element => {
 
   // operator toggle status
   const [expanded, setExpanded] = useState(false)
+  // incremented by the "Reset filters" button of the empty state
+  const [resetFiltersTrigger, setResetFiltersTrigger] = useState(0)
 
   const queueManagerStore = useSelector((state: RootState) => state.queueManagerQueues)
 
@@ -693,6 +696,7 @@ export const Summary: FC<SummaryProps> = ({ className }): JSX.Element => {
         <>
           <div>
             <RealTimeOperatorsFilter
+              resetTrigger={resetFiltersTrigger}
               updateTextFilter={debouncedUpdateTextFilterOperator}
               updateQueuesFilter={updateQueuesFilterOperators}
               className='pt-6'
@@ -701,16 +705,14 @@ export const Summary: FC<SummaryProps> = ({ className }): JSX.Element => {
               {/* empty state */}
               {filteredAgentMembers.length === 0 && (
                 <EmptyState
-                  title={t('QueueManager.No agents') || ''}
-                  description='There is no agent'
-                  icon={
-                    <FontAwesomeIcon
-                      icon={faHeadset}
-                      className='mx-auto h-12 w-12'
-                      aria-hidden='true'
-                    />
-                  }
-                ></EmptyState>
+                  title={t('QueueManager.No agents found') || ''}
+                  description={t('Common.Try changing your search filters') || ''}
+                  icon={<FontAwesomeIcon icon={faMagnifyingGlass} aria-hidden='true' />}
+                >
+                  <Button variant='ghost' size='large' onClick={() => setResetFiltersTrigger((n) => n + 1)}>
+                    {t('Common.Reset filters')}
+                  </Button>
+                </EmptyState>
               )}
               {/* skeleton */}
               {!queueManagerStore.isLoaded && (

@@ -59,6 +59,8 @@ const visibilityFilter = {
 }
 
 export interface FilterProps extends ComponentPropsWithRef<'div'> {
+  // incremented by the page to reset the filters, e.g. from an empty state
+  resetTrigger?: number
   updateTextFilter: Function
   updateContactTypeFilter: Function
   updateVisibilityFilter: Function
@@ -67,7 +69,7 @@ export interface FilterProps extends ComponentPropsWithRef<'div'> {
 
 export const Filter = forwardRef<HTMLButtonElement, FilterProps>(
   (
-    { updateTextFilter, updateContactTypeFilter, updateVisibilityFilter, updateSort, className, ...props },
+    { updateTextFilter, updateContactTypeFilter, updateVisibilityFilter, updateSort, className, resetTrigger, ...props },
     ref,
   ) => {
     const { t } = useTranslation()
@@ -187,6 +189,13 @@ export const Filter = forwardRef<HTMLButtonElement, FilterProps>(
       updateVisibilityFilter(DEFAULT_VISIBILITY_FILTER)
       updateSort(DEFAULT_SORT_BY)
     }
+
+    useEffect(() => {
+      if (resetTrigger) {
+        resetFilters()
+      }
+      // eslint-disable-next-line react-hooks/exhaustive-deps
+    }, [resetTrigger])
 
     const translatedContactTypeOptions = contactTypeFilter.options.map((o) => ({
       ...o,

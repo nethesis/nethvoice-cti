@@ -580,7 +580,6 @@ export const QueueManagementChart: FC<QueueManagementChartProps> = ({
                           aria-hidden='true'
                         />
                       }
-                      className='bg-white dark:bg-gray-900'
                     ></EmptyState>
                   )}
                   {/* skeleton */}

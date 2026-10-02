@@ -5,7 +5,7 @@ import { FC, ComponentProps, useEffect, useState, useMemo } from 'react'
 import { useTranslation } from 'react-i18next'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { debounce } from 'lodash'
-import { Avatar, EmptyState } from '../../common'
+import { Avatar, EmptyState, Button } from '../../common'
 import InfiniteScroll from 'react-infinite-scroll-component'
 import { LoggedStatus } from '../../queues'
 import { savePreference } from '../../../lib/storage'
@@ -22,6 +22,7 @@ import {
   faPhone,
   faAngleRight,
   faPause,
+  faMagnifyingGlass,
 } from '@fortawesome/free-solid-svg-icons'
 import { RealTimeOperatorsFilter } from './RealTimeOperatorsFilter'
 import { UserActionInQueue } from '../Common/UserActionInQueue'
@@ -46,6 +47,9 @@ export const RealTimeOperators: FC<RealTimeOperatorsProps> = ({
   const [infiniteScrollLastIndex, setInfiniteScrollLastIndex] = useState(
     infiniteScrollOperatorsPageSize,
   )
+
+  // incremented by the "Reset filters" button of the empty state
+  const [resetFiltersTrigger, setResetFiltersTrigger] = useState(0)
 
   const [operatorsStatisticsExpanded, setOperatorsStatisticsExpanded] = useState(false)
 
@@ -160,6 +164,7 @@ export const RealTimeOperators: FC<RealTimeOperatorsProps> = ({
           <>
             <div>
               <RealTimeOperatorsFilter
+                resetTrigger={resetFiltersTrigger}
                 updateTextFilter={debouncedUpdateTextFilterOperator}
                 updateQueuesFilter={updateQueuesFilter}
                 className='pt-6'
@@ -168,16 +173,14 @@ export const RealTimeOperators: FC<RealTimeOperatorsProps> = ({
                 {/* empty state */}
                 {filteredAgentMembers.length === 0 && (
                   <EmptyState
-                    title={t('QueueManager.No agents') || ''}
-                    description='There is no agent'
-                    icon={
-                      <FontAwesomeIcon
-                        icon={faHeadset}
-                        className='mx-auto h-12 w-12'
-                        aria-hidden='true'
-                      />
-                    }
-                  ></EmptyState>
+                    title={t('QueueManager.No agents found') || ''}
+                    description={t('Common.Try changing your search filters') || ''}
+                    icon={<FontAwesomeIcon icon={faMagnifyingGlass} aria-hidden='true' />}
+                  >
+                    <Button variant='ghost' size='large' onClick={() => setResetFiltersTrigger((n) => n + 1)}>
+                      {t('Common.Reset filters')}
+                    </Button>
+                  </EmptyState>
                 )}
                 {/* skeleton */}
                 {!queueManagerStore.isLoaded && (
