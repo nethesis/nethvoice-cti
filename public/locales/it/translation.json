@@ -1,5 +1,6 @@
 {
   "Common": {
+    "Messages": "Messaggi",
     "Showing": "Visualizza",
     "of": "di",
     "Active filters": "Filtri attivi",
@@ -88,7 +89,8 @@
     "Add": "Aggiungi",
     "Remove": "Rimuovi",
     "Page of": "Pagina {{current}} di {{total}}",
-    "Optional": "Opzionale"
+    "Optional": "Opzionale",
+    "Chat": "Chat"
   },
   "Login": {
     "User": "Utente",
@@ -1240,5 +1242,32 @@
     "Neutral": "Neutro",
     "Negative": "Negativo",
     "Sentiment score tooltip": "Punteggio sentiment: {{score}}/10"
+  },
+  "Chat": {
+    "No longer active": "Non più attivo",
+    "Conversations": "Messaggi",
+    "Offline": "Chat non connessa",
+    "Search": "Cerca una conversazione",
+    "No conversations": "Nessuna conversazione",
+    "No conversations description": "Apri la pagina Operatori e premi Chat su un operatore per iniziare.",
+    "You": "Tu",
+    "Attachment": "Allegato",
+    "New chat": "Nuova chat",
+    "members": "membri",
+    "No messages yet": "Nessun messaggio",
+    "Conversation": "Conversazione",
+    "Last message": "Ultimo messaggio",
+    "Time": "Ora",
+    "Delete": "Elimina",
+    "Delete confirm": "Eliminare la conversazione con \"{{name}}\"? La tua copia dei messaggi viene rimossa.",
+    "Open menu": "Apri menù",
+    "Leave": "Abbandona",
+    "Delete group confirm": "Eliminare il gruppo \"{{name}}\" per tutti? I suoi messaggi vengono rimossi per tutti i membri.",
+    "Leave confirm": "Abbandonare il gruppo \"{{name}}\"? Non riceverai più i suoi messaggi e la tua copia viene rimossa.",
+    "In NethLink": "La chat è aperta in NethLink.",
+    "Open in NethLink": "Apri in NethLink",
+    "New message": "Nuovo messaggio",
+    "Messages count": "{{count}} nuovi messaggi",
+    "Reply": "Rispondi"
   }
 }

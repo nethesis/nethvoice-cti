@@ -17,6 +17,7 @@ import { getBrandedTabTitle, getConfiguredFaviconUrl, getProductSubname } from '
 import Head from 'next/head'
 import { loadI18n } from '../lib/i18n'
 import { Island } from '../components/island'
+import { ChatIslandMount } from '../components/chat'
 
 function MyApp({ Component, pageProps }: AppProps) {
   const [isLoading, setIsLoading] = useState<boolean>(true)
@@ -104,6 +105,7 @@ function MyApp({ Component, pageProps }: AppProps) {
                 </Layout>
               </Service>
               <Island />
+              <ChatIslandMount />
             </>
           ) : (
             // Render the Login page

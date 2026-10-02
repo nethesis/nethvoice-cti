@@ -9,6 +9,7 @@ import {
   faGear as faGearSolid,
   faClockRotateLeft as faClockRotateLeftSolid,
   faCubes as faCubesSolid,
+  faCommentDots,
   IconDefinition as SolidIconDefinition,
 } from '@fortawesome/free-solid-svg-icons'
 
@@ -22,6 +23,7 @@ import {
   faChartLine as faChartLineLight,
   IconDefinition as LightIconDefinition,
 } from '@nethesis/nethesis-light-svg-icons'
+import { faCommentDotsRegular } from '../components/chat/icons'
 
 type IconDefinition = SolidIconDefinition | LightIconDefinition
 
@@ -39,6 +41,13 @@ export const navItems: NavItemsProps[] = [
     href: '/operators',
     icon: faHeadsetLight,
     iconActive: faHeadsetSolid,
+    current: false,
+  },
+  {
+    name: 'Messages',
+    href: '/chat',
+    icon: faCommentDotsRegular,
+    iconActive: faCommentDots,
     current: false,
   },
   { name: 'Queues', href: '/queues', icon: faUsersLight, iconActive: faUsersSolid, current: false },

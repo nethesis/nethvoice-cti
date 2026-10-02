@@ -29,6 +29,7 @@ import { devices } from './devices'
 import { voicemail } from './voicemail'
 import { incomingCall } from './incomingCall'
 import { ringtones } from './ringtones'
+import { chat } from './chat'
 
 export interface RootModel extends Models<RootModel> {
   authentication: typeof authentication
@@ -58,6 +59,7 @@ export interface RootModel extends Models<RootModel> {
   voicemail: typeof voicemail
   incomingCall: typeof incomingCall
   ringtones: typeof ringtones
+  chat: typeof chat
 }
 
 export const models: RootModel = {
@@ -88,4 +90,5 @@ export const models: RootModel = {
   voicemail,
   incomingCall,
   ringtones,
+  chat,
 }
