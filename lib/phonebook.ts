@@ -191,6 +191,29 @@ export async function getPhonebook(
   }
 }
 
+export async function getCompanyInformation(company: string) {
+  const companySearchTerm = company.replace(/\//g, ' ')
+  const normalizedCompany = company.trim().toLowerCase()
+  let pageNum = 1
+
+  while (true) {
+    const res = await getPhonebook(pageNum, companySearchTerm, 'company', 'displayname')
+    const rows = Array.isArray(res?.rows) ? res.rows : []
+    const companyInformation = rows.find(
+      (row: any) =>
+        typeof row?.company === 'string' && row.company.trim().toLowerCase() === normalizedCompany,
+    )
+
+    if (companyInformation) {
+      return companyInformation
+    }
+    if (!rows.length || pageNum * PAGE_SIZE >= (res?.count || 0)) {
+      return undefined
+    }
+    pageNum++
+  }
+}
+
 export async function getContact(contactId: number, source: string) {
   if (window == undefined) {
     return
