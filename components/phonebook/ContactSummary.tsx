@@ -29,7 +29,7 @@ import {
   deleteContact,
   getContact,
   fetchContact,
-  getPhonebook,
+  getCompanyInformation,
   getContactVisibilityKind,
   getContactVisibility,
   getContactSharedGroups,
@@ -196,26 +196,27 @@ export const ContactSummary = forwardRef<HTMLButtonElement, ContactSummaryProps>
 
     // Get all company information
     useEffect(() => {
+      let isMounted = true
+      setCompanyInformation([])
+
       async function searchCompanyInformation() {
         if (contact && contact?.kind === 'person' && contact?.company) {
           try {
-            //Remove space and slash characters
-            let noSlashCharactersCompanyInformation = contact?.company?.replace(/\//g, '')
-            const res = await getPhonebook(
-              1,
-              noSlashCharactersCompanyInformation,
-              'company',
-              'displayname',
-            )
-            let companyAllInformation = res?.rows[0]
-            setCompanyInformation(companyAllInformation)
+            const companyAllInformation = await getCompanyInformation(contact.company)
+
+            if (isMounted && companyAllInformation) {
+              setCompanyInformation(companyAllInformation)
+            }
           } catch (e) {
             console.error(e)
-            return []
           }
         }
       }
       searchCompanyInformation()
+
+      return () => {
+        isMounted = false
+      }
       // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [contact])
 
