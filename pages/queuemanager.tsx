@@ -94,6 +94,12 @@ const QueueManager: NextPage = () => {
 
   const { profile } = useSelector((state: RootState) => state.user)
 
+  // the profile is empty on the first render: showing the missing permission page
+  // before it arrives makes it flash on every reload
+  if (typeof profile?.macro_permissions?.qmanager?.value === 'undefined') {
+    return <></>
+  }
+
   return (
     <>
       {profile?.macro_permissions?.qmanager?.value ? (

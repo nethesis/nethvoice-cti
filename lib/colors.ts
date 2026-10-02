@@ -50,6 +50,7 @@ export const GREEN_600_SHADOW = '#22c55e99'
 export const GREEN_700 = '#16a34a'
 export const GREEN_800 = '#15803d'
 export const GREEN_800_SHADOW = '#15803d99'
+export const GREEN_950 = '#052e16'
 
 //teal
 export const TEAL_100 = '#ccfbf1'
@@ -110,6 +111,7 @@ export const INDIGO_600_SHADOW = '#4f46e599'
 export const INDIGO_700 = '#4338ca'
 export const INDIGO_800 = '#3730a3'
 export const INDIGO_800_SHADOW = '#3730a399'
+export const INDIGO_950 = '#1e1b4b'
 
 //violet
 export const VIOLET_100 = '#ede9fe'
@@ -170,6 +172,7 @@ export const ROSE_600_SHADOW = '#e11d4899'
 export const ROSE_700 = '#be123c'
 export const ROSE_800 = '#9f1239'
 export const ROSE_800_SHADOW = '#9f123999'
+export const ROSE_950 = '#4c0519'
 
 //amber
 export const AMBER_100 = '#fef3c7'

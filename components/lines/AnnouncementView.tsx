@@ -17,8 +17,9 @@ import {
   faLockOpen,
   faChevronLeft,
   faEllipsisVertical,
-  faFilter,
   faPenToSquare,
+  faMagnifyingGlass,
+  faPhoneVolume,
 } from '@fortawesome/free-solid-svg-icons'
 import classNames from 'classnames'
 import { AnnouncementFilter } from './AnnouncementFilter'
@@ -50,6 +51,8 @@ export const AnnouncementView: FC<AnnouncementViewProps> = ({ className }): JSX.
   const [pageSize, setPageSize] = useState(PAGE_SIZE)
   const [firstRender, setFirstRender]: any = useState(true)
   const [textFilter, setTextFilter]: any = useState('')
+  // incremented by the "Reset filters" button of the empty state
+  const [resetFiltersTrigger, setResetFiltersTrigger] = useState(0)
   const [donwloadAudioMessageError, setDownloadAudioMessageError] = useState('')
   const reloadValue = useSelector((state: RootState) => state.announcement.reloadValue)
 
@@ -405,6 +408,7 @@ export const AnnouncementView: FC<AnnouncementViewProps> = ({ className }): JSX.
     <div className={classNames(className)}>
       <div className='flex-col flex-wrap xl:flex-row justify-between gap-x-4 xl:items-end'>
         <AnnouncementFilter
+          resetTrigger={resetFiltersTrigger}
           updateTextFilter={debouncedUpdateTextFilter}
           updateSortFilter={updateSortFilter}
         />
@@ -419,17 +423,23 @@ export const AnnouncementView: FC<AnnouncementViewProps> = ({ className }): JSX.
                   columns={columns}
                   data={announcementsArray}
                   isLoading={!isLinesLoaded}
-                  emptyState={{
-                    title: t('Lines.No announcement'),
-                    description: t('Lines.There are no announcement with current filter') || '',
-                    icon: (
-                      <FontAwesomeIcon
-                        icon={faFilter}
-                        className='mx-auto h-12 w-12'
-                        aria-hidden='true'
-                      />
-                    ),
-                  }}
+                  emptyState={
+                    textFilter
+                      ? {
+                          title: t('Lines.No announcements found'),
+                          description: t('Common.Try changing your search filters') || '',
+                          icon: <FontAwesomeIcon icon={faMagnifyingGlass} aria-hidden='true' />,
+                          action: (
+                            <Button variant='ghost' size='large' onClick={() => setResetFiltersTrigger((n) => n + 1)}>
+                              {t('Common.Reset filters')}
+                            </Button>
+                          ),
+                        }
+                      : {
+                          title: t('Lines.No announcement'),
+                          icon: <FontAwesomeIcon icon={faPhoneVolume} aria-hidden='true' />,
+                        }
+                  }
                   rowKey={(announcement: any) => announcement.id}
                   trClassName='h-[84px]'
                   scrollable={true}

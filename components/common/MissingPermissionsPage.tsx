@@ -5,43 +5,27 @@ import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { faArrowRight, faBan } from '@fortawesome/free-solid-svg-icons'
 import { t } from 'i18next'
 import Link from 'next/link'
+import { Button } from './Button'
+import { EmptyState } from './EmptyState'
 
+// "Restricted page" pattern of the Nethesis design system
 export const MissingPermission = ({}): JSX.Element => {
   return (
-    <div className='flex items-center justify-center h-[46rem] overflow-y-hidden'>
-      <div className='text-center'>
-        <FontAwesomeIcon
-          icon={faBan}
-          className='text-emerald-600 text-6xl mb-4 w-[6rem] h-[6rem]'
-        />
-        <p className='text-2xl text-gray-900 dark:text-gray-300 pt-8 font-semibold	'>
-          {t('Common.Permission error')}
-        </p>
-        <p className='text-base text-gray-600 dark:text-gray-300 pt-[1rem] font-medium'>
-          {t('Common.Permission error message content')}
-        </p>
-        <div className='flex items-center justify-center'>
-          <div className='flex items-center justify-center '>
-            <p className='text-base text-gray-600 dark:text-gray-300 font-medium mr-2'>
-              {t('Common.Permission error message content link')}
-            </p>
-          </div>
-
-          <div className='flex items-center justify-center text-gray-900 dark:text-gray-100 text-sm '>
-            <Link href={'/operators'}>
-              <div className='flex justify-center items-center '>
-                <span className='font-semibold text-gray-900 dark:text-gray-100 hover:text-primary hover:dark:text-primaryDark hover:underline'>
-                  {t('Common.Main page')}
-                </span>
-                <FontAwesomeIcon
-                  icon={faArrowRight}
-                  className='h-4 w-4 m-3 rounded-lg text-gray-900 dark:text-gray-100 hover:text-primary hover:dark:text-primaryDark'
-                />
-              </div>
-            </Link>
-          </div>
-        </div>
-      </div>
+    <div className='flex justify-center py-16'>
+      <EmptyState
+        variant='plain'
+        className='max-w-xl'
+        title={t('Common.Restricted page')}
+        description={t('Common.Restricted page description') || ''}
+        icon={<FontAwesomeIcon icon={faBan} className='text-emerald-600' aria-hidden='true' />}
+      >
+        <Link href={'/operators'}>
+          <Button variant='primary' size='large'>
+            <FontAwesomeIcon icon={faArrowRight} className='mr-2 h-4 w-4' aria-hidden='true' />
+            <span>{t('Common.Go to Operators')}</span>
+          </Button>
+        </Link>
+      </EmptyState>
     </div>
   )
 }

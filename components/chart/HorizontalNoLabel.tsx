@@ -140,7 +140,15 @@ const BarChartHorizontalNoLabels: FC<BarChartHorizontalNoLabelsProps> = ({
     ],
   }
 
-  return <Bar data={data} plugins={[ChartDataLabels]} options={options} />
+  // the chart height follows the number of rows, so the card scrolls only when they
+  // do not fit instead of always showing a scrollbar on a fixed height
+  const chartHeight = Math.max(120, data.labels.length * 44 + 24)
+
+  return (
+    <div style={{ height: `${chartHeight}px` }}>
+      <Bar data={data} plugins={[ChartDataLabels]} options={options} />
+    </div>
+  )
 }
 
 export default BarChartHorizontalNoLabels

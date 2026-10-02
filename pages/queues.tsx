@@ -105,7 +105,6 @@ const Queues: NextPage = () => {
               icon={
                 <FontAwesomeIcon icon={faUsers} className='mx-auto h-12 w-12' aria-hidden='true' />
               }
-              className='md:rounded-md bg-white dark:bg-gray-900'
             ></EmptyState>
           )}
           {/* tabs */}
@@ -165,7 +164,13 @@ const Queues: NextPage = () => {
           )}
         </div>
       ) : (
-        <MissingPermission />
+        // the profile is empty on the first render: the missing permission page
+        // must not flash before it arrives
+        typeof profile?.macro_permissions?.queue_agent?.value === 'undefined' ? (
+          <></>
+        ) : (
+          <MissingPermission />
+        )
       )}
     </>
   )

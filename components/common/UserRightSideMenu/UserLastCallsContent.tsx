@@ -12,6 +12,7 @@ import {
   faArrowRightLong,
   faUserPlus,
   faFilter,
+  faMagnifyingGlass,
 } from '@fortawesome/free-solid-svg-icons'
 import { Button, Avatar, EmptyState, Dropdown, Badge } from '../../common'
 import { useSelector } from 'react-redux'
@@ -642,20 +643,22 @@ export const UserLastCallsContent = () => {
           {/* Empty state */}
           {!isLoading && filteredCalls?.length === 0 && (
             <div className='py-4 px-6'>
-              <EmptyState
-                title={
-                  directionFilter !== 'all'
-                    ? t(`LastCalls.No ${directionFilter === 'in' ? 'incoming' : 'outgoing'} calls`)
-                    : t('LastCalls.No calls')
-                }
-                icon={
-                  <FontAwesomeIcon
-                    icon={faPhone}
-                    className='mx-auto h-12 w-12'
-                    aria-hidden='true'
-                  />
-                }
-              />
+              {directionFilter !== 'all' ? (
+                <EmptyState
+                  title={t(`LastCalls.No ${directionFilter === 'in' ? 'incoming' : 'outgoing'} calls`)}
+                  description={t('Common.Try changing your search filters') || ''}
+                  icon={<FontAwesomeIcon icon={faMagnifyingGlass} aria-hidden='true' />}
+                >
+                  <Button variant='ghost' size='large' onClick={() => handleDirectionFilter('all')}>
+                    {t('Common.Reset filters')}
+                  </Button>
+                </EmptyState>
+              ) : (
+                <EmptyState
+                  title={t('LastCalls.No calls')}
+                  icon={<FontAwesomeIcon icon={faPhone} aria-hidden='true' />}
+                />
+              )}
             </div>
           )}
 

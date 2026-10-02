@@ -15,6 +15,7 @@ import {
   faVoicemail,
   faArrowRightLong,
   faCircle,
+  faMagnifyingGlass,
 } from '@fortawesome/free-solid-svg-icons'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { t } from 'i18next'
@@ -48,6 +49,8 @@ export const VoicemailInbox: FC<VoicemailInboxProps> = ({ className }): JSX.Elem
   const { profile } = useSelector((state: RootState) => state.user)
 
   const [voicemailError, setVoicemailError] = useState('')
+  // incremented by the "Reset filters" button of the empty state
+  const [resetFiltersTrigger, setResetFiltersTrigger] = useState(0)
   const [isVoicemailLoaded, setVoicemailLoaded] = useState(false)
   const [voicemails, setVoicemails] = useState<any[]>([])
   const [totalPages, setTotalPages] = useState(0)
@@ -478,6 +481,7 @@ export const VoicemailInbox: FC<VoicemailInboxProps> = ({ className }): JSX.Elem
         <div>
           <div className='flex justify-between'>
             <Filter
+              resetTrigger={resetFiltersTrigger}
               filterTextValue={searchTerm}
               updateFilterText={debouncedUpdateFilterText}
               updateSortFilter={updateSortFilter}
@@ -513,21 +517,26 @@ export const VoicemailInbox: FC<VoicemailInboxProps> = ({ className }): JSX.Elem
                     data={currentPageVoicemails}
                     isLoading={!isVoicemailLoaded}
                     loadingRows={8}
-                    emptyState={{
-                      title: searchTerm
-                        ? t('History.No matching voicemails')
-                        : t('History.No voicemails'),
-                      description: searchTerm
-                        ? t('History.No voicemails match your search criteria') || ''
-                        : t('History.There are no voicemails in your history') || '',
-                      icon: (
-                        <FontAwesomeIcon
-                          icon={faVoicemail}
-                          className='mx-auto h-12 w-12'
-                          aria-hidden='true'
-                        />
-                      ),
-                    }}
+                    emptyState={
+                      searchTerm
+                        ? {
+                            title: t('History.No voicemails found'),
+                            description: t('Common.Try changing your search filters') || '',
+                            icon: <FontAwesomeIcon icon={faMagnifyingGlass} aria-hidden='true' />,
+                            action: (
+                              <Button variant='ghost' size='large'
+                                onClick={() => setResetFiltersTrigger((n) => n + 1)}
+                              >
+                                {t('Common.Reset filters')}
+                              </Button>
+                            ),
+                          }
+                        : {
+                            title: t('History.No voicemails'),
+                            description: t('History.There are no voicemails in your history') || '',
+                            icon: <FontAwesomeIcon icon={faVoicemail} aria-hidden='true' />,
+                          }
+                    }
                     rowKey='id'
                     trClassName='h-[84px]'
                     scrollable={true}
@@ -558,7 +567,13 @@ export const VoicemailInbox: FC<VoicemailInboxProps> = ({ className }): JSX.Elem
           </div>
         </div>
       ) : (
-        <MissingPermission />
+        // the profile is empty on the first render: the missing permission page
+        // must not flash before it arrives
+        typeof profile?.macro_permissions?.cdr?.value === 'undefined' ? (
+          <></>
+        ) : (
+          <MissingPermission />
+        )
       )}
     </>
   )

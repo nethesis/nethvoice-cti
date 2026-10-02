@@ -194,7 +194,7 @@ export const QueueManagementOperators: FC<QueueManagementOperatorsProps> = ({
                 isEmpty(queueManagerStore?.queues[selectedValue?.queue]?.members) && (
                   <EmptyState
                     title={t('QueueManager.No operators') || ''}
-                    description='There is no operator configured'
+                    description={t('QueueManager.There is no operator configured') || ''}
                     icon={
                       <FontAwesomeIcon
                         icon={faHeadset}
@@ -244,6 +244,8 @@ export const QueueManagementOperators: FC<QueueManagementOperatorsProps> = ({
                     next={showMoreInfiniteScrollOperators}
                     hasMore={infiniteScrollHasMore}
                     scrollableTarget='main-content'
+                    // the wrapper of the library sets overflow:auto, which would clip the row menus
+                    style={{ overflow: 'visible' }}
                     loader={
                       <FontAwesomeIcon
                         icon={faCircleNotch}
@@ -258,7 +260,7 @@ export const QueueManagementOperators: FC<QueueManagementOperatorsProps> = ({
                       {infiniteScrollOperators.map((operator: any, index) => {
                         return (
                           <li key={index} className='px-1'>
-                            <div className='group flex w-full items-center justify-between space-x-3 rounded-lg p-2 text-left focus:outline-none focus:ring-2 focus:ring-offset-2 bg-cardBackgroud dark:bg-cardBackgroudDark hover:bg-gray-200 dark:hover:bg-gray-700 focus:ring-primary dark:focus:ring-primary'>
+                            <div className='group flex w-full items-center justify-between space-x-3 rounded-lg py-2 px-3 text-left focus:outline-none focus:ring-2 focus:ring-offset-2 bg-cardBackgroud dark:bg-cardBackgroudDark focus:ring-primary dark:focus:ring-primary'>
                               <span className='flex min-w-0 flex-1 items-center space-x-3'>
                                 <span className='block flex-shrink-0 cursor-pointer'>
                                   <Avatar

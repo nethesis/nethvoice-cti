@@ -6,7 +6,6 @@ import { useState, useEffect, useRef, MutableRefObject, useCallback, useMemo } f
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import {
   faPhone,
-  faPlus,
   faEllipsisVertical,
   faPen,
   faBolt,
@@ -470,13 +469,11 @@ export const SpeedDialContent = () => {
             <div className='px-6 py-4'>
               <EmptyState
                 title={t('SpeedDial.No speed dials')}
-                icon={
-                  <FontAwesomeIcon icon={faBolt} className='mx-auto h-12 w-12' aria-hidden='true' />
-                }
+                icon={<FontAwesomeIcon icon={faBolt} aria-hidden='true' />}
               >
                 {canCreateSpeedDials && (
-                  <Button variant='white' onClick={() => openCreateSpeedDialDrawer()}>
-                    <FontAwesomeIcon icon={faPlus} className='mr-2 h-4 w-4' />
+                  <Button variant='primary' size='large' onClick={() => openCreateSpeedDialDrawer()}>
+                    <FontAwesomeIcon icon={faCirclePlus} className='mr-2 h-4 w-4' />
                     <span>{t('SpeedDial.Create')}</span>
                   </Button>
                 )}

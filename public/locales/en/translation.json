@@ -1,5 +1,12 @@
 {
   "Common": {
+    "None": "None",
+    "Select all": "Select all",
+    "Deselect all": "Deselect all",
+    "Restricted page": "Restricted page",
+    "Restricted page description": "It seems that you don't have the necessary permissions to view this page.",
+    "Try changing your search filters": "Try changing your search filters",
+    "Go to Operators": "Go to Operators",
     "Showing": "Showing",
     "of": "of",
     "Active filters": "Active filters",
@@ -11,7 +18,6 @@
     "Coming soon": "Coming soon",
     "Cancel": "Cancel",
     "Save": "Save",
-    "Try changing your search filters": "Try changing your search filters",
     "Phone number": "Phone number",
     "Company name": "Company name",
     "Call": "Call",
@@ -124,6 +130,7 @@
     "Two-factor authentication is disabled": "Two-factor authentication is disabled"
   },
   "Phonebook": {
+    "No contacts found": "No contacts found",
     "Phonebook": "Phonebook",
     "Create contact": "Create contact",
     "Save contact": "Save contact",
@@ -167,7 +174,6 @@
     "Type info": "Choose whether the contact is a Person or a Company",
     "Work": "Work",
     "Mobile": "Mobile",
-    "Try changing your search filters": "Try changing your search filters",
     "Delete contact": "Delete contact",
     "Visibility": "Visibility",
     "Visibility info": "Determine who can view this contact - Public (everyone), Private (only you), or shared with specific groups",
@@ -235,6 +241,8 @@
     "Website placeholder": "e.g. https://example.com"
   },
   "History": {
+    "No calls found": "No calls found",
+    "No voicemails found": "No voicemails found",
     "History": "History",
     "Personal": "Personal",
     "Switchboard": "Switchboard",
@@ -320,6 +328,9 @@
     "Named queue call": "Queue: {{name}}"
   },
   "Operators": {
+    "No operators found": "No operators found",
+    "No operators": "No operators",
+    "There is no operator configured": "There is no operator configured",
     "Operators": "Operators",
     "No groups": "No groups",
     "Favorites": "Favorites",
@@ -603,6 +614,12 @@
     "Notifications": "Notifications"
   },
   "Queues": {
+    "outcome_JOINEMPTY": "No agents outside the queue",
+    "outcome_JOINUNAVAIL": "No agents outside the queue",
+    "outcome_EXITEMPTY": "No agents in queue",
+    "outcome_FULL": "Queue full",
+    "No queues found": "No queues found",
+    "No queue calls found": "No queue calls found",
     "Queues": "Queues",
     "Filter queues": "Filter queues",
     "Login to all queues": "Login all queues",
@@ -701,6 +718,8 @@
     "Filter calls": "Filter calls"
   },
   "Lines": {
+    "No lines found": "No lines found",
+    "No announcements found": "No announcements found",
     "Lines management": "Lines management",
     "Ads": "Announcement",
     "Rules": "Rules",
@@ -834,6 +853,8 @@
     "Number (descending)": "Number (descending)"
   },
   "LastCalls": {
+    "No incoming calls": "No incoming calls",
+    "No outgoing calls": "No outgoing calls",
     "Last calls": "Last calls",
     "No calls": "No calls",
     "Sort by": "Sort by",
@@ -874,6 +895,11 @@
     "Voice mail": "Voicemail inbox"
   },
   "QueueManager": {
+    "Descending order": "Descending",
+    "Ascending order": "Ascending",
+    "No agents found": "No agents found",
+    "Please select a queue": "Please select a queue",
+    "There is no operator configured": "There is no operator configured",
     "Dashboard": "Dashboard",
     "Queues management": "Queues management",
     "Not managed calls": "Not managed calls",
@@ -963,12 +989,12 @@
     "Null": "Null",
     "Expired": "Expired",
     "Abandoned": "Abandoned",
-    "No agents outqueue": "No agents outqueue",
-    "No agents inqueue": "No agents inqueue",
+    "No agents outqueue": "No agents outside the queue",
+    "No agents inqueue": "No agents in queue",
     "No not managed customers": "No not managed customers",
     "Date": "Date",
     "Caller": "Caller",
-    "Go to not managed customers": "Go to customers management",
+    "Go to not managed customers": "Go to Customers management",
     "No customers to manage": "No customers to manage",
     "There are no customers to manage": "There are no customers to manage",
     "Queues": "Queues",
@@ -1080,6 +1106,8 @@
     "Call": "Call"
   },
   "Devices": {
+    "No keys found": "No keys found",
+    "No devices available": "No devices available",
     "Download app": "Download app",
     "Open app": "Open app",
     "Used as": "Used as",
@@ -1121,7 +1149,6 @@
     "Edit inline information message multiple rows": "{{isInformationLineShow}} changes rows",
     "Create a pin": "Create a pin",
     "No results": "No results",
-    "Try changing your search query": "Try changing your search query",
     "Key position information tooltip": "Choose a position for your key",
     "Audio and video settings": "Audio and Video settings",
     "Audio input": "Audio input",

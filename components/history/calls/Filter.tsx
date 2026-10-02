@@ -89,6 +89,8 @@ const contentFilter = {
 }
 
 export interface FilterProps extends ComponentPropsWithRef<'div'> {
+  // incremented by the page to reset the filters, e.g. from an empty state
+  resetTrigger?: number
   updateFilterText: Function
   updateCallTypeFilter: Function
   updateCallDirectionFilter: Function
@@ -113,7 +115,7 @@ export const Filter = forwardRef<HTMLButtonElement, FilterProps>(
       updateQueueFilter,
       availableQueues,
       className,
-      ...props
+      resetTrigger, ...props
     },
     ref,
   ) => {
@@ -429,6 +431,13 @@ export const Filter = forwardRef<HTMLButtonElement, FilterProps>(
       updateQueueFilter(DEFAULT_QUEUE_FILTER)
       checkSelected(DEFAULT_CALL_TYPE_FILTER)
     }
+
+    useEffect(() => {
+      if (resetTrigger) {
+        clearFilters()
+      }
+      // eslint-disable-next-line react-hooks/exhaustive-deps
+    }, [resetTrigger])
 
     return (
       <div className={classNames('bg-body dark:bg-bodyDark', className)} {...props}>

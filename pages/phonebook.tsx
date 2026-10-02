@@ -23,13 +23,13 @@ import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import {
   faPhone,
   faSuitcase,
-  faPlus,
   faAddressBook,
   faMobileScreenButton,
-  faFilter,
   faAngleRight,
   faUserGroup,
   faUserLock,
+  faCirclePlus,
+  faMagnifyingGlass,
 } from '@fortawesome/free-solid-svg-icons'
 import { callPhoneNumber, transferCallToExtension } from '../lib/utils'
 import { useTranslation } from 'react-i18next'
@@ -47,6 +47,8 @@ const Phonebook: NextPage = () => {
   const { t } = useTranslation()
 
   const [textFilter, setTextFilter]: any = useState('')
+  // incremented by the "Reset filters" button of the empty state
+  const [resetFiltersTrigger, setResetFiltersTrigger] = useState(0)
 
   const updateTextFilter = (newTextFilter: string) => {
     setPageNum(1)
@@ -334,6 +336,7 @@ const Phonebook: NextPage = () => {
             {t('Phonebook.Phonebook')}
           </h1>
           <Filter
+            resetTrigger={resetFiltersTrigger}
             updateTextFilter={debouncedUpdateTextFilter}
             updateContactTypeFilter={updateContactTypeFilter}
             updateVisibilityFilter={updateVisibilityFilter}
@@ -356,26 +359,26 @@ const Phonebook: NextPage = () => {
                       emptyState={
                         !textFilter?.length
                           ? {
+                              // no items configured: icon, title and the create action
                               title: t('Phonebook.No contacts'),
-                              description:
-                                t('Phonebook.There is no contact in your phonebook') || '',
-                              icon: (
-                                <FontAwesomeIcon
-                                  icon={faAddressBook}
-                                  className='mx-auto h-12 w-12'
-                                  aria-hidden='true'
-                                />
-                              ),
+                              icon: <FontAwesomeIcon icon={faAddressBook} aria-hidden='true' />,
+                              action: canCreateContact ? (
+                                <Button variant='primary' size='large' onClick={() => openCreateContactDrawer()}>
+                                  <FontAwesomeIcon icon={faCirclePlus} className='mr-2 h-4 w-4' />
+                                  <span>{t('Phonebook.Create contact')}</span>
+                                </Button>
+                              ) : undefined,
                             }
                           : {
-                              title: t('Phonebook.No contacts'),
-                              description: t('Phonebook.Try changing your search filters') || '',
-                              icon: (
-                                <FontAwesomeIcon
-                                  icon={faFilter}
-                                  className='mx-auto h-12 w-12'
-                                  aria-hidden='true'
-                                />
+                              title: t('Phonebook.No contacts found'),
+                              description: t('Common.Try changing your search filters') || '',
+                              icon: <FontAwesomeIcon icon={faMagnifyingGlass} aria-hidden='true' />,
+                              action: (
+                                <Button variant='ghost' size='large'
+                                  onClick={() => setResetFiltersTrigger((n) => n + 1)}
+                                >
+                                  {t('Common.Reset filters')}
+                                </Button>
                               ),
                             }
                       }
@@ -409,17 +412,6 @@ const Phonebook: NextPage = () => {
                       }
                     />
 
-                    {isPhonebookLoaded &&
-                      filteredContacts?.length === 0 &&
-                      !textFilter?.length &&
-                      canCreateContact && (
-                        <div className='mt-4 flex justify-center'>
-                          <Button variant='primary' onClick={() => openCreateContactDrawer()}>
-                            <FontAwesomeIcon icon={faPlus} className='mr-2 h-4 w-4' />
-                            <span>{t('Phonebook.Create contact')}</span>
-                          </Button>
-                        </div>
-                      )}
                   </div>
                 </div>
               </div>
@@ -427,7 +419,13 @@ const Phonebook: NextPage = () => {
           )}
         </div>
       ) : (
-        <MissingPermission />
+        // the profile is empty on the first render: the missing permission page
+        // must not flash before it arrives
+        typeof profile?.macro_permissions?.phonebook?.value === 'undefined' ? (
+          <></>
+        ) : (
+          <MissingPermission />
+        )
       )}
     </>
   )

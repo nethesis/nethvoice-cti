@@ -1,7 +1,7 @@
 // Copyright (C) 2024 Nethesis S.r.l.
 // SPDX-License-Identifier: AGPL-3.0-or-later
 
-import { ComponentPropsWithRef, forwardRef, useRef } from 'react'
+import { ComponentPropsWithRef, forwardRef, useRef, useEffect } from 'react'
 import classNames from 'classnames'
 import { TextInput, Button } from '../common'
 import { Fragment, useState } from 'react'
@@ -14,11 +14,13 @@ import { useTranslation } from 'react-i18next'
 import { openCreateAnnouncementDrawer } from '../../lib/lines'
 
 export interface RulesFilterProps extends ComponentPropsWithRef<'div'> {
+  // incremented by the page to reset the filters, e.g. from an empty state
+  resetTrigger?: number
   updateTextFilter: Function
 }
 
 export const RulesFilter = forwardRef<HTMLButtonElement, RulesFilterProps>(
-  ({ updateTextFilter, className, ...props }, ref) => {
+  ({ updateTextFilter, className, resetTrigger, ...props }, ref) => {
     const { t } = useTranslation()
     const auth = useSelector((state: RootState) => state.authentication)
     const [textFilter, setTextFilter] = useState('')
@@ -37,6 +39,13 @@ export const RulesFilter = forwardRef<HTMLButtonElement, RulesFilterProps>(
       setTextFilter('')
       updateTextFilter('') // notify parent component
     }
+
+    useEffect(() => {
+      if (resetTrigger) {
+        resetFilters()
+      }
+      // eslint-disable-next-line react-hooks/exhaustive-deps
+    }, [resetTrigger])
 
     const clearTextFilter = () => {
       setTextFilter('')
