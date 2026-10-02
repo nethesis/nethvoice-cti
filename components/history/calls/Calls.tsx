@@ -3,6 +3,7 @@
 
 import {
   faArrowUpRightFromSquare,
+  faMagnifyingGlass,
   faPhone,
   faArrowRight,
   faDownload,
@@ -69,6 +70,8 @@ export const Calls: FC<CallsProps> = ({ className }): JSX.Element => {
   const { username } = authenticationStore
 
   const [historyError, setHistoryError] = useState('')
+  // incremented by the "Reset filters" button of the empty state
+  const [resetFiltersTrigger, setResetFiltersTrigger] = useState(0)
   const [isHistoryLoaded, setHistoryLoaded] = useState(false)
   const [isLoadingPagination, setIsLoadingPagination] = useState(false)
   const [history, setHistory]: any = useState({})
@@ -1039,6 +1042,7 @@ export const Calls: FC<CallsProps> = ({ className }): JSX.Element => {
           <div>
             <div className='flex justify-between'>
               <Filter
+                resetTrigger={resetFiltersTrigger}
                 updateFilterText={debouncedUpdateFilterText}
                 updateCallTypeFilter={updateCallTypeFilter}
                 updateSortFilter={updateSortFilter}
@@ -1081,14 +1085,16 @@ export const Calls: FC<CallsProps> = ({ className }): JSX.Element => {
                       data={!historyError && isHistoryLoaded ? displayRows : []}
                       isLoading={!isHistoryLoaded || isLoadingPagination}
                       emptyState={{
-                        title: t('History.No calls'),
-                        description: t('History.There are no calls in your history') || '',
-                        icon: (
-                          <FontAwesomeIcon
-                            icon={faPhone}
-                            className='mx-auto h-12 w-12'
-                            aria-hidden='true'
-                          />
+                        // always filtered by a date range: "no items found" pattern
+                        title: t('History.No calls found'),
+                        description: t('Common.Try changing your search filters') || '',
+                        icon: <FontAwesomeIcon icon={faMagnifyingGlass} aria-hidden='true' />,
+                        action: (
+                          <Button variant='ghost' size='large'
+                            onClick={() => setResetFiltersTrigger((n) => n + 1)}
+                          >
+                            {t('Common.Reset filters')}
+                          </Button>
                         ),
                       }}
                       rowKey={(record, index) => generateUniqueKey(record, index)}

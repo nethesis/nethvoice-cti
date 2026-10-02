@@ -14,7 +14,12 @@ import {
   PAGE_SIZE,
   retrieveAndFilterQueueCalls,
 } from '../../../lib/queueManager'
-import { faPhone, faDownload, faAngleRight } from '@fortawesome/free-solid-svg-icons'
+import {
+  faDownload,
+  faAngleRight,
+  faMagnifyingGlass,
+  faPhone,
+} from '@fortawesome/free-solid-svg-icons'
 import classNames from 'classnames'
 import { formatDateLoc } from '../../../lib/dateTime'
 import { getQueuesCallsLoadPeriod } from '../../../lib/queuesLib'
@@ -46,6 +51,8 @@ export const NotManagedCalls: FC<NotManagedCallsProps> = ({ className }): JSX.El
   const authStore = useSelector((state: RootState) => state.authentication)
 
   const [textFilter, setTextFilter]: any = useState('')
+  // incremented by the "Reset filters" button of the empty state
+  const [resetFiltersTrigger, setResetFiltersTrigger] = useState(0)
   const updateTextFilter = (newTextFilter: string) => {
     setTextFilter(newTextFilter)
     setPageNum(1)
@@ -296,6 +303,7 @@ export const NotManagedCalls: FC<NotManagedCallsProps> = ({ className }): JSX.El
     <div className={classNames(className)}>
       <div className='flex flex-col flex-wrap xl:flex-row justify-between gap-x-4 xl:items-end'>
         <NotManagedCallsFilter
+          resetTrigger={resetFiltersTrigger}
           updateTextFilter={debouncedUpdateTextFilter}
           updateOutcomeFilter={updateOutcomeFilter}
           updateQueueManagerFilter={updateQueueManagerFilter}
@@ -335,16 +343,24 @@ export const NotManagedCalls: FC<NotManagedCallsProps> = ({ className }): JSX.El
                   emptyState={{
                     title: emptyQueueFilter
                       ? t('QueueManager.No queue selected')
-                      : t('Queues.No queue calls'),
+                      : t('Queues.No queue calls found'),
                     description: emptyQueueFilter
                       ? t('QueueManager.Select queue') || ''
-                      : t('Queues.There are no recent calls with current filters') || '',
+                      : t('Common.Try changing your search filters') || '',
                     icon: (
                       <FontAwesomeIcon
-                        icon={faPhone}
-                        className='mx-auto h-12 w-12'
+                        icon={emptyQueueFilter ? faPhone : faMagnifyingGlass}
                         aria-hidden='true'
                       />
+                    ),
+                    action: !emptyQueueFilter && (
+                      <Button
+                        variant='ghost'
+                        size='large'
+                        onClick={() => setResetFiltersTrigger((n) => n + 1)}
+                      >
+                        {t('Common.Reset filters')}
+                      </Button>
                     ),
                   }}
                   rowKey={(call: any) => call.id || call.uniqueid || call.cid + call.time}

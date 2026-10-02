@@ -100,7 +100,6 @@ const Queues: NextPage = () => {
               icon={
                 <FontAwesomeIcon icon={faUsers} className='mx-auto h-12 w-12' aria-hidden='true' />
               }
-              className='md:rounded-md bg-white dark:bg-gray-900'
             ></EmptyState>
           )}
           {/* tabs */}

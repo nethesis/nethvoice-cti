@@ -35,6 +35,8 @@ import { customScrollbarClass } from '../../../lib/utils'
 import { CustomThemedTooltip } from '../../common/CustomThemedTooltip'
 
 export interface NotManagedCallsFilterProps extends ComponentPropsWithRef<'div'> {
+  // incremented by the page to reset the filters, e.g. from an empty state
+  resetTrigger?: number
   updateTextFilter: Function
   updateOutcomeFilter: Function
   updateQueueManagerFilter: Function
@@ -42,7 +44,7 @@ export interface NotManagedCallsFilterProps extends ComponentPropsWithRef<'div'>
 
 export const NotManagedCallsFilter = forwardRef<HTMLButtonElement, NotManagedCallsFilterProps>(
   (
-    { updateTextFilter, updateOutcomeFilter, updateQueueManagerFilter, className, ...props },
+    { updateTextFilter, updateOutcomeFilter, updateQueueManagerFilter, className, resetTrigger, ...props },
     ref,
   ) => {
     const { t } = useTranslation()
@@ -187,6 +189,13 @@ export const NotManagedCallsFilter = forwardRef<HTMLButtonElement, NotManagedCal
       updateQueueManagerFilter(allQueueCodes)
       savePreference('queueManagerSelectedQueues', allQueueCodes, auth.username)
     }
+
+    useEffect(() => {
+      if (resetTrigger) {
+        resetFilters()
+      }
+      // eslint-disable-next-line react-hooks/exhaustive-deps
+    }, [resetTrigger])
 
     const clearTextFilter = () => {
       setTextFilter('')

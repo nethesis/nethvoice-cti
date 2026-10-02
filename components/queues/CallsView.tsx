@@ -3,7 +3,7 @@
 
 import { FC, ComponentProps, useState, useEffect, useMemo } from 'react'
 import { useTranslation } from 'react-i18next'
-import { InlineNotification } from '../common'
+import { InlineNotification, Button } from '../common'
 import { Pagination } from '../common/Pagination'
 import { isEmpty, debounce } from 'lodash'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
@@ -15,7 +15,7 @@ import {
   PAGE_SIZE,
   retrieveAndFilterQueueCalls,
 } from '../../lib/queuesLib'
-import { faAngleRight, faPhone } from '@fortawesome/free-solid-svg-icons'
+import { faAngleRight, faMagnifyingGlass, faPhone } from '@fortawesome/free-solid-svg-icons'
 import classNames from 'classnames'
 import { formatDateLoc } from '../../lib/dateTime'
 import { CallsViewFilter } from './CallsViewFilter'
@@ -45,6 +45,8 @@ export const CallsView: FC<CallsViewProps> = ({ className }): JSX.Element => {
   const authStore = useSelector((state: RootState) => state.authentication)
 
   const [textFilter, setTextFilter]: any = useState('')
+  // incremented by the "Reset filters" button of the empty state
+  const [resetFiltersTrigger, setResetFiltersTrigger] = useState(0)
   const updateTextFilter = (newTextFilter: string) => {
     setTextFilter(newTextFilter)
     setPageNum(1)
@@ -259,6 +261,7 @@ export const CallsView: FC<CallsViewProps> = ({ className }): JSX.Element => {
     <div className={classNames(className)}>
       <div className='flex flex-col flex-wrap xl:flex-row justify-between gap-x-4 xl:items-end'>
         <CallsViewFilter
+          resetTrigger={resetFiltersTrigger}
           updateTextFilter={debouncedUpdateTextFilter}
           updateOutcomeFilter={updateOutcomeFilter}
           updateQueuesFilter={updateQueuesFilter}
@@ -288,16 +291,24 @@ export const CallsView: FC<CallsViewProps> = ({ className }): JSX.Element => {
                   emptyState={{
                     title: emptyQueueFilter
                       ? t('QueueManager.No queue selected')
-                      : t('Queues.No queue calls'),
+                      : t('Queues.No queue calls found'),
                     description: emptyQueueFilter
                       ? t('QueueManager.Select queue') || ''
-                      : t('Queues.There are no recent calls with current filters') || '',
+                      : t('Common.Try changing your search filters') || '',
                     icon: (
                       <FontAwesomeIcon
-                        icon={faPhone}
-                        className='mx-auto h-12 w-12'
+                        icon={emptyQueueFilter ? faPhone : faMagnifyingGlass}
                         aria-hidden='true'
                       />
+                    ),
+                    action: !emptyQueueFilter && (
+                      <Button
+                        variant='ghost'
+                        size='large'
+                        onClick={() => setResetFiltersTrigger((n) => n + 1)}
+                      >
+                        {t('Common.Reset filters')}
+                      </Button>
                     ),
                   }}
                   rowKey={(call) => call.id || call.uniqueid || call.cid + call.time}

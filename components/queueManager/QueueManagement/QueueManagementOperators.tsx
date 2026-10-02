@@ -194,7 +194,7 @@ export const QueueManagementOperators: FC<QueueManagementOperatorsProps> = ({
                 isEmpty(queueManagerStore?.queues[selectedValue?.queue]?.members) && (
                   <EmptyState
                     title={t('QueueManager.No operators') || ''}
-                    description='There is no operator configured'
+                    description={t('QueueManager.There is no operator configured') || ''}
                     icon={
                       <FontAwesomeIcon
                         icon={faHeadset}

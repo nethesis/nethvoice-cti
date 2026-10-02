@@ -17,9 +17,10 @@ import {
 import {
   faAngleRight,
   faChevronLeft,
-  faFilter,
   faVoicemail,
   faTurnDown,
+  faMagnifyingGlass,
+  faPhoneVolume,
 } from '@fortawesome/free-solid-svg-icons'
 import classNames from 'classnames'
 import { LinesFilter } from './LinesFilter'
@@ -71,6 +72,8 @@ export const LinesView: FC<LinesViewProps> = ({ className }): JSX.Element => {
   const linesStore = useSelector((state: RootState) => state.lines)
 
   const [textFilter, setTextFilter]: any = useState('')
+  // incremented by the "Reset filters" button of the empty state
+  const [resetFiltersTrigger, setResetFiltersTrigger] = useState(0)
   const updateTextFilter = (newTextFilter: string) => {
     setTextFilter(newTextFilter)
     setLinesLoaded(false)
@@ -465,6 +468,7 @@ export const LinesView: FC<LinesViewProps> = ({ className }): JSX.Element => {
     <div className={classNames(className)}>
       <div className='flex flex-col flex-wrap xl:flex-row justify-between gap-x-4 xl:items-end'>
         <LinesFilter
+          resetTrigger={resetFiltersTrigger}
           updateTextFilter={debouncedUpdateTextFilter}
           updateSortFilter={updateSortFilter}
           updateConfigurationTypeFilter={updateConfigurationTypeFilter}
@@ -480,17 +484,23 @@ export const LinesView: FC<LinesViewProps> = ({ className }): JSX.Element => {
                   columns={columns}
                   data={lines}
                   isLoading={!isLinesLoaded}
-                  emptyState={{
-                    title: t('Lines.No lines'),
-                    description: t('Lines.There are no lines with the current filter') || '',
-                    icon: (
-                      <FontAwesomeIcon
-                        icon={faFilter}
-                        className='mx-auto h-12 w-12'
-                        aria-hidden='true'
-                      />
-                    ),
-                  }}
+                  emptyState={
+                    textFilter
+                      ? {
+                          title: t('Lines.No lines found'),
+                          description: t('Common.Try changing your search filters') || '',
+                          icon: <FontAwesomeIcon icon={faMagnifyingGlass} aria-hidden='true' />,
+                          action: (
+                            <Button variant='ghost' size='large' onClick={() => setResetFiltersTrigger((n) => n + 1)}>
+                              {t('Common.Reset filters')}
+                            </Button>
+                          ),
+                        }
+                      : {
+                          title: t('Lines.No lines'),
+                          icon: <FontAwesomeIcon icon={faPhoneVolume} aria-hidden='true' />,
+                        }
+                  }
                   rowKey={(line: any) =>
                     `${line.calledIdNum}_${line.callerIdNum || ''}_${line.description || ''}`
                   }
