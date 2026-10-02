@@ -463,6 +463,7 @@ const theme = {
         topVoicemail: 'w-60 right-[0rem] bottom-[2.6rem]',
         bottomVoicemail: 'w-60 right-[0rem] bottom-[-8.5rem]',
         oneVoicemail: 'w-60 right-[3rem] top-[-4.5rem]',
+        fullWidth: 'left-0 w-full mt-2',
       },
       divider: 'divide-y divide-gray-200 dark:divide-gray-700',
       header: 'block px-4 py-3 text-sm cursor-normal text-gray-700 dark:text-gray-300',

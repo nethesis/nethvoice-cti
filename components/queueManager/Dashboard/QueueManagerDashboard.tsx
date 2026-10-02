@@ -10,10 +10,9 @@ import { RootState } from '../../../store'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { savePreference } from '../../../lib/storage'
 import {
+  faCheck,
   faChevronDown,
   faChevronUp,
-  faArrowUpWideShort,
-  faArrowDownWideShort,
 } from '@fortawesome/free-solid-svg-icons'
 import {
   getQueues,
@@ -291,9 +290,24 @@ export const QueueManagerDashboard: FC<QueueManagerDashboardProps> = ({
   const [sortOrderInCallPercentage, setSortOrderInCallPercentage] = useState<'asc' | 'desc'>('desc')
 
   //change card order
-  function handleSortOrderToggle(sortOrder: any, setSortOrder: any) {
-    setSortOrder(sortOrder === 'asc' ? 'desc' : 'asc')
-  }
+  // the order buttons open a menu with the two directions, the current one checked
+  // same layout as the speed dial sort menu: label on the left, check on the right
+  const sortOrderItems = (sortOrder: 'asc' | 'desc', setSortOrder: any) => (
+    <>
+      <Dropdown.Item onClick={() => setSortOrder('desc')}>
+        <span>{t('QueueManager.Descending order')}</span>
+        {sortOrder === 'desc' && (
+          <FontAwesomeIcon icon={faCheck} className='ml-auto text-emerald-700' />
+        )}
+      </Dropdown.Item>
+      <Dropdown.Item onClick={() => setSortOrder('asc')}>
+        <span>{t('QueueManager.Ascending order')}</span>
+        {sortOrder === 'asc' && (
+          <FontAwesomeIcon icon={faCheck} className='ml-auto text-emerald-700' />
+        )}
+      </Dropdown.Item>
+    </>
+  )
 
   //get total calls for headers cards Dashboard
   useEffect(() => {
@@ -673,30 +687,16 @@ export const QueueManagerDashboard: FC<QueueManagerDashboardProps> = ({
                           </h3>
                         </div>
                       </div>
-                      <Button
-                        variant='white'
-                        onClick={() =>
-                          handleSortOrderToggle(sortOrderAnsweredCalls, setSortOrderAnsweredCalls)
-                        }
-                      >
-                        <div className='flex items-center space-x-2'>
-                          <FontAwesomeIcon
-                            icon={
-                              sortOrderAnsweredCalls === 'desc'
-                                ? faArrowUpWideShort
-                                : faArrowDownWideShort
-                            }
-                            className='h-4 w-4 pl-2 py-2 cursor-pointer'
-                            aria-hidden='true'
-                          />
+                      <Dropdown items={sortOrderItems(sortOrderAnsweredCalls, setSortOrderAnsweredCalls)} position='left'>
+                        <Button variant='white'>
                           <span>{t('QueueManager.Order')}</span>
                           <FontAwesomeIcon
                             icon={faChevronDown}
-                            className='h-3.5 w-3.5 pl-2 py-2 cursor-pointer'
+                            className='h-3.5 w-3.5 ml-2'
                             aria-hidden='true'
                           />
-                        </div>
-                      </Button>
+                        </Button>
+                      </Dropdown>
                     </div>
                   </div>
                   {/* <div className='flex-grow border-b border-gray-200 dark:border-gray-700'></div> */}
@@ -793,33 +793,16 @@ export const QueueManagerDashboard: FC<QueueManagerDashboardProps> = ({
                           </h3>
                         </div>
                       </div>
-                      <Button
-                        variant='white'
-                        onClick={() =>
-                          handleSortOrderToggle(
-                            sortOrderUnansweredCalls,
-                            setSortOrderUnansweredCalls,
-                          )
-                        }
-                      >
-                        <div className='flex items-center space-x-2'>
-                          <FontAwesomeIcon
-                            icon={
-                              sortOrderUnansweredCalls === 'desc'
-                                ? faArrowUpWideShort
-                                : faArrowDownWideShort
-                            }
-                            className='h-4 w-4 pl-2 py-2 cursor-pointer'
-                            aria-hidden='true'
-                          />
+                      <Dropdown items={sortOrderItems(sortOrderUnansweredCalls, setSortOrderUnansweredCalls)} position='left'>
+                        <Button variant='white'>
                           <span>{t('QueueManager.Order')}</span>
                           <FontAwesomeIcon
                             icon={faChevronDown}
-                            className='h-3.5 w-3.5 pl-2 py-2 cursor-pointer'
+                            className='h-3.5 w-3.5 ml-2'
                             aria-hidden='true'
                           />
-                        </div>
-                      </Button>
+                        </Button>
+                      </Dropdown>
                     </div>
                   </div>
                   <div className='flex-grow border-b border-gray-200 dark:border-gray-700'></div>
@@ -916,30 +899,16 @@ export const QueueManagerDashboard: FC<QueueManagerDashboardProps> = ({
                           </h3>
                         </div>
                       </div>
-                      <Button
-                        variant='white'
-                        onClick={() =>
-                          handleSortOrderToggle(sortOrderPauseOnLogin, setSortOrderPauseOnLogin)
-                        }
-                      >
-                        <div className='flex items-center space-x-2'>
-                          <FontAwesomeIcon
-                            icon={
-                              sortOrderPauseOnLogin === 'desc'
-                                ? faArrowUpWideShort
-                                : faArrowDownWideShort
-                            }
-                            className='h-4 w-4 pl-2 py-2 cursor-pointer'
-                            aria-hidden='true'
-                          />
+                      <Dropdown items={sortOrderItems(sortOrderPauseOnLogin, setSortOrderPauseOnLogin)} position='left'>
+                        <Button variant='white'>
                           <span>{t('QueueManager.Order')}</span>
                           <FontAwesomeIcon
                             icon={faChevronDown}
-                            className='h-3.5 w-3.5 pl-2 py-2 cursor-pointer'
+                            className='h-3.5 w-3.5 ml-2'
                             aria-hidden='true'
                           />
-                        </div>
-                      </Button>
+                        </Button>
+                      </Dropdown>
                     </div>
                   </div>
                   <div className='flex-grow border-b border-gray-200 dark:border-gray-700'></div>
@@ -1036,33 +1005,16 @@ export const QueueManagerDashboard: FC<QueueManagerDashboardProps> = ({
                           </h3>
                         </div>
                       </div>
-                      <Button
-                        variant='white'
-                        onClick={() =>
-                          handleSortOrderToggle(
-                            sortOrderAgentsLoginTime,
-                            setSortOrderAgentsLoginTime,
-                          )
-                        }
-                      >
-                        <div className='flex items-center space-x-2'>
-                          <FontAwesomeIcon
-                            icon={
-                              sortOrderAgentsLoginTime === 'desc'
-                                ? faArrowUpWideShort
-                                : faArrowDownWideShort
-                            }
-                            className='h-4 w-4 pl-2 py-2 cursor-pointer'
-                            aria-hidden='true'
-                          />
+                      <Dropdown items={sortOrderItems(sortOrderAgentsLoginTime, setSortOrderAgentsLoginTime)} position='left'>
+                        <Button variant='white'>
                           <span>{t('QueueManager.Order')}</span>
                           <FontAwesomeIcon
                             icon={faChevronDown}
-                            className='h-3.5 w-3.5 pl-2 py-2 cursor-pointer'
+                            className='h-3.5 w-3.5 ml-2'
                             aria-hidden='true'
                           />
-                        </div>
-                      </Button>
+                        </Button>
+                      </Dropdown>
                     </div>
                   </div>
                   <div className='flex-grow border-b border-gray-200 dark:border-gray-700'></div>
@@ -1159,33 +1111,16 @@ export const QueueManagerDashboard: FC<QueueManagerDashboardProps> = ({
                           </h3>
                         </div>
                       </div>
-                      <Button
-                        variant='white'
-                        onClick={() =>
-                          handleSortOrderToggle(
-                            sortOrderAgentsPauseTime,
-                            setSortOrderAgentsPauseTime,
-                          )
-                        }
-                      >
-                        <div className='flex items-center space-x-2'>
-                          <FontAwesomeIcon
-                            icon={
-                              sortOrderAgentsPauseTime === 'desc'
-                                ? faArrowUpWideShort
-                                : faArrowDownWideShort
-                            }
-                            className='h-4 w-4 pl-2 py-2 cursor-pointer'
-                            aria-hidden='true'
-                          />
+                      <Dropdown items={sortOrderItems(sortOrderAgentsPauseTime, setSortOrderAgentsPauseTime)} position='left'>
+                        <Button variant='white'>
                           <span>{t('QueueManager.Order')}</span>
                           <FontAwesomeIcon
                             icon={faChevronDown}
-                            className='h-3.5 w-3.5 pl-2 py-2 cursor-pointer'
+                            className='h-3.5 w-3.5 ml-2'
                             aria-hidden='true'
                           />
-                        </div>
-                      </Button>
+                        </Button>
+                      </Dropdown>
                     </div>
                   </div>
                   <div className='flex-grow border-b border-gray-200 dark:border-gray-700'></div>
@@ -1282,33 +1217,16 @@ export const QueueManagerDashboard: FC<QueueManagerDashboardProps> = ({
                           </h3>
                         </div>
                       </div>
-                      <Button
-                        variant='white'
-                        onClick={() =>
-                          handleSortOrderToggle(
-                            sortOrderInCallPercentage,
-                            setSortOrderInCallPercentage,
-                          )
-                        }
-                      >
-                        <div className='flex items-center space-x-2'>
-                          <FontAwesomeIcon
-                            icon={
-                              sortOrderInCallPercentage === 'desc'
-                                ? faArrowUpWideShort
-                                : faArrowDownWideShort
-                            }
-                            className='h-4 w-4 pl-2 py-2 cursor-pointer'
-                            aria-hidden='true'
-                          />
+                      <Dropdown items={sortOrderItems(sortOrderInCallPercentage, setSortOrderInCallPercentage)} position='left'>
+                        <Button variant='white'>
                           <span>{t('QueueManager.Order')}</span>
                           <FontAwesomeIcon
                             icon={faChevronDown}
-                            className='h-3.5 w-3.5 pl-2 py-2 cursor-pointer'
+                            className='h-3.5 w-3.5 ml-2'
                             aria-hidden='true'
                           />
-                        </div>
-                      </Button>
+                        </Button>
+                      </Dropdown>
                     </div>
                   </div>
                   <div className='flex-grow border-b border-gray-200 dark:border-gray-700'></div>
@@ -1428,33 +1346,16 @@ export const QueueManagerDashboard: FC<QueueManagerDashboardProps> = ({
                           </h3>
                         </div>
                       </div>
-                      <Button
-                        variant='white'
-                        onClick={() =>
-                          handleSortOrderToggle(
-                            sortOrderQueuesTotalCalls,
-                            setSortOrderQueuesTotalCalls,
-                          )
-                        }
-                      >
-                        <div className='flex items-center space-x-2'>
-                          <FontAwesomeIcon
-                            icon={
-                              sortOrderQueuesTotalCalls === 'desc'
-                                ? faArrowUpWideShort
-                                : faArrowDownWideShort
-                            }
-                            className='h-4 w-4 pl-2 py-2 cursor-pointer'
-                            aria-hidden='true'
-                          />
+                      <Dropdown items={sortOrderItems(sortOrderQueuesTotalCalls, setSortOrderQueuesTotalCalls)} position='left'>
+                        <Button variant='white'>
                           <span>{t('QueueManager.Order')}</span>
                           <FontAwesomeIcon
                             icon={faChevronDown}
-                            className='h-3.5 w-3.5 pl-2 py-2 cursor-pointer'
+                            className='h-3.5 w-3.5 ml-2'
                             aria-hidden='true'
                           />
-                        </div>
-                      </Button>
+                        </Button>
+                      </Dropdown>
                     </div>
                   </div>
                   {/* <div className='flex-grow border-b border-gray-200 dark:border-gray-700'></div> */}
@@ -1518,33 +1419,16 @@ export const QueueManagerDashboard: FC<QueueManagerDashboardProps> = ({
                           </h3>
                         </div>
                       </div>
-                      <Button
-                        variant='white'
-                        onClick={() =>
-                          handleSortOrderToggle(
-                            sortOrderQueuesFailedCalls,
-                            setSortOrderQueuesFailedCalls,
-                          )
-                        }
-                      >
-                        <div className='flex items-center space-x-2'>
-                          <FontAwesomeIcon
-                            icon={
-                              sortOrderQueuesFailedCalls === 'desc'
-                                ? faArrowUpWideShort
-                                : faArrowDownWideShort
-                            }
-                            className='h-4 w-4 pl-2 py-2 cursor-pointer'
-                            aria-hidden='true'
-                          />
+                      <Dropdown items={sortOrderItems(sortOrderQueuesFailedCalls, setSortOrderQueuesFailedCalls)} position='left'>
+                        <Button variant='white'>
                           <span>{t('QueueManager.Order')}</span>
                           <FontAwesomeIcon
                             icon={faChevronDown}
-                            className='h-3.5 w-3.5 pl-2 py-2 cursor-pointer'
+                            className='h-3.5 w-3.5 ml-2'
                             aria-hidden='true'
                           />
-                        </div>
-                      </Button>
+                        </Button>
+                      </Dropdown>
                     </div>
                   </div>
                   {/* <div className='flex-grow border-b border-gray-200 dark:border-gray-700'></div> */}
@@ -1608,33 +1492,16 @@ export const QueueManagerDashboard: FC<QueueManagerDashboardProps> = ({
                           </h3>
                         </div>
                       </div>
-                      <Button
-                        variant='white'
-                        onClick={() =>
-                          handleSortOrderToggle(
-                            sortOrderQueuesInvalidCalls,
-                            setSortOrderQueuesInvalidCalls,
-                          )
-                        }
-                      >
-                        <div className='flex items-center space-x-2'>
-                          <FontAwesomeIcon
-                            icon={
-                              sortOrderQueuesInvalidCalls === 'desc'
-                                ? faArrowUpWideShort
-                                : faArrowDownWideShort
-                            }
-                            className='h-4 w-4 pl-2 py-2 cursor-pointer'
-                            aria-hidden='true'
-                          />
+                      <Dropdown items={sortOrderItems(sortOrderQueuesInvalidCalls, setSortOrderQueuesInvalidCalls)} position='left'>
+                        <Button variant='white'>
                           <span>{t('QueueManager.Order')}</span>
                           <FontAwesomeIcon
                             icon={faChevronDown}
-                            className='h-3.5 w-3.5 pl-2 py-2 cursor-pointer'
+                            className='h-3.5 w-3.5 ml-2'
                             aria-hidden='true'
                           />
-                        </div>
-                      </Button>
+                        </Button>
+                      </Dropdown>
                     </div>
                   </div>
                   {/* <div className='flex-grow border-b border-gray-200 dark:border-gray-700'></div> */}
@@ -1698,30 +1565,16 @@ export const QueueManagerDashboard: FC<QueueManagerDashboardProps> = ({
                           </h3>
                         </div>
                       </div>
-                      <Button
-                        variant='white'
-                        onClick={() =>
-                          handleSortOrderToggle(sortOrderQueuesFailures, setSortOrderQueuesFailures)
-                        }
-                      >
-                        <div className='flex items-center space-x-2'>
-                          <FontAwesomeIcon
-                            icon={
-                              sortOrderQueuesFailures === 'desc'
-                                ? faArrowUpWideShort
-                                : faArrowDownWideShort
-                            }
-                            className='h-4 w-4 pl-2 py-2 cursor-pointer'
-                            aria-hidden='true'
-                          />
+                      <Dropdown items={sortOrderItems(sortOrderQueuesFailures, setSortOrderQueuesFailures)} position='left'>
+                        <Button variant='white'>
                           <span>{t('QueueManager.Order')}</span>
                           <FontAwesomeIcon
                             icon={faChevronDown}
-                            className='h-3.5 w-3.5 pl-2 py-2 cursor-pointer'
+                            className='h-3.5 w-3.5 ml-2'
                             aria-hidden='true'
                           />
-                        </div>
-                      </Button>
+                        </Button>
+                      </Dropdown>
                     </div>
                   </div>
                   {/* <div className='flex-grow border-b border-gray-200 dark:border-gray-700'></div> */}
@@ -1788,33 +1641,16 @@ export const QueueManagerDashboard: FC<QueueManagerDashboardProps> = ({
                           </h3>
                         </div>
                       </div>
-                      <Button
-                        variant='white'
-                        onClick={() =>
-                          handleSortOrderToggle(
-                            sortOrderAverageCallTime,
-                            setSortOrderAverageCallTime,
-                          )
-                        }
-                      >
-                        <div className='flex items-center space-x-2'>
-                          <FontAwesomeIcon
-                            icon={
-                              sortOrderAverageCallTime === 'desc'
-                                ? faArrowUpWideShort
-                                : faArrowDownWideShort
-                            }
-                            className='h-4 w-4 pl-2 py-2 cursor-pointer'
-                            aria-hidden='true'
-                          />
+                      <Dropdown items={sortOrderItems(sortOrderAverageCallTime, setSortOrderAverageCallTime)} position='left'>
+                        <Button variant='white'>
                           <span>{t('QueueManager.Order')}</span>
                           <FontAwesomeIcon
                             icon={faChevronDown}
-                            className='h-3.5 w-3.5 pl-2 py-2 cursor-pointer'
+                            className='h-3.5 w-3.5 ml-2'
                             aria-hidden='true'
                           />
-                        </div>
-                      </Button>
+                        </Button>
+                      </Dropdown>
                     </div>
                   </div>
                   <div className='flex-grow border-b border-gray-200 dark:border-gray-700'></div>
@@ -1913,33 +1749,16 @@ export const QueueManagerDashboard: FC<QueueManagerDashboardProps> = ({
                           </h3>
                         </div>
                       </div>
-                      <Button
-                        variant='white'
-                        onClick={() =>
-                          handleSortOrderToggle(
-                            sortOrderAverageCallTimeQueue,
-                            setSortOrderAverageCallTimeQueue,
-                          )
-                        }
-                      >
-                        <div className='flex items-center space-x-2'>
-                          <FontAwesomeIcon
-                            icon={
-                              sortOrderAverageCallTimeQueue === 'desc'
-                                ? faArrowUpWideShort
-                                : faArrowDownWideShort
-                            }
-                            className='h-4 w-4 pl-2 py-2 cursor-pointer'
-                            aria-hidden='true'
-                          />
+                      <Dropdown items={sortOrderItems(sortOrderAverageCallTimeQueue, setSortOrderAverageCallTimeQueue)} position='left'>
+                        <Button variant='white'>
                           <span>{t('QueueManager.Order')}</span>
                           <FontAwesomeIcon
                             icon={faChevronDown}
-                            className='h-3.5 w-3.5 pl-2 py-2 cursor-pointer'
+                            className='h-3.5 w-3.5 ml-2'
                             aria-hidden='true'
                           />
-                        </div>
-                      </Button>
+                        </Button>
+                      </Dropdown>
                     </div>
                   </div>
                   <div className='flex-grow border-b border-gray-200 dark:border-gray-700'></div>

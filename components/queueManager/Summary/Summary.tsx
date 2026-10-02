@@ -3,7 +3,7 @@
 
 import { FC, ComponentProps, useState, useEffect, Fragment, useMemo } from 'react'
 import { useTranslation } from 'react-i18next'
-import { EmptyState, Avatar, Button } from '../../common'
+import { EmptyState, Avatar, Button, TextInput } from '../../common'
 import { useSelector } from 'react-redux'
 import { RootState } from '../../../store'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
@@ -21,6 +21,7 @@ import {
   faPause,
   faPhone,
   faUser,
+  faCircleXmark,
   faMagnifyingGlass,
 } from '@fortawesome/free-solid-svg-icons'
 import { LoggedStatus } from '../../queues'
@@ -85,10 +86,19 @@ export const Summary: FC<SummaryProps> = ({ className }): JSX.Element => {
   //set beginning value of selected queues
   useEffect(() => {
     const expandedValues = getExpandedSummaryValue(auth.username)
-    const filterValues = getFilterValuesSummary(auth.username)
-
     setExpanded(expandedValues.expandedOperators)
     setExpandedQueuesSummary(expandedValues.expandedQueues)
+  }, [])
+
+  // the default selection is "every queue", read from the store: wait until it is loaded,
+  // otherwise opening the summary during the queues request leaves no queue selected
+  const [isQueuesSelectionInitialized, setQueuesSelectionInitialized] = useState(false)
+  useEffect(() => {
+    if (isQueuesSelectionInitialized || !queueManagerStore.isLoaded) {
+      return
+    }
+    setQueuesSelectionInitialized(true)
+    const filterValues = getFilterValuesSummary(auth.username)
 
     if (isEmpty(filterValues.selectedQueues)) {
       // select all queues
@@ -101,7 +111,7 @@ export const Summary: FC<SummaryProps> = ({ className }): JSX.Element => {
       setSelectedQueues(filterValues.selectedQueues)
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [])
+  }, [queueManagerStore.isLoaded])
 
   // load operators information from the store
   const operatorsStore = useSelector((state: RootState) => state.operators) as Record<string, any>
@@ -162,6 +172,26 @@ export const Summary: FC<SummaryProps> = ({ className }): JSX.Element => {
   const [selectedQueues, setSelectedQueues]: any = useState([])
 
   const [selectedTest, setSelectedTest] = useState<any>()
+
+  // options filter inside the panel, like the design system dropdown
+  const [queuesSearch, setQueuesSearch] = useState('')
+  const filteredQueueOptions = queuesFilterQueues.options.filter((option: any) =>
+    option.label.toLowerCase().includes(queuesSearch.trim().toLowerCase()),
+  )
+
+  // with many queues, ticking them one by one is tedious
+  const allQueuesSelected =
+    queuesFilterQueues.options.length > 0 &&
+    selectedQueues.length === queuesFilterQueues.options.length
+
+  function toggleAllQueues() {
+    const newSelectedQueues = allQueuesSelected
+      ? []
+      : queuesFilterQueues.options.map((option: any) => option.value)
+    setSelectedQueues(newSelectedQueues)
+    savePreference('summaryOperatorSelectedQueues', newSelectedQueues, auth.username)
+    setSelectedTest(getSelectedQueuesData(queueManagerStore.queues, newSelectedQueues))
+  }
 
   function changeQueuesFilter(event: any) {
     const isChecked = event.target.checked
@@ -640,15 +670,36 @@ export const Summary: FC<SummaryProps> = ({ className }): JSX.Element => {
                   leaveFrom='transform opacity-100 scale-100'
                   leaveTo='transform opacity-0 scale-95'
                 >
-                  <PopoverPanel className='absolute right-0 z-10 mt-2 origin-top-right rounded-md min-w-max p-4 shadow-2xl ring-1 focus:outline-none ring-opacity-5 bg-white ring-black dark:ring-opacity-5 dark:bg-gray-900 dark:ring-gray-700'>
+                  <PopoverPanel className='absolute right-0 z-10 mt-2 origin-top-right rounded-md w-max min-w-full p-4 shadow-2xl ring-1 focus:outline-none ring-opacity-5 bg-white ring-black dark:bg-gray-900 dark:ring-gray-700'>
                     <form className='space-y-4'>
-                      {queuesFilterQueues.options.map((option) => (
+                      {queuesFilterQueues.options.length > 0 && (
+                        <TextInput
+                          placeholder={t('Queues.Filter queues') || ''}
+                          value={queuesSearch}
+                          onChange={(event: any) => setQueuesSearch(event.target.value)}
+                          icon={queuesSearch.length ? faCircleXmark : faMagnifyingGlass}
+                          onIconClick={() => setQueuesSearch('')}
+                          trailingIcon={true}
+                        />
+                      )}
+                      {queuesFilterQueues.options.length > 0 && (
+                        <div className='flex justify-end'>
+                          <button
+                            type='button'
+                            onClick={toggleAllQueues}
+                            className='text-sm font-medium text-primary dark:text-primaryDark hover:underline'
+                          >
+                            {allQueuesSelected ? t('Common.Deselect all') : t('Common.Select all')}
+                          </button>
+                        </div>
+                      )}
+                      {filteredQueueOptions.map((option: any) => (
                         <div key={option.value} className='flex items-center'>
                           <input
                             id={`queues-${option.value}`}
                             name={`filter-${queuesFilterQueues.id}`}
                             type='checkbox'
-                            defaultChecked={selectedQueues.includes(option.value)}
+                            checked={selectedQueues.includes(option.value)}
                             value={option.value}
                             onChange={changeQueuesFilter}
                             className='h-4 w-4 rounded border-gray-300 text-primary focus:ring-primaryLight dark:border-gray-600 dark:text-primaryDark dark:focus:ring-primaryDark'
@@ -661,6 +712,11 @@ export const Summary: FC<SummaryProps> = ({ className }): JSX.Element => {
                           </label>
                         </div>
                       ))}
+                      {filteredQueueOptions.length === 0 && (
+                        <div className='text-sm leading-5 text-gray-500 dark:text-gray-400'>
+                          {t('Queues.No queues')}
+                        </div>
+                      )}
                     </form>
                   </PopoverPanel>
                 </Transition>
@@ -709,7 +765,11 @@ export const Summary: FC<SummaryProps> = ({ className }): JSX.Element => {
                   description={t('Common.Try changing your search filters') || ''}
                   icon={<FontAwesomeIcon icon={faMagnifyingGlass} aria-hidden='true' />}
                 >
-                  <Button variant='ghost' size='large' onClick={() => setResetFiltersTrigger((n) => n + 1)}>
+                  <Button
+                    variant='ghost'
+                    size='large'
+                    onClick={() => setResetFiltersTrigger((n) => n + 1)}
+                  >
                     {t('Common.Reset filters')}
                   </Button>
                 </EmptyState>
@@ -752,6 +812,8 @@ export const Summary: FC<SummaryProps> = ({ className }): JSX.Element => {
                   next={showMoreInfiniteScrollOperators}
                   hasMore={infiniteScrollHasMore}
                   scrollableTarget='main-content'
+                  // the wrapper of the library sets overflow:auto, which would clip the row menus
+                  style={{ overflow: 'visible' }}
                   loader={
                     <FontAwesomeIcon
                       icon={faCircleNotch}
@@ -817,7 +879,7 @@ export const Summary: FC<SummaryProps> = ({ className }): JSX.Element => {
                                 <div className='flex-grow border-b border-gray-200 dark:border-gray-700 mt-1'></div>
 
                                 {/* User statistics  */}
-                                <div className='h-96 overflow-auto  scrollbar-thin scrollbar-thumb-gray-400 dark:scrollbar-thumb-gray-400 scrollbar-thumb-rounded-full scrollbar-thumb-opacity-50 scrollbar-track-gray-200 dark:scrollbar-track-gray-900 scrollbar-track-rounded-full scrollbar-track-opacity-25 pt-2'>
+                                <div className='max-h-96 overflow-auto  scrollbar-thin scrollbar-thumb-gray-400 dark:scrollbar-thumb-gray-400 scrollbar-thumb-rounded-full scrollbar-thumb-opacity-50 scrollbar-track-gray-200 dark:scrollbar-track-gray-900 scrollbar-track-rounded-full scrollbar-track-opacity-25 pt-2'>
                                   <div className='px-3 py-4 '>
                                     <h3 className='truncate text-base leading-6 font-medium flex items-center'>
                                       <FontAwesomeIcon
@@ -993,7 +1055,7 @@ export const Summary: FC<SummaryProps> = ({ className }): JSX.Element => {
                                 </div>
 
                                 {/* Queues body */}
-                                <div className='pt-6 overflow-auto scrollbar-thin scrollbar-thumb-gray-400 dark:scrollbar-thumb-gray-400 scrollbar-thumb-rounded-full scrollbar-thumb-opacity-50 scrollbar-track-gray-200 dark:scrollbar-track-gray-900 scrollbar-track-rounded-full scrollbar-track-opacity-25 h-56'>
+                                <div className='pt-6 overflow-auto scrollbar-thin scrollbar-thumb-gray-400 dark:scrollbar-thumb-gray-400 scrollbar-thumb-rounded-full scrollbar-thumb-opacity-50 scrollbar-track-gray-200 dark:scrollbar-track-gray-900 scrollbar-track-rounded-full scrollbar-track-opacity-25 max-h-56'>
                                   {Object.entries(operator.queues).map(
                                     ([queueNum, queue]: [string, any], queueIndex: number) => {
                                       if (isNaN(Number(queueNum))) {

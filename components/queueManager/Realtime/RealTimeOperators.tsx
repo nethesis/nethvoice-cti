@@ -192,7 +192,7 @@ export const RealTimeOperators: FC<RealTimeOperatorsProps> = ({
                       <li key={index} className='px-1'>
                         <button
                           type='button'
-                          className='group flex w-full items-center justify-between space-x-3 rounded-lg p-2 text-left focus:outline-none focus:ring-2 focus:ring-offset-2 bg-cardBackgroud dark:bg-cardBackgroudDark cursor-default'
+                          className='group flex w-full items-center justify-between space-x-3 rounded-lg py-2 px-3 text-left focus:outline-none focus:ring-2 focus:ring-offset-2 bg-cardBackgroud dark:bg-cardBackgroudDark cursor-default'
                         >
                           <div className='flex min-w-0 flex-1 items-center space-x-3'>
                             <div className='block flex-shrink-0'>
@@ -220,6 +220,8 @@ export const RealTimeOperators: FC<RealTimeOperatorsProps> = ({
                     next={showMoreInfiniteScrollOperators}
                     hasMore={infiniteScrollHasMore}
                     scrollableTarget='main-content'
+                    // the wrapper of the library sets overflow:auto, which would clip the row menus
+                    style={{ overflow: 'visible' }}
                     loader={
                       <FontAwesomeIcon
                         icon={faCircleNotch}
@@ -285,7 +287,7 @@ export const RealTimeOperators: FC<RealTimeOperatorsProps> = ({
                                   <div className='flex-grow border-b border-gray-200 dark:border-gray-700 mt-1'></div>
 
                                   {/* login stats */}
-                                  <div className='pt-2 h-96 overflow-auto  scrollbar-thin scrollbar-thumb-gray-400 dark:scrollbar-thumb-gray-400 scrollbar-thumb-rounded-full scrollbar-thumb-opacity-50 scrollbar-track-gray-200 dark:scrollbar-track-gray-900 scrollbar-track-rounded-full scrollbar-track-opacity-25'>
+                                  <div className='pt-2 max-h-96 overflow-auto  scrollbar-thin scrollbar-thumb-gray-400 dark:scrollbar-thumb-gray-400 scrollbar-thumb-rounded-full scrollbar-thumb-opacity-50 scrollbar-track-gray-200 dark:scrollbar-track-gray-900 scrollbar-track-rounded-full scrollbar-track-opacity-25'>
                                     {Object.values(operator?.queues).map(
                                       (queue: any, queueIndex: number) => (
                                         <div

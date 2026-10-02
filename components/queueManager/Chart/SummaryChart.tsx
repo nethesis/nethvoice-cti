@@ -7,7 +7,8 @@ import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { Tooltip } from 'react-tooltip'
 import { getQueueStats } from '../../../lib/queueManager'
 
-import { faCircleInfo } from '@fortawesome/free-solid-svg-icons'
+import { faCircleInfo, faUsers } from '@fortawesome/free-solid-svg-icons'
+import { EmptyState } from '../../common'
 import BarChartHorizontalNoLabels from '../../chart/HorizontalNoLabel'
 import MultipleInformationChart from '../../chart/MultipleInformationBarChart'
 
@@ -412,6 +413,21 @@ export const SummaryChart: FC<SummaryChartProps> = ({ className, selectedQueues 
     createChartData()
   }, [queuesStatus, selectedQueues])
 
+  // without a selected queue there is nothing to chart: eight empty cards would be shown
+  if (!selectedQueues?.length) {
+    return (
+      <div className='pt-8'>
+        <EmptyState
+          title={t('QueueManager.No queue selected') || ''}
+          description={t('QueueManager.Select queue') || ''}
+          icon={
+            <FontAwesomeIcon icon={faUsers} className='mx-auto h-12 w-12' aria-hidden='true' />
+          }
+        />
+      </div>
+    )
+  }
+
   return (
     <>
       {/* Queues summary */}
@@ -493,7 +509,7 @@ export const SummaryChart: FC<SummaryChartProps> = ({ className, selectedQueues 
                     </Tooltip>
                   </div>
                 </div>
-                <div className='mt-3 mx-auto h-80 w-full overflow-auto'>
+                <div className='mt-3 mx-auto h-80 w-full overflow-auto scrollbar-thin scrollbar-thumb-gray-400 dark:scrollbar-thumb-gray-400 scrollbar-thumb-rounded-full scrollbar-thumb-opacity-50 scrollbar-track-gray-200 dark:scrollbar-track-gray-900 scrollbar-track-rounded-full scrollbar-track-opacity-25'>
                   <BarChartHorizontalNoLabels
                     datasets={datasetsQueuesFailed}
                     titleText={`${t('QueueManager.Total')}: ${totalCallsFailed}`}

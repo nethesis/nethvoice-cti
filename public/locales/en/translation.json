@@ -1,5 +1,8 @@
 {
   "Common": {
+    "None": "None",
+    "Select all": "Select all",
+    "Deselect all": "Deselect all",
     "Restricted page": "Restricted page",
     "Restricted page description": "It seems that you don't have the necessary permissions to view this page.",
     "Try changing your search filters": "Try changing your search filters",
@@ -594,6 +597,10 @@
     "Notifications": "Notifications"
   },
   "Queues": {
+    "outcome_JOINEMPTY": "No agents outside the queue",
+    "outcome_JOINUNAVAIL": "No agents outside the queue",
+    "outcome_EXITEMPTY": "No agents in queue",
+    "outcome_FULL": "Queue full",
     "No queues found": "No queues found",
     "No queue calls found": "No queue calls found",
     "Queues": "Queues",
@@ -871,6 +878,8 @@
     "Voice mail": "Voicemail inbox"
   },
   "QueueManager": {
+    "Descending order": "Descending",
+    "Ascending order": "Ascending",
     "No agents found": "No agents found",
     "Please select a queue": "Please select a queue",
     "There is no operator configured": "There is no operator configured",
@@ -964,12 +973,12 @@
     "Null": "Null",
     "Expired": "Expired",
     "Abandoned": "Abandoned",
-    "No agents outqueue": "No agents outqueue",
-    "No agents inqueue": "No agents inqueue",
+    "No agents outqueue": "No agents outside the queue",
+    "No agents inqueue": "No agents in queue",
     "No not managed customers": "No not managed customers",
     "Date": "Date",
     "Caller": "Caller",
-    "Go to not managed customers": "Go to customers management",
+    "Go to not managed customers": "Go to Customers management",
     "No customers to manage": "No customers to manage",
     "There are no customers to manage": "There are no customers to manage",
     "Queues": "Queues",

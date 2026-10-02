@@ -18,6 +18,7 @@ import {
   faDownload,
   faAngleRight,
   faMagnifyingGlass,
+  faPhone,
 } from '@fortawesome/free-solid-svg-icons'
 import classNames from 'classnames'
 import { formatDateLoc } from '../../../lib/dateTime'
@@ -73,9 +74,13 @@ export const NotManagedCalls: FC<NotManagedCallsProps> = ({ className }): JSX.El
   }
 
   const [queueManagerFilter, setQueueManagerFilter]: any = useState([])
+  // the filter reads the saved queues after the first render: fetching before that
+  // shows a first result that is replaced right away
+  const [queuesFilterReady, setQueuesFilterReady] = useState(false)
   const [emptyQueueFilter, setEmptyQueueFilter]: any = useState(false)
 
   const updateQueueManagerFilter = (newQueuesFilter: string[]) => {
+    setQueuesFilterReady(true)
     setQueueManagerFilter(newQueuesFilter)
     setPageNum(1)
     setCallsLoaded(false)
@@ -116,6 +121,8 @@ export const NotManagedCalls: FC<NotManagedCallsProps> = ({ className }): JSX.El
       }
       setCallsLoaded(true)
     } else {
+      // no queue selected: drop the rows of the previous selection
+      setCalls({ count: 0, rows: [] })
       setCallsLoaded(true)
       setEmptyQueueFilter(true)
     }
@@ -125,6 +132,9 @@ export const NotManagedCalls: FC<NotManagedCallsProps> = ({ className }): JSX.El
   useEffect(() => {
     if (firstRender) {
       setFirstRender(false)
+      return
+    }
+    if (!queuesFilterReady) {
       return
     }
 
@@ -160,6 +170,7 @@ export const NotManagedCalls: FC<NotManagedCallsProps> = ({ className }): JSX.El
     }
   }, [
     firstRender,
+    queuesFilterReady,
     pageNum,
     pageSize,
     textFilter,
@@ -330,11 +341,24 @@ export const NotManagedCalls: FC<NotManagedCallsProps> = ({ className }): JSX.El
                   data={isCallsLoaded ? calls?.rows || [] : []}
                   isLoading={!isCallsLoaded}
                   emptyState={{
-                    title: t('Queues.No queue calls found'),
-                    description: t('Common.Try changing your search filters') || '',
-                    icon: <FontAwesomeIcon icon={faMagnifyingGlass} aria-hidden='true' />,
-                    action: (
-                      <Button variant='ghost' size='large' onClick={() => setResetFiltersTrigger((n) => n + 1)}>
+                    title: emptyQueueFilter
+                      ? t('QueueManager.No queue selected')
+                      : t('Queues.No queue calls found'),
+                    description: emptyQueueFilter
+                      ? t('QueueManager.Select queue') || ''
+                      : t('Common.Try changing your search filters') || '',
+                    icon: (
+                      <FontAwesomeIcon
+                        icon={emptyQueueFilter ? faPhone : faMagnifyingGlass}
+                        aria-hidden='true'
+                      />
+                    ),
+                    action: !emptyQueueFilter && (
+                      <Button
+                        variant='ghost'
+                        size='large'
+                        onClick={() => setResetFiltersTrigger((n) => n + 1)}
+                      >
                         {t('Common.Reset filters')}
                       </Button>
                     ),

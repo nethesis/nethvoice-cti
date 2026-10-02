@@ -1,5 +1,8 @@
 {
   "Common": {
+    "None": "Nessuna",
+    "Select all": "Seleziona tutte",
+    "Deselect all": "Deseleziona tutte",
     "Restricted page": "Pagina riservata",
     "Restricted page description": "Sembra che tu non abbia i permessi necessari per visualizzare questa pagina.",
     "Try changing your search filters": "Prova a modificare i filtri di ricerca",
@@ -748,6 +751,10 @@
     "Notifications": "Notifiche"
   },
   "Queues": {
+    "outcome_JOINEMPTY": "Nessun agente fuori dalla coda",
+    "outcome_JOINUNAVAIL": "Nessun agente fuori dalla coda",
+    "outcome_EXITEMPTY": "Nessun agente in coda",
+    "outcome_FULL": "Coda piena",
     "No queues found": "Nessuna coda trovata",
     "No queue calls found": "Nessuna chiamata di coda trovata",
     "Logout": "Logout",
@@ -880,6 +887,8 @@
     "Call": "Chiama"
   },
   "QueueManager": {
+    "Descending order": "Decrescente",
+    "Ascending order": "Crescente",
     "No agents found": "Nessun agente trovato",
     "Please select a queue": "Seleziona una coda",
     "There is no operator configured": "Non è configurato nessun operatore",
@@ -978,7 +987,7 @@
     "Null": "Nulla",
     "Expired": "Scaduta",
     "Abandoned": "Abbandonata",
-    "No agents outqueue": "Nessun agente fuori coda",
+    "No agents outqueue": "Nessun agente fuori dalla coda",
     "No agents inqueue": "Nessun agente in coda",
     "No not managed customers": "Nessun cliente non gestito",
     "Date": "Data",

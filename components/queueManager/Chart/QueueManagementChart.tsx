@@ -1,6 +1,23 @@
 // Copyright (C) 2024 Nethesis S.r.l.
 // SPDX-License-Identifier: AGPL-3.0-or-later
 
+import {
+  GREEN_200,
+  GREEN_300,
+  GREEN_500,
+  GREEN_800,
+  AMBER_200,
+  AMBER_500,
+  AMBER_800,
+  INDIGO_100,
+  INDIGO_400,
+  INDIGO_700,
+  INDIGO_800,
+  ROSE_100,
+  ROSE_400,
+  ROSE_700,
+  ROSE_800,
+} from '../../../lib/colors'
 import { FC, ComponentProps, useEffect, useState } from 'react'
 import { useTranslation } from 'react-i18next'
 import { RootState } from '../../../store'
@@ -8,7 +25,7 @@ import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { useSelector } from 'react-redux'
 import { getCallIcon, openShowQueueCallDrawer } from '../../../lib/queueManager'
 import BarChartHorizontal from '../../chart/HorizontalBarChart'
-import { EmptyState } from '../../common'
+import { EmptyState, Button } from '../../common'
 import { Tooltip } from 'react-tooltip'
 import { faArrowRight, faUser } from '@fortawesome/free-solid-svg-icons'
 import Link from 'next/link'
@@ -284,7 +301,7 @@ export const QueueManagementChart: FC<QueueManagementChartProps> = ({
     {
       label: `${t('Queues.Minimum')}`,
       data: [mininumConnectedCallsDatasets],
-      backgroundColor: '#6EE7B7',
+      backgroundColor: GREEN_200,
       // borderRadius: [20, 20, 10, 10],
       borderRadius: 10,
       barPercentage: 0.5,
@@ -295,7 +312,7 @@ export const QueueManagementChart: FC<QueueManagementChartProps> = ({
     {
       label: `${t('Queues.Average')}`,
       data: [averageConnectedCallsDatasets],
-      backgroundColor: '#10B981',
+      backgroundColor: GREEN_500,
       // borderRadius: [20, 20, 10, 10],
       borderRadius: 10,
       barPercentage: 0.5,
@@ -305,7 +322,7 @@ export const QueueManagementChart: FC<QueueManagementChartProps> = ({
     {
       label: `${t('Queues.Maximum')}`,
       data: [maximumConnectedCallsDatasets],
-      backgroundColor: '#047857',
+      backgroundColor: GREEN_800,
       // borderRadius: [20, 20, 10, 10],
       borderRadius: 10,
       barPercentage: 0.5,
@@ -321,7 +338,7 @@ export const QueueManagementChart: FC<QueueManagementChartProps> = ({
     {
       label: `${t('Queues.Minimum')}`,
       data: [mininumWaitingCallsDatasets],
-      backgroundColor: '#D1D5DB',
+      backgroundColor: AMBER_200,
       borderRadius: 10,
       barPercentage: 0.5,
       borderWidth: 0,
@@ -330,7 +347,7 @@ export const QueueManagementChart: FC<QueueManagementChartProps> = ({
     {
       label: `${t('Queues.Average')}`,
       data: [averageWaitingCallsDatasets],
-      backgroundColor: '#6B7280',
+      backgroundColor: AMBER_500,
       borderRadius: 10,
       barPercentage: 0.5,
       borderWidth: 0,
@@ -339,7 +356,7 @@ export const QueueManagementChart: FC<QueueManagementChartProps> = ({
     {
       label: `${t('Queues.Maximum')}`,
       data: [maximumWaitingCallsDatasets],
-      backgroundColor: '#374151',
+      backgroundColor: AMBER_800,
       borderRadius: 10,
       barPercentage: 0.5,
       borderWidth: 0,
@@ -354,7 +371,7 @@ export const QueueManagementChart: FC<QueueManagementChartProps> = ({
     {
       label: `${t('QueueManager.Null')}`,
       data: [totalNullCalls],
-      backgroundColor: '#a7f3d0',
+      backgroundColor: INDIGO_100,
       // borderRadius: [20, 20, 10, 10],
       borderRadius: 10,
       barPercentage: 0.5,
@@ -364,7 +381,7 @@ export const QueueManagementChart: FC<QueueManagementChartProps> = ({
     {
       label: `${t('QueueManager.Failed')}`,
       data: [totalCallsMissedStatus],
-      backgroundColor: '#6EE7B7',
+      backgroundColor: INDIGO_400,
       // borderRadius: [20, 20, 10, 10],
       borderRadius: 10,
       barPercentage: 0.5,
@@ -375,7 +392,7 @@ export const QueueManagementChart: FC<QueueManagementChartProps> = ({
     {
       label: `${t('QueueManager.Answered')}`,
       data: [totalCallsAnsweredStatus],
-      backgroundColor: '#10B981',
+      backgroundColor: INDIGO_700,
       // borderRadius: [20, 20, 10, 10],
       borderRadius: 10,
       barPercentage: 0.5,
@@ -385,7 +402,7 @@ export const QueueManagementChart: FC<QueueManagementChartProps> = ({
     {
       label: `${t('QueueManager.In progress')}`,
       data: [inProgress],
-      backgroundColor: '#047857',
+      backgroundColor: INDIGO_800,
       // borderRadius: [20, 20, 10, 10],
       borderRadius: 10,
       barPercentage: 0.5,
@@ -400,7 +417,7 @@ export const QueueManagementChart: FC<QueueManagementChartProps> = ({
     {
       label: `${t('QueueManager.Before 60s')}`,
       data: [answeredBeforeSeconds],
-      backgroundColor: '#6EE7B7',
+      backgroundColor: GREEN_300,
       // borderRadius: [20, 20, 10, 10],
       borderRadius: 10,
       barPercentage: 0.5,
@@ -411,7 +428,7 @@ export const QueueManagementChart: FC<QueueManagementChartProps> = ({
     {
       label: `${t('QueueManager.After 60s')}`,
       data: [answeredAfterSeconds],
-      backgroundColor: '#10B981',
+      backgroundColor: GREEN_800,
       // borderRadius: [20, 20, 10, 10],
       borderRadius: 10,
       barPercentage: 0.5,
@@ -426,7 +443,7 @@ export const QueueManagementChart: FC<QueueManagementChartProps> = ({
     {
       label: `${t('QueueManager.Expired')}`,
       data: [expiredTime],
-      backgroundColor: '#6EE7B7',
+      backgroundColor: ROSE_100,
       // borderRadius: [20, 20, 10, 10],
       borderRadius: 10,
       barPercentage: 0.5,
@@ -436,7 +453,7 @@ export const QueueManagementChart: FC<QueueManagementChartProps> = ({
     {
       label: `${t('QueueManager.Abandoned')}`,
       data: [abandonedCalls],
-      backgroundColor: '#10B981',
+      backgroundColor: ROSE_400,
       // borderRadius: [20, 20, 10, 10],
       borderRadius: 10,
       barPercentage: 0.5,
@@ -446,20 +463,20 @@ export const QueueManagementChart: FC<QueueManagementChartProps> = ({
     {
       label: `${t('QueueManager.No agents outqueue')}`,
       data: [failedNoagentsOutqueue],
-      backgroundColor: '#10B981',
+      backgroundColor: ROSE_700,
       // borderRadius: [20, 20, 10, 10],
       borderRadius: 10,
-      barPercentage: 1,
+      barPercentage: 0.5,
       borderWidth: 0.5,
       borderSkipped: false,
     },
     {
       label: `${t('QueueManager.No agents inqueue')}`,
       data: [failedNoagentsInqueue],
-      backgroundColor: '#10B981',
+      backgroundColor: ROSE_800,
       // borderRadius: [20, 20, 10, 10],
       borderRadius: 10,
-      barPercentage: 1,
+      barPercentage: 0.5,
       borderWidth: 0.5,
       borderSkipped: false,
     },
@@ -553,21 +570,15 @@ export const QueueManagementChart: FC<QueueManagementChartProps> = ({
                   numericTooltip={true}
                 />
               </div>
-              <div className='overflow-auto  scrollbar-thin scrollbar-thumb-gray-400 dark:scrollbar-thumb-gray-400 scrollbar-thumb-rounded-full scrollbar-thumb-opacity-50 scrollbar-track-gray-200 dark:scrollbar-track-gray-900 scrollbar-track-rounded-full scrollbar-track-opacity-25 mt-12 h-56 w-full'>
+              <div className='overflow-auto  scrollbar-thin scrollbar-thumb-gray-400 dark:scrollbar-thumb-gray-400 scrollbar-thumb-rounded-full scrollbar-thumb-opacity-50 scrollbar-track-gray-200 dark:scrollbar-track-gray-900 scrollbar-track-rounded-full scrollbar-track-opacity-25 mt-4 max-h-56 w-full'>
                 <ul
                   role='list'
-                  className=' divide-gray-300 dark:divide-gray-600 bg-cardBackgroud dark:bg-cardBackgroudDark'
+                  className='bg-cardBackgroud dark:bg-cardBackgroudDark text-sm'
                 >
-                  <li className='flex items-center justify-between gap-x-6 rounded-md bg-gray-100 dark:bg-gray-700 py-2 px-2'>
-                    <div className='py-1 px-2'>
-                      <strong>{t('QueueManager.Date')}</strong>
-                    </div>
-                    <div className='px-3'>
-                      <strong>{t('QueueManager.Caller')}</strong>
-                    </div>
-                    <div className='px-3'>
-                      <strong>{t('QueueManager.Outcome')}</strong>
-                    </div>
+                  <li className='sticky top-0 z-10 grid grid-cols-3 items-center gap-x-4 rounded-md bg-gray-100 dark:bg-gray-700 px-4 py-3 font-semibold'>
+                    <div>{t('QueueManager.Date')}</div>
+                    <div>{t('QueueManager.Caller')}</div>
+                    <div className='text-right'>{t('QueueManager.Outcome')}</div>
                   </li>
                   {isLoadedQueuesNotManaged && calls.count === 0 && (
                     <EmptyState
@@ -599,9 +610,16 @@ export const QueueManagementChart: FC<QueueManagementChartProps> = ({
                     ))}
                   {isLoadedQueuesNotManaged &&
                     calls?.rows?.map((call: any, index: number) => (
-                      <li key={index} className='flex justify-between gap-x-6 pt-1 items-center'>
+                      <li
+                        key={index}
+                        className={classNames(
+                          'grid grid-cols-3 items-center gap-x-4 px-4 py-3',
+                          // divider between rows, not between the header and the first one
+                          index > 0 && 'border-t border-gray-200 dark:border-gray-700',
+                        )}
+                      >
                         {/* time */}
-                        <div className='py-4 px-2 pr-3'>
+                        <div>
                           <div className='flex flex-col'>
                             <div>{formatDateLoc(call.time * 1000, 'PP')}</div>
                             <div className='text-gray-500 dark:text-gray-500'>
@@ -611,7 +629,7 @@ export const QueueManagementChart: FC<QueueManagementChartProps> = ({
                         </div>
 
                         {/* name / number */}
-                        <div className='px-3 py-4'>
+                        <div className='min-w-0 truncate'>
                           {call.name && (
                             <div
                               onClick={() =>
@@ -634,8 +652,8 @@ export const QueueManagementChart: FC<QueueManagementChartProps> = ({
                         </div>
 
                         {/* outcome */}
-                        <div className='whitespace-nowrap px-3 py-4'>
-                          <div className='flex items-center'>
+                        <div className='whitespace-nowrap'>
+                          <div className='flex items-center justify-end'>
                             <span
                               className='tooltip-outcome-value'
                               id={`tooltip-outcome-value-${index}`}
@@ -652,28 +670,17 @@ export const QueueManagementChart: FC<QueueManagementChartProps> = ({
                 </ul>
               </div>
             </div>
-            <div className='pt-8 px-4 flex items-center justify-between text-primary font-medium dark:text-primaryDark'>
+            <div className='pt-6 pb-4 px-2'>
               <Link
                 href={{
                   pathname: '/queuemanager',
                   query: { section: 'Customers management' },
                 }}
               >
-                <span className='hover:underline '>
-                  {t('QueueManager.Go to not managed customers')}
-                </span>
-              </Link>
-              <Link
-                href={{
-                  pathname: '/queuemanager',
-                  query: { section: 'Customers management' },
-                }}
-              >
-                <FontAwesomeIcon
-                  icon={faArrowRight}
-                  className='h-5 w-5 pr-2 cursor-pointer'
-                  aria-hidden='true'
-                />
+                <Button variant='ghost'>
+                  <span>{t('QueueManager.Go to not managed customers')}</span>
+                  <FontAwesomeIcon icon={faArrowRight} className='h-4 w-4 ml-2' aria-hidden='true' />
+                </Button>
               </Link>
             </div>
           </div>
