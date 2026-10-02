@@ -1012,12 +1012,20 @@ export const Calls: FC<CallsProps> = ({ className }): JSX.Element => {
         // recognised from its queue name or from the queue-entry leg (lastapp=
         // "Queue"), which after collapsing lives either on the parent (nobody
         // answered) or among its interactions (an agent answered).
+        // In the personal view the queue-entry leg is not among the user's own
+        // legs: there the queue shows on the member's leg itself, as its queue
+        // fields or its "from-queue" channel (already there while the call is on).
         const isRingGroupCall = !!call?.ringGroupName
+        const queueName = call?.queueName || call?.queue_name
+        const isQueueLeg = (leg: any) =>
+          leg?.lastapp === 'Queue' ||
+          (typeof leg?.channel === 'string' && leg.channel.includes('@from-queue-'))
         const isQueueCall =
           !isRingGroupCall &&
-          (!!call?.queueName ||
-            call?.lastapp === 'Queue' ||
-            (call?.interactions || []).some((leg: any) => leg?.lastapp === 'Queue'))
+          (!!queueName ||
+            !!call?.queue ||
+            isQueueLeg(call) ||
+            (call?.interactions || []).some(isQueueLeg))
         const showGroupMarker = isRingGroupCall || isQueueCall
 
         // Built from an interpolated key, not concatenated, so a translation can
@@ -1028,8 +1036,8 @@ export const Calls: FC<CallsProps> = ({ className }): JSX.Element => {
             ? t('History.Named group call', { name: call.ringGroupName })
             : t('History.Group')
         } else if (isQueueCall) {
-          markerLabel = call?.queueName
-            ? t('History.Named queue call', { name: call.queueName })
+          markerLabel = queueName
+            ? t('History.Named queue call', { name: queueName })
             : t('History.Queue')
         }
 
