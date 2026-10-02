@@ -1283,8 +1283,6 @@
     "Leave": "Leave",
     "Delete group confirm": "Delete the group \"{{name}}\" for everyone? Its messages are removed for all members.",
     "Leave confirm": "Leave the group \"{{name}}\"? You stop receiving its messages and your copy is removed.",
-    "In NethLink": "The chat is open in NethLink.",
-    "Open in NethLink": "Open in NethLink",
     "New message": "New message",
     "Messages count": "{{count}} new messages",
     "Reply": "Reply"

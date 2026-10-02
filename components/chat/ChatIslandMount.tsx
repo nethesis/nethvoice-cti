@@ -24,7 +24,7 @@ export const newChat = () => {
   else window.dispatchEvent(new CustomEvent('chat-island-new'))
 }
 
-/** One island at a time: with NethLink running the chat lives there. */
+/** With NethLink running the chat windows live there. */
 export const useChatInNethlink = () => useSelector(() => isNethlinkOnline())
 
 /** Chat switched on for this NethVoice (window.CONFIG). */
@@ -81,13 +81,9 @@ export function ChatIslandMount() {
     // resent once the island is up
   }, [operatorsStore.operators, operatorsStore.avatars, currentUser.username, ready])
 
-  useEffect(() => {
-    if (!inNethlink) return
-    store.dispatch.chat.setConversations([])
-    store.dispatch.chat.setUnread(0)
-  }, [inNethlink])
-
-  if (!config || !allowed || inNethlink) return null
+  if (!config || !allowed) return null
+  // NethLink shows the chats; the CTI keeps a hidden island for its list (read state follows NethLink).
+  if (inNethlink) return <ChatIsland dataConfig={config} headless />
   return (
     <>
       <ChatIsland dataConfig={config} serviceWorker='/chat-island-sw.js' newChatButton={false} maxHeads={5} notifications='auto' />
