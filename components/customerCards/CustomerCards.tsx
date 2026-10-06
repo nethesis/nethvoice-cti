@@ -16,7 +16,7 @@ import { LastCallsDrawerTable } from '../history/LastCallsDrawerTable'
 import { startOfDay, subDays } from 'date-fns'
 import { isEmpty } from 'lodash'
 import { Avatar, EmptyState } from '../common'
-import { getPhonebook, openShowContactDrawer, retrieveContact } from '../../lib/phonebook'
+import { getCompanyInformation, openShowContactDrawer, retrieveContact } from '../../lib/phonebook'
 import { callPhoneNumber, openEmailClient, transferCallToExtension } from '../../lib/utils'
 import { Tooltip } from 'react-tooltip'
 import { useSelector } from 'react-redux'
@@ -81,15 +81,7 @@ export const CustomerCardsCustomerData: FC<CustomerCardsCustomerDataViewProps> =
         companyInformation?.company
       ) {
         try {
-          //Remove space and slash characters
-          let noSlashCharactersCompanyInformation = companyInformation?.company?.replace(/\//g, '')
-          const res = await getPhonebook(
-            1,
-            noSlashCharactersCompanyInformation,
-            'company',
-            'displayname',
-          )
-          let companyAllInformation = res?.rows[0]
+          const companyAllInformation = await getCompanyInformation(companyInformation.company)
           setcompanyCardInformation(companyAllInformation)
         } catch (e) {
           console.error(e)
