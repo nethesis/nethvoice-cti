@@ -258,8 +258,7 @@ export const UserNavBar: FC = () => {
       {/* The side menu */}
       <div
         style={{ width: '3.125rem' }}
-        // Over the panel while the chat heads are here, so their +N list can open across it.
-        className={`border-gray-200 dark:border-gray-700 border-l bg-sidebar dark:bg-sidebarDark py-6 flex flex-col items-center gap-6 relative ${chatRail ? 'z-30' : 'z-10'}`}
+        className='border-gray-200 dark:border-gray-700 border-l bg-sidebar dark:bg-sidebarDark py-6 flex flex-col items-center gap-6 relative z-10'
       >
         {tabs.map((tab, i) => (
           <div

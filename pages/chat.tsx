@@ -112,7 +112,8 @@ const Chat: NextPage = () => {
       header: '',
       width: '4rem',
       className: 'text-right',
-      cell: (c: ChatConversation, i: number) => (
+      // A CTI group's chat follows the CTI: nothing to leave or delete here.
+      cell: (c: ChatConversation, i: number) => c.peer.startsWith('cti-') ? null : (
         <div className='flex items-center justify-end gap-2' onClick={(e) => e.stopPropagation()}>
           <Dropdown
             items={
