@@ -21,7 +21,8 @@ const Slot = ({ event, className }: { event: string; className?: string }) => {
 
 /** The right panel with the pinned conversation. */
 export const ChatPanel = () => (
-  <aside className='relative z-20 hidden lg:block h-full lg:w-96 xl:w-[32rem] 2xl:w-[40rem] border-l border-gray-200 dark:border-gray-700'>
+  // Under the rail (z-10), so the heads' +N list opens across it; drawers (z-20) stay above both.
+  <aside className='relative z-[5] hidden lg:block h-full lg:w-96 xl:w-[32rem] 2xl:w-[40rem] border-l border-gray-200 dark:border-gray-700'>
     <Slot event='chat-island-pin-target' className='h-full' />
   </aside>
 )
