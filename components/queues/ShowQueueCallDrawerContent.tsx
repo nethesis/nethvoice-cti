@@ -25,6 +25,9 @@ import { Button } from '../common'
 import { faCommentDotsRegular } from '../chat/icons'
 import { openChatWith, useChatAllowed } from '../chat/ChatIslandMount'
 
+// "Queue chat name" in every CTI language, to find a queue's group created in another one.
+const QUEUE_CHAT_PREFIXES = ['Queue - ', 'Coda - ']
+
 export interface ShowQueueCallDrawerContentProps extends ComponentPropsWithRef<'div'> {
   config: any
 }
@@ -101,7 +104,8 @@ export const ShowQueueCallDrawerContent = forwardRef<
   const conversations = useSelector((state: RootState) => state.chat.conversations)
   const queue = config?.queues?.[config?.queueId]
   // "Queue - Assistenza": not mistaken for a CTI group with the same name.
-  const queueName: string = t('Queues.Queue chat name', { name: queue?.name || config?.queueId || '' })
+  const rawQueueName: string = queue?.name || config?.queueId || ''
+  const queueName: string = t('Queues.Queue chat name', { name: rawQueueName })
   const agents: string[] = Array.from(
     new Set(
       Object.values(queue?.members || {})
@@ -117,7 +121,9 @@ export const ShowQueueCallDrawerContent = forwardRef<
   const writeToAgents = () => {
     // The chat takes over: the drawer would cover it.
     closeSideDrawer()
-    const existing = conversations.find((c) => c.kind === 'group' && c.name === queueName)
+    // Whatever language created it: the same queue must not get a group per language.
+    const names = [queueName, ...QUEUE_CHAT_PREFIXES.map((p) => p + rawQueueName)]
+    const existing = conversations.find((c) => c.kind === 'group' && names.includes(c.name))
     if (existing) openChatWith(existing.peer)
     else
       window.dispatchEvent(
