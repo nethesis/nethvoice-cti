@@ -86,7 +86,7 @@ export function ChatIslandMount() {
   if (inNethlink) return <ChatIsland dataConfig={config} headless />
   return (
     <>
-      <ChatIsland dataConfig={config} serviceWorker='/chat-island-sw.js' newChatButton={false} maxHeads={5} notifications='auto' />
+      <ChatIsland dataConfig={config} serviceWorker='/chat-island-sw.js' newChatButton={false} maxHeads={5} notifications='auto' pinnable />
       <div className='fixed top-6 right-9 z-50'>
         <ChatToast notice={notice} onOpen={openChatWith} onClose={closeNotice} />
       </div>
