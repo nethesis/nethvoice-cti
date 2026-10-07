@@ -258,7 +258,7 @@ export const UserNavBar: FC = () => {
       {/* The side menu */}
       <div
         style={{ width: '3.125rem' }}
-        className='border-gray-200 dark:border-gray-700 border-l bg-sidebar dark:bg-sidebarDark py-6 flex flex-col items-center gap-6 relative z-10'
+        className='border-gray-200 dark:border-gray-700 border-l bg-sidebar dark:bg-sidebarDark py-6 flex flex-col items-center gap-6 relative z-20'
       >
         {tabs.map((tab, i) => (
           <div
