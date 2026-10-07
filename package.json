@@ -1,6 +1,6 @@
 {
   "name": "nethvoice-cti",
-  "version": "0.15.29",
+  "version": "0.15.31",
   "private": true,
   "scripts": {
     "dev": "next dev --turbopack",
@@ -75,7 +75,7 @@
     "babel-loader": "^10.1.1",
     "eslint": "^9.39.4",
     "eslint-config-next": "^15.5.14",
-    "eslint-config-prettier": "^8.5.0",
+    "eslint-config-prettier": "^10.0.0",
     "exports-loader": "^5.0.0",
     "postcss": "^8.4.47",
     "prettier": "^2.8.0",

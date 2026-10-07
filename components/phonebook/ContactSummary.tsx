@@ -29,7 +29,7 @@ import {
   deleteContact,
   getContact,
   fetchContact,
-  getPhonebook,
+  getCompanyInformation,
   getContactVisibilityKind,
   getContactVisibility,
   getContactSharedGroups,
@@ -196,26 +196,27 @@ export const ContactSummary = forwardRef<HTMLButtonElement, ContactSummaryProps>
 
     // Get all company information
     useEffect(() => {
+      let isMounted = true
+      setCompanyInformation([])
+
       async function searchCompanyInformation() {
         if (contact && contact?.kind === 'person' && contact?.company) {
           try {
-            //Remove space and slash characters
-            let noSlashCharactersCompanyInformation = contact?.company?.replace(/\//g, '')
-            const res = await getPhonebook(
-              1,
-              noSlashCharactersCompanyInformation,
-              'company',
-              'displayname',
-            )
-            let companyAllInformation = res?.rows[0]
-            setCompanyInformation(companyAllInformation)
+            const companyAllInformation = await getCompanyInformation(contact.company)
+
+            if (isMounted && companyAllInformation) {
+              setCompanyInformation(companyAllInformation)
+            }
           } catch (e) {
             console.error(e)
-            return []
           }
         }
       }
       searchCompanyInformation()
+
+      return () => {
+        isMounted = false
+      }
       // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [contact])
 
@@ -267,6 +268,35 @@ export const ContactSummary = forwardRef<HTMLButtonElement, ContactSummaryProps>
       }
     }, [contact?.contacts])
 
+    const companyPhoneFields = [
+      { key: 'workphone', label: 'Phonebook.Work phone' },
+      { key: 'workphone2', label: 'Phonebook.Work phone 2' },
+      { key: 'cellphone', label: 'Phonebook.Mobile phone' },
+      { key: 'cellphone2', label: 'Phonebook.Mobile phone 2' },
+      { key: 'homephone', label: 'Phonebook.Home phone' },
+      { key: 'otherphone', label: 'Phonebook.Other phone' },
+    ]
+
+    const companyEmailFields = [
+      { key: 'workemail', label: 'Phonebook.Email' },
+      { key: 'homeemail', label: 'Phonebook.Home email' },
+      { key: 'otheremail', label: 'Phonebook.Other email' },
+    ]
+
+    const companyCityLine = [
+      companyInformation?.workpostalcode,
+      companyInformation?.workcity,
+      companyInformation?.workprovince ? `(${companyInformation?.workprovince})` : '',
+    ]
+      .filter(Boolean)
+      .join(' ')
+
+    const showCompanyAddress =
+      !!companyInformation?.workstreet ||
+      !!companyInformation?.workpostalcode ||
+      !!companyInformation?.workprovince ||
+      !!companyInformation?.workcountry
+
     const companyInformationData = () => {
       return (
         <div className='rounded-md border-gray-600 bg-gray-100 px-5 py-4 dark:border-gray-100 dark:bg-gray-800'>
@@ -277,6 +307,69 @@ export const ContactSummary = forwardRef<HTMLButtonElement, ContactSummaryProps>
             <span className='flex pt-2 text-base font-normal text-gray-600 dark:text-gray-300'>
               {companyInformation?.company || '-'}
             </span>
+
+            {companyPhoneFields
+              .filter((field) => companyInformation?.[field.key])
+              .map((field) => (
+                <div key={field.key}>
+                  <h3 className='flex text-sm font-medium leading-5 text-gray-900 dark:text-gray-50 pt-8'>
+                    {t(field.label)}
+                  </h3>
+                  <div className='flex items-center gap-2 pt-2 text-base font-normal text-primary dark:text-primaryDark'>
+                    <span
+                      className='truncate cursor-pointer hover:underline'
+                      onClick={() =>
+                        operatorsStore?.operators?.[auth?.username]?.mainPresence === 'busy'
+                          ? transferCallToExtension(companyInformation[field.key])
+                          : callPhoneNumber(companyInformation[field.key])
+                      }
+                    >
+                      {companyInformation[field.key]}
+                    </span>
+                    <CopyComponent
+                      number={companyInformation[field.key]}
+                      id={`company-${field.key}`}
+                    />
+                  </div>
+                </div>
+              ))}
+
+            {companyEmailFields
+              .filter((field) => companyInformation?.[field.key])
+              .map((field) => (
+                <div key={field.key}>
+                  <h3 className='flex text-sm font-medium leading-5 text-gray-900 dark:text-gray-50 pt-8'>
+                    {t(field.label)}
+                  </h3>
+                  <div className='flex items-center gap-2 pt-2 text-base font-normal'>
+                    <a
+                      target='_blank'
+                      rel='noreferrer'
+                      href={`mailto:${companyInformation[field.key]?.trim()}`}
+                      className='truncate hover:underline text-gray-600 dark:text-gray-300'
+                    >
+                      {companyInformation[field.key]}
+                    </a>
+                    <CopyComponent
+                      number={companyInformation[field.key]}
+                      id={`company-${field.key}`}
+                    />
+                  </div>
+                </div>
+              ))}
+
+            {showCompanyAddress && (
+              <>
+                <h3 className='flex text-sm font-medium leading-5 text-gray-900 dark:text-gray-50 pt-8'>
+                  {t('Phonebook.Company address')}
+                </h3>
+                <div className='pt-2 text-base font-normal text-gray-600 dark:text-gray-300'>
+                  {companyInformation?.workstreet && <div>{companyInformation?.workstreet}</div>}
+                  {companyCityLine && <div>{companyCityLine}</div>}
+                  {companyInformation?.workcountry && <div>{companyInformation?.workcountry}</div>}
+                </div>
+              </>
+            )}
 
             {/* Company city address */}
             <h3 className='flex text-sm font-medium leading-5 text-gray-900 dark:text-gray-50 pt-8'>
