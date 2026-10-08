@@ -226,8 +226,21 @@ export const ShowQueueCallDrawerContent = forwardRef<
             </div>
           )}
         </dl>
+        {/* What to do about it, before the call history */}
+        {chatAllowed && agents.length > 0 && (
+          <>
+            <h4 className='mt-6 text-base font-medium text-gray-700 dark:text-gray-200'>
+              {t('Common.Actions')}
+            </h4>
+            <div className='mt-4 border-t border-gray-200 dark:border-gray-700'></div>
+            <Button variant='white' className='mt-5' onClick={writeToAgents}>
+              <FontAwesomeIcon icon={faCommentDotsRegular} className='mr-2 h-4 w-4' />
+              {t('Queues.Write to queue agents')}
+            </Button>
+          </>
+        )}
         {/* call management */}
-        <h4 className='mt-6 text-base font-medium text-gray-700 dark:text-gray-200'>
+        <h4 className={`${chatAllowed && agents.length > 0 ? 'mt-8' : 'mt-6'} text-base font-medium text-gray-700 dark:text-gray-200`}>
           {t('Queues.Call management')}
         </h4>
         {/* Divider */}
@@ -336,19 +349,6 @@ export const ShowQueueCallDrawerContent = forwardRef<
                 ))}
             </ul>
           </div>
-        )}
-        {/* What to do about it: details, outcome, then the actions */}
-        {chatAllowed && agents.length > 0 && (
-          <>
-            <h4 className='mt-8 text-base font-medium text-gray-700 dark:text-gray-200'>
-              {t('Common.Actions')}
-            </h4>
-            <div className='mt-4 border-t border-gray-200 dark:border-gray-700'></div>
-            <Button variant='white' className='mt-5' onClick={writeToAgents}>
-              <FontAwesomeIcon icon={faCommentDotsRegular} className='mr-2 h-4 w-4' />
-              {t('Queues.Write to queue agents')}
-            </Button>
-          </>
         )}
       </div>
     </>
