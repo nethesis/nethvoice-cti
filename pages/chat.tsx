@@ -14,7 +14,6 @@ import {
   faCommentMedical,
   faRightFromBracket,
   faTrash,
-  faUsers,
 } from '@fortawesome/free-solid-svg-icons'
 import { RootState } from '../store'
 import { Avatar, Button, ConfirmationModal, Dropdown, TextInput } from '../components/common'
@@ -23,6 +22,7 @@ import { newChat, openChatWith, useChatAllowed } from '../components/chat'
 import { MissingPermission } from '../components/common/MissingPermissionsPage'
 import type { ChatConversation } from '../models/chat'
 import { ChatTime } from '../components/chat/ChatTime'
+import { groupLook } from '../components/chat/icons'
 
 /** Conversations table; a row opens the chat in the island. */
 const Chat: NextPage = () => {
@@ -52,8 +52,8 @@ const Chat: NextPage = () => {
             {c.kind === 'group' && c.avatar ? (
               <Avatar src={c.avatar} size='base' />
             ) : c.kind === 'group' ? (
-              <span className='flex h-10 w-10 items-center justify-center rounded-full bg-indigo-700 text-white'>
-                <FontAwesomeIcon icon={faUsers} className='h-4 w-4' />
+              <span className={`flex h-10 w-10 items-center justify-center rounded-full ${groupLook(c.peer, c.name).className}`}>
+                <FontAwesomeIcon icon={groupLook(c.peer, c.name).icon} className='h-4 w-4' />
               </span>
             ) : (
               <>

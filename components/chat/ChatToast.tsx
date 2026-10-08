@@ -9,10 +9,10 @@ import {
   faCommentDots,
   faPaperclip,
   faReply,
-  faUsers,
   faXmark,
 } from '@fortawesome/free-solid-svg-icons'
 import { Avatar, Button } from '../common'
+import { groupLook } from './icons'
 
 export interface ChatNotice {
   peer: string
@@ -75,8 +75,8 @@ export function ChatToast({
           <div className='flex items-start gap-4'>
             <div className='relative shrink-0'>
               {notice.kind === 'group' && !notice.avatar ? (
-                <span className='flex h-10 w-10 items-center justify-center rounded-full bg-indigo-700 text-white'>
-                  <FontAwesomeIcon icon={faUsers} className='h-4 w-4' aria-hidden='true' />
+                <span className={`flex h-10 w-10 items-center justify-center rounded-full ${groupLook(notice.peer, notice.name).className}`}>
+                  <FontAwesomeIcon icon={groupLook(notice.peer, notice.name).icon} className='h-4 w-4' aria-hidden='true' />
                 </span>
               ) : (
                 <Avatar src={notice.avatar} size='base' placeholderType='operator' />
