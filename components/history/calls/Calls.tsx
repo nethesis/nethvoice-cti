@@ -75,6 +75,9 @@ export const Calls: FC<CallsProps> = ({ className }): JSX.Element => {
   const { operators } = useSelector((state: RootState) => state.operators)
   const { profile } = useSelector((state: RootState) => state.user)
   const { name, mainextension, feature_codes } = useSelector((state: RootState) => state.user)
+  // The code in use, the default until the feature codes arrive: the history is
+  // fetched again only if the PBX uses another one, not when they arrive.
+  const audioTestCode = feature_codes?.audio_test || '*41'
   const authenticationStore = useSelector((state: RootState) => state.authentication)
   const lastCallsUpdate = useSelector((state: RootState) => state.lastCalls)
   const { username } = authenticationStore
@@ -170,12 +173,12 @@ export const Calls: FC<CallsProps> = ({ className }): JSX.Element => {
     let isMounted = true
 
     async function fetchHistoryQueues() {
-      if (!username) {
+      if (!username || !/^[0-9]{8}$/.test(dateBegin) || !/^[0-9]{8}$/.test(dateEnd)) {
         return
       }
 
       try {
-        const queues = await getHistoryQueues(username)
+        const queues = await getHistoryQueues(username, dateBegin, dateEnd)
         if (isMounted) {
           setAvailableQueues(Array.isArray(queues) ? queues : [])
         }
@@ -191,7 +194,7 @@ export const Calls: FC<CallsProps> = ({ className }): JSX.Element => {
     return () => {
       isMounted = false
     }
-  }, [username])
+  }, [username, dateBegin, dateEnd])
 
   const clearSummaryLinkedIdQuery = useCallback(() => {
     if (!router.isReady || !router.query.summaryLinkedid) {
@@ -366,7 +369,7 @@ export const Calls: FC<CallsProps> = ({ className }): JSX.Element => {
             pageSize,
             contentFilter,
             queueFilter,
-            feature_codes?.audio_test || '*41',
+            audioTestCode,
           )
           if (ignore) return
           setHistory(res)
@@ -411,8 +414,9 @@ export const Calls: FC<CallsProps> = ({ className }): JSX.Element => {
     // fetch and the server is asked to filter the default *41. Without this the
     // fetch never repeats once the real code lands, and a PBX that changed it
     // would fall back to filtering the echo calls client-side — which shortens
-    // pages, the very thing the server-side filter was added to fix.
-    feature_codes?.audio_test,
+    // pages, the very thing the server-side filter was added to fix. It is the code
+    // in use, default included, so a PBX on *41 is not asked for the page twice.
+    audioTestCode,
   ])
 
   // Function to load summary status for current page calls
@@ -719,7 +723,6 @@ export const Calls: FC<CallsProps> = ({ className }): JSX.Element => {
   // the audioTest parameter and returns those calls with no error of any kind,
   // and dropping the few rows it missed is cheaper than showing them. Against a
   // middleware that honours the parameter this removes nothing.
-  const audioTestCode = feature_codes?.audio_test || '*41'
   const filteredHistory = useMemo(() => {
     const rows = history?.rows
     if (!rows?.length) {

@@ -207,10 +207,12 @@ export const getFilterValues = (currentUsername: string) => {
   return { callType, callDirection, sortBy, contentFilter, queue }
 }
 
-export const getHistoryQueues = async (username: string) => {
+// The queues of the calls in the interval shown (YYYYMMDD): the whole history of
+// a user is too large to be searched every time the history is opened.
+export const getHistoryQueues = async (username: string, from: string, to: string) => {
   try {
     const requestUrl = `${getHistoryUrl()}/api/historycall/queues/user/${username}`
-    const { data, status } = await axios.get(requestUrl)
+    const { data, status } = await axios.get(requestUrl, { params: { from, to } })
 
     if (status === 200 && Array.isArray(data)) {
       return data
