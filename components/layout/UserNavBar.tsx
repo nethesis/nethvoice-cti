@@ -11,7 +11,7 @@ import {
   faVoicemail,
   type IconDefinition,
 } from '@fortawesome/free-solid-svg-icons'
-import { getJSONItem, loadPreference } from '../../lib/storage'
+import { getJSONItem, loadPreference, savePreference } from '../../lib/storage'
 import { RootState, store } from '../../store'
 import { useSelector } from 'react-redux'
 import { UserLastCalls } from './UserLastCalls'
@@ -19,6 +19,8 @@ import { useTranslation } from 'react-i18next'
 import { UserVoiceMail } from './UserVoiceMail'
 import { isEmpty } from 'lodash'
 import { CustomThemedTooltip } from '../common/CustomThemedTooltip'
+import { ChatPanel, ChatRail } from '../chat/ChatPanel'
+import { useChatAllowed, useChatInNethlink } from '../chat/ChatIslandMount'
 const activeStyles = {
   width: '.1875rem',
   height: '1.25rem',
@@ -36,6 +38,11 @@ export const UserNavBar: FC = () => {
   const auth = useSelector((state: RootState) => state.authentication)
 
   const [tabReady, setTabReady] = useState<boolean>(false)
+  const chatAllowed = useChatAllowed()
+  // Pinned, the island's heads sit in the rail and its window in a panel.
+  const [chatPinned, setChatPinned] = useState(false)
+  useEffect(() => setChatPinned(!!username && loadPreference('chatPinned', username) === true), [username])
+  const chatRail = !useChatInNethlink() && chatAllowed && chatPinned
 
   const [tabs, setTabs] = useState<TabTypes[]>([])
   useEffect(() => {
@@ -126,6 +133,43 @@ export const UserNavBar: FC = () => {
     }
   }
 
+  // The chat panel follows the island: shown while it has a conversation or the picker, closed otherwise.
+  const showChat = (v: boolean) => {
+    if (v === !!(rightSideStatus?.isShown && rightSideStatus?.actualTab === 'chat')) return
+    // Hidden, the tab keeps its name: with an empty one the restore effect above would reopen the last tab.
+    if (!v) return store.dispatch.rightSideMenu.setShown(false)
+    setDefaultTabSelected('chat')
+    setTabs((state) =>
+      state.map((tab) => {
+        tab.active = false
+        return tab
+      }),
+    )
+    store.dispatch.rightSideMenu.toggleSideMenu({ tabName: 'chat', username, force: true })
+  }
+  useEffect(() => {
+    const onPin = (e: Event) => {
+      const pinned = !!(e as CustomEvent).detail?.pinned
+      savePreference('chatPinned', pinned, username)
+      setChatPinned(pinned)
+      if (!pinned) showChat(false)
+    }
+    const onWindow = (e: Event) => {
+      const d = (e as CustomEvent).detail
+      if (chatRail) showChat(!!d?.open || !!d?.picker)
+    }
+    window.addEventListener('chat-island-pin', onPin)
+    window.addEventListener('chat-island-window', onWindow)
+    return () => {
+      window.removeEventListener('chat-island-pin', onPin)
+      window.removeEventListener('chat-island-window', onWindow)
+    }
+  })
+  // Another tab takes the panel: the conversation closes, its head stays in the rail.
+  useEffect(() => {
+    if (chatRail && rightSideStatus?.isShown && rightSideStatus?.actualTab !== 'chat') window.dispatchEvent(new CustomEvent('chat-island-close'))
+  }, [rightSideStatus?.isShown, rightSideStatus?.actualTab])
+
   const [firstRender, setFirstRender] = useState(true)
 
   const userPreferences = getJSONItem(`preferences-${username}`) || {}
@@ -210,10 +254,11 @@ export const UserNavBar: FC = () => {
             return <UserVoiceMail key={i} />
           }
         })}
+      {chatRail && rightSideStatus?.isShown && rightSideStatus?.actualTab === 'chat' && <ChatPanel />}
       {/* The side menu */}
       <div
         style={{ width: '3.125rem' }}
-        className='border-gray-200 dark:border-gray-700 border-l bg-sidebar dark:bg-sidebarDark py-6 flex flex-col items-center gap-6 relative z-10'
+        className='border-gray-200 dark:border-gray-700 border-l bg-sidebar dark:bg-sidebarDark py-6 flex flex-col items-center gap-6 relative z-20'
       >
         {tabs.map((tab, i) => (
           <div
@@ -236,6 +281,7 @@ export const UserNavBar: FC = () => {
             )}
           </div>
         ))}
+        {chatRail && <ChatRail />}
       </div>
       <CustomThemedTooltip id='tooltip-side-menu' place='left' />
     </>

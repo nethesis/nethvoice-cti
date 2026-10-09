@@ -14,13 +14,16 @@ import {
   faUser,
 } from '@fortawesome/free-solid-svg-icons'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
-import { callPhoneNumber, transferCallToExtension } from '../../lib/utils'
+import { callPhoneNumber, closeSideDrawer, transferCallToExtension } from '../../lib/utils'
 import { getCallIcon, retrieveQueueCallInfo } from '../../lib/queuesLib'
 import { formatCallDuration } from '../../lib/dateTime'
 import { useSelector } from 'react-redux'
 import { RootState } from '../../store'
 import { openShowOperatorDrawer } from '../../lib/operators'
 import { CallsDate } from '../history/CallsDate'
+import { Button } from '../common'
+import { faCommentDotsRegular } from '../chat/icons'
+import { openChatWith, useChatAllowed } from '../chat/ChatIslandMount'
 
 export interface ShowQueueCallDrawerContentProps extends ComponentPropsWithRef<'div'> {
   config: any
@@ -91,6 +94,38 @@ export const ShowQueueCallDrawerContent = forwardRef<
       }
     })
     setCallInfo(newCallInfo)
+  }
+
+  // The queue's agents, static and dynamic, as chat usernames (me left out).
+  const chatAllowed = useChatAllowed()
+  const conversations = useSelector((state: RootState) => state.chat.conversations)
+  const queue = config?.queues?.[config?.queueId]
+  // "Queue - Assistenza": not mistaken for a CTI group with the same name.
+  // The same name whatever the CTI language, so every manager finds the same group.
+  const queueName = `Queue - ${queue?.name || config?.queueId || ''}`
+  const agents: string[] = Array.from(
+    new Set(
+      Object.values(queue?.members || {})
+        .map(
+          (m: any) =>
+            (operatorsStore.extensions as any)?.[m?.member]?.username || m?.shortname,
+        )
+        .filter((u: any) => u && u !== authStore.username),
+    ),
+  ) as string[]
+
+  // A group named after the queue: the one already there, or a new one with its agents.
+  const writeToAgents = () => {
+    // The chat takes over: the drawer would cover it.
+    closeSideDrawer()
+    const existing = conversations.find((c) => c.kind === 'group' && c.name === queueName)
+    if (existing) openChatWith(existing.peer)
+    else
+      window.dispatchEvent(
+        new CustomEvent('chat-island-group-create', {
+          detail: { name: queueName, members: agents },
+        }),
+      )
   }
 
   const getOperatorTemplate = (operatorName: string) => {
@@ -191,8 +226,21 @@ export const ShowQueueCallDrawerContent = forwardRef<
             </div>
           )}
         </dl>
+        {/* What to do about it, before the call history */}
+        {chatAllowed && agents.length > 0 && (
+          <>
+            <h4 className='mt-6 text-base font-medium text-gray-700 dark:text-gray-200'>
+              {t('Common.Actions')}
+            </h4>
+            <div className='mt-4 border-t border-gray-200 dark:border-gray-700'></div>
+            <Button variant='white' className='mt-5' onClick={writeToAgents}>
+              <FontAwesomeIcon icon={faCommentDotsRegular} className='mr-2 h-4 w-4' />
+              {t('Queues.Write to queue agents')}
+            </Button>
+          </>
+        )}
         {/* call management */}
-        <h4 className='mt-6 text-base font-medium text-gray-700 dark:text-gray-200'>
+        <h4 className={`${chatAllowed && agents.length > 0 ? 'mt-8' : 'mt-6'} text-base font-medium text-gray-700 dark:text-gray-200`}>
           {t('Queues.Call management')}
         </h4>
         {/* Divider */}
