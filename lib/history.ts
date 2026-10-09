@@ -13,6 +13,30 @@ export const DEFAULT_CALL_TYPE_FILTER = 'user'
 export const DEFAULT_CALL_DIRECTION_FILTER = 'all'
 export const DEFAULT_SORT_BY = 'time%20desc'
 export const DEFAULT_CONTENT_FILTER = 'all'
+export const DEFAULT_QUEUE_FILTER = ''
+
+export function isAnsweredDisposition(disposition?: string) {
+  return disposition === 'ANSWERED' || disposition === 'ANSWERED_ELSEWHERE'
+}
+
+export function isAnsweredElsewhereDisposition(disposition?: string) {
+  return disposition === 'ANSWERED_ELSEWHERE'
+}
+
+export function getAnsweredTranslationKey(
+  direction: 'Incoming' | 'Outgoing' | 'Internal',
+  disposition?: string,
+) {
+  return isAnsweredElsewhereDisposition(disposition)
+    ? `History.${direction} answered elsewhere`
+    : `History.${direction} answered`
+}
+
+export function getAnsweredIconColorClass(disposition?: string) {
+  return isAnsweredElsewhereDisposition(disposition)
+    ? 'text-gray-700 dark:text-gray-400'
+    : 'text-green-600 dark:text-green-500'
+}
 
 export function getHistoryUrl() {
   if (window == undefined) {
@@ -33,6 +57,8 @@ export async function search(
   pageNum: number,
   pageSize: number = PAGE_SIZE,
   contentFilter: string = DEFAULT_CONTENT_FILTER,
+  queue: string = DEFAULT_QUEUE_FILTER,
+  audioTest: string = '',
 ) {
   if (window == undefined) {
     return
@@ -53,6 +79,10 @@ export async function search(
         pageNum,
         pageSize,
         artifact: contentFilter,
+        queue,
+        // Let the middleware drop audio-test (echo) calls before pagination so
+        // pages are not left short by client-side filtering.
+        audioTest,
       },
     })
     return data
@@ -172,8 +202,27 @@ export const getFilterValues = (currentUsername: string) => {
   const sortBy = loadPreference('historySortTypePreference', currentUsername) || DEFAULT_SORT_BY
   const contentFilter =
     loadPreference('historyContentFilter', currentUsername) || DEFAULT_CONTENT_FILTER
+  const queue = loadPreference('historyQueueFilter', currentUsername) || DEFAULT_QUEUE_FILTER
 
-  return { callType, callDirection, sortBy, contentFilter }
+  return { callType, callDirection, sortBy, contentFilter, queue }
+}
+
+// The queues of the calls in the interval shown (YYYYMMDD): the whole history of
+// a user is too large to be searched every time the history is opened.
+export const getHistoryQueues = async (username: string, from: string, to: string) => {
+  try {
+    const requestUrl = `${getHistoryUrl()}/api/historycall/queues/user/${username}`
+    const { data, status } = await axios.get(requestUrl, { params: { from, to } })
+
+    if (status === 200 && Array.isArray(data)) {
+      return data
+    }
+
+    return []
+  } catch (error) {
+    handleNetworkError(error)
+    throw error
+  }
 }
 
 export const openAddToPhonebookDrawer = (operator: any) => {
@@ -207,7 +256,7 @@ export const getLastCalls = async (
       sort = 'time%20asc'
     }
 
-    const requestUrl = `${getHistoryUrl()}/api/historycall/interval/user/${username}/${dateFrom}/${dateTo}?offset=0&limit=15&sort=${sort}&removeLostCalls=undefined`
+    const requestUrl = `${getHistoryUrl()}/api/historycall/interval/user/${username}/${dateFrom}/${dateTo}?offset=0&limit=15&sort=${sort}&removeLostCalls=false`
     const { data, status } = await axios.get(requestUrl)
 
     if (status === 200) {
@@ -278,9 +327,16 @@ export interface CallTypes {
   clid: string
   direction: 'in' | 'out'
   queue: string
+  queue_name?: string
+  answered_by_num?: string
   reached_voicemail?: boolean
   has_voicemail_message?: boolean
   voicemail_message_id?: string
+  interactions?: CallTypes[]
+  interactionsCount?: number
+  ringGroupName?: string
+  ringGroupNum?: string
+  queueName?: string
 }
 
 export interface LastCallsResponse {
@@ -302,8 +358,55 @@ type CallVoicemailLike = {
 export const getNormalizedDisposition = (call?: CallDispositionLike) =>
   call?.normalized_disposition || call?.disposition || ''
 
+/**
+ * Collapses the legs of a call into a single entry, keeping one row per linkedid.
+ *
+ * The last-calls lists read the legacy history API directly (they do not go through
+ * the middleware, which groups calls for the history page), and that API now returns
+ * every leg of a call — including the members a queue or ring group rang before
+ * someone answered. Without this they would show up as extra rows for the same call.
+ *
+ * The kept leg mirrors the middleware's choice: the last one that answered, so the
+ * entry reflects who the call ended up with; otherwise the earliest leg.
+ */
+export function collapseCallsByLinkedid<
+  T extends CallDispositionLike & { linkedid?: string; time?: number | string },
+>(
+  calls: T[],
+): T[] {
+  const order: string[] = []
+  const chosen = new Map<string, T>()
+  const standalone: T[] = []
+
+  calls.forEach((call) => {
+    const key = call?.linkedid
+    if (!key) {
+      // No linkedid: nothing to group it with, keep it as its own entry.
+      standalone.push(call)
+      order.push(`standalone:${standalone.length - 1}`)
+      return
+    }
+    const current = chosen.get(key)
+    if (!current) {
+      chosen.set(key, call)
+      order.push(key)
+      return
+    }
+    const currentAnswered = isCallAnswered(current)
+    const callAnswered = isCallAnswered(call)
+    const isLater = Number(call?.time ?? 0) > Number(current?.time ?? 0)
+    if ((callAnswered && !currentAnswered) || (callAnswered === currentAnswered && callAnswered && isLater)) {
+      chosen.set(key, call)
+    }
+  })
+
+  return order.map((key) =>
+    key.startsWith('standalone:') ? standalone[Number(key.split(':')[1])] : (chosen.get(key) as T),
+  )
+}
+
 export const isCallAnswered = (call?: CallDispositionLike) =>
-  getNormalizedDisposition(call) === 'ANSWERED'
+  isAnsweredDisposition(getNormalizedDisposition(call))
 
 export const hasVoicemailMessage = (call?: CallVoicemailLike) =>
   call?.has_voicemail_message === true

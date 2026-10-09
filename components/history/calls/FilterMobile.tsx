@@ -36,6 +36,9 @@ interface FilterMobileProps {
   contentFilter: any
   selectedContentFilter: string
   changeContentFilter: (event: any) => void
+  queueFilter: any
+  selectedQueue: string
+  changeQueueFilter: (event: any) => void
 }
 
 export const FilterMobile: React.FC<FilterMobileProps> = ({
@@ -66,6 +69,9 @@ export const FilterMobile: React.FC<FilterMobileProps> = ({
   contentFilter,
   selectedContentFilter,
   changeContentFilter,
+  queueFilter,
+  selectedQueue,
+  changeQueueFilter,
 }) => {
   const { t } = useTranslation()
   const { timePicker: timePickerTheme, datePicker: datePickerTheme } = useTheme().theme
@@ -85,10 +91,21 @@ export const FilterMobile: React.FC<FilterMobileProps> = ({
             <fieldset>
               <legend className='sr-only'>{callTypeFilter?.name}</legend>
             </fieldset>
-            {profile?.macro_permissions?.cdr?.permissions?.ad_cdr?.value && (
+            {(profile?.macro_permissions?.cdr?.permissions?.ad_cdr?.value ||
+              profile?.macro_permissions?.cdr?.permissions?.group_cdr?.value) && (
               <>
                 <div className='space-y-4'>
-                  {callTypeFilter?.options?.map((option: any) => (
+                  {callTypeFilter?.options
+                    ?.filter((option: any) => {
+                      if (option.value === 'switchboard') {
+                        return profile?.macro_permissions?.cdr?.permissions?.ad_cdr?.value
+                      } else if (option.value === 'group') {
+                        return profile?.macro_permissions?.cdr?.permissions?.group_cdr?.value
+                      } else {
+                        return true
+                      }
+                    })
+                    .map((option: any) => (
                     <div key={option?.value} className='flex items-center'>
                       <input
                         id={option?.value}
@@ -251,6 +268,17 @@ export const FilterMobile: React.FC<FilterMobileProps> = ({
           onChange={changeContentFilter}
         />
       </form>
+      {queueFilter?.options?.length > 0 && (
+        <form className='mt-4'>
+          <FilterDisclosure
+            name={t('History.Queue')}
+            filterId={queueFilter.id}
+            options={queueFilter.options}
+            selectedValue={selectedQueue}
+            onChange={changeQueueFilter}
+          />
+        </form>
+      )}
     </MobileFilterDrawer>
   )
 }
