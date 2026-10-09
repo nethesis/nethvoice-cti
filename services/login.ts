@@ -35,6 +35,25 @@ export const logout = async () => {
   }
 }
 
+/**
+ * With an SSO method, the user logout must also end the front-door session
+ * (Shibboleth SP or oauth2-proxy), otherwise "Sign in with SSO" logs the same
+ * user back in without credentials. The SP also propagates the logout to the
+ * IdP (SAML2 SLO) when the IdP supports it.
+ */
+const getSsoLogoutUrl = () => {
+  // @ts-ignore
+  const method = window.CONFIG?.AUTHENTICATION_METHOD
+  if (method === 'saml2') {
+    const target = window.location.origin + '/login'
+    return '/Shibboleth.sso/Logout?return=' + encodeURIComponent(target)
+  }
+  if (method === 'oidc') {
+    return '/oauth2/sign_out?rd=' + encodeURIComponent('/login')
+  }
+  return ''
+}
+
 export const doLogout = async (isLogoutError?: any) => {
   const res = await logout()
   //// TODO logout API is currently authenticated. For this reason, we must not check res.ok (this is a temporary workaround)
@@ -68,7 +87,12 @@ export const doLogout = async (isLogoutError?: any) => {
     saveQueryParams(queryParams)
   } else {
     clearLocalStorageAndCache()
-    reloadPage()
+    const ssoLogoutUrl = getSsoLogoutUrl()
+    if (ssoLogoutUrl) {
+      window.location.href = ssoLogoutUrl
+    } else {
+      reloadPage()
+    }
   }
 
   // } ////

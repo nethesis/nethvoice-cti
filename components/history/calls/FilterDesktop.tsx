@@ -35,6 +35,9 @@ interface FilterDesktopProps {
   contentFilter: any
   selectedContentFilter: string
   changeContentFilter: (event: any) => void
+  queueFilter: any
+  selectedQueue: string
+  changeQueueFilter: (event: any) => void
 }
 
 export const FilterDesktop: React.FC<FilterDesktopProps> = ({
@@ -63,12 +66,15 @@ export const FilterDesktop: React.FC<FilterDesktopProps> = ({
   contentFilter,
   selectedContentFilter,
   changeContentFilter,
+  queueFilter,
+  selectedQueue,
+  changeQueueFilter,
 }) => {
   const { t } = useTranslation()
   const { timePicker: timePickerTheme, datePicker: datePickerTheme } = useTheme().theme
 
   return (
-    <PopoverGroup className='hidden sm:flex sm:items-baseline sm:space-x-4'>
+    <PopoverGroup className='hidden xl:flex xl:items-baseline xl:space-x-4'>
       {/* Call type + direction filter (desktop) */}
       <FilterPopover
         name={t(`History.${callTypeFilter?.name}`)}
@@ -238,6 +244,17 @@ export const FilterDesktop: React.FC<FilterDesktopProps> = ({
         selectedValue={selectedContentFilter}
         onChange={changeContentFilter}
       />
+      {queueFilter?.options?.length > 0 && (
+        <FilterPopover
+          name={t('History.Queue')}
+          filterId={queueFilter.id}
+          options={queueFilter.options}
+          selectedValue={selectedQueue}
+          onChange={changeQueueFilter}
+          panelClassName='absolute right-0 z-10 mt-2 origin-top-right rounded-md p-4 shadow-2xl ring-1 ring-opacity-5 focus:outline-none bg-white ring-black dark:bg-gray-900 dark:ring-gray-700 min-w-max'
+          optionLabelClassName='whitespace-nowrap'
+        />
+      )}
     </PopoverGroup>
   )
 }

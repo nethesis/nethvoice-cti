@@ -72,7 +72,10 @@ function MyApp({ Component, pageProps }: AppProps) {
         window.location.href = cfg.SSO_LOGIN_URL || '/sso'
         return
       }
-      router.push('/login')
+      // keep ?error (e.g. ssoUserNotEnabled from the SSO return leg): the login
+      // page reads it from the URL to show the matching message
+      const error = params.get('error')
+      router.push(error ? '/login?error=' + encodeURIComponent(error) : '/login')
       router.events.on('routeChangeComplete', loaded)
     }
 

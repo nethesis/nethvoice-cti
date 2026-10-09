@@ -3,7 +3,7 @@
 
 import { FC } from 'react'
 import { CallTypes, getEffectiveCnam } from '../../lib/history'
-import { getOperatorByPhoneNumber } from '../../lib/operators'
+import { getOperatorByPhoneNumber, openShowOperatorDrawer } from '../../lib/operators'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { faCommentDots } from '@fortawesome/free-solid-svg-icons'
 import { openChatWith, useChatAllowed } from '../chat'
@@ -30,6 +30,7 @@ interface CallDetailsProps {
   fromHistory?: boolean
   isQueueBadgeAvailable?: boolean
   direction: 'in' | 'out'
+  lastCallsType?: string
   tooltipPlace?: 'top' | 'right' | 'bottom' | 'left'
 }
 
@@ -50,6 +51,7 @@ export const CallDetails: FC<CallDetailsProps> = ({
   fromHistory,
   isQueueBadgeAvailable,
   direction,
+  lastCallsType,
   tooltipPlace = 'bottom',
 }) => {
   const authStore = useSelector((state: RootState) => state.authentication)
@@ -69,6 +71,19 @@ export const CallDetails: FC<CallDetailsProps> = ({
   const openLastCardUserDrawer = (userInformation: any) => {
     let updatedUserInformation: any = {}
     let createContactObject: any = {}
+    const phoneNumber =
+      direction === 'in'
+        ? userInformation?.cnum || userInformation?.src
+        : userInformation?.dst
+    const operatorFound: any = getOperatorByPhoneNumber(phoneNumber, operators)
+
+    if (operatorFound) {
+      openShowOperatorDrawer({
+        ...operatorFound,
+        lastCallsType: lastCallsType || 'user',
+      })
+      return
+    }
 
     if (direction === 'in') {
       const incomingNum = userInformation.src || userInformation.cnum
@@ -135,7 +150,7 @@ export const CallDetails: FC<CallDetailsProps> = ({
                 className={`${
                   highlightNumber
                     ? 'text-textLink dark:text-textLinkDark'
-                    : 'text-gray-500 dark:text-gray-200'
+                    : 'text-textPlaceholder dark:text-textPlaceholderDark'
                 } ${fromHistory || (!fromHistory && isQueueBadgeAvailable) ? 'truncate' : ''}`}
               >
                 {direction === 'in' ? incomingNumber : call.dst}
@@ -154,16 +169,21 @@ export const CallDetails: FC<CallDetailsProps> = ({
         </>
       ) : (
         <>
-          {(direction === 'in' ? call.cnum : call.dst) && (
+          {/* Use incomingNumber (src || cnum), the same party the name is resolved
+              against: on a transferred incoming call cnum is the transfer initiator,
+              so using it here showed a number belonging to someone else. */}
+          {(direction === 'in' ? incomingNumber : call.dst) && (
             <div
               className='truncate text-primary dark:text-primaryDark'
               onClick={() =>
                 operatorsStore?.operators[authStore?.username]?.mainPresence === 'busy'
-                  ? transferCallToExtension(direction === 'in' ? call.cnum : call.dst)
-                  : callPhoneNumber(direction === 'in' ? call.cnum : call.dst)
+                  ? transferCallToExtension(direction === 'in' ? incomingNumber : call.dst)
+                  : callPhoneNumber(direction === 'in' ? incomingNumber : call.dst)
               }
             >
-              {direction === 'in' ? formatPhoneNumber(call.cnum) : formatPhoneNumber(call.dst)}
+              {direction === 'in'
+                ? formatPhoneNumber(incomingNumber)
+                : formatPhoneNumber(call.dst)}
             </div>
           )}
         </>
