@@ -118,7 +118,7 @@ export const CallDetails: FC<CallDetailsProps> = ({
                 `tooltip-${direction === 'in' ? 'dest' : 'source'}-${cleanString(
                   getCallName(call, direction) || '-',
                 )}`,
-                'truncate text-primaryNeutral dark:text-primaryNeutralDark leading-4 font-medium text-sm whitespace-nowrap cursor-pointer hover:underline',
+                'truncate text-primaryNeutral dark:text-primaryNeutralDark leading-5 font-medium text-sm whitespace-nowrap cursor-pointer hover:underline',
               )}
               onClick={() => openLastCardUserDrawer(call)}
               data-tooltip-id={`tooltip-${cleanString(getCallName(call, direction) || '-')}`}

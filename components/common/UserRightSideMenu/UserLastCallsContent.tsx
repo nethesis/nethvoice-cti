@@ -30,6 +30,7 @@ import type { SortTypes } from '../../../lib/history'
 import { UserCallStatusIcon } from '../../history/UserCallStatusIcon'
 import { getJSONItem, setJSONItem } from '../../../lib/storage'
 import { openCreateLastCallContact, openShowContactDrawer } from '../../../lib/phonebook'
+import { openShowOperatorDrawer } from '../../../lib/operators'
 import { CallDetails } from '../../history/CallDetails'
 import Link from 'next/link'
 import { Skeleton } from '../../common/Skeleton'
@@ -216,17 +217,22 @@ const LastCallItem = memo(
 
     return (
       <div
-        className='group relative flex items-center py-6 px-3'
+        className='group relative flex items-center px-6 py-4'
         onMouseEnter={() => hasNoInfo && setIsHovered(true)}
         onMouseLeave={() => setIsHovered(false)}
       >
-        <div className='relative min-w-0 flex-1 items-center px-6'>
+        <div
+          className='absolute inset-0 group-hover:bg-dropdownBgHover dark:group-hover:bg-dropdownBgHoverDark'
+          aria-hidden='true'
+        />
+        <div className='relative min-w-0 flex-1'>
           <div className='flex items-start'>
             <Avatar
               size='base'
               placeholderType='person'
               src={operators[call?.username]?.avatarBase64}
               status={operators[call?.username]?.mainPresence}
+              className='cursor-pointer'
               onClick={() => openLastCardUserDrawer(call)}
             />
             <div className='ml-4 truncate flex flex-col gap-1.5'>
@@ -280,7 +286,7 @@ const LastCallItem = memo(
               </div>
 
               <div
-                className='font-poppins text-sm leading-4 font-normal text-gray-600 dark:text-gray-300 truncate pb-1'
+                className='truncate text-sm leading-5 text-tertiaryNeutral dark:text-tertiaryNeutralDark'
                 data-tooltip-id={`tooltip-lastcall-date-${call.uniqueid}`}
                 data-tooltip-content={getCallDateString(call)}
               >
@@ -292,7 +298,7 @@ const LastCallItem = memo(
 
           {/* Create contact button */}
           {hasNoInfo && isHovered && (
-            <div className='absolute right-3 top-0 transform'>
+            <div className='absolute right-0 top-0'>
               <Button
                 variant='ghost'
                 className='flex items-center border dark:border-borderDark border-borderLight dark:hover:bg-hoverDark hover:bg-hoverLight'
@@ -458,6 +464,13 @@ export const UserLastCallsContent = () => {
   }, [lastCallsUpdate.isReload, getLastCallsList, sort])
 
   const openLastCardUserDrawer = useCallback((userInformation: any) => {
+    // a colleague opens its operator drawer, like its name does
+    const operator = operators[userInformation?.username]
+    if (operator) {
+      openShowOperatorDrawer({ ...operator, lastCallsType: 'user' })
+      return
+    }
+
     const isIncoming = userInformation?.direction === 'in'
     const rawName = isIncoming ? userInformation?.cnam : userInformation?.dst_cnam
     const extension = isIncoming ? userInformation?.src : userInformation?.dst
@@ -475,7 +488,7 @@ export const UserLastCallsContent = () => {
     } else if (extension) {
       openCreateLastCallContact({ extension })
     }
-  }, [])
+  }, [operators])
 
   const handleCreateContact = useCallback((call: any) => {
     const isIncoming = call?.direction === 'in'
@@ -588,8 +601,8 @@ export const UserLastCallsContent = () => {
           {isLoading &&
             Array.from(Array(4)).map((_, index) => (
               <li key={`skeleton-${index}`}>
-                <div className='group relative flex items-center py-6 px-3'>
-                  <div className='relative min-w-0 flex-1 items-center px-6'>
+                <div className='group relative flex items-center px-6 py-4'>
+                  <div className='relative min-w-0 flex-1'>
                     <div className='flex items-start'>
                       {/* Avatar skeleton - matching Avatar size='base' */}
                       <Skeleton variant='circular' className='h-10 w-10 flex-shrink-0' />

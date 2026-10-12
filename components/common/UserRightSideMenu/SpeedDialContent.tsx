@@ -33,16 +33,18 @@ import { useSelector } from 'react-redux'
 import { RootState } from '../../../store'
 import { Tooltip } from 'react-tooltip'
 import { CustomThemedTooltip } from '../CustomThemedTooltip'
+import { openShowOperatorDrawer } from '../../../lib/operators'
+import classNames from 'classnames'
 
 const SpeedDialItemSkeleton = () => (
-  <div className='group relative flex items-center py-2 px-6'>
+  <div className='group relative flex items-center px-6 py-4'>
     <div className='absolute inset-0' aria-hidden='true' />
     <div className='relative flex min-w-0 flex-1 items-center justify-between'>
-      <div className='flex items-center'>
+      <div className='flex items-start'>
         <Skeleton variant='circular' width='40px' height='40px' />
-        <div className='ml-4 flex flex-col gap-1'>
-          <Skeleton width='128px' height='12px' />
-          <Skeleton width='80px' height='12px' className='mt-1' />
+        <div className='ml-4 flex flex-col gap-1.5'>
+          <Skeleton width='128px' height='16px' />
+          <Skeleton width='80px' height='16px' />
         </div>
       </div>
     </div>
@@ -364,10 +366,10 @@ export const SpeedDialContent = () => {
   // Main content
   return (
     <>
-      <div className='flex h-full flex-col bg-sidebar dark:bg-sidebarDark'>
+      <div className='flex h-full flex-col bg-elevation0 dark:bg-elevation0Dark'>
         <div className='py-4 px-6'>
           <div className='flex items-center justify-between'>
-            <h2 className='text-lg font-medium text-textLight dark:text-textDark'>
+            <h2 className='text-lg font-medium text-primaryNeutral dark:text-primaryNeutralDark'>
               {t('SpeedDial.Speed dial')}
             </h2>
             <div className='flex gap-2 items-center'>
@@ -447,11 +449,8 @@ export const SpeedDialContent = () => {
             </div>
           </div>
         </div>
-        <span className='border-b border-gray-200 dark:border-gray-700'></span>
-        <ul
-          role='list'
-          className={`flex-1 divide-y ${customScrollbarClass} divide-gray-200 dark:divide-gray-700`}
-        >
+        <span className='border-b border-layoutDivider dark:border-layoutDividerDark'></span>
+        <ul role='list' className={`flex-1 ${customScrollbarClass}`}>
           {/* get speed dial error */}
           {errors.getSpeedDial && (
             <InlineNotification type='error' title={errors.getSpeedDial} className='my-6' />
@@ -462,6 +461,11 @@ export const SpeedDialContent = () => {
             Array.from(Array(4)).map((_, index) => (
               <li key={index}>
                 <SpeedDialItemSkeleton />
+                {index !== 3 && (
+                  <div className='px-6 relative'>
+                    <div className='border-b border-layoutDivider dark:border-layoutDividerDark'></div>
+                  </div>
+                )}
               </li>
             ))}
           {/* empty state */}
@@ -482,44 +486,41 @@ export const SpeedDialContent = () => {
           )}
           {/* Iterate through speed dial list */}
           {isSpeedDialLoaded &&
-            speedDials.map((speedDial: any, key: any) => (
-              <li key={key}>
-                <div className='group relative flex items-center py-2 px-6'>
-                  <div
-                    className='absolute inset-0 group-hover:bg-dropdownBgHover dark:group-hover:bg-dropdownBgHoverDark'
-                    aria-hidden='true'
-                  />
-                  <div className='relative flex min-w-0 flex-1 items-center justify-between'>
-                    <div className='flex items-center'>
-                      <Avatar
-                        size='base'
-                        src={
-                          operators?.avatars[
-                            operators?.extensions[speedDial?.speeddial_num]?.username
-                          ]
-                        }
-                        status={
-                          operators?.operators[
-                            operators?.extensions[speedDial?.speeddial_num]?.username
-                          ]?.mainPresence
-                        }
-                        placeholderType='operator'
-                        star={
-                          operators?.operators?.[
-                            operators?.extensions?.[speedDial?.speeddial_num]?.username
-                          ]?.favorite
-                        }
-                      />
-                      <div className='ml-4 truncate max-w-40'>
-                        <p
-                          className='truncate text-sm font-medium leading-5 text-secondaryNeutral dark:text-secondaryNeutralDark'
-                          data-tooltip-id='tooltip-speed-dial-name'
-                          data-tooltip-content={speedDial?.name || speedDial?.company || '-'}
-                        >
-                          {speedDial?.name || speedDial?.company || '-'}
-                        </p>
-                        <div className='truncate text-sm mt-1'>
-                          <div className='flex items-center'>
+            speedDials.map((speedDial: any, key: any) => {
+              // a colleague: name and avatar open its drawer, like in the other drawers
+              const operator =
+                operators?.operators?.[operators?.extensions?.[speedDial?.speeddial_num]?.username]
+              return (
+                <li key={key}>
+                  <div className='group relative flex items-center px-6 py-4'>
+                    <div
+                      className='absolute inset-0 group-hover:bg-dropdownBgHover dark:group-hover:bg-dropdownBgHoverDark'
+                      aria-hidden='true'
+                    />
+                    <div className='relative flex min-w-0 flex-1 items-center justify-between gap-3'>
+                      <div className='flex min-w-0 items-start'>
+                        <Avatar
+                          size='base'
+                          src={operators?.avatars[operator?.username]}
+                          status={operator?.mainPresence}
+                          placeholderType='operator'
+                          star={operator?.favorite}
+                          className={operator ? 'cursor-pointer' : 'cursor-default'}
+                          onClick={operator ? () => openShowOperatorDrawer(operator) : undefined}
+                        />
+                        <div className='ml-4 flex min-w-0 flex-col gap-1.5'>
+                          <span
+                            className={classNames(
+                              'truncate text-sm font-medium leading-5 text-primaryNeutral dark:text-primaryNeutralDark',
+                              operator && 'cursor-pointer hover:underline',
+                            )}
+                            data-tooltip-id='tooltip-speed-dial-name'
+                            data-tooltip-content={speedDial?.name || speedDial?.company || '-'}
+                            onClick={operator ? () => openShowOperatorDrawer(operator) : undefined}
+                          >
+                            {speedDial?.name || speedDial?.company || '-'}
+                          </span>
+                          <div className='flex items-center truncate text-sm'>
                             <FontAwesomeIcon
                               icon={faPhone}
                               className='mr-1.5 h-4 w-4 flex-shrink-0 text-iconSecondaryNeutral dark:text-iconSecondaryNeutralDark'
@@ -534,22 +535,28 @@ export const SpeedDialContent = () => {
                           </div>
                         </div>
                       </div>
+                      {canWriteSpeedDials && (
+                        <div className='flex shrink-0 gap-2'>
+                          {/* Actions */}
+                          <Dropdown items={getItemsMenu(speedDial)} position='left'>
+                            <Button variant='ghost' className='dark:hover:bg-gray-700 h-9 w-9'>
+                              <FontAwesomeIcon icon={faEllipsisVertical} className='h-4 w-4' />
+                              <span className='sr-only'>{t('SpeedDial.Open speed dial menu')}</span>
+                            </Button>
+                          </Dropdown>
+                        </div>
+                      )}
                     </div>
-                    {canWriteSpeedDials && (
-                      <div className='flex gap-2'>
-                        {/* Actions */}
-                        <Dropdown items={getItemsMenu(speedDial)} position='left'>
-                          <Button variant='ghost' className='dark:hover:bg-gray-700 h-9 w-9'>
-                            <FontAwesomeIcon icon={faEllipsisVertical} className='h-4 w-4' />
-                            <span className='sr-only'>{t('SpeedDial.Open speed dial menu')}</span>
-                          </Button>
-                        </Dropdown>
-                      </div>
-                    )}
                   </div>
-                </div>
-              </li>
-            ))}
+                  {/* Divider */}
+                  {key !== speedDials.length - 1 && (
+                    <div className='px-6 relative'>
+                      <div className='border-b border-layoutDivider dark:border-layoutDividerDark'></div>
+                    </div>
+                  )}
+                </li>
+              )
+            })}
         </ul>
       </div>
 
