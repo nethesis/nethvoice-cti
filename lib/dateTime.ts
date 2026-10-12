@@ -11,7 +11,6 @@ import { padStart } from 'lodash'
 import { enGB, it } from 'date-fns/locale'
 import { format, utcToZonedTime, zonedTimeToUtc } from 'date-fns-tz'
 import { getNumericTimezone, getTimezone } from './utils'
-import { UTCDate } from '@date-fns/utc'
 
 /**
  * Format a date expressed in milliseconds to current locale
@@ -56,7 +55,7 @@ export const getCallTimeToDisplayIsAnnouncement = (date: any, differenceInHours:
   const minute = parseInt(timeParts[1], 10)
   const second = parseInt(timeParts[2], 10)
 
-  const formattedTime = new UTCDate(0, 0, 0, hour, minute, second)
+  const formattedTime = new Date(Date.UTC(0, 0, 0, hour, minute, second))
 
   return formatInTimeZoneLoc(formattedTime, 'HH:mm', differenceInHours)
 }
