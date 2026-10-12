@@ -490,6 +490,9 @@ export const SpeedDialContent = () => {
               // a colleague: name and avatar open its drawer, like in the other drawers
               const operator =
                 operators?.operators?.[operators?.extensions?.[speedDial?.speeddial_num]?.username]
+              const openOperator = operator
+                ? () => openShowOperatorDrawer({ ...operator, lastCallsType: 'user' })
+                : undefined
               return (
                 <li key={key}>
                   <div className='group relative flex items-center px-6 py-4'>
@@ -505,18 +508,18 @@ export const SpeedDialContent = () => {
                           status={operator?.mainPresence}
                           placeholderType='operator'
                           star={operator?.favorite}
-                          className={operator ? 'cursor-pointer' : 'cursor-default'}
-                          onClick={operator ? () => openShowOperatorDrawer(operator) : undefined}
+                          className={openOperator ? 'cursor-pointer' : 'cursor-default'}
+                          onClick={openOperator}
                         />
                         <div className='ml-4 flex min-w-0 flex-col gap-1.5'>
                           <span
                             className={classNames(
                               'truncate text-sm font-medium leading-5 text-primaryNeutral dark:text-primaryNeutralDark',
-                              operator && 'cursor-pointer hover:underline',
+                              openOperator && 'cursor-pointer hover:underline',
                             )}
                             data-tooltip-id='tooltip-speed-dial-name'
                             data-tooltip-content={speedDial?.name || speedDial?.company || '-'}
-                            onClick={operator ? () => openShowOperatorDrawer(operator) : undefined}
+                            onClick={openOperator}
                           >
                             {speedDial?.name || speedDial?.company || '-'}
                           </span>

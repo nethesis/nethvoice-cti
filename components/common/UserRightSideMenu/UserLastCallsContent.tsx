@@ -30,7 +30,7 @@ import type { SortTypes } from '../../../lib/history'
 import { UserCallStatusIcon } from '../../history/UserCallStatusIcon'
 import { getJSONItem, setJSONItem } from '../../../lib/storage'
 import { openCreateLastCallContact, openShowContactDrawer } from '../../../lib/phonebook'
-import { openShowOperatorDrawer } from '../../../lib/operators'
+import { getOperatorByPhoneNumber, openShowOperatorDrawer } from '../../../lib/operators'
 import { CallDetails } from '../../history/CallDetails'
 import Link from 'next/link'
 import { Skeleton } from '../../common/Skeleton'
@@ -41,9 +41,7 @@ import { formatDistanceToNowStrict } from 'date-fns'
 import { enGB, it } from 'date-fns/locale'
 import i18next from 'i18next'
 
-interface LastCallTypes extends CallTypes {
-  username: string
-}
+type LastCallTypes = CallTypes
 
 type LastCallsTypes = LastCallTypes[]
 
@@ -55,6 +53,12 @@ interface LastCallItemProps {
   openLastCardUserDrawer: (userInformation: any) => void
   handleCreateContact: (call: any) => void
 }
+
+// The colleague on the other side of the call, matched by number like the name in
+// CallDetails: matching by display name could pick a contact with a colleague's name,
+// and an unknown incoming caller would resolve to the user's own extension (dst)
+const getCallOperator = (call: any, operators: any): any =>
+  getOperatorByPhoneNumber(call?.direction === 'in' ? call?.src || call?.cnum : call?.dst, operators)
 
 const LastCallItem = memo(
   ({
@@ -159,6 +163,9 @@ const LastCallItem = memo(
     const hasNoInfo = isIncoming
       ? !(getEffectiveCnam(call.cnam, call.src || call.cnum) || call.ccompany)
       : !(getEffectiveCnam(call.dst_cnam, call.dst) || call.dst_ccompany)
+    const callOperator = getCallOperator(call, operators)
+    // the avatar opens the colleague, the contact or "create contact": none of them without a number
+    const canOpenDrawer = !!callOperator || !hasNoInfo || !!(isIncoming ? call?.src : call?.dst)
     const isQueueCall =
       !!call?.queue ||
       !!call?.queue_name ||
@@ -230,10 +237,10 @@ const LastCallItem = memo(
             <Avatar
               size='base'
               placeholderType='person'
-              src={operators[call?.username]?.avatarBase64}
-              status={operators[call?.username]?.mainPresence}
-              className='cursor-pointer'
-              onClick={() => openLastCardUserDrawer(call)}
+              src={callOperator?.avatarBase64}
+              status={callOperator?.mainPresence}
+              className={canOpenDrawer ? 'cursor-pointer' : 'cursor-default'}
+              onClick={canOpenDrawer ? () => openLastCardUserDrawer(call) : undefined}
             />
             <div className='ml-4 truncate flex flex-col gap-1.5'>
               <div className='flex items-center'>
@@ -346,43 +353,14 @@ export const UserLastCallsContent = () => {
         if (callsData) {
           // Legs are kept as they come; applyFilters collapses them once the
           // direction filter has run (see there).
-          const callsFinalInformations = getLastCallsUsername(callsData.rows as any)
-          setLastCalls(callsFinalInformations)
-          applyFilters(callsFinalInformations, directionFilter)
+          setLastCalls(callsData.rows)
+          applyFilters(callsData.rows as any, directionFilter)
           setIsLoading(false)
         }
       }
     },
     // eslint-disable-next-line react-hooks/exhaustive-deps
     [username, profile?.macro_permissions?.cdr?.value, directionFilter],
-  )
-
-  const getLastCallsUsername = useCallback(
-    (callsData: CallTypes[]) => {
-      if (!callsData) return []
-
-      return callsData.map((call: CallTypes) => {
-        let callName =
-          call.direction === 'out'
-            ? getEffectiveCnam(call.dst_cnam, call.dst) || call.dst_ccompany
-            : call.direction === 'in'
-            ? getEffectiveCnam(call.cnam, call.src || call.cnum) || call.ccompany
-            : ''
-
-        let operator: any = null
-
-        if (callName) {
-          operator = Object.values(operators).find((operator: any) => operator.name === callName)
-        } else {
-          operator = Object.values(operators).find((operator: any) => {
-            const isExten = operator.endpoints.extension.find((exten: any) => exten.id === call.dst)
-            return !!isExten
-          })
-        }
-        return { ...call, username: operator?.username || '' }
-      })
-    },
-    [operators],
   )
 
   const applyFilters = useCallback(
@@ -465,7 +443,7 @@ export const UserLastCallsContent = () => {
 
   const openLastCardUserDrawer = useCallback((userInformation: any) => {
     // a colleague opens its operator drawer, like its name does
-    const operator = operators[userInformation?.username]
+    const operator = getCallOperator(userInformation, operators)
     if (operator) {
       openShowOperatorDrawer({ ...operator, lastCallsType: 'user' })
       return

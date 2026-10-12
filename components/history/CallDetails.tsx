@@ -68,7 +68,7 @@ export const CallDetails: FC<CallDetailsProps> = ({
     let createContactObject: any = {}
     const phoneNumber =
       direction === 'in'
-        ? userInformation?.cnum || userInformation?.src
+        ? userInformation?.src || userInformation?.cnum
         : userInformation?.dst
     const operatorFound: any = getOperatorByPhoneNumber(phoneNumber, operators)
 

@@ -246,15 +246,12 @@ export const VoiceMailContent = () => {
     }
   }
 
-  // a caller is known when it is a colleague: only then name and avatar open its drawer
-  const isKnownCaller = (voicemail: any) =>
-    !!voicemail?.caller_operator && voicemail.caller_operator.name !== t('VoiceMail.Unknown')
-
-  const openDrawerOperator = (operator: any) => {
-    if (operator) {
-      openShowOperatorDrawer(operator)
-    }
-  }
+  // a caller is known when it is a colleague (the unknown placeholder has no username):
+  // only then name and avatar open its drawer, with the user's own calls like last calls
+  const getOpenOperator = (voicemail: any) =>
+    voicemail?.caller_operator?.username
+      ? () => openShowOperatorDrawer({ ...voicemail.caller_operator, lastCallsType: 'user' })
+      : undefined
 
   async function playSelectedVoicemail(voicemail: any) {
     if (voicemail) {
@@ -323,7 +320,9 @@ export const VoiceMailContent = () => {
               }
             >
               <ul role='list'>
-                {visibleVoicemails.map((voicemail, index) => (
+                {visibleVoicemails.map((voicemail, index) => {
+                  const openOperator = getOpenOperator(voicemail)
+                  return (
               <li key={voicemail?.id}>
                 <div className='group relative flex items-center px-6 py-4'>
                   <div
@@ -345,14 +344,8 @@ export const VoiceMailContent = () => {
                           src={voicemail?.caller_operator?.avatarBase64}
                           placeholderType='operator'
                           size='base'
-                          onClick={
-                            isKnownCaller(voicemail)
-                              ? () => openDrawerOperator(voicemail?.caller_operator)
-                              : undefined
-                          }
-                          className={
-                            isKnownCaller(voicemail) ? 'cursor-pointer' : 'cursor-default'
-                          }
+                          onClick={openOperator}
+                          className={openOperator ? 'cursor-pointer' : 'cursor-default'}
                           status={voicemail?.caller_operator?.mainPresence}
                           star={voicemail?.caller_operator?.favorite}
                         />
@@ -361,14 +354,10 @@ export const VoiceMailContent = () => {
                         <span
                           className={classNames(
                             'truncate text-sm font-medium leading-5 text-primaryNeutral dark:text-primaryNeutralDark',
-                            isKnownCaller(voicemail) && 'cursor-pointer hover:underline',
+                            openOperator && 'cursor-pointer hover:underline',
                           )}
                           title={voicemail?.caller_operator?.name || t('VoiceMail.Unknown')}
-                          onClick={
-                            isKnownCaller(voicemail)
-                              ? () => openDrawerOperator(voicemail?.caller_operator)
-                              : undefined
-                          }
+                          onClick={openOperator}
                         >
                           {voicemail?.caller_operator?.name
                             ? voicemail.caller_operator.name
@@ -436,7 +425,8 @@ export const VoiceMailContent = () => {
                   </div>
                 )}
               </li>
-                ))}
+                  )
+                })}
               </ul>
             </InfiniteScroll>
           )}
