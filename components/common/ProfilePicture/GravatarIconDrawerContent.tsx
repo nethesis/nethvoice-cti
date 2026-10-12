@@ -20,7 +20,7 @@ import { RootState } from '../../../store'
 import { retrieveAvatars } from '../../../lib/operators'
 import { isEmpty } from 'lodash'
 import { InlineNotification } from '../InlineNotification'
-import { MD5 } from 'crypto-js'
+import MD5 from 'crypto-js/md5'
 
 export interface GravatarIconDrawerContentProps extends ComponentPropsWithRef<'div'> {
   config: any

@@ -9,7 +9,6 @@ import {
   getTimeDifference,
 } from '../../lib/dateTime'
 import i18next from 'i18next'
-import { UTCDate } from '@date-fns/utc'
 
 interface CallsDateProps {
   call: any
@@ -78,7 +77,7 @@ export const CallsDate: FC<CallsDateProps> = ({ call, spaced, isInQueue, isInAnn
       const minute = parseInt(timeParts[1], 10)
       const second = parseInt(timeParts[2], 10)
 
-      const utcDate = new UTCDate(year, month, day, hour, minute, second)
+      const utcDate = new Date(Date.UTC(year, month, day, hour, minute, second))
 
       return (
         <div className='font-poppins text-sm leading-5 font-normal text-gray-600 dark:text-gray-300 truncate'>
