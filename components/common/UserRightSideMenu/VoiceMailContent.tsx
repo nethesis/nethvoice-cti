@@ -36,6 +36,7 @@ import { useEventListener } from '../../../lib/hooks/useEventListener'
 import { customScrollbarClass } from '../../../lib/utils'
 import { Skeleton } from '../Skeleton'
 import InfiniteScroll from 'react-infinite-scroll-component'
+import classNames from 'classnames'
 
 const VOICEMAIL_PAGE_SIZE = 30
 
@@ -245,11 +246,12 @@ export const VoiceMailContent = () => {
     }
   }
 
-  const openDrawerOperator = (operator: any) => {
-    if (operator) {
-      openShowOperatorDrawer(operator)
-    }
-  }
+  // a caller is known when it is a colleague (the unknown placeholder has no username):
+  // only then name and avatar open its drawer, with the user's own calls like last calls
+  const getOpenOperator = (voicemail: any) =>
+    voicemail?.caller_operator?.username
+      ? () => openShowOperatorDrawer({ ...voicemail.caller_operator, lastCallsType: 'user' })
+      : undefined
 
   async function playSelectedVoicemail(voicemail: any) {
     if (voicemail) {
@@ -318,108 +320,101 @@ export const VoiceMailContent = () => {
               }
             >
               <ul role='list'>
-                {visibleVoicemails.map((voicemail, index) => (
-              <li key={voicemail?.id} className=''>
-                <div className='group relative flex items-center'>
+                {visibleVoicemails.map((voicemail, index) => {
+                  const openOperator = getOpenOperator(voicemail)
+                  return (
+              <li key={voicemail?.id}>
+                <div className='group relative flex items-center px-6 py-4'>
                   <div
                     className='absolute inset-0 group-hover:bg-dropdownBgHover dark:group-hover:bg-dropdownBgHoverDark'
                     aria-hidden='true'
                   />
-                  <div className='relative flex min-w-0 flex-1 items-center px-6'>
-                    <div className='gap-4 py-4 px-0 w-full'>
-                      <div className='flex justify-between gap-3'>
-                        <div className='flex shrink-0 h-min items-center min-w-[48px]'>
-                          <div className='h-2 w-2 flex justify-center items-center'>
-                            {voicemail.type === 'inbox' ? (
-                              <FontAwesomeIcon
-                                icon={faCircle}
-                                className='h-2 w-2 text-iconDanger dark:text-iconDangerDark'
-                              />
-                            ) : null}
-                          </div>
-                          <Avatar
-                            src={voicemail?.caller_operator?.avatarBase64}
-                            placeholderType='operator'
-                            size='large'
-                            bordered
-                            onClick={
-                              voicemail?.caller_operator?.name !== t('VoiceMail.Unknown') &&
-                              voicemail?.caller_operator
-                                ? () => openDrawerOperator(voicemail?.caller_operator)
-                                : undefined
-                            }
-                            className={`mx-auto ${
-                              voicemail?.caller_operator?.name !== t('VoiceMail.Unknown') &&
-                              voicemail?.caller_operator
-                                ? 'cursor-pointer'
-                                : 'cursor-default'
-                            } ml-0.5`}
-                            status={voicemail?.caller_operator?.mainPresence}
-                            star={voicemail?.caller_operator?.favorite}
+                  <div className='relative flex min-w-0 flex-1 items-start justify-between gap-3'>
+                    <div className='flex min-w-0 items-start'>
+                      {/* the unread dot sits in the left padding, centered on the avatar, so the
+                      avatar lines up with the other drawers */}
+                      <div className='relative shrink-0'>
+                        {voicemail.type === 'inbox' && (
+                          <FontAwesomeIcon
+                            icon={faCircle}
+                            className='absolute -left-3.5 top-1/2 -translate-y-1/2 h-2 w-2 text-iconDanger dark:text-iconDangerDark'
                           />
-                        </div>
-                        <div className='flex flex-col gap-1.5 min-w-0 flex-1'>
+                        )}
+                        <Avatar
+                          src={voicemail?.caller_operator?.avatarBase64}
+                          placeholderType='operator'
+                          size='base'
+                          onClick={openOperator}
+                          className={openOperator ? 'cursor-pointer' : 'cursor-default'}
+                          status={voicemail?.caller_operator?.mainPresence}
+                          star={voicemail?.caller_operator?.favorite}
+                        />
+                      </div>
+                      <div className='ml-4 flex min-w-0 flex-col gap-1.5'>
+                        <span
+                          className={classNames(
+                            'truncate text-sm font-medium leading-5 text-primaryNeutral dark:text-primaryNeutralDark',
+                            openOperator && 'cursor-pointer hover:underline',
+                          )}
+                          title={voicemail?.caller_operator?.name || t('VoiceMail.Unknown')}
+                          onClick={openOperator}
+                        >
+                          {voicemail?.caller_operator?.name
+                            ? voicemail.caller_operator.name
+                            : t('VoiceMail.Unknown')}
+                        </span>
+                        <div className='flex items-center truncate text-sm text-textLink dark:text-textLinkDark'>
+                          <FontAwesomeIcon
+                            icon={faPhone}
+                            className='mr-1.5 h-4 w-4 flex-shrink-0 text-iconSecondaryNeutral dark:text-iconSecondaryNeutralDark'
+                            aria-hidden='true'
+                          />
                           <span
-                            className='font-poppins text-sm leading-4 font-medium text-primaryNeutral dark:text-primaryNeutralDark truncate'
-                            title={voicemail?.caller_operator?.name || t('VoiceMail.Unknown')}
+                            className='cursor-pointer hover:underline truncate'
+                            onClick={() => quickCall(voicemail)}
+                            title={voicemail?.caller_number}
                           >
-                            {voicemail?.caller_operator?.name
-                              ? voicemail.caller_operator.name
-                              : t('VoiceMail.Unknown')}
+                            {voicemail?.caller_number}
                           </span>
-                          <div className='flex items-center truncate text-sm text-textLink dark:text-textLinkDark'>
-                            <FontAwesomeIcon
-                              icon={faPhone}
-                              className='mr-1.5 h-4 w-4 flex-shrink-0 text-tertiaryNeutral dark:text-tertiaryNeutralDark'
-                              aria-hidden='true'
-                            />
-                            <span
-                              className='cursor-pointer hover:underline font-poppins text-sm leading-4 font-normal truncate'
-                              onClick={() => quickCall(voicemail)}
-                              title={voicemail?.caller_number}
-                            >
-                              {voicemail?.caller_number}
+                        </div>
+                        <span
+                          className='truncate text-sm leading-5 text-tertiaryNeutral dark:text-tertiaryNeutralDark'
+                          title={formatTimestamp(voicemail?.origtime)}
+                        >
+                          {formatTimestamp(voicemail?.origtime)}
+                        </span>
+                        <div className='flex text-tertiaryNeutral dark:text-tertiaryNeutralDark'>
+                          <FontAwesomeIcon
+                            icon={faVoicemail}
+                            className='mr-1.5 h-4 w-4 flex-shrink-0'
+                            aria-hidden='true'
+                          />
+                          {voicemail?.duration && (
+                            <span className='text-sm leading-4'>
+                              {formatDuration(voicemail?.duration)}
                             </span>
-                          </div>
-                          <span
-                            className='font-poppins text-sm leading-4 font-normal text-tertiaryNeutral dark:text-tertiaryNeutralDark truncate'
-                            title={formatTimestamp(voicemail?.origtime)}
-                          >
-                            {formatTimestamp(voicemail?.origtime)}
-                          </span>
-                          <div className='flex text-tertiaryNeutral dark:text-tertiaryNeutralDark'>
-                            <FontAwesomeIcon
-                              icon={faVoicemail}
-                              className='mr-1.5 h-4 w-4 flex-shrink-0'
-                              aria-hidden='true'
-                            />
-                            {voicemail?.duration && (
-                              <span className='font-poppins text-sm leading-4 font-normal'>
-                                {formatDuration(voicemail?.duration)}
-                              </span>
-                            )}
-                          </div>
-                        </div>
-                        <div className='flex gap-2 items-start shrink-0 pl-2.5'>
-                          <Button
-                            variant='white'
-                            className='border border-gray-300 dark:border-gray-500 py-2 h-9 w-9 gap-3'
-                            onClick={() => playSelectedVoicemail(voicemail)}
-                          >
-                            <FontAwesomeIcon icon={faPlay} className='h-4 w-4' />
-                            <span className='sr-only'>{t('VoiceMail.Play voicemail')}</span>
-                          </Button>
-                          <Dropdown
-                            items={getVoiceMailOptionsTemplate(voicemail)}
-                            position={index === 0 ? 'bottomVoicemail' : 'topVoicemail'}
-                          >
-                            <Button variant='ghost' className='py-2 px-2 h-9 w-9'>
-                              <FontAwesomeIcon icon={faEllipsisVertical} className='h-4 w-4' />
-                              <span className='sr-only'>{t('VoiceMail.Open voicemail menu')}</span>
-                            </Button>
-                          </Dropdown>
+                          )}
                         </div>
                       </div>
+                    </div>
+                    <div className='flex shrink-0 items-start gap-2'>
+                      <Button
+                        variant='white'
+                        className='border border-gray-300 dark:border-gray-500 py-2 h-9 w-9 gap-3'
+                        onClick={() => playSelectedVoicemail(voicemail)}
+                      >
+                        <FontAwesomeIcon icon={faPlay} className='h-4 w-4' />
+                        <span className='sr-only'>{t('VoiceMail.Play voicemail')}</span>
+                      </Button>
+                      <Dropdown
+                        items={getVoiceMailOptionsTemplate(voicemail)}
+                        position={index === 0 ? 'bottomVoicemail' : 'topVoicemail'}
+                      >
+                        <Button variant='ghost' className='py-2 px-2 h-9 w-9'>
+                          <FontAwesomeIcon icon={faEllipsisVertical} className='h-4 w-4' />
+                          <span className='sr-only'>{t('VoiceMail.Open voicemail menu')}</span>
+                        </Button>
+                      </Dropdown>
                     </div>
                   </div>
                 </div>
@@ -430,7 +425,8 @@ export const VoiceMailContent = () => {
                   </div>
                 )}
               </li>
-                ))}
+                  )
+                })}
               </ul>
             </InfiniteScroll>
           )}
@@ -438,19 +434,18 @@ export const VoiceMailContent = () => {
           {!isVoiceMailLoaded && !getVoiceMailError && (
             <ul role='list'>
               {Array.from(Array(4)).map((_, index) => (
-              <li key={index} className='px-6 py-4'>
-                <div className='flex justify-between gap-3'>
-                  <div className='flex shrink-0 h-min items-center min-w-[48px]'>
-                    <div className='h-2 w-2 flex justify-center'></div>
-                    <Skeleton variant='avatar' className='ml-0.5'/>
+              <li key={index}>
+                <div className='flex items-start justify-between gap-3 px-6 py-4'>
+                  <div className='flex min-w-0 flex-1 items-start'>
+                    <Skeleton variant='circular' className='h-10 w-10 flex-shrink-0' />
+                    <div className='ml-4 flex min-w-0 flex-1 flex-col gap-1.5'>
+                      <Skeleton width='75%' />
+                      <Skeleton width='50%' />
+                      <Skeleton width='25%' />
+                      <Skeleton width='25%' />
+                    </div>
                   </div>
-                  <div className='flex flex-col gap-1.5 min-w-0 flex-1'>
-                    <Skeleton width='75%' />
-                    <Skeleton width='50%' />
-                    <Skeleton width='25%' />
-                    <Skeleton width='25%' />
-                  </div>
-                  <div className='flex gap-2 items-start shrink-0'>
+                  <div className='flex shrink-0 items-start gap-2'>
                     <Skeleton
                       width='36px'
                       height='36px'
@@ -466,7 +461,7 @@ export const VoiceMailContent = () => {
                   </div>
                 </div>
                 {index !== 3 && (
-                  <div className='pt-4 relative'>
+                  <div className='px-6 relative'>
                     <div className='border-b border-layoutDivider dark:border-layoutDividerDark'></div>
                   </div>
                 )}

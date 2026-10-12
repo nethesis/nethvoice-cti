@@ -30,6 +30,7 @@ import type { SortTypes } from '../../../lib/history'
 import { UserCallStatusIcon } from '../../history/UserCallStatusIcon'
 import { getJSONItem, setJSONItem } from '../../../lib/storage'
 import { openCreateLastCallContact, openShowContactDrawer } from '../../../lib/phonebook'
+import { getOperatorByPhoneNumber, openShowOperatorDrawer } from '../../../lib/operators'
 import { CallDetails } from '../../history/CallDetails'
 import Link from 'next/link'
 import { Skeleton } from '../../common/Skeleton'
@@ -40,9 +41,7 @@ import { formatDistanceToNowStrict } from 'date-fns'
 import { enGB, it } from 'date-fns/locale'
 import i18next from 'i18next'
 
-interface LastCallTypes extends CallTypes {
-  username: string
-}
+type LastCallTypes = CallTypes
 
 type LastCallsTypes = LastCallTypes[]
 
@@ -54,6 +53,12 @@ interface LastCallItemProps {
   openLastCardUserDrawer: (userInformation: any) => void
   handleCreateContact: (call: any) => void
 }
+
+// The colleague on the other side of the call, matched by number like the name in
+// CallDetails: matching by display name could pick a contact with a colleague's name,
+// and an unknown incoming caller would resolve to the user's own extension (dst)
+const getCallOperator = (call: any, operators: any): any =>
+  getOperatorByPhoneNumber(call?.direction === 'in' ? call?.src || call?.cnum : call?.dst, operators)
 
 const LastCallItem = memo(
   ({
@@ -158,6 +163,9 @@ const LastCallItem = memo(
     const hasNoInfo = isIncoming
       ? !(getEffectiveCnam(call.cnam, call.src || call.cnum) || call.ccompany)
       : !(getEffectiveCnam(call.dst_cnam, call.dst) || call.dst_ccompany)
+    const callOperator = getCallOperator(call, operators)
+    // the avatar opens the colleague, the contact or "create contact": none of them without a number
+    const canOpenDrawer = !!callOperator || !hasNoInfo || !!(isIncoming ? call?.src : call?.dst)
     const isQueueCall =
       !!call?.queue ||
       !!call?.queue_name ||
@@ -216,18 +224,23 @@ const LastCallItem = memo(
 
     return (
       <div
-        className='group relative flex items-center py-6 px-3'
+        className='group relative flex items-center px-6 py-4'
         onMouseEnter={() => hasNoInfo && setIsHovered(true)}
         onMouseLeave={() => setIsHovered(false)}
       >
-        <div className='relative min-w-0 flex-1 items-center px-6'>
+        <div
+          className='absolute inset-0 group-hover:bg-dropdownBgHover dark:group-hover:bg-dropdownBgHoverDark'
+          aria-hidden='true'
+        />
+        <div className='relative min-w-0 flex-1'>
           <div className='flex items-start'>
             <Avatar
               size='base'
               placeholderType='person'
-              src={operators[call?.username]?.avatarBase64}
-              status={operators[call?.username]?.mainPresence}
-              onClick={() => openLastCardUserDrawer(call)}
+              src={callOperator?.avatarBase64}
+              status={callOperator?.mainPresence}
+              className={canOpenDrawer ? 'cursor-pointer' : 'cursor-default'}
+              onClick={canOpenDrawer ? () => openLastCardUserDrawer(call) : undefined}
             />
             <div className='ml-4 truncate flex flex-col gap-1.5'>
               <div className='flex items-center'>
@@ -280,7 +293,7 @@ const LastCallItem = memo(
               </div>
 
               <div
-                className='font-poppins text-sm leading-4 font-normal text-gray-600 dark:text-gray-300 truncate pb-1'
+                className='truncate text-sm leading-5 text-tertiaryNeutral dark:text-tertiaryNeutralDark'
                 data-tooltip-id={`tooltip-lastcall-date-${call.uniqueid}`}
                 data-tooltip-content={getCallDateString(call)}
               >
@@ -292,7 +305,7 @@ const LastCallItem = memo(
 
           {/* Create contact button */}
           {hasNoInfo && isHovered && (
-            <div className='absolute right-3 top-0 transform'>
+            <div className='absolute right-0 top-0'>
               <Button
                 variant='ghost'
                 className='flex items-center border dark:border-borderDark border-borderLight dark:hover:bg-hoverDark hover:bg-hoverLight'
@@ -340,43 +353,14 @@ export const UserLastCallsContent = () => {
         if (callsData) {
           // Legs are kept as they come; applyFilters collapses them once the
           // direction filter has run (see there).
-          const callsFinalInformations = getLastCallsUsername(callsData.rows as any)
-          setLastCalls(callsFinalInformations)
-          applyFilters(callsFinalInformations, directionFilter)
+          setLastCalls(callsData.rows)
+          applyFilters(callsData.rows as any, directionFilter)
           setIsLoading(false)
         }
       }
     },
     // eslint-disable-next-line react-hooks/exhaustive-deps
     [username, profile?.macro_permissions?.cdr?.value, directionFilter],
-  )
-
-  const getLastCallsUsername = useCallback(
-    (callsData: CallTypes[]) => {
-      if (!callsData) return []
-
-      return callsData.map((call: CallTypes) => {
-        let callName =
-          call.direction === 'out'
-            ? getEffectiveCnam(call.dst_cnam, call.dst) || call.dst_ccompany
-            : call.direction === 'in'
-            ? getEffectiveCnam(call.cnam, call.src || call.cnum) || call.ccompany
-            : ''
-
-        let operator: any = null
-
-        if (callName) {
-          operator = Object.values(operators).find((operator: any) => operator.name === callName)
-        } else {
-          operator = Object.values(operators).find((operator: any) => {
-            const isExten = operator.endpoints.extension.find((exten: any) => exten.id === call.dst)
-            return !!isExten
-          })
-        }
-        return { ...call, username: operator?.username || '' }
-      })
-    },
-    [operators],
   )
 
   const applyFilters = useCallback(
@@ -458,6 +442,13 @@ export const UserLastCallsContent = () => {
   }, [lastCallsUpdate.isReload, getLastCallsList, sort])
 
   const openLastCardUserDrawer = useCallback((userInformation: any) => {
+    // a colleague opens its operator drawer, like its name does
+    const operator = getCallOperator(userInformation, operators)
+    if (operator) {
+      openShowOperatorDrawer({ ...operator, lastCallsType: 'user' })
+      return
+    }
+
     const isIncoming = userInformation?.direction === 'in'
     const rawName = isIncoming ? userInformation?.cnam : userInformation?.dst_cnam
     const extension = isIncoming ? userInformation?.src : userInformation?.dst
@@ -475,7 +466,7 @@ export const UserLastCallsContent = () => {
     } else if (extension) {
       openCreateLastCallContact({ extension })
     }
-  }, [])
+  }, [operators])
 
   const handleCreateContact = useCallback((call: any) => {
     const isIncoming = call?.direction === 'in'
@@ -588,8 +579,8 @@ export const UserLastCallsContent = () => {
           {isLoading &&
             Array.from(Array(4)).map((_, index) => (
               <li key={`skeleton-${index}`}>
-                <div className='group relative flex items-center py-6 px-3'>
-                  <div className='relative min-w-0 flex-1 items-center px-6'>
+                <div className='group relative flex items-center px-6 py-4'>
+                  <div className='relative min-w-0 flex-1'>
                     <div className='flex items-start'>
                       {/* Avatar skeleton - matching Avatar size='base' */}
                       <Skeleton variant='circular' className='h-10 w-10 flex-shrink-0' />
