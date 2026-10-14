@@ -12,6 +12,7 @@ import {
   faPhone,
   faSuitcase,
   faUser,
+  faMessage,
 } from '@fortawesome/free-solid-svg-icons'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { callPhoneNumber, closeSideDrawer, transferCallToExtension } from '../../lib/utils'
@@ -22,7 +23,6 @@ import { RootState } from '../../store'
 import { openShowOperatorDrawer } from '../../lib/operators'
 import { CallsDate } from '../history/CallsDate'
 import { Button } from '../common'
-import { faCommentDotsRegular } from '../chat/icons'
 import { openChatWith, useChatAllowed } from '../chat/ChatIslandMount'
 
 export interface ShowQueueCallDrawerContentProps extends ComponentPropsWithRef<'div'> {
@@ -234,7 +234,7 @@ export const ShowQueueCallDrawerContent = forwardRef<
             </h4>
             <div className='mt-4 border-t border-gray-200 dark:border-gray-700'></div>
             <Button variant='white' className='mt-5' onClick={writeToAgents}>
-              <FontAwesomeIcon icon={faCommentDotsRegular} className='mr-2 h-4 w-4' />
+              <FontAwesomeIcon icon={faMessage} className='mr-2 h-4 w-4' />
               {t('Queues.Write to queue agents')}
             </Button>
           </>
