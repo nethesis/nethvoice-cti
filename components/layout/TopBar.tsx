@@ -305,7 +305,8 @@ export const TopBar: FC<TopBarProps> = ({ openMobileCb }) => {
                 rounded='full'
                 placeholderType='person'
                 src={operators[profile?.username]?.avatarBase64}
-                status={operators[profile?.username]?.mainPresence}
+                // the user store gets every presence update, the operators one may miss those before it loads
+                status={mainPresence}
               />
             </Dropdown>
           </div>
