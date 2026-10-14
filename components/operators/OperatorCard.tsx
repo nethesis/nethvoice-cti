@@ -4,7 +4,7 @@ import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import {
   faStar,
   faPhone,
-  faCommentDots,
+  faMessage,
   faRightLeft,
   IconDefinition,
   faRecordVinyl,
@@ -227,40 +227,35 @@ const OperatorCard = ({
             </div>
           )}
 
-          {/* Operator is not busy, not ringing, not in conversation - show call button */}
+          {/* Call: an icon button, not for an offline operator (as for a busy one) */}
           {!isInConversation &&
             !isRinging &&
             !isBusy &&
+            liveOperatorData?.mainPresence !== 'offline' &&
             (!mainUserIsBusy || liveOperatorData?.mainPresence !== 'online') && (
               <Button
                 variant='dashboard'
-                className={
-                  mainUserIsBusy
-                    ? 'text-primary dark:text-primaryDark dark:disabled:text-gray-600 dark:disabled:hover:text-gray-600 disabled:text-gray-400'
-                    : isOfflineOrDnd
-                      ? 'text-primaryActive dark:text-primaryActiveDark dark:disabled:text-gray-600 dark:disabled:hover:text-gray-600 disabled:text-gray-400'
-                      : 'text-primaryActive dark:text-primaryActiveDark'
-                }
+                className='text-primaryActive dark:text-primaryActiveDark dark:disabled:text-gray-600 dark:disabled:hover:text-gray-600 disabled:text-gray-400'
                 disabled={
                   mainUserIsBusy || isOfflineOrDnd || liveOperatorData?.username === authUsername
                 }
                 onClick={handleCallOperator}
+                title={t('Operators.Call') || ''}
               >
-                <FontAwesomeIcon icon={faPhone} className='inline-block text-center h-4 w-4 mr-2' />
-                <span className='text-sm not-italic font-medium leading-5'>
-                  {t('Operators.Call')}
-                </span>
+                <FontAwesomeIcon icon={faPhone} className='inline-block text-center h-4 w-4' />
+                <span className='sr-only'>{t('Operators.Call')}</span>
               </Button>
             )}
 
-                    {chatAllowed && liveOperatorData?.username !== authUsername && (
+          {/* Message: hidden while the operator rings, the call is the focus */}
+          {chatAllowed && !isRinging && liveOperatorData?.username !== authUsername && (
             <Button
               variant='dashboard'
               className='text-primaryActive dark:text-primaryActiveDark'
               onClick={() => openChatWith(liveOperatorData?.username)}
               title={t('Common.Chat') || ''}
             >
-              <FontAwesomeIcon icon={faCommentDots} className='inline-block text-center h-4 w-4' />
+              <FontAwesomeIcon icon={faMessage} className='inline-block text-center h-4 w-4' />
               <span className='sr-only'>{t('Common.Chat')}</span>
             </Button>
           )}
