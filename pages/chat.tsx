@@ -191,7 +191,8 @@ const Chat: NextPage = () => {
           </Button>
           <Dropdown
             items={
-              <>
+              // The items take no colour of their own: not the table cell's grey.
+              <div className='text-gray-700 dark:text-gray-200'>
                 <div
                   className={
                     c.peer.startsWith('cti-') ? '' : 'border-b border-gray-200 dark:border-gray-700'
@@ -220,7 +221,7 @@ const Chat: NextPage = () => {
                     {c.kind === 'group' && !c.owner ? t('Chat.Leave') : t('Chat.Delete')}
                   </Dropdown.Item>
                 )}
-              </>
+              </div>
             }
             position={i === rows.length - 1 && rows.length > 2 ? 'topVoicemail' : 'left'}
           >

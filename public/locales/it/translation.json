@@ -1293,7 +1293,7 @@
   },
   "Chat": {
     "Date": "Data",
-    "Mute": "Silenzia",
+    "Mute": "Silenzia notifiche",
     "Unmute": "Riattiva notifiche",
     "Muted": "Silenziata: niente suono né notifiche",
     "No messages": "Nessun messaggio",

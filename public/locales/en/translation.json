@@ -1312,8 +1312,8 @@
   },
   "Chat": {
     "Date": "Date",
-    "Mute": "Mute",
-    "Unmute": "Unmute",
+    "Mute": "Mute notifications",
+    "Unmute": "Unmute notifications",
     "Muted": "Muted: no sound or notification",
     "No messages": "No messages",
     "conversations": "conversations",
