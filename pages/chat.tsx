@@ -168,10 +168,8 @@ const Chat: NextPage = () => {
       cell: (c: ChatConversation) =>
         c.last ? (
           <span className='text-sm text-gray-700 dark:text-gray-200 whitespace-nowrap'>
-            {formatDistanceToNowStrict(c.last.ts, { addSuffix: true, locale })}{' '}
-            <span className='text-gray-500 dark:text-gray-400'>
-              ({format(c.last.ts, 'd MMM yyyy HH:mm', { locale })})
-            </span>
+            {formatDistanceToNowStrict(c.last.ts, { addSuffix: true, locale })} (
+            {format(c.last.ts, 'd MMM yyyy HH:mm', { locale })})
           </span>
         ) : (
           <span className='text-gray-500 dark:text-gray-400'>-</span>
