@@ -20,7 +20,8 @@ export interface ShowHistoryDrawerContentProps extends ComponentPropsWithRef<'di
 }
 
 function checkTitle(config: any) {
-  if (config.name) {
+  const hasName = !!config.name && config.name.trim() !== '-'
+  if (hasName) {
     return (
       <div className='flex items-center'>
         <div className='flex-shrink-0 mr-4'>
@@ -31,7 +32,7 @@ function checkTitle(config: any) {
         </div>
       </div>
     )
-  } else if (!config.name && config.company) {
+  } else if (!hasName && config.company) {
     return (
       <div className='flex items-center'>
         <div className='flex-shrink-0 mr-4'>

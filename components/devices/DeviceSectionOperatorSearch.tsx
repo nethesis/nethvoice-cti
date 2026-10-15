@@ -195,8 +195,8 @@ export const DeviceSectionOperatorSearch: FC<DeviceSectionOperatorSearchProps> =
       numberTypeFromId && phoneProps.includes(numberTypeFromId)
         ? result[numberTypeFromId] || ''
         : operatorId || phoneProps.map((prop) => result[prop]).find((prop) => prop) || ''
-    const selectedName =
-      result?.name?.trim() || result?.displayName?.trim() || result?.company?.trim() || ''
+    const contactName = result?.name?.trim() === '-' ? '' : result?.name?.trim()
+    const selectedName = contactName || result?.displayName?.trim() || result?.company?.trim() || ''
 
     setInputText(
       selectedNumber ? `${selectedName || selectedNumber} (${selectedNumber})` : selectedName,
@@ -335,7 +335,10 @@ export const DeviceSectionOperatorSearch: FC<DeviceSectionOperatorSearchProps> =
                           <div className='flex items-center text-center'>
                             <FontAwesomeIcon
                               icon={
-                                result?.name !== '' && result?.name !== ' ' && result?.name !== null
+                                result?.name !== '' &&
+                                result?.name !== ' ' &&
+                                result?.name !== '-' &&
+                                result?.name !== null
                                   ? faCircleUser
                                   : faBuilding
                               }
@@ -345,7 +348,11 @@ export const DeviceSectionOperatorSearch: FC<DeviceSectionOperatorSearchProps> =
                         )}
                         <div className='ml-4 flex flex-col items-start justify-center'>
                           <span className='flex items-center truncate'>
-                            {result?.name || result?.displayName || result?.company || query || '-'}
+                            {(result?.name !== '-' && result?.name) ||
+                              result?.displayName ||
+                              result?.company ||
+                              query ||
+                              '-'}
                           </span>
                           <span className='text-gray-500 text-sm truncate'>
                             {result?.number || result?.endpoints?.extension[0]?.id || '-'}

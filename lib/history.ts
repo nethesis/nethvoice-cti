@@ -422,5 +422,5 @@ export function getEffectiveCnam(
 ): string {
   const name = cnam?.trim() ?? ''
   const number = phoneNumber?.trim() ?? ''
-  return name !== '' && name !== number ? name : ''
+  return name !== '' && name !== '-' && name !== number ? name : ''
 }
