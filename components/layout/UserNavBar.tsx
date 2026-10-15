@@ -12,6 +12,7 @@ import {
   type IconDefinition,
 } from '@fortawesome/free-solid-svg-icons'
 import { getJSONItem, loadPreference, savePreference } from '../../lib/storage'
+import { closeSideDrawer } from '../../lib/utils'
 import { RootState, store } from '../../store'
 import { useSelector } from 'react-redux'
 import { UserLastCalls } from './UserLastCalls'
@@ -39,9 +40,9 @@ export const UserNavBar: FC = () => {
 
   const [tabReady, setTabReady] = useState<boolean>(false)
   const chatAllowed = useChatAllowed()
-  // Pinned, the island's heads sit in the rail and its window in a panel.
+  // Pinned, the island's heads sit in the rail and its window in a panel: the default, so New chat is always there.
   const [chatPinned, setChatPinned] = useState(false)
-  useEffect(() => setChatPinned(!!username && loadPreference('chatPinned', username) === true), [username])
+  useEffect(() => setChatPinned(!!username && loadPreference('chatPinned', username) !== false), [username])
   const chatRail = !useChatInNethlink() && chatAllowed && chatPinned
 
   const [tabs, setTabs] = useState<TabTypes[]>([])
@@ -157,6 +158,8 @@ export const UserNavBar: FC = () => {
     const onWindow = (e: Event) => {
       const d = (e as CustomEvent).detail
       if (chatRail) showChat(!!d?.open || !!d?.picker)
+      // A chat opening goes on top: the drawer over it closes.
+      if (d?.open || d?.picker) closeSideDrawer()
     }
     window.addEventListener('chat-island-pin', onPin)
     window.addEventListener('chat-island-window', onWindow)

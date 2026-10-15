@@ -27,6 +27,8 @@ import { isEmpty } from 'lodash'
 import { Tooltip } from 'react-tooltip'
 import { IconProp } from '@fortawesome/fontawesome-svg-core'
 import { CustomThemedTooltip } from '../common/CustomThemedTooltip'
+import { openChatWith, useChatAllowed } from '../chat'
+import { closeSideDrawer } from '../../lib/utils'
 
 export interface OperatorSummaryProps extends ComponentPropsWithRef<'div'> {
   operator: any
@@ -41,6 +43,7 @@ export const OperatorSummary = forwardRef<HTMLButtonElement, OperatorSummaryProp
     const operatorsStore = useSelector((state: RootState) => state.operators)
     const currentOperatorInformations = operatorsStore?.operators[operator?.username]
     const authStore = useSelector((state: RootState) => state.authentication)
+    const chatAllowed = useChatAllowed()
     const [isFavorite, setFavorite] = useState(false)
     const operatorGroups = Array.from(
       new Set<string>(
@@ -201,7 +204,7 @@ export const OperatorSummary = forwardRef<HTMLButtonElement, OperatorSummaryProp
             </div>
           </div>
         </div>
-        <div className='mt-8'>
+        <div className='mt-8 flex items-start gap-4'>
           {operatorsStore?.operators[authStore?.username]?.mainPresence === 'busy' &&
           operator?.mainPresence === 'online' ? (
             <ButtonDropdown
@@ -211,6 +214,16 @@ export const OperatorSummary = forwardRef<HTMLButtonElement, OperatorSummaryProp
             ></ButtonDropdown>
           ) : (
             <ButtonDropdown operatorDevices={operatorDevices} operator={operator}></ButtonDropdown>
+          )}
+          {chatAllowed && operator?.username && operator.username !== authStore?.username && (
+            <Button
+              variant='ghost'
+              className='text-primaryActive dark:text-primaryActiveDark'
+              onClick={() => (closeSideDrawer(), openChatWith(operator.username))}
+            >
+              <FontAwesomeIcon icon={faMessage} className='h-4 w-4 mr-2' />
+              {t('OperatorDrawer.Open chat')}
+            </Button>
           )}
 
           {/* HIDDEN AT THE MOMENT */}

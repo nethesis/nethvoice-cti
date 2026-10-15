@@ -588,6 +588,7 @@
     "Sign out": "Sign out"
   },
   "OperatorDrawer": {
+    "Open chat": "Open chat",
     "Book": "Book call",
     "Hangup": "Hangup current call",
     "Listen": "Listen",
