@@ -70,16 +70,16 @@ export function ChatIslandMount() {
     return () => offs.forEach((off) => off())
   }, [])
 
-  // Operators for the island: names, avatars, presence, number (loaded here, client side only).
+  // Operators for the island: names, avatars, presence, number, registered devices (loaded here, client side only).
   useEffect(() => {
     import('@nethesis/chat-island').then(({ contactsFromOperators }) => {
-      const contacts = contactsFromOperators(operatorsStore.operators as any, operatorsStore.avatars as any, currentUser.username)
+      const contacts = contactsFromOperators(operatorsStore.operators as any, operatorsStore.avatars as any, currentUser.username, operatorsStore.extensions as any)
       if (contacts.length) {
         window.dispatchEvent(new CustomEvent('chat-island-contacts', { detail: { contacts } }))
       }
     })
     // resent once the island is up
-  }, [operatorsStore.operators, operatorsStore.avatars, currentUser.username, ready])
+  }, [operatorsStore.operators, operatorsStore.avatars, operatorsStore.extensions, currentUser.username, ready])
 
   if (!config || !allowed) return null
   // NethLink shows the chats; the CTI keeps a hidden island for its list (read state follows NethLink).
