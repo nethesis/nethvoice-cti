@@ -174,6 +174,14 @@ export const user = createModel<RootModel>()({
       state.settings.queue_auto_login = loginStatus
       return state
     },
+    updateAutoDndOffLogin: (state, enabled) => {
+      state.settings.auto_dndoff_login = enabled
+      return state
+    },
+    updateAutoDndOnLogout: (state, enabled) => {
+      state.settings.auto_dndon_logout = enabled
+      return state
+    },
     updatePauseQueue: (state, pauseStatus) => {
       state.settings.queue_auto_pause_onpresence = pauseStatus
       return state

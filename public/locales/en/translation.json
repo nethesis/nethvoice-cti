@@ -563,7 +563,9 @@
     "Enter the 6-digit code from authenticator app": "Enter the 6-digit code from authenticator app",
     "No recovery codes available": "No recovery codes available",
     "No WebRTC extension found": "No WebRTC extension found",
-    "To enable Phone Island integration, ask your administrator to configure a WebRTC extension": "To enable Phone Island integration, ask your administrator to configure a Web phone"
+    "To enable Phone Island integration, ask your administrator to configure a WebRTC extension": "To enable Phone Island integration, ask your administrator to configure a Web phone",
+    "Disable Do not disturb automatically": "Disable Do not disturb automatically",
+    "Enable Do not disturb automatically": "Enable Do not disturb automatically"
   },
   "TopBar": {
     "Signed in as": "Signed in as",
