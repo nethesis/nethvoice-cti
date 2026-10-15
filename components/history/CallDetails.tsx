@@ -32,6 +32,7 @@ interface CallDetailsProps {
   direction: 'in' | 'out'
   lastCallsType?: string
   tooltipPlace?: 'top' | 'right' | 'bottom' | 'left'
+  hideChat?: boolean
 }
 
 export function getCallName(call: CallTypes, direction: 'in' | 'out'): string {
@@ -53,6 +54,7 @@ export const CallDetails: FC<CallDetailsProps> = ({
   direction,
   lastCallsType,
   tooltipPlace = 'bottom',
+  hideChat,
 }) => {
   const authStore = useSelector((state: RootState) => state.authentication)
   const operatorsStore = useSelector((state: RootState) => state.operators)
@@ -154,7 +156,7 @@ export const CallDetails: FC<CallDetailsProps> = ({
                 } ${fromHistory || (!fromHistory && isQueueBadgeAvailable) ? 'truncate' : ''}`}
               >
                 {direction === 'in' ? incomingNumber : call.dst}
-                {chatAllowed && chatWith && chatWith !== authStore?.username && (
+                {chatAllowed && !hideChat && chatWith && chatWith !== authStore?.username && (
                   <button
                     type='button'
                     className='ml-2 text-gray-500 dark:text-gray-300 hover:text-primary dark:hover:text-primaryDark'

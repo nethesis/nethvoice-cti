@@ -301,6 +301,7 @@ export const LastCallsDrawerTable = forwardRef<HTMLButtonElement, LastCallsDrawe
                                       fromHistory
                                       direction='in'
                                       lastCallsType={callType}
+                                      hideChat
                                     />
                                   </td>
 
@@ -322,6 +323,7 @@ export const LastCallsDrawerTable = forwardRef<HTMLButtonElement, LastCallsDrawe
                                       fromHistory
                                       direction='out'
                                       lastCallsType={callType}
+                                      hideChat
                                     />
                                   </td>
 
