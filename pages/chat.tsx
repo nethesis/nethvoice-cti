@@ -32,7 +32,7 @@ import { faNewChat, groupInitials, groupLook } from '../components/chat/icons'
 /** The conversations: a name opens the operator's (or the group's) drawer, Open chat the chat in the island. */
 const Chat: NextPage = () => {
   const { t } = useTranslation()
-  const { conversations, status } = useSelector((state: RootState) => state.chat)
+  const { conversations, status, ready } = useSelector((state: RootState) => state.chat)
   const operators = useSelector((state: RootState) => state.operators.operators) as any
   const avatars = useSelector((state: RootState) => state.operators.avatars) as any
   const [query, setQuery] = useState('')
@@ -55,6 +55,8 @@ const Chat: NextPage = () => {
   const totalPages = Math.max(1, Math.ceil(list.length / pageSize))
   const current = Math.min(page, totalPages)
   const rows = list.slice((current - 1) * pageSize, current * pageSize)
+  // Skeleton until groups and recent messages are in, instead of raw room ids.
+  const loading = !ready && status !== 'error' && status !== 'unauthorized'
 
   const displayName = (username?: string) =>
     (username && operators?.[username]?.name) || username || ''
@@ -286,6 +288,8 @@ const Chat: NextPage = () => {
       <Table
         columns={columns}
         data={rows}
+        isLoading={loading}
+        loadingRows={5}
         emptyState={{
           title: t('Chat.No conversations'),
           description: t('Chat.No conversations description') || '',
@@ -298,7 +302,7 @@ const Chat: NextPage = () => {
         scrollable={true}
         maxHeight='calc(100vh - 18rem)'
         footer={
-          list.length > 0 ? (
+          list.length > 0 && !loading ? (
             <Pagination
               currentPage={current}
               totalPages={totalPages}
