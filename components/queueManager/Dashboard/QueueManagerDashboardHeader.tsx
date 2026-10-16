@@ -35,6 +35,9 @@ export interface QueueManagerDashboardHeaderProps extends ComponentProps<'div'> 
   notManaged: any
 }
 
+// alarms are evaluated by the server every 30 seconds
+const ALARMS_UPDATE_INTERVAL = 30000
+
 function classNames(...classes: any) {
   return classes.filter(Boolean).join(' ')
 }
@@ -70,32 +73,20 @@ export const QueueManagerDashboardHeader: FC<QueueManagerDashboardHeaderProps> =
   const queueManagerStore = useSelector((state: RootState) => state.queueManagerQueues)
   const [alarmsList, setAlarmsList] = useState<any>({})
 
-  const [firstRenderAlarmList, setFirstRenderAlarmList]: any = useState(true)
-  const [isLoadedAlarms, setLoadedAlarms] = useState(false)
-
-  //get alarm list information
+  // get alarm list information and keep it updated while the dashboard is open
   useEffect(() => {
-    // Avoid api double calling
-    if (firstRenderAlarmList) {
-      setFirstRenderAlarmList(false)
-      return
-    }
     async function getAlarmList() {
-      setLoadedAlarms(false)
       try {
         const res = await getAlarm()
         setAlarmsList(res)
-        // only for testing
-        // setAlarmsList(alarmListExample)
       } catch (err) {
         console.error(err)
       }
-      setLoadedAlarms(true)
     }
-    if (!isLoadedAlarms) {
-      getAlarmList()
-    }
-  }, [firstRenderAlarmList, isLoadedAlarms])
+    getAlarmList()
+    const interval = setInterval(getAlarmList, ALARMS_UPDATE_INTERVAL)
+    return () => clearInterval(interval)
+  }, [])
 
   // Alarms section
 
@@ -173,50 +164,52 @@ export const QueueManagerDashboardHeader: FC<QueueManagerDashboardHeaderProps> =
     <>
       <div>
         <div className='grid grid-cols-1 gap-4 lg:grid-cols-2 xl:grid-cols-3'>
-          {/* Alarm */}
-          <div className='rounded-lg shadow-md border-gray-200 dark:border-gray-700 bg-cardBackgroud dark:bg-cardBackgroudDark px-5 py-1 sm: mt-1 relative flex items-center'>
-            <div className='w-full'>
-              {/* the card only opens when there is an alarm to show */}
-              <ConditionalDropdown enabled={!isEmpty(alarms)} items={dropdownItems}>
-                <div className='flex items-center'>
-                  <div
-                    className={`h-10 w-10 flex items-center justify-center rounded-xl mt-1 mb-1 ${
-                      !isEmpty(alarms)
-                        ? 'bg-red-50 dark:bg-emerald-50'
-                        : 'bg-emerald-50 dark:bg-emerald-800'
-                    }`}
-                  >
-                    <FontAwesomeIcon
-                      icon={faTriangleExclamation}
-                      className={`h-6 w-6 py-2 flex items-center ${
+          {/* Alarm, hidden when the alarms are disabled */}
+          {alarmsList?.status === true && (
+            <div className='rounded-lg shadow-md border-gray-200 dark:border-gray-700 bg-cardBackgroud dark:bg-cardBackgroudDark px-5 py-1 sm: mt-1 relative flex items-center'>
+              <div className='w-full'>
+                {/* the card only opens when there is an alarm to show */}
+                <ConditionalDropdown enabled={!isEmpty(alarms)} items={dropdownItems}>
+                  <div className='flex items-center'>
+                    <div
+                      className={`h-10 w-10 flex items-center justify-center rounded-xl mt-1 mb-1 ${
                         !isEmpty(alarms)
-                          ? 'text-rose-600'
-                          : 'text-emerald-600 dark:text-emerald-100'
+                          ? 'bg-red-50 dark:bg-emerald-50'
+                          : 'bg-emerald-50 dark:bg-emerald-800'
                       }`}
-                      aria-hidden='true'
-                    />
-                  </div>
-                  <div className='flex items-center ml-4 text-gray-900 dark:text-white'>
-                    <p className='text-3xl font-medium tracking-tight text-left leading-10'>
-                      {alarms.length}
-                    </p>
-                    <p className='text-sm font-normal leading-5 text-left ml-4'>
-                      {alarms.length === 1 ? t('QueueManager.Alarm') : t('QueueManager.Alarms')}
-                    </p>
-                  </div>
-                  {!isEmpty(alarms) && (
-                    <div className='flex items-center ml-auto'>
+                    >
                       <FontAwesomeIcon
-                        icon={faChevronDown}
-                        className='h-3.5 w-3.5 text-gray-500 dark:text-gray-400 hover:text-gray-600 hover:dark:text-gray-500'
+                        icon={faTriangleExclamation}
+                        className={`h-6 w-6 py-2 flex items-center ${
+                          !isEmpty(alarms)
+                            ? 'text-rose-600'
+                            : 'text-emerald-600 dark:text-emerald-100'
+                        }`}
                         aria-hidden='true'
                       />
                     </div>
-                  )}
-                </div>
-              </ConditionalDropdown>
+                    <div className='flex items-center ml-4 text-gray-900 dark:text-white'>
+                      <p className='text-3xl font-medium tracking-tight text-left leading-10'>
+                        {alarms.length}
+                      </p>
+                      <p className='text-sm font-normal leading-5 text-left ml-4'>
+                        {alarms.length === 1 ? t('QueueManager.Alarm') : t('QueueManager.Alarms')}
+                      </p>
+                    </div>
+                    {!isEmpty(alarms) && (
+                      <div className='flex items-center ml-auto'>
+                        <FontAwesomeIcon
+                          icon={faChevronDown}
+                          className='h-3.5 w-3.5 text-gray-500 dark:text-gray-400 hover:text-gray-600 hover:dark:text-gray-500'
+                          aria-hidden='true'
+                        />
+                      </div>
+                    )}
+                  </div>
+                </ConditionalDropdown>
+              </div>
             </div>
-          </div>
+          )}
 
           {/* not Managed */}
           {cardContent(faListCheck, notManaged?.count, 'Not managed customers')}
