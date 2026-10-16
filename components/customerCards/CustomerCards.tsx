@@ -61,9 +61,11 @@ export const CustomerCardsCustomerData: FC<CustomerCardsCustomerDataViewProps> =
         }
       }
 
-      contactInformationUsers.forEach((contact: any) => {
-        fetchContactDetails(contact.id)
-      })
+      contactInformationUsers
+        .filter((contact: any) => contact?.name?.trim() !== '-')
+        .forEach((contact: any) => {
+          fetchContactDetails(contact.id)
+        })
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [companyInformation])

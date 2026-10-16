@@ -35,6 +35,8 @@ export interface AddToPhonebookDrawerContentProps extends ComponentPropsWithRef<
   config: any
 }
 
+const isCompanyContact = (contact: any) => contact?.name === null || contact?.name?.trim() === '-'
+
 export const AddToPhonebookDrawerContent = forwardRef<
   HTMLButtonElement,
   AddToPhonebookDrawerContentProps
@@ -197,7 +199,7 @@ export const AddToPhonebookDrawerContent = forwardRef<
                   <div className='flex items-center cursor-pointer hover:bg-gray-200 dark:hover:bg-gray-700 px-4 py-4 sm:px-6'>
                     <div className='flex min-w-0 flex-1 items-center'>
                       <div className='flex-shrink-0'>
-                        {contact.name !== null ? (
+                        {!isCompanyContact(contact) ? (
                           <Avatar className='cursor-pointer' placeholderType='person' />
                         ) : (
                           <Avatar className='cursor-pointer' placeholderType='company' />
@@ -206,7 +208,7 @@ export const AddToPhonebookDrawerContent = forwardRef<
                       <div className='min-w-0 flex-1 px-4 md:grid md:grid-cols-2 gap-4 lg:grid-cols-2 xl:grid-cols-2'>
                         <div className='flex flex-col justify-center'>
                           {/* display name */}
-                          {contact.name !== null && (
+                          {!isCompanyContact(contact) && (
                             <div className='truncate text-sm font-medium'>
                               <span className=''>{contact.name}</span>
                               <span className='flex text-sm text-gray-500 dark:text-gray-500'>
@@ -221,7 +223,7 @@ export const AddToPhonebookDrawerContent = forwardRef<
                             </div>
                           )}
                           {/* display company name  */}
-                          {contact.name === null && (
+                          {isCompanyContact(contact) && (
                             <div className='truncate text-sm font-medium'>
                               <span className=''>{contact.company}</span>
                             </div>
