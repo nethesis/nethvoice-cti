@@ -62,7 +62,7 @@ export function ChatIslandMount() {
         setReady(true)
       }),
       on('chat-island-unread', (d) => store.dispatch.chat.setUnread(d.total)),
-      on('chat-island-conversations', (d) => store.dispatch.chat.setConversations(d.conversations)),
+      on('chat-island-conversations', (d) => store.dispatch.chat.setConversations(d)),
       on('chat-island-call', (d) => d?.number && callPhoneNumber(d.number)),
       // Messages from the same conversation add up in one toast.
       on('chat-island-notify', (d) => d?.body && setNotice((n) => ({ ...d, count: n && n.peer === d.peer ? n.count + 1 : 1 }))),

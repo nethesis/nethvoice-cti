@@ -24,12 +24,15 @@ interface DefaultState {
   status: string
   unread: number
   conversations: ChatConversation[]
+  // Groups and recent messages loaded: until then the list is partial.
+  ready: boolean
 }
 
 const defaultState: DefaultState = {
   status: 'offline',
   unread: 0,
   conversations: [],
+  ready: false,
 }
 
 export const chat = createModel<RootModel>()({
@@ -43,8 +46,9 @@ export const chat = createModel<RootModel>()({
       state.unread = unread
       return state
     },
-    setConversations: (state, conversations: ChatConversation[]) => {
+    setConversations: (state, { conversations, ready }: { conversations: ChatConversation[]; ready?: boolean }) => {
       state.conversations = conversations
+      state.ready = !!ready
       return state
     },
   },
