@@ -188,9 +188,13 @@ export const sortOperators = (operators: any[], sortBy: string, fallbackSortBy: 
   )
 }
 
-export const callOperator = (operator: any, event: any = undefined) => {
+export const callOperator = (
+  operator: any,
+  event: any = undefined,
+  options: { video?: boolean } = {},
+) => {
   const phoneNumber = operator?.endpoints?.mainextension?.[0]?.id
-  callPhoneNumber(phoneNumber)
+  callPhoneNumber(phoneNumber, options)
 
   store.dispatch.globalSearch.setFocused(false)
   store.dispatch.globalSearch.setOpen(false)
@@ -199,6 +203,27 @@ export const callOperator = (operator: any, event: any = undefined) => {
   if (event) {
     event.stopPropagation()
   }
+}
+
+// Desk phones known to handle video calls, matched on the registered User-Agent
+const VIDEO_PHONE_USER_AGENTS = /Yealink SIP-(T58|VP59)|Fanvil (V6|X7|i[0-9])|Nethesis NP-V|Akuvox|Grandstream GXV/i
+
+/**
+ * True when the extension can receive a video call: WebRTC, NethLink and the mobile app always,
+ * physical phones only for known video models
+ */
+export const isVideoCapableExtension = (extension: any) => {
+  if (['webrtc', 'nethlink', 'mobile'].includes(extension?.type)) {
+    return true
+  }
+  return extension?.type === 'physical' && VIDEO_PHONE_USER_AGENTS.test(extension?.description || '')
+}
+
+export const isOperatorVideoCallable = (operator: any, currentUsername: string) => {
+  return (
+    isOperatorCallable(operator, currentUsername) &&
+    (operator?.endpoints?.extension || []).some(isVideoCapableExtension)
+  )
 }
 
 export const isOperatorCallable = (operator: any, currentUsername: string) => {

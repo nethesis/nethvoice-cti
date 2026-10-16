@@ -116,7 +116,7 @@ export const sortByFavorite = (a: any, b: any) => {
   return 0
 }
 
-export function callPhoneNumber(phoneNumber: string) {
+export function callPhoneNumber(phoneNumber: string, options: { video?: boolean } = {}) {
   const { default_device, username } = store.getState().user
   const userExtensions = store.getState().operators?.operators[username]?.endpoints?.extension
 
@@ -126,7 +126,11 @@ export function callPhoneNumber(phoneNumber: string) {
     : false
 
   if (default_device?.type === 'webrtc') {
-    eventDispatch('phone-island-call-start', { number: phoneNumber })
+    // video: true offers the camera in the first INVITE (desk video phones refuse a later upgrade)
+    eventDispatch('phone-island-call-start', {
+      number: phoneNumber,
+      ...(options.video ? { video: true } : {}),
+    })
   } else if (default_device?.type === 'nethlink' || hasNethlinkExtension) {
     console.log('Attempting callto://', phoneNumber)
 
