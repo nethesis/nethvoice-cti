@@ -11,6 +11,8 @@ import {
   openShowOperatorDrawer,
   reloadOperators,
   removeOperatorFromFavorites,
+  callOperator,
+  isOperatorVideoCallable,
 } from '../../lib/operators'
 import { useSelector } from 'react-redux'
 import { RootState, store } from '../../store'
@@ -39,6 +41,7 @@ export interface OperatorSummaryProps extends ComponentPropsWithRef<'div'> {
 export const OperatorSummary = forwardRef<HTMLButtonElement, OperatorSummaryProps>(
   ({ operator, isShownFavorite, isShownSideDrawerLink = false, className, ...props }, ref) => {
     const auth = useSelector((state: RootState) => state.authentication)
+    const user = useSelector((state: RootState) => state.user)
     // Get selected operator information from operators store
     const operatorsStore = useSelector((state: RootState) => state.operators)
     const currentOperatorInformations = operatorsStore?.operators[operator?.username]
@@ -215,6 +218,17 @@ export const OperatorSummary = forwardRef<HTMLButtonElement, OperatorSummaryProp
           ) : (
             <ButtonDropdown operatorDevices={operatorDevices} operator={operator}></ButtonDropdown>
           )}
+          {user?.default_device?.type === 'webrtc' &&
+            isOperatorVideoCallable(operator, auth?.username) && (
+              <Button
+                variant='ghost'
+                className='h-9 text-primaryActive dark:text-primaryActiveDark'
+                onClick={() => callOperator(operator, undefined, { video: true })}
+              >
+                <FontAwesomeIcon icon={faVideo} className='h-4 w-4 mr-2' />
+                {t('OperatorDrawer.Video call')}
+              </Button>
+            )}
           {chatAllowed && operator?.username && operator.username !== authStore?.username && (
             <Button
               variant='ghost'
@@ -225,28 +239,6 @@ export const OperatorSummary = forwardRef<HTMLButtonElement, OperatorSummaryProp
               {t('OperatorDrawer.Open chat')}
             </Button>
           )}
-
-          {/* HIDDEN AT THE MOMENT */}
-          {/* <Button
-            variant='white'
-            disabled={!isOperatorCallable(operator, auth.username)}
-            className='mr-2'
-          >
-            <FontAwesomeIcon
-              icon={faVideo}
-              className='h-4 w-4 xl:mr-2 text-gray-500 dark:text-gray-400'
-            />
-            <span className='hidden xl:inline-block'>Videocall</span>
-            <span className='sr-only'>Videocall</span>
-          </Button>
-          <Button variant='white' className='mr-2'>
-            <FontAwesomeIcon
-              icon={faMessage}
-              className='h-4 w-4 xl:mr-2 text-gray-500 dark:text-gray-400'
-            />
-            <span className='hidden xl:inline-block'>Chat</span>
-            <span className='sr-only'>Chat</span>
-          </Button> */}
         </div>
         {/* ongoing call info */}
         {!!operatorsStore?.operators[operator?.username]?.conversations?.length &&
