@@ -18,11 +18,12 @@ export const faNewChat = {
 
 const QUEUE_PREFIX = 'Queue - '
 
-/** A group's look, as in the island: the default groups (CTI operator groups, cti-…, and queue chats, with the Queues icon) indigo, the ones people create gray. */
+/** A group's look, as in the island: CTI operator groups (cti-…) blue like their badge, queue chats indigo with the Queues icon, the ones people create gray. */
 export const groupLook = (peer: string, name: string) => ({
   icon: name.startsWith(QUEUE_PREFIX) ? faUsers : faUserGroup,
-  className:
-    peer.startsWith('cti-') || name.startsWith(QUEUE_PREFIX)
+  className: peer.startsWith('cti-')
+    ? 'bg-surfaceBadgeBlueNethLink text-textBadgeBlueNethLink dark:bg-surfaceBadgeBlueNethLinkDark dark:text-textBadgeBlueNethLinkDark'
+    : name.startsWith(QUEUE_PREFIX)
       ? 'bg-indigo-100 text-indigo-800 dark:bg-indigo-700 dark:text-indigo-100'
       : 'bg-gray-200 text-gray-700 dark:bg-gray-700 dark:text-gray-100',
 })
