@@ -114,7 +114,8 @@ export const Layout: FC<LayoutProps> = ({ children }) => {
       return route
     })
     if (router?.pathname?.includes('/lines')) {
-      items[5].current = true
+      const applications = currentItems.find((route) => route.href === '/applications')
+      if (applications) applications.current = true
     }
 
     setItems(currentItems)
@@ -1201,6 +1202,14 @@ export const Layout: FC<LayoutProps> = ({ children }) => {
 
   //check if socket reconnect
   useEventListener('phone-island-socket-disconnected', () => {})
+
+  // The WebRTC phone registers before the socket listens: that presence change is never pushed, so read it.
+  useEventListener('phone-island-socket-connected', async () => {
+    const mainPresence = (await getUserInfo().catch(() => null))?.data?.mainPresence
+    if (!mainPresence) return
+    dispatch.user.updateMainPresence(mainPresence)
+    store.dispatch.operators.updateMainPresence(user, mainPresence)
+  })
 
   // Reload operators data when socket reconnects to sync state
   // This handles cases where events were lost during network interruption

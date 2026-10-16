@@ -295,9 +295,10 @@ export function getConfiguredNavbarLogoUrl(preferDarkTheme: boolean = false) {
   }
 
   // @ts-ignore
-  const lightLogoUrl = window.CONFIG.NAVBAR_LOGO_URL || '/navbar_logo.svg'
-  // @ts-ignore
-  const darkLogoUrl = window.CONFIG.NAVBAR_LOGO_DARK_URL || lightLogoUrl || '/navbar_logo_dark.svg'
+  const { NAVBAR_LOGO_URL, NAVBAR_LOGO_DARK_URL } = window.CONFIG
+  const lightLogoUrl = NAVBAR_LOGO_URL || '/navbar_logo.svg'
+  // a custom logo without a dark variant is used in both themes
+  const darkLogoUrl = NAVBAR_LOGO_DARK_URL || NAVBAR_LOGO_URL || '/navbar_logo_dark.svg'
 
   return preferDarkTheme ? darkLogoUrl : lightLogoUrl
 }

@@ -11,7 +11,7 @@ import { Badge, EmptyState, IconSwitch } from '../common'
 import { DrawerHeader } from '../common/DrawerHeader'
 import {
   faBell,
-  faCommentDots,
+  faMessage,
   faCircleCheck,
   faPhone,
   faXmark,
@@ -83,7 +83,7 @@ export const NotificationsDrawerContent = forwardRef<
         {notification.type === 'chat' && (
           <>
             <FontAwesomeIcon
-              icon={faCommentDots}
+              icon={faMessage}
               className={classNames(
                 'h-5 w-5 text-gray-400',
                 notification.isRead ? 'dark:text-gray-500' : 'dark:text-gray-100',
