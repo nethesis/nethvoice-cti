@@ -95,14 +95,23 @@ const Chat: NextPage = () => {
             )}
           </div>
           <div className='ml-4 min-w-0'>
-            <div
-              className={`truncate ${
-                c.unread
-                  ? 'font-semibold text-gray-900 dark:text-gray-100'
-                  : 'font-medium text-gray-900 dark:text-gray-100'
-              }`}
-            >
-              {c.name}
+            <div className='flex items-center gap-2 min-w-0'>
+              <span
+                className={`truncate ${
+                  c.unread
+                    ? 'font-semibold text-gray-900 dark:text-gray-100'
+                    : 'font-medium text-gray-900 dark:text-gray-100'
+                }`}
+              >
+                {c.name}
+              </span>
+              {c.muted && (
+                <FontAwesomeIcon
+                  icon={faBellSlash}
+                  className='h-3.5 w-3.5 shrink-0 text-indigo-700 dark:text-indigo-400'
+                  title={t('Chat.Muted') || ''}
+                />
+              )}
             </div>
             <div className='text-sm text-gray-500 dark:text-gray-400 truncate'>
               {c.kind === 'group'
@@ -119,13 +128,6 @@ const Chat: NextPage = () => {
       header: t('Chat.Last message'),
       cell: (c: ChatConversation) => (
         <div className='flex items-center gap-3 min-w-0'>
-          {c.muted && (
-            <FontAwesomeIcon
-              icon={faBellSlash}
-              className='h-3.5 w-3.5 shrink-0 text-gray-400 dark:text-gray-500'
-              title={t('Chat.Muted') || ''}
-            />
-          )}
           <span
             className={`truncate text-sm ${
               c.unread
