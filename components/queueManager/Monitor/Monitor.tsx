@@ -1,16 +1,22 @@
 // Copyright (C) 2024 Nethesis S.r.l.
 // SPDX-License-Identifier: AGPL-3.0-or-later
 
-import { FC, ComponentProps, useState, useEffect, Fragment } from 'react'
+import { FC, ComponentProps, useState, useEffect, useRef, Fragment } from 'react'
 import { useTranslation } from 'react-i18next'
-import { Button, EmptyState } from '../../common'
+import { Button } from '../../common'
 import { useSelector } from 'react-redux'
 import { RootState } from '../../../store'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 
-import { faChevronDown, faCheck, faExpand, faXmark } from '@fortawesome/free-solid-svg-icons'
+import {
+  faChevronDown,
+  faCheck,
+  faExpand,
+  faPlus,
+  faXmark,
+} from '@fortawesome/free-solid-svg-icons'
 
-import { getMonitorValue } from '../../../lib/queueManager'
+import { DEFAULT_REALTIME_QUEUE_SELECTED, getMonitorValue } from '../../../lib/queueManager'
 
 import {
   Label,
@@ -23,11 +29,14 @@ import {
 
 import { savePreference } from '../../../lib/storage'
 
-import { MonitorTables } from './Tables'
+import { MonitorCard, MonitorTables } from './Tables'
 
 export interface MonitorProps extends ComponentProps<'div'> {}
 
 const numbers = Array.from({ length: 20 }, (_, index) => index + 1)
+
+const MIN_FULLSCREEN_ZOOM = 0.25
+const ZOOM_SEARCH_STEPS = 10
 
 function classNames(...classes: any) {
   return classes.filter(Boolean).join(' ')
@@ -53,12 +62,96 @@ export const Monitor: FC<MonitorProps> = ({ className }): JSX.Element => {
     savePreference('monitorRowNumbers', currentSelectedRowNumbers, authStore.username)
   }
 
-  //Load selected row numbers from local storage
+  const [cards, setCards] = useState<MonitorCard[]>([])
+  const nextCardId = useRef(0)
+  const fullscreenRef = useRef<HTMLDivElement>(null)
+  const tablesRef = useRef<HTMLDivElement>(null)
+
+  const createCard = (queue: any): MonitorCard => ({ id: nextCardId.current++, queue })
+
+  const updateCards = (newCards: MonitorCard[]) => {
+    setCards(newCards)
+    savePreference(
+      'monitorSelectedQueues',
+      newCards.map((card) => card.queue),
+      authStore.username,
+    )
+  }
+
+  const addCard = () => {
+    updateCards([...cards, createCard(DEFAULT_REALTIME_QUEUE_SELECTED)])
+  }
+
+  const removeCard = (cardId: number) => {
+    updateCards(cards.filter((card) => card.id !== cardId))
+  }
+
+  const changeCardQueue = (cardId: number, newQueue: any) => {
+    updateCards(
+      cards.map((card) => {
+        if (card.id !== cardId) {
+          return card
+        }
+        const isSameQueue = !!newQueue?.queue && newQueue.queue === card.queue?.queue
+        return { ...card, queue: isSameQueue ? DEFAULT_REALTIME_QUEUE_SELECTED : newQueue }
+      }),
+    )
+  }
+
+  //Load selected row numbers and queues from local storage
   useEffect(() => {
     const monitorLocalStorageValue = getMonitorValue(authStore.username)
     setSelected(monitorLocalStorageValue.rowNumbers)
+    setCards(monitorLocalStorageValue.selectedQueues.map((queue: any) => createCard(queue)))
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [])
+
+  useEffect(() => {
+    const container = fullscreenRef.current
+    const content = tablesRef.current
+    if (!isFullscreen || !container || !content) {
+      return
+    }
+
+    let frame = 0
+    const setZoom = (zoom: number) => content.style.setProperty('zoom', String(zoom))
+    const fitsVertically = () => container.scrollHeight <= container.clientHeight
+
+    const fitToScreen = () => {
+      setZoom(1)
+      if (fitsVertically()) {
+        return
+      }
+      let low = MIN_FULLSCREEN_ZOOM
+      let high = 1
+      for (let step = 0; step < ZOOM_SEARCH_STEPS; step++) {
+        const zoom = (low + high) / 2
+        setZoom(zoom)
+        if (fitsVertically()) {
+          low = zoom
+        } else {
+          high = zoom
+        }
+      }
+      setZoom(low)
+    }
+
+    const scheduleFit = () => {
+      cancelAnimationFrame(frame)
+      frame = requestAnimationFrame(fitToScreen)
+    }
+
+    const resizeObserver = new ResizeObserver(scheduleFit)
+    resizeObserver.observe(container)
+    resizeObserver.observe(content)
+    fitToScreen()
+
+    return () => {
+      cancelAnimationFrame(frame)
+      resizeObserver.disconnect()
+      content.style.removeProperty('zoom')
+    }
+  }, [isFullscreen])
 
   //Use escape button to close fullscreen
   useEffect(() => {
@@ -143,6 +236,10 @@ export const Monitor: FC<MonitorProps> = ({ className }): JSX.Element => {
             </>
           )}
         </Listbox>
+        <Button variant='white' onClick={addCard}>
+          <FontAwesomeIcon icon={faPlus} />
+          <span className='ml-2'>{t('QueueManager.Add queue')}</span>
+        </Button>
         <Button variant='primary' onClick={toggleFullscreen}>
           <FontAwesomeIcon
             icon={faExpand}
@@ -155,9 +252,10 @@ export const Monitor: FC<MonitorProps> = ({ className }): JSX.Element => {
 
       {/* Queue Dashboard*/}
       <div
+        ref={fullscreenRef}
         className={`transition-all duration-300 ${
           isFullscreen
-            ? 'fixed top-0 left-0 right-0 bottom-0 w-screen h-screen z-50 bg-white dark:bg-gray-800 overflow-auto scrollbar-thin scrollbar-thumb-gray-400 dark:scrollbar-thumb-gray-400 scrollbar-thumb-rounded-full scrollbar-thumb-opacity-50 scrollbar-track-gray-200 dark:scrollbar-track-gray-900 scrollbar-track-rounded-full scrollbar-track-opacity-25'
+            ? 'fixed top-0 left-0 right-0 bottom-0 w-screen h-screen z-50 bg-white dark:bg-gray-800 overflow-y-auto overflow-x-hidden scrollbar-thin scrollbar-thumb-gray-400 dark:scrollbar-thumb-gray-400 scrollbar-thumb-rounded-full scrollbar-thumb-opacity-50 scrollbar-track-gray-200 dark:scrollbar-track-gray-900 scrollbar-track-rounded-full scrollbar-track-opacity-25'
             : ''
         }`}
       >
@@ -174,7 +272,15 @@ export const Monitor: FC<MonitorProps> = ({ className }): JSX.Element => {
                 </Button>
               </div>
             )}
-            <MonitorTables isFullscreen={isFullscreen} selectedRow={selected}></MonitorTables>
+            <div ref={tablesRef}>
+              <MonitorTables
+                isFullscreen={isFullscreen}
+                selectedRow={selected}
+                cards={cards}
+                onQueueChange={changeCardQueue}
+                onRemove={removeCard}
+              />
+            </div>
           </div>
         </div>
       </div>
