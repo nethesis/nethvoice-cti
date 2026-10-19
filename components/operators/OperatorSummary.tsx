@@ -218,7 +218,7 @@ export const OperatorSummary = forwardRef<HTMLButtonElement, OperatorSummaryProp
           {chatAllowed && operator?.username && operator.username !== authStore?.username && (
             <Button
               variant='ghost'
-              className='text-primaryActive dark:text-primaryActiveDark'
+              className='h-9 text-primaryActive dark:text-primaryActiveDark'
               onClick={() => (closeSideDrawer(), openChatWith(operator.username))}
             >
               <FontAwesomeIcon icon={faMessage} className='h-4 w-4 mr-2' />
