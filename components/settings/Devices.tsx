@@ -35,6 +35,7 @@ import { isEmpty } from 'lodash'
 import { faOfficePhone } from '@nethesis/nethesis-solid-svg-icons'
 import { IconProp } from '@fortawesome/fontawesome-svg-core'
 import { CustomThemedTooltip } from '../common/CustomThemedTooltip'
+import { useIsTruncated } from '../../lib/hooks/useIsTruncated'
 import { PhysicalPhoneSettings } from '../devices/PhysicalPhoneSettings'
 
 interface NavigatorWithUserAgentData extends Navigator {
@@ -54,10 +55,33 @@ const STYLES = {
   iconButton: 'text-emerald-700 dark:text-emerald-500 h-4 w-4',
   ghostButton: 'gap-3 px-3 py-2',
   skeletonBase: 'animate-pulse rounded bg-gray-300 dark:bg-gray-700',
-  nameColumnWidth: 'w-[28.5%]',
-  statusColumnWidth: 'w-[28.5%]',
-  defaultColumnWidth: 'w-[28.5%]',
-  actionsColumnWidth: 'w-[14.5%]',
+}
+
+const MainDeviceBadge = ({ tooltipId }: { tooltipId: string }) => {
+  const { t } = useTranslation()
+  const label = t('Devices.Main device')
+  const { ref, isTruncated } = useIsTruncated<HTMLSpanElement>(label)
+
+  return (
+    <>
+      <Badge
+        size='small'
+        variant='indigoNethLink'
+        rounded='full'
+        className='max-w-full whitespace-nowrap px-2.5 py-0.5 leading-4'
+      >
+        <span
+          ref={ref}
+          className='min-w-0 truncate'
+          data-tooltip-id={isTruncated ? tooltipId : undefined}
+          data-tooltip-content={isTruncated ? label : undefined}
+        >
+          {label}
+        </span>
+      </Badge>
+      {isTruncated && <CustomThemedTooltip id={tooltipId} place='top' />}
+    </>
+  )
 }
 
 const Devices: NextPage = () => {
@@ -291,6 +315,7 @@ const Devices: NextPage = () => {
 
   const settingsIconClasses = isRightSideMenuOpen ? 'mr-0 h-4 w-4' : 'xl:mr-3 mr-0 h-4 w-4'
   const settingsLabelClasses = isRightSideMenuOpen ? 'hidden' : 'hidden xl:inline'
+  const actionsColumnWidth = isRightSideMenuOpen ? 'w-[8.5rem]' : 'w-[8.5rem] xl:w-[14rem]'
 
   const settingsButtonPlaceholder = (
     <span className='invisible' aria-hidden='true'>
@@ -321,16 +346,16 @@ const Devices: NextPage = () => {
             <table className='w-full table-fixed'>
               <thead>
                 <tr>
-                  <th className={`${STYLES.tableHeader} ${STYLES.nameColumnWidth}`}>
+                  <th className={STYLES.tableHeader}>
                     {t('Devices.Name')}
                   </th>
-                  <th className={`${STYLES.tableHeader} ${STYLES.statusColumnWidth}`}>
+                  <th className={STYLES.tableHeader}>
                     {t('Devices.Status')}
                   </th>
-                  <th className={`${STYLES.tableHeader} ${STYLES.defaultColumnWidth}`}>
+                  <th className={STYLES.tableHeader}>
                     {t('Devices.Used as')}
                   </th>
-                  <th className={`${STYLES.tableHeader} ${STYLES.actionsColumnWidth}`}></th>
+                  <th className={`${STYLES.tableHeader} ${actionsColumnWidth}`}></th>
                 </tr>
               </thead>
               <tbody>
@@ -368,14 +393,7 @@ const Devices: NextPage = () => {
                   </td>
                   <td className={STYLES.tableCell}>
                     {webrtcData[0]?.id === profile?.default_device?.id ? (
-                      <Badge
-                        size='small'
-                        variant='indigoNethLink'
-                        rounded='full'
-                        className='whitespace-nowrap px-2.5 py-0.5 leading-4'
-                      >
-                        <span>{t('Devices.Main device')}</span>
-                      </Badge>
+                      <MainDeviceBadge tooltipId={'tooltip-main-device-web-phone'} />
                     ) : (
                       <span className='text-transparent cursor-default select-none'>
                         {t('Devices.Main device')}
@@ -452,16 +470,16 @@ const Devices: NextPage = () => {
             <table className='w-full table-fixed'>
               <thead>
                 <tr>
-                  <th className={`${STYLES.tableHeader} ${STYLES.nameColumnWidth}`}>
+                  <th className={STYLES.tableHeader}>
                     {t('Devices.Name')}
                   </th>
-                  <th className={`${STYLES.tableHeader} ${STYLES.statusColumnWidth}`}>
+                  <th className={STYLES.tableHeader}>
                     {t('Devices.Status')}
                   </th>
-                  <th className={`${STYLES.tableHeader} ${STYLES.defaultColumnWidth}`}>
+                  <th className={STYLES.tableHeader}>
                     {t('Devices.Used as')}
                   </th>
-                  <th className={`${STYLES.tableHeader} ${STYLES.actionsColumnWidth}`}></th>
+                  <th className={`${STYLES.tableHeader} ${actionsColumnWidth}`}></th>
                 </tr>
               </thead>
               <tbody>
@@ -499,14 +517,7 @@ const Devices: NextPage = () => {
                   </td>
                   <td className={STYLES.tableCell}>
                     {phoneLinkData[0]?.id === profile?.default_device?.id ? (
-                      <Badge
-                        size='small'
-                        variant='indigoNethLink'
-                        rounded='full'
-                        className='whitespace-nowrap px-2.5 py-0.5 leading-4'
-                      >
-                        <span>{t('Devices.Main device')}</span>
-                      </Badge>
+                      <MainDeviceBadge tooltipId={'tooltip-main-device-desktop-phone'} />
                     ) : (
                       <span className='text-transparent cursor-default select-none'>
                         {t('Devices.Main device')}
@@ -555,16 +566,16 @@ const Devices: NextPage = () => {
             <table className='w-full table-fixed'>
               <thead>
                 <tr>
-                  <th className={`${STYLES.tableHeader} ${STYLES.nameColumnWidth}`}>
+                  <th className={STYLES.tableHeader}>
                     {t('Devices.Name')}
                   </th>
-                  <th className={`${STYLES.tableHeader} ${STYLES.statusColumnWidth}`}>
+                  <th className={STYLES.tableHeader}>
                     {t('Devices.Status')}
                   </th>
-                  <th className={`${STYLES.tableHeader} ${STYLES.defaultColumnWidth}`}>
+                  <th className={STYLES.tableHeader}>
                     {t('Devices.Used as')}
                   </th>
-                  <th className={`${STYLES.tableHeader} ${STYLES.actionsColumnWidth}`}></th>
+                  <th className={`${STYLES.tableHeader} ${actionsColumnWidth}`}></th>
                 </tr>
               </thead>
               <tbody>
@@ -608,14 +619,7 @@ const Devices: NextPage = () => {
                     </td>
                     <td className={STYLES.tableCell}>
                       {phone?.id === profile?.default_device?.id ? (
-                        <Badge
-                          size='small'
-                          variant='indigoNethLink'
-                          rounded='full'
-                          className='whitespace-nowrap px-2.5 py-0.5 leading-4'
-                        >
-                          <span>{t('Devices.Main device')}</span>
-                        </Badge>
+                        <MainDeviceBadge tooltipId={`tooltip-main-device-physical-${phone?.id}`} />
                       ) : (
                         <span className='text-transparent cursor-default select-none'>
                           {t('Devices.Main device')}
