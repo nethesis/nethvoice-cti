@@ -8,7 +8,6 @@ import { useSelector } from 'react-redux'
 import { RootState } from '../../../store'
 import {
   faChevronDown,
-  faCheck,
   faMinus,
   faPlus,
   faUsers,
@@ -17,11 +16,11 @@ import { CallDuration } from '../../operators/CallDuration'
 import {
   Listbox,
   ListboxButton,
-  ListboxOption,
   ListboxOptions,
   Transition,
 } from '@headlessui/react'
 import { Button, EmptyState } from '../../common'
+import { MonitorDropdownOption, monitorDropdownPanelClasses } from './MonitorDropdown'
 
 export interface MonitorQueueCardProps {
   queue: any
@@ -58,17 +57,17 @@ export const MonitorQueueCard: FC<MonitorQueueCardProps> = ({
   const columns = [t('QueueManager.Position'), t('QueueManager.Calls'), t('QueueManager.Waiting')]
 
   return (
-    <div className='border-b rounded-lg shadow-md border-gray-200 dark:border-gray-700 bg-cardBackgroud dark:bg-cardBackgroudDark px-5 py-4 sm:mt-1 relative'>
-      <div className='flex items-center space-x-2' data-monitor-card-header>
-        <div className='flex-grow'>
-          <div className='flex items-center space-x-2'>
+    <div className='flex-1 border-b rounded-lg shadow-md border-gray-200 dark:border-gray-700 bg-cardBackgroud dark:bg-cardBackgroudDark px-5 py-4 sm:mt-1 relative'>
+      <div className='flex flex-wrap items-center gap-2'>
+        <div className='flex-grow basis-32 min-w-0'>
+          <div className='flex items-center space-x-2 min-w-0'>
             <Listbox value={queue} onChange={onQueueChange}>
               {({ open }) => (
                 <>
-                  <div className='flex items-center'>
-                    <div className='relative'>
+                  <div className='flex items-center min-w-0'>
+                    <div className='relative min-w-0'>
                       <ListboxButton
-                        className={`relative  cursor-default rounded-md py-1.5 pr-10 text-left text-gray-950 dark:text-gray-300 focus:outline-none sm:text-sm sm:leading-6 ${
+                        className={`relative max-w-full cursor-default rounded-md py-1.5 pr-10 text-left text-gray-950 dark:text-gray-300 focus:outline-none sm:text-sm sm:leading-6 ${
                           isFullscreen ? 'w-96' : 'w-48'
                         }  `}
                       >
@@ -91,47 +90,26 @@ export const MonitorQueueCard: FC<MonitorQueueCardProps> = ({
                         leaveFrom='opacity-100'
                         leaveTo='opacity-0'
                       >
-                        <ListboxOptions className='absolute z-10 mt-1 w-full overflow-auto  scrollbar-thin scrollbar-thumb-gray-400 dark:scrollbar-thumb-gray-400 scrollbar-thumb-rounded-full scrollbar-thumb-opacity-50 scrollbar-track-gray-200 dark:scrollbar-track-gray-900 scrollbar-track-rounded-full scrollbar-track-opacity-25 rounded-md bg-white py-1 text-base shadow-lg ring-1 dark:bg-gray-900 ring-black ring-opacity-5 dark:ring-gray-700 dark:ring-opacity-100 focus:outline-none sm:text-sm h-auto'>
+                        <ListboxOptions
+                          className={`${monitorDropdownPanelClasses} min-w-full w-max ${
+                            isFullscreen ? 'max-w-2xl' : 'max-w-xs'
+                          }`}
+                        >
                           {Object.keys(queueManagerStore.queues).length === 0 && (
-                            <div className='relative select-none px-4 py-2 text-sm text-gray-500 dark:text-gray-400'>
+                            <div className='select-none py-2 text-sm text-gray-500 dark:text-gray-400'>
                               {t('Queues.No queues')}
                             </div>
                           )}
                           {Object.entries<any>(queueManagerStore.queues).map(
                             ([queueId, queueInfo]) => (
-                              <ListboxOption
+                              <MonitorDropdownOption
                                 key={queueId}
-                                className={() =>
-                                  classNames(
-                                    'relative cursor-default select-none py-2 pl-8 pr-4 data-[focus]:text-white data-[focus]:bg-primary text-gray-900 dark:text-gray-100',
-                                    textSize,
-                                  )
-                                }
                                 value={queueInfo}
+                                isSelected={queue?.queue === queueId}
+                                textSize={textSize}
                               >
-                                {({ selected }) => (
-                                  <>
-                                    <span
-                                      className={classNames(
-                                        selected ? 'font-semibold' : 'font-normal',
-                                        'block truncate',
-                                      )}
-                                    >
-                                      {queueInfo.name} ({queueInfo.queue})
-                                    </span>
-
-                                    {selected || queue?.queue === queueId ? (
-                                      <span className='data-[focus]:text-white text-primary absolute inset-y-0 left-0 flex items-center pl-1.5'>
-                                        <FontAwesomeIcon
-                                          icon={faCheck}
-                                          className='h-3.5 w-3.5 pl-2 py-2 cursor-pointer flex items-center'
-                                          aria-hidden='true'
-                                        />
-                                      </span>
-                                    ) : null}
-                                  </>
-                                )}
-                              </ListboxOption>
+                                {queueInfo.name} ({queueInfo.queue})
+                              </MonitorDropdownOption>
                             ),
                           )}
                         </ListboxOptions>
@@ -144,7 +122,7 @@ export const MonitorQueueCard: FC<MonitorQueueCardProps> = ({
           </div>
         </div>
 
-        <div className='flex items-center ml-auto space-x-5'>
+        <div className='flex flex-wrap items-center justify-end ml-auto gap-x-5 gap-y-2 min-w-0'>
           <div className='text-sm text-gray-500 whitespace-nowrap'>
             <span className={`text-amber-700 dark:text-amber-500 font-semibold mr-2 ${textSize}  `}>
               {waitingCallsCount}
@@ -155,14 +133,14 @@ export const MonitorQueueCard: FC<MonitorQueueCardProps> = ({
           </div>
 
           {onRemove && !isFullscreen && (
-            <Button variant='white' className='ml-2' onClick={onRemove} size='base'>
+            <Button variant='white' className='whitespace-nowrap' onClick={onRemove} size='base'>
               <FontAwesomeIcon icon={faMinus} />
               <span className='ml-2'>{t('QueueManager.Remove')}</span>
             </Button>
           )}
 
           {onAdd && !isFullscreen && (
-            <Button variant='white' className='ml-2' onClick={onAdd} size='base'>
+            <Button variant='white' className='whitespace-nowrap' onClick={onAdd} size='base'>
               <FontAwesomeIcon icon={faPlus} />
               <span className='ml-2'>{t('QueueManager.Add queue')} </span>
             </Button>

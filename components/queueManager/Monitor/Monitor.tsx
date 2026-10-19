@@ -10,7 +10,6 @@ import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 
 import {
   faChevronDown,
-  faCheck,
   faExpand,
   faMinus,
   faXmark,
@@ -22,7 +21,6 @@ import {
   Label,
   Listbox,
   ListboxButton,
-  ListboxOption,
   ListboxOptions,
   Transition,
 } from '@headlessui/react'
@@ -30,17 +28,11 @@ import {
 import { savePreference } from '../../../lib/storage'
 
 import { MonitorCard, MonitorTables } from './Tables'
+import { MonitorDropdownOption, monitorDropdownPanelClasses } from './MonitorDropdown'
 
 export interface MonitorProps extends ComponentProps<'div'> {}
 
 const numbers = Array.from({ length: 20 }, (_, index) => index + 1)
-
-const MIN_FULLSCREEN_ZOOM = 0.2
-const ZOOM_SEARCH_STEPS = 10
-
-function classNames(...classes: any) {
-  return classes.filter(Boolean).join(' ')
-}
 
 export const Monitor: FC<MonitorProps> = ({ className }): JSX.Element => {
   const { t } = useTranslation()
@@ -66,8 +58,6 @@ export const Monitor: FC<MonitorProps> = ({ className }): JSX.Element => {
   const [showRemoveAllModal, setShowRemoveAllModal] = useState(false)
   const cancelRemoveAllRef = useRef<HTMLButtonElement>(null)
   const nextCardId = useRef(0)
-  const fullscreenRef = useRef<HTMLDivElement>(null)
-  const tablesRef = useRef<HTMLDivElement>(null)
 
   const createCard = (queue: any): MonitorCard => ({ id: nextCardId.current++, queue })
 
@@ -112,87 +102,6 @@ export const Monitor: FC<MonitorProps> = ({ className }): JSX.Element => {
     setCards(monitorLocalStorageValue.selectedQueues.map((queue: any) => createCard(queue)))
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [])
-
-  useEffect(() => {
-    const container = fullscreenRef.current
-    const content = tablesRef.current
-    const grid = content?.firstElementChild as HTMLElement | null
-    if (!isFullscreen || !container || !content || !grid) {
-      return
-    }
-
-    let frame = 0
-    const setZoom = (zoom: number) => content.style.setProperty('zoom', String(zoom))
-    const setColumns = (columns: number) =>
-      grid.style.setProperty('grid-template-columns', `repeat(${columns}, minmax(0, 1fr))`)
-
-    const fits = () =>
-      container.scrollHeight <= container.clientHeight &&
-      Array.from(
-        content.querySelectorAll<HTMLElement>('.overflow-x-auto, [data-monitor-card-header]'),
-      ).every((element) => element.scrollWidth <= element.clientWidth)
-
-    const findZoom = () => {
-      setZoom(1)
-      if (fits()) {
-        return 1
-      }
-      let low = MIN_FULLSCREEN_ZOOM
-      let high = 1
-      for (let step = 0; step < ZOOM_SEARCH_STEPS; step++) {
-        const zoom = (low + high) / 2
-        setZoom(zoom)
-        if (fits()) {
-          low = zoom
-        } else {
-          high = zoom
-        }
-      }
-      return low
-    }
-
-    const fitToScreen = () => {
-      const cardCount = grid.childElementCount
-      const columnOptions =
-        cardCount <= 1
-          ? [2]
-          : Array.from(
-              new Set(
-                Array.from({ length: cardCount }, (_, index) => Math.ceil(cardCount / (index + 1))),
-              ),
-            ).sort((a, b) => a - b)
-      let best = { columns: columnOptions[0], zoom: 0 }
-      for (const columns of columnOptions) {
-        setColumns(columns)
-        const zoom = findZoom()
-        if (zoom > best.zoom) {
-          best = { columns, zoom }
-        }
-        if (best.zoom === 1) {
-          break
-        }
-      }
-      setColumns(best.columns)
-      setZoom(best.zoom)
-    }
-
-    const scheduleFit = () => {
-      cancelAnimationFrame(frame)
-      frame = requestAnimationFrame(fitToScreen)
-    }
-
-    const resizeObserver = new ResizeObserver(scheduleFit)
-    resizeObserver.observe(container)
-    resizeObserver.observe(content)
-    fitToScreen()
-
-    return () => {
-      cancelAnimationFrame(frame)
-      resizeObserver.disconnect()
-      content.style.removeProperty('zoom')
-      grid.style.removeProperty('grid-template-columns')
-    }
-  }, [isFullscreen])
 
   //Use escape button to close fullscreen
   useEffect(() => {
@@ -239,36 +148,15 @@ export const Monitor: FC<MonitorProps> = ({ className }): JSX.Element => {
                     leaveFrom='opacity-100'
                     leaveTo='opacity-0'
                   >
-                    <ListboxOptions className='absolute z-10 mt-1 max-h-60 w-full overflow-auto  scrollbar-thin scrollbar-thumb-gray-400 dark:scrollbar-thumb-gray-400 scrollbar-thumb-rounded-full scrollbar-thumb-opacity-50 scrollbar-track-gray-200 dark:scrollbar-track-gray-900 scrollbar-track-rounded-full scrollbar-track-opacity-25 rounded-md bg-white dark:bg-gray-900 py-1 text-base shadow-lg ring-1 ring-black ring-opacity-5 dark:ring-gray-700 dark:ring-opacity-100 focus:outline-none sm:text-sm'>
+                    <ListboxOptions className={`${monitorDropdownPanelClasses} max-h-60 min-w-full`}>
                       {numbers.map((number: any) => (
-                        <ListboxOption
+                        <MonitorDropdownOption
                           key={number}
-                          className='data-[focus]:bg-primary data-[focus]:text-white data-[focus]:dark:text-gray-900 text-gray-900 dark:text-gray-100 relative cursor-default select-none py-2 pl-6'
                           value={number}
+                          isSelected={number === selected}
                         >
-                          {({ selected }) => (
-                            <>
-                              <span
-                                className={classNames(
-                                  selected ? 'font-semibold' : 'font-normal',
-                                  'block truncate',
-                                )}
-                              >
-                                {number}
-                              </span>
-
-                              {selected ? (
-                                <span className='data-[focus]:text-white text-primary absolute inset-y-0 left-0 flex items-center'>
-                                  <FontAwesomeIcon
-                                    icon={faCheck}
-                                    className='h-3.5 w-3.5 pl-1 py-2 cursor-pointer flex items-center'
-                                    aria-hidden='true'
-                                  />
-                                </span>
-                              ) : null}
-                            </>
-                          )}
-                        </ListboxOption>
+                          {number}
+                        </MonitorDropdownOption>
                       ))}
                     </ListboxOptions>
                   </Transition>
@@ -295,7 +183,6 @@ export const Monitor: FC<MonitorProps> = ({ className }): JSX.Element => {
 
       {/* Queue Dashboard*/}
       <div
-        ref={fullscreenRef}
         className={`transition-all duration-300 ${
           isFullscreen
             ? 'fixed top-0 left-0 right-0 bottom-0 w-screen h-screen z-50 bg-white dark:bg-gray-800 overflow-y-auto overflow-x-hidden scrollbar-thin scrollbar-thumb-gray-400 dark:scrollbar-thumb-gray-400 scrollbar-thumb-rounded-full scrollbar-thumb-opacity-50 scrollbar-track-gray-200 dark:scrollbar-track-gray-900 scrollbar-track-rounded-full scrollbar-track-opacity-25'
@@ -315,16 +202,14 @@ export const Monitor: FC<MonitorProps> = ({ className }): JSX.Element => {
                 </Button>
               </div>
             )}
-            <div ref={tablesRef}>
-              <MonitorTables
-                isFullscreen={isFullscreen}
-                selectedRow={selected}
-                cards={cards}
-                onQueueChange={changeCardQueue}
-                onAdd={addCard}
-                onRemove={removeCard}
-              />
-            </div>
+            <MonitorTables
+              isFullscreen={isFullscreen}
+              selectedRow={selected}
+              cards={cards}
+              onQueueChange={changeCardQueue}
+              onAdd={addCard}
+              onRemove={removeCard}
+            />
           </div>
         </div>
       </div>

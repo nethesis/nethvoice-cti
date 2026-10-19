@@ -33,7 +33,7 @@ export const MonitorTables: FC<MonitorTablesProps> = ({
       {cards.map((card, index) => (
         <div
           key={card.id}
-          className={`${!isFullscreen ? 'pt-8' : 'pt-1'} ${isSingleCard ? 'col-span-2' : 'col-span-1'}`}
+          className={`flex flex-col ${!isFullscreen ? 'pt-8' : 'pt-1'} ${isSingleCard ? 'col-span-2' : 'col-span-1'}`}
         >
           <MonitorQueueCard
             queue={card.queue}
