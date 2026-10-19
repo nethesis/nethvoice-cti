@@ -291,7 +291,7 @@ export const CallsView: FC<CallsViewProps> = ({ className }): JSX.Element => {
                   emptyState={{
                     title: emptyQueueFilter
                       ? t('QueueManager.No queue selected')
-                      : t('Queues.No queue calls found'),
+                      : t('Queues.No customers found'),
                     description: emptyQueueFilter
                       ? t('QueueManager.Select queue') || ''
                       : t('Common.Try changing your search filters') || '',

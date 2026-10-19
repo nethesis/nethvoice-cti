@@ -782,7 +782,7 @@
     "outcome_EXITEMPTY": "Nessun agente in coda",
     "outcome_FULL": "Coda piena",
     "No queues found": "Nessuna coda trovata",
-    "No queue calls found": "Nessuna chiamata di coda trovata",
+    "No customers found": "Nessun cliente trovato",
     "Logout": "Logout",
     "Queues": "Code",
     "No queues": "Nessuna coda",

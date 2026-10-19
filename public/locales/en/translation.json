@@ -628,7 +628,7 @@
     "outcome_EXITEMPTY": "No agents in queue",
     "outcome_FULL": "Queue full",
     "No queues found": "No queues found",
-    "No queue calls found": "No queue calls found",
+    "No customers found": "No customers found",
     "Queues": "Queues",
     "Filter queues": "Filter queues",
     "Login to all queues": "Login all queues",
