@@ -3,7 +3,7 @@
 
 import { FC, ComponentProps, useState, useEffect, useRef, Fragment } from 'react'
 import { useTranslation } from 'react-i18next'
-import { Button } from '../../common'
+import { Button, ConfirmationModal } from '../../common'
 import { useSelector } from 'react-redux'
 import { RootState } from '../../../store'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
@@ -12,7 +12,7 @@ import {
   faChevronDown,
   faCheck,
   faExpand,
-  faPlus,
+  faMinus,
   faXmark,
 } from '@fortawesome/free-solid-svg-icons'
 
@@ -35,7 +35,7 @@ export interface MonitorProps extends ComponentProps<'div'> {}
 
 const numbers = Array.from({ length: 20 }, (_, index) => index + 1)
 
-const MIN_FULLSCREEN_ZOOM = 0.25
+const MIN_FULLSCREEN_ZOOM = 0.2
 const ZOOM_SEARCH_STEPS = 10
 
 function classNames(...classes: any) {
@@ -63,6 +63,8 @@ export const Monitor: FC<MonitorProps> = ({ className }): JSX.Element => {
   }
 
   const [cards, setCards] = useState<MonitorCard[]>([])
+  const [showRemoveAllModal, setShowRemoveAllModal] = useState(false)
+  const cancelRemoveAllRef = useRef<HTMLButtonElement>(null)
   const nextCardId = useRef(0)
   const fullscreenRef = useRef<HTMLDivElement>(null)
   const tablesRef = useRef<HTMLDivElement>(null)
@@ -80,6 +82,11 @@ export const Monitor: FC<MonitorProps> = ({ className }): JSX.Element => {
 
   const addCard = () => {
     updateCards([...cards, createCard(DEFAULT_REALTIME_QUEUE_SELECTED)])
+  }
+
+  const removeAllCards = () => {
+    updateCards(cards.slice(0, 1))
+    setShowRemoveAllModal(false)
   }
 
   const removeCard = (cardId: number) => {
@@ -109,31 +116,64 @@ export const Monitor: FC<MonitorProps> = ({ className }): JSX.Element => {
   useEffect(() => {
     const container = fullscreenRef.current
     const content = tablesRef.current
-    if (!isFullscreen || !container || !content) {
+    const grid = content?.firstElementChild as HTMLElement | null
+    if (!isFullscreen || !container || !content || !grid) {
       return
     }
 
     let frame = 0
     const setZoom = (zoom: number) => content.style.setProperty('zoom', String(zoom))
-    const fitsVertically = () => container.scrollHeight <= container.clientHeight
+    const setColumns = (columns: number) =>
+      grid.style.setProperty('grid-template-columns', `repeat(${columns}, minmax(0, 1fr))`)
 
-    const fitToScreen = () => {
+    const fits = () =>
+      container.scrollHeight <= container.clientHeight &&
+      Array.from(
+        content.querySelectorAll<HTMLElement>('.overflow-x-auto, [data-monitor-card-header]'),
+      ).every((element) => element.scrollWidth <= element.clientWidth)
+
+    const findZoom = () => {
       setZoom(1)
-      if (fitsVertically()) {
-        return
+      if (fits()) {
+        return 1
       }
       let low = MIN_FULLSCREEN_ZOOM
       let high = 1
       for (let step = 0; step < ZOOM_SEARCH_STEPS; step++) {
         const zoom = (low + high) / 2
         setZoom(zoom)
-        if (fitsVertically()) {
+        if (fits()) {
           low = zoom
         } else {
           high = zoom
         }
       }
-      setZoom(low)
+      return low
+    }
+
+    const fitToScreen = () => {
+      const cardCount = grid.childElementCount
+      const columnOptions =
+        cardCount <= 1
+          ? [2]
+          : Array.from(
+              new Set(
+                Array.from({ length: cardCount }, (_, index) => Math.ceil(cardCount / (index + 1))),
+              ),
+            ).sort((a, b) => a - b)
+      let best = { columns: columnOptions[0], zoom: 0 }
+      for (const columns of columnOptions) {
+        setColumns(columns)
+        const zoom = findZoom()
+        if (zoom > best.zoom) {
+          best = { columns, zoom }
+        }
+        if (best.zoom === 1) {
+          break
+        }
+      }
+      setColumns(best.columns)
+      setZoom(best.zoom)
     }
 
     const scheduleFit = () => {
@@ -150,6 +190,7 @@ export const Monitor: FC<MonitorProps> = ({ className }): JSX.Element => {
       cancelAnimationFrame(frame)
       resizeObserver.disconnect()
       content.style.removeProperty('zoom')
+      grid.style.removeProperty('grid-template-columns')
     }
   }, [isFullscreen])
 
@@ -236,10 +277,12 @@ export const Monitor: FC<MonitorProps> = ({ className }): JSX.Element => {
             </>
           )}
         </Listbox>
-        <Button variant='white' onClick={addCard}>
-          <FontAwesomeIcon icon={faPlus} />
-          <span className='ml-2'>{t('QueueManager.Add queue')}</span>
-        </Button>
+        {cards.length >= 2 && (
+          <Button variant='white' onClick={() => setShowRemoveAllModal(true)}>
+            <FontAwesomeIcon icon={faMinus} />
+            <span className='ml-2'>{t('QueueManager.Remove all tables')}</span>
+          </Button>
+        )}
         <Button variant='primary' onClick={toggleFullscreen}>
           <FontAwesomeIcon
             icon={faExpand}
@@ -278,12 +321,23 @@ export const Monitor: FC<MonitorProps> = ({ className }): JSX.Element => {
                 selectedRow={selected}
                 cards={cards}
                 onQueueChange={changeCardQueue}
+                onAdd={addCard}
                 onRemove={removeCard}
               />
             </div>
           </div>
         </div>
       </div>
+
+      <ConfirmationModal
+        show={showRemoveAllModal}
+        focus={cancelRemoveAllRef}
+        onClose={() => setShowRemoveAllModal(false)}
+        title={t('QueueManager.Remove all tables')}
+        description={t('QueueManager.Remove all tables message')}
+        confirmLabel={t('QueueManager.Remove')}
+        onConfirm={removeAllCards}
+      />
     </>
   )
 }

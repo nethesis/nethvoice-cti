@@ -985,6 +985,8 @@
     "Logged_out": "Disconesso",
     "Fullscreen": "Schermo intero",
     "Add queue": "Aggiungi coda",
+    "Remove all tables": "Rimuovi tutte le tabelle",
+    "Remove all tables message": "Tutte le tabelle del monitor tranne la prima verranno rimosse. Vuoi continuare?",
     "In progress": "In progresso",
     "No alarm detected": "Nessun allarme rilevato",
     "Begin hour": "Ora inizio",

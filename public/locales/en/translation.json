@@ -972,6 +972,8 @@
     "Logged_out": "Logged out",
     "Fullscreen": "Fullscreen",
     "Add queue": "Add queue",
+    "Remove all tables": "Remove all tables",
+    "Remove all tables message": "All monitor tables except the first one will be removed. Do you want to continue?",
     "In progress": "In progress",
     "No alarm detected": "No alarm detected",
     "Begin hour": "Begin hour",

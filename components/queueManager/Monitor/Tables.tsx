@@ -1,7 +1,7 @@
 // Copyright (C) 2024 Nethesis S.r.l.
 // SPDX-License-Identifier: AGPL-3.0-or-later
 
-import { FC, CSSProperties } from 'react'
+import { FC } from 'react'
 import { MonitorQueueCard } from './MonitorQueueCard'
 
 export interface MonitorCard {
@@ -14,17 +14,8 @@ export interface MonitorTablesProps {
   selectedRow: number
   cards: MonitorCard[]
   onQueueChange: (cardId: number, queue: any) => void
+  onAdd: () => void
   onRemove: (cardId: number) => void
-}
-
-const getFullscreenColumns = (cardCount: number) => {
-  if (cardCount <= 2) {
-    return 2
-  }
-  if (cardCount === 3) {
-    return 3
-  }
-  return Math.ceil(Math.sqrt(cardCount))
 }
 
 export const MonitorTables: FC<MonitorTablesProps> = ({
@@ -32,20 +23,14 @@ export const MonitorTables: FC<MonitorTablesProps> = ({
   selectedRow,
   cards,
   onQueueChange,
+  onAdd,
   onRemove,
 }): JSX.Element => {
   const isSingleCard = cards.length === 1
 
-  const gridStyle: CSSProperties | undefined = isFullscreen
-    ? { gridTemplateColumns: `repeat(${getFullscreenColumns(cards.length)}, minmax(0, 1fr))` }
-    : undefined
-
   return (
-    <div
-      className='grid grid-cols-1 gap-4 sm:grid-cols-1 lg:grid-cols-2 xl:grid-cols-2'
-      style={gridStyle}
-    >
-      {cards.map((card) => (
+    <div className='grid grid-cols-1 gap-4 sm:grid-cols-1 lg:grid-cols-2 xl:grid-cols-2'>
+      {cards.map((card, index) => (
         <div
           key={card.id}
           className={`${!isFullscreen ? 'pt-8' : 'pt-1'} ${isSingleCard ? 'col-span-2' : 'col-span-1'}`}
@@ -55,7 +40,8 @@ export const MonitorTables: FC<MonitorTablesProps> = ({
             rowCount={selectedRow}
             isFullscreen={isFullscreen}
             onQueueChange={(queue) => onQueueChange(card.id, queue)}
-            onRemove={isSingleCard ? undefined : () => onRemove(card.id)}
+            onAdd={index === 0 ? onAdd : undefined}
+            onRemove={index === 0 ? undefined : () => onRemove(card.id)}
           />
         </div>
       ))}

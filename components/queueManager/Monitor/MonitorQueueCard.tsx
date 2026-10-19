@@ -6,7 +6,13 @@ import { useTranslation } from 'react-i18next'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { useSelector } from 'react-redux'
 import { RootState } from '../../../store'
-import { faChevronDown, faCheck, faMinus, faUsers } from '@fortawesome/free-solid-svg-icons'
+import {
+  faChevronDown,
+  faCheck,
+  faMinus,
+  faPlus,
+  faUsers,
+} from '@fortawesome/free-solid-svg-icons'
 import { CallDuration } from '../../operators/CallDuration'
 import {
   Listbox,
@@ -22,6 +28,7 @@ export interface MonitorQueueCardProps {
   rowCount: number
   isFullscreen: boolean
   onQueueChange: (queue: any) => void
+  onAdd?: () => void
   onRemove?: () => void
 }
 
@@ -34,6 +41,7 @@ export const MonitorQueueCard: FC<MonitorQueueCardProps> = ({
   rowCount,
   isFullscreen,
   onQueueChange,
+  onAdd,
   onRemove,
 }): JSX.Element => {
   const { t } = useTranslation()
@@ -51,7 +59,7 @@ export const MonitorQueueCard: FC<MonitorQueueCardProps> = ({
 
   return (
     <div className='border-b rounded-lg shadow-md border-gray-200 dark:border-gray-700 bg-cardBackgroud dark:bg-cardBackgroudDark px-5 py-4 sm:mt-1 relative'>
-      <div className='flex items-center space-x-2'>
+      <div className='flex items-center space-x-2' data-monitor-card-header>
         <div className='flex-grow'>
           <div className='flex items-center space-x-2'>
             <Listbox value={queue} onChange={onQueueChange}>
@@ -137,7 +145,7 @@ export const MonitorQueueCard: FC<MonitorQueueCardProps> = ({
         </div>
 
         <div className='flex items-center ml-auto space-x-5'>
-          <div className='text-sm text-gray-500'>
+          <div className='text-sm text-gray-500 whitespace-nowrap'>
             <span className={`text-amber-700 dark:text-amber-500 font-semibold mr-2 ${textSize}  `}>
               {waitingCallsCount}
             </span>
@@ -145,6 +153,13 @@ export const MonitorQueueCard: FC<MonitorQueueCardProps> = ({
               {t('QueueManager.Waiting calls')}
             </span>
           </div>
+
+          {onAdd && !isFullscreen && (
+            <Button variant='white' className='ml-2' onClick={onAdd} size='base'>
+              <FontAwesomeIcon icon={faPlus} />
+              <span className='ml-2'>{t('QueueManager.Add queue')} </span>
+            </Button>
+          )}
 
           {onRemove && !isFullscreen && (
             <Button variant='white' className='ml-2' onClick={onRemove} size='base'>
