@@ -74,7 +74,7 @@ export const FilterDesktop: React.FC<FilterDesktopProps> = ({
   const { timePicker: timePickerTheme, datePicker: datePickerTheme } = useTheme().theme
 
   return (
-    <PopoverGroup className='hidden xl:flex xl:items-baseline xl:space-x-4'>
+    <PopoverGroup className='hidden xl:flex xl:flex-wrap xl:items-baseline xl:gap-x-4 xl:gap-y-2'>
       {/* Call type + direction filter (desktop) */}
       <FilterPopover
         name={t(`History.${callTypeFilter?.name}`)}

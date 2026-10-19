@@ -483,7 +483,7 @@ export const Filter = forwardRef<HTMLButtonElement, FilterProps>(
                 {t('History.History filters')}
               </h2>
 
-              <div className='flex items-center space-x-8'>
+              <div className='flex flex-wrap items-center gap-x-8 gap-y-2'>
                 <div className='flex items-center'>
                   <TextInput
                     placeholder={t('History.Filter by name or number') || ''}
@@ -497,7 +497,7 @@ export const Filter = forwardRef<HTMLButtonElement, FilterProps>(
                     trailingIcon={true}
                   />
                 </div>
-                <div className='flex'>
+                <div className='flex min-w-0'>
                   <FilterDesktop
                     callTypeFilter={callTypeFilter}
                     callType={callType}
