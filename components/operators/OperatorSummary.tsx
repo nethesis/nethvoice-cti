@@ -26,7 +26,6 @@ import {
 import { faStar as faStarLight } from '@nethesis/nethesis-light-svg-icons'
 import { t } from 'i18next'
 import { isEmpty } from 'lodash'
-import { Tooltip } from 'react-tooltip'
 import { IconProp } from '@fortawesome/fontawesome-svg-core'
 import { CustomThemedTooltip } from '../common/CustomThemedTooltip'
 import { openChatWith, useChatAllowed } from '../chat'
@@ -166,7 +165,7 @@ export const OperatorSummary = forwardRef<HTMLButtonElement, OperatorSummaryProp
                       </span>
                     </IconSwitch>
                     {/* Tooltip for favorite operators toggle */}
-                    <Tooltip className='pi-z-20' id={'tooltip-toggle-favorite'} place='left' />
+                    <CustomThemedTooltip id={'tooltip-toggle-favorite'} place='left' />
                   </>
                 )}
               </div>
