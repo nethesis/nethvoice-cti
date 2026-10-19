@@ -40,7 +40,7 @@ export const MonitorTables: FC<MonitorTablesProps> = ({
             rowCount={selectedRow}
             isFullscreen={isFullscreen}
             onQueueChange={(queue) => onQueueChange(card.id, queue)}
-            onAdd={index === 0 ? onAdd : undefined}
+            onAdd={index === cards.length - 1 ? onAdd : undefined}
             onRemove={index === 0 ? undefined : () => onRemove(card.id)}
           />
         </div>

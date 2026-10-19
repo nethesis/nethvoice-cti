@@ -154,17 +154,17 @@ export const MonitorQueueCard: FC<MonitorQueueCardProps> = ({
             </span>
           </div>
 
-          {onAdd && !isFullscreen && (
-            <Button variant='white' className='ml-2' onClick={onAdd} size='base'>
-              <FontAwesomeIcon icon={faPlus} />
-              <span className='ml-2'>{t('QueueManager.Add queue')} </span>
-            </Button>
-          )}
-
           {onRemove && !isFullscreen && (
             <Button variant='white' className='ml-2' onClick={onRemove} size='base'>
               <FontAwesomeIcon icon={faMinus} />
               <span className='ml-2'>{t('QueueManager.Remove')}</span>
+            </Button>
+          )}
+
+          {onAdd && !isFullscreen && (
+            <Button variant='white' className='ml-2' onClick={onAdd} size='base'>
+              <FontAwesomeIcon icon={faPlus} />
+              <span className='ml-2'>{t('QueueManager.Add queue')} </span>
             </Button>
           )}
         </div>
