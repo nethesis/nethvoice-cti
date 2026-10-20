@@ -1068,7 +1068,7 @@ export function getAlarmTime(date: any) {
 export const cardContent = (icon: any, number: number, description: string) => {
   return (
     <>
-      <div className='rounded-lg shadow-md border-gray-200 dark:border-gray-700 bg-cardBackgroud dark:bg-cardBackgroudDark px-5 py-1 sm: mt-1 relative flex items-center'>
+      <div className='rounded-lg shadow-md border-gray-200 dark:border-gray-700 bg-cardBackgroud dark:bg-cardBackgroudDark px-5 py-1 mt-1 relative flex items-center'>
         <div className='flex items-center space-x-4'>
           <div className='h-10 w-10 flex items-center justify-center rounded-xl bg-emerald-50 dark:bg-emerald-800 mt-1 mb-1'>
             <FontAwesomeIcon

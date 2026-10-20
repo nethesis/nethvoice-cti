@@ -4,13 +4,7 @@
 import { FC, ComponentProps, useEffect, useState, useMemo } from 'react'
 import { useTranslation } from 'react-i18next'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
-import {
-  faChevronDown,
-  faChevronUp,
-  faHeadset,
-  faAngleRight,
-  faCircleNotch,
-} from '@fortawesome/free-solid-svg-icons'
+import { faHeadset, faAngleRight, faCircleNotch } from '@fortawesome/free-solid-svg-icons'
 import { QueueManagementFilterOperators } from './QueueManagementFilterOperators'
 import { debounce, isEmpty } from 'lodash'
 import { Avatar, EmptyState } from '../../common'
@@ -26,6 +20,7 @@ import { RootState } from '../../../store'
 import { getInfiniteScrollOperatorsPageSize, openShowOperatorDrawer } from '../../../lib/operators'
 import { sortByBooleanProperty, sortByProperty } from '../../../lib/utils'
 import { UserActionInQueue } from '../Common/UserActionInQueue'
+import { SectionToggleHeader } from '../Common/SectionToggleHeader'
 
 export interface QueueManagementOperatorsProps extends ComponentProps<'div'> {
   selectedValue: any
@@ -95,7 +90,6 @@ export const QueueManagementOperators: FC<QueueManagementOperatorsProps> = ({
     setInfiniteScrollHasMore(hasMore)
   }
 
-  const [isApplyingFilters, setApplyingFilters]: any = useState(false)
   const [filteredAgentMembers, setFilteredAgentMembers]: any = useState([])
 
   // apply selected filters
@@ -103,7 +97,6 @@ export const QueueManagementOperators: FC<QueueManagementOperatorsProps> = ({
     if (!(statusFilter && sortByFilter)) {
       return
     }
-    setApplyingFilters(true)
     // text filter
     let filteredAgentMembers: any = Object.values(operators).filter((op) =>
       searchStringInQueuesMembers(op, textFilter),
@@ -132,7 +125,6 @@ export const QueueManagementOperators: FC<QueueManagementOperatorsProps> = ({
     setInfiniteScrollOperators(filteredAgentMembers.slice(0, infiniteScrollLastIndex))
     const hasMore = infiniteScrollLastIndex < filteredAgentMembers.length
     setInfiniteScrollHasMore(hasMore)
-    setApplyingFilters(false)
   }
 
   // apply filters when operators data has been loaded and operator menu is opened
@@ -157,27 +149,12 @@ export const QueueManagementOperators: FC<QueueManagementOperatorsProps> = ({
     <>
       <div className='w-2/3 ml-8'>
         {/* Queue operators */}
-        <div className='flex items-center'>
-          <div className='flex items-center'>
-            <FontAwesomeIcon
-              icon={faHeadset}
-              className='h-4 w-4 mr-2 py-2 cursor-pointer flex items-center'
-              aria-hidden='true'
-            />
-            <h2 className='text-base font-semibold text-gray-900 dark:text-gray-100 mr-4'>
-              {t('QueueManager.Queue operators')}
-            </h2>
-          </div>
-          <div className='flex-grow'></div>
-          <div className='flex items-center justify-end h-6 w-6'>
-            <FontAwesomeIcon
-              icon={expandedQueueOperators ? faChevronUp : faChevronDown}
-              className='h-3.5 w-3.5 pl-2 py-2 cursor-pointer flex items-center'
-              aria-hidden='true'
-              onClick={toggleQueueOperators}
-            />
-          </div>
-        </div>
+        <SectionToggleHeader
+          icon={faHeadset}
+          title={t('QueueManager.Queue operators')}
+          expanded={expandedQueueOperators}
+          onToggle={toggleQueueOperators}
+        />
 
         {/* divider */}
         <div className='flex-grow border-b border-gray-200 dark:border-gray-700 mt-1'></div>

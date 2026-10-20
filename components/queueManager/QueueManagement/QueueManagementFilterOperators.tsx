@@ -3,7 +3,7 @@
 
 import { ComponentPropsWithRef, forwardRef, useRef } from 'react'
 import classNames from 'classnames'
-import { TextInput, SideDrawerCloseIcon } from '../../common'
+import { TextInput } from '../../common'
 import { Fragment, useState, useEffect } from 'react'
 import { Dialog, DialogPanel, Disclosure, DisclosureButton, DisclosurePanel, Popover, PopoverButton, PopoverGroup, PopoverPanel, Transition, TransitionChild } from '@headlessui/react'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'

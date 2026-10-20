@@ -175,6 +175,9 @@ export const ROSE_800 = '#9f1239'
 export const ROSE_800_SHADOW = '#9f123999'
 export const ROSE_950 = '#4c0519'
 
+//orange
+export const ORANGE_300 = '#fdba74'
+
 //amber
 export const AMBER_100 = '#fef3c7'
 export const AMBER_200 = '#fde68a'
