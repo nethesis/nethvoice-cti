@@ -430,7 +430,7 @@ export const Summary: FC<SummaryProps> = ({ className }): JSX.Element => {
 
           //Last logout
           if (lastLogout) {
-            agent.queues.lastLogout = getCallTimeToDisplay(lastLogin * 1000)
+            agent.queues.lastLogout = getCallTimeToDisplay(lastLogout * 1000)
           }
 
           //Last calls
