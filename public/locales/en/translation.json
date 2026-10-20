@@ -905,6 +905,12 @@
     "Voice mail": "Voicemail inbox"
   },
   "QueueManager": {
+    "Online": "Online",
+    "On a break": "On a break",
+    "Offline": "Offline",
+    "Busy": "Busy",
+    "Free": "Free",
+    "Operators": "Operators",
     "Descending order": "Descending",
     "Ascending order": "Ascending",
     "No agents found": "No agents found",

@@ -116,8 +116,18 @@ export const RealTimeQueues: FC<RealTimeQueuesProps> = ({
   }
 
   // Labels for queues chart
-  const labelsCalls = ['Waiting calls', 'Connected calls', 'Total']
-  const labelsOperators = ['Online', 'On a break', 'Offline', 'Busy', 'Free']
+  const labelsCalls = [
+    t('QueueManager.Waiting calls'),
+    t('QueueManager.Connected calls'),
+    t('QueueManager.Total'),
+  ]
+  const labelsOperators = [
+    t('QueueManager.Online'),
+    t('QueueManager.On a break'),
+    t('QueueManager.Offline'),
+    t('QueueManager.Busy'),
+    t('QueueManager.Free'),
+  ]
 
   const [filteredQueues, setFilteredQueues]: any = useState({})
 
@@ -231,7 +241,7 @@ export const RealTimeQueues: FC<RealTimeQueuesProps> = ({
                   let realtimeAgentCountersChartData = realTimeAgentCounters.counters[queue.queue]
                   const datasetsQueues = [
                     {
-                      label: 'Calls',
+                      label: t('QueueManager.Calls'),
                       data: [
                         queue.waitingCallersList.length || 0,
                         realtimeAgentCountersChartData.connected || 0,
@@ -249,7 +259,7 @@ export const RealTimeQueues: FC<RealTimeQueuesProps> = ({
                   ]
                   const datasetsOperators = [
                     {
-                      label: 'Operators',
+                      label: t('QueueManager.Operators'),
                       data: [
                         queue.onlineOperators || 0,
                         queue.numPausedOperators || 0,
@@ -319,14 +329,14 @@ export const RealTimeQueues: FC<RealTimeQueuesProps> = ({
                               <BarChartHorizontalWithTitle
                                 labels={labelsCalls}
                                 datasets={datasetsQueues}
-                                titleText='Calls'
+                                titleText={t('QueueManager.Calls') || ''}
                               />
                             </div>
                             <div className='w-full px-8 pt-1 pb-6'>
                               <BarChartHorizontalWithTitle
                                 labels={labelsOperators}
                                 datasets={datasetsOperators}
-                                titleText='Operators'
+                                titleText={t('QueueManager.Operators') || ''}
                               />
                             </div>
                           </>

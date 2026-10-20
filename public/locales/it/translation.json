@@ -914,6 +914,12 @@
     "Call": "Chiama"
   },
   "QueueManager": {
+    "Online": "Online",
+    "On a break": "In pausa",
+    "Offline": "Offline",
+    "Busy": "Occupati",
+    "Free": "Liberi",
+    "Operators": "Operatori",
     "Descending order": "Decrescente",
     "Ascending order": "Crescente",
     "No agents found": "Nessun agente trovato",
