@@ -38,10 +38,6 @@ export interface QueueManagerDashboardHeaderProps extends ComponentProps<'div'> 
 // alarms are evaluated by the server every 30 seconds
 const ALARMS_UPDATE_INTERVAL = 30000
 
-function classNames(...classes: any) {
-  return classes.filter(Boolean).join(' ')
-}
-
 // wraps the card in a dropdown only when there is something to open
 const ConditionalDropdown = ({
   enabled,
@@ -89,19 +85,6 @@ export const QueueManagerDashboardHeader: FC<QueueManagerDashboardHeaderProps> =
   }, [])
 
   // Alarms section
-
-  // Alarm list example to test
-  // const alarmListExample = {
-  //   list: {
-  //     '211': {
-  //       queuefewop: {
-  //         status: 'warning',
-  //         date: new Date().getTime(),
-  //       },
-  //     },
-  //   },
-  //   status: true,
-  // }
 
   // Create a object with all alarms type and description
   const alarmsType = {
@@ -166,7 +149,7 @@ export const QueueManagerDashboardHeader: FC<QueueManagerDashboardHeaderProps> =
         <div className='grid grid-cols-1 gap-4 lg:grid-cols-2 xl:grid-cols-3'>
           {/* Alarm, hidden when the alarms are disabled */}
           {alarmsList?.status === true && (
-            <div className='rounded-lg shadow-md border-gray-200 dark:border-gray-700 bg-cardBackgroud dark:bg-cardBackgroudDark px-5 py-1 sm: mt-1 relative flex items-center'>
+            <div className='rounded-lg shadow-md border-gray-200 dark:border-gray-700 bg-cardBackgroud dark:bg-cardBackgroudDark px-5 py-1 mt-1 relative flex items-center'>
               <div className='w-full'>
                 {/* the card only opens when there is an alarm to show */}
                 <ConditionalDropdown enabled={!isEmpty(alarms)} items={dropdownItems}>

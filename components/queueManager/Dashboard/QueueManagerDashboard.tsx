@@ -3,17 +3,20 @@
 
 import { FC, ComponentProps, useState, useEffect } from 'react'
 import { useTranslation } from 'react-i18next'
-import { Avatar, Button, Dropdown } from '../../common'
+import { Dropdown } from '../../common'
+import {
+  DashboardRankCard,
+  OperatorRankRows,
+  QueueRankRows,
+  RankIndexCell,
+  RankValueCell,
+} from './DashboardRankCard'
 import { isEmpty } from 'lodash'
 import { useSelector } from 'react-redux'
 import { RootState } from '../../../store'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { savePreference } from '../../../lib/storage'
-import {
-  faCheck,
-  faChevronDown,
-  faChevronUp,
-} from '@fortawesome/free-solid-svg-icons'
+import { faCheck, faChevronDown, faChevronUp } from '@fortawesome/free-solid-svg-icons'
 import {
   getQueues,
   getAgentsStats,
@@ -106,7 +109,7 @@ export const QueueManagerDashboard: FC<QueueManagerDashboardProps> = ({
   const [isLoadedQueues, setLoadedQueues] = useState(false)
 
   // Call api interval update ( every 2 minutes)
-  const [updateDashboardInterval, SetUpdateDashboardInterval] = useState(120000)
+  const [updateDashboardInterval] = useState(120000)
 
   useEffect(() => {
     //every tot seconds set loaded queues to false to call api
@@ -256,7 +259,6 @@ export const QueueManagerDashboard: FC<QueueManagerDashboardProps> = ({
   const [totalInvalid, setTotalInvalid] = useState(0)
   const [totalInProgress, setTotalInProgress] = useState(0)
 
-  const [queuesAnswered, setQueuesAnswered] = useState({} as Record<string, any>)
   const [queuesTotalCalls, setQueuesTotalCalls] = useState({} as Record<string, any>)
   const [queuesFailedCalls, setQueuesFailedCalls] = useState({} as Record<string, any>)
   const [queuesInvalidCalls, setQueuesInvalidCalls] = useState({} as Record<string, any>)
@@ -265,7 +267,6 @@ export const QueueManagerDashboard: FC<QueueManagerDashboardProps> = ({
   const [averageCallTimeQueue, setAverageCallTimeQueue] = useState({} as Record<string, any>)
 
   //type of order section
-  const [sortOrderQueuesAnswered, setSortOrderQueuesAnswered] = useState<'asc' | 'desc'>('desc')
   const [sortOrderQueuesTotalCalls, setSortOrderQueuesTotalCalls] = useState<'asc' | 'desc'>('desc')
   const [sortOrderQueuesFailedCalls, setSortOrderQueuesFailedCalls] = useState<'asc' | 'desc'>(
     'desc',
@@ -317,54 +318,16 @@ export const QueueManagerDashboard: FC<QueueManagerDashboardProps> = ({
       const keys = ['tot_processed', 'tot_failed', 'tot', 'tot_null']
       const calculatedRank = getQueuesDashboardRank(keys, queuesList)
 
-      const queuesAnsweredData = Object.values(calculatedRank).map((agent: any, index: number) => ({
-        name: agent.name,
-        queue: agent.queue,
-        values: agent.values.tot_processed,
-      }))
+      const rankBy = (field: string) =>
+        Object.values(calculatedRank).map((queue: any) => ({
+          name: queue.name,
+          queue: queue.queue,
+          values: queue.values[field],
+        }))
 
-      const queuesTotalCallsData = Object.values(calculatedRank).map(
-        (agent: any, index: number) => ({
-          name: agent.name,
-          queue: agent.queue,
-          values: agent.values.tot,
-        }),
-      )
-
-      const queuesFailedCallsData = Object.values(calculatedRank).map(
-        (agent: any, index: number) => ({
-          name: agent.name,
-          queue: agent.queue,
-          values: agent.values.tot_failed,
-        }),
-      )
-
-      const queuesInvalidCallsData = Object.values(calculatedRank).map(
-        (agent: any, index: number) => ({
-          name: agent.name,
-          queue: agent.queue,
-          values: agent.values.tot_null,
-        }),
-      )
-
-      const sortedQueuesAgentsAnswered = sortAgentsData(queuesAnsweredData, sortOrderQueuesAnswered)
-      const sortedQueuesTotalCallsData = sortAgentsData(
-        queuesTotalCallsData,
-        sortOrderQueuesTotalCalls,
-      )
-      const sortedQueuesFailedCalls = sortAgentsData(
-        queuesFailedCallsData,
-        sortOrderQueuesFailedCalls,
-      )
-      const sortedQueuesInvalidCalls = sortAgentsData(
-        queuesInvalidCallsData,
-        sortOrderQueuesInvalidCalls,
-      )
-
-      setQueuesAnswered(sortedQueuesAgentsAnswered)
-      setQueuesTotalCalls(sortedQueuesTotalCallsData)
-      setQueuesFailedCalls(sortedQueuesFailedCalls)
-      setQueuesInvalidCalls(sortedQueuesInvalidCalls)
+      setQueuesTotalCalls(sortAgentsData(rankBy('tot'), sortOrderQueuesTotalCalls))
+      setQueuesFailedCalls(sortAgentsData(rankBy('tot_failed'), sortOrderQueuesFailedCalls))
+      setQueuesInvalidCalls(sortAgentsData(rankBy('tot_null'), sortOrderQueuesInvalidCalls))
 
       //failure calls tables section
       const reasonsToFailCallsKeys = [
@@ -417,7 +380,6 @@ export const QueueManagerDashboard: FC<QueueManagerDashboardProps> = ({
   }, [
     allQueuesStats,
     queuesList,
-    sortOrderQueuesAnswered,
     sortOrderQueuesFailedCalls,
     sortOrderQueuesTotalCalls,
     sortOrderQueuesInvalidCalls,
@@ -650,7 +612,6 @@ export const QueueManagerDashboard: FC<QueueManagerDashboardProps> = ({
         queuesHistory={queuesHistory}
         queuesList={queueManagerStore.queues}
         isLoadedQueues={isLoadedQueues}
-        notManaged={notManaged}
       ></QueueManagerDashboardChart>
 
       {/* Operator statistics section */}
@@ -675,640 +636,97 @@ export const QueueManagerDashboard: FC<QueueManagerDashboardProps> = ({
           <>
             <div className='grid grid-cols-1 gap-6 xl:grid-cols-2 3xl:grid-cols-3 pt-6'>
               {/* Number of answered calls  */}
-              <div>
-                <div className='col-span-1 rounded-md divide-y shadow divide-gray-200 bg-cardBackgroud dark:bg-cardBackgroudDark dark:divide-gray-700'>
-                  {/* card header */}
-                  <div className='flex flex-col pt-3 pb-5 px-5'>
-                    <div className='flex w-full items-center justify-between space-x-6'>
-                      <div className='flex-1 truncate'>
-                        <div className='flex items-center space-x-2 py-1 text-gray-700 dark:text-gray-200'>
-                          <h3 className='truncate text-lg leading-6 font-medium'>
-                            {t('QueueManager.Number of answered calls')}
-                          </h3>
-                        </div>
-                      </div>
-                      <Dropdown items={sortOrderItems(sortOrderAnsweredCalls, setSortOrderAnsweredCalls)} position='left'>
-                        <Button variant='white'>
-                          <span>{t('QueueManager.Order')}</span>
-                          <FontAwesomeIcon
-                            icon={faChevronDown}
-                            className='h-3.5 w-3.5 ml-2'
-                            aria-hidden='true'
-                          />
-                        </Button>
-                      </Dropdown>
-                    </div>
-                  </div>
-                  {/* <div className='flex-grow border-b border-gray-200 dark:border-gray-700'></div> */}
-                  {/* card body */}
-                  <div className='flow-root'>
-                    <div className='-mx-4 -my-2 overflow-x-auto sm:-mx-6 pl-2 pr-2'>
-                      <div className='inline-block min-w-full py-2 align-middle sm:px-6 lg:px-8'>
-                        <table className='min-w-full divide-y divide-gray-300'>
-                          <tbody className='divide-y divide-gray-200 dark:divide-gray-700'>
-                            {/* skeleton */}
-                            {!isLoadedQueues &&
-                              Array.from(Array(5)).map((e, i) => (
-                                <tr key={i}>
-                                  {Array.from(Array(3)).map((e, j) => (
-                                    <td key={j}>
-                                      <div className='px-4 py-6'>
-                                        <div className='animate-pulse h-5 rounded bg-gray-300 dark:bg-gray-600'></div>
-                                      </div>
-                                    </td>
-                                  ))}
-                                </tr>
-                              ))}
-                            {isLoadedQueues &&
-                              Array.from({ length: 5 }).map((_, index) => {
-                                const agent = Object.values(agentsAnswered)[index]
-                                const isRowEmpty = !agent
-
-                                return (
-                                  <tr key={index}>
-                                    <td className='whitespace-nowrap py-2 pl-4 pr-3 text-sm sm:pl-0'>
-                                      <div className='flex items-center justify-center h-full'>
-                                        {index + 1}.
-                                      </div>
-                                    </td>
-                                    <td className='whitespace-nowrap py-3 pl-4 pr-3 text-sm sm:pl-0'>
-                                      <div className='flex items-center'>
-                                        <div className='h-9 w-9 flex-shrink-0 mr-2'>
-                                          {isRowEmpty ? (
-                                            <Avatar
-                                              placeholderType='operator'
-                                              size='small'
-                                              bordered
-                                              className='cursor-pointer'
-                                            />
-                                          ) : (
-                                            <Avatar
-                                              rounded='full'
-                                              src={operators[agent?.shortname]?.avatarBase64}
-                                              placeholderType='operator'
-                                              size='small'
-                                              status={operators[agent?.shortname]?.mainPresence}
-                                              star={operators?.[agent?.shortname]?.favorite}
-                                              onClick={() =>
-                                                openShowOperatorDrawer(operators[agent?.shortname])
-                                              }
-                                              className='cursor-pointer'
-                                            />
-                                          )}
-                                        </div>
-                                        <div
-                                          className='text-gray-900 dark:text-gray-100 cursor-pointer'
-                                          onClick={() =>
-                                            openShowOperatorDrawer(operators[agent?.shortname])
-                                          }
-                                        >
-                                          {isRowEmpty ? '-' : agent?.name}
-                                        </div>
-                                      </div>
-                                    </td>
-                                    <td className='relative whitespace-nowrap py-2 pl-3 pr-4 text-right text-sm font-medium sm:pr-0'>
-                                      {isRowEmpty ? '-' : agent?.values}
-                                    </td>
-                                  </tr>
-                                )
-                              })}
-                          </tbody>
-                        </table>
-                      </div>
-                    </div>
-                  </div>
-                </div>
-              </div>
+              <DashboardRankCard
+                title={t('QueueManager.Number of answered calls')}
+                sortItems={sortOrderItems(sortOrderAnsweredCalls, setSortOrderAnsweredCalls)}
+                isLoading={!isLoadedQueues}
+              >
+                <OperatorRankRows
+                  rows={agentsAnswered}
+                  operators={operators}
+                  onAvatarClick={(agent) => openShowOperatorDrawer(operators[agent?.shortname])}
+                  onNameClick={(agent) => openShowOperatorDrawer(operators[agent?.shortname])}
+                />
+              </DashboardRankCard>
 
               {/* Number of unanswered calls  */}
-              <div>
-                <div className='col-span-1 rounded-md divide-y shadow divide-gray-200 bg-cardBackgroud dark:bg-cardBackgroudDark dark:divide-gray-700'>
-                  {/* card header */}
-                  <div className='flex flex-col pt-3 pb-5 px-5'>
-                    <div className='flex w-full items-center justify-between space-x-6'>
-                      <div className='flex-1 truncate'>
-                        <div className='flex items-center space-x-2 py-1 text-gray-700 dark:text-gray-200'>
-                          <h3 className='truncate text-lg leading-6 font-medium'>
-                            {t('QueueManager.Number of unanswered calls')}
-                          </h3>
-                        </div>
-                      </div>
-                      <Dropdown items={sortOrderItems(sortOrderUnansweredCalls, setSortOrderUnansweredCalls)} position='left'>
-                        <Button variant='white'>
-                          <span>{t('QueueManager.Order')}</span>
-                          <FontAwesomeIcon
-                            icon={faChevronDown}
-                            className='h-3.5 w-3.5 ml-2'
-                            aria-hidden='true'
-                          />
-                        </Button>
-                      </Dropdown>
-                    </div>
-                  </div>
-                  <div className='flex-grow border-b border-gray-200 dark:border-gray-700'></div>
-                  {/* card body */}
-                  <div className='flow-root'>
-                    <div className='-mx-4 -my-2 overflow-x-auto sm:-mx-6 pl-2 pr-2'>
-                      <div className='inline-block min-w-full py-2 align-middle sm:px-6 lg:px-8'>
-                        <table className='min-w-full divide-y divide-gray-300'>
-                          <tbody className='divide-y divide-gray-200 dark:divide-gray-700'>
-                            {/* skeleton */}
-                            {!isLoadedQueues &&
-                              Array.from(Array(5)).map((e, i) => (
-                                <tr key={i}>
-                                  {Array.from(Array(3)).map((e, j) => (
-                                    <td key={j}>
-                                      <div className='px-4 py-6'>
-                                        <div className='animate-pulse h-5 rounded bg-gray-300 dark:bg-gray-600'></div>
-                                      </div>
-                                    </td>
-                                  ))}
-                                </tr>
-                              ))}
-                            {isLoadedQueues &&
-                              Array.from({ length: 5 }).map((_, index) => {
-                                const agent = Object.values(agentsLost)[index]
-                                const isRowEmpty = !agent
-
-                                return (
-                                  <tr key={index}>
-                                    <td className='whitespace-nowrap py-2 pl-4 pr-3 text-sm sm:pl-0'>
-                                      <div className='flex items-center justify-center h-full'>
-                                        {index + 1}.
-                                      </div>
-                                    </td>
-                                    <td className='whitespace-nowrap py-3 pl-4 pr-3 text-sm sm:pl-0'>
-                                      <div className='flex items-center'>
-                                        <div className='h-9 w-9 flex-shrink-0 mr-2'>
-                                          {isRowEmpty ? (
-                                            <Avatar
-                                              placeholderType='operator'
-                                              size='small'
-                                              bordered
-                                              className='cursor-pointer'
-                                            />
-                                          ) : (
-                                            <Avatar
-                                              rounded='full'
-                                              src={operators[agent?.shortname]?.avatarBase64}
-                                              placeholderType='operator'
-                                              size='small'
-                                              status={operators[agent?.shortname]?.mainPresence}
-                                              star={operators[agent?.shortname]?.favorite}
-                                              onClick={() =>
-                                                openShowOperatorDrawer(operators[agent?.shortname])
-                                              }
-                                              className='cursor-pointer'
-                                            />
-                                          )}
-                                        </div>
-                                        <div
-                                          className='text-gray-900 dark:text-gray-100 cursor-pointer'
-                                          onClick={() =>
-                                            setOperatorInformationDrawer(agent, operatorsStore)
-                                          }
-                                        >
-                                          {isRowEmpty ? '-' : agent?.name}
-                                        </div>
-                                      </div>
-                                    </td>
-                                    <td className='relative whitespace-nowrap py-2 pl-3 pr-4 text-right text-sm font-medium sm:pr-0'>
-                                      {isRowEmpty ? '-' : agent?.values}
-                                    </td>
-                                  </tr>
-                                )
-                              })}
-                          </tbody>
-                        </table>
-                      </div>
-                    </div>
-                  </div>
-                </div>
-              </div>
+              <DashboardRankCard
+                title={t('QueueManager.Number of unanswered calls')}
+                sortItems={sortOrderItems(sortOrderUnansweredCalls, setSortOrderUnansweredCalls)}
+                isLoading={!isLoadedQueues}
+                withDivider
+              >
+                <OperatorRankRows
+                  rows={agentsLost}
+                  operators={operators}
+                  onAvatarClick={(agent) => openShowOperatorDrawer(operators[agent?.shortname])}
+                  onNameClick={(agent) => setOperatorInformationDrawer(agent, operatorsStore)}
+                />
+              </DashboardRankCard>
 
               {/* Pause on login  */}
-              <div>
-                <div className='col-span-1 rounded-md divide-y shadow divide-gray-200 bg-cardBackgroud dark:bg-cardBackgroudDark dark:divide-gray-700'>
-                  {/* card header */}
-                  <div className='flex flex-col pt-3 pb-5 px-5'>
-                    <div className='flex w-full items-center justify-between space-x-6'>
-                      <div className='flex-1 truncate'>
-                        <div className='flex items-center space-x-2 py-1 text-gray-700 dark:text-gray-200'>
-                          <h3 className='truncate text-lg leading-6 font-medium'>
-                            {t('QueueManager.Pause on login')}
-                          </h3>
-                        </div>
-                      </div>
-                      <Dropdown items={sortOrderItems(sortOrderPauseOnLogin, setSortOrderPauseOnLogin)} position='left'>
-                        <Button variant='white'>
-                          <span>{t('QueueManager.Order')}</span>
-                          <FontAwesomeIcon
-                            icon={faChevronDown}
-                            className='h-3.5 w-3.5 ml-2'
-                            aria-hidden='true'
-                          />
-                        </Button>
-                      </Dropdown>
-                    </div>
-                  </div>
-                  <div className='flex-grow border-b border-gray-200 dark:border-gray-700'></div>
-                  {/* card body */}
-                  <div className='flow-root'>
-                    <div className='-mx-4 -my-2 overflow-x-auto sm:-mx-6 pl-2 pr-2'>
-                      <div className='inline-block min-w-full py-2 align-middle sm:px-6 lg:px-8'>
-                        <table className='min-w-full divide-y divide-gray-300'>
-                          <tbody className='divide-y divide-gray-200 dark:divide-gray-700'>
-                            {/* skeleton */}
-                            {!isLoadedQueues &&
-                              Array.from(Array(5)).map((e, i) => (
-                                <tr key={i}>
-                                  {Array.from(Array(3)).map((e, j) => (
-                                    <td key={j}>
-                                      <div className='px-4 py-6'>
-                                        <div className='animate-pulse h-5 rounded bg-gray-300 dark:bg-gray-600'></div>
-                                      </div>
-                                    </td>
-                                  ))}
-                                </tr>
-                              ))}
-                            {isLoadedQueues &&
-                              Array.from({ length: 5 }).map((_, index) => {
-                                const agent = Object.values(agentsPauseOnLogon)[index]
-                                const isRowEmpty = !agent
-
-                                return (
-                                  <tr key={index}>
-                                    <td className='whitespace-nowrap py-2 pl-4 pr-3 text-sm sm:pl-0'>
-                                      <div className='flex items-center justify-center h-full'>
-                                        {index + 1}.
-                                      </div>
-                                    </td>
-                                    <td className='whitespace-nowrap py-3 pl-4 pr-3 text-sm sm:pl-0'>
-                                      <div className='flex items-center'>
-                                        <div className='h-9 w-9 flex-shrink-0 mr-2'>
-                                          {isRowEmpty ? (
-                                            <Avatar
-                                              placeholderType='operator'
-                                              size='small'
-                                              bordered
-                                              className='cursor-pointer'
-                                            />
-                                          ) : (
-                                            <Avatar
-                                              rounded='full'
-                                              src={operators[agent.shortname]?.avatarBase64}
-                                              placeholderType='operator'
-                                              size='small'
-                                              status={operators[agent.shortname]?.mainPresence}
-                                              star={operators[agent.shortname]?.favorite}
-                                              onClick={() =>
-                                                openShowOperatorDrawer(operators[agent.shortname])
-                                              }
-                                              className='cursor-pointer'
-                                            />
-                                          )}
-                                        </div>
-                                        <div
-                                          className='text-gray-900 dark:text-gray-100 cursor-pointer'
-                                          onClick={() =>
-                                            setOperatorInformationDrawer(agent, operatorsStore)
-                                          }
-                                        >
-                                          {isRowEmpty ? '-' : agent.name}
-                                        </div>
-                                      </div>
-                                    </td>
-                                    <td className='relative whitespace-nowrap py-2 pl-3 pr-4 text-right text-sm font-medium sm:pr-0'>
-                                      {isRowEmpty ? '-' : `${agent.values}%`}
-                                    </td>
-                                  </tr>
-                                )
-                              })}
-                          </tbody>
-                        </table>
-                      </div>
-                    </div>
-                  </div>
-                </div>
-              </div>
+              <DashboardRankCard
+                title={t('QueueManager.Pause on login')}
+                sortItems={sortOrderItems(sortOrderPauseOnLogin, setSortOrderPauseOnLogin)}
+                isLoading={!isLoadedQueues}
+                withDivider
+              >
+                <OperatorRankRows
+                  rows={agentsPauseOnLogon}
+                  operators={operators}
+                  onAvatarClick={(agent) => openShowOperatorDrawer(operators[agent?.shortname])}
+                  onNameClick={(agent) => setOperatorInformationDrawer(agent, operatorsStore)}
+                  formatValue={(value) => `${value}%`}
+                />
+              </DashboardRankCard>
 
               {/* Time on login  */}
-              <div>
-                <div className='col-span-1 rounded-md divide-y shadow divide-gray-200 bg-cardBackgroud dark:bg-cardBackgroudDark dark:divide-gray-700'>
-                  {/* card header */}
-                  <div className='flex flex-col pt-3 pb-5 px-5'>
-                    <div className='flex w-full items-center justify-between space-x-6'>
-                      <div className='flex-1 truncate'>
-                        <div className='flex items-center space-x-2 py-1 text-gray-700 dark:text-gray-200'>
-                          <h3 className='truncate text-lg leading-6 font-medium'>
-                            {t('QueueManager.Time on login')}
-                          </h3>
-                        </div>
-                      </div>
-                      <Dropdown items={sortOrderItems(sortOrderAgentsLoginTime, setSortOrderAgentsLoginTime)} position='left'>
-                        <Button variant='white'>
-                          <span>{t('QueueManager.Order')}</span>
-                          <FontAwesomeIcon
-                            icon={faChevronDown}
-                            className='h-3.5 w-3.5 ml-2'
-                            aria-hidden='true'
-                          />
-                        </Button>
-                      </Dropdown>
-                    </div>
-                  </div>
-                  <div className='flex-grow border-b border-gray-200 dark:border-gray-700'></div>
-                  {/* card body */}
-                  <div className='flow-root'>
-                    <div className='-mx-4 -my-2 overflow-x-auto sm:-mx-6 pl-2 pr-2'>
-                      <div className='inline-block min-w-full py-2 align-middle sm:px-6 lg:px-8'>
-                        <table className='min-w-full divide-y divide-gray-300'>
-                          <tbody className='divide-y divide-gray-200 dark:divide-gray-700'>
-                            {/* skeleton */}
-                            {!isLoadedQueues &&
-                              Array.from(Array(5)).map((e, i) => (
-                                <tr key={i}>
-                                  {Array.from(Array(3)).map((e, j) => (
-                                    <td key={j}>
-                                      <div className='px-4 py-6'>
-                                        <div className='animate-pulse h-5 rounded bg-gray-300 dark:bg-gray-600'></div>
-                                      </div>
-                                    </td>
-                                  ))}
-                                </tr>
-                              ))}
-                            {isLoadedQueues &&
-                              Array.from({ length: 5 }).map((_, index) => {
-                                const agent = Object.values(agentsLoginTime)[index]
-                                const isRowEmpty = !agent
-
-                                return (
-                                  <tr key={index}>
-                                    <td className='whitespace-nowrap py-2 pl-4 pr-3 text-sm sm:pl-0'>
-                                      <div className='flex items-center justify-center h-full'>
-                                        {index + 1}.
-                                      </div>
-                                    </td>
-                                    <td className='whitespace-nowrap py-3 pl-4 pr-3 text-sm sm:pl-0'>
-                                      <div className='flex items-center'>
-                                        <div className='h-9 w-9 flex-shrink-0 mr-2'>
-                                          {isRowEmpty ? (
-                                            <Avatar
-                                              placeholderType='operator'
-                                              size='small'
-                                              bordered
-                                              className='cursor-pointer'
-                                            />
-                                          ) : (
-                                            <Avatar
-                                              rounded='full'
-                                              src={operators[agent.shortname]?.avatarBase64}
-                                              placeholderType='operator'
-                                              size='small'
-                                              status={operators[agent.shortname]?.mainPresence}
-                                              star={operators[agent.shortname]?.favorite}
-                                              onClick={() =>
-                                                openShowOperatorDrawer(operators[agent.shortname])
-                                              }
-                                              className='cursor-pointer'
-                                            />
-                                          )}
-                                        </div>
-                                        <div
-                                          className='text-gray-900 dark:text-gray-100 cursor-pointer'
-                                          onClick={() =>
-                                            setOperatorInformationDrawer(agent, operatorsStore)
-                                          }
-                                        >
-                                          {isRowEmpty ? '-' : agent.name}
-                                        </div>
-                                      </div>
-                                    </td>
-                                    <td className='relative whitespace-nowrap py-2 pl-3 pr-4 text-right text-sm font-medium sm:pr-0'>
-                                      {isRowEmpty ? '-' : convertToHumanReadable(agent.values)}
-                                    </td>
-                                  </tr>
-                                )
-                              })}
-                          </tbody>
-                        </table>
-                      </div>
-                    </div>
-                  </div>
-                </div>
-              </div>
+              <DashboardRankCard
+                title={t('QueueManager.Time on login')}
+                sortItems={sortOrderItems(sortOrderAgentsLoginTime, setSortOrderAgentsLoginTime)}
+                isLoading={!isLoadedQueues}
+                withDivider
+              >
+                <OperatorRankRows
+                  rows={agentsLoginTime}
+                  operators={operators}
+                  onAvatarClick={(agent) => openShowOperatorDrawer(operators[agent?.shortname])}
+                  onNameClick={(agent) => setOperatorInformationDrawer(agent, operatorsStore)}
+                  formatValue={(value) => convertToHumanReadable(value)}
+                />
+              </DashboardRankCard>
 
               {/* Pause time  */}
-              <div>
-                <div className='col-span-1 rounded-md divide-y shadow divide-gray-200 bg-cardBackgroud dark:bg-cardBackgroudDark dark:divide-gray-700'>
-                  {/* card header */}
-                  <div className='flex flex-col pt-3 pb-5 px-5'>
-                    <div className='flex w-full items-center justify-between space-x-6'>
-                      <div className='flex-1 truncate'>
-                        <div className='flex items-center space-x-2 py-1 text-gray-700 dark:text-gray-200'>
-                          <h3 className='truncate text-lg leading-6 font-medium'>
-                            {t('QueueManager.Pause time')}
-                          </h3>
-                        </div>
-                      </div>
-                      <Dropdown items={sortOrderItems(sortOrderAgentsPauseTime, setSortOrderAgentsPauseTime)} position='left'>
-                        <Button variant='white'>
-                          <span>{t('QueueManager.Order')}</span>
-                          <FontAwesomeIcon
-                            icon={faChevronDown}
-                            className='h-3.5 w-3.5 ml-2'
-                            aria-hidden='true'
-                          />
-                        </Button>
-                      </Dropdown>
-                    </div>
-                  </div>
-                  <div className='flex-grow border-b border-gray-200 dark:border-gray-700'></div>
-                  {/* card body */}
-                  <div className='flow-root'>
-                    <div className='-mx-4 -my-2 overflow-x-auto sm:-mx-6 pl-2 pr-2'>
-                      <div className='inline-block min-w-full py-2 align-middle sm:px-6 lg:px-8'>
-                        <table className='min-w-full divide-y divide-gray-300'>
-                          <tbody className='divide-y divide-gray-200 dark:divide-gray-700'>
-                            {/* skeleton */}
-                            {!isLoadedQueues &&
-                              Array.from(Array(5)).map((e, i) => (
-                                <tr key={i}>
-                                  {Array.from(Array(3)).map((e, j) => (
-                                    <td key={j}>
-                                      <div className='px-4 py-6'>
-                                        <div className='animate-pulse h-5 rounded bg-gray-300 dark:bg-gray-600'></div>
-                                      </div>
-                                    </td>
-                                  ))}
-                                </tr>
-                              ))}
-                            {isLoadedQueues &&
-                              Array.from({ length: 5 }).map((_, index) => {
-                                const agent = Object.values(agentsPauseTime)[index]
-                                const isRowEmpty = !agent
-
-                                return (
-                                  <tr key={index}>
-                                    <td className='whitespace-nowrap py-2 pl-4 pr-3 text-sm sm:pl-0'>
-                                      <div className='flex items-center justify-center h-full'>
-                                        {index + 1}.
-                                      </div>
-                                    </td>
-                                    <td className='whitespace-nowrap py-3 pl-4 pr-3 text-sm sm:pl-0'>
-                                      <div className='flex items-center'>
-                                        <div className='h-9 w-9 flex-shrink-0 mr-2'>
-                                          {isRowEmpty ? (
-                                            <Avatar
-                                              placeholderType='operator'
-                                              size='small'
-                                              bordered
-                                              className='cursor-pointer'
-                                            />
-                                          ) : (
-                                            <Avatar
-                                              rounded='full'
-                                              src={operators[agent.shortname]?.avatarBase64}
-                                              placeholderType='operator'
-                                              size='small'
-                                              status={operators[agent.shortname]?.mainPresence}
-                                              star={operators[agent.shortname]?.favorite}
-                                              onClick={() =>
-                                                openShowOperatorDrawer(operators[agent.shortname])
-                                              }
-                                              className='cursor-pointer'
-                                            />
-                                          )}
-                                        </div>
-                                        <div
-                                          className='text-gray-900 dark:text-gray-100 cursor-pointer'
-                                          onClick={() =>
-                                            setOperatorInformationDrawer(agent, operatorsStore)
-                                          }
-                                        >
-                                          {isRowEmpty ? '-' : agent.name}
-                                        </div>
-                                      </div>
-                                    </td>
-                                    <td className='relative whitespace-nowrap py-2 pl-3 pr-4 text-right text-sm font-medium sm:pr-0'>
-                                      {isRowEmpty ? '-' : convertToHumanReadable(agent.values)}
-                                    </td>
-                                  </tr>
-                                )
-                              })}
-                          </tbody>
-                        </table>
-                      </div>
-                    </div>
-                  </div>
-                </div>
-              </div>
+              <DashboardRankCard
+                title={t('QueueManager.Pause time')}
+                sortItems={sortOrderItems(sortOrderAgentsPauseTime, setSortOrderAgentsPauseTime)}
+                isLoading={!isLoadedQueues}
+                withDivider
+              >
+                <OperatorRankRows
+                  rows={agentsPauseTime}
+                  operators={operators}
+                  onAvatarClick={(agent) => openShowOperatorDrawer(operators[agent?.shortname])}
+                  onNameClick={(agent) => setOperatorInformationDrawer(agent, operatorsStore)}
+                  formatValue={(value) => convertToHumanReadable(value)}
+                />
+              </DashboardRankCard>
 
               {/* In call percentage */}
-              <div>
-                <div className='col-span-1 rounded-md divide-y shadow divide-gray-200 bg-cardBackgroud dark:bg-cardBackgroudDark dark:divide-gray-700'>
-                  {/* card header */}
-                  <div className='flex flex-col pt-3 pb-5 px-5'>
-                    <div className='flex w-full items-center justify-between space-x-6'>
-                      <div className='flex-1 truncate'>
-                        <div className='flex items-center space-x-2 py-1 text-gray-700 dark:text-gray-200'>
-                          <h3 className='truncate text-lg leading-6 font-medium'>
-                            {t('QueueManager.In call percentage')}
-                          </h3>
-                        </div>
-                      </div>
-                      <Dropdown items={sortOrderItems(sortOrderInCallPercentage, setSortOrderInCallPercentage)} position='left'>
-                        <Button variant='white'>
-                          <span>{t('QueueManager.Order')}</span>
-                          <FontAwesomeIcon
-                            icon={faChevronDown}
-                            className='h-3.5 w-3.5 ml-2'
-                            aria-hidden='true'
-                          />
-                        </Button>
-                      </Dropdown>
-                    </div>
-                  </div>
-                  <div className='flex-grow border-b border-gray-200 dark:border-gray-700'></div>
-                  {/* card body */}
-                  <div className='flow-root'>
-                    <div className='-mx-4 -my-2 overflow-x-auto sm:-mx-6 pl-2 pr-2'>
-                      <div className='inline-block min-w-full py-2 align-middle sm:px-6 lg:px-8'>
-                        <table className='min-w-full divide-y divide-gray-300'>
-                          <tbody className='divide-y divide-gray-200 dark:divide-gray-700'>
-                            {/* skeleton */}
-                            {!isLoadedQueues &&
-                              Array.from(Array(5)).map((e, i) => (
-                                <tr key={i}>
-                                  {Array.from(Array(3)).map((e, j) => (
-                                    <td key={j}>
-                                      <div className='px-4 py-6'>
-                                        <div className='animate-pulse h-5 rounded bg-gray-300 dark:bg-gray-600'></div>
-                                      </div>
-                                    </td>
-                                  ))}
-                                </tr>
-                              ))}
-                            {isLoadedQueues &&
-                              Array.from({ length: 5 }).map((_, index) => {
-                                const agent = Object.values(inCallPercentage)[index]
-                                const isRowEmpty = !agent
-
-                                return (
-                                  <tr key={index}>
-                                    <td className='whitespace-nowrap py-2 pl-4 pr-3 text-sm sm:pl-0'>
-                                      <div className='flex items-center justify-center h-full'>
-                                        {index + 1}.
-                                      </div>
-                                    </td>
-                                    <td className='whitespace-nowrap py-3 pl-4 pr-3 text-sm sm:pl-0'>
-                                      <div className='flex items-center'>
-                                        <div className='h-9 w-9 flex-shrink-0 mr-2'>
-                                          {isRowEmpty ? (
-                                            <Avatar
-                                              placeholderType='operator'
-                                              size='small'
-                                              bordered
-                                              className='cursor-pointer'
-                                            />
-                                          ) : (
-                                            <Avatar
-                                              rounded='full'
-                                              src={operators[agent?.shortname]?.avatarBase64}
-                                              placeholderType='operator'
-                                              size='small'
-                                              status={operators[agent?.shortname]?.mainPresence}
-                                              star={operators[agent?.shortname]?.favorite}
-                                              onClick={() =>
-                                                openShowOperatorDrawer(operators[agent?.shortname])
-                                              }
-                                              className='cursor-pointer'
-                                            />
-                                          )}
-                                        </div>
-                                        <div
-                                          className='text-gray-900 dark:text-gray-100 cursor-pointer'
-                                          onClick={() =>
-                                            setOperatorInformationDrawer(agent, operatorsStore)
-                                          }
-                                        >
-                                          {isRowEmpty ? '-' : agent?.name}
-                                        </div>
-                                      </div>
-                                    </td>
-                                    <td className='relative whitespace-nowrap py-2 pl-3 pr-4 text-right text-sm font-medium sm:pr-0'>
-                                      {isRowEmpty ? '-' : `${agent?.values}%`}
-                                    </td>
-                                  </tr>
-                                )
-                              })}
-                          </tbody>
-                        </table>
-                      </div>
-                    </div>
-                  </div>
-                </div>
-              </div>
+              <DashboardRankCard
+                title={t('QueueManager.In call percentage')}
+                sortItems={sortOrderItems(sortOrderInCallPercentage, setSortOrderInCallPercentage)}
+                isLoading={!isLoadedQueues}
+                withDivider
+              >
+                <OperatorRankRows
+                  rows={inCallPercentage}
+                  operators={operators}
+                  onAvatarClick={(agent) => openShowOperatorDrawer(operators[agent?.shortname])}
+                  onNameClick={(agent) => setOperatorInformationDrawer(agent, operatorsStore)}
+                  formatValue={(value) => `${value}%`}
+                />
+              </DashboardRankCard>
             </div>
           </>
         )}
@@ -1334,490 +752,112 @@ export const QueueManagerDashboard: FC<QueueManagerDashboardProps> = ({
           <>
             <div className='grid grid-cols-1 gap-6 xl:grid-cols-2 3xl:grid-cols-3 pt-6'>
               {/* Total calls  */}
-              <div>
-                <div className='col-span-1 rounded-md divide-y shadow divide-gray-200 bg-cardBackgroud dark:bg-cardBackgroudDark dark:divide-gray-700'>
-                  {/* card header */}
-                  <div className='flex flex-col pt-3 pb-5 px-5'>
-                    <div className='flex w-full items-center justify-between space-x-6'>
-                      <div className='flex-1 truncate'>
-                        <div className='flex items-center space-x-2 py-1 text-gray-700 dark:text-gray-200'>
-                          <h3 className='truncate text-lg leading-6 font-medium'>
-                            {t('QueueManager.Total calls')}
-                          </h3>
-                        </div>
-                      </div>
-                      <Dropdown items={sortOrderItems(sortOrderQueuesTotalCalls, setSortOrderQueuesTotalCalls)} position='left'>
-                        <Button variant='white'>
-                          <span>{t('QueueManager.Order')}</span>
-                          <FontAwesomeIcon
-                            icon={faChevronDown}
-                            className='h-3.5 w-3.5 ml-2'
-                            aria-hidden='true'
-                          />
-                        </Button>
-                      </Dropdown>
-                    </div>
-                  </div>
-                  {/* <div className='flex-grow border-b border-gray-200 dark:border-gray-700'></div> */}
-                  {/* card body */}
-                  <div className='flow-root'>
-                    <div className='-mx-4 -my-2 overflow-x-auto sm:-mx-6 pl-2 pr-2'>
-                      <div className='inline-block min-w-full py-2 align-middle sm:px-6 lg:px-8'>
-                        <table className='min-w-full divide-y divide-gray-300'>
-                          <tbody className='divide-y divide-gray-200 dark:divide-gray-700'>
-                            {/* skeleton */}
-                            {!isLoadedQueues &&
-                              Array.from(Array(5)).map((e, i) => (
-                                <tr key={i}>
-                                  {Array.from(Array(3)).map((e, j) => (
-                                    <td key={j}>
-                                      <div className='px-4 py-6'>
-                                        <div className='animate-pulse h-5 rounded bg-gray-300 dark:bg-gray-600'></div>
-                                      </div>
-                                    </td>
-                                  ))}
-                                </tr>
-                              ))}
-                            {isLoadedQueues &&
-                              Object.values(queuesTotalCalls).map((queue: any, index: number) => (
-                                <tr key={index}>
-                                  <td className='whitespace-nowrap py-2 pl-4 pr-3 text-sm sm:pl-0'>
-                                    <div className='flex items-center justify-center h-full'>
-                                      {index + 1}.
-                                    </div>
-                                  </td>
-                                  <td className='whitespace-nowrap py-3 pl-4 pr-3 text-sm sm:pl-0'>
-                                    <div className='flex items-center py-3'>
-                                      <div className='text-gray-900 dark:text-gray-100'>
-                                        {queue.name}
-                                      </div>
-                                    </div>
-                                  </td>
-                                  <td className='relative whitespace-nowrap py-2 pl-3 pr-4 text-right text-sm font-medium sm:pr-0'>
-                                    {queue.values}
-                                  </td>
-                                </tr>
-                              ))}
-                          </tbody>
-                        </table>
-                      </div>
-                    </div>
-                  </div>
-                </div>
-              </div>
+              <DashboardRankCard
+                title={t('QueueManager.Total calls')}
+                sortItems={sortOrderItems(sortOrderQueuesTotalCalls, setSortOrderQueuesTotalCalls)}
+                isLoading={!isLoadedQueues}
+              >
+                <QueueRankRows rows={queuesTotalCalls} />
+              </DashboardRankCard>
 
               {/* Unanswered calls  */}
-              <div>
-                <div className='col-span-1 rounded-md divide-y shadow divide-gray-200 bg-cardBackgroud dark:bg-cardBackgroudDark dark:divide-gray-700'>
-                  {/* card header */}
-                  <div className='flex flex-col pt-3 pb-5 px-5'>
-                    <div className='flex w-full items-center justify-between space-x-6'>
-                      <div className='flex-1 truncate'>
-                        <div className='flex items-center space-x-2 py-1 text-gray-700 dark:text-gray-200'>
-                          <h3 className='truncate text-lg leading-6 font-medium'>
-                            {t('QueueManager.Unanswered calls')}
-                          </h3>
-                        </div>
-                      </div>
-                      <Dropdown items={sortOrderItems(sortOrderQueuesFailedCalls, setSortOrderQueuesFailedCalls)} position='left'>
-                        <Button variant='white'>
-                          <span>{t('QueueManager.Order')}</span>
-                          <FontAwesomeIcon
-                            icon={faChevronDown}
-                            className='h-3.5 w-3.5 ml-2'
-                            aria-hidden='true'
-                          />
-                        </Button>
-                      </Dropdown>
-                    </div>
-                  </div>
-                  {/* <div className='flex-grow border-b border-gray-200 dark:border-gray-700'></div> */}
-                  {/* card body */}
-                  <div className='flow-root'>
-                    <div className='-mx-4 -my-2 overflow-x-auto sm:-mx-6 pl-2 pr-2'>
-                      <div className='inline-block min-w-full py-2 align-middle sm:px-6 lg:px-8'>
-                        <table className='min-w-full divide-y divide-gray-300'>
-                          <tbody className='divide-y  dark:divide-gray-700'>
-                            {/* skeleton */}
-                            {!isLoadedQueues &&
-                              Array.from(Array(5)).map((e, i) => (
-                                <tr key={i}>
-                                  {Array.from(Array(3)).map((e, j) => (
-                                    <td key={j}>
-                                      <div className='px-4 py-6'>
-                                        <div className='animate-pulse h-5 rounded bg-gray-300 dark:bg-gray-600'></div>
-                                      </div>
-                                    </td>
-                                  ))}
-                                </tr>
-                              ))}
-                            {isLoadedQueues &&
-                              Object.values(queuesFailedCalls).map((queue: any, index: number) => (
-                                <tr key={index}>
-                                  <td className='whitespace-nowrap py-2 pl-4 pr-3 text-sm sm:pl-0'>
-                                    <div className='flex items-center justify-center h-full'>
-                                      {index + 1}.
-                                    </div>
-                                  </td>
-                                  <td className='whitespace-nowrap py-3 pl-4 pr-3 text-sm sm:pl-0'>
-                                    <div className='flex items-center py-3'>
-                                      <div className='text-gray-900 dark:text-gray-100'>
-                                        {queue.name}
-                                      </div>
-                                    </div>
-                                  </td>
-                                  <td className='relative whitespace-nowrap py-2 pl-3 pr-4 text-right text-sm font-medium sm:pr-0'>
-                                    {queue.values}
-                                  </td>
-                                </tr>
-                              ))}
-                          </tbody>
-                        </table>
-                      </div>
-                    </div>
-                  </div>
-                </div>
-              </div>
+              <DashboardRankCard
+                title={t('QueueManager.Unanswered calls')}
+                sortItems={sortOrderItems(
+                  sortOrderQueuesFailedCalls,
+                  setSortOrderQueuesFailedCalls,
+                )}
+                isLoading={!isLoadedQueues}
+              >
+                <QueueRankRows rows={queuesFailedCalls} />
+              </DashboardRankCard>
 
               {/* Invalid calls  */}
-              <div>
-                <div className='col-span-1 rounded-md divide-y shadow divide-gray-200 bg-cardBackgroud dark:bg-cardBackgroudDark dark:divide-gray-700'>
-                  {/* card header */}
-                  <div className='flex flex-col pt-3 pb-5 px-5'>
-                    <div className='flex w-full items-center justify-between space-x-6'>
-                      <div className='flex-1 truncate'>
-                        <div className='flex items-center space-x-2 py-1 text-gray-700 dark:text-gray-200'>
-                          <h3 className='truncate text-lg leading-6 font-medium'>
-                            {t('QueueManager.Invalid calls')}
-                          </h3>
-                        </div>
-                      </div>
-                      <Dropdown items={sortOrderItems(sortOrderQueuesInvalidCalls, setSortOrderQueuesInvalidCalls)} position='left'>
-                        <Button variant='white'>
-                          <span>{t('QueueManager.Order')}</span>
-                          <FontAwesomeIcon
-                            icon={faChevronDown}
-                            className='h-3.5 w-3.5 ml-2'
-                            aria-hidden='true'
-                          />
-                        </Button>
-                      </Dropdown>
-                    </div>
-                  </div>
-                  {/* <div className='flex-grow border-b border-gray-200 dark:border-gray-700'></div> */}
-                  {/* card body */}
-                  <div className='flow-root'>
-                    <div className='-mx-4 -my-2 overflow-x-auto sm:-mx-6 pl-2 pr-2'>
-                      <div className='inline-block min-w-full py-2 align-middle sm:px-6 lg:px-8'>
-                        <table className='min-w-full divide-y divide-gray-300'>
-                          <tbody className='divide-y divide-gray-200 dark:divide-gray-700'>
-                            {/* skeleton */}
-                            {!isLoadedQueues &&
-                              Array.from(Array(5)).map((e, i) => (
-                                <tr key={i}>
-                                  {Array.from(Array(3)).map((e, j) => (
-                                    <td key={j}>
-                                      <div className='px-4 py-6'>
-                                        <div className='animate-pulse h-5 rounded bg-gray-300 dark:bg-gray-600'></div>
-                                      </div>
-                                    </td>
-                                  ))}
-                                </tr>
-                              ))}
-                            {isLoadedQueues &&
-                              Object.values(queuesInvalidCalls).map((queue: any, index: number) => (
-                                <tr key={index}>
-                                  <td className='whitespace-nowrap py-2 pl-4 pr-3 text-sm sm:pl-0'>
-                                    <div className='flex items-center justify-center h-full'>
-                                      {index + 1}.
-                                    </div>
-                                  </td>
-                                  <td className='whitespace-nowrap py-3 pl-4 pr-3 text-sm sm:pl-0'>
-                                    <div className='flex items-center py-3'>
-                                      <div className='text-gray-900 dark:text-gray-100'>
-                                        {queue.name}
-                                      </div>
-                                    </div>
-                                  </td>
-                                  <td className='relative whitespace-nowrap py-2 pl-3 pr-4 text-right text-sm font-medium sm:pr-0'>
-                                    {queue.values}
-                                  </td>
-                                </tr>
-                              ))}
-                          </tbody>
-                        </table>
-                      </div>
-                    </div>
-                  </div>
-                </div>
-              </div>
+              <DashboardRankCard
+                title={t('QueueManager.Invalid calls')}
+                sortItems={sortOrderItems(
+                  sortOrderQueuesInvalidCalls,
+                  setSortOrderQueuesInvalidCalls,
+                )}
+                isLoading={!isLoadedQueues}
+              >
+                <QueueRankRows rows={queuesInvalidCalls} />
+              </DashboardRankCard>
 
               {/* Missed call reasons  */}
-              <div>
-                <div className='col-span-1 rounded-md divide-y shadow divide-gray-200 bg-cardBackgroud dark:bg-cardBackgroudDark dark:divide-gray-700'>
-                  {/* card header */}
-                  <div className='flex flex-col pt-3 pb-5 px-5'>
-                    <div className='flex w-full items-center justify-between space-x-6'>
-                      <div className='flex-1 truncate'>
-                        <div className='flex items-center space-x-2 py-1 text-gray-700 dark:text-gray-200'>
-                          <h3 className='truncate text-lg leading-6 font-medium'>
-                            {t('QueueManager.Missed call reasons')}
-                          </h3>
+              <DashboardRankCard
+                title={t('QueueManager.Missed call reasons')}
+                sortItems={sortOrderItems(sortOrderQueuesFailures, setSortOrderQueuesFailures)}
+                isLoading={!isLoadedQueues}
+              >
+                {Object.values(queuesFailures).map((queue: any, index: number) => (
+                  <tr key={index}>
+                    <RankIndexCell index={index} />
+                    <td className='whitespace-nowrap py-3 pl-4 pr-3 text-sm sm:pl-0'>
+                      <div className='flex items-center py-3'>
+                        <div className='text-gray-900 dark:text-gray-100'>
+                          {queue?.name} ({queue?.queue})
                         </div>
                       </div>
-                      <Dropdown items={sortOrderItems(sortOrderQueuesFailures, setSortOrderQueuesFailures)} position='left'>
-                        <Button variant='white'>
-                          <span>{t('QueueManager.Order')}</span>
-                          <FontAwesomeIcon
-                            icon={faChevronDown}
-                            className='h-3.5 w-3.5 ml-2'
-                            aria-hidden='true'
-                          />
-                        </Button>
-                      </Dropdown>
-                    </div>
-                  </div>
-                  {/* <div className='flex-grow border-b border-gray-200 dark:border-gray-700'></div> */}
-                  {/* card body */}
-                  <div className='flow-root'>
-                    <div className='-mx-4 -my-2 overflow-x-auto sm:-mx-6 pl-2 pr-2'>
-                      <div className='inline-block min-w-full py-2 align-middle sm:px-6 lg:px-8'>
-                        <table className='min-w-full divide-y divide-gray-300'>
-                          <tbody className='divide-y divide-gray-200  dark:divide-gray-700'>
-                            {/* skeleton */}
-                            {!isLoadedQueues &&
-                              Array.from(Array(5)).map((e, i) => (
-                                <tr key={i}>
-                                  {Array.from(Array(3)).map((e, j) => (
-                                    <td key={j}>
-                                      <div className='px-4 py-6'>
-                                        <div className='animate-pulse h-5 rounded bg-gray-300 dark:bg-gray-600'></div>
-                                      </div>
-                                    </td>
-                                  ))}
-                                </tr>
-                              ))}
-                            {isLoadedQueues &&
-                              Object.values(queuesFailures).map((queue: any, index: number) => (
-                                <tr key={index}>
-                                  <td className='whitespace-nowrap py-2 pl-4 pr-3 text-sm sm:pl-0'>
-                                    <div className='flex items-center justify-center h-full'>
-                                      {index + 1}.
-                                    </div>
-                                  </td>
-                                  <td className='whitespace-nowrap py-3 pl-4 pr-3 text-sm sm:pl-0'>
-                                    <div className='flex items-center py-3'>
-                                      <div className='text-gray-900 dark:text-gray-100'>
-                                        {queue?.name} ({queue?.queue})
-                                      </div>
-                                    </div>
-                                  </td>
-                                  <td className='relative whitespace-nowrap py-2 pl-3 pr-4 text-right text-sm font-medium sm:pr-0'>
-                                    {t(`QueueManager.${queue?.note}`)}
-                                  </td>
-                                  <td className='relative whitespace-nowrap py-2 pl-3 pr-4 text-right text-sm font-medium sm:pr-0'>
-                                    {queue?.values}
-                                  </td>
-                                </tr>
-                              ))}
-                          </tbody>
-                        </table>
-                      </div>
-                    </div>
-                  </div>
-                </div>
-              </div>
+                    </td>
+                    <RankValueCell>{t(`QueueManager.${queue?.note}`)}</RankValueCell>
+                    <RankValueCell>{queue?.values}</RankValueCell>
+                  </tr>
+                ))}
+              </DashboardRankCard>
 
               {/* Average call time */}
-              <div>
-                <div className='col-span-1 rounded-md divide-y shadow divide-gray-200 bg-cardBackgroud dark:bg-cardBackgroudDark dark:divide-gray-700'>
-                  {/* card header */}
-                  <div className='flex flex-col pt-3 pb-5 px-5'>
-                    <div className='flex w-full items-center justify-between space-x-6'>
-                      <div className='flex-1 truncate'>
-                        <div className='flex items-center space-x-2 py-1 text-gray-700 dark:text-gray-200'>
-                          <h3 className='truncate text-lg leading-6 font-medium'>
-                            {t('QueueManager.Average call time')}
-                          </h3>
-                        </div>
-                      </div>
-                      <Dropdown items={sortOrderItems(sortOrderAverageCallTime, setSortOrderAverageCallTime)} position='left'>
-                        <Button variant='white'>
-                          <span>{t('QueueManager.Order')}</span>
-                          <FontAwesomeIcon
-                            icon={faChevronDown}
-                            className='h-3.5 w-3.5 ml-2'
-                            aria-hidden='true'
-                          />
-                        </Button>
-                      </Dropdown>
-                    </div>
-                  </div>
-                  <div className='flex-grow border-b border-gray-200 dark:border-gray-700'></div>
-                  {/* card body */}
-                  <div className='flow-root'>
-                    <div className='-mx-4 -my-2 overflow-x-auto sm:-mx-6 pl-2 pr-2'>
-                      <div className='inline-block min-w-full py-2 align-middle sm:px-6 lg:px-8'>
-                        <table className='min-w-full divide-y divide-gray-300'>
-                          <tbody className='divide-y divide-gray-200 dark:divide-gray-700'>
-                            {/* skeleton */}
-                            {!isLoadedQueues &&
-                              Array.from(Array(5)).map((e, i) => (
-                                <tr key={i}>
-                                  {Array.from(Array(3)).map((e, j) => (
-                                    <td key={j}>
-                                      <div className='px-4 py-6'>
-                                        <div className='animate-pulse h-5 rounded bg-gray-300 dark:bg-gray-600'></div>
-                                      </div>
-                                    </td>
-                                  ))}
-                                </tr>
-                              ))}
-                            {isLoadedQueues &&
-                              Array.from({ length: 5 }).map((_, index) => {
-                                const agent = Object.values(averageCallTime)[index]
-                                const isRowEmpty = !agent
-
-                                return (
-                                  <tr key={index}>
-                                    <td className='whitespace-nowrap py-3 pl-4 pr-3 text-sm sm:pl-0'>
-                                      <div className='flex items-center justify-center h-full py-3'>
-                                        {index + 1}.
-                                      </div>
-                                    </td>
-                                    <td className='whitespace-nowrap py-3 pl-4 pr-3 text-sm sm:pl-0'>
-                                      <div className='flex items-center'>
-                                        <div className='h-9 w-9 flex-shrink-0 mr-2'>
-                                          {isRowEmpty ? (
-                                            <Avatar
-                                              placeholderType='operator'
-                                              size='small'
-                                              bordered
-                                              className='cursor-pointer'
-                                            />
-                                          ) : (
-                                            <Avatar
-                                              rounded='full'
-                                              src={operators[agent?.shortname]?.avatarBase64}
-                                              placeholderType='operator'
-                                              size='small'
-                                              status={operators[agent?.shortname]?.mainPresence}
-                                              star={operators[agent?.shortname]?.favorite}
-                                              onClick={() =>
-                                                openShowOperatorDrawer(operators[agent?.shortname])
-                                              }
-                                              className='cursor-pointer'
-                                            />
-                                          )}
-                                        </div>
-                                        <div
-                                          className='text-gray-900 dark:text-gray-100 cursor-pointer'
-                                          onClick={() =>
-                                            setOperatorInformationDrawer(agent, operatorsStore)
-                                          }
-                                        >
-                                          {isRowEmpty ? '-' : agent?.name}
-                                        </div>
-                                      </div>
-                                    </td>
-                                    <td className='relative whitespace-nowrap py-2 pl-3 pr-4 text-right text-sm font-medium sm:pr-0'>
-                                      {isRowEmpty
-                                        ? '00:00:00'
-                                        : convertToHumanReadable(agent?.values)}
-                                    </td>
-                                  </tr>
-                                )
-                              })}
-                          </tbody>
-                        </table>
-                      </div>
-                    </div>
-                  </div>
-                </div>
-              </div>
+              <DashboardRankCard
+                title={t('QueueManager.Average call time')}
+                sortItems={sortOrderItems(sortOrderAverageCallTime, setSortOrderAverageCallTime)}
+                isLoading={!isLoadedQueues}
+                withDivider
+              >
+                <OperatorRankRows
+                  rows={averageCallTime}
+                  operators={operators}
+                  onAvatarClick={(agent) => openShowOperatorDrawer(operators[agent?.shortname])}
+                  onNameClick={(agent) => setOperatorInformationDrawer(agent, operatorsStore)}
+                  formatValue={(value) => convertToHumanReadable(value)}
+                  emptyValue='00:00:00'
+                  isTallIndex
+                />
+              </DashboardRankCard>
 
               {/* Average callback time */}
-              <div>
-                <div className='col-span-1 rounded-md divide-y shadow divide-gray-200 bg-cardBackgroud dark:bg-cardBackgroudDark dark:divide-gray-700'>
-                  {/* card header */}
-                  <div className='flex flex-col pt-3 pb-5 px-5'>
-                    <div className='flex w-full items-center justify-between space-x-6'>
-                      <div className='flex-1 truncate'>
-                        <div className='flex items-center space-x-2 py-1 text-gray-700 dark:text-gray-200'>
-                          <h3 className='truncate text-lg leading-6 font-medium'>
-                            {t('QueueManager.Average callback time')}
-                          </h3>
-                        </div>
-                      </div>
-                      <Dropdown items={sortOrderItems(sortOrderAverageCallTimeQueue, setSortOrderAverageCallTimeQueue)} position='left'>
-                        <Button variant='white'>
-                          <span>{t('QueueManager.Order')}</span>
-                          <FontAwesomeIcon
-                            icon={faChevronDown}
-                            className='h-3.5 w-3.5 ml-2'
-                            aria-hidden='true'
-                          />
-                        </Button>
-                      </Dropdown>
-                    </div>
-                  </div>
-                  <div className='flex-grow border-b border-gray-200 dark:border-gray-700'></div>
-                  {/* card body */}
-                  <div className='flow-root'>
-                    <div className='-mx-4 -my-2 overflow-x-auto sm:-mx-6 pl-2 pr-2'>
-                      <div className='inline-block min-w-full py-2 align-middle sm:px-6 lg:px-8'>
-                        <table className='min-w-full divide-y divide-gray-300'>
-                          <tbody className='divide-y divide-gray-200 dark:divide-gray-700'>
-                            {/* skeleton */}
-                            {!isLoadedQueues &&
-                              Array.from(Array(5)).map((e, i) => (
-                                <tr key={i}>
-                                  {Array.from(Array(3)).map((e, j) => (
-                                    <td key={j}>
-                                      <div className='px-4 py-6'>
-                                        <div className='animate-pulse h-5 rounded bg-gray-300 dark:bg-gray-600'></div>
-                                      </div>
-                                    </td>
-                                  ))}
-                                </tr>
-                              ))}
-                            {isLoadedQueues &&
-                              Array.from({ length: 5 }).map((_, index) => {
-                                const agent = Object.values(averageCallTimeQueue)[index]
-                                const isRowEmpty = !agent
+              <DashboardRankCard
+                title={t('QueueManager.Average callback time')}
+                sortItems={sortOrderItems(
+                  sortOrderAverageCallTimeQueue,
+                  setSortOrderAverageCallTimeQueue,
+                )}
+                isLoading={!isLoadedQueues}
+                withDivider
+              >
+                {Array.from({ length: 5 }).map((_, index) => {
+                  const agent = Object.values(averageCallTimeQueue)[index]
+                  const isRowEmpty = !agent
 
-                                return (
-                                  <tr key={index}>
-                                    <td className='whitespace-nowrap py-3 pl-4 pr-3 text-sm sm:pl-0'>
-                                      <div className='flex items-center justify-center h-full py-3'>
-                                        {index + 1}.
-                                      </div>
-                                    </td>
-                                    <td className='whitespace-nowrap py-3 pl-4 pr-3 text-sm sm:pl-0'>
-                                      <div className='flex items-center'>
-                                        <span className='flex-shrink-0 mr-2'>
-                                          {isRowEmpty ? '' : getQueueName(agent?.name, queuesList)}
-                                        </span>
-                                        <div className='text-gray-900 dark:text-gray-100'>
-                                          {isRowEmpty ? '-' : agent?.name}
-                                        </div>
-                                      </div>
-                                    </td>
-                                    <td className='relative whitespace-nowrap py-2 pl-3 pr-4 text-right text-sm font-medium sm:pr-0'>
-                                      {isRowEmpty
-                                        ? '00:00:00'
-                                        : convertToHumanReadable(agent?.values)}
-                                    </td>
-                                  </tr>
-                                )
-                              })}
-                          </tbody>
-                        </table>
-                      </div>
-                    </div>
-                  </div>
-                </div>
-              </div>
+                  return (
+                    <tr key={index}>
+                      <RankIndexCell index={index} isTall />
+                      <td className='whitespace-nowrap py-3 pl-4 pr-3 text-sm sm:pl-0'>
+                        <div className='flex items-center'>
+                          <span className='flex-shrink-0 mr-2'>
+                            {isRowEmpty ? '' : getQueueName(agent?.name, queuesList)}
+                          </span>
+                          <div className='text-gray-900 dark:text-gray-100'>
+                            {isRowEmpty ? '-' : agent?.name}
+                          </div>
+                        </div>
+                      </td>
+                      <RankValueCell>
+                        {isRowEmpty ? '00:00:00' : convertToHumanReadable(agent?.values)}
+                      </RankValueCell>
+                    </tr>
+                  )
+                })}
+              </DashboardRankCard>
             </div>
           </>
         )}
