@@ -250,66 +250,58 @@ export const QueueManagement: FC<QueueManagementProps> = ({ className }): JSX.El
   useEffect(() => {
     //check if all queues
     if (allQueuesStats) {
+      const newAgentCounters: Record<string, any> = {}
+
       for (const q in queueManagerStore.queues) {
-        if (!agentCounters[q]) {
-          agentCounters[q] = {}
+        const counters = {
+          online: 0,
+          offline: 0,
+          paused: 0,
+          connected: 0,
+          free: 0,
+          busy: 0,
         }
-        // Initialize all counters to 0
-        agentCounters[q].online = 0
-        agentCounters[q].offline = 0
-        agentCounters[q].paused = 0
-        agentCounters[q].connected = 0
-        agentCounters[q].free = 0
-        agentCounters[q].busy = 0
 
         for (const m in queueManagerStore.queues[q].members) {
-          let shortNameUser = queueManagerStore.queues[q].members[m].shortname
-          if (queueManagerStore.queues[q].members[m].loggedIn) {
-            agentCounters[q].online += 1
+          const member = queueManagerStore.queues[q].members[m]
+          const operator = operatorsStore?.operators?.[member.shortname]
+
+          if (member.loggedIn) {
+            counters.online += 1
           } else {
-            agentCounters[q].offline += 1
+            counters.offline += 1
           }
-          if (queueManagerStore.queues[q].members[m].paused) {
-            agentCounters[q].paused += 1
+          if (member.paused) {
+            counters.paused += 1
           }
 
-          if (
-            operatorsStore &&
-            operatorsStore.operators &&
-            operatorsStore.operators[shortNameUser] &&
-            Object.keys(operatorsStore.operators[shortNameUser]).length > 0
-          ) {
-            for (const c in operatorsStore.operators[shortNameUser].conversations) {
-              if (
-                operatorsStore.operators[shortNameUser].conversations &&
-                operatorsStore.operators[shortNameUser].conversations[c].queueId === q &&
-                operatorsStore.operators[shortNameUser].conversations[c].connected
-              ) {
-                agentCounters[q].connected += 1
-              } else if (
-                operatorsStore.operators[shortNameUser].conversations[c].queueId !== q &&
-                operatorsStore.operators[shortNameUser].conversations[c].connected
-              ) {
-                agentCounters[q].busy += 1
+          if (operator && Object.keys(operator).length > 0) {
+            for (const c in operator.conversations) {
+              const conversation = operator.conversations[c]
+              if (conversation.queueId === q && conversation.connected) {
+                counters.connected += 1
+              } else if (conversation.queueId !== q && conversation.connected) {
+                counters.busy += 1
               }
             }
           }
 
+          const extension = operatorsStore?.extensions?.[m]
           if (
-            operatorsStore &&
-            operatorsStore.extensions &&
-            operatorsStore.extensions[m] &&
-            operatorsStore.extensions[m].status === 'online' &&
-            operatorsStore.extensions[m].cf === '' &&
-            operatorsStore.extensions[m].dnd === false &&
-            queueManagerStore.queues[q].members[m].loggedIn === true &&
-            queueManagerStore.queues[q].members[m].paused === false
+            extension &&
+            extension.status === 'online' &&
+            extension.cf === '' &&
+            extension.dnd === false &&
+            member.loggedIn === true &&
+            member.paused === false
           ) {
-            agentCounters[q].free += 1
+            counters.free += 1
           }
         }
+
+        newAgentCounters[q] = counters
       }
-      setAgentCounters({ ...agentCounters })
+      setAgentCounters(newAgentCounters)
     }
   }, [queueManagerStore.isLoaded, allQueuesStats, operatorsStore])
 
