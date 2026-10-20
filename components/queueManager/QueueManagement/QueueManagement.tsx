@@ -559,44 +559,48 @@ export const QueueManagement: FC<QueueManagementProps> = ({ className }): JSX.El
                 headers={[t('Queues.Caller'), t('Queues.Operator'), t('Queues.Duration')]}
               >
                 {selectedQueueData?.connectedCalls &&
-                  Object.values(selectedQueueData.connectedCalls).map((call: any, index: number) => (
-                    <tr key={index}>
-                      <td className='py-3 pl-4 pr-2'>
-                        <div className='flex flex-col'>
-                          <div className='font-medium'>{call.conversation.counterpartName}</div>
-                          {call.conversation.counterpartName !== call.conversation.counterpartNum && (
-                            <div>{call.conversation.counterpartNum}</div>
-                          )}
-                        </div>
-                      </td>
-                      <td className='px-2 py-3'>
-                        <div className='flex items-center gap-3 overflow-hidden'>
-                          <Avatar
-                            rounded='full'
-                            src={operators[call.operatorUsername].avatarBase64}
-                            placeholderType='operator'
-                            size='small'
-                            status={operators[call.operatorUsername].mainPresence}
-                            onClick={() => openShowOperatorDrawer(operators[call.operatorUsername])}
-                            className='cursor-pointer'
-                            star={operators?.[call?.operatorUsername]?.favorite}
-                          />
-                          <div className='flex flex-col overflow-hidden'>
-                            <div>{operators[call.operatorUsername].name}</div>
-                            <div className='text-gray-500 dark:text-gray-400'>
-                              {operators[call.operatorUsername].endpoints.mainextension?.[0].id}
+                  Object.values(selectedQueueData.connectedCalls).map((call: any, index: number) => {
+                    const operator = operators?.[call.operatorUsername]
+
+                    return (
+                      <tr key={index}>
+                        <td className='py-3 pl-4 pr-2'>
+                          <div className='flex flex-col'>
+                            <div className='font-medium'>{call.conversation.counterpartName}</div>
+                            {call.conversation.counterpartName !== call.conversation.counterpartNum && (
+                              <div>{call.conversation.counterpartNum}</div>
+                            )}
+                          </div>
+                        </td>
+                        <td className='px-2 py-3'>
+                          <div className='flex items-center gap-3 overflow-hidden'>
+                            <Avatar
+                              rounded='full'
+                              src={operator?.avatarBase64}
+                              placeholderType='operator'
+                              size='small'
+                              status={operator?.mainPresence}
+                              onClick={() => operator && openShowOperatorDrawer(operator)}
+                              className={operator ? 'cursor-pointer' : ''}
+                              star={operator?.favorite}
+                            />
+                            <div className='flex flex-col overflow-hidden'>
+                              <div>{operator?.name || call.operatorUsername}</div>
+                              <div className='text-gray-500 dark:text-gray-400'>
+                                {operator?.endpoints?.mainextension?.[0]?.id}
+                              </div>
                             </div>
                           </div>
-                        </div>
-                      </td>
-                      <td className='pl-2 pr-4 py-3'>
-                        <CallDuration
-                          key={`callDuration-${call.conversation.id}`}
-                          startTime={call.conversation.startTime}
-                        />
-                      </td>
-                    </tr>
-                  ))}
+                        </td>
+                        <td className='pl-2 pr-4 py-3'>
+                          <CallDuration
+                            key={`callDuration-${call.conversation.id}`}
+                            startTime={call.conversation.startTime}
+                          />
+                        </td>
+                      </tr>
+                    )
+                  })}
               </CallsTable>
             )}
           </div>
