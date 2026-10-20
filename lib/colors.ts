@@ -14,6 +14,7 @@ export const EMERALD_600_SHADOW = '#05966999'
 export const EMERALD_700 = '#047857'
 export const EMERALD_800 = '#065f46'
 export const EMERALD_800_SHADOW = '#065f4699'
+export const EMERALD_900 = '#064e3b'
 
 // gray
 export const GRAY_100 = '#f3f4f6'
@@ -209,3 +210,5 @@ export const LIME_600_SHADOW = '#65a30d99'
 export const LIME_700 = '#4d7c0f'
 export const LIME_800 = '#3f6212'
 export const LIME_800_SHADOW = '#3f621299'
+
+export const QUEUE_CALLS_CHART_COLORS = [EMERALD_600, EMERALD_900, GRAY_200]
