@@ -39,7 +39,7 @@ const mark = (text: string, q: string): ReactNode =>
         .split(new RegExp(`(${q.replace(/[.*+?^${}()|[\]\\]/g, '\\$&')})`, 'gi'))
         .map((p, i) =>
           i % 2 ? (
-            <mark key={i} className='rounded-sm bg-amber-700 text-white dark:bg-amber-300 dark:text-gray-900'>
+            <mark key={i} className='rounded-sm bg-yellow-400 text-gray-900'>
               {p}
             </mark>
           ) : (
