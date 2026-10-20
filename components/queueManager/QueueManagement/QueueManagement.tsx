@@ -89,7 +89,7 @@ const CallsTable: FC<CallsTableProps> = ({ isEmpty, maxHeightClassName, headers,
                       ))}
                     </tr>
                   </thead>
-                  <tbody className='divide-y divide-gray-200 bg-white dark:divide-gray-700 dark:bg-gray-900'>
+                  <tbody className='divide-y divide-gray-200 bg-cardBackgroud dark:divide-gray-700 dark:bg-cardBackgroudDark'>
                     {children}
                   </tbody>
                 </table>
