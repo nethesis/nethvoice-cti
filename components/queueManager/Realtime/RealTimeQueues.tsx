@@ -222,7 +222,7 @@ export const RealTimeQueues: FC<RealTimeQueuesProps> = ({
                 Array.from(Array(3)).map((e, i) => (
                   <li
                     key={i}
-                    className='col-span-1 rounded-md divide-y shadow divide-gray-200 bg-white dark:divide-gray-700 dark:bg-gray-900'
+                    className='col-span-1 rounded-md divide-y shadow divide-gray-200 bg-cardBackgroud dark:divide-gray-700 dark:bg-cardBackgroudDark'
                   >
                     <div className='px-5 py-4'>
                       {Array.from(Array(3)).map((e, j) => (
