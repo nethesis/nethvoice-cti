@@ -16,7 +16,6 @@ import { getInfiniteScrollOperatorsPageSize, openShowOperatorDrawer } from '../.
 import {
   faChevronDown,
   faChevronUp,
-  faHeadset,
   faCircleNotch,
   faUser,
   faPhone,
@@ -26,6 +25,7 @@ import {
 } from '@fortawesome/free-solid-svg-icons'
 import { RealTimeOperatorsFilter } from './RealTimeOperatorsFilter'
 import { UserActionInQueue } from '../Common/UserActionInQueue'
+import { StatRow } from '../Common/StatRow'
 
 export interface RealTimeOperatorsProps extends ComponentProps<'div'> {
   realTimeAgentConvertedArray: any
@@ -35,7 +35,6 @@ export const RealTimeOperators: FC<RealTimeOperatorsProps> = ({
   realTimeAgentConvertedArray,
 }): JSX.Element => {
   const { t } = useTranslation()
-  const auth = useSelector((state: RootState) => state.authentication)
   const queueManagerStore = useSelector((state: RootState) => state.queueManagerQueues)
 
   const authStore = useSelector((state: RootState) => state.authentication)
@@ -177,7 +176,11 @@ export const RealTimeOperators: FC<RealTimeOperatorsProps> = ({
                     description={t('Common.Try changing your search filters') || ''}
                     icon={<FontAwesomeIcon icon={faMagnifyingGlass} aria-hidden='true' />}
                   >
-                    <Button variant='ghost' size='large' onClick={() => setResetFiltersTrigger((n) => n + 1)}>
+                    <Button
+                      variant='ghost'
+                      size='large'
+                      onClick={() => setResetFiltersTrigger((n) => n + 1)}
+                    >
                       {t('Common.Reset filters')}
                     </Button>
                   </EmptyState>
@@ -326,25 +329,14 @@ export const RealTimeOperators: FC<RealTimeOperatorsProps> = ({
                                           <div className='flex-grow border-b border-gray-200 dark:border-gray-700 mt-1'></div>
                                           {/* login stats */}
                                           <div className='flex flex-col divide-y divide-gray-200 dark:divide-gray-700'>
-                                            {/* last login */}
-                                            <div className='flex py-2 px-3'>
-                                              <div className='w-1/2 flex justify-start text-gray-500 dark:text-gray-400'>
-                                                {t('Queues.Last login')}
-                                              </div>
-                                              <div className='w-1/2 flex justify-end mr-4'>
-                                                {queue?.lastLogin || '-'}
-                                              </div>
-                                            </div>
-                                            {/* last logout */}
-                                            <div className='flex py-2 px-3'>
-                                              <div className='w-1/2 flex justify-start text-gray-500 dark:text-gray-400'>
-                                                {t('Queues.Last logout')}
-                                              </div>
-                                              <div className='w-1/2 flex justify-end mr-4'>
-                                                {queue?.lastLogout || '-'}
-                                              </div>
-                                            </div>
-                                            {/* last login */}
+                                            <StatRow
+                                              label={t('Queues.Last login')}
+                                              value={queue?.lastLogin}
+                                            />
+                                            <StatRow
+                                              label={t('Queues.Last logout')}
+                                              value={queue?.lastLogout}
+                                            />
                                           </div>
 
                                           {/* Pause stats */}
@@ -363,33 +355,18 @@ export const RealTimeOperators: FC<RealTimeOperatorsProps> = ({
                                               </div>
                                               {/* card body */}
                                               <div className='flex flex-col divide-y divide-gray-200 dark:divide-gray-700'>
-                                                {/* last pause */}
-                                                <div className='flex py-2 px-3'>
-                                                  <div className='w-1/2 flex justify-start text-gray-500 dark:text-gray-400'>
-                                                    {t('QueueManager.Last pause')}
-                                                  </div>
-                                                  <div className='w-1/2 flex justify-end mr-4'>
-                                                    {queue?.lastPause || '-'}
-                                                  </div>
-                                                </div>
-                                                {/* outgoing calls */}
-                                                <div className='flex py-2 px-3'>
-                                                  <div className='w-1/2 flex justify-start text-gray-500 dark:text-gray-400'>
-                                                    {t('QueueManager.Last end pause')}
-                                                  </div>
-                                                  <div className='w-1/2 flex justify-end mr-4'>
-                                                    {queue?.lastEndPause || '-'}
-                                                  </div>
-                                                </div>
-                                                {/* missed calls */}
-                                                <div className='flex py-2 px-3'>
-                                                  <div className='w-1/2 flex justify-start text-gray-500 dark:text-gray-400'>
-                                                    {t('QueueManager.Since last pause')}
-                                                  </div>
-                                                  <div className='w-1/2 flex justify-end mr-4'>
-                                                    {queue?.sinceLastPause || '-'}
-                                                  </div>
-                                                </div>
+                                                <StatRow
+                                                  label={t('QueueManager.Last pause')}
+                                                  value={queue?.lastPause}
+                                                />
+                                                <StatRow
+                                                  label={t('QueueManager.Last end pause')}
+                                                  value={queue?.lastEndPause}
+                                                />
+                                                <StatRow
+                                                  label={t('QueueManager.Since last pause')}
+                                                  value={queue?.sinceLastPause}
+                                                />
                                               </div>
                                             </div>
                                           </div>
@@ -410,33 +387,18 @@ export const RealTimeOperators: FC<RealTimeOperatorsProps> = ({
                                               </div>
                                               {/* card body */}
                                               <div className='flex flex-col divide-y divide-gray-200 dark:divide-gray-700'>
-                                                {/* answered calls */}
-                                                <div className='flex py-2 px-3'>
-                                                  <div className='w-1/2 flex justify-start text-gray-500 dark:text-gray-400'>
-                                                    {t('QueueManager.Answered calls')}
-                                                  </div>
-                                                  <div className='w-1/2 flex justify-end mr-4'>
-                                                    {queue?.answeredcalls || '-'}
-                                                  </div>
-                                                </div>
-                                                {/* outgoing calls */}
-                                                <div className='flex py-2 px-3'>
-                                                  <div className='w-1/2 flex justify-start text-gray-500 dark:text-gray-400'>
-                                                    {t('QueueManager.Latest call')}
-                                                  </div>
-                                                  <div className='w-1/2 flex justify-end mr-4'>
-                                                    {queue?.lastCall || '-'}
-                                                  </div>
-                                                </div>
-                                                {/* missed calls */}
-                                                <div className='flex py-2 px-3'>
-                                                  <div className='w-1/2 flex justify-start text-gray-500 dark:text-gray-400'>
-                                                    {t('QueueManager.Since latest call')}
-                                                  </div>
-                                                  <div className='w-1/2 flex justify-end mr-4'>
-                                                    {queue?.sinceLastCall || '-'}
-                                                  </div>
-                                                </div>
+                                                <StatRow
+                                                  label={t('QueueManager.Answered calls')}
+                                                  value={queue?.answeredcalls}
+                                                />
+                                                <StatRow
+                                                  label={t('QueueManager.Latest call')}
+                                                  value={queue?.lastCall}
+                                                />
+                                                <StatRow
+                                                  label={t('QueueManager.Since latest call')}
+                                                  value={queue?.sinceLastCall}
+                                                />
                                               </div>
                                             </div>
                                           </div>

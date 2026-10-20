@@ -1,7 +1,7 @@
 // Copyright (C) 2024 Nethesis S.r.l.
 // SPDX-License-Identifier: AGPL-3.0-or-later
 
-import { FC, ComponentProps, ReactNode, useState, useEffect, Fragment, useMemo } from 'react'
+import { FC, ComponentProps, useState, useEffect, Fragment, useMemo } from 'react'
 import { useTranslation } from 'react-i18next'
 import { EmptyState, Avatar, Button, TextInput } from '../../common'
 import { useSelector } from 'react-redux'
@@ -39,15 +39,9 @@ import { getInfiniteScrollOperatorsPageSize } from '../../../lib/operators'
 import { savePreference } from '../../../lib/storage'
 import { SummaryChart } from '../Chart/SummaryChart'
 import { RealTimeOperatorsFilter } from '../Realtime/RealTimeOperatorsFilter'
+import { StatRow } from '../Common/StatRow'
 
 export interface SummaryProps extends ComponentProps<'div'> {}
-
-const StatRow: FC<{ label: string; value: ReactNode }> = ({ label, value }) => (
-  <div className='flex py-2 px-3'>
-    <div className='w-1/2 flex justify-start text-gray-500 dark:text-gray-400'>{label}</div>
-    <div className='w-1/2 flex justify-end mr-4'>{value || '-'}</div>
-  </div>
-)
 
 export const Summary: FC<SummaryProps> = ({ className }): JSX.Element => {
   const { t } = useTranslation()

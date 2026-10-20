@@ -3,16 +3,11 @@
 
 import { FC, ComponentProps } from 'react'
 import { useTranslation } from 'react-i18next'
-import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { faHeadset, faUserCheck, faUserClock, faUserXmark } from '@fortawesome/free-solid-svg-icons'
 import { cardContent } from '../../../lib/queueManager'
 
 export interface RealTimeHeaderProps extends ComponentProps<'div'> {
   realTimeAgentCounters: any
-}
-
-function classNames(...classes: any) {
-  return classes.filter(Boolean).join(' ')
 }
 
 export const RealTimeHeader: FC<RealTimeHeaderProps> = ({
