@@ -1,10 +1,18 @@
 // Copyright (C) 2024 Nethesis S.r.l.
 // SPDX-License-Identifier: AGPL-3.0-or-later
 
-import { ComponentPropsWithRef, forwardRef, useRef } from 'react'
+import {
+  ComponentPropsWithRef,
+  FC,
+  Fragment,
+  ReactNode,
+  forwardRef,
+  useEffect,
+  useRef,
+  useState,
+} from 'react'
 import classNames from 'classnames'
 import { TextInput } from '../../common'
-import { Fragment, useState, useEffect } from 'react'
 import {
   Dialog,
   DialogPanel,
@@ -42,9 +50,76 @@ export interface NotManagedCallsFilterProps extends ComponentPropsWithRef<'div'>
   updateQueueManagerFilter: Function
 }
 
+const FilterDisclosure: FC<{ name: string; children: ReactNode }> = ({ name, children }) => (
+  <Disclosure as='div' className='border-t px-4 py-6 border-gray-200 dark:border-gray-700'>
+    {({ open }) => (
+      <>
+        <h3 className='-mx-2 -my-3 flow-root'>
+          <DisclosureButton className='flex w-full items-center justify-between px-2 py-3 text-sm bg-white text-gray-400 dark:bg-gray-900 dark:text-gray-500'>
+            <span className='font-medium text-gray-900 dark:text-gray-100'>{name}</span>
+            <span className='ml-6 flex items-center'>
+              <FontAwesomeIcon
+                icon={faChevronDown}
+                className={classNames(open ? '-rotate-180' : 'rotate-0', 'h-3 w-3 transform')}
+                aria-hidden='true'
+              />
+            </span>
+          </DisclosureButton>
+        </h3>
+        <DisclosurePanel className='pt-6'>
+          <fieldset>
+            <legend className='sr-only'>{name}</legend>
+            <div className='space-y-4'>{children}</div>
+          </fieldset>
+        </DisclosurePanel>
+      </>
+    )}
+  </Disclosure>
+)
+
+const FilterPopover: FC<{ id: string; name: string; children: ReactNode }> = ({
+  id,
+  name,
+  children,
+}) => (
+  <Popover as='div' id={`desktop-menu-${id}`} className='relative inline-block text-left shrink-0'>
+    <div>
+      <PopoverButton className='px-3 py-2 text-sm leading-4 p-2 rounded border shadow-sm border-gray-300 bg-white text-gray-700 hover:bg-gray-100 focus:ring-primaryLight dark:border-gray-600 dark:bg-gray-900 dark:text-gray-100 dark:hover:bg-gray-800 dark:focus:ring-primaryDark group inline-flex items-center justify-center font-medium  hover:text-gray-900 dark:hover:text-gray-100'>
+        <span>{name}</span>
+        <FontAwesomeIcon
+          icon={faChevronDown}
+          className='ml-2 h-3 w-3 flex-shrink-0 text-gray-400 group-hover:text-gray-500 dark:text-gray-500 dark:group-hover:text-gray-400'
+          aria-hidden='true'
+        />
+      </PopoverButton>
+    </div>
+
+    <Transition
+      as={Fragment}
+      enter='transition ease-out duration-100'
+      enterFrom='transform opacity-0 scale-95'
+      enterTo='transform opacity-100 scale-100'
+      leave='transition ease-in duration-75'
+      leaveFrom='transform opacity-100 scale-100'
+      leaveTo='transform opacity-0 scale-95'
+    >
+      <PopoverPanel className='absolute right-0 z-10 mt-2 origin-top-right rounded-md w-max min-w-full p-4 shadow-2xl ring-1 focus:outline-none ring-opacity-5 bg-white ring-black dark:bg-gray-900 dark:ring-gray-700'>
+        <form className='space-y-4'>{children}</form>
+      </PopoverPanel>
+    </Transition>
+  </Popover>
+)
+
 export const NotManagedCallsFilter = forwardRef<HTMLButtonElement, NotManagedCallsFilterProps>(
   (
-    { updateTextFilter, updateOutcomeFilter, updateQueueManagerFilter, className, resetTrigger, ...props },
+    {
+      updateTextFilter,
+      updateOutcomeFilter,
+      updateQueueManagerFilter,
+      className,
+      resetTrigger,
+      ...props
+    },
     ref,
   ) => {
     const { t } = useTranslation()
@@ -91,7 +166,8 @@ export const NotManagedCallsFilter = forwardRef<HTMLButtonElement, NotManagedCal
 
     // with many queues, ticking them one by one is tedious
     const allQueuesSelected =
-      queueManagerFilter.options.length > 0 && selectedQueues.length === queueManagerFilter.options.length
+      queueManagerFilter.options.length > 0 &&
+      selectedQueues.length === queueManagerFilter.options.length
 
     function toggleAllQueues() {
       const newSelectedQueues = allQueuesSelected
@@ -203,6 +279,78 @@ export const NotManagedCallsFilter = forwardRef<HTMLButtonElement, NotManagedCal
       textFilterRef.current.focus()
     }
 
+    const renderOutcomeOptions = () =>
+      outcomeFilter.options.map((option) => (
+        <div key={option.value}>
+          <div className='flex items-center'>
+            <input
+              id={`outcome-${option.value}`}
+              name={`filter-${outcomeFilter.id}`}
+              type='radio'
+              defaultChecked={option.value === outcome}
+              onChange={changeOutcomeFilter}
+              className='h-4 w-4 border-gray-300 text-primary focus:ring-primaryLight dark:border-gray-600 dark:text-primaryDark dark:focus:ring-primaryDark'
+            />
+            <label
+              htmlFor={`outcome-${option.value}`}
+              className='ml-3 block text-sm font-medium text-gray-700 dark:text-gray-200'
+            >
+              {option.label}
+            </label>
+          </div>
+        </div>
+      ))
+
+    const renderQueueOptions = (checkboxClassName: string) => (
+      <>
+        {queueManagerFilter.options.length > 0 && (
+          <TextInput
+            placeholder={t('Queues.Filter queues') || ''}
+            value={queuesSearch}
+            onChange={(event: any) => setQueuesSearch(event.target.value)}
+            icon={queuesSearch.length ? faCircleXmark : faMagnifyingGlass}
+            onIconClick={() => setQueuesSearch('')}
+            trailingIcon={true}
+          />
+        )}
+        {queueManagerFilter.options.length > 0 && (
+          <div className='flex justify-end'>
+            <button
+              type='button'
+              onClick={toggleAllQueues}
+              className='text-sm font-medium text-primary dark:text-primaryDark hover:underline'
+            >
+              {allQueuesSelected ? t('Common.Deselect all') : t('Common.Select all')}
+            </button>
+          </div>
+        )}
+        {filteredQueueOptions.map((option: any) => (
+          <div key={option.value} className='flex items-center'>
+            <input
+              id={`queues-${option.value}`}
+              name={`filter-${queueManagerFilter.id}`}
+              type='checkbox'
+              checked={selectedQueues.includes(option.value)}
+              value={option.value}
+              onChange={changeQueueManagerFilter}
+              className={checkboxClassName}
+            />
+            <label
+              htmlFor={`queues-${option.value}`}
+              className='ml-3 block text-sm font-medium text-gray-700 dark:text-gray-200'
+            >
+              {option.label}
+            </label>
+          </div>
+        ))}
+        {filteredQueueOptions.length === 0 && (
+          <div className='text-sm leading-5 text-gray-500 dark:text-gray-400'>
+            {t('Queues.No queues')}
+          </div>
+        )}
+      </>
+    )
+
     return (
       <div className={classNames(className)} {...props}>
         <div className=''>
@@ -250,153 +398,14 @@ export const NotManagedCallsFilter = forwardRef<HTMLButtonElement, NotManagedCal
 
                     {/* Filters (mobile) */}
                     <form className='mt-4'>
-                      {/* outcome filter (mobile) */}
-                      <Disclosure
-                        as='div'
-                        key={outcomeFilter.name}
-                        className='border-t px-4 py-6 border-gray-200 dark:border-gray-700'
-                      >
-                        {({ open }) => (
-                          <>
-                            <h3 className='-mx-2 -my-3 flow-root'>
-                              <DisclosureButton className='flex w-full items-center justify-between px-2 py-3 text-sm bg-white text-gray-400 dark:bg-gray-900 dark:text-gray-500'>
-                                <span className='font-medium text-gray-900 dark:text-gray-100'>
-                                  {outcomeFilter.name}
-                                </span>
-                                <span className='ml-6 flex items-center'>
-                                  <FontAwesomeIcon
-                                    icon={faChevronDown}
-                                    className={classNames(
-                                      open ? '-rotate-180' : 'rotate-0',
-                                      'h-3 w-3 transform',
-                                    )}
-                                    aria-hidden='true'
-                                  />
-                                </span>
-                              </DisclosureButton>
-                            </h3>
-                            <DisclosurePanel className='pt-6'>
-                              <fieldset>
-                                <legend className='sr-only'>{outcomeFilter.name}</legend>
-                                <div className='space-y-4'>
-                                  {outcomeFilter.options.map((option) => (
-                                    <div key={option.value}>
-                                      {option.value.startsWith('divider') ? (
-                                        <div className='relative'>
-                                          <div
-                                            className='absolute inset-0 flex items-center'
-                                            aria-hidden='true'
-                                          >
-                                            <div className='w-full border-t border-gray-300 dark:border-gray-600' />
-                                          </div>
-                                          <div className='relative flex justify-center'></div>
-                                        </div>
-                                      ) : (
-                                        <div className='flex items-center'>
-                                          <input
-                                            id={`outcome-${option.value}`}
-                                            name={`filter-${outcomeFilter.id}`}
-                                            type='radio'
-                                            defaultChecked={option.value === outcome}
-                                            onChange={changeOutcomeFilter}
-                                            className='h-4 w-4 border-gray-300 text-primary focus:ring-primaryLight dark:border-gray-600 dark:text-primaryDark dark:focus:ring-primaryDark'
-                                          />
-                                          <label
-                                            htmlFor={`outcome-${option.value}`}
-                                            className='ml-3 block text-sm font-medium text-gray-700 dark:text-gray-200'
-                                          >
-                                            {option.label}
-                                          </label>
-                                        </div>
-                                      )}
-                                    </div>
-                                  ))}
-                                </div>
-                              </fieldset>
-                            </DisclosurePanel>
-                          </>
+                      <FilterDisclosure name={outcomeFilter.name}>
+                        {renderOutcomeOptions()}
+                      </FilterDisclosure>
+                      <FilterDisclosure name={queueManagerFilter.name}>
+                        {renderQueueOptions(
+                          'h-4 w-4 border-gray-300 text-primary focus:ring-primaryLight dark:border-gray-600 dark:text-primaryDark dark:focus:ring-primaryDark',
                         )}
-                      </Disclosure>
-                      {/* queues filter (mobile) */}
-                      <Disclosure
-                        as='div'
-                        key={queueManagerFilter.name}
-                        className='border-t px-4 py-6 border-gray-200 dark:border-gray-700'
-                      >
-                        {({ open }) => (
-                          <>
-                            <h3 className='-mx-2 -my-3 flow-root'>
-                              <DisclosureButton className='flex w-full items-center justify-between px-2 py-3 text-sm bg-white text-gray-400 dark:bg-gray-900 dark:text-gray-500'>
-                                <span className='font-medium text-gray-900 dark:text-gray-100'>
-                                  {queueManagerFilter.name}
-                                </span>
-                                <span className='ml-6 flex items-center'>
-                                  <FontAwesomeIcon
-                                    icon={faChevronDown}
-                                    className={classNames(
-                                      open ? '-rotate-180' : 'rotate-0',
-                                      'h-3 w-3 transform',
-                                    )}
-                                    aria-hidden='true'
-                                  />
-                                </span>
-                              </DisclosureButton>
-                            </h3>
-                            <DisclosurePanel className='pt-6'>
-                              <fieldset>
-                                <legend className='sr-only'>{queueManagerFilter.name}</legend>
-                                <div className='space-y-4'>
-                                  {queueManagerFilter.options.length > 0 && (
-                                    <TextInput
-                                      placeholder={t('Queues.Filter queues') || ''}
-                                      value={queuesSearch}
-                                      onChange={(event: any) => setQueuesSearch(event.target.value)}
-                                      icon={queuesSearch.length ? faCircleXmark : faMagnifyingGlass}
-                                      onIconClick={() => setQueuesSearch('')}
-                                      trailingIcon={true}
-                                    />
-                                  )}
-                                  {queueManagerFilter.options.length > 0 && (
-                                    <div className='flex justify-end'>
-                                      <button
-                                        type='button'
-                                        onClick={toggleAllQueues}
-                                        className='text-sm font-medium text-primary dark:text-primaryDark hover:underline'
-                                      >
-                                        {allQueuesSelected ? t('Common.Deselect all') : t('Common.Select all')}
-                                      </button>
-                                    </div>
-                                  )}
-                                  {filteredQueueOptions.map((option: any) => (
-                                    <div key={option.value} className='flex items-center'>
-                                      <input
-                                        id={`queues-${option.value}`}
-                                        name={`filter-${queueManagerFilter.id}`}
-                                        type='checkbox'
-                                        checked={selectedQueues.includes(option.value)}
-                                        value={option.value}
-                                        onChange={changeQueueManagerFilter}
-                                        className='h-4 w-4 border-gray-300 text-primary focus:ring-primaryLight dark:border-gray-600 dark:text-primaryDark dark:focus:ring-primaryDark'
-                                      />
-                                      <label
-                                        htmlFor={`queues-${option.value}`}
-                                        className='ml-3 block text-sm font-medium text-gray-700 dark:text-gray-200'
-                                      >
-                                        {option.label}
-                                      </label>
-                                    </div>
-                                  ))}
-                                  {filteredQueueOptions.length === 0 && (
-                                    <div className='text-sm leading-5 text-gray-500 dark:text-gray-400'>
-                                      {t('Queues.No queues')}
-                                    </div>
-                                  )}
-                                </div>
-                              </fieldset>
-                            </DisclosurePanel>
-                          </>
-                        )}
-                      </Disclosure>
+                      </FilterDisclosure>
                     </form>
                   </DialogPanel>
                 </TransitionChild>
@@ -426,151 +435,15 @@ export const NotManagedCallsFilter = forwardRef<HTMLButtonElement, NotManagedCal
 
                 <div className='flex ml-8'>
                   <PopoverGroup className='hidden sm:flex sm:items-baseline sm:space-x-4'>
-                    {/* outcome filter */}
-                    <Popover
-                      as='div'
-                      key={outcomeFilter.name}
-                      id={`desktop-menu-${outcomeFilter.id}`}
-                      className='relative inline-block text-left shrink-0'
-                    >
-                      <div>
-                        <PopoverButton className='px-3 py-2 text-sm leading-4 p-2 rounded border shadow-sm border-gray-300 bg-white text-gray-700 hover:bg-gray-100 focus:ring-primaryLight dark:border-gray-600 dark:bg-gray-900 dark:text-gray-100 dark:hover:bg-gray-800 dark:focus:ring-primaryDark group inline-flex items-center justify-center font-medium  hover:text-gray-900 dark:hover:text-gray-100'>
-                          <span>{outcomeFilter.name}</span>
-                          <FontAwesomeIcon
-                            icon={faChevronDown}
-                            className='ml-2 h-3 w-3 flex-shrink-0 text-gray-400 group-hover:text-gray-500 dark:text-gray-500 dark:group-hover:text-gray-400'
-                            aria-hidden='true'
-                          />
-                        </PopoverButton>
-                      </div>
+                    <FilterPopover id={outcomeFilter.id} name={outcomeFilter.name}>
+                      {renderOutcomeOptions()}
+                    </FilterPopover>
 
-                      <Transition
-                        as={Fragment}
-                        enter='transition ease-out duration-100'
-                        enterFrom='transform opacity-0 scale-95'
-                        enterTo='transform opacity-100 scale-100'
-                        leave='transition ease-in duration-75'
-                        leaveFrom='transform opacity-100 scale-100'
-                        leaveTo='transform opacity-0 scale-95'
-                      >
-                        <PopoverPanel className='absolute right-0 z-10 mt-2 origin-top-right rounded-md w-max min-w-full p-4 shadow-2xl ring-1 focus:outline-none ring-opacity-5 bg-white ring-black dark:bg-gray-900 dark:ring-gray-700'>
-                          <form className='space-y-4'>
-                            {outcomeFilter.options.map((option) => (
-                              <div key={option.value}>
-                                {option.value.startsWith('divider') ? (
-                                  <div className='relative'>
-                                    <div
-                                      className='absolute inset-0 flex items-center'
-                                      aria-hidden='true'
-                                    >
-                                      <div className='w-full border-t border-gray-300 dark:border-gray-600' />
-                                    </div>
-                                    <div className='relative flex justify-center'></div>
-                                  </div>
-                                ) : (
-                                  <div className='flex items-center'>
-                                    <input
-                                      id={`outcome-${option.value}`}
-                                      name={`filter-${outcomeFilter.id}`}
-                                      type='radio'
-                                      defaultChecked={option.value === outcome}
-                                      onChange={changeOutcomeFilter}
-                                      className='h-4 w-4 border-gray-300 text-primary focus:ring-primaryLight dark:border-gray-600 dark:text-primaryDark dark:focus:ring-primaryDark'
-                                    />
-                                    <label
-                                      htmlFor={`outcome-${option.value}`}
-                                      className='ml-3 block text-sm font-medium text-gray-700 dark:text-gray-200'
-                                    >
-                                      {option.label}
-                                    </label>
-                                  </div>
-                                )}
-                              </div>
-                            ))}
-                          </form>
-                        </PopoverPanel>
-                      </Transition>
-                    </Popover>
-
-                    {/* queues filter */}
-
-                    <Popover
-                      as='div'
-                      key={queueManagerFilter.name}
-                      id={`desktop-menu-${queueManagerFilter.id}`}
-                      className='relative inline-block text-left shrink-0'
-                    >
-                      <div>
-                        <PopoverButton className='px-3 py-2 text-sm leading-4 p-2 rounded border shadow-sm border-gray-300 bg-white text-gray-700 hover:bg-gray-100 focus:ring-primaryLight dark:border-gray-600 dark:bg-gray-900 dark:text-gray-100 dark:hover:bg-gray-800 dark:focus:ring-primaryDark group inline-flex items-center justify-center font-medium  hover:text-gray-900 dark:hover:text-gray-100'>
-                          <span>{queueManagerFilter.name}</span>
-                          <FontAwesomeIcon
-                            icon={faChevronDown}
-                            className='ml-2 h-3 w-3 flex-shrink-0 text-gray-400 group-hover:text-gray-500 dark:text-gray-500 dark:group-hover:text-gray-400'
-                            aria-hidden='true'
-                          />
-                        </PopoverButton>
-                      </div>
-
-                      <Transition
-                        as={Fragment}
-                        enter='transition ease-out duration-100'
-                        enterFrom='transform opacity-0 scale-95'
-                        enterTo='transform opacity-100 scale-100'
-                        leave='transition ease-in duration-75'
-                        leaveFrom='transform opacity-100 scale-100'
-                        leaveTo='transform opacity-0 scale-95'
-                      >
-                        <PopoverPanel className='absolute right-0 z-10 mt-2 origin-top-right rounded-md w-max min-w-full p-4 shadow-2xl ring-1 focus:outline-none ring-opacity-5 bg-white ring-black dark:bg-gray-900 dark:ring-gray-700'>
-                          <form className='space-y-4'>
-                            {queueManagerFilter.options.length > 0 && (
-                              <TextInput
-                                placeholder={t('Queues.Filter queues') || ''}
-                                value={queuesSearch}
-                                onChange={(event: any) => setQueuesSearch(event.target.value)}
-                                icon={queuesSearch.length ? faCircleXmark : faMagnifyingGlass}
-                                onIconClick={() => setQueuesSearch('')}
-                                trailingIcon={true}
-                              />
-                            )}
-                            {queueManagerFilter.options.length > 0 && (
-                              <div className='flex justify-end'>
-                                <button
-                                  type='button'
-                                  onClick={toggleAllQueues}
-                                  className='text-sm font-medium text-primary dark:text-primaryDark hover:underline'
-                                >
-                                  {allQueuesSelected ? t('Common.Deselect all') : t('Common.Select all')}
-                                </button>
-                              </div>
-                            )}
-                            {filteredQueueOptions.map((option: any) => (
-                              <div key={option.value} className='flex items-center'>
-                                <input
-                                  id={`queues-${option.value}`}
-                                  name={`filter-${queueManagerFilter.id}`}
-                                  type='checkbox'
-                                  checked={selectedQueues.includes(option.value)}
-                                  value={option.value}
-                                  onChange={changeQueueManagerFilter}
-                                  className='h-4 w-4 rounded border-gray-300 text-primary focus:ring-primaryLight dark:border-gray-600 dark:text-primaryDark dark:focus:ring-primaryDark'
-                                />
-                                <label
-                                  htmlFor={`queues-${option.value}`}
-                                  className='ml-3 block text-sm font-medium text-gray-700 dark:text-gray-200'
-                                >
-                                  {option.label}
-                                </label>
-                              </div>
-                            ))}
-                            {filteredQueueOptions.length === 0 && (
-                              <div className='text-sm leading-5 text-gray-500 dark:text-gray-400'>
-                                {t('Queues.No queues')}
-                              </div>
-                            )}
-                          </form>
-                        </PopoverPanel>
-                      </Transition>
-                    </Popover>
+                    <FilterPopover id={queueManagerFilter.id} name={queueManagerFilter.name}>
+                      {renderQueueOptions(
+                        'h-4 w-4 rounded border-gray-300 text-primary focus:ring-primaryLight dark:border-gray-600 dark:text-primaryDark dark:focus:ring-primaryDark',
+                      )}
+                    </FilterPopover>
                   </PopoverGroup>
 
                   <button
