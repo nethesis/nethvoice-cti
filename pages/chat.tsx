@@ -2,7 +2,7 @@
 // SPDX-License-Identifier: AGPL-3.0-or-later
 
 import type { NextPage } from 'next'
-import { useMemo, useState } from 'react'
+import { useEffect, useMemo, useState, type ReactNode } from 'react'
 import { useSelector } from 'react-redux'
 import { useTranslation } from 'react-i18next'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
@@ -29,6 +29,24 @@ import { Pagination } from '../components/common/Pagination'
 import { openShowOperatorDrawer } from '../lib/operators'
 import { faNewChat, groupInitials, groupLook } from '../components/chat/icons'
 
+type Hit = { peer: string; id: string; ts: number; body: string; nick?: string }
+
+/** The searched text marked, as in the chat window; case does not matter. */
+const mark = (text: string, q: string): ReactNode =>
+  q.length < 2
+    ? text
+    : text
+        .split(new RegExp(`(${q.replace(/[.*+?^${}()|[\]\\]/g, '\\$&')})`, 'gi'))
+        .map((p, i) =>
+          i % 2 ? (
+            <mark key={i} className='rounded-sm bg-amber-700 text-white dark:bg-amber-300 dark:text-gray-900'>
+              {p}
+            </mark>
+          ) : (
+            p
+          ),
+        )
+
 /** The conversations: a name opens the operator's (or the group's) drawer, Open chat the chat in the island. */
 const Chat: NextPage = () => {
   const { t } = useTranslation()
@@ -40,18 +58,40 @@ const Chat: NextPage = () => {
   const [toDelete, setToDelete] = useState<ChatConversation | null>(null)
   const [page, setPage] = useState(1)
   const [pageSize, setPageSize] = useState(10)
+  // Messages found in the whole archive: the newest per conversation, and how many.
+  const [found, setFound] = useState<Record<string, Hit & { count: number }>>({})
+  const q = query.trim()
+
+  useEffect(() => {
+    setFound({})
+    if (q.length < 2) return
+    const onResults = (e: Event) => {
+      const { query: asked, results } = (e as CustomEvent).detail as { query: string; results: Hit[] }
+      if (asked !== q) return
+      const byPeer: Record<string, Hit & { count: number }> = {}
+      for (const h of results) byPeer[h.peer] = byPeer[h.peer] ? { ...byPeer[h.peer], count: byPeer[h.peer].count + 1 } : { ...h, count: 1 }
+      setFound(byPeer)
+    }
+    window.addEventListener('chat-island-search-results', onResults)
+    const timer = window.setTimeout(() => window.dispatchEvent(new CustomEvent('chat-island-search', { detail: { query: q } })), 300)
+    return () => {
+      window.clearTimeout(timer)
+      window.removeEventListener('chat-island-search-results', onResults)
+    }
+  }, [q])
 
   const list = useMemo(() => {
-    const q = query.trim().toLowerCase()
-    return q
+    const lq = q.toLowerCase()
+    return lq
       ? conversations.filter(
           (c) =>
-            c.name.toLowerCase().includes(q) ||
-            c.peer.includes(q) ||
-            c.last?.body.toLowerCase().includes(q),
+            c.name.toLowerCase().includes(lq) ||
+            c.peer.includes(lq) ||
+            c.last?.body.toLowerCase().includes(lq) ||
+            !!found[c.peer],
         )
       : conversations
-  }, [conversations, query])
+  }, [conversations, q, found])
   const totalPages = Math.max(1, Math.ceil(list.length / pageSize))
   const current = Math.min(page, totalPages)
   const rows = list.slice((current - 1) * pageSize, current * pageSize)
@@ -105,7 +145,7 @@ const Chat: NextPage = () => {
                     : 'font-medium text-gray-900 dark:text-gray-100'
                 }`}
               >
-                {c.name}
+                {mark(c.name, q)}
               </span>
               {c.muted && (
                 <FontAwesomeIcon
@@ -137,7 +177,12 @@ const Chat: NextPage = () => {
                 : 'text-gray-700 dark:text-gray-200'
             }`}
           >
-            {c.last ? (
+            {found[c.peer] ? (
+              <>
+                {found[c.peer].nick ? `${displayName(found[c.peer].nick)}: ` : ''}
+                {mark(found[c.peer].body, q)}
+              </>
+            ) : c.last ? (
               <>
                 {c.last.mine
                   ? `${t('Chat.You')}: `
@@ -150,13 +195,18 @@ const Chat: NextPage = () => {
                     {t('Chat.Attachment')}
                   </>
                 ) : (
-                  c.last.body
+                  mark(c.last.body, q)
                 )}
               </>
             ) : (
               t('Chat.No messages')
             )}
           </span>
+          {found[c.peer]?.count > 1 && (
+            <span className='shrink-0 text-xs text-gray-500 dark:text-gray-400'>
+              {t('Chat.{{count}} matches', { count: found[c.peer].count })}
+            </span>
+          )}
           {c.unread > 0 && (
             <span className='shrink-0 min-w-5 h-5 px-1.5 rounded-full bg-primary dark:bg-primaryDark text-white dark:text-gray-950 text-xs font-medium flex items-center justify-center'>
               {c.unread}
@@ -170,10 +220,10 @@ const Chat: NextPage = () => {
       width: '16rem',
       // As the last calls: how long ago, then the date.
       cell: (c: ChatConversation) =>
-        c.last ? (
+        found[c.peer] || c.last ? (
           <span className='text-sm text-gray-700 dark:text-gray-200 whitespace-nowrap'>
-            {formatDistanceToNowStrict(c.last.ts, { addSuffix: true, locale })} (
-            {format(c.last.ts, 'd MMM yyyy HH:mm', { locale })})
+            {formatDistanceToNowStrict((found[c.peer] ?? c.last)!.ts, { addSuffix: true, locale })} (
+            {format((found[c.peer] ?? c.last)!.ts, 'd MMM yyyy HH:mm', { locale })})
           </span>
         ) : (
           <span className='text-gray-500 dark:text-gray-400'>-</span>
@@ -188,7 +238,7 @@ const Chat: NextPage = () => {
           <Button
             variant='ghost'
             className='whitespace-nowrap text-primaryActive dark:text-primaryActiveDark'
-            onClick={() => openChatWith(c.peer)}
+            onClick={() => openChatWith(c.peer, found[c.peer] && { query: q, id: found[c.peer].id })}
           >
             <FontAwesomeIcon icon={faMessage} className='h-4 w-4 mr-2' />
             {t('OperatorDrawer.Open chat')}

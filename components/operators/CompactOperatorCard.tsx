@@ -192,7 +192,8 @@ const CompactOperatorCard = ({
                 mainUserIsBusy || isOfflineOrDnd || liveOperatorData?.username === authUsername
               }
               onClick={handleCallOperator}
-              title={t('Operators.Call') || ''}
+              data-tooltip-id={`tooltip-card-actions-${index}`}
+              data-tooltip-content={t('Operators.Call') || ''}
             >
               <FontAwesomeIcon icon={faPhone} className='inline-block text-center h-4 w-4' />
               <span className='sr-only'>{t('Operators.Call')}</span>
@@ -206,12 +207,14 @@ const CompactOperatorCard = ({
             size='small'
             className='text-primaryActive dark:text-primaryActiveDark'
             onClick={() => openChatWith(liveOperatorData?.username)}
-            title={t('Common.Chat') || ''}
+            data-tooltip-id={`tooltip-card-actions-${index}`}
+            data-tooltip-content={t('Common.Chat') || ''}
           >
             <FontAwesomeIcon icon={faMessage} className='inline-block text-center h-4 w-4' />
             <span className='sr-only'>{t('Common.Chat')}</span>
           </Button>
         )}
+        <CustomThemedTooltip id={`tooltip-card-actions-${index}`} className='[&_.react-tooltip-content-wrapper]:!p-0' />
 
         {/* Transfer button: shown when current user is in call and target operator is available */}
         {mainUserIsBusy && isOnline && !isRinging && !isInConversation && (

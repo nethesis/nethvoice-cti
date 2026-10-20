@@ -14,9 +14,10 @@ const ChatIsland = dynamic(() => import('@nethesis/chat-island').then((mod) => m
 })
 
 /** Open the chat with an operator or a group address; in NethLink when it runs. */
-export const openChatWith = (username: string) => {
+// With a search, the island opens the chat on it, at that message.
+export const openChatWith = (username: string, search?: { query: string; id?: string }) => {
   if (isNethlinkOnline()) window.location.href = `nethlink://chat?to=${encodeURIComponent(username)}`
-  else window.dispatchEvent(new CustomEvent('chat-island-open', { detail: { username } }))
+  else window.dispatchEvent(new CustomEvent('chat-island-open', { detail: { username, search } }))
 }
 
 export const newChat = () => {

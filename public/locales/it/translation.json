@@ -1303,7 +1303,7 @@
     "No longer active": "Non più attivo",
     "Conversations": "Messaggi",
     "Offline": "Chat non connessa",
-    "Search": "Filtra messaggi",
+    "Search": "Cerca chat o messaggi",
     "No conversations": "Nessuna conversazione",
     "No conversations description": "Apri la pagina Operatori e premi Chat su un operatore per iniziare.",
     "You": "Tu",
@@ -1322,6 +1322,7 @@
     "Leave confirm": "Abbandonare il gruppo \"{{name}}\"? Non riceverai più i suoi messaggi e la tua copia viene rimossa.",
     "New message": "Nuovo messaggio",
     "Messages count": "{{count}} nuovi messaggi",
-    "Reply": "Rispondi"
+    "Reply": "Rispondi",
+    "{{count}} matches": "{{count}} risultati"
   }
 }
