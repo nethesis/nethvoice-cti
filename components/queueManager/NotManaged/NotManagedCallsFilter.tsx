@@ -301,7 +301,7 @@ export const NotManagedCallsFilter = forwardRef<HTMLButtonElement, NotManagedCal
         </div>
       ))
 
-    const renderQueueOptions = (checkboxClassName: string) => (
+    const renderQueueOptions = () => (
       <>
         {queueManagerFilter.options.length > 0 && (
           <TextInput
@@ -333,7 +333,7 @@ export const NotManagedCallsFilter = forwardRef<HTMLButtonElement, NotManagedCal
               checked={selectedQueues.includes(option.value)}
               value={option.value}
               onChange={changeQueueManagerFilter}
-              className={checkboxClassName}
+              className='h-4 w-4 rounded border-gray-300 text-primary focus:ring-primaryLight dark:border-gray-600 dark:text-primaryDark dark:focus:ring-primaryDark'
             />
             <label
               htmlFor={`queues-${option.value}`}
@@ -402,9 +402,7 @@ export const NotManagedCallsFilter = forwardRef<HTMLButtonElement, NotManagedCal
                         {renderOutcomeOptions()}
                       </FilterDisclosure>
                       <FilterDisclosure name={queueManagerFilter.name}>
-                        {renderQueueOptions(
-                          'h-4 w-4 border-gray-300 text-primary focus:ring-primaryLight dark:border-gray-600 dark:text-primaryDark dark:focus:ring-primaryDark',
-                        )}
+                        {renderQueueOptions()}
                       </FilterDisclosure>
                     </form>
                   </DialogPanel>
@@ -440,9 +438,7 @@ export const NotManagedCallsFilter = forwardRef<HTMLButtonElement, NotManagedCal
                     </FilterPopover>
 
                     <FilterPopover id={queueManagerFilter.id} name={queueManagerFilter.name}>
-                      {renderQueueOptions(
-                        'h-4 w-4 rounded border-gray-300 text-primary focus:ring-primaryLight dark:border-gray-600 dark:text-primaryDark dark:focus:ring-primaryDark',
-                      )}
+                      {renderQueueOptions()}
                     </FilterPopover>
                   </PopoverGroup>
 
