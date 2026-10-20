@@ -159,16 +159,18 @@ export const QueueManagementChart: FC<QueueManagementChartProps> = ({
       EXITWITHTIMEOUT: 'EXITWITHTIMEOUT',
     }
 
+    const rows = callData?.rows || []
+
     const processedData: any = {
-      queueman: callData.rows[0]?.queuename || '',
-      tot: callData.count,
+      queueman: rows[0]?.queuename || '',
+      tot: callData?.count || 0,
       ABANDON: 0,
       FAILED: 0,
       NO_ANSWER: 0,
       EXITWITHTIMEOUT: 0,
     }
 
-    callData.rows.forEach((call: any) => {
+    rows.forEach((call: any) => {
       if (eventMappings.hasOwnProperty(call.event)) {
         const eventProperty = eventMappings[call.event]
         processedData[eventProperty]++
