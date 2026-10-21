@@ -61,6 +61,8 @@ const Chat: NextPage = () => {
   const [pageSize, setPageSize] = useState(10)
   // Messages found in the whole archive: the newest per conversation, and how many.
   const [found, setFound] = useState<Record<string, Hit & { count: number }>>({})
+  // The query the archive has answered: until then an empty list is still loading, not empty.
+  const [searched, setSearched] = useState('')
   const q = query.trim()
 
   useEffect(() => {
@@ -72,11 +74,15 @@ const Chat: NextPage = () => {
       const byPeer: Record<string, Hit & { count: number }> = {}
       for (const h of results) byPeer[h.peer] = byPeer[h.peer] ? { ...byPeer[h.peer], count: byPeer[h.peer].count + 1 } : { ...h, count: 1 }
       setFound(byPeer)
+      setSearched(q)
     }
     window.addEventListener('chat-island-search-results', onResults)
     const timer = window.setTimeout(() => window.dispatchEvent(new CustomEvent('chat-island-search', { detail: { query: q } })), 300)
+    // No answer (the island offline): what matched here is all there is.
+    const giveUp = window.setTimeout(() => setSearched(q), 5000)
     return () => {
       window.clearTimeout(timer)
+      window.clearTimeout(giveUp)
       window.removeEventListener('chat-island-search-results', onResults)
     }
   }, [q])
@@ -351,13 +357,17 @@ const Chat: NextPage = () => {
         columns={columns}
         data={rows}
         onRowClick={openChat}
-        isLoading={loading}
+        isLoading={loading || (!list.length && q.length > 1 && searched !== q)}
         loadingRows={5}
         emptyState={{
-          title: t('Chat.No conversations'),
-          description: t('Chat.No conversations description') || '',
+          title: q ? t('Chat.No results') : t('Chat.No conversations'),
+          description: (q ? t('Chat.No results description') : t('Chat.No conversations description')) || '',
           icon: (
-            <FontAwesomeIcon icon={faMessage} className='mx-auto h-12 w-12' aria-hidden='true' />
+            <FontAwesomeIcon
+              icon={q ? faMagnifyingGlass : faMessage}
+              className='mx-auto h-12 w-12'
+              aria-hidden='true'
+            />
           ),
         }}
         rowKey={(c: ChatConversation) => c.peer}
