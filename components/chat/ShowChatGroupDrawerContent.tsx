@@ -13,7 +13,7 @@ import { Divider } from '../common/Divider'
 import { openShowOperatorDrawer } from '../../lib/operators'
 import { closeSideDrawer } from '../../lib/utils'
 import { openChatWith } from './ChatIslandMount'
-import { groupInitials, groupLook } from './icons'
+import { groupInitials, groupLook, isQueue } from './icons'
 import type { ChatConversation } from '../../models/chat'
 
 /** A chat group: its name and members; a member opens the operator's drawer. */
@@ -33,7 +33,11 @@ export const ShowChatGroupDrawerContent = forwardRef<
 
   return (
     <div ref={ref} {...props}>
-      <DrawerHeader title={t('Chat.Group details') || ''} />
+      <DrawerHeader
+        title={
+          (isQueue(group?.name ?? '') ? t('Chat.Queue details') : t('Chat.Group details')) || ''
+        }
+      />
       <div className='px-6'>
         <Divider />
         <div className='flex items-center gap-6'>

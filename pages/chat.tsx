@@ -9,6 +9,7 @@ import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import {
   faBell,
   faBellSlash,
+  faCircleUser,
   faEllipsisVertical,
   faMagnifyingGlass,
   faMessage,
@@ -27,7 +28,7 @@ import { MissingPermission } from '../components/common/MissingPermissionsPage'
 import type { ChatConversation } from '../models/chat'
 import { Pagination } from '../components/common/Pagination'
 import { openShowOperatorDrawer } from '../lib/operators'
-import { faNewChat, groupInitials, groupLook } from '../components/chat/icons'
+import { faNewChat, groupInitials, groupLook, isQueue } from '../components/chat/icons'
 
 type Hit = { peer: string; id: string; ts: number; body: string; nick?: string }
 
@@ -47,7 +48,7 @@ const mark = (text: string, q: string): ReactNode =>
           ),
         )
 
-/** The conversations: a name opens the operator's (or the group's) drawer, Open chat the chat in the island. */
+/** The conversations: a row (or Open chat) opens the chat in the island, the menu the operator's (or the group's) drawer. */
 const Chat: NextPage = () => {
   const { t } = useTranslation()
   const { conversations, status, ready } = useSelector((state: RootState) => state.chat)
@@ -104,6 +105,8 @@ const Chat: NextPage = () => {
     c.kind === 'group'
       ? store.dispatch.sideDrawer.update({ isShown: true, contentType: 'showChatGroup', config: c })
       : operators?.[c.peer] && openShowOperatorDrawer(operators[c.peer])
+  const openChat = (c: ChatConversation) =>
+    openChatWith(c.peer, found[c.peer] && { query: q, id: found[c.peer].id })
   const locale = i18next?.languages?.[0] === 'it' ? it : enGB
 
   if (!allowed) return <MissingPermission />
@@ -111,11 +114,7 @@ const Chat: NextPage = () => {
     {
       header: t('Chat.Conversation'),
       cell: (c: ChatConversation) => (
-        <button
-          type='button'
-          className='flex items-center text-left min-w-0'
-          onClick={() => showDetails(c)}
-        >
+        <div className='flex items-center min-w-0'>
           <div className='relative h-10 w-10 flex-shrink-0'>
             {c.kind === 'group' && c.avatar ? (
               <Avatar src={c.avatar} size='base' />
@@ -163,7 +162,7 @@ const Chat: NextPage = () => {
                 : `@${c.peer}`}
             </div>
           </div>
-        </button>
+        </div>
       ),
     },
     {
@@ -233,12 +232,13 @@ const Chat: NextPage = () => {
       header: '',
       width: '13rem',
       className: 'text-right',
+      // The menu is not the row: it does not open the chat.
       cell: (c: ChatConversation, i: number) => (
-        <div className='flex items-center justify-end gap-2'>
+        <div className='flex items-center justify-end gap-2' onClick={(e) => e.stopPropagation()}>
           <Button
             variant='ghost'
             className='whitespace-nowrap text-primaryActive dark:text-primaryActiveDark'
-            onClick={() => openChatWith(c.peer, found[c.peer] && { query: q, id: found[c.peer].id })}
+            onClick={() => openChat(c)}
           >
             <FontAwesomeIcon icon={faMessage} className='h-4 w-4 mr-2' />
             {t('OperatorDrawer.Open chat')}
@@ -264,6 +264,18 @@ const Chat: NextPage = () => {
                   >
                     {c.muted ? t('Chat.Unmute') : t('Chat.Mute')}
                   </Dropdown.Item>
+                  {(c.kind === 'group' || operators?.[c.peer]) && (
+                    <Dropdown.Item
+                      icon={c.kind === 'group' ? groupLook(c.peer, c.name).icon : faCircleUser}
+                      onClick={() => showDetails(c)}
+                    >
+                      {c.kind !== 'group'
+                        ? t('OperatorDrawer.Operator details')
+                        : isQueue(c.name)
+                        ? t('Chat.Queue details')
+                        : t('Chat.Group details')}
+                    </Dropdown.Item>
+                  )}
                 </div>
                 {/* A CTI group's chat follows the CTI: nothing to leave or delete here. */}
                 {!c.peer.startsWith('cti-') && (
@@ -338,6 +350,7 @@ const Chat: NextPage = () => {
       <Table
         columns={columns}
         data={rows}
+        onRowClick={openChat}
         isLoading={loading}
         loadingRows={5}
         emptyState={{

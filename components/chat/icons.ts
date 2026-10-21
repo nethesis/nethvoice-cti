@@ -17,6 +17,7 @@ export const faNewChat = {
 } as unknown as IconDefinition
 
 const QUEUE_PREFIX = 'Queue - '
+export const isQueue = (name: string) => name.startsWith(QUEUE_PREFIX)
 
 /** A group's look, as in the island: CTI operator groups (cti-…) blue like their badge, queue chats indigo with the Queues icon, the ones people create gray. */
 export const groupLook = (peer: string, name: string) => ({
