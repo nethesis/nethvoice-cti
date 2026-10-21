@@ -4,6 +4,7 @@ import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import {
   faStar,
   faPhone,
+  faMessage,
   faRightLeft,
   IconDefinition,
   faRecordVinyl,
@@ -19,6 +20,7 @@ import { faPhoneArrowDownLeft } from '@nethesis/nethesis-solid-svg-icons'
 import { CustomThemedTooltip } from '../common/CustomThemedTooltip'
 import { useOperatorStates } from '../../hooks/useOperatorStates'
 import TextScroll from '../common/TextScroll'
+import { openChatWith, useChatAllowed } from '../chat'
 
 interface OperatorCardProps {
   operator: any
@@ -35,6 +37,7 @@ const OperatorCard = ({
   actionInformation,
   index,
 }: OperatorCardProps) => {
+  const chatAllowed = useChatAllowed()
   const liveOperatorData = useSelector(
     (state: RootState) => state.operators.operators[operator?.username] || operator,
   )
@@ -224,31 +227,41 @@ const OperatorCard = ({
             </div>
           )}
 
-          {/* Operator is not busy, not ringing, not in conversation - show call button */}
+          {/* Call: an icon button, not for an offline operator (as for a busy one) */}
           {!isInConversation &&
             !isRinging &&
             !isBusy &&
+            liveOperatorData?.mainPresence !== 'offline' &&
             (!mainUserIsBusy || liveOperatorData?.mainPresence !== 'online') && (
               <Button
                 variant='dashboard'
-                className={
-                  mainUserIsBusy
-                    ? 'text-primary dark:text-primaryDark dark:disabled:text-gray-600 dark:disabled:hover:text-gray-600 disabled:text-gray-400'
-                    : isOfflineOrDnd
-                      ? 'text-primaryActive dark:text-primaryActiveDark dark:disabled:text-gray-600 dark:disabled:hover:text-gray-600 disabled:text-gray-400'
-                      : 'text-primaryActive dark:text-primaryActiveDark'
-                }
+                className='text-primaryActive dark:text-primaryActiveDark dark:disabled:text-gray-600 dark:disabled:hover:text-gray-600 disabled:text-gray-400'
                 disabled={
                   mainUserIsBusy || isOfflineOrDnd || liveOperatorData?.username === authUsername
                 }
                 onClick={handleCallOperator}
+                data-tooltip-id={`tooltip-card-actions-${index}`}
+                data-tooltip-content={t('Operators.Call') || ''}
               >
-                <FontAwesomeIcon icon={faPhone} className='inline-block text-center h-4 w-4 mr-2' />
-                <span className='text-sm not-italic font-medium leading-5'>
-                  {t('Operators.Call')}
-                </span>
+                <FontAwesomeIcon icon={faPhone} className='inline-block text-center h-4 w-4' />
+                <span className='sr-only'>{t('Operators.Call')}</span>
               </Button>
             )}
+
+          {/* Message: hidden while the operator rings, the call is the focus */}
+          {chatAllowed && !isRinging && liveOperatorData?.username !== authUsername && (
+            <Button
+              variant='dashboard'
+              className='text-primaryActive dark:text-primaryActiveDark'
+              onClick={() => openChatWith(liveOperatorData?.username)}
+              data-tooltip-id={`tooltip-card-actions-${index}`}
+              data-tooltip-content={t('Common.Chat') || ''}
+            >
+              <FontAwesomeIcon icon={faMessage} className='inline-block text-center h-4 w-4' />
+              <span className='sr-only'>{t('Common.Chat')}</span>
+            </Button>
+          )}
+          <CustomThemedTooltip id={`tooltip-card-actions-${index}`} className='[&_.react-tooltip-content-wrapper]:!p-0' />
         </span>
       </div>
 

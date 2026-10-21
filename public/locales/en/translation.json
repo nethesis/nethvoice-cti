@@ -7,6 +7,7 @@
     "Restricted page description": "It seems that you don't have the necessary permissions to view this page.",
     "Try changing your search filters": "Try changing your search filters",
     "Go to Operators": "Go to Operators",
+    "Messages": "Messages",
     "Showing": "Showing",
     "of": "of",
     "Active filters": "Active filters",
@@ -108,7 +109,8 @@
     "Add": "Add",
     "Remove": "Remove",
     "Page of": "Page {{current}} of {{total}}",
-    "Optional": "Optional"
+    "Optional": "Optional",
+    "Chat": "Chat"
   },
   "Login": {
     "User": "Username",
@@ -586,6 +588,7 @@
     "Sign out": "Sign out"
   },
   "OperatorDrawer": {
+    "Open chat": "Open chat",
     "Book": "Book call",
     "Hangup": "Hangup current call",
     "Listen": "Listen",
@@ -710,6 +713,7 @@
     "Pause on logon": "Pause on logon",
     "No queue calls": "No queue calls",
     "Call details": "Call details",
+    "Write to queue agents": "Write to queue agents",
     "Call management": "Call management",
     "Duration": "Duration",
     "Hold": "Hold",
@@ -1305,5 +1309,42 @@
     "Neutral": "Neutral",
     "Negative": "Negative",
     "Sentiment score tooltip": "Sentiment score: {{score}}/10"
+  },
+  "Chat": {
+    "Date": "Date",
+    "Mute": "Mute notifications",
+    "Unmute": "Unmute notifications",
+    "Muted": "Muted: no sound or notification",
+    "No messages": "No messages",
+    "conversations": "conversations",
+    "Group details": "Group details",
+    "Queue details": "Queue details",
+    "Members": "Members",
+    "No longer active": "No longer active",
+    "Conversations": "Messages",
+    "Offline": "Chat offline",
+    "Search": "Search chats or messages",
+    "No conversations": "No conversations yet",
+    "No conversations description": "Open the Operators page and press Chat on an operator to start.",
+    "No results": "No results",
+    "No results description": "No chat or message matches your search.",
+    "You": "You",
+    "Attachment": "Attachment",
+    "New chat": "New chat",
+    "members": "members",
+    "No messages yet": "No messages yet",
+    "Conversation": "Conversation",
+    "Last message": "Last message",
+    "Time": "Time",
+    "Delete": "Delete",
+    "Delete confirm": "Delete the conversation with \"{{name}}\"? Your copy of the messages is removed.",
+    "Open menu": "Open menu",
+    "Leave": "Leave",
+    "Delete group confirm": "Delete the group \"{{name}}\" for everyone? Its messages are removed for all members.",
+    "Leave confirm": "Leave the group \"{{name}}\"? You stop receiving its messages and your copy is removed.",
+    "New message": "New message",
+    "Messages count": "{{count}} new messages",
+    "Reply": "Reply",
+    "{{count}} matches": "{{count}} matches"
   }
 }

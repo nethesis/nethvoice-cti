@@ -14,6 +14,7 @@ window.CONFIG = {
   COMPANY_URL: '${COMPANY_URL:=https://www.nethesis.it/}',
   NUMERIC_TIMEZONE: '$(date +'%z')',
   TIMEZONE: '${TIMEZONE:=UTC}',
+  CHAT_ENABLED: '${CHAT_ENABLED:=false}',
 EOF
 
 if [ -z $VOICE_ENDPOINT ]; then

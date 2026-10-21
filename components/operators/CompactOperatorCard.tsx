@@ -3,6 +3,7 @@ import { Avatar, Button } from '../common'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import {
   faAngleRight,
+  faMessage,
   faEarListen,
   faHandPointUp,
   faPhone,
@@ -18,6 +19,7 @@ import { CustomThemedTooltip } from '../common/CustomThemedTooltip'
 import { useOperatorStates } from '../../hooks/useOperatorStates'
 import { useSelector } from 'react-redux'
 import { RootState } from '../../store'
+import { openChatWith, useChatAllowed } from '../chat'
 
 interface CompactOperatorCardProps {
   operator: any
@@ -34,6 +36,7 @@ const CompactOperatorCard = ({
   actionInformation,
   index,
 }: CompactOperatorCardProps) => {
+  const chatAllowed = useChatAllowed()
   const liveOperatorData = useSelector(
     (state: RootState) => state.operators.operators[operator?.username] || operator,
   )
@@ -59,6 +62,7 @@ const CompactOperatorCard = ({
     hasValidConversation,
     isCalledByCurrentUser,
   } = operatorStates
+  const isOffline = liveOperatorData?.mainPresence === 'offline'
 
   const mainExtension = useMemo(
     () => liveOperatorData?.endpoints?.mainextension?.[0]?.id || '',
@@ -174,29 +178,43 @@ const CompactOperatorCard = ({
 
       {/* Right section: Action buttons */}
       <div className='flex items-center space-x-2'>
-        {/* Call button */}
-        {!isInConversation && !isRinging && !isBusy && (!mainUserIsBusy || !isOnline) && (
+        {/* Call: an icon button, not for an offline operator (as for a busy one) */}
+        {!isInConversation &&
+          !isRinging &&
+          !isBusy &&
+          !isOffline &&
+          (!mainUserIsBusy || !isOnline) && (
+            <Button
+              variant='ghost'
+              size='small'
+              className='text-primaryActive dark:text-primaryActiveDark disabled:text-gray-400 dark:disabled:text-gray-600'
+              disabled={
+                mainUserIsBusy || isOfflineOrDnd || liveOperatorData?.username === authUsername
+              }
+              onClick={handleCallOperator}
+              data-tooltip-id={`tooltip-card-actions-${index}`}
+              data-tooltip-content={t('Operators.Call') || ''}
+            >
+              <FontAwesomeIcon icon={faPhone} className='inline-block text-center h-4 w-4' />
+              <span className='sr-only'>{t('Operators.Call')}</span>
+            </Button>
+          )}
+
+        {/* Message: hidden while the operator rings, the call is the focus */}
+        {chatAllowed && !isRinging && liveOperatorData?.username !== authUsername && (
           <Button
-            variant='dashboard'
-            className={
-              mainUserIsBusy
-                ? 'text-primary dark:text-primaryDark dark:disabled:text-gray-600 dark:disabled:hover:text-gray-600 disabled:text-gray-400'
-                : isOfflineOrDnd
-                ? 'text-primaryActive dark:text-primaryActiveDark dark:disabled:text-gray-600 dark:disabled:hover:text-gray-600 disabled:text-gray-400'
-                : 'text-primaryActive dark:text-primaryActiveDark'
-            }
-            disabled={
-              mainUserIsBusy || isOfflineOrDnd || liveOperatorData?.username === authUsername
-            }
-            onClick={handleCallOperator}
+            variant='ghost'
+            size='small'
+            className='text-primaryActive dark:text-primaryActiveDark'
+            onClick={() => openChatWith(liveOperatorData?.username)}
+            data-tooltip-id={`tooltip-card-actions-${index}`}
+            data-tooltip-content={t('Common.Chat') || ''}
           >
-            <FontAwesomeIcon
-              icon={faPhone}
-              className='inline-block text-center font-medium h-4 w-4 mr-3 leading-5'
-            />
-            <span className='text-xs'>{t('Operators.Call')}</span>
+            <FontAwesomeIcon icon={faMessage} className='inline-block text-center h-4 w-4' />
+            <span className='sr-only'>{t('Common.Chat')}</span>
           </Button>
         )}
+        <CustomThemedTooltip id={`tooltip-card-actions-${index}`} className='[&_.react-tooltip-content-wrapper]:!p-0' />
 
         {/* Transfer button: shown when current user is in call and target operator is available */}
         {mainUserIsBusy && isOnline && !isRinging && !isInConversation && (

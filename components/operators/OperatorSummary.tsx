@@ -19,7 +19,7 @@ import {
   faStar as faStarSolid,
   faUserGroup,
   faVideo,
-  faComment,
+  faMessage,
 } from '@fortawesome/free-solid-svg-icons'
 import { faStar as faStarLight } from '@nethesis/nethesis-light-svg-icons'
 import { t } from 'i18next'
@@ -27,6 +27,8 @@ import { isEmpty } from 'lodash'
 import { Tooltip } from 'react-tooltip'
 import { IconProp } from '@fortawesome/fontawesome-svg-core'
 import { CustomThemedTooltip } from '../common/CustomThemedTooltip'
+import { openChatWith, useChatAllowed } from '../chat'
+import { closeSideDrawer } from '../../lib/utils'
 
 export interface OperatorSummaryProps extends ComponentPropsWithRef<'div'> {
   operator: any
@@ -41,6 +43,7 @@ export const OperatorSummary = forwardRef<HTMLButtonElement, OperatorSummaryProp
     const operatorsStore = useSelector((state: RootState) => state.operators)
     const currentOperatorInformations = operatorsStore?.operators[operator?.username]
     const authStore = useSelector((state: RootState) => state.authentication)
+    const chatAllowed = useChatAllowed()
     const [isFavorite, setFavorite] = useState(false)
     const operatorGroups = Array.from(
       new Set<string>(
@@ -201,7 +204,7 @@ export const OperatorSummary = forwardRef<HTMLButtonElement, OperatorSummaryProp
             </div>
           </div>
         </div>
-        <div className='mt-8'>
+        <div className='mt-8 flex items-start gap-4'>
           {operatorsStore?.operators[authStore?.username]?.mainPresence === 'busy' &&
           operator?.mainPresence === 'online' ? (
             <ButtonDropdown
@@ -211,6 +214,16 @@ export const OperatorSummary = forwardRef<HTMLButtonElement, OperatorSummaryProp
             ></ButtonDropdown>
           ) : (
             <ButtonDropdown operatorDevices={operatorDevices} operator={operator}></ButtonDropdown>
+          )}
+          {chatAllowed && operator?.username && operator.username !== authStore?.username && (
+            <Button
+              variant='ghost'
+              className='h-9 text-primaryActive dark:text-primaryActiveDark'
+              onClick={() => (closeSideDrawer(), openChatWith(operator.username))}
+            >
+              <FontAwesomeIcon icon={faMessage} className='h-4 w-4 mr-2' />
+              {t('OperatorDrawer.Open chat')}
+            </Button>
           )}
 
           {/* HIDDEN AT THE MOMENT */}
@@ -228,7 +241,7 @@ export const OperatorSummary = forwardRef<HTMLButtonElement, OperatorSummaryProp
           </Button>
           <Button variant='white' className='mr-2'>
             <FontAwesomeIcon
-              icon={faComment}
+              icon={faMessage}
               className='h-4 w-4 xl:mr-2 text-gray-500 dark:text-gray-400'
             />
             <span className='hidden xl:inline-block'>Chat</span>

@@ -31,6 +31,7 @@ import { customScrollbarClass } from '../../lib/utils'
 import { CallSummaryDrawerContent } from '../summary/CallSummaryDrawerContent'
 import { AddPhoneKeyDrawerContent } from '../devices/AddPhoneKeyDrawerContent'
 import { EditExpansionKeyDrawerContent } from '../devices/EditExpansionKeyDrawerContent'
+import { ShowChatGroupDrawerContent } from '../chat/ShowChatGroupDrawerContent'
 
 export type ContentType =
   | 'createOrEditContact'
@@ -55,6 +56,7 @@ export type ContentType =
   | 'showUploadVoicemail'
   | 'setup2FA'
   | 'callSummary'
+  | 'showChatGroup'
 
 interface SideDrawerProps {
   isShown: boolean
@@ -70,6 +72,7 @@ export const SideDrawer: FC<SideDrawerProps> = ({ isShown, contentType, config, 
       showContact: ShowContactDrawerContent,
       createOrEditSpeedDial: CreateOrEditSpeedDialDrawerContent,
       showOperator: ShowOperatorDrawerContent,
+      showChatGroup: ShowChatGroupDrawerContent,
       showContactHistory: ShowHistoryDrawerContent,
       notifications: NotificationsDrawerContent,
       addToPhonebookDrawer: AddToPhonebookDrawerContent,

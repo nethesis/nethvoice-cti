@@ -21,6 +21,9 @@ const OperatorList = ({ operators, hasMore, showMore, isLoading = false }: Opera
   )
   const actionInformation = useSelector((state: RootState) => state?.userActions)
   const isSidebarOpen = useSelector((state: RootState) => state?.rightSideMenu?.isShown)
+  const chatOpen = useSelector(
+    (state: RootState) => state?.rightSideMenu?.isShown && state?.rightSideMenu?.actualTab === 'chat',
+  )
 
   // Filter out the current user from the operators list
   const filteredOperators = useMemo(() => {
@@ -33,6 +36,9 @@ const OperatorList = ({ operators, hasMore, showMore, isLoading = false }: Opera
     'mx-auto gap-x-8 gap-y-8 grid grid-cols-1 sm:grid-cols-2 xl:grid-cols-3 2xl:grid-cols-4 3xl:grid-cols-5 4xl:grid-cols-6 5xl:grid-cols-8 6xl:grid-cols-9'
   const classNameSidebarClosed =
     'mx-auto gap-x-8 gap-y-8 grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 2xl:grid-cols-5 3xl:grid-cols-7 4xl:grid-cols-8 5xl:grid-cols-9 6xl:grid-cols-10'
+  // The chat panel is wider than the other tabs: columns follow the space left, not the window.
+  const classNameChatOpen =
+    'mx-auto gap-x-8 gap-y-8 grid grid-cols-[repeat(auto-fill,minmax(12rem,1fr))]'
 
   const [currentCols, setCurrentCols] = useState(2)
   const gridRef = useRef<HTMLUListElement>(null)
@@ -52,7 +58,7 @@ const OperatorList = ({ operators, hasMore, showMore, isLoading = false }: Opera
     window.addEventListener('resize', detectGridCols)
 
     return () => window.removeEventListener('resize', detectGridCols)
-  }, [isSidebarOpen])
+  }, [isSidebarOpen, chatOpen])
 
   // Calculate skeleton items to show exactly 4 rows based on current breakpoint
   const skeletonItemsCount = useMemo(() => {
@@ -66,7 +72,7 @@ const OperatorList = ({ operators, hasMore, showMore, isLoading = false }: Opera
         <ul
           ref={gridRef}
           role='list'
-          className={`${isSidebarOpen ? classNameSidebarOpen : classNameSidebarClosed}`}
+          className={`${chatOpen ? classNameChatOpen : isSidebarOpen ? classNameSidebarOpen : classNameSidebarClosed}`}
         >
           {Array.from(Array(skeletonItemsCount)).map((e, index) => (
             <li key={index}>
@@ -120,7 +126,7 @@ const OperatorList = ({ operators, hasMore, showMore, isLoading = false }: Opera
         <ul
           ref={gridRef}
           role='list'
-          className={`${isSidebarOpen ? classNameSidebarOpen : classNameSidebarClosed}`}
+          className={`${chatOpen ? classNameChatOpen : isSidebarOpen ? classNameSidebarOpen : classNameSidebarClosed}`}
         >
           {filteredOperators.map((operator, index) => (
             <li key={operator?.username || index}>

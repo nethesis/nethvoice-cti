@@ -4,6 +4,9 @@
 import { FC } from 'react'
 import { CallTypes, getEffectiveCnam } from '../../lib/history'
 import { getOperatorByPhoneNumber, openShowOperatorDrawer } from '../../lib/operators'
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
+import { faMessage } from '@fortawesome/free-solid-svg-icons'
+import { openChatWith, useChatAllowed } from '../chat'
 import classNames from 'classnames'
 import {
   callPhoneNumber,
@@ -29,6 +32,7 @@ interface CallDetailsProps {
   direction: 'in' | 'out'
   lastCallsType?: string
   tooltipPlace?: 'top' | 'right' | 'bottom' | 'left'
+  hideChat?: boolean
 }
 
 export function getCallName(call: CallTypes, direction: 'in' | 'out'): string {
@@ -50,10 +54,13 @@ export const CallDetails: FC<CallDetailsProps> = ({
   direction,
   lastCallsType,
   tooltipPlace = 'bottom',
+  hideChat,
 }) => {
   const authStore = useSelector((state: RootState) => state.authentication)
   const operatorsStore = useSelector((state: RootState) => state.operators)
+  const chatAllowed = useChatAllowed()
   const incomingNumber = call.src || call.cnum
+  const chatWith: string | undefined = (getOperatorByPhoneNumber(direction === 'in' ? incomingNumber : call.dst, operators) as any)?.username
 
   if ((direction === 'in' && !getEffectiveCnam(call.cnam, incomingNumber)) || (direction === 'out' && !getEffectiveCnam(call.dst_cnam, call.dst))) {
     const phoneNumber = direction === 'in' ? incomingNumber : call.dst
@@ -149,6 +156,16 @@ export const CallDetails: FC<CallDetailsProps> = ({
                 } ${fromHistory || (!fromHistory && isQueueBadgeAvailable) ? 'truncate' : ''}`}
               >
                 {direction === 'in' ? incomingNumber : call.dst}
+                {chatAllowed && !hideChat && chatWith && chatWith !== authStore?.username && (
+                  <button
+                    type='button'
+                    className='ml-2 text-gray-500 dark:text-gray-300 hover:text-primary dark:hover:text-primaryDark'
+                    title={t('Common.Chat') || ''}
+                    onClick={() => openChatWith(chatWith)}
+                  >
+                    <FontAwesomeIcon icon={faMessage} className='h-3.5 w-3.5' />
+                  </button>
+                )}
               </div>
             )}
         </>

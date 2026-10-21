@@ -28,6 +28,9 @@ const GroupedOperatorList = ({
   )
   const actionInformation = useSelector((state: RootState) => state?.userActions)
   const isSidebarOpen = useSelector((state: RootState) => state?.rightSideMenu?.isShown)
+  const chatOpen = useSelector(
+    (state: RootState) => state?.rightSideMenu?.isShown && state?.rightSideMenu?.actualTab === 'chat',
+  )
 
   // Filter out the current user from all groups with proper type checking
   const filteredOperators = useMemo(() => {
@@ -52,6 +55,9 @@ const GroupedOperatorList = ({
     'grid grid-cols-1 gap-x-5 gap-y-4 2xl:grid-cols-2 3xl:grid-cols-3 5xl:grid-cols-4 6xl:grid-cols-5 7xl:grid-cols-6'
   const classNameSidebarClosed =
     'grid grid-cols-1 gap-x-5 gap-y-4 lg:grid-cols-2 xl:grid-cols-2 2xl:grid-cols-3 3xl:grid-cols-4 5xl:grid-cols-5 6xl:grid-cols-6'
+  // The chat panel is wider than the other tabs: columns follow the space left, not the window.
+  const classNameChatOpen =
+    'grid gap-x-5 gap-y-4 grid-cols-[repeat(auto-fill,minmax(min(384px,100%),1fr))]'
 
   const [currentCols, setCurrentCols] = useState(1)
   const gridRef = useRef<HTMLUListElement>(null)
@@ -71,7 +77,7 @@ const GroupedOperatorList = ({
     window.addEventListener('resize', detectGridCols)
 
     return () => window.removeEventListener('resize', detectGridCols)
-  }, [isSidebarOpen])
+  }, [isSidebarOpen, chatOpen])
 
   // Calculate skeleton items to show exactly 4 rows based on current breakpoint
   const skeletonItemsCount = useMemo(() => {
@@ -99,7 +105,7 @@ const GroupedOperatorList = ({
             <ul
               ref={gridRef}
               role='list'
-              className={`${isSidebarOpen ? classNameSidebarOpen : classNameSidebarClosed}`}
+              className={`${chatOpen ? classNameChatOpen : isSidebarOpen ? classNameSidebarOpen : classNameSidebarClosed}`}
             >
               {Array.from(Array(skeletonItemsCount)).map((e, operatorIndex) => (
                 <li key={operatorIndex} className='min-w-[384px]'>
@@ -171,7 +177,7 @@ const GroupedOperatorList = ({
           <ul
             ref={gridRef}
             role='list'
-            className={`${isSidebarOpen ? classNameSidebarOpen : classNameSidebarClosed}`}
+            className={`${chatOpen ? classNameChatOpen : isSidebarOpen ? classNameSidebarOpen : classNameSidebarClosed}`}
           >
             {category?.members?.map((operator: any, operatorIndex: number) => (
               <li
