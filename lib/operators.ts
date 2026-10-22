@@ -2,7 +2,7 @@
 // SPDX-License-Identifier: AGPL-3.0-or-later
 
 import axios from 'axios'
-import { callPhoneNumber, handleNetworkError, sortByFavorite } from '../lib/utils'
+import { callPhoneNumber, handleNetworkError, isNethlinkOnline, sortByFavorite } from '../lib/utils'
 import { store } from '../store'
 import { loadCache, loadPreference, saveCache, savePreference, clearPreference } from './storage'
 import { isEmpty, cloneDeep } from 'lodash'
@@ -572,7 +572,14 @@ export async function intrude(obj: any) {
 
 export async function pickup(obj: any) {
   try {
+    const userExtensions = store.getState().user?.endpoints?.extension || []
+    const isNethLinkDestination =
+      isNethlinkOnline() &&
+      userExtensions.some((ext: any) => ext?.type === 'nethlink' && ext?.id === `${obj?.destId}`)
     const { data, status } = await axios.post('/astproxy/pickup_conv', obj)
+    if (isNethLinkDestination && obj?.endpointId) {
+      window.location.href = `nethlink://pickup?to=${obj.endpointId}`
+    }
     return data
   } catch (error) {
     handleNetworkError(error)

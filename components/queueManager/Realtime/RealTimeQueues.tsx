@@ -10,8 +10,8 @@ import { sortByProperty, sortByFavorite } from '../../../lib/utils'
 import { savePreference } from '../../../lib/storage'
 import BarChartHorizontalWithTitle from '../../chart/HorizontalWithTitle'
 import { debounce, isEmpty } from 'lodash'
-import { Tooltip } from 'react-tooltip'
 import { EmptyState, IconSwitch, TextInput, Button } from '../../common'
+import { CustomThemedTooltip } from '../../common/CustomThemedTooltip'
 import {
   addQueueToFavorites,
   removeQueueFromFavorites,
@@ -26,18 +26,21 @@ import {
   faChevronDown,
   faChevronUp,
   faCircleXmark,
-  faUsers,
   faStar as faStarSolid,
   faMagnifyingGlass,
 } from '@fortawesome/free-solid-svg-icons'
 import { IconProp } from '@fortawesome/fontawesome-svg-core'
+import {
+  EMERALD_600,
+  GRAY_200,
+  GRAY_600,
+  GREEN_500,
+  QUEUE_CALLS_CHART_COLORS,
+  YELLOW_500,
+} from '../../../lib/colors'
 
 export interface RealTimeQueuesProps extends ComponentProps<'div'> {
   realTimeAgentCounters: any
-}
-
-function classNames(...classes: any) {
-  return classes.filter(Boolean).join(' ')
 }
 
 export const RealTimeQueues: FC<RealTimeQueuesProps> = ({
@@ -113,8 +116,18 @@ export const RealTimeQueues: FC<RealTimeQueuesProps> = ({
   }
 
   // Labels for queues chart
-  const labelsCalls = ['Waiting calls', 'Connected calls', 'Total']
-  const labelsOperators = ['Online', 'On a break', 'Offline', 'Busy', 'Free']
+  const labelsCalls = [
+    t('QueueManager.Waiting calls'),
+    t('QueueManager.Connected calls'),
+    t('QueueManager.Total'),
+  ]
+  const labelsOperators = [
+    t('QueueManager.Online'),
+    t('QueueManager.On a break'),
+    t('QueueManager.Offline'),
+    t('QueueManager.Busy'),
+    t('QueueManager.Free'),
+  ]
 
   const [filteredQueues, setFilteredQueues]: any = useState({})
 
@@ -209,7 +222,7 @@ export const RealTimeQueues: FC<RealTimeQueuesProps> = ({
                 Array.from(Array(3)).map((e, i) => (
                   <li
                     key={i}
-                    className='col-span-1 rounded-md divide-y shadow divide-gray-200 bg-white dark:divide-gray-700 dark:bg-gray-900'
+                    className='col-span-1 rounded-md divide-y shadow divide-gray-200 bg-cardBackgroud dark:divide-gray-700 dark:bg-cardBackgroudDark'
                   >
                     <div className='px-5 py-4'>
                       {Array.from(Array(3)).map((e, j) => (
@@ -228,18 +241,14 @@ export const RealTimeQueues: FC<RealTimeQueuesProps> = ({
                   let realtimeAgentCountersChartData = realTimeAgentCounters.counters[queue.queue]
                   const datasetsQueues = [
                     {
-                      label: 'Calls',
+                      label: t('QueueManager.Calls'),
                       data: [
                         queue.waitingCallersList.length || 0,
                         realtimeAgentCountersChartData.connected || 0,
                         queue.waitingCallersList.length +
                           realtimeAgentCountersChartData.connected || 0,
                       ],
-                      backgroundColor: [
-                        '#059669', // Lost calls
-                        '#064E3B', // Expired time
-                        '#E5E7EB', // Total
-                      ],
+                      backgroundColor: [...QUEUE_CALLS_CHART_COLORS],
                       borderRadius: 10,
                       barPercentage: 1,
                       borderWidth: 0,
@@ -250,7 +259,7 @@ export const RealTimeQueues: FC<RealTimeQueuesProps> = ({
                   ]
                   const datasetsOperators = [
                     {
-                      label: 'Operators',
+                      label: t('QueueManager.Operators'),
                       data: [
                         queue.onlineOperators || 0,
                         queue.numPausedOperators || 0,
@@ -260,13 +269,7 @@ export const RealTimeQueues: FC<RealTimeQueuesProps> = ({
                           realtimeAgentCountersChartData.busy -
                           queue.numPausedOperators || 0,
                       ],
-                      backgroundColor: [
-                        '#059669', // Online
-                        '#eab308', // On a break
-                        '#E5E7EB', // Offline
-                        '#4b5563', // Busy
-                        '#4ade80', // Free
-                      ],
+                      backgroundColor: [EMERALD_600, YELLOW_500, GRAY_200, GRAY_600, GREEN_500],
                       borderRadius: 10,
                       barPercentage: 1,
                       borderWidth: 0,
@@ -294,20 +297,21 @@ export const RealTimeQueues: FC<RealTimeQueuesProps> = ({
                                   offIcon={<FontAwesomeIcon icon={faStarLight as IconProp} />}
                                   changed={() => toggleFavoriteQueue(queue)}
                                   key={queue.queue}
-                                  className={`tooltip-favorite-${queue.queue}`}
+                                  data-tooltip-id={`tooltip-favorite-${queue.queue}`}
+                                  data-tooltip-content={
+                                    queue.favorite
+                                      ? t('Common.Remove from favorites') || ''
+                                      : t('Common.Add to favorites') || ''
+                                  }
                                 >
                                   <span className='sr-only'>
                                     {t('Queues.Toggle favorite queue')}
                                   </span>
                                 </IconSwitch>
-                                <Tooltip
-                                  anchorSelect={`.tooltip-favorite-${queue.queue}`}
+                                <CustomThemedTooltip
+                                  id={`tooltip-favorite-${queue.queue}`}
                                   place='top'
-                                >
-                                  {queue.favorite
-                                    ? t('Common.Remove from favorites') || ''
-                                    : t('Common.Add to favorites') || ''}
-                                </Tooltip>
+                                />
                               </div>
                             </div>
                             <FontAwesomeIcon
@@ -321,20 +325,18 @@ export const RealTimeQueues: FC<RealTimeQueuesProps> = ({
                         {/* card body */}
                         {queue.expanded && (
                           <>
-                            {/* divider */}
-                            {/* <div className='flex-grow border-b border-gray-200 dark:border-gray-700 mt-1'></div> */}
                             <div className='w-full px-8 pt-1'>
                               <BarChartHorizontalWithTitle
                                 labels={labelsCalls}
                                 datasets={datasetsQueues}
-                                titleText='Calls'
+                                titleText={t('QueueManager.Calls') || ''}
                               />
                             </div>
                             <div className='w-full px-8 pt-1 pb-6'>
                               <BarChartHorizontalWithTitle
                                 labels={labelsOperators}
                                 datasets={datasetsOperators}
-                                titleText='Operators'
+                                titleText={t('QueueManager.Operators') || ''}
                               />
                             </div>
                           </>

@@ -1,37 +1,38 @@
 // Copyright (C) 2024 Nethesis S.r.l.
 // SPDX-License-Identifier: AGPL-3.0-or-later
 
-import { FC, ComponentProps, useState, useEffect, Fragment } from 'react'
+import { FC, ComponentProps, useState, useEffect, useRef, Fragment } from 'react'
 import { useTranslation } from 'react-i18next'
-import { Button, EmptyState } from '../../common'
+import { Button, ConfirmationModal } from '../../common'
 import { useSelector } from 'react-redux'
 import { RootState } from '../../../store'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 
-import { faChevronDown, faCheck, faExpand, faXmark } from '@fortawesome/free-solid-svg-icons'
+import {
+  faChevronDown,
+  faExpand,
+  faMinus,
+  faXmark,
+} from '@fortawesome/free-solid-svg-icons'
 
-import { getMonitorValue } from '../../../lib/queueManager'
+import { DEFAULT_REALTIME_QUEUE_SELECTED, getMonitorValue } from '../../../lib/queueManager'
 
 import {
   Label,
   Listbox,
   ListboxButton,
-  ListboxOption,
   ListboxOptions,
   Transition,
 } from '@headlessui/react'
 
 import { savePreference } from '../../../lib/storage'
 
-import { MonitorTables } from './Tables'
+import { MonitorCard, MonitorTables } from './Tables'
+import { MonitorDropdownOption, monitorDropdownPanelClasses } from './MonitorDropdown'
 
 export interface MonitorProps extends ComponentProps<'div'> {}
 
 const numbers = Array.from({ length: 20 }, (_, index) => index + 1)
-
-function classNames(...classes: any) {
-  return classes.filter(Boolean).join(' ')
-}
 
 export const Monitor: FC<MonitorProps> = ({ className }): JSX.Element => {
   const { t } = useTranslation()
@@ -53,10 +54,52 @@ export const Monitor: FC<MonitorProps> = ({ className }): JSX.Element => {
     savePreference('monitorRowNumbers', currentSelectedRowNumbers, authStore.username)
   }
 
-  //Load selected row numbers from local storage
+  const [cards, setCards] = useState<MonitorCard[]>([])
+  const [showRemoveAllModal, setShowRemoveAllModal] = useState(false)
+  const cancelRemoveAllRef = useRef<HTMLButtonElement>(null)
+  const nextCardId = useRef(0)
+
+  const createCard = (queue: any): MonitorCard => ({ id: nextCardId.current++, queue })
+
+  const updateCards = (newCards: MonitorCard[]) => {
+    setCards(newCards)
+    savePreference(
+      'monitorSelectedQueues',
+      newCards.map((card) => card.queue),
+      authStore.username,
+    )
+  }
+
+  const addCard = () => {
+    updateCards([...cards, createCard(DEFAULT_REALTIME_QUEUE_SELECTED)])
+  }
+
+  const removeAllCards = () => {
+    updateCards(cards.slice(0, 1))
+    setShowRemoveAllModal(false)
+  }
+
+  const removeCard = (cardId: number) => {
+    updateCards(cards.filter((card) => card.id !== cardId))
+  }
+
+  const changeCardQueue = (cardId: number, newQueue: any) => {
+    updateCards(
+      cards.map((card) => {
+        if (card.id !== cardId) {
+          return card
+        }
+        const isSameQueue = !!newQueue?.queue && newQueue.queue === card.queue?.queue
+        return { ...card, queue: isSameQueue ? DEFAULT_REALTIME_QUEUE_SELECTED : newQueue }
+      }),
+    )
+  }
+
+  //Load selected row numbers and queues from local storage
   useEffect(() => {
     const monitorLocalStorageValue = getMonitorValue(authStore.username)
     setSelected(monitorLocalStorageValue.rowNumbers)
+    setCards(monitorLocalStorageValue.selectedQueues.map((queue: any) => createCard(queue)))
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [])
 
@@ -105,36 +148,15 @@ export const Monitor: FC<MonitorProps> = ({ className }): JSX.Element => {
                     leaveFrom='opacity-100'
                     leaveTo='opacity-0'
                   >
-                    <ListboxOptions className='absolute z-10 mt-1 max-h-60 w-full overflow-auto  scrollbar-thin scrollbar-thumb-gray-400 dark:scrollbar-thumb-gray-400 scrollbar-thumb-rounded-full scrollbar-thumb-opacity-50 scrollbar-track-gray-200 dark:scrollbar-track-gray-900 scrollbar-track-rounded-full scrollbar-track-opacity-25 rounded-md bg-white dark:bg-gray-900 py-1 text-base shadow-lg ring-1 ring-black ring-opacity-5 dark:ring-gray-700 dark:ring-opacity-100 focus:outline-none sm:text-sm'>
+                    <ListboxOptions className={`${monitorDropdownPanelClasses} max-h-60 min-w-full`}>
                       {numbers.map((number: any) => (
-                        <ListboxOption
+                        <MonitorDropdownOption
                           key={number}
-                          className='data-[focus]:bg-primary data-[focus]:text-white data-[focus]:dark:text-gray-900 text-gray-900 dark:text-gray-100 relative cursor-default select-none py-2 pl-6'
                           value={number}
+                          isSelected={number === selected}
                         >
-                          {({ selected }) => (
-                            <>
-                              <span
-                                className={classNames(
-                                  selected ? 'font-semibold' : 'font-normal',
-                                  'block truncate',
-                                )}
-                              >
-                                {number}
-                              </span>
-
-                              {selected ? (
-                                <span className='data-[focus]:text-white text-primary absolute inset-y-0 left-0 flex items-center'>
-                                  <FontAwesomeIcon
-                                    icon={faCheck}
-                                    className='h-3.5 w-3.5 pl-1 py-2 cursor-pointer flex items-center'
-                                    aria-hidden='true'
-                                  />
-                                </span>
-                              ) : null}
-                            </>
-                          )}
-                        </ListboxOption>
+                          {number}
+                        </MonitorDropdownOption>
                       ))}
                     </ListboxOptions>
                   </Transition>
@@ -143,6 +165,12 @@ export const Monitor: FC<MonitorProps> = ({ className }): JSX.Element => {
             </>
           )}
         </Listbox>
+        {cards.length >= 2 && (
+          <Button variant='white' onClick={() => setShowRemoveAllModal(true)}>
+            <FontAwesomeIcon icon={faMinus} />
+            <span className='ml-2'>{t('QueueManager.Remove all tables')}</span>
+          </Button>
+        )}
         <Button variant='primary' onClick={toggleFullscreen}>
           <FontAwesomeIcon
             icon={faExpand}
@@ -157,7 +185,7 @@ export const Monitor: FC<MonitorProps> = ({ className }): JSX.Element => {
       <div
         className={`transition-all duration-300 ${
           isFullscreen
-            ? 'fixed top-0 left-0 right-0 bottom-0 w-screen h-screen z-50 bg-white dark:bg-gray-800 overflow-auto scrollbar-thin scrollbar-thumb-gray-400 dark:scrollbar-thumb-gray-400 scrollbar-thumb-rounded-full scrollbar-thumb-opacity-50 scrollbar-track-gray-200 dark:scrollbar-track-gray-900 scrollbar-track-rounded-full scrollbar-track-opacity-25'
+            ? 'fixed top-0 left-0 right-0 bottom-0 w-screen h-screen z-50 bg-white dark:bg-gray-800 overflow-y-auto overflow-x-hidden scrollbar-thin scrollbar-thumb-gray-400 dark:scrollbar-thumb-gray-400 scrollbar-thumb-rounded-full scrollbar-thumb-opacity-50 scrollbar-track-gray-200 dark:scrollbar-track-gray-900 scrollbar-track-rounded-full scrollbar-track-opacity-25'
             : ''
         }`}
       >
@@ -174,10 +202,27 @@ export const Monitor: FC<MonitorProps> = ({ className }): JSX.Element => {
                 </Button>
               </div>
             )}
-            <MonitorTables isFullscreen={isFullscreen} selectedRow={selected}></MonitorTables>
+            <MonitorTables
+              isFullscreen={isFullscreen}
+              selectedRow={selected}
+              cards={cards}
+              onQueueChange={changeCardQueue}
+              onAdd={addCard}
+              onRemove={removeCard}
+            />
           </div>
         </div>
       </div>
+
+      <ConfirmationModal
+        show={showRemoveAllModal}
+        focus={cancelRemoveAllRef}
+        onClose={() => setShowRemoveAllModal(false)}
+        title={t('QueueManager.Remove all tables')}
+        description={t('QueueManager.Remove all tables message')}
+        confirmLabel={t('QueueManager.Remove')}
+        onConfirm={removeAllCards}
+      />
     </>
   )
 }

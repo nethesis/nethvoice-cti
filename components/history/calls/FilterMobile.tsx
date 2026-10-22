@@ -27,6 +27,7 @@ interface FilterMobileProps {
   hourEndValue: string
   changeHourBegin: () => void
   changeHourEnd: () => void
+  isDateRangeInvalid: boolean
   selectedLanguage: string
   dateValue: any
   changeDateBegin: (date: any) => void
@@ -60,6 +61,7 @@ export const FilterMobile: React.FC<FilterMobileProps> = ({
   hourEndValue,
   changeHourBegin,
   changeHourEnd,
+  isDateRangeInvalid,
   selectedLanguage,
   dateValue,
   changeDateBegin,
@@ -228,6 +230,11 @@ export const FilterMobile: React.FC<FilterMobileProps> = ({
                 />
               </div>
             </div>
+            {isDateRangeInvalid && (
+              <p className='pb-4 text-sm text-rose-600 dark:text-rose-400'>
+                {t('History.The start must be before the end')}
+              </p>
+            )}
             <Datepicker
               i18n={selectedLanguage?.toString()}
               value={dateValue}

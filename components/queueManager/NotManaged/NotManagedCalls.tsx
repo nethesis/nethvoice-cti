@@ -43,9 +43,6 @@ export const NotManagedCalls: FC<NotManagedCallsProps> = ({ className }): JSX.El
   const [firstRender, setFirstRender]: any = useState(true)
   const [lastUpdated, setLastUpdated]: any = useState(null)
   const intervalIdRef = useRef<ReturnType<typeof setInterval> | null>(null)
-  const [callsRefreshInterval, setCallsRefreshInterval]: any = useState(
-    DEFAULT_CALLS_REFRESH_INTERVAL,
-  )
   const queueManagerStore = useSelector((state: RootState) => state.queueManagerQueues)
 
   const authStore = useSelector((state: RootState) => state.authentication)
@@ -153,8 +150,6 @@ export const NotManagedCalls: FC<NotManagedCallsProps> = ({ className }): JSX.El
         loadPreference('queuesCallsRefreshInterval', authStore.username) ||
         DEFAULT_CALLS_REFRESH_INTERVAL
 
-      setCallsRefreshInterval(refreshInterval)
-
       intervalIdRef.current = setInterval(() => {
         fetchCalls(numHours)
       }, refreshInterval * 1000)
@@ -192,8 +187,6 @@ export const NotManagedCalls: FC<NotManagedCallsProps> = ({ className }): JSX.El
   }
 
   // export to csv section
-  const [exportData, setExportData] = useState([])
-
   const formatDataAsCSV = (data: any) => {
     const headers = ['Time', 'Queue', 'Name', 'Company', 'Outcome']
 
@@ -217,7 +210,6 @@ export const NotManagedCalls: FC<NotManagedCallsProps> = ({ className }): JSX.El
 
   const handleExportCSV = () => {
     const dataToExport = calls?.rows || []
-    setExportData(dataToExport)
 
     const csvContent = formatDataAsCSV(dataToExport)
     const blob = new Blob([csvContent], { type: 'text/csv' })
@@ -319,7 +311,7 @@ export const NotManagedCalls: FC<NotManagedCallsProps> = ({ className }): JSX.El
             <span className='mr-2'>
               <span className='text-gray-500 dark:text-gray-500'>{t('Queues.Last update')}:</span>{' '}
               <span className='text-gray-500 dark:text-gray-500'>
-                {lastUpdated ? formatDateLoc(new Date(), 'HH:mm:ss') : '-'}
+                {lastUpdated ? formatDateLoc(lastUpdated, 'HH:mm:ss') : '-'}
               </span>
             </span>
           </div>
@@ -343,7 +335,7 @@ export const NotManagedCalls: FC<NotManagedCallsProps> = ({ className }): JSX.El
                   emptyState={{
                     title: emptyQueueFilter
                       ? t('QueueManager.No queue selected')
-                      : t('Queues.No queue calls found'),
+                      : t('Queues.No customers found'),
                     description: emptyQueueFilter
                       ? t('QueueManager.Select queue') || ''
                       : t('Common.Try changing your search filters') || '',

@@ -26,6 +26,7 @@ interface FilterDesktopProps {
   hourEndValue: string
   changeHourBegin: () => void
   changeHourEnd: () => void
+  isDateRangeInvalid: boolean
   selectedLanguage: string
   dateValue: any
   changeDateBegin: (date: any) => void
@@ -57,6 +58,7 @@ export const FilterDesktop: React.FC<FilterDesktopProps> = ({
   hourEndValue,
   changeHourBegin,
   changeHourEnd,
+  isDateRangeInvalid,
   selectedLanguage,
   dateValue,
   changeDateBegin,
@@ -74,7 +76,7 @@ export const FilterDesktop: React.FC<FilterDesktopProps> = ({
   const { timePicker: timePickerTheme, datePicker: datePickerTheme } = useTheme().theme
 
   return (
-    <PopoverGroup className='hidden xl:flex xl:items-baseline xl:space-x-4'>
+    <PopoverGroup className='hidden xl:flex xl:flex-wrap xl:items-baseline xl:gap-x-4 xl:gap-y-2'>
       {/* Call type + direction filter (desktop) */}
       <FilterPopover
         name={t(`History.${callTypeFilter?.name}`)}
@@ -210,6 +212,11 @@ export const FilterDesktop: React.FC<FilterDesktopProps> = ({
             />
           </div>
         </div>
+        {isDateRangeInvalid && (
+          <p className='pb-4 text-sm text-rose-600 dark:text-rose-400'>
+            {t('History.The start must be before the end')}
+          </p>
+        )}
         <Datepicker
           i18n={selectedLanguage?.toString()}
           value={dateValue}

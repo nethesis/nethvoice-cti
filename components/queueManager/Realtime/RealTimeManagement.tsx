@@ -5,18 +5,24 @@ import { FC, ComponentProps, useState, useEffect } from 'react'
 import { useTranslation } from 'react-i18next'
 import { useSelector } from 'react-redux'
 import { RootState } from '../../../store'
-import { exactDistanceToNowLoc } from '../../../lib/dateTime'
+import { exactDistanceToNowLoc, getCallTimeToDisplay } from '../../../lib/dateTime'
 import { getAgentsStats } from '../../../lib/queueManager'
 import { RealTimeHeader } from './RealTimeHeader'
 import { RealTimeOperators } from './RealTimeOperators'
 import { RealTimeQueues } from './RealTimeQueues'
-import { getCallTimeToDisplay } from '../../../lib/dateTime'
 
 export interface RealTimeManagementProps extends ComponentProps<'div'> { }
 
-function classNames(...classes: any) {
-  return classes.filter(Boolean).join(' ')
-}
+const emptyQueueCounters = () => ({
+  total: 0,
+  waiting: 0,
+  connected: 0,
+  online: 0,
+  offline: 0,
+  paused: 0,
+  busy: 0,
+  free: 0,
+})
 
 export const RealTimeManagement: FC<RealTimeManagementProps> = ({ className }): JSX.Element => {
   const { t } = useTranslation()
@@ -47,16 +53,7 @@ export const RealTimeManagement: FC<RealTimeManagementProps> = ({ className }): 
       }
 
       for (const q in queueManagerStore?.queues) {
-        updatedCounters.counters[q] = {
-          total: 0,
-          waiting: 0,
-          connected: 0,
-          online: 0,
-          offline: 0,
-          paused: 0,
-          busy: 0,
-          free: 0,
-        }
+        updatedCounters.counters[q] = emptyQueueCounters()
       }
 
       let waitingCount = 0
@@ -119,16 +116,7 @@ export const RealTimeManagement: FC<RealTimeManagementProps> = ({ className }): 
             if (updatedCounters.counters[queueId]) {
               updatedCounters.counters[queueId].connected += 1
             } else {
-              updatedCounters.counters[queueId] = {
-                total: 0,
-                waiting: 0,
-                connected: 1,
-                online: 0,
-                offline: 0,
-                paused: 0,
-                busy: 0,
-                free: 0,
-              }
+              updatedCounters.counters[queueId] = { ...emptyQueueCounters(), connected: 1 }
             }
             connectedCount += 1
           }

@@ -582,29 +582,6 @@ export const groupDataByHourLineCallsChart = (data: any) => {
   return groupedData
 }
 
-//Get line chart values for invalid calls
-export const groupDataFailedCallsHourLineChart = (data: any) => {
-  const dataArray = Array.isArray(data) ? data : data.dataByTopic
-  const groupedData = {} as Record<string, any>
-
-  dataArray.forEach((item: any) => {
-    const { topicName, dates } = item
-
-    if (!groupedData[topicName]) {
-      groupedData[topicName] = {}
-    }
-
-    dates.forEach((dateItem: any) => {
-      const { date, value } = dateItem
-      const hour = date.split('-')[3]
-
-      groupedData[topicName][hour] = value
-    })
-  })
-
-  return groupedData
-}
-
 //----------------------------------------------------------------
 //Local storage section
 
@@ -639,8 +616,7 @@ export const DEFAULT_EXPANDED_REALTIME_QUEUES_STATISTICS = true
 export const DEFAULT_EXPANDED_REALTIME_OPERATOR_STATISTICS = true
 
 export const DEFAULT_REALTIME_ROW_NUMBERS = 5
-export const DEFAULT_REALTIME_FIRST_QUEUE_SELECTED = {}
-export const DEFAULT_REALTIME_SECOND_QUEUE_SELECTED = {}
+export const DEFAULT_REALTIME_QUEUE_SELECTED = {}
 export const DEFAULT_REALTIME_IS_SECOND_CARD_VISIBLE = false
 
 // Set default queue manager tab to dashboard
@@ -755,18 +731,28 @@ export const getMonitorValue = (currentUsername: string) => {
   const rowNumbers =
     loadPreference('monitorRowNumbers', currentUsername) || DEFAULT_REALTIME_ROW_NUMBERS
 
+  const savedQueues = loadPreference('monitorSelectedQueues', currentUsername)
+  if (Array.isArray(savedQueues) && savedQueues.length > 0) {
+    return { rowNumbers, selectedQueues: savedQueues }
+  }
+
   const selectedFirstQueue =
     loadPreference('monitorFirstQueueSelected', currentUsername) ||
-    DEFAULT_REALTIME_FIRST_QUEUE_SELECTED
+    DEFAULT_REALTIME_QUEUE_SELECTED
 
   const selectedSecondQueue =
     loadPreference('monitorSecondQueueSelected', currentUsername) ||
-    DEFAULT_REALTIME_FIRST_QUEUE_SELECTED
+    DEFAULT_REALTIME_QUEUE_SELECTED
 
   const isSecondCardVisible =
     loadPreference('monitorSecondCardIsVisible', currentUsername) ||
     DEFAULT_REALTIME_IS_SECOND_CARD_VISIBLE
-  return { rowNumbers, selectedFirstQueue, selectedSecondQueue, isSecondCardVisible }
+
+  const selectedQueues = isSecondCardVisible
+    ? [selectedFirstQueue, selectedSecondQueue]
+    : [selectedFirstQueue]
+
+  return { rowNumbers, selectedQueues }
 }
 
 //find totals
@@ -1059,7 +1045,7 @@ export function getAlarmTime(date: any) {
 export const cardContent = (icon: any, number: number, description: string) => {
   return (
     <>
-      <div className='rounded-lg shadow-md border-gray-200 dark:border-gray-700 bg-cardBackgroud dark:bg-cardBackgroudDark px-5 py-1 sm: mt-1 relative flex items-center'>
+      <div className='rounded-lg shadow-md border-gray-200 dark:border-gray-700 bg-cardBackgroud dark:bg-cardBackgroudDark px-5 py-1 mt-1 relative flex items-center'>
         <div className='flex items-center space-x-4'>
           <div className='h-10 w-10 flex items-center justify-center rounded-xl bg-emerald-50 dark:bg-emerald-800 mt-1 mb-1'>
             <FontAwesomeIcon

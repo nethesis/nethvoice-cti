@@ -279,6 +279,7 @@
     "Type to search contact": "Digita per cercare un contatto",
     "Start time": "Tempo di inizio",
     "End time": "Tempo di fine",
+    "The start must be before the end": "L'inizio deve precedere la fine",
     "Choose a date range": "Scegli un intervallo",
     "Groups": "Gruppi",
     "Open recording action modal": "Apri modale azioni registrazione",
@@ -545,7 +546,9 @@
     "Enter the 6-digit code from authenticator app": "Inserisci il codice a 6 cifre dall'app di autenticazione",
     "No recovery codes available": "Nessun codice di recupero disponibile",
     "No WebRTC extension found": "Nessuna estensione WebRTC trovata",
-    "To enable Phone Island integration, ask your administrator to configure a WebRTC extension": "Per abilitare l'integrazione della Phone Island, chiedi al tuo amministratore di abilitare il Web phone"
+    "To enable Phone Island integration, ask your administrator to configure a WebRTC extension": "Per abilitare l'integrazione della Phone Island, chiedi al tuo amministratore di abilitare il Web phone",
+    "Disable Do not disturb automatically": "Disattiva automaticamente il Non disturbare",
+    "Enable Do not disturb automatically": "Attiva automaticamente il Non disturbare"
   },
   "TopBar": {
     "Signed in as": "Accesso effettuato come",
@@ -780,7 +783,7 @@
     "outcome_EXITEMPTY": "Nessun agente in coda",
     "outcome_FULL": "Coda piena",
     "No queues found": "Nessuna coda trovata",
-    "No queue calls found": "Nessuna chiamata di coda trovata",
+    "No customers found": "Nessun cliente trovato",
     "Logout": "Logout",
     "Queues": "Code",
     "No queues": "Nessuna coda",
@@ -912,6 +915,12 @@
     "Call": "Chiama"
   },
   "QueueManager": {
+    "Online": "Online",
+    "On a break": "In pausa",
+    "Offline": "Offline",
+    "Busy": "Occupati",
+    "Free": "Liberi",
+    "Operators": "Operatori",
     "Descending order": "Decrescente",
     "Ascending order": "Crescente",
     "No agents found": "Nessun agente trovato",
@@ -983,6 +992,8 @@
     "Logged_out": "Disconesso",
     "Fullscreen": "Schermo intero",
     "Add queue": "Aggiungi coda",
+    "Remove all tables": "Rimuovi tutte le tabelle",
+    "Remove all tables message": "Tutte le tabelle del monitor tranne la prima verranno rimosse. Vuoi continuare?",
     "In progress": "In progresso",
     "No alarm detected": "Nessun allarme rilevato",
     "Begin hour": "Ora inizio",

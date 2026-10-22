@@ -41,7 +41,6 @@ import { CallsDate } from '../CallsDate'
 import { Filter } from './Filter'
 import { useSelector, useDispatch } from 'react-redux'
 import { RootState, Dispatch } from '../../../store'
-import { Tooltip } from 'react-tooltip'
 import { CustomThemedTooltip } from '../../common/CustomThemedTooltip'
 import {
   getApiVoiceEndpoint,
@@ -173,7 +172,11 @@ export const Calls: FC<CallsProps> = ({ className }): JSX.Element => {
     let isMounted = true
 
     async function fetchHistoryQueues() {
-      if (!username || !/^[0-9]{8}$/.test(dateBegin) || !/^[0-9]{8}$/.test(dateEnd)) {
+      if (
+        !username ||
+        !/^[0-9]{8}([0-9]{4})?$/.test(dateBegin) ||
+        !/^[0-9]{8}([0-9]{4})?$/.test(dateEnd)
+      ) {
         return
       }
 
@@ -1232,6 +1235,7 @@ export const Calls: FC<CallsProps> = ({ className }): JSX.Element => {
           <div>
             <div className='flex justify-between'>
               <Filter
+                className='min-w-0 flex-1'
                 resetTrigger={resetFiltersTrigger}
                 updateFilterText={debouncedUpdateFilterText}
                 updateCallTypeFilter={updateCallTypeFilter}
@@ -1243,7 +1247,7 @@ export const Calls: FC<CallsProps> = ({ className }): JSX.Element => {
                 updateQueueFilter={updateQueueFilter}
                 availableQueues={availableQueues}
               />
-              <div className='text-primaryNeutral dark:text-primaryNeutralDark flex items-start lg:whitespace-nowrap ml-4'>
+              <div className='text-primaryNeutral dark:text-primaryNeutralDark flex shrink-0 items-start lg:whitespace-nowrap ml-4'>
                 <Link
                   href={pbxReportUrl}
                   target='_blank'
@@ -1252,7 +1256,7 @@ export const Calls: FC<CallsProps> = ({ className }): JSX.Element => {
                   data-tooltip-content={t('Applications.Open PBX Report')}
                 >
                   <Button variant='white' className='gap-2'>
-                    <Tooltip
+                    <CustomThemedTooltip
                       id={`tooltip-button-pbx-report`}
                       place='top'
                       className='block lg:hidden'

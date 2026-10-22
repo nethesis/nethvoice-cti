@@ -295,6 +295,7 @@
     "Play": "Play",
     "Start time": "Start time",
     "End time": "End time",
+    "The start must be before the end": "The start must be before the end",
     "Choose a date range": "Choose a date range",
     "Voicemail available": "Open voicemail message",
     "Type to search contact": "Type to search contact",
@@ -563,7 +564,9 @@
     "Enter the 6-digit code from authenticator app": "Enter the 6-digit code from authenticator app",
     "No recovery codes available": "No recovery codes available",
     "No WebRTC extension found": "No WebRTC extension found",
-    "To enable Phone Island integration, ask your administrator to configure a WebRTC extension": "To enable Phone Island integration, ask your administrator to configure a Web phone"
+    "To enable Phone Island integration, ask your administrator to configure a WebRTC extension": "To enable Phone Island integration, ask your administrator to configure a Web phone",
+    "Disable Do not disturb automatically": "Disable Do not disturb automatically",
+    "Enable Do not disturb automatically": "Enable Do not disturb automatically"
   },
   "TopBar": {
     "Signed in as": "Signed in as",
@@ -626,7 +629,7 @@
     "outcome_EXITEMPTY": "No agents in queue",
     "outcome_FULL": "Queue full",
     "No queues found": "No queues found",
-    "No queue calls found": "No queue calls found",
+    "No customers found": "No customers found",
     "Queues": "Queues",
     "Filter queues": "Filter queues",
     "Login to all queues": "Login all queues",
@@ -903,6 +906,12 @@
     "Voice mail": "Voicemail inbox"
   },
   "QueueManager": {
+    "Online": "Online",
+    "On a break": "On a break",
+    "Offline": "Offline",
+    "Busy": "Busy",
+    "Free": "Free",
+    "Operators": "Operators",
     "Descending order": "Descending",
     "Ascending order": "Ascending",
     "No agents found": "No agents found",
@@ -970,6 +979,8 @@
     "Logged_out": "Logged out",
     "Fullscreen": "Fullscreen",
     "Add queue": "Add queue",
+    "Remove all tables": "Remove all tables",
+    "Remove all tables message": "All monitor tables except the first one will be removed. Do you want to continue?",
     "In progress": "In progress",
     "No alarm detected": "No alarm detected",
     "Begin hour": "Begin hour",

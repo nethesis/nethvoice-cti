@@ -48,6 +48,27 @@ export const IncomingCalls = () => {
   const ringtonesStore = useSelector((state: RootState) => state.ringtones)
   const dispatch = useDispatch()
 
+  const hasDndPermission = Boolean(
+    userStore?.profile?.macro_permissions?.settings?.permissions?.dnd?.value,
+  )
+
+  const updateAutoDndSetting = async (
+    key: 'auto_dndoff_login' | 'auto_dndon_logout',
+    enabled: boolean,
+  ) => {
+    const updateStore =
+      key === 'auto_dndoff_login'
+        ? dispatch.user.updateAutoDndOffLogin
+        : dispatch.user.updateAutoDndOnLogout
+    updateStore(enabled)
+    try {
+      await setIncomingCallsPreference({ [key]: enabled })
+    } catch (error) {
+      updateStore(!enabled)
+      console.error(error)
+    }
+  }
+
   const [callUrl, setCallUrl] = useState<string>('')
   const [urlTrigger, setUrlTrigger] = useState<string>(TRIGGER_NEVER)
   const [isLoading, setIsLoading] = useState<boolean>(true)
@@ -733,6 +754,73 @@ export const IncomingCalls = () => {
             </div>
           </div>
         </div>
+
+        {/* Do not disturb automation */}
+        {hasDndPermission && (
+          <div className='max-w-3xl'>
+            <h4 className='text-sm font-medium leading-6 text-gray-900 dark:text-gray-100 mb-4'>
+              {t('Settings.Do not disturb')}
+            </h4>
+            <div className='space-y-5'>
+              <div className='relative flex items-start'>
+                <div className='flex h-6 items-center'>
+                  <input
+                    id='auto-dnd-off-login'
+                    aria-describedby='auto-dnd-off-login-description'
+                    type='checkbox'
+                    checked={Boolean(userStore?.settings?.auto_dndoff_login)}
+                    onChange={(event) =>
+                      updateAutoDndSetting('auto_dndoff_login', event.target.checked)
+                    }
+                    className='h-4 w-4 rounded border-gray-300 text-emerald-600 focus:ring-emerald-600'
+                  />
+                </div>
+                <div className='ml-3 text-sm leading-6'>
+                  <label
+                    htmlFor='auto-dnd-off-login'
+                    className='font-medium text-gray-900 dark:text-gray-300'
+                  >
+                    {t('Settings.Disable Do not disturb automatically')}
+                  </label>
+                  <p
+                    id='auto-dnd-off-login-description'
+                    className='text-gray-500 dark:text-gray-200'
+                  >
+                    {t('Settings.When you enter the app')}
+                  </p>
+                </div>
+              </div>
+              <div className='relative flex items-start'>
+                <div className='flex h-6 items-center'>
+                  <input
+                    id='auto-dnd-on-logout'
+                    aria-describedby='auto-dnd-on-logout-description'
+                    type='checkbox'
+                    checked={Boolean(userStore?.settings?.auto_dndon_logout)}
+                    onChange={(event) =>
+                      updateAutoDndSetting('auto_dndon_logout', event.target.checked)
+                    }
+                    className='h-4 w-4 rounded border-gray-300 text-emerald-600 focus:ring-emerald-600'
+                  />
+                </div>
+                <div className='ml-3 text-sm leading-6'>
+                  <label
+                    htmlFor='auto-dnd-on-logout'
+                    className='font-medium text-gray-900 dark:text-gray-300'
+                  >
+                    {t('Settings.Enable Do not disturb automatically')}
+                  </label>
+                  <p
+                    id='auto-dnd-on-logout-description'
+                    className='text-gray-500 dark:text-gray-200'
+                  >
+                    {t('Settings.When you exit the app')}
+                  </p>
+                </div>
+              </div>
+            </div>
+          </div>
+        )}
       </div>
     </>
   )
