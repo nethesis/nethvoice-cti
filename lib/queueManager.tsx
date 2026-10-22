@@ -1035,12 +1035,15 @@ export function getAlarmsFlatList(alarmsList: any) {
     return []
   }
   return Object.entries<any>(alarmsList.list).flatMap(([queue, queueAlarms]) =>
-    Object.entries<any>(queueAlarms || {}).map(([type, alarm]: any) => ({
-      queue,
-      type,
-      status: alarm?.status,
-      date: alarm?.date,
-    })),
+    Object.entries<any>(queueAlarms || {})
+      // alarms back to normal are not counted
+      .filter(([, alarm]: any) => alarm?.status && alarm.status !== 'okay')
+      .map(([type, alarm]: any) => ({
+        queue,
+        type,
+        status: alarm?.status,
+        date: alarm?.date,
+      })),
   )
 }
 
