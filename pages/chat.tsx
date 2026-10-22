@@ -174,7 +174,8 @@ const Chat: NextPage = () => {
     {
       header: t('Chat.Last message'),
       cell: (c: ChatConversation) => (
-        <div className='flex items-center gap-3 min-w-0'>
+        // the table grows with its content: a max width lets truncate cut a long message
+        <div className='flex items-center gap-3 min-w-0 max-w-[14rem] sm:max-w-xs md:max-w-md lg:max-w-xl 2xl:max-w-3xl'>
           <span
             className={`truncate text-sm ${
               c.unread
