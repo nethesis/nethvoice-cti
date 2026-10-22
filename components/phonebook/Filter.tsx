@@ -256,7 +256,7 @@ export const Filter = forwardRef<HTMLButtonElement, FilterProps>(
                   <div className='items-center'>
                     <TextInput
                       placeholder={t('Phonebook.Filter contacts') || ''}
-                      className='max-w-sm'
+                      className='max-w-xs sm:min-w-[20rem]'
                       value={textFilter}
                       onChange={changeTextFilter}
                       ref={textFilterRef}

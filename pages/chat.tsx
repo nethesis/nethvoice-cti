@@ -174,7 +174,8 @@ const Chat: NextPage = () => {
     {
       header: t('Chat.Last message'),
       cell: (c: ChatConversation) => (
-        <div className='flex items-center gap-3 min-w-0'>
+        // the table grows with its content: a max width lets truncate cut a long message
+        <div className='flex items-center gap-3 min-w-0 max-w-[14rem] sm:max-w-xs md:max-w-md lg:max-w-xl 2xl:max-w-3xl'>
           <span
             className={`truncate text-sm ${
               c.unread
@@ -239,7 +240,7 @@ const Chat: NextPage = () => {
       width: '13rem',
       className: 'text-right',
       // The menu is not the row: it does not open the chat.
-      cell: (c: ChatConversation, i: number) => (
+      cell: (c: ChatConversation) => (
         <div className='flex items-center justify-end gap-2' onClick={(e) => e.stopPropagation()}>
           <Button
             variant='ghost'
@@ -295,7 +296,7 @@ const Chat: NextPage = () => {
                 )}
               </div>
             }
-            position={i === rows.length - 1 && rows.length > 2 ? 'topVoicemail' : 'left'}
+            anchor='bottom end'
           >
             <Button variant='ghost' className='py-2 px-2 h-9 w-9'>
               <FontAwesomeIcon icon={faEllipsisVertical} className='h-4 w-4' />
@@ -335,9 +336,10 @@ const Chat: NextPage = () => {
         {t('Chat.Conversations')}
       </h1>
       <div className='flex items-center justify-between gap-4 mb-6'>
-        <div className='max-w-md flex-1'>
+        <div>
           <TextInput
             placeholder={t('Chat.Search') || ''}
+            className='max-w-xs sm:min-w-[20rem]'
             icon={faMagnifyingGlass}
             value={query}
             onChange={(e: any) => (setQuery(e.target.value), setPage(1))}

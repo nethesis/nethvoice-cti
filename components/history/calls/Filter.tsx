@@ -512,7 +512,7 @@ export const Filter = forwardRef<HTMLButtonElement, FilterProps>(
                 <div className='flex items-center'>
                   <TextInput
                     placeholder={t('History.Filter by name or number') || ''}
-                    className='max-w-lg'
+                    className='max-w-xs sm:min-w-[20rem]'
                     value={filterText}
                     onChange={changeFilterText}
                     ref={textFilterRef}
