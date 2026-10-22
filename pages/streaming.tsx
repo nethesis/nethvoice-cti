@@ -99,7 +99,7 @@ const Streaming: NextPage = () => {
             value={searchQuery}
             onChange={(e) => setSearchQuery(e.target.value)}
             icon={faMagnifyingGlass}
-            className='max-w-xs'
+            className='max-w-xs sm:min-w-[20rem]'
           />
 
           {/* Sort dropdown */}

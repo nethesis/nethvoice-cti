@@ -400,7 +400,7 @@ export const QueuesManagementView: FC<QueuesManagementViewProps> = ({ className 
           icon={textFilter.length ? faCircleXmark : undefined}
           onIconClick={() => clearTextFilter()}
           trailingIcon={true}
-          className='max-w-sm mb-4'
+          className='max-w-xs sm:min-w-[20rem] mb-4'
         />
         {/* login/logout and pause buttons */}
         <div className='flex flex-col md:items-end mb-3 shrink-0'>

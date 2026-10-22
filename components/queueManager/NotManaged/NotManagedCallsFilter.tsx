@@ -421,7 +421,7 @@ export const NotManagedCallsFilter = forwardRef<HTMLButtonElement, NotManagedCal
                 <div className='flex items-center'>
                   <TextInput
                     placeholder={t('Queues.Filter calls') || ''}
-                    className='max-w-sm'
+                    className='max-w-xs sm:min-w-[20rem]'
                     value={textFilter}
                     onChange={changeTextFilter}
                     ref={textFilterRef}

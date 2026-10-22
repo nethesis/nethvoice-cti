@@ -336,10 +336,10 @@ const Chat: NextPage = () => {
         {t('Chat.Conversations')}
       </h1>
       <div className='flex items-center justify-between gap-4 mb-6'>
-        {/* same width as the Operators filter */}
-        <div className='w-44'>
+        <div>
           <TextInput
             placeholder={t('Chat.Search') || ''}
+            className='max-w-xs sm:min-w-[20rem]'
             icon={faMagnifyingGlass}
             value={query}
             onChange={(e: any) => (setQuery(e.target.value), setPage(1))}

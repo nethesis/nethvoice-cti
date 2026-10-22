@@ -308,7 +308,7 @@ export const RealTimeOperatorsFilter = forwardRef<HTMLButtonElement, RealTimeOpe
                 <div className='flex items-center'>
                   <TextInput
                     placeholder={t('Operators.Filter operators') || ""}
-                    className='max-w-sm'
+                    className='max-w-xs sm:min-w-[20rem]'
                     value={textFilter}
                     onChange={changeTextFilter}
                     ref={textFilterRef}
