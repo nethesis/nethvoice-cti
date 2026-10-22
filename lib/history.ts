@@ -207,7 +207,7 @@ export const getFilterValues = (currentUsername: string) => {
   return { callType, callDirection, sortBy, contentFilter, queue }
 }
 
-// The queues of the calls in the interval shown (YYYYMMDD): the whole history of
+// The queues of the calls in the interval shown (YYYYMMDD[HHmm]): the whole history of
 // a user is too large to be searched every time the history is opened.
 export const getHistoryQueues = async (username: string, from: string, to: string) => {
   try {

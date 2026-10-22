@@ -172,7 +172,11 @@ export const Calls: FC<CallsProps> = ({ className }): JSX.Element => {
     let isMounted = true
 
     async function fetchHistoryQueues() {
-      if (!username || !/^[0-9]{8}$/.test(dateBegin) || !/^[0-9]{8}$/.test(dateEnd)) {
+      if (
+        !username ||
+        !/^[0-9]{8}([0-9]{4})?$/.test(dateBegin) ||
+        !/^[0-9]{8}([0-9]{4})?$/.test(dateEnd)
+      ) {
         return
       }
 

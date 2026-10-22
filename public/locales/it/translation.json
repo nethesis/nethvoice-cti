@@ -279,6 +279,7 @@
     "Type to search contact": "Digita per cercare un contatto",
     "Start time": "Tempo di inizio",
     "End time": "Tempo di fine",
+    "The start must be before the end": "L'inizio deve precedere la fine",
     "Choose a date range": "Scegli un intervallo",
     "Groups": "Gruppi",
     "Open recording action modal": "Apri modale azioni registrazione",

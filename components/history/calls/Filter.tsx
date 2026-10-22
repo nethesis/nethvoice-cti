@@ -199,12 +199,14 @@ export const Filter = forwardRef<HTMLButtonElement, FilterProps>(
       //Get the date from the input
       const hourBegin = hourBeginRef.current.value
       setHourBeginValue(hourBegin)
+      applyDateRange(getSelectedDateRange(), hourBegin, hourEndValue)
     }
 
     function changeHourEnd() {
       //Get the date from the input
       const hourEnd = hourEndRef.current.value
       setHourEndValue(hourEnd)
+      applyDateRange(getSelectedDateRange(), hourBeginValue, hourEnd)
     }
 
     const [dateValue, setdateValue]: any = useState({
@@ -213,6 +215,7 @@ export const Filter = forwardRef<HTMLButtonElement, FilterProps>(
     })
     const [hourBeginValue, setHourBeginValue]: any = useState('')
     const [hourEndValue, setHourEndValue]: any = useState('')
+    const [isDateRangeInvalid, setIsDateRangeInvalid] = useState(false)
 
     const queueFilter = {
       id: 'queue',
@@ -245,28 +248,40 @@ export const Filter = forwardRef<HTMLButtonElement, FilterProps>(
       return nextDate
     }
 
+    const getSelectedDateRange = () => {
+      if (dateValue?.startDate && dateValue?.endDate) {
+        return dateValue
+      }
+      return { startDate: actualDateLabelFrom, endDate: actualDateLabelTo }
+    }
+
+    const applyDateRange = (date: any, hourBegin: string, hourEnd: string) => {
+      const convertDateBegin = applyTimeToDate(date.startDate, hourBegin, 0, 0)
+      const convertDateEnd = applyTimeToDate(date.endDate, hourEnd, 23, 59)
+
+      if (!convertDateBegin || !convertDateEnd) {
+        return
+      }
+
+      if (convertDateBegin > convertDateEnd) {
+        setIsDateRangeInvalid(true)
+        return
+      }
+      setIsDateRangeInvalid(false)
+
+      updateDateBeginFilter(formatDateLoc(convertDateBegin, 'yyyyMMddHHmm'))
+      updateDateEndFilter(formatDateLoc(convertDateEnd, 'yyyyMMddHHmm'))
+
+      setDateEndShowed(formatDateLoc(convertDateEnd, 'PPp'))
+      setDateBeginShowed(formatDateLoc(convertDateBegin, 'PPp'))
+      setdateValue(date)
+      setClearSelected(false)
+    }
+
     //Set the date when the date filter is changed
     const changeDateBegin = (date: any) => {
       if (date != null && date.startDate !== null && date.endDate !== null) {
-        const convertDateBegin = applyTimeToDate(date.startDate, hourBeginValue, 0, 0)
-        const convertDateEnd = applyTimeToDate(date.endDate, hourEndValue, 23, 59)
-
-        if (!convertDateBegin || !convertDateEnd) {
-          return
-        }
-
-        let dateBeginWithHour: any = formatDateLoc(convertDateBegin, 'PPp')
-        let noHour: any = formatDateLoc(convertDateBegin, 'yyyy-MM-dd')
-        updateDateBeginFilter(noHour)
-
-        let dateEndWithHour: any = formatDateLoc(convertDateEnd, 'PPp')
-        let noEndHour: any = formatDateLoc(convertDateEnd, 'yyyy-MM-dd')
-        updateDateEndFilter(noEndHour)
-
-        setDateEndShowed(dateEndWithHour)
-        setDateBeginShowed(dateBeginWithHour)
-        setdateValue(date)
-        setClearSelected(false)
+        applyDateRange(date, hourBeginValue, hourEndValue)
       }
     }
 
@@ -405,6 +420,15 @@ export const Filter = forwardRef<HTMLButtonElement, FilterProps>(
       setCallDirection(DEFAULT_CALL_DIRECTION_FILTER)
       setSelectedContentFilter(DEFAULT_CONTENT_FILTER)
       setSelectedQueue(DEFAULT_QUEUE_FILTER)
+      setHourBeginValue('')
+      setHourEndValue('')
+      setIsDateRangeInvalid(false)
+      if (hourBeginRef.current) {
+        hourBeginRef.current.value = ''
+      }
+      if (hourEndRef.current) {
+        hourEndRef.current.value = ''
+      }
       // Update the dateValue state
       setdateValue((prevState: any) => {
         return {
@@ -462,6 +486,7 @@ export const Filter = forwardRef<HTMLButtonElement, FilterProps>(
             hourEndValue={hourEndValue}
             changeHourBegin={changeHourBegin}
             changeHourEnd={changeHourEnd}
+            isDateRangeInvalid={isDateRangeInvalid}
             selectedLanguage={selectedLanguage}
             dateValue={dateValue}
             changeDateBegin={changeDateBegin}
@@ -515,6 +540,7 @@ export const Filter = forwardRef<HTMLButtonElement, FilterProps>(
                     hourEndValue={hourEndValue}
                     changeHourBegin={changeHourBegin}
                     changeHourEnd={changeHourEnd}
+                    isDateRangeInvalid={isDateRangeInvalid}
                     selectedLanguage={selectedLanguage}
                     dateValue={dateValue}
                     changeDateBegin={changeDateBegin}
