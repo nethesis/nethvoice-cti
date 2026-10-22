@@ -336,7 +336,8 @@ const Chat: NextPage = () => {
         {t('Chat.Conversations')}
       </h1>
       <div className='flex items-center justify-between gap-4 mb-6'>
-        <div className='max-w-md flex-1'>
+        {/* same width as the Operators filter */}
+        <div className='w-44'>
           <TextInput
             placeholder={t('Chat.Search') || ''}
             icon={faMagnifyingGlass}
