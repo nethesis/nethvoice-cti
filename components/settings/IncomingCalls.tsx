@@ -207,7 +207,7 @@ export const IncomingCalls = () => {
         savePreference('incomingCallTrigger', triggerValue, authStore.username)
       } catch (error) {
         console.error('Error loading parameter URL:', error)
-        setParamUrlError('Cannot retrieve URL configuration')
+        setParamUrlError(t('Settings.Cannot retrieve URL configuration') || '')
 
         // Use default example and saved preferences as fallback
         const savedUrl = loadPreference('incomingCallUrl', authStore.username) || defaultExampleUrl
