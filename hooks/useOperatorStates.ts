@@ -10,7 +10,8 @@ export const useOperatorStates = (operator: any, authUsername: string) => {
 
   const pickupPermission = useSelector(
     (state: RootState) =>
-      state.user?.profile?.macro_permissions?.settings?.permissions?.pickup?.value,
+      !!state.user?.profile?.macro_permissions?.settings?.value &&
+      !!state.user?.profile?.macro_permissions?.settings?.permissions?.pickup?.value,
   )
   const hangupPermission = useSelector(
     (state: RootState) =>

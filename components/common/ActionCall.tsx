@@ -274,7 +274,8 @@ export const ActionCall: React.FC<ActionCallProps> = ({ config }) => {
           </Dropdown.Item>
         )}
 
-      {profile?.profile?.macro_permissions?.settings?.permissions?.pickup?.value &&
+      {profile?.profile?.macro_permissions?.settings?.value &&
+        profile?.profile?.macro_permissions?.settings?.permissions?.pickup?.value &&
         operators?.operators[config?.username]?.mainPresence === 'ringing' && (
           <Dropdown.Item icon={faPhoneArrowDownLeft as any} onClick={actions.pickup}>
             {t('OperatorDrawer.Pickup')}
