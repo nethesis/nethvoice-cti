@@ -13,20 +13,23 @@ const ChatIsland = dynamic(() => import('@nethesis/chat-island').then((mod) => m
   ssr: false,
 })
 
-/** Open the chat with an operator or a group address; in NethLink when it runs. */
+/** The chat windows are in NethLink: it runs, and the person did not move them here. */
+const chatInNethlink = () => isNethlinkOnline() && store.getState().chat.host !== 'cti'
+
+/** Open the chat with an operator or a group address; in NethLink when the chat is there. */
 // With a search, the island opens the chat on it, at that message.
 export const openChatWith = (username: string, search?: { query: string; id?: string }) => {
-  if (isNethlinkOnline()) window.location.href = `nethlink://chat?to=${encodeURIComponent(username)}`
+  if (chatInNethlink()) window.location.href = `nethlink://chat?to=${encodeURIComponent(username)}`
   else window.dispatchEvent(new CustomEvent('chat-island-open', { detail: { username, search } }))
 }
 
 export const newChat = () => {
-  if (isNethlinkOnline()) window.location.href = 'nethlink://chat'
+  if (chatInNethlink()) window.location.href = 'nethlink://chat'
   else window.dispatchEvent(new CustomEvent('chat-island-new'))
 }
 
-/** With NethLink running the chat windows live there. */
-export const useChatInNethlink = () => useSelector(() => isNethlinkOnline())
+/** With NethLink running the chat windows live there, unless the person moved them here. */
+export const useChatInNethlink = () => useSelector((state: RootState) => isNethlinkOnline() && state.chat.host !== 'cti')
 
 /** Chat switched on for this NethVoice (window.CONFIG). */
 export const chatEnabled = () => typeof window !== 'undefined' && String((window as any).CONFIG?.CHAT_ENABLED) === 'true'
@@ -35,9 +38,12 @@ export const chatEnabled = () => typeof window !== 'undefined' && String((window
 export const useChatAllowed = () =>
   useSelector((state: RootState) => chatEnabled() && !!(state.user as any)?.profile?.macro_permissions?.nethvoice_cti?.permissions?.chat?.value)
 
+const MOVE_TO_NETHLINK = { host: 'nethlink' as const, label: 'NethLink' }
+
 export function ChatIslandMount() {
   const allowed = useChatAllowed()
   const inNethlink = useChatInNethlink()
+  const nethlink = useSelector(() => isNethlinkOnline())
   const auth = useSelector((state: RootState) => state.authentication)
   const currentUser = useSelector((state: RootState) => state.user)
   const operatorsStore = useSelector((state: RootState) => state.operators)
@@ -65,6 +71,7 @@ export function ChatIslandMount() {
       on('chat-island-unread', (d) => store.dispatch.chat.setUnread(d.total)),
       on('chat-island-conversations', (d) => store.dispatch.chat.setConversations(d)),
       on('chat-island-call', (d) => d?.number && callPhoneNumber(d.number)),
+      on('chat-island-host', (d) => (d?.host === 'cti' || d?.host === 'nethlink') && store.dispatch.chat.setHost(d.host)),
       // Messages from the same conversation add up in one toast.
       on('chat-island-notify', (d) => d?.body && setNotice((n) => ({ ...d, count: n && n.peer === d.peer ? n.count + 1 : 1 }))),
     ]
@@ -83,14 +90,24 @@ export function ChatIslandMount() {
   }, [operatorsStore.operators, operatorsStore.avatars, operatorsStore.extensions, currentUser.username, ready])
 
   if (!config || !allowed) return null
-  // NethLink shows the chats; the CTI keeps a hidden island for its list (read state follows NethLink).
-  if (inNethlink) return <ChatIsland dataConfig={config} headless />
+  // NethLink shows the chats unless they were moved here; then the CTI keeps a hidden island for its list (read state follows NethLink).
   return (
     <>
-      <ChatIsland dataConfig={config} serviceWorker='/chat-island-sw.js' newChatButton={false} maxHeads={5} notifications='auto' pinnable />
-      <div className='fixed top-6 right-9 z-50'>
-        <ChatToast notice={notice} onOpen={openChatWith} onClose={closeNotice} />
-      </div>
+      <ChatIsland
+        dataConfig={config}
+        headless={inNethlink}
+        serviceWorker='/chat-island-sw.js'
+        newChatButton={false}
+        maxHeads={5}
+        notifications='auto'
+        pinnable
+        moveTo={nethlink ? MOVE_TO_NETHLINK : undefined}
+      />
+      {!inNethlink && (
+        <div className='fixed top-6 right-9 z-50'>
+          <ChatToast notice={notice} onOpen={openChatWith} onClose={closeNotice} />
+        </div>
+      )}
     </>
   )
 }

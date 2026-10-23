@@ -21,6 +21,7 @@ export interface ChatConversation {
 }
 
 interface DefaultState {
+  host: 'nethlink' | 'cti' // where the person keeps the chat windows while NethLink runs
   status: string
   unread: number
   conversations: ChatConversation[]
@@ -29,6 +30,7 @@ interface DefaultState {
 }
 
 const defaultState: DefaultState = {
+  host: 'nethlink',
   status: 'offline',
   unread: 0,
   conversations: [],
@@ -38,6 +40,10 @@ const defaultState: DefaultState = {
 export const chat = createModel<RootModel>()({
   state: defaultState,
   reducers: {
+    setHost: (state, host: 'nethlink' | 'cti') => {
+      state.host = host
+      return state
+    },
     setStatus: (state, status: string) => {
       state.status = status
       return state
