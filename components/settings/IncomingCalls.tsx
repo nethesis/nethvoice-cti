@@ -49,7 +49,8 @@ export const IncomingCalls = () => {
   const dispatch = useDispatch()
 
   const hasDndPermission = Boolean(
-    userStore?.profile?.macro_permissions?.settings?.permissions?.dnd?.value,
+    userStore?.profile?.macro_permissions?.settings?.value &&
+      userStore?.profile?.macro_permissions?.settings?.permissions?.dnd?.value,
   )
 
   const updateAutoDndSetting = async (

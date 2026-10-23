@@ -1268,11 +1268,14 @@ export const Layout: FC<LayoutProps> = ({ children }) => {
   }
 
   const parkingInfo = useSelector((state: RootState) => state.park)
+  const hasParkingsPermission =
+    !!profile?.macro_permissions?.settings?.value &&
+    !!profile?.macro_permissions?.settings?.permissions?.parkings?.value
   const parkingsRefreshTimerRef = useRef<ReturnType<typeof setTimeout> | null>(null)
   const parkingsRefreshInFlightRef = useRef(false)
 
   const scheduleParksRefresh = () => {
-    if (!profile?.macro_permissions?.settings?.permissions?.parkings?.value) {
+    if (!hasParkingsPermission) {
       return
     }
 
@@ -1318,7 +1321,7 @@ export const Layout: FC<LayoutProps> = ({ children }) => {
     }
 
     scheduleParksRefresh()
-  }, [firstRenderPark, profile?.macro_permissions?.settings?.permissions?.parkings?.value])
+  }, [firstRenderPark, hasParkingsPermission])
 
   const controls = useAnimation()
 
@@ -1650,8 +1653,7 @@ export const Layout: FC<LayoutProps> = ({ children }) => {
           <div className='flex flex-1 items-stretch overflow-hidden bg-body dark:bg-bodyDark'>
             <main
               className={`flex-1 ${customScrollbarClass} ${
-                parkingInfo?.isParkingFooterVisible &&
-                profile?.macro_permissions?.settings?.permissions?.parkings?.value
+                parkingInfo?.isParkingFooterVisible && hasParkingsPermission
                   ? 'pb-16'
                   : ''
               }`}
@@ -1697,7 +1699,7 @@ export const Layout: FC<LayoutProps> = ({ children }) => {
             </div>
 
             {parkingInfo?.isParkingFooterVisible &&
-            profile?.macro_permissions?.settings?.permissions?.parkings?.value &&
+            hasParkingsPermission &&
             userInformation?.default_device &&
             userInformation?.default_device?.type !== 'nethlink' ? (
               <motion.div
