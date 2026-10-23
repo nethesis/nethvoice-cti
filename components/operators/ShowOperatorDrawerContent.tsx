@@ -32,15 +32,16 @@ export const ShowOperatorDrawerContent = forwardRef<
         <OperatorSummary operator={config} isShownFavorite={true} isShownSideDrawerLink={false} />
 
         {/* last calls: search all operator extensions */}
-        {profile?.profile?.macro_permissions?.cdr?.permissions?.ad_cdr?.value && (
-          <LastCallsDrawerTable
-            callType={config?.lastCallsType || 'switchboard'}
-            dateFrom={startOfDay(subDays(new Date(), 7))}
-            dateTo={new Date()}
-            phoneNumbers={config?.endpoints?.extension?.map((ext: any) => ext?.id)}
-            limit={10}
-          />
-        )}
+        {profile?.profile?.macro_permissions?.cdr?.value &&
+          profile?.profile?.macro_permissions?.cdr?.permissions?.ad_cdr?.value && (
+            <LastCallsDrawerTable
+              callType={config?.lastCallsType || 'switchboard'}
+              dateFrom={startOfDay(subDays(new Date(), 7))}
+              dateTo={new Date()}
+              phoneNumbers={config?.endpoints?.extension?.map((ext: any) => ext?.id)}
+              limit={10}
+            />
+          )}
       </div>
     </>
   )

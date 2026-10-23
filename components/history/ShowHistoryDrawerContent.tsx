@@ -164,15 +164,16 @@ export const ShowHistoryDrawerContent = forwardRef<
         </div>
 
         {/* last calls */}
-        {profile?.macro_permissions?.cdr?.permissions?.ad_cdr?.value && (
-          <LastCallsDrawerTable
-            callType={config?.callType}
-            dateFrom={startOfDay(subDays(new Date(), 7))}
-            dateTo={new Date()}
-            phoneNumbers={[config?.number]}
-            limit={10}
-          />
-        )}
+        {profile?.macro_permissions?.cdr?.value &&
+          profile?.macro_permissions?.cdr?.permissions?.ad_cdr?.value && (
+            <LastCallsDrawerTable
+              callType={config?.callType}
+              dateFrom={startOfDay(subDays(new Date(), 7))}
+              dateTo={new Date()}
+              phoneNumbers={[config?.number]}
+              limit={10}
+            />
+          )}
       </div>
     </>
   )
