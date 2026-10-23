@@ -491,6 +491,11 @@ export const getOperatorByPhoneNumber = (phoneNumber: string, operators: any) =>
   )
 }
 
+export const getMainExtensionNumber = (phoneNumber: string, operators: any) => {
+  const operator: any = getOperatorByPhoneNumber(phoneNumber, operators || {})
+  return operator?.endpoints?.mainextension?.[0]?.id || phoneNumber
+}
+
 export const getInfiniteScrollOperatorsPageSize = () => {
   let pageSize = 30
 

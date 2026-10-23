@@ -30,6 +30,7 @@ import {
   intrude,
   pickup,
   hangupMainExt,
+  getMainExtensionNumber,
 } from '../../lib/operators'
 import { eventDispatch } from '../../lib/hooks/eventDispatch'
 import { isNethlinkOnline, openToast } from '../../lib/utils'
@@ -45,6 +46,10 @@ export const ActionCall: React.FC<ActionCallProps> = ({ config }) => {
   const profile = useSelector((state: RootState) => state.user)
 
   const currentConversation = operators?.operators[config?.username]?.conversations?.[0]
+  const counterpartNumber = getMainExtensionNumber(
+    currentConversation?.counterpartNum,
+    operators?.operators,
+  )
   const canShowActions =
     currentConversation?.chDest?.callerName !== profile?.name &&
     currentConversation?.chSource?.callerName !== profile?.name
@@ -348,7 +353,7 @@ export const ActionCall: React.FC<ActionCallProps> = ({ config }) => {
               </div>
             )}
             <div className='font-normal text-textStatusBusy dark:text-textStatusBusyDark overflow-hidden whitespace-nowrap text-ellipsis'>
-              {currentConversation?.counterpartNum || '-'}
+              {counterpartNumber || '-'}
             </div>
           </dd>
 

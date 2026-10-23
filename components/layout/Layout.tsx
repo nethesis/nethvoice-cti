@@ -22,6 +22,7 @@ import {
 import { store } from '../../store'
 import {
   buildOperators,
+  getMainExtensionNumber,
   retrieveAvatars,
   retrieveExtensions,
   retrieveFavoriteOperators,
@@ -826,7 +827,10 @@ export const Layout: FC<LayoutProps> = ({ children }) => {
         let callerUsername = callerInfo?.username
         let callerAvatar = operatorsStore.avatars[callerUsername]
         let notificationObject: any = {
-          number: data[currentUsername]?.conversations[firstElementConversation]?.counterpartNum,
+          number: getMainExtensionNumber(
+            data[currentUsername]?.conversations[firstElementConversation]?.counterpartNum,
+            operatorsStore?.operators,
+          ),
           name: data[currentUsername]?.conversations[firstElementConversation]?.counterpartName,
           avatar: callerAvatar || '',
         }
