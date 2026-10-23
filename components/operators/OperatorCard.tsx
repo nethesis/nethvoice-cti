@@ -119,7 +119,6 @@ const OperatorCard = ({
                   </>
                 )}
               </div>
-              <CustomThemedTooltip id={`tooltip-textscroll-${index}`} />
             </div>
           )}
 
@@ -161,15 +160,12 @@ const OperatorCard = ({
                       />
                     </Button>
                   )}
-                  {/* Show tooltips only on small screens when text is hidden */}
-                  <div className='md:hidden'>
-                    <CustomThemedTooltip
-                      id={`tooltip-pickup-operator-${liveOperatorData?.username || 'op'}`}
-                    />
-                    <CustomThemedTooltip
-                      id={`tooltip-reject-operator-${liveOperatorData?.username || 'op'}`}
-                    />
-                  </div>
+                  <CustomThemedTooltip
+                    id={`tooltip-pickup-operator-${liveOperatorData?.username || 'op'}`}
+                  />
+                  <CustomThemedTooltip
+                    id={`tooltip-reject-operator-${liveOperatorData?.username || 'op'}`}
+                  />
                 </div>
               ) : (
                 <div className='py-2 px-2 flex justify-center'>

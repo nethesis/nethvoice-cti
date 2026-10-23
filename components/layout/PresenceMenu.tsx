@@ -121,25 +121,28 @@ export const PresenceMenu: React.FC<PresenceMenuProps> = ({
                     </Dropdown.Item>
                   )}
 
-                  {/* Divider */}
-                  <div className='relative py-2'>
-                    <div className='absolute inset-0 flex items-center' aria-hidden='true'>
-                      <div className='w-full border-t border-gray-300 dark:border-gray-700' />
-                    </div>
-                  </div>
-
                   {/* DND option */}
                   {profile.profile?.macro_permissions?.settings?.value &&
                     profile.profile?.macro_permissions?.settings?.permissions?.dnd?.value && (
-                      <Dropdown.Item onClick={() => setPresence('dnd')}>
-                        <div className='text-dropdownText dark:text-dropdownTextDark'>
-                          <div className='flex items-center'>
-                            <StatusDot status='dnd' className='flex mr-2' />
-                            <p className='flex text-sm font-medium'>{t('TopBar.Do not disturb')}</p>
+                      <>
+                        {/* Divider */}
+                        <div className='relative py-2'>
+                          <div className='absolute inset-0 flex items-center' aria-hidden='true'>
+                            <div className='w-full border-t border-gray-300 dark:border-gray-700' />
                           </div>
-                          <p className='text-sm mt-2'>{t('TopBar.Do not receive any calls')}</p>
                         </div>
-                      </Dropdown.Item>
+                        <Dropdown.Item onClick={() => setPresence('dnd')}>
+                          <div className='text-dropdownText dark:text-dropdownTextDark'>
+                            <div className='flex items-center'>
+                              <StatusDot status='dnd' className='flex mr-2' />
+                              <p className='flex text-sm font-medium'>
+                                {t('TopBar.Do not disturb')}
+                              </p>
+                            </div>
+                            <p className='text-sm mt-2'>{t('TopBar.Do not receive any calls')}</p>
+                          </div>
+                        </Dropdown.Item>
+                      </>
                     )}
                 </div>
               </div>
